@@ -142,10 +142,10 @@
         </el-row>
       </el-form>
     </div>
-  
+    
     <div class="table-part-title"><i class="header-icon el-icon-document-copy"></i>采购中介服务信息</div>
     <div class="part-info-box c-f" v-for="item in zjItemInfo" :key="item.projInfoId">
-    
+      
       <el-form :model="item" size="medium" label-width="0">
         <el-row>
           <el-col :span="12">
@@ -162,7 +162,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="投资审批项目" :label-width="labelWidth">
-              <el-input v-model="item.isApproveProj" readonly></el-input>
+              <el-input :value="item.isApproveProj=='1'?'是':'否'" readonly></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -174,21 +174,25 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
-            <el-form-item label="资金来源比例" :label-width="labelWidth">
-              <el-input v-model="item.themeName" readonly></el-input>
+          <el-col :span="12" v-if="item.isFinancialFund=='1'">
+            <el-form-item label="财政资金比例" :label-width="labelWidth">
+              <el-input :value="item.financialFundProportion" readonly>
+                <template slot="append">%</template>
+              </el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="资金来源比例" :label-width="labelWidth">
-              <el-input v-model="item.projType" readonly></el-input>
+          <el-col :span="12" v-if="item.isSocialFund=='1'">
+            <el-form-item label="社会资金比例" :label-width="labelWidth">
+              <el-input :value="item.socialFundProportion" readonly>
+                <template slot="append">%</template>
+              </el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="所属服务" :label-width="labelWidth">
-              <el-input v-model="item.serviceId" readonly></el-input>
+              <el-input v-model="item.serviceName" readonly></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -220,94 +224,120 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row v-if="item.promiseService==1">
           <el-col :span="24">
             <el-form-item label="中介机构服务要求" :label-width="labelWidth">
-              <el-input v-model="item.themeName" readonly></el-input>
+              <el-input value="仅承诺服务即可" readonly></el-input>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item>
-              <div class="form-unit-box">
-                <div class="form-left-label c-f">
-                  <div class="r">资质要求</div>
-                  <div class="u-hint-box r">
-                    <el-tooltip placement="right">
-                      <div slot="content">
-                        备注：涉及工程项目的，应当包含工程项目地址、项目基本情况(包含建设规模、建设面积、资金投入等具体参数)。
-                        涉及土地、房产评估的、应当包含土地、房产面积、预算价格等内容。
-                      </div>
-                      <i class="ag ag-help"></i>
-                    </el-tooltip>
+        <template v-if="item.isQualRequire==1">
+          <el-row>
+            <el-col :span="24">
+              <el-form-item>
+                <div class="form-unit-box">
+                  <div class="form-left-label c-f">
+                    <div class="r">资质要求</div>
+                    <div class="u-hint-box r">
+                      <el-tooltip placement="right">
+                        <div slot="content">
+                          备注：涉及工程项目的，应当包含工程项目地址、项目基本情况(包含建设规模、建设面积、资金投入等具体参数)。
+                          涉及土地、房产评估的、应当包含土地、房产面积、预算价格等内容。
+                        </div>
+                        <i class="ag ag-help"></i>
+                      </el-tooltip>
+                    </div>
                   </div>
+                  <el-input :value="item.qualRequireType==1?'多个资质子项符合其一':'需要同时符合所有选中资质子项'" readonly></el-input>
                 </div>
-                <el-input v-model="item.qualRequireType" readonly></el-input>
-              </div>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item>
-              <div class="form-unit-box">
-                <div class="form-left-label c-f">
-                  <div class="r">资质要求说明</div>
-                  <div class="u-hint-box r">
-                    <el-tooltip placement="right">
-                      <div slot="content">
-                        备注：请说明资质/分类的具体要求，如行业、专业、等级等。
-                      </div>
-                      <i class="ag ag-help"></i>
-                    </el-tooltip>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
+              <el-form-item>
+                <div class="form-unit-box">
+                  <div class="form-left-label c-f">
+                    <div class="r">资质要求说明</div>
+                    <div class="u-hint-box r">
+                      <el-tooltip placement="right">
+                        <div slot="content">
+                          备注：请说明资质/分类的具体要求，如行业、专业、等级等。
+                        </div>
+                        <i class="ag ag-help"></i>
+                      </el-tooltip>
+                    </div>
                   </div>
+                  <el-input :value="item.qualRequireExplain" readonly></el-input>
                 </div>
-                <el-input v-model="item.qualRequireExplain" readonly></el-input>
-              </div>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item>
-              <div class="form-unit-box">
-                <div class="form-left-label c-f">
-                  <div class="r">执业/职业人员总数</div>
-                  <div class="u-hint-box r">
-                    <el-tooltip placement="right">
-                      <div slot="content">
-                        备注：请填写为本项目提供服务的中介机构持证执业(职业)人员总数要求。
-                      </div>
-                      <i class="ag ag-help"></i>
-                    </el-tooltip>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </template>
+        <template v-if="item.isRegisterRequire==1">
+          <el-row>
+            <el-col :span="24">
+              <el-form-item>
+                <div class="form-unit-box">
+                  <div class="form-left-label c-f">
+                    <div class="r">执业/职业人员总数</div>
+                    <div class="u-hint-box r">
+                      <el-tooltip placement="right">
+                        <div slot="content">
+                          备注：请填写为本项目提供服务的中介机构持证执业(职业)人员总数要求。
+                        </div>
+                        <i class="ag ag-help"></i>
+                      </el-tooltip>
+                    </div>
                   </div>
+                  <el-input v-model="item.registerTotal" readonly></el-input>
                 </div>
-                <el-input v-model="item.registerTotal" readonly></el-input>
-              </div>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item>
-              <div class="form-unit-box">
-                <div class="form-left-label c-f">
-                  <div class="r">执业/职业人员要求</div>
-                  <div class="u-hint-box r">
-                    <el-tooltip placement="right">
-                      <div slot="content">
-                        备注：该要求将公示于前台采购公告中。
-                      </div>
-                      <i class="ag ag-help"></i>
-                    </el-tooltip>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
+              <el-form-item>
+                <div class="form-unit-box">
+                  <div class="form-left-label c-f">
+                    <div class="r">执业/职业人员要求</div>
+                    <div class="u-hint-box r">
+                      <el-tooltip placement="right">
+                        <div slot="content">
+                          备注：该要求将公示于前台采购公告中。
+                        </div>
+                        <i class="ag ag-help"></i>
+                      </el-tooltip>
+                    </div>
                   </div>
+                  <el-input v-model="item.registerRequire" readonly></el-input>
                 </div>
-                <el-input v-model="item.registerRequire" readonly></el-input>
-              </div>
-            </el-form-item>
-          </el-col>
-        </el-row>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </template>
+        <template v-if="item.isRecordRequire==1">
+          <el-row>
+            <el-col :span="24">
+              <el-form-item>
+                <div class="form-unit-box">
+                  <div class="form-left-label c-f">
+                    <div class="r">备案要求说明</div>
+                    <div class="u-hint-box r">
+                      <el-tooltip placement="right">
+                        <div slot="content">
+                          备注：该要求将公示于前台采购公告中。
+                        </div>
+                        <i class="ag ag-help"></i>
+                      </el-tooltip>
+                    </div>
+                  </div>
+                  <el-input :value="item.recordRequireExplain" readonly></el-input>
+                </div>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </template>
         <el-row>
           <el-col :span="24">
             <el-form-item>
@@ -331,14 +361,15 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="选取中介机构方式" :label-width="labelWidth">
-              <el-input v-model="item.biddingType" readonly></el-input>
+              <el-input :value="item.biddingType==1?'随机抽取':item.biddingType==2?'直接抽取':item.biddingType==3?'竞价选取':'未知'"
+                        readonly></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
             <el-form-item label="是否确认金额" :label-width="labelWidth">
-              <el-input v-model="item.isDefineAmount" readonly></el-input>
+              <el-input :value="item.isDefineAmount==1?'已确定服务金额':'暂不做评估与预算'" readonly></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -350,19 +381,35 @@
               </el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="金额大写" :label-width="labelWidth">
-              <el-input v-model="item.basePriceDx" readonly></el-input>
-            </el-form-item>
-          </el-col>
+          <!--          <el-col :span="12">-->
+          <!--            <el-form-item label="金额大写" :label-width="labelWidth">-->
+          <!--              <el-input v-model="item.basePriceDx" readonly></el-input>-->
+          <!--            </el-form-item>-->
+          <!--          </el-col>-->
         </el-row>
         <el-row>
           <el-col :span="24">
             <el-form-item label="是否有回避情况" :label-width="labelWidth">
-              <el-input v-model="item.isAvoid" readonly></el-input>
+              <el-input :value="item.isAvoid==1?'有':'无'" readonly></el-input>
             </el-form-item>
           </el-col>
         </el-row>
+        <template v-if="item.isAvoid==1">
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="回避单位" :label-width="labelWidth">
+                <el-input :value="item.avoidUnitNames" readonly></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="回避原因" :label-width="labelWidth">
+                <el-input :value="item.avoidReason" readonly></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </template>
         <el-row>
           <el-col :span="12">
             <el-form-item label="报名截止时间" :label-width="labelWidth">
@@ -384,13 +431,13 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="中选机构公示" :label-width="labelWidth">
-              <el-input v-model="item.isDiscloseIm" readonly></el-input>
+            <el-form-item label="是否公示中选机构" :label-width="labelWidth">
+              <el-input :value="item.isDiscloseIm==1?'是':'否'" readonly></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="中选公告公示" :label-width="labelWidth">
-              <el-input v-model="item.isDiscloseBidding" readonly></el-input>
+            <el-form-item label="是否公示中选公告" :label-width="labelWidth">
+              <el-input :value="item.isDiscloseBidding==1?'是':'否'" readonly></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -406,7 +453,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        
+      
       </el-form>
     </div>
     
