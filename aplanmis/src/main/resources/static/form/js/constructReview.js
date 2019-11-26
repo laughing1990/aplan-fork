@@ -512,14 +512,7 @@ var app = new Vue({
     // 模糊查询人员
     getPerson: function(val, type) {
       var vm = this;
-      // vm.loading = true;
-      if (!val.unitInfoId) {
-        this.$message({
-          message: '请先选择单位',
-          type: 'error'
-        });
-        return;
-      }
+
       request('', {
         type: 'get',
         url: ctx + 'rest/linkman/list',
