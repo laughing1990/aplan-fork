@@ -4,11 +4,20 @@
 var vm = new Vue({
   el: '#applyForm',
   data: function () {
+    var checkMissValue = function (rule, value, callback) {
+      if (value === '' || value === undefined || value === null) {
+        callback(new Error('该输入项为必输项！'));
+      } else if (value.toString().trim() === '') {
+        callback(new Error('该输入项为必输项！'));
+      } else {
+        callback();
+      }
+    };
     return {
       labelWidth: '165px',
       isItemSeek: false,
-      applyinstId: __STATIC.getUrlParam('masterEntityKey'),
-      taskId: __STATIC.getUrlParam('taskId'),
+      applyinstId: '',
+      taskId: '',
       showMore: false,
       // 申办主体信息
       unitInfoList: [],
@@ -28,11 +37,287 @@ var vm = new Vue({
       personalApplyInfo: {},
       personalLinkInfo: {},
       unitTypeList: [],
-      isZJItem: __STATIC.getUrlParam('isZJItem'),
+      isZJItem: '',
       zjItemInfo: [],
+      matsTableData: [],
+      showFileListKey:[],
+      getPaperAll: false,
+      getCopyAll: false,
+      isShowMatForm: '',
+      model: {
+        rules: {
+          getPaper: {required: true, message: "必选", trigger: ["change"]},
+          getCopy: {required: true, message: "必选", trigger: ["change"]},
+          realPaperCount: {validator: checkMissValue, required: true, message: "必填字段", trigger: ['blur']},
+          realCopyCount: {validator: checkMissValue, required: true, message: "必填字段", trigger: ['blur']},
+        },
+        matsTableData: []
+      },
+      showMatTableExpand: true,
+      showUploadWindowFlag: false, // 是否展示文件上传窗口
+      fileSelectionList: [], // 所选电子件
+      selMatRowData: {}, // 所选择的材料信息
+      uploadMatinstId: '', // 上传返回材料实例
+      selMatinstId: '',
+      showUploadWindowTitle: '材料附件',
+      loadingFileWin: false,
+      uploadTableData: [],
+      fileList: [],
+      matinstIds: '',
+      matCodes: [],
+      matIds: [],
     }
   },
   methods: {
+    //删除单个文件附件
+    delOneFile: function (data, matData) {
+      var _that = this;
+      request('', {
+        url: ctx + 'rest/mats/att/delelte',
+        type: 'post',
+        data: {matinstId: matData.attMatinstId, detailIds: data.fileId}
+      }, function (res) {
+        if (res.success) {
+          _that.getFileListWin(matData.matinstId, matData);
+          _that.$message({
+            message: '删除成功',
+            type: 'success'
+          });
+        } else {
+          _that.$message({
+            message: res.message ? res.message : '删除失败',
+            type: 'error'
+          });
+        }
+      }, function (msg) {
+        _that.$message({
+          message: '服务请求失败',
+          type: 'error'
+        });
+      });
+    },
+    //下载单个附件
+    downOneFile: function (data) {
+      window.open(ctx + 'rest/mats/att/download?detailIds=' + data.fileId, '_blank')
+    },
+    // 获取文件后缀
+    getFileType: function (fileName) {
+      var index1 = fileName.lastIndexOf(".");
+      var index2 = fileName.length;
+      var suffix = fileName.substring(index1 + 1, index2).toLowerCase();//后缀名
+      if (suffix == 'docx') {
+        suffix = 'doc';
+      }
+      return suffix;
+    },
+    filePreview: function(row){
+      parent.vm.filePreview(row);
+    },
+    // 文件上传弹窗页面-上传电子件
+    uploadFileCom: function (file) {
+      var _that = this;
+      var rowData = _that.selMatRowData;
+      this.fileWinData = new FormData();
+      file.forEach(function (u) {
+        Vue.set(u.file, 'fileName', u.file.name);
+        _that.fileWinData.append('file', u.file);
+      })
+      this.fileWinData.append("matinstId", rowData.attMatinstId);
+      this.fileWinData.append("applyinstId", _that.applyinstId);
+      this.fileWinData.append("matId", rowData.matId);
+      _that.loadingFileWin = true;
+      axios.defaults.withCredentials = true;
+      axios.post(ctx + 'market/approve/uploadServiceResultAtt', _that.fileWinData).then(function (res) {
+        file.forEach(function (u) {
+          Vue.set(u.file, 'matinstId', res.data.content);
+        })
+        // Vue.set(file.file, 'matinstId', res.data.content)
+        _that.selMatinstId = res.data.content;
+        _that.getFileListWin(res.data.content, rowData);
+        var matinstIdsObj = [];
+        _that.model.matsTableData.map(function (item) {
+          if (item.matId == rowData.matId) {
+            item.matinstId = res.data.content;
+            _that.showFileListKey.push(item.matId)
+          }
+          if (matinstIdsObj.indexOf(item.matinstId) < 0 && item.matinstId != '') {
+            matinstIdsObj.push(item.matinstId);
+          }
+          ;
+        });
+        _that.matinstIds = matinstIdsObj.join(',')
+        _that.loadingFileWin = false;
+        _that.$message({
+          message: '上传成功',
+          type: 'success'
+        });
+      
+      }).catch(function (error) {
+        _that.loadingFileWin = false;
+        if (error.response) {
+          _that.$message({
+            message: '文件上传失败(' + error.response.status + ')，' + error.response.data,
+            type: 'error'
+          });
+        } else if (error.request) {
+          _that.$message({
+            message: '文件上传失败，服务器端无响应',
+            type: 'error'
+          });
+        } else {
+          _that.$message({
+            message: '文件上传失败，请求封装失败',
+            type: 'error'
+          });
+        }
+      
+      });
+    },
+    //文件上传弹窗页面- 删除电子件
+    delSelectFileCom: function () {
+      var _that = this;
+      var detailIds = [];
+      if (_that.fileSelectionList.length == 0) {
+        _that.$message({
+          message: '请勾选数据后操作！',
+          type: 'error'
+        });
+        return false;
+      }
+      _that.fileSelectionList.map(function (item, index) {
+        detailIds.push(item.fileId);
+      });
+      detailIds = detailIds.join(',')
+      request('', {
+        url: ctx + 'rest/mats/att/delelte',
+        type: 'post',
+        data: {matinstId: _that.attMatinstId, detailIds: detailIds}
+      }, function (res) {
+        if (res.success) {
+          _that.getFileListWin(_that.selMatRowData.matinstId, _that.selMatRowData);
+          _that.$message({
+            message: '删除成功',
+            type: 'success'
+          });
+        } else {
+          _that.$message({
+            message: res.message ? res.message : '删除失败',
+            type: 'error'
+          });
+        }
+      }, function (msg) {
+        _that.$message({
+          message: '服务请求失败',
+          type: 'error'
+        });
+      });
+    },
+    // 下载电子件
+    downloadFile: function () {
+      var _that = this;
+      var detailIds = [];
+      if (_that.fileSelectionList.length == 0) {
+        _that.$message({
+          message: '请勾选数据后操作！',
+          type: 'error'
+        });
+        return false;
+      }
+      _that.fileSelectionList.map(function (item, index) {
+        detailIds.push(item.fileId);
+      });
+      detailIds = detailIds.join(',')
+      window.open(ctx + 'rest/mats/att/download?detailIds=' + detailIds, '_blank')
+    },
+    // 获取已上传文件列表
+    getFileListWin: function (matinstId, rowData) {
+      var _that = this;
+      request('', {
+        url: ctx + 'rest/mats/att/list',
+        type: 'get',
+        data: {matinstId: attMatinstId}
+      }, function (res) {
+        if (res.success) {
+          // if (res.content) {
+          _that.uploadTableData = res.content ? res.content : [];
+          if (rowData) {
+            rowData.matChild = res.content ? res.content : [];
+          }
+          if (rowData.matChild.length > 0) {
+            _that.showMatTableExpand = true;
+          }
+          // }
+        } else {
+          _that.$message({
+            message: res.message ? res.message : '加载已上传材料列表失败',
+            type: 'error'
+          });
+        }
+      }, function (msg) {
+        _that.$message({
+          message: '服务请求失败',
+          type: 'error'
+        });
+      });
+    },
+    // 勾选电子件
+    selectionFileChange: function (val) {
+      this.fileSelectionList = val;
+    },
+    debounceHandler: function (file) {
+      this.loadingFileWin = true;
+      this.debounce(this.uploadFileCom, file);
+    },
+    debounce: function (func, file) {
+      var vm = this;
+      window.clearTimeout(func.tId);
+      func.temArr = func.temArr || [];
+      func.temArr.push(file);
+      func.tId = window.setTimeout(function () {
+        this.loadingFileWin = false;
+        func(func.temArr);
+        func.temArr = [];
+      }, 1000);
+    },
+    showUploadWindow: function (data) { // 展示文件上传下载弹窗
+      var _that = this;
+      _that.showUploadWindowFlag = true;
+      _that.selMatRowData = data;
+      _that.selMatinstId = data.matinstId ? data.matinstId : '',
+          _that.showUploadWindowTitle = '材料附件 - ' + data.matName
+      _that.getFileListWin(data.matinstId, data);
+    },
+    // 材料全选
+    checkAllMatChange: function (val, flag) {
+      if (val == false) {
+        val = '';
+      }
+      var _that = this;
+      // this.checkedCities[[index]] = val ? this.id[[index]] : []
+      _that.model.matsTableData.map(function (item) {
+        if (flag == 'paper') {
+          item.getPaper = val;
+          _that.getPaperAll = val;
+        } else {
+          item.getCopy = val;
+          _that.getCopyAll = val;
+        }
+      });
+    },
+    // 材料单选
+    checkedMatChange: function (val, index, flag) {
+      var _that = this;
+      if (val == false) {
+        val = '';
+      }
+      if (flag == 'paper') {
+        _that.model.matsTableData[index].getPaper = val;
+        _that.getPaperAll = val;
+      } else {
+        _that.model.matsTableData[index].getCopy = val;
+        _that.getCopyAll = val;
+      }
+    },
     seeCredit: function (row, type, isBlackDia) {
       var reqData = {bizType: type};
       reqData.bizId = type == 'u' ? row.unitInfoId : row.linkmanInfoId;
@@ -55,12 +340,66 @@ var vm = new Vue({
           vm.projInfoList = [res.content.aeaProjInfo];
           vm.applyinst = res.content.iteminst;
           vm.zjItemInfo = [res.content.purchaseProj];
+          vm.getMatTableData();
         } else {
           vm.$message.error(res.message || '获取申请表数据失败');
         }
       }, function () {
         vm.pageLoading = false;
         vm.$message.error('获取申请表数据失败');
+      })
+    },
+    getMatTableData: function(){
+      var vm = this;
+      var _that = this;
+      vm.pageLoading = true;
+      request('', {
+        url: ctx + 'market/approve/getProjPurchaseMatinstList',
+        type: 'get',
+        data: {
+          applyinstId: vm.applyinstId,
+          iteminstId: vm.iteminstId,
+        },
+      }, function(res) {
+        vm.pageLoading = false;
+        if (res.success) {
+          vm.model.matsTableData = res.content;
+          _that.model.matsTableData.map(function (item) {
+            _that.model.matsTableData.map(function (item) {
+              if (item.matChild == 'undefined' || item.matChild == undefined) {
+                Vue.set(item, 'matChild', []);
+              }
+              if(item.certChild=='undefined'||item.certChild==undefined){
+                Vue.set(item,'certChild',[]);
+              }
+              if (item.matinstId == 'undefined' || item.matinstId == undefined) {
+                Vue.set(item, 'matinstId', '');
+              }
+              if (item.getPaper == 'undefined' || item.getPaper == undefined) {
+                Vue.set(item, 'getPaper', '');
+              }
+              if (item.getCopy == 'undefined' || item.getCopy == undefined) {
+                Vue.set(item, 'getCopy', '');
+              }
+              if (item.realPaperCount == 'undefined' || item.realPaperCount == undefined) {
+                Vue.set(item, 'realPaperCount', item.duePaperCount);
+              }
+              if (item.realCopyCount == 'undefined' || item.realCopyCount == undefined) {
+                Vue.set(item, 'realCopyCount', item.dueCopyCount);
+              }
+              if(_that.matCodes.indexOf(item.matCode)<0){
+                _that.matCodes.push(item.matCode);
+              }
+              _that.matIds.push(item.matId);
+      
+            });
+          });
+        } else {
+          vm.$message.error(res.message || '获取申请表数据失败');
+        }
+      }, function(){
+        vm.pageLoading = false;
+        vm.$message.error('获取材料数据失败');
       })
     },
     getBaseApplyForm: function () {
@@ -86,14 +425,14 @@ var vm = new Vue({
           vm.applyinst = res.content.applyInfoVo;
           vm.linkmanInfo = res.content.linkmanInfoVo;
           vm.applySubject = res.content.applySubject;
-          var isApprover = __STATIC.getUrlParam('isApprover');
-          var busRecordId = __STATIC.getUrlParam('busRecordId');
+          var isApprover = getUrlParam('isApprover');
+          var busRecordId = getUrlParam('busRecordId');
           var isNotSingle = (busRecordId == 'undefined' || busRecordId == 'null' || busRecordId == '');
           
           if (isNotSingle) {
             if (isApprover == '1') {
               // 找到当前事项
-              var iteminstId = __STATIC.getUrlParam('iteminstId');
+              var iteminstId = getUrlParam('iteminstId');
               var _index = 0;
               vm.iteminstList.forEach(function (u, index) {
                 if (u.iteminstId == iteminstId) {
@@ -211,6 +550,10 @@ var vm = new Vue({
   created: function () {
     // this.getDicCodeItems(); //获取通用字典数据
     var vm = this;
+    vm.applyinstId = getUrlParam('masterEntityKey');
+    vm.taskId = getUrlParam('taskId');
+    vm.isShowMatForm = getUrlParam('isShowMatForm');
+    vm.isZJItem = getUrlParam('isZJItem');
     vm.isZJItem = (vm.isZJItem == 'true');
     var list = [
       {code: 'IDTYPE', dataStr: 'dicCodeItems'},
@@ -296,3 +639,11 @@ var vm = new Vue({
     },
   }
 });
+function getUrlParam(name){
+  var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+  var r = window.location.search.substr(1).match(reg);
+  if (r != null) {
+    return unescape(r[2]);
+  }
+  return null;
+}

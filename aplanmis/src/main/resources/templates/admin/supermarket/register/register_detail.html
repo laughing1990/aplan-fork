@@ -1,0 +1,227 @@
+<!--@Author: ZL-->
+<!--@Date:   2019/05/27-->
+<!--@Last Modified by:   小糊涂-->
+<!--@Last Modified time: $ $-->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<!--公共css,js-->
+	<th:block th:include="common/common :: commonheader('中介服务采购')" />
+	<link rel="stylesheet" href="../../../../static/admin/supermarket/css/register_detail.css"
+		th:href="@{/admin/supermarket/css/register_detail.css}">
+
+	<script>
+		var ctx = '[[@{/}]]';
+    /*var ctx = 'http://192.168.30.33:8083/aplanmis-front/';*/
+	</script>
+</head>
+
+<body class="gray-body">
+	<div id="app" v-cloak v-loading="loading">
+		<el-form ref="form" :model="form" label-width="130px" disabled="disabled">
+			<el-collapse v-model="activeNames">
+				<el-collapse-item class="clearfix" name="1" id="">
+					<template slot="title">
+						<i class="header-icon icon ag ag-project-info"></i>基本信息
+					</template>
+
+					<el-form-item label="机构名称">
+						<el-input v-model="form.projName"></el-input>
+					</el-form-item>
+
+					<div class="clearfix">
+						<el-form-item label="机构性质" class="inline-block">
+							<el-input v-model="form.projName"></el-input>
+						</el-form-item>
+						<el-form-item label="机构代码类型" class="inline-block">
+							<el-input v-model="form.projName"></el-input>
+						</el-form-item>
+						<el-form-item label="统一社会信用代码" class="inline-block">
+							<el-input v-model="form.projName"></el-input>
+						</el-form-item>
+						<el-form-item label="法定代表人" class="inline-block">
+							<el-input v-model="form.projName"></el-input>
+						</el-form-item>
+					</div>
+
+					<el-form-item label="法人代表证件号">
+						<el-input v-model="form.projName"></el-input>
+					</el-form-item>
+
+					<div class="clearfix">
+						<el-form-item label="注册资本币种" class="inline-block">
+							<el-input v-model="form.projName"></el-input>
+						</el-form-item>
+						<el-form-item label="注册资本(万元)" class="inline-block">
+							<el-input v-model="form.projName"></el-input>
+						</el-form-item>
+						<el-form-item label="成立日期" class="inline-block">
+							<el-input v-model="form.projName"></el-input>
+						</el-form-item>
+						<el-form-item label="经营有效期止" class="inline-block">
+							<el-input v-model="form.projName"></el-input>
+						</el-form-item>
+					</div>
+
+					<el-form-item label="经营范围">
+						<el-input v-model="form.registerRequire" type="textarea" rows="3"></el-input>
+					</el-form-item>
+					<el-form-item label="注册地行政区划">
+						<el-input v-model="form.projName"></el-input>
+					</el-form-item>
+					<el-form-item label="注册详细地址">
+						<el-input v-model="form.projName"></el-input>
+					</el-form-item>
+
+					<div class="clearfix">
+						<el-form-item label="登记机关行政区划" class="inline-block">
+							<el-input v-model="form.projName"></el-input>
+						</el-form-item>
+						<el-form-item label="登记机关" class="inline-block">
+							<el-input v-model="form.projName"></el-input>
+						</el-form-item>
+						<el-form-item label="办公地行政区划" class="inline-block">
+							<el-input v-model="form.projName"></el-input>
+						</el-form-item>
+						<el-form-item label="办公地址" class="inline-block">
+							<el-input v-model="form.projName"></el-input>
+						</el-form-item>
+					</div>
+
+					<el-form-item label="附件" class="inline-block">
+						<el-input v-model="form.projName"></el-input>
+					</el-form-item>
+
+					<div class="clearfix">
+						<el-form-item label="联系人" class="inline-block">
+							<el-input v-model="form.projName"></el-input>
+						</el-form-item>
+						<el-form-item label="电子邮箱" class="inline-block">
+							<el-input v-model="form.projName"></el-input>
+						</el-form-item>
+						<el-form-item label="移动电话" class="inline-block">
+							<el-input v-model="form.projName"></el-input>
+						</el-form-item>
+						<el-form-item label="固定电话" class="inline-block">
+							<el-input v-model="form.projName"></el-input>
+						</el-form-item>
+						<el-form-item label="传真" class="inline-block">
+							<el-input v-model="form.projName"></el-input>
+						</el-form-item>
+						<el-form-item label="网址" class="inline-block">
+							<el-input v-model="form.projName"></el-input>
+						</el-form-item>
+					</div>
+				</el-collapse-item>
+
+				<el-collapse-item class="clearfix" name="2" id="">
+					<template slot="title">
+						<i class="header-icon icon ag ag-project-info"></i>资格信息
+					</template>
+
+					<el-form-item label="服务类型">
+						<el-input v-model="form.projName"></el-input>
+					</el-form-item>
+					<el-form-item label="服务承诺">
+						<el-input v-model="form.registerRequire" type="textarea" rows="3"></el-input>
+					</el-form-item>
+					<el-form-item label="收费参考">
+						<el-input v-model="form.projName"></el-input>
+					</el-form-item>
+					<el-form-item label="是否有备案">
+						<el-input v-model="form.projName"></el-input>
+					</el-form-item>
+					<el-form-item label="备案说明">
+						<el-input v-model="form.registerRequire" type="textarea" rows="3"></el-input>
+					</el-form-item>
+
+					<div class="clearfix">
+						<el-form-item label="资格证书编号" class="inline-block">
+							<el-input v-model="form.projName"></el-input>
+						</el-form-item>
+						<el-form-item label="出证部门/备案部门" class="inline-block">
+							<el-input v-model="form.projName"></el-input>
+						</el-form-item>
+						<el-form-item label="资格有效期起" class="inline-block">
+							<el-input v-model="form.projName"></el-input>
+						</el-form-item>
+						<el-form-item label="经资格有效期止" class="inline-block">
+							<el-input v-model="form.projName"></el-input>
+						</el-form-item>
+					</div>
+
+					<el-form-item label="业务范围">
+						<el-input v-model="form.registerRequire" type="textarea" rows="3"></el-input>
+					</el-form-item>
+
+					<el-form-item label="资格专业或登记">
+						<el-input v-model="form.registerRequire"></el-input>
+					</el-form-item>
+
+					<el-form-item label="附件">
+						<el-input v-model="form.registerRequire"></el-input>
+					</el-form-item>
+				</el-collapse-item>
+
+				<el-collapse-item class="clearfix" name="3" id="">
+					<template slot="title">
+						<i class="header-icon icon ag ag-project-info"></i>授权人员信息
+					</template>
+
+					<el-table :data="form.tableData" border style="width: 100%">
+						<el-table-column prop="" label="业务授权人">
+						</el-table-column>
+						<el-table-column prop="" label="联系方式">
+						</el-table-column>
+						<el-table-column prop="" label="证件号">
+						</el-table-column>
+						<el-table-column prop="" label="服务类型">
+						</el-table-column>
+						<el-table-column prop="" label="是否实名">
+						</el-table-column>
+					</el-table>
+				</el-collapse-item>
+
+				<el-collapse-item class="clearfix" name="4" id="">
+					<template slot="title">
+						<i class="header-icon icon ag ag-project-info"></i>职业人员信息
+					</template>
+
+					<el-form-item label="姓名">
+						<el-input v-model="form.registerRequire"></el-input>
+					</el-form-item>
+					<el-form-item label="性别">
+						<el-input v-model="form.registerRequire"></el-input>
+					</el-form-item>
+					<el-form-item label="证件号">
+						<el-input v-model="form.registerRequire"></el-input>
+					</el-form-item>
+
+					<el-form-item label="附件">
+						<el-input v-model="form.registerRequire"></el-input>
+					</el-form-item>
+
+					<el-table :data="form.tableData" border style="width: 100%">
+						<el-table-column prop="" type="index" label="序号" width="50">
+						</el-table-column>
+						<el-table-column prop="" label="证书分类">
+						</el-table-column>
+						<el-table-column prop="" label="证书名称">
+						</el-table-column>
+						<el-table-column prop="" label="证书编号">
+						</el-table-column>
+						<el-table-column prop="" label="可提供服务类型">
+						</el-table-column>
+					</el-table>
+				</el-collapse-item>
+			</el-collapse>
+		</el-form>
+	</div>
+</body>
+
+<th:block th:include="common/common :: commonfooter" />
+<script src="../../../../static/admin/supermarket/register/register_detail.js"
+	th:src="@{/admin/supermarket/register/register_detail.js}"></script>
+
+</html>

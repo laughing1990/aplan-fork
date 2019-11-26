@@ -523,6 +523,7 @@ var vm = new Vue({
       },
       // 中介事项审批
       isZJItem: false, // 是否为中介事项
+      isShowMatForm: true, // 中介事项是否展示材料表格
       smartFormInfo: [],
       processDialogLoading: false,
       stageId: '',
@@ -1597,7 +1598,7 @@ var vm = new Vue({
       vm.taskId = vm.getUrlParam('taskId');
       vm.isDraftPage = vm.getUrlParam('draft');
       vm.isZJItem = (vm.getUrlParam('itemNature') == '8');
-      // vm.isZJItem = true;
+      vm.isZJItem = true; // 该页面事项全部都为中介事项
       // vm.isDraftPage = 'true';
       vm.getIteminstIdByTaskId(callback);
       
@@ -1839,6 +1840,7 @@ var vm = new Vue({
             if (vm.isShowMatiPanel) {
               vm.getAttachment(); //初始化附件管理页面
             }
+            vm.getCommentListAll();// 获取右边审批过程
             // iframes
             vm.formData = result.form || [];
             if (result.form && result.form.length) {
@@ -1871,13 +1873,13 @@ var vm = new Vue({
       var vm = this;
       var oneFromSrc = '';
       var lTabsData = [
-        {label: '申请表', labelId: "1", src: './applyForm.html'},
-        {label: '一张表单', labelId: "oneFrom", src: 'urlStageOneForm.html',},
-        {label: '材料附件', labelId: "2", src: './materialAnnex.html'},
-        {label: '审批过程', labelId: "3", src: './opinionForm.html'},
-        {label: '材料补正', labelId: "4", src: './opinionForm.html'},
-        {label: '特殊程序', labelId: "5", src: './opinionForm.html'},
-        {label: '批文批复', labelId: "6", src: './approvalOpinions.html',}
+        {label: '申请表', labelId: "1", src: '../approve/applyForm.html'},
+        // {label: '一张表单', labelId: "oneFrom", src: 'urlStageOneForm.html',},
+        // {label: '材料附件', labelId: "2", src: './materialAnnex.html'},
+        // {label: '审批过程', labelId: "3", src: './opinionForm.html'},
+        // {label: '材料补正', labelId: "4", src: './opinionForm.html'},
+        // {label: '特殊程序', labelId: "5", src: './opinionForm.html'},
+        // {label: '批文批复', labelId: "6", src: './approvalOpinions.html',}
       ];
       //去掉基本信息、批文批复、隐藏的form
       vm.formData.forEach(function (u) {
@@ -1906,6 +1908,7 @@ var vm = new Vue({
         'projectCode',
         'viewId',
         'projInfoId',
+        'isShowMatForm',
       ];
       var oneFormIndex = -1;
       lTabsData.forEach(function (u, i) {
@@ -2036,31 +2039,31 @@ var vm = new Vue({
           vm.lTabsData.splice(oneFormIndex, 1);
         }
       }
-      // 材料补正
-      var tmpIndex = -1;
-      vm.lTabsData.forEach(function (u, i) {
-        if (u.labelId == 4) {
-          tmpIndex = i
-        }
-      })
-      if (vm.hasSupply != 1) {
-        vm.lTabsData.splice(tmpIndex, 1);
-      } else {
-        vm.loadSupplyDetail();
-      }
-      // 特殊程序
-      var tmpIndex = -1;
-      vm.lTabsData.forEach(function (u, i) {
-        if (u.labelId == 5) {
-          tmpIndex = i
-        }
-      })
-      if (vm.hasSpecial != 1) {
-        vm.lTabsData.splice(tmpIndex, 1);
-      } else {
-        vm.getSpecialType();
-        vm.loadSpecialDetail();
-      }
+      // // 材料补正
+      // var tmpIndex = -1;
+      // vm.lTabsData.forEach(function (u, i) {
+      //   if (u.labelId == 4) {
+      //     tmpIndex = i
+      //   }
+      // })
+      // if (vm.hasSupply != 1) {
+      //   vm.lTabsData.splice(tmpIndex, 1);
+      // } else {
+      //   vm.loadSupplyDetail();
+      // }
+      // // 特殊程序
+      // var tmpIndex = -1;
+      // vm.lTabsData.forEach(function (u, i) {
+      //   if (u.labelId == 5) {
+      //     tmpIndex = i
+      //   }
+      // })
+      // if (vm.hasSpecial != 1) {
+      //   vm.lTabsData.splice(tmpIndex, 1);
+      // } else {
+      //   vm.getSpecialType();
+      //   vm.loadSpecialDetail();
+      // }
     },
     // 初始化左边按钮组
     initButtons: function () {
@@ -2103,16 +2106,17 @@ var vm = new Vue({
         isHidden: '0',
         elementRender: '<button class="btn btn-outline-info" onclick="getPrintList()">打印回执</button>'
       }];
-      if (vm.isApprover == 1) {
-        defaultBtn = matBtn.concat(defaultBtn);
-      }
-      if (vm.isDraftPage == 'true') {
-        defaultBtn = draftBtn.concat(defaultBtn);
-      }
-      if (!vm.checkNull(vm.taskId)) {
-        //如果不是起草界面则加上流程跟踪按钮
-        vm.buttonData = vm.buttonData.concat(defaultBtn)
-      }
+      // if (vm.isApprover == 1) {
+      //   defaultBtn = matBtn.concat(defaultBtn);
+      // }
+      // if (vm.isDraftPage == 'true') {
+      //   defaultBtn = draftBtn.concat(defaultBtn);
+      // }
+      // if (!vm.checkNull(vm.taskId)) {
+      //   //如果不是起草界面则加上流程跟踪按钮
+      //   vm.buttonData = vm.buttonData.concat(defaultBtn)
+      // }
+      vm.buttonData = defaultBtn;
       var buttonDatas = vm.buttonData;
       var newButtonData = [];
       for (var i in buttonDatas) {
@@ -2263,30 +2267,30 @@ var vm = new Vue({
       _showProcessDiagram(this.processInstanceId, this.isCheck)
       this.processDialogVisible = true;
     },
-    //获取右边所有的意见列表
-    // getCommentListAll: function () {
-    //   var _that = this;
-    //   var vm = this;
-    //   request('', {
-    //     url: ctx+'rest/bpm/approve/comment/tree?processInstanceId='+vm.processInstanceId+'&applyinstId='+vm.masterEntityKey,
-    //     type: 'get',
-    //     // url: ctx + 'rest/bpm/approve/comments/list/all',
-    //     // data: {
-    //     //   processInstanceId: _that.processInstanceId,
-    //     //   applyinstId: vm.masterEntityKey,
-    //     // },
-    //   }, function (res) {
-    //     _that.approveProcessLoading = false;
-    //     if (res.success) {
-    //       _that.approveStepList = res.content || [];
-    //     } else {
-    //       vm.$message.error(res.message);
-    //     }
-    //   }, function () {
-    //     _that.approveProcessLoading = false;
-    //     vm.$message.error("获取意见列表失败");
-    //   });
-    // },
+    // 获取右边所有的意见列表
+    getCommentListAll: function () {
+      var _that = this;
+      var vm = this;
+      request('', {
+        url: ctx + 'rest/bpm/approve/comment/tree?processInstanceId=' + vm.processInstanceId + '&applyinstId=' + vm.masterEntityKey,
+        type: 'get',
+        // url: ctx + 'rest/bpm/approve/comments/list/all',
+        // data: {
+        //   processInstanceId: _that.processInstanceId,
+        //   applyinstId: vm.masterEntityKey,
+        // },
+      }, function (res) {
+        _that.approveProcessLoading = false;
+        if (res.success) {
+          _that.approveStepList = res.content || [];
+        } else {
+          vm.$message.error(res.message);
+        }
+      }, function () {
+        _that.approveProcessLoading = false;
+        vm.$message.error("获取意见列表失败");
+      });
+    },
     // 查看情形
     showParState: function () {
       var vm = this;

@@ -1281,6 +1281,7 @@ function stagePartformFormatter(value, row, index) {
     var isSmartForm = row.isSmartForm;
     var stagePartformId = row.stagePartformId;
     var params = '?stagePartformId='+stagePartformId+'&stageId='+row.stageId+'&isSmartForm='+row.isSmartForm;
+    params=encodeURIComponent(params);
 
     var strCallback = '';
     strCallback += 'needCallBackSaveActStoForm=1';

@@ -803,6 +803,7 @@ function stagePartformFormatter(value, row, index){
     var sumformId = row.stoFormId;
     var isSmartForm = row.isSmartForm;
     var params = '?itemPartformId='+row.itemPartformId+'&itemVerId='+row.itemVerId+'&isSmartForm='+isSmartForm;
+    params=encodeURIComponent(params);
 
     var strCallback = '';
     strCallback += 'needCallBackSaveActStoForm=1';

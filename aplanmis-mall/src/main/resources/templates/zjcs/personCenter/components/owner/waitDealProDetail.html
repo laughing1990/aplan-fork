@@ -182,7 +182,7 @@
 
                     <!--随机选取 start-->
                     <el-form-item label="是否确认金额">
-                            <el-input v-if="form.purchaseProj.isDefineAmount === '0'" value="暂不做评估与预算"></el-input>
+                        <el-input v-if="form.purchaseProj.isDefineAmount === '0'" value="暂不做评估与预算"></el-input>
                         <el-input v-if="form.purchaseProj.isDefineAmount === '1'" value="确定服务金额"></el-input>
                     </el-form-item>
                     <el-form-item label="服务金额">
@@ -196,27 +196,29 @@
                         </el-row>
                     </el-form-item>
                     <el-form-item label="是否有回避情况">
-                        <el-input v-model="form.name"></el-input>
+                        <el-input v-if="form.purchaseProj.isAvoid === '0'" value="否"></el-input>
+                        <el-input v-if="form.purchaseProj.isAvoid === '1'" value="是"></el-input>
                     </el-form-item>
                     <el-form-item label="回避单位">
                         <el-input v-model="form.purchaseProj.avoidUnitNames" type="textarea" rows="3"></el-input>
                     </el-form-item>
                     <el-form-item label="回避原因">
-                        <el-input v-model="form.name" type="textarea" rows="3"></el-input>
+                        <el-input v-model="form.purchaseProj.avoidReason" type="textarea" rows="3"></el-input>
                     </el-form-item>
                     <!--随机选取 end-->
 
                     <!--直接选取 start-->
                     <el-form-item label="是否确定服务金额">
-                        <el-input v-model="form.name"></el-input>
+                        <el-input v-if="form.purchaseProj.isDefineAmount === '0'" value="暂不做评估与预算"></el-input>
+                        <el-input v-if="form.purchaseProj.isDefineAmount === '1'" value="确定服务金额"></el-input>
                     </el-form-item>
                     <el-form-item label="服务金额">
                         <el-row>
                             <el-col :span="12">
-                                <el-input v-model="form.name" style="width: 63%;"></el-input>元
+                                <el-input v-model="form.purchaseProj.basePrice" style="width: 63%;"></el-input>元
                             </el-col>
                             <el-col :span="12">
-                                金额大写<el-input v-model="form.name" style="width: 63%;"></el-input>
+                                金额大写<el-input v-model="form.purchaseProj.bidNum" style="width: 63%;"></el-input>
                             </el-col>
                         </el-row>
                     </el-form-item>
@@ -232,14 +234,14 @@
                     <el-form-item label="服务金额">
                         <el-row>
                             <el-col :span="12">
-                                <el-input v-model="form.name" style="width: 63%;"></el-input>元
+                                <el-input v-model="form.purchaseProj.basePrice" style="width: 63%;"></el-input>元
                             </el-col>
                             <el-col :span="12">
-                                至<el-input v-model="form.name" style="width: 63%;"></el-input>元
+                                至<el-input v-model="form.purchaseProj.highestPrice" style="width: 63%;"></el-input>元
                             </el-col>
                         </el-row>
                     </el-form-item>
-                    <el-form-item label="金额大写">
+                    <!-- <el-form-item label="金额大写">
                         <el-row>
                             <el-col :span="12">
                                 <el-input v-model="form.name" style="width: 63%;"></el-input>元
@@ -248,37 +250,40 @@
                                 至<el-input v-model="form.name" style="width: 63%;"></el-input>元
                             </el-col>
                         </el-row>
-                    </el-form-item>
+                    </el-form-item> -->
                     <el-form-item label="是否有回避情况">
-                        <el-input v-model="form.name"></el-input>
+                        <el-input v-if="form.purchaseProj.isAvoid === '0'" value="否"></el-input>
+                        <el-input v-if="form.purchaseProj.isAvoid === '1'" value="是"></el-input>
                     </el-form-item>
                     <el-form-item label="回避单位">
-                        <el-input v-model="form.name" type="textarea" rows="3"></el-input>
+                        <el-input v-model="form.purchaseProj.avoidUnitNames" type="textarea" rows="3"></el-input>
                     </el-form-item>
                     <el-form-item label="回避原因">
-                        <el-input v-model="form.name" type="textarea" rows="3"></el-input>
+                        <el-input v-model="form.purchaseProj.avoidReason" type="textarea" rows="3"></el-input>
                     </el-form-item>
                     <!--竞价选取 end-->
 
                     <div class="clearfix">
                         <el-form-item label="报名截止时间" class="inline-block">
-                            <el-input v-model="form.name"></el-input>
+                            <el-input v-model="form.purchaseProj.expirationDate"></el-input>
                         </el-form-item>
                         <el-form-item label="选取中介时间" class="inline-block">
-                            <el-input v-model="form.name"></el-input>
+                            <el-input v-model="form.purchaseProj.choiceImunitTime"></el-input>
                         </el-form-item>
                     </div>
 
                     <el-form-item label="金额说明">
-                        <el-input v-model="form.name" type="textarea" rows="3"></el-input>
+                        <el-input v-model="form.purchaseProj.amountExplain" type="textarea" rows="3"></el-input>
                     </el-form-item>
 
                     <div class="clearfix">
                         <el-form-item label="中选机构公示" class="inline-block">
-                            <el-input v-model="form.name"></el-input>
+                            <el-input v-if="form.purchaseProj.isDiscloseIm === '0'" value="否"></el-input>
+                            <el-input v-if="form.purchaseProj.isDiscloseIm === '1'" value="是"></el-input>
                         </el-form-item>
                         <el-form-item label="中选公告公示" class="inline-block">
-                            <el-input v-model="form.name"></el-input>
+                            <el-input v-if="form.purchaseProj.isDiscloseBidding === '0'" value="否"></el-input>
+                            <el-input v-if="form.purchaseProj.isDiscloseBidding === '1'" value="是"></el-input>
                         </el-form-item>
                     </div>
 
