@@ -11,7 +11,6 @@ import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.MatHolder;
 import com.augurit.aplanmis.common.constants.MatinstSource;
-import com.augurit.aplanmis.common.domain.AeaHiCertinst;
 import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaItemMat;
@@ -22,8 +21,6 @@ import com.augurit.aplanmis.common.domain.AeaParState;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.domain.AeaServiceWindow;
 import com.augurit.aplanmis.common.handler.ItemPrivilegeComputationHandler;
-import com.augurit.aplanmis.common.mapper.AeaCertMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiCertinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemMatinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemMatMapper;
@@ -115,10 +112,6 @@ public class RestApplyMatService {
     private AeaServiceWindowService aeaServiceWindowService;
     @Autowired
     private AeaHiIteminstService aeaHiIteminstService;
-    @Autowired
-    private AeaCertMapper aeaCertMapper;
-    @Autowired
-    private AeaHiCertinstMapper aeaHiCertinstMapper;
 
     /**
      * 根据阶段ID获取root情形和材料列表---分情形
@@ -180,8 +173,7 @@ public class RestApplyMatService {
                 BeanUtils.copyProperties(mat, matVo);
                 stateMats1.add(matVo);
             }
-            List<ParallelApplyHandleVo.MatVo> questionMats = new ArrayList<>();
-            questionMats.addAll(stateMats1);
+            List<ParallelApplyHandleVo.MatVo> questionMats = new ArrayList<>(stateMats1);
             questionStateVo.setStateMats(questionMats);
             questionStateVo.setParentQuestionStateId(parentQuestionStateId);
             List<AeaParState> answerStates = state.getAnswerStates();
@@ -255,9 +247,7 @@ public class RestApplyMatService {
         if (aeaParStageItems.size() == 1) {
             // 设置sortNo
             itemVo.setSortNo(aeaParStageItems.get(0).getSortNo().toString());
-            if ("0".equals(aeaParStageItems.get(0).getIsOptionItem())) {
-                return true;
-            }
+            return "0".equals(aeaParStageItems.get(0).getIsOptionItem());
         }
         return false;
     }
@@ -265,7 +255,6 @@ public class RestApplyMatService {
     /**
      * 给文件类型是批复文件的在其文件名后加上批复标识
      *
-     * @param itemMat
      */
     private void addReplyIdentifier(AeaItemMat itemMat) {
         if ("1".equals(itemMat.getIsOfficialDoc())) {
@@ -354,7 +343,6 @@ public class RestApplyMatService {
         SeriesApplyHandleVo.QuestionStateVo questionStateVo;
         SeriesApplyHandleVo.AnswerStateVo answerStateVo;
         for (AeaItemState itemState : aeaItemStates) {
-            //QuestionStateVo属性----List<SeriesApplyHandleVo.AnswerStateVo> answerStates;
             List<SeriesApplyHandleVo.AnswerStateVo> answerStates = new ArrayList<>();
             questionStateVo = new SeriesApplyHandleVo.QuestionStateVo();
             BeanUtils.copyProperties(itemState, questionStateVo);
@@ -387,13 +375,13 @@ public class RestApplyMatService {
         List<ApplyImportListVo> importList = new ArrayList<>();
         String[] unitInfoIds = attImportQueryVo.getUnitInfoId().split(",");
         String[] matCodes = attImportQueryVo.getMatCode().split(",");
-        List<AeaHiItemMatinst> aeaHiItemMatinsts = new ArrayList();
+        List<AeaHiItemMatinst> aeaHiItemMatinsts = new ArrayList<>();
 
         for (String matcode : matCodes) {
             aeaHiItemMatinsts.addAll(aeaHiItemMatinstMapper.listUnitAttMatinst(matcode, unitInfoIds, null));
         }
 
-        if (aeaHiItemMatinsts != null && aeaHiItemMatinsts.size() > 0) {
+        if (aeaHiItemMatinsts.size() > 0) {
             String[] recordIds = new String[aeaHiItemMatinsts.size()];
             for (int i = 0; i < aeaHiItemMatinsts.size(); i++) {
                 recordIds[i] = aeaHiItemMatinsts.get(i).getMatinstId();
@@ -421,16 +409,14 @@ public class RestApplyMatService {
      *
      * @param _matCodes    材料编码，多个时用逗号隔开
      * @param projInfoId 项目ID
-     * @return
-     * @throws Exception
      */
     public Map getHistoryAttMatList(String _matCodes, String projInfoId) throws Exception {
 
         String[] matCodes = _matCodes.split(",");
-        List<AeaHiItemMatinst> aeaHiItemMatinsts = null;
+        List<AeaHiItemMatinst> aeaHiItemMatinsts;
 
-        Map attMatList = new HashMap();
-        List<ApplyImportListVo> attFileList = null;
+        Map<String, Object> attMatList = new HashMap<>();
+        List<ApplyImportListVo> attFileList;
 
         for (String matcode : matCodes) {
 
@@ -438,7 +424,7 @@ public class RestApplyMatService {
 
             if (aeaHiItemMatinsts.size() > 0) {
 
-                attFileList = new ArrayList();
+                attFileList = new ArrayList<>();
                 AeaHiItemMatinst matinst = aeaHiItemMatinsts.get(0);
 
                 AeaHiItemMatinst copyMatinst = new AeaHiItemMatinst();// 复制电子材料对象
@@ -470,7 +456,7 @@ public class RestApplyMatService {
                 }
 
                 if (attFileList.size() > 0) {
-                    Map obj = new HashMap();
+                    Map<String, Object> obj = new HashMap<>();
                     obj.put("matinstId", copyMatinst.getMatinstId());
                     obj.put("FileList", attFileList);
                     attMatList.put(matcode, obj);
@@ -597,16 +583,13 @@ public class RestApplyMatService {
         // 防止重复
         Set<String> matinstIdSet = new HashSet<>();
         StandardMultipartHttpServletRequest req = (StandardMultipartHttpServletRequest) request;
-        List<String> fileNames = new ArrayList<>();
         List<MultipartFile> files = req.getFiles("file");
         //获取文件根据文件名，与材料定义匹配新建对应的材料实例保存，如果存在材料实例跟新attcount字段每次+1
         for (MultipartFile file : files) {
             String filename = file.getOriginalFilename();
-            boolean flag1 = true;
             for (AeaItemMat aeaItemMat : itemMatList) {
                 //判断当前材料是否已经存在材料实例
-                for (int i = 0; i < aeaHiItemMatinsts.size(); i++) {
-                    AeaHiItemMatinst itemMatinst = aeaHiItemMatinsts.get(i);
+                for (AeaHiItemMatinst itemMatinst : aeaHiItemMatinsts) {
                     if (itemMatinst.getMatId().equals(aeaItemMat.getMatId())) {
                         if (!matinstIdSet.contains(itemMatinst.getMatinstId())) {
                             returnList.add(itemMatinst);
@@ -614,24 +597,25 @@ public class RestApplyMatService {
                         }
                     }
                 }
-                double length;
+                double length = 0D;
                 AeaHiItemMatinst aeaHiItemMatinst = new AeaHiItemMatinst();
                 //只勾选了一个材料不用名称匹配
                 if (itemMatList.size() == 1) {
                     length = 1;
                 } else {
                     //ie下上传文件名带真实路径
-                    if (filename.lastIndexOf(File.separator) != -1) {
+                    if (filename != null && filename.lastIndexOf(File.separator) != -1) {
                         filename = filename.substring(filename.lastIndexOf(File.separator) + 1);
                     }
                     String[] filenames = StringUtils.split(filename, ".");
                     //如果材料实例名称包含材料定义名称则直接通过匹配  ---- 2019.7.22 czh
-                    length = StringUtils.isNotBlank(filenames[0]) ? (filenames[0].trim().indexOf(aeaItemMat.getMatName().trim()) != -1 ? 1 : SimFeatureUtil.sim(filenames[0], aeaItemMat.getMatName())) : 0;
+                    if (filenames != null && filenames.length > 0) {
+                        length = StringUtils.isNotBlank(filenames[0]) ? (filenames[0].trim().contains(aeaItemMat.getMatName().trim()) ? 1 : SimFeatureUtil.sim(filenames[0], aeaItemMat.getMatName())) : 0;
+                    }
                 }
                 //大于0.8则存入数据库，否则把没有存入的返回给前端
                 if (length > 0.8) {
                     boolean flag = true;
-                    flag1 = false;
                     for (AeaHiItemMatinst temp : returnList) {
                         if (temp.getMatId().equals(aeaItemMat.getMatId())) {
                             flag = false;
@@ -661,12 +645,7 @@ public class RestApplyMatService {
                     fileUtilsService.uploadAttachments("AEA_HI_ITEM_MATINST", "MATINST_ID", aeaHiItemMatinst.getMatinstId(), multipartFiles);
                 }
             }
-
-            if (flag1) {
-                fileNames.add(filename);
-            }
         }
-
         return getUploadMatReturnVos(returnList);
     }
 
@@ -689,7 +668,7 @@ public class RestApplyMatService {
         String[] _detailIds = detailIds.split(",");
         //判断该附件是否存在共享，如果存在共享，则删除link表关联关系，否则返回不存在共享的附件ID
         List<String> detailIds_ = this.getOnlyOneRecord(_detailIds, matinstId);
-        fileUtilsService.deleteAttachments(detailIds_.toArray(new String[detailIds_.size()]));
+        fileUtilsService.deleteAttachments(detailIds_.toArray(new String[0]));
 
         //查询材料实例是否还有附件
         List<BscAttFileAndDir> matAttDetail = fileUtilsService.getMatAttDetailByMatinstId(matinstId);
@@ -721,7 +700,7 @@ public class RestApplyMatService {
 
                     //判断该附件是否存在共享，如果存在共享，则删除link表关联关系，否则返回不存在共享的附件ID
                     List<String> detailIds_ = this.getOnlyOneRecord(recordIds, matinstId);
-                    fileUtilsService.deleteAttachments(detailIds_.toArray(new String[detailIds_.size()]));
+                    fileUtilsService.deleteAttachments(detailIds_.toArray(new String[0]));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -733,11 +712,11 @@ public class RestApplyMatService {
     //判断该附件是否存在共享，如果存在共享，则只删除LINK关联表
     private List<String> getOnlyOneRecord(String[] recordIds, String matinstId) throws Exception {
 
-        List<String> detailIds_ = new ArrayList();
+        List<String> detailIds_ = new ArrayList<>();
 
-        for (int i = 0; i < recordIds.length; i++) {
+        for (String recordId : recordIds) {
             BscAttLink attLink = new BscAttLink();
-            attLink.setDetailId(recordIds[i]);
+            attLink.setDetailId(recordId);
             attLink.setPkName("MATINST_ID");
             List<BscAttLink> attLinks = bscAttMapper.listBscAttLink(attLink);
             if (attLinks.size() > 1) {
@@ -746,7 +725,7 @@ public class RestApplyMatService {
                         bscAttMapper.deleteAttLinkBylinkId(bscAttLink.getLinkId());
                 }
             } else {
-                detailIds_.add(recordIds[i]);
+                detailIds_.add(recordId);
             }
         }
 
@@ -760,16 +739,11 @@ public class RestApplyMatService {
         Map<String, SaveMatinstVo.MatCountVo> matCountMap = saveMatinstVo.buildMatCountMap();
 
         List<AeaHiItemMatinst> matinsts = new ArrayList<>();
-        List<AeaHiCertinst> certinsts = new ArrayList<>();
         List<Mat2MatInstVo> mat2MatInstVos = new ArrayList<>();
         final String currentOrgId = SecurityContext.getCurrentOrgId();
         aeaItemMatMapper.listAeaItemMatByIds(matCountMap.keySet().toArray(new String[0]))
                 .forEach(mat -> {
-                    if ("f".equals(mat.getMatProp())) {
-                        // todo
-                        /*AeaHiItemMatinst aeaHiItemMatinst = mat2Matinst(mat, unitInfoId, projectInfoId, currentOrgId);
-                        matinstIds.add(aeaHiItemMatinst.getMatinstId());*/
-                    } else {
+                    if (!"f".equals(mat.getMatProp())) {
                         List<String> matinstIds = new ArrayList<>();
                         SaveMatinstVo.MatCountVo matCountVo = matCountMap.get(mat.getMatId());
 
@@ -796,11 +770,6 @@ public class RestApplyMatService {
                         }
                     }
                 });
-
-        if (certinsts.size() > 0) {
-            log.info("batch insert certinst, size: {}", certinsts.size());
-            aeaHiCertinstMapper.batchInsertAeaHiCertinst(certinsts);
-        }
 
         if (matinsts.size() > 0) {
             try {
@@ -843,7 +812,7 @@ public class RestApplyMatService {
 
         String[] itemVerIdsArr = itemVerIds.split(",");
         if (StringUtils.isBlank(stageId) || StringUtils.isBlank(itemVerIds) || itemVerIdsArr.length < 1)
-            return new ArrayList();
+            return new ArrayList<>();
 
         List<AeaItemMat> mats = aeaItemMatService.getOfficeMatsByStageItemVerIds(stageId, itemVerIdsArr);
         return mats.stream()

@@ -16,7 +16,7 @@ public class SaveMatinstVo {
     @ApiModelProperty(value = "材料id与材料份数", dataType = "string")
     private List<MatCountVo> matCountVos;
 
-    @ApiModelProperty(value = "企业单位id", dataType = "string", notes = "个人申报时没有值", required = false)
+    @ApiModelProperty(value = "企业单位id", dataType = "string", notes = "个人申报时没有值")
     private String unitInfoId;
 
     @ApiModelProperty(value = "项目id", dataType = "string", required = true)

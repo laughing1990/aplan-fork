@@ -512,12 +512,7 @@ var app = new Vue({
     // 模糊查询人员
     getPerson: function(val, type) {
       var vm = this;
-      // vm.loading = true;
       if (!val.unitInfoId) {
-        this.$message({
-          message: '请先选择单位',
-          type: 'error'
-        });
         return;
       }
       request('', {
@@ -582,13 +577,20 @@ var app = new Vue({
               _that.addEditManModalShow = false;
               _that.loading = false;
 
+              var item = {
+                addressId: result.content,
+                addressIdCard: _that.addEditManModalShow.linkmanCertNo,
+                addressMail: _that.addEditManModalShow.linkmanMail,
+                addressName: _that.addEditManModalShow.linkmanName,
+                addressPhone: _that.addEditManModalShow.linkmanMobilePhone,
+              }
               if (_that.addEditManModalFlag == 'add') {
                 if (_that.curUnit == 'shencha') {
-                  _that.getPerson(_that.formDataTuShen, 'shencha');
+                  _that.shenchaPerson.push(item);
                 } else if (_that.curUnit == 'sheji') {
-                  _that.getPerson(_that.formDataSheJj, 'sheji');
+                  _that.shejiPerson.push(item);
                 } else {
-                  _that.getPerson(_that.formDataKanCha, 'kancha');
+                  _that.kanchaPerson.push(item);
                 }
               }
             }
@@ -817,19 +819,19 @@ var app = new Vue({
               var kanChaLinkManInfoIds = '';
               var sheJiLinkManInfoIds = '';
 
-              vm.shenchaPerson.forEach(function(item) {
+              _this.shenchaPerson.forEach(function(item) {
                 if (item['addressId'] != '' & item['addressId'] != '1') {
                   shenChaLinkManInfoIds = item['addressId'] + ",";
                 }
               });
 
-              vm.shejiPerson.forEach(function(item) {
+              _this.shejiPerson.forEach(function(item) {
                 if (item['addressId'] != '' & item['addressId'] != '1') {
                   sheJiLinkManInfoIds = item['addressId'] + ",";
                 }
               });
 
-              vm.kanchaPerson.forEach(function(item) {
+              _this.kanchaPerson.forEach(function(item) {
                 if (item['addressId'] != '' & item['addressId'] != '1') {
                   kanChaLinkManInfoIds = item['addressId'] + ",";
                 }

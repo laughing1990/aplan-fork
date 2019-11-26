@@ -398,14 +398,19 @@ var guideIndex = (function () {
             var flashAttributes = '';
             _that.filePreviewCount++
             if(fileType=='pdf'){
-                if(getSrc){
-                    _that.getViewIframeSrc = ctx+'cod/drawing/drawingCheck?detailId='+detailId;
-                }else {
-                    var tempwindow=window.open(); // 先打开页面
-                    setTimeout(function(){
-                        tempwindow.location=ctx+'cod/drawing/drawingCheck?detailId='+detailId;
-                    },1000)
-                }
+                // if(getSrc){
+                //     _that.getViewIframeSrc = ctx+'cod/drawing/drawingCheck?detailId='+detailId;
+                // }else {
+                //     var tempwindow=window.open(); // 先打开页面
+                //     setTimeout(function(){
+                //         tempwindow.location=ctx+'cod/drawing/drawingCheck?detailId='+detailId;
+                //     },1000)
+                // }
+                var tempwindow=window.open(); // 先打开页面
+                setTimeout(function(){
+                    tempwindow.location=ctx+'/previewPdf/view?detailId='+detailId;
+                },1000)
+
             }else {
               if(regText.test(fileType)){
                 // previewPdf/pdfIsCoverted

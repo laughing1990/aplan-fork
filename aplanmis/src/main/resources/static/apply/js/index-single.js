@@ -656,7 +656,7 @@ var vm = new Vue({
       // 获取可共享材料列表
       getShareMatsList: function (matData) {
         var _that = this, _matCode = '';
-        var matChild = _that.selMatRowData.matChild?_that.selMatRowData.matChild:[];
+        var matChild = _that.selMatRowData?_that.selMatRowData.matChild:[];
         var matChildIds = [];
         if(matChild.length>0){
           matChild.map(function(item){
@@ -3557,7 +3557,7 @@ var vm = new Vue({
       getOneFormrender3: function(_applyinstId,_formId){
         var _that = this;
         // _formId = 'ecbebb64-a29c-41c6-abb7-e7b337a1a2cb';
-        var sFRenderConfig='&showBasicButton=true&includePlatformResource=false';
+        var sFRenderConfig='&showBasicButton=true&includePlatformResource=false&busiScence=mat';
         request('', {
           url: ctx + 'bpm/common/sf/renderHtmlFormContainer?listRefEntityId='+_applyinstId+'&listFormId='+_formId+sFRenderConfig,
           type: 'get',
@@ -3585,6 +3585,7 @@ var vm = new Vue({
       showOneFormDialog1: function(oneformMat){
         var _that = this;
         var _applyinstId = _that.applyinstId;
+        _that.selMatRowData = oneformMat;
         _that.matformNameTitle = oneformMat ? oneformMat.matName : '';
         if(_applyinstId==''){
           if(oneformMat){
@@ -4246,3 +4247,22 @@ var vm = new Vue({
       },
     }
 });
+function callbackAfterSaveSFForm(result,sFRenderConfig,formModelVal,actStoForminst) {
+  console.log(result,sFRenderConfig.busiScence,formModelVal,actStoForminst);
+  if(sFRenderConfig.busiScence=='mat'){
+    var parma = {
+      "linkmainInfoId": vm.rootApplyLinkmanId,
+      "matId": vm.selMatRowData.matId,
+      "projInfoId": vm.projInfoId,
+      "stoForminstId": actStoForminst.stoForminstId,
+      "unitInfoId": vm.rootUnitInfoId
+    };
+    request('', {
+      url: ctx + 'rest/mats/bind/form',
+      type: 'POST',
+      ContentType: 'application/json',
+      data: JSON.stringify(parma),
+    }, function (result1) {
+    }, function (msg) {})
+  }
+}
