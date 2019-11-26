@@ -330,7 +330,7 @@ var guideIndex = (function () {
                             }else if(vm.themeListData.length  === 2){
                                 $(".theme-type .theme-type-list").css({'height':604+'px'});
                             }else if(vm.themeListData.length  === 3){
-                                $(".theme-type. .theme-type-list").css({'height':549+'px'});
+                                $(".theme-type .theme-type-list").css({'height':549+'px'});
                             }else if(vm.themeListData.length  === 4){
                                 $(".theme-type .theme-type-list").css({'height':494+'px'});
                             }else if(vm.themeListData.length  === 5){
