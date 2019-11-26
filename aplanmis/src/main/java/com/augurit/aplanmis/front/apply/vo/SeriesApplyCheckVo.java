@@ -25,11 +25,6 @@ public class SeriesApplyCheckVo {
     public SeriesApplyCheckVo() {
     }
 
-    public SeriesApplyCheckVo(String stageId, String isParallel) {
-        this.stageId = stageId;
-        this.isParallel = isParallel;
-    }
-
     public void buildThemeStageList(List<AeaParStageItem> aeaParStageItems, String projInfoId) {
         if (aeaParStageItems != null && aeaParStageItems.size() > 0) {
             Set<ThemeStageVo> themeStageList = new HashSet<>(aeaParStageItems.size());

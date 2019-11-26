@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 @ApiModel("导入材料附件列表查询参数")
 public class AttImportQueryVo {
+
     @ApiModelProperty(value = "材料编码， 多个用逗号分隔", required = true)
     private String matCode;
 
