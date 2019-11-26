@@ -106,7 +106,7 @@
                   <el-option :label="item.addressName" :value="item.addressName" v-for="item in shenchaPerson" @click.native="selTypeLinkman(formDataTuShen,item)"></el-option>
                 </el-select>
                 <div style="position:absolute;right:0;top:0;">
-                  <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="addEditManModalFlag='edit';edit(formDataTuShen,'')" title="编辑" style="margin-left:5px;float:right;"></el-button>
+                  <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="addEditManModalFlag='edit';edit(formDataTuShen,'','shencha')" title="编辑" style="margin-left:5px;float:right;"></el-button>
                   <el-button icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="addPerson(formDataTuShen,'shencha');addEditManModalFlag='add'" title="新增" style="margin-left:3px;float:right;"></el-button>
                 </div>
               </el-form-item>
@@ -162,7 +162,7 @@
                     </el-option>
                   </el-select>
                   <el-button icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="add(formDataTuShen,'shencha');addEditManModalFlag='add'" title="新增" style="margin-left:10px;height:33px;"></el-button>
-                  <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="edit(type,formDataTuShen);addEditManModalFlag='edit'" title="编辑" style="margin-left:12px;height:33px;"></el-button>
+                  <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="edit(type,formDataTuShen,'shencha');addEditManModalFlag='edit'" title="编辑" style="margin-left:12px;height:33px;"></el-button>
                 </el-col>
                 <el-col :span="8">
                   <span><i>*</i>身份证号</span>
@@ -210,7 +210,7 @@
                   <el-option :label="item.addressName" :value="item.addressName" v-for="item in kanchaPerson" @click.native="selTypeLinkman(formDataKanCha,item)"></el-option>
                 </el-select>
                 <div style="position:absolute;right:0;top:0;">
-                  <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="addEditManModalFlag='edit';edit(formDataKanCha,'')" title="编辑" style="margin-left:5px;float:right;"></el-button>
+                  <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="addEditManModalFlag='edit';edit(formDataKanCha,'','kancha')" title="编辑" style="margin-left:5px;float:right;"></el-button>
                   <el-button icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="addPerson(formDataKanCha,'kancha');addEditManModalFlag='add'" title="新增" style="margin-left:3px;float:right;"></el-button>
                 </div>
               </el-form-item>
@@ -284,7 +284,7 @@
                   <el-option :label="item.addressName" :value="item.addressName" v-for="item in shejiPerson" @click.native="selTypeLinkman(formDataSheJj,item)"></el-option>
                 </el-select>
                 <div style="position:absolute;right:0;top:0;">
-                  <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="addEditManModalFlag='edit';edit(formDataSheJj,'')" title="编辑" style="margin-left:5px;float:right;"></el-button>
+                  <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="addEditManModalFlag='edit';edit(formDataSheJj,'','sheji')" title="编辑" style="margin-left:5px;float:right;"></el-button>
                   <el-button icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="addPerson(formDataSheJj,'sheji');addEditManModalFlag='add'" title="新增" style="margin-left:3px;float:right;"></el-button>
                 </div>
               </el-form-item>
@@ -345,7 +345,7 @@
                       </el-option>
                     </el-select>
                     <el-button icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="add(formDataSheJj,'sheji');addEditManModalFlag='add'" title="新增" style="margin-left:10px;height:33px;"></el-button>
-                    <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="edit(type,formDataSheJj);addEditManModalFlag='edit'" title="编辑" style="margin-left:12px;height:33px;"></el-button>
+                    <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="edit(type,formDataSheJj,'sheji');addEditManModalFlag='edit'" title="编辑" style="margin-left:12px;height:33px;"></el-button>
                   </el-col>
                   <el-col :span="8">
                     <span><i>*</i>身份证号</span>
