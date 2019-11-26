@@ -4975,6 +4975,23 @@ function urlForItem() {
   vm.wfBusSend();
 }
 
+// 中介事项  三个按钮事件
+function zjItem1(){
+  vm.sendUrlPath = ctx + "market/approve/btn/win/wfSendAndChangeApplyState";
+  vm.requestMappingType = 'put';
+  vm.wfBusSend();
+}
+function zjItem2(){
+  vm.sendUrlPath = ctx + "market/approve/btn/win/wfSendAndChangeApplyAndItemState";
+  vm.requestMappingType = 'put';
+  vm.wfBusSend();
+}
+function zjItem3(){
+  vm.sendUrlPath = ctx + "market/approve/btn/item/wfSendAndChangeItemState";
+  vm.requestMappingType = 'put';
+  vm.wfBusSend();
+}
+
 //--------------------------更改窗口-状态及流程--------------------------
 
 //窗口-办结   更改状态并推动流程
