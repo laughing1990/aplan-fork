@@ -1,0 +1,2114 @@
+<!--@Author: ***-->
+<!--@Date:   ***-->
+<!--@Last Modified by:   ***-->
+<!--@Last Modified time: ***-->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>流程审批</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <!--引入公共css-->
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+        th:href="@{/agcloud/framework/js-lib/element-2/element.css}"/>
+  <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css"
+        th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css"
+        th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
+  <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agtree-v3/css/zTreeStyle/zTreeStyle.css"
+        th:href="@{/agcloud/framework/js-lib/agtree-v3/css/zTreeStyle/zTreeStyle.css}"/>
+  <link rel="stylesheet" href="../../static/agcloud/bpm/front/process/css/orgTheme.css"
+        th:href="@{/agcloud/bpm/front/process/css/orgTheme.css}">
+  <link rel="stylesheet" href="../../static/agcloud/bpm/front/process/diagram/display/jquery.qtip.min.css"
+        th:href="@{/agcloud/bpm/front/process/diagram/display/jquery.qtip.min.css}">
+  <link rel="stylesheet" href="../../static/agcloud/bpm/front/process/diagram/display/displaymodel.css"
+        th:href="@{/agcloud/bpm/front/process/diagram/display/displaymodel.css}">
+  <link rel="stylesheet" href="../../static/approve/css/index.css" th:href="@{/approve/css/index.css}">
+  <script>
+    var ctx = '[[@{/}]]';
+  </script>
+  <script src="../../static/approve/js/ip.js" th:src="@{/approve/js/ip.js}"></script>
+</head>
+
+<body>
+<div id="approvePage" v-cloak :class="{ 'is-expanded': expanded }" v-loading="parentPageLoading"
+     element-loading-text="拼命加载中" element-loading-background="rgba(0, 0, 0, 0.8)">
+  <header class="page-header">
+    <h3>
+      <b>{{typeAstateData.stageOrItemName || '加载中...'}}</b>
+      <span> {{iteminstName}}{{typeAstateData.projName ? (' —— '+typeAstateData.projName) : ''}}</span>
+      <!--      <span> {{iteminstName}} —— {{typeAstateData.projName || '加载中...'}}</span>-->
+    </h3>
+  </header>
+  <div class="box-position left-content">
+    <!-- 按钮组和状态信息 -->
+    <div class="top-btns-status c-f">
+      <!-- 直接显示的按钮 -->
+      <div class="l" v-for="item in buttonDataShow" v-if="item.isHidden == 0" v-html="item.elementRender"></div>
+      <!-- 更多按钮 -->
+      <el-dropdown v-show="showMenuMore" style="margin-top:5px;cursor:pointer;">
+          <span class="el-dropdown-link">
+            <i class="el-icon-more" style="color: #61bbff;transform:rotate(90deg);"></i>
+          </span>
+        <el-dropdown-menu slot="dropdown">
+          <template v-for="(itemHide,ind) in buttonDataHide">
+            <el-dropdown-item v-if="itemHide.isHidden == 0" v-html="itemHide.elementRender"></el-dropdown-item>
+          </template>
+        </el-dropdown-menu>
+      </el-dropdown>
+      <div class="right-status-box r">
+        <span class="status-text">{{typeAstateData.currentState || '加载中...'}}</span>
+        <span class="status-label">状态：</span>
+        <span class="status-text">
+            {{!typeAstateData.applyStyle?'加载中...':(typeAstateData.applyStyle=='win'?'窗口申报':'网上申报')}}
+          </span>
+        <span class="status-label">申报：</span>
+        <span class="status-text" v-if="typeAstateData.coordinationState">{{typeAstateData.coordinationState || '加载中...'}}</span>
+        <span class="status-label" v-if="typeAstateData.coordinationState">协同：</span>
+      </div>
+    </div>
+    <!-- 申请表、材料附件、审批意见、意见汇总表 -->
+    <el-tabs class="ltabs">
+      <el-tab-pane v-for="u in lTabsData" :label="u.label" :key="u.label">
+        <div v-if="u.labelId=='oneFrom'" id="oneForm">
+          <el-tabs tab-position="left" class="form-el-tabs">
+            <el-tab-pane v-for="(item,index) in smartFormInfo" :key="index" :label="item.formName">
+              <iframe :style="{height:'100%',overflow: 'auto',width:'100%'}"
+                      v-if="item.smartForm==false"
+                      :src="ctx+item.formUrl" frameborder="0"></iframe>
+              <div v-else :style="{height:'100%',overflow: 'auto',width:'100%','padding-right':'10px'}">
+                <div :id="'smartFormBox_'+index"></div>
+              </div>
+            </el-tab-pane>
+          </el-tabs>
+        </div>
+        <!--特殊程序-->
+        <div v-else-if="u.labelId==5" style="height:100%;overflow:auto;">
+          <div class="spe-pane-wrap">
+            <!-- 审批人员 特殊程序详情 -->
+            <div v-if="isApprover==1">
+              <div class="spe-item-uboxs">
+                <div class="spe-item-u" v-for="(item,index) in approverSpecialDetailList">
+                  <div class="top-time-text-box c-f" :class="{'is-blue': item.specialState==9}">
+                    <div class="ttt-f"></div>
+                    <div class="ttt-s">
+                      第{{getChineseIndex(index,approverSpecialDetailList.length)}}次发起（{{item.specialState==9?'待结束':'已结束'}}）
+                    </div>
+                    <div class="ttt-t"></div>
+                  </div>
+                  <table class="spe-info-table">
+                    <div class="table-section-title">特殊程序发起</div>
+                    <tr>
+                      <td class="td-bg-grey">种类</td>
+                      <td>{{specialTypeToText(item.specialType)}}</td>
+                      <td class="td-bg-grey">发起单位</td>
+                      <td>{{item.chargeOrgName}}</td>
+                      <td class="td-bg-grey">发起人</td>
+                      <td>{{item.creater}}</td>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey">申请时限</td>
+                      <td>{{item.specialDueDays}}（工作日）</td>
+                      <td class="td-bg-grey">开始时间</td>
+                      <td>{{item.createTime}}</td>
+                      <td class="td-bg-grey">结束时间</td>
+                      <td>{{item.specialDueTime}}</td>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey">申请内容</td>
+                      <td colspan="5">{{item.specialReason}}</td>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey">申请理由或法律依据</td>
+                      <td colspan="5">{{item.specialMemo}}</td>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey">相关附件</td>
+                      <td colspan="5">
+                        <template v-if="item.specialStartMatList&&item.specialStartMatList.length">
+                          <div class="spe-table-file-u" v-for="file in item.specialStartMatList">
+                            <i class="ag" v-html="getIconText(file.attFormat)"
+                               :style="{color:getIconColor(file.attFormat)}"></i>
+                            {{file.attName}}
+                            <i class="ag ag-ope-btn ag-search" title="预览" @click="filePreview(file)"></i>
+                            <i class="ag ag-ope-btn ag-download" title="下载" @click="downOneFile(file)"></i>
+                          </div>
+                        </template>
+                        <div v-else class="non-file-text">无</div>
+                      </td>
+                    </tr>
+                  </table>
+                  <table class="spe-info-table">
+                    <div class="table-section-title">特殊程序结束</div>
+                    <template v-if="item.specialState==10">
+                      <tr data-title="特殊程序已结束">
+                        <td class="td-bg-grey">特殊程序结果</td>
+                        <td colspan="5">{{item.specialResult}}</td>
+                      </tr>
+                      <tr>
+                        <td class="td-bg-grey">经办人</td>
+                        <td>{{item.opsUserName}}</td>
+                        <td class="td-bg-grey">经办时间</td>
+                        <td>{{item.opsTime}}</td>
+                        <td class="td-bg-grey">收费金额</td>
+                        <td>{{item.money}}元</td>
+                      </tr>
+                      <tr>
+                        <td class="td-bg-grey">相关附件</td>
+                        <td colspan="5">
+                          <template v-if="item.specialEndMatList&&item.specialEndMatList.length">
+                            <div class="spe-table-file-u" v-for="file in item.specialEndMatList">
+                              <i class="ag" v-html="getIconText(file.attFormat)"
+                                 :style="{color:getIconColor(file.attFormat)}"></i>
+                              {{file.attName}}
+                              <i class="ag ag-ope-btn ag-search" title="预览" @click="filePreview(file)"></i>
+                              <i class="ag ag-ope-btn ag-download" title="下载" @click="downOneFile(file)"></i>
+                            </div>
+                          </template>
+                          <div v-else class="non-file-text">无</div>
+                        </td>
+                      </tr>
+                    </template>
+                    <template v-else>
+                      <tr data-title="特殊程序未结束">
+                        <td colspan="6" style="padding:0">
+                          <div class="spe-result-td">
+                            <div class="spe-result-tabs c-f">
+                              <div class="spe-result-tab" @click="item.tabIndex=0" :class="{active:item.tabIndex==0}">
+                                基本信息
+                              </div>
+                              <div class="spe-result-tab" @click="item.tabIndex=1" :class="{active:item.tabIndex==1}">
+                                相关附件
+                              </div>
+                            </div>
+                            <div class="spe-result-all-box">
+                              <!--基本信息-->
+                              <div class="spe-result-form-box" v-show="item.tabIndex==0">
+                                <el-form size="medium" label-width="130px" :rules="endSpecialRules"
+                                         :ref="'specialEndForm_'+index"
+                                         :model="item.endSpecialForm">
+                                  <el-row>
+                                    <el-col :span="24">
+                                      <el-form-item label="特殊程序结果" prop="specialResult">
+                                        <el-input v-model='item.endSpecialForm.specialResult' type="textarea"
+                                                  :rows="4"></el-input>
+                                      </el-form-item>
+                                    </el-col>
+                                  </el-row>
+                                  <el-row>
+                                    <el-col :span="8">
+                                      <el-form-item label="经办人">
+                                        <el-input v-model="item.endSpecialForm.opsUserName" disabled></el-input>
+                                      </el-form-item>
+                                    </el-col>
+                                    <el-col :span="8">
+                                      <el-form-item label="经办日期">
+                                        <el-date-picker
+                                            disabled
+                                            v-model="item.endSpecialForm.opsTime"
+                                            type="date"
+                                            value-format="yyyy-MM-dd"
+                                            placeholder="">
+                                        </el-date-picker>
+                                      </el-form-item>
+                                    </el-col>
+                                    <el-col :span="8">
+                                      <el-form-item label="收费金额">
+                                        <el-input type="number" v-model='item.endSpecialForm.money'>
+                                          <template slot="append">元</template>
+                                        </el-input>
+                                      </el-form-item>
+                                    </el-col>
+                                  </el-row>
+                                </el-form>
+                              </div>
+                              <!--相关附件-->
+                              <div class="spe-result-upload-wrap" v-show="item.tabIndex==1">
+                                <el-upload :http-request="speUploadEndFile"
+                                           :show-file-list="false"
+                                           :action="ctx+'rest/mats/att/upload'">
+                                  <el-button size="small" type="primary" @click="setNowEndRow(item)">上传附件</el-button>
+                                </el-upload>
+                                <el-table style="width: 100%;margin-top:14px;" border stripe
+                                          :data="item.specialEndMatList">
+                                  <el-table-column label='序号' type="index" width="50"></el-table-column>
+                                  <el-table-column label="附件名称" prop="attName">
+                                    <template slot-scope="scope">
+                                      <i class="ag" v-html="getIconText(scope.row.attFormat)"
+                                         :style="{color:getIconColor(scope.row.attFormat)}"></i>
+                                      {{scope.row.attName}}
+                                    </template>
+                                  </el-table-column>
+                                  <el-table-column label="操作" width="210" align="center">
+                                    <template slot-scope="scope">
+                                      <div class="spe-file-btns c-f">
+                                        <div class="spe-file-btn" @click="filePreview(scope.row)">预览</div>
+                                        <div class="spe-ope-line"></div>
+                                        <div class="spe-file-btn" @click="downOneFile(scope.row)">下载</div>
+                                        <div class="spe-ope-line"></div>
+                                        <div class="spe-file-btn delete" @click="delSpeFile(scope.row, true)">删除</div>
+                                      </div>
+                                    </template>
+                                  </el-table-column>
+                                </el-table>
+                              </div>
+                              <div style="text-align: right;">
+                                <el-button @click="stopSpecialApp(index)" size="medium" type="primary">结束特殊程序
+                                </el-button>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </template>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <!-- 窗口人员 特殊程序详情 -->
+            <el-collapse class="spe-collapse" v-if="isApprover==0" v-model="collapseActiveIndex">
+              <el-collapse-item v-for="(u, indexF) in specialDetailInfo" :name="indexF">
+                <template slot="title">
+                  <i class="ag ag-files"></i>
+                  {{u.iteminstName}}
+                  <span class="item-spe-number">{{u.specialList.length}}</span>
+                </template>
+                <div class="spe-item-uboxs">
+                  <div class="spe-item-u" v-for="(uu, index) in u.specialList">
+                    <div class="top-time-text-box c-f" :class="{'is-blue': uu.specialState==9}">
+                      <div class="ttt-f"></div>
+                      <div class="ttt-s">
+                        第{{getChineseIndex(index,u.specialList.length)}}次发起（{{uu.specialState==9?'待结束':'已结束'}}）
+                      </div>
+                      <div class="ttt-t"></div>
+                    </div>
+                    <table class="spe-info-table">
+                      <div class="table-section-title">特殊程序发起</div>
+                      <tr>
+                        <td class="td-bg-grey">种类</td>
+                        <td>{{specialTypeToText(uu.specialType)}}</td>
+                        <td class="td-bg-grey">发起单位</td>
+                        <td>{{uu.chargeOrgName}}</td>
+                        <td class="td-bg-grey">发起人</td>
+                        <td>{{uu.creater}}</td>
+                      </tr>
+                      <tr>
+                        <td class="td-bg-grey">申请时限</td>
+                        <td>{{uu.specialDueDays}}（工作日）</td>
+                        <td class="td-bg-grey">开始时间</td>
+                        <td>{{uu.createTime}}</td>
+                        <td class="td-bg-grey">结束时间</td>
+                        <td>{{uu.specialDueTime}}</td>
+                      </tr>
+                      <tr>
+                        <td class="td-bg-grey">申请内容</td>
+                        <td colspan="5">{{uu.specialReason}}</td>
+                      </tr>
+                      <tr>
+                        <td class="td-bg-grey">申请理由或法律依据</td>
+                        <td colspan="5">{{uu.specialMemo}}</td>
+                      </tr>
+                      <tr>
+                        <td class="td-bg-grey">相关附件</td>
+                        <td colspan="5">
+                          <template v-if="uu.specialStartMatList&&uu.specialStartMatList.length">
+                            <div class="spe-table-file-u" v-for="file in uu.specialStartMatList">
+                              <i class="ag" v-html="getIconText(file.attFormat)"
+                                 :style="{color:getIconColor(file.attFormat)}"></i>
+                              {{file.attName}}
+                              <i class="ag ag-ope-btn ag-search" title="预览" @click="filePreview(file)"></i>
+                              <i class="ag ag-ope-btn ag-download" title="下载" @click="downOneFile(file)"></i>
+                            </div>
+                          </template>
+                          <div v-else class="non-file-text">无</div>
+                        </td>
+                      </tr>
+                    </table>
+                    <table class="spe-info-table">
+                      <div class="table-section-title">特殊程序结束</div>
+                      <tr>
+                        <td class="td-bg-grey">特殊程序结果</td>
+                        <td colspan="5">{{uu.specialResult}}</td>
+                      </tr>
+                      <tr>
+                        <td class="td-bg-grey">经办人</td>
+                        <td>{{uu.opsUserName}}</td>
+                        <td class="td-bg-grey">经办时间</td>
+                        <td>{{uu.opsTime}}</td>
+                        <td class="td-bg-grey">收费金额</td>
+                        <td>{{uu.money}}元</td>
+                      </tr>
+                      <tr>
+                        <td class="td-bg-grey">相关附件</td>
+                        <td colspan="5">
+                          <template v-if="uu.specialEndMatList&&uu.specialEndMatList.length">
+                            <div class="spe-table-file-u" v-for="file in uu.specialEndMatList">
+                              <i class="ag" v-html="getIconText(file.attFormat)"
+                                 :style="{color:getIconColor(file.attFormat)}"></i>
+                              {{file.attName}}
+                              <i class="ag ag-ope-btn ag-search" title="预览" @click="filePreview(file)"></i>
+                              <i class="ag ag-ope-btn ag-download" title="下载" @click="downOneFile(file)"></i>
+                            </div>
+                          </template>
+                          <div v-else class="non-file-text">无</div>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </el-collapse-item>
+            </el-collapse>
+          </div>
+        </div>
+        <!--材料补正-->
+        <div v-else-if="u.labelId==4" style="height:100%;overflow:auto;">
+          <div class="spe-pane-wrap">
+            <!-- 审批人员 材料补正详情 -->
+            <div>
+              <div class="spe-item-uboxs">
+                <div class="spe-item-u" v-for="(item,index) in bzApproveData">
+                  <div class="top-time-text-box c-f" :class="{'is-blue': item.correctState==6}">
+                    <div class="ttt-f"></div>
+                    <div class="ttt-s">
+                      第{{getChineseIndex(index,bzApproveData.length)}}次发起（{{item.correctState==6?'待确认':'已完成'}}）
+                    </div>
+                    <div class="ttt-t"></div>
+                  </div>
+                  <table class="spe-info-table">
+                    <div class="table-section-title">基本信息</div>
+                    <tr>
+                      <td class="td-bg-grey">申请流水号</td>
+                      <td>{{item.applyinstCode}}</td>
+                      <td class="td-bg-grey">项目/工程编号</td>
+                      <td>{{item.applyinstCode}}</td>
+                      <td class="td-bg-grey">项目/工程名称</td>
+                      <td>{{item.projInfoName}}</td>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey">业主单位</td>
+                      <td>{{item.owner}}</td>
+                      <td class="td-bg-grey">联系人</td>
+                      <td>{{item.linkman}}</td>
+                      <td class="td-bg-grey">联系电话</td>
+                      <td>{{item.linkmanPhone}}</td>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey">事项名称</td>
+                      <td colspan="3">{{item.iteminstName}}</td>
+                      <td class="td-bg-grey">实施主体</td>
+                      <td>{{item.approveOrgName}}</td>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey">补正发起日期</td>
+                      <td>{{formatDateStr(item.createTime, 'yyyy-MM-dd')}}</td>
+                      <td class="td-bg-grey">补正截止日期</td>
+                      <td>{{formatDateStr(item.correctDueTime, 'yyyy-MM-dd')}}</td>
+                      <td class="td-bg-grey">办结时限</td>
+                      <td>{{item.correctDueDays}}（工作日）</td>
+                    </tr>
+                  </table>
+                  <table class="spe-info-table">
+                    <div class="table-section-title">补正材料列表</div>
+                    <tr>
+                      <td class="td-bg-grey w1">序号</td>
+                      <td class="td-bg-grey w2">材料名称</td>
+                      <td class="td-bg-grey w3">类型</td>
+                      <td class="td-bg-grey w4">补正份数</td>
+                      <td class="td-bg-grey w5">已收份数</td>
+                      <td class="td-bg-grey w6">补正意见</td>
+                      <td class="td-bg-grey w7">操作</td>
+                    </tr>
+                    <tr v-for="(uu, index2) in item.bzMatList">
+                      <template v-if="uu.colspan&&uu.rowspan">
+                        <td :colspan="uu.colspan" :rowspan="uu.rowspan" align="center">{{uu.uIndex+1}}</td>
+                        <td :colspan="uu.colspan" :rowspan="uu.rowspan">{{uu.matinstName}}</td>
+                      </template>
+                      <td>{{uu.rowType==1?'原件':uu.rowType==2?'复印件':'电子件'}}</td>
+                      <td>{{uu.rowType==1?uu.paperCount:(uu.rowType==2?uu.copyCount:'-')}}</td>
+                      <td>{{uu.rowType==1?uu.realPaperCount:(uu.rowType==2?uu.realCopyCount:uu.attCount)}}</td>
+                      <td>
+                        {{uu.rowType==1?uu.paperDueIninstOpinion:(uu.rowType==2?uu.copyDueIninstOpinion:uu.attDueIninstOpinion)}}
+                      </td>
+                      <td>
+                        <template v-if="uu.rowType==3&&uu.attFiles&&uu.attFiles.length">
+                          <el-popover
+                              placement="left"
+                              width="600"
+                              trigger="hover">
+                            <el-table :data="uu.attFiles" border stripe style="width:100%">
+                              <el-table-column width="50" label="序号" type="index"></el-table-column>
+                              <el-table-column prop="fileName" label="文件名称">
+                                <template slot-scope="scope">
+                                  <i class="ag" v-html="getIconText(scope.row.fileType)"
+                                     :style="{color:getIconColor(scope.row.fileType)}"></i>
+                                  {{scope.row.fileName}}
+                                </template>
+                              </el-table-column>
+                              <el-table-column width="100" property="address" label="操作">
+                                <template slot-scope="scope">
+                                  <el-button type="text" @click="filePreview(scope.row)">预览</el-button>
+                                  <el-button type="text" @click="downOneFile(scope.row)">下载</el-button>
+                                </template>
+                              </el-table-column>
+                            </el-table>
+                            <el-button slot="reference" type="text" style="padding:0">查看</el-button>
+                          </el-popover>
+                        </template>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey w1">备注</td>
+                      <td colspan="6">{{item.correctMemo}}</td>
+                    </tr>
+                  </table>
+                  <table class="spe-info-table">
+                    <div class="table-section-title">经办信息</div>
+                    <tr>
+                      <td class="td-bg-grey" colspan="1">补正发起人</td>
+                      <td colspan="5">{{item.windowUserName}}</td>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey">经办人</td>
+                      <td>{{item.opsUserName}}</td>
+                      <td class="td-bg-grey">经办日期</td>
+                      <td>{{formatDateStr(item.opsTime, 'yyyy-MM-dd')}}</td>
+                      <td class="td-bg-grey">补正结束人</td>
+                      <td>{{item.opsUserName}}</td>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey">补正结束日期</td>
+                      <td>{{formatDateStr(item.correctEndTime, 'yyyy-MM-dd')}}</td>
+                      <td class="td-bg-grey">打印人</td>
+                      <td>{{item.printUserName}}</td>
+                      <td class="td-bg-grey">打印日期</td>
+                      <td>{{formatDateStr(item.printTime, 'yyyy-MM-dd')}}</td>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey" colspan="1">补正意见</td>
+                      <td colspan="5">{{item.correctDesc}}</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <!-- 窗口人员 材料补正详情 -->
+            <el-collapse class="spe-collapse" v-if="isApprover==9" v-model="collapseActiveIndex">
+              <el-collapse-item v-for="(u, indexF) in specialDetailInfo" :name="indexF">
+                <template slot="title">
+                  <i class="ag ag-files"></i>
+                  {{u.iteminstName}}
+                  <span class="item-spe-number">{{u.specialList.length}}</span>
+                </template>
+                <div class="spe-item-uboxs">
+                  <div class="spe-item-u" v-for="(uu, index) in u.specialList">
+                    <div class="top-time-text-box">第{{getChineseIndex(index, uu.length)}}次发起</div>
+                    <table class="spe-info-table">
+                      <tr>
+                        <td class="td-bg-grey" colspan="6">特殊程序发起</td>
+                      </tr>
+                      <tr>
+                        <td class="td-bg-grey">种类</td>
+                        <td>{{specialTypeToText(uu.specialType)}}</td>
+                        <td class="td-bg-grey">发起单位</td>
+                        <td>{{uu.chargeOrgName}}</td>
+                        <td class="td-bg-grey">发起人</td>
+                        <td>{{uu.creater}}</td>
+                      </tr>
+                      <tr>
+                        <td class="td-bg-grey">申请时限</td>
+                        <td>{{uu.specialDueDays}}（工作日）</td>
+                        <td class="td-bg-grey">开始时间</td>
+                        <td>{{uu.createTime}}</td>
+                        <td class="td-bg-grey">结束时间</td>
+                        <td>{{uu.specialDueTime}}</td>
+                      </tr>
+                      <tr>
+                        <td class="td-bg-grey">申请内容</td>
+                        <td colspan="5">{{uu.specialReason}}</td>
+                      </tr>
+                      <tr>
+                        <td class="td-bg-grey">申请理由或法律依据</td>
+                        <td colspan="5">{{uu.specialMemo}}</td>
+                      </tr>
+                      <tr>
+                        <td class="td-bg-grey">相关附件</td>
+                        <td colspan="5">
+                          <template v-if="uu.specialStartMatList&&uu.specialStartMatList.length">
+                            <div class="spe-table-file-u" v-for="file in uu.specialStartMatList">
+                              <i class="ag" v-html="getIconText(file.attFormat)"
+                                 :style="{color:getIconColor(file.attFormat)}"></i>
+                              {{file.attName}}
+                              <i class="ag ag-ope-btn ag-search" title="预览" @click="filePreview(file)"></i>
+                              <i class="ag ag-ope-btn ag-download" title="下载" @click="downOneFile(file)"></i>
+                            </div>
+                          </template>
+                          <div v-else class="non-file-text">无</div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="6" style="border:none;padding:5px;"></td>
+                      </tr>
+                      <tr>
+                        <td class="td-bg-grey" colspan="6">特殊程序结束</td>
+                      </tr>
+                      <tr>
+                        <td class="td-bg-grey">特殊程序结果</td>
+                        <td colspan="5">{{uu.specialResult}}</td>
+                      </tr>
+                      <tr>
+                        <td class="td-bg-grey">经办人</td>
+                        <td>{{uu.creater}}</td>
+                        <td class="td-bg-grey">经办时间</td>
+                        <td>{{uu.opsTime}}</td>
+                        <td class="td-bg-grey">收费金额</td>
+                        <td>{{uu.money}}元</td>
+                      </tr>
+                      <tr>
+                        <td class="td-bg-grey">相关附件</td>
+                        <td colspan="5">
+                          <template v-if="uu.specialEndMatList&&uu.specialEndMatList.length">
+                            <div class="spe-table-file-u" v-for="file in uu.specialEndMatList">
+                              <i class="ag" v-html="getIconText(file.attFormat)"
+                                 :style="{color:getIconColor(file.attFormat)}"></i>
+                              {{file.attName}}
+                              <i class="ag ag-ope-btn ag-search" title="预览" @click="filePreview(file)"></i>
+                              <i class="ag ag-ope-btn ag-download" title="下载" @click="downOneFile(file)"></i>
+                            </div>
+                          </template>
+                          <div v-else class="non-file-text">无</div>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </el-collapse-item>
+            </el-collapse>
+          </div>
+        </div>
+        <iframe v-else :src="u.src" class="ltab-iframe"></iframe>
+      </el-tab-pane>
+    </el-tabs>
+  </div>
+  <!--  右边aside  -->
+  <aside class="box-position page-aside">
+    <div class="aside-tab">
+      <div class="toggle-triangle ag" :title="expanded?'收起':'展开'" @click="expanded=!expanded">
+        {{expanded?"&#xe6d6":"&#xe6d5"}}
+      </div>
+      <ul>
+        <li :class="{active:asideIndex===0}" @click="asideIndex=0">{{asideTabs[0]}}</li>
+        <li :class="{active:asideIndex===1}" @click="asideIndex=1" v-if="isShowMatiPanel">{{asideTabs[1]}}</li>
+      </ul>
+    </div>
+    <div class="aside-content">
+      <div class="aside-title">{{asideTabs[asideIndex]}}</div>
+      <div class="contents">
+        <!-- 审批过程 -->
+        <div class="content-u approve-step" v-show="asideIndex===0" v-loading="approveProcessLoading">
+          <div data-title="一级" class="step-box" v-for="(item, index) in approveStepList">
+            <div class="step-title">
+              <div class="step-title-text" :title="item.nodeName">{{item.nodeName}}</div>
+              <div class="ag man-icon">&#xe6bc</div>
+            </div>
+            <div data-title="一级无子节点" v-if="!(item.childNode&&item.childNode.length)" class="node-box">
+              <div class="ispass-icon s-top" :class="{'bg-blue': item.endDate==null}"></div>
+              <div class="man-time-box c-f">
+                <div class="l-man l">{{item.taskAssignee}}</div>
+                <div class="r-time r">{{processFormatDate(item.endDate)}}</div>
+              </div>
+              <div class="remark-box">
+                {{item.commentMessage || '暂无意见'}}
+                <div class="remark-triangle"></div>
+              </div>
+            </div>
+            <div data-title="一级下子节点为多工作项" v-else-if="item.isMultiTaskNode=='1'" v-for="item2 in item.childNode"
+                 class="node-box">
+              <div class="ispass-icon s-top" :class="{'bg-blue': item2.endDate==null}"></div>
+              <div class="man-time-box c-f">
+                <div class="l-man l">{{item2.taskAssignee}}</div>
+                <div class="r-time r">{{processFormatDate(item2.endDate)}}</div>
+              </div>
+              <div class="remark-box">
+                {{item2.commentMessage || '暂无意见'}}
+                <div class="remark-triangle"></div>
+              </div>
+            </div>
+            <template v-else v-for="item2 in item.childNode" data-title="非工作项">
+              <template data-title="二级无子节点" v-if="!(item2.childNode&&item2.childNode.length)">
+                <div data-title="二级无子节点" class="step-title not-item-step" v-if="item2.isItemNode!=1">
+                  <div class="step-title-text" :title="item2.nodeName">{{item2.nodeName}}</div>
+                  <div class="ag man-icon">&#xe6bc</div>
+                </div>
+                <div data-title="二级无子节点" class="node-box">
+                  <div class="ispass-icon" :class="{'bg-blue': item2.endDate==null}"></div>
+                  <div class="man-time-box c-f">
+                    <div class="l-man l">{{item2.taskAssignee}}</div>
+                    <div class="r-time r">{{processFormatDate(item2.endDate)}}</div>
+                  </div>
+                  <div class="remark-box">
+                    {{item2.commentMessage || '暂无意见'}}
+                    <div class="remark-triangle"></div>
+                  </div>
+                </div>
+              </template>
+              <template data-title="二级事项或者节点，显示事项或者是蓝色小图标" v-else>
+                <div data-title="事项" v-if="item2.isItemNode==1" class="node-box">
+                  <div class="ispass-icon"
+                       :class="{'bg-blue':item2.endDate==null,'s-top':item.isMultiTaskNode=='1'}"></div>
+                  <div class="pro-item-box c-f" v-if="item.isMultiTaskNode!='1'">
+                    <span class="label-pi l" v-if="item2.isItemNode==1">事项</span>
+                    <span class="text-pi l" :title="item2.nodeName">{{item2.nodeName}}</span>
+                  </div>
+                  <div class="man-time-box c-f">
+                    <div class="l-man l">{{processFormatType(item2,'taskAssignee')}}</div>
+                    <div class="r-time r">{{processFormatType(item2,'endDate')}}</div>
+                  </div>
+                  <div class="remark-box">
+                    {{processFormatType(item2,'commentMessage')}}
+                    <div class="remark-triangle"></div>
+                  </div>
+                </div>
+                <template v-else data-title="非事项节点，显示蓝色小图标">
+                  <div data-title="二级有子节点" class="step-title not-item-step">
+                    <div class="step-title-text" :title="item2.nodeName">{{item2.nodeName}}</div>
+                    <div class="ag man-icon">&#xe6bc</div>
+                  </div>
+                  <template data-title="无子节点" v-if="!(item2.childNode&&item2.childNode.length)">
+                    <div data-title="无子节点" class="node-box">
+                      <div class="ispass-icon s-top" :class="{'bg-blue': item2.endDate==null}"></div>
+                      <div class="man-time-box c-f">
+                        <div class="l-man l">{{item2.taskAssignee}}</div>
+                        <div class="r-time r">{{processFormatDate(item2.endDate)}}</div>
+                      </div>
+                      <div class="remark-box">
+                        {{item2.commentMessage || '暂无意见'}}
+                        <div class="remark-triangle"></div>
+                      </div>
+                    </div>
+                  </template>
+                  <template v-else>
+                    <div data-title="事项" v-for="item3 in item2.childNode" class='node-box'>
+                      <div class="ispass-icon"
+                           :class="{'bg-blue':item3.endDate==null,'s-top':item2.isMultiTaskNode=='1'}"></div>
+                      <div class="pro-item-box c-f" v-if="item2.isMultiTaskNode!='1'">
+                        <span class="label-pi l" v-if="item3.isItemNode==1">事项</span>
+                        <span class="text-pi l" :title="item3.nodeName">{{item3.nodeName}}</span>
+                      </div>
+                      <div class="man-time-box c-f">
+                        <div class="l-man l" data-title="是否为事项，数据获取不一样">
+                          {{item3.isItemNode==1?processFormatType(item3,'taskAssignee'):item3.taskAssignee}}
+                        </div>
+                        <div class="r-time r" :data-title="item3.isItemNode">
+                          {{item3.isItemNode==1?processFormatType(item3,'endDate'):processFormatDate(item3.endDate)}}
+                        </div>
+                      </div>
+                      <div class="remark-box">
+                        {{item3.isItemNode==1?processFormatType(item3,'commentMessage'):(item3.commentMessage||'暂无意见')}}
+                        <div class="remark-triangle"></div>
+                      </div>
+                    </div>
+                  </template>
+                </template>
+              </template>
+            </template>
+          </div>
+        </div>
+        <!-- 所有材料 -->
+        <div v-show="asideIndex===1" v-loading="fileLoading" style="min-height:100%"
+             @click="selectedNodeId=-1;selectedNode=null;friNodeId=-1">
+          <el-button-group class="button-grounp">
+            <el-button title="上传文件" size="medium" class="ag" @click.stop="clickUploadBtn">&#xe6da</el-button>
+            <el-button title="下载文件" size="medium" class="ag" @click.stop="downloadFiles">&#xe6d2</el-button>
+            <el-button title="新建文件夹" size="medium" class="ag" @click.stop="createFolder">&#xe6ee</el-button>
+          </el-button-group>
+          <input ref="uploadInput" @click.stop="function(){}" class="upload-input" type="file"/>
+          <!--            材料树-->
+          <div class="file-tree">
+            <!--              一级-->
+            <div class="f-node" v-for="(u, index1) in treeData">
+              <template v-if="u.isLeaf">
+                <div class="s-title istLeaf istLeafFri ppp ppp38"
+                     :title="u.fileText"
+                     :class="{ 'bg-grey-node': selectedNodeId===u.dirId }">
+                  <i class="ag" v-html="getIconText(u.attFormat)" :style="{color:getIconColor(u.attFormat)}"></i>
+                  {{u.fileText}}
+                  <div class="leaf-node-btns r c-f">
+                    <div title="预览" class="leaf-node-btn l el-icon-search" @click.stop="filePreview(u)"></div>
+                    <div title="下载" class="leaf-node-btn l el-icon-download" @click.stop="downOneFile(u)"></div>
+                    <div title="删除" v-if="!notAllowFileOpe[u.dirId]" class="leaf-node-btn l el-icon-delete"
+                         @click.stop="delOneFile(u)"></div>
+                  </div>
+                </div>
+              </template>
+              <template v-else>
+                <div class="f-title ss-node" @click.stop="clickNodeTitle($event, u, u.dirId)"
+                     style="font-size: 15px;"
+                     :class="{ 'bg-grey-node': selectedNodeId===u.dirId }">
+                  <i class="ag forder-f-level fi-close">&#xe6e0;</i>
+                  <i class="ag forder-f-level fi-open">&#xe6e2;</i>
+                  {{u.fileText}}
+                  <div class="leaf-node-btns r c-f" v-if="!notAllowFileOpe[u.dirId]">
+                    <div title="删除" class="leaf-node-btn l el-icon-delete" @click.stop="delOneFile(u)"></div>
+                  </div>
+                </div>
+                <div class="s-nodes">
+                  <div class="s-node" v-for="(uu, index2) in u.list">
+                    <!--                    二级目录-->
+                    <div class="s-title ppp ppp36" v-if="!uu.isLeaf"
+                         :title="uu.fileText"
+                         style="font-weight:600;"
+                         @click.stop="clickNodeTitle($event, uu, u.dirId)"
+                         :class="{ 'bg-grey-node': selectedNodeId===uu.dirId }">
+                      <i class="el-icon-caret-right"></i>
+                      {{uu.fileText}}
+                      <div class="leaf-node-btns r c-f" v-if="!notAllowFileOpe[u.dirId]">
+                        <div title="删除" class="leaf-node-btn l el-icon-delete" @click.stop="delOneFile(uu, u)"></div>
+                      </div>
+                    </div>
+                    <!--                    二级文件-->
+                    <div class="s-title istLeaf ppp ppp38" v-else-if="uu.isLeaf"
+                         @click.stop="clickNodeTitle($event, uu, u.dirId)"
+                         :class="{ 'bg-grey-node': selectedNodeId===uu.dirId }">
+                      <i class="ag" v-html="getIconText(uu.attFormat)" :style="{color:getIconColor(uu.attFormat)}"></i>
+                      {{uu.fileText}}
+                      <div class="leaf-node-btns r c-f">
+                        <div title="预览" class="leaf-node-btn l el-icon-search" @click.stop="filePreview(uu)"></div>
+                        <div title="下载" class="leaf-node-btn l el-icon-download" @click.stop="downOneFile(uu)"></div>
+                        <div title="删除" v-if="!notAllowFileOpe[u.dirId]" class="leaf-node-btn l el-icon-delete"
+                             @click.stop="delOneFile(uu, u)"></div>
+                      </div>
+                    </div>
+                    <!--                    三级文件-->
+                    <div class="t-nodes">
+                      <div class="t-node ppp ppp32" v-for="(uuu, index3) in uu.list"
+                           :title="uuu.fileText"
+                           :class="{ 'bg-grey-node': selectedNodeId===uuu.dirId }">
+                        <i class="ag" v-html="getIconText(uuu.attFormat)"
+                           :style="{color:getIconColor(uuu.attFormat)}"></i>
+                        {{uuu.fileText}}
+                        <div class="leaf-node-btns r c-f">
+                          <div title="预览" class="leaf-node-btn l el-icon-search" @click.stop="filePreview(uuu)"></div>
+                          <div title="下载" class="leaf-node-btn l el-icon-download" @click.stop="downOneFile(uuu)"></div>
+                          <div title="删除" class="leaf-node-btn l el-icon-delete" v-if="!notAllowFileOpe[u.dirId]"
+                               @click.stop="delOneFile(uuu, uu)"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+        <!-- 主题导航 -->
+        <div v-show="asideIndex===2">主题导航</div>
+        <!-- 项目导航 -->
+        <div v-show="asideIndex===3">项目导航</div>
+      </div>
+    </div>
+  </aside>
+  <!-- 查看流程图弹窗 start -->
+  <el-dialog title="流程跟踪" width="80%" top="5vh" :visible.sync="processDialogVisible" v-loading="processDialogLoading">
+    <div class="row" id="parentPro"></div>
+    <el-scrollbar>
+      <div id="bpmnModel"></div>
+    </el-scrollbar>
+  </el-dialog>
+  <!--  发送弹窗-->
+  <el-dialog @close="closeSendDialog" :title="saveAndSendTitle" width="942px" v-loading="sendDialogLoading"
+             :visible.sync="sendDialog">
+    <el-form class="send-dia-form" ref="sendForm" :rules="sendFormRule"
+             style='max-height: 580px;overflow:auto;' :model="sendForm" label-width="110px">
+      <div class="send-form-part">
+        <p class="hint-text"><i class="ag ag-warn-circle"></i>提示：所选下一环节为单人审批模式，请选择一个办理人。然后请点击“发送”按钮发送到所选环节。</p>
+      </div>
+      <div class="send-form-part">
+        <div class="part-title">下一环节及审批人</div>
+        <template v-if="!isMultiFlow">
+          <el-form-item label="下一环节：">
+            <el-radio-group v-model="nextTaskCheckedId" @change="selectNextNode">
+              <el-radio v-for="item in nextTaskListData" :label="item.destActId">
+                {{item.destActName}}
+              </el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="审批人：" style="padding-bottom: 13px;">
+            <el-col :span="20">
+              <el-input :value="sendForm.nextTaskAssignee" readonly ref="nextTaskAssignee" name="nextTaskAssignee"
+                        size="medium"/>
+            </el-col>
+            <el-col :span="2">
+              <el-button id='selectAsingee' :disabled="!isNeedSelectAssignee"
+                         @click="selectAssigneeDialog=true;getAssigneeTree()" type="primary"
+                         style="margin-left:21px;width:90px;"
+                         size="medium"><i class="ag ag-add-person"></i>
+              </el-button>
+            </el-col>
+          </el-form-item>
+        </template>
+        <template :data-title="多选" v-if="isMultiFlow">
+          <el-form-item label="下一环节：" label-width="180px">
+            <el-checkbox-group v-model="mutiCheckedNames" :min="1">
+              <el-checkbox v-for="(item, index) in nextTaskListData"
+                           @change="changeMutiMan(item)" :label="item.destActName"></el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+          <el-form-item v-for="u in mutiCheckedMan" label-width="180px"
+                        :label="u.destActName+'环节审批人：'" style="padding-bottom: 13px;">
+            <el-col :span="20">
+              <el-input :value="u.defaultSendAssignees|defaultManFilter" readonly size="medium"/>
+            </el-col>
+            <el-col :span="2">
+              <el-button :disabled="!u.needSelectAssignee"
+                         @click="selectAssigneeDialog=true;mutiGetAssigneeTree(u)" type="primary"
+                         style="margin-left:21px;width:90px;"
+                         size="medium"><i class="ag ag-add-person"></i>
+              </el-button>
+            </el-col>
+          </el-form-item>
+        </template>
+      </div>
+      <div class="send-form-part">
+        <div class="part-title">办理结果及意见</div>
+        <el-form-item label="办理结果：" style="padding-top:14px;pading-bottom: 9px;">
+          <el-radio-group v-model="conclusionOptionValue">
+            <el-radio label="1">同意</el-radio>
+            <el-radio label="0">不同意</el-radio>
+            <el-radio label="2">不涉及</el-radio>
+          </el-radio-group>
+          <el-select v-model="sendForm.selectOpinion" filterable placeholder="请选择常用意见" @change="opinionSelectChange"
+                     style="margin-left:185px;margin-right:5px;width:295px;"
+                     size="medium" class="sug-select">
+            <el-option :label="item.opinionContent" :value="item.opinionContent" v-for="item in opinionTableData"
+                       :key="item.opinionId"></el-option>
+          </el-select>
+          <el-tooltip class="item" effect="dark" content="设为常用意见" placement="top">
+            <el-button size="medium" type="info" style="position:relative;top:3px;" @click="setCommonOpinion()"><i
+                class="ag ag-save-common"></i></el-button>
+          </el-tooltip>
+        </el-form-item>
+        <el-form-item label="办理意见：" style="padding-right:25px;padding-bottom: 29px;">
+          <el-input type="textarea" :rows="4" class="send-sug-textarea" placeholder="请输入内容"
+                    v-model="opinionForm.opinionText"/>
+        </el-form-item>
+      </div>
+    </el-form>
+    <span slot="footer" class="dialog-footer">
+        <el-button @click="sendDialog=false" size="medium">取 消</el-button>
+        <el-button type="primary" @click="doSendOperation()" size="medium">发 送</el-button>
+      </span>
+  </el-dialog>
+  <!--  只有办理意见的dialog  start-->
+  <el-dialog :title="preApproveOperation" width="942px" v-loading="onlySuggestLoading"
+             :visible.sync="onlySuggestDialog">
+    <el-form class="send-dia-form" ref="onlySuggestForm" :rules="sendFormRule" :model="onlySuggestForm"
+             label-width="110px">
+      <div class="send-form-part">
+        <div class="part-title">办理结果及意见</div>
+        <el-form-item label="办理结果：" style="padding-top:14px;pading-bottom: 9px;">
+          <el-radio-group v-model="conclusionOptionValue">
+            <el-radio label="1">同意</el-radio>
+            <el-radio label="0">不同意</el-radio>
+            <el-radio label="2">不涉及</el-radio>
+          </el-radio-group>
+          <el-select v-model="sendForm.selectOpinion" filterable placeholder="请选择常用意见" @change="opinionSelectChange"
+                     style="margin-left:185px;margin-right:5px;width:295px;"
+                     size="medium" class="sug-select">
+            <el-option :label="item.opinionContent" :value="item.opinionContent" v-for="item in opinionTableData"
+                       :key="item.opinionId"></el-option>
+          </el-select>
+          <el-tooltip class="item" effect="dark" content="设为常用意见" placement="top">
+            <el-button size="medium" type="info" style="position:relative;top:3px;" @click="setCommonOpinion()"><i
+                class="ag ag-save-common"></i></el-button>
+          </el-tooltip>
+        </el-form-item>
+        <el-form-item label="办理意见：" style="padding-right:25px;padding-bottom: 29px;">
+          <el-input type="textarea" :rows="4" class="send-sug-textarea" placeholder="请输入内容"
+                    v-model="opinionForm.opinionText"/>
+        </el-form-item>
+      </div>
+    </el-form>
+    <span slot="footer" class="dialog-footer">
+        <el-button @click="onlySuggestDialog=false" size="medium">取 消</el-button>
+        <el-button type="primary" size="medium" @click="updateApplyState">发 送</el-button>
+      </span>
+  </el-dialog>
+  <!--更改事项状态专用弹框 start-->
+  <el-dialog :title="commentTitle" :visible.sync="submitCommentsShow" class="dialog sendDialog">
+    <div class="part-title">办理意见</div>
+    <el-container>
+      <el-main style="padding: 10px 16px 0px 16px;">
+        <el-form ref="opinionForm" :rules="opinionFormRule" class="demo-form-inline" :model="opinionForm">
+          <el-row>
+            <el-col :span="16">
+              <el-form-item>
+                <el-select v-model="opinionForm.selectOpinion" placeholder="请选择常用办理意见" filterable style="width:550px;"
+                           @change="opinionSelectChange">
+                  <el-option :label="item.opinionContent" :value="item.opinionContent" v-for="item in opinionTableData"
+                             :key="item.opinionId"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <div style="text-align: right">
+                <!--                <el-button @click="setCommonOpinion()">设为常用意见</el-button>-->
+                <el-tooltip class="item" effect="dark" content="设为常用意见" placement="top">
+                  <el-button size="medium" type="info" style="position:relative;top:6px;" @click="setCommonOpinion()"><i
+                      class="ag ag-save-common"></i></el-button>
+                </el-tooltip>
+              </div>
+            </el-col>
+          </el-row>
+          <el-form-item>
+            <el-input type="textarea" :rows="3" placeholder="请输入办理意见" v-model="opinionForm.opinionText"></el-input>
+          </el-form-item>
+        </el-form>
+      </el-main>
+    </el-container>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="submitCommentsShow = false">取 消</el-button>
+      <el-button type="primary" @click="updateItemState">发 送</el-button>
+    </div>
+    <el-dialog title="常用意见管理" append-to-body class="edit-comments" :visible.sync="submitCommentsFlag1" width="700px">
+      <el-table :data="opinionTableData">
+        <el-table-column property="opinionTableData.name" label="常用意见" prop="opinionContent"></el-table-column>
+        <el-table-column property="name" label="操作" width="150">
+          <template slot-scope="scope">
+            <span title="编辑" class="el-icon-edit" @click="getUserOptionById(scope.row)"></span>
+            <span title="删除" class="el-icon-delete" @click="deleteOpinion(scope.row.opinionId)"></span>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-dialog title="编辑常用意见" append-to-body class="edit-comments" :visible.sync="submitCommentsFlag2" width="600px">
+        <el-form ref="editOpinionForm" :rules="editOpinionFormRule" label-width="100px" :model="editOpinionForm">
+          <el-form-item label="意见内容:" require prop="opinionContent">
+            <el-input type="textarea" :rows="4" placeholder="请输入办理意见"
+                      v-model="editOpinionForm.opinionContent"></el-input>
+          </el-form-item>
+          <el-form-item label="排序号">
+            <el-input type="number" v-model="editOpinionForm.sortNo" autocomplete="off"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="submitCommentsFlag2 = false">关闭</el-button>
+          <el-button type="primary" @click="editUserOption()">保存</el-button>
+        </div>
+      </el-dialog>
+    </el-dialog>
+  </el-dialog>
+  <!--申报意见弹窗 end-->
+  <!--  选择审批人 弹窗 -->
+  <el-dialog title="选择办理人对话框" :visible.sync="selectAssigneeDialog" class="dialog sendDialog selectAssigneeDialog"
+             v-cloak>
+    <el-row style="margin:12px 16px 0px 16px;border:1px solid #e6e6e6;border-radius:4px;">
+      <el-col :span="14">
+        <el-container>
+          <el-header style="margin-top: 10px;border-bottom:1px solid #e6e6e6;height:45px;">
+            <span>待选办理人</span>
+            <span style="margin-left:10px;">
+                <input style="height:30px;border:1px solid rgb(193, 193, 193);padding:0 8px;border-radius:3px;"
+                       v-model="assigneeSearchKeyword" @keyup="assigneeSearch"/>
+              </span>
+          </el-header>
+          <el-main style="padding-top:10px;">
+            <ul id="assigneeOrgTree" class="ztree"></ul>
+          </el-main>
+        </el-container>
+      </el-col>
+      <el-col :span="2">
+        <div style="height:445px;padding-top:210px;border:1px solid #e6e6e6;border-width:0 1px;">
+          <button type="button" class="el-button el-button--primary el-transfer__button">
+            <span><i class="el-icon-arrow-right"></i></span></button>
+        </div>
+      </el-col>
+      <el-col :span="8">
+        <el-container style="margin-top: 16px">
+          <el-header style="border-bottom:1px solid #e6e6e6;height:40px;">已选办理人</el-header>
+          <el-main style="padding-top:10px;">
+            <div id="selectedAssignees"></div>
+          </el-main>
+        </el-container>
+      </el-col>
+    </el-row>
+    <div slot="footer" class="dialog-footer">
+      <el-button size="medium" @click="selectAssigneeDialog=false">关闭</el-button>
+      <el-button size="medium" type="primary" @click="confirmSelectAssignee">确定</el-button>
+    </div>
+  </el-dialog>
+  <!--  管理常用办理意见 弹窗 -->
+  <el-dialog title="常用办理意见" :visible.sync="manageOpinionDialog" class="dialog sendDialog dialogPadding"
+             id="manageOpinionDialog">
+    <el-table :data="opinionTableData" stripe border highlight-current-row ref="opinionTable" height="500"
+              @selection-change="handleSelectionChange" style="margin-top: 10px;width: 100%;">
+      <el-table-column prop="opinionContent" label="意见内容" width="400"></el-table-column>
+      <el-table-column label="操作" align="center">
+        <template slot-scope="scope">
+          <el-button type="text" class="btn-table" @click="editOpinion(scope.row)">
+            编辑
+          </el-button>
+          <el-button type="text" class="btn-table" @click="deleteOpinion(scope.row.opinionId)">
+            删除
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+  </el-dialog>
+  <!--  编辑意见 弹窗 -->
+  <el-dialog title="编辑意见" width="600px" :visible.sync="editOpinionDialog" class="dialog sendDialog dialogPadding">
+    <el-form ref="editOpinionForm" :rules="editOpinionFormRule" label-width="100px" class="demo-form-inline"
+             :model="editOpinionForm">
+      <el-form-item label="意见内容:" require prop="opinionContent">
+        <el-input type="textarea" :rows="4" placeholder="请输入办理意见" v-model="editOpinionForm.opinionContent"></el-input>
+      </el-form-item>
+      <el-form-item label="排序号" require prop="sortNo">
+        <el-input type="number" v-model="editOpinionForm.sortNo" autocomplete="off"></el-input>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="doSaveOpinion">保存</el-button>
+      <el-button @click="editOpinionDialog=false">取消</el-button>
+    </div>
+  </el-dialog>
+  <el-dialog title="回执列表" :visible.sync="receiptPrintDialog" class="receive-modal" width="80%">
+    <div class="fl">
+      <div class="receive-item" :class="receiveActive==ind?'active':''" :key="ind" v-for="(item,ind) in receiveList">
+        <p class="receive-item-header">
+          <span :title="item.name" class="ellipsis">{{item.name}}</span>
+          <i class="fr icon" :class="item.show?'el-icon-arrow-down':'el-icon-arrow-right'"
+             @click="toggleReceiveListShow(item)"></i>
+          <span class="fr"
+                :class="item.isSeries==0?'receive-type-y':'receive-type'">{{item.isSeries==0?'并联':'并行'}}</span>
+        </p>
+        <ul class="receive-list" v-show="item.show">
+          <li :class="receiveItemActive==index?'active':''" :key="index" v-for="(itemBtn,index) in item.receiveList"
+              @click="printReceive(itemBtn,index,ind)">
+            <span>{{$options.filters.changeReceiveType(itemBtn.receiptType)}}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="pdf-view-win" :style="{height: '600px'}">
+      <iframe :src="receivePdfSrc" width="100%" height="100%"></iframe>
+    </div>
+  </el-dialog>
+  <el-dialog title="证照列表" :visible.sync="certinstModalShow" class="dialog sendDialog pic-list-dia" width="900px">
+    <el-button style="padding:9px 20px" type="primary" @click="addItemCert()" size="medium">新增</el-button>
+    <el-button style="padding:9px 20px" type="danger" @click="batchDeleteItemCert()" size="medium">删除</el-button>
+    <el-table :data="certinstList" stripe border highlight-current-row ref="opinionTable"
+              @selection-change="selecCertinstListChange" style="margin-top: 15px;width: 100%;">
+      <el-table-column type="selection" width="55" align="center"></el-table-column>
+      <el-table-column prop="certinstCode" label="证照编码" align="center"></el-table-column>
+      <el-table-column prop="certinstName" label="证照名称" align="center"></el-table-column>
+      <el-table-column prop="issueDate" label="颁发日期" align="center"></el-table-column>
+      <el-table-column prop="termStart" label="有效期（起始）" align="center"></el-table-column>
+      <el-table-column prop="termEnd" label="有效期（截止）" align="center"></el-table-column>
+      <el-table-column label="操作" align="center">
+        <template slot-scope="scope">
+          <el-button type="text" class="btn-table" @click="editCertinst(scope.row)">
+            编辑
+          </el-button>
+          <el-button style="color:red" type="text" class="btn-table" @click="deleteCertinst(scope.row.certinstId)">
+            删除
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-dialog title="编辑/新增证照" append-to-body class="edit-comments add-edit-idpic-dia" top="10vh"
+               :visible.sync="editCertinstModel" width="900px" @close="resetForm('editCertForm')">
+      <el-form size="medium" :model="editCertForm" ref="editCertForm" label-width="120px" :rules="certFormRules">
+        <div class="clearfix">
+          <el-form-item class="input-inline" label="证照类型" prop="certId">
+            <el-select id="certId" v-model="editCertForm.certId" placeholder="证书类型">
+              <el-option v-for="item in certList" :key="item.certId" :label="item.certName" :value="item.certId">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </div>
+        <el-form-item label="证书编号：" prop="certinstCode">
+          <el-input v-model="editCertForm.certinstCode" placeholder="请输入证书编号"></el-input>
+        </el-form-item>
+        <el-form-item label="证书名称：" prop="certinstName">
+          <el-input v-model="editCertForm.certinstName" placeholder="请输入证书名称"></el-input>
+        </el-form-item>
+        <el-form-item label="业主单位：" prop="applicant">{{editCertForm.applicant}}
+          <!--<el-input v-model="editCertForm.applicant" placeholder="请输入业主单位" disabled></el-input>-->
+        </el-form-item>
+        <el-form-item label="颁发单位：" prop="issueOrgName">{{editCertForm.issueOrgName}}
+          <!--<el-input v-model="editCertForm.issueOrgName" placeholder="请输入颁发单位" disabled></el-input>-->
+        </el-form-item>
+        <el-form-item label="有效期">
+          <el-col :span="11">
+            <el-date-picker type="date" placeholder="选择日期" v-model="editCertForm.termStart"
+                            style="width: 100%;"></el-date-picker>
+          </el-col>
+          <el-col style="text-align: center" class="line" :span="2">-</el-col>
+          <el-col :span="11">
+            <el-date-picker type="date" placeholder="选择日期" v-model="editCertForm.termEnd" style="width: 100%;"
+                            prop="termEnd"></el-date-picker>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="制证时间：">
+          <!--<el-input v-model="editCertForm.issueDate"></el-input>-->
+          <el-date-picker type="date" placeholder="选择日期" format="yyyy-MM-dd" v-model="editCertForm.issueDate"
+                          style="width: 100%;"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="持证者：">
+          <el-input v-model="editCertForm.certOwner"></el-input>
+        </el-form-item>
+        <el-form-item label="证书上传">
+          <div class="upload-file-content" :loading="loadingFileWin" element-loading-text="文件上传中"
+               element-loading-background="rgba(0, 0, 0, 0.3)" element-loading-spinner="el-icon-loading">
+            <div class="file-opt-btn">
+              <el-upload ref="uploadCert" class="upload-s-file" :action="ctx+'rest/certificate/certinst/att/upload'"
+                         :show-file-list="false" :http-request="uploadFileCom" :file-list="fileList">
+                <el-button slot="trigger" size="small" type="primary">上传</el-button>
+                <el-button size="small" type="primary" @click="delSelectCertCom()">删除</el-button>
+              </el-upload>
+            </div>
+            <el-table :data="uploadCertData" border @selection-change="selectFileChange">
+              <el-table-column type="selection" align="center" width="55">
+              </el-table-column>
+              <el-table-column prop="fileName" label="文件名"></el-table-column>
+              <el-table-column label="操作" align="center" width="150">
+                <template slot-scope="scope">
+                  <el-button type="primary" size="mini" @click="filePreview(scope.row)">预览</el-button>
+                  <el-button type="primary" size="mini" @click="deleteOneAttach(scope.row.fileId)">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="medium" @click="editCertinstModel = false">取 消</el-button>
+        <el-button size="medium" type="primary" @click="saveOrUpdateCertinst()">确 定</el-button>
+      </div>
+    </el-dialog>
+  </el-dialog>
+  <!--  材料补正 弹窗 old -->
+  <el-dialog title="材料补正" v-loading="sloading" :visible.sync="isShowMaterialSupplementDialog"
+             class="dialog mertial-supplement-dialog mat-update-dialog" top="10vh" width="1200px" height="75%">
+    <!-- 标签（正在补件的显示） -->
+    <div class="supplement-tag" v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7">
+      正在补件中...
+    </div>
+    <el-form :inline="true" :model="supplemetForm" :rules="supplementFormRules" label-width="140px"
+             class="demo-form-inline supplement-form" ref="supplemetForm">
+      <el-form-item class="half-item" label="办件流水号">
+        <!-- <el-input placeholder="请输入办件流水号" v-model="supplemetForm.applyinstCode" disabled></el-input> -->
+        <span class="color-999">{{supplemetForm.applyinstCode || '暂无'}}</span>
+      </el-form-item>
+      <el-form-item class="half-item" label="项目编号">
+        <!-- <el-input placeholder="请输入项目编号" v-model="supplemetForm.localCode" disabled></el-input> -->
+        <span class="color-999">{{supplemetForm.localCode || '暂无'}}</span>
+      </el-form-item>
+      <el-form-item class="half-item" label="项目名称">
+        <!-- <el-input placeholder="请输入项目名称" v-model="supplemetForm.projInfoName" disabled></el-input> -->
+        <span class="color-999">{{supplemetForm.projInfoName || '暂无'}}</span>
+      </el-form-item>
+      <el-form-item class="half-item" label="业主单位">
+        <!-- <el-input placeholder="请输入客户名称" v-model="supplemetForm.owner" disabled></el-input> -->
+        <span class="color-999">{{supplemetForm.owner || '暂无'}}</span>
+      </el-form-item>
+      <el-form-item class="half-item" label="事项名称">
+        <!-- <el-input placeholder="请输入审批事项名称" v-model="supplemetForm.iteminstName" disabled></el-input> -->
+        <span class="color-999">{{supplemetForm.iteminstName || '暂无'}}</span>
+      </el-form-item>
+      <el-form-item class="half-item" label="实施主体">
+        <!-- <el-input placeholder="请输入负责部门名称" v-model="supplemetForm.approveOrgName" disabled></el-input> -->
+        <!-- <span class="color-999">{{supplemetForm.approveOrgName || '暂无'}}</span> -->
+        <span class="color-999">{{supplemetForm.chargeOrgName || '暂无'}}</span>
+      </el-form-item>
+      <el-form-item class="half-item" label="办理时限（工作日）" prop="correctDueDays">
+        <span class="color-999" v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7">{{supplemetForm.correctDueDays || '暂无'}}</span>
+        <el-input size="medium" placeholder="请输入办理时限" type="number" min="0" v-else
+                  v-model="supplemetForm.correctDueDays"></el-input>
+      </el-form-item>
+      <el-form-item class="fill-item" style="width:65%" label="备注">
+        <span class="color-999" v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7">{{supplementDialogData.correctMemo || '暂无'}}</span>
+        <el-input size="medium" placeholder="请输入备注" type="text" :rows="1" style="width:638px;"
+                  v-model="supplementDialogData.correctMemo" v-else></el-input>
+      </el-form-item>
+      <el-form-item class="fill-item" :label="inSeletcedIteminstMaterialPandel? '已收清单列表':'待补正材料清单'">
+        <template v-if="!inSeletcedIteminstMaterialPandel">
+          <!--          <el-table :data="tobaMakeupMaterialList">-->
+          <!--            <el-table-colum label="材料名称" prop="matName">-->
+          <!--              <template slot-scope="scope">{{scope.row.matName||scope.row.matinstName}}</template>-->
+          <!--            </el-table-colum>-->
+          <!--            <el-table-colum label="原件" prop=""></el-table-colum>-->
+          <!--          </el-table>-->
+          <div class="material-table-header c-f">
+            <!--            <span style="width: 126px;">材料名称</span>-->
+            <!--            <span style="width: 61px;">类型</span>-->
+            <!--            <span style="width: 100px;">补正份数</span>-->
+            <!--            <span style="width: 282px;">意见</span>-->
+            <!--            <span style="width: 58px;">操作</span>-->
+            <span class="mf-col mf-col-w1" style="width: 404px;">材料名称</span>
+            <span class="mf-col mf-col-w2" style="width: 101px;">类型</span>
+            <span class="mf-col mf-col-w3" style="width: 100px;">补正份数</span>
+            <!-- <span class="mf-col mf-col-w4" style="width: 283px;">意见</span>
+            <span class="mf-col mf-col-w5" style="width: 135px;">操作</span> -->
+            <span class="mf-col mf-col-w4" style="width: 352px;">意见</span>
+            <span class="mf-col mf-col-w5" style="width: 80px;">操作</span>
+          </div>
+          <div class="material-table-wrap">
+            <div class="material-table" v-for="(item,index) in tobaMakeupMaterialList" :key="item.matId"
+                 v-if='tobaMakeupMaterialList!== undefined && tobaMakeupMaterialList.length>0'>
+              <div class="tb-title inline-block">
+                <p>{{item.matName || item.matinstName}}</p>
+              </div>
+              <div class="tb-content inline-block">
+                <div class="tb-item" v-if="item.isNeedOrign">
+                  <span class="inline-block tip">原件</span>
+                  <div class="inline-block border-left al-center num ">
+                    <span class="color-999"
+                          v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7">{{tobaMakeupMaterialList[index].paperCount || '0'}}</span>
+                    <el-input class="w98" placeholder="补正份数" type="number" min="0"
+                              v-model="tobaMakeupMaterialList[index].paperCount" v-else></el-input>
+                  </div>
+                  <div class="inline-block border-left al-center opinion">
+                    <span class="color-999"
+                          v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7">{{tobaMakeupMaterialList[index].paperDueIninstOpinion || '暂无'}}</span>
+                    <el-input class="w98" placeholder="请输入意见"
+                              v-model="tobaMakeupMaterialList[index].paperDueIninstOpinion" v-else></el-input>
+                  </div>
+                  <div class="inline-block border-left al-center delete">
+                      <span class="color-999"
+                            v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7">
+                        <i class="el-icon-delete color-999" style="cursor: not-allowed;"></i>
+                      </span>
+                    <i class="el-icon-delete" @click="delTobaMakeupMaterial('isNeedOrign',item,index)" v-else></i>
+                  </div>
+                </div>
+                <div class="tb-item" v-if="item.isNeedCopy">
+                  <span class="inline-block tip">复印件</span>
+                  <div class="inline-block border-left al-center num">
+                    <span class="color-999"
+                          v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7">{{tobaMakeupMaterialList[index].copyCount || '0'}}</span>
+                    <el-input class="w98" placeholder="补正份数" type="number" min="0"
+                              v-model="tobaMakeupMaterialList[index].copyCount" v-else></el-input>
+                  </div>
+                  <div class="inline-block border-left al-center opinion">
+                    <span class="color-999"
+                          v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7">{{tobaMakeupMaterialList[index].copyDueIninstOpinion || '暂无'}}</span>
+                    <el-input class="w98" placeholder="请输入意见"
+                              v-model="tobaMakeupMaterialList[index].copyDueIninstOpinion" v-else></el-input>
+                  </div>
+                  <div class="inline-block border-left al-center delete">
+                      <span class="color-999"
+                            v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7">
+                        <i class="el-icon-delete color-999" style="cursor: not-allowed;"></i>
+                      </span>
+                    <i class="el-icon-delete" @click="delTobaMakeupMaterial('isNeedCopy',item,index)" v-else></i>
+                  </div>
+                </div>
+                <div class="tb-item" v-if="item.isNeedElectron">
+                  <span class="inline-block tip">电子件</span>
+                  <div class="inline-block border-left al-center num">
+                    <!-- <el-switch v-model="tobaMakeupMaterialList[index].isNeedAtt" active-color="#13ce66" disabled>
+                    </el-switch> -->
+                    <p>/</p>
+                  </div>
+                  <div class="inline-block border-left al-center opinion">
+                    <span class="color-999"
+                          v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7">{{tobaMakeupMaterialList[index].attDueIninstOpinion || '暂无'}}</span>
+                    <el-input class="w98" placeholder="请输入意见"
+                              v-model="tobaMakeupMaterialList[index].attDueIninstOpinion" v-else></el-input>
+                  </div>
+                  <div class="inline-block border-left al-center delete">
+                      <span class="color-999"
+                            v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7">
+                        <i class="el-icon-delete color-999" style="cursor: not-allowed;"></i>
+                      </span>
+                    <i class="el-icon-delete" @click="delTobaMakeupMaterial('isNeedElectron',item,index)" v-else></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-else style="text-align:center;padding-top:30px;">暂无数据</div>
+          </div>
+          <div class="show-all" v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7"
+               style="height: 1px;border-bottom: 1px solid #e5e5e5;"></div>
+          <div class="show-all" @click="inSeletcedIteminstMaterialPandel = true;" v-else>选择材料</div>
+        </template>
+        <template v-else>
+          <div class="material-table-header c-f">
+            <span style="width: 404px;">材料名称</span>
+            <span style="width: 101px;">类型</span>
+            <span style="width: 100px;">应收（份）</span>
+            <span style="width: 100px;">已收（份）</span>
+            <span style="width: 135px;">操作</span>
+          </div>
+          <div class="material-table-wrap">
+            <div class="material-table" v-for="(item,index) in tobeSelectMaterialList" :key="item.matId"
+                 v-if='tobeSelectMaterialList!== undefined && tobeSelectMaterialList.length>0'>
+              <div class="tb-title inline-block">
+                <p>{{item.matName}}</p>
+              </div>
+              <div class="tb-content inline-block">
+                <div class="tb-item" v-if="!!item.realPaperCount">
+                  <span class="inline-block show-span">原件</span>
+                  <span class="inline-block show-span">{{item.paperCount || '0'}}</span>
+                  <span class="inline-block show-span">{{item.realPaperCount || '0'}}</span>
+                  <div class="inline-block border-left al-center check">
+                    <el-checkbox v-model="tobeSelectMaterialList[index].isNeedOrign"
+                                 @change="clickTobaSelectMaterial"></el-checkbox>
+                  </div>
+                </div>
+                <div class="tb-item" v-if="!!item.realCopyCount">
+                  <span class="inline-block show-span">复印件</span>
+                  <span class="inline-block show-span">{{item.copyCount || '0'}}</span>
+                  <span class="inline-block show-span">{{item.realCopyCount || '0'}}</span>
+                  <div class="inline-block border-left al-center check">
+                    <el-checkbox v-model="tobeSelectMaterialList[index].isNeedCopy"
+                                 @change="clickTobaSelectMaterial"></el-checkbox>
+                  </div>
+                </div>
+                <div class="tb-item" v-if="!!item.attCount">
+                  <span class="inline-block show-span">电子件</span>
+                  <span class="inline-block show-span">必须</span>
+                  <span class="inline-block show-span">{{item.attCount || '0'}}</span>
+                  <div class="inline-block border-left al-center check">
+                    <el-checkbox v-model="tobeSelectMaterialList[index].isNeedElectron"
+                                 @change="clickTobaSelectMaterial"></el-checkbox>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-else style="text-align:center;padding-top:30px;">暂无数据</div>
+          </div>
+          <div class="show-all" @click="inSeletcedIteminstMaterialPandel = false; selectMaterialToMakeupList();">确定并返回
+          </div>
+        </template>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button size="medium" type="primary" class="btn btn-primary" @click="saveMaterialCorrection"
+                 :disabled="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7">补正开始
+      </el-button>
+      <el-button size="medium" class="btn btn-secondary" @click="isShowMaterialSupplementDialog=false">关闭
+      </el-button>
+    </div>
+  </el-dialog>
+  <!-- 材料补全dialog old -->
+  <el-dialog @closed="isGetReceiveList()" title="材料补全" :visible.sync="isShowMatmend"
+             class="dialog mertial-supplement-dialog" width="80%">
+    <!-- 标签（正在补件的显示） -->
+    <div class="supplement-tag" v-if=" matMendDialogData.correctState == 6 || matMendDialogData.correctState == 7">
+      正在补件中...
+    </div>
+    <el-form :inline="true" :model="matMendForm" :rules="supplementFormRules" label-width="140px"
+             class="demo-form-inline supplement-form" ref="matMendForm" v-loading="sloading">
+      <el-form-item class="half-item" label="办件流水号">
+        <!-- <el-input placeholder="请输入办件流水号" v-model="matMendForm.applyinstCode" disabled></el-input> -->
+        <span class="color-999">{{matMendForm.applyinstCode || '暂无'}}</span>
+      </el-form-item>
+      <el-form-item class="half-item" label="项目编号">
+        <!-- <el-input placeholder="请输入项目编号" v-model="matMendForm.localCode" disabled></el-input> -->
+        <span class="color-999">{{matMendForm.localCode || '暂无'}}</span>
+      </el-form-item>
+      <el-form-item class="half-item" label="项目名称">
+        <!-- <el-input placeholder="请输入项目名称" v-model="matMendForm.projInfoName" disabled></el-input> -->
+        <span class="color-999">{{matMendForm.projInfoName || '暂无'}}</span>
+      </el-form-item>
+      <el-form-item class="half-item" label="客户名称">
+        <!-- <el-input placeholder="请输入客户名称" v-model="matMendForm.owner" disabled></el-input> -->
+        <span class="color-999">{{matMendForm.owner || '暂无'}}</span>
+      </el-form-item>
+      <el-form-item class="half-item" label="审批事项名称">
+        <!-- <el-input placeholder="请输入审批事项名称" v-model="matMendForm.iteminstName" disabled></el-input> -->
+        <span class="color-999">{{matMendForm.iteminstName || '暂无'}}</span>
+      </el-form-item>
+      <el-form-item class="half-item" label="负责部门名称">
+        <!-- <el-input placeholder="请输入负责部门名称" v-model="matMendForm.approveOrgName" disabled></el-input> -->
+        <span class="color-999">{{matMendForm.approveOrgName || '暂无'}}</span>
+      </el-form-item>
+      <el-form-item class="half-item" label="办理期限（工作日）" prop="correctDueDays">
+        <span class="color-999" v-if=" matMendDialogData.correctState == 6 || matMendDialogData.correctState == 7">{{matMendForm.correctDueDays || '暂无'}}</span>
+        <el-input placeholder="请输入办理期限" type="number" min="0" v-else
+                  v-model="matMendForm.correctDueDays"></el-input>
+      </el-form-item>
+      <el-form-item class="fill-item padding-r16" :label="inSeletcedMaterialPandel? '待补全材料清单':'已收清单列表'">
+        <!--已收清单列表-->
+        <template v-if="!inSeletcedMaterialPandel">
+          <el-row class="material-tablesec-header">
+            <el-col class="header-item" :span="8">材料名称</el-col>
+            <el-col class="header-item" :span="2">类型</el-col>
+            <el-col class="header-item" :span="4">应收（份）</el-col>
+            <el-col class="header-item" :span="8">已收（份）</el-col>
+            <el-col class="header-item" :span="2">操作</el-col>
+          </el-row>
+          <div class="material-tablesec-wrap">
+            <el-row class="material-tablesec content-center"
+                    v-for="(item,index) in submittedMats"
+                    :key="item.matId">
+              <el-col :span="8" class="tb-title inline-block"><p>{{item.matName}}</p></el-col>
+              <el-col :span="16" class="tb-content inline-block">
+                <el-row class="tb-item" v-if="item.paperCount>0">
+                  <el-col :span="3" class="inline-block show-span">原件</el-col>
+                  <el-col :span="6" class="inline-block show-span">{{item.paperCount || '0'}}</el-col>
+                  <el-col :span="12" class="inline-block show-span">{{item.realPaperCount || '0'}}</el-col>
+                  <el-col :span="3" class="inline-block border-left al-center check">
+                    <el-checkbox v-model="item.isNeedOrignSel"
+                                 @change="function(value) {clickTobaSelectMaterial1(value,item,'isNeedOrignSel')}"></el-checkbox>
+                  </el-col>
+                </el-row>
+                <el-row class="tb-item" v-if="item.copyCount>0">
+                  <el-col :span="3" class="inline-block show-span">复印件</el-col>
+                  <el-col :span="6" class="inline-block show-span">{{item.copyCount || '0'}}</el-col>
+                  <el-col :span="12" class="inline-block show-span">{{item.realCopyCount || '0'}}</el-col>
+                  <el-col :span="3" class="inline-block border-left al-center check">
+                    <el-checkbox v-model="item.isNeedCopySel"
+                                 @change="function(value) {clickTobaSelectMaterial1(value,item,'isNeedCopySel')}"></el-checkbox>
+                  </el-col>
+                </el-row>
+                <el-row class="tb-item" v-if="item.attCount>0">
+                  <el-col :span="3" class="inline-block show-span">电子件</el-col>
+                  <el-col :span="6" class="inline-block show-span">
+                    <span v-if="item.isNeedAtt=='1'">必须</span>
+                    <span v-else>非必须</span>
+                  </el-col>
+                  <el-col :span="12" class="inline-block show-span">{{item.attCount || '0'}}</el-col>
+                  <el-col :span="3" class="inline-block border-left al-center check">
+                    <el-checkbox v-model="item.isNeedElectronSel"
+                                 @change="function(value) {clickTobaSelectMaterial1(value,item,'isNeedElectronSel')}"></el-checkbox>
+                  </el-col>
+                </el-row>
+              </el-col>
+            </el-row>
+          </div>
+          <div class="show-all" @click="inSeletcedMaterialPandel = true;">确定并返回</div>
+        </template>
+        <!--待补全材料清单-->
+        <template v-else>
+          <el-row class="material-tablesec-header">
+            <el-col class="header-item" :span="8">材料名称</el-col>
+            <el-col class="header-item" :span="2">类型</el-col>
+            <el-col class="header-item" :span="4">补全份数</el-col>
+            <el-col class="header-item" :span="8">意见</el-col>
+            <el-col class="header-item" :span="2">操作</el-col>
+          </el-row>
+          <div class="material-tablesec-wrap">
+            <el-row class="material-tablesec content-center"
+                    v-for="(item,index) in matCorrectDtos"
+                    :key="item.matId">
+              <el-col :span="8" class="tb-title inline-block"><p>{{item.matName}}</p></el-col>
+              <el-col :span="16" class="tb-content inline-block">
+                <el-row class="tb-item" v-if="item.isNeedOrign">
+                  <el-col :span="3" class="inline-block tip">原件</el-col>
+                  <el-col :span="6" class="inline-block border-left al-center num ">
+                    <span class="color-999"
+                          v-if=" matMendDialogData.correctState == 6 || matMendDialogData.correctState == 7">{{item.paperCount || '0'}}</span>
+                    <el-input class="w98" placeholder="补全份数" type="number" min="0" v-model="item.paperCount"
+                              v-else></el-input>
+                  </el-col>
+                  <el-col :span="12" class="inline-block border-left al-center opinion">
+                    <span class="color-999"
+                          v-if=" matMendDialogData.correctState == 6 || matMendDialogData.correctState == 7">{{item.paperDueIninstOpinion || '暂无'}}</span>
+                    <el-input class="w98" placeholder="请输入意见" v-model="item.paperDueIninstOpinion" v-else></el-input>
+                  </el-col>
+                  <el-col :span="3" class="inline-block border-left al-center delete">
+                        <span class="color-999"
+                              v-if=" matMendDialogData.correctState == 6 || matMendDialogData.correctState == 7">
+                            <i class="el-icon-delete color-999" style="cursor: not-allowed;"></i>
+                        </span>
+                    <i class="el-icon-delete" @click="delTobaMakeupMaterialMend('isNeedOrign',item,index)" v-else></i>
+                  </el-col>
+                </el-row>
+                <el-row class="tb-item" v-if="item.isNeedCopy">
+                  <el-col :span="3" class="inline-block tip">复印件</el-col>
+                  <el-col :span="6" class="inline-block border-left al-center num">
+                    <span class="color-999"
+                          v-if=" matMendDialogData.correctState == 6 || matMendDialogData.correctState == 7">{{item.copyCount || '0'}}</span>
+                    <el-input class="w98" placeholder="补全份数" type="number" min="0" v-model="item.copyCount"
+                              v-else></el-input>
+                  </el-col>
+                  <el-col :span="12" class="inline-block border-left al-center opinion">
+                    <span class="color-999"
+                          v-if=" matMendDialogData.correctState == 6 || matMendDialogData.correctState == 7">{{item.copyDueIninstOpinion || '暂无'}}</span>
+                    <el-input class="w98" placeholder="请输入意见" v-model="item.copyDueIninstOpinion" v-else></el-input>
+                  </el-col>
+                  <el-col :span="3" class="inline-block border-left al-center delete">
+                        <span class="color-999"
+                              v-if=" matMendDialogData.correctState == 6 || matMendDialogData.correctState == 7">
+                            <i class="el-icon-delete color-999" style="cursor: not-allowed;"></i>
+                        </span>
+                    <i class="el-icon-delete" @click="delTobaMakeupMaterialMend('isNeedCopy',item,index)" v-else></i>
+                  </el-col>
+                </el-row>
+                <el-row class="tb-item" v-if="item.isNeedElectron">
+                  <el-col :span="3" class="inline-block tip">电子件</el-col>
+                  <el-col :span="6" class="inline-block border-left al-center num">
+                    <span> / </span>
+                  </el-col>
+                  <el-col :span="12" class="inline-block border-left al-center opinion">
+                    <span class="color-999"
+                          v-if=" matMendDialogData.correctState == 6 || matMendDialogData.correctState == 7">{{item.attDueIninstOpinion || '暂无'}}</span>
+                    <el-input class="w98" placeholder="请输入意见" v-model="item.attDueIninstOpinion" v-else></el-input>
+                  </el-col>
+                  <el-col :span="3" class="inline-block border-left al-center delete">
+                        <span class="color-999"
+                              v-if=" matMendDialogData.correctState == 6 || matMendDialogData.correctState == 7">
+                            <i class="el-icon-delete color-999" style="cursor: not-allowed;"></i>
+                        </span>
+                    <i class="el-icon-delete" @click="delTobaMakeupMaterialMend('isNeedElectron',item,index)"
+                       v-else></i>
+                  </el-col>
+                </el-row>
+              </el-col>
+            </el-row>
+          </div>
+          <div class="show-all" v-if="matMendDialogData.correctState == 6 || matMendDialogData.correctState == 7"
+               style="height: 1px;border-bottom: 1px solid #e5e5e5;"></div>
+          <div class="show-all" style="width:100%" @click="inSeletcedMaterialPandel = false;" v-else>选择材料</div>
+        </template>
+      </el-form-item>
+      <el-form-item class="fill-item padding-r16" label="备注">
+        <span class="color-999" v-if="matMendDialogData.correctState == 6 || matMendDialogData.correctState == 7">{{matMendDialogData.correctMemo || '暂无'}}</span>
+        <el-input placeholder="请输入备注" type="textarea" v-model="matMendDialogData.correctMemo" v-else></el-input>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="saveMaterialCorrectionMend"
+                 :disabled="matMendDialogData.correctState == 6 || matMendDialogData.correctState == 7">补全开始
+      </el-button>
+      <el-button @click="isShowMatmend=false;">关闭</el-button>
+    </div>
+  </el-dialog>
+  <!--材料补正 新-->
+  <el-dialog title="材料补正" v-loading="bzLoading" @close="closeBzDialog"
+             top="10vh" :visible.sync="bzDiaVisible" width="1200px">
+    <div class="bz-dialog-wrap">
+      <div class="bz-dialog-box">
+        <el-form :model='bzFormData' class="bz-form" ref="bzFormRef"
+                 :rules="bzFormRules" label-width="130px" size="medium">
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="办件流水号：">{{bzFormData.applyinstCode}}</el-form-item>
+            </el-col>
+            <el-col :span="16">
+              <el-form-item label="项目名称：" label-width="145px">{{bzFormData.projInfoName}}</el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="项目编号：">{{bzFormData.localCode}}</el-form-item>
+            </el-col>
+            <el-col :span="16">
+              <el-form-item label="客户名称：" label-width="145px">{{bzFormData.owner}}</el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="办理时限：" prop="correctDueDays">
+                <el-input type="number" placeholder="请填写工作日" v-model="bzFormData.correctDueDays">
+                  <template slot="append">工作日</template>
+                </el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="16">
+              <el-form-item label="备注：" label-width="145px">
+                <el-input placeholder="填写备注" v-model="bzFormData.correctMemo"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+        <div class="bz-two-table-wrap c-f" :class="{'left-is-expand':showBzLeftTable}">
+          <div class="bz-dia-table bz-dia-table-left l">
+            <div class="bz-table-top c-f">
+              <div class="l">
+                <i class="bz-t-icon" @click="toggleBzTableExpand"
+                   :class="[showBzLeftTable?'el-icon-s-fold':'el-icon-s-unfold']"></i>
+              </div>
+              <div class="l" style="margin-left:4px;">已收材料列表</div>
+              <!--<el-button class="r" size="small">全 选</el-button>-->
+            </div>
+            <div class="bz-table-out">
+              <el-table style="width:100%;" border height="300px" v-show="showBzLeftTable"
+                        @select="bzTableSelect" ref="bzLeftTableRef"
+                        :data="bzSubmitData" :span-method="bzTableSpanMethod">
+                <el-table-column label="材料名称" prop="matName"></el-table-column>
+                <el-table-column label="类型" prop="rowTypeText" width="65"></el-table-column>
+                <el-table-column label="已收/应收" prop="realPaperCount" width="80" align="center">
+                  <template scope="scope">
+                    <span v-if="scope.row.rowType==1">
+                      {{(scope.row.realPaperCount||'0')+' / '+(scope.row.paperCount||'0')}}
+                    </span>
+                    <span v-else-if="scope.row.rowType==2">
+                      {{(scope.row.realCopyCount||'0')+' / '+(scope.row.copyCount||'0')}}
+                    </span>
+                    <span v-else-if="scope.row.rowType==3">
+                      {{(scope.row.attCount||'0')+' / 1'}}
+                    </span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="选择" width="40" type="selection"></el-table-column>
+              </el-table>
+            </div>
+          </div>
+          <div class="table-center-arrow"></div>
+          <div class="bz-dia-table bz-dia-table-right l" :class="{'is-expand':showBzLeftTable}">
+            <div class="bz-table-top c-f">
+              <div class="l" style="margin-left:8px;">待补正材料列表</div>
+              <!--<el-button class="r" size="small">一键清除</el-button>-->
+            </div>
+            <div class="bz-table-out">
+              <el-table style="width:100%;" border height="300px"
+                        :data="bzCorrectData" :span-method="bzTableSpanMethod">
+                <el-table-column label="材料名称" prop="matName"></el-table-column>
+                <el-table-column label="类型" prop="rowTypeText" width="65"></el-table-column>
+                <el-table-column label="补正份数" prop="realPaperCount" width="80" align="center">
+                  <template scope="scope">
+                    <span v-if="scope.row.rowType==1">
+                      <el-input-number :min="1" :controls="false" controls-position="right" size="small"
+                                       type="number" v-model="scope.row.paperCount"></el-input-number>
+                    </span>
+                    <span v-else-if="scope.row.rowType==2">
+                      <el-input-number :min="1" :controls="false" controls-position="right" size="small"
+                                       type="number" v-model="scope.row.copyCount"></el-input-number>
+                    </span>
+                    <span v-else-if="scope.row.rowType==3">-</span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="补正意见" prop="realPaperCount" :width="showBzLeftTable?190:290">
+                  <template scope="scope">
+                    <el-input v-if="scope.row.rowType==1" size="small" v-model="scope.row.paperDueIninstOpinion"
+                              placeholder="请填写补正意见"></el-input>
+                    <el-input v-else-if="scope.row.rowType==2" size="small" v-model="scope.row.copyDueIninstOpinion"
+                              placeholder="请填写补正意见"></el-input>
+                    <el-input v-else-if="scope.row.rowType==3" size="small" v-model="scope.row.attDueIninstOpinion"
+                              placeholder="请填写补正意见"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" width="50" align="center">
+                  <template scope="scope">
+                    <i class="ag ag-trash" @click="bzDeleteSelect(scope.row)"></i>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="bzDiaVisible=false" size="medium">取 消</el-button>
+      <el-button type="primary" @click="startBz" size="medium">补正开始</el-button>
+    </div>
+  </el-dialog>
+  <!-- 证照库弹窗 -->
+  <el-dialog title="证照列表" v-loading="idLibLoading" :visible.sync="idLibVisible" width="940px">
+    <div class="bz-dialog-wrap">
+      <div class="bz-dialog-box" style="padding: 20px;">
+        <div class="id-lib-top-search next-margin-top c-f" v-if="applyMainType=='1'">
+          <div class="l">建设单位</div>
+          <div class="l" style="margin-left: 8px;margin-right: 38px;">
+            <el-select size="medium" v-model="idLibSearchOpt.chooseUnit"
+                       @change="loadIdLibList"
+                       style="width:300px" placeholder="请选择建设单位">
+              <el-option v-for="item in applyUnitList"
+                         :label="item.applicant" :value="item.unitInfoId">
+              </el-option>
+            </el-select>
+          </div>
+          <div class="l">
+            <el-radio-group v-model="idLibSearchOpt.chooseType" @change="loadIdLibList">
+              <el-radio :label="1">企业证照</el-radio>
+              <el-radio :label="2">法人证照</el-radio>
+            </el-radio-group>
+          </div>
+        </div>
+        <el-table class="next-margin-top" max-height="400" style="width:100%;" border stripe :data="idLibTableList">
+          <el-table-column label="证照名称" prop="name"></el-table-column>
+          <el-table-column label="证照类型" prop="license_type_name" width="100"></el-table-column>
+          <el-table-column label="有效截止日期" prop="expiry_date" width="160"></el-table-column>
+          <el-table-column label="可信等级" prop="trust_level" width="100"></el-table-column>
+          <el-table-column label="证照状态" prop="license_status_name" width="100"></el-table-column>
+          <el-table-column label="操作" width="120">
+            <template slot-scope="scope">
+              <div class="c-f">
+                <span class="mat-table-btn" @click="idTableListSee(scope.row)">查看</span>
+                <span class="mat-ope-line"></span>
+                <span v-show="!scope.row.isRelated" class="mat-table-btn" @click="idTabListChoose(scope.row)">关联</span>
+                <!--                <span v-show="scope.row.isRelated" class="mat-table-btn ope-disabled">已关联</span>-->
+                <span v-show="scope.row.isRelated" class="mat-table-btn"
+                      @click="idIisassociation(scope.row)">解除关联</span>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </div>
+  </el-dialog>
+  <!-- 材料库弹窗 -->
+  <el-dialog title="材料库文件列表" v-loading="matLibLoading" :visible.sync="matLibVisible" width="940px">
+    <div class="bz-dialog-wrap">
+      <div class="bz-dialog-box" style="padding: 20px;">
+        <el-table max-height="500" style="width:100%;" border stripe :data="matLibTableList">
+          <el-table-column label="文件名" prop="fileName">
+            <template slot-scope="scope">
+              <i class="ag" v-html="getIconText(scope.row.fileType)"
+                 :style="{color:getIconColor(scope.row.fileType)}"></i>
+              {{scope.row.fileName}}
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="100">
+            <template slot-scope="scope">
+              <div class="c-f">
+                <span class="mat-table-btn" @click="filePreview(scope.row, 'matLibLoading')">预览</span>
+                <span class="mat-ope-line"></span>
+                <span class="mat-table-btn" @click="matTabListChoose(scope.row)">关联</span>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </div>
+  </el-dialog>
+  <!--  材料附件填写表单弹窗-->
+  <el-dialog title="填写表单" @close="closeMatFormDia" top="10vh"
+             :visible.sync="matFormVisible" class="mat-form-dialog">
+    <div class="special-iframe-box" id="matFormBox"
+         style="padding: 0px 20px 20px 20px; max-height:500px;">
+      <!--      <iframe :src="pdfSrc" class='ltab-iframe'></iframe>-->
+    </div>
+  </el-dialog>
+  <!-- 回退弹窗  发起申报弹窗 -->
+  <el-dialog :title="backDiaTitle" v-loading="backDiaLoading" @close="closeBackDialog"
+             :visible.sync="backDiaVisible" width="940px">
+    <div class="bz-dialog-wrap">
+      <div class="bz-dialog-box" style="padding:15px 15px 15px 0px;">
+        <el-form label-width="110px" :model="backFormData"
+                 :rules="backformRules" ref="backFormRef" size="medium">
+          <el-form-item label="回退到：" prop="returnToActId" v-if="isBackDialog">
+            <el-radio-group v-model="backFormData.returnToActId">
+              <el-radio v-for="u in backNodeList" :title="u.isCanSelect?'':'未审批节点，无法回退'"
+                        :label="u.nodeId" :disabled="!u.isCanSelect">
+                {{u.nodeName}}
+              </el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="常用意见：">
+            <el-select v-model="backFormData.selectOpinion" filterable placeholder="请选择常用意见"
+                       style="margin-right:5px;width:295px;" @change="backOpChange"
+                       size="medium" class="sug-select">
+              <el-option v-for="item in opinionTableData" :label="item.opinionContent"
+                         :value="item.opinionContent" :key="item.opinionId"></el-option>
+            </el-select>
+            <el-tooltip class="item" effect="dark" content="设为常用意见" placement="top">
+              <el-button size="medium" type="info" style="position:relative;top:3px;"
+                         @click="setCommonOpinion('backFormData')"><i
+                  class="ag ag-save-common"></i></el-button>
+            </el-tooltip>
+          </el-form-item>
+          <el-form-item label="填写意见：" prop="comment">
+            <el-input type="textarea" :rows="5" placeholder="请填写意见" v-model="backFormData.comment"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+    </div>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="backDiaVisible=false" size="medium">取 消</el-button>
+      <el-button type="primary" @click="ensureBack" size="medium">确 认</el-button>
+    </div>
+  </el-dialog>
+  <!-- 发起特殊程序弹窗 -->
+  <el-dialog title="发起特殊程序" :visible.sync="specialDiaVisible"
+             :close-on-click-modal="false"
+             @close="closeSpecialDialog" v-loading="speDiaLoading"
+             top="10vh" width="1250px">
+    <div class="special-main-wrap">
+      <div class="special-content-box">
+        <div class="spe-dia-tabs c-f">
+          <div class="spe-tab-u" :class="{active:speTabIndex==0}">基本信息</div>
+          <div class="spe-tab-u" :class="{active:speTabIndex==1}">相关附件</div>
+          <div class="bottom-line"></div>
+        </div>
+        <div class="spe-tab-contents">
+          <!-- 基本信息 -->
+          <div class="spe-base-info-box" v-show='speTabIndex==0'>
+            <el-form label-width="112px" :rules="speBaseInfoRules" ref="speBaseInfoForm"
+                     :model='speBaseInfoForm' size="medium">
+              <el-row>
+                <el-col :span='10'>
+                  <el-form-item label="类型" label-width="180px" prop="specialType">
+                    <el-select v-model="speBaseInfoForm.specialType" placeholder="其他（如：专家鉴定、招标等）">
+                      <el-option v-for="item in specialTypeList" :label="item.itemName"
+                                 :value="item.itemCode"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span='7'>
+                  <el-form-item label="发起单位">
+                    <el-input v-model="speBaseInfoForm.chargeOrgName" disabled></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span='7'>
+                  <el-form-item label="发起人">
+                    <el-input v-model="speBaseInfoForm.creator" disabled></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span='10'>
+                  <el-form-item label="申请时限" label-width="180px" prop="specialDueDays">
+                    <el-input type="number" @change="calcEndDate" v-model="speBaseInfoForm.specialDueDays"
+                              placeholder="请输入时限">
+                      <template slot="append">工作日</template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span='7'>
+                  <el-form-item label="开始日期" prop="opsTime">
+                    <el-date-picker
+                        @change="calcEndDate"
+                        v-model="speBaseInfoForm.opsTime"
+                        type="date"
+                        value-format="yyyy-MM-dd"
+                        placeholder="选择开始日期">
+                    </el-date-picker>
+                  </el-form-item>
+                </el-col>
+                <el-col :span='7'>
+                  <el-form-item label="结束日期">
+                    <el-date-picker
+                        v-model="speBaseInfoForm.specialDueTime"
+                        type="date"
+                        disabled
+                        placeholder="结束日期自动计算">
+                    </el-date-picker>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="24">
+                  <el-form-item label="申请内容" label-width="180px" prop="specialReason">
+                    <el-input type="textarea" v-model="speBaseInfoForm.specialReason" :rows="6"
+                              placeholder="请输入申请内容"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                  <el-form-item label="启动理由或法律依据" label-width="180px" prop="specialMemo">
+                    <el-input type="textarea" v-model="speBaseInfoForm.specialMemo" :rows="6"
+                              placeholder="请输入启动理由或法律依据"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form>
+          </div>
+          <!-- 相关附件 -->
+          <div class="spe-file-box" v-show='speTabIndex==1'>
+            <div class="spe-upload-box">
+              <el-upload :http-request="speUploadFile"
+                         :show-file-list="false"
+                         :action="ctx+'rest/mats/att/upload'">
+                <el-button size="small" type="primary">上传附件</el-button>
+              </el-upload>
+            </div>
+            <div class="spe-file-table">
+              <el-table style="width: 100%;" border stripe :data="speFileList">
+                <el-table-column label='序号' type="index" width="50"></el-table-column>
+                <el-table-column label="附件名称" prop="attName">
+                  <template slot-scope="scope">
+                    <i class="ag" v-html="getIconText(scope.row.attFormat)"
+                       :style="{color:getIconColor(scope.row.attFormat)}"></i>
+                    {{scope.row.attName}}
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" width="190">
+                  <template slot-scope="scope">
+                    <div class="spe-file-btns c-f">
+                      <div class="spe-file-btn" @click="filePreview(scope.row,'speDiaLoading')">预览</div>
+                      <div class="spe-ope-line"></div>
+                      <div class="spe-file-btn" @click="downOneFile(scope.row)">下载</div>
+                      <div class="spe-ope-line"></div>
+                      <div class="spe-file-btn delete" @click="delSpeFile(scope.row)">删除</div>
+                    </div>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spe-footer-btns">
+        <el-button size="medium" @click="specialDiaVisible=false">取 消</el-button>
+        <el-button size="medium" @click="specialDiaSave" type="primary">提 交</el-button>
+      </div>
+    </div>
+  </el-dialog>
+  <!--  预览pdf弹窗-->
+  <el-dialog title="预览" :visible.sync="prePdfVisible" ref="prePdfRef" class="special-dialog" top="10vh"
+             @close="closePdfDialog">
+    <div class="special-iframe-box">
+      <iframe :src="pdfSrc" class='ltab-iframe'></iframe>
+    </div>
+  </el-dialog>
+  <!--  转发任务弹窗-->
+  <el-dialog title="转发任务" :visible.sync="forwardTaskVisible" width="600px" top="25vh" class="forw-dia-s"
+             v-loading="forwardDiaLoading" ref="forwardRef" @close="closeForwardDialog">
+    <div class="dig-bg-grey">
+      <el-form ref="forwardFormRef" size="medium" :rules="forwardRules" :model="forwardForm" label-width="85px">
+        <el-form-item label="转发至：" prop="loginName">
+          <el-select v-model="forwardForm.loginName" clearable>
+            <el-option v-for="u in nextTaskManList" :key="u.label" :label="u.label" :value="u.value"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="意见：" prop="comment">
+          <el-input type="textarea" :rows="5" v-model="forwardForm.comment"></el-input>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div slot="footer" class="dialog-footer">
+      <el-button size="medium" type="primary" class="btn btn-primary" @click="ensureForward">确认转发</el-button>
+      <el-button size="medium" class="btn btn-secondary" @click="forwardTaskVisible=false">关闭</el-button>
+    </div>
+  </el-dialog>
+  <!--  查看信用记录-->
+  <el-dialog title="信用记录" class="special-dialog credit-dialog" top="10vh" v-loading="creditDiaLoading" width="950px"
+             :visible.sync="creditDiaVisible">
+    <div class="credit-dia-wrap">
+      <div class="credit-dia-box">
+        <div class="cd-hint-box">
+          <i class="credit-hint-icon" :class="[creditHintIconClass]"></i>
+          {{creditHintTitle}}
+        </div>
+        <div class="cd-type-u" :class="{'is-black':item.itemCode=='bad'}" v-for="(item,index) in creditTypeList"
+             v-show="item.preList&&item.preList.length">
+          <div class="cd-type-title">{{item.itemName}}</div>
+          <div class="pre-list-box">
+            <div class="pre-list-u" :class="{open: item2.isOpen}" v-for="(item2,index2) in item.preList">
+              <div class="pre-u-title" @click="clickCreditPre(item2)">
+                <i :class="[item2.isOpen?'el-icon-caret-bottom':'el-icon-caret-right']"></i>
+                {{item2.cnDeptName}}（{{item2.creditUnitInfoName}}）（1条记录，最后更新时间{{$options.filters.formatDate(item2.createTime)}}）
+              </div>
+              <div class="p-u-wrap">
+                <div class="pre-u-detail c-f">
+                  <div class="c-f l" v-for="uuu in item2.detail">
+                    <div class="l p-detail-label">{{uuu.cnColumnName}}：</div>
+                    <div class="l p-detail-value">{{uuu.columnValue}}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </el-dialog>
+  <!-- 已废弃 审批过程iframe中特殊程序或者补正详情的弹窗 -->
+  <el-dialog :title="processDetailTitle" class="pro-det-dialog el-body-pbg" top="15vh" width="950px"
+             :visible.sync="processDetailVisible" v-loading="processDetailLoading">
+    <div class='pro-det-box'>
+      <div class="pro-det-title c-f">
+        <div class="pro-det-label l">事项</div>
+        <div class="pro-det-nodeName l">{{proDetNodeName}}</div>
+      </div>
+      <el-table border :data="processDetList" row-key="id">
+        <el-table-column label="" width="15" type="expand">
+          <template slot-scope="scope">
+            <div class="det-mat-expand">
+              <el-table border :data="scope.row.list">
+                <el-table-column label="材料名称" prop="matName"></el-table-column>
+                <el-table-column label="材料类型" prop="matType" width="100"></el-table-column>
+                <el-table-column label="应补/已补" prop="need" width="99">
+                  <template slot-scope="scope2">{{scope2.row.need+'/'+scope2.row.real}}</template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="节点" width="75" prop="nodeName" align="left"></el-table-column>
+        <el-table-column label="补正人员" prop="man" width="90"></el-table-column>
+        <el-table-column label="补正原因" prop="reason"></el-table-column>
+        <el-table-column label="开始时间" prop="startTime" width="150"></el-table-column>
+        <el-table-column label="结束时间" prop="endTime" width="150"></el-table-column>
+        <el-table-column label="补正状态" prop="status" width="100"></el-table-column>
+        <el-table-column label="补正材料" prop="mat" width="80"></el-table-column>
+      </el-table>
+    </div>
+  </el-dialog>
+  <!-- 批文批复 许可证打印 -->
+  <el-dialog title="预览打印" class="special-dialog licence-dialog-class" top="10vh" @close="closePrintLicenseDialog"
+             width="80%" :visible.sync="licenceDialogVisible" v-loading="printLicenseLoading">
+    <div class="license-pre-iframe">
+      <iframe :src="prePrintIframeSrc" name="iframePre" id="prePrintIframeId"></iframe>
+    </div>
+    <div class="license-pre-iframe">
+      <iframe :src="preLicenceIframeSrc" name="iframePrint" id="preLicenceIframeId"></iframe>
+    </div>
+    <div slot="footer" class="dialog-footer">
+      <el-button size="medium" type="primary" class="btn btn-primary" @click="clickPrintLicense">打印</el-button>
+      <el-button size="medium" class="btn btn-secondary" @click="licenceDialogVisible=false">关闭</el-button>
+    </div>
+  </el-dialog>
+  <!--查看情形弹窗  -->
+  <el-dialog title="查看情形" :visible.sync="processStatesDialog" class="dialog">
+    <el-scrollbar style="height: 450px">
+      <div class="m-portlet__body"
+           style="padding:15px 20px 10px 15px;max-height:650px;overflow-y:auto;overflow-x: hidden">
+        <div id="dg_modal_show_par_stateinst_content" style="width:100%" v-loading="processStatesLoading">
+          <div v-if="statesData.length>0">
+            <div class="states_item" v-for="(item,index) in statesData">
+              <div style="">
+                <span style="color:red;" v-if="item.mustAnswer == '1'">*</span>
+                问：{{item.stateName}}？
+              </div>
+              <div v-for="(item2,index2) in item.answerStates">
+                答：{{item2.stateName}}。
+              </div>
+            </div>
+          </div>
+          <div v-else>
+            <span>没有情形</span>
+          </div>
+        </div>
+      </div>
+    </el-scrollbar>
+  </el-dialog>
+</div>
+</body>
+<!--引入公共js-->
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+        th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+        th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+        th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
+        th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+<!--<script src="https://cdn.bootcss.com/axios/0.19.0/axios.min.js"></script>-->
+<script src="../../static/common/js/axios.min.js" th:src="@{/common/js/axios.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agtree-v3/js/jquery.agtree.core.js"
+        th:src="@{/agcloud/framework/js-lib/agtree-v3/js/jquery.agtree.core.js}" type="text/javascript"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/ztree-v3/js/jquery.ztree.excheck.js"
+        th:src="@{/agcloud/framework/js-lib/ztree-v3/js/jquery.ztree.excheck.js}" type="text/javascript"></script>
+<!--扩展实现复选框-->
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/ztree-v3/js/jquery.ztree.exedit.js"
+        th:src="@{/agcloud/framework/js-lib/ztree-v3/js/jquery.ztree.exedit.js}" type="text/javascript"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/ztree-v3/js/jquery.ztree.exhide.js"
+        th:src="@{/agcloud/framework/js-lib/ztree-v3/js/jquery.ztree.exhide.js}" type="text/javascript"></script>
+<script src="../../static/agcloud/bpm/front/process/diagram/display/Polyline.js"
+        th:src="@{/agcloud/bpm/front/process/diagram/display/Polyline.js}"></script>
+<script src="../../static/agcloud/bpm/front/process/diagram/display/bpmn-draw.js"
+        th:src="@{/agcloud/bpm/front/process/diagram/display/bpmn-draw.js}"></script>
+<script src="../../static/agcloud/bpm/front/process/diagram/display/bpmn-icons.js"
+        th:src="@{/agcloud/bpm/front/process/diagram/display/bpmn-icons.js}"></script>
+<script src="../../static/agcloud/bpm/front/process/diagram/display/jquery.qtip.min.js"
+        th:src="@{/agcloud/bpm/front/process/diagram/display/jquery.qtip.min.js}"></script>
+<script src="../../static/agcloud/bpm/front/process/diagram/display/raphael.js"
+        th:src="@{/agcloud/bpm/front/process/diagram/display/raphael.js}"></script>
+<script src="../../static/approve/js/plugin/jquery.jqprint-0.3.js"
+        th:src="@{/approve/js/plugin/jquery.jqprint-0.3.js}"></script>
+<script src="../../static/approve/js/index.js" th:src="@{/approve/js/index.js}"></script>
+<script src="../../static/agcloud/bpm/front/process/js/showDiagram.js"
+        th:src="@{/agcloud/bpm/front/process/showDiagram.js}"></script>
+<script type="text/javascript" src="../../static/agcloud/bpm/front/process/js/wfCommon.js"
+        th:src="@{/agcloud/bpm/front/process/wfCommon.js}"></script>
+
+</html>

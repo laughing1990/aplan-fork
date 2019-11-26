@@ -790,6 +790,9 @@ var module1 = new Vue({
               _that.addEditManPerform.linkmanMail = _that.addEditManform.linkmanMail;
               _that.addEditManPerform.linkmanCertNo = _that.addEditManform.linkmanCertNo;
               _that.addEditManPerform.linkmanMobilePhone = _that.addEditManform.linkmanMobilePhone;
+
+              _that.applyObjectInfo.aeaLinkmanInfo.linkmanId=result.content;//qjp添加
+
               _that.addEditManModalShow = false;
               _that.loading = false;
             }
