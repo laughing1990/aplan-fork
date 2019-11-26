@@ -248,7 +248,7 @@
                       </el-tooltip>
                     </div>
                   </div>
-                  <el-input :value="item.qualRequireType==1?'多个资质子项符合其一':'需要同时符合所有选中资质子项'" readonly></el-input>
+                  <el-input :value="item.qualRequire+(item.qualRequireType==1?'中符合其一':'需要同时符合')" readonly></el-input>
                 </div>
               </el-form-item>
             </el-col>
