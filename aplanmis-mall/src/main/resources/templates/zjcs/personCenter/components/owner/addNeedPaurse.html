@@ -1,5 +1,5 @@
 <!-- 新增采购需求 -->
-<div class="box normal-module-box" id="addNeedPaurse">
+<div class="box normal-module-box" id="addNeedPaurse" v-loading.fullscreen.lock="mloading">
 	<h2 class="box-tit">新增采购需求</h2>
 	<!-- 采购列表 -->
 	<div class="list-wrap pandel" v-if="addNeedStatus == 0">
@@ -455,17 +455,17 @@
 							</el-form-item>
 						</div>
 
-						<el-form-item class="twoLine" label="查看符合条件的中介机构" prop="deparment"
-							v-show="form.biddingType == 2">
+						<el-form-item class="twoLine" label="查看符合条件的中介机构" prop="deparment">
 							<div class="input-box">
 								<el-button type="primary" @click="getAgentUnitInfoList">查看</el-button>
 							</div>
 						</el-form-item>
-						<el-form-item label="指定的中介机构" :prop="agentUnitNamechange" require
-							v-show="biddingType == 2 && multipleSelection3.length>0">
+						<el-form-item class="twoLine" label="指定的中介机构" prop="unitInfoId" require>
 							<div class="input-box input-radio el-input-radio">
-								<p>{{multipleSelection3[0].agentUnitName}}</p>
+								<p v-if="multipleSelection3.length">{{multipleSelection3[0].agentUnitName}}</p>
+								<p v-else>还没选择中介机构</p>
 							</div>
+							<input type="hidden" v-model="form.unitInfoId">
 						</el-form-item>
 					</div>
 					<!--竞价选取 str-->
@@ -1031,7 +1031,7 @@
 	<!-- 选择元素部件 str -->
 	<el-dialog title="服务事项" :visible.sync="serviceTabledialogTable" class="dialog7">
 		<div class="dialog-footer">
-			<el-button @click="serviceItemListChange">选择</el-button>
+			<el-button @click="serviceItemListChange" style="marginBottom: 10px;">选择</el-button>
 			<div class="search-box float-right">
 				<el-input placeholder="请输入关键字进行搜索" v-model="serviceKeyword" class="input-with-select" clearable>
 					<i slot="suffix" class="el-input__icon el-icon-search" @click="searchTaskNodeData()"></i>
