@@ -26,7 +26,61 @@
           callback();
         }
       };
-      checkMissValue
+      var checkUnifiedSocialCreditCode = function(rule, value, callback) {
+        if (value === '' || value === undefined || value.trim() === '') {
+          callback(new Error('请输入统一社会信用代码！'));
+        } else if (value) {
+          var flag = !/[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}/.test(value);
+          if (flag) {
+            return callback(new Error('请输入正确的统一社会信用代码！'));
+          } else {
+            callback();
+          }
+
+        } else {
+          callback();
+        }
+      };
+      var checkCertNum = function(rule, value, callback) {
+        if (value === '' || value === undefined || value.trim() === '') {
+          callback(new Error('请输入身份证号码！'));
+        } else if (value) {
+          var flag = !/^[0-9a-zA-Z]*$/.test(value) || /^[\u4E00-\u9FA5]+$/.test(value);
+          var len = value.length;
+          if (flag) {
+            return callback(new Error('请输入正确的身份证号码！'));
+          } else {
+            if (len != 18) {
+              return callback(new Error('请输入18位身份证号码！'));
+            } else {
+              callback();
+            }
+          }
+
+        } else {
+          callback();
+        }
+      };
+      var checkOrganizationalCode = function(rule, value, callback) {
+        if (value === '' || value === undefined || value.trim() === '') {
+          callback(new Error('请输入组织机构代码！'));
+        } else if (value) {
+          var flag = !/^[0-9A-Z]*$/.test(value) || /^[\u4E00-\u9FA5]+$/.test(value);
+          var len = value.length;
+          if (flag) {
+            return callback(new Error('请输入正确的组织机构代码！'));
+          } else {
+            if (len != 9) {
+              return callback(new Error('请输入9位组织机构代码！'));
+            } else {
+              callback();
+            }
+          }
+
+        } else {
+          callback();
+        }
+      };
       return {
         projInfoId: '',
         activeNames: ['1'],
@@ -59,6 +113,19 @@
           bidMode: { required: true, message: "招标方式不得为空！", trigger: ["change"] },
           winBidTime: { required: true, message: "中标日期不得为空！", trigger: ["change"] },
           realWinBiddingMoney: { required: true, message: "实际中标金额不得为空！", trigger: ["change"] },
+
+          winBidUnits: [{
+            organizationalCode: { required: true, validator: checkOrganizationalCode, trigger: ["change"] },
+            unifiedSocialCreditCode: { required: true, validator: checkUnifiedSocialCreditCode, trigger: ["change"] },
+          }],
+          agencyUnits: [{
+            organizationalCode: { required: true, validator: checkOrganizationalCode, trigger: ["change"] },
+            unifiedSocialCreditCode: { required: true, validator: checkUnifiedSocialCreditCode, trigger: ["change"] },
+          }],
+          costUnits: [{
+            organizationalCode: { required: true, validator: checkOrganizationalCode, trigger: ["change"] },
+            unifiedSocialCreditCode: { required: true, validator: checkUnifiedSocialCreditCode, trigger: ["change"] },
+          }]
         },
         bidTypeOptions: [], // 招标类型下拉选项arr
         bidModeOptions: [], // 招标方式下拉选项arr
@@ -76,7 +143,7 @@
             { required: true, validator: checkMissValue, trigger: 'blur' },
           ],
           linkmanCertNo: [
-            { required: true, validator: checkMissValue, trigger: 'blur' },
+            { required: true, validator: checkCertNum, trigger: 'blur' },
           ],
           linkmanMobilePhone: [
             { required: true, validator: checkPhoneNum, trigger: 'blur' },
@@ -109,7 +176,7 @@
           var winBidUnitLinkManInfoIds = '';
           _that.person.forEach(function (item) {
               if (item['addressId'] != '' & item['addressId'] != '1') {
-                  winBidUnitLinkManInfoIds = item['addressId'] + ",";
+                  winBidUnitLinkManInfoIds += item['addressId'] + ",";
               }
           })
           params.winBidLinkManInfoids = winBidUnitLinkManInfoIds.length > 0 ? winBidUnitLinkManInfoIds.substring(0, winBidUnitLinkManInfoIds.length - 1) : '';
@@ -325,10 +392,6 @@
         var vm = this;
         // vm.loading = true;
         if (!val.unitInfoId) {
-          this.$message({
-            message: '请先选择单位',
-            type: 'error'
-          });
           return;
         }
         request('', {
@@ -417,6 +480,30 @@
                 if (_that.addEditManModalFlag == 'edit') {
                   _that.biddingInfo.winBidUnits[0].projectLeader = _that.addEditManform.linkmanName;
                   _that.biddingInfo.winBidUnits[0].projectLeaderCertNum = _that.addEditManform.linkmanCertNo;
+
+                  if (typeof(_that.addEditManform.unitInfoId) == 'undefined' || _that.addEditManform.unitInfoId == '') {
+                    for (var i = 0, len = _that.person.length; i < len; i++) {
+                      if (_that.person[i].addressId == result.content) {
+                        _that.person[i].addressIdCard = _that.addEditManform.linkmanCertNo;
+                        _that.person[i].addressMail = _that.addEditManform.linkmanMail;
+                        _that.person[i].addressName = _that.addEditManform.linkmanName;
+                        _that.person[i].addressPhone = _that.addEditManform.linkmanMobilePhone;
+                      }
+                    }
+                  }
+                } else {
+                  if (typeof(_that.addEditManform.unitInfoId) == 'undefined' || _that.addEditManform.unitInfoId == '') {
+                    _that.addEditManform.linkmanId = result.content;
+                    console.info(_that.addEditManform);
+                    var item = {
+                      addressId: result.content,
+                      addressIdCard: _that.addEditManform.linkmanCertNo,
+                      addressMail: _that.addEditManform.linkmanMail,
+                      addressName: _that.addEditManform.linkmanName,
+                      addressPhone: _that.addEditManform.linkmanMobilePhone
+                    }
+                    _that.person.push(item);
+                  }
                 }
                 _that.addEditManModalShow = false;
                 _that.loading = false;

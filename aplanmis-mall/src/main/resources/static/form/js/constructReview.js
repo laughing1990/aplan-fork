@@ -70,15 +70,15 @@ var app = new Vue({
     };
     var checkProjectLeaderCertNum = function(rule, value, callback) {
       if (value === '' || value === undefined || value.trim() === '') {
-        callback(new Error('请输入单位负责人身份证号码！'));
+        callback(new Error('请输入身份证号码！'));
       } else if (value) {
         var flag = !/^[0-9a-zA-Z]*$/.test(value) || /^[\u4E00-\u9FA5]+$/.test(value);
         var len = value.length;
         if (flag) {
-          return callback(new Error('请输入正确的单位负责人身份证号码！'));
+          return callback(new Error('请输入正确的身份证号码！'));
         } else {
           if (len != 18) {
-            return callback(new Error('请输入18位单位负责人身份证号码！'));
+            return callback(new Error('请输入18位身份证号码！'));
           } else {
             callback();
           }
@@ -114,29 +114,9 @@ var app = new Vue({
       formData: {
         drawings: []
       },
-      formDataTuShen: {
-        linkmen: [{
-          linkmanInfoId: '',
-          linkmanType: '8',
-          linkmanName: '',
-          linkmanCertNo: '',
-          prjSpty: '1',
-          unitProjId: '',
-          unitInfoId: ''
-        }]
-      },
+      formDataTuShen: {},
       formDataKanCha: {},
-      formDataSheJj: {
-        linkmen: [{
-          linkmanInfoId: '',
-          linkmanType: '8',
-          linkmanName: '',
-          linkmanCertNo: '',
-          prjSpty: '1',
-          unitProjId: '',
-          unitInfoId: ''
-        }]
-      },
+      formDataSheJj: {},
       total: 0,
       tableData: [],
       activeNames: '1',
@@ -165,7 +145,7 @@ var app = new Vue({
           { required: true, validator: checkMissValue, trigger: 'blur' },
         ],
         linkmanCertNo: [
-          { required: true, validator: checkMissValue, trigger: 'blur' },
+          { required: true, validator: checkProjectLeaderCertNum, trigger: 'blur' },
         ],
         linkmanMobilePhone: [
           { required: true, validator: checkPhoneNum, trigger: 'blur' },
@@ -348,67 +328,68 @@ var app = new Vue({
       var vm = this;
       // vm.loading = true;
       request('', {
-          type: 'post',
-          url: ctx + 'rest/form/drawing/index.do',
-          data: {
-            projInfoId: this.projInfoId
-          },
-        }, function(res) {
-          if (!res.success) {
-            vm.formDataTuShen = {};
-            vm.formDataKanCha = {};
-            vm.formDataSheJj = {};
-          } else {
-            for (var i = 0; i < res.content.drawings.length; i++) {
-              if (res.content.drawings[i].unitType == '25') {
-                vm.formDataTuShen = res.content.drawings[i] || {};
-              } else if (res.content.drawings[i].unitType == '4') {
-                vm.formDataSheJj = res.content.drawings[i] || {};
-              } else {
-                vm.formDataKanCha = res.content.drawings[i] || {};
+            type: 'post',
+            url: ctx + 'rest/form/drawing/index.do',
+            data: {
+              projInfoId: this.projInfoId
+            },
+          }, function(res) {
+            if (!res.success) {
+              vm.formDataTuShen = {};
+              vm.formDataKanCha = {};
+              vm.formDataSheJj = {};
+            } else {
+              for (var i = 0; i < res.content.drawings.length; i++) {
+                if (res.content.drawings[i].unitType == '25') {
+                  vm.formDataTuShen = res.content.drawings[i] || {};
+                } else if (res.content.drawings[i].unitType == '4') {
+                  vm.formDataSheJj = res.content.drawings[i] || {};
+                } else {
+                  vm.formDataKanCha = res.content.drawings[i] || {};
+                }
               }
             }
-          }
 
-          if (vm.formDataTuShen.linkmen == undefined || vm.formDataTuShen.linkmen.length == 0) {
-            vm.formDataTuShen.linkmen = [];
-            vm.init('tushen');
-          }
-          if (vm.formDataSheJj.linkmen == undefined || vm.formDataSheJj.linkmen.length == 0) {
-            vm.formDataSheJj.linkmen = [];
-            vm.init('sheji');
-          }
+            debugger;
+            if (vm.formDataTuShen.linkmen == undefined || vm.formDataTuShen.linkmen.length == 0) {
+              vm.formDataTuShen.linkmen = [];
+              vm.init('tushen');
+            }
+            if (vm.formDataSheJj.linkmen == undefined || vm.formDataSheJj.linkmen.length == 0) {
+              vm.formDataSheJj.linkmen = [];
+              vm.init('sheji');
+            }
 
 
-          vm.formDataTuShen.linkmanType = '1';
-          vm.formDataKanCha.linkmanType = '1';
-          vm.formDataSheJj.linkmanType = '1';
-          vm.formDataTuShen.unitType = '25';
-          vm.formDataKanCha.unitType = '3';
-          vm.formDataSheJj.unitType = '4';
+            vm.formDataTuShen.linkmanType = '1';
+            vm.formDataKanCha.linkmanType = '1';
+            vm.formDataSheJj.linkmanType = '1';
+            vm.formDataTuShen.unitType = '25';
+            vm.formDataKanCha.unitType = '3';
+            vm.formDataSheJj.unitType = '4';
 
-          if (!res.success) {
-            vm.$message({
-              message: res.message,
-              type: 'error'
+            if (!res.success) {
+              vm.$message({
+                message: res.message,
+                type: 'error'
+              });
+
+              return;
+            }
+
+            for (var key in res.content.aeaExProjDrawing) {
+              vm.$set(vm.formData, key, res.content.aeaExProjDrawing[key])
+            }
+
+
+            vm.$nextTick(function() {
+              vm.$refs['form'].clearValidate();
+
             });
-
-            return;
-          }
-
-          for (var key in res.content.aeaExProjDrawing) {
-            vm.$set(vm.formData, key, res.content.aeaExProjDrawing[key])
-          }
-
-
-          vm.$nextTick(function() {
-            vm.$refs['form'].clearValidate();
-
-          });
-        },
-        function(err) {
-          vm.$message.error('服务器错了哦!');
-        })
+          },
+          function(err) {
+            vm.$message.error('服务器错了哦!');
+          })
     },
     // 请求各个类型数据
     getAllType: function() {
@@ -840,19 +821,19 @@ var app = new Vue({
 
               _this.shenchaPerson.forEach(function(item) {
                 if (item['addressId'] != '' & item['addressId'] != '1') {
-                  shenChaLinkManInfoIds = item['addressId'] + ",";
+                  shenChaLinkManInfoIds += item['addressId'] + ",";
                 }
               });
 
               _this.shejiPerson.forEach(function(item) {
                 if (item['addressId'] != '' & item['addressId'] != '1') {
-                  sheJiLinkManInfoIds = item['addressId'] + ",";
+                  sheJiLinkManInfoIds += item['addressId'] + ",";
                 }
               });
 
               _this.kanchaPerson.forEach(function(item) {
                 if (item['addressId'] != '' & item['addressId'] != '1') {
-                  kanChaLinkManInfoIds = item['addressId'] + ",";
+                  kanChaLinkManInfoIds += item['addressId'] + ",";
                 }
               });
 

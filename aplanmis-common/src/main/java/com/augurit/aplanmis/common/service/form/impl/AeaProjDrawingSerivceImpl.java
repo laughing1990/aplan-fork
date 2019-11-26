@@ -159,6 +159,7 @@ public class AeaProjDrawingSerivceImpl implements AeaProjDrawingSerivce {
                 info.setCreateTime(new Date());
                 info.setOrganizationalCode(aeaProjDrawing.getOrganizationalCode());
                 info.setUnifiedSocialCreditCode(aeaProjDrawing.getUnifiedSocialCreditCode());
+                info.setIsDeleted("0");
                 aeaUnitInfoMapper.insertAeaUnitInfo(info);
                 aeaUnitProj.setUnitInfoId(info.getUnitInfoId());
 
@@ -166,6 +167,10 @@ public class AeaProjDrawingSerivceImpl implements AeaProjDrawingSerivce {
                 String linkmanInfoIds = aeaProjDrawing.getLinkManInfoIds();
                 if (StringUtils.isNotBlank(linkmanInfoIds)) {
                     for (String linkmanInfoId : linkmanInfoIds.split(",")) {
+                        if (StringUtils.isBlank(linkmanInfoId)) {
+                            continue;
+                        }
+
                         AeaUnitLinkman aeaUnitLinkman = new AeaUnitLinkman();
                         aeaUnitLinkman.setUnitLinkmanId(UUID.randomUUID().toString());
                         aeaUnitLinkman.setUnitInfoId(info.getUnitInfoId());

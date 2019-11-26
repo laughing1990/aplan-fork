@@ -16,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class RestApplyCommonServiceImpl implements RestApplyCommonService {
@@ -33,16 +30,19 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
 
 
     @Override
-    public List<String> saveOrUpdateUnitInfo(String projInfoId, List<AeaUnitInfoVo> aeaUnitInfos) {
+    public Map<String,Object> saveOrUpdateUnitInfo(String projInfoId, List<AeaUnitInfoVo> aeaUnitInfos) {
+        Map<String,Object> map=new HashMap<>(2);
         List<String> projUnitIds = new ArrayList<>();
-        if (aeaUnitInfos==null||aeaUnitInfos.size()==0) return projUnitIds;
+        if (aeaUnitInfos==null||aeaUnitInfos.size()==0) return map;
         AeaUnitProj aeaUnitProj = new AeaUnitProj();
         aeaUnitProj.setProjInfoId(projInfoId);
         aeaUnitProj.setCreater(SecurityContext.getCurrentUserId());
         aeaUnitProj.setCreateTime(new Date());
+        List<Map> unitReturnJson=new ArrayList<>();
         aeaUnitInfos.stream().forEach(aeaUnitInfo -> {
+            Map<String,Object> jsonMap=new HashMap<>(2);
             String unitInfoId = "";
-            unitInfoId = aeaUnitInfo.getUnitInfoId();
+            //unitInfoId = aeaUnitInfo.getUnitInfoId();
             if (StringUtils.isEmpty(aeaUnitInfo.getUnitInfoId())){
                 aeaUnitInfo.setUnitInfoId(UUID.randomUUID().toString());
                 aeaUnitInfoService.insertAeaUnitInfo(AeaUnitInfoVo.returnForm(aeaUnitInfo));
@@ -50,6 +50,9 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
                 aeaUnitInfoService.updateAeaUnitInfo(AeaUnitInfoVo.returnForm(aeaUnitInfo));
             }
             unitInfoId = aeaUnitInfo.getUnitInfoId();
+            jsonMap.put("unitInfoId",unitInfoId);
+            jsonMap.put("unifiedSocialCreditCode",aeaUnitInfo.getUnifiedSocialCreditCode());
+            unitReturnJson.add(jsonMap);
             AeaLinkmanInfo selectedLinkman = aeaUnitInfo.getSelectedLinkman();
             aeaUnitProj.setUnitType(aeaUnitInfo.getUnitType());
             aeaUnitProj.setIsOwner(AeaUnitConstants.IS_OWNER_TRUE);
@@ -96,7 +99,9 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
             }
 
         });
-        return projUnitIds;
+        map.put("projUnitIds",projUnitIds);
+        map.put("unitReturnJson",unitReturnJson);
+        return map;
     }
 
     @Override

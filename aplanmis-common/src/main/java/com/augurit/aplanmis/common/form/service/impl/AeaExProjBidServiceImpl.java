@@ -171,6 +171,10 @@ public class AeaExProjBidServiceImpl implements AeaExProjBidService {
                     String linkmanInfoIds = aeaExProjBidVo.getWinBidLinkManInfoids();
                     if (StringUtils.isNotBlank(linkmanInfoIds)) {
                         for (String linkmanInfoId : linkmanInfoIds.split(",")) {
+                            if (StringUtils.isBlank(linkmanInfoId)) {
+                                continue;
+                            }
+
                             AeaUnitLinkman aeaUnitLinkman = new AeaUnitLinkman();
                             aeaUnitLinkman.setUnitLinkmanId(UUID.randomUUID().toString());
                             aeaUnitLinkman.setUnitInfoId(aeaUnitInfo.getUnitInfoId());

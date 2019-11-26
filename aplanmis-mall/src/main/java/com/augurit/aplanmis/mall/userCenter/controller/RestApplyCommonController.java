@@ -126,12 +126,14 @@ public class RestApplyCommonController {
             }
 
             //项目单位关联
-            List<String> projUnitIds = new ArrayList<>();
+            //List<String> projUnitIds = new ArrayList<>();
+            Map<String,Object> map=new HashMap<>(2);
             if (smsInfoVo.getAeaUnitInfos() != null && smsInfoVo.getAeaUnitInfos().size() > 0) {
-                projUnitIds = restApplyCommonService.saveOrUpdateUnitInfo(aeaProjInfo.getProjInfoId(), smsInfoVo.getAeaUnitInfos());
+                map = restApplyCommonService.saveOrUpdateUnitInfo(aeaProjInfo.getProjInfoId(), smsInfoVo.getAeaUnitInfos());
             }
             resultMap.put("smsId", smsId);
-            resultMap.put("unitProjIds", projUnitIds);
+            resultMap.put("unitProjIds", map.get("projUnitIds"));
+            resultMap.put("unitReturnJson",map.get("unitReturnJson"));
             resultMap.put("regionalism", aeaProjInfo.getRegionalism());
             return new ContentResultForm<>(true, resultMap, "保存成功!");
         } catch (Exception e) {

@@ -70,15 +70,15 @@ var app = new Vue({
     };
     var checkProjectLeaderCertNum = function(rule, value, callback) {
       if (value === '' || value === undefined || value.trim() === '') {
-        callback(new Error('请输入单位负责人身份证号码！'));
+        callback(new Error('请输入身份证号码！'));
       } else if (value) {
         var flag = !/^[0-9a-zA-Z]*$/.test(value) || /^[\u4E00-\u9FA5]+$/.test(value);
         var len = value.length;
         if (flag) {
-          return callback(new Error('请输入正确的单位负责人身份证号码！'));
+          return callback(new Error('请输入正确的身份证号码！'));
         } else {
           if (len != 18) {
-            return callback(new Error('请输入18位单位负责人身份证号码！'));
+            return callback(new Error('请输入18位身份证号码！'));
           } else {
             callback();
           }
@@ -114,29 +114,9 @@ var app = new Vue({
       formData: {
         drawings: []
       },
-      formDataTuShen: {
-        linkmen: [{
-          linkmanInfoId: '',
-          linkmanType: '8',
-          linkmanName: '',
-          linkmanCertNo: '',
-          prjSpty: '1',
-          unitProjId: '',
-          unitInfoId: ''
-        }]
-      },
+      formDataTuShen: {},
       formDataKanCha: {},
-      formDataSheJj: {
-        linkmen: [{
-          linkmanInfoId: '',
-          linkmanType: '8',
-          linkmanName: '',
-          linkmanCertNo: '',
-          prjSpty: '1',
-          unitProjId: '',
-          unitInfoId: ''
-        }]
-      },
+      formDataSheJj: {},
       total: 0,
       tableData: [],
       activeNames: '1',
@@ -165,7 +145,7 @@ var app = new Vue({
           { required: true, validator: checkMissValue, trigger: 'blur' },
         ],
         linkmanCertNo: [
-          { required: true, validator: checkMissValue, trigger: 'blur' },
+          { required: true, validator: checkProjectLeaderCertNum, trigger: 'blur' },
         ],
         linkmanMobilePhone: [
           { required: true, validator: checkPhoneNum, trigger: 'blur' },
@@ -370,6 +350,7 @@ var app = new Vue({
             }
           }
 
+          debugger;
           if (vm.formDataTuShen.linkmen == undefined || vm.formDataTuShen.linkmen.length == 0) {
             vm.formDataTuShen.linkmen = [];
             vm.init('tushen');
@@ -840,19 +821,19 @@ var app = new Vue({
 
               _this.shenchaPerson.forEach(function(item) {
                 if (item['addressId'] != '' & item['addressId'] != '1') {
-                  shenChaLinkManInfoIds = item['addressId'] + ",";
+                  shenChaLinkManInfoIds += item['addressId'] + ",";
                 }
               });
 
               _this.shejiPerson.forEach(function(item) {
                 if (item['addressId'] != '' & item['addressId'] != '1') {
-                  sheJiLinkManInfoIds = item['addressId'] + ",";
+                  sheJiLinkManInfoIds += item['addressId'] + ",";
                 }
               });
 
               _this.kanchaPerson.forEach(function(item) {
                 if (item['addressId'] != '' & item['addressId'] != '1') {
-                  kanChaLinkManInfoIds = item['addressId'] + ",";
+                  kanChaLinkManInfoIds += item['addressId'] + ",";
                 }
               });
 

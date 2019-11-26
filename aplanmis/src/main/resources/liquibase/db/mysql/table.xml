@@ -1177,4 +1177,10 @@
             ALTER TABLE aea_ex_proj_contract DROP COLUMN PROVINCE_PROJ_CODE;
         </sql>
     </changeSet>
+
+    <changeSet id="201911261559" author="yinlf" failOnError="false">
+        <sql splitStatements="true">
+            DROP TABLE bsc_att_file;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
