@@ -350,8 +350,9 @@ public class AeaItemStateAdminService {
 
     public List<AeaItemState> listAeaItemState(AeaItemState aeaItemState) {
 
-        if(aeaItemState!=null)
+        if(aeaItemState!=null) {
             aeaItemState.setRootOrgId(SecurityContext.getCurrentOrgId());
+        }
         List<AeaItemState> list = aeaItemStateMapper.listAeaItemStateWithStateVer(aeaItemState);
         log.debug("成功执行查询list！！");
         return list;
@@ -381,37 +382,45 @@ public class AeaItemStateAdminService {
         Assert.notNull(itemVerId, "事项版本itemVerId不能为空");
 
         // 构造根节点
+        List<MindBaseNode> childNodes = new ArrayList<>();
+        List<AeaItemInout> allStateIns = new ArrayList<>();
+        List<AeaItemInout> allCommonIns = new ArrayList<>();
         MindBaseNode orgNode = buildItemTreeRootNode(itemVerId, rootOrgId);
 
         // 根据itemVerId和stateVerId获取所有的情形
         List<AeaItemState> allStates = preFetchAllStates(itemVerId, stateVerId, rootOrgId);
 
+        // 获取事项某事项版本情形版本的材料、证照、表单
+        if(aeaMindUi!=null){
+            List<String> matProps = new ArrayList<>();
+            // 显示事项下的通用材料
+            if(aeaMindUi.isShowMat()){
+                matProps.add(MindType.M.getValue());
+            }
+            // 显示事项下的通用证照
+            if(aeaMindUi.isShowCert()){
+                matProps.add(MindType.C.getValue());
+            }
+            // 显示事项下的通用表单
+            if(aeaMindUi.isShowForm()) {
+                matProps.add(MindType.F.getValue());
+            }
+            if(matProps!=null&&matProps.size()>0){
+
+                // 获取事项某事项版本情形版本所有的情形材料
+                allStateIns = listAeaItemInoutUnderState(itemVerId, stateVerId, null, null, matProps, rootOrgId);
+
+                // 获取事项某事项版本情形版本所有的通用材料、证照、表单
+                allCommonIns = listAeaItemInoutNotUnderState(itemVerId, stateVerId, null, matProps, rootOrgId);
+            }
+        }
+
         // 构造子树节点，包括情形和材料
-        List<MindBaseNode> childNodes = new ArrayList<>();
-        node(itemVerId, itemVerId, allStates, childNodes, aeaMindUi, rootOrgId);
+        node(itemVerId, itemVerId, allStates, allStateIns, childNodes, aeaMindUi, rootOrgId);
 
-        List<AeaItemInout> matIns;
-        List<AeaItemInout> certIns;
-        List<AeaItemInout> commonForms;
+        // 封装事项某事项版本情形版本的所有通用材料、证照、表单
+        getBaseNode(allCommonIns, childNodes, itemVerId);
 
-        // 显示事项下的通用材料
-        if(aeaMindUi!=null&&aeaMindUi.isShowMat()){
-            matIns = listAeaItemInoutNotUnderState(itemVerId, stateVerId, MindType.M.getValue(), rootOrgId);
-            // 封装通用材料节点
-            getBaseNode(matIns, childNodes, itemVerId);
-        }
-        // 显示事项下的通用证照
-        if(aeaMindUi!=null&&aeaMindUi.isShowCert()){
-            certIns = listAeaItemInoutNotUnderState(itemVerId, stateVerId, MindType.C.getValue(), rootOrgId);
-            // 封装通用证照节点
-            getBaseNode(certIns, childNodes, itemVerId);
-        }
-        // 显示事项下的通用表单
-        if(aeaMindUi!=null&&aeaMindUi.isShowForm()){
-            commonForms = listAeaItemInoutNotUnderState(itemVerId, stateVerId, MindType.F.getValue(), rootOrgId);
-            // 封装通用证照节点
-            getBaseNode(commonForms, childNodes, itemVerId);
-        }
         // 设置根节点的孩子们
         orgNode.setChilds(childNodes.toArray(new MindBaseNode[]{}));
         return orgNode;
@@ -459,7 +468,8 @@ public class AeaItemStateAdminService {
      * @param childNodes
      * @param aeaMindUi
      */
-    private void node(String itemVerId, String parentId, List<AeaItemState> allStates, List<MindBaseNode> childNodes, AeaMindUi aeaMindUi, String rootOrgId) {
+    private void node(String itemVerId, String parentId, List<AeaItemState> allStates, List<AeaItemInout> allStateIns,
+                      List<MindBaseNode> childNodes, AeaMindUi aeaMindUi, String rootOrgId) {
 
         List<AeaItemState> list = extractStatesByParentIdAndItemVerId(parentId, itemVerId, allStates);
         if (CollectionUtils.isEmpty(list)) {
@@ -469,36 +479,26 @@ public class AeaItemStateAdminService {
             MindBaseNode stateNode;
             stateNode = buildNodeByState(state, parentId);
             List<MindBaseNode> stateChildren = new ArrayList<>();
+            List<MindBaseNode> stateInChildren = new ArrayList<>();
+
+            // 封装事项下的某事项版本某情形下的材料、证照、表单
+            if(allStateIns!=null&&allStateIns.size()>0){
+                List<AeaItemInout> needDelList = new ArrayList<>();
+                for(AeaItemInout in : allStateIns){
+                    if(in.getItemStateId().equals(state.getItemStateId())){
+                        stateInChildren.add(buildNodeByMatCertForm(in, state.getItemStateId()));
+                        needDelList.add(in);
+                    }
+                }
+                if(needDelList!=null&&needDelList.size()>0){
+                    allStateIns.removeAll(needDelList);
+                }
+            }
 
             //递归处理子情形节点
-            node(itemVerId, state.getItemStateId(), allStates, stateChildren, aeaMindUi, rootOrgId);
-
-            List<AeaItemInout> matIns;
-            List<AeaItemInout> certIns;
-            List<AeaItemInout> stateForms;
-
-            // 显示事项下的情形材料
-            if(aeaMindUi!=null&&aeaMindUi.isShowMat()){
-
-                matIns = listAeaItemInoutUnderState(itemVerId, state.getItemStateId(), MindType.M.getValue(), rootOrgId);
-                // 封装材料节点
-                getBaseNode(matIns, stateChildren, null);
-            }
-
-            // 显示事项下的情形证照
-            if(aeaMindUi!=null&&aeaMindUi.isShowCert()){
-
-                certIns = listAeaItemInoutUnderState(itemVerId, state.getItemStateId(), MindType.C.getValue(), rootOrgId);
-                // 封装证照节点
-                getBaseNode(certIns, stateChildren, null);
-            }
-
-            // 显示事项下的情形表单
-            if(aeaMindUi!=null&&aeaMindUi.isShowForm()){
-
-                stateForms = listAeaItemInoutUnderState(itemVerId, state.getItemStateId(), MindType.F.getValue(), rootOrgId);
-                // 封装证照节点
-                getBaseNode(stateForms, stateChildren, null);
+            node(itemVerId, state.getItemStateId(), allStates, allStateIns, stateChildren, aeaMindUi, rootOrgId);
+            if(stateInChildren!=null&&stateInChildren.size()>0){
+                stateChildren.addAll(stateInChildren);
             }
             stateNode.setChilds(stateChildren.toArray(new MindBaseNode[]{}));
             childNodes.add(stateNode);
@@ -512,14 +512,17 @@ public class AeaItemStateAdminService {
      * @param itemStateId
      * @return
      */
-    private List<AeaItemInout> listAeaItemInoutUnderState(String itemVerId, String itemStateId, String fileType, String rootOrgId){
+    private List<AeaItemInout> listAeaItemInoutUnderState(String itemVerId, String stateVerId, String itemStateId,
+                                                          String matProp, List<String> matProps, String rootOrgId){
 
         AeaItemInout inout = new AeaItemInout();
         inout.setRootOrgId(rootOrgId);
         inout.setItemVerId(itemVerId);
+        inout.setStateVerId(stateVerId);
         inout.setIsStateIn(Status.ON);
         inout.setItemStateId(itemStateId);
-        inout.setMatProp(fileType);
+        inout.setMatProp(matProp);
+        inout.setMatProps(matProps);
         inout.setIsInput(Status.ON);
         inout.setIsDeleted(DeletedStatus.NOT_DELETED.getValue());
         return aeaItemInoutMapper.listAeaItemInoutRelMat(inout);
@@ -540,6 +543,30 @@ public class AeaItemStateAdminService {
         return aeaItemStateFormMapper.listItemStateFormRelInfo(form);
     }
 
+    /**
+     * 转换单个节点
+     *
+     * @param in
+     * @param mindBaseNodes
+     * @param parentId
+     */
+    private void getBaseNode(AeaItemInout in, List<MindBaseNode> mindBaseNodes, String parentId) {
+
+        if(in!=null){
+            if (StringUtils.isBlank(parentId)) {
+                parentId = in.getItemStateId();
+            }
+            mindBaseNodes.add(buildNodeByMatCertForm(in, parentId));
+        }
+    }
+
+    /**
+     * 转换多个节点
+     *
+     * @param inouts
+     * @param mindBaseNodes
+     * @param parentId
+     */
     private void getBaseNode(List<AeaItemInout> inouts, List<MindBaseNode> mindBaseNodes, String parentId) {
 
         if(inouts!=null&&inouts.size()>0){
@@ -547,25 +574,7 @@ public class AeaItemStateAdminService {
                 if (StringUtils.isBlank(parentId)) {
                     parentId = in.getItemStateId();
                 }
-//                if (MindType.M.getValue().equals(in.getMatProp())) {
-//                    AeaItemMat mat = aeaItemMatMapper.selectOneById(in.getMatId());
-//                    if (Objects.isNull(mat)) {
-//                        return;
-//                    }
-//                    mindBaseNodes.add(buildNodeByMat(mat, parentId));
-//                } else if (MindType.C.getValue().equals(in.getMatProp())) {
-//                    AeaCert cert = aeaCertMapper.selectOneById(in.getCertId());
-//                    if (Objects.isNull(cert)) {
-//                        return;
-//                    }
-//                    mindBaseNodes.add(buildNodeByCert(cert, parentId));
-//                }else if(MindType.F.getValue().equals(in.getMatProp())){
-//                    ActStoForm form = aeaItemMatMapper.getActStoFormById(in.getFormId());
-//                    if (Objects.isNull(form)) {
-//                        return;
-//                    }
-                    mindBaseNodes.add(buildNodeByMatCertForm(in, parentId));
-//                }
+                mindBaseNodes.add(buildNodeByMatCertForm(in, parentId));
             }
         }
     }
@@ -577,7 +586,8 @@ public class AeaItemStateAdminService {
      * @param stateVerId
      * @return
      */
-    private List<AeaItemInout> listAeaItemInoutNotUnderState(String itemVerId, String stateVerId, String fileType, String rootOrgId) {
+    private List<AeaItemInout> listAeaItemInoutNotUnderState(String itemVerId, String stateVerId, String matProp,
+                                                             List<String> matProps, String rootOrgId) {
 
         if (StringUtils.isBlank(stateVerId)) {
             stateVerId = getMaxStateVerId(itemVerId, rootOrgId);
@@ -591,7 +601,8 @@ public class AeaItemStateAdminService {
         inout.setStateVerId(stateVerId);
         inout.setIsInput(Status.ON);
         inout.setIsStateIn(Status.OFF);
-        inout.setMatProp(fileType);
+        inout.setMatProp(matProp);
+        inout.setMatProps(matProps);
         inout.setIsDeleted(DeletedStatus.NOT_DELETED.getValue());
         return aeaItemInoutMapper.listAeaItemInoutRelMat(inout);
     }
