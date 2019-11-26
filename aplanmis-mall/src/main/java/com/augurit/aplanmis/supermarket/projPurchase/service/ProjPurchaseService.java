@@ -23,6 +23,7 @@ import com.augurit.aplanmis.common.constants.AuditFlagStatus;
 import com.augurit.aplanmis.common.constants.DeletedStatus;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.utils.BusinessUtils;
 import com.augurit.aplanmis.common.utils.CommonConstant;
 import com.augurit.aplanmis.common.utils.FileUtils;
@@ -134,6 +135,19 @@ public class ProjPurchaseService {
     private RestImApplyService restImApplyService;
     private static final String SERVICE_OBJECT_DICT_NAME = "ITEM_FWJGXZ";
     private static final String SERVICE_OBJECT_CODE = "5";
+
+    @Autowired
+    private OpuOmOrgService opuOmOrgService;
+    @Autowired
+    private BscDicCodeService bscDicCodeService;
+    @Autowired
+    private AeaProjInfoService aeaProjInfoService;
+
+    @Autowired
+    private AeaHiIteminstMapper aeaHiIteminstMapper;
+
+    @Autowired
+    private AeaParentProjMapper aeaParentProjMapper;
 
 
     public List<AeaImProjPurchase> getProjPurchaseList(AeaImProjPurchase aeaImProjPurchase, Page page) {
@@ -1397,8 +1411,6 @@ public class ProjPurchaseService {
         aeaImProjPurchaseMapper.updateAeaImProjPurchase(aeaImProjPurchase);
     }
 
-    @Autowired
-    private AeaHiIteminstMapper aeaHiIteminstMapper;
     /**
      * 发布项目采购需求并启动流程---唐山模式
      *
@@ -1420,8 +1432,8 @@ public class ProjPurchaseService {
             purchaseVo.setApplySubject("1");
         }
         //需要先保存 采购项目信息，发起事项流程时关联的是采购项目信息
-
         AeaProjInfo aeaProjInfo = purchaseVo.createAeaProjInfo();
+        aeaProjInfo.setIsDeleted("0");
         aeaProjInfoMapper.insertAeaProjInfo(aeaProjInfo);
         String projInfoId = aeaProjInfo.getProjInfoId();//采购项目 项目ID
         ImItemApplyData applyData = purchaseVo.createItemApplyData();
@@ -1506,10 +1518,6 @@ public class ProjPurchaseService {
         }
     }
 
-    @Autowired
-    private OpuOmOrgService opuOmOrgService;
-    @Autowired
-    private BscDicCodeService bscDicCodeService;
 
     /**
      * 获取项目采购详情
@@ -1525,8 +1533,12 @@ public class ProjPurchaseService {
         String isApproveProj = purchaseProj.getIsApproveProj();
         if (StringUtils.isNotBlank(isApproveProj) && "1".equals(isApproveProj)) {
             //查询关联的投资审批项目信息
-            AeaProjInfo parentProj = aeaProjInfoMapper.findParentProj(purchaseProj.getProjInfoId());
-            form.setAeaProjInfo(parentProj);
+            //查询关联的投资审批项目信息
+            AeaParentProj parentProj = aeaParentProjMapper.getParentProjByProjInfoId(purchaseProj.getProjInfoId());
+            if (null != parentProj) {
+                AeaProjInfo projInfo = aeaProjInfoService.getTransProjInfoDetail(parentProj.getParentProjId());
+                form.setAeaProjInfo(projInfo);
+            }
         }
         //查询资质信息
         String unitRequireId = purchaseProj.getUnitRequireId();
