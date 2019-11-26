@@ -2,14 +2,11 @@ package com.augurit.aplanmis.front.apply.vo;
 
 import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.aplanmis.common.domain.AeaHiSmsInfo;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Null;
 
 @Data
 @ApiModel("领件人vo")

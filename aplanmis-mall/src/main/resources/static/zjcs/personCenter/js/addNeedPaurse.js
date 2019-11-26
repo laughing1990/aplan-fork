@@ -27,6 +27,7 @@ var module1 = new Vue({
 			}
 		};
 		return {
+			mloading: false, // 整屏loading
 			itemVerId: '', // 事项版本id
 			loginUserInfo: {
 				isAdministrators: "",
@@ -73,10 +74,10 @@ var module1 = new Vue({
 			total4: 0,
 			multipleSelection4: [],
 			multipleSelection2: [],
-			multipleSelection3: [{ agentUnitName: '还没选择中介机构' }],
+			multipleSelection3: [],
 			projInfoId: '', // 项目主键ID
 			projCode: '', // 项目代码
-			addNeedList: [{}],// 新增采购需求   // 新增采购需求查询结果列表
+			addNeedList: [],// 新增采购需求   // 新增采购需求查询结果列表
 			addNeedCheckData: {},     // 新增采购需求查询参数
 			addNeedStatus: 0,     // 新增采购需求-当前展示是为列表还是项目发布详情编辑页
 			aeaLinkmanInfo: {},
@@ -98,7 +99,7 @@ var module1 = new Vue({
 					{ required: true, message: '请输入项目联系人', trigger: 'change' }
 				],
 				basicLinkPhone: [
-					{ required: true, message: '请输入联系电话', trigger: 'change' }
+					{ required: true, validator: checkPhone, trigger: 'change' }
 				],
 				mobile: [
 					//  { required: true, message: '请输入联系电话', trigger: 'blur' },
@@ -123,31 +124,31 @@ var module1 = new Vue({
 					{ required: true, message: '请填写资金来源比例', trigger: 'change' }
 				],
 				registerTotal: [
-					{ required: true, message: '请输入执业/职业人员总数', trigger: 'blur' }
+					{ required: true, message: '请输入执业/职业人员总数', trigger: 'change' }
 				],
 				registerRequire: [
-					{ required: true, message: '请输入执业/职业人员要求', trigger: 'blur' }
+					{ required: true, message: '请输入执业/职业人员要求', trigger: 'change' }
 				],
 				serviceName: [
 					{ required: true, message: '请选择所需服务', trigger: 'change' }
 				],
 				timeLimitExplain: [
-					{ required: true, message: '请填写服务时限说明', trigger: 'blur' }
+					{ required: true, message: '请填写服务时限说明', trigger: 'change' }
 				],
 				serviceContent: [
-					{ required: true, message: '请填写服务内容', trigger: 'blur' }
+					{ required: true, message: '请填写服务内容', trigger: 'change' }
 				],
 				amountExplain: [
-					{ required: true, message: '请填写金额说明', trigger: 'blur' }
+					{ required: true, message: '请填写金额说明', trigger: 'change' }
 				],
 				recordRequireExplain: [
-					{ required: true, message: '请填写备案要求说明', trigger: 'blur' }
+					{ required: true, message: '请填写备案要求说明', trigger: 'change' }
 				],
 				// qualRequireType:[
-				//     { required: true, message: '请选择资质要求', trigger: 'blur' }
+				//     { required: true, message: '请选择资质要求', trigger: 'change' }
 				// ],
 				// qualRequireExplain:[
-				//     { required: true, message: '请填写资质要求说明', trigger: 'blur' }
+				//     { required: true, message: '请填写资质要求说明', trigger: 'change' }
 				// ],
 				isDefineAmount: [
 					{ required: true, message: '请选择是否确认金额', trigger: 'change' }
@@ -162,10 +163,10 @@ var module1 = new Vue({
 					{ required: true, message: '请选择见证现场竞价选 取、摇珠', trigger: 'change' }
 				],
 				expirationDate: [
-					{ required: true, message: '请选择截止时间', trigger: 'blur' }
+					{ required: true, message: '请选择截止时间', trigger: 'change' }
 				],
 				choiceImunitTime: [
-					{ required: true, message: '请选择选取中介时间', trigger: 'blur' }
+					{ required: true, message: '请选择选取中介时间', trigger: 'change' }
 				],
 				basePrice: [
 					{ required: true, message: '请填写服务金额', trigger: 'change' }
@@ -174,19 +175,19 @@ var module1 = new Vue({
 					{ required: true, message: '请选择是否有回避情况', trigger: 'change' }
 				],
 				highestPrice: [
-					{ required: true, message: '请填写服务最高金额', trigger: 'blur' }
+					{ required: true, message: '请填写服务最高金额', trigger: 'change' }
 				],
-				agentUnitName: [
-					{ required: true, message: '请选择指定的中介机构', trigger: 'blur' }
+				unitInfoId: [
+					{ required: true, message: '请选择指定的中介机构', trigger: 'change' }
 				],
 				witnessName1: [
-					{ required: true, message: '请填写见证人姓名', trigger: 'blur' }
+					{ required: true, message: '请填写见证人姓名', trigger: 'change' }
 				],
 				witnessPhone1: [
-					{ required: true, message: '请填写见证人联系电话', trigger: 'blur' }
+					{ required: true, message: '请填写见证人联系电话', trigger: 'change' }
 				],
 				ownerComplaintPhone: [
-					{ required: true, message: '请填写投诉质疑电话', trigger: 'blur' }
+					{ required: true, message: '请填写投诉质疑电话', trigger: 'change' }
 				],
 				biddingType: [
 					{ required: true, message: '请选取中介服务机构方式', trigger: 'change' }
@@ -269,8 +270,8 @@ var module1 = new Vue({
 				rules: {
 					getPaper: { required: true, message: "必选", trigger: ["change"] },
 					getCopy: { required: true, message: "必选", trigger: ["change"] },
-					realPaperCount: { validator: checkMissValue, required: true, message: "必填字段", trigger: ['blur'] },
-					realCopyCount: { validator: checkMissValue, required: true, message: "必填字段", trigger: ['blur'] },
+					realPaperCount: { validator: checkMissValue, required: true, message: "必填字段", trigger: ['change'] },
+					realCopyCount: { validator: checkMissValue, required: true, message: "必填字段", trigger: ['change'] },
 				},
 				matsTableData: []
 			},
@@ -600,6 +601,8 @@ var module1 = new Vue({
 						// })
 						formData.append('requireExplainFile', vm.recordId2);
 					}
+
+					vm.mloading = true;
 					$.ajax({
 						type: "POST",
 						url: ctx + 'supermarket/purchase/startProjPurchase',
@@ -609,16 +612,20 @@ var module1 = new Vue({
 						processData: false, //用于对data参数进行序列化处理，这里必须false；如果是true，就会将FormData转换为String类型
 						contentType: false,  //一些文件上传http协议的关系，自行百度，如果上传的有文件，那么只能设置为false
 						success: function (res) {  //请求成功后的回调函数
-							vm.loading = false;
+							vm.mloading = false;
 							if (res.success) {
 								vm.$message({ message: '保存成功', type: 'success' });
 								vm.projPurchaseId = res.content // 拿到项目需要提交的id
+
+								// 显示列表页，刷新列表数据
+								vm.addNeedStatus = 0;
+								vm.getUnpublishedProjInfoList();
 							} else {
 								vm.$message({ message: res.message, type: 'error' });
 							}
 						},
 						error: function () {
-							vm.loading = false;
+							vm.mloading = false;
 							vm.$message({ message: '保存失败', type: 'error' });
 						}
 					});
@@ -637,7 +644,7 @@ var module1 = new Vue({
 					projPurchaseId: vm.projPurchaseId
 				},
 			}, function (res) {
-				vm.loading = false;
+				vm.mloading = false;
 				if (res.success) {
 					vm.$message({ message: '提交成功', type: 'success' });
 					vm.addNeedStatus = 0
@@ -645,7 +652,7 @@ var module1 = new Vue({
 					vm.$message({ message: res.message, type: 'error' });
 				}
 			}, function (msg) {
-				vm.loading = false;
+				vm.mloading = false;
 				vm.$message({ message: '加载失败', type: 'error' });
 			});
 		},
@@ -1097,14 +1104,13 @@ var module1 = new Vue({
 			func.temArr.push(file);
 			console.log(file);
 			func.tId = window.setTimeout(function () {
-				this.loadingFileWin = false;
 				func(func.temArr);
 				func.temArr = [];
 			}, 1000);
 		},
 		uploadFile1: function (file) {
 			var vm = this;
-			vm.loading = true;
+			vm.mloading = true;
 			var formData = new FormData();
 
 			file.forEach(function (u) {
@@ -1123,7 +1129,7 @@ var module1 = new Vue({
 				processData: false, //用于对data参数进行序列化处理，这里必须false；如果是true，就会将FormData转换为String类型
 				contentType: false,  //一些文件上传http协议的关系，自行百度，如果上传的有文件，那么只能设置为false
 				success: function (res) {  //请求成功后的回调函数
-					vm.loading = false;
+					vm.mloading = false;
 					if (res.success) {
 						vm.recordId1 = res.content.recordId;
 						vm.formData1 = res.content.attForms;
@@ -1133,7 +1139,7 @@ var module1 = new Vue({
 					}
 				},
 				error: function () {
-					vm.loading = false;
+					vm.mloading = false;
 					vm.$message({ message: '上传失败', type: 'error' });
 				}
 			});
@@ -1150,14 +1156,13 @@ var module1 = new Vue({
 			func.temArr.push(file);
 			console.log(file);
 			func.tId = window.setTimeout(function () {
-				this.loadingFileWin = false;
 				func(func.temArr);
 				func.temArr = [];
 			}, 1000);
 		},
 		uploadFile2: function (file) {
 			var vm = this;
-			vm.loading = true;
+			vm.mloading = true;
 			var formData = new FormData();
 
 			file.forEach(function (u) {
@@ -1176,7 +1181,7 @@ var module1 = new Vue({
 				processData: false, //用于对data参数进行序列化处理，这里必须false；如果是true，就会将FormData转换为String类型
 				contentType: false,  //一些文件上传http协议的关系，自行百度，如果上传的有文件，那么只能设置为false
 				success: function (res) {  //请求成功后的回调函数
-					vm.loading = false;
+					vm.mloading = false;
 					if (res.success) {
 						vm.recordId2 = res.content.recordId;
 						vm.formData2 = res.content.attForms;
@@ -1186,7 +1191,7 @@ var module1 = new Vue({
 					}
 				},
 				error: function () {
-					vm.loading = false;
+					vm.mloading = false;
 					vm.$message({ message: '上传失败', type: 'error' });
 				}
 			});
@@ -1303,8 +1308,12 @@ var module1 = new Vue({
 			this.selectOrgan()
 		},
 		handleSelectionChange3: function (val) {
+			if (!val) return false;
+
 			var _newArr = JSON.parse(JSON.stringify(val));
 			this.multipleSelection3 = _newArr;
+			this.form.unitInfoId = _newArr[0].unitInfoId;
+
 			if (val.length > 1) {
 				this.$refs.multipleTable3.clearSelection();
 				this.$refs.multipleTable3.toggleRowSelection(val.pop());
@@ -1371,6 +1380,7 @@ var module1 = new Vue({
 		selectOrgan: function () {
 			var _this = this;
 			_this.avoidOrgan = true;
+			_this.mloading = true;
 			request('', {
 				url: ctx + 'supermarket/agentservice/listCheckinUnit', type: 'get', data: {
 					pageNum: this.pageNum4,
@@ -1378,6 +1388,7 @@ var module1 = new Vue({
 					applicant: this.organWord,
 				}
 			}, function (data) {
+				_this.mloading = false;
 				_this.avoidList = data.content.rows;
 				_this.total4 = data.content.total;
 			}, function (msg) {
@@ -1385,7 +1396,7 @@ var module1 = new Vue({
 					message: '加载失败',
 					type: 'error'
 				});
-				_this.loading = false;
+				_this.mloading = false;
 			});
 		},
 
@@ -1990,13 +2001,13 @@ var module1 = new Vue({
 					}, 1000)
 				} else if (regText.test(fileType)) {
 					// previewPdf/pdfIsCoverted
-					_that.loading = true;
+					_that.mloading = true;
 					request('', {
 						url: ctx + 'previewPdf/pdfIsCoverted?detailId=' + detailId,
 						type: 'get',
 					}, function (result) {
 						if (result.success) {
-							_that.loading = false;
+							_that.mloading = false;
 							var tempwindow = window.open(); // 先打开页面
 							setTimeout(function () {
 								tempwindow.location = ctx + 'previewPdf/view?detailId=' + detailId;
@@ -2008,7 +2019,7 @@ var module1 = new Vue({
 									_that.filePreview(data);
 								}, function () {
 									_that.filePreviewCount = 0;
-									_that.loading = false;
+									_that.mloading = false;
 									return false;
 								}, '确定', '取消', 'warning', true)
 							} else {
@@ -2018,14 +2029,14 @@ var module1 = new Vue({
 							}
 						}
 					}, function (msg) {
-						_that.loading = false;
+						_that.mloading = false;
 						_that.$message({
 							message: '文件预览失败',
 							type: 'error'
 						});
 					})
 				} else {
-					_that.loading = false;
+					_that.mloading = false;
 					var tempwindow = window.open(); // 先打开页面
 					setTimeout(function () {
 						tempwindow.location = ctx + 'supermarket/purchase/mat/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;

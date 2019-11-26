@@ -28,7 +28,6 @@ import com.augurit.aplanmis.common.domain.AeaParStage;
 import com.augurit.aplanmis.common.domain.AeaParTheme;
 import com.augurit.aplanmis.common.domain.AeaParThemeVer;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.common.event.AplanmisEventPublisher;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
@@ -44,7 +43,6 @@ import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiParStateinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiSeriesinstService;
 import com.augurit.aplanmis.common.service.instance.AeaLogApplyStateHistService;
-import com.augurit.aplanmis.common.service.instance.RestTimeruleinstService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.item.AeaLogItemStateHistService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
@@ -132,8 +130,6 @@ public class AeaParStageService {
     @Autowired
     private AeaParStageMapper aeaParStageMapper;
     @Autowired
-    private RestTimeruleinstService restTimeruleinstService;
-    @Autowired
     private AeaItemMatService aeaItemMatService;
     @Autowired
     private AeaHiItemInoutinstMapper aeaHiItemInoutinstMapper;
@@ -141,8 +137,6 @@ public class AeaParStageService {
     private AeaHiItemMatinstService aeaHiItemMatinstService;
     @Autowired
     private AeaServiceWindowService aeaServiceWindowService;
-    @Autowired
-    private AplanmisEventPublisher publisher;
 
     /**
      * 保存实例、启动流程（停留在收件节点）
@@ -153,8 +147,8 @@ public class AeaParStageService {
         //创建事项、情形、申请实例，并启动流程
         List<ApplyInstantiateResult> results = this.instantiateStageApply(stageApplyDataVo, false);
 
-        for (int i = 0; i < results.size(); i++) {
-            String procinstId = results.get(i).getProcInstId();
+        for (ApplyInstantiateResult result : results) {
+            String procinstId = result.getProcInstId();
             //挂起流程
             bpmProcessService.suspendProcessInstanceById(procinstId);
         }
@@ -165,7 +159,6 @@ public class AeaParStageService {
      * 发起申报（流转到部门审批节点）
      *
      * @param stageApplyDataVo 并联阶段申报参数实体
-     * @throws Exception
      */
     public ApplyinstIdVo stageApply(StageApplyDataVo stageApplyDataVo) throws Exception {
         List<Task> tasks = new ArrayList<>();
@@ -198,8 +191,8 @@ public class AeaParStageService {
         } else {
             //直接发起申报
             results = this.instantiateStageApply(stageApplyDataVo, false);
-            for (int i = 0; i < results.size(); i++) {
-                String procinstId = results.get(i).getProcInstId();
+            for (ApplyInstantiateResult result : results) {
+                String procinstId = result.getProcInstId();
                 if (procinstId != null) {
                     tasks.addAll(taskService.createTaskQuery().processInstanceId(procinstId).list());
                 }
@@ -222,24 +215,19 @@ public class AeaParStageService {
             for (ApplyInstantiateResult result : results) {
                 String procinstId = result.getProcInstId();
                 List<Task> currTasks = null;
-                if (procinstId != null)
+                if (procinstId != null) {
                     currTasks = taskService.createTaskQuery().processInstanceId(procinstId).list();
-
-                //更改事项实例状态和新增历史记录
-                List<AeaHiIteminst> aeaHiIteminsts = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(result.getApplyinstId());
-                for (AeaHiIteminst iteminst : aeaHiIteminsts) {
-                    aeaHiIteminstService.updateAeaHiIteminstStateAndInsertTriggerAeaLogItemStateHist(iteminst.getIteminstId(), currTasks.get(0).getId(), result.getAppinstId(), ItemStatus.ACCEPT_DEAL.getValue(), currentOrgId);
                 }
 
-                //更改申请实例状态和新增历史记录
-                aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(result.getApplyinstId(), currTasks.get(0).getId(), result.getAppinstId(), ApplyState.ACCEPT_DEAL.getValue(), opuWinId);
-                /*//发起阶段申报受理事件
-                try {
-                    publisher.publishEvent(new ApplyAcceptAplanmisEvent(this, stageApplyDataVo.getStageId(), stageApplyDataVo.getProjInfoIds(), SecurityContext.getCurrentUserId(),result.getApplyinstId()));
-                }catch (Exception e){
-                    //发起事件失败
-                    e.printStackTrace();
-                }*/
+                if (currTasks != null && currTasks.size() > 0) {
+                    //更改事项实例状态和新增历史记录
+                    List<AeaHiIteminst> aeaHiIteminsts = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(result.getApplyinstId());
+                    for (AeaHiIteminst iteminst : aeaHiIteminsts) {
+                        aeaHiIteminstService.updateAeaHiIteminstStateAndInsertTriggerAeaLogItemStateHist(iteminst.getIteminstId(), currTasks.get(0).getId(), result.getAppinstId(), ItemStatus.ACCEPT_DEAL.getValue(), currentOrgId);
+                    }
+                    //更改申请实例状态和新增历史记录
+                    aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(result.getApplyinstId(), currTasks.get(0).getId(), result.getAppinstId(), ApplyState.ACCEPT_DEAL.getValue(), opuWinId);
+                }
             }
         }
         return covertResults(results);
@@ -283,7 +271,7 @@ public class AeaParStageService {
                 //收件意见
                 bpmTaskService.addTaskComment(task.getId(), task.getProcessInstanceId(), stageApplayDataVo.getComments());
                 //推动流程流转
-                taskService.complete(task.getId(), new String[]{"jieshu"}, (Map) null);
+                taskService.complete(task.getId(), new String[]{"jieshu"}, null);
             }
 
             //更改事项实例状态和新增历史记录，收件》不予受理
@@ -304,20 +292,10 @@ public class AeaParStageService {
     }
 
     /**
-     * 意见征求
-     *
-     * @throws Exception
-     */
-    public void solicit() throws Exception {
-        //do something
-    }
-
-    /**
      * 并联申报实例化方法
      *
      * @param stageApplyDataVo 并联阶段申报参数实体
      * @param isInadmissible   是否不予受理
-     * @throws Exception
      */
     private List<ApplyInstantiateResult> instantiateStageApply(StageApplyDataVo stageApplyDataVo, boolean isInadmissible) throws Exception {
         //参数非空校验
@@ -354,9 +332,8 @@ public class AeaParStageService {
         List<String> propulsionItemVerIds = stageApplyDataVo.getPropulsionItemVerIds();//并行推进事项IDs，允许为空
         String propulsionBranchOrgMap = stageApplyDataVo.getPropulsionBranchOrgMap();//并行推进事项分局承办，允许为空
         String isJustApplyinst = stageApplyDataVo.getIsJustApplyinst();//是否仅实例化了申报实例
-        //if("1".equals(isJustApplyinst) && StringUtils.isBlank(stageApplyDataVo.getParallelApplyinstId())) throw new InvalidParameterException("缺少并联申报实例ID！");
         String appinstId = UUID.randomUUID().toString();//预先生成流程模板实例ID
-        AeaHiApplyinst aeaHiApplyinst = null;
+        AeaHiApplyinst aeaHiApplyinst;
         //1、实例化申请实例
         String opuWinId = aeaServiceWindowService.getCurrentUserWindow() == null ? "" : aeaServiceWindowService.getCurrentUserWindow().getWindowId();
         if (StringUtils.isNotBlank(stageApplyDataVo.getParallelApplyinstId()) && "1".equals(isJustApplyinst)) {//说明之前仅实例化了申报实例
@@ -399,7 +376,7 @@ public class AeaParStageService {
 
         Map<String, Boolean> approveOrgMap = new HashMap<>();
         Map<String, Boolean> isBranchHandle = new HashMap<>();
-        Map<String, Boolean> iteminstMap = new HashMap();//初始化选中情形绑定的事项
+        Map<String, Boolean> iteminstMap = new HashMap<>();//初始化选中情形绑定的事项
         aeaHiIteminsts.forEach(aeaHiIteminst -> {
             AeaItemBasic aeaItemBasic;
             try {
@@ -426,13 +403,14 @@ public class AeaParStageService {
         aeaHiApplyinst.setIteminsts(iteminstMap);
 
         //把所有情形丢到变量里，用于流程启动情形
-        if(stateIds!=null&&stateIds.length>0){
-            Map<String,Boolean> stateinsts = new HashMap();
-            for(String stateId:stateIds){
-                stateinsts.put(stateId,true);
+        if (stateIds != null && stateIds.length > 0) {
+            Map<String, Boolean> stateinsts = new HashMap<>();
+            for (String stateId : stateIds) {
+                stateinsts.put(stateId, true);
             }
-            if(stateinsts.size()>0)
+            if (stateinsts.size() > 0) {
                 aeaHiApplyinst.setStateinsts(stateinsts);
+            }
         }
 
         //6、启动主流程
@@ -441,14 +419,6 @@ public class AeaParStageService {
         if (bpmProcessInstance == null) {
             throw new RuntimeException("并联申报流程实例化失败！阶段ID为：" + stageId);
         }
-
-        /*// 流程启动事件
-        if (publisher.eventEnabled(AplanmisEventType.APPLY_START)) {
-            publisher.publishEvent(new ApplyStartAplanmisEvent(this));
-        }*/
-
-        //新增时限规则实例
-//        restTimeruleinstService.createTimeruleinstByProcinst(appId, bpmProcessInstance.getProcessInstance().getId(), bpmProcessInstance.getProcessInstance().getProcessDefinitionKey());
 
         //流程发起后，更新初始事项历史的taskId
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(bpmProcessInstance.getProcessInstance().getId()).list();//查询出流程第一个节点
@@ -474,7 +444,6 @@ public class AeaParStageService {
 
         //8、并行推进事项
         if (!isInadmissible && propulsionItemVerIds != null && propulsionItemVerIds.size() > 0) {
-            int index = 1;
             List<PropulsionItemStateVo> propulsionItemStateIds = stageApplyDataVo.getPropulsionItemStateIds();
             Map<String, List<String>> propulsionItemStateIdMap = new HashMap<>();
             propulsionItemStateIds.forEach(p -> propulsionItemStateIdMap.put(p.getItemVerId(), p.getStateIds()));
@@ -485,7 +454,7 @@ public class AeaParStageService {
                 //实例化串联申请实例
                 AeaHiApplyinst seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinstAndTriggerAeaLogApplyStateHist(applySource, applySubject, linkmanInfoId, "1", branchOrgMap, null, propulsionAppinstId, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), opuWinId);
 
-                if (aeaHiApplyinst == null)
+                if (seriesApplyinst == null)
                     throw new RuntimeException("实例化并行推进事项申请实例失败！");
 
                 String seriesApplyinstId = seriesApplyinst.getApplyinstId();//并行推进事项申请实例ID
@@ -498,7 +467,6 @@ public class AeaParStageService {
                 AeaHiSeriesinst aeaHiSeriesinst = aeaHiSeriesinstService.createAeaHiSeriesinst(seriesApplyinstId, propulsionAppinstId, "1", stageId);
 
                 //2、事项实例
-//                AeaHiIteminst aeaHiIteminst = aeaHiIteminstService.insertAeaHiIteminst(aeaHiSeriesinst.getSeriesinstId(), itemVerId, propulsionBranchOrgMap);
                 AeaHiIteminst aeaHiIteminst = aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), itemVerId, propulsionBranchOrgMap, null, propulsionAppinstId);
 
                 // 分局承办设置 根据itemVerId查map， 有则说明是分局承办，否则市局承办
@@ -517,13 +485,16 @@ public class AeaParStageService {
                 seriesApplyinst.setProjInfoId(projInfoIds[0]);
 
                 //把所有情形丢到变量里，用于流程启动情形
-                if(propulsionItemStateIds!=null&&propulsionItemStateIds.size()>0){
-                    Map<String,Boolean> stateinsts = new HashMap();
-                    for(String stateId:stateIds){
-                        stateinsts.put(stateId,true);
+                if (propulsionItemStateIds.size() > 0) {
+                    Map<String, Boolean> stateinsts = new HashMap<>();
+                    if (stateIds != null && stateIds.length > 0) {
+                        for (String stateId : stateIds) {
+                            stateinsts.put(stateId, true);
+                        }
                     }
-                    if(stateinsts.size()>0)
+                    if (stateinsts.size() > 0) {
                         seriesApplyinst.setStateinsts(stateinsts);
+                    }
                 }
 
                 //4、情形实例
@@ -541,14 +512,6 @@ public class AeaParStageService {
                 if (processInstance == null || processInstance.getProcessInstance() == null) {
                     throw new RuntimeException("并行推进事项主流程实例化失败！事项版本ID为：" + itemVerId);
                 }
-
-               /* // 流程启动事件
-                if (publisher.eventEnabled(AplanmisEventType.APPLY_START)) {
-                    publisher.publishEvent(new ApplyStartAplanmisEvent(this));
-                }*/
-
-                //新增时限规则实例
-//                restTimeruleinstService.createTimeruleinstByProcinst(aeaItemBasic.getAppId(), processInstance.getProcessInstance().getId(), processInstance.getProcessInstance().getProcessDefinitionKey());
 
                 //查询出流程第一个节点
                 List<Task> seriesTasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstance().getId()).list();
@@ -572,7 +535,6 @@ public class AeaParStageService {
                 //7、申报主体
                 this.insertApplySubject(applySubject, seriesApplyinstId, projInfoIds, applyLinkmanId, linkmanInfoId, buildProjUnitMap, handleUnitIds);
 
-                index++;
             }
 
         }
@@ -631,7 +593,7 @@ public class AeaParStageService {
         }
     }
 
-    private void bindThemeAndProject(String[] projInfoIds, String themeVerId) throws Exception {
+    private void bindThemeAndProject(String[] projInfoIds, String themeVerId) {
 
         AeaParThemeVer themeVer = aeaParThemeVerMapper.selectOneById(themeVerId);
         if (themeVer == null) {

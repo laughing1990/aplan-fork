@@ -486,8 +486,8 @@
 }
 .isTag{
   margin-left: 5px;
-  border-radius: 13px;
-  padding: 3px 6px 1px 6px;
+  border-radius: 5px;
+  padding: 4px 6px 3px 6px;
   color: white;
   line-height: normal;
   font-size: 12px;

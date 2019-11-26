@@ -235,8 +235,7 @@ public class RestApplyMatAndAttachmentController {
     @ApiOperation(value = "申报页面--> 预览电子件")
     @ApiImplicitParam(name = "detailId", value = "附件ID", dataType = "string", required = true)
     public ModelAndView preview(String detailId, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) throws Exception {
-        ModelAndView modelAndView = fileUtilsService.preview(detailId, request, response, redirectAttributes);
-        return modelAndView;
+        return fileUtilsService.preview(detailId, request, response, redirectAttributes);
     }
 
     @GetMapping("/att/read")

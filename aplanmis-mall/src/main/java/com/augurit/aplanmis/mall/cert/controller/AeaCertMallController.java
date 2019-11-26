@@ -1,13 +1,16 @@
 package com.augurit.aplanmis.mall.cert.controller;
 
+import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaHiCertinst;
+import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.cert.service.AeaCertMallService;
+import com.augurit.aplanmis.mall.cert.vo.BindForminstVo;
 import io.jsonwebtoken.lang.Assert;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -15,6 +18,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -95,5 +99,21 @@ public class AeaCertMallController {
             return new ResultForm(false, "解绑失败: " + e.getMessage());
         }
         return new ResultForm(true, "解绑成功");
+    }
+
+    @PostMapping("/bind/form")
+    @ApiOperation(value = "关联表单材料")
+    public ContentResultForm<AeaHiItemMatinst> bindForminst(@RequestBody BindForminstVo bindForminstVo) {
+        Assert.hasText(bindForminstVo.getMatId(), "matId must not null.");
+        Assert.hasText(bindForminstVo.getStoForminstId(), "stoForminstId must not null.");
+
+        try {
+            AeaHiItemMatinst aeaHiItemMatinst = new AeaHiItemMatinst();
+            BeanUtils.copyProperties(bindForminstVo, aeaHiItemMatinst);
+            aeaHiItemMatinst = aeaHiItemMatinstService.bindForminst(aeaHiItemMatinst, SecurityContext.getCurrentUserId());
+            return new ContentResultForm<>(true, aeaHiItemMatinst, "bind forminst success");
+        } catch (Exception e) {
+            return new ContentResultForm<>(false, null, e.getMessage());
+        }
     }
 }
