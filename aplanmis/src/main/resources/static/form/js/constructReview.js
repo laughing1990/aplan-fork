@@ -740,7 +740,6 @@ var app = new Vue({
                   return false;
                 }
               }
-
               for (var i = 0; i < formDataSheJj.linkmen.length; i++) {
                 if (formDataSheJj.linkmen[i].prjSpty == '') {
                   _this.$message({
@@ -750,39 +749,11 @@ var app = new Vue({
                   return false;
                 }
               }
-
-                var shenChaLinkManInfoIds = '';
-                var kanChaLinkManInfoIds = '';
-                var sheJiLinkManInfoIds = '';
-
-                vm.shenChaPerson.forEach(function (item) {
-                    if (item['addressId'] != '' & item['addressId'] != '1') {
-                        shenChaLinkManInfoIds = item['addressId'] + ",";
-                    }
-                });
-
-                vm.sheJiPerson.forEach(function (item) {
-                    if (item['addressId'] != '' & item['addressId'] != '1') {
-                        sheJiLinkManInfoIds = item['addressId'] + ",";
-                    }
-                });
-
-                vm.kanChaPerson.forEach(function (item) {
-                    if (item['addressId'] != '' & item['addressId'] != '1') {
-                        kanChaLinkManInfoIds = item['addressId'] + ",";
-                    }
-                });
-
-                formDataTuShen.linkManInfoIds = shenChaLinkManInfoIds.length > 0 ? shenChaLinkManInfoIds.substring(0, shenChaLinkManInfoIds.length - 1) : '';
-                formDataKanCha.linkManInfoIds = kanChaLinkManInfoIds.length > 0 ? kanChaLinkManInfoIds.substring(0, kanChaLinkManInfoIds.length - 1) : '';
-                formDataSheJj.linkManInfoIds = sheJiLinkManInfoIds.length > 0 ? sheJiLinkManInfoIds.substring(0, sheJiLinkManInfoIds.length - 1) : '';
-
               var drawings = [];
               drawings.push(formDataTuShen);
               drawings.push(formDataKanCha);
               drawings.push(formDataSheJj);
-
-                var aeaExProjDrawing = {};
+              var aeaExProjDrawing = {};
               _this.formData.approveStartTime = _this.formatTime(_this.formData.approveStartTime, 'Y-M-D') || '';
               _this.formData.approveEndTime = _this.formatTime(_this.formData.approveEndTime, 'Y-M-D') || '';
               // _this.formData.approveConfirmTime = _this.formatTime(_this.formData.approveConfirmTime, 'Y-M-D') || '';
@@ -790,8 +761,7 @@ var app = new Vue({
 
               aeaExProjDrawing = _this.formData;
               aeaExProjDrawing.aeaProjDrawing = drawings;
-
-                request('', {
+              request('', {
                 type: 'post',
                 url: ctx + 'rest/form/drawing/saveAeaExProjDrawing.do',
                 ContentType: 'application/json',
