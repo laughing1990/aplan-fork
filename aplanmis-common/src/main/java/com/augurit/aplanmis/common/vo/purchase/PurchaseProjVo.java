@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.common.vo.purchase;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -58,6 +59,7 @@ public class PurchaseProjVo {
 
     @ApiModelProperty(value = "发布时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private java.util.Date publishTime;
 
     @ApiModelProperty(value = "金额说明")
@@ -83,6 +85,16 @@ public class PurchaseProjVo {
 
     @ApiModelProperty(value = "是否确认服务金额 0 否 1 是")
     private String isDefineAmount;
+
+    @ApiModelProperty(value = "报名截止日期")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private java.util.Date expirationDate;
+
+    @ApiModelProperty(value = "选取中介时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private java.util.Date choiceImunitTime;
 
     //============================== 单位要求字段 ===============================
     @ApiModelProperty(value = "中介机构要求信息ID")

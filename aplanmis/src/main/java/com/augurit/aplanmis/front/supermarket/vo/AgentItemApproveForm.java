@@ -44,11 +44,12 @@ public class AgentItemApproveForm {
     private ApplyFormVo.LinkmanInfoVo linkmanInfoVo;
     private ApplyInfoVo applyInfoVo;*/
 
-    public void changeToIteminst(AeaHiIteminst iteminst) {
+    public void changeToIteminst(AeaHiIteminst iteminst, String serviceObject) {
         Iteminst inst = new Iteminst();
         BeanUtils.copyProperties(iteminst, inst);
         this.iteminst = inst;
         this.iteminstName = inst.getIteminstName();
+        inst.setServiceObj(serviceObject);
     }
 
     public List<ApplyFormVo.UnitInfoVo> changeUnit2vo(List<AeaUnitInfo> unitInfos) {
