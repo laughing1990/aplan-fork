@@ -385,7 +385,7 @@ public class AeaItemStateAdminService {
         List<MindBaseNode> childNodes = new ArrayList<>();
         List<AeaItemInout> allStateIns = new ArrayList<>();
         List<AeaItemInout> allCommonIns = new ArrayList<>();
-        MindBaseNode orgNode = buildItemTreeRootNode(itemVerId, rootOrgId);
+        MindBaseNode mindBaseNode = buildItemTreeRootNode(itemVerId, rootOrgId);
 
         // 根据itemVerId和stateVerId获取所有的情形
         List<AeaItemState> allStates = preFetchAllStates(itemVerId, stateVerId, rootOrgId);
@@ -393,15 +393,12 @@ public class AeaItemStateAdminService {
         // 获取事项某事项版本情形版本的材料、证照、表单
         if(aeaMindUi!=null){
             List<String> matProps = new ArrayList<>();
-            // 显示事项下的通用材料
             if(aeaMindUi.isShowMat()){
                 matProps.add(MindType.M.getValue());
             }
-            // 显示事项下的通用证照
             if(aeaMindUi.isShowCert()){
                 matProps.add(MindType.C.getValue());
             }
-            // 显示事项下的通用表单
             if(aeaMindUi.isShowForm()) {
                 matProps.add(MindType.F.getValue());
             }
@@ -416,14 +413,14 @@ public class AeaItemStateAdminService {
         }
 
         // 构造子树节点，包括情形和材料
-        node(itemVerId, itemVerId, allStates, allStateIns, childNodes, aeaMindUi, rootOrgId);
+        node(itemVerId, itemVerId, allStates, allStateIns, childNodes, rootOrgId);
 
         // 封装事项某事项版本情形版本的所有通用材料、证照、表单
         getBaseNode(allCommonIns, childNodes, itemVerId);
 
         // 设置根节点的孩子们
-        orgNode.setChilds(childNodes.toArray(new MindBaseNode[]{}));
-        return orgNode;
+        mindBaseNode.setChilds(childNodes.toArray(new MindBaseNode[]{}));
+        return mindBaseNode;
     }
 
     /**
@@ -469,7 +466,7 @@ public class AeaItemStateAdminService {
      * @param aeaMindUi
      */
     private void node(String itemVerId, String parentId, List<AeaItemState> allStates, List<AeaItemInout> allStateIns,
-                      List<MindBaseNode> childNodes, AeaMindUi aeaMindUi, String rootOrgId) {
+                      List<MindBaseNode> childNodes, String rootOrgId) {
 
         List<AeaItemState> list = extractStatesByParentIdAndItemVerId(parentId, itemVerId, allStates);
         if (CollectionUtils.isEmpty(list)) {
@@ -496,7 +493,7 @@ public class AeaItemStateAdminService {
             }
 
             //递归处理子情形节点
-            node(itemVerId, state.getItemStateId(), allStates, allStateIns, stateChildren, aeaMindUi, rootOrgId);
+            node(itemVerId, state.getItemStateId(), allStates, allStateIns, stateChildren, rootOrgId);
             if(stateInChildren!=null&&stateInChildren.size()>0){
                 stateChildren.addAll(stateInChildren);
             }

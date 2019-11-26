@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.common.domain;
 
+import com.augurit.agcloud.framework.util.StringUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -17,6 +18,7 @@ import java.util.List;
 public class AeaParState implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     private String parStateId;
     /**
      * 阶段定义ID
@@ -117,12 +119,18 @@ public class AeaParState implements Serializable {
      */
     @ApiModelProperty("问题答案列表")
     List<AeaParState> answerStates;
-    //选择的子情形ID
+
     @ApiModelProperty(value = "选择的子情形ID")
     private String selectAnswerId="";
 
     // 扩展字段
     private String keyword;
+
     @ApiModelProperty(value = "父问题情形ID")
     private String parentQuestionStateId;
+
+    public boolean firstLevelState() {
+
+        return StringUtils.isBlank(parentStateId);
+    }
 }
