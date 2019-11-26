@@ -167,7 +167,6 @@
         from AEA_ITEM_INOUT inout1, AEA_ITEM_MAT mat
         <where>
                 and  inout1.MAT_ID = mat.MAT_ID
---                 and  inout1.ROOT_ORG_ID = mat.ROOT_ORG_ID
                 and  inout1.ROOT_ORG_ID = #{rootOrgId}
                 and  inout1.IS_DELETED = '0'
                 and  mat.IS_DELETED = '0'
@@ -200,6 +199,12 @@
             </if>
             <if test="matProp!=null and  matProp!='' ">
                 and  mat.MAT_PROP = #{matProp}
+            </if>
+            <if test="matProps!=null and matProps.size()>0">
+                and  mat.MAT_PROP in
+                <foreach collection="matProps" item="matPropItem" open="(" close=")" separator=",">
+                    #{matPropItem}
+                </foreach>
             </if>
         </where>
     </select>
