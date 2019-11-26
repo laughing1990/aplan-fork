@@ -77,7 +77,7 @@ var app = new Vue({
         if (flag) {
           return callback(new Error('请输入正确的单位负责人身份证号码！'));
         } else {
-          if (len != 9) {
+          if (len != 18) {
             return callback(new Error('请输入18位单位负责人身份证号码！'));
           } else {
             callback();
@@ -548,6 +548,17 @@ var app = new Vue({
         vm.$message.error('服务器错了哦!');
       })
     },
+    changeData: function(oldData, newData) {
+      var _this = this;
+      oldData.forEach(function(item) {
+        if (item.addressId == newData.addressId) {
+          item.addressIdCard = newData.addressIdCard;
+          item.addressMail = newData.addressMail;
+          item.addressName = newData.addressName;
+          item.addressPhone = newData.addressPhone;
+        }
+      });
+    },
     // 保存联系人信息
     saveAeaLinkmanInfo: function(linkmanType) {
       var _that = this;
@@ -570,7 +581,7 @@ var app = new Vue({
           }, function(result) {
             if (result.success) {
               _that.$message({
-                message: '保存成功',
+                message: msg,
                 type: 'success'
               });
 
@@ -578,10 +589,10 @@ var app = new Vue({
               _that.loading = false;
               var item = {
                 addressId: result.content,
-                addressIdCard: _that.addEditManModalShow.linkmanCertNo,
-                addressMail: _that.addEditManModalShow.linkmanMail,
-                addressName: _that.addEditManModalShow.linkmanName,
-                addressPhone: _that.addEditManModalShow.linkmanMobilePhone,
+                addressIdCard: _that.addEditManform.linkmanCertNo,
+                addressMail: _that.addEditManform.linkmanMail,
+                addressName: _that.addEditManform.linkmanName,
+                addressPhone: _that.addEditManform.linkmanMobilePhone,
               }
               if (_that.addEditManModalFlag == 'add') {
                 if (_that.curUnit == 'shencha') {
@@ -590,6 +601,14 @@ var app = new Vue({
                   _that.shejiPerson.push(item);
                 } else {
                   _that.kanchaPerson.push(item);
+                }
+              } else {
+                if (_that.curUnit == 'shencha') {
+                  _that.changeData(_that.shenchaPerson, item);
+                } else if (_that.curUnit == 'sheji') {
+                  _that.changeData(_that.shejiPerson, item);
+                } else {
+                  _that.changeData(_that.kanchaPerson, item);
                 }
               }
             }
@@ -650,8 +669,9 @@ var app = new Vue({
       this.addEditManform.unitName = row.applicant;
       this.addEditManform.unitInfoId = row.unitInfoId;
     },
-    edit: function(row, formData) {
+    edit: function(row, formData, type) {
       // this.addEditManform = row;
+      this.curUnit = type;
       this.addEditManModalShow = true;
       this.addEditManModalTitle = '编辑联系人';
       this.backDLinkmanInfo(row, formData);

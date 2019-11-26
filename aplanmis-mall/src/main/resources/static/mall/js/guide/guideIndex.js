@@ -105,7 +105,7 @@ var guideIndex = (function () {
         data: {
             ctx: ctx,
             approvalwayTypeFlag: true,
-            approvalWayActiveName: [1, 2, 3],
+            approvalWayActiveName: 1,
             tableData: [],
             pageSize: 10,
             page: 1,
