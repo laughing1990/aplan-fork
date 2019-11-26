@@ -512,7 +512,9 @@ var app = new Vue({
     // 模糊查询人员
     getPerson: function(val, type) {
       var vm = this;
-
+      if (!val.unitInfoId) {
+        return;
+      }
       request('', {
         type: 'get',
         url: ctx + 'rest/linkman/list',
@@ -575,13 +577,20 @@ var app = new Vue({
               _that.addEditManModalShow = false;
               _that.loading = false;
 
+              var item = {
+                addressId: result.content,
+                addressIdCard: _that.addEditManModalShow.linkmanCertNo,
+                addressMail: _that.addEditManModalShow.linkmanMail,
+                addressName: _that.addEditManModalShow.linkmanName,
+                addressPhone: _that.addEditManModalShow.linkmanMobilePhone,
+              }
               if (_that.addEditManModalFlag == 'add') {
                 if (_that.curUnit == 'shencha') {
-                  _that.getPerson(_that.formDataTuShen, 'shencha');
+                  _that.shenchaPerson.push(item);
                 } else if (_that.curUnit == 'sheji') {
-                  _that.getPerson(_that.formDataSheJj, 'sheji');
+                  _that.shejiPerson.push(item);
                 } else {
-                  _that.getPerson(_that.formDataKanCha, 'kancha');
+                  _that.kanchaPerson.push(item);
                 }
               }
             }
