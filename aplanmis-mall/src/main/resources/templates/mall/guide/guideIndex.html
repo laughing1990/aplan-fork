@@ -58,14 +58,14 @@
               </div>
               <div class="wt-tab-content" style="padding-top: 16px;">
                   <!-- 按主题申报 start -->
-                  <transition name="el-fade-in-linear">
+                  <!--<transition name="el-fade-in-linear">-->
                       <div class="wt-tab-item clearfix" id="themeApproval" v-show="approvalwayTypeFlag" >
                           <div class="guide-content-left"  v-loading="themeLoading">
                               <ul id="themeul">
                                   <el-collapse v-model="approvalWayActiveName" @change="approvelWayActiveChange">
                                       <el-collapse-item :name="index+1" v-for="(item, index) in themeListData" :key="index">
                                         <template slot="title">
-                                          <li class="theme-type theme-list active" >
+                                          <li class="theme-type theme-list" :class="{'active':approvalWayActiveName === (index+1)}">
                                             <p class="theme-type-name ellipsis"><i class="theme-type-icon"></i>{{item.themeTypeName}} <i class="tooggle-icon"></i></p>
                                           </li>
                                         </template>
@@ -494,7 +494,7 @@
                           </div>
                         <!--<a :href="ctx+'rest/main/toIndexPage#/userCenterIndex'"><el-button type="primary" class="imediaBtn">立即办理</el-button></a>-->
                       </div>
-                  </transition>
+                  <!--</transition>-->
                   <!-- 按主题申报 end -->
                   <!-- 按部门申报 start -->
                   <transition name="el-fade-in-linear">
