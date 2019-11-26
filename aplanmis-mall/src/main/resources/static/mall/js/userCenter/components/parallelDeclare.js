@@ -397,6 +397,9 @@ var module1 = new Vue({
       stageFrontCheckMsg: '', // 阶段前置检测失败提示
       leftTabClosed: true, //
       selThemeDialogShow: false, // 是否展示
+      rootUnitInfoId: '',
+      rootLinkmanInfoId: '',
+      ootApplyLinkmanId: '',
     }
   },
   mounted: function () {
@@ -595,8 +598,6 @@ var module1 = new Vue({
     },
     // 切换我的材料选中状态 flag ==dir 我的空间选中材料
     changeMyMatSel: function (val, selMatData, flag) {
-      console.log(val, selMatData);
-      console.log(this.selMatRowData);
       var _that = this;
       var fileId = flag == 'dir' ? selMatData.detailId : selMatData.fileId;
       var param = {
@@ -3326,6 +3327,7 @@ var module1 = new Vue({
     showOneFormDialog1: function(oneformMat){
       var _that = this;
       var _applyinstId = _that.parallelApplyinstId;
+      _that.selMatRowData = oneformMat;
       _that.matformNameTitle = oneformMat.matName
       if(_applyinstId==''){
         _that.getParallelApplyinstId('matForm',oneformMat.stoFormId)
@@ -3337,7 +3339,7 @@ var module1 = new Vue({
     getOneFormrender3: function(_applyinstId,_formId){
       var _that = this;
       // _formId = 'ecbebb64-a29c-41c6-abb7-e7b337a1a2cb';
-      var sFRenderConfig='&showBasicButton=true&includePlatformResource=false';
+      var sFRenderConfig='&showBasicButton=true&includePlatformResource=false&busiScence=mat';
       request('', {
         url: ctx + 'bpm/common/sf/renderHtmlFormContainer?listRefEntityId='+_applyinstId+'&listFormId='+_formId+sFRenderConfig,
         type: 'get',
@@ -3971,4 +3973,23 @@ var module1 = new Vue({
     },
   },
 });
+function callbackAfterSaveSFForm(result,sFRenderConfig,formModelVal,actStoForminst) {
+  console.log(result,sFRenderConfig.busiScence,formModelVal,actStoForminst);
+  if(sFRenderConfig.busiScence=='mat'){
+    var parma = {
+      "linkmainInfoId": module1.userInfoId,
+      "matId": module1.selMatRowData.matId,
+      "projInfoId": module1.projInfoId,
+      "stoForminstId": actStoForminst.stoForminstId,
+      "unitInfoId": module1.unitInfoId
+    };
+    request('', {
+      url: ctx + 'aea/cert/bind/form',
+      type: 'POST',
+      ContentType: 'application/json',
+      data: JSON.stringify(parma),
+    }, function (result1) {
+    }, function (msg) {})
+  }
+}
 
