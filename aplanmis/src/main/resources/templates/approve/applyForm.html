@@ -81,6 +81,64 @@
       padding: 0px;
     }
     
+    .el-table thead.is-group th {
+      border-color: #DCDFE6;
+    }
+    
+    .upload-flie-dialog .el-dialog__body {
+      padding: 15px 10px 30px 10px;
+    }
+    
+    .upload-flie-dialog .file-opt-btn {
+      padding: 0 10px 10px 10px;
+      border-bottom: 1px solid #E0E3E9;
+      margin-bottom: 10px;
+    }
+    
+    .upload-flie-dialog .upload-s-file {
+      display: inline-block;
+      height: 34px;
+      line-height: 34px;
+      margin: 0 10px;
+    }
+    
+    .upload-flie-dialog .upload-s-file .el-button {
+      font-size: 12px;
+    }
+    .mat-children {
+      padding: 10px 73px;
+    }
+
+    .mat-children .file-list-tab {
+      line-height: 30px;
+      height: 30px;
+    }
+    .content-tables-u th:nth-child(2),
+    .content-tables-u td:nth-child(2) {
+      /*border-right: none;*/
+    }
+
+    .content-tables-u .el-table__expanded-cell[class*=cell] {
+      padding: 0;
+    }
+    .file-icon-btn {
+      margin-left: 25px;
+      color: #169AFF;
+      display: none;
+    }
+
+    .file-icon-btn > span {
+      display: inline-block;
+      width: 25px;
+      height: 25px;
+      font-size: 16px;
+    }
+
+    .file-list-tab:hover .file-icon-btn {
+      display: inline-block;
+    }
+    
+    
     /* 失信 end */
   </style>
   
@@ -734,6 +792,132 @@
         <div class="show-more-btn" @click="showMore=!showMore">{{showMore?"收起":"显示更多"}}</div>
       </el-form>
     </div>
+    
+    <div class="table-part-title" v-if="isShowMatForm=='true'"><i class="header-icon el-icon-document-copy"></i>材料一单清
+    </div>
+    <div class="part-info-box c-f" v-if="isShowMatForm=='true'">
+      <el-form :rules="model.rules" :model="model" ref="formTest">
+        <el-table :data="model.matsTableData" row-key="matId" class="mats-table content-tables-u"
+                  :expand-row-keys="showFileListKey"
+                  style="width: 100%;margin-top:15px;">
+          <el-table-column label='序号' align="center" type="index" width="50"></el-table-column>
+          <el-table-column type="expand" v-if="showMatTableExpand" width="20" align="right" class="expand-row-ui">
+            <template slot-scope="props">
+              
+              <div class="mat-children" v-if="props.row.fileList.length>0">
+                <div v-for="item in props.row.fileList" class="file-list-tab" :key="item.fileId">
+                        <span class="file-name">
+                          <span class="icon ag ag-filetype-doc"
+                                :class="'ag-filetype-'+getFileType(item.fileName)"></span>
+                          {{item.fileName}}
+                        </span>
+                  <span class="file-icon-btn">
+                          <span title="预览" class="el-icon-search" @click="filePreview(item)"></span>
+                          <span title="下载" class="el-icon-download" @click="downOneFile(item)"></span>
+                          <span title="删除" class="el-icon-delete" @click="delOneFile(item,props.row)"></span>
+                        </span>
+                </div>
+              </div>
+              <div v-else>
+                <div class="mat-children">
+                  <div class="file-list-tab no-file">暂无附件</div>
+                </div>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="matName" label="材料名称" min-width="220"></el-table-column>
+          <!--        <el-table-column label="收件要点" min-width="50" align="center">-->
+          <!--          <template slot-scope="scope">-->
+          <!--            <el-tooltip class="item custor" effect="light" :content="scope.row.reviewKeyPoints" placement="right">-->
+          <!--              <span class="el-icon el-icon-search"></span>-->
+          <!--            </el-tooltip>-->
+          <!--          </template>-->
+          <!--        </el-table-column>-->
+          <!--        <el-table-column align="center" label="要点示例" min-width="55">-->
+          <!--          <template slot-scope="scope">-->
+          <!--            <el-popover class="custor" placement="right" width="60" trigger="hover">-->
+          <!--              <p class="notice-pop" @click="showMatFiles(scope.row.matId,'TEMPLATE_DOC')">-->
+          <!--                空表</p>-->
+          <!--              <p class="notice-pop" @click="showMatFiles(scope.row.matId,'SAMPLE_DOC')">样表 </p>-->
+          <!--              <p class="notice-pop" @click="showMatFiles(scope.row.matId,'REVIEW_SAMPLE_DOC')">收件样本</p>-->
+          <!--              <i slot="reference" class="el-icon el-icon-more"></i>-->
+          <!--            </el-popover>-->
+          <!--          </template>-->
+          <!--        </el-table-column>-->
+          <!--        <el-table-column align="center" label="是否容缺" min-width="55">-->
+          <!--          <template slot-scope="scope">-->
+          <!--            <span :class="(scope.row.zcqy!='0')?'text-green':''">{{(scope.row.zcqy=='0')?'否':'是'}}</span>-->
+          <!--          </template>-->
+          <!--        </el-table-column>-->
+          <el-table-column label="纸质件" align="center">
+            <el-table-column label="原件" align="center">
+              <el-table-column prop="duePaperCount" align="center" label="份数" min-width="60"></el-table-column>
+              <el-table-column prop="realPaperCount" align="center" label="收/验" min-width="70">
+                <template slot-scope="scope">
+                  <el-form-item :prop="'matsTableData.' + scope.$index + '.realPaperCount'"
+                                :rules='(scope.row.zcqy==0&&scope.row.paperIsRequire==1)?model.rules.realPaperCount:[]'>
+                    
+                    <el-input size="mini" v-model="scope.row.realPaperCount"></el-input>
+                  </el-form-item>
+                </template>
+              </el-table-column>
+              <el-table-column align="center" width="98">
+                <template slot-scope="scope" slot="header">
+                  <el-checkbox v-model="getPaperAll" @change="function(val) {checkAllMatChange(val,'paper')}">全选
+                  </el-checkbox>
+                </template>
+                <template slot-scope="scope">
+                  <el-form-item :prop="'matsTableData.' + scope.$index + '.getPaper'"
+                                :rules='(scope.row.zcqy==0&&scope.row.paperIsRequire==1)?model.rules.getPaper:[]'>
+                    <el-checkbox v-model="scope.row.getPaper" :key="scope.row.matinstId"
+                                 @change="function(value) {checkedMatChange(value,scope.$index,'paper')}">
+                      已收/验
+                    </el-checkbox>
+                  </el-form-item>
+                </template>
+              </el-table-column>
+            </el-table-column>
+            <el-table-column label="复印件" align="center">
+              <el-table-column prop="dueCopyCount" align="center" label="份数" min-width="60"></el-table-column>
+              <el-table-column prop="realCopyCount" align="center" label="收/验" min-width="70">
+                <template slot-scope="scope">
+                  <el-form-item :prop="'matsTableData.' + scope.$index + '.realCopyCount'">
+                    <el-input size="mini" v-model="scope.row.realCopyCount"></el-input>
+                  </el-form-item>
+                </template>
+              </el-table-column>
+              <el-table-column align="center" width="98">
+                <template slot-scope="scope" slot="header">
+                  <el-checkbox v-model="getCopyAll" @change="function(val){ checkAllMatChange(val,'copy')}">全选
+                  </el-checkbox>
+                </template>
+                <template slot-scope="scope">
+                  <el-form-item :prop="'matsTableData.' + scope.$index + '.getCopy'">
+                    <el-checkbox v-model="scope.row.getCopy" :key="scope.row.matinstId"
+                                 @change="function(value){ checkedMatChange(value,scope.$index,'copy')}">
+                      已收/验
+                    </el-checkbox>
+                  </el-form-item>
+                </template>
+              </el-table-column>
+            </el-table-column>
+          </el-table-column>
+          <el-table-column label="电子件" align="center">
+            <el-table-column align="center" label="必须" min-width="70">
+              <template slot-scope="scope">
+                <span
+                    :class="(scope.row.attIsRequire==1)?'text-green':''">{{(scope.row.attIsRequire==1)?'是':'否'}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="附件" min-width="60" align="center">
+              <template slot-scope="scope">
+                <i class="upload-flie-icon el-icon-upload" style="cursor: pointer;" @click="showUploadWindow(scope.row)"></i>
+              </template>
+            </el-table-column>
+          </el-table-column>
+        </el-table>
+      </el-form>
+    </div>
   
   </template>
   <template data-title="非中介事项" v-else>
@@ -1280,7 +1464,36 @@
     </div>
   
   </template>
-
+  
+  <!--文件上传下载弹窗 start-->
+  <el-dialog v-loading="loadingFileWin" element-loading-text="文件上传中" element-loading-spinner="el-icon-loading"
+             element-loading-background="rgba(0, 0, 0, 0.3)" class="upload-flie-dialog" :title="showUploadWindowTitle"
+             :visible.sync="showUploadWindowFlag" @closed="uploadTableData=[]" width="750px" top="5vh">
+    <div class="upload-file-content">
+      <div class="file-opt-btn">
+        <el-button type="primary" size="small" @click="downloadFile()">下载</el-button>
+        <el-upload size="small" ref="uploadFileWin" class="upload-s-file" :action="'rest/mats/att/upload'"
+                   :show-file-list="false" :http-request="debounceHandler" multiple :file-list="fileList">
+          <el-button slot="trigger" size="small" type="primary">上传</el-button>
+        </el-upload>
+        <el-button size="small" type="primary" @click="delSelectFileCom()">删除</el-button>
+        <!--        <el-button type="primary" @click="openPhotoWindow(selMatRowData,'lt')">良田拍照</el-button>-->
+        <!--        <el-button type="primary" @click="openPhotoWindow(selMatRowData,'fz')">方正拍照</el-button>-->
+      </div>
+      <el-table :data="uploadTableData" border @selection-change="selectionFileChange">
+        <el-table-column type="selection" align="center" width="55"></el-table-column>
+        <el-table-column prop="fileName" label="文件名"></el-table-column>
+        <el-table-column label="操作" align="center" width="200">
+          <template slot-scope="scope">
+            <el-button type="primary" size="mini" :loading="loading" @click="filePreview(scope.row)">预览</el-button>
+<!--            <el-button type="primary" size="mini" :disabled="getFileType(scope.row.fileName)!=='pdf'"-->
+<!--                       @click="filePreview(scope.row,'pdf')">查看施工图-->
+<!--            </el-button>-->
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+  </el-dialog>
 </div>
 </body>
 <!--引入公共js-->
@@ -1290,6 +1503,7 @@
         th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
 <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
         th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="../../static/common/js/axios.min.js" th:src="@{/common/js/axios.min.js}"></script>
 <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
         th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
 <script src="../../static/approve/js/applyForm.js" th:src="@{/approve/js/applyForm.js}"></script>
