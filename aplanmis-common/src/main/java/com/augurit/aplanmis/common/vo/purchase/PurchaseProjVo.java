@@ -96,6 +96,9 @@ public class PurchaseProjVo {
     @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private java.util.Date choiceImunitTime;
 
+    @ApiModelProperty(value = "业主投诉电话")
+    private String ownerComplaintPhone;
+
     //============================== 单位要求字段 ===============================
     @ApiModelProperty(value = "中介机构要求信息ID")
     private String unitRequireId;

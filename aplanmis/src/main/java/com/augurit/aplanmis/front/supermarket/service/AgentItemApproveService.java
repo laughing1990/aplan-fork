@@ -4,15 +4,10 @@ import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
 import com.augurit.agcloud.bsc.mapper.BscDicCodeMapper;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaHiIteminst;
-import com.augurit.aplanmis.common.domain.AeaItemBasic;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.common.mapper.AeaImMajorQualMapper;
-import com.augurit.aplanmis.common.mapper.AeaImProjPurchaseMapper;
-import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
-import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
+import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
+import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.vo.AeaImMajorQualVo;
 import com.augurit.aplanmis.common.vo.purchase.PurchaseProjVo;
 import com.augurit.aplanmis.front.approve.service.ApproveService;
@@ -51,6 +46,11 @@ public class AgentItemApproveService {
     private AeaItemBasicMapper aeaItemBasicMapper;
     @Autowired
     private RestItemService restItemService;
+    @Autowired
+    private AeaProjInfoService aeaProjInfoService;
+    @Autowired
+    private AeaParentProjMapper aeaParentProjMapper;
+
     /**
      * 获取中介事项申报基本信息
      *
@@ -70,8 +70,12 @@ public class AgentItemApproveService {
         String isApproveProj = purchaseProj.getIsApproveProj();
         if (StringUtils.isNotBlank(isApproveProj) && "1".equals(isApproveProj)) {
             //查询关联的投资审批项目信息
-            AeaProjInfo parentProj = aeaProjInfoMapper.findParentProj(purchaseProj.getProjInfoId());
-            form.setAeaProjInfo(parentProj);
+            AeaParentProj parentProj = aeaParentProjMapper.getParentProjByProjInfoId(purchaseProj.getProjInfoId());
+            if (null != parentProj) {
+                AeaProjInfo projInfo = aeaProjInfoService.getTransProjInfoDetail(parentProj.getParentProjId());
+                form.setAeaProjInfo(projInfo);
+            }
+
         }
         //查询资质信息
         String unitRequireId = purchaseProj.getUnitRequireId();

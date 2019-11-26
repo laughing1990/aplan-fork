@@ -4,6 +4,7 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.constants.ApplyType;
 import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import com.augurit.aplanmis.common.domain.AeaHiSmsInfo;
 import com.augurit.aplanmis.common.domain.AeaParStageItem;
@@ -167,7 +168,7 @@ public class RestApplyCotroller {
     @ApiOperation(value = "草稿箱视图的申报 --> 发起申报", notes = "草稿箱视图的申报 --> 发起申报", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applyinstId", value = "申请实例id", required = true, dataType = "string", paramType = "query", readOnly = true),
-            @ApiImplicitParam(name = "comment", value = "办理意见", required = false, dataType = "string", paramType = "query", readOnly = true)
+            @ApiImplicitParam(name = "comment", value = "办理意见", dataType = "string", paramType = "query", readOnly = true)
     })
     public ResultForm startProcessFlow(String applyinstId, String comment) throws Exception {
         if (StringUtils.isBlank(applyinstId)) {
@@ -177,7 +178,7 @@ public class RestApplyCotroller {
         if (aeaHiApplyinst != null) {
             try {
                 String isSeriesApprove = aeaHiApplyinst.getIsSeriesApprove();
-                if ("1".equals(isSeriesApprove)) {
+                if (ApplyType.SERIES.getValue().equals(isSeriesApprove)) {
                     SeriesApplyDataVo seriesApplyDataVo = new SeriesApplyDataVo();
                     seriesApplyDataVo.setApplyinstId(applyinstId);
                     seriesApplyDataVo.setComments(comment);

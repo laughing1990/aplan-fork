@@ -34,41 +34,41 @@
                     <el-row>
                         <el-col :span="8">
                             <el-form-item label="事项名称：">
-                                <el-input v-model="form.name"></el-input>
+                                {{form.iteminst.iteminstName}}
                             </el-form-item>
                         </el-col>
                         <el-col :span="8">
                             <el-form-item label="实施主体：">
-                                <el-input v-model="form.name"></el-input>
+                                {{form.iteminst.approveOrgName}}
                             </el-form-item>
                         </el-col>
                         <el-col :span="8">
                             <el-form-item label="服务对象：">
-                                <el-input v-model="form.name"></el-input>
+                                {{form.iteminst.serviceObj}}
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row>
                         <el-col :span="8">
                             <el-form-item label="办件类型：">
-                                <el-input v-model="form.name"></el-input>
+                                {{form.iteminst.itemProperty}}
                             </el-form-item>
                         </el-col>
                         <el-col :span="8">
                             <el-form-item label="法定办结期限：">
-                                <el-input v-model="form.name"></el-input>
+                                {{form.iteminst.dueNum}}（{{form.iteminst.dueNumUnit}}）
                             </el-form-item>
                         </el-col>
                         <el-col :span="8">
                             <el-form-item label="承诺办结期限：">
-                                <el-input v-model="form.name"></el-input>
+                                {{form.iteminst.isSeriesApprove}}（{{form.iteminst.itemProperty}}）
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row>
                         <el-col :span="8">
                             <el-form-item label="关联的行政事项：">
-                                <el-input v-model="form.name"></el-input>
+                                {{form.iteminst.relevancyItemName }}
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -80,15 +80,15 @@
                     </template>
 
                     <el-form-item label="项目/工程名称">
-                        <el-input v-model="form.name"></el-input>
+                        <el-input v-model="form.aeaProjInfo.projName"></el-input>
                     </el-form-item>
 
                     <div class="clearfix">
                         <el-form-item label="项目代码" class="inline-block">
-                            <el-input v-model="form.name"></el-input>
+                            <el-input v-model="form.aeaProjInfo.localCode"></el-input>
                         </el-form-item>
                         <el-form-item label="工程代码" class="inline-block">
-                            <el-input v-model="form.name"></el-input>
+                            <el-input v-model="form.aeaProjInfo.gcbm"></el-input>
                         </el-form-item>
                     </div>
                 </el-collapse-item>
@@ -99,23 +99,19 @@
                     </template>
                     <div class="clearfix">
                         <el-form-item label="项目联系人" class="inline-block">
-                            <el-input v-model="form.name"></el-input>
+                            <el-input v-model="form.purchaseProj.contacts"></el-input>
                         </el-form-item>
                         <el-form-item label="联系电话" class="inline-block">
-                            <el-input v-model="form.name"></el-input>
+                            <el-input v-model="form.purchaseProj.moblie"></el-input>
                         </el-form-item>
                         <el-form-item label="采购项目名称" class="inline-block">
-                            <el-input v-model="form.name"></el-input>
+                            <el-input v-model="form.purchaseProj.projName"></el-input>
                         </el-form-item>
 
                         <el-form-item label="项目规模" class="inline-block">
-                            <el-input placeholder="请选择项目规模" v-model="form.name" class="input-with-select">
-                                <el-select v-model="form.name" slot="prepend" placeholder="请选择">
-                                    <el-option v-for="item in projScaleOptions" :key="item.value" :label="item.label"
-                                        :value="item.value">
-                                    </el-option>
-                                </el-select>
-                                <el-button slot="append" icon="el-icon-search"></el-button>
+                            <el-input placeholder="请选择项目规模" v-model="form.purchaseProj.projScaleContent"
+                                class="input-with-select">
+                                <span slot="prepend">{{form.purchaseProj.projScale}}</span>
                             </el-input>
                         </el-form-item>
                     </div>
@@ -123,69 +119,79 @@
                     <el-form-item label="资源来源比例">
                         <el-row>
                             <el-col :span="12">
-                                财政资金(%)<el-input v-model="form.name" style="width: 63%;"></el-input>
+                                财政资金(%)<el-input v-model="form.purchaseProj.financialFundProportion"
+                                    style="width: 63%;"></el-input>
                             </el-col>
                             <el-col :span="12">
-                                社会资金(%)<el-input v-model="form.name" style="width: 63%;"></el-input>
+                                社会资金(%)<el-input v-model="form.purchaseProj.socialFundProportion" style="width: 63%;">
+                                </el-input>
                             </el-col>
                         </el-row>
                     </el-form-item>
                     <el-form-item label="所需服务">
-                        <el-input v-model="form.name" style="width: 63%;"></el-input>
+                        <el-input v-model="form.purchaseProj.serviceName" style="width: 63%;"></el-input>
                     </el-form-item>
                     <el-form-item label="服务时限说明">
-                        <el-input v-model="form.name" style="width: 63%;"></el-input>
+                        <el-input v-model="form.purchaseProj.serviceTimeExplain" style="width: 63%;"></el-input>
                     </el-form-item>
                     <el-form-item label="服务内容">
-                        <el-input v-model="form.name" style="width: 63%;"></el-input>
+                        <el-input v-model="form.purchaseProj.serviceContent" style="width: 63%;"></el-input>
                     </el-form-item>
                     <el-form-item label="中介服务机构要求">
-                        <el-input v-model="form.name"></el-input>
+                        <el-input v-if="form.purchaseProj.isQualRequire === '1'" value="资质(资格)要求"></el-input>
+                        <el-input v-if="form.purchaseProj.isRegisterRequire === '1'" value="执业/职业人员要求"></el-input>
+                        <el-input v-if="form.purchaseProj.isRecordRequire === '1'" value="备案要求"></el-input>
+                        <el-input v-if="form.purchaseProj.promiseService === '1'" value="仅承诺服务即可"></el-input>
+                        <el-input v-else></el-input>
                     </el-form-item>
 
                     <!--资质（资格）要求 start-->
                     <el-form-item label="资质要求">
-                        <el-input v-model="form.name"></el-input>
+                        <el-input v-if="form.purchaseProj.qualRequireType === '0'" value="多个资质子项符合其一"></el-input>
+                        <el-input v-if="form.purchaseProj.qualRequireType === '1'" value="需要同时符合所有选中资质子项"></el-input>
                     </el-form-item>
                     <el-form-item label="资质要求说明">
-                        <el-input v-model="form.name" type="textarea" rows="3"></el-input>
+                        <el-input v-model="form.purchaseProj.qualRequireExplain" type="textarea" rows="3"></el-input>
                     </el-form-item>
                     <!--资质（资格）要求 end-->
 
                     <!--执业/职业人员要求 start-->
                     <el-form-item label="执业/职业人员总数">
-                        <el-input v-model="form.name"></el-input>
+                        <el-input v-model="form.purchaseProj.registerTotal"></el-input>
                     </el-form-item>
                     <el-form-item label="执业/职业人员要求">
-                        <el-input v-model="form.name" type="textarea" rows="3"></el-input>
+                        <el-input v-model="form.purchaseProj.registerRequire" type="textarea" rows="3"></el-input>
                     </el-form-item>
                     <!--执业/职业人员要求 end-->
 
                     <!--备案要求 start-->
                     <el-form-item label="备案要求说明">
-                        <el-input v-model="form.name" type="textarea" rows="3"></el-input>
+                        <el-input v-model="form.purchaseProj.recordRequireExplain" type="textarea" rows="3"></el-input>
                     </el-form-item>
                     <!--备案要求 end-->
 
                     <el-form-item label="其他要求说明">
-                        <el-input v-model="form.name" type="textarea" rows="3"></el-input>
+                        <el-input v-model="form.purchaseProj.otherRequireExplain" type="textarea" rows="3"></el-input>
                     </el-form-item>
 
                     <el-form-item label="选取中介服务机构方式">
-                        <el-input v-model="form.name"></el-input>
+                        <el-input v-if="form.purchaseProj.biddingType === '1'" value="随机抽取"></el-input>
+                        <el-input v-if="form.purchaseProj.biddingType === '2'" value="直接抽取"></el-input>
+                        <el-input v-if="form.purchaseProj.biddingType === '3'" value="竞价选取"></el-input>
                     </el-form-item>
 
                     <!--随机选取 start-->
                     <el-form-item label="是否确认金额">
-                        <el-input v-model="form.name"></el-input>
+                            <el-input v-if="form.purchaseProj.isDefineAmount === '0'" value="暂不做评估与预算"></el-input>
+                        <el-input v-if="form.purchaseProj.isDefineAmount === '1'" value="确定服务金额"></el-input>
                     </el-form-item>
                     <el-form-item label="服务金额">
                         <el-row>
                             <el-col :span="12">
-                                <el-input v-model="form.name" style="width: 63%;"></el-input>元
+                                <el-input v-model="form.purchaseProj.basePrice" style="width: 63%;"></el-input>元
                             </el-col>
                             <el-col :span="12">
-                                金额大写<el-input v-model="form.name" style="width: 63%;"></el-input>
+                                金额大写<el-input v-model="form.purchaseProj.bidNum" style="width: 63%;"></el-input>
                             </el-col>
                         </el-row>
                     </el-form-item>
@@ -193,7 +199,7 @@
                         <el-input v-model="form.name"></el-input>
                     </el-form-item>
                     <el-form-item label="回避单位">
-                        <el-input v-model="form.name" type="textarea" rows="3"></el-input>
+                        <el-input v-model="form.purchaseProj.avoidUnitNames" type="textarea" rows="3"></el-input>
                     </el-form-item>
                     <el-form-item label="回避原因">
                         <el-input v-model="form.name" type="textarea" rows="3"></el-input>
@@ -214,8 +220,8 @@
                             </el-col>
                         </el-row>
                     </el-form-item>
-                    <el-form-item label="查看符合条件的中介机构">
-                        <el-input v-model="form.name" type="textarea" rows="3"></el-input>
+                    <el-form-item label="选取单位">
+                        <el-input v-model="form.purchaseProj.biddingUnitNames" type="textarea" rows="3"></el-input>
                     </el-form-item>
                     <!--直接选取 end-->
 
@@ -277,12 +283,12 @@
                     </div>
 
                     <!--附件-->
-                    <el-form-item label="附件" class="inline-block">
+                    <el-form-item label="附件">
                         <el-input v-model="form.name"></el-input>
                     </el-form-item>
 
                     <!--材料-->
-                    <el-form-item label="材料" class="inline-block">
+                    <el-form-item label="材料">
                         <el-input v-model="form.name"></el-input>
                     </el-form-item>
                 </el-collapse-item>
