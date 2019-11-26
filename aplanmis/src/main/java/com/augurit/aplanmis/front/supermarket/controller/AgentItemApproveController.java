@@ -31,7 +31,7 @@ public class AgentItemApproveController {
     @Autowired
     private AeaImProjPurchaseService aeaImProjPurchaseService;
 
-    @GetMapping("/index.html")
+    @GetMapping("/approveSubmitMat.html")
     public ModelAndView index(String taskId,String viewId,String busRecordId){
         ModelAndView mv =new ModelAndView("supermarket/approveSubmitMat");
         mv.addObject("taskId",taskId);
