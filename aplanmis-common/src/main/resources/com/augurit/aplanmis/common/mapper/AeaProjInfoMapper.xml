@@ -715,7 +715,7 @@
         WHERE LINKMAN_INFO_ID = #{linkmanInfoId}
         AND TYPE = 'link'
         )
-        AND IS_DELETED = '0' and (PROJ_FLAG = 'p' or PROJ_FLAG = 'r' or proj.PROJ_FLAG is null )
+        AND IS_DELETED = '0' and (PROJ_FLAG = 'p' or PROJ_FLAG = 'r' or PROJ_FLAG is null )
     </select>
 
     <select id="findRootAeaProjInfoByUnitInfoId" resultType="AeaProjInfo">
