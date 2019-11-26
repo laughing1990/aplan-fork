@@ -1427,9 +1427,7 @@ var module1 = new Vue({
           validFun = _that.$refs[formRef][0].validate
         }
         validFun(function (valid) {
-          if (valid) {
-            jiansheUnitFlag = true;
-          } else {
+          if (!valid) {
             jiansheUnitFlag = false;
             perUnitMsg = "请完善申办主体建设单位信息"
             return false;

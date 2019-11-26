@@ -3604,9 +3604,7 @@ var vm = new Vue({
             validFun = _that.$refs[formRef][0].validate
           }
           validFun(function(valid){
-            if(valid){
-              jiansheUnitFlag=true;
-            }else{
+            if(!valid){
               if(_that.submitCommentsType!='4') {
                 jiansheUnitFlag=false;
                 perUnitMsg = "请完善申办主体建设单位信息"
@@ -3632,10 +3630,7 @@ var vm = new Vue({
             validFun = _that.$refs[formRef][0].validate
           }
           validFun(function(valid){
-            if(valid){
-              jinbanUnitFlag=true;
-            }else{
-
+            if(!valid){
               if(_that.submitCommentsType!='4') {
                 jinbanUnitFlag=false;
                 perUnitMsg = "请完善申办主体经办单位信息"
