@@ -814,6 +814,7 @@ var module1 = new Vue({
               });
               _that.addEditManPerform.linkmanName = _that.addEditManform.linkmanName;
               _that.addEditManPerform.linkmanId = result.content;
+              _that.addEditManPerform.linkmanInfoId = result.content;
               _that.addEditManPerform.linkmanMail = _that.addEditManform.linkmanMail;
               _that.addEditManPerform.linkmanCertNo = _that.addEditManform.linkmanCertNo;
               _that.addEditManPerform.linkmanMobilePhone = _that.addEditManform.linkmanMobilePhone;
@@ -1483,6 +1484,18 @@ var module1 = new Vue({
 
                     _that.smsInfoId = data.content.smsId;
                     _that.regionalism = data.content.regionalism;
+                    if(data.content.unitReturnJson&&data.content.unitReturnJson.length>0) {
+                      var arr = data.content.unitReturnJson;
+                      arr.forEach(function (item, index) {
+                        if (_that.jiansheFrom.length > 0) {
+                          for (var i = 0; i < _that.jiansheFrom.length; i++) {
+                            if (_that.jiansheFrom[i].unifiedSocialCreditCode == item.unifiedSocialCreditCode) {
+                              _that.jiansheFrom[i].unitInfoId = item.unitInfoId;
+                            }
+                          }
+                        }
+                      })
+                    }
                     _that.$message({
                       message: '保存成功',
                       type: 'success'
