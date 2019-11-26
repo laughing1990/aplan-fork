@@ -644,7 +644,7 @@ public class RestImApplyService {
 
             }
         }
-        //fixme
+        //fixme 先设置不需要资质
         aeaImUnitRequire.setIsQualRequire("0");
         aeaImUnitRequireMapper.insertAeaImUnitRequire(aeaImUnitRequire);
 

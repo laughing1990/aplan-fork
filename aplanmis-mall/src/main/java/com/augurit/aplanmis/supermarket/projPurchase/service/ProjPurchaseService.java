@@ -124,6 +124,9 @@ public class ProjPurchaseService {
     AeaImAvoidUnitMapper aeaImAvoidUnitMapper;
 
     @Autowired
+    private AeaHiApplyinstMapper aeaHiApplyinstMapper;
+
+    @Autowired
     private RestImApplyService restImApplyService;
 
     public List<AeaImProjPurchase> getProjPurchaseList(AeaImProjPurchase aeaImProjPurchase, Page page) {
@@ -1495,9 +1498,6 @@ public class ProjPurchaseService {
             throw new RuntimeException("项目名称已存在:" + purchaseVo.getSaveAeaProjInfoVo().getProjName());
         }
     }
-
-    @Autowired
-    private AeaHiApplyinstMapper aeaHiApplyinstMapper;
 
     public PurchaseDetailVo getPurchaseDetail(String projPurchaseId) throws Exception {
         PurchaseDetailVo form = new PurchaseDetailVo();
