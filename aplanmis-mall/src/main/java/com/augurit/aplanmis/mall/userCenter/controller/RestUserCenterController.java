@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.mall.userCenter.controller;
 
+import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
@@ -112,6 +113,19 @@ public class RestUserCenterController {
             aeaLinkmanInfoService.updateAeaLinkmanInfo(aeaLinkmanInfo);
         }else{
             aeaLinkmanInfoService.insertAeaLinkmanInfo(aeaLinkmanInfo);
+        }
+        //将联系人绑定到单位
+        if(StringUtils.isNotBlank(aeaLinkmanInfo.getUnitInfoId())){
+            AeaUnitLinkman param=new AeaUnitLinkman();
+            param.setUnitInfoId(aeaLinkmanInfo.getUnitInfoId());
+            param.setLinkmanInfoId(aeaLinkmanInfo.getLinkmanInfoId());
+            List<AeaUnitLinkman> linkList = aeaUnitLinkmanMapper.listAeaUnitLinkman(param);
+            if(linkList.size()==0){
+                param.setCreateTime(new Date());
+                param.setCreater(SecurityContext.getCurrentUserName());
+                param.setUnitLinkmanId(UUID.randomUUID().toString());
+                aeaUnitLinkmanMapper.insertAeaUnitLinkman(param);
+            }
         }
         //mainService.freshenUnitInfo(request);
         return new ContentResultForm(true,aeaLinkmanInfo.getLinkmanInfoId(),"success");
