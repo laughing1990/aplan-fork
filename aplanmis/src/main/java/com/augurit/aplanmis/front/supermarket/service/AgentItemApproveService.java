@@ -13,6 +13,7 @@ import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.vo.AeaImMajorQualVo;
 import com.augurit.aplanmis.common.vo.purchase.PurchaseProjVo;
+import com.augurit.aplanmis.front.apply.vo.SaveMatinstVo;
 import com.augurit.aplanmis.front.approve.service.ApproveService;
 import com.augurit.aplanmis.front.basis.item.service.RestItemService;
 import com.augurit.aplanmis.front.supermarket.vo.AgentItemApproveForm;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -66,6 +68,13 @@ public class AgentItemApproveService {
     private AeaHiItemMatinstService aeaHiItemMatinstService;
     @Autowired
     private AeaApplyinstProjMapper aeaApplyinstProjMapper;
+
+    @Autowired
+    private AeaItemInoutMapper aeaItemInoutMapper;
+    @Autowired
+    private AeaHiIteminstMapper aeaHiIteminstMapper;
+    @Autowired
+    private AeaHiItemInoutinstMapper aeaHiItemInoutinstMapper;
 
     /**
      * 获取中介事项申报基本信息
@@ -139,22 +148,6 @@ public class AgentItemApproveService {
     }
 
     /**
-     * 审批系统上传服务结果
-     *
-     * @param matinstIds  材料是滴ID
-     * @param applyinstId 申请实例ID
-     * @throws Exception E
-     */
-    public void uploadServiceResult(String[] matinstIds, String applyinstId) throws Exception {
-        AeaHiApplyinst applyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
-        if (null == applyinst) throw new Exception("can not find applyinst");
-        PurchaseProjVo purchase = aeaImProjPurchaseMapper.getProjPurchaseInfoByApplyinstCode(applyinst.getApplyinstCode(), null);
-        if (null == purchase) throw new Exception("can not find purchase");
-        restImApplyService.uploadServiceResult(purchase.getProjPurchaseId(), "", matinstIds);
-
-    }
-
-    /**
      * 中介事项审批页上传服务结果电子件
      *
      * @param matinstId   材料实例ID 第一次上传为空
@@ -168,7 +161,7 @@ public class AgentItemApproveService {
 
         request.setCharacterEncoding("utf-8");//设置编码，防止附件名称乱码
 
-        if (org.apache.commons.lang.StringUtils.isNotBlank(matinstId)) {
+        if (org.apache.commons.lang.StringUtils.isNotBlank(matinstId) && !"null".equalsIgnoreCase(matinstId) && !"undefined".equalsIgnoreCase(matinstId)) {
 
             AeaHiItemMatinst aeaHiItemMatinst = aeaHiItemMatinstService.getAeaHiItemMatinstById(matinstId);
             if (aeaHiItemMatinst == null) throw new Exception("找不到材料实例！");
@@ -220,5 +213,99 @@ public class AgentItemApproveService {
 
         }
         return matinstId;
+    }
+
+    /**
+     * 窗口人员收取纸质服务结果并发起流程
+     *
+     * @param saveMatinstVo
+     * @param applyinstId
+     * @throws Exception
+     */
+    public void uploadPaperMatAndStartProcess(SaveMatinstVo saveMatinstVo, String applyinstId, String iteminstId) throws Exception {
+        if (null == saveMatinstVo || StringUtils.isBlank(applyinstId) || StringUtils.isBlank(iteminstId))
+            throw new Exception("param is null");
+        AeaHiIteminst iteminst = aeaHiIteminstMapper.getAeaHiIteminstById(iteminstId);
+        if (null == iteminst) throw new Exception("can not find iteminst");
+        String itemVerId = iteminst.getItemVerId();
+        List<SaveMatinstVo.MatCountVo> matCountVos = saveMatinstVo.getMatCountVos();
+        String linkmanInfoId = saveMatinstVo.getLinkmanInfoId();
+        String unitInfoId = saveMatinstVo.getUnitInfoId();
+        List<AeaHiItemMatinst> matinsts = new ArrayList<>();
+        List<AeaHiItemInoutinst> inoutinstList = new ArrayList<>();
+        for (SaveMatinstVo.MatCountVo matCountVo : matCountVos) {
+            int copyCnt = matCountVo.getCopyCnt();
+            int paperCnt = matCountVo.getPaperCnt();
+            if (copyCnt < 1 && paperCnt < 1) continue;
+            String matId = matCountVo.getMatId();
+            AeaItemMat mat = aeaItemMatMapper.getAeaItemMatById(matId);
+            if (null == mat) throw new Exception("can not find mat");
+
+            List<AeaItemInout> itemInouts = aeaItemInoutMapper.getAeaItemMatByItemVerIdAndMatIdAndStateId(itemVerId, matId, null);
+            if (itemInouts.isEmpty()) continue;
+            AeaItemInout inout = itemInouts.get(0);
+
+            if (copyCnt > 0) {
+                AeaHiItemMatinst matinst = this.buildMatinst(mat, matCountVo, linkmanInfoId, unitInfoId);
+                matinst.setRealCopyCount((long) copyCnt);
+                matinsts.add(matinst);
+                AeaHiItemInoutinst inoutinst = this.buildItemInoutInst(matinst.getMatinstId(), iteminstId, inout.getInoutId());
+                inoutinstList.add(inoutinst);
+            }
+            if (paperCnt > 0) {
+                AeaHiItemMatinst matinst = this.buildMatinst(mat, matCountVo, linkmanInfoId, unitInfoId);
+                matinst.setRealPaperCount((long) paperCnt);
+                matinsts.add(matinst);
+                AeaHiItemInoutinst inoutinst = this.buildItemInoutInst(matinst.getMatinstId(), iteminstId, inout.getInoutId());
+                inoutinstList.add(inoutinst);
+            }
+
+
+        }
+
+        if (!matinsts.isEmpty()) {
+            aeaHiItemMatinstMapper.batchInsertAeaHiItemMatinst(matinsts);
+        }
+        if (!inoutinstList.isEmpty()) {
+            aeaHiItemInoutinstMapper.batchInsertAeaHiItemInoutinst(inoutinstList);
+        }
+        //推动流程流转
+
+        AeaHiApplyinst applyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+        if (null == applyinst) throw new Exception("can not find applyinst");
+        PurchaseProjVo purchase = aeaImProjPurchaseMapper.getProjPurchaseInfoByApplyinstCode(applyinst.getApplyinstCode(), null);
+        if (null == purchase) throw new Exception("can not find purchase");
+        restImApplyService.uploadServiceResult(purchase.getProjPurchaseId(), "", iteminstId);
+    }
+
+    private AeaHiItemInoutinst buildItemInoutInst(String matinstId, String iteminstId, String inoutId) {
+        AeaHiItemInoutinst inoutinst = new AeaHiItemInoutinst();
+        inoutinst.setInoutinstId(UUID.randomUUID().toString());
+        inoutinst.setItemInoutId(inoutId);
+        inoutinst.setMatinstId(matinstId);
+        inoutinst.setMatinstId(matinstId);
+        inoutinst.setCreater(SecurityContext.getCurrentUserName());
+        inoutinst.setCreateTime(new Date());
+        inoutinst.setIsCollected("1");
+        inoutinst.setRootOrgId(SecurityContext.getCurrentOrgId());
+        return inoutinst;
+    }
+
+    private AeaHiItemMatinst buildMatinst(AeaItemMat mat, SaveMatinstVo.MatCountVo matCountVo, String linkmanInfoId, String unitInfoId) {
+        int copyCnt = matCountVo.getCopyCnt();
+        int paperCnt = matCountVo.getPaperCnt();
+        AeaHiItemMatinst matinst = new AeaHiItemMatinst();
+        matinst.setMatinstId(UUID.randomUUID().toString());
+        matinst.setMatId(mat.getMatId());
+        matinst.setMatinstCode(mat.getMatCode());
+        matinst.setMatinstName(mat.getMatName());
+        matinst.setUnitInfoId(unitInfoId);
+        matinst.setLinkmanInfoId(linkmanInfoId);
+        matinst.setCreater(SecurityContext.getCurrentUserName());
+        matinst.setCreateTime(new Date());
+        matinst.setRootOrgId(SecurityContext.getCurrentOrgId());
+
+
+        return matinst;
     }
 }

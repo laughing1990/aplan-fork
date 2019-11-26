@@ -64,7 +64,7 @@ public class RestUnitController {
     @ApiOperation(value = "查看联系人")
     @GetMapping("/getLinkmanInfoById/{linkmanInfoId}")
     public ContentResultForm<AeaLinkmanInfoVo> getLinkmanInfoById(@PathVariable("linkmanInfoId") String linkmanInfoId, HttpServletRequest request) throws Exception {
-        if (!restUserCenterService.isBelongUnit(linkmanInfoId,request)) return new ContentResultForm(false,null,"查看联系人异常");
+        //if (!restUserCenterService.isBelongUnit(linkmanInfoId,request)) return new ContentResultForm(false,null,"查看联系人异常");
         AeaLinkmanInfo linkmanInfo = aeaLinkmanInfoService.getAeaLinkmanInfoByLinkmanInfoId(linkmanInfoId);
         AeaLinkmanInfoVo aeaLinkmanIanfoVo = new AeaLinkmanInfoVo();
         BeanUtils.copyProperties(linkmanInfo, aeaLinkmanIanfoVo);

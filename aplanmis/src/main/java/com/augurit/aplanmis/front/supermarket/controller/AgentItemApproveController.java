@@ -2,8 +2,12 @@ package com.augurit.aplanmis.front.supermarket.controller;
 
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.service.projPurchase.AeaImProjPurchaseService;
 import com.augurit.aplanmis.common.vo.MatinstVo;
+import com.augurit.aplanmis.front.apply.service.RestApplyMatService;
+import com.augurit.aplanmis.front.apply.vo.Mat2MatInstVo;
+import com.augurit.aplanmis.front.apply.vo.SaveMatinstVo;
 import com.augurit.aplanmis.front.supermarket.service.AgentItemApproveService;
 import com.augurit.aplanmis.front.supermarket.vo.AgentItemApproveForm;
 import io.swagger.annotations.Api;
@@ -12,10 +16,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +34,9 @@ public class AgentItemApproveController {
     @Autowired
     private AeaImProjPurchaseService aeaImProjPurchaseService;
 
+    @Autowired
+    private RestApplyMatService restApplyMatService;
+
     @GetMapping("/approveSubmitMat.html")
     public ModelAndView index(String taskId, String viewId, String busRecordId) {
         ModelAndView mv = new ModelAndView("supermarket/approveSubmitMat");
@@ -43,6 +47,15 @@ public class AgentItemApproveController {
         return mv;
     }
 
+    @GetMapping("/applyForm.html")
+    public ModelAndView applyForm(String taskId, String isSeriesinst, String iteminstId) {
+        ModelAndView mv = new ModelAndView("approve/applyForm");
+        mv.addObject("taskId", taskId);
+        mv.addObject("isSeriesinst", isSeriesinst);
+        mv.addObject("iteminstId", iteminstId);
+
+        return mv;
+    }
     @GetMapping("/basic/apply/info")
     @ApiOperation(value = "业务审批 --> 申报表单基本信息")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "applyinstId", value = "申请实例", dataType = "string", required = true)
@@ -85,4 +98,22 @@ public class AgentItemApproveController {
         return new ContentResultForm(true, vos, "success");
     }
 
+
+    @PostMapping("/matinst/batch/save")
+    @ApiOperation("申报页面根据材料定义生成材料实例id")
+    public ContentResultForm<List<Mat2MatInstVo>> saveMatinsts(@RequestBody SaveMatinstVo saveMatinstVo, String applyinstId) {
+
+
+        List<Mat2MatInstVo> mat2MatInstVos = restApplyMatService.saveMatinsts(saveMatinstVo);
+        return new ContentResultForm<>(true, mat2MatInstVos, "Batch save matinst success");
+    }
+
+    @PostMapping("/receivePaperAndStartProcess")
+    @ApiOperation("窗口人员收取纸质服务结果并发起流程")
+    public ResultForm uploadPaperMatAndStartProcess(@RequestBody SaveMatinstVo saveMatinstVo, String applyinstId, String iteminstId) throws Exception {
+        if (null == saveMatinstVo || StringUtils.isBlank(applyinstId) || StringUtils.isBlank(iteminstId))
+            throw new Exception("params is null");
+        agentItemApproveService.uploadPaperMatAndStartProcess(saveMatinstVo, applyinstId, iteminstId);
+        return new ResultForm(true, "success");
+    }
 }
