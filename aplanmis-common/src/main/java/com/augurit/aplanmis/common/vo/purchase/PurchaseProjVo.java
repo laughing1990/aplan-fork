@@ -120,6 +120,19 @@ public class PurchaseProjVo {
     @ApiModelProperty(value = "备案要求说明（当IS_RECORD_REQUIRE =1 时，必填）")
     private String recordRequireExplain;
 
+    @ApiModelProperty(value = "是否有企业回避：1 是，0 否")
+    private String isAvoid;
+
+    @ApiModelProperty(value = "【当IS_AVOID=1时必填】回避原因")
+    private String avoidReason;
+
+    @ApiModelProperty(value = "回避单位ID")
+    private String avoidUnitInfoIds;
+    @ApiModelProperty(value = "回避单位名称")
+    private String avoidUnitNames;
+
+    private String biddingUnitId;
+    private String biddingUnitName;
     //=============================================采购项目信息===============================================
     @ApiModelProperty(value = "项目名称")
     private String projName;
