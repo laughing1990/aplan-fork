@@ -35,11 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Service
@@ -84,7 +80,8 @@ public class ApproveProcessService {
             List<String> procInstIds = approveCommonService.
                     getProcInstIdByApplyinstIdOrApplyinstCode(applyinst.getApplyinstId(), null);
             if (procInstIds.size() > 0) {
-                return listHistoryCommentAll(procInstIds.get(0), applyinst.getApplyinstId(), applyinst.getIteminstId());
+                List<HistoryProcessVo> historyProcessVos = listHistoryCommentAll(procInstIds.get(0), applyinst.getApplyinstId(), applyinst.getIteminstId());
+                return historyProcessVos;
             }
         }
         return new ArrayList<HistoryProcessVo>();

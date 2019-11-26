@@ -17,7 +17,6 @@
         var project_code = '[[${project_code}]]';
         var item_instance_code = '[[${item_instance_code}]]';
         var access_token = '[[${access_token}]]';
-        //var ctx = 'http://192.168.32.46:7050/cp-rest';
     </script>
 </head>
 
@@ -39,74 +38,74 @@
             <table class="table-zebra border-dotted">
                 <tr style="line-height:18px;">
                     <td class="tdOne">项目名称</td>
-                    <td class="tdTwo fontColor">{{aeaItemBasic.projName}}</td>
+                    <td class="tdTwo fontColor">{{projInfo.projName}}</td>
                     <td class="tdOne">项目代码</td>
                     <td class="tdTwo">
-                        <span>{{aeaItemBasic.projCode}}</span>
+                        <span>{{projInfo.localCode}}</span>
                     </td>
                 </tr>
                 <tr>
                     <td class="tdOne">项目（法人）单位</td>
-                    <td class="tdTwo fontColor">{{aeaItemBasic.applicant}}</td>
+                    <td class="tdTwo fontColor">{{projInfo.applicant}}</td>
                     <td class="tdOne">单位证照号码</td>
-                    <td class="tdTwo fontColor">{{aeaItemBasic.idCard}}</td>
+                    <td class="tdTwo fontColor">{{projInfo.idCard}}</td>
                 </tr>
                 <tr>
                     <td class="tdOne">办件类型</td>
-                    <td class="tdTwo">{{aeaItemBasic.itemProperty}}</td>
+                    <td class="tdTwo">{{iteminstInfo.itemProperty}}</td>
                     <td class="tdOne">受理单位</td>
-                    <td class="tdTwo">{{aeaItemBasic.approveOrgId}}</td>
+                    <td class="tdTwo">{{iteminstInfo.approveOrgId}}</td>
                 </tr>
                 <tr>
                     <td class="tdOne">事项名称</td>
-                    <td class="tdTwo fontColor">{{aeaItemBasic.itemName}}</td>
+                    <td class="tdTwo fontColor">{{iteminstInfo.iteminstName}}</td>
                     <td class="tdOne">事项编号</td>
-                    <td class="tdTwo">{{aeaItemBasic.itemCode}}</td>
+                    <td class="tdTwo">{{iteminstInfo.iteminstCode}}</td>
                 </tr>
             </table>
             <p class="table-header">办理信息</p>
             <table class="table-zebra border-dotted">
                 <tr>
                     <td class="tdOne">办件单号</td>
-                    <td class="tdTwo">{{aeaHiApplyinst.applyinstCode}}</td>
+                    <td class="tdTwo">{{applyData.applyinstCode}}</td>
                     <td class="tdOne">办件状态</td>
-                    <td class="tdTwo">{{aeaHiIteminst.businessState}}</td>
+                    <td class="tdTwo">{{applyData.iteminstState}}</td>
                 </tr>
                 <tr>
                     <td class="tdOne">是否计时</td>
-                    <td class="tdTwo">{{aeaHiIteminst.isTiming}}</td>
+                    <td class="tdTwo">{{iteminstInfo.isTiming}}</td>
                     <td class="tdOne">承诺时限</td>
-                    <td class="tdTwo">{{aeaHiIteminst.dueNum}}个{{aeaHiIteminst.bjType}}</td>
+                    <td class="tdTwo">{{iteminstInfo.dueNum}}个{{iteminstInfo.bjType}}</td>
                 </tr>
-                <tr>
+                <!--<tr>
                     <td>承诺办结时间</td>
-                    <td class="tranDate tdTwo">{{aeaHiIteminst.dueDate | formatDate}}</td>
-                </tr>
+                    <td class="tranDate tdTwo">{{iteminstInfo.dueDate | formatDate}}</td>
+                </tr>-->
                 <tr>
                     <td class="tdOne">最新业务操作</td>
-                    <td class="tdTwo">{{aeaHiIteminst.businessState}}</td>
+                    <td class="tdTwo">{{iteminstInfo.iteminstState}}</td>
                     <td class="tdOne">最后操作时间</td>
-                    <td class="tranDate tdTwo">{{aeaHiIteminst.modifyTime | formatDate}}</td>
+                    <td class="tranDate tdTwo">{{iteminstInfo.modifyTime | formatDate}}</td>
                 </tr>
                 <tr>
                     <td>申请时间</td>
-                    <td class="tranDate">{{aeaHiIteminst.startTime | formatDate}}</td>
+                    <td class="tranDate">{{iteminstInfo.startTime | formatDate}}</td>
                 </tr>
                 <tr>
                     <td>登记时间</td>
-                    <td colspan="3" class="tranDate">{{aeaHiIteminst.registerTime | formatDate}}</td>
+                    <td class="tranDate" colspan="3">{{iteminstInfo.registerTime | formatDate}}</td>
                 </tr>
                 <tr>
                     <td class="tdOne">受理时间</td>
-                    <td class="tranDate tdTwo">{{aeaHiIteminst.signTime | formatDate}}</td>
+                    <td class="tranDate tdTwo">{{iteminstInfo.signTime | formatDate}}</td>
                     <td class="tdOne">受理核准备注</td>
-                    <td class="tdTwo">{{aeaHiIteminst.signTime | formatDate}}</td>
+                    <td class="tdTwo">{{iteminstInfo.signTime | formatDate}}</td>
                 </tr>
                 <tr>
                     <td class="tdOne">办结时间</td>
-                    <td class="tranDate tdTwo">{{aeaHiIteminst.endTime | formatDate}}</td>
+                    <td class="tranDate tdTwo">{{iteminstInfo.endTime | formatDate}}</td>
                     <td class="tdOne">办结结果</td>
-                    <td class="tdTwo">{{aeaHiIteminst.businessState}}</td>
+                    <td class="tdTwo">{{iteminstInfo.iteminstState}}</td>
                 </tr>
                 <tr>
                     <td>出文文件</td>
@@ -117,11 +116,11 @@
             <table class="table-zebra border-dotted">
                 <tr>
                     <td class="tdOne">申请来源</td>
-                    <td>{{aeaHiApplyinst.applyinstSource}}</td>
+                    <td>{{applyData.applyinstSource}}</td>
                 </tr>
                 <tr>
                     <td class="tdOne">申请备注</td>
-                    <td>{{aeaHiApplyinst.applyinstMemo}}</td>
+                    <td>{{applyData.applyinstMemo}}</td>
                 </tr>
                 <tr>
                     <td class="tdOne">申请附加文件</td>
@@ -129,6 +128,7 @@
                 </tr>
                 <tr>
                     <td class="tdOne">登记备注</td>
+                    {{applyData.applyinstMemo}}
                     <td></td>
                 </tr>
                 <tr>
@@ -140,15 +140,15 @@
             <table class="table-zebra border-dotted">
                 <tr>
                     <td class="tdOne">联系人</td>
-                    <td class="tdTwo">{{aeaLinkmanInfo.linkmanName}}</td>
+                    <td class="tdTwo">{{linkman.linkmanName}}</td>
                     <td class="tdOne">联系人证件号</td>
-                    <td class="tdTwo">{{aeaLinkmanInfo.linkmanCertNo}}</td>
+                    <td class="tdTwo">{{linkman.linkmanCertNo}}</td>
                 </tr>
                 <tr>
                     <td class="tdOne">联系人手机</td>
-                    <td class="tdTwo">{{aeaLinkmanInfo.linkmanMobilePhone}}</td>
+                    <td class="tdTwo">{{linkman.linkmanMobilePhone}}</td>
                     <td class="tdOne">联系人电话</td>
-                    <td class="tdTwo">{{aeaLinkmanInfo.linkmanOfficePhon}}</td>
+                    <td class="tdTwo">{{linkman.linkmanOfficePhon}}</td>
                 </tr>
             </table>
         </div>
