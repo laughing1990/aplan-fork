@@ -9,5 +9,5 @@ public interface AeaProjDrawingSerivce {
 
     List<AeaProjDrawing> getAeaProjDrawing(String projInfoId);
 
-    void saveAeaProjDrawing(AeaProjDrawingVo aeaProjDrawingVo);
+    void saveAeaProjDrawing(AeaProjDrawingVo aeaProjDrawingVo) throws Exception;
 }

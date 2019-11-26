@@ -4,10 +4,7 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.GDUnitType;
 import com.augurit.aplanmis.common.constants.UnitProjLinkmanType;
-import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
-import com.augurit.aplanmis.common.domain.AeaUnitInfo;
-import com.augurit.aplanmis.common.domain.AeaUnitProj;
-import com.augurit.aplanmis.common.domain.AeaUnitProjLinkman;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.form.AeaProjDrawingSerivce;
 import com.augurit.aplanmis.common.vo.AeaProjDrawing;
@@ -138,7 +135,7 @@ public class AeaProjDrawingSerivceImpl implements AeaProjDrawingSerivce {
 
 
     @Override
-    public void saveAeaProjDrawing(AeaProjDrawingVo aeaProjDrawingVo) {
+    public void saveAeaProjDrawing(AeaProjDrawingVo aeaProjDrawingVo) throws Exception {
         List<AeaProjDrawing> drawings = aeaProjDrawingVo.getAeaProjDrawing();
 
         for (AeaProjDrawing aeaProjDrawing : drawings) {
@@ -164,6 +161,20 @@ public class AeaProjDrawingSerivceImpl implements AeaProjDrawingSerivce {
                 info.setUnifiedSocialCreditCode(aeaProjDrawing.getUnifiedSocialCreditCode());
                 aeaUnitInfoMapper.insertAeaUnitInfo(info);
                 aeaUnitProj.setUnitInfoId(info.getUnitInfoId());
+
+                // 保存单位与联系人关联
+                String linkmanInfoIds = aeaProjDrawing.getLinkManInfoIds();
+                if (StringUtils.isNotBlank(linkmanInfoIds)) {
+                    for (String linkmanInfoId : linkmanInfoIds.split(",")) {
+                        AeaUnitLinkman aeaUnitLinkman = new AeaUnitLinkman();
+                        aeaUnitLinkman.setUnitLinkmanId(UUID.randomUUID().toString());
+                        aeaUnitLinkman.setUnitInfoId(info.getUnitInfoId());
+                        aeaUnitLinkman.setLinkmanInfoId(linkmanInfoId);
+                        aeaUnitLinkman.setCreater(SecurityContext.getCurrentUserId());
+                        aeaUnitLinkman.setCreateTime(new Date());
+                        aeaUnitLinkmanMapper.insertAeaUnitLinkman(aeaUnitLinkman);
+                    }
+                }
 
             } else {
                 AeaUnitInfo info = new AeaUnitInfo();
