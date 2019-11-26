@@ -879,7 +879,8 @@
     background: rgba(33,147,229,0.08);
 }
 .theme-type .theme-type-list {
-    display: none;
+    /*display: none;*/
+    overflow: auto;
 }
 .theme-type .active .theme-type-list {
     display: block;

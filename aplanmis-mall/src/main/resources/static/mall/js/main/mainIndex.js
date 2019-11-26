@@ -409,15 +409,18 @@ var mainIndex = (function () {
                             if(content == null || content == ""){
                                 $("#mainLine #stageImg").css('display','none');
                                 $("#mainLine2 #stageImg2").css('display','none');
+                              vm.isNode = true;
                             }else{
                                 $("#mainLine #stageImg").append(content);
+                              $("#mainLine2 #stageImg2").css('display','block');
                                 $("#mainLine2 #stageImg2").append(content);
+                              vm.isNode = false;
                             }
-                            if(content_aux){
-                                vm.isNode = true;
-                            }else{
-                                vm.isNode = false;
-                            }
+                            // if(content_aux){
+                            //     vm.isNode = true;
+                            // }else{
+                            //     vm.isNode = false;
+                            // }
                             $('#auxiliaryLine #stageAuxiliaryImg').append(content_aux);
 
                             if(minHeight){
