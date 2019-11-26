@@ -62,7 +62,7 @@
                       <div class="wt-tab-item clearfix" id="themeApproval" v-show="approvalwayTypeFlag" >
                           <div class="guide-content-left"  v-loading="themeLoading">
                               <ul id="themeul">
-                                  <el-collapse v-model="approvalWayActiveName" @change="approvelWayActiveChange">
+                                  <el-collapse accordion v-model="approvalWayActiveName" @change="approvelWayActiveChange">
                                       <el-collapse-item :name="index+1" v-for="(item, index) in themeListData" :key="index">
                                         <template slot="title">
                                           <li class="theme-type theme-list" :class="{'active':approvalWayActiveName === (index+1)}">
