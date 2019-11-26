@@ -7,8 +7,8 @@ var vm = new Vue({
     return {
       labelWidth: '165px',
       isItemSeek: false,
-      applyinstId: getUrlParam('masterEntityKey'),
-      taskId: getUrlParam('taskId'),
+      applyinstId: __STATIC.getUrlParam('masterEntityKey'),
+      taskId: __STATIC.getUrlParam('taskId'),
       showMore: false,
       // 申办主体信息
       unitInfoList: [],
@@ -24,16 +24,12 @@ var vm = new Vue({
       statesData: [],//情形列表
       pageLoading: true,
       applyTableName: parent.vm.stageOrItemName,
-      applySubject: '0',
+      applySubject: '0', // 0 个人， 1 企业
       personalApplyInfo: {},
       personalLinkInfo: {},
       unitTypeList: [],
-      isZJItem: getUrlParam('isZJItem'),
-      zjItemInfo: [
-        {
-          aeaImUnitRequire: {},
-        }
-      ],
+      isZJItem: __STATIC.getUrlParam('isZJItem'),
+      zjItemInfo: [],
     }
   },
   methods: {
@@ -43,7 +39,7 @@ var vm = new Vue({
       reqData.isBlackDia = isBlackDia || false;
       parent.vm.openCreditDialog(reqData);
     },
-    getZJItemInfo: function(){
+    getZJItemInfo: function () {
       var vm = this;
       request('', {
         url: ctx + 'market/approve/basic/apply/info',
@@ -53,7 +49,7 @@ var vm = new Vue({
           applyinstId: vm.applyinstId,
           isItemSeek: false,
         },
-      }, function(res){
+      }, function (res) {
         vm.pageLoading = false;
         if (res.success) {
           vm.projInfoList = [res.content.aeaProjInfo];
@@ -62,7 +58,7 @@ var vm = new Vue({
         } else {
           vm.$message.error(res.message || '获取申请表数据失败');
         }
-      }, function(){
+      }, function () {
         vm.pageLoading = false;
         vm.$message.error('获取申请表数据失败');
       })
@@ -90,14 +86,14 @@ var vm = new Vue({
           vm.applyinst = res.content.applyInfoVo;
           vm.linkmanInfo = res.content.linkmanInfoVo;
           vm.applySubject = res.content.applySubject;
-          var isApprover = getUrlParam('isApprover');
-          var busRecordId = getUrlParam('busRecordId');
+          var isApprover = __STATIC.getUrlParam('isApprover');
+          var busRecordId = __STATIC.getUrlParam('busRecordId');
           var isNotSingle = (busRecordId == 'undefined' || busRecordId == 'null' || busRecordId == '');
           
           if (isNotSingle) {
             if (isApprover == '1') {
               // 找到当前事项
-              var iteminstId = getUrlParam('iteminstId');
+              var iteminstId = __STATIC.getUrlParam('iteminstId');
               var _index = 0;
               vm.iteminstList.forEach(function (u, index) {
                 if (u.iteminstId == iteminstId) {
@@ -243,7 +239,7 @@ var vm = new Vue({
   mounted: function () {
   },
   filters: {
-    substrings: function(value) {
+    substrings: function (value) {
       return value.substring(0, 10);
     },
     dicCodeItem: function (value) {
@@ -300,13 +296,3 @@ var vm = new Vue({
     },
   }
 });
-
-function getUrlParam(name) {
-  var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
-  var r = window.location.search.substr(1).match(reg);
-  if (r != null) {
-    return unescape(r[2]);
-  }
-  ;
-  return null;
-}
