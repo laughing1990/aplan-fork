@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -29,6 +30,16 @@ public class AgentItemApproveController {
 
     @Autowired
     private AeaImProjPurchaseService aeaImProjPurchaseService;
+
+    @GetMapping("/index.html")
+    public ModelAndView index(String taskId,String viewId,String busRecordId){
+        ModelAndView mv =new ModelAndView("supermarket/approveSubmitMat");
+        mv.addObject("taskId",taskId);
+        mv.addObject("viewId",viewId);
+        mv.addObject("busRecordId",busRecordId);
+
+        return mv;
+    }
 
     @GetMapping("/basic/apply/info")
     @ApiOperation(value = "业务审批 --> 申报表单基本信息")
