@@ -687,7 +687,7 @@ public class AeaParInAdminServiceImpl implements AeaParInAdminService {
 
         String rootOrgId = SecurityContext.getCurrentOrgId();
         PageHelper.startPage(page);
-        List<AeaParIn> matList = aeaParInMapper.listStageMatNew(stageId, stateId, (isCommon != null && isCommon) ? Status.ON : Status.OFF, isStateIn, keyword, rootOrgId, null);
+        List<AeaParIn> matList = aeaParInMapper.listStageMatNew(stageId, stateId, (isCommon != null && isCommon) ? Status.ON : Status.OFF, isStateIn, keyword, rootOrgId, null, null);
         return new PageInfo<>(matList);
     }
 

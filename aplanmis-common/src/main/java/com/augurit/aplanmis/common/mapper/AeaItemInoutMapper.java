@@ -149,5 +149,5 @@ public interface AeaItemInoutMapper {
      * @param itemVerId 事项版本ID
      * @return List<AeaItemMat>
      */
-    List<AeaItemMat> getSeriesNoStateMatList(String itemVerId);
+    List<AeaItemMat> getSeriesNoStateMatList(@Param("itemVerId") String itemVerId);
 }

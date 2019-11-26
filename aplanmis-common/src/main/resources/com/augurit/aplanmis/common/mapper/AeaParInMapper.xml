@@ -513,6 +513,12 @@
             <if test="matProp!=null and  matProp!='' ">
             and  mat.MAT_PROP = #{matProp}
             </if>
+            <if test="matProps!=null and matProps.size()>0">
+            and  mat.MAT_PROP in
+                <foreach collection="matProps" item="matPropItem" open="(" close=")" separator=",">
+                    #{matPropItem}
+                </foreach>
+            </if>
             <if test="keyword!='' and keyword!=null ">
             and (
                 mat.MAT_NAME like concat('%',concat(#{keyword},'%')) or
@@ -641,6 +647,12 @@
             </if>
             <if test="matProp!=null and  matProp!='' ">
             and  mat.MAT_PROP = #{matProp}
+            </if>
+            <if test="matProps!=null and matProps.size()>0">
+            and  mat.MAT_PROP in
+                <foreach collection="matProps" item="matPropItem" open="(" close=")" separator=",">
+                    #{matPropItem}
+                </foreach>
             </if>
             <if test="keyword!='' and keyword!=null ">
             and (
