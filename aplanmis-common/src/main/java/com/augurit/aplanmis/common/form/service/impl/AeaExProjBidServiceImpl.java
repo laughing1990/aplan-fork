@@ -5,10 +5,7 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.UnitProjLinkmanType;
 import com.augurit.aplanmis.common.domain.*;
-import com.augurit.aplanmis.common.mapper.AeaExProjBidMapper;
-import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
-import com.augurit.aplanmis.common.mapper.AeaUnitProjLinkmanMapper;
-import com.augurit.aplanmis.common.mapper.AeaUnitProjMapper;
+import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.form.service.AeaExProjBidService;
 import com.augurit.aplanmis.common.form.vo.AeaExProjBidVo;
@@ -46,6 +43,8 @@ public class AeaExProjBidServiceImpl implements AeaExProjBidService {
     private AeaUnitProjMapper aeaUnitProjMapper;
     @Autowired
     private AeaUnitProjLinkmanMapper aeaUnitProjLinkmanMapper;
+    @Autowired
+    private AeaUnitLinkmanMapper aeaUnitLinkmanMapper;
 
     public void saveAeaExProjBid(AeaExProjBid aeaExProjBid) throws Exception{
         aeaExProjBid.setCreater(SecurityContext.getCurrentUserName());
@@ -168,6 +167,19 @@ public class AeaExProjBidServiceImpl implements AeaExProjBidService {
                         aeaUnitProjLinkmanMapper.insertAeaUnitProjLinkman(man);
                     }
 
+                    // 保存单位与联系人关联
+                    String linkmanInfoIds = aeaExProjBidVo.getWinBidLinkManInfoids();
+                    if (StringUtils.isNotBlank(linkmanInfoIds)) {
+                        for (String linkmanInfoId : linkmanInfoIds.split(",")) {
+                            AeaUnitLinkman aeaUnitLinkman = new AeaUnitLinkman();
+                            aeaUnitLinkman.setUnitLinkmanId(UUID.randomUUID().toString());
+                            aeaUnitLinkman.setUnitInfoId(aeaUnitInfo.getUnitInfoId());
+                            aeaUnitLinkman.setLinkmanInfoId(linkmanInfoId);
+                            aeaUnitLinkman.setCreater(SecurityContext.getCurrentUserId());
+                            aeaUnitLinkman.setCreateTime(new Date());
+                            aeaUnitLinkmanMapper.insertAeaUnitLinkman(aeaUnitLinkman);
+                        }
+                    }
                 }
             }
         }
