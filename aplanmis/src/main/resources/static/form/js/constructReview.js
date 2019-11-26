@@ -749,6 +749,32 @@ var app = new Vue({
                   return false;
                 }
               }
+              var shenChaLinkManInfoIds = '';
+              var kanChaLinkManInfoIds = '';
+              var sheJiLinkManInfoIds = '';
+
+              vm.shenchaPerson.forEach(function(item) {
+                if (item['addressId'] != '' & item['addressId'] != '1') {
+                  shenChaLinkManInfoIds = item['addressId'] + ",";
+                }
+              });
+
+              vm.shejiPerson.forEach(function(item) {
+                if (item['addressId'] != '' & item['addressId'] != '1') {
+                  sheJiLinkManInfoIds = item['addressId'] + ",";
+                }
+              });
+
+              vm.kanchaPerson.forEach(function(item) {
+                if (item['addressId'] != '' & item['addressId'] != '1') {
+                  kanChaLinkManInfoIds = item['addressId'] + ",";
+                }
+              });
+
+              formDataTuShen.linkManInfoIds = shenChaLinkManInfoIds.length > 0 ? shenChaLinkManInfoIds.substring(0, shenChaLinkManInfoIds.length - 1) : '';
+              formDataKanCha.linkManInfoIds = kanChaLinkManInfoIds.length > 0 ? kanChaLinkManInfoIds.substring(0, kanChaLinkManInfoIds.length - 1) : '';
+              formDataSheJj.linkManInfoIds = sheJiLinkManInfoIds.length > 0 ? sheJiLinkManInfoIds.substring(0, sheJiLinkManInfoIds.length - 1) : '';
+
               var drawings = [];
               drawings.push(formDataTuShen);
               drawings.push(formDataKanCha);
