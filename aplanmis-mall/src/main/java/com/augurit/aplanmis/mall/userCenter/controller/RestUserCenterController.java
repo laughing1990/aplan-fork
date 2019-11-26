@@ -54,7 +54,7 @@ public class RestUserCenterController {
     private AeaLinkmanInfoMapper aeaLinkmanInfoMapper;
 
     @GetMapping("/toMyCloundSpacesPage")
-    @ApiOperation(value = "法人空间我的首页")
+    @ApiOperation(value = "我的云盘")
     public ModelAndView toMyCloundSpacesPage(){
         return new ModelAndView("mall/userCenter/components/my-cloundSpaces");
     }
@@ -106,7 +106,7 @@ public class RestUserCenterController {
 
     @PostMapping("linkman/save")
     @ApiOperation("保存联系人信息")
-    public ResultForm saveLinkman(AeaLinkmanInfo aeaLinkmanInfo, HttpServletRequest request) throws  Exception{
+    public ContentResultForm saveLinkman(AeaLinkmanInfo aeaLinkmanInfo, HttpServletRequest request) throws  Exception{
         //要求密码字段MD5加密
         if(StringUtils.isNotBlank(aeaLinkmanInfo.getLinkmanInfoId())){
             aeaLinkmanInfoService.updateAeaLinkmanInfo(aeaLinkmanInfo);
@@ -114,7 +114,7 @@ public class RestUserCenterController {
             aeaLinkmanInfoService.insertAeaLinkmanInfo(aeaLinkmanInfo);
         }
         //mainService.freshenUnitInfo(request);
-        return new ResultForm(true,"success");
+        return new ContentResultForm(true,aeaLinkmanInfo.getLinkmanInfoId(),"success");
     }
 
     @PostMapping("linkmanCascade/save")
