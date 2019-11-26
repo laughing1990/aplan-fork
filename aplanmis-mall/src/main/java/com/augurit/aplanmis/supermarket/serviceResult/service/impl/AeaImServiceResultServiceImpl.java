@@ -319,7 +319,7 @@ public class AeaImServiceResultServiceImpl implements AeaImServiceResultService 
             result.setModifier(SecurityContext.getCurrentUserName());
             aeaImServiceResultMapper.updateAeaImServiceResult(result);
         }
-        restImApplyService.uploadServiceResult(projPurchaseId, serviceResultVo.getMemo(), matinstIds);
+        restImApplyService.uploadServiceResult(projPurchaseId, serviceResultVo.getMemo(), null);
     }
 
     /**
