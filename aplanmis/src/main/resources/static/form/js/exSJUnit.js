@@ -14,6 +14,45 @@ var vm = new Vue({
                 callback();
             }
         };
+        var checkOrg = function (rule, value, callback) {
+            if (value) {
+                var flag = !/[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}/.test(value);
+                if (flag) {
+                    return callback(new Error('格式错误'));
+                } else {
+                    callback();
+                }
+
+            } else {
+                callback();
+            }
+        };
+        var checkJigoudaima = function (rule, value, callback) {
+            if (value) {
+                var flag = !/^[0-9A-Z]{8}$/.test(value);
+                if (flag) {
+                    return callback(new Error('格式错误'));
+                } else {
+                    callback();
+                }
+
+            } else {
+                callback();
+            }
+        };
+        var idCard = function (rule, value, callback) {
+            if (value) {
+                var flag = !/\d{17}[\d|x]|\d{15}/.test(value);
+                if (flag) {
+                    return callback(new Error('格式错误'));
+                } else {
+                    callback();
+                }
+
+            } else {
+                callback();
+            }
+        };
         var checkPhoneNum = function(rule, value, callback) {
             if (value === '' || value === undefined || value.trim() === '') {
                 callback(new Error('必填字段！'));
@@ -84,7 +123,7 @@ var vm = new Vue({
                     { required: true, validator: checkMissValue, trigger: 'blur' },
                 ],
                 linkmanCertNo: [
-                    { required: true, validator: checkMissValue, trigger: 'blur' },
+                    { required: true, validator: idCard, trigger: 'blur' },
                 ],
                 linkmanMobilePhone: [
                     { required: true, validator: checkPhoneNum, trigger: 'blur' },
@@ -111,9 +150,11 @@ var vm = new Vue({
             },
             gongchengzongFromRules: { //工程总承包单位信息校验
                 organizationalCode: [
+                    { validator: checkJigoudaima, trigger: ['blur'] },
                     { required: true, message: '请输入组织机构代码!', trigger: ['change'] },
                 ],
                 unifiedSocialCreditCode: [
+                    { validator: checkOrg, trigger: ['blur'] },
                     { required: true, message: '请输入统一社会信用代码!', trigger: ['change'] },
                 ],
                 applicant: [
@@ -136,9 +177,11 @@ var vm = new Vue({
             },
             rulesApplyShigongzongFrom: { //施工总承包单位校验
                 organizationalCode: [
+                    { validator: checkJigoudaima, trigger: ['blur'] },
                     { required: true, message: '请输入组织机构代码!', trigger: ['change'] },
                 ],
                 unifiedSocialCreditCode: [
+                    { validator: checkOrg, trigger: ['blur'] },
                     { required: true, message: '请输入统一社会信用代码!', trigger: ['change'] },
                 ],
                 applicant: [
@@ -172,6 +215,21 @@ var vm = new Vue({
                 linkmanMobilePhone: [
                     { required: true, message: '请输入项目负责人（项目经理）联系电话！', trigger: ['change'] },
                 ],
+                professionCertType: [
+                    { required: true, message: '请选择执业注册证类型！', trigger: ['change'] },
+                ],
+                professionSealNum: [
+                    { required: true, message: '请输入执业印章号！', trigger: ['change'] },
+                ],
+                titleGrade: [
+                    { required: true, message: '请选择职称等级！', trigger: ['change'] },
+                ],
+                titleCertNum: [
+                    { required: true, message: '请输入职称证号！', trigger: ['change'] },
+                ],
+                personSafeLicenceNum: [
+                    { required: true, message: '请输入安全生产考核合格证号！', trigger: ['change'] },
+                ],
                 personSetting: {
                     linkmanCertNo: [
                         { required: false, message: '请输入身份证号码！', trigger: ['change'] },
@@ -180,9 +238,11 @@ var vm = new Vue({
             },
             rulesShigongzhuanyefenbaoFrom: {
                 organizationalCode: [
+                    { validator: checkJigoudaima, trigger: ['blur'] },
                     { required: true, message: '请输入组织机构代码!', trigger: ['change'] },
                 ],
                 unifiedSocialCreditCode: [
+                    { validator: checkOrg, trigger: ['blur'] },
                     { required: true, message: '请输入统一社会信用代码!', trigger: ['change'] },
                 ],
                 applicant: [
@@ -218,9 +278,11 @@ var vm = new Vue({
             },
             rulesShigonglaowufenbaoFrom: {
                 organizationalCode: [
+                    { validator: checkJigoudaima, trigger: ['blur'] },
                     { required: true, message: '请输入组织机构代码!', trigger: ['change'] },
                 ],
                 unifiedSocialCreditCode: [
+                    { validator: checkOrg, trigger: ['blur'] },
                     { required: true, message: '请输入统一社会信用代码!', trigger: ['change'] },
                 ],
                 applicant: [
@@ -253,9 +315,11 @@ var vm = new Vue({
             },
             rulesJianliFrom: {
                 organizationalCode: [
+                    { validator: checkJigoudaima, trigger: ['blur'] },
                     { required: true, message: '请输入组织机构代码!', trigger: ['change'] },
                 ],
                 unifiedSocialCreditCode: [
+                    { validator: checkOrg, trigger: ['blur'] },
                     { required: true, message: '请输入统一社会信用代码!', trigger: ['change'] },
                 ],
                 applicant: [
@@ -268,6 +332,7 @@ var vm = new Vue({
                     { required: true, message: '请输入项目总监姓名!', trigger: ['change'] },
                 ],
                 linkmanCertNo: [
+                    { validator: idCard, trigger: ['blur'] },
                     { required: true, message: '请输入项目总监身份证号码!', trigger: ['change'] },
                 ]
             },
