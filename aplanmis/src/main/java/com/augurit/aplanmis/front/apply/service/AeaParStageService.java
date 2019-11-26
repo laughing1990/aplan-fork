@@ -13,10 +13,38 @@ import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.constants.ApplyType;
 import com.augurit.aplanmis.common.constants.ItemStatus;
-import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.domain.AeaApplyinstProj;
+import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
+import com.augurit.aplanmis.common.domain.AeaHiItemInoutinst;
+import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
+import com.augurit.aplanmis.common.domain.AeaHiIteminst;
+import com.augurit.aplanmis.common.domain.AeaHiParStageinst;
+import com.augurit.aplanmis.common.domain.AeaHiSeriesinst;
+import com.augurit.aplanmis.common.domain.AeaItemBasic;
+import com.augurit.aplanmis.common.domain.AeaItemMat;
+import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
+import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
+import com.augurit.aplanmis.common.domain.AeaParStage;
+import com.augurit.aplanmis.common.domain.AeaParTheme;
+import com.augurit.aplanmis.common.domain.AeaParThemeVer;
+import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.event.AplanmisEventPublisher;
-import com.augurit.aplanmis.common.mapper.*;
-import com.augurit.aplanmis.common.service.instance.*;
+import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
+import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
+import com.augurit.aplanmis.common.mapper.AeaParThemeMapper;
+import com.augurit.aplanmis.common.mapper.AeaParThemeVerMapper;
+import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
+import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemStateinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiParStateinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiSeriesinstService;
+import com.augurit.aplanmis.common.service.instance.AeaLogApplyStateHistService;
+import com.augurit.aplanmis.common.service.instance.RestTimeruleinstService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.item.AeaLogItemStateHistService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
@@ -26,7 +54,11 @@ import com.augurit.aplanmis.common.service.receive.ReceiveService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowService;
 import com.augurit.aplanmis.common.utils.BusinessUtil;
-import com.augurit.aplanmis.front.apply.vo.*;
+import com.augurit.aplanmis.front.apply.vo.ApplyInstantiateResult;
+import com.augurit.aplanmis.front.apply.vo.ApplyinstIdVo;
+import com.augurit.aplanmis.front.apply.vo.BuildProjUnitVo;
+import com.augurit.aplanmis.front.apply.vo.PropulsionItemStateVo;
+import com.augurit.aplanmis.front.apply.vo.StageApplyDataVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.flowable.engine.TaskService;
@@ -36,7 +68,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.InvalidParameterException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * 并联申报service
@@ -131,11 +168,7 @@ public class AeaParStageService {
      * @throws Exception
      */
     public ApplyinstIdVo stageApply(StageApplyDataVo stageApplyDataVo) throws Exception {
-//        if (StringUtils.isBlank(stageApplyDataVo.getComments()))
-//            throw new InvalidParameterException("申报意见参数为空！");
-
-        List<Task> tasks = new ArrayList();
-        //String[] applyinstIds = new String[0];
+        List<Task> tasks = new ArrayList<>();
         List<ApplyInstantiateResult> results = new ArrayList<>();
 
         //已经先创建实例、启动流程，下一个节点是部门审批
@@ -143,6 +176,7 @@ public class AeaParStageService {
         if (ids.length > 0 && "2".equals(stageApplyDataVo.getIsJustApplyinst())) {//说明已经实例化了申报，事项，材料等
             //applyinstIds = stageApplyDataVo.getApplyinstIds();
             for (String applyinstId : stageApplyDataVo.getApplyinstIds()) {
+                AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
                 ActStoAppinst actStoAppinst = new ActStoAppinst();
                 actStoAppinst.setMasterRecordId(applyinstId);
                 actStoAppinst.setFlowMode("proc");
@@ -157,20 +191,18 @@ public class AeaParStageService {
                     result.setProcInstId(actStoAppinst.getProcinstId());
                     result.setAppinstId(actStoAppinst.getAppinstId());
                     result.setApplyinstId(applyinstId);
+                    result.setIsSeriesApprove(aeaHiApplyinst.getIsSeriesApprove());
                     results.add(result);
                 }
             }
         } else {
             //直接发起申报
             results = this.instantiateStageApply(stageApplyDataVo, false);
-
-            //applyinstIds = new String[results.size()];
             for (int i = 0; i < results.size(); i++) {
                 String procinstId = results.get(i).getProcInstId();
                 if (procinstId != null) {
                     tasks.addAll(taskService.createTaskQuery().processInstanceId(procinstId).list());
                 }
-                // applyinstIds[i] = results.get(i).getApplyinstId();
             }
         }
 
@@ -179,14 +211,14 @@ public class AeaParStageService {
             //收件意见
             bpmTaskService.addTaskComment(task.getId(), task.getProcessInstanceId(), stageApplyDataVo.getComments());
             //推动流程流转，这里固定窗机流程的部门审批节点的id必须为“bumenshenpi”，否则报错
-            taskService.complete(task.getId(), new String[]{"bumenshenpi"}, (Map) null);
+            taskService.complete(task.getId(), new String[]{"bumenshenpi"}, null);
         }
 
         String opuWinId = aeaServiceWindowService.getCurrentUserWindow() == null ? "" : aeaServiceWindowService.getCurrentUserWindow().getWindowId();
         String currentOrgId = SecurityContext.getCurrentOrgId();
 
         //循环更新事项状态和申请状态，收件》受理
-        if (results != null && results.size() > 0) {
+        if (results.size() > 0) {
             for (ApplyInstantiateResult result : results) {
                 String procinstId = result.getProcInstId();
                 List<Task> currTasks = null;
@@ -216,8 +248,8 @@ public class AeaParStageService {
     private ApplyinstIdVo covertResults(List<ApplyInstantiateResult> results) {
         ApplyinstIdVo applyinstIdVo = new ApplyinstIdVo();
         if (results.size() == 0) return applyinstIdVo;
-        String[] applyinstIds = results.size() > 0 ? results.stream().filter(result -> ApplyType.SERIES.getValue().equals(result.getIsSeriesApprove())).map(ApplyInstantiateResult::getApplyinstId).toArray(String[]::new) : new String[]{};
-        String[] parrallelApplyinstIds = results.size() > 0 ? results.stream().filter(result -> ApplyType.UNIT.getValue().equals(result.getIsSeriesApprove())).map(ApplyInstantiateResult::getApplyinstId).toArray(String[]::new) : new String[]{};
+        String[] applyinstIds = results.stream().filter(result -> ApplyType.SERIES.getValue().equals(result.getIsSeriesApprove())).map(ApplyInstantiateResult::getApplyinstId).toArray(String[]::new);
+        String[] parrallelApplyinstIds = results.stream().filter(result -> ApplyType.UNIT.getValue().equals(result.getIsSeriesApprove())).map(ApplyInstantiateResult::getApplyinstId).toArray(String[]::new);
         applyinstIdVo.setParallelApplyinstId(parrallelApplyinstIds.length > 0 ? parrallelApplyinstIds[0] : null);
         applyinstIdVo.setApplyinstIds(applyinstIds);
         return applyinstIdVo;
