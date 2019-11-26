@@ -817,19 +817,19 @@ var app = new Vue({
               var kanChaLinkManInfoIds = '';
               var sheJiLinkManInfoIds = '';
 
-              vm.shenchaPerson.forEach(function(item) {
+              _this.shenchaPerson.forEach(function(item) {
                 if (item['addressId'] != '' & item['addressId'] != '1') {
                   shenChaLinkManInfoIds = item['addressId'] + ",";
                 }
               });
 
-              vm.shejiPerson.forEach(function(item) {
+              _this.shejiPerson.forEach(function(item) {
                 if (item['addressId'] != '' & item['addressId'] != '1') {
                   sheJiLinkManInfoIds = item['addressId'] + ",";
                 }
               });
 
-              vm.kanchaPerson.forEach(function(item) {
+              _this.kanchaPerson.forEach(function(item) {
                 if (item['addressId'] != '' & item['addressId'] != '1') {
                   kanChaLinkManInfoIds = item['addressId'] + ",";
                 }
