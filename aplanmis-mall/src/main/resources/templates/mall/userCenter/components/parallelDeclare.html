@@ -859,16 +859,56 @@
   <!--  智能引导 end-->
   <!-- 选择主题 -->
   <div class="mt40 proj-module pd-info-pandel" v-show="declareStep == 3" :style="{position:'relative'}">
-    <div class="pro-type-item active pro-type-sel" v-if="selThemeInfo&&themeId">
-      <img :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">
-      <div class="theme-name">{{selThemeInfo.themeName}}</div>
-      <i class="el-icon-check"></i>
+    <!--themeTypeList-->
+    <div class="theme-type-list">
+      <el-tabs v-model="stageTypeTabSelect">
+        <el-tab-pane label="并联审批" name="paralle">
+          <div :style="{'max-height':(curHeight-360)+'px',overflow: 'auto'}">
+            <p class="parallel-appr-title mb20">
+              <span v-if="selThemeInfo&&themeId">该项目已确定为 <b>“ {{themeName}} ” </b>主题，确认无误可继续下一步</span>
+              <span v-else>请先绑定项目主题，申报完成将不可变更</span>
+            </p>
+            <div class="pro-type-item active pro-type-sel" v-if="selThemeInfo&&themeId">
+              <img :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">
+              <div class="theme-name">{{selThemeInfo.themeName}}</div>
+              <i class="el-icon-check"></i>
+            </div>
+            <div class="pro-type-item pro-type-null" v-else @click="selThemeDialogShow=true">
+              <span><i class="el-icon-circle-plus-outline"></i>请选择并联审批主题类型</span>
+            </div>
+            <el-button class="change-theme-btn" circle icon="el-icon-refresh"
+                       v-show="selThemeInfo&&themeId" @click="selThemeDialogShow=true"></el-button>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="预先服务协同" name="auxiLine" v-if="themeTypeList.auxiLine&&themeTypeList.auxiLine.length>0">
+          <p class="parallel-appr-title mb20">
+            <span v-if="selThemeInfo&&themeId">该项目已确定为 <b>“ {{themeName}} ” </b>主题，确认无误可继续下一步</span>
+            <span v-else>请先绑定项目主题，申报完成将不可变更</span>
+          </p>
+          <div class="pro-type-item"
+               @click="chooseTheme(itemList)"
+               :class="themeActive==itemList.themeId?'active':''"
+               :key="ind"
+               v-for="(itemList,ind) in themeTypeList.auxiLine[0].themeList">
+            <img v-if="themeActive==itemList.themeId" :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">
+            <img v-else :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">
+            <div class="theme-name">{{itemList.themeName}}</div>
+            <i class="el-icon-check"></i>
+          </div>
+            <!--<p class="show-more-theme" v-if="item.themeList.length>10" @click="themeListShowHide(item)">{{showThemeLenText?'展开更多':'收起更多'}} <i :class="showThemeLenText?'el-icon-arrow-down':'el-icon-arrow-up'"></i></p>-->
+        </el-tab-pane>
+      </el-tabs>
     </div>
-    <div class="pro-type-item pro-type-null" v-else @click="selThemeDialogShow=true">
-      <span><i class="el-icon-circle-plus-outline"></i>请选择并联审批主题类型</span>
-    </div>
-    <el-button class="change-theme-btn" circle icon="el-icon-refresh"
-               v-show="selThemeInfo&&themeId" @click="selThemeDialogShow=true"></el-button>
+    <!--<div class="pro-type-item active pro-type-sel" v-if="selThemeInfo&&themeId">-->
+      <!--<img :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">-->
+      <!--<div class="theme-name">{{selThemeInfo.themeName}}</div>-->
+      <!--<i class="el-icon-check"></i>-->
+    <!--</div>-->
+    <!--<div class="pro-type-item pro-type-null" v-else @click="selThemeDialogShow=true">-->
+      <!--<span><i class="el-icon-circle-plus-outline"></i>请选择并联审批主题类型</span>-->
+    <!--</div>-->
+    <!--<el-button class="change-theme-btn" circle icon="el-icon-refresh"-->
+               <!--v-show="selThemeInfo&&themeId" @click="selThemeDialogShow=true"></el-button>-->
     <div class="footer-stage-btn">
       <el-button class="mt60" @click="prevPage(2)">上一步</el-button>
       <el-button class="mt60" type="primary" @click="saveThemeAndNext">保存并下一步</el-button>
@@ -1652,7 +1692,7 @@
   <!--选择主题 start-->
   <el-dialog title="选择主题" :visible.sync="selThemeDialogShow" width="900px">
     <el-tabs v-model="itemTabSelect">
-      <el-tab-pane v-for="(item,index) in themeTypeList"
+      <el-tab-pane v-for="(item,index) in themeTypeList.mainLine"
                    :label="item.themeTypeName"
                    :name="'tab_'+item.themeTypeCode"
                    :key="index">

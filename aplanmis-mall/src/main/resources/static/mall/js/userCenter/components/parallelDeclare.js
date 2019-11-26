@@ -79,7 +79,8 @@ var module1 = new Vue({
         { num: '7', name: '材料一单清' },
         { num: '8', name: '完成申报' },
       ],
-      itemTabSelect: '', // 选择主题-选中tab
+      itemTabSelect: 'tab_0', // 选择主题-选中tab
+      stageTypeTabSelect: 'paralle', //
       themeActive: '', // 选中主题样式
       isShowAll: false,  // 是否展示更多事项材料一单清
       projInfoId: '', // 查询项目id
@@ -184,7 +185,10 @@ var module1 = new Vue({
           { required: true, validator: checkUnifiedSocialCreditCode, trigger: ['blur'] },
         ]
       },
-      themeTypeList: [], // 主题类型主题列表
+      themeTypeList: {
+        auxiLine:[],
+        mainLine: [],
+      }, // 主题类型主题列表
       smsInfoId: '', // 领件人实例id
       themeId: '', // 所选主题id
       themeName: '', // 所选主题名称
@@ -992,6 +996,8 @@ var module1 = new Vue({
       _that.loading = true;
       _that.gbhyShowMsg = '';
       _that.themeId = '';
+      _that.themeName = '';
+      _that.themeActive = '';
       _that.selThemeInfo = {};
       request('', {
         url: ctx + 'rest/apply/common/projInfo/' + _that.projInfoId,
@@ -1565,7 +1571,8 @@ var module1 = new Vue({
       var _that = this;
       _that.loading = true;
       request('', {
-        url: ctx + 'rest/main/theme/list',
+        // url: ctx + 'rest/main/theme/list',
+        url: ctx + 'rest/userCenter/apply/theme/list ',
         type: 'get',
       }, function (data) {
         if (data.success) {
@@ -1576,7 +1583,7 @@ var module1 = new Vue({
             if (_that.themeId) {
               _that.themeActive = _that.themeId;
               _that.themeIdFlag = true;
-              var copyThemeTypeList = JSON.parse(JSON.stringify(_that.themeTypeList));
+              var copyThemeTypeList = JSON.parse(JSON.stringify(_that.themeTypeList.mainLine));
               copyThemeTypeList = copyThemeTypeList.filter(function (item, index) {
                 return item.themeTypeCode === _that.themeType;
               })
@@ -1588,7 +1595,7 @@ var module1 = new Vue({
             }
           } else {
             _that.themeIdFlag = false;
-            _that.itemTabSelect = 'tab_' + _that.themeTypeList[0].themeTypeCode;
+            _that.itemTabSelect = 'tab_' + _that.themeTypeList.mainLine[0].themeTypeCode;
             // _that.chooseTheme(_that.themeTypeList[0].themeList[0]);
           }
         } else {
