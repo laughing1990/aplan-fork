@@ -29,7 +29,7 @@ var vm = new Vue({
         };
         var checkJigoudaima = function (rule, value, callback) {
             if (value) {
-                var flag = !/^[0-9A-Z]{8}$/.test(value);
+                var flag = !/^[0-9A-Z]{9}$/.test(value);
                 if (flag) {
                     return callback(new Error('格式错误'));
                 } else {

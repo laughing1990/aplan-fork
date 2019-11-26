@@ -39,6 +39,9 @@ public class PurchaseProjVo {
     @ApiModelProperty(value = "竞价类型：1 随机中标，2 自主选择 3 竞价选取")
     private String biddingType;
 
+    @ApiModelProperty(value = "报价方式,0 金额 1 下浮率")
+    private String quoteType;
+
     @ApiModelProperty(value = "备注")
     private String memo;
 

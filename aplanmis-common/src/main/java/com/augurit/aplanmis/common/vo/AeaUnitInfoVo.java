@@ -75,6 +75,8 @@ public class AeaUnitInfoVo {
 
     private java.lang.String loginName; // (单位登录名)
 
+    private String linkmanInfoId;//联系人
+
     public static AeaUnitInfoVo build(AeaUnitInfo aeaUnitInfo) {
         AeaUnitInfoVo aeaUnitInfoVo = new AeaUnitInfoVo();
         BeanUtils.copyProperties(aeaUnitInfo, aeaUnitInfoVo);

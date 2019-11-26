@@ -35,6 +35,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
                                                 , "/rest/send/short/message/**"
                                                 , "/province/**"
                                                 , "/rest/mall/mobile/login"
+                                                , "/rest/mobile/**"
                                         })
                         )
                                 .permitAll()
