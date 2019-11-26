@@ -88,7 +88,6 @@
               </el-form-item>
               <el-form-item class="input-inline" prop="unifiedSocialCreditCode" label='统一社会信用代码'>
                 <el-input v-model="formDataTuShen.unifiedSocialCreditCode" placeholder="请输入统一社会信用代码"></el-input>
-                <el-button type="primary" @click="searchFromInternet(formDataTuShen,formDataTuShen.organizationalCode)" title="联网查询" style="float:right;margin-left:3px;">联网查询</el-button>
               </el-form-item>
               <el-form-item class="input-inline" prop="applicant" label="单位名称">
                 <!-- <el-input v-model="formDataTuShen.applicant" placeholder="请输入单位名称"></el-input> -->
@@ -186,7 +185,6 @@
             <div class="clearfix">
               <el-form-item class="input-inline" prop="organizationalCode" label="组织机构代码">
                 <el-input v-model="formDataKanCha.organizationalCode" placeholder="格式：XXXXXXXXX"></el-input>
-                <el-button type="primary" @click="searchFromInternet(formDataKanCha,formDataKanCha.organizationalCode)" title="联网查询" style="float:right;margin-left:3px;">联网查询</el-button>
               </el-form-item>
               <el-form-item class="input-inline" prop="unifiedSocialCreditCode" label='统一社会信用代码'>
                 <el-input v-model="formDataKanCha.unifiedSocialCreditCode" placeholder="请输入统一社会信用代码"></el-input>
@@ -261,7 +259,6 @@
             <div class="clearfix">
               <el-form-item class="input-inline" prop="organizationalCode" label="组织机构代码">
                 <el-input v-model="formDataSheJj.organizationalCode" placeholder="格式：XXXXXXXXX"></el-input>
-                <el-button type="primary" @click="searchFromInternet(formDataSheJj,formDataSheJj.organizationalCode)" title="联网查询" style="margin-left:3px;float:right">联网查询</el-button>
               </el-form-item>
               <el-form-item class="input-inline" prop="unifiedSocialCreditCode" label='统一社会信用代码'>
                 <el-input v-model="formDataSheJj.unifiedSocialCreditCode" placeholder="请输入统一社会信用代码"></el-input>
@@ -384,7 +381,6 @@
         </el-form-item>
         <el-form-item label="证件号：" prop="linkmanCertNo">
           <el-input v-model="addEditManform.linkmanCertNo" placeholder="请输入联系人证件号"></el-input>
-          <el-button type="primary" @click="searchMan(addEditManform,addEditManform.linkmanCertNo)" title="联网查询" style="float:right;margin-left:3px;">联网查询</el-button>
         </el-form-item>
         <el-form-item label="手机号码：" prop="linkmanMobilePhone">
           <el-input v-model="addEditManform.linkmanMobilePhone" placeholder="请输入联系人手机号码"></el-input>

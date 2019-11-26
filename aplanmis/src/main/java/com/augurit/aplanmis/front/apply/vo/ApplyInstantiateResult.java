@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 public class ApplyInstantiateResult {
     private String procInstId;
-//    private String iteminstId;
     private String appinstId;
     private String applyinstId;
     private String applyinstCode;

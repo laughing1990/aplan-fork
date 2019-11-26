@@ -22,11 +22,12 @@ public class PurchaseDetailVo {
     @ApiModelProperty(name = "aeaProjInfo", value = "关联的投资审批项目信息")
     private AeaProjInfo aeaProjInfo;
 
-    public void changeToIteminst(AeaHiIteminst iteminst) {
+    public void changeToIteminst(AeaHiIteminst iteminst, String serviceObject) {
         Iteminst inst = new Iteminst();
         BeanUtils.copyProperties(iteminst, inst);
         this.iteminst = inst;
         this.iteminstName = inst.getIteminstName();
+        inst.setServiceObj(serviceObject);
     }
 
     @Data

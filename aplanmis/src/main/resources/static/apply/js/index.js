@@ -4,9 +4,6 @@
  * @Last Modified by:   ZL
  * @Last Modified time: $ $
  */
-function callbackAfterSaveSFForm(result,sFRenderConfig,formModelVal,actStoForminst) {
-    debugger;
-}
 var vm = new Vue({
   el: '#approve',
   data: function () {
@@ -3693,9 +3690,6 @@ var vm = new Vue({
         alertMsg('', perUnitMsg, '关闭', 'error', true);
       }
     },
-    test: function(item,ev){
-      console.log(item,ev)
-    },
     // 根据材料定义id获取材料实例id
     getMatinstIds: function () {
       var _that = this;
@@ -5484,14 +5478,14 @@ var vm = new Vue({
     getOneFormrender3: function(_applyinstId,_formId){
       var _that = this;
       // _formId = 'ecbebb64-a29c-41c6-abb7-e7b337a1a2cb';
-      var sFRenderConfig='&showBasicButton=true&includePlatformResource=false';
+      var sFRenderConfig="&showBasicButton=true&includePlatformResource=false&busiScence=mat";
       request('', {
         url: ctx + 'bpm/common/sf/renderHtmlFormContainer?listRefEntityId='+_applyinstId+'&listFormId='+_formId+sFRenderConfig,
         type: 'get',
       }, function (result) {
         if (result.success) {
           _that.matFormDialogVisible = true;
-          $('#matFormContent').html(result.content)
+          // $('#matFormContent').html(result.content)
           _that.$nextTick(function(){
             $('#matFormContent').html(result.content)
           });
@@ -5538,6 +5532,7 @@ var vm = new Vue({
     // 展示材料一张表单弹窗
     showOneFormDialog1: function(oneformMat){
       var _that = this;
+      _that.selMatRowData = oneformMat;
       var _applyinstId = _that.parallelApplyinstId;
       _that.oneformNameTitle = oneformMat.matName
       if(_applyinstId==''){
@@ -6044,4 +6039,23 @@ var vm = new Vue({
 
   }
 });
+function callbackAfterSaveSFForm(result,sFRenderConfig,formModelVal,actStoForminst) {
+  console.log(result,sFRenderConfig.busiScence,formModelVal,actStoForminst);
+  if(sFRenderConfig.busiScence=='mat'){
+    var parma = {
+      "linkmainInfoId": vm.rootApplyLinkmanId,
+      "matId": vm.selMatRowData.matId,
+      "projInfoId": vm.projInfoId,
+      "stoForminstId": actStoForminst.stoForminstId,
+      "unitInfoId": vm.rootUnitInfoId
+    };
+    request('', {
+      url: ctx + 'rest/mats/bind/form',
+      type: 'POST',
+      ContentType: 'application/json',
+      data: JSON.stringify(parma),
+    }, function (result1) {
+    }, function (msg) {})
+  }
+}
 

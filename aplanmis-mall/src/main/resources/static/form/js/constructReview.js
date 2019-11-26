@@ -53,6 +53,61 @@ var app = new Vue({
         callback();
       }
     };
+    var checkUnifiedSocialCreditCode = function(rule, value, callback) {
+      if (value === '' || value === undefined || value.trim() === '') {
+        callback(new Error('请输入统一社会信用代码！'));
+      } else if (value) {
+        var flag = !/[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}/.test(value);
+        if (flag) {
+          return callback(new Error('请输入正确的统一社会信用代码！'));
+        } else {
+          callback();
+        }
+
+      } else {
+        callback();
+      }
+    };
+    var checkProjectLeaderCertNum = function(rule, value, callback) {
+      if (value === '' || value === undefined || value.trim() === '') {
+        callback(new Error('请输入单位负责人身份证号码！'));
+      } else if (value) {
+        var flag = !/^[0-9a-zA-Z]*$/.test(value) || /^[\u4E00-\u9FA5]+$/.test(value);
+        var len = value.length;
+        if (flag) {
+          return callback(new Error('请输入正确的单位负责人身份证号码！'));
+        } else {
+          if (len != 9) {
+            return callback(new Error('请输入18位单位负责人身份证号码！'));
+          } else {
+            callback();
+          }
+        }
+
+      } else {
+        callback();
+      }
+    };
+    var checkOrganizationalCode = function(rule, value, callback) {
+      if (value === '' || value === undefined || value.trim() === '') {
+        callback(new Error('请输入组织机构代码！'));
+      } else if (value) {
+        var flag = !/^[0-9A-Z]*$/.test(value) || /^[\u4E00-\u9FA5]+$/.test(value);
+        var len = value.length;
+        if (flag) {
+          return callback(new Error('请输入正确的组织机构代码！'));
+        } else {
+          if (len != 9) {
+            return callback(new Error('请输入9位组织机构代码！'));
+          } else {
+            callback();
+          }
+        }
+
+      } else {
+        callback();
+      }
+    };
     return {
       dialogTitie: '',
       pageLoading: false,
@@ -163,7 +218,10 @@ var app = new Vue({
       },
       rules2: {
         'organizationalCode': [
-          { required: true, message: '请输入组织机构代码' },
+          { required: true, validator: checkOrganizationalCode, trigger: ['blur'] },
+        ],
+        'unifiedSocialCreditCode': [
+          { required: true, validator: checkUnifiedSocialCreditCode, trigger: ['blur'] },
         ],
         'applicant': [
           { required: true, message: '请输入单位名称' },
@@ -178,12 +236,15 @@ var app = new Vue({
           { required: true, message: '请选择图审机构项目负责人' },
         ],
         'projectLeaderCertNum': [
-          { required: true, message: '请输入图审机构项目负责人身份证号码' },
+          { required: true, validator: checkProjectLeaderCertNum, trigger: ['blur'] },
         ],
       },
       rules3: {
         'organizationalCode': [
-          { required: true, message: '请输入组织机构代码' },
+          { required: true, validator: checkOrganizationalCode, trigger: ['blur'] },
+        ],
+        'unifiedSocialCreditCode': [
+          { required: true, validator: checkUnifiedSocialCreditCode, trigger: ['blur'] },
         ],
         'applicant': [
           { required: true, message: '请输入单位名称' },
@@ -198,12 +259,15 @@ var app = new Vue({
           { required: true, message: '请选择勘查单位项目负责人' },
         ],
         'projectLeaderCertNum': [
-          { required: true, message: '请输入勘查单位项目负责人身份证号码' },
+          { required: true, validator: checkProjectLeaderCertNum, trigger: ['blur'] },
         ],
       },
       rules4: {
         'organizationalCode': [
-          { required: true, message: '请输入组织机构代码' },
+          { required: true, validator: checkOrganizationalCode, trigger: ['blur'] },
+        ],
+        'unifiedSocialCreditCode': [
+          { required: true, validator: checkUnifiedSocialCreditCode, trigger: ['blur'] },
         ],
         'applicant': [
           { required: true, message: '请输入单位名称' },
@@ -218,7 +282,7 @@ var app = new Vue({
           { required: true, message: '请选择设计单位项目负责人' },
         ],
         'projectLeaderCertNum': [
-          { required: true, message: '请输入设计单位项目负责人身份证号码' },
+          { required: true, validator: checkProjectLeaderCertNum, trigger: ['blur'] },
         ],
       },
 
@@ -448,12 +512,7 @@ var app = new Vue({
     // 模糊查询人员
     getPerson: function(val, type) {
       var vm = this;
-      // vm.loading = true;
       if (!val.unitInfoId) {
-        this.$message({
-          message: '请先选择单位',
-          type: 'error'
-        });
         return;
       }
       request('', {
@@ -518,13 +577,20 @@ var app = new Vue({
               _that.addEditManModalShow = false;
               _that.loading = false;
 
+              var item = {
+                addressId: result.content,
+                addressIdCard: _that.addEditManModalShow.linkmanCertNo,
+                addressMail: _that.addEditManModalShow.linkmanMail,
+                addressName: _that.addEditManModalShow.linkmanName,
+                addressPhone: _that.addEditManModalShow.linkmanMobilePhone,
+              }
               if (_that.addEditManModalFlag == 'add') {
                 if (_that.curUnit == 'shencha') {
-                  _that.getPerson(_that.formDataTuShen, 'shencha');
+                  _that.shenchaPerson.push(item);
                 } else if (_that.curUnit == 'sheji') {
-                  _that.getPerson(_that.formDataSheJj, 'sheji');
+                  _that.shejiPerson.push(item);
                 } else {
-                  _that.getPerson(_that.formDataKanCha, 'kancha');
+                  _that.kanchaPerson.push(item);
                 }
               }
             }
@@ -749,6 +815,32 @@ var app = new Vue({
                   return false;
                 }
               }
+              var shenChaLinkManInfoIds = '';
+              var kanChaLinkManInfoIds = '';
+              var sheJiLinkManInfoIds = '';
+
+              _this.shenchaPerson.forEach(function(item) {
+                if (item['addressId'] != '' & item['addressId'] != '1') {
+                  shenChaLinkManInfoIds = item['addressId'] + ",";
+                }
+              });
+
+              _this.shejiPerson.forEach(function(item) {
+                if (item['addressId'] != '' & item['addressId'] != '1') {
+                  sheJiLinkManInfoIds = item['addressId'] + ",";
+                }
+              });
+
+              _this.kanchaPerson.forEach(function(item) {
+                if (item['addressId'] != '' & item['addressId'] != '1') {
+                  kanChaLinkManInfoIds = item['addressId'] + ",";
+                }
+              });
+
+              formDataTuShen.linkManInfoIds = shenChaLinkManInfoIds.length > 0 ? shenChaLinkManInfoIds.substring(0, shenChaLinkManInfoIds.length - 1) : '';
+              formDataKanCha.linkManInfoIds = kanChaLinkManInfoIds.length > 0 ? kanChaLinkManInfoIds.substring(0, kanChaLinkManInfoIds.length - 1) : '';
+              formDataSheJj.linkManInfoIds = sheJiLinkManInfoIds.length > 0 ? sheJiLinkManInfoIds.substring(0, sheJiLinkManInfoIds.length - 1) : '';
+
               var drawings = [];
               drawings.push(formDataTuShen);
               drawings.push(formDataKanCha);

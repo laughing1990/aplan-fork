@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.OrderComparator;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -28,12 +29,16 @@ public class CheckerManager {
         if (stageCheckers != null) {
             OrderComparator.sort(stageCheckers);
 
+            List<String> errorMsg = new ArrayList<>();
             try {
                 for (Checker<AeaParStage> checker : stageCheckers) {
                     String message = checker.check(aeaParStage, checkerContext);
                     if (StringUtils.isNotBlank(message)) {
-                        return message;
+                        errorMsg.add(message);
                     }
+                }
+                if (errorMsg.size() > 0) {
+                    return StringUtils.join(errorMsg.toArray(new String[0]), "\n");
                 }
             } finally {
                 checkerContext.clear();
@@ -49,12 +54,16 @@ public class CheckerManager {
         if (itemCheckers != null) {
             OrderComparator.sort(itemCheckers);
 
+            List<String> errorMsg = new ArrayList<>();
             try {
                 for (Checker<AeaItemBasic> checker : itemCheckers) {
                     String message = checker.check(aeaItemBasic, checkerContext);
                     if (StringUtils.isNotBlank(message)) {
-                        return message;
+                        errorMsg.add(message);
                     }
+                }
+                if (errorMsg.size() > 0) {
+                    return StringUtils.join(errorMsg.toArray(new String[0]), "\n");
                 }
             } finally {
                 checkerContext.clear();

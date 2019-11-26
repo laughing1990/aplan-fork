@@ -79,7 +79,8 @@ var module1 = new Vue({
         { num: '7', name: '材料一单清' },
         { num: '8', name: '完成申报' },
       ],
-      itemTabSelect: '', // 选择主题-选中tab
+      itemTabSelect: 'tab_0', // 选择主题-选中tab
+      stageTypeTabSelect: 'paralle', //
       themeActive: '', // 选中主题样式
       isShowAll: false,  // 是否展示更多事项材料一单清
       projInfoId: '', // 查询项目id
@@ -184,7 +185,10 @@ var module1 = new Vue({
           { required: true, validator: checkUnifiedSocialCreditCode, trigger: ['blur'] },
         ]
       },
-      themeTypeList: [], // 主题类型主题列表
+      themeTypeList: {
+        auxiLine:[],
+        mainLine: [],
+      }, // 主题类型主题列表
       smsInfoId: '', // 领件人实例id
       themeId: '', // 所选主题id
       themeName: '', // 所选主题名称
@@ -393,6 +397,9 @@ var module1 = new Vue({
       stageFrontCheckMsg: '', // 阶段前置检测失败提示
       leftTabClosed: true, //
       selThemeDialogShow: false, // 是否展示
+      rootUnitInfoId: '',
+      rootLinkmanInfoId: '',
+      ootApplyLinkmanId: '',
     }
   },
   mounted: function () {
@@ -591,8 +598,6 @@ var module1 = new Vue({
     },
     // 切换我的材料选中状态 flag ==dir 我的空间选中材料
     changeMyMatSel: function (val, selMatData, flag) {
-      console.log(val, selMatData);
-      console.log(this.selMatRowData);
       var _that = this;
       var fileId = flag == 'dir' ? selMatData.detailId : selMatData.fileId;
       var param = {
@@ -786,6 +791,9 @@ var module1 = new Vue({
               _that.addEditManPerform.linkmanMail = _that.addEditManform.linkmanMail;
               _that.addEditManPerform.linkmanCertNo = _that.addEditManform.linkmanCertNo;
               _that.addEditManPerform.linkmanMobilePhone = _that.addEditManform.linkmanMobilePhone;
+
+              _that.applyObjectInfo.aeaLinkmanInfo.linkmanId=result.content;//qjp添加
+
               _that.addEditManModalShow = false;
               _that.loading = false;
             }
@@ -992,6 +1000,8 @@ var module1 = new Vue({
       _that.loading = true;
       _that.gbhyShowMsg = '';
       _that.themeId = '';
+      _that.themeName = '';
+      _that.themeActive = '';
       _that.selThemeInfo = {};
       request('', {
         url: ctx + 'rest/apply/common/projInfo/' + _that.projInfoId,
@@ -1565,7 +1575,8 @@ var module1 = new Vue({
       var _that = this;
       _that.loading = true;
       request('', {
-        url: ctx + 'rest/main/theme/list',
+        // url: ctx + 'rest/main/theme/list',
+        url: ctx + 'rest/userCenter/apply/theme/list ',
         type: 'get',
       }, function (data) {
         if (data.success) {
@@ -1576,7 +1587,7 @@ var module1 = new Vue({
             if (_that.themeId) {
               _that.themeActive = _that.themeId;
               _that.themeIdFlag = true;
-              var copyThemeTypeList = JSON.parse(JSON.stringify(_that.themeTypeList));
+              var copyThemeTypeList = JSON.parse(JSON.stringify(_that.themeTypeList.mainLine));
               copyThemeTypeList = copyThemeTypeList.filter(function (item, index) {
                 return item.themeTypeCode === _that.themeType;
               })
@@ -1588,7 +1599,7 @@ var module1 = new Vue({
             }
           } else {
             _that.themeIdFlag = false;
-            _that.itemTabSelect = 'tab_' + _that.themeTypeList[0].themeTypeCode;
+            _that.itemTabSelect = 'tab_' + _that.themeTypeList.mainLine[0].themeTypeCode;
             // _that.chooseTheme(_that.themeTypeList[0].themeList[0]);
           }
         } else {
@@ -3316,6 +3327,7 @@ var module1 = new Vue({
     showOneFormDialog1: function(oneformMat){
       var _that = this;
       var _applyinstId = _that.parallelApplyinstId;
+      _that.selMatRowData = oneformMat;
       _that.matformNameTitle = oneformMat.matName
       if(_applyinstId==''){
         _that.getParallelApplyinstId('matForm',oneformMat.stoFormId)
@@ -3327,7 +3339,7 @@ var module1 = new Vue({
     getOneFormrender3: function(_applyinstId,_formId){
       var _that = this;
       // _formId = 'ecbebb64-a29c-41c6-abb7-e7b337a1a2cb';
-      var sFRenderConfig='&showBasicButton=true&includePlatformResource=false';
+      var sFRenderConfig='&showBasicButton=true&includePlatformResource=false&busiScence=mat';
       request('', {
         url: ctx + 'bpm/common/sf/renderHtmlFormContainer?listRefEntityId='+_applyinstId+'&listFormId='+_formId+sFRenderConfig,
         type: 'get',
@@ -3961,4 +3973,23 @@ var module1 = new Vue({
     },
   },
 });
+function callbackAfterSaveSFForm(result,sFRenderConfig,formModelVal,actStoForminst) {
+  console.log(result,sFRenderConfig.busiScence,formModelVal,actStoForminst);
+  if(sFRenderConfig.busiScence=='mat'){
+    var parma = {
+      "linkmainInfoId": module1.userInfoId,
+      "matId": module1.selMatRowData.matId,
+      "projInfoId": module1.projInfoId,
+      "stoForminstId": actStoForminst.stoForminstId,
+      "unitInfoId": module1.unitInfoId
+    };
+    request('', {
+      url: ctx + 'aea/cert/bind/form',
+      type: 'POST',
+      ContentType: 'application/json',
+      data: JSON.stringify(parma),
+    }, function (result1) {
+    }, function (msg) {})
+  }
+}
 

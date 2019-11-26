@@ -9,11 +9,7 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.CommonConstant;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaParTheme;
-import com.augurit.aplanmis.common.domain.AeaParentProj;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.common.domain.AeaUnitProj;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.exception.ProjectCodeDuplicateException;
 import com.augurit.aplanmis.common.mapper.AeaHiApplyinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaParentProjMapper;
@@ -38,16 +34,7 @@ import org.springframework.util.Assert;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -616,7 +603,7 @@ public class AeaProjInofServiceImpl implements AeaProjInfoService {
      */
     @Transactional
     public boolean deleteChildChildProj(String delProjId) throws Exception {
-        if ( StringUtils.isEmpty(delProjId)) {
+        if (StringUtils.isEmpty(delProjId)) {
             return false;
         }
         AeaProjInfo delProjInfo = aeaProjInfoMapper.getOnlyAeaProjInfoById(delProjId);//info 待删除项目
@@ -825,6 +812,76 @@ public class AeaProjInofServiceImpl implements AeaProjInfoService {
         return aeaProjInfos;
     }
 
+    /**
+     * 获取转换字段后的项目详情信息
+     *
+     * @param projInfoId 项目采购信息
+     * @return AeaProjInfo
+     * @throws Exception e
+     */
+    @Override
+    public AeaProjInfo getTransProjInfoDetail(String projInfoId) throws Exception {
+        LOGGER.debug("根据申请实例ID查询项目列表，申请实例ID：{}", projInfoId);
+        String orgId = SecurityContext.getCurrentOrgId();
+        List<BscDicCodeItem> xmlxCodeList = bscDicCodeService.getActiveItemsByTypeCode("XM_PROJECT_STEP", orgId);
+        List<BscDicCodeItem> tzlxCodeList = bscDicCodeService.getActiveItemsByTypeCode("XM_TZLX", orgId);
+        List<BscDicCodeItem> zjlyCodeList = bscDicCodeService.getActiveItemsByTypeCode("XM_ZJLY", orgId);
+        List<BscDicCodeItem> tdlyCodeList = bscDicCodeService.getActiveItemsByTypeCode("XM_TDLY", orgId);
+        List<BscDicCodeItem> gcflCodeList = bscDicCodeService.getActiveItemsByTypeCode("XM_GCFL", orgId);
+        List<BscDicCodeItem> jsxzCodeList = bscDicCodeService.getActiveItemsByTypeCode("XM_NATURE", orgId);
+        List<BscDicCodeItem> gbhyCodeList = bscDicCodeService.getActiveItemsByTypeCode("XM_GBHY", orgId);
+        List<BscDicCodeItem> zdxmCodeList = bscDicCodeService.getActiveItemsByTypeCode("XM_PROJECT_LEVEL", orgId);
+        AeaProjInfo aeaProjInfo = aeaProjInfoMapper.getAeaProjInfoById(projInfoId);
+        if (aeaProjInfo == null) throw new Exception("can not find proj info");
+        String projType = getValueByBscDIcCode(xmlxCodeList, aeaProjInfo.getProjType());
+        aeaProjInfo.setProjType(projType);
+        String investType = getValueByBscDIcCode(tzlxCodeList, aeaProjInfo.getInvestType());
+        aeaProjInfo.setInvestType(investType);
+        String zjly = getValueByBscDIcCode(zjlyCodeList, aeaProjInfo.getFinancialSource());
+        aeaProjInfo.setFinancialSource(zjly);
+        String tdly = getValueByBscDIcCode(tdlyCodeList, aeaProjInfo.getLandSource());
+        aeaProjInfo.setLandSource(tdly);
+        String gcfl = getValueByBscDIcCode(gcflCodeList, aeaProjInfo.getProjCategory());
+        aeaProjInfo.setProjCategory(gcfl);
+        String jsxz = getValueByBscDIcCode(jsxzCodeList, aeaProjInfo.getProjNature());
+        aeaProjInfo.setProjNature(jsxz);
+        String gbhy = getValueByBscDIcCode(gbhyCodeList, aeaProjInfo.getTheIndustry());
+        aeaProjInfo.setTheIndustry(gbhy);
+        String zdxm = getValueByBscDIcCode(zdxmCodeList, aeaProjInfo.getProjLevel());
+        aeaProjInfo.setProjLevel(zdxm);
+        aeaProjInfo.setIsForeign("1".equals(aeaProjInfo.getIsForeign()) ? "是" : "否");
+        aeaProjInfo.setIsDesignSolution("1".equals(aeaProjInfo.getIsDesignSolution()) ? "是" : "否");
+        aeaProjInfo.setIsAreaEstimate("1".equals(aeaProjInfo.getIsAreaEstimate()) ? "是" : "否");
+        String regionalism = aeaProjInfo.getRegionalism();
+        BscDicRegion bscDicRegion = bscDicRegionMapper.getBscDicRegionById(regionalism);
+        if (bscDicRegion != null) {
+            aeaProjInfo.setRegionalism(bscDicRegion.getRegionName());
+        }
+        String projectAddress = aeaProjInfo.getProjectAddress();
+        if (StringUtils.isNotBlank(projectAddress)) {
+            String[] split = projectAddress.split(",");
+            String result = "";
+            for (String str : split) {
+                BscDicRegion addrRegion = bscDicRegionMapper.getBscDicRegionById(str);
+                if (addrRegion != null) {
+                    result += addrRegion.getRegionName() + ",";
+                }
+            }
+            if (result.length() > 0) {
+                result = result.substring(0, result.length() - 1);
+            }
+            aeaProjInfo.setProjectAddress(result);
+        }
+        try {
+            AeaParTheme theme = aeaParThemeService.getAeaParThemeByThemeId(aeaProjInfo.getThemeId());
+            aeaProjInfo.setThemeName(Optional.ofNullable(theme).orElse(new AeaParTheme()).getThemeName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return aeaProjInfo;
+    }
+
+
     private void buildChildProjects(Map<String, String> child2Parent, Set<String> projInfoIds, List<String> pIds) {
         List<AeaParentProj> childProjs;
         do {
@@ -976,6 +1033,7 @@ public class AeaProjInofServiceImpl implements AeaProjInfoService {
         }
         return rootId;
     }
+
 
     private List<AeaParentProj> recursiveGetParentProj(List<AeaParentProj> parentProjs, String projInfoId) {
         List<AeaParentProj> result = new ArrayList<>();

@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.common.vo.purchase;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -58,6 +59,7 @@ public class PurchaseProjVo {
 
     @ApiModelProperty(value = "发布时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private java.util.Date publishTime;
 
     @ApiModelProperty(value = "金额说明")
@@ -83,6 +85,19 @@ public class PurchaseProjVo {
 
     @ApiModelProperty(value = "是否确认服务金额 0 否 1 是")
     private String isDefineAmount;
+
+    @ApiModelProperty(value = "报名截止日期")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private java.util.Date expirationDate;
+
+    @ApiModelProperty(value = "选取中介时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private java.util.Date choiceImunitTime;
+
+    @ApiModelProperty(value = "业主投诉电话")
+    private String ownerComplaintPhone;
 
     //============================== 单位要求字段 ===============================
     @ApiModelProperty(value = "中介机构要求信息ID")
@@ -120,6 +135,19 @@ public class PurchaseProjVo {
     @ApiModelProperty(value = "备案要求说明（当IS_RECORD_REQUIRE =1 时，必填）")
     private String recordRequireExplain;
 
+    @ApiModelProperty(value = "是否有企业回避：1 是，0 否")
+    private String isAvoid;
+
+    @ApiModelProperty(value = "【当IS_AVOID=1时必填】回避原因")
+    private String avoidReason;
+
+    @ApiModelProperty(value = "回避单位ID")
+    private String avoidUnitInfoIds;
+    @ApiModelProperty(value = "回避单位名称")
+    private String avoidUnitNames;
+
+    private String biddingUnitId;
+    private String biddingUnitName;
     //=============================================采购项目信息===============================================
     @ApiModelProperty(value = "项目名称")
     private String projName;

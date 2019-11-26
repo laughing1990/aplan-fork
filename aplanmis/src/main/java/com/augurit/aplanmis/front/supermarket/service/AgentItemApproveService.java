@@ -2,17 +2,16 @@ package com.augurit.aplanmis.front.supermarket.service;
 
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
 import com.augurit.agcloud.bsc.mapper.BscDicCodeMapper;
+import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaHiIteminst;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.common.mapper.AeaImMajorQualMapper;
-import com.augurit.aplanmis.common.mapper.AeaImProjPurchaseMapper;
-import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
+import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
+import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.vo.AeaImMajorQualVo;
 import com.augurit.aplanmis.common.vo.purchase.PurchaseProjVo;
 import com.augurit.aplanmis.front.approve.service.ApproveService;
+import com.augurit.aplanmis.front.basis.item.service.RestItemService;
 import com.augurit.aplanmis.front.supermarket.vo.AgentItemApproveForm;
 import com.augurit.aplanmis.supermarket.apply.service.RestImApplyService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +24,9 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class AgentItemApproveService {
+
+    private static final String SERVICE_OBJECT_DICT_NAME = "ITEM_FWJGXZ";
+    private static final String SERVICE_OBJECT_CODE = "5";
 
     @Autowired
     private AeaHiApplyinstService aeaHiApplyinstService;
@@ -40,7 +42,14 @@ public class AgentItemApproveService {
     private BscDicCodeMapper bscDicCodeMapper;
     @Autowired
     private RestImApplyService restImApplyService;
-
+    @Autowired
+    private AeaItemBasicMapper aeaItemBasicMapper;
+    @Autowired
+    private RestItemService restItemService;
+    @Autowired
+    private AeaProjInfoService aeaProjInfoService;
+    @Autowired
+    private AeaParentProjMapper aeaParentProjMapper;
 
     /**
      * 获取中介事项申报基本信息
@@ -61,8 +70,12 @@ public class AgentItemApproveService {
         String isApproveProj = purchaseProj.getIsApproveProj();
         if (StringUtils.isNotBlank(isApproveProj) && "1".equals(isApproveProj)) {
             //查询关联的投资审批项目信息
-            AeaProjInfo parentProj = aeaProjInfoMapper.findParentProj(purchaseProj.getProjInfoId());
-            form.setAeaProjInfo(parentProj);
+            AeaParentProj parentProj = aeaParentProjMapper.getParentProjByProjInfoId(purchaseProj.getProjInfoId());
+            if (null != parentProj) {
+                AeaProjInfo projInfo = aeaProjInfoService.getTransProjInfoDetail(parentProj.getParentProjId());
+                form.setAeaProjInfo(projInfo);
+            }
+
         }
         //查询资质信息
         String unitRequireId = purchaseProj.getUnitRequireId();
@@ -98,8 +111,14 @@ public class AgentItemApproveService {
             iteminst.setDueNumUnit(item_property.getItemName());
         }
         //服务对象
+        String currentOrgId = SecurityContext.getCurrentOrgId();
+        String itemVerId = iteminst.getItemVerId();
+        AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(itemVerId, currentOrgId);
 
-        form.changeToIteminst(iteminst);
+        String serviceObjectCode = StringUtils.isNotBlank(aeaItemBasic.getXkdx()) ? aeaItemBasic.getXkdx() : SERVICE_OBJECT_CODE;
+        String serviceObject = restItemService.getServiceObject(SERVICE_OBJECT_DICT_NAME, serviceObjectCode, currentOrgId);
+
+        form.changeToIteminst(iteminst, serviceObject);
         return form;
     }
 

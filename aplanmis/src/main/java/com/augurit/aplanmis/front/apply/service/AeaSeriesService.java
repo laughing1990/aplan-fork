@@ -21,7 +21,6 @@ import com.augurit.aplanmis.common.domain.AeaHiSeriesinst;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
 import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
-import com.augurit.aplanmis.common.event.AplanmisEventPublisher;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
@@ -30,7 +29,6 @@ import com.augurit.aplanmis.common.service.instance.AeaHiItemStateinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiSeriesinstService;
 import com.augurit.aplanmis.common.service.instance.AeaLogApplyStateHistService;
-import com.augurit.aplanmis.common.service.instance.RestTimeruleinstService;
 import com.augurit.aplanmis.common.service.item.AeaLogItemStateHistService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.process.AeaBpmProcessService;
@@ -95,23 +93,18 @@ public class AeaSeriesService {
     @Autowired
     private AeaLogApplyStateHistService aeaLogApplyStateHistService;
     @Autowired
-    private RestTimeruleinstService restTimeruleinstService;
-    @Autowired
     private AeaServiceWindowService aeaServiceWindowService;
-    @Autowired
-    private AplanmisEventPublisher publisher;
 
 
     /**
      * 保存实例、启动流程（停留在收件节点）
      *
      * @param seriesApplyDataVo 单项申报参数实体
-     * @throws Exception
      */
     public String stagingApply(SeriesApplyDataVo seriesApplyDataVo) throws Exception {
 
         //创建事项、情形、申请实例，并启动流程
-        ApplyInstantiateResult applyResult = this.instantiateSeriesApply(seriesApplyDataVo, false, new String[]{"1", "2"});
+        ApplyInstantiateResult applyResult = this.instantiateSeriesApply(seriesApplyDataVo);
         seriesApplyDataVo.setApplyinstCode(applyResult.getApplyinstCode());
         //挂起流程
         bpmProcessService.suspendProcessInstanceById(applyResult.getProcInstId());
@@ -123,18 +116,17 @@ public class AeaSeriesService {
      * 发起申报流转到部门审批节点）
      *
      * @param seriesApplyDataVo 单项申报参数实体
-     * @throws Exception
      */
     public String stageApplay(SeriesApplyDataVo seriesApplyDataVo) throws Exception {
         List<Task> tasks = new ArrayList<>();
 
         String appinstId = null;
-        String applyinstId = null;
+        String applyinstId;
         List<AeaHiIteminst> aeaHiIteminsts;
 
         //直接发起申报
         if (StringUtils.isBlank(seriesApplyDataVo.getApplyinstId()) || Status.ON.equals(seriesApplyDataVo.getIsJustApplyinst())) {
-            ApplyInstantiateResult applyResult = this.instantiateSeriesApply(seriesApplyDataVo, true, new String[]{"1", "2"});
+            ApplyInstantiateResult applyResult = this.instantiateSeriesApply(seriesApplyDataVo);
             seriesApplyDataVo.setApplyinstCode(applyResult.getApplyinstCode());
             tasks.addAll(taskService.createTaskQuery().processInstanceId(applyResult.getProcInstId()).list());
 
@@ -172,7 +164,7 @@ public class AeaSeriesService {
             //收件意见
             bpmTaskService.addTaskComment(task.getId(), task.getProcessInstanceId(), seriesApplyDataVo.getComments());
             //推动流程流转
-            taskService.complete(task.getId(), new String[]{"bumenshenpi"}, (Map) null);
+            taskService.complete(task.getId(), new String[]{"bumenshenpi"}, null);
 
             //更新事项状态
             for (AeaHiIteminst iteminst : aeaHiIteminsts) {
@@ -192,10 +184,9 @@ public class AeaSeriesService {
      * 不予受理
      *
      * @param seriesApplyDataVo 单项申报参数实体
-     * @throws Exception
      */
     public String inadmissible(SeriesApplyDataVo seriesApplyDataVo) throws Exception {
-        ApplyInstantiateResult applyResult = this.instantiateSeriesApply(seriesApplyDataVo, false, new String[]{"3"});
+        ApplyInstantiateResult applyResult = this.instantiateSeriesApply(seriesApplyDataVo);
         seriesApplyDataVo.setApplyinstCode(applyResult.getApplyinstCode());
         String appinstId = applyResult.getAppinstId();
         String taskId = null;
@@ -209,7 +200,7 @@ public class AeaSeriesService {
             //收件意见
             bpmTaskService.addTaskComment(task.getId(), task.getProcessInstanceId(), seriesApplyDataVo.getComments());
             //推动流程流转
-            taskService.complete(task.getId(), new String[]{"jieshu"}, (Map) null);
+            taskService.complete(task.getId(), new String[]{"jieshu"}, null);
         }
 
         String opuWinId = aeaServiceWindowService.getCurrentUserWindow() == null ? "" : aeaServiceWindowService.getCurrentUserWindow().getWindowId();
@@ -234,7 +225,6 @@ public class AeaSeriesService {
      * @param applyinstId 申请实例ID
      * @param comments    意见
      * @param flag        start：开始补全，end:补全结束
-     * @throws Exception
      */
     public void materialCompletion(String applyinstId, String comments, String flag) throws Exception {
 
@@ -248,7 +238,7 @@ public class AeaSeriesService {
         if (appinsts.size() > 0) {
             actStoAppinst = appinsts.get(0);
 
-            String iteminstId = null;
+            String iteminstId;
 
             AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
 
@@ -287,23 +277,9 @@ public class AeaSeriesService {
     }
 
     /**
-     * 意见征求
-     *
-     * @throws Exception
-     */
-    public void solicit() throws Exception {
-        //do something
-    }
-
-    /**
      * 单项申报实例化方法
-     *
-     * @param seriesApplyDataVo
-     * @param isNeedSaveReceive 是否需要保存回执信息
-     * @param receiptTypes      回执类型数组，当isNeedSaveReceive=true时，需要传递
-     * @throws Exception
      */
-    private ApplyInstantiateResult instantiateSeriesApply(SeriesApplyDataVo seriesApplyDataVo, boolean isNeedSaveReceive, String[] receiptTypes) throws Exception {
+    private ApplyInstantiateResult instantiateSeriesApply(SeriesApplyDataVo seriesApplyDataVo) throws Exception {
         //参数非空校验
         if (seriesApplyDataVo == null) {
             throw new InvalidParameterException("参数对象为空！");
@@ -370,8 +346,8 @@ public class AeaSeriesService {
 
 
         AeaHiSeriesinst seriesInst = aeaHiSeriesinstService.getAeaHiSeriesinstByApplyinstId(seriesApplyinstId);
-        AeaHiSeriesinst aeaHiSeriesinst=null;
-        AeaHiIteminst aeaHiIteminst=null;
+        AeaHiSeriesinst aeaHiSeriesinst;
+        AeaHiIteminst aeaHiIteminst;
         if(seriesInst==null){
             //1、保存单项实例
             aeaHiSeriesinst = aeaHiSeriesinstService.createAeaHiSeriesinst(seriesApplyinstId, appinstId, seriesApplyDataVo.getIsParallel(), seriesApplyDataVo.getStageId());
@@ -387,16 +363,16 @@ public class AeaSeriesService {
             List<Map> mapList = JSONArray.parseArray(branchOrgMap, Map.class);
             mapList.forEach(map -> {
                 OpuOmOrg opuOmOrg = opuOmOrgMapper.getOrg(map.get("branchOrg").toString());
-                Map approvalOrgCode = new HashMap();
-                Map isBranchHandle = new HashMap();
+                Map<String, Boolean> approvalOrgCode = new HashMap<>();
+                Map<String, Boolean> isBranchHandle = new HashMap<>();
                 approvalOrgCode.put(opuOmOrg.getOrgCode(), true);
                 isBranchHandle.put(itemBasicByItemVerId.getItemCategoryMark(), true);
                 seriesApplyinst.setApprovalOrgCode(approvalOrgCode);
                 seriesApplyinst.setIsBranchHandle(isBranchHandle);
             });
         } else {//市局承办
-            Map mapOrg = new HashMap();
-            Map isBranchHandle = new HashMap();
+            Map<String, String> mapOrg = new HashMap<>();
+            Map<String, Boolean> isBranchHandle = new HashMap<>();
             mapOrg.put("itemVerId", itemBasicByItemVerId.getItemVerId());
             mapOrg.put("branchOrg", aeaHiIteminst.getApproveOrgId());
             seriesApplyinst.setBranchOrg(mapOrg.toString());
@@ -406,7 +382,7 @@ public class AeaSeriesService {
 
         //把所有情形丢到变量里，用于流程启动情形
         if (stateIds != null && stateIds.length > 0) {
-            Map<String, Boolean> stateinsts = new HashMap();
+            Map<String, Boolean> stateinsts = new HashMap<>();
             for (String stateId : stateIds) {
                 stateinsts.put(stateId, true);
             }
@@ -426,14 +402,6 @@ public class AeaSeriesService {
         if (processInstance == null || processInstance.getProcessInstance() == null) {
             throw new RuntimeException("流程启动失败！");
         }
-
-       /* // 流程启动事件
-        if (publisher.eventEnabled(AplanmisEventType.APPLY_START)) {
-            publisher.publishEvent(new ApplyStartAplanmisEvent(this));
-        }*/
-
-        //新增时限规则实例
-//        restTimeruleinstService.createTimeruleinstByProcinst(itemBasicByItemVerId.getAppId(), processInstance.getProcessInstance().getId(), processInstance.getProcessInstance().getProcessDefinitionKey());
 
         //查询出流程第一个节点
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstance().getId()).list();

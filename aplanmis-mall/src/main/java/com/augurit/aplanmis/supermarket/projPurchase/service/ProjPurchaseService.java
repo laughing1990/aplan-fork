@@ -6,6 +6,7 @@ import com.augurit.agcloud.bsc.domain.BscAttForm;
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
 import com.augurit.agcloud.bsc.mapper.BscAttMapper;
 import com.augurit.agcloud.bsc.mapper.BscDicCodeMapper;
+import com.augurit.agcloud.bsc.sc.dic.code.service.BscDicCodeService;
 import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
@@ -15,12 +16,16 @@ import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
+import com.augurit.agcloud.opus.common.service.om.OpuOmOrgService;
 import com.augurit.aplanmis.common.constants.ActiveStatus;
 import com.augurit.aplanmis.common.constants.AuditFlagStatus;
 import com.augurit.aplanmis.common.constants.DeletedStatus;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.utils.BusinessUtils;
+import com.augurit.aplanmis.common.utils.CommonConstant;
 import com.augurit.aplanmis.common.utils.FileUtils;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.*;
@@ -124,7 +129,26 @@ public class ProjPurchaseService {
     AeaImAvoidUnitMapper aeaImAvoidUnitMapper;
 
     @Autowired
+    private AeaHiApplyinstMapper aeaHiApplyinstMapper;
+
+    @Autowired
     private RestImApplyService restImApplyService;
+    private static final String SERVICE_OBJECT_DICT_NAME = "ITEM_FWJGXZ";
+    private static final String SERVICE_OBJECT_CODE = "5";
+
+    @Autowired
+    private OpuOmOrgService opuOmOrgService;
+    @Autowired
+    private BscDicCodeService bscDicCodeService;
+    @Autowired
+    private AeaProjInfoService aeaProjInfoService;
+
+    @Autowired
+    private AeaHiIteminstMapper aeaHiIteminstMapper;
+
+    @Autowired
+    private AeaParentProjMapper aeaParentProjMapper;
+
 
     public List<AeaImProjPurchase> getProjPurchaseList(AeaImProjPurchase aeaImProjPurchase, Page page) {
         PageHelper.startPage(page);
@@ -1387,8 +1411,6 @@ public class ProjPurchaseService {
         aeaImProjPurchaseMapper.updateAeaImProjPurchase(aeaImProjPurchase);
     }
 
-    @Autowired
-    private AeaHiIteminstMapper aeaHiIteminstMapper;
     /**
      * 发布项目采购需求并启动流程---唐山模式
      *
@@ -1410,8 +1432,8 @@ public class ProjPurchaseService {
             purchaseVo.setApplySubject("1");
         }
         //需要先保存 采购项目信息，发起事项流程时关联的是采购项目信息
-
         AeaProjInfo aeaProjInfo = purchaseVo.createAeaProjInfo();
+        aeaProjInfo.setIsDeleted("0");
         aeaProjInfoMapper.insertAeaProjInfo(aeaProjInfo);
         String projInfoId = aeaProjInfo.getProjInfoId();//采购项目 项目ID
         ImItemApplyData applyData = purchaseVo.createItemApplyData();
@@ -1496,9 +1518,14 @@ public class ProjPurchaseService {
         }
     }
 
-    @Autowired
-    private AeaHiApplyinstMapper aeaHiApplyinstMapper;
 
+    /**
+     * 获取项目采购详情
+     *
+     * @param projPurchaseId
+     * @return
+     * @throws Exception
+     */
     public PurchaseDetailVo getPurchaseDetail(String projPurchaseId) throws Exception {
         PurchaseDetailVo form = new PurchaseDetailVo();
 //查询采购项目,中介服务，机构要求等 信息
@@ -1506,8 +1533,12 @@ public class ProjPurchaseService {
         String isApproveProj = purchaseProj.getIsApproveProj();
         if (StringUtils.isNotBlank(isApproveProj) && "1".equals(isApproveProj)) {
             //查询关联的投资审批项目信息
-            AeaProjInfo parentProj = aeaProjInfoMapper.findParentProj(purchaseProj.getProjInfoId());
-            form.setAeaProjInfo(parentProj);
+            //查询关联的投资审批项目信息
+            AeaParentProj parentProj = aeaParentProjMapper.getParentProjByProjInfoId(purchaseProj.getProjInfoId());
+            if (null != parentProj) {
+                AeaProjInfo projInfo = aeaProjInfoService.getTransProjInfoDetail(parentProj.getParentProjId());
+                form.setAeaProjInfo(projInfo);
+            }
         }
         //查询资质信息
         String unitRequireId = purchaseProj.getUnitRequireId();
@@ -1545,7 +1576,46 @@ public class ProjPurchaseService {
         }
         //服务对象
 
-        form.changeToIteminst(iteminst);
+        String currentOrgId = SecurityContext.getCurrentOrgId();
+        String itemVerId = iteminst.getItemVerId();
+        AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(itemVerId, currentOrgId);
+        String serviceObjectCode = StringUtils.isNotBlank(aeaItemBasic.getXkdx()) ? aeaItemBasic.getXkdx() : SERVICE_OBJECT_CODE;
+        String serviceObject = this.getServiceObject(SERVICE_OBJECT_DICT_NAME, serviceObjectCode, currentOrgId);
+
+        form.changeToIteminst(iteminst, serviceObject);
         return form;
+    }
+
+    private String getServiceObject(String dicName, String code, String currentOrgId) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(code)) {
+            return "";
+        }
+        OpuOmOrg topOrg = opuOmOrgService.getTopOrgByCurOrgId(currentOrgId);
+        if (topOrg != null) {
+            List<BscDicCodeItem> activeItemsByTypeCode = bscDicCodeService.getActiveItemsByTypeCode(dicName, topOrg.getOrgId());
+            if (code.contains(CommonConstant.COMMA_SEPARATOR)) {
+                String[] split = code.split(CommonConstant.COMMA_SEPARATOR);
+                StringBuilder str = new StringBuilder();
+                for (int j = 0; j < split.length; j++) {
+                    for (BscDicCodeItem bscDicCodeItem : activeItemsByTypeCode) {
+                        if (bscDicCodeItem.getItemCode().equals(split[j])) {
+                            if (j != split.length - 1) {
+                                str.append(bscDicCodeItem.getItemName()).append(CommonConstant.COMMA_SEPARATOR);
+                            } else {
+                                str.append(bscDicCodeItem.getItemName());
+                            }
+                        }
+                    }
+                }
+                return str.toString();
+            } else {
+                for (BscDicCodeItem bscDicCodeItem : activeItemsByTypeCode) {
+                    if (bscDicCodeItem.getItemCode().equals(code)) {
+                        return bscDicCodeItem.getItemName();
+                    }
+                }
+            }
+        }
+        return null;
     }
 }
