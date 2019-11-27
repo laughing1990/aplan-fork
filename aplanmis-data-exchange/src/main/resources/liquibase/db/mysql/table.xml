@@ -45,4 +45,11 @@
             ADD CONSTRAINT `FK_ERROR_LOG_JOB_LOB` FOREIGN KEY (`job_log_id`) REFERENCES `etl_job_log` (`job_log_id`);
         </sql>
     </changeSet>
+
+    <changeSet id="201911271605" author="yinlf">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `etl_job_log`
+            ADD COLUMN `operate_source` char(1) COMMENT '生成来源。1表示程序生成，0表示人工生成';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
