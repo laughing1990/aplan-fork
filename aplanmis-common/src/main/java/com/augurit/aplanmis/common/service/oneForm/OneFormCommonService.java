@@ -69,7 +69,7 @@ public class OneFormCommonService {
 
         //阶段下的-事项form
         List<StageItemFormVo> listStageItemFormVo = restStageService.findStageItemFormsByStageIdAndItemIds(oneFormStageRequest.getStageId(), oneFormStageRequest.getItemids());
-        List<SFFormParam> listSFFormParam4Item = genListSFFormParamByStageItemForm(listStageItemFormVo);
+        List<SFFormParam> listSFFormParam4Item = genListSFFormParamByFillFormId(listStageItemFormVo);
         for (SFFormParam itemSFFormParam : listSFFormParam4Item) {
             // 封装表单信息
             if (itemSFFormParam != null) {
@@ -156,7 +156,7 @@ public class OneFormCommonService {
         try {
             //阶段下的-事项form
             List<StageItemFormVo> listStageItemFormVo = restStageService.findStageItemFormsByStageIdAndItemIds(oneFormStageRequest.getStageId(), oneFormStageRequest.getItemids());
-            result = genListSFFormParamByStageItemForm(listStageItemFormVo);
+            result = genListSFFormParamByFillFormId(listStageItemFormVo);
             if (result == null || result.isEmpty()) {
                 logger.warn("未找到该阶段下的事项的智能表单,StageId:" + oneFormStageRequest.getStageId() + ",Itemids:" + oneFormStageRequest.getItemids());
             }
@@ -233,7 +233,7 @@ public class OneFormCommonService {
     /*
      * 构造列表，填充事项formId
      * */
-    protected List<SFFormParam> genListSFFormParamByStageItemForm(List<StageItemFormVo> listStageItemFormVo) {
+    protected List<SFFormParam> genListSFFormParamByFillFormId(List<StageItemFormVo> listStageItemFormVo) {
         List<SFFormParam> listSFFormParam = new ArrayList<>();
         for (int i = 0; i < listStageItemFormVo.size(); i++) {
             if (StringUtils.isNotBlank(listStageItemFormVo.get(i).getSubFormId()) &&
