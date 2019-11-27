@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.common.vo.purchase;
 
 import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
+import com.augurit.aplanmis.common.vo.MatinstVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -105,10 +106,11 @@ public class PurchaseProjVo {
     @ApiModelProperty(value = "业主投诉电话")
     private String ownerComplaintPhone;
 
+    // ============== 材料列表====================================
+    List<MatinstVo> matinstList;
     @ApiModelProperty(value = "批文文件附件列表")
     List<BscAttFileAndDir> officialRemarkFileList;
-    @ApiModelProperty(value = "批文文件")
-    private String officialRemarkFile;
+
     @ApiModelProperty(value = "要求说明文件")
     private String requireExplainFile;
     @ApiModelProperty(value = "要求说明文件附件列表")
@@ -189,6 +191,7 @@ public class PurchaseProjVo {
     //======================================== 中介服务信息 ==========================================
     @ApiModelProperty(value = "服务名称")
     private String serviceName;
-
+    @ApiModelProperty(value = "批文文件")
+    private String officialRemarkFile;
 
 }

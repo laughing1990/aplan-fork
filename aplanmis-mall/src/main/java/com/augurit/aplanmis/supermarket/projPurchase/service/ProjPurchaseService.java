@@ -41,6 +41,7 @@ import com.augurit.aplanmis.supermarket.projPurchase.vo.SelectedQualMajorRequire
 import com.augurit.aplanmis.supermarket.projPurchase.vo.SelectedQualVo;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.purchase.PurchaseDetailVo;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.purchase.ShowProjPurchaseVo;
+import com.augurit.aplanmis.supermarket.serviceResult.service.AeaImServiceResultService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
@@ -152,6 +153,8 @@ public class ProjPurchaseService {
     private AeaParentProjMapper aeaParentProjMapper;
     @Autowired
     private FileUtilsService fileUtilsService;
+    @Autowired
+    private AeaImServiceResultService aeaImServiceResultService;
 
 
     public List<AeaImProjPurchase> getProjPurchaseList(AeaImProjPurchase aeaImProjPurchase, Page page) {
@@ -1540,7 +1543,9 @@ public class ProjPurchaseService {
         List<BscAttFileAndDir> requireExplainFileList = fileUtilsService.getBscAttFileAndDirListByinstId(purchaseProj.getRequireExplainFile(), "REQUIRE_EXPLAIN_FILE", "AEA_IM_PROJ_PURCHASE");
         purchaseProj.setOfficialRemarkFileList(officialRemarkFileList);
         purchaseProj.setRequireExplainFileList(requireExplainFileList);
-
+        //查询材料
+        List<MatinstVo> vos = aeaImServiceResultService.getProjPurchaseMatinstList(projPurchaseId);
+        purchaseProj.setMatinstList(vos);
         String isApproveProj = purchaseProj.getIsApproveProj();
         if (StringUtils.isNotBlank(isApproveProj) && "1".equals(isApproveProj)) {
             //查询关联的投资审批项目信息
