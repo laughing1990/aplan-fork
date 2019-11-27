@@ -45,7 +45,16 @@
             item.IS_CATALOG as isCatalog,
             item.GUIDE_ORG_NAME as guideOrgName,
             item.ORG_NAME as orgName,
-            asf.FORM_NAME as formName
+            (
+                SELECT
+                asf.FORM_NAME
+                FROM
+                ACT_STO_FORM asf
+                WHERE
+                asf.FORM_ID = apsi.SUB_FORM_ID
+                AND asf.IS_DELETED = '0'
+                AND asf.FORM_PROPERTY IN ('smart-biz', 'smart-flow')
+            ) AS formName
         from AEA_PAR_STAGE_ITEM apsi,(
             select
                 ai.ITEM_ID,
@@ -63,15 +72,12 @@
             where ai.ROOT_ORG_ID = #{rootOrgId}
             and aiv.ROOT_ORG_ID = #{rootOrgId}
             and aiv.IS_DELETED = '0'
-        )item,ACT_STO_FORM asf
+        )item
         <where>
             and apsi.ITEM_ID = item.ITEM_ID
             and apsi.ITEM_VER_ID = item.ITEM_VER_ID
             and apsi.STAGE_ID = #{parStageId}
             and apsi.IS_OPTION_ITEM ='0'
-            and asf.FORM_ID = apsi.SUB_FORM_ID
-            AND asf.IS_DELETED = '0'
-            AND asf.FORM_PROPERTY in ( 'smart-biz', 'smart-flow' )
         </where>
         order by apsi.SORT_NO asc, apsi.CREATE_TIME asc
     </select>
