@@ -130,7 +130,7 @@ var vm = new Vue({
         data: JSON.stringify(params),
       }, function(res) {
         vm.pageLoading = false;
-        if (res.successs){
+        if (res.success){
           vm.$message.success('保存成功');
           parent.delayCloseWindow();
         } else {
