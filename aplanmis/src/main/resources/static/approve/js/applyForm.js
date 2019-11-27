@@ -54,7 +54,7 @@ var vm = new Vue({
         },
         matsTableData: []
       },
-      showMatTableExpand: false,
+      showMatTableExpand: true,
       showUploadWindowFlag: false, // 是否展示文件上传窗口
       fileSelectionList: [], // 所选电子件
       selMatRowData: {}, // 所选择的材料信息
