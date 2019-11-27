@@ -812,7 +812,7 @@
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
         LEFT JOIN aea_par_theme theme ON theme.THEME_ID = ver.THEME_ID
-        LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = AHP_123.PROC_INST_ID_
+        LEFT JOIN act_sto_timerule_inst ti ON (ti.PROC_INST_ID = AHP_123.PROC_INST_ID_ AND ti.TIMERULE_INST_TYPE = '1')
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
             <if test="theme != null and theme != '' ">
@@ -822,7 +822,6 @@
             </include>
             AND art_123.ASSIGNEE_ = #{loginName}
             AND ahap_123.APPLYINST_STATE NOT IN ('0', '1', '3', '5', '6')
-            AND ti.TIMERULE_INST_TYPE = '1'
         </where>
         )
         UNION
@@ -868,7 +867,7 @@
         LEFT JOIN aea_par_theme theme ON theme.THEME_ID = ver.THEME_ID
         LEFT JOIN aea_hi_iteminst hi ON hi.PROCINST_ID = art_123.PROC_INST_ID_
         LEFT JOIN AEA_ITEM_BASIC ai_123 ON hi.ITEM_ID = ai_123.ITEM_ID AND hi.ITEM_VER_ID = ai_123.ITEM_VER_ID
-        LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = hi.PROCINST_ID
+        LEFT JOIN act_sto_timerule_inst ti ON (ti.PROC_INST_ID = hi.PROCINST_ID  AND ti.TIMERULE_INST_TYPE = '1')
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
             AND hi.ITEMINST_STATE NOT IN (
@@ -887,7 +886,6 @@
             </if>
             <include refid="baseConditionalQuery">
             </include>
-            AND ti.TIMERULE_INST_TYPE = '1'
         </where>
         )
         UNION
@@ -931,7 +929,7 @@
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
         LEFT JOIN aea_par_theme theme ON theme.THEME_ID = ver.THEME_ID
-        LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = AHP_123.PROC_INST_ID_
+        LEFT JOIN act_sto_timerule_inst ti ON (ti.PROC_INST_ID = AHP_123.PROC_INST_ID_ AND ti.TIMERULE_INST_TYPE = '1')
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
             AND ahap_123.APPLYINST_STATE != '0'
@@ -941,7 +939,6 @@
             </if>
             <include refid="baseConditionalQuery">
             </include>
-            AND ti.TIMERULE_INST_TYPE = '1'
         </where>
         )
         UNION
@@ -983,7 +980,7 @@
         LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID AND ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
-        LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = ahi_123.PROCINST_ID
+        LEFT JOIN act_sto_timerule_inst ti ON (ti.PROC_INST_ID = ahi_123.PROCINST_ID AND ti.TIMERULE_INST_TYPE = '1')
         <where>
             ahap_123.IS_SERIES_APPROVE = '1'
             AND ahi_123.ITEMINST_STATE NOT IN (
@@ -999,7 +996,6 @@
             AND art_123.ASSIGNEE_ = #{loginName}
             <include refid="baseConditionalQuery">
             </include>
-            AND ti.TIMERULE_INST_TYPE = '1'
         </where>
         )
         UNION
@@ -1042,7 +1038,7 @@
         LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID AND ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
-        LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = ahi_123.PROCINST_ID
+        LEFT JOIN act_sto_timerule_inst ti ON (ti.PROC_INST_ID = ahi_123.PROCINST_ID AND ti.TIMERULE_INST_TYPE = '1')
         <where>
             ahap_123.IS_SERIES_APPROVE = '1'
             AND ahi_123.ITEMINST_STATE NOT IN ('2', '4', /*'5',*/ '6', '14', '15')
@@ -1050,7 +1046,6 @@
             AND art_123.ASSIGNEE_ = #{loginName}
             <include refid="baseConditionalQuery">
             </include>
-            AND ti.TIMERULE_INST_TYPE = '1'
         </where>
         )
         ) ART_123
@@ -1152,8 +1147,8 @@
         AND hv.name_ = '$BUS_CURRENT_ITEMINST_ID'
         LEFT JOIN aea_hi_iteminst hi ON hi.iteminst_id = hv.text_
         LEFT JOIN AEA_ITEM_BASIC ai_123 ON hi.ITEM_ID = ai_123.ITEM_ID AND hi.ITEM_VER_ID = ai_123.ITEM_VER_ID
-        LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = hi.PROCINST_ID
-        LEFT JOIN act_sto_timerule_inst ati ON ati.PROC_INST_ID = AHP_123.PROC_INST_ID_
+        LEFT JOIN act_sto_timerule_inst ti ON (ti.PROC_INST_ID = hi.PROCINST_ID AND ti.TIMERULE_INST_TYPE = '1')
+        LEFT JOIN act_sto_timerule_inst ati ON (ati.PROC_INST_ID = AHP_123.PROC_INST_ID_ AND ati.TIMERULE_INST_TYPE = '1')
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
             AND aht_123.ASSIGNEE_ = #{loginName}
@@ -1165,7 +1160,7 @@
             </if>
             <include refid="baseConditionalQuery">
             </include>
-            AND ti.TIMERULE_INST_TYPE = '1'
+
         </where>
         )
         UNION
@@ -1211,8 +1206,8 @@
         AND hv.name_ = '$BUS_CURRENT_ITEMINST_ID'
         LEFT JOIN aea_hi_iteminst hi ON hi.iteminst_id = hv.text_
         LEFT JOIN AEA_ITEM_BASIC ai_123 ON hi.ITEM_ID = ai_123.ITEM_ID AND hi.ITEM_VER_ID = ai_123.ITEM_VER_ID
-        LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = hi.PROCINST_ID
-        LEFT JOIN act_sto_timerule_inst ati ON ati.PROC_INST_ID = AHP_123.PROC_INST_ID_
+        LEFT JOIN act_sto_timerule_inst ti ON (ti.PROC_INST_ID = hi.PROCINST_ID AND ti.TIMERULE_INST_TYPE = '1')
+        LEFT JOIN act_sto_timerule_inst ati ON (ati.PROC_INST_ID = AHP_123.PROC_INST_ID_ AND ati.TIMERULE_INST_TYPE = '1')
 
         <where>
 
@@ -1226,7 +1221,6 @@
             </if>
             <include refid="baseConditionalQuery">
             </include>
-            AND ti.TIMERULE_INST_TYPE = '1'
         </where>
         )
         UNION
@@ -1265,7 +1259,7 @@
         </include>
         LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
-        LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = ahi_123.PROCINST_ID
+        LEFT JOIN act_sto_timerule_inst ti ON (ti.PROC_INST_ID = ahi_123.PROCINST_ID AND ti.TIMERULE_INST_TYPE = '1')
         LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID AND ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '1'
@@ -1275,7 +1269,6 @@
             AND ahap_123.APPLYINST_STATE !='6'
             <include refid="baseConditionalQuery">
             </include>
-            AND ti.TIMERULE_INST_TYPE = '1'
         </where>
         )
         UNION
@@ -1315,7 +1308,7 @@
         </include>
         LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
-        LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = ahi_123.PROCINST_ID
+        LEFT JOIN act_sto_timerule_inst ti ON (ti.PROC_INST_ID = ahi_123.PROCINST_ID AND ti.TIMERULE_INST_TYPE = '1')
         LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID AND ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '1'
@@ -1325,7 +1318,6 @@
             AND ahap_123.APPLYINST_STATE !='6'
             <include refid="baseConditionalQuery">
             </include>
-            AND ti.TIMERULE_INST_TYPE = '1'
         </where>
 
         )
