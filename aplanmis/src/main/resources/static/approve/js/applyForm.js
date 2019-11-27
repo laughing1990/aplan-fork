@@ -113,14 +113,12 @@ var vm = new Vue({
         // return vm.$message.info('请勾选并填写份数再保存');
       }
       var params = {
-        saveMatinstVo: {
-          matCountVos: tmpArr,
-          unitInfoId: vm.zjItemInfo[0].publishUnitInfoId||'',
-          projInfoId: vm.zjItemInfo[0].projInfoId,
-          linkmanInfoId: vm.zjItemInfo[0].publishLinkmanInfoId||'',
-          applyinstId: vm.applyinstId,
-          iteminstId: vm.iteminstId,
-        },
+        matCountVos: tmpArr,
+        unitInfoId: vm.zjItemInfo[0].publishUnitInfoId||'',
+        projInfoId: vm.zjItemInfo[0].projInfoId,
+        linkmanInfoId: vm.zjItemInfo[0].publishLinkmanInfoId||'',
+        applyinstId: vm.applyinstId,
+        iteminstId: vm.iteminstId,
       };
       // console.log(params);
       // if(window) return null;
@@ -134,6 +132,7 @@ var vm = new Vue({
         vm.pageLoading = false;
         if (res.successs){
           vm.$message.success('保存成功');
+          parent.delayCloseWindow();
         } else {
           vm.$message.error(res.message || '保存失败');
         }
@@ -466,11 +465,13 @@ var vm = new Vue({
               if (item.realCopyCount == 'undefined' || item.realCopyCount == undefined) {
                 Vue.set(item, 'realCopyCount', item.dueCopyCount);
               }
-              if (item.paperMatinstId || item.duePaperCount == 0) {
+              Vue.set(item, 'realPaperCount', item.realPaperCount || 0);
+              Vue.set(item, 'realCopyCount', item.realCopyCount ||0);
+              if (item.paperMatinstId || item.duePaperCount >= item.realPaperCount) {
                 Vue.set(item, 'getPaper', true);
                 Vue.set(item, 'paperDisabled', true);
               }
-              if (item.copyMatinstId || item.dueCopyCount == 0) {
+              if (item.copyMatinstId || item.dueCopyCount >= item.realCopyCount) {
                 Vue.set(item, 'getCopy', true);
                 Vue.set(item, 'copyDisabled', true);
               }
