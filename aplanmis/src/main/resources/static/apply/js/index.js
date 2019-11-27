@@ -1832,7 +1832,7 @@ var vm = new Vue({
       }
       if(flag=='parallel'){
         this.getSelThemeInfo(this.themeType,this.themeId,flag);
-        _that.themeInfoListP = item.themes;
+        _that.themeInfoListP = (item&&item.themes)?item.themes:[];
         _that.themeType = item.themeType;
         this.themeDialogIndex = index;
         this.themeTypeIndex = 0;
