@@ -110,7 +110,7 @@ public class AgentItemApproveController {
 
     @PostMapping("/receivePaperAndStartProcess")
     @ApiOperation("窗口人员收取纸质服务结果并发起流程")
-    public ResultForm uploadPaperMatAndStartProcess(@RequestBody SaveMatinstVo saveMatinstVo, String applyinstId, String iteminstId) throws Exception {
+    public ResultForm uploadPaperMatAndStartProcess(@RequestBody SaveMatinstVo saveMatinstVo, @RequestBody String applyinstId, @RequestBody String iteminstId) throws Exception {
         if (null == saveMatinstVo || StringUtils.isBlank(applyinstId) || StringUtils.isBlank(iteminstId))
             throw new Exception("params is null");
         agentItemApproveService.uploadPaperMatAndStartProcess(saveMatinstVo, applyinstId, iteminstId);

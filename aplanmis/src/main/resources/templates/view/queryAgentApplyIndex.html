@@ -46,30 +46,6 @@
 		<el-form class="search-from clearfix" label-width="100px">
 			<el-col :span="24" class="search-item-fif">
 				<el-form-item label="搜索关键字" class="search-input">
-					<!--<el-col :span="6">
-							<el-select v-model="searchFrom.itemNature" placeholder="请选择" clearable style = "padding-right:0px;">
-									<el-option
-													key="0"
-													label="行政事项"
-													value="0">
-									</el-option>
-									<el-option
-													key="9"
-													label="服务协同事项"
-													value="9">
-									</el-option>
-									<el-option
-													key="8"
-													label="中介服务事项"
-													value="8">
-									</el-option>
-									<el-option
-													key="6"
-													label="公用服务事项"
-													value="6">
-									</el-option>
-							</el-select>
-					</el-col>-->
 					<el-col :span="16">
 						<el-input v-model="searchFrom.keyword" placeholder="请输入事项名称、实施事项编号等关键词">
 							<el-button slot="append" icon="el-icon-search" @click="tableDataSearch">查询</el-button>
