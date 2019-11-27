@@ -77,18 +77,40 @@ var vm = new Vue({
       vm.model.matsTableData.forEach(function(u){
         var tmp = { matId: u.matId };
         var flag = false;
-        if (!u.paperMatinstId&&u.getPaper&&u.realPaperCount!=0){
-          tmp.paperCnt = u.realPaperCount;
-          flag = true;
+        if (!u.paperMatinstId&&u.getPaper){
+          if (u.duePaperCount == 0) {
+            if (u.realPaperCount !=0) {
+              tmp.paperCnt = u.realPaperCount;
+              tmp.paperMatinstId = u.paperMatinstId;
+              flag = true;
+            }
+          } else {
+            if (u.realPaperCount!=0) {
+              tmp.paperCnt = u.realPaperCount;
+              tmp.paperMatinstId = u.paperMatinstId;
+              flag = true;
+            }
+          }
         }
-        if (!u.copyMatinstId&&u.getCopy&&u.realCopyCount!=0){
-          tmp.copyCnt = u.realPaperCount;
-          flag = true;
+        if (!u.copyMatinstId&&u.getCopy){
+          if (u.dueCopyCount == 0) {
+            if (u.realCopyCount !=0) {
+              tmp.copyCnt = u.realCopyCount;
+              tmp.copyMatinstId = u.copyMatinstId;
+              flag = true;
+            }
+          } else {
+            if (u.realCopyCount!=0) {
+              tmp.copyCnt = u.realCopyCount;
+              tmp.copyMatinstId = u.copyMatinstId;
+              flag = true;
+            }
+          }
         }
         flag && tmpArr.push(tmp);
       });
       if (tmpArr.length == 0) {
-        return vm.$message.info('请勾选并填写份数再保存');
+        // return vm.$message.info('请勾选并填写份数再保存');
       }
       var params = {
         saveMatinstVo: {
@@ -444,11 +466,11 @@ var vm = new Vue({
               if (item.realCopyCount == 'undefined' || item.realCopyCount == undefined) {
                 Vue.set(item, 'realCopyCount', item.dueCopyCount);
               }
-              if (item.paperMatinstId) {
+              if (item.paperMatinstId || item.duePaperCount == 0) {
                 Vue.set(item, 'getPaper', true);
                 Vue.set(item, 'paperDisabled', true);
               }
-              if (item.copyMatinstId) {
+              if (item.copyMatinstId || item.dueCopyCount == 0) {
                 Vue.set(item, 'getCopy', true);
                 Vue.set(item, 'copyDisabled', true);
               }
