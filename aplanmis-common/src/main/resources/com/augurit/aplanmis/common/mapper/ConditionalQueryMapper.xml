@@ -4108,7 +4108,7 @@
         SELECT temp_table.*
         FROM (
         SELECT aiv_123.ITEM_VER_ID AS itemVerId, aiv_123.ITEM_ID AS itemId, aiv_123.VER_NUM AS verNum, aib_123.ITEM_CODE
-        AS itemCode,
+        AS itemCode,aib_123.ITEM_NATURE as itemNature,
         aib_123.ITEM_NAME AS itemName, aib_123.ORG_ID AS orgId, aib_123.XKDX AS xkdx, aib_123.ITEM_PROPERTY AS
         itemProperty, aib_123.DUE_NUM AS dueNum,
         aib_123.BJ_TYPE AS bjType, ooo_123.ORG_NAME AS orgName
@@ -4137,7 +4137,7 @@
         )
         UNION
         SELECT aiv_123.ITEM_VER_ID AS itemVerId, aiv_123.ITEM_ID AS itemId, aiv_123.VER_NUM AS verNum, aib_123.ITEM_CODE
-        AS itemCode,
+        AS itemCode,aib_123.ITEM_NATURE as itemNature,
         aib_123.ITEM_NAME AS itemName, aib_123.ORG_ID AS orgId, aib_123.XKDX AS xkdx, aib_123.ITEM_PROPERTY AS
         itemProperty, aib_123.DUE_NUM AS dueNum,
         aib_123.BJ_TYPE AS bjType, ooo_123.ORG_NAME AS orgName
