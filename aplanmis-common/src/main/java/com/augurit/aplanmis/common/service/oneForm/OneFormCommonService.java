@@ -70,10 +70,10 @@ public class OneFormCommonService {
         //阶段下的-事项form
         List<StageItemFormVo> listStageItemFormVo = restStageService.findStageItemFormsByStageIdAndItemIds(oneFormStageRequest.getStageId(), oneFormStageRequest.getItemids());
         List<SFFormParam> listSFFormParam4Item = genListSFFormParamByStageItemForm(listStageItemFormVo);
-        for (SFFormParam item : listSFFormParam4Item) {
+        for (SFFormParam itemSFFormParam : listSFFormParam4Item) {
             // 封装表单信息
-            if (item != null) {
-                FormFrofileVo formFrofileVo = getFormFrofileVo(item.getFormId(), item.getRefEntityId(), projInfoId);
+            if (itemSFFormParam != null) {
+                FormFrofileVo formFrofileVo = getFormFrofileVo(itemSFFormParam.getFormId(), oneFormStageRequest.getApplyinstId(), projInfoId);
                 if (formFrofileVo != null) {
                     result.add(formFrofileVo);
                 }
@@ -234,27 +234,14 @@ public class OneFormCommonService {
      * 构造列表，填充事项formId
      * */
     protected List<SFFormParam> genListSFFormParamByStageItemForm(List<StageItemFormVo> listStageItemFormVo) {
-        //是否所有form为空
-        boolean isAllFormNull = true;
-        for (StageItemFormVo item : listStageItemFormVo) {
-            if (StringUtils.isNotBlank(item.getSubFormId())) {
-                isAllFormNull = false;
-                break;
-            }
-        }
-
         List<SFFormParam> listSFFormParam = new ArrayList<>();
-        if (isAllFormNull) {
+        for (int i = 0; i < listStageItemFormVo.size(); i++) {
+            if (StringUtils.isNotBlank(listStageItemFormVo.get(i).getSubFormId()) &&
+                    StringUtils.isNotBlank(listStageItemFormVo.get(i).getItemVerId())) {
+                SFFormParam ref = new SFFormParam();
+                ref.setFormId(listStageItemFormVo.get(i).getSubFormId());
 
-        } else {
-            for (int i = 0; i < listStageItemFormVo.size(); i++) {
-                if (StringUtils.isNotBlank(listStageItemFormVo.get(i).getSubFormId()) &&
-                        StringUtils.isNotBlank(listStageItemFormVo.get(i).getItemVerId())) {
-                    SFFormParam ref = new SFFormParam();
-                    ref.setFormId(listStageItemFormVo.get(i).getSubFormId());
-                    ref.setRefEntityId(listStageItemFormVo.get(i).getItemVerId());
-                    listSFFormParam.add(ref);
-                }
+                listSFFormParam.add(ref);
             }
         }
         return listSFFormParam;
