@@ -118,11 +118,11 @@
 
                     <el-form-item label="资源来源比例">
                         <el-row>
-                            <el-col :span="12">
+                            <el-col :span="12" v-show="isFinancialFund === '1'">
                                 财政资金(%)<el-input v-model="form.purchaseProj.financialFundProportion"
                                     style="width: 63%;"></el-input>
                             </el-col>
-                            <el-col :span="12">
+                            <el-col :span="12" v-show="isFinancialFund !== '1'">
                                 社会资金(%)<el-input v-model="form.purchaseProj.socialFundProportion" style="width: 63%;">
                                 </el-input>
                             </el-col>
