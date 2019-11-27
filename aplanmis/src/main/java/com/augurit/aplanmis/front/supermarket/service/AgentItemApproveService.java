@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.front.supermarket.service;
 
+import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
 import com.augurit.agcloud.bsc.mapper.BscDicCodeMapper;
 import com.augurit.agcloud.framework.security.SecurityContext;
@@ -7,6 +8,7 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.UnitType;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
@@ -17,10 +19,12 @@ import com.augurit.aplanmis.front.apply.vo.SaveMatinstVo;
 import com.augurit.aplanmis.front.approve.service.ApproveService;
 import com.augurit.aplanmis.front.basis.item.service.RestItemService;
 import com.augurit.aplanmis.front.supermarket.vo.AgentItemApproveForm;
+import com.augurit.aplanmis.front.supermarket.vo.ReceiveServiceResult;
 import com.augurit.aplanmis.supermarket.apply.service.RestImApplyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -31,6 +35,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Transactional(rollbackFor = Exception.class)
 public class AgentItemApproveService {
 
     private static final String SERVICE_OBJECT_DICT_NAME = "ITEM_FWJGXZ";
@@ -75,6 +80,8 @@ public class AgentItemApproveService {
     private AeaHiIteminstMapper aeaHiIteminstMapper;
     @Autowired
     private AeaHiItemInoutinstMapper aeaHiItemInoutinstMapper;
+    @Autowired
+    private FileUtilsService fileUtilsService;
 
     /**
      * 获取中介事项申报基本信息
@@ -92,6 +99,13 @@ public class AgentItemApproveService {
         String applyinstCode = applyinst.getApplyinstCode();
         //查询采购项目,中介服务，机构要求等 信息
         PurchaseProjVo purchaseProj = aeaImProjPurchaseMapper.getProjPurchaseInfoByApplyinstCode(applyinstCode, null);
+
+        //查询附件
+        List<BscAttFileAndDir> officialRemarkFileList = fileUtilsService.getBscAttFileAndDirListByinstId(purchaseProj.getOfficialRemarkFile(), "OFFICIAL_REMARK_FILE", "AEA_IM_PROJ_PURCHASE");
+        List<BscAttFileAndDir> requireExplainFileList = fileUtilsService.getBscAttFileAndDirListByinstId(purchaseProj.getRequireExplainFile(), "REQUIRE_EXPLAIN_FILE", "AEA_IM_PROJ_PURCHASE");
+        purchaseProj.setOfficialRemarkFileList(officialRemarkFileList);
+        purchaseProj.setRequireExplainFileList(requireExplainFileList);
+
         String isApproveProj = purchaseProj.getIsApproveProj();
         if (StringUtils.isNotBlank(isApproveProj) && "1".equals(isApproveProj)) {
             //查询关联的投资审批项目信息
@@ -219,10 +233,11 @@ public class AgentItemApproveService {
      * 窗口人员收取纸质服务结果并发起流程
      *
      * @param saveMatinstVo
-     * @param applyinstId
      * @throws Exception
      */
-    public void uploadPaperMatAndStartProcess(SaveMatinstVo saveMatinstVo, String applyinstId, String iteminstId) throws Exception {
+    public void uploadPaperMatAndStartProcess(ReceiveServiceResult saveMatinstVo) throws Exception {
+        String iteminstId = saveMatinstVo.getIteminstId();
+        String applyinstId = saveMatinstVo.getApplyinstId();
         if (null == saveMatinstVo || StringUtils.isBlank(applyinstId) || StringUtils.isBlank(iteminstId))
             throw new Exception("param is null");
         AeaHiIteminst iteminst = aeaHiIteminstMapper.getAeaHiIteminstById(iteminstId);
@@ -231,29 +246,36 @@ public class AgentItemApproveService {
         List<SaveMatinstVo.MatCountVo> matCountVos = saveMatinstVo.getMatCountVos();
         String linkmanInfoId = saveMatinstVo.getLinkmanInfoId();
         String unitInfoId = saveMatinstVo.getUnitInfoId();
+        if (StringUtils.isBlank(unitInfoId) || "null".equalsIgnoreCase(unitInfoId) || "undefinded".equalsIgnoreCase(unitInfoId)) {
+            unitInfoId = null;
+        }
+        System.out.println(StringUtils.isBlank(linkmanInfoId));
+        if (StringUtils.isBlank(linkmanInfoId) || "null".equalsIgnoreCase(linkmanInfoId) || "undefinded".equalsIgnoreCase(linkmanInfoId)) {
+            linkmanInfoId = null;
+        }
         List<AeaHiItemMatinst> matinsts = new ArrayList<>();
+        List<String> matIds = new ArrayList<>();
         List<AeaHiItemInoutinst> inoutinstList = new ArrayList<>();
         for (SaveMatinstVo.MatCountVo matCountVo : matCountVos) {
             int copyCnt = matCountVo.getCopyCnt();
             int paperCnt = matCountVo.getPaperCnt();
             if (copyCnt < 1 && paperCnt < 1) continue;
             String matId = matCountVo.getMatId();
+            matIds.add(matId);
             AeaItemMat mat = aeaItemMatMapper.getAeaItemMatById(matId);
             if (null == mat) throw new Exception("can not find mat");
-
             List<AeaItemInout> itemInouts = aeaItemInoutMapper.getAeaItemMatByItemVerIdAndMatIdAndStateId(itemVerId, matId, null);
             if (itemInouts.isEmpty()) continue;
             AeaItemInout inout = itemInouts.get(0);
-
             if (copyCnt > 0) {
-                AeaHiItemMatinst matinst = this.buildMatinst(mat, matCountVo, linkmanInfoId, unitInfoId);
+                AeaHiItemMatinst matinst = this.buildMatinst(mat, linkmanInfoId, unitInfoId);
                 matinst.setRealCopyCount((long) copyCnt);
                 matinsts.add(matinst);
                 AeaHiItemInoutinst inoutinst = this.buildItemInoutInst(matinst.getMatinstId(), iteminstId, inout.getInoutId());
                 inoutinstList.add(inoutinst);
             }
             if (paperCnt > 0) {
-                AeaHiItemMatinst matinst = this.buildMatinst(mat, matCountVo, linkmanInfoId, unitInfoId);
+                AeaHiItemMatinst matinst = this.buildMatinst(mat, linkmanInfoId, unitInfoId);
                 matinst.setRealPaperCount((long) paperCnt);
                 matinsts.add(matinst);
                 AeaHiItemInoutinst inoutinst = this.buildItemInoutInst(matinst.getMatinstId(), iteminstId, inout.getInoutId());
@@ -269,6 +291,7 @@ public class AgentItemApproveService {
         if (!inoutinstList.isEmpty()) {
             aeaHiItemInoutinstMapper.batchInsertAeaHiItemInoutinst(inoutinstList);
         }
+
         //推动流程流转
 
         AeaHiApplyinst applyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
@@ -287,13 +310,13 @@ public class AgentItemApproveService {
         inoutinst.setCreater(SecurityContext.getCurrentUserName());
         inoutinst.setCreateTime(new Date());
         inoutinst.setIsCollected("1");
+        inoutinst.setIteminstId(iteminstId);
         inoutinst.setRootOrgId(SecurityContext.getCurrentOrgId());
         return inoutinst;
     }
 
-    private AeaHiItemMatinst buildMatinst(AeaItemMat mat, SaveMatinstVo.MatCountVo matCountVo, String linkmanInfoId, String unitInfoId) {
-        int copyCnt = matCountVo.getCopyCnt();
-        int paperCnt = matCountVo.getPaperCnt();
+    private AeaHiItemMatinst buildMatinst(AeaItemMat mat, String linkmanInfoId, String unitInfoId) {
+
         AeaHiItemMatinst matinst = new AeaHiItemMatinst();
         matinst.setMatinstId(UUID.randomUUID().toString());
         matinst.setMatId(mat.getMatId());

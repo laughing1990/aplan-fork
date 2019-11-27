@@ -35,8 +35,13 @@ public class MatinstVo implements Serializable {
 
     @ApiModelProperty(value = "电子附件数量，默认为0", required = true, dataType = "long")
     private Long attCount;
+
     @ApiModelProperty(value = "电子附件是否必须", required = true, dataType = "string")
     private String attIsRequire;
+
+    @ApiModelProperty(value = "电子附件是否必须", required = true, dataType = "string")
+    private String paperIsRequire;
+
     @ApiModelProperty(value = "实交纸质原件材料ID", required = true, dataType = "string")
     private String paperMatinstId;
 

@@ -10,6 +10,7 @@ import com.augurit.aplanmis.front.apply.vo.Mat2MatInstVo;
 import com.augurit.aplanmis.front.apply.vo.SaveMatinstVo;
 import com.augurit.aplanmis.front.supermarket.service.AgentItemApproveService;
 import com.augurit.aplanmis.front.supermarket.vo.AgentItemApproveForm;
+import com.augurit.aplanmis.front.supermarket.vo.ReceiveServiceResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -110,10 +111,10 @@ public class AgentItemApproveController {
 
     @PostMapping("/receivePaperAndStartProcess")
     @ApiOperation("窗口人员收取纸质服务结果并发起流程")
-    public ResultForm uploadPaperMatAndStartProcess(@RequestBody SaveMatinstVo saveMatinstVo, @RequestBody String applyinstId, @RequestBody String iteminstId) throws Exception {
-        if (null == saveMatinstVo || StringUtils.isBlank(applyinstId) || StringUtils.isBlank(iteminstId))
+    public ResultForm uploadPaperMatAndStartProcess(@RequestBody ReceiveServiceResult saveMatinstVo) throws Exception {
+        if (null == saveMatinstVo || StringUtils.isBlank(saveMatinstVo.getApplyinstId()) || StringUtils.isBlank(saveMatinstVo.getIteminstId()))
             throw new Exception("params is null");
-        agentItemApproveService.uploadPaperMatAndStartProcess(saveMatinstVo, applyinstId, iteminstId);
+        agentItemApproveService.uploadPaperMatAndStartProcess(saveMatinstVo);
         return new ResultForm(true, "success");
     }
 }
