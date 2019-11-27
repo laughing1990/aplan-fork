@@ -52,7 +52,6 @@ public class OneFormCommonService {
 
         AeaParStagePartform aeaParStagePartform = new AeaParStagePartform();
         aeaParStagePartform.setStageId(oneFormStageRequest.getStageId());
-        aeaParStagePartform.setSortNo(null);
         List<AeaParStagePartform> aeaParStagePartformList = aeaParStagePartformService.listStagePartform(aeaParStagePartform);
         String projInfoId = oneFormStageRequest.getProjInfoId();
         if (aeaParStagePartformList != null && aeaParStagePartformList.size() > 0) {
@@ -165,7 +164,6 @@ public class OneFormCommonService {
             List<AeaParStagePartform> listAeaParStagePartform = null;
             AeaParStagePartform aeaParStagePartform = new AeaParStagePartform();
             aeaParStagePartform.setStageId(oneFormStageRequest.getStageId());
-            aeaParStagePartform.setSortNo(null);
             if (isIncludeDevForm) {
 
             } else {
