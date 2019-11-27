@@ -570,6 +570,51 @@
         </where>
     </select>
 
+    <select id="getCertintList" resultType="AeaHiCertinst">
+        SELECT
+        <include refid="aliasColumns">
+            <property name="alias" value="ahc"/>
+        </include>,act.TYPE_NAME certType,api.proj_name projName
+        FROM aea_hi_certinst ahc
+        left join aea_cert ac on ahc.cert_id=ac.cert_id
+        left join aea_cert_type act on ac.cert_type_id=act.cert_type_id
+        left join aea_proj_info api on api.proj_info_id=ahc.proj_info_id
+        <where>
+            ac.IS_DELETED !=1 and act.IS_DELETED !=1 and api.IS_DELETED !=1
+            <if test="unitInfoId != null">
+                AND ahc.UNIT_INFO_ID = #{unitInfoId}
+            </if>
+            <if test="projInfoIds != null and projInfoIds!='' and projInfoIds.length>0">
+                AND ahc.PROJ_INFO_ID in
+                <if test="_databaseId == 'oracle'">
+                    <foreach collection="projInfoIds" item="projInfoId" open="(" separator="union all" close=")">
+                        #{projInfoId}
+                    </foreach>
+                </if>
+                <if test="_databaseId == 'mysql'">
+                    <foreach collection="projInfoIds" item="projInfoId" open="(" close=")" separator=",">
+                        #{projInfoId}
+                    </foreach>
+                </if>
+            </if>
+            <if test="linkmanInfoId != null">
+                AND ahc.LINKMAN_INFO_ID = #{linkmanInfoId}
+            </if>
+            <if test="rootOrgId != null">
+                AND ahc.ROOT_ORG_ID = #{rootOrgId}
+                AND ac.ROOT_ORG_ID = #{rootOrgId}
+                AND act.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="keyword !=null and keyword !=''">
+                AND (
+                  ahc.CERTINST_NAME LIKE  CONCAT(CONCAT('%',#{keyword}),'%')
+                  or ac.CERT_NAME LIKE  CONCAT(CONCAT('%',#{keyword}),'%')
+                  or act.TYPE_NAME LIKE  CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+    </select>
+
     <select id="getAeaHiCertinstByBusCertinst" resultType="com.augurit.aplanmis.common.vo.AeaHiCertinstBVo">
         select
         <include refid="aliasColumns">
