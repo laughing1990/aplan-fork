@@ -98,6 +98,8 @@ public class ConstructPermitVo extends AeaHiCertinst {
         vo.setDesignUnitName("佛山市莱博特塑料制品有限公司");
         vo.setDesignUnitLeader("郝郝");
         vo.setContractDuration("2019年1月至2020年8月");
+        vo.setGczcbUnitName("测试单位");
+        vo.setGczcbUnitLeader("zhangsan");
         return vo;
     }
 
