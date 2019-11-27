@@ -96,6 +96,7 @@ public class AeaImServiceResult implements Serializable {
         this.projPurchaseId = projPurchaseId;
         this.auditFlag = auditFlag;
         this.creater = creater;
+        this.createTime = new Date();
         this.unitBiddingId = unitBiddingId;
         this.rootOrgId = rootOrgId;
     }

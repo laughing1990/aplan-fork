@@ -19,6 +19,7 @@ import com.augurit.aplanmis.common.service.process.AeaBpmProcessService;
 import com.augurit.aplanmis.common.service.projPurchase.AeaImProjPurchaseService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowService;
+import com.augurit.aplanmis.common.vo.MatinstVo;
 import com.augurit.aplanmis.supermarket.apply.vo.ApplyinstResult;
 import com.augurit.aplanmis.supermarket.apply.vo.ImItemApplyData;
 import com.augurit.aplanmis.supermarket.apply.vo.ImPurchaseData;
@@ -329,32 +330,32 @@ public class RestImApplyService {
             itemVerId = iteminst.getItemVerId();
         }
 
-
         //查询所有材料定义
-        List<AeaItemMat> matList = aeaItemMatService.getSeriesNoStateMatList(itemVerId);
-        String[] matIds = matList.stream().map(AeaItemMat::getMatId).toArray(String[]::new);
-        //是否有必须电子件
-        //查看当前事项下所有的材料实例
-        List<AeaMatinst> matinsts = aeaHiItemInoutinstMapper.getMatinstListByiteminstIdAndMatId(iteminstId, matIds);
-        //判断所有材料是否已上传
-        boolean requiredPaper = matinsts.stream().anyMatch(aea -> {
-            Long realPaperCount = aea.getRealPaperCount();
-            Long duePaperCount = aea.getDuePaperCount();
-            Long dueCopyCount = aea.getDueCopyCount();
-            Long realCopyCount = aea.getRealCopyCount();
-            Long attCount = aea.getAttCount();
-            String paperIsRequire = aea.getPaperIsRequire();
-            boolean paperRequire = StringUtils.isNotBlank(paperIsRequire) && "1".equals(paperIsRequire);
-            boolean papaerResult = paperRequire && (realPaperCount < duePaperCount || realCopyCount < dueCopyCount);
+        List<MatinstVo> matinstVos = aeaImProjPurchaseService.listPurchaseMatinst(iteminstId, applyinstId);
+        boolean requiredPaper = false;
+        for (MatinstVo vo : matinstVos) {
+            String attIsRequire = vo.getAttIsRequire();
+            String paperIsRequire = vo.getPaperIsRequire();
+            Long dueCopyCount = vo.getDueCopyCount();
+            Long duePaperCount = vo.getDuePaperCount();
+            Long realCopyCount = vo.getRealCopyCount();
+            Long realPaperCount = vo.getRealPaperCount();
+            Long attCount = vo.getAttCount();
+            boolean attFlag = false;
+            boolean paperFlag = false;
+            if (StringUtils.isNotBlank(attIsRequire) && "1".equals(attIsRequire)) {
+                attFlag = attCount == 0;
+            }
+            if (StringUtils.isNotBlank(paperIsRequire) && "1".equals(paperIsRequire)) {
+                paperFlag = (realPaperCount < duePaperCount || realCopyCount < dueCopyCount);
+            }
 
-            String attIsRequire = aea.getAttIsRequire();
-            boolean attrequire = StringUtils.isNotBlank(attIsRequire) && "1".equals(attIsRequire);
-            boolean attResult = attrequire && attCount < 1;
+            if (attFlag || paperFlag) {
+                requiredPaper = true;
+                break;
+            }
+        }
 
-            //纸质件必须且（实收纸质<定义数量 || 复印件<定义熟练）==true 表示需要纸质件且收到的材料不满足要求
-            return papaerResult || attResult;
-
-        });
         String opuWinId = aeaServiceWindowService.getCurrentUserWindow() == null ? "" : aeaServiceWindowService.getCurrentUserWindow().getWindowId();
         //更新竞价表，已上传服务结果 =1
         aeaImUnitBiddingMapper.updateUploadResult(projPurchaseId, "1");
@@ -563,6 +564,12 @@ public class RestImApplyService {
 
         //挂起当前流程
         bpmProcessService.suspendProcessInstanceById(processInstance.getProcessInstance().getId());
+        //保存意见
+        if (!tasks.isEmpty()) {
+            Task task = tasks.get(0);
+            String message = applyData.getComments();
+            bpmTaskService.addTaskComment(task.getId(), task.getProcessInstanceId(), StringUtils.isBlank(message) ? "" : message);//收件意见
+        }
 
         //6.流程发起后，更新初始事项历史的taskId
         AeaLogItemStateHist logItemStateHist = aeaLogItemStateHistService.getInitStateAeaLogItemStateHist(aeaHiIteminst.getIteminstId(), appinstId);
