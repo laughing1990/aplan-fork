@@ -138,4 +138,10 @@ public class AeaHiCertinst implements Serializable {
     @ApiModelProperty(value = "证照材料实例id")
     private String matinstId;
 
+    @ApiModelProperty(value = "证照类型")
+    private String certType;
+
+    @ApiModelProperty(value = "项目名称")
+    private String projName;
+
 }
