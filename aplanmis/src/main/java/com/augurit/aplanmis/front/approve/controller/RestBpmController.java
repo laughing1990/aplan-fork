@@ -271,4 +271,30 @@ public class RestBpmController {
         List<HistoryCommentsVo> voList = restBpmService.itemSupplementRecord(iteminstId);
         return new ContentResultForm<>(true, voList);
     }
+
+    @GetMapping("/task/comment")
+    @ApiOperation(value = "4.0审批页 --> 获取任务节点的审批意见")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "taskId", value = "任务id", required = true, dataType = "string", paramType = "query", readOnly = true)
+    })
+    public ResultForm getTaskComment(String taskId) throws Exception {
+        if (StringUtils.isBlank(taskId)) {
+            return new ResultForm(false, "参数任务id不能为空！");
+        }
+        List<HistoryCommentsVo> voList = restBpmService.getTaskComment(taskId);
+        return new ContentResultForm<>(true, voList);
+    }
+
+    @GetMapping("/lastTask/comment")
+    @ApiOperation(value = "4.0审批页 --> 获取任务节点的前一个节点的审批意见")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "taskId", value = "任务id", required = true, dataType = "string", paramType = "query", readOnly = true)
+    })
+    public ResultForm getLastTaskComment(String taskId) throws Exception {
+        if (StringUtils.isBlank(taskId)) {
+            return new ResultForm(false, "参数任务id不能为空！");
+        }
+        List<HistoryCommentsVo> voList = restBpmService.getLastTaskComment(taskId);
+        return new ContentResultForm<>(true, voList);
+    }
 }
