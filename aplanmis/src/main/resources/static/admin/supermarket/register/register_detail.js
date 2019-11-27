@@ -14,12 +14,12 @@ var vm = new Vue({
         // 获取项目详情
         getDetail: function () {
             var vm = this;
-            var url = 'supermarket/purchase/getPurchaseDetail';
-            var projPurchaseId = this.getUrlParam('id');
+            var url = 'supermarket/register/getRegisterDetail';
+            var unitInfoId = this.getUrlParam('unitInfoId');
             request('', {
                 url: ctx + url,
                 type: 'get',
-                data: { projPurchaseId: projPurchaseId },
+                data: { unitInfoId: unitInfoId },
             }, function (res) {
                 if (res.success) {
                     vm.form = res.content;

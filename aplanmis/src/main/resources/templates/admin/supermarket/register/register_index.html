@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<!--引入公共css-->
+	<th:block th:include="common/common :: commonheader('项目需求采购发布列表')"/>
+	<style type="text/css">
+		.row {
+			margin-left: 0px;
+			margin-left: 0px;
+		}
+
+		#mainContentPanel {
+			padding: 20px;
+		}
+	</style>
+</head>
+<body>
+<div id="mainContentPanel">
+	<el-divider></el-divider>
+	<h3 class="m-portlet__head-text">
+		项目需求采购列表
+	</h3>
+
+	<div style="padding: 10px 0px;">
+		<!--搜索框-->
+		<div>
+			<el-form :model="searchForm" ref="searchForm" label-width="150px">
+				<el-row>
+					<el-col :span="12">
+						<el-form-item label="机构名称：" prop="applicant">
+							<el-input v-model="searchForm.applicant" placeholder="请输入机构名称" @blur="getRegisterList"></el-input>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item label="统一社会信用代码：" prop="unifiedSocialCreditCode">
+							<el-input v-model="searchForm.unifiedSocialCreditCode" placeholder="请输入统一社会信用代码" @blur="getRegisterList"></el-input>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row>
+					<el-col :span="12">
+						<el-form-item label="入驻机构类型：" prop="registerType">
+							<el-select placeholder="请选择" v-model="searchForm.registerType" :popper-append-to-body="false">
+								<el-option v-for="item in registerOptions" :key="item.value" :label="item.label" :value="item.value" @click.native="getRegisterList"></el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item label="审核状态：" prop="auditFlag">
+							<el-select placeholder="请选择" v-model="searchForm.auditFlag" :popper-append-to-body="false">
+								<el-option v-for="item in auditOptions" :key="item.value" :label="item.label" :value="item.value" @click.native="getRegisterList"></el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+				</el-row>
+			</el-form>
+
+			<div class="clearfix">
+				<el-button class="fr" @click="clearSearchForm">清空</el-button>
+				<el-button class="fr" style="marginRight: 15px;" @click="findSearchForm">查询</el-button>
+			</div>
+
+		</div>
+		<!--列表-->
+		<div style="marginTop: 20px">
+			<el-table :data="registerList" border>
+				<el-table-column label="序号" width="55">
+					<template slot-scope="scope">
+						{{scope.$index+1}}
+					</template>
+				</el-table-column>
+				<el-table-column prop="applicant" label="机构名称"></el-table-column>
+				<el-table-column prop="unifiedSocialCreditCode" label="统一社会信用代码"></el-table-column>
+				<el-table-column prop="idrepresentative" label="法定代表人"></el-table-column>
+				<el-table-column prop="idno" label="法人身份证号"></el-table-column>
+                <el-table-column prop="createTime" label="注冊时间" :formatter="formatDateTime"></el-table-column>
+				<el-table-column label="操作" width="100px">
+					<template slot-scope="scope">
+						<el-button v-if="scope.row.auditFlag!=1" type="text" class="el-icon-edit" style="font-size:1.3rem" @click.native="registerDeatail(scope.row)">
+						</el-button>
+						<el-button type="text" v-else style="font-size:1.3rem" class="el-icon-search" @click.native="registerDeatail(scope.row)">
+
+						</el-button>
+					</template>
+				</el-table-column>
+			</el-table>
+
+		</div>
+		<!--分页-->
+		<div style="margin-top: 20px;">
+			<el-pagination
+					background
+					align="right"
+					:pager-count="5"
+					@size-change="handleSizeChange"
+					@current-change="handleCurrentChange"
+					:page-sizes="[10, 20, 30, 50]"
+					:page-size="searchForm.pageSize"
+					:current-page="searchForm.pageNum"
+					layout="total,sizes, prev, pager, next, jumper"
+					:total="searchForm.total">
+			</el-pagination>
+		</div>
+
+	</div>
+
+
+</div>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+<script src="../../../static/common/js/axios.min.js" th:src="@{/common/js/axios.min.js}"></script>
+<script src="../../../../static/admin/supermarket/register/register_index.js" th:src="@{/admin/supermarket/register/register_index.js}"></script>
+</body>
+
+</html>

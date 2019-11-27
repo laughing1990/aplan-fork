@@ -1,0 +1,112 @@
+.gray-body {
+    background-color: #f2f3f8;
+    padding: 16px;
+}
+
+#app {
+    padding: 16px;
+    background-color: #fff;
+}
+
+.el-collapse-item__wrap {
+    overflow: visible;
+    position: relative;
+    border: none;
+    padding: 15px 30px;
+}
+
+.el-collapse {
+    border: none;
+}
+
+.el-collapse-item__header {
+    height: 50px;
+    line-height: 50px;
+    padding-left: 16px;
+    font-size: 16px;
+    position: relative;
+    width: 100%;
+    color: #575962;
+    font-weight: 700;
+    border-bottom: 2px solid #E0E3E9;
+}
+
+.el-collapse-item__header.is-active {
+    border-bottom: 2px solid #36A3F7;
+    color: #169aff;
+}
+
+.el-collapse-item__content {
+    color: #575962;
+    padding-bottom: 0;
+}
+
+.el-collapse-item__arrow {
+    margin: 0 18px 0 auto;
+    font-size: 20px;
+    float: right;
+    line-height: 42px;
+}
+
+.el-collapse-item__header.is-active .el-collapse-item__arrow,
+.el-collapse-item__header.is-active .header-icon {
+    color: #169aff;
+}
+
+.el-collapse-item__header .header-icon {
+    font-size: 22px;
+    margin-right: 5px;
+    color: #aaa;
+    font-weight: normal;
+}
+
+.el-collapse-item {
+    margin-bottom: 15px;
+}
+
+.el-input.is-disabled .el-input__inner, .el-textarea.is-disabled .el-textarea__inner {
+    color: #333;
+}
+
+.attachment-box ul li span {
+    margin-left: 10px;
+}
+
+.attachment-box ul li span i {
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0 3px;
+    color: #169AFF;
+}
+
+.el-table--border,
+.el-table--group,
+.el-table td,
+.el-table th.is-leaf {
+    border-color: #DCDFE6;
+}
+
+.file-list-tab {
+    padding-left: 30px;
+}
+
+.file-list-tab:hover .file-name {
+    color: #169AFF;
+}
+
+.file-list-tab:hover .file-icon-btn {
+    display: inline-block;
+}
+
+.file-icon-btn span {
+    cursor: pointer;
+    color: #169AFF;
+    font-size: 18px;
+    margin: 0 5px;
+}
+
+.inline-block {
+    float: left;
+    /* display: inline-block; */
+    width: 50%;
+}
