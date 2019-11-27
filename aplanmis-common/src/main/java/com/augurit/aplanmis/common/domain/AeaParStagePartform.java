@@ -44,7 +44,7 @@ public class AeaParStagePartform implements Serializable {
     /**
      * 排序字段
      */
-    private Long sortNo = 99L;
+    private Long sortNo;
 
     /**
      * 是否启动EL表达式，0表示禁用，1表示启用
