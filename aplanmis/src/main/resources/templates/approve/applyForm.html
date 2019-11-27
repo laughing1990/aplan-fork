@@ -804,8 +804,8 @@
           <el-table-column type="expand" v-if="showMatTableExpand" width="20" align="right" class="expand-row-ui">
             <template slot-scope="props">
               
-              <div class="mat-children" v-if="props.row.fileList.length>0">
-                <div v-for="item in props.row.fileList" class="file-list-tab" :key="item.fileId">
+              <div class="mat-children" v-if="props.row.matChild.length>0">
+                <div v-for="item in props.row.matChild" class="file-list-tab" :key="item.fileId">
                         <span class="file-name">
                           <span class="icon ag ag-filetype-doc"
                                 :class="'ag-filetype-'+getFileType(item.fileName)"></span>
@@ -857,7 +857,7 @@
                   <el-form-item :prop="'matsTableData.' + scope.$index + '.realPaperCount'"
                                 :rules='(scope.row.zcqy==0&&scope.row.paperIsRequire==1)?model.rules.realPaperCount:[]'>
                     
-                    <el-input size="mini" v-model="scope.row.realPaperCount"></el-input>
+                    <el-input size="mini" :disabled="scope.row.paperDisabled" v-model="scope.row.realPaperCount"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
@@ -870,6 +870,7 @@
                   <el-form-item :prop="'matsTableData.' + scope.$index + '.getPaper'"
                                 :rules='(scope.row.zcqy==0&&scope.row.paperIsRequire==1)?model.rules.getPaper:[]'>
                     <el-checkbox v-model="scope.row.getPaper" :key="scope.row.matinstId"
+                                 :disabled="scope.row.paperDisabled"
                                  @change="function(value) {checkedMatChange(value,scope.$index,'paper')}">
                       已收/验
                     </el-checkbox>
@@ -882,7 +883,7 @@
               <el-table-column prop="realCopyCount" align="center" label="收/验" min-width="70">
                 <template slot-scope="scope">
                   <el-form-item :prop="'matsTableData.' + scope.$index + '.realCopyCount'">
-                    <el-input size="mini" v-model="scope.row.realCopyCount"></el-input>
+                    <el-input size="mini" :disabled="scope.row.copyDisabled" v-model="scope.row.realCopyCount"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
@@ -894,6 +895,7 @@
                 <template slot-scope="scope">
                   <el-form-item :prop="'matsTableData.' + scope.$index + '.getCopy'">
                     <el-checkbox v-model="scope.row.getCopy" :key="scope.row.matinstId"
+                                 :disabled="scope.row.copyDisabled"
                                  @change="function(value){ checkedMatChange(value,scope.$index,'copy')}">
                       已收/验
                     </el-checkbox>
@@ -918,7 +920,7 @@
         </el-table>
       </el-form>
       <div style="text-align: center;margin-top: 15px;">
-        <button type="primary" size="medium">保存</button>
+        <el-button type="primary" size="medium" @click="matFormSave">保存</el-button>
       </div>
     </div>
   
@@ -1488,7 +1490,7 @@
         <el-table-column prop="fileName" label="文件名"></el-table-column>
         <el-table-column label="操作" align="center" width="200">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" :loading="loading" @click="filePreview(scope.row)">预览</el-button>
+            <el-button type="primary" size="mini" @click="filePreview(scope.row)">预览</el-button>
 <!--            <el-button type="primary" size="mini" :disabled="getFileType(scope.row.fileName)!=='pdf'"-->
 <!--                       @click="filePreview(scope.row,'pdf')">查看施工图-->
 <!--            </el-button>-->

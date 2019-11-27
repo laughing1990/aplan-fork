@@ -18,6 +18,7 @@ var vm = new Vue({
       isItemSeek: false,
       applyinstId: '',
       taskId: '',
+      iteminstId: '',
       showMore: false,
       // 申办主体信息
       unitInfoList: [],
@@ -53,7 +54,7 @@ var vm = new Vue({
         },
         matsTableData: []
       },
-      showMatTableExpand: true,
+      showMatTableExpand: false,
       showUploadWindowFlag: false, // 是否展示文件上传窗口
       fileSelectionList: [], // 所选电子件
       selMatRowData: {}, // 所选择的材料信息
@@ -69,16 +70,68 @@ var vm = new Vue({
     }
   },
   methods: {
+    // 点击保存
+    matFormSave: function(){
+      var vm = this;
+      var tmpArr = [];
+      vm.model.matsTableData.forEach(function(u){
+        var tmp = { matId: u.matId };
+        var flag = false;
+        if (!u.paperMatinstId&&u.getPaper&&u.realPaperCount!=0){
+          tmp.paperCnt = u.realPaperCount;
+          flag = true;
+        }
+        if (!u.copyMatinstId&&u.getCopy&&u.realCopyCount!=0){
+          tmp.copyCnt = u.realPaperCount;
+          flag = true;
+        }
+        flag && tmpArr.push(tmp);
+      });
+      if (tmpArr.length == 0) {
+        return vm.$message.info('请勾选并填写份数再保存');
+      }
+      var params = {
+        saveMatinstVo: {
+          matCountVos: tmpArr,
+          unitInfoId: vm.zjItemInfo[0].publishUnitInfoId||'',
+          projInfoId: vm.zjItemInfo[0].projInfoId,
+          linkmanInfoId: vm.zjItemInfo[0].publishLinkmanInfoId||'',
+          applyinstId: vm.applyinstId,
+          iteminstId: vm.iteminstId,
+        },
+      };
+      // console.log(params);
+      // if(window) return null;
+      vm.pageLoading = true;
+      request('', {
+        url: ctx + 'market/approve/receivePaperAndStartProcess',
+        type: 'post',
+        ContentType: 'application/json',
+        data: JSON.stringify(params),
+      }, function(res) {
+        vm.pageLoading = false;
+        if (res.successs){
+          vm.$message.success('保存成功');
+        } else {
+          vm.$message.error(res.message || '保存失败');
+        }
+      }, function(){
+        vm.pageLoading = false;
+        vm.$message.error('保存失败');
+      })
+    },
     //删除单个文件附件
     delOneFile: function (data, matData) {
       var _that = this;
+      _that.loadingFileWin = true;
       request('', {
         url: ctx + 'rest/mats/att/delelte',
         type: 'post',
         data: {matinstId: matData.attMatinstId, detailIds: data.fileId}
       }, function (res) {
+        _that.loadingFileWin = false;
         if (res.success) {
-          _that.getFileListWin(matData.matinstId, matData);
+          _that.getFileListWin(matData.attMatinstId, matData);
           _that.$message({
             message: '删除成功',
             type: 'success'
@@ -90,6 +143,7 @@ var vm = new Vue({
           });
         }
       }, function (msg) {
+        _that.loadingFileWin = false;
         _that.$message({
           message: '服务请求失败',
           type: 'error'
@@ -187,14 +241,16 @@ var vm = new Vue({
       _that.fileSelectionList.map(function (item, index) {
         detailIds.push(item.fileId);
       });
-      detailIds = detailIds.join(',')
+      detailIds = detailIds.join(',');
+      _that.loadingFileWin = true;
       request('', {
         url: ctx + 'rest/mats/att/delelte',
         type: 'post',
-        data: {matinstId: _that.attMatinstId, detailIds: detailIds}
+        data: {matinstId: _that.selMatRowData.attMatinstId, detailIds: detailIds}
       }, function (res) {
+        _that.loadingFileWin = false;
         if (res.success) {
-          _that.getFileListWin(_that.selMatRowData.matinstId, _that.selMatRowData);
+          _that.getFileListWin(_that.selMatRowData.attMatinstId, _that.selMatRowData);
           _that.$message({
             message: '删除成功',
             type: 'success'
@@ -206,6 +262,7 @@ var vm = new Vue({
           });
         }
       }, function (msg) {
+        _that.loadingFileWin = false;
         _that.$message({
           message: '服务请求失败',
           type: 'error'
@@ -235,7 +292,7 @@ var vm = new Vue({
       request('', {
         url: ctx + 'rest/mats/att/list',
         type: 'get',
-        data: {matinstId: attMatinstId}
+        data: {matinstId: matinstId}
       }, function (res) {
         if (res.success) {
           // if (res.content) {
@@ -285,7 +342,7 @@ var vm = new Vue({
       _that.selMatRowData = data;
       _that.selMatinstId = data.matinstId ? data.matinstId : '',
           _that.showUploadWindowTitle = '材料附件 - ' + data.matName
-      _that.getFileListWin(data.matinstId, data);
+      _that.getFileListWin(data.attMatinstId, data);
     },
     // 材料全选
     checkAllMatChange: function (val, flag) {
@@ -296,10 +353,10 @@ var vm = new Vue({
       // this.checkedCities[[index]] = val ? this.id[[index]] : []
       _that.model.matsTableData.map(function (item) {
         if (flag == 'paper') {
-          item.getPaper = val;
+          item.getPaper = item.paperDisabled ? true : val;
           _that.getPaperAll = val;
         } else {
-          item.getCopy = val;
+          item.getCopy = item.copyDisabled ? true : val;
           _that.getCopyAll = val;
         }
       });
@@ -386,6 +443,14 @@ var vm = new Vue({
               }
               if (item.realCopyCount == 'undefined' || item.realCopyCount == undefined) {
                 Vue.set(item, 'realCopyCount', item.dueCopyCount);
+              }
+              if (item.paperMatinstId) {
+                Vue.set(item, 'getPaper', true);
+                Vue.set(item, 'paperDisabled', true);
+              }
+              if (item.copyMatinstId) {
+                Vue.set(item, 'getCopy', true);
+                Vue.set(item, 'copyDisabled', true);
               }
               if(_that.matCodes.indexOf(item.matCode)<0){
                 _that.matCodes.push(item.matCode);
@@ -553,6 +618,7 @@ var vm = new Vue({
     vm.applyinstId = getUrlParam('masterEntityKey');
     vm.taskId = getUrlParam('taskId');
     vm.isShowMatForm = getUrlParam('isShowMatForm');
+    vm.iteminstId = getUrlParam('iteminstId');
     vm.isZJItem = getUrlParam('isZJItem');
     vm.isZJItem = (vm.isZJItem == 'true');
     var list = [
