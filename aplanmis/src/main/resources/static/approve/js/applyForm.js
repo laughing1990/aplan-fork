@@ -424,7 +424,7 @@ var vm = new Vue({
           _that.model.matsTableData.map(function (item) {
             _that.model.matsTableData.map(function (item) {
               if (item.matChild == 'undefined' || item.matChild == undefined) {
-                Vue.set(item, 'matChild', []);
+                Vue.set(item, 'matChild', item.fileList);
               }
               if(item.certChild=='undefined'||item.certChild==undefined){
                 Vue.set(item,'certChild',[]);
