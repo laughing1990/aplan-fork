@@ -51,14 +51,12 @@ public class StageItemChecker extends AbstractChecker<AeaParStage> {
                 StringBuffer message = new StringBuffer();
 
                 if (itemBasics.size() < 1) {
-                    parFrontItemList.forEach(aeaParFrontItemVo -> {
-                        message.append(aeaParFrontItemVo.getItemName() + "事项").append("、");
-                    });
+                    parFrontItemList.forEach(aeaParFrontItemVo -> message.append(aeaParFrontItemVo.getItemName() + "事项").append("、"));
                     String error = "【" + message.substring(0, message.length() - 1) + "】";
                     return error + "尚未审批通过，无法申报【" + stage.getStageName() + "】。";
                 }
 
-                List<String> itemSeq = new ArrayList();
+                List<String> itemSeq = new ArrayList<>();
                 String ids = itemBasics.stream().map(aeaItemBasic -> {
                     itemSeq.add(aeaItemBasic.getItemSeq());
                     return aeaItemBasic.getItemVerId();

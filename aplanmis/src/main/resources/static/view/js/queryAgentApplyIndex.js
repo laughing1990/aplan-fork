@@ -44,9 +44,13 @@ var vm = new Vue({
 		},
 		//单项申报
 		seriesApply: function (row) {
+			var itemNature = row.itemNature;
 			var itemVerId = row.itemVerId;
 			var itemName = row.itemName;
 			var urltemp = ctx + 'market/agentApplyIndex.html?itemVerId=' + itemVerId;
+			if (itemNature && '8' == itemNature) {
+				urltemp = ctx + 'market/agentApplyIndex.html?itemVerId=' + itemVerId;
+			}
 			var data = {
 				'menuName': itemName,
 				'menuInnerUrl': urltemp,

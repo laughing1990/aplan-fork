@@ -43,56 +43,6 @@ public class TestController {
         return spglDfxmsplcjdsxxxbService.listSpglDfxmsplcjdsxxxb(condi);
     }
 
-    @RequestMapping("/import/1")
-    public void importItem() {
-        importService.importThemeVer(null, null);
-    }
-
-    @RequestMapping("/import/2")
-    public void importItem2() {
-        importService.importStage(null, null);
-    }
-
-    @RequestMapping("/import/3")
-    public void importItem3() {
-        importService.importItem(null, null);
-    }
-
-    @RequestMapping("/import/4")
-    public void importItem4() {
-        importService.importProj(null, null);
-    }
-
-    @RequestMapping("/import/5")
-    public void importItem5() {
-        importService.importUnit(null, null);
-    }
-
-    @RequestMapping("/import/6")
-    public void importItem6() {
-        importService.importIteminst(null, null);
-    }
-
-    @RequestMapping("/import/7")
-    public void importItem7() {
-        importService.importItemOpinion(null, null);
-    }
-
-    @RequestMapping("/import/8")
-    public void importItem8() {
-        importService.importOfficDoc(null, null);
-    }
-
-    @RequestMapping("/import/9")
-    public void importItem9() {
-        importService.importItemMatinst(null, null);
-    }
-
-    @RequestMapping("/import/all")
-    public void importAllTable() {
-        importService.importAllTable(null, null);
-    }
-
     @RequestMapping("/find/item")
     public List<AeaItem> findItem1(String itemId) {
         return itemBasicService.findCarryOutItemByCatalogItemId(itemId);

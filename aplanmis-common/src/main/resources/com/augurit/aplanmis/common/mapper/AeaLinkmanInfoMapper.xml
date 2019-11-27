@@ -108,6 +108,22 @@
         where aup.PROJ_INFO_ID=#{projInfoId}  and aup.UNIT_INFO_ID=#{unitInfoId}
     </select>
 
+    <select id="findCorporationByUnitInfoId" resultType="AeaLinkmanInfo">
+        SELECT
+        <include refid="allColumns"/>
+        FROM
+            aea_linkman_info linkman
+        WHERE
+	LINKMAN_CERT_NO IN (
+		SELECT
+			IDCARD
+		FROM
+			aea_unit_info
+		WHERE
+			UNIT_INFO_ID = #{unitInfoId}
+	)
+    </select>
+
     <select id="findAllUnitLinkman" resultType="AeaLinkmanInfo">
         select
         <include refid="allColumns"/>

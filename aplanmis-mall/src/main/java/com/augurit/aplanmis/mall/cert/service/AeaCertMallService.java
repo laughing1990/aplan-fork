@@ -12,18 +12,18 @@ import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
 import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
-import com.augurit.agcloud.opus.common.mapper.OpuOmUserInfoMapper;
+import com.augurit.aplanmis.common.constants.CertHolderConstants;
 import com.augurit.aplanmis.common.constants.DeletedStatus;
 import com.augurit.aplanmis.common.domain.*;
-import com.augurit.aplanmis.common.mapper.AeaCertMapper;
-import com.augurit.aplanmis.common.mapper.AeaCertTypeMapper;
-import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
+import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.admin.opus.AplanmisOpuOmOrgAdminService;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
+import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.integration.license.config.LicenseConfig;
 import com.augurit.aplanmis.integration.license.dto.*;
 import com.augurit.aplanmis.integration.license.service.LicenseApiService;
+import com.augurit.aplanmis.mall.cert.vo.AeaCertVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -37,6 +37,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author ZhangXinhui
@@ -67,12 +68,20 @@ public class AeaCertMallService {
     private BscDicRegionMapper bscDicRegionMapper;
     @Autowired
     private LicenseApiService licenseApiService;
-    @Autowired
-    private OpuOmUserInfoMapper opuOmUserInfoMapper;
+
     @Autowired
     private AeaItemBasicMapper aeaItemBasicMapper;
     @Autowired
     private LicenseConfig licenseConfig;
+
+    @Autowired
+    private AeaHiCertinstMapper aeaHiCertinstMapper;
+
+    @Autowired
+    private AeaProjInfoService aeaProjInfoService;
+
+    @Autowired
+    private AeaLinkmanInfoMapper aeaLinkmanInfoMapper;
 
     
     public void deleteAeaCertById(String id) {
@@ -418,4 +427,51 @@ public class AeaCertMallService {
         }
         return null;
     }
+
+    public List<AeaHiCertinst> getCertintListByCertHolder(String certHolder, String keyword, int pageNum, int pageSize,LoginInfoVo loginInfo) {
+        String linkmanInfoId=null;
+        String unitInfoId=null;
+        List<String> projInfoIds=null;
+        if(CertHolderConstants.CERT_FROM_APPLICANT.equals(certHolder)){//企业证照
+            unitInfoId=loginInfo.getUnitId();
+        }else if(CertHolderConstants.CERT_FROM_CORPORATION.equals(certHolder)){//法人证照
+            if("1".equals(loginInfo.getIsPersonAccount())||com.augurit.agcloud.framework.util.StringUtils.isNotBlank(loginInfo.getUserId())){//个人
+                linkmanInfoId=loginInfo.getUserId();
+            }else{//法人
+                List<AeaLinkmanInfo> linkmanList = aeaLinkmanInfoMapper.findCorporationByUnitInfoId(loginInfo.getUnitId());
+                linkmanInfoId=linkmanList.size()>0?linkmanList.get(0).getLinkmanInfoId():null;
+            }
+        }else if(CertHolderConstants.CERT_FROM_PROJ.equals(certHolder)){//项目证照
+            List<AeaProjInfo> projList=null;
+            if("1".equals(loginInfo.getIsPersonAccount())){//个人
+                projList=aeaProjInfoService.findRootAeaProjInfoByLinkmanInfoId(loginInfo.getUserId());
+            }else if(com.augurit.agcloud.framework.util.StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
+                projList=aeaProjInfoService.findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(loginInfo.getUserId(),loginInfo.getUnitId());
+            }else{//企业
+                projList=aeaProjInfoService.findRootAeaProjInfoByUnitInfoId(loginInfo.getUnitId());
+            }
+            projInfoIds=projList.size()>0?projList.stream().map(AeaProjInfo::getProjInfoId).collect(Collectors.toList()):null;
+        }else{
+            return new ArrayList<>();
+        }
+        com.github.pagehelper.PageHelper.startPage(pageNum, pageSize);
+        List<AeaHiCertinst>list=aeaHiCertinstMapper.getCertintList(linkmanInfoId,unitInfoId,projInfoIds,keyword,SecurityContext.getCurrentOrgId());
+        return list;
+    }
+
+    public List<AeaCertVo> getCertTypesAndCertList(String certHolder) {
+        AeaCertType typeQ = new AeaCertType();
+        typeQ.setRootOrgId(SecurityContext.getCurrentOrgId());
+        typeQ.setIsActive("1");
+        List<AeaCertType> list = aeaCertTypeMapper.listAeaCertType(typeQ);
+        if(list.size()==0) return new ArrayList<>();
+        return list.stream().map(AeaCertVo::forMat).peek(vo->{
+            AeaCert query=new AeaCert();
+            query.setRootOrgId(SecurityContext.getCurrentOrgId());
+            query.setCertTypeId(vo.getCertTypeId());
+            query.setCertHolder(StringUtils.isNotBlank(certHolder)?certHolder:null);
+            vo.setCertList(aeaCertMapper.listAeaCert(query));
+            }).collect(Collectors.toList());
+        }
+
 }

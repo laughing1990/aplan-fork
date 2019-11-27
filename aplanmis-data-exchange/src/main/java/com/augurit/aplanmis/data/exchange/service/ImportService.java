@@ -13,6 +13,7 @@ import com.augurit.aplanmis.data.exchange.domain.base.SpglEntity;
 import com.augurit.aplanmis.data.exchange.domain.base.SpglInstEntity;
 import com.augurit.aplanmis.data.exchange.domain.base.SpglItemInstEntity;
 import com.augurit.aplanmis.data.exchange.domain.spgl.*;
+import com.augurit.aplanmis.data.exchange.dto.ThreadEtlJobLog;
 import com.augurit.aplanmis.data.exchange.dto.view.SpglDfxmsplcjdfxsxxxbVew;
 import com.augurit.aplanmis.data.exchange.dto.view.SpglXmspsxblxxbView;
 import com.augurit.aplanmis.data.exchange.dto.view.ViewSubTable;
@@ -132,19 +133,14 @@ public class ImportService {
     @Autowired
     EtlJobDetailLogService etlJobDetailLogService;
 
-
-    private Long jobLogId;
-    private int readNum;
-    private int errorNum;
-    private int writtenNum;
+    private static String OPERATE_SOURCE = EtlConstant.PROGRAM_OPERATE;
 
     /**
      * 增量上传
      *
      * @return 上传数据量
      */
-    public int incrementAllTable() {
-        this.initLogNum();
+    public Long incrementAllTable() {
         EtlJob job = etlJobService.getEtlJobById("1");
         Date startTime = job.getStartTime();
         Date endTime = new Date();
@@ -152,61 +148,209 @@ public class ImportService {
         updateJob.setJobId(job.getJobId());
         updateJob.setRunStatus("1");
         etlJobService.updateEtlJob(updateJob);
-        this.importAllTable(startTime, endTime);
+        this.importAllTableAndLog(startTime, endTime, OPERATE_SOURCE);
         Date nextTime = new Date();
         updateJob.setStartTime(endTime);
         updateJob.setEndTime(nextTime);
         updateJob.setRunStatus("0");
         etlJobService.updateEtlJob(updateJob);
-        EtlJobLog etlJobLog = new EtlJobLog();
-        etlJobLog.setJobLogId(jobLogId);
-        etlJobLog.setReadNum(Integer.toUnsignedLong(readNum));
-        etlJobLog.setWrittenNum(Integer.toUnsignedLong(writtenNum));
-        etlJobLog.setErrorNum(Integer.toUnsignedLong(errorNum));
-        etlJobLog.setSolveNum(0L);
-        etlJobLog.setStartTime(startTime);
-        etlJobLog.setEndTime(endTime);
-        Date now = new Date();
-        etlJobLog.setCreateTime(now);
-        etlJobLogService.updateEtlJobLog(etlJobLog);
-        log.info("本次上传读取：{}，上传成功：{}，上传出错:{}",readNum,writtenNum,errorNum);
-        return writtenNum;
+        return ThreadEtlJobLog.getWrittenNum();
     }
 
-    public void initLogNum() {
-        //Long autoIncrement = etlJobLogService.getAutoIncrement();
-        EtlJobLog etlJobLog = new EtlJobLog();
-        String code = this.generateIncreaseJobLogCode();
-        etlJobLog.setJobLogCode(code);
-        etlJobLogService.saveEtlJobLog(etlJobLog);
-        this.jobLogId = etlJobLog.getJobLogId();
-        this.readNum = 0;
-        this.errorNum = 0;
-        this.writtenNum = 0;
+    public void importAllTableAndLog(Date startTime, Date endTime, String operateSource) {
+        new ImportJobLogWrapper(operateSource) {
+
+            @Override
+            protected void executeImport(Date startTime, Date endTime) {
+                importAllTable(startTime, endTime);
+            }
+        }.wapper(startTime, endTime);
     }
 
-    private String generateIncreaseJobLogCode() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-        String today = format.format(new Date());
-        long code = this.generateIncreaseAtOneDay(EtlConstant.JOB_CODE_INCREASE_KEY);
-        String codeStr = String.format("%04d", code);
-        StringBuilder builder = new StringBuilder(today);
-        builder.append(codeStr);
-        return builder.toString();
+    public void importThemeMainAndLog(Date startTime, Date endTime, String operateSource) {
+        new ImportJobLogWrapper(operateSource) {
+
+            @Override
+            protected void executeImport(Date startTime, Date endTime) {
+                importThemeVer(startTime, endTime);
+                importStage(startTime, endTime);
+                importItem(startTime, endTime);
+                importSubordinateItem(startTime, endTime);
+                importProj(startTime, endTime);
+                importIteminst(startTime, endTime);
+                importSubordinateIteminst(startTime, endTime);
+                importItemOpinion(startTime, endTime);
+                importSubordinateItemOpinion(startTime, endTime);
+            }
+        }.wapper(startTime, endTime);
     }
 
-    private long generateIncreaseAtOneDay(String key) {
-        long incr = redisUtil.incr(key, 1);
-        if (incr == 1) {
-            //当天结束时间
-            LocalDateTime todayEnd = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
-            Date todayEndTime = Date.from(todayEnd.atZone(ZoneId.systemDefault()).toInstant());
-            redisUtil.expireAt(key, todayEndTime);
+    //1.地方项目审批流程信息表
+    public void importThemeVerAndLog(Date startTime, Date endTime, String operateSource) {
+        new ImportJobLogWrapper(operateSource) {
+
+            @Override
+            protected void executeImport(Date startTime, Date endTime) {
+                importThemeVer(startTime, endTime);
+            }
+        }.wapper(startTime, endTime);
+    }
+
+    //2.地方项目审批流程阶段信息表
+    public void importStageAndLog(Date startTime, Date endTime, String operateSource) {
+        new ImportJobLogWrapper(operateSource) {
+
+            @Override
+            protected void executeImport(Date startTime, Date endTime) {
+                importStage(startTime, endTime);
+            }
+        }.wapper(startTime, endTime);
+    }
+
+    //3.地方项目审批流程阶段事项信息表
+    public void importItemAndLog(Date startTime, Date endTime, String operateSource) {
+        new ImportJobLogWrapper(operateSource) {
+
+            @Override
+            protected void executeImport(Date startTime, Date endTime) {
+                //地方项目审批流程阶段事项信息表
+                importItem(startTime, endTime);
+                // 辅线事项
+                importSubordinateItem(startTime, endTime);
+            }
+        }.wapper(startTime, endTime);
+    }
+
+    //4.项目基本信息表
+    public void importProjAndLog(Date startTime, Date endTime, String operateSource) {
+        new ImportJobLogWrapper(operateSource) {
+
+            @Override
+            protected void executeImport(Date startTime, Date endTime) {
+                importProj(startTime, endTime);
+            }
+        }.wapper(startTime, endTime);
+    }
+
+    //5.项目单位信息表
+    public void importUnitAndLog(Date startTime, Date endTime, String operateSource) {
+        new ImportJobLogWrapper(operateSource) {
+
+            @Override
+            protected void executeImport(Date startTime, Date endTime) {
+                importUnit(startTime, endTime);
+            }
+        }.wapper(startTime, endTime);
+    }
+
+    //6.项目审批事项办理信息表
+    public void importIteminstAndLog(Date startTime, Date endTime, String operateSource) {
+        new ImportJobLogWrapper(operateSource) {
+
+            @Override
+            protected void executeImport(Date startTime, Date endTime) {
+                //项目审批事项办理信息表
+                importIteminst(startTime, endTime);
+                // 辅线事项办理信息
+                importSubordinateIteminst(startTime, endTime);
+            }
+        }.wapper(startTime, endTime);
+    }
+
+    //7.项目审批事项办理详细信息表
+    public void importItemOpinionAndLog(Date startTime, Date endTime, String operateSource) {
+        new ImportJobLogWrapper(operateSource) {
+
+            @Override
+            protected void executeImport(Date startTime, Date endTime) {
+                //项目审批事项办理详细信息表
+                importItemOpinion(startTime, endTime);
+                // 辅线事项办理详细信息
+                importSubordinateItemOpinion(startTime, endTime);
+            }
+        }.wapper(startTime, endTime);
+    }
+
+    //8.项目审批事项批复文件信息表
+    public void importOfficDocAndLog(Date startTime, Date endTime, String operateSource) {
+        new ImportJobLogWrapper(operateSource) {
+
+            @Override
+            protected void executeImport(Date startTime, Date endTime) {
+                importOfficDoc(startTime, endTime);
+            }
+        }.wapper(startTime, endTime);
+    }
+
+    //9.项目其他附件信息表
+    public void importItemMatinstAndLog(Date startTime, Date endTime, String operateSource) {
+        new ImportJobLogWrapper(operateSource) {
+
+            @Override
+            protected void executeImport(Date startTime, Date endTime) {
+                importItemMatinst(startTime, endTime);
+            }
+        }.wapper(startTime, endTime);
+    }
+
+    private abstract class ImportJobLogWrapper {
+        private String operateSource;
+
+        public ImportJobLogWrapper(String operateSource) {
+            this.operateSource = operateSource;
         }
-        return incr;
+
+        protected abstract void executeImport(Date startTime, Date endTime);
+
+        public void wapper(Date startTime, Date endTime) {
+            this.initLogNum();
+            this.executeImport(startTime, endTime);
+            this.endLogNum(startTime, endTime);
+        }
+
+        private void initLogNum() {
+            EtlJobLog etlJobLog = new EtlJobLog();
+            String code = this.generateIncreaseJobLogCode();
+            etlJobLog.setJobLogCode(code);
+            etlJobLog.setOperateSource(this.operateSource);
+            etlJobLogService.saveEtlJobLog(etlJobLog);
+            ThreadEtlJobLog.setJobLogId(etlJobLog.getJobLogId());
+        }
+
+        private void endLogNum(Date startTime, Date endTime) {
+            EtlJobLog etlJobLog = ThreadEtlJobLog.get();
+            etlJobLog.setSolveNum(0L);
+            etlJobLog.setStartTime(startTime);
+            etlJobLog.setEndTime(endTime);
+            Date now = new Date();
+            etlJobLog.setCreateTime(now);
+            etlJobLogService.updateEtlJobLog(etlJobLog);
+            log.info("本次上传读取：{}，上传成功：{}，上传出错:{}", etlJobLog.getReadNum(), etlJobLog.getWrittenNum(), etlJobLog.getErrorNum());
+        }
+
+        private String generateIncreaseJobLogCode() {
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+            String today = format.format(new Date());
+            long code = this.generateIncreaseAtOneDay(EtlConstant.JOB_CODE_INCREASE_KEY);
+            String codeStr = String.format("%04d", code);
+            StringBuilder builder = new StringBuilder(today);
+            builder.append(codeStr);
+            return builder.toString();
+        }
+
+        private long generateIncreaseAtOneDay(String key) {
+            long incr = redisUtil.incr(key, 1);
+            if (incr == 1) {
+                //当天结束时间
+                LocalDateTime todayEnd = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+                Date todayEndTime = Date.from(todayEnd.atZone(ZoneId.systemDefault()).toInstant());
+                redisUtil.expireAt(key, todayEndTime);
+            }
+            return incr;
+        }
     }
 
-    public void importAllTable(Date startTime, Date endTime) {
+    private void importAllTable(Date startTime, Date endTime) {
         //1.地方项目审批流程信息表
         this.importThemeVer(startTime, endTime);
         //2.地方项目审批流程阶段信息表
@@ -244,7 +388,7 @@ public class ImportService {
          * @Date 2019/11/04
          *
          */
-        if(uploadDuoGui){
+        if (uploadDuoGui) {
             try {
                 //10.项目用地红线界址信息表
                 this.importLandRedLine(startTime, endTime);
@@ -253,24 +397,24 @@ public class ImportService {
                 //12.地方规划控制线信息表
                 this.importPlanControlLine(startTime, endTime);
                 log.info("多规数据上传成功");
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 log.info("多规数据上传失败");
             }
         }
     }
 
-    public void importThemeVer(Date startTime, Date endTime) {
+    private void importThemeVer(Date startTime, Date endTime) {
         new AbstractImporter<SpglDfxmsplcxxb>(themeVerService, spglDfxmsplcxxbService) {
         }.commonImport(startTime, endTime, TableNameConstant.SPGL_DFXMSPLCXXB);
     }
 
-    public void importStage(Date startTime, Date endTime) {
+    private void importStage(Date startTime, Date endTime) {
         new AbstractImporter<SpglDfxmsplcjdxxb>(stageService, spglDfxmsplcjdxxbService) {
         }.commonImport(startTime, endTime, TableNameConstant.SPGL_DFXMSPLCJDXXB);
     }
 
-    public void importItem(Date startTime, Date endTime) {
+    private void importItem(Date startTime, Date endTime) {
         new AbstractImporter<SpglDfxmsplcjdsxxxb>(stageItemService, spglDfxmsplcjdsxxxbService) {
             @Override
             protected void prepareHandle(SpglDfxmsplcjdsxxxb item, Iterator<SpglDfxmsplcjdsxxxb> iterator) {
@@ -278,7 +422,7 @@ public class ImportService {
                 boolean itemHasImport = spglDfxmsplcjdsxxxbService.findActiveSpglDfxmsplcjdsxxxbByUnique(item.getSplcbm(), item.getSplcbbh(), item.getSpsxbm(), item.getSpsxbbh());
                 if (itemHasImport) {
                     iterator.remove();
-                    readNum--;
+                    ThreadEtlJobLog.reduceReadNum();
                     detailReadNum--;
                     return;
                 }
@@ -314,12 +458,12 @@ public class ImportService {
     /**
      * 辅线上传到事项信息表
      */
-    public void importSubordinateItem(Date startTime, Date endTime) {
+    private void importSubordinateItem(Date startTime, Date endTime) {
         new AbstractImporter<SpglDfxmsplcjdsxxxb>(stageSubordinateItemService, spglDfxmsplcjdsxxxbService) {
         }.commonImport(startTime, endTime, TableNameConstant.SPGL_DFXMSPLCJDSXXXB);
     }
 
-    public void importProj(Date startTime, Date endTime) {
+    private void importProj(Date startTime, Date endTime) {
         new AbstractImporter<SpglXmjbxxb>(applyProjService, spglXmjbxxbService) {
             @Override
             protected void prepareHandle(SpglXmjbxxb item, Iterator<SpglXmjbxxb> iterator) {
@@ -337,7 +481,7 @@ public class ImportService {
                         //从单项申报中获取申报的主题版本
                         boolean flag = true;
                         List<SpglDfxmsplcjdsxxxb> itemInstlist = itemBasicService.findItemByGcdm(item.getGcdm());
-                        for(SpglDfxmsplcjdsxxxb spglDfxmsplcjdsxxxb: itemInstlist){
+                        for (SpglDfxmsplcjdsxxxb spglDfxmsplcjdsxxxb : itemInstlist) {
                             spglDfxmsplcjdsxxxb.setSplcbm(item.getSplcbm());
                             SpglDfxmsplcjdxxb spglDfxmsplcjdxxb = itemBasicService.getAeaParThemeVerByItemCodeAndThemeCode(spglDfxmsplcjdsxxxb);
                             if (spglDfxmsplcjdxxb != null) {
@@ -346,7 +490,7 @@ public class ImportService {
                                 break;
                             }
                         }
-                        if(flag){
+                        if (flag) {
                             item.setSplcbbh(1D);
                         }
                         redisUtil.hset(StorageCacheKeyConstants.PROJ_CACHE_KEY, item.getGcdm(), item);
@@ -356,7 +500,7 @@ public class ImportService {
         }.commonImport(startTime, endTime, TableNameConstant.SPGL_XMJBXXB);
     }
 
-    public void importUnit(Date startTime, Date endTime) {
+    private void importUnit(Date startTime, Date endTime) {
         new AbstractImporter<SpglXmdwxxb>(applyProjUnitService, spglXmdwxxbService) {
             @Override
             protected void prepareHandle(SpglXmdwxxb item, Iterator<SpglXmdwxxb> iterator) {
@@ -365,7 +509,7 @@ public class ImportService {
         }.commonImport(startTime, endTime, TableNameConstant.SPGL_XMDWXXB);
     }
 
-    public void importIteminst(Date startTime, Date endTime) {
+    private void importIteminst(Date startTime, Date endTime) {
         new AbstractImporter<SpglXmspsxblxxb>(iteminstService, spglXmspsxblxxbService) {
             @Override
             protected void prepareHandle(SpglXmspsxblxxb item, Iterator<SpglXmspsxblxxb> iterator) {
@@ -385,12 +529,12 @@ public class ImportService {
         }.commonImport(startTime, endTime, TableNameConstant.SPGL_XMSPSXBLXXB);
     }
 
-    public void importSubordinateIteminst(Date startTime, Date endTime) {
+    private void importSubordinateIteminst(Date startTime, Date endTime) {
         new AbstractImporter<SpglXmspsxblxxb>(subordinateIteminstService, spglXmspsxblxxbService) {
         }.commonImport(startTime, endTime, TableNameConstant.SPGL_XMSPSXBLXXB);
     }
 
-    public void importItemOpinion(Date startTime, Date endTime) {
+    private void importItemOpinion(Date startTime, Date endTime) {
         new AbstractImporter<SpglXmspsxblxxxxb>(itemOpinionService, spglXmspsxblxxxxbService) {
             @Override
             protected void prepareHandle(SpglXmspsxblxxxxb item, Iterator<SpglXmspsxblxxxxb> iterator) {
@@ -400,12 +544,12 @@ public class ImportService {
         }.commonImport(startTime, endTime, TableNameConstant.SPGL_XMSPSXBLXXXXB);
     }
 
-    public void importSubordinateItemOpinion(Date startTime, Date endTime) {
+    private void importSubordinateItemOpinion(Date startTime, Date endTime) {
         new AbstractImporter<SpglXmspsxblxxxxb>(subordinateItemOpinionService, spglXmspsxblxxxxbService) {
         }.commonImport(startTime, endTime, TableNameConstant.SPGL_XMSPSXBLXXXXB);
     }
 
-    public void importOfficDoc(Date startTime, Date endTime) {
+    private void importOfficDoc(Date startTime, Date endTime) {
         new AbstractImporter<SpglXmspsxpfwjxxb>(officialDocService, spglXmspsxpfwjxxbService) {
             @Override
             protected void prepareHandle(SpglXmspsxpfwjxxb item, Iterator<SpglXmspsxpfwjxxb> iterator) {
@@ -415,7 +559,7 @@ public class ImportService {
         }.commonImport(startTime, endTime, TableNameConstant.SPGL_XMSPSXPFWJXXB);
     }
 
-    public void importItemMatinst(Date startTime, Date endTime) {
+    private void importItemMatinst(Date startTime, Date endTime) {
         new AbstractImporter<SpglXmqtfjxxb>(itemOthersMatService, spglXmqtfjxxbService) {
             @Override
             protected void prepareHandle(SpglXmqtfjxxb item, Iterator<SpglXmqtfjxxb> iterator) {
@@ -496,7 +640,7 @@ public class ImportService {
                 pageInfo = baseUploadServer.listByTimeRange(startTime, endTime, page);
                 List<T> list = pageInfo.getList();
                 if (list != null && list.size() > 0) {
-                    readNum = readNum + list.size();
+                    ThreadEtlJobLog.readNumAddNum(list.size());
                     detailReadNum = detailReadNum + list.size();
                     Iterator<T> iterator = list.iterator();
                     while (iterator.hasNext()) {
@@ -506,9 +650,9 @@ public class ImportService {
                             this.prepareHandle(next, iterator);
                         } catch (EtlTransException e) {
                             try {
-                                errorNum++;
+                                ThreadEtlJobLog.increaseErrorNum();
                                 detailErrorNum++;
-                                etlErrorLogService.insertEtlErrorLogWithException(next, e, jobLogId);
+                                etlErrorLogService.insertEtlErrorLogWithException(next, e, ThreadEtlJobLog.getJobLogId());
                                 iterator.remove();
                             } catch (Exception v) {
                                 log.error("向错误日志日志表插入数据发生错误，主键为：{}", next.getDfsjzj());
@@ -531,7 +675,7 @@ public class ImportService {
             } while (pageInfo.isHasNextPage());
             try {
                 EtlJobDetailLog detailLog = new EtlJobDetailLog();
-                detailLog.setJobLogId(jobLogId);
+                detailLog.setJobLogId(ThreadEtlJobLog.getJobLogId());
                 detailLog.setTableName(key);
                 detailLog.setReadNum(Integer.toUnsignedLong(detailReadNum));
                 detailLog.setErrorNum(Integer.toUnsignedLong(detailErrorNum));
@@ -540,7 +684,7 @@ public class ImportService {
                 detailLog.setCreateTime(now);
                 etlJobDetailLogService.saveEtlJobDetailLog(detailLog);
             } catch (Exception e2) {
-                log.error("保存上传详细错误日志出错，表名为：{}。上传日志主键为：{}", key, jobLogId);
+                log.error("保存上传详细错误日志出错，表名为：{}。上传日志主键为：{}", key, ThreadEtlJobLog.getJobLogId());
                 e2.printStackTrace();
             }
         }
@@ -610,7 +754,7 @@ public class ImportService {
             }
             try {
                 baseSpglServer.batchInsert(list);
-                writtenNum = writtenNum + list.size();
+                ThreadEtlJobLog.writtenNumAddNum(list.size());
                 detailWrittenNum = detailWrittenNum + list.size();
                 return;
             } catch (Exception e) {
@@ -620,14 +764,14 @@ public class ImportService {
             for (T item : list) {
                 try {
                     baseSpglServer.insert(item);
-                    writtenNum++;
+                    ThreadEtlJobLog.increaseWrittenNum();
                     detailWrittenNum++;
                 } catch (Exception e) {
                     log.error("上传出错，表名:{},地方数据主键为：{}", item.getStepName(), item.getDfsjzj());
                     try {
-                        errorNum++;
+                        ThreadEtlJobLog.increaseErrorNum();
                         detailErrorNum++;
-                        etlErrorLogService.insertEtlErrorLog(item.getStepName(), item.getTableName(), item.getDfsjzj(), e, jobLogId);
+                        etlErrorLogService.insertEtlErrorLog(item.getStepName(), item.getTableName(), item.getDfsjzj(), e, ThreadEtlJobLog.getJobLogId());
                     } catch (Exception e2) {
                         log.error("保存错误日志出错，地方数据主键为：{}", item.getDfsjzj());
                     }

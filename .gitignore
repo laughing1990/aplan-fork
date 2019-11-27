@@ -81,6 +81,7 @@ aplanmis-mall/src/main/resources/rebel.xml
 /aplanmis-analyse/build/
 /aplanmis-analyse/out/
 /aplanmis/src/main/resources/application-lwq.properties
+**/*localdev.properties
 
 /aplanmis/fastjson-1.2.56.jar
 /aplanmis/gson-2.8.6.jar

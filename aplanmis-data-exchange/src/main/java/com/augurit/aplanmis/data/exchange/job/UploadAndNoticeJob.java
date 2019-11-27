@@ -29,7 +29,7 @@ public class UploadAndNoticeJob extends JobTimer {
 
     public void uploadAndNotice() {
         try {
-            int uploadNum = importService.incrementAllTable();
+            Long uploadNum = importService.incrementAllTable();
             if (cityNoticeProperties.isOpen()) {
                 if (uploadNum > 0) {
                     cityUploadSuccessNotice.notice();

@@ -2,6 +2,7 @@ package com.augurit.aplanmis.supermarket.projPurchase.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
 import com.augurit.agcloud.bsc.domain.BscAttForm;
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
 import com.augurit.agcloud.bsc.mapper.BscAttMapper;
@@ -23,6 +24,7 @@ import com.augurit.aplanmis.common.constants.AuditFlagStatus;
 import com.augurit.aplanmis.common.constants.DeletedStatus;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.utils.BusinessUtils;
 import com.augurit.aplanmis.common.utils.CommonConstant;
@@ -39,6 +41,7 @@ import com.augurit.aplanmis.supermarket.projPurchase.vo.SelectedQualMajorRequire
 import com.augurit.aplanmis.supermarket.projPurchase.vo.SelectedQualVo;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.purchase.PurchaseDetailVo;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.purchase.ShowProjPurchaseVo;
+import com.augurit.aplanmis.supermarket.serviceResult.service.AeaImServiceResultService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
@@ -148,6 +151,10 @@ public class ProjPurchaseService {
 
     @Autowired
     private AeaParentProjMapper aeaParentProjMapper;
+    @Autowired
+    private FileUtilsService fileUtilsService;
+    @Autowired
+    private AeaImServiceResultService aeaImServiceResultService;
 
 
     public List<AeaImProjPurchase> getProjPurchaseList(AeaImProjPurchase aeaImProjPurchase, Page page) {
@@ -1528,11 +1535,19 @@ public class ProjPurchaseService {
      */
     public PurchaseDetailVo getPurchaseDetail(String projPurchaseId) throws Exception {
         PurchaseDetailVo form = new PurchaseDetailVo();
-//查询采购项目,中介服务，机构要求等 信息
+        //查询采购项目,中介服务，机构要求等 信息
         PurchaseProjVo purchaseProj = aeaImProjPurchaseMapper.getProjPurchaseInfoByApplyinstCode(null, projPurchaseId);
+        if (null == purchaseProj) throw new Exception("can not find purchase proj");
+        //查询附件
+        List<BscAttFileAndDir> officialRemarkFileList = fileUtilsService.getBscAttFileAndDirListByinstId(purchaseProj.getOfficialRemarkFile(), "OFFICIAL_REMARK_FILE", "AEA_IM_PROJ_PURCHASE");
+        List<BscAttFileAndDir> requireExplainFileList = fileUtilsService.getBscAttFileAndDirListByinstId(purchaseProj.getRequireExplainFile(), "REQUIRE_EXPLAIN_FILE", "AEA_IM_PROJ_PURCHASE");
+        purchaseProj.setOfficialRemarkFileList(officialRemarkFileList);
+        purchaseProj.setRequireExplainFileList(requireExplainFileList);
+        //查询材料
+        List<MatinstVo> vos = aeaImServiceResultService.getProjPurchaseMatinstList(projPurchaseId);
+        purchaseProj.setMatinstList(vos);
         String isApproveProj = purchaseProj.getIsApproveProj();
         if (StringUtils.isNotBlank(isApproveProj) && "1".equals(isApproveProj)) {
-            //查询关联的投资审批项目信息
             //查询关联的投资审批项目信息
             AeaParentProj parentProj = aeaParentProjMapper.getParentProjByProjInfoId(purchaseProj.getProjInfoId());
             if (null != parentProj) {

@@ -13,7 +13,8 @@
         solve_num solveNum,
         start_time  startTime,
         end_time  endTime,
-        create_time  createTime
+        create_time  createTime,
+        operate_source operateSource
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
@@ -45,6 +46,9 @@
             <if test="isFilterEmpty != null and isFilterEmpty">
                 AND read_num IS NOT NULL AND read_num &gt; 0
             </if>
+            <if test="operateSource != null">
+                AND operate_source = #{operateSource}
+            </if>
         </where>
         order by end_time desc
     </select>
@@ -53,9 +57,9 @@
     <!--5 新增实体对象 -->
     <insert id="insertEtlJobLog" useGeneratedKeys="true" keyProperty="jobLogId" parameterType="EtlJobLog">
         insert into ETL_JOB_LOG (
-        job_log_code  ,read_num  ,written_num  ,error_num  ,solve_num ,start_time  ,end_time  ,create_time
+        job_log_code  ,read_num  ,written_num  ,error_num  ,solve_num ,start_time  ,end_time  ,create_time ,operate_source
             )  values  (
-        #{jobLogCode},#{readNum},#{writtenNum},#{errorNum},#{solveNum},#{startTime},#{endTime},  #{createTime}
+        #{jobLogCode},#{readNum},#{writtenNum},#{errorNum},#{solveNum},#{startTime},#{endTime},  #{createTime}, #{operateSource}
         )
     </insert>
     <!--6 修改实体对象 -->
@@ -88,6 +92,9 @@
             </if>
             <if test="createTime != null">
                 create_time = #{createTime},
+            </if>
+            <if test="operateSource != null">
+                operate_source = #{operateSource},
             </if>
         </set>
         where job_log_id = #{jobLogId}

@@ -3077,6 +3077,9 @@ var vm = new Vue({
             setTimeout(function () {
               //直接刷新界面好了
               var newUrl = window.location.href.substring(0, window.location.href.indexOf("?") + 1) + "taskId=" + nextTaskId + "&viewId=" + vm.viewId + "&busRecordId=" + vm.getUrlParam('busRecordId');
+              if (vm.isZJItem) {
+                newUrl += '&itemNature=8'
+              }
               window.location.href = newUrl;
             }, 1500);
           } else {
