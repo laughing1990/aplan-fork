@@ -165,6 +165,7 @@ public class OneFormCommonService {
             List<AeaParStagePartform> listAeaParStagePartform = null;
             AeaParStagePartform aeaParStagePartform = new AeaParStagePartform();
             aeaParStagePartform.setStageId(oneFormStageRequest.getStageId());
+            aeaParStagePartform.setSortNo(null);
             if (isIncludeDevForm) {
 
             } else {
