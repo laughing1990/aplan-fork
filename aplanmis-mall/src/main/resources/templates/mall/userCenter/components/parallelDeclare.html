@@ -1087,7 +1087,8 @@
       </el-table-column>
       <el-table-column label="单项申报" width="85" align="center">
         <template slot-scope="scope">
-          <a href="javascript:;" class="sign-icon handel-icon" @click="goToSingleDeclare(scope.row.itemVerId)"></a>
+          <a v-if="scope.row.notRegionData" href="javascript:;" class="sign-icon handel-icon disabled"></a>
+          <a v-else href="javascript:;" class="sign-icon handel-icon" @click="goToSingleDeclare(scope.row.itemVerId)"></a>
         </template>
       </el-table-column>
     </el-table>
@@ -1187,7 +1188,8 @@
       </el-table-column>
       <el-table-column label="单项申报" width="85" align="center">
         <template slot-scope="scope">
-          <a href="javascript:;" class="sign-icon handel-icon" @click="goToSingleDeclare(scope.row.itemVerId)"></a>
+          <a v-if="scope.row.notRegionData" href="javascript:;" class="sign-icon handel-icon disabled"></a>
+          <a v-else href="javascript:;" class="sign-icon handel-icon" @click="goToSingleDeclare(scope.row.itemVerId)"></a>
         </template>
       </el-table-column>
     </el-table>

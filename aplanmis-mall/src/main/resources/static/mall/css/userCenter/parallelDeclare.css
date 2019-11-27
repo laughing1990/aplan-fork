@@ -263,6 +263,9 @@
 .matter-list .sign-icon {
   background: url(../../images/icon/declare.png) no-repeat center center;
 }
+.matter-list .sign-icon.disabled {
+  cursor: not-allowed;
+}
 .declare-content .pd-info-pandel .situation-box .question {
   padding: 24px 0 20px 0;
 }
