@@ -38,11 +38,13 @@ var vm = new Vue({
                     value: 'pendingProject',
                     // value: 'detailAndContract',
                     select: false,
-                }, {
-                    name: '待审核项目',
-                    value: 'waitAuditProject',
-                    select: false,
-                }, {
+                }, 
+                // {
+                //     name: '待审核项目',
+                //     value: 'waitAuditProject',
+                //     select: false,
+                // }, 
+                {
                     name: '待发布项目',
                     value: 'waitAnnounceProject',
                     select: false,
