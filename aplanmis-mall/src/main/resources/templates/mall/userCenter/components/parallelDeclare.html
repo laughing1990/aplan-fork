@@ -1449,16 +1449,31 @@
               <el-input v-model="myMatsKeyword" placeholder="搜索你要找的材料" @keyup.enter.native="getMyMatsList"></el-input>
               <el-button type="primary" icon="icon ag ag-search" @click="getMyMatsList()"> 搜索</el-button>
             </div>
-            <el-table :data="myMatsList" class="mt20" :style="{height:(curHeight-555)+'px',overflow: 'auto'}">
-              <el-table-column prop="fileName" label="材料名称"></el-table-column>
+            <el-table :data="myMatsList" class="mt20 my-mat-table"
+                      row-key="rowKey"
+                      ref="myMatsList"
+                      default-expand-all
+                      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+                      :style="{height:(curHeight-555)+'px',overflow: 'auto'}">
+              <el-table-column prop="matinstName" label="材料名称">
+                <template slot-scope="scope">
+                  <span v-if="scope.row.matinstName" class="ellipsis dir-file-name" :title="scope.row.matinstName">
+                    <i class="ag ag-folder-open-fill"></i>{{scope.row.matinstName}}
+                  </span>
+                  <span v-else class="ellipsis dir-file-name">
+                    <i class="ag ag-fileType-doc" :class="'ag-filetype-'+getFileType(scope.row.fileName)"></i>{{scope.row.fileName}}
+                  </span>
+                </template>
+              </el-table-column>
               <el-table-column prop="fileName" label="日期" width="140">
                 <template slot-scope="scope">
-                  <span>{{$options.filters.formatDate(scope.row.updateTime)}}</span>
+                  <span v-if="scope.row.matinstName">{{$options.filters.formatDate(scope.row.createTime)}}</span>
+                  <span v-else>{{$options.filters.formatDate(scope.row.updateTime)}}</span>
                 </template>
               </el-table-column>
               <el-table-column label="选择" align="center" width="55">
                 <template slot-scope="scope">
-                  <el-checkbox v-model="scope.row.checked" :checked="scope.row.checked" @change="function(val){changeMyMatSel(val,scope.row)}"></el-checkbox>
+                  <el-checkbox v-model="scope.row.checked" :checked="scope.row.checked" @change="function(val){changeMyMatSel(val,scope.row,'mats')}"></el-checkbox>
                 </template>
               </el-table-column>
             </el-table>

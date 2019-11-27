@@ -425,7 +425,8 @@ var module1 = new Vue({
       };
       _that.mySpaceLoading = true;
       request('', {
-        url: ctx + 'rest/user/mat/list',
+        // url: ctx + 'rest/user/mat/list',
+        url: ctx + 'rest/user/mat/getMyMatListContainsFiles',
         type: 'get',
         data: param
       }, function (result) {
@@ -441,8 +442,36 @@ var module1 = new Vue({
             });
           }
           if (_that.myMatsList.length > 0) {
-            _that.myMatsList.map(function (item) {
+            _that.myMatsList.map(function (item,index) {
               Vue.set(item, 'checked', false);
+              if (typeof item.hasChildren == 'undefined') {
+                Vue.set(item, 'hasChildren', true)
+              }
+              if (typeof item.rowKey == 'undefined') {
+                Vue.set(item, 'rowKey', 'mat_'+index)
+              } else {
+                item.rowKey = 'mat_'+index
+              }
+              if(item.bscAttFileAndDir&&item.bscAttFileAndDir.length>0){
+                item.bscAttFileAndDir.map(function(bscAttFileItem,ind){
+                  if (typeof bscAttFileItem.rowKey == 'undefined') {
+                    Vue.set(bscAttFileItem, 'rowKey', 'mat_'+index+'_file_'+ind)
+                  } else {
+                    bscAttFileItem.rowKey = 'mat_'+index+'_file_'+ind
+                  }
+                  if (typeof bscAttFileItem.checked == 'undefined') {
+                    Vue.set(bscAttFileItem, 'checked', false)
+                  }
+                  if (typeof item.hasChildren == 'undefined') {
+                    Vue.set(item, 'hasChildren', false)
+                  }
+                });
+                if (typeof item.children == 'undefined') {
+                  Vue.set(item, 'children', item.bscAttFileAndDir)
+                }else {
+                  item.children = item.bscAttFileAndDir;
+                }
+              }
               if (uploadFileIds.indexOf(item.fileId) > -1) {
                 item.checked = true;
               }
@@ -598,8 +627,24 @@ var module1 = new Vue({
     },
     // 切换我的材料选中状态 flag ==dir 我的空间选中材料
     changeMyMatSel: function (val, selMatData, flag) {
-      var _that = this;
-      var fileId = flag == 'dir' ? selMatData.detailId : selMatData.fileId;
+      var _that = this, fileId = '';
+      if(flag == 'dir'){
+        fileId = selMatData.detailId;
+      }else {
+        if(selMatData.fileId){
+          fileId = selMatData.fileId
+        }else {
+          if(selMatData.children&&selMatData.children.length>0){
+            var fileIds = [];
+            selMatData.children.map(function(itemFile){
+              if(fileIds.indexOf(itemFile.fileId)<0){
+                fileIds.push(itemFile.fileId);
+              }
+            });
+            fileId = fileIds.join(',')
+          }
+        }
+      }
       var param = {
         detailIds: fileId,
         matId: _that.selMatRowData.matId,
@@ -617,7 +662,7 @@ var module1 = new Vue({
           if (result) {
             console.log(result);
             _that.selMatRowData.matinstId = result.content;
-            _that.getFileListWin(result.content, _that.selMatRowData);
+            _that.getFileListWin(result.content, _that.selMatRowData,val,selMatData);
           }
         }, function (msg) { });
       } else {
@@ -2835,8 +2880,25 @@ var module1 = new Vue({
     },
     // 删除文件 flag ==dir 我的空间选中材料
     delSelectFileCom: function (rowData, fileData, index, flag) {
-      var _that = this;
-      var detailIds = flag == 'dir' ? fileData.detailId : fileData.fileId;
+      var _that = this, detailIds='';
+      // var detailIds = flag == 'dir' ? fileData.detailId : fileData.fileId;
+      if(flag == 'dir'){
+        detailIds = fileData.detailId;
+      }else {
+        if(fileData.fileId){
+          detailIds = fileData.fileId
+        }else {
+          if(fileData.children&&fileData.children.length>0){
+            var fileIds = [];
+            fileData.children.map(function(itemFile){
+              if(fileIds.indexOf(itemFile.fileId)<0){
+                fileIds.push(itemFile.fileId);
+              }
+            });
+            detailIds = fileIds.join(',')
+          }
+        }
+      }
       request('', {
         url: ctx + 'rest/file/delelteAttachment',
         type: 'get',
@@ -2844,15 +2906,16 @@ var module1 = new Vue({
       }, function (res) {
         if (res.success) {
           _that.getFileListWin(res.content, rowData);
+          fileData.checked = false;
           // rowData.childs.splice(index,1);
           var succMsg = index ? '删除成功' : '移除成功'
-          if (_that.myMatsList.length > 0) {
-            _that.myMatsList.map(function (item) {
-              if (item.fileId == detailIds) {
-                item.checked = false;
-              }
-            });
-          }
+          // if (_that.myMatsList.length > 0) {
+          //   _that.myMatsList.map(function (item) {
+          //     if (item.fileId == detailIds) {
+          //       item.checked = false;
+          //     }
+          //   });
+          // }
           _that.$message({
             message: succMsg,
             type: 'success'
@@ -3516,7 +3579,7 @@ var module1 = new Vue({
       }, 300);
     },
     // 获取已上传文件列表
-    getFileListWin: function (matinstId, rowData) {
+    getFileListWin: function (matinstId, rowData, checkFlag,selMatData) {
       var _that = this;
       _that.selMatLoading = true;
       request('', {
@@ -3537,14 +3600,46 @@ var module1 = new Vue({
                 }
               });
             }
+            if(checkFlag==true){
+              if (typeof selMatData.checked == undefined) {
+                Vue.set(selMatData, 'checked', true);
+              }else {
+                selMatData.checked = true;
+              }
+              _that.$refs['myMatsList'].toggleRowExpansion(selMatData,true);
+            }
             if (_that.myMatsList.length > 0) {
               _that.myMatsList.map(function (item) {
+                var checkedFlag = true;
                 if (typeof item.checked == undefined) {
                   Vue.set(item, 'checked', false);
                 }
-                if (uploadFileIds.length > 0 && uploadFileIds.indexOf(item.fileId) > -1) {
-                  item.checked = true;
-                } else {
+                if(item.children&&item.children.length>0){
+                  item.children.map(function(myMatsListItem){
+                    if (uploadFileIds.length > 0 && uploadFileIds.indexOf(myMatsListItem.fileId) > -1) {
+                      // myMatsListItem.checked = true;
+                      if (typeof myMatsListItem.checked == undefined) {
+                        Vue.set(myMatsListItem, 'checked', true);
+                      }else {
+                        myMatsListItem.checked = true;
+                      }
+                    } else {
+                      // myMatsListItem.checked = false;
+                      if (typeof myMatsListItem.checked == undefined) {
+                        Vue.set(myMatsListItem, 'checked', false);
+                      }else {
+                        myMatsListItem.checked = false;
+                      }
+                    }
+                    if(myMatsListItem.checked==false){
+                      checkedFlag = false;
+                    }
+                  });
+                  item.checked = checkedFlag;
+                  if(checkedFlag==true){
+                    _that.$refs['myMatsList'].toggleRowExpansion(item,true);
+                  }
+                }else {
                   item.checked = false;
                 }
               })

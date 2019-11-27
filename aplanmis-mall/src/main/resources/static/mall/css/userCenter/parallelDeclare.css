@@ -1171,16 +1171,16 @@
 .upload-file-list .file-btn.el-icon-delete {
   color: #FF4B47;
 }
-.my-dir-table .dir-file-name {
+.my-dir-table .dir-file-name, .my-mat-table .dir-file-name {
   width: 240px;
   display: inline-block;
   vertical-align: bottom;
 }
-.my-dir-table .dir-file-name .ag {
+.dir-file-name .ag {
   margin-right: 10px;
   color: #457EFF;
 }
-.my-dir-table .dir-file-name .ag-folder-open-fill {
+.dir-file-name .ag-folder-open-fill {
   color: #ffb822;
   font-size: 20px;
   vertical-align: sub;
@@ -1233,4 +1233,7 @@
 }
 .show-mat-form .el-dialog__body {
   padding: 0 20px 20px 20px;
+}
+.my-mat-table.el-table:before {
+  height: 0;
 }
