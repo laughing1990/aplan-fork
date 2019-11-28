@@ -528,6 +528,7 @@ var vm = new Vue({
       stageId: '',
       projInfoId: '',
       itemVersionId: '',
+      currentCertinstId: '',
     }
   },
   filters: {
@@ -1408,12 +1409,17 @@ var vm = new Vue({
       }, 5000);
       vm.licenceDialogVisible = true;
       var src = ctx + 'rest/receive/preview/construct/permit';
+      vm.currentCertinstId = row.certinstId;
       vm.preLicenceIframeSrc = src + '?print=false&certinstId=' + row.certinstId;
       vm.prePrintIframeSrc = src + '?print=true&certinstId=' + row.certinstId;
     },
     closePrintLicenseDialog: function () {
       vm.preLicenceIframeSrc = '';
       vm.prePrintIframeSrc = '';
+    },
+    // 点击下载证件
+    clickDownloadLicense: function () {
+      window.open(ctx+'rest/docTemplate/downLoad?certinstId='+vm.currentCertinstId);
     },
     // 点击打印证件
     clickPrintLicense: function () {

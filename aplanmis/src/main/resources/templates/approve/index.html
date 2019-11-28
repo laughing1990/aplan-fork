@@ -2043,6 +2043,7 @@
       <iframe :src="preLicenceIframeSrc" name="iframePrint" id="preLicenceIframeId"></iframe>
     </div>
     <div slot="footer" class="dialog-footer">
+      <el-button size="medium" type="primary" class="btn btn-primary" @click="clickDownloadLicense">下载</el-button>
       <el-button size="medium" type="primary" class="btn btn-primary" @click="clickPrintLicense">打印</el-button>
       <el-button size="medium" class="btn btn-secondary" @click="licenceDialogVisible=false">关闭</el-button>
     </div>
