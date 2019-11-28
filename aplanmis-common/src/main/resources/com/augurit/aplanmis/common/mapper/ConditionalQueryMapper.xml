@@ -800,7 +800,8 @@
         ti.REMAINING_TIME AS remainingTime,
         ti.INST_STATE AS instState,
         ti.TIMERULE_UNIT AS timeruleUnit,
-        art_123.SIGN_STATE_ AS signState
+        art_123.SIGN_STATE_ AS signState,
+        '0' as itemNature
         FROM
         ACT_RU_TASK art_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -852,7 +853,8 @@
         ti.REMAINING_TIME AS remainingTime,
         ti.INST_STATE AS instState,
         ti.TIMERULE_UNIT AS timeruleUnit,
-        art_123.SIGN_STATE_ AS signState
+        art_123.SIGN_STATE_ AS signState,
+        '0' as itemNature
         FROM
         ACT_RU_TASK art_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -916,7 +918,8 @@
         ti.REMAINING_TIME AS remainingTime,
         ti.INST_STATE AS instState,
         ti.TIMERULE_UNIT AS timeruleUnit,
-        art_123.SIGN_STATE_ AS signState
+        art_123.SIGN_STATE_ AS signState,
+        '0' as itemNature
         FROM
         ACT_RU_TASK art_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -969,7 +972,8 @@
         ti.REMAINING_TIME AS remainingTime,
         ti.INST_STATE AS instState,
         ti.TIMERULE_UNIT AS timeruleUnit,
-        art_123.SIGN_STATE_ AS signState
+        art_123.SIGN_STATE_ AS signState,
+        ai_123.ITEM_NATURE AS itemNature
         FROM
         ACT_RU_TASK art_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -1026,7 +1030,8 @@
         ti.REMAINING_TIME AS remainingTime,
         ti.INST_STATE AS instState,
         ti.TIMERULE_UNIT AS timeruleUnit,
-        art_123.SIGN_STATE_ AS signState
+        art_123.SIGN_STATE_ AS signState,
+        ai_123.ITEM_NATURE AS itemNature
         FROM
         ACT_RU_TASK art_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -1131,7 +1136,8 @@
         CASE when hi.ITEMINST_NAME IS NULL THEN ati.INST_STATE else ti.INST_STATE end AS instState,
         CASE when hi.ITEMINST_NAME IS NULL THEN ati.TIMERULE_UNIT else ti.TIMERULE_UNIT end AS timeruleUnit,
         aht_123.TASK_DEF_KEY_ AS taskDefKey,
-        ahp_123.ID_ procInstId
+        ahp_123.ID_ procInstId,
+        '0' as itemNature
         FROM
         ACT_HI_TASKINST aht_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON aht_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -1189,7 +1195,8 @@
         CASE when hi.ITEMINST_NAME IS NULL THEN ati.INST_STATE else ti.INST_STATE end AS instState,
         CASE when hi.ITEMINST_NAME IS NULL THEN ati.TIMERULE_UNIT else ti.TIMERULE_UNIT end AS timeruleUnit,
         aht_123.TASK_DEF_KEY_ AS taskDefKey,
-        ahp_123.ID_ procInstId
+        ahp_123.ID_ procInstId,
+        '0' as itemNature
         FROM
         ACT_HI_TASKINST aht_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON aht_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -1249,7 +1256,8 @@
         ti.INST_STATE AS instState,
         ti.TIMERULE_UNIT AS timeruleUnit,
         aht_123.TASK_DEF_KEY_ AS taskDefKey,
-        ahp_123.ID_ procInstId
+        ahp_123.ID_ procInstId,
+        ai_123.ITEM_NATURE as itemNature
         FROM
         ACT_HI_TASKINST aht_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON aht_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -1297,7 +1305,8 @@
         ti.INST_STATE AS instState,
         ti.TIMERULE_UNIT AS timeruleUnit,
         aht_123.TASK_DEF_KEY_ AS taskDefKey,
-        ahp_123.ID_ procInstId
+        ahp_123.ID_ procInstId,
+        ai_123.ITEM_NATURE as itemNature
         FROM
         ACT_HI_TASKINST aht_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON aht_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -4966,6 +4975,164 @@
                 OR temp_123.localCode LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.themeName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+    </select>
+    <!--根据查询条件查询中介服务事项待上传服务结果列表-->
+    <select id="listWaitUploadServiceResult" resultType="com.augurit.aplanmis.common.vo.conditional.TaskInfo">
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        ART_123.*
+        FROM
+        (
+        (
+        SELECT
+        art_123.ID_ AS taskId,
+        art_123.TASK_DEF_KEY_ AS taskDefKey,
+        ahp_123.ID_ AS procInstId,
+        ahap_123.APPLYINST_ID AS applyinstId,
+        ahap_123.APPLYINST_CODE AS applyinstCode,
+        NULL AS stageName,
+        ahap_123.APPLYINST_SOURCE AS applySource,
+        art_123.CREATE_TIME_ AS arriveTime,
+        ahap_123.ACCEPT_TIME AS acceptTime,
+        ahap_123.CREATE_TIME AS applyTime,
+        art_123.NAME_ AS taskName,
+        ai_123.DUE_NUM AS dueNum,
+        '1' AS isSeriesApprove,
+        ahi_123.ITEMINST_ID AS busRecordId,
+        ai_123.ITEM_PROPERTY AS itemProperty,
+        '单项' AS applyType,
+        temp1.PROJ_NAME AS projName,
+        temp1.LOCAL_CODE AS localCode,
+        temp1.GCBM AS gcbm,
+        NULL AS themeName,
+        ahi_123.ITEMINST_NAME AS itemName,
+        ti.OVERDUE_TIME AS overdueTime,
+        ti.REMAINING_TIME AS remainingTime,
+        ti.INST_STATE AS instState,
+        ti.TIMERULE_UNIT AS timeruleUnit,
+        art_123.SIGN_STATE_ AS signState
+        FROM
+        ACT_RU_TASK art_123
+        LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+        <include refid="leftJoinApplyinstProj">
+        </include>
+        LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+        LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID AND ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+        and ai_123.ITEM_NATURE='8'
+        LEFT JOIN act_sto_timerule_inst ti ON (ti.PROC_INST_ID = ahi_123.PROCINST_ID AND ti.TIMERULE_INST_TYPE = '1')
+        <where>
+            ahap_123.IS_SERIES_APPROVE = '1'
+            AND ahi_123.ITEMINST_STATE NOT IN ( '2', '4', '6', '14', '15' )
+            AND ahap_123.APPLYINST_STATE = '11'
+            AND art_123.ASSIGNEE_ = #{loginName}
+            <include refid="baseConditionalQuery">
+            </include>
+        </where>
+        )
+        UNION
+        (
+        SELECT
+        art_123.ID_ AS taskId,
+        art_123.TASK_DEF_KEY_ AS taskDefKey,
+        ahp_123.ID_ AS procInstId,
+        ahap_123.APPLYINST_ID AS applyinstId,
+        ahap_123.APPLYINST_CODE AS applyinstCode,
+        NULL AS stageName,
+        ahap_123.APPLYINST_SOURCE AS applySource,
+        art_123.CREATE_TIME_ AS arriveTime,
+        ahap_123.ACCEPT_TIME AS acceptTime,
+        ahap_123.CREATE_TIME AS applyTime,
+        art_123.NAME_ AS taskName,
+        ai_123.DUE_NUM AS dueNum,
+        '1' AS isSeriesApprove,
+        ahi_123.ITEMINST_ID AS busRecordId,
+        ai_123.ITEM_PROPERTY AS itemProperty,
+        '单项' AS applyType,
+        temp1.PROJ_NAME AS projName,
+        temp1.LOCAL_CODE AS localCode,
+        temp1.GCBM AS gcbm,
+        NULL AS themeName,
+        ahi_123.ITEMINST_NAME AS itemName,
+        ti.OVERDUE_TIME AS overdueTime,
+        ti.REMAINING_TIME AS remainingTime,
+        ti.INST_STATE AS instState,
+        ti.TIMERULE_UNIT AS timeruleUnit,
+        art_123.SIGN_STATE_ AS signState
+        FROM
+        ACT_RU_TASK art_123
+        LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+        <include refid="leftJoinApplyinstProj">
+        </include>
+        LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+        LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID AND ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+        and ai_123.ITEM_NATURE='8'
+        LEFT JOIN act_sto_timerule_inst ti ON (ti.PROC_INST_ID = ahi_123.PROCINST_ID AND ti.TIMERULE_INST_TYPE = '1')
+        <where>
+            ahap_123.IS_SERIES_APPROVE = '1'
+            AND ahi_123.ITEMINST_STATE NOT IN ('2', '4','6', '14', '15')
+            AND ahap_123.APPLYINST_STATE = '11'
+            AND art_123.ASSIGNEE_ = #{loginName}
+            <include refid="baseConditionalQuery">
+            </include>
+        </where>
+        )
+        ) ART_123
+
+        GROUP BY
+        <if test="_databaseId == 'oracle'">
+            ART_123.taskId,
+            ART_123.applyinstId,
+            ART_123.applyinstCode,
+            ART_123.stageName,
+            ART_123.applySource,
+            ART_123.arriveTime,
+            ART_123.acceptTime,
+            ART_123.applyTime,
+            ART_123.taskName,
+            ART_123.dueNum,
+            ART_123.isSeriesApprove,
+            ART_123.busRecordId,
+            ART_123.itemProperty,
+            ART_123.applyType,
+            ART_123.projName,
+            ART_123.localCode,
+            ART_123.gcbm,
+            ART_123.themeName,
+            ART_123.itemName,
+            ART_123.overdueTime,
+            ART_123.remainingTime,
+            ART_123.instState,
+            ART_123.timeruleUnit,
+            ART_123.signState
+        </if>
+        <if test="_databaseId == 'mysql'">
+            ART_123.taskId
+        </if>
+
+        )temp_123
+
+        <where>
+            <if test="keyword != null and keyword != '' ">
+                AND (
+                temp_123.projName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.applyinstCode LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.localCode LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>

@@ -190,5 +190,11 @@ public interface ConditionalQueryMapper {
      */
     List<ApplyInfo> listStageConcludedApplyInfo(ConditionalQueryRequest conditionalQueryRequest) throws Exception;
 
-
+    /**
+     * 根据查询条件查询中介服务事项待上传服务结果列表
+     *
+     * @param conditionalQueryRequest 查询条件
+     * @return List<TaskInfo>
+     */
+    List<TaskInfo> listWaitUploadServiceResult(ConditionalQueryRequest conditionalQueryRequest) throws Exception;
 }

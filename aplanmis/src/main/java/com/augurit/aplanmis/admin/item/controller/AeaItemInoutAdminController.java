@@ -9,13 +9,11 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.DeletedStatus;
 import com.augurit.aplanmis.common.constants.MindType;
 import com.augurit.aplanmis.common.domain.AeaItemInout;
-import com.augurit.aplanmis.common.domain.AeaItemStateForm;
 import com.augurit.aplanmis.common.qo.item.ItemMatInoutQo;
 import com.augurit.aplanmis.common.service.admin.item.AeaItemInoutAdminService;
 import com.augurit.aplanmis.common.service.admin.item.AeaItemStateFormAdminService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
-import org.bouncycastle.jce.provider.symmetric.SEED;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -236,7 +234,7 @@ public class AeaItemInoutAdminController {
     public ResultForm batchDeleteAeaItemInoutCascade(String[] ids) throws Exception {
 
         if (ids != null && ids.length > 0) {
-            logger.debug("删除事项输入输出定义，对象id为：{}", ids);
+            logger.debug("删除事项输入输出定义，对象id为：{}", (Object) ids);
             aeaItemInoutAdminService.batchDeleteAeaItemInoutCascade(ids);
             return new ResultForm(true);
         }

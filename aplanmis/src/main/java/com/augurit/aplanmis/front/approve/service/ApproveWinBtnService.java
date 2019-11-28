@@ -9,24 +9,31 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.constants.ItemStatus;
 import com.augurit.aplanmis.common.constants.OpsActionConstants;
+import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import com.augurit.aplanmis.common.domain.AeaHiIteminst;
-import com.augurit.aplanmis.common.event.AplanmisEventPublisher;
+import com.augurit.aplanmis.common.mapper.AeaImProjPurchaseMapper;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
+import com.augurit.aplanmis.common.service.projPurchase.AeaImProjPurchaseService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowService;
+import com.augurit.aplanmis.common.vo.purchase.PurchaseProjVo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.InvalidParameterException;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * 窗口流程按钮service
+ *
  * @author sam
  */
 @Service
 @Transactional
+@Slf4j
 public class ApproveWinBtnService {
     @Autowired
     private BpmTaskService bpmTaskService;
@@ -39,25 +46,30 @@ public class ApproveWinBtnService {
     @Autowired
     private AeaServiceWindowService aeaServiceWindowService;
     @Autowired
-    private AplanmisEventPublisher publisher;
+    private AeaImProjPurchaseService aeaImProjPurchaseService;
+    @Autowired
+    private AeaImProjPurchaseMapper aeaImProjPurchaseMapper;
+//    @Autowired
+//    private AplanmisEventPublisher publisher;
 
     /**
      * 窗口流程：推动流程流转并更改申请状态和事项状态；适用于：网上申报 预审通过，不予受理等操作
-     * @param sendObject 流程发送对象
+     *
+     * @param sendObject  流程发送对象
      * @param applyinstId 申请实例ID
-     * @param applyState 需要变更的申报状态
-     * @param itemState 需要变更的事项状态
+     * @param applyState  需要变更的申报状态
+     * @param itemState   需要变更的事项状态
      * @throws Exception
      * @author sam
      */
-    public String wfSendAndChangeApplyAndItemState(BpmTaskSendObject sendObject,String applyinstId,String applyState,String itemState) throws Exception{
-        if(sendObject==null|| StringUtils.isBlank(sendObject.getTaskId())||sendObject.getSendConfigs()==null)
+    public String wfSendAndChangeApplyAndItemState(BpmTaskSendObject sendObject, String applyinstId, String applyState, String itemState) throws Exception {
+        if (sendObject == null || StringUtils.isBlank(sendObject.getTaskId()) || sendObject.getSendConfigs() == null)
             throw new InvalidParameterException("流程发送对象参数为空！");
-        if(StringUtils.isBlank(applyinstId))
+        if (StringUtils.isBlank(applyinstId))
             throw new InvalidParameterException("申请实例ID为空！");
-        if(StringUtils.isBlank(applyState))
+        if (StringUtils.isBlank(applyState))
             throw new InvalidParameterException("申请状态为空！");
-        if(StringUtils.isBlank(itemState))
+        if (StringUtils.isBlank(itemState))
             throw new InvalidParameterException("事项状态为空！");
 
         //1、通过申请实例id作为业务主键，查询流程模板实例信息
@@ -65,8 +77,8 @@ public class ApproveWinBtnService {
         stoAppinst.setMasterRecordId(applyinstId);
         stoAppinst.setFlowMode("proc");
         List<ActStoAppinst> appinsts = actStoAppinstService.listActStoAppinst(stoAppinst);
-        if(appinsts==null)
-            throw new RuntimeException("无法申请实例ID为："+applyinstId+"获取到模板流程实例，请检查！");
+        if (appinsts == null)
+            throw new RuntimeException("无法申请实例ID为：" + applyinstId + "获取到模板流程实例，请检查！");
         String applyStatus = ApplyState.valueOf(applyState).getValue();
 
         String opuWinId = aeaServiceWindowService.getCurrentUserWindow() == null ? "" : aeaServiceWindowService.getCurrentUserWindow().getWindowId();
@@ -80,7 +92,7 @@ public class ApproveWinBtnService {
         //4、通过申请实例id查询事项实例列表，更新事项实例状态
         List<AeaHiIteminst> aeaHiIteminstList = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
         String iteminstStatus = ItemStatus.valueOf(itemState).getValue();
-        for(AeaHiIteminst iteminst : aeaHiIteminstList){
+        for (AeaHiIteminst iteminst : aeaHiIteminstList) {
             //更新事项状态及维护状态历史
             aeaHiIteminstService.updateAeaHiIteminstStateAndInsertTriggerAeaLogItemStateHist(iteminst.getIteminstId(), sendObject.getTaskId(), appinsts.get(0).getAppinstId(), iteminstStatus, opuOrgId);
         }
@@ -95,26 +107,27 @@ public class ApproveWinBtnService {
 
     /**
      * 窗口流程：推动流程流转并更改申请状态；适用于：受理、办结等操作
-     * @param sendObject 流程发送对象
+     *
+     * @param sendObject  流程发送对象
      * @param applyinstId 申请实例ID
-     * @param applyState 需要变更的申报状态
+     * @param applyState  需要变更的申报状态
      * @throws Exception
      * @author sam
      */
-    public String wfSendAndChangeApplyState(BpmTaskSendObject sendObject,String applyinstId,String applyState) throws Exception{
-        if(sendObject==null|| StringUtils.isBlank(sendObject.getTaskId())||sendObject.getSendConfigs()==null)
+    public String wfSendAndChangeApplyState(BpmTaskSendObject sendObject, String applyinstId, String applyState) throws Exception {
+        if (sendObject == null || StringUtils.isBlank(sendObject.getTaskId()) || sendObject.getSendConfigs() == null)
             throw new InvalidParameterException("流程发送对象参数为空！");
-        if(StringUtils.isBlank(applyinstId))
+        if (StringUtils.isBlank(applyinstId))
             throw new InvalidParameterException("申请实例ID为空！");
-        if(StringUtils.isBlank(applyState))
+        if (StringUtils.isBlank(applyState))
             throw new InvalidParameterException("申请状态为空！");
 
         ActStoAppinst stoAppinst = new ActStoAppinst();
         stoAppinst.setMasterRecordId(applyinstId);
         stoAppinst.setFlowMode("proc");
         List<ActStoAppinst> appinsts = actStoAppinstService.listActStoAppinst(stoAppinst);
-        if(appinsts==null)
-            throw new RuntimeException("无法申请实例ID为："+applyinstId+"获取到模板流程实例，请检查！");
+        if (appinsts == null)
+            throw new RuntimeException("无法申请实例ID为：" + applyinstId + "获取到模板流程实例，请检查！");
 
         //推动流程流转
         String taskId = bpmTaskService.completeTask(sendObject);
@@ -127,31 +140,76 @@ public class ApproveWinBtnService {
         //触发流程发送事件 已废弃
 //        Task currTask = bpmTaskService.getRuTaskByTaskId(sendObject.getTaskId());
 //        publisher.publishEvent(new BpmNodeSendAplanmisEvent(this,sendObject));
-
+        //更新中介采购项目状态
+        this.changeProjPurchaseState(applyinstId, applyStatus, sendObject.getTaskId());
         return taskId;
     }
 
     /**
      * 只变更申报状态
-     * @param applyinstId 申报实例ID
-     * @param userOpinion 用户意见
+     *
+     * @param applyinstId    申报实例ID
+     * @param userOpinion    用户意见
      * @param applyinstState 申报状态
-     * @param opsActionCode 操作按钮类型编号
+     * @param opsActionCode  操作按钮类型编号
      * @throws Exception
      */
-    public void onlyChangeApplyState(String applyinstId,String userOpinion,String applyinstState,String opsActionCode) throws Exception{
-        if(StringUtils.isBlank(applyinstId))
+    public void onlyChangeApplyState(String applyinstId, String userOpinion, String applyinstState, String opsActionCode) throws Exception {
+        if (StringUtils.isBlank(applyinstId))
             throw new InvalidParameterException("申请实例ID为空！");
-        if(StringUtils.isBlank(userOpinion))
+        if (StringUtils.isBlank(userOpinion))
             throw new InvalidParameterException("用户意见为空！");
-        if(StringUtils.isBlank(applyinstState))
+        if (StringUtils.isBlank(applyinstState))
             throw new InvalidParameterException("申请状态为空！");
-        if(StringUtils.isBlank(opsActionCode))
+        if (StringUtils.isBlank(opsActionCode))
             throw new InvalidParameterException("操作按钮类型编号为空，按钮规则为：窗口流程W开头，事项I开头，加按钮拼音首大写字母，如窗口受理：WSL；如事项材料补正：ICLBZ！");
 
         String opsAction = OpsActionConstants.valueOf(opsActionCode).getName();
         String applyStatus = ApplyState.valueOf(applyinstState).getValue();
         //更新申请状态及维护状态历史
         aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertOpsAeaLogItemStateHist(applyinstId,userOpinion,opsAction,null,applyStatus,null);
+
+    }
+
+    /**
+     * 中介事项更新采购项目状态
+     *
+     * @param applyinstId
+     * @param applyStatus
+     */
+    private void changeProjPurchaseState(String applyinstId, String applyStatus, String taskId) {
+        try {
+            if ("6".equals(applyStatus)) {
+                //办结
+                List<AeaHiIteminst> iteminsts = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
+                if (iteminsts.isEmpty()) return;
+                AeaHiIteminst iteminst = iteminsts.get(0);
+                //查询事项状态
+                String iteminstState = iteminst.getIteminstState();
+
+                String[] approve = {"11", "12"};
+                String[] reject = {"4", "5", "13"};
+                if (Arrays.binarySearch(approve, iteminstState) > -1 || Arrays.binarySearch(reject, iteminstState) > -1) {
+                    AeaHiApplyinst applyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+                    if (null == applyinst) return;
+                    String newState = "14";
+                    if (Arrays.binarySearch(approve, iteminstState) > -1) {
+                        newState = "14";
+                    } else if (Arrays.binarySearch(reject, iteminstState) > -1) {
+                        newState = "15";
+                    }
+                    PurchaseProjVo purchase = aeaImProjPurchaseMapper.getProjPurchaseInfoByApplyinstCode(applyinst.getApplyinstCode(), null);
+                    if (null == purchase) return;
+                    String proPurchaseId = purchase.getProjPurchaseId();
+                    aeaImProjPurchaseService.updateProjPurchaseStateAndInsertPurchaseinstState(proPurchaseId, "14", null, SecurityContext.getCurrentUserId(), "窗口办结", taskId);
+
+                }
+            }
+        } catch (Exception e) {
+            log.info("更新采购项目状态失败");
+            e.printStackTrace();
+        }
+
+
     }
 }

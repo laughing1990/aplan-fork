@@ -683,4 +683,18 @@ public class ConditionalQueryController {
             return new ContentResultForm<>(false, null, e.getMessage());
         }
     }
+
+
+    @GetMapping("/listWaitUploadServiceResult")
+    @ApiOperation(value = "根据查询条件查询中介服务事项待上传服务结果列表")
+    public ResultForm listWaitUploadServiceResult(ConditionalQueryRequest conditionalQueryRequest, Page page) {
+        try {
+//            PageInfo waitDoTasks = conditionalQueryService.listWaitDoTasksByPage(conditionalQueryRequest, page);
+            PageInfo waitDoTasks = conditionalQueryService.listWaitUploadServiceResult(conditionalQueryRequest, page);
+            return new ContentResultForm<>(true, waitDoTasks);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return new ContentResultForm<>(false, null, e.getMessage());
+        }
+    }
 }

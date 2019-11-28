@@ -78,7 +78,7 @@ var vm = new Vue({
         },
         //查看详情
         viewDetail:function (row) {
-            var url = ctx+'apanmis/page/stageApproveIndex?taskId='+row.taskId+'&viewId='+row.viewId;
+            var url = ctx + 'apanmis/page/stageApproveIndex?taskId=' + row.taskId + '&viewId=' + row.viewId + '&itemNature=' + row.itemNature;
             if(row.busRecordId){
                 url = url + '&busRecordId='+row.busRecordId;
             }
