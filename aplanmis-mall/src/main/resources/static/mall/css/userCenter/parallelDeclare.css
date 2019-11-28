@@ -266,6 +266,9 @@
 .matter-list .sign-icon.disabled {
   cursor: not-allowed;
 }
+.matter-list .guid-icon.disabled {
+  cursor: not-allowed;
+}
 .declare-content .pd-info-pandel .situation-box .question {
   padding: 24px 0 20px 0;
 }
