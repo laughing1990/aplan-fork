@@ -3,7 +3,7 @@
 <!-- 设置图标信息 -->
 <div id="common_set_img_modal" class="modal fade" tabindex="-1" role="dialog"
      aria-labelledby="common_set_img_modal_title" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document" style="max-width: 900px;">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document" style="max-width: 950px;">
         <div class="modal-content">
             <div class="modal-header" style="padding: 15px;height: 45px;">
                 <h5 class="modal-title" id="common_set_img_modal_title"></h5>
