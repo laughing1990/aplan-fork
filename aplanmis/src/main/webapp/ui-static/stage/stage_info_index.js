@@ -93,7 +93,7 @@ $(function () {
             bgCss: {
                 maxlength: 500
             },
-            themeDemo: {
+            stageMemo: {
                 maxlength: 2000
             },
             isOptionItem:{
@@ -133,7 +133,7 @@ $(function () {
             bgCss: {
                 maxlength: "长度不能超过500个字母!"
             },
-            themeDemo: {
+            stageMemo: {
                 maxlength: "长度不能超过2000个字母!"
             },
             isOptionItem:{
@@ -152,6 +152,10 @@ $(function () {
         // 提交表单
         submitHandler: function (form) {
 
+            $("#uploadProgress").modal("show");
+            $('#addStageBtn').hide();
+            $('#uploadProgressMsg').html("保存数据中,请勿点击,耐心等候...");
+
             var isNode = $('#add_stage_form input[name="isNode"]').val();
             var d = {};
             var t = $('#add_stage_form').serializeArray();
@@ -165,14 +169,41 @@ $(function () {
                 async: false,
                 success: function (result) {
                     if (result.success) {
-                        $('#add_stage_modal').modal('hide');
-                        searchParStageCondition(isNode);
+
+                        setTimeout(function(){
+
+                            $("#uploadProgress").modal('hide');
+                            swal({
+                                type: 'success',
+                                title: '保存成功！',
+                                showConfirmButton: false,
+                                timer: 1000
+                            });
+                            // 隐藏模式框
+                            $('#addStageBtn').show();
+                            $('#add_stage_modal').modal('hide');
+                            searchParStageCondition(isNode);
+
+                        },500);
                     } else {
-                        swal('错误信息', result.message, 'error');
+                        setTimeout(function(){
+
+                            $('#addStageBtn').show();
+                            $('#add_stage_modal').modal('hide');
+                            swal('错误信息', result.message, 'error');
+
+                        },500);
                     }
                 },
-                error: function () {
-                    swal('错误信息', '保存信息失败！', 'error');
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+
+                    setTimeout(function(){
+
+                        $('#addStageBtn').show();
+                        $('#add_stage_modal').modal('hide');
+                        swal('错误信息', XMLHttpRequest.responseText, 'error');
+
+                    },500);
                 }
             });
         }
