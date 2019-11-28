@@ -1,13 +1,16 @@
 package com.augurit.aplanmis.common.check.exception;
 
+import lombok.Getter;
+
 /**
  * 前置检查异常类
  */
+@Getter
 public class ItemProjCheckException extends CheckException {
 
-    private static final String message = "事项项目信息检查不通过";
+    protected String message = "事项项目信息检查不通过";
 
-    public ItemProjCheckException() {
+    public ItemProjCheckException(String message) {
         super(message);
     }
 }

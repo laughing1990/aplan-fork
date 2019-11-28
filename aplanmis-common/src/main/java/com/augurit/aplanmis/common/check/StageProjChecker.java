@@ -15,7 +15,7 @@ import org.springframework.util.Assert;
 public class StageProjChecker extends AbstractChecker<AeaParStage> {
 
     @Override
-    public String doCheck(AeaParStage aeaParStage, CheckerContext checkerContext) throws StageProjCheckException {
+    public void doCheck(AeaParStage aeaParStage, CheckerContext checkerContext) throws StageProjCheckException {
 
         if (Status.ON.equals(aeaParStage.getIsCheckProj())) {
 
@@ -28,6 +28,5 @@ public class StageProjChecker extends AbstractChecker<AeaParStage> {
             // TODO
 
         }
-        return null;
     }
 }

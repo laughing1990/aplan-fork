@@ -15,7 +15,7 @@ import org.springframework.util.Assert;
 public class ItemProjChecker extends AbstractChecker<AeaItemBasic> {
 
     @Override
-    public String doCheck(AeaItemBasic aeaItemBasic, CheckerContext checkerContext) throws ItemProjCheckException {
+    public void doCheck(AeaItemBasic aeaItemBasic, CheckerContext checkerContext) throws ItemProjCheckException {
 
         if (Status.ON.equals(aeaItemBasic.getIsCheckProj())) {
 
@@ -27,6 +27,5 @@ public class ItemProjChecker extends AbstractChecker<AeaItemBasic> {
 
             // TODO
         }
-        return null;
     }
 }

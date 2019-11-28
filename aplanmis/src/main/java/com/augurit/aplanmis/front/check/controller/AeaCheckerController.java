@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.front.check.controller;
 
 import com.augurit.agcloud.framework.ui.result.ResultForm;
+import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.front.check.service.RestAeaCheckerService;
 import io.swagger.annotations.Api;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/rest/check")
@@ -20,12 +23,12 @@ public class AeaCheckerController {
 
     @PostMapping("/itemFrontCheck")
     @ApiOperation(value = "单项前置条件检测", httpMethod = "POST")
-    public ResultForm itemFrontCheck(String itemVerId, String projInfoId) {
+    public ResultForm itemFrontCheck(List<String> itemVerIds, String projInfoId) {
         try {
 
-            if (StringUtils.isBlank(itemVerId)) return new ResultForm(false, "缺少参数：itemVerId");
+            if (CollectionUtils.isEmpty(itemVerIds)) return new ResultForm(false, "缺少参数：itemVerId");
             if (StringUtils.isBlank(projInfoId)) return new ResultForm(false, "缺少参数：projInfoId！");
-            return restAeaCheckerService.itemFrontCheck(itemVerId, projInfoId);
+            return restAeaCheckerService.itemFrontCheck(itemVerIds, projInfoId);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultForm(false, "系统内部发生异常！");

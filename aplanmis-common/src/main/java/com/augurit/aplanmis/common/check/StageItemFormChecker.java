@@ -13,6 +13,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +31,7 @@ public class StageItemFormChecker extends AbstractChecker<AeaParStage> {
     private AeaHiItemMatinstMapper aeaHiItemMatinstMapper;
 
     @Override
-    public String doCheck(AeaParStage aeaParStage, CheckerContext checkerContext) throws StageItemFormCheckException {
+    public void doCheck(AeaParStage aeaParStage, CheckerContext checkerContext) throws StageItemFormCheckException {
 
         if (Status.ON.equals(aeaParStage.getIsCheckItemform())) {
 
@@ -51,28 +52,27 @@ public class StageItemFormChecker extends AbstractChecker<AeaParStage> {
                 List<AeaHiItemMatinst> formMatinsts = aeaHiItemMatinstMapper.getFormMatinstByProjInfoId(projInfoId, SecurityContext.getCurrentOrgId());
 
                 if (formMatinsts.size() < 1) {
-                    aeaParFrontItemformVoList.forEach(aeaParFrontItemformVo -> {
-                        message.append(aeaParFrontItemformVo.getFormName()).append("、");
-                    });
+                    aeaParFrontItemformVoList.forEach(aeaParFrontItemformVo -> message.append(aeaParFrontItemformVo.getFormName()).append("、"));
 
-                    String error = "【" + message.substring(0, message.length() - 1) + "】";
-                    return error + "尚未填写，无法申报【" + aeaParStage.getStageName() + "】。";
+                    String error = "【" + message.substring(0, message.length() - 1) + "】" + "尚未填写，无法申报【" + aeaParStage.getStageName() + "】。";
+                    throw new StageItemFormCheckException(error, aeaParFrontItemformVoList);
 
                 } else {
                     String forminstIds = formMatinsts.stream().map(AeaHiItemMatinst::getStoFormId).collect(Collectors.joining(","));
+                    List<AeaParFrontItemform> resultItemForms = new ArrayList<>();
                     aeaParFrontItemformVoList.forEach(aeaParFrontItemformVo -> {
                         if (!forminstIds.contains(aeaParFrontItemformVo.getSubFormId())) {
+                            resultItemForms.add(aeaParFrontItemformVo);
                             message.append(aeaParFrontItemformVo.getFormName()).append("、");
                         }
                     });
 
                     if (message.length() > 0) {
-                        String error = "【" + message.substring(0, message.length() - 1) + "】";
-                        return error + "尚未填写，无法申报【" + aeaParStage.getStageName() + "】。";
+                        String error = "【" + message.substring(0, message.length() - 1) + "】" + "尚未填写，无法申报【" + aeaParStage.getStageName() + "】。";
+                        throw new StageItemFormCheckException(error, resultItemForms);
                     }
                 }
             }
         }
-        return null;
     }
 }
