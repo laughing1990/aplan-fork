@@ -50,15 +50,16 @@ public class AeaCreditRedblackController {
     @RequestMapping(value = "/getPersonOrUnitBlackAndCreditListByBizCode", method = {RequestMethod.GET})
     public ResultForm getPersonOrUnitBlackAndCreditListByBizCode(String bizType, String bizCode, HttpServletRequest request) {
         if (StringUtils.isBlank(bizCode) || StringUtils.isBlank(bizType)) {
-            LoginInfoVo loginVo = SessionUtil.getLoginInfo(request);
-            if (loginVo == null) return new ResultForm(false, "未登录，获取信用记录失败！");
-            if (StringUtils.isNotBlank(loginVo.getUnitId())) {//企业用户或者委托人用户
-                bizType = "u";
-                bizCode = loginVo.getUnifiedSocialCreditCode();
-            } else {//个人用户
-                bizType = "l";
-                bizCode = loginVo.getIdCard();
-            }
+
+        }
+        LoginInfoVo loginVo = SessionUtil.getLoginInfo(request);
+        if (loginVo == null) return new ResultForm(false, "未登录，获取信用记录失败！");
+        if (StringUtils.isNotBlank(loginVo.getUnitId())) {//企业用户或者委托人用户
+            bizType = "u";
+            bizCode = loginVo.getUnifiedSocialCreditCode();
+        } else {//个人用户
+            bizType = "l";
+            bizCode = loginVo.getIdCard();
         }
         List<AeaCreditRedblack> list = aeaCreditRedblackService.listPersonOrUnitBlackByBizCode(bizType, bizCode);
         CreditRedblackVo creditRedblackVo = new CreditRedblackVo();
