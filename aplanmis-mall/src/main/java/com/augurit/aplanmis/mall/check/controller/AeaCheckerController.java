@@ -1,8 +1,10 @@
 package com.augurit.aplanmis.mall.check.controller;
 
-import com.augurit.agcloud.framework.ui.result.ResultForm;
+import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.check.CheckItemResultInfo;
+import com.augurit.aplanmis.common.check.CheckStageResultInfo;
 import com.augurit.aplanmis.mall.check.service.RestAeaCheckerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,29 +25,29 @@ public class AeaCheckerController {
 
     @PostMapping("/itemFrontCheck")
     @ApiOperation(value = "单项前置条件检测", httpMethod = "POST")
-    public ResultForm itemFrontCheck(List<String> itemVerIds, String projInfoId) {
+    public ContentResultForm<CheckItemResultInfo> itemFrontCheck(List<String> itemVerIds, String projInfoId) {
         try {
 
-            if (CollectionUtils.isEmpty(itemVerIds)) return new ResultForm(false, "缺少参数：itemVerId");
-            if (StringUtils.isBlank(projInfoId)) return new ResultForm(false, "缺少参数：projInfoId！");
+            if (CollectionUtils.isEmpty(itemVerIds)) return new ContentResultForm<>(false, null, "缺少参数：itemVerId");
+            if (StringUtils.isBlank(projInfoId)) return new ContentResultForm<>(false, null, "缺少参数：projInfoId！");
             return restAeaCheckerService.itemFrontCheck(itemVerIds, projInfoId);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResultForm(false, "系统内部发生异常！");
+            return new ContentResultForm<>(false, null, "系统内部发生异常！");
         }
     }
 
     @PostMapping("/stageFrontCheck")
     @ApiOperation(value = "阶段前置条件检测", httpMethod = "POST")
-    public ResultForm stageFrontCheck(String stageId, String projInfoId) {
+    public ContentResultForm<CheckStageResultInfo> stageFrontCheck(String stageId, String projInfoId) {
         try {
 
-            if (StringUtils.isBlank(stageId)) return new ResultForm(false, "缺少参数：stageId");
-            if (StringUtils.isBlank(projInfoId)) return new ResultForm(false, "缺少参数：projInfoId！");
+            if (StringUtils.isBlank(stageId)) return new ContentResultForm<>(false, null, "缺少参数：stageId");
+            if (StringUtils.isBlank(projInfoId)) return new ContentResultForm<>(false, null, "缺少参数：projInfoId！");
             return restAeaCheckerService.stageFrontCheck(stageId, projInfoId);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResultForm(false, "系统内部发生异常！");
+            return new ContentResultForm<>(false, null, "系统内部发生异常！");
         }
     }
 }

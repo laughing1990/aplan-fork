@@ -1,7 +1,6 @@
 package com.augurit.aplanmis.mall.check.service;
 
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
-import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.aplanmis.common.check.CheckItemResultInfo;
 import com.augurit.aplanmis.common.check.CheckStageResultInfo;
 import com.augurit.aplanmis.common.check.CheckerContext;
@@ -32,20 +31,20 @@ public class RestAeaCheckerService {
     @Autowired
     private AeaParStageMapper aeaParStageMapper;
 
-    public ResultForm itemFrontCheck(List<String> itemVerIds, String projInfoId) throws Exception {
+    public ContentResultForm<CheckItemResultInfo> itemFrontCheck(List<String> itemVerIds, String projInfoId) {
         List<AeaItemBasic> aeaItemBasics = aeaItemBasicMapper.listAeaItemBasicByItemVerIds(itemVerIds.toArray(new String[0]));
         CheckerInfo checkerInfo = new CheckerInfo();
         checkerInfo.setProjInfoId(projInfoId);
         CheckItemResultInfo resultInfo = checkerManager.itemCheck(aeaItemBasics, new CheckerContext(checkerInfo));
-        return resultInfo.isPassed() ? new ResultForm(true, "前置条件检查通过！") : new ContentResultForm<>(false, resultInfo, resultInfo.getMessage());
+        return resultInfo.isPassed() ? new ContentResultForm<>(true, null, "前置条件检查通过！") : new ContentResultForm<>(false, resultInfo, resultInfo.getMessage());
     }
 
-    public ResultForm stageFrontCheck(String stageId, String projInfoId) throws Exception {
+    public ContentResultForm<CheckStageResultInfo> stageFrontCheck(String stageId, String projInfoId) {
         AeaParStage parStage = aeaParStageMapper.getAeaParStageById(stageId);
         CheckerInfo checkerInfo = new CheckerInfo();
         checkerInfo.setProjInfoId(projInfoId);
         CheckStageResultInfo checkStageResultInfo = checkerManager.stageCheck(parStage, new CheckerContext(checkerInfo));
-        return checkStageResultInfo.isPassed() ? new ResultForm(true, "前置条件检查通过！") : new ContentResultForm<>(false, checkStageResultInfo, checkStageResultInfo.getMessage());
+        return checkStageResultInfo.isPassed() ? new ContentResultForm<>(true, null, "前置条件检查通过！") : new ContentResultForm<>(false, checkStageResultInfo, checkStageResultInfo.getMessage());
     }
 
 }
