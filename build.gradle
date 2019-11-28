@@ -175,7 +175,7 @@ allprojects {
 
         compile("org.liquibase:liquibase-core:3.6.3")
 
-        compile("e-iceblue:spire.doc:2.7.3")
+        compile("e-iceblue:spire-doc:2.7.3")
 
         //bsc依赖
         compile('org.jodconverter:jodconverter-core:4.2.0')
