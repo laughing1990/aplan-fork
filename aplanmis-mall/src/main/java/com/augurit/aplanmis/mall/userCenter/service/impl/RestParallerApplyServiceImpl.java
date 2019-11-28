@@ -88,6 +88,10 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
             } else {
                 item.setCoreStateList(aeaItemStateService.listAeaItemStateByParentId(item.getItemVerId(), "", "ROOT", SecurityContext.getCurrentOrgId()));
             }
+            if (item.getCarryOutItems()==null||item.getCarryOutItems().size()==0){
+                item.setCarryOutItems(new ArrayList<>());
+            }
+            if (item.getCurrentCarryOutItem()==null) item.setCurrentCarryOutItem(new AeaItemBasic());
         }
         //getIsNeedState 为1时为分情形
         if ("1".equals(aeaParStage.getIsNeedState())){
@@ -112,7 +116,10 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
                 } else {
                     item.setParaStateList(aeaItemStateService.listAeaItemStateByParentId(item.getItemVerId(), "", "ROOT", SecurityContext.getCurrentOrgId()));
                 }
-
+                if (item.getCarryOutItems()==null||item.getCarryOutItems().size()==0){
+                    item.setCarryOutItems(new ArrayList<>());
+                }
+                if (item.getCurrentCarryOutItem()==null) item.setCurrentCarryOutItem(new AeaItemBasic());
             }
         }
 

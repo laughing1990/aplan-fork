@@ -1646,5 +1646,30 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
         return new PageInfo<>(applyInfoList);
     }
 
+    /**
+     * 根据查询条件查询中介服务事项待上传服务结果列表
+     *
+     * @param conditionalQueryRequest 查询条件
+     * @param page                    分页参数
+     * @return PageInfo
+     */
+    @Override
+    public PageInfo listWaitUploadServiceResult(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception {
+        conditionalQueryRequest.setHandler(true);
+
+        loadConditionalQueryRequest(conditionalQueryRequest);
+
+        changeOrderBySql(page);
+
+        PageHelper.startPage(page);
+        List<TaskInfo> taskList = conditionalQueryMapper.listWaitUploadServiceResult(conditionalQueryRequest);
+
+        loadTaskInfo(taskList, "待办");
+
+        loadRemindInfo(taskList);
+
+        return new PageInfo<>(taskList);
+    }
+
 
 }

@@ -14,7 +14,6 @@ import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.*;
 import com.augurit.aplanmis.common.service.item.AeaLogItemStateHistService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
-import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
 import com.augurit.aplanmis.common.service.process.AeaBpmProcessService;
 import com.augurit.aplanmis.common.service.projPurchase.AeaImProjPurchaseService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
@@ -139,6 +138,7 @@ public class RestImApplyService {
     private AeaHiItemInoutinstMapper aeaHiItemInoutinstMapper;
     @Autowired
     private AeaImServiceResultMapper aeaImServiceResultMapper;
+
 
     /**
      * 选取中介机构
@@ -290,9 +290,6 @@ public class RestImApplyService {
 
     }
 
-    @Autowired
-    private AeaItemMatService aeaItemMatService;
-
     /**
      * 上传服务结果电子件或窗口收取纸质件
      * 纸质件只能审批系统收取
@@ -338,8 +335,8 @@ public class RestImApplyService {
             String paperIsRequire = vo.getPaperIsRequire();
             Long dueCopyCount = vo.getDueCopyCount();
             Long duePaperCount = vo.getDuePaperCount();
-            Long realCopyCount = vo.getRealCopyCount();
-            Long realPaperCount = vo.getRealPaperCount();
+            Long realCopyCount = vo.getRealCopyCount() == null ? 0L : vo.getRealCopyCount();
+            Long realPaperCount = vo.getRealPaperCount() == null ? 0L : vo.getRealPaperCount();
             Long attCount = vo.getAttCount();
             boolean attFlag = false;
             boolean paperFlag = false;
@@ -561,15 +558,16 @@ public class RestImApplyService {
 
         //查询出流程第一个节点
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstance().getId()).list();
-
-        //挂起当前流程
-        bpmProcessService.suspendProcessInstanceById(processInstance.getProcessInstance().getId());
         //保存意见
         if (!tasks.isEmpty()) {
             Task task = tasks.get(0);
             String message = applyData.getComments();
             bpmTaskService.addTaskComment(task.getId(), task.getProcessInstanceId(), StringUtils.isBlank(message) ? "" : message);//收件意见
         }
+
+        //挂起当前流程
+        bpmProcessService.suspendProcessInstanceById(processInstance.getProcessInstance().getId());
+
 
         //6.流程发起后，更新初始事项历史的taskId
         AeaLogItemStateHist logItemStateHist = aeaLogItemStateHistService.getInitStateAeaLogItemStateHist(aeaHiIteminst.getIteminstId(), appinstId);

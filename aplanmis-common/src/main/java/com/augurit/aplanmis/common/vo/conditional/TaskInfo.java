@@ -117,5 +117,8 @@ public class TaskInfo extends BaseInfo implements Serializable {
     @ApiModelProperty(value = "节点时限列表")
     private List nodeTimelimitList;
 
+    @ApiModelProperty(value = "事项性质大分类：0-行政事项，8-中介服务事项，9-服务协同，6-市政公用服务")
+    private String itemNature;
+
 
 }

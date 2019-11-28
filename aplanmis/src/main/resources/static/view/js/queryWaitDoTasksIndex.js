@@ -77,7 +77,7 @@ var vm = new Vue({
         },
         //办理
         viewDetail:function (row) {
-            var url = ctx+'apanmis/page/stageApproveIndex?taskId='+row.taskId+'&viewId='+row.viewId;
+            var url = ctx + 'apanmis/page/stageApproveIndex?taskId=' + row.taskId + '&viewId=' + row.viewId + '&itemNature=' + row.itemNature;
             if(row.busRecordId){
                 url = url + '&busRecordId='+row.busRecordId;
             }
@@ -111,7 +111,7 @@ var vm = new Vue({
                 if (result.success) {
                     ts.$message.success(result.message);
                     window.setTimeout(function(){
-                        window.open(ctx+'apanmis/page/stageApproveIndex?taskId='+taskId+'&viewId='+viewId+'&busRecordId='+busRecordId,'_blank');
+                        window.open(ctx + 'apanmis/page/stageApproveIndex?taskId=' + taskId + '&viewId=' + viewId + '&busRecordId=' + busRecordId + '&itemNature=' + row.itemNature, '_blank');
                         window.location.reload();
                     }, 500);
                 } else {

@@ -376,6 +376,13 @@ public interface ConditionalQueryService {
      */
     PageInfo listStageConcludedApplyInfoByPage(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception;
 
-
+    /**
+     * 根据查询条件查询中介服务事项待上传服务结果列表
+     *
+     * @param conditionalQueryRequest 查询条件
+     * @param page                    分页参数
+     * @return PageInfo
+     */
+    PageInfo listWaitUploadServiceResult(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception;
 }
 

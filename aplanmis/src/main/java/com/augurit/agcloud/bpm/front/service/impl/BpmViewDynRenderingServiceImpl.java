@@ -84,7 +84,7 @@ public class BpmViewDynRenderingServiceImpl implements BpmViewDynRenderingServic
                 }
             }
             // 调用指定方法
-            catClass.getMethod("shout").invoke(obj, null);
+            catClass.getMethod("shout").invoke(obj, (Object) null);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {

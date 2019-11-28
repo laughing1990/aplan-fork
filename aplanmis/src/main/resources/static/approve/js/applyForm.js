@@ -460,18 +460,18 @@ var vm = new Vue({
                 Vue.set(item, 'getCopy', '');
               }
               if (item.realPaperCount == 'undefined' || item.realPaperCount == undefined) {
-                Vue.set(item, 'realPaperCount', item.duePaperCount);
+                Vue.set(item, 'realPaperCount', item.realPaperCount);
               }
               if (item.realCopyCount == 'undefined' || item.realCopyCount == undefined) {
-                Vue.set(item, 'realCopyCount', item.dueCopyCount);
+                Vue.set(item, 'realCopyCount', item.realCopyCount);
               }
               Vue.set(item, 'realPaperCount', item.realPaperCount || 0);
               Vue.set(item, 'realCopyCount', item.realCopyCount ||0);
-              if (item.paperMatinstId || item.duePaperCount >= item.realPaperCount) {
+              if (item.paperMatinstId || item.duePaperCount <= item.realPaperCount) {
                 Vue.set(item, 'getPaper', true);
                 Vue.set(item, 'paperDisabled', true);
               }
-              if (item.copyMatinstId || item.dueCopyCount >= item.realCopyCount) {
+              if (item.copyMatinstId || item.dueCopyCount <= item.realCopyCount) {
                 Vue.set(item, 'getCopy', true);
                 Vue.set(item, 'copyDisabled', true);
               }

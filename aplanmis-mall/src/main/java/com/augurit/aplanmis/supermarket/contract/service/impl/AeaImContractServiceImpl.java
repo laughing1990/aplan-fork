@@ -373,7 +373,6 @@ public class AeaImContractServiceImpl implements AeaImContractService {
             } else {
                 aeaImContract.setIsOwnerUpload("0");
             }
-
         } else {
             BeanUtils.copyProperties(contractVo, aeaImContract);
             aeaImContract.setModifier(SecurityContext.getCurrentUserName());
