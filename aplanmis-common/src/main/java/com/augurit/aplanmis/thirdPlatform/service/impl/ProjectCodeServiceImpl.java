@@ -291,14 +291,14 @@ public class ProjectCodeServiceImpl implements ProjectCodeService {
         List<AeaProjInfo> list = new ArrayList<>();
         ProUnitLinkVo proUnitLinkVo = this.getProjectInfo(null, "swfg2zj", "sw190718a3p", projCode);
         if (proUnitLinkVo == null) throw new Exception("监管平台找不到该项目！");
-        if (!StringUtils.isEmpty(proUnitLinkVo.getAeaUnitInfo().getUnifiedSocialCreditCode())
-                &&!proUnitLinkVo.getAeaUnitInfo().getUnifiedSocialCreditCode().equals(unifiedSocialCreditCode)){
-            throw new Exception("找不到该项目或者当前用户不能申报该项目！");
-        }
-        if (org.apache.commons.lang3.StringUtils.isNotBlank(unitName)
-                && !unitName.equals(proUnitLinkVo.getAeaUnitInfo().getApplicant())) {
-            throw new Exception("找不到该项目或者当前用户不能申报该项目！");
-        }
+//        if (!StringUtils.isEmpty(proUnitLinkVo.getAeaUnitInfo().getUnifiedSocialCreditCode())
+//                &&!proUnitLinkVo.getAeaUnitInfo().getUnifiedSocialCreditCode().equals(unifiedSocialCreditCode)){
+//            throw new Exception("找不到该项目或者当前用户不能申报该项目！");
+//        }
+//        if (org.apache.commons.lang3.StringUtils.isNotBlank(unitName)
+//                && !unitName.equals(proUnitLinkVo.getAeaUnitInfo().getApplicant())) {
+//            throw new Exception("找不到该项目或者当前用户不能申报该项目！");
+//        }
 
         saveProjUnitLinkmanInfo(proUnitLinkVo);
 

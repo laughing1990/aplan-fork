@@ -465,11 +465,11 @@ public class AeaCertMallService {
         typeQ.setIsActive("1");
         List<AeaCertType> list = aeaCertTypeMapper.listAeaCertType(typeQ);
         if(list.size()==0) return new ArrayList<>();
+        AeaCert query=new AeaCert();
+        query.setRootOrgId(SecurityContext.getCurrentOrgId());
+        query.setCertHolder(StringUtils.isNotBlank(certHolder)?certHolder:null);
         return list.stream().map(AeaCertVo::forMat).peek(vo->{
-            AeaCert query=new AeaCert();
-            query.setRootOrgId(SecurityContext.getCurrentOrgId());
             query.setCertTypeId(vo.getCertTypeId());
-            query.setCertHolder(StringUtils.isNotBlank(certHolder)?certHolder:null);
             vo.setCertList(aeaCertMapper.listAeaCert(query));
             }).collect(Collectors.toList());
         }

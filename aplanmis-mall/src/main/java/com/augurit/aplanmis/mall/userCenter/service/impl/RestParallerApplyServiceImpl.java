@@ -172,20 +172,22 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
             AeaParFactorTheme aeaParFactorTheme = new AeaParFactorTheme();
             aeaParFactorTheme.setFactorId(factorId);
             List<AeaParFactorTheme> aeaParFactorThemes = aeaParFactorThemeMapper.listAeaParFactorTheme(aeaParFactorTheme);
-            String themeId=aeaParFactorThemes.size()>0?aeaParFactorThemes.get(0).getThemeId():"";
-            resultMap.put("themeId",themeId);
-            if(!StringUtils.isBlank(themeId)){
-                String themeType="";
-                try {
-                    themeType=aeaParThemeService.getAeaParThemeByThemeId(themeId).getThemeType();
-                }catch (Exception e){
-                    e.printStackTrace();
+            if(aeaParFactorThemes.size()>0){
+                String themeId=aeaParFactorThemes.get(0).getThemeId();
+                resultMap.put("themeId",themeId);
+                if(!StringUtils.isBlank(themeId)){
+                    String themeType="";
+                    try {
+                        themeType=aeaParThemeService.getAeaParThemeByThemeId(themeId).getThemeType();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    resultMap.put("themeType",themeType);
+                }else{
+                    resultMap.put("themeType","");
                 }
-                resultMap.put("themeType",themeType);
-            }else{
-                resultMap.put("themeType","");
+                set.add(resultMap);
             }
-            set.add(resultMap);
         }
         if (set.size()!=1) return null;
         Iterator it = set.iterator();
