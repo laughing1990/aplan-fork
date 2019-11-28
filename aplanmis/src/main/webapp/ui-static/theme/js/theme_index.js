@@ -280,8 +280,8 @@ function addTheme(){
     $("#add_theme_form select[name='isAuxiline'] option:eq(1)").prop("selected", 'selected');
     // $("#add_theme_form select[name='isTechspectline'] option:eq(1)").prop("selected", 'selected');
 
-    $("#add_theme_form input[name='mainlineAlias']").val('并联审批');
-    $("#add_theme_form input[name='auxilineAlias']").val('服务协同');
+    $("#add_theme_form input[name='mainlineAlias']").val('主线阶段');
+    $("#add_theme_form input[name='auxilineAlias']").val('辅线服务');
     // $("#add_theme_form input[name='techspectlineAlias']").val('技术审查');
 
     $("#add_theme_form select[name='themeType'] option:eq(1)").prop("selected", 'selected');

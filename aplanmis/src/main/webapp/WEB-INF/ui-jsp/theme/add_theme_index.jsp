@@ -76,11 +76,6 @@
                                         </c:forEach>
                                     </select>
                                 </div>
-
-                                <%--<label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>排序:</label>--%>
-                                <%--<div class="col-lg-4">--%>
-                                    <%--<input type="number" class="form-control m-input" name="sortNo" value="1"/>--%>
-                                <%--</div>--%>
                             </div>
 
                             <div class="form-group m-form__group row" >
@@ -101,7 +96,7 @@
                             </div>
 
                             <div class="form-group m-form__group row">
-                                <label class="col-2 col-form-label" style="text-align: right;"><font color="red">*</font>是否启用并联审批:</label>
+                                <label class="col-2 col-form-label" style="text-align: right;"><font color="red">*</font>是否启用主线阶段:</label>
                                 <div class="col-4">
                                     <select type="text" class="form-control" name="isMainline" value="">
                                         <option value="">请选择</option>
@@ -110,14 +105,14 @@
                                     </select>
                                 </div>
 
-                                <label class="col-lg-2 col-form-label" style="text-align: right;">并联审批别名:</label>
+                                <label class="col-lg-2 col-form-label" style="text-align: right;">主线阶段别名:</label>
                                 <div class="col-lg-4">
                                     <input type="text" class="form-control m-input" name="mainlineAlias" value=""/>
                                 </div>
                             </div>
 
                             <div class="form-group m-form__group row">
-                                <label class="col-2 col-form-label" style="text-align: right;"><font color="red">*</font>是否启用服务协同:</label>
+                                <label class="col-2 col-form-label" style="text-align: right;"><font color="red">*</font>是否启用辅线服务:</label>
                                 <div class="col-4">
                                     <select type="text" class="form-control" name="isAuxiline" value="">
                                         <option value="">请选择</option>
@@ -126,7 +121,7 @@
                                     </select>
                                 </div>
 
-                                <label class="col-lg-2 col-form-label" style="text-align: right;">服务协同别名:</label>
+                                <label class="col-lg-2 col-form-label" style="text-align: right;">辅线服务别名:</label>
                                 <div class="col-lg-4">
                                     <input type="text" class="form-control m-input" name="auxilineAlias" value=""/>
                                 </div>

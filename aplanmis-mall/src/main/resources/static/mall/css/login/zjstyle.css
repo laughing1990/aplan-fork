@@ -735,6 +735,10 @@
 
 /* 登录页 */
 .loginBg {
+    background-color: rgba(56, 133, 194,1);
+    background: -webkit-linear-gradient(to bottom, #3885c2 0%, rgba(56, 133, 194, 0.3) 100%);
+    background: -o-linear-gradient(to bottom, #3885c2 0%, rgba(56, 133, 194, 0.3) 100%);
+    background: -moz-linear-gradient(to bottom, #3885c2 0%, rgba(56, 133, 194, 0.3) 100%);
     background: linear-gradient(to bottom, #3885c2 0%, rgba(56, 133, 194, 0.3) 100%);
 }
 .login{
