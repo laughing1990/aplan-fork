@@ -64,6 +64,36 @@
     margin-bottom: 15px;
 }
 
+.el-input.is-disabled .el-input__inner, .el-textarea.is-disabled .el-textarea__inner {
+    color: #333;
+}
+
+.el-table--border,
+.el-table--group,
+.el-table td,
+.el-table th.is-leaf {
+    border-color: #DCDFE6;
+}
+
+.file-list-tab {
+    padding-left: 30px;
+}
+
+.file-list-tab:hover .file-name {
+    color: #169AFF;
+}
+
+.file-list-tab:hover .file-icon-btn {
+    display: inline-block;
+}
+
+.file-icon-btn span {
+    cursor: pointer;
+    color: #169AFF;
+    font-size: 18px;
+    margin: 0 5px;
+}
+
 .inline-block {
     float: left;
     /* display: inline-block; */
