@@ -55,9 +55,9 @@
 					</el-form-item>
 
 					<div class="clearfix">
-						<el-form-item label="机构性质" class="inline-block">
+						<!--<el-form-item label="机构性质" class="inline-block">
 							<el-input v-model="form.unitInfo.unitNature"></el-input>
-						</el-form-item>
+						</el-form-item>-->
 						<el-form-item label="机构代码类型" class="inline-block">
 							<el-input v-model="form.unitInfo.idtype"></el-input>
 						</el-form-item>
@@ -74,18 +74,9 @@
 					</el-form-item>
 
 					<div class="clearfix">
-						<!-- <el-form-item label="注册资本币种" class="inline-block">
-							<el-input v-model="form.unitInfo.applicant"></el-input>
-						</el-form-item> -->
 						<el-form-item label="注册资本(万元)" class="inline-block">
 							<el-input v-model="form.unitInfo.registeredCapital"></el-input>
 						</el-form-item>
-						<!-- <el-form-item label="成立日期" class="inline-block">
-							<el-input v-model="form.unitInfo.applicant"></el-input>
-						</el-form-item>
-						<el-form-item label="经营有效期止" class="inline-block">
-							<el-input v-model="form.unitInfo.applicant"></el-input>
-						</el-form-item> -->
 					</div>
 
 					<el-form-item label="经营范围">
@@ -102,9 +93,9 @@
 						<!-- <el-form-item label="登记机关行政区划" class="inline-block">
 							<el-input v-model="form.unitInfo.applicant"></el-input>
 						</el-form-item> -->
-						<el-form-item label="登记机关" class="inline-block">
+						<!--<el-form-item label="登记机关" class="inline-block">
 							<el-input v-model="form.unitInfo.registerAuthority"></el-input>
-						</el-form-item>
+						</el-form-item>-->
 						<!-- <el-form-item label="办公地行政区划" class="inline-block">
 							<el-input v-model="form.unitInfo.applicant"></el-input>
 						</el-form-item>
@@ -174,7 +165,7 @@
 			<el-button @click="examineService('0')">不通过</el-button>
 		</div>
 		<!--审批弹窗-->
-		<el-dialog title="收货地址" :visible.sync="dialogFormVisible">
+		<el-dialog title="审批信息" :visible.sync="dialogFormVisible">
 			<el-form >
 				<el-row :span="18">
 					<el-form-item label="审批意见:">

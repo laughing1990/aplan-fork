@@ -95,9 +95,9 @@ var vm = new Vue({
 		},
 		registerDeatail: function (row) {
 			var url;
-			if(!row.isImUnit && row.isImUnit==='1') {
+			if(row.isImUnit==='1') {
 				url = ctx + '/supermarket/register/detail.html?unitInfoId=' + row.unitInfoId;//中介机构
-			}else{
+			}else if(row.isOwnerUnit==='1'){
 				url = ctx + '/supermarket/register/ownerDetail.html?unitInfoId=' + row.unitInfoId;//业主
 			}
 			window.location.href = url;
