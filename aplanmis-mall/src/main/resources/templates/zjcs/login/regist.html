@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <!--  <title>唐山市中介服务网上超市</title>-->
+  <title>新疆自治区中介服务网上超市</title>
+  <link rel="shortcut icon" href="../../../static/zjcs/common/images/favicon.ico" th:href="@{/zjcs/common/images/favicon.ico}">
+  <link rel="stylesheet" href="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}" />
+  <link rel="stylesheet" href="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet" href="../../../static/zjcs/common/css/reset.css" th:href="@{/zjcs/common/css/reset.css}">
+  <link rel="stylesheet" href="../../../static/zjcs/login/css/regist.css" th:href="@{/zjcs/login/css/regist.css}">
+  <script>
+  var ctx = '[[@{/}]]';
+  </script>
+</head>
+
+<body>
+  <div id="regist" v-cloak>
+    <div class="login-container">
+      <div class="login-pic">
+        <div class="login-logo">
+          <img src="../../../static/zjcs/login/images/login_name-xj.png" th:src="@{/zjcs/login/images/login_name-xj.png}">
+        </div>
+        <img src="../../../static/zjcs/login/images/login_pic.png" th:src="@{/zjcs/login/images/login_pic.png}">
+      </div>
+      <div class="login-box">
+        <div class="sign-icon"><i></i></div>
+        <div class="org item" @click="toggle('org')">
+          <i class="el-icon-office-building"></i>
+          <p>机构注册</p>
+        </div>
+        <div class="owner item" @click="toggle('owner')">
+          <i class="el-icon-user"></i>
+          <p>业主注册</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+  <script src="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+  <script src="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+  <!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>-->
+  <script src="../../../static/common/js/common.js" th:src="@{/common/js/common.js}"></script>
+  <script src="../../../static/zjcs/login/js/regist.js" th:src="@{/zjcs/login/js/regist.js}"></script>
+</body>
+
+</html>
