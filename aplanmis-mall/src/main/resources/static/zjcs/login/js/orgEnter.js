@@ -604,7 +604,7 @@ var vm = new Vue({
             });
             return;
           } else {
-            if (this.selectdRecord[0].majorQualId.length == 0) {
+            if (_this.selectdRecord[0].majorQualId.length == 0) {
               _this.$message({
                 message: '请选择资格专业证书',
                 type: 'error'
