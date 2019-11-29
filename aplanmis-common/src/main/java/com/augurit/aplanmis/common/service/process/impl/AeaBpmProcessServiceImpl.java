@@ -9,17 +9,19 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import com.augurit.aplanmis.common.service.process.AeaBpmProcessService;
-import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
+import org.flowable.bpmn.model.*;
+import org.flowable.engine.RepositoryService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.flowable.task.api.Task;
-import org.flowable.engine.RepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Transactional
 @Service
@@ -109,5 +111,23 @@ public class AeaBpmProcessServiceImpl implements AeaBpmProcessService {
                 }
             }
         }
+    }
+
+    @Override
+    public BpmProcessInstance startFlow(String appId, String appinstId, AeaHiApplyinst aeaHiApplyinst, String userName) throws Exception {
+        if (StringUtils.isBlank(appId)) {
+            throw new InvalidParameterException(appId);
+        }
+        if (aeaHiApplyinst == null)
+            throw new InvalidParameterException("申请实例对象为空：{}", aeaHiApplyinst);
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("form", aeaHiApplyinst);
+
+        //暂时忽略了概要标题、概要说明和其他概要信息的获取
+
+        BpmProcessInstance bpmProcessInstance = bpmProcessService.startMasterProcessInstanceByTplAppId(appId, aeaHiApplyinst.getApplyinstId(), variables,
+                SecurityContext.getCurrentOrgId(), userName, null, null, null, appinstId);
+        return bpmProcessInstance;
     }
 }
