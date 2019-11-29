@@ -1743,7 +1743,7 @@
     <!--<el-button type="primary" style="margin-left: 20px"><a target="_blank" :href="ctx+'rest/oneform/common/renderPage?applyinstId='+parallelApplyinstId+'&stageId='+stageId+'&'+formItemsIdStr+'&showBasicButton=false&includePlatformResource=true'">打印表单</a></el-button>-->
     <div :style="{height:(curHeight-64)+'px',overflow: 'auto'}">
       <el-tabs tab-position="left">
-        <el-tab-pane v-for="(item,index) in oneFormInfo" :key="index" :label="item.formName" @click.native="test(1,2)">
+        <el-tab-pane v-for="(item,index) in oneFormInfo" :key="index" :label="item.formName">
           <iframe :style="{height:(curHeight-68)+'px',overflow: 'auto',width:'100%'}"
                   v-if="item.smartForm==false"
                   :src="ctx+item.formUrl" frameborder="0"></iframe>

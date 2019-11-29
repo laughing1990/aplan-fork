@@ -2485,4 +2485,11 @@ INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`
         </sql>
     </changeSet>
 
+    <changeSet id="201911290845" author="liuzhaoxiong" failOnError="false">
+        <comment>增加审批标记</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_unit_info` ADD COLUMN `AUDIT_FLAG`  varchar(2) DEFAULT NULL COMMENT '审核状态:0 审核失败，1 已审核，2 审核中';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

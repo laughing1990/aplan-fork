@@ -98,6 +98,7 @@ public class MallWebMvcConfig implements WebMvcConfigurer {
                         "/supermarket/main/agentServiceInfo.html",
                         "/supermarket/main/contactTemplate.html",
                         "/supermarket/purchase/getSelectedQualMajorRequire/**",
+                        "/aea/supermarket/serviceMatter/getMajorTreeByServiceId.do",
                         "/supermarket/main/login.html");
     }
 

@@ -450,10 +450,41 @@ var vm = new Vue({
         }
       }
     },
+    backToIndex: function() {
+      window.parent.location.href = ctx + '/aplanmis-mall/supermarket/main/index.html';
+
+    },
     upload: function(row, type) {
       this.curUpData = row;
       this.uploadTableData = this.curUpData.fileList;
       this.type = type;
+    },
+    deleteFile: function(row) {
+      var _this = this;
+      this.uploadTableData.forEach(function(item) {
+        if (item == row) {
+          _this.uploadTableData.splice(row, 1);
+        }
+      })
+    },
+    deleteAttr: function(data, row) {
+      var _this = this;
+
+      data.splice(row, 1);
+
+    },
+    //下载单个附件
+    downLoad: function(data) {
+      window.open(ctx + 'supermarket/purchase/mat/att/download?detailIds=' + data.fileId, '_blank')
+    },
+    // 预览源文件
+    preview: function(data) {
+      var detailId = data.fileId;
+      var flashAttributes = '';
+      var tempwindow = window.open(); // 先打开页面
+      setTimeout(function() {
+        tempwindow.location = ctx + 'supermarket/purchase/mat/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
+      }, 1000)
     },
     // 附件上传文件列表变动
     enclosureFileSelectChange: function(file, fileLi) {
@@ -465,6 +496,7 @@ var vm = new Vue({
       // }
       fileLi.forEach(function(item) {
         if (item.raw) {
+          if (item.status == 'success') return;
           if (_this.type == 'jiben') {
             _this.fileList.push(item.raw);
           } else if (_this.type == 'zige') {
@@ -600,7 +632,7 @@ var vm = new Vue({
             });
             return;
           } else {
-            if (this.selectdRecord[0].majorQualId.length == 0) {
+            if (_this.selectdRecord[0].majorQualId.length == 0) {
               _this.$message({
                 message: '请选择资格专业证书',
                 type: 'error'
@@ -655,53 +687,53 @@ var vm = new Vue({
               return;
             } else {
               var certinstId = [];
-              this.jobPeopleDetailObj.certinstBVos.forEach(function(item) {
+              _that.jobPeopleDetailObj.certinstBVos.forEach(function(item) {
                 certinstId.push(item.certinstId);
               })
               var param = {
                 // 第一页数据
-                "unitInfo.applicant": this.formData.applicant || '',
-                "unitInfo.unitNature": this.formData.unitNature || '',
-                "unitInfo.idtype": this.formData.idtype || '',
-                "unitInfo.unifiedSocialCreditCode": this.formData.unifiedSocialCreditCode || '',
-                "unitInfo.idrepresentative": this.formData.idrepresentative || '',
-                "unitInfo.idno": this.formData.idno || '',
-                "unitInfo.registeredCapital": this.formData.registeredCapital || '',
-                "unitInfo.managementScope": this.formData.managementScope || '',
-                "unitInfo.applicantDistrict": this.formData.applicantDistrict[this.formData.applicantDistrict.length - 1] || '',
-                "unitInfo.applicantDetailSite": this.formData.applicantDetailSite || '',
-                "unitInfo.registerAuthority": this.formData.registerAuthority || '',
-                "contactManInfo.linkmanName": this.formData.linkmanName || '',
-                "contactManInfo.linkmanMail": this.formData.linkmanMail || '',
-                "contactManInfo.linkmanMobilePhone": this.formData.linkmanMobilePhone || '',
-                "contactManInfo.linkmanOfficePhon": this.formData.linkmanOfficePhon || '',
-                "contactManInfo.linkmanFax": this.formData.linkmanFax || '',
+                "unitInfo.applicant": _that.formData.applicant || '',
+                "unitInfo.unitNature": _that.formData.unitNature || '',
+                "unitInfo.idtype": _that.formData.idtype || '',
+                "unitInfo.unifiedSocialCreditCode": _that.formData.unifiedSocialCreditCode || '',
+                "unitInfo.idrepresentative": _that.formData.idrepresentative || '',
+                "unitInfo.idno": _that.formData.idno || '',
+                "unitInfo.registeredCapital": _that.formData.registeredCapital || '',
+                "unitInfo.managementScope": _that.formData.managementScope || '',
+                "unitInfo.applicantDistrict": _that.formData.applicantDistrict[_that.formData.applicantDistrict.length - 1] || '',
+                "unitInfo.applicantDetailSite": _that.formData.applicantDetailSite || '',
+                "unitInfo.registerAuthority": _that.formData.registerAuthority || '',
+                "contactManInfo.linkmanName": _that.formData.linkmanName || '',
+                "contactManInfo.linkmanMail": _that.formData.linkmanMail || '',
+                "contactManInfo.linkmanMobilePhone": _that.formData.linkmanMobilePhone || '',
+                "contactManInfo.linkmanOfficePhon": _that.formData.linkmanOfficePhon || '',
+                "contactManInfo.linkmanFax": _that.formData.linkmanFax || '',
 
                 // 第二页数据
-                'serviceAndQualVo.aeaImUnitService.serviceId': this.formDataZgxx.serviceId || '',
-                'serviceAndQualVo.aeaImUnitService.serviceContent': this.formDataZgxx.serviceContent || '',
-                'serviceAndQualVo.aeaImUnitService.feeReference': this.formDataZgxx.feeReference || '',
-                'serviceAndQualVo.aeaHiCertinstBVo.qualLevelId': this.selectdRecord[0].qualLevelId,
-                'serviceAndQualVo.aeaHiCertinstBVo.majorId': this.selectdRecord[0].majorQualId.join(','),
-                'serviceAndQualVo.aeaHiCertinstBVo.serviceId': this.formDataZgxx.serviceId || '',
-                'serviceAndQualVo.aeaHiCertinstBVo.certId': this.formDataZgxx.certId || '',
-                'serviceAndQualVo.aeaHiCertinstBVo.serviceContent': this.formDataZgxx.serviceContent || '',
-                'serviceAndQualVo.aeaHiCertinstBVo.feeReference': this.formDataZgxx.feeReference || '',
-                'serviceAndQualVo.aeaHiCertinstBVo.certinstCode': this.formDataZgxx.certinstCode || '',
-                'serviceAndQualVo.aeaHiCertinstBVo.termStart': this.formDataZgxx.termStart || '',
-                'serviceAndQualVo.aeaHiCertinstBVo.termEnd': this.formDataZgxx.termEnd || '',
-                'serviceAndQualVo.aeaHiCertinstBVo.managementScope': this.formDataZgxx.managementScope || '',
+                'serviceAndQualVo.aeaImUnitService.serviceId': _that.formDataZgxx.serviceId || '',
+                'serviceAndQualVo.aeaImUnitService.serviceContent': _that.formDataZgxx.serviceContent || '',
+                'serviceAndQualVo.aeaImUnitService.feeReference': _that.formDataZgxx.feeReference || '',
+                'serviceAndQualVo.aeaHiCertinstBVo.qualLevelId': _that.selectdRecord[0].qualLevelId,
+                'serviceAndQualVo.aeaHiCertinstBVo.majorId': _that.selectdRecord[0].majorQualId.join(','),
+                'serviceAndQualVo.aeaHiCertinstBVo.serviceId': _that.formDataZgxx.serviceId || '',
+                'serviceAndQualVo.aeaHiCertinstBVo.certId': _that.formDataZgxx.certId || '',
+                'serviceAndQualVo.aeaHiCertinstBVo.serviceContent': _that.formDataZgxx.serviceContent || '',
+                'serviceAndQualVo.aeaHiCertinstBVo.feeReference': _that.formDataZgxx.feeReference || '',
+                'serviceAndQualVo.aeaHiCertinstBVo.certinstCode': _that.formDataZgxx.certinstCode || '',
+                'serviceAndQualVo.aeaHiCertinstBVo.termStart': _that.formDataZgxx.termStart || '',
+                'serviceAndQualVo.aeaHiCertinstBVo.termEnd': _that.formDataZgxx.termEnd || '',
+                'serviceAndQualVo.aeaHiCertinstBVo.managementScope': _that.formDataZgxx.managementScope || '',
 
                 //第三页数据
-                authorManList: this.certigierData,
+                authorManList: _that.certigierData,
 
 
                 //第四页数据
                 practiceManInfo: {
-                  linkmanName: this.formPersonInfo.linkmanName || '',
-                  linkmanCertNo: this.formPersonInfo.linkmanCertNo || '',
+                  linkmanName: _that.formPersonInfo.linkmanName || '',
+                  linkmanCertNo: _that.formPersonInfo.linkmanCertNo || '',
                   practiseDate: _that.formPersonInfo.practiseDate || '',
-                  serviceId: this.formPersonInfo.serviceId || '',
+                  serviceId: _that.formPersonInfo.serviceId || '',
                   certinstId: certinstId
                 },
                 // 'unitInfo.unitInfoId': '05fc27ef-a9bc-4ba8-97fd-e1fb84526437'
@@ -715,13 +747,13 @@ var vm = new Vue({
               //   formData.append(k, param[k])
               // }
 
-              this.fileList.forEach(function(item) {
+              _that.fileList.forEach(function(item) {
                 formData.append('unitFile', item)
               })
-              this.fileList2.forEach(function(item) {
+              _that.fileList2.forEach(function(item) {
                 formData.append('file', item)
               })
-              this.fileList3.forEach(function(item) {
+              _that.fileList3.forEach(function(item) {
                 formData.append('practiceManFile', item)
               })
 
@@ -742,6 +774,8 @@ var vm = new Vue({
                       type: 'success'
                     });
                   }
+                  _that.step = '5';
+
                   _that.password = res.content.password;
                   _that.loginName = res.content.loginName;
                 },

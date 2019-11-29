@@ -91,23 +91,60 @@ var vm = new Vue({
       uploadTableData: [],
       type: '',
       rules: {
-        provinceProjCode: [
-          { required: true, message: '请输入省级项目编号' },
-        ]
+        applicant: [
+          { required: true, message: '请输入单位名称' },
+        ],
+        projTypeList: [
+          { required: true, message: '请选择机构代码类型' },
+        ],
+        unifiedSocialCreditCode: [
+          { required: true, message: '请输入统一社会信用码' },
+        ],
+        applicantDistrict: [
+          { required: true, message: '请选择注册地行政区划' },
+        ],
+        regionalism: [
+          { required: true, message: '请输入法定代表人' },
+        ],
+        idno: [
+          { required: true, message: '请输入法人代表证件号' },
+        ],
+        applicantDetailSite: [
+          { required: true, message: '请输入注册地址' },
+        ],
+        managementScope: [
+          { required: true, message: '请输入经营或业务范围' },
+        ],
+        registeredCapital: [
+          { required: true, message: '请输入注册资本' },
+        ],
       },
       rules2: {
-        provinceProjCode: [
-          { required: true, message: '请输入省级项目编号' },
+        linkmanName: [
+          { required: true, message: '请输入联系人' },
+        ],
+        linkmanMail: [
+          { required: true, message: '请输入电子邮箱' },
+        ],
+        linkmanMobilePhone: [
+          { required: true, message: '请输入移动电话' },
         ]
       },
       ruleswtr: {
-        provinceProjCode: [
-          { required: true, message: '请输入省级项目编号' },
-        ]
-      },
-      rulesPersonInfo: {
-        provinceProjCode: [
-          { required: true, message: '请输入省级项目编号' },
+        projName: [
+          { required: true, message: '请输入所属科室' },
+        ],
+        linkmanName: [
+          { required: true, message: '请输入采购人姓名' },
+        ],
+        linkmanMobilePhone: [
+          { required: true, message: '请输入移动电话' },
+        ],
+        linkmanCertNo: [
+          { required: true, message: '请输入采购委托人证件号' },
+        ],
+        linkmanMail: [
+          { required: true, message: '请输入邮箱' },
         ]
       }
     }
@@ -156,6 +193,10 @@ var vm = new Vue({
         vm.$message.error('服务器错了哦!');
       })
     },
+    backToIndex: function() {
+      window.parent.location.href = ctx + '/aplanmis-mall/supermarket/main/index.html';
+
+    },
     upload: function(row, type) {
       this.curUpData = row;
       this.uploadTableData = this.curUpData.fileList;
@@ -171,6 +212,7 @@ var vm = new Vue({
       // }
       fileLi.forEach(function(item) {
         if (item.raw) {
+          if (item.status == 'success') return;
           if (_this.type == 'jiben') {
             _this.fileList.push(item.raw);
           } else if (_this.type == 'weituoren') {
@@ -223,83 +265,140 @@ var vm = new Vue({
       return formData;
 
     },
+    toStep2: function() {
+      var _this = this;
+      _this.$refs['form'].validate(function(valid) {
+        _this.$refs['form2'].validate(function(valid) {
+          if (valid) {
+            if (_this.tableData[0].fileList.length == 0 || _this.tableData[1].fileList.length == 0) {
+              _this.$message({
+                message: '请上传完完整两份附件内容',
+                type: 'error'
+              });
+              return;
+            } else {
+              _this.step = '2';
+            }
+          } else {
+            _this.$message({
+              message: '请先填写完整本页信息',
+              type: 'error'
+            });
+            return;
+          }
+        })
+      })
+    },
+    deleteFile: function(row) {
+      var _this = this;
+      this.uploadTableData.forEach(function(item) {
+        if (item == row) {
+          _this.uploadTableData.splice(row, 1);
+        }
+      })
+    },
+    deleteAttr: function(data, row) {
+      var _this = this;
+
+      data.splice(row, 1);
+
+    },
     // 保存
     saveForm: function() {
       var a = this.tableData;
       var _that = this;
-
-      var param = {
-        //第一页数据
-        unitInfo: {
-          applicant: this.formData.applicant || '',
-          idtype: this.formData.idtype || '',
-          unifiedSocialCreditCode: this.formData.unifiedSocialCreditCode || '',
-          applicantDistrict: this.formData.applicantDistrict[this.formData.applicantDistrict.length - 1] || '',
-          regionalism: this.formData.regionalism || '',
-          idno: this.formData.idno || '',
-          applicantDetailSite: this.formData.applicantDetailSite || '',
-          managementScope: this.formData.managementScope || '',
-          registeredCapital: this.formData.registeredCapital || '',
-
-        },
-        contactManInfo: {
-          linkmanName: this.formData2.linkmanName || '', //联系人姓名
-          linkmanMail: this.formData2.linkmanMail || '', //电子邮箱
-          linkmanMobilePhone: this.formData2.linkmanMobilePhone || '', //移动电话
-          linkmanOfficePhon: this.formData2.linkmanOfficePhon || '', //固定电话
-          linkmanFax: this.formData2.linkmanFax || '', //传真
-        },
-        authorManInfo: {
-          linkmanName: this.formDatawtr.linkmanName || '', //姓名
-          linkmanMobilePhone: this.formDatawtr.linkmanMobilePhone || '', //移动电话
-          linkmanCertNo: this.formDatawtr.linkmanCertNo || '', //证件号
-          linkmanMail: this.formDatawtr.linkmanMail || '', //证件号
-        }
-
-
-      };
-      var formData = _that.toFormData(param);
-
-      // console.log(param)
-      // var formData = new FormData();
-      // for (var k in param) {
-      //   formData.append(k, param[k])
-      // }
-
-      this.fileList.forEach(function(item) {
-        formData.append('unitFile', item)
-      })
-      this.fileList2.forEach(function(item) {
-        formData.append('authorManFile', item)
-      })
-
-
-      // _that.$refs['addEditManform'].validate(function(valid) {
-      // if (valid) {
-      _that.loading = true;
-      $.ajax({
-        url: ctx + 'supermarket/ownerRegister/saveRegisterForm',
-        type: 'post',
-        data: formData,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
-        success: function(res) {
-          if (res.success) {
+      _that.$refs['formwtr'].validate(function(valid) {
+        if (valid) {
+          if (_that.tableData2[0].fileList.length == 0) {
             _that.$message({
-              message: '保存成功',
-              type: 'success'
+              message: '请上传完完整附件内容',
+              type: 'error'
             });
+            return;
+          } else {
+            var param = {
+              //第一页数据
+              unitInfo: {
+                applicant: _that.formData.applicant || '',
+                idtype: _that.formData.idtype || '',
+                unifiedSocialCreditCode: _that.formData.unifiedSocialCreditCode || '',
+                applicantDistrict: _that.formData.applicantDistrict[_that.formData.applicantDistrict.length - 1] || '',
+                regionalism: _that.formData.regionalism || '',
+                idno: _that.formData.idno || '',
+                applicantDetailSite: _that.formData.applicantDetailSite || '',
+                managementScope: _that.formData.managementScope || '',
+                registeredCapital: _that.formData.registeredCapital || '',
+
+              },
+              contactManInfo: {
+                linkmanName: _that.formData2.linkmanName || '', //联系人姓名
+                linkmanMail: _that.formData2.linkmanMail || '', //电子邮箱
+                linkmanMobilePhone: _that.formData2.linkmanMobilePhone || '', //移动电话
+                linkmanOfficePhon: _that.formData2.linkmanOfficePhon || '', //固定电话
+                linkmanFax: _that.formData2.linkmanFax || '', //传真
+              },
+              authorManInfo: {
+                linkmanName: _that.formDatawtr.linkmanName || '', //姓名
+                linkmanMobilePhone: _that.formDatawtr.linkmanMobilePhone || '', //移动电话
+                linkmanCertNo: _that.formDatawtr.linkmanCertNo || '', //证件号
+                linkmanMail: _that.formDatawtr.linkmanMail || '', //证件号
+              }
+
+
+            };
+            var formData = _that.toFormData(param);
+
+            // console.log(param)
+            // var formData = new FormData();
+            // for (var k in param) {
+            //   formData.append(k, param[k])
+            // }
+
+            _that.fileList.forEach(function(item) {
+              formData.append('unitFile', item)
+            })
+            _that.fileList2.forEach(function(item) {
+              formData.append('authorManFile', item)
+            })
+
+
+            // _that.$refs['addEditManform'].validate(function(valid) {
+            // if (valid) {
+            _that.loading = true;
+            $.ajax({
+              url: ctx + 'supermarket/ownerRegister/saveRegisterForm',
+              type: 'post',
+              data: formData,
+              dataType: 'json',
+              contentType: false,
+              processData: false,
+              success: function(res) {
+                if (res.success) {
+                  _that.$message({
+                    message: '保存成功',
+                    type: 'success'
+                  });
+                }
+                _that.step = '3';
+                _that.password = res.content.password;
+                _that.loginName = res.content.loginName;
+              },
+              error: function(msg) {
+                _that.$message({
+                  message: '保存失败',
+                  type: 'error'
+                });
+              },
+            })
+
           }
-          _that.password = res.content.password;
-          _that.loginName = res.content.loginName;
-        },
-        error: function(msg) {
+        } else {
           _that.$message({
-            message: '保存失败',
+            message: '请先填写完整本页信息',
             type: 'error'
           });
-        },
+          return;
+        }
       })
 
 

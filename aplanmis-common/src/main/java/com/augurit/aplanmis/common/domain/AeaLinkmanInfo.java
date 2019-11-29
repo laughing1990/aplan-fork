@@ -75,4 +75,5 @@ public class AeaLinkmanInfo implements Serializable {
     private String certNames;
     private String serviceName;
     private String auditFlag;
+    private String unitServiceIds;//中介发布服务ID
 }

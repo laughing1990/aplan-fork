@@ -226,9 +226,9 @@ var vm = new Vue({
         saveOrUpdateCertBuildFrom(){
             var _that = this;
             // _that.certBuildFrom = JSON.parse (JSON.stringify(_that.certBuildFrom));
-            _that.certBuildFrom.contractPeriod = _that.certBuildFrom.contractEndBuildTime.replace(/-/g,".") + '~' + _that.certBuildFrom.contractStartBuildTime.replace(/-/g,".")
             _that.$refs['certBuildFrom'].validate(function (valid){
                 if(valid){
+                    _that.certBuildFrom.contractPeriod = _that.certBuildFrom.contractEndBuildTime.replace(/-/g,".") + '~' + _that.certBuildFrom.contractStartBuildTime.replace(/-/g,".");
                     request('',{
                         url: ctx + '/rest/from/certbuild/saveAeaExProjCertBuild',
                         data: _that.certBuildFrom,
@@ -240,9 +240,10 @@ var vm = new Vue({
                                 message: '保存成功',
                                 type: 'success'
                             });
+                            window.location.reload();
                         }else {
                             _that.$message({
-                                message: '保存失败' + data.content,
+                                message: data.message,
                                 type: 'error'
                             });
                         }

@@ -202,7 +202,7 @@ public class RestUserCenterController {
     }
 
     //删除联系人
-    @DeleteMapping("linkman/delete/{unitInfoId}/{linkmanInfoId}")
+    @PostMapping("linkman/delete/{unitInfoId}/{linkmanInfoId}")
     @ApiOperation(value = "删除联系人")
     @ApiImplicitParams({@ApiImplicitParam(value = "单位id",name = "unitInfoId",required = true,dataType = "string"),
             @ApiImplicitParam(value = "联系人id",name = "linkmanInfoId",required = true,dataType = "string")})
