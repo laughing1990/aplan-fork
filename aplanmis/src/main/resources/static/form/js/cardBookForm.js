@@ -111,6 +111,8 @@ var app = new Vue({
       }, function(res) {
         vm.landAreaUnitSite = res.content.Land_Area_Type;
         vm.fieldType = res.content.C_LAND_TYPE;
+        vm.formData.landAreaUnit = vm.landAreaUnitSite[0].itemCode;
+        vm.formData3.landAreaUnit = vm.landAreaUnitSite[0].itemCode;
       }, function(err) {
         vm.$message.error('服务器错了哦!');
       })
@@ -207,7 +209,7 @@ var app = new Vue({
             _this.showData();
           } else {
             _this.$message({
-              message: '保存失败' + + res.content,
+              message: '保存失败' + +res.content,
               type: 'error'
             });
           }

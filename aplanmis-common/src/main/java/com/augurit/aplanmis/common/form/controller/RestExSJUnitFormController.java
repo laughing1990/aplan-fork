@@ -1,10 +1,15 @@
 package com.augurit.aplanmis.common.form.controller;
 
+import com.augurit.agcloud.bsc.util.UuidUtil;
+import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 //import com.augurit.aplanmis.admin.market.qual.service.AeaImQualLevelService;
+import com.augurit.agcloud.framework.ui.result.ResultForm;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaImQualLevelMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
+import com.augurit.aplanmis.common.mapper.AeaUnitInfoMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitProjLinkmanMapper;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
@@ -38,6 +43,8 @@ public class RestExSJUnitFormController {
     private AeaProjInfoMapper aeaProjInfoMapper;
     @Autowired
     private AeaExProjCertBuildService aeaExProjCertBuildService;
+    @Autowired
+    private AeaUnitInfoMapper aeaUnitInfoMapper;
 
     @PostMapping("/saveOrUpdateSJUnitInfo")
     public ContentResultForm<String> saveOrUpdateSJUnitInfo(AeaExProjBuild aeaExProjBuild){
@@ -127,4 +134,18 @@ public class RestExSJUnitFormController {
     @GetMapping("/index.html")
     @ApiOperation("施工和监理单位信息")
     public ModelAndView exSJUnit(){return new ModelAndView("form/exSJUnit");}
+
+    @PostMapping("/save/unitInfo")
+    @ApiOperation("保存单位信息并回显")
+    public ResultForm unitInfo(AeaUnitInfo aeaUnitInfo){
+        if (StringUtils.isBlank(aeaUnitInfo.getUnitInfoId())){
+            aeaUnitInfo.setUnitInfoId(UuidUtil.generateUuid());
+            aeaUnitInfo.setCreater(SecurityContext.getCurrentUserName());
+            aeaUnitInfo.setRootOrgId(SecurityContext.getCurrentOrgCode());
+            aeaUnitInfo.setCreateTime(new Date());
+            aeaUnitInfo.setIsDeleted("0");
+            aeaUnitInfoMapper.insertAeaUnitInfo(aeaUnitInfo);
+        }
+        return new ContentResultForm<AeaUnitInfo>(true,aeaUnitInfo,"success");
+    }
 }

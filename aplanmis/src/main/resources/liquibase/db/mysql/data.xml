@@ -2478,4 +2478,11 @@ INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`
         </sql>
     </changeSet>
 
+    <changeSet id="201911251448" author="小糊涂">
+        <comment>增加工作时时限规则</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `act_sto_timerule`(`TIMERULE_ID`, `TIMERULE_NAME`, `TIMERULE_CLASS_FULL_PATH`, `TIMERULE_CLASS_BEAN_ID`, `TIMERULE_UNIT`, `JOB_TIMER_ID`, `IS_ACTIVE`, `IS_DELETED`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ROOT_ORG_ID`) VALUES ('a82c3104-d15d-4b6b-8371-da7f5f4f11a9', '工作时计算规则', 'com.augurit.agcloud.bpm.common.timerule.impl.AplanmisWorkHourCalculate', 0x61706C616E6D6973576F726B486F757243616C63756C617465, 'WH', 'd80f1a12-7c32-446d-b70f-7cdf0f03e11f', '1', '0', 'htry', '2019-11-25 10:44:43', 'htry', '2019-11-25 10:47:39', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

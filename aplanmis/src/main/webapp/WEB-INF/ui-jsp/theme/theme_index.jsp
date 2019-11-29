@@ -38,11 +38,11 @@
 				<div class="m-portlet__body" style="padding: 10px 0px;">
 					<div class="m-form m-form--label-align-right m--margin-bottom-5">
 						<div class="row" style="margin: 0px;margin-bottom: 30px;">
-							<div class="col-xl-7 order-1 m--align-left m--padding-left-20">
+							<div class="col-xl-6 order-1 m--align-left m--padding-left-20">
 								<button type="button" class="btn btn-primary" onclick="addTheme();">新增主题</button>
 								<button type="button" class="btn btn-secondary" onclick="themeSort();">主题排序</button>
 							</div>
-							<div class="col-xl-5 order-2 order-xl-1  m--align-right">
+							<div class="col-xl-6 order-2 order-xl-1  m--align-right">
 								<div class="form-group m-form__group row align-items-center">
 									<div class="col-md-8 m--margin-left-210">
 										<div class="input-group">

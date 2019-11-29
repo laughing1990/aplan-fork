@@ -1,6 +1,5 @@
 package com.augurit.aplanmis.common.vo;
 
-import com.augurit.aplanmis.common.domain.AeaExProjDrawing;
 import com.augurit.aplanmis.common.domain.AeaUnitProjLinkman;
 import lombok.Data;
 
@@ -20,7 +19,7 @@ public class AeaProjDrawing implements Serializable {
     private String unitProjId;//项目和企业关联id
 
     private String linkmanInfoId;//项目负责人id
-    private String projectLeader ;//项目负责人
+    private String projectLeader;//项目负责人
     private String projectLeaderCertNum;//项目负责人 ID Card
 
     private String linkmanType;//承担角色，来PROJ_UNIT_LINKMAN_TYPE项目单位联系人类型
@@ -32,4 +31,5 @@ public class AeaProjDrawing implements Serializable {
 
     List<AeaUnitProjLinkman> linkmen;
 
+    private String linkManInfoIds;
 }

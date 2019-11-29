@@ -48,7 +48,6 @@
                                                 <span class="warning" v-if="itemSub.name== '申报列表' && applyNum" >{{applyNum}}</span>
                                                 <span class="warning" v-if="itemSub.name== '撤回申报列表' && withdrawNum" >{{withdrawNum}}</span>
                                                 <span class="warning" v-if="itemSub.name== '待申报'&& draftNum ">{{draftNum}}</span>
-                                                <span class="warning" v-if="itemSub.name== '我的材料库'&& myMatNum ">{{myMatNum}}</span>
                                             </a>
                                         </li>
                                     </ul>
@@ -58,7 +57,11 @@
                     </div>
                 </div>
                 <transition name="el-fade-in-linear">
-                    <div class="my-pro-right floor" :class="myProLeftShow?'':'my-pro-right-full'" id="my-pro-right_m" style="min-height: 700px;padding-bottom: 30px;">
+                    <div class="my-pro-right floor"
+                         :class="myProLeftShow?'':'my-pro-right-full'"
+                         id="my-pro-right_m"
+                         :style="{'min-height': (curHeight-258)+'px'}"
+                         style="padding-bottom: 30px;">
 
                     </div>
                 </transition>

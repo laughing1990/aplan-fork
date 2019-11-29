@@ -97,7 +97,6 @@ public class RestApplyService {
      *
      * @param seriesApplyDataPageVo 申报参数
      * @return applyinstId 申请实例ID
-     * @throws Exception
      */
     public String startSeriesFlow(SeriesApplyDataPageVo seriesApplyDataPageVo) throws Exception {
         String applyinstIdParam = seriesApplyDataPageVo.getApplyinstId();
@@ -106,7 +105,7 @@ public class RestApplyService {
         String applyinstId = aeaSeriesService.stageApplay(dataVo);
         updateAeaSmsInfo(seriesApplyDataPageVo.getSmsInfoId(), new String[]{applyinstId});
         //保存受理回执，物料回执
-        if (StringUtils.isBlank(applyinstIdParam)) {
+        if (StringUtils.isNotBlank(applyinstIdParam)) {
             receiveService.saveReceive(new String[]{applyinstId}, new String[]{"1", "2"}, SecurityContext.getCurrentUserName(), "");
         }
         return applyinstId;
@@ -117,7 +116,6 @@ public class RestApplyService {
      *
      * @param seriesApplyDataPageVo 申报餐宿
      * @return applyinstId 申请实例ID
-     * @throws Exception
      */
     public String instantiateSeriesFlow(SeriesApplyDataPageVo seriesApplyDataPageVo) throws Exception {
         // 如果是多次打印回执，直接返回申报实例
@@ -158,9 +156,6 @@ public class RestApplyService {
      * 并联申报 --> 生成实例，打印回执
      * 并联申报可以支持只申报并行推进事项，不申报并联申报事项；
      *
-     * @param stageApplyDataPageVo
-     * @return
-     * @throws Exception
      */
     public ApplyinstIdVo instantiateStageProcess(StageApplyDataPageVo stageApplyDataPageVo) throws Exception {
         ApplyinstIdVo applyinstIdVo = new ApplyinstIdVo();
@@ -173,7 +168,7 @@ public class RestApplyService {
         String[] applyinstIds;
         //20190819 小糊涂 并联申报可以支持只申报并行推进事项，不申报并联申报事项；
         List<String> itemVerIds = stageApplyDataPageVo.getItemVerIds();
-        if (null != itemVerIds || itemVerIds.size() > 0) {
+        if (null != itemVerIds && itemVerIds.size() > 0) {
             AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageApplyDataPageVo.getStageId());
             Assert.notNull(aeaParStage, "aeaParStage is null");
             String appId = aeaParStage.getAppId();
@@ -209,9 +204,7 @@ public class RestApplyService {
     /**
      * 并联申报 --> 发起申报
      *
-     * @param stageApplyDataPageVo
      * @return applyinstIds 申请实例集合
-     * @throws Exception
      */
     public ApplyinstIdVo startStageProcess(StageApplyDataPageVo stageApplyDataPageVo) throws Exception {
         ApplyinstIdVo applyinstIdVo = new ApplyinstIdVo();
@@ -252,16 +245,13 @@ public class RestApplyService {
     /**
      * 并联申报 --> 发起申报，不予受理
      *
-     * @param stageApplyDataPageVo
-     * @return
-     * @throws Exception
      */
     public ApplyinstIdVo inadmissibleStageProcess(StageApplyDataPageVo stageApplyDataPageVo) throws Exception {
         ApplyinstIdVo applyinstIdVo = new ApplyinstIdVo();
         String[] applyinstIds;
         //20190820 小糊涂 并联申报可以支持只申报并行推进事项，不申报并联申报事项；
         List<String> itemVerIds = stageApplyDataPageVo.getItemVerIds();
-        if (null != itemVerIds || itemVerIds.size() > 0) {
+        if (null != itemVerIds && itemVerIds.size() > 0) {
             AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageApplyDataPageVo.getStageId());
             Assert.notNull(aeaParStage, "aeaParStage is null");
             String appId = aeaParStage.getAppId();
@@ -294,8 +284,6 @@ public class RestApplyService {
     /**
      * 并联申报时，如果只勾选并行事项，则转换参数到单项申报
      *
-     * @param applyDataPageVo StageApplyDataPageVo
-     * @return
      */
     private List<SeriesApplyDataVo> getSeriesApplyDataVoListFromStage(StageApplyDataPageVo applyDataPageVo) {
         List<SeriesApplyDataVo> list = new ArrayList<>();
@@ -312,7 +300,7 @@ public class RestApplyService {
             vo.setAppId(aeaItemBasic.getAppId());
             String orgId = BusinessUtil.getOrgIdFromBranchOrgMap(branchOrgMap, itemVerId);
             if (StringUtils.isNotBlank(orgId)) {
-                Map map = new HashMap();
+                Map<String, String> map = new HashMap<>();
                 map.put("branchOrg", orgId);
                 map.put("itemVerId", itemVerId);
                 List<Map> temp = new ArrayList<>();
@@ -372,14 +360,12 @@ public class RestApplyService {
     /**
      * 根据材料ID获取相关中介服务事项信息和项目信息
      *
-     * @return
-     * @throws Exception
      */
     public Map getImServiceItemsAndProjInfo(String matId, String applyinstId) throws Exception {
 
         if (StringUtils.isBlank(matId) || StringUtils.isBlank(applyinstId)) return null;
 
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<>();
 
         ImServiceItemPurchaseVo imServiceItemPurchaseVo = new ImServiceItemPurchaseVo();
 
@@ -398,7 +384,7 @@ public class RestApplyService {
         imServiceItemPurchaseVo.setLocalCode(projInfo.getLocalCode());
         imServiceItemPurchaseVo.setPurchaseName(projInfo.getProjName());
 
-        Map projScale = new HashMap();
+        Map<String, Double> projScale = new HashMap<>();
         projScale.put("buildAreaSum", projInfo.getBuildAreaSum());// 建筑面积
         projScale.put("investSum", projInfo.getInvestSum());// 总投资
         projScale.put("xmYdmj", projInfo.getXmYdmj());// 用地面积
@@ -427,8 +413,8 @@ public class RestApplyService {
         //根据输出材料ID获取对应的中介服务事项
         List<AeaItemBasic> itemBasics = aeaItemBasicAdminService.getAeaItemBasicsListByOutputMatId(matId);
 
-        List<Map> serviceItemsInfo = new ArrayList();
-        Map serviceMap = new HashMap();
+        List<Map> serviceItemsInfo = new ArrayList<>();
+        Map<String, AeaImService> serviceMap = new HashMap<>();
 
         for (AeaItemBasic itemBasic : itemBasics) {
 
@@ -436,7 +422,7 @@ public class RestApplyService {
             aeaItemRelevance.setChildItemId(itemBasic.getItemId());
             aeaItemRelevance.setIsDelete("0");
 
-            Map itemVo = new HashMap();
+            Map<String, Object> itemVo = new HashMap<>();
             itemVo.put("itemName", itemBasic.getItemName());
             itemVo.put("parItem", aeaItemRelevanceService.listAeaItemRelevance(aeaItemRelevance));// 获取关联行政事项
 
@@ -451,20 +437,20 @@ public class RestApplyService {
             }
         }
 
-        List<Map> _services = new ArrayList();
+        List<Map> _services = new ArrayList<>();
 
         if (serviceItemsInfo.size() > 0) {
 
             Collection<AeaImService> valueCollection = serviceMap.values();
-            List<AeaImService> services = new ArrayList(valueCollection);
+            List<AeaImService> services = new ArrayList<>(valueCollection);
 
             //按照中介服务来分类
             for (AeaImService service : services) {
-                Map serviceVo = new HashMap();
+                Map<String, Object> serviceVo = new HashMap<>();
                 serviceVo.put("serviceId", service.getServiceId());
                 serviceVo.put("serviceName", service.getServiceName());
 
-                List<Map> temp = new ArrayList();
+                List<Map> temp = new ArrayList<>();
                 for (Map itemVo : serviceItemsInfo) {
                     if (itemVo.get("serviceId").equals(service.getServiceId())) {
                         temp.add(itemVo);
@@ -485,8 +471,6 @@ public class RestApplyService {
     /**
      * 发布项目采购需求
      *
-     * @param imServiceItemPurchaseVo
-     * @throws Exception
      */
     public ResultForm createImServiceItemPurchase(ImServiceItemPurchaseVo imServiceItemPurchaseVo) throws Exception {
 

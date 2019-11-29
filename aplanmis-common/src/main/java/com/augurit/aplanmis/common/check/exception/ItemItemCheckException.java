@@ -1,17 +1,27 @@
 package com.augurit.aplanmis.common.check.exception;
 
+import com.augurit.aplanmis.common.domain.AeaItemBasic;
+import lombok.Getter;
+
+import java.util.List;
+
 /**
  * 前置检查异常类
  */
+@Getter
 public class ItemItemCheckException extends CheckException {
 
-    private static final String message = "事项的前置事项检查不通过";
+    protected String message = "事项的前置事项检查不通过";
 
-    public ItemItemCheckException() {
-        super(message);
-    }
+    private List<AeaItemBasic> aeaItemFronts;
 
     public ItemItemCheckException(String message) {
         super(message);
+    }
+
+    public ItemItemCheckException(String message, List<AeaItemBasic> aeaItemFronts) {
+        super(message);
+        this.message = message;
+        this.aeaItemFronts = aeaItemFronts;
     }
 }

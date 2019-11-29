@@ -186,7 +186,7 @@ public class AeaCertAdminController {
     public ResultForm batchDeleteCertByIds(String[] ids) {
 
         if (ids != null && ids.length > 0) {
-            logger.debug("删除电子证照定义表Form对象，对象id为：{}", ids);
+            logger.debug("删除电子证照定义表Form对象，对象id为：{}", (Object) ids);
             aeaCertAdminService.batchDeleteCertByIds(ids);
             return new ResultForm(true);
         }

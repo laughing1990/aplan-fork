@@ -226,7 +226,7 @@ $(function () {
         var vm = this;
         // console.log(data);
         var iteminstId = data.iteminstId;
-        // var iteminstId = '988347fc-fde9-4067-8558-f45f1e3d9955';
+        // var iteminstId = '2ccbbcd7-e48b-45a9-9b87-83f4a82a0939';
         vm.getSpecialType(function () {
           vm.pageLoading = true;
           request('', {
@@ -252,6 +252,13 @@ $(function () {
               vm.$nextTick(function () {
                 vm.itemDetailVisible = true;
                 vm.pageLoading = false;
+                var box = $('.el-table__row');
+                for (var i = 0; i < box.length; i++) {
+                  var _this = box.eq(i);
+                  if (!_this.hasClass('expanded')) {
+                    _this.find('.el-icon.el-icon-arrow-right').trigger('click');
+                  }
+                }
               });
             } else {
               vm.$message.error(res.message || '获取事项详情失败');
@@ -330,6 +337,16 @@ $(function () {
       // icon 字体文件颜色
       getIconColor: function (type) {
         return __STATIC.getIconColor(type || "DEFAULT");
+      },
+      // 获取文件后缀
+      getFileType: function (fileName) {
+        var index1 = fileName.lastIndexOf(".");
+        var index2 = fileName.length;
+        var suffix = fileName.substring(index1 + 1, index2);//后缀名
+        if (suffix == 'docx') {
+          suffix = 'doc';
+        }
+        return suffix;
       },
       // 加载所有附件面板
       loadFilePanel: function () {

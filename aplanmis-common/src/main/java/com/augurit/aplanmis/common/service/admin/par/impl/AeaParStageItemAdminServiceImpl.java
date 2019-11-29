@@ -81,11 +81,16 @@ public class AeaParStageItemAdminServiceImpl implements AeaParStageItemAdminServ
 
     @Override
     public void saveAeaParStageItem(AeaParStageItem aeaParStageItem) {
+
+        aeaParStageItem.setSortNo(getMaxSortNoByStageId(aeaParStageItem.getStageId()));
+        aeaParStageItem.setCreater(SecurityContext.getCurrentUserId());
+        aeaParStageItem.setCreateTime(new Date());
         aeaParStageItemMapper.insertAeaParStageItem(aeaParStageItem);
     }
 
     @Override
     public void updateAeaParStageItem(AeaParStageItem aeaParStageItem) {
+
         aeaParStageItemMapper.updateAeaParStageItem(aeaParStageItem);
     }
 

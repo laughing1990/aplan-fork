@@ -67,17 +67,66 @@ var mixins = {
             }
 
             $.get(url, function (result) {
-                $('.project-detail-pandel-'+id).html(result);
+                $('.project-detail-pandel-' + id).html(result);
             });
         },
         // 返回列表-提供给项目详情模块内部使用
         returnProjectList: function () {
             var ts = this;
-            ts.showList=0;
+            ts.showList = 0;
             $('.project-detail').html('');
             ts.isProjectServiceDetail = false; //项目详情容器为false
             ts.curShowProjectDetailRow = {};
         },
+        /**
+         * 
+         * @param {*} row 
+         * @param {*} column 
+         * @param {*} value 传入的状态值
+         * @param {*} index 
+         * 根据状态值显示对应的项目状态文案
+         */
+        formatAuditFlag: function (row, column, value, index) {
+            switch (value) {
+                case '0':
+                    return "未提交";
+                case '1':
+                    return "服务中";
+                case '2':
+                    return "服务完成";
+                case '3':
+                    return "服务中止";
+                case '4':
+                    return "审核中";
+                case '5':
+                    return "退回";
+                case '6':
+                    return "报名中";
+                case '7':
+                    return "选取中";
+                case '8':
+                    return "选取开始";
+                case '9':
+                    return "已选取";
+                case '10':
+                    return "无效";
+                case '11':
+                    return "竞价中";
+                case '12':
+                    return "已过时";
+                case '13':
+                    return "部门审批中";
+                case '14':
+                    return "办结通过";
+                case '15':
+                    return "办结不通过";
+                case '16':
+                    return "待上传合同";
+                case '17':
+                    return "待确认合同";
+            }
+            return value;
+        }
     },
     filters: {
         dateFormat: function (date, format) {
@@ -93,7 +142,7 @@ var mixins = {
                 return y + '-' + add0(m) + '-' + add0(d)
             }
             return y + '-' + add0(m) + '-' + add0(d) + ' ' + add0(h) + ':' + add0(mm) + ':' + add0(s);
-        },
+        }
     },
     directives: {
         // el-select的加载更多

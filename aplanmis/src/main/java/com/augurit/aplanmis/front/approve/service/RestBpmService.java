@@ -871,4 +871,58 @@ public class RestBpmService {
         return result;
     }
 
+    /**
+     * 获取任务节点的审批意见，如果包含子流程，则连同子流程的意见获取
+     **/
+    public List getTaskComment(String taskId){
+        List result = new ArrayList();
+        HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
+        if(historicTaskInstance != null){
+            String processInstanceId = historicTaskInstance.getProcessInstanceId();
+            try {
+                //当前节点的意见
+                List<BpmHistoryCommentForm> historyComments = bpmTaskService.getHistoryCommentsByTaskId(processInstanceId, taskId);
+
+                //子流程节点意见
+                ActStoAppinstSubflow query = new ActStoAppinstSubflow();
+                query.setTriggerTaskinstId(taskId);
+                List<ActStoAppinstSubflow> actStoAppinstSubflows = actStoAppinstSubflowService.listActStoAppinstSubflow(query);
+                if(actStoAppinstSubflows.size() > 0){
+                    for(int i=0,len=actStoAppinstSubflows.size(); i<len; i++){
+                        ActStoAppinstSubflow actStoAppinstSubflow = actStoAppinstSubflows.get(i);
+                        List<BpmHistoryCommentForm> subHistoryComments = bpmTaskService.getHistoryCommentsByProcessInstanceId(actStoAppinstSubflow.getSubflowProcinstId());
+                        result.addAll(subHistoryComments);
+                    }
+                }else{
+                    result.addAll(historyComments);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 获取任务节点的前一个节点的审批意见，如果包含子流程，则连同子流程的意见获取
+     * @param taskId
+     * @return
+     */
+    public List getLastTaskComment(String taskId){
+        HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
+        String taskDefinitionKey = historicTaskInstance.getTaskDefinitionKey();
+        if(historicTaskInstance != null) {
+            String processInstanceId = historicTaskInstance.getProcessInstanceId();
+            List<HistoricTaskInstance> list = historyService.createHistoricTaskInstanceQuery().processInstanceId(processInstanceId).list();
+            for(int i=list.size()-1; i>=1; i--){
+                HistoricTaskInstance temp = list.get(i);
+                HistoricTaskInstance temp1 = list.get(i - 1);
+                if(temp.getId().equals(taskId) && temp1.getTaskDefinitionKey() != taskDefinitionKey){
+                    return getTaskComment(temp1.getId());
+                }
+            }
+        }
+        return null;
+    }
+
 }

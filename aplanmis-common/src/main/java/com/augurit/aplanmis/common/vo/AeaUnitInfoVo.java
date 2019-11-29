@@ -70,10 +70,13 @@ public class AeaUnitInfoVo {
     @ApiModelProperty(value = "人员设置列表", dataType = "list")
     private List<LinkmanTypeVo> linkmanTypes;
 
-    @ApiModelProperty(value = "选中的联系人")
-    private AeaLinkmanInfo selectedLinkman;
+    //@ApiModelProperty(value = "选中的联系人")
+    //private AeaLinkmanInfo selectedLinkman;
 
     private java.lang.String loginName; // (单位登录名)
+
+    @ApiModelProperty(value = "当前单位选择的联系人ID")
+    private String linkmanInfoId;//联系人
 
     public static AeaUnitInfoVo build(AeaUnitInfo aeaUnitInfo) {
         AeaUnitInfoVo aeaUnitInfoVo = new AeaUnitInfoVo();

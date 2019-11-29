@@ -144,7 +144,7 @@ public class AeaParStagePartformServiceImpl implements AeaParStagePartformServic
             actStoForm.setFormId(UUID.randomUUID().toString());
             actStoForm.setFormName(formName);
             actStoForm.setFormLoadUrl(formLoadUrl);
-            actStoForm.setFormProperty("dev-biz");
+            actStoForm.setFormProperty("meta-biz");
             actStoForm.setIsDeleted("0");
             actStoForm.setCreater(SecurityContext.getCurrentUserId());
             actStoForm.setCreateTime(new Date());
@@ -152,18 +152,22 @@ public class AeaParStagePartformServiceImpl implements AeaParStagePartformServic
             actStoForm.setIsAutoBuildForm("0");
             actStoForm.setIsAutoBuildTable("0");
             actStoForm.setIsMetaDbTable("0");
-            actStoForm.setFormVersion(1l);
+            actStoForm.setFormVersion(1L);
             actStoForm.setIsInnerForm("0");
             actStoForm.setIsLock("0");
             actStoFormMapper.insertActStoForm(actStoForm);
 
             AeaParStagePartform aeaParStagePartform = aeaParStagePartformMapper.getStagePartformById(stagePartformId);
-            if (aeaParStagePartform == null) throw new Exception("aeaParStagePartform is null");
+            if (aeaParStagePartform == null) {
+                throw new Exception("aeaParStagePartform is null");
+            }
             aeaParStagePartform.setStoFormId(actStoForm.getFormId());
             aeaParStagePartformMapper.updateStagePartform(aeaParStagePartform);
         } else {
             ActStoForm actStoForm = actStoFormMapper.getActStoFormById(formId);
-            if (actStoForm == null) throw new Exception("actStoForm is null");
+            if (actStoForm == null) {
+                throw new Exception("actStoForm is null");
+            }
             actStoForm.setFormCode(formCode);
             actStoForm.setFormName(formName);
             actStoForm.setFormLoadUrl(formLoadUrl);

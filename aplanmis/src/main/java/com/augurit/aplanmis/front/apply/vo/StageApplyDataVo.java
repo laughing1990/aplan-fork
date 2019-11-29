@@ -39,7 +39,7 @@ public class StageApplyDataVo {
     @ApiModelProperty(value = "并联申报事项版本ID", required = true, dataType = "java.util.List")
     private List<String> itemVerIds;
 
-    @ApiModelProperty(value = "简单合并申报，选择的并联事项情形", dataType = "string", notes = "")
+    @ApiModelProperty(value = "简单合并申报，选择的并联事项情形", dataType = "string")
     private List<ParallelItemStateVo> parallelItemStateIds;
 
     @ApiModelProperty(value = "分局承办，格式为：[{\"itemVerId\":\"111\",\"branchOrg\":\"222\"}]", required = true)

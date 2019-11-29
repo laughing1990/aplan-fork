@@ -32,9 +32,10 @@
     <select id="listAeaStageItem" resultType="AeaParStageItem">
         select
             apsi.STAGE_ITEM_ID stageItemId,
+            apsi.STAGE_ID stageId,
             apsi.ITEM_ID itemId,
             apsi.ITEM_VER_ID itemVerId,
-            apsi.STAGE_ID stageId,
+            apsi.IS_OPTION_ITEM  isOptionItem,
             apsi.SUB_FORM_ID subFormId,
             apsi.SORT_NO sortNo,
             item.ITEM_NAME as itemName,
@@ -43,7 +44,17 @@
             item.BJ_TYPE as bjType,
             item.IS_CATALOG as isCatalog,
             item.GUIDE_ORG_NAME as guideOrgName,
-            item.ORG_NAME as orgName
+            item.ORG_NAME as orgName,
+            (
+                SELECT
+                asf.FORM_NAME
+                FROM
+                ACT_STO_FORM asf
+                WHERE
+                asf.FORM_ID = apsi.SUB_FORM_ID
+                AND asf.IS_DELETED = '0'
+                AND asf.FORM_PROPERTY IN ('smart-biz', 'smart-flow')
+            ) AS formName
         from AEA_PAR_STAGE_ITEM apsi,(
             select
                 ai.ITEM_ID,
@@ -73,7 +84,7 @@
 
     <select id="getActStoForm" resultType="ActStoForm">
         select
-        asf.FORM_NAME formName
+          asf.FORM_NAME formName
         FROM
         AEA_PAR_STAGE_ITEM apsi
         LEFT JOIN ACT_STO_FORM asf ON asf.FORM_ID = apsi.SUB_FORM_ID
@@ -82,7 +93,7 @@
             AND apsi.ITEM_VER_ID = #{itemVerId}
             AND asf.FORM_ID = #{formId}
             AND asf.IS_DELETED = '0'
-            AND asf.FORM_PROPERTY IN ( 'smart-biz', 'smart-flow' )
+            AND asf.FORM_PROPERTY in ( 'smart-biz', 'smart-flow' )
         </where>
     </select>
 
@@ -172,14 +183,14 @@
         <where>
             and asf.FORM_ORG_ID = #{formOrgId}
             and asf.FORM_ID not in (
-                select DISTINCT apsi.SUB_FORM_ID
+                select distinct apsi.SUB_FORM_ID
                 from AEA_PAR_STAGE_ITEM apsi
                 where apsi.STAGE_ID = #{stageId}
                   and apsi.SUB_FORM_ID is not null
                   and apsi.SUB_FORM_ID !=''
             )
             AND asf.IS_DELETED = '0'
-            AND asf.FORM_PROPERTY IN ( 'smart-biz', 'smart-flow' )
+            AND asf.FORM_PROPERTY in ( 'smart-biz', 'smart-flow' )
             <if test="keyword!=null and keyword!='' ">
             and (
                 asf.FORM_NAME like concat('%',concat(#{keyword},'%')) or

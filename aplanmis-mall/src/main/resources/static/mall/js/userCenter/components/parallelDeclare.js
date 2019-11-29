@@ -51,7 +51,7 @@ var module1 = new Vue({
       if (value === '' || value === undefined || value.trim() === '') {
         callback(new Error('请输入统一社会信用代码！'));
       } else if (value) {
-        var flag = !/[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}/.test(value);
+        var flag = !/^[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}$/.test(value);
         if (flag) {
           return callback(new Error('请输入正确的统一社会信用代码！'));
         } else {
@@ -79,7 +79,8 @@ var module1 = new Vue({
         { num: '7', name: '材料一单清' },
         { num: '8', name: '完成申报' },
       ],
-      itemTabSelect: '', // 选择主题-选中tab
+      itemTabSelect: 'tab_0', // 选择主题-选中tab
+      stageTypeTabSelect: 'paralle', //
       themeActive: '', // 选中主题样式
       isShowAll: false,  // 是否展示更多事项材料一单清
       projInfoId: '', // 查询项目id
@@ -184,10 +185,14 @@ var module1 = new Vue({
           { required: true, validator: checkUnifiedSocialCreditCode, trigger: ['blur'] },
         ]
       },
-      themeTypeList: [], // 主题类型主题列表
+      themeTypeList: {
+        auxiLine:[],
+        mainLine: [],
+      }, // 主题类型主题列表
       smsInfoId: '', // 领件人实例id
       themeId: '', // 所选主题id
       themeName: '', // 所选主题名称
+      selThemeInfo: {}, // 所选主题信息
       themeIdFlag: false, // 项目是否已存在主题id
       themeType: '', // 所选主题类型
       stageList: [], // 阶段列表
@@ -292,7 +297,7 @@ var module1 = new Vue({
           { required: true, message: '请选择工程分类', trigger: 'change' },
         ],
         nstartTime: [
-          { required: true, message: '请选择拟开工时间', trigger: 'blur' },
+          { required: true, message: '请选择拟开工时间', trigger: 'change' },
         ],
         endTime: [
           { required: true, message: '请选择拟建成时间', trigger: 'change' },
@@ -391,6 +396,10 @@ var module1 = new Vue({
       stageFrontCheckFlag: true, // 阶段前置检测是否通过
       stageFrontCheckMsg: '', // 阶段前置检测失败提示
       leftTabClosed: true, //
+      selThemeDialogShow: false, // 是否展示
+      rootUnitInfoId: '',
+      rootLinkmanInfoId: '',
+      ootApplyLinkmanId: '',
     }
   },
   mounted: function () {
@@ -416,7 +425,8 @@ var module1 = new Vue({
       };
       _that.mySpaceLoading = true;
       request('', {
-        url: ctx + 'rest/user/mat/list',
+        // url: ctx + 'rest/user/mat/list',
+        url: ctx + 'rest/user/mat/getMyMatListContainsFiles',
         type: 'get',
         data: param
       }, function (result) {
@@ -432,8 +442,36 @@ var module1 = new Vue({
             });
           }
           if (_that.myMatsList.length > 0) {
-            _that.myMatsList.map(function (item) {
+            _that.myMatsList.map(function (item,index) {
               Vue.set(item, 'checked', false);
+              if (typeof item.hasChildren == 'undefined') {
+                Vue.set(item, 'hasChildren', true)
+              }
+              if (typeof item.rowKey == 'undefined') {
+                Vue.set(item, 'rowKey', 'mat_'+index)
+              } else {
+                item.rowKey = 'mat_'+index
+              }
+              if(item.bscAttFileAndDir&&item.bscAttFileAndDir.length>0){
+                item.bscAttFileAndDir.map(function(bscAttFileItem,ind){
+                  if (typeof bscAttFileItem.rowKey == 'undefined') {
+                    Vue.set(bscAttFileItem, 'rowKey', 'mat_'+index+'_file_'+ind)
+                  } else {
+                    bscAttFileItem.rowKey = 'mat_'+index+'_file_'+ind
+                  }
+                  if (typeof bscAttFileItem.checked == 'undefined') {
+                    Vue.set(bscAttFileItem, 'checked', false)
+                  }
+                  if (typeof item.hasChildren == 'undefined') {
+                    Vue.set(item, 'hasChildren', false)
+                  }
+                });
+                if (typeof item.children == 'undefined') {
+                  Vue.set(item, 'children', item.bscAttFileAndDir)
+                }else {
+                  item.children = item.bscAttFileAndDir;
+                }
+              }
               if (uploadFileIds.indexOf(item.fileId) > -1) {
                 item.checked = true;
               }
@@ -589,10 +627,24 @@ var module1 = new Vue({
     },
     // 切换我的材料选中状态 flag ==dir 我的空间选中材料
     changeMyMatSel: function (val, selMatData, flag) {
-      console.log(val, selMatData);
-      console.log(this.selMatRowData);
-      var _that = this;
-      var fileId = flag == 'dir' ? selMatData.detailId : selMatData.fileId;
+      var _that = this, fileId = '';
+      if(flag == 'dir'){
+        fileId = selMatData.detailId;
+      }else {
+        if(selMatData.fileId){
+          fileId = selMatData.fileId
+        }else {
+          if(selMatData.children&&selMatData.children.length>0){
+            var fileIds = [];
+            selMatData.children.map(function(itemFile){
+              if(fileIds.indexOf(itemFile.fileId)<0){
+                fileIds.push(itemFile.fileId);
+              }
+            });
+            fileId = fileIds.join(',')
+          }
+        }
+      }
       var param = {
         detailIds: fileId,
         matId: _that.selMatRowData.matId,
@@ -610,7 +662,7 @@ var module1 = new Vue({
           if (result) {
             console.log(result);
             _that.selMatRowData.matinstId = result.content;
-            _that.getFileListWin(result.content, _that.selMatRowData);
+            _that.getFileListWin(result.content, _that.selMatRowData,val,selMatData);
           }
         }, function (msg) { });
       } else {
@@ -781,9 +833,13 @@ var module1 = new Vue({
               });
               _that.addEditManPerform.linkmanName = _that.addEditManform.linkmanName;
               _that.addEditManPerform.linkmanId = result.content;
+              _that.addEditManPerform.linkmanInfoId = result.content;
               _that.addEditManPerform.linkmanMail = _that.addEditManform.linkmanMail;
               _that.addEditManPerform.linkmanCertNo = _that.addEditManform.linkmanCertNo;
               _that.addEditManPerform.linkmanMobilePhone = _that.addEditManform.linkmanMobilePhone;
+
+              // _that.applyObjectInfo.aeaLinkmanInfo.linkmanId=result.content;//qjp添加
+
               _that.addEditManModalShow = false;
               _that.loading = false;
             }
@@ -988,6 +1044,11 @@ var module1 = new Vue({
     searchProjAllInfo: function () {
       var _that = this;
       _that.loading = true;
+      _that.gbhyShowMsg = '';
+      _that.themeId = '';
+      _that.themeName = '';
+      _that.themeActive = '';
+      _that.selThemeInfo = {};
       request('', {
         url: ctx + 'rest/apply/common/projInfo/' + _that.projInfoId,
         type: 'get',
@@ -1465,9 +1526,7 @@ var module1 = new Vue({
           validFun = _that.$refs[formRef][0].validate
         }
         validFun(function (valid) {
-          if (valid) {
-            jiansheUnitFlag = true;
-          } else {
+          if (!valid) {
             jiansheUnitFlag = false;
             perUnitMsg = "请完善申办主体建设单位信息"
             return false;
@@ -1512,10 +1571,22 @@ var module1 = new Vue({
                     }
                     _that.getThemeList();
                     _that.unitProjIds = data.content.unitProjIds;
-                    if (_that.intelligenceAllow || _that.themeId != '') {
+                    if (_that.intelligenceAllow || (_that.themeId&&_that.themeId != '')) {
                       _that.declareStep = 3;
                     } else {
                       _that.declareStep = 2;
+                    }
+                    if(data.content.unitReturnJson&&data.content.unitReturnJson.length>0){
+                      var arr = data.content.unitReturnJson;
+                      arr.forEach(function(item,index){
+                        if(_that.jiansheFrom.length > 0) {
+                          for(var i= 0;i<_that.jiansheFrom.length;i++){
+                            if(_that.jiansheFrom[i].unifiedSocialCreditCode == item.unifiedSocialCreditCode){
+                              _that.jiansheFrom[i].unitInfoId =  item.unitInfoId;
+                            }
+                          }
+                        }
+                      })
                     }
                     _that.$message({
                       message: '保存成功',
@@ -1560,7 +1631,8 @@ var module1 = new Vue({
       var _that = this;
       _that.loading = true;
       request('', {
-        url: ctx + 'rest/main/theme/list',
+        // url: ctx + 'rest/main/theme/list',
+        url: ctx + 'rest/userCenter/apply/theme/list ',
         type: 'get',
       }, function (data) {
         if (data.success) {
@@ -1571,7 +1643,7 @@ var module1 = new Vue({
             if (_that.themeId) {
               _that.themeActive = _that.themeId;
               _that.themeIdFlag = true;
-              var copyThemeTypeList = JSON.parse(JSON.stringify(_that.themeTypeList));
+              var copyThemeTypeList = JSON.parse(JSON.stringify(_that.themeTypeList.mainLine));
               copyThemeTypeList = copyThemeTypeList.filter(function (item, index) {
                 return item.themeTypeCode === _that.themeType;
               })
@@ -1579,11 +1651,12 @@ var module1 = new Vue({
                 return item.themeId === _that.themeId;
               })
               _that.themeName = copyThemeTypeList[0].themeList[0].themeName;
+              _that.selThemeInfo = copyThemeTypeList[0].themeList[0];
             }
           } else {
             _that.themeIdFlag = false;
-            _that.itemTabSelect = 'tab_' + _that.themeTypeList[0].themeTypeCode;
-            _that.chooseTheme(_that.themeTypeList[0].themeList[0]);
+            _that.itemTabSelect = 'tab_' + _that.themeTypeList.mainLine[0].themeTypeCode;
+            // _that.chooseTheme(_that.themeTypeList[0].themeList[0]);
           }
         } else {
           _that.loading = false;
@@ -1615,9 +1688,11 @@ var module1 = new Vue({
       // alertMsg('', '主题已锁定，不可更改', '关闭', 'error', true);
       //   return false;
       // }else {
+      _that.selThemeDialogShow = false;
       _that.themeActive = data.themeId;
       _that.themeId = data.themeId;
       _that.themeName = data.themeName;
+      _that.selThemeInfo = data;
       // }
     },
     // 选择主题保存并下一步根据主题获取阶段
@@ -1734,10 +1809,10 @@ var module1 = new Vue({
       }
       var param = {stageId: this.stageId,projInfoId:this.projInfoId};
       var _that = this;
-      if(data.isCheckStage=='0'){
-        _that.getStatusStateMats(_that.stageId);  // 获取事项情形列表
-        _that.stageFrontCheckFlag = true;
-      }else {
+      // if(data.isCheckStage=='0'){
+      //   _that.getStatusStateMats(_that.stageId);  // 获取事项情形列表
+      //   _that.stageFrontCheckFlag = true;
+      // }else {
         // 阶段前置检测
         request('', {
           url: ctx + 'rest/check/stageFrontCheck',
@@ -1761,7 +1836,7 @@ var module1 = new Vue({
             },'继续申报','放弃申报', 'error', true);
           }
         }, function (msg) {})
-      }
+      // }
     },
     // 判断事项checkbox是否可勾选
     checkboxInit: function (row) {
@@ -2805,8 +2880,25 @@ var module1 = new Vue({
     },
     // 删除文件 flag ==dir 我的空间选中材料
     delSelectFileCom: function (rowData, fileData, index, flag) {
-      var _that = this;
-      var detailIds = flag == 'dir' ? fileData.detailId : fileData.fileId;
+      var _that = this, detailIds='';
+      // var detailIds = flag == 'dir' ? fileData.detailId : fileData.fileId;
+      if(flag == 'dir'){
+        detailIds = fileData.detailId;
+      }else {
+        if(fileData.fileId){
+          detailIds = fileData.fileId
+        }else {
+          if(fileData.children&&fileData.children.length>0){
+            var fileIds = [];
+            fileData.children.map(function(itemFile){
+              if(fileIds.indexOf(itemFile.fileId)<0){
+                fileIds.push(itemFile.fileId);
+              }
+            });
+            detailIds = fileIds.join(',')
+          }
+        }
+      }
       request('', {
         url: ctx + 'rest/file/delelteAttachment',
         type: 'get',
@@ -2814,15 +2906,16 @@ var module1 = new Vue({
       }, function (res) {
         if (res.success) {
           _that.getFileListWin(res.content, rowData);
+          fileData.checked = false;
           // rowData.childs.splice(index,1);
           var succMsg = index ? '删除成功' : '移除成功'
-          if (_that.myMatsList.length > 0) {
-            _that.myMatsList.map(function (item) {
-              if (item.fileId == detailIds) {
-                item.checked = false;
-              }
-            });
-          }
+          // if (_that.myMatsList.length > 0) {
+          //   _that.myMatsList.map(function (item) {
+          //     if (item.fileId == detailIds) {
+          //       item.checked = false;
+          //     }
+          //   });
+          // }
           _that.$message({
             message: succMsg,
             type: 'success'
@@ -3308,6 +3401,7 @@ var module1 = new Vue({
     showOneFormDialog1: function(oneformMat){
       var _that = this;
       var _applyinstId = _that.parallelApplyinstId;
+      _that.selMatRowData = oneformMat;
       _that.matformNameTitle = oneformMat.matName
       if(_applyinstId==''){
         _that.getParallelApplyinstId('matForm',oneformMat.stoFormId)
@@ -3319,7 +3413,7 @@ var module1 = new Vue({
     getOneFormrender3: function(_applyinstId,_formId){
       var _that = this;
       // _formId = 'ecbebb64-a29c-41c6-abb7-e7b337a1a2cb';
-      var sFRenderConfig='&showBasicButton=true&includePlatformResource=false';
+      var sFRenderConfig='&showBasicButton=true&includePlatformResource=false&busiScence=mat';
       request('', {
         url: ctx + 'bpm/common/sf/renderHtmlFormContainer?listRefEntityId='+_applyinstId+'&listFormId='+_formId+sFRenderConfig,
         type: 'get',
@@ -3485,7 +3579,7 @@ var module1 = new Vue({
       }, 300);
     },
     // 获取已上传文件列表
-    getFileListWin: function (matinstId, rowData) {
+    getFileListWin: function (matinstId, rowData, checkFlag,selMatData) {
       var _that = this;
       _that.selMatLoading = true;
       request('', {
@@ -3506,14 +3600,46 @@ var module1 = new Vue({
                 }
               });
             }
+            if(checkFlag==true){
+              if (typeof selMatData.checked == undefined) {
+                Vue.set(selMatData, 'checked', true);
+              }else {
+                selMatData.checked = true;
+              }
+              _that.$refs['myMatsList'].toggleRowExpansion(selMatData,true);
+            }
             if (_that.myMatsList.length > 0) {
               _that.myMatsList.map(function (item) {
+                var checkedFlag = true;
                 if (typeof item.checked == undefined) {
                   Vue.set(item, 'checked', false);
                 }
-                if (uploadFileIds.length > 0 && uploadFileIds.indexOf(item.fileId) > -1) {
-                  item.checked = true;
-                } else {
+                if(item.children&&item.children.length>0){
+                  item.children.map(function(myMatsListItem){
+                    if (uploadFileIds.length > 0 && uploadFileIds.indexOf(myMatsListItem.fileId) > -1) {
+                      // myMatsListItem.checked = true;
+                      if (typeof myMatsListItem.checked == undefined) {
+                        Vue.set(myMatsListItem, 'checked', true);
+                      }else {
+                        myMatsListItem.checked = true;
+                      }
+                    } else {
+                      // myMatsListItem.checked = false;
+                      if (typeof myMatsListItem.checked == undefined) {
+                        Vue.set(myMatsListItem, 'checked', false);
+                      }else {
+                        myMatsListItem.checked = false;
+                      }
+                    }
+                    if(myMatsListItem.checked==false){
+                      checkedFlag = false;
+                    }
+                  });
+                  item.checked = checkedFlag;
+                  if(checkedFlag==true){
+                    _that.$refs['myMatsList'].toggleRowExpansion(item,true);
+                  }
+                }else {
                   item.checked = false;
                 }
               })
@@ -3953,4 +4079,23 @@ var module1 = new Vue({
     },
   },
 });
+function callbackAfterSaveSFForm(result,sFRenderConfig,formModelVal,actStoForminst) {
+  console.log(result,sFRenderConfig.busiScence,formModelVal,actStoForminst);
+  if(sFRenderConfig.busiScence=='mat'){
+    var parma = {
+      "linkmainInfoId": module1.userInfoId,
+      "matId": module1.selMatRowData.matId,
+      "projInfoId": module1.projInfoId,
+      "stoForminstId": actStoForminst.stoForminstId,
+      "unitInfoId": module1.unitInfoId
+    };
+    request('', {
+      url: ctx + 'aea/cert/bind/form',
+      type: 'POST',
+      ContentType: 'application/json',
+      data: JSON.stringify(parma),
+    }, function (result1) {
+    }, function (msg) {})
+  }
+}
 

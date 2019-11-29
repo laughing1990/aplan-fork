@@ -27,33 +27,14 @@
 				class="scrollable mt20" style="width: 100%;">
 				<el-table-column label="项目名称">
 					<template scope="scope">
-						<a @click="showProjectDetail2(scope.row)" class="a-color4879E4"
-							href="javascript:;">{{scope.row.projName}}</a>
+						<!-- <a @click="showProjectDetail2(scope.row)" class="a-color4879E4"
+							href="javascript:;">{{scope.row.projName}}</a> -->
+						<a class="a-color4879E4"
+							:href="ctx + '/supermarket/main/showPorjDetail.html?id=' + scope.row.projPurchaseId" target="_blank">{{scope.row.projName}}</a>
 					</template>
 				</el-table-column>
 				<el-table-column label="服务类型" prop="serviceName"></el-table-column>
-				<el-table-column label="状态" prop="auditFlag">
-					<template scope="scope">
-						<span v-if="scope.row.auditFlag==0">未提交</span>
-						<span v-if="scope.row.auditFlag==1">服务中</span>
-						<span v-if="scope.row.auditFlag==2">服务完成</span>
-						<span v-if="scope.row.auditFlag==3">服务中止</span>
-						<span v-if="scope.row.auditFlag==4">审核中</span>
-						<span v-if="scope.row.auditFlag==5">退回</span>
-						<span v-if="scope.row.auditFlag==6">报名中</span>
-						<span v-if="scope.row.auditFlag==7">选取中</span>
-						<span v-if="scope.row.auditFlag==8">选取开始</span>
-						<span v-if="scope.row.auditFlag==9">已选取</span>
-						<span v-if="scope.row.auditFlag==10">无效</span>
-						<span v-if="scope.row.auditFlag==11">待选取</span>
-						<span v-if="scope.row.auditFlag==12">已过时</span>
-						<span v-if="scope.row.auditFlag==13">部门审批中</span>
-						<span v-if="scope.row.auditFlag==14">办结通过</span>
-						<span v-if="scope.row.auditFlag==15">办结不通过</span>
-						<span v-if="scope.row.auditFlag==16">待上传合同</span>
-						<span v-if="scope.row.auditFlag==17">待确认合同</span>
-					</template>
-				</el-table-column>
+				<el-table-column label="状态" prop="auditFlag" :formatter="formatAuditFlag"></el-table-column>
 				<el-table-column label="更新时间" prop="modifyTime">
 					<template scope="scope">
 						{{scope.row.modifyTime ? dateFormat(scope.row.modifyTime) : dateFormat(scope.row.createTime)}}
@@ -213,7 +194,7 @@
 			确认合同
 		</button> -->
 		<div style="marginTop: 15px; textAlign: center;">
-			<el-button type="primary" @click="userSureContract" v-if="!isSureHandelRow&&isConfirm=='0'">保存并上传合同
+			<el-button type="primary" @click="saveAndUpdateAgree" v-if="!isSureHandelRow&&isConfirm=='0'">保存并上传合同
 			</el-button>
 			<el-button type="primary" @click="userSureContract" v-if="isSureHandelRow&&isConfirm=='0'">确认合同</el-button>
 		</div>
@@ -250,7 +231,11 @@
 				<el-input :rows="3" type="textarea" v-model="form2.memo"></el-input>
 			</el-form-item>
 		</el-form>
-		<button @click="postAeaImServiceEvaluation" class="btn btn-primary" type="button">提交</button>
+		<!-- <button @click="postAeaImServiceEvaluation" class="btn btn-primary" type="button">提交</button> -->
+		<div style="marginTop: 15px; textAlign: center;">
+			<el-button type="primary" @click="postAeaImServiceEvaluation">提交
+			</el-button>
+		</div>
 	</div>
 </div>
 
@@ -274,6 +259,7 @@
 		mixins: [mixins],
 		data: function () {
 			return {
+				ctx: '[[@{/}]]',
 				// 待处理项目
 				// 合同服务期限
 				value: '',
@@ -916,10 +902,10 @@
 			// 跳转到项目详情
 			showProjectDetail2: function (row) {
 				var ts = this;
-				ts.curShowProjectDetailRow = row;
-				ts.showList = 4;
-				ts.showProjectDetail(row);
-
+				// ts.curShowProjectDetailRow = row;
+				// ts.showList = 4;
+				// ts.showProjectDetail(row);
+				// window.location.href = ctx + "/supermarket/main/showPorjDetail.html?id=" + row.projPurchaseId;
 			},
 		},
 		created: function () {

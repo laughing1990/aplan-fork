@@ -8,6 +8,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Arrays;
+
 @DisplayName("前置检查管理器")
 class CheckerManagerTest extends BaseTest {
 
@@ -25,6 +27,6 @@ class CheckerManagerTest extends BaseTest {
     void itemCheck() throws Exception {
         Assertions.assertNotNull(checkerManager, "CheckerManager must not null");
 
-        checkerManager.itemCheck(new AeaItemBasic(), new CheckerContext(new CheckerInfo()));
+        checkerManager.itemCheck(Arrays.asList(new AeaItemBasic()), new CheckerContext(new CheckerInfo()));
     }
 }

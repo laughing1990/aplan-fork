@@ -161,4 +161,7 @@ public interface AeaParStageItemMapper {
                                                     @Param("rootOrgId") String rootOrgId);
 
     List<AeaParStageItem> checkBeforeSeriesFlow(@Param("itemVerIds") List<String> itemVerIds, @Param("themeId") String themeId, @Param("rootOrgId") String rootOrgId);
+
+    List<AeaParStageItem> listStageItems(@Param("stageId") String stageId,
+                                         @Param("isOptionItem") String isOptionItem);
 }

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>项目详情</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="../../../static/zjcs/common/images/favicon.ico"
+        th:href="@{/zjcs/common/images/favicon.ico}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+        th:href="@{/agcloud/framework/js-lib/element-2/element.css}" />
+    <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/blue/css/theme.css"
+        th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
+    <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css"
+        th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+    <link rel="stylesheet" href="../../../static/zjcs/common/css/reset.css" th:href="@{/zjcs/common/css/reset.css}">
+    <link rel="stylesheet" href="../../../../../static/zjcs/personCenter/css/waitDealProDetail.css"
+        th:href="@{/zjcs/personCenter/css/waitDealProDetail.css}">
+
+    <script>
+        var ctx = '[[@{/}]]';
+    </script>
+</head>
+
+<body class="gray-body">
+    <div id="app" v-cloak>
+        <el-form ref="form" :model="form" label-width="130px" disabled="disabled">
+            <el-collapse v-model="activeNames">
+                <el-collapse-item class="clearfix" name="1" id="">
+                    <template slot="title">
+                        <i class="header-icon icon ag ag-project-info"></i>中介事项信息
+                    </template>
+                    <el-row>
+                        <el-col :span="8">
+                            <el-form-item label="事项名称：">
+                                {{form.iteminst.iteminstName}}
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-form-item label="实施主体：">
+                                {{form.iteminst.approveOrgName}}
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-form-item label="服务对象：">
+                                {{form.iteminst.serviceObj}}
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :span="8">
+                            <el-form-item label="办件类型：">
+                                {{form.iteminst.itemProperty}}
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-form-item label="法定办结期限：">
+                                {{form.iteminst.dueNum}}（{{form.iteminst.dueNumUnit}}）
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-form-item label="承诺办结期限：">
+                                {{form.iteminst.isSeriesApprove}}（{{form.iteminst.itemProperty}}）
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :span="8">
+                            <el-form-item label="关联的行政事项：">
+                                {{form.iteminst.relevancyItemName }}
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                </el-collapse-item>
+
+                <el-collapse-item class="clearfix" name="2" id="">
+                    <template slot="title">
+                        <i class="header-icon icon ag ag-project-info"></i>项目/工程信息
+                    </template>
+
+                    <el-form-item label="项目/工程名称">
+                        <el-input v-model="form.aeaProjInfo.projName"></el-input>
+                    </el-form-item>
+
+                    <div class="clearfix">
+                        <el-form-item label="项目代码" class="inline-block">
+                            <el-input v-model="form.aeaProjInfo.localCode"></el-input>
+                        </el-form-item>
+                        <el-form-item label="工程代码" class="inline-block">
+                            <el-input v-model="form.aeaProjInfo.gcbm"></el-input>
+                        </el-form-item>
+                    </div>
+                </el-collapse-item>
+
+                <el-collapse-item class="clearfix" name="3" id="">
+                    <template slot="title">
+                        <i class="header-icon icon ag ag-project-info"></i>采购中介服务信息
+                    </template>
+                    <div class="clearfix">
+                        <el-form-item label="项目联系人" class="inline-block">
+                            <el-input v-model="form.purchaseProj.contacts"></el-input>
+                        </el-form-item>
+                        <el-form-item label="联系电话" class="inline-block">
+                            <el-input v-model="form.purchaseProj.moblie"></el-input>
+                        </el-form-item>
+                        <el-form-item label="采购项目名称" class="inline-block">
+                            <el-input v-model="form.purchaseProj.projName"></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="项目规模" class="inline-block">
+                            <el-input placeholder="请选择项目规模" v-model="form.purchaseProj.projScaleContent"
+                                class="input-with-select">
+                                <span slot="prepend">{{form.purchaseProj.projScale}}</span>
+                            </el-input>
+                        </el-form-item>
+                    </div>
+
+                    <el-form-item label="资源来源比例">
+                        <el-row>
+                            <el-col :span="12" v-show="form.purchaseProj.isFinancialFund === '1'">
+                                财政资金(%)<el-input v-model="form.purchaseProj.financialFundProportion"
+                                    style="width: 63%;"></el-input>
+                            </el-col>
+                            <el-col :span="12" v-show="form.purchaseProj.isFinancialFund !== '1'">
+                                社会资金(%)<el-input v-model="form.purchaseProj.socialFundProportion" style="width: 63%;">
+                                </el-input>
+                            </el-col>
+                        </el-row>
+                    </el-form-item>
+                    <el-form-item label="所需服务">
+                        <el-input v-model="form.purchaseProj.serviceName" style="width: 63%;"></el-input>
+                    </el-form-item>
+                    <el-form-item label="服务时限说明">
+                        <el-input v-model="form.purchaseProj.serviceTimeExplain" style="width: 63%;"></el-input>
+                    </el-form-item>
+                    <el-form-item label="服务内容">
+                        <el-input v-model="form.purchaseProj.serviceContent" style="width: 63%;"></el-input>
+                    </el-form-item>
+                    <el-form-item label="中介服务机构要求">
+                        <el-input v-if="form.purchaseProj.isQualRequire === '1'" value="资质(资格)要求"></el-input>
+                        <el-input v-if="form.purchaseProj.isRegisterRequire === '1'" value="执业/职业人员要求"></el-input>
+                        <el-input v-if="form.purchaseProj.isRecordRequire === '1'" value="备案要求"></el-input>
+                        <el-input v-if="form.purchaseProj.promiseService === '1'" value="仅承诺服务即可"></el-input>
+                        <el-input v-else></el-input>
+                    </el-form-item>
+
+                    <!--资质（资格）要求 start-->
+                    <div v-if="form.purchaseProj.isQualRequire === '1'">
+                        <el-form-item label="资质要求">
+                            <el-input v-if="form.purchaseProj.qualRequireType === '0'" value="多个资质子项符合其一"></el-input>
+                            <el-input v-if="form.purchaseProj.qualRequireType === '1'" value="需要同时符合所有选中资质子项">
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item label="资质要求说明">
+                            <el-input v-model="form.purchaseProj.qualRequireExplain" type="textarea" rows="3">
+                            </el-input>
+                        </el-form-item>
+                    </div>
+                    <!--资质（资格）要求 end-->
+
+                    <!--执业/职业人员要求 start-->
+                    <div v-if="form.purchaseProj.isRegisterRequire === '1'">
+                        <el-form-item label="执业/职业人员总数">
+                            <el-input v-model="form.purchaseProj.registerTotal"></el-input>
+                        </el-form-item>
+                        <el-form-item label="执业/职业人员要求">
+                            <el-input v-model="form.purchaseProj.registerRequire" type="textarea" rows="3"></el-input>
+                        </el-form-item>
+                    </div>
+                    <!--执业/职业人员要求 end-->
+
+                    <!--备案要求 start-->
+                    <div v-if="form.purchaseProj.isRecordRequire === '1'">
+                        <el-form-item label="备案要求说明">
+                            <el-input v-model="form.purchaseProj.recordRequireExplain" type="textarea" rows="3">
+                            </el-input>
+                        </el-form-item>
+                    </div>
+                    <!--备案要求 end-->
+
+                    <el-form-item label="其他要求说明">
+                        <el-input v-model="form.purchaseProj.otherRequireExplain" type="textarea" rows="3"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="选取中介服务机构方式">
+                        <el-input v-if="form.purchaseProj.biddingType === '1'" value="随机抽取"></el-input>
+                        <el-input v-if="form.purchaseProj.biddingType === '2'" value="直接抽取"></el-input>
+                        <el-input v-if="form.purchaseProj.biddingType === '3'" value="竞价选取"></el-input>
+                    </el-form-item>
+
+                    <!--随机选取 start-->
+                    <div v-if="form.purchaseProj.biddingType === '1'">
+                        <el-form-item label="是否确认金额">
+                            <el-input v-if="form.purchaseProj.isDefineAmount === '0'" value="暂不做评估与预算"></el-input>
+                            <el-input v-if="form.purchaseProj.isDefineAmount === '1'" value="确定服务金额"></el-input>
+                        </el-form-item>
+                        <div v-if="form.purchaseProj.isDefineAmount === '1'">
+                            <el-form-item label="服务金额">
+                                <el-row>
+                                    <el-col :span="12">
+                                        <el-input v-model="form.purchaseProj.basePrice" style="width: 63%;"></el-input>元
+                                    </el-col>
+                                    <el-col :span="12">
+                                        金额大写<el-input v-model="form.purchaseProj.bidNum" style="width: 63%;"></el-input>
+                                    </el-col>
+                                </el-row>
+                            </el-form-item>
+                        </div>
+                        <el-form-item label="是否有回避情况">
+                            <el-input v-if="form.purchaseProj.isAvoid === '0'" value="否"></el-input>
+                            <el-input v-if="form.purchaseProj.isAvoid === '1'" value="是"></el-input>
+                        </el-form-item>
+                        <div v-if="form.purchaseProj.isAvoid === '1'">
+                            <el-form-item label="回避单位">
+                                <el-input v-model="form.purchaseProj.avoidUnitNames" type="textarea" rows="3">
+                                </el-input>
+                            </el-form-item>
+                            <el-form-item label="回避原因">
+                                <el-input v-model="form.purchaseProj.avoidReason" type="textarea" rows="3"></el-input>
+                            </el-form-item>
+                        </div>
+                    </div>
+                    <!--随机选取 end-->
+
+                    <!--直接选取 start-->
+                    <div v-if="form.purchaseProj.biddingType === '2'">
+                        <el-form-item label="是否确定服务金额">
+                            <el-input v-if="form.purchaseProj.isDefineAmount === '0'" value="暂不做评估与预算"></el-input>
+                            <el-input v-if="form.purchaseProj.isDefineAmount === '1'" value="确定服务金额"></el-input>
+                        </el-form-item>
+                        <div v-if="form.purchaseProj.isDefineAmount === '1'">
+                            <el-form-item label="服务金额">
+                                <el-row>
+                                    <el-col :span="12">
+                                        <el-input v-model="form.purchaseProj.basePrice" style="width: 63%;"></el-input>元
+                                    </el-col>
+                                    <el-col :span="12">
+                                        金额大写<el-input v-model="form.purchaseProj.bidNum" style="width: 63%;"></el-input>
+                                    </el-col>
+                                </el-row>
+                            </el-form-item>
+                        </div>
+                        <el-form-item label="选取单位">
+                            <el-input v-model="form.purchaseProj.biddingUnitNames" type="textarea" rows="3"></el-input>
+                        </el-form-item>
+                    </div>
+                    <!--直接选取 end-->
+
+                    <!--竞价选取 start-->
+                    <div v-if="form.purchaseProj.biddingType === '3'">
+                        <el-form-item label="报价方式">
+                            <el-input v-model="form.name"></el-input>
+                        </el-form-item>
+                        <el-form-item label="服务金额">
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-input v-model="form.purchaseProj.basePrice" style="width: 63%;"></el-input>元
+                                </el-col>
+                                <el-col :span="12">
+                                    至<el-input v-model="form.purchaseProj.highestPrice" style="width: 63%;"></el-input>元
+                                </el-col>
+                            </el-row>
+                        </el-form-item>
+                        <!-- <el-form-item label="金额大写">
+                        <el-row>
+                            <el-col :span="12">
+                                <el-input v-model="form.name" style="width: 63%;"></el-input>元
+                            </el-col>
+                            <el-col :span="12">
+                                至<el-input v-model="form.name" style="width: 63%;"></el-input>元
+                            </el-col>
+                        </el-row>
+                    </el-form-item> -->
+                        <el-form-item label="是否有回避情况">
+                            <el-input v-if="form.purchaseProj.isAvoid === '0'" value="否"></el-input>
+                            <el-input v-if="form.purchaseProj.isAvoid === '1'" value="是"></el-input>
+                        </el-form-item>
+                        <div v-if="form.purchaseProj.isAvoid === '1'">
+                            <el-form-item label="回避单位">
+                                <el-input v-model="form.purchaseProj.avoidUnitNames" type="textarea" rows="3">
+                                </el-input>
+                            </el-form-item>
+                            <el-form-item label="回避原因">
+                                <el-input v-model="form.purchaseProj.avoidReason" type="textarea" rows="3"></el-input>
+                            </el-form-item>
+                        </div>
+                    </div>
+                    <!--竞价选取 end-->
+
+                    <div class="clearfix">
+                        <el-form-item label="报名截止时间" class="inline-block">
+                            <el-input v-model="form.purchaseProj.expirationDate"></el-input>
+                        </el-form-item>
+                        <el-form-item label="选取中介时间" class="inline-block">
+                            <el-input v-model="form.purchaseProj.choiceImunitTime"></el-input>
+                        </el-form-item>
+                    </div>
+
+                    <el-form-item label="金额说明">
+                        <el-input v-model="form.purchaseProj.amountExplain" type="textarea" rows="3"></el-input>
+                    </el-form-item>
+
+                    <div class="clearfix">
+                        <el-form-item label="中选机构公示" class="inline-block">
+                            <el-input v-if="form.purchaseProj.isDiscloseIm === '0'" value="否"></el-input>
+                            <el-input v-if="form.purchaseProj.isDiscloseIm === '1'" value="是"></el-input>
+                        </el-form-item>
+                        <el-form-item label="中选公告公示" class="inline-block">
+                            <el-input v-if="form.purchaseProj.isDiscloseBidding === '0'" value="否"></el-input>
+                            <el-input v-if="form.purchaseProj.isDiscloseBidding === '1'" value="是"></el-input>
+                        </el-form-item>
+                    </div>
+
+                    <!--附件-->
+                    <el-form-item label="附件">
+                        <el-row>
+                            <el-col :span="12">
+                                <h5>批文批复：</h5>
+                                <div class="attachment-box">
+                                    <ul>
+                                        <li v-for="(item, index) in form.purchaseProj.officialRemarkFileList">
+                                            <i class="icon ag"
+                                            :style="{color:getIconColor(getFileType(item.fileName)), fontSize: '20px'}"
+                                            :class="'ag-filetype-'+getFileType(item.fileName)"></i>
+                                            {{item.fileName}}
+                                            <span>
+                                                <i title="预览" class="el-icon-search" @click="filePreview(item)"></i>
+                                                <i title="下载" class="el-icon-download" @click="downOneFile(item)"></i>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </el-col>
+                            <el-col :span="12">
+                                <h5>采购项目要求说明：</h5>
+                                <div class="attachment-box">
+                                    <ul>
+                                        <li v-for="(item, index) in form.purchaseProj.requireExplainFileList">
+                                            <i class="icon ag"
+                                            :style="{color:getIconColor(getFileType(item.fileName)), fontSize: '20px'}"
+                                            :class="'ag-filetype-'+getFileType(item.fileName)"></i>
+                                            {{item.fileName}}
+                                            <span>
+                                                <i title="预览" class="el-icon-search" @click="filePreview(item)"></i>
+                                                <i title="下载" class="el-icon-download" @click="downOneFile(item)"></i>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </el-col>
+                        </el-row>
+                    </el-form-item>
+
+                    <!--材料-->
+                    <el-form-item label="材料">
+                        <el-table class="" :data="form.purchaseProj.matinstList" border tooltip-effect="dark" style="width: 100%;" stripe>
+                            <el-table-column type="index" width="50px" align="center" label="序号"></el-table-column>
+                            <el-table-column type="expand" width="15px" align="right">
+                                <template slot-scope="props">
+                                    <template
+                                        v-if="(props.row.certinstList&&props.row.certinstList.length)||(props.row.fileList&&props.row.fileList.length)">
+                                        <div class="mat-children" v-if="props.row.fileList&&props.row.fileList.length">
+                                            <div v-for="item in props.row.fileList" class="file-list-tab"
+                                                :key="item.fileId">
+                                                <span class="file-name">
+                                                    <span class="icon ag"
+                                                        :style="{color:getIconColor(getFileType(item.fileName)), fontSize: '20px'}"
+                                                        :class="'ag-filetype-'+getFileType(item.fileName)"></span>
+                                                    {{item.fileName}}
+                                                </span>
+                                                <span style="color:#AFB2C1;">
+                                                    （{{item.createrName}}于{{(item.updateTime)}}上传）
+                                                </span>
+                                                <span class="file-icon-btn" style="margin-left:20px;">
+                                                    <span title="预览" class="el-icon-search"
+                                                        @click="filePreview(item)"></span>
+                                                    <span title="下载" class="el-icon-download"
+                                                        @click="downOneFile(item)"></span>
+                                                    <!-- <span title="删除" class="el-icon-delete" @click="delOneFile(item,props.row)"></span> -->
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <div v-else>
+                                        <div class="mat-children" style="text-indent: 2em; color:#AFB2C1">暂无附件</div>
+                                    </div>
+                                </template>
+                            </el-table-column>
+                            <el-table-column class-name="meterial-col" prop="matName" label="材料名称" align="left">
+                                <template slot-scope="scope">
+                                    {{scope.row.matName}}
+                                    <i v-if="scope.row.matProp=='c'&&scope.row.certFileList&&scope.row.certFileList.length"
+                                        class="ag ag-id-card"></i>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="realPaperCount" label="纸质原件（应收/已收）" align="center" width="180px"
+                                :formatter="formDueToZero"></el-table-column>
+                            <el-table-column prop="realCopyCount" label="复印件（应收/已收）" align="center" width="160px"
+                                :formatter="formaterCopyToZero"></el-table-column>
+                            <el-table-column prop="attCount" label="电子件" width="170px">
+                            </el-table-column>
+                        </el-table>
+                    </el-form-item>
+                </el-collapse-item>
+            </el-collapse>
+        </el-form>
+    </div>
+</body>
+
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+    th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+    th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+    th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="../../../static/common/js/common.js" th:src="@{/common/js/common.js}"></script>
+<script src="../../../../../static/zjcs/personCenter/js/ip.js" th:src="@{/zjcs/personCenter/js/ip.js}"
+    type="text/javascript"></script>
+<script src="../../../../../static/zjcs/personCenter/js/waitDealProDetail.js"
+    th:src="@{/zjcs/personCenter/js/waitDealProDetail.js}" type="text/javascript"></script>
+
+</html>

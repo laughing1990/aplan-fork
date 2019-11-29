@@ -4,9 +4,6 @@
  * @Last Modified by:   ZL
  * @Last Modified time: $ $
  */
-function callbackAfterSaveSFForm(result,sFRenderConfig,formModelVal,actStoForminst) {
-    debugger;
-}
 var vm = new Vue({
   el: '#approve',
   data: function () {
@@ -66,7 +63,7 @@ var vm = new Vue({
       if (value === '' || value === undefined || value.trim() === '') {
         callback(new Error('请输入统一社会信用代码！'));
       } else if (value) {
-        var flag = !/[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}/.test(value);
+        var flag = !/^[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}$/.test(value);
         if (flag) {
           return callback(new Error('请输入正确的统一社会信用代码！'));
         } else {
@@ -1835,7 +1832,7 @@ var vm = new Vue({
       }
       if(flag=='parallel'){
         this.getSelThemeInfo(this.themeType,this.themeId,flag);
-        _that.themeInfoListP = item.themes;
+        _that.themeInfoListP = (item&&item.themes)?item.themes:[];
         _that.themeType = item.themeType;
         this.themeDialogIndex = index;
         this.themeTypeIndex = 0;
@@ -3607,9 +3604,7 @@ var vm = new Vue({
             validFun = _that.$refs[formRef][0].validate
           }
           validFun(function(valid){
-            if(valid){
-              jiansheUnitFlag=true;
-            }else{
+            if(!valid){
               if(_that.submitCommentsType!='4') {
                 jiansheUnitFlag=false;
                 perUnitMsg = "请完善申办主体建设单位信息"
@@ -3635,10 +3630,7 @@ var vm = new Vue({
             validFun = _that.$refs[formRef][0].validate
           }
           validFun(function(valid){
-            if(valid){
-              jinbanUnitFlag=true;
-            }else{
-
+            if(!valid){
               if(_that.submitCommentsType!='4') {
                 jinbanUnitFlag=false;
                 perUnitMsg = "请完善申办主体经办单位信息"
@@ -3692,9 +3684,6 @@ var vm = new Vue({
       }else {
         alertMsg('', perUnitMsg, '关闭', 'error', true);
       }
-    },
-    test: function(item,ev){
-      console.log(item,ev)
     },
     // 根据材料定义id获取材料实例id
     getMatinstIds: function () {
@@ -5484,14 +5473,14 @@ var vm = new Vue({
     getOneFormrender3: function(_applyinstId,_formId){
       var _that = this;
       // _formId = 'ecbebb64-a29c-41c6-abb7-e7b337a1a2cb';
-      var sFRenderConfig='&showBasicButton=true&includePlatformResource=false';
+      var sFRenderConfig="&showBasicButton=true&includePlatformResource=false&busiScence=mat";
       request('', {
         url: ctx + 'bpm/common/sf/renderHtmlFormContainer?listRefEntityId='+_applyinstId+'&listFormId='+_formId+sFRenderConfig,
         type: 'get',
       }, function (result) {
         if (result.success) {
           _that.matFormDialogVisible = true;
-          $('#matFormContent').html(result.content)
+          // $('#matFormContent').html(result.content)
           _that.$nextTick(function(){
             $('#matFormContent').html(result.content)
           });
@@ -5538,6 +5527,7 @@ var vm = new Vue({
     // 展示材料一张表单弹窗
     showOneFormDialog1: function(oneformMat){
       var _that = this;
+      _that.selMatRowData = oneformMat;
       var _applyinstId = _that.parallelApplyinstId;
       _that.oneformNameTitle = oneformMat.matName
       if(_applyinstId==''){
@@ -6044,4 +6034,23 @@ var vm = new Vue({
 
   }
 });
+function callbackAfterSaveSFForm(result,sFRenderConfig,formModelVal,actStoForminst) {
+  console.log(result,sFRenderConfig.busiScence,formModelVal,actStoForminst);
+  if(sFRenderConfig.busiScence=='mat'){
+    var parma = {
+      "linkmainInfoId": vm.rootApplyLinkmanId,
+      "matId": vm.selMatRowData.matId,
+      "projInfoId": vm.projInfoId,
+      "stoForminstId": actStoForminst.stoForminstId,
+      "unitInfoId": vm.rootUnitInfoId
+    };
+    request('', {
+      url: ctx + 'rest/mats/bind/form',
+      type: 'POST',
+      ContentType: 'application/json',
+      data: JSON.stringify(parma),
+    }, function (result1) {
+    }, function (msg) {})
+  }
+}
 

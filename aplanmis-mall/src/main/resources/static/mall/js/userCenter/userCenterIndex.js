@@ -6,6 +6,7 @@ var userCenter = (function () {
                 ctx: ctx,
                 // 页面loading
                 loading: false,
+                curHeight: (document.documentElement.clientHeight || document.body.clientHeight),//当前屏幕高度
 
                 // 当前账号信息
                 curentLoginInfo: {
@@ -125,7 +126,6 @@ var userCenter = (function () {
                 applyNum:0,
                 supplyNum:0,
                 withdrawalNum:0,
-                myMatNum:0,
                 myProLeftShow: true,
 
             }
@@ -186,7 +186,6 @@ var userCenter = (function () {
                         vm.applyNum = res.content.applyNum;
 						vm.supplyNum = res.content.supplyNum;
 						vm.withdrawalNum = res.content.withdrawalNum;
-						vm.myMatNum=res.content.myMatNum;
                     }
                 }, function () {
 

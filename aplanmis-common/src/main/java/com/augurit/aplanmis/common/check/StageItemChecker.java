@@ -30,7 +30,7 @@ public class StageItemChecker extends AbstractChecker<AeaParStage> {
     private AeaItemBasicAdminService aeaItemBasicAdminService;
 
     @Override
-    public String doCheck(AeaParStage stage, CheckerContext checkerContext) throws StageItemCheckException {
+    public void doCheck(AeaParStage stage, CheckerContext checkerContext) throws StageItemCheckException {
 
         if (Status.ON.equals(stage.getIsCheckItem())) {
 
@@ -51,14 +51,12 @@ public class StageItemChecker extends AbstractChecker<AeaParStage> {
                 StringBuffer message = new StringBuffer();
 
                 if (itemBasics.size() < 1) {
-                    parFrontItemList.forEach(aeaParFrontItemVo -> {
-                        message.append(aeaParFrontItemVo.getItemName() + "事项").append("、");
-                    });
-                    String error = "【" + message.substring(0, message.length() - 1) + "】";
-                    return error + "尚未审批通过，无法申报【" + stage.getStageName() + "】。";
+                    parFrontItemList.forEach(aeaParFrontItemVo -> message.append(aeaParFrontItemVo.getItemName() + "事项").append("、"));
+                    String error = "【" + message.substring(0, message.length() - 1) + "】" + "尚未审批通过，无法申报【" + stage.getStageName() + "】。";
+                    throw new StageItemCheckException(error, parFrontItemList);
                 }
 
-                List<String> itemSeq = new ArrayList();
+                List<String> itemSeq = new ArrayList<>();
                 String ids = itemBasics.stream().map(aeaItemBasic -> {
                     itemSeq.add(aeaItemBasic.getItemSeq());
                     return aeaItemBasic.getItemVerId();
@@ -67,24 +65,25 @@ public class StageItemChecker extends AbstractChecker<AeaParStage> {
                 //实施事项的事项ID序列
                 String itemSeqStr = String.join(",", itemSeq);
 
+                List<AeaParFrontItem> resultItems = new ArrayList<>();
                 parFrontItemList.forEach(aeaParFrontItemVo -> {
                     if ("1".equals(aeaParFrontItemVo.getIsCatalog())) {
                         if (!itemSeqStr.contains(aeaParFrontItemVo.getItemId())) {
+                            resultItems.add(aeaParFrontItemVo);
                             message.append(aeaParFrontItemVo.getItemName() + "事项").append("、");
                         }
                     } else {
                         if (!ids.contains(aeaParFrontItemVo.getItemVerId())) {
+                            resultItems.add(aeaParFrontItemVo);
                             message.append(aeaParFrontItemVo.getItemName() + "事项").append("、");
                         }
                     }
                 });
-
                 if (message.length() > 0) {
-                    String error = "【" + message.substring(0, message.length() - 1) + "】";
-                    return error + "尚未审批通过，无法申报【" + stage.getStageName() + "】。";
+                    String error = "【" + message.substring(0, message.length() - 1) + "】" + "尚未审批通过，无法申报【" + stage.getStageName() + "】。";
+                    throw new StageItemCheckException(error, resultItems);
                 }
             }
         }
-        return null;
     }
 }

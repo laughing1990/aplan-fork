@@ -42,7 +42,7 @@
     <h3>
       <b>{{typeAstateData.stageOrItemName || '加载中...'}}</b>
       <span> {{iteminstName}}{{typeAstateData.projName ? (' —— '+typeAstateData.projName) : ''}}</span>
-<!--      <span> {{iteminstName}} —— {{typeAstateData.projName || '加载中...'}}</span>-->
+      <!--      <span> {{iteminstName}} —— {{typeAstateData.projName || '加载中...'}}</span>-->
     </h3>
   </header>
   <div class="box-position left-content">
@@ -470,7 +470,7 @@
                     <div class="table-section-title">经办信息</div>
                     <tr>
                       <td class="td-bg-grey" colspan="1">补正发起人</td>
-                      <td colspan="5">{{item.windowUserName}}</td>
+                        <td colspan="5">{{item.createrName}}</td>
                     </tr>
                     <tr>
                       <td class="td-bg-grey">经办人</td>
@@ -478,7 +478,7 @@
                       <td class="td-bg-grey">经办日期</td>
                       <td>{{formatDateStr(item.opsTime, 'yyyy-MM-dd')}}</td>
                       <td class="td-bg-grey">补正结束人</td>
-                      <td>{{item.opsUserName}}</td>
+                        <td>{{item.correctUserName}}</td>
                     </tr>
                     <tr>
                       <td class="td-bg-grey">补正结束日期</td>
@@ -1735,8 +1735,9 @@
                 <span class="mat-table-btn" @click="idTableListSee(scope.row)">查看</span>
                 <span class="mat-ope-line"></span>
                 <span v-show="!scope.row.isRelated" class="mat-table-btn" @click="idTabListChoose(scope.row)">关联</span>
-<!--                <span v-show="scope.row.isRelated" class="mat-table-btn ope-disabled">已关联</span>-->
-                <span v-show="scope.row.isRelated" class="mat-table-btn" @click="idIisassociation(scope.row)">解除关联</span>
+                <!--                <span v-show="scope.row.isRelated" class="mat-table-btn ope-disabled">已关联</span>-->
+                <span v-show="scope.row.isRelated" class="mat-table-btn"
+                      @click="idIisassociation(scope.row)">解除关联</span>
               </div>
             </template>
           </el-table-column>
@@ -1800,7 +1801,8 @@
                          :value="item.opinionContent" :key="item.opinionId"></el-option>
             </el-select>
             <el-tooltip class="item" effect="dark" content="设为常用意见" placement="top">
-              <el-button size="medium" type="info" style="position:relative;top:3px;" @click="setCommonOpinion('backFormData')"><i
+              <el-button size="medium" type="info" style="position:relative;top:3px;"
+                         @click="setCommonOpinion('backFormData')"><i
                   class="ag ag-save-common"></i></el-button>
             </el-tooltip>
           </el-form-item>
@@ -2041,6 +2043,7 @@
       <iframe :src="preLicenceIframeSrc" name="iframePrint" id="preLicenceIframeId"></iframe>
     </div>
     <div slot="footer" class="dialog-footer">
+      <el-button size="medium" type="primary" class="btn btn-primary" @click="clickDownloadLicense">下载</el-button>
       <el-button size="medium" type="primary" class="btn btn-primary" @click="clickPrintLicense">打印</el-button>
       <el-button size="medium" class="btn btn-secondary" @click="licenceDialogVisible=false">关闭</el-button>
     </div>

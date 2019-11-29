@@ -29,6 +29,8 @@ public interface AeaParThemeVerAdminService {
 
     AeaParThemeVer getAeaParThemeVerById(String id);
 
+    List<AeaParThemeVer> listAeaParThemeVerNoRelThemeInfo(AeaParThemeVer aeaParThemeVer);
+
     List<AeaParThemeVer> listAeaParThemeVer(AeaParThemeVer aeaParThemeVer);
 
     List<AeaParThemeVer> listThemeVerSyncZTree(String themeId);
@@ -159,4 +161,13 @@ public interface AeaParThemeVerAdminService {
      * @param itemId
      */
     void removeActivityFromDiagramInAllAeaThemeVer(String itemId);
+
+    /**
+     * 获取最大主题版本集合
+     * 数据
+     * @param themeId
+     * @param rootOrgId
+     * @return
+     */
+    List<AeaParThemeVer> listMaxThemeVerGroupByThemeId(String themeId, String rootOrgId);
 }

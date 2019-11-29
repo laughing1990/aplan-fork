@@ -35,6 +35,8 @@ public class AeaExProjBidVo extends AeaExProjBid implements Serializable{
     private List<AeaUnitInfo> agencyUnits;//招标代理机构
     private List<AeaUnitInfo> costUnits;//造价咨询单位
 
+    private String winBidLinkManInfoids;
+
     public static AeaExProjBidVo from(AeaExProjBid aeaExProjBid) {
         AeaExProjBidVo vo = new AeaExProjBidVo();
         vo.setBidId(aeaExProjBid.getBidId());
@@ -98,5 +100,13 @@ public class AeaExProjBidVo extends AeaExProjBid implements Serializable{
 
     public void setCostUnits(List<AeaUnitInfo> costUnits) {
         this.costUnits = costUnits;
+    }
+
+    public String getWinBidLinkManInfoids() {
+        return winBidLinkManInfoids;
+    }
+
+    public void setWinBidLinkManInfoids(String winBidLinkManInfoids) {
+        this.winBidLinkManInfoids = winBidLinkManInfoids;
     }
 }

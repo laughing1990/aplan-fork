@@ -166,6 +166,8 @@ public class SaveAeaImProjPurchaseVo {
         ImPurchaseData purchaseData = new ImPurchaseData();
         BeanUtils.copyProperties(this, purchaseData);
         purchaseData.setApproveProjInfoId(this.projInfoId);
+        purchaseData.setApplyinstCode(applyinstCode);
+        purchaseData.setApplyinstId(applyinstId);
         purchaseData.setProjPurchaseId(UUID.randomUUID().toString());
 
         return purchaseData;

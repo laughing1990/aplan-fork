@@ -591,10 +591,11 @@
 }
 
 .theme-type .theme-type-list {
-    display: none;
+    /*display: none;*/
+    overflow: auto;
 }
 
-.theme-type.active .theme-type-list {
+.theme-type .active .theme-type-list {
 
 }
 

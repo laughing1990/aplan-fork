@@ -14,11 +14,11 @@ import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.*;
 import com.augurit.aplanmis.common.service.item.AeaLogItemStateHistService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
-import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
 import com.augurit.aplanmis.common.service.process.AeaBpmProcessService;
 import com.augurit.aplanmis.common.service.projPurchase.AeaImProjPurchaseService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowService;
+import com.augurit.aplanmis.common.vo.MatinstVo;
 import com.augurit.aplanmis.supermarket.apply.vo.ApplyinstResult;
 import com.augurit.aplanmis.supermarket.apply.vo.ImItemApplyData;
 import com.augurit.aplanmis.supermarket.apply.vo.ImPurchaseData;
@@ -138,6 +138,7 @@ public class RestImApplyService {
     private AeaHiItemInoutinstMapper aeaHiItemInoutinstMapper;
     @Autowired
     private AeaImServiceResultMapper aeaImServiceResultMapper;
+
 
     /**
      * 选取中介机构
@@ -289,19 +290,15 @@ public class RestImApplyService {
 
     }
 
-    @Autowired
-    private AeaItemMatService aeaItemMatService;
-
     /**
      * 上传服务结果电子件或窗口收取纸质件
      * 纸质件只能审批系统收取
      *
      * @param projPurchaseId 采购需求ID
      * @param message        如果在窗口上传电子件和收纸质件，则需要填写意见
-     * @param matinstIds     上传的材料实例ID
      * @throws Exception
      */
-    public void uploadServiceResult(String projPurchaseId, String message, String[] matinstIds) throws Exception {
+    public void uploadServiceResult(String projPurchaseId, String message, String iteminstId) throws Exception {
 
         AeaImProjPurchase purchase = this.getApplyinstIdByProPurchaseId(projPurchaseId);
         String applyinstId = purchase.getApplyinstId();
@@ -313,54 +310,54 @@ public class RestImApplyService {
         String appinstId = applyStateHist.getAppinstId();// 模板实例ID
 
         String creater = SecurityContext.getCurrentUserName();
-        List<AeaHiIteminst> iteminsts = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
-        if (iteminsts.size() < 1) throw new Exception("找不到事项实例信息！");
-        AeaHiIteminst iteminst = iteminsts.get(0);
-        String iteminstId = iteminst.getIteminstId();
-        String rootOrgId = iteminst.getRootOrgId();
-        String itemVerId = iteminst.getItemVerId();
+        String rootOrgId = "";
+        String itemVerId = "";
+
+        if (StringUtils.isBlank(iteminstId)) {
+            List<AeaHiIteminst> iteminsts = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
+            if (iteminsts.size() < 1) throw new Exception("找不到事项实例信息！");
+            AeaHiIteminst iteminst = iteminsts.get(0);
+            iteminstId = iteminst.getIteminstId();
+            rootOrgId = iteminst.getRootOrgId();
+            itemVerId = iteminst.getItemVerId();
+        } else {
+            AeaHiIteminst iteminst = aeaHiIteminstService.getAeaHiIteminstById(iteminstId);
+            if (null == iteminst) throw new Exception("找不到事项实例信息！");
+            rootOrgId = iteminst.getRootOrgId();
+            itemVerId = iteminst.getItemVerId();
+        }
+
         //查询所有材料定义
-        List<AeaItemMat> matList = aeaItemMatService.getSeriesNoStateMatList(itemVerId);
-        /*String[] matIds = matList.stream().filter(aeaItemMat -> {
-            String paperIsRequire = aeaItemMat.getPaperIsRequire();
-            String attIsRequire = aeaItemMat.getAttIsRequire();
-            String zcqy = aeaItemMat.getZcqy();
-            boolean isRq = StringUtils.isNotBlank(zcqy) && "1".equals(zcqy);//支持容缺
-            boolean papaerRequire = StringUtils.isNotBlank(paperIsRequire) && "1".equals(paperIsRequire);//纸质件必须
-            boolean attRequire = StringUtils.isNotBlank(attIsRequire) && "1".equals(attIsRequire);//电子件必须
-            return !isRq && (papaerRequire || attRequire);
-        }).map(AeaItemMat::getMatId).toArray(String[]::new);*/
-        //
+        List<MatinstVo> matinstVos = aeaImProjPurchaseService.listPurchaseMatinst(iteminstId, applyinstId);
+        boolean requiredPaper = false;
+        for (MatinstVo vo : matinstVos) {
+            String attIsRequire = vo.getAttIsRequire();
+            String paperIsRequire = vo.getPaperIsRequire();
+            Long dueCopyCount = vo.getDueCopyCount();
+            Long duePaperCount = vo.getDuePaperCount();
+            Long realCopyCount = vo.getRealCopyCount() == null ? 0L : vo.getRealCopyCount();
+            Long realPaperCount = vo.getRealPaperCount() == null ? 0L : vo.getRealPaperCount();
+            Long attCount = vo.getAttCount();
+            boolean attFlag = false;
+            boolean paperFlag = false;
+            if (StringUtils.isNotBlank(attIsRequire) && "1".equals(attIsRequire)) {
+                attFlag = attCount == 0;
+            }
+            if (StringUtils.isNotBlank(paperIsRequire) && "1".equals(paperIsRequire)) {
+                paperFlag = (realPaperCount < duePaperCount || realCopyCount < dueCopyCount);
+            }
 
-        String[] matIds = matList.stream().map(AeaItemMat::getMatId).toArray(String[]::new);
-        //是否有必须电子件
-        //查看当前事项下所有的材料实例
-        List<AeaMatinst> matinsts = aeaHiItemInoutinstMapper.getMatinstListByiteminstIdAndMatId(iteminstId, matIds);
-        //判断所有材料是否已上传
-        boolean requiredPaper = matinsts.stream().anyMatch(aea -> {
-            Long realPaperCount = aea.getRealPaperCount();
-            Long duePaperCount = aea.getDuePaperCount();
-            Long dueCopyCount = aea.getDueCopyCount();
-            Long realCopyCount = aea.getRealCopyCount();
-            long l = aea.getDuePaperCount() + aea.getDueCopyCount();
-            Long attCount = aea.getAttCount();
-            String paperIsRequire = aea.getPaperIsRequire();
-            boolean paperRequire = StringUtils.isNotBlank(paperIsRequire) && "1".equals(paperIsRequire);
-            boolean papaerResult = paperRequire && (realPaperCount < duePaperCount || realCopyCount < dueCopyCount);
-            String attIsRequire = aea.getAttIsRequire();
-            boolean attrequire = StringUtils.isNotBlank(attIsRequire) && "1".equals(attIsRequire);
-            boolean attResult = attrequire && attCount < 1;
+            if (attFlag || paperFlag) {
+                requiredPaper = true;
+                break;
+            }
+        }
 
-            //纸质件必须且（实收纸质<定义数量 || 复印件<定义熟练）==true 表示需要纸质件且收到的材料不满足要求
-            return papaerResult || attResult;
-
-        });
         String opuWinId = aeaServiceWindowService.getCurrentUserWindow() == null ? "" : aeaServiceWindowService.getCurrentUserWindow().getWindowId();
         //更新竞价表，已上传服务结果 =1
         aeaImUnitBiddingMapper.updateUploadResult(projPurchaseId, "1");
-        //aea_im_service_result 插入数据或修改数据 todo 先默认上传电子件就发起流程，
-//        if (requiredPaper) {
-        if (false) {
+        //aea_im_service_result 插入数据或修改数据
+        if (requiredPaper) {
             //需要纸质件
             //保持当前流程为挂起状态，等待窗口收齐纸质件在发起流程
 
@@ -561,9 +558,16 @@ public class RestImApplyService {
 
         //查询出流程第一个节点
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstance().getId()).list();
+        //保存意见
+        if (!tasks.isEmpty()) {
+            Task task = tasks.get(0);
+            String message = applyData.getComments();
+            bpmTaskService.addTaskComment(task.getId(), task.getProcessInstanceId(), StringUtils.isBlank(message) ? "" : message);//收件意见
+        }
 
         //挂起当前流程
         bpmProcessService.suspendProcessInstanceById(processInstance.getProcessInstance().getId());
+
 
         //6.流程发起后，更新初始事项历史的taskId
         AeaLogItemStateHist logItemStateHist = aeaLogItemStateHistService.getInitStateAeaLogItemStateHist(aeaHiIteminst.getIteminstId(), appinstId);
@@ -635,6 +639,17 @@ public class RestImApplyService {
         AeaImUnitRequire aeaImUnitRequire = data.getAeaImUnitRequire();
         aeaImUnitRequire.setUnitRequireId(UuidUtil.generateUuid());
         aeaImUnitRequire.setRootOrgId(data.getRootOrgId());
+        if (StringUtils.isNotBlank(aeaImUnitRequire.getPromiseService())) {
+            if (aeaImUnitRequire.getPromiseService().equals("true")) {
+
+                aeaImUnitRequire.setPromiseService("1");
+            } else if (aeaImUnitRequire.getPromiseService().equals("false")) {
+                aeaImUnitRequire.setPromiseService("0");
+
+            }
+        }
+        //fixme 先设置不需要资质
+        aeaImUnitRequire.setIsQualRequire("0");
         aeaImUnitRequireMapper.insertAeaImUnitRequire(aeaImUnitRequire);
 
         aeaImProjPurchase.setUnitRequireId(aeaImUnitRequire.getUnitRequireId());
@@ -647,11 +662,6 @@ public class RestImApplyService {
                 aeaImMajorQualMapper.insertAeaImMajorQual(aeaImMajorQual);
             }
         }
-        //保存采购项目
-//        AeaProjInfo aeaProjInfo = data.createProjInfo(data);
-//        aeaProjInfoMapper.insertAeaProjInfo(aeaProjInfo);
-//        aeaImProjPurchase.setProjInfoId(aeaProjInfo.getProjInfoId());
-
         if ("0".equals(data.getApplySubject())) {
             aeaImProjPurchase.setPublishLinkmanInfoId(data.getPublishLinkmanInfoId());
         } else {
@@ -688,7 +698,7 @@ public class RestImApplyService {
         AeaProjLinkman aeaProjLinkman = new AeaProjLinkman(data.getProjInfoId(), linkmanInfoId, "link", data.getApplyinstId(), data.getCreater());
         aeaProjLinkmanMapper.insertAeaProjLinkman(aeaProjLinkman);
 
-        //保存企业报价
+        //保存企业报价---todo 如果是直接选取，需要生成竞价信息及中标事项，修改事项转态
         if (AeaImProjPurchase.BiddingType.自主选择.getType().equals(aeaImProjPurchase.getBiddingType())) {
             if (StringUtils.isNotBlank(data.getAgentUnitInfoId())) {
                 saveImUnitBidding(data, aeaImProjPurchase.getProjPurchaseId());

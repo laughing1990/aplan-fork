@@ -296,6 +296,7 @@
 			目竞价方式是下浮率竞价，每次出价幅度不能少于最低下浮率的 20%。</p>
 	</el-dialog>
 </div>
+
 <script>
 	var module1 = new Vue({
 		el: '#projectSignup',
@@ -617,7 +618,7 @@
 			//  是否可以竞价
 			isShowWantPriceBtn: function (row) {
 				var time = new Date().getTime();
-				if ( time > row.expirationDate && time < row.choiceImunitTime) {
+				if (time > row.expirationDate && time < row.choiceImunitTime) {
 					// if (row.purchaseAuditFlag == 7 || row.purchaseAuditFlag == 11) {
 					if (['6', '7', '11'].indexOf(row.purchaseAuditFlag) > -1) {
 						return false;
@@ -696,37 +697,6 @@
 						_unitBiddingSignInfo[u] = '';
 					}
 				}
-			},
-			formatAuditFlag: function (row, column, value, index) {
-				switch (value) {
-					case '0':
-						return "未提交";
-					case '1':
-						return "服务中";
-					case '2':
-						return "服务完成";
-					case '3':
-						return "服务中止";
-					case '4':
-						return "审核中";
-					case '5':
-						return "退回";
-					case '6':
-						return "报名中";
-					case '7':
-						return "选取中";
-					case '8':
-						return "选取开始";
-					case '9':
-						return "已选取";
-					case '10':
-						return "无效";
-					case '11':
-						return "待选取";
-					case '12':
-						return "已过时";
-				}
-				return value;
 			}
 		},
 		mounted: function () {

@@ -20,7 +20,8 @@ public enum ApplyType  implements BaseEnum<TimeruleInstState, String> {
         this.value = value;
     }
 
-    public static ApplyType getApplyType(String value){
+    /// 用到的时候再放开
+    /*public static ApplyType getApplyType(String value){
         ApplyType[] applyTypes = ApplyType.values();
         for(ApplyType applyType : applyTypes){
             if(applyType.getValue().equals(value)){
@@ -29,5 +30,5 @@ public enum ApplyType  implements BaseEnum<TimeruleInstState, String> {
         }
 
         return null;
-    }
+    }*/
 }

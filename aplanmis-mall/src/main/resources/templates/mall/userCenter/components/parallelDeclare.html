@@ -858,27 +858,57 @@
   </div>
   <!--  智能引导 end-->
   <!-- 选择主题 -->
-  <div class="mt40 proj-module pd-info-pandel" v-show="declareStep == 3">
-    <el-tabs v-model="itemTabSelect">
-      <el-tab-pane v-for="(item,index) in themeTypeList"
-                   :label="item.themeTypeName"
-                   :name="'tab_'+item.themeTypeCode"
-                   :key="index">
-        <p class="parallel-appr-title mb20">该项目已确定为 <b>“ {{themeName}} ” </b>主题，确认无误可继续下一步</p>
-        <div class="pro-type-item"
-             @click="chooseTheme(itemList)"
-             v-show="ind<showThemeLen"
-             :class="themeActive==itemList.themeId?'active':''"
-             :key="ind"
-             v-for="(itemList,ind) in item.themeList">
-          <img v-if="themeActive==itemList.themeId" :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">
-          <img v-else :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">
-          <div class="theme-name">{{itemList.themeName}}</div>
-          <i class="el-icon-check"></i>
-        </div>
-        <p class="show-more-theme" v-if="item.themeList.length>10" @click="themeListShowHide(item)">{{showThemeLenText?'展开更多':'收起更多'}} <i :class="showThemeLenText?'el-icon-arrow-down':'el-icon-arrow-up'"></i></p>
-      </el-tab-pane>
-    </el-tabs>
+  <div class="mt40 proj-module pd-info-pandel" v-show="declareStep == 3" :style="{position:'relative'}">
+    <!--themeTypeList-->
+    <div class="theme-type-list">
+      <el-tabs v-model="stageTypeTabSelect">
+        <el-tab-pane label="并联审批" name="paralle">
+          <div :style="{'max-height':(curHeight-360)+'px',overflow: 'auto'}">
+            <p class="parallel-appr-title mb20">
+              <span v-if="selThemeInfo&&themeId">该项目已确定为 <b>“ {{themeName}} ” </b>主题，确认无误可继续下一步</span>
+              <span v-else>请先绑定项目主题，申报完成将不可变更</span>
+            </p>
+            <div class="pro-type-item active pro-type-sel" v-if="selThemeInfo&&themeId">
+              <img :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">
+              <div class="theme-name">{{selThemeInfo.themeName}}</div>
+              <i class="el-icon-check"></i>
+            </div>
+            <div class="pro-type-item pro-type-null" v-else @click="selThemeDialogShow=true">
+              <span><i class="el-icon-circle-plus-outline"></i>请选择并联审批主题类型</span>
+            </div>
+            <el-button class="change-theme-btn" circle icon="el-icon-refresh"
+                       v-show="selThemeInfo&&themeId" @click="selThemeDialogShow=true"></el-button>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="预先服务协同" name="auxiLine" v-if="themeTypeList.auxiLine&&themeTypeList.auxiLine.length>0">
+          <p class="parallel-appr-title mb20">
+            <span v-if="selThemeInfo&&themeId">该项目已确定为 <b>“ {{themeName}} ” </b>主题，确认无误可继续下一步</span>
+            <span v-else>请先绑定项目主题，申报完成将不可变更</span>
+          </p>
+          <div class="pro-type-item"
+               @click="chooseTheme(itemList)"
+               :class="themeActive==itemList.themeId?'active':''"
+               :key="ind"
+               v-for="(itemList,ind) in themeTypeList.auxiLine[0].themeList">
+            <img v-if="themeActive==itemList.themeId" :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">
+            <img v-else :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">
+            <div class="theme-name">{{itemList.themeName}}</div>
+            <i class="el-icon-check"></i>
+          </div>
+            <!--<p class="show-more-theme" v-if="item.themeList.length>10" @click="themeListShowHide(item)">{{showThemeLenText?'展开更多':'收起更多'}} <i :class="showThemeLenText?'el-icon-arrow-down':'el-icon-arrow-up'"></i></p>-->
+        </el-tab-pane>
+      </el-tabs>
+    </div>
+    <!--<div class="pro-type-item active pro-type-sel" v-if="selThemeInfo&&themeId">-->
+      <!--<img :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">-->
+      <!--<div class="theme-name">{{selThemeInfo.themeName}}</div>-->
+      <!--<i class="el-icon-check"></i>-->
+    <!--</div>-->
+    <!--<div class="pro-type-item pro-type-null" v-else @click="selThemeDialogShow=true">-->
+      <!--<span><i class="el-icon-circle-plus-outline"></i>请选择并联审批主题类型</span>-->
+    <!--</div>-->
+    <!--<el-button class="change-theme-btn" circle icon="el-icon-refresh"-->
+               <!--v-show="selThemeInfo&&themeId" @click="selThemeDialogShow=true"></el-button>-->
     <div class="footer-stage-btn">
       <el-button class="mt60" @click="prevPage(2)">上一步</el-button>
       <el-button class="mt60" type="primary" @click="saveThemeAndNext">保存并下一步</el-button>
@@ -1037,13 +1067,20 @@
       <el-table-column label="行政区划" width="200" >
         <template slot-scope="scope">
           <div v-if="scope.row.isCatalog==1">
-            <el-select :disabled="scope.row.disabled" v-model="scope.row.itemVerId"
-                       placeholder="请选择活动区域">
-              <el-option v-for="(item,indexOp) in scope.row.carryOutItems"
-                         :key="indexOp"
-                         :label="item.regionName"
-                         @click.native="getItemOrgId(scope.row,scope.$index,item)" :value="item.itemVerId"></el-option>
-            </el-select>
+            <template v-if="scope.row.carryOutItems.length">
+              <el-select :disabled="scope.row.disabled" v-model="scope.row.itemVerId"
+                        placeholder="请选择活动区域">
+                <el-option v-for="(item,indexOp) in scope.row.carryOutItems"
+                          :key="indexOp"
+                          :label="item.regionName"
+                          @click.native="getItemOrgId(scope.row,scope.$index,item)" :value="item.itemVerId"></el-option>
+              </el-select>
+            </template>
+            <template v-else>
+              <el-select disabled="disabled" value="" placeholder="请选择活动区域">
+                <el-option value="请选择活动区域"></el-option>
+              </el-select>
+            </template>
           </div>
           <div v-else>
             <span>{{scope.row.regionName}}</span>
@@ -1052,12 +1089,16 @@
       </el-table-column>
       <el-table-column label="办事指南" width="85" align="center">
         <template slot-scope="scope">
-          <a href="javascript:;" class="guid-icon handel-icon" @click="goToBszn(scope.row)"></a>
+          <a v-if="!scope.row.carryOutItems.length" href="javascript:;" class="guid-icon handel-icon disabled"></a>
+          <a v-else href="javascript:;" class="guid-icon handel-icon" @click="goToBszn(scope.row)"></a>
         </template>
       </el-table-column>
       <el-table-column label="单项申报" width="85" align="center">
         <template slot-scope="scope">
-          <a href="javascript:;" class="sign-icon handel-icon" @click="goToSingleDeclare(scope.row.itemVerId)"></a>
+          <a v-if="scope.row.notRegionData" href="javascript:;" class="sign-icon handel-icon disabled"></a>
+          <!--行政区划下拉选项没值时，禁止操作办事指南，单项申报-->
+          <a v-else-if="!scope.row.carryOutItems.length" href="javascript:;" class="sign-icon handel-icon disabled"></a>
+          <a v-else href="javascript:;" class="sign-icon handel-icon" @click="goToSingleDeclare(scope.row.itemVerId)"></a>
         </template>
       </el-table-column>
     </el-table>
@@ -1157,7 +1198,8 @@
       </el-table-column>
       <el-table-column label="单项申报" width="85" align="center">
         <template slot-scope="scope">
-          <a href="javascript:;" class="sign-icon handel-icon" @click="goToSingleDeclare(scope.row.itemVerId)"></a>
+          <a v-if="scope.row.notRegionData" href="javascript:;" class="sign-icon handel-icon disabled"></a>
+          <a v-else href="javascript:;" class="sign-icon handel-icon" @click="goToSingleDeclare(scope.row.itemVerId)"></a>
         </template>
       </el-table-column>
     </el-table>
@@ -1419,16 +1461,31 @@
               <el-input v-model="myMatsKeyword" placeholder="搜索你要找的材料" @keyup.enter.native="getMyMatsList"></el-input>
               <el-button type="primary" icon="icon ag ag-search" @click="getMyMatsList()"> 搜索</el-button>
             </div>
-            <el-table :data="myMatsList" class="mt20" :style="{height:(curHeight-555)+'px',overflow: 'auto'}">
-              <el-table-column prop="fileName" label="材料名称"></el-table-column>
+            <el-table :data="myMatsList" class="mt20 my-mat-table"
+                      row-key="rowKey"
+                      ref="myMatsList"
+                      default-expand-all
+                      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+                      :style="{height:(curHeight-555)+'px',overflow: 'auto'}">
+              <el-table-column prop="matinstName" label="材料名称">
+                <template slot-scope="scope">
+                  <span v-if="scope.row.matinstName" class="ellipsis dir-file-name" :title="scope.row.matinstName">
+                    <i class="ag ag-folder-open-fill"></i>{{scope.row.matinstName}}
+                  </span>
+                  <span v-else class="ellipsis dir-file-name">
+                    <i class="ag ag-fileType-doc" :class="'ag-filetype-'+getFileType(scope.row.fileName)"></i>{{scope.row.fileName}}
+                  </span>
+                </template>
+              </el-table-column>
               <el-table-column prop="fileName" label="日期" width="140">
                 <template slot-scope="scope">
-                  <span>{{$options.filters.formatDate(scope.row.updateTime)}}</span>
+                  <span v-if="scope.row.matinstName">{{$options.filters.formatDate(scope.row.createTime)}}</span>
+                  <span v-else>{{$options.filters.formatDate(scope.row.updateTime)}}</span>
                 </template>
               </el-table-column>
               <el-table-column label="选择" align="center" width="55">
                 <template slot-scope="scope">
-                  <el-checkbox v-model="scope.row.checked" :checked="scope.row.checked" @change="function(val){changeMyMatSel(val,scope.row)}"></el-checkbox>
+                  <el-checkbox v-model="scope.row.checked" :checked="scope.row.checked" @change="function(val){changeMyMatSel(val,scope.row,'mats')}"></el-checkbox>
                 </template>
               </el-table-column>
             </el-table>
@@ -1659,6 +1716,32 @@
     </div>
   </el-dialog>
   <!--  材料一张表单  end-->
+  <!--选择主题 start-->
+  <el-dialog title="选择主题" :visible.sync="selThemeDialogShow" width="900px">
+    <el-tabs v-model="itemTabSelect">
+      <el-tab-pane v-for="(item,index) in themeTypeList.mainLine"
+                   :label="item.themeTypeName"
+                   :name="'tab_'+item.themeTypeCode"
+                   :key="index">
+        <div :style="{'max-height':(curHeight-360)+'px',overflow: 'auto'}">
+          <!--<p class="parallel-appr-title mb20">该项目已确定为 <b>“ {{themeName}} ” </b>主题，确认无误可继续下一步</p>-->
+          <div class="pro-type-item"
+               @click="chooseTheme(itemList)"
+               :class="themeActive==itemList.themeId?'active':''"
+               :key="ind"
+               v-for="(itemList,ind) in item.themeList">
+            <img v-if="themeActive==itemList.themeId" :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">
+            <img v-else :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">
+            <div class="theme-name">{{itemList.themeName}}</div>
+            <i class="el-icon-check"></i>
+          </div>
+          <!--<p class="show-more-theme" v-if="item.themeList.length>10" @click="themeListShowHide(item)">{{showThemeLenText?'展开更多':'收起更多'}} <i :class="showThemeLenText?'el-icon-arrow-down':'el-icon-arrow-up'"></i></p>-->
+
+        </div>
+      </el-tab-pane>
+    </el-tabs>
+  </el-dialog>
+  <!--选择主题 end-->
 </div>
 <script>
 </script>

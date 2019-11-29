@@ -10,6 +10,5 @@ include 'aplanmis-common'
 include 'aplanmis'
 include 'aplanmis-mall'
 include 'aplanmis-rest'
-include 'aplanmis-dao'
 include 'aplanmis-data-exchange'
 

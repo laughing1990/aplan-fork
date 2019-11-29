@@ -14,6 +14,45 @@ var vm = new Vue({
                 callback();
             }
         };
+        var checkOrg = function (rule, value, callback) {
+            if (value) {
+                var flag = !/[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}/.test(value);
+                if (flag) {
+                    return callback(new Error('格式错误'));
+                } else {
+                    callback();
+                }
+
+            } else {
+                callback();
+            }
+        };
+        var checkJigoudaima = function (rule, value, callback) {
+            if (value) {
+                var flag = !/^[0-9A-Z]{9}$/.test(value);
+                if (flag) {
+                    return callback(new Error('格式错误'));
+                } else {
+                    callback();
+                }
+
+            } else {
+                callback();
+            }
+        };
+        var idCard = function (rule, value, callback) {
+            if (value) {
+                var flag = !/\d{17}[\d|x]|\d{15}/.test(value);
+                if (flag) {
+                    return callback(new Error('格式错误'));
+                } else {
+                    callback();
+                }
+
+            } else {
+                callback();
+            }
+        };
         var checkPhoneNum = function(rule, value, callback) {
             if (value === '' || value === undefined || value.trim() === '') {
                 callback(new Error('必填字段！'));
@@ -69,6 +108,14 @@ var vm = new Vue({
             addEditManform: {
                 unitInfoId: '',
             }, // 新增编辑联系人信息
+            addUnitInfo:{
+                unitInfoId: '',
+                applicant:'',
+                organizationalCode:'',
+                unifiedSocialCreditCode:'',
+                idmobile:'',
+                idno:'',
+            },
             addEditManPerform: {}, // 新增编辑联系人信息
             projInfoId: '', // 查询项目id
             addLinkManRules: { // 新增编辑联系人校验
@@ -76,7 +123,7 @@ var vm = new Vue({
                     { required: true, validator: checkMissValue, trigger: 'blur' },
                 ],
                 linkmanCertNo: [
-                    { required: true, validator: checkMissValue, trigger: 'blur' },
+                    { required: true, validator: idCard, trigger: 'blur' },
                 ],
                 linkmanMobilePhone: [
                     { required: true, validator: checkPhoneNum, trigger: 'blur' },
@@ -103,9 +150,11 @@ var vm = new Vue({
             },
             gongchengzongFromRules: { //工程总承包单位信息校验
                 organizationalCode: [
+                    { validator: checkJigoudaima, trigger: ['blur'] },
                     { required: true, message: '请输入组织机构代码!', trigger: ['change'] },
                 ],
                 unifiedSocialCreditCode: [
+                    { validator: checkOrg, trigger: ['blur'] },
                     { required: true, message: '请输入统一社会信用代码!', trigger: ['change'] },
                 ],
                 applicant: [
@@ -128,9 +177,11 @@ var vm = new Vue({
             },
             rulesApplyShigongzongFrom: { //施工总承包单位校验
                 organizationalCode: [
+                    { validator: checkJigoudaima, trigger: ['blur'] },
                     { required: true, message: '请输入组织机构代码!', trigger: ['change'] },
                 ],
                 unifiedSocialCreditCode: [
+                    { validator: checkOrg, trigger: ['blur'] },
                     { required: true, message: '请输入统一社会信用代码!', trigger: ['change'] },
                 ],
                 applicant: [
@@ -164,6 +215,21 @@ var vm = new Vue({
                 linkmanMobilePhone: [
                     { required: true, message: '请输入项目负责人（项目经理）联系电话！', trigger: ['change'] },
                 ],
+                professionCertType: [
+                    { required: true, message: '请选择执业注册证类型！', trigger: ['change'] },
+                ],
+                professionSealNum: [
+                    { required: true, message: '请输入执业印章号！', trigger: ['change'] },
+                ],
+                titleGrade: [
+                    { required: true, message: '请选择职称等级！', trigger: ['change'] },
+                ],
+                titleCertNum: [
+                    { required: true, message: '请输入职称证号！', trigger: ['change'] },
+                ],
+                personSafeLicenceNum: [
+                    { required: true, message: '请输入安全生产考核合格证号！', trigger: ['change'] },
+                ],
                 personSetting: {
                     linkmanCertNo: [
                         { required: false, message: '请输入身份证号码！', trigger: ['change'] },
@@ -172,9 +238,11 @@ var vm = new Vue({
             },
             rulesShigongzhuanyefenbaoFrom: {
                 organizationalCode: [
+                    { validator: checkJigoudaima, trigger: ['blur'] },
                     { required: true, message: '请输入组织机构代码!', trigger: ['change'] },
                 ],
                 unifiedSocialCreditCode: [
+                    { validator: checkOrg, trigger: ['blur'] },
                     { required: true, message: '请输入统一社会信用代码!', trigger: ['change'] },
                 ],
                 applicant: [
@@ -210,9 +278,11 @@ var vm = new Vue({
             },
             rulesShigonglaowufenbaoFrom: {
                 organizationalCode: [
+                    { validator: checkJigoudaima, trigger: ['blur'] },
                     { required: true, message: '请输入组织机构代码!', trigger: ['change'] },
                 ],
                 unifiedSocialCreditCode: [
+                    { validator: checkOrg, trigger: ['blur'] },
                     { required: true, message: '请输入统一社会信用代码!', trigger: ['change'] },
                 ],
                 applicant: [
@@ -245,9 +315,11 @@ var vm = new Vue({
             },
             rulesJianliFrom: {
                 organizationalCode: [
+                    { validator: checkJigoudaima, trigger: ['blur'] },
                     { required: true, message: '请输入组织机构代码!', trigger: ['change'] },
                 ],
                 unifiedSocialCreditCode: [
+                    { validator: checkOrg, trigger: ['blur'] },
                     { required: true, message: '请输入统一社会信用代码!', trigger: ['change'] },
                 ],
                 applicant: [
@@ -260,6 +332,7 @@ var vm = new Vue({
                     { required: true, message: '请输入项目总监姓名!', trigger: ['change'] },
                 ],
                 linkmanCertNo: [
+                    { validator: idCard, trigger: ['blur'] },
                     { required: true, message: '请输入项目总监身份证号码!', trigger: ['change'] },
                 ]
             },
@@ -289,6 +362,7 @@ var vm = new Vue({
             qualLevelName: [], //资历等级
             unitLinkManOptions: [], //联系人
             applyShigongzongFrom: {
+                unitInfoId:'',
                 registerNum: '',
                 personSafeLicenceNum: '',
                 personSetting: [{
@@ -302,6 +376,7 @@ var vm = new Vue({
                 }]
             }, // 施工总承包单位信息
             applyShigongzhuanyefenbaoFrom: {
+                unitInfoId:'',
                 registerNum: '',
                 personSafeLicenceNum: '',
                 personSetting: [{
@@ -315,6 +390,7 @@ var vm = new Vue({
                 }],
             }, //施工专业分包单位信息
             applyShigonglaowufenbaoFrom: {
+                unitInfoId:'',
                 registerNum: '',
                 personSafeLicenceNum: '',
                 personSetting: [{
@@ -328,6 +404,7 @@ var vm = new Vue({
                 }],
             }, //施工劳务分包单位信息
             applyJianliFrom: {
+                unitInfoId:'',
                 registerNum: '',
                 personSafeLicenceNum: '',
                 personSetting: [{
@@ -340,7 +417,9 @@ var vm = new Vue({
                     linkmanCertNo: '',
                 }],
             }, //监理单位信息
-            gongchengzongFrom: {}, //工程总承包单位信息
+            gongchengzongFrom: {
+                unitInfoId:''
+            }, //工程总承包单位信息
             exSJAllUnit: {
                 aeaExProjBuildUnitInfo: '',
             }, //所有表单集合
@@ -832,6 +911,7 @@ var vm = new Vue({
         },
         // 新增编辑联系人信息
         addLinkman: function(data, parData) {
+            debugger;
             var _that = this;
             _that.addEditManModalShow = true;
             _that.getUnitsListByProjInfoId();
@@ -854,8 +934,37 @@ var vm = new Vue({
                         _that.addEditManform.unitInfoId = parData.unitInfoId;
                         _that.addEditManform.unitName = parData.applicant;
                     } else {
-                        _that.addEditManform.unitInfoId = '';
-                        _that.addEditManform.unitName = parData.applicant
+                        if(parData.applicant){
+                            _that.addUnitInfo.applicant = parData.applicant;
+                            _that.addUnitInfo.organizationalCode = parData.organizationalCode;
+                            _that.addUnitInfo.unifiedSocialCreditCode = parData.unifiedSocialCreditCode;
+                            _that.addUnitInfo.idrepresentative = parData.idrepresentative;
+                            _that.addUnitInfo.idmobile = parData.idmobile;
+                            request('', {
+                                url: ctx + '/rest/from/exSJUnit/save/unitInfo',
+                                type: 'post',
+                                data: _that.addUnitInfo
+                            }, function(result) {
+                                if (result.success) {
+                                    _that.$message({
+                                        message: '保存成功',
+                                        type: 'success'
+                                    });
+                                    // _that.addEditManPerform.linkmanName = _that.addEditManform.linkmanName;
+                                    console.log(result);
+                                    _that.addEditManform.unitInfoId = result.content.unitInfoId;
+                                    _that.addEditManform.unitName = parData.applicant;
+                                    parData.unitInfoId = result.content.unitInfoId;
+                                }
+                            }, function(msg) {
+                                _that.$message({
+                                    message: msg.message ? msg.message : '保存失败单位失败！',
+                                    type: 'error'
+                                });
+                                _that.loading = false;
+                            });
+
+                        }
                     }
                 }
             } else {

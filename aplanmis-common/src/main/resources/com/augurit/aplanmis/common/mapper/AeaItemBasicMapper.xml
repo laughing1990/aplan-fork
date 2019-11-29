@@ -594,31 +594,44 @@
         SELECT
         <include refid="aib_allColumns"/>,ai.ITEM_SEQ itemSeq
         FROM
-        aea_item_basic aib,
-        aea_hi_iteminst ahi,
-        aea_applyinst_proj aap,
-        aea_hi_seriesinst ahs,
-        aea_hi_par_stageinst ahps,
-        aea_hi_applyinst aha,
-        aea_item ai
+        aea_item_basic aib
+        join aea_hi_iteminst ahi on aib.ITEM_VER_ID = ahi.ITEM_VER_ID
+        join aea_hi_seriesinst ahs on ahi.SERIESINST_ID = ahs.SERIESINST_ID
+        join aea_applyinst_proj aap on aap.APPLYINST_ID = ahs.APPLYINST_ID
+        join aea_hi_applyinst aha on aap.APPLYINST_ID = aha.APPLYINST_ID
+        join aea_item ai on ai.ITEM_ID = aib.ITEM_ID
+        WHERE
+        aap.PROJ_INFO_ID = #{projInfoId}
+        AND aha.IS_DELETED = '0'
+        AND aha.ROOT_ORG_ID = #{rootOrgId}
+        AND aha.APPLYINST_STATE = '6'
+        AND ahs.ROOT_ORG_ID = #{rootOrgId}
+        AND ahi.ROOT_ORG_ID = #{rootOrgId}
+        AND ( ahi.ITEMINST_STATE = '11' OR ahi.ITEMINST_STATE = '12' )
+        AND aib.ROOT_ORG_ID = #{rootOrgId}
+        AND ai.ROOT_ORG_ID = #{rootOrgId}
+        union all
+        SELECT
+        <include refid="aib_allColumns"/>,ai.ITEM_SEQ itemSeq
+        FROM
+        aea_item_basic aib
+        join aea_hi_iteminst ahi on aib.ITEM_VER_ID = ahi.ITEM_VER_ID
+        join aea_hi_par_stageinst ahps on ahi.STAGEINST_ID = ahps.STAGEINST_ID
+        join aea_applyinst_proj aap on aap.APPLYINST_ID = ahps.APPLYINST_ID
+        join aea_hi_applyinst aha on aap.APPLYINST_ID = aha.APPLYINST_ID
+        join aea_item ai on ai.ITEM_ID = aib.ITEM_ID
         WHERE
         aap.PROJ_INFO_ID = #{projInfoId}
         AND aap.APPLYINST_ID = aha.APPLYINST_ID
         AND aha.IS_DELETED = '0'
         AND aha.ROOT_ORG_ID = #{rootOrgId}
         AND aha.APPLYINST_STATE = '6'
-        AND ahs.ROOT_ORG_ID = #{rootOrgId}
         AND ahps.ROOT_ORG_ID = #{rootOrgId}
-        AND ( aap.APPLYINST_ID = ahs.APPLYINST_ID OR aap.APPLYINST_ID = ahps.APPLYINST_ID )
         AND ahi.ROOT_ORG_ID = #{rootOrgId}
-        AND ( ahi.SERIESINST_ID = ahs.SERIESINST_ID OR ahi.STAGEINST_ID = ahps.STAGEINST_ID )
         AND ( ahi.ITEMINST_STATE = '11' OR ahi.ITEMINST_STATE = '12' )
-        AND aib.ITEM_VER_ID = ahi.ITEM_VER_ID
         AND aib.ROOT_ORG_ID = #{rootOrgId}
         AND ai.ITEM_ID = aib.ITEM_ID
         AND ai.ROOT_ORG_ID = #{rootOrgId}
-        GROUP BY
-        aib.ITEM_BASIC_ID
     </select>
 
     <select id="listOpuOmOrgByAllPropJoinItem" resultType="OpuOmOrg">

@@ -1,0 +1,302 @@
+<!--@Author: Lfq-->
+<!--@Date:   2019/11/27-->
+<!--@Last Modified by:   李富贵-->
+<!--@Last Modified time: $ $-->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<!--公共css,js-->
+	<!-- <th:block th:include="common/common :: commonheader('中介服务采购')" /> -->
+
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+		th:href="@{/agcloud/framework/js-lib/element-2/element.css}" />
+	<link rel="stylesheet"
+		href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css"
+		th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+	<link rel="stylesheet"
+		href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css"
+		th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
+	<style>
+		.custor {
+			cursor: pointer;
+		}
+	</style>
+
+	<link rel="stylesheet" href="../../../../static/admin/supermarket/css/register_detail.css"
+		th:href="@{/admin/supermarket/css/register_detail.css}">
+
+	<script>
+		var ctx = '[[@{/}]]';
+		var ctx = 'http://192.168.32.59:8083/aplanmis-front/';
+	</script>
+</head>
+
+<body class="gray-body">
+	<div id="app" v-cloak v-loading="loading">
+		<el-form ref="form" :model="form" label-width="130px" disabled="disabled">
+			<el-collapse v-model="activeNames">
+				<el-collapse-item class="clearfix" name="1" id="">
+					<template slot="title">
+						<i class="header-icon icon ag ag-project-info"></i>基本信息
+					</template>
+
+					<el-form-item label="机构名称">
+						<el-input v-model="form.unitInfo.applicant"></el-input>
+					</el-form-item>
+
+					<div class="clearfix">
+						<el-form-item label="机构性质" class="inline-block">
+							<el-input v-model="form.unitInfo.unitNature"></el-input>
+						</el-form-item>
+						<el-form-item label="机构代码类型" class="inline-block">
+							<el-input v-model="form.unitInfo.idtype"></el-input>
+						</el-form-item>
+						<el-form-item label="统一社会信用代码" class="inline-block">
+							<el-input v-model="form.unitInfo.unifiedSocialCreditCode"></el-input>
+						</el-form-item>
+						<el-form-item label="法定代表人" class="inline-block">
+							<el-input v-model="form.unitInfo.idrepresentative"></el-input>
+						</el-form-item>
+					</div>
+
+					<el-form-item label="法人代表证件号">
+						<el-input v-model="form.unitInfo.idno"></el-input>
+					</el-form-item>
+
+					<div class="clearfix">
+						<!-- <el-form-item label="注册资本币种" class="inline-block">
+							<el-input v-model="form.unitInfo.applicant"></el-input>
+						</el-form-item> -->
+						<el-form-item label="注册资本(万元)" class="inline-block">
+							<el-input v-model="form.unitInfo.registeredCapital"></el-input>
+						</el-form-item>
+						<!-- <el-form-item label="成立日期" class="inline-block">
+							<el-input v-model="form.unitInfo.applicant"></el-input>
+						</el-form-item>
+						<el-form-item label="经营有效期止" class="inline-block">
+							<el-input v-model="form.unitInfo.applicant"></el-input>
+						</el-form-item> -->
+					</div>
+
+					<el-form-item label="经营范围">
+						<el-input v-model="form.unitInfo.managementScope" type="textarea" rows="3"></el-input>
+					</el-form-item>
+					<el-form-item label="注册地行政区划">
+						<el-input v-model="form.unitInfo.applicantDistrict"></el-input>
+					</el-form-item>
+					<el-form-item label="注册详细地址">
+						<el-input v-model="form.unitInfo.applicantDetailSite"></el-input>
+					</el-form-item>
+
+					<div class="clearfix">
+						<!-- <el-form-item label="登记机关行政区划" class="inline-block">
+							<el-input v-model="form.unitInfo.applicant"></el-input>
+						</el-form-item> -->
+						<el-form-item label="登记机关" class="inline-block">
+							<el-input v-model="form.unitInfo.registerAuthority"></el-input>
+						</el-form-item>
+						<!-- <el-form-item label="办公地行政区划" class="inline-block">
+							<el-input v-model="form.unitInfo.applicant"></el-input>
+						</el-form-item>
+						<el-form-item label="办公地址" class="inline-block">
+							<el-input v-model="form.unitInfo.applicant"></el-input>
+						</el-form-item> -->
+					</div>
+
+					<el-form-item label="附件">
+						<el-input v-model="form.unitInfo.applicant"></el-input>
+					</el-form-item>
+
+					<el-form-item label="联系人信息">
+						<el-table :data="form.contactManList" border style="width: 100%">
+							<el-table-column prop="linkmanName" label="联系人姓名" width="180">
+							</el-table-column>
+							<el-table-column prop="linkmanMail" label="电子邮箱" width="180">
+							</el-table-column>
+							<el-table-column prop="linkmanMobilePhone" label="移动电话">
+							</el-table-column>
+							<el-table-column prop="linkmanOfficePhon" label="固定电话">
+							</el-table-column>
+							<el-table-column prop="linkmanFax" label="传真">
+							</el-table-column>
+						</el-table>
+					</el-form-item>
+				</el-collapse-item>
+
+				<el-collapse-item class="clearfix" name="2" id="">
+					<template slot="title">
+						<i class="header-icon icon ag ag-project-info"></i>资格信息
+					</template>
+
+					<el-form-item label="服务类型">
+						<el-input v-model="form.serviceAndQualVo.aeaImUnitService.serviceId"></el-input>
+					</el-form-item>
+					<el-form-item label="服务承诺">
+						<el-input v-model="form.serviceAndQualVo.aeaImUnitService.serviceContent" type="textarea"
+							rows="3"></el-input>
+					</el-form-item>
+					<el-form-item label="收费参考">
+						<el-input v-model="form.serviceAndQualVo.aeaImUnitService.feeReference"></el-input>
+					</el-form-item>
+					<!-- <el-form-item label="是否有备案">
+						<el-input v-model="form.serviceAndQualVo"></el-input>
+					</el-form-item>
+					<el-form-item label="备案说明">
+						<el-input v-model="form.serviceAndQualVo" type="textarea" rows="3"></el-input>
+					</el-form-item> -->
+
+					<div class="clearfix">
+						<el-form-item label="资格证书编号" class="inline-block">
+							<el-input v-model="form.serviceAndQualVo.aeaHiCertinstBVo.certinstCode"></el-input>
+						</el-form-item>
+						<!-- <el-form-item label="出证部门/备案部门" class="inline-block">
+							<el-input v-model="form.serviceAndQualVo.aeaHiCertinstBVo.certinstCode"></el-input>
+						</el-form-item> -->
+						<el-form-item label="资格有效期起" class="inline-block">
+							<el-input v-model="form.serviceAndQualVo.aeaHiCertinstBVo.termStart"></el-input>
+						</el-form-item>
+						<el-form-item label="经资格有效期止" class="inline-block">
+							<el-input v-model="form.serviceAndQualVo.aeaHiCertinstBVo.termEnd"></el-input>
+						</el-form-item>
+					</div>
+
+					<el-form-item label="业务范围">
+						<el-input v-model="form.serviceAndQualVo.aeaHiCertinstBVo.managementScope" type="textarea"
+							rows="3"></el-input>
+					</el-form-item>
+
+					<el-form-item label="资格专业或登记">
+						<el-input v-model="form.serviceAndQualVo.aeaHiCertinstBVo.majorId"></el-input>
+					</el-form-item>
+
+					<el-form-item label="附件">
+						<el-input v-model="form.serviceAndQualVo.aeaHiCertinstBVo.certinstCode"></el-input>
+					</el-form-item>
+				</el-collapse-item>
+
+				<el-collapse-item class="clearfix" name="3" id="">
+					<template slot="title">
+						<i class="header-icon icon ag ag-project-info"></i>授权人员信息
+					</template>
+
+					<el-table :data="form.authorManList" border style="width: 100%">
+						<el-table-column prop="linkmanName" label="业务授权人">
+						</el-table-column>
+						<el-table-column prop="linkmanMobilePhone" label="联系方式">
+						</el-table-column>
+						<el-table-column prop="linkmanCertNo" label="证件号">
+						</el-table-column>
+						<el-table-column prop="unitServiceIds" label="服务类型">
+						</el-table-column>
+						<!-- <el-table-column prop="" label="是否实名">
+						</el-table-column> -->
+					</el-table>
+				</el-collapse-item>
+
+				<el-collapse-item class="clearfix" name="4" id="">
+					<template slot="title">
+						<i class="header-icon icon ag ag-project-info"></i>职业人员信息
+					</template>
+
+					<el-form-item label="姓名">
+						<el-input v-model="form.practiceManInfo.linkmanName"></el-input>
+					</el-form-item>
+					<!-- <el-form-item label="性别">
+						<el-input v-model="form.practiceManInfo."></el-input>
+					</el-form-item> -->
+					<el-form-item label="证件号">
+						<el-input v-model="form.practiceManInfo.linkmanCertNo"></el-input>
+					</el-form-item>
+
+					<el-form-item label="附件">
+						<el-table class="" :data="form.practiceManFileList" border tooltip-effect="dark"
+							style="width: 100%;" stripe>
+							<el-table-column type="index" width="50px" align="center" label="序号"></el-table-column>
+							<el-table-column type="expand" width="15px" align="right">
+								<template slot-scope="props">
+									<template
+										v-if="(props.row.certinstList&&props.row.certinstList.length)||(props.row.fileList&&props.row.fileList.length)">
+										<div class="mat-children" v-if="props.row.fileList&&props.row.fileList.length">
+											<div v-for="item in props.row.fileList" class="file-list-tab"
+												:key="item.fileId">
+												<span class="file-name">
+													<span class="icon ag"
+														:style="{color:getIconColor(getFileType(item.fileName)), fontSize: '20px'}"
+														:class="'ag-filetype-'+getFileType(item.fileName)"></span>
+													{{item.fileName}}
+												</span>
+												<span style="color:#AFB2C1;">
+													（{{item.createrName}}于{{(item.updateTime)}}上传）
+												</span>
+												<span class="file-icon-btn" style="margin-left:20px;">
+													<span title="预览" class="el-icon-search"
+														@click="filePreview(item)"></span>
+													<span title="下载" class="el-icon-download"
+														@click="downOneFile(item)"></span>
+													<!-- <span title="删除" class="el-icon-delete" @click="delOneFile(item,props.row)"></span> -->
+												</span>
+											</div>
+										</div>
+									</template>
+									<div v-else>
+										<div class="mat-children" style="text-indent: 2em; color:#AFB2C1">暂无附件</div>
+									</div>
+								</template>
+							</el-table-column>
+							<el-table-column class-name="meterial-col" prop="matName" label="材料名称" align="left">
+								<template slot-scope="scope">
+									{{scope.row.matName}}
+									<i v-if="scope.row.matProp=='c'&&scope.row.certFileList&&scope.row.certFileList.length"
+										class="ag ag-id-card"></i>
+								</template>
+							</el-table-column>
+						</el-table>
+					</el-form-item>
+
+					<el-form-item label="证书信息">
+						<el-table :data="form.tableData" border style="width: 100%">
+							<el-table-column prop="" type="index" label="序号" width="50">
+							</el-table-column>
+							<el-table-column prop="" label="证书分类">
+							</el-table-column>
+							<el-table-column prop="" label="证书名称">
+							</el-table-column>
+							<el-table-column prop="" label="证书编号">
+							</el-table-column>
+							<el-table-column prop="" label="可提供服务类型">
+							</el-table-column>
+						</el-table>
+					</el-form-item>
+				</el-collapse-item>
+			</el-collapse>
+		</el-form>
+	</div>
+</body>
+
+<!-- <th:block th:include="common/common :: commonfooter" /> -->
+
+<!--一下文件不存在，先注释-->
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+	th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/polyfill.min.js"
+	th:src="@{/agcloud/framework/js-lib/element-2/polyfill.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+	th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+	th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="../../static/common/js/axios.min.js" th:src="@{/common/js/axios.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
+	th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+
+
+	
+<script src="../../../../static/admin/supermarket/js/ip.js" th:src="@{/admin/supermarket/js/ip.js}"
+	type="text/javascript"></script>
+<script src="../../../../static/admin/supermarket/register/register_detail.js"
+	th:src="@{/admin/supermarket/register/register_detail.js}"></script>
+
+</html>

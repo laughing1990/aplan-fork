@@ -29,6 +29,7 @@ import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 主题情形定义表-Service服务接口实现类
@@ -68,11 +69,6 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
 
     @Autowired
     private AeaParStateFormMapper aeaParStateFormMapper;
-
-    /**
-     * 是否使用递归查询数据库算法
-     */
-    private final static boolean USE_RECURSION = false;
 
     @Override
     public void saveAeaParState(AeaParState aeaParState) {
@@ -307,77 +303,120 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
             AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageId);
             if (aeaParStage != null) {
 
-                // 转换阶段数据成mind节点
+                List<MindBaseNode> childNodes = new ArrayList<>();
+                List<AeaParIn> allStateIns = new ArrayList<>();
+                List<AeaParIn> allCommonIns = new ArrayList<>();
+                List<AeaParStateItem> stageStateItemList = new ArrayList<>();
+
+                // 构造根节点
                 MindBaseNode mindBaseNode = getStageNode(aeaParStage);
 
-                // 声明存储集合
-                List<AeaParState> topStateList;
-                List<AeaParState> allStateList;
-                List<AeaParIn> allMatList = null;
-                List<AeaParIn> allCertList = null;
-                List<AeaParIn> allMatCommonList = null;
-                List<AeaParIn> allCertCommonList = null;
-                List<AeaParIn> stageStateFormList = null;
-                List<AeaParIn> allStageCommonFormList = null;
-                List<AeaParStateItem> stageStateItemList = null;
-                if (USE_RECURSION) {
-                    topStateList = aeaParStateMapper.listRootAeaParStateByStageId(stageId, rootOrgId);
-                } else {
-                    // 获取阶段情形节点
-                    allStateList = aeaParStateMapper.listAeaParStateByStageId(stageId, rootOrgId);
-                    if(aeaMindUi!=null&&aeaMindUi.isShowMat()){
-                        // 获取阶段情形材料
-                        allMatList = aeaParInMapper.listInStateMatNewByStageId(stageId, null, rootOrgId, MindType.M.getValue());
-                        // 获取阶段通用材料
-                        allMatCommonList = aeaParInMapper.listStageMatNew(stageId, "", Status.ON , "0", "", rootOrgId, MindType.M.getValue());
+                // 获取阶段情形节点
+                List<AeaParState> allStates = aeaParStateMapper.listAeaParStateByStageId(stageId, rootOrgId);
+
+                // 获取阶段情形的材料、证照、表单
+                if(aeaMindUi!=null){
+                    List<String> matProps = new ArrayList<>();
+                    if(aeaMindUi.isShowMat()){
+                        matProps.add(MindType.M.getValue());
                     }
-                    if(aeaMindUi!=null&&aeaMindUi.isShowCert()){
-                        // 获取阶段情形证照
-                        allCertList = aeaParInMapper.listInStateMatNewByStageId(stageId, null, rootOrgId, MindType.C.getValue());
-                        // 获取阶段通用证照
-                        allCertCommonList = aeaParInMapper.listStageMatNew(stageId, "", Status.ON , "0", "", rootOrgId, MindType.C.getValue());
+                    if(aeaMindUi.isShowCert()){
+                        matProps.add(MindType.C.getValue());
                     }
-                    if(aeaMindUi!=null&&aeaMindUi.isShowSituationLinkItem()){
+                    if(aeaMindUi.isShowForm()) {
+                        matProps.add(MindType.F.getValue());
+                    }
+                    if(matProps!=null&&matProps.size()>0){
+
+                        // 获取阶段情形材料、证照、表单
+                        allStateIns = aeaParInMapper.listInStateMatNewByStageId(stageId, null, rootOrgId, null, matProps);
+
+                        // 获取阶段情形材料、证照、表单
+                        allCommonIns = aeaParInMapper.listStageMatNew(stageId, "", Status.ON , "0", "", rootOrgId, null, matProps);
+                    }
+                    if(aeaMindUi.isShowSituationLinkItem()) {
                         // 获取阶段情形事项
                         stageStateItemList = aeaParStateItemMapper.listStageStateItem(null, stageId, rootOrgId);
                     }
-                    if(aeaMindUi!=null&&aeaMindUi.isShowForm()){
-                        // 获取阶段情形表单数据
-                        stageStateFormList = aeaParInMapper.listInStateMatNewByStageId(stageId, null, rootOrgId, MindType.F.getValue());
-                        // 获取阶段通用表单数据
-                        allStageCommonFormList = aeaParInMapper.listStageMatNew(stageId, "", Status.ON , "0", "", rootOrgId, MindType.F.getValue());
-                    }
-                    // 获取阶段顶级情形数据
-                    topStateList = getTopAeaParStateList(allStateList);
                 }
 
-                //阶段下的顶级节点集合
-                List<MindBaseNode> topNodeList = new ArrayList<>();
-                // 获取阶段顶级情形数据
-                if (topStateList != null && !topStateList.isEmpty()) {
-                    sortAeaParStateBySortNo(topStateList);
-                    for (AeaParState topState : topStateList) {
-                        // 转换情形阶段数据为mind节点
-                        MindBaseNode mindSituationNode = getChildStateNode(topState);
-                        topNodeList.add(mindSituationNode);
-                        loadChildStateList(aeaParStage.getStageId(), mindSituationNode, USE_RECURSION, aeaMindUi, allStateList, allMatList, allCertList, stageStateItemList, stageStateFormList, rootOrgId);
-                    }
-                } else {
-                    mindBaseNode.setOpen(MindConst.MIND_NODE_EXPAND_FALSE);
-                }
-                // 转换通用材料为mind节点
-                mindBaseNode.setChilds(listToArray(getChildStageNodeOfCommonMatCertForm(stageId, topNodeList, allMatCommonList)));
-                // 转换通用证照为mind节点
-                mindBaseNode.setChilds(listToArray(getChildStageNodeOfCommonMatCertForm(stageId, topNodeList, allCertCommonList)));
-                // 转换通用表单为mind节点
-                mindBaseNode.setChilds(listToArray(getChildStageNodeOfCommonMatCertForm(stageId, topNodeList, allStageCommonFormList)));
+                // 构造子树节点，包括情形和材料
+                node(stageId, stageId, allStates, allStateIns, stageStateItemList, childNodes, rootOrgId);
+
+                // 封装阶段的所有通用材料、证照、表单
+                getChildStageNodeOfCommonMatCertForm(stageId, childNodes, allCommonIns);
+
+                // 设置根节点的孩子们
+                mindBaseNode.setChilds(childNodes.toArray(new MindBaseNode[]{}));
                 return mindBaseNode;
             }
         }
         return null;
     }
 
-    private List<MindBaseNode> getChildStageNodeOfCommonMatCertForm(String stageId, List<MindBaseNode> topNodeList, List<AeaParIn> allMatCommonList){
+    private List<AeaParState> extractStatesByParentIdAndStageId(String parentId, String stageId, List<AeaParState> allStates) {
+
+        //获取一级情形
+        if (stageId.equals(parentId)) {
+            return allStates.stream().filter(AeaParState::firstLevelState).collect(Collectors.toList());
+        } else {//根据情形父id获取
+            return allStates.stream().filter(s -> parentId.equals(s.getParentStateId())).collect(Collectors.toList());
+        }
+    }
+
+    private void node(String stageId, String parentId, List<AeaParState> allStates, List<AeaParIn> allStateIns,
+                      List<AeaParStateItem> stageStateItemList, List<MindBaseNode> childNodes, String rootOrgId) {
+
+        List<AeaParState> list = extractStatesByParentIdAndStageId(parentId, stageId, allStates);
+        if (CollectionUtils.isEmpty(list)) {
+            return;
+        }
+        for (AeaParState state : list) {
+            MindBaseNode stateNode;
+            stateNode = buildNodeByState(state, parentId);
+            List<MindBaseNode> stateChildren = new ArrayList<>();
+            List<MindBaseNode> stateChildrenNode = new ArrayList<>();
+
+            // 封装阶段情形下的材料、证照、表单
+            if(allStateIns!=null&&allStateIns.size()>0){
+                List<AeaParIn> needDelList = new ArrayList<>();
+                for(AeaParIn in : allStateIns){
+                    if(in.getParStateId().equals(state.getParStateId())){
+                        stateChildrenNode.add(getChildParInNode(in));
+                        needDelList.add(in);
+                    }
+                }
+                if(needDelList!=null&&needDelList.size()>0){
+                    allStateIns.removeAll(needDelList);
+                }
+            }
+
+            // 封装阶段情形下的事项
+            if(stageStateItemList!=null&&stageStateItemList.size()>0){
+                List<AeaParStateItem> needDelList = new ArrayList<>();
+                for(AeaParStateItem stateItem : stageStateItemList){
+                    if(stateItem.getParStateId().equals(state.getParStateId())){
+                        stateChildrenNode.add(convertChildStateItemNode(stateItem));
+                        needDelList.add(stateItem);
+                    }
+                }
+                if(needDelList!=null&&needDelList.size()>0){
+                    stageStateItemList.removeAll(needDelList);
+                }
+            }
+
+            //递归处理子情形节点
+            node(stageId, state.getParStateId(), allStates, allStateIns, stageStateItemList, stateChildren, rootOrgId);
+
+            if(stateChildrenNode!=null&&stateChildrenNode.size()>0){
+                stateChildren.addAll(stateChildrenNode);
+            }
+            stateNode.setChilds(stateChildren.toArray(new MindBaseNode[]{}));
+            childNodes.add(stateNode);
+        }
+    }
+
+    private List<MindBaseNode> getChildStageNodeOfCommonMatCertForm(String stageId, List<MindBaseNode> child, List<AeaParIn> allMatCommonList){
 
         if(allMatCommonList!=null&&allMatCommonList.size()>0) {
             for (AeaParIn aeaParIn:allMatCommonList) {
@@ -415,10 +454,10 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
                 }
                 mindMatCertNode.setExtra(map);
                 mindMatCertNode.setNote(aeaParIn.getAeaMatCertMemo());
-                topNodeList.add(mindMatCertNode);
+                child.add(mindMatCertNode);
             }
         }
-        return topNodeList;
+        return child;
     }
 
     private List<MindBaseNode> getChildStageNodeOfCommonForm(String stageId, List<MindBaseNode> topNodeList, List<AeaParStateForm> allFormCommonList){
@@ -605,7 +644,7 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
             }
             if (matInList != null && !matInList.isEmpty()) {
                 for (AeaParIn child : matInList) {
-                    allChildList.add(getChildParInNode(child, true, useRecursion));
+                    allChildList.add(getChildParInNode(child));
                 }
             }
         }
@@ -620,7 +659,7 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
             }
             if (certInList != null && !certInList.isEmpty()) {
                 for (AeaParIn child : certInList) {
-                    allChildList.add(getChildParInNode(child, false, useRecursion));
+                    allChildList.add(getChildParInNode(child));
                 }
             }
         }
@@ -650,7 +689,7 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
             }
             if (stateFormList != null && !stateFormList.isEmpty()) {
                 for (AeaParIn child : stateFormList) {
-                    allChildList.add(getChildParInNode(child, false, useRecursion));
+                    allChildList.add(getChildParInNode(child));
                 }
             }
         }
@@ -677,7 +716,7 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
         mindBaseNode.setChilds(listToArray(listNode));
     }
 
-    private MindBaseNode getChildParInNode(AeaParIn aeaParIn, boolean isMat, boolean getStageItemIn) {
+    private MindBaseNode getChildParInNode(AeaParIn aeaParIn) {
 
         MindBaseNode mindMatCertNode = new MindBaseNode();
         mindMatCertNode.setProgress("");
@@ -790,6 +829,26 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
         mindMatNode.setExtra(map);
         return mindMatNode;
     }
+
+    private MindBaseNode buildNodeByState(AeaParState state, String parentId) {
+
+        MindBaseNode mindBaseNode = new MindBaseNode();
+        mindBaseNode.setId(state.getParStateId());
+        mindBaseNode.setName(state.getStateName());
+        //父级id
+        mindBaseNode.setPid(parentId);
+        mindBaseNode.setOpen(MindConst.MIND_NODE_EXPAND_TRUE);
+        //是否必选
+        mindBaseNode.setPriority("m".equals(state.getAnswerType()) ? AeaMindConst.MIND_NODE_PRIORITY_MAPPING_REQUIRED : "");
+        //是否多选
+        mindBaseNode.setProgress(Status.ON.equals(state.getMustAnswer()) ? AeaMindConst.MIND_NODE_PROGRESS_MAPPING_REQUIRED : "");
+        mindBaseNode.setNodeTypeCode(MindType.SITUATION.getValue());
+        mindBaseNode.setNodeTypeName(MindType.SITUATION.getName());
+        mindBaseNode.setNote(state.getStateMemo());
+        mindBaseNode.setLinkProcessStart(state.getIsProcStartCond());
+        return mindBaseNode;
+    }
+
 
     private MindBaseNode getChildStateNode(AeaParState state) {
 

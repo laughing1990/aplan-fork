@@ -51,7 +51,7 @@ var module1 = new Vue({
       if (value === '' || value === undefined || value.trim() === '') {
         callback(new Error('请输入统一社会信用代码！'));
       } else if (value) {
-        var flag = !/[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}/.test(value);
+        var flag = !/^[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}$/.test(value);
         if (flag) {
           return callback(new Error('请输入正确的统一社会信用代码！'));
         } else {
@@ -353,6 +353,10 @@ var module1 = new Vue({
       preItemCheckkMsg: '', // 前置检测失败提示
       formUrlList: [],
       leftTabClosed: true, //
+      useOneForm: '1', // 是否启用一张表单
+      rootUnitInfoId: '',
+      rootLinkmanInfoId: '',
+      ootApplyLinkmanId: '',
     }
   },
   created: function () {
@@ -380,7 +384,8 @@ var module1 = new Vue({
       };
       _that.mySpaceLoading = true;
       request('', {
-        url: ctx + 'rest/user/mat/list',
+        // url: ctx + 'rest/user/mat/list',
+        url: ctx + 'rest/user/mat/getMyMatListContainsFiles',
         type: 'get',
         data: param
       }, function (result) {
@@ -396,8 +401,36 @@ var module1 = new Vue({
             });
           }
           if (_that.myMatsList.length > 0) {
-            _that.myMatsList.map(function (item) {
+            _that.myMatsList.map(function (item,index) {
               Vue.set(item, 'checked', false);
+              if (typeof item.hasChildren == 'undefined') {
+                Vue.set(item, 'hasChildren', true)
+              }
+              if (typeof item.rowKey == 'undefined') {
+                Vue.set(item, 'rowKey', 'mat_'+index)
+              } else {
+                item.rowKey = 'mat_'+index
+              }
+              if(item.bscAttFileAndDir&&item.bscAttFileAndDir.length>0){
+                item.bscAttFileAndDir.map(function(bscAttFileItem,ind){
+                  if (typeof bscAttFileItem.rowKey == 'undefined') {
+                    Vue.set(bscAttFileItem, 'rowKey', 'mat_'+index+'_file_'+ind)
+                  } else {
+                    bscAttFileItem.rowKey = 'mat_'+index+'_file_'+ind
+                  }
+                  if (typeof bscAttFileItem.checked == 'undefined') {
+                    Vue.set(bscAttFileItem, 'checked', false)
+                  }
+                  if (typeof item.hasChildren == 'undefined') {
+                    Vue.set(item, 'hasChildren', false)
+                  }
+                });
+                if (typeof item.children == 'undefined') {
+                  Vue.set(item, 'children', item.bscAttFileAndDir)
+                }else {
+                  item.children = item.bscAttFileAndDir;
+                }
+              }
               if (uploadFileIds.indexOf(item.fileId) > -1) {
                 item.checked = true;
               }
@@ -553,10 +586,24 @@ var module1 = new Vue({
     },
     // 切换我的材料选中状态 flag ==dir 我的空间选中材料
     changeMyMatSel: function (val, selMatData, flag) {
-      console.log(val, selMatData);
-      console.log(this.selMatRowData);
-      var _that = this;
-      var fileId = flag == 'dir' ? selMatData.detailId : selMatData.fileId;
+      var _that = this, fileId = '';
+      if(flag == 'dir'){
+        fileId = selMatData.detailId;
+      }else {
+        if(selMatData.fileId){
+          fileId = selMatData.fileId
+        }else {
+          if(selMatData.children&&selMatData.children.length>0){
+            var fileIds = [];
+            selMatData.children.map(function(itemFile){
+              if(fileIds.indexOf(itemFile.fileId)<0){
+                fileIds.push(itemFile.fileId);
+              }
+            });
+            fileId = fileIds.join(',')
+          }
+        }
+      }
       var param = {
         detailIds: fileId,
         matId: _that.selMatRowData.matId,
@@ -574,7 +621,7 @@ var module1 = new Vue({
           if (result) {
             console.log(result);
             _that.selMatRowData.matinstId = result.content;
-            _that.getFileListWin(result.content, _that.selMatRowData);
+            _that.getFileListWin(result.content, _that.selMatRowData,val,selMatData);
           }
         }, function (msg) { });
       } else {
@@ -810,6 +857,7 @@ var module1 = new Vue({
               });
               _that.addEditManPerform.linkmanName = _that.addEditManform.linkmanName;
               _that.addEditManPerform.linkmanId = result.content;
+              _that.addEditManPerform.linkmanInfoId = result.content;
               _that.addEditManPerform.linkmanMail = _that.addEditManform.linkmanMail;
               _that.addEditManPerform.linkmanCertNo = _that.addEditManform.linkmanCertNo;
               _that.addEditManPerform.linkmanMobilePhone = _that.addEditManform.linkmanMobilePhone;
@@ -1050,6 +1098,7 @@ var module1 = new Vue({
         _that.loading = false;
         if (data.success) {
           _that.itemBasicInfo = data.content;
+          _that.useOneForm = data.content.useOneForm;
         } else {
           _that.$message({
             message: data.message ? data.message : '获取事项信息失败',
@@ -1256,7 +1305,9 @@ var module1 = new Vue({
             _that.querySelentUnit(_that.aeaUnitList[0]);
           }
           _that.getPersonOrUnitBlackByBizId();
-          _that.getParallelApplyinstId(); // 获取一张表单
+          if(_that.useOneForm == '1'){
+            _that.getParallelApplyinstId(); // 获取一张表单
+          }
         } else {
           _that.$message({
             message: result.message ? result.message : '获取申报主体信息失败',
@@ -1420,9 +1471,7 @@ var module1 = new Vue({
           validFun = _that.$refs[formRef][0].validate
         }
         validFun(function (valid) {
-          if (valid) {
-            jiansheUnitFlag = true;
-          } else {
+          if (!valid) {
             jiansheUnitFlag = false;
             perUnitMsg = "请完善申办主体建设单位信息"
             return false;
@@ -1478,6 +1527,18 @@ var module1 = new Vue({
 
                     _that.smsInfoId = data.content.smsId;
                     _that.regionalism = data.content.regionalism;
+                    if(data.content.unitReturnJson&&data.content.unitReturnJson.length>0) {
+                      var arr = data.content.unitReturnJson;
+                      arr.forEach(function (item, index) {
+                        if (_that.jiansheFrom.length > 0) {
+                          for (var i = 0; i < _that.jiansheFrom.length; i++) {
+                            if (_that.jiansheFrom[i].unifiedSocialCreditCode == item.unifiedSocialCreditCode) {
+                              _that.jiansheFrom[i].unitInfoId = item.unitInfoId;
+                            }
+                          }
+                        }
+                      })
+                    }
                     _that.$message({
                       message: '保存成功',
                       type: 'success'
@@ -1570,7 +1631,7 @@ var module1 = new Vue({
       }
       if (this.isNeedState == 1) {
         this.getRootStateList();
-      } else if(_that.needOneForm){
+      } else if(this.needOneForm){
         this.declareStep = 4;
       } else {
         this.saveAndGetMats();
@@ -2027,23 +2088,42 @@ var module1 = new Vue({
     },
     // 删除文件  flag ==dir 我的空间选中材料
     delSelectFileCom: function (rowData, fileData, index, flag) {
-      var _that = this;
-      var detailIds = flag == 'dir' ? fileData.detailId : fileData.fileId;
+      var _that = this, detailIds='';
+      // var detailIds = flag == 'dir' ? fileData.detailId : fileData.fileId;
+      if(flag == 'dir'){
+        detailIds = fileData.detailId;
+      }else {
+        if(fileData.fileId){
+          detailIds = fileData.fileId
+        }else {
+          if(fileData.children&&fileData.children.length>0){
+            var fileIds = [];
+            fileData.children.map(function(itemFile){
+              if(fileIds.indexOf(itemFile.fileId)<0){
+                fileIds.push(itemFile.fileId);
+              }
+            });
+            detailIds = fileIds.join(',')
+          }
+        }
+      }
       request('', {
+        url: ctx + 'rest/file/delelteAttachment',
         type: 'get',
         data: { matinstId: rowData.matinstId, detailIds: detailIds }
       }, function (res) {
         if (res.success) {
           _that.getFileListWin(res.content, rowData);
           // rowData.childs.splice(index,1);
+          fileData.checked = false;
           var succMsg = index ? '删除成功' : '移除成功'
-          if (_that.myMatsList.length > 0) {
-            _that.myMatsList.map(function (item) {
-              if (item.fileId == detailIds) {
-                item.checked = false;
-              }
-            });
-          }
+          // if (_that.myMatsList.length > 0) {
+          //   _that.myMatsList.map(function (item) {
+          //     if (item.fileId == detailIds) {
+          //       item.checked = false;
+          //     }
+          //   });
+          // }
           _that.$message({
             message: succMsg,
             type: 'success'
@@ -2463,6 +2543,7 @@ var module1 = new Vue({
     showOneFormDialog1: function(oneformMat){
       var _that = this;
       var _applyinstId = _that.parallelApplyinstId;
+      _that.selMatRowData = oneformMat;
       _that.matformNameTitle = oneformMat.matName
       if(_applyinstId==''){
         _that.getParallelApplyinstId('matForm',oneformMat.stoFormId)
@@ -2474,7 +2555,7 @@ var module1 = new Vue({
     getOneFormrender3: function(_applyinstId,_formId){
       var _that = this;
       // _formId = 'ecbebb64-a29c-41c6-abb7-e7b337a1a2cb';
-      var sFRenderConfig='&showBasicButton=true&includePlatformResource=false';
+      var sFRenderConfig='&showBasicButton=true&includePlatformResource=false&busiScence=mat';
       request('', {
         url: ctx + 'bpm/common/sf/renderHtmlFormContainer?listRefEntityId='+_applyinstId+'&listFormId='+_formId+sFRenderConfig,
         type: 'get',
@@ -2741,7 +2822,7 @@ var module1 = new Vue({
       }, 300);
     },
     // 获取已上传文件列表
-    getFileListWin: function (matinstId, rowData) {
+    getFileListWin: function (matinstId, rowData, checkFlag,selMatData) {
       var _that = this;
       _that.selMatLoading = true;
       request('', {
@@ -2762,14 +2843,46 @@ var module1 = new Vue({
                 }
               });
             }
+            if(checkFlag==true){
+              if (typeof selMatData.checked == undefined) {
+                Vue.set(selMatData, 'checked', true);
+              }else {
+                selMatData.checked = true;
+              }
+              _that.$refs['myMatsList'].toggleRowExpansion(selMatData,true);
+            }
             if (_that.myMatsList.length > 0) {
               _that.myMatsList.map(function (item) {
+                var checkedFlag = true;
                 if (typeof item.checked == undefined) {
                   Vue.set(item, 'checked', false);
                 }
-                if (uploadFileIds.length > 0 && uploadFileIds.indexOf(item.fileId) > -1) {
-                  item.checked = true;
-                } else {
+                if(item.children&&item.children.length>0){
+                  item.children.map(function(myMatsListItem){
+                    if (uploadFileIds.length > 0 && uploadFileIds.indexOf(myMatsListItem.fileId) > -1) {
+                      // myMatsListItem.checked = true;
+                      if (typeof myMatsListItem.checked == undefined) {
+                        Vue.set(myMatsListItem, 'checked', true);
+                      }else {
+                        myMatsListItem.checked = true;
+                      }
+                    } else {
+                      // myMatsListItem.checked = false;
+                      if (typeof myMatsListItem.checked == undefined) {
+                        Vue.set(myMatsListItem, 'checked', false);
+                      }else {
+                        myMatsListItem.checked = false;
+                      }
+                    }
+                    if(myMatsListItem.checked==false){
+                      checkedFlag = false;
+                    }
+                  });
+                  item.checked = checkedFlag;
+                  if(checkedFlag==true){
+                    _that.$refs['myMatsList'].toggleRowExpansion(item,true);
+                  }
+                }else {
                   item.checked = false;
                 }
               })
@@ -2961,4 +3074,23 @@ var module1 = new Vue({
     },
   },
 });
+function callbackAfterSaveSFForm(result,sFRenderConfig,formModelVal,actStoForminst) {
+  console.log(result,sFRenderConfig.busiScence,formModelVal,actStoForminst);
+  if(sFRenderConfig.busiScence=='mat'){
+    var parma = {
+      "linkmainInfoId": module1.rootApplyLinkmanId,
+      "matId": module1.selMatRowData.matId,
+      "projInfoId": module1.projInfoId,
+      "stoForminstId": actStoForminst.stoForminstId,
+      "unitInfoId": module1.rootUnitInfoId
+    };
+    request('', {
+      url: ctx + 'aea/cert/bind/form',
+      type: 'POST',
+      ContentType: 'application/json',
+      data: JSON.stringify(parma),
+    }, function (result1) {
+    }, function (msg) {})
+  }
+}
 

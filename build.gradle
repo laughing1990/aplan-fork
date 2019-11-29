@@ -175,6 +175,8 @@ allprojects {
 
         compile("org.liquibase:liquibase-core:3.6.3")
 
+        compile("e-iceblue:spire-doc:2.7.3")
+
         //bsc依赖
         compile('org.jodconverter:jodconverter-core:4.2.0')
 
@@ -191,6 +193,7 @@ allprojects {
 // https://mvnrepository.com/artifact/com.itextpdf.tool/xmlworker
         compile group: 'com.itextpdf.tool', name: 'xmlworker', version: '5.5.6'
 //    compile "org.springframework.boot:spring-boot-devtools"
+
 
         testCompile('org.springframework.boot:spring-boot-starter-test')
         testCompile('org.junit.jupiter:junit-jupiter-engine:5.0.2')

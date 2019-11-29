@@ -873,7 +873,7 @@ public class AeaImProjPurchaseController {
     }
 
     @GetMapping("/getPurchaseDetail")
-    @ApiOperation(value = "")
+    @ApiOperation(value = "查询申报采购项目详情")
     public ContentResultForm<PurchaseDetailVo> getPurchaseDetail(String projPurchaseId) throws Exception {
         PurchaseDetailVo vo = projPurchaseService.getPurchaseDetail(projPurchaseId);
         return new ContentResultForm(true, vo, "success");

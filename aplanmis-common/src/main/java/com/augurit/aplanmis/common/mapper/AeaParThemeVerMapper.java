@@ -16,6 +16,14 @@ import java.util.List;
 public interface AeaParThemeVerMapper extends BaseMapper<AeaParThemeVer> {
 
     /**
+     * 不关联主题信息
+     *
+     * @param aeaParThemeVer
+     * @return
+     */
+    List<AeaParThemeVer> listAeaParThemeVerNoRelThemeInfo(AeaParThemeVer aeaParThemeVer);
+
+    /**
      * 查询
      *
      * @param aeaParThemeVer
@@ -72,4 +80,6 @@ public interface AeaParThemeVerMapper extends BaseMapper<AeaParThemeVer> {
     AeaParThemeVer getTestRunOrPublishedVer(@Param("themeId") String themeId, @Param("rootOrgId") String rootOrgId);
 
     List<AeaParThemeVer> getNotExpireThemeverByItemId(@Param("itemId") String itemId, @Param("rootOrgId")String rootOrgId);
+
+    List<AeaParThemeVer> listMaxThemeVerGroupByThemeId(@Param("themeId") String themeId, @Param("rootOrgId") String rootOrgId);
 }

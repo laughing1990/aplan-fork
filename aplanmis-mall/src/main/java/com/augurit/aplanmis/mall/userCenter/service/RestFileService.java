@@ -39,6 +39,15 @@ public interface RestFileService {
     Boolean isFileBelong(String detailId,HttpServletRequest request)throws Exception;
 
     /**
+     * 判断当前 detailId
+     * @param detailId
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    Boolean isMatInstFileBelong(String detailId,HttpServletRequest request)throws Exception;
+
+    /**
      * 判断是否允许上传的文件类型
      * @param request
      * @return

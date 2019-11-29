@@ -84,7 +84,6 @@
         left join ACT_STO_FORM asf on (
                 partform.STO_FORM_ID = asf.FORM_ID
             and asf.IS_DELETED = '0'
---             and asf.FORM_PROPERTY in ( 'smart-biz', 'smart-flow','dev-biz' )
             and partform.STO_FORM_ID is not null
             and partform.STO_FORM_ID !=''
         )

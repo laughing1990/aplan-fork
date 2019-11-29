@@ -82,42 +82,52 @@ public class AeaItemPartformAdminController {
      * 保存或编辑事项与扩展表单关联表
      *
      * @param aeaItemPartform 事项与扩展表单关联表
-     * @param result          校验对象
      * @return 返回结果对象 包含结果信息
      * @throws Exception
      */
     @RequestMapping("/saveAeaItemPartform.do")
-    public ResultForm saveAeaItemPartform(AeaItemPartform aeaItemPartform, BindingResult result) throws Exception {
-        if (result.hasErrors()) {
-            logger.error("保存事项与扩展表单关联表Form对象出错");
-            throw new InvalidParameterException(aeaItemPartform);
-        }
+    public ResultForm saveAeaItemPartform(AeaItemPartform aeaItemPartform) throws Exception {
+
         if (StringUtils.isNotBlank(aeaItemPartform.getItemPartformId())) {
             aeaItemPartformService.updateAeaItemPartform(aeaItemPartform);
         } else {
             aeaItemPartform.setItemPartformId(UUID.randomUUID().toString());
             aeaItemPartformService.saveAeaItemPartform(aeaItemPartform);
         }
-
         return new ContentResultForm<AeaItemPartform>(true, aeaItemPartform);
     }
 
     @RequestMapping("/updateAeaItemPartformWithFormId.do")
-    public ResultForm updateAeaItemPartformWithFormId(String id, String formId, String operation) throws Exception {
+    public ResultForm updateAeaItemPartformWithFormId(AeaItemPartform partform, String formId, String operation) throws Exception {
 
-        if (StringUtils.isBlank(id)) {
-            throw new InvalidParameterException("参数id为空!");
+        String itemPartformId = partform.getItemPartformId();
+        if(StringUtils.isBlank(itemPartformId)){
+            throw new InvalidParameterException("参数itemPartformId为空!");
         }
-        if (StringUtils.isBlank(formId)) {
+        if(StringUtils.isBlank(formId)){
             throw new InvalidParameterException("参数formId为空!");
         }
-        if (ActStoConstant.SMART_FORM_ENTITY_OPERATION_NEW.equals(operation)) {
-            AeaItemPartform partform = new AeaItemPartform();
-            partform.setItemPartformId(id);
+        AeaItemPartform itemPartform = aeaItemPartformService.getAeaItemPartformById(itemPartformId);
+        if(itemPartform!=null) {
+            itemPartform.setStoFormId(formId);
+            aeaItemPartformService.updateAeaItemPartform(itemPartform);
+        }else{
+            if(partform==null){
+                return  new ResultForm(false, "传递参数全部丢失!");
+            }
+            if(StringUtils.isBlank(partform.getItemVerId())){
+                return  new ResultForm(false, "智能表单与阶段事项关联表记录不存在,传递参数itemVerId为空!");
+            }
+            if(StringUtils.isBlank(partform.getIsSmartForm())){
+                return  new ResultForm(false, "智能表单与阶段事项关联表记录不存在,传递参数isSmartForm为空!");
+            }
+            partform.setItemPartformId(UUID.randomUUID().toString());
+            partform.setPartformName(StringUtils.isBlank(partform.getPartformName())?"未命名":partform.getPartformName());
             partform.setStoFormId(formId);
-            aeaItemPartformService.updateAeaItemPartform(partform);
+            partform.setUseEl(Status.OFF);
+            aeaItemPartformService.saveAeaItemPartform(partform);
         }
-        return new ResultForm(true);
+        return new ResultForm(true,"保存成功!");
     }
 
     @RequestMapping("/deleteAeaItemPartformById.do")
@@ -179,7 +189,7 @@ public class AeaItemPartformAdminController {
     }
 
     @RequestMapping("/updateItemPartformSortNos.do")
-    public ResultForm updateItemPartformSortNos(String[] ids, String[] sortNos) throws Exception {
+    public ResultForm updateItemPartformSortNos(String[] ids, Long[] sortNos) throws Exception {
 
         if (ids != null && ids.length > 0 && sortNos != null && sortNos.length > 0) {
             for (int i = 0; i < ids.length; i++) {

@@ -75,6 +75,7 @@
   text-align: center;
   position: relative;
   margin-right: 50px;
+  margin-top: 10px;
   width: 106px;
 }
 .el-select-dropdown.el-popper {
@@ -138,14 +139,14 @@
 .declare-content .proj-base-info .el-form .el-form-item .el-form-item__label {
   width: 178px;
 }
-.declare-content .pd-info-pandel .pro-type-item {
-  width: 49%;
+.declare-content .pro-type-item {
+  width: 48%;
   border: 1px solid #E6EAF4;
   border-radius: 4px;
   margin: 0 5px 20px 5px;
   float: left;
   cursor: pointer;
-  height: 80px;
+  height: 70px;
   color: #3F4047;
   padding: 15px 20px;
   display: -webkit-box;
@@ -157,11 +158,18 @@
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
 }
-.declare-content .pd-info-pandel .pro-type-item:hover {
+.declare-content .pro-type-item:hover {
   box-shadow:0px 2px 13px 0px rgba(59,97,183,0.16);
   border-color: transparent;
 }
-.declare-content .pd-info-pandel .pro-type-item.active:before {
+.change-theme-btn {
+  border-color: #457EFF;
+  color: #457EFF;
+  position: absolute;
+  right: 110px;
+  top: 80px;
+}
+.declare-content .pro-type-item.active:before {
   content: '';
   display: inline;
   position: absolute;
@@ -172,26 +180,47 @@
   border-top: 18px solid transparent;
   border-bottom: 45px solid #457EFF;
 }
-.declare-content .pd-info-pandel .pro-type-item img {
+.declare-content .pro-type-item img {
   margin-right: 15px;
   display: block;
   float: left;
   width: 50px;
   height: 50px;
 }
-.declare-content .pd-info-pandel .pro-type-item.disabled {
+.declare-content .pro-type-item.disabled {
   opacity: .6;
   cursor: not-allowed;
 }
-.declare-content .pd-info-pandel .pro-type-item.active {
+.declare-content  .pro-type-item.active {
   border-color: #457EFF;
   position: relative;
 }
-.declare-content .pd-info-pandel .pro-type-item .el-icon-check {
+.declare-content .pd-info-pandel .pro-type-item.pro-type-sel,
+.declare-content .pd-info-pandel .pro-type-item.pro-type-null {
+  padding: 0px 20px;
+  height: 70px;
+  width: 80%;
+  float: inherit;
+  margin: 20px 0 0 60px;
+}
+.declare-content .pro-type-item.pro-type-null {
+  text-align: center;
+  border: dashed 2px #E0E3E9;
+  display: block;
+  line-height: 70px;
+  font-size: 16px;
+  color: #457EFF;
+}
+.declare-content .pro-type-item.pro-type-null .el-icon-circle-plus-outline {
+  font-size: 24px;
+  vertical-align: sub;
+  padding-right: 10px;
+}
+.declare-content .pro-type-item .el-icon-check {
   display: none;
 }
 
-.declare-content .pd-info-pandel .pro-type-item.active .el-icon-check {
+.declare-content .pro-type-item.active .el-icon-check {
   display: inline;
   position: absolute;
   bottom: 2px;
@@ -233,6 +262,12 @@
 }
 .matter-list .sign-icon {
   background: url(../../images/icon/declare.png) no-repeat center center;
+}
+.matter-list .sign-icon.disabled {
+  cursor: not-allowed;
+}
+.matter-list .guid-icon.disabled {
+  cursor: not-allowed;
 }
 .declare-content .pd-info-pandel .situation-box .question {
   padding: 24px 0 20px 0;
@@ -457,8 +492,8 @@
 }
 .isTag{
   margin-left: 5px;
-  border-radius: 13px;
-  padding: 3px 6px 1px 6px;
+  border-radius: 5px;
+  padding: 4px 6px 3px 6px;
   color: white;
   line-height: normal;
   font-size: 12px;
@@ -1142,16 +1177,16 @@
 .upload-file-list .file-btn.el-icon-delete {
   color: #FF4B47;
 }
-.my-dir-table .dir-file-name {
+.my-dir-table .dir-file-name, .my-mat-table .dir-file-name {
   width: 240px;
   display: inline-block;
   vertical-align: bottom;
 }
-.my-dir-table .dir-file-name .ag {
+.dir-file-name .ag {
   margin-right: 10px;
   color: #457EFF;
 }
-.my-dir-table .dir-file-name .ag-folder-open-fill {
+.dir-file-name .ag-folder-open-fill {
   color: #ffb822;
   font-size: 20px;
   vertical-align: sub;
@@ -1204,4 +1239,7 @@
 }
 .show-mat-form .el-dialog__body {
   padding: 0 20px 20px 20px;
+}
+.my-mat-table.el-table:before {
+  height: 0;
 }

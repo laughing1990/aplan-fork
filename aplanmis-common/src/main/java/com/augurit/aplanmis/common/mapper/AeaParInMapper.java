@@ -43,8 +43,8 @@ public interface AeaParInMapper {
     List<AeaParIn> listInStateMatNewByStageId(@Param("stageId") String stageId,
                                               @Param("keyword") String keyword,
                                               @Param("rootOrgId") String rootOrgId,
-                                              @Param("matProp")String matProp);
-
+                                              @Param("matProp")String matProp,
+                                              @Param("matProps")List<String> matProps);
     /**
      * 获取阶段情形电子证照集合
      *
@@ -69,7 +69,8 @@ public interface AeaParInMapper {
                                     @Param("isStateIn") String isStateIn,
                                     @Param("keyword") String keyword,
                                     @Param("rootOrgId") String rootOrgId,
-                                    @Param("matProp")String matProp);
+                                    @Param("matProp")String matProp,
+                                    @Param("matProps")List<String> matProps);
 
     /**
      * 获取阶段材料证照

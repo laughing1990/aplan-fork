@@ -155,10 +155,14 @@
                 </p>
             </div>
             <div class="table-content">
-                <div class="table-content-top">
-                    <div class="table-content-title">并联事项</div>
-                    <div class="table-content-body">
-                        <ul>
+                <div class="table-content-top clearfix">
+                    <div class="fl table-content-title">
+                            <div class="title-box">
+                                <span>并联事项</span>
+                            </div>                            
+                    </div>
+                    <div class="fl table-content-body">
+                        <ul class="clearfix">
                             <template v-if="parallelItemList.length>0">
                                 <li :class="{'not-dealt':item.itemStateType == 2}" v-for="item in parallelItemList">
                                     <div class="table-content-item">
@@ -193,9 +197,13 @@
                     </div>
                 </div>
                 <div class="table-content-bottom">
-                    <div class="table-content-title">并行事项</div>
+                    <div class="table-content-title">
+                            <div class="title-box">
+                                <span>并行事项</span>
+                            </div>
+                    </div>
                     <div class="table-content-body">
-                        <ul>
+                        <ul class="clearfix">
                             <template v-if="coreItemList.length>0">
                                 <li :class="{'not-dealt':item.itemStateType == 2}" v-for="item in coreItemList">
                                     <div class="table-content-item">

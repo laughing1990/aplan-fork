@@ -12,19 +12,22 @@ import org.springframework.beans.BeanUtils;
 @ApiModel(value = "采购项目详情")
 public class PurchaseDetailVo {
     private String iteminstName;
+
     @ApiModelProperty(name = "iteminst", value = "事项实例信息")
     private Iteminst iteminst;
+
     @ApiModelProperty(name = "purchaseProj", value = "采购项目信息")
     private PurchaseProjVo purchaseProj;
 
     @ApiModelProperty(name = "aeaProjInfo", value = "关联的投资审批项目信息")
     private AeaProjInfo aeaProjInfo;
 
-    public void changeToIteminst(AeaHiIteminst iteminst) {
+    public void changeToIteminst(AeaHiIteminst iteminst, String serviceObject) {
         Iteminst inst = new Iteminst();
         BeanUtils.copyProperties(iteminst, inst);
         this.iteminst = inst;
         this.iteminstName = inst.getIteminstName();
+        inst.setServiceObj(serviceObject);
     }
 
     @Data
@@ -65,5 +68,8 @@ public class PurchaseDetailVo {
 
         @ApiModelProperty(name = "serviceObj", value = "服务对象")
         private String serviceObj;
+
+        @ApiModelProperty(name = "relevancyItemName", value = "关联的服务事项")
+        private String relevancyItemName;
     }
 }

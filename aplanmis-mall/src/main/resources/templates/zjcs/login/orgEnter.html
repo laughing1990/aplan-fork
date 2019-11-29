@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <!--  <title>唐山市中介服务网上超市</title>-->
+  <title>中介入驻机构</title>
+  <link rel="shortcut icon" href="../../../static/zjcs/common/images/favicon.ico" th:href="@{/zjcs/common/images/favicon.ico}">
+  <link rel="stylesheet" href="../../../static/zjcs/common/css/reset.css" th:href="@{/zjcs/common/css/reset.css}">
+  <link rel="stylesheet" href="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}" />
+  <link rel="stylesheet" href="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet" href="../../../static/zjcs/login/css/orgEnter.css" th:href="@{/zjcs/login/css/orgEnter.css}">
+  <script>
+    var ctx = '[[@{/}]]';
+    // var ctx = 'http://192.168.32.59:8084/aplanmis-mall/';
+
+  </script>
+</head>
+
+<body>
+  <div id="app" v-cloak v-loading.fullscreen.lock="mloading">
+    <div class="header">
+      <iframe src="../common/header.html" th:src="@{/supermarket/main/header.html}" frameborder="0" width="100%" height="100%"></iframe>
+    </div>
+    <!-- 面包屑 -->
+    <div class="crumbs-wrap">
+      <span class="inlineblock-midd crumbs-icon"></span>
+      <span class="crumbs-tip">当前位置：</span>
+      <el-breadcrumb separator-class="el-icon-arrow-right" class="inlineblock-midd">
+        <el-breadcrumb-item><a href="../index.html" th:href="@{index.html}">首页</a></el-breadcrumb-item>
+        <el-breadcrumb-item><span>超市指南</span></el-breadcrumb-item>
+        <el-breadcrumb-item><span class="crumbs-cur">中介机构注册</span></el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <div class="content">
+      <div class="content-head">
+        <h2>中介机构入驻</h2>
+        <div class="tag">
+          <ul>
+            <li :class="step==1?'current':''">填写基本信息</li>
+            <li :class="step==1?'future':step==2?'current':''">填写资格信息</li>
+            <li :class="step==3?'current':step==1||step==2?'future':''">填写授权人员信息</li>
+            <li :class="step==4?'current':step==5?'':'future'">填写执业/职业人员信息</li>
+            <li :class="step==5?'current':'future'">完成入驻</li>
+          </ul>
+        </div>
+      </div>
+      <div class="step1" v-if="step=='1'">
+        <el-collapse v-model="activeNames">
+          <!--  基本信息  start  -->
+          <el-collapse-item class="clearfix" name="1" id="baseInfo">
+            <template slot="title">
+              <i class="header-icon icon ag ag-project-info"></i>基本信息
+            </template>
+            <el-form label-width="176px" ref="form" :rules="rules" :model="formData">
+              <!-- <input type="hidden" name="projInfoId" :value="formData.projInfoId"> -->
+              <el-form-item label="机构名称" class="proj-code-info" prop="applicant">
+                <el-input name="applicant" v-model="formData.applicant" placeholder="请输入机构名称">
+                </el-input>
+              </el-form-item>
+              <div class="clearfix">
+                <el-form-item class="input-inline" label="机构性质" prop='unitNature'>
+                  <el-select v-model="formData.unitNature" placeholder="请选择机构性质" @click.native="">
+                    <el-option key="1" label="企业" value="1"></el-option>
+                    <el-option key="2" label="事业单位" value="2"></el-option>
+                    <el-option key="3" label="社会组织" value="3"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item class="input-inline" label="机构代码类型" prop="idtype">
+                  <el-select v-model="formData.idtype" placeholder="请选择机构代码类型">
+                    <el-option v-for="item in projTypeList" :key="item.itemCode" :label="item.itemName" :value="item.itemCode">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item class="input-inline" label="统一社会信用码" prop="unifiedSocialCreditCode">
+                  <el-input name="unifiedSocialCreditCode" v-model="formData.unifiedSocialCreditCode" placeholder="请输入统一社会信用码">
+                </el-form-item>
+                <el-form-item class="input-inline" prop="idrepresentative" label="法定代表人">
+                  <el-input name="idrepresentative" v-model="formData.idrepresentative" placeholder="请输入法定代表人">
+                </el-form-item>
+              </div>
+              <el-form-item label="法人代表证件号" class="proj-code-info" prop="idno">
+                <!-- <el-select value="身份证" style="width:15%;">
+                  <el-option v-for="item in IdList" :key="item.regionId" :label="item.regionName" :value="item.regionId">
+                  <el-option key="1" label="身份证" value="1">
+                  </el-option>
+                </el-select> -->
+                <el-input name="idno" v-model="formData.idno" placeholder="请输入法人代表证件号" style="width:50%;">
+                </el-input>
+              </el-form-item>
+              <div class="clearfix">
+                <el-form-item class="input-inline" label="注册资本币种">
+                  <!-- <el-select v-model="formData.projApplyType" filterable placeholder="请选择注册资本币种" @click.native="getProjThemeIdList">
+                    <el-option v-for="item in moneyList" :key="item.themeId" :label="item.themeName" :value="item.themeName">
+                    </el-option>
+                  </el-select> -->
+                </el-form-item>
+                <el-form-item class="input-inline" label="注册资本（万元）" prop="registeredCapital">
+                  <el-input name="registeredCapital" v-model="formData.registeredCapital" placeholder="请输入注册资本">
+                </el-form-item>
+                <!-- <el-form-item class="input-inline mb5" prop="regionalism" label="成立日期">
+                  <el-date-picker v-model="formData.contractSignTime" type="date" placeholder="请选择成立日期">
+                </el-form-item>
+                <el-form-item class="input-inline mb5" prop="projectAddress" label="经营有效期止">
+                  <el-date-picker v-model="formData.contractSignTime" type="date" placeholder="请选择经营有效期止">
+                </el-form-item> -->
+              </div>
+              <el-form-item>
+                <span class="tip">备注：若证书长期有效，则“经营有效期始”按执照的成立日期填，无需填写“经营有效期止”。</span>
+              </el-form-item>
+              <el-form-item label="经营范围" class="proj-code-info mb5" prop="managementScope">
+                <el-input name="managementScope" type="textarea" :rows="5" v-model="formData.managementScope" placeholder="请输入经营范围">
+                </el-input>
+              </el-form-item>
+              <el-form-item>
+                <span class="tip">备注：若上面机构类型选择了“企业法人”或“企业分支”时，则须填写“经营或业务范围”。</span>
+              </el-form-item>
+              <el-form-item label="注册地行政区划" class="proj-code-info" prop="applicantDistrict">
+                <el-cascader placeholder="请选择注册地行政区划" v-model="formData.applicantDistrict" :options="options" separator=">" :Props='props' style="width:34%"></el-cascader>
+              </el-form-item>
+              <el-form-item label="注册详细地址" class="proj-code-info" prop="applicantDetailSite">
+                <el-input name="applicantDetailSite" type="textarea" :rows="5" v-model="formData.applicantDetailSite" placeholder="请输入注册详细地址">
+                </el-input>
+              </el-form-item>
+              <div class="clearfix">
+                <el-form-item class="input-inline" label="登记机关行政区划">
+                  <!--  <el-cascader placeholder="请选择登记机关行政区划" v-model="value" :options="options" separator=">" style="width:100%"></el-cascader> -->
+                </el-form-item>
+                <el-form-item class="input-inline" label="登记机关" prop="registerAuthority">
+                  <el-input name="registerAuthority" v-model="formData.registerAuthority" placeholder="请输入登记机关">
+                </el-form-item>
+                <!-- <el-form-item class="input-inline" label="办公地行政区划">
+                  <el-cascader placeholder="请选择办公地行政区划" v-model="value" :options="options" separator=">" style="width:100%"></el-cascader>
+                </el-form-item>
+                <el-form-item class="input-inline" label="办公地址" prop="projType">
+                  <el-input name="projName" v-model="formData.projName" placeholder="请输入办公地址">
+                </el-form-item> -->
+              </div>
+            </el-form>
+          </el-collapse-item>
+          <el-collapse-item class="clearfix" name="2" id="matfile">
+            <template slot="title">
+              <i class="header-icon icon ag mat"></i>附件
+            </template>
+            <el-table :data="tableData" style="width: 100%" border class="table">
+              <el-table-column type="expand">
+                <template slot-scope="props">
+                  <ul>
+                    <li v-for="item in props.row.fileList" class="file-box">
+                      <span>{{item.name}}</span>
+                      <span class="file-icon-btn">
+                        <span title="预览" class="el-icon-search" @click=""></span>
+                        <span title="下载" class="el-icon-download" @click=""></span>
+                        <span title="删除" class="el-icon-delete" @click=""></span>
+                      </span>
+                    </li>
+                  </ul>
+                </template>
+              </el-table-column>
+              <el-table-column type="index" width="50" align="center">
+              </el-table-column>
+              <el-table-column prop="name" label="附件名称">
+              </el-table-column>
+              <el-table-column prop="bb" label="是否必须上传" align="center" width="120">
+              </el-table-column>
+              <el-table-column label="操作" align="center" width="200">
+                <template slot-scope="scope">
+                  <!-- <a href="#javascript:void(0);">材料库选择</a>| -->
+                  <!-- <el-upload ref="uploadFileWin" class="upload-s-file" action='' :show-file-list="false" multiple :file-list="fileList" :on-change="enclosureFileSelectChange"> -->
+                  <a href="#javascript:void(0);" @click="showUploadWindowFlag=true;upload(scope.row,'jiben')">上传附件</a>
+                  <!-- </el-upload> -->
+                  <!-- <a href="#javascript:void(0);">选择证照</a> -->
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-collapse-item>
+          <el-collapse-item class="clearfix" name="3" id="contact">
+            <template slot="title">
+              <i class="header-icon icon ag contact"></i>联系人
+            </template>
+            <el-form label-width="176px" ref="form2" :rules="rules2" :model="formData2">
+              <div class="clearfix">
+                <el-form-item class="input-inline" label="联系人">
+                  <el-input name="linkmanName" v-model="formData2.linkmanName" placeholder="请输入联系人"></el-input>
+                </el-form-item>
+                <el-form-item class="input-inline" label="电子邮箱" prop="projType">
+                  <el-input name="linkmanMail" v-model="formData2.linkmanMail" placeholder="请输入电子邮箱"></el-input>
+                </el-form-item>
+                <el-form-item class="input-inline" label="移动电话">
+                  <el-input name="linkmanMobilePhone" v-model="formData2.linkmanMobilePhone" placeholder="请输入移动电话">
+                </el-form-item>
+                </el-input>
+                <el-form-item class="input-inline" label="固定电话" prop="linkmanOfficePhon">
+                  <el-input name="linkmanOfficePhon" v-model="formData2.linkmanOfficePhon" placeholder="请输入固定电话"></el-input>
+                </el-form-item>
+                <el-form-item class="input-inline" label="传真" prop="linkmanFax">
+                  <el-input name="linkmanFax" v-model="formData2.linkmanFax" placeholder="请输入传真"></el-input>
+                </el-form-item>
+                <el-form-item class="input-inline" label="网址">
+                  <!-- <el-input name="projName" v-model="formData2.projName" placeholder="请输入网址"></el-input> -->
+                </el-form-item>
+              </div>
+            </el-form>
+          </el-collapse-item>
+        </el-collapse>
+        <div class="right-bottom-btn">
+          <el-button class="save-jinbanUnit-info" @click="saveForm">取消</el-button>
+          <el-button type="primary" class="save-jinbanUnit-info" @click="step='2'">下一步</el-button>
+        </div>
+      </div>
+      <div class="step2" v-if="step=='2'">
+        <div class="tips">
+          <p>温馨提示</p>
+          <ul>
+            <li>1. 如果系统为您查询到您有资格电子证书，您可点击【我的资格电子证照】选择您可使用的资格证书电子证照，系统将会自动填充资格信息项，您可根据实际情况修改或添加自动填充的信息； </li>
+            <li>2. 您也可以先选择服务类型，系统将会自动为您查询您是否有该服务的资格共享信息，若有，您可通过选择共享信息来填充资格信息的数据项。</li>
+            <li>3. 若同个资格同时有电子证照和共享信息且信息相同，请选择一种方式进行填充信息，不要重复录入。</li>
+            <li>4. 您也可以自动填写资格信息，若有多个服务类型，可在下方点击【添加资格信息】进行录入。</li>
+          </ul>
+        </div>
+        <el-collapse v-model="activeNames2">
+          <!--  基本信息  start  -->
+          <el-collapse-item class="clearfix" name="1" id="baseInfo">
+            <template slot="title">
+              <i class="header-icon icon ag ag-project-info"></i>资格信息
+            </template>
+            <el-form label-width="176px" ref="formZgxx" :rules="rulesZgxx" :model="formDataZgxx">
+              <el-form-item label="服务类型" class="proj-code-info mb5" prop="serviceId">
+                <el-select v-model="formDataZgxx.serviceId" style="width:34%;" @change="selectService">
+                  <el-option v-for="item in serviceType" :key="item.serviceId" :label="item.serviceName" :value="item.serviceId">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item>
+                <span class="tip">备注；此服务类型为有资质或备案要求，请按实际情况填写资格或备案信息。</span>
+              </el-form-item>
+              <el-form-item label="服务承诺" class="proj-code-info" prop="serviceContent">
+                <el-input name="serviceContent" type="textarea" :rows="5" v-model="formDataZgxx.serviceContent" placeholder="请对选择的“服务类型”，承诺说明本机构承接服务的范围，能力等信息">
+                </el-input>
+              </el-form-item>
+              <el-form-item label="收费参考" class="proj-code-info" prop="feeReference">
+                <el-input name="feeReference" v-model="formDataZgxx.feeReference" placeholder="请对输入收费参考">
+                </el-input>
+              </el-form-item>
+              <el-form-item label="是否有备案" class="proj-code-info" prop="projName">
+                <!-- <el-select multiple v-model="formDataZgxx.projectAddress" style="width:34%;">
+                  <el-option v-for="item in recordList" :key="item.regionId" :label="item.regionName" :value="item.regionId">
+                  </el-option>
+                </el-select> -->
+              </el-form-item>
+              <el-form-item label="备案说明" class="proj-code-info" prop="projName">
+                <!-- <el-input name="projName" type="textarea" :rows="5" v-model="formDataZgxx.projName" placeholder="请说明备案的部门、备案内容、查询网址等">
+                </el-input> -->
+              </el-form-item>
+              <el-form-item label="证书类型：" class="proj-code-info">
+                <el-select placeholder="请选择" v-model="formDataZgxx.certId" style="width: 100%;" :popper-append-to-body="false">
+                  <el-option v-for="item in certTypeZige" :key="item.certId" :label="item.certName" :value="item.certId">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <div class="clearfix">
+                <el-form-item class="input-inline" label="资格证书编号">
+                  <el-input name="certinstCode" v-model="formDataZgxx.certinstCode" placeholder="请输入资格证书编号">
+                </el-form-item>
+                <el-form-item class="input-inline" label="出征部门/备案部门">
+                  <!-- <el-input name="projName" v-model="formDataZgxx.projName" placeholder="请输入出征部门/备案部门"> -->
+                </el-form-item>
+                <el-form-item class="input-inline" prop="regionalism" label="资格有效期起">
+                  <el-date-picker v-model="formDataZgxx.termStart" type="date" placeholder="请选择资格有效期起">
+                </el-form-item>
+                <el-form-item class="input-inline" prop="projectAddress" label="资格有效期止">
+                  <el-date-picker v-model="formDataZgxx.termEnd" type="date" placeholder="请选择资格有效期止">
+                </el-form-item>
+              </div>
+              <el-form-item label="业务范围" class="proj-code-info" prop="promanagementScopejName">
+                <el-input name="managementScope" type="textarea" :rows="5" v-model="formDataZgxx.managementScope" placeholder="请输入业务范围">
+                </el-input>
+              </el-form-item>
+            </el-form>
+          </el-collapse-item>
+          <el-collapse-item class="clearfix" name="2" id="grade">
+            <template slot="title">
+              <i class="header-icon icon ag grade"></i>资格专业、等级
+            </template>
+            <div class="tips tips2">
+              <p>温馨提示：请根据资格证书的业务范围勾选对应的资格专业或登记</p>
+            </div>
+            <!-- <div class="grade-box">
+              <el-input name="localCode" placeholder="">
+                <el-button slot="prepend" type="primary" @click="">测绘</el-button>
+              </el-input>
+              <el-button type="primary" @click="" class="select-btn">勾选专业资格</el-button>
+            </div> -->
+            <!-- <div class="form-item">
+              <div class="input-box el-input-checkbox">
+                <span>专业：</span>
+                <el-select style="width:34%;" v-model="curGrade" @focus='onfocus' @change="toggleGrade">
+                  <el-option v-for="(item,index) in gradeType" :key="item.qualName" :label="item.qualName" :value="item.qualName">
+                  </el-option>
+                </el-select>
+              </div>
+            </div> -->
+            <div v-show="formDataZgxx.serviceId">
+              <div class="input-box input-radio el-input-radio">
+                <div>
+                  <div style="line-height:40px;">
+                    <p class="aptTreeTitle" v-if="aptTreeaFlag" @click="aptTreeaFlag = false">
+                      <i class="header-icon el-icon-caret-top"></i><span>收起资质树</span></p>
+                    <p class="aptTreeTitle" v-else @click="aptTreeaFlag = true">
+                      <i class="header-icon el-icon-caret-bottom"></i><span>展开资质树</span></p>
+                  </div>
+                  <div v-show="aptTreeaFlag" style="border:1px solid #ced4da;">
+                    <el-tabs type="border-card" v-model="activeSN" class="grade-tabs" @tab-click="handleClickAtiveQA">
+                      <el-tab-pane :label="item.qualName" v-for="(item, index1) in qualArry" :key="index1">
+                        <el-tabs type="border-card" v-model="activeLE" @tab-click="handleClickAtiveLE" class="grade-tabs">
+                          <el-tab-pane :label="item2.qualLevelName" v-for="(item2, index2) in needServiceList2" :key="item2.qualLevelId">
+                          </el-tab-pane>
+                        </el-tabs>
+                      </el-tab-pane>
+                    </el-tabs>
+                    <el-tree :data="serviceTreeData" show-checkbox default-expand-all node-key="id" ref="treeService" empty-text="请选择所需服务" @check="handleServiceTreeData" highlight-current :props="defaultProps" class="grade-tree">
+                    </el-tree>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </el-collapse-item>
+          <el-collapse-item class="clearfix" name="3" id="matfile">
+            <template slot="title">
+              <i class="header-icon icon ag mat"></i>附件
+            </template>
+            <el-table :data="tableData2" style="width: 100%" border class="table">
+              <el-table-column type="expand">
+                <template slot-scope="props">
+                  <ul>
+                    <li v-for="item in props.row.fileList" class="file-box">
+                      <span>{{item.name}}</span>
+                      <span class="file-icon-btn">
+                        <span title="预览" class="el-icon-search" @click=""></span>
+                        <span title="下载" class="el-icon-download" @click=""></span>
+                        <span title="删除" class="el-icon-delete" @click=""></span>
+                      </span>
+                    </li>
+                  </ul>
+                </template>
+              </el-table-column>
+              <el-table-column type="index" width="50" align="center">
+              </el-table-column>
+              <el-table-column prop="name" label="附件名称">
+              </el-table-column>
+              <!-- <el-table-column prop="aa" label="示例材料">
+</el-table-column> -->
+              <el-table-column prop="bb" label="是否必须上传" align="center" width="120">
+              </el-table-column>
+              <el-table-column label="操作" width="200" align="center">
+                <template slot-scope="scope">
+                  <!-- <a href="#javascript:void(0);">材料库选择</a>| -->
+                  <a href="#javascript:void(0);" @click="showUploadWindowFlag=true;upload(scope.row,'zige')">上传附件</a>|
+                  <!-- <a href="#javascript:void(0);">选择证照</a> -->
+                </template>
+              </el-table-column>
+            </el-table>
+            <!--  <div class="plus-btn">
+              <el-button class="save-jinbanUnit-info plus specialbtn" @click=""><i class="el-icon-plus"></i>添加资格信息</el-button>
+            </div> -->
+          </el-collapse-item>
+        </el-collapse>
+        <div class="right-bottom-btn">
+          <el-button class="save-jinbanUnit-info" @click="saveForm">取消</el-button>
+          <el-button type="primary" class="save-jinbanUnit-info" @click="step='1'">上一步</el-button>
+          <el-button type="primary" class="save-jinbanUnit-info" @click="step='3'">下一步</el-button>
+        </div>
+      </div>
+      <div class="step3" v-if="step=='3'">
+        <div class="tips">
+          <p>温馨提示</p>
+          <ul>
+            <li>1. 您已登记以下业务授权人，若需要修改业务授权人的基本信息，请登录“中介超市-用户网页-我的资料“进行修改。点击【下一步】继续办理。</li>
+            <li>2. 若您还未登记业务授权人，请点击【添加业务授权人信息】，并选择他的服务类型。</li>
+          </ul>
+        </div>
+        <el-collapse v-model="activeNames3">
+          <!--  基本信息  start  -->
+          <el-collapse-item class="clearfix" name="1" id="baseInfo">
+            <template slot="title">
+              <i class="header-icon icon ag ag-project-info"></i>机构已有业务授权人
+            </template>
+            <el-table :data="certigierData" style="width: 100%" border class="table">
+              <el-table-column prop="linkmanName" label="业务授权人" width="180">
+              </el-table-column>
+              <el-table-column prop="linkmanMobilePhone" label="联系方式">
+              </el-table-column>
+              <el-table-column prop="linkmanCertNo" label="证件号" align="center">
+              </el-table-column>
+              <el-table-column prop="unitServiceIds" label="服务类型" align="center">
+              </el-table-column>
+              <!-- <el-table-column prop="dd" label="是否实名" align="center">
+              </el-table-column> -->
+            </el-table>
+            <div class="plus-btn">
+              <el-button class="save-jinbanUnit-info plus specialbtn" @click="addlinkman();"><i class="el-icon-plus"></i>添加业务授权人员信息</el-button>
+            </div>
+            <div class="right-bottom-btn">
+              <el-button class="save-jinbanUnit-info" @click="saveForm">取消</el-button>
+              <el-button type="primary" class="save-jinbanUnit-info" @click="step='2'">上一步</el-button>
+              <el-button type="primary" class="save-jinbanUnit-info" @click="step='4'">下一步</el-button>
+            </div>
+          </el-collapse-item>
+      </div>
+      <div class="step4" v-if="step=='4'">
+        <div class="tips">
+          <p>温馨提示</p>
+          <ul>
+            <li>1. 执业/职业人员资格证书必须是国家《人力资源社会保障部关于公布国家职业资格目录的通知》（人社部发[2017]68号）公布的职业资格证书，请中介机构按要求上传证书原件扫描件。 </li>
+            <li>2. 一个执业/职业人员可录入多个资格证书/职称证，请点击【添加资格书/职称证】进行录入；</li>
+            <li>3. 一个执业/职业人员只可提供一种服务；</li>
+            <li>4. 一个执业/职业人员只能服务于一家中介机构。</li>
+            <li>5. 执业/职业人员的证件号请选择”身份证“，系统可通过”社保平台“自动核验人员广东省内3个月的社保信息。</li>
+          </ul>
+        </div>
+        <el-collapse v-model="activeNames4">
+          <!--  基本信息  start  -->
+          <el-collapse-item class="clearfix" name="1" id="baseInfo">
+            <template slot="title">
+              <i class="header-icon icon ag ag-project-info"></i>基本信息
+            </template>
+            <el-form label-width="176px" ref="formPersonInfo" :rules="rulesPersonInfo" :model="formPersonInfo">
+              <el-form-item label="姓名" class="proj-code-info" prop="linkmanName">
+                <el-input name="linkmanName" v-model="formPersonInfo.linkmanName" placeholder="请对输入姓名" style="width:42%">
+              </el-form-item>
+              <!--  <el-form-item label="性别" class="proj-code-info" prop="projName">
+                <el-radio-group v-model="formPersonInfo.isForeign">
+                  <el-radio label="1" value="1" key="1">男</el-radio>
+                  <el-radio label="0" value="0" key="0">女</el-radio>
+                </el-radio-group>
+              </el-form-item> -->
+              <el-form-item label="证件号" class="proj-code-info" prop="linkmanCertNo">
+                <el-select v-model="idCard" style="width:16%;">
+                  <el-option key="1" label="身份证" value="身份证">
+                  </el-option>
+                </el-select>
+                <el-input name="linkmanCertNo" v-model="formPersonInfo.linkmanCertNo" placeholder="请对输入证件号" style="width:42%">
+                </el-input>
+              </el-form-item>
+              <div class="clearfix">
+                <el-form-item class="input-inline" label="从业时间" prop='practiseDate'>
+                  <el-date-picker v-model="formPersonInfo.practiseDate" type="date" placeholder="请选择从业时间">
+                </el-form-item>
+                <el-form-item class="input-inline" label="服务类型" prop="idtype">
+                  <el-select v-model="formPersonInfo.serviceId" @change="">
+                    <el-option v-for="item in serviceType2" :key="item.serviceId" :label="item.serviceName" :value="item.serviceId">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </div>
+            </el-form>
+            <!--  <div class="verify">
+              <el-button class="save-jinbanUnit-info " type="primary" @click=""><i class="el-icon-plus"></i>自动核验人员社保信息</el-button>
+            </div> -->
+          </el-collapse-item>
+          <el-collapse-item class="clearfix" name="2" id="matfile">
+            <template slot="title">
+              <i class="header-icon icon ag mat"></i>附件
+            </template>
+            <el-table :data="matData" style="width: 100%" border class="table">
+              <el-table-column type="expand">
+                <template slot-scope="props">
+                  <ul>
+                    <li v-for="item in props.row.fileList" class="file-box">
+                      <span>{{item.name}}</span>
+                      <span class="file-icon-btn">
+                        <span title="预览" class="el-icon-search" @click=""></span>
+                        <span title="下载" class="el-icon-download" @click=""></span>
+                        <span title="删除" class="el-icon-delete" @click=""></span>
+                      </span>
+                    </li>
+                </template>
+              </el-table-column>
+              <el-table-column type="index" width="50" align="center">
+              </el-table-column>
+              <el-table-column prop="name" label="附件名称">
+              </el-table-column>
+              <!--   <el-table-column prop="aa" label="示例材料">
+              </el-table-column> -->
+              <el-table-column prop="bb" label="是否必须上传" align="center" width="120">
+              </el-table-column>
+              <el-table-column label="操作" width="180">
+                <template slot-scope="scope">
+                  <!-- <a href="#javascript:void(0);">材料库选择</a>| -->
+                  <a href="#javascript:void(0);" @click="showUploadWindowFlag=true;upload(scope.row,'zhiye')">上传附件</a>|
+                  <!-- <a href="#javascript:void(0);">选择证照</a> -->
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-collapse-item>
+          <el-collapse-item class="clearfix" name="3" id="baseInfo">
+            <template slot="title">
+              <i class="header-icon icon ag card"></i>人员证书信息
+            </template>
+            <div class="tips">
+              <p>温馨提示</p>
+              <ul>
+                <li> 一个执业/职业人员可录入多个资格证书/职称证，包括职业证书、职业资格证书（不含职称证）、执业资格证/注册证，请点击【添加证书信息】进行录入。 </li>
+              </ul>
+            </div>
+            <el-button type="primary" class="save-jinbanUnit-info addcert" @click="addCertificate">添加证书信息</el-button>
+            <el-table :data="jobPeopleDetailObj.certinstBVos" style="width: 100%" border class="table">
+              <el-table-column type="index" width="55">
+              </el-table-column>
+              <el-table-column prop="certId" label="证属分类">
+                <template slot-scope="scope">
+                  {{scope.row.certId | certTypeFun}}
+                </template>
+              </el-table-column>
+              <el-table-column prop="certinstName" label="证书名称">
+              </el-table-column>
+              <el-table-column prop="certinstCode" label="证书编号" align="center">
+              </el-table-column>
+              <!--  <el-table-column prop="cc" label="可提供服务类型" align="center">
+              </el-table-column> -->
+              <el-table-column label="操作" align="center">
+                <template slot-scope="scope">
+                  <a href="javascript:void(0);" @click="editCertificate(scope.$index,scope.row)">编辑</a>|
+                  <a href="javascript:void(0);" @click='delOneCertificate(scope.row)'>删除</a>
+                </template>
+              </el-table-column>
+            </el-table>
+            <!-- <div class="plus-btn">
+              <el-button class="save-jinbanUnit-info plus specialbtn" @click=""><i class="el-icon-plus"></i>添加人员</el-button>
+            </div> -->
+            <div class="right-bottom-btn">
+              <el-button class="save-jinbanUnit-info" @click="saveForm">取消</el-button>
+              <el-button type="primary" class="save-jinbanUnit-info" @click="step='3'">上一步</el-button>
+              <el-button type="primary" class="save-jinbanUnit-info" @click="step=5;">提交</el-button>
+            </div>
+          </el-collapse-item>
+      </div>
+      <div class="step5" v-if="step=='5'">
+        <div class="tips">
+          <p>温馨提示</p>
+          <ul>
+            <li>1、你的注册申报已成功提交处理，中介机构入驻办件号为【190115001100】业务等待形式检查，请记住您的入驻办件号以便查询业务进度。 </li>
+            <li>2、办件通过形式检查后，您将会受到授权人员激活账号的短信，请于收到短信的48小时内，点击短信内的激活链接进行账号激活。</li>
+            <li>3、点击激活链接前，请注意检查连接格式是否正确，若链接格式为http:zjcs.gdggzy.org.cn/则为正确，若为其他格式，请慎重点击。 </li>
+          </ul>
+        </div>
+        <i class="el-icon-success" style="font-size:87px;margin-left:46%;color: rgb(56,178,10);margin-top: 50px;margin-bottom:20px;"></i>
+        <h1 style="text-align:center;font-size: 36px;color: #3F4047;">注册成功</h1>
+        <div class="loginInfo">
+          <span>您的登陆账号为：{{loginName}}</span>
+          <span>您的登陆密码为：{{password}}</span>
+        </div>
+        <p style="font-size:16px;margin-top: 20px;text-align: center;">进入服务指南-中介机构入驻指南-<a href="javascript:void(0);">进度查询</a> 页面查询业务进度</p>
+        <el-button type="primary" style="margin-top: 28px;width: 93px;height: 43px;font-size: 18px;margin-left: 46%;">确定</el-button>
+      </div>
+    </div>
+    <!--选择资格专业弹窗 start-->
+    <el-dialog class="grade-dialog" title="请选择资格专业" :visible.sync="getFileListWindowFlag" width="1000px" height="674px">
+      <div class="grade-content">
+        <div class="tips tips2 tips3">
+          <p>温馨提示：信息确认无误后点击【确认】即可添加成功</p>
+        </div>
+        <div class="file-opt-btn search-proj">
+          <span>附件名称：</span>
+          <el-input :inline="true" placeholder="输入关键字" v-model="searchFileListfilter" style="width:36%;margin-right:15px;">
+          </el-input>
+          <span>附件类型：</span>
+          <el-select v-model="matType" style="margin-right:15px;">
+            <el-option v-for="item in matTypeList" :key="item.themeId" :label="item.themeName" :value="item.themeName">
+            </el-option>
+          </el-select>
+          <el-button type="primary">查询</el-button>
+          <el-button @click="">重置</el-button>
+        </div>
+        <el-tabs type="border-card" v-model="tabBind" class="tabs">
+          <el-tab-pane label="甲级" name="one">甲级</el-tab-pane>
+          <el-tab-pane label="乙级" name="two">乙级</el-tab-pane>
+          <el-tab-pane label="丙级" name="three">丙级</el-tab-pane>
+          <el-tab-pane label="丁级" name="four">丁级</el-tab-pane>
+        </el-tabs>
+        <div class="right-bottom-btn tabBtn">
+          <el-button class="save-jinbanUnit-info" @click="">取消</el-button>
+          <el-button type="primary" class="save-jinbanUnit-info" @click="">确定</el-button>
+        </div>
+      </div>
+    </el-dialog>
+    <!--材料库选择弹窗 start-->
+    <el-dialog class="mat-dialog" title="材料库选择" :visible.sync="matDialog" width="1000px" height="674px">
+      <div class="grade-content">
+        <div class="tips tips2 tips3">
+          <p>温馨提示：选择对应的材料时，请点击【选择】即可完成选择。</p>
+        </div>
+        <div class="file-opt-btn search-proj">
+          <span>附件名称：</span>
+          <el-input :inline="true" placeholder="输入关键字" v-model="searchFileListfilter" style="width:36%;margin-right:15px;">
+          </el-input>
+          <span>附件类型：</span>
+          <el-select v-model="matType" style="margin-right:15px;">
+            <el-option v-for="item in matTypeList" :key="item.themeId" :label="item.themeName" :value="item.themeName">
+            </el-option>
+          </el-select>
+          <el-button type="primary">查询</el-button>
+          <el-button @click="">重置</el-button>
+        </div>
+        <el-table :data="shareFileList" border ref="shareFileList" class="matfile table">
+          <el-table-column label="选择" align="center" width="100">
+            <template slot-scope="scope">
+              <el-button type="primary" size="" @click="" round>选择</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column prop="attName1" label="材料来源"></el-table-column>
+          <el-table-column prop="attName2" label="附件名称"></el-table-column>
+          <el-table-column prop="attName3" label="最后更新时间"></el-table-column>
+        </el-table>
+      </div>
+    </el-dialog>
+    <!--文件上传下载弹窗 start-->
+    <el-dialog v-loading="loadingFileWin" element-loading-text="文件上传中" element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.3)" class="upload-flie-dialog" :title="showUploadWindowTitle" :visible.sync="showUploadWindowFlag" @closed="uploadTableData=[]" width="750px">
+      <div class="upload-file-content">
+        <div class="file-opt-btn">
+          <el-upload ref="uploadFileWin" class="upload-s-file" :show-file-list="false" multiple action="" style="display:inline-block;" :on-change="enclosureFileSelectChange">
+            <el-button slot="trigger" type="primary">选择附件</el-button>
+          </el-upload>
+        </div>
+        <el-table :data="uploadTableData" ref="uploadTableData" row-key="fileId" border>
+          <!-- <el-table-column type="selection" align="center" width="55">
+          </el-table-column> -->
+          <el-table-column prop="name" label="文件名"></el-table-column>
+          <el-table-column label="操作" align="center" width="310">
+            <template slot-scope="scope">
+              <el-button type="primary" @click="">删除</el-button>
+              <!-- <el-button type="primary" size="mini" @click="">预览</el-button> -->
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </el-dialog>
+    <!--新增业务授权人 start-->
+    <el-dialog :title="addEditManModalTitle" :visible.sync="addEditManModalShow" width="750px" class="dg-modal-add-linkmain-info linkman-dialog" @close="">
+      <el-form :model="addEditManform" class="dialog" ref="addEditManform" label-width="150px" :rules="addLinkManRules">
+        <el-form-item label="业务授权人：" prop="linkmanName">
+          <el-input v-model="addEditManform.linkmanName" placeholder="请输入业务授权人"></el-input>
+        </el-form-item>
+        <el-form-item label="联系方式：" prop="linkmanMobilePhone">
+          <el-input v-model="addEditManform.linkmanMobilePhone" placeholder="请输入联系方式"></el-input>
+        </el-form-item>
+        <el-form-item label="证件号：" prop="linkmanCertNo">
+          <el-input v-model="addEditManform.linkmanCertNo" placeholder="请输入证件号"></el-input>
+        </el-form-item>
+        <el-form-item label="服务类型：">
+          <el-input v-model="addEditManform.unitServiceIds" placeholder="请输入服务类型"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addEditManModalShow = false">取 消</el-button>
+        <el-button type="primary" @click="savaLinkman">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 证书编辑区 -->
+    <el-dialog :title="addCert" :visible.sync="addCertShow" width="900px" class="dg-modal-add-linkmain-info certDialog" @close="" style="height:800px" top="5vh">
+      <!-- 基本信息 -->
+      <el-form :model="certificateDetailObj" class="dialog" ref="certForm" label-width="150px" :rules="certRule">
+        <el-form-item label="证书类型：">
+          <el-select placeholder="请选择" v-model="certificateDetailObj.certId" style="width: 100%;" :popper-append-to-body="false">
+            <el-option v-for="item in addCertificateOptions" :key="item.certId" :label="item.certName" :value="item.certId">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="证书编码：">
+          <el-input class=" mr20" v-model="certificateDetailObj.certinstCode" />
+        </el-form-item>
+        <el-form-item label="证书名称：">
+          <el-input class=" mr20" v-model="certificateDetailObj.certinstName" />
+        </el-form-item>
+        <el-form-item label="业务范围：">
+          <el-input class=" mr20" type="textarea" v-model="certificateDetailObj.managementScope" />
+        </el-form-item>
+        <el-form-item label="有效期限：">
+          <el-date-picker type="date" placeholder="选择日期" format="yyyy-MM-dd" v-model="certificateDetailObj.termStart" style="width:48%">
+          </el-date-picker>至
+          <el-date-picker type="date" placeholder="选择日期" format="yyyy-MM-dd" v-model="certificateDetailObj.termEnd" style="width:48%">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="资质：">
+          <el-select placeholder="请选择" style="width:100%;" v-model="certificateDetailObj.qualId" @change="getMajorTreeByQualId" :popper-append-to-body="false">
+            <el-option v-for="item in serviceQual" :label="item.qualName" :value="item.qualId" :key="item.qualId"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="所属专业">
+          <div class="belong-grade major-tree-box">
+            <el-button-group>
+              <el-button class="quality-btn" type="primary" size="medium" v-for="(item, index) in allSubordinateMajorData" @click="selectTreeForQuality(item,index)">{{item.qualName}}
+              </el-button>
+            </el-button-group>
+            <el-tree ref="tree" :data="curSelectQualiTreeData" :props="treeProps" show-checkbox :check-strictly="true" node-key="id">
+            </el-tree>
+          </div>
+        </el-form-item>
+        <el-form-item label="等级">
+          <el-radio-group v-model="certificateDetailObj.qualLevelId">
+            <el-radio label="cd6ffb40-1123-4c0b-a726-76abae361f31">甲级</el-radio>
+            <el-radio label="78bf88bb-6056-4095-b053-c0ee4bcea703">乙级</el-radio>
+            <el-radio label="d251fdc1-6489-4a9a-946e-cb89f4bad73a">丙级</el-radio>
+            <el-radio label="597da3a4-c69e-4e80-a6ab-b9ded332eb3c">不分等级</el-radio>
+            <el-radio label="5655d405-ffdc-4339-8b6a-2e7d7f707bd2">不分级</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="附件">
+          <div class="belong-grade">
+            <el-upload class="enclosure-upload-ref inlineblock-midd" ref="enclosureUploadRef" action="" :multiple="true" :on-change="enclosureFileSelectChange2" :on-remove="enclosureFileSelectRemove" :auto-upload="false" :file-list="certList">
+              <el-button slot="trigger" size="medium" type="normal">上传文件</el-button>
+            </el-upload>
+            <span class="upload-tip">上传的附件不可超过10MB，禁止上传以下的附件类型：.exe,.sh,.bat,.com,.dll</span>
+            <ul class="pjfile-list">
+              <li v-for="item in certificateDetailObj.certinstDetail">{{item.fileName}}<a class="debtn" href="javascript:;" @click="delOneEnclosure(item)">删除</a></li>
+            </ul>
+          </div>
+        </el-form-item>
+      </el-form>
+      <div class="text-center">
+        <el-button type="primary" @click="saveCertificateDetail">保存</el-button>
+      </div>
+  </div>
+  </div>
+  </el-dialog>
+  <!--新增编辑联系人 end-->
+  <div class="footer">
+    <iframe src="../common/footer.html" th:src="@{/supermarket/main/footer.html}" frameborder="0" width="100%" height="100%"></iframe>
+  </div>
+  </div>
+  <script src="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+  <script src="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+  <script src="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+  <!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>-->
+  <script src="../../../static/common/js/common.js" th:src="@{/common/js/common.js}"></script>
+  <script src="../../../static/zjcs/login/js/orgEnter.js" th:src="@{/zjcs/login/js/orgEnter.js}"></script>
+</body>
+
+</html>

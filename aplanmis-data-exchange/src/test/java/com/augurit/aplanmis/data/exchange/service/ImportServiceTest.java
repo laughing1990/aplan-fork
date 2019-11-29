@@ -15,11 +15,11 @@ public class ImportServiceTest extends BaseTest {
     @Autowired
     ImportService importService;
 
-    @Test
+    /*@Test
     @DisplayName("上传事项")
     public void testImportItem() {
         importService.importItem(null, null);
-    }
+    }*/
 
     @Test
     @DisplayName(("辅线事项上传"))

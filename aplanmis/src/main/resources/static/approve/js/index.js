@@ -528,6 +528,7 @@ var vm = new Vue({
       stageId: '',
       projInfoId: '',
       itemVersionId: '',
+      currentCertinstId: '',
     }
   },
   filters: {
@@ -1408,12 +1409,17 @@ var vm = new Vue({
       }, 5000);
       vm.licenceDialogVisible = true;
       var src = ctx + 'rest/receive/preview/construct/permit';
+      vm.currentCertinstId = row.certinstId;
       vm.preLicenceIframeSrc = src + '?print=false&certinstId=' + row.certinstId;
       vm.prePrintIframeSrc = src + '?print=true&certinstId=' + row.certinstId;
     },
     closePrintLicenseDialog: function () {
       vm.preLicenceIframeSrc = '';
       vm.prePrintIframeSrc = '';
+    },
+    // 点击下载证件
+    clickDownloadLicense: function () {
+      window.open(ctx+'rest/docTemplate/downLoad?certinstId='+vm.currentCertinstId);
     },
     // 点击打印证件
     clickPrintLicense: function () {
@@ -3077,6 +3083,9 @@ var vm = new Vue({
             setTimeout(function () {
               //直接刷新界面好了
               var newUrl = window.location.href.substring(0, window.location.href.indexOf("?") + 1) + "taskId=" + nextTaskId + "&viewId=" + vm.viewId + "&busRecordId=" + vm.getUrlParam('busRecordId');
+              if (vm.isZJItem) {
+                newUrl += '&itemNature=8'
+              }
               window.location.href = newUrl;
             }, 1500);
           } else {
@@ -4971,6 +4980,23 @@ function toleranceAcceptForItem() {
 //更改事项状态和流程url
 function urlForItem() {
   vm.sendUrlPath = ctx + "/approve/btn/item/wfSendAndChangeItemState";
+  vm.requestMappingType = 'put';
+  vm.wfBusSend();
+}
+
+// 中介事项  三个按钮事件
+function zjItem1(){
+  vm.sendUrlPath = ctx + "market/approve/btn/win/wfSendAndChangeApplyState";
+  vm.requestMappingType = 'put';
+  vm.wfBusSend();
+}
+function zjItem2(){
+  vm.sendUrlPath = ctx + "market/approve/btn/win/wfSendAndChangeApplyAndItemState";
+  vm.requestMappingType = 'put';
+  vm.wfBusSend();
+}
+function zjItem3(){
+  vm.sendUrlPath = ctx + "market/approve/btn/item/wfSendAndChangeItemState";
   vm.requestMappingType = 'put';
   vm.wfBusSend();
 }

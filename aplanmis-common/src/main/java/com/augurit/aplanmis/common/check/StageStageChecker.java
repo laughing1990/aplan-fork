@@ -12,6 +12,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +31,7 @@ public class StageStageChecker extends AbstractChecker<AeaParStage> {
     private AeaParStageService aeaParStageService;
 
     @Override
-    public String doCheck(AeaParStage aeaParStage, CheckerContext checkerContext) throws StageStageCheckException {
+    public void doCheck(AeaParStage aeaParStage, CheckerContext checkerContext) throws StageStageCheckException {
 
         if (Status.ON.equals(aeaParStage.getIsCheckStage())) {
             log.info("阶段: " + aeaParStage.getStageName() + " 需要对前置阶段进行检查");
@@ -55,23 +56,24 @@ public class StageStageChecker extends AbstractChecker<AeaParStage> {
                     aeaParFrontStageVoList.forEach(aeaParFrontStageVo -> {
                         message.append(aeaParFrontStageVo.getHistStageName()).append("、");
                     });
-                    String error = "【" + message.substring(0, message.length() - 1) + "】";
-                    return error + "尚未审批通过，无法申报【" + aeaParStage.getStageName() + "】。";
+                    String error = "【" + message.substring(0, message.length() - 1) + "】" + "尚未审批通过，无法申报【" + aeaParStage.getStageName() + "】。";
+                    throw new StageStageCheckException(error, aeaParFrontStageVoList);
                 }
 
                 String stageIds = parStages.stream().map(AeaParStage::getStageId).collect(Collectors.joining(","));
+                List<AeaParFrontStage> resultStages = new ArrayList<>();
                 aeaParFrontStageVoList.forEach(aeaParFrontStageVo -> {
                     if (!stageIds.contains(aeaParFrontStageVo.getHistStageId())) {
                         message.append(aeaParFrontStageVo.getHistStageName()).append("、");
+                        resultStages.add(aeaParFrontStageVo);
                     }
                 });
 
                 if (message.length() > 0) {
-                    String error = "【" + message.substring(0, message.length() - 1) + "】";
-                    return error + "尚未审批通过，无法申报【" + aeaParStage.getStageName() + "】。";
+                    String error = "【" + message.substring(0, message.length() - 1) + "】" + "尚未审批通过，无法申报【" + aeaParStage.getStageName() + "】。";
+                    throw new StageStageCheckException(error, resultStages);
                 }
             }
         }
-        return null;
     }
 }

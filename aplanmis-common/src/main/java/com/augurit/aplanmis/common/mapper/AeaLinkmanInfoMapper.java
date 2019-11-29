@@ -90,4 +90,11 @@ public interface AeaLinkmanInfoMapper {
     AeaLinkmanInfo getApplyLinkman(@Param("applyinstId") String applyinstId);
 
     List<AeaLinkmanInfo> findLinkmanTypes(@Param("projInfoId") String projInfoId, @Param("unitInfoId") String unitInfoId);
+
+    /**
+     * 根据单位查询联系人表中的法人信息
+     * @param unitInfoId
+     * @return
+     */
+    List<AeaLinkmanInfo> findCorporationByUnitInfoId(String unitInfoId);
 }

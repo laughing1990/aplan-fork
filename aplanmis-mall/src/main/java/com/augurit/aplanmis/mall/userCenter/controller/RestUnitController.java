@@ -7,8 +7,10 @@ import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
 import com.augurit.aplanmis.common.domain.AeaUnitInfo;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
+import com.augurit.aplanmis.common.utils.DesensitizedUtil;
 import com.augurit.aplanmis.mall.userCenter.service.RestUnitService;
 import com.augurit.aplanmis.mall.userCenter.service.RestUserCenterService;
+import com.augurit.aplanmis.mall.userCenter.vo.AeaLinkmanInfoVo;
 import com.augurit.aplanmis.mall.userCenter.vo.UnitAddVo;
 import com.augurit.aplanmis.mall.userCenter.vo.UnitEditVo;
 import com.augurit.aplanmis.mall.userCenter.vo.UnitVo;
@@ -16,6 +18,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
@@ -60,10 +63,13 @@ public class RestUnitController {
 
     @ApiOperation(value = "查看联系人")
     @GetMapping("/getLinkmanInfoById/{linkmanInfoId}")
-    public ContentResultForm<AeaLinkmanInfo> getLinkmanInfoById(@PathVariable("linkmanInfoId") String linkmanInfoId, HttpServletRequest request) throws Exception {
-        if (!restUserCenterService.isBelongUnit(linkmanInfoId,request)) return new ContentResultForm(false,null,"查看联系人异常");
+    public ContentResultForm<AeaLinkmanInfoVo> getLinkmanInfoById(@PathVariable("linkmanInfoId") String linkmanInfoId, HttpServletRequest request) throws Exception {
+        //if (!restUserCenterService.isBelongUnit(linkmanInfoId,request)) return new ContentResultForm(false,null,"查看联系人异常");
         AeaLinkmanInfo linkmanInfo = aeaLinkmanInfoService.getAeaLinkmanInfoByLinkmanInfoId(linkmanInfoId);
-        return new ContentResultForm<>(true, linkmanInfo, "Save unit success");
+        AeaLinkmanInfoVo aeaLinkmanIanfoVo = new AeaLinkmanInfoVo();
+        BeanUtils.copyProperties(linkmanInfo, aeaLinkmanIanfoVo);
+        aeaLinkmanIanfoVo.setLinkmanMobilePhone(DesensitizedUtil.desensitizedPhoneNumber(aeaLinkmanIanfoVo.getLinkmanMobilePhone()));
+        return new ContentResultForm<>(true,aeaLinkmanIanfoVo, "Save unit success");
     }
 
     @ApiOperation(value = "新增企业单位")

@@ -184,7 +184,7 @@ public interface AeaProjInfoService {
      * @return
      * @throws Exception
      */
-    public boolean deleteChildChildProj(String  delProjId) throws Exception;
+    public boolean deleteChildChildProj(String delProjId) throws Exception;
 
     /**
      * 判断是数据库类型是否是mysql
@@ -234,4 +234,13 @@ public interface AeaProjInfoService {
      * @param aeaProjInfo
      */
     public AeaProjInfo addChildProjInfo(AeaProjInfo aeaProjInfo) throws Exception;
+
+    /**
+     * 获取转换字段后的项目详情信息
+     *
+     * @param projInfoId 项目采购信息
+     * @return AeaProjInfo
+     * @throws Exception e
+     */
+    AeaProjInfo getTransProjInfoDetail(String projInfoId) throws Exception;
 }

@@ -59,8 +59,8 @@ public class SmsInfoVo extends AeaProjInfo {
     @ApiModelProperty(value = "单位项目关联list")
     private List<AeaUnitProj> aeaUnitProjs;
 
-    //@ApiModelProperty(value = "单位list")
-    //private List<AeaUnitInfoVo> unitInfos;
+    @ApiModelProperty(value = "新增的单位list")
+    private List<AeaUnitInfoVo> unitInfos;
 
     @ApiModelProperty(value = "当前企业用户的人员设置")
     private List<LinkmanTypeVo> linkmanTypeVos;

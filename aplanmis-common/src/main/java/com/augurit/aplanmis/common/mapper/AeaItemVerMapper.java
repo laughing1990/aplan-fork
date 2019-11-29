@@ -49,4 +49,6 @@ public interface AeaItemVerMapper {
      * @return
      */
     List<String> getShiShiItemByBiaozhunItemId(@Param("itemId") String itemId);
+
+    List<AeaItemVer> queryAeaItemVerByItemId(@Param("itemId") String itemId);
 }

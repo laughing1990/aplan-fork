@@ -105,7 +105,7 @@ var guideIndex = (function () {
         data: {
             ctx: ctx,
             approvalwayTypeFlag: true,
-            approvalWayActiveName: [1, 2, 3],
+            approvalWayActiveName: 1,
             tableData: [],
             pageSize: 10,
             page: 1,
@@ -330,7 +330,7 @@ var guideIndex = (function () {
                             }else if(vm.themeListData.length  === 2){
                                 $(".theme-type .theme-type-list").css({'height':604+'px'});
                             }else if(vm.themeListData.length  === 3){
-                                $(".theme-type. .theme-type-list").css({'height':549+'px'});
+                                $(".theme-type .theme-type-list").css({'height':549+'px'});
                             }else if(vm.themeListData.length  === 4){
                                 $(".theme-type .theme-type-list").css({'height':494+'px'});
                             }else if(vm.themeListData.length  === 5){
@@ -398,14 +398,19 @@ var guideIndex = (function () {
             var flashAttributes = '';
             _that.filePreviewCount++
             if(fileType=='pdf'){
-                if(getSrc){
-                    _that.getViewIframeSrc = ctx+'cod/drawing/drawingCheck?detailId='+detailId;
-                }else {
-                    var tempwindow=window.open(); // 先打开页面
-                    setTimeout(function(){
-                        tempwindow.location=ctx+'cod/drawing/drawingCheck?detailId='+detailId;
-                    },1000)
-                }
+                // if(getSrc){
+                //     _that.getViewIframeSrc = ctx+'cod/drawing/drawingCheck?detailId='+detailId;
+                // }else {
+                //     var tempwindow=window.open(); // 先打开页面
+                //     setTimeout(function(){
+                //         tempwindow.location=ctx+'cod/drawing/drawingCheck?detailId='+detailId;
+                //     },1000)
+                // }
+                var tempwindow=window.open(); // 先打开页面
+                setTimeout(function(){
+                    tempwindow.location=ctx+'/previewPdf/view?detailId='+detailId;
+                },1000)
+
             }else {
               if(regText.test(fileType)){
                 // previewPdf/pdfIsCoverted

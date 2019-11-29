@@ -15,4 +15,14 @@ public class EtlConstant {
      * 上传完成
      */
     public static String JOB_RUN_STATUS_OFF = "0";
+
+    /**
+     * 人工生成
+     */
+    public static String MAN_OPERATE = "0";
+
+    /**
+     * 程序生成
+     */
+    public static String PROGRAM_OPERATE = "1";
 }

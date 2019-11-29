@@ -57,16 +57,18 @@ public class AeaItemPartformAdminServiceImpl implements AeaItemPartformAdminServ
 
     @Override
     public Long getMaxSortNo(String itemVerId) {
+
         Long sortNo = aeaItemPartformMapper.getMaxSortNo(itemVerId);
         return sortNo == null ? 1L : (sortNo + 1L);
     }
 
     @Override
-    public void saveAeaItemPartform(AeaItemPartform aeaItemPartform) {
+    public void saveAeaItemPartform(AeaItemPartform partform) {
 
-        aeaItemPartform.setCreater(SecurityContext.getCurrentUserId());
-        aeaItemPartform.setCreateTime(new Date());
-        aeaItemPartformMapper.insertAeaItemPartform(aeaItemPartform);
+        partform.setSortNo(getMaxSortNo(partform.getItemVerId()));
+        partform.setCreater(SecurityContext.getCurrentUserId());
+        partform.setCreateTime(new Date());
+        aeaItemPartformMapper.insertAeaItemPartform(partform);
     }
 
     @Override
@@ -100,7 +102,8 @@ public class AeaItemPartformAdminServiceImpl implements AeaItemPartformAdminServ
 
     @Override
     public AeaItemPartform getAeaItemPartformById(String id) {
-        if (id == null) {
+
+        if (StringUtils.isBlank(id)) {
             throw new InvalidParameterException(id);
         }
         logger.debug("根据ID获取Form对象，ID为：{}", id);
@@ -125,7 +128,7 @@ public class AeaItemPartformAdminServiceImpl implements AeaItemPartformAdminServ
             actStoForm.setFormId(UUID.randomUUID().toString());
             actStoForm.setFormName(formName);
             actStoForm.setFormLoadUrl(formLoadUrl);
-            actStoForm.setFormProperty("dev-biz");
+            actStoForm.setFormProperty("meta-biz");
             actStoForm.setIsDeleted("0");
             actStoForm.setCreater(SecurityContext.getCurrentUserId());
             actStoForm.setCreateTime(new Date());

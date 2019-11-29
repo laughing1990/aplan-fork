@@ -27,7 +27,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -58,7 +58,7 @@ public class AgentApproveBtnController {
     private AeaHiParStageinstMapper aeaHiParStageinstMapper;
 
 
-    @PutMapping("/win/wfSendAndChangeApplyState")
+    @PostMapping("/win/wfSendAndChangeApplyState")
     @ApiOperation(value = "窗口流程：流程审批并更改申请状态按钮方法（使用于既要推动流程流转，也需要修改申报状态时使用）")
     @ApiImplicitParams({@ApiImplicitParam(name = "applyinstId", value = "申请实例ID", dataType = "string", required = true),
             @ApiImplicitParam(name = "sendObjectStr", value = "流程节点实体字符串", dataType = "string", required = true),
@@ -85,7 +85,7 @@ public class AgentApproveBtnController {
 
     }
 
-    @PutMapping("/win/changeApplyState")
+    @PostMapping("/win/changeApplyState")
     @ApiOperation(value = "窗口流程：更改申请状态按钮方法（使用于无需推动流程流转，仅修改申报状态时使用）")
     @ApiImplicitParams({@ApiImplicitParam(name = "applyinstId", value = "申请实例ID", dataType = "string", required = true),
             @ApiImplicitParam(name = "userOpinion", value = "用户意见", dataType = "string", required = true),
@@ -102,7 +102,7 @@ public class AgentApproveBtnController {
 
     }
 
-    @PutMapping("/item/wfSendAndChangeItemState")
+    @PostMapping("/item/wfSendAndChangeItemState")
     @ApiOperation(value = "事项流程：流程审批并更改事项实例状态按钮方法（使用于既要推动流程流转，也需要修改事项状态时使用）")
     @ApiImplicitParams({@ApiImplicitParam(name = "iteminstId", value = "申请实例ID", dataType = "string", required = true),
             @ApiImplicitParam(name = "sendObjectStr", value = "流程节点实体字符串", dataType = "string", required = true),
@@ -125,7 +125,7 @@ public class AgentApproveBtnController {
         }
     }
 
-    @PutMapping("/item/changeItemState")
+    @PostMapping("/item/changeItemState")
     @ApiOperation(value = "事项流程：更改事项状态按钮方法（使用于无需推动流程流转，仅修改事项实例状态时使用）")
     @ApiImplicitParams({@ApiImplicitParam(name = "iteminstId", value = "事项实例ID", dataType = "string", required = true),
             @ApiImplicitParam(name = "userOpinion", value = "用户意见", dataType = "string", required = true),
@@ -143,7 +143,7 @@ public class AgentApproveBtnController {
         }
     }
 
-    @PutMapping("/win/wfSendAndChangeApplyAndItemState")
+    @PostMapping("/win/wfSendAndChangeApplyAndItemState")
     @ApiOperation(value = "窗口流程：流程审批并更改申请状态和事项状态按钮方法（使用于既要推动流程流转，也需要修改申报状态和事项状态时使用）")
     @ApiImplicitParams({@ApiImplicitParam(name = "applyinstId", value = "申请实例ID", dataType = "string", required = true),
             @ApiImplicitParam(name = "sendObjectStr", value = "流程节点实体字符串", dataType = "string", required = true),

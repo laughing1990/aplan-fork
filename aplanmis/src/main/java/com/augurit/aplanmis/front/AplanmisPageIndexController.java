@@ -24,7 +24,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -760,6 +759,19 @@ public class AplanmisPageIndexController {
         }
         ModelAndView modelAndView = new ModelAndView("view/queryStageConcludedApplyInfoIndex");
         modelAndView.addObject("stageIndex", stageIndex);
+        return modelAndView;
+    }
+
+
+    /**
+     * 待办任务
+     *
+     * @return
+     */
+    @GetMapping("/queryUploadServiceResultIndex.html")
+    @ApiOperation("菜单-待办任务")
+    public ModelAndView queryuUloadServiceResultIndex() {
+        ModelAndView modelAndView = new ModelAndView("view/queryUploadServiceResultIndex");
         return modelAndView;
     }
 }

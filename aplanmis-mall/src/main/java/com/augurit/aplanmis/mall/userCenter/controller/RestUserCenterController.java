@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.mall.userCenter.controller;
 
+import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
@@ -54,7 +55,7 @@ public class RestUserCenterController {
     private AeaLinkmanInfoMapper aeaLinkmanInfoMapper;
 
     @GetMapping("/toMyCloundSpacesPage")
-    @ApiOperation(value = "法人空间我的首页")
+    @ApiOperation(value = "我的云盘")
     public ModelAndView toMyCloundSpacesPage(){
         return new ModelAndView("mall/userCenter/components/my-cloundSpaces");
     }
@@ -106,15 +107,28 @@ public class RestUserCenterController {
 
     @PostMapping("linkman/save")
     @ApiOperation("保存联系人信息")
-    public ResultForm saveLinkman(AeaLinkmanInfo aeaLinkmanInfo, HttpServletRequest request) throws  Exception{
+    public ContentResultForm saveLinkman(AeaLinkmanInfo aeaLinkmanInfo, HttpServletRequest request) throws  Exception{
         //要求密码字段MD5加密
         if(StringUtils.isNotBlank(aeaLinkmanInfo.getLinkmanInfoId())){
             aeaLinkmanInfoService.updateAeaLinkmanInfo(aeaLinkmanInfo);
         }else{
             aeaLinkmanInfoService.insertAeaLinkmanInfo(aeaLinkmanInfo);
         }
+        //将联系人绑定到单位
+        if(StringUtils.isNotBlank(aeaLinkmanInfo.getUnitInfoId())){
+            AeaUnitLinkman param=new AeaUnitLinkman();
+            param.setUnitInfoId(aeaLinkmanInfo.getUnitInfoId());
+            param.setLinkmanInfoId(aeaLinkmanInfo.getLinkmanInfoId());
+            List<AeaUnitLinkman> linkList = aeaUnitLinkmanMapper.listAeaUnitLinkman(param);
+            if(linkList.size()==0){
+                param.setCreateTime(new Date());
+                param.setCreater(SecurityContext.getCurrentUserName());
+                param.setUnitLinkmanId(UUID.randomUUID().toString());
+                aeaUnitLinkmanMapper.insertAeaUnitLinkman(param);
+            }
+        }
         //mainService.freshenUnitInfo(request);
-        return new ResultForm(true,"success");
+        return new ContentResultForm(true,aeaLinkmanInfo.getLinkmanInfoId(),"success");
     }
 
     @PostMapping("linkmanCascade/save")

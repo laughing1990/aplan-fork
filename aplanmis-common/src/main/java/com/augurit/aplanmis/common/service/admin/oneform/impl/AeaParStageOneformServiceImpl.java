@@ -89,17 +89,8 @@ public class AeaParStageOneformServiceImpl implements AeaParStageOneformService 
             throw new InvalidParameterException("parStageId为空！");
         }
         PageHelper.startPage(page);
+        //获取事项表单列表
         List<AeaParStageItem> list = aeaParStageOneformMapper.listAeaStageItem(parStageId, SecurityContext.getCurrentOrgId());
-        for (int i = 0; i < list.size(); i++) {
-            AeaParStageItem aeaParStageItem = list.get(i);
-            String itemVerId = aeaParStageItem.getItemVerId();
-            String formId = aeaParStageItem.getSubFormId();
-            String stageId = aeaParStageItem.getStageId();
-            ActStoForm actStoForm = aeaParStageOneformMapper.getActStoForm(stageId, itemVerId, formId);
-            if (actStoForm != null) {
-                aeaParStageItem.setFormName(actStoForm.getFormName());
-            }
-        }
         logger.debug("成功执行分页查询！！");
         EasyuiPageInfo<AeaParStageItem> pageInfo = PageHelper.toEasyuiPageInfo(new PageInfo<>(list));
         return pageInfo;
@@ -159,18 +150,8 @@ public class AeaParStageOneformServiceImpl implements AeaParStageOneformService 
         if (StringUtils.isBlank(aeaParStageItem.getStageId())) {
             throw new InvalidParameterException("stageId为空！");
         }
+        //获取事项表单列表
         List<AeaParStageItem> list = aeaParStageOneformMapper.listAeaStageItem(aeaParStageItem.getStageId(), SecurityContext.getCurrentOrgId());
-        if(list!=null && list.size()>0){
-            for(AeaParStageItem stageItem : list){
-                String stageId = stageItem.getStageId();
-                String itemVerId = stageItem.getItemVerId();
-                String formId = stageItem.getSubFormId();
-                ActStoForm actStoForm = aeaParStageOneformMapper.getActStoForm(stageId, itemVerId, formId);
-                if (actStoForm != null) {
-                    stageItem.setFormName(actStoForm.getFormName());
-                }
-            }
-        }
         return list;
     }
 }

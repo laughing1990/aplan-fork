@@ -1474,6 +1474,7 @@ HIGHEST_RATE,QUOTE_TYPE,ROOT_ORG_ID
     <update id="updateIntermediaryWonBidStatus">
         update aea_im_unit_bidding set IS_WON_BID='1' where UNIT_BIDDING_ID=#{unitBiddingId}
     </update>
+
     <sql id="UnitRequireColumnsAlias">
         ${alias}.IS_QUAL_REQUIRE  isQualRequire,
         ${alias}.QUAL_REQUIRE_TYPE  qualRequireType,
@@ -1488,6 +1489,7 @@ HIGHEST_RATE,QUOTE_TYPE,ROOT_ORG_ID
         ${alias}.IS_RECORD_REQUIRE  isRecordRequire,
         ${alias}.RECORD_REQUIRE_EXPLAIN  recordRequireExplain
     </sql>
+
     <sql id="projColumnsAlias">
         ${alias}.PROJ_NAME AS projName,
         ${alias}.LOCAL_CODE localCode,
@@ -1523,7 +1525,21 @@ HIGHEST_RATE,QUOTE_TYPE,ROOT_ORG_ID
             <property name="alias" value="aiur"/>
         </include>
         ,
-        ais.service_name serviceName
+        (SELECT
+        <if test="_databaseId == 'oracle'">
+            WM_CONCAT(aui.APPLICANT)
+        </if>
+        <if test="_databaseId == 'mysql'">
+            GROUP_CONCAT(aui.APPLICANT)
+        </if>
+        FROM aea_im_avoid_unit aiau, aea_unit_info aui
+        WHERE aiau.UNIT_INFO_ID = aui.UNIT_INFO_ID
+        AND aiau.IS_DELETE = '0' AND aiau.PROJ_PURCHASE_ID = aipp.PROJ_PURCHASE_ID) avoidUnitNames,
+        (select aui.APPLICANT
+        from aea_im_unit_bidding aiub,aea_unit_info aui where aiub.UNIT_INFO_ID = aui.UNIT_INFO_ID and
+        aiub.PROJ_PURCHASE_ID = aipp.PROJ_PURCHASE_ID
+        ) biddingUnitName
+
         from aea_im_proj_purchase aipp
         left join aea_proj_info api on api.PROJ_INFO_ID=aipp.PROJ_INFO_ID
         left join aea_im_unit_require aiur on aiur.UNIT_REQUIRE_ID=aipp.UNIT_REQUIRE_ID
@@ -1536,7 +1552,6 @@ HIGHEST_RATE,QUOTE_TYPE,ROOT_ORG_ID
                 and aipp.PROJ_PURCHASE_ID=#{projPurchaseId}
             </if>
         </where>
-        where aipp.APPLYINST_CODE=#{applyinstCode}
     </select>
 
 </mapper>

@@ -1,44 +1,51 @@
-var myHomeIndex = (function(){
+var myHomeIndex = (function () {
     var vm = new Vue({
-        el:"#myHomeindex",
-        data:{
-            ctx:ctx,
-            applyIngData:[],
+        el: "#myHomeindex",
+        data: {
+            ctx: ctx,
+            applyIngData: [],
             approvalNum: 0,
             matCompletionNum: 0,
-            draftNum:0,
-            applyNum:0,
-            supplyNum:0,
-            withdrawalNum:0,
+            draftNum: 0,
+            applyNum: 0,
+            supplyNum: 0,
+            completedNum: 0,
 
             // 用户的信息
-            aeaLinkmanInfo:{},
-            aeaUnitInfo:{},
-            option:{},
-            user:2,
-            isBlack:null,
+            aeaLinkmanInfo: {},
+            aeaUnitInfo: {},
+            option: {},
+            user: 2,
+            isBlack: null,
+
+            declare: {
+                pageSize: 5,
+                currentPage: 1,
+                total: 0
+            }
         },
-        created:function(){
+        created: function () {
             var ts = this;
             ts.getwarningNum()
             ts.getApplyIngData()
             ts.getUserinfo()
         },
-        methods:{
+        methods: {
             // 获取正在进行中的申报列表数据
-            getApplyIngData:function () {
+            getApplyIngData: function () {
                 var ts = this;
                 request('', {
                     url: ctx + 'rest/user/hadApplyItem/list',
                     type: 'get',
                     data: {
-                        pageNum:0,
-                        pageSize:5,
-                        state:1,
+                        pageNum: ts.declare.currentPage,
+                        pageSize: ts.declare.pageSize,
+                        state: 1,
                     }
                 }, function (res) {
                     if (res.success) {
-                        ts.applyIngData = res.content.list.slice(0,5);
+                        ts.applyIngData = res.content.list;
+                        ts.declare.total = res.content.total;
                     } else {
                         ts.$message.error(res.message)
                     }
@@ -59,7 +66,7 @@ var myHomeIndex = (function(){
                         vm.draftNum = res.content.draftNum;
                         vm.applyNum = res.content.applyNum;
                         vm.supplyNum = res.content.supplyNum;
-                        vm.withdrawalNum = res.content.withdrawalNum;
+                        vm.completedNum = res.content.completedNum;
                     }
                 }, function () {
 
@@ -67,67 +74,67 @@ var myHomeIndex = (function(){
             },
 
             // 获取信息
-            getUserinfo:function(){
+            getUserinfo: function () {
                 var _this = this;
                 request('', {
                     url: ctx + 'rest/user/userinfo',
                     type: 'get',
-                    data:{}
+                    data: {}
                 }, function (res) {
-                    if(res.success){
-                        if(res.content.aeaLinkmanInfo || res.content.aeaUnitInfo){
+                    if (res.success) {
+                        if (res.content.aeaLinkmanInfo || res.content.aeaUnitInfo) {
                             _this.aeaLinkmanInfo = res.content.aeaLinkmanInfo;
                             _this.aeaUnitInfo = res.content.aeaUnitInfo;
                             _this.option = res.content.aeaUnitList;
                             _this.user = res.content.role;
                             _this.getPersonOrUnitBlackByBizCode();
                         }
-                    }else{
+                    } else {
                         _this.$message.error(res.message);
                     }
 
-                },function () {
+                }, function () {
                     _this.$message.error('获取数据失败，请重试');
                 });
             },
 
             // 请求接口判断 信用状况
-            getPersonOrUnitBlackByBizCode:function(){
+            getPersonOrUnitBlackByBizCode: function () {
                 var _this = this;
                 var params = {};
-                if(_this.user == 2){ //企业时，传统一信用社会编码
+                if (_this.user == 2) { //企业时，传统一信用社会编码
                     params = {
-                        bizCode:_this.aeaUnitInfo.unifiedSocialCreditCode,
-                        bizType:'u'
+                        bizCode: _this.aeaUnitInfo.unifiedSocialCreditCode,
+                        bizType: 'u'
                     }
-                }else{
+                } else {
                     params = {
-                        bizCode:_this.aeaLinkmanInfo.linkmanCertNo,
+                        bizCode: _this.aeaLinkmanInfo.linkmanCertNo,
                         bizType: 'l'
                     }
                 }
                 request('', {
                     url: ctx + 'rest/user/credit/redblack/getPersonOrUnitBlackByBizCode',
                     type: 'get',
-                    data:params,
+                    data: params,
                 }, function (res) {
-                    if(res.success){
+                    if (res.success) {
                         _this.isBlack = res.content.isBlack;
                     }
-                },function () {
+                }, function () {
                 });
             },
-            
+
             // 点击编辑个人信息
-            toUserCenterPage:function () {
+            toUserCenterPage: function () {
                 userCenter.vm.toUserCenterPage();
             },
 
             // 点击并联申报
-            goToStageApply:function(){
-                userCenter.vm.selectNav="我的项目库";
-                localStorage.setItem('selectNav',userCenter.vm.selectNav);
-                location.href =ctx + "rest/main/toIndexPage?projInfoId=null#declare";
+            goToStageApply: function () {
+                userCenter.vm.selectNav = "我的项目库";
+                localStorage.setItem('selectNav', userCenter.vm.selectNav);
+                location.href = ctx + "rest/main/toIndexPage?projInfoId=null#declare";
             },
 
             // 点击我的项目库
@@ -151,7 +158,7 @@ var myHomeIndex = (function(){
             },
 
             // 点击我的云盘
-            toMyCloundSpaces:function(){
+            toMyCloundSpaces: function () {
                 window.location.href = ctx + '/rest/main/toIndexPage?#/myCloundSpaces';
             },
 
@@ -166,21 +173,28 @@ var myHomeIndex = (function(){
             },
 
             // 点击查看 申报详细
-            toDetail:function (item) {
+            toDetail: function (item) {
                 var mod = {
                     name: '申报列表',
                     value: 'declareHave',
                     select: true,
                 }
-                var formMyHomeIndexData={
-                    originFlag:true,
-                    item:item
+                var formMyHomeIndexData = {
+                    originFlag: true,
+                    item: item
                 };
-                sessionStorage.setItem("formMyHomeIndexData",JSON.stringify(formMyHomeIndexData))
+                sessionStorage.setItem("formMyHomeIndexData", JSON.stringify(formMyHomeIndexData))
                 userCenter.vm.userCenterMenuSelect(mod);
             },
 
-
+            handleSizeChange: function (val) {
+                this.declare.pageSize = val;
+                this.getApplyIngData();
+            },
+            handleCurrentChange: function (val) {
+                this.declare.currentPage = val;
+                this.getApplyIngData();
+            }
         },
     })
     return {

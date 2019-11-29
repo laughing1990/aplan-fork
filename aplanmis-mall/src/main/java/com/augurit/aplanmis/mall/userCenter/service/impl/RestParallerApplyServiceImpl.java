@@ -88,6 +88,10 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
             } else {
                 item.setCoreStateList(aeaItemStateService.listAeaItemStateByParentId(item.getItemVerId(), "", "ROOT", SecurityContext.getCurrentOrgId()));
             }
+            if (item.getCarryOutItems()==null||item.getCarryOutItems().size()==0){
+                item.setCarryOutItems(new ArrayList<>());
+            }
+            if (item.getCurrentCarryOutItem()==null) item.setCurrentCarryOutItem(new AeaItemBasic());
         }
         //getIsNeedState 为1时为分情形
         if ("1".equals(aeaParStage.getIsNeedState())){
@@ -112,7 +116,10 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
                 } else {
                     item.setParaStateList(aeaItemStateService.listAeaItemStateByParentId(item.getItemVerId(), "", "ROOT", SecurityContext.getCurrentOrgId()));
                 }
-
+                if (item.getCarryOutItems()==null||item.getCarryOutItems().size()==0){
+                    item.setCarryOutItems(new ArrayList<>());
+                }
+                if (item.getCurrentCarryOutItem()==null) item.setCurrentCarryOutItem(new AeaItemBasic());
             }
         }
 
@@ -172,20 +179,22 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
             AeaParFactorTheme aeaParFactorTheme = new AeaParFactorTheme();
             aeaParFactorTheme.setFactorId(factorId);
             List<AeaParFactorTheme> aeaParFactorThemes = aeaParFactorThemeMapper.listAeaParFactorTheme(aeaParFactorTheme);
-            String themeId=aeaParFactorThemes.size()>0?aeaParFactorThemes.get(0).getThemeId():"";
-            resultMap.put("themeId",themeId);
-            if(!StringUtils.isBlank(themeId)){
-                String themeType="";
-                try {
-                    themeType=aeaParThemeService.getAeaParThemeByThemeId(themeId).getThemeType();
-                }catch (Exception e){
-                    e.printStackTrace();
+            if(aeaParFactorThemes.size()>0){
+                String themeId=aeaParFactorThemes.get(0).getThemeId();
+                resultMap.put("themeId",themeId);
+                if(!StringUtils.isBlank(themeId)){
+                    String themeType="";
+                    try {
+                        themeType=aeaParThemeService.getAeaParThemeByThemeId(themeId).getThemeType();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    resultMap.put("themeType",themeType);
+                }else{
+                    resultMap.put("themeType","");
                 }
-                resultMap.put("themeType",themeType);
-            }else{
-                resultMap.put("themeType","");
+                set.add(resultMap);
             }
-            set.add(resultMap);
         }
         if (set.size()!=1) return null;
         Iterator it = set.iterator();

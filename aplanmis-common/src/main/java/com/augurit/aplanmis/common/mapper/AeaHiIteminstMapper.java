@@ -53,7 +53,7 @@ public interface AeaHiIteminstMapper {
      */
     List<ApproveProjInfoDto> getWithdrawApplyListByUnitOrLinkman(@Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId, @Param("keyword") String keyword);
 
-    long countApproveProjInfoListByUnitOrLinkman(@Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId);
+    long countApproveProjInfoListByUnitOrLinkman(@Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId,@Param("isAll")String isAll);
 
     List<ApproveProjInfoDto> getScheduleInquireListByUnitInfoIdOrLinkman(@Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId, @Param("keyword") String keyword);
 

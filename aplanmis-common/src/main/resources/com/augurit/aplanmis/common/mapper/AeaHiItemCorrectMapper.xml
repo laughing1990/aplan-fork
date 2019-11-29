@@ -91,105 +91,106 @@
 <!--3 根据条件查询实体list -->
     <select id="listAeaHiItemCorrect" resultType="AeaHiItemCorrect" >
         select
-        <include refid="allColumns"/>
-        from    AEA_HI_ITEM_CORRECT
+        <include refid="allColumns_ahic"/>,ouser.USER_NAME createrName
+        from AEA_HI_ITEM_CORRECT ahic
+        LEFT JOIN OPU_OM_USER ouser ON ouser.USER_ID = ahic.CREATER
     <where>
         <if test="correctId != null" >
-        AND    CORRECT_ID = #{correctId}
+            AND ahic.CORRECT_ID = #{correctId}
         </if>
         <if test="iteminstId != null" >
-        AND    ITEMINST_ID = #{iteminstId}
+            AND ahic.ITEMINST_ID = #{iteminstId}
         </if>
         <if test="applyinstId != null" >
-        AND    APPLYINST_ID = #{applyinstId}
+            AND ahic.APPLYINST_ID = #{applyinstId}
         </if>
         <if test="projInfoId != null" >
-        AND    PROJ_INFO_ID = #{projInfoId}
+            AND ahic.PROJ_INFO_ID = #{projInfoId}
         </if>
         <if test="isFlowTrigger != null" >
-        AND    IS_FLOW_TRIGGER = #{isFlowTrigger}
+            AND ahic.IS_FLOW_TRIGGER = #{isFlowTrigger}
         </if>
         <if test="appinstId != null" >
-        AND    APPINST_ID = #{appinstId}
+            AND ahic.APPINST_ID = #{appinstId}
         </if>
         <if test="correctDueDays != null" >
-        AND    CORRECT_DUE_DAYS = #{correctDueDays}
+            AND ahic.CORRECT_DUE_DAYS = #{correctDueDays}
         </if>
         <if test="correctDueTime != null" >
-        AND    CORRECT_DUE_TIME = #{correctDueTime}
+            AND ahic.CORRECT_DUE_TIME = #{correctDueTime}
         </if>
         <if test="matinstIds != null" >
-        AND    MATINST_IDS = #{matinstIds}
+            AND ahic.MATINST_IDS = #{matinstIds}
         </if>
         <if test="correctDesc != null" >
-        AND    CORRECT_DESC = #{correctDesc}
+            AND ahic.CORRECT_DESC = #{correctDesc}
         </if>
         <if test="correctMemo != null" >
-        AND    CORRECT_MEMO = #{correctMemo}
+            AND ahic.CORRECT_MEMO = #{correctMemo}
         </if>
         <if test="chargeOrgId != null" >
-        AND    CHARGE_ORG_ID = #{chargeOrgId}
+            AND ahic.CHARGE_ORG_ID = #{chargeOrgId}
         </if>
         <if test="chargeOrgName != null" >
-        AND    CHARGE_ORG_NAME = #{chargeOrgName}
+            AND ahic.CHARGE_ORG_NAME = #{chargeOrgName}
         </if>
         <if test="windowUserId != null" >
-        AND    WINDOW_USER_ID = #{windowUserId}
+            AND ahic.WINDOW_USER_ID = #{windowUserId}
         </if>
         <if test="windowUserName != null" >
-        AND    WINDOW_USER_NAME = #{windowUserName}
+            AND ahic.WINDOW_USER_NAME = #{windowUserName}
         </if>
         <if test="windowPhone != null" >
-        AND    WINDOW_PHONE = #{windowPhone}
+            AND ahic.WINDOW_PHONE = #{windowPhone}
         </if>
         <if test="opsUserId != null" >
-        AND    OPS_USER_ID = #{opsUserId}
+            AND ahic.OPS_USER_ID = #{opsUserId}
         </if>
         <if test="opsUserName != null" >
-        AND    OPS_USER_NAME = #{opsUserName}
+            AND ahic.OPS_USER_NAME = #{opsUserName}
         </if>
         <if test="opsTime != null" >
-        AND    OPS_TIME = #{opsTime}
+            AND ahic.OPS_TIME = #{opsTime}
         </if>
         <if test="correctUserName != null" >
-        AND    CORRECT_USER_NAME = #{correctUserName}
+            AND ahic.CORRECT_USER_NAME = #{correctUserName}
         </if>
         <if test="correctEndTime != null" >
-        AND    CORRECT_END_TIME = #{correctEndTime}
+            AND ahic.CORRECT_END_TIME = #{correctEndTime}
         </if>
         <if test="printUserId != null" >
-        AND    PRINT_USER_ID = #{printUserId}
+            AND ahic.PRINT_USER_ID = #{printUserId}
         </if>
         <if test="printUserName != null" >
-        AND    PRINT_USER_NAME = #{printUserName}
+            AND ahic.PRINT_USER_NAME = #{printUserName}
         </if>
         <if test="printTime != null" >
-        AND    PRINT_TIME = #{printTime}
+            AND ahic.PRINT_TIME = #{printTime}
         </if>
         <if test="correctState != null" >
-        AND    CORRECT_STATE = #{correctState}
+            AND ahic.CORRECT_STATE = #{correctState}
         </if>
         <if test="isDeleted != null" >
-        AND    IS_DELETED = #{isDeleted}
+            AND ahic.IS_DELETED = #{isDeleted}
         </if>
         <if test="creater != null" >
-        AND    CREATER = #{creater}
+            AND ahic.CREATER = #{creater}
         </if>
         <if test="createTime != null" >
-        AND    CREATE_TIME = #{createTime}
+            AND ahic.CREATE_TIME = #{createTime}
         </if>
         <if test="modifier != null" >
-        AND    MODIFIER = #{modifier}
+            AND ahic.MODIFIER = #{modifier}
         </if>
         <if test="modifyTime != null" >
-        AND    MODIFY_TIME = #{modifyTime}
+            AND ahic.MODIFY_TIME = #{modifyTime}
         </if>
         <if test="rootOrgId != null" >
-            AND  ROOT_ORG_ID = #{rootOrgId}
+            AND ahic.ROOT_ORG_ID = #{rootOrgId}
         </if>
-      AND  IS_DELETED = '0'
+        AND ahic.IS_DELETED = '0'
     </where>
-        ORDER BY CREATE_TIME DESC
+        ORDER BY ahic.CREATE_TIME DESC
     </select>
 <!--4 根据条件查询实体list,返回分页对象 -->
 
