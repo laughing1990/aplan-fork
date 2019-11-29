@@ -12,6 +12,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.net.URLEncoder;
 import java.util.Date;
 
 @Service
@@ -113,7 +114,7 @@ public class DocTemplateService {
             //word文件输出流
             file = new File("src/main/resources/static/receive/default/" + newFileName);
             response.setContentType("application/x-msdownload;");
-            response.setHeader("Content-disposition", "attachment; filename=" + newFileName);
+            response.setHeader("Content-disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(newFileName, "UTF-8"));
             response.setHeader("Content-Length", String.valueOf(file.length()));
             bis = new BufferedInputStream(new FileInputStream(file));
             bos = new BufferedOutputStream(response.getOutputStream());

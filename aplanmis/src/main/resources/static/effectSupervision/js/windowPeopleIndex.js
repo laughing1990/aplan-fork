@@ -432,7 +432,7 @@ var Index = new Vue({
     // 待办列表-相关
     // 待办列表-双击某一行
     needHandelListRowDbFn: function(row){
-      this.yushen(row);
+      this.daibanbanliHand(row);
     },
     // 待办列表-剩余时间排序
     needHandelListSurplusSort: function(obj){
@@ -507,7 +507,7 @@ var Index = new Vue({
     // 补全待确认列表-相关
     // 补全待确认列表-双击某一行
     correctNeedSureListRowDbFn: function(row){
-      this.yushen(row);
+      this.wangshangdaiyushen(row);
     },
     // 补全待确认列表-切换页
     correctNeedSureCurrentChange: function (val) {
@@ -705,6 +705,15 @@ var Index = new Vue({
           // ts.loading = false;
           return ts.apiMessage('网络错误！', 'error')
       });
+    },
+
+    // 待办列表中的办理操作
+    daibanbanliHand: function(){
+      var url = ctx+'apanmis/page/stageApproveIndex?taskId='+row.taskId+'&viewId='+row.viewId;
+      if(row.busRecordId){
+          url = url + '&busRecordId='+row.busRecordId;
+      }
+      window.open(url,'_blank');
     },
   },
   mounted: function () {

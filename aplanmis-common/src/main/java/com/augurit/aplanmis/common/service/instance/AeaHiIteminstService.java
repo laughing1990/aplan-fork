@@ -254,7 +254,7 @@ public interface AeaHiIteminstService {
      */
     void updateAeaHiIteminstIsToleranceAccept(String iteminstId, String isToleranceAccept) throws Exception;
 
-    long countApproveProjInfoListByUnitOrLinkman (String unitInfoId,String userInfoId);
+    long countApproveProjInfoListByUnitOrLinkman (String unitInfoId,String userInfoId,String isAll);
 
     /**
      * 查询项目相关的阶段事项办理状态

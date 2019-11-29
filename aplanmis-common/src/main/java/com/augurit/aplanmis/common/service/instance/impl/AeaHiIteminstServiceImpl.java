@@ -356,8 +356,8 @@ public class AeaHiIteminstServiceImpl implements AeaHiIteminstService {
     }
 
     @Override
-    public  long countApproveProjInfoListByUnitOrLinkman (String unitInfoId, String userInfoId){
-        return aeaHiIteminstMapper.countApproveProjInfoListByUnitOrLinkman(unitInfoId,userInfoId);
+    public  long countApproveProjInfoListByUnitOrLinkman (String unitInfoId, String userInfoId,String isAll){
+        return aeaHiIteminstMapper.countApproveProjInfoListByUnitOrLinkman(unitInfoId,userInfoId,isAll);
     }
 
     @Override
