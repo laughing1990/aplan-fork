@@ -245,7 +245,7 @@ public class AeaItemInoutAdminController {
     public ResultForm batchDelItemMatCertFormCascade(String[] ids, String[] fileTypes) throws Exception {
 
         if (ids != null && ids.length > 0 && fileTypes!=null && fileTypes.length>0) {
-            logger.debug("删除事项输入输出定义，对象id为：{}", ids);
+            logger.debug("删除事项输入输出定义，对象id为：{}", (Object[]) ids);
             aeaItemInoutAdminService.batchDelItemMatCertFormCascade(ids, fileTypes);
             return new ResultForm(true);
         }
