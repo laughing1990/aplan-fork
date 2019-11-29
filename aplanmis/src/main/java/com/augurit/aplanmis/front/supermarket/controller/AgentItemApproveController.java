@@ -1,5 +1,7 @@
 package com.augurit.aplanmis.front.supermarket.controller;
 
+import com.augurit.agcloud.bpm.common.engine.BpmProcessService;
+import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
@@ -16,6 +18,8 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.flowable.engine.TaskService;
+import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -38,6 +42,12 @@ public class AgentItemApproveController {
     @Autowired
     private RestApplyMatService restApplyMatService;
 
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
+    private BpmProcessService bpmProcessService;
+
     @GetMapping("/approveSubmitMat.html")
     public ModelAndView index(String taskId, String viewId, String busRecordId) {
         ModelAndView mv = new ModelAndView("supermarket/approveSubmitMat");
@@ -57,6 +67,7 @@ public class AgentItemApproveController {
 
         return mv;
     }
+
     @GetMapping("/basic/apply/info")
     @ApiOperation(value = "业务审批 --> 申报表单基本信息")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "applyinstId", value = "申请实例", dataType = "string", required = true)
@@ -110,11 +121,31 @@ public class AgentItemApproveController {
     }
 
     @PostMapping("/receivePaperAndStartProcess")
-    @ApiOperation("窗口人员收取纸质服务结果并发起流程")
+    @ApiOperation("窗口人员签收并修改任务签收人wi当前登录人员")
     public ResultForm uploadPaperMatAndStartProcess(@RequestBody ReceiveServiceResult saveMatinstVo) throws Exception {
         if (null == saveMatinstVo || StringUtils.isBlank(saveMatinstVo.getApplyinstId()) || StringUtils.isBlank(saveMatinstVo.getIteminstId()))
             throw new Exception("params is null");
         agentItemApproveService.uploadPaperMatAndStartProcess(saveMatinstVo);
+        return new ResultForm(true, "success");
+    }
+
+    /**
+     * 窗口人员签收 中介超市发起的申报并修改任务处理人为当前登录人员
+     *
+     * @param taskId
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/SignTaskOrUpdateAssign")
+    @ApiOperation("申报页面根据材料定义生成材料实例id")
+    public ResultForm SignTaskOrUpdateAssign(String taskId) throws Exception {
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        if (task == null) throw new Exception("找不到节点信息！");
+        if (bpmProcessService.isProcessSuspended(task.getProcessInstanceId())) {
+            bpmProcessService.activateProcessInstanceById(task.getProcessInstanceId());//激活当前流程
+        }
+        taskService.setAssignee(taskId, SecurityContext.getCurrentUserName());
+        taskService.signTask(taskId);
         return new ResultForm(true, "success");
     }
 }

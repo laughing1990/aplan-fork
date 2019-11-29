@@ -8,7 +8,7 @@ var vm = new Vue({
   el: '#app',
   data: function() {
     return {
-      step: '2',
+      step: '1',
       dialogTitie: '',
       pageLoading: false,
       formData: {},
@@ -212,6 +212,7 @@ var vm = new Vue({
       // }
       fileLi.forEach(function(item) {
         if (item.raw) {
+          if (item.status == 'success') return;
           if (_this.type == 'jiben') {
             _this.fileList.push(item.raw);
           } else if (_this.type == 'weituoren') {

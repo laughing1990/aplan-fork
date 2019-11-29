@@ -103,7 +103,8 @@ var vm = new Vue({
 			event.preventDefault();
 			ts.loading = true;
 			request('bpmFrontUrl', {
-				url: ctx + 'rest/front/task/signTask/' + taskId,
+				// url: ctx + 'rest/front/task/signTask/' + taskId,
+				url: ctx + 'market/approve/SignTaskOrUpdateAssign?taskId=' + taskId,
 				type: 'get',
 				data: {}
 			}, function (result) {

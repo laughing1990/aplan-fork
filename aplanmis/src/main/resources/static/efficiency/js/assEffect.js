@@ -101,13 +101,7 @@ var app = new Vue({
         regionId: '', //区划id
       },
       // 当前部门所在省市下面的区域
-      regionList: [{
-        regionId: '123',
-        regionName: '天河区'
-      }, {
-        regionId: '13',
-        regionName: '番禺区'
-      }, ],
+      regionList: [],
       // 时间范围
       pageDateRange: culatorCurMonthDateRange() || [],
 

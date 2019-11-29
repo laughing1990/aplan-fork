@@ -544,7 +544,7 @@ public class RestImApplyService {
         aeaHiItemInoutinstService.batchInsertAeaHiItemInoutinst(applyData.getMatinstsIds(), applyinstId, applyData.getCreater());
 
         //5、启动主流程
-        BpmProcessInstance processInstance = aeaBpmProcessService.startFlow(itemBasic.getAppId(), appinstId, seriesApplyinst);
+        BpmProcessInstance processInstance = aeaBpmProcessService.startFlow(itemBasic.getAppId(), appinstId, seriesApplyinst, "system");
 
         if (processInstance == null || processInstance.getProcessInstance() == null) {
             throw new RuntimeException("流程启动失败！");
