@@ -8,11 +8,13 @@ var vm = new Vue({
                 unitInfo: {},
                 contactManList: [],
                 registerServiceAndQualVo: {
-                    aeaHiCertinstBVo: {},
+                    aeaHiCertinstBVo: [],
                     aeaImUnitService: {}
                 },
                 authorManList: [],
-                practiceManInfo: {},
+                practiceManInfo: {
+                    certinsts: []
+                },
                 practiceManFileList: []
             },
             auditForm:{
@@ -20,6 +22,7 @@ var vm = new Vue({
                 memo: '',
                 unitInfoId: ''
             },
+            filePreviewCount: 0,
             dialogFormVisible: false
         }
     },
@@ -32,6 +35,8 @@ var vm = new Vue({
             var vm = this;
             var url = 'supermarket/register/getRegisterDetail';
             var unitInfoId = this.getUrlParam('unitInfoId');
+
+            vm.loading = true;
             request('', {
                 url: ctx + url,
                 type: 'get',
@@ -40,9 +45,13 @@ var vm = new Vue({
                 if (res.success) {
                     vm.form = res.content;
                     vm.auditForm.unitInfoId = vm.form.unitInfo.unitInfoId;
+
+                    vm.loading = false;
                 }
 
-            }, function (msg) { })
+            }, function (msg) {
+                vm.loading = true;
+            })
         },
         // 获取页面的URL参数
         getUrlParam: function (val) {
@@ -109,7 +118,7 @@ var vm = new Vue({
                     _that.mloading = false;
                     var tempwindow = window.open(); // 先打开页面
                     setTimeout(function () {
-                        tempwindow.location = ctx + 'supermarket/purchase/mat/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
+                        tempwindow.location = ctx + 'rest/mats/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
                     }, 1000)
                 }
             }

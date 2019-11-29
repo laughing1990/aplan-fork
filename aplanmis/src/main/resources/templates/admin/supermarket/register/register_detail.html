@@ -40,10 +40,12 @@
 
 <body class="gray-body">
 	<div id="app" v-cloak v-loading="loading">
+		<div style="text-align: right;">
+			<el-button class="fr" @click="toPre">返回上一页</el-button>
+		</div>
 		<el-form ref="form" :model="form" label-width="130px" disabled="disabled">
 			<el-collapse v-model="activeNames">
-				<el-collapse-item class="clearfix" name="1" id="">
-					<el-button class="fr" @click="toPre">返回上一页</el-button>
+				<el-collapse-item class="clearfix" name="1" id="">					
 					<template slot="title">
 						<i class="header-icon icon ag ag-project-info"></i>基本信息
 					</template>
@@ -112,16 +114,12 @@
 					</div>
 
 					<el-form-item label="附件">
-						<el-input v-model="form.unitInfo.applicant"></el-input>
-					</el-form-item>
-
-					<el-row style="margin-left: 50px">
-						<el-form-item label="附件列表：">
-							<label v-for="bscAttDetail in form.unitFileList" style="margin-right: 15px;">
+						<el-row>
+							<el-col :span="12" v-for="bscAttDetail in form.unitFileList">
 								<a href="javascript:;" class="a-color4879E4" @click="filePreview(bscAttDetail)" style="cursor:pointer;">{{bscAttDetail.fileName}}</a>
-							</label>
-						</el-form-item>
-					</el-row>
+							</el-col>
+						</el-row>							
+					</el-form-item>
 
 					<el-form-item label="联系人信息">
 						<el-table :data="form.contactManList" border style="width: 100%">
@@ -317,8 +315,8 @@
 		</el-form>
 
 		<!--	操作  -->
-		<div style="text-align: center" v-if="form.unitInfo.auditFlag!='1'" v-cloak>
-			<el-button @click="examineService('1')">通过</el-button>
+		<div style="margin-top: 10px; text-align: center" v-if="form.unitInfo.auditFlag!='1'">
+			<el-button type="primary" @click="examineService('1')">通过</el-button>
 			<el-button @click="examineService('0')">不通过</el-button>
 		</div>
 		<!--审批弹窗-->
