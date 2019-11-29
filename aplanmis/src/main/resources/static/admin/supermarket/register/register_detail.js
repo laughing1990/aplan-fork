@@ -7,7 +7,7 @@ var vm = new Vue({
             form: {
                 unitInfo: {},
                 contactManList: [],
-                serviceAndQualVo: {
+                registerServiceAndQualVo: {
                     aeaHiCertinstBVo: {},
                     aeaImUnitService: {}
                 },
@@ -15,6 +15,12 @@ var vm = new Vue({
                 practiceManInfo: {},
                 practiceManFileList: []
             },
+            auditForm:{
+                auditFlag: "",
+                memo: '',
+                unitInfoId: ''
+            },
+            dialogFormVisible: false
         }
     },
     mounted: function () {
@@ -33,6 +39,7 @@ var vm = new Vue({
             }, function (res) {
                 if (res.success) {
                     vm.form = res.content;
+                    vm.auditForm.unitInfoId = vm.form.unitInfo.unitInfoId;
                 }
 
             }, function (msg) { })
@@ -125,5 +132,32 @@ var vm = new Vue({
         getIconColor: function (type) {
             return __STATIC.getIconColor(type || "DEFAULT");
         },
+        examineService: function (value) {
+            var _this = this;
+            _this.auditForm.auditFlag = value;
+            _this.dialogFormVisible = true;
+
+        },
+        changeAuditFlag: function () {
+            var _this = this;
+            _this.dialogFormVisible = false;
+            var url = ctx + '/supermarket/register/examineUnitService';
+            request('', {
+                url: url,
+                data: _this.auditForm,
+                type: 'post'
+            }, function (data) {
+                console.log(data)
+                if (data.success) {
+                    _this.toPre()
+                }
+            }, function (msg) {
+            })
+        },
+        //返回上一页
+        toPre: function () {
+            window.location.href = '/aplanmis-front/supermarket/register/index.html'
+
+        }
     }
 });
