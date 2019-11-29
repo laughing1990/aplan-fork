@@ -3693,7 +3693,7 @@ var vm = new Vue({
                 },function(){
                   _that.showOneFormDialog(_that.oneFormData[0].oneformName);
                   return false;
-                },'已完成','去填写', 'error', true)
+                },'已完成','去填写', 'warning', true)
               }else {
                 _that.getMatinstIds();
                 if(!_that.attIsRequireFlag&&_that.submitCommentsType!='4'&&_that.submitCommentsType!='5'){

@@ -3066,7 +3066,7 @@ var vm = new Vue({
                     },function(){
                       _that.openOneFormDialog();
                       return false;
-                    },'已完成','去填写', 'error', true)
+                    },'已完成','去填写', 'warning', true)
                   }else {
                     _that.getMatinstIds();
                     if(!_that.attIsRequireFlag && _that.buttonStyle!=5&&_that.buttonStyle!='4'){
