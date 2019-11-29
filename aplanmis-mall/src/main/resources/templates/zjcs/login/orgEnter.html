@@ -91,12 +91,12 @@
                 </el-input>
               </el-form-item>
               <div class="clearfix">
-                <el-form-item class="input-inline" label="注册资本币种">
-                  <!-- <el-select v-model="formData.projApplyType" filterable placeholder="请选择注册资本币种" @click.native="getProjThemeIdList">
+                <!--  <el-form-item class="input-inline" label="注册资本币种">
+                  <el-select v-model="formData.projApplyType" filterable placeholder="请选择注册资本币种" @click.native="getProjThemeIdList">
                     <el-option v-for="item in moneyList" :key="item.themeId" :label="item.themeName" :value="item.themeName">
                     </el-option>
-                  </el-select> -->
-                </el-form-item>
+                  </el-select>
+                </el-form-item> -->
                 <el-form-item class="input-inline" label="注册资本（万元）" prop="registeredCapital">
                   <el-input name="registeredCapital" v-model="formData.registeredCapital" placeholder="请输入注册资本">
                 </el-form-item>
@@ -125,9 +125,9 @@
                 </el-input>
               </el-form-item>
               <div class="clearfix">
-                <el-form-item class="input-inline" label="登记机关行政区划">
-                  <!--  <el-cascader placeholder="请选择登记机关行政区划" v-model="value" :options="options" separator=">" style="width:100%"></el-cascader> -->
-                </el-form-item>
+                <!--  <el-form-item class="input-inline" label="登记机关行政区划">
+                   <el-cascader placeholder="请选择登记机关行政区划" v-model="value" :options="options" separator=">" style="width:100%"></el-cascader>
+                </el-form-item> -->
                 <el-form-item class="input-inline" label="登记机关" prop="registerAuthority">
                   <el-input name="registerAuthority" v-model="formData.registerAuthority" placeholder="请输入登记机关">
                 </el-form-item>
@@ -198,9 +198,9 @@
                 <el-form-item class="input-inline" label="传真" prop="linkmanFax">
                   <el-input name="linkmanFax" v-model="formData2.linkmanFax" placeholder="请输入传真"></el-input>
                 </el-form-item>
-                <el-form-item class="input-inline" label="网址">
-                  <!-- <el-input name="projName" v-model="formData2.projName" placeholder="请输入网址"></el-input> -->
-                </el-form-item>
+                <!-- <el-form-item class="input-inline" label="网址">
+                  <el-input name="projName" v-model="formData2.projName" placeholder="请输入网址"></el-input>
+                </el-form-item> -->
               </div>
             </el-form>
           </el-collapse-item>
@@ -244,16 +244,16 @@
                 <el-input name="feeReference" v-model="formDataZgxx.feeReference" placeholder="请对输入收费参考">
                 </el-input>
               </el-form-item>
-              <el-form-item label="是否有备案" class="proj-code-info" prop="projName">
-                <!-- <el-select multiple v-model="formDataZgxx.projectAddress" style="width:34%;">
+              <!--  <el-form-item label="是否有备案" class="proj-code-info" prop="projName">
+                <el-select multiple v-model="formDataZgxx.projectAddress" style="width:34%;">
                   <el-option v-for="item in recordList" :key="item.regionId" :label="item.regionName" :value="item.regionId">
                   </el-option>
-                </el-select> -->
-              </el-form-item>
-              <el-form-item label="备案说明" class="proj-code-info" prop="projName">
-                <!-- <el-input name="projName" type="textarea" :rows="5" v-model="formDataZgxx.projName" placeholder="请说明备案的部门、备案内容、查询网址等">
-                </el-input> -->
-              </el-form-item>
+                </el-select>
+              </el-form-item> -->
+              <!--  <el-form-item label="备案说明" class="proj-code-info" prop="projName">
+                <el-input name="projName" type="textarea" :rows="5" v-model="formDataZgxx.projName" placeholder="请说明备案的部门、备案内容、查询网址等">
+                </el-input>
+              </el-form-item> -->
               <el-form-item label="证书类型：" class="proj-code-info">
                 <el-select placeholder="请选择" v-model="formDataZgxx.certId" style="width: 100%;" :popper-append-to-body="false">
                   <el-option v-for="item in certTypeZige" :key="item.certId" :label="item.certName" :value="item.certId">
@@ -264,9 +264,9 @@
                 <el-form-item class="input-inline" label="资格证书编号">
                   <el-input name="certinstCode" v-model="formDataZgxx.certinstCode" placeholder="请输入资格证书编号">
                 </el-form-item>
-                <el-form-item class="input-inline" label="出征部门/备案部门">
-                  <!-- <el-input name="projName" v-model="formDataZgxx.projName" placeholder="请输入出征部门/备案部门"> -->
-                </el-form-item>
+                <!--  <el-form-item class="input-inline" label="出征部门/备案部门">
+                  <el-input name="projName" v-model="formDataZgxx.projName" placeholder="请输入出征部门/备案部门">
+                </el-form-item> -->
                 <el-form-item class="input-inline" prop="regionalism" label="资格有效期起">
                   <el-date-picker v-model="formDataZgxx.termStart" type="date" placeholder="请选择资格有效期起">
                 </el-form-item>
