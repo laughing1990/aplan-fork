@@ -182,13 +182,13 @@
             </template>
             <el-form label-width="176px" ref="form2" :rules="rules2" :model="formData2">
               <div class="clearfix">
-                <el-form-item class="input-inline" label="联系人">
+                <el-form-item class="input-inline" label="联系人" prop="linkmanName">
                   <el-input name="linkmanName" v-model="formData2.linkmanName" placeholder="请输入联系人"></el-input>
                 </el-form-item>
-                <el-form-item class="input-inline" label="电子邮箱" prop="projType">
+                <el-form-item class="input-inline" label="电子邮箱" prop="linkmanMail">
                   <el-input name="linkmanMail" v-model="formData2.linkmanMail" placeholder="请输入电子邮箱"></el-input>
                 </el-form-item>
-                <el-form-item class="input-inline" label="移动电话">
+                <el-form-item class="input-inline" label="移动电话" prop='linkmanMobilePhone'>
                   <el-input name="linkmanMobilePhone" v-model="formData2.linkmanMobilePhone" placeholder="请输入移动电话">
                 </el-form-item>
                 </el-input>
@@ -207,7 +207,7 @@
         </el-collapse>
         <div class="right-bottom-btn">
           <el-button class="save-jinbanUnit-info" @click="saveForm">取消</el-button>
-          <el-button type="primary" class="save-jinbanUnit-info" @click="step='2'">下一步</el-button>
+          <el-button type="primary" class="save-jinbanUnit-info" @click="toStep2">下一步</el-button>
         </div>
       </div>
       <div class="step2" v-if="step=='2'">
@@ -370,7 +370,7 @@
         <div class="right-bottom-btn">
           <el-button class="save-jinbanUnit-info" @click="saveForm">取消</el-button>
           <el-button type="primary" class="save-jinbanUnit-info" @click="step='1'">上一步</el-button>
-          <el-button type="primary" class="save-jinbanUnit-info" @click="step='3'">下一步</el-button>
+          <el-button type="primary" class="save-jinbanUnit-info" @click="toStep3">下一步</el-button>
         </div>
       </div>
       <div class="step3" v-if="step=='3'">
@@ -405,7 +405,7 @@
             <div class="right-bottom-btn">
               <el-button class="save-jinbanUnit-info" @click="saveForm">取消</el-button>
               <el-button type="primary" class="save-jinbanUnit-info" @click="step='2'">上一步</el-button>
-              <el-button type="primary" class="save-jinbanUnit-info" @click="step='4'">下一步</el-button>
+              <el-button type="primary" class="save-jinbanUnit-info" @click="toStep4">下一步</el-button>
             </div>
           </el-collapse-item>
       </div>
@@ -533,7 +533,7 @@
             <div class="right-bottom-btn">
               <el-button class="save-jinbanUnit-info" @click="saveForm">取消</el-button>
               <el-button type="primary" class="save-jinbanUnit-info" @click="step='3'">上一步</el-button>
-              <el-button type="primary" class="save-jinbanUnit-info" @click="step=5;">提交</el-button>
+              <el-button type="primary" class="save-jinbanUnit-info" @click="saveForm">提交</el-button>
             </div>
           </el-collapse-item>
       </div>
