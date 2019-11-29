@@ -16,6 +16,7 @@ import com.augurit.aplanmis.common.utils.Md5Utils;
 import com.augurit.aplanmis.common.vo.OwnerRegisterVo;
 import com.augurit.aplanmis.supermarket.certinst.service.AeaHiCertinstService;
 import com.augurit.aplanmis.supermarket.clientManage.service.ClientManageService;
+import com.augurit.aplanmis.supermarket.clientManage.vo.ClientManageVo;
 import com.augurit.aplanmis.supermarket.linkmanInfo.service.AeaLinkmanInfoService;
 import com.augurit.aplanmis.supermarket.register.service.AgentRegisterService;
 import com.augurit.aplanmis.supermarket.register.service.OwnerRegisterService;
@@ -84,6 +85,7 @@ public class OwnerRegisterServiceImpl implements OwnerRegisterService {
             unitInfo.setLoginName(loginName);
             unitInfo.setLoginPwd(Md5Utils.encrypt32(password));
             unitInfo.setIsOwnerUnit("1");
+            unitInfo.setAuditFlag("2");
 
             //保存单位信息
             aeaUnitInfoService.insertAeaUnitInfo(unitInfo);
@@ -108,19 +110,20 @@ public class OwnerRegisterServiceImpl implements OwnerRegisterService {
                 authorManInfo.setLinkmanType("u");
                 this.insertLinkmanInfo(authorManInfo);
 
-                /*String manLoginName = authorManInfo.getLoginName();
+                String manLoginName = authorManInfo.getLoginName();
                 if (StringUtils.isBlank(manLoginName) && StringUtils.isNotBlank(authorManInfo.getLinkmanCertNo())) {
                     manLoginName = authorManInfo.getLinkmanCertNo();//将身份证号作为登录名
                 }
-                String manPassword = GeneratePasswordUtils.generatePassword(8);*/
+                String manPassword = GeneratePasswordUtils.generatePassword(8);
 
                 //因为业主入驻放没有服务的，暂时不用下面这段代码
-                /*ClientManageVo clienManageVo = new ClientManageVo();
+                ClientManageVo clienManageVo = new ClientManageVo();
+                clienManageVo.setUnitInfoId(unitInfo.getUnitInfoId());
+                clienManageVo.setLinkmanInfoId(authorManInfo.getLinkmanInfoId());
                 clienManageVo.setIsBindAccount("1");
-                clienManageVo.setLoginName(authorManInfo.getLoginName());
-                clienManageVo.setLoginPwd(authorManInfo.getLoginPwd());
-                clienManageVo.setUnitServiceIds(authorManInfo.getUnitServiceIds());
-                clientManageService.updateAeaUnitLink(clienManageVo);*/
+                //clienManageVo.setLoginName(authorManInfo.getLoginName());
+                //clienManageVo.setLoginPwd(authorManInfo.getLoginPwd());
+                clientManageService.updateAeaUnitLink(clienManageVo);
 
                 List<MultipartFile> authorManFiles = this.getFileListByName(request, "authorManFile");
                 FileUtils.uploadFile("AEA_LINKMAN_INFO", "LINKMAN_INFO_ID", authorManInfo.getLinkmanInfoId(), authorManFiles);

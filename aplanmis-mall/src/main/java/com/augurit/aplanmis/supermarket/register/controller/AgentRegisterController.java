@@ -44,8 +44,8 @@ public class AgentRegisterController {
     public ModelAndView indexAeaImServiceLinkman() throws  Exception{
         //虚拟登录员信息
         OpuOmUser opuOmUser=new OpuOmUser();
-        opuOmUser.setUserId("admin");
-        opuOmUser.setLoginName("admin");
+        opuOmUser.setUserId("tourist");
+        opuOmUser.setLoginName("游客");
         agentRegisterService.generateVirtualUser(opuOmUser,topOrgId);
         return new ModelAndView("zjcs/login/orgEnter");
     }

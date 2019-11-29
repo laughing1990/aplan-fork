@@ -94,7 +94,12 @@ var vm = new Vue({
 			return num;
 		},
 		registerDeatail: function (row) {
-			var url = ctx + '/supermarket/register/detail.html?unitInfoId=' + row.unitInfoId;
+			var url;
+			if(!row.isImUnit && row.isImUnit==='1') {
+				url = ctx + '/supermarket/register/detail.html?unitInfoId=' + row.unitInfoId;//中介机构
+			}else{
+				url = ctx + '/supermarket/register/ownerDetail.html?unitInfoId=' + row.unitInfoId;//业主
+			}
 			window.location.href = url;
 		},
 		// 预览电子件 必须要有detailId

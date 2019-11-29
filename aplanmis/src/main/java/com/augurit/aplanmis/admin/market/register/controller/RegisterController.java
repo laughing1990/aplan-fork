@@ -5,6 +5,7 @@ import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.admin.market.register.service.RegisterService;
+import com.augurit.aplanmis.admin.market.register.vo.OwnerRegisterResultVo;
 import com.augurit.aplanmis.admin.market.register.vo.RegisterAuditVo;
 import com.augurit.aplanmis.admin.market.register.vo.RegisterResultVo;
 import com.augurit.aplanmis.admin.market.register.vo.RegisterSearch;
@@ -42,6 +43,12 @@ public class RegisterController {
         return new ModelAndView("admin/supermarket/register/register_detail");
     }
 
+    @RequestMapping("/ownerDetail.html")
+    @ApiOperation(value = "详情页面")
+    public ModelAndView ownerRegisterDetail() {
+        return new ModelAndView("admin/supermarket/register/owner_register_detail");
+    }
+
     @PostMapping("/listRegister")
     @ApiOperation(value = "查询入驻机构列表")
     public ResultForm listRegister(RegisterSearch registerSearch, Integer pageSize, Integer pageNum) throws Exception {
@@ -56,15 +63,30 @@ public class RegisterController {
         return new ContentResultForm<>(true, PageHelper.toEasyuiPageInfo(new PageInfo(list)), "success");
     }
     @RequestMapping("/getRegisterDetail")
-    @ApiOperation(value = "获取入驻机构详情信息")
-    public ResultForm getRegisterDetail(String unitInfoId) throws Exception {
+    @ApiOperation(value = "获取入驻的中介机构详情信息")
+    public ResultForm getAgentRegisterDetail(String unitInfoId) throws Exception {
         RegisterResultVo registerResultVo = registerService.getRegisterUnitDetail(unitInfoId);
         return new ContentResultForm<RegisterResultVo>(true, registerResultVo, "success");
     }
 
     @RequestMapping("/examineUnitService")
-    @ApiOperation(value = "审批入驻机构")
-    public ResultForm examineUnitService(RegisterAuditVo registerAuditVo) throws Exception {
+    @ApiOperation(value = "审批入驻的中介机构")
+    public ResultForm examineAgentUnitService(RegisterAuditVo registerAuditVo) throws Exception {
+        registerService.examineService(registerAuditVo);
+        return new ResultForm(true);
+
+    }
+
+    @RequestMapping("/getOwnerRegisterDetail")
+    @ApiOperation(value = "获取入驻的业主机构详情信息")
+    public ResultForm getOwnerRegisterDetail(String unitInfoId) throws Exception {
+        OwnerRegisterResultVo registerResultVo = registerService.getOwnerRegisterDetail(unitInfoId);
+        return new ContentResultForm<OwnerRegisterResultVo>(true, registerResultVo, "success");
+    }
+
+    @RequestMapping("/examineOwnerUnitService")
+    @ApiOperation(value = "审批入驻的业主机构")
+    public ResultForm examineOwnerUnitService(RegisterAuditVo registerAuditVo) throws Exception {
         registerService.examineService(registerAuditVo);
         return new ResultForm(true);
 

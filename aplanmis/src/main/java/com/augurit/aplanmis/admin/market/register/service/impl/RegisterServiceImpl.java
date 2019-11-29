@@ -10,10 +10,7 @@ import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.admin.market.register.service.RegisterService;
-import com.augurit.aplanmis.admin.market.register.vo.RegisterAuditVo;
-import com.augurit.aplanmis.admin.market.register.vo.RegisterResultVo;
-import com.augurit.aplanmis.admin.market.register.vo.RegisterSearch;
-import com.augurit.aplanmis.admin.market.register.vo.RegisterServiceAndQualVo;
+import com.augurit.aplanmis.admin.market.register.vo.*;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.dic.BscDicCodeItemService;
@@ -260,6 +257,46 @@ public class RegisterServiceImpl implements RegisterService {
                 aeaBusCertinstMapper.updateAeaBusCertinstByAudit(aeaBusCertinst);
             }
 
+        }
+    }
+
+    @Override
+    public OwnerRegisterResultVo getOwnerRegisterDetail(String unitInfoId) throws Exception {
+        OwnerRegisterResultVo ownerRegisterResultVo = new OwnerRegisterResultVo();
+        AeaUnitInfo aeaUnitInfo = aeaUnitInfoMapper.getAeaUnitInfoById(unitInfoId);
+        if (aeaUnitInfo != null) {
+            BscDicCodeItem idTypeItem = bscDicCodeItemService.getItemByTypeCodeAndItemCodeAndOrgId("IDTYPE", aeaUnitInfo.getIdtype(), SecurityContext.getCurrentOrgId());
+            aeaUnitInfo.setIdtype(idTypeItem.getItemName());
+            aeaUnitInfo.setUnitNature("1".equals(aeaUnitInfo.getUnitNature()) ? "企业" : "2".equals(aeaUnitInfo.getUnitNature()) ? "事业单位" : "3".equals(aeaUnitInfo.getUnitNature()) ? "社会组织" : "");
+
+            //联系人列表：包括授权人列表，执业人员列表
+            List<AeaLinkmanInfo> contactManList = aeaLinkmanInfoMapper.getAeaLinkmanInfoByUnitInfoId(unitInfoId, 0);
+
+            List<BscAttFileAndDir> unitFileList = bscAttDetailMapper.searchFileAndDirsSimple(null, SecurityContext.getCurrentOrgId(), "AEA_UNIT_INFO", "UNIT_INFO_ID", new String[]{aeaUnitInfo.getUnitInfoId()});
+
+            //授权人列表
+            List<AeaLinkmanInfo> authorManList = aeaLinkmanInfoMapper.listBindLinkmanByUnitId(aeaUnitInfo.getUnitInfoId(), null, "1", null);
+            if (CollectionUtils.isNotEmpty(authorManList)) {
+                AeaLinkmanInfo authorMan = authorManList.get(0);
+                //授权人附件
+                List<BscAttFileAndDir> authorManFiles = bscAttDetailMapper.searchFileAndDirsSimple(null, SecurityContext.getCurrentOrgId(), "AEA_LINKMAN_INFO", "LINKMAN_INFO_ID", new String[]{authorMan.getLinkmanInfoId()});
+                ownerRegisterResultVo.setAuthorManInfo(authorMan);
+                ownerRegisterResultVo.setAuthorManFileList(authorManFiles);
+            }
+            ownerRegisterResultVo.setContactManList(contactManList);
+            ownerRegisterResultVo.setUnitFileList(unitFileList);
+        }
+        ownerRegisterResultVo.setUnitInfo(aeaUnitInfo);
+        return ownerRegisterResultVo;
+    }
+
+    @Override
+    public void examineOwnerUnitService(RegisterAuditVo registerAuditVo) throws Exception {
+        if (registerAuditVo != null && StringUtils.isNotBlank(registerAuditVo.getUnitInfoId())) {
+            AeaUnitInfo aeaUnitInfo = aeaUnitInfoMapper.getAeaUnitInfoById(registerAuditVo.getUnitInfoId());
+            aeaUnitInfo.setAuditFlag(registerAuditVo.getAuditFlag());
+            aeaUnitInfo.setUnitInfoId(registerAuditVo.getUnitInfoId());
+            aeaUnitInfoMapper.updateAeaUnitInfo(aeaUnitInfo);
         }
     }
 }
