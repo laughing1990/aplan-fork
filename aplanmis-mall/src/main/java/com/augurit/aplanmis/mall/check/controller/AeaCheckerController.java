@@ -9,8 +9,9 @@ import com.augurit.aplanmis.mall.check.service.RestAeaCheckerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -23,9 +24,9 @@ public class AeaCheckerController {
     @Autowired
     private RestAeaCheckerService restAeaCheckerService;
 
-    @PostMapping("/itemFrontCheck")
-    @ApiOperation(value = "单项前置条件检测", httpMethod = "POST")
-    public ContentResultForm<CheckItemResultInfo> itemFrontCheck(List<String> itemVerIds, String projInfoId) {
+    @GetMapping("/itemFrontCheck")
+    @ApiOperation(value = "单项前置条件检测", httpMethod = "GET")
+    public ContentResultForm<CheckItemResultInfo> itemFrontCheck(@RequestParam List<String> itemVerIds, @RequestParam String projInfoId) {
         try {
 
             if (CollectionUtils.isEmpty(itemVerIds)) return new ContentResultForm<>(false, null, "缺少参数：itemVerId");
@@ -37,8 +38,8 @@ public class AeaCheckerController {
         }
     }
 
-    @PostMapping("/stageFrontCheck")
-    @ApiOperation(value = "阶段前置条件检测", httpMethod = "POST")
+    @GetMapping("/stageFrontCheck")
+    @ApiOperation(value = "阶段前置条件检测", httpMethod = "GET")
     public ContentResultForm<CheckStageResultInfo> stageFrontCheck(String stageId, String projInfoId) {
         try {
 
