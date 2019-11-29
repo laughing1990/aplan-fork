@@ -3043,7 +3043,7 @@ var vm = new Vue({
               if (valid || _that.buttonStyle==5||_that.buttonStyle=='4') {
                 if (_that.smsInfoId||_that.buttonStyle=='4') {
                   // if(_that.oneFormInfo.length>0&&!_that.oneFormInputFlag){
-                  if(_that.oneFormInfo.length>0){
+                  if(_that.oneFormInfo.length>0&&_that.buttonStyle!='4'){
                     confirmMsg('确认信息', '是否已完成一张表单填写？', function(){
                       _that.getMatinstIds();
                       if(!_that.attIsRequireFlag && _that.buttonStyle!=5&&_that.buttonStyle!='4'){
