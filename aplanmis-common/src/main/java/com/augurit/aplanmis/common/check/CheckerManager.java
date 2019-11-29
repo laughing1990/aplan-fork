@@ -94,7 +94,7 @@ public class CheckerManager {
                             checker.check(aeaItemBasic, checkerContext);
                         } catch (CheckException e) {
                             // 当前正在被检查的事项
-                            if (itemResult.getCheckedItem() != null) {
+                            if (itemResult.getCheckedItem() == null) {
                                 itemResult.setCheckedItem(aeaItemBasic);
                             }
                             if (e instanceof ItemItemCheckException) {
