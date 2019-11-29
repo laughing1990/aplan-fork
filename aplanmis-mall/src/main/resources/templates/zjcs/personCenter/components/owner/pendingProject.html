@@ -4,24 +4,39 @@
 		<h2 class="box-tit">待处理项目</h2>
 		<div class="project-allproject-wrap pandel mt20" v-if="isSignupProjectInfo==0">
 			<el-row>
-				项目名称：
-				<el-input class="mr20" placeholder="请输入要查询的项目名称" style="width:800px" v-model="projName">
-				</el-input>
+				<el-col :span="12">
+					项目名称：
+					<el-input class="mr20" placeholder="请输入要查询的项目名称" style="width:300px" v-model="projName">
+					</el-input>
+				</el-col>
+				<el-col :span="12">
+					服务类型：
+					<el-select :popper-append-to-body="false" placeholder="请选择" style="width:300px" v-model="serviceId">
+						<el-option :key="item.serviceName" :label="item.serviceName" :value="item.serviceId"
+							v-for="item in serviceTypeOptions">
+						</el-option>
+					</el-select>
+				</el-col>
 			</el-row>
 			<el-row class="mt20">
-				服务类型：
-				<el-select :popper-append-to-body="false" placeholder="请选择" style="width:300px" v-model="serviceId">
-					<el-option :key="item.serviceName" :label="item.serviceName" :value="item.serviceId"
-						v-for="item in serviceTypeOptions">
-					</el-option>
-				</el-select>
-				<span class="ml20">选取方式：</span>
-				<el-select :popper-append-to-body="false" placeholder="请选择" v-model="biddingType">
-					<el-option :key="item.value" :label="item.label" :value="item.value"
-						v-for="item in selectionMethodOptions">
-					</el-option>
-				</el-select>
-				<el-button @click="listPendingProjPurchase" class="ml20" size="medium" type="primary">查询</el-button>
+				<el-col :span="12">
+					选取方式：
+					<el-select :popper-append-to-body="false" placeholder="请选择" style="width:300px"
+						v-model="biddingType">
+						<el-option :key="item.value" :label="item.label" :value="item.value"
+							v-for="item in selectionMethodOptions">
+						</el-option>
+					</el-select>
+				</el-col>
+				<el-col :span="12">
+					状态：
+					<el-select :popper-append-to-body="false" placeholder="请选择" style="width:235px" v-model="auditFlag">
+						<el-option :key="item.value" :label="item.label" :value="item.value"
+							v-for="item in statusOptions">
+						</el-option>
+					</el-select>
+					<el-button @click="listPendingProjPurchase" class="ml20" size="medium" type="primary">查询</el-button>
+				</el-col>
 			</el-row>
 			<el-table :data="pendingProjectList" :header-cell-style="{background:'#f7f8fa'}" border
 				class="scrollable mt20" style="width: 100%;">
@@ -30,7 +45,8 @@
 						<!-- <a @click="showProjectDetail2(scope.row)" class="a-color4879E4"
 							href="javascript:;">{{scope.row.projName}}</a> -->
 						<a class="a-color4879E4"
-							:href="ctx + '/supermarket/main/showPorjDetail.html?id=' + scope.row.projPurchaseId" target="_blank">{{scope.row.projName}}</a>
+							:href="ctx + '/supermarket/main/showPorjDetail.html?id=' + scope.row.projPurchaseId"
+							target="_blank">{{scope.row.projName}}</a>
 					</template>
 				</el-table-column>
 				<el-table-column label="服务类型" prop="serviceName"></el-table-column>
@@ -269,12 +285,10 @@
 				form: {},
 				//服务评价
 				form2: {},
-				// 项目名称
-				projName: '',
-				//服务类型
-				serviceId: '',
-				//选取方式
-				biddingType: '',
+				projName: '',  // 项目名称				
+				serviceId: '',  //服务类型
+				biddingType: '',  //选取方式
+				auditFlag: '',  // 项目状态
 				//待处理列表
 				pendingProjectList: [{}],
 				// 待处理项目列表
@@ -300,6 +314,36 @@
 					label: '网上竞价',
 					value: 3
 				}],
+				statusOptions: [
+					{
+						label: '报名中',
+						value: 6
+					},
+					{
+						label: '选取中',
+						value: 7
+					},
+					{
+						label: '选取开始',
+						value: 8
+					},
+					{
+						label: '已选取',
+						value: 9
+					},
+					{
+						label: '竞价中',
+						value: 11
+					},
+					{
+						label: '待上传合同',
+						value: 16
+					},
+					{
+						label: '待确认合同',
+						value: 17
+					},
+				],
 
 				// 当前账号信息
 				unitInfo: {},
@@ -368,7 +412,8 @@
 						pageNum: this.pendingProjectCheckData.pageNum,
 						projName: this.projName,
 						serviceId: this.serviceId,
-						biddingType: this.biddingType
+						biddingType: this.biddingType,
+						auditFlag: this.auditFlag
 					}
 				}, function (data) {
 					_this.pendingProjectList = data.content.rows;

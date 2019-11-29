@@ -162,7 +162,7 @@
               <el-table-column label="操作" width="150">
                 <template slot-scope="scope">
                   <!-- <a href="#javascript:void(0);">材料库选择</a>| -->
-                  <a href="#javascript:void(0);" @click="showUploadWindowFlag=true;upload(scope.row,'jiben')">上传附件</a>|
+                  <a href="#javascript:void(0);" @click="showUploadWindowFlag=true;upload(scope.row,'jiben')">上传附件</a>
                   <!-- <a href="#javascript:void(0);">选择证照</a> -->
                 </template>
               </el-table-column>
@@ -219,9 +219,9 @@
               <i class="header-icon icon ag ag-project-info"></i>采购受委托人信息
             </template>
             <el-form label-width="176px" ref="formwtr" :rules="ruleswtr" :model="formDatawtr">
-              <el-form-item label="所属科室" class="proj-code-info" prop="projName">
+              <!--  <el-form-item label="所属科室" class="proj-code-info" prop="projName">
                 <el-input name="projName" v-model="formDatawtr.projName" placeholder="请输入所属科室">
-              </el-form-item>
+              </el-form-item> -->
               <div class="clearfix">
                 <el-form-item class="input-inline" label="采购委托人姓名">
                   <el-input name="linkmanName" v-model="formDatawtr.linkmanName" placeholder="请输入采购人姓名">
@@ -289,7 +289,7 @@
               <el-table-column label="操作" width="150">
                 <template slot-scope="scope">
                   <!-- <a href="#javascript:void(0);">材料库选择</a>| -->
-                  <a href="#javascript:void(0);" @click="showUploadWindowFlag=true;upload(scope.row,'weituoren')">上传附件</a>|
+                  <a href="#javascript:void(0);" @click="showUploadWindowFlag=true;upload(scope.row,'weituoren')">上传附件</a>
                   <!-- <a href="#javascript:void(0);">选择证照</a> -->
                 </template>
               </el-table-column>
