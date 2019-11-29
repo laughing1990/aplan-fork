@@ -583,6 +583,7 @@ var vm = new Vue({
       }, // 证照库条件查询
       allApplySubjectInfo: [], // 证照库条件查询
       selApplySubject: {}, // 选中的建设单位 申报主体
+      oneFormInputFlag: false, // 一张表单是否填写
     }
   },
   mounted: function () {
@@ -2393,7 +2394,7 @@ var vm = new Vue({
       // 阶段前置检测
       request('', {
         url: ctx + 'rest/check/stageFrontCheck',
-        type: 'post',
+        type: 'get',
         data: param,
       }, function (result) {
         if (result.success) {
@@ -3480,6 +3481,10 @@ var vm = new Vue({
         alertMsg('', '事项无匹配的行政区划及实施主体', '关闭', 'error', true);
         return true;
       }
+      if(_that.formUrlList&&_that.formUrlList.length>0&&!_that.oneFormInputFlag&&_that.submitCommentsType=='0'){
+        alertMsg('', '请填写一张表单', '关闭', 'error', true);
+        return false;
+      }
       var selItemVer = (_that.parallelItems.length>0)?_that.$refs.parallelItemsTable.selection:[]; // 所有选择的并联审批事项
       var selCoreItems = (_that.coreItems.length>0)?_that.$refs.coreItemsTable.selection:[]; // 所有选择的并行审批事项
       for(var i=0;i<stateSelLen;i++){  // 并联情形id集合
@@ -3500,6 +3505,7 @@ var vm = new Vue({
         }
       }
       var coreStateSel = [];
+      var coreItemSelIds = [];
       _that.propulsionItemStateIds=[];
       for(var j=0;j< selCoreItems.length; j++){
         coreStateSel=selCoreItems[j].questionStates;
@@ -3522,11 +3528,17 @@ var vm = new Vue({
               }
             }
           }
+          if(coreItemSelIds.indexOf(selCoreItems[j].implementItemVerId)<0){
+            coreItemSelIds.push(selCoreItems[j].implementItemVerId);
+          }
           _that.propulsionItemStateIds.push({
             "itemVerId": selCoreItems[j].implementItemVerId,
             "stateIds": stateIds
           });
         }
+      }
+      if(coreItemSelIds.length>0){
+        _that.itemFrontCheck(coreItemSelIds);
       }
       if(_that.parallelItemsQuestionFlag==false){
         var parallelStateSel = [];
@@ -4505,23 +4517,23 @@ var vm = new Vue({
       });
       if(flag){
         if(row.implementItemVerId){
-          request('', { // 判断并行实施事项是否可选
-            url: ctx + 'rest/check/itemFrontCheck',
-            type: 'post',
-            data: {
-              projInfoId: _that.projInfoId,
-              itemVerId: row.implementItemVerId
-            },
-          }, function (result) {
-            if (result.success) {
-              row.preItemCheckPassed = true;
+          // request('', { // 判断并行实施事项是否可选
+          //   url: ctx + 'rest/check/itemFrontCheck',
+          //   type: 'post',
+          //   data: {
+          //     projInfoId: _that.projInfoId,
+          //     itemVerId: row.implementItemVerId
+          //   },
+          // }, function (result) {
+          //   if (result.success) {
+          //     row.preItemCheckPassed = true;
               _that.getStatusMatItemsByStatus(row,'coreItem');
-            }else {
-              row.preItemCheckPassed = false;
-              selArr.splice(spliceIndex,1);
-              _that.checkboxInit(row);
-            }
-          }, function (msg) {})
+          //   }else {
+          //     row.preItemCheckPassed = false;
+          //     selArr.splice(spliceIndex,1);
+          //     _that.checkboxInit(row);
+          //   }
+          // }, function (msg) {})
         }
       }else {
         row.questionStates=[];
@@ -4705,23 +4717,23 @@ var vm = new Vue({
             flag = true;
           }
           if(flag&&row.implementItemVerId){
-            request('', { // 判断并行实施事项是否可选
-              url: ctx + 'rest/check/itemFrontCheck',
-              type: 'post',
-              data: {
-                projInfoId: _that.projInfoId,
-                itemVerId: row.implementItemVerId
-              },
-            }, function (result) {
-              if (result.success) {
-                row.preItemCheckPassed = true;
+            // request('', { // 判断并行实施事项是否可选
+            //   url: ctx + 'rest/check/itemFrontCheck',
+            //   type: 'post',
+            //   data: {
+            //     projInfoId: _that.projInfoId,
+            //     itemVerId: row.implementItemVerId
+            //   },
+            // }, function (result) {
+            //   if (result.success) {
+            //     row.preItemCheckPassed = true;
                 _that.getStatusMatItemsByStatus(row,'coreItem');
-              }else {
-                row.preItemCheckPassed = false;
-                selArr.splice(index,1);
-                _that.checkboxInit(row);
-              }
-            }, function (msg) {})
+            //   }else {
+            //     row.preItemCheckPassed = false;
+            //     selArr.splice(index,1);
+            //     _that.checkboxInit(row);
+            //   }
+            // }, function (msg) {})
           }
         }
       });
@@ -5948,6 +5960,29 @@ var vm = new Vue({
     delLinkmanTypes: function(row,index){
       row.splice(index,1);
     },
+    // 事项前置检测
+    itemFrontCheck: function(itemVerIds){
+      var _that = this;
+      request('', { // 判断并行实施事项是否可选
+        url: ctx + 'rest/check/itemFrontCheck',
+        type: 'get',
+        ContentType: 'application/json',
+        data: {
+          projInfoId: _that.projInfoId,
+          itemVerIds: itemVerIds.join(',')
+        },
+      }, function (result) {
+        console.log(result);
+        if(result.success){
+          _that.itemFrontCheckFlag = true;
+        }else {
+          _that.itemFrontCheckFlag = false;
+          return false;
+        }
+      }, function (msg) {
+
+      })
+    }
   },
   filters: {
     changeReceiveType: function (value) {
@@ -6051,6 +6086,8 @@ function callbackAfterSaveSFForm(result,sFRenderConfig,formModelVal,actStoFormin
       data: JSON.stringify(parma),
     }, function (result1) {
     }, function (msg) {})
+  }else {
+    vm.oneFormInputFlag = true;
   }
 }
 
