@@ -43,7 +43,7 @@ var vm = new Vue({
       }
     };
     return {
-      step: '1',
+      step: '4',
       dialogTitie: '',
       pageLoading: false,
       mloading: false,
@@ -449,6 +449,10 @@ var vm = new Vue({
 
         }
       }
+    },
+    backToIndex: function() {
+      window.parent.location.href = ctx + '/aplanmis-mall/supermarket/main/index.html';
+
     },
     upload: function(row, type) {
       this.curUpData = row;

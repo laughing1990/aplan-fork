@@ -15,9 +15,9 @@ var vm = new Vue({
   methods: {
     toggle: function(type) {
       if (type == 'org') {
-        window.parent.location.href = ctx + 'supermarket/main/login.html';
+        window.parent.location.href = ctx + '/supermarket/agentregister/index.html';
       } else {
-        window.parent.location.href = ctx + 'supermarket/main/login.html';
+        window.parent.location.href = ctx + '/supermarket/ownerRegister/index.html';
       }
     }
   }

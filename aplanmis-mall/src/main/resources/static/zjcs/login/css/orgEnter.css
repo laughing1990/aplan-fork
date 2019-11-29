@@ -554,13 +554,13 @@ body {
   z-index: 2;
   left: 411px;
   text-indent: 20px;
-  width: 165px;
+  width: 178px;
 }
 
 .tag ul li:nth-child(5) {
   z-index: 1;
   width: 90px;
-  left: 579px;
+  left: 592px;
   text-indent: 15px;
 }
 
@@ -660,7 +660,7 @@ body {
 }
 
 .certDialog .el-dialog {
-  height: 800px;
+  /*  height: 800px;*/
 }
 
 .certDialog .el-dialog__body {

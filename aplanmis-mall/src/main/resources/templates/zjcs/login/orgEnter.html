@@ -206,7 +206,7 @@
           </el-collapse-item>
         </el-collapse>
         <div class="right-bottom-btn">
-          <el-button class="save-jinbanUnit-info" @click="saveForm">取消</el-button>
+          <el-button class="save-jinbanUnit-info" @click="backToIndex">取消</el-button>
           <el-button type="primary" class="save-jinbanUnit-info" @click="toStep2">下一步</el-button>
         </div>
       </div>
@@ -368,7 +368,7 @@
           </el-collapse-item>
         </el-collapse>
         <div class="right-bottom-btn">
-          <el-button class="save-jinbanUnit-info" @click="saveForm">取消</el-button>
+          <el-button class="save-jinbanUnit-info" @click="backToIndex">取消</el-button>
           <el-button type="primary" class="save-jinbanUnit-info" @click="step='1'">上一步</el-button>
           <el-button type="primary" class="save-jinbanUnit-info" @click="toStep3">下一步</el-button>
         </div>
@@ -403,7 +403,7 @@
               <el-button class="save-jinbanUnit-info plus specialbtn" @click="addlinkman();"><i class="el-icon-plus"></i>添加业务授权人员信息</el-button>
             </div>
             <div class="right-bottom-btn">
-              <el-button class="save-jinbanUnit-info" @click="saveForm">取消</el-button>
+              <el-button class="save-jinbanUnit-info" @click="backToIndex">取消</el-button>
               <el-button type="primary" class="save-jinbanUnit-info" @click="step='2'">上一步</el-button>
               <el-button type="primary" class="save-jinbanUnit-info" @click="toStep4">下一步</el-button>
             </div>
@@ -531,7 +531,7 @@
               <el-button class="save-jinbanUnit-info plus specialbtn" @click=""><i class="el-icon-plus"></i>添加人员</el-button>
             </div> -->
             <div class="right-bottom-btn">
-              <el-button class="save-jinbanUnit-info" @click="saveForm">取消</el-button>
+              <el-button class="save-jinbanUnit-info" @click="backToIndex">取消</el-button>
               <el-button type="primary" class="save-jinbanUnit-info" @click="step='3'">上一步</el-button>
               <el-button type="primary" class="save-jinbanUnit-info" @click="saveForm">提交</el-button>
             </div>
@@ -581,7 +581,7 @@
           <el-tab-pane label="丁级" name="four">丁级</el-tab-pane>
         </el-tabs>
         <div class="right-bottom-btn tabBtn">
-          <el-button class="save-jinbanUnit-info" @click="">取消</el-button>
+          <el-button class="save-jinbanUnit-info" @click="backToIndex">取消</el-button>
           <el-button type="primary" class="save-jinbanUnit-info" @click="">确定</el-button>
         </div>
       </div>
@@ -659,7 +659,7 @@
       </div>
     </el-dialog>
     <!-- 证书编辑区 -->
-    <el-dialog :title="addCert" :visible.sync="addCertShow" width="900px" class="dg-modal-add-linkmain-info certDialog" @close="" style="height:800px" top="5vh">
+    <el-dialog :title="addCert" :visible.sync="addCertShow" width="900px" class="dg-modal-add-linkmain-info certDialog" @close="" top="6vh">
       <!-- 基本信息 -->
       <el-form :model="certificateDetailObj" class="dialog" ref="certForm" label-width="150px" :rules="certRule">
         <el-form-item label="证书类型：">
