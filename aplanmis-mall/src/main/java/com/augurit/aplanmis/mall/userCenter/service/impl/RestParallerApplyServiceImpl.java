@@ -171,7 +171,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
     }
 
     @Override
-    public Map<String,Object> getThemeByFactorIds(String[] factorIds) {
+    public Map<String,Object> getThemeByFactorIds(String[] factorIds) throws Exception{
         if (factorIds==null||factorIds.length==0) return  null;
         Map<String,Object> resultMap = new HashMap<String,Object>();
         Set<Map<String,Object>> set = new HashSet<Map<String,Object>>();
@@ -181,6 +181,8 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
             List<AeaParFactorTheme> aeaParFactorThemes = aeaParFactorThemeMapper.listAeaParFactorTheme(aeaParFactorTheme);
             if(aeaParFactorThemes.size()>0){
                 String themeId=aeaParFactorThemes.get(0).getThemeId();
+                AeaParTheme aeaParTheme = aeaParThemeService.getAeaParThemeByThemeId(themeId);
+                if (aeaParTheme==null) continue;
                 resultMap.put("themeId",themeId);
                 if(!StringUtils.isBlank(themeId)){
                     String themeType="";
