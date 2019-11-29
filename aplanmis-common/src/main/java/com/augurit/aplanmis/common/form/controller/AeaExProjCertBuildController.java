@@ -5,6 +5,7 @@ import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.aplanmis.common.domain.AeaExProjCertBuild;
 import com.augurit.aplanmis.common.form.service.AeaExProjCertBuildService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -27,6 +28,9 @@ public class AeaExProjCertBuildController {
     @PostMapping("/saveAeaExProjCertBuild")
     public ContentResultForm<String> saveAeaExProjCertBuild(AeaExProjCertBuild aeaExProjCertBuild){
         try {
+            if (StringUtils.isBlank(aeaExProjCertBuild.getBuildId())){
+                return new ContentResultForm<>(false,null, "保存失败，项目ID为空或者查询不到该项目ID");
+            }
             aeaExProjCertBuildService.saveForm(aeaExProjCertBuild);
             return new ContentResultForm<>(true,"保存成功", "Save success");
         }catch (Exception e){
