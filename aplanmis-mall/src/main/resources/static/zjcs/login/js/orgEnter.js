@@ -773,6 +773,8 @@ var vm = new Vue({
                       type: 'success'
                     });
                   }
+                  _that.step = '5';
+
                   _that.password = res.content.password;
                   _that.loginName = res.content.loginName;
                 },
