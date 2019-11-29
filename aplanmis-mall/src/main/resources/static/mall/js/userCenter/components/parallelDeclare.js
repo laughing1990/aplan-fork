@@ -2730,24 +2730,24 @@ var module1 = new Vue({
             },'继续申报','放弃申报', 'error', true);
           }
         }, function (msg) {
-          if (_that.useOneForm == 1) {
-            if (selItemVer.length > 0) { // 已选择并联事项
-              _that.getParallelApplyinstId();// 实例化并联申报  获取一张表单
-            } else {
-              _that.declareStep = 7;
-              _that.saveAndGetMats();
-            }
 
-            // this.getOneFormList(fix_stageid);
-          } else {
-            _that.oneFormDataAllow = true;
-            _that.declareStep = 7;
-            _that.saveAndGetMats();
-            // this.getOneFormList(fix_stageid);
-          }
         })
       }else {
+        if (_that.useOneForm == 1) {
+          if (selItemVer.length > 0) { // 已选择并联事项
+            _that.getParallelApplyinstId();// 实例化并联申报  获取一张表单
+          } else {
+            _that.declareStep = 7;
+            _that.saveAndGetMats();
+          }
 
+          // this.getOneFormList(fix_stageid);
+        } else {
+          _that.oneFormDataAllow = true;
+          _that.declareStep = 7;
+          _that.saveAndGetMats();
+          // this.getOneFormList(fix_stageid);
+        }
       }
 
     },
