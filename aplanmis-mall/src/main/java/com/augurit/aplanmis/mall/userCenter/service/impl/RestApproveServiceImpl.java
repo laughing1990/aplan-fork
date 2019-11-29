@@ -366,7 +366,7 @@ public class RestApproveServiceImpl implements RestApproveService {
         long supplyNum = 0;//材料补正
         long applyNum = 0;//已申报
         long withdrawalNum = 0;//已撤件
-        long myMatNum=0;//我的材料库
+        long completedNum=0;//已办结
         long withdrawNum=0;//撤回申报列表数目
         if (loginInfo==null) return retVo;
         if("1".equals(loginInfo.getIsPersonAccount())){//个人
@@ -374,24 +374,24 @@ public class RestApproveServiceImpl implements RestApproveService {
             approvalNum = this.searchIteminstApproveInfoListByUnitIdAndUserId("","",loginInfo.getUserId(),1,1).getTotal();
             draftNum=this.searchApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId(),"2",null,1,1).getTotal();
             supplyNum=this.searchSupplyInfoList("",loginInfo.getUserId(),1,1,"").getTotal();
-            applyNum=aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId());
-            //myMatNum=restMyMatService.getMyMatListByUser("",loginInfo.getUserId(),null,1,1).getTotal();
+            applyNum=aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId(),"all");
+            completedNum=aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId(),"completed");
             withdrawNum = this.searchWithdrawApplyListByUnitOrLinkman("",loginInfo.getUserId(),null,1,1).getTotal();
         }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
             matCompletionNum =this.searchMatComplet(loginInfo.getUnitId(),loginInfo.getUserId(),"",1,1).getTotal();
             approvalNum = this.searchIteminstApproveInfoListByUnitIdAndUserId("",loginInfo.getUnitId(),loginInfo.getUserId(),1,1).getTotal();
             draftNum=this.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),"2",null,1,1).getTotal();
             supplyNum=this.searchSupplyInfoList(loginInfo.getUnitId(),loginInfo.getUserId(),1,1,"").getTotal();
-            applyNum=aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId());
-            //myMatNum=restMyMatService.getMyMatListByUser(loginInfo.getUnitId(),loginInfo.getUserId(),null,1,1).getTotal();
+            applyNum=aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),"all");
+            completedNum=aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),"completed");
             withdrawNum = this.searchWithdrawApplyListByUnitOrLinkman("",loginInfo.getUserId(),null,1,1).getTotal();
         }else{//企业
             matCompletionNum =this.searchMatComplet(loginInfo.getUnitId(),"","",1,1).getTotal();
             approvalNum = this.searchIteminstApproveInfoListByUnitIdAndUserId("",loginInfo.getUnitId(),"",1,1).getTotal();
             draftNum=this.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"","2",null,1,1).getTotal();
             supplyNum=this.searchSupplyInfoList(loginInfo.getUnitId(),"",1,1,"").getTotal();
-            applyNum=aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"");
-            //myMatNum=restMyMatService.getMyMatListByUser(loginInfo.getUnitId(),"",null,1,1).getTotal();
+            applyNum=aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"","all");
+            completedNum=aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"","completed");
             withdrawNum = this.searchWithdrawApplyListByUnitOrLinkman(loginInfo.getUnitId(),"",null,1,1).getTotal();
         }
         retVo.setApplyNum(applyNum);
@@ -400,7 +400,7 @@ public class RestApproveServiceImpl implements RestApproveService {
         retVo.setMatCompletionNum(matCompletionNum);
         retVo.setSupplyNum(supplyNum);
         retVo.setWithdrawalNum(withdrawalNum);
-        retVo.setMyMatNum(myMatNum);
+        retVo.setCompletedNum(completedNum);
         retVo.setWithdrawNum(withdrawNum);
         return retVo;
     }

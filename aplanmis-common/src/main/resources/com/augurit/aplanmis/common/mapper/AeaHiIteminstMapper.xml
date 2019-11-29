@@ -697,7 +697,13 @@
             </if>
             AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND ali.IS_DELETED !=1 AND apl.TYPE='apply' AND
             aha.IS_SERIES_APPROVE='1'
-             and  aha.APPLYINST_STATE in ('0','1','2','3','4','5','6') AND aha.APPLYINST_STATE IS NOT NULL
+            <if test="isAll =='all'">
+                and  aha.APPLYINST_STATE in ('0','1','2','3','4','5','6')
+            </if>
+            <if test="isAll=='completed'">
+                and  aha.APPLYINST_STATE ='6'
+            </if>
+             AND aha.APPLYINST_STATE IS NOT NULL
         </where>
         UNION
         SELECT
@@ -727,7 +733,13 @@
             </if>
             AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND ali.IS_DELETED !=1 AND
             apl.TYPE='apply' AND aha.IS_SERIES_APPROVE='0'
-            and  aha.APPLYINST_STATE in ('0','1','2','3','4','5','6') AND aha.APPLYINST_STATE IS NOT NULL
+            <if test="isAll =='all'">
+                and  aha.APPLYINST_STATE in ('0','1','2','3','4','5','6')
+            </if>
+            <if test="isAll=='completed'">
+                and  aha.APPLYINST_STATE ='6'
+            </if>
+            AND aha.APPLYINST_STATE IS NOT NULL
         </where>
         UNION
         SELECT DISTINCT
@@ -757,7 +769,13 @@
                 aui.UNIT_INFO_ID is null
             </if>
             AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND aui.IS_DELETED !=1 AND aha.IS_SERIES_APPROVE='1'
-            and  aha.APPLYINST_STATE in ('0','1','2','3','4','5','6') AND aha.APPLYINST_STATE IS NOT NULL  AND aup.IS_DELETED !=1
+            <if test="isAll =='all'">
+                and  aha.APPLYINST_STATE in ('0','1','2','3','4','5','6')
+            </if>
+            <if test="isAll=='completed'">
+                and  aha.APPLYINST_STATE ='6'
+            </if>
+            AND aha.APPLYINST_STATE IS NOT NULL  AND aup.IS_DELETED !=1
         </where>
         UNION
         SELECT DISTINCT
@@ -788,7 +806,13 @@
             </if>
             AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND aui.IS_DELETED !=1 AND
             aha.IS_SERIES_APPROVE='0'
-            and  aha.APPLYINST_STATE in ('0','1','2','3','4','5','6') AND aha.APPLYINST_STATE IS NOT NULL  AND aup.IS_DELETED !=1
+            <if test="isAll =='all'">
+                and  aha.APPLYINST_STATE in ('0','1','2','3','4','5','6')
+            </if>
+            <if test="isAll=='completed'">
+                and  aha.APPLYINST_STATE ='6'
+            </if>
+            AND aha.APPLYINST_STATE IS NOT NULL  AND aup.IS_DELETED !=1
         </where>
         ) aea_123
     </select>

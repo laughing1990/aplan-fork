@@ -9,7 +9,7 @@ var myHomeIndex = (function () {
             draftNum: 0,
             applyNum: 0,
             supplyNum: 0,
-            withdrawalNum: 0,
+            completedNum: 0,
 
             // 用户的信息
             aeaLinkmanInfo: {},
@@ -19,7 +19,7 @@ var myHomeIndex = (function () {
             isBlack: null,
 
             declare: {
-                pageSize: 10,
+                pageSize: 5,
                 currentPage: 1,
                 total: 0
             }
@@ -66,7 +66,7 @@ var myHomeIndex = (function () {
                         vm.draftNum = res.content.draftNum;
                         vm.applyNum = res.content.applyNum;
                         vm.supplyNum = res.content.supplyNum;
-                        vm.withdrawalNum = res.content.withdrawalNum;
+                        vm.completedNum = res.content.completedNum;
                     }
                 }, function () {
 

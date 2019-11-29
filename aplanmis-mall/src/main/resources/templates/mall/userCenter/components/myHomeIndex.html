@@ -411,19 +411,19 @@
                     </div>
                 </li>
                 <li class="static-list-item">
+                    <img src="../../../../static/mall/images/userCenter/type-icon-3.png"
+                         th:src="@{/mall/images/userCenter/type-icon-3.png}" alt="">
+                    <div class="type">
+                        <p class="type-num">{{completedNum}}</p>
+                        <p class="type-txt">已办结</p>
+                    </div>
+                </li>
+                <li class="static-list-item">
                     <img src="../../../../static/mall/images/userCenter/type-icon-2.png"
                         th:src="@{/mall/images/userCenter/type-icon-2.png}" alt="">
                     <div class="type">
                         <p class="type-num">{{matCompletionNum}}</p>
                         <p class="type-txt">材料补全</p>
-                    </div>
-                </li>
-                <li class="static-list-item">
-                    <img src="../../../../static/mall/images/userCenter/type-icon-3.png"
-                        th:src="@{/mall/images/userCenter/type-icon-3.png}" alt="">
-                    <div class="type">
-                        <p class="type-num">{{approvalNum}}</p>
-                        <p class="type-txt">已办件</p>
                     </div>
                 </li>
                 <li class="static-list-item">
@@ -513,7 +513,7 @@
 
                 <el-pagination style="marginTop: 15px;" background align="right" :page-size="declare.pageSize"
                     :current-page="declare.currentPage" @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 50]"
+                    @current-change="handleCurrentChange" :page-sizes="[5,10, 20]"
                     layout="total,sizes, prev, pager, next, jumper" :total="declare.total" :hide-on-single-page="true">
                 </el-pagination>
             </div>
