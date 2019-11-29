@@ -22,7 +22,7 @@
 <body>
   <div id="app" v-cloak v-loading.fullscreen.lock="mloading">
     <div class="header">
-      <iframe src="../common/header.html" th:src="@{header.html}" frameborder="0" width="100%" height="100%"></iframe>
+      <iframe src="../common/header.html" th:src="@{/supermarket/main/header.html}" frameborder="0" width="100%" height="100%"></iframe>
     </div>
     <!-- 面包屑 -->
     <div class="crumbs-wrap">
@@ -251,8 +251,8 @@
                 </el-select> -->
               </el-form-item>
               <el-form-item label="备案说明" class="proj-code-info" prop="projName">
-                <el-input name="projName" type="textarea" :rows="5" v-model="formDataZgxx.projName" placeholder="请说明备案的部门、备案内容、查询网址等">
-                </el-input>
+                <!-- <el-input name="projName" type="textarea" :rows="5" v-model="formDataZgxx.projName" placeholder="请说明备案的部门、备案内容、查询网址等">
+                </el-input> -->
               </el-form-item>
               <el-form-item label="证书类型：" class="proj-code-info">
                 <el-select placeholder="请选择" v-model="formDataZgxx.certId" style="width: 100%;" :popper-append-to-body="false">
@@ -267,8 +267,8 @@
                 <el-form-item class="input-inline" label="出征部门/备案部门">
                   <!-- <el-input name="projName" v-model="formDataZgxx.projName" placeholder="请输入出征部门/备案部门"> -->
                 </el-form-item>
-                <el-form-item class="input-inline" prop="regionalism" label="自个有效期起">
-                  <el-date-picker v-model="formDataZgxx.termStart" type="date" placeholder="请选择自个有效期起">
+                <el-form-item class="input-inline" prop="regionalism" label="资格有效期起">
+                  <el-date-picker v-model="formDataZgxx.termStart" type="date" placeholder="请选择资格有效期起">
                 </el-form-item>
                 <el-form-item class="input-inline" prop="projectAddress" label="资格有效期止">
                   <el-date-picker v-model="formDataZgxx.termEnd" type="date" placeholder="请选择资格有效期止">
@@ -727,7 +727,7 @@
   </el-dialog>
   <!--新增编辑联系人 end-->
   <div class="footer">
-    <iframe src="../common/footer.html" th:src="@{footer.html}" frameborder="0" width="100%" height="100%"></iframe>
+    <iframe src="../common/footer.html" th:src="@{/supermarket/main/footer.html}" frameborder="0" width="100%" height="100%"></iframe>
   </div>
   </div>
   <script src="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>

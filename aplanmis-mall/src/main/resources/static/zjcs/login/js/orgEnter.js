@@ -245,13 +245,34 @@ var vm = new Vue({
 
       },
       rules2: {
-        provinceProjCode: [
-          { required: true, message: '请输入省级项目编号' },
+        linkmanName: [
+          { required: true, message: '请输入联系人' },
+        ],
+        linkmanMail: [
+          { required: true, message: '请输入电子邮箱' },
+        ],
+        linkmanMobilePhone: [
+          { required: true, message: '移动电话' },
         ]
       },
       rulesZgxx: {
-        provinceProjCode: [
-          { required: true, message: '请输入省级项目编号' },
+        serviceId: [
+          { required: true, message: '请选择服务类型' },
+        ],
+        certId: [
+          { required: true, message: '请选择证书类型' },
+        ],
+        certinstCode: [
+          { required: true, message: '请输入资格证书编号' },
+        ],
+        termStart: [
+          { required: true, message: '请选择资格有效期起' },
+        ],
+        termEnd: [
+          { required: true, message: '请选择资格有效期止' },
+        ],
+        managementScope: [
+          { required: true, message: '请输入业务范围' },
         ]
       },
       rulesPersonInfo: {
