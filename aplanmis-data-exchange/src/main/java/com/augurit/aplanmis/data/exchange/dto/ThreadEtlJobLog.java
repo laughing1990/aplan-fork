@@ -24,6 +24,9 @@ public class ThreadEtlJobLog {
         }
         return etlJobLog;
     }
+    public static void clear() {
+        local.set(null);
+    }
 
     public static Long getJobLogId() {
         return ThreadEtlJobLog.get().getJobLogId();
