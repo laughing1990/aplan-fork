@@ -42,7 +42,7 @@ public class AeaImUnitService implements Serializable {
     //非表字段
     private String applicant;//从业机构名称
 
-
+    private String certinstId;
 
 //    @FiledNameIs(filedValue = "事项版本ID")
 //    private String itemVerId; //事项版本ID

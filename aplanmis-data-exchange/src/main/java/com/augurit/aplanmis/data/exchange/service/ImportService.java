@@ -24,6 +24,7 @@ import com.augurit.aplanmis.data.exchange.service.duogui.PlanControlLineService;
 import com.augurit.aplanmis.data.exchange.service.duogui.PreIdeaService;
 import com.augurit.aplanmis.data.exchange.service.spgl.*;
 import com.augurit.aplanmis.data.exchange.util.RedisUtil;
+import com.augurit.aplanmis.data.exchange.vo.EtlReuploadVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -154,7 +155,10 @@ public class ImportService {
         updateJob.setEndTime(nextTime);
         updateJob.setRunStatus("0");
         etlJobService.updateEtlJob(updateJob);
-        return ThreadEtlJobLog.getWrittenNum();
+        Long writtenNum = ThreadEtlJobLog.getWrittenNum();
+        //线程池线程中线程会重用，需要手动清理线程变量
+        ThreadEtlJobLog.clear();
+        return writtenNum;
     }
 
     public void importAllTableAndLog(Date startTime, Date endTime, String operateSource) {
@@ -164,7 +168,7 @@ public class ImportService {
             protected void executeImport(Date startTime, Date endTime) {
                 importAllTable(startTime, endTime);
             }
-        }.wapper(startTime, endTime);
+        }.wrapper(startTime, endTime);
     }
 
     public void importThemeMainAndLog(Date startTime, Date endTime, String operateSource) {
@@ -182,10 +186,9 @@ public class ImportService {
                 importItemOpinion(startTime, endTime);
                 importSubordinateItemOpinion(startTime, endTime);
             }
-        }.wapper(startTime, endTime);
+        }.wrapper(startTime, endTime);
     }
 
-    //1.地方项目审批流程信息表
     public void importThemeVerAndLog(Date startTime, Date endTime, String operateSource) {
         new ImportJobLogWrapper(operateSource) {
 
@@ -193,10 +196,9 @@ public class ImportService {
             protected void executeImport(Date startTime, Date endTime) {
                 importThemeVer(startTime, endTime);
             }
-        }.wapper(startTime, endTime);
+        }.wrapper(startTime, endTime);
     }
 
-    //2.地方项目审批流程阶段信息表
     public void importStageAndLog(Date startTime, Date endTime, String operateSource) {
         new ImportJobLogWrapper(operateSource) {
 
@@ -204,10 +206,9 @@ public class ImportService {
             protected void executeImport(Date startTime, Date endTime) {
                 importStage(startTime, endTime);
             }
-        }.wapper(startTime, endTime);
+        }.wrapper(startTime, endTime);
     }
 
-    //3.地方项目审批流程阶段事项信息表
     public void importItemAndLog(Date startTime, Date endTime, String operateSource) {
         new ImportJobLogWrapper(operateSource) {
 
@@ -218,10 +219,9 @@ public class ImportService {
                 // 辅线事项
                 importSubordinateItem(startTime, endTime);
             }
-        }.wapper(startTime, endTime);
+        }.wrapper(startTime, endTime);
     }
 
-    //4.项目基本信息表
     public void importProjAndLog(Date startTime, Date endTime, String operateSource) {
         new ImportJobLogWrapper(operateSource) {
 
@@ -229,10 +229,9 @@ public class ImportService {
             protected void executeImport(Date startTime, Date endTime) {
                 importProj(startTime, endTime);
             }
-        }.wapper(startTime, endTime);
+        }.wrapper(startTime, endTime);
     }
 
-    //5.项目单位信息表
     public void importUnitAndLog(Date startTime, Date endTime, String operateSource) {
         new ImportJobLogWrapper(operateSource) {
 
@@ -240,10 +239,9 @@ public class ImportService {
             protected void executeImport(Date startTime, Date endTime) {
                 importUnit(startTime, endTime);
             }
-        }.wapper(startTime, endTime);
+        }.wrapper(startTime, endTime);
     }
 
-    //6.项目审批事项办理信息表
     public void importIteminstAndLog(Date startTime, Date endTime, String operateSource) {
         new ImportJobLogWrapper(operateSource) {
 
@@ -254,10 +252,9 @@ public class ImportService {
                 // 辅线事项办理信息
                 importSubordinateIteminst(startTime, endTime);
             }
-        }.wapper(startTime, endTime);
+        }.wrapper(startTime, endTime);
     }
 
-    //7.项目审批事项办理详细信息表
     public void importItemOpinionAndLog(Date startTime, Date endTime, String operateSource) {
         new ImportJobLogWrapper(operateSource) {
 
@@ -268,10 +265,9 @@ public class ImportService {
                 // 辅线事项办理详细信息
                 importSubordinateItemOpinion(startTime, endTime);
             }
-        }.wapper(startTime, endTime);
+        }.wrapper(startTime, endTime);
     }
 
-    //8.项目审批事项批复文件信息表
     public void importOfficDocAndLog(Date startTime, Date endTime, String operateSource) {
         new ImportJobLogWrapper(operateSource) {
 
@@ -279,10 +275,9 @@ public class ImportService {
             protected void executeImport(Date startTime, Date endTime) {
                 importOfficDoc(startTime, endTime);
             }
-        }.wapper(startTime, endTime);
+        }.wrapper(startTime, endTime);
     }
 
-    //9.项目其他附件信息表
     public void importItemMatinstAndLog(Date startTime, Date endTime, String operateSource) {
         new ImportJobLogWrapper(operateSource) {
 
@@ -290,7 +285,58 @@ public class ImportService {
             protected void executeImport(Date startTime, Date endTime) {
                 importItemMatinst(startTime, endTime);
             }
-        }.wapper(startTime, endTime);
+        }.wrapper(startTime, endTime);
+    }
+
+    public void importByTableName(EtlReuploadVo etlReuploadVo, String operateSource) {
+        new ImportJobLogWrapper(operateSource) {
+
+            @Override
+            protected void executeImport(Date startTime, Date endTime) {
+                List<String> tableNames = etlReuploadVo.getTableNames();
+                if (tableNames.contains(TableNameConstant.SPGL_DFXMSPLCXXB)) {
+                    importThemeVer(startTime, endTime);
+                }
+                if (tableNames.contains(TableNameConstant.SPGL_DFXMSPLCJDXXB)) {
+                    importStage(startTime, endTime);
+                }
+                if (tableNames.contains(TableNameConstant.SPGL_DFXMSPLCJDSXXXB)) {
+                    importItem(startTime, endTime);
+                    importSubordinateItem(startTime, endTime);
+                }
+                if (tableNames.contains(TableNameConstant.SPGL_XMJBXXB)) {
+                    importProj(startTime, endTime);
+                }
+                if (tableNames.contains(TableNameConstant.SPGL_XMDWXXB)) {
+                    importUnit(startTime, endTime);
+                }
+                if (tableNames.contains(TableNameConstant.SPGL_XMSPSXBLXXB)) {
+                    importIteminst(startTime, endTime);
+                    importSubordinateIteminst(startTime, endTime);
+                }
+                if (tableNames.contains(TableNameConstant.SPGL_XMSPSXBLXXXXB)) {
+                    importItemOpinion(startTime, endTime);
+                    importSubordinateItemOpinion(startTime, endTime);
+                }
+                if (tableNames.contains(TableNameConstant.SPGL_XMSPSXPFWJXXB)) {
+                    importOfficDoc(startTime, endTime);
+                }
+                if (tableNames.contains(TableNameConstant.SPGL_XMQTFJXXB)) {
+                    importItemMatinst(startTime, endTime);
+                }
+                if (uploadDuoGui) {
+                    if (tableNames.contains(TableNameConstant.SPGL_XMYDHXJZXXB)) {
+                        importLandRedLine(startTime, endTime);
+                    }
+                    if (tableNames.contains(TableNameConstant.SPGL_XMQQYJXXB)) {
+                        importPreIdea(startTime, endTime);
+                    }
+                    if (tableNames.contains(TableNameConstant.SPGL_DFGHKZXXXB)) {
+                        importPlanControlLine(startTime, endTime);
+                    }
+                }
+            }
+        }.wrapper(etlReuploadVo.getStartTime(), etlReuploadVo.getEndTime());
     }
 
     private abstract class ImportJobLogWrapper {
@@ -302,7 +348,7 @@ public class ImportService {
 
         protected abstract void executeImport(Date startTime, Date endTime);
 
-        public void wapper(Date startTime, Date endTime) {
+        public void wrapper(Date startTime, Date endTime) {
             this.initLogNum();
             this.executeImport(startTime, endTime);
             this.endLogNum(startTime, endTime);

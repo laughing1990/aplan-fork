@@ -7,14 +7,23 @@ var vm = new Vue({
             form: {
                 unitInfo: {},
                 contactManList: [],
-                serviceAndQualVo: {
-                    aeaHiCertinstBVo: {},
+                registerServiceAndQualVo: {
+                    aeaHiCertinstBVo: [],
                     aeaImUnitService: {}
                 },
                 authorManList: [],
-                practiceManInfo: {},
+                practiceManInfo: {
+                    certinsts: []
+                },
                 practiceManFileList: []
             },
+            auditForm:{
+                auditFlag: "",
+                memo: '',
+                unitInfoId: ''
+            },
+            filePreviewCount: 0,
+            dialogFormVisible: false
         }
     },
     mounted: function () {
@@ -26,6 +35,8 @@ var vm = new Vue({
             var vm = this;
             var url = 'supermarket/register/getRegisterDetail';
             var unitInfoId = this.getUrlParam('unitInfoId');
+
+            vm.loading = true;
             request('', {
                 url: ctx + url,
                 type: 'get',
@@ -33,9 +44,14 @@ var vm = new Vue({
             }, function (res) {
                 if (res.success) {
                     vm.form = res.content;
+                    vm.auditForm.unitInfoId = vm.form.unitInfo.unitInfoId;
+
+                    vm.loading = false;
                 }
 
-            }, function (msg) { })
+            }, function (msg) {
+                vm.loading = true;
+            })
         },
         // 获取页面的URL参数
         getUrlParam: function (val) {
@@ -102,7 +118,7 @@ var vm = new Vue({
                     _that.mloading = false;
                     var tempwindow = window.open(); // 先打开页面
                     setTimeout(function () {
-                        tempwindow.location = ctx + 'supermarket/purchase/mat/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
+                        tempwindow.location = ctx + 'rest/mats/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
                     }, 1000)
                 }
             }
@@ -125,5 +141,32 @@ var vm = new Vue({
         getIconColor: function (type) {
             return __STATIC.getIconColor(type || "DEFAULT");
         },
+        examineService: function (value) {
+            var _this = this;
+            _this.auditForm.auditFlag = value;
+            _this.dialogFormVisible = true;
+
+        },
+        changeAuditFlag: function () {
+            var _this = this;
+            _this.dialogFormVisible = false;
+            var url = ctx + '/supermarket/register/examineUnitService';
+            request('', {
+                url: url,
+                data: _this.auditForm,
+                type: 'post'
+            }, function (data) {
+                console.log(data)
+                if (data.success) {
+                    _this.toPre()
+                }
+            }, function (msg) {
+            })
+        },
+        //返回上一页
+        toPre: function () {
+            window.location.href = '/aplanmis-front/supermarket/register/index.html'
+
+        }
     }
 });

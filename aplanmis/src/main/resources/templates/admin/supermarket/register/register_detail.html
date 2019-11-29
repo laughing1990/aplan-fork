@@ -24,6 +24,9 @@
 		.custor {
 			cursor: pointer;
 		}
+		.a-color4879E4{
+			color:#4879E4;
+		}
 	</style>
 
 	<link rel="stylesheet" href="../../../../static/admin/supermarket/css/register_detail.css"
@@ -37,9 +40,12 @@
 
 <body class="gray-body">
 	<div id="app" v-cloak v-loading="loading">
+		<div style="text-align: right;">
+			<el-button class="fr" @click="toPre">返回上一页</el-button>
+		</div>
 		<el-form ref="form" :model="form" label-width="130px" disabled="disabled">
 			<el-collapse v-model="activeNames">
-				<el-collapse-item class="clearfix" name="1" id="">
+				<el-collapse-item class="clearfix" name="1" id="">					
 					<template slot="title">
 						<i class="header-icon icon ag ag-project-info"></i>基本信息
 					</template>
@@ -108,7 +114,11 @@
 					</div>
 
 					<el-form-item label="附件">
-						<el-input v-model="form.unitInfo.applicant"></el-input>
+						<el-row>
+							<el-col :span="12" v-for="bscAttDetail in form.unitFileList">
+								<a href="javascript:;" class="a-color4879E4" @click="filePreview(bscAttDetail)" style="cursor:pointer;">{{bscAttDetail.fileName}}</a>
+							</el-col>
+						</el-row>							
 					</el-form-item>
 
 					<el-form-item label="联系人信息">
@@ -133,14 +143,14 @@
 					</template>
 
 					<el-form-item label="服务类型">
-						<el-input v-model="form.serviceAndQualVo.aeaImUnitService.serviceId"></el-input>
+						<el-input v-model="form.registerServiceAndQualVo.aeaImUnitService.serviceName"></el-input>
 					</el-form-item>
 					<el-form-item label="服务承诺">
-						<el-input v-model="form.serviceAndQualVo.aeaImUnitService.serviceContent" type="textarea"
+						<el-input v-model="form.registerServiceAndQualVo.aeaImUnitService.serviceContent" type="textarea"
 							rows="3"></el-input>
 					</el-form-item>
 					<el-form-item label="收费参考">
-						<el-input v-model="form.serviceAndQualVo.aeaImUnitService.feeReference"></el-input>
+						<el-input v-model="form.registerServiceAndQualVo.aeaImUnitService.feeReference"></el-input>
 					</el-form-item>
 					<!-- <el-form-item label="是否有备案">
 						<el-input v-model="form.serviceAndQualVo"></el-input>
@@ -149,34 +159,54 @@
 						<el-input v-model="form.serviceAndQualVo" type="textarea" rows="3"></el-input>
 					</el-form-item> -->
 
-					<div class="clearfix">
+					<!--<div class="clearfix">
 						<el-form-item label="资格证书编号" class="inline-block">
-							<el-input v-model="form.serviceAndQualVo.aeaHiCertinstBVo.certinstCode"></el-input>
+							<el-input v-model="form.registerServiceAndQualVo.aeaHiCertinstBVo.certinstCode"></el-input>
 						</el-form-item>
-						<!-- <el-form-item label="出证部门/备案部门" class="inline-block">
-							<el-input v-model="form.serviceAndQualVo.aeaHiCertinstBVo.certinstCode"></el-input>
-						</el-form-item> -->
 						<el-form-item label="资格有效期起" class="inline-block">
-							<el-input v-model="form.serviceAndQualVo.aeaHiCertinstBVo.termStart"></el-input>
+							<el-input v-model="form.registerServiceAndQualVo.aeaHiCertinstBVo.termStart"></el-input>
 						</el-form-item>
 						<el-form-item label="经资格有效期止" class="inline-block">
-							<el-input v-model="form.serviceAndQualVo.aeaHiCertinstBVo.termEnd"></el-input>
+							<el-input v-model="form.registerServiceAndQualVo.aeaHiCertinstBVo.termEnd"></el-input>
 						</el-form-item>
 					</div>
 
 					<el-form-item label="业务范围">
-						<el-input v-model="form.serviceAndQualVo.aeaHiCertinstBVo.managementScope" type="textarea"
+						<el-input v-model="form.registerServiceAndQualVo.aeaHiCertinstBVo.managementScope" type="textarea"
 							rows="3"></el-input>
 					</el-form-item>
 
-					<el-form-item label="资格专业或登记">
-						<el-input v-model="form.serviceAndQualVo.aeaHiCertinstBVo.majorId"></el-input>
+					<el-form-item label="资格专业、等级">
+						<el-input v-model="form.registerServiceAndQualVo.aeaHiCertinstBVo.qualMajorList"></el-input>
+						<el-input v-model="form.registerServiceAndQualVo.aeaHiCertinstBVo.qualLevelName"></el-input>
 					</el-form-item>
 
 					<el-form-item label="附件">
-						<el-input v-model="form.serviceAndQualVo.aeaHiCertinstBVo.certinstCode"></el-input>
+						<el-input v-model="form.registerServiceAndQualVo.aeaHiCertinstBVo.certinstCode"></el-input>
 					</el-form-item>
-				</el-collapse-item>
+				</el-collapse-item>-->
+
+				<el-form-item label="证书信息">
+					<el-table :data="form.registerServiceAndQualVo.aeaHiCertinstBVo" border style="width: 100%">
+						<el-table-column prop="" type="index" label="序号" width="50">
+						</el-table-column>
+						<el-table-column prop="certinstCode" label="证书编码">
+						</el-table-column>
+						<el-table-column prop="certinstName" label="证书名称">
+						</el-table-column>
+						<el-table-column prop="qualName" label="所属资质">
+						</el-table-column>
+						<el-table-column prop="qualLevelName" label="等级">
+						</el-table-column>
+						<el-table-column label="证书列表">
+							<template scope="scope">
+								<p v-for="item in scope.row.certinstDetail">
+									<a href="javascript:;" class="a-color4879E4" @click="filePreview(item)" style="cursor:pointer;">{{item.fileName}}</a>
+								</p>
+							</template>
+						</el-table-column>
+					</el-table>
+				</el-form-item>
 
 				<el-collapse-item class="clearfix" name="3" id="">
 					<template slot="title">
@@ -190,7 +220,7 @@
 						</el-table-column>
 						<el-table-column prop="linkmanCertNo" label="证件号">
 						</el-table-column>
-						<el-table-column prop="unitServiceIds" label="服务类型">
+						<el-table-column prop="serviceNames" label="服务类型">
 						</el-table-column>
 						<!-- <el-table-column prop="" label="是否实名">
 						</el-table-column> -->
@@ -199,7 +229,7 @@
 
 				<el-collapse-item class="clearfix" name="4" id="">
 					<template slot="title">
-						<i class="header-icon icon ag ag-project-info"></i>职业人员信息
+						<i class="header-icon icon ag ag-project-info"></i>执业/职业人员信息
 					</template>
 
 					<el-form-item label="姓名">
@@ -212,7 +242,7 @@
 						<el-input v-model="form.practiceManInfo.linkmanCertNo"></el-input>
 					</el-form-item>
 
-					<el-form-item label="附件">
+					<!--<el-form-item label="附件">
 						<el-table class="" :data="form.practiceManFileList" border tooltip-effect="dark"
 							style="width: 100%;" stripe>
 							<el-table-column type="index" width="50px" align="center" label="序号"></el-table-column>
@@ -237,7 +267,7 @@
 														@click="filePreview(item)"></span>
 													<span title="下载" class="el-icon-download"
 														@click="downOneFile(item)"></span>
-													<!-- <span title="删除" class="el-icon-delete" @click="delOneFile(item,props.row)"></span> -->
+													&lt;!&ndash; <span title="删除" class="el-icon-delete" @click="delOneFile(item,props.row)"></span> &ndash;&gt;
 												</span>
 											</div>
 										</div>
@@ -255,25 +285,56 @@
 								</template>
 							</el-table-column>
 						</el-table>
-					</el-form-item>
+					</el-form-item>-->
 
 					<el-form-item label="证书信息">
-						<el-table :data="form.tableData" border style="width: 100%">
+						<el-table :data="form.practiceManInfo.certinsts" border style="width: 100%">
 							<el-table-column prop="" type="index" label="序号" width="50">
 							</el-table-column>
-							<el-table-column prop="" label="证书分类">
+							<el-table-column prop="certinstCode" label="证书编码">
 							</el-table-column>
-							<el-table-column prop="" label="证书名称">
+							<el-table-column prop="certinstName" label="证书名称">
 							</el-table-column>
-							<el-table-column prop="" label="证书编号">
+							<el-table-column prop="qualName" label="所属资质">
 							</el-table-column>
-							<el-table-column prop="" label="可提供服务类型">
+							<el-table-column prop="qualLevelName" label="等级">
+							</el-table-column>
+							<el-table-column label="证书列表">
+								<template scope="scope">
+									<p v-for="item in scope.row.certinstDetail">
+										<a href="javascript:;" class="a-color4879E4" @click="filePreview(item)" style="cursor:pointer;">{{item.fileName}}</a>
+									</p>
+								</template>
 							</el-table-column>
 						</el-table>
 					</el-form-item>
 				</el-collapse-item>
+				</el-collapse-item>
 			</el-collapse>
+
 		</el-form>
+
+		<!--	操作  -->
+		<div style="margin-top: 10px; text-align: center" v-if="form.unitInfo.auditFlag!='1'">
+			<el-button type="primary" @click="examineService('1')">通过</el-button>
+			<el-button @click="examineService('0')">不通过</el-button>
+		</div>
+		<!--审批弹窗-->
+		<el-dialog title="收货地址" :visible.sync="dialogFormVisible">
+			<el-form >
+				<el-row :span="18">
+					<el-form-item label="审批意见:">
+						<el-input v-model="auditForm.memo"></el-input>
+					</el-form-item>
+
+				</el-row>
+			</el-form>
+			<div slot="footer" class="dialog-footer">
+				<el-button @click="dialogFormVisible = false">取 消</el-button>
+				<el-button type="primary" @click="changeAuditFlag">确 定</el-button>
+			</div>
+		</el-dialog>
+
 	</div>
 </body>
 

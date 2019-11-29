@@ -108,6 +108,8 @@ public class AeaUnitInfo implements Serializable {
     private String projectLeaderId;//项目负责人ID
     private String projectLeaderCertNum;//项目负责人 ID Card
 
+    private String auditFlag;//审批状态
+
     public AeaUnitInfo() {
 
     }

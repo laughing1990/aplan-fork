@@ -388,6 +388,7 @@
         <if test="type!=null and type==0">
             and aipp.AUDIT_FLAG not in('0','4','5','10')
         </if>
+        order by aipp.CREATE_TIME DESC
     </select>
 
     <!-- 获取中介机构报名信息 -->

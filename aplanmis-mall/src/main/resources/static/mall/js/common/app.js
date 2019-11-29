@@ -55,7 +55,8 @@
                     hash:'/myCloundSpaces',
                 },
             ],
-            curentLoginInfo:{}
+            curentLoginInfo:{},
+            isShowCompatibleTips: true // 是否显示浏览器兼容模块提示
         },
         created:function() {
             this.init();

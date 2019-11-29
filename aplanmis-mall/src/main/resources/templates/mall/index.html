@@ -1,82 +1,109 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-	<head>
-		<title>唐山市工程建设项目联合审批系统网上办事大厅</title>
-		<link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
 
-		<link rel="stylesheet" href="../../static/mall/css/common/reset_wt.css" th:href="@{/mall/css/common/reset_wt.css}">
-		<link rel="stylesheet" href="../../static/mall/css/common/base_wt.css" th:href="@{/mall/css/common/base_wt.css}">
-		<link rel="stylesheet" href="../../static/mall/css/main/index_wt.css" th:href="@{/mall/css/main/index_wt.css}">
+<head>
+	<title>唐山市工程建设项目联合审批系统网上办事大厅</title>
+	<link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+		th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
 
-		<script>
-			var ctx = "[[@{/}]]";
-		</script>
-	</head>
-	<body>
-		<div id="APP"  v-cloak>
+	<link rel="stylesheet" href="../../static/mall/css/common/reset_wt.css" th:href="@{/mall/css/common/reset_wt.css}">
+	<link rel="stylesheet" href="../../static/mall/css/common/base_wt.css" th:href="@{/mall/css/common/base_wt.css}">
+	<link rel="stylesheet" href="../../static/mall/css/main/index_wt.css" th:href="@{/mall/css/main/index_wt.css}">
 
-			<header>
-				<div class="wt-header-nav clearfix">
-				    <div class="header-logo">
-				        <a class="logo" href="#"></a>
-				        <span class="logo-title"><a href="/aplanmis-mall/aea/mall/main/mainIndex.do">河北政务服务网</a></span>
-				        <span class="wt-title">唐山市工程建设项目审批管理系统网上办事大厅</span>
-				    </div>
+	<script>
+		var ctx = "[[@{/}]]";
+	</script>
+</head>
 
-				    <div class="go-login">
-						<a class="wt-header-enterprise" href="https://www.creditchina.gov.cn/" target="_blank"
-						   title="信用中国"><span>信用中国</span></a>|
-						<!--<a id="commonLoginNameInfo"></a>
+<body>
+	<!--[if Ite IE 10]>
+	<div id="compatibleTips" ref="compatibleTips"
+		style="z-index: 6000;position: fixed;top: 1px;left: 0;right: 0;margin: auto;width: 900px;border: 1px solid #FFB822;border-radius: 4px;padding: 14px 16px 15px 40px;color: #575962;background: #FFFCEE;">
+		<div>
+			为了获得更好的用户体验,请使用火狐、谷歌、360浏览器的极速模式或IE10及以上版本的浏览器。
+			<strong style="float:right;margin-right: 10px;cursor:pointer;"
+				onclick="document.getElementById('compatibleTips').style.display='none'"> x </strong>
+		</div>
+	</div>
+	<![endif]-->
+	<div id="APP" v-cloak>
+
+		<header>
+			<div class="wt-header-nav clearfix">
+				<div class="header-logo">
+					<a class="logo" href="#"></a>
+					<span class="logo-title"><a href="/aplanmis-mall/aea/mall/main/mainIndex.do">河北政务服务网</a></span>
+					<span class="wt-title">唐山市工程建设项目审批管理系统网上办事大厅</span>
+				</div>
+
+				<div class="go-login">
+					<a class="wt-header-enterprise" href="https://www.creditchina.gov.cn/" target="_blank"
+						title="信用中国"><span>信用中国</span></a>|
+					<!--<a id="commonLoginNameInfo"></a>
 						<a id="commonLoginInfo"></a>-->
-						<span v-if="curentLoginInfo">
-							<a href="javascript:;" class="wt-header-enterprise">
+					<span v-if="curentLoginInfo">
+						<a href="javascript:;" class="wt-header-enterprise">
 							<span v-if="curentLoginInfo.isPersonAccount == 1">{{curentLoginInfo.personName}}</span>
 							<span v-else>
-								  <el-dropdown v-if="curentLoginInfo.userId || curentLoginInfo.unitId" :popper-append-to-body="true">
-									  <span class="el-dropdown-link">
-										  <span><span class="unitName ellipsis">{{curentLoginInfo.unitName}}</span><i v-show="curentLoginInfo.unitInfoList" class="el-icon-caret-bottom el-icon--right"></i></span>
-									  </span>
-									  <el-dropdown-menu slot="dropdown" v-show="curentLoginInfo.unitInfoList">
-										<el-dropdown-item v-for="(item,index) in curentLoginInfo.unitInfoList" :key="index" @click.native="switchUnit(item)">{{item.applicant}}</el-dropdown-item>
-									  </el-dropdown-menu>
+								<el-dropdown v-if="curentLoginInfo.userId || curentLoginInfo.unitId"
+									:popper-append-to-body="true">
+									<span class="el-dropdown-link">
+										<span><span class="unitName ellipsis">{{curentLoginInfo.unitName}}</span><i
+												v-show="curentLoginInfo.unitInfoList"
+												class="el-icon-caret-bottom el-icon--right"></i></span>
+									</span>
+									<el-dropdown-menu slot="dropdown" v-show="curentLoginInfo.unitInfoList">
+										<el-dropdown-item v-for="(item,index) in curentLoginInfo.unitInfoList"
+											:key="index" @click.native="switchUnit(item)">{{item.applicant}}
+										</el-dropdown-item>
+									</el-dropdown-menu>
 								</el-dropdown>
-							  </span>
-								. 欢迎您！
+							</span>
+							. 欢迎您！
 						</a>|
-							<a href="javascript:;" class="wt-header-enterprise" @click="logout" title="退出">退出</a>
-						</span>
-						<a v-else href="/aplanmis-mall/rest/mall/loginIndex" class="wt-header-enterprise"
-						   title="登录">登录</a>
-				    </div>
+						<a href="javascript:;" class="wt-header-enterprise" @click="logout" title="退出">退出</a>
+					</span>
+					<a v-else href="/aplanmis-mall/rest/mall/loginIndex" class="wt-header-enterprise" title="登录">登录</a>
 				</div>
-				<div class="wt-header-tab wt-tab">
-			        <ul class="wt-tab-nav">
-			            <li  :class="index==activeName?'active':''"  :data-url="item.url" @click="routerChange(item.hash,item.url,item.thUrl,index)" v-for="(item, index) in topTabData" :key="index">
-							<a href="javascript:;" v-text="item.label" ></a>
-			            </li>
-			        </ul>
-			    </div>
-			</header>
+			</div>
+			<div class="wt-header-tab wt-tab">
+				<ul class="wt-tab-nav">
+					<li :class="index==activeName?'active':''" :data-url="item.url"
+						@click="routerChange(item.hash,item.url,item.thUrl,index)" v-for="(item, index) in topTabData"
+						:key="index">
+						<a href="javascript:;" v-text="item.label"></a>
+					</li>
+				</ul>
+			</div>
+		</header>
 
-			<main>
-				<div id="app_frame">
+		<main>
+			<div id="app_frame">
 
-				</div>
-			</main>
+			</div>
+		</main>
 
-			<footer>
-				唐山市一体化政务服务中心版权所有
-			</footer>
-		</div>
-		<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
-		<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
-		<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
-<!--		<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>-->
-		<script src="../static/common/js/common.js"  th:src="@{/common/js/common.js}"></script>
+		<footer>
+			唐山市一体化政务服务中心版权所有
+		</footer>
 
-		<script src="../static/mall/js/common/polyfill.min.js" th:src="@{/mall/js/common/polyfill.min.js}"></script>
-		<script src="../static/mall/js/common/axios.min.js" th:src="@{/mall/js/common/axios.min.js}"></script>
-		<script src="../../static/mall/js/common/app.js" th:src="@{/mall/js/common/app.js}" type="text/javascript"></script>
-		<script src="../../static/mall/js/utils/AGRouter.js" th:src="@{/mall/js/utils/AGRouter.js}" type="text/javascript"></script>
 
-	</body>
+	</div>
+
+	<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+		th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+	<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+		th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+	<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+		th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+	<!--		<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>-->
+	<script src="../static/common/js/common.js" th:src="@{/common/js/common.js}"></script>
+
+	<script src="../static/mall/js/common/polyfill.min.js" th:src="@{/mall/js/common/polyfill.min.js}"></script>
+	<script src="../static/mall/js/common/axios.min.js" th:src="@{/mall/js/common/axios.min.js}"></script>
+	<script src="../../static/mall/js/common/app.js" th:src="@{/mall/js/common/app.js}" type="text/javascript"></script>
+	<script src="../../static/mall/js/utils/AGRouter.js" th:src="@{/mall/js/utils/AGRouter.js}"
+		type="text/javascript"></script>
+
+</body>
+
 </html>

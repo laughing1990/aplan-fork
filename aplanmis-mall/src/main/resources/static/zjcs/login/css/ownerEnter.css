@@ -218,6 +218,7 @@ body {
 
 .el-cascader {
   line-height: 34px;
+  width: 100%;
 }
 
 .clearfix {
@@ -510,7 +511,7 @@ body {
 .tag {
   display: inline-block;
   margin-left: 233px;
-  width: 660px;
+  width: 441px;
   height: 40px;
   float: right;
 }
@@ -550,19 +551,6 @@ body {
 
 }
 
-.tag ul li:nth-child(4) {
-  z-index: 2;
-  left: 411px;
-  text-indent: 20px;
-  width: 165px;
-}
-
-.tag ul li:nth-child(5) {
-  z-index: 1;
-  width: 90px;
-  left: 579px;
-  text-indent: 15px;
-}
 
 .tag ul li:after {
   content: '';
@@ -574,7 +562,7 @@ body {
   border-left-color: var(--achieved);
 }
 
-.tag ul li:nth-child(5):after {
+.tag ul li:nth-child(3):after {
   content: '';
   border: 0 none;
 }

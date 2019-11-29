@@ -96,6 +96,23 @@ var vm = new Vue({
 		registerDeatail: function (row) {
 			var url = ctx + '/supermarket/register/detail.html?unitInfoId=' + row.unitInfoId;
 			window.location.href = url;
+		},
+		// 预览电子件 必须要有detailId
+		filePreview: function (data) {
+			if (!data.detailId) {
+				data.detailId = data.fileId;
+			} // 设置detailId
+			if (!data.attFormat) {
+				data.attFormat = data.fileType;
+			} // 文件类型
+			if (this.allowPreType[data.attFormat]) {
+				return this.preFile(data);
+			} // 预览pdf、doc等
+			// 预览图片等
+			var detailId = data.detailId;
+			var flashAttributes = '';
+			var tempwindow = window.open('_blank'); // 先打开页面
+			tempwindow.location = ctx + 'rest/mats/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
 		}
 	}
 })

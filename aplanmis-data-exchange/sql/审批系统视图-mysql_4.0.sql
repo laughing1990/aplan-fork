@@ -7,6 +7,15 @@ SELECT lk.TABLE_NAME, lk.PK_NAME, lk.RECORD_ID, detail.DETAIL_ID AS FJID, detail
 FROM BSC_ATT_LINK lk
 	LEFT JOIN BSC_ATT_DETAIL detail ON lk.DETAIL_ID = detail.DETAIL_ID;
 
+-- 主题最大发布版本号
+CREATE OR REPLACE VIEW THEME_MAX_VER
+AS
+SELECT theme_2.THEME_ID, theme_2.THEME_CODE, GJBZSPLCLX, MAX(VER_NUM) AS VER_NUM
+FROM AEA_PAR_THEME_VER aptv_2
+	INNER JOIN AEA_PAR_THEME theme_2 ON theme_2.THEME_ID = aptv_2.THEME_ID
+WHERE IS_PUBLISH IN ('1', '2', '3')
+GROUP BY theme_2.THEME_ID;
+
 -- ===============================================业务视图=================================================
 -- --------------------------------------------------------------------------------------------------------
 -- 要点说明：
@@ -36,7 +45,8 @@ FROM AEA_PAR_THEME_VER ptv
 		AND lk.TABLE_NAME = 'AEA_PAR_THEME_VER'
 		AND lk.PK_NAME = 'THEME_VER_ID'
 	LEFT JOIN BSC_ATT_DETAIL detail ON lk.DETAIL_ID = detail.DETAIL_ID
-WHERE ptv.IS_PUBLISH IN (1, 2, 3);
+WHERE ptv.IS_PUBLISH IN (1, 2, 3)
+	AND apt.THEME_TYPE IN ('A00001','A00003');
 
 -- 3.3.2地方项目审批流程阶段信息表
 CREATE OR REPLACE VIEW SPGL_DFXMSPLCJDXXB_VIEW
@@ -53,6 +63,7 @@ FROM AEA_PAR_STAGE stage
 	ON ptv.THEME_VER_ID = stage.THEME_VER_ID
 		AND ptv.IS_PUBLISH IN (1, 2, 3)
 	INNER JOIN AEA_PAR_THEME apt ON apt.THEME_ID = ptv.THEME_ID
+		AND apt.THEME_TYPE IN ('A00001','A00003')
 WHERE stage.IS_SHOW_ITEM != '0'
 	AND stage.IS_NODE = '1'
 UNION ALL
@@ -67,6 +78,7 @@ SELECT CONCAT(apt.THEME_CODE, '-', ptv.VER_NUM) AS DFSJZJ, '000000' AS XZQHDM
 	END AS MODIFY_TIME
 FROM AEA_PAR_THEME_VER ptv
 	INNER JOIN AEA_PAR_THEME apt ON apt.THEME_ID = ptv.THEME_ID
+    AND apt.THEME_TYPE IN ('A00001','A00003')
 WHERE ptv.IS_PUBLISH IN (1, 2, 3);
 
 -- 3.3.3地方项目审批流程阶段事项信息表
@@ -330,9 +342,134 @@ AS
 FROM AEA_APPLYINST_PROJ ahai123
 	INNER JOIN AEA_PROJ_INFO proj ON proj.PROJ_INFO_ID = ahai123.PROJ_INFO_ID
 	INNER JOIN AEA_HI_PAR_STAGEINST hps ON hps.APPLYINST_ID = ahai123.APPLYINST_ID
+	INNER JOIN AEA_PAR_STAGE stage ON stage.STAGE_ID = hps.STAGE_ID
 	LEFT JOIN AEA_PAR_THEME_VER ptv ON ptv.THEME_VER_ID = hps.THEME_VER_ID
-	LEFT JOIN AEA_PAR_THEME apt ON apt.THEME_ID = ptv.THEME_ID)
-UNION
+	LEFT JOIN AEA_PAR_THEME apt ON apt.THEME_ID = ptv.THEME_ID
+WHERE stage.IS_SHOW_ITEM != '0')
+UNION ALL
+(SELECT ahai123.APPLYINST_PROJ_ID AS DFSJZJ, '000000' AS XZQHDM
+	, replace(proj.LOCAL_CODE, '#', '-') AS XMDM
+	, proj.PROJ_NAME AS XMMC, replace(proj.GCBM, '#', '-') AS GCDM
+	, proj.PROJ_NAME AS GCFW
+	, (
+		SELECT p.GCBM
+		FROM AEA_PROJ_INFO p
+			INNER JOIN AEA_PARENT_PROJ pp ON pp.PARENT_PROJ_ID = p.PROJ_INFO_ID
+		WHERE pp.CHILD_PROJ_ID = proj.PROJ_INFO_ID
+	) AS QJDGCDM
+	, CASE
+		WHEN proj.FINANCIAL_SOURCE = '0' THEN '1'
+		WHEN proj.FINANCIAL_SOURCE = '1' THEN '2'
+		WHEN proj.FINANCIAL_SOURCE = '2' THEN '3'
+		ELSE '3'
+	END AS XMTZLY
+	, CASE
+		WHEN proj.LAND_SOURCE = '0' THEN '1'
+		WHEN proj.LAND_SOURCE = '1' THEN '3'
+		WHEN proj.LAND_SOURCE = '2' THEN '4'
+		WHEN proj.LAND_SOURCE = '3' THEN '2'
+		WHEN proj.LAND_SOURCE = '4' THEN '5'
+		ELSE '5'
+	END AS TDHQFS
+	, CASE
+		WHEN length(trim(proj.IS_DESIGN_SOLUTION)) > 0 THEN proj.IS_DESIGN_SOLUTION
+		ELSE '0'
+	END AS TDSFDSJFA
+	, CASE
+		WHEN length(trim(proj.IS_AREA_ESTIMATE)) > 0 THEN proj.IS_AREA_ESTIMATE
+		ELSE '0'
+	END AS SFWCQYPG, GJBZSPLCLX AS SPLCLX
+	, CASE proj.PROJ_TYPE
+		WHEN 'A00001' THEN '1'
+		WHEN 'A00002' THEN '2'
+		WHEN 'A00003' THEN '3'
+		ELSE '1'
+	END AS LXLX
+	, CASE
+		WHEN length(trim(proj.PROJ_CATEGORY)) = 0 THEN NULL
+		ELSE proj.PROJ_CATEGORY
+	END AS GCFL
+	, CASE
+		WHEN length(trim(proj.PROJ_NATURE)) > 0 THEN proj.PROJ_NATURE
+		ELSE 5
+	END AS JSXZ
+	, CASE proj.INVEST_TYPE
+		WHEN '1' THEN '1'
+		WHEN '2' THEN '1'
+		WHEN '0' THEN '2'
+		ELSE '3'
+	END AS XMZJSX
+	, CASE
+		WHEN length(trim(proj.INDUSTRY)) > 0 THEN proj.INDUSTRY
+		ELSE 'A01'
+	END AS GBHY
+	, CASE
+		WHEN length(trim(proj.GB_CODE_YEAR)) > 0 THEN proj.GB_CODE_YEAR
+		ELSE '2017'
+	END AS GBHYDMFBND
+	, CASE
+		WHEN length(trim(NSTART_TIME)) > 0 THEN
+			CASE
+				WHEN length(trim(proj.NSTART_TIME)) = 4 THEN CONCAT(proj.NSTART_TIME, '-01-01')
+				WHEN length(trim(proj.NSTART_TIME)) < 9 THEN replace(replace(proj.END_TIME, '月', '-'), '年', '-')
+				ELSE replace(replace(proj.NSTART_TIME, '月', '-01'), '年', '-')
+			END
+		ELSE '1970-01-01'
+	END AS NKGSJ
+	, CASE
+		WHEN length(trim(proj.END_TIME)) > 0 THEN
+			CASE
+				WHEN length(trim(proj.END_TIME)) = 4 THEN CONCAT(proj.END_TIME, '-12-31')
+				WHEN length(trim(proj.END_TIME)) < 9 THEN replace(replace(proj.END_TIME, '月', '-'), '年', '-')
+				ELSE replace(replace(proj.END_TIME, '月', '-01'), '年', '-')
+			END
+		ELSE '1970-12-31'
+	END AS NJCSJ, '0' AS XMSFWQBJ, NULL AS XMWQBJSJ
+	, CASE
+		WHEN length(trim(proj.INVEST_SUM)) > 0 THEN proj.INVEST_SUM
+		ELSE 0
+	END AS ZTZE
+	, CASE
+		WHEN length(trim(proj.REGIONALISM)) = 6 THEN proj.REGIONALISM
+		WHEN proj.REGIONALISM IS NOT NULL THEN (
+			SELECT REGION_NUM
+			FROM BSC_DIC_REGION
+			WHERE REGION_ID = REGIONALISM
+		)
+		ELSE '000000'
+	END AS JSDDXZQH
+	, CASE
+		WHEN proj.PROJ_ADDR IS NOT NULL
+		AND length(trim(proj.PROJ_ADDR)) > 0 THEN proj.PROJ_ADDR
+		ELSE 'xx市'
+	END AS JSDD, NULL AS XMJSDDX, NULL AS XMJSDDY
+	, CASE
+		WHEN length(trim(proj.SCALE_CONTENT)) > 0 THEN proj.SCALE_CONTENT
+		ELSE '建设规模：'
+	END AS JSGMJNR
+	, CASE
+		WHEN length(trim(proj.XM_YDMJ)) > 0 THEN proj.XM_YDMJ
+		ELSE 0
+	END AS YDMJ
+	, CASE
+		WHEN length(trim(proj.BUILD_AREA_SUM)) > 0 THEN proj.BUILD_AREA_SUM
+		ELSE 0
+	END AS JZMJ
+	, CASE
+		WHEN length(trim(PROJECT_CREATE_DATE)) > 0 THEN proj.PROJECT_CREATE_DATE
+		ELSE (
+			SELECT CREATE_TIME
+			FROM aea_hi_applyinst
+			WHERE APPLYINST_ID = ahai123.APPLYINST_ID
+		)
+	END AS SBSJ, apt.THEME_CODE AS SPLCBM, apt.VER_NUM AS SPLCBBH, 1 AS SJYXBS, ahai123.CREATE_TIME AS MODIFY_TIME
+FROM AEA_APPLYINST_PROJ ahai123
+	INNER JOIN AEA_PROJ_INFO proj ON proj.PROJ_INFO_ID = ahai123.PROJ_INFO_ID
+	INNER JOIN AEA_HI_PAR_STAGEINST hps ON hps.APPLYINST_ID = ahai123.APPLYINST_ID
+	INNER JOIN AEA_PAR_STAGE stage ON stage.STAGE_ID = hps.STAGE_ID
+	LEFT JOIN THEME_MAX_VER apt ON apt.THEME_ID = proj.THEME_ID
+WHERE stage.IS_SHOW_ITEM = '0')
+UNION ALL
 (SELECT ahai123.APPLYINST_PROJ_ID AS DFSJZJ, '000000' AS XZQHDM
 	, replace(proj.LOCAL_CODE, '#', '-') AS XMDM
 	, proj.PROJ_NAME AS XMMC, replace(proj.GCBM, '#', '-') AS GCDM
@@ -456,7 +593,7 @@ FROM AEA_APPLYINST_PROJ ahai123
 	LEFT JOIN AEA_PAR_THEME_VER ptv ON ptv.THEME_VER_ID = stage.THEME_VER_ID
 	LEFT JOIN AEA_PAR_THEME apt ON apt.THEME_ID = ptv.THEME_ID
 WHERE ahs.STAGE_ID IS NOT NULL)
-UNION
+UNION ALL
 (SELECT ahai123.APPLYINST_PROJ_ID AS DFSJZJ, '000000' AS XZQHDM
 	, replace(proj.LOCAL_CODE, '#', '-') AS XMDM
 	, proj.PROJ_NAME AS XMMC, replace(proj.GCBM, '#', '-') AS GCDM
@@ -934,37 +1071,38 @@ FROM (
 
 CREATE OR REPLACE VIEW spgl_dfxmsplcjdfxsxxxb_view
 AS
-SELECT stage.STAGE_ID AS DFSJZJ, '000000' AS XZQHDM, theme.THEME_CODE AS SPLCBM, themever.VER_NUM AS SPLCBBH, 5 AS SPJDXH
+SELECT stage.STAGE_ID AS DFSJZJ, '000000' AS XZQHDM, theme.THEME_CODE AS SPLCBM, theme.VER_NUM AS SPLCBBH, 5 AS SPJDXH
 	, stage.STAGE_CODE AS SPSXBM, themever.VER_NUM AS SPSXBBH, stage.STAGE_NAME AS SPSXMC, '9990' AS DYBZSPSXBM, '0' AS SFSXGZCNZ
 	, '3' AS BJLX, '6' AS SQDX, '2,3' AS BLJGSDFS, stage.DUE_NUM AS SPSXBLSX
 	, (
 		SELECT opu_om_org.ORG_CODE
 		FROM opu_om_org
-		WHERE stageinst.ROOT_ORG_ID = opu_om_org.ORG_ID
+		WHERE stage.ROOT_ORG_ID = opu_om_org.ORG_ID
 	) AS SPBMBM
 	, (
 		SELECT opu_om_org.ORG_NAME
 		FROM opu_om_org
-		WHERE stageinst.ROOT_ORG_ID = opu_om_org.ORG_ID
+		WHERE stage.ROOT_ORG_ID = opu_om_org.ORG_ID
 	) AS SPBMMC, 0 AS SFLCBSX, 1 AS SJYXBS
 	, CASE
-		WHEN stageinst.MODIFY_TIME IS NOT NULL THEN stageinst.MODIFY_TIME
-		ELSE stageinst.CREATE_TIME
+		WHEN stage.MODIFY_TIME IS NOT NULL THEN stage.MODIFY_TIME
+		ELSE stage.CREATE_TIME
 	END AS MODIFY_TIME
-FROM aea_hi_par_stageinst stageinst
-	JOIN aea_par_stage stage ON stage.STAGE_ID = stageinst.STAGE_ID
-	JOIN aea_par_theme_ver themever ON themever.THEME_VER_ID = stage.THEME_VER_ID
-	JOIN aea_par_theme theme ON theme.THEME_ID = themever.THEME_ID
-WHERE (stage.IS_SHOW_ITEM = '0')
-	AND (stage.IS_NODE = '2')
-	AND themever.IS_PUBLISH IN (1, 2, 3);
+FROM AEA_HI_PAR_STAGEINST hps
+	INNER JOIN AEA_PAR_STAGE stage ON stage.STAGE_ID = hps.STAGE_ID
+	INNER JOIN aea_par_theme_ver themever ON themever.THEME_VER_ID = stage.THEME_VER_ID
+	INNER JOIN AEA_APPLYINST_PROJ ahai123 ON ahai123.APPLYINST_ID = hps.APPLYINST_ID
+	LEFT JOIN AEA_PROJ_INFO proj ON proj.PROJ_INFO_ID = ahai123.PROJ_INFO_ID
+	LEFT JOIN THEME_MAX_VER theme ON theme.THEME_ID = proj.THEME_ID
+WHERE stage.IS_SHOW_ITEM = '0'
+	AND stage.IS_NODE = '2';
 
 -- 辅线事项办理信息
 CREATE OR REPLACE VIEW SPGL_XMSPFXSXBLXXB_VIEW
 AS
 SELECT stageinst.stageinst_id AS DFSJZJ, '000000' AS XZQHDM
 	, replace(proj.GCBM, '#', '-') AS GCDM
-	, stage.STAGE_CODE AS SPSXBM, themever.VER_NUM AS SPSXBBH, theme.THEME_CODE AS SPLCBM, themever.VER_NUM AS SPLCBBH, stageinst.stageinst_id AS SPSXSLBM
+	, stage.STAGE_CODE AS SPSXBM, themever.VER_NUM AS SPSXBBH, theme.THEME_CODE AS SPLCBM, theme.VER_NUM AS SPLCBBH, stageinst.stageinst_id AS SPSXSLBM
 	, org.ORG_CODE AS SPBMBM, org.ORG_NAME AS SPBMMC
 	, CASE applyinst.APPLYINST_SOURCE
 		WHEN 'net' THEN 4
@@ -986,8 +1124,8 @@ FROM aea_hi_par_stageinst stageinst
 	JOIN aea_proj_info proj ON proj.proj_info_id = aap.proj_info_id
 	JOIN aea_par_stage stage ON stage.STAGE_ID = stageinst.STAGE_ID
 	JOIN aea_par_theme_ver themever ON themever.THEME_VER_ID = stage.THEME_VER_ID
-	JOIN aea_par_theme theme ON theme.THEME_ID = themever.THEME_ID
-	JOIN opu_om_org org ON org.org_id = stageinst.ROOT_ORG_ID
+	LEFT JOIN THEME_MAX_VER theme ON theme.THEME_ID = proj.THEME_ID
+	LEFT JOIN opu_om_org org ON org.org_id = stageinst.ROOT_ORG_ID
 WHERE stage.IS_SHOW_ITEM = '0'
 	AND stage.IS_NODE = '2';
 
