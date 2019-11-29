@@ -28,26 +28,26 @@
 				<el-row>
 					<el-col :span="12">
 						<el-form-item label="机构名称：" prop="applicant">
-							<el-input v-model="searchForm.applicant" placeholder="请输入机构名称" @blur="getRegisterList"></el-input>
+							<el-input v-model="searchForm.applicant" placeholder="请输入机构名称" style="width: 300px;"></el-input>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="统一社会信用代码：" prop="unifiedSocialCreditCode">
-							<el-input v-model="searchForm.unifiedSocialCreditCode" placeholder="请输入统一社会信用代码" @blur="getRegisterList"></el-input>
+							<el-input v-model="searchForm.unifiedSocialCreditCode" placeholder="请输入统一社会信用代码" style="width: 300px;"></el-input>
 						</el-form-item>
 					</el-col>
 				</el-row>
 				<el-row>
 					<el-col :span="12">
 						<el-form-item label="入驻机构类型：" prop="registerType">
-							<el-select placeholder="请选择" v-model="searchForm.registerType" :popper-append-to-body="false">
+							<el-select placeholder="请选择" v-model="searchForm.registerType" :popper-append-to-body="false" style="width: 300px;">
 								<el-option v-for="item in registerOptions" :key="item.value" :label="item.label" :value="item.value" @click.native="getRegisterList"></el-option>
 							</el-select>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="审核状态：" prop="auditFlag">
-							<el-select placeholder="请选择" v-model="searchForm.auditFlag" :popper-append-to-body="false">
+							<el-select placeholder="请选择" v-model="searchForm.auditFlag" :popper-append-to-body="false" style="width: 300px;">
 								<el-option v-for="item in auditOptions" :key="item.value" :label="item.label" :value="item.value" @click.native="getRegisterList"></el-option>
 							</el-select>
 						</el-form-item>

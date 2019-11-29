@@ -15,10 +15,10 @@ var vm = new Vue({
 			// 审核情况下拉选项
 			auditOptions: [
 				{value: '', label: '请选择'}, {
-					value: '0',
+					value: '2',
 					label: '未审核'
 				}, {
-					value: '2',
+					value: '0',
 					label: '审核不通过'
 				}, {
 					value: '1',
