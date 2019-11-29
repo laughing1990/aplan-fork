@@ -42,7 +42,8 @@
         IMG_URL  imgUrl,
         IS_OWNER_UNIT  isOwnerUnit,
         ROOT_ORG_ID rootOrgId,
-        IS_GD isGd
+        IS_GD isGd,
+        AUDIT_FLAG auditFlag
     </sql>
 
     <sql id="alias_allColumns">
@@ -444,6 +445,9 @@
             <if test="isGd != null">
                 IS_GD = #{isGd}
             </if>
+            <if test="auditFlag != null">
+                AUDIT_FLAG = #{auditFlag}
+            </if>
         </set>
         where UNIT_INFO_ID = #{unitInfoId}
     </update>
@@ -689,5 +693,31 @@
             AND ROOT_ORG_ID=#{rootOrgId}
         </if>
         ORDER BY CREATE_TIME DESC
+    </select>
+
+    <select id="getRegisterUnitList" parameterType="AeaUnitInfo" resultType="AeaUnitInfo">
+        select
+        <include refid="allColumns" />
+        from AEA_UNIT_INFO aul
+        where 1=1
+        and AUDIT_FLAG is not null and AUDIT_FLAG !=''
+        <if test="applicant!=null and applicant!=''">
+            and APPLICANT LIKE CONCAT(CONCAT('%',#{applicant}),'%')
+        </if>
+        <if test="unifiedSocialCreditCode!=null and unifiedSocialCreditCode!=''">
+            and unified_social_credit_code LIKE CONCAT(CONCAT('%',#{unifiedSocialCreditCode}),'%')
+        </if>
+        <if test="isImUnit!=null and isImUnit!=''">
+            and IS_IM_UNIT = #{isImUnit}
+        </if>
+        <if test="isOwnerUnit!=null and isOwnerUnit!=''">
+            and IS_OWNER_UNIT = #{isOwnerUnit}
+        </if>
+        <if test="auditFlag!=null and auditFlag!=''">
+            and AUDIT_FLAG = #{auditFlag}
+        </if>
+        <if test="rootOrgId!=null and rootOrgId!=''">
+            AND ROOT_ORG_ID = #{rootOrgId}
+        </if>
     </select>
 </mapper>

@@ -26,7 +26,7 @@ public class OwnerRegisterController {
     @Value("${dg.sso.access.platform.org.top-org-id}")
     protected String topOrgId;
 
-    @RequestMapping("/index.do")
+    @RequestMapping("/index.html")
     public ModelAndView indexAeaImServiceLinkman() throws  Exception{
         //虚拟登录员信息
         OpuOmUser opuOmUser=new OpuOmUser();

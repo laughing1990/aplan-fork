@@ -59,4 +59,11 @@ public class RestAreaController {
         return new ContentResultForm<>(true, regions);
     }
 
+    @GetMapping("/org/region/tree")
+    @ApiOperation(("根据顶级组织ID查询区划树形列表"))
+    public ContentResultForm<List<BscDicRegion>> getBscDicRegionTree() {
+        List<BscDicRegion> regions = regionService.getBscDicRegionTreeList(SecurityContext.getCurrentOrgId());
+        return new ContentResultForm<>(true, regions);
+    }
+
 }

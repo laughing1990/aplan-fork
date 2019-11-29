@@ -84,4 +84,6 @@ public interface AeaUnitInfoMapper {
      * @return
      */
     List<ExSJUnitFromDetails> findAeaExProBuildUnitInfoByKeyword(@Param("keyword") String keyword, @Param("rootOrgId") String rootOrgId);
+
+    List<AeaUnitInfo> getRegisterUnitList(AeaUnitInfo aeaUnitInfo);
 }
