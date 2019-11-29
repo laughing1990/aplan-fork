@@ -562,7 +562,7 @@ function addItemFrontProj() {
     if(curIsEditable) {
 
         $("#edit_item_front_proj_modal").modal("show");
-        $('#edit_item_front_proj_title').html('新增项目信息前置检测');
+        $('#edit_item_front_proj_title').html('新增检测项目信息');
         $('#edit_item_front_proj_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
         $('#edit_item_front_proj_form')[0].reset();
         if(edit_item_front_proj_form_validator){
@@ -670,7 +670,7 @@ function editItemFrontProj(frontProjId) {
         $('#selectRuleElBtn').hide();
     }
     $("#edit_item_front_proj_modal").modal("show");
-    $('#edit_item_front_proj_title').html((curIsEditable?'编辑':'查看')+'项目信息前置检测');
+    $('#edit_item_front_proj_title').html((curIsEditable?'编辑':'查看')+'检测项目信息');
     $('#edit_item_front_proj_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
     $('#edit_item_front_proj_form')[0].reset();
     if(edit_item_front_proj_form_validator){
@@ -702,7 +702,7 @@ function addItemFrontItem() {
     if(curIsEditable) {
 
         $("#edit_item_front_item_modal").modal("show");
-        $('#edit_item_front_item_title').html('新增事项信息前置检测');
+        $('#edit_item_front_item_title').html('新增检测事项信息');
         $('#edit_item_front_item_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
         $('#edit_item_front_item_form')[0].reset();
         if(edit_item_front_item_form_validator){
@@ -748,7 +748,7 @@ function editItemFrontItem(frontItemId) {
     // $("#uploadProgress").modal("show");
 
     $("#edit_item_front_item_modal").modal("show");
-    $('#edit_item_front_item_title').html((curIsEditable?'编辑':'查看')+'事项信息前置检测');
+    $('#edit_item_front_item_title').html((curIsEditable?'编辑':'查看')+'检测事项信息');
     $('#edit_item_front_item_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
     $('#edit_item_front_item_form')[0].reset();
     if(edit_item_front_item_form_validator){
@@ -878,7 +878,7 @@ function addItemFrontPartform() {
     if(curIsEditable) {
 
         $("#edit_item_front_partform_modal").modal("show");
-        $('#edit_item_front_partform_title').html('新增事项扩展表单前置检测');
+        $('#edit_item_front_partform_title').html('新增检测扩展表单信息');
         $('#edit_item_front_partform_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
         $('#edit_item_front_partform_form')[0].reset();
         if(edit_item_front_partform_form_validator){
@@ -920,7 +920,7 @@ function editItemFrontPartform(frontPartformId) {
         $('#saveItemFrontPartformBtn').hide();
     }
     $("#edit_item_front_partform_modal").modal("show");
-    $('#edit_item_front_partform_title').html((curIsEditable?'编辑':'查看')+'事项扩展表单前置检测');
+    $('#edit_item_front_partform_title').html((curIsEditable?'编辑':'查看')+'检测扩展表单信息');
     $('#edit_item_front_partform_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
     $('#edit_item_front_partform_form')[0].reset();
     if(edit_item_front_partform_form_validator){
