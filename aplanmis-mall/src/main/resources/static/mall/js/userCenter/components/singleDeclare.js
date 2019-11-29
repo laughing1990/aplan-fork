@@ -356,7 +356,8 @@ var module1 = new Vue({
       useOneForm: '1', // 是否启用一张表单
       rootUnitInfoId: '',
       rootLinkmanInfoId: '',
-      ootApplyLinkmanId: '',
+      rootApplyLinkmanId: '',
+      itemFrontCheckFlag: true,
     }
   },
   created: function () {
@@ -655,10 +656,11 @@ var module1 = new Vue({
       if (_that.projInfoId) {
         request('', {
           url: ctx + 'rest/check/itemFrontCheck',
-          type: 'POST',
+          type: 'get',
+          ContentType: 'application/json',
           data: {
             projInfoId: _that.projInfoId,
-            itemVerId: _that.itemVerId
+            itemVerIds: _that.itemVerId
           },
         }, function (result) {
           if (result.success) {
@@ -666,10 +668,18 @@ var module1 = new Vue({
           } else {
             _that.preItemCheckPassed = false;
             _that.preItemCheckkMsg = result.message?result.message:'事项前置检测失败';
-            _that.$message({
-              message: result.message?result.message:'事项前置检测失败',
-              type: 'error'
-            });
+            // _that.$message({
+            //   message: result.message?result.message:'事项前置检测失败',
+            //   type: 'error'
+            // });
+            confirmMsg('前置事项检测不通过', result.message, function(){
+              _that.itemFrontCheckFlag = true;
+              _that.preItemCheckPassed = true;
+            },function(){
+              _that.itemFrontCheckFlag = false;
+              _that.preItemCheckPassed = false;
+              return false;
+            },'继续申报','放弃申报', 'error', true);
           }
         }, function (msg) { })
       } else {
@@ -684,6 +694,18 @@ var module1 = new Vue({
             type: 'error'
           });
         }
+      }
+    },
+    oneFormConfirm: function(){
+      var _that = this;
+      if(_that.formUrlList.length>0){
+        confirmMsg('确认信息', '是否已完成一张表单填写？', function(){
+          _that.saveAndGetMats();
+        },function(){
+          return false;
+        },'已完成','继续填写', 'warning', true)
+      }else {
+        _that.saveAndGetMats();
       }
     },
     // 跳转办事指南

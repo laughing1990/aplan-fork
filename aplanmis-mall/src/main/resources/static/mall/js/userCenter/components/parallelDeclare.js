@@ -399,7 +399,9 @@ var module1 = new Vue({
       selThemeDialogShow: false, // 是否展示
       rootUnitInfoId: '',
       rootLinkmanInfoId: '',
-      ootApplyLinkmanId: '',
+      rootApplyLinkmanId: '',
+      preItemCheckkMsg: '',
+      itemFrontCheckFlag: true,
     }
   },
   mounted: function () {
@@ -1816,7 +1818,7 @@ var module1 = new Vue({
         // 阶段前置检测
         request('', {
           url: ctx + 'rest/check/stageFrontCheck',
-          type: 'post',
+          type: 'get',
           data: param,
         }, function (result) {
           if (result.success) {
@@ -2374,33 +2376,33 @@ var module1 = new Vue({
           selArr.splice(index, 1);
         } else {
           if (item.itemVerId == row.itemVerId && row.preItemCheckPassed == true) {
-            request('', { // 判断并行实施事项是否可选
-              url: ctx + 'rest/check/itemFrontCheck',
-              type: 'POST',
-              data: {
-                projInfoId: _that.projInfoId,
-                itemVerId: row.itemVerId
-              },
-            }, function (result) {
-              if (result.success) {
-                row.preItemCheckPassed = true;
+            // request('', { // 判断并行实施事项是否可选
+            //   url: ctx + 'rest/check/itemFrontCheck',
+            //   type: 'POST',
+            //   data: {
+            //     projInfoId: _that.projInfoId,
+            //     itemVerIds: row.itemVerId
+            //   },
+            // }, function (result) {
+            //   if (result.success) {
+            //     row.preItemCheckPassed = true;
                 if(_that.selCoreItemsKey.indexOf(row.itemId)<0){
                   _that.selCoreItemsKey.push(row.itemId);
                 }
-              }else {
-                row.preItemCheckPassed = false;
-                selArr.splice(index,1);
-                _that.checkboxInit(row);
-                if (row.preItemCheckPassed == false) {
-                  _that.$message({
-                    message: '该事项前置事项检测失败！',
-                    type: 'error'
-                  });
-                }
-              }
-            }, function (msg) {
-
-            })
+            //   }else {
+            //     row.preItemCheckPassed = false;
+            //     selArr.splice(index,1);
+            //     _that.checkboxInit(row);
+            //     if (row.preItemCheckPassed == false) {
+            //       _that.$message({
+            //         message: '该事项前置事项检测失败！',
+            //         type: 'error'
+            //       });
+            //     }
+            //   }
+            // }, function (msg) {
+            //
+            // })
           } else {
             for (var i = 0; i < _that.selCoreItemsKey.length; i++) {
               if (_that.selCoreItemsKey[i] == row.itemId) {
@@ -2431,25 +2433,25 @@ var module1 = new Vue({
           }
           if(flag){
             _that.selCoreItemsKey.push(item.itemId);
-            request('', { // 判断并行实施事项是否可选
-              url: ctx + 'rest/check/itemFrontCheck',
-              type: 'post',
-              data: {
-                projInfoId: _that.projInfoId,
-                itemVerId: item.itemVerId
-              },
-            }, function (result) {
-              if (result.success) {
-                item.preItemCheckPassed = true;
+            // request('', { // 判断并行实施事项是否可选
+            //   url: ctx + 'rest/check/itemFrontCheck',
+            //   type: 'post',
+            //   data: {
+            //     projInfoId: _that.projInfoId,
+            //     itemVerIds: [item.itemVerId]
+            //   },
+            // }, function (result) {
+            //   if (result.success) {
+            //     item.preItemCheckPassed = true;
                 if(_that.selCoreItemsKey.indexOf(item.itemId)<0){
                   _that.selCoreItemsKey.push(item.itemId);
                 }
-              }else {
-                item.preItemCheckPassed = false;
-                selArr.splice(index,1);
-                _that.checkboxInit(item);
-              }
-            }, function (msg) {})
+            //   }else {
+            //     item.preItemCheckPassed = false;
+            //     selArr.splice(index,1);
+            //     _that.checkboxInit(item);
+            //   }
+            // }, function (msg) {})
           }
         });
         _that.selCoreItemsKey = _that.distinct(_that.selCoreItemsKey, [])
@@ -2572,11 +2574,13 @@ var module1 = new Vue({
         _that.branchOrgMap = ''
       }
       // 并行itemVerids集合
+      var itemVerIdCoreIds = [];
       selCoreItems.map(function (item) {
         _that.propulsionItemVerIds.push(item.itemVerId);
         if (item.baseItemVerId) {
           _that.coreParentItemVerIds.push(item.baseItemVerId);
         }
+        itemVerIdCoreIds.push(item.itemVerId);
         _that.propulsionBranchOrgMap.push({
           itemVerId: item.itemVerId,
           branchOrg: item.orgId,
@@ -2671,21 +2675,75 @@ var module1 = new Vue({
       }
       _that._itemStateIds = _itemStateIds;
       _that._stageStateIds = _stageStateIds;
-      if (_that.useOneForm == 1) {
-        if (selItemVer.length > 0) { // 已选择并联事项
-          _that.getParallelApplyinstId();// 实例化并联申报  获取一张表单
-        } else {
-          _that.declareStep = 7;
-          _that.saveAndGetMats();
-        }
+      if(itemVerIdCoreIds.length>0){
+        request('', { // 判断并行实施事项是否可选
+          url: ctx + 'rest/check/itemFrontCheck',
+          type: 'get',
+          ContentType: 'application/json',
+          data: {
+            projInfoId: _that.projInfoId,
+            itemVerIds: itemVerIdCoreIds.join(',')
+          },
+        }, function (result) {
+          console.log(result);
+          if (result.success) {
+            _that.itemFrontCheckFlag = true;
+            if (_that.useOneForm == 1) {
+              if (selItemVer.length > 0) { // 已选择并联事项
+                _that.getParallelApplyinstId();// 实例化并联申报  获取一张表单
+              } else {
+                _that.declareStep = 7;
+                _that.saveAndGetMats();
+              }
 
-        // this.getOneFormList(fix_stageid);
-      } else {
-        _that.oneFormDataAllow = true;
-        _that.declareStep = 7;
-        _that.saveAndGetMats();
-        // this.getOneFormList(fix_stageid);
+              // this.getOneFormList(fix_stageid);
+            } else {
+              _that.oneFormDataAllow = true;
+              _that.declareStep = 7;
+              _that.saveAndGetMats();
+              // this.getOneFormList(fix_stageid);
+            }
+          }else {
+            _that.itemFrontCheckFlag = false;
+            _that.preItemCheckkMsg = result.message
+            // _that.preItemCheckkMsg = result.message?result.message:'事项前置检测失败'
+            confirmMsg('前置事项检测不通过', result.message, function(){
+              _that.itemFrontCheckFlag = true;
+              if (_that.useOneForm == 1) {
+                if (selItemVer.length > 0) { // 已选择并联事项
+                  _that.getParallelApplyinstId();// 实例化并联申报  获取一张表单
+                } else {
+                  _that.declareStep = 7;
+                  _that.saveAndGetMats();
+                }
+
+                // this.getOneFormList(fix_stageid);
+              } else {
+                _that.oneFormDataAllow = true;
+                _that.declareStep = 7;
+                _that.saveAndGetMats();
+                // this.getOneFormList(fix_stageid);
+              }
+            },function(){
+              _that.itemFrontCheckFlag = false;
+              return false;
+            },'继续申报','放弃申报', 'error', true);
+          }
+        }, function (msg) {
+
+        })
+      }else {
+
       }
+
+    },
+    oneFormConfirm: function(){
+      var _that = this;
+      confirmMsg('确认信息', '是否已完成一张表单填写？', function(){
+        _that.saveAndGetMats();
+      },function(){
+        return false;
+      },'已完成','继续填写', 'warning', true)
     },
     // 保存并根据阶段ID、情形ID集合、事项版本ID集合获取材料一单清列表数据
     saveAndGetMats: function () {
