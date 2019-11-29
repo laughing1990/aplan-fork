@@ -311,7 +311,6 @@ public class RestImApplyService {
 
         String creater = SecurityContext.getCurrentUserName();
         String rootOrgId = "";
-        String itemVerId = "";
 
         if (StringUtils.isBlank(iteminstId)) {
             List<AeaHiIteminst> iteminsts = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
@@ -319,12 +318,10 @@ public class RestImApplyService {
             AeaHiIteminst iteminst = iteminsts.get(0);
             iteminstId = iteminst.getIteminstId();
             rootOrgId = iteminst.getRootOrgId();
-            itemVerId = iteminst.getItemVerId();
         } else {
             AeaHiIteminst iteminst = aeaHiIteminstService.getAeaHiIteminstById(iteminstId);
             if (null == iteminst) throw new Exception("找不到事项实例信息！");
             rootOrgId = iteminst.getRootOrgId();
-            itemVerId = iteminst.getItemVerId();
         }
 
         //查询所有材料定义
@@ -559,14 +556,22 @@ public class RestImApplyService {
         //查询出流程第一个节点
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstance().getId()).list();
         //保存意见
-        if (!tasks.isEmpty()) {
-            Task task = tasks.get(0);
-            String message = applyData.getComments();
-            bpmTaskService.addTaskComment(task.getId(), task.getProcessInstanceId(), StringUtils.isBlank(message) ? "" : message);//收件意见
-        }
+        if (tasks.isEmpty()) throw new Exception("找不到流程的第一个节点，请检查配置");
+        Task task = tasks.get(0);
+        String message = applyData.getComments();
+        bpmTaskService.addTaskComment(task.getId(), task.getProcessInstanceId(), StringUtils.isBlank(message) ? "" : message);//收件意见
 
-        //挂起当前流程
+        //挂起当前流程，只有上传了服务结果在根据流程来启动
         bpmProcessService.suspendProcessInstanceById(processInstance.getProcessInstance().getId());
+
+        //判断申报来源，如果是中介超市，则推送到预审节点，
+       /* String applySource = applyData.getApplySource();
+        if (StringUtils.isNotBlank(applySource) && "net".equals(applySource)) {
+            taskService.complete(task.getId());
+        } else {
+            //如果是审批系统，则挂起当前流程，只有上传了服务结果在根据流程来启动
+            bpmProcessService.suspendProcessInstanceById(processInstance.getProcessInstance().getId());
+        }*/
 
 
         //6.流程发起后，更新初始事项历史的taskId
