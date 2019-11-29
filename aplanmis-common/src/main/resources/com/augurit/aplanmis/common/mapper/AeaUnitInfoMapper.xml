@@ -320,12 +320,12 @@
                                    APPLICANT_DETAIL_SITE, IDREPRESENTATIVE, IDMOBILE, IDNO, IS_DELETED, CREATER,
                                    CREATE_TIME, MODIFIER, MODIFY_TIME, IS_PRIMARY_UNIT, PARENT_ID, UNIT_INFO_SEQ,
                                    LOGIN_NAME, UNIT_TYPE, LOGIN_PWD, MANAGEMENT_SCOPE, REGISTERED_CAPITAL,
-                                   REGISTER_AUTHORITY, UNIT_NATURE, POSTAL_CODE, IS_IM_UNIT, IMG_URL, IS_OWNER_UNIT,ROOT_ORG_ID,IS_GD)
+                                   REGISTER_AUTHORITY, UNIT_NATURE, POSTAL_CODE, IS_IM_UNIT, IMG_URL, IS_OWNER_UNIT,ROOT_ORG_ID,IS_GD,AUDIT_FLAG)
         values (#{unitInfoId}, #{applicant}, #{idtype}, #{idcard}, #{induCommRegNum} , #{organizationalCode} , #{unifiedSocialCreditCode} ,#{taxpayerNum},#{creditFlagNum}, #{contact}, #{mobile}, #{email},
                 #{applicantDistrict}, #{applicantDetailSite}, #{idrepresentative}, #{idmobile}, #{idno}, #{isDeleted},
                 #{creater}, #{createTime}, #{modifier}, #{modifyTime}, #{isPrimaryUnit}, #{parentId}, #{unitInfoSeq},
                 #{loginName}, #{unitType}, #{loginPwd}, #{managementScope}, #{registeredCapital}, #{registerAuthority},
-                #{unitNature}, #{postalCode}, #{isImUnit}, #{imgUrl}, #{isOwnerUnit},#{rootOrgId},#{isGd})
+                #{unitNature}, #{postalCode}, #{isImUnit}, #{imgUrl}, #{isOwnerUnit},#{rootOrgId},#{isGd},#{auditFlag})
     </insert>
     <!--6 修改实体对象 -->
     <update id="updateAeaUnitInfo" parameterType="AeaUnitInfo">
