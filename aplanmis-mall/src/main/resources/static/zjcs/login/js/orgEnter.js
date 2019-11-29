@@ -494,7 +494,6 @@ var vm = new Vue({
       // if (!_this.enclosureBeforeUpload(file)) {
 
       // }
-        debugger;
       fileLi.forEach(function(item) {
         if (item.raw) {
           if (item.status == 'success') return;
