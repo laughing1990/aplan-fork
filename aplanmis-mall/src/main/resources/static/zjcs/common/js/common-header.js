@@ -151,6 +151,9 @@ var vm = new Vue({
     login: function () {
       window.parent.location.href = ctx + 'supermarket/main/login.html';
     },
+    register: function () {
+      window.parent.location.href = ctx + 'supermarket/agentRegister/index.html';
+    },
     init: function () {
       var _curLoginInfo = JSON.parse(localStorage.getItem('loginInfo'));
       if (_curLoginInfo) {
