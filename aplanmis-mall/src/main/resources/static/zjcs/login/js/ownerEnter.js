@@ -103,7 +103,7 @@ var vm = new Vue({
         applicantDistrict: [
           { required: true, message: '请选择注册地行政区划' },
         ],
-        regionalism: [
+        idrepresentative: [
           { required: true, message: '请输入法定代表人' },
         ],
         idno: [
@@ -323,7 +323,7 @@ var vm = new Vue({
                 idtype: _that.formData.idtype || '',
                 unifiedSocialCreditCode: _that.formData.unifiedSocialCreditCode || '',
                 applicantDistrict: _that.formData.applicantDistrict[_that.formData.applicantDistrict.length - 1] || '',
-                regionalism: _that.formData.regionalism || '',
+                idrepresentative: _that.formData.idrepresentative || '',
                 idno: _that.formData.idno || '',
                 applicantDetailSite: _that.formData.applicantDetailSite || '',
                 managementScope: _that.formData.managementScope || '',
