@@ -151,9 +151,9 @@
                     <li v-for="item in props.row.fileList" class="file-box">
                       <span>{{item.name}}</span>
                       <span class="file-icon-btn">
-                        <span title="预览" class="el-icon-search" @click=""></span>
-                        <span title="下载" class="el-icon-download" @click=""></span>
-                        <span title="删除" class="el-icon-delete" @click=""></span>
+                        <!-- <span title="预览" class="el-icon-search" @click="preview(item)"></span> -->
+                        <!-- <span title="下载" class="el-icon-download" @click="downLoad(item)"></span> -->
+                        <span title="删除" class="el-icon-delete" @click="deleteAttr(props.row.fileList,item)"></span>
                       </span>
                     </li>
                   </ul>
@@ -338,8 +338,8 @@
                     <li v-for="item in props.row.fileList" class="file-box">
                       <span>{{item.name}}</span>
                       <span class="file-icon-btn">
-                        <span title="预览" class="el-icon-search" @click=""></span>
-                        <span title="下载" class="el-icon-download" @click=""></span>
+                        <!-- <span title="预览" class="el-icon-search" @click=""></span> -->
+                        <!-- <span title="下载" class="el-icon-download" @click=""></span> -->
                         <span title="删除" class="el-icon-delete" @click=""></span>
                       </span>
                     </li>
@@ -471,8 +471,8 @@
                     <li v-for="item in props.row.fileList" class="file-box">
                       <span>{{item.name}}</span>
                       <span class="file-icon-btn">
-                        <span title="预览" class="el-icon-search" @click=""></span>
-                        <span title="下载" class="el-icon-download" @click=""></span>
+                        <!-- <span title="预览" class="el-icon-search" @click=""></span> -->
+                        <!-- <span title="下载" class="el-icon-download" @click=""></span> -->
                         <span title="删除" class="el-icon-delete" @click=""></span>
                       </span>
                     </li>
@@ -630,7 +630,7 @@
           <el-table-column prop="name" label="文件名"></el-table-column>
           <el-table-column label="操作" align="center" width="310">
             <template slot-scope="scope">
-              <el-button type="primary" @click="">删除</el-button>
+              <el-button type="primary" @click="deleteFile(scope.row)">删除</el-button>
               <!-- <el-button type="primary" size="mini" @click="">预览</el-button> -->
             </template>
           </el-table-column>
