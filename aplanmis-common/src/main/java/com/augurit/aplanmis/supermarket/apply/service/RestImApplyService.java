@@ -331,10 +331,7 @@ public class RestImApplyService {
         for (MatinstVo vo : matinstVos) {
             String zcqy = vo.getZcqy();//支持容缺
             if (StringUtils.isNotBlank(zcqy) && "1".equals(zcqy)) {
-                requiredPaper = true;
                 continue;
-            } else {
-                requiredPaper = false;
             }
 
             String attIsRequire = vo.getAttIsRequire();
