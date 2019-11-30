@@ -15,10 +15,10 @@ var vm = new Vue({
 			// 审核情况下拉选项
 			auditOptions: [
 				{value: '', label: '请选择'}, {
-					value: '0',
+					value: '2',
 					label: '未审核'
 				}, {
-					value: '2',
+					value: '0',
 					label: '审核不通过'
 				}, {
 					value: '1',
@@ -95,9 +95,9 @@ var vm = new Vue({
 		},
 		registerDeatail: function (row) {
 			var url;
-			if(!row.isImUnit && row.isImUnit==='1') {
+			if(row.isImUnit==='1') {
 				url = ctx + '/supermarket/register/detail.html?unitInfoId=' + row.unitInfoId;//中介机构
-			}else{
+			}else if(row.isOwnerUnit==='1'){
 				url = ctx + '/supermarket/register/ownerDetail.html?unitInfoId=' + row.unitInfoId;//业主
 			}
 			window.location.href = url;
