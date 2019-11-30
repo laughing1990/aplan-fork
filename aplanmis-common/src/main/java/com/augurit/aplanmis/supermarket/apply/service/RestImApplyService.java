@@ -287,6 +287,7 @@ public class RestImApplyService {
             aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(applyinstId, taskId, appinstId, ApplyState.IM_MILESTONE_CONFIRM_CONTRACT.getValue(), null);// 重新上传合同
             aeaImProjPurchaseService.updateProjPurchaseStateAndInsertPurchaseinstState(projPurchaseId, AuditFlagStatus.CONFIRM_CONTRACT, null, opsLinkInfoId, null, taskId);//待上传合同
         }
+        //更新合同状态
 
     }
 
@@ -328,6 +329,14 @@ public class RestImApplyService {
         List<MatinstVo> matinstVos = aeaImProjPurchaseService.listPurchaseMatinst(iteminstId, applyinstId);
         boolean requiredPaper = false;
         for (MatinstVo vo : matinstVos) {
+            String zcqy = vo.getZcqy();//支持容缺
+            if (StringUtils.isNotBlank(zcqy) && "1".equals(zcqy)) {
+                requiredPaper = true;
+                continue;
+            } else {
+                requiredPaper = false;
+            }
+
             String attIsRequire = vo.getAttIsRequire();
             String paperIsRequire = vo.getPaperIsRequire();
             Long dueCopyCount = vo.getDueCopyCount();
@@ -360,8 +369,7 @@ public class RestImApplyService {
 
             this.insertOrUpdateServiceResult(projPurchaseId, "0", creater, rootOrgId);
             //更新申请实例历史状态
-            aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(applyinstId, taskId, appinstId, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), opuWinId);// 已接件并审核
-
+//            aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(applyinstId, taskId, appinstId, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), opuWinId);// 已接件并审核
             //如果中介机构或窗口人员上传了服务结果，则进入服务已完成
             aeaImProjPurchaseService.updateProjPurchaseStateAndInsertPurchaseinstState(projPurchaseId, AuditFlagStatus.SERVICE_FINISH, null, opsLinkInfoId, null, taskId);//服务已完成
             return;
@@ -387,36 +395,6 @@ public class RestImApplyService {
         }
         bpmTaskService.addTaskComment(taskId, task.getProcessInstanceId(), StringUtils.isBlank(message) ? "" : message);//收件意见
         taskService.complete(taskId, new String[]{"zhuanjiapingshen"}, (Map) null);
-    }
-
-    /**
-     * 保存材料输入输出实例
-     *
-     * @param matinstIds 材料实例ID
-     * @param itemVerId  事项版本ID
-     * @param iteminstId 事项实例ID
-     * @param creater    创建人
-     * @return Set<String>
-     * @throws Exception e
-     */
-    private String[] saveItemInoutinst(String[] matinstIds, String itemVerId, String iteminstId, String creater) throws Exception {
-        Set<String> matIds = new HashSet<>();
-        // 保存材料实例---不分情形
-        for (String matinstId : matinstIds) {
-            AeaHiItemMatinst matinst = aeaHiItemMatinstMapper.getAeaHiItemMatinstById(matinstId);
-            if (null == matinst) continue;
-            String matId = matinst.getMatId();
-            matIds.add(matId);
-            List<AeaItemInout> itemInouts = aeaItemInoutMapper.getAeaItemMatByItemVerIdAndMatIdAndStateId(itemVerId, matId, null);
-            if (itemInouts.isEmpty()) continue;
-            AeaItemInout inout = itemInouts.get(0);
-            //保存材料实例---不分情形,重复材料不保存
-            String inoutId = inout.getInoutId();
-            AeaHiItemInoutinst inoutinst = new AeaHiItemInoutinst();
-            inoutinst.buildInoutInst(iteminstId, inoutId, matinstId, creater, inout.getRootOrgId());
-            aeaHiItemInoutinstMapper.insertAeaHiItemInoutinst(inoutinst);
-        }
-        return matIds.toArray(new String[matIds.size()]);
     }
 
     /**
@@ -555,6 +533,7 @@ public class RestImApplyService {
 
         //查询出流程第一个节点
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstance().getId()).list();
+
         //保存意见
         if (tasks.isEmpty()) throw new Exception("找不到流程的第一个节点，请检查配置");
         Task task = tasks.get(0);

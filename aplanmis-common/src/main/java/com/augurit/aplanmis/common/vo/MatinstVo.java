@@ -70,4 +70,7 @@ public class MatinstVo implements Serializable {
     @ApiModelProperty(value = "表单实例id")
     private String forminstId;
 
+    @ApiModelProperty(value = "是否支持容缺 0 否 1是")
+    private String zcqy;
+
 }
