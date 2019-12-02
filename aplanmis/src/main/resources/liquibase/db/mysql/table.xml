@@ -1183,4 +1183,12 @@
             DROP TABLE bsc_att_file;
         </sql>
     </changeSet>
+
+    <changeSet id="201911291438" author="chenzh" failOnError="false">
+        <sql splitStatements="true">
+            ALTER TABLE `aea_par_stage`
+            ADD COLUMN `IS_ALLOW_CHILD_PROJECT_CREATION` char(1) NULL DEFAULT 1 COMMENT '是否允许创建子工程：1 允许，0 禁止' AFTER
+            `ANTICIPATE_TYPE`;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

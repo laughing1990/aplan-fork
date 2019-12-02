@@ -124,7 +124,7 @@
                                 财政资金(%)<el-input v-model="form.purchaseProj.financialFundProportion"
                                     style="width: 63%;"></el-input>
                             </el-col>
-                            <el-col :span="12" v-show="form.purchaseProj.isFinancialFund !== '1'">
+                            <el-col :span="12" v-show="form.purchaseProj.isSocialFund === '1'">
                                 社会资金(%)<el-input v-model="form.purchaseProj.socialFundProportion" style="width: 63%;">
                                 </el-input>
                             </el-col>

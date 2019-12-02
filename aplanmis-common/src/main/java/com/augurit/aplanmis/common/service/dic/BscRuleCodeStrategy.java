@@ -70,6 +70,7 @@ public abstract class BscRuleCodeStrategy {
         if (log.isInfoEnabled()) {
             log.info("Generate Code, codeIc: {}, codeMemo: {}, orgId: {}", codeIc, codeMemo, orgId);
         }
+
         long currentValue;
         BscRuleCode bscRuleCode = getBscRuleCode(codeIc, orgId, codeMemo);
         // 规则编码为空，需要新增一条

@@ -43,7 +43,7 @@
       </div>
       <template v-if="!qualificationTree">
         <!-- 跳转 -->
-        <div class="jump-box" v-if="isShowSignBtn && !(purchaseDetails.expirationDate > new Date().getTime())">
+        <div class="jump-box" v-if="isShowSignBtn">
           <el-button type="primary" @click="jumpToSignPandel">我要报名</el-button>
         </div>
         <!-- 增加提示 -->
@@ -60,11 +60,11 @@
             <div class="icon">
               <i class="el-icon-time"></i>
             </div>
-            <div class="txt" v-if="purchaseDetails.expirationDate < new Date().getTime()">
+            <div class="txt" v-if="!isShowSignBtn">
                 <p>报名结束</p>
             </div>
             <div class="txt" v-else>
-              <p>报名时间</p>
+              <p>报名截止时间</p>
               <p>{{purchaseDetails.expirationDate | formatDateTime}}</p>
             </div>
           </div>
