@@ -386,6 +386,7 @@ var vm = new Vue({
       treeBtnLeft: '',
       childProjText: '', // 子项目工程备注
       childProjName: '', // 子项目工程名称
+        stageFlag: '', //阶段标志
       parentProjInfoId: '', // 父工程id
       loadingLinkMan: false,
       stageId: '',  // 所选阶段ID
@@ -483,6 +484,8 @@ var vm = new Vue({
       fileWinData: [], // 上传窗口上传参数列表
       uploadLogo: '',
       addChildProjShow: false, // 新增子项目input
+        isAllowChildProjectCreation: '1',  //是否允许创建子工程：1 允许，0 禁止
+        dybzspjdxh: [],  //对应国家标准审批阶段
       shareFileList: [], // 共享材料列表
       uploadTableData: [],
       selCoreItems: {}, // 选择分局承办的事项
@@ -2381,6 +2384,20 @@ var vm = new Vue({
       this.optItemShowNum = data.optItemShowNum; // 并行事项展示条数
       this.noptItemShowNum = data.noptItemShowNum; // 并联事项展示条数
       this.parallelApplyinstId = '';
+        this.isAllowChildProjectCreation = data.isAllowChildProjectCreation;
+        this.dybzspjdxh = [];
+        var _that = this;
+        if (data.dybzspjdxh != null) {
+            var _dybzspjdxh = data.dybzspjdxh.split(",");
+            if (_dybzspjdxh.length > 0) {
+                _dybzspjdxh.forEach(function (item) {
+                    if (item != '') {
+                        _that.dybzspjdxh.push(item);
+                    }
+                });
+            }
+        }
+
       if(data&&(data.handWay==0)){
         this.parallelItemsQuestionFlag=false; // 简单合并办理
       }else {
@@ -4108,7 +4125,8 @@ var vm = new Vue({
         isSecond: false,
         parentProjInfoId: _that.parentProjInfoId,
         projName: _that.childProjName,
-        foreignRemark: _that.childProjText
+          foreignRemark: _that.childProjText,
+          stageFlag: _that.stageFlag
       }
       _that.addChildLoading = true;
       request('', {

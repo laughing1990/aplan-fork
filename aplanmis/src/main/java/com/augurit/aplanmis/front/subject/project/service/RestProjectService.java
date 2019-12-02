@@ -3,11 +3,7 @@ package com.augurit.aplanmis.front.subject.project.service;
 import com.augurit.agcloud.bsc.domain.BscDicRegion;
 import com.augurit.agcloud.bsc.mapper.BscDicRegionMapper;
 import com.augurit.agcloud.framework.util.StringUtils;
-import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
-import com.augurit.aplanmis.common.domain.AeaParTheme;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.common.domain.AeaProjLinkman;
-import com.augurit.aplanmis.common.domain.AeaUnitProjLinkman;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaLinkmanInfoMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjLinkmanMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitProjLinkmanMapper;
@@ -163,6 +159,7 @@ public class RestProjectService {
         aeaProjInfo.setParentProjId(childProjectAddVo.getParentProjInfoId());
         aeaProjInfo.setProjName(childProjectAddVo.getProjName());
         aeaProjInfo.setForeignRemark(childProjectAddVo.getForeignRemark());
+        aeaProjInfo.setStageFlag(childProjectAddVo.getStageFlag());
         return aeaProjInfoService.addChildProjInfo(aeaProjInfo, childProjectAddVo.getIsSecond());
     }
 }

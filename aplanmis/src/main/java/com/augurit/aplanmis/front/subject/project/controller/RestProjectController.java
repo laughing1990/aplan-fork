@@ -122,6 +122,10 @@ public class RestProjectController {
     @PostMapping("/add/child")
     public ContentResultForm<ChildProjectVo> addChildProject(ChildProjectAddVo childProjectAddVo) throws Exception {
         Assert.isTrue(StringUtils.isNotBlank(childProjectAddVo.getParentProjInfoId()), "parentProjInfoId is null");
+        //广东模式只允许在第二、三阶段新建项目工程，非广东模式注释此代码
+//        if (StringUtils.isBlank(childProjectAddVo.getStageFlag()) || !("1".equals(childProjectAddVo.getStageFlag()) || "2".equals(childProjectAddVo.getStageFlag()))) {
+//            return new ContentResultForm<>(false, null, "该阶段不允许新建项目工程");
+//        }
         AeaProjInfo child = restProjectService.addChildProject(childProjectAddVo);
         return new ContentResultForm<>(true, ChildProjectVo.from(child, childProjectAddVo.getParentProjInfoId()), "Add child project success.");
     }
@@ -150,20 +154,20 @@ public class RestProjectController {
     @GetMapping("/diagram/status/projInfo1")
     @ApiOperation("根据项目id查看审批全景图， 两种方式可查看：/diagram/status/projInfo?projInfoId=xxx 或者 /diagram/status/projInfo?applyinstId=xxx")
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "projInfoId", value = "项目id", required = false, dataType = "String"),
-        @ApiImplicitParam(name = "applyinstId", value = "申请实例id", required = false, dataType = "String"),
+            @ApiImplicitParam(name = "projInfoId", value = "项目id", required = false, dataType = "String"),
+            @ApiImplicitParam(name = "applyinstId", value = "申请实例id", required = false, dataType = "String"),
     })
     public ModelAndView projectDiagramByProjInfoId(String projInfoId, String applyinstId) throws Exception {
         ModelAndView modelAndView = new ModelAndView("ui-jsp/theme/rappid_proj_view");
         String errorMsg = "";
-        try{
+        try {
             AeaProjInfo aeaProjInfo = null;
-            if(StringUtils.isNotBlank(applyinstId)){
+            if (StringUtils.isNotBlank(applyinstId)) {
                 AeaApplyinstProj aeaApplyinstProj = new AeaApplyinstProj();
                 aeaApplyinstProj.setApplyinstId(applyinstId);
                 List<AeaApplyinstProj> aeaApplyinstProjs = aeaApplyinstProjMapper.listAeaApplyinstProj(aeaApplyinstProj);
                 if (CollectionUtils.isNotEmpty(aeaApplyinstProjs)) {
-                    if(aeaApplyinstProjs.size()<1){
+                    if (aeaApplyinstProjs.size() < 1) {
                         errorMsg = "未查找到相关的申报信息！";
                         modelAndView.addObject("errorMsg", errorMsg);
                         return modelAndView;
@@ -171,11 +175,11 @@ public class RestProjectController {
                     aeaApplyinstProj = aeaApplyinstProjs.get(0);
                     aeaProjInfo = aeaProjInfoService.getAeaProjInfoByProjInfoId(aeaApplyinstProj.getProjInfoId());
                 }
-            }else if(StringUtils.isNotBlank(projInfoId)){
+            } else if (StringUtils.isNotBlank(projInfoId)) {
                 aeaProjInfo = aeaProjInfoService.getAeaProjInfoByProjInfoId(projInfoId);
             }
 
-            if(StringUtils.isBlank(projInfoId) && StringUtils.isBlank(applyinstId)){
+            if (StringUtils.isBlank(projInfoId) && StringUtils.isBlank(applyinstId)) {
                 errorMsg = "参数不能同时为空！";
                 modelAndView.addObject("errorMsg", errorMsg);
                 return modelAndView;
@@ -185,7 +189,7 @@ public class RestProjectController {
                 modelAndView.addObject("projName", aeaProjInfo.getProjName());
                 modelAndView.addObject("projInfoId", aeaProjInfo.getProjInfoId());
 
-                if(globalDiagramStatus == null || StringUtils.isBlank(globalDiagramStatus.getDiagramJson())){
+                if (globalDiagramStatus == null || StringUtils.isBlank(globalDiagramStatus.getDiagramJson())) {
                     errorMsg = "当前项目未绑定主题或所属主题未设置全景图！";
                     modelAndView.addObject("errorMsg", errorMsg);
                     return modelAndView;
@@ -193,7 +197,7 @@ public class RestProjectController {
 
                 List<ZtreeNode> ztreeNodes = aeaProjInfoService.buildProjectTree(aeaProjInfo.getProjInfoId());
                 errorMsg = "";
-                if(ztreeNodes != null){
+                if (ztreeNodes != null) {
                     modelAndView.addObject("errorMsg", errorMsg);
                     modelAndView.addObject("projTree", JsonUtils.toJson(ztreeNodes));
                 }
@@ -204,15 +208,15 @@ public class RestProjectController {
                     modelAndView.addObject("statusList", JsonUtils.toJson(statusList));
                 }
                 return modelAndView;
-            }else{
+            } else {
                 errorMsg = "未查找到相关的项目或未绑定主题！";
                 modelAndView.addObject("errorMsg", errorMsg);
                 log.warn("根据申报实例展示全景图失败, projInfoId: {}", projInfoId);
                 return modelAndView;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             errorMsg = "查询出错！";
-            if(StringUtils.isNotBlank(e.getMessage())){
+            if (StringUtils.isNotBlank(e.getMessage())) {
                 errorMsg = e.getMessage();
             }
             log.error("", e);
@@ -231,17 +235,17 @@ public class RestProjectController {
     public ResultForm projectDiagramByProjInfoIdInter(String projInfoId, String applyinstId) throws Exception {
         ModelAndView view = projectDiagramByProjInfoId(projInfoId, applyinstId);
         ContentResultForm form = new ContentResultForm(true);
-        try{
+        try {
 
             ModelMap modelMap = view.getModelMap();
             form.setContent(view.getModelMap());
             Object errorMsg = modelMap.get("errorMsg");
-            if(errorMsg == null || StringUtils.isNotBlank(errorMsg.toString())){
+            if (errorMsg == null || StringUtils.isNotBlank(errorMsg.toString())) {
                 form.setSuccess(false);
-                form.setMessage(errorMsg==null?"":errorMsg.toString());
+                form.setMessage(errorMsg == null ? "" : errorMsg.toString());
             }
-        }catch (Exception e){
-            log.error("",e);
+        } catch (Exception e) {
+            log.error("", e);
             form.setMessage(e.getMessage());
             form.setSuccess(false);
         }
