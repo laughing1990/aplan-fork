@@ -101,7 +101,7 @@
                             <font color="red">*</font>是否外部流程：
                         </label>
                         <div class="col-9">
-                            <div class="col-sm-10 d-flex" id="isOuterFlow">
+                            <div class="col-sm-10 d-flex" id="isOuterFlow" style="padding-top:7px">
                                 <label class="m-checkbox" ng-show="tabType == 1" style="">
                                     <input ng-model="triggerEvent_task_create" value="0"  name="isOuterFlow" type="radio" class="ng-pristine ng-untouched ng-valid">&nbsp;是&nbsp;&nbsp;&nbsp;&nbsp;
                                     <span></span>
@@ -138,7 +138,7 @@
                             <font color="red">*</font>触发时机：
                         </label>
                         <div class="col-9">
-                            <div class="col-sm-10 d-flex" id="chufa">
+                            <div class="col-sm-10 d-flex" id="chufa" style="padding-top:7px">
 
                             </div>
                         </div>

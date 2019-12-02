@@ -209,21 +209,21 @@
 					<!-- floor1分类申报 end -->
 					<div class="quick-entry margin-top-40">
 						<p class="p-header">快捷入口</p>
-						<ul class="publicity">
-							<li><a target="_blank" th:href="@{/mall/file/tangshan/shortcutEntry/唐政办发（2019）1号唐山市深化工程建设项目审批制度改革实施方案.pdf}">
+						<ul class="publicity clearfix">
+							<li class="fl"><a target="_blank" th:href="@{/mall/file/tangshan/shortcutEntry/唐政办发（2019）1号唐山市深化工程建设项目审批制度改革实施方案.pdf}">
 									<img src="../../static/mall/images/index/entry-icon1.png" th:src="@{/mall/images/index/entry-icon1.png}" alt="" />
 									<p>政策文件</p>
 								</a>
 							</li>
-								<li><a target="_blank" href="/aplanmis-mall/supermarket/main/index.html">
+								<li class="fl"><a target="_blank" href="/aplanmis-mall/supermarket/main/index.html">
 										<img src="../../static/mall/images/index/entry-icon2.png" th:src="@{/mall/images/index/entry-icon2.png}" alt="" />
 										<p>事项清单</p>
 									</a></li>
-							<li><a target="_blank" th:href="@{/mall/file/tangshan/shortcutEntry/流程图.pdf}">
+							<li class="fl"><a target="_blank" th:href="@{/mall/file/tangshan/shortcutEntry/流程图.pdf}">
 									<img src="../../static/mall/images/index/entry-icon3.png" th:src="@{/mall/images/index/entry-icon3.png}" alt="" />
 									<p>改革流程图</p>
 								</a></li>
-							<li><a href="#">
+							<li class="fl"><a href="#">
 									<img src="../../static/mall/images/index/download.png" th:src="@{/mall/images/index/download.png}" alt="" />
 									<p>审批细则</p>
 								</a></li>
@@ -253,7 +253,7 @@
 						<div id="demo" style="overflow: hidden; height: 350px;">
 							<div id="demo1">
 								<table class="wt-table">
-									<div v-if="approveListData.length > 0">
+									<template v-if="approveListData.length > 0">
 											<tr style="height: 50px;" v-for="(item,index) in approveListData">
 												<td width="13%">{{item.applyinstCode}}</td>
 												<td width="17%">{{item.projName}}</td>
@@ -300,12 +300,12 @@
 													<span v-else>-</span>
 												</td>
 											</tr>
-									</div>
-									<div v-else>
+									</template>
+									<template v-else>
 										<tr class="noData">
 											<td colspan="16">暂无审批数据</td>
 										</tr>
-									</div>
+									</template>
 								</table>
 							</div>
 							<div id="demo2">
@@ -316,9 +316,9 @@
 					<!-- floor2审批情况 end -->
 
 					<!-- floor3统计 公告 start -->
-					<div class="floor row-floor margin-top-40">
+					<div class="floor row-floor margin-top-40 clearfix">
 						<!-- 办件统计 start -->
-						<div class="all-pro-done">
+						<div class="all-pro-done fl">
 							<p class="p-header">办件统计</p>
 							<div class="pro-done-item">
 								<div class="count-box clearfix">
@@ -356,10 +356,10 @@
 						</div>
 						<!-- 办件统计 end -->
 						<!-- 公告动态 start -->
-						<div class="news">
+						<div class="news fl">
 							<p class="p-header">审批信息公示</p>
-							<ul class="publicity">
-								<li><a href="javascript:;">
+							<ul class="publicity clearfix">
+								<li class="fl"><a href="javascript:;">
 										<img src="../../static/mall/images/index/approval1.png" th:src="@{/mall/images/index/approval1.png}" alt="" />
 										<p>受理情况</p>
 									</a>
@@ -367,7 +367,7 @@
 										<p  @click="showApprovalPublicity(1)">查看详情</p>
 									</div>
 								</li>
-								<li ><a href="javascript:;">
+								<li class="fl"><a href="javascript:;">
 										<img src="../../static/mall/images/index/approval2.png" th:src="@{/mall/images/index/approval2.png}" alt="" />
 										<p>拟审批意见</p>
 									</a>
@@ -375,7 +375,7 @@
 										<p @click="showApprovalPublicity(2)">查看详情</p>
 									</div>
 								</li>
-								<li ><a href="javascript:;">
+								<li class="fl"><a href="javascript:;">
 										<img src="../../static/mall/images/index/approval3.png" th:src="@{/mall/images/index/approval3.png}" alt="" />
 										<p>审批决定</p>
 									</a>
@@ -540,7 +540,7 @@
 												<span class="applyinstState applyinstState6"
 													  v-else-if="item.applyinstState=='5'">不予受理</span>
 												<span class="applyinstState applyinstState7"
-													  v-else="item.applyinstState=='6'">已办结</span>
+													  v-else-if="item.applyinstState=='6'">已办结</span>
 											</td>
 										</tr>
 									</template>
