@@ -16,6 +16,7 @@ import com.augurit.aplanmis.common.mapper.AeaParentProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitProjMapper;
 import com.augurit.aplanmis.common.service.dic.GcbmBscRuleCodeStrategy;
+import com.augurit.aplanmis.common.service.dic.GdGcbmBscRuleCodeStrategy;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.theme.AeaParThemeService;
 import com.github.pagehelper.Page;
@@ -74,6 +75,9 @@ public class AeaProjInofServiceImpl implements AeaProjInfoService {
 
     @Autowired
     private GcbmBscRuleCodeStrategy gcbmBscRuleCodeStrategy;
+
+    @Autowired
+    private GdGcbmBscRuleCodeStrategy gdGcbmBscRuleCodeStrategy;
 
     @Autowired
     private AeaParThemeService aeaParThemeService;
@@ -397,7 +401,12 @@ public class AeaProjInofServiceImpl implements AeaProjInfoService {
 //                throw new BaseRuntimeException(601, "root节点不能新增项目");
                 return null;
             } else {
-                childGcbm = gcbmBscRuleCodeStrategy.generateCode(parentProj.getLocalCode(), parentProj.getLocalCode(), "工程编码", rootOrgId);
+                //广东模式
+                String childGCBMCode = parentProj.getGcbm() + "-" + aeaProjInfo.getStageFlag();
+                childGcbm = gdGcbmBscRuleCodeStrategy.generateCode(childGCBMCode, childGCBMCode, "工程编码", rootOrgId);
+
+                //非广东模式
+//                childGcbm = gcbmBscRuleCodeStrategy.generateCode(parentProj.getLocalCode(), parentProj.getLocalCode(), "工程编码", rootOrgId);
             }
 
             if (childGcbm != null) {
