@@ -86,7 +86,7 @@ public class OneFormCommonService {
     private FormFrofileVo getFormFrofileVo(String formId, String refEntityId, String projInfoId) {
         FormFrofileVo formFrofileVo = null;
         if (StringUtils.isNotBlank(formId)) {
-            formFrofileVo = new FormFrofileVo()
+            formFrofileVo = new FormFrofileVo();
             ActStoForm actStoForm = actStoFormMapper.getActStoFormById(formId);
             formFrofileVo.setFormId(formId);
             formFrofileVo.setFormName(actStoForm.getFormName());
