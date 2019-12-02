@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="../../../../static/mall/css/common/base_wt.css"
         th:href="@{/mall/css/common/base_wt.css}">
     <style>
+        /* prefixed by https://autoprefixer.github.io (PostCSS: v7.0.23, autoprefixer: v9.7.3) */
+
         #myHomeindex {
             position: relative;
         }
@@ -19,7 +21,11 @@
             width: 930px;
             height: 120px;
             background: url("../../mall/images/userCenter/header-wraper-bg.png") #F8F8F8 no-repeat center;
+            display: -webkit-box;
+            display: -ms-flexbox;
             display: flex;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
             align-items: center;
             margin-bottom: 22px;
         }
@@ -29,8 +35,14 @@
             height: 90px;
             background-color: #ffffff;
             border-radius: 50%;
+            display: -webkit-box;
+            display: -ms-flexbox;
             display: flex;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
             align-items: center;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
             justify-content: center;
             margin-left: 25px;
             position: relative;
@@ -47,16 +59,31 @@
             margin-left: 27px;
             color: #ffffff;
             font-size: 14px;
+            display: -webkit-box;
+            display: -ms-flexbox;
             display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: column;
             flex-direction: column;
         }
 
         .header-wraper .head-user-approval {
             position: absolute;
             right: 80px;
+            top: 15px;
+            display: -webkit-box;
+            display: -ms-flexbox;
             display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: column;
             flex-direction: column;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
             justify-content: center;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
             align-items: center;
             color: #fff;
             font-size: 14px;
@@ -70,6 +97,8 @@
         }
 
         .header-wraper .head-user-info .nickName-des {
+            display: -webkit-box;
+            display: -ms-flexbox;
             display: flex;
         }
 
@@ -90,8 +119,6 @@
             color: #457EFF;
             font-size: 14px;
             text-align: center;
-            -webkit-border-radius: 25px;
-            -moz-border-radius: 25px;
             border-radius: 25px;
             margin-left: 45px;
         }
@@ -171,6 +198,8 @@
         .my-data-box ul.data-list li.data-list-item p {
             position: absolute;
             left: 50%;
+            -webkit-transform: translateX(-50%);
+            -ms-transform: translateX(-50%);
             transform: translateX(-50%);
             bottom: 20px;
             width: 112px;
@@ -227,12 +256,17 @@
             background: rgba(255, 255, 255, 1);
             border: 1px solid rgba(227, 230, 237, 1);
             border-radius: 4px;
+            display: -webkit-box;
+            display: -ms-flexbox;
             display: flex;
             margin-right: 15px;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
             align-items: center;
         }
 
         .my-static-box ul.static-list li.static-list-item img {
+            -ms-flex-negative: 1;
             flex-shrink: 1;
             width: 58px;
             height: 59px;
@@ -291,8 +325,11 @@
             left: -11px;
             top: 50%;
             padding: 2px 15px;
+            -webkit-transform: translateY(-50%);
+            -ms-transform: translateY(-50%);
             transform: translateY(-50%);
             overflow: hidden;
+            -o-text-overflow: ellipsis;
             text-overflow: ellipsis;
             white-space: nowrap;
             word-wrap: normal;

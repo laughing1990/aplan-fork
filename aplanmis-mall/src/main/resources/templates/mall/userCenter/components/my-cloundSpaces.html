@@ -44,10 +44,10 @@
             <div class="userCenterMenList">
                 <ul class="user-pro-list">
                     <li class="user-pro-item pro-appraval "   v-for="(item ,index) in DirTreeData">
-                        <div class="user-pro-item-parent" :class="[item.dirId == dirId ? 'active': '']" @click.stop="getFileList(item);keyword='';handleOpenMenu(item,item.childDirs,index)" @contextmenu.prevent.stop="rigthClickTree($event,item,1)">
+                        <div class="user-pro-item-parent" :class="[item.dirId == dirId ? 'active': '']" @click.stop="getFileList(item);keyword='';" @contextmenu.prevent.stop="rigthClickTree($event,item,1)">
 <!--                            <i :class="[item.open ? '':'close']" class="el-icon-arrow-down" style="margin-right: 5px;"></i>-->
-                            <img v-if="item.open" src="../../../../static/mall/images/userCenter/folder-open-fill.png" th:src="@{/mall/images/userCenter/folder-open-fill.png}" style="margin-right: 8px;" alt="文件夹" align="absmiddle">
-                            <img v-else src="../../../../static/mall/images/userCenter/folder-close-fill.png" th:src="@{/mall/images/userCenter/folder-close-fill.png}" style="margin-right: 8px;" alt="文件夹" align="absmiddle">
+                            <img @click="handleOpenMenu(item,item.childDirs,index)" v-if="item.open" src="../../../../static/mall/images/userCenter/folder-open-fill.png" th:src="@{/mall/images/userCenter/folder-open-fill.png}" style="margin-right: 8px;" alt="文件夹" align="absmiddle">
+                            <img @click="handleOpenMenu(item,item.childDirs,index)" v-else src="../../../../static/mall/images/userCenter/folder-close-fill.png" th:src="@{/mall/images/userCenter/folder-close-fill.png}" style="margin-right: 8px;" alt="文件夹" align="absmiddle">
                             <span :class="hangleIcon(index)">{{item.dirName}}</span>
                         </div>
                         <el-collapse-transition>
@@ -78,8 +78,8 @@
                 <div class="operation-box">
                     <el-button type="primary" :disabled="DirTreeData.length == 0"><i class="ag ag-upload"></i> 上传</el-button>
                     <el-button class="download-btn" :disabled="DirTreeData.length == 0 || FilesMultipleSelection.length == 0" @click="doDownload(1)"><i class="ag ag-download"></i> 下载</el-button>
-                    <el-button class="download-btn" :disabled="DirTreeData.length == 0  || FilesMultipleSelection.length == 0" @click="moveFiles(1)"> <img src="../../../../static/mall/images/userCenter/move.png" style="margin-right: 8px;" th:src="@{/mall/images/userCenter/move.png}" alt="文件夹">移动</el-button>
-                    <el-button type="danger" :disabled="DirTreeData.length == 0  || FilesMultipleSelection.length == 0" plain class="trash-btn" @click="delelteCloundFile(1)"><i class="ag ag-trash"></i> 删除</el-button>
+                    <el-button class="download-btn" :disabled="DirTreeData.length == 0  || FilesMultipleSelection.length == 0" @click="moveFiles(1)">  <img v-if="DirTreeData.length == 0  || FilesMultipleSelection.length == 0" src="../../../../static/mall/images/userCenter/move-hey.png" style="margin-right: 8px;" th:src="@{/mall/images/userCenter/move-hey.png}" alt="" /> <img v-else src="../../../../static/mall/images/userCenter/move.png" style="margin-right: 8px;" th:src="@{/mall/images/userCenter/move.png}" alt="文件夹" />移动</el-button>
+                    <el-button type="danger" :disabled="DirTreeData.length == 0  || FilesMultipleSelection.length == 0"  class="trash-btn" @click="delelteCloundFile(1)"><i class="ag ag-trash"></i> 删除</el-button>
                     <input v-show="DirTreeData.length > 0" type="file" class="upload-file" id="fileMutiply" multiple @change="chooseFile($event)">
                 </div>
                 <div class="search-box">
@@ -215,11 +215,11 @@
                     <el-scrollbar style="height: 100%;">
                         <ul class="user-pro-list">
                             <li class="user-pro-item pro-appraval " v-for="(item ,index) in DirTreeDataCopy">
-                                <div :class="[item.dirId == targetDirId ? 'active': '']"   style="cursor: pointer;margin: 0px auto;padding-left: 15px;padding: 10px;" @click="handleOpenMenu(item,item.childDirs,index);chooseMoveDir(item)">
+                                <div :class="[item.dirId == targetDirId ? 'active': '']"   style="cursor: pointer;margin: 0px auto;padding-left: 15px;padding: 10px;" @click="chooseMoveDir(item)">
                                     <!-- <i :class="[item.open ? '':'close']" class="el-icon-arrow-down" style="margin-right: 5px;"></i>-->
-                                    <div class="add-icon-bg" :class="[item.open ? '':'close']"></div>
-                                    <img v-if="item.open" src="../../../../static/mall/images/userCenter/folder-open-fill.png" th:src="@{/mall/images/userCenter/folder-open-fill.png}" style="margin-right: 8px;" alt="文件夹" align="absmiddle">
-                                    <img v-else src="../../../../static/mall/images/userCenter/folder-close-fill.png" th:src="@{/mall/images/userCenter/folder-close-fill.png}" style="margin-right: 8px;" alt="文件夹" align="absmiddle">
+                                    <div @click="handleOpenMenu(item,item.childDirs,index);" class="add-icon-bg" :class="[item.open ? '':'close']"></div>
+                                    <img @click="handleOpenMenu(item,item.childDirs,index);" v-if="item.open" src="../../../../static/mall/images/userCenter/folder-open-fill.png" th:src="@{/mall/images/userCenter/folder-open-fill.png}" style="margin-right: 8px;" alt="文件夹" align="absmiddle">
+                                    <img @click="handleOpenMenu(item,item.childDirs,index);" v-else src="../../../../static/mall/images/userCenter/folder-close-fill.png" th:src="@{/mall/images/userCenter/folder-close-fill.png}" style="margin-right: 8px;" alt="文件夹" align="absmiddle">
                                     <span :class="hangleIcon(index)">{{item.dirName}}</span>
                                 </div>
                                 <el-collapse-transition>

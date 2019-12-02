@@ -45,6 +45,7 @@
                         <input type="hidden" name="isCheckPartform" value=""/>
                         <input type="hidden" name="isCheckProj" value=""/>
                         <input type="hidden" name="isCheckStage" value=""/>
+                        <input type="hidden" name="isCreateSubproj" value=""/>
 
                         <div id="m_tabs_1_1" class="tab-pane active" role="tabpanel" style="height: 450px;overflow-x: hidden;overflow-y: auto;">
 
@@ -124,7 +125,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group m-form__group row" >
+                            <div class="form-group m-form__group row">
                                 <label class="col-2 col-form-label" style="text-align: right;"></label>
                                 <div class="col-10">
                                     <div class="m-checkbox-inline">
@@ -134,6 +135,21 @@
 
                                         <label id="isShowItemDiv" class="m-checkbox">
                                             <input type="checkbox" name="isShowItem1" onclick="checkboxOnclick('isShowItem1', 'isShowItem', false);">是否允许在线运行图辅线展示事项<span></span>
+                                        </label>
+
+                                        <label id="isCreateSubprojDiv" class="m-checkbox">
+                                            <input type="checkbox" name="isCreateSubproj1" onclick="checkboxOnclick('isCreateSubproj1', 'isCreateSubproj', false);">是否允许创建子工程<span></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="isCreateSubprojDiv2" class="form-group m-form__group row">
+                                <label class="col-2 col-form-label" style="text-align: right;"></label>
+                                <div class="col-10">
+                                    <div class="m-checkbox-inline">
+                                        <label class="m-checkbox">
+                                            <input type="checkbox" name="isCreateSubproj2" onclick="checkboxOnclick('isCreateSubproj2', 'isCreateSubproj', false);">是否允许创建子工程<span></span>
                                         </label>
                                     </div>
                                 </div>

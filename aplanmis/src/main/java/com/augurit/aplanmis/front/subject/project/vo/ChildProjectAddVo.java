@@ -13,6 +13,11 @@ public class ChildProjectAddVo {
     private String projName;
     @ApiModelProperty(value = "是否默认新增一个root下的项目工程 true  在root节点下新增；false:非root节点下新增", required = true, dataType = "boolean", allowableValues = "true, false")
     private Boolean isSecond;
-    @ApiModelProperty(value = "项目备注",dataType = "string")
+    @ApiModelProperty(value = "项目备注", dataType = "string")
     private String foreignRemark;
+
+    //广东模式
+    @ApiModelProperty(value = "1:工程规划阶段，2：施工许可阶段", dataType = "string")
+    private String stageFlag;
+
 }

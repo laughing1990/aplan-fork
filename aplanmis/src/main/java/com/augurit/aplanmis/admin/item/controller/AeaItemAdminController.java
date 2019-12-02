@@ -363,14 +363,21 @@ public class AeaItemAdminController {
      * 是否可以选择标注事项
      *
      * @param basic
-     * @param isCheckCatalogItem
      * @return
      */
     @RequestMapping("/gtreeTestRunOrPublishedItem.do")
-    public List<AeaItem> gtreeTestRunOrPublishedItem(AeaItemBasic basic, Boolean isCheckCatalogItem) {
+    public List<AeaItem> gtreeTestRunOrPublishedItem(AeaItemBasic basic) {
 
         com.github.pagehelper.PageHelper.clearPage();
         List<AeaItem> list = aeaItemAdminService.gtreeTestRunOrPublishedItem(basic);
+        return list;
+    }
+
+    @RequestMapping("/gtreeOkVerItemNoRelSelf.do")
+    public List<AeaItem> gtreeOkVerItemNoRelSelf(AeaItemBasic basic) {
+
+        com.github.pagehelper.PageHelper.clearPage();
+        List<AeaItem> list = aeaItemAdminService.gtreeOkVerItemNoRelSelf(basic);
         return list;
     }
 

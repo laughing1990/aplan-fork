@@ -18,6 +18,8 @@ import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.cert.service.AeaCertMallService;
 import com.augurit.aplanmis.mall.cert.vo.AeaCertVo;
+import com.augurit.aplanmis.mall.cert.vo.AeaCertinstDetailResultVo;
+import com.augurit.aplanmis.mall.cert.vo.AeaCertinstParamVo;
 import com.augurit.aplanmis.mall.cert.vo.BindForminstVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
@@ -30,11 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -184,10 +182,60 @@ public class AeaCertMallController {
             return new ContentResultForm(true,new PageInfo<>(list),"query success！");
         }catch (Exception e){
             logger.debug(e.getMessage(),e);
-            return new ContentResultForm(false,null,"query error！");
+            return new ContentResultForm(false,null,e.getMessage());
         }
     }
 
+
+    @PostMapping("/saveCertint")
+    @ApiOperation(value = "新增或编辑证照实例")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "aeaCertinstParamVo", value = "证照实例", required = true , dataType = "Object" ,paramType = "query"),
+    })
+    public ContentResultForm<AeaHiCertinst> saveCertint(@RequestBody AeaCertinstParamVo aeaCertinstParamVo, HttpServletRequest request){
+        LoginInfoVo loginVo = SessionUtil.getLoginInfo(request);
+        try{
+            AeaHiCertinst certinst = aeaCertService.saveCertint(aeaCertinstParamVo,loginVo);
+            return new ContentResultForm(true,certinst,"save success！");
+        }catch (Exception e){
+            logger.debug(e.getMessage(),e);
+            return new ContentResultForm(false,null,e.getMessage());
+        }
+    }
+
+    @PostMapping("/deleteCertint/{certinstId}")
+    @ApiOperation(value = "删除证照实例(已有用证码的证照不可删除)")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "certinstId", value = "证照实例ID", required = true , dataType = "String" ,paramType = "query"),
+    })
+    public ContentResultForm<String> deleteCertint(@PathVariable String certinstId){
+        Assert.hasText(certinstId, "certinstId must not null.");
+        try{
+            aeaCertService.deleteCertinstById(certinstId);
+            return new ContentResultForm(true,certinstId,"delete success！");
+        }catch (Exception e){
+            logger.debug(e.getMessage(),e);
+            return new ContentResultForm(false,null,e.getMessage());
+        }
+    }
+
+    @PostMapping("/detailCertint/{certinstId}")
+    @ApiOperation(value = "查看证照实例")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "certinstId", value = "证照实例ID", required = true , dataType = "String" ,paramType = "query"),
+    })
+    public ContentResultForm<AeaCertinstDetailResultVo> detailCertint(@PathVariable String certinstId){
+        Assert.hasText(certinstId, "certinstId must not null.");
+        try{
+            AeaCertinstDetailResultVo vo=aeaCertService.getCertinstById(certinstId);
+            return new ContentResultForm(true,vo,"delete success！");
+        }catch (Exception e){
+            logger.debug(e.getMessage(),e);
+            return new ContentResultForm(false,null,e.getMessage());
+        }
+    }
+
+    //约定电子证照文件夹不可编辑，文件夹编号为cert_code_用户ID  文件夹名为 本地电子证照
 
 
 }

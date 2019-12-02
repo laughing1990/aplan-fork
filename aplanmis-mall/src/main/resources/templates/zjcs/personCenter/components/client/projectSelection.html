@@ -55,7 +55,7 @@
                                 @click="editAgreement(scope.row)">编辑合同</a>
                             <a class="a-color4879E4" href="javascript:;" @click="lookAgreement(scope.row)">查看合同</a>
                             <a class="a-color4879E4" href="javascript:;"
-                                v-if="scope.row.contractFlag != 0 && scope.row.isOwnerUpload == 1"
+                                v-if="['0', '2'].indexOf(scope.row.contractFlag) > -1 && scope.row.isOwnerUpload === '1'"
                                 @click="sureAgreement(scope.row)">确认合同</a>
                         </p>
                     </div>
@@ -192,11 +192,12 @@
                 </div>
 
                 <!-- 确认合同需要提交的字段 -->
-                <div style="marginTop: 20px;">
+                <!--确认or审核失败-->
+                <div v-if="['0', '2'].indexOf(curHandelRow.contractFlag) > -1 && ((curHandelRow.isOwnerUpload === '0' && userStatus === '0') || (curHandelRow.isOwnerUpload === '1' && userStatus === '1'))" style="marginTop: 20px;">
                     <div class="form-item">
                         <label><b class="red-cl">*</b>确认结果</label>
                         <div class="input-box">
-                            <el-radio-group v-model="contractDetailObj.confirmFlag" >
+                            <el-radio-group v-model="contractDetailObj.confirmFlag">
                                 <el-radio label="1">有效</el-radio>
                                 <el-radio label="0">无效</el-radio>
                             </el-radio-group>
@@ -212,8 +213,33 @@
                         <label><b class="red-cl">*</b>延期日期</label>
                         <div class="input-box date">
                             <el-date-picker style="width:330px;" type="date" value-format="yyyy-MM-dd"
-                                 placeholder="选择日期"
-                                v-model="contractDetailObj.postponeServiceEndTime">
+                                placeholder="选择日期" v-model="contractDetailObj.postponeServiceEndTime">
+                            </el-date-picker>
+                        </div>
+                    </div>
+                </div>
+                <!--已确认-->
+                <div v-else-if="curHandelRow.contractFlag === '1'" style="marginTop: 20px;">
+                    <div class="form-item">
+                        <label><b class="red-cl">*</b>确认结果</label>
+                        <div class="input-box">
+                            <el-radio-group v-model="contractDetailObj.confirmFlag" disabled="disabled">
+                                <el-radio label="1">有效</el-radio>
+                                <el-radio label="0">无效</el-radio>
+                            </el-radio-group>
+                        </div>
+                    </div>
+                    <div class="form-item">
+                        <label><b class="red-cl">*</b>确认意见</label>
+                        <div class="input-box">
+                            <textarea class="form-control" v-model="contractDetailObj.auditOpinion" disabled="disabled"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-item">
+                        <label><b class="red-cl">*</b>延期日期</label>
+                        <div class="input-box date">
+                            <el-date-picker style="width:330px;" type="date" value-format="yyyy-MM-dd"
+                                placeholder="选择日期" v-model="contractDetailObj.postponeServiceEndTime" disabled="disabled">
                             </el-date-picker>
                         </div>
                     </div>
@@ -252,6 +278,8 @@
             return {
                 // 页面loading
                 mloading: false,
+
+                userStatus: '', // 用户状态（0：中介；1：业主）
 
                 // 当前是否中选的项目详情
                 isProjectSelectDetail: false,
@@ -342,6 +370,9 @@
         },
         methods: {
             init: function () {
+                var loginInfo = localStorage.getItem('loginInfo');
+                this.userStatus = loginInfo ? loginInfo.isOwner : '';
+
                 this.fetchSelectionProjectList();
             },
             // 获取中选的项目的项目列表
@@ -559,7 +590,7 @@
                 request('', {
                     url: _sureUrl,
                     type: 'post',
-                    data: { 
+                    data: {
                         projPurchaseId: ts.contractDetailObj.projPurchaseId,
                         confirmFlag: ts.contractDetailObj.confirmFlag,
                         auditOpinion: ts.contractDetailObj.auditOpinion,
@@ -591,8 +622,8 @@
             // 查看合同操作
             lookAgreement: function (row) {
                 this.isProjectSelectDetail = true;
-                this.isSureHandelRow = false,
-                    this.isLookHandelRow = true; //当前为查看合同
+                this.isSureHandelRow = false;
+                this.isLookHandelRow = true; //当前为查看合同
                 this.curHandelRow = JSON.parse(JSON.stringify(row)); //当前操作行赋值
                 this.fetchEditOrLookContractData(row);
             },

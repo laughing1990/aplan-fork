@@ -50,30 +50,31 @@
         ${alias}.IS_CHECK_PROJ  isCheckProj,
         ${alias}.IS_CHECK_STAGE  isCheckStage,
         ${alias}.ANTICIPATE_DAY  anticipateDay,
-        ${alias}.ANTICIPATE_TYPE  anticipateType
+        ${alias}.ANTICIPATE_TYPE anticipateType,
+        ${alias}.IS_CREATE_SUBPROJ isCreateSubproj
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaParStageById" resultType="AeaParStage">
         select
-        <include refid="allColumns">
-            <property name="alias" value="aps"/>
-        </include>
+            <include refid="allColumns">
+                <property name="alias" value="aps"/>
+            </include>
         from AEA_PAR_STAGE aps
         where aps.STAGE_ID = #{id}
-        and aps.IS_DELETED = '0'
+          and aps.IS_DELETED = '0'
     </select>
 
     <select id="getCompletedStageByProjInfoId" resultType="AeaParStage">
         SELECT
-        <include refid="allColumns">
-            <property name="alias" value="aps"/>
-        </include>
+            <include refid="allColumns">
+                <property name="alias" value="aps"/>
+            </include>
         FROM
-        aea_par_stage aps,
-        aea_hi_par_stageinst ahps,
-        aea_hi_applyinst aha,
-        aea_applyinst_proj aap
+            aea_par_stage aps,
+            aea_hi_par_stageinst ahps,
+            aea_hi_applyinst aha,
+            aea_applyinst_proj aap
         WHERE
         aps.STAGE_ID = ahps.STAGE_ID
         AND aps.IS_DELETED = '0'
@@ -117,136 +118,139 @@
     <!--3 根据条件查询实体list -->
     <select id="listAeaParStage" resultType="AeaParStage">
         select
-        <include refid="allColumns">
-            <property name="alias" value="aps"/>
-        </include>
+            <include refid="allColumns">
+                <property name="alias" value="aps"/>
+            </include>
         from AEA_PAR_STAGE aps
         <where>
             <if test="stageId != null">
-                AND STAGE_ID = #{stageId}
+                and STAGE_ID = #{stageId}
             </if>
             <if test="stageName != null">
-                AND STAGE_NAME = #{stageName}
+                and STAGE_NAME = #{stageName}
             </if>
             <if test="themeVerId != null">
-                AND THEME_VER_ID = #{themeVerId}
+                and THEME_VER_ID = #{themeVerId}
             </if>
             <if test="appId != null">
-                AND APP_ID = #{appId}
+                and APP_ID = #{appId}
             </if>
             <if test="dueNum != null">
-                AND DUE_NUM = #{dueNum}
+                and DUE_NUM = #{dueNum}
             </if>
             <if test="dueUnit != null">
-                AND DUE_UNIT = #{dueUnit}
+                and DUE_UNIT = #{dueUnit}
             </if>
             <if test="sortNo != null">
-                AND SORT_NO = #{sortNo}
+                and SORT_NO = #{sortNo}
             </if>
             <if test="iconCss != null">
-                AND ICON_CSS = #{iconCss}
+                and ICON_CSS = #{iconCss}
             </if>
             <if test="bgCss != null">
-                AND BG_CSS = #{bgCss}
+                and BG_CSS = #{bgCss}
             </if>
             <if test="stageMemo != null">
-                AND STAGE_MEMO = #{stageMemo}
+                and STAGE_MEMO = #{stageMemo}
             </if>
             <if test="isNode != null">
-                AND IS_NODE = #{isNode}
+                and IS_NODE = #{isNode}
             </if>
             <if test="statusCheckUrl != null">
-                AND STATUS_CHECK_URL = #{statusCheckUrl}
+                and STATUS_CHECK_URL = #{statusCheckUrl}
             </if>
             <if test="stageCode != null">
-                AND STAGE_CODE = #{stageCode}
+                and STAGE_CODE = #{stageCode}
             </if>
             <if test="isNeedState != null">
-                AND IS_NEED_STATE = #{isNeedState}
+                and IS_NEED_STATE = #{isNeedState}
             </if>
             <if test="smallImgPath != null">
-                AND SMALL_IMG_PATH = #{smallImgPath}
+                and SMALL_IMG_PATH = #{smallImgPath}
             </if>
             <if test="middleImgPath != null">
-                AND MIDDLE_IMG_PATH = #{middleImgPath}
+                and MIDDLE_IMG_PATH = #{middleImgPath}
             </if>
             <if test="bigImgPath != null">
-                AND BIG_IMG_PATH = #{bigImgPath}
+                and BIG_IMG_PATH = #{bigImgPath}
             </if>
             <if test="hugeImgPath != null">
-                AND HUGE_IMG_PATH = #{hugeImgPath}
+                and HUGE_IMG_PATH = #{hugeImgPath}
             </if>
             <if test="isImgIcon != null">
-                AND IS_IMG_ICON = #{isImgIcon}
+                and IS_IMG_ICON = #{isImgIcon}
             </if>
             <if test="isOptionItem != null">
-                AND IS_OPTION_ITEM = #{isOptionItem}
+                and IS_OPTION_ITEM = #{isOptionItem}
             </if>
             <if test="isSelItem != null">
-                AND IS_SEL_ITEM = #{isSelItem}
+                and IS_SEL_ITEM = #{isSelItem}
             </if>
             <if test="parentId != null">
-                AND PARENT_ID = #{parentId}
+                and PARENT_ID = #{parentId}
             </if>
             <if test="noptItemShowNum != null">
-                AND NOPT_ITEM_SHOW_NUM = #{noptItemShowNum}
+                and NOPT_ITEM_SHOW_NUM = #{noptItemShowNum}
             </if>
             <if test="optItemShowNum != null">
-                AND OPT_ITEM_SHOW_NUM = #{optItemShowNum}
+                and OPT_ITEM_SHOW_NUM = #{optItemShowNum}
             </if>
             <if test="useEl != null">
-                AND USE_EL = #{useEl}
+                and USE_EL = #{useEl}
             </if>
             <if test="stageEl != null">
-                AND STAGE_EL = #{stageEl}
+                and STAGE_EL = #{stageEl}
             </if>
             <if test="isCheckItem != null">
-                AND IS_CHECK_ITEM = #{isCheckItem}
+                and IS_CHECK_ITEM = #{isCheckItem}
             </if>
             <if test="lcbsxlx != null">
-                AND LCBSXLX = #{lcbsxlx}
+                and LCBSXLX = #{lcbsxlx}
             </if>
             <if test="dybzspjdxh != null">
-                AND DYBZSPJDXH = #{dybzspjdxh}
+                and DYBZSPJDXH = #{dybzspjdxh}
             </if>
             <if test="handWay != null">
-                AND HAND_WAY = #{handWay}
+                and HAND_WAY = #{handWay}
             </if>
             <if test="rootOrgId != null">
-                AND ROOT_ORG_ID = #{rootOrgId}
+                and ROOT_ORG_ID = #{rootOrgId}
             </if>
             <if test="isShowItem != null">
-                AND IS_SHOW_ITEM = #{isShowItem}
+                and IS_SHOW_ITEM = #{isShowItem}
             </if>
             <if test="dygjbzfxfw != null">
-                AND DYGJBZFXFW = #{dygjbzfxfw}
+                and DYGJBZFXFW = #{dygjbzfxfw}
             </if>
             <if test="isCheckItemform != null">
-                AND IS_CHECK_ITEMFORM = #{isCheckItemform}
+                and IS_CHECK_ITEMFORM = #{isCheckItemform}
             </if>
             <if test="isCheckPartform != null">
-                AND IS_CHECK_PARTFORM = #{isCheckPartform}
+                and IS_CHECK_PARTFORM = #{isCheckPartform}
             </if>
             <if test="isCheckProj != null">
-                AND IS_CHECK_PROJ = #{isCheckProj}
+                and IS_CHECK_PROJ = #{isCheckProj}
             </if>
             <if test="isCheckStage != null">
-                AND IS_CHECK_STAGE = #{isCheckStage}
+                and IS_CHECK_STAGE = #{isCheckStage}
             </if>
             <if test="anticipateDay != null" >
-                AND    ANTICIPATE_DAY = #{anticipateDay}
+                and ANTICIPATE_DAY = #{anticipateDay}
             </if>
             <if test="anticipateType != null" >
-                AND    ANTICIPATE_TYPE = #{anticipateType}
+                and ANTICIPATE_TYPE = #{anticipateType}
+            </if>
+            <if test="isCreateSubproj != null">
+                and IS_CREATE_SUBPROJ = #{isCreateSubproj}
             </if>
             <if test="keyword != null and keyword !='' ">
-                AND (
-                STAGE_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
-                STAGE_MEMO LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
-                STAGE_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                and (
+                    STAGE_NAME like CONCAT(CONCAT('%',#{keyword}),'%') or
+                    STAGE_MEMO like CONCAT(CONCAT('%',#{keyword}),'%') or
+                    STAGE_CODE like CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
-            AND IS_DELETED = '0'
+            and IS_DELETED = '0'
         </where>
         order by IS_NODE asc, SORT_NO asc, CREATE_TIME asc
     </select>
@@ -298,7 +302,8 @@
             IS_CHECK_PROJ,
             IS_CHECK_STAGE,
             ANTICIPATE_DAY,
-            ANTICIPATE_TYPE
+            ANTICIPATE_TYPE,
+            IS_CREATE_SUBPROJ
         )  values  (
             #{stageId},
             #{stageName},
@@ -344,7 +349,8 @@
             #{isCheckProj},
             #{isCheckStage},
             #{anticipateDay},
-            #{anticipateType}
+            #{anticipateType},
+            #{isCreateSubproj}
         )
     </insert>
 
@@ -487,6 +493,9 @@
             <if test="anticipateType != null" >
                 ANTICIPATE_TYPE = #{anticipateType},
             </if>
+            <if test="isCreateSubproj != null">
+               IS_CREATE_SUBPROJ = #{isCreateSubproj},
+            </if>
         </set>
         where STAGE_ID = #{stageId}
     </update>
@@ -497,10 +506,13 @@
 
     <select id="listAeaParStageByThemeVerId" resultType="AeaParStage">
         select
-        <include refid="allColumns">
-            <property name="alias" value="aps"/>
-        </include>
-        from AEA_PAR_STAGE aps where aps.THEME_VER_ID=#{themeVerId} and aps.IS_DELETED!=1 order By aps.sort_no
+            <include refid="allColumns">
+                <property name="alias" value="aps"/>
+            </include>
+        from AEA_PAR_STAGE aps
+        where aps.THEME_VER_ID=#{themeVerId}
+          and aps.IS_DELETED!=1
+        order By aps.sort_no
     </select>
 
     <select id="getAeaParStageListByIteminstId" resultType="AeaParStage">
@@ -560,6 +572,7 @@
         <result property="isCheckStage" column="IS_CHECK_STAGE"/>
         <result property="anticipateDay" column="ANTICIPATE_DAY"/>
         <result property="anticipateType" column="ANTICIPATE_TYPE"/>
+        <result property="isCreateSubproj" column="IS_CREATE_SUBPROJ"/>
     </resultMap>
 
     <delete id="deleteAeaParStageByIds">
