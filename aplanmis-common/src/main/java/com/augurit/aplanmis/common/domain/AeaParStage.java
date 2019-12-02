@@ -160,7 +160,7 @@ public class AeaParStage implements Serializable {
     private String anticipateType;
 
     @ApiModelProperty(value = "是否允许创建子工程：1 允许，0 禁止")
-    private String isAllowChildProjectCreation;
+    private String isCreateSubproj;
 
 
     /**

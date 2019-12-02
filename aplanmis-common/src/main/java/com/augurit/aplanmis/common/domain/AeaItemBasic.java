@@ -149,7 +149,7 @@ public class AeaItemBasic implements Serializable {
     private String isShare;
 
     //非表字段
-    @ApiModelProperty(value = "审批组织名称")
+    private List<String> notRelItemIds;
     private String orgName;
     private List<AeaItemMat> matList;//事项材料列表
     private String isDone;//是否已办 1 是 0 否
@@ -226,7 +226,9 @@ public class AeaItemBasic implements Serializable {
     private String idCard;//单位证照号码
     private String approveOrgId;//审批部门id
 
-    /* 中介服务事项关联行政事项使用  */
+    /**
+     * 中介服务事项关联行政事项使用
+     */
     private String currItemId;
     private String[] searchItemIds;
     private Boolean isCheck = false;

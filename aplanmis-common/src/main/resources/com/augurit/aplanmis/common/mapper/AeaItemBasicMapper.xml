@@ -1214,8 +1214,18 @@
         )
         <where>
             and aiv.ROOT_ORG_ID = #{rootOrgId}
-            and aiv.item_ver_id = #{itemVerId}
+            and aiv.ITEM_VER_ID = #{itemVerId}
             and aiv.IS_DELETED = '0'
+        </where>
+    </select>
+
+    <select id="getItemBasicNoRelOtherByItemVerId" resultType="AeaItemBasic">
+        select
+            <include refid="aib_allColumns"/>
+        from aea_item_basic aib
+        <where>
+            and aib.ROOT_ORG_ID = #{rootOrgId}
+            and aib.ITEM_VER_ID = #{itemVerId}
         </where>
     </select>
 
@@ -1530,7 +1540,7 @@
         itemVer.ITEM_VER_ID
         left join OPU_OM_ORG org on ( org.ORG_ID = aib.ORG_ID and org.ORG_DELETED = '0' )
         left join AEA_ITEM item on item.ITEM_ID = aib.ITEM_ID
-        left JOIN bsc_dic_region bdr on aib.region_id=bdr.region_id
+        left join bsc_dic_region bdr on aib.region_id=bdr.region_id
         <where>
             and aib.ROOT_ORG_ID = #{rootOrgId}
             <if test="itemBasicId != null and itemBasicId!='' ">
@@ -1572,50 +1582,20 @@
             <if test="sendResultMode != null">
                 and aib.SEND_RESULT_MODE = #{sendResultMode}
             </if>
-            <if test="docTemplate != null">
-                and aib.DOC_TEMPLATE = #{docTemplate}
-            </if>
-            <if test="applyTableDemo != null">
-                and aib.APPLY_TABLE_DEMO = #{applyTableDemo}
-            </if>
-            <if test="applyTableTemplate != null">
-                and aib.APPLY_TABLE_TEMPLATE = #{applyTableTemplate}
-            </if>
             <if test="standardItemCode != null">
                 and aib.STANDARD_ITEM_CODE = #{standardItemCode}
             </if>
             <if test="itemMemo != null and itemMemo!='' ">
                 and aib.ITEM_MEMO = #{itemMemo}
             </if>
-            <if test="creater != null and creater!='' ">
-                and aib.CREATER = #{creater}
-            </if>
-            <if test="createTime != null">
-                and aib.CREATE_TIME = #{createTime}
-            </if>
-            <if test="modifier != null and modifier!='' ">
-                and aib.MODIFIER = #{modifier}
-            </if>
-            <if test="modifyTime != null">
-                and aib.MODIFY_TIME = #{modifyTime}
-            </if>
             <if test="appId != null and appId!='' ">
                 and aib.APP_ID = #{appId}
-            </if>
-            <if test="itemDirId != null and itemDirId!='' ">
-                and aib.ITEM_DIR_ID = #{itemDirId}
             </if>
             <if test="innerAppId != null and innerAppId!='' ">
                 and aib.INNER_APP_ID = #{innerAppId}
             </if>
             <if test="itemProperty != null and itemProperty!='' ">
                 and aib.ITEM_PROPERTY = #{itemProperty}
-            </if>
-            <if test="directorycode != null and directorycode!='' ">
-                and aib.DIRECTORYCODE =#{directorycode}
-            </if>
-            <if test="directoryId != null and directoryId!='' ">
-                and aib.DIRECTORY_ID =#{directoryId}
             </if>
             <if test="basecode != null and basecode!='' ">
                 and aib.BASECODE =#{basecode}
@@ -1695,12 +1675,6 @@
             <if test="outerSystemUrl != null">
                 and aib.OUTER_SYSTEM_URL = #{outerSystemUrl}
             </if>
-            <if test="isAsyn != null">
-                and aib.IS_ASYN = #{isAsyn}
-            </if>
-            <if test="asynTime != null">
-                and aib.ASYN_TIME = #{asynTime}
-            </if>
             <if test="isLocal != null and isLocal!='' ">
                 and aib.IS_LOCAL = #{isLocal}
             </if>
@@ -1745,23 +1719,29 @@
                 and aib.REGION_ID = #{regionId}
             </if>
             <if test="regionIds != null and regionIds.length > 0 ">
-                and aib.REGION_ID IN
+                and aib.REGION_ID in
                 <foreach collection="regionIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="searchItemIds != null and searchItemIds.length > 0 ">
+                and aib.ITEM_ID in
+                <foreach collection="searchItemIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="notRelItemIds != null and notRelItemIds.size() > 0 ">
+                and aib.ITEM_ID not in
+                <foreach collection="notRelItemIds" item="id" open="(" close=")" separator=",">
                     #{id}
                 </foreach>
             </if>
             <if test="keyword!=null and keyword!='' ">
                 and (
-                aib.ITEM_CODE like concat('%',concat(#{keyword},'%')) or
-                aib.ITEM_NAME like concat('%',concat(#{keyword},'%')) or
-                aib.ITEM_MEMO like concat('%',concat(#{keyword},'%'))
+                    aib.ITEM_CODE like concat('%',concat(#{keyword},'%')) or
+                    aib.ITEM_NAME like concat('%',concat(#{keyword},'%')) or
+                    aib.ITEM_MEMO like concat('%',concat(#{keyword},'%'))
                 )
-            </if>
-            <if test="searchItemIds != null and searchItemIds.length > 0 ">
-                and aib.ITEM_ID IN
-                <foreach collection="searchItemIds" item="id" open="(" close=")" separator=",">
-                    #{id}
-                </foreach>
             </if>
         </where>
         order by org.ORG_LEVEL asc, org.ORG_SORT_NO asc, aib.CREATE_TIME desc

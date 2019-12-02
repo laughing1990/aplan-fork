@@ -291,6 +291,69 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
         return allNodes;
     }
 
+    @Override
+    public List<AeaItem> gtreeOkVerItemNoRelSelf(AeaItemBasic basic){
+
+        List<AeaItem> allNodes = new ArrayList<>();
+        String title = "工程建设审批事项库";
+        AeaItem rootNode = new AeaItem();
+        rootNode.setId("root");
+        rootNode.setName(title);
+        rootNode.setType("root");
+        rootNode.setOpen(true);
+        rootNode.setIsParent(true);
+        rootNode.setNocheck(true);
+        allNodes.add(rootNode);
+
+        // 获取当前用户数据
+        String rootOrgId = SecurityContext.getCurrentOrgId();
+        String itemVerId = basic.getItemVerId();
+        List<String> notRelItemIds = new ArrayList<>();
+        if(StringUtils.isNotBlank(itemVerId)) {
+            AeaItemBasic curItemBasic = aeaItemBasicMapper.getItemBasicNoRelOtherByItemVerId(itemVerId, rootOrgId);
+            if(curItemBasic!=null){
+                String curItemId = curItemBasic.getItemId();
+                if(StringUtils.isNotBlank(curItemId)){
+                    // 获取子级
+                    List<AeaItem> childItems = aeaItemMapper.listAllChildItem(curItemId, rootOrgId);
+                    if(childItems!=null&&childItems.size()>0){
+                        for(AeaItem child:childItems){
+                            notRelItemIds.add(child.getItemId());
+                        }
+                    }
+                    // 获取父级和自己
+                    AeaItem curItem = aeaItemMapper.getAeaItemById(curItemId);
+                    if(curItem!=null){
+                        String itemSeq = curItem.getItemSeq();
+                        if(StringUtils.isNotBlank(itemSeq)){
+                            String[] itemIds = itemSeq.split("\\.");
+                            if(itemIds!=null&&itemIds.length>0){
+                                for(String vo:itemIds){
+                                    if(StringUtils.isNotBlank(vo)){
+                                        notRelItemIds.add(vo);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // 所有最新版本事项,没有考虑是否发布
+        basic.setItemVerId(null);
+        basic.setRootOrgId(rootOrgId);
+        basic.setNotRelItemIds(notRelItemIds);
+        List<AeaItemBasic> allItems = aeaItemBasicMapper.listLatestOkAeaItemBasic(basic);
+        if(allItems!=null&&allItems.size()>0){
+            for(AeaItemBasic itemBasic : allItems){
+                AeaItem item = convertItemNode(itemBasic);
+                allNodes.add(item);
+            }
+        }
+        return allNodes;
+    }
+
     /**
      * 转换事项节点
      *

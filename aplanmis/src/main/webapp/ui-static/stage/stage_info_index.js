@@ -429,6 +429,8 @@ function addParStage(isNode) {
 
             if(isNode=='1'){
 
+                $('#isCreateSubprojDiv').show();
+                $('#isCreateSubprojDiv2').hide();
                 $('#isShowItemDiv').hide();
                 $('#dybzfxfwDiv').hide();
                 $('#add_stage_form input[name="isShowItem1"]').prop("checked", true);
@@ -437,6 +439,8 @@ function addParStage(isNode) {
 
             }else if(isNode=='2'){
 
+                $('#isCreateSubprojDiv').hide();
+                $('#isCreateSubprojDiv2').show();
                 $('#isShowItemDiv').show();
                 $('#dybzfxfwDiv').show();
                 $('#add_stage_form input[name="isShowItem1"]').prop("checked", false);
@@ -454,6 +458,9 @@ function addParStage(isNode) {
 
             $("#add_stage_form input[name='lcbsxlx'][value='1']").prop("checked", true);
             $("#add_stage_form input[name='handWay'][value='1']").prop("checked", true);
+
+            $('#add_stage_form input[name="isCreateSubproj1"]').prop("checked", false);
+            $('#add_stage_form input[name="isCreateSubproj"]').val('0');
 
             $('#stageElDiv').hide();
             $("#add_stage_form select[name='dueUnit'] option:eq(1)").prop("selected", 'selected');
@@ -497,11 +504,15 @@ function editParStage(stageId, isNode) {
 
     if(isNode=='1'){
 
+        $('#isCreateSubprojDiv').show();
+        $('#isCreateSubprojDiv2').hide();
         $('#isShowItemDiv').hide();
         $('#dybzfxfwDiv').hide();
 
     }else if(isNode=='2'){
 
+        $('#isCreateSubprojDiv').hide();
+        $('#isCreateSubprojDiv2').show();
         $('#isShowItemDiv').show();
         $('#dybzfxfwDiv').show();
     }
@@ -608,6 +619,12 @@ function editParStage(stageId, isNode) {
                         $('#add_stage_form input[name="isCheckStage1"]').prop("checked", true);
                     }else{
                         $('#add_stage_form input[name="isCheckStage1"]').prop("checked", false);
+                    }
+
+                    if(data.isCreateSubproj=='1'){
+                        $('#add_stage_form input[name="isCreateSubproj2"]').prop("checked", true);
+                    } else {
+                        $('#add_stage_form input[name="isCreateSubproj2"]').prop("checked", false);
                     }
 
                     if (data.dybzspjdxh){
