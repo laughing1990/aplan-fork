@@ -484,7 +484,7 @@ var vm = new Vue({
       fileWinData: [], // 上传窗口上传参数列表
       uploadLogo: '',
       addChildProjShow: false, // 新增子项目input
-        isAllowChildProjectCreation: '1',  //是否允许创建子工程：1 允许，0 禁止
+        isCreateSubproj: '1',  //是否允许创建子工程：1 允许，0 禁止
         dybzspjdxh: [],  //对应国家标准审批阶段
       shareFileList: [], // 共享材料列表
       uploadTableData: [],
@@ -2385,18 +2385,20 @@ var vm = new Vue({
       this.optItemShowNum = data.optItemShowNum; // 并行事项展示条数
       this.noptItemShowNum = data.noptItemShowNum; // 并联事项展示条数
       this.parallelApplyinstId = '';
-        this.isAllowChildProjectCreation = data.isAllowChildProjectCreation;
+        this.isCreateSubproj = data.isCreateSubproj;
         this.dybzspjdxh = [];
         var _that = this;
         if (data.dybzspjdxh != null) {
-            var _dybzspjdxh = data.dybzspjdxh.split(",");
-            if (_dybzspjdxh.length > 0) {
-                _dybzspjdxh.forEach(function (item) {
-                    if (item != '') {
-                        _that.dybzspjdxh.push(item);
-                    }
-                });
-            }
+            // ---------广东模式需放开以下注释 start----------
+            /*    var _dybzspjdxh = data.dybzspjdxh.split(",");
+                if (_dybzspjdxh.length > 0) {
+                    _dybzspjdxh.forEach(function (item) {
+                        if (item != '') {
+                            _that.dybzspjdxh.push(item);
+                        }
+                    });
+                }   */
+            // ---------广东模式需放开以下注释 end----------
         }
 
       if(data&&(data.handWay==0)){
