@@ -1450,7 +1450,7 @@ var module1 = new Vue({
       }
 
       request('', {
-        url: ctx + '/rest/userCenter/apply/intelligent/theme/list/' + _that.factorIds,
+        url: ctx + 'rest/userCenter/apply/intelligent/theme/list/' + _that.factorIds,
         type: 'get',
         data: { factorIds: _that.factorIds }
       }, function (res) {
@@ -1459,11 +1459,27 @@ var module1 = new Vue({
             message: '保存成功',
             type: 'success'
           });
-          if (res.content != null && res.content != "" &&
-            res.content.themeId != null && res.content.themeId != "") {
+          if (res.content != null && res.content != "" && res.content.themeId != null && res.content.themeId != "") {
+            var allThemeList = _that.themeTypeList.mainLine.concat(_that.themeTypeList.auxiLine);
+            var allThemeListLen = allThemeList.length;
             _that.themeActive = res.content.themeId;
             _that.itemTabSelect = 'tab_' + res.content.themeType;
+            _that.selThemeInfo = res.content;
             _that.declareStep = 3;
+            for(i=0;i<allThemeListLen;i++){
+              if(allThemeList[i].themeTypeCode==res.content.themeType){
+                var themesLen = allThemeList[i].themeList.length;
+                for(var j=0;j<themesLen;j++){
+                  if(allThemeList[i].themeList[j].themeId==res.content.themeId){
+                    _that.selThemeInfo = allThemeList[i].themeList[j];
+                    _that.themeName = _that.selThemeInfo.themeName;
+                    _that.themeId = _that.selThemeInfo.themeId;
+                    return false;
+                  }
+                }
+                return false;
+              }
+            }
           } else {
             alertMsg('当前未定位到主题，可重新选择引导选项或跳过此步直接人工定位主题');
           }
