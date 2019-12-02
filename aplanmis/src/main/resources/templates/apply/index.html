@@ -1390,6 +1390,11 @@
             </el-input>
             <el-input :inline="true" placeholder="请输入子项目工程备注" v-model="childProjText">
             </el-input>
+              <el-select v-if="dybzspjdxh.length > 1" v-model="stageFlag">
+                  <el-option v-for="item in dybzspjdxh"
+                             :label="item=='1'?'立项用地阶段':item=='2'?'规划许可阶段':item=='3'?'施工许可阶段':item=='4'?'竣工验收阶段':'并行推进'"
+                             :value="item"></el-option>
+              </el-select>
             <el-button type="primary" :loading="addChildLoading" @click="saveAddChildProj()">确认</el-button>
             <el-button type="danger" @click="addChildProjShow=false">取消</el-button>
           </div>
@@ -1406,7 +1411,8 @@
             </span>
           </el-tree>
           <div class="tree-right-btn" v-show="treeRightBtnList" :style="{top:treeBtnTop+'px',left:treeBtnLeft+'px'}">
-            <a href="javascript:void(0);" class="list-group-item" @click="addChildChildProj();">
+              <a href="javascript:void(0);" class="list-group-item" @click="addChildChildProj();"
+                 v-if="isAllowChildProjectCreation=='1'">
               <i class="el-icon-circle-plus-outline"></i>新增子工程
             </a>
             <a href="javascript:void(0);" class="list-group-item" @click="delChildChildProj();">

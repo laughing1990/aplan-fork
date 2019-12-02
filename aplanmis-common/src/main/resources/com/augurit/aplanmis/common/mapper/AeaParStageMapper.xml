@@ -50,7 +50,8 @@
         ${alias}.IS_CHECK_PROJ  isCheckProj,
         ${alias}.IS_CHECK_STAGE  isCheckStage,
         ${alias}.ANTICIPATE_DAY  anticipateDay,
-        ${alias}.ANTICIPATE_TYPE  anticipateType
+        ${alias}.ANTICIPATE_TYPE anticipateType,
+        ${alias}.IS_ALLOW_CHILD_PROJECT_CREATION isAllowChildProjectCreation
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
@@ -239,6 +240,9 @@
             <if test="anticipateType != null" >
                 AND    ANTICIPATE_TYPE = #{anticipateType}
             </if>
+            <if test="isAllowChildProjectCreation != null">
+                AND IS_ALLOW_CHILD_PROJECT_CREATION = #{isAllowChildProjectCreation}
+            </if>
             <if test="keyword != null and keyword !='' ">
                 AND (
                 STAGE_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
@@ -298,7 +302,8 @@
             IS_CHECK_PROJ,
             IS_CHECK_STAGE,
             ANTICIPATE_DAY,
-            ANTICIPATE_TYPE
+        ANTICIPATE_TYPE,
+        IS_ALLOW_CHILD_PROJECT_CREATION
         )  values  (
             #{stageId},
             #{stageName},
@@ -344,7 +349,8 @@
             #{isCheckProj},
             #{isCheckStage},
             #{anticipateDay},
-            #{anticipateType}
+        #{anticipateType},
+        #{isAllowChildProjectCreation}
         )
     </insert>
 
@@ -487,6 +493,9 @@
             <if test="anticipateType != null" >
                 ANTICIPATE_TYPE = #{anticipateType},
             </if>
+            <if test="isAllowChildProjectCreation != null">
+                IS_ALLOW_CHILD_PROJECT_CREATION = #{isAllowChildProjectCreation}
+            </if>
         </set>
         where STAGE_ID = #{stageId}
     </update>
@@ -560,6 +569,7 @@
         <result property="isCheckStage" column="IS_CHECK_STAGE"/>
         <result property="anticipateDay" column="ANTICIPATE_DAY"/>
         <result property="anticipateType" column="ANTICIPATE_TYPE"/>
+        <result property="isAllowChildProjectCreation" column="IS_ALLOW_CHILD_PROJECT_CREATION"/>
     </resultMap>
 
     <delete id="deleteAeaParStageByIds">

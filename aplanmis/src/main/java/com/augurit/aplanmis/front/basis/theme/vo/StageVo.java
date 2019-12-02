@@ -66,6 +66,9 @@ public class StageVo {
     @ApiModelProperty(value = "法定办结时限单位")
     protected String anticipateType;
 
+    @ApiModelProperty(value = "是否允许创建子工程：1 允许，0 禁止")
+    protected String isAllowChildProjectCreation;
+
     public StageVo() {
         this.helperStages = new ArrayList<>();
     }
@@ -93,6 +96,7 @@ public class StageVo {
         stageVo.setDybzspjdxh(aeaParStage.getDybzspjdxh());
         stageVo.setAnticipateDay(aeaParStage.getAnticipateDay());
         stageVo.setAnticipateType(aeaParStage.getAnticipateType());
+        stageVo.setIsAllowChildProjectCreation(aeaParStage.getIsAllowChildProjectCreation());
         return stageVo;
     }
 }
