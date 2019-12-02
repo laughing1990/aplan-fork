@@ -4047,6 +4047,9 @@ var module1 = new Vue({
             });
           }
           item.disabled = false;
+          if(item.carryOutItems&&item.carryOutItems.length==0){
+            item.notRegionData = true;
+          }
         } else {
           item.orgId = '';
           item.orgName = '';

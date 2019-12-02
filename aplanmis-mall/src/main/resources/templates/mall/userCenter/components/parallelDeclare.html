@@ -1067,7 +1067,7 @@
       <el-table-column label="行政区划" width="200" >
         <template slot-scope="scope">
           <div v-if="scope.row.isCatalog==1">
-            <template v-if="scope.row.carryOutItems.length">
+            <template v-if="scope.row.carryOutItems&&scope.row.carryOutItems.length>0">
               <el-select :disabled="scope.row.disabled" v-model="scope.row.itemVerId"
                         placeholder="请选择活动区域">
                 <el-option v-for="(item,indexOp) in scope.row.carryOutItems"
@@ -1089,7 +1089,9 @@
       </el-table-column>
       <el-table-column label="办事指南" width="85" align="center">
         <template slot-scope="scope">
-          <a v-if="!scope.row.carryOutItems.length" href="javascript:;" class="guid-icon handel-icon disabled"></a>
+          <!--<a v-if="!(scope.row.carryOutItems&&scope.row.carryOutItems.length>0)" href="javascript:;" class="guid-icon handel-icon disabled"></a>-->
+
+          <a v-if="scope.row.notRegionData" href="javascript:;" class="guid-icon handel-icon disabled"></a>
           <a v-else href="javascript:;" class="guid-icon handel-icon" @click="goToBszn(scope.row)"></a>
         </template>
       </el-table-column>
@@ -1097,7 +1099,7 @@
         <template slot-scope="scope">
           <a v-if="scope.row.notRegionData" href="javascript:;" class="sign-icon handel-icon disabled"></a>
           <!--行政区划下拉选项没值时，禁止操作办事指南，单项申报-->
-          <a v-else-if="!scope.row.carryOutItems.length" href="javascript:;" class="sign-icon handel-icon disabled"></a>
+          <!--<a v-else-if="!(scope.row.carryOutItems&&scope.row.carryOutItems.length>0)" href="javascript:;" class="sign-icon handel-icon disabled"></a>-->
           <a v-else href="javascript:;" class="sign-icon handel-icon" @click="goToSingleDeclare(scope.row.itemVerId)"></a>
         </template>
       </el-table-column>
@@ -1193,6 +1195,7 @@
       </el-table-column>
       <el-table-column label="办事指南" width="85" align="center">
         <template slot-scope="scope">
+          <a v-if="scope.row.notRegionData" href="javascript:;" class="guid-icon handel-icon disabled"></a>
           <a href="javascript:;" class="guid-icon handel-icon" @click="goToBszn(scope.row)"></a>
         </template>
       </el-table-column>
