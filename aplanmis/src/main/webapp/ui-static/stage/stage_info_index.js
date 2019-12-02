@@ -384,7 +384,8 @@ function addParStage(isNode) {
                 title = "技术审查线";
             }
             $('#add_stage_modal_title').html('新增' + title);
-            $('#add_stage_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
+            $('#m_tabs_1_1').animate({scrollTop: 0}, 800);//滚动到顶部
+            $('#m_tabs_1_2').animate({scrollTop: 0}, 800);//滚动到顶部
             $('#add_stage_form')[0].reset();
             if(add_stage_validator!=null) {
                 $("#add_stage_form").validate().resetForm();
@@ -435,6 +436,9 @@ function addParStage(isNode) {
                 $('#dybzfxfwDiv').hide();
                 $('#add_stage_form input[name="isShowItem1"]').prop("checked", true);
                 $('#add_stage_form input[name="isShowItem"]').val('1');
+                $('#add_stage_form input[name="isCreateSubproj1"]').prop("checked", false);
+                $('#add_stage_form input[name="isCreateSubproj2"]').prop("checked", false);
+                $('#add_stage_form input[name="isCreateSubproj"]').val('0');
                 $('#add_stage_form input[name="dygjbzfxfw"]').rules("remove");
 
             }else if(isNode=='2'){
@@ -445,6 +449,9 @@ function addParStage(isNode) {
                 $('#dybzfxfwDiv').show();
                 $('#add_stage_form input[name="isShowItem1"]').prop("checked", false);
                 $('#add_stage_form input[name="isShowItem"]').val('0');
+                $('#add_stage_form input[name="isCreateSubproj1"]').prop("checked", false);
+                $('#add_stage_form input[name="isCreateSubproj2"]').prop("checked", false);
+                $('#add_stage_form input[name="isCreateSubproj"]').val('0');
                 $('#add_stage_form input[name="dygjbzfxfw"]').rules("add", {
                     required: true,
                     messages: {
@@ -458,9 +465,6 @@ function addParStage(isNode) {
 
             $("#add_stage_form input[name='lcbsxlx'][value='1']").prop("checked", true);
             $("#add_stage_form input[name='handWay'][value='1']").prop("checked", true);
-
-            $('#add_stage_form input[name="isCreateSubproj1"]').prop("checked", false);
-            $('#add_stage_form input[name="isCreateSubproj"]').val('0');
 
             $('#stageElDiv').hide();
             $("#add_stage_form select[name='dueUnit'] option:eq(1)").prop("selected", 'selected');
@@ -525,7 +529,9 @@ function editParStage(stageId, isNode) {
         $('#add_stage_modal_title').html('查看' + title);
     }
 
-    $('#add_stage_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
+    $('#m_tabs_1_1').animate({scrollTop: 0}, 800);//滚动到顶部
+    $('#m_tabs_1_2').animate({scrollTop: 0}, 800);//滚动到顶部
+
     $('#add_stage_form')[0].reset();
     if(add_stage_validator!=null) {
         $("#add_stage_form").validate().resetForm();
@@ -622,8 +628,12 @@ function editParStage(stageId, isNode) {
                     }
 
                     if(data.isCreateSubproj=='1'){
+
+                        $('#add_stage_form input[name="isCreateSubproj1"]').prop("checked", true);
                         $('#add_stage_form input[name="isCreateSubproj2"]').prop("checked", true);
                     } else {
+
+                        $('#add_stage_form input[name="isCreateSubproj1"]').prop("checked", false);
                         $('#add_stage_form input[name="isCreateSubproj2"]').prop("checked", false);
                     }
 
