@@ -292,11 +292,13 @@ var module1 = new Vue({
 		}
 	},
 	methods: {
-		// 清空表单填写过的数据
+		// 清空表单填写过的数据,并初始化配置数据
 		resetForm: function() {			
 			this.form = new Object();
 			this.form.isDiscloseIm = '1';
 			this.form.isDiscloseBidding = '1';
+			this.form.approvalCode = '';
+			this.form.isApproveProj = '1';
 
 			this.isQualRequire = false;
 			this.isRegisterRequire = false;
