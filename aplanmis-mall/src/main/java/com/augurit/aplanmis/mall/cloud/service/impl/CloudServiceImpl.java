@@ -11,6 +11,7 @@ import com.augurit.agcloud.bsc.sc.att.service.BscAttDirService;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.mapper.AeaHiItemMatinstMapper;
+import com.augurit.aplanmis.common.service.cloud.BscCloudCommonService;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
@@ -27,9 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CloudServiceImpl implements CloudService {
@@ -48,6 +48,8 @@ public class CloudServiceImpl implements CloudService {
     private FileUtilsService fileUtilsService;
     @Autowired
     private BscAttDetailMapper bscAttDetailMapper;
+    @Autowired
+    private BscCloudCommonService bscCloudCommonService;
 
     @Override
     public AttAndDirVo getMyCloudRootDirAndAttList(String unitInfoId, String userInfoId) throws Exception{
@@ -293,4 +295,51 @@ public class CloudServiceImpl implements CloudService {
             }
         }
     }
+
+
+    @Override
+    public String uploadCertFile(HttpServletRequest request) throws Exception {
+        String dirId=null;
+        LoginInfoVo user = SessionUtil.getLoginInfo(request);
+        if(user!=null) {
+            if ("1".equals(user.getIsPersonAccount())) {//个人
+                dirId=createDirId(null,user.getUserId());
+                fileUtilsService.uploadAttachments("AEA_LINKMAN_INFO", "LINKMAN_INFO_ID", user.getUserId(), dirId, request);
+            } else if (StringUtils.isNotBlank(user.getUserId())) {//委托人
+                dirId= createDirId(null,user.getUserId());
+                fileUtilsService.uploadAttachments("AEA_LINKMAN_INFO", "LINKMAN_INFO_ID", user.getUserId(),dirId , request);
+            } else {//企业
+                dirId=createDirId(user.getUnitId(),null);
+                fileUtilsService.uploadAttachments("AEA_UNIT_INFO", "UNIT_INFO_ID", user.getUnitId(),  dirId, request);
+            }
+        }
+        //根据dirId查询link值
+        BscAttLink query=new BscAttLink();
+        query.setDirId(dirId);
+        List<BscAttLink> linkL = bscAttMapper.listBscAttLink(query);
+        if(linkL.size()>0) return linkL.get(0).getLinkId();
+        return "";
+    }
+
+    private String createDirId(String unitInfoId,String linkmanInfoId) throws Exception {
+        String tableName=null;
+        String pkName=null;
+        String recordId=null;
+        if (StringUtils.isNotBlank(unitInfoId)){//单位
+            tableName="AEA_UNIT_INFO";
+            pkName="UNIT_INFO_ID";
+            recordId=unitInfoId;
+        }else {
+            tableName="AEA_LINKMAN_INFO";
+            pkName="LINKMAN_INFO_ID";
+            recordId=linkmanInfoId;
+        }
+        List<BscAttDir> rootDirs = bscAttDirMapper.listRootDirsByRecordIds(SecurityContext.getCurrentOrgId(),tableName,new String[]{recordId});
+        if(rootDirs.size()==0) return bscCloudCommonService.doCreateCertDir(tableName,pkName,recordId);
+        List<BscAttDir> certDirs = rootDirs.stream().filter(v -> ("cert_code_"+(StringUtils.isBlank(unitInfoId)?linkmanInfoId:unitInfoId)).equals(v.getDirCode())).collect(Collectors.toList());
+        if(certDirs.size()==0) return bscCloudCommonService.doCreateCertDir(tableName,pkName,recordId);
+        return certDirs.get(0).getDirId();
+    }
+
+
 }

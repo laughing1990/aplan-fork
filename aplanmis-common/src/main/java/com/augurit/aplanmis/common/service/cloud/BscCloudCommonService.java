@@ -76,5 +76,17 @@ public class BscCloudCommonService {
         return bscAttDir;
     }
 
+    public String doCreateCertDir(String tableName,String pkName,String recordId) throws Exception {
+        BscAttDir bscAttDir = initBscAttDir("本地电子证照", "cert_code_"+recordId, null, "1", null, null);
+        String dirId = UUID.randomUUID().toString();
+        BscAttLink link = initBscAttLink(dirId, tableName, pkName, recordId);
+        bscAttDir.setDirId(dirId);
+        bscAttDir.setDirSeq(dirId);
+        bscAttDir.setCreater(SecurityContext.getCurrentUserName());
+        bscAttDir.setCreateTime(new Date());
+        bscAttDirService.saveBscAttDirAndBscAttLink(bscAttDir, link);
+        return dirId;
+    }
+
 
 }
