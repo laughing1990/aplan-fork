@@ -246,10 +246,18 @@
     border: 1px solid #457EFF;
     background: none;
 }
+.my-clound-spaces-right .operation-box button.download-btn.is-disabled{
+    color:  #DCDFE6;
+    border: 1px solid  #DCDFE6;
+}
 .my-clound-spaces-right  .operation-box button.trash-btn{
     color: #FF6F6C;
     border: 1px solid #FF6F6C;
     background: none;
+}
+.my-clound-spaces-right .operation-box button.trash-btn.is-disabled{
+    color:  #DCDFE6;
+    border: 1px solid  #DCDFE6;
 }
 .my-clound-spaces-right  .operation-box .upload-file{
     position: absolute;
