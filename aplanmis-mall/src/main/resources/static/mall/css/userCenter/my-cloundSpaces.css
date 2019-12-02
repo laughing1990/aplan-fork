@@ -1,3 +1,5 @@
+/* prefixed by https://autoprefixer.github.io (PostCSS: v7.0.23, autoprefixer: v9.7.3) */
+
 /*重置 element str */
 .el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner{
     background-color: #457EFF;
@@ -21,12 +23,19 @@
 }
 .el-dialog__headerbtn .el-dialog__close{
     color: #ffffff;
+    -webkit-transition: all 0.2ms;
+    -o-transition: all 0.2ms;
     transition: all 0.2ms;
 }
 .el-dialog__headerbtn .el-dialog__close:hover{
+    -webkit-transform: scale(1.2);
+    -ms-transform: scale(1.2);
     transform: scale(1.2);
 }
 .matFileListTable.el-table{
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     user-select: none;
 }
 .matFileListTable.el-table th>.cell{
@@ -80,7 +89,7 @@
     line-height: 1;
 }
 /*  tree end*/
- .matFileListTable .el-table__fixed{
+.matFileListTable .el-table__fixed{
     /*overflow: visible!important;*/
 }
 /*重置 element end */
@@ -98,9 +107,13 @@
     width: 1200px;
 }
 .user-pro-item>div>i{
+    -webkit-transition: all 0.3s;
+    -o-transition: all 0.3s;
     transition: all 0.3s;
 }
 .user-pro-item>div>i.close {
+    -webkit-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
     transform: rotate(180deg);
 }
 .user-pro-list .user-pro-item .user-pro-item-parent{
@@ -117,6 +130,7 @@
 .matFileListTable .fileName{
     color:#3F4047;
     overflow: hidden;
+    -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
     white-space: nowrap;
     word-wrap: normal;
@@ -133,16 +147,27 @@
     margin-right: 30px;
     background: #F9FBFD;
     float: left;
+    -webkit-box-shadow: 0px 5px 6px rgba(120,47,224,0.08);
     box-shadow: 0px 5px 6px rgba(120,47,224,0.08);
 }
 .my-clound-spaces-left .user-company{
     width:240px;
     height:120px;
+    background:-o-linear-gradient(45deg,rgba(88,210,255,0.85),rgba(69,126,255,0.85));
     background:linear-gradient(45deg,rgba(88,210,255,0.85),rgba(69,126,255,0.85));
     border-radius:4px 4px 0px 0px;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
     justify-content: center;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
     flex-direction: column;
 }
 .my-clound-spaces-left .user-company .company-name{
@@ -173,6 +198,7 @@
     position: absolute;
     width:90px;
     background:rgba(255,255,255,1);
+    -webkit-box-shadow:0px 6px 16px 0px rgba(64,93,160,0.24);
     box-shadow:0px 6px 16px 0px rgba(64,93,160,0.24);
     border-radius:10px;
     color: #595762;
@@ -310,7 +336,7 @@
     margin: 10px auto;
     color: #333;
     -webkit-transition: font-size 0.25s linear, width 0.25s linear;
-    -moz-transition: font-size 0.25s linear, width 0.25s linear;
+    -o-transition: font-size 0.25s linear, width 0.25s linear;
     transition: font-size 0.25s linear, width 0.25s linear;
     vertical-align: sub;
 }
@@ -391,7 +417,11 @@
 }
 .view-model .file-icon{
     height: 86px;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
 }
 .view-model .file-name{
@@ -401,6 +431,7 @@
     line-height: 24px;
     border-radius:4px;
     overflow: hidden;
+    -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
     white-space: nowrap;
     word-wrap: normal;
@@ -421,6 +452,7 @@
     background:rgba(69,126,255,1);
     color: #fff;
     overflow: hidden;
+    -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
     white-space: nowrap;
     word-wrap: normal;
@@ -436,7 +468,11 @@
     width:776px;
     height:267px;
     background:rgba(255,255,255,1);
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
 }
 .addDirDialog .el-dialog__body{
@@ -445,8 +481,14 @@
 .reNameDirForm-box{
     background: #fff;
     padding: 4px;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
     justify-content: center;
     border-radius: 4px;
     padding-left: 15px;
@@ -460,8 +502,6 @@
     height: 300px;
     overflow: hidden;
     background: #ffffff;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
     border-radius: 4px;
 }
 .addFileForm-box .user-pro-item li.active{
@@ -499,9 +539,11 @@
     box-sizing: border-box;
     position: fixed;
     background-color: #fff;
+    -webkit-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
     -webkit-transition: opacity .3s, left .3s, right .3s, top .4s, bottom .3s, -webkit-transform .3s;
     transition: opacity .3s, left .3s, right .3s, top .4s, bottom .3s, -webkit-transform .3s;
+    -o-transition: opacity .3s, transform .3s, left .3s, right .3s, top .4s, bottom .3s;
     transition: opacity .3s, transform .3s, left .3s, right .3s, top .4s, bottom .3s;
     transition: opacity .3s, transform .3s, left .3s, right .3s, top .4s, bottom .3s, -webkit-transform .3s;
     overflow: hidden;
@@ -511,6 +553,7 @@
 .el-notification {
     width: 400px;
     padding: 0;
+    -webkit-box-shadow:0px 6px 16px 0px rgba(64,93,160,0.24);
     box-shadow:0px 6px 16px 0px rgba(64,93,160,0.24);
     border-radius:4px;
 }
