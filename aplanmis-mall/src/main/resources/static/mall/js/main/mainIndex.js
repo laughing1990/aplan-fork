@@ -132,7 +132,7 @@ var mainIndex = (function () {
                   if(res.success){
                       var content = res.content;
                       vm.approveListData = content;
-                      if(vm.approveListData.length == 0){
+                      if(vm.approveListData && vm.approveListData.length == 0){
                           $("#demo2").empty();
                       }else{
                           $("#demo1 .noData").empty();
@@ -269,7 +269,7 @@ var mainIndex = (function () {
         chooseCityItem:function(){
             var vm = this;
             if(this.firAeaOrgVo[0].orgDeptList instanceof Array){
-                if(this.firAeaOrgVo[0].orgDeptList.length>0){
+                if(this.firAeaOrgVo[0].orgDeptList && this.firAeaOrgVo[0].orgDeptList.length>0){
                     this.OrgListData = this.firAeaOrgVo[0].orgDeptList;
                 }else{
                     this.OrgListData = this.firAeaOrgVo[0].orgDeptList;

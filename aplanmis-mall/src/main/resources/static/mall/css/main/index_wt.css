@@ -49,6 +49,7 @@
     display: flex;
 }
 .all-pro-done {
+    width: 385px;
     -webkit-box-flex: 0.74;
     flex: 0.74;
     -ms-flex: 0.74;
@@ -679,6 +680,8 @@
 .quick-entry .publicity li{
     width:286px;
     border-radius: 4px;
+    _margin-right: 12px;
+    margin-right: 12px\0;
 }
 
 
@@ -1622,6 +1625,8 @@ h2{
     position: relative;
     border-radius: 4px;
     height: 211px;
+    _margin-right: 10px;
+    margin-right: 10px\0;
 }
 .news .publicity li a p{
     font-size:18px;
