@@ -84,10 +84,9 @@ public class OneFormCommonService {
 
     // 封装表单信息
     private FormFrofileVo getFormFrofileVo(String formId, String refEntityId, String projInfoId) {
-        FormFrofileVo formFrofileVo = new FormFrofileVo();
+        FormFrofileVo formFrofileVo = null;
         if (StringUtils.isNotBlank(formId)) {
-            int formSortNo = 0;
-
+            formFrofileVo = new FormFrofileVo()
             ActStoForm actStoForm = actStoFormMapper.getActStoFormById(formId);
             formFrofileVo.setFormId(formId);
             formFrofileVo.setFormName(actStoForm.getFormName());
@@ -102,9 +101,6 @@ public class OneFormCommonService {
                 formFrofileVo.setSmartForm(false);
                 formFrofileVo.setFormUrl(actStoForm.getFormLoadUrl().replace("{projInfoId}", "projInfoId=" + projInfoId));
             }
-
-            formSortNo++;
-            formFrofileVo.setFormSortNo(formSortNo);
         }
 
         return formFrofileVo;
