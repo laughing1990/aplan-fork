@@ -66,8 +66,8 @@
 				</div>
 			</div>
 			<div class="wt-header-tab wt-tab">
-				<ul class="wt-tab-nav">
-					<li :class="index==activeName?'active':''" :data-url="item.url"
+				<ul class="wt-tab-nav clearfix">
+					<li :class="index==activeName?'active':''" :data-url="item.url" class="fl"
 						@click="routerChange(item.hash,item.url,item.thUrl,index)" v-for="(item, index) in topTabData"
 						:key="index">
 						<a href="javascript:;" v-text="item.label"></a>
