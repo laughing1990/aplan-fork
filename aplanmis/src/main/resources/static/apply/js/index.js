@@ -1196,6 +1196,7 @@ var vm = new Vue({
       request('', {
         url: ctx + 'rest/theme/getMainThemeTypeCategory/'+category,
         type: 'get',
+        async: false,
       }, function (data) {
         if (data.success) {
           if(category==1){
