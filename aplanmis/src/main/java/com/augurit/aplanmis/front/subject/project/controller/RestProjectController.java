@@ -123,7 +123,7 @@ public class RestProjectController {
     public ContentResultForm<ChildProjectVo> addChildProject(ChildProjectAddVo childProjectAddVo) throws Exception {
         Assert.isTrue(StringUtils.isNotBlank(childProjectAddVo.getParentProjInfoId()), "parentProjInfoId is null");
         //广东模式只允许在第二、三阶段新建项目工程，非广东模式注释此代码
-//        if (StringUtils.isBlank(childProjectAddVo.getStageFlag()) || !("1".equals(childProjectAddVo.getStageFlag()) || "2".equals(childProjectAddVo.getStageFlag()))) {
+//        if (StringUtils.isBlank(childProjectAddVo.getStageFlag()) || !("2".equals(childProjectAddVo.getStageFlag()) || "3".equals(childProjectAddVo.getStageFlag()))) {
 //            return new ContentResultForm<>(false, null, "该阶段不允许新建项目工程");
 //        }
         AeaProjInfo child = restProjectService.addChildProject(childProjectAddVo);

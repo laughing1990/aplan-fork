@@ -1184,11 +1184,18 @@
         </sql>
     </changeSet>
 
-    <changeSet id="201911291438" author="chenzh" failOnError="false">
-        <sql splitStatements="true">
+    <!--<changeSet id="201911291438" author="chenzh" failOnError="false">-->
+        <!--<sql splitStatements="true">-->
+            <!--ALTER TABLE `aea_par_stage`-->
+            <!--ADD COLUMN `IS_CREATE_SUBPROJ` char(1) NULL DEFAULT 0 COMMENT '是否允许创建子工程：1 允许，0 禁止';-->
+        <!--</sql>-->
+    <!--</changeSet>-->
+
+    <changeSet id="201912021522" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
             ALTER TABLE `aea_par_stage`
-            ADD COLUMN `IS_ALLOW_CHILD_PROJECT_CREATION` char(1) NULL DEFAULT 1 COMMENT '是否允许创建子工程：1 允许，0 禁止' AFTER
-            `ANTICIPATE_TYPE`;
+            ADD COLUMN `IS_CREATE_SUBPROJ` char(1) NULL DEFAULT 0 COMMENT '是否允许创建子工程：1 允许，0 禁止';
         </sql>
     </changeSet>
+
 </databaseChangeLog>

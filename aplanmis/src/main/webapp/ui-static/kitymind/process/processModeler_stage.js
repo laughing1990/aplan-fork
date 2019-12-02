@@ -103,7 +103,19 @@ $(function () {
 
     leftRIghtSelectEvent();
 
+  initHeight();
+
+  //窗口伸缩时重新计算
+  window.onresize = function(){
+    initHeight();
+  }
 });
+
+//自动计算流程表格的高度
+function initHeight() {
+  var h = window.innerHeight - ($(".container-tab").height() + $("#tabeToobarPanel").height() + 90);
+  $("#tabePanel").height(h);
+}
 
 function masterFormatter(value, row, index) {
     var isCheack = '';

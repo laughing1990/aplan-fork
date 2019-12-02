@@ -402,11 +402,11 @@ public class AeaProjInofServiceImpl implements AeaProjInfoService {
                 return null;
             } else {
                 //广东模式
-                String childGCBMCode = parentProj.getGcbm() + "-" + aeaProjInfo.getStageFlag();
-                childGcbm = gdGcbmBscRuleCodeStrategy.generateCode(childGCBMCode, childGCBMCode, "工程编码", rootOrgId);
+//                String childGCBMCode = parentProj.getGcbm() + "-" + ("2".equals(aeaProjInfo.getStageFlag()) == true ? "1" : "2");
+//                childGcbm = gdGcbmBscRuleCodeStrategy.generateCode(childGCBMCode, childGCBMCode, "工程编码", rootOrgId);
 
                 //非广东模式
-//                childGcbm = gcbmBscRuleCodeStrategy.generateCode(parentProj.getLocalCode(), parentProj.getLocalCode(), "工程编码", rootOrgId);
+                childGcbm = gcbmBscRuleCodeStrategy.generateCode(parentProj.getLocalCode(), parentProj.getLocalCode(), "工程编码", rootOrgId);
             }
 
             if (childGcbm != null) {

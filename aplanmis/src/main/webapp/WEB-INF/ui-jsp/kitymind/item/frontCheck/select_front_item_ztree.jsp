@@ -572,9 +572,9 @@
     function initSelectFrontItemZtree(){
 
         $.ajax({
-            url: ctx+'/aea/item/gtreeTestRunOrPublishedItem.do',
+            url: ctx+'/aea/item/gtreeOkVerItemNoRelSelf.do',
             type:'post',
-            data:{/*'isCatalog': '0'*/},
+            data:{/*'isCatalog': '0'*/ 'itemVerId': currentBusiId},
             async: false,
             dataType: 'json',
             success: function(data){
