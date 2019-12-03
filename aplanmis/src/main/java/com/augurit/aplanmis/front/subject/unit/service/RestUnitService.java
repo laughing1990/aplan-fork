@@ -163,4 +163,10 @@ public class RestUnitService {
 
         }
     }
+
+    public void deleteUnitByLinkmanInfoId(String linkmanInfoId, String unitInfoId) {
+        if (StringUtils.isNotBlank(linkmanInfoId) && StringUtils.isNotBlank(unitInfoId)) {
+            aeaUnitLinkmanMapper.deleteUnitLinkman(unitInfoId, new String[]{linkmanInfoId});
+        }
+    }
 }
