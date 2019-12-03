@@ -846,6 +846,7 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
         mindBaseNode.setNodeTypeName(MindType.SITUATION.getName());
         mindBaseNode.setNote(state.getStateMemo());
         mindBaseNode.setLinkProcessStart(state.getIsProcStartCond());
+        mindBaseNode.setIsInformCommit(state.getIsInformCommit());
         return mindBaseNode;
     }
 
@@ -1191,12 +1192,20 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
             needUpdate = true;
         }
 
+        String isInformCommit = mindExportData.getIsInformCommit();
+        if (StringUtils.isBlank(isInformCommit)) {
+            isInformCommit = Status.OFF;
+        }
+        if (!isInformCommit.equals(aeaParState.getIsInformCommit())) {
+            aeaParState.setIsInformCommit(isInformCommit);
+            needUpdate = true;
+        }
+
         if (needUpdate) {
 
             if(!"2".equals(aeaParState.getIsQuestionOri())){
                 aeaParState.setIsQuestionOri(aeaParState.getIsQuestion());
             }
-
             aeaParState.setModifier(SecurityContext.getCurrentUserId());
             aeaParState.setModifyTime(new Date());
             aeaParState.setIsActive(ActiveStatus.ACTIVE.getValue());
@@ -1378,6 +1387,13 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
         } else {
             aeaParState.setIsProcStartCond(Status.OFF);
         }
+
+        // 处理是否告知承诺制
+        if (Status.ON.equals(mindExportData.getIsInformCommit())) {
+            aeaParState.setIsInformCommit(Status.ON);
+        } else {
+            aeaParState.setIsInformCommit(Status.OFF);
+        }
         return aeaParState;
     }
 
@@ -1401,6 +1417,12 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
             aeaParState.setIsProcStartCond(Status.ON);
         } else {
             aeaParState.setIsProcStartCond(Status.OFF);
+        }
+
+        if (Status.ON.equals(mindExportData.getIsInformCommit())) {
+            aeaParState.setIsInformCommit(Status.ON);
+        } else {
+            aeaParState.setIsInformCommit(Status.OFF);
         }
 
         initStateQuestionAndAnswer(aeaParState, mindExportData.getPriority(), mindExportData.getProgress(), parentStateId);

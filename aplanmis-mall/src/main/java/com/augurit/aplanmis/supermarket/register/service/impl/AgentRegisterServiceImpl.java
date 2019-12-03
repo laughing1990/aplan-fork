@@ -92,7 +92,6 @@ public class AgentRegisterServiceImpl implements AgentRegisterService {
 
             //********保存单位信息
             aeaUnitInfoService.insertAeaUnitInfo(unitInfo);
-            System.out.println("**************"+unitInfo.getUnitInfoId());
             if (agentRegisterVo.getContactManInfo() != null) {
                 //保存联系人信息
                 agentRegisterVo.getContactManInfo().setUnitInfoId(unitInfo.getUnitInfoId());
@@ -197,6 +196,7 @@ public class AgentRegisterServiceImpl implements AgentRegisterService {
         aeaLinkmanInfo.setCreateTime(new Date());
         aeaLinkmanInfo.setIsActive("1");
         aeaLinkmanInfo.setIsDeleted(DeletedStatus.NOT_DELETED.getValue());
+        aeaLinkmanInfo.setRootOrgId(SecurityContext.getCurrentOrgId());
         aeaLinkmanInfoMapper.insertAeaLinkmanInfo(aeaLinkmanInfo);
 
         AeaUnitLinkman aeaUnitLinkman = new AeaUnitLinkman();

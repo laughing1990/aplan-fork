@@ -43,10 +43,21 @@ var vm = new Vue({
                     vm.auditForm.unitInfoId = vm.form.unitInfo.unitInfoId;
 
                     vm.loading = false;
+                } else {
+                    vm.loading = false;
+                    vm.$message({
+                        message: res.message ? res.message : '信息获取失败',
+                        type: 'error'
+                    });
                 }
 
             }, function (msg) {
-                vm.loading = true;
+                vm.loading = false;
+                var result=res.responseJSON;
+                vm.$message({
+                    message: result.message ? result.message : '服务请求失败',
+                    type: 'error'
+                });
             })
         },
         // 获取页面的URL参数

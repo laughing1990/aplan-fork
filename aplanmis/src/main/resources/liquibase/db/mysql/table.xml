@@ -1184,17 +1184,17 @@
         </sql>
     </changeSet>
 
-    <!--<changeSet id="201911291438" author="chenzh" failOnError="false">-->
-        <!--<sql splitStatements="true">-->
-            <!--ALTER TABLE `aea_par_stage`-->
-            <!--ADD COLUMN `IS_CREATE_SUBPROJ` char(1) NULL DEFAULT 0 COMMENT '是否允许创建子工程：1 允许，0 禁止';-->
-        <!--</sql>-->
-    <!--</changeSet>-->
-
     <changeSet id="201912021522" author="jjt" failOnError="false">
         <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
             ALTER TABLE `aea_par_stage`
             ADD COLUMN `IS_CREATE_SUBPROJ` char(1) NULL DEFAULT 0 COMMENT '是否允许创建子工程：1 允许，0 禁止';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201912031049" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_iteminst`
+            ADD COLUMN `ITEMINST_TYPE` char(1) NULL DEFAULT 'a' COMMENT '事项实例类型： a 行政审批，p 告知承诺制' AFTER `PROCINST_ID`;
         </sql>
     </changeSet>
 
