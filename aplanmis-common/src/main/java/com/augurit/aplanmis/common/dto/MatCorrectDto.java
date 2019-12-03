@@ -95,4 +95,7 @@ public class MatCorrectDto implements Serializable {
 
     @ApiModelProperty(name = "attFiles", value = "电子件附件，用于查看和下载")
     private List<BscAttFileAndDir> attFiles;
+    @ApiModelProperty(value = "材料性质，m表示普通材料，c表示证照材料，f表示在线表单")
+    private String matProp;
+    private String certId;//证照ID
 }

@@ -28,7 +28,6 @@ public class AeaCheckerController {
     @ApiOperation(value = "单项前置条件检测", httpMethod = "GET")
     public ContentResultForm<CheckItemResultInfo> itemFrontCheck(@RequestParam List<String> itemVerIds, @RequestParam String projInfoId) {
         try {
-
             if (CollectionUtils.isEmpty(itemVerIds)) return new ContentResultForm<>(false, null, "缺少参数：itemVerId");
             if (StringUtils.isBlank(projInfoId)) return new ContentResultForm<>(false, null, "缺少参数：projInfoId！");
             return restAeaCheckerService.itemFrontCheck(itemVerIds, projInfoId);

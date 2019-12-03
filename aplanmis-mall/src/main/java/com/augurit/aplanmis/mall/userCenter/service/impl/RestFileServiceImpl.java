@@ -28,6 +28,7 @@ import com.augurit.aplanmis.mall.userCenter.service.RestFileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -72,7 +73,8 @@ public class RestFileServiceImpl implements RestFileService {
     private UploaderFactory uploaderFactory;
 
     private static int BUFFER_SIZE = 2048;
-
+    @Value("${mall.check.authority:false}")
+    private boolean isCheckAuthority;
     @Override
     public List<BscAttFileAndDir> getAttFiles(String matinstId) throws Exception {
         String[] recordIds = {matinstId};
@@ -273,6 +275,7 @@ public class RestFileServiceImpl implements RestFileService {
 
     @Override
     public Boolean isMatBelong(String matinstId, HttpServletRequest request)throws Exception {
+        if (!isCheckAuthority) return true;
         try {
             AeaHiItemMatinst aeaHiItemMatinst = aeaHiItemMatinstMapper.getAeaHiItemMatinstById(matinstId);
             if (aeaHiItemMatinst==null) return false;
@@ -285,7 +288,7 @@ public class RestFileServiceImpl implements RestFileService {
                 } else{//企业
                     return false;
                 }
-            }else {
+            }else if ("0".equals(aeaHiItemMatinst.getMatinstSource())){
                 if("1".equals(user.getIsPersonAccount())||StringUtils.isNotBlank(user.getUserId())){//个人
                     return false;
                 }else if (user.getUnitId().equals(aeaHiItemMatinst.getUnitInfoId())){//企业
@@ -293,7 +296,7 @@ public class RestFileServiceImpl implements RestFileService {
                 }else {
                     return false;
                 }
-            }
+            }else return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -302,12 +305,18 @@ public class RestFileServiceImpl implements RestFileService {
 
     @Override
     public Boolean isFileBelong(String detailId,HttpServletRequest request)throws Exception{
+        if (!isCheckAuthority) return true;
         LoginInfoVo loginInfoVo = SessionUtil.getLoginInfo(request);
         BscAttLink param = new BscAttLink();
         param.setDetailId(detailId);
         //param.setPkName("MATINST_ID");
         List<BscAttLink> links = bscAttMapper.listBscAttLink(param);
-        if (links.size()>1){//说明此detailId即是材料库文件，又是申请实例文件，亦或补全补正文件
+        if (links.size()>1){//说明此detailId必然是申请实例文件，有可能是补全补正文件，也有可能是材料库文件
+            param.setPkName("MATINST_ID");
+            List<BscAttLink> matInstLinks = bscAttMapper.listBscAttLink(param);
+            if (matInstLinks.size()>0){
+                return  this.isMatBelong(matInstLinks.get(0).getRecordId(),request);
+            }
             if ("1".equals(loginInfoVo.getIsPersonAccount())||StringUtils.isNotBlank(loginInfoVo.getUserId())){//个人
                 param.setPkName("LINKMAN_INFO_ID");
                 List<BscAttLink> linkmanLinks = bscAttMapper.listBscAttLink(param);
@@ -315,11 +324,10 @@ public class RestFileServiceImpl implements RestFileService {
                 return false;
             }else {
                 param.setPkName("UNIT_INFO_ID");
-                List<BscAttLink> linkmanLinks = bscAttMapper.listBscAttLink(param);
-                if (linkmanLinks.size()==1) return true;
+                List<BscAttLink> unitLinks = bscAttMapper.listBscAttLink(param);
+                if (unitLinks.size()==1) return true;
                 return false;
             }
-
         }else if (links.size()==1){
             String pkName = links.get(0).getPkName();
             String recordId = links.get(0).getRecordId();
@@ -335,6 +343,8 @@ public class RestFileServiceImpl implements RestFileService {
                 return  this.isMatBelong(recordId,request);
             }else if ("CERTINST_ID".equals(pkName)){
                 return false;
+            }else if ("REAL_ININST_ID".equals(pkName)){
+                return  true;
             }else return false;
         }else return false;
     }
@@ -352,6 +362,7 @@ public class RestFileServiceImpl implements RestFileService {
 
     @Override
     public Boolean isMatInstFileBelong(String detailId,HttpServletRequest request)throws Exception{
+        if (!isCheckAuthority) return true;
         BscAttLink param = new BscAttLink();
         param.setDetailId(detailId);
         param.setPkName("MATINST_ID");

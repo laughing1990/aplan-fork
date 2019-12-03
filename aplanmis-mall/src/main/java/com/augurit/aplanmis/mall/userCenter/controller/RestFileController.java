@@ -267,17 +267,4 @@ public class RestFileController {
             return new ResultForm(false, "文件上传失败！");
         }
     }
-
-    @PostMapping("cert/upload")
-    @ApiOperation("电子证照 --> 上传电子件(上传成功则返回linkId)")
-    public ResultForm uploadCloudFiles(HttpServletRequest request) {
-        try {
-            String linkId=cloudService.uploadCertFile(request);
-            if(StringUtils.isBlank(linkId)) return  new ContentResultForm(false,linkId,"上传失败!" );
-            return new ContentResultForm(true,linkId,"上传成功!" );
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return new ResultForm(false, e.getMessage());
-        }
-    }
 }

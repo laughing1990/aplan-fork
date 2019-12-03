@@ -75,7 +75,7 @@
 <!--2 根据主键ID查询单个实体 -->
 <select id="getAeaHiItemCorrectById" resultType="AeaHiItemCorrect" >
     select
-    <include refid="allColumns_ahic"/>,ahi.ITEMINST_NAME iteminstName,aha.APPLYINST_CODE applyinstCode,api.PROJ_NAME
+    <include refid="allColumns_ahic"/>,ahi.ITEMINST_NAME iteminstName,ahi.ITEM_VER_ID itemVerId,aha.APPLYINST_CODE applyinstCode,api.PROJ_NAME
     projInfoName,
     api.LOCAL_CODE localCode,api.REGIONALISM regionalism,aha.APPLY_SUBJECT applySubject,aha.LINKMAN_INFO_ID
     linkmanInfoId,ooo.ORG_NAME approveOrgName

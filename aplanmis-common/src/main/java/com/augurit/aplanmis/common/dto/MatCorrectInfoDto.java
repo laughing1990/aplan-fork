@@ -16,7 +16,8 @@ public class MatCorrectInfoDto implements Serializable {
 
     @ApiModelProperty(name = "iteminstName", value = "事项名称")
     private String iteminstName;
-
+    @ApiModelProperty(name = "itemVerId", value = "事项版本ID")
+    private String itemVerId;
     @ApiModelProperty(name = "chargeOrgName", value = "审批部门")
     private String chargeOrgName;
 

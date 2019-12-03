@@ -233,21 +233,3 @@
 .material-form .el-button + .el-button {
   margin-left: 0;
 }
-.el-dialog__header {
-  border: none;
-  height: 44px;
-  line-height: 44px;
-  color: #fff;
-  background: #457EFF;
-  padding: 0 15px;
-}
-.el-dialog__header .el-dialog__title {
-  line-height: 43px;
-  color: #ffffff;
-}
-.el-dialog__header .el-dialog__headerbtn {
-  top: 14px;
-}
-.el-dialog__header .el-dialog__headerbtn .el-dialog__close {
-  color: #ffffff;
-}

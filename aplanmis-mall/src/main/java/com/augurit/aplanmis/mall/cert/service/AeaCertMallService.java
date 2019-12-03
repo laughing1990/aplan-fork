@@ -409,6 +409,7 @@ public class AeaCertMallService {
                         continue;
                     checkAuthCodes.add(data.getData().get(i).getLicense_code());
                     auth_codes.add(data.getAuth_codes()[i]);
+                    data.getData().get(i).setAuth_code(data.getAuth_codes()[i]);
                     licenseDTO.add(data.getData().get(i));
                 }
             }

@@ -24,6 +24,7 @@ import com.google.common.base.Strings;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,7 +50,8 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
     private AeaUnitInfoService aeaUnitInfoService;
     @Autowired
     private AeaUnitLinkmanMapper aeaUnitLinkmanMapper;
-
+    @Value("${mall.check.authority:false}")
+    private boolean isCheckAuthority;
 
     @Override
     public String saveChildProject(HttpServletRequest request, AeaProjInfo aeaProjInfo) throws Exception {
@@ -176,6 +178,7 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
 
     @Override
     public Boolean isBelongUnit(String userId, HttpServletRequest request) throws Exception{
+        if (!isCheckAuthority) return true;
         try {
             LoginInfoVo user = SessionUtil.getLoginInfo(request);
             AeaUnitLinkman query=new AeaUnitLinkman();

@@ -15,7 +15,9 @@ import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestApproveService;
 import com.augurit.aplanmis.mall.userCenter.service.RestFileService;
+import com.augurit.aplanmis.mall.userCenter.service.RestMatCompletService;
 import com.augurit.aplanmis.mall.userCenter.vo.ApplyDetailVo;
+import com.augurit.aplanmis.mall.userCenter.vo.UserInfoVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -45,6 +47,8 @@ public class RestMatCompletController {
     private AeaHiApplyinstService aeaHiApplyinstService;
     @Autowired
     private RestFileService restFileService;
+    @Autowired
+    private RestMatCompletService restMatCompletService;
 
     @GetMapping("matCompletDetail/{applyinstId}/{projInfoId}/{isSeriesApprove}")
     @ApiOperation(value = "材料补全详情信息接口")
@@ -255,6 +259,36 @@ public class RestMatCompletController {
         } catch (Exception e) {
             e.printStackTrace();
             return new ContentResultForm(false, null, "Query attachment list failed");
+        }
+    }
+
+    @ApiOperation(value = "材料补正页面--> 从我的材料库或云盘上传电子件")
+    @PostMapping("comp/att/uploadFileByCloud")
+    @ApiImplicitParams({@ApiImplicitParam(name = "attRealIninstId", value = "材料补正实例ID", required = false, type = "string"),
+            @ApiImplicitParam(name = "detailIds", value = "文件ID（英文状态逗号分隔）", required = true, type = "string")})
+    public ResultForm uploadFileByCloud(String attRealIninstId, String detailIds) {
+        try {
+            Assert.isTrue(StringUtils.isNotBlank(attRealIninstId), "attRealIninstId is null");
+            Assert.isTrue(StringUtils.isNotBlank(detailIds), "detailIds is null");
+            restMatCompletService.uploadFileByCloud(attRealIninstId, detailIds);
+            return new ContentResultForm<>(false,attRealIninstId, "文件上传成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultForm(false, "文件上传失败！");
+        }
+    }
+
+    @GetMapping("comp/allApplyObject")
+    @ApiOperation(value = "材料补全 --> 根据材料补全实例ID查询所有申报主体及建设单位或个人信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "材料补全实例ID", name = "applyinstCorrectId", required = false, dataType = "string")
+    })
+    public ContentResultForm<UserInfoVo> getAllApplyObject(HttpServletRequest request, String applyinstCorrectId) {
+        try {
+            return new ContentResultForm<>(true, restMatCompletService.getAllApplyObject(request,applyinstCorrectId));
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ContentResultForm(false,"","查询申报主体接口发生异常");
         }
     }
 }

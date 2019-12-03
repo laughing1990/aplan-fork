@@ -42,4 +42,5 @@ public class AeaHiItemCorrectDueIninst implements Serializable {
     private String matinstName;
     private String matId;
     private String reviewKeyPoints;
+    private String matProp;
 }

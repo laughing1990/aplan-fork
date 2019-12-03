@@ -42,6 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -114,7 +115,8 @@ public class RestApproveServiceImpl implements RestApproveService {
     private OpuOmUserMapper opuOmUserMapper;
     @Autowired
     private AeaHiIteminstMapper aeaHiIteminstMapper;
-
+    @Value("${mall.check.authority:false}")
+    private boolean isCheckAuthority;
     @Override
     public PageInfo<ApproveProjInfoDto> searchApproveProjInfoListByUnitOrLinkman(String unitInfoId, String userInfoId, String state, String keyword, int pageNum, int pageSize) throws Exception {
         return approveDataService.searchApproveProjInfoListByUnitOrLinkman(unitInfoId,userInfoId,state,keyword,pageNum,pageSize);
@@ -437,6 +439,7 @@ public class RestApproveServiceImpl implements RestApproveService {
 
     @Override
     public Boolean isApplyBelong(String applyInstId,String projinfoId, HttpServletRequest request)throws Exception {
+        if (!isCheckAuthority) return true;
         AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyInstId);
         if (aeaHiApplyinst==null) throw new Exception("查询出错");
         String applySubject = aeaHiApplyinst.getApplySubject();//(申办主体：1 单位，0 个人)

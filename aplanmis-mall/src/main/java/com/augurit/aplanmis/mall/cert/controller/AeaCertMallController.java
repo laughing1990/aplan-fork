@@ -4,16 +4,14 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
-import com.augurit.aplanmis.common.domain.AeaCert;
-import com.augurit.aplanmis.common.domain.AeaCertType;
-import com.augurit.aplanmis.common.domain.AeaHiCertinst;
-import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaCertMapper;
 import com.augurit.aplanmis.common.mapper.AeaCertTypeMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiCertinstMapper;
 import com.augurit.aplanmis.common.service.admin.cert.AeaCertAdminService;
 import com.augurit.aplanmis.common.service.admin.cert.AeaCertTypeAdminService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
+import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.cert.service.AeaCertMallService;
@@ -58,6 +56,8 @@ public class AeaCertMallController {
     private AeaCertMapper aeaCertMapper;
     @Autowired
     private AeaCertTypeMapper aeaCertTypeMapper;
+    @Autowired
+    private AeaUnitInfoService aeaUnitInfoService;
 
     @ApiOperation(value = "通过查询条件获取电子证照库数据", notes = "通过查询条件获取电子证照库数据")
     @ApiImplicitParams({
@@ -68,6 +68,20 @@ public class AeaCertMallController {
     public ContentResultForm getLicenseAuthRes(String itemVerIds, String identityNumber,HttpServletRequest request) throws Exception {
         LoginInfoVo loginVo = SessionUtil.getLoginInfo(request);
         return new ContentResultForm(true,aeaCertService.getLicenseAuthRes(itemVerIds, identityNumber,loginVo),"success");
+    }
+
+    @ApiOperation(value = "通过查询条件(申办单位ID)获取电子证照库数据", notes = "通过查询条件(申办单位ID)获取电子证照库数据")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "itemVerIds", value = "事项版本IDs", required = true , dataType = "String" ,paramType = "query"),
+            @ApiImplicitParam(name = "unitInfoId", value = "申报主体id", required = true , dataType = "String" ,paramType = "query"),
+    })
+    @GetMapping("/getLicenseAuthResByUnitInfoId")
+    public ContentResultForm getLicenseAuthResByUnitInfoId(String itemVerIds, String unitInfoId,HttpServletRequest request) throws Exception {
+        Assert.hasText(unitInfoId, "unitInfoId is null");
+        LoginInfoVo loginVo = SessionUtil.getLoginInfo(request);
+        AeaUnitInfo aeaUnitInfo = aeaUnitInfoService.getAeaUnitInfoByUnitInfoId(unitInfoId);
+        Assert.isNull(aeaUnitInfo, "aeaUnitInfo is null");
+        return new ContentResultForm(true,aeaCertService.getLicenseAuthRes(itemVerIds, aeaUnitInfo.getUnifiedSocialCreditCode(),loginVo),"success");
     }
 
     @ApiOperation(value = "通过电子证照编码获取证照显示地址", notes = "通过电子证照编码获取证照显示地址")
