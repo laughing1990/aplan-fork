@@ -276,6 +276,9 @@
     color:  #DCDFE6;
     border: 1px solid  #DCDFE6;
 }
+.my-clound-spaces-right  .operation-box button.download-btn:hover{
+    background: #dfe7f9;
+}
 .my-clound-spaces-right  .operation-box button.trash-btn{
     color: #FF6F6C;
     border: 1px solid #FF6F6C;
@@ -284,6 +287,9 @@
 .my-clound-spaces-right .operation-box button.trash-btn.is-disabled{
     color:  #DCDFE6;
     border: 1px solid  #DCDFE6;
+}
+.my-clound-spaces-right  .operation-box button.trash-btn:hover{
+    background: #f7e0e0;
 }
 .my-clound-spaces-right  .operation-box .upload-file{
     position: absolute;
@@ -343,7 +349,13 @@
 .matFileListTable .el-icon-view{
     font-size: 16px;
     color: #457EFF;
-    margin-right: 20px;
+    position: absolute;
+    top: 5px;
+    right: 6px;
+    display: none;
+}
+.matFileListTable li:hover .el-icon-view{
+    display: block;
 }
 .matFileListTable .ag-filetype-txt{
     color:#55d7e0;
@@ -414,6 +426,7 @@
     margin-top: 15px;
     margin-right: 40px;
     cursor: pointer;
+    position: relative;
 }
 .view-model .file-icon{
     height: 86px;

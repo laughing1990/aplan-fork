@@ -17,9 +17,7 @@ import com.augurit.aplanmis.common.constants.ApplyType;
 import com.augurit.aplanmis.common.constants.ItemStatus;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiIteminstMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
-import com.augurit.aplanmis.common.mapper.AeaItemStateMapper;
 import com.augurit.aplanmis.common.service.apply.ApplyCommonService;
 import com.augurit.aplanmis.common.service.instance.*;
 import com.augurit.aplanmis.common.service.item.AeaLogItemStateHistService;
@@ -84,10 +82,6 @@ public class AeaSeriesService {
     private AeaServiceWindowService aeaServiceWindowService;
     @Autowired
     private ApplyCommonService applyCommonService;
-    @Autowired
-    private AeaItemStateMapper aeaItemStateMapper;
-    @Autowired
-    private AeaHiIteminstMapper aeaHiIteminstMapper;
 
     /**
      * 保存实例、启动流程（停留在收件节点）
@@ -379,15 +373,8 @@ public class AeaSeriesService {
         //3、情形实例
         aeaHiItemStateinstService.batchInsertAeaHiItemStateinst(seriesApplyinstId, aeaHiSeriesinst.getSeriesinstId(), null, stateIds, SecurityContext.getCurrentUserName());
 
-        List<AeaItemState> stateList = aeaItemStateMapper.listAeaItemStateByIds(stateIds);
-        for (AeaItemState state : stateList) {
-            //判断事项是否为告知承诺制
-            if ("1".equals(state.getIsInformCommit())) {
-                aeaHiIteminst.setIteminstType("p");
-                aeaHiIteminstMapper.updateAeaHiIteminst(aeaHiIteminst);
-                break;
-            }
-        }
+        //判断事项是否为告知承诺制
+        applyCommonService.setInformCommit(stateIds, ApplyType.SERIES, aeaHiIteminst);
 
         //4、材料输入输出实例
         aeaHiItemInoutinstService.batchInsertAeaHiItemInoutinst(matinstsIds, seriesApplyinstId, SecurityContext.getCurrentUserName());
