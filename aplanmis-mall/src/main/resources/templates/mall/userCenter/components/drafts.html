@@ -15,8 +15,8 @@
                     <thead>
                     <tr>
                         <th class="al" width="20%">申报流水号</th>
-                        <th class="al" width="40%">项目代码 | 项目名称</th>
-                        <th width="40%">阶段/事项名称</th>
+                        <th class="al" width="40%">项目/工程代码</th>
+                        <th width="40%">项目名称</th>
                     </tr>
                     </thead>
                     <tbody id="inProgressProjBody">
@@ -24,25 +24,13 @@
                         <tr v-for="item in draftApplyListData">
                             <td width="20%">{{item.applyinstCode}}</td>
                             <td class="al" width="40%">
+                                <p>{{item.gcbm}}</p>
+                            </td>
+                            <td class="al" width="40%">
                                 <el-tooltip placement="top" effect="light">
                                     <div slot="content">项目代码：{{item.localCode}}<br/> <br/>工程代码：{{item.gcbm}}<br /> <br/>项目/工程名称：{{item.projName}}</div>
                                     <div>
-                                        <p>{{item.localCode}}</p>
                                         <span class="ellipsis pro-name">{{item.projName}}</span>
-                                    </div>
-                                </el-tooltip>
-                            </td>
-                            <td width="40%">
-                                <el-tooltip placement="top" effect="light" v-if="item.isSeriesApprove == 1">
-                                    <div slot="content">主题名称：{{item.themeName}}<br/> <br/> 事项名称：{{item.stageIteminstName}}</div>
-                                    <div>
-                                        <span class=" pro-name" >{{item.stageIteminstName}}</span>
-                                    </div>
-                                </el-tooltip>
-                                <el-tooltip placement="top" effect="light" v-else>
-                                    <div slot="content">主题名称：{{item.themeName}} <br/> <br/> 阶段名称：{{item.stageIteminstName}}</div>
-                                    <div>
-                                        <span class="stageIteminstName-bg" >{{item.stageIteminstName}}</span>
                                     </div>
                                 </el-tooltip>
                             </td>

@@ -2482,7 +2482,6 @@
         SELECT
         aha.APPLYINST_ID applyinstId,
         aha.APPLYINST_CODE applyinstCode,
-        ahi.ITEMINST_NAME stageIteminstName,
         aha.APPLYINST_STATE applyinstState,
         aha.CREATE_TIME startTime,
         aha.MODIFY_TIME endTime,
@@ -2490,17 +2489,12 @@
         api.LOCAL_CODE localCode,
         '1' isSeriesApprove,
         api.PROJ_INFO_ID projInfoId,
-        '' stageName,
-        apt.THEME_NAME themeName,
         api.GCBM gcbm
         FROM aea_hi_applyinst aha
-        LEFT JOIN aea_hi_seriesinst ahs ON aha.APPLYINST_ID=ahs.APPLYINST_ID
-        LEFT JOIN aea_hi_iteminst ahi ON ahi.SERIESINST_ID=ahs.SERIESINST_ID
         LEFT JOIN aea_applyinst_proj aap ON aap.APPLYINST_ID=aha.APPLYINST_ID
         LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID=aap.PROJ_INFO_ID
         LEFT JOIN aea_proj_linkman apl ON apl.APPLYINST_ID=aha.APPLYINST_ID AND apl.PROJ_INFO_ID=api.PROJ_INFO_ID
         LEFT JOIN aea_linkman_info ali ON ali.LINKMAN_INFO_ID=apl.LINKMAN_INFO_ID
-        LEFT JOIN aea_par_theme apt ON api.theme_id=apt.theme_id
         <where>
             <if test="userInfoId !=null and userInfoId!=''">
                 ali.LINKMAN_INFO_ID=#{userInfoId}
@@ -2524,7 +2518,6 @@
         SELECT
         aha.APPLYINST_ID applyinstId,
         aha.APPLYINST_CODE applyinstCode,
-        aps.STAGE_NAME stageIteminstName,
         aha.APPLYINST_STATE applyinstState,
         aha.CREATE_TIME startTime,
         aha.MODIFY_TIME endTime,
@@ -2532,18 +2525,12 @@
         api.LOCAL_CODE localCode,
         '0' isSeriesApprove,
         api.PROJ_INFO_ID projInfoId,
-        aps.STAGE_NAME stageName,
-        apt.THEME_NAME themeName,
         api.GCBM gcbm
         FROM aea_hi_applyinst aha
-        LEFT JOIN aea_hi_par_stageinst ahps ON aha.APPLYINST_ID=ahps.APPLYINST_ID
-        LEFT JOIN aea_par_stage aps ON aps.STAGE_ID=ahps.STAGE_ID
         LEFT JOIN aea_applyinst_proj aap ON aap.APPLYINST_ID=aha.APPLYINST_ID
         LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID=aap.PROJ_INFO_ID
         LEFT JOIN aea_proj_linkman apl ON apl.APPLYINST_ID=aha.APPLYINST_ID AND apl.PROJ_INFO_ID=api.PROJ_INFO_ID
         LEFT JOIN aea_linkman_info ali ON ali.LINKMAN_INFO_ID=apl.LINKMAN_INFO_ID
-        LEFT JOIN aea_par_theme_ver aptv on aptv.THEME_VER_ID=ahps.THEME_VER_ID
-        LEFT JOIN aea_par_theme apt on apt.THEME_ID=aptv.THEME_ID
         <where>
             <if test="userInfoId !=null and userInfoId!=''">
                 ali.LINKMAN_INFO_ID=#{userInfoId}
@@ -2567,7 +2554,6 @@
         SELECT DISTINCT
         aha.APPLYINST_ID applyinstId,
         aha.APPLYINST_CODE applyinstCode,
-        ahi.ITEMINST_NAME stageIteminstName,
         aha.APPLYINST_STATE applyinstState,
         aha.CREATE_TIME startTime,
         aha.MODIFY_TIME endTime,
@@ -2575,18 +2561,13 @@
         api.LOCAL_CODE localCode,
         '1' isSeriesApprove,
         api.PROJ_INFO_ID projInfoId,
-        '' stageName,
-        apt.THEME_NAME themeName,
         api.GCBM gcbm
         FROM aea_hi_applyinst aha
-        LEFT JOIN aea_hi_seriesinst ahs ON aha.APPLYINST_ID=ahs.APPLYINST_ID
-        LEFT JOIN aea_hi_iteminst ahi ON ahi.SERIESINST_ID=ahs.SERIESINST_ID
         LEFT JOIN aea_applyinst_proj aap ON aap.APPLYINST_ID=aha.APPLYINST_ID
         LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID=aap.PROJ_INFO_ID
         LEFT JOIN aea_applyinst_unit_proj aaup ON aaup.APPLYINST_ID=aha.APPLYINST_ID
         LEFT JOIN aea_unit_proj aup ON aup.UNIT_PROJ_ID=aaup.UNIT_PROJ_ID
         LEFT JOIN aea_unit_info aui ON aup.UNIT_INFO_ID=aui.UNIT_INFO_ID
-        LEFT JOIN aea_par_theme apt ON api.theme_id=apt.theme_id
         <where>
             <if test="unitInfoId !=null and unitInfoId!=''">
                 aui.UNIT_INFO_ID=#{unitInfoId}
@@ -2609,7 +2590,6 @@
         SELECT DISTINCT
         aha.APPLYINST_ID applyinstId,
         aha.APPLYINST_CODE applyinstCode,
-        aps.STAGE_NAME stageIteminstName,
         aha.APPLYINST_STATE applyinstState,
         aha.CREATE_TIME startTime,
         aha.MODIFY_TIME endTime,
@@ -2617,19 +2597,13 @@
         api.LOCAL_CODE localCode,
         '0' isSeriesApprove,
         api.PROJ_INFO_ID projInfoId,
-        aps.STAGE_NAME stageName,
-        apt.THEME_NAME themeName,
         api.GCBM gcbm
         FROM aea_hi_applyinst aha
-        LEFT JOIN aea_hi_par_stageinst ahps ON aha.APPLYINST_ID=ahps.APPLYINST_ID
-        LEFT JOIN aea_par_stage aps ON aps.STAGE_ID=ahps.STAGE_ID
         LEFT JOIN aea_applyinst_proj aap ON aap.APPLYINST_ID=aha.APPLYINST_ID
         LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID=aap.PROJ_INFO_ID
         LEFT JOIN aea_applyinst_unit_proj aaup ON aaup.APPLYINST_ID=aha.APPLYINST_ID
         LEFT JOIN aea_unit_proj aup ON aup.UNIT_PROJ_ID=aaup.UNIT_PROJ_ID
         LEFT JOIN aea_unit_info aui ON aup.UNIT_INFO_ID=aui.UNIT_INFO_ID
-        LEFT JOIN aea_par_theme_ver aptv on aptv.THEME_VER_ID=ahps.THEME_VER_ID
-        LEFT JOIN aea_par_theme apt on apt.THEME_ID=aptv.THEME_ID
         <where>
             <if test="unitInfoId !=null and unitInfoId!=''">
                 aui.UNIT_INFO_ID=#{unitInfoId}
