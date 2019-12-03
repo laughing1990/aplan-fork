@@ -946,4 +946,35 @@
         </sql>
     </changeSet>
 
+    <changeSet id="201912031023" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_state`
+            ADD COLUMN `IS_INFORM_COMMIT`  char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '是否告知承诺制  0  否  1是' AFTER `ROOT_ORG_ID`;
+            ALTER TABLE `aea_par_state`
+            ADD COLUMN `IS_INFORM_COMMIT`  char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '是否告知承诺制  0  否  1是' AFTER `ROOT_ORG_ID`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201912031102" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            CREATE TABLE `aea_item_user` (
+                `ITEM_USER_ID` varchar(50) NOT NULL COMMENT '主键',
+                `ITEM_VER_ID` varchar(100) NOT NULL COMMENT '窗口ID',
+                `USER_ID` varchar(100) NOT NULL COMMENT '用户ID',
+                `IS_ACTIVE` char(1) NOT NULL COMMENT '是否启用，0表示禁用，1表示启用',
+                `CREATER` varchar(50) NOT NULL COMMENT '创建人',
+                `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+                `ROOT_ORG_ID` varchar(50) DEFAULT NULL COMMENT '根组织ID',
+                PRIMARY KEY (`ITEM_USER_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户事项管理';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201912031726" author="qinjp" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_applyinst`
+            ADD COLUMN `IS_TEMPORARY_SUBMIT`  char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 0 COMMENT '是否临时提交  0否  1是';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

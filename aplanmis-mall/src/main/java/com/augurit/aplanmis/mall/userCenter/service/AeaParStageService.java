@@ -302,10 +302,14 @@ public class AeaParStageService {
             //1、实例化申请实例
             //
             AeaHiApplyinst aeaHiApplyinst = null;
-            if (StringUtils.isNotBlank(applyInstId)){//applyInstId不为空的情况:在调用一张表单时已经提前将申请实例化
+            if (StringUtils.isNotBlank(applyInstId)){//applyInstId不为空的情况:在调用一张表单(或暂存)时已经提前将申请实例化
                 aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyInstId);
+                if("1".equals(aeaHiApplyinst.getIsTemporarySubmit())){
+                    aeaHiApplyinst.setIsTemporarySubmit("0");
+                    aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
+                }
             }else {
-                aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "0", branchOrgMap,ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue());
+                aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "0", branchOrgMap,ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"0");
             }
 
             if (aeaHiApplyinst == null)
@@ -428,7 +432,7 @@ public class AeaParStageService {
 
                 AeaCoreItemVo aeaCoreItemVo=new AeaCoreItemVo();
                 //实例化串联申请实例
-                AeaHiApplyinst seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "1", branchOrgMap,ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue());
+                AeaHiApplyinst seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "1", branchOrgMap,ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"0");
 
                 if (seriesApplyinst == null)
                     throw new RuntimeException("实例化并行推进事项申请实例失败！");

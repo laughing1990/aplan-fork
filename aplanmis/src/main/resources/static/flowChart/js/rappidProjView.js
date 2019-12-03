@@ -1605,8 +1605,9 @@ function reqStatusListAndResetThemeverDiagram(node, nodes, proj, cells) {
       setViewByProjResult(proj[ele.id], ele.id, cells);
     });
   } else {
-    $("#uploadProgress").modal("show");
-    $('#uploadProgressMsg').html("正在处理，请稍后...");
+    ts.pageLoading = true;
+    // $("#uploadProgress").modal("show");
+    // $('#uploadProgressMsg').html("正在处理，请稍后...");
     $.ajax({
       url: ctx + '/rest/project/diagram/status/json',
       method: 'GET',
@@ -1631,10 +1632,12 @@ function reqStatusListAndResetThemeverDiagram(node, nodes, proj, cells) {
             // swal('提示信息', '请联系管理员！', 'info');
           }
         }
-        setTimeout("$('#uploadProgress').modal('hide');", 400);
+          ts.pageLoading = true;
+        // setTimeout("$('#uploadProgress').modal('hide');", 400);
       },
       error: function (res) {
-        setTimeout("$('#uploadProgress').modal('hide');", 400);
+          ts.pageLoading = true;
+        // setTimeout("$('#uploadProgress').modal('hide');", 400);
       }
     });
   }

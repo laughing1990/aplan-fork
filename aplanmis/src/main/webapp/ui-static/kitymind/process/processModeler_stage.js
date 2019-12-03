@@ -1187,7 +1187,7 @@ function addTimeGroupImpl(){
     });
     data = data+'&appFlowdefId='+row.appFlowdefId+'&accId='+actIds;
     $.ajax({
-        url:ctx+'/bpm/admin/sto/save',
+        url:ctx+'/rest/act/tpl/app/setNodeTimeGroupLimit',
         data:data,
         method:'POST',
         success:function(res){
@@ -1212,7 +1212,7 @@ function searchTimegroupTable() {
     var row =  $('#timeGroupModal').data('row');
     var data = {appFlowdefId: row.appFlowdefId};
     if (timeGroupModalTable != null) timeGroupModalTable.bootstrapTable("destroy");
-    var dataJSONArray = getDataJSONArray(data, ctx + '/bpm/admin/sto/list', '', '没有更多流程!');
+    var dataJSONArray = getDataJSONArray(data, ctx + '/rest/act/tpl/app/getNodeTimeGroupList', '', '没有更多流程!');
     timeGroupModalTable = $('#timeGroupModal_tb').bootstrapTable({
         data: dataJSONArray,
         columns: [
@@ -1317,9 +1317,9 @@ function initLeftRightSelect(){
 function editTimeGroup(timegroupId){
     initLeftRightSelect();
     $.ajax({
-        url:ctx+'/bpm/admin/sto/get',
+        url:ctx+'/rest/act/tpl/app/getNodeTimeGroup',
         data:{timegroupId:timegroupId},
-        method:'POST',
+        method:'GET',
         success:function(res){
             var $form = $('#addTimeGroupDialogForm');
             $form.find('input[name=timegroupId]').val(res.timegroupId);
@@ -1343,9 +1343,8 @@ function editTimeGroup(timegroupId){
 
 function deleteTimeGroup(timegroupId){
     $.ajax({
-        url:ctx+'/bpm/admin/sto/delete',
-        data:{timegroupId:timegroupId},
-        method:'POST',
+        url:ctx+'/rest/act/tpl/app/deleteNodeTimeGroup?timegroupId=' + timegroupId,
+        method:'DELETE',
         success:function(res){
             if(res.success){
                 swal('提示', '删除成功！', 'info');
@@ -1542,13 +1541,22 @@ $("#selectItemTree").on('click',function (e) {
   }
 });
 
-//绑定模糊查询事项
+//绑定时限类型选择框
 $("#timeruleId_").on('change',function(){
   var text =$(this).find("option:selected").text();
   if(text){
       var unit = text.substring(0,3);
       var placeholder = "单位：" + unit;
       $("#edit_timeLimit").attr("placeholder",placeholder);
+  }
+});
+//绑定时限类型选择框
+$("#timeruleGroupId_").on('change',function(){
+  var text =$(this).find("option:selected").text();
+  if(text){
+      var unit = text.substring(0,3);
+      var placeholder = "单位：" + unit;
+      $("#edit_groupTimeLimit").attr("placeholder",placeholder);
   }
 });
 

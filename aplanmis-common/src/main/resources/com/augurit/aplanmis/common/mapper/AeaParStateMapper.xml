@@ -26,80 +26,84 @@
         ${alias}.IS_DELETED  isDeleted,
         ${alias}.IS_QUESTION_ORI  isQuestionOri,
         ${alias}.IS_PROC_START_COND  isProcStartCond,
-        ${alias}.ROOT_ORG_ID  rootOrgId
+        ${alias}.ROOT_ORG_ID  rootOrgId,
+        ${alias}.IS_INFORM_COMMIT isInformCommit
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaParStateById" resultType="AeaParState">
         select
-        <include refid="allColumns">
-            <property name="alias" value="parState"/>
-        </include>
+            <include refid="allColumns">
+                <property name="alias" value="parState"/>
+            </include>
         from AEA_PAR_STATE parState
         where parState.PAR_STATE_ID = #{id}
-        and parState.IS_DELETED = '0'
+          and parState.IS_DELETED = '0'
     </select>
 
     <!--3 根据条件查询实体list -->
     <select id="listAeaParState" resultType="AeaParState">
         select
-        <include refid="allColumns">
-            <property name="alias" value="parState"/>
-        </include>
+            <include refid="allColumns">
+                <property name="alias" value="parState"/>
+            </include>
         from AEA_PAR_STATE parState
         <where>
             <if test="parStateId != null">
-                AND PAR_STATE_ID = #{parStateId}
+                and PAR_STATE_ID = #{parStateId}
             </if>
             <if test="stageId != null">
-                AND STAGE_ID = #{stageId}
+                and STAGE_ID = #{stageId}
             </if>
             <if test="stateName != null">
-                AND STATE_NAME = #{stateName}
+                and STATE_NAME = #{stateName}
             </if>
             <if test="useEl != null">
-                AND USE_EL = #{useEl}
+                and USE_EL = #{useEl}
             </if>
             <if test="stateEl != null">
-                AND STATE_EL = #{stateEl}
+                and STATE_EL = #{stateEl}
             </if>
             <if test="isQuestion != null">
-                AND IS_QUESTION = #{isQuestion}
+                and IS_QUESTION = #{isQuestion}
             </if>
             <if test="answerType != null">
-                AND ANSWER_TYPE = #{answerType}
+                and ANSWER_TYPE = #{answerType}
             </if>
             <if test="mustAnswer != null">
-                AND MUST_ANSWER = #{mustAnswer}
+                and MUST_ANSWER = #{mustAnswer}
             </if>
             <if test="parentStateId != null">
-                AND PARENT_STATE_ID = #{parentStateId}
+                and PARENT_STATE_ID = #{parentStateId}
             </if>
             <if test="stateSeq != null">
-                AND STATE_SEQ = #{stateSeq}
+                and STATE_SEQ = #{stateSeq}
             </if>
             <if test="sortNo != null">
-                AND SORT_NO = #{sortNo}
+                and SORT_NO = #{sortNo}
             </if>
             <if test="isActive != null">
-                AND IS_ACTIVE = #{isActive}
+                and IS_ACTIVE = #{isActive}
             </if>
             <if test="stateMemo != null">
-                AND STATE_MEMO = #{stateMemo}
+                and STATE_MEMO = #{stateMemo}
             </if>
             <if test="isQuestionOri != null">
-                AND IS_QUESTION_ORI = #{isQuestionOri}
+                and IS_QUESTION_ORI = #{isQuestionOri}
             </if>
             <if test="isProcStartCond != null">
-                AND IS_PROC_START_COND = #{isProcStartCond}
+                and IS_PROC_START_COND = #{isProcStartCond}
             </if>
             <if test="rootOrgId != null">
-                AND ROOT_ORG_ID = #{rootOrgId}
+                and ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="isInformCommit != null">
+                and IS_INFORM_COMMIT = #{isInformCommit}
             </if>
             <if test="keyword!='' and keyword!=null ">
-                AND STATE_NAME like concat('%',concat(#{keyword},'%'))
+                and STATE_NAME like concat('%',concat(#{keyword},'%'))
             </if>
-            AND IS_DELETED = '0'
+                and IS_DELETED = '0'
         </where>
     </select>
 
@@ -126,7 +130,8 @@
             IS_DELETED,
             IS_QUESTION_ORI,
             IS_PROC_START_COND,
-            ROOT_ORG_ID
+            ROOT_ORG_ID,
+            IS_INFORM_COMMIT
         ) values (
             #{parStateId},
             #{stageId},
@@ -148,7 +153,8 @@
             #{isDeleted, jdbcType=VARCHAR},
             #{isQuestionOri},
             #{isProcStartCond},
-            #{rootOrgId}
+            #{rootOrgId},
+            #{isInformCommit}
         )
     </insert>
 
@@ -219,6 +225,9 @@
             <if test="rootOrgId != null">
                 ROOT_ORG_ID = #{rootOrgId},
             </if>
+            <if test="isInformCommit != null">
+                IS_INFORM_COMMIT = #{isInformCommit},
+            </if>
         </set>
         where PAR_STATE_ID = #{parStateId}
     </update>
@@ -247,22 +256,22 @@
     <!--根据阶段ID获取阶段root情形-->
     <select id="listRootAeaParStateByStageId" resultType="AeaParState">
         select
-        <include refid="allColumns">
-            <property name="alias" value="parState"/>
-        </include>
+            <include refid="allColumns">
+                <property name="alias" value="parState"/>
+            </include>
         from AEA_PAR_STATE parState
         where parState.PARENT_STATE_ID is null
-        and parState.STAGE_ID = #{stageId}
-        and parState.ROOT_ORG_ID = #{rootOrgId}
-        and parState.IS_DELETED = '0'
+          and parState.STAGE_ID = #{stageId}
+          and parState.ROOT_ORG_ID = #{rootOrgId}
+          and parState.IS_DELETED = '0'
     </select>
 
     <!--根据父情形ID查找子情形-->
     <select id="listAeaParStateByParentStateId" resultType="AeaParState">
         select
-        <include refid="allColumns">
-            <property name="alias" value="parState"/>
-        </include>
+            <include refid="allColumns">
+                <property name="alias" value="parState"/>
+            </include>
         from AEA_PAR_STATE parState
         <where>
             and parState.ROOT_ORG_ID = #{rootOrgId}
@@ -274,9 +283,9 @@
     <!--根据问题情形查找答案-->
     <select id="listAnswerStateByQuestionStateId" resultType="AeaParState">
         select
-        <include refid="allColumns">
-            <property name="alias" value="parState"/>
-        </include>
+            <include refid="allColumns">
+                <property name="alias" value="parState"/>
+            </include>
         from AEA_PAR_STATE parState
         <where>
             and parState.ROOT_ORG_ID = #{rootOrgId}
@@ -289,9 +298,9 @@
     <!-- 查询除了root情形外的所有情形-->
     <select id="listChildAeaParStateByStageId" resultType="AeaParState">
         select
-        <include refid="allColumns">
-            <property name="alias" value="parState"/>
-        </include>
+            <include refid="allColumns">
+                <property name="alias" value="parState"/>
+            </include>
         from AEA_PAR_STATE parState
         <where>
             and parState.ROOT_ORG_ID = #{rootOrgId}
@@ -313,8 +322,6 @@
             #{stateId}
         </foreach>
     </select>
-    <!--8 删除实体对象列表,根据主键ID列表 -->
-
 
     <!--根据父情形ID查找子情形及答案-->
     <select id="listParStateByParentStateId" resultMap="AeaParStateMap">
@@ -329,6 +336,7 @@
             </otherwise>
         </choose>
     </select>
+
     <!--9 返回所有字段的对象map,用于级联 -->
     <resultMap type="AeaParState" id="AeaParStateMap">
         <id property="parStateId" column="PAR_STATE_ID"/>
@@ -352,50 +360,63 @@
         <result property="isQuestionOri" column="IS_QUESTION_ORI"/>
         <result property="isProcStartCond" column="IS_PROC_START_COND"/>
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
-        <collection property="answerStates" column="PAR_STATE_ID" select="listParStateByParentId"
-                    ofType="AeaParState" javaType="arraylist"></collection>
+        <result property="isInformCommit" column="IS_INFORM_COMMIT"/>
+        <collection property="answerStates" column="PAR_STATE_ID"
+            select="listParStateByParentId" ofType="AeaParState" javaType="arraylist">
+        </collection>
     </resultMap>
 
     <select id="listParStateByParentId" resultType="AeaParState">
         select
-        <include refid="allColumns">
-            <property name="alias" value="state"/>
-        </include>
-        from AEA_PAR_STATE state where IS_DELETED = '0' and PARENT_STATE_ID = #{parStateId}
-
+            <include refid="allColumns">
+                <property name="alias" value="state"/>
+            </include>
+        from AEA_PAR_STATE state
+        where IS_DELETED = '0'
+          and PARENT_STATE_ID = #{parStateId}
     </select>
+
     <select id="listAllChildStates" resultType="AeaParState">
         select
-        <include refid="allColumns">
-            <property name="alias" value="state"/>
-        </include>
+            <include refid="allColumns">
+                <property name="alias" value="state"/>
+            </include>
         from AEA_PAR_STATE state
         where state.IS_DELETED = '0'
         and state.ROOT_ORG_ID = #{rootOrgId}
         and state.STATE_SEQ like concat('%.',concat(#{parStateId},'.%'))
         and state.PAR_STATE_ID != #{parStateId}
         <if test="keyword!='' and keyword!=null ">
-            and state.STATE_NAME like concat('%',concat(#{keyword},'%'))
+        and state.STATE_NAME like concat('%',concat(#{keyword},'%'))
         </if>
         order by state.CREATE_TIME asc
     </select>
 
     <select id="getMaxSortNo" resultType="java.lang.Long">
-        select max(SORT_NO) from AEA_PAR_STATE where ROOT_ORG_ID = #{rootOrgId}
+        select
+              max(SORT_NO)
+          from AEA_PAR_STATE
+         where ROOT_ORG_ID = #{rootOrgId}
     </select>
 
     <select id="listAeaParStateByParentStateIdAndStageId" resultType="AeaParState">
         select
-        <include refid="allColumns">
-            <property name="alias" value="state"/>
-        </include>
+            <include refid="allColumns">
+                <property name="alias" value="state"/>
+            </include>
         from AEA_PAR_STATE state
         <where>
             IS_DELETED = '0'
-            <if test="parentStateId!=null">and PARENT_STATE_ID = #{parentStateId}</if>
-            <if test="rootOrgId!=null">and ROOT_ORG_ID = #{rootOrgId}</if>
-            <if test="stageId!=null">and STAGE_ID = #{stageId}</if>
+            <if test="parentStateId!=null">
+                and PARENT_STATE_ID = #{parentStateId}
+            </if>
+            <if test="rootOrgId!=null">
+                and ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="stageId!=null">
+                and STAGE_ID = #{stageId}
+            </if>
         </where>
-
     </select>
+
 </mapper>

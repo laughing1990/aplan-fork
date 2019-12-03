@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--申报页面-apply-公共引入的js css-->
+
+<head th:fragment="commonheader(title)">
+    <meta charset="UTF-8">
+    <title>单位详情</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+        th:href="@{/agcloud/framework/js-lib/element-2/element.css}" />
+    <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css"
+        th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+    <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css"
+        th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
+    <link rel="stylesheet" href="../../static/effectSupervision/common/css/base.css"
+        th:href="@{/effectSupervision/common/css/base.css}">
+    <link rel="stylesheet" href="../../static/global/css/unitsDetail.css" th:href="@{/global/css/unitsDetail.css}">
+    <script>
+        var ctx = '[[@{/}]]';
+        // var ctx = 'http://192.168.17.4:8083/aplanmis-front/';
+    </script>
+</head>
+
+<body class="gray-body">
+    <div class="unitsDetail" id="unitsDetail" v-loading.fullscreen.lock="loading" v-cloak>
+
+        <div class="vertical-tab">
+            <ul>
+                <li class="vertical-label" v-for="(item, index) in verticalTabData"
+                    :class="activeTab==index?'active':item.target" data-name="item.target" :key="index"
+                    @click="targetCollapse(item.target,index)">
+                    <a :href="'#'+item.target">{{item.label}}</a>
+                </li>
+            </ul>
+        </div>
+
+        <el-collapse v-model="activeNames">
+            <el-collapse-item class="clearfix" name="1" id="baseInfo">
+                <template slot="title">
+                    <i class="header-icon icon ag ag-project-info"></i>基本信息
+                </template>
+                <el-form :model="manForm" :rules="manRules" ref="manForm" label-width="135px" class="linkman-form">
+                    <!-- <div class="divider">
+                        <span>基本信息</span>
+                        <el-divider></el-divider>
+                    </div> -->
+                    <div class="clearfix">
+                        <el-form-item class="inline-block" label="单位性质" prop="unitNature">
+                            <el-select placeholder="请选择" v-model="manForm.unitNature">
+                                <el-option label="企业" value="1"></el-option>
+                                <el-option label="事业单位" value="2"></el-option>
+                                <el-option label="社会组织" value="3"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item class="inline-block" label="单位类型" prop="unitType">
+                            <el-select placeholder="请选择" v-model="manForm.unitType">
+                                <el-option label="建设单位" value="1"></el-option>
+                                <el-option label="施工单位" value="2"></el-option>
+                                <el-option label="勘察单位" value="3"></el-option>
+                                <el-option label="设计单位" value="4"></el-option>
+                                <el-option label="监理单位" value="5"></el-option>
+                                <el-option label="代建单位" value="6"></el-option>
+                                <el-option label="代办单位" value="7"></el-option>
+                                <el-option label="其他" value="8"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item class="inline-block" label="统一社会信用代码" prop="unifiedSocialCreditCode">
+                            <el-input placeholder="请输入统一社会信用代码" v-model="manForm.unifiedSocialCreditCode"></el-input>
+                        </el-form-item>
+                        <el-form-item class="inline-block" label="单位名称" prop="applicant">
+                            <el-input placeholder="请输入单位名称" v-model="manForm.applicant"></el-input>
+                        </el-form-item>
+                        <el-form-item class="inline-block" label="单位地址" prop="applicantDetailSite">
+                            <el-input placeholder="请输入单位地址" v-model="manForm.applicantDetailSite"></el-input>
+                        </el-form-item>
+                        <el-form-item class="inline-block" label="法定代表人" prop="idrepresentative">
+                            <el-input placeholder="请输入法定代表人" v-model="manForm.idrepresentative"></el-input>
+                        </el-form-item>
+                        <el-form-item class="inline-block" label="法定代表人证件号" prop="idno">
+                            <el-input placeholder="请输入身份证号码" v-model="manForm.idno"></el-input>
+                        </el-form-item>
+                        <el-form-item class="inline-block" label="单位登录名">
+                            <el-input placeholder="请输入单位登录名" :disabled="true"></el-input>
+                        </el-form-item>
+                        <el-form-item class="inline-block" label="工商登记号" prop="induCommRegNum">
+                            <el-input placeholder="请输入工商登记号" v-model="manForm.induCommRegNum"></el-input>
+                        </el-form-item>
+                        <el-form-item class="inline-block" label="组织机构代码" prop="organizationalCode">
+                            <el-input placeholder="请输入组织机构代码" v-model="manForm.organizationalCode"></el-input>
+                        </el-form-item>
+                        <el-form-item class="inline-block" label="纳税人识别号" prop="taxpayerNum">
+                            <el-input placeholder="请输入纳税人识别号" v-model="manForm.taxpayerNum"></el-input>
+                        </el-form-item>
+                        <el-form-item class="inline-block" label="信用标记码" prop="creditFlagNum">
+                            <el-input placeholder="请输入信用标记码" v-model="manForm.creditFlagNum"></el-input>
+                        </el-form-item>
+                        <el-form-item class="inline-block" label="注册资本（万元）" prop="registeredCapital">
+                            <el-input placeholder="请输入注册资本" v-model="manForm.registeredCapital"></el-input>
+                        </el-form-item>
+                        <el-form-item class="inline-block" label="注册登记机关" prop="registerAuthority">
+                            <el-input placeholder="请输入注册登记机关" v-model="manForm.registerAuthority"></el-input>
+                        </el-form-item>
+                        <el-form-item class="inline-block" label="经营范围" prop="managementScope">
+                            <el-input placeholder="请输入经营范围" v-model="manForm.managementScope"></el-input>
+                        </el-form-item>
+                        <el-form-item class="inline-block" label="邮政编码" prop="postalCode">
+                            <el-input placeholder="请输入邮政编码" v-model="manForm.postalCode"></el-input>
+                        </el-form-item>
+                        <el-form-item class="inline-block" label="是否主单位" prop="isPrimaryUnit">
+                            <el-radio-group v-model="manForm.isPrimaryUnit">
+                                <el-radio label="1">主单位</el-radio>
+                                <el-radio label="0">副单位</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                        <el-form-item class="inline-block" label="角色">
+                            <el-checkbox-group v-model="roles" @change="roleChange">
+                                <el-checkbox label="isImUnit">中介机构</el-checkbox>
+                                <el-checkbox label="isOwnerUnit">业主单位</el-checkbox>
+                            </el-checkbox-group>
+                        </el-form-item>
+                    </div>
+                    <!-- <div class="clearfix">                          
+                        <el-form-item class="inline-block" label="联系人姓名" prop="contact">
+                            <el-input placeholder="请输入联系人姓名" v-model="manForm.contact"></el-input>
+                        </el-form-item>
+                        <el-form-item class="inline-block" label="联系电话" prop="idmobile">
+                            <el-input placeholder="请输入联系电话" v-model="manForm.idmobile"></el-input>
+                        </el-form-item>
+                        <el-form-item class="inline-block" label="联系人电子邮箱">
+                            <el-input placeholder="请输入联系人电子邮箱" v-model="manForm.email"></el-input>
+                        </el-form-item>                
+                    </div> -->
+                </el-form>
+            </el-collapse-item>
+            <el-collapse-item v-if="isEdit" class="clearfix" name="2" id="linkman">
+                <template slot="title">
+                    <i class="header-icon icon ag ag-project-info"></i>联系人列表
+                </template>
+                <!-- <div class="upload-card">
+                    <div class="upload-btn">
+                        <el-upload class="enclosure-upload-ref inlineblock-midd" ref="enclosureUploadRef" action=""
+                            :multiple="true" :on-change="enclosureFileSelectChange"
+                            :on-remove="enclosureFileSelectRemove" :auto-upload="false">
+                            <el-button slot="trigger" size="medium" type="normal">上传文件</el-button>
+                        </el-upload>
+                        <span class="tip">上传的附件不可超过10MB，禁止上传以下的附件类型：.exe,.sh,.bat,.com,.dll</span>
+                    </div>
+                    <el-table :data="curEditRow.fileList" class="scrollable mt20" style="width: 100%;"
+                        @selection-change="handleFileSelectionChange">
+                        <el-table-column label="序号" width="55">
+                            <template scope="scope">
+                                <span>{{scope.$index + 1}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="文件名">
+                            <template scope="scope">
+                                <a href="javascript:;" @click="filePreview(scope.row)">{{scope.row.fileName}}</a>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="操作" width="100">
+                            <template scope="scope">
+                                <span class="inline-block table-btn" @click="downFile(scope.row)"><i
+                                        class="el-icon-download"></i></span>
+                                <span class="inline-block table-btn btn-hv-danger"
+                                    @click="deleteContractOne(scope.row)"><i class="el-icon-delete"></i></span>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </div> -->
+
+                <el-button type="primary" class="addUser" @click="addLinkman('')">新增人员</el-button>
+                <el-table :data="tableData" border stripe
+                    :header-cell-style="{background:'#F3F6F9',padding:'8px 0', color: '#575962'}" style="width: 100%">
+                    <el-table-column prop="linkmanName" label="联系人姓名" width="180">
+                    </el-table-column>
+                    <el-table-column prop="linkmanCertNo" label="身份证号" width="180">
+                    </el-table-column>
+                    <el-table-column prop="linkmanMobilePhone" label="手机号码">
+                    </el-table-column>
+                    <el-table-column prop="linkmanMail" label="电子邮箱">
+                    </el-table-column>
+                    <el-table-column prop="linkmanAddr" label="联系人住址">
+                    </el-table-column>
+                    <el-table-column prop="loginName" label="登录名">
+                    </el-table-column>
+                    <el-table-column label="操作">
+                        <template slot-scope="scope">
+                            <span class="color-169AFF canClick" @click="addLinkman(scope.row)">编辑</span>
+                            <span class="color-999">|</span>
+                            <span class="color-FF4B47 canClick" @click="delLinkman(scope.row)">删除</span>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-collapse-item>
+        </el-collapse>
+
+        <div class="foot-btn">
+            <el-button @click="applicantDialogState = false">取 消</el-button>
+            <el-button type="primary" @click="saveApplicantInfo">保 存</el-button>
+        </div>
+
+        <!--新增编辑联系人 start-->
+        <el-dialog :title="addEditManModalTitle" :visible.sync="addEditManModalShow" width="750px"
+            class="dg-modal-add-linkmain-info" @close="resetForm('addEditManform')">
+            <el-form :model="addEditManform" ref="addEditManform" label-width="180px" :rules="addLinkManRules">
+                <!-- <el-form-item label="所在单位：" required>
+                    <el-select v-model="addEditManform.unitName" placeholder="请选择单位">
+                        <el-option v-for="item in unitInfoIdList" :key="item.unitInfoId" :label="item.applicant"
+                            :value="item.unitInfoId"></el-option>
+                    </el-select>
+                </el-form-item> -->
+                <el-form-item label="所在单位：">
+                    <el-input v-model="manForm.applicant" placeholder="请输入单位" disabled="disabled"></el-input>
+                </el-form-item>
+                <el-form-item label="联系人姓名：" prop="linkmanName">
+                    <el-input v-model="addEditManform.linkmanName" placeholder="请输入联系人姓名"></el-input>
+                </el-form-item>
+                <el-form-item label="证件号：" prop="linkmanCertNo">
+                    <el-input v-model="addEditManform.linkmanCertNo" placeholder="请输入联系人证件号"></el-input>
+                </el-form-item>
+                <el-form-item label="手机号码：" prop="linkmanMobilePhone">
+                    <el-input v-model="addEditManform.linkmanMobilePhone" placeholder="请输入联系人手机号码"></el-input>
+                </el-form-item>
+                <el-form-item label="办公电话：">
+                    <el-input v-model="addEditManform.linkmanOfficePhon"></el-input>
+                </el-form-item>
+                <el-form-item label="传真：">
+                    <el-input v-model="addEditManform.linkmanFax"></el-input>
+                </el-form-item>
+                <el-form-item label="电子邮件：">
+                    <el-input v-model="addEditManform.linkmanMail"></el-input>
+                </el-form-item>
+                <el-form-item label="联系人住址：">
+                    <el-input v-model="addEditManform.linkmanAddr"></el-input>
+                </el-form-item>
+                <el-form-item label="备注：">
+                    <el-input v-model="addEditManform.linkmanMemo"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="addEditManModalShow = false">取 消</el-button>
+                <el-button type="primary" @click="saveAeaLinkmanInfo('u')">确 定</el-button>
+            </div>
+        </el-dialog>
+        <!--新增编辑联系人 end-->
+    </div>
+    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+        th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+        th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+        th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
+        th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+    <script src="../../static/view/js/mixins.js" th:src="@{/view/js/mixins.js}" type="text/javascript"></script>
+    <script src="../../static/global/js/unitsDetail.js" th:src="@{/global/js/unitsDetail.js}"
+        type="text/javascript"></script>
+</body>
+
+</html>

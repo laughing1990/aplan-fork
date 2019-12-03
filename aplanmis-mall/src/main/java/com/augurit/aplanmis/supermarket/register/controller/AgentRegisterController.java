@@ -6,6 +6,12 @@ import com.augurit.agcloud.framework.security.user.OpuOmUser;
 import com.augurit.agcloud.framework.security.user.OpusLoginUser;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
+import com.augurit.agcloud.framework.util.CollectionUtils;
+import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
+import com.augurit.aplanmis.common.domain.AeaUnitInfo;
+import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
+import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.vo.AgentRegisterVo;
 import com.augurit.aplanmis.supermarket.cert.service.AeaCertService;
 import com.augurit.aplanmis.supermarket.certinst.service.AeaHiCertinstService;
@@ -19,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequestMapping("/supermarket/agentRegister")
@@ -31,6 +38,12 @@ public class AgentRegisterController {
 
     @Autowired
     AeaCertService aeaCertService;
+
+    @Autowired
+    AeaUnitInfoService aeaUnitInfoService;
+
+    @Autowired
+    AeaLinkmanInfoService aeaLinkmanInfoService;
 
     @Value("${dg.sso.access.platform.org.top-org-id}")
     protected String topOrgId;
@@ -60,5 +73,36 @@ public class AgentRegisterController {
         return new ContentResultForm<AgentRegisterVo>(true,agentRegisterVo);
     }
 
+    /**
+     * 根据统一社会信用代码判断是否已重复
+     * @param unifiedSocialCreditCode
+     * @return
+     */
+    @RequestMapping("/checkUnitIsExisted")
+    public ResultForm checkUnitIsExisted(String unifiedSocialCreditCode) {
+        if (StringUtils.isNotBlank(unifiedSocialCreditCode)) {
+            List<AeaUnitInfo> listAeaUnitInfos = aeaUnitInfoService.getUnitInfoListByIdCard(unifiedSocialCreditCode);
+            if (CollectionUtils.isNotEmpty(listAeaUnitInfos)) {
+                return new ContentResultForm<Boolean>(true, false, "该统一社会信用代码已注册！");
+            }
+        }
+        return new ContentResultForm<Boolean>(true, true);
+    }
+
+    /**
+     * 根据身份证号判断用户是否已重复
+     * @param linkmanCertNo
+     * @return
+     */
+    @RequestMapping("/checkManIsExisted")
+    public ResultForm checkManIsExisted(String linkmanCertNo) {
+        if (StringUtils.isNotBlank(linkmanCertNo)) {
+            List<AeaLinkmanInfo> links = aeaLinkmanInfoService.getAeaLinkmanInfoListByCertNo(linkmanCertNo);
+            if (CollectionUtils.isNotEmpty(links)) {
+                return new ContentResultForm<Boolean>(true, false, "该身份证号已注册用户！");
+            }
+        }
+        return new ContentResultForm<Boolean>(true, true);
+    }
 
 }

@@ -10,7 +10,6 @@ var aCells = '';
 var app = "";
 var stageTip = '';
 $(function () {
-  // $("#uploadProgress").modal("show");
   var proj = {};
   var cells = ""; //渲染内容
 
@@ -1588,8 +1587,9 @@ function reqStatusListAndResetThemeverDiagram(node, nodes, proj, cells) {
       setViewByProjResult(proj[ele.id], ele.id, cells);
     });
   } else {
-    $("#uploadProgress").modal("show");
-    $('#uploadProgressMsg').html("正在处理，请稍后...");
+    // $("#uploadProgress").modal("show");
+    // $('#uploadProgressMsg').html("正在处理，请稍后...");
+    ts.pageLoading = true;
     $.ajax({
       url: ctx + '/rest/project/diagram/status/json',
       method: 'GET',
@@ -1614,10 +1614,12 @@ function reqStatusListAndResetThemeverDiagram(node, nodes, proj, cells) {
             // swal('提示信息', '请联系管理员！', 'info');
           }
         }
-        setTimeout("$('#uploadProgress').modal('hide');", 400);
+        // setTimeout("$('#uploadProgress').modal('hide');", 400);
+        ts.pageLoading = false;
       },
       error: function (res) {
-        setTimeout("$('#uploadProgress').modal('hide');", 400);
+        ts.pageLoading = false;
+        // setTimeout("$('#uploadProgress').modal('hide');", 400);
       }
     });
   }
