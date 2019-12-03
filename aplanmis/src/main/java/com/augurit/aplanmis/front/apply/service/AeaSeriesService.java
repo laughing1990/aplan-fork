@@ -13,6 +13,7 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.aplanmis.common.constants.ApplyState;
+import com.augurit.aplanmis.common.constants.ApplyType;
 import com.augurit.aplanmis.common.constants.ItemStatus;
 import com.augurit.aplanmis.common.domain.AeaApplyinstProj;
 import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
@@ -23,6 +24,7 @@ import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
 import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
+import com.augurit.aplanmis.common.service.apply.ApplyCommonService;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemStateinstService;
@@ -94,6 +96,8 @@ public class AeaSeriesService {
     private AeaLogApplyStateHistService aeaLogApplyStateHistService;
     @Autowired
     private AeaServiceWindowService aeaServiceWindowService;
+    @Autowired
+    private ApplyCommonService applyCommonService;
 
 
     /**
@@ -380,15 +384,8 @@ public class AeaSeriesService {
             seriesApplyinst.setIsBranchHandle(isBranchHandle);
         }
 
-        //把所有情形丢到变量里，用于流程启动情形
-        if (stateIds != null && stateIds.length > 0) {
-            Map<String, Boolean> stateinsts = new HashMap<>();
-            for (String stateId : stateIds) {
-                stateinsts.put(stateId, true);
-            }
-            if (stateinsts.size() > 0)
-                seriesApplyinst.setStateinsts(stateinsts);
-        }
+        // 用于流程启动情形
+        seriesApplyinst.setStateinsts(applyCommonService.filterProcessStartConditions(stateIds, ApplyType.SERIES));
 
         //3、情形实例
         aeaHiItemStateinstService.batchInsertAeaHiItemStateinst(seriesApplyinstId, aeaHiSeriesinst.getSeriesinstId(), null, stateIds, SecurityContext.getCurrentUserName());
