@@ -1500,18 +1500,22 @@ var module1 = new Vue({
           }
         });
       }
-      var projNameValue = this.$refs.projName.value.trim();
-      var localCodeValue = this.$refs.localCode.value.trim();
-      var regionalism = this.$refs.regionalism.value.trim();
-      if (projNameValue == null || projNameValue == "") {
-        return;
-      }
-      if (localCodeValue == null || localCodeValue == "") {
-        return;
-      }
-      if (regionalism == null || regionalism == "") {
-        return;
-      }
+      _that.projInfoDetail.projName = _that.projInfoDetail.projName?_that.projInfoDetail.projName.trim():'';
+      _that.projInfoDetail.localCode = _that.projInfoDetail.localCode?_that.projInfoDetail.localCode.trim():'';
+      _that.projInfoDetail.regionalism = _that.projInfoDetail.regionalism?_that.projInfoDetail.regionalism.trim():'';
+
+      // var projNameValue = this.$refs.projName.value.trim();
+      // var localCodeValue = this.$refs.localCode.value.trim();
+      // var regionalism = this.$refs.regionalism.value.trim();
+      // if (projNameValue == null || projNameValue == "") {
+      //   return;
+      // }
+      // if (localCodeValue == null || localCodeValue == "") {
+      //   return;
+      // }
+      // if (regionalism == null || regionalism == "") {
+      //   return;
+      // }
 
       _that.getResultForm.id = _that.smsInfoId;
       _that.$refs['projInfoForm'].validate(function (valid1) {
