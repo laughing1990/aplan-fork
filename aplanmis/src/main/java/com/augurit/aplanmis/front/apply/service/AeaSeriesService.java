@@ -15,22 +15,13 @@ import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.constants.ApplyType;
 import com.augurit.aplanmis.common.constants.ItemStatus;
-import com.augurit.aplanmis.common.domain.AeaApplyinstProj;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaHiIteminst;
-import com.augurit.aplanmis.common.domain.AeaHiSeriesinst;
-import com.augurit.aplanmis.common.domain.AeaItemBasic;
-import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
-import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiIteminstMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemStateMapper;
 import com.augurit.aplanmis.common.service.apply.ApplyCommonService;
-import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiItemStateinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiSeriesinstService;
-import com.augurit.aplanmis.common.service.instance.AeaLogApplyStateHistService;
+import com.augurit.aplanmis.common.service.instance.*;
 import com.augurit.aplanmis.common.service.item.AeaLogItemStateHistService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.process.AeaBpmProcessService;
@@ -46,12 +37,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * 单项申报service
@@ -98,7 +84,10 @@ public class AeaSeriesService {
     private AeaServiceWindowService aeaServiceWindowService;
     @Autowired
     private ApplyCommonService applyCommonService;
-
+    @Autowired
+    private AeaItemStateMapper aeaItemStateMapper;
+    @Autowired
+    private AeaHiIteminstMapper aeaHiIteminstMapper;
 
     /**
      * 保存实例、启动流程（停留在收件节点）
@@ -352,14 +341,14 @@ public class AeaSeriesService {
         AeaHiSeriesinst seriesInst = aeaHiSeriesinstService.getAeaHiSeriesinstByApplyinstId(seriesApplyinstId);
         AeaHiSeriesinst aeaHiSeriesinst;
         AeaHiIteminst aeaHiIteminst;
-        if(seriesInst==null){
+        if (seriesInst == null) {
             //1、保存单项实例
             aeaHiSeriesinst = aeaHiSeriesinstService.createAeaHiSeriesinst(seriesApplyinstId, appinstId, seriesApplyDataVo.getIsParallel(), seriesApplyDataVo.getStageId());
             //2、事项实例
             aeaHiIteminst = aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), itemVerId, branchOrgMap, null, appinstId);
-        }else{
-            aeaHiSeriesinst=seriesInst;
-            aeaHiIteminst=aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(seriesApplyinstId).get(0);
+        } else {
+            aeaHiSeriesinst = seriesInst;
+            aeaHiIteminst = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(seriesApplyinstId).get(0);
         }
 
 
@@ -389,6 +378,16 @@ public class AeaSeriesService {
 
         //3、情形实例
         aeaHiItemStateinstService.batchInsertAeaHiItemStateinst(seriesApplyinstId, aeaHiSeriesinst.getSeriesinstId(), null, stateIds, SecurityContext.getCurrentUserName());
+
+        List<AeaItemState> stateList = aeaItemStateMapper.listAeaItemStateByIds(stateIds);
+        for (AeaItemState state : stateList) {
+            //判断事项是否为告知承诺制
+            if ("1".equals(state.getIsInformCommit())) {
+                aeaHiIteminst.setIteminstType("p");
+                aeaHiIteminstMapper.updateAeaHiIteminst(aeaHiIteminst);
+                break;
+            }
+        }
 
         //4、材料输入输出实例
         aeaHiItemInoutinstService.batchInsertAeaHiItemInoutinst(matinstsIds, seriesApplyinstId, SecurityContext.getCurrentUserName());

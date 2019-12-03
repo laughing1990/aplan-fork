@@ -91,6 +91,7 @@ public class AeaItemState extends ZtreeNode implements Serializable {
     private String rootOrgId;
     @ApiModelProperty(value = "父问题情形id")
     private String parentQuestionStateId;
+    private String isInformCommit; // 是否告知承诺制  0  否  1是
 
     /*----------------拓展字段----------*/
     /** 情形答案列表*/

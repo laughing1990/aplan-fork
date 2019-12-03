@@ -68,7 +68,7 @@ public class AeaHiIteminst implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date smsSendTime;//最新出件时间
     private String procinstId; //流程实例ID
-
+    private String iteminstType; //事项实例类型： a 行政审批，p 告知承诺制
 
     //非表字段
     private String approveOrgName;  //审批部门
