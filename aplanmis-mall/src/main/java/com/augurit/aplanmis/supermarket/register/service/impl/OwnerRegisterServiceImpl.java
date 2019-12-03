@@ -21,6 +21,7 @@ import com.augurit.aplanmis.supermarket.linkmanInfo.service.AeaLinkmanInfoServic
 import com.augurit.aplanmis.supermarket.register.service.AgentRegisterService;
 import com.augurit.aplanmis.supermarket.register.service.OwnerRegisterService;
 import com.augurit.aplanmis.supermarket.serviceMatter.service.ServiceMatterPublishService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,7 @@ import java.util.UUID;
 
 @Service
 @Transactional(rollbackFor = RuntimeException.class)
+@Slf4j
 public class OwnerRegisterServiceImpl implements OwnerRegisterService {
 
     @Autowired
@@ -84,12 +86,12 @@ public class OwnerRegisterServiceImpl implements OwnerRegisterService {
 
             unitInfo.setLoginName(loginName);
             unitInfo.setLoginPwd(Md5Utils.encrypt32(password));
+            unitInfo.setUnitType("1");//建设单位
             unitInfo.setIsOwnerUnit("1");
             unitInfo.setAuditFlag("2");
 
             //保存单位信息
             aeaUnitInfoService.insertAeaUnitInfo(unitInfo);
-            System.out.println("**************"+unitInfo.getUnitInfoId());
             AeaLinkmanInfo contactManInfo = ownerRegisterVo.getContactManInfo();
             if (contactManInfo != null) {
                 contactManInfo.setUnitInfoId(unitInfo.getUnitInfoId());
@@ -131,7 +133,7 @@ public class OwnerRegisterServiceImpl implements OwnerRegisterService {
             }
 
         }
-
+        log.debug(unitInfo.getUnitInfoId() + "机构注册成功,账号：" + ownerRegisterVo.getLoginName() + "密码：" + ownerRegisterVo.getPassword());
     }
 
     private List<MultipartFile> getFileListByName(HttpServletRequest request, String fileName) {

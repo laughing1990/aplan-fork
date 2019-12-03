@@ -71,9 +71,9 @@ var module1 = new Vue({
       declareStep: 1, // 申报步骤 1-补全信息 2-选择主题 3-选择阶段 4-事项材料一单清
       declareStepList: [  // 所有的步骤
         { num: '1', name: '补全信息' },
-        { num: '2', name: '主题引导' },
-        { num: '3', name: '选择主题' },
-        { num: '4', name: '选择服务' },
+        // { num: '2', name: '主题引导' },
+        // { num: '3', name: '选择主题' },
+        // { num: '4', name: '选择服务' },
         { num: '5', name: '事项一单清' },
         { num: '6', name: '一张表单' },
         { num: '7', name: '材料一单清' },
@@ -288,7 +288,7 @@ var module1 = new Vue({
           { required: true, message: '请选择立项类型', trigger: 'change' },
         ],
         themeId: [
-          { required: true, message: '请选择项目类型', trigger: 'change' },
+          { required: true, message: '请选择所属主题', trigger: 'change' },
         ],
         projNature: [
           { required: true, message: '请选择建设性质', trigger: 'change' },
@@ -1498,6 +1498,10 @@ var module1 = new Vue({
       var aeaUnitInfo = this.applyObjectInfo.aeaUnitInfo;
       var aeaLinkmanInfo = this.applyObjectInfo.aeaLinkmanInfo;
       var _linkmanTypes = [];
+      _that.stageList = [];
+      _that.stateList = [];
+      _that.parallelItems = [];
+      _that.coreItems = [];
       if (_that.applyObjectInfo.aeaUnitInfo && _that.applyObjectInfo.aeaUnitInfo.linkmanTypes && _that.applyObjectInfo.aeaUnitInfo.linkmanTypes.length > 0) {
         _that.applyObjectInfo.aeaUnitInfo.linkmanTypes.map(function (itemType) {
           if (itemType.linkmanInfoId) {
@@ -1551,18 +1555,18 @@ var module1 = new Vue({
           }
         });
       }
-      var projNameValue = this.$refs.projName.value.trim();
-      var localCodeValue = this.$refs.localCode.value.trim();
-      var regionalism = this.$refs.regionalism.value.trim();
-      if (projNameValue == null || projNameValue == "") {
-        return;
-      }
-      if (localCodeValue == null || localCodeValue == "") {
-        return;
-      }
-      if (regionalism == null || regionalism == "") {
-        return;
-      }
+      _that.projInfoDetail.projName = _that.projInfoDetail.projName?_that.projInfoDetail.projName.trim():'';
+      _that.projInfoDetail.localCode = _that.projInfoDetail.localCode?_that.projInfoDetail.localCode.trim():'';
+      _that.projInfoDetail.regionalism = _that.projInfoDetail.regionalism?_that.projInfoDetail.regionalism.trim():'';
+      // if (projNameValue == null || projNameValue == "") {
+      //   return;
+      // }
+      // if (localCodeValue == null || localCodeValue == "") {
+      //   return;
+      // }
+      // if (regionalism == null || regionalism == "") {
+      //   return;
+      // }
       _that.getResultForm.id = _that.smsInfoId;
       _that.$refs['projInfoForm'].validate(function (valid1) {
         if (valid1) {
@@ -1584,16 +1588,17 @@ var module1 = new Vue({
                     _that.loading = false;
                     _that.smsInfoId = data.content.smsId;
                     _that.regionalism = data.content.regionalism;//更新区划ID
-                    if (_that.themeId == '') {
-                      _that.themeId = _that.projInfoDetail.themeId;
-                    }
+                    // if (_that.themeId == '') {
+                    _that.themeId = _that.projInfoDetail.themeId;
+                    // }
                     _that.getThemeList();
                     _that.unitProjIds = data.content.unitProjIds;
-                    if (_that.intelligenceAllow || (_that.themeId&&_that.themeId != '')) {
-                      _that.declareStep = 3;
-                    } else {
-                      _that.declareStep = 2;
-                    }
+                    // if (_that.intelligenceAllow || (_that.themeId&&_that.themeId != '')) {
+                    //   _that.declareStep = 3;
+                    // } else {
+                    //   _that.declareStep = 2;
+                    // }
+                    _that.saveThemeAndNext();
                     if(data.content.unitReturnJson&&data.content.unitReturnJson.length>0){
                       var arr = data.content.unitReturnJson;
                       arr.forEach(function(item,index){
@@ -1768,15 +1773,15 @@ var module1 = new Vue({
           if (_that.statusLineList.length > 0) {
             _that.stageList = _that.statusLineList[0].statusList;
           }
-          if (_that.statusLineList.length > 1) {
-            _that.statusLineListAllow = false;
-            _that.showStageType = true;
-            _that.declareStep = 4;
-          } else {
+          // if (_that.statusLineList.length > 1) {
+          //   _that.statusLineListAllow = false;
+          //   _that.showStageType = true;
+          //   _that.declareStep = 4;
+          // } else {
             _that.statusLineListAllow = true
             _that.declareStep = 5;
             _that.selStatus(_that.stageList[0], 0);
-          }
+          // }
           _that.selStatusLine(_that.statusLineList[0], 0)
           // _that.selStatus(_that.stageList[0],0,_that.stageList[0].stageId,_that.stageList[0].isSelItem); // 默认选择阶段1
         } else {
@@ -1795,7 +1800,7 @@ var module1 = new Vue({
     selStatusLine: function (data, index) {
       var _that = this;
       this.statusLineListActive = index;
-      this.stageList = data.statusList;
+      this.stageList = data?data.statusList:[];
       _that.stageList.map(function (item) { // 图片切换为新的图片
         if (item.stageName.indexOf('工程') == 0) {
           item.bigImgPath = 'mall/images/userCenter/stage_2.png';

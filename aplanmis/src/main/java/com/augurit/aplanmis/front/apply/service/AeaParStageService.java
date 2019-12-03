@@ -34,6 +34,7 @@ import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
 import com.augurit.aplanmis.common.mapper.AeaParThemeMapper;
 import com.augurit.aplanmis.common.mapper.AeaParThemeVerMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
+import com.augurit.aplanmis.common.service.apply.ApplyCommonService;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
@@ -137,6 +138,8 @@ public class AeaParStageService {
     private AeaHiItemMatinstService aeaHiItemMatinstService;
     @Autowired
     private AeaServiceWindowService aeaServiceWindowService;
+    @Autowired
+    private ApplyCommonService applyCommonService;
 
     /**
      * 保存实例、启动流程（停留在收件节点）
@@ -402,16 +405,8 @@ public class AeaParStageService {
         aeaHiApplyinst.setApprovalOrgCode(approveOrgMap);
         aeaHiApplyinst.setIteminsts(iteminstMap);
 
-        //把所有情形丢到变量里，用于流程启动情形
-        if (stateIds != null && stateIds.length > 0) {
-            Map<String, Boolean> stateinsts = new HashMap<>();
-            for (String stateId : stateIds) {
-                stateinsts.put(stateId, true);
-            }
-            if (stateinsts.size() > 0) {
-                aeaHiApplyinst.setStateinsts(stateinsts);
-            }
-        }
+        // 用于流程启动情形
+        aeaHiApplyinst.setStateinsts(applyCommonService.filterProcessStartConditions(stateIds, ApplyType.UNIT));
 
         //6、启动主流程
         BpmProcessInstance bpmProcessInstance = aeaBpmProcessService.startFlow(appId, appinstId, aeaHiApplyinst);
@@ -484,23 +479,11 @@ public class AeaParStageService {
                 seriesApplyinst.setApprovalOrgCode(approveOrgItem);
                 seriesApplyinst.setProjInfoId(projInfoIds[0]);
 
-                //把所有情形丢到变量里，用于流程启动情形
-                if (propulsionItemStateIds.size() > 0) {
-                    Map<String, Boolean> stateinsts = new HashMap<>();
-                    if (stateIds != null && stateIds.length > 0) {
-                        for (String stateId : stateIds) {
-                            stateinsts.put(stateId, true);
-                        }
-                    }
-                    if (stateinsts.size() > 0) {
-                        seriesApplyinst.setStateinsts(stateinsts);
-                    }
-                }
-
                 //4、情形实例
                 if (CollectionUtils.isNotEmpty(propulsionItemStateIdMap.get(itemVerId))) {
                     String[] itemStateIds = propulsionItemStateIdMap.get(itemVerId).toArray(new String[0]);
                     aeaHiItemStateinstService.batchInsertAeaHiItemStateinst(seriesApplyinstId, aeaHiSeriesinst.getSeriesinstId(), null, itemStateIds, SecurityContext.getCurrentUserName());
+                    seriesApplyinst.setStateinsts(applyCommonService.filterProcessStartConditions(itemStateIds, ApplyType.SERIES));
                 }
 
                 //5、材料输入输出实例

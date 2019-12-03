@@ -463,7 +463,6 @@ public class AeaItemStateAdminService {
      * @param parentId
      * @param allStates
      * @param childNodes
-     * @param aeaMindUi
      */
     private void node(String itemVerId, String parentId, List<AeaItemState> allStates, List<AeaItemInout> allStateIns,
                       List<MindBaseNode> childNodes, String rootOrgId) {
@@ -667,6 +666,7 @@ public class AeaItemStateAdminService {
         mindBaseNode.setNodeTypeName(MindType.SITUATION.getName());
         mindBaseNode.setNote(aeaItemState.getStateMemo());
         mindBaseNode.setLinkProcessStart(aeaItemState.getIsProcStartCond());
+        mindBaseNode.setIsInformCommit(aeaItemState.getIsInformCommit());
         return mindBaseNode;
     }
 
@@ -1055,6 +1055,7 @@ public class AeaItemStateAdminService {
             }
             updateItemState.setIsQuestion(Status.OFF);
         }
+
         updateItemState.setAnswerType(AeaMindConst.MIND_NODE_PRIORITY_MAPPING_REQUIRED.equals(data.getPriority()) ? AnswerType.MULTIPLE.getValue() : "");//2：多选
         updateItemState.setMustAnswer(AeaMindConst.MIND_NODE_PROGRESS_MAPPING_REQUIRED.equals(data.getProgress()) ? Status.ON : "");
         if (updateItemState.getIsQuestion().equals(Status.ON) && "".equals(updateItemState.getAnswerType())) {
@@ -1064,14 +1065,22 @@ public class AeaItemStateAdminService {
             updateItemState.setMustAnswer(Status.OFF);
         }
 
-        updateItemState.setStateMemo(data.getNote());//备注
+        //备注
+        updateItemState.setStateMemo(data.getNote());
 
+        // 是否情形流程启动
         if (Status.ON.equals(data.getLinkProcessStart())) {
             updateItemState.setIsProcStartCond(Status.ON);
         } else {
             updateItemState.setIsProcStartCond(Status.OFF);
         }
 
+        // 是否告知承诺制
+        if (Status.ON.equals(data.getIsInformCommit())) {
+            updateItemState.setIsInformCommit(Status.ON);
+        } else {
+            updateItemState.setIsInformCommit(Status.OFF);
+        }
         return updateItemState;
     }
 
@@ -1115,10 +1124,18 @@ public class AeaItemStateAdminService {
         }
         aeaItemState.setStateMemo(c.getData().getNote());
 
+        // 是否流程启动
         if (Status.ON.equals(c.getData().getLinkProcessStart())) {
             aeaItemState.setIsProcStartCond(Status.ON);
         } else {
             aeaItemState.setIsProcStartCond(Status.OFF);
+        }
+
+        // 是否告知承诺制
+        if (Status.ON.equals(c.getData().getIsInformCommit())) {
+            aeaItemState.setIsInformCommit(Status.ON);
+        } else {
+            aeaItemState.setIsInformCommit(Status.OFF);
         }
         this.saveAeaItemState(aeaItemState);
         return aeaItemState;

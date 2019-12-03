@@ -790,7 +790,7 @@
                             <font color="red">*</font>时限：
                         </label>
                         <div class="col-9" style="text-align:left">
-                            <input class="form-control" type="number" min="0" name="timeLimit" placeholder="单位：工作日" style="float:left;"/>
+                            <input class="form-control" type="number" min="0" name="timeLimit" id="edit_groupTimeLimit" placeholder="单位：工作日" style="float:left;"/>
                         </div>
                     </div>
 
@@ -1191,7 +1191,7 @@
 <script src="${pageContext.request.contextPath}/ui-static/kitymind/process/processModelerVue.js?v=2"
         type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/ui-static/kitymind/process/processTreeGrid.js" type="text/javascript"></script>
-<script src="${pageContext.request.contextPath}/ui-static/kitymind/process/processModeler_stage.js?v=3"
+<script src="${pageContext.request.contextPath}/ui-static/kitymind/process/processModeler_stage.js?v=4"
         type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/ui-static/kitymind/process/getPingyin.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/ui-static/common/ztree/opus_om_org_ztree.js" type="text/javascript"></script>

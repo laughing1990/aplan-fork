@@ -3,28 +3,28 @@
       th:href="@{/mall/css/userCenter/parallelDeclare.css}">
 <div class="wt-tab declare-content" id="parallelDeclare" v-cloak v-loading.fullscreen.lock="loading">
   <!-- 步骤 -->
-  <ul class="pd-tab-nav tab_7 clearfix">
+  <ul class="pd-tab-nav tab_5 clearfix">
     <li class="tab-li" :class="[declareStep == item.num? 'active': '']" v-for="(item,index) in declareStepList" :key="item.num">
-      <span  v-if="index==3&&statusLineListAllow">
+      <!--<span  v-if="index==3&&statusLineListAllow">-->
+        <!--<el-tooltip effect="light" placement="top">-->
+          <!--<div slot="content"><i class="el-icon-warning-outline"></i>该步骤无需办理</div>-->
+          <!--<span class="mstage-count not-allow-sel">!</span>-->
+        <!--</el-tooltip>-->
+      <!--</span>-->
+      <span v-if="index==2&&oneFormDataAllow">
         <el-tooltip effect="light" placement="top">
           <div slot="content"><i class="el-icon-warning-outline"></i>该步骤无需办理</div>
           <span class="mstage-count not-allow-sel">!</span>
         </el-tooltip>
       </span>
-      <span v-else-if="index==5&&oneFormDataAllow">
-        <el-tooltip effect="light" placement="top">
-          <div slot="content"><i class="el-icon-warning-outline"></i>该步骤无需办理</div>
-          <span class="mstage-count not-allow-sel">!</span>
-        </el-tooltip>
-      </span>
-      <span v-else-if="index==1&&intelligenceAllow">
-        <el-tooltip effect="light" placement="top">
-          <div slot="content"><i class="el-icon-warning-outline"></i>该步骤无需办理</div>
-          <span class="mstage-count not-allow-sel">!</span>
-        </el-tooltip>
-      </span>
-      <span class="mstage-count el-icon-check" v-else-if="(index+1)<declareStep"></span>
-      <span class="mstage-count" v-else>{{item.num}}</span>
+      <!--<span v-else-if="index==1&&intelligenceAllow">-->
+        <!--<el-tooltip effect="light" placement="top">-->
+          <!--<div slot="content"><i class="el-icon-warning-outline"></i>该步骤无需办理</div>-->
+          <!--<span class="mstage-count not-allow-sel">!</span>-->
+        <!--</el-tooltip>-->
+      <!--</span>-->
+      <span class="mstage-count el-icon-check" v-else-if="item.num<declareStep"></span>
+      <span class="mstage-count" v-else>{{index+1}}</span>
       <p class="mstage-name">{{item.name}}</p>
     </li>
   </ul>
@@ -76,8 +76,8 @@
           <el-input class="w-1010" disabled v-model="projInfoDetail.projName" ref="projName"
                     placeholder="请填写项目/工程名称"></el-input>
         </el-form-item>
-        <el-form-item class="wt588" label="所属主题">
-          <el-select  clearable filterable class="w-410" v-model="projInfoDetail.themeId" :disabled="isAble">
+        <el-form-item class="wt588" label="所属主题" prop="themeId">
+          <el-select  clearable filterable class="w-410" v-model="projInfoDetail.themeId">
             <el-option v-for="item in themeList" :key="item.themeId" :label="item.themeName"
                        :value="item.themeId">
             </el-option>
@@ -809,134 +809,134 @@
       <el-button class="mt20" type="primary" @click="saveProOrSmsinfo">保存并下一步</el-button>
     </div>
   </div>
-  <!--  智能引导-->
-  <div class="mt20 proj-module pd-info-pandel" v-show="declareStep == 2">
-    <h4 class="mt60 mt20">主题引导</h4>
-    <!--办理情形 start-->
-    <div class="col-status-z" v-show="guideList.length>0">
-      <div class="sel-status" v-if="guideList.length>0">
-        <div id="guidediv">
-          <el-form :model="guideSelVal">
-            <el-form-item class="sel-status-item" :required="item.mustAnswer==1"
-                          v-for="(item,index) in guideList" :key="index" :label="item.factorName">
-              <p class="status-label">
-                <el-tooltip class="item" effect="light" :content="item.factorName?item.factorName:'无'"
-                            placement="right">
-                  <i class="el-icon-question"></i>
-                </el-tooltip>
-              </p>
-              <template v-if="item.answerType=='s'||item.answerType=='y'">
-                <el-radio-group v-model="item.selectAnswerId">
-                  <el-radio v-for="(itemAns,ind) in item.answerFactors"
-                            @change="getSubGuide(itemAns,index,true)"
-                            :key="ind"
-                  :value="itemAns.factorId" :label="itemAns.factorId" :checked="itemAns.factorId" name="answer">{{itemAns.factorName}}
-                  </el-radio>
-                </el-radio-group><div name="append"></div>
-              </template>
-              <template v-else>
-                <el-checkbox-group v-model="guideCheckboxAnswer">
-                  <el-checkbox v-for="(itemAns,indAns) in item.answerFactors" :value="itemAns.factorId"
-                               :key="indAns"
-                               @change="function(value){getSubGuide(itemAns,index,value)}"
-                               :label="itemAns.factorId" name="answer">{{itemAns.factorName}}</el-checkbox>
-                </el-checkbox-group>
-              </template>
-            </el-form-item>
-          </el-form>
-        </div>
-      </div>
-    </div>
-
-
-
-    <div class="footer-stage-btn">
-      <el-button class="mt60" @click="prevPage(1)">上一步</el-button>
-      <el-button class="mt60" type="primary" @click="saveGuideAndNext">保存并下一步</el-button>
-      <el-button class="mt60" @click="prevPage(3)">跳过</el-button>
-    </div>
-  </div>
-  <!--  智能引导 end-->
-  <!-- 选择主题 -->
-  <div class="mt40 proj-module pd-info-pandel" v-show="declareStep == 3" :style="{position:'relative'}">
-    <!--themeTypeList-->
-    <div class="theme-type-list">
-      <el-tabs v-model="stageTypeTabSelect">
-        <el-tab-pane label="并联审批" name="paralle">
-          <div :style="{'max-height':(curHeight-360)+'px',overflow: 'auto'}">
-            <p class="parallel-appr-title mb20">
-              <span v-if="selThemeInfo&&themeId">该项目已确定为 <b>“ {{themeName}} ” </b>主题，确认无误可继续下一步</span>
-              <span v-else>请先绑定项目主题，申报完成将不可变更</span>
-            </p>
-            <div class="pro-type-item active pro-type-sel" v-if="selThemeInfo&&themeId">
-              <img :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">
-              <div class="theme-name">{{selThemeInfo.themeName}}</div>
-              <i class="el-icon-check"></i>
-            </div>
-            <div class="pro-type-item pro-type-null" v-else @click="selThemeDialogShow=true">
-              <span><i class="el-icon-circle-plus-outline"></i>请选择并联审批主题类型</span>
-            </div>
-            <el-button class="change-theme-btn" circle icon="el-icon-refresh"
-                       v-show="selThemeInfo&&themeId" @click="selThemeDialogShow=true"></el-button>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane label="预先服务协同" name="auxiLine" v-if="themeTypeList.auxiLine&&themeTypeList.auxiLine.length>0">
-          <p class="parallel-appr-title mb20">
-            <span v-if="selThemeInfo&&themeId">该项目已确定为 <b>“ {{themeName}} ” </b>主题，确认无误可继续下一步</span>
-            <span v-else>请先绑定项目主题，申报完成将不可变更</span>
-          </p>
-          <div class="pro-type-item"
-               @click="chooseTheme(itemList)"
-               :class="themeActive==itemList.themeId?'active':''"
-               :key="ind"
-               v-for="(itemList,ind) in themeTypeList.auxiLine[0].themeList">
-            <img v-if="themeActive==itemList.themeId" :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">
-            <img v-else :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">
-            <div class="theme-name">{{itemList.themeName}}</div>
-            <i class="el-icon-check"></i>
-          </div>
-            <!--<p class="show-more-theme" v-if="item.themeList.length>10" @click="themeListShowHide(item)">{{showThemeLenText?'展开更多':'收起更多'}} <i :class="showThemeLenText?'el-icon-arrow-down':'el-icon-arrow-up'"></i></p>-->
-        </el-tab-pane>
-      </el-tabs>
-    </div>
-    <!--<div class="pro-type-item active pro-type-sel" v-if="selThemeInfo&&themeId">-->
-      <!--<img :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">-->
-      <!--<div class="theme-name">{{selThemeInfo.themeName}}</div>-->
-      <!--<i class="el-icon-check"></i>-->
+  <!--&lt;!&ndash;  智能引导&ndash;&gt;-->
+  <!--<div class="mt20 proj-module pd-info-pandel" v-show="declareStep == 2">-->
+    <!--<h4 class="mt60 mt20">主题引导</h4>-->
+    <!--&lt;!&ndash;办理情形 start&ndash;&gt;-->
+    <!--<div class="col-status-z" v-show="guideList.length>0">-->
+      <!--<div class="sel-status" v-if="guideList.length>0">-->
+        <!--<div id="guidediv">-->
+          <!--<el-form :model="guideSelVal">-->
+            <!--<el-form-item class="sel-status-item" :required="item.mustAnswer==1"-->
+                          <!--v-for="(item,index) in guideList" :key="index" :label="item.factorName">-->
+              <!--<p class="status-label">-->
+                <!--<el-tooltip class="item" effect="light" :content="item.factorName?item.factorName:'无'"-->
+                            <!--placement="right">-->
+                  <!--<i class="el-icon-question"></i>-->
+                <!--</el-tooltip>-->
+              <!--</p>-->
+              <!--<template v-if="item.answerType=='s'||item.answerType=='y'">-->
+                <!--<el-radio-group v-model="item.selectAnswerId">-->
+                  <!--<el-radio v-for="(itemAns,ind) in item.answerFactors"-->
+                            <!--@change="getSubGuide(itemAns,index,true)"-->
+                            <!--:key="ind"-->
+                  <!--:value="itemAns.factorId" :label="itemAns.factorId" :checked="itemAns.factorId" name="answer">{{itemAns.factorName}}-->
+                  <!--</el-radio>-->
+                <!--</el-radio-group><div name="append"></div>-->
+              <!--</template>-->
+              <!--<template v-else>-->
+                <!--<el-checkbox-group v-model="guideCheckboxAnswer">-->
+                  <!--<el-checkbox v-for="(itemAns,indAns) in item.answerFactors" :value="itemAns.factorId"-->
+                               <!--:key="indAns"-->
+                               <!--@change="function(value){getSubGuide(itemAns,index,value)}"-->
+                               <!--:label="itemAns.factorId" name="answer">{{itemAns.factorName}}</el-checkbox>-->
+                <!--</el-checkbox-group>-->
+              <!--</template>-->
+            <!--</el-form-item>-->
+          <!--</el-form>-->
+        <!--</div>-->
+      <!--</div>-->
     <!--</div>-->
-    <!--<div class="pro-type-item pro-type-null" v-else @click="selThemeDialogShow=true">-->
-      <!--<span><i class="el-icon-circle-plus-outline"></i>请选择并联审批主题类型</span>-->
+
+
+
+    <!--<div class="footer-stage-btn">-->
+      <!--<el-button class="mt60" @click="prevPage(1)">上一步</el-button>-->
+      <!--<el-button class="mt60" type="primary" @click="saveGuideAndNext">保存并下一步</el-button>-->
+      <!--<el-button class="mt60" @click="prevPage(3)">跳过</el-button>-->
     <!--</div>-->
-    <!--<el-button class="change-theme-btn" circle icon="el-icon-refresh"-->
-               <!--v-show="selThemeInfo&&themeId" @click="selThemeDialogShow=true"></el-button>-->
-    <div class="footer-stage-btn">
-      <el-button class="mt60" @click="prevPage(2)">上一步</el-button>
-      <el-button class="mt60" type="primary" @click="saveThemeAndNext">保存并下一步</el-button>
-    </div>
-  </div>
-  <!--  选择服务-->
-  <div class="mt20 proj-module pd-info-pandel" v-show="declareStep == 4">
-    <h4 class="mt60 mt20">请选择服务</h4>
-    <p class="ye-notice" style="line-height: 24px;"><i class="el-icon-warning-outline"></i>请根据以下指标进行选择。</br>
-      阶段并联申报主要包括：立项用地许可阶段，工程建设许可阶段，施工许可阶段，竣工验收阶段。</br>
-      预先服务协同主要包括：多评合一，施工图联合审查，联合验收，规划设计方案联合审查。</p>
-    <ul class="pandel-tab-nav" v-if="showStageType">
-      <li v-for="(item,index) in statusLineList"
-          :key="index"
-          :class="statusLineListActive==index?'active':''"
-          @click="selStatusLine(item,index)">
-        <div class="status-line-img">
-          <img :src="ctx+item.imgUrl" alt="item.title">
-        </div>
-        <el-radio v-model="statusLineListActive" :label="index">{{item.title}}</el-radio>
-      </li>
-    </ul>
-    <div class="footer-stage-btn">
-      <el-button class="mt60" @click="prevPage(3)">上一步</el-button>
-      <el-button class="mt60" type="primary" @click="selStatus(stageList[0],0)">保存并下一步</el-button>
-    </div>
-  </div>
-  <!--  选择服务 end-->
+  <!--</div>-->
+  <!--&lt;!&ndash;  智能引导 end&ndash;&gt;-->
+  <!--&lt;!&ndash; 选择主题 &ndash;&gt;-->
+  <!--<div class="mt40 proj-module pd-info-pandel" v-show="declareStep == 3" :style="{position:'relative'}">-->
+    <!--&lt;!&ndash;themeTypeList&ndash;&gt;-->
+    <!--<div class="theme-type-list">-->
+      <!--<el-tabs v-model="stageTypeTabSelect">-->
+        <!--<el-tab-pane label="并联审批" name="paralle">-->
+          <!--<div :style="{'max-height':(curHeight-360)+'px',overflow: 'auto'}">-->
+            <!--<p class="parallel-appr-title mb20">-->
+              <!--<span v-if="selThemeInfo&&themeId">该项目已确定为 <b>“ {{themeName}} ” </b>主题，确认无误可继续下一步</span>-->
+              <!--<span v-else>请先绑定项目主题，申报完成将不可变更</span>-->
+            <!--</p>-->
+            <!--<div class="pro-type-item active pro-type-sel" v-if="selThemeInfo&&themeId">-->
+              <!--<img :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">-->
+              <!--<div class="theme-name">{{selThemeInfo.themeName}}</div>-->
+              <!--<i class="el-icon-check"></i>-->
+            <!--</div>-->
+            <!--<div class="pro-type-item pro-type-null" v-else @click="selThemeDialogShow=true">-->
+              <!--<span><i class="el-icon-circle-plus-outline"></i>请选择并联审批主题类型</span>-->
+            <!--</div>-->
+            <!--<el-button class="change-theme-btn" circle icon="el-icon-refresh"-->
+                       <!--v-show="selThemeInfo&&themeId" @click="selThemeDialogShow=true"></el-button>-->
+          <!--</div>-->
+        <!--</el-tab-pane>-->
+        <!--<el-tab-pane label="预先服务协同" name="auxiLine" v-if="themeTypeList.auxiLine&&themeTypeList.auxiLine.length>0">-->
+          <!--<p class="parallel-appr-title mb20">-->
+            <!--<span v-if="selThemeInfo&&themeId">该项目已确定为 <b>“ {{themeName}} ” </b>主题，确认无误可继续下一步</span>-->
+            <!--<span v-else>请先绑定项目主题，申报完成将不可变更</span>-->
+          <!--</p>-->
+          <!--<div class="pro-type-item"-->
+               <!--@click="chooseTheme(itemList)"-->
+               <!--:class="themeActive==itemList.themeId?'active':''"-->
+               <!--:key="ind"-->
+               <!--v-for="(itemList,ind) in themeTypeList.auxiLine[0].themeList">-->
+            <!--<img v-if="themeActive==itemList.themeId" :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">-->
+            <!--<img v-else :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">-->
+            <!--<div class="theme-name">{{itemList.themeName}}</div>-->
+            <!--<i class="el-icon-check"></i>-->
+          <!--</div>-->
+            <!--&lt;!&ndash;<p class="show-more-theme" v-if="item.themeList.length>10" @click="themeListShowHide(item)">{{showThemeLenText?'展开更多':'收起更多'}} <i :class="showThemeLenText?'el-icon-arrow-down':'el-icon-arrow-up'"></i></p>&ndash;&gt;-->
+        <!--</el-tab-pane>-->
+      <!--</el-tabs>-->
+    <!--</div>-->
+    <!--&lt;!&ndash;<div class="pro-type-item active pro-type-sel" v-if="selThemeInfo&&themeId">&ndash;&gt;-->
+      <!--&lt;!&ndash;<img :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">&ndash;&gt;-->
+      <!--&lt;!&ndash;<div class="theme-name">{{selThemeInfo.themeName}}</div>&ndash;&gt;-->
+      <!--&lt;!&ndash;<i class="el-icon-check"></i>&ndash;&gt;-->
+    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+    <!--&lt;!&ndash;<div class="pro-type-item pro-type-null" v-else @click="selThemeDialogShow=true">&ndash;&gt;-->
+      <!--&lt;!&ndash;<span><i class="el-icon-circle-plus-outline"></i>请选择并联审批主题类型</span>&ndash;&gt;-->
+    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+    <!--&lt;!&ndash;<el-button class="change-theme-btn" circle icon="el-icon-refresh"&ndash;&gt;-->
+               <!--&lt;!&ndash;v-show="selThemeInfo&&themeId" @click="selThemeDialogShow=true"></el-button>&ndash;&gt;-->
+    <!--<div class="footer-stage-btn">-->
+      <!--<el-button class="mt60" @click="prevPage(2)">上一步</el-button>-->
+      <!--<el-button class="mt60" type="primary" @click="saveThemeAndNext">保存并下一步</el-button>-->
+    <!--</div>-->
+  <!--</div>-->
+  <!--&lt;!&ndash;  选择服务&ndash;&gt;-->
+  <!--<div class="mt20 proj-module pd-info-pandel" v-show="declareStep == 4">-->
+    <!--<h4 class="mt60 mt20">请选择服务</h4>-->
+    <!--<p class="ye-notice" style="line-height: 24px;"><i class="el-icon-warning-outline"></i>请根据以下指标进行选择。</br>-->
+      <!--阶段并联申报主要包括：立项用地许可阶段，工程建设许可阶段，施工许可阶段，竣工验收阶段。</br>-->
+      <!--预先服务协同主要包括：多评合一，施工图联合审查，联合验收，规划设计方案联合审查。</p>-->
+    <!--<ul class="pandel-tab-nav" v-if="showStageType">-->
+      <!--<li v-for="(item,index) in statusLineList"-->
+          <!--:key="index"-->
+          <!--:class="statusLineListActive==index?'active':''"-->
+          <!--@click="selStatusLine(item,index)">-->
+        <!--<div class="status-line-img">-->
+          <!--<img :src="ctx+item.imgUrl" alt="item.title">-->
+        <!--</div>-->
+        <!--<el-radio v-model="statusLineListActive" :label="index">{{item.title}}</el-radio>-->
+      <!--</li>-->
+    <!--</ul>-->
+    <!--<div class="footer-stage-btn">-->
+      <!--<el-button class="mt60" @click="prevPage(3)">上一步</el-button>-->
+      <!--<el-button class="mt60" type="primary" @click="selStatus(stageList[0],0)">保存并下一步</el-button>-->
+    <!--</div>-->
+  <!--</div>-->
+  <!--&lt;!&ndash;  选择服务 end&ndash;&gt;-->
   <!-- 事项一单清 -->
   <div class="mt20 proj-module pd-info-pandel" v-show="declareStep == 5">
     <h4 class="mt60 mt20" v-if="stageList.length>0" @click="showStageList = !showStageList">请选择阶段<i class="fr" :class="showStageList?'el-icon-arrow-down':'el-icon-arrow-right'"></i></h4>
@@ -1208,7 +1208,7 @@
     </el-table>
 
     <div class="footer-stage-btn">
-      <el-button class="mt60" @click="prevPage(4)">上一步</el-button>
+      <el-button class="mt60" @click="prevPage(1)">上一步</el-button>
       <el-button class="mt60" type="primary" @click="saveAndGetOneForm">保存并下一步</el-button>
     </div>
   </div>

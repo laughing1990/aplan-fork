@@ -143,6 +143,9 @@ public class AeaImProjPurchaseController {
                 }
                 String itemId = vo.getAgentItemId();
                 String rootOrgId = vo.getRootOrgId();
+                //设置服务对象
+
+                //关联的行政事项
                 List<AeaItemBasic> parentItems = aeaItemBasicMapper.getAgentParentItem(itemId, rootOrgId);
                 String names = parentItems.stream().map(AeaItemBasic::getItemName).collect(Collectors.joining(","));
                 vo.setItemName(names);
