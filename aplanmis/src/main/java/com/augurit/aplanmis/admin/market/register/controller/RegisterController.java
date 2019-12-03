@@ -16,6 +16,7 @@ import com.augurit.aplanmis.common.vo.AgentRegisterVo;
 import com.augurit.aplanmis.common.vo.ServiceMatterVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
+import io.jsonwebtoken.lang.Assert;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -65,8 +66,13 @@ public class RegisterController {
     @RequestMapping("/getRegisterDetail")
     @ApiOperation(value = "获取入驻的中介机构详情信息")
     public ResultForm getAgentRegisterDetail(String unitInfoId) throws Exception {
+        Assert.isTrue(StringUtils.isNotBlank(unitInfoId),"unitInfoId不能为空！");
         RegisterResultVo registerResultVo = registerService.getRegisterUnitDetail(unitInfoId);
-        return new ContentResultForm<RegisterResultVo>(true, registerResultVo, "success");
+        if(registerResultVo!=null && registerResultVo.getUnitInfo()!=null){
+            return new ContentResultForm<RegisterResultVo>(true, registerResultVo, "success");
+        }else {
+            return new ContentResultForm<RegisterResultVo>(false, registerResultVo, "根据单位id查询不到该单位信息！");
+        }
     }
 
     @RequestMapping("/examineUnitService")
