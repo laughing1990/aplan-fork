@@ -7,6 +7,7 @@ import com.augurit.agcloud.framework.security.user.OpusLoginUser;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.CollectionUtils;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
 import com.augurit.aplanmis.common.domain.AeaUnitInfo;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
@@ -79,9 +80,11 @@ public class AgentRegisterController {
      */
     @RequestMapping("/checkUnitIsExisted")
     public ResultForm checkUnitIsExisted(String unifiedSocialCreditCode) {
-        List<AeaUnitInfo> listAeaUnitInfos = aeaUnitInfoService.getUnitInfoListByIdCard(unifiedSocialCreditCode);
-        if (CollectionUtils.isNotEmpty(listAeaUnitInfos)) {
-            return new ContentResultForm<Boolean>(true, false, "该统一社会信用代码已注册！");
+        if (StringUtils.isNotBlank(unifiedSocialCreditCode)) {
+            List<AeaUnitInfo> listAeaUnitInfos = aeaUnitInfoService.getUnitInfoListByIdCard(unifiedSocialCreditCode);
+            if (CollectionUtils.isNotEmpty(listAeaUnitInfos)) {
+                return new ContentResultForm<Boolean>(true, false, "该统一社会信用代码已注册！");
+            }
         }
         return new ContentResultForm<Boolean>(true, true);
     }
@@ -93,9 +96,11 @@ public class AgentRegisterController {
      */
     @RequestMapping("/checkManIsExisted")
     public ResultForm checkManIsExisted(String linkmanCertNo) {
-        List<AeaLinkmanInfo> links = aeaLinkmanInfoService.getAeaLinkmanInfoListByCertNo(linkmanCertNo);
-        if (CollectionUtils.isNotEmpty(links)) {
-            return new ContentResultForm<Boolean>(true, false, "该身份证号已注册用户！");
+        if (StringUtils.isNotBlank(linkmanCertNo)) {
+            List<AeaLinkmanInfo> links = aeaLinkmanInfoService.getAeaLinkmanInfoListByCertNo(linkmanCertNo);
+            if (CollectionUtils.isNotEmpty(links)) {
+                return new ContentResultForm<Boolean>(true, false, "该身份证号已注册用户！");
+            }
         }
         return new ContentResultForm<Boolean>(true, true);
     }

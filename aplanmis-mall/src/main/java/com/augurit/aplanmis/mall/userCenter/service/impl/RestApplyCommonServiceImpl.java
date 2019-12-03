@@ -3,19 +3,21 @@ package com.augurit.aplanmis.mall.userCenter.service.impl;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.AeaUnitConstants;
-import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
-import com.augurit.aplanmis.common.domain.AeaUnitLinkman;
-import com.augurit.aplanmis.common.domain.AeaUnitProj;
-import com.augurit.aplanmis.common.domain.AeaUnitProjLinkman;
+import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.mapper.AeaApplyinstUnitProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitLinkmanMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitProjLinkmanMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitProjMapper;
+import com.augurit.aplanmis.common.service.instance.AeaHiSmsInfoService;
+import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.vo.AeaUnitInfoVo;
 import com.augurit.aplanmis.common.vo.LinkmanTypeVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyCommonService;
+import com.augurit.aplanmis.mall.userCenter.vo.SmsInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -31,6 +33,14 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
     private AeaUnitProjLinkmanMapper aeaUnitProjLinkmanMapper;
     @Autowired
     private AeaUnitLinkmanMapper aeaUnitLinkmanMapper;
+    @Autowired
+    private AeaApplyinstUnitProjMapper aeaApplyinstUnitProjMapper;
+    @Autowired
+    private AeaHiSmsInfoService aeaHiSmsInfoService;
+    @Autowired
+    private AeaProjInfoService aeaProjInfoService;
+    @Autowired
+    private RestApplyCommonService restApplyCommonService;
 
 
     @Override
@@ -104,7 +114,7 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
             }
 
         });
-        map.put("projUnitIds",projUnitIds);
+        map.put("unitProjIds",projUnitIds);
         map.put("unitReturnJson",unitReturnJson);
         return map;
     }
@@ -167,4 +177,71 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
 
         return null;
     }
+
+    @Override
+    public void insertAeaApplyinstUnitProj(String applyinstId,List<String>unitProjIds){
+        if(unitProjIds.size()>0 && StringUtils.isNotBlank(applyinstId)){
+            List<AeaApplyinstUnitProj> paramList=new ArrayList<>();
+            for (String unitProjId:unitProjIds){
+                AeaApplyinstUnitProj entity=new AeaApplyinstUnitProj();
+                entity.setUnitProjId(unitProjId);
+                entity.setApplyinstId(applyinstId);
+                entity.setIsDeleted("0");
+                List<AeaApplyinstUnitProj> list = aeaApplyinstUnitProjMapper.listAeaApplyinstUnitProj(entity);
+                if(list.size()>0) continue;
+                entity.setApplyinstUnitProjId(UUID.randomUUID().toString());
+                entity.setCreater(SecurityContext.getCurrentUserName());
+                entity.setCreateTime(new Date());
+                paramList.add(entity);
+            }
+            if(paramList.size()==0) return;
+            aeaApplyinstUnitProjMapper.batchInsertAeaApplyinstUnitProjMapper(paramList);
+        }
+    }
+
+    @Override
+    public Map<String, Object> getStringObjectMap(@RequestBody SmsInfoVo smsInfoVo, Map<String, Object> resultMap, AeaProjInfo aeaProjInfo) throws Exception {
+        String smsId;//保存或修改领件人信息
+        if (StringUtils.isBlank(smsInfoVo.getId())) {
+            AeaHiSmsInfo aeaHiSmsInfo = aeaHiSmsInfoService.createAeaHiSmsInfo(smsInfoVo.toSmsInfo());
+            smsId = aeaHiSmsInfo.getId();
+        } else {
+            AeaHiSmsInfo aeaHiSmsInfo = aeaHiSmsInfoService.getAeaHiSmsInfoById(smsInfoVo.getId());
+            aeaHiSmsInfoService.updateAeaHiSmsInfo(smsInfoVo.merge(aeaHiSmsInfo));
+            smsId = smsInfoVo.getId();
+        }
+        //修改项目信息
+        if (StringUtils.isBlank(aeaProjInfo.getGcbm()))
+            aeaProjInfo.setGcbm(aeaProjInfo.getLocalCode());
+        aeaProjInfoService.updateAeaProjInfo(aeaProjInfo);
+        //当前企业用户的人员设置
+        if (smsInfoVo.getLinkmanTypeVos() != null && smsInfoVo.getLinkmanTypeVos().size() > 0) {
+            restApplyCommonService.saveOrUpdateLinkmanTypes(smsInfoVo.getLinkmanTypeVos());
+        }
+
+        //项目单位关联
+        //List<String> projUnitIds = new ArrayList<>();
+        Map<String, Object> map = new HashMap<>(2);
+        if (smsInfoVo.getAeaUnitInfos() != null && smsInfoVo.getAeaUnitInfos().size() > 0) {
+            map = restApplyCommonService.saveOrUpdateUnitInfo(aeaProjInfo.getProjInfoId(), smsInfoVo.getAeaUnitInfos());
+        }
+        resultMap.put("smsId", smsId);
+        resultMap.put("unitProjIds", map.get("unitProjIds"));
+        resultMap.put("unitReturnJson", map.get("unitReturnJson"));
+        resultMap.put("regionalism", aeaProjInfo.getRegionalism());
+        return map;
+    }
+
+    @Override
+    public void deleteReInsertAeaApplyinstUnitProj(String applyinstId, List<String> unitProjIds){
+        List<AeaApplyinstUnitProj> applyinstUnitProjList = aeaApplyinstUnitProjMapper.getAeaApplyinstUnitProjByApplyinstId(applyinstId);
+        if(applyinstUnitProjList.size()>0){
+            applyinstUnitProjList.stream().forEach(entity->{
+                entity.setIsDeleted("1");
+                aeaApplyinstUnitProjMapper.updateAeaApplyinstUnitProj(entity);//逻辑删除
+            });
+        }
+        insertAeaApplyinstUnitProj(applyinstId,unitProjIds);
+    }
+
 }

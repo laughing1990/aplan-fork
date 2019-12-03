@@ -65,6 +65,12 @@ public class SmsInfoVo extends AeaProjInfo {
     @ApiModelProperty(value = "当前企业用户的人员设置")
     private List<LinkmanTypeVo> linkmanTypeVos;
 
+    @ApiModelProperty(value = "申报时传的联系人ID参数")
+    private String linkmanInfoId;
+    @ApiModelProperty(value = "申报时传的申报方式参数")
+    private String applySubject;
+
+
     public static List<AeaUnitInfo> returnForm(List<AeaUnitInfoVo> unitInfos) {
         List<AeaUnitInfo> list = new ArrayList<>();
         if (unitInfos.size() > 0) {
