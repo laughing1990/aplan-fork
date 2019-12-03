@@ -1,106 +1,169 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<!--created by Administrator    2019-07-04 17:14:00 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <!--0 一些前置信息配置 -->
 <mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemStateMapper">
+
     <!--1 返回所有字段的SQL字句 -->
     <sql id="allColumns">
-        ${alias}.ITEM_STATE_ID  itemStateId,    ${alias}.ITEM_ID  itemId,           ${alias}.ITEM_VER_ID  itemVerId,
-        ${alias}.STATE_VER_ID  stateVerId,      ${alias}.STATE_NAME  stateName,     ${alias}.STATE_EL  stateEl,
-        ${alias}.SORT_NO  sortNo,               ${alias}.STATE_MEMO  stateMemo,     ${alias}.IS_ACTIVE  isActive,
-        ${alias}.CREATER  creater,              ${alias}.CREATE_TIME  createTime,   ${alias}.MODIFIER  modifier,
-        ${alias}.MODIFY_TIME  modifyTime,       ${alias}.USE_EL  useEl,             ${alias}.PARENT_STATE_ID  parentStateId,
-        ${alias}.STATE_SEQ  stateSeq,           ${alias}.IS_QUESTION  isQuestion,   ${alias}.ANSWER_TYPE  answerType,
-        ${alias}.MUST_ANSWER  mustAnswer,       ${alias}.IS_DELETED  isDeleted,     ${alias}.IS_PROC_START_COND  isProcStartCond,
-        ${alias}.ROOT_ORG_ID  rootOrgId
+        ${alias}.ITEM_STATE_ID  itemStateId,
+        ${alias}.ITEM_ID  itemId,
+        ${alias}.ITEM_VER_ID  itemVerId,
+        ${alias}.STATE_VER_ID  stateVerId,
+        ${alias}.STATE_NAME  stateName,
+        ${alias}.STATE_EL  stateEl,
+        ${alias}.SORT_NO  sortNo,
+        ${alias}.STATE_MEMO  stateMemo,
+        ${alias}.IS_ACTIVE  isActive,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.USE_EL  useEl,
+        ${alias}.PARENT_STATE_ID  parentStateId,
+        ${alias}.STATE_SEQ  stateSeq,
+        ${alias}.IS_QUESTION  isQuestion,
+        ${alias}.ANSWER_TYPE  answerType,
+        ${alias}.MUST_ANSWER  mustAnswer,
+        ${alias}.IS_DELETED  isDeleted,
+        ${alias}.IS_PROC_START_COND  isProcStartCond,
+        ${alias}.ROOT_ORG_ID  rootOrgId,
+        ${alias}.IS_INFORM_COMMIT isInformCommit
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaItemStateById" resultType="AeaItemState">
         select
-        <include refid="allColumns">
-            <property name="alias" value="ais"/>
-        </include>
+            <include refid="allColumns">
+                <property name="alias" value="ais"/>
+            </include>
         from AEA_ITEM_STATE ais
-        where ais.ITEM_STATE_ID = #{id} AND ais.IS_DELETED = '0'
+        where ais.ITEM_STATE_ID = #{id}
+          and ais.IS_DELETED = '0'
     </select>
 
     <!--3 根据条件查询实体list -->
     <select id="listAeaItemState" resultType="AeaItemState">
         select
-        <include refid="allColumns">
-            <property name="alias" value="ais"/>
-        </include>
+            <include refid="allColumns">
+                <property name="alias" value="ais"/>
+            </include>
         from AEA_ITEM_STATE ais
         <where>
             <if test="itemStateId != null">
-                AND ITEM_STATE_ID = #{itemStateId}
+                and ITEM_STATE_ID = #{itemStateId}
             </if>
             <if test="itemId != null">
-                AND ITEM_ID = #{itemId}
+                and ITEM_ID = #{itemId}
             </if>
             <if test="itemVerId != null">
-                AND ITEM_VER_ID = #{itemVerId}
+                and ITEM_VER_ID = #{itemVerId}
             </if>
             <if test="stateVerId != null">
-                AND STATE_VER_ID = #{stateVerId}
+                and STATE_VER_ID = #{stateVerId}
             </if>
             <if test="stateName != null">
-                AND STATE_NAME = #{stateName}
+                and STATE_NAME = #{stateName}
             </if>
             <if test="stateEl != null">
-                AND STATE_EL = #{stateEl}
+                and STATE_EL = #{stateEl}
             </if>
             <if test="sortNo != null">
-                AND SORT_NO = #{sortNo}
+                and SORT_NO = #{sortNo}
             </if>
             <if test="stateMemo != null">
-                AND STATE_MEMO = #{stateMemo}
+                and STATE_MEMO = #{stateMemo}
             </if>
             <if test="isActive != null">
-                AND IS_ACTIVE = #{isActive}
+                and IS_ACTIVE = #{isActive}
             </if>
             <if test="useEl != null">
-                AND USE_EL = #{useEl}
+                and USE_EL = #{useEl}
             </if>
             <if test="parentStateId != null">
-                AND PARENT_STATE_ID = #{parentStateId}
+                and PARENT_STATE_ID = #{parentStateId}
             </if>
             <if test="stateSeq != null">
-                AND STATE_SEQ = #{stateSeq}
+                and STATE_SEQ = #{stateSeq}
             </if>
             <if test="isQuestion != null">
-                AND IS_QUESTION = #{isQuestion}
+                and IS_QUESTION = #{isQuestion}
             </if>
             <if test="answerType != null">
-                AND ANSWER_TYPE = #{answerType}
+                and ANSWER_TYPE = #{answerType}
             </if>
             <if test="mustAnswer != null">
-                AND MUST_ANSWER = #{mustAnswer}
+                and MUST_ANSWER = #{mustAnswer}
             </if>
             <if test="isProcStartCond != null">
-                AND IS_PROC_START_COND = #{isProcStartCond}
+                and IS_PROC_START_COND = #{isProcStartCond}
             </if>
             <if test="rootOrgId != null">
-                AND ROOT_ORG_ID = #{rootOrgId}
+                and ROOT_ORG_ID = #{rootOrgId}
             </if>
-            AND IS_DELETED = '0'
+            <if test="isInformCommit != null">
+                and IS_INFORM_COMMIT = #{isInformCommit}
+            </if>
+            and IS_DELETED = '0'
         </where>
     </select>
 
-    <!--4 根据条件查询实体list,返回分页对象 -->
-
     <!--5 新增实体对象 -->
     <insert id="insertAeaItemState" parameterType="AeaItemState">
-        insert into AEA_ITEM_STATE (ITEM_STATE_ID, ITEM_ID, ITEM_VER_ID, STATE_VER_ID, STATE_NAME, STATE_EL, SORT_NO,
-                                    STATE_MEMO, IS_ACTIVE, CREATER, CREATE_TIME, MODIFIER, MODIFY_TIME, USE_EL,
-                                    PARENT_STATE_ID, STATE_SEQ, IS_QUESTION, ANSWER_TYPE, MUST_ANSWER, IS_DELETED,
-                                    IS_PROC_START_COND,ROOT_ORG_ID)
-        values (#{itemStateId}, #{itemId}, #{itemVerId}, #{stateVerId}, #{stateName}, #{stateEl}, #{sortNo},
-                #{stateMemo}, #{isActive}, #{creater}, #{createTime}, #{modifier}, #{modifyTime}, #{useEl},
-                #{parentStateId}, #{stateSeq}, #{isQuestion}, #{answerType}, #{mustAnswer}, #{isDeleted},
-                #{isProcStartCond},#{rootOrgId})
+        insert into AEA_ITEM_STATE
+        (
+            ITEM_STATE_ID,
+            ITEM_ID,
+            ITEM_VER_ID,
+            STATE_VER_ID,
+            STATE_NAME,
+            STATE_EL,
+            SORT_NO,
+            STATE_MEMO,
+            IS_ACTIVE,
+            CREATER,
+            CREATE_TIME,
+            MODIFIER,
+            MODIFY_TIME,
+            USE_EL,
+            PARENT_STATE_ID,
+            STATE_SEQ,
+            IS_QUESTION,
+            ANSWER_TYPE,
+            MUST_ANSWER,
+            IS_DELETED,
+            IS_PROC_START_COND,
+            ROOT_ORG_ID,
+            IS_INFORM_COMMIT
+        )
+        values
+        (
+            #{itemStateId},
+            #{itemId},
+            #{itemVerId},
+            #{stateVerId},
+            #{stateName},
+            #{stateEl},
+            #{sortNo},
+            #{stateMemo},
+            #{isActive},
+            #{creater},
+            #{createTime},
+            #{modifier},
+            #{modifyTime},
+            #{useEl},
+            #{parentStateId},
+            #{stateSeq},
+            #{isQuestion},
+            #{answerType},
+            #{mustAnswer},
+            #{isDeleted},
+            #{isProcStartCond},
+            #{rootOrgId},
+            #{isInformCommit}
+        )
     </insert>
+
     <!--6 修改实体对象 -->
     <update id="updateAeaItemState" parameterType="AeaItemState">
         update AEA_ITEM_STATE
@@ -171,78 +234,110 @@
             <if test="rootOrgId != null">
                 ROOT_ORG_ID = #{rootOrgId},
             </if>
+            <if test="isInformCommit != null">
+                IS_INFORM_COMMIT = #{isInformCommit},
+            </if>
         </set>
         where ITEM_STATE_ID = #{itemStateId}
     </update>
+
     <!--7 删除实体对象,根据主键ID -->
     <update id="deleteAeaItemState">
         update AEA_ITEM_STATE set IS_DELETED = '1' where ITEM_STATE_ID = #{id}
     </update>
+
     <!--根据事项版本ID获取情形列表-->
     <select id="listAeaItemStateByItemVerId" resultType="AeaItemState">
         select
-        <include refid="allColumns">
-            <property name="alias" value="ais"/>
-        </include>
-        from AEA_ITEM_STATE ais where ais.ITEM_VER_ID=#{itemVerId} AND IS_DELETED = '0'
+            <include refid="allColumns">
+                <property name="alias" value="ais"/>
+            </include>
+        from AEA_ITEM_STATE ais
+        where ais.ITEM_VER_ID=#{itemVerId}
+          and IS_DELETED = '0'
     </select>
-    <!--根据事项版本ID获取root情形列表-->
+
+    <!-- 根据事项版本ID获取root情形列表 -->
     <select id="listRootAeaItemStateByItemVerId" resultType="AeaItemState">
         select
-        <include refid="allColumns">
-            <property name="alias" value="ais"/>
-        </include>
-        from AEA_ITEM_STATE ais where ais.PARENT_STATE_ID is null and ais.ITEM_VER_ID=#{itemVerId} AND IS_DELETED = '0'
-        <if test="stateVerId!=null and stateVerId!=''">and ais.STATE_VER_ID=#{stateVerId}</if>
+            <include refid="allColumns">
+                <property name="alias" value="ais"/>
+            </include>
+        from AEA_ITEM_STATE ais
+        where
+            ais.PARENT_STATE_ID is null
+        and ais.ITEM_VER_ID = #{itemVerId}
+        and ais.IS_DELETED = '0'
+        <if test="stateVerId!=null and stateVerId!=''">
+            and ais.STATE_VER_ID = #{stateVerId}
+        </if>
     </select>
-    <!--    根据父情形ID查找子情形列表-->
+
+    <!-- 根据父情形ID查找子情形列表 -->
     <select id="listAeaItemStateByParentItemStateId" resultType="AeaItemState">
         select
-        <include refid="allColumns">
-            <property name="alias" value="ais"/>
-        </include>
-        from AEA_ITEM_STATE ais where ais.PARENT_STATE_ID=#{itemStateId} AND IS_DELETED = '0'
+            <include refid="allColumns">
+                <property name="alias" value="ais"/>
+            </include>
+        from AEA_ITEM_STATE ais
+        where ais.PARENT_STATE_ID = #{itemStateId}
+          and IS_DELETED = '0'
     </select>
+
     <!--查询情形答案-->
     <select id="listAnswerStateByQuestionStateId" resultType="AeaItemState">
         select
         <include refid="allColumns">
             <property name="alias" value="ais"/>
         </include>
-        from AEA_ITEM_STATE ais where ais.PARENT_STATE_ID=#{itemStateId} and ais.IS_QUESTION='0' AND IS_DELETED = '0'
+        from AEA_ITEM_STATE ais
+        where ais.PARENT_STATE_ID = #{itemStateId}
+        and ais.IS_QUESTION='0'
+        and ais.IS_DELETED = '0'
     </select>
+
     <!--根据情形版本ID查询所有情形-->
     <select id="listAeaItemStateByStateVerId" resultType="AeaItemState">
         select
-        <include refid="allColumns">
-            <property name="alias" value="ais"/>
-        </include>
-        from AEA_ITEM_STATE ais where ais.STATE_VER_ID=#{stateVerId} AND IS_DELETED = '0'
-    </select>
-    <select id="listAeaItemStateByIds" resultType="AeaItemState">
-        select
-        <include refid="allColumns">
-            <property name="alias" value="ais"/>
-        </include>
+            <include refid="allColumns">
+                <property name="alias" value="ais"/>
+            </include>
         from AEA_ITEM_STATE ais
-        where ais.ITEM_STATE_ID in
-        <foreach collection="itemStateIds" item="id" open="(" close=")" separator=",">#{id}</foreach>
+        where ais.STATE_VER_ID = #{stateVerId}
+          and ais.IS_DELETED = '0'
     </select>
 
-    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <select id="listAeaItemStateByIds" resultType="AeaItemState">
+        select
+            <include refid="allColumns">
+                <property name="alias" value="ais"/>
+            </include>
+        from AEA_ITEM_STATE ais
+        where ais.ITEM_STATE_ID in
+        <foreach collection="itemStateIds" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
 
     <!--TODO 小糊涂-->
     <!--    根据父情形ID查找子情形及答案列表-->
     <select id="listItemStateByParentItemStateId" resultMap="AeaItemStateMap">
-        select ais.* from AEA_ITEM_STATE ais where IS_DELETED = '0'
-        <if test="itemVerId!=null and itemVerId!='' ">and ais.ITEM_VER_ID=#{itemVerId}</if>
-        <if test="stateVerId!=null and stateVerId!=''">and ais.STATE_VER_ID=#{stateVerId}</if>
+        select
+            ais.*
+        from AEA_ITEM_STATE ais
+        where ais.IS_DELETED = '0'
+        <if test="itemVerId!=null and itemVerId!='' ">
+            and ais.ITEM_VER_ID=#{itemVerId}
+        </if>
+        <if test="stateVerId!=null and stateVerId!=''">
+            and ais.STATE_VER_ID=#{stateVerId}
+        </if>
         <choose>
             <when test="parentStateId==null or parentStateId=='ROOT' or parentStateId=='root'">
                 and ais.PARENT_STATE_ID is null
             </when>
             <otherwise>
-                and ais.PARENT_STATE_ID=#{parentStateId}
+                and ais.PARENT_STATE_ID = #{parentStateId}
             </otherwise>
         </choose>
     </select>
@@ -271,16 +366,17 @@
         <result property="isDeleted" column="IS_DELETED"/>
         <result property="isProcStartCond" column="IS_PROC_START_COND"/>
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
-        <collection property="answerStates" column="ITEM_STATE_ID" select="listAeaItemStateByParentItemStateId"
-                    ofType="AeaParState" javaType="arraylist"></collection>
+        <result property="isInformCommit" column="IS_INFORM_COMMIT"/>
+        <collection property="answerStates" column="ITEM_STATE_ID"
+            select="listAeaItemStateByParentItemStateId" ofType="AeaParState" javaType="arraylist">
+        </collection>
     </resultMap>
-
 
     <select id="listAeaItemStateBySyncKpState" resultType="AeaItemState">
         select
-        <include refid="allColumns">
-            <property name="alias" value="ais"/>
-        </include>
+            <include refid="allColumns">
+                <property name="alias" value="ais"/>
+            </include>
         from AEA_ITEM_STATE ais
         <where>
             <if test="itemStateId != null and itemStateId!='' ">
@@ -323,7 +419,7 @@
                 AND PARENT_STATE_ID = #{parentStateId}
             </if>
             <if test="parentStateId == ''">
-                AND PARENT_STATE_ID IS NULL
+                AND PARENT_STATE_ID is null
             </if>
             <if test="stateSeq != null">
                 AND STATE_SEQ = #{stateSeq}
@@ -343,29 +439,33 @@
             <if test="isProcStartCond != null">
                 AND IS_PROC_START_COND = #{isProcStartCond}
             </if>
+            <if test="isInformCommit != null">
+                AND IS_INFORM_COMMIT = #{isInformCommit}
+            </if>
             <if test="keyword!=null and keyword!='' ">
-                and (
-                STATE_NAME like concat('%',concat(#{keyword},'%')) or
-                STATE_EL like concat('%',concat(#{keyword},'%')) or
-                STATE_MEMO like concat('%',concat(#{keyword},'%'))
+                AND (
+                    STATE_NAME like concat('%',concat(#{keyword},'%')) or
+                    STATE_EL like concat('%',concat(#{keyword},'%')) or
+                    STATE_MEMO like concat('%',concat(#{keyword},'%'))
                 )
             </if>
         </where>
-        order by MODIFY_TIME desc,CREATE_TIME desc,SORT_NO desc
+        order by MODIFY_TIME desc, CREATE_TIME desc, SORT_NO desc
     </select>
 
     <select id="getMaxSortNo" resultType="java.lang.Long">
-        select max(SORT_NO) from AEA_ITEM_STATE
+        select
+            max(SORT_NO)
+        from AEA_ITEM_STATE
     </select>
 
     <select id="listAeaItemStateWithStateVer" resultType="AeaItemState">
         select
-        <include refid="allColumns">
-            <property name="alias" value="itemState"/>
-        </include>
+            <include refid="allColumns">
+                <property name="alias" value="itemState"/>
+            </include>
         from AEA_ITEM_STATE itemState
-        left join AEA_ITEM_STATE_VER stateVer
-        on itemState.STATE_VER_ID = stateVer.ITEM_STATE_VER_ID
+        left join AEA_ITEM_STATE_VER stateVer on itemState.STATE_VER_ID = stateVer.ITEM_STATE_VER_ID
         and itemState.ITEM_VER_ID = stateVer.ITEM_VER_ID
         and itemState.ROOT_ORG_ID = stateVer.ROOT_ORG_ID
         <where>
@@ -437,11 +537,14 @@
             <if test="isProcStartCond != null">
                 AND itemState.IS_PROC_START_COND = #{isProcStartCond}
             </if>
+            <if test="isInformCommit != null">
+                AND itemState.IS_INFORM_COMMIT = #{isInformCommit}
+            </if>
             <if test="keyword!=null and keyword!='' ">
                 and (
-                itemState.STATE_NAME like concat('%',concat(#{keyword},'%')) or
-                itemState.STATE_EL like concat('%',concat(#{keyword},'%')) or
-                itemState.STATE_MEMO like concat('%',concat(#{keyword},'%'))
+                    itemState.STATE_NAME like concat('%',concat(#{keyword},'%')) or
+                    itemState.STATE_EL like concat('%',concat(#{keyword},'%')) or
+                    itemState.STATE_MEMO like concat('%',concat(#{keyword},'%'))
                 )
             </if>
         </where>
@@ -491,27 +594,28 @@
 
     <select id="getAeaItemStateByItemVerId" resultType="AeaItemState">
         select
-        ITEM_STATE_ID  itemStateId,
-        ITEM_ID  itemId,
-        ITEM_VER_ID itemVerId,
-        STATE_VER_ID stateVerId,
-        STATE_NAME  stateName,
-        STATE_EL  stateEl,
-        SORT_NO  sortNo,
-        STATE_MEMO  stateMemo,
-        IS_ACTIVE  isActive,
-        CREATER  creater,
-        CREATE_TIME  createTime,
-        MODIFIER  modifier,
-        MODIFY_TIME  modifyTime,
-        USE_EL  useEl,
-        PARENT_STATE_ID  parentStateId,
-        STATE_SEQ  stateSeq,
-        IS_QUESTION  isQuestion,
-        ANSWER_TYPE  answerType,
-        MUST_ANSWER  mustAnswer,
-        IS_DELETED  isDeleted,
-        IS_PROC_START_COND  isProcStartCond
+            ITEM_STATE_ID  itemStateId,
+            ITEM_ID  itemId,
+            ITEM_VER_ID itemVerId,
+            STATE_VER_ID stateVerId,
+            STATE_NAME  stateName,
+            STATE_EL  stateEl,
+            SORT_NO  sortNo,
+            STATE_MEMO  stateMemo,
+            IS_ACTIVE  isActive,
+            CREATER  creater,
+            CREATE_TIME  createTime,
+            MODIFIER  modifier,
+            MODIFY_TIME  modifyTime,
+            USE_EL  useEl,
+            PARENT_STATE_ID  parentStateId,
+            STATE_SEQ  stateSeq,
+            IS_QUESTION  isQuestion,
+            ANSWER_TYPE  answerType,
+            MUST_ANSWER  mustAnswer,
+            IS_DELETED  isDeleted,
+            IS_PROC_START_COND  isProcStartCond,
+            IS_INFORM_COMMIT isInformCommit
         from AEA_ITEM_STATE
         where ITEM_VER_ID = #{itemVerId}
         ORDER BY SORT_NO asc
@@ -519,30 +623,30 @@
 
     <select id="listAeaItemStateForIsPublish" resultType="AeaItemState">
         select
-        itemState.ITEM_STATE_ID itemStateId,
-        itemState.ITEM_ID itemId,
-        itemState.ITEM_VER_ID itemVerId,
-        itemState.STATE_VER_ID stateVerId,
-        itemState.STATE_NAME stateName,
-        itemState.STATE_EL stateEl,
-        itemState.SORT_NO sortNo,
-        itemState.STATE_MEMO stateMemo,
-        itemState.IS_ACTIVE isActive,
-        itemState.CREATER creater,
-        itemState.CREATE_TIME createTime,
-        itemState.MODIFIER modifier,
-        itemState.MODIFY_TIME modifyTime,
-        itemState.USE_EL useEl,
-        itemState.PARENT_STATE_ID parentStateId,
-        itemState.STATE_SEQ stateSeq,
-        itemState.IS_QUESTION isQuestion,
-        itemState.ANSWER_TYPE answerType,
-        itemState.MUST_ANSWER mustAnswer,
-        itemState.IS_DELETED isDeleted,
-        itemState.IS_PROC_START_COND isProcStartCond
+            itemState.ITEM_STATE_ID itemStateId,
+            itemState.ITEM_ID itemId,
+            itemState.ITEM_VER_ID itemVerId,
+            itemState.STATE_VER_ID stateVerId,
+            itemState.STATE_NAME stateName,
+            itemState.STATE_EL stateEl,
+            itemState.SORT_NO sortNo,
+            itemState.STATE_MEMO stateMemo,
+            itemState.IS_ACTIVE isActive,
+            itemState.CREATER creater,
+            itemState.CREATE_TIME createTime,
+            itemState.MODIFIER modifier,
+            itemState.MODIFY_TIME modifyTime,
+            itemState.USE_EL useEl,
+            itemState.PARENT_STATE_ID parentStateId,
+            itemState.STATE_SEQ stateSeq,
+            itemState.IS_QUESTION isQuestion,
+            itemState.ANSWER_TYPE answerType,
+            itemState.MUST_ANSWER mustAnswer,
+            itemState.IS_DELETED isDeleted,
+            itemState.IS_PROC_START_COND isProcStartCond,
+            itemState.IS_INFORM_COMMIT isInformCommit
         from AEA_ITEM_STATE itemState
-        left join AEA_ITEM_STATE_VER stateVer
-        ON itemState.STATE_VER_ID=stateVer.ITEM_STATE_VER_ID AND itemState.ITEM_VER_ID=stateVer.ITEM_VER_ID
+        left join AEA_ITEM_STATE_VER stateVer on itemState.STATE_VER_ID=stateVer.ITEM_STATE_VER_ID and itemState.ITEM_VER_ID=stateVer.ITEM_VER_ID
         <where>
             and itemState.IS_DELETED = '0'
             and stateVer.IS_DELETED = '0'
@@ -610,11 +714,14 @@
             <if test="isProcStartCond != null">
                 AND itemState.IS_PROC_START_COND = #{isProcStartCond}
             </if>
+            <if test="isInformCommit != null">
+                and itemState.IS_INFORM_COMMIT = #{isInformCommit}
+            </if>
             <if test="keyword!=null and keyword!='' ">
                 and (
-                itemState.STATE_NAME like concat('%',concat(#{keyword},'%')) or
-                itemState.STATE_EL like concat('%',concat(#{keyword},'%')) or
-                itemState.STATE_MEMO like concat('%',concat(#{keyword},'%'))
+                    itemState.STATE_NAME like concat('%',concat(#{keyword},'%')) or
+                    itemState.STATE_EL like concat('%',concat(#{keyword},'%')) or
+                    itemState.STATE_MEMO like concat('%',concat(#{keyword},'%'))
                 )
             </if>
         </where>
@@ -649,11 +756,10 @@
     <select id="getOneByItemVerId" resultType="AeaItemState" parameterType="string">
         select
         <include refid="allColumns"/>
-        from AEA_ITEM_STATE where ITEM_VER_ID=#{itemVerId}
+        from AEA_ITEM_STATE where ITEM_VER_ID = #{itemVerId}
     </select>
 
     <select id="getPublistOneByItemVerId" resultType="AeaItemState" parameterType="string">
-
         SELECT
             s.ITEM_STATE_ID  itemStateId,
             s.ITEM_ID  itemId,
@@ -675,13 +781,11 @@
             s.ANSWER_TYPE  answerType,
             s.MUST_ANSWER  mustAnswer,
             s.IS_DELETED  isDeleted,
-            s.IS_PROC_START_COND  isProcStartCond
-
+            s.IS_PROC_START_COND  isProcStartCond,
+            s.IS_INFORM_COMMIT isInformCommit
          FROM AEA_ITEM_STATE s
         INNER JOIN AEA_ITEM_STATE_VER V
         ON s.STATE_VER_ID=V.ITEM_STATE_VER_ID AND s.ITEM_VER_ID=V.ITEM_VER_ID
-
-
         WHERE s.ITEM_VER_ID=#{itemVerId}
         AND s.IS_ACTIVE='1' AND V.VER_STATUS='1' AND V.IS_DELETED='0';
 
@@ -734,6 +838,9 @@
             </if>
             <if test="isProcStartCond != null">
                 AND IS_PROC_START_COND = #{isProcStartCond}
+            </if>
+            <if test="isInformCommit != null">
+                and IS_INFORM_COMMIT = #{isInformCommit}
             </if>
         </where>
     </select>

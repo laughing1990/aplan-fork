@@ -20,10 +20,13 @@ public class MindBaseEntity implements Serializable {
     private String nodeTypeCode;
     private String nodeTypeName;
     private String note;
+
     //绑定节点类型 ref AeaMindConst.MIND_NODE_TYPE_CODE
     private String bindDestTypeCode;
+
     //多个用逗号隔开(,)
     private String bindDestId;
+
     private String isQuestion;
 
     /*
@@ -45,10 +48,17 @@ public class MindBaseEntity implements Serializable {
     //节点扩展属性
     private Map extra;
 
-    //情形关联流程启动
+    // 情形关联流程启动
     private String linkProcessStart;
+
+    /**
+     * 情形关联是否告知承诺制
+     */
+    private String isInformCommit;
+
     //终止情形
     private String terminateSituation;
+
     //情形答案个数
     private String situationAnswerNum;
 
@@ -171,5 +181,13 @@ public class MindBaseEntity implements Serializable {
     }
     public void setIsQuestion(String isQuestion) {
         this.isQuestion = isQuestion;
+    }
+
+    public String getIsInformCommit() {
+        return isInformCommit;
+    }
+
+    public void setIsInformCommit(String isInformCommit) {
+        this.isInformCommit = isInformCommit;
     }
 }
