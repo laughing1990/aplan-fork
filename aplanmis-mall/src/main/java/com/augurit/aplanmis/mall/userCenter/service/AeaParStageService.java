@@ -12,13 +12,33 @@ import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.domain.OpuOmUser;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.aplanmis.common.constants.ApplyState;
+import com.augurit.aplanmis.common.constants.ApplyType;
 import com.augurit.aplanmis.common.constants.DicConstants;
 import com.augurit.aplanmis.common.constants.ItemStatus;
-import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.domain.AeaApplyinstProj;
+import com.augurit.aplanmis.common.domain.AeaApplyinstUnitProj;
+import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
+import com.augurit.aplanmis.common.domain.AeaHiIteminst;
+import com.augurit.aplanmis.common.domain.AeaHiParStageinst;
+import com.augurit.aplanmis.common.domain.AeaHiSeriesinst;
+import com.augurit.aplanmis.common.domain.AeaHiSmsInfo;
+import com.augurit.aplanmis.common.domain.AeaItemBasic;
+import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
+import com.augurit.aplanmis.common.domain.AeaParStage;
+import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstUnitProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
-import com.augurit.aplanmis.common.service.instance.*;
+import com.augurit.aplanmis.common.service.apply.ApplyCommonService;
+import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemStateinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiParStateinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiSeriesinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiSmsInfoService;
+import com.augurit.aplanmis.common.service.instance.RestTimeruleinstService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.item.AeaLogItemStateHistService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
@@ -27,7 +47,14 @@ import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowUserService;
 import com.augurit.aplanmis.common.utils.BusinessUtil;
-import com.augurit.aplanmis.mall.userCenter.vo.*;
+import com.augurit.aplanmis.mall.userCenter.vo.AeaCoreItemVo;
+import com.augurit.aplanmis.mall.userCenter.vo.AeaParaItemVo;
+import com.augurit.aplanmis.mall.userCenter.vo.ApplyInstantiateResult;
+import com.augurit.aplanmis.mall.userCenter.vo.BuildProjUnitVo;
+import com.augurit.aplanmis.mall.userCenter.vo.ParallelApplyResultVo;
+import com.augurit.aplanmis.mall.userCenter.vo.PropulsionItemStateVo;
+import com.augurit.aplanmis.mall.userCenter.vo.StageApplyDataVo;
+import com.augurit.aplanmis.mall.userCenter.vo.StageApplyInstantiateResult;
 import com.google.common.collect.Lists;
 import org.flowable.engine.TaskService;
 import org.flowable.task.api.Task;
@@ -38,7 +65,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.InvalidParameterException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * 并联申报service
@@ -97,6 +129,8 @@ public class AeaParStageService {
     private AeaServiceWindowUserService aeaServiceWindowUserService;
     @Autowired
     private AeaApplyinstUnitProjMapper aeaApplyinstUnitProjMapper;
+    @Autowired
+    private ApplyCommonService applyCommonService;
 
     /**
      * 保存实例、启动流程（停留在收件节点）
@@ -337,15 +371,8 @@ public class AeaParStageService {
             aeaHiApplyinst.setApprovalOrgCode(approveOrgMap);
             aeaHiApplyinst.setIteminsts(iteminstMap);
 
-            //把所有情形丢到变量里，用于流程启动情形
-            if (stateIds != null && stateIds.length > 0) {
-                Map<String, Boolean> stateinsts = new HashMap();
-                for (String stateId : stateIds) {
-                    stateinsts.put(stateId, true);
-                }
-                if (stateinsts.size() > 0)
-                    aeaHiApplyinst.setStateinsts(stateinsts);
-            }
+            // 用于流程启动情形
+            aeaHiApplyinst.setStateinsts(applyCommonService.filterProcessStartConditions(stateIds, ApplyType.UNIT));
 
             //6、启动主流程
             BpmProcessInstance bpmProcessInstance = aeaBpmProcessService.startFlow(appId, appinstId, aeaHiApplyinst);

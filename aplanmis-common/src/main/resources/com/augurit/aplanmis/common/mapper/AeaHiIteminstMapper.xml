@@ -36,7 +36,8 @@
     IS_SMS_SEND isSmsSend,
     SMS_SEND_TIME smsSendTime,
      ROOT_ORG_ID rootOrgId,
-     PROCINST_ID procinstId
+        PROCINST_ID procinstId,
+        ITEMINST_TYPE iteminstType
     </sql>
 
     <sql id="aliasColumns">
@@ -71,7 +72,8 @@
          ${alias}.IS_SMS_SEND isSmsSend,
         ${alias}.SMS_SEND_TIME smsSendTime,
         ${alias}.ROOT_ORG_ID rootOrgId,
-        ${alias}.PROCINST_ID procinstId
+        ${alias}.PROCINST_ID procinstId,
+        ${alias}.ITEMINST_TYPE iteminstType
     </sql>
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaHiIteminstById" resultType="AeaHiIteminst">
@@ -193,6 +195,9 @@
             <if test="procinstId != null">
                 AND PROCINST_ID = #{procinstId}
             </if>
+            <if test="iteminstType != null">
+                AND ITEMINST_TYPE = #{iteminstType}
+            </if>
         </where>
     </select>
     <!--4 根据条件查询实体list,返回分页对象 -->
@@ -203,11 +208,13 @@
                                      IS_LACK_ITEMINST, IS_SERIES_APPROVE, THEME_VER_ID, STAGEINST_ID, SERIESINST_ID,
                                      START_TIME, REGISTER_TIME, SIGN_TIME, END_TIME, PUBLIC_MODE, ITEMINST_STATE, ACCEPT_TIME,
                                      INNER_APPINST_ID, CREATER, CREATE_TIME, MODIFIER, MODIFY_TIME, ITEMINST_LEVEL,
-                                     BUSINESS_STATE, ITEM_VER_ID, IS_JOIN_APPROVAL,ITEM_APPLY_CODE,IS_TOLERANCE_ACCEPT,ROOT_ORG_ID,PROCINST_ID)
+        BUSINESS_STATE, ITEM_VER_ID,
+        IS_JOIN_APPROVAL,ITEM_APPLY_CODE,IS_TOLERANCE_ACCEPT,ROOT_ORG_ID,PROCINST_ID,ITEMINST_TYPE)
         values (#{iteminstId}, #{itemId}, #{iteminstCode}, #{iteminstName}, #{approveOrgId}, #{isLackIteminst},
                 #{isSeriesApprove}, #{themeVerId}, #{stageinstId}, #{seriesinstId}, #{startTime}, #{registerTime},
                 #{signTime}, #{endTime}, #{publicMode}, #{iteminstState}, #{acceptTime}, #{innerAppinstId}, #{creater}, #{createTime},
-                #{modifier}, #{modifyTime}, #{iteminstLevel}, #{businessState}, #{itemVerId}, #{isJoinApproval},#{itemApplyCode},#{isToleranceAccept},#{rootOrgId},#{procinstId})
+        #{modifier}, #{modifyTime}, #{iteminstLevel}, #{businessState}, #{itemVerId},
+        #{isJoinApproval},#{itemApplyCode},#{isToleranceAccept},#{rootOrgId},#{procinstId},#{iteminstType})
     </insert>
     <!--6 修改实体对象 -->
     <update id="updateAeaHiIteminst" parameterType="AeaHiIteminst">
@@ -308,7 +315,10 @@
                 SMS_SEND_TIME = #{smsSendTime},
             </if>
             <if test="procinstId != null">
-                PROCINST_ID = #{procinstId}
+                PROCINST_ID = #{procinstId},
+            </if>
+            <if test="iteminstType != null">
+                ITEMINST_TYPE = #{iteminstType}
             </if>
         </set>
         where ITEMINST_ID = #{iteminstId}
@@ -351,6 +361,7 @@
         <result property="itemApplyCode" column="ITEM_APPLY_CODE"/>
         <result property="isToleranceAccept" column="IS_TOLERANCE_ACCEPT"/>
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
+        <result property="iteminstType" column="ITEMINST_TYPE"/>
     </resultMap>
 
     <select id="getAeaHiIteminstListByStageinstId" resultType="AeaHiIteminst">
