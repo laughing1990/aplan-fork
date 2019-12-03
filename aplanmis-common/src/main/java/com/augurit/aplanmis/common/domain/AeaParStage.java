@@ -1,6 +1,5 @@
 package com.augurit.aplanmis.common.domain;
 
-import com.augurit.aplanmis.common.constants.NeedStateStatus;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -194,10 +193,6 @@ public class AeaParStage implements Serializable {
     private String stageinstId;
 
     private List<AeaItem> aeaItems;
-
-    public boolean needState() {
-        return NeedStateStatus.NEED_STATE.getValue().equals(this.isNeedState);
-    }
 
     /**
      * 申请实例状态
