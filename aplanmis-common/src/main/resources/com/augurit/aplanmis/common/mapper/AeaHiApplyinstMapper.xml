@@ -481,6 +481,7 @@
         inner join aea_unit_info aui
             on aui.unit_info_id = aup.unit_info_id
         where aup.unit_info_id = #{unitInfoId}
+            and aha.IS_DELETED = '0'
             <if test="isSeriesApprove!=null and isSeriesApprove!=''">
                and aha.IS_SERIES_APPROVE=#{isSeriesApprove}
             </if>
@@ -496,6 +497,7 @@
         inner join aea_linkman_info ali
             on apl.linkman_info_id = ali.linkman_info_id
         where apl.LINKMAN_INFO_ID = #{userInfoId}
+            and aha.IS_DELETED = '0'
         <if test="isSeriesApprove!=null and isSeriesApprove!=''">
             and aha.IS_SERIES_APPROVE=#{isSeriesApprove}
         </if>
@@ -513,6 +515,7 @@
         inner join aea_unit_info aui
         on aui.unit_info_id = aup.unit_info_id
         where aup.unit_info_id = #{unitInfoId}
+            and aha.IS_DELETED = '0'
         <if test="isSeriesApprove!=null and isSeriesApprove!=''">
             and aha.IS_SERIES_APPROVE=#{isSeriesApprove}
         </if>
@@ -528,6 +531,7 @@
         inner join aea_linkman_info ali
         on apl.linkman_info_id = ali.linkman_info_id
         where apl.LINKMAN_INFO_ID = #{userInfoId}
+            and aha.IS_DELETED = '0'
         <if test="isSeriesApprove!=null and isSeriesApprove!=''">
             and aha.IS_SERIES_APPROVE=#{isSeriesApprove}
         </if>
