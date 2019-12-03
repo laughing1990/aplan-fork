@@ -145,7 +145,7 @@ public class AplanmisTimeCalculateEngine extends TimeCalculateEngineBase {
                             }
 
                             // 根据时限计算规则进行计算
-                            timeCalculateResult = timeLimitRule.calculate(startTime, currentTime, timeruleInst.getOrgId(), timeruleInst.getTimeruleInstType());
+                            timeCalculateResult = timeLimitRule.calculate(startTime, currentTime, timeruleInst.getOrgId());
                             // 获取流程实例的总挂起时间
                             timeCalculateResult = this.getProcessinstHangUpTime(startTime, timeCalculateResult, timeruleInst.getTimeruleUnit(), processInstance.getId(), null);
                             timeruleInst.setIsConcluding(currentTime == null ? IS_CONCLUDING_NO : IS_CONCLUDING_YES);
@@ -154,7 +154,7 @@ public class AplanmisTimeCalculateEngine extends TimeCalculateEngineBase {
                             HistoricTaskInstance taskInstance = historyService.createHistoricTaskInstanceQuery().taskId(timeruleInst.getTaskinstId()).singleResult();
                             if (taskInstance == null) continue;
                             // 根据时限计算规则进行计算
-                            timeCalculateResult = timeLimitRule.calculate(taskInstance.getStartTime(), taskInstance.getEndTime(), timeruleInst.getOrgId(), timeruleInst.getTimeruleInstType());
+                            timeCalculateResult = timeLimitRule.calculate(taskInstance.getStartTime(), taskInstance.getEndTime(), timeruleInst.getOrgId());
                             // 获取节点的总挂起时间
                             timeCalculateResult = this.getProcessinstHangUpTime(null, timeCalculateResult, timeruleInst.getTimeruleUnit(), taskInstance.getProcessInstanceId(), taskInstance.getId());
                             timeruleInst.setIsConcluding(taskInstance.getEndTime() == null ? IS_CONCLUDING_NO : IS_CONCLUDING_YES);
@@ -166,7 +166,7 @@ public class AplanmisTimeCalculateEngine extends TimeCalculateEngineBase {
                                 if (taskInstance == null) continue;
                                 if (timeruleInst.getTimegroupActId().equals(taskInstance.getTaskDefinitionId())) {
                                     // 根据时限计算规则进行计算
-                                    timeCalculateResult = timeLimitRule.calculate(taskInstance.getStartTime(), taskInstance.getEndTime(), timeruleInst.getOrgId(), timeruleInst.getTimeruleInstType());
+                                    timeCalculateResult = timeLimitRule.calculate(taskInstance.getStartTime(), taskInstance.getEndTime(), timeruleInst.getOrgId());
                                     // 获取节点的总挂起时间
                                     timeCalculateResult = this.getProcessinstHangUpTime(null, timeCalculateResult, timeruleInst.getTimeruleUnit(), taskInstance.getProcessInstanceId(), taskInstance.getId());
                                     timeruleInst.setIsConcluding(taskInstance.getEndTime() == null ? IS_CONCLUDING_NO : IS_CONCLUDING_YES);
