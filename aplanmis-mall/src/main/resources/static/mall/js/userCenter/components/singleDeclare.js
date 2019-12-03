@@ -71,7 +71,7 @@ var module1 = new Vue({
       declareStep: 1, // 申报步骤 1-补全信息 2-选择主题 3-选择阶段 4-事项材料一单清
       declareStepList: [  // 所有的步骤
         { num: '1', name: '补全信息' },
-        { num: '2', name: '前置条件' },
+        // { num: '2', name: '前置条件' },
         { num: '3', name: '情形选择' },
         { num: '4', name: '一张表单' },
         { num: '5', name: '材料一单清' },
@@ -1121,6 +1121,9 @@ var module1 = new Vue({
         if (data.success) {
           _that.itemBasicInfo = data.content;
           _that.useOneForm = data.content.useOneForm;
+          if(_that.useOneForm != '1'){
+            _that.needOneForm = false;
+          }
         } else {
           _that.$message({
             message: data.message ? data.message : '获取事项信息失败',
@@ -1438,8 +1441,14 @@ var module1 = new Vue({
     // 保存保存领件人、项目信息 补全信息保存并下一步
     saveProOrSmsinfo: function () {
       if(this.preItemCheckPassed==false){
-        alertMsg('', this.preItemCheckkMsg, '关闭', 'error', true);
-        return false;
+        confirmMsg('前置事项检测不通过', this.preItemCheckkMsg, function(){
+          _that.itemFrontCheckFlag = true;
+          _that.preItemCheckPassed = true;
+        },function(){
+          _that.itemFrontCheckFlag = false;
+          _that.preItemCheckPassed = false;
+          return false;
+        },'继续申报','放弃申报', 'error', true);
       }
       var msg = '';
       var _that = this;
@@ -1447,6 +1456,9 @@ var module1 = new Vue({
       var aeaUnitInfo = this.applyObjectInfo.aeaUnitInfo;
       var aeaLinkmanInfo = this.applyObjectInfo.aeaLinkmanInfo;
       var _linkmanTypes = [];
+      _that.stateList = [];
+      // _that.formUrlList = [];
+      _that.showMatsTableData = [];
       if (_that.applyObjectInfo.aeaUnitInfo && _that.applyObjectInfo.aeaUnitInfo.linkmanTypes && _that.applyObjectInfo.aeaUnitInfo.linkmanTypes.length > 0) {
         _that.applyObjectInfo.aeaUnitInfo.linkmanTypes.map(function (itemType) {
           if (itemType.linkmanInfoId) {
@@ -1537,6 +1549,7 @@ var module1 = new Vue({
                   if (data.success) {
                     _that.projInfoDetail.projectAddress = _that.projInfoDetail.projectAddress.split(',');
                     _that.loading = false;
+                    _that.themeId = _that.projInfoDetail.themeId;
                     if (_that.isNeedFrontCond == 1) {
                       _that.declareStep = 2;
                       _that.getPrecondition();
@@ -1546,7 +1559,6 @@ var module1 = new Vue({
                     } else if(_that.needOneForm){
                       _that.declareStep = 4;
                     } else {
-                      debugger
                       _that.saveAndGetMats();
                       // _that.getParallelApplyinstId();
                     }

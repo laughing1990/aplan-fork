@@ -6,26 +6,26 @@
   <ul class="pd-tab-nav tab_5 clearfix">
     <li class="tab-li" :class="[declareStep == item.num? 'active': '']"
         v-for="(item,index) in declareStepList" :key="item.num">
-      <span  v-if="index==1&&isNeedFrontCond!=1">
+      <!--<span  v-if="index==1&&isNeedFrontCond!=1">-->
+        <!--<el-tooltip effect="light" placement="top">-->
+          <!--<div slot="content"><i class="el-icon-warning-outline"></i>该步骤无需办理</div>-->
+          <!--<span class="mstage-count not-allow-sel">!</span>-->
+        <!--</el-tooltip>-->
+      <!--</span>-->
+      <span v-if="index==1&&isNeedState!=1">
         <el-tooltip effect="light" placement="top">
           <div slot="content"><i class="el-icon-warning-outline"></i>该步骤无需办理</div>
           <span class="mstage-count not-allow-sel">!</span>
         </el-tooltip>
       </span>
-      <span v-else-if="index==2&&isNeedState!=1">
-        <el-tooltip effect="light" placement="top">
-          <div slot="content"><i class="el-icon-warning-outline"></i>该步骤无需办理</div>
-          <span class="mstage-count not-allow-sel">!</span>
-        </el-tooltip>
-      </span>
-      <span v-else-if="index==3&&!needOneForm">
+      <span v-else-if="index==2&&!needOneForm">
         <el-tooltip effect="light" placement="top">
           <div slot="content"><i class="el-icon-warning-outline"></i>该事项无需填写一张表单</div>
           <span class="mstage-count not-allow-sel">!</span>
         </el-tooltip>
       </span>
-      <span class="mstage-count el-icon-check" v-else-if="(index+1)<declareStep"></span>
-      <span class="mstage-count" v-else>{{item.num}}</span>
+      <span class="mstage-count el-icon-check" v-else-if="item.num<declareStep"></span>
+      <span class="mstage-count" v-else>{{index+1}}</span>
       <p class="mstage-name">{{item.name}}</p>
     </li>
   </ul>
@@ -825,47 +825,47 @@
     </div>
   </div>
   <!-- 前置条件 -->
-  <div class="mt20 proj-module pd-info-pandel" v-show="declareStep == 2">
-    <h4 class="mt60 mt20">前置条件</h4>
-    <p class="gary-notice">告知承诺制审批，是指企业法人和其他组织（以下简称“申请人”）提出建设工程项目的事项审批申请，审批部门一次性告知审批条件及所需材料，申请人以书面形式承诺其符合审批条件，由审批部门作出事项审批决定的方式。</p>
-    <div class="situation-box">
-      <el-form :model="stateSelVal">
-        <el-form-item class="sel-status-item" required
-                      v-for="(item,index) in preconditionList"
-                      :key="index"
-                      :label="item.condName">
-          <template v-if="item.muiltSelect>1">
-            <p class="status-label">
-              <span class="must-sel-count">至少选择{{item.muiltSelect}}项</span>
-            </p>
-            <el-checkbox-group v-model="item.selectAnswerId">
-              <el-checkbox v-for="(itemAns,indAns) in item.childCondList"
-                           :key="indAns"
-                           :value="itemAns.itemCondId"
-                           @change="function(value) {getPreconditionClidrenList(item,itemAns,index,value)}"
-                           :label="itemAns.itemCondId" name="answer">{{itemAns.condName}}</el-checkbox>
-            </el-checkbox-group>
-          </template>
-          <template v-else>
-            <p class="status-label">
-              <br/>
-            </p>
-            <el-radio-group v-model="item.selectAnswerId">
-              <el-radio v-for="(itemAns,ind) in item.childCondList"
-                        :key="ind"
-                        @change="getPreconditionClidrenList(item,itemAns,index)"
-                        :value="itemAns.itemCondId"
-                        :label="itemAns.itemCondId" name="answer">{{itemAns.condName}}</el-radio>
-            </el-radio-group>
-          </template>
-        </el-form-item>
-      </el-form>
-    </div>
-    <div class="footer-stage-btn">
-      <el-button class="mt60" @click="prevPage(1)">上一步</el-button>
-      <el-button class="mt60" type="primary" @click="saveThemeAndNext">保存并下一步</el-button>
-    </div>
-  </div>
+  <!--<div class="mt20 proj-module pd-info-pandel" v-show="declareStep == 2">-->
+    <!--<h4 class="mt60 mt20">前置条件</h4>-->
+    <!--<p class="gary-notice">告知承诺制审批，是指企业法人和其他组织（以下简称“申请人”）提出建设工程项目的事项审批申请，审批部门一次性告知审批条件及所需材料，申请人以书面形式承诺其符合审批条件，由审批部门作出事项审批决定的方式。</p>-->
+    <!--<div class="situation-box">-->
+      <!--<el-form :model="stateSelVal">-->
+        <!--<el-form-item class="sel-status-item" required-->
+                      <!--v-for="(item,index) in preconditionList"-->
+                      <!--:key="index"-->
+                      <!--:label="item.condName">-->
+          <!--<template v-if="item.muiltSelect>1">-->
+            <!--<p class="status-label">-->
+              <!--<span class="must-sel-count">至少选择{{item.muiltSelect}}项</span>-->
+            <!--</p>-->
+            <!--<el-checkbox-group v-model="item.selectAnswerId">-->
+              <!--<el-checkbox v-for="(itemAns,indAns) in item.childCondList"-->
+                           <!--:key="indAns"-->
+                           <!--:value="itemAns.itemCondId"-->
+                           <!--@change="function(value) {getPreconditionClidrenList(item,itemAns,index,value)}"-->
+                           <!--:label="itemAns.itemCondId" name="answer">{{itemAns.condName}}</el-checkbox>-->
+            <!--</el-checkbox-group>-->
+          <!--</template>-->
+          <!--<template v-else>-->
+            <!--<p class="status-label">-->
+              <!--<br/>-->
+            <!--</p>-->
+            <!--<el-radio-group v-model="item.selectAnswerId">-->
+              <!--<el-radio v-for="(itemAns,ind) in item.childCondList"-->
+                        <!--:key="ind"-->
+                        <!--@change="getPreconditionClidrenList(item,itemAns,index)"-->
+                        <!--:value="itemAns.itemCondId"-->
+                        <!--:label="itemAns.itemCondId" name="answer">{{itemAns.condName}}</el-radio>-->
+            <!--</el-radio-group>-->
+          <!--</template>-->
+        <!--</el-form-item>-->
+      <!--</el-form>-->
+    <!--</div>-->
+    <!--<div class="footer-stage-btn">-->
+      <!--<el-button class="mt60" @click="prevPage(1)">上一步</el-button>-->
+      <!--<el-button class="mt60" type="primary" @click="saveThemeAndNext">保存并下一步</el-button>-->
+    <!--</div>-->
+  <!--</div>-->
 
   <!-- 情形选择 -->
   <div class="mt20 proj-module pd-info-pandel" v-show="declareStep == 3">
