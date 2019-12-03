@@ -180,7 +180,7 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
 
     @Override
     public void insertAeaApplyinstUnitProj(String applyinstId,List<String>unitProjIds){
-        if(unitProjIds.size()>0 && StringUtils.isNotBlank(applyinstId)){
+        if(unitProjIds!=null && unitProjIds.size()>0 && StringUtils.isNotBlank(applyinstId)){
             List<AeaApplyinstUnitProj> paramList=new ArrayList<>();
             for (String unitProjId:unitProjIds){
                 AeaApplyinstUnitProj entity=new AeaApplyinstUnitProj();

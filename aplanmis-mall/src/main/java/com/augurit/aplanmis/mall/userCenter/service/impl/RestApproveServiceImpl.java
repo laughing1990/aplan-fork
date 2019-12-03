@@ -128,6 +128,13 @@ public class RestApproveServiceImpl implements RestApproveService {
     }
 
     @Override
+    public PageInfo<ApproveProjInfoDto> getDraftApplyList(String unitInfoId, String userInfoId, String keyword, int pageNum, int pageSize) throws Exception{
+        PageHelper.startPage(pageNum,pageSize);
+        List<ApproveProjInfoDto> list = aeaHiIteminstMapper.getDraftApplyList(unitInfoId,userInfoId,keyword);
+        return new PageInfo<>(list);
+    }
+
+    @Override
     public PageInfo<ApproveProjInfoDto> searchScheduleInquireListByUnitInfoIdOrLinkman(String unitInfoId, String userInfoId, String keyword, int pageNum, int pageSize) {
         return approveDataService.searchScheduleInquireListByUnitInfoIdOrLinkman(unitInfoId,userInfoId,keyword,pageNum,pageSize);
     }

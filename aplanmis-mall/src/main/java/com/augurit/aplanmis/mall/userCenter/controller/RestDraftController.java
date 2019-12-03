@@ -38,21 +38,21 @@ public class RestDraftController {
         return new ModelAndView("mall/userCenter/components/drafts");
     }
 
-    @GetMapping("draftApplyItem/list")
-    @ApiOperation(value = "我的草稿 --> 我的草稿项目列表查询接口")
-    @ApiImplicitParams({@ApiImplicitParam(value = "项目状态(0:办结1:办理中2:草稿)",name = "state",required = false,dataType = "string"),
+    @GetMapping("draftApply/list")
+    @ApiOperation(value = "草稿箱 --> 暂存件列表查询接口")
+    @ApiImplicitParams({
             @ApiImplicitParam(value = "关键词",name = "keyword",required = false,dataType = "string"),
             @ApiImplicitParam(value = "页面数量",name = "pageNum",required = true,dataType = "string"),
             @ApiImplicitParam(value = "页面页数",name = "pageSize",required = true,dataType = "string")})
-    public ResultForm getdraftApplyItemlist(String state, String keyword, int pageNum, int pageSize, HttpServletRequest request){
+    public ResultForm getDraftApplyList(String keyword, int pageNum, int pageSize,HttpServletRequest request){
         try {
             LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
             if("1".equals(loginInfo.getIsPersonAccount())){//个人
-                return new ContentResultForm<PageInfo<ApproveProjInfoDto>>(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId(),state,keyword,pageNum,pageSize));
+                return new ContentResultForm(true,restApproveService.getDraftApplyList("",loginInfo.getUserId(),keyword,pageNum,pageSize));
             }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
-                return new ContentResultForm<PageInfo<ApproveProjInfoDto>>(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),state,keyword,pageNum,pageSize));
+                return new ContentResultForm(true,restApproveService.getDraftApplyList(loginInfo.getUnitId(),loginInfo.getUserId(),keyword,pageNum,pageSize));
             }else{//企业
-                return new ContentResultForm<PageInfo<ApproveProjInfoDto>>(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"",state,keyword,pageNum,pageSize));
+                return new ContentResultForm(true,restApproveService.getDraftApplyList(loginInfo.getUnitId(),"",keyword,pageNum,pageSize));
             }
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
