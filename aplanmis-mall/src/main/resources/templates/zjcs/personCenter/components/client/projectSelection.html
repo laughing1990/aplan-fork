@@ -591,7 +591,6 @@
                     url: _sureUrl,
                     type: 'post',
                     data: {
-                        projPurchaseId: ts.contractDetailObj.projPurchaseId,
                         confirmFlag: ts.contractDetailObj.confirmFlag,
                         auditOpinion: ts.contractDetailObj.auditOpinion,
                         postponeServiceEndTime: ts.contractDetailObj.postponeServiceEndTime
@@ -857,7 +856,8 @@
             // 合同状态
             contractFormat: function (val) {
                 if (!val) return '待上传合同';
-                return val == 0 ? '待上传合同' : (val == 1 ? '已确定' : (val == 2 ? '审核失败' : '审核中'))
+                //合同状态：0 待确定，1 已确定 ，2 审核失败，3：审核中
+                return val == 0 ? '待确定' : (val == 1 ? '已确定' : (val == 2 ? '审核失败' : '审核中'))
             },
             // 金额/下浮率
             realPriceFormat: function (val) {

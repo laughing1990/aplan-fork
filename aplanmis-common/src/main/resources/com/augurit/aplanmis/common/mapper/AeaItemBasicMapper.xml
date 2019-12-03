@@ -2593,6 +2593,8 @@
         itemBasic.DUE_NUM agentItemDueNum,
         itemBasic.BJ_TYPE agentItemBjType,
         itemBasic.XKDX agentItemFwdx,
+        itemBasic.ANTICIPATE_DAY anticipateDay,
+        itemBasic.ANTICIPATE_TYPE anticipateType,
         itemBasic.ROOT_ORG_ID rootOrgId,
         <if test="_databaseId == 'oracle'">
             WM_CONCAT(temp2.ITEM_NAME) itemName,
