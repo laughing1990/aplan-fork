@@ -91,11 +91,11 @@ var userCenter = (function () {
                         name: '我的资料库',
                         open: true,
                         childList: [
-                          /*  {
+                            {
                                 name: '我的云盘',
-                                value: '',
+                                value: 'MyCloundSpaces',
                                 select: false,
-                            },*/
+                            },
                             {
                                 name: '我的材料库',
                                 value: 'MyMaterials',
@@ -205,6 +205,11 @@ var userCenter = (function () {
                 // 当前选中菜单项赋值
                 ts.userCenterItemSelect = mod.value;
                 ts.selectNav = mod.name;
+                // 如果选中的是 我的云盘则进行页面跳转
+                if(mod.value == "MyCloundSpaces"){
+                    window.location.href = ctx + '/rest/main/toIndexPage?#/myCloundSpaces';
+                    return ;
+                }
                 localStorage.setItem('selectNav',ts.selectNav);
                 if(mod.value == "/userCenterIndex"){
                     localStorage.removeItem('selectNav');
@@ -240,19 +245,6 @@ var userCenter = (function () {
             // init
             init: function () {
                 // 刷新回显当前模块
-               /* if (location.hash) {  旧的写法逻辑
-                    var _mod = location.hash.slice(1);
-                    if(_mod == "/userCenterIndex"){
-                        this.moduleLoad('myHomeIndex.html', '#MyHomeIndex',true);
-                    }else {
-                        this.moduleLoad(_mod + '.html', '#' + _mod);
-                    }
-                    this.userCenterItemSelect = _mod;
-
-                } else {
-                    this.moduleLoad('myHomeIndex.html', '#MyHomeIndex');
-                }*/
-
                var hashVal = location.hash.slice(1) || userCenterItemSelect;
                var  mod = {
                    name: localStorage.getItem('selectNav') || '我的首页',

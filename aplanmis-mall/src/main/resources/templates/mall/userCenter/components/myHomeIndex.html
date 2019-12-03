@@ -209,9 +209,9 @@
             color: rgba(63, 64, 71, 1);
         }
 
-        .my-data-box ul.data-list li.data-list-item:hover p {
+      /*  .my-data-box ul.data-list li.data-list-item:hover p {
             display: none;
-        }
+        }*/
 
         .my-data-box ul.data-list li.data-list-item p.checkDetail {
             font-size: 14px;
@@ -226,9 +226,9 @@
             bottom: 12px;
         }
 
-        .my-data-box ul.data-list li.data-list-item:hover p.checkDetail {
+       /* .my-data-box ul.data-list li.data-list-item:hover p.checkDetail {
             display: block;
-        }
+        }*/
 
         .my-static-box {
             width: 930px;
@@ -390,20 +390,20 @@
                 快捷入口<span class="title-line"></span>
             </div>
             <ul class="data-list">
-                <li class="data-list-item">
+                <li class="data-list-item"  @click="toDeclare">
                     <a target="_blank">
                         <img src="../../../../static/mall/images/userCenter/data-icon-1.png"
                             th:src="@{/mall/images/userCenter/data-icon-1.png}" alt="">
                         <p>我的项目库</p>
-                        <p class="checkDetail" @click="toDeclare">查看详情</p>
+<!--                        <p class="checkDetail" @click="toDeclare">查看详情</p>-->
                     </a>
                 </li>
-                <li class="data-list-item">
+                <li class="data-list-item" @click="toMyMaterials">
                     <a target="_blank">
                         <img src="../../../../static/mall/images/userCenter/data-icon-2.png"
                             th:src="@{/mall/images/userCenter/data-icon-2.png}" alt="">
                         <p>我的材料库</p>
-                        <p class="checkDetail" @click="toMyMaterials">查看详情</p>
+<!--                        <p class="checkDetail" @click="toMyMaterials">查看详情</p>-->
                     </a>
                 </li>
                 <!--<li class="data-list-item">
@@ -413,22 +413,22 @@
                         <p class="checkDetail">查看详情</p>
                     </a>
                 </li>-->
-                <li class="data-list-item">
+                <li class="data-list-item" @click="toMyCloundSpaces">
                     <a target="_blank">
                         <img src="../../../../static/mall/images/userCenter/data-icon-4.png"
                             th:src="@{/mall/images/userCenter/data-icon-4.png}" alt="">
                         <p>我的云盘</p>
-                        <p class="checkDetail" @click="toMyCloundSpaces">查看详情</p>
+<!--                        <p class="checkDetail" @click="toMyCloundSpaces">查看详情</p>-->
                     </a>
                 </li>
-                <li class="data-list-item">
+                <li class="data-list-item" @click="toCreditDetail">
                     <a target="_blank">
                         <img src="../../../../static/mall/images/userCenter/data-icon-5.png"
                             th:src="@{/mall/images/userCenter/data-icon-5.png}" alt="">
                         <p>企业信用<span v-show="isBlack"
                                 style="position:absolute;left: 90px;top: 2px;font-size:12px;display: block;width:39px;height:18px;background:rgba(255,75,71,1);border-radius:4px;color: #fff;">失信</span>
                         </p>
-                        <p class="checkDetail" @click="toCreditDetail">查看详情</p>
+<!--                        <p class="checkDetail" @click="toCreditDetail">查看详情</p>-->
                     </a>
                 </li>
             </ul>
