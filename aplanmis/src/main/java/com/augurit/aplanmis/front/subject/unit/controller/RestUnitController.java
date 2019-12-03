@@ -132,7 +132,7 @@ public class RestUnitController {
         return new ContentResultForm<>(true, aeaUnitInfos, "Query success");
     }
 
-    @PostMapping("/delete/unit/by/{linkmanInfoId}")
+    @PostMapping("/delete/by/{linkmanInfoId}")
     @ApiOperation("根据联系人id删除企业单位关联")
     public ResultForm deleteUnitByLinkmanInfoId(@PathVariable String linkmanInfoId, String unitInfoId) {
         Assert.hasText(linkmanInfoId, "linkmanInfoId is null");
