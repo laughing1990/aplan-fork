@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.front.subject.unit.controller;
 
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
+import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
 import com.augurit.aplanmis.common.domain.AeaUnitInfo;
@@ -123,12 +124,21 @@ public class RestUnitController {
     }
 
     @GetMapping("/list/{linkmanInfoId}")
-    @ApiOperation(value = "根据项目ID查找关联的单位列表")
+    @ApiOperation(value = "根据联系人ID查找关联的单位列表")
     public ContentResultForm<List<AeaUnitInfo>> listUnitInfosByLinkmanInfoId(@PathVariable String linkmanInfoId) {
         Assert.isTrue(StringUtils.isNotBlank(linkmanInfoId), "unitInfoId is null");
 
         List<AeaUnitInfo> aeaUnitInfos = aeaUnitInfoMapper.getAeaUnitListByLinkmanInfoId(linkmanInfoId);
         return new ContentResultForm<>(true, aeaUnitInfos, "Query success");
+    }
+
+    @PostMapping("/delete/unit/by/{linkmanInfoId}")
+    @ApiOperation("根据联系人id删除企业单位关联")
+    public ResultForm deleteUnitByLinkmanInfoId(@PathVariable String linkmanInfoId, String unitInfoId) {
+        Assert.hasText(linkmanInfoId, "linkmanInfoId is null");
+        Assert.hasText(unitInfoId, "unitInfoId is null");
+        restUnitService.deleteUnitByLinkmanInfoId(linkmanInfoId, unitInfoId);
+        return new ResultForm(true, "success");
     }
 
 }
