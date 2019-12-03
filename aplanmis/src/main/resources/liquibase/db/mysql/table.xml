@@ -1198,4 +1198,20 @@
         </sql>
     </changeSet>
 
+
+    <changeSet id="20191203104638" author="huangzl" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aoa_notice_content`
+            ADD COLUMN `NOTICE_DISPATCH_TIME` datetime DEFAULT NULL COMMENT '发文时间';
+            ALTER TABLE `aoa_notice_content`
+            ADD COLUMN `NOTICE_DISPATCH_TYPE` varchar(50) DEFAULT NULL COMMENT '公告发文类型，来自数据字典，key为 NOTICE_DISPATCH_TYPE';
+
+
+            INSERT INTO `bsc_dic_code_type` (`TYPE_ID`, `TYPE_CODE`, `TYPE_NAME`, `IS_TREE`, `IS_ACTIVE`, `TYPE_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('b405d278-cc90-4761-8a59-5fbf853aa720', 'NOTICE_DISPATCH_TYPE', '公告发文类型', '0', '1', NULL, NULL, '2018-12-13 15:13:30', NULL, '2018-12-13 15:13:30', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('b405d278-cc90-4761-8a59-5fbf853aa721', 'b405d278-cc90-4761-8a59-5fbf853aa720', '9', '普通公告', '1', '9', NULL, NULL, '0', '0', NULL, NULL, '2018-12-13 15:15:09', NULL, '2018-12-13 15:15:09', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('b405d278-cc90-4761-8a59-5fbf853aa722', 'b405d278-cc90-4761-8a59-5fbf853aa720', '1', '政府发文', '1', '0', NULL, NULL, '0', '0', NULL, NULL, '2018-12-13 15:13:30', NULL, '2018-12-13 15:13:43', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
