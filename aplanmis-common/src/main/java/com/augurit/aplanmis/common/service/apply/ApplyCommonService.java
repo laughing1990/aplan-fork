@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.common.service.apply;
 
 import com.augurit.aplanmis.common.constants.ApplyType;
+import com.augurit.aplanmis.common.domain.AeaHiIteminst;
 
 import java.util.Map;
 
@@ -14,4 +15,13 @@ public interface ApplyCommonService {
      * @return 放入申报实例中的map
      */
     Map<String, Boolean> filterProcessStartConditions(String[] stateIds, ApplyType applyType);
+
+    /**
+     * 设置事项实例是否为告知承诺制办理
+     *
+     * @param stateIds
+     * @param applyType
+     * @param iteminst
+     */
+    void setInformCommit(String[] stateIds, ApplyType applyType, AeaHiIteminst iteminst) throws Exception;
 }
