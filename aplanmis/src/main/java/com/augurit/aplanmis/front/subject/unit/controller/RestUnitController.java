@@ -4,6 +4,7 @@ import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
 import com.augurit.aplanmis.common.domain.AeaUnitInfo;
+import com.augurit.aplanmis.common.mapper.AeaUnitInfoMapper;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.front.subject.unit.service.RestUnitService;
@@ -40,6 +41,8 @@ public class RestUnitController {
     private AeaLinkmanInfoService aeaLinkmanInfoService;
     @Autowired
     private RestUnitService restUnitService;
+    @Autowired
+    private AeaUnitInfoMapper aeaUnitInfoMapper;
 
     @ApiOperation(value = "根据企业单位名称模糊查询")
     @ApiImplicitParams({
@@ -117,6 +120,15 @@ public class RestUnitController {
         List<UnitVo> unitVos = aeaUnitInfoService.findAllProjUnit(projectInfoId).stream()
                 .map(u -> UnitVo.from(u, null)).collect(Collectors.toList());
         return new ContentResultForm<>(true, unitVos, "Query success");
+    }
+
+    @GetMapping("/list/{linkmanInfoId}")
+    @ApiOperation(value = "根据项目ID查找关联的单位列表")
+    public ContentResultForm<List<AeaUnitInfo>> listUnitInfosByLinkmanInfoId(@PathVariable String linkmanInfoId) {
+        Assert.isTrue(StringUtils.isNotBlank(linkmanInfoId), "unitInfoId is null");
+
+        List<AeaUnitInfo> aeaUnitInfos = aeaUnitInfoMapper.getAeaUnitListByLinkmanInfoId(linkmanInfoId);
+        return new ContentResultForm<>(true, aeaUnitInfos, "Query success");
     }
 
 }
