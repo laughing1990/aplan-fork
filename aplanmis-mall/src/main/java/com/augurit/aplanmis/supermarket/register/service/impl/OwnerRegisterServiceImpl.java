@@ -84,6 +84,7 @@ public class OwnerRegisterServiceImpl implements OwnerRegisterService {
 
             unitInfo.setLoginName(loginName);
             unitInfo.setLoginPwd(Md5Utils.encrypt32(password));
+            unitInfo.setUnitType("1");//建设单位
             unitInfo.setIsOwnerUnit("1");
             unitInfo.setAuditFlag("2");
 
