@@ -7,7 +7,12 @@ import com.augurit.aplanmis.common.domain.AeaUnitInfo;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.front.subject.linkman.serivce.RestLinkmanService;
-import com.augurit.aplanmis.front.subject.linkman.vo.*;
+import com.augurit.aplanmis.front.subject.linkman.vo.LinkmanAddVo;
+import com.augurit.aplanmis.front.subject.linkman.vo.LinkmanEditVo;
+import com.augurit.aplanmis.front.subject.linkman.vo.LinkmanInfoVo;
+import com.augurit.aplanmis.front.subject.linkman.vo.LinkmanVo;
+import com.augurit.aplanmis.front.subject.linkman.vo.PersonalInfoListVo;
+import com.augurit.aplanmis.front.subject.linkman.vo.PersonalResultVo;
 import io.jsonwebtoken.lang.Assert;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -15,7 +20,13 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -114,5 +125,14 @@ public class RestLinkmanController {
     public ContentResultForm<String> deleteLinkmanInfoByUnitId(@RequestParam String linkmanInfoId, @RequestParam String unitInfoId) {
         restLinkmanService.deleteLinkmanInfoByUnitId(linkmanInfoId, unitInfoId);
         return new ContentResultForm<>(true, linkmanInfoId, "Delete linkmanInfo by unitInfoId success");
+    }
+
+    @ApiOperation("根据企业单位查询所有联系人列表")
+    @GetMapping("/list/{unitInfoId}")
+    public ContentResultForm<List<AeaLinkmanInfo>> listLinkmanInfosByUnitInfoId(@PathVariable String unitInfoId) {
+        Assert.hasText(unitInfoId, "企业单位不能为空-unitInfoId.");
+
+        List<AeaLinkmanInfo> aeaLinkmanInfos = aeaLinkmanInfoService.findAllUnitLinkman(unitInfoId);
+        return new ContentResultForm<>(true, aeaLinkmanInfos, "success");
     }
 }

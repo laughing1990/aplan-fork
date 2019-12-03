@@ -68,7 +68,7 @@
       </el-col>
 <!--      <el-button type="primary" style="float: right" size="medium">新增项目</el-button>-->
       <div style="float: right">
-        <a class="el-button el-button--primary el-button--medium" @click="addApplicant" target="_blank" >新增单位</a>
+        <a class="el-button el-button--primary el-button--medium" @click="jumpToDetail('add')" target="_blank" >新增单位</a>
       </div>
     </el-form>
   </div>
@@ -124,7 +124,7 @@
             label="操作">
       <template slot-scope="scope">
         <span class="op-btn btn_border_right"  @click="generatePassword(scope.row)" >重置密码</span>
-        <span class="op-btn btn_border_right"  @click="editApplicant(scope.row)">编辑</span>
+        <span class="op-btn btn_border_right"  @click="jumpToDetail(scope.row.unitInfoId)">编辑</span>
         <span class="op-btn"  @click="delApplicant(scope.row)">删除</span>
       </template>
     </el-table-column>
