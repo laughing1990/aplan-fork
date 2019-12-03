@@ -703,11 +703,11 @@ var vm = new Vue({
                 "unitInfo.applicantDistrict": _that.formData.applicantDistrict[_that.formData.applicantDistrict.length - 1] || '',
                 "unitInfo.applicantDetailSite": _that.formData.applicantDetailSite || '',
                 "unitInfo.registerAuthority": _that.formData.registerAuthority || '',
-                "contactManInfo.linkmanName": _that.formData.linkmanName || '',
-                "contactManInfo.linkmanMail": _that.formData.linkmanMail || '',
-                "contactManInfo.linkmanMobilePhone": _that.formData.linkmanMobilePhone || '',
-                "contactManInfo.linkmanOfficePhon": _that.formData.linkmanOfficePhon || '',
-                "contactManInfo.linkmanFax": _that.formData.linkmanFax || '',
+                "contactManInfo.linkmanName": _that.formData2.linkmanName || '',
+                "contactManInfo.linkmanMail": _that.formData2.linkmanMail || '',
+                "contactManInfo.linkmanMobilePhone": _that.formData2.linkmanMobilePhone || '',
+                "contactManInfo.linkmanOfficePhon": _that.formData2.linkmanOfficePhon || '',
+                "contactManInfo.linkmanFax": _that.formData2.linkmanFax || '',
 
                 // 第二页数据
                 'serviceAndQualVo.aeaImUnitService.serviceId': _that.formDataZgxx.serviceId || '',
