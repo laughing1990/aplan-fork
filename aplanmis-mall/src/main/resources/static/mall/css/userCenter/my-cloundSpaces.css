@@ -343,7 +343,9 @@
 .matFileListTable .el-icon-view{
     font-size: 16px;
     color: #457EFF;
-    margin-right: 20px;
+    position: absolute;
+    top: 5px;
+    right: 6px;
 }
 .matFileListTable .ag-filetype-txt{
     color:#55d7e0;
@@ -414,6 +416,7 @@
     margin-top: 15px;
     margin-right: 40px;
     cursor: pointer;
+    position: relative;
 }
 .view-model .file-icon{
     height: 86px;

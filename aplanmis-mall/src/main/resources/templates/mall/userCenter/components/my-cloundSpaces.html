@@ -104,7 +104,7 @@
             <section class="my-materials-table-box" v-loading="mloading">
                 <!--列表模式 str-->
                 <div class="my-declareing-table" v-show="mode == '列表'">
-                    <el-table :data="fileListData" ref="fileListTable"  stripe  style="width:100%" class="matFileListTable" v-loading="tableLoading" @selection-change="handleSelectionChange">
+                    <el-table :data="fileListData" ref="fileListTable"   stripe  style="width:100%" class="matFileListTable" v-loading="tableLoading" @selection-change="handleSelectionChange">
                         <el-table-column
                                 type="selection"
                                 width="30">
@@ -115,7 +115,7 @@
                                 :label="chooseFileNum"
                         >
                             <template slot-scope="scope">
-                                <div class="clearfix">
+                                <div class="clearfix" @dblclick="previewFile(scope.row)">
                                     <div class="fileName fl"><i class="ag" :class="getFileTypeIcon(scope.row.attFormat)"></i>
                                         {{scope.row.attName}}
                                     </div>
@@ -156,6 +156,7 @@
                             <li class="fl" v-for="(item , index) in fileListData" @click="viewModelChoose(item)" :class="[item.selectFlag? 'active': '']">
                                 <p class="file-icon"><i class="ag" :class="getFileTypeIcon(item.attFormat)"></i></p>
                                 <p class="file-name">{{item.attName}}</p>
+                                <i class="el-icon-view" @click="previewFile(item)"></i>
                             </li>
                         </template>
                      <!--   <li class="active fl">
