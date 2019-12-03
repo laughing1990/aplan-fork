@@ -316,4 +316,11 @@
             ADD COLUMN `OPS_ORG_ID`  varchar(50) NULL COMMENT '办件所属委办局组织ID' AFTER `NEW_STATE`;
         </sql>
     </changeSet>
+
+    <changeSet id="201912031927" author="liuzhaoxiong" failOnError="false">
+        <comment>增加审批标记</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_unit_info` ADD COLUMN `AUDIT_FLAG`  varchar(2) DEFAULT NULL COMMENT '审核状态:0 审核失败，1 已审核，2 审核中';
+        </sql>
+    </changeSet>
 </databaseChangeLog>

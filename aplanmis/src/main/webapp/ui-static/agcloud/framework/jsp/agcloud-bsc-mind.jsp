@@ -266,7 +266,10 @@
         width:20px;
     }
 
-
+    .tab-content .km-priority .km-priority-item .km-isInformCommit-icon {
+        background: url("${pageContext.request.contextPath}/ui-static/agcloud/bsc/mind/resource/js/kityminder/images/icon-isInformCommit.png") repeat-y;
+        background-color: transparent;
+    }
 
     .tab-content .km-priority, .tab-content .km-progress{
         border-right: none;

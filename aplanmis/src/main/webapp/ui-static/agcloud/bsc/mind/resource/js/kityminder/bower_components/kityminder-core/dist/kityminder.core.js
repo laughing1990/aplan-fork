@@ -9780,7 +9780,8 @@ _p[79] = {
 
                 // Designed by Akikonata
                 // [MASK, BACK]
-                var ISINFORMCOMMIT_COLORS = [null, ['#FF1200', '#840023'], // 1 - red
+                //['#FF1200', '#840023'],red
+                var ISINFORMCOMMIT_COLORS = [null, ['#FF8655', '#FF8655'], // 1 - red
                     ['#0074FF', '#01467F'], // 2 - blue
                     ['#00AF00', '#006300'], // 3 - green
                     ['#FF962E', '#B25000'], // 4 - orange

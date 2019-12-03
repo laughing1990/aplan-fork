@@ -132,11 +132,19 @@ public class RestApplyCommonController {
             if(StringUtils.isNotBlank(applyinstId)){//已暂存过，需要删除历史记录，重新插入数据
                 restApplyCommonService.deleteReInsertAeaApplyinstUnitProj(applyinstId,(List<String>)map.get("unitProjIds"));
             }else{//第一次暂存
-                AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst("net", smsInfoVo.getApplySubject(), smsInfoVo.getLinkmanInfoId(), "0", null, ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue());
+                AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst("net", smsInfoVo.getApplySubject(), smsInfoVo.getLinkmanInfoId(), "0", null, ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"1");
                 applyinstId=aeaHiApplyinst==null?"":aeaHiApplyinst.getApplyinstId();
                 restApplyCommonService.insertAeaApplyinstUnitProj(applyinstId,(List<String>)map.get("unitProjIds"));
             }
             resultMap.put("applyinstId", applyinstId);
+            if(StringUtils.isNotBlank(applyinstId)){//回填sms表的申请实例ID
+                String smsId=(String) resultMap.get("smsId");
+                if(StringUtils.isNotBlank(smsId)) {
+                    AeaHiSmsInfo sms=aeaHiSmsInfoService.getAeaHiSmsInfoById(smsId);
+                    sms.setApplyinstId(applyinstId);
+                    aeaHiSmsInfoService.updateAeaHiSmsInfo(sms);
+                }
+            }
             return new ContentResultForm<>(true, resultMap, "暂存成功!");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

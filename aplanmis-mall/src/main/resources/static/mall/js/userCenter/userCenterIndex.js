@@ -59,12 +59,14 @@ var userCenter = (function () {
                             name: '撤回申报列表',
                             value: 'withdrawApplyList',
                             select: false,
-                        }/*,
-                        {
-                            name: '待申报',
-                            value: 'drafts',
-                            select: false,
-                        }*/,
+                        }
+                        // ,
+                        // {
+                        //     name: '草稿箱',
+                        //     value: 'drafts',
+                        //     select: false,
+                        // }
+                        ,
                         {
                             name: '材料补全',
                             value: 'matCompletionList',

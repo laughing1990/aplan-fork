@@ -465,7 +465,7 @@ angular.module('kityminderEditor')
                 $scope.getInnerClass = function (p) {
                     switch (p) {
                         case 1:
-                            return 'km-priority-icon tool-group-icon';
+                            return 'km-isInformCommit-icon tool-group-icon';
                         case 0:
                             return 'km-priority-icon tool-group-icon priority-0';
                     }

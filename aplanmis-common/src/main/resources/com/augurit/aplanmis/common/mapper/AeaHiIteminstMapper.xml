@@ -2476,4 +2476,154 @@
         ) aea_123
         order by aea_123.startTime desc
     </select>
+
+    <select id="getDraftApplyList" resultType="com.augurit.aplanmis.common.dto.ApproveProjInfoDto">
+        select aea_123.* from (
+        SELECT
+        aha.APPLYINST_ID applyinstId,
+        aha.APPLYINST_CODE applyinstCode,
+        aha.APPLYINST_STATE applyinstState,
+        aha.CREATE_TIME startTime,
+        aha.MODIFY_TIME endTime,
+        api.PROJ_NAME projName,
+        api.LOCAL_CODE localCode,
+        '1' isSeriesApprove,
+        api.PROJ_INFO_ID projInfoId,
+        api.GCBM gcbm
+        FROM aea_hi_applyinst aha
+        LEFT JOIN aea_applyinst_proj aap ON aap.APPLYINST_ID=aha.APPLYINST_ID
+        LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID=aap.PROJ_INFO_ID
+        LEFT JOIN aea_proj_linkman apl ON apl.APPLYINST_ID=aha.APPLYINST_ID AND apl.PROJ_INFO_ID=api.PROJ_INFO_ID
+        LEFT JOIN aea_linkman_info ali ON ali.LINKMAN_INFO_ID=apl.LINKMAN_INFO_ID
+        <where>
+            <if test="userInfoId !=null and userInfoId!=''">
+                ali.LINKMAN_INFO_ID=#{userInfoId}
+            </if>
+            <if test="userInfoId ==null || userInfoId==''">
+                ali.LINKMAN_INFO_ID is null
+            </if>
+            AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND ali.IS_DELETED !=1 AND apl.TYPE='apply' AND
+            aha.IS_SERIES_APPROVE='1' AND aha.IS_TEMPORARY_SUBMIT='1'
+            <if test="keyword != null and keyword != ''">
+                AND (
+                api.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
+                api.GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                api.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
+                aha.APPLYINST_CODE = #{keyword}
+                )
+            </if>
+        </where>
+        UNION
+
+        SELECT
+        aha.APPLYINST_ID applyinstId,
+        aha.APPLYINST_CODE applyinstCode,
+        aha.APPLYINST_STATE applyinstState,
+        aha.CREATE_TIME startTime,
+        aha.MODIFY_TIME endTime,
+        api.PROJ_NAME projName,
+        api.LOCAL_CODE localCode,
+        '0' isSeriesApprove,
+        api.PROJ_INFO_ID projInfoId,
+        api.GCBM gcbm
+        FROM aea_hi_applyinst aha
+        LEFT JOIN aea_applyinst_proj aap ON aap.APPLYINST_ID=aha.APPLYINST_ID
+        LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID=aap.PROJ_INFO_ID
+        LEFT JOIN aea_proj_linkman apl ON apl.APPLYINST_ID=aha.APPLYINST_ID AND apl.PROJ_INFO_ID=api.PROJ_INFO_ID
+        LEFT JOIN aea_linkman_info ali ON ali.LINKMAN_INFO_ID=apl.LINKMAN_INFO_ID
+        <where>
+            <if test="userInfoId !=null and userInfoId!=''">
+                ali.LINKMAN_INFO_ID=#{userInfoId}
+            </if>
+            <if test="userInfoId ==null || userInfoId==''">
+                ali.LINKMAN_INFO_ID is null
+            </if>
+            AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND ali.IS_DELETED !=1 AND
+            apl.TYPE='apply' AND aha.IS_SERIES_APPROVE='0'AND aha.IS_TEMPORARY_SUBMIT='1'
+            <if test="keyword != null and keyword != ''">
+                AND (
+                api.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
+                api.GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                api.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
+                aha.APPLYINST_CODE = #{keyword}
+                )
+            </if>
+        </where>
+        UNION
+
+        SELECT DISTINCT
+        aha.APPLYINST_ID applyinstId,
+        aha.APPLYINST_CODE applyinstCode,
+        aha.APPLYINST_STATE applyinstState,
+        aha.CREATE_TIME startTime,
+        aha.MODIFY_TIME endTime,
+        api.PROJ_NAME projName,
+        api.LOCAL_CODE localCode,
+        '1' isSeriesApprove,
+        api.PROJ_INFO_ID projInfoId,
+        api.GCBM gcbm
+        FROM aea_hi_applyinst aha
+        LEFT JOIN aea_applyinst_proj aap ON aap.APPLYINST_ID=aha.APPLYINST_ID
+        LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID=aap.PROJ_INFO_ID
+        LEFT JOIN aea_applyinst_unit_proj aaup ON aaup.APPLYINST_ID=aha.APPLYINST_ID
+        LEFT JOIN aea_unit_proj aup ON aup.UNIT_PROJ_ID=aaup.UNIT_PROJ_ID
+        LEFT JOIN aea_unit_info aui ON aup.UNIT_INFO_ID=aui.UNIT_INFO_ID
+        <where>
+            <if test="unitInfoId !=null and unitInfoId!=''">
+                aui.UNIT_INFO_ID=#{unitInfoId}
+            </if>
+            <if test="unitInfoId ==null || unitInfoId==''">
+                aui.UNIT_INFO_ID is null
+            </if>
+            AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND aui.IS_DELETED !=1 AND aha.IS_SERIES_APPROVE='1' AND aha.IS_TEMPORARY_SUBMIT='1'
+            <if test="keyword != null and keyword != ''">
+                AND (
+                api.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
+                api.GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                api.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
+                aha.APPLYINST_CODE = #{keyword}
+                )
+            </if>
+        </where>
+        UNION
+
+        SELECT DISTINCT
+        aha.APPLYINST_ID applyinstId,
+        aha.APPLYINST_CODE applyinstCode,
+        aha.APPLYINST_STATE applyinstState,
+        aha.CREATE_TIME startTime,
+        aha.MODIFY_TIME endTime,
+        api.PROJ_NAME projName,
+        api.LOCAL_CODE localCode,
+        '0' isSeriesApprove,
+        api.PROJ_INFO_ID projInfoId,
+        api.GCBM gcbm
+        FROM aea_hi_applyinst aha
+        LEFT JOIN aea_applyinst_proj aap ON aap.APPLYINST_ID=aha.APPLYINST_ID
+        LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID=aap.PROJ_INFO_ID
+        LEFT JOIN aea_applyinst_unit_proj aaup ON aaup.APPLYINST_ID=aha.APPLYINST_ID
+        LEFT JOIN aea_unit_proj aup ON aup.UNIT_PROJ_ID=aaup.UNIT_PROJ_ID
+        LEFT JOIN aea_unit_info aui ON aup.UNIT_INFO_ID=aui.UNIT_INFO_ID
+        <where>
+            <if test="unitInfoId !=null and unitInfoId!=''">
+                aui.UNIT_INFO_ID=#{unitInfoId}
+            </if>
+            <if test="unitInfoId ==null || unitInfoId==''">
+                aui.UNIT_INFO_ID is null
+            </if>
+            AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND aui.IS_DELETED !=1 AND
+            aha.IS_SERIES_APPROVE='0' and aup.IS_DELETED != 1 AND aha.IS_TEMPORARY_SUBMIT='1'
+            <if test="keyword != null and keyword != ''">
+                AND (
+                api.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
+                api.GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                api.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
+                aha.APPLYINST_CODE = #{keyword}
+                )
+            </if>
+        </where>
+        ) aea_123
+        order by aea_123.startTime desc
+    </select>
+
 </mapper>

@@ -45,6 +45,8 @@ public class AeaHiApplyinst implements Serializable, FlowObject {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private java.util.Date smsSendTime; // (最新出件时间)
     private String rootOrgId;//根组织ID
+    private String isTemporarySubmit; //是否临时提交  0否  1是
+
 
     // 窗口受理时间
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
