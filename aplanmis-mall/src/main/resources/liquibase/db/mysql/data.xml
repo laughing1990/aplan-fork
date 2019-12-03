@@ -676,10 +676,4 @@
             MODIFY COLUMN `MODIFY_TIME` datetime(0) NULL DEFAULT NULL AFTER `MODIFIER`;
         </sql>
     </changeSet>
-    <changeSet id="201911290846" author="liuzhaoxiong" failOnError="false">
-        <comment>增加审批标记</comment>
-        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
-            ALTER TABLE `aea_unit_info` ADD COLUMN `AUDIT_FLAG`  varchar(2) DEFAULT NULL COMMENT '审核状态:0 审核失败，1 已审核，2 审核中';
-        </sql>
-    </changeSet>
 </databaseChangeLog>
