@@ -970,4 +970,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="201912031726" author="qinjp" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_applyinst`
+            ADD COLUMN `IS_TEMPORARY_SUBMIT`  char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 0 COMMENT '是否临时提交  0否  1是';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
