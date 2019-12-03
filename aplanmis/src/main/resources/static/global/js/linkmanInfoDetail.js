@@ -4,6 +4,19 @@
  * @Last Modified by:   Lfuqiang
  * @Last Modified time: $ $
  */
+// 联系人dialog，初始数据
+var MANFORM = {
+    linkmanName: '', //联系人名称
+    linkmanType: '', //联系人类型
+    linkmanCertNo: '', //身份证号
+    linkmanMobilePhone: '', //手机号码
+    linkmanOfficePhon: '', //办公电话
+    linkmanMail: '', //电子邮件
+    linkmanFax: '', //传真
+    linkmanAddr: '', //联系人住址
+    linkmanMemo: '', //备注
+    applicant: '' //单位名-联系人类型为企业时
+}
 var vm = new Vue({
     el: '#linkmanInfo',
     mixins: [mixins],
@@ -22,33 +35,20 @@ var vm = new Vue({
                 }
             }
         };
-        
+
         return {
+            loading: false,
+            linkmanId: '',
+            isEdit: false,
             activeNames: ['1', '2'],
-            tableData: [{
-                name: 'Amy',
-                idcard: 'Amy',
-                mobileNum: 'Amy',
-                email: 'Amy',
-                address: 'Amy',
-                dlName: 'Amy'
-            },
-            {
-                name: 'Amy',
-                idcard: 'Amy',
-                mobileNum: 'Amy',
-                email: 'Amy',
-                address: 'Amy',
-                dlName: 'Amy'
-            },
-            {
-                name: 'Amy',
-                idcard: 'Amy',
-                mobileNum: 'Amy',
-                email: 'Amy',
-                address: 'Amy',
-                dlName: 'Amy'
-            }],
+            activeTab: 0,  // 纵向导航active状态index
+            verticalTabData: [ // 左侧纵向导航数据
+                {
+                    label: '基本信息',
+                    target: 'baseInfo'
+                }
+            ],
+            tableData: [],
             // 当前编辑行
             curEditRow: {
             },
@@ -72,7 +72,7 @@ var vm = new Vue({
                 linkmanName: [{
                     required: true,
                     message: '请输入联系人姓名',
-                    trigger: 'blur'
+                    trigger: 'change'
                 }], //联系人名称
                 linkmanType: [{
                     required: true,
@@ -82,22 +82,129 @@ var vm = new Vue({
                 linkmanCertNo: [{
                     required: true,
                     message: '请输入身份证号',
-                    trigger: 'blur'
+                    trigger: 'change'
                 }], //身份证号
                 linkmanMobilePhone: [{
                     required: true,
                     validator: checkPhone,
-                    trigger: 'blur'
+                    trigger: 'change'
                 }], //手机号码
                 linkmanAddr: [{
                     required: true,
                     message: '请输入联系人住址',
-                    trigger: 'blur'
+                    trigger: 'change'
                 }], //联系人住址
             },
+            enclosureFileListArr: [], // 附件上传时，从电脑中选择的文件列表            
+            isShowSelectDropBox: false, // 是否展示单位列表选择框
+            unitList: [], // dialog-单位列表
+        }
+    },
+    mounted: function () {
+        // 获取联系人id，存在即编辑状态，需要初始化数据
+        this.linkmanId = this.QueryString('linkmanId');
+        if (this.linkmanId) {
+            this.isEdit = true;
+            this.verticalTabData.push(
+                {
+                    label: '单位信息',
+                    target: 'units'
+                }
+            );
+            this.fetchRowDetail(this.linkmanId);
+            this.getUnitData();
+        } else {
+            this.isEdit = false;
         }
     },
     methods: {
+        // 选中下拉框中的一项单位数据
+        selectDropItem: function (item) {
+            this.manForm.applicant = item.applicant;
+            this.manForm.unitInfoId = item.unitInfoId;
+            this.hideSelectDropBox()
+        },
+        // 单位列表获取哦
+        fetchUnitList: function () {
+            var ts = this;
+            var query = ts.manForm.applicant;
+            if (!query) return;
+            request('', {
+                url: ctx + 'rest/applicant/listApplicantsNoPage',
+                type: 'get',
+                data: {
+                    keyword: query
+                }
+            }, function (res) {
+                // 展示可选择的单位下拉框
+                ts.showSelectDropBox();
+                ts.unitList = res.map(function (item) {
+                    return {
+                        applicant: item.applicant,
+                        unitInfoId: item.unitInfoId
+                    }
+                })
+            }, function () {
+                return ts.apiMessage('网络错误！', 'error')
+            });
+        },
+        // 选中下拉框显示
+        showSelectDropBox: function () {
+            var ts = this;
+            this.isShowSelectDropBox = true;
+            // test-当点击外部时，关闭下拉弹框
+            document.onclick = function () {
+                ts.hideSelectDropBox();
+                document.onclick = null;
+            }
+        },
+        hideSelectDropBox: function () {
+            this.isShowSelectDropBox = false;
+        },
+        // 删除单位
+        delUnit: function (row) {
+            var _that = this;
+
+            request('', {
+                url: ctx + 'rest/unit/delete/by/' + _that.linkmanId,
+                type: 'post',
+                data: {
+                    unitInfoId: row.unitInfoId
+                }
+            }, function (result) {
+                if (result.success) {
+                    _that.getUnitData();
+
+                    _that.$message({
+                        message: '删除成功！',
+                        type: 'success'
+                    });
+
+                    _that.loading = false;
+                } else {
+                    _that.$message({
+                        message: '删除失败！',
+                        type: 'error'
+                    });
+                    _that.loading = false;
+                }
+            }, function (msg) {
+                _that.$message({
+                    message: '服务请求失败！',
+                    type: 'error'
+                });
+                _that.loading = false;
+            });
+        },
+        // 获取页面的URL参数
+        QueryString: function (val) {
+            var svalue = location.search.match(new RegExp("[\?\&]" + val + "=([^\&]*)(\&?)", "i"));
+            return svalue ? svalue[1] : svalue;
+        },
+        targetCollapse: function (target, ind) { // 纵向导航点击事件
+            this.activeTab = ind;
+            $(document).scrollTop($('#' + target).offset().top)
+        },
         // change联系人类型
         changeLinkmanType: function (val) {
             // console.log(val)
@@ -176,8 +283,8 @@ var vm = new Vue({
                         _saveForm.append(k, ts.manForm[k]);
                     }
                     // 如果是编辑联系人-带上联系人的id
-                    if (ts.isEditLinkManFlag == 1) {
-                        _saveForm.append('linkmanInfoId', ts.curEditRow.linkmanInfoId);
+                    if (ts.isEdit) {
+                        _saveForm.append('linkmanInfoId', ts.linkmanId);
                     }
                     // 如果选择了本地的文件上传
                     if (ts.enclosureFileListArr.length) {
@@ -212,7 +319,6 @@ var vm = new Vue({
                                         type: 'get',
                                         data: _resetData
                                     }, function (res) {
-                                        debugger
                                         ts.loading = false;
                                         if (res.success) {
                                             var data = res.content;
@@ -254,6 +360,57 @@ var vm = new Vue({
                     }
                     return false;
                 }
+            });
+        },
+        // 编辑联系人时，获取联系人的详情
+        fetchRowDetail: function (id) {
+            var ts = this;
+            ts.loading = true;
+            request('', {
+                url: ctx + 'rest/linkman/getAeaLinkManById',
+                type: 'get',
+                data: {
+                    id: id
+                }
+            }, function (res) {
+                ts.loading = false;
+                if (res.success) {
+                    ts.curEditRow = res.content;
+                    // ts.manForm = JSON.parse(JSON.stringify(res.content));
+                    ts.formEditInitData(JSON.parse(JSON.stringify(res.content)))
+                    ts.linkManDialogState = true;
+                } else {
+                    return ts.apiMessage('联系人详情获取失败！', 'error')
+                }
+            }, function () {
+                ts.loading = false;
+                return ts.apiMessage('网络错误！', 'error')
+            });
+        },
+        // 编辑联系人时，对manForm进行已有值赋值
+        formEditInitData: function (obj) {
+            var ts = this;
+            for (var k in MANFORM) {
+                ts.manForm[k] = obj[k];
+            }
+        },
+        // 查询单位信息列表数据
+        getUnitData: function () {
+            var ts = this;
+            ts.loading = true;
+            request('', {
+                url: ctx + 'rest/unit/list/' + this.linkmanId,
+                type: 'get',
+            }, function (res) {
+                ts.loading = false;
+                if (res.success) {
+                    ts.tableData = res.content;
+                } else {
+                    return ts.apiMessage(res.message, 'error')
+                }
+            }, function () {
+                ts.loading = false;
+                return ts.apiMessage('网络错误！', 'error')
             });
         },
     }

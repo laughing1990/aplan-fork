@@ -15,16 +15,28 @@
     <link rel="stylesheet"
         href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css"
         th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
+    <link rel="stylesheet" href="../../static/effectSupervision/common/css/base.css"
+        th:href="@{/effectSupervision/common/css/base.css}">
     <link rel="stylesheet" href="../../static/global/css/linkmanInfoDetail.css"
         th:href="@{/global/css/linkmanInfoDetail.css}">
     <script>
         var ctx = '[[@{/}]]';
-        var ctx = 'http://192.168.17.4:8083/aplanmis-front/';
+        // var ctx = 'http://192.168.17.4:8083/aplanmis-front/';
     </script>
 </head>
 
 <body class="gray-body">
-    <div class="linkmanInfo" id="linkmanInfo" v-cloak>
+    <div class="linkmanInfo" id="linkmanInfo" v-loading.fullscreen.lock="loading" v-cloak>
+        <div class="vertical-tab">
+            <ul>
+                <li class="vertical-label" v-for="(item, index) in verticalTabData"
+                    :class="activeTab==index?'active':item.target" data-name="item.target" :key="index"
+                    @click="targetCollapse(item.target,index)">
+                    <a :href="'#'+item.target">{{item.label}}</a>
+                </li>
+            </ul>
+        </div>
+
         <el-collapse v-model="activeNames">
             <el-collapse-item class="clearfix" name="1" id="baseInfo">
                 <template slot="title">
@@ -83,7 +95,7 @@
                     </el-form-item>
                 </el-form>
             </el-collapse-item>
-            <el-collapse-item class="clearfix" name="2" id="baseInfo">
+            <el-collapse-item class="clearfix" name="2" id="units" v-if="isEdit">
                 <template slot="title">
                     <i class="header-icon icon ag ag-project-info"></i>单位信息
                 </template>
@@ -123,19 +135,22 @@
 
                 <el-table :data="tableData" border stripe
                     :header-cell-style="{background:'#F3F6F9',padding:'8px 0', color: '#575962'}" style="width: 100%">
-                    <el-table-column prop="name" label="单位名称" width="180">
+                    <el-table-column prop="applicant" label="单位名称" width="180">
                     </el-table-column>
-                    <el-table-column prop="idcard" label="统一社会信用代码" width="180">
+                    <el-table-column prop="unifiedSocialCreditCode" label="统一社会信用代码" width="180">
                     </el-table-column>
-                    <el-table-column prop="email" label="法定代表人">
+                    <el-table-column prop="idrepresentative" label="法定代表人">
                     </el-table-column>
-                    <el-table-column prop="address" label="法人身份证号">
+                    <el-table-column prop="idno" label="法人身份证号">
                     </el-table-column>
-                    <el-table-column prop="dlName" label="法人联系电话">
+                    <el-table-column prop="idmobile" label="法人联系电话">
                     </el-table-column>
-                    <el-table-column prop="dlName" label="单位登录名">
+                    <el-table-column prop="loginName" label="单位登录名">
                     </el-table-column>
-                    <el-table-column type="selection" width="55">
+                    <el-table-column label="操作" width="55">
+                        <template slot-scope="scope">
+                            <span class="color-FF4B47 canClick" @click="delUnit(scope.row)">删除</span>
+                        </template>
                     </el-table-column>
                 </el-table>
             </el-collapse-item>

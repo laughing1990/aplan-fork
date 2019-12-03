@@ -60,6 +60,7 @@ var vm = new Vue({
       }
     };
     return {
+      isEdit: false, // 编辑or新增
       demoStageId:"",
       isParallel: true, // true为并联
       projBascInfoShow: {
@@ -562,8 +563,14 @@ var vm = new Vue({
       }
     }
 
+    // 获取项目id，存在即编辑状态，需要初始化数据
     _that.projInfoId = _that.QueryString('projInfoId');
-    if (!!_that.projInfoId) _that.searchProjAllInfo();
+    if (_that.projInfoId) {
+      _that.isEdit = true;
+      _that.searchProjAllInfo();
+    } else {
+      _that.isEdit = false;
+    }
   },
   watch: {
     searchProjfilterText: function(val) {
@@ -582,7 +589,7 @@ var vm = new Vue({
       var _that = this;
 
       if (!_that.projBascInfoShow.projName) {
-
+        _that.$message.error('请输入项目/工程名称');
         return false;
       }
 
@@ -593,8 +600,10 @@ var vm = new Vue({
           projName: _that.projBascInfoShow.projName
         },
       }, function (res) {
-        if (res) {
-          
+        if (res.success) {
+          vm.$set(_that.projBascInfoShow, 'localCode', res.content.localCode);
+          vm.$set(_that.projBascInfoShow, 'gcbm', res.content.gcbm);
+          vm.$set(_that.projBascInfoShow, 'projInfoId', res.content.projInfoId);
         }
       }, function (msg) {})
     },
@@ -1168,6 +1177,10 @@ var vm = new Vue({
             type: 'post'
           }, function (data) {
             if(data.success){
+              // 保存成功后显示‘申报主体信息’模块
+              _that.showVerLen = _that.verticalTabData.length;
+              _that.showMoreProjInfo = true;
+              
               _that.$message({
                 message: '信息保存成功',
                 type: 'success'

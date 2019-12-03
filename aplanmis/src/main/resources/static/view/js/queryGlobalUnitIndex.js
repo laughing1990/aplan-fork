@@ -135,6 +135,25 @@ var vm = new Vue({
         }
     },
     methods: {
+        // 跳转到详情页面
+        jumpToDetail: function (id) {
+            var _unitInfoId = id;
+            var parentIfreamUrl = window.frames.location.href;
+            var _url = "",_tabName="";
+            if (_unitInfoId === 'add'){
+                _tabName = "新增单位";
+                _url = ctx + 'rest/applicant/lib/detail?parentIfreamUrl='+parentIfreamUrl;
+            }else{
+                _tabName = "编辑单位"
+                _url = ctx + 'rest/applicant/lib/detail?unitInfoId=' + _unitInfoId +'&parentIfreamUrl='+parentIfreamUrl;
+            }
+            var _jumpData = {
+                'menuName': _tabName,
+                'menuInnerUrl': _url,
+                'id': _unitInfoId + '_unitDetail'
+            };
+            parent.vm.addTab('', _jumpData, parent.vm.activeTabIframe, '');
+        },
         //刷新列表
         fetchTableData: function () {
             var ts = this;

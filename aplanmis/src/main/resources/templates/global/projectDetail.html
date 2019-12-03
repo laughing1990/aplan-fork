@@ -41,7 +41,7 @@
 
 <body class="gray-body">
     <div id="approve" v-cloak v-loading="loading">
-        <el-form class="search-proj-info" label-width="115px">
+        <el-form class="search-proj-info" label-width="115px" v-if="!isEdit">
             <el-form-item label="项目/工程查询" id="projCodeInfo">
                 <el-select v-model="searchKeyword" filterable remote autofocus reserve-keyword ref="searchProjInfo"
                             no-data-text="暂无匹配的项目/工程" placeholder="请输入项目（工程）的编码 / 名称" :remote-method="searchProjInfoByKeyword"
@@ -104,7 +104,7 @@
                             <el-input name="projName" :disabled="linkQuerySucc" v-model="projBascInfoShow.projName"
                                 placeholder="请输入项目/工程名称">
                             </el-input>
-                            <el-button type="primary" @click="showProjTree()">项目工程</el-button>
+                            <el-button v-if="!isEdit" type="primary" @click="showProjTree()">项目工程</el-button>
                         </el-form-item>
 
                         <div class="clearfix">
@@ -438,7 +438,7 @@
                             </el-form>
                             <el-col :span="24" class="ar">
                                 <el-form-item>
-                                    <el-button type="primary" icon="el-icon-wallet" @click="saveApplyAndLinkmanInfo()">
+                                    <el-button type="primary" icon="el-icon-wallet" @click="saveApplyAndLinkmanInfo">
                                         保存</el-button>
                                 </el-form-item>
                             </el-col>

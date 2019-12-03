@@ -8,42 +8,45 @@ var vm = new Vue({
     el: '#unitsDetail',
     mixins: [mixins],
     data: function () {
+        var checkMissValue = function (rule, value, callback) {
+            if (value === '' || value === undefined || value === null) {
+                callback(new Error('该输入项为必输项！'));
+            } else if (value.toString().trim() === '') {
+                callback(new Error('该输入项为必输项！'));
+            } else {
+                callback();
+            }
+        };
+
+        var checkPhoneNum = function (rule, value, callback) {
+            if (value === '' || value === undefined || value.trim() === '') {
+                callback(new Error('必填字段！'));
+            } else if (value) {
+                var flag = !(/^1[3456789]\d{9}$/.test(value));
+                if (flag) {
+                    return callback(new Error('格式不正确'));
+                } else {
+                    callback();
+                }
+
+            } else {
+                callback();
+            }
+        };
+
         return {
+            loading: false,
+            unitInfoId: '',
+            isEdit: false,
             activeTab: 0,  // 纵向导航active状态index
             verticalTabData: [ // 左侧纵向导航数据
                 {
                     label: '基本信息',
                     target: 'baseInfo'
-                }, {
-                    label: '单位信息',
-                    target: 'units'
                 }
             ],
             activeNames: ['1', '2'],
-            tableData: [{
-                name: 'Amy',
-                idcard: 'Amy',
-                mobileNum: 'Amy',
-                email: 'Amy',
-                address: 'Amy',
-                dlName: 'Amy'
-            },
-            {
-                name: 'Amy',
-                idcard: 'Amy',
-                mobileNum: 'Amy',
-                email: 'Amy',
-                address: 'Amy',
-                dlName: 'Amy'
-            },
-            {
-                name: 'Amy',
-                idcard: 'Amy',
-                mobileNum: 'Amy',
-                email: 'Amy',
-                address: 'Amy',
-                dlName: 'Amy'
-            }],
+            tableData: [],
             // 表单数据
             manForm: {
                 applicant: '', //单位名
@@ -149,12 +152,217 @@ var vm = new Vue({
                 }], //具体地址
             },
             roles: [],
+            addEditManModalTitle: '新增联系人',
+            addEditManModalFlag: 'edit',
+            addEditManModalShow: false, // 是否显示新增编辑联系人窗口
+            addEditManform: {},  // 新增编辑联系人信息
+            addLinkManRules: { // 新增编辑联系人校验
+                linkmanName: [
+                    { required: true, validator: checkMissValue, trigger: 'change' },
+                ],
+                linkmanCertNo: [
+                    { required: true, validator: checkMissValue, trigger: 'change' },
+                ],
+                linkmanMobilePhone: [
+                    { required: true, validator: checkPhoneNum, trigger: 'change' },
+                ]
+            },
+            unitInfoIdList: [], // 根据项目id查找相关联的单位列表
         }
     },
     mounted: function () {
-        this.fetchRowDetail();
+        // 获取单位id，存在即编辑状态，需要初始化数据
+        this.unitInfoId = this.QueryString('unitInfoId');
+        if (this.unitInfoId) {
+            this.isEdit = true;
+            this.verticalTabData.push(
+                {
+                    label: '联系人列表',
+                    target: 'linkman'
+                }
+            );
+            this.fetchRowDetail();
+            this.getLinkManData();
+        } else {
+            this.isEdit = false;
+        }        
     },
     methods: {
+        // 重置表单
+        resetForm: function (formName) {
+            this.$refs[formName].resetFields();
+            this.selectMat = '';
+        },
+        // 删除联系人
+        delLinkman: function (row) {
+            var _that = this;
+            var params = {
+                linkmanInfoId: row.linkmanInfoId,
+                unitInfoId: _that.unitInfoId
+            };
+            request('', {
+                url: ctx + 'rest/linkman/delete/by/unit',
+                type: 'post',
+                data: params
+            }, function (result) {
+                if (result.success) {
+                    _that.getLinkManData();
+
+                    _that.$message({
+                        message: '删除成功！',
+                        type: 'success'
+                    });
+
+                    _that.loading = false;
+                } else {
+                    _that.$message({
+                        message: '删除失败！',
+                        type: 'error'
+                    });
+                    _that.loading = false;
+                }
+            }, function (msg) {
+                _that.$message({
+                    message: '服务请求失败！',
+                    type: 'error'
+                });
+                _that.loading = false;
+            });
+        },
+        // 新增编辑联系人信息
+        addLinkman: function (data) {
+            var _that = this;
+            _that.addEditManModalShow = true;
+            // _that.getUnitsListByProjInfoId();
+            _that.addEditManPerform = data
+            
+            if (data) {
+                _that.addEditManModalTitle = '编辑联系人';
+                _that.addEditManModalFlag = 'edit';
+                _that.addEditManform = data;
+                _that.addEditManform.unitInfoId = _that.unitInfoId;
+            } else {
+                _that.addEditManModalTitle = '新增联系人';
+                _that.addEditManform = {};
+                _that.addEditManform.unitInfoId = _that.unitInfoId;
+                _that.addEditManModalFlag = 'add';                
+            }
+        },
+        // 根据项目ID查找关联的单位列表
+        getUnitsListByProjInfoId: function () {
+            var _that = this;
+            _that.loading = true;
+            request('', {
+                url: ctx + 'rest/unit/list',
+                type: 'get',
+            }, function (result) {
+                if (result.success) {
+                    _that.unitInfoIdList = result.content;
+                    _that.loading = false;
+                }
+            }, function (msg) {
+                _that.$message({
+                    message: '服务请求失败！',
+                    type: 'error'
+                });
+                _that.loading = false;
+            });
+        },
+        // 反显联系人信息
+        backDLinkmanInfo: function (data) {
+            var _that = this;
+            if (data.linkmanId) {
+                request('', {
+                    url: ctx + 'rest/linkman/one/' + data.linkmanId,
+                    type: 'get'
+                }, function (result) {
+                    if (result.success) {
+                        _that.addEditManform = result.content;
+                        _that.addEditManform.unitInfoId = data.unitInfoId;
+                        _that.addEditManform.unitName = data.applicant;
+                    }
+                }, function (msg) {
+                    alertMsg('', '服务请求失败', '关闭', 'error', true);
+                });
+            } else {
+                _that.aeaLinkmanInfoList = {};
+            }
+        },
+        // 保存联系人信息
+        saveAeaLinkmanInfo: function (linkmanType) {
+            var _that = this;
+            _that.addEditManform.linkmanType = linkmanType
+            _that.$refs['addEditManform'].validate(function (valid) {
+                if (valid) {
+                    _that.loading = true;
+                    var url, msg;
+                    if (_that.addEditManModalFlag == 'edit') {
+                        url = 'rest/linkman/edit';
+                        msg = '编辑联系人信息保存成功';
+                    } else {
+                        url = 'rest/linkman/save'
+                        msg = '新增联系人信息保存成功';
+                    }
+                    request('', {
+                        url: ctx + url,
+                        type: 'post',
+                        data: _that.addEditManform
+                    }, function (result) {
+                        if (result.success) {
+                            _that.$message({
+                                message: '保存成功',
+                                type: 'success'
+                            });
+                            _that.addEditManPerform.linkmanName = _that.addEditManform.linkmanName;
+                            _that.addEditManPerform.linkmanId = result.content;
+                            _that.addEditManPerform.linkmanMail = _that.addEditManform.linkmanMail;
+                            _that.addEditManPerform.linkmanCertNo = _that.addEditManform.linkmanCertNo;
+                            _that.addEditManPerform.linkmanMobilePhone = _that.addEditManform.linkmanMobilePhone;
+                            _that.addEditManModalShow = false;
+                            _that.loading = false;
+
+                            _that.getLinkManData();
+                        }
+                    }, function (msg) {
+                        _that.$message({
+                            message: msg.message ? msg.message : '保存失败！',
+                            type: 'error'
+                        });
+                        _that.loading = false;
+                    });
+                } else {
+                    _that.$message({
+                        message: '请输入完整的联系人信息！',
+                        type: 'error'
+                    });
+                    return false;
+                }
+            });
+        },
+        // 获取页面的URL参数
+        QueryString: function (val) {
+            var svalue = location.search.match(new RegExp("[\?\&]" + val + "=([^\&]*)(\&?)", "i"));
+            return svalue ? svalue[1] : svalue;
+        },
+        // 查询联系人列表数据
+        getLinkManData: function () {
+            var ts = this;
+            ts.loading = true;
+            request('', {
+                url: ctx + 'rest/linkman/list/' + this.unitInfoId,
+                type: 'get',
+            }, function (res) {
+                ts.loading = false;
+                if (res.success) {
+                    ts.tableData = res.content;
+                } else {
+                    return ts.apiMessage(res.message, 'error')
+                }
+            }, function () {
+                ts.loading = false;
+                return ts.apiMessage('网络错误！', 'error')
+            });
+        },
         targetCollapse: function (target, ind) { // 纵向导航点击事件
             this.activeTab = ind;
             $(document).scrollTop($('#' + target).offset().top)
@@ -200,11 +408,6 @@ var vm = new Vue({
             this.isEditApplicantFlag = 0;
             // 新增时重置掉manForm数据
             this.manForm = JSON.parse(JSON.stringify(MANFORM));
-        },
-        // 编辑单位
-        editApplicant: function (row) {
-            this.isEditApplicantFlag = 1;
-            this.fetchRowDetail(row.unitInfoId);
         },
         // 编辑单位时，获取单位的详情
         fetchRowDetail: function (id) {
@@ -353,8 +556,8 @@ var vm = new Vue({
                         _saveForm.append(k, ts.manForm[k]);
                     }
                     // 如果是编辑单位-带上单位的id
-                    if (ts.isEditApplicantFlag == 1) {
-                        _saveForm.append('unitInfoId', ts.curEditRow.unitInfoId);
+                    if (ts.isEdit) {
+                        _saveForm.append('unitInfoId', ts.unitInfoId);
                     }
                     // 如果选择了本地的文件上传
                     if (ts.enclosureFileListArr.length) {
