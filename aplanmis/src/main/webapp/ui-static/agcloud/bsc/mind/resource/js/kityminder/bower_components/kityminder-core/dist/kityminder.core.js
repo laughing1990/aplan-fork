@@ -3856,6 +3856,7 @@ _p[35] = {
         _p.r(81);
         _p.r(82);
         _p.r(83);
+        _p.r(84);
         module.exports = kityminder;
     }
 };
@@ -9774,12 +9775,12 @@ _p[79] = {
             var Module = _p.r(20);
             var Renderer = _p.r(27);
 
-            Module.register('LinkProcessStartModule', function() {
+            Module.register('IsInformCommitModule', function() {
                 var minder = this;
 
                 // Designed by Akikonata
                 // [MASK, BACK]
-                var LINKPROCESSSTART_COLORS = [null, ['#FF1200', '#840023'], // 1 - red
+                var ISINFORMCOMMIT_COLORS = [null, ['#FF1200', '#840023'], // 1 - red
                     ['#0074FF', '#01467F'], // 2 - blue
                     ['#00AF00', '#006300'], // 3 - green
                     ['#FF962E', '#B25000'], // 4 - orange
@@ -9794,17 +9795,17 @@ _p[79] = {
                 var BACK_PATH = 'M0,13c0,3.866,3.134,7,7,7h6c3.866,0,7-3.134,7-7V7H0V13z';
                 var MASK_PATH = 'M20,10c0,3.866-3.134,7-7,7H7c-3.866,0-7-3.134-7-7V7c0-3.866,3.134-7,7-7h6c3.866,0,7,3.134,7,7V10z';
 
-                var LINKPROCESSSTART_DATA = 'linkProcessStart';
+                var ISINFORMCOMMIT_DATA = 'isInformCommit';
 
                 // 进度图标的图形
-                var LinkProcessStartIcon = kity.createClass('LinkProcessStartIcon', {
+                var IsInformCommitIcon = kity.createClass('IsInformCommitIcon', {
                     base: kity.Group,
 
                     constructor: function() {
                         this.callBase();
                         this.setSize(20);
                         this.create();
-                        this.setId(utils.uuid('node_linkProcessStart'));
+                        this.setId(utils.uuid('node_isInformCommit'));
                     },
 
                     setSize: function(size) {
@@ -9837,7 +9838,7 @@ _p[79] = {
                             mask = this.mask,
                             number = this.number;
 
-                        var color = LINKPROCESSSTART_COLORS[value];
+                        var color = ISINFORMCOMMIT_COLORS[value];
 
                         if (color) {
                             back.fill(color[1]);
@@ -9849,7 +9850,7 @@ _p[79] = {
                 });
 
                 /**
-                 * @command LinkProcessStart
+                 * @command IsInformCommit
                  * @description 设置节点的优先级信息
                  * @param {number} value 要设置的优先级（添加一个优先级小图标）
                  *     取值为 0 移除优先级信息；
@@ -9858,12 +9859,12 @@ _p[79] = {
                  *    0: 当前有选中的节点
                  *   -1: 当前没有选中的节点
                  */
-                var LinkProcessStartCommand = kity.createClass('SetLinkProcessStartCommand', {
+                var IsInformCommitCommand = kity.createClass('SetIsInformCommitCommand', {
                     base: Command,
                     execute: function(km, value) {
                         var nodes = km.getSelectedNodes();
                         for (var i = 0; i < nodes.length; i++) {
-                            nodes[i].setData(LINKPROCESSSTART_DATA, value || null).render();
+                            nodes[i].setData(ISINFORMCOMMIT_DATA, value || null).render();
                         }
                         km.layout();
                     },
@@ -9871,7 +9872,7 @@ _p[79] = {
                         var nodes = km.getSelectedNodes();
                         var val;
                         for (var i = 0; i < nodes.length; i++) {
-                            val = nodes[i].getData(LINKPROCESSSTART_DATA);
+                            val = nodes[i].getData(ISINFORMCOMMIT_DATA);
                             if (val) break;
                         }
                         return val || null;
@@ -9883,28 +9884,28 @@ _p[79] = {
                 });
                 return {
                     'commands': {
-                        'linkProcessStart': LinkProcessStartCommand
+                        'isInformCommit': IsInformCommitCommand
                     },
                     'renderers': {
-                        left: kity.createClass('LinkProcessStartRenderer', {
+                        left: kity.createClass('IsInformCommitRenderer', {
                             base: Renderer,
 
                             create: function(node) {
-                                return new LinkProcessStartIcon();
+                                return new IsInformCommitIcon();
                             },
 
                             shouldRender: function(node) {
-                                return node.getData(LINKPROCESSSTART_DATA);
+                                return node.getData(ISINFORMCOMMIT_DATA);
                             },
 
                             update: function(icon, node, box) {
-                                var data = node.getData(LINKPROCESSSTART_DATA);
+                                var data = node.getData(ISINFORMCOMMIT_DATA);
                                 var spaceLeft = node.getStyle('space-left'),
                                     x, y;
 
                                 icon.setValue(data);
                                 if(data == 1) {
-                                    icon.setValue('流');
+                                    icon.setValue('告');
                                 }
                                 x = box.left - icon.width - spaceLeft;
                                 y = -icon.height / 2;
@@ -9924,7 +9925,9 @@ _p[79] = {
             });
         }
     };
-var moduleMapping = {
+
+
+    var moduleMapping = {
     "expose-kityminder": 34
 };
 

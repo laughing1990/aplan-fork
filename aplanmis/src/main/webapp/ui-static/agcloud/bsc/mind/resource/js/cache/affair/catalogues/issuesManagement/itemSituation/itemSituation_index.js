@@ -56,6 +56,10 @@ function zuanData(node){
     data.linkProcessStart=node.linkProcessStart;
     data.terminateSituation=node.terminateSituation;
     data.situationAnswerNum=node.situationAnswerNum;
+    data.isInformCommit='1';
+    // data.isInformCommit=node.isInformCommit;
+
+
     // if(node.name){
     //     data.hyperlink = 'javaScript:;'
     //     data.hyperlinkTitle = node.name;
