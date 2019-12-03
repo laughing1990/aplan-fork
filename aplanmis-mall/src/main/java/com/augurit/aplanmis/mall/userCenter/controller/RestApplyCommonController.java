@@ -137,6 +137,14 @@ public class RestApplyCommonController {
                 restApplyCommonService.insertAeaApplyinstUnitProj(applyinstId,(List<String>)map.get("unitProjIds"));
             }
             resultMap.put("applyinstId", applyinstId);
+            if(StringUtils.isNotBlank(applyinstId)){//回填sms表的申请实例ID
+                String smsId=(String) resultMap.get("smsId");
+                if(StringUtils.isNotBlank(smsId)) {
+                    AeaHiSmsInfo sms=aeaHiSmsInfoService.getAeaHiSmsInfoById(smsId);
+                    sms.setApplyinstId(applyinstId);
+                    aeaHiSmsInfoService.updateAeaHiSmsInfo(sms);
+                }
+            }
             return new ContentResultForm<>(true, resultMap, "暂存成功!");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
