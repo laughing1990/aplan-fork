@@ -4,15 +4,13 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.AeaUnitConstants;
 import com.augurit.aplanmis.common.domain.*;
-import com.augurit.aplanmis.common.mapper.AeaApplyinstUnitProjMapper;
-import com.augurit.aplanmis.common.mapper.AeaUnitLinkmanMapper;
-import com.augurit.aplanmis.common.mapper.AeaUnitProjLinkmanMapper;
-import com.augurit.aplanmis.common.mapper.AeaUnitProjMapper;
+import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.instance.AeaHiSmsInfoService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.vo.AeaUnitInfoVo;
 import com.augurit.aplanmis.common.vo.LinkmanTypeVo;
+import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyCommonService;
 import com.augurit.aplanmis.mall.userCenter.vo.SmsInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class RestApplyCommonServiceImpl implements RestApplyCommonService {
@@ -41,6 +40,10 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
     private AeaProjInfoService aeaProjInfoService;
     @Autowired
     private RestApplyCommonService restApplyCommonService;
+    @Autowired
+    private AeaProjLinkmanMapper aeaProjLinkmanMapper;
+    @Autowired
+    private AeaApplyinstProjMapper aeaApplyinstProjMapper;
 
 
     @Override
@@ -244,4 +247,49 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
         insertAeaApplyinstUnitProj(applyinstId,unitProjIds);
     }
 
+    @Override
+    public void deleteReInsertAeaApplyinstUnitProjCurrentLogin(String applyinstId, String unitInfoId,String linkmanInfoId , String projInfoId){
+        List<AeaUnitProj> unitProjList = aeaUnitProjMapper.findUnitProjByProjIdAndUnitIdAndunitType(projInfoId, unitInfoId, "1");
+        List<String> unitProjIds=new ArrayList<>();
+        if(unitProjList.size()==0){
+            String unitProjId=UUID.randomUUID().toString();
+            AeaUnitProj entity=new AeaUnitProj();
+            entity.setIsDeleted("0");
+            entity.setUnitInfoId(unitInfoId);
+            entity.setIsOwner("1");
+            entity.setProjInfoId(projInfoId);
+            entity.setCreater(SecurityContext.getCurrentUserName());
+            entity.setCreateTime(new Date());
+            entity.setUnitType("1");
+            entity.setLinkmanInfoId(linkmanInfoId);
+            aeaUnitProjMapper.insertAeaUnitProj(entity);
+            unitProjIds.add(unitProjId);
+        }else{
+            unitProjIds=unitProjList.stream().map(AeaUnitProj::getUnitProjId).collect(Collectors.toList());
+        }
+        deleteReInsertAeaApplyinstUnitProj(applyinstId,unitProjIds);
+    }
+
+    @Override
+    public void deleteReInsertAeaProjLinkmanCurrentLogin(String applyinstId, String userId, String projInfoId){
+        AeaProjLinkman query=new AeaProjLinkman();
+        query.setApplyinstId(applyinstId);
+        query.setProjInfoId(projInfoId);
+        query.setLinkmanInfoId(userId);
+        aeaProjLinkmanMapper.listAeaProjLinkman(query);
+    }
+
+    @Override
+    public void saveOrUpdateAeaApplyinstProj(String applyinstId, String projInfoId) throws Exception {
+        List<AeaApplyinstProj> list = aeaApplyinstProjMapper.getAeaApplyinstProjByApplyinstId(applyinstId);
+        if(list.size()==0||!projInfoId.equals(list.get(0).getProjInfoId())){
+            AeaApplyinstProj entity=new AeaApplyinstProj();
+            entity.setCreateTime(new Date());
+            entity.setCreater(SecurityContext.getCurrentUserName());
+            entity.setProjInfoId(projInfoId);
+            entity.setApplyinstId(applyinstId);
+            entity.setApplyinstProjId(UUID.randomUUID().toString());
+            aeaApplyinstProjMapper.insertAeaApplyinstProj(entity);
+        }
+    }
 }

@@ -60,12 +60,12 @@ var userCenter = (function () {
                             value: 'withdrawApplyList',
                             select: false,
                         }
-                        // ,
-                        // {
-                        //     name: '草稿箱',
-                        //     value: 'drafts',
-                        //     select: false,
-                        // }
+                        ,
+                        {
+                            name: '草稿箱',
+                            value: 'drafts',
+                            select: false,
+                        }
                         ,
                         {
                             name: '材料补全',
