@@ -470,7 +470,7 @@
                     <div class="table-section-title">经办信息</div>
                     <tr>
                       <td class="td-bg-grey" colspan="1">补正发起人</td>
-                        <td colspan="5">{{item.createrName}}</td>
+                      <td colspan="5">{{item.createrName}}</td>
                     </tr>
                     <tr>
                       <td class="td-bg-grey">经办人</td>
@@ -478,7 +478,7 @@
                       <td class="td-bg-grey">经办日期</td>
                       <td>{{formatDateStr(item.opsTime, 'yyyy-MM-dd')}}</td>
                       <td class="td-bg-grey">补正结束人</td>
-                        <td>{{item.correctUserName}}</td>
+                      <td>{{item.correctUserName}}</td>
                     </tr>
                     <tr>
                       <td class="td-bg-grey">补正结束日期</td>
@@ -872,6 +872,24 @@
             </el-col>
           </el-form-item>
         </template>
+      </div>
+      <div class="send-form-part" v-if="isRQDialog">
+        <div class="part-title">容缺时限设置</div>
+        <el-row style="padding:5px 0;">
+          <el-col :span="12">
+            <el-form-item label="容缺时限：">
+              <el-input type="number" placeholder="请填写容缺时限" v-model="sendForm.toleranceTime"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="时限规则：">
+              <el-select style="width:322px" v-model="sendForm.timeruleId" placeholder="请选择容缺时限规则">
+                <el-option v-for="item in rqRulesList" :label="item.timeruleName"
+                           :value="item.timeruleId"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </div>
       <div class="send-form-part">
         <div class="part-title">办理结果及意见</div>
@@ -2046,6 +2064,30 @@
       <el-button size="medium" type="primary" class="btn btn-primary" @click="clickDownloadLicense">下载</el-button>
       <el-button size="medium" type="primary" class="btn btn-primary" @click="clickPrintLicense">打印</el-button>
       <el-button size="medium" class="btn btn-secondary" @click="licenceDialogVisible=false">关闭</el-button>
+    </div>
+  </el-dialog>
+  <!-- 容缺实现配置弹窗 -->
+  <el-dialog title="时限配置" top="15vh" @close="closeRQtimeDialog"
+             width="700px" :visible.sync="RQtimeVisible" v-loading="RQtimeLoading">
+    <div class="bz-dialog-wrap">
+      <div class="bz-dialog-box" style="padding:15px 15px 15px 0px;">
+        <el-form label-width="110px" :model="rqTimeForm"
+                 :rules="rqTimeformRules" ref="rqTimeFormRef" size="medium">
+          <el-form-item label="时限：" prop="toleranceTime">
+            <el-input type="number" placeholder="请填写时限" v-model="rqTimeForm.toleranceTime"></el-input>
+          </el-form-item>
+          <el-form-item label="时限规则：" placeholder="请选择时限规则" prop="timeruleId">
+            <el-select v-model="rqTimeForm.timeruleId">
+              <el-option v-for="item in rqRulesList" :label="item.timeruleName"
+                         :value="item.timeruleId"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+      </div>
+    </div>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="RQtimeVisible=false" size="medium">取 消</el-button>
+      <el-button type="primary" size="medium">确 认</el-button>
     </div>
   </el-dialog>
   <!--查看情形弹窗  -->

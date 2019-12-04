@@ -670,4 +670,14 @@
             #{id}
         </foreach>
     </select>
+    <!--查询单位下绑定的中介超市业务联系人-->
+    <select id="findAgentBindAccountLinkman" resultType="com.augurit.aplanmis.common.domain.AeaLinkmanInfo">
+        select
+        <include refid="alias_allColumns">
+            <property name="alias" value="ali"/>
+        </include>
+        from aea_linkman_info ali
+        left join aea_unit_linkman aul on aul.LINKMAN_INFO_ID=ali.LINKMAN_INFO_ID
+        where aul.IS_BIND_ACCOUNT='1' and aul.UNIT_INFO_ID=#{unitInfoId}
+    </select>
 </mapper>

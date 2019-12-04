@@ -7,59 +7,11 @@ import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
-import com.augurit.aplanmis.common.constants.AeaUnitConstants;
-import com.augurit.aplanmis.common.constants.ApplyState;
-import com.augurit.aplanmis.common.constants.AuditFlagStatus;
-import com.augurit.aplanmis.common.constants.DeletedStatus;
-import com.augurit.aplanmis.common.constants.ItemStatus;
-import com.augurit.aplanmis.common.domain.AeaApplyinstProj;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaHiIteminst;
-import com.augurit.aplanmis.common.domain.AeaHiSeriesinst;
-import com.augurit.aplanmis.common.domain.AeaImAvoidUnit;
-import com.augurit.aplanmis.common.domain.AeaImBiddingPrice;
-import com.augurit.aplanmis.common.domain.AeaImContract;
-import com.augurit.aplanmis.common.domain.AeaImMajorQual;
-import com.augurit.aplanmis.common.domain.AeaImProjPurchase;
-import com.augurit.aplanmis.common.domain.AeaImPurchaseinst;
-import com.augurit.aplanmis.common.domain.AeaImServiceResult;
-import com.augurit.aplanmis.common.domain.AeaImUnitBidding;
-import com.augurit.aplanmis.common.domain.AeaImUnitRequire;
-import com.augurit.aplanmis.common.domain.AeaImUnitService;
-import com.augurit.aplanmis.common.domain.AeaItemBasic;
-import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
-import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
-import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
-import com.augurit.aplanmis.common.domain.AeaParentProj;
-import com.augurit.aplanmis.common.domain.AeaProjLinkman;
-import com.augurit.aplanmis.common.domain.AeaUnitInfo;
-import com.augurit.aplanmis.common.domain.AeaUnitProj;
-import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiItemMatinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaImAvoidUnitMapper;
-import com.augurit.aplanmis.common.mapper.AeaImBiddingPriceMapper;
-import com.augurit.aplanmis.common.mapper.AeaImContractMapper;
-import com.augurit.aplanmis.common.mapper.AeaImMajorQualMapper;
-import com.augurit.aplanmis.common.mapper.AeaImProjPurchaseMapper;
-import com.augurit.aplanmis.common.mapper.AeaImPurchaseinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaImServiceResultMapper;
-import com.augurit.aplanmis.common.mapper.AeaImUnitBiddingMapper;
-import com.augurit.aplanmis.common.mapper.AeaImUnitRequireMapper;
-import com.augurit.aplanmis.common.mapper.AeaImUnitServiceMapper;
-import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
-import com.augurit.aplanmis.common.mapper.AeaItemInoutMapper;
-import com.augurit.aplanmis.common.mapper.AeaLinkmanInfoMapper;
-import com.augurit.aplanmis.common.mapper.AeaParentProjMapper;
-import com.augurit.aplanmis.common.mapper.AeaProjLinkmanMapper;
-import com.augurit.aplanmis.common.mapper.AeaUnitInfoMapper;
-import com.augurit.aplanmis.common.mapper.AeaUnitProjMapper;
+import com.augurit.aplanmis.common.constants.*;
+import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
-import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiSeriesinstService;
-import com.augurit.aplanmis.common.service.instance.AeaLogApplyStateHistService;
+import com.augurit.aplanmis.common.service.instance.*;
 import com.augurit.aplanmis.common.service.item.AeaLogItemStateHistService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.process.AeaBpmProcessService;
@@ -77,12 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Author: lucas Chan
@@ -491,7 +438,7 @@ public class RestImApplyService {
         contract.setAuditTime(new Date());
         contract.setModifyTime(new Date());
         contract.setAuditOpinion(auditOpinion);
-        if ("1".equals(confirmFlag)) {
+        if (StringUtils.isBlank(confirmFlag) || "1".equals(confirmFlag)) {
             contract.setAuditFlag("1");
             contract.setIsConfirm("1");
         } else {//合同无效

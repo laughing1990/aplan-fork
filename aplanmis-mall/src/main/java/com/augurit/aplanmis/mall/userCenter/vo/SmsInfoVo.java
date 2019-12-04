@@ -107,6 +107,7 @@ public class SmsInfoVo extends AeaProjInfo {
         aeaHiSmsInfo.setAddresseeCity(this.addresseeCity);
         aeaHiSmsInfo.setAddresseeCounty(this.addresseeCounty);
         aeaHiSmsInfo.setAddresseeAddr(this.addresseeAddr);
+        aeaHiSmsInfo.setAddresseeIdcard(this.addresseeIdcard);
         return aeaHiSmsInfo;
     }
 }

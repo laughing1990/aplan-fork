@@ -591,9 +591,9 @@
                     url: _sureUrl,
                     type: 'post',
                     data: {
-                        confirmFlag: ts.contractDetailObj.confirmFlag,
+                        confirmFlag: '1',//ts.contractDetailObj.confirmFlag,
                         auditOpinion: ts.contractDetailObj.auditOpinion,
-                        postponeServiceEndTime: ts.contractDetailObj.postponeServiceEndTime
+                        // postponeServiceEndTime: ts.contractDetailObj.postponeServiceEndTime
                     }
                 }, function (res) {
                     ts.mloading = false;

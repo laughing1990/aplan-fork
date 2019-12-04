@@ -87,62 +87,62 @@ var module1 = new Vue({
 			avoidData: [],
 			rules: {
 				agentItemName: [
-					{ required: true, message: '请选择中介服务事项', trigger: 'change' }
+					{required: true, message: '请选择中介服务事项', trigger: 'change'}
 				],
 				isApproveProj: [
-					{ required: true, message: '请选择投资审批项目', trigger: 'change' }
+					{required: true, message: '请选择投资审批项目', trigger: 'change'}
 				],
 				approvalCode: [
-					{ required: true, message: '投资审批项目编码', trigger: 'change' }
+					{required: true, message: '投资审批项目编码', trigger: 'change'}
 				],
 				contact: [
-					{ required: true, message: '请输入项目联系人', trigger: 'change' }
+					{required: true, message: '请输入项目联系人', trigger: 'change'}
 				],
 				basicLinkPhone: [
-					{ required: true, validator: checkPhone, trigger: 'change' }
+					{required: true, validator: checkPhone, trigger: 'change'}
 				],
 				mobile: [
 					//  { required: true, message: '请输入联系电话', trigger: 'blur' },
-					{ required: true, validator: checkPhone, trigger: 'change' }
+					{required: true, validator: checkPhone, trigger: 'change'}
 				],
 				projName: [
-					{ required: true, message: '请输入采购项目名称', trigger: 'change' }
+					{required: true, message: '请输入采购项目名称', trigger: 'change'}
 				],
 				projScale: [
-					{ required: true, message: '请输入项目规模', trigger: 'change' }
+					{required: true, message: '请输入项目规模', trigger: 'change'}
 				],
 				projScaleContent: [
-					{ required: true, message: '请输入项目规模描述', trigger: 'change' }
+					{required: true, message: '请输入项目规模描述', trigger: 'change'}
 				],
 				chooseInsertype: [
-					{ type: 'array', required: true, message: '请至少选择一个资金来源', trigger: 'change' }
+					{type: 'array', required: true, message: '请至少选择一个资金来源', trigger: 'change'}
 				],
 				financialFundProportion: [
-					{ required: true, message: '请至少填写资金来源比例', trigger: 'change' }
+					{required: true, message: '请至少填写资金来源比例', trigger: 'change'}
 				],
 				socialFundProportion: [
-					{ required: true, message: '请填写资金来源比例', trigger: 'change' }
+					{required: true, message: '请填写资金来源比例', trigger: 'change'}
 				],
 				registerTotal: [
-					{ required: true, message: '请输入执业/职业人员总数', trigger: 'change' }
+					{required: true, message: '请输入执业/职业人员总数', trigger: 'change'}
 				],
 				registerRequire: [
-					{ required: true, message: '请输入执业/职业人员要求', trigger: 'change' }
+					{required: true, message: '请输入执业/职业人员要求', trigger: 'change'}
 				],
 				serviceName: [
-					{ required: true, message: '请选择所需服务', trigger: 'change' }
+					{required: true, message: '请选择所需服务', trigger: 'change'}
 				],
 				timeLimitExplain: [
-					{ required: true, message: '请填写服务时限说明', trigger: 'change' }
+					{required: true, message: '请填写服务时限说明', trigger: 'change'}
 				],
 				serviceContent: [
-					{ required: true, message: '请填写服务内容', trigger: 'change' }
+					{required: true, message: '请填写服务内容', trigger: 'change'}
 				],
 				amountExplain: [
-					{ required: true, message: '请填写金额说明', trigger: 'change' }
+					{required: true, message: '请填写金额说明', trigger: 'change'}
 				],
 				recordRequireExplain: [
-					{ required: true, message: '请填写备案要求说明', trigger: 'change' }
+					{required: true, message: '请填写备案要求说明', trigger: 'change'}
 				],
 				// qualRequireType:[
 				//     { required: true, message: '请选择资质要求', trigger: 'change' }
@@ -151,46 +151,46 @@ var module1 = new Vue({
 				//     { required: true, message: '请填写资质要求说明', trigger: 'change' }
 				// ],
 				isDefineAmount: [
-					{ required: true, message: '请选择是否确认金额', trigger: 'change' }
+					{required: true, message: '请选择是否确认金额', trigger: 'change'}
 				],
 				isDiscloseIm: [
-					{ required: true, message: '请选择中选机构公示', trigger: 'change' }
+					{required: true, message: '请选择中选机构公示', trigger: 'change'}
 				],
 				isDiscloseBidding: [
-					{ required: true, message: '请选择中选公告公示', trigger: 'change' }
+					{required: true, message: '请选择中选公告公示', trigger: 'change'}
 				],
 				isLiveWitness: [
-					{ required: true, message: '请选择见证现场竞价选 取、摇珠', trigger: 'change' }
+					{required: true, message: '请选择见证现场竞价选 取、摇珠', trigger: 'change'}
 				],
 				expirationDate: [
-					{ required: true, message: '请选择截止时间', trigger: 'change' }
+					{required: true, message: '请选择截止时间', trigger: 'change'}
 				],
 				choiceImunitTime: [
-					{ required: true, message: '请选择选取中介时间', trigger: 'change' }
+					{required: true, message: '请选择选取中介时间', trigger: 'change'}
 				],
 				basePrice: [
-					{ required: true, message: '请填写服务金额', trigger: 'change' }
+					{required: true, message: '请填写服务金额', trigger: 'change'}
 				],
 				isAvoid: [
-					{ required: true, message: '请选择是否有回避情况', trigger: 'change' }
+					{required: true, message: '请选择是否有回避情况', trigger: 'change'}
 				],
 				highestPrice: [
-					{ required: true, message: '请填写服务最高金额', trigger: 'change' }
+					{required: true, message: '请填写服务最高金额', trigger: 'change'}
 				],
 				unitInfoId: [
-					{ required: true, message: '请选择指定的中介机构', trigger: 'change' }
+					{required: true, message: '请选择指定的中介机构', trigger: 'change'}
 				],
 				witnessName1: [
-					{ required: true, message: '请填写见证人姓名', trigger: 'change' }
+					{required: true, message: '请填写见证人姓名', trigger: 'change'}
 				],
 				witnessPhone1: [
-					{ required: true, message: '请填写见证人联系电话', trigger: 'change' }
+					{required: true, message: '请填写见证人联系电话', trigger: 'change'}
 				],
 				ownerComplaintPhone: [
-					{ required: true, message: '请填写投诉质疑电话', trigger: 'change' }
+					{required: true, message: '请填写投诉质疑电话', trigger: 'change'}
 				],
 				biddingType: [
-					{ required: true, message: '请选取中介服务机构方式', trigger: 'change' }
+					{required: true, message: '请选取中介服务机构方式', trigger: 'change'}
 				],
 			},
 			agentUnit: [],
@@ -223,7 +223,8 @@ var module1 = new Vue({
 				biddingType: '1',
 				basePrice: '',
 				isDiscloseIm: '1',
-				isDiscloseBidding: '1'
+				isDiscloseBidding: '1',
+				basicLinkPhone: ''
 			},
 			isFinancialFund: true,
 			isSocialFund: true,
@@ -268,10 +269,10 @@ var module1 = new Vue({
 			matinstIds: [], // 材料实例Ids
 			model: {
 				rules: {
-					getPaper: { required: true, message: "必选", trigger: ["change"] },
-					getCopy: { required: true, message: "必选", trigger: ["change"] },
-					realPaperCount: { validator: checkMissValue, required: true, message: "必填字段", trigger: ['change'] },
-					realCopyCount: { validator: checkMissValue, required: true, message: "必填字段", trigger: ['change'] },
+					getPaper: {required: true, message: "必选", trigger: ["change"]},
+					getCopy: {required: true, message: "必选", trigger: ["change"]},
+					realPaperCount: {validator: checkMissValue, required: true, message: "必填字段", trigger: ['change']},
+					realCopyCount: {validator: checkMissValue, required: true, message: "必填字段", trigger: ['change']},
 				},
 				matsTableData: []
 			},
@@ -293,7 +294,7 @@ var module1 = new Vue({
 	},
 	methods: {
 		// 清空表单填写过的数据,并初始化配置数据
-		resetForm: function() {			
+		resetForm: function () {
 			this.form = new Object();
 			this.form.isDiscloseIm = '1';
 			this.form.isDiscloseBidding = '1';
@@ -330,7 +331,7 @@ var module1 = new Vue({
 					vm.$set(vm.form, 'mobile', vm.aeaLinkmanInfo.linkmanMobilePhone) //设置项目联系人电话
 				}
 			}, function (msg) {
-				vm.$message({ message: '加载失败', type: 'error' });
+				vm.$message({message: '加载失败', type: 'error'});
 			});
 		},
 
@@ -350,7 +351,7 @@ var module1 = new Vue({
 						if (item.data.length > 0) {
 							var qualLevelId = vm.qualArry[item.level1].aeaImQualLevels[item.leve2.toString().split('-')[1]].qualLevelId
 							for (var i = 0; i < item.data.length; i++) {
-								aeaImMajorQuals.push({ qualLevelId: qualLevelId, majorId: item.data[i][i] });
+								aeaImMajorQuals.push({qualLevelId: qualLevelId, majorId: item.data[i][i]});
 							}
 						}
 					})
@@ -616,19 +617,19 @@ var module1 = new Vue({
 						success: function (res) {  //请求成功后的回调函数
 							vm.mloading = false;
 							if (res.success) {
-								vm.$message({ message: '保存成功', type: 'success' });
+								vm.$message({message: '保存成功', type: 'success'});
 								vm.projPurchaseId = res.content // 拿到项目需要提交的id
 
 								// 显示列表页，刷新列表数据
 								vm.addNeedStatus = 0;
 								vm.getUnpublishedProjInfoList();
 							} else {
-								vm.$message({ message: res.message, type: 'error' });
+								vm.$message({message: res.message, type: 'error'});
 							}
 						},
 						error: function () {
 							vm.mloading = false;
-							vm.$message({ message: '保存失败', type: 'error' });
+							vm.$message({message: '保存失败', type: 'error'});
 						}
 					});
 				}
@@ -648,14 +649,14 @@ var module1 = new Vue({
 			}, function (res) {
 				vm.mloading = false;
 				if (res.success) {
-					vm.$message({ message: '提交成功', type: 'success' });
+					vm.$message({message: '提交成功', type: 'success'});
 					vm.addNeedStatus = 0
 				} else {
-					vm.$message({ message: res.message, type: 'error' });
+					vm.$message({message: res.message, type: 'error'});
 				}
 			}, function (msg) {
 				vm.mloading = false;
-				vm.$message({ message: '加载失败', type: 'error' });
+				vm.$message({message: '加载失败', type: 'error'});
 			});
 		},
 		init: function () {
@@ -689,7 +690,7 @@ var module1 = new Vue({
 				}
 			}, function (msg) {
 				vm.loading = false;
-				vm.$message({ message: '加载失败', type: 'error' });
+				vm.$message({message: '加载失败', type: 'error'});
 			});
 		},
 		/**
@@ -713,14 +714,17 @@ var module1 = new Vue({
 					vm.aeaUnitInfo = content.aeaUnitInfo;
 
 					vm.ProjName = content.aeaProjInfo.projName;
-					if (!!content.aeaLinkmanInfo) vm.$set(vm.form, 'contact', content.aeaLinkmanInfo.linkmanName + '[' + content.aeaLinkmanInfo.linkmanCertNo + ']')
+					if (!!content.aeaLinkmanInfo) {
+						vm.$set(vm.form, 'contact', content.aeaLinkmanInfo.linkmanName + '[' + content.aeaLinkmanInfo.linkmanCertNo + ']');
+						vm.$set(vm.form, 'basicLinkPhone', content.aeaLinkmanInfo.linkmanMobilePhone);
+						vm.$set(vm.form, 'ownerComplaintPhone', content.aeaLinkmanInfo.linkmanMobilePhone)
+					}
 					//   vm.$set(vm.form,'mobile',content.aeaLinkmanInfo.linkmanMobilePhone)
 					if (!!content.aeaLinkmanInfo) vm.basicLinkPhone = content.aeaLinkmanInfo.linkmanMobilePhone; //基本信息联系电话信息
 					//   debugger
-					vm.$set(vm.form, 'ownerComplaintPhone', content.ownerComplaintPhone)
+					vm.$set(vm.form, 'ownerComplaintPhone', content.ownerComplaintPhone);
 					vm.form.localCode = content.aeaProjInfo.localCode;
-					// vm.$set(vm.form,'ownerComplaintPhone',vm.aeaUnitInfo.mobile)
-					vm.$set(vm.form, 'approvalCode', content.aeaProjInfo.localCode) // 投资审批项目编码
+					vm.$set(vm.form, 'approvalCode', content.aeaProjInfo.localCode);// 投资审批项目编码
 
 
 					if (vm.aeaProjInfo.isFinancialFund == '1') {
@@ -734,7 +738,7 @@ var module1 = new Vue({
 					vm.$message.error(res.message);
 				}
 			}, function (msg) {
-				vm.$message({ message: '加载失败', type: 'error' });
+				vm.$message({message: '加载失败', type: 'error'});
 			});
 		},
 		getProUnitLinkInfoWithoutId: function () {
@@ -763,7 +767,7 @@ var module1 = new Vue({
 					vm.$message.error(res.message);
 				}
 			}, function (msg) {
-				vm.$message({ message: '加载失败', type: 'error' });
+				vm.$message({message: '加载失败', type: 'error'});
 			});
 		},
 		/**
@@ -786,7 +790,7 @@ var module1 = new Vue({
 					vm.serviceItemList = content.rows
 				}
 			}, function (msg) {
-				vm.$message({ message: '加载失败', type: 'error' });
+				vm.$message({message: '加载失败', type: 'error'});
 			});
 		},
 		serviceItemListChange: function () {
@@ -847,7 +851,7 @@ var module1 = new Vue({
 			vm.form.serviceItemId = item.serviceItemId;
 			for (var i = 0; i < vm.qualArry.length; i++) {
 				for (var j = 0; j < vm.qualArry[i].aeaImQualLevels.length; j++) {
-					vm.selectdRecord.push({ level1: i, leve2: i + "-" + j, data: [] })
+					vm.selectdRecord.push({level1: i, leve2: i + "-" + j, data: []})
 				}
 			}
 			console.log(vm.selectdRecord)
@@ -941,7 +945,7 @@ var module1 = new Vue({
 					vm.needServiceList = content;
 				}
 			}, function (msg) {
-				vm.$message({ message: '加载失败', type: 'error' });
+				vm.$message({message: '加载失败', type: 'error'});
 			});
 		},
 		/**
@@ -971,7 +975,7 @@ var module1 = new Vue({
 				serviceId: vm.form.serviceId, // 服务ID
 			})
 			if (vm.majorQualRequiresArry.lenght !== 0) {
-				vm.qualsArry.push({ qualId: vm.qualId, majorQualRequires: vm.majorQualRequiresArry })
+				vm.qualsArry.push({qualId: vm.qualId, majorQualRequires: vm.majorQualRequiresArry})
 				params.quals = vm.qualsArry
 			}
 			console.log("请求的参数", params);
@@ -988,7 +992,7 @@ var module1 = new Vue({
 					vm.chooseAgentTabledialogTable = false;
 				}
 			}, function (msg) {
-				vm.$message({ message: '加载失败', type: 'error' });
+				vm.$message({message: '加载失败', type: 'error'});
 			});
 		},
 		/**
@@ -1135,14 +1139,14 @@ var module1 = new Vue({
 					if (res.success) {
 						vm.recordId1 = res.content.recordId;
 						vm.formData1 = res.content.attForms;
-						vm.$message({ message: '上传成功', type: 'success' });
+						vm.$message({message: '上传成功', type: 'success'});
 					} else {
-						vm.$message({ message: res.message, type: 'error' });
+						vm.$message({message: res.message, type: 'error'});
 					}
 				},
 				error: function () {
 					vm.mloading = false;
-					vm.$message({ message: '上传失败', type: 'error' });
+					vm.$message({message: '上传失败', type: 'error'});
 				}
 			});
 		},
@@ -1187,18 +1191,17 @@ var module1 = new Vue({
 					if (res.success) {
 						vm.recordId2 = res.content.recordId;
 						vm.formData2 = res.content.attForms;
-						vm.$message({ message: '上传成功', type: 'success' });
+						vm.$message({message: '上传成功', type: 'success'});
 					} else {
-						vm.$message({ message: res.message, type: 'error' });
+						vm.$message({message: res.message, type: 'error'});
 					}
 				},
 				error: function () {
 					vm.mloading = false;
-					vm.$message({ message: '上传失败', type: 'error' });
+					vm.$message({message: '上传失败', type: 'error'});
 				}
 			});
 		},
-
 
 
 		handleRemove2: function (file, fileList) {
@@ -1413,7 +1416,7 @@ var module1 = new Vue({
 				request('', {
 					url: ctx + 'supermarket/purchase/info',
 					type: 'get',
-					data: { "keyword": queryString },
+					data: {"keyword": queryString},
 				}, function (result) {
 					if (result.content) {
 						_that.projInfoList = result.content;
@@ -1588,7 +1591,7 @@ var module1 = new Vue({
 			request('', {
 				url: ctx + 'supermarket/purchase/mat/att/list',
 				type: 'get',
-				data: { matinstId: matinstId }
+				data: {matinstId: matinstId}
 			}, function (res) {
 				if (res.success) {
 					// if(res.content){
@@ -1625,7 +1628,7 @@ var module1 = new Vue({
 			request('', {
 				url: ctx + 'supermarket/purchase/mat/att/batch/delete',
 				type: 'get',
-				data: { matinstId: matData.matinstId, detailIds: data.fileId }
+				data: {matinstId: matData.matinstId, detailIds: data.fileId}
 			}, function (res) {
 				if (res.success) {
 					_that.getFileListWin(matData.matinstId, matData);
@@ -1665,11 +1668,11 @@ var module1 = new Vue({
 					_that.showMatFilesDialogShow = true;
 					$.each(result, function (i, file) {
 						trHtml += '<div class="td-cust clearfix" data-type="file" data-key="' + file.detailId + '"  data-format="' + file.attFormat + '">\n' +
-							'                    <div class="file-image fl"><img src="' + _that.getFileIcon(file.attName) + '" /></div>\n' +
-							'                    <div class="file-name fl">\n' +
-							'                        <a href="' + _that.kpFileOpenEvent(file.detailId) + '" target="_blank" title="' + file.attName + '">' + _that.cutString(file.attName, 50) + '</a>\n' +
-							'                    </div>\n' +
-							'                </div>';
+								'                    <div class="file-image fl"><img src="' + _that.getFileIcon(file.attName) + '" /></div>\n' +
+								'                    <div class="file-name fl">\n' +
+								'                        <a href="' + _that.kpFileOpenEvent(file.detailId) + '" target="_blank" title="' + file.attName + '">' + _that.cutString(file.attName, 50) + '</a>\n' +
+								'                    </div>\n' +
+								'                </div>';
 					});
 					_that.dialogHtml = trHtml;
 				} else if (result.length == 1) {
@@ -1723,7 +1726,7 @@ var module1 = new Vue({
 			_that.showUploadWindowFlag = true;
 			_that.selMatRowData = data;
 			_that.selMatinstId = data.matinstId ? data.matinstId : '',
-				_that.showUploadWindowTitle = '材料附件 - ' + data.matName
+					_that.showUploadWindowTitle = '材料附件 - ' + data.matName
 			_that.getFileListWin(data.matinstId, data);
 		},
 		// 获取并行情形列表id
@@ -1876,7 +1879,7 @@ var module1 = new Vue({
 			request('', {
 				url: url,
 				type: 'get',
-				data: { matinstId: _that.selMatinstId, detailIds: detailIds }
+				data: {matinstId: _that.selMatinstId, detailIds: detailIds}
 			}, function (res) {
 				if (res.success) {
 					_that.getFileListWin(res.content, _that.selMatRowData);
@@ -1950,7 +1953,8 @@ var module1 = new Vue({
 						}
 						if (matinstIdsObj.indexOf(item.matinstId) < 0 && item.matinstId != '') {
 							matinstIdsObj.push(item.matinstId);
-						};
+						}
+						;
 					}
 				});
 				_that.matinstIds = matinstIdsObj.join(',');
