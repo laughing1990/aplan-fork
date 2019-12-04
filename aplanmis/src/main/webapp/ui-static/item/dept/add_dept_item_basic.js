@@ -408,6 +408,14 @@ function editItemBasicById(itemBasicId, itemVerStatus, isCatalog) {
                         $("#add_item_under_dept input[name='sendResultMode1'][value='"+ arr[i] +"']").prop("checked", true);
                     }
                 }
+
+                if (data.xkdx){
+                    var arr = data.xkdx.split(",");
+                    for(var i in arr){
+                        $("#add_item_under_dept input[name='xkdx1'][value='"+ arr[i] +"']").prop("checked", true);
+                    }
+                }
+
                 if(data.isCatalog == '1'){
                     data.orgNameIsCatalog = data.orgName;
                 }

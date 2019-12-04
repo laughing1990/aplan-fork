@@ -334,6 +334,20 @@
                             </div>
                         </div>
 
+                        <div class="form-group m-form__group row" >
+                            <label class="col-lg-2 col-form-label" style="text-align: right;">服务对象:</label>
+                            <div class="col-lg-10">
+                                <input type="hidden" name="xkdx" value=""/>
+                                <div class="m-checkbox-inline">
+                                    <c:forEach items="${itemFwjgxzs}" var="xkdx">
+                                        <label class="m-checkbox">
+                                            <input type="checkbox" name="xkdx1" value="${xkdx.itemCode}" onclick="checkboxOnclick('xkdx1','xkdx',true)">${xkdx.itemName}<span></span>
+                                        </label>
+                                    </c:forEach>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-group m-form__group row">
                             <label class="col-lg-2 col-form-label" style="text-align: right;">文书模版:</label>
                             <div class="col-lg-10">

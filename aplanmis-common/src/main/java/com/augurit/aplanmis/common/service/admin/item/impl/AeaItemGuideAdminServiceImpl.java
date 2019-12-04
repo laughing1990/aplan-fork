@@ -150,6 +150,9 @@ public class AeaItemGuideAdminServiceImpl implements AeaItemGuideAdminService {
         // 受理方式
         List<BscDicCodeItem> slfss = bscDicCodeService.getActiveItemsByTypeCode("ITEM_SLFS", topOrgId);
 
+        // 服务对象
+        List<BscDicCodeItem> fwdxs = bscDicCodeService.getActiveItemsByTypeCode("ITEM_FWJGXZ", topOrgId);
+
         for (AeaItemBasic aeaItemBasic : itemBasicList) {
 
             Boolean isNew = false;
@@ -181,8 +184,13 @@ public class AeaItemGuideAdminServiceImpl implements AeaItemGuideAdminService {
             aeaItemGuide.setProjectType(aeaItemBasic.getItemProperty());
             aeaItemGuide.setProjectTypeTexy(getBscDicCodeItemItemName(aeaItemBasic.getItemProperty(), itemPropertys));
 
+            // 受理方式
             aeaItemGuide.setHandleType(aeaItemBasic.getSlfs());
             aeaItemGuide.setHandleTypeText(getBscDicCodeItemItemName(aeaItemBasic.getSlfs(), slfss));
+
+            // 服务对象
+            aeaItemGuide.setServeType(aeaItemBasic.getXkdx());
+            aeaItemGuide.setServeTypeText(getBscDicCodeItemItemName(aeaItemBasic.getXkdx(), fwdxs));
 
             //承诺时限
             aeaItemGuide.setPromiseDay(aeaItemBasic.getDueNum());
