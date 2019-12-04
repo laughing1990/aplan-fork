@@ -5,6 +5,7 @@ import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
+import com.augurit.aplanmis.common.service.CommonCheckService;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
 import com.augurit.aplanmis.common.service.mat.RestMatCorrectCommonService;
@@ -57,7 +58,7 @@ public class RestFileController {
     @Autowired
     private RestMatCorrectCommonService restMatCorrectCommonService;
     @Autowired
-    private CloudService cloudService;
+    private CommonCheckService commonCheckService;
 
 
     @PostMapping("/uploadFile")
@@ -131,7 +132,7 @@ public class RestFileController {
     public ResultForm getAttFiles(@PathVariable String matinstId,HttpServletRequest request) throws Exception {
         if ("null".equalsIgnoreCase(matinstId) || "undefined".equalsIgnoreCase(matinstId) || StringUtils.isBlank(matinstId))
             return new ContentResultForm<>(true, new ArrayList<>());
-        if (!restFileService.isMatBelong(matinstId,request)) return new ContentResultForm<>(true,new ArrayList<BscAttFileAndDir>());
+        if (!commonCheckService.isMatBelong(matinstId,request)) return new ContentResultForm<>(true,new ArrayList<BscAttFileAndDir>());
         return new ContentResultForm<>(true, restFileService.getAttFiles(matinstId));
     }
 
@@ -147,7 +148,7 @@ public class RestFileController {
             if (StringUtils.isBlank(detailIds)) {
                 return new ResultForm(false, "删除失败：没有可删除文件!");
             }
-            if (!restFileService.isMatBelong(matinstId,request)) return new ResultForm(false,"删除出错");
+            if (!commonCheckService.isMatBelong(matinstId,request)) return new ResultForm(false,"删除出错");
             String[] str = detailIds.split(",");
             return restFileService.delelteAttachment(str, matinstId);
         } catch (Exception e) {
@@ -186,7 +187,7 @@ public class RestFileController {
             detailIds[0] = detailId;
 //            return new ContentResultForm<>(true,restApproveService.downloadAttachment(detailIds,response,request));
 //            attachmentAdminService.downloadFileStrategy(detailId, response);
-            if (!restFileService.isFileBelong(detailId,request))return new ResultForm(false, "下载出错");
+            if (!commonCheckService.isFileBelong(detailId,request))return new ResultForm(false, "下载出错");
             fileUtilsService.downloadAttachment(detailId, response, request, false);
             return new ResultForm(true, "下载成功");
         } catch (Exception e) {
@@ -199,7 +200,7 @@ public class RestFileController {
     @ApiOperation(value = "文件处理--> 预览电子件")
     @ApiImplicitParam(name = "detailId", value = "附件ID", dataType = "string", required = true)
     public ModelAndView preview_old(@PathVariable("detailId") String detailId, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) throws Exception {
-        if (!restFileService.isFileBelong(detailId,request)) throw new Exception("预览出错");
+        if (!commonCheckService.isFileBelong(detailId,request)) throw new Exception("预览出错");
         ModelAndView modelAndView = restFileService.preview(detailId, request, response, redirectAttributes);
         return modelAndView;
     }
@@ -208,7 +209,7 @@ public class RestFileController {
     @ApiOperation(value = "申报页面--> 预览电子件")
     @ApiImplicitParam(name = "detailId", value = "附件ID", dataType = "string", required = true)
     public ModelAndView preview(String detailId, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) throws Exception {
-        if (!restFileService.isFileBelong(detailId,request)) throw new Exception("预览出错");
+        if (!commonCheckService.isFileBelong(detailId,request)) throw new Exception("预览出错");
         ModelAndView modelAndView = fileUtilsService.preview(detailId, request, response, redirectAttributes);
         return modelAndView;
     }
@@ -242,7 +243,7 @@ public class RestFileController {
             Assert.isTrue(StringUtils.isNotBlank(attRealIninstId), "attRealIninstId is null");
             String[] detailIdArr = detailIds.split(",");
             for (String detailId:detailIdArr){
-                if (!restFileService.isFileBelong(detailId,request)){
+                if (!commonCheckService.isFileBelong(detailId,request)){
                     throw new Exception("文件删除出错");
                 }
             }
