@@ -292,9 +292,19 @@ public class RestApproveServiceImpl implements RestApproveService {
             if ("0".equals(applyinst.getApplySubject())) {
                 applyDetailVo.setRole(LoginUserRoleEnum.PERSONAL.getValue());
             } else {
+                AeaUnitInfo aeaUnitInfo;
                 applyDetailVo.setRole(LoginUserRoleEnum.UNIT.getValue());
                 List<AeaUnitInfo> unitInfoList = aeaUnitInfoService.findApplyOwnerUnitProj(applyinstId, projInfoId);//建设单位
-                applyDetailVo.setAeaUnitInfo(unitInfoList.size() > 0 ? unitInfoList.get(0) : new AeaUnitInfo());
+                if (unitInfoList.size()>0){
+                    aeaUnitInfo = unitInfoList.get(0);
+                    String unitInfoId = aeaUnitInfo.getUnitInfoId();
+                    aeaUnitInfo.setAeaLinkmanInfoList(aeaLinkmanInfoService.findAllUnitLinkman(unitInfoId));
+                }else {
+                    List<AeaLinkmanInfo> aeaLinkmanInfoList = new ArrayList<>();
+                    aeaUnitInfo = new AeaUnitInfo();
+                    aeaUnitInfo.setAeaLinkmanInfoList(aeaLinkmanInfoList);
+                }
+                applyDetailVo.setAeaUnitInfo(aeaUnitInfo);
             }
             AeaLinkmanInfo aeaLinkmanInfo = aeaLinkmanInfoService.getAeaLinkmanInfoByLinkmanInfoId(applyinst.getLinkmanInfoId());
             applyDetailVo.setAeaLinkmanInfo(aeaLinkmanInfo == null ? new AeaLinkmanInfo() : aeaLinkmanInfo);
