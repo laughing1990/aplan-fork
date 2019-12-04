@@ -64,13 +64,13 @@
         }
         .circleIcon{
             display: inline-block;
-            width: 36px;
-            height: 36px;
-            border-radius: 18px;
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
             color: white;
-            padding: 8px 4px;
+            padding: 8px 5px;
             font-size: 14px;
-            margin:0px 5px;
+            margin: 0px 5px;
         }
         .blueColor{
             background-color: #52B6FD;
