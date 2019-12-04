@@ -5,6 +5,7 @@ import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.vo.AeaUnitInfoVo;
 import com.augurit.aplanmis.common.vo.LinkmanTypeVo;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
+import com.augurit.aplanmis.mall.userCenter.vo.ItemListTemporaryParamVo;
 import com.augurit.aplanmis.mall.userCenter.vo.SmsInfoVo;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -46,4 +47,8 @@ public interface RestApplyCommonService {
     void deleteReInsertAeaProjLinkmanCurrentLogin(String applyinstId, String userId, String projInfoId);
 
     void saveOrUpdateAeaApplyinstProj(String applyinstId, String projInfoId) throws Exception;
+
+    Map<String,Object>  submitItemList(ItemListTemporaryParamVo itemListTemporaryParamVo) throws Exception;
+
+    void insertSeriesIteminst(String seriesApplyinstId ,String itemVerId) throws Exception;
 }

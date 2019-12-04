@@ -306,6 +306,9 @@ public class AeaParStageService {
                 aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyInstId);
                 if("1".equals(aeaHiApplyinst.getIsTemporarySubmit())){
                     aeaHiApplyinst.setIsTemporarySubmit("0");
+                    if (StringUtils.isNotBlank(branchOrgMap)) {//AeaHiApplyinst增加branchOrg字段控制分局承办
+                        aeaHiApplyinst.setBranchOrg(branchOrgMap);
+                    }
                     aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
                 }
             }else {

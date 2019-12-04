@@ -4,6 +4,7 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
@@ -18,10 +19,7 @@ import com.augurit.aplanmis.mall.userCenter.service.RestApplyCommonService;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyMatService;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyService;
 import com.augurit.aplanmis.mall.userCenter.service.RestFileService;
-import com.augurit.aplanmis.mall.userCenter.vo.AutoImportParamVo;
-import com.augurit.aplanmis.mall.userCenter.vo.SmsInfoVo;
-import com.augurit.aplanmis.mall.userCenter.vo.UploadMatReturnVo;
-import com.augurit.aplanmis.mall.userCenter.vo.UserInfoVo;
+import com.augurit.aplanmis.mall.userCenter.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -33,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -138,9 +137,12 @@ public class RestApplyCommonController {
             if(StringUtils.isNotBlank(applyinstId)){//已暂存过，需要删除历史记录，重新插入数据
                 restApplyCommonService.deleteReInsertAeaApplyinstUnitProj(applyinstId,(List<String>)map.get("unitProjIds"));
             }else{//第一次暂存
-                AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst("net", smsInfoVo.getApplySubject(), smsInfoVo.getLinkmanInfoId(), "0", null, ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"1");
+                AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst("net", smsInfoVo.getApplySubject(), smsInfoVo.getLinkmanInfoId(), smsInfoVo.getIsSeriesApprove(), null, ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"1");
                 applyinstId=aeaHiApplyinst==null?"":aeaHiApplyinst.getApplyinstId();
                 restApplyCommonService.insertAeaApplyinstUnitProj(applyinstId,(List<String>)map.get("unitProjIds"));
+                if("1".equals(smsInfoVo.getIsSeriesApprove()) && StringUtils.isNotBlank(smsInfoVo.getItemVerId())){
+                    restApplyCommonService.insertSeriesIteminst(applyinstId,smsInfoVo.getItemVerId());
+                }
             }
             resultMap.put("applyinstId", applyinstId);
             if(StringUtils.isNotBlank(applyinstId)){//回填sms表的申请实例ID
@@ -162,6 +164,29 @@ public class RestApplyCommonController {
             logger.error(e.getMessage(), e);
             return new ContentResultForm(false, "", e.getMessage());
         }
+    }
+
+
+    @PostMapping("/itemList/temporary")
+    @ApiOperation(value = "阶段申报-->暂存阶段，情形及事项(含事项情形)")
+    public ContentResultForm itemListTemporary(@Valid @RequestBody ItemListTemporaryParamVo itemListTemporaryParamVo, @RequestBody SmsInfoVo smsInfoVo,HttpServletRequest request){
+        Map<String,Object> map;
+        ContentResultForm firstStepResult = temporarySaveOrUpdateSmsInfo(smsInfoVo, request);
+        String applyinstId="";
+        if(firstStepResult.isSuccess()){
+            Map<String,Object> firstStepResultContent=(Map<String,Object>)(firstStepResult.getContent());
+            applyinstId=(String)firstStepResultContent.get("applyinstId");
+        }else {
+            return new ContentResultForm(false,"",firstStepResult.getMessage());
+        }
+        try{
+            itemListTemporaryParamVo.setApplyinstId(applyinstId);
+            map=restApplyCommonService.submitItemList(itemListTemporaryParamVo);
+            map.put("applyinstId",applyinstId);
+        }catch (Exception e){
+            return new ContentResultForm(false,"",e.getMessage());
+        }
+        return new ContentResultForm(true,map,"暂存成功！");
     }
 
 

@@ -69,6 +69,10 @@ public class SmsInfoVo extends AeaProjInfo {
     private String linkmanInfoId;
     @ApiModelProperty(value = "申报时传的申报方式参数")
     private String applySubject;
+    @ApiModelProperty(value = "是否单项申报 1是 0否")
+    private String isSeriesApprove;
+    @ApiModelProperty(value = "事项版本ID（isSeriesApprove==1时）")
+    private String itemVerId;
 
 
     public static List<AeaUnitInfo> returnForm(List<AeaUnitInfoVo> unitInfos) {

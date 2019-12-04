@@ -189,4 +189,6 @@ public interface AeaHiIteminstMapper {
     List<AeaHiIteminst> listAeaHiIteminstByProjInfoIdAndItemVerIds(@Param("projInfoId") String projInfoId, @Param("itemVerIds") List<String> itemVerIds, @Param("rootOrgId") String rootOrgId);
 
     List<ApproveProjInfoDto> getDraftApplyList(@Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId, @Param("keyword") String keyword);
+
+    void batchDeleteAeaHiIteminst(@Param("ids") String[] iteminstIds);
 }

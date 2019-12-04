@@ -2626,4 +2626,12 @@
         order by aea_123.startTime desc
     </select>
 
+    <delete id="batchDeleteAeaHiIteminst" parameterType="string">
+        delete from aea_hi_iteminst
+        where iteminst_id IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
 </mapper>

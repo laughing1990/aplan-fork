@@ -1,18 +1,20 @@
 package com.augurit.aplanmis.mall.userCenter.service.impl;
 
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.aplanmis.common.constants.AeaUnitConstants;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
-import com.augurit.aplanmis.common.service.instance.AeaHiSmsInfoService;
+import com.augurit.aplanmis.common.service.instance.*;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.vo.AeaUnitInfoVo;
 import com.augurit.aplanmis.common.vo.LinkmanTypeVo;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyCommonService;
-import com.augurit.aplanmis.mall.userCenter.vo.SmsInfoVo;
+import com.augurit.aplanmis.mall.userCenter.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,7 +46,20 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
     private AeaProjLinkmanMapper aeaProjLinkmanMapper;
     @Autowired
     private AeaApplyinstProjMapper aeaApplyinstProjMapper;
-
+    @Autowired
+    private AeaHiParStageinstService aeaHiParStageinstService;
+    @Autowired
+    private AeaHiIteminstService aeaHiIteminstService;
+    @Autowired
+    private AeaHiParStateinstService aeaHiParStateinstService;
+    @Autowired
+    private AeaParStageMapper aeaParStageMapper;
+    @Autowired
+    private AeaHiItemStateinstService aeaHiItemStateinstService;
+    @Autowired
+    private AeaHiParStateinstMapper aeaHiParStateinstMapper;
+    @Autowired
+    private AeaHiSeriesinstService aeaHiSeriesinstService;
 
     @Override
     public Map<String,Object> saveOrUpdateUnitInfo(String projInfoId, List<AeaUnitInfoVo> aeaUnitInfos) {
@@ -305,6 +320,116 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
             entity.setApplyinstId(applyinstId);
             entity.setApplyinstProjId(UUID.randomUUID().toString());
             aeaApplyinstProjMapper.insertAeaApplyinstProj(entity);
+        }
+    }
+
+    @Override
+    public Map<String,Object>  submitItemList(ItemListTemporaryParamVo itemListTemporaryParamVo) throws Exception {
+        Map<String,Object> map=new HashMap<>();
+        String applyinstId=itemListTemporaryParamVo.getApplyinstId();
+        String stageId=itemListTemporaryParamVo.getStageId();
+        String stageinstId=itemListTemporaryParamVo.getStageinstId();
+        String themeVerId=itemListTemporaryParamVo.getThemeVerId();
+        String[] stateIds=itemListTemporaryParamVo.getStateIds();
+        List<String> itemVerIds=itemListTemporaryParamVo.getItemVerIds();
+        List<ParallelItemStateVo> parallelItemStateVoList=itemListTemporaryParamVo.getParallelItemStateIds();
+        String appinstId=UUID.randomUUID().toString();
+        AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageId);
+        if(StringUtils.isNotBlank(applyinstId) && StringUtils.isNotBlank(stageinstId)){//说明此前已经实例化过阶段，则需判断是否切换了阶段
+            AeaHiParStageinst stageinst = aeaHiParStageinstService.getAeaHiParStageinstById(stageinstId);
+            if(stageinst==null){
+                AeaHiParStageinst newStageinst=aeaHiParStageinstService.createAeaHiParStageinst(applyinstId,stageId,themeVerId,appinstId,null);
+                stageinstId=newStageinst.getStageinstId();
+            }if(!stageId.equals(stageinst.getStageId())){//说明阶段变了
+                aeaHiParStageinstService.deleteAeaHiParStageinstById(stageinstId);
+                AeaHiParStageinst newStageinst=aeaHiParStageinstService.createAeaHiParStageinst(applyinstId,stageId,themeVerId,appinstId,null);
+                stageinstId=newStageinst.getStageinstId();
+            }else{
+                appinstId=stageinst.getAppinstId();
+            }
+            //变更,1.删除该阶段的所有情形，重新实例化 2.删除该阶段下的所有事项，重新实例化  3.删除所有事项的情形重新实例化
+            deleteReInsertParStateinstUnderStageinst(applyinstId,stageinstId, stateIds);
+            deleteReInsertIteminstUnderStageinst(themeVerId,stageinstId,itemVerIds,appinstId);
+            // 多事项直接合并办理 handWay=0 时才处理
+            if (aeaParStage!= null && "0".equals(aeaParStage.getHandWay())) {
+                deleteItemStates(applyinstId);
+                // 简单合并申报的情况下，可能存在事项自己的情形列表
+                saveItemStateBySimpleMerge(parallelItemStateVoList, itemVerIds, applyinstId,stageinstId);
+            }
+        }else{//第一次暂存阶段信息
+            //2、实例化并联实例
+            AeaHiParStageinst aeaHiParStageinst = aeaHiParStageinstService.createAeaHiParStageinst(applyinstId, stageId, themeVerId, appinstId, null);
+            stageinstId=aeaHiParStageinst.getStageinstId();
+            //3、实例化事项----此处已经做了事项实例表中的分局承办字段，
+            aeaHiIteminstService.batchInsertAeaHiIteminstAndTriggerAeaLogItemStateHist(themeVerId,stageinstId,itemVerIds,null,null,appinstId);
+            //4、情形实例
+            aeaHiParStateinstService.batchInsertAeaHiParStateinst(applyinstId, stageinstId, stateIds, SecurityContext.getCurrentUserName());
+            // 多事项直接合并办理 handWay=0 时才处理
+            if (aeaParStage!= null && "0".equals(aeaParStage.getHandWay())) {
+                // 简单合并申报的情况下，可能存在事项自己的情形列表
+                saveItemStateBySimpleMerge(parallelItemStateVoList, itemVerIds, applyinstId,stageinstId);
+            }
+        }
+
+        map.put("stageinstId",stageinstId);
+        return map;
+    }
+
+    private void deleteItemStates(String applyinstId) throws Exception {
+        if(StringUtils .isNotBlank(applyinstId)){
+            aeaHiItemStateinstService.listAeaItemStateByApplyinstIdOrSeriesinstId(applyinstId,null);
+        }
+    }
+
+    @Override
+    public void insertSeriesIteminst(String seriesApplyinstId ,String itemVerId) throws Exception {
+        String appinstId=UUID.randomUUID().toString();
+        //1、保存单项实例
+        AeaHiSeriesinst aeaHiSeriesinst = aeaHiSeriesinstService.createAeaHiSeriesinst(seriesApplyinstId, appinstId,"0",null);
+        //2、事项实例
+        AeaHiIteminst aeaHiIteminst = aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), itemVerId, null,null,appinstId);
+    }
+
+    private  List<AeaHiIteminst> deleteReInsertIteminstUnderStageinst(String themeVerId, String stageinstId, List<String> itemVerIds, String appinstId) throws Exception {
+        List<AeaHiIteminst> iteminstList = aeaHiIteminstService.getAeaHiIteminstListByStageinstId(stageinstId);
+        if(iteminstList.size()>0){
+            String[] iteminstIds = iteminstList.stream().map(AeaHiIteminst::getIteminstId).toArray(String[]::new);
+            aeaHiIteminstService.batchDeleteAeaHiIteminst(iteminstIds);
+        }
+        return aeaHiIteminstService.batchInsertAeaHiIteminstAndTriggerAeaLogItemStateHist(themeVerId,stageinstId,itemVerIds,null,null,appinstId);
+    }
+
+
+    private void deleteReInsertParStateinstUnderStageinst(String applyinstId, String stageinstId, String[] stateIds) throws Exception {
+        List<AeaHiParStateinst> stateList = aeaHiParStateinstMapper.listAeaHiParStateinstByApplyinstIdOrStageinstId(applyinstId, stageinstId);
+        if(stateList.size()>0){
+            String[] stateinstIds = stateList.stream().map(AeaHiParStateinst::getStageStateinstId).toArray(String[]::new);
+            aeaHiParStateinstMapper.batchDeleteAeaHiParStateinst(stateinstIds);
+        }
+        aeaHiParStateinstService.batchInsertAeaHiParStateinst(applyinstId, stageinstId, stateIds, SecurityContext.getCurrentUserName());
+    }
+
+    /**
+     * 简单合并时即多事项直接合并办理，判断并联事项下是否有选择情形，保存对应的情形实例
+     *
+     * @param itemVerIds       并联申报事项
+     * @param applyinstId      并联申报实例id
+     * @param stageinstId      阶段实例id
+     */
+    private void saveItemStateBySimpleMerge(List<ParallelItemStateVo> parallelItemStateVoList, List<String> itemVerIds, String applyinstId, String stageinstId) {
+        if (parallelItemStateVoList != null && parallelItemStateVoList.size() > 0) {
+            Map<String, List<String>> parallelItemStateIdMap = new HashMap<>();
+            parallelItemStateVoList.forEach(p -> parallelItemStateIdMap.put(p.getItemVerId(), p.getStateIds()));
+            itemVerIds.forEach(itemVerId -> {
+                if (CollectionUtils.isNotEmpty(parallelItemStateIdMap.get(itemVerId))) {
+                    String[] itemStateIds = parallelItemStateIdMap.get(itemVerId).toArray(new String[0]);
+                    try {
+                        aeaHiItemStateinstService.batchInsertAeaHiItemStateinst(applyinstId, null, stageinstId, itemStateIds, SecurityContext.getCurrentUserName());
+                    } catch (Exception e) {
+                        throw new RuntimeException("简单合并申报保存事项的情形实例时失败", e);
+                    }
+                }
+            });
         }
     }
 }
