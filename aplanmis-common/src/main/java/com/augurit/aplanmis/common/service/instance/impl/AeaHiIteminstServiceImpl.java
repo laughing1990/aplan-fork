@@ -425,5 +425,10 @@ public class AeaHiIteminstServiceImpl implements AeaHiIteminstService {
         AeaHiIteminst iteminst = saveAndReturnAeaHiIteminstState(iteminstId, iteminstState);
         aeaLogApplyStateHistService.insertOpsAeaLogApplyStateHist(iteminstId, opsUserOpinion, opsAction, opsMemo, iteminst.getIteminstState(), iteminstState, iteminst.getApproveOrgId());
     }
+    @Override
+    public void batchDeleteAeaHiIteminst(String[] iteminstIds){
+        if(iteminstIds.length>0)
+            aeaHiIteminstMapper.batchDeleteAeaHiIteminst(iteminstIds);
+    }
 
 }

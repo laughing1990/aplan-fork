@@ -302,4 +302,6 @@ public interface AeaHiIteminstService {
      * @param iteminstState  事项实例状态
      */
     void updateAeaHiIteminstStateAndInsertOpsAeaLogApplyinstStateHist(String iteminstId, String opsUserOpinion, String opsAction, String opsMemo, String iteminstState) throws Exception;
+
+    void batchDeleteAeaHiIteminst(String[] iteminstIds);
 }

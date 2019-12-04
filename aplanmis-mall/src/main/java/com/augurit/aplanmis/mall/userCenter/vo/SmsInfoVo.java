@@ -69,6 +69,10 @@ public class SmsInfoVo extends AeaProjInfo {
     private String linkmanInfoId;
     @ApiModelProperty(value = "申报时传的申报方式参数")
     private String applySubject;
+    @ApiModelProperty(value = "是否单项申报 1是 0否")
+    private String isSeriesApprove;
+    @ApiModelProperty(value = "事项版本ID（isSeriesApprove==1时）")
+    private String itemVerId;
 
 
     public static List<AeaUnitInfo> returnForm(List<AeaUnitInfoVo> unitInfos) {
@@ -85,19 +89,14 @@ public class SmsInfoVo extends AeaProjInfo {
     public AeaHiSmsInfo toSmsInfo() {
         AeaHiSmsInfo aeaHiSmsInfo = new AeaHiSmsInfo();
         aeaHiSmsInfo.setId(UuidUtil.generateUuid());
-        aeaHiSmsInfo.setReceiveMode(this.receiveMode);
-        aeaHiSmsInfo.setSmsType(this.smsType);
-        aeaHiSmsInfo.setAddresseeName(this.addresseeName);
-        aeaHiSmsInfo.setAddresseePhone(this.addresseePhone);
-        aeaHiSmsInfo.setApplyinstId(this.applyinstId);
-        aeaHiSmsInfo.setAddresseeProvince(this.addresseeProvince);
-        aeaHiSmsInfo.setAddresseeCity(this.addresseeCity);
-        aeaHiSmsInfo.setAddresseeCounty(this.addresseeCounty);
-        aeaHiSmsInfo.setAddresseeAddr(this.addresseeAddr);
-        return aeaHiSmsInfo;
+        return setAeaHiSmsInfo(aeaHiSmsInfo);
     }
 
     public AeaHiSmsInfo merge(AeaHiSmsInfo aeaHiSmsInfo) {
+        return setAeaHiSmsInfo(aeaHiSmsInfo);
+    }
+
+    private AeaHiSmsInfo setAeaHiSmsInfo(AeaHiSmsInfo aeaHiSmsInfo) {
         aeaHiSmsInfo.setReceiveMode(this.receiveMode);
         aeaHiSmsInfo.setSmsType(this.smsType);
         aeaHiSmsInfo.setAddresseeName(this.addresseeName);
