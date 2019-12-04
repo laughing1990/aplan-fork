@@ -37,6 +37,7 @@ import com.augurit.aplanmis.supermarket.apply.vo.ApplyinstResult;
 import com.augurit.aplanmis.supermarket.apply.vo.ImItemApplyData;
 import com.augurit.aplanmis.supermarket.apply.vo.ImPurchaseData;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.OwnerIndexData;
+import com.augurit.aplanmis.supermarket.projPurchase.vo.ProjUnitLinkVo;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.SelectedQualMajorRequire;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.SelectedQualVo;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.purchase.PurchaseDetailVo;
@@ -57,7 +58,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class ProjPurchaseService {
     @Autowired
     private AeaImProjPurchaseMapper aeaImProjPurchaseMapper;
@@ -155,15 +156,13 @@ public class ProjPurchaseService {
     private FileUtilsService fileUtilsService;
     @Autowired
     private AeaImServiceResultService aeaImServiceResultService;
+    @Autowired
+    private AeaItemMapper aeaItemMapper;
 
 
     public List<AeaImProjPurchase> getProjPurchaseList(AeaImProjPurchase aeaImProjPurchase, Page page) {
         PageHelper.startPage(page);
         return aeaImProjPurchaseMapper.listAeaImProjPurchaseForMyProj(aeaImProjPurchase);
-    }
-
-    public AeaImProjPurchase getProjPurchaseById(String projPurchaseId) {
-        return aeaImProjPurchaseMapper.listbid(projPurchaseId);
     }
 
     public List<AeaImProjPurchase> getProjListByLocalCode(String keyword, Page page) {
@@ -658,59 +657,11 @@ public class ProjPurchaseService {
         return list;
     }
 
-    /**
-     * 获取项目信息，没有的话会同步
-     *
-     * @param localCode
-     * @param unitInfoId
-     * @return
-     * @throws Exception
-     */
-    private AeaProjInfo getAeaProjInfo(String localCode, String unitInfoId) throws Exception {
-        AeaProjInfo aeaProjInfo = null;//  //aeaBusinessService.getProjInfoByCodes(localCode);
-        if (aeaProjInfo != null) {
-            AeaUnitProj aeaUnitProj = new AeaUnitProj();
-            aeaUnitProj.setProjInfoId(aeaProjInfo.getProjInfoId());
-            aeaUnitProj.setIsOwner(Status.ON);
-            List<AeaUnitProj> aeaUnitProjList = aeaUnitProjMapper.listAeaUnitProj(aeaUnitProj);
-
-            if (!aeaUnitProjList.isEmpty()) {
-                for (AeaUnitProj aup : aeaUnitProjList) {
-                    if (aup.getUnitInfoId().equals(unitInfoId)) {
-                        AeaProjInfo aeaProjInfoVo = new AeaProjInfo();
-                        aeaProjInfoVo.setProjName(aeaProjInfo.getProjName());
-                        aeaProjInfoVo.setLocalCode(aeaProjInfo.getLocalCode());
-                        aeaProjInfoVo.setProjInfoId(aeaProjInfo.getProjInfoId());
-                        return aeaProjInfoVo;
-                    }
-                }
-            }
-        }
-
-        return null;
-
-    }
-
-    /**
-     * 判断是否为业主单位
-     *
-     * @param loginInfoVo 登录信息
-     */
-    private void checkIsOwner(LoginInfoVo loginInfoVo) {
-        if (loginInfoVo == null) {
-            throw new RuntimeException("未登录或登录超时，请重新登录！");
-        }
-
-        if (StringUtils.isBlank(loginInfoVo.getUnitId()) || !Status.ON.equals(loginInfoVo.getIsOwner())) {
-            throw new RuntimeException("不是业主单位！");
-        }
-    }
-
-    public ProUnitLinkVo getProUnitLinkInfo(String projInfoId, HttpServletRequest request) {
+    public ProjUnitLinkVo getProUnitLinkInfo(String projInfoId, HttpServletRequest request) {
         LoginInfoVo loginInfoVo = SessionUtil.getLoginInfo(request);
         checkIsOwner(loginInfoVo);
 
-        ProUnitLinkVo proUnitLinkVo = new ProUnitLinkVo();
+        ProjUnitLinkVo proUnitLinkVo = new ProjUnitLinkVo();
 
         AeaUnitInfo aeaUnitInfo = new AeaUnitInfo();
         aeaUnitInfo.setUnitInfoId(loginInfoVo.getUnitId());
@@ -732,29 +683,24 @@ public class ProjPurchaseService {
             }
         }
 
-        proUnitLinkVo.setAeaUnitInfo(aeaUnitInfo);
+//        proUnitLinkVo.setAeaUnitInfo(aeaUnitInfo);
+        proUnitLinkVo.change2UnitVo(aeaUnitInfo);
         AeaLinkmanInfo aeaLinkmanInfo = null;
         if (StringUtils.isNotBlank(loginInfoVo.getUserId())) {
             aeaLinkmanInfo = aeaLinkmanInfoMapper.getAeaLinkmanInfoById(loginInfoVo.getUserId());
-
-            if (aeaLinkmanInfo != null) {
-                proUnitLinkVo.setAeaLinkmanInfo(aeaLinkmanInfo);
-                proUnitLinkVo.setOwnerComplaintPhone(aeaLinkmanInfo.getLinkmanMobilePhone());
-            }
         }
 
         if (aeaLinkmanInfo == null) {
-            List<AeaLinkmanInfo> aeaLinkmanInfos = aeaLinkmanInfoMapper.findAllUnitLinkman(aeaUnitInfo.getUnitInfoId());
-
+//            List<AeaLinkmanInfo> aeaLinkmanInfos = aeaLinkmanInfoMapper.findAllUnitLinkman(aeaUnitInfo.getUnitInfoId());
+            List<AeaLinkmanInfo> aeaLinkmanInfos = aeaLinkmanInfoMapper.findAgentBindAccountLinkman(aeaUnitInfo.getUnitInfoId());
             for (AeaLinkmanInfo linkmanInfo : aeaLinkmanInfos) {
                 if (linkmanInfo.getLinkmanType() != null && linkmanInfo.getLinkmanType().contains("u")) {
-                    proUnitLinkVo.setAeaLinkmanInfo(linkmanInfo);
-                    proUnitLinkVo.setOwnerComplaintPhone(linkmanInfo.getLinkmanMobilePhone());
+                    aeaLinkmanInfo = linkmanInfo;
                     break;
                 }
             }
         }
-
+        proUnitLinkVo.change2LinkmanVo(aeaLinkmanInfo);
         return proUnitLinkVo;
     }
 
@@ -763,8 +709,43 @@ public class ProjPurchaseService {
         if (page != null) {
             PageHelper.startPage(page);
         }
+        List<AeaItemServiceVo> list = aeaItemBasicMapper.listItemServiceVo(keyword, null);
 
-        return aeaItemBasicMapper.listItemServiceVo(keyword, null);
+        for (AeaItemServiceVo vo : list) {
+            //设置事项办件类型
+            BscDicCodeItem item_property = bscDicCodeMapper.getItemByTypeCodeAndItemCodeAndOrgId("ITEM_PROPERTY", vo.getAgentItemProperty(), "012aa547-7104-418d-87cc-824f24f1a278");
+            if (null != item_property) {
+                vo.setAgentItemPropertyName(item_property.getItemName());
+            }
+
+            BscDicCodeItem dueUnitType = bscDicCodeMapper.getItemByTypeCodeAndItemCodeAndOrgId("DUE_UNIT_TYPE", vo.getAgentItemBjType(), "012aa547-7104-418d-87cc-824f24f1a278");
+            if (null != dueUnitType) {
+                vo.setAgentItemDueUnitType(dueUnitType.getItemName());
+            }
+            String itemId = vo.getAgentItemId();
+            String rootOrgId = vo.getRootOrgId();
+            //设置服务对象
+            String itemVerId = vo.getAgentItemVerId();
+            AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(itemVerId, rootOrgId);
+            String serviceObjectCode = com.augurit.agcloud.framework.util.StringUtils.isNotBlank(aeaItemBasic.getXkdx()) ? aeaItemBasic.getXkdx() : SERVICE_OBJECT_CODE;
+            String serviceObject = this.getServiceObject(SERVICE_OBJECT_DICT_NAME, serviceObjectCode, rootOrgId);
+            //关联的行政事项
+            AeaItem item = aeaItemMapper.getAeaItemById(itemId);
+            if (item == null) return list;
+            String itemSeq = item.getItemSeq();
+            if (StringUtils.isNotBlank(itemSeq)) {
+                String[] itemSeqs = itemSeq.split("\\.");
+                if (itemSeqs.length > 1) {
+                    String rootItemId = itemSeqs[1];
+                    List<AeaItemBasic> parentItems = aeaItemBasicMapper.getAgentParentItem(rootItemId, rootOrgId);
+                    String names = parentItems.stream().map(AeaItemBasic::getItemName).collect(Collectors.joining(","));
+                    vo.setItemName(names);
+                }
+            }
+
+        }
+
+        return list;
 
     }
 
@@ -1417,6 +1398,7 @@ public class ProjPurchaseService {
     public void updateAeaImProjPurchase(AeaImProjPurchase aeaImProjPurchase) throws Exception {
         aeaImProjPurchaseMapper.updateAeaImProjPurchase(aeaImProjPurchase);
     }
+    // 新增接口
 
     /**
      * 发布项目采购需求并启动流程---唐山模式
@@ -1453,9 +1435,10 @@ public class ProjPurchaseService {
             String unitId = loginInfoVo.getUnitId();
             publishUnitInfoId = unitId;
             applyData.setConstructionUnitId(loginInfoVo.getUnitId());
-            List<AeaLinkmanInfo> aeaLinkmanInfos = aeaImServiceLinkmanMapper.listAeaImServiceLinkmanByUnitInfoId(unitId, null, null);
-            if (aeaLinkmanInfos.isEmpty()) throw new Exception("can not find linkman");
-            linkmanId = aeaLinkmanInfos.get(0).getLinkmanInfoId();
+            //默认获取第一个,查找当前单位已经绑定到中介超市的的联系人
+            List<AeaLinkmanInfo> allUnitLinkman = aeaLinkmanInfoMapper.findAgentBindAccountLinkman(unitId);
+            if (allUnitLinkman.isEmpty()) throw new Exception("can not find linkman");
+            linkmanId = allUnitLinkman.get(0).getLinkmanInfoId();
         } else {
             linkmanId = loginInfoVo.getUserId();
             publishLinkmanInfoId = linkmanId;
@@ -1521,7 +1504,7 @@ public class ProjPurchaseService {
         aeaProjInfoCond.setProjName(purchaseVo.getSaveAeaProjInfoVo().getProjName());
         List aeaProjInfoCondList = aeaProjInfoMapper.listAeaProjInfo(aeaProjInfoCond);
         if (!aeaProjInfoCondList.isEmpty()) {
-            throw new RuntimeException("项目名称已存在:" + purchaseVo.getSaveAeaProjInfoVo().getProjName());
+            throw new Exception("项目名称已存在:" + purchaseVo.getSaveAeaProjInfoVo().getProjName());
         }
     }
 
@@ -1601,6 +1584,8 @@ public class ProjPurchaseService {
         return form;
     }
 
+
+    //获取服务对象
     private String getServiceObject(String dicName, String code, String currentOrgId) {
         if (org.apache.commons.lang3.StringUtils.isBlank(code)) {
             return "";
@@ -1633,4 +1618,54 @@ public class ProjPurchaseService {
         }
         return null;
     }
+
+
+    /**
+     * 获取项目信息，没有的话会同步
+     *
+     * @param localCode
+     * @param unitInfoId
+     * @return
+     * @throws Exception
+     */
+    private AeaProjInfo getAeaProjInfo(String localCode, String unitInfoId) throws Exception {
+        AeaProjInfo aeaProjInfo = null;//  //aeaBusinessService.getProjInfoByCodes(localCode);
+        if (aeaProjInfo != null) {
+            AeaUnitProj aeaUnitProj = new AeaUnitProj();
+            aeaUnitProj.setProjInfoId(aeaProjInfo.getProjInfoId());
+            aeaUnitProj.setIsOwner(Status.ON);
+            List<AeaUnitProj> aeaUnitProjList = aeaUnitProjMapper.listAeaUnitProj(aeaUnitProj);
+
+            if (!aeaUnitProjList.isEmpty()) {
+                for (AeaUnitProj aup : aeaUnitProjList) {
+                    if (aup.getUnitInfoId().equals(unitInfoId)) {
+                        AeaProjInfo aeaProjInfoVo = new AeaProjInfo();
+                        aeaProjInfoVo.setProjName(aeaProjInfo.getProjName());
+                        aeaProjInfoVo.setLocalCode(aeaProjInfo.getLocalCode());
+                        aeaProjInfoVo.setProjInfoId(aeaProjInfo.getProjInfoId());
+                        return aeaProjInfoVo;
+                    }
+                }
+            }
+        }
+
+        return null;
+
+    }
+
+    /**
+     * 判断是否为业主单位
+     *
+     * @param loginInfoVo 登录信息
+     */
+    private void checkIsOwner(LoginInfoVo loginInfoVo) {
+        if (loginInfoVo == null) {
+            throw new RuntimeException("未登录或登录超时，请重新登录！");
+        }
+
+        if (StringUtils.isBlank(loginInfoVo.getUnitId()) || !Status.ON.equals(loginInfoVo.getIsOwner())) {
+            throw new RuntimeException("不是业主单位！");
+        }
+    }
+
 }

@@ -1,15 +1,15 @@
 package com.augurit.aplanmis.supermarket.projPurchase.controller;
 
 import com.augurit.agcloud.bsc.domain.BscAttForm;
-import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
-import com.augurit.agcloud.bsc.mapper.BscDicCodeMapper;
 import com.augurit.agcloud.framework.ui.pager.EasyuiPageInfo;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.aplanmis.common.constants.AuditFlagStatus;
-import com.augurit.aplanmis.common.domain.*;
-import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
+import com.augurit.aplanmis.common.domain.AeaImProjPurchase;
+import com.augurit.aplanmis.common.domain.AeaImService;
+import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.common.domain.AeaUnitInfo;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.projPurchase.AeaImProjPurchaseService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
@@ -21,6 +21,7 @@ import com.augurit.aplanmis.supermarket.apply.service.RestImApplyService;
 import com.augurit.aplanmis.supermarket.contract.service.AeaImContractService;
 import com.augurit.aplanmis.supermarket.projPurchase.service.ProjPurchaseService;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.OwnerIndexData;
+import com.augurit.aplanmis.supermarket.projPurchase.vo.ProjUnitLinkVo;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.QueryUnpublishedProjInfo;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.SelectedQualMajorRequire;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.purchase.PurchaseDetailVo;
@@ -48,7 +49,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @Api(description = "项目需求采购管理接口", value = "", tags = "中介超市---项目需求采购接口")
@@ -72,13 +72,6 @@ public class AeaImProjPurchaseController {
 
     @Autowired
     AeaImContractService aeaImContractService;
-
-    @Autowired
-    private BscDicCodeMapper bscDicCodeMapper;
-
-    @Autowired
-    private AeaItemBasicMapper aeaItemBasicMapper;
-
 
     @ApiOperation(value = "获取业主单位未发布的项目列表", notes = "获取业主单位未发布的项目列表,用于新增采购需求", httpMethod = "POST")
     @PostMapping(value = "/getUnpublishedProjInfoList")
@@ -104,13 +97,13 @@ public class AeaImProjPurchaseController {
             @ApiImplicitParam(name = "projInfoId", value = "项目主键ID")
     })
     @PostMapping(value = "/getProUnitLinkInfo/{projInfoId}")
-    public ContentRestResult<ProUnitLinkVo> getProUnitLinkInfo(@PathVariable("projInfoId") String projInfoId, HttpServletRequest request) {
+    public ContentRestResult<ProjUnitLinkVo> getProUnitLinkInfo(@PathVariable("projInfoId") String projInfoId, HttpServletRequest request) {
         return new ContentRestResult<>(true, projPurchaseService.getProUnitLinkInfo(projInfoId, request));
     }
 
     @ApiOperation(value = "获取项目信息", notes = "获取项目信息,包括单位信息和联系人信息,用于新增采购需求", httpMethod = "POST")
     @PostMapping(value = "/getProUnitLinkInfo")
-    public ContentRestResult<ProUnitLinkVo> getProUnitLinkInfo(HttpServletRequest request) {
+    public ContentRestResult<ProjUnitLinkVo> getProUnitLinkInfo(HttpServletRequest request) {
         return new ContentRestResult<>(true, projPurchaseService.getProUnitLinkInfo(null, request));
     }
 
@@ -130,32 +123,14 @@ public class AeaImProjPurchaseController {
                 page = new Page(pageNum, pageSize > 0 ? pageSize : 10);
             }
             List<AeaItemServiceVo> list = projPurchaseService.getAgentServiceItemList(keyword, page);
-            for (AeaItemServiceVo vo : list) {
-                //设置事项办件类型
-                BscDicCodeItem item_property = bscDicCodeMapper.getItemByTypeCodeAndItemCodeAndOrgId("ITEM_PROPERTY", vo.getAgentItemProperty(), "012aa547-7104-418d-87cc-824f24f1a278");
-                if (null != item_property) {
-                    vo.setAgentItemPropertyName(item_property.getItemName());
-                }
 
-                BscDicCodeItem dueUnitType = bscDicCodeMapper.getItemByTypeCodeAndItemCodeAndOrgId("DUE_UNIT_TYPE", vo.getAgentItemBjType(), "012aa547-7104-418d-87cc-824f24f1a278");
-                if (null != dueUnitType) {
-                    vo.setAgentItemDueUnitType(dueUnitType.getItemName());
-                }
-                String itemId = vo.getAgentItemId();
-                String rootOrgId = vo.getRootOrgId();
-                //设置服务对象
-
-                //关联的行政事项
-                List<AeaItemBasic> parentItems = aeaItemBasicMapper.getAgentParentItem(itemId, rootOrgId);
-                String names = parentItems.stream().map(AeaItemBasic::getItemName).collect(Collectors.joining(","));
-                vo.setItemName(names);
-            }
             return new ContentRestResult<EasyuiPageInfo<AeaItemServiceVo>>(true, PageHelper.toEasyuiPageInfo(new PageInfo(list)));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ContentRestResult(false, null, e.getMessage());
         }
     }
+
 
     @ApiOperation(value = "根据中介服务事项获取中介服务", notes = "根据中介服务事项获取中介服务")
     @ApiImplicitParams({

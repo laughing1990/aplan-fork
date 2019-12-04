@@ -3,7 +3,6 @@ package com.augurit.aplanmis.common.mapper;
 import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
 import com.augurit.aplanmis.common.domain.AeaUnitLinkman;
 import com.augurit.aplanmis.common.domain.AgentLinkmanCert;
-import com.augurit.aplanmis.common.vo.LinkmanTypeVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -42,13 +41,13 @@ public interface AeaLinkmanInfoMapper {
 
     List<AeaLinkmanInfo> findAllUnitLinkman(@Param("unitInfoId") String unitInfoId);
 
-    AeaLinkmanInfo getAeaLinkmanInfoByLoginName(@Param("loginName") String loginName,@Param("rootOrgId") String rootOrgId);
+    AeaLinkmanInfo getAeaLinkmanInfoByLoginName(@Param("loginName") String loginName, @Param("rootOrgId") String rootOrgId);
 
-    List<AeaLinkmanInfo> findLinkmanInfoByKeyword(@Param("keyword") String keyword,@Param("rootOrgId") String rootOrgId);
+    List<AeaLinkmanInfo> findLinkmanInfoByKeyword(@Param("keyword") String keyword, @Param("rootOrgId") String rootOrgId);
 
     List<AeaLinkmanInfo> getProjLinkmanByApplyinstId(@Param("applyinstId") String applyinstId);
 
-    List<AeaLinkmanInfo> getAeaLinkmanInfoByUnitInfoIdAndIsBindAccount(@Param("unitInfoId") String unitInfoId,@Param("isBindAccount") String isBindAccount) throws Exception;
+    List<AeaLinkmanInfo> getAeaLinkmanInfoByUnitInfoIdAndIsBindAccount(@Param("unitInfoId") String unitInfoId, @Param("isBindAccount") String isBindAccount) throws Exception;
 
     List<AeaLinkmanInfo> listAeaLinkmanInfo(AeaLinkmanInfo aeaLinkman);
 
@@ -62,13 +61,13 @@ public interface AeaLinkmanInfoMapper {
      */
     List<AgentLinkmanCert> listAgentHeadLinkman(@Param("unitInfoId") String unitInfoId);
 
-    List<AeaLinkmanInfo> getLinkmanList(@Param("unitInfoId") String unitInfoId,@Param("serviceId") String serviceId,@Param("linkmanInfoIds") List linkmanInfoIds);
+    List<AeaLinkmanInfo> getLinkmanList(@Param("unitInfoId") String unitInfoId, @Param("serviceId") String serviceId, @Param("linkmanInfoIds") List linkmanInfoIds);
 
     List<AeaLinkmanInfo> getAeaLinkmanInfoAndUnitInfoByLinkmanInfoId(@Param("id") String id);
 
     int updateAeaUnitLinkman(AeaUnitLinkman aeaUnitLinkman);
 
-    List<AeaLinkmanInfo> getAeaLinkmanInfoByUnitInfoId(@Param("unitInfoId") String unitInfoId,@Param("isAll") Integer isAll);
+    List<AeaLinkmanInfo> getAeaLinkmanInfoByUnitInfoId(@Param("unitInfoId") String unitInfoId, @Param("isAll") Integer isAll);
 
     /**
      * 删除委托人信息
@@ -93,8 +92,17 @@ public interface AeaLinkmanInfoMapper {
 
     /**
      * 根据单位查询联系人表中的法人信息
+     *
      * @param unitInfoId
      * @return
      */
     List<AeaLinkmanInfo> findCorporationByUnitInfoId(String unitInfoId);
+
+    /**
+     * 查询单位下绑定的中介超市业务联系人
+     *
+     * @param unitInfoId 单位ID
+     * @return List<AeaLinkmanInfo>
+     */
+    List<AeaLinkmanInfo> findAgentBindAccountLinkman(@Param("unitInfoId") String unitInfoId);
 }

@@ -67,46 +67,7 @@
 								</el-button>
 							</el-input>
 						</div>
-						<!-- <div v-show="!!serviceDetail">
-							<el-row :gutter="20">
-								<el-col :span="8">
-									<el-form-item label="事项名称：">{{serviceDetail.agentItemName}}</el-form-item>
-								</el-col>
-								<el-col :span="8">
-									<el-form-item label="实施主体：">{{serviceDetail.agentOrgName}}
-									</el-form-item>
-								</el-col>
-								<el-col :span="8">
-									<el-form-item label="服务对象：">{{serviceDetail.agentItemFwdx}}
-									</el-form-item>
-								</el-col>
-								<el-col :span="8">
-									<el-form-item label="办件类型：">{{serviceDetail.agentItemPropertyName}}
-									</el-form-item>
-								</el-col>
-							</el-row>
-							<el-row :gutter="20">								
-								<el-col :span="8">
-									<el-form-item label="法定办结时限：">
-										{{serviceDetail.agentItemDueNum}}（{{serviceDetail.agentItemDueUnitType}}）
-									</el-form-item>
-								</el-col>
-								<el-col :span="8">
-									<el-form-item label="承诺办结时限：">
-										{{serviceDetail.agentItemDueNum}}（{{serviceDetail.agentItemDueUnitType}}）
-									</el-form-item>
-								</el-col>
-							</el-row>
-						</div> -->
 					</el-form-item>
-					<!--<el-form-item label="实施主体" prop="agentOrgName">
-						<el-input type="text" v-model="form.agentOrgName" class="form-control" disabled>
-						</el-input>
-					</el-form-item>
-					<el-form-item label="涉及的行政事项" prop="itemName">
-						<el-input type="text" class="form-control" v-model="form.itemName" disabled>
-						</el-input>
-					</el-form-item>-->
 
 					<div v-show="isShowServiceDetail" class="clearfix">
 						<el-form-item class="inline-block" label="实施主体">{{form.agentOrgName}}</el-form-item>
@@ -144,18 +105,6 @@
 							</el-option>
 						</el-select>
 					</el-form-item>
-
-					<!--<div class="row">
-						<div class="col-md-12 form-item">
-							<el-form-item label="" prop="applyinstCode">
-								<label>审批业务流水号</label>
-								<div class="input-box">
-									<el-input type="text" class="form-control" placeholder="请输入流水号" v-model="form.applyinstCode"></el-input>
-								</div>
-							</el-form-item>
-						</div>
-					</div>-->
-
 					<div class="clearfix">
 						<el-form-item class="inline-block" label="采购项目编码" prop="localCode">
 							<el-input type="text" class="form-control" v-model="form.localCode"></el-input>
@@ -172,9 +121,7 @@
 							</el-input>
 						</el-form-item>
 						<el-form-item class="inline-block" label="联系电话" prop="basicLinkPhone" require>
-							<el-input type="number" class="form-control" id="basicLinkPhone"
-								v-model="form.basicLinkPhone">
-							</el-input>
+							<el-input class="form-control" id="basicLinkPhone" type="number" v-model="form.basicLinkPhone"></el-input>
 						</el-form-item>
 					</div>
 
@@ -383,12 +330,11 @@
 						<div class="col-md-6 form-item">
 							<el-form-item label="选取中介服务机构方式" prop="biddingType" require>
 								<div class="input-box">
-									<el-select v-model="form.biddingType" placeholder="请选择" stye="width:825px;"
-										:popper-append-to-body="false" @change="biddingTypeChange">
-										<el-option value="1" label="随机抽取"></el-option>
-										<el-option value="2" label="直接抽取"></el-option>
-										<el-option value="3" label="竞价选取"></el-option>
-									</el-select>
+									<el-radio-group @change="biddingTypeChange" v-model="form.biddingType">
+										<el-radio :label="1">随机抽取</el-radio>
+										<el-radio :label="2">直接抽取</el-radio>
+										<el-radio :label="3">竞价选取</el-radio>
+									</el-radio-group>
 								</div>
 							</el-form-item>
 						</div>
