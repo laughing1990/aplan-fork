@@ -43,4 +43,6 @@ public class ApplyDetailVo {
     private String applyinstCode;
     @ApiModelProperty("是否启动情形 0否 1是")
     private String isNeedState;
+    @ApiModelProperty("联系人列表")
+    private List<AeaLinkmanInfo> aeaLinkmanInfoList;
 }
