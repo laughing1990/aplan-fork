@@ -12,6 +12,8 @@ import com.augurit.aplanmis.common.service.instance.AeaHiSmsInfoService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.state.AeaItemStateService;
 import com.augurit.aplanmis.common.service.theme.AeaParThemeService;
+import com.augurit.aplanmis.common.utils.SessionUtil;
+import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyCommonService;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyMatService;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyService;
@@ -125,11 +127,12 @@ public class RestApplyCommonController {
 
     @PostMapping("/completioninfo/saveOrUpdate/temporary")
     @ApiOperation(value = "并联申报/单项申报 --> 暂存补全信息保存领件人、项目信息、单位项目关联", httpMethod = "POST")
-    public ContentResultForm temporarySaveOrUpdateSmsInfo(@RequestBody SmsInfoVo smsInfoVo) {
+    public ContentResultForm temporarySaveOrUpdateSmsInfo(@RequestBody SmsInfoVo smsInfoVo,HttpServletRequest request) {
         Map<String,Object> resultMap=new HashMap();
         AeaProjInfo aeaProjInfo= new AeaProjInfo();
         BeanUtils.copyProperties(smsInfoVo,aeaProjInfo);
         String applyinstId=smsInfoVo.getApplyinstId();//有值则表示之前已经暂存过
+        LoginInfoVo loginVo = SessionUtil.getLoginInfo(request);
         try {
             Map<String, Object> map = restApplyCommonService.getStringObjectMap(smsInfoVo, resultMap, aeaProjInfo);
             if(StringUtils.isNotBlank(applyinstId)){//已暂存过，需要删除历史记录，重新插入数据
@@ -147,6 +150,12 @@ public class RestApplyCommonController {
                     sms.setApplyinstId(applyinstId);
                     aeaHiSmsInfoService.updateAeaHiSmsInfo(sms);
                 }
+                if(StringUtils.isNotBlank(loginVo.getUnitId())){
+                    restApplyCommonService.deleteReInsertAeaApplyinstUnitProjCurrentLogin(applyinstId,loginVo.getUnitId(),smsInfoVo.getLinkmanInfoId(),aeaProjInfo.getProjInfoId());
+                }else{
+                    restApplyCommonService.deleteReInsertAeaProjLinkmanCurrentLogin(applyinstId,loginVo.getUserId(),aeaProjInfo.getProjInfoId());
+                }
+                restApplyCommonService.saveOrUpdateAeaApplyinstProj(applyinstId,aeaProjInfo.getProjInfoId());
             }
             return new ContentResultForm<>(true, resultMap, "暂存成功!");
         } catch (Exception e) {

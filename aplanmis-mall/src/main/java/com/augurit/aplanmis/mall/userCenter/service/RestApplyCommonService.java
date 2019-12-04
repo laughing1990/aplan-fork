@@ -4,6 +4,7 @@ package com.augurit.aplanmis.mall.userCenter.service;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.vo.AeaUnitInfoVo;
 import com.augurit.aplanmis.common.vo.LinkmanTypeVo;
+import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.userCenter.vo.SmsInfoVo;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -39,4 +40,10 @@ public interface RestApplyCommonService {
 
     //需要将以前的记录删除，重新创建关联关系
     void deleteReInsertAeaApplyinstUnitProj(String applyinstId, List<String> unitProjIds);
+
+    void deleteReInsertAeaApplyinstUnitProjCurrentLogin(String applyinstId, String unitInfoId,String linkmanInfoId ,String projInfoId);
+
+    void deleteReInsertAeaProjLinkmanCurrentLogin(String applyinstId, String userId, String projInfoId);
+
+    void saveOrUpdateAeaApplyinstProj(String applyinstId, String projInfoId) throws Exception;
 }
