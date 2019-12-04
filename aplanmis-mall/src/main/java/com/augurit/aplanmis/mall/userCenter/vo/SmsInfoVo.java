@@ -85,19 +85,14 @@ public class SmsInfoVo extends AeaProjInfo {
     public AeaHiSmsInfo toSmsInfo() {
         AeaHiSmsInfo aeaHiSmsInfo = new AeaHiSmsInfo();
         aeaHiSmsInfo.setId(UuidUtil.generateUuid());
-        aeaHiSmsInfo.setReceiveMode(this.receiveMode);
-        aeaHiSmsInfo.setSmsType(this.smsType);
-        aeaHiSmsInfo.setAddresseeName(this.addresseeName);
-        aeaHiSmsInfo.setAddresseePhone(this.addresseePhone);
-        aeaHiSmsInfo.setApplyinstId(this.applyinstId);
-        aeaHiSmsInfo.setAddresseeProvince(this.addresseeProvince);
-        aeaHiSmsInfo.setAddresseeCity(this.addresseeCity);
-        aeaHiSmsInfo.setAddresseeCounty(this.addresseeCounty);
-        aeaHiSmsInfo.setAddresseeAddr(this.addresseeAddr);
-        return aeaHiSmsInfo;
+        return setAeaHiSmsInfo(aeaHiSmsInfo);
     }
 
     public AeaHiSmsInfo merge(AeaHiSmsInfo aeaHiSmsInfo) {
+        return setAeaHiSmsInfo(aeaHiSmsInfo);
+    }
+
+    private AeaHiSmsInfo setAeaHiSmsInfo(AeaHiSmsInfo aeaHiSmsInfo) {
         aeaHiSmsInfo.setReceiveMode(this.receiveMode);
         aeaHiSmsInfo.setSmsType(this.smsType);
         aeaHiSmsInfo.setAddresseeName(this.addresseeName);
