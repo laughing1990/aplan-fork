@@ -5958,6 +5958,25 @@ _p[52] = {
                 return selectedNode ? 0 : -1;
             }
         });
+
+        var NodeTypeCodeStateCommand = kity.createClass("NodeTypeCodeStateCommand", {
+            base: Command,
+            execute: function(km, text) {
+
+            },
+            queryState: function(km) {
+                var result='';
+                var nodes = km.getSelectedNodes();
+                if (!nodes.length){
+
+                }
+                else{
+                    result=nodes[0].data.nodeTypeCode;
+                }
+                return result;
+            }
+        });
+
         /**
      * @command AppendSiblingNode
      * @description 添加选中的节点的兄弟节点
@@ -6048,6 +6067,7 @@ _p[52] = {
                     AppendSiblingNode: AppendSiblingCommand,
                     RemoveNode: RemoveNodeCommand,
                     AppendParentNode: AppendParentCommand
+                    ,NodeTypeCodeStateCommand:NodeTypeCodeStateCommand
                 },
                 commandShortcutKeys: {
                     appendsiblingnode: "normal::Enter",

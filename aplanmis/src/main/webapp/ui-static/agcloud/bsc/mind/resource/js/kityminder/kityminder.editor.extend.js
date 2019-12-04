@@ -108,7 +108,7 @@ angular.module('kityminderEditor').run(['$templateCache', function ($templateCac
     );
 
     $templateCache.put('ui/directive/isInformCommit/isInformCommit.html',
-        "<ul class=\"km-priority tool-group\" ng-disabled=\"commandDisabled\" style='width:60px;'>" +
+        "<ul class=\"km-priority tool-group\" ng-disabled=\"minder.queryCommandState('NodeTypeCodeStateCommand') != 'situation'\" style='width:60px;'>" +
         "<li class=\"km-priority-item tool-group-item\" ng-repeat=\"p in linkfieldes\" ng-click=\"commandDisabled || minder.execCommand('isInformCommit', p)\" ng-class=\"{ active: commandValue == p }\" title=\"{{ getInnerTitle(p) }}\">" +
         "<div class=\"{{ getInnerClass(p) }}\" title='{{ getInnerTitle(p) }}'><div style='height: 3px;'></div>{{ getInnerTitle(p) }}</div>" +
         "</li></ul>"
