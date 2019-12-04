@@ -2489,8 +2489,11 @@
         api.LOCAL_CODE localCode,
         '1' isSeriesApprove,
         api.PROJ_INFO_ID projInfoId,
-        api.GCBM gcbm
+        api.GCBM gcbm,
+        ahi.item_ver_id itemVerId
         FROM aea_hi_applyinst aha
+        left join aea_hi_seriesinst ahs on aha.APPLYINST_ID=ahs.APPLYINST_ID
+        left join aea_hi_iteminst ahi on ahi.SERIESINST_ID=ahs.SERIESINST_ID
         LEFT JOIN aea_applyinst_proj aap ON aap.APPLYINST_ID=aha.APPLYINST_ID
         LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID=aap.PROJ_INFO_ID
         LEFT JOIN aea_proj_linkman apl ON apl.APPLYINST_ID=aha.APPLYINST_ID AND apl.PROJ_INFO_ID=api.PROJ_INFO_ID
@@ -2525,7 +2528,8 @@
         api.LOCAL_CODE localCode,
         '0' isSeriesApprove,
         api.PROJ_INFO_ID projInfoId,
-        api.GCBM gcbm
+        api.GCBM gcbm,
+        '' itemVerId
         FROM aea_hi_applyinst aha
         LEFT JOIN aea_applyinst_proj aap ON aap.APPLYINST_ID=aha.APPLYINST_ID
         LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID=aap.PROJ_INFO_ID
@@ -2561,8 +2565,11 @@
         api.LOCAL_CODE localCode,
         '1' isSeriesApprove,
         api.PROJ_INFO_ID projInfoId,
-        api.GCBM gcbm
+        api.GCBM gcbm,
+        ahi.item_ver_id itemVerId
         FROM aea_hi_applyinst aha
+        left join aea_hi_seriesinst ahs on aha.APPLYINST_ID=ahs.APPLYINST_ID
+        left join aea_hi_iteminst ahi on ahi.SERIESINST_ID=ahs.SERIESINST_ID
         LEFT JOIN aea_applyinst_proj aap ON aap.APPLYINST_ID=aha.APPLYINST_ID
         LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID=aap.PROJ_INFO_ID
         LEFT JOIN aea_applyinst_unit_proj aaup ON aaup.APPLYINST_ID=aha.APPLYINST_ID
@@ -2597,7 +2604,8 @@
         api.LOCAL_CODE localCode,
         '0' isSeriesApprove,
         api.PROJ_INFO_ID projInfoId,
-        api.GCBM gcbm
+        api.GCBM gcbm,
+        '' itemVerId
         FROM aea_hi_applyinst aha
         LEFT JOIN aea_applyinst_proj aap ON aap.APPLYINST_ID=aha.APPLYINST_ID
         LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID=aap.PROJ_INFO_ID
