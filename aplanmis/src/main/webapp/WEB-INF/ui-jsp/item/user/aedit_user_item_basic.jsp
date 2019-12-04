@@ -10,21 +10,21 @@
     }
 </style>
 
-<!-- 添加/编辑对话框 -->
-<div class="modal fade" id="dialog_add_item_under_dept" tabindex="-1" role="dialog"
+<!-- 添加/编辑 -->
+<div id="aedit_item_modal" class="modal fade" tabindex="-1" role="dialog"
      aria-labelledby="dialog_item_dept" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered  modal-lg" role="document" style="max-width: 1000px;">
         <div class="modal-content">
             <!-- 标题 -->
-            <div class="modal-header" style="padding: 15px">
-                <h5 class="modal-title" id="dialog_add_item_under_dept_header">编辑部门事项</h5>
+            <div class="modal-header" style="padding: 15px;height: 45px;">
+                <h5 class="modal-title" id="aedit_item_modal_title">新增事项</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="add_item_under_dept" method="post" enctype="multipart/form-data">
+            <form id="aedit_item_form" method="post" enctype="multipart/form-data">
                 <div class="modal-body" style="padding: 10px;">
-                    <div id="addItemScrollable" style="height: 500px;overflow-x: hidden;overflow-y: auto;">
+                    <div id="aedit_item_scroll" style="height: 500px;overflow-x: hidden;overflow-y: auto;">
 
                         <input type="hidden" name="itemBasicId" value=""/>
                         <input type="hidden" name="itemId" value=""/>
@@ -105,13 +105,17 @@
 
                             <label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red" id="org_necessary_mark">*</font>所属部门:</label>
                             <div class="col-lg-4 input-group" id="item_basic_org_name">
-                                <select type="text" class="form-control" name="orgId" value="">
-                                    <option value="">请选择</option>
-                                    <c:forEach items="${userOrgs}" var="userOrg">
-                                        <option value="${userOrg.orgId}">${userOrg.orgName}</option>
-                                    </c:forEach>
-                                </select>
+                                <input type="text" class="form-control m-input" name="orgName"
+                                       placeholder="请点击选择" aria-describedby="select_org_Id" readonly
+                                       onclick="isSelectOpuOmOrg(this, false);">
+                                <div class="input-group-append">
+                                    <span id="select_org_Id" class="input-group-text"
+                                          onclick="isSelectOpuOmOrg(null, false);">
+                                        <i class="la la-group"></i>
+                                    </span>
+                                </div>
                             </div>
+
                             <div class="col-lg-4" id="item_basic_guide_org_name">
                                 <input type="text" class="form-control m-input" name="guideOrgName" value=""/>
                             </div>
@@ -145,12 +149,12 @@
                         <div class="form-group m-form__group row" >
                             <%--<label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>事项状态:</label>--%>
                             <%--<div class="col-lg-4">--%>
-                                <%--<select type="text" class="form-control" name="sxmlzt" value="">--%>
-                                    <%--<option value="">请选择</option>--%>
-                                    <%--<c:forEach items="${itemStatus}" var="itemStatu">--%>
-                                        <%--<option value="${itemStatu.itemCode}">${itemStatu.itemName}</option>--%>
-                                    <%--</c:forEach>--%>
-                                <%--</select>--%>
+                            <%--<select type="text" class="form-control" name="sxmlzt" value="">--%>
+                            <%--<option value="">请选择</option>--%>
+                            <%--<c:forEach items="${itemStatus}" var="itemStatu">--%>
+                            <%--<option value="${itemStatu.itemCode}">${itemStatu.itemName}</option>--%>
+                            <%--</c:forEach>--%>
+                            <%--</select>--%>
                             <%--</div>--%>
 
                             <label class="col-lg-2 col-form-label" style="text-align: right;">事项类型:</label>
@@ -162,9 +166,9 @@
                                     </c:forEach>
                                 </select>
                             </div>
-                        <%--</div>--%>
+                            <%--</div>--%>
 
-                        <%--<div class="form-group m-form__group row" >--%>
+                            <%--<div class="form-group m-form__group row" >--%>
 
                             <label class="col-lg-2 col-form-label" style="text-align: right;">办件类型:</label>
                             <div class="col-lg-4">
