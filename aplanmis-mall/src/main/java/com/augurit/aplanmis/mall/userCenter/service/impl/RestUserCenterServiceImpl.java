@@ -150,8 +150,10 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
             AeaLinkmanInfo aeaLinkmanInfo=aeaLinkmanInfoService.getAeaLinkmanInfoByLinkmanInfoId(userId);
             AeaLinkmanInfoVo aeaLinkmanInfoVo = new AeaLinkmanInfoVo();
             BeanUtils.copyProperties(aeaLinkmanInfo,aeaLinkmanInfoVo);
-            aeaLinkmanInfoVo.setLinkmanCertNo(DesensitizedUtil.desensitizedIdNumber(aeaLinkmanInfoVo.getLinkmanCertNo()));
-            aeaLinkmanInfoVo.setLinkmanMobilePhone(DesensitizedUtil.desensitizedPhoneNumber(aeaLinkmanInfoVo.getLinkmanMobilePhone()));
+            if (isCheckAuthority){
+                aeaLinkmanInfoVo.setLinkmanCertNo(DesensitizedUtil.desensitizedIdNumber(aeaLinkmanInfoVo.getLinkmanCertNo()));
+                aeaLinkmanInfoVo.setLinkmanMobilePhone(DesensitizedUtil.desensitizedPhoneNumber(aeaLinkmanInfoVo.getLinkmanMobilePhone()));
+            }
             return aeaLinkmanInfoVo;
     }
 
@@ -160,7 +162,9 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
         AeaUnitInfo aeaUnitInfo = aeaUnitInfoService.getAeaUnitInfoByUnitInfoId(unitInfoId);
         AeaUnitInfoVo aeaUnitInfoVo = new AeaUnitInfoVo();
         BeanUtils.copyProperties(aeaUnitInfo,aeaUnitInfoVo);
-        aeaUnitInfoVo.setIdno(DesensitizedUtil.desensitizedIdNumber(aeaUnitInfoVo.getIdno()));
+        if (isCheckAuthority){
+            aeaUnitInfoVo.setIdno(DesensitizedUtil.desensitizedIdNumber(aeaUnitInfoVo.getIdno()));
+        }
         return aeaUnitInfoVo;
     }
 
