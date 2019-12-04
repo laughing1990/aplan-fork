@@ -3083,10 +3083,11 @@ var vm = new Vue({
     //发送操作
     sendOperation: function (directSend) {
       var vm = this;
-      var sendObj = $.extend({
-        toleranceTime: vm.sendForm.toleranceTime,
-        timeruleId: vm.sendForm.timeruleId,
-      }, vm.sendParam);
+      var sendObj = $.extend({}, vm.sendParam);
+      if (vm.isRQDialog) {
+        sendObj.toleranceTime = vm.sendForm.toleranceTime;
+        sendObj.timeruleId = vm.sendForm.timeruleId;
+      }
       if (vm.isMultiFlow) {
         sendObj.sendConfigs = [];
         vm.mutiCheckedMan.forEach(function (u) {
