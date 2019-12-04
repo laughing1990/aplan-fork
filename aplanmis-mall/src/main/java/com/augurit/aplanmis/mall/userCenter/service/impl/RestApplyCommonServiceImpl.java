@@ -276,7 +276,22 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
         query.setApplyinstId(applyinstId);
         query.setProjInfoId(projInfoId);
         query.setLinkmanInfoId(userId);
-        aeaProjLinkmanMapper.listAeaProjLinkman(query);
+        query.setType("apply");
+        List<AeaProjLinkman> projLinkmans = aeaProjLinkmanMapper.listAeaProjLinkman(query);
+        if(projLinkmans.size()==0){
+            String[] types={"apply","link"};
+            for (int i=0;i<2;i++){
+                AeaProjLinkman entity=new AeaProjLinkman();
+                entity.setLinkmanInfoId(userId);
+                entity.setProjInfoId(projInfoId);
+                entity.setApplyinstId(applyinstId);
+                entity.setCreater(SecurityContext.getCurrentUserName());
+                entity.setCreateTime(new Date());
+                entity.setType(types[i]);
+                entity.setProjLinkmanId(UUID.randomUUID().toString());
+                aeaProjLinkmanMapper.insertAeaProjLinkman(entity);
+            }
+        }
     }
 
     @Override
