@@ -193,69 +193,69 @@ var guideIndex = (function () {
         },
         mounted: function () {
             var vm = this;
-            this.GetRequest();
+
+            vm.stepScroll();
+            vm.GetRequest();
             vm.getRegionList();
 
             this.sessionStorage = JSON.parse(sessionStorage.getItem("stageData"))|| {origin:false};
             this.sessionStorage2 = JSON.parse(sessionStorage.getItem("orgData")) || {origin2:false};
-           /* if (this.sessionStorage2.origin2) {
-                this.getOrgList();
-            }*/
 
-            //do something after mounting vue instance
-            setTimeout(function () {
-                ele = $('#floorTab .department-name');
-                eleLen = ele.length;
-                vm.init()
-            }, 20)
-            var flag = true;
-            // end 滚动时，固定左侧的menu 并导航到相对位置
-            // 点击左侧滚动导航条 start
-            $('.ciclebox').click(function () {
-                var ele = $(this).children('a').attr('href');
-                $(ele).addClass('active').siblings('.div_step').removeClass('active');
-                $(this).addClass('active').siblings('.ciclebox').removeClass('active');
-            });
-            var rightFixed = $('.right-content .other');
-            var top = rightFixed.offset().top;
-            $(document).scroll(function () {
-                var scroH = $(this).scrollTop();
-                if (scroH > 630) {
-                    rightFixed.css({"position": "fixed"});
-                } else if (scroH < 630) {
-                    rightFixed.css({"position": "static"});
-                }
-
-                if (flag) {
-
-                    var items = $(".div-step");
-                    var menu = $("#menu");
-                    var top = $(document).scrollTop();
-                    var currentId = ""; //滚动条现在所在位置的item id
-                    var cl = '';
-                    var h = $(window).height() / 2;
-                    items.each(function () {
-                        var m = $(this);
-                        //m.offset().top代表每一个item的顶部位置
-                        if (top > m.offset().top - h / 2) {
-                            currentId = "#" + m.attr("id");
-                            cl = m.attr("id");
-                        } else {
-                            return false;
-                        }
-                    });
-                    var currentLink = menu.find(".active");
-                    if (currentId && currentLink.attr("href") != currentId) {
-                        currentLink.removeClass("active");
-                        menu.find("[data-name=" + cl + "]").addClass("active");
-                        $(currentId).addClass("active").siblings().removeClass("active");
-                    }
-                }
-            })
         },
         methods: {
             init: function () {
                 this.getThemeList();
+            },
+            stepScroll:function(){
+                setTimeout(function () {
+                    ele = $('#floorTab .department-name');
+                    eleLen = ele.length;
+                    vm.init()
+                }, 20)
+                var flag = true;
+                // end 滚动时，固定左侧的menu 并导航到相对位置
+                // 点击左侧滚动导航条 start
+                $('.ciclebox').click(function () {
+                    var ele = $(this).children('a').attr('href');
+                    $(ele).addClass('active').siblings('.div_step').removeClass('active');
+                    $(this).addClass('active').siblings('.ciclebox').removeClass('active');
+                });
+                var rightFixed = $('.right-content .other');
+                var top = rightFixed.offset().top;
+                $(document).scroll(function () {
+                    var scroH = $(this).scrollTop();
+                    if (scroH > 630) {
+                        rightFixed.css({"position": "fixed"});
+                    } else if (scroH < 630) {
+                        rightFixed.css({"position": "static"});
+                    }
+
+                    if (flag) {
+
+                        var items = $(".div-step");
+                        var menu = $("#menu");
+                        var top = $(document).scrollTop();
+                        var currentId = ""; //滚动条现在所在位置的item id
+                        var cl = '';
+                        var h = $(window).height() / 2;
+                        items.each(function () {
+                            var m = $(this);
+                            //m.offset().top代表每一个item的顶部位置
+                            if (top > m.offset().top - h / 2) {
+                                currentId = "#" + m.attr("id");
+                                cl = m.attr("id");
+                            } else {
+                                return false;
+                            }
+                        });
+                        var currentLink = menu.find(".active");
+                        if (currentId && currentLink.attr("href") != currentId) {
+                            currentLink.removeClass("active");
+                            menu.find("[data-name=" + cl + "]").addClass("active");
+                            $(currentId).addClass("active").siblings().removeClass("active");
+                        }
+                    }
+                })
             },
             hideMoreDepart: function () {
                 for (var i = 0; i < eleLen; i++) {
@@ -582,10 +582,7 @@ var guideIndex = (function () {
                 }
 
             },
-            // radioItemEvent:function(val){
-            //   debugger
-            //   var a = val
-            // },
+
             // 获取url参数
             GetRequest: function () {
                 var url = location.search; //获取url中"?"符后的字串
@@ -603,8 +600,10 @@ var guideIndex = (function () {
                     this.getOrgList(this.orgId);
                 } else if (theRequest.flag === 'bszn' && theRequest.itemVerId && theRequest.itemName) {
                     this.singleTitle = decodeURIComponent(theRequest.itemName);
-                    console.log(this.singleTitle);
-                    this.switchSinglePage(theRequest.itemVerId)
+                    var row = {
+                        itemVerId:theRequest.itemVerId
+                    }
+                    this.switchSinglePage(row);
                 }
                 return theRequest;
             },
