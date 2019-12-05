@@ -4,7 +4,6 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
-import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
@@ -20,10 +19,7 @@ import com.augurit.aplanmis.mall.userCenter.service.RestApplyMatService;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyService;
 import com.augurit.aplanmis.mall.userCenter.service.RestFileService;
 import com.augurit.aplanmis.mall.userCenter.vo.*;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -63,6 +59,8 @@ public class RestApplyCommonController {
     private RestFileService restFileService;
     @Autowired
     private AeaHiApplyinstService aeaHiApplyinstService;
+    @Autowired
+    private AeaParThemeService aeaParThemeService;
 
 
 
@@ -77,7 +75,11 @@ public class RestApplyCommonController {
             AeaProjInfo aeaProjInfo = aeaProjInfoService.getAeaProjInfoByProjInfoId(projInfoId);
             if(StringUtils.isNotBlank(aeaProjInfo.getThemeId())){
                 AeaParTheme theme = aeaParThemeService.getAeaParThemeByThemeId(aeaProjInfo.getThemeId());
-                if(theme!=null) aeaProjInfo.setThemeType(theme.getThemeType());
+                if(theme!=null) {
+                    aeaProjInfo.setThemeType(theme.getThemeType());
+                    AeaParThemeVer themeVer = aeaParThemeService.getAeaParThemeVerByThemeIdAndVerNum(theme.getThemeId(),null, SecurityContext.getCurrentOrgId());
+                    theme.setThemeVerId(themeVer==null?"":themeVer.getThemeVerId());
+                }
             }
             aeaProjInfo.setAeaUnitInfos(restApplyService.getAeaUnitInfosByProjInfoId(projInfoId,request));
             return new ContentResultForm<>(true,aeaProjInfo);
@@ -170,18 +172,42 @@ public class RestApplyCommonController {
     @PostMapping("/itemList/temporary")
     @ApiOperation(value = "阶段申报-->暂存阶段，情形及事项(含事项情形)")
     public ContentResultForm itemListTemporary(@Valid @RequestBody ItemListTemporaryParamVo itemListTemporaryParamVo, @RequestBody SmsInfoVo smsInfoVo,HttpServletRequest request){
-        Map<String,Object> map;
+        Map<String,Object> map=new HashMap<>();
         ContentResultForm firstStepResult = temporarySaveOrUpdateSmsInfo(smsInfoVo, request);
         String applyinstId="";
         if(firstStepResult.isSuccess()){
             Map<String,Object> firstStepResultContent=(Map<String,Object>)(firstStepResult.getContent());
+            BeanUtils.copyProperties(firstStepResultContent,map);
             applyinstId=(String)firstStepResultContent.get("applyinstId");
         }else {
             return new ContentResultForm(false,"",firstStepResult.getMessage());
         }
         try{
             itemListTemporaryParamVo.setApplyinstId(applyinstId);
-            map=restApplyCommonService.submitItemList(itemListTemporaryParamVo);
+            map=restApplyCommonService.submitItemList(itemListTemporaryParamVo,map);
+            map.put("applyinstId",applyinstId);
+        }catch (Exception e){
+            return new ContentResultForm(false,"",e.getMessage());
+        }
+        return new ContentResultForm(true,map,"暂存成功！");
+    }
+
+    @PostMapping("/matList/temporary")
+    @ApiOperation(value = "阶段申报-->暂存材料)")
+    public ContentResultForm matListTemporary(@Valid @RequestBody ItemListTemporaryParamVo itemListTemporaryParamVo, @RequestBody SmsInfoVo smsInfoVo,@RequestBody MatListTemporaryParamVo matListTemporaryParamVo,HttpServletRequest request){
+        Map<String,Object> map=new HashMap<>();
+        ContentResultForm secondStepResult = itemListTemporary(itemListTemporaryParamVo,smsInfoVo, request);
+        String applyinstId="";
+        if(secondStepResult.isSuccess()){
+            Map<String,Object> secondStepResultContent=(Map<String,Object>)(secondStepResult.getContent());
+            BeanUtils.copyProperties(secondStepResultContent,map);
+            applyinstId=(String)secondStepResultContent.get("applyinstId");
+        }else {
+            return new ContentResultForm(false,"",secondStepResult.getMessage());
+        }
+        try{
+            matListTemporaryParamVo.setApplyinstId(applyinstId);
+            restApplyCommonService.submitMatmList(matListTemporaryParamVo);
             map.put("applyinstId",applyinstId);
         }catch (Exception e){
             return new ContentResultForm(false,"",e.getMessage());

@@ -11,12 +11,13 @@ import com.augurit.agcloud.opus.common.sc.scc.runtime.kernal.support.om.OpusOmZt
 import com.augurit.agcloud.opus.common.service.om.OpuOmOrgService;
 import com.augurit.aplanmis.common.constants.DicConstants;
 import com.augurit.aplanmis.common.domain.AeaParTheme;
+import com.augurit.aplanmis.common.domain.AeaParThemeVer;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.common.dto.ApproveProjInfoDto;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
 import com.augurit.aplanmis.common.service.admin.opus.AplanmisOpuOmOrgAdminService;
 import com.augurit.aplanmis.common.service.admin.par.AeaParThemeAdminService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
+import com.augurit.aplanmis.common.service.theme.AeaParThemeService;
 import com.augurit.aplanmis.common.utils.CommonTools;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
@@ -76,6 +77,8 @@ public class RestApplyProjController {
 
     @Autowired
     private AplanmisOpuOmOrgAdminService aplanmisOpuOmOrgAdminService;
+    @Autowired
+    private AeaParThemeService aeaParThemeService;
 
     @GetMapping("todeclarePage")
     @ApiOperation(value = "跳转我要申报页面")
@@ -201,6 +204,17 @@ public class RestApplyProjController {
         }
         aeaParTheme.setIsOnlineSb("1");
         List<AeaParTheme> aeaParThemes=aeaParThemeAdminService.listAeaParTheme(aeaParTheme);
+        if(aeaParThemes.size()>0){
+            aeaParThemes.stream().forEach(theme->{
+                AeaParThemeVer themeVer = null;
+                try {
+                    themeVer = aeaParThemeService.getAeaParThemeVerByThemeIdAndVerNum(theme.getThemeId(),null, SecurityContext.getCurrentOrgId());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                theme.setThemeVerId(themeVer==null?"":themeVer.getThemeVerId());
+            });
+        }
         return new ContentResultForm<>(true, aeaParThemes);
     }
 

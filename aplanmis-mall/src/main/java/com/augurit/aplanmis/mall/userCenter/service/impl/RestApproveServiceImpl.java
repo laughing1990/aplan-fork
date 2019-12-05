@@ -133,6 +133,18 @@ public class RestApproveServiceImpl implements RestApproveService {
     public PageInfo<ApproveProjInfoDto> getDraftApplyList(String unitInfoId, String userInfoId, String keyword, int pageNum, int pageSize) throws Exception{
         PageHelper.startPage(pageNum,pageSize);
         List<ApproveProjInfoDto> list = aeaHiIteminstMapper.getDraftApplyList(unitInfoId,userInfoId,keyword);
+        if(list.size()>0){
+            list.stream().forEach(dto->{
+                if("0".equals(dto.getIsSeriesApprove())){
+                    try {
+                        AeaHiParStageinst stageinst = aeaHiParStageinstService.getAeaHiParStageinstByApplyinstId(dto.getApplyinstId());
+                        dto.setStageinstId(stageinst==null?"":stageinst.getStageinstId());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
         return new PageInfo<>(list);
     }
 

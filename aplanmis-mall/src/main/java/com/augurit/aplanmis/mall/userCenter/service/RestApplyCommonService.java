@@ -7,6 +7,7 @@ import com.augurit.aplanmis.common.vo.AeaUnitInfoVo;
 import com.augurit.aplanmis.common.vo.LinkmanTypeVo;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.userCenter.vo.ItemListTemporaryParamVo;
+import com.augurit.aplanmis.mall.userCenter.vo.MatListTemporaryParamVo;
 import com.augurit.aplanmis.mall.userCenter.vo.ParallelItemStateVo;
 import com.augurit.aplanmis.mall.userCenter.vo.SmsInfoVo;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,7 +53,7 @@ public interface RestApplyCommonService {
 
     void saveOrUpdateAeaApplyinstProj(String applyinstId, String projInfoId) throws Exception;
 
-    Map<String, Object> submitItemList(ItemListTemporaryParamVo itemListTemporaryParamVo) throws Exception;
+    Map<String, Object> submitItemList(ItemListTemporaryParamVo itemListTemporaryParamVo,Map<String,Object> map) throws Exception;
 
     void insertSeriesIteminst(String seriesApplyinstId, String itemVerId) throws Exception;
 
@@ -64,4 +65,5 @@ public interface RestApplyCommonService {
 
     public void deleteItemStates(String applyinstId) throws Exception;
 
+    void submitMatmList(MatListTemporaryParamVo matListTemporaryParamVo) throws Exception;
 }
