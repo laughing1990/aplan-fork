@@ -146,8 +146,8 @@ public class RestApproveServiceImpl implements RestApproveService {
     }
 
     @Override
-    public PageInfo<SupplementInfoDto> searchMatComplet(String unitInfoId, String userId, int pageNum, int pageSize) throws Exception {
-        return MergeopinionList(approveDataService.searchMatComplet(unitInfoId, userId, ApplyState.IN_THE_SUPPLEMENT.getValue(), pageNum, pageSize));
+    public PageInfo<SupplementInfoDto> searchMatComplet(String unitInfoId, String userId, String keyword, int pageNum, int pageSize) throws Exception {
+        return MergeopinionList(approveDataService.searchMatCompletByUser(unitInfoId, userId, keyword, pageNum, pageSize));
     }
 
     public PageInfo<SupplementInfoDto> searchSupplementInfo(String unitInfoId, String userId, int pageNum, int pageSize) throws Exception {
@@ -362,19 +362,19 @@ public class RestApproveServiceImpl implements RestApproveService {
         long withdrawalNum = 0;//已撤件
         if (loginInfo == null) return retVo;
         if (loginInfo.isPersonalAccount()) {//个人
-            matCompletionNum = this.searchMatComplet("", loginInfo.getLinkmanInfoId(), 1, 1).getTotal();
+            matCompletionNum = this.searchMatComplet("", loginInfo.getLinkmanInfoId(), null, 1, 1).getTotal();
             approvalNum = this.searchIteminstApproveInfoListByUnitIdAndUserId("", "", loginInfo.getLinkmanInfoId(), 1, 1).getTotal();
             draftNum = this.searchApproveProjInfoListByUnitOrLinkman("", loginInfo.getLinkmanInfoId(), "2", null, 1, 1).getTotal();
             supplyNum = this.searchSupplyInfoList("", loginInfo.getLinkmanInfoId(), 1, 1).getTotal();
             applyNum = aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman("", loginInfo.getLinkmanInfoId(),"all");
         } else if (StringUtils.isNotBlank(loginInfo.getLinkmanInfoId())) {//委托人
-            matCompletionNum = this.searchMatComplet(loginInfo.getUnitInfoId(), loginInfo.getLinkmanInfoId(), 1, 1).getTotal();
+            matCompletionNum = this.searchMatComplet(loginInfo.getUnitInfoId(), loginInfo.getLinkmanInfoId(), null, 1, 1).getTotal();
             approvalNum = this.searchIteminstApproveInfoListByUnitIdAndUserId("", loginInfo.getUnitInfoId(), loginInfo.getLinkmanInfoId(), 1, 1).getTotal();
             draftNum = this.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitInfoId(), loginInfo.getLinkmanInfoId(), "2", null, 1, 1).getTotal();
             supplyNum = this.searchSupplyInfoList(loginInfo.getUnitInfoId(), loginInfo.getLinkmanInfoId(), 1, 1).getTotal();
             applyNum = aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitInfoId(), loginInfo.getLinkmanInfoId(),"all");
         } else {//企业
-            matCompletionNum = this.searchMatComplet(loginInfo.getUnitInfoId(), "", 1, 1).getTotal();
+            matCompletionNum = this.searchMatComplet(loginInfo.getUnitInfoId(), "", null, 1, 1).getTotal();
             approvalNum = this.searchIteminstApproveInfoListByUnitIdAndUserId("", loginInfo.getUnitInfoId(), "", 1, 1).getTotal();
             draftNum = this.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitInfoId(), "", "2", null, 1, 1).getTotal();
             supplyNum = this.searchSupplyInfoList(loginInfo.getUnitInfoId(), "", 1, 1).getTotal();

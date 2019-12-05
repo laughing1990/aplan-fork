@@ -47,7 +47,7 @@ public interface RestApproveService {
      * 查询补全状态的数据
      *
      */
-    PageInfo<SupplementInfoDto> searchMatComplet(String unitInfoId, String userId, int pageNum, int pageSize) throws Exception;
+    PageInfo<SupplementInfoDto> searchMatComplet(String unitInfoId, String userId, String keyword, int pageNum, int pageSize) throws Exception;
 
     /**
      * 查询补正状态的数据
