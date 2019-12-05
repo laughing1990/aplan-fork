@@ -30,4 +30,5 @@ public class ApproveProjInfoDto {
     private String themeName;//主题名称
     private String approveComments;//办理意见
     private String iteminstCode;//办件编号
+    private String itemVerId;
 }

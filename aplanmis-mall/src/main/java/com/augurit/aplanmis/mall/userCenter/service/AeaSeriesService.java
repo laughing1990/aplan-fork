@@ -252,21 +252,32 @@ public class AeaSeriesService {
         List<BuildProjUnitVo> buildProjUnits = seriesApplyDataVo.getBuildProjUnitMap();
         List<String> unitProjIds = seriesApplyDataVo.getProjUnitIds();
         AeaItemBasic itemBasicByItemVerId = aeaItemBasicMapper.getAeaItemBasicByItemVerId(itemVerId,SecurityContext.getCurrentOrgId());
-        AeaHiApplyinst seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "1", null,ApplyState.RECEIVE_APPROVED_APPLY.getValue(),"0");//实例化串联申请实例
-
-        String seriesApplyinstId = seriesApplyinst.getApplyinstId();//申报实例ID
-        seriesApplyinst.setProjInfoId(projInfoIds[0]);
-
-        seriesApplyDataVo.setApplyinstId(seriesApplyinstId);//回填申请实例ID
-
-        String appinstId = UUID.randomUUID().toString();//预先生成流程模板实例ID
-
-        //1、保存单项实例
-        AeaHiSeriesinst aeaHiSeriesinst = aeaHiSeriesinstService.createAeaHiSeriesinst(seriesApplyinstId, appinstId,"0",null);
-
-        //2、事项实例
-        AeaHiIteminst aeaHiIteminst = aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), itemVerId, null,null,appinstId);
-        aeaHiIteminstList.add(aeaHiIteminst);
+        String applyinstId=seriesApplyDataVo.getApplyinstId();
+        AeaHiIteminst aeaHiIteminst;
+        AeaHiSeriesinst aeaHiSeriesinst;
+        AeaHiApplyinst seriesApplyinst;
+        String seriesApplyinstId;
+        String appinstId;
+        if(StringUtils.isNotBlank(applyinstId)){//已暂存过
+            seriesApplyinst=aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+            seriesApplyinstId = seriesApplyinst.getApplyinstId();//申报实例ID
+            seriesApplyinst.setProjInfoId(projInfoIds[0]);
+            seriesApplyDataVo.setApplyinstId(seriesApplyinstId);//回填申请实例ID
+            aeaHiSeriesinst=aeaHiSeriesinstService.getAeaHiSeriesinstByApplyinstId(applyinstId);
+            appinstId=aeaHiSeriesinst.getAppinstId();
+            aeaHiIteminst=aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId).get(0);
+        }else{
+            seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "1", null,ApplyState.RECEIVE_APPROVED_APPLY.getValue(),"0");//实例化串联申请实例
+            seriesApplyinstId = seriesApplyinst.getApplyinstId();//申报实例ID
+            seriesApplyinst.setProjInfoId(projInfoIds[0]);
+            seriesApplyDataVo.setApplyinstId(seriesApplyinstId);//回填申请实例ID
+            appinstId = UUID.randomUUID().toString();//预先生成流程模板实例ID
+            //1、保存单项实例
+            aeaHiSeriesinst = aeaHiSeriesinstService.createAeaHiSeriesinst(seriesApplyinstId, appinstId,"0",null);
+            //2、事项实例
+            aeaHiIteminst = aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), itemVerId, null,null,appinstId);
+        }
+       aeaHiIteminstList.add(aeaHiIteminst);
         Map mapOrg = new HashMap();
         Map isBranchHandle = new HashMap();
         mapOrg.put("itemVerId", itemBasicByItemVerId.getItemVerId());

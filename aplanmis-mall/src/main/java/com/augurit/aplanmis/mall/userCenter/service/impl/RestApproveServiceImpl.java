@@ -322,11 +322,11 @@ public class RestApproveServiceImpl implements RestApproveService {
                 if (unitInfoList.size()>0){
                     aeaUnitInfo = unitInfoList.get(0);
                     String unitInfoId = aeaUnitInfo.getUnitInfoId();
-                    aeaUnitInfo.setAeaLinkmanInfoList(aeaLinkmanInfoService.findAllUnitLinkman(unitInfoId));
+                    applyDetailVo.setAeaLinkmanInfoList(aeaLinkmanInfoService.findAllUnitLinkman(unitInfoId));
                 }else {
                     List<AeaLinkmanInfo> aeaLinkmanInfoList = new ArrayList<>();
                     aeaUnitInfo = new AeaUnitInfo();
-                    aeaUnitInfo.setAeaLinkmanInfoList(aeaLinkmanInfoList);
+                    applyDetailVo.setAeaLinkmanInfoList(aeaLinkmanInfoList);
                 }
                 applyDetailVo.setAeaUnitInfo(aeaUnitInfo);
             }
@@ -341,6 +341,7 @@ public class RestApproveServiceImpl implements RestApproveService {
 
         //建设单位信息
         applyDetailVo.setAeaUnitInfos(restApplyService.getAeaUnitInfosByProjInfoId(projInfoId,request));
+        if (applyDetailVo.getAeaLinkmanInfoList()==null)applyDetailVo.setAeaHiIteminstList(new ArrayList<>());
         return applyDetailVo;
     }
 

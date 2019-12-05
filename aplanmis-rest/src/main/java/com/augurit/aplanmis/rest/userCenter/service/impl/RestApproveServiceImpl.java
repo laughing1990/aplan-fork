@@ -30,6 +30,7 @@ import com.augurit.aplanmis.common.dto.ApproveProjInfoDto;
 import com.augurit.aplanmis.common.dto.SupplementInfoDto;
 import com.augurit.aplanmis.common.mapper.AeaHiItemCorrectMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemStateinstMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiIteminstMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemStateMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStateItemMapper;
 import com.augurit.aplanmis.common.service.file.impl.FileAbstractService;
@@ -126,6 +127,8 @@ public class RestApproveServiceImpl implements RestApproveService {
     private AeaItemStateMapper aeaItemStateMapper;
     @Autowired
     private AeaHiItemStateinstMapper aeaHiItemStateinstMapper;
+    @Autowired
+    private AeaHiIteminstMapper aeaHiIteminstMapper;
 
     @Override
     public PageInfo<ApproveProjInfoDto> searchApproveProjInfoListByUnitOrLinkman(String unitInfoId, String userInfoId, String state, String keyword, int pageNum, int pageSize) throws Exception {
@@ -784,5 +787,12 @@ public class RestApproveServiceImpl implements RestApproveService {
 //        lifeCycleDiagramVo.setAeaParStages(paralleStages);
 
         return lifeCycleDiagramVo;
+    }
+
+    @Override
+    public PageInfo<ApproveProjInfoDto> searchWithdrawApplyListByUnitOrLinkman(String unitInfoId, String userInfoId, String keyword, int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<ApproveProjInfoDto> list = aeaHiIteminstMapper.getWithdrawApplyListByUnitOrLinkman(unitInfoId, userInfoId, keyword);
+        return new PageInfo<>(list);
     }
 }
