@@ -995,6 +995,20 @@ var module1 = new Vue({
 				vm.$message({message: '加载失败', type: 'error'});
 			});
 		},
+		//直接选取时选择中介机构
+		selectAgentUnit: function () {
+			var _this = this;
+			_this.chooseAgentTabledialogTable = false;
+			if (_this.multipleSelection3.length == 0) {
+				_this.$alert('还未选择机构', '提示', {
+					confirmButtonText: '确定',
+				});
+			} else {
+				_this.unitInfoId = _this.multipleSelection3[0].unitInfoId;
+				_this.form.agentUnitName = _this.multipleSelection3[0].agentUnitName;
+			}
+
+		},
 		/**
 		 * 文件上传部分
 		 */
@@ -1312,6 +1326,7 @@ var module1 = new Vue({
 			this.pageNum4 = val;
 			this.selectOrgan()
 		},
+		//直接选取中介机构，勾选中介机构时的方法
 		handleSelectionChange3: function (val) {
 			if (!val) return false;
 
@@ -1362,11 +1377,15 @@ var module1 = new Vue({
 				str += '零壹贰叁肆伍陆柒捌玖'.charAt(n.charAt(i)) + unit.charAt(i);
 			return str.replace(/零(千|百|拾|角)/g, "零").replace(/(零)+/g, "零").replace(/零(万|亿|元)/g, "$1").replace(/(亿)万|壹(拾)/g, "$1$2").replace(/^元零?|零分/g, "").replace(/元$/g, "元整");
 		},
+		//选取中介机构方式改变方法
 		biddingTypeChange: function (val) {
 			var vm = this;
 			console.log(val)
 			if (val == 3) {
 				vm.$set(vm.form, 'quoteType', '0')
+			}
+			if (val == 2) {
+				vm.$set(vm.form, 'isDefineAmount', '1');
 			}
 			if (val == 1) {
 				vm.$nextTick(function () {

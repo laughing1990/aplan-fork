@@ -590,6 +590,23 @@ public class RestImApplyService {
         return result;
     }
 
+    @Autowired
+    private AeaImServiceLinkmanMapper aeaImServiceLinkmanMapper;
+
+
+    /**
+     * 保存采购实例信息
+     *
+     * @param purchaseData
+     * @throws Exception
+     */
+    public void savePurchaseinst(ImPurchaseData purchaseData) throws Exception {
+        //初始化采购需求历史状态信息
+        AeaImPurchaseinst aeaImPurchaseinst = new AeaImPurchaseinst();
+        aeaImPurchaseinst.buildImPurchaseinst(purchaseData.getProjPurchaseId(), AuditFlagStatus.WAIT_CHOOSE, "root", purchaseData.getLinkmanInfoId(), "0", purchaseData.getCreater(), purchaseData.getRootOrgId());
+        aeaImPurchaseinstMapper.insertPurchaseinst(aeaImPurchaseinst);
+    }
+
     /**
      * 保存采购项目信息
      *
@@ -666,7 +683,7 @@ public class RestImApplyService {
         AeaProjLinkman aeaProjLinkman = new AeaProjLinkman(data.getProjInfoId(), linkmanInfoId, "link", data.getApplyinstId(), data.getCreater());
         aeaProjLinkmanMapper.insertAeaProjLinkman(aeaProjLinkman);
 
-        //保存企业报价---todo 如果是直接选取，需要生成竞价信息及中标事项，修改事项转态
+        //自主选择保存企业报价
         if (AeaImProjPurchase.BiddingType.自主选择.getType().equals(aeaImProjPurchase.getBiddingType())) {
             if (StringUtils.isNotBlank(data.getAgentUnitInfoId())) {
                 saveImUnitBidding(data, aeaImProjPurchase.getProjPurchaseId());
@@ -692,42 +709,30 @@ public class RestImApplyService {
         return aeaImProjPurchase;
     }
 
-
-    /**
-     * 保存采购实例信息
-     *
-     * @param purchaseData
-     * @throws Exception
-     */
-    public void savePurchaseinst(ImPurchaseData purchaseData) throws Exception {
-        //初始化采购需求历史状态信息
-        AeaImPurchaseinst aeaImPurchaseinst = new AeaImPurchaseinst();
-        aeaImPurchaseinst.buildImPurchaseinst(purchaseData.getProjPurchaseId(), AuditFlagStatus.WAIT_CHOOSE, "root", purchaseData.getLinkmanInfoId(), "0", purchaseData.getCreater(), purchaseData.getRootOrgId());
-        aeaImPurchaseinstMapper.insertPurchaseinst(aeaImPurchaseinst);
-    }
-
     private void saveImUnitBidding(ImPurchaseData data, String projPurchaseId) throws Exception {
         AeaUnitInfo agentUnitInfo = aeaUnitInfoMapper.getAeaUnitInfoById(data.getAgentUnitInfoId());
+        if (null == agentUnitInfo) return;
 
-        if (agentUnitInfo != null) {
+        AeaImUnitService aeaImUnitService = aeaImUnitServiceMapper.getUnitServiceByUnitInfoIdAndServiceItemId(agentUnitInfo.getUnitInfoId(), data.getServiceItemId());
 
-            AeaImUnitService aeaImUnitService = aeaImUnitServiceMapper.getUnitServiceByUnitInfoIdAndServiceItemId(agentUnitInfo.getUnitInfoId(), data.getServiceItemId());
-
-            if (aeaImUnitService != null) {
-                AeaImUnitBidding aeaImUnitBidding = new AeaImUnitBidding();
-                aeaImUnitBidding.buildImUnitBidding(projPurchaseId, data.getAgentUnitInfoId(), aeaImUnitService.getUnitServiceId(), data.getCreater(), data.getRootOrgId());
-                // 查询已绑定联系人
-                List<AeaLinkmanInfo> aeaLinkmanInfos = aeaLinkmanInfoMapper.listBindLinkmanByUnitId(data.getAgentUnitInfoId(), "1", "1", "");
-                if (aeaLinkmanInfos != null && aeaLinkmanInfos.size() > 0) {
-                    AeaLinkmanInfo linkmanInfo = aeaLinkmanInfos.get(0);
-                    aeaImUnitBidding.setLinkmanInfoId(linkmanInfo.getLinkmanInfoId());
-                }
-                aeaImUnitBiddingMapper.insertAeaImUnitBidding(aeaImUnitBidding);
-
-                // 保存竞价价格
-                AeaImBiddingPrice aeaImBiddingPrice = new AeaImBiddingPrice(aeaImUnitBidding.getUnitBiddingId(), data.getBasePrice(), "1", "0", data.getCreater(), data.getRootOrgId());
-                aeaImBiddingPriceMapper.insertAeaImBiddingPrice(aeaImBiddingPrice);
+        if (aeaImUnitService != null) {
+            AeaImUnitBidding aeaImUnitBidding = new AeaImUnitBidding();
+            aeaImUnitBidding.buildImUnitBidding(projPurchaseId, data.getAgentUnitInfoId(), aeaImUnitService.getUnitServiceId(), data.getCreater(), data.getRootOrgId());
+            // 查询当前服务联系人
+            List<AeaImServiceLinkman> linkmanList = aeaImServiceLinkmanMapper.listAeaImServiceLinkmanByUnitInfoIdAndServiceId(data.getAgentUnitInfoId(), data.getServiceId());
+            if (!linkmanList.isEmpty()) {
+                aeaImUnitBidding.setLinkmanInfoId(linkmanList.get(0).getLinkmanInfoId());
             }
+           /* List<AeaLinkmanInfo> aeaLinkmanInfos = aeaLinkmanInfoMapper.listBindLinkmanByUnitId(data.getAgentUnitInfoId(), "1", "1", "");
+            if (aeaLinkmanInfos != null && aeaLinkmanInfos.size() > 0) {
+                AeaLinkmanInfo linkmanInfo = aeaLinkmanInfos.get(0);
+                aeaImUnitBidding.setLinkmanInfoId(linkmanInfo.getLinkmanInfoId());
+            }*/
+            aeaImUnitBiddingMapper.insertAeaImUnitBidding(aeaImUnitBidding);
+
+            // 保存竞价价格
+            AeaImBiddingPrice aeaImBiddingPrice = new AeaImBiddingPrice(aeaImUnitBidding.getUnitBiddingId(), data.getBasePrice(), "1", "0", data.getCreater(), data.getRootOrgId());
+            aeaImBiddingPriceMapper.insertAeaImBiddingPrice(aeaImBiddingPrice);
         }
     }
 
