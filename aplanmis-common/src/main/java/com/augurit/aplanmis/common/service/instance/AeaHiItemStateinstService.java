@@ -38,5 +38,9 @@ public interface AeaHiItemStateinstService {
      */
     List<AeaItemState> listAeaItemStateByApplyinstIdOrSeriesinstId(String applyinstId, String seriesinstId) throws Exception;
 
-
+    /**
+     * 批量删除事项情形
+     * @param itemStateIds
+     */
+    void batchDeleteAeaItemState(String[] itemStateIds);
 }

@@ -654,7 +654,7 @@ var module1 = new Vue({
       }else {
         _that.showUploadWindowFlag = true;
         _that.getMyMatsList();
-        _that.getFileListWin(_that.selMatinstId, data);
+        _that.getFileListWin(_that.selAttRealIninstId, data);
       }
     },
     // close文件上传dialog

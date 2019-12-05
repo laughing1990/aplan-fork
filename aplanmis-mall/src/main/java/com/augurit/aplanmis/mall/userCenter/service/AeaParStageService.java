@@ -47,14 +47,7 @@ import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowUserService;
 import com.augurit.aplanmis.common.utils.BusinessUtil;
-import com.augurit.aplanmis.mall.userCenter.vo.AeaCoreItemVo;
-import com.augurit.aplanmis.mall.userCenter.vo.AeaParaItemVo;
-import com.augurit.aplanmis.mall.userCenter.vo.ApplyInstantiateResult;
-import com.augurit.aplanmis.mall.userCenter.vo.BuildProjUnitVo;
-import com.augurit.aplanmis.mall.userCenter.vo.ParallelApplyResultVo;
-import com.augurit.aplanmis.mall.userCenter.vo.PropulsionItemStateVo;
-import com.augurit.aplanmis.mall.userCenter.vo.StageApplyDataVo;
-import com.augurit.aplanmis.mall.userCenter.vo.StageApplyInstantiateResult;
+import com.augurit.aplanmis.mall.userCenter.vo.*;
 import com.google.common.collect.Lists;
 import org.flowable.engine.TaskService;
 import org.flowable.task.api.Task;
@@ -108,7 +101,7 @@ public class AeaParStageService {
     @Autowired
     private BpmProcessService bpmProcessService;
     @Autowired
-    private ActStoAppinstService actStoAppinstService;
+    private RestApplyCommonService restApplyCommonService;
     @Autowired
     private OpuOmOrgMapper opuOmOrgMapper;
     @Autowired
@@ -121,8 +114,6 @@ public class AeaParStageService {
     private AeaHiSmsInfoService aeaHiSmsInfoService;
     @Autowired
     private AeaProjInfoService aeaProjInfoService;
-    @Autowired
-    private RestTimeruleinstService restTimeruleinstService;
     @Autowired
     private BscDicCodeService bscDicCodeService;
     @Autowired
@@ -302,8 +293,12 @@ public class AeaParStageService {
             //1、实例化申请实例
             //
             AeaHiApplyinst aeaHiApplyinst = null;
+            String applyinstId;
+            String appinstId;
+            List<AeaHiIteminst> aeaHiIteminsts=new ArrayList<>();
             if (StringUtils.isNotBlank(applyInstId)){//applyInstId不为空的情况:在调用一张表单(或暂存)时已经提前将申请实例化
                 aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyInstId);
+                applyinstId = aeaHiApplyinst.getApplyinstId();//获取申报实例ID
                 if("1".equals(aeaHiApplyinst.getIsTemporarySubmit())){
                     aeaHiApplyinst.setIsTemporarySubmit("0");
                     if (StringUtils.isNotBlank(branchOrgMap)) {//AeaHiApplyinst增加branchOrg字段控制分局承办
@@ -311,25 +306,50 @@ public class AeaParStageService {
                     }
                     aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
                 }
+                AeaHiParStageinst aeaHiParStageinst = aeaHiParStageinstService.getAeaHiParStageinstByApplyinstId(applyinstId);
+                if(aeaHiParStageinst==null) {//说明之前只是实例化了申报，阶段没有实例化，也就是没有实例化事项和情形了
+                    appinstId=UUID.randomUUID().toString();
+                    aeaHiParStageinst = aeaHiParStageinstService.createAeaHiParStageinst(applyinstId, stageId, themeVerId,appinstId , null);
+                    //3、实例化事项----此处已经做了事项实例表中的分局承办字段，
+                    aeaHiIteminsts = aeaHiIteminstService.batchInsertAeaHiIteminstAndTriggerAeaLogItemStateHist(themeVerId,aeaHiParStageinst.getStageinstId(),itemVerIds,branchOrgMap,null,appinstId);
+
+                    //4、情形实例
+                    aeaHiParStateinstService.batchInsertAeaHiParStateinst(applyinstId, aeaHiParStageinst.getStageinstId(), stateIds, SecurityContext.getCurrentUserName());
+
+                    // 简单合并申报的情况下，可能存在事项自己的情形列表
+                    saveItemStateBySimpleMerge(stageApplyDataVo, itemVerIds, applyinstId,aeaHiParStageinst.getStageinstId());
+                }else{
+                    appinstId=aeaHiParStageinst.getAppinstId();
+                    //如果已经实例化了事项，则删除事项重新实例化
+                    aeaHiIteminsts=restApplyCommonService.deleteReInsertIteminstUnderStageinst(themeVerId,aeaHiParStageinst.getStageinstId(),itemVerIds,appinstId,branchOrgMap);
+                    //如果已经实例化了情形，则删除重新实例化
+                    restApplyCommonService.deleteReInsertParStateinstUnderStageinst(applyinstId,aeaHiParStageinst.getStageinstId(),stateIds);
+                    //如果是简单的事项合并，则需删除事项下已经实例化的情形，重新实例化
+                    // 多事项直接合并办理 handWay=0 时才处理
+                    AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageId);
+                    if (aeaParStage!= null && "0".equals(aeaParStage.getHandWay())) {
+                        List<ParallelItemStateVo> parallelItemStateVoList=stageApplyDataVo.getParallelItemStateIds();
+                        restApplyCommonService.deleteItemStates(applyinstId);
+                        // 简单合并申报的情况下，可能存在事项自己的情形列表
+                        restApplyCommonService.saveItemStateBySimpleMerge(parallelItemStateVoList, itemVerIds, applyinstId,aeaHiParStageinst.getStageinstId());
+                    }
+                }
             }else {
                 aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "0", branchOrgMap,ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"0");
+                applyinstId = aeaHiApplyinst.getApplyinstId();//获取申报实例ID
+                appinstId = UUID.randomUUID().toString();//预先生成流程模板实例ID
+                //2、实例化并联实例
+                AeaHiParStageinst aeaHiParStageinst = aeaHiParStageinstService.createAeaHiParStageinst(applyinstId, stageId, themeVerId, appinstId, null);
+                //3、实例化事项----此处已经做了事项实例表中的分局承办字段，
+                aeaHiIteminsts = aeaHiIteminstService.batchInsertAeaHiIteminstAndTriggerAeaLogItemStateHist(themeVerId,aeaHiParStageinst.getStageinstId(),itemVerIds,branchOrgMap,null,appinstId);
+
+                //4、情形实例
+                aeaHiParStateinstService.batchInsertAeaHiParStateinst(applyinstId, aeaHiParStageinst.getStageinstId(), stateIds, SecurityContext.getCurrentUserName());
+
+                // 简单合并申报的情况下，可能存在事项自己的情形列表
+                saveItemStateBySimpleMerge(stageApplyDataVo, itemVerIds, applyinstId,aeaHiParStageinst.getStageinstId());
             }
-
-            if (aeaHiApplyinst == null)
-                throw new RuntimeException("实例化申请实例失败！");
-            parallelApplyResultVo.setApplyinstCode(aeaHiApplyinst.getApplyinstCode());
-            String applyinstId = aeaHiApplyinst.getApplyinstId();//获取申报实例ID
-
-            aeaHiApplyinst.setProjInfoId(projInfoIds[0]);
-
-            String appinstId = UUID.randomUUID().toString();//预先生成流程模板实例ID
-
-            //2、实例化并联实例
-            AeaHiParStageinst aeaHiParStageinst = aeaHiParStageinstService.createAeaHiParStageinst(applyinstId, stageId, themeVerId, appinstId, null);
-            //3、实例化事项----此处已经做了事项实例表中的分局承办字段，
-            List<AeaHiIteminst> aeaHiIteminsts = aeaHiIteminstService.batchInsertAeaHiIteminstAndTriggerAeaLogItemStateHist(themeVerId,aeaHiParStageinst.getStageinstId(),itemVerIds,branchOrgMap,null,appinstId);
-
-            aeaHiIteminsts.stream().forEach(aeaHiIteminst -> {
+            if(aeaHiIteminsts.size()>0) aeaHiIteminsts.stream().forEach(aeaHiIteminst -> {
                 AeaParaItemVo aeaParaItemVo = new AeaParaItemVo();
                 aeaParaItemVo.setItemName(aeaHiIteminst.getIteminstName());
                 OpuOmOrg approveOrg = opuOmOrgMapper.getOrg(aeaHiIteminst.getApproveOrgId());
@@ -339,11 +359,12 @@ public class AeaParStageService {
                 aeaParaItemVoList.add(aeaParaItemVo);
             });
 
-            //4、情形实例
-            aeaHiParStateinstService.batchInsertAeaHiParStateinst(applyinstId, aeaHiParStageinst.getStageinstId(), stateIds, SecurityContext.getCurrentUserName());
+            if (aeaHiApplyinst == null)
+                throw new RuntimeException("实例化申请实例失败！");
+            parallelApplyResultVo.setApplyinstCode(aeaHiApplyinst.getApplyinstCode());
 
-            // 简单合并申报的情况下，可能存在事项自己的情形列表
-            saveItemStateBySimpleMerge(stageApplyDataVo, itemVerIds, applyinstId,aeaHiParStageinst.getStageinstId());
+            aeaHiApplyinst.setProjInfoId(projInfoIds[0]);
+
             //5、材料输入输出实例
             aeaHiItemInoutinstService.batchInsertAeaHiItemInoutinst(matinstsIds, applyinstId, SecurityContext.getCurrentUserName());
 

@@ -20,7 +20,7 @@ import java.util.List;
 @Data
 @ApiModel("领件人vo")
 public class SmsInfoVo extends AeaProjInfo {
-    @ApiModelProperty(value = "保存到数据表中的标识, 更新领件人时需要传, 保存不用", dataType = "string", allowEmptyValue = true)
+    @ApiModelProperty(value = "主键smsId", dataType = "string", allowEmptyValue = true)
     private String id;
 
     @ApiModelProperty(value = "领取模式: 0,邮政快递; 1, 窗口取证", required = true, allowableValues = "0, 1")

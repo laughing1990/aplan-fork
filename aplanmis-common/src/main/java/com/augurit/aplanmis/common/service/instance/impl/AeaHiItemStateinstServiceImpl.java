@@ -102,6 +102,11 @@ public class AeaHiItemStateinstServiceImpl implements AeaHiItemStateinstService 
         list.addAll(aeaItemStateMapper.listAeaItemStateByIds(stateIds));
         return list;
     }
+    @Override
+    public void batchDeleteAeaItemState(String[] itemStateIds){
+        if(itemStateIds.length>0)
+            aeaItemStateMapper.batchDeleteAeaItemState(itemStateIds);
+    }
 
     @Autowired
     public void setAeaHiItemStateinstMapper(AeaHiItemStateinstMapper aeaHiItemStateinstMapper) {
