@@ -349,7 +349,7 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
             }
             //变更,1.删除该阶段的所有情形，重新实例化 2.删除该阶段下的所有事项，重新实例化  3.删除所有事项的情形重新实例化
             deleteReInsertParStateinstUnderStageinst(applyinstId,stageinstId, stateIds);
-            deleteReInsertIteminstUnderStageinst(themeVerId,stageinstId,itemVerIds,appinstId);
+            deleteReInsertIteminstUnderStageinst(themeVerId,stageinstId,itemVerIds,appinstId,null);
             // 多事项直接合并办理 handWay=0 时才处理
             if (aeaParStage!= null && "0".equals(aeaParStage.getHandWay())) {
                 deleteItemStates(applyinstId);
@@ -375,9 +375,14 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
         return map;
     }
 
-    private void deleteItemStates(String applyinstId) throws Exception {
+    @Override
+    public void deleteItemStates(String applyinstId) throws Exception {
         if(StringUtils .isNotBlank(applyinstId)){
-            aeaHiItemStateinstService.listAeaItemStateByApplyinstIdOrSeriesinstId(applyinstId,null);
+            List<AeaItemState> itemStates = aeaHiItemStateinstService.listAeaItemStateByApplyinstIdOrSeriesinstId(applyinstId, null);
+            if(itemStates.size()>0) {
+                String[] itemStateIds=itemStates.stream().map(AeaItemState::getItemStateId).toArray(String[]::new);
+                aeaHiItemStateinstService.batchDeleteAeaItemState(itemStateIds);
+            }
         }
     }
 
@@ -390,17 +395,18 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
         aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), itemVerId, null,null,appinstId);
     }
 
-    private  List<AeaHiIteminst> deleteReInsertIteminstUnderStageinst(String themeVerId, String stageinstId, List<String> itemVerIds, String appinstId) throws Exception {
+    @Override
+    public   List<AeaHiIteminst> deleteReInsertIteminstUnderStageinst(String themeVerId, String stageinstId, List<String> itemVerIds, String appinstId, String branchOrgMap) throws Exception {
         List<AeaHiIteminst> iteminstList = aeaHiIteminstService.getAeaHiIteminstListByStageinstId(stageinstId);
         if(iteminstList.size()>0){
             String[] iteminstIds = iteminstList.stream().map(AeaHiIteminst::getIteminstId).toArray(String[]::new);
             aeaHiIteminstService.batchDeleteAeaHiIteminst(iteminstIds);
         }
-        return aeaHiIteminstService.batchInsertAeaHiIteminstAndTriggerAeaLogItemStateHist(themeVerId,stageinstId,itemVerIds,null,null,appinstId);
+        return aeaHiIteminstService.batchInsertAeaHiIteminstAndTriggerAeaLogItemStateHist(themeVerId,stageinstId,itemVerIds,branchOrgMap,null,appinstId);
     }
 
-
-    private void deleteReInsertParStateinstUnderStageinst(String applyinstId, String stageinstId, String[] stateIds) throws Exception {
+    @Override
+    public void deleteReInsertParStateinstUnderStageinst(String applyinstId, String stageinstId, String[] stateIds) throws Exception {
         List<AeaHiParStateinst> stateList = aeaHiParStateinstMapper.listAeaHiParStateinstByApplyinstIdOrStageinstId(applyinstId, stageinstId);
         if(stateList.size()>0){
             String[] stateinstIds = stateList.stream().map(AeaHiParStateinst::getStageStateinstId).toArray(String[]::new);
@@ -416,7 +422,8 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
      * @param applyinstId      并联申报实例id
      * @param stageinstId      阶段实例id
      */
-    private void saveItemStateBySimpleMerge(List<ParallelItemStateVo> parallelItemStateVoList, List<String> itemVerIds, String applyinstId, String stageinstId) {
+    @Override
+    public void saveItemStateBySimpleMerge(List<ParallelItemStateVo> parallelItemStateVoList, List<String> itemVerIds, String applyinstId, String stageinstId) {
         if (parallelItemStateVoList != null && parallelItemStateVoList.size() > 0) {
             Map<String, List<String>> parallelItemStateIdMap = new HashMap<>();
             parallelItemStateVoList.forEach(p -> parallelItemStateIdMap.put(p.getItemVerId(), p.getStateIds()));

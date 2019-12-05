@@ -260,6 +260,8 @@ public class AeaSeriesService {
         String appinstId;
         if(StringUtils.isNotBlank(applyinstId)){//已暂存过
             seriesApplyinst=aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+            seriesApplyinst.setIsTemporarySubmit("0");
+            aeaHiApplyinstService.updateAeaHiApplyinst(seriesApplyinst);
             seriesApplyinstId = seriesApplyinst.getApplyinstId();//申报实例ID
             seriesApplyinst.setProjInfoId(projInfoIds[0]);
             seriesApplyDataVo.setApplyinstId(seriesApplyinstId);//回填申请实例ID
