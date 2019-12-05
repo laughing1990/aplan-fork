@@ -111,6 +111,8 @@ public class CommonCheckService {
                 return false;
             }else if ("REAL_ININST_ID".equals(pkName)){
                 return  true;
+            }else if ("GUIDE_ATT".equals(pkName)){
+                return  true;
             }else return false;
         }else return false;
     }
