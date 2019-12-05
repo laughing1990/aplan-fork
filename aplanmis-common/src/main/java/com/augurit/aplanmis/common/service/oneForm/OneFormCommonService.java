@@ -30,6 +30,7 @@ import java.util.*;
 @Service
 public class OneFormCommonService {
     private static Logger logger = LoggerFactory.getLogger(OneFormCommonService.class);
+
     @Autowired
     private RestStageService restStageService;
     @Autowired
@@ -47,14 +48,15 @@ public class OneFormCommonService {
      * 获取并联申报的一张表单--表单列表
      * */
     public List<FormFrofileVo> getListForm4StageOneForm(OneFormStageRequest oneFormStageRequest) throws Exception {
-        // 查询开发表单
-        List<FormFrofileVo> result = new ArrayList<>();
 
+        List<FormFrofileVo> result = new ArrayList<>();
+        String projInfoId = oneFormStageRequest.getProjInfoId();
+
+        // 阶段下的-表单form
         AeaParStagePartform aeaParStagePartform = new AeaParStagePartform();
         aeaParStagePartform.setStageId(oneFormStageRequest.getStageId());
         List<AeaParStagePartform> aeaParStagePartformList = aeaParStagePartformService.listStagePartform(aeaParStagePartform);
-        String projInfoId = oneFormStageRequest.getProjInfoId();
-        if (aeaParStagePartformList != null && aeaParStagePartformList.size() > 0) {
+        if (!aeaParStagePartformList.isEmpty() && aeaParStagePartformList.size() > 0) {
             for (AeaParStagePartform parStagePartform : aeaParStagePartformList) {
                 // 封装表单信息
                 if (parStagePartform != null) {
@@ -68,13 +70,14 @@ public class OneFormCommonService {
 
         //阶段下的-事项form
         List<StageItemFormVo> listStageItemFormVo = restStageService.findStageItemFormsByStageIdAndItemIds(oneFormStageRequest.getStageId(), oneFormStageRequest.getItemids());
-        List<SFFormParam> listSFFormParam4Item = genListSFFormParamByFillFormId(listStageItemFormVo);
-        for (SFFormParam itemSFFormParam : listSFFormParam4Item) {
-            // 封装表单信息
-            if (itemSFFormParam != null) {
-                FormFrofileVo formFrofileVo = getFormFrofileVo(itemSFFormParam.getFormId(), oneFormStageRequest.getApplyinstId(), projInfoId);
-                if (formFrofileVo != null) {
-                    result.add(formFrofileVo);
+        if (!listStageItemFormVo.isEmpty() && listStageItemFormVo.size() > 0) {
+            for (StageItemFormVo stageItemFormVo : listStageItemFormVo) {
+                // 封装表单信息
+                if (stageItemFormVo != null) {
+                    FormFrofileVo formFrofileVo = getFormFrofileVo(stageItemFormVo.getSubFormId(), oneFormStageRequest.getApplyinstId(), projInfoId);
+                    if (formFrofileVo != null) {
+                        result.add(formFrofileVo);
+                    }
                 }
             }
         }
@@ -131,38 +134,35 @@ public class OneFormCommonService {
     public List<SFFormParam> genListSFFormParam4OneForm(OneFormStageRequest oneFormStageRequest, boolean isIncludeDevForm) {
         List<SFFormParam> result = null;
 
-        //参数去重去空
+        // itemids参数去重去空
         if (oneFormStageRequest.getItemids() != null && !oneFormStageRequest.getItemids().isEmpty()) {
-            HashMap<String, String> map = new HashMap<String, String>();
+            List<String> listItemIdNew = new ArrayList<String>();
+            Set<String> set = new HashSet<String>();
             for (String itemId : oneFormStageRequest.getItemids()) {
                 if (StringUtils.isNotBlank(itemId)) {
-                    if (!map.containsKey(itemId)) {
-                        map.put(itemId, itemId);
+                    if (set.add(itemId)) {
+                        listItemIdNew.add(itemId);
                     }
                 }
             }
-            List<String> listItemIdNew = new ArrayList<String>();
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                listItemIdNew.add(entry.getKey());
-            }
             oneFormStageRequest.setItemids(listItemIdNew);
         }
-        //2.
+
         try {
             //阶段下的-事项form
             List<StageItemFormVo> listStageItemFormVo = restStageService.findStageItemFormsByStageIdAndItemIds(oneFormStageRequest.getStageId(), oneFormStageRequest.getItemids());
-            result = genListSFFormParamByFillFormId(listStageItemFormVo);
-            if (result == null || result.isEmpty()) {
+            if (listStageItemFormVo == null || listStageItemFormVo.isEmpty()) {
                 logger.warn("未找到该阶段下的事项的智能表单,StageId:" + oneFormStageRequest.getStageId() + ",Itemids:" + oneFormStageRequest.getItemids());
             }
+
+            // 构造列表，填充事项formId
+            result = genListSFFormParamByFillFormId(listStageItemFormVo);
 
             //阶段下的 扩展表partform
             List<AeaParStagePartform> listAeaParStagePartform = null;
             AeaParStagePartform aeaParStagePartform = new AeaParStagePartform();
             aeaParStagePartform.setStageId(oneFormStageRequest.getStageId());
-            if (isIncludeDevForm) {
-
-            } else {
+            if (!isIncludeDevForm) {
                 // 过滤开发表单
                 aeaParStagePartform.setIsSmartForm("1");
             }
@@ -177,12 +177,6 @@ public class OneFormCommonService {
             //用申报实例ID 替换所有外键数据ID
             for (SFFormParam itemSFFormParam : result) {
                 itemSFFormParam.setRefEntityId(oneFormStageRequest.getApplyinstId());
-                //初始化参数动态注入
-//                Map map=null;
-//                map=new HashMap<String,String>();
-//                map.put("test1","GZXKZ-201901-1024");
-//                map.put("test2","uuid-我的祖国");
-//                itemSFFormParam.setFormReqExtra(map);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -230,15 +224,17 @@ public class OneFormCommonService {
      * */
     protected List<SFFormParam> genListSFFormParamByFillFormId(List<StageItemFormVo> listStageItemFormVo) {
         List<SFFormParam> listSFFormParam = new ArrayList<>();
-        for (int i = 0; i < listStageItemFormVo.size(); i++) {
-            if (StringUtils.isNotBlank(listStageItemFormVo.get(i).getSubFormId()) &&
-                    StringUtils.isNotBlank(listStageItemFormVo.get(i).getItemVerId())) {
-                SFFormParam ref = new SFFormParam();
-                ref.setFormId(listStageItemFormVo.get(i).getSubFormId());
-
-                listSFFormParam.add(ref);
+        if (!listStageItemFormVo.isEmpty() && listStageItemFormVo.size() > 0) {
+            for (int i = 0; i < listStageItemFormVo.size(); i++) {
+                if (StringUtils.isNotBlank(listStageItemFormVo.get(i).getSubFormId()) &&
+                        StringUtils.isNotBlank(listStageItemFormVo.get(i).getItemVerId())) {
+                    SFFormParam ref = new SFFormParam();
+                    ref.setFormId(listStageItemFormVo.get(i).getSubFormId());
+                    listSFFormParam.add(ref);
+                }
             }
         }
+
         return listSFFormParam;
     }
 
@@ -262,19 +258,16 @@ public class OneFormCommonService {
             }
         }
 
-        String itemVerId=oneFormItemRequest.getItemId();
+        String itemVerId = oneFormItemRequest.getItemId();
         AeaItemPartform aeaItemPartform = new AeaItemPartform();
         aeaItemPartform.setItemVerId(itemVerId);
         aeaItemPartform.setSortNo(null);
-
-        List<AeaItemPartform> aeaItemPartformList = null;
-        aeaItemPartformList = aeaItemPartformService.listAeaItemPartformNoPage(aeaItemPartform);
-        String projInfoId = oneFormItemRequest.getProjInfoId();
-        if (aeaItemPartformList != null && aeaItemPartformList.size() > 0) {
+        List<AeaItemPartform> aeaItemPartformList = aeaItemPartformService.listAeaItemPartformNoPage(aeaItemPartform);
+        if (!aeaItemPartformList.isEmpty() && aeaItemPartformList.size() > 0) {
             for (AeaItemPartform itemPartform : aeaItemPartformList) {
                 // 封装表单信息
                 if (itemPartform != null) {
-                    FormFrofileVo formFrofileVo = getFormFrofileVo(itemPartform.getStoFormId(), oneFormItemRequest.getApplyinstId(), projInfoId);
+                    FormFrofileVo formFrofileVo = getFormFrofileVo(itemPartform.getStoFormId(), oneFormItemRequest.getApplyinstId(), oneFormItemRequest.getProjInfoId());
                     if (formFrofileVo != null) {
                         result.add(formFrofileVo);
                     }

@@ -59,7 +59,6 @@ public class RestStageService {
         return aeaParStageItems.stream().map(StageItemFormVo::from).collect(Collectors.toList());
     }
 
-
     /**
      * 根据前端传递的阶段id以及事项id获取表单参数
      * 引用到 findStageItemFormsByStageId 接口
@@ -69,8 +68,16 @@ public class RestStageService {
      * @return
      */
     public List<StageItemFormVo> findStageItemFormsByStageIdAndItemIds(String stageId, List<String> itemverIds) {
-
         List<StageItemFormVo> result = new ArrayList<>();
+
+        // 获取阶段下的事项
+        List<StageItemFormVo> stageItemFormVos = findStageItemFormsByStageId(stageId);
+
+        //没有传事项的情况下，直接用阶段下的事项
+        if (itemverIds.isEmpty()) {
+            return stageItemFormVos;
+        }
+
         //获取事项的seq
         List<String> itemSeqList = new ArrayList<>();
         if (itemverIds != null && itemverIds.size() > 0) {
@@ -81,13 +88,6 @@ public class RestStageService {
             }
         }
 
-        //没有传事项的情况下，直接用阶段下的事项
-        if (itemverIds.isEmpty()) {
-            result = findStageItemFormsByStageId(stageId);
-            return result;
-        }
-
-        List<StageItemFormVo> stageItemFormVos = findStageItemFormsByStageId(stageId);
         //传递进来的事项与阶段进行匹配
         // itemverIds的size会大于等于itemSeqList的size
         for (int indexItemVerId = 0; indexItemVerId < itemSeqList.size(); indexItemVerId++) {
@@ -101,6 +101,7 @@ public class RestStageService {
                 }
             }
         }
+
         return result;
     }
 }
