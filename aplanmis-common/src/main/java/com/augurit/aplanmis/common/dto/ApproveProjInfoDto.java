@@ -32,4 +32,5 @@ public class ApproveProjInfoDto {
     private String iteminstCode;//办件编号
     private String itemVerId;
     private String stageinstId;
+    private String stageId;
 }

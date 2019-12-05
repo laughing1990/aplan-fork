@@ -138,6 +138,7 @@ public class RestApproveServiceImpl implements RestApproveService {
                 if("0".equals(dto.getIsSeriesApprove())){
                     try {
                         AeaHiParStageinst stageinst = aeaHiParStageinstService.getAeaHiParStageinstByApplyinstId(dto.getApplyinstId());
+                        dto.setStageId(stageinst==null?"":stageinst.getStageId());
                         dto.setStageinstId(stageinst==null?"":stageinst.getStageinstId());
                     } catch (Exception e) {
                         e.printStackTrace();
