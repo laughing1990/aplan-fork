@@ -1220,4 +1220,11 @@
             ALTER TABLE `aea_unit_info` ADD COLUMN `AUDIT_FLAG`  varchar(2) DEFAULT NULL COMMENT '审核状态:0 审核失败，1 已审核，2 审核中';
         </sql>
     </changeSet>
+
+    <changeSet id="20191204183030" author="ouym" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aoa_notice_content`
+            MODIFY COLUMN `NOTICE_DISPATCH_TIME`  varchar(20) DEFAULT NULL COMMENT '发文时间' AFTER `BUSINESS_FLAG`;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
