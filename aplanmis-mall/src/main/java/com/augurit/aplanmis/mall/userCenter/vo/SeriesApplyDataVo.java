@@ -46,4 +46,7 @@ public class SeriesApplyDataVo {
     private List<BuildProjUnitVo> buildProjUnitMap;
     @ApiModelProperty(value = "单位项目关联ID", required = true)
     private List<String> projUnitIds;
+
+    @ApiModelProperty(value = "单项申报，草稿箱进来时，设置为1")
+    private String isTemporarySubmit;
 }

@@ -131,7 +131,7 @@ public class AeaSeriesService {
         String applyinstId = null;
         List<AeaHiIteminst> aeaHiIteminstList=new ArrayList<>();
         //直接发起申报
-        if (StringUtils.isBlank(seriesApplyDataVo.getApplyinstId())) {
+        if ("1".equals(seriesApplyDataVo.getIsTemporarySubmit()) || StringUtils.isBlank(seriesApplyDataVo.getApplyinstId())) {//草稿箱或者未实例化时
             SeriesApplyInstantiateResult applyResult = this.instantiateSeriesApply(seriesApplyDataVo, false, new String[]{"1", "2"});
             tasks.addAll(taskService.createTaskQuery().processInstanceId(applyResult.getProcInstId()).list());
 
