@@ -246,7 +246,7 @@ public class RestApproveServiceImpl implements RestApproveService {
                 }
                 jsddStr = org.apache.commons.lang.StringUtils.isBlank(jsddStr) ? "" : jsddStr.substring(0, jsddStr.length() - 1);
             }
-            aeaProjInfo.setProjectAddress(jsddStr);
+            aeaProjInfo.setProjectAddressName(jsddStr);
             applyDetailVo.setAeaProjInfo(aeaProjInfo);
         }else {
             applyDetailVo.setAeaProjInfo(new AeaProjInfo());
