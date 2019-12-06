@@ -169,9 +169,9 @@ public class RestApplyCommonController {
 
     @PostMapping("/itemList/temporary")
     @ApiOperation(value = "阶段申报-->暂存阶段，情形及事项(含事项情形)")
-    public ContentResultForm itemListTemporary(@Valid @RequestBody ItemListTemporaryParamVo itemListTemporaryParamVo, @RequestBody SmsInfoVo smsInfoVo,HttpServletRequest request){
+    public ContentResultForm itemListTemporary(@Valid @RequestBody ItemListTemporaryParamVo itemListTemporaryParamVo,HttpServletRequest request){
         Map<String,Object> map=new HashMap<>();
-        ContentResultForm firstStepResult = temporarySaveOrUpdateSmsInfo(smsInfoVo, request);
+        ContentResultForm firstStepResult = temporarySaveOrUpdateSmsInfo(itemListTemporaryParamVo.getSmsInfoVo(), request);
         String applyinstId="";
         if(firstStepResult.isSuccess()){
             Map<String,Object> firstStepResultContent=(Map<String,Object>)(firstStepResult.getContent());

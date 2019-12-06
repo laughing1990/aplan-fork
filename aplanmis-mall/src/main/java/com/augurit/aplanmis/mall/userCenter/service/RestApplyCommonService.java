@@ -5,7 +5,6 @@ import com.augurit.aplanmis.common.domain.AeaHiIteminst;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.vo.AeaUnitInfoVo;
 import com.augurit.aplanmis.common.vo.LinkmanTypeVo;
-import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.userCenter.vo.ItemListTemporaryParamVo;
 import com.augurit.aplanmis.mall.userCenter.vo.MatListTemporaryParamVo;
 import com.augurit.aplanmis.mall.userCenter.vo.ParallelItemStateVo;

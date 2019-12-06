@@ -14,6 +14,7 @@ import com.augurit.aplanmis.common.vo.AeaUnitInfoVo;
 import com.augurit.aplanmis.common.vo.LinkmanTypeVo;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyCommonService;
+import com.augurit.aplanmis.mall.userCenter.service.RestMyMatService;
 import com.augurit.aplanmis.mall.userCenter.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,6 +63,8 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
     private AeaHiSeriesinstService aeaHiSeriesinstService;
     @Autowired
     private AeaHiItemInoutinstService aeaHiItemInoutinstService;
+    @Autowired
+    private RestMyMatService restMyMatService;
 
     @Override
     public Map<String,Object> saveOrUpdateUnitInfo(String projInfoId, List<AeaUnitInfoVo> aeaUnitInfos) {
@@ -414,7 +417,9 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
         if(iteminstList.size()==0){
             String[] oldIteminstIds=oldIteminstList.stream().map(AeaHiIteminst::getIteminstId).toArray(String[]::new);
             List<AeaHiItemInoutinst> inoutList=aeaHiItemInoutinstService.getAeaHiItemInoutinstByIteminstIds(oldIteminstIds);
-// TODO: 2019/12/5 qinjp
+            for (AeaHiItemInoutinst inoutinst:inoutList){
+
+            }
         }else {//如果oldIteminstList，iteminstList都不为空，则替换同一事项，old中的事项若是在iteminstList不存在，则需删除该事项的材料
             List<String> itemVerIds=iteminstList.stream().map(AeaHiIteminst::getItemVerId).collect(Collectors.toList());
             for (AeaHiIteminst old:oldIteminstList){
