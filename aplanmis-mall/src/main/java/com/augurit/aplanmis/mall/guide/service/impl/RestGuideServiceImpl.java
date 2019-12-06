@@ -260,6 +260,12 @@ public class RestGuideServiceImpl implements RestGuideService {
         //拓展信息
         AeaItemGuideExtend  aeaItemGuideExtend = aeaItemGuideExtendService.getAeaItemGuideExtendByItemVerId(itemVerId);
         if (aeaItemGuideExtend!=null){
+            if(StringUtils.isNotBlank(aeaItemGuideExtend.getZzzResultGuid())){
+                String[] guideArr = aeaItemGuideExtend.getZzzResultGuid().split(",");
+                BscAttDetail bscAttDetail = bscAttDetailService.getBscAttDetailById(guideArr[0]);
+                aeaItemGuideExtend.setZzzResultGuid(guideArr[0]);
+                aeaItemGuideExtend.setZzzResultGuidName(bscAttDetail.getAttName());
+            }
             vo.setAeaItemGuideExtend(aeaItemGuideExtend);
         }else {
             vo.setAeaItemGuideExtend(new AeaItemGuideExtend());
