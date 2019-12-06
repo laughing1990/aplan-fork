@@ -15,17 +15,7 @@ import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.constants.ApplyType;
 import com.augurit.aplanmis.common.constants.DicConstants;
 import com.augurit.aplanmis.common.constants.ItemStatus;
-import com.augurit.aplanmis.common.domain.AeaApplyinstProj;
-import com.augurit.aplanmis.common.domain.AeaApplyinstUnitProj;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaHiIteminst;
-import com.augurit.aplanmis.common.domain.AeaHiParStageinst;
-import com.augurit.aplanmis.common.domain.AeaHiSeriesinst;
-import com.augurit.aplanmis.common.domain.AeaHiSmsInfo;
-import com.augurit.aplanmis.common.domain.AeaItemBasic;
-import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
-import com.augurit.aplanmis.common.domain.AeaParStage;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstUnitProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
@@ -366,6 +356,14 @@ public class AeaParStageService {
             aeaHiApplyinst.setProjInfoId(projInfoIds[0]);
 
             //5、材料输入输出实例
+            if(aeaHiIteminsts.size()>0){
+                String[] currentIteminstIds=aeaHiIteminsts.stream().map(AeaHiIteminst::getIteminstId).toArray(String[]::new);
+                List<AeaHiItemInoutinst> inoutList=aeaHiItemInoutinstService.getAeaHiItemInoutinstByIteminstIds(currentIteminstIds);
+                if(inoutList.size()>0){
+                    String[] outinstIds=inoutList.stream().map(AeaHiItemInoutinst::getInoutinstId).toArray(String[]::new);
+                    aeaHiItemInoutinstService.batchDeleteAeaHiItemInoutinst(outinstIds);
+                }
+            }
             aeaHiItemInoutinstService.batchInsertAeaHiItemInoutinst(matinstsIds, applyinstId, SecurityContext.getCurrentUserName());
 
             Map<String, Boolean> approveOrgMap = new HashMap<>();
