@@ -76,7 +76,7 @@ public class RestApplyCommonController {
                 if(theme!=null) {
                     aeaProjInfo.setThemeType(theme.getThemeType());
                     AeaParThemeVer themeVer = aeaParThemeService.getAeaParThemeVerByThemeIdAndVerNum(theme.getThemeId(),null, SecurityContext.getCurrentOrgId());
-                    theme.setThemeVerId(themeVer==null?"":themeVer.getThemeVerId());
+                    aeaProjInfo.setThemeVerId(themeVer==null?"":themeVer.getThemeVerId());
                 }
             }
             aeaProjInfo.setAeaUnitInfos(restApplyService.getAeaUnitInfosByProjInfoId(projInfoId,request));

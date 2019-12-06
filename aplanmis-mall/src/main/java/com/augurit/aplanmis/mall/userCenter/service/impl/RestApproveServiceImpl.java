@@ -262,7 +262,7 @@ public class RestApproveServiceImpl implements RestApproveService {
             }
             aeaProjInfo.setProjectAddress(jsddStr);
             applyDetailVo.setAeaProjInfo(aeaProjInfo);
-        }else if(aeaProjInfo!=null && "1".equals(applyinst.getIsTemporarySubmit())){
+        }else if(aeaProjInfo!=null && "1".equals(applyinst.getIsTemporarySubmit())){//用于草稿箱的回显
             applyDetailVo.setAeaProjInfo(aeaProjInfo);
         } else {
             applyDetailVo.setAeaProjInfo(new AeaProjInfo());
@@ -280,10 +280,8 @@ public class RestApproveServiceImpl implements RestApproveService {
                     AeaParStage stage = aeaParStageService.getAeaParStageById(stageinst.getStageId());
                     isNeedState = (stage != null && StringUtils.isNotBlank(stage.getIsNeedState())) ? stage.getIsNeedState() : "1";
                     //办理方式 0 多事项直接合并办理  1 按阶段多级情形组织事项办理
-                    if (stage != null) {
-                        if ("0".equals(stage.getHandWay())) {
-                            setItemStateinstList(aeaHiIteminstList, stageinst.getStageinstId());
-                        }
+                    if (stage != null&&"0".equals(stage.getHandWay())) {
+                        setItemStateinstList(aeaHiIteminstList, stageinst.getStageinstId());
                     }
                     applyDetailVo.setStageId(stage==null?"":stage.getStageId());
                     applyDetailVo.setStageinstId(stageinst==null?"":stageinst.getStageinstId());
@@ -299,7 +297,7 @@ public class RestApproveServiceImpl implements RestApproveService {
         }
 
         //情形、前置条件
-        List<Map<String,String>> stateList=new ArrayList<>();
+        List<Map<String,String>> stateList;
         if("1".equals(isSeriesApprove)){//单项，取值事项情形实例表
             stateList = aeaHiItemStateinstService.listSelectedAeaItemStateinstBySeriesinstIdOrApplyinstId(applyinstId,"");
         }else{//并联，取值情形实例表
