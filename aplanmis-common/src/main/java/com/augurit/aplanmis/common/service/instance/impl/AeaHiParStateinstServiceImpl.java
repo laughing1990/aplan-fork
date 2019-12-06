@@ -84,7 +84,7 @@ public class AeaHiParStateinstServiceImpl implements AeaHiParStateinstService {
         for (AeaParState parentState : parentStateList) {
             for (AeaParState state : stateList) {
                 if (state.getParentStateId().equals(parentState.getParStateId())) {
-                    Map<String, String> map = new HashMap<>(2);
+                    Map<String, String> map = new HashMap<>(4);
                     map.put("question", parentState.getStateName());
                     map.put("answer", state.getStateName());
                     map.put("questionId",parentState.getParStateId());

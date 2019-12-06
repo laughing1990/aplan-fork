@@ -79,7 +79,7 @@ public class AeaHiItemStateinstServiceImpl implements AeaHiItemStateinstService 
         for (AeaItemState parentState : parentStateList) {
             for (AeaItemState state : stateList) {
                 if (StringUtils.isNotBlank(state.getParentStateId()) && state.getParentStateId().equals(parentState.getItemStateId())) {
-                    Map<String, String> map = new HashMap<>(2);
+                    Map<String, String> map = new HashMap<>(4);
                     map.put("question", parentState.getStateName());
                     map.put("answer", state.getStateName());
                     map.put("questionId",parentState.getItemStateId());
