@@ -976,5 +976,21 @@
             ADD COLUMN `IS_TEMPORARY_SUBMIT`  char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 0 COMMENT '是否临时提交  0否  1是';
         </sql>
     </changeSet>
+    
+    <changeSet id="201912051733" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_user`
+            ADD COLUMN `SORT_NO`  double(10,0) NOT NULL COMMENT '排序字段' AFTER `ROOT_ORG_ID`,
+            ADD COLUMN `MODIFIER`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '修改人' AFTER `SORT_NO`,
+            ADD COLUMN `MODIFY_TIME`  datetime NULL DEFAULT NULL COMMENT '修改时间' AFTER `MODIFIER`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201912061108" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_user`
+            CHANGE COLUMN `ITEM_VER_ID` `ITEM_ID`  varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '窗口ID' AFTER `ITEM_USER_ID`;
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>

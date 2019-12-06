@@ -1826,14 +1826,13 @@
 
     <select id="listLatestAeaItemBasic" resultType="com.augurit.aplanmis.common.domain.AeaItemBasic">
         select
-        <include refid="allColumns2">
-            <property name="alias" value="aib"/>
-        </include>
-        ,
-        itemVer.ver_num verNum,
-        itemVer.item_ver_status itemVerStatus,
-        org.ORG_NAME orgName,
-        item.PARENT_ITEM_ID parentItemId
+            <include refid="allColumns2">
+                <property name="alias" value="aib"/>
+            </include>,
+            itemVer.ver_num verNum,
+            itemVer.item_ver_status itemVerStatus,
+            org.ORG_NAME orgName,
+            item.PARENT_ITEM_ID parentItemId
         from AEA_ITEM_BASIC aib
         join (select item_ver_id, ver_num, ITEM_VER_STATUS from aea_item_ver ver
         join (select ITEM_ID, max(VER_NUM) maxNum from aea_item_ver where IS_DELETED='0' group by ITEM_ID) maxVer
@@ -1908,11 +1907,11 @@
             </if>
             <if test="keyword!=null and keyword!='' ">
                 and (
-                aib.ITEM_CODE like concat('%',concat(#{keyword},'%')) or
-                aib.ITEM_NAME like concat('%',concat(#{keyword},'%')) or
-                aib.ITEM_MEMO like concat('%',concat(#{keyword},'%')) or
-                aib.GUIDE_ORG_NAME like concat('%',concat(#{keyword},'%')) or
-                org.ORG_NAME like concat('%',concat(#{keyword},'%'))
+                    aib.ITEM_CODE like concat('%',concat(#{keyword},'%')) or
+                    aib.ITEM_NAME like concat('%',concat(#{keyword},'%')) or
+                    aib.ITEM_MEMO like concat('%',concat(#{keyword},'%')) or
+                    aib.GUIDE_ORG_NAME like concat('%',concat(#{keyword},'%')) or
+                    org.ORG_NAME like concat('%',concat(#{keyword},'%'))
                 )
             </if>
             <if test="searchItemIds != null and searchItemIds.length > 0 ">

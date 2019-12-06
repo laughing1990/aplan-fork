@@ -390,6 +390,14 @@ public class AeaItemAdminController {
         return list;
     }
 
+    @RequestMapping("/gtreeLatestItem.do")
+    public List<AeaItem> gtreeLatestItem(AeaItemBasic basic) {
+
+        com.github.pagehelper.PageHelper.clearPage();
+        List<AeaItem> list = aeaItemAdminService.gtreeLatestItem(basic);
+        return list;
+    }
+
     @RequestMapping("/gtreeOkVerItemNoRelSelf.do")
     public List<AeaItem> gtreeOkVerItemNoRelSelf(AeaItemBasic basic) {
 
