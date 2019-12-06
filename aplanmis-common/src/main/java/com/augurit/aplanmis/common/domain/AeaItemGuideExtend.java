@@ -50,6 +50,7 @@ public class AeaItemGuideExtend implements Serializable {
     /**
      * 格式：[{"filepath":"http://static.gdzwfw.gov.cn/obs/obs-sxml/txyCos43C75859298F154912720A60C38586874C9C324174250C52C742A917386046EF6294BDF9293EDA9F","neiwangPath":"http://19.15.0.24/gdsqlk/rest/frame/base/attach/attachAction/getContent?isCommondto=true&attachGuid=c99f2d53-ef77-4374-9216-1acc9e102b59","attachname":"建设用地规划许可证.pdf","attachguid":"c99f2d53-ef77-4374-9216-1acc9e102b59"}]
      */
+    private String zzzResultGuidName; // 许可证件样本名称
     private String zzzResultGuid; // 许可证件样本
     private String resultName; // 许可证件名称
     private String themeNaturalType; // 主题分类

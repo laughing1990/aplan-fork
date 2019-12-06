@@ -465,6 +465,11 @@ var guideIndex = (function () {
               }
             }
           },
+            previewResultGuide:function(detailId){
+                debugger;
+                    window.open(ctx+'rest/file/att/preview?detailId='+detailId);
+            },
+
             goToGuid: function (e, themeId, indexSub, themeMemo) {
                 var vm = this;
                 vm.activeSub = indexSub;
