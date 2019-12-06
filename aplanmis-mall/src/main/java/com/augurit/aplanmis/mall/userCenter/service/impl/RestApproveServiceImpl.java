@@ -213,9 +213,11 @@ public class RestApproveServiceImpl implements RestApproveService {
         ApplyDetailVo applyDetailVo = new ApplyDetailVo();
         String isNeedState = "1";
         applyDetailVo.setIsSeriesApprove(isSeriesApprove);
+        AeaHiApplyinst applyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+        if(applyinst==null) throw new Exception("当前申报已不存在！");
         //项目基本信息
         AeaProjInfo aeaProjInfo  =aeaProjInfoService.getAeaProjInfoByProjInfoId(projInfoId);
-        if (aeaProjInfo!=null){
+        if (aeaProjInfo!=null && "0".equals(applyinst.getIsTemporarySubmit())){
             //建设地点，资金来源，投资类型，土地来源，建设性质，工程分类，国标行业，重点项目,    审批行政区划,立项类型
 
             //建设性质
@@ -258,9 +260,11 @@ public class RestApproveServiceImpl implements RestApproveService {
                 }
                 jsddStr = org.apache.commons.lang.StringUtils.isBlank(jsddStr) ? "" : jsddStr.substring(0, jsddStr.length() - 1);
             }
-            aeaProjInfo.setProjectAddressName(jsddStr);
+            aeaProjInfo.setProjectAddress(jsddStr);
             applyDetailVo.setAeaProjInfo(aeaProjInfo);
-        }else {
+        }else if(aeaProjInfo!=null && "1".equals(applyinst.getIsTemporarySubmit())){
+            applyDetailVo.setAeaProjInfo(aeaProjInfo);
+        } else {
             applyDetailVo.setAeaProjInfo(new AeaProjInfo());
         }
 
@@ -318,7 +322,7 @@ public class RestApproveServiceImpl implements RestApproveService {
         applyDetailVo.setAeaHiSmsInfo(aeaHiSmsInfo==null?new AeaHiSmsInfo():aeaHiSmsInfo);
 
         //申报主体
-        AeaHiApplyinst applyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+
         if(applyinst!=null){
             //是否启动情形
 //            if("0".equals(applyinst.getIsSeriesApprove())){

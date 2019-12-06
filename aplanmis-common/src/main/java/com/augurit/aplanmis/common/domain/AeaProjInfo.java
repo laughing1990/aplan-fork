@@ -318,6 +318,4 @@ public class AeaProjInfo implements Serializable {
 
     private String stageFlag;// 广东模式的阶段标志 1:工程规划阶段，2：施工许可阶段
 
-    @ApiModelProperty("建设地点名称")
-    private java.lang.String projectAddressName; // (建设地点)
 }
