@@ -126,16 +126,25 @@ public class SelectionNoticeVo {
     private String avoidReason;
     @ApiModelProperty(value = "发布单位或个人名字")
     private String applicant;
-    //中标单位信息
+    //=======================中标单位信息
     private String selectedEndTime;//选取结束时间
     private String selectedApplicant;//中选机构名称
     private String selectedUnitInfoId;//中选机构id
     private String selectedAppAddr;//中选机构地址
+    //============中介服务事项信息 ======================
 
-    //采购项目信息
+    //======================采购项目信息
     private String projName;
     private String itemName;
+    private String itemBasicId;
     private String localCode;
+    @ApiModelProperty("采购项目规模")
+    private String projScale;
+    @ApiModelProperty("采购项目规模内容")
+    private java.lang.String projScaleContent;
+
+    @ApiModelProperty(value = "服务名称")
+    private String serviceName;
 
     @ApiModelProperty("投资审批项目")
     private ApproveProjInfo approveProjInfo;

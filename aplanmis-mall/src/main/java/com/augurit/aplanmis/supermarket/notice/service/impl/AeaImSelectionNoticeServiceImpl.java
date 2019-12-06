@@ -58,18 +58,6 @@ public class AeaImSelectionNoticeServiceImpl implements AeaImSelectionNoticeServ
         AeaImProjPurchase projPurchase = projPurchaseMapper.getSelectionNoticeByProjPurchaseId(projPurchaseId);
         if (null == projPurchase) return null;
         SelectionNoticeVo vo = new SelectionNoticeVo(projPurchase);
-        //查询发布单位或个人名字
-        /*if (StringUtils.isNotBlank(vo.getPublishUnitInfoId())) {
-            AeaUnitInfo info = aeaUnitInfoMapper.getAeaUnitInfoById(vo.getPublishUnitInfoId());
-            if (null != info) {
-                vo.setPublishUnitName(info.getApplicant());
-            }
-        } else if (StringUtils.isNotBlank(vo.getPublishLinkmanInfoId())) {
-            AeaLinkmanInfo info = aeaLinkmanInfoMapper.getAeaLinkmanInfoById(vo.getPublishLinkmanInfoId());
-            if (null != info) {
-                vo.setPublishUnitName(info.getLinkmanName());
-            }
-        }*/
         String isApproveProj = projPurchase.getIsApproveProj();
         if (StringUtils.isNotBlank(isApproveProj) && "1".equals(isApproveProj)) {
             //查询关联的投资审批项目信息

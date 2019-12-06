@@ -214,9 +214,9 @@ public class AeaProjInfo implements Serializable {
     @ApiModelProperty("项目空间信息id")
     private java.lang.String geoObjectid; // (项目空间信息id,多个用","隔开)
     @ApiModelProperty("项目规模")
-    private java.lang.String projScale; // (项目规模)
+    private java.lang.String projScale;
     @ApiModelProperty("项目规模内容")
-    private java.lang.String projScaleContent; // (项目规模内容)
+    private java.lang.String projScaleContent;
     @ApiModelProperty("是否为财政资金（资金来源）：1 是，0 不是")
     private java.lang.String isFinancialFund; // (是否为财政资金（资金来源）：1 是，0 不是)
     @ApiModelProperty("财政资金比例：当 IS_FINANCIAL_FUND = 1，必填")
