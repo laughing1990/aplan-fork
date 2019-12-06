@@ -251,7 +251,6 @@ public class RestApproveServiceImpl implements RestApproveService {
             String jsddStr=aeaProjInfo.getProjectAddress();
             if(StringUtils.isNotBlank(jsddStr)){
                 String[] jsddArr=jsddStr.split(",");
-                BscDicRegion query=new BscDicRegion();
                 jsddStr="";
                 for (String jsdd:jsddArr){
                     BscDicRegion jsddRegion = bscDicRegionService.getBscDicRegionById(jsdd);
@@ -282,8 +281,12 @@ public class RestApproveServiceImpl implements RestApproveService {
                             setItemStateinstList(aeaHiIteminstList, stageinst.getStageinstId());
                         }
                     }
+                    applyDetailVo.setStageId(stage==null?"":stage.getStageId());
+                    applyDetailVo.setStageinstId(stageinst==null?"":stageinst.getStageinstId());
                     AeaParTheme theme = aeaParThemeService.getAeaParThemeByThemeVerId(stageinst.getThemeVerId());
                     applyDetailVo.setThemeStageName((stage==null||theme==null)?"":"【"+theme.getThemeName()+"】"+stage.getStageName());
+                    applyDetailVo.setThemeId(theme==null?"":theme.getThemeId());
+                    applyDetailVo.setThemeVerId(stageinst==null?"":stageinst.getThemeVerId());
                 }
                 applyDetailVo.setAeaHiIteminstList(aeaHiIteminstList);
             }
