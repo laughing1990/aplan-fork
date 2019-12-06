@@ -82,6 +82,8 @@ public class AeaHiItemStateinstServiceImpl implements AeaHiItemStateinstService 
                     Map<String, String> map = new HashMap<>(2);
                     map.put("question", parentState.getStateName());
                     map.put("answer", state.getStateName());
+                    map.put("questionId",parentState.getItemStateId());
+                    map.put("answerId",state.getItemStateId());
                     list.add(map);
                 }
             }
