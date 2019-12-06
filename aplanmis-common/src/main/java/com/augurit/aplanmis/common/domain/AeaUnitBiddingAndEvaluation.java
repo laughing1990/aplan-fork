@@ -1,8 +1,10 @@
 package com.augurit.aplanmis.common.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author Administrator
@@ -55,15 +57,28 @@ public class AeaUnitBiddingAndEvaluation implements Serializable {
     private String servicePrescription;
     /**服务态度*/
     private String serviceAttitude;
-    /**服务收费*/
+    /**
+     * 服务收费
+     */
     private String serviceCharge;
-    /**服务规范*/
+    /**
+     * 服务规范
+     */
     private String serviceStandard;
-    /**综合评价*/
+    /**
+     * 综合评价
+     */
     private String compEvaluation;
-    /**平均评价*/
+    /**
+     * 平均评价
+     */
     private Double avgCompEvaluation;
     /***/
     private String biddingType;
+    //服务开始时间
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    private Date serviceStartTime;
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    private Date serviceEndTime;
 
 }

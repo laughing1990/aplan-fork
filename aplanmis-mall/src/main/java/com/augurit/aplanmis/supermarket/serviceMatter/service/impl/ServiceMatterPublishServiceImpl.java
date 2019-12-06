@@ -79,12 +79,12 @@ public class ServiceMatterPublishServiceImpl implements ServiceMatterPublishServ
     private AeaImServiceQualMapper aeaImServiceQualMapper;
     @Autowired
     private CommonLoginService commonLoginService;
-    @Autowired
-    private AeaImServiceLinkmanMapper aeaImServiceLinkmanMapper;
 
     @Autowired
     private AeaItemRelevanceMapper aeaItemRelevanceMapper;
 
+    @Autowired
+    private AeaImCertinstMajorMapper aeaImCertinstMajorMapper;
 
     @Value("${dg.sso.access.platform.org.top-org-id}")
     protected String topOrgId;
@@ -240,8 +240,6 @@ public class ServiceMatterPublishServiceImpl implements ServiceMatterPublishServ
         return linkmanInfos;
     }
 
-    @Autowired
-    private AeaImCertinstMajorMapper aeaImCertinstMajorMapper;
     @Override
     public List<ServiceMatterVo> listServiceMatter(ServiceMatterVo serviceMatterVo, Page page) throws Exception {
         PageHelper.startPage(page);
@@ -279,6 +277,9 @@ public class ServiceMatterPublishServiceImpl implements ServiceMatterPublishServ
         return matterVos;
     }
 
+    @Autowired
+    private AeaCertMapper aeaCertMapper;
+
     @Override
     public AeaHiCertinstBVo saveCertificateInfo(AeaHiCertinstBVo certinstBVo, HttpServletRequest req) throws Exception {
         this.setDefaultUser();
@@ -287,8 +288,19 @@ public class ServiceMatterPublishServiceImpl implements ServiceMatterPublishServ
         BeanUtils.copyProperties(hiCertinst, certinstBVo);
         String certinstId = UUID.randomUUID().toString();
         hiCertinst.setCertinstId(certinstId);
+        if (StringUtils.isBlank(hiCertinst.getCertinstName())) {
+            String certId = hiCertinst.getCertId();
+            AeaCert cert = aeaCertMapper.getAeaCertById(certId, topOrgId);
+            if (null != cert) {
+                hiCertinst.setCertinstName(cert.getCertName());
+            }
+        }
+        if (null == hiCertinst.getIssueDate()) {
+            hiCertinst.setIssueDate(hiCertinst.getTermStart());
+        }
         hiCertinst.setCreater(SecurityContext.getCurrentUserName());
         hiCertinst.setCreateTime(new Date());
+        hiCertinst.setRootOrgId(topOrgId);
         certinstMapper.insertAeaHiCertinst(hiCertinst);
 
         AeaHiCertinstBVo certinstBVo1 = uploadServiceMatter(certinstBVo.getMajorId(), req, hiCertinst);
@@ -454,12 +466,12 @@ public class ServiceMatterPublishServiceImpl implements ServiceMatterPublishServ
         List<AeaItemBasic> itemBasics = new ArrayList<>();
         if (itemServices != null && itemServices.size() > 0) {
             for (AeaImServiceItem item : itemServices) {
-                AeaItemBasic aeaItemBasic=aeaItemBasicMapper.getAeaItemBasicByItemVerId(item.getItemVerId(), topOrgId);
-                if(null!=aeaItemBasic){
+                AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(item.getItemVerId(), topOrgId);
+                if (null != aeaItemBasic) {
                     List<AeaItemBasic> result = new ArrayList<>();
-                    if(StringUtils.isNotBlank(aeaItemBasic.getItemId())){
+                    if (StringUtils.isNotBlank(aeaItemBasic.getItemId())) {
                         List<String> idList = this.getItemIdList(aeaItemBasic.getItemId());
-                        if(idList.size() > 0){
+                        if (idList.size() > 0) {
                             AeaItemBasic aib = new AeaItemBasic();
                             aib.setSearchItemIds(idList.toArray(new String[idList.size()]));
                             aib.setRootOrgId(topOrgId);
@@ -475,19 +487,19 @@ public class ServiceMatterPublishServiceImpl implements ServiceMatterPublishServ
         return itemBasics;
     }
 
-    private List<String> getItemIdList(String itemId) throws Exception{
+    private List<String> getItemIdList(String itemId) throws Exception {
         List<String> idList = new ArrayList<>();
-        if(StringUtils.isNotBlank(itemId)){
+        if (StringUtils.isNotBlank(itemId)) {
             AeaItemRelevance search = new AeaItemRelevance();
             search.setChildItemId(itemId);
             List<AeaItemRelevance> relevances = aeaItemRelevanceMapper.listAeaItemRelevance(search);
-            if(relevances != null && relevances.size() > 0){
-                for(AeaItemRelevance relevance:relevances){
+            if (relevances != null && relevances.size() > 0) {
+                for (AeaItemRelevance relevance : relevances) {
                     idList.add(relevance.getParentItemId());
                 }
             }
         }
-        return  idList;
+        return idList;
     }
 
 
