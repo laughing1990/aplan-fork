@@ -2003,7 +2003,7 @@ var vm = new Vue({
       selStateIds=selStateIds.filter(function(item, index) {
         //当前元素，在原始数组中的第一个索引==当前索引值，否则返回当前元素
         return selStateIds.indexOf(item, 0) === index
-                  }else if(obj.selectAnswerId !== '') {})
+                  })
     return selStateIds;
 },
 // 根据阶段获取情形和材料
@@ -2026,7 +2026,7 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
               return item !== itemSel;
             })
           });
-
+        }else if(obj.selectAnswerId !== '') {
           selStateIds=selStateIds.filter(function(item, index) {
                 return item !== obj.selectAnswerId;
               })
