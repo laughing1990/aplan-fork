@@ -2423,7 +2423,8 @@
         aib.ITEM_NAME agentItemName,
         o.ORG_NAME agentOrgName,
         aib.CREATE_TIME publishTime,
-        (SELECT
+        (
+        SELECT
         <if test="_databaseId == 'oracle'">
             WM_CONCAT(aib1.ITEM_NAME)
         </if>
@@ -2433,14 +2434,25 @@
         FROM aea_item_relevance air, aea_item_basic aib1
         WHERE air.PARENT_ITEM_ID = aib1.ITEM_ID AND air.CHILD_ITEM_ID = aib.ITEM_ID
         AND aib1.ITEM_VER_ID IN (
-        SELECT seq.ITEM_VER_ID FROM aea_item_seq seq,(
-        SELECT seq1.ITEM_ID,MAX(seq1.ITEM_VER_MAX) ITEM_VER_MAX FROM aea_item_seq seq1
-        GROUP BY seq1.ITEM_ID) temp
+        SELECT seq.ITEM_VER_ID FROM aea_item_seq seq,
+        (SELECT seq1.ITEM_ID,MAX(seq1.ITEM_VER_MAX) ITEM_VER_MAX FROM aea_item_seq seq1 GROUP BY seq1.ITEM_ID) temp
         WHERE seq.ITEM_ID = temp.ITEM_ID AND seq.ITEM_VER_MAX = temp.ITEM_VER_MAX
-        AND seq.ITEM_ID = aib1.ITEM_ID)
-        AND aib1.ITEM_NATURE = '0' and aib1.IS_CATALOG='1') itemName
+        AND seq.ITEM_ID = aib1.ITEM_ID
+        )
+        AND aib1.ITEM_NATURE = '0' and aib1.IS_CATALOG='1'
+        ) itemName,
+        (select
+        <if test="_databaseId == 'oracle'">
+            WM_CONCAT(ais.SERVICE_NAME)
+        </if>
+        <if test="_databaseId == 'mysql'">
+            GROUP_CONCAT(ais.SERVICE_NAME)
+        </if>
+        from aea_im_service ais,aea_im_service_item aisi3
+        where ais.SERVICE_ID=aisi3.SERVICE_ID and aisi3.ITEM_VER_ID=aib.ITEM_VER_ID
+        ) serviceName
         FROM aea_item_basic aib LEFT JOIN opu_om_org o ON aib.ORG_ID = o.ORG_ID
-        WHERE aib.ITEM_NATURE = '8' and aib.IS_CATALOG='1'
+        WHERE aib.ITEM_NATURE = '8' and aib.IS_CATALOG='0'
         AND EXISTS (
         SELECT ver1.ITEM_VER_ID FROM aea_item_ver ver1, (
         SELECT ver2.ITEM_ID,MAX(ver2.VER_NUM) VER_NUM FROM aea_item_ver ver2
@@ -2537,7 +2549,9 @@
         <include refid="allColumns2">
             <property name="alias" value="itemBasic"/>
         </include>
-        ,org.ORG_NAME from AEA_ITEM_BASIC itemBasic
+        ,
+        org.ORG_NAME
+        from AEA_ITEM_BASIC itemBasic
         left join OPU_OM_ORG org on ( org.ORG_ID = itemBasic.ORG_ID and org.ORG_DELETED = '0')
         where itemBasic.ITEM_VER_ID in (
         select temp1.ITEM_VER_ID from (

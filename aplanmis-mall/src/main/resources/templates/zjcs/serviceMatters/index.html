@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
     <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/layout.css" th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
     <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/blue/css/theme.css" th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
-    <!-- <link rel="stylesheet" href="../../../static/common/css/reset.css" th:href="@{/serviceMatters/css/index.css}"> -->
     <link rel="stylesheet" href="../../../static/zjcs/common/css/reset.css" th:href="@{/zjcs/common/css/reset.css}">
 
     <link rel="stylesheet" href="../../../static/zjcs/serviceMatters/css/index.css" th:href="@{/zjcs/serviceMatters/css/index.css}">
@@ -31,15 +30,6 @@
                 <el-input v-model="form.agentItemName" class="search-btn">
                   <el-button slot="append" icon="el-icon-search" type="primary" @click="showTable">搜索</el-button>
                 </el-input>
-                <!--<el-input v-model="form.agentItemName"></el-input>-->
-                <!--<el-button type="primary"  @click="showTable()">查询</el-button>-->
-               <!--  <div class="input-group-append">
-                    <button class="btn btn-primary m-btn--icon" @click="showTable()">
-                      <span>
-                        <span style="paddingLeft:0;">查询</span>
-                      </span>
-                    </button>
-                  </div> -->
               </el-form-item>
               <el-form-item label="涉及的行政事项" class="inoputW" v-show="isUp">
                 <el-input v-model="form.itemName"></el-input>
@@ -48,16 +38,6 @@
                   <el-checkbox-group  v-model="checkboxGroup" class="checkgroup special">
                       <el-checkbox v-for="item in checkboxs" :key="item.serviceId" :label="item.serviceId">{{item.serviceName}}</el-checkbox>
                   </el-checkbox-group>
-                  <!-- <div class="slide-control control-down" @click="toggle($event)">
-                    <span v-if="!isUp">
-                      <span>展开</span>
-                      <i class="el-icon-arrow-down"></i>
-                    </span>
-                    <span v-else>
-                      <span>收起</span>
-                      <i class="el-icon-arrow-up"></i>
-                    </span>
-                  </div> -->
               </el-form-item>
             </el-form>
           </div>
@@ -113,12 +93,13 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="itemName" label="涉及的行政事项"></el-table-column>
+                <el-table-column prop="serviceName" label="服务类型"></el-table-column>
                 <el-table-column prop="agentOrgName" width="240px" label="中介服务事项对应部门" ></el-table-column>
-                <el-table-column prop="publishTime" width="200px" label="发布日期">
-                  <template slot-scope="scope">
-                    {{dateFormat(scope.row.publishTime)}}
-                  </template>
-                </el-table-column>
+            <el-table-column prop="publishTime" width="150px" label="发布日期">
+              <template slot-scope="scope">
+                {{dateFormat(scope.row.publishTime)}}
+              </template>
+            </el-table-column>
           </el-table>
           <el-pagination
             v-show="pagination"
@@ -210,9 +191,10 @@
                 <li>
                   <span>1) 设计的行政事项：</span>
                   <el-table :data="tableData3" class="scrollable" border style="margin-top: 10px;width: 100%;" ref="singleTable" :header-cell-style="{background:'#f7f8fa',color:'#606266',fontWeight:'bold'}" >
+                    <el-table-column type="index" width="50" label="序号" align="center"></el-table-column>
                     <el-table-column prop="itemName" label="涉及的行政事项名称"></el-table-column>
                     <el-table-column prop="itemType"  label="事项类型"></el-table-column>
-                    <el-table-column prop="connect"  label="与中介服务关系说明" ></el-table-column>
+                    <!--<el-table-column prop="connect"  label="与中介服务关系说明" ></el-table-column>-->
                     <el-table-column prop="orgName"  label="实施部门"></el-table-column>
                   </el-table>
                 </li>

@@ -11,8 +11,6 @@
         ${alias}.PK_NAME  pkName,
         ${alias}.RECORD_ID  recordId,
         ${alias}.LEGAL_CLAUSE_ID  legalClauseId,
-        ${alias}.CREATER  creater,
-        ${alias}.CREATE_TIME  createTime,
         ${alias}.ROOT_ORG_ID  rootOrgId
     </sql>
 
@@ -27,11 +25,7 @@
         legal.SERVICE_LEGAL_ATT  serviceLegalAtt,
         legal.SERVICE_LEGAL_MEMO  serviceLegalMemo,
         legal.PARENT_LEGAL_ID  parentLegalId,
-        legal.LEGAL_SEQ  legalSeq,
-        legal.CREATER  creater,
-        legal.CREATE_TIME  createTime,
-        legal.MODIFIER  modifier,
-        legal.MODIFY_TIME  modifyTime
+        legal.LEGAL_SEQ  legalSeq
     </sql>
 
     <sql id="legalClauseColumns" >
@@ -41,11 +35,7 @@
         aislc.CLAUSE_CONTENT  clauseContent,
         aislc.SORT_NO  sortNo,
         aislc.IS_ACTIVE  isActive,
-        aislc.IS_DELETED  isDeleted,
-        aislc.CREATER  creater,
-        aislc.CREATE_TIME  createTime,
-        aislc.MODIFIER  modifier,
-        aislc.MODIFY_TIME  modifyTime
+        aislc.IS_DELETED  isDeleted
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
@@ -59,8 +49,24 @@
     <!--3 根据条件查询实体list -->
     <select id="listAeaItemServiceBasic" resultType="AeaItemServiceBasic">
         select
-        <include refid="allColumns"><property name="alias" value="aib"/></include>
-        from AEA_ITEM_SERVICE_BASIC aib
+        <include refid="allColumns">
+            <property name="alias" value="aisb"/>
+        </include>
+        ,
+        asl.LEGAL_NAME legalName,
+        asl.LEGAL_LEVEL legalLevel,
+        asl.BASIC_NO basicNo,
+        asl.ISSUE_ORG issueOrg,
+        asl.EXE_DATE exeDate,
+        asl.UPDATE_DATE updateDate,
+        asl.SERVICE_LEGAL_ATT serviceLegalAtt,
+        asl.SERVICE_LEGAL_MEMO serviceLegalMemo,
+        aslc.CLAUSE_TITLE clauseTitle,
+        aslc.CLAUSE_CONTENT clauseContent,
+        aslc.SORT_NO sortNo
+        from aea_item_service_basic aisb
+        left join aea_service_legal_clause aslc on aisb.LEGAL_CLAUSE_ID=aslc.LEGAL_CLAUSE_ID
+        LEFT JOIN aea_service_legal asl on asl.LEGAL_ID=aslc.LEGAL_ID
         <where>
             <if test="basicId != null">
                 AND BASIC_ID = #{basicId}

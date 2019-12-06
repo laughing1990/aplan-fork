@@ -32,15 +32,17 @@ public class AeaItemService {
     private String itemName;
     @ApiModelProperty(value = "中介事项创建时间")
     private String createTime;
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "中介事项发布时间")
     private Date publishTime;
-    @ApiModelProperty(value = "查询拓展字段",hidden = true)
+    @ApiModelProperty(value = "查询拓展字段", hidden = true)
     private String[] orgIds;
     @ApiModelProperty(value = "所属服务ID")
     private String serviceId;
     @ApiModelProperty(value = "单位ID")
     private String unitInfoId;
+    @ApiModelProperty(value = "中介服务名称")
+    private String serviceName;
 
     private List serviceIds;// 用于参数转换
 
