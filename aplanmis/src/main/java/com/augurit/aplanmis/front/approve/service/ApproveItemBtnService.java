@@ -147,6 +147,8 @@ public class ApproveItemBtnService {
                 aeaToleranceTimeInst.setOrgId(SecurityContext.getCurrentOrgId());
                 aeaToleranceTimeInst.setIsCompleted("0");
                 aeaToleranceTimeInstService.saveAeaToleranceTimeInst(aeaToleranceTimeInst);
+                //创建短信通知联系人
+                aeaToleranceTimeInstService.createToleranceSmsRemindInfo(aeaToleranceTimeInst);
             }
         }
     }

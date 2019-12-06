@@ -15,8 +15,8 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
 import com.augurit.aplanmis.common.domain.AeaToleranceTimeInst;
-import com.augurit.aplanmis.common.mapper.AeaToleranceTimeInstMapper;
 import com.augurit.aplanmis.common.service.instance.AeaLogApplyStateHistService;
+import com.augurit.aplanmis.common.service.item.AeaToleranceTimeInstService;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.task.api.history.HistoricTaskInstance;
@@ -54,7 +54,7 @@ public class AplanmisTimeCalculateEngine extends TimeCalculateEngineBase {
     private BpmProcessService bpmProcessService;
 
     @Autowired
-    private AeaToleranceTimeInstMapper aeaToleranceTimeInstMapper;
+    private AeaToleranceTimeInstService aeaToleranceTimeInstService;
 
     public static ApplicationContext applicationContext = null;
 
@@ -243,7 +243,7 @@ public class AplanmisTimeCalculateEngine extends TimeCalculateEngineBase {
      */
     private void calculateToleranceTime(String jobTimerId,Map<String, ActStoTimerule> timeTemp) throws Exception{
         //查出所有的为完成的办件容缺补正时限实例
-        List<AeaToleranceTimeInst> timeinsts = aeaToleranceTimeInstMapper.getUnCompletedToleranceTimeinstsByJobTimerId(topOrgId, jobTimerId);
+        List<AeaToleranceTimeInst> timeinsts = aeaToleranceTimeInstService.getUnCompletedToleranceTimeinstsByJobTimerId(topOrgId, jobTimerId);
         Date currentTime = new Date(); //当前时间
         List<AeaToleranceTimeInst> temp = new ArrayList();
         for(int i=0,len=timeinsts.size(); i<len; i++ ){
@@ -283,11 +283,17 @@ public class AplanmisTimeCalculateEngine extends TimeCalculateEngineBase {
             }
         }
         if(temp.size() > 0){
-            aeaToleranceTimeInstMapper.batchUpdateAeaToleranceTimeInst(temp);
+            aeaToleranceTimeInstService.batchUpdateAeaToleranceTimeInst(temp);
         }
 
         try{
-            //可以在这里加入对应的业务逻辑，做短信发送或其他操作
+            //可以在这里加入对应的业务逻辑，做短信发送或其他操作，对于预警的容缺补正实例，做短信通知
+            for(int i=0,len=temp.size(); i<len; i++ ){
+                AeaToleranceTimeInst aeaToleranceTimeInst = temp.get(i);
+                if("2".equals(aeaToleranceTimeInst.getInstState())){
+                    aeaToleranceTimeInstService.createToleranceSmsRemindInfo(aeaToleranceTimeInst);
+                }
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
