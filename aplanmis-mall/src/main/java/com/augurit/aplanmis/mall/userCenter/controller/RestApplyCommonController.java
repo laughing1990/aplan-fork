@@ -59,8 +59,6 @@ public class RestApplyCommonController {
     private RestFileService restFileService;
     @Autowired
     private AeaHiApplyinstService aeaHiApplyinstService;
-    @Autowired
-    private AeaParThemeService aeaParThemeService;
 
 
 
