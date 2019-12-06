@@ -411,23 +411,62 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
         return iteminstList;
     }
 
-    private void replaceInoutinstForIteminst(List<AeaHiIteminst> oldIteminstList, List<AeaHiIteminst> iteminstList) {
+    private void replaceInoutinstForIteminst(List<AeaHiIteminst> oldIteminstList, List<AeaHiIteminst> iteminstList) throws Exception {
         if(oldIteminstList.size()==0) return; //oldIteminstList为空
         //如果oldIteminstList不为空，iteminstList为空，说明没选事项了，需要将之前的事项的材料删除
         if(iteminstList.size()==0){
-            String[] oldIteminstIds=oldIteminstList.stream().map(AeaHiIteminst::getIteminstId).toArray(String[]::new);
-            List<AeaHiItemInoutinst> inoutList=aeaHiItemInoutinstService.getAeaHiItemInoutinstByIteminstIds(oldIteminstIds);
-            if(inoutList.size()==0) return;
-            String[] outinstIds=inoutList.stream().map(AeaHiItemInoutinst::getInoutinstId).toArray(String[]::new);
-            aeaHiItemInoutinstService.batchDeleteAeaHiItemInoutinst(outinstIds);
-            for (AeaHiItemInoutinst inoutinst:inoutList){
-                restMyMatService.deleteMatinst(inoutinst.getMatinstId());
-            }
+            deleteMatUnderIteminst(oldIteminstList);
         }else {//如果oldIteminstList，iteminstList都不为空，则替换同一事项，old中的事项若是在iteminstList不存在，则需删除该事项的材料
             List<String> itemVerIds=iteminstList.stream().map(AeaHiIteminst::getItemVerId).collect(Collectors.toList());
+            List<AeaHiIteminst> unSelectList=new ArrayList<>();
+            List<AeaHiIteminst> selectedList=new ArrayList<>();
+            Map<String,Object> hashMap=new HashMap<>();//保存新旧事项实例ID的键值对
             for (AeaHiIteminst old:oldIteminstList){
-                // TODO: 2019/12/5  qinjp
+                if(!itemVerIds.contains(old.getItemVerId())){
+                    unSelectList.add(old);
+                }else{
+                    selectedList.add(old);
+                    String iteminstId=getNewIteminstIdFromOldAndNewIteminstList(old,iteminstList);
+                    if(StringUtils.isBlank(iteminstId)) continue;
+                    hashMap.put(old.getIteminstId(),iteminstId);
+                }
             }
+            deleteMatUnderIteminst(unSelectList);
+            replaceInoutinstFromSelectedIteminst(selectedList,hashMap);//选择的事项没变，则需替换输入输出到新的事项实例上，不然材料会丢失
+        }
+    }
+
+    private void replaceInoutinstFromSelectedIteminst(List<AeaHiIteminst> selectedList,Map<String,Object> hashMap) throws Exception {
+        if(selectedList.size()==0) return;
+        String[] selectedIteminstIds=selectedList.stream().map(AeaHiIteminst::getIteminstId).toArray(String[]::new);
+        List<AeaHiItemInoutinst> selectedInoutList=aeaHiItemInoutinstService.getAeaHiItemInoutinstByIteminstIds(selectedIteminstIds);
+        if(selectedInoutList.size()==0) return;
+        for (AeaHiItemInoutinst inoutinst:selectedInoutList){
+            String iteminstId=(String) hashMap.get(inoutinst.getIteminstId());
+            if(StringUtils.isBlank(iteminstId)) continue;
+            inoutinst.setIteminstId(iteminstId);
+            aeaHiItemInoutinstService.updateAeaHiItemInoutinst(inoutinst);
+        }
+    }
+
+    private String getNewIteminstIdFromOldAndNewIteminstList(AeaHiIteminst old, List<AeaHiIteminst> iteminstList) {
+        for (AeaHiIteminst iteminst:iteminstList){
+            if(old.getItemVerId().equals(iteminst.getItemVerId())){
+                return iteminst.getIteminstId();
+            }
+        }
+        return null;
+    }
+
+    //删除事项下的材料和输入输出
+    private void deleteMatUnderIteminst(List<AeaHiIteminst> iteminstList){
+        String[] iteminstIds=iteminstList.stream().map(AeaHiIteminst::getIteminstId).toArray(String[]::new);
+        List<AeaHiItemInoutinst> inoutList=aeaHiItemInoutinstService.getAeaHiItemInoutinstByIteminstIds(iteminstIds);
+        if(inoutList.size()==0) return;
+        String[] outinstIds=inoutList.stream().map(AeaHiItemInoutinst::getInoutinstId).toArray(String[]::new);
+        aeaHiItemInoutinstService.batchDeleteAeaHiItemInoutinst(outinstIds);
+        for (AeaHiItemInoutinst inoutinst:inoutList){
+            restMyMatService.deleteMatinst(inoutinst.getMatinstId());
         }
     }
 

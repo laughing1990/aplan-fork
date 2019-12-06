@@ -22,4 +22,6 @@ public interface AeaHiItemInoutinstService {
     List<AeaHiItemInoutinst> getAeaHiItemInoutinstByIteminstIds(String[] oldIteminstIds);
 
     void batchDeleteAeaHiItemInoutinst(String[] outinstIds);
+
+    void updateAeaHiItemInoutinst(AeaHiItemInoutinst inoutinst) throws Exception;
 }
