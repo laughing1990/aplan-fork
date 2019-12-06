@@ -1,19 +1,39 @@
-var commonQueryParams = [], aedit_item_validator, customTable_tree;
-var treegridCurrentPageNumber = 1;  //记录当前页面
-var treegridCurrentPageSize = 10;   //记录页面大小
-var modalLevel = 1;//设置Bootstrap，多个modal展示的前后z-index
+var commonQueryParams = [],
+    aedit_item_validator,
+    customTable_tree;
 $(function () {
 
     // 初始化高度
-    $('#mainContentPanel').css('height', $(document.body).height() - 10);
+    $('#mainContentPanel').css('height',$(document.body).height()-20);
+
+    $('#selectUserTree').css('height', $('#westPanel').height()-116);
+
+    // 初始化用户树
+    initSelectUserZtree();
+
+    // 初始化事项表格
+    initItemBasicTreeGrid();
 
     // 组织机构事项列表
     $('#all_item_list_tb').bootstrapTable('resetView', {
+
         height: $('#westPanel').height() - 116
     });
 
-    initItemBasicTreeGrid();
+    // 处理滚动条
+    $('#selectUserTree').niceScroll({
 
+        cursorcolor: "#e2e5ec",//#CC0071 光标颜色
+        cursoropacitymin: 0, // 当滚动条是隐藏状态时改变透明度, 值范围 1 到 0
+        cursoropacitymax: 1, // 当滚动条是显示状态时改变透明度, 值范围 1 到 0
+        touchbehavior: false, //使光标拖动滚动像在台式电脑触摸设备
+        cursorwidth: "4px", //像素光标的宽度
+        cursorborder: "0", //   游标边框css定义
+        cursorborderradius: "2px",//以像素为光标边界半径
+        autohidemode: true  //是否隐藏滚动条
+    });
+
+    // 处理事项表格滚动条
     $(".fixed-table-body").niceScroll({
 
         cursorcolor: "#e2e5ec",//#CC0071 光标颜色
@@ -26,6 +46,7 @@ $(function () {
         autohidemode: true  //是否隐藏滚动条
     });
 
+    // 查询
     $('#searchItemNature').change(function () {
 
         searchAllItemList();
@@ -51,19 +72,11 @@ $(function () {
             swal('提示信息', '请选择行政区划！', 'info');
         }
     });
-
-    //隐藏中介事项新增实施事项按钮
-    // if (itemNature == '8') {
-    // 	$("#zjsssx").hide()
-    // } else {
-    // 	$("#zjsssx").show()
-    // }
-
 });
 
 function initItemBasicTreeGrid() {
 
-    var url = ctx + '/aea/item/basic/listLatestAeaItemBasicTreeByPage.do?itemNature=' + itemNature;
+    var url = ctx + '/aea/item/user/listUserItemByPage.do';
     customTable_tree = $('#all_item_list_tb').bootstrapTable({
         url: url,
         columns: getItemBasicTreeGridColumns(),
@@ -73,43 +86,13 @@ function initItemBasicTreeGrid() {
         paginationVAlign: 'bottom',
         paginationDetailHAlign: "left",
         paginationShowPageGo: true,
-        onPageChange: function (number, size) {
-            treegridCurrentPageNumber = number;
-            treegridCurrentPageSize = size;
-        },
         pageList: [10, 20, 50, 100],
         method: 'post',
         contentType: "application/x-www-form-urlencoded",
         queryParams: allItemListParam,
         sidePagination: 'server',
-        singleSelect: true,
-        treeShowField: 'itemName',
-        parentIdField: 'pid',
-        idField: 'itemId',
-        onPreBody: function (data) {
-            if (data.length > 0) {
-                var ids = [];
-                $(data).each(function (i, item) {
-                    ids.push(item.itemId);
-                    item.pid = item.parentItemId;   //pid属性用于树表格显示
-                });
-                $(data).each(function (i, item) {
-                    if (item.pid != null && $.inArray(item.pid, ids) == -1) { //父节点不在返回数据中的，设置pid为null
-                        item.pid = null;
-                    }
-                });
-            }
-        },
-        onLoadSuccess: function (result) {
-
-            $('#all_item_list_tb').treegrid({
-                initialState: 'expanded',// 所有节点都折叠
-                treeColumn: 0,
-                onChange: function () {
-                    $('#all_item_list_tb').bootstrapTable('resetWidth');
-                }
-            });
-        }
+        singleSelect: false,
+        clickToSelect: true,
     });
 }
 
@@ -117,83 +100,98 @@ function initItemBasicTreeGrid() {
 var getItemBasicTreeGridColumns = function () {
 
     var columns = [
-        // {
-        //     field: 'Number',
-        //     title: '序号',
-        //     align: 'center',
-        //     width: 10,
-        //     formatter: function (value, row, index) {
-        //         if(row.pid != null)return '';
-        //         return treegridCurrentPageSize * (treegridCurrentPageNumber - 1) + index;//返回每条的序号： 每页条数 * （当前页 - 1 ）+ 序号
-        //     }
-        // },
-        // {
-        //     checkbox:true
-        // },
+        {
+            checkbox:true,
+            width: 5
+        },
+        {
+            field: 'itemNature',
+            align: 'center',
+            width: 65,
+            title: '事项类型',
+            formatter: function (value, row) {
+
+                var itemNature = "";
+                if(row.itemNature){
+
+                    if(value=='0'){
+                        itemNature = '行政事项';
+                    }else if(value=='9'){
+                        itemNature = '服务协同';
+                    }else if(value=='8'){
+                        itemNature = '中介服务事项';
+                    }else if(value=='6'){
+                        itemNature = '市政公用服务';
+                    }
+                }
+                return itemNature;
+            }
+        },
         {
             field: 'itemName',
-            title: '标准/实施事项名称',
+            title: '事项名称',
             align: 'left',
-            width: 300
+            width: 350,
+            formatter: function (value, row) {
+
+                var itemName = row.itemName;
+                if(!isEmpty(row.isCatalog)){
+                    if(row.isCatalog=='1'){
+                        itemName = '【标准事项】'+ itemName;
+                        if(!isEmpty(row.guideOrgName)){
+                            itemName = itemName +'【'+ row.guideOrgName+'】';
+                        }
+                    }else{
+                        itemName = '【实施事项】'+ itemName;
+                        if(!isEmpty(row.orgName)) {
+                            itemName = itemName + '【' + row.orgName + '】';
+                        }
+                    }
+                }
+                return itemName;
+            }
         },
         {
             field: 'itemCode',
-            title: '标准/实施编码',
-            width: 130,
+            title: '事项编码',
+            width: 200,
             align: 'left'
         },
         {
-            field: 'orgName',
-            title: '主管/实施部门名称',
-            width: 130,
-            align: 'left',
-            formatter: function (value, row) {
+            field: 'verNum',
+            align: 'center',
+            width: 60,
+            title: '最新版本',
+            formatter: function(value, row) {
 
-                if (row.isCatalog == '1') {
-                    return row.guideOrgName;
-                } else {
-                    return value;
+                if(value){
+                    if((''+value).indexOf('.00')>-1){
+                        return 'V' + (''+value).substring(0,(''+value).indexOf('.00'))+'.0';
+                    }else{
+                        return 'V' + value;
+                    }
                 }
             }
-        },
-        {
-            field: 'isCatalog',
-            align: 'center',
-            width: 60,
-            title: '是否实施事项',
-            formatter: function (value, row) {
-                return value == '1' ? '标准事项' : '实施事项';
-            }
-        },
-        {
-            field: 'itemType',
-            align: 'center',
-            width: 60,
-            title: '事项类型',
-            formatter: itemTypeFormatter
-        },
-        // {
-        //     field: 'sxmlzt',
-        //     align: 'center',
-        //     width: 40,
-        //     title: '事项状态',
-        //     formatter: itemStatusFormatter
-        // },
-        {
-            field: 'verNumVo',
-            align: 'center',
-            width: 60,
-            title: '最新版本'
         },
         {
             field: 'operate_',
             align: 'center',
             title: '操作',
-            width: 150,
+            width: 120,
             formatter: itemOperatorFormatter
         }
     ];
     return columns;
+}
+
+//判断字符是否为空的方法
+function isEmpty(obj){
+
+    if(typeof obj == "undefined" || obj == null || obj == ""){
+        return true;
+    }else{
+        return false;
+    }
 }
 
 function addItemBasicChildById(itemId, itemName, isCatalog, itemBasicId) {
@@ -269,22 +267,8 @@ function addItemBasicChildById(itemId, itemName, isCatalog, itemBasicId) {
     }
 }
 
-// 事项操作指南
-function viewItemOperaGuide(itemId, itemCode) {
-
-    window.open('https://www.gdzwfw.gov.cn/portal/guide/' + itemCode, '查看操作指南');
-}
-
-$(document).on('hidden.bs.modal', '.modal', function (e) {
-    $(this).css("z-index", 1050);
-    modalLevel--;
-});
-$(document).on('show.bs.modal', '.modal', function (e) {
-    $(this).css("z-index", 1050 + modalLevel);
-    modalLevel++;
-});
-
 function itemOperatorFormatter(value, row, index) {
+
     var itemTitle = "编辑";
     var icoCSS = "la la-edit";
     if (row.itemVerStatus == "1" || row.itemVerStatus == "3") {
@@ -293,38 +277,40 @@ function itemOperatorFormatter(value, row, index) {
     }
 
     var editBtn = '<a href="javascript:editItemBasicById(\'' + row.itemBasicId + '\',\'' + row.itemVerStatus + '\',\'' + row.isCatalog + '\')" ' +
-        'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill"' +
-        'title="' + itemTitle + '"><i class="' + icoCSS + '"></i>' +
-        '</a>';
+                      'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill"' +
+                      'title="' + itemTitle + '"><i class="' + icoCSS + '"></i>' +
+                  '</a>';
 
-    // var addChildBtn='';
-    // if(row.itemNature!='8'){
-    var addChildBtn = '<a href="javascript:addItemBasicChildById(\'' + row.itemId + '\',\'' + row.itemName + '\',\'' + row.isCatalog + '\',\'' + row.itemBasicId + '\',)" ' +
-        'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill"' +
-        'title="添加子事项"><i class="la la-plus"></i>' +
-        '</a>';
-    // }
-    var deleteBtn = '<a href="javascript:deleteItemById(\'' + row.itemId + '\')" ' +
-        'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
-        'title="删除"><i class="la la-trash"></i>' +
-        '</a>';
+    // var addChildBtn = '<a href="javascript:addItemBasicChildById(\'' + row.itemId + '\',\'' + row.itemName + '\',\'' + row.isCatalog + '\',\'' + row.itemBasicId + '\',)" ' +
+    //                       'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill"' +
+    //                       'title="添加子事项"><i class="la la-plus"></i>' +
+    //                   '</a>';
+
+    var deleteUserItemBtn = '<a href="javascript:deleteUserItemById(\'' + row.itemUserId + '\')" ' +
+                                'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
+                                'title="移除用户事项"><i class="la la-times"></i>' +
+                            '</a>';
+
+    // var deleteBtn = '<a href="javascript:deleteItemById(\'' + row.itemId + '\')" ' +
+    //                     'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
+    //                     'title="删除事项"><i class="la la-trash"></i>' +
+    //                 '</a>';
 
     var setState = '<a href="javascript:openItemVerModal(\'' + row.itemId + '\',\'' + row.itemVerId + '\',\'' + row.itemNature + '\')" ' +
-        'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
-        'title="事项版本"><i class="la la-cog"></i>' +
-        '</a>';
+                        'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
+                        'title="事项版本"><i class="la la-cog"></i>' +
+                   '</a>';
 
-    var editMaterial='';
+    // var editMaterial='';
+    // if(row.itemNature=='8'){
+    //
+    //     editMaterial='<a href="javascript:openItemVerMaterialModal(\'' + row.itemVerId + '\')" ' +
+    //                      'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
+    //                      'title="输出材料"><i class="la la-cogs"></i>' +
+    //                  '</a>';
+    // }
 
-    if(row.itemNature=='8'){
-        editMaterial='<a href="javascript:openItemVerMaterialModal(\'' + row.itemVerId + '\')" ' +
-            'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
-            'title="输出材料"><i class="la la-cogs"></i>' +
-            '</a>';
-    }
-
-
-    return editBtn + addChildBtn + setState + deleteBtn+editMaterial;
+    return editBtn + setState + deleteUserItemBtn /*+ editMaterial*/;
 }
 
 function allItemListParam(params) {
@@ -345,6 +331,11 @@ function allItemListParam(params) {
     };
     //组装查询参数
     var buildParam = {};
+    var userId = null;
+    if(curSelectedUserTreeNode!=null){
+        userId = curSelectedUserTreeNode.id;
+    }
+    commonQueryParams.push({name: 'userId', value: userId});
     if (commonQueryParams) {
         for (var i = 0; i < commonQueryParams.length; i++) {
             buildParam[commonQueryParams[i].name] = commonQueryParams[i].value.trim();
@@ -357,9 +348,8 @@ function allItemListParam(params) {
 // 查询
 function searchAllItemList() {
 
-    var params = $('#search_all_item_list_form').serializeArray();
     commonQueryParams = [];
-    // commonQueryParams.push({name: 'itemNature', value: itemNature});
+    var params = $('#search_all_item_list_form').serializeArray();
     if (params != "") {
         $.each(params, function () {
             commonQueryParams.push({name: this.name, value: this.value});
@@ -400,7 +390,7 @@ function initItemVerSeq() {
             $.ajax({
                 url: ctx + '/aea/item/initItemVerSeq.do',
                 type: 'post',
-                data: {'itemNature': itemNature},
+                data: {/*'itemNature': itemNature*/},
                 // async: false,
                 success: function (result) {
                     if (result.success) {
@@ -580,6 +570,117 @@ function isSelectBscDicRegion(obj, isSearch) {
         }
     } else {
         selectBscDicRegionZtree();
+    }
+}
+
+/**
+ * 批量删除用户与事项关联
+ */
+function deleteUserItemById(id){
+
+    if(!isEmpty(id)){
+        swal({
+            text: '此操作将移除用户所管理的事项数据，您确定执行吗？',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '确定',
+            cancelButtonText: '取消'
+        }).then(function (result) {
+            if (result.value) {
+                $.ajax({
+                    url: ctx + '/aea/item/user/delItemUserById.do',
+                    type: 'post',
+                    data: {'id': id},
+                    success: function (result1) {
+                        if (result1.success) {
+                            swal({
+                                type: 'success',
+                                title: '移除关联事项成功！',
+                                showConfirmButton: false,
+                                timer: 1000
+                            });
+                            // 列表数据重新加载
+                            searchAllItemList();
+                        }else{
+                            swal('错误信息', result1.message, 'error');
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                        swal('错误信息', XMLHttpRequest.responseText, 'error');
+                    }
+                });
+            }
+        });
+    }else{
+        swal('提示信息', "请选择需要移除事项数据！", 'info');
+    }
+}
+
+/**
+ * 批量删除用户与事项关联
+ */
+function batchDelUserItem(){
+
+    var rows = $("#all_item_list_tb").bootstrapTable('getSelections');
+    if(rows!=null&&rows.length>0){
+        var ids = [];
+        for(var i=0;i<rows.length;i++){
+            ids.push(rows[i].itemUserId);
+        }
+        swal({
+            text: '此操作将批量移除用户所管理的事项数据，您确定执行吗？',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '确定',
+            cancelButtonText: '取消'
+        }).then(function (result) {
+            if (result.value) {
+                $.ajax({
+                    url: ctx + '/aea/item/user/batchDelItemUserByIds.do',
+                    type: 'post',
+                    data: {
+                        'ids': ids.toString()
+                    },
+                    success: function (result1) {
+                        if (result1.success) {
+                            swal({
+                                type: 'success',
+                                title: '移除关联事项成功！',
+                                showConfirmButton: false,
+                                timer: 1000
+                            });
+                            // 列表数据重新加载
+                            searchAllItemList();
+                        }else{
+                            swal('错误信息', result1.message, 'error');
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                        swal('错误信息', XMLHttpRequest.responseText, 'error');
+                    }
+                });
+            }
+        });
+    }else{
+        swal('提示信息', "请选择需要移除事项数据！", 'info');
+    }
+}
+
+function importUserItem(){
+
+    if(curSelectedUserTreeNode!=null){
+
+        $("#uploadProgress").modal("show");
+        $('#uploadProgressMsg').html("加载数据中,请勿点击,耐心等候...");
+        initUserCheckItem();
+        setTimeout(function () {
+            $("#uploadProgress").modal('hide');
+        }, 500);
+
+    }else{
+        swal('提示信息', '请选择用户!', 'info');
     }
 }
 
