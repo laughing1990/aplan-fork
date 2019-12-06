@@ -69,6 +69,8 @@ public class AeaHiIteminst implements Serializable {
     private Date smsSendTime;//最新出件时间
     private String procinstId; //流程实例ID
     private String iteminstType; //事项实例类型： a 行政审批，p 告知承诺制
+    private Double toleranceTime; //办件容缺办结时的时限
+    private String timeruleId; //办件容缺办结时的时限计算规则id
 
     //非表字段
     private String approveOrgName;  //审批部门

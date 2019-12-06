@@ -28,14 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -339,6 +332,24 @@ public class AeaHiIteminstServiceImpl implements AeaHiIteminstService {
         AeaHiIteminst iteminst = new AeaHiIteminst();
         iteminst.setIteminstId(iteminstId);
         iteminst.setIsToleranceAccept(isToleranceAccept);
+        iteminst.setModifier(SecurityContext.getCurrentUserName());
+        iteminst.setModifyTime(new Date());
+        aeaHiIteminstMapper.updateAeaHiIteminst(iteminst);
+    }
+
+    @Override
+    public void updateAeaHiIteminstToleranceTime(String iteminstId, double toleranceTime, String timeruleId) throws Exception {
+        if (StringUtils.isBlank(iteminstId))
+            throw new InvalidParameterException("事项实例ID为空！");
+        if (StringUtils.isBlank(timeruleId))
+            throw new InvalidParameterException("容缺时限规则id为空！");
+        if (toleranceTime <= 0)
+            throw new InvalidParameterException("容缺时限值必须大于0！");
+
+        AeaHiIteminst iteminst = new AeaHiIteminst();
+        iteminst.setIteminstId(iteminstId);
+        iteminst.setToleranceTime(toleranceTime);
+        iteminst.setTimeruleId(timeruleId);
         iteminst.setModifier(SecurityContext.getCurrentUserName());
         iteminst.setModifyTime(new Date());
         aeaHiIteminstMapper.updateAeaHiIteminst(iteminst);

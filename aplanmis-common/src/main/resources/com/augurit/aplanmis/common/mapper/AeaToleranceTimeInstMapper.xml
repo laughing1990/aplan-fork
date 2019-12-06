@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Augurit    2019-12-03 19:48:17 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaToleranceTimeInstMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    TOLERANCE_TIME_INST_ID  toleranceTimeInstId,
+    ITEMINST_ID  iteminstId,
+    TIMERULE_ID  timeruleId,
+    TIME_LIMIT  timeLimit,
+    TIMERULE_UNIT  timeruleUnit,
+    USE_LIMIT_TIME  useLimitTime,
+    REMAINING_TIME  remainingTime,
+    OVERDUE_TIME  overdueTime,
+    OVERDUE_DATE  overdueDate,
+    ORG_ID  orgId,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    INST_STATE  instState,
+    IS_COMPLETED isCompleted
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaToleranceTimeInstById" resultType="AeaToleranceTimeInst" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_TOLERANCE_TIME_INST
+    where    TOLERANCE_TIME_INST_ID = #{id}
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaToleranceTimeInst" resultType="AeaToleranceTimeInst" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_TOLERANCE_TIME_INST
+    <where>
+        <if test="toleranceTimeInstId != null" >
+        AND    TOLERANCE_TIME_INST_ID = #{toleranceTimeInstId}
+        </if>
+        <if test="iteminstId != null" >
+        AND    ITEMINST_ID = #{iteminstId}
+        </if>
+        <if test="timeruleId != null" >
+        AND    TIMERULE_ID = #{timeruleId}
+        </if>
+        <if test="timeLimit != null" >
+        AND    TIME_LIMIT = #{timeLimit}
+        </if>
+        <if test="timeruleUnit != null" >
+        AND    TIMERULE_UNIT = #{timeruleUnit}
+        </if>
+        <if test="useLimitTime != null" >
+        AND    USE_LIMIT_TIME = #{useLimitTime}
+        </if>
+        <if test="remainingTime != null" >
+        AND    REMAINING_TIME = #{remainingTime}
+        </if>
+        <if test="overdueTime != null" >
+        AND    OVERDUE_TIME = #{overdueTime}
+        </if>
+        <if test="overdueDate != null" >
+        AND    OVERDUE_DATE = #{overdueDate}
+        </if>
+        <if test="orgId != null" >
+        AND    ORG_ID = #{orgId}
+        </if>
+        <if test="creater != null" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+        <if test="modifier != null" >
+        AND    MODIFIER = #{modifier}
+        </if>
+        <if test="modifyTime != null" >
+        AND    MODIFY_TIME = #{modifyTime}
+        </if>
+        <if test="instState != null" >
+        AND    INST_STATE = #{instState}
+        </if>
+        <if test="isCompleted != null" >
+        AND    IS_COMPLETED = #{isCompleted}
+        </if>
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+    <select id="getUnCompletedToleranceTimeinstsByJobTimerId" resultType="AeaToleranceTimeInst">
+        select
+        <include refid="allColumns"/>
+        from AEA_TOLERANCE_TIME_INST
+        where
+        IS_COMPLETED = '0'
+        AND
+        ORG_ID = #{orgId}
+        AND
+        TIMERULE_ID IN (
+        SELECT TIMERULE_ID FROM ACT_STO_TIMERULE WHERE JOB_TIMER_ID =#{jobTimerId}
+        )
+    </select>
+<!--5 新增实体对象 -->
+<insert id="insertAeaToleranceTimeInst" parameterType="AeaToleranceTimeInst" >
+    insert into AEA_TOLERANCE_TIME_INST (
+TOLERANCE_TIME_INST_ID  ,ITEMINST_ID  ,TIMERULE_ID  ,TIME_LIMIT  ,TIMERULE_UNIT  ,USE_LIMIT_TIME  ,REMAINING_TIME  ,OVERDUE_TIME  ,OVERDUE_DATE  ,ORG_ID  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,INST_STATE ,IS_COMPLETED
+    )  values  (
+#{toleranceTimeInstId},#{iteminstId},#{timeruleId},#{timeLimit},#{timeruleUnit},#{useLimitTime},#{remainingTime},#{overdueTime},#{overdueDate},#{orgId},#{creater},#{createTime},#{modifier},#{modifyTime},  #{instState},  #{isCompleted}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaToleranceTimeInst" parameterType="AeaToleranceTimeInst" >
+    update AEA_TOLERANCE_TIME_INST
+    <set >
+        <if test="toleranceTimeInstId != null " >
+        TOLERANCE_TIME_INST_ID = #{toleranceTimeInstId},
+        </if>
+        <if test="iteminstId != null" >
+        ITEMINST_ID = #{iteminstId},
+        </if>
+        <if test="timeruleId != null" >
+        TIMERULE_ID = #{timeruleId},
+        </if>
+        <if test="timeLimit != null" >
+        TIME_LIMIT = #{timeLimit},
+        </if>
+        <if test="timeruleUnit != null" >
+        TIMERULE_UNIT = #{timeruleUnit},
+        </if>
+        <if test="useLimitTime != null" >
+        USE_LIMIT_TIME = #{useLimitTime},
+        </if>
+        <if test="remainingTime != null" >
+        REMAINING_TIME = #{remainingTime},
+        </if>
+        <if test="overdueTime != null" >
+        OVERDUE_TIME = #{overdueTime},
+        </if>
+        <if test="overdueDate != null" >
+        OVERDUE_DATE = #{overdueDate},
+        </if>
+        <if test="orgId != null" >
+        ORG_ID = #{orgId},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="modifier != null" >
+        MODIFIER = #{modifier},
+        </if>
+        <if test="modifyTime != null" >
+        MODIFY_TIME = #{modifyTime},
+        </if>
+        <if test="instState != null" >
+        INST_STATE = #{instState},
+        </if>
+        <if test="isCompleted != null" >
+        IS_COMPLETED = #{isCompleted},
+        </if>
+    </set>
+    where TOLERANCE_TIME_INST_ID = #{toleranceTimeInstId}
+</update>
+
+    <update id="batchUpdateAeaToleranceTimeInst" parameterType="java.util.List">
+        insert into AEA_TOLERANCE_TIME_INST (
+            TOLERANCE_TIME_INST_ID  ,ITEMINST_ID  ,TIMERULE_ID  ,TIME_LIMIT  ,TIMERULE_UNIT  ,USE_LIMIT_TIME  ,REMAINING_TIME  ,OVERDUE_TIME  ,OVERDUE_DATE  ,ORG_ID  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,INST_STATE ,IS_COMPLETED
+        )  values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+                #{item.toleranceTimeInstId},#{item.iteminstId},#{item.timeruleId},#{item.timeLimit},#{item.timeruleUnit},#{item.useLimitTime},#{item.remainingTime},#{item.overdueTime},#{item.overdueDate},#{item.orgId},#{item.creater},#{item.createTime},#{item.modifier},#{item.modifyTime},  #{item.instState},  #{item.isCompleted}
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        TOLERANCE_TIME_INST_ID =VALUES(TOLERANCE_TIME_INST_ID)  ,ITEMINST_ID =VALUES(ITEMINST_ID)  ,TIMERULE_ID=VALUES(TIMERULE_ID)  ,TIME_LIMIT=VALUES(TIME_LIMIT)  ,TIMERULE_UNIT=VALUES(TIMERULE_UNIT)  ,USE_LIMIT_TIME=VALUES(USE_LIMIT_TIME)
+        ,REMAINING_TIME=VALUES(REMAINING_TIME)  ,OVERDUE_TIME=VALUES(OVERDUE_TIME)  ,OVERDUE_DATE=VALUES(OVERDUE_DATE),ORG_ID=VALUES(ORG_ID)  ,CREATER=VALUES(CREATER)  ,CREATE_TIME=VALUES(CREATE_TIME)  ,MODIFIER=VALUES(MODIFIER)  ,MODIFY_TIME=VALUES(MODIFY_TIME),INST_STATE=VALUES(INST_STATE),IS_COMPLETED=VALUES(IS_COMPLETED)
+    </update>
+
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaToleranceTimeInst">
+        delete from   AEA_TOLERANCE_TIME_INST
+        where
+    TOLERANCE_TIME_INST_ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaToleranceTimeInst" id="AeaToleranceTimeInstMap">
+        <id property="toleranceTimeInstId" column="TOLERANCE_TIME_INST_ID"/>
+        <result property="iteminstId" column="ITEMINST_ID"/>
+        <result property="timeruleId" column="TIMERULE_ID"/>
+        <result property="timeLimit" column="TIME_LIMIT"/>
+        <result property="timeruleUnit" column="TIMERULE_UNIT"/>
+        <result property="useLimitTime" column="USE_LIMIT_TIME"/>
+        <result property="remainingTime" column="REMAINING_TIME"/>
+        <result property="overdueTime" column="OVERDUE_TIME"/>
+        <result property="overdueDate" column="OVERDUE_DATE"/>
+        <result property="orgId" column="ORG_ID"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="instState" column="INST_STATE"/>
+        <result property="isCompleted" column="IS_COMPLETED"/>
+    </resultMap>
+</mapper>
