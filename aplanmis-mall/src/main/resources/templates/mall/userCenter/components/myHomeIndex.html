@@ -273,7 +273,9 @@
             margin-left: 27px;
             margin-right: 22px;
         }
-
+        .my-static-box ul.static-list li.static-list-item .type{
+            display: inline-block;
+        }
         .my-static-box ul.static-list li.static-list-item .type .type-num {
             font-size: 34px;
             font-weight: 700;
@@ -389,8 +391,8 @@
             <div class="title-item">
                 快捷入口<span class="title-line"></span>
             </div>
-            <ul class="data-list">
-                <li class="data-list-item"  @click="toDeclare">
+            <ul class="data-list clearfix">
+                <li class="data-list-item fl"  @click="toDeclare">
                     <a target="_blank">
                         <img src="../../../../static/mall/images/userCenter/data-icon-1.png"
                             th:src="@{/mall/images/userCenter/data-icon-1.png}" alt="">
@@ -398,7 +400,7 @@
 <!--                        <p class="checkDetail" @click="toDeclare">查看详情</p>-->
                     </a>
                 </li>
-                <li class="data-list-item" @click="toMyMaterials">
+                <li class="data-list-item fl" @click="toMyMaterials">
                     <a target="_blank">
                         <img src="../../../../static/mall/images/userCenter/data-icon-2.png"
                             th:src="@{/mall/images/userCenter/data-icon-2.png}" alt="">
@@ -413,7 +415,7 @@
                         <p class="checkDetail">查看详情</p>
                     </a>
                 </li>-->
-                <li class="data-list-item" @click="toMyCloundSpaces">
+                <li class="data-list-item fl" @click="toMyCloundSpaces">
                     <a target="_blank">
                         <img src="../../../../static/mall/images/userCenter/data-icon-4.png"
                             th:src="@{/mall/images/userCenter/data-icon-4.png}" alt="">
@@ -421,7 +423,7 @@
 <!--                        <p class="checkDetail" @click="toMyCloundSpaces">查看详情</p>-->
                     </a>
                 </li>
-                <li class="data-list-item" @click="toCreditDetail">
+                <li class="data-list-item fl" @click="toCreditDetail">
                     <a target="_blank">
                         <img src="../../../../static/mall/images/userCenter/data-icon-5.png"
                             th:src="@{/mall/images/userCenter/data-icon-5.png}" alt="">
@@ -438,8 +440,8 @@
             <div class="title-item">
                 统计分析<span class="title-line"></span>
             </div>
-            <ul class="static-list">
-                <li class="static-list-item">
+            <ul class="static-list clearfix">
+                <li class="static-list-item fl">
                     <img src="../../../../static/mall/images/userCenter/type-icon-1.png"
                         th:src="@{/mall/images/userCenter/type-icon-1.png}" alt="">
                     <div class="type">
@@ -447,7 +449,7 @@
                         <p class="type-txt">已申报</p>
                     </div>
                 </li>
-                <li class="static-list-item">
+                <li class="static-list-item fl">
                     <img src="../../../../static/mall/images/userCenter/type-icon-3.png"
                          th:src="@{/mall/images/userCenter/type-icon-3.png}" alt="">
                     <div class="type">
@@ -455,7 +457,7 @@
                         <p class="type-txt">已办结</p>
                     </div>
                 </li>
-                <li class="static-list-item">
+                <li class="static-list-item fl">
                     <img src="../../../../static/mall/images/userCenter/type-icon-2.png"
                         th:src="@{/mall/images/userCenter/type-icon-2.png}" alt="">
                     <div class="type">
@@ -463,7 +465,7 @@
                         <p class="type-txt">材料补全</p>
                     </div>
                 </li>
-                <li class="static-list-item">
+                <li class="static-list-item fl">
                     <img src="../../../../static/mall/images/userCenter/type-icon-4.png"
                         th:src="@{/mall/images/userCenter/type-icon-4.png}" alt="">
                     <div class="type">

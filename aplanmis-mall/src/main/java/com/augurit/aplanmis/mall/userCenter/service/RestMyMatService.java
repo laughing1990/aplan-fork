@@ -10,4 +10,5 @@ public interface RestMyMatService {
 
     PageInfo<MyMatFilesVo> getMyMatListByUser1(String unitInfoId, String userInfoId, String keyword, int pageNum, int pageSize)throws Exception;
 
+    public void deleteMatinst(String matinstId);
 }

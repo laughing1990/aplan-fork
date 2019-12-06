@@ -121,4 +121,6 @@ public interface AeaHiItemInoutinstMapper {
      * @return
      */
     List<AeaMatinst> getMatinstListByiteminstIdAndMatId(@Param("iteminstId") String iteminstId, @Param("matIds") String[] matIds);
+
+    List<AeaHiItemInoutinst> getAeaHiItemInoutinstByIteminstIds(@Param("ids")String[] oldIteminstIds);
 }

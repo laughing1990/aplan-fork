@@ -60,6 +60,8 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
     private AeaHiParStateinstMapper aeaHiParStateinstMapper;
     @Autowired
     private AeaHiSeriesinstService aeaHiSeriesinstService;
+    @Autowired
+    private AeaHiItemInoutinstService aeaHiItemInoutinstService;
 
     @Override
     public Map<String,Object> saveOrUpdateUnitInfo(String projInfoId, List<AeaUnitInfoVo> aeaUnitInfos) {
@@ -324,8 +326,7 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
     }
 
     @Override
-    public Map<String,Object>  submitItemList(ItemListTemporaryParamVo itemListTemporaryParamVo) throws Exception {
-        Map<String,Object> map=new HashMap<>();
+    public Map<String,Object>  submitItemList(ItemListTemporaryParamVo itemListTemporaryParamVo,Map<String,Object> map) throws Exception {
         String applyinstId=itemListTemporaryParamVo.getApplyinstId();
         String stageId=itemListTemporaryParamVo.getStageId();
         String stageinstId=itemListTemporaryParamVo.getStageinstId();
@@ -397,12 +398,29 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
 
     @Override
     public   List<AeaHiIteminst> deleteReInsertIteminstUnderStageinst(String themeVerId, String stageinstId, List<String> itemVerIds, String appinstId, String branchOrgMap) throws Exception {
-        List<AeaHiIteminst> iteminstList = aeaHiIteminstService.getAeaHiIteminstListByStageinstId(stageinstId);
-        if(iteminstList.size()>0){
-            String[] iteminstIds = iteminstList.stream().map(AeaHiIteminst::getIteminstId).toArray(String[]::new);
+        List<AeaHiIteminst> oldIteminstList = aeaHiIteminstService.getAeaHiIteminstListByStageinstId(stageinstId);
+        if(oldIteminstList.size()>0){
+            String[] iteminstIds = oldIteminstList.stream().map(AeaHiIteminst::getIteminstId).toArray(String[]::new);
             aeaHiIteminstService.batchDeleteAeaHiIteminst(iteminstIds);
         }
-        return aeaHiIteminstService.batchInsertAeaHiIteminstAndTriggerAeaLogItemStateHist(themeVerId,stageinstId,itemVerIds,branchOrgMap,null,appinstId);
+        List<AeaHiIteminst> iteminstList=aeaHiIteminstService.batchInsertAeaHiIteminstAndTriggerAeaLogItemStateHist(themeVerId,stageinstId,itemVerIds,branchOrgMap,null,appinstId);
+        replaceInoutinstForIteminst(oldIteminstList,iteminstList);//将输入输出替换为新的事项实例的
+        return iteminstList;
+    }
+
+    private void replaceInoutinstForIteminst(List<AeaHiIteminst> oldIteminstList, List<AeaHiIteminst> iteminstList) {
+        if(oldIteminstList.size()==0) return; //oldIteminstList为空
+        //如果oldIteminstList不为空，iteminstList为空，说明没选事项了，需要将之前的事项的材料删除
+        if(iteminstList.size()==0){
+            String[] oldIteminstIds=oldIteminstList.stream().map(AeaHiIteminst::getIteminstId).toArray(String[]::new);
+            List<AeaHiItemInoutinst> inoutList=aeaHiItemInoutinstService.getAeaHiItemInoutinstByIteminstIds(oldIteminstIds);
+// TODO: 2019/12/5 qinjp
+        }else {//如果oldIteminstList，iteminstList都不为空，则替换同一事项，old中的事项若是在iteminstList不存在，则需删除该事项的材料
+            List<String> itemVerIds=iteminstList.stream().map(AeaHiIteminst::getItemVerId).collect(Collectors.toList());
+            for (AeaHiIteminst old:oldIteminstList){
+                // TODO: 2019/12/5  qinjp
+            }
+        }
     }
 
     @Override
@@ -438,5 +456,16 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
                 }
             });
         }
+    }
+
+
+    @Override
+    public void submitMatmList(MatListTemporaryParamVo matListTemporaryParamVo) throws Exception {
+        String[] matinstIds = matListTemporaryParamVo.getMatinstsIds();
+        String applyinstId=matListTemporaryParamVo.getApplyinstId();
+        if(StringUtils.isNotBlank(applyinstId) && matinstIds!=null && matinstIds.length>0){
+            aeaHiItemInoutinstService.batchInsertAeaHiItemInoutinst(matinstIds, applyinstId, SecurityContext.getCurrentUserName());
+        }
+        //todo qinjp
     }
 }

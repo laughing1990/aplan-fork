@@ -133,6 +133,19 @@ public class RestApproveServiceImpl implements RestApproveService {
     public PageInfo<ApproveProjInfoDto> getDraftApplyList(String unitInfoId, String userInfoId, String keyword, int pageNum, int pageSize) throws Exception{
         PageHelper.startPage(pageNum,pageSize);
         List<ApproveProjInfoDto> list = aeaHiIteminstMapper.getDraftApplyList(unitInfoId,userInfoId,keyword);
+        if(list.size()>0){
+            list.stream().forEach(dto->{
+                if("0".equals(dto.getIsSeriesApprove())){
+                    try {
+                        AeaHiParStageinst stageinst = aeaHiParStageinstService.getAeaHiParStageinstByApplyinstId(dto.getApplyinstId());
+                        dto.setStageId(stageinst==null?"":stageinst.getStageId());
+                        dto.setStageinstId(stageinst==null?"":stageinst.getStageinstId());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
         return new PageInfo<>(list);
     }
 
@@ -238,7 +251,6 @@ public class RestApproveServiceImpl implements RestApproveService {
             String jsddStr=aeaProjInfo.getProjectAddress();
             if(StringUtils.isNotBlank(jsddStr)){
                 String[] jsddArr=jsddStr.split(",");
-                BscDicRegion query=new BscDicRegion();
                 jsddStr="";
                 for (String jsdd:jsddArr){
                     BscDicRegion jsddRegion = bscDicRegionService.getBscDicRegionById(jsdd);
@@ -269,8 +281,12 @@ public class RestApproveServiceImpl implements RestApproveService {
                             setItemStateinstList(aeaHiIteminstList, stageinst.getStageinstId());
                         }
                     }
+                    applyDetailVo.setStageId(stage==null?"":stage.getStageId());
+                    applyDetailVo.setStageinstId(stageinst==null?"":stageinst.getStageinstId());
                     AeaParTheme theme = aeaParThemeService.getAeaParThemeByThemeVerId(stageinst.getThemeVerId());
                     applyDetailVo.setThemeStageName((stage==null||theme==null)?"":"【"+theme.getThemeName()+"】"+stage.getStageName());
+                    applyDetailVo.setThemeId(theme==null?"":theme.getThemeId());
+                    applyDetailVo.setThemeVerId(stageinst==null?"":stageinst.getThemeVerId());
                 }
                 applyDetailVo.setAeaHiIteminstList(aeaHiIteminstList);
             }

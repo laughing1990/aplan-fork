@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.common.service.instance;
 
+import com.augurit.aplanmis.common.domain.AeaHiItemInoutinst;
 import com.augurit.aplanmis.common.domain.AeaHiIteminst;
 
 import java.util.List;
@@ -17,4 +18,6 @@ public interface AeaHiItemInoutinstService {
      * @return 插入的条数 0 代表失败
      */
     int batchInsertAeaHiItemInoutinst(String[] matinstsIds, String applyinstId, String creater) throws Exception;
+
+    List<AeaHiItemInoutinst> getAeaHiItemInoutinstByIteminstIds(String[] oldIteminstIds);
 }

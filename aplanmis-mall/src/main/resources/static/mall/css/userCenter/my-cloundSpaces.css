@@ -312,10 +312,10 @@
     border: none;
 }
 .my-clound-spaces-right input[type=radio] ~ span {
-    width: initial;
-    height: initial;
+    width: auto;
+    height: auto;
     border-radius: initial;
-    position: initial;
+    position: static;
 }
 .my-clound-spaces-right input[type=radio]:checked ~ span{
     border: 1px solid #457EFF;

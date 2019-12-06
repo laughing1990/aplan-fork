@@ -3299,7 +3299,7 @@ var vm = new Vue({
             message: '删除成功',
             type: 'success'
           });
-          _that.getFileListWin(matData.content,matData);
+          _that.getFileListWin(res.content,matData);
         }else {
           _that.$message({
             message: res.message?res.message:'删除失败',
