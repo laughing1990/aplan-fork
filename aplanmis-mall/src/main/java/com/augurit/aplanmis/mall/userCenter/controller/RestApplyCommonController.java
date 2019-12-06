@@ -192,9 +192,9 @@ public class RestApplyCommonController {
 
     @PostMapping("/matList/temporary")
     @ApiOperation(value = "阶段申报-->暂存材料)")
-    public ContentResultForm matListTemporary(@Valid @RequestBody ItemListTemporaryParamVo itemListTemporaryParamVo, @RequestBody SmsInfoVo smsInfoVo,@RequestBody MatListTemporaryParamVo matListTemporaryParamVo,HttpServletRequest request){
+    public ContentResultForm matListTemporary(@Valid @RequestBody MatListTemporaryParamVo matListTemporaryParamVo,HttpServletRequest request){
         Map<String,Object> map=new HashMap<>();
-        ContentResultForm secondStepResult = itemListTemporary(itemListTemporaryParamVo,smsInfoVo, request);
+        ContentResultForm secondStepResult = itemListTemporary(matListTemporaryParamVo.getItemListTemporaryParamVo(), request);
         String applyinstId="";
         if(secondStepResult.isSuccess()){
             Map<String,Object> secondStepResultContent=(Map<String,Object>)(secondStepResult.getContent());

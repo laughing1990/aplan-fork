@@ -417,8 +417,11 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
         if(iteminstList.size()==0){
             String[] oldIteminstIds=oldIteminstList.stream().map(AeaHiIteminst::getIteminstId).toArray(String[]::new);
             List<AeaHiItemInoutinst> inoutList=aeaHiItemInoutinstService.getAeaHiItemInoutinstByIteminstIds(oldIteminstIds);
+            if(inoutList.size()==0) return;
+            String[] outinstIds=inoutList.stream().map(AeaHiItemInoutinst::getInoutinstId).toArray(String[]::new);
+            aeaHiItemInoutinstService.batchDeleteAeaHiItemInoutinst(outinstIds);
             for (AeaHiItemInoutinst inoutinst:inoutList){
-
+                restMyMatService.deleteMatinst(inoutinst.getMatinstId());
             }
         }else {//如果oldIteminstList，iteminstList都不为空，则替换同一事项，old中的事项若是在iteminstList不存在，则需删除该事项的材料
             List<String> itemVerIds=iteminstList.stream().map(AeaHiIteminst::getItemVerId).collect(Collectors.toList());

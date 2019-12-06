@@ -122,6 +122,12 @@ public class AeaHiItemInoutinstServiceImpl implements AeaHiItemInoutinstService 
         return new ArrayList<>();
     }
 
+    @Override
+    public void batchDeleteAeaHiItemInoutinst(String[] outinstIds){
+        if(outinstIds.length>0)
+            aeaHiItemInoutinstMapper.batchDeleteAeaHiItemInoutinst(outinstIds);
+    }
+
     private List<AeaHiItemInoutinst> buildItemInoutinst4Stage(String applyinstId, String creater, List<AeaHiIteminst> aeaHiIteminstList, List<AeaHiItemMatinst> aeaHiItemMatinsts) throws Exception {
         List<AeaHiItemInoutinst> list = new ArrayList<>();
         AeaHiParStageinst aeaHiParStageinst = aeaHiParStageinstMapper.getAeaHiParStageinstByApplyinstId(applyinstId);
