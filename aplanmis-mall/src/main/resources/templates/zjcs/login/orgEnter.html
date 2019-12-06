@@ -15,6 +15,7 @@
   <script>
     var ctx = '[[@{/}]]';
     // var ctx = 'http://192.168.32.59:8084/aplanmis-mall/';
+    // var ctx = 'http://192.168.32.46:8084/aplanmis-mall/';
 
   </script>
 </head>
@@ -29,8 +30,8 @@
       <span class="inlineblock-midd crumbs-icon"></span>
       <span class="crumbs-tip">当前位置：</span>
       <el-breadcrumb separator-class="el-icon-arrow-right" class="inlineblock-midd">
-        <el-breadcrumb-item><a href="../index.html" th:href="@{index.html}">首页</a></el-breadcrumb-item>
-        <el-breadcrumb-item><span>超市指南</span></el-breadcrumb-item>
+        <el-breadcrumb-item><a href="../index.html" th:href="@{index.html}" @click="backToIndex">首页</a></el-breadcrumb-item>
+        <el-breadcrumb-item><a href="javascript:void(0);"><span @click="backToGuide">超市指南</span></a></el-breadcrumb-item>
         <el-breadcrumb-item><span class="crumbs-cur">中介机构注册</span></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -75,7 +76,7 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item class="input-inline" label="统一社会信用码" prop="unifiedSocialCreditCode">
-                  <el-input name="unifiedSocialCreditCode" v-model="formData.unifiedSocialCreditCode" placeholder="请输入统一社会信用码">
+                  <el-input name="unifiedSocialCreditCode" v-model="formData.unifiedSocialCreditCode" placeholder="请输入统一社会信用码" @blur="checkcode">
                 </el-form-item>
                 <el-form-item class="input-inline" prop="idrepresentative" label="法定代表人">
                   <el-input name="idrepresentative" v-model="formData.idrepresentative" placeholder="请输入法定代表人">
@@ -441,7 +442,7 @@
                   <el-option key="1" label="身份证" value="身份证">
                   </el-option>
                 </el-select>
-                <el-input name="linkmanCertNo" v-model="formPersonInfo.linkmanCertNo" placeholder="请对输入证件号" style="width:42%">
+                <el-input name="linkmanCertNo" v-model="formPersonInfo.linkmanCertNo" placeholder="请对输入证件号" style="width:42%" @blur="checknum">
                 </el-input>
               </el-form-item>
               <div class="clearfix">

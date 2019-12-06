@@ -42,6 +42,7 @@ var vm = new Vue({
         callback();
       }
     };
+
     return {
       step: '1',
       dialogTitie: '',
@@ -194,6 +195,8 @@ var vm = new Vue({
       },
       loginName: '1231231',
       password: '123213',
+      code: false,
+      num: false,
       addLinkManRules: {
         linkmanName: [
           { required: true, message: '请输入联系人姓名' },
@@ -298,6 +301,7 @@ var vm = new Vue({
     this.getAeaCertInfo(); //获取证书类型
   },
   methods: {
+
     // 请求table数据
     getRegion: function() {
       var vm = this;
@@ -334,7 +338,7 @@ var vm = new Vue({
         _this.serviceType = res.content;
         _this.serviceType2 = res.content;
       }, function(err) {
-        vm.$message.error('服务器错了哦!');
+        _this.$message.error('服务器错了哦!');
       })
     },
     // 请求专业
@@ -387,8 +391,47 @@ var vm = new Vue({
         return;
       }
     },
-    toggleGrade: function(val) {
-
+    checkcode: function(event) {
+      var vm = this;
+      request('', {
+        type: 'get',
+        url: ctx + 'supermarket/agentRegister/checkUnitIsExisted',
+        data: {
+          unifiedSocialCreditCode: vm.formData.unifiedSocialCreditCode
+        }
+      }, function(res) {
+        vm.code = res.content;
+        if (!vm.code) {
+          vm.$message({
+            message: '统一社会信用码重复，请重新输入',
+            type: 'error'
+          });
+          return;
+        }
+      }, function(err) {
+        vm.$message.error('服务器错了哦!');
+      })
+    },
+    checknum: function(event) {
+      var vm = this;
+      request('', {
+        type: 'get',
+        url: ctx + 'supermarket/agentRegister/checkManIsExisted',
+        data: {
+          linkmanCertNo: vm.formData.linkmanCertNo
+        }
+      }, function(res) {
+        vm.num = res.content;
+        if (!vm.num) {
+          vm.$message({
+            message: '证件号重复，请重新输入',
+            type: 'error'
+          });
+          return;
+        }
+      }, function(err) {
+        vm.$message.error('服务器错了哦!');
+      })
     },
 
     handleClickAtiveQA: function(tab) {
@@ -454,6 +497,10 @@ var vm = new Vue({
       window.parent.location.href = ctx + '/aplanmis-mall/supermarket/main/index.html';
 
     },
+    backToGuide: function() {
+      window.parent.location.href = ctx + ' aplanmis-mall/supermarket/main/guide.html';
+
+    },
     upload: function(row, type) {
       this.curUpData = row;
       this.uploadTableData = this.curUpData.fileList;
@@ -494,6 +541,7 @@ var vm = new Vue({
       // if (!_this.enclosureBeforeUpload(file)) {
 
       // }
+
       fileLi.forEach(function(item) {
         if (item.raw) {
           if (item.status == 'success') return;
@@ -608,8 +656,16 @@ var vm = new Vue({
               });
               return;
             } else {
-              _this.step = '2';
+              if (!_this.code) {
+                _this.$message({
+                  message: '统一社会信用码重复，请重新输入',
+                  type: 'error'
+                });
+                return;
+              } else {
+                _this.step = '2';
 
+              }
             }
           } else {
             _this.$message({
@@ -686,107 +742,114 @@ var vm = new Vue({
               });
               return;
             } else {
-              var certinstId = [];
-              _that.jobPeopleDetailObj.certinstBVos.forEach(function(item) {
-                certinstId.push(item.certinstId);
-              })
-              var param = {
-                // 第一页数据
-                "unitInfo.applicant": _that.formData.applicant || '',
-                "unitInfo.unitNature": _that.formData.unitNature || '',
-                "unitInfo.idtype": _that.formData.idtype || '',
-                "unitInfo.unifiedSocialCreditCode": _that.formData.unifiedSocialCreditCode || '',
-                "unitInfo.idrepresentative": _that.formData.idrepresentative || '',
-                "unitInfo.idno": _that.formData.idno || '',
-                "unitInfo.registeredCapital": _that.formData.registeredCapital || '',
-                "unitInfo.managementScope": _that.formData.managementScope || '',
-                "unitInfo.applicantDistrict": _that.formData.applicantDistrict[_that.formData.applicantDistrict.length - 1] || '',
-                "unitInfo.applicantDetailSite": _that.formData.applicantDetailSite || '',
-                "unitInfo.registerAuthority": _that.formData.registerAuthority || '',
-                "contactManInfo.linkmanName": _that.formData2.linkmanName || '',
-                "contactManInfo.linkmanMail": _that.formData2.linkmanMail || '',
-                "contactManInfo.linkmanMobilePhone": _that.formData2.linkmanMobilePhone || '',
-                "contactManInfo.linkmanOfficePhon": _that.formData2.linkmanOfficePhon || '',
-                "contactManInfo.linkmanFax": _that.formData2.linkmanFax || '',
+              if (!_this.num) {
+                _this.$message({
+                  message: '证件号重复，请重新输入',
+                  type: 'error'
+                });
+                return;
+              } else {
+                var certinstId = [];
+                _that.jobPeopleDetailObj.certinstBVos.forEach(function(item) {
+                  certinstId.push(item.certinstId);
+                })
+                var param = {
+                  // 第一页数据
+                  "unitInfo.applicant": _that.formData.applicant || '',
+                  "unitInfo.unitNature": _that.formData.unitNature || '',
+                  "unitInfo.idtype": _that.formData.idtype || '',
+                  "unitInfo.unifiedSocialCreditCode": _that.formData.unifiedSocialCreditCode || '',
+                  "unitInfo.idrepresentative": _that.formData.idrepresentative || '',
+                  "unitInfo.idno": _that.formData.idno || '',
+                  "unitInfo.registeredCapital": _that.formData.registeredCapital || '',
+                  "unitInfo.managementScope": _that.formData.managementScope || '',
+                  "unitInfo.applicantDistrict": _that.formData.applicantDistrict[_that.formData.applicantDistrict.length - 1] || '',
+                  "unitInfo.applicantDetailSite": _that.formData.applicantDetailSite || '',
+                  "unitInfo.registerAuthority": _that.formData.registerAuthority || '',
+                  "contactManInfo.linkmanName": _that.formData.linkmanName || '',
+                  "contactManInfo.linkmanMail": _that.formData.linkmanMail || '',
+                  "contactManInfo.linkmanMobilePhone": _that.formData.linkmanMobilePhone || '',
+                  "contactManInfo.linkmanOfficePhon": _that.formData.linkmanOfficePhon || '',
+                  "contactManInfo.linkmanFax": _that.formData.linkmanFax || '',
 
-                // 第二页数据
-                'serviceAndQualVo.aeaImUnitService.serviceId': _that.formDataZgxx.serviceId || '',
-                'serviceAndQualVo.aeaImUnitService.serviceContent': _that.formDataZgxx.serviceContent || '',
-                'serviceAndQualVo.aeaImUnitService.feeReference': _that.formDataZgxx.feeReference || '',
-                'serviceAndQualVo.aeaHiCertinstBVo.qualLevelId': _that.selectdRecord[0].qualLevelId,
-                'serviceAndQualVo.aeaHiCertinstBVo.majorId': _that.selectdRecord[0].majorQualId.join(','),
-                'serviceAndQualVo.aeaHiCertinstBVo.serviceId': _that.formDataZgxx.serviceId || '',
-                'serviceAndQualVo.aeaHiCertinstBVo.certId': _that.formDataZgxx.certId || '',
-                'serviceAndQualVo.aeaHiCertinstBVo.serviceContent': _that.formDataZgxx.serviceContent || '',
-                'serviceAndQualVo.aeaHiCertinstBVo.feeReference': _that.formDataZgxx.feeReference || '',
-                'serviceAndQualVo.aeaHiCertinstBVo.certinstCode': _that.formDataZgxx.certinstCode || '',
-                'serviceAndQualVo.aeaHiCertinstBVo.termStart': _that.formDataZgxx.termStart || '',
-                'serviceAndQualVo.aeaHiCertinstBVo.termEnd': _that.formDataZgxx.termEnd || '',
-                'serviceAndQualVo.aeaHiCertinstBVo.managementScope': _that.formDataZgxx.managementScope || '',
+                  // 第二页数据
+                  'serviceAndQualVo.aeaImUnitService.serviceId': _that.formDataZgxx.serviceId || '',
+                  'serviceAndQualVo.aeaImUnitService.serviceContent': _that.formDataZgxx.serviceContent || '',
+                  'serviceAndQualVo.aeaImUnitService.feeReference': _that.formDataZgxx.feeReference || '',
+                  'serviceAndQualVo.aeaHiCertinstBVo.qualLevelId': _that.selectdRecord[0].qualLevelId,
+                  'serviceAndQualVo.aeaHiCertinstBVo.majorId': _that.selectdRecord[0].majorQualId.join(','),
+                  'serviceAndQualVo.aeaHiCertinstBVo.serviceId': _that.formDataZgxx.serviceId || '',
+                  'serviceAndQualVo.aeaHiCertinstBVo.certId': _that.formDataZgxx.certId || '',
+                  'serviceAndQualVo.aeaHiCertinstBVo.serviceContent': _that.formDataZgxx.serviceContent || '',
+                  'serviceAndQualVo.aeaHiCertinstBVo.feeReference': _that.formDataZgxx.feeReference || '',
+                  'serviceAndQualVo.aeaHiCertinstBVo.certinstCode': _that.formDataZgxx.certinstCode || '',
+                  'serviceAndQualVo.aeaHiCertinstBVo.termStart': _that.formDataZgxx.termStart || '',
+                  'serviceAndQualVo.aeaHiCertinstBVo.termEnd': _that.formDataZgxx.termEnd || '',
+                  'serviceAndQualVo.aeaHiCertinstBVo.managementScope': _that.formDataZgxx.managementScope || '',
 
-                //第三页数据
-                authorManList: _that.certigierData,
+                  //第三页数据
+                  authorManList: _that.certigierData,
 
 
-                //第四页数据
-                practiceManInfo: {
-                  linkmanName: _that.formPersonInfo.linkmanName || '',
-                  linkmanCertNo: _that.formPersonInfo.linkmanCertNo || '',
-                  practiseDate: _that.formPersonInfo.practiseDate || '',
-                  serviceId: _that.formPersonInfo.serviceId || '',
-                  certinstId: certinstId
-                },
-                // 'unitInfo.unitInfoId': '05fc27ef-a9bc-4ba8-97fd-e1fb84526437'
+                  //第四页数据
+                  practiceManInfo: {
+                    linkmanName: _that.formPersonInfo.linkmanName || '',
+                    linkmanCertNo: _that.formPersonInfo.linkmanCertNo || '',
+                    practiseDate: _that.formPersonInfo.practiseDate || '',
+                    serviceId: _that.formPersonInfo.serviceId || '',
+                    certinstId: certinstId
+                  },
+                  // 'unitInfo.unitInfoId': '05fc27ef-a9bc-4ba8-97fd-e1fb84526437'
 
-              };
-              var formData = _that.toFormData(param);
+                };
+                var formData = _that.toFormData(param);
 
-              // console.log(param)
-              // var formData = new FormData();
-              // for (var k in param) {
-              //   formData.append(k, param[k])
-              // }
+                // console.log(param)
+                // var formData = new FormData();
+                // for (var k in param) {
+                //   formData.append(k, param[k])
+                // }
 
-              _that.fileList.forEach(function(item) {
-                formData.append('unitFile', item)
-              })
-              _that.fileList2.forEach(function(item) {
-                formData.append('file', item)
-              })
-              _that.fileList3.forEach(function(item) {
-                formData.append('practiceManFile', item)
-              })
+                _that.fileList.forEach(function(item) {
+                  formData.append('unitFile', item)
+                })
+                _that.fileList2.forEach(function(item) {
+                  formData.append('file', item)
+                })
+                _that.fileList3.forEach(function(item) {
+                  formData.append('practiceManFile', item)
+                })
 
-              // _that.$refs['addEditManform'].validate(function(valid) {
-              // if (valid) {
-              _that.loading = true;
-              $.ajax({
-                url: ctx + 'supermarket/agentRegister/saveRegisterForm',
-                type: 'post',
-                data: formData,
-                dataType: 'json',
-                contentType: false,
-                processData: false,
-                success: function(res) {
-                  if (res.success) {
+                // _that.$refs['addEditManform'].validate(function(valid) {
+                // if (valid) {
+                _that.loading = true;
+                $.ajax({
+                  url: ctx + 'supermarket/agentRegister/saveRegisterForm',
+                  type: 'post',
+                  data: formData,
+                  dataType: 'json',
+                  contentType: false,
+                  processData: false,
+                  success: function(res) {
+                    if (res.success) {
+                      _that.$message({
+                        message: '保存成功',
+                        type: 'success'
+                      });
+                    }
+                    _that.step = '5';
+
+                    _that.password = res.content.password;
+                    _that.loginName = res.content.loginName;
+                  },
+                  error: function(msg) {
                     _that.$message({
-                      message: '保存成功',
-                      type: 'success'
+                      message: '保存失败',
+                      type: 'error'
                     });
-                  }
-                  _that.step = '5';
-
-                  _that.password = res.content.password;
-                  _that.loginName = res.content.loginName;
-                },
-                error: function(msg) {
-                  _that.$message({
-                    message: '保存失败',
-                    type: 'error'
-                  });
-                },
-              })
-
+                  },
+                })
+              }
             }
           }
         } else {
