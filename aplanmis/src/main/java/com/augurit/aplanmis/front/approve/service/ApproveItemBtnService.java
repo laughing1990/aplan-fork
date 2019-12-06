@@ -1,17 +1,16 @@
 package com.augurit.aplanmis.front.approve.service;
 
+import com.augurit.agcloud.bpm.common.domain.ActStoTimerule;
 import com.augurit.agcloud.bpm.common.domain.BpmTaskSendObject;
 import com.augurit.agcloud.bpm.common.engine.BpmProcessService;
 import com.augurit.agcloud.bpm.common.engine.BpmTaskService;
+import com.augurit.agcloud.bpm.common.mapper.ActStoTimeruleMapper;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.AeaHiIteminstConstants;
 import com.augurit.aplanmis.common.constants.ItemStatus;
 import com.augurit.aplanmis.common.constants.OpsActionConstants;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaHiIteminst;
-import com.augurit.aplanmis.common.domain.AeaHiParStageinst;
-import com.augurit.aplanmis.common.domain.AeaHiSeriesinst;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.event.AplanmisEventPublisher;
 import com.augurit.aplanmis.common.event.def.BpmNodeSendAplanmisEvent;
 import com.augurit.aplanmis.common.mapper.AeaImProjPurchaseMapper;
@@ -19,6 +18,7 @@ import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiSeriesinstService;
+import com.augurit.aplanmis.common.service.item.AeaToleranceTimeInstService;
 import com.augurit.aplanmis.common.service.projPurchase.AeaImProjPurchaseService;
 import com.augurit.aplanmis.common.vo.purchase.PurchaseProjVo;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.InvalidParameterException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * 流程审批按钮服务层
@@ -59,6 +61,10 @@ public class ApproveItemBtnService {
     private AeaImProjPurchaseMapper aeaImProjPurchaseMapper;
     @Autowired
     private AeaHiApplyinstService aeaHiApplyinstService;
+    @Autowired
+    private AeaToleranceTimeInstService aeaToleranceTimeInstService;
+    @Autowired
+    private ActStoTimeruleMapper actStoTimeruleMapper;
     /**
      * 事项流程：推动流程流转并更改事项状态；适用于：受理、办结等操作
      *
@@ -67,7 +73,7 @@ public class ApproveItemBtnService {
      * @param iteminstState 事项实例状态
      * @throws Exception
      */
-    public String wfSendAndChangeItemState(BpmTaskSendObject sendObject, String iteminstId, String iteminstState) throws Exception {
+    public String wfSendAndChangeItemState(BpmTaskSendObject sendObject, String iteminstId, String iteminstState,double toleranceTime, String timeruleId) throws Exception {
         if (sendObject == null || StringUtils.isBlank(sendObject.getTaskId()) || sendObject.getSendConfigs() == null)
             throw new InvalidParameterException("流程发送对象参数为空！");
         if (StringUtils.isBlank(iteminstId))
@@ -78,6 +84,9 @@ public class ApproveItemBtnService {
         AeaHiIteminst iteminst = aeaHiIteminstService.getAeaHiIteminstById(iteminstId);
         if (iteminst == null)
             throw new RuntimeException("获取事项实例为空，请检查事项实例ID！");
+
+        //20191204 新增，办件容缺办结时限信息存储和实例化，有容缺办结信息才会实例化
+        createToleranceTimeinst(iteminst,iteminstState,toleranceTime,timeruleId);
 
         String appinstId = null;
         String applyinstId = null;
@@ -115,6 +124,31 @@ public class ApproveItemBtnService {
         this.changeProjPurchaseState(applyinstId, iteminstStatus, sendObject.getTaskId());
         //推动流程流转
         return bpmTaskService.completeTask(sendObject);
+    }
+
+    private void createToleranceTimeinst(AeaHiIteminst iteminst,String iteminstState,double toleranceTime, String timeruleId) throws Exception {
+        if(iteminstState.equalsIgnoreCase(ItemStatus.AGREE_TOLERANCE.name()) && toleranceTime > 0 && StringUtils.isNotBlank(timeruleId)){
+            //更新容缺时限信息到事项实例中
+            aeaHiIteminstService.updateAeaHiIteminstToleranceTime(iteminst.getIteminstId(),toleranceTime,timeruleId);
+
+            //先判断是否已经创建了事项容缺补正时限实例，如果存在则不重复创建
+            AeaToleranceTimeInst aeaToleranceTimeInst = new AeaToleranceTimeInst();
+            aeaToleranceTimeInst.setIteminstId(iteminst.getIteminstId());
+            List<AeaToleranceTimeInst> aeaToleranceTimeInsts = aeaToleranceTimeInstService.listAeaToleranceTimeInst(aeaToleranceTimeInst);
+            if(aeaToleranceTimeInsts.size() == 0) {
+                //创建事项容缺补正时限实例
+                ActStoTimerule actStoTimerule = actStoTimeruleMapper.getActStoTimeruleById(timeruleId);
+                if(actStoTimerule != null)
+                    aeaToleranceTimeInst.setTimeruleUnit(actStoTimerule.getTimeruleUnit());
+                aeaToleranceTimeInst.setToleranceTimeInstId(UUID.randomUUID().toString());
+                aeaToleranceTimeInst.setInstState("1");
+                aeaToleranceTimeInst.setTimeLimit(toleranceTime);
+                aeaToleranceTimeInst.setTimeruleId(timeruleId);
+                aeaToleranceTimeInst.setOrgId(SecurityContext.getCurrentOrgId());
+                aeaToleranceTimeInst.setIsCompleted("0");
+                aeaToleranceTimeInstService.saveAeaToleranceTimeInst(aeaToleranceTimeInst);
+            }
+        }
     }
 
     /**

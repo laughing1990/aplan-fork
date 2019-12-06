@@ -27,6 +27,8 @@ public class ItemListTemporaryParamVo {
     private String[] stateIds;
     @ApiModelProperty(value = "简单合并申报，选择的并联事项情形")
     private List<ParallelItemStateVo> parallelItemStateIds; // 简单合并申报，选择的并联事项情形
+    @ApiModelProperty(value = "第一步暂存实体")
+    private SmsInfoVo smsInfoVo;
 
 //    @ApiModelProperty(value = "事项与区划的键值对集合")
 //    private List<ItemRegionMap> itemRegionMapList;

@@ -210,7 +210,7 @@ public class RestApplyProjController {
                 try {
                     themeVer = aeaParThemeService.getAeaParThemeVerByThemeIdAndVerNum(theme.getThemeId(),null, SecurityContext.getCurrentOrgId());
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error("getThemes 获取主题信息接口查询主题版本异常:"+e.getMessage(),e);
                 }
                 theme.setThemeVerId(themeVer==null?"":themeVer.getThemeVerId());
             });

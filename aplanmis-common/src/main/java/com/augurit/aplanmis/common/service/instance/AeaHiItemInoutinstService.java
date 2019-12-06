@@ -20,4 +20,8 @@ public interface AeaHiItemInoutinstService {
     int batchInsertAeaHiItemInoutinst(String[] matinstsIds, String applyinstId, String creater) throws Exception;
 
     List<AeaHiItemInoutinst> getAeaHiItemInoutinstByIteminstIds(String[] oldIteminstIds);
+
+    void batchDeleteAeaHiItemInoutinst(String[] outinstIds);
+
+    void updateAeaHiItemInoutinst(AeaHiItemInoutinst inoutinst) throws Exception;
 }

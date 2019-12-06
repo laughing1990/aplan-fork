@@ -11,4 +11,6 @@ public class MatListTemporaryParamVo {
     private String applyinstId;
     @ApiModelProperty(value = "材料实例ID集合")
     private String[] matinstsIds;
+    @ApiModelProperty(value = "第一步项目信息暂存及第二步事项一单清暂存实体")
+    private ItemListTemporaryParamVo itemListTemporaryParamVo;
 }

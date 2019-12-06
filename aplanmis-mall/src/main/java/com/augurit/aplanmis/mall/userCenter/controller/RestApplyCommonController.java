@@ -78,7 +78,7 @@ public class RestApplyCommonController {
                 if(theme!=null) {
                     aeaProjInfo.setThemeType(theme.getThemeType());
                     AeaParThemeVer themeVer = aeaParThemeService.getAeaParThemeVerByThemeIdAndVerNum(theme.getThemeId(),null, SecurityContext.getCurrentOrgId());
-                    theme.setThemeVerId(themeVer==null?"":themeVer.getThemeVerId());
+                    aeaProjInfo.setThemeVerId(themeVer==null?"":themeVer.getThemeVerId());
                 }
             }
             aeaProjInfo.setAeaUnitInfos(restApplyService.getAeaUnitInfosByProjInfoId(projInfoId,request));
@@ -171,9 +171,9 @@ public class RestApplyCommonController {
 
     @PostMapping("/itemList/temporary")
     @ApiOperation(value = "阶段申报-->暂存阶段，情形及事项(含事项情形)")
-    public ContentResultForm itemListTemporary(@Valid @RequestBody ItemListTemporaryParamVo itemListTemporaryParamVo, @RequestBody SmsInfoVo smsInfoVo,HttpServletRequest request){
+    public ContentResultForm itemListTemporary(@Valid @RequestBody ItemListTemporaryParamVo itemListTemporaryParamVo,HttpServletRequest request){
         Map<String,Object> map=new HashMap<>();
-        ContentResultForm firstStepResult = temporarySaveOrUpdateSmsInfo(smsInfoVo, request);
+        ContentResultForm firstStepResult = temporarySaveOrUpdateSmsInfo(itemListTemporaryParamVo.getSmsInfoVo(), request);
         String applyinstId="";
         if(firstStepResult.isSuccess()){
             Map<String,Object> firstStepResultContent=(Map<String,Object>)(firstStepResult.getContent());
@@ -194,9 +194,9 @@ public class RestApplyCommonController {
 
     @PostMapping("/matList/temporary")
     @ApiOperation(value = "阶段申报-->暂存材料)")
-    public ContentResultForm matListTemporary(@Valid @RequestBody ItemListTemporaryParamVo itemListTemporaryParamVo, @RequestBody SmsInfoVo smsInfoVo,@RequestBody MatListTemporaryParamVo matListTemporaryParamVo,HttpServletRequest request){
+    public ContentResultForm matListTemporary(@Valid @RequestBody MatListTemporaryParamVo matListTemporaryParamVo,HttpServletRequest request){
         Map<String,Object> map=new HashMap<>();
-        ContentResultForm secondStepResult = itemListTemporary(itemListTemporaryParamVo,smsInfoVo, request);
+        ContentResultForm secondStepResult = itemListTemporary(matListTemporaryParamVo.getItemListTemporaryParamVo(), request);
         String applyinstId="";
         if(secondStepResult.isSuccess()){
             Map<String,Object> secondStepResultContent=(Map<String,Object>)(secondStepResult.getContent());

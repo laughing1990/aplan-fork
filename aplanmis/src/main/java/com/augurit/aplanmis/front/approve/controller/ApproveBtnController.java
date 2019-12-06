@@ -1,10 +1,7 @@
 package com.augurit.aplanmis.front.approve.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.augurit.agcloud.bpm.common.domain.ActStoAppinst;
 import com.augurit.agcloud.bpm.common.domain.BpmTaskSendObject;
-import com.augurit.agcloud.bpm.common.engine.BpmTaskService;
-import com.augurit.agcloud.bpm.common.mapper.ActStoAppinstMapper;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
@@ -19,13 +16,11 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.InvalidParameterException;
-import java.util.List;
 
 @RequestMapping("/approve/btn")
 @RestController
@@ -83,15 +78,18 @@ public class ApproveBtnController {
     @ApiOperation(value = "事项流程：流程审批并更改事项实例状态按钮方法（使用于既要推动流程流转，也需要修改事项状态时使用）")
     @ApiImplicitParams({@ApiImplicitParam(name = "iteminstId", value = "申请实例ID", dataType = "string", required = true),
             @ApiImplicitParam(name = "sendObjectStr", value = "流程节点实体字符串", dataType = "string", required = true),
-            @ApiImplicitParam(name = "itemState", value = "事项状态", dataType = "string", required = true)})
-    public ResultForm wfSendAndChangeItemState(String sendObjectStr, String iteminstId, String itemState) {
+            @ApiImplicitParam(name = "itemState", value = "事项状态", dataType = "string", required = true),
+            @ApiImplicitParam(name = "toleranceTime", value = "事项容缺办结时限", dataType = "double", required = false),
+            @ApiImplicitParam(name = "timeruleId", value = "事项容缺办结时限计算规则", dataType = "string", required = false)
+    })
+    public ResultForm wfSendAndChangeItemState(String sendObjectStr, String iteminstId, String itemState,double toleranceTime, String timeruleId) {
         if (StringUtils.isBlank(sendObjectStr)) throw new InvalidParameterException("流程发送参数为空！");
         if (StringUtils.isBlank(iteminstId)) throw new InvalidParameterException("事项实例ID为空！");
         if (StringUtils.isBlank(itemState)) throw new InvalidParameterException("申请状态为空！");
 
         BpmTaskSendObject sendObject = (BpmTaskSendObject) JSONObject.parseObject(sendObjectStr, BpmTaskSendObject.class);
         try {
-            String nextTaskId = approveItemBtnService.wfSendAndChangeItemState(sendObject, iteminstId, itemState);
+            String nextTaskId = approveItemBtnService.wfSendAndChangeItemState(sendObject, iteminstId, itemState,toleranceTime,timeruleId);
             return new ContentResultForm<>(true, nextTaskId, "success");
 
         } catch (Exception e) {

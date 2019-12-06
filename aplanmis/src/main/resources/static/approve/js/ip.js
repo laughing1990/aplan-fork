@@ -187,6 +187,7 @@ var __STATIC = {
     "EXE": {text: "&#xe641", color: "rgb(246, 228, 0)"},
     "FLV": {text: "&#xe642", color: "rgb(218, 60, 9)"},
     "DOC": {text: "&#xe643", color: "rgb(56, 120, 222)"},
+    "DOCX": {text: "&#xe643", color: "rgb(56, 120, 222)"},
     "GIF": {text: "&#xe644", color: "rgb(132, 220, 0)"},
     "MOV": {text: "&#xe645", color: "rgb(176, 215, 0)"},
     "HTML": {text: "&#xe646", color: "rgb(108, 182, 0)"},
@@ -194,6 +195,7 @@ var __STATIC = {
     "PDF": {text: "&#xe648", color: "rgb(234, 67, 24)"},
     "MP3": {text: "&#xe649", color: "rgb(71, 77, 226)"},
     "PPT": {text: "&#xe64a", color: "rgb(248, 82, 7)"},
+    "PPTX": {text: "&#xe64a", color: "rgb(248, 82, 7)"},
     "PNG": {text: "&#xe64b", color: "rgb(252, 204, 0)"},
     "PSD": {text: "&#xe64c", color: "rgb(54, 118, 244)"},
     "RAR": {text: "&#xe64d", color: "rgb(26, 142, 247)"},
@@ -207,6 +209,7 @@ var __STATIC = {
     "WPS": {text: "&#xe655", color: "rgb(51, 211, 157)"},
     "TAR": {text: "&#xe656", color: "rgb(186, 76, 215)"},
     "XSL": {text: "&#xe657", color: "rgb(139, 199, 85)"},
+    "XSLX": {text: "&#xe657", color: "rgb(139, 199, 85)"},
   },
   getIconData: function (type) {
     var defalutData = {text: "&#xe6b1", color: "rgb(56, 120, 222)"};
