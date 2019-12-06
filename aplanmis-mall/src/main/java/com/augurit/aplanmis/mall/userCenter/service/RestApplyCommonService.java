@@ -5,10 +5,7 @@ import com.augurit.aplanmis.common.domain.AeaHiIteminst;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.vo.AeaUnitInfoVo;
 import com.augurit.aplanmis.common.vo.LinkmanTypeVo;
-import com.augurit.aplanmis.mall.userCenter.vo.ItemListTemporaryParamVo;
-import com.augurit.aplanmis.mall.userCenter.vo.MatListTemporaryParamVo;
-import com.augurit.aplanmis.mall.userCenter.vo.ParallelItemStateVo;
-import com.augurit.aplanmis.mall.userCenter.vo.SmsInfoVo;
+import com.augurit.aplanmis.mall.userCenter.vo.*;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,7 +51,7 @@ public interface RestApplyCommonService {
 
     Map<String, Object> submitItemList(ItemListTemporaryParamVo itemListTemporaryParamVo,Map<String,Object> map) throws Exception;
 
-    void insertSeriesIteminst(String seriesApplyinstId, String itemVerId) throws Exception;
+    void insertSeriesIteminst(String seriesApplyinstId, String itemVerId,Map<String,Object> resultMap) throws Exception;
 
     public List<AeaHiIteminst> deleteReInsertIteminstUnderStageinst(String themeVerId, String stageinstId, List<String> itemVerIds, String appinstId, String branchOrgMap) throws Exception;
 
@@ -64,5 +61,7 @@ public interface RestApplyCommonService {
 
     public void deleteItemStates(String applyinstId) throws Exception;
 
-    void submitMatmList(MatListTemporaryParamVo matListTemporaryParamVo) throws Exception;
+    void submitMatmList(MatListCommonTemporaryParamVo matListTemporaryParamVo) throws Exception;
+
+    void submitSeriesStateList(StateListSeriesTemporaryParamVo stateListSeriesTemporaryParamVo,String seriesinstId, Map<String, Object> map) throws Exception;
 }

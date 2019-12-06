@@ -380,6 +380,15 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
     }
 
     @Override
+    public void submitSeriesStateList(StateListSeriesTemporaryParamVo stateListSeriesTemporaryParamVo,String seriesinstId, Map<String, Object> map) throws Exception {
+        String applyinstId=stateListSeriesTemporaryParamVo.getApplyinstId();
+        String[] stateIds=stateListSeriesTemporaryParamVo.getStateIds();
+        //先删除情形，再实例化
+        deleteItemStates(applyinstId);
+        aeaHiItemStateinstService.batchInsertAeaHiItemStateinst(applyinstId, seriesinstId, null, stateIds, SecurityContext.getCurrentUserName());
+    }
+
+    @Override
     public void deleteItemStates(String applyinstId) throws Exception {
         if(StringUtils .isNotBlank(applyinstId)){
             List<AeaItemState> itemStates = aeaHiItemStateinstService.listAeaItemStateByApplyinstIdOrSeriesinstId(applyinstId, null);
@@ -391,12 +400,14 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
     }
 
     @Override
-    public void insertSeriesIteminst(String seriesApplyinstId ,String itemVerId) throws Exception {
+    public void insertSeriesIteminst(String seriesApplyinstId ,String itemVerId,Map<String,Object> resultMap) throws Exception {
         String appinstId=UUID.randomUUID().toString();
         //1、保存单项实例
         AeaHiSeriesinst aeaHiSeriesinst = aeaHiSeriesinstService.createAeaHiSeriesinst(seriesApplyinstId, appinstId,"0",null);
+        if(aeaHiSeriesinst!=null) resultMap.put("seriesinstId",aeaHiSeriesinst.getSeriesinstId());
         //2、事项实例
-        aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), itemVerId, null,null,appinstId);
+        AeaHiIteminst iteminst=aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), itemVerId, null,null,appinstId);
+        if(iteminst!=null) resultMap.put("iteminstId",iteminst.getIteminstId());
     }
 
     @Override
@@ -507,12 +518,14 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
 
 
     @Override
-    public void submitMatmList(MatListTemporaryParamVo matListTemporaryParamVo) throws Exception {
+    public void submitMatmList(MatListCommonTemporaryParamVo matListTemporaryParamVo) throws Exception {
         String[] matinstIds = matListTemporaryParamVo.getMatinstsIds();
         String applyinstId=matListTemporaryParamVo.getApplyinstId();
-        if(StringUtils.isNotBlank(applyinstId) && matinstIds!=null && matinstIds.length>0){
-            aeaHiItemInoutinstService.batchInsertAeaHiItemInoutinst(matinstIds, applyinstId, SecurityContext.getCurrentUserName());
-        }
-        //todo qinjp
+        if(StringUtils.isBlank(applyinstId)) return;
+        List<AeaHiIteminst> iteminstList = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
+        if(iteminstList.size()>0) deleteMatUnderIteminst(iteminstList);//先删除
+        if(matinstIds==null || matinstIds.length==0) return;
+        //再重新创建
+        aeaHiItemInoutinstService.batchInsertAeaHiItemInoutinst(matinstIds, applyinstId, SecurityContext.getCurrentUserName());
     }
 }
