@@ -77,4 +77,15 @@ public interface SendSmsRemindContentConverter {
      */
     public String getBpmRemindSmsContent(String projName,String projCode,String applyinstCode,String phoneNum);
 
+    /**
+     * 办件容缺办结补正短信提醒
+     * @param projName 项目名称
+     * @param projCode 项目代码
+     * @param applyinstCode 申报流水号
+     * @param itemName 事项名称
+     * @param phoneNum 手机号
+     * @return
+     */
+    public String getToleranceBzRemindSmsContent(String projName,String projCode,String applyinstCode,String itemName,String phoneNum);
+
 }

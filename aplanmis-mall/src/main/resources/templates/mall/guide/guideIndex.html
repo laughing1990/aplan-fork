@@ -694,8 +694,9 @@
                                                             <td width="20%" class="left-td-custom_bg">结果样本</td>
                                                             <td width="30%" class="right-td-custom">
                                                                 <div>
-                                                                    {{detailData.aeaItemGuide?detailData.aeaItemGuideExtend.resultGuid:'无'}}
-                                                                </div>
+                                                                <a href="javascript:void(0);" style="color: #3E97DF" @click="previewResultGuide(detailData.aeaItemGuideExtend.zzzResultGuid)">
+                                                                    {{detailData.aeaItemGuide?detailData.aeaItemGuideExtend.zzzResultGuidName:'无'}}
+                                                                </a></div>
                                                             </td>
                                                         </tr>
                                                         <tr v-show="singleTable1">
