@@ -221,6 +221,8 @@ public class ImPurchaseData {
         aeaImProjPurchase.setIsDelete("0");
         aeaImProjPurchase.setIsActive("1");
         aeaImProjPurchase.setCreateTime(new Date());
+        aeaImProjPurchase.setPublishTime(new Date());
+        aeaImProjPurchase.setAuditTime(new Date());
         return aeaImProjPurchase;
 
     }

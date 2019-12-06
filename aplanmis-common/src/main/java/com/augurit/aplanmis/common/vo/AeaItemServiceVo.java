@@ -40,6 +40,8 @@ public class AeaItemServiceVo {
     @ApiModelProperty(value = "办理时限，以工作日为单位 ")
     private String agentItemDueNum;
     private String agentItemDueUnitType;
+    private String agentItemDueUnit;
+
     @ApiModelProperty(value = "承诺时限单位")
     private String agentItemBjType;
     @ApiModelProperty(value = "对应的行政事项名称")

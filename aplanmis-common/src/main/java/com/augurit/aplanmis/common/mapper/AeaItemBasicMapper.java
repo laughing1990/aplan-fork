@@ -283,4 +283,13 @@ public interface AeaItemBasicMapper {
      * @return
      */
     int listAgentItemServiceNum(@Param("startDate") String startDate);
+
+    /**
+     * 采购页获取中介事项列表
+     *
+     * @param keyword
+     * @param itemVerId
+     * @return
+     */
+    List<AeaItemServiceVo> listAgentItemServiceVo(@Param("keyword") String keyword, @Param("itemVerId") String itemVerId);
 }

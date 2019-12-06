@@ -857,4 +857,28 @@ public class AeaImProjPurchaseController {
         return new ContentResultForm(true, vo, "success");
     }
 
+
+    @ApiOperation(value = "采购页获取中介服务事项列表", notes = "获取中介服务事项列表", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "keyword", value = "查询关键字"),
+            @ApiImplicitParam(name = "pageNum", value = "当前页", dataType = "int"),
+            @ApiImplicitParam(name = "pageSize", value = "每页记录数", dataType = "int"),
+    })
+    @GetMapping(value = "/getAgentItemList")
+    public ContentRestResult<EasyuiPageInfo<AeaItemServiceVo>> getAgentItemList(String keyword, Integer pageNum, Integer pageSize) {
+
+        try {
+            Page page = null;
+            if (pageNum != null && pageSize != null) {
+                page = new Page(pageNum, pageSize > 0 ? pageSize : 10);
+            }
+            List<AeaItemServiceVo> list = projPurchaseService.getAgentItemList(keyword, page);
+
+            return new ContentRestResult<EasyuiPageInfo<AeaItemServiceVo>>(true, PageHelper.toEasyuiPageInfo(new PageInfo(list)));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ContentRestResult(false, null, e.getMessage());
+        }
+    }
+
 }

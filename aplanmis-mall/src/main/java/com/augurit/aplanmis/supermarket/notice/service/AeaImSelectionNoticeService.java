@@ -16,5 +16,12 @@ import java.util.List;
 public interface AeaImSelectionNoticeService {
     List<AeaImProjPurchase> listSelectionNotice(QueryProjPurchaseVo projPurchase, Page page);
 
-    AeaImProjPurchase getSelectionNoticeByProjPurchaseId(String projPurchaseId);
+    /**
+     * 根据采购项目ID查询采购项目详情
+     *
+     * @param projPurchaseId 采购项目ID
+     * @return AeaImProjPurchase
+     * @throws Exception E
+     */
+    SelectionNoticeVo getSelectionNoticeByProjPurchaseId(String projPurchaseId) throws Exception;
 }

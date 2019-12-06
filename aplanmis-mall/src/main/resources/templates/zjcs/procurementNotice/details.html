@@ -146,21 +146,12 @@
             <b>竞价天数：</b>
             <div class="txt">{{purchaseDetails.bidNum?purchaseDetails.bidNum+'个工作日内完成':''}}</div>
           </li>
-          <!--<li>-->
-          <!--<b>服务金额：</b>-->
-          <!--<div class="txt">暂不做评估与测算</div>-->
-          <!--</li>-->
           <li>
             <b>金额说明：</b>
             <div class="txt">{{purchaseDetails.amountExplain}}</div>
           </li>
-          <!--<li>-->
-          <!--<b>调配择优球数比例：</b>-->
-          <!--<div class="txt">%</div>-->
-          <!--</li>-->
           <li>
             <b>竞价类型：</b>
-            <!-- <div class="txt">{{purchaseDetails.biddingType==1?'随机中标':'自主选'}}</div> -->
             <div class="txt">{{purchaseDetails.biddingType | biddingTypeFormat}}</div>
           </li>
           <!-- 回避 -->
@@ -186,28 +177,8 @@
               </li>
             </template>
           </template>
-          <!--<li>-->
-          <!--<b>有无回避情况：</b>-->
-          <!--<div class="txt">否</div>-->
-          <!--</li>-->
           <li>
-            <b>是否现场见证：</b>
-            <div class="txt">{{purchaseDetails.isLiveWitness==1?'是':'否'}}</div>
-          </li>
-          <!--<li>-->
-          <!--<b>截止报名时间：</b>-->
-          <!--<div class="txt">-->
-          <!--2019-06-18 16:30-->
-          <!--</div>-->
-          <!--</li>-->
-          <li>
-            <b>审核时间：</b>
-            <div class="txt">
-              {{purchaseDetails.auditTime | formatDate }}
-            </div>
-          </li>
-          <li>
-            <b>项目业主业务咨询电话：</b>
+            <b>业主咨询电话：</b>
             <div class="txt">{{purchaseDetails.moblie}}</div>
           </li>
           <template v-if="purchaseDetails.requireExplainFile">
@@ -249,8 +220,6 @@
     th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
   <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
     th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
-<!--  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"-->
-<!--    th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>-->
   <script src="../../../static/common/js/common.js" th:src="@{/common/js/common.js}"></script>
 
   <script src="../../../static/zjcs/procurementNotice/js/details.js" th:src="@{/zjcs/procurementNotice/js/details.js}"></script>

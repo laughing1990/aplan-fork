@@ -10,6 +10,7 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.vo.AeaImProjPurchaseDetailVo;
+import com.augurit.aplanmis.supermarket.bidProPurchase.ServiceLinkmanVo;
 import com.github.pagehelper.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -399,8 +400,10 @@ public class BidProjectService {
         return aeaImBiddingPrice;
     }
 
-    public List<AeaLinkmanInfo> listClientServiceLinkmanInfo(String serviceId, String unitInfoId) throws Exception {
-        return aeaImClientServiceMapper.listClientServiceLinkmanInfo(serviceId, unitInfoId);
+    public List<ServiceLinkmanVo> listClientServiceLinkmanInfo(String serviceId, String unitInfoId) throws Exception {
+        List<AeaLinkmanInfo> linkmanInfos = aeaImClientServiceMapper.listClientServiceLinkmanInfo(serviceId, unitInfoId);
+
+        return ServiceLinkmanVo.change2vo(linkmanInfos);
     }
 
 }

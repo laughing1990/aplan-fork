@@ -184,7 +184,7 @@ public class AeaImProjPurchase implements Serializable {
     @ApiModelProperty(value = "【当IS_AVOID=1时必填】回避原因")
     private String avoidReason;
 
-    //拓展地段
+    //拓展地段-采购项目信息
     @ApiModelProperty(value = "项目名称")
     private String projName;//项目名称
     @ApiModelProperty(value = "事项名称，中介事项")

@@ -124,7 +124,7 @@
                         <el-col class="text-right" :span="5">项目规模：</el-col>
                         <el-col class="text-left pl10" :span="19">
                             <b style="color: #fa9931;">{{curCanSignUpProjectDetail.projScaleContent || '无'}}</b>
-                            元
+                            {{curCanSignUpProjectDetail.projScale}}
                         </el-col>
                     </el-row>
                     <el-row class="mb20">
@@ -215,20 +215,20 @@
                         <el-col class="text-left pl10" :span="19">{{curCanSignUpProjectDetail.amountExplain || '无'}}
                         </el-col>
                     </el-row>
-                    <el-row class="mb20">
-                        <el-col class="text-right" :span="5">见证现场竞价选取、摇珠：</el-col>
-                        <el-col class="text-left pl10" :span="19">
-                            {{curCanSignUpProjectDetail.isLiveWitness == 0 ? '否':'是' || '无'}}</el-col>
-                    </el-row>
-                    <el-row class="mb20">
-                        <el-col class="text-right" :span="5">见证人姓名（联系电话）：</el-col>
-                        <el-col class="text-left pl10" :span="19">
-                            <span v-if="!witnessInfo">无</span>
-                            <span v-else>
-                                {{witnessInfo}}
-                            </span>
-                        </el-col>
-                    </el-row>
+	                <!--<el-row class="mb20">
+											<el-col class="text-right" :span="5">见证现场竞价选取、摇珠：</el-col>
+											<el-col class="text-left pl10" :span="19">
+													{{curCanSignUpProjectDetail.isLiveWitness == 0 ? '否':'是' || '无'}}</el-col>
+									</el-row>
+									<el-row class="mb20">
+											<el-col class="text-right" :span="5">见证人姓名（联系电话）：</el-col>
+											<el-col class="text-left pl10" :span="19">
+													<span v-if="!witnessInfo">无</span>
+													<span v-else>
+															{{witnessInfo}}
+													</span>
+											</el-col>
+									</el-row>-->
                 </div>
             </div>
 
@@ -238,13 +238,14 @@
                         class="arrow-icon"></i></h2>
                 <div class="item-detail">
                     <el-row class="mb20">
-                        <el-col class="text-right" :span="5">项目业主业务咨询电话：</el-col>
+	                    <el-col :span="5" class="text-right">业主咨询电话：</el-col>
                         <el-col class="text-left pl10" :span="19">{{curCanSignUpProjectDetail.moblie || '无'}}</el-col>
                     </el-row>
                     <el-row class="mb20">
                         <el-col class="text-right" :span="5">投诉质疑：</el-col>
-                        <el-col class="text-left pl10" :span="19">
-                            {{curCanSignUpProjectDetail.ownerComplaintPhone || '无'}}</el-col>
+	                    <el-col :span="19" class="text-left pl10">{{curCanSignUpProjectDetail.ownerComplaintPhone ||
+		                    '无'}}
+	                    </el-col>
                     </el-row>
                 </div>
             </div>
@@ -284,33 +285,32 @@
                 <h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>填写报名信息<i
                         class="arrow-icon"></i></h2>
                 <div class="item-detail edit-item-detail">
-                    <div class="form-item">
-                        <label><b class="red-cl">*</b>中介机构名称</label>
-                        <div class="input-box">
-                            <input type="text" class="form-control" placeholder="请输入中介机构名称" :readonly="isReadOnly"
-                                v-model="curCanSignUpProjectSubmitData.applicant" />
-                        </div>
-                    </div>
+	                <div class="form-item">
+		                <label>中介机构名称</label><!--<b class="red-cl">*</b>-->
+		                <div class="input-box">
+			                <input :readonly="isReadOnly" class="form-control" type="text"
+			                       v-model="curCanSignUpProjectSubmitData.applicant"/>
+		                </div>
+	                </div>
                     <div class="form-item mt20">
-                        <label><b class="red-cl">*</b>统一社会信用代码</label>
+	                    <label>统一社会信用代码</label>
                         <div class="input-box">
-                            <input type="text" class="form-control" placeholder="请输入统一社会信用代码" :readonly="isReadOnly"
-                                   v-model="curCanSignUpProjectSubmitData.unifiedSocialCreditCode"/>
+	                        <input :readonly="isReadOnly" class="form-control" type="text"
+	                               v-model="curCanSignUpProjectSubmitData.unifiedSocialCreditCode"/>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6 form-item">
-                            <label><b class="red-cl">*</b>联系地址</label>
+	                        <label>联系地址</label>
                             <div class="input-box">
-                                <input type="text" class="form-control" placeholder="请输入联系地址" :readonly="isReadOnly"
-                                    v-model="curCanSignUpProjectSubmitData.applicantDetailSite" />
+	                            <input :readonly="isReadOnly" class="form-control" type="text"
+	                                   v-model="curCanSignUpProjectSubmitData.applicantDetailSite"/>
                             </div>
                         </div>
                         <div class="col-md-6 form-item">
-                            <label><b class="red-cl">*</b>邮政编号</label>
+	                        <label>邮政编号</label>
                             <div class="input-box">
-                                <input type="text" class="form-control" id="" placeholder="请输入邮政编号"
-                                    :readonly="isReadOnly" v-model="curCanSignUpProjectSubmitData.postalCode" />
+	                            <input :readonly="isReadOnly" class="form-control" type="text" v-model="curCanSignUpProjectSubmitData.postalCode"/>
                             </div>
                         </div>
                     </div>
@@ -318,7 +318,6 @@
                         <div class="col-md-6 form-item">
                             <label><b class="red-cl">*</b>业务授权人</label>
                             <div class="input-box">
-                                <!-- <input type="text" class="form-control" placeholder="请输入业务授权人"> -->
                                 <el-select placeholder="请选择业务授权人" style="width: 330px;" v-model="businessAdminObj" :popper-append-to-body="false"
                                     value-key="linkmanInfoId">
                                     <el-option v-for="item in businessAdminOptions" :key="item.linkmanInfoId"
@@ -330,8 +329,7 @@
                         <div class="col-md-6 form-item">
                             <label>联系邮箱</label>
                             <div class="input-box">
-                                <input type="text" class="form-control" placeholder="请输入联系邮箱"
-                                    v-model="businessAdminObj.linkmanMail" :readonly="isReadOnly" />
+	                            <input :readonly="isReadOnly" class="form-control" type="text" v-model="businessAdminObj.linkmanMail"/>
                             </div>
                         </div>
                     </div>
@@ -339,23 +337,22 @@
                         <div class="col-md-6 form-item">
                             <label>固定电话</label>
                             <div class="input-box">
-                                <input type="text" class="form-control" placeholder="请输入固定电话" :readonly="isReadOnly">
+	                            <input :readonly="isReadOnly" class="form-control" type="text">
                             </div>
                         </div>
                         <div class="col-md-6 form-item">
-                            <label><b class="red-cl">*</b>企业联系号码</label>
+	                        <label>企业联系号码</label>
                             <div class="input-box">
-                                <input type="text" class="form-control" placeholder="请输入企业联系号码" :readonly="isReadOnly"
-                                    v-model="curCanSignUpProjectSubmitData.mobile" />
+	                            <input :readonly="isReadOnly" class="form-control" type="text"
+	                                   v-model="curCanSignUpProjectSubmitData.mobile"/>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6 form-item">
-                            <label><b class="red-cl">*</b>业务联系号码</label>
+	                        <label>业务联系号码</label>
                             <div class="input-box">
-                                <input type="text" class="form-control" placeholder="请输入业务联系号码"
-                                    v-model="businessAdminObj.linkmanMobilePhone" :readonly="isReadOnly">
+	                            <input :readonly="isReadOnly" class="form-control" type="text" v-model="businessAdminObj.linkmanMobilePhone">
                             </div>
                         </div>
                     </div>
@@ -585,26 +582,27 @@
                 // 当前展示的项目详情
                 curCanSignUpProjectDetail: {
                     projName: '', //项目名
-                    itemName: '', //中介服务事项
-                    parentItemName: '', //涉及的行政事项
-                    orgName: '', //事项对应部门
-                    isApproveProj: 0, //是否投资审批项目 0否，1是
-                    parentLocalCode: '', //投资审批项目编码
-                    applyinstCode: '', //审批业务流水号
-                    localCode: '', //采购项目编码
-                    applicant: '', //项目业主
-                    contacts: '', //项目联系人
-                    moblie: '', //联系电话、 项目业主业务咨询电话
-                    projScaleContent: '', //项目规模
+	                itemName: '', //中介服务事项
+	                parentItemName: '', //涉及的行政事项
+	                orgName: '', //事项对应部门
+	                isApproveProj: 0, //是否投资审批项目 0否，1是
+	                parentLocalCode: '', //投资审批项目编码
+	                applyinstCode: '', //审批业务流水号
+	                localCode: '', //采购项目编码
+	                applicant: '', //项目业主
+	                contacts: '', //项目联系人
+	                moblie: '', //联系电话、 项目业主业务咨询电话
+	                projScale: '',//项目规模类型
+	                projScaleContent: '', //项目规模
 
-                    // 资金来源
-                    isFinancialFund: '', //(是否为财政资金（资金来源）：1 是，0 不是)
-                    financialFundProportion: '', // (财政资金比例
-                    isSocialFund: '', // (是否为社会资金（资金来源）：1 是，0 不是)
-                    socialFundProportion: '', // (社会资金比例
+	                // 资金来源
+	                isFinancialFund: '', //(是否为财政资金（资金来源）：1 是，0 不是)
+	                financialFundProportion: '', // (财政资金比例
+	                isSocialFund: '', // (是否为社会资金（资金来源）：1 是，0 不是)
+	                socialFundProportion: '', // (社会资金比例
 
-                    serviceName: '', //所需服务
-                    serviceTimeExplain: '', //服务时限说明                           
+	                serviceName: '', //所需服务
+	                serviceTimeExplain: '', //服务时限说明
                     serviceContent: '', //服务内容
 
                     // 中介服务机构要求
@@ -612,32 +610,32 @@
                     isRecordRequire: '', //string是否需要备案要求：1 需要，0 不需要
                     isRegisterRequire: '', //	string是否需要执业/职业人员要求：1 需要，0 不需要
 
-                    qualRequireType: '', //资质要求 1 多个资质子项符合其一即可，0 需同时符合所有选中资质子项要
-                    qualRequireExplain: '', //资质要求说明
-                    otherRequireExplain: '', //其他要求说明
+	                qualRequireType: '', //资质要求 1 多个资质子项符合其一即可，0 需同时符合所有选中资质子项要
+	                qualRequireExplain: '', //资质要求说明
+	                otherRequireExplain: '', //其他要求说明
 
-                    biddingType: '', // 选取中介服务机构方式 1 随机中标，2 自主选
-                    isDefineAmount: '', //是否确认金额 1 是 0 否
-                    amountExplain: '', //金额说明
-                    isLiveWitness: '', //是否见证现场竞价选取、摇珠：1 是， 0 否
+	                biddingType: '', // 选取中介服务机构方式 1 随机中标，2 自主选
+	                isDefineAmount: '', //是否确认金额 1 是 0 否
+	                amountExplain: '', //金额说明
+	                isLiveWitness: '', //是否见证现场竞价选取、摇珠：1 是， 0 否
 
-                    // 见证人list
-                    witnessName1: '',
-                    witnessName2: '',
-                    witnessName3: '',
-                    witnessPhone1: '',
-                    witnessPhone2: '',
-                    witnessPhone3: '',
+	                // 见证人list
+	                // witnessName1: '',
+	                // witnessName2: '',
+	                // witnessName3: '',
+	                // witnessPhone1: '',
+	                // witnessPhone2: '',
+	                // witnessPhone3: '',
 
-                    ownerComplaintPhone: '', //投诉质疑
+	                ownerComplaintPhone: '', //投诉质疑
 
-                    expirationDate: '', //竞价截止时间
-                    unitBiddingCount: '', //已有参与竞价的中介数量
+	                expirationDate: '', //竞价截止时间
+	                unitBiddingCount: '', //已有参与竞价的中介数量
 
-                    // 中介服务的serviceId
-                    serviceId: '',
+	                // 中介服务的serviceId
+	                serviceId: '',
 
-                    registerTotal: '', //执业/职业人员总数
+	                registerTotal: '', //执业/职业人员总数
                     registerRequire: '', //执业/职业人员要求
 
                     // 是否是必须填写选择职业从业人员

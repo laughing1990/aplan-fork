@@ -2,10 +2,18 @@ package com.augurit.aplanmis.supermarket.notice.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaImProjPurchase;
+import com.augurit.aplanmis.common.domain.AeaParentProj;
+import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.mapper.AeaImProjPurchaseMapper;
+import com.augurit.aplanmis.common.mapper.AeaLinkmanInfoMapper;
+import com.augurit.aplanmis.common.mapper.AeaParentProjMapper;
+import com.augurit.aplanmis.common.mapper.AeaUnitInfoMapper;
+import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.vo.QueryProjPurchaseVo;
 import com.augurit.aplanmis.supermarket.notice.service.AeaImSelectionNoticeService;
+import com.augurit.aplanmis.supermarket.notice.service.SelectionNoticeVo;
 import com.github.pagehelper.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +32,14 @@ import java.util.List;
 public class AeaImSelectionNoticeServiceImpl implements AeaImSelectionNoticeService {
     @Autowired
     private AeaImProjPurchaseMapper projPurchaseMapper;
+    @Autowired
+    private AeaParentProjMapper aeaParentProjMapper;
+    @Autowired
+    private AeaProjInfoService aeaProjInfoService;
+    @Autowired
+    private AeaUnitInfoMapper aeaUnitInfoMapper;
+    @Autowired
+    private AeaLinkmanInfoMapper aeaLinkmanInfoMapper;
 
     @Override
     public List<AeaImProjPurchase> listSelectionNotice(QueryProjPurchaseVo projPurchase, Page page) {
@@ -38,8 +54,32 @@ public class AeaImSelectionNoticeServiceImpl implements AeaImSelectionNoticeServ
     }
 
     @Override
-    public AeaImProjPurchase getSelectionNoticeByProjPurchaseId(String projPurchaseId) {
+    public SelectionNoticeVo getSelectionNoticeByProjPurchaseId(String projPurchaseId) throws Exception {
         AeaImProjPurchase projPurchase = projPurchaseMapper.getSelectionNoticeByProjPurchaseId(projPurchaseId);
-        return projPurchase;
+        if (null == projPurchase) return null;
+        SelectionNoticeVo vo = new SelectionNoticeVo(projPurchase);
+        //查询发布单位或个人名字
+        /*if (StringUtils.isNotBlank(vo.getPublishUnitInfoId())) {
+            AeaUnitInfo info = aeaUnitInfoMapper.getAeaUnitInfoById(vo.getPublishUnitInfoId());
+            if (null != info) {
+                vo.setPublishUnitName(info.getApplicant());
+            }
+        } else if (StringUtils.isNotBlank(vo.getPublishLinkmanInfoId())) {
+            AeaLinkmanInfo info = aeaLinkmanInfoMapper.getAeaLinkmanInfoById(vo.getPublishLinkmanInfoId());
+            if (null != info) {
+                vo.setPublishUnitName(info.getLinkmanName());
+            }
+        }*/
+        String isApproveProj = projPurchase.getIsApproveProj();
+        if (StringUtils.isNotBlank(isApproveProj) && "1".equals(isApproveProj)) {
+            //查询关联的投资审批项目信息
+            AeaParentProj parentProj = aeaParentProjMapper.getParentProjByProjInfoId(projPurchase.getProjInfoId());
+            if (null != parentProj) {
+                AeaProjInfo projInfo = aeaProjInfoService.getTransProjInfoDetail(parentProj.getParentProjId());
+                vo.change2proj(projInfo);
+            }
+        }
+//        PurchaseDetailVo vo = projPurchaseService.getPurchaseDetail(projPurchaseId);
+        return vo;
     }
 }

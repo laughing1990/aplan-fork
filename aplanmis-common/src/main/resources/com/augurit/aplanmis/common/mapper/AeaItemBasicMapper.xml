@@ -3106,5 +3106,44 @@
             AND aib.CREATE_TIME &gt;= #{startDate}
         </if>
     </select>
+    <select id="listAgentItemServiceVo" resultType="com.augurit.aplanmis.common.vo.AeaItemServiceVo">
+        select
+        itemBasic.ITEM_BASIC_ID agentItemBasicId,
+        itemBasic.ITEM_ID agentItemId,
+        itemBasic.ITEM_VER_ID agentItemVerId,
+        itemBasic.ITEM_CODE agentItemCode,
+        itemBasic.ITEM_NAME agentItemName,
+        itemBasic.ITEM_PROPERTY agentItemProperty,
+        itemBasic.ORG_ID agentOrgId,t1.ORG_NAME agentOrgName,
+        itemBasic.DUE_NUM agentItemDueNum,
+        itemBasic.BJ_TYPE agentItemBjType,
+        itemBasic.XKDX agentItemFwdx,
+        itemBasic.ANTICIPATE_DAY anticipateDay,
+        itemBasic.ANTICIPATE_TYPE anticipateType,
+        itemBasic.ROOT_ORG_ID rootOrgId,
+        itemservice.SERVICE_NAME serviceName
+        from AEA_ITEM_BASIC itemBasic
+        LEFT JOIN OPU_OM_ORG t1 ON t1.ORG_ID = itemBasic.ORG_ID
+        LEFT JOIN (
+        select aisi.ITEM_VER_ID,GROUP_CONCAT(ais.SERVICE_NAME) SERVICE_NAME from AEA_IM_SERVICE_ITEM aisi
+        LEFT JOIN AEA_IM_SERVICE ais on ais.SERVICE_ID=aisi.SERVICE_ID GROUP by aisi.ITEM_VER_ID
+        ) itemservice on itemservice.ITEM_VER_ID = itemBasic.ITEM_VER_ID
+        <where>
+            itemBasic.ITEM_NATURE='8' and itemBasic.IS_CATALOG='0'
+            <if test="keyword!=null and keyword!=''">
+                and (
+                itemBasic.ITEM_CODE like concat('%',concat(#{keyword},'%')) or
+                itemBasic.ITEM_NAME like concat('%',concat(#{keyword},'%')) or
+                itemBasic.ITEM_MEMO like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+
+            <if test="itemVerId!=null and itemVerId!=''">
+                and itemBasic.ITEM_VER_ID = #{itemVerId}
+            </if>
+
+        </where>
+        GROUP BY itemBasic.ITEM_ID
+    </select>
 
 </mapper>

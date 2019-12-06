@@ -22,6 +22,7 @@ public class PurchaseProjVo {
     @ApiModelProperty(value = "业主单位ID")
     private String publishUnitInfoId;
 
+    private String publishUnitName;
     @ApiModelProperty(value = "个人申报时采购人ID")
     private String publishLinkmanInfoId;
 
@@ -193,5 +194,47 @@ public class PurchaseProjVo {
     private String serviceName;
     @ApiModelProperty(value = "批文文件")
     private String officialRemarkFile;
+
+    //============事项信息==========================================
+
+    @ApiModelProperty(value = "事项版本")
+    private String itemVerId;
+    @ApiModelProperty(value = "事项名称")
+    private String itemName;
+
+    @ApiModelProperty(value = "承诺办结时限单位")
+    private String dueUnit;
+    @ApiModelProperty(value = "办理时限")
+    private Double dueNum;
+    @ApiModelProperty(value = "办件类型")
+    private String itemProperty;
+
+    @ApiModelProperty(value = "事项实例ID")
+    private String iteminstId;
+
+    @ApiModelProperty(value = "事项实例（办件）编号")
+    private String iteminstCode;
+
+    @ApiModelProperty(value = "事项实例（办件）名称")
+    private String iteminstName;
+    @ApiModelProperty(value = "实例状态，1表示已接件，2表示已撤件，3已受理，4不受理，5不予受理，6补正（开始），7补正（结束），8部门开始办理，9特别程序（开始），10特别程序（结束），11办结（通过），12办结（容缺通过），13办结（不通过），14.撤回，15.撤销")
+    private String iteminstState;
+
+    @ApiModelProperty(value = "审批部门ID")
+    private String approveOrgId;
+
+    @ApiModelProperty(value = "审批部门ID")
+    private String approveOrgName;
+
+    @ApiModelProperty(value = "服务对象")
+    private String xkdx;
+
+    private String guideOrgName;
+
+    @ApiModelProperty(value = "法定办结时限")
+    private Double anticipateDay;
+
+    @ApiModelProperty(value = "法定办结时限单位")
+    private String anticipateType;
 
 }

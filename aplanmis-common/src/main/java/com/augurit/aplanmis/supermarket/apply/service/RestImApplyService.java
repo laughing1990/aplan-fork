@@ -140,40 +140,8 @@ public class RestImApplyService {
     private AeaImServiceResultMapper aeaImServiceResultMapper;
 
 
-    /**
-     * 选取中介机构
-     * <p>
-     * purchaseId = null;// 采购需求ID
-     * unitInfoId 选取的中介竞标ID
-     *
-     * @throws Exception E
-     */
-    public void chooseImunit(String projPurchaseId, String unitBiddingId) throws Exception {
-
-        AeaImProjPurchase purchase = this.getApplyinstIdByProPurchaseId(projPurchaseId);
-        String applyinstId = purchase.getApplyinstId();
-        String opsLinkInfoId = purchase.getLinkmanInfoId();//业主委托人
-        String isWonBid = "1";
-        //更新中标状态
-        aeaImUnitBiddingMapper.updateWinBid(unitBiddingId, projPurchaseId, isWonBid);
-        //选中中标企业最高价
-        AeaImBiddingPrice biddingPrice = aeaImBiddingPriceMapper.getBiddingPrice(projPurchaseId, "2");
-        biddingPrice.setIsChoice("1");
-        aeaImBiddingPriceMapper.updateAeaImBiddingPrice(biddingPrice);
-
-        //获取申请实例历史记录列表
-        AeaLogApplyStateHist applyStateHist = this.getLastAeaLogApplyStateHist(applyinstId);
-        if (applyStateHist == null) throw new Exception("找不到申请实例历史记录！");
-        String taskId = applyStateHist.getTaskinstId();// 节点ID（此时还停留在《发布采购需求》节点）
-        String appinstId = applyStateHist.getAppinstId();// 模板实例ID
-
-        //更新申请实例历史状态
-        aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(applyinstId, taskId, appinstId, ApplyState.IM_MILESTONE_CONFIRM_IMUNIT.getValue(), null);// 待中介机构确认
-
-        //更新采购需求状态
-        aeaImProjPurchaseService.updateProjPurchaseStateAndInsertPurchaseinstState(projPurchaseId, AuditFlagStatus.CHOOSE_END, null, opsLinkInfoId, null, taskId);//已选取，待确认
-
-    }
+@Autowired
+private AeaImClientServiceMapper aeaImClientServiceMapper;
 
     /**
      * 中介机构确认
@@ -709,6 +677,41 @@ public class RestImApplyService {
         return aeaImProjPurchase;
     }
 
+    /**
+     * 选取中介机构
+     * <p>
+     * purchaseId = null;// 采购需求ID
+     * unitInfoId 选取的中介竞标ID
+     *
+     * @throws Exception E
+     */
+    public void chooseImunit(String projPurchaseId, String unitBiddingId) throws Exception {
+
+        AeaImProjPurchase purchase = this.getApplyinstIdByProPurchaseId(projPurchaseId);
+        String applyinstId = purchase.getApplyinstId();
+        String opsLinkInfoId = purchase.getLinkmanInfoId();//业主委托人
+        String isWonBid = "1";
+        //更新中标状态和中标时间
+        aeaImUnitBiddingMapper.updateWinBid(unitBiddingId, projPurchaseId, isWonBid);
+        //选中中标企业最高价
+        AeaImBiddingPrice biddingPrice = aeaImBiddingPriceMapper.getBiddingPrice(projPurchaseId, "2");
+        biddingPrice.setIsChoice("1");
+        aeaImBiddingPriceMapper.updateAeaImBiddingPrice(biddingPrice);
+
+        //获取申请实例历史记录列表
+        AeaLogApplyStateHist applyStateHist = this.getLastAeaLogApplyStateHist(applyinstId);
+        if (applyStateHist == null) throw new Exception("找不到申请实例历史记录！");
+        String taskId = applyStateHist.getTaskinstId();// 节点ID（此时还停留在《发布采购需求》节点）
+        String appinstId = applyStateHist.getAppinstId();// 模板实例ID
+
+        //更新申请实例历史状态
+        aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(applyinstId, taskId, appinstId, ApplyState.IM_MILESTONE_CONFIRM_IMUNIT.getValue(), null);// 待中介机构确认
+
+        //更新采购需求状态
+        aeaImProjPurchaseService.updateProjPurchaseStateAndInsertPurchaseinstState(projPurchaseId, AuditFlagStatus.CHOOSE_END, null, opsLinkInfoId, null, taskId);//已选取，待确认
+
+    }
+
     private void saveImUnitBidding(ImPurchaseData data, String projPurchaseId) throws Exception {
         AeaUnitInfo agentUnitInfo = aeaUnitInfoMapper.getAeaUnitInfoById(data.getAgentUnitInfoId());
         if (null == agentUnitInfo) return;
@@ -717,17 +720,13 @@ public class RestImApplyService {
 
         if (aeaImUnitService != null) {
             AeaImUnitBidding aeaImUnitBidding = new AeaImUnitBidding();
-            aeaImUnitBidding.buildImUnitBidding(projPurchaseId, data.getAgentUnitInfoId(), aeaImUnitService.getUnitServiceId(), data.getCreater(), data.getRootOrgId());
+            aeaImUnitBidding.buildImUnitBidding(projPurchaseId, data.getAgentUnitInfoId(), aeaImUnitService.getUnitServiceId());
             // 查询当前服务联系人
-            List<AeaImServiceLinkman> linkmanList = aeaImServiceLinkmanMapper.listAeaImServiceLinkmanByUnitInfoIdAndServiceId(data.getAgentUnitInfoId(), data.getServiceId());
-            if (!linkmanList.isEmpty()) {
-                aeaImUnitBidding.setLinkmanInfoId(linkmanList.get(0).getLinkmanInfoId());
+            List<AeaLinkmanInfo> linkmanInfos = aeaImClientServiceMapper.listClientServiceLinkmanInfo(data.getServiceId(), data.getAgentUnitInfoId());
+//            List<AeaImServiceLinkman> linkmanList = aeaImServiceLinkmanMapper.listAeaImServiceLinkmanByUnitInfoIdAndServiceId(data.getAgentUnitInfoId(), data.getServiceId());
+            if (!linkmanInfos.isEmpty()) {
+                aeaImUnitBidding.setLinkmanInfoId(linkmanInfos.get(0).getLinkmanInfoId());
             }
-           /* List<AeaLinkmanInfo> aeaLinkmanInfos = aeaLinkmanInfoMapper.listBindLinkmanByUnitId(data.getAgentUnitInfoId(), "1", "1", "");
-            if (aeaLinkmanInfos != null && aeaLinkmanInfos.size() > 0) {
-                AeaLinkmanInfo linkmanInfo = aeaLinkmanInfos.get(0);
-                aeaImUnitBidding.setLinkmanInfoId(linkmanInfo.getLinkmanInfoId());
-            }*/
             aeaImUnitBiddingMapper.insertAeaImUnitBidding(aeaImUnitBidding);
 
             // 保存竞价价格

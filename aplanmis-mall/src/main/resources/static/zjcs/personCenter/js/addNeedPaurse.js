@@ -777,7 +777,8 @@ var module1 = new Vue({
 		getAgentServiceItemList: function () {
 			var vm = this;
 			request('', {
-				url: ctx + 'supermarket/purchase/getAgentServiceItemList', type: 'post',
+				// url: ctx + 'supermarket/purchase/getAgentItemList', type: 'post',
+				url: ctx + 'supermarket/purchase/getAgentItemList', type: 'get',
 				data: {
 					keyword: vm.serviceKeyword,
 					pageNum: vm.pageNum2,
