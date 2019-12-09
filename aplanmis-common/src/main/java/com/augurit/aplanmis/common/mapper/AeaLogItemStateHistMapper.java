@@ -68,4 +68,5 @@ public interface AeaLogItemStateHistMapper {
     List<SupplyOrSpacialCommentVo> findItemCorrectStateHist(@Param("taskInstId") String taskInstId, @Param("rootOrgId") String rootOrgId);
 
     List<AeaLogItemStateHist> listAeaLogItemStateHistByIteminstIds(@Param("iteminstIds") List<String> iteminstIds);
+
 }
