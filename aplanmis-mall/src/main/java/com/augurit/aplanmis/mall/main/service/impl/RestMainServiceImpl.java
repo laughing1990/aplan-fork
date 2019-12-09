@@ -96,7 +96,7 @@ public class RestMainServiceImpl implements RestMainService {
     }
 
     @Override
-    public List<AeaParStage> getStageByThemeId(String themeId, String projInfoId, String rootOrgId,String unitInfoId, HttpServletRequest request) throws Exception {
+    public List<AeaParStage> getStageByThemeId(String themeId, String projInfoId, String rootOrgId,String unitInfoId,String dygjbzfxfw, HttpServletRequest request) throws Exception {
 
         List<AeaParStage> results = new ArrayList<>();
         AeaParTheme theme = aeaParThemeService.getAeaParThemeByThemeId(themeId);
@@ -111,6 +111,9 @@ public class RestMainServiceImpl implements RestMainService {
         if (themeVerIds.size() == 0) return results;
         List<AeaParStage> list = aeaParStageService.listAeaParStageByThemeIdOrThemeVerId(StringUtils.EMPTY, themeVerIds.get(0), rootOrgId);
         for (AeaParStage aeaParStage : list) {
+            if(StringUtils.isNotBlank(dygjbzfxfw) && !dygjbzfxfw.equals(aeaParStage.getDygjbzfxfw())){
+                continue;
+            }
             if (("0".equals(theme.getIsMainline()) && "1".equals(aeaParStage.getIsNode())
                     ||("0".equals(theme.getIsAuxiline()) && "2".equals(aeaParStage.getIsNode()))
                     ||("0".equals(theme.getIsTechspectline()) && "3".equals(aeaParStage.getIsNode()))))  continue;

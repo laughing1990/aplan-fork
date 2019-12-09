@@ -84,11 +84,12 @@ public class RestMainController {
     @ApiOperation(value = "首页-->按主题申报-->根据主题获取阶段接口")
     @ApiImplicitParams({@ApiImplicitParam(name = "themeId", value = "主题id", dataType = "String", required = true),
             @ApiImplicitParam(name = "projInfoId", value = "项目id", dataType = "String", required = false),
-            @ApiImplicitParam(name = "unitInfoId", value = "委托人申报时选择的单位id", dataType = "String", required = false)})
-    public ContentResultForm<List<AeaParStage>> getStageByThemeId(@PathVariable("themeId") String themeId, String projInfoId, String unitInfoId, HttpServletRequest request) {
+            @ApiImplicitParam(name = "unitInfoId", value = "委托人申报时选择的单位id", dataType = "String", required = false),
+            @ApiImplicitParam(name = "dygjbzfxfw", value = "对应国家标准辅线服务:多评合一（51）、方案联审（52）、联合审图（53）、联合测绘（54C）、联合验收（54Y）", dataType = "String", required = false)})
+    public ContentResultForm<List<AeaParStage>> getStageByThemeId(@PathVariable("themeId") String themeId, String projInfoId, String unitInfoId,String dygjbzfxfw, HttpServletRequest request) {
         try {
             if (StringUtils.isEmpty(themeId)) return new ContentResultForm(false, "主题id为必填项!");
-            return new ContentResultForm<>(true, restMainService.getStageByThemeId(themeId, projInfoId,topOrgId,unitInfoId,request));
+            return new ContentResultForm<>(true, restMainService.getStageByThemeId(themeId, projInfoId,topOrgId,unitInfoId,dygjbzfxfw,request));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ContentResultForm(false, "根据主题获取阶段接口异常");
