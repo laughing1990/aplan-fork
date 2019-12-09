@@ -435,7 +435,7 @@ var vm = new Vue({
       isMultiFlow: false,
       mutiCheckedNames: [],
       mutiCheckedMan: [],
-      treeTargetRow: [],
+      treeTargetRow: null,
       // 特殊程序
       speTabIndex: 0,
       speBaseInfoForm: {
@@ -2504,11 +2504,18 @@ var vm = new Vue({
       } else {
         vm.nextTaskAssignee = vm.sendTaskInfo.defaultSendAssignees;
         vm.nextTaskAssigneeId = vm.sendTaskInfo.defaultSendAssigneesId;
+        if (vm.treeTargetRow){
+          vm.nextTaskAssignee = vm.treeTargetRow.defaultSendAssignees;
+          vm.nextTaskAssigneeId = vm.treeTargetRow.defaultSendAssigneesId;
+        }
       }
       //设置到提交参数中
       vm.sendParam.sendConfigs[0].assignees = vm.nextTaskAssigneeId;
       //回显到发送信息框中
       vm.$set(vm.sendForm, 'nextTaskAssignee', vm.nextTaskAssignee);
+      if (vm.treeTargetRow) {
+        vm.treeTargetRow.nextTaskAssignee = vm.nextTaskAssignee;
+      }
       //关闭选择框
       vm.selectAssigneeDialog = false;
       if (vm.isMultiFlow) {
