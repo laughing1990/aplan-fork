@@ -21,9 +21,9 @@ public class ProjUnitLinkVo {
     private String ownerComplaintPhone;
 
     public ProjUnitLinkVo() {
-        aeaUnitInfo = new UnitInfoVo();
-        aeaLinkmanInfo = new LinkmanVo();
-        aeaProjInfo = new AeaProjInfo();
+        this.aeaUnitInfo = new UnitInfoVo();
+        this.aeaLinkmanInfo = new LinkmanVo();
+        this.aeaProjInfo = new AeaProjInfo();
     }
 
     public void change2LinkmanVo(AeaLinkmanInfo info) {
