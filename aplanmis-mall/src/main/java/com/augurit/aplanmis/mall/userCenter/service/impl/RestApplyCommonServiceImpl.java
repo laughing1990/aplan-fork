@@ -422,9 +422,12 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
             String[] iteminstIds = oldIteminstList.stream().map(AeaHiIteminst::getIteminstId).toArray(String[]::new);
             aeaHiIteminstService.batchDeleteAeaHiIteminst(iteminstIds);
         }
-        List<AeaHiIteminst> iteminstList=aeaHiIteminstService.batchInsertAeaHiIteminstAndTriggerAeaLogItemStateHist(themeVerId,stageinstId,itemVerIds,branchOrgMap,null,appinstId);
-        replaceInoutinstForIteminst(oldIteminstList,iteminstList);//将输入输出替换为新的事项实例的
-        return iteminstList;
+        if(itemVerIds.size()>0){
+            List<AeaHiIteminst> iteminstList=aeaHiIteminstService.batchInsertAeaHiIteminstAndTriggerAeaLogItemStateHist(themeVerId,stageinstId,itemVerIds,branchOrgMap,null,appinstId);
+            replaceInoutinstForIteminst(oldIteminstList,iteminstList);//将输入输出替换为新的事项实例的
+            return iteminstList;
+        }
+        return new ArrayList<>();
     }
 
     private void replaceInoutinstForIteminst(List<AeaHiIteminst> oldIteminstList, List<AeaHiIteminst> iteminstList) throws Exception {
