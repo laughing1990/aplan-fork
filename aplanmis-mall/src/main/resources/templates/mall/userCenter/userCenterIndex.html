@@ -27,14 +27,14 @@
         </div>
         <section>
             <div class="my-pro-content clearfix">
-                <div class="my-pro-left" v-show="myProLeftShow" >
+                <div class="my-pro-left" v-show="myProLeftShow" :style="{height:clientRightH}" >
                     <div class="user-company" id="leftMyInfo">
                         <p class="company-name">
                             <img th:src="@{/mall/images/userCenter/room-icon.png}" align="middle">
                             &nbsp;法人空间
                         </p>
                     </div>
-                    <div class="userCenterMenList" :style="{height:clientRightH}">
+                    <div class="userCenterMenList">
                         <ul class="user-pro-list">
                             <li class="user-pro-item pro-appraval " v-for="(item ,index) in userCenterMenuList">
                                  <div  :class="[item.value == userCenterItemSelect ? 'active': '']" style="cursor: pointer;" @click="handleOpenMenu(item,item.childList,index)"><span class="pro-title pro-icon" :class="hangleIcon(index)">{{item.name}}</span><i v-show="item.childList && item.childList.length>0" :class="[item.open ? '':'close']" class="el-icon-arrow-down" style="margin-left: 80px;"></i></div>
@@ -74,7 +74,6 @@
 <!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>-->
 <!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>-->
 <!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>-->
-
 <script src="../../../static/mall/js/userCenter/userCenterIndex.js" th:src="@{/mall/js/userCenter/userCenterIndex.js}" type="text/javascript"></script>
 </body>
 </html>
