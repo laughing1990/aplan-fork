@@ -73,7 +73,7 @@ public class ApproveItemBtnService {
      * @param iteminstState 事项实例状态
      * @throws Exception
      */
-    public String wfSendAndChangeItemState(BpmTaskSendObject sendObject, String iteminstId, String iteminstState,double toleranceTime, String timeruleId) throws Exception {
+    public String wfSendAndChangeItemState(BpmTaskSendObject sendObject, String iteminstId, String iteminstState,Double toleranceTime, String timeruleId) throws Exception {
         if (sendObject == null || StringUtils.isBlank(sendObject.getTaskId()) || sendObject.getSendConfigs() == null)
             throw new InvalidParameterException("流程发送对象参数为空！");
         if (StringUtils.isBlank(iteminstId))
@@ -126,8 +126,8 @@ public class ApproveItemBtnService {
         return bpmTaskService.completeTask(sendObject);
     }
 
-    private void createToleranceTimeinst(AeaHiIteminst iteminst,String iteminstState,double toleranceTime, String timeruleId) throws Exception {
-        if(iteminstState.equalsIgnoreCase(ItemStatus.AGREE_TOLERANCE.name()) && toleranceTime > 0 && StringUtils.isNotBlank(timeruleId)){
+    private void createToleranceTimeinst(AeaHiIteminst iteminst,String iteminstState,Double toleranceTime, String timeruleId) throws Exception {
+        if(iteminstState.equalsIgnoreCase(ItemStatus.AGREE_TOLERANCE.name()) && toleranceTime != null && toleranceTime > 0 && StringUtils.isNotBlank(timeruleId)){
             //更新容缺时限信息到事项实例中
             aeaHiIteminstService.updateAeaHiIteminstToleranceTime(iteminst.getIteminstId(),toleranceTime,timeruleId);
 

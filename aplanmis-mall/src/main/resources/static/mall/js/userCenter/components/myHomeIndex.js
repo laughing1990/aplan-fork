@@ -157,6 +157,16 @@ var myHomeIndex = (function () {
                 userCenter.vm.userCenterMenuSelect(mod)
             },
 
+            // 点击我的证件照
+            toMyCertificateLibrary:function(){
+                var mod = {
+                    name: '我的证件照库',
+                    value: 'MyCertificateLibrary',
+                    select: true,
+                }
+                userCenter.vm.userCenterMenuSelect(mod)
+            },
+
             // 点击我的云盘
             toMyCloundSpaces: function () {
                 window.location.href = ctx + '/rest/main/toIndexPage?#/myCloundSpaces';

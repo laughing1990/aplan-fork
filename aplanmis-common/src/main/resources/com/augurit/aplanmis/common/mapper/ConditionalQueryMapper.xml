@@ -513,6 +513,9 @@
         <if test="iteminstState != null and iteminstState != '' ">
             AND ahi_123.ITEMINST_STATE = #{iteminstState}
         </if>
+        <if test="iteminstType != null and iteminstType != '' ">
+            AND ahi_123.ITEMINST_TYPE = #{iteminstType}
+        </if>
         <if test="instState != null and instState != '' ">
             AND tinst.INST_STATE = #{instState}
         </if>
@@ -620,6 +623,9 @@
             </if>
             <if test="iteminstState != null and iteminstState != '' ">
                 AND ahi_123.ITEMINST_STATE = #{iteminstState}
+            </if>
+            <if test="iteminstType != null and iteminstType != '' ">
+                AND ahi_123.ITEMINST_TYPE = #{iteminstType}
             </if>
             <if test="instState != null and instState != '' ">
                 AND tinst.INST_STATE = #{instState}

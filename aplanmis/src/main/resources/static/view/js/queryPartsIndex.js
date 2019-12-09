@@ -25,6 +25,7 @@ var vm = new Vue({
                 keyword:'',
                 handler:handler,
                 entrust:entrust,
+                isInformCommit:_isInformCommit,
                 isConcluding:''
             },
 

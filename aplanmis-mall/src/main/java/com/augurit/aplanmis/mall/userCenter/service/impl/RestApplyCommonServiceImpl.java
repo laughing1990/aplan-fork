@@ -420,7 +420,7 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
         List<AeaHiIteminst> oldIteminstList = aeaHiIteminstService.getAeaHiIteminstListByStageinstId(stageinstId);
         if(oldIteminstList.size()>0){
             String[] iteminstIds = oldIteminstList.stream().map(AeaHiIteminst::getIteminstId).toArray(String[]::new);
-            aeaHiIteminstService.batchDeleteAeaHiIteminst(iteminstIds);
+            aeaHiIteminstService.batchDeleteAeaHiIteminstAndBatchDelAeaLogItemStateHist(iteminstIds);
         }
         if(itemVerIds.size()>0){
             List<AeaHiIteminst> iteminstList=aeaHiIteminstService.batchInsertAeaHiIteminstAndTriggerAeaLogItemStateHist(themeVerId,stageinstId,itemVerIds,branchOrgMap,null,appinstId);

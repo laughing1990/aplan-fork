@@ -8,7 +8,6 @@ var login = (function () {
             verifyCode:'',
             errorMsg:'',
             errorMsgFlag:false,
-            code:ctx + "rest/verifycode/getCode",
         },
         mounted:function() {
             var vm = this;
@@ -51,11 +50,6 @@ var login = (function () {
                     }
                 })
             },
-            changeCode:function () {
-                var vm = this;
-                this.code = ctx + 'rest/verifycode/getCode?t='+new Date();
-                debugger;
-            }
         },
         watch:{
 
