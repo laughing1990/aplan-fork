@@ -312,5 +312,5 @@ public interface AeaHiIteminstService {
      */
     void updateAeaHiIteminstStateAndInsertOpsAeaLogApplyinstStateHist(String iteminstId, String opsUserOpinion, String opsAction, String opsMemo, String iteminstState) throws Exception;
 
-    void batchDeleteAeaHiIteminst(String[] iteminstIds);
+    void batchDeleteAeaHiIteminstAndBatchDelAeaLogItemStateHist(String[] iteminstIds);
 }

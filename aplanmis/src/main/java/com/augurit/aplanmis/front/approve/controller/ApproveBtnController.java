@@ -79,10 +79,10 @@ public class ApproveBtnController {
     @ApiImplicitParams({@ApiImplicitParam(name = "iteminstId", value = "申请实例ID", dataType = "string", required = true),
             @ApiImplicitParam(name = "sendObjectStr", value = "流程节点实体字符串", dataType = "string", required = true),
             @ApiImplicitParam(name = "itemState", value = "事项状态", dataType = "string", required = true),
-            @ApiImplicitParam(name = "toleranceTime", value = "事项容缺办结时限", dataType = "double", required = false),
+            @ApiImplicitParam(name = "toleranceTime", value = "事项容缺办结时限", dataType = "Double", required = false),
             @ApiImplicitParam(name = "timeruleId", value = "事项容缺办结时限计算规则", dataType = "string", required = false)
     })
-    public ResultForm wfSendAndChangeItemState(String sendObjectStr, String iteminstId, String itemState,double toleranceTime, String timeruleId) {
+    public ResultForm wfSendAndChangeItemState(String sendObjectStr, String iteminstId, String itemState,Double toleranceTime, String timeruleId) {
         if (StringUtils.isBlank(sendObjectStr)) throw new InvalidParameterException("流程发送参数为空！");
         if (StringUtils.isBlank(iteminstId)) throw new InvalidParameterException("事项实例ID为空！");
         if (StringUtils.isBlank(itemState)) throw new InvalidParameterException("申请状态为空！");

@@ -437,9 +437,15 @@ public class AeaHiIteminstServiceImpl implements AeaHiIteminstService {
         aeaLogApplyStateHistService.insertOpsAeaLogApplyStateHist(iteminstId, opsUserOpinion, opsAction, opsMemo, iteminst.getIteminstState(), iteminstState, iteminst.getApproveOrgId());
     }
     @Override
-    public void batchDeleteAeaHiIteminst(String[] iteminstIds){
-        if(iteminstIds.length>0)
+    public void batchDeleteAeaHiIteminstAndBatchDelAeaLogItemStateHist(String[] iteminstIds){
+        if(iteminstIds.length>0){
             aeaHiIteminstMapper.batchDeleteAeaHiIteminst(iteminstIds);
+            List<AeaLogItemStateHist> logs=aeaLogItemStateHistService.findAeaLogItemStateHistByIteminstIds(iteminstIds);
+            if(logs.size()>0){
+                List<String> ids=logs.stream().map(AeaLogItemStateHist::getStateHistId).collect(Collectors.toList());
+                aeaLogItemStateHistService.batchDeleteAeaLogItemStateHist(ids);
+            }
+        }
     }
 
 }
