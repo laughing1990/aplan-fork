@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>我的证照库</title>
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+    <link rel="stylesheet" href="../../../../static/mall/css/userCenter/my-certificate-library.css" th:href="@{/mall/css/userCenter/my-certificate-library.css}">
+</head>
+<body>
+<div id="my-materials">
+
+    <section>
+        <div class="tips">
+            <i class="el-icon-warning-outline" style="font-size: 28px; color: rgb(255, 184, 34); vertical-align: middle;"></i>
+            <span style="color: rgb(255, 75, 71);">温馨提示* </span>：我的证照库与证照库同步，自己上传的证照支持删除
+        </div>
+    </section>
+
+    <section class="search-box clearfix">
+        <div class="fl">
+            <el-button  type="primary" class="add-btn">新增</el-button>
+        </div>
+        <div class="fr">
+            <el-input style="display: inline-block;width: 350px;"
+                    placeholder="证照名称/证照类型"
+                    v-model="keyword">
+                <i slot="suffix" class="el-input__icon el-icon-search"></i>
+            </el-input>
+            <el-button type="primary" icon="el-icon-search" class="search-certifi-btn">查询</el-button>
+        </div>
+    </section>
+
+    <section class="my-certifiy-table-box" v-loading="mloading">
+        <div class="step-title">企业证照库</div>
+        <div class="my-certifiy-table">
+            <el-table :data="matFileList"   style="width:100%" class="matFileListTable" v-loading="tableLoading">
+                <el-table-column
+                        prop="matinstName"
+                        label="证照名称"
+                >
+                    <template slot-scope="scope">
+                        <div class="fontSize">{{scope.row.matinstName}}</div>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="matinstName"
+                        label="证照类型"
+                >
+                    <template slot-scope="scope">
+                        <div class="fontSize">{{scope.row.matinstName}}</div>
+                    </template>
+                </el-table-column>
+
+                <el-table-column
+                        width="110"
+                        prop="createTime"
+                        label="有效截止日期"
+                >
+                    <template slot-scope="scope">
+                        <div class="fontSize">{{scope.row.createTime|formatDate}}</div>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="matinstName"
+                        label="可信等级"
+                >
+                    <template slot-scope="scope">
+                        <div class="fontSize">{{scope.row.matinstName}}</div>
+                    </template>
+                </el-table-column>
+
+                <el-table-column
+                        prop="matinstName"
+                        label="证照状态"
+                >
+                    <template slot-scope="scope">
+                        <div class="fontSize">{{scope.row.matinstName}}</div>
+                    </template>
+                </el-table-column>
+
+                <el-table-column
+                        prop=""
+                        label="操作"
+                >
+                    <template slot-scope="scope">
+                        <span class="option-btn" style="display: inline-block" @click="lookProjDetail(item)">查看</span>
+                        <span class="option-btn" style="display: inline-block"  @click="showReceive(item)">编辑</span>
+                        <span class="option-btn" style="display: inline-block;color: #FF4B47;"  @click="showReceive(item)">删除</span>
+                    </template>
+                </el-table-column>
+
+            </el-table>
+            <el-pagination class="mt20 mb20 mr20" background align="right" @size-change="handleSizeChange"
+                           @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 50]" :page-size="pageSize"
+                           :current-page="pageNum" layout="total,sizes, prev, pager, next, jumper" :total="total"
+                           v-show="total>10">
+            </el-pagination>
+        </div>
+    </section>
+
+</div>
+<script src="../../../../static/mall/js/userCenter/components/my-certificate-library.js" th:src="@{/mall/js/userCenter/components/my-certificate-library.js}" type="text/javascript"></script>
+</body>
+</html>

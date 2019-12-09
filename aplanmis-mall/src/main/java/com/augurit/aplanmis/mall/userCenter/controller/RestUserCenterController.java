@@ -60,6 +60,12 @@ public class RestUserCenterController {
         return new ModelAndView("mall/userCenter/components/my-cloundSpaces");
     }
 
+    @GetMapping("/toMyCertificateLibraryPage")
+    @ApiOperation(value = "我的证照库")
+    public ModelAndView toMyCertificateLibraryPage(){
+        return new ModelAndView("mall/userCenter/components/my-certificate-library");
+    }
+
     @GetMapping("/toMyHomeIndexPage")
     @ApiOperation(value = "法人空间我的首页")
     public ModelAndView toMyHomeIndexPage(){
