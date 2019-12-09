@@ -3,6 +3,7 @@ var vm = new Vue({
     el: "#draftApplyListVue",
     data: {
         // 全局loading
+        ctx: ctx,
         mloading: false,
         noDataTip:"",
         projName: '',
