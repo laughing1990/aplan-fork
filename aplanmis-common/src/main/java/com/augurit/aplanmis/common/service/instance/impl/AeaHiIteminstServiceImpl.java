@@ -157,7 +157,7 @@ public class AeaHiIteminstServiceImpl implements AeaHiIteminstService {
     @Override
     public List<AeaHiIteminst> batchInsertAeaHiIteminst(String themeVerId, String stageinstId, List<String> itemVerIds, String branchOrgMap) throws Exception {
 
-        if (StringUtils.isBlank(themeVerId)) throw new InvalidParameterException("参数themeinstId为空！");
+        if (StringUtils.isBlank(themeVerId)) throw new InvalidParameterException("参数themeVerId为空！");
         if (StringUtils.isBlank(stageinstId)) throw new InvalidParameterException("参数stageinstId为空！");
         List<AeaItemBasic> list = aeaItemBasicMapper.getAeaItemBasicListByItemVerIds(itemVerIds);
         List<AeaHiIteminst> iteminstList = new ArrayList<>();
