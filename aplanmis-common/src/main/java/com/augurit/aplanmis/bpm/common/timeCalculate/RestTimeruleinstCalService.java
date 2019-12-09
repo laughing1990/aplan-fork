@@ -91,6 +91,7 @@ public class RestTimeruleinstCalService extends TimeCalculateEngineBase {
                 if (timeLimitRule == null) continue;
                 double timeCalculateResult = 0.0d;  //已经用时
                 if ("1".equals(timeruleInst.getTimeruleInstType())) {   //流程时限计算
+                    if (StringUtils.isBlank(timeruleInst.getProcInstId())) continue;
                     // 获取流程实例
                     HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(timeruleInst.getProcInstId()).singleResult();
                     if (processInstance == null) continue;

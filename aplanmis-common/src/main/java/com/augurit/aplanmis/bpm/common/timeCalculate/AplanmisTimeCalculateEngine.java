@@ -112,6 +112,7 @@ public class AplanmisTimeCalculateEngine extends TimeCalculateEngineBase {
                         if (timeLimitRule == null) continue;
                         double timeCalculateResult = 0.0d;  //已经用时
                         if ("1".equals(timeruleInst.getTimeruleInstType())) {   //流程时限计算
+                            if (StringUtils.isBlank(timeruleInst.getProcInstId())) continue;
                             // 获取流程实例
                             HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(timeruleInst.getProcInstId()).singleResult();
                             if (processInstance == null) continue;
@@ -156,6 +157,7 @@ public class AplanmisTimeCalculateEngine extends TimeCalculateEngineBase {
                             timeCalculateResult = this.getProcessinstHangUpTime(startTime, timeCalculateResult, timeruleInst.getTimeruleUnit(), processInstance.getId(), null);
                             timeruleInst.setIsConcluding(currentTime == null ? IS_CONCLUDING_NO : IS_CONCLUDING_YES);
                         } else if ("2".equals(timeruleInst.getTimeruleInstType())) {    //节点时限计算
+                            if (StringUtils.isBlank(timeruleInst.getTaskinstId())) continue;
                             // 获取taskinst实例
                             HistoricTaskInstance taskInstance = historyService.createHistoricTaskInstanceQuery().taskId(timeruleInst.getTaskinstId()).singleResult();
                             if (taskInstance == null) continue;
@@ -165,6 +167,8 @@ public class AplanmisTimeCalculateEngine extends TimeCalculateEngineBase {
                             timeCalculateResult = this.getProcessinstHangUpTime(null, timeCalculateResult, timeruleInst.getTimeruleUnit(), taskInstance.getProcessInstanceId(), taskInstance.getId());
                             timeruleInst.setIsConcluding(taskInstance.getEndTime() == null ? IS_CONCLUDING_NO : IS_CONCLUDING_YES);
                         } else {    //虚拟组时限计算
+                            if (StringUtils.isBlank(timeruleInst.getProcInstId())) continue;
+                            if (StringUtils.isBlank(timeruleInst.getTimegroupActId())) continue;
                             // 根据流程实例ID获取全部task节点
                             List<HistoricTaskInstance> taskInstances = historyService.createHistoricTaskInstanceQuery().processInstanceId(timeruleInst.getProcInstId()).list();
                             if (taskInstances.size() < 1) continue;
@@ -210,7 +214,7 @@ public class AplanmisTimeCalculateEngine extends TimeCalculateEngineBase {
                 }
 
                 //20191205新增，办件容缺办结时限实例计算模块
-                calculateToleranceTime(jobTimer.getTimerId(),timeTemp);
+                calculateToleranceTime(jobTimer.getTimerId(), timeTemp);
 
                 //更新运行结束标志
                 jobTimer.setRunEndStatus("1");
@@ -237,16 +241,17 @@ public class AplanmisTimeCalculateEngine extends TimeCalculateEngineBase {
 
     /**
      * 计算办件容缺时限实例的接口，可以在后面的try块中添加其他业务逻辑
+     *
      * @param jobTimerId
      * @param timeTemp
      * @throws Exception
      */
-    private void calculateToleranceTime(String jobTimerId,Map<String, ActStoTimerule> timeTemp) throws Exception{
+    private void calculateToleranceTime(String jobTimerId, Map<String, ActStoTimerule> timeTemp) throws Exception {
         //查出所有的为完成的办件容缺补正时限实例
         List<AeaToleranceTimeInst> timeinsts = aeaToleranceTimeInstService.getUnCompletedToleranceTimeinstsByJobTimerId(topOrgId, jobTimerId);
         Date currentTime = new Date(); //当前时间
         List<AeaToleranceTimeInst> temp = new ArrayList();
-        for(int i=0,len=timeinsts.size(); i<len; i++ ){
+        for (int i = 0, len = timeinsts.size(); i < len; i++) {
             //容缺时限实例
             AeaToleranceTimeInst aeaToleranceTimeInst = timeinsts.get(i);
             // 获取时限计算规则
@@ -282,19 +287,19 @@ public class AplanmisTimeCalculateEngine extends TimeCalculateEngineBase {
                 temp.add(aeaToleranceTimeInst);
             }
         }
-        if(temp.size() > 0){
+        if (temp.size() > 0) {
             aeaToleranceTimeInstService.batchUpdateAeaToleranceTimeInst(temp);
         }
 
-        try{
+        try {
             //可以在这里加入对应的业务逻辑，做短信发送或其他操作，对于预警的容缺补正实例，做短信通知
-            for(int i=0,len=temp.size(); i<len; i++ ){
+            for (int i = 0, len = temp.size(); i < len; i++) {
                 AeaToleranceTimeInst aeaToleranceTimeInst = temp.get(i);
-                if("2".equals(aeaToleranceTimeInst.getInstState())){
+                if ("2".equals(aeaToleranceTimeInst.getInstState())) {
                     aeaToleranceTimeInstService.createToleranceSmsRemindInfo(aeaToleranceTimeInst);
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
