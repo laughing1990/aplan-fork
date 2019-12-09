@@ -103,11 +103,11 @@ var userCenter = (function () {
                                 value: 'MyMaterials',
                                 select: false,
                             },
-                            {
-                                name: '我的证照库',
-                                value: 'MyCertificateLibrary',
-                                select: false,
-                            },
+                            // {
+                            //     name: '我的证照库',
+                            //     value: 'MyCertificateLibrary',
+                            //     select: false,
+                            // },
                         ]
                     },
                     {
@@ -130,6 +130,12 @@ var userCenter = (function () {
                 withdrawalNum:0,
                 myProLeftShow: true,
                clientRightH:980 + "px",
+                observer: null,
+                firedNum: 0,
+                recordOldValue: { // 记录下旧的宽高数据，避免重复触发回调函数
+                    width: '0',
+                    height: '0'
+                }
             }
         },
         computed: {
@@ -144,11 +150,6 @@ var userCenter = (function () {
             this.getwarningNum();
         },
         mounted: function () {
-            var _this = this;
-            setTimeout(function () {
-                var _h = $('#my-pro-right_m').height() - 90;
-                _this.clientRightH = _h +"px";
-            },1000)
         },
         methods: {
             handleOpenMenu:function(item,row,index){
@@ -221,6 +222,7 @@ var userCenter = (function () {
                     return false;
                 }
                 ts.moduleLoad(mod.value + '.html', '#' + mod.value);
+                ts.setNavHeight();
             },
 
             // 模块加载
@@ -266,6 +268,19 @@ var userCenter = (function () {
                     //     type: 'warning'
                     // })
                 }
+            },
+
+            // 设置左边的导航条高度
+            setNavHeight:function(){
+                _this = this;
+                setTimeout(function () {
+                    var _h = $('#my-pro-right_m').height();
+                    console.log(_h)
+                    if(_h < 900){
+                        _h = 1066
+                    }
+                    _this.clientRightH = _h +"px";
+                },1000)
             },
 
             // 退出

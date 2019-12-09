@@ -154,6 +154,11 @@ public class AeaParThemeServiceImpl implements AeaParThemeService {
         return aeaParThemeMapper.getTestRunOrPublishedVerAeaParTheme(themeType, rootOrgId);
     }
 
+    @Override
+    public List<AeaParTheme> getTestRunOrPublishedVerAeaParThemeByDygjbzfxfw(String dygjbzfxfw,String isOnlineSb){
+        return aeaParThemeMapper.listAeaParThemeByDygjbzfxfw(dygjbzfxfw,isOnlineSb);
+    }
+
     @Autowired
     public void setAeaParThemeMapper(AeaParThemeMapper aeaParThemeMapper) {
         this.aeaParThemeMapper = aeaParThemeMapper;

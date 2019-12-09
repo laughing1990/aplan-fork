@@ -153,6 +153,14 @@
         from AEA_HI_ITEM_STATEINST
         where ITEM_STATEINST_ID = #{id}
     </delete>
+
+    <delete id="batchDeleteAeaHiItemStateinst">
+        delete from AEA_HI_ITEM_STATEINST
+        WHERE ITEM_STATEINST_ID IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
     <!--8 删除实体对象列表,根据主键ID列表 -->
     <!--9 返回所有字段的对象map,用于级联 -->
     <resultMap type="AeaHiItemStateinst" id="AeaHiItemStateinstMap">

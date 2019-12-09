@@ -34,13 +34,13 @@
             target="_blank">“投资项目在线审批监管平台”</a></b>进行项目登记赋码</p>
       <el-form>
         <el-form-item label="项目/工程查询">
-          <el-select style="width:65%" v-model="searchKeyword" filterable remote autofocus reserve-keyword ref="searchProjInfo"
+          <el-select :disabled="draftsProj" style="width:65%" v-model="searchKeyword" filterable remote autofocus reserve-keyword ref="searchProjInfo"
                      no-data-text="暂无匹配的项目/工程，可新增项目" placeholder="请输入项目（工程）的编码 / 名称" :remote-method="searchProjInfoByKeyword">
               <el-option v-for="item in projInfoList" :key="item.projInfoId" @click.native="projNameSel(item)"
                          :label="item.projName+' （'+item.localCode+'）'" :value="item.projInfoId">
               </el-option>
           </el-select>
-          <el-button style="padding: 11px 20px; margin-left: 5px;" type="primary" icon="icon ag ag-search" @click="linkQuery()">联网查询</el-button>
+          <el-button style="padding: 11px 20px; margin-left: 5px;" :disabled="draftsProj" type="primary" icon="icon ag ag-search" @click="linkQuery()">联网查询</el-button>
         </el-form-item>
       </el-form>
   </div>
@@ -77,7 +77,7 @@
                     placeholder="请填写项目/工程名称"></el-input>
         </el-form-item>
         <el-form-item class="wt588" label="所属主题" prop="themeId">
-          <el-select  clearable filterable class="w-410" v-model="projInfoDetail.themeId">
+          <el-select :disabled="draftsProj" clearable filterable class="w-410" v-model="projInfoDetail.themeId">
             <el-option v-for="item in themeList" :key="item.themeId" :label="item.themeName"
                        :value="item.themeId">
             </el-option>
@@ -627,7 +627,7 @@
                          @click.native="getLinkManListByUnitId(jiansheFromItem,jiansheFromItem.unitInfoId)"
                          required placeholder="--请选择--">
                 <el-option class="select-option-ul"
-                           v-for="(item2, index2) in jiansheFromItem.linkmanInfoList"
+                           v-for="(item2, index2) in jiansheFromItem.aeaLinkmanInfoList"
                            :key="index2"
                            :label="item2.linkmanName"
                            @click.native="selLinkman(jiansheFromItem,item2,index)"
@@ -749,8 +749,8 @@
         <input type="hidden" value="getResultForm.id">
         <el-form-item class="wt100" label="领取模式" prop="receiveMode">
           <el-radio-group v-model="getResultForm.receiveMode" @change="changeReceiveMode">
-            <el-radio :label="0">邮政快递</el-radio>
-            <el-radio :label="1">窗口取证</el-radio>
+            <el-radio label="0">邮政快递</el-radio>
+            <el-radio label="1">窗口取证</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item class="wt588" label="收件人名字" prop="addresseeName">
@@ -806,7 +806,8 @@
       </el-form>
     </el-collapse-transition>
     <div class="footer-stage-btn">
-      <el-button class="mt20" type="primary" @click="saveProOrSmsinfo">保存并下一步</el-button>
+      <el-button class="mt20" type="primary" @click="saveProOrSmsinfo('0')">暂存</el-button>
+      <el-button class="mt20" @click="saveProOrSmsinfo('1')">下一步</el-button>
     </div>
   </div>
   <!--&lt;!&ndash;  智能引导&ndash;&gt;-->
@@ -943,7 +944,7 @@
     <div class="stage-row clearfix" v-if="stageList.length>0&&showStageList">
       <div class="icon-box"
            :class="statusActiveIndex==index?'active':item.isDoing==0?'gary-bg-row':''"
-           @click="selStatus(item,index)"
+           @click="selStatus(item,index,'isClick')"
            :key="index"
            v-for="(item,index) in stageList">
         <img :src="ctx+item.bigImgPath" alt="">
@@ -1209,7 +1210,8 @@
 
     <div class="footer-stage-btn">
       <el-button class="mt60" @click="prevPage(1)">上一步</el-button>
-      <el-button class="mt60" type="primary" @click="saveAndGetOneForm">保存并下一步</el-button>
+      <el-button class="mt60" type="primary" @click="saveAndGetOneForm('0')">暂存</el-button>
+      <el-button class="mt60" @click="saveAndGetOneForm('1')">下一步</el-button>
     </div>
   </div>
   <!-- 事项一单清 end-->
@@ -1236,7 +1238,8 @@
     </el-tabs>
     <div class="footer-stage-btn">
       <el-button class="mt60" @click="prevPage(5)">上一步</el-button>
-      <el-button class="mt60" type="primary" @click="oneFormConfirm">下一步</el-button>
+      <el-button class="mt60" type="primary" @click="oneFormConfirm('0')">暂存</el-button>
+      <el-button class="mt60" @click="oneFormConfirm('1')">下一步</el-button>
     </div>
   </div>
   <!--  一张表单 end-->
@@ -1338,6 +1341,7 @@
     </div>
     <div class="footer-stage-btn">
       <el-button class="mt60" @click="prevPage(6)">上一步</el-button>
+      <el-button class="mt60" type="primary" @click="matListTemporary">暂存</el-button>
       <el-button class="mt60" type="primary" @click="startParalleApprove">提交申请</el-button>
     </div>
   </div>
