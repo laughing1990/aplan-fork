@@ -196,26 +196,32 @@ public class RestApplyProjController {
      * @return
      */
     @GetMapping("/getThemes")
-    @ApiOperation("我要申报  --> 获取主题信息")
-    public ResultForm getThemes(String themeType) throws Exception {
-        AeaParTheme aeaParTheme = new AeaParTheme();
-        if (StringUtils.isNotBlank(themeType)) {
-            aeaParTheme.setThemeType(themeType);
+    @ApiOperation("我要申报  --> 获取主题列表信息")
+    @ApiImplicitParams({@ApiImplicitParam(value = "对应国家标准辅线服务:多评合一（51）、方案联审（52）、联合审图（53）、联合测绘（54C）、联合验收（54Y）",name = "dygjbzfxfw",required = false,dataType = "string")})
+    public ResultForm getThemes(String themeType,String dygjbzfxfw) throws Exception {
+        if(StringUtils.isBlank(dygjbzfxfw)){
+            AeaParTheme aeaParTheme = new AeaParTheme();
+            if (StringUtils.isNotBlank(themeType)) {
+                aeaParTheme.setThemeType(themeType);
+            }
+            aeaParTheme.setIsOnlineSb("1");
+            List<AeaParTheme> aeaParThemes=aeaParThemeAdminService.listAeaParTheme(aeaParTheme);
+            if(aeaParThemes.size()>0){
+                aeaParThemes.stream().forEach(theme->{
+                    AeaParThemeVer themeVer = null;
+                    try {
+                        themeVer = aeaParThemeService.getAeaParThemeVerByThemeIdAndVerNum(theme.getThemeId(),null, SecurityContext.getCurrentOrgId());
+                    } catch (Exception e) {
+                        logger.error("getThemes 获取主题信息接口查询主题版本异常:"+e.getMessage(),e);
+                    }
+                    theme.setThemeVerId(themeVer==null?"":themeVer.getThemeVerId());
+                });
+            }
+            return new ContentResultForm<>(true, aeaParThemes);
+        }else{
+            List<AeaParTheme> aeaParThemes=aeaParThemeService.getTestRunOrPublishedVerAeaParThemeByDygjbzfxfw(dygjbzfxfw,"1");
+            return new ContentResultForm<>(true, aeaParThemes);
         }
-        aeaParTheme.setIsOnlineSb("1");
-        List<AeaParTheme> aeaParThemes=aeaParThemeAdminService.listAeaParTheme(aeaParTheme);
-        if(aeaParThemes.size()>0){
-            aeaParThemes.stream().forEach(theme->{
-                AeaParThemeVer themeVer = null;
-                try {
-                    themeVer = aeaParThemeService.getAeaParThemeVerByThemeIdAndVerNum(theme.getThemeId(),null, SecurityContext.getCurrentOrgId());
-                } catch (Exception e) {
-                    logger.error("getThemes 获取主题信息接口查询主题版本异常:"+e.getMessage(),e);
-                }
-                theme.setThemeVerId(themeVer==null?"":themeVer.getThemeVerId());
-            });
-        }
-        return new ContentResultForm<>(true, aeaParThemes);
     }
 
 

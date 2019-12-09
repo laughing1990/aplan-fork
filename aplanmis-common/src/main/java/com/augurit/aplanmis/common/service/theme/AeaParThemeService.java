@@ -111,4 +111,12 @@ public interface AeaParThemeService {
     AeaParTheme getAeaParThemeByThemeVerId(String themeVerId) throws Exception;
 
     List<AeaParTheme> getTestRunOrPublishedVerAeaParTheme(String themeType, String rootOrgId);
+
+    /**
+     *
+     * @param dygjbzfxfw 对应国家标准辅线服务:多评合一（51）、方案联审（52）、联合审图（53）、联合测绘（54C）、联合验收（54Y）
+     * @param isOnlineSb 网厅是否启用 非必传参数
+     * @return
+     */
+    List<AeaParTheme> getTestRunOrPublishedVerAeaParThemeByDygjbzfxfw(String dygjbzfxfw,String isOnlineSb);
 }
