@@ -296,10 +296,14 @@ var module1 = new Vue({
 		// 清空表单填写过的数据,并初始化配置数据
 		resetForm: function () {
 			this.form = new Object();
-			this.form.isDiscloseIm = '1';
-			this.form.isDiscloseBidding = '1';
-			this.form.approvalCode = '';
-			this.form.isApproveProj = '1';
+			this.$set(this.form, 'isDiscloseIm', '1');
+			this.$set(this.form, 'isDiscloseBidding', '1');
+			this.$set(this.form, 'isApproveProj', '1');
+			this.$set(this.form, 'approvalCode', '');
+			// this.form.isDiscloseIm = '1';
+			// this.form.isDiscloseBidding = '1';
+			// this.form.approvalCode = '';
+			// this.form.isApproveProj = '1';
 
 			this.isQualRequire = false;
 			this.isRegisterRequire = false;
@@ -660,7 +664,7 @@ var module1 = new Vue({
 			});
 		},
 		init: function () {
-			this.form.isApproveProj = '1'
+			// this.form.isApproveProj = '1'
 			this.getUnpublishedProjInfoList()
 
 		},
@@ -753,16 +757,17 @@ var module1 = new Vue({
 					vm.aeaLinkmanInfo = content.aeaLinkmanInfo;
 					vm.aeaUnitInfo = content.aeaUnitInfo;
 					// vm.aeaProjInfo.projName='';
-					vm.$set(vm.aeaProjInfo, 'projName', '');
+					vm.$set(vm.aeaProjInfo, 'projName', '');					
 
 					if (content.aeaLinkmanInfo) {
 						// debugger
 						vm.$set(vm.form, 'contact', content.aeaLinkmanInfo.linkmanName + '[' + content.aeaLinkmanInfo.linkmanCertNo + ']');
 						//   vm.$set(vm.form,'mobile',content.aeaLinkmanInfo.linkmanMobilePhone)
 						vm.basicLinkPhone = content.aeaLinkmanInfo.linkmanMobilePhone; //基本信息联系电话信息
+						vm.$set(vm.form, 'basicLinkPhone', vm.aeaLinkmanInfo.linkmanMobilePhone);
 					}
 
-					vm.FinancialCheckList.push('isFinancialFund')
+					vm.FinancialCheckList.push('isFinancialFund');
 				} else {
 					vm.$message.error(res.message);
 				}

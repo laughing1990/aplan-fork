@@ -1183,9 +1183,9 @@
 				<el-table-column prop="fileName" label="文件名"></el-table-column>
 				<el-table-column label="操作" align="center" width="310">
 					<template slot-scope="scope">
-						<el-button type="primary" :loading="loading" size="mini" @click="filePreview(scope.row)">预览
+						<el-button style="marginBottom: 10px;" type="primary" :loading="loading" size="mini" @click="filePreview(scope.row)">预览
 						</el-button>
-						<el-button type="primary" size="mini" @click="filePreview1(scope.row)">查看源文件</el-button>
+						<el-button style="marginBottom: 10px;" type="primary" size="mini" @click="filePreview1(scope.row)">查看源文件</el-button>
 
 						<el-button type="primary" size="mini" :disabled="getFileType(scope.row.fileName)!=='pdf'"
 							@click="filePreview(scope.row,'pdf')">查看施工图</el-button>
