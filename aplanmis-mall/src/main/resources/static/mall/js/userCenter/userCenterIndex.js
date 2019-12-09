@@ -103,11 +103,11 @@ var userCenter = (function () {
                                 value: 'MyMaterials',
                                 select: false,
                             },
-                            /*{
+                            {
                                 name: '我的证照库',
-                                value: '',
+                                value: 'MyCertificateLibrary',
                                 select: false,
-                            },*/
+                            },
                         ]
                     },
                     {
@@ -129,7 +129,7 @@ var userCenter = (function () {
                 supplyNum:0,
                 withdrawalNum:0,
                 myProLeftShow: true,
-
+               clientRightH:980 + "px",
             }
         },
         computed: {
@@ -138,17 +138,17 @@ var userCenter = (function () {
                 var _h = $(window).height()+70
                 return _h + 'px'
             },
-            // 获取浏览器高度
-            clientRightH: function () {
-                var _h = $('#my-pro-right_m').height();
-                return _h + 'px'
-            }
         },
         created: function () {
             this.init();
             this.getwarningNum();
         },
         mounted: function () {
+            var _this = this;
+            setTimeout(function () {
+                var _h = $('#my-pro-right_m').height() - 90;
+                _this.clientRightH = _h +"px";
+            },1000)
         },
         methods: {
             handleOpenMenu:function(item,row,index){
@@ -257,18 +257,14 @@ var userCenter = (function () {
 
                 // 登陆用户数据
                 var _curLoginInfo = localStorage.getItem('loginInfo');
-
                 if (_curLoginInfo) {
-                    this.$nextTick(function () {
-
-                    })
                     this.curentLoginInfo = JSON.parse(_curLoginInfo);
                 } else {
-                    window.location.href = window.location.origin + '/aplanmis-mall/rest/mall/loginIndex';
-                    return this.$message({
-                        message: '您尚未登陆，请先登陆！',
-                        type: 'warning'
-                    })
+                    // window.location.href = window.location.origin + '/aplanmis-mall/rest/mall/loginIndex';
+                    // return this.$message({
+                    //     message: '您尚未登陆，请先登陆！',
+                    //     type: 'warning'
+                    // })
                 }
             },
 

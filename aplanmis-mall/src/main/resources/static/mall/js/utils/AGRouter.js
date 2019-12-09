@@ -31,7 +31,7 @@
         this.refresh = function (e) {
             if(e.type=='load' && /div_step/igm.test(location.hash.slice(1))){
                 this.curUrl = '/guideIndex';
-            } else if (e.type == 'load' && /declare|scheduleInquire|declareHave|matCompletionList|approve|matSupplementList|lifeCycle|UserInfo|MyHomeIndex|MyMaterials|AddProj|CreditDetail|withdrawApplyList|drafts/igm.test(location.hash.slice(1))) {
+            } else if (e.type == 'load' && /declare|scheduleInquire|declareHave|matCompletionList|approve|matSupplementList|lifeCycle|UserInfo|MyHomeIndex|MyMaterials|AddProj|MyCertificateLibrary|CreditDetail|withdrawApplyList|drafts/igm.test(location.hash.slice(1))) {
                this.curUrl = '/userCenterIndex'
             }else if(e.type="hashchange" && /userCenterIndex/igm.test(location.hash.slice(1))){
                this.curUrl = '/userCenterIndex'
