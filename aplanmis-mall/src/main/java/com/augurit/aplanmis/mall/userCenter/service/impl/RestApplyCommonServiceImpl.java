@@ -274,6 +274,7 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
         if(unitProjList.size()==0){
             String unitProjId=UUID.randomUUID().toString();
             AeaUnitProj entity=new AeaUnitProj();
+            entity.setUnitProjId(unitProjId);
             entity.setIsDeleted("0");
             entity.setUnitInfoId(unitInfoId);
             entity.setIsOwner("1");
@@ -365,11 +366,15 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
             AeaHiParStageinst aeaHiParStageinst = aeaHiParStageinstService.createAeaHiParStageinst(applyinstId, stageId, themeVerId, appinstId, null);
             stageinstId=aeaHiParStageinst.getStageinstId();
             //3、实例化事项----此处已经做了事项实例表中的分局承办字段，
-            aeaHiIteminstService.batchInsertAeaHiIteminstAndTriggerAeaLogItemStateHist(themeVerId,stageinstId,itemVerIds,null,null,appinstId);
+            if(itemVerIds.size()>0){
+                aeaHiIteminstService.batchInsertAeaHiIteminstAndTriggerAeaLogItemStateHist(themeVerId,stageinstId,itemVerIds,null,null,appinstId);
+            }
             //4、情形实例
-            aeaHiParStateinstService.batchInsertAeaHiParStateinst(applyinstId, stageinstId, stateIds, SecurityContext.getCurrentUserName());
+            if(stateIds.length>0){
+                aeaHiParStateinstService.batchInsertAeaHiParStateinst(applyinstId, stageinstId, stateIds, SecurityContext.getCurrentUserName());
+            }
             // 多事项直接合并办理 handWay=0 时才处理
-            if (aeaParStage!= null && "0".equals(aeaParStage.getHandWay())) {
+            if (aeaParStage!= null && "0".equals(aeaParStage.getHandWay()) && itemVerIds.size()>0) {
                 // 简单合并申报的情况下，可能存在事项自己的情形列表
                 saveItemStateBySimpleMerge(parallelItemStateVoList, itemVerIds, applyinstId,stageinstId);
             }
