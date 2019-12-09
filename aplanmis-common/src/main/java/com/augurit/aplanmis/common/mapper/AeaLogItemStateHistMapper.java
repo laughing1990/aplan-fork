@@ -34,6 +34,8 @@ public interface AeaLogItemStateHistMapper {
      */
     void deleteAeaLogItemStateHist(@Param("id") String id);
 
+    void batchDeleteAeaLogItemStateHist(@Param("ids") List<String> ids);
+
     /**
      * 查询事项状态变更记录
      *
@@ -61,7 +63,9 @@ public interface AeaLogItemStateHistMapper {
 
     AeaLogItemStateHist getInitStateAeaLogItemStateHist(@Param("iteminstId") String iteminstId, @Param("appinstId") String appinstId);
 
-    List<SupplyOrSpacialCommentVo> findSpacialAeaLogItemStateHist(@Param("taskInstId") String taskInstId,@Param("rootOrgId")  String rootOrgId);
+    List<SupplyOrSpacialCommentVo> findSpacialAeaLogItemStateHist(@Param("taskInstId") String taskInstId, @Param("rootOrgId") String rootOrgId);
 
     List<SupplyOrSpacialCommentVo> findItemCorrectStateHist(@Param("taskInstId") String taskInstId, @Param("rootOrgId") String rootOrgId);
+
+    List<AeaLogItemStateHist> listAeaLogItemStateHistByIteminstIds(@Param("iteminstIds") List<String> iteminstIds);
 }
