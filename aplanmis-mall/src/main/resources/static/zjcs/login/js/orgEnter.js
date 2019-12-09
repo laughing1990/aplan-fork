@@ -742,15 +742,15 @@ var vm = new Vue({
               });
               return;
             } else {
-              if (!_this.num) {
-                _this.$message({
+              if (!_that.num) {
+                _that.$message({
                   message: '证件号重复，请重新输入',
                   type: 'error'
                 });
                 return;
               } else {
                 var certinstId = [];
-                _that.jobPeopleDetailObj.certinstBVos.forEach(function(item) {
+                _that.jobPeopleDetailObj.certinstBVos.forEach(function (item) {
                   certinstId.push(item.certinstId);
                 })
                 var param = {
