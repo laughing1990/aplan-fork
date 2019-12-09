@@ -27,6 +27,8 @@ public interface AeaHiItemStateinstMapper {
 
     int deleteAeaHiItemStateinst(@Param("id") String id) throws Exception;
 
+    int batchDeleteAeaHiItemStateinst(@Param("ids") List<String> ids) throws Exception;
+
     List<AeaHiItemStateinst> listAeaHiItemStateinst(AeaHiItemStateinst aeaHiItemStateinst) throws Exception;
 
     AeaHiItemStateinst getAeaHiItemStateinstById(@Param("id") String id) throws Exception;
