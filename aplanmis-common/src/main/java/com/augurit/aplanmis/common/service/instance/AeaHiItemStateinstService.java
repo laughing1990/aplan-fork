@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.common.service.instance;
 
+import com.augurit.aplanmis.common.domain.AeaHiItemStateinst;
 import com.augurit.aplanmis.common.domain.AeaItemState;
 
 import java.util.List;
@@ -43,4 +44,19 @@ public interface AeaHiItemStateinstService {
      * @param itemStateIds
      */
     void batchDeleteAeaItemState(String[] itemStateIds);
+
+    /**
+     * 根据申请实例ID或单项实例ID查询已选择的情形实例列表
+     * @param applyinstId
+     * @param seriesinstId
+     * @return
+     * @throws Exception
+     */
+    List<AeaHiItemStateinst> listAeaItemStateinstByApplyinstIdOrSeriesinstId(String applyinstId, String seriesinstId) throws Exception;
+
+    /**
+     * 批量删除事项情形实例
+     * @param itemStateinstIds 事项的情形实例ID
+     */
+    void batchDeleteAeaItemStateinst(String[] itemStateinstIds) throws Exception;
 }

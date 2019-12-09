@@ -5,6 +5,7 @@ import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.aplanmis.common.constants.AeaUnitConstants;
+import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.instance.*;
@@ -16,6 +17,7 @@ import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyCommonService;
 import com.augurit.aplanmis.mall.userCenter.service.RestMyMatService;
 import com.augurit.aplanmis.mall.userCenter.vo.*;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -339,6 +341,10 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
         List<String> itemVerIds=itemListTemporaryParamVo.getItemVerIds();
         List<ParallelItemStateVo> parallelItemStateVoList=itemListTemporaryParamVo.getParallelItemStateIds();
         String appinstId=UUID.randomUUID().toString();
+        List<String> propulsionItemVerIds=itemListTemporaryParamVo.getPropulsionItemVerIds();
+        List<PropulsionItemStateVo> propulsionItemStateIds=itemListTemporaryParamVo.getPropulsionItemStateIds();
+        List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos=itemListTemporaryParamVo.getPropulsionItemApplyinstIdVos();
+
         AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageId);
         if(StringUtils.isNotBlank(applyinstId) && StringUtils.isNotBlank(stageinstId)){//说明此前已经实例化过阶段，则需判断是否切换了阶段
             AeaHiParStageinst stageinst = aeaHiParStageinstService.getAeaHiParStageinstById(stageinstId);
@@ -379,9 +385,59 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
                 saveItemStateBySimpleMerge(parallelItemStateVoList, itemVerIds, applyinstId,stageinstId);
             }
         }
-
         map.put("stageinstId",stageinstId);
+
+        submitPropulsionItem(propulsionItemVerIds,propulsionItemStateIds,propulsionItemApplyinstIdVos,itemListTemporaryParamVo.getSmsInfoVo(),map);
         return map;
+    }
+    @Autowired
+    private AeaHiApplyinstService aeaHiApplyinstService;
+
+    /**
+     * 暂存并行事项及其情形
+     * @param propulsionItemVerIds
+     * @param propulsionItemStateIds
+     * @param propulsionItemApplyinstIdVos
+     * @param map
+     */
+    private void submitPropulsionItem(List<String> propulsionItemVerIds, List<PropulsionItemStateVo> propulsionItemStateIds, List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos,SmsInfoVo smsInfoVo, Map<String, Object> map) throws Exception {
+        if(propulsionItemVerIds==null||propulsionItemVerIds.size()==0) return;
+        if(propulsionItemApplyinstIdVos==null||propulsionItemApplyinstIdVos.size()==0){//第一次暂存并行
+            //实例化申报实例，事项实例及其情形
+            for (String itemVerId:propulsionItemVerIds){
+                PropulsionItemApplyinstIdVo propulsionItemApplyinstIdVo=new PropulsionItemApplyinstIdVo();
+                AeaHiApplyinst seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinst("net", smsInfoVo.getApplySubject(), smsInfoVo.getLinkmanInfoId(), "1", null, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), "1");//实例化串联申请实例
+                String seriesApplyinstId = seriesApplyinst.getApplyinstId();//申报实例ID
+                seriesApplyinst.setProjInfoId(smsInfoVo.getProjInfoId());
+                String appinstId = UUID.randomUUID().toString();//预先生成流程模板实例ID
+                //1、保存单项实例
+                AeaHiSeriesinst aeaHiSeriesinst = aeaHiSeriesinstService.createAeaHiSeriesinst(seriesApplyinstId, appinstId, "0", null);
+                //2、事项实例
+                aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), itemVerId, null, null, appinstId);
+                List<String> stateIds=getStateIdsFromPropulsionItemStateIds(propulsionItemStateIds,itemVerId);
+                if(stateIds.size()>0){
+                    aeaHiItemStateinstService.batchInsertAeaHiItemStateinst(seriesApplyinstId, aeaHiSeriesinst.getSeriesinstId(), null, stateIds.toArray(new String[stateIds.size()]), SecurityContext.getCurrentUserName());
+                }
+                propulsionItemApplyinstIdVo.setItemVerId(itemVerId);
+                propulsionItemApplyinstIdVo.setSeriesApplyinstId(seriesApplyinstId);
+                propulsionItemApplyinstIdVo.setSeriesinstId(aeaHiSeriesinst.getSeriesinstId());
+                propulsionItemApplyinstIdVos.add(propulsionItemApplyinstIdVo);
+            }
+        }else{
+            //跟propulsionItemVerIds对比，如果已经实例化的申报，无需实例化，只需删除重新实例化情形即可
+
+        }
+        map.put("propulsionItemApplyinstIdVos",propulsionItemApplyinstIdVos);
+    }
+
+    private  List<String> getStateIdsFromPropulsionItemStateIds(List<PropulsionItemStateVo> propulsionItemStateIds,String itemVerId){
+        if(propulsionItemStateIds==null||propulsionItemStateIds.size()==0) return new ArrayList<>();
+        for (PropulsionItemStateVo vo:propulsionItemStateIds){
+            if(itemVerId.equals(vo.getItemVerId())){
+                return vo.getStateIds();
+            }
+        }
+        return new ArrayList<>();
     }
 
     @Override
@@ -396,10 +452,10 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
     @Override
     public void deleteItemStates(String applyinstId) throws Exception {
         if(StringUtils .isNotBlank(applyinstId)){
-            List<AeaItemState> itemStates = aeaHiItemStateinstService.listAeaItemStateByApplyinstIdOrSeriesinstId(applyinstId, null);
+            List<AeaHiItemStateinst> itemStates = aeaHiItemStateinstService.listAeaItemStateinstByApplyinstIdOrSeriesinstId(applyinstId, null);
             if(itemStates.size()>0) {
-                String[] itemStateIds=itemStates.stream().map(AeaItemState::getItemStateId).toArray(String[]::new);
-                aeaHiItemStateinstService.batchDeleteAeaItemState(itemStateIds);
+                String[] itemStateinstIds=itemStates.stream().map(AeaHiItemStateinst::getItemStateinstId).toArray(String[]::new);
+                aeaHiItemStateinstService.batchDeleteAeaItemStateinst(itemStateinstIds);
             }
         }
     }

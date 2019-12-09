@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
@@ -29,6 +30,15 @@ public class ItemListTemporaryParamVo {
     private List<ParallelItemStateVo> parallelItemStateIds; // 简单合并申报，选择的并联事项情形
     @ApiModelProperty(value = "第一步暂存实体")
     private SmsInfoVo smsInfoVo;
+
+    @ApiModelProperty(value = "并行推进事项版本ID", dataType = "java.util.List")
+    private List<String> propulsionItemVerIds;
+
+    @ApiModelProperty(value = "并行事项情形Map集合")
+    private List<PropulsionItemStateVo> propulsionItemStateIds;
+
+    @ApiModelProperty(value = "并行事项及其申请实例ID集合")
+    private List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos;
 
 //    @ApiModelProperty(value = "事项与区划的键值对集合")
 //    private List<ItemRegionMap> itemRegionMapList;
