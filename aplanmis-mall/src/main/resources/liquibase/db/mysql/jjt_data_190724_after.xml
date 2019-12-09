@@ -161,4 +161,15 @@
         </sql>
     </changeSet>
 
+    <changeSet id="201912091445" author="qinjp" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE aea_proj_info
+            set PROJ_FLAG='p'
+            where PROJ_INFO_ID in (SELECT PARENT_PROJ_ID from aea_parent_proj where CHILD_PROJ_ID is NULL);
+            UPDATE aea_proj_info
+            set PROJ_FLAG='c'
+            where PROJ_INFO_ID in (SELECT CHILD_PROJ_ID from aea_parent_proj);
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
