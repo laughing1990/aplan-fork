@@ -17,7 +17,7 @@ import com.augurit.aplanmis.front.apply.service.AeaParStageService;
 import com.augurit.aplanmis.front.apply.service.AeaSeriesService;
 import com.augurit.aplanmis.front.apply.service.RestApplyService;
 import com.augurit.aplanmis.front.apply.vo.ApplyinstIdVo;
-import com.augurit.aplanmis.front.apply.vo.ParallerStashResultVo;
+import com.augurit.aplanmis.front.apply.vo.ParallelStashResultVo;
 import com.augurit.aplanmis.front.apply.vo.SeriesApplyCheckVo;
 import com.augurit.aplanmis.front.apply.vo.SeriesApplyDataPageVo;
 import com.augurit.aplanmis.front.apply.vo.SeriesApplyDataVo;
@@ -214,11 +214,30 @@ public class RestApplyCotroller {
 
     @PostMapping("/parallel/stash")
     @ApiOperation(value = "并联申报 --> 暂存", notes = "并联申报 --> 暂存", httpMethod = "POST")
-    public ContentResultForm<ParallerStashResultVo> stashParallel(@RequestBody StashVo.ParallelStashVo parallelStashVo) {
+    public ContentResultForm<ParallelStashResultVo> stashParallel(@RequestBody StashVo.ParallelStashVo parallelStashVo) {
         try {
             return new ContentResultForm<>(true, aeaParStageService.stash(parallelStashVo), "success");
         } catch (Exception e) {
             return new ContentResultForm<>(false, null, e.getMessage());
+        }
+    }
+
+    @GetMapping("/unstash")
+    @ApiOperation(value = "回显")
+    @ApiImplicitParam(name = "applyinstId", value = "申报实例id")
+    public ResultForm unstash(String applyinstId) {
+        Assert.hasText(applyinstId, "applyinstId is null.");
+        try {
+            AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+            Assert.notNull(aeaHiApplyinst, "无法找到对应的申报实例, applyinstId: " + applyinstId);
+            if (ApplyType.UNIT.getValue().equals(aeaHiApplyinst.getIsSeriesApprove())) {
+                return new ContentResultForm<>(true, aeaParStageService.unstash(applyinstId), "success");
+            } else {
+                return new ContentResultForm<>(true, aeaSeriesService.unstash(applyinstId), "success");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultForm(false, e.getMessage());
         }
     }
 }

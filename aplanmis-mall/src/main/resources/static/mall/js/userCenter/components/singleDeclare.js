@@ -372,6 +372,7 @@ var module1 = new Vue({
     this.getItemBaseInfo();
     //this.querySelecTheme() // 获取主题列表
     userCenter.vm.myProLeftShow = false;
+    userCenter.vm.selectNav2 = '单项申报';
   },
   mounted: function () {
     var _that = this;
