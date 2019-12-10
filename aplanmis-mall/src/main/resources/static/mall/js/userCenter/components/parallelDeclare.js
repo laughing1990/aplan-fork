@@ -426,6 +426,7 @@ var module1 = new Vue({
     this.getDicContent(); // 数据字典
     this.getGbhy();
     userCenter.vm.myProLeftShow = false;
+    userCenter.vm.selectNav2 = '并联申报';
   },
   methods: {
     // 查看项目详情

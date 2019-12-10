@@ -121,6 +121,7 @@ var userCenter = (function () {
                 // 菜单栏选中
                 userCenterItemSelect: 'MyHomeIndex',
                 selectNav:'',
+                selectNav2: '',
                 approvalNum: 0,
                 matCompletionNum: 0,
                 withdrawNum: 0,

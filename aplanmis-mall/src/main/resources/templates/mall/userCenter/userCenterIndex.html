@@ -24,6 +24,8 @@
             <a :href="ctx+'rest/main/toIndexPage?#MyHomeIndex'">法人空间</a>
             <span class="local-span">&gt;</span>
             <a :href="ctx+'rest/main/toIndexPage#'+ userCenterItemSelect">{{selectNav}}</a>
+            <span v-if="selectNav2" class="local-span">&gt;</span>
+            <a v-if="selectNav2" href="#">{{selectNav2}}</a>
         </div>
         <section>
             <div class="my-pro-content clearfix">
