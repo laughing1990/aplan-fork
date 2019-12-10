@@ -708,7 +708,7 @@ var Index = new Vue({
     },
 
     // 待办列表中的办理操作
-    daibanbanliHand: function(){
+    daibanbanliHand: function(row){
       var url = ctx+'apanmis/page/stageApproveIndex?taskId='+row.taskId+'&viewId='+row.viewId;
       if(row.busRecordId){
           url = url + '&busRecordId='+row.busRecordId;
