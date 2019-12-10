@@ -554,7 +554,8 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
     }
 
     //删除事项下的材料和输入输出
-    private void deleteMatUnderIteminst(List<AeaHiIteminst> iteminstList){
+    @Override
+    public void deleteMatUnderIteminst(List<AeaHiIteminst> iteminstList){
         String[] iteminstIds=iteminstList.stream().map(AeaHiIteminst::getIteminstId).toArray(String[]::new);
         List<AeaHiItemInoutinst> inoutList=aeaHiItemInoutinstService.getAeaHiItemInoutinstByIteminstIds(iteminstIds);
         if(inoutList.size()==0) return;
