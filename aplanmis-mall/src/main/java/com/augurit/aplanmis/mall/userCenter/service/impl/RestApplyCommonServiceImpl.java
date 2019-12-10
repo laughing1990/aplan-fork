@@ -411,13 +411,29 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
             //跟propulsionItemVerIds对比，如果已经实例化的申报，无需实例化，只需删除重新实例化情形即可
             for (String itemVerId:propulsionItemVerIds){
                 String applyinstId=getApplyinstIdFromPpropulsionItemApplyinstIdVos(propulsionItemApplyinstIdVos,itemVerId);
+                String seriesinstId=getSeriesinstIdFromPpropulsionItemApplyinstIdVos(propulsionItemApplyinstIdVos,itemVerId);
                 if(StringUtils.isNotBlank(applyinstId)){
                     deleteItemStates(applyinstId);
+                    List<String> stateIds=getStateIdsFromPropulsionItemStateIds(propulsionItemStateIds,itemVerId);
+                    if(stateIds.size()>0){
+                        aeaHiItemStateinstService.batchInsertAeaHiItemStateinst(applyinstId, seriesinstId, null, stateIds.toArray(new String[stateIds.size()]), SecurityContext.getCurrentUserName());
+                    }
+                }else{
+                    saveSeriesApplyinstAndStateinst(itemVerId,propulsionItemStateIds,propulsionItemApplyinstIdVos,smsInfoVo);
                 }
-                saveSeriesApplyinstAndStateinst(itemVerId,propulsionItemStateIds,propulsionItemApplyinstIdVos,smsInfoVo);
             }
         }
         map.put("propulsionItemApplyinstIdVos",propulsionItemApplyinstIdVos);
+    }
+
+    private String getSeriesinstIdFromPpropulsionItemApplyinstIdVos(List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos, String itemVerId) {
+        if(propulsionItemApplyinstIdVos.size()==0) return null;
+        for (PropulsionItemApplyinstIdVo vo:propulsionItemApplyinstIdVos){
+            if(itemVerId.equals(vo.getItemVerId())){
+                return vo.getSeriesinstId();
+            }
+        }
+        return null;
     }
 
     private void saveSeriesApplyinstAndStateinst(String itemVerId, List<PropulsionItemStateVo> propulsionItemStateIds, List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos,SmsInfoVo smsInfoVo) throws Exception {
