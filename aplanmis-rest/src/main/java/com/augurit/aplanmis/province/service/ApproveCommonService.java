@@ -5,14 +5,9 @@ import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
 import com.augurit.agcloud.bsc.mapper.BscAttDetailMapper;
 import com.augurit.agcloud.bsc.mapper.BscDicCodeMapper;
 import com.augurit.agcloud.bsc.sc.att.service.IBscAttService;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaHiReceive;
-import com.augurit.aplanmis.common.domain.AeaMatinst;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.common.mapper.AeaHiApplyinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiReceiveMapper;
-import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
+import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -41,6 +36,12 @@ public class ApproveCommonService {
     private AeaHiReceiveMapper aeaHiReceiveMapper;
     @Autowired
     private BscDicCodeMapper bscDicCodeMapper;
+    @Autowired
+    private AeaHiIteminstMapper aeaHiIteminstMapper;
+    @Autowired
+    private AeaHiParStageinstMapper aeaHiParStageinstMapper;
+    @Autowired
+    private AeaHiSeriesinstMapper aeaHiSeriesinstMapper;
 
     @Value("${dg.sso.access.platform.org.top-org-id:0368948a-1cdf-4bf8-a828-71d796ba89f6}")
     private String topOrgId;
@@ -54,11 +55,48 @@ public class ApproveCommonService {
      * @throws Exception
      */
     public AeaHiApplyinst getApplyinstByProjCodeAndIteminstId(String proj_code, String item_instance_code) throws Exception {
-        List<AeaHiApplyinst> list = aeaHiApplyinstMapper.getApplyinstByProjCodeAndIteminstId(proj_code, item_instance_code);
+        if (StringUtils.isNotBlank(item_instance_code)) {
+            AeaHiIteminst iteminst = aeaHiIteminstMapper.getAeaHiIteminstById(item_instance_code);
+            if (null == iteminst) return null;
+            String isSeriesApprove = iteminst.getIsSeriesApprove();
+            if ("0".equals(isSeriesApprove)) {
+                //并联
+                String stageinstId = iteminst.getStageinstId();
+                AeaHiParStageinst stageinst = aeaHiParStageinstMapper.getAeaHiParStageinstById(stageinstId);
+                if (null == stageinst) return null;
+                AeaHiApplyinst aeaHiApplyinstById = aeaHiApplyinstMapper.getAeaHiApplyinstById(stageinst.getApplyinstId());
+                return aeaHiApplyinstById;
+            } else {
+                String seriesinstId = iteminst.getSeriesinstId();
+            }
+        }
+        /*List<AeaHiApplyinst> list = aeaHiApplyinstMapper.getApplyinstByProjCodeAndIteminstId(proj_code, item_instance_code);
         if (list.size() > 0) {
             return list.get(0);
+        }*/
+        return null;
+    }
+
+    public String getApplyinstIdByIteminstId(String iteminstId) throws Exception {
+        if (StringUtils.isNotBlank(iteminstId)) {
+            AeaHiIteminst iteminst = aeaHiIteminstMapper.getAeaHiIteminstById(iteminstId);
+            if (null == iteminst) return null;
+            String isSeriesApprove = iteminst.getIsSeriesApprove();
+            if ("0".equals(isSeriesApprove)) {
+                //并联
+                String stageinstId = iteminst.getStageinstId();
+                AeaHiParStageinst stageinst = aeaHiParStageinstMapper.getAeaHiParStageinstById(stageinstId);
+                if (null == stageinst) return null;
+                return stageinst.getApplyinstId();
+            } else {
+                String seriesinstId = iteminst.getSeriesinstId();
+                AeaHiSeriesinst seriesinst = aeaHiSeriesinstMapper.getAeaHiSeriesinstById(seriesinstId);
+                if (null == seriesinst) return null;
+                return seriesinst.getApplyinstId();
+
+            }
         }
-        return new AeaHiApplyinst();
+        return null;
     }
 
     /**
