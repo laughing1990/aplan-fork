@@ -403,9 +403,14 @@
 }
 
 .isDesignSolution > label {
-    width: 156px !important;
+    width: 110px !important;
+    margin-left: 40px;
 }
 
 .gbCodeYear label {
     width: 248px !important;
+}
+
+.twoLine label {
+  line-height: 20px;
 }
