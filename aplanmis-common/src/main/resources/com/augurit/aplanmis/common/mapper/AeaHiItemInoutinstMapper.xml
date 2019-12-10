@@ -478,4 +478,25 @@
         ORDER BY aim.SORT_NO
     </select>
 
+    <select id="getAeaHiItemInoutinstByIteminstIds" resultType="AeaHiItemInoutinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_ITEM_INOUTINST
+        <where>
+            ITEMINST_ID in
+            <foreach collection="ids" item="iteminstId" open="(" separator="," close=")">
+                #{iteminstId}
+            </foreach>
+        </where>
+    </select>
+
+    <delete id="batchDeleteAeaHiItemInoutinst">
+        delete from AEA_HI_ITEM_INOUTINST
+        WHERE INOUTINST_ID IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
 </mapper>

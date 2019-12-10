@@ -179,7 +179,10 @@ var vm = new Vue({
       nextTask: null,//下一环节名称
       sendParam: null,//发送参数
       sendDialog: false,//发送对话框
-      sendForm: {},//发送表单参数
+      sendForm: {
+        timeruleId: '',
+        toleranceTime: '',
+      },//发送表单参数
       sendFormRule: {},//发送表单校验规则
       onlySuggestForm: {}, // 只有办理意见的弹窗form
       
@@ -432,7 +435,7 @@ var vm = new Vue({
       isMultiFlow: false,
       mutiCheckedNames: [],
       mutiCheckedMan: [],
-      treeTargetRow: [],
+      treeTargetRow: null,
       // 特殊程序
       speTabIndex: 0,
       speBaseInfoForm: {
@@ -589,8 +592,19 @@ var vm = new Vue({
       }, function(res){
         if (res.success) {
           vm.rqRulesList = res.content;
-          vm.rqTimeForm.timeruleId = vm.rqRulesList[0].timeruleId;
-          vm.rqTimeForm.toleranceTime = 1;
+          if(vm.rqRulesList.length > 0){
+            //格式化一下label
+            for(var i=0; i<vm.rqRulesList.length; i++){
+              var timeruleName = vm.rqRulesList[i].timeruleName;
+              if(timeruleName && timeruleName.length > 3)
+                vm.rqRulesList[i].timeruleName = timeruleName.substring(0,3);
+            }
+            //默认选择工作日
+            vm.sendForm.timeruleId = vm.rqRulesList[0].timeruleId;
+
+            vm.rqTimeForm.timeruleId = vm.rqRulesList[0].timeruleId;
+            vm.rqTimeForm.toleranceTime = 1;
+          }
         } else {
           vm.$message.error(res.message || '获取时限规则数据失败');
         }
@@ -2490,11 +2504,18 @@ var vm = new Vue({
       } else {
         vm.nextTaskAssignee = vm.sendTaskInfo.defaultSendAssignees;
         vm.nextTaskAssigneeId = vm.sendTaskInfo.defaultSendAssigneesId;
+        if (vm.treeTargetRow){
+          vm.nextTaskAssignee = vm.treeTargetRow.defaultSendAssignees;
+          vm.nextTaskAssigneeId = vm.treeTargetRow.defaultSendAssigneesId;
+        }
       }
       //设置到提交参数中
       vm.sendParam.sendConfigs[0].assignees = vm.nextTaskAssigneeId;
       //回显到发送信息框中
       vm.$set(vm.sendForm, 'nextTaskAssignee', vm.nextTaskAssignee);
+      if (vm.treeTargetRow) {
+        vm.treeTargetRow.nextTaskAssignee = vm.nextTaskAssignee;
+      }
       //关闭选择框
       vm.selectAssigneeDialog = false;
       if (vm.isMultiFlow) {
@@ -2516,7 +2537,7 @@ var vm = new Vue({
         if (result.success) {
           $('#parentPro').show();
           $('#parentPro').empty();
-          var btn = '<button class="btn btn-default" style="margin-top:16px;" onclick="vm.getParentProcess(' + result.content.processInstanceId + ',' + result.content.isCheck + ')">返回上级流程</button>';
+          var btn = '<button class="btn btn-default" style="margin-top:16px;" onclick="vm.getParentProcess(\'' + result.content.processInstanceId + '\',' + result.content.isCheck + ')">返回上级流程</button>';
           $('#parentPro').append(btn);
         } else {
           $('#parentPro').hide();
@@ -2946,13 +2967,13 @@ var vm = new Vue({
       var vm = this;
       if (vm.isRQDialog) {
         if (!vm.sendForm.toleranceTime) {
-          return vm.$message.error('请填写容缺时限');
+          return vm.$message.error('请填写容缺期限');
         }
         if (vm.sendForm.toleranceTime&&vm.sendForm.toleranceTime<=0) {
-          return vm.$message.error('容缺时限请填写正数');
+          return vm.$message.error('容缺期限值必须大于0');
         }
         if(!vm.sendForm.timeruleId){
-          return vm.$message.error('请选择容缺时限规则');
+          return vm.$message.error('请选择容缺期限类型');
         }
       }
       if (!directSend) {
@@ -3084,10 +3105,6 @@ var vm = new Vue({
     sendOperation: function (directSend) {
       var vm = this;
       var sendObj = $.extend({}, vm.sendParam);
-      if (vm.isRQDialog) {
-        sendObj.toleranceTime = vm.sendForm.toleranceTime;
-        sendObj.timeruleId = vm.sendForm.timeruleId;
-      }
       if (vm.isMultiFlow) {
         sendObj.sendConfigs = [];
         vm.mutiCheckedMan.forEach(function (u) {
@@ -3119,6 +3136,8 @@ var vm = new Vue({
         applyinstId: vm.masterEntityKey,
         applyState: vm.enumApplyStatus,
         conclusionOptionValue: vm.conclusionOptionValue,
+        toleranceTime: vm.sendForm.toleranceTime,
+        timeruleId: vm.sendForm.timeruleId,
       }
       // console.log(tmpSendParam);
       // console.log(params);

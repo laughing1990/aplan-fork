@@ -1220,4 +1220,47 @@
             ALTER TABLE `aea_unit_info` ADD COLUMN `AUDIT_FLAG`  varchar(2) DEFAULT NULL COMMENT '审核状态:0 审核失败，1 已审核，2 审核中';
         </sql>
     </changeSet>
+
+    <changeSet id="20191204183030" author="ouym" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aoa_notice_content`
+            MODIFY COLUMN `NOTICE_DISPATCH_TIME`  varchar(20) DEFAULT NULL COMMENT '发文时间' AFTER `BUSINESS_FLAG`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201912051110" author="chendx" failOnError="false">
+        <comment>事项实例表新增用于存储容缺办结时限的字段</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_iteminst`
+            ADD COLUMN `TOLERANCE_TIME` double NULL COMMENT '办件容缺办结时的时限' AFTER `ITEMINST_TYPE`,
+            ADD COLUMN `TIMERULE_ID` varchar(50) NULL COMMENT '办件容缺办结时的时限计算规则id' AFTER `TOLERANCE_TIME`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201912051111" author="chendx" failOnError="false">
+        <comment>增加事项容缺办结时限实例表</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            CREATE TABLE `aea_tolerance_time_inst`  (
+            `TOLERANCE_TIME_INST_ID` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '主键',
+            `ITEMINST_ID` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '事项实例id',
+            `TIMERULE_ID` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '时限计算规则ID',
+            `TIME_LIMIT` double NOT NULL COMMENT '时限数',
+            `TIMERULE_UNIT` varchar(3) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '【计算规则时间单位】ND：自然日，WD：工作日，NH：小时（自然日），WH：小时（工作日）',
+            `USE_LIMIT_TIME` double NULL DEFAULT NULL COMMENT '已用时',
+            `REMAINING_TIME` double NULL DEFAULT NULL COMMENT '剩余用时',
+            `OVERDUE_TIME` double NULL DEFAULT NULL COMMENT '逾期用时',
+            `OVERDUE_DATE` datetime(0) NULL DEFAULT NULL COMMENT '逾期日期',
+            `ORG_ID` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '顶级组织ID',
+            `CREATER` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+            `CREATE_TIME` datetime(0) NULL DEFAULT NULL,
+            `MODIFIER` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+            `MODIFY_TIME` datetime(0) NULL DEFAULT NULL,
+            `INST_STATE` varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '1' COMMENT '实例状态：1 正常，2 预警，3 逾期',
+            `IS_COMPLETED` varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '0' COMMENT '是否补交材料完成，1是，0否',
+            PRIMARY KEY (`TOLERANCE_TIME_INST_ID`) USING BTREE,
+            INDEX `IDX_AEA_TOLERANCE_TIME_INST_ITEMINSTID`(`ITEMINST_ID`) USING BTREE,
+            INDEX `IDX_AEA_TOLERANCE_TIME_INST_TIMERULEID`(`TIMERULE_ID`) USING BTREE
+            ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

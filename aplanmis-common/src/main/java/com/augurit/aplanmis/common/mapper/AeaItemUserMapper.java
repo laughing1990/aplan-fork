@@ -20,7 +20,19 @@ public interface AeaItemUserMapper {
 
      void deleteAeaItemUser(@Param("id") String id);
 
+     void batchDelItemUserByArrIds(@Param("ids") String[] ids);
+
+     void batchDelItemUserByListIds(@Param("ids") List<String> ids);
+
      List <AeaItemUser> listAeaItemUser(AeaItemUser aeaItemUser);
 
+     List<AeaItemUser> listUserItemRelItemInfo(AeaItemUser aeaItemUser);
+
      AeaItemUser getAeaItemUserById(@Param("id") String id);
+
+     void batchDelItemByUserId(@Param("userId") String userId, @Param("rootOrgId") String rootOrgId);
+
+     Long getMaxSortNo(@Param("rootOrgId") String rootOrgId);
+
+     void changIsActive(@Param("id")String id, @Param("rootOrgId")String rootOrgId);
 }

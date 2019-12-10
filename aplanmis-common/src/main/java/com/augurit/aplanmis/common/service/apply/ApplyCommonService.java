@@ -24,4 +24,8 @@ public interface ApplyCommonService {
      * @param iteminst
      */
     void setInformCommit(String[] stateIds, ApplyType applyType, AeaHiIteminst iteminst) throws Exception;
+
+    void clearHistoryInst(String applyinstId) throws Exception;
+
+    void bindApplyinstProj(String projInfoId, String applyinstId, String currentUserId) throws Exception;
 }

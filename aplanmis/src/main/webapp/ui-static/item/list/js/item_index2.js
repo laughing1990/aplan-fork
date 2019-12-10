@@ -27,6 +27,7 @@ $(function () {
 	});
 
 	$('#searchItemType').change(function () {
+
 		searchAllItemList();
 	});
 
@@ -284,6 +285,7 @@ $(document).on('show.bs.modal', '.modal', function (e) {
 });
 
 function itemOperatorFormatter(value, row, index) {
+
 	var itemTitle = "编辑";
 	var icoCSS = "la la-edit";
 	if (row.itemVerStatus == "1" || row.itemVerStatus == "3") {
@@ -292,38 +294,38 @@ function itemOperatorFormatter(value, row, index) {
 	}
 
 	var editBtn = '<a href="javascript:editItemBasicById(\'' + row.itemBasicId + '\',\'' + row.itemVerStatus + '\',\'' + row.isCatalog + '\')" ' +
-			'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill"' +
-			'title="' + itemTitle + '"><i class="' + icoCSS + '"></i>' +
-			'</a>';
+					 'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill"' +
+					 'title="' + itemTitle + '"><i class="' + icoCSS + '"></i>' +
+				 '</a>';
 
 	// var addChildBtn='';
 	// if(row.itemNature!='8'){
 		var addChildBtn = '<a href="javascript:addItemBasicChildById(\'' + row.itemId + '\',\'' + row.itemName + '\',\'' + row.isCatalog + '\',\'' + row.itemBasicId + '\',)" ' +
-			'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill"' +
-			'title="添加子事项"><i class="la la-plus"></i>' +
-			'</a>';
+								'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill"' +
+								'title="添加子事项"><i class="la la-plus"></i>' +
+			              '</a>';
 	// }
 	var deleteBtn = '<a href="javascript:deleteItemById(\'' + row.itemId + '\')" ' +
-			'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
-			'title="删除"><i class="la la-trash"></i>' +
-			'</a>';
+						'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
+						'title="删除"><i class="la la-trash"></i>' +
+					'</a>';
 
 	var setState = '<a href="javascript:openItemVerModal(\'' + row.itemId + '\',\'' + row.itemVerId + '\',\'' + row.itemNature + '\')" ' +
-			'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
-			'title="事项版本"><i class="la la-cog"></i>' +
-			'</a>';
+						'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
+						'title="事项版本"><i class="la la-cog"></i>' +
+					'</a>';
 
-	var editMaterial='';
+	// var editMaterial='';
+    //
+	// if(row.itemNature=='8'){
+	// 	editMaterial='<a href="javascript:openItemVerMaterialModal(\'' + row.itemVerId + '\')" ' +
+	// 		'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
+	// 		'title="输出材料"><i class="la la-cogs"></i>' +
+	// 		'</a>';
+	// }
 
-	if(row.itemNature=='8'){
-		editMaterial='<a href="javascript:openItemVerMaterialModal(\'' + row.itemVerId + '\')" ' +
-			'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
-			'title="输出材料"><i class="la la-cogs"></i>' +
-			'</a>';
-	}
 
-
-	return editBtn + addChildBtn + setState + deleteBtn+editMaterial;
+	return editBtn + addChildBtn + setState + deleteBtn/*+editMaterial*/;
 }
 
 function allItemListParam(params) {

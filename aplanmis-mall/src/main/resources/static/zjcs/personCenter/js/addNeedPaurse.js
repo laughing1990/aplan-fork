@@ -296,10 +296,14 @@ var module1 = new Vue({
 		// 清空表单填写过的数据,并初始化配置数据
 		resetForm: function () {
 			this.form = new Object();
-			this.form.isDiscloseIm = '1';
-			this.form.isDiscloseBidding = '1';
-			this.form.approvalCode = '';
-			this.form.isApproveProj = '1';
+			this.$set(this.form, 'isDiscloseIm', '1');
+			this.$set(this.form, 'isDiscloseBidding', '1');
+			this.$set(this.form, 'isApproveProj', '1');
+			this.$set(this.form, 'approvalCode', '');
+			// this.form.isDiscloseIm = '1';
+			// this.form.isDiscloseBidding = '1';
+			// this.form.approvalCode = '';
+			// this.form.isApproveProj = '1';
 
 			this.isQualRequire = false;
 			this.isRegisterRequire = false;
@@ -660,7 +664,7 @@ var module1 = new Vue({
 			});
 		},
 		init: function () {
-			this.form.isApproveProj = '1'
+			// this.form.isApproveProj = '1'
 			this.getUnpublishedProjInfoList()
 
 		},
@@ -753,16 +757,17 @@ var module1 = new Vue({
 					vm.aeaLinkmanInfo = content.aeaLinkmanInfo;
 					vm.aeaUnitInfo = content.aeaUnitInfo;
 					// vm.aeaProjInfo.projName='';
-					vm.$set(vm.aeaProjInfo, 'projName', '');
+					vm.$set(vm.aeaProjInfo, 'projName', '');					
 
 					if (content.aeaLinkmanInfo) {
 						// debugger
 						vm.$set(vm.form, 'contact', content.aeaLinkmanInfo.linkmanName + '[' + content.aeaLinkmanInfo.linkmanCertNo + ']');
 						//   vm.$set(vm.form,'mobile',content.aeaLinkmanInfo.linkmanMobilePhone)
 						vm.basicLinkPhone = content.aeaLinkmanInfo.linkmanMobilePhone; //基本信息联系电话信息
+						vm.$set(vm.form, 'basicLinkPhone', vm.aeaLinkmanInfo.linkmanMobilePhone);
 					}
 
-					vm.FinancialCheckList.push('isFinancialFund')
+					vm.FinancialCheckList.push('isFinancialFund');
 				} else {
 					vm.$message.error(res.message);
 				}
@@ -777,7 +782,8 @@ var module1 = new Vue({
 		getAgentServiceItemList: function () {
 			var vm = this;
 			request('', {
-				url: ctx + 'supermarket/purchase/getAgentServiceItemList', type: 'post',
+				// url: ctx + 'supermarket/purchase/getAgentItemList', type: 'post',
+				url: ctx + 'supermarket/purchase/getAgentItemList', type: 'get',
 				data: {
 					keyword: vm.serviceKeyword,
 					pageNum: vm.pageNum2,
@@ -994,6 +1000,20 @@ var module1 = new Vue({
 			}, function (msg) {
 				vm.$message({message: '加载失败', type: 'error'});
 			});
+		},
+		//直接选取时选择中介机构
+		selectAgentUnit: function () {
+			var _this = this;
+			_this.chooseAgentTabledialogTable = false;
+			if (_this.multipleSelection3.length == 0) {
+				_this.$alert('还未选择机构', '提示', {
+					confirmButtonText: '确定',
+				});
+			} else {
+				_this.unitInfoId = _this.multipleSelection3[0].unitInfoId;
+				_this.form.agentUnitName = _this.multipleSelection3[0].agentUnitName;
+			}
+
 		},
 		/**
 		 * 文件上传部分
@@ -1312,6 +1332,7 @@ var module1 = new Vue({
 			this.pageNum4 = val;
 			this.selectOrgan()
 		},
+		//直接选取中介机构，勾选中介机构时的方法
 		handleSelectionChange3: function (val) {
 			if (!val) return false;
 
@@ -1362,11 +1383,15 @@ var module1 = new Vue({
 				str += '零壹贰叁肆伍陆柒捌玖'.charAt(n.charAt(i)) + unit.charAt(i);
 			return str.replace(/零(千|百|拾|角)/g, "零").replace(/(零)+/g, "零").replace(/零(万|亿|元)/g, "$1").replace(/(亿)万|壹(拾)/g, "$1$2").replace(/^元零?|零分/g, "").replace(/元$/g, "元整");
 		},
+		//选取中介机构方式改变方法
 		biddingTypeChange: function (val) {
 			var vm = this;
 			console.log(val)
 			if (val == 3) {
 				vm.$set(vm.form, 'quoteType', '0')
+			}
+			if (val == 2) {
+				vm.$set(vm.form, 'isDefineAmount', '1');
 			}
 			if (val == 1) {
 				vm.$nextTick(function () {

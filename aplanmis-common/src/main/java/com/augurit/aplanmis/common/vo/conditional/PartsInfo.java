@@ -23,4 +23,6 @@ public class PartsInfo extends BaseInfo implements Serializable {
     @ApiModelProperty(value = "事项实例状态")
     private String iteminstState;
 
+    @ApiModelProperty(value = "事项实例类型： a 行政审批，p 告知承诺制")
+    private String iteminstType;
 }

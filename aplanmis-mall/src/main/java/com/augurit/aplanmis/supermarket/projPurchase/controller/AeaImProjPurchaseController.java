@@ -19,6 +19,8 @@ import com.augurit.aplanmis.common.utils.FileUtils;
 import com.augurit.aplanmis.common.vo.*;
 import com.augurit.aplanmis.supermarket.apply.service.RestImApplyService;
 import com.augurit.aplanmis.supermarket.contract.service.AeaImContractService;
+import com.augurit.aplanmis.supermarket.notice.service.AeaImSelectionNoticeService;
+import com.augurit.aplanmis.supermarket.notice.service.SelectionNoticeVo;
 import com.augurit.aplanmis.supermarket.projPurchase.service.ProjPurchaseService;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.OwnerIndexData;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.ProjUnitLinkVo;
@@ -72,6 +74,8 @@ public class AeaImProjPurchaseController {
 
     @Autowired
     AeaImContractService aeaImContractService;
+    @Autowired
+    private AeaImSelectionNoticeService selectionNoticeService;
 
     @ApiOperation(value = "获取业主单位未发布的项目列表", notes = "获取业主单位未发布的项目列表,用于新增采购需求", httpMethod = "POST")
     @PostMapping(value = "/getUnpublishedProjInfoList")
@@ -194,8 +198,10 @@ public class AeaImProjPurchaseController {
             @ApiImplicitParam(name = "projPurchaseId", value = "采购需求id")
     })
     @PostMapping(value = "/getPublicProjPurchaseDatail")
-    public ContentRestResult<AeaImProjPurchaseDetailVo> getPublicProjPurchaseDatail(String projPurchaseId) throws Exception {
-        return new ContentRestResult<>(true, projPurchaseService.getPublicProjPurchaseDatail(projPurchaseId));
+    public ContentRestResult<SelectionNoticeVo> getPublicProjPurchaseDatail(String projPurchaseId) throws Exception {
+        //projPurchaseService.getPublicProjPurchaseDatail(projPurchaseId)
+        SelectionNoticeVo purchaseDetail = selectionNoticeService.getSelectionNoticeByProjPurchaseId(projPurchaseId);
+        return new ContentRestResult<>(true, purchaseDetail);
     }
 
     @ApiOperation(value = "获取所有服务列表", notes = "获取所有服务列表")
@@ -855,6 +861,30 @@ public class AeaImProjPurchaseController {
     public ContentResultForm<PurchaseDetailVo> getPurchaseDetail(String projPurchaseId) throws Exception {
         PurchaseDetailVo vo = projPurchaseService.getPurchaseDetail(projPurchaseId);
         return new ContentResultForm(true, vo, "success");
+    }
+
+
+    @ApiOperation(value = "采购页获取中介服务事项列表", notes = "获取中介服务事项列表", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "keyword", value = "查询关键字"),
+            @ApiImplicitParam(name = "pageNum", value = "当前页", dataType = "int"),
+            @ApiImplicitParam(name = "pageSize", value = "每页记录数", dataType = "int"),
+    })
+    @GetMapping(value = "/getAgentItemList")
+    public ContentRestResult<EasyuiPageInfo<AeaItemServiceVo>> getAgentItemList(String keyword, Integer pageNum, Integer pageSize) {
+
+        try {
+            Page page = null;
+            if (pageNum != null && pageSize != null) {
+                page = new Page(pageNum, pageSize > 0 ? pageSize : 10);
+            }
+            List<AeaItemServiceVo> list = projPurchaseService.getAgentItemList(keyword, page);
+
+            return new ContentRestResult<EasyuiPageInfo<AeaItemServiceVo>>(true, PageHelper.toEasyuiPageInfo(new PageInfo(list)));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ContentRestResult(false, null, e.getMessage());
+        }
     }
 
 }

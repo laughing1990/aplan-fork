@@ -159,5 +159,8 @@ public class ConditionalQueryRequest implements Serializable {
     @ApiModelProperty(value = "当前用户所属组织ID和上级ID",hidden = true)
     private Set<String> selfAndParentOrgIdList;
 
+    @ApiModelProperty(value = "是否为承诺制办件",hidden = true)
+    private String isInformCommit;
 
+    private String iteminstType;
 }

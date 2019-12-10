@@ -4,7 +4,6 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
-import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
@@ -32,7 +31,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +75,11 @@ public class RestApplyCommonController {
             AeaProjInfo aeaProjInfo = aeaProjInfoService.getAeaProjInfoByProjInfoId(projInfoId);
             if(StringUtils.isNotBlank(aeaProjInfo.getThemeId())){
                 AeaParTheme theme = aeaParThemeService.getAeaParThemeByThemeId(aeaProjInfo.getThemeId());
-                if(theme!=null) aeaProjInfo.setThemeType(theme.getThemeType());
+                if(theme!=null) {
+                    aeaProjInfo.setThemeType(theme.getThemeType());
+                    AeaParThemeVer themeVer = aeaParThemeService.getAeaParThemeVerByThemeIdAndVerNum(theme.getThemeId(),null, SecurityContext.getCurrentOrgId());
+                    aeaProjInfo.setThemeVerId(themeVer==null?"":themeVer.getThemeVerId());
+                }
             }
             aeaProjInfo.setAeaUnitInfos(restApplyService.getAeaUnitInfosByProjInfoId(projInfoId,request));
             return new ContentResultForm<>(true,aeaProjInfo);
@@ -141,7 +143,7 @@ public class RestApplyCommonController {
                 applyinstId=aeaHiApplyinst==null?"":aeaHiApplyinst.getApplyinstId();
                 restApplyCommonService.insertAeaApplyinstUnitProj(applyinstId,(List<String>)map.get("unitProjIds"));
                 if("1".equals(smsInfoVo.getIsSeriesApprove()) && StringUtils.isNotBlank(smsInfoVo.getItemVerId())){
-                    restApplyCommonService.insertSeriesIteminst(applyinstId,smsInfoVo.getItemVerId());
+                    restApplyCommonService.insertSeriesIteminst(applyinstId,smsInfoVo.getItemVerId(),resultMap);
                 }
             }
             resultMap.put("applyinstId", applyinstId);
@@ -169,19 +171,94 @@ public class RestApplyCommonController {
 
     @PostMapping("/itemList/temporary")
     @ApiOperation(value = "阶段申报-->暂存阶段，情形及事项(含事项情形)")
-    public ContentResultForm itemListTemporary(@Valid @RequestBody ItemListTemporaryParamVo itemListTemporaryParamVo, @RequestBody SmsInfoVo smsInfoVo,HttpServletRequest request){
-        Map<String,Object> map;
-        ContentResultForm firstStepResult = temporarySaveOrUpdateSmsInfo(smsInfoVo, request);
+    public ContentResultForm itemListTemporary(@Valid @RequestBody ItemListTemporaryParamVo itemListTemporaryParamVo,HttpServletRequest request){
+        Map<String,Object> map=new HashMap<>();
+        ContentResultForm firstStepResult = temporarySaveOrUpdateSmsInfo(itemListTemporaryParamVo.getSmsInfoVo(), request);
         String applyinstId="";
         if(firstStepResult.isSuccess()){
             Map<String,Object> firstStepResultContent=(Map<String,Object>)(firstStepResult.getContent());
+            BeanUtils.copyProperties(firstStepResultContent,map);
             applyinstId=(String)firstStepResultContent.get("applyinstId");
         }else {
             return new ContentResultForm(false,"",firstStepResult.getMessage());
         }
         try{
             itemListTemporaryParamVo.setApplyinstId(applyinstId);
-            map=restApplyCommonService.submitItemList(itemListTemporaryParamVo);
+            map=restApplyCommonService.submitItemList(itemListTemporaryParamVo,map);
+            map.put("applyinstId",applyinstId);
+        }catch (Exception e){
+            return new ContentResultForm(false,"",e.getMessage());
+        }
+        return new ContentResultForm(true,map,"暂存成功！");
+    }
+
+    @PostMapping("/matList/stage/temporary")
+    @ApiOperation(value = "阶段申报-->暂存材料)")
+    public ContentResultForm matListStageTemporary(@Valid @RequestBody MatListStageTemporaryParamVo matListStageTemporaryParamVo,HttpServletRequest request){
+        Map<String,Object> map=new HashMap<>();
+        ContentResultForm secondStepResult = itemListTemporary(matListStageTemporaryParamVo.getItemListTemporaryParamVo(), request);
+        String applyinstId="";
+        if(secondStepResult.isSuccess()){
+            Map<String,Object> secondStepResultContent=(Map<String,Object>)(secondStepResult.getContent());
+            BeanUtils.copyProperties(secondStepResultContent,map);
+            applyinstId=(String)secondStepResultContent.get("applyinstId");
+        }else {
+            return new ContentResultForm(false,"",secondStepResult.getMessage());
+        }
+        try{
+            matListStageTemporaryParamVo.setApplyinstId(applyinstId);
+            restApplyCommonService.submitMatmList(matListStageTemporaryParamVo);
+            map.put("applyinstId",applyinstId);
+        }catch (Exception e){
+            return new ContentResultForm(false,"",e.getMessage());
+        }
+        return new ContentResultForm(true,map,"暂存成功！");
+    }
+
+
+    @PostMapping("/matList/series/temporary")
+    @ApiOperation(value = "单项申报-->暂存材料)")
+    public ContentResultForm matListSeriesTemporary(@Valid @RequestBody MatListSeiesTemporaryParamVo matListSeiesTemporaryParamVo,HttpServletRequest request){
+        Map<String,Object> map=new HashMap<>();
+        ContentResultForm secondStepResult = stateListSeriesTemporary(matListSeiesTemporaryParamVo.getStateListSeriesTemporaryParamVo(),request);//暂存情形
+        String applyinstId="";
+        if(secondStepResult.isSuccess()){
+            Map<String,Object> secondStepResultContent=(Map<String,Object>)(secondStepResult.getContent());
+            BeanUtils.copyProperties(secondStepResultContent,map);
+            applyinstId=(String)secondStepResultContent.get("applyinstId");
+        }else {
+            return new ContentResultForm(false,"",secondStepResult.getMessage());
+        }
+        try{
+            matListSeiesTemporaryParamVo.setApplyinstId(applyinstId);
+            restApplyCommonService.submitMatmList(matListSeiesTemporaryParamVo);
+            map.put("applyinstId",applyinstId);
+        }catch (Exception e){
+            return new ContentResultForm(false,"",e.getMessage());
+        }
+        return new ContentResultForm(true,map,"暂存成功！");
+    }
+
+
+
+    @PostMapping("/stateList/series/temporary")
+    @ApiOperation(value = "单项申报-->暂存情形)")
+    public ContentResultForm stateListSeriesTemporary(@Valid @RequestBody StateListSeriesTemporaryParamVo stateListSeriesTemporaryParamVo,HttpServletRequest request){
+        Map<String,Object> map=new HashMap<>();
+        ContentResultForm firstStepResult = temporarySaveOrUpdateSmsInfo(stateListSeriesTemporaryParamVo.getSmsInfoVo(), request);
+        String applyinstId="";
+        String seriesinstId="";
+        if(firstStepResult.isSuccess()){
+            Map<String,Object> firstStepResultContent=(Map<String,Object>)(firstStepResult.getContent());
+            BeanUtils.copyProperties(firstStepResultContent,map);
+            applyinstId=(String)firstStepResultContent.get("applyinstId");
+            seriesinstId=(String) firstStepResultContent.get("seriesinstId");
+        }else {
+            return new ContentResultForm(false,"",firstStepResult.getMessage());
+        }
+        try{
+            stateListSeriesTemporaryParamVo.setApplyinstId(applyinstId);
+            restApplyCommonService.submitSeriesStateList(stateListSeriesTemporaryParamVo,seriesinstId,map);
             map.put("applyinstId",applyinstId);
         }catch (Exception e){
             return new ContentResultForm(false,"",e.getMessage());

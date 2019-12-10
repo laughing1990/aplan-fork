@@ -2003,31 +2003,31 @@ var vm = new Vue({
       selStateIds=selStateIds.filter(function(item, index) {
         //当前元素，在原始数组中的第一个索引==当前索引值，否则返回当前元素
         return selStateIds.indexOf(item, 0) === index
-      })
-      return selStateIds;
-    },
-    // 根据阶段获取情形和材料
-    getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
-      var selStateIds = [];
-      var parentStateId = data.parentStateId?data.parentStateId:'ROOT';
-      var questionStateId = pData.parStateId?pData.parStateId:'';
-      var stateParallelItems=data.stateParallelItems?data.stateParallelItems:[];
-      var stateOptionItems=data.stateOptionItems?data.stateOptionItems:[];
-      var _that = this;
-      var _parentId = data.parStateId?data.parStateId:'ROOT';
-      if(checkFlag==false){
-        selStateIds = _that.getStatusListId();
-        for (var i = 0;i< _that.stateList.length;i++) { // 清空情形下所对应情形
-          var obj = _that.stateList[i];
-          if(obj&&(obj.parentStateId == _parentId)||(obj&&obj.parentStateId!=null&&(selStateIds.indexOf(obj.parentStateId)==-1))){
-            if(typeof(obj.selectAnswerId)=='object'&&obj.selectAnswerId.length>0){
-              obj.selectAnswerId.map(function(itemSel){
-                selStateIds=selStateIds.filter(function(item, index) {
-                  return item !== itemSel;
-                })
-              });
-            }else if(obj.selectAnswerId !== '') {
-              selStateIds=selStateIds.filter(function(item, index) {
+                  })
+    return selStateIds;
+},
+// 根据阶段获取情形和材料
+getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
+  var selStateIds = [];
+  var parentStateId = data.parentStateId?data.parentStateId:'ROOT';
+  var questionStateId = pData.parStateId?pData.parStateId:'';
+  var stateParallelItems=data.stateParallelItems?data.stateParallelItems:[];
+  var stateOptionItems=data.stateOptionItems?data.stateOptionItems:[];
+  var _that = this;
+  var _parentId = data.parStateId?data.parStateId:'ROOT';
+  if(checkFlag==false){
+    selStateIds = _that.getStatusListId();
+    for (var i = 0;i< _that.stateList.length;i++) { // 清空情形下所对应情形
+      var obj = _that.stateList[i];
+      if(obj&&(obj.parentStateId == _parentId)||(obj&&obj.parentStateId!=null&&(selStateIds.indexOf(obj.parentStateId)==-1))){
+        if(typeof(obj.selectAnswerId)=='object'&&obj.selectAnswerId.length>0){
+          obj.selectAnswerId.map(function(itemSel){
+            selStateIds=selStateIds.filter(function(item, index) {
+              return item !== itemSel;
+            })
+          });
+        }else if(obj.selectAnswerId !== '') {
+          selStateIds=selStateIds.filter(function(item, index) {
                 return item !== obj.selectAnswerId;
               })
             }
@@ -2390,14 +2390,16 @@ var vm = new Vue({
         var _that = this;
         if (data.dybzspjdxh != null) {
             // ---------广东模式需放开以下注释 start----------
-            /*    var _dybzspjdxh = data.dybzspjdxh.split(",");
-                if (_dybzspjdxh.length > 0) {
+       /*         var _dybzspjdxh = data.dybzspjdxh.split(",");
+                if (_dybzspjdxh.length > 1) {
                     _dybzspjdxh.forEach(function (item) {
                         if (item != '') {
                             _that.dybzspjdxh.push(item);
                         }
                     });
-                }   */
+                } else if(_dybzspjdxh.length == 1){
+                  _that.stageFlag = _dybzspjdxh[0];
+                }    */
             // ---------广东模式需放开以下注释 end----------
         }
 
@@ -3299,7 +3301,7 @@ var vm = new Vue({
             message: '删除成功',
             type: 'success'
           });
-          _that.getFileListWin(matData.content,matData);
+          _that.getFileListWin(res.content,matData);
         }else {
           _that.$message({
             message: res.message?res.message:'删除失败',
@@ -4145,6 +4147,11 @@ var vm = new Vue({
           });
           _that.showProjTree();
           _that.addChildProjShow = false;
+        }else{
+          _that.$message({
+            message: data.message,
+            type: 'error'
+          });
         }
       }, function (msg) {
         _that.addChildLoading = false;

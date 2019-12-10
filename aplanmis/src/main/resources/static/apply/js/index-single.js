@@ -2550,7 +2550,7 @@ var vm = new Vue({
                 data: {matinstId: matData.matinstId, detailIds: data.fileId}
             }, function (res) {
                 if (res.success) {
-                    _that.getFileListWin(matData.matinstId, matData);
+                    _that.getFileListWin(res.content, matData);
                     _that.$message({
                         message: '删除成功',
                         type: 'success'
@@ -2688,7 +2688,7 @@ var vm = new Vue({
                 data: {matinstId: _that.selMatinstId, detailIds: detailIds}
             }, function (res) {
                 if (res.success) {
-                    _that.getFileListWin(_that.selMatRowData.matinstId, _that.selMatRowData);
+                    _that.getFileListWin(res.content, _that.selMatRowData);
                     _that.$message({
                         message: '删除成功',
                         type: 'success'

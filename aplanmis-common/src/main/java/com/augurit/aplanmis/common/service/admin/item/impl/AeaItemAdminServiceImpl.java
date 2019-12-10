@@ -292,6 +292,32 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
     }
 
     @Override
+    public List<AeaItem> gtreeLatestItem(AeaItemBasic basic){
+
+        List<AeaItem> allNodes = new ArrayList<>();
+        String title = "工程建设审批事项库";
+        AeaItem rootNode = new AeaItem();
+        rootNode.setId("root");
+        rootNode.setName(title);
+        rootNode.setType("root");
+        rootNode.setOpen(true);
+        rootNode.setIsParent(true);
+        rootNode.setNocheck(true);
+        allNodes.add(rootNode);
+
+        // 所有最新版本事项,没有考虑是否发布
+        basic.setRootOrgId(SecurityContext.getCurrentOrgId());
+        List<AeaItemBasic> allItems = aeaItemBasicMapper.listLatestAeaItemBasic(basic);
+        if(allItems!=null&&allItems.size()>0){
+            for(AeaItemBasic itemBasic : allItems){
+                AeaItem item = convertItemNode(itemBasic);
+                allNodes.add(item);
+            }
+        }
+        return allNodes;
+    }
+
+    @Override
     public List<AeaItem> gtreeOkVerItemNoRelSelf(AeaItemBasic basic){
 
         List<AeaItem> allNodes = new ArrayList<>();
@@ -935,6 +961,7 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
 
     @Override
     public List<AeaItem> gtreeItem() {
+
         AeaItemBasic aeaItemBasic = new AeaItemBasic();
         aeaItemBasic.setParentItemId("root");
         // 所有最新版本事项,没有考虑是否发布

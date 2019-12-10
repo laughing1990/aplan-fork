@@ -27,6 +27,7 @@ var vm = new Vue({
       isScroll: false, // 页面是否出现滚动条
       projPurchaseId: '',
       purchaseDetails: {},
+      approveProjInfo: {},
       activeName: 3,
       fileList: [],
       qualificationTree: false, // 是否展示资质树
@@ -49,13 +50,6 @@ var vm = new Vue({
     var _this = this;
     this.getPublicProjPurchaseDatail();
     this.contentMinHeight = this.curHeight - 295;
-    // var curLoginInfo = localStorage.getItem('loginInfo');
-    // if(curLoginInfo){
-    //   curLoginInfo = JSON.parse(curLoginInfo);
-    //   if(curLoginInfo.isOwner != 1){
-    //     this.isShowSignBtn = true;
-    //   }
-    // }
   },
   methods: {
     getPublicProjPurchaseDatail: function () {
@@ -67,6 +61,7 @@ var vm = new Vue({
       }, function (data) {
         if (data.content) {
           _that.purchaseDetails = data.content;
+          _that.approveProjInfo = data.content.approveProjInfo;
 
           var curLoginInfo = localStorage.getItem('loginInfo');
           if (curLoginInfo) {

@@ -11,12 +11,13 @@ import com.augurit.agcloud.opus.common.sc.scc.runtime.kernal.support.om.OpusOmZt
 import com.augurit.agcloud.opus.common.service.om.OpuOmOrgService;
 import com.augurit.aplanmis.common.constants.DicConstants;
 import com.augurit.aplanmis.common.domain.AeaParTheme;
+import com.augurit.aplanmis.common.domain.AeaParThemeVer;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.common.dto.ApproveProjInfoDto;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
 import com.augurit.aplanmis.common.service.admin.opus.AplanmisOpuOmOrgAdminService;
 import com.augurit.aplanmis.common.service.admin.par.AeaParThemeAdminService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
+import com.augurit.aplanmis.common.service.theme.AeaParThemeService;
 import com.augurit.aplanmis.common.utils.CommonTools;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
@@ -76,6 +77,8 @@ public class RestApplyProjController {
 
     @Autowired
     private AplanmisOpuOmOrgAdminService aplanmisOpuOmOrgAdminService;
+    @Autowired
+    private AeaParThemeService aeaParThemeService;
 
     @GetMapping("todeclarePage")
     @ApiOperation(value = "跳转我要申报页面")
@@ -193,15 +196,32 @@ public class RestApplyProjController {
      * @return
      */
     @GetMapping("/getThemes")
-    @ApiOperation("我要申报  --> 获取主题信息")
-    public ResultForm getThemes(String themeType) throws Exception {
-        AeaParTheme aeaParTheme = new AeaParTheme();
-        if (StringUtils.isNotBlank(themeType)) {
-            aeaParTheme.setThemeType(themeType);
+    @ApiOperation("我要申报  --> 获取主题列表信息")
+    @ApiImplicitParams({@ApiImplicitParam(value = "对应国家标准辅线服务:多评合一（51）、方案联审（52）、联合审图（53）、联合测绘（54C）、联合验收（54Y）",name = "dygjbzfxfw",required = false,dataType = "string")})
+    public ResultForm getThemes(String themeType,String dygjbzfxfw) throws Exception {
+        if(StringUtils.isBlank(dygjbzfxfw)){
+            AeaParTheme aeaParTheme = new AeaParTheme();
+            if (StringUtils.isNotBlank(themeType)) {
+                aeaParTheme.setThemeType(themeType);
+            }
+            aeaParTheme.setIsOnlineSb("1");
+            List<AeaParTheme> aeaParThemes=aeaParThemeAdminService.listAeaParTheme(aeaParTheme);
+            if(aeaParThemes.size()>0){
+                aeaParThemes.stream().forEach(theme->{
+                    AeaParThemeVer themeVer = null;
+                    try {
+                        themeVer = aeaParThemeService.getAeaParThemeVerByThemeIdAndVerNum(theme.getThemeId(),null, SecurityContext.getCurrentOrgId());
+                    } catch (Exception e) {
+                        logger.error("getThemes 获取主题信息接口查询主题版本异常:"+e.getMessage(),e);
+                    }
+                    theme.setThemeVerId(themeVer==null?"":themeVer.getThemeVerId());
+                });
+            }
+            return new ContentResultForm<>(true, aeaParThemes);
+        }else{
+            List<AeaParTheme> aeaParThemes=aeaParThemeService.getTestRunOrPublishedVerAeaParThemeByDygjbzfxfw(dygjbzfxfw,"1");
+            return new ContentResultForm<>(true, aeaParThemes);
         }
-        aeaParTheme.setIsOnlineSb("1");
-        List<AeaParTheme> aeaParThemes=aeaParThemeAdminService.listAeaParTheme(aeaParTheme);
-        return new ContentResultForm<>(true, aeaParThemes);
     }
 
 

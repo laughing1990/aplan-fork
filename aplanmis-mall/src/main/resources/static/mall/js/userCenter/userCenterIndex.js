@@ -103,11 +103,11 @@ var userCenter = (function () {
                                 value: 'MyMaterials',
                                 select: false,
                             },
-                            /*{
-                                name: '我的证照库',
-                                value: '',
-                                select: false,
-                            },*/
+                            // {
+                            //     name: '我的证照库',
+                            //     value: 'MyCertificateLibrary',
+                            //     select: false,
+                            // },
                         ]
                     },
                     {
@@ -129,7 +129,13 @@ var userCenter = (function () {
                 supplyNum:0,
                 withdrawalNum:0,
                 myProLeftShow: true,
-
+               clientRightH:980 + "px",
+                observer: null,
+                firedNum: 0,
+                recordOldValue: { // 记录下旧的宽高数据，避免重复触发回调函数
+                    width: '0',
+                    height: '0'
+                }
             }
         },
         computed: {
@@ -138,11 +144,6 @@ var userCenter = (function () {
                 var _h = $(window).height()+70
                 return _h + 'px'
             },
-            // 获取浏览器高度
-            clientRightH: function () {
-                var _h = $('#my-pro-right_m').height();
-                return _h + 'px'
-            }
         },
         created: function () {
             this.init();
@@ -221,6 +222,7 @@ var userCenter = (function () {
                     return false;
                 }
                 ts.moduleLoad(mod.value + '.html', '#' + mod.value);
+                ts.setNavHeight();
             },
 
             // 模块加载
@@ -257,19 +259,28 @@ var userCenter = (function () {
 
                 // 登陆用户数据
                 var _curLoginInfo = localStorage.getItem('loginInfo');
-
                 if (_curLoginInfo) {
-                    this.$nextTick(function () {
-
-                    })
                     this.curentLoginInfo = JSON.parse(_curLoginInfo);
                 } else {
-                    window.location.href = window.location.origin + '/aplanmis-mall/rest/mall/loginIndex';
-                    return this.$message({
-                        message: '您尚未登陆，请先登陆！',
-                        type: 'warning'
-                    })
+                    // window.location.href = window.location.origin + '/aplanmis-mall/rest/mall/loginIndex';
+                    // return this.$message({
+                    //     message: '您尚未登陆，请先登陆！',
+                    //     type: 'warning'
+                    // })
                 }
+            },
+
+            // 设置左边的导航条高度
+            setNavHeight:function(){
+                _this = this;
+                setTimeout(function () {
+                    var _h = $('#my-pro-right_m').height();
+                    console.log(_h)
+                    if(_h < 900){
+                        _h = 1066
+                    }
+                    _this.clientRightH = _h +"px";
+                },1000)
             },
 
             // 退出

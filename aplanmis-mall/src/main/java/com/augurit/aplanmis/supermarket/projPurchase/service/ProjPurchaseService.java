@@ -721,23 +721,32 @@ public class ProjPurchaseService {
             BscDicCodeItem dueUnitType = bscDicCodeMapper.getItemByTypeCodeAndItemCodeAndOrgId("DUE_UNIT_TYPE", vo.getAgentItemBjType(), "012aa547-7104-418d-87cc-824f24f1a278");
             if (null != dueUnitType) {
                 vo.setAgentItemDueUnitType(dueUnitType.getItemName());
+                vo.setAgentItemDueUnit(dueUnitType.getItemName());
+                vo.setAnticipateType(dueUnitType.getItemName());
             }
             String itemId = vo.getAgentItemId();
             String rootOrgId = vo.getRootOrgId();
             //设置服务对象
-            String itemVerId = vo.getAgentItemVerId();
-            AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(itemVerId, rootOrgId);
-            String serviceObjectCode = com.augurit.agcloud.framework.util.StringUtils.isNotBlank(aeaItemBasic.getXkdx()) ? aeaItemBasic.getXkdx() : SERVICE_OBJECT_CODE;
+            /*String itemVerId = vo.getAgentItemVerId();
+            AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(itemVerId, rootOrgId);*/
+            String serviceObjectCode = com.augurit.agcloud.framework.util.StringUtils.isNotBlank(vo.getAgentItemFwdx()) ? vo.getAgentItemFwdx() : SERVICE_OBJECT_CODE;
             String serviceObject = this.getServiceObject(SERVICE_OBJECT_DICT_NAME, serviceObjectCode, rootOrgId);
+            vo.setAgentItemFwdx(serviceObject);
             //关联的行政事项
             AeaItem item = aeaItemMapper.getAeaItemById(itemId);
             if (item == null) return list;
+            List<AeaItemBasic> parentItems = aeaItemBasicMapper.getAgentParentItem(itemId, rootOrgId);
+            if (!parentItems.isEmpty()) {
+                String names = parentItems.stream().map(AeaItemBasic::getItemName).collect(Collectors.joining(","));
+                vo.setItemName(names);
+                continue;
+            }
             String itemSeq = item.getItemSeq();
             if (StringUtils.isNotBlank(itemSeq)) {
                 String[] itemSeqs = itemSeq.split("\\.");
                 if (itemSeqs.length > 1) {
                     String rootItemId = itemSeqs[1];
-                    List<AeaItemBasic> parentItems = aeaItemBasicMapper.getAgentParentItem(rootItemId, rootOrgId);
+                    parentItems = aeaItemBasicMapper.getAgentParentItem(rootItemId, rootOrgId);
                     String names = parentItems.stream().map(AeaItemBasic::getItemName).collect(Collectors.joining(","));
                     vo.setItemName(names);
                 }
@@ -1519,6 +1528,7 @@ public class ProjPurchaseService {
     public PurchaseDetailVo getPurchaseDetail(String projPurchaseId) throws Exception {
         PurchaseDetailVo form = new PurchaseDetailVo();
         //查询采购项目,中介服务，机构要求等 信息
+        if (StringUtils.isBlank(projPurchaseId)) return form;
         PurchaseProjVo purchaseProj = aeaImProjPurchaseMapper.getProjPurchaseInfoByApplyinstCode(null, projPurchaseId);
         if (null == purchaseProj) throw new Exception("can not find purchase proj");
         //查询附件
@@ -1554,33 +1564,25 @@ public class ProjPurchaseService {
             purchaseProj.setQualRequire("无");
         }
         form.setPurchaseProj(purchaseProj);
-        AeaHiApplyinst applyinst = aeaHiApplyinstMapper.getAeaHiApplyinstByCode(purchaseProj.getApplyinstCode());
-        if (null == applyinst) throw new Exception("can not find applyisnt");
-        List<AeaHiIteminst> itemisntList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinst.getApplyinstId());
-        //中介事项信息
-        if (itemisntList.isEmpty()) throw new Exception("can not find iteminst info ");
-        AeaHiIteminst iteminst = itemisntList.get(0);
-        String itemProperty = iteminst.getItemProperty();//办件类型
-        String dueNumUnit = iteminst.getDueNumUnit();//办理时限单位
+        String itemProperty = purchaseProj.getItemProperty();//办件类型
+        String dueNumUnit = purchaseProj.getDueUnit();//办理时限单位
         //设置事项办件类型
         BscDicCodeItem item_property = bscDicCodeMapper.getItemByTypeCodeAndItemCodeAndOrgId("ITEM_PROPERTY", itemProperty, "012aa547-7104-418d-87cc-824f24f1a278");
         if (null != item_property) {
-            iteminst.setItemProperty(item_property.getItemName());
+            purchaseProj.setItemProperty(item_property.getItemName());
         }
         //办理时限单位
-        BscDicCodeItem dunNumUnit = bscDicCodeMapper.getItemByTypeCodeAndItemCodeAndOrgId("ITEM_PROPERTY", dueNumUnit, "012aa547-7104-418d-87cc-824f24f1a278");
+        BscDicCodeItem dunNumUnit = bscDicCodeMapper.getItemByTypeCodeAndItemCodeAndOrgId("DUE_UNIT_TYPE", dueNumUnit, "012aa547-7104-418d-87cc-824f24f1a278");
         if (null != item_property) {
-            iteminst.setDueNumUnit(item_property.getItemName());
+            purchaseProj.setDueUnit(dunNumUnit.getItemName());
+            purchaseProj.setAnticipateType(dunNumUnit.getItemName());
         }
         //服务对象
-
         String currentOrgId = SecurityContext.getCurrentOrgId();
-        String itemVerId = iteminst.getItemVerId();
-        AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(itemVerId, currentOrgId);
-        String serviceObjectCode = StringUtils.isNotBlank(aeaItemBasic.getXkdx()) ? aeaItemBasic.getXkdx() : SERVICE_OBJECT_CODE;
+        String serviceObjectCode = StringUtils.isNotBlank(purchaseProj.getXkdx()) ? purchaseProj.getXkdx() : SERVICE_OBJECT_CODE;
         String serviceObject = this.getServiceObject(SERVICE_OBJECT_DICT_NAME, serviceObjectCode, currentOrgId);
-
-        form.changeToIteminst(iteminst, serviceObject);
+        //关联的行政审批事项
+        form.changeToIteminst(serviceObject);
         return form;
     }
 
@@ -1668,4 +1670,64 @@ public class ProjPurchaseService {
         }
     }
 
+    /**
+     * 申报页获取中介事项
+     *
+     * @param keyword
+     * @param page
+     * @return
+     */
+    public List<AeaItemServiceVo> getAgentItemList(String keyword, Page page) {
+
+        if (page != null) {
+            PageHelper.startPage(page);
+        }
+//        List<AeaItemServiceVo> list = aeaItemBasicMapper.listItemServiceVo(keyword, null);
+        List<AeaItemServiceVo> list = aeaItemBasicMapper.listAgentItemServiceVo(keyword, null);
+
+        for (AeaItemServiceVo vo : list) {
+            //设置事项办件类型
+            BscDicCodeItem item_property = bscDicCodeMapper.getItemByTypeCodeAndItemCodeAndOrgId("ITEM_PROPERTY", vo.getAgentItemProperty(), "012aa547-7104-418d-87cc-824f24f1a278");
+            if (null != item_property) {
+                vo.setAgentItemPropertyName(item_property.getItemName());
+            }
+
+            BscDicCodeItem dueUnitType = bscDicCodeMapper.getItemByTypeCodeAndItemCodeAndOrgId("DUE_UNIT_TYPE", vo.getAgentItemBjType(), "012aa547-7104-418d-87cc-824f24f1a278");
+            if (null != dueUnitType) {
+                vo.setAgentItemDueUnitType(dueUnitType.getItemName());
+                vo.setAgentItemDueUnit(dueUnitType.getItemName());
+                vo.setAnticipateType(dueUnitType.getItemName());
+            }
+            String itemId = vo.getAgentItemId();
+            String rootOrgId = vo.getRootOrgId();
+            //设置服务对象
+            /*String itemVerId = vo.getAgentItemVerId();
+            AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(itemVerId, rootOrgId);*/
+            String serviceObjectCode = com.augurit.agcloud.framework.util.StringUtils.isNotBlank(vo.getAgentItemFwdx()) ? vo.getAgentItemFwdx() : SERVICE_OBJECT_CODE;
+            String serviceObject = this.getServiceObject(SERVICE_OBJECT_DICT_NAME, serviceObjectCode, rootOrgId);
+            vo.setAgentItemFwdx(serviceObject);
+            //关联的行政事项
+            AeaItem item = aeaItemMapper.getAeaItemById(itemId);
+            if (item == null) return list;
+            List<AeaItemBasic> parentItems = aeaItemBasicMapper.getAgentParentItem(itemId, rootOrgId);
+            if (!parentItems.isEmpty()) {
+                String names = parentItems.stream().map(AeaItemBasic::getItemName).collect(Collectors.joining(","));
+                vo.setItemName(names);
+                continue;
+            }
+            String itemSeq = item.getItemSeq();
+            if (StringUtils.isNotBlank(itemSeq)) {
+                String[] itemSeqs = itemSeq.split("\\.");
+                if (itemSeqs.length > 1) {
+                    String rootItemId = itemSeqs[1];
+                    parentItems = aeaItemBasicMapper.getAgentParentItem(rootItemId, rootOrgId);
+                    String names = parentItems.stream().map(AeaItemBasic::getItemName).collect(Collectors.joining(","));
+                    vo.setItemName(names);
+                }
+            }
+
+        }
+
+        return list;
+    }
 }

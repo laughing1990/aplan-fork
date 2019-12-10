@@ -1113,23 +1113,30 @@ HIGHEST_RATE,QUOTE_TYPE,ROOT_ORG_ID
     <select id="getSelectionNoticeByProjPurchaseId" resultType="AeaImProjPurchase">
         select
         pinfo.PROJ_NAME projName,
-        item.ITEM_VER_ID,
+        item.ITEM_VER_ID itemVerId,
         basic.ITEM_NAME itemName,
+        basic.ITEM_BASIC_ID itemBasicId,
         pinfo.Local_CODE localCode ,
+        pinfo.PROJ_SCALE projScale,
+        pinfo.PROJ_SCALE_CONTENT projScaleContent,
         bid.BIDDING_TIME biddingTime,
+        aim.SERVICE_NAME serviceName,
         (
             SELECT MAX(aibp.PRICE) FROM aea_im_bidding_price aibp
             WHERE aibp.IS_DELETE = '0' AND aibp.IS_CHOICE = '1'
             AND aibp.UNIT_BIDDING_ID = bid.UNIT_BIDDING_ID
         ) realPrice,
         bid.UNIT_INFO_ID binfoId,
-        (select aui.APPLICANT from aea_unit_info aui where aui.UNIT_INFO_ID = purchase.PUBLISH_UNIT_INFO_ID) applicant,
+        case when purchase.PUBLISH_LINKMAN_INFO_ID is null then (select aui.APPLICANT from aea_unit_info aui where aui.UNIT_INFO_ID = purchase.PUBLISH_UNIT_INFO_ID)
+        else (select ali.LINKMAN_NAME from aea_linkman_info ali where ali.LINKMAN_INFO_ID = purchase.PUBLISH_LINKMAN_INFO_ID) end applicant,
+        /*(select aui.APPLICANT from aea_unit_info aui where aui.UNIT_INFO_ID = purchase.PUBLISH_UNIT_INFO_ID) applicant,*/
         uinfo.APPLICANT selectedApplicant,
         uinfo.APPLICANT_DETAIL_SITE selectedAppAddr,
         purchase.* from
         (select * from aea_im_proj_purchase pp where pp.PROJ_PURCHASE_ID = #{projPurchaseId})purchase
         LEFT JOIN aea_proj_info pinfo on purchase.PROJ_INFO_ID = pinfo.PROJ_INFO_ID
         LEFT JOIN aea_im_service_item  item on purchase.SERVICE_ITEM_ID = item.SERVICE_ITEM_ID
+        LEFT JOIN aea_im_service aim on aim.SERVICE_ID=item.SERVICE_ID
         LEFT JOIN aea_item_basic basic on item.ITEM_VER_ID = basic.ITEM_VER_ID
         LEFT JOIN aea_im_unit_bidding bid on bid.PROJ_PURCHASE_ID = purchase.PROJ_PURCHASE_ID and bid.IS_WON_BID="1"
         LEFT JOIN aea_unit_info uinfo on uinfo.UNIT_INFO_ID = bid.UNIT_INFO_ID
@@ -1510,6 +1517,26 @@ HIGHEST_RATE,QUOTE_TYPE,ROOT_ORG_ID
         ${alias}.FINANCIAL_FUND_PROPORTION financialFundProportion,
         ${alias}.SOCIAL_FUND_PROPORTION socialFundProportion
     </sql>
+    <sql id="item_columns">
+        ${alias}.ITEM_VER_ID AS itemVerId,
+        ${alias}.ITEM_NAME as itemName,
+        ${alias}.DUE_NUM as dueNum,
+        ${alias}.BJ_TYPE as dueUnit,
+        ${alias}.ITEM_PROPERTY as itemProperty,
+        ${alias}.XKDX as xkdx,
+        ${alias}.GUIDE_ORG_NAME as guideOrgName,
+        ${alias}.ANTICIPATE_DAY as anticipateDay,
+        ${alias}.ANTICIPATE_TYPE as anticipateType
+    </sql>
+    <sql id="iteminst_columns">
+        ${alias}.ITEMINST_ID AS iteminstId,
+        ${alias}.ITEMINST_CODE as iteminstCode,
+        ${alias}.ITEMINST_NAME as iteminstName,
+        ${alias}.ITEMINST_STATE as iteminstState,
+        ${alias}.APPROVE_ORG_ID as approveOrgId,
+        ${alias}.ORG_NAME as approveOrgName
+
+    </sql>
     <!--查询审批页采购项目详情-->
     <select id="getProjPurchaseInfoByApplyinstCode" resultType="com.augurit.aplanmis.common.vo.purchase.PurchaseProjVo">
         select
@@ -1525,6 +1552,19 @@ HIGHEST_RATE,QUOTE_TYPE,ROOT_ORG_ID
             <property name="alias" value="aiur"/>
         </include>
         ,
+        <include refid="item_columns">
+            <property name="alias" value="aib"/>
+        </include>
+        ,
+        <include refid="iteminst_columns">
+            <property name="alias" value="temp1"/>
+        </include>
+        ,
+        ais.SERVICE_NAME AS serviceName,
+        case when aipp.PUBLISH_LINKMAN_INFO_ID is null then (select aui.APPLICANT from aea_unit_info aui where
+        aui.UNIT_INFO_ID = aipp.PUBLISH_UNIT_INFO_ID)
+        else (select ali.LINKMAN_NAME from aea_linkman_info ali where ali.LINKMAN_INFO_ID =
+        aipp.PUBLISH_LINKMAN_INFO_ID) end publishUnitName,
         (SELECT
         <if test="_databaseId == 'oracle'">
             WM_CONCAT(aui.APPLICANT)
@@ -1544,6 +1584,16 @@ HIGHEST_RATE,QUOTE_TYPE,ROOT_ORG_ID
         left join aea_proj_info api on api.PROJ_INFO_ID=aipp.PROJ_INFO_ID
         left join aea_im_unit_require aiur on aiur.UNIT_REQUIRE_ID=aipp.UNIT_REQUIRE_ID
         left join aea_im_service ais on ais.service_id=aipp.service_id
+        left join aea_im_service_item aisi on aisi.SERVICE_ITEM_ID=aipp.SERVICE_ITEM_ID
+        left join aea_item_basic aib on aisi.ITEM_VER_ID=aib.ITEM_VER_ID
+        LEFT JOIN (
+        select
+        ahi.ITEMINST_ID,ahi.ITEMINST_CODE,ahi.ITEMINST_NAME,ahi.ITEMINST_STATE,ahi.APPROVE_ORG_ID,aha.APPLYINST_CODE,ooo.ORG_NAME
+        from aea_hi_iteminst ahi
+        LEFT JOIN opu_om_org ooo on ooo.org_id=ahi.APPROVE_ORG_ID
+        INNER JOIN aea_hi_seriesinst ahs on ahs.SERIESINST_ID=ahi.SERIESINST_ID
+        inner join aea_hi_applyinst aha on aha.applyinst_id=ahs.applyinst_id) temp1 on
+        temp1.APPLYINST_CODE=aipp.APPLYINST_CODE
         <where>
             <if test="applyinstCode!=null and applyinstCode!=''">
                 and aipp.APPLYINST_CODE=#{applyinstCode}

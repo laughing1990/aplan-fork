@@ -61,45 +61,61 @@
               <i class="el-icon-time"></i>
             </div>
             <div class="txt" v-if="!isShowSignBtn">
-                <p>报名结束</p>
+              <p>报名结束</p>
             </div>
             <div class="txt" v-else>
               <p>报名截止时间</p>
               <p>{{purchaseDetails.expirationDate | formatDateTime}}</p>
             </div>
           </div>
-        </div>
-        <div class="article-tit mt-2">关于为【{{purchaseDetails.projName}}】，公开选取【{{purchaseDetails.serviceContent}}】机构的公告</div>
+        </div><!--【{{purchaseDetails.serviceContent}}】-->
+        <div class="article-tit mt-2">关于为【{{purchaseDetails.projName}}】，公开选取服务机构的公告</div>
         <ul>
           <li>
             <b>项目业主：</b>
             <div class="txt">{{purchaseDetails.applicant}}</div>
           </li>
           <li>
+            <b>采购项目编码：</b>
+            <div class="txt">{{purchaseDetails.localCode}}</div>
+          </li>
+          <li>
             <b>采购项目名称：</b>
             <div class="txt">{{purchaseDetails.projName}}</div>
+          </li>
+          <li>
+            <b>采购项目规模：</b>
+            <div class="txt">
+              <p>{{purchaseDetails.projScaleContent}}&nbsp;&nbsp; {{purchaseDetails.projScale}} </p>
+            </div>
           </li>
           <li>
             <b>中介服务事项：</b>
             <div class="txt">
               <a :href="'../imServices.html?itemBasicId='+purchaseDetails.itemBasicId">
-                {{purchaseDetails.serviceName}}</a>
+                {{purchaseDetails.itemName}}</a>
             </div>
+          </li>
+          <li>
+            <b>服务类型：</b>
+            <div class="txt">{{purchaseDetails.serviceName}}</div>
           </li>
           <li>
             <b>投资审批项目：</b>
             <div class="txt">{{purchaseDetails.isApproveProj==1?'是':'否'}}</div>
           </li>
-          <li>
-            <b>采购项目编码：</b>
-            <div class="txt">{{purchaseDetails.localCode}}</div>
-          </li>
-          <li>
-            <b>项目规模：</b>
-            <div class="txt">
-              <p>{{purchaseDetails.projScale}}</p>
-            </div>
-          </li>
+          <div v-if="purchaseDetails.isApproveProj==1">
+            <li>
+              <b>投资审批项目编码：</b>
+              <div class="txt">{{approveProjInfo.localCode}}</div>
+            </li>
+            <li>
+              <b>投资审批项目名称：</b>
+              <div class="txt">{{approveProjInfo.projName}}</div>
+            </li>
+          </div>
+
+
           <!--<li>-->
           <!--<b>所需服务：</b>-->
           <!--<div class="txt">{{purchaseDetails.serviceContent}}</div>-->
@@ -146,21 +162,12 @@
             <b>竞价天数：</b>
             <div class="txt">{{purchaseDetails.bidNum?purchaseDetails.bidNum+'个工作日内完成':''}}</div>
           </li>
-          <!--<li>-->
-          <!--<b>服务金额：</b>-->
-          <!--<div class="txt">暂不做评估与测算</div>-->
-          <!--</li>-->
           <li>
             <b>金额说明：</b>
             <div class="txt">{{purchaseDetails.amountExplain}}</div>
           </li>
-          <!--<li>-->
-          <!--<b>调配择优球数比例：</b>-->
-          <!--<div class="txt">%</div>-->
-          <!--</li>-->
           <li>
             <b>竞价类型：</b>
-            <!-- <div class="txt">{{purchaseDetails.biddingType==1?'随机中标':'自主选'}}</div> -->
             <div class="txt">{{purchaseDetails.biddingType | biddingTypeFormat}}</div>
           </li>
           <!-- 回避 -->
@@ -186,28 +193,8 @@
               </li>
             </template>
           </template>
-          <!--<li>-->
-          <!--<b>有无回避情况：</b>-->
-          <!--<div class="txt">否</div>-->
-          <!--</li>-->
           <li>
-            <b>是否现场见证：</b>
-            <div class="txt">{{purchaseDetails.isLiveWitness==1?'是':'否'}}</div>
-          </li>
-          <!--<li>-->
-          <!--<b>截止报名时间：</b>-->
-          <!--<div class="txt">-->
-          <!--2019-06-18 16:30-->
-          <!--</div>-->
-          <!--</li>-->
-          <li>
-            <b>审核时间：</b>
-            <div class="txt">
-              {{purchaseDetails.auditTime | formatDate }}
-            </div>
-          </li>
-          <li>
-            <b>项目业主业务咨询电话：</b>
+            <b>业主咨询电话：</b>
             <div class="txt">{{purchaseDetails.moblie}}</div>
           </li>
           <template v-if="purchaseDetails.requireExplainFile">
@@ -249,8 +236,6 @@
     th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
   <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
     th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
-<!--  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"-->
-<!--    th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>-->
   <script src="../../../static/common/js/common.js" th:src="@{/common/js/common.js}"></script>
 
   <script src="../../../static/zjcs/procurementNotice/js/details.js" th:src="@{/zjcs/procurementNotice/js/details.js}"></script>

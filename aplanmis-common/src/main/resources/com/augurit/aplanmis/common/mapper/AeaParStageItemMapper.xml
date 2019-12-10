@@ -784,7 +784,7 @@
         <include refid="allColumns">
             <property name="alias" value="apsi"/>
         </include>
-        , apt.theme_id themeId, apt.theme_name themeName, api.proj_info_id projInfoId
+        , apt.theme_id themeId, apt.theme_name themeName, api.proj_info_id projInfoId, aps.stage_name stageName
         from aea_par_theme apt
         left join aea_proj_info api on api.theme_id=apt.theme_id
         join aea_par_theme_ver aptv on aptv.theme_id=apt.theme_id

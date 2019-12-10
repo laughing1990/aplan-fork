@@ -28,14 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -164,7 +157,7 @@ public class AeaHiIteminstServiceImpl implements AeaHiIteminstService {
     @Override
     public List<AeaHiIteminst> batchInsertAeaHiIteminst(String themeVerId, String stageinstId, List<String> itemVerIds, String branchOrgMap) throws Exception {
 
-        if (StringUtils.isBlank(themeVerId)) throw new InvalidParameterException("参数themeinstId为空！");
+        if (StringUtils.isBlank(themeVerId)) throw new InvalidParameterException("参数themeVerId为空！");
         if (StringUtils.isBlank(stageinstId)) throw new InvalidParameterException("参数stageinstId为空！");
         List<AeaItemBasic> list = aeaItemBasicMapper.getAeaItemBasicListByItemVerIds(itemVerIds);
         List<AeaHiIteminst> iteminstList = new ArrayList<>();
@@ -344,6 +337,24 @@ public class AeaHiIteminstServiceImpl implements AeaHiIteminstService {
         aeaHiIteminstMapper.updateAeaHiIteminst(iteminst);
     }
 
+    @Override
+    public void updateAeaHiIteminstToleranceTime(String iteminstId, double toleranceTime, String timeruleId) throws Exception {
+        if (StringUtils.isBlank(iteminstId))
+            throw new InvalidParameterException("事项实例ID为空！");
+        if (StringUtils.isBlank(timeruleId))
+            throw new InvalidParameterException("容缺时限规则id为空！");
+        if (toleranceTime <= 0)
+            throw new InvalidParameterException("容缺时限值必须大于0！");
+
+        AeaHiIteminst iteminst = new AeaHiIteminst();
+        iteminst.setIteminstId(iteminstId);
+        iteminst.setToleranceTime(toleranceTime);
+        iteminst.setTimeruleId(timeruleId);
+        iteminst.setModifier(SecurityContext.getCurrentUserName());
+        iteminst.setModifyTime(new Date());
+        aeaHiIteminstMapper.updateAeaHiIteminst(iteminst);
+    }
+
     private AeaHiIteminst saveAndReturnAeaHiIteminstState(String iteminstId, String iteminstState) throws Exception {
         if (StringUtils.isBlank(iteminstId)) throw new InvalidParameterException("参数iteminstId为空！");
         AeaHiIteminst iteminst = aeaHiIteminstMapper.getAeaHiIteminstById(iteminstId);
@@ -426,9 +437,15 @@ public class AeaHiIteminstServiceImpl implements AeaHiIteminstService {
         aeaLogApplyStateHistService.insertOpsAeaLogApplyStateHist(iteminstId, opsUserOpinion, opsAction, opsMemo, iteminst.getIteminstState(), iteminstState, iteminst.getApproveOrgId());
     }
     @Override
-    public void batchDeleteAeaHiIteminst(String[] iteminstIds){
-        if(iteminstIds.length>0)
+    public void batchDeleteAeaHiIteminstAndBatchDelAeaLogItemStateHist(String[] iteminstIds){
+        if(iteminstIds.length>0){
             aeaHiIteminstMapper.batchDeleteAeaHiIteminst(iteminstIds);
+            List<AeaLogItemStateHist> logs=aeaLogItemStateHistService.findAeaLogItemStateHistByIteminstIds(iteminstIds);
+            if(logs.size()>0){
+                List<String> ids=logs.stream().map(AeaLogItemStateHist::getStateHistId).collect(Collectors.toList());
+                aeaLogItemStateHistService.batchDeleteAeaLogItemStateHist(ids);
+            }
+        }
     }
 
 }

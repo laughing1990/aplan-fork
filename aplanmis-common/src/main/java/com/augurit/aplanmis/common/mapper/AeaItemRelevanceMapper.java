@@ -3,6 +3,7 @@ package com.augurit.aplanmis.common.mapper;
 import com.augurit.aplanmis.common.domain.AeaItemRelevance;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ import java.util.List;
  * </ul>
  */
 @Mapper
+@Repository
 public interface AeaItemRelevanceMapper {
 
     public void insertAeaItemRelevance(AeaItemRelevance aeaItemRelevance) throws Exception;

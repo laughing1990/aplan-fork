@@ -75,9 +75,9 @@ public class StageApplyDataPageVo {
         stageApplyDataVo.setLinkmanInfoId(this.linkmanInfoId);
         stageApplyDataVo.setAppId(appId);
         stageApplyDataVo.setItemVerIds(this.itemVerIds);
-        //stageApplyDataVo.setBranchOrgMap(this.branchOrgMap);
+        stageApplyDataVo.setBranchOrgMap(this.branchOrgMap);
         stageApplyDataVo.setPropulsionItemVerIds(this.propulsionItemVerIds);
-       // stageApplyDataVo.setPropulsionBranchOrgMap(this.propulsionBranchOrgMap);
+        stageApplyDataVo.setPropulsionBranchOrgMap(this.propulsionBranchOrgMap);
         stageApplyDataVo.setProjInfoIds(this.projInfoIds);
         //stageApplyDataVo.setHandleUnitIds(this.handleUnitIds);
         //stageApplyDataVo.setBuildProjUnitMap(this.buildProjUnitMap);

@@ -1,7 +1,7 @@
 package com.augurit.aplanmis.common.service.diagram.service.impl;
 
 import com.augurit.agcloud.bpm.common.domain.ActStoTimeruleInst;
-import com.augurit.agcloud.bpm.common.service.ActStoTimeruleInstService;
+import com.augurit.agcloud.bpm.common.mapper.ActStoTimeruleInstMapper;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
@@ -77,7 +77,7 @@ public class DiagramServiceImpl implements DiagramService {
     @Autowired
     private AeaItemBasicService aeaItemBasicService;
     @Autowired
-    private ActStoTimeruleInstService actStoTimeruleInstService;
+    private ActStoTimeruleInstMapper actStoTimeruleInstMapper;
     @Autowired
     private AeaProjStageService aeaProjStageService;
     @Autowired
@@ -233,9 +233,9 @@ public class DiagramServiceImpl implements DiagramService {
                         }
                         dto.setIteminstRunTime(0d);
                         if (StringUtils.isNotBlank(dto.getIteminstId())){
-                            ActStoTimeruleInst itemActStoTimeruleInst = actStoTimeruleInstService.getProcessinstTimeruleInstByIteminstId(dto.getIteminstId());
-                            if (itemActStoTimeruleInst!=null) {
-                                dto.setIteminstRunTime(itemActStoTimeruleInst.getUseLimitTime());
+                            List<ActStoTimeruleInst> actStoTimeruleInsts = actStoTimeruleInstMapper.listProcessinstTimeruleInst(new String[]{dto.getIteminstId()}, item.getRootOrgId());
+                            if (actStoTimeruleInsts != null && actStoTimeruleInsts.size() > 0) {
+                                dto.setIteminstRunTime(actStoTimeruleInsts.get(0).getUseLimitTime());
                             }
                         }
 

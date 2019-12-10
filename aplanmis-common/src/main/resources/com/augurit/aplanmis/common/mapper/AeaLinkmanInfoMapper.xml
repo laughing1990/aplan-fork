@@ -103,7 +103,7 @@
     <select id="findLinkmanTypes" resultType="AeaLinkmanInfo">
         SELECT ali.linkman_name linkmanName,aupl.LINKMAN_TYPE linkmanType,aupl.LINKMAN_INFO_ID linkmanInfoId
         from aea_unit_proj aup
-        LEFT JOIN aea_unit_proj_linkman aupl ON aup.UNIT_PROJ_ID=aupl.UNIT_PROJ_ID
+        right JOIN aea_unit_proj_linkman aupl ON aup.UNIT_PROJ_ID=aupl.UNIT_PROJ_ID
         left join aea_linkman_info ali on  aupl.linkman_info_id=ali.linkman_info_id
         where aup.PROJ_INFO_ID=#{projInfoId}  and aup.UNIT_INFO_ID=#{unitInfoId}
     </select>

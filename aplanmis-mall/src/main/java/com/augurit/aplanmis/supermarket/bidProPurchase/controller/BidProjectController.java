@@ -7,10 +7,10 @@ import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaImUnitBidding;
 import com.augurit.aplanmis.common.domain.AeaItemService;
-import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
 import com.augurit.aplanmis.common.vo.AeaImProjPurchaseDetailVo;
 import com.augurit.aplanmis.supermarket.agentService.service.UnitAgentService;
 import com.augurit.aplanmis.supermarket.agentService.vo.AgentUnitDetailVo;
+import com.augurit.aplanmis.supermarket.bidProPurchase.ServiceLinkmanVo;
 import com.augurit.aplanmis.supermarket.bidProPurchase.service.BidProjectService;
 import com.augurit.aplanmis.supermarket.projPurchase.service.ProjPurchaseService;
 import com.github.pagehelper.Page;
@@ -322,7 +322,7 @@ public class BidProjectController {
                 return new ResultForm(false, "必填参数为空");
             }
 
-            List<AeaLinkmanInfo> list = projectService.listClientServiceLinkmanInfo(serviceId, unitInfoId);
+            List<ServiceLinkmanVo> list = projectService.listClientServiceLinkmanInfo(serviceId, unitInfoId);
             return new ContentResultForm(true, list);
         } catch (Exception e) {
             e.printStackTrace();

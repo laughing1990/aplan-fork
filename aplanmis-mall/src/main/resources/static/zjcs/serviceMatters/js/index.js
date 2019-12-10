@@ -194,7 +194,7 @@ var vm = new Vue({
           var daterc = val;
           if(daterc!=null){
               var dateMat= new Date(parseInt(daterc));
-              return formatDate(dateMat, 'yyyy.MM.dd')
+              return formatDate(dateMat, 'yyyy-MM-dd')
           }
       },
       getURLArgs:function() {

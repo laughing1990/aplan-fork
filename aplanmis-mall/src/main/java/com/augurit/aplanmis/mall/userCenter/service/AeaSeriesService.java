@@ -11,14 +11,7 @@ import com.augurit.agcloud.opus.common.domain.OpuOmUser;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.constants.ApplyType;
 import com.augurit.aplanmis.common.constants.ItemStatus;
-import com.augurit.aplanmis.common.domain.AeaApplyinstProj;
-import com.augurit.aplanmis.common.domain.AeaApplyinstUnitProj;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaHiIteminst;
-import com.augurit.aplanmis.common.domain.AeaHiSeriesinst;
-import com.augurit.aplanmis.common.domain.AeaItemBasic;
-import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstUnitProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
@@ -98,6 +91,8 @@ public class AeaSeriesService {
     private AeaServiceWindowUserService aeaServiceWindowUserService;
     @Autowired
     private ApplyCommonService applyCommonService;
+    @Autowired
+    private RestApplyCommonService restApplyCommonService;
 
     /**
      * 保存实例、启动流程（停留在收件节点）
@@ -131,7 +126,7 @@ public class AeaSeriesService {
         String applyinstId = null;
         List<AeaHiIteminst> aeaHiIteminstList=new ArrayList<>();
         //直接发起申报
-        if (StringUtils.isBlank(seriesApplyDataVo.getApplyinstId())) {
+        if ("1".equals(seriesApplyDataVo.getIsTemporarySubmit()) || StringUtils.isBlank(seriesApplyDataVo.getApplyinstId())) {//草稿箱或者未实例化时
             SeriesApplyInstantiateResult applyResult = this.instantiateSeriesApply(seriesApplyDataVo, false, new String[]{"1", "2"});
             tasks.addAll(taskService.createTaskQuery().processInstanceId(applyResult.getProcInstId()).list());
 
@@ -260,6 +255,8 @@ public class AeaSeriesService {
         String appinstId;
         if(StringUtils.isNotBlank(applyinstId)){//已暂存过
             seriesApplyinst=aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+            seriesApplyinst.setIsTemporarySubmit("0");
+            aeaHiApplyinstService.updateAeaHiApplyinst(seriesApplyinst);
             seriesApplyinstId = seriesApplyinst.getApplyinstId();//申报实例ID
             seriesApplyinst.setProjInfoId(projInfoIds[0]);
             seriesApplyDataVo.setApplyinstId(seriesApplyinstId);//回填申请实例ID
@@ -290,9 +287,18 @@ public class AeaSeriesService {
         seriesApplyinst.setStateinsts(applyCommonService.filterProcessStartConditions(stateIds, ApplyType.SERIES));
 
         //3、情形实例
+        restApplyCommonService.deleteItemStates(seriesApplyinstId);//先删除再实例化
         aeaHiItemStateinstService.batchInsertAeaHiItemStateinst(seriesApplyinstId, aeaHiSeriesinst.getSeriesinstId(),null, stateIds, SecurityContext.getCurrentUserName());
 
         //4、材料输入输出实例
+        if(aeaHiIteminst!=null){
+            String[] currentIteminstIds={aeaHiIteminst.getIteminstId()};
+            List<AeaHiItemInoutinst> inoutList=aeaHiItemInoutinstService.getAeaHiItemInoutinstByIteminstIds(currentIteminstIds);
+            if(inoutList.size()>0){
+                String[] outinstIds=inoutList.stream().map(AeaHiItemInoutinst::getInoutinstId).toArray(String[]::new);
+                aeaHiItemInoutinstService.batchDeleteAeaHiItemInoutinst(outinstIds);
+            }
+        }
         aeaHiItemInoutinstService.batchInsertAeaHiItemInoutinst(matinstsIds, seriesApplyinstId, SecurityContext.getCurrentUserName());
 
         //5、启动主流程

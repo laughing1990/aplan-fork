@@ -21,9 +21,9 @@ public class AeaCertinstParamVo {
     private String certType;
     @ApiModelProperty(value = "证照（下拉，数据根据证照所属和证照类型联动筛选）")
     private String certId;
-    @ApiModelProperty(value = "证照名称(填写)人")
+    @ApiModelProperty(value = "证照名称(填写)")
     private String certinstName;
-    @ApiModelProperty(value = "证照编码（接口获取，不可编辑）人")
+    @ApiModelProperty(value = "证照编码（接口获取，不可编辑）")
     private String certinstCode;
     @ApiModelProperty(value = "颁发单位(下拉)")
     private String issueOrgId;

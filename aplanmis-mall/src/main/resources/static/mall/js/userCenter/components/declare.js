@@ -17,6 +17,7 @@ var vm = new Vue({
         // 当前编辑的项目数据
         curEditProjRow: {},
         projInfoId: '', // 当前申报项目id
+        parallelApplyinstId: '',
     },
     mounted:function () {
         this.getprojList();
@@ -102,8 +103,15 @@ var vm = new Vue({
               url = ctx + 'rest/userCenter/apply/toParaApplyPage';
             }else {
               if(this.itemVerId){
-                url = ctx + 'rest/userCenter/apply/series/toSingleApplyPage?itemVerId='+ this.itemVerId+'&&projInfoId='+this.projInfoId;
-                location.search='?itemVerId='+ this.itemVerId+'&&projInfoId='+this.projInfoId+'&&flag=singleD'
+                if(this.parallelApplyinstId==''){
+                  url = ctx + 'rest/userCenter/apply/series/toSingleApplyPage?itemVerId='+ this.itemVerId+'&&projInfoId='+this.projInfoId;
+                  location.search='?itemVerId='+ this.itemVerId+'&projInfoId='+this.projInfoId+'&&flag=singleD'
+                }else {
+                  url = ctx + 'rest/userCenter/apply/series/toSingleApplyPage?itemVerId='+ this.itemVerId+'&projInfoId='+this.projInfoId+'&applyinstId='+this.parallelApplyinstId;
+                  location.search='?itemVerId='+ this.itemVerId+'&projInfoId='+this.projInfoId+'&applyinstId='+this.parallelApplyinstId+'&&flag=singleD'
+                  // window.location.href = ctx + 'rest/main/toIndexPage?projInfoId='+this.projInfoId+'&itemVerId='+ this.itemVerId+'&applyinstId='+this.parallelApplyinstId+'&flag=singleD#/guideIndex';
+                  // return false;
+                }
               }else {
                 // rest/main/toIndexPage#/guideIndex
                 window.location.href = ctx + 'rest/main/toIndexPage?projInfoId='+this.projInfoId+'&&flag=singleD#/guideIndex';
@@ -126,6 +134,7 @@ var vm = new Vue({
               }
           }
           this.itemVerId=theRequest.itemVerId;
+          this.parallelApplyinstId = theRequest.applyinstId?theRequest.applyinstId:'';
           var flag=true;
           if(theRequest.flag&&theRequest.flag=='singleD'){
             flag=false;

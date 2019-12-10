@@ -874,21 +874,25 @@
         </template>
       </div>
       <div class="send-form-part" v-if="isRQDialog">
-        <div class="part-title">容缺时限设置</div>
+        <div class="part-title">容缺补正期限设置</div>
         <el-row style="padding:5px 0;">
           <el-col :span="12">
-            <el-form-item label="容缺时限：">
-              <el-input type="number" placeholder="请填写容缺时限" v-model="sendForm.toleranceTime"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="时限规则：">
-              <el-select style="width:322px" v-model="sendForm.timeruleId" placeholder="请选择容缺时限规则">
+            <el-form-item label="容缺期限：">
+              <el-input style="width:150px" type="number" placeholder="请填写容缺补正期限" v-model="sendForm.toleranceTime"></el-input>
+              <el-select style="width:150px" v-model="sendForm.timeruleId" placeholder="请选择容缺补正期限类型">
                 <el-option v-for="item in rqRulesList" :label="item.timeruleName"
                            :value="item.timeruleId"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
+          <!--<el-col :span="12">-->
+            <!--<el-form-item>-->
+              <!--<el-select style="width:150px" v-model="sendForm.timeruleId" placeholder="请选择容缺补正期限类型">-->
+                <!--<el-option v-for="item in rqRulesList" :label="item.timeruleName"-->
+                           <!--:value="item.timeruleId"></el-option>-->
+              <!--</el-select>-->
+            <!--</el-form-item>-->
+          <!--</el-col>-->
         </el-row>
       </div>
       <div class="send-form-part">
