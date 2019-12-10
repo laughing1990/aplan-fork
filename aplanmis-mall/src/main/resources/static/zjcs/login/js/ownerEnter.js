@@ -89,6 +89,8 @@ var vm = new Vue({
       fileList: [],
       fileList2: [],
       uploadTableData: [],
+      code: false,
+      num: false,
       type: '',
       rules: {
         applicant: [
@@ -103,7 +105,7 @@ var vm = new Vue({
         applicantDistrict: [
           { required: true, message: '请选择注册地行政区划' },
         ],
-        regionalism: [
+        idrepresentative: [
           { required: true, message: '请输入法定代表人' },
         ],
         idno: [
@@ -154,6 +156,48 @@ var vm = new Vue({
     this.getDicCode();
   },
   methods: {
+    checkcode: function(event) {
+      var vm = this;
+      request('', {
+        type: 'get',
+        url: ctx + 'supermarket/agentRegister/checkUnitIsExisted',
+        data: {
+          unifiedSocialCreditCode: vm.formData.unifiedSocialCreditCode
+        }
+      }, function(res) {
+        vm.code = res.content;
+        if (!vm.code) {
+          vm.$message({
+            message: '统一社会信用码重复，请重新输入',
+            type: 'error'
+          });
+          return;
+        }
+      }, function(err) {
+        vm.$message.error('服务器错了哦!');
+      })
+    },
+    checknum: function(event) {
+      var vm = this;
+      request('', {
+        type: 'get',
+        url: ctx + 'supermarket/agentRegister/checkManIsExisted',
+        data: {
+          linkmanCertNo: vm.formData.linkmanCertNo
+        }
+      }, function(res) {
+        vm.num = res.content;
+        if (!vm.num) {
+          vm.$message({
+            message: '证件号重复，请重新输入',
+            type: 'error'
+          });
+          return;
+        }
+      }, function(err) {
+        vm.$message.error('服务器错了哦!');
+      })
+    },
     clearchildren(arr) {
       var _this = this;
       for (var i = 0; i < arr.length; i++) {
@@ -194,9 +238,14 @@ var vm = new Vue({
       })
     },
     backToIndex: function() {
-      window.parent.location.href = ctx + '/aplanmis-mall/supermarket/main/index.html';
+      window.parent.location.href = ctx + 'aplanmis-mall/supermarket/main/index.html';
 
     },
+    backToGuide: function() {
+      window.parent.location.href = ctx + ' aplanmis-mall/supermarket/main/guide.html';
+
+    },
+
     upload: function(row, type) {
       this.curUpData = row;
       this.uploadTableData = this.curUpData.fileList;
@@ -277,7 +326,16 @@ var vm = new Vue({
               });
               return;
             } else {
-              _this.step = '2';
+              if (!_this.code) {
+                _this.$message({
+                  message: '统一社会信用码重复，请重新输入',
+                  type: 'error'
+                });
+                return;
+              } else {
+                _this.step = '2';
+              }
+
             }
           } else {
             _this.$message({
@@ -316,81 +374,88 @@ var vm = new Vue({
             });
             return;
           } else {
-            var param = {
-              //第一页数据
-              unitInfo: {
-                applicant: _that.formData.applicant || '',
-                idtype: _that.formData.idtype || '',
-                unifiedSocialCreditCode: _that.formData.unifiedSocialCreditCode || '',
-                applicantDistrict: _that.formData.applicantDistrict[_that.formData.applicantDistrict.length - 1] || '',
-                regionalism: _that.formData.regionalism || '',
-                idno: _that.formData.idno || '',
-                applicantDetailSite: _that.formData.applicantDetailSite || '',
-                managementScope: _that.formData.managementScope || '',
-                registeredCapital: _that.formData.registeredCapital || '',
+            if (!_this.num) {
+              _this.$message({
+                message: '证件号重复，请重新输入',
+                type: 'error'
+              });
+              return;
+            } else {
+              var param = {
+                //第一页数据
+                unitInfo: {
+                  applicant: _that.formData.applicant || '',
+                  idtype: _that.formData.idtype || '',
+                  unifiedSocialCreditCode: _that.formData.unifiedSocialCreditCode || '',
+                  applicantDistrict: _that.formData.applicantDistrict[_that.formData.applicantDistrict.length - 1] || '',
+                  idrepresentative: _that.formData.idrepresentative || '',
+                  idno: _that.formData.idno || '',
+                  applicantDetailSite: _that.formData.applicantDetailSite || '',
+                  managementScope: _that.formData.managementScope || '',
+                  registeredCapital: _that.formData.registeredCapital || '',
 
-              },
-              contactManInfo: {
-                linkmanName: _that.formData2.linkmanName || '', //联系人姓名
-                linkmanMail: _that.formData2.linkmanMail || '', //电子邮箱
-                linkmanMobilePhone: _that.formData2.linkmanMobilePhone || '', //移动电话
-                linkmanOfficePhon: _that.formData2.linkmanOfficePhon || '', //固定电话
-                linkmanFax: _that.formData2.linkmanFax || '', //传真
-              },
-              authorManInfo: {
-                linkmanName: _that.formDatawtr.linkmanName || '', //姓名
-                linkmanMobilePhone: _that.formDatawtr.linkmanMobilePhone || '', //移动电话
-                linkmanCertNo: _that.formDatawtr.linkmanCertNo || '', //证件号
-                linkmanMail: _that.formDatawtr.linkmanMail || '', //证件号
-              }
-
-
-            };
-            var formData = _that.toFormData(param);
-
-            // console.log(param)
-            // var formData = new FormData();
-            // for (var k in param) {
-            //   formData.append(k, param[k])
-            // }
-
-            _that.fileList.forEach(function(item) {
-              formData.append('unitFile', item)
-            })
-            _that.fileList2.forEach(function(item) {
-              formData.append('authorManFile', item)
-            })
-
-
-            // _that.$refs['addEditManform'].validate(function(valid) {
-            // if (valid) {
-            _that.loading = true;
-            $.ajax({
-              url: ctx + 'supermarket/ownerRegister/saveRegisterForm',
-              type: 'post',
-              data: formData,
-              dataType: 'json',
-              contentType: false,
-              processData: false,
-              success: function(res) {
-                if (res.success) {
-                  _that.$message({
-                    message: '保存成功',
-                    type: 'success'
-                  });
+                },
+                contactManInfo: {
+                  linkmanName: _that.formData2.linkmanName || '', //联系人姓名
+                  linkmanMail: _that.formData2.linkmanMail || '', //电子邮箱
+                  linkmanMobilePhone: _that.formData2.linkmanMobilePhone || '', //移动电话
+                  linkmanOfficePhon: _that.formData2.linkmanOfficePhon || '', //固定电话
+                  linkmanFax: _that.formData2.linkmanFax || '', //传真
+                },
+                authorManInfo: {
+                  linkmanName: _that.formDatawtr.linkmanName || '', //姓名
+                  linkmanMobilePhone: _that.formDatawtr.linkmanMobilePhone || '', //移动电话
+                  linkmanCertNo: _that.formDatawtr.linkmanCertNo || '', //证件号
+                  linkmanMail: _that.formDatawtr.linkmanMail || '', //证件号
                 }
-                _that.step = '3';
-                _that.password = res.content.password;
-                _that.loginName = res.content.loginName;
-              },
-              error: function(msg) {
-                _that.$message({
-                  message: '保存失败',
-                  type: 'error'
-                });
-              },
-            })
 
+
+              };
+              var formData = _that.toFormData(param);
+
+              // console.log(param)
+              // var formData = new FormData();
+              // for (var k in param) {
+              //   formData.append(k, param[k])
+              // }
+
+              _that.fileList.forEach(function(item) {
+                formData.append('unitFile', item)
+              })
+              _that.fileList2.forEach(function(item) {
+                formData.append('authorManFile', item)
+              })
+
+
+              // _that.$refs['addEditManform'].validate(function(valid) {
+              // if (valid) {
+              _that.loading = true;
+              $.ajax({
+                url: ctx + 'supermarket/ownerRegister/saveRegisterForm',
+                type: 'post',
+                data: formData,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function(res) {
+                  if (res.success) {
+                    _that.$message({
+                      message: '保存成功',
+                      type: 'success'
+                    });
+                  }
+                  _that.step = '3';
+                  _that.password = res.content.password;
+                  _that.loginName = res.content.loginName;
+                },
+                error: function(msg) {
+                  _that.$message({
+                    message: '保存失败',
+                    type: 'error'
+                  });
+                },
+              })
+            }
           }
         } else {
           _that.$message({

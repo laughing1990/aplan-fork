@@ -1,12 +1,13 @@
 package com.augurit.aplanmis.supermarket.agentService.service;
 
 import com.alibaba.fastjson.JSONArray;
+import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
+import com.augurit.agcloud.bsc.mapper.BscDicCodeMapper;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.dto.AeaCreditSummaryAllDto;
 import com.augurit.aplanmis.common.dto.AeaCreditSummaryDto;
-import com.augurit.aplanmis.common.mapper.AeaImServiceItemMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemServiceBasicMapper;
 import com.augurit.aplanmis.common.mapper.AgentUnitServiceMapper;
@@ -33,8 +34,7 @@ public class AgentServiceService {
     private AeaItemServiceBasicMapper aeaItemServiceBasicMapper;
 
     @Autowired
-    private AeaImServiceItemMapper aeaImServiceItemMapper;
-
+    private BscDicCodeMapper bscDicCodeMapper;
     @Autowired
     private SuperMarketCreditSummaryService summaryService;
 
@@ -139,6 +139,13 @@ public class AgentServiceService {
 
             //查询中介事项对应的行政事项列表
             List<AeaItemBasic> aeaItemBasics = aeaItemBasicMapper.listItemBasicByAgentItemId(agentItemDetail.getItemId());
+            //设置事项类型
+            for (AeaItemBasic basic : aeaItemBasics) {
+                BscDicCodeItem itemType = bscDicCodeMapper.getItemByTypeCodeAndItemCodeAndOrgId("DEPT_ITEM_TYPE", basic.getItemType(), "012aa547-7104-418d-87cc-824f24f1a278");
+                if (null != itemType) {
+                    basic.setItemType(itemType.getItemName());
+                }
+            }
             agentServiceItemDetailVo.setAeaItemBasicList(ItemDetailVo.conver2List(aeaItemBasics));
         }
 
@@ -147,13 +154,13 @@ public class AgentServiceService {
 
 
     public void getCredCreditSummary(List<AgentUnitService> agentUnitServices) throws Exception {
-        List<AeaCreditSummaryDto>  acsds = new ArrayList<AeaCreditSummaryDto>();
-        for(AgentUnitService agentUnitService:agentUnitServices){
+        List<AeaCreditSummaryDto> acsds = new ArrayList<AeaCreditSummaryDto>();
+        for (AgentUnitService agentUnitService : agentUnitServices) {
             String bizType = "u";
             String bizCode = agentUnitService.getUnifiedSocialCreditCode();
             List<AeaCreditSummaryAllDto> creditList = summaryService.listCreditSummaryDetailByByBizCode(bizType, bizCode);
-            for(AeaCreditSummaryAllDto aeaCreditSummaryAllDto:creditList){
-                if("bad".equals(aeaCreditSummaryAllDto.getItemCode())){
+            for (AeaCreditSummaryAllDto aeaCreditSummaryAllDto : creditList) {
+                if ("bad".equals(aeaCreditSummaryAllDto.getItemCode())) {
                     AeaCreditSummaryAllDto acsad = new AeaCreditSummaryAllDto();
                     acsad.setItemCode(aeaCreditSummaryAllDto.getItemCode());
                     acsad.setItemName(aeaCreditSummaryAllDto.getItemName());

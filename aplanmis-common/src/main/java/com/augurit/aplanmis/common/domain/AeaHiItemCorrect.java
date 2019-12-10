@@ -81,4 +81,6 @@ public class AeaHiItemCorrect implements Serializable {
     private String regionalism;//行政区划
     private String regionName;//行政名称
     private String createrName;
+    private String itemVerId;
+    private List<AeaUnitInfo> unitInfos;
 }

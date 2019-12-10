@@ -10,12 +10,7 @@ import com.augurit.aplanmis.common.service.instance.AeaHiItemStateinstService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author xiaohutu
@@ -79,9 +74,11 @@ public class AeaHiItemStateinstServiceImpl implements AeaHiItemStateinstService 
         for (AeaItemState parentState : parentStateList) {
             for (AeaItemState state : stateList) {
                 if (StringUtils.isNotBlank(state.getParentStateId()) && state.getParentStateId().equals(parentState.getItemStateId())) {
-                    Map<String, String> map = new HashMap<>(2);
+                    Map<String, String> map = new HashMap<>(4);
                     map.put("question", parentState.getStateName());
                     map.put("answer", state.getStateName());
+                    map.put("questionId",parentState.getItemStateId());
+                    map.put("answerId",state.getItemStateId());
                     list.add(map);
                 }
             }
@@ -101,6 +98,23 @@ public class AeaHiItemStateinstServiceImpl implements AeaHiItemStateinstService 
         if (stateIds.length==0) return list;
         list.addAll(aeaItemStateMapper.listAeaItemStateByIds(stateIds));
         return list;
+    }
+    @Override
+    public List<AeaHiItemStateinst> listAeaItemStateinstByApplyinstIdOrSeriesinstId(String applyinstId, String seriesinstId) throws Exception{
+        List<AeaHiItemStateinst> stateinstList = aeaHiItemStateinstMapper.listAeaHiItemStateinstByApplyinstIdOrSeriesinstId(applyinstId, seriesinstId);
+        return stateinstList;
+    }
+
+    @Override
+    public void batchDeleteAeaItemStateinst(String[] itemStateinstIds) throws Exception {
+        if(itemStateinstIds.length>0)
+            aeaHiItemStateinstMapper.batchDeleteAeaHiItemStateinst(Arrays.asList(itemStateinstIds));
+    }
+
+    @Override
+    public void batchDeleteAeaItemState(String[] itemStateIds){
+        if(itemStateIds.length>0)
+            aeaItemStateMapper.batchDeleteAeaItemState(itemStateIds);
     }
 
     @Autowired

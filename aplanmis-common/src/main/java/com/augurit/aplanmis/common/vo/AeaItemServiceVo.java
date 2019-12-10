@@ -40,6 +40,8 @@ public class AeaItemServiceVo {
     @ApiModelProperty(value = "办理时限，以工作日为单位 ")
     private String agentItemDueNum;
     private String agentItemDueUnitType;
+    private String agentItemDueUnit;
+
     @ApiModelProperty(value = "承诺时限单位")
     private String agentItemBjType;
     @ApiModelProperty(value = "对应的行政事项名称")
@@ -74,15 +76,20 @@ public class AeaItemServiceVo {
     private String otherRequireExplain;
     @ApiModelProperty(value = "是否需要执业/职业人员要求",notes = "1 需要，0 不需要")
     private String isRegisterRequire;
-    @ApiModelProperty(value = "是否需要执业/执业/职业人员总数",notes = "当IS_REGISTER_REQUIRE =1 时，必填")
+    @ApiModelProperty(value = "是否需要执业/执业/职业人员总数", notes = "当IS_REGISTER_REQUIRE =1 时，必填")
     private String registerTotal;
-    @ApiModelProperty(value = "执业/职业人员要求",notes = "当IS_REGISTER_REQUIRE =1 时，必填")
+    @ApiModelProperty(value = "执业/职业人员要求", notes = "当IS_REGISTER_REQUIRE =1 时，必填")
     private String registerRequire;
-    @ApiModelProperty(value = "是否需要备案要求",notes = "1 需要，0 不需要")
+    @ApiModelProperty(value = "是否需要备案要求", notes = "1 需要，0 不需要")
     private String isRecordRequire;
-    @ApiModelProperty(value = "备案要求说明",notes = "当IS_RECORD_REQUIRE =1 时，必填")
+    @ApiModelProperty(value = "备案要求说明", notes = "当IS_RECORD_REQUIRE =1 时，必填")
     private String recordRequireExplain;
 
+    @ApiModelProperty(value = "法定办结时限")
+    private Double anticipateDay;
+
+    @ApiModelProperty(value = "法定办结时限单位")
+    private String anticipateType;
     private String rootOrgId;
 
 

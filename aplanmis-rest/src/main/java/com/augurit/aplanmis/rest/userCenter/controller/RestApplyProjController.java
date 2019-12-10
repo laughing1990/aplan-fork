@@ -13,6 +13,7 @@ import com.augurit.agcloud.opus.common.service.om.OpuOmOrgService;
 import com.augurit.aplanmis.common.constants.DicConstants;
 import com.augurit.aplanmis.common.domain.AeaParTheme;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.common.dto.ApproveProjInfoDto;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
 import com.augurit.aplanmis.common.service.admin.opus.AplanmisOpuOmOrgAdminService;
 import com.augurit.aplanmis.common.service.admin.par.AeaParThemeAdminService;
@@ -124,7 +125,6 @@ public class RestApplyProjController {
 
     /**
      * 获取页面所需的数据字典信息
-     *
      */
     @GetMapping("/getDicContents")
     @ApiOperation("我要申报  --> 获取数据字典集合")
@@ -151,7 +151,6 @@ public class RestApplyProjController {
 
     /**
      * 获取页面所需的数据字典信息
-     *
      */
     @GetMapping("/getThemes")
     @ApiOperation("我要申报  --> 获取主题信息")
@@ -166,7 +165,6 @@ public class RestApplyProjController {
 
     /**
      * 获取页面所需的数据字典信息
-     *
      */
     @GetMapping("/getOrgs")
     @ApiOperation("我要申报  --> 获取部门组织")
@@ -329,6 +327,28 @@ public class RestApplyProjController {
             return new ContentResultForm<>(true, new PageInfo<>(aeaProjChildrenList));
         } catch (Exception e) {
             return new ResultForm(false, "无法查询");
+        }
+    }
+
+    @GetMapping("/withdrawApply/list")
+    @ApiOperation(value = "已申报项目 --> 撤回申报列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "关键词", name = "keyword", dataType = "string"),
+            @ApiImplicitParam(value = "页面数量", name = "pageNum", dataType = "string"),
+            @ApiImplicitParam(value = "页面页数", name = "pageSize", dataType = "string")})
+    public ContentResultForm<PageInfo<ApproveProjInfoDto>> getWithdrawApplylist(String keyword, @RequestParam(defaultValue = "1") int pageNum, @RequestParam(defaultValue = "10") int pageSize) {
+        try {
+            AuthUser loginInfo = AuthContext.getCurrentUser();
+            if (loginInfo.isPersonalAccount()) {//个人
+                return new ContentResultForm<>(true, restApproveService.searchWithdrawApplyListByUnitOrLinkman("", loginInfo.getLinkmanInfoId(), keyword, pageNum, pageSize));
+            } else if (StringUtils.isNotBlank(loginInfo.getLinkmanInfoId())) {//委托人
+                return new ContentResultForm<>(true, restApproveService.searchWithdrawApplyListByUnitOrLinkman(loginInfo.getLinkmanInfoId(), loginInfo.getLinkmanInfoId(), keyword, pageNum, pageSize));
+            } else {//企业
+                return new ContentResultForm<>(true, restApproveService.searchWithdrawApplyListByUnitOrLinkman(loginInfo.getUnitInfoId(), "", keyword, pageNum, pageSize));
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ContentResultForm<>(false, null, "查询已申报项目列表查询接口异常" + e.getMessage());
         }
     }
 }

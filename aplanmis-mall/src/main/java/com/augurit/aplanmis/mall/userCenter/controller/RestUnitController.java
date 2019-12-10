@@ -20,6 +20,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,8 +40,8 @@ public class RestUnitController {
     private AeaLinkmanInfoService aeaLinkmanInfoService;
     @Autowired
     private RestUnitService restUnitService;
-    @Autowired
-    private RestUserCenterService restUserCenterService;
+    @Value("${mall.check.authority:false}")
+    private static boolean isCheckAuthority;
 
     @ApiOperation(value = "编辑企业单位")
     @PostMapping("/edit")
@@ -68,7 +69,9 @@ public class RestUnitController {
         AeaLinkmanInfo linkmanInfo = aeaLinkmanInfoService.getAeaLinkmanInfoByLinkmanInfoId(linkmanInfoId);
         AeaLinkmanInfoVo aeaLinkmanIanfoVo = new AeaLinkmanInfoVo();
         BeanUtils.copyProperties(linkmanInfo, aeaLinkmanIanfoVo);
-        aeaLinkmanIanfoVo.setLinkmanMobilePhone(DesensitizedUtil.desensitizedPhoneNumber(aeaLinkmanIanfoVo.getLinkmanMobilePhone()));
+        if (isCheckAuthority){
+            aeaLinkmanIanfoVo.setLinkmanMobilePhone(DesensitizedUtil.desensitizedPhoneNumber(aeaLinkmanIanfoVo.getLinkmanMobilePhone()));
+        }
         return new ContentResultForm<>(true,aeaLinkmanIanfoVo, "Save unit success");
     }
 

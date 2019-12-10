@@ -872,7 +872,7 @@ public class RestBpmService {
     }
 
     /**
-     * 获取任务节点的审批意见，如果包含子流程，则连同子流程的意见获取
+     * 获取任务节点的审批意见，如果包含子流程，则获取子流程的意见，最多两级子流程
      **/
     public List getTaskComment(String taskId){
         List result = new ArrayList();
@@ -890,8 +890,18 @@ public class RestBpmService {
                 if(actStoAppinstSubflows.size() > 0){
                     for(int i=0,len=actStoAppinstSubflows.size(); i<len; i++){
                         ActStoAppinstSubflow actStoAppinstSubflow = actStoAppinstSubflows.get(i);
-                        List<BpmHistoryCommentForm> subHistoryComments = bpmTaskService.getHistoryCommentsByProcessInstanceId(actStoAppinstSubflow.getSubflowProcinstId());
-                        result.addAll(subHistoryComments);
+                        query.setTriggerTaskinstId(null);
+                        query.setParentSubflowId(actStoAppinstSubflow.getSubflowId());
+                        List<ActStoAppinstSubflow> sSubflows = actStoAppinstSubflowService.listActStoAppinstSubflow(query);
+                        if(sSubflows.size() > 0){
+                            for(int j=0,lenj=sSubflows.size(); j<lenj; j++){
+                                List<BpmHistoryCommentForm> temp = bpmTaskService.getHistoryCommentsByProcessInstanceId(sSubflows.get(j).getSubflowProcinstId());
+                                result.addAll(temp);
+                            }
+                        }else{
+                            List<BpmHistoryCommentForm> subHistoryComments = bpmTaskService.getHistoryCommentsByProcessInstanceId(actStoAppinstSubflow.getSubflowProcinstId());
+                            result.addAll(subHistoryComments);
+                        }
                     }
                 }else{
                     result.addAll(historyComments);
@@ -904,7 +914,7 @@ public class RestBpmService {
     }
 
     /**
-     * 获取任务节点的前一个节点的审批意见，如果包含子流程，则连同子流程的意见获取
+     * 获取任务节点的前一个节点的审批意见，如果包含子流程，则获取子流程的意见，最多两级子流程
      * @param taskId
      * @return
      */

@@ -36,7 +36,10 @@
     IS_SMS_SEND isSmsSend,
     SMS_SEND_TIME smsSendTime,
      ROOT_ORG_ID rootOrgId,
-     PROCINST_ID procinstId
+        PROCINST_ID procinstId,
+        ITEMINST_TYPE iteminstType,
+        TOLERANCE_TIME toleranceTime,
+        TIMERULE_ID timeruleId
     </sql>
 
     <sql id="aliasColumns">
@@ -71,7 +74,10 @@
          ${alias}.IS_SMS_SEND isSmsSend,
         ${alias}.SMS_SEND_TIME smsSendTime,
         ${alias}.ROOT_ORG_ID rootOrgId,
-        ${alias}.PROCINST_ID procinstId
+        ${alias}.PROCINST_ID procinstId,
+        ${alias}.ITEMINST_TYPE iteminstType,
+        ${alias}.TOLERANCE_TIME toleranceTime,
+        ${alias}.TIMERULE_ID timeruleId
     </sql>
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaHiIteminstById" resultType="AeaHiIteminst">
@@ -193,6 +199,15 @@
             <if test="procinstId != null">
                 AND PROCINST_ID = #{procinstId}
             </if>
+            <if test="iteminstType != null">
+                AND ITEMINST_TYPE = #{iteminstType}
+            </if>
+            <if test="toleranceTime != null">
+                AND TOLERANCE_TIME = #{toleranceTime}
+            </if>
+            <if test="timeruleId != null">
+                AND TIMERULE_ID = #{timeruleId}
+            </if>
         </where>
     </select>
     <!--4 根据条件查询实体list,返回分页对象 -->
@@ -203,11 +218,13 @@
                                      IS_LACK_ITEMINST, IS_SERIES_APPROVE, THEME_VER_ID, STAGEINST_ID, SERIESINST_ID,
                                      START_TIME, REGISTER_TIME, SIGN_TIME, END_TIME, PUBLIC_MODE, ITEMINST_STATE, ACCEPT_TIME,
                                      INNER_APPINST_ID, CREATER, CREATE_TIME, MODIFIER, MODIFY_TIME, ITEMINST_LEVEL,
-                                     BUSINESS_STATE, ITEM_VER_ID, IS_JOIN_APPROVAL,ITEM_APPLY_CODE,IS_TOLERANCE_ACCEPT,ROOT_ORG_ID,PROCINST_ID)
+        BUSINESS_STATE, ITEM_VER_ID,
+        IS_JOIN_APPROVAL,ITEM_APPLY_CODE,IS_TOLERANCE_ACCEPT,ROOT_ORG_ID,PROCINST_ID,ITEMINST_TYPE,TOLERANCE_TIME,TIMERULE_ID)
         values (#{iteminstId}, #{itemId}, #{iteminstCode}, #{iteminstName}, #{approveOrgId}, #{isLackIteminst},
                 #{isSeriesApprove}, #{themeVerId}, #{stageinstId}, #{seriesinstId}, #{startTime}, #{registerTime},
                 #{signTime}, #{endTime}, #{publicMode}, #{iteminstState}, #{acceptTime}, #{innerAppinstId}, #{creater}, #{createTime},
-                #{modifier}, #{modifyTime}, #{iteminstLevel}, #{businessState}, #{itemVerId}, #{isJoinApproval},#{itemApplyCode},#{isToleranceAccept},#{rootOrgId},#{procinstId})
+        #{modifier}, #{modifyTime}, #{iteminstLevel}, #{businessState}, #{itemVerId},
+        #{isJoinApproval},#{itemApplyCode},#{isToleranceAccept},#{rootOrgId},#{procinstId},#{iteminstType},#{toleranceTime},#{timeruleId})
     </insert>
     <!--6 修改实体对象 -->
     <update id="updateAeaHiIteminst" parameterType="AeaHiIteminst">
@@ -308,7 +325,16 @@
                 SMS_SEND_TIME = #{smsSendTime},
             </if>
             <if test="procinstId != null">
-                PROCINST_ID = #{procinstId}
+                PROCINST_ID = #{procinstId},
+            </if>
+            <if test="iteminstType != null">
+                ITEMINST_TYPE = #{iteminstType},
+            </if>
+            <if test="toleranceTime != null">
+                TOLERANCE_TIME = #{toleranceTime},
+            </if>
+            <if test="timeruleId != null">
+                TIMERULE_ID = #{timeruleId}
             </if>
         </set>
         where ITEMINST_ID = #{iteminstId}
@@ -351,6 +377,9 @@
         <result property="itemApplyCode" column="ITEM_APPLY_CODE"/>
         <result property="isToleranceAccept" column="IS_TOLERANCE_ACCEPT"/>
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
+        <result property="iteminstType" column="ITEMINST_TYPE"/>
+        <result property="toleranceTime" column="TOLERANCE_TIME"/>
+        <result property="timeruleId" column="TIMERULE_ID"/>
     </resultMap>
 
     <select id="getAeaHiIteminstListByStageinstId" resultType="AeaHiIteminst">
@@ -360,7 +389,7 @@
         </include>
         ,ooo.org_name orgName
         FROM aea_hi_par_stageinst ahps
-        LEFT JOIN aea_hi_iteminst ahi ON ahps.STAGEINST_ID=ahi.STAGEINST_ID
+        right JOIN aea_hi_iteminst ahi ON ahps.STAGEINST_ID=ahi.STAGEINST_ID
         LEFT JOIN opu_om_org ooo on ahi.approve_org_id=ooo.org_id
         where ahps.STAGEINST_ID=#{stageinstId}
     </select>
@@ -2465,4 +2494,170 @@
         ) aea_123
         order by aea_123.startTime desc
     </select>
+
+    <select id="getDraftApplyList" resultType="com.augurit.aplanmis.common.dto.ApproveProjInfoDto">
+        select aea_123.* from (
+        SELECT
+        aha.APPLYINST_ID applyinstId,
+        aha.APPLYINST_CODE applyinstCode,
+        aha.APPLYINST_STATE applyinstState,
+        aha.CREATE_TIME startTime,
+        aha.MODIFY_TIME endTime,
+        api.PROJ_NAME projName,
+        api.LOCAL_CODE localCode,
+        '1' isSeriesApprove,
+        api.PROJ_INFO_ID projInfoId,
+        api.GCBM gcbm,
+        ahi.item_ver_id itemVerId
+        FROM aea_hi_applyinst aha
+        left join aea_hi_seriesinst ahs on aha.APPLYINST_ID=ahs.APPLYINST_ID
+        left join aea_hi_iteminst ahi on ahi.SERIESINST_ID=ahs.SERIESINST_ID
+        LEFT JOIN aea_applyinst_proj aap ON aap.APPLYINST_ID=aha.APPLYINST_ID
+        LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID=aap.PROJ_INFO_ID
+        LEFT JOIN aea_proj_linkman apl ON apl.APPLYINST_ID=aha.APPLYINST_ID AND apl.PROJ_INFO_ID=api.PROJ_INFO_ID
+        LEFT JOIN aea_linkman_info ali ON ali.LINKMAN_INFO_ID=apl.LINKMAN_INFO_ID
+        <where>
+            <if test="userInfoId !=null and userInfoId!=''">
+                ali.LINKMAN_INFO_ID=#{userInfoId}
+            </if>
+            <if test="userInfoId ==null || userInfoId==''">
+                ali.LINKMAN_INFO_ID is null
+            </if>
+            AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND ali.IS_DELETED !=1 AND apl.TYPE='apply' AND
+            aha.IS_SERIES_APPROVE='1' AND aha.IS_TEMPORARY_SUBMIT='1'
+            <if test="keyword != null and keyword != ''">
+                AND (
+                api.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
+                api.GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                api.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
+                aha.APPLYINST_CODE = #{keyword}
+                )
+            </if>
+        </where>
+        UNION
+
+        SELECT
+        aha.APPLYINST_ID applyinstId,
+        aha.APPLYINST_CODE applyinstCode,
+        aha.APPLYINST_STATE applyinstState,
+        aha.CREATE_TIME startTime,
+        aha.MODIFY_TIME endTime,
+        api.PROJ_NAME projName,
+        api.LOCAL_CODE localCode,
+        '0' isSeriesApprove,
+        api.PROJ_INFO_ID projInfoId,
+        api.GCBM gcbm,
+        '' itemVerId
+        FROM aea_hi_applyinst aha
+        LEFT JOIN aea_applyinst_proj aap ON aap.APPLYINST_ID=aha.APPLYINST_ID
+        LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID=aap.PROJ_INFO_ID
+        LEFT JOIN aea_proj_linkman apl ON apl.APPLYINST_ID=aha.APPLYINST_ID AND apl.PROJ_INFO_ID=api.PROJ_INFO_ID
+        LEFT JOIN aea_linkman_info ali ON ali.LINKMAN_INFO_ID=apl.LINKMAN_INFO_ID
+        <where>
+            <if test="userInfoId !=null and userInfoId!=''">
+                ali.LINKMAN_INFO_ID=#{userInfoId}
+            </if>
+            <if test="userInfoId ==null || userInfoId==''">
+                ali.LINKMAN_INFO_ID is null
+            </if>
+            AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND ali.IS_DELETED !=1 AND
+            apl.TYPE='apply' AND aha.IS_SERIES_APPROVE='0'AND aha.IS_TEMPORARY_SUBMIT='1'
+            <if test="keyword != null and keyword != ''">
+                AND (
+                api.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
+                api.GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                api.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
+                aha.APPLYINST_CODE = #{keyword}
+                )
+            </if>
+        </where>
+        UNION
+
+        SELECT DISTINCT
+        aha.APPLYINST_ID applyinstId,
+        aha.APPLYINST_CODE applyinstCode,
+        aha.APPLYINST_STATE applyinstState,
+        aha.CREATE_TIME startTime,
+        aha.MODIFY_TIME endTime,
+        api.PROJ_NAME projName,
+        api.LOCAL_CODE localCode,
+        '1' isSeriesApprove,
+        api.PROJ_INFO_ID projInfoId,
+        api.GCBM gcbm,
+        ahi.item_ver_id itemVerId
+        FROM aea_hi_applyinst aha
+        left join aea_hi_seriesinst ahs on aha.APPLYINST_ID=ahs.APPLYINST_ID
+        left join aea_hi_iteminst ahi on ahi.SERIESINST_ID=ahs.SERIESINST_ID
+        LEFT JOIN aea_applyinst_proj aap ON aap.APPLYINST_ID=aha.APPLYINST_ID
+        LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID=aap.PROJ_INFO_ID
+        LEFT JOIN aea_applyinst_unit_proj aaup ON aaup.APPLYINST_ID=aha.APPLYINST_ID
+        LEFT JOIN aea_unit_proj aup ON aup.UNIT_PROJ_ID=aaup.UNIT_PROJ_ID
+        LEFT JOIN aea_unit_info aui ON aup.UNIT_INFO_ID=aui.UNIT_INFO_ID
+        <where>
+            <if test="unitInfoId !=null and unitInfoId!=''">
+                aui.UNIT_INFO_ID=#{unitInfoId}
+            </if>
+            <if test="unitInfoId ==null || unitInfoId==''">
+                aui.UNIT_INFO_ID is null
+            </if>
+            AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND aui.IS_DELETED !=1 AND aha.IS_SERIES_APPROVE='1' AND aha.IS_TEMPORARY_SUBMIT='1'
+            <if test="keyword != null and keyword != ''">
+                AND (
+                api.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
+                api.GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                api.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
+                aha.APPLYINST_CODE = #{keyword}
+                )
+            </if>
+        </where>
+        UNION
+
+        SELECT DISTINCT
+        aha.APPLYINST_ID applyinstId,
+        aha.APPLYINST_CODE applyinstCode,
+        aha.APPLYINST_STATE applyinstState,
+        aha.CREATE_TIME startTime,
+        aha.MODIFY_TIME endTime,
+        api.PROJ_NAME projName,
+        api.LOCAL_CODE localCode,
+        '0' isSeriesApprove,
+        api.PROJ_INFO_ID projInfoId,
+        api.GCBM gcbm,
+        '' itemVerId
+        FROM aea_hi_applyinst aha
+        LEFT JOIN aea_applyinst_proj aap ON aap.APPLYINST_ID=aha.APPLYINST_ID
+        LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID=aap.PROJ_INFO_ID
+        LEFT JOIN aea_applyinst_unit_proj aaup ON aaup.APPLYINST_ID=aha.APPLYINST_ID
+        LEFT JOIN aea_unit_proj aup ON aup.UNIT_PROJ_ID=aaup.UNIT_PROJ_ID
+        LEFT JOIN aea_unit_info aui ON aup.UNIT_INFO_ID=aui.UNIT_INFO_ID
+        <where>
+            <if test="unitInfoId !=null and unitInfoId!=''">
+                aui.UNIT_INFO_ID=#{unitInfoId}
+            </if>
+            <if test="unitInfoId ==null || unitInfoId==''">
+                aui.UNIT_INFO_ID is null
+            </if>
+            AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND aui.IS_DELETED !=1 AND
+            aha.IS_SERIES_APPROVE='0' and aup.IS_DELETED != 1 AND aha.IS_TEMPORARY_SUBMIT='1'
+            <if test="keyword != null and keyword != ''">
+                AND (
+                api.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
+                api.GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                api.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
+                aha.APPLYINST_CODE = #{keyword}
+                )
+            </if>
+        </where>
+        ) aea_123
+        order by aea_123.startTime desc
+    </select>
+
+    <delete id="batchDeleteAeaHiIteminst" parameterType="string">
+        delete from aea_hi_iteminst
+        where iteminst_id IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
 </mapper>

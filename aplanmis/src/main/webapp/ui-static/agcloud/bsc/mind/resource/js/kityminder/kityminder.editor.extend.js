@@ -41,6 +41,7 @@ angular.module('kityminderEditor').run(['$templateCache', function ($templateCac
                 "<must-select minder=\"minder\"></must-select>" +
                 "<is-more minder=\"minder\"></is-more>" +
                 "<link-process-start minder=\"minder\"></link-process-start>" +
+                "<is-inform-commit minder=\"minder\"></is-inform-commit>" +
                 '<ul class="km-priority tool-group ng-isolate-scope" ng-disabled="commandDisabled"' +
                 '    style="margin-right: 15px;;width: 60px;margin-right: 15px;" minder="minder">' +
                 "<importfile-xmind minder=\"minder\"></importfile-xmind>" +
@@ -100,8 +101,15 @@ angular.module('kityminderEditor').run(['$templateCache', function ($templateCac
     );
 
     $templateCache.put('ui/directive/linkProcessStart/linkProcessStart.html',
-        "<ul class=\"km-priority tool-group\" ng-disabled=\"commandDisabled\" style='width:60px;'>" +
-        "<li class=\"km-priority-item tool-group-item\" ng-repeat=\"p in linkfieldes\" ng-click=\"commandDisabled || minder.execCommand('linkProcessStart', p)\" ng-class=\"{ active: commandValue == p }\" title=\"{{ getInnerTitle(p) }}\">" +
+        "<ul class=\"km-priority tool-group\" ng-disabled=\"minder.queryCommandState('NodeTypeCodeStateCommand') != 'situation'\" style='width:60px;'>" +
+        "<li class=\"km-priority-item tool-group-item\" ng-repeat=\"p in linkfieldes\" ng-click=\"(minder.queryCommandState('NodeTypeCodeStateCommand') != 'situation') || minder.execCommand('linkProcessStart', p)\" ng-class=\"{ active: commandValue == p }\" title=\"{{ getInnerTitle(p) }}\">" +
+        "<div class=\"{{ getInnerClass(p) }}\" title='{{ getInnerTitle(p) }}'><div style='height: 3px;'></div>{{ getInnerTitle(p) }}</div>" +
+        "</li></ul>"
+    );
+
+    $templateCache.put('ui/directive/isInformCommit/isInformCommit.html',
+        "<ul class=\"km-priority tool-group\" ng-disabled=\"minder.queryCommandState('NodeTypeCodeStateCommand') != 'situation'\" style='width:60px;'>" +
+        "<li class=\"km-priority-item tool-group-item\" ng-repeat=\"p in linkfieldes\" ng-click=\"(minder.queryCommandState('NodeTypeCodeStateCommand') != 'situation') || minder.execCommand('isInformCommit', p)\" ng-class=\"{ active: commandValue == p }\" title=\"{{ getInnerTitle(p) }}\">" +
         "<div class=\"{{ getInnerClass(p) }}\" title='{{ getInnerTitle(p) }}'><div style='height: 3px;'></div>{{ getInnerTitle(p) }}</div>" +
         "</li></ul>"
     );
@@ -426,6 +434,46 @@ angular.module('kityminderEditor')
                     switch (p) {
                         case 1:
                             return '流程';
+                        case 0:
+                            return '取消';
+                    }
+                }
+            }
+        }
+    }]);
+
+
+
+angular.module('kityminderEditor')
+    .directive('isInformCommit', ['commandBinder', function (commandBinder) {
+        return {
+            restrict: 'E',
+            templateUrl: 'ui/directive/isInformCommit/isInformCommit.html',
+            scope: {
+                minder: '='
+            },
+            replace: true,
+            link: function ($scope) {
+
+                var minder = $scope.minder;
+                var linkfieldes = [];
+                linkfieldes.push(1);
+                linkfieldes.push(0);
+
+                commandBinder.bind(minder, 'isInformCommit', $scope);
+                $scope.linkfieldes = linkfieldes;
+                $scope.getInnerClass = function (p) {
+                    switch (p) {
+                        case 1:
+                            return 'km-isInformCommit-icon tool-group-icon';
+                        case 0:
+                            return 'km-priority-icon tool-group-icon priority-0';
+                    }
+                }
+                $scope.getInnerTitle = function (p) {
+                    switch (p) {
+                        case 1:
+                            return '告知';
                         case 0:
                             return '取消';
                     }

@@ -4,6 +4,7 @@ import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
 import com.augurit.aplanmis.common.vo.SupplyOrSpacialCommentVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -139,4 +140,8 @@ public interface AeaLogItemStateHistService {
      * @return
      */
     List<SupplyOrSpacialCommentVo> findItemCorrectStateHist(String taskInstId, String rootOrgId);
+
+    void batchDeleteAeaLogItemStateHist(List<String> ids);
+
+    List<AeaLogItemStateHist> findAeaLogItemStateHistByIteminstIds(String[] iteminstIds);
 }

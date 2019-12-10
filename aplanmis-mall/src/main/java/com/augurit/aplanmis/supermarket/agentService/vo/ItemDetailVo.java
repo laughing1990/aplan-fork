@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.supermarket.agentService.vo;
 
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
@@ -42,13 +43,25 @@ public class ItemDetailVo {
      */
     private String orgName;
 
+    private String guideOrgName;
+
+    public ItemDetailVo() {
+    }
+
+    public ItemDetailVo(AeaItemBasic itemBasic) {
+        BeanUtils.copyProperties(itemBasic, this);
+        if (StringUtils.isBlank(this.orgName)) {
+            this.orgName = this.guideOrgName;
+        }
+    }
+
     public static List<ItemDetailVo> conver2List(List<AeaItemBasic> list) {
         List<ItemDetailVo> copyList = new ArrayList<>();
-        ItemDetailVo vo = null;
+        //ItemDetailVo vo = null;
         for (AeaItemBasic tempBasic : list) {
-            vo = new ItemDetailVo();
-            BeanUtils.copyProperties(tempBasic, vo);
-            copyList.add(vo);
+            /*vo = new ItemDetailVo();
+            BeanUtils.copyProperties(tempBasic, vo);*/
+            copyList.add(new ItemDetailVo(tempBasic));
         }
         return copyList;
     }

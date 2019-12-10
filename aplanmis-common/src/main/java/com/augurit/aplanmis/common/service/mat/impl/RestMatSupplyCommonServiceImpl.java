@@ -189,6 +189,7 @@ public class RestMatSupplyCommonServiceImpl implements RestMatCorrectCommonServi
 
             AeaHiIteminst aeaHiIteminst = aeaHiIteminstService.getAeaHiIteminstById(iteminstId);
             matCorrectInfoDto.setIteminstName(aeaHiIteminst.getIteminstName());
+            matCorrectInfoDto.setItemVerId(aeaHiApplyinst.getItemVerId());
             matCorrectInfoDto.setChargeOrgName(aeaHiIteminst.getApproveOrgName());
 
             if ("1".equals(aeaHiApplyinst.getIsSeriesApprove())) {
@@ -755,7 +756,7 @@ public class RestMatSupplyCommonServiceImpl implements RestMatCorrectCommonServi
             if (StringUtils.isBlank(matCorrectDto.getMatinstName())) {
                 matCorrectDto.setMatinstName(correctDueIninst.getMatinstName());
             }
-
+            matCorrectDto.setMatProp(correctDueIninst.getMatProp());
             if (correctDueIninst.getCopyCount() != null && correctDueIninst.getCopyCount() > 0) {
                 matCorrectDto.setCopyMatinstId(correctDueIninst.getMatinstId());
                 matCorrectDto.setCopyInoutinstId(correctDueIninst.getInoutinstId());
@@ -825,9 +826,9 @@ public class RestMatSupplyCommonServiceImpl implements RestMatCorrectCommonServi
                 matCorrectDto.setAttCount(0l);
             }
         }
-
+        String projInfoId = aeaHiItemCorrect.getProjInfoId();
+        aeaHiItemCorrect.setUnitInfos(aeaUnitInfoService.findOwerUnitProj(projInfoId));
         aeaHiItemCorrect.setMatCorrectDtos(matCorrectDtos);
-
         return aeaHiItemCorrect;
     }
 

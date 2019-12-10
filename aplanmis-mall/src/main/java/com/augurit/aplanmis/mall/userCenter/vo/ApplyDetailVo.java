@@ -33,6 +33,15 @@ public class ApplyDetailVo {
     private String approveOrgName;//审批部门（单项）
     @ApiModelProperty("【主题】+阶段名称(并联)")
     private String themeStageName;//【主题】+阶段名称(并联)
+    @ApiModelProperty("主题ID")
+    private String themeId;//主题ID
+    @ApiModelProperty("主题版本ID")
+    private String themeVerId;//主题版本ID
+    @ApiModelProperty("阶段ID")
+    private String stageId;//阶段ID
+    @ApiModelProperty("阶段实例ID(并联)")
+    private String stageinstId;//阶段实例ID(并联)
+
     @ApiModelProperty("单位信息")
     private  AeaUnitInfo aeaUnitInfo;
     @ApiModelProperty("联系人信息")
@@ -43,4 +52,6 @@ public class ApplyDetailVo {
     private String applyinstCode;
     @ApiModelProperty("是否启动情形 0否 1是")
     private String isNeedState;
+    @ApiModelProperty("联系人列表")
+    private List<AeaLinkmanInfo> aeaLinkmanInfoList;
 }

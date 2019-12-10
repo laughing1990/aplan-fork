@@ -78,6 +78,25 @@ var vm = new Vue({
         }
     },
     methods: {
+        // 跳转到详情页面
+        jumpToDetail: function (id) {
+            var _linkmanId = id;
+            var parentIfreamUrl = window.frames.location.href;
+            var _url = "",_tabName="";
+            if (_linkmanId === 'add'){
+                _tabName = "新增人员";
+                _url = ctx + 'rest/linkman/lib/detail?parentIfreamUrl='+parentIfreamUrl;
+            }else{
+                _tabName = "编辑人员"
+                _url = ctx + 'rest/linkman/lib/detail?linkmanId=' + _linkmanId +'&parentIfreamUrl='+parentIfreamUrl;
+            }
+            var _jumpData = {
+                'menuName': _tabName,
+                'menuInnerUrl': _url,
+                'id': _linkmanId + '_linkmanDetail'
+            };
+            parent.vm.addTab('', _jumpData, parent.vm.activeTabIframe, '');
+        },
         //刷新列表
         fetchTableData: function () {
             var ts = this;

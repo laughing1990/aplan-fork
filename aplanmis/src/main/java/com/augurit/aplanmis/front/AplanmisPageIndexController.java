@@ -202,6 +202,23 @@ public class AplanmisPageIndexController {
         modelAndView.addObject("entrust", false);
         modelAndView.addObject("handler", false);
         modelAndView.addObject("defaultInstState", "");
+        modelAndView.addObject("isInformCommit", "0");
+        return modelAndView;
+    }
+
+    /**
+     * 承诺制办件查询（查看所有）
+     *
+     * @return
+     */
+    @GetMapping("/queryCommitPartsIndex.html")
+    @ApiOperation("菜单-承诺制办件")
+    public ModelAndView queryCommitPartsIndex() {
+        ModelAndView modelAndView = new ModelAndView("view/queryPartsIndex");
+        modelAndView.addObject("entrust", false);
+        modelAndView.addObject("handler", false);
+        modelAndView.addObject("defaultInstState", "");
+        modelAndView.addObject("isInformCommit", "1");
         return modelAndView;
     }
 
@@ -217,6 +234,7 @@ public class AplanmisPageIndexController {
         modelAndView.addObject("entrust", false);
         modelAndView.addObject("handler", true);
         modelAndView.addObject("defaultInstState", "");
+        modelAndView.addObject("isInformCommit", "0");
         return modelAndView;
     }
 
@@ -232,6 +250,7 @@ public class AplanmisPageIndexController {
         modelAndView.addObject("entrust", true);
         modelAndView.addObject("handler", false);
         modelAndView.addObject("defaultInstState", "");
+        modelAndView.addObject("isInformCommit", "0");
         return modelAndView;
     }
 
@@ -572,6 +591,7 @@ public class AplanmisPageIndexController {
         modelAndView.addObject("entrust", true);
         modelAndView.addObject("handler", false);
         modelAndView.addObject("defaultInstState", "2");
+        modelAndView.addObject("isInformCommit", "0");
         return modelAndView;
     }
 
@@ -582,6 +602,7 @@ public class AplanmisPageIndexController {
         modelAndView.addObject("entrust", true);
         modelAndView.addObject("handler", false);
         modelAndView.addObject("defaultInstState", "3");
+        modelAndView.addObject("isInformCommit", "0");
         return modelAndView;
     }
 

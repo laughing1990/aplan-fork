@@ -250,6 +250,42 @@
 
     </select>
 
+    <select id="listAeaParThemeByDygjbzfxfw" resultType="AeaParTheme">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="apt"/>
+        </include>,temp1.THEME_VER_ID themeVerId
+        from AEA_PAR_THEME apt
+        LEFT JOIN (
+        SELECT
+        aptv.THEME_VER_ID,
+        aptv.VER_NUM,
+        aptv.THEME_ID
+        FROM
+        aea_par_theme_ver aptv
+        WHERE
+        EXISTS (
+        SELECT
+        *
+        FROM
+        aea_par_theme_seq apts
+        WHERE
+        apts.MAX_NUM = aptv.VER_NUM
+        AND apts.THEME_ID = aptv.THEME_ID
+        )
+        AND aptv.IS_PUBLISH IN ('1', '2')
+        ) temp1 ON temp1.THEME_ID = apt.THEME_ID
+        LEFT JOIN aea_par_stage aps ON aps.THEME_VER_ID = temp1.THEME_VER_ID
+        WHERE
+        apt.IS_ACTIVE = '1'
+        AND apt.IS_DELETED = '0'
+        <if test="isOnlineSb != null ">
+            and apt.IS_ONLINE_SB = #{isOnlineSb}
+        </if>
+        AND aps.DYGJBZFXFW = #{dygjbzfxfw}
+        AND aps.IS_DELETED = '0'
+    </select>
+
     <!--5 新增实体对象 -->
     <insert id="insertOne" parameterType="AeaParTheme" >
         insert into AEA_Par_THEME (

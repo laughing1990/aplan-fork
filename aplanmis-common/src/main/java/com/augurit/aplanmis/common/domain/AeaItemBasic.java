@@ -5,7 +5,6 @@ import com.augurit.aplanmis.common.constants.PublishStatus;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -49,7 +48,8 @@ public class AeaItemBasic implements Serializable {
     private String appId; // (所属业务流程模板)
     private String itemDirId;//所属事项目录ID
     private String innerAppId;//（事项审批部门）内部业务流程模板定义ID
-    private String itemProperty; // 办件类型
+    @ApiModelProperty(value = "办件类型")
+    private String itemProperty;
     private String directorycode; // (临时事项编码)
     private String directoryId; // (通用事(子)项ID)
     private String basecode; // (事项基本编码)
@@ -85,7 +85,7 @@ public class AeaItemBasic implements Serializable {
     private String isLocal;  // 是否本地事项
     private String isFee; //是否收费 0 不收费 1 收费
     @ApiModelProperty(value = "服务对象")
-    private String xkdx; // (服务对象)
+    private String xkdx;
     private String itemAlias; // (事项别名)
     private String isNeedFrontCond; // (是否有前置条件，0表示没有 1表示有)
     private String areaCode; // (行政区划代码)
@@ -149,7 +149,7 @@ public class AeaItemBasic implements Serializable {
     private String isShare;
 
     //非表字段
-    @ApiModelProperty(value = "审批组织名称")
+    private List<String> notRelItemIds;
     private String orgName;
     private List<AeaItemMat> matList;//事项材料列表
     private String isDone;//是否已办 1 是 0 否
@@ -226,7 +226,9 @@ public class AeaItemBasic implements Serializable {
     private String idCard;//单位证照号码
     private String approveOrgId;//审批部门id
 
-    /* 中介服务事项关联行政事项使用  */
+    /**
+     * 中介服务事项关联行政事项使用
+     */
     private String currItemId;
     private String[] searchItemIds;
     private Boolean isCheck = false;

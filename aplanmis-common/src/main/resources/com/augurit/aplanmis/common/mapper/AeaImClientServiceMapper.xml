@@ -113,7 +113,9 @@ CLIENT_SERVICE_ID  ,UNIT_SERVICE_ID  ,UNIT_LINKMAN_ID  ,IS_DELETED  ,CREATER  ,C
             ali.LINKMAN_INFO_ID linkmanInfoId,
             ali.LINKMAN_NAME linkmanName,
             ali.LINKMAN_MOBILE_PHONE linkmanMobilePhone,
-            ali.LINKMAN_CERT_NO linkmanCertNo
+            ali.LINKMAN_CERT_NO linkmanCertNo,
+            ali.LINKMAN_MAIL  linkmanMail,
+            ali.LINKMAN_OFFICE_PHON linkmanOfficePhon
         FROM aea_im_client_service aics
         LEFT JOIN aea_im_unit_service aius ON aius.UNIT_SERVICE_ID = aics.UNIT_SERVICE_ID
         LEFT JOIN aea_unit_linkman aul ON aul.UNIT_LINKMAN_ID = aics.UNIT_LINKMAN_ID

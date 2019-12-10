@@ -7,10 +7,15 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 
 @Data
 @ApiModel("人员信息")
 public class AeaLinkmanInfoVo {
+
+    @Value("${mall.check.authority:false}")
+    private static boolean isCheckAuthority;
+
     @ApiModelProperty("联系人姓名")
     private java.lang.String linkmanName; // (联系人姓名)
     @ApiModelProperty("证件号")
@@ -40,7 +45,9 @@ public class AeaLinkmanInfoVo {
     public static AeaLinkmanInfoVo build(AeaLinkmanInfo aeaLinkmanInfo) {
         AeaLinkmanInfoVo aeaLinkmanIanfoVo = new AeaLinkmanInfoVo();
         BeanUtils.copyProperties(aeaLinkmanInfo, aeaLinkmanIanfoVo);
-        aeaLinkmanIanfoVo.setLinkmanMobilePhone(DesensitizedUtil.desensitizedPhoneNumber(aeaLinkmanIanfoVo.getLinkmanMobilePhone()));
+        if (isCheckAuthority){
+            aeaLinkmanIanfoVo.setLinkmanMobilePhone(DesensitizedUtil.desensitizedPhoneNumber(aeaLinkmanIanfoVo.getLinkmanMobilePhone()));
+        }
         return aeaLinkmanIanfoVo;
     }
 }

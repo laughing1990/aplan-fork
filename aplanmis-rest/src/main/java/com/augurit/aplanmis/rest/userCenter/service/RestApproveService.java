@@ -47,7 +47,7 @@ public interface RestApproveService {
      * 查询补全状态的数据
      *
      */
-    PageInfo<SupplementInfoDto> searchMatComplet(String unitInfoId, String userId, int pageNum, int pageSize) throws Exception;
+    PageInfo<SupplementInfoDto> searchMatComplet(String unitInfoId, String userId, String keyword, int pageNum, int pageSize) throws Exception;
 
     /**
      * 查询补正状态的数据
@@ -87,4 +87,17 @@ public interface RestApproveService {
      * @param userInfoId 用户ID
      */
     LifeCycleDiagramVo getLiftCycleDiagramInfo(String projInfoId, String unitInfoId, String userInfoId) throws Exception;
+
+    /**
+     * 根据登录信息查询撤件列表
+     *
+     * @param unitInfoId
+     * @param userInfoId
+     * @param keyword
+     * @param pageNum
+     * @param pageSize
+     * @return
+     * @throws Exception
+     */
+    PageInfo<ApproveProjInfoDto> searchWithdrawApplyListByUnitOrLinkman(String unitInfoId, String userInfoId, String keyword, int pageNum, int pageSize) throws Exception;
 }

@@ -40,4 +40,6 @@ public interface AeaHiParStateinstMapper {
      * @throws Exception e
      */
     List<AeaHiParStateinst> listAeaHiParStateinstByApplyinstIdOrStageinstId(@Param("applyinstId") String applyinstId, @Param("stageinstId") String stageinstId) throws Exception;
+
+    void batchDeleteAeaHiParStateinst(@Param("ids")String[] stateinstIds);
 }

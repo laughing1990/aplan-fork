@@ -1,6 +1,5 @@
 package com.augurit.aplanmis.supermarket.projPurchase.vo.purchase;
 
-import com.augurit.aplanmis.common.domain.AeaHiIteminst;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.vo.purchase.PurchaseProjVo;
 import io.swagger.annotations.ApiModel;
@@ -22,11 +21,12 @@ public class PurchaseDetailVo {
     @ApiModelProperty(name = "aeaProjInfo", value = "关联的投资审批项目信息")
     private AeaProjInfo aeaProjInfo;
 
-    public void changeToIteminst(AeaHiIteminst iteminst, String serviceObject) {
+    public void changeToIteminst(String serviceObject) {
         Iteminst inst = new Iteminst();
-        BeanUtils.copyProperties(iteminst, inst);
+        BeanUtils.copyProperties(this.purchaseProj, inst);
         this.iteminst = inst;
         this.iteminstName = inst.getIteminstName();
+        inst.setDueNumUnit(this.purchaseProj.getDueUnit());
         inst.setServiceObj(serviceObject);
     }
 
@@ -54,9 +54,6 @@ public class PurchaseDetailVo {
         @ApiModelProperty(name = "approveOrgName", value = "审批部门")
         private String approveOrgName;
 
-        @ApiModelProperty(name = "orgShortName", value = "部门简称")
-        private String orgShortName;
-
         @ApiModelProperty(name = "dueNum", value = "办理时限")
         private Double dueNum;
 
@@ -71,5 +68,11 @@ public class PurchaseDetailVo {
 
         @ApiModelProperty(name = "relevancyItemName", value = "关联的服务事项")
         private String relevancyItemName;
+
+        @ApiModelProperty(value = "法定办结时限")
+        private Double anticipateDay;
+
+        @ApiModelProperty(value = "法定办结时限单位")
+        private String anticipateType;
     }
 }

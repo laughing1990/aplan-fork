@@ -1,0 +1,44 @@
+.mt20{
+    margin-top: 20px;
+}
+.tips {
+    width: 930px;
+    height: 48px;
+    background: rgba(255,252,238,1);
+    border: 1px solid rgba(255,184,34,1);
+    border-radius: 4px;
+    margin-bottom: 30px;
+}
+
+.add-btn{
+    width:120px;
+    height:40px;
+    background:rgba(69,126,255,1);
+    border-radius:4px;
+    color: #ffffff;
+}
+.search-certifi-btn{
+    width:118px;
+    height:40px;
+    background:rgba(69,126,255,1);
+    border-radius:4px;
+}
+
+.my-certifiy-table-box .step-title {
+    margin: 38px 0 36px 0;
+    font-size: 20px;
+    font-family: Microsoft YaHei;
+    font-weight: 400;
+    position: relative;
+    color: #3F4047;
+}
+.my-certifiy-table-box .step-title:after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 2px;
+    background-color: #3F4047;
+    position: absolute;
+    top: 35px;
+    left: 0px;
+}

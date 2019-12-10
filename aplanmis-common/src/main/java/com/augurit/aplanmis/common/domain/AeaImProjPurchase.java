@@ -184,19 +184,25 @@ public class AeaImProjPurchase implements Serializable {
     @ApiModelProperty(value = "【当IS_AVOID=1时必填】回避原因")
     private String avoidReason;
 
-    //拓展地段
+    //拓展地段-采购项目信息
     @ApiModelProperty(value = "项目名称")
-    private String projName;//项目名称
+    private String projName;
     @ApiModelProperty(value = "事项名称，中介事项")
-    private String itemName;//事项名称，中介事项
+    private String itemName;
+    private String itemBasicId;
     @ApiModelProperty(value = "项目代码")
-    private String localCode;//项目代码
+    private String localCode;
+    @ApiModelProperty("采购项目规模")
+    private String projScale;
+    @ApiModelProperty("采购项目规模内容")
+    private java.lang.String projScaleContent;
+
     private String priority;//要求资质
     private String realPrice;//中介竞价价格
     @ApiModelProperty(value = "业主名称")
     private String applicant;//业主名称
     @ApiModelProperty(value = "服务名称")
-    private String serviceName;//服务名称
+    private String serviceName;
     private String serviceId;
     private String purchaseImgUrl;
 
@@ -225,8 +231,6 @@ public class AeaImProjPurchase implements Serializable {
     private String selectedApplicant;//中选机构名称
     private String selectedUnitInfoId;//中选机构id
     private String selectedAppAddr;//中选机构地址
-    private String projScale;//项目规模
-    private String projScaleContent;
     private String financialSource;//资金来源
     private List<AeaImUnitBidding> unitBiddingList;//中介机构列表
     private String isUploadContract;//是否上传合同：1 是，0 否

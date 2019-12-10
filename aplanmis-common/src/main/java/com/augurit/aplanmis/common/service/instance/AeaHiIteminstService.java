@@ -254,6 +254,15 @@ public interface AeaHiIteminstService {
      */
     void updateAeaHiIteminstIsToleranceAccept(String iteminstId, String isToleranceAccept) throws Exception;
 
+    /**
+     * 办件容缺办结时，更新容缺时限和时限规则到事项实例中
+     * @param iteminstId
+     * @param toleranceTime
+     * @param timeruleId
+     * @throws Exception
+     */
+    void updateAeaHiIteminstToleranceTime(String iteminstId, double toleranceTime, String timeruleId) throws Exception;
+
     long countApproveProjInfoListByUnitOrLinkman (String unitInfoId,String userInfoId,String isAll);
 
     /**
@@ -302,4 +311,6 @@ public interface AeaHiIteminstService {
      * @param iteminstState  事项实例状态
      */
     void updateAeaHiIteminstStateAndInsertOpsAeaLogApplyinstStateHist(String iteminstId, String opsUserOpinion, String opsAction, String opsMemo, String iteminstState) throws Exception;
+
+    void batchDeleteAeaHiIteminstAndBatchDelAeaLogItemStateHist(String[] iteminstIds);
 }

@@ -46,7 +46,7 @@ public class AeaImUnitBidding implements Serializable {
     private String memo; //备注
     @FiledNameIs(filedValue = "中介机构服务项目id")
     private String unitServiceId; //中介机构服务项目id
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date biddingTime; // (中标时间)
     private String isCancelSignup; // (是否取消报名：1 已取消，0  未取消)
 
@@ -106,10 +106,10 @@ public class AeaImUnitBidding implements Serializable {
     }
 
     public AeaImUnitBidding(String isWonBid, String isDelete, String auditFlag, String rootOrgId) {
-        this.isWonBid=isWonBid;
-        this.isDelete=isDelete;
-        this.auditFlag=auditFlag;
-        this.rootOrgId=rootOrgId;
+        this.isWonBid = isWonBid;
+        this.isDelete = isDelete;
+        this.auditFlag = auditFlag;
+        this.rootOrgId = rootOrgId;
     }
 
 
@@ -117,7 +117,7 @@ public class AeaImUnitBidding implements Serializable {
 
     }
 
-    public void buildImUnitBidding(String projPurchaseId, String agentUnitInfoId, String unitServiceId, String creater, String rootOrgId) {
+    public void buildImUnitBidding(String projPurchaseId, String agentUnitInfoId, String unitServiceId) {
         this.setUnitBiddingId(UUID.randomUUID().toString());
         this.setProjPurchaseId(projPurchaseId);
         this.setAuditFlag("1");
@@ -128,7 +128,7 @@ public class AeaImUnitBidding implements Serializable {
         this.setIsEvaluate("0");
         this.setBiddingTime(new Date());
         this.setUnitInfoId(agentUnitInfoId);
-//                aeaImUnitBidding.setRealPrice(aeaImUnitService.getPrice());
+        this.setBiddingTime(new Date());
         this.setIsDelete(DeletedStatus.NOT_DELETED.getValue());
         this.setCreateTime(new Date());
         this.setCreater(SecurityContext.getCurrentUserName());

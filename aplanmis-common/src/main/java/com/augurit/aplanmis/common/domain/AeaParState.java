@@ -107,11 +107,11 @@ public class AeaParState implements Serializable {
      */
     private String rootOrgId;
 
-    /**
-     * 是否流程 0否 1是
-     */
+    @ApiModelProperty(value = "是否流程  0否  1是")
     private String isProcStartCond;
 
+    @ApiModelProperty(value = "是否告知承诺制  0否 1是")
+    private String isInformCommit;
 
     /*-------------------------------------拓展字段----------------*/
     /**

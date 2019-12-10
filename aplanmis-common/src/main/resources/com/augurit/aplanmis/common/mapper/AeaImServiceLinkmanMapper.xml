@@ -29,6 +29,18 @@
     serviceLinkman.AUDIT_FLAG  auditFlag,
     serviceLinkman.PRACTISE_DATE  practiseDate
     </sql>
+    <sql id="alias_serviceLinkmanColumns">
+    ${alias}.SERVICE_LINKMAN_ID  serviceLinkmanId,
+    ${alias}.SERVICE_ID  serviceId,
+    ${alias}.LINKMAN_INFO_ID  linkmanInfoId,
+    ${alias}.UNIT_INFO_ID  unitInfoId,
+    ${alias}.IS_DELETE  isDelete,
+    ${alias}.CREATER  creater,
+    ${alias}.CREATE_TIME  createTime,
+    ${alias}.IS_HEAD  isHead,
+    ${alias}.AUDIT_FLAG  auditFlag,
+    ${alias}.PRACTISE_DATE  practiseDate
+    </sql>
 
 
     <sql id="linkman_allColumns">
@@ -262,6 +274,24 @@ SERVICE_LINKMAN_ID  ,SERVICE_ID  ,LINKMAN_INFO_ID  ,UNIT_INFO_ID  ,IS_DELETE  ,C
         LEFT JOIN aea_im_service ais on ais.SERVICE_ID = aisl.SERVICE_ID
         LEFT JOIN aea_unit_info aui on aui.UNIT_INFO_ID = aisl.UNIT_INFO_ID
         WHERE aisl.IS_DELETE = '0' AND aisl.SERVICE_LINKMAN_ID = #{serviceLinkmanId}
+    </select>
+    <select id="listAeaImServiceLinkmanByUnitInfoIdAndServiceId"
+            resultType="com.augurit.aplanmis.common.domain.AeaImServiceLinkman">
+        select
+        <include refid="alias_serviceLinkmanColumns">
+            <property name="alias" value="aisl"/>
+        </include>
+
+        from aea_im_service_linkman aisl
+        <where>
+            AUDIT_FLAG='1'
+            <if test="serviceId!=null and serviceId!= '' ">
+                and aisl.SERVICE_ID=#{serviceId}
+            </if>
+            <if test="unitInfoId!=null and unitInfoId!=''">
+                and aisl.UNIT_INFO_ID=#{unitInfoId}
+            </if>
+        </where>
     </select>
 
 </mapper>

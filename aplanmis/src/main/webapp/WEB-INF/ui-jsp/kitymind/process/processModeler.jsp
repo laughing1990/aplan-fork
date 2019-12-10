@@ -64,13 +64,13 @@
         }
         .circleIcon{
             display: inline-block;
-            width: 36px;
-            height: 36px;
-            border-radius: 18px;
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
             color: white;
-            padding: 8px 4px;
+            padding: 8px 5px;
             font-size: 14px;
-            margin:0px 5px;
+            margin: 0px 5px;
         }
         .blueColor{
             background-color: #52B6FD;
@@ -263,6 +263,11 @@
             line-height: normal;
             padding: 10px 20px;
         }
+        /*表格行高度*/
+        .base tbody tr td {
+            padding: 6px 8px!important;
+            border-top:none!important;
+        }
     </style>
     <script type="text/javascript">
         var currentBusiType = '${currentBusiType}';
@@ -292,7 +297,7 @@
     <div class="col-xl-12" style="padding: 0px 2px 0px 8px;">
         <div id="westPanel" class="m-portlet" style="margin-bottom: 0px;width: 100%;height: 100%;">
             <div class="m-portlet__body" style="padding: 10px 0px;">
-                <div class="m-form m-form--label-align-right m--margin-bottom-5">
+                <div id="tabeToobarPanel" class="m-form m-form--label-align-right m--margin-bottom-5">
                     <div class="row" style="margin: 0px;">
                         <div class="col-8"  style="text-align: left;padding-left: 20px">
                             <button type="button" class="btn btn-info" onclick="showCreateProcess();">新建流程</button>
@@ -323,7 +328,7 @@
                 </div>
                 <div style="margin: 10px 0px;border-bottom: 1px solid #e8e8e8;"></div>
                 <!-- 列表区域 -->
-                <div class="base" style="padding: 10px">
+                <div id="tabePanel" class="base" style="padding: 10px;overflow: auto">
                     <%--<table  id="process_design_tb"--%>
                             <%--data-toggle="table",--%>
                             <%--data-click-to-select=true,--%>
@@ -785,7 +790,7 @@
                             <font color="red">*</font>时限：
                         </label>
                         <div class="col-9" style="text-align:left">
-                            <input class="form-control" type="number" min="0" name="timeLimit" placeholder="单位：工作日" style="float:left;"/>
+                            <input class="form-control" type="number" min="0" name="timeLimit" id="edit_groupTimeLimit" placeholder="单位：工作日" style="float:left;"/>
                         </div>
                     </div>
 
@@ -1184,7 +1189,7 @@
 <script src="${pageContext.request.contextPath}/ui-static/kitymind/process/processModelerVue.js?v=2"
         type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/ui-static/kitymind/process/processTreeGrid.js" type="text/javascript"></script>
-<script src="${pageContext.request.contextPath}/ui-static/kitymind/process/processModeler_stage.js?v=2"
+<script src="${pageContext.request.contextPath}/ui-static/kitymind/process/processModeler_stage.js?v=4"
         type="text/javascript"></script>
 <%--<script src="${pageContext.request.contextPath}/ui-static/kitymind/process/processModeler.js" type="text/javascript"></script>--%>
 <script src="${pageContext.request.contextPath}/ui-static/kitymind/process/getPingyin.js" type="text/javascript"></script>

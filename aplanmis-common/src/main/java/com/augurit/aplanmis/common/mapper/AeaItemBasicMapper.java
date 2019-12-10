@@ -24,13 +24,16 @@ public interface AeaItemBasicMapper {
 
     void updateAeaItemBasic(AeaItemBasic aeaItemBasic);
 
-    void deleteAeaItemBasic(@Param("id") String id) throws Exception;
+    void deleteAeaItemBasic(@Param("id") String id) ;
 
-    List<AeaItemBasic> listAeaItemBasic(AeaItemBasic aeaItemBasic) throws Exception;
+    List<AeaItemBasic> listAeaItemBasic(AeaItemBasic aeaItemBasic) ;
 
-    List<AeaItemBasic> listAeaItemBasicOfMain(AeaItemBasic aeaItemBasic) throws Exception;
+    List<AeaItemBasic> listAeaItemBasicOfMain(AeaItemBasic aeaItemBasic) ;
 
-    AeaItemBasic getAeaItemBasicById(@Param("id") String id) throws Exception;
+    AeaItemBasic getAeaItemBasicById(@Param("id") String id) ;
+
+    AeaItemBasic getItemBasicNoRelOtherByItemVerId(@Param("itemVerId") String itemVerId,
+                                                   @Param("rootOrgId") String rootOrgId);
 
     List<AeaItemBasic> getAeaItemBasicListByStageId(@Param("stageId") String stageId,
                                                     @Param("isOptionItem") String isOptionItem,
@@ -258,7 +261,13 @@ public interface AeaItemBasicMapper {
 
     List<AeaItemBasic> getAeaItemBasicsListByOutputMatId(@Param("matId") String matId, @Param("rootOrgId") String rootOrgId);
 
-    //根据中介事项获取关联的行政事项列表
+    /**
+     * 根据中介事项获取关联的行政事项列表
+     *
+     * @param itemId
+     * @param rootOrgId
+     * @return
+     */
     List<AeaItemBasic> getAgentParentItem(@Param("itemId") String itemId, @Param("rootOrgId") String rootOrgId);
 
     List<AeaItemBasic> listUnSelectedParFrontItemBasicByStageId(@Param("stageId") String stageId, @Param("frontItemId") String frontItemId, @Param("rootOrgId") String rootOrgId);
@@ -274,4 +283,13 @@ public interface AeaItemBasicMapper {
      * @return
      */
     int listAgentItemServiceNum(@Param("startDate") String startDate);
+
+    /**
+     * 采购页获取中介事项列表
+     *
+     * @param keyword
+     * @param itemVerId
+     * @return
+     */
+    List<AeaItemServiceVo> listAgentItemServiceVo(@Param("keyword") String keyword, @Param("itemVerId") String itemVerId);
 }

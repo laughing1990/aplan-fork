@@ -90,23 +90,6 @@
 
                 // 登陆用户数据
                 var _curLoginInfo = localStorage.getItem('loginInfo');
-                /*if(_curLoginInfo){
-                    var currentLoginInfo = JSON.parse(_curLoginInfo);
-                    $('#commonLoginInfo').empty();
-                    $('#commonLoginNameInfo').empty();
-                    if(currentLoginInfo && currentLoginInfo.unitId){
-                        $('#commonLoginNameInfo').append('<a href="##" class="wt-header-enterprise"><span>'+currentLoginInfo.unitName+'</span></a>|');
-                        $('#commonLoginInfo').append( ' <a href="javascript:;" @click="logout" class="wt-header-enterprise">退出</a>');
-                    }else if(currentLoginInfo && currentLoginInfo.userId){
-                        $('#commonLoginNameInfo').append('<a href="##" class="wt-header-enterprise"><span>'+currentLoginInfo.personName+'</span></a>|');
-                        $('#commonLoginInfo').append( ' <a href="javascript:;" @click="logout" class="wt-header-enterprise">退出</a>');
-                    }else{
-                        $('#commonLoginInfo').append( ' <a href="/aplanmis-mall/rest/mall/loginIndex" class="wt-header-enterprise">登录</a>');
-                    }
-                }else {
-                    $('#commonLoginInfo').append( ' <a href="/aplanmis-mall/rest/mall/loginIndex" class="wt-header-enterprise">登录</a>');
-                }*/
-
                 if (_curLoginInfo) {
                     this.curentLoginInfo = JSON.parse(_curLoginInfo);
                 }else{

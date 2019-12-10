@@ -28,6 +28,10 @@ public interface AeaItemAdminService {
 
     List<AeaItem> gtreeTestRunOrPublishedItem(AeaItemBasic basic);
 
+    List<AeaItem> gtreeLatestItem(AeaItemBasic basic);
+
+    List<AeaItem> gtreeOkVerItemNoRelSelf(AeaItemBasic basic);
+
     void initItemVerSeq(AeaItemBasic basic);
 
     void initStandItem(AeaItemBasic basic);

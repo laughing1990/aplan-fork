@@ -1,8 +1,10 @@
 package com.augurit.aplanmis.mall.cert.service;
 
 import com.augurit.agcloud.bsc.domain.BscAttDir;
+import com.augurit.agcloud.bsc.domain.BscAttLink;
 import com.augurit.agcloud.bsc.domain.BscDicRegion;
 import com.augurit.agcloud.bsc.mapper.BscAttDirMapper;
+import com.augurit.agcloud.bsc.mapper.BscAttMapper;
 import com.augurit.agcloud.bsc.mapper.BscDicRegionMapper;
 import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
@@ -24,19 +26,21 @@ import com.augurit.aplanmis.integration.license.config.LicenseConfig;
 import com.augurit.aplanmis.integration.license.dto.*;
 import com.augurit.aplanmis.integration.license.service.LicenseApiService;
 import com.augurit.aplanmis.mall.cert.vo.AeaCertVo;
+import com.augurit.aplanmis.mall.cert.vo.AeaCertinstDetailResultVo;
+import com.augurit.aplanmis.mall.cert.vo.AeaCertinstParamVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -82,6 +86,8 @@ public class AeaCertMallService {
 
     @Autowired
     private AeaLinkmanInfoMapper aeaLinkmanInfoMapper;
+    @Autowired
+    private BscAttMapper bscAttMapper;
 
     
     public void deleteAeaCertById(String id) {
@@ -403,6 +409,7 @@ public class AeaCertMallService {
                         continue;
                     checkAuthCodes.add(data.getData().get(i).getLicense_code());
                     auth_codes.add(data.getAuth_codes()[i]);
+                    data.getData().get(i).setAuth_code(data.getAuth_codes()[i]);
                     licenseDTO.add(data.getData().get(i));
                 }
             }
@@ -474,4 +481,53 @@ public class AeaCertMallService {
             }).collect(Collectors.toList());
         }
 
+    public AeaHiCertinst saveCertint(AeaCertinstParamVo aeaCertinstParamVo, LoginInfoVo loginVo) throws Exception {
+        String certintId=aeaCertinstParamVo.getCertinstId();
+        String certHolder=aeaCertinstParamVo.getCertHolder();
+        AeaHiCertinst aeaHiCertinst=new AeaHiCertinst();
+        BeanUtils.copyProperties(aeaCertinstParamVo,aeaHiCertinst);
+        if("u".equals(certHolder) && StringUtils.isNotBlank(loginVo.getUserId())){//个人
+            aeaHiCertinst.setLinkmanInfoId(loginVo.getUserId());
+        }else if("c".equals(certHolder) && StringUtils.isNotBlank(loginVo.getUnitId())){//单位
+            aeaHiCertinst.setUnitInfoId(loginVo.getUnitId());
+        }else{
+            throw new Exception("当前用户不可创建该类型证照!");
+        }
+        if(StringUtils.isNotBlank(certintId)){//更新
+            aeaHiCertinst.setModifier(SecurityContext.getCurrentUserName());
+            aeaHiCertinst.setModifyTime(new Date());
+            aeaHiCertinstMapper.updateAeaHiCertinst(aeaHiCertinst);
+        }else{//新增
+            aeaHiCertinst.setCertinstId(UUID.randomUUID().toString());
+            aeaHiCertinst.setCreater(SecurityContext.getCurrentUserName());
+            aeaHiCertinst.setCreateTime(new Date());
+            //aeaHiCertinst.setCertinstSource("external");
+            aeaHiCertinstMapper.insertAeaHiCertinst(aeaHiCertinst);
+        }
+        return aeaHiCertinst;
+    }
+
+    public void deleteCertinstById(String id) throws Exception {
+        if (StringUtils.isNotBlank(id)) {
+            aeaHiCertinstMapper.deleteAeaHiCertinst(id);
+        }
+    }
+
+    public AeaCertinstDetailResultVo getCertinstById(String certinstId) throws Exception {
+        AeaCertinstDetailResultVo vo=new AeaCertinstDetailResultVo();
+        AeaHiCertinst certinst = aeaHiCertinstMapper.getAeaHiCertinstById(certinstId);
+        BeanUtils.copyProperties(certinst,vo);
+        if(StringUtils.isNotBlank(certinst.getLinkmanInfoId())){
+            vo.setCertHolder("u");
+        }else{
+            vo.setCertHolder("c");
+        }
+        AeaCert cert = aeaCertMapper.getAeaCertById(certinst.getCertId(), SecurityContext.getCurrentOrgId());
+        vo.setCertType(cert.getCertTypeId());
+        BscAttLink query=new BscAttLink();
+        query.setLinkId(vo.getAttLinkId());
+        List<BscAttLink> attLinkL = bscAttMapper.listBscAttLink(query);
+        if(attLinkL.size()>0) vo.setAttDetailId(attLinkL.get(0).getDetailId());
+        return vo;
+    }
 }

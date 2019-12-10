@@ -187,4 +187,8 @@ public interface AeaHiIteminstMapper {
     int countOverTimeOrWarningAeaHiIteminst(@Param("state") String state, @Param("queryIteminstStates") String queryIteminstStates, @Param("orgId") String orgId, @Param("rootOrgId") String rootOrgId);
 
     List<AeaHiIteminst> listAeaHiIteminstByProjInfoIdAndItemVerIds(@Param("projInfoId") String projInfoId, @Param("itemVerIds") List<String> itemVerIds, @Param("rootOrgId") String rootOrgId);
+
+    List<ApproveProjInfoDto> getDraftApplyList(@Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId, @Param("keyword") String keyword);
+
+    void batchDeleteAeaHiIteminst(@Param("ids") String[] iteminstIds);
 }

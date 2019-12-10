@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CommonLoginService {
@@ -81,7 +82,8 @@ public class CommonLoginService {
             if (password.equals(SM3.generateSM3(aeaLinkmanInfo.getLoginPwd()))) {
                 //查询登录人单位信息列表
                 unitList = aeaUnitInfoMapper.listAeaUnitInfoByLinkIdHasBind(userId);
-
+                //只读取已经审核通过或者没有审核状态的单位
+                unitList = unitList.stream().filter(unit -> StringUtils.isBlank(unit.getAuditFlag()) || unit.getAuditFlag().equals("1")).collect(Collectors.toList());
                 if (unitList.size() > 0) {
                     for (AeaUnitInfo unitInfo : unitList) {
                         //判断是否有匹配当前登录角色（业主或中介）的单位
@@ -129,6 +131,9 @@ public class CommonLoginService {
         } else if (aeaLinkmanInfo==null && aeaUnitInfos.size() == 1) {
 
             aeaUnitInfo = aeaUnitInfos.get(0);
+            if (StringUtils.isNotBlank(aeaUnitInfo.getAuditFlag()) && !"1".equals(aeaUnitInfo.getAuditFlag())) {
+                return getRestResult(false, "该账号尚未有通过审核！");
+            }
 
             loginInfoVo.setImgUrl(aeaUnitInfo.getImgUrl());
 

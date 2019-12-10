@@ -2,14 +2,16 @@ package com.augurit.aplanmis.mall.userCenter.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
+import com.augurit.agcloud.bsc.domain.BscAttLink;
 import com.augurit.agcloud.bsc.mapper.BscAttDetailMapper;
+import com.augurit.agcloud.bsc.mapper.BscAttMapper;
+import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.agcloud.framework.ui.result.ContentResultForm;
+import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.ItemStatus;
-import com.augurit.aplanmis.common.domain.AeaHiItemCorrect;
-import com.augurit.aplanmis.common.domain.AeaHiItemCorrectDueIninst;
-import com.augurit.aplanmis.common.domain.AeaHiItemCorrectRealIninst;
-import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.dto.MatCorrectDto;
 import com.augurit.aplanmis.common.dto.MatCorrectinstDto;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
@@ -18,6 +20,7 @@ import com.augurit.aplanmis.common.service.instance.AeaHiItemCorrectRealIninstSe
 import com.augurit.aplanmis.common.service.instance.AeaHiItemCorrectService;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.service.item.AeaLogItemStateHistService;
+import com.augurit.aplanmis.mall.userCenter.service.RestFileService;
 import com.augurit.aplanmis.mall.userCenter.service.RestMatSupplyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +55,10 @@ public class RestMatSupplyServiceImpl implements RestMatSupplyService {
     private FileUtilsService fileUtilsService;
     @Autowired
     private BscAttDetailMapper bscAttDetailMapper;
+    @Autowired
+    private BscAttMapper bscAttMapper;
+    @Autowired
+    private RestFileService restFileService;
 
     /**
      * 保存补正的材料
@@ -84,15 +91,7 @@ public class RestMatSupplyServiceImpl implements RestMatSupplyService {
                         aeaHiItemCorrectRealIninst.setRealPaperCount(matCorrectDto.getRealPaperCount());
                         aeaHiItemCorrectRealIninstService.updateAeaHiItemCorrectRealIninst(aeaHiItemCorrectRealIninst);
                     } else {
-                        AeaHiItemCorrectRealIninst aeaHiItemCorrectRealIninst = new AeaHiItemCorrectRealIninst();
-                        aeaHiItemCorrectRealIninst.setRealIninstId(UUID.randomUUID().toString());
-                        aeaHiItemCorrectRealIninst.setDueIninstId(matCorrectDto.getPaperDueIninstId());
-                        aeaHiItemCorrectRealIninst.setCorrectId(matCorrectinstDto.getCorrectId());
-                        aeaHiItemCorrectRealIninst.setIsPass("0");
-                        aeaHiItemCorrectRealIninst.setInoutinstId(matCorrectDto.getPaperInoutinstId());
-                        aeaHiItemCorrectRealIninst.setRealPaperCount(matCorrectDto.getRealPaperCount());
-                        aeaHiItemCorrectRealIninst.setRootOrgId(SecurityContext.getCurrentOrgId());
-                        aeaHiItemCorrectRealIninstService.saveAeaHiItemCorrectRealIninst(aeaHiItemCorrectRealIninst);
+                        saveAeaHiItemCorrectRealIninst(matCorrectinstDto, matCorrectDto);
                     }
                 }
 
@@ -103,16 +102,7 @@ public class RestMatSupplyServiceImpl implements RestMatSupplyService {
                         aeaHiItemCorrectRealIninst.setRealCopyCount(matCorrectDto.getRealCopyCount());
                         aeaHiItemCorrectRealIninstService.updateAeaHiItemCorrectRealIninst(aeaHiItemCorrectRealIninst);
                     } else {
-
-                        AeaHiItemCorrectRealIninst aeaHiItemCorrectRealIninst = new AeaHiItemCorrectRealIninst();
-                        aeaHiItemCorrectRealIninst.setRealIninstId(UUID.randomUUID().toString());
-                        aeaHiItemCorrectRealIninst.setDueIninstId(matCorrectDto.getCopyDueIninstId());
-                        aeaHiItemCorrectRealIninst.setCorrectId(matCorrectinstDto.getCorrectId());
-                        aeaHiItemCorrectRealIninst.setIsPass("0");
-                        aeaHiItemCorrectRealIninst.setInoutinstId(matCorrectDto.getCopyInoutinstId());
-                        aeaHiItemCorrectRealIninst.setRealCopyCount(matCorrectDto.getRealCopyCount());
-                        aeaHiItemCorrectRealIninst.setRootOrgId(SecurityContext.getCurrentOrgId());
-                        aeaHiItemCorrectRealIninstService.saveAeaHiItemCorrectRealIninst(aeaHiItemCorrectRealIninst);
+                        saveAeaHiItemCorrectRealIninst(matCorrectinstDto, matCorrectDto);
                     }
                 }
             }
@@ -135,16 +125,7 @@ public class RestMatSupplyServiceImpl implements RestMatSupplyService {
                         aeaHiItemCorrectRealIninst.setRealPaperCount(matCorrectDto.getRealPaperCount());
                         aeaHiItemCorrectRealIninstService.updateAeaHiItemCorrectRealIninst(aeaHiItemCorrectRealIninst);
                     } else {
-
-                        AeaHiItemCorrectRealIninst aeaHiItemCorrectRealIninst = new AeaHiItemCorrectRealIninst();
-                        aeaHiItemCorrectRealIninst.setRealIninstId(UUID.randomUUID().toString());
-                        aeaHiItemCorrectRealIninst.setDueIninstId(matCorrectDto.getPaperDueIninstId());
-                        aeaHiItemCorrectRealIninst.setCorrectId(matCorrectinstDto.getCorrectId());
-                        aeaHiItemCorrectRealIninst.setInoutinstId(matCorrectDto.getPaperInoutinstId());
-                        aeaHiItemCorrectRealIninst.setIsPass("0");
-                        aeaHiItemCorrectRealIninst.setRootOrgId(SecurityContext.getCurrentOrgId());
-                        aeaHiItemCorrectRealIninst.setRealPaperCount(matCorrectDto.getRealPaperCount());
-                        aeaHiItemCorrectRealIninstService.saveAeaHiItemCorrectRealIninst(aeaHiItemCorrectRealIninst);
+                        saveAeaHiItemCorrectRealIninst(matCorrectinstDto, matCorrectDto);
                     }
                 }
 
@@ -158,16 +139,7 @@ public class RestMatSupplyServiceImpl implements RestMatSupplyService {
                         aeaHiItemCorrectRealIninst.setRealCopyCount(matCorrectDto.getRealCopyCount());
                         aeaHiItemCorrectRealIninstService.updateAeaHiItemCorrectRealIninst(aeaHiItemCorrectRealIninst);
                     } else {
-
-                        AeaHiItemCorrectRealIninst aeaHiItemCorrectRealIninst = new AeaHiItemCorrectRealIninst();
-                        aeaHiItemCorrectRealIninst.setRealIninstId(UUID.randomUUID().toString());
-                        aeaHiItemCorrectRealIninst.setDueIninstId(matCorrectDto.getCopyDueIninstId());
-                        aeaHiItemCorrectRealIninst.setCorrectId(matCorrectinstDto.getCorrectId());
-                        aeaHiItemCorrectRealIninst.setInoutinstId(matCorrectDto.getCopyInoutinstId());
-                        aeaHiItemCorrectRealIninst.setIsPass("0");
-                        aeaHiItemCorrectRealIninst.setRealCopyCount(matCorrectDto.getRealCopyCount());
-                        aeaHiItemCorrectRealIninst.setRootOrgId(SecurityContext.getCurrentOrgId());
-                        aeaHiItemCorrectRealIninstService.saveAeaHiItemCorrectRealIninst(aeaHiItemCorrectRealIninst);
+                        saveAeaHiItemCorrectRealIninst(matCorrectinstDto, matCorrectDto);
                     }
                 }
 
@@ -203,6 +175,20 @@ public class RestMatSupplyServiceImpl implements RestMatSupplyService {
                 aeaHiIteminstService.updateAeaHiIteminstStateAndInsertOpsAeaLogItemStateHist(aeaHiItemCorrect.getIteminstId(), aeaHiItemCorrect.getCorrectDesc(), option, null, ItemStatus.CORRECT_MATERIAL_END.getValue(), null);
             }
         }
+    }
+
+
+    private void saveAeaHiItemCorrectRealIninst( MatCorrectinstDto matCorrectinstDto,  MatCorrectDto matCorrectDto) throws Exception {
+        AeaHiItemCorrectRealIninst aeaHiItemCorrectRealIninst = new AeaHiItemCorrectRealIninst();
+        aeaHiItemCorrectRealIninst.setRealIninstId(UUID.randomUUID().toString());
+        aeaHiItemCorrectRealIninst.setDueIninstId(matCorrectDto.getPaperDueIninstId());
+        aeaHiItemCorrectRealIninst.setCorrectId(matCorrectinstDto.getCorrectId());
+        aeaHiItemCorrectRealIninst.setIsPass("0");
+        aeaHiItemCorrectRealIninst.setInoutinstId(matCorrectDto.getPaperInoutinstId());
+        aeaHiItemCorrectRealIninst.setRealPaperCount(matCorrectDto.getRealPaperCount());
+        aeaHiItemCorrectRealIninst.setRealCopyCount(matCorrectDto.getRealCopyCount());
+        aeaHiItemCorrectRealIninst.setRootOrgId(SecurityContext.getCurrentOrgId());
+        aeaHiItemCorrectRealIninstService.saveAeaHiItemCorrectRealIninst(aeaHiItemCorrectRealIninst);
     }
 
     //判断材料补正是否已收齐
@@ -249,7 +235,6 @@ public class RestMatSupplyServiceImpl implements RestMatSupplyService {
     }
 
 
-
     /**
      * 材料删除
      *
@@ -260,14 +245,12 @@ public class RestMatSupplyServiceImpl implements RestMatSupplyService {
     public void delelteAttFile(String detailIds, String attRealIninstId) throws Exception {
         AeaHiItemCorrectRealIninst realIninst = aeaHiItemCorrectRealIninstService.getAeaHiItemCorrectRealIninstById(attRealIninstId);
         if (realIninst != null) {
-            fileUtilsService.deleteAttachments(detailIds.split(","));
-            List<BscAttFileAndDir> matAttDetail = bscAttDetailMapper.searchFileAndDirsSimple(null, null, "AEA_HI_ITEM_CORRECT_REAL_ININST", "REAL_ININST_ID", new String[]{attRealIninstId});
-            realIninst.setAttCount(Long.valueOf(matAttDetail.size()));
-            realIninst.setModifyTime(new Date());
-            realIninst.setModifier(SecurityContext.getCurrentUserName());
-            aeaHiItemCorrectRealIninstService.updateAeaHiItemCorrectRealIninst(realIninst);
+            restFileService.delelteAttachmentByCloud(detailIds.split(","),attRealIninstId);
+            updateAeaHiItemCorrectRealIninst(attRealIninstId, realIninst);
         }
     }
+
+
     @Override
     public void uploadFile(String attRealIninstId, HttpServletRequest request) throws Exception {
         StandardMultipartHttpServletRequest req = (StandardMultipartHttpServletRequest) request;
@@ -276,12 +259,37 @@ public class RestMatSupplyServiceImpl implements RestMatSupplyService {
             AeaHiItemCorrectRealIninst realIninst = aeaHiItemCorrectRealIninstService.getAeaHiItemCorrectRealIninstById(attRealIninstId);
             if (realIninst == null) throw new Exception("材料实例不存在！");
             fileUtilsService.uploadAttachments("AEA_HI_ITEM_CORRECT_REAL_ININST", "REAL_ININST_ID", attRealIninstId, files);
-            List<BscAttFileAndDir> matAttDetail = bscAttDetailMapper.searchFileAndDirsSimple(null, null, "AEA_HI_ITEM_CORRECT_REAL_ININST", "REAL_ININST_ID", new String[]{attRealIninstId});
-            realIninst.setAttCount(Long.valueOf(matAttDetail.size()));
-            realIninst.setModifyTime(new Date());
-            realIninst.setModifier(SecurityContext.getCurrentUserName());
-            aeaHiItemCorrectRealIninstService.updateAeaHiItemCorrectRealIninst(realIninst);
+            updateAeaHiItemCorrectRealIninst(attRealIninstId, realIninst);
+
         }
     }
 
+    public void uploadFileByCloud(String attRealIninstId, String  detailIds) throws Exception {
+        AeaHiItemCorrectRealIninst realIninst = aeaHiItemCorrectRealIninstService.getAeaHiItemCorrectRealIninstById(attRealIninstId);
+        if (realIninst == null) throw new Exception("材料实例不存在！");
+        String[] detailIdArr = detailIds.split(",");
+        for (String s : detailIdArr) {
+            insertCorrectRealInst(attRealIninstId,s);
+        }
+        updateAeaHiItemCorrectRealIninst(attRealIninstId, realIninst);
+    }
+
+
+    private void insertCorrectRealInst(String  attRealIninstId,String detailId) throws Exception {
+        BscAttLink bscAttLink = new BscAttLink();
+        bscAttLink.setLinkId(UUID.randomUUID().toString());
+        bscAttLink.setTableName("AEA_HI_ITEM_CORRECT_REAL_ININST");
+        bscAttLink.setPkName("REAL_ININST_ID");
+        bscAttLink.setRecordId(attRealIninstId);
+        bscAttLink.setDetailId(detailId);
+        bscAttLink.setLinkType("a");
+        bscAttMapper.insertLink(bscAttLink);
+    }
+    private void updateAeaHiItemCorrectRealIninst(String attRealIninstId, AeaHiItemCorrectRealIninst realIninst) throws Exception {
+        List<BscAttFileAndDir> matAttDetail = bscAttDetailMapper.searchFileAndDirsSimple(null, null, "AEA_HI_ITEM_CORRECT_REAL_ININST", "REAL_ININST_ID", new String[]{attRealIninstId});
+        realIninst.setAttCount(Long.valueOf(matAttDetail.size()));
+        realIninst.setModifyTime(new Date());
+        realIninst.setModifier(SecurityContext.getCurrentUserName());
+        aeaHiItemCorrectRealIninstService.updateAeaHiItemCorrectRealIninst(realIninst);
+    }
 }

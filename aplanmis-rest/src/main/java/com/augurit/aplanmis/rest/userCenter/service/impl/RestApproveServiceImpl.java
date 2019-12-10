@@ -30,6 +30,7 @@ import com.augurit.aplanmis.common.dto.ApproveProjInfoDto;
 import com.augurit.aplanmis.common.dto.SupplementInfoDto;
 import com.augurit.aplanmis.common.mapper.AeaHiItemCorrectMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemStateinstMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiIteminstMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemStateMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStateItemMapper;
 import com.augurit.aplanmis.common.service.file.impl.FileAbstractService;
@@ -126,6 +127,8 @@ public class RestApproveServiceImpl implements RestApproveService {
     private AeaItemStateMapper aeaItemStateMapper;
     @Autowired
     private AeaHiItemStateinstMapper aeaHiItemStateinstMapper;
+    @Autowired
+    private AeaHiIteminstMapper aeaHiIteminstMapper;
 
     @Override
     public PageInfo<ApproveProjInfoDto> searchApproveProjInfoListByUnitOrLinkman(String unitInfoId, String userInfoId, String state, String keyword, int pageNum, int pageSize) throws Exception {
@@ -143,8 +146,8 @@ public class RestApproveServiceImpl implements RestApproveService {
     }
 
     @Override
-    public PageInfo<SupplementInfoDto> searchMatComplet(String unitInfoId, String userId, int pageNum, int pageSize) throws Exception {
-        return MergeopinionList(approveDataService.searchMatComplet(unitInfoId, userId, ApplyState.IN_THE_SUPPLEMENT.getValue(), pageNum, pageSize));
+    public PageInfo<SupplementInfoDto> searchMatComplet(String unitInfoId, String userId, String keyword, int pageNum, int pageSize) throws Exception {
+        return MergeopinionList(approveDataService.searchMatCompletByUser(unitInfoId, userId, keyword, pageNum, pageSize));
     }
 
     public PageInfo<SupplementInfoDto> searchSupplementInfo(String unitInfoId, String userId, int pageNum, int pageSize) throws Exception {
@@ -292,9 +295,19 @@ public class RestApproveServiceImpl implements RestApproveService {
             if ("0".equals(applyinst.getApplySubject())) {
                 applyDetailVo.setRole(LoginUserRoleEnum.PERSONAL.getValue());
             } else {
+                AeaUnitInfo aeaUnitInfo;
                 applyDetailVo.setRole(LoginUserRoleEnum.UNIT.getValue());
                 List<AeaUnitInfo> unitInfoList = aeaUnitInfoService.findApplyOwnerUnitProj(applyinstId, projInfoId);//建设单位
-                applyDetailVo.setAeaUnitInfo(unitInfoList.size() > 0 ? unitInfoList.get(0) : new AeaUnitInfo());
+                if (unitInfoList.size()>0){
+                    aeaUnitInfo = unitInfoList.get(0);
+                    String unitInfoId = aeaUnitInfo.getUnitInfoId();
+                    aeaUnitInfo.setAeaLinkmanInfoList(aeaLinkmanInfoService.findAllUnitLinkman(unitInfoId));
+                }else {
+                    List<AeaLinkmanInfo> aeaLinkmanInfoList = new ArrayList<>();
+                    aeaUnitInfo = new AeaUnitInfo();
+                    aeaUnitInfo.setAeaLinkmanInfoList(aeaLinkmanInfoList);
+                }
+                applyDetailVo.setAeaUnitInfo(aeaUnitInfo);
             }
             AeaLinkmanInfo aeaLinkmanInfo = aeaLinkmanInfoService.getAeaLinkmanInfoByLinkmanInfoId(applyinst.getLinkmanInfoId());
             applyDetailVo.setAeaLinkmanInfo(aeaLinkmanInfo == null ? new AeaLinkmanInfo() : aeaLinkmanInfo);
@@ -325,9 +338,11 @@ public class RestApproveServiceImpl implements RestApproveService {
             for (AeaItemState parentState : parentStateList) {
                 for (AeaItemState state : stateList) {
                     if (StringUtils.isNotBlank(state.getParentStateId()) && state.getParentStateId().equals(parentState.getItemStateId())) {
-                        Map<String, String> map = new HashMap<>(2);
+                        Map<String, String> map = new HashMap<>(4);
                         map.put("question", parentState.getStateName());
                         map.put("answer", state.getStateName());
+                        map.put("questionId",parentState.getItemStateId());
+                        map.put("answerId",state.getItemStateId());
                         list.add(map);
                     }
                 }
@@ -349,19 +364,19 @@ public class RestApproveServiceImpl implements RestApproveService {
         long withdrawalNum = 0;//已撤件
         if (loginInfo == null) return retVo;
         if (loginInfo.isPersonalAccount()) {//个人
-            matCompletionNum = this.searchMatComplet("", loginInfo.getLinkmanInfoId(), 1, 1).getTotal();
+            matCompletionNum = this.searchMatComplet("", loginInfo.getLinkmanInfoId(), null, 1, 1).getTotal();
             approvalNum = this.searchIteminstApproveInfoListByUnitIdAndUserId("", "", loginInfo.getLinkmanInfoId(), 1, 1).getTotal();
             draftNum = this.searchApproveProjInfoListByUnitOrLinkman("", loginInfo.getLinkmanInfoId(), "2", null, 1, 1).getTotal();
             supplyNum = this.searchSupplyInfoList("", loginInfo.getLinkmanInfoId(), 1, 1).getTotal();
             applyNum = aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman("", loginInfo.getLinkmanInfoId(),"all");
         } else if (StringUtils.isNotBlank(loginInfo.getLinkmanInfoId())) {//委托人
-            matCompletionNum = this.searchMatComplet(loginInfo.getUnitInfoId(), loginInfo.getLinkmanInfoId(), 1, 1).getTotal();
+            matCompletionNum = this.searchMatComplet(loginInfo.getUnitInfoId(), loginInfo.getLinkmanInfoId(), null, 1, 1).getTotal();
             approvalNum = this.searchIteminstApproveInfoListByUnitIdAndUserId("", loginInfo.getUnitInfoId(), loginInfo.getLinkmanInfoId(), 1, 1).getTotal();
             draftNum = this.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitInfoId(), loginInfo.getLinkmanInfoId(), "2", null, 1, 1).getTotal();
             supplyNum = this.searchSupplyInfoList(loginInfo.getUnitInfoId(), loginInfo.getLinkmanInfoId(), 1, 1).getTotal();
             applyNum = aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitInfoId(), loginInfo.getLinkmanInfoId(),"all");
         } else {//企业
-            matCompletionNum = this.searchMatComplet(loginInfo.getUnitInfoId(), "", 1, 1).getTotal();
+            matCompletionNum = this.searchMatComplet(loginInfo.getUnitInfoId(), "", null, 1, 1).getTotal();
             approvalNum = this.searchIteminstApproveInfoListByUnitIdAndUserId("", loginInfo.getUnitInfoId(), "", 1, 1).getTotal();
             draftNum = this.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitInfoId(), "", "2", null, 1, 1).getTotal();
             supplyNum = this.searchSupplyInfoList(loginInfo.getUnitInfoId(), "", 1, 1).getTotal();
@@ -774,5 +789,12 @@ public class RestApproveServiceImpl implements RestApproveService {
 //        lifeCycleDiagramVo.setAeaParStages(paralleStages);
 
         return lifeCycleDiagramVo;
+    }
+
+    @Override
+    public PageInfo<ApproveProjInfoDto> searchWithdrawApplyListByUnitOrLinkman(String unitInfoId, String userInfoId, String keyword, int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<ApproveProjInfoDto> list = aeaHiIteminstMapper.getWithdrawApplyListByUnitOrLinkman(unitInfoId, userInfoId, keyword);
+        return new PageInfo<>(list);
     }
 }

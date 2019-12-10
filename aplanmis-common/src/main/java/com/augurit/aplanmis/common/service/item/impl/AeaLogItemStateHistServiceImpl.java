@@ -10,15 +10,15 @@ import com.augurit.aplanmis.common.vo.SupplyOrSpacialCommentVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import io.jsonwebtoken.lang.Assert;
+import org.apache.commons.collections.ListUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional
@@ -152,6 +152,21 @@ public class AeaLogItemStateHistServiceImpl implements AeaLogItemStateHistServic
     public List<SupplyOrSpacialCommentVo> findItemCorrectStateHist(String taskInstId, String rootOrgId){
         Assert.notNull(taskInstId, "任务ID为空！");
         return aeaLogItemStateHistMapper.findItemCorrectStateHist(taskInstId,rootOrgId);
+    }
+
+    @Override
+    public void batchDeleteAeaLogItemStateHist(List<String> ids){
+        if(ids.size()>0){
+            aeaLogItemStateHistMapper.batchDeleteAeaLogItemStateHist(ids);
+        }
+    }
+
+    @Override
+    public List<AeaLogItemStateHist> findAeaLogItemStateHistByIteminstIds(String[] iteminstIds){
+        if(iteminstIds.length>0){
+            return aeaLogItemStateHistMapper.listAeaLogItemStateHistByIteminstIds(Arrays.asList(iteminstIds));
+        }
+        return new ArrayList<>();
     }
 
 }

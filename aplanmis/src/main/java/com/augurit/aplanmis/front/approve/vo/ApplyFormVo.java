@@ -57,7 +57,8 @@ public class ApplyFormVo {
 
     public ApplyFormVo.LinkmanInfoVo changeLinkman2vo(AeaLinkmanInfo linkmanInfo) {
         LinkmanInfoVo vo = new LinkmanInfoVo();
-        BeanUtils.copyProperties(linkmanInfo, vo);
+        if(linkmanInfo != null)
+            BeanUtils.copyProperties(linkmanInfo, vo);
         return vo;
     }
 

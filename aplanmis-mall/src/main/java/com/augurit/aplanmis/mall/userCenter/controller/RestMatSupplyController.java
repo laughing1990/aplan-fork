@@ -221,5 +221,22 @@ public class RestMatSupplyController {
         }
     }
 
+    @ApiOperation(value = "材料补正页面--> 从我的材料库或云盘上传电子件")
+    @PostMapping("/att/uploadFileByCloud")
+    @ApiImplicitParams({@ApiImplicitParam(name = "attRealIninstId", value = "材料补正实例ID", required = false, type = "string"),
+            @ApiImplicitParam(name = "detailIds", value = "文件ID（英文状态逗号分隔）", required = true, type = "string")})
+    public ResultForm uploadFileByCloud(String attRealIninstId, String detailIds) {
+        try {
+            Assert.isTrue(StringUtils.isNotBlank(attRealIninstId), "attRealIninstId is null");
+            Assert.isTrue(StringUtils.isNotBlank(detailIds), "detailIds is null");
+            restMatSupplyService.uploadFileByCloud(attRealIninstId, detailIds);
+            return new ContentResultForm<>(false,attRealIninstId, "文件上传成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultForm(false, "文件上传失败！");
+        }
+    }
+
+
 
 }

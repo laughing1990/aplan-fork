@@ -124,6 +124,19 @@ public class AeaItemAdminController {
     }
 
     /**
+     * 用户事项管理
+     *
+     * @param modelMap
+     * @return
+     */
+    @RequestMapping("/item/user.do")
+    public ModelAndView indexItemUser(ModelMap modelMap){
+
+        loadBscItemData(modelMap);
+        return new ModelAndView("ui-jsp/item/user/item_user");
+    }
+
+    /**
      * 事项下放
      *
      * @return
@@ -165,6 +178,10 @@ public class AeaItemAdminController {
         // 受理方式
         List<BscDicCodeItem> slfss = bscDicCodeService.getActiveItemsByTypeCode("ITEM_SLFS", topOrgId);
         modelMap.put("slfss", slfss);
+
+        // 服务对象
+        List<BscDicCodeItem> itemFwjgxzs = bscDicCodeService.getActiveItemsByTypeCode("ITEM_FWJGXZ", topOrgId);
+        modelMap.put("itemFwjgxzs", itemFwjgxzs);
     }
 
     /**
@@ -363,14 +380,29 @@ public class AeaItemAdminController {
      * 是否可以选择标注事项
      *
      * @param basic
-     * @param isCheckCatalogItem
      * @return
      */
     @RequestMapping("/gtreeTestRunOrPublishedItem.do")
-    public List<AeaItem> gtreeTestRunOrPublishedItem(AeaItemBasic basic, Boolean isCheckCatalogItem) {
+    public List<AeaItem> gtreeTestRunOrPublishedItem(AeaItemBasic basic) {
 
         com.github.pagehelper.PageHelper.clearPage();
         List<AeaItem> list = aeaItemAdminService.gtreeTestRunOrPublishedItem(basic);
+        return list;
+    }
+
+    @RequestMapping("/gtreeLatestItem.do")
+    public List<AeaItem> gtreeLatestItem(AeaItemBasic basic) {
+
+        com.github.pagehelper.PageHelper.clearPage();
+        List<AeaItem> list = aeaItemAdminService.gtreeLatestItem(basic);
+        return list;
+    }
+
+    @RequestMapping("/gtreeOkVerItemNoRelSelf.do")
+    public List<AeaItem> gtreeOkVerItemNoRelSelf(AeaItemBasic basic) {
+
+        com.github.pagehelper.PageHelper.clearPage();
+        List<AeaItem> list = aeaItemAdminService.gtreeOkVerItemNoRelSelf(basic);
         return list;
     }
 

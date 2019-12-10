@@ -20,10 +20,11 @@ public interface AeaHiApplyinstService {
      * @param applySubject  申报主体 必须
      * @param linkmanInfoId 联系人ID 必须
      * @param branchOrgMap  分局承办
+     * @param isTemporarySubmit 是否临时提交 1 是 0否（应用于暂存）
      * @return
      * @throws Exception
      */
-    public AeaHiApplyinst createAeaHiApplyinst(String applySource, String applySubject, String linkmanInfoId, String isSeriesApprove, String branchOrgMap, String applyState) throws Exception;
+    public AeaHiApplyinst createAeaHiApplyinst(String applySource, String applySubject, String linkmanInfoId, String isSeriesApprove, String branchOrgMap, String applyState, String isTemporarySubmit) throws Exception;
 
     /**
      * 创建申请实例信息并保存状态变更记录

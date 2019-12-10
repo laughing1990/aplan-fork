@@ -16,79 +16,78 @@ import java.util.List;
 
 /**
  * 事项情形定义表-模型
- * <ul>
- * <li>项目名：奥格工程建设审批系统</li>
- * <li>版本信息：v4.0</li>
- * <li>版权所有(C)2019广州奥格智能科技有限公司-版权所有</li>
- * <li>创建人:Administrator</li>
- * <li>创建时间：2019-07-04 17:14:00</li>
- * </ul>
  */
 @Data
 @ApiModel("事项情形实体类")
 @EqualsAndHashCode(callSuper = true)
 public class AeaItemState extends ZtreeNode implements Serializable {
-// ----------------------------------------------------- Properties
 
     private static final long serialVersionUID = 1L;
     /**
      *   (主键)
      */
     private String itemStateId;
-    /** */
-    private String itemId; // ()
-    /** */
+
+    private String itemId; 
+
     private String itemVerId; // (事项定义ID)
-    /** */
+
     private String stateVerId; // (情形版本ID)
-    /** */
+
     @ApiModelProperty(value = "情形名称")
     private String stateName; // (情形名称)
-    /** */
+
     private String stateEl; // (条件表达式)
-    /** */
+
     @Size(max = 38)
     private Long sortNo; // (排列顺序号)
-    /** */
+
     private String stateMemo; // (备注说明)
-    /** */
+
     private String isActive; // (是否启用，0表示禁用，1表示启用)
-    /** */
+
     private String creater; // (创建人)
-    /** */
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private java.util.Date createTime; // (创建时间)
-    /** */
+
     private String modifier; // (修改人)
-    /** */
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private java.util.Date modifyTime; // (修改时间)
-    /** */
+
     private String useEl; // (是否启用EL表达式，0表示不启用，1表示启用。默认为0)
-    /** */
+
     private String parentStateId; // (父ID(1表示父节点为事项))
-    /** */
+
     private String stateSeq; // (序列)
-    /** */
+
     @ApiModelProperty(value = "是否问题，0表示答案，1表示问题")
     private String isQuestion; // (是否问题，0表示答案，1表示问题)
-    /** */
+
     @ApiModelProperty(value = "问题的答案类型，y表示是否选择，s表示单选答案，m表示多选答案")
     private String answerType; // (问题的答案类型，y表示是否选择，s表示单选答案，m表示多选答案)
-    /** */
+
     @ApiModelProperty(value = "是否必须回答，0表示可选回答，1表示必须回答【IS_QUESTION=1】")
     private String mustAnswer; // (是否必须回答，0表示可选回答，1表示必须回答【IS_QUESTION=1】)
-    /** */
+
     private String isDeleted; // (是否删除，0表示未删除，1表示已删除)
-    /** */
-    private String isProcStartCond; // ()
+
+    @ApiModelProperty(value = "是否流程  0否  1是")
+    private String isProcStartCond;
+
+    @ApiModelProperty(value = "是否告知承诺制  0否 1是")
+    private String isInformCommit;
+
     //选择的子情形ID
     @ApiModelProperty(value = "选择的子情形ID")
     private String selectAnswerId="";
+
     /**
      * 根组织ID
      */
     private String rootOrgId;
+    
     @ApiModelProperty(value = "父问题情形id")
     private String parentQuestionStateId;
 
@@ -143,6 +142,7 @@ public class AeaItemState extends ZtreeNode implements Serializable {
         newOne.setMustAnswer(this.mustAnswer);
         newOne.setIsDeleted(this.isDeleted);
         newOne.setIsProcStartCond(this.isProcStartCond);
+        newOne.setIsProcStartCond(this.isInformCommit);
         newOne.setRootOrgId(this.rootOrgId);
         return newOne;
     }

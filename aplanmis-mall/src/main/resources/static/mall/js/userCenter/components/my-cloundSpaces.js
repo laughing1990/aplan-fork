@@ -442,6 +442,72 @@
                 }
             },
 
+            // 预览电子件
+            previewFile: function(data,flag){ // flag==pdf 查看施工图
+                var detailId = data.fileId;
+                var _that = this;
+                var regText = /doc|docx|ppt|pptx|xls|xlsx|txt$/;
+                var fileName=data.fileName;
+                var fileType = data.fileType;
+                var flashAttributes = '';
+                _that.filePreviewCount++
+                if(flag=='pdf'){
+                    var tempwindow=window.open(); // 先打开页面
+                    setTimeout(function(){
+                        tempwindow.location=ctx+'cod/drawing/drawingCheck?detailId='+detailId;
+                    },1000)
+                }else {
+                    if(fileType=='pdf'){
+                        var tempwindow=window.open(); // 先打开页面
+                        setTimeout(function(){
+                            tempwindow.location=ctx+'previewPdf/view?detailId='+detailId;
+                        },1000)
+                    }else if(regText.test(fileType)){
+                        // previewPdf/pdfIsCoverted
+                        _that.mloading = true;
+                        request('', {
+                            url: ctx + 'previewPdf/pdfIsCoverted?detailId='+detailId,
+                            type: 'get',
+                        }, function (result) {
+                            if(result.success){
+                                _that.mloading = false;
+                                var tempwindow=window.open(); // 先打开页面
+                                setTimeout(function(){
+                                    tempwindow.location=ctx+'previewPdf/view?detailId='+detailId;
+                                },1000)
+                            }else {
+                                if(_that.filePreviewCount>9){
+                                    confirmMsg('提示信息：', '文件预览请求中，是否继续等待？', function () {
+                                        _that.filePreviewCount=0;
+                                        _that.previewFile(data);
+                                    }, function () {
+                                        _that.filePreviewCount=0;
+                                        _that.mloading = false;
+                                        return false;
+                                    }, '确定', '取消', 'warning', true)
+                                }else {
+                                    setTimeout(function(){
+                                        _that.previewFile(data);
+                                    },1000)
+                                }
+                            }
+                        }, function (msg) {
+                            _that.mloading = false;
+                            _that.$message({
+                                message: '文件预览失败',
+                                type: 'error'
+                            });
+                        })
+                    }else {
+                        _that.mloading = false;
+                        var tempwindow=window.open(); // 先打开页面
+                        setTimeout(function(){
+                            tempwindow.location = ctx + 'rest/file/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
+                        },1000)
+                    }
+                }
+            },
+
             /* 移动文件
 
             *   type=0代表是单个移动，type=1代表多个移动  it

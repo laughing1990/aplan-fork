@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.mall.userCenter.controller;
 
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.AeaHiApplyinstConstants;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
@@ -161,10 +162,11 @@ public class RestSeriesApplyController {
 
 
     @PostMapping("net/process/form/start")
-    @ApiOperation("阶段申报--> 一张表单提前实例化申请")
-    public ContentResultForm<String> startInstApply(String applySource,String applySubject,String  linkmanInfoId){
+    @ApiOperation("单项申报--> 一张表单提前实例化申请")
+    public ContentResultForm<String> startInstApply(String applySource,String applySubject,String  linkmanInfoId,String applyinstId){
         try {
-            AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, AeaHiApplyinstConstants.SERIESINST_APPLY, null, ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue());
+            if(StringUtils.isNotBlank(applyinstId)) return new ContentResultForm<>(true, applyinstId, "申请实例已创建!");
+            AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, AeaHiApplyinstConstants.SERIESINST_APPLY, null, ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"1");
             return new ContentResultForm<>(true, aeaHiApplyinst.getApplyinstId(), "申报成功!");
         } catch (Exception e) {
             logger.error(e.getMessage(),e);

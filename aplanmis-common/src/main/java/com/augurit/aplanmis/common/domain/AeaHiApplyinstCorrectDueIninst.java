@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.common.domain;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -43,4 +44,6 @@ private static final long serialVersionUID = 1L;
         private String matinstName;
         private String matId;
         private String reviewKeyPoints;
+        private String matProp;//材料性质，m表示普通材料，c表示证照材料，f表示在线表单
+        private String certId;//证照ID
 }

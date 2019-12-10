@@ -6,6 +6,7 @@ import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.aplanmis.common.domain.AeaImProjPurchase;
 import com.augurit.aplanmis.common.vo.QueryProjPurchaseVo;
 import com.augurit.aplanmis.supermarket.notice.service.AeaImSelectionNoticeService;
+import com.augurit.aplanmis.supermarket.notice.service.SelectionNoticeVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.google.common.base.Strings;
@@ -68,11 +69,11 @@ public class AeaImSelectionNoticeController {
     @GetMapping("/getSelectionNoticeDetail")
     public ResultForm getSelectionNoticeDetail(String  projPurchaseId){
         try {
-            if(Strings.isNullOrEmpty(projPurchaseId)){
-                throw  new Exception("传入参数projPurchaseId不能为空！");
+            if (Strings.isNullOrEmpty(projPurchaseId)) {
+                throw new Exception("传入参数projPurchaseId不能为空！");
             }
-            AeaImProjPurchase selectionNotice = selectionNoticeService.getSelectionNoticeByProjPurchaseId(projPurchaseId);
-            return new ContentResultForm<>(true,selectionNotice);
+            SelectionNoticeVo purchaseDetailVo = selectionNoticeService.getSelectionNoticeByProjPurchaseId(projPurchaseId);
+            return new ContentResultForm<>(true, purchaseDetailVo);
         } catch (Exception e) {
             log.error("查询中选公告详情出错！", e);
             return new ContentResultForm<>(false);

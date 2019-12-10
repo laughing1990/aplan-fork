@@ -7,12 +7,11 @@ import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
 import com.augurit.agcloud.bsc.sc.dic.code.service.BscDicCodeService;
 import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.DicConstants;
 import com.augurit.aplanmis.common.domain.*;
-import com.augurit.aplanmis.common.mapper.AeaHiSmsInfoMapper;
-import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
-import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
+import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.instance.*;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
@@ -21,6 +20,7 @@ import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.receive.ReceiveService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.utils.CommonTools;
+import com.augurit.aplanmis.common.utils.DesensitizedUtil;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.mall.userCenter.vo.AeaUnitInfoVo;
 import com.augurit.aplanmis.common.vo.LinkmanTypeVo;
@@ -96,6 +96,10 @@ public class RestApplyServiceImpl implements RestApplyService {
     ReceiveService receiveService;
     @Autowired
     RestUserCenterService restUserCenterService;
+    @Autowired
+    AeaHiApplyinstCorrectMapper aeaHiApplyinstCorrectMapper;
+    @Autowired
+    AeaLinkmanInfoMapper aeaLinkmanInfoMapper;
 
     @Override
     public UserInfoVo getApplyObject(HttpServletRequest request, String projInfoId) throws Exception {
@@ -135,7 +139,6 @@ public class RestApplyServiceImpl implements RestApplyService {
         }
         return vo;
     }
-
 
     /**
      * 并联申报 --> 发起申报

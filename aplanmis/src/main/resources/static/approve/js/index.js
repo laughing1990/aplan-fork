@@ -179,7 +179,10 @@ var vm = new Vue({
       nextTask: null,//下一环节名称
       sendParam: null,//发送参数
       sendDialog: false,//发送对话框
-      sendForm: {},//发送表单参数
+      sendForm: {
+        timeruleId: '',
+        toleranceTime: '',
+      },//发送表单参数
       sendFormRule: {},//发送表单校验规则
       onlySuggestForm: {}, // 只有办理意见的弹窗form
       
@@ -432,7 +435,7 @@ var vm = new Vue({
       isMultiFlow: false,
       mutiCheckedNames: [],
       mutiCheckedMan: [],
-      treeTargetRow: [],
+      treeTargetRow: null,
       // 特殊程序
       speTabIndex: 0,
       speBaseInfoForm: {
@@ -529,6 +532,18 @@ var vm = new Vue({
       projInfoId: '',
       itemVersionId: '',
       currentCertinstId: '',
+      RQtimeVisible: false,
+      RQtimeLoading: false,
+      rqTimeForm: {
+        toleranceTime: 1,
+        timeruleId: '',
+      },
+      rqTimeformRules: {
+        toleranceTime: [{required: true, message: '请填写时限', trigger: 'blur'}],
+        timeruleId: [{required: true, message: '请选择时限规则', trigger: 'blur'}],
+      },
+      rqRulesList: [],
+      isRQDialog: false,
     }
   },
   filters: {
@@ -565,6 +580,70 @@ var vm = new Vue({
     },
   },
   methods: {
+    // 得到容缺时限规则数据
+    getRQRuleList: function(){
+      var vm = this;
+      if (vm.rqRulesList.length) {
+        return null;
+      }
+      request('', {
+        url: ctx + 'rest/act/sto/timerule/getActStoTimeruleByOrgId',
+        type: 'get',
+      }, function(res){
+        if (res.success) {
+          vm.rqRulesList = res.content;
+          if(vm.rqRulesList.length > 0){
+            //格式化一下label
+            for(var i=0; i<vm.rqRulesList.length; i++){
+              var timeruleName = vm.rqRulesList[i].timeruleName;
+              if(timeruleName && timeruleName.length > 3)
+                vm.rqRulesList[i].timeruleName = timeruleName.substring(0,3);
+            }
+            //默认选择工作日
+            vm.sendForm.timeruleId = vm.rqRulesList[0].timeruleId;
+
+            vm.rqTimeForm.timeruleId = vm.rqRulesList[0].timeruleId;
+            vm.rqTimeForm.toleranceTime = 1;
+          }
+        } else {
+          vm.$message.error(res.message || '获取时限规则数据失败');
+        }
+      },function(){
+        vm.$message.error('获取时限规则数据失败');
+      })
+    },
+    // 关闭容缺时限配置弹窗
+    closeRQtimeDialog: function(){
+      this.$refs.rqTimeFormRef.resetFields();
+    },
+    // 打开容缺时限配置弹窗
+    openRQtimeDialog: function(){
+      var vm = this;
+      if (vm.rqRulesList.length) {
+        vm.rqTimeForm.timeruleId = vm.rqRulesList[0].timeruleId;
+        vm.rqTimeForm.toleranceTime = 1;
+        vm.RQtimeVisible = true;
+        return null;
+      }
+      vm.parentPageLoading = true;
+      request('', {
+        url: ctx + 'rest/act/sto/timerule/getActStoTimeruleByOrgId',
+        type: 'get',
+      }, function(res){
+        vm.parentPageLoading = false;
+        if (res.success) {
+          vm.rqRulesList = res.content;
+          vm.rqTimeForm.timeruleId = vm.rqRulesList[0].timeruleId;
+          vm.rqTimeForm.toleranceTime = 1;
+          vm.RQtimeVisible = true;
+        } else {
+          vm.$message.error(res.message || '获取时限规则数据失败');
+        }
+      },function(){
+        vm.parentPageLoading = false;
+        vm.$message.error('获取时限规则数据失败');
+      })
+    },
     // 关闭填写材料表单弹窗
     closeMatFormDia: function () {
       this.$nextTick(function () {
@@ -940,6 +1019,7 @@ var vm = new Vue({
     closeSendDialog: function () {
       this.mutiCheckedNames = [];
       this.mutiCheckedMan = [];
+      this.isRQDialog = false;
     },
     // 特殊程序类型code转text
     specialTypeToText: function (type) {
@@ -2424,11 +2504,18 @@ var vm = new Vue({
       } else {
         vm.nextTaskAssignee = vm.sendTaskInfo.defaultSendAssignees;
         vm.nextTaskAssigneeId = vm.sendTaskInfo.defaultSendAssigneesId;
+        if (vm.treeTargetRow){
+          vm.nextTaskAssignee = vm.treeTargetRow.defaultSendAssignees;
+          vm.nextTaskAssigneeId = vm.treeTargetRow.defaultSendAssigneesId;
+        }
       }
       //设置到提交参数中
       vm.sendParam.sendConfigs[0].assignees = vm.nextTaskAssigneeId;
       //回显到发送信息框中
       vm.$set(vm.sendForm, 'nextTaskAssignee', vm.nextTaskAssignee);
+      if (vm.treeTargetRow) {
+        vm.treeTargetRow.nextTaskAssignee = vm.nextTaskAssignee;
+      }
       //关闭选择框
       vm.selectAssigneeDialog = false;
       if (vm.isMultiFlow) {
@@ -2450,7 +2537,7 @@ var vm = new Vue({
         if (result.success) {
           $('#parentPro').show();
           $('#parentPro').empty();
-          var btn = '<button class="btn btn-default" style="margin-top:16px;" onclick="vm.getParentProcess(' + result.content.processInstanceId + ',' + result.content.isCheck + ')">返回上级流程</button>';
+          var btn = '<button class="btn btn-default" style="margin-top:16px;" onclick="vm.getParentProcess(\'' + result.content.processInstanceId + '\',' + result.content.isCheck + ')">返回上级流程</button>';
           $('#parentPro').append(btn);
         } else {
           $('#parentPro').hide();
@@ -2743,6 +2830,9 @@ var vm = new Vue({
     //办理按钮功能，弹窗发送选择框----窗口办理/事项办理--只推动流程流转---使用原来的
     wfBusSend: function () {
       var vm = this;
+      if (vm.isRQDialog) {
+        vm.getRQRuleList();
+      }
       if (vm.checkCanClick()) return null;
       if (vm.checkNotNull(vm.taskId)) {
         vm.parentPageLoading = true;
@@ -2875,6 +2965,17 @@ var vm = new Vue({
     //流程发送
     doSendOperation: function (directSend) {
       var vm = this;
+      if (vm.isRQDialog) {
+        if (!vm.sendForm.toleranceTime) {
+          return vm.$message.error('请填写容缺期限');
+        }
+        if (vm.sendForm.toleranceTime&&vm.sendForm.toleranceTime<=0) {
+          return vm.$message.error('容缺期限值必须大于0');
+        }
+        if(!vm.sendForm.timeruleId){
+          return vm.$message.error('请选择容缺期限类型');
+        }
+      }
       if (!directSend) {
         // if (vm.sendTaskInfo.userTask && vm.checkNull(vm.nextTaskAssigneeId)) {
         //   vm.$message.error('您选择的下一环节需要选择办理人，没有办理人无法发送！');
@@ -3035,7 +3136,12 @@ var vm = new Vue({
         applyinstId: vm.masterEntityKey,
         applyState: vm.enumApplyStatus,
         conclusionOptionValue: vm.conclusionOptionValue,
+        toleranceTime: vm.sendForm.toleranceTime,
+        timeruleId: vm.sendForm.timeruleId,
       }
+      // console.log(tmpSendParam);
+      // console.log(params);
+      // if (window) return null;
       vm.sendDialogLoading = true;
       vm.onlySuggestLoading = true;
       request('bpmFrontUrl', {
@@ -4935,6 +5041,7 @@ function testBtn() {
 function passOfToleranceForItem() {
   vm.enumItemStatus = 'AGREE_TOLERANCE';
   vm.requestMappingType = 'put';
+  vm.isRQDialog = true;
   urlForItem();
 }
 
@@ -5259,6 +5366,6 @@ function callbackAfterSaveSFForm(result, sFRenderConfig, formModelVal, actStoFor
 }
 
 // window.setTimeout(function(){
-//   startSupplementForItem();
+//   passOfToleranceForItem();
 // }, 4000)
 //4.0 ******************** 新接口  end********************************************

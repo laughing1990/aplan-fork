@@ -28,7 +28,7 @@ public class AeaExProjCertBuildController {
     @PostMapping("/saveAeaExProjCertBuild")
     public ContentResultForm<String> saveAeaExProjCertBuild(AeaExProjCertBuild aeaExProjCertBuild){
         try {
-            if (StringUtils.isBlank(aeaExProjCertBuild.getBuildId())){
+            if (StringUtils.isBlank(aeaExProjCertBuild.getProjInfoId())){
                 return new ContentResultForm<>(false,null, "保存失败，项目ID为空或者查询不到该项目ID");
             }
             aeaExProjCertBuildService.saveForm(aeaExProjCertBuild);

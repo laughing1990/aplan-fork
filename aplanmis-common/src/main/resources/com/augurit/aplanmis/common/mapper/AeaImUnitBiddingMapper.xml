@@ -230,7 +230,15 @@
         WHEN '7' THEN '选取中'
         WHEN '8' THEN '选取开始'
         WHEN '9' THEN '已选取'
-        WHEN '10' THEN '无效' ELSE ''
+        WHEN '10' THEN '无效'
+        WHEN '12' THEN '已过时'
+        WHEN '11' THEN '竞价中'
+        WHEN '13' THEN '部门审批中'
+        WHEN '14' THEN '办结通过'
+        WHEN '15' THEN '办结不通过'
+        WHEN '16' THEN '待上传合同'
+        WHEN '17' THEN '待确认合同'
+        ELSE ''
         END) auditFlag,
         (SELECT aui.APPLICANT FROM aea_unit_info aui WHERE aui.UNIT_INFO_ID = aipp.PUBLISH_UNIT_INFO_ID) applicant,
         aipp.BIDDING_TYPE biddingType,
@@ -240,11 +248,15 @@
         aise.SERVICE_ATTITUDE serviceAttitude,
         aise.SERVICE_CHARGE serviceCharge,
         aise.SERVICE_STANDARD serviceStandard,
-        aise.MEMO memo
+        aise.MEMO memo,
+        aic.PRICE as realPrice,
+        aic.SERVICE_START_TIME as serviceStartTime,
+        aic.SERVICE_END_TIME as serviceEndTime
         FROM aea_im_unit_bidding aiub
         LEFT JOIN aea_im_service_evaluation aise ON aiub.UNIT_BIDDING_ID = aise.UNIT_BIDDING_ID AND aise.IS_DELETE = '0'
         LEFT JOIN aea_im_proj_purchase aipp ON aiub.PROJ_PURCHASE_ID = aipp.PROJ_PURCHASE_ID
         LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID = aipp.PROJ_INFO_ID
+        left join aea_im_contract aic on aic.PROJ_PURCHASE_ID=aipp.PROJ_PURCHASE_ID
         WHERE aiub.IS_WON_BID = '1' AND aiub.IS_CANCEL_SIGNUP = '0'
         AND aiub.IS_DELETE = '0' AND aipp.IS_DELETE = '0'
         AND aiub.UNIT_INFO_ID = #{unitInfoId}

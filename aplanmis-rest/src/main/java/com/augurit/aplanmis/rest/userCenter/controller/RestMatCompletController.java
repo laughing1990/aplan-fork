@@ -72,15 +72,15 @@ public class RestMatCompletController {
     @ApiOperation(value = "材料补全 --> 材料补全列表查询接口")
     @ApiImplicitParams({@ApiImplicitParam(value = "页面数量", name = "pageNum", required = true, dataType = "string"),
             @ApiImplicitParam(value = "页面页数", name = "pageSize", required = true, dataType = "string")})
-    public ResultForm searchMatComplet(@RequestParam(defaultValue = "1") int pageNum, @RequestParam(defaultValue = "10") int pageSize) {
+    public ResultForm searchMatComplet(String keyword, @RequestParam(defaultValue = "1") int pageNum, @RequestParam(defaultValue = "10") int pageSize) {
         try {
             AuthUser loginInfo = AuthContext.getCurrentUser();
             if (loginInfo.isPersonalAccount()) {//个人
-                return new ContentResultForm<>(true, restApproveService.searchMatComplet("", loginInfo.getLinkmanInfoId(), pageNum, pageSize));
+                return new ContentResultForm<>(true, restApproveService.searchMatComplet("", loginInfo.getLinkmanInfoId(), keyword, pageNum, pageSize));
             } else if (StringUtils.isNotBlank(loginInfo.getLinkmanInfoId())) {//委托人
-                return new ContentResultForm<>(true, restApproveService.searchMatComplet(loginInfo.getUnitInfoId(), loginInfo.getLinkmanInfoId(), pageNum, pageSize));
+                return new ContentResultForm<>(true, restApproveService.searchMatComplet(loginInfo.getUnitInfoId(), loginInfo.getLinkmanInfoId(), keyword, pageNum, pageSize));
             } else {//企业
-                return new ContentResultForm<>(true, restApproveService.searchMatComplet(loginInfo.getUnitInfoId(), "", pageNum, pageSize));
+                return new ContentResultForm<>(true, restApproveService.searchMatComplet(loginInfo.getUnitInfoId(), "", keyword, pageNum, pageSize));
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

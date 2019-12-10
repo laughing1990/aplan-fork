@@ -42,8 +42,8 @@
 
     <select id="getCorrectDueIninstByApplyinstCorrectId" resultType="AeaHiApplyinstCorrectDueIninst">
         SELECT
-        <include refid="allColumns_ahacdi"/>,ahim.MATINST_NAME matinstName,ahim.MAT_ID matId,aim.REVIEW_KEY_POINTS
-        reviewKeyPoints,aim.REVIEW_SAMPLE_DOC reviewSampleDoc,aim.SAMPLE_DOC sampleDoc,aim.TEMPLATE_DOC templateDoc
+        <include refid="allColumns_ahacdi"/>,ahim.MATINST_NAME matinstName,ahim.MAT_ID matId,aim.mat_prop,aim.REVIEW_KEY_POINTS
+        reviewKeyPoints,aim.REVIEW_SAMPLE_DOC reviewSampleDoc,aim.SAMPLE_DOC sampleDoc,aim.TEMPLATE_DOC templateDoc,aim.CERT_ID certId
         FROM AEA_HI_APPLYINST_CORRECT_DUE_ININST ahacdi,AEA_HI_ITEM_MATINST ahim,AEA_ITEM_MAT aim
         WHERE aim.MAT_ID = ahim.MAT_ID
         AND ahacdi.MATINST_ID = ahim.MATINST_ID

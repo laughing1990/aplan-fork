@@ -1,49 +1,69 @@
-// 0:办结1:办理中2:草稿
+//  var ctx = "http://192.168.15.101:8084/aplanmis-mall/"
 var vm = new Vue({
-    el:"#draftsVue",
-    data:{
-        state:2,
-        projName:'',
-        localCode:'',
-        keyword:'',
-        pageNumDrafts:1,
-        pageSizeDrafts:10,
-        totalDrafts:0,
-        draftsData: [],
+    el: "#draftApplyListVue",
+    data: {
+        // 全局loading
+        ctx: ctx,
+        mloading: false,
+        noDataTip:"",
+        projName: '',
+        keyword: '',
+        localCode: '',
+        pageNumDH: 1,
+        pageSizeDH: 10,
+        totalDH: 0,
+        draftApplyListData: [],
+        curWidth: (document.documentElement.clientWidth || document.body.clientWidth),//当前屏幕宽度
+        curHeight: (document.documentElement.clientHeight || document.body.clientHeight),//当前屏幕高度
+
     },
-    mounted:function () {
-        this.getDraftList()
+    mounted: function () {
+        this.getDraftApplyList()
     },
-    methods:{
-        getDraftList:function(){
+    methods: {
+        getDraftApplyList: function () {
             var vm = this;
-            vm.applyinstFlag = 2;
-            vm.searchBtnLoading = true;
+            vm.mloading = true;
+            vm.noDataTip = ""
             request('', {
-                url: ctx + 'rest/user/draftApplyItem/list',
+                url: ctx + 'rest/user/draftApply/list',
                 type: 'get',
-                data:{
-                    state:vm.state,
-                    localCode:vm.localCode,
-                    keyword:vm.keyword,
-                    projName:vm.projName,
-                    pageNum:vm.pageNumDrafts,
-                    pageSize:vm.pageSizeDrafts,
+                data: {
+                    keyword: vm.keyword,
+                    pageNum: vm.pageNumDH,
+                    pageSize: vm.pageSizeDH,
                 }
             }, function (res) {
-                vm.draftsData = res.content.list;
-                vm.totalDrafts = res.content.total;
-            },function () {
-
+                vm.mloading = false;
+                if (res.success) {
+                    vm.draftApplyListData = res.content.list;
+                    if(vm.draftApplyListData.length<=0){
+                        vm.noDataTip = "暂无数据"
+                    }
+                    vm.totalDe = res.content.total;
+                    vm.totalDH = res.content.total;
+                } else {
+                    return vm.$message({
+                        message: '加载失败！',
+                        type: 'error'
+                    })
+                }
+            }, function () {
+                vm.mloading = false;
+                return vm.$message({
+                    message: '加载失败！',
+                    type: 'error'
+                })
             });
         },
-        handleSizeChangeDrafts:function(val){
-            this.pageSizeDrafts = val;
-            this.getDraftList()
+        handleSizeChangeDe: function (val) {
+            this.pageSizeDH = val;
+            this.getDraftApplyList()
         },
-        handleCurrentChangeDrafts:function(val){
-            this.pageNumDrafts = val;
-            this.getDraftList()
+        handleCurrentChangeDe: function (val) {
+            this.pageNumDH = val;
+            this.getDraftApplyList()
         },
-    }
+
+    },
 })

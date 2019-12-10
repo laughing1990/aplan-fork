@@ -37,11 +37,11 @@ import com.augurit.aplanmis.mall.userCenter.service.RestMyMatService;
 import com.augurit.aplanmis.mall.userCenter.vo.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -114,7 +114,8 @@ public class RestApproveServiceImpl implements RestApproveService {
     private OpuOmUserMapper opuOmUserMapper;
     @Autowired
     private AeaHiIteminstMapper aeaHiIteminstMapper;
-
+    @Value("${mall.check.authority:false}")
+    private boolean isCheckAuthority;
     @Override
     public PageInfo<ApproveProjInfoDto> searchApproveProjInfoListByUnitOrLinkman(String unitInfoId, String userInfoId, String state, String keyword, int pageNum, int pageSize) throws Exception {
         return approveDataService.searchApproveProjInfoListByUnitOrLinkman(unitInfoId,userInfoId,state,keyword,pageNum,pageSize);
@@ -124,6 +125,26 @@ public class RestApproveServiceImpl implements RestApproveService {
     public PageInfo<ApproveProjInfoDto> searchWithdrawApplyListByUnitOrLinkman(String unitInfoId, String userInfoId, String keyword, int pageNum, int pageSize) throws Exception {
         PageHelper.startPage(pageNum,pageSize);
         List<ApproveProjInfoDto> list = aeaHiIteminstMapper.getWithdrawApplyListByUnitOrLinkman(unitInfoId,userInfoId,keyword);
+        return new PageInfo<>(list);
+    }
+
+    @Override
+    public PageInfo<ApproveProjInfoDto> getDraftApplyList(String unitInfoId, String userInfoId, String keyword, int pageNum, int pageSize) throws Exception{
+        PageHelper.startPage(pageNum,pageSize);
+        List<ApproveProjInfoDto> list = aeaHiIteminstMapper.getDraftApplyList(unitInfoId,userInfoId,keyword);
+        if(list.size()>0){
+            list.stream().forEach(dto->{
+                if("0".equals(dto.getIsSeriesApprove())){
+                    try {
+                        AeaHiParStageinst stageinst = aeaHiParStageinstService.getAeaHiParStageinstByApplyinstId(dto.getApplyinstId());
+                        dto.setStageId(stageinst==null?"":stageinst.getStageId());
+                        dto.setStageinstId(stageinst==null?"":stageinst.getStageinstId());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
         return new PageInfo<>(list);
     }
 
@@ -191,9 +212,11 @@ public class RestApproveServiceImpl implements RestApproveService {
         ApplyDetailVo applyDetailVo = new ApplyDetailVo();
         String isNeedState = "1";
         applyDetailVo.setIsSeriesApprove(isSeriesApprove);
+        AeaHiApplyinst applyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+        if(applyinst==null) throw new Exception("当前申报已不存在！");
         //项目基本信息
         AeaProjInfo aeaProjInfo  =aeaProjInfoService.getAeaProjInfoByProjInfoId(projInfoId);
-        if (aeaProjInfo!=null){
+        if (aeaProjInfo!=null && "0".equals(applyinst.getIsTemporarySubmit())){
             //建设地点，资金来源，投资类型，土地来源，建设性质，工程分类，国标行业，重点项目,    审批行政区划,立项类型
 
             //建设性质
@@ -229,7 +252,6 @@ public class RestApproveServiceImpl implements RestApproveService {
             String jsddStr=aeaProjInfo.getProjectAddress();
             if(StringUtils.isNotBlank(jsddStr)){
                 String[] jsddArr=jsddStr.split(",");
-                BscDicRegion query=new BscDicRegion();
                 jsddStr="";
                 for (String jsdd:jsddArr){
                     BscDicRegion jsddRegion = bscDicRegionService.getBscDicRegionById(jsdd);
@@ -239,7 +261,9 @@ public class RestApproveServiceImpl implements RestApproveService {
             }
             aeaProjInfo.setProjectAddress(jsddStr);
             applyDetailVo.setAeaProjInfo(aeaProjInfo);
-        }else {
+        }else if(aeaProjInfo!=null && "1".equals(applyinst.getIsTemporarySubmit())){//用于草稿箱的回显
+            applyDetailVo.setAeaProjInfo(aeaProjInfo);
+        } else {
             applyDetailVo.setAeaProjInfo(new AeaProjInfo());
         }
 
@@ -255,13 +279,15 @@ public class RestApproveServiceImpl implements RestApproveService {
                     AeaParStage stage = aeaParStageService.getAeaParStageById(stageinst.getStageId());
                     isNeedState = (stage != null && StringUtils.isNotBlank(stage.getIsNeedState())) ? stage.getIsNeedState() : "1";
                     //办理方式 0 多事项直接合并办理  1 按阶段多级情形组织事项办理
-                    if (stage != null) {
-                        if ("0".equals(stage.getHandWay())) {
-                            setItemStateinstList(aeaHiIteminstList, stageinst.getStageinstId());
-                        }
+                    if (stage != null&&"0".equals(stage.getHandWay())) {
+                        setItemStateinstList(aeaHiIteminstList, stageinst.getStageinstId());
                     }
+                    applyDetailVo.setStageId(stage==null?"":stage.getStageId());
+                    applyDetailVo.setStageinstId(stageinst==null?"":stageinst.getStageinstId());
                     AeaParTheme theme = aeaParThemeService.getAeaParThemeByThemeVerId(stageinst.getThemeVerId());
                     applyDetailVo.setThemeStageName((stage==null||theme==null)?"":"【"+theme.getThemeName()+"】"+stage.getStageName());
+                    applyDetailVo.setThemeId(theme==null?"":theme.getThemeId());
+                    applyDetailVo.setThemeVerId(stageinst==null?"":stageinst.getThemeVerId());
                 }
                 applyDetailVo.setAeaHiIteminstList(aeaHiIteminstList);
             }
@@ -270,7 +296,7 @@ public class RestApproveServiceImpl implements RestApproveService {
         }
 
         //情形、前置条件
-        List<Map<String,String>> stateList=new ArrayList<>();
+        List<Map<String,String>> stateList;
         if("1".equals(isSeriesApprove)){//单项，取值事项情形实例表
             stateList = aeaHiItemStateinstService.listSelectedAeaItemStateinstBySeriesinstIdOrApplyinstId(applyinstId,"");
         }else{//并联，取值情形实例表
@@ -293,7 +319,7 @@ public class RestApproveServiceImpl implements RestApproveService {
         applyDetailVo.setAeaHiSmsInfo(aeaHiSmsInfo==null?new AeaHiSmsInfo():aeaHiSmsInfo);
 
         //申报主体
-        AeaHiApplyinst applyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+
         if(applyinst!=null){
             //是否启动情形
 //            if("0".equals(applyinst.getIsSeriesApprove())){
@@ -307,9 +333,19 @@ public class RestApproveServiceImpl implements RestApproveService {
             if("0".equals(applyinst.getApplySubject())){
                 applyDetailVo.setRole(LoginUserRoleEnum.PERSONAL.getValue());
             }else{
+                AeaUnitInfo aeaUnitInfo;
                 applyDetailVo.setRole(LoginUserRoleEnum.UNIT.getValue());
                 List<AeaUnitInfo> unitInfoList = aeaUnitInfoService.findApplyOwnerUnitProj(applyinstId, projInfoId);//建设单位
-                applyDetailVo.setAeaUnitInfo(unitInfoList.size()>0?unitInfoList.get(0):new AeaUnitInfo());
+                if (unitInfoList.size()>0){
+                    aeaUnitInfo = unitInfoList.get(0);
+                    String unitInfoId = aeaUnitInfo.getUnitInfoId();
+                    applyDetailVo.setAeaLinkmanInfoList(aeaLinkmanInfoService.findAllUnitLinkman(unitInfoId));
+                }else {
+                    List<AeaLinkmanInfo> aeaLinkmanInfoList = new ArrayList<>();
+                    aeaUnitInfo = new AeaUnitInfo();
+                    applyDetailVo.setAeaLinkmanInfoList(aeaLinkmanInfoList);
+                }
+                applyDetailVo.setAeaUnitInfo(aeaUnitInfo);
             }
             AeaLinkmanInfo aeaLinkmanInfo = aeaLinkmanInfoService.getAeaLinkmanInfoByLinkmanInfoId(applyinst.getLinkmanInfoId());
             applyDetailVo.setAeaLinkmanInfo(aeaLinkmanInfo==null?new AeaLinkmanInfo():aeaLinkmanInfo);
@@ -322,6 +358,7 @@ public class RestApproveServiceImpl implements RestApproveService {
 
         //建设单位信息
         applyDetailVo.setAeaUnitInfos(restApplyService.getAeaUnitInfosByProjInfoId(projInfoId,request));
+        if (applyDetailVo.getAeaLinkmanInfoList()==null)applyDetailVo.setAeaHiIteminstList(new ArrayList<>());
         return applyDetailVo;
     }
 
@@ -344,9 +381,11 @@ public class RestApproveServiceImpl implements RestApproveService {
                 if (!parentState.getItemVerId().equals(iteminst.getItemVerId())) continue;
                 for (AeaItemState state : stateList) {
                     if (StringUtils.isNotBlank(state.getParentStateId()) && state.getParentStateId().equals(parentState.getItemStateId())) {
-                        Map<String, String> map = new HashMap<>(2);
+                        Map<String, String> map = new HashMap<>(4);
                         map.put("question", parentState.getStateName());
                         map.put("answer", state.getStateName());
+                        map.put("questionId",parentState.getItemStateId());
+                        map.put("answerId",state.getItemStateId());
                         list.add(map);
                     }
                 }
@@ -430,6 +469,7 @@ public class RestApproveServiceImpl implements RestApproveService {
 
     @Override
     public Boolean isApplyBelong(String applyInstId,String projinfoId, HttpServletRequest request)throws Exception {
+        if (!isCheckAuthority) return true;
         AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyInstId);
         if (aeaHiApplyinst==null) throw new Exception("查询出错");
         String applySubject = aeaHiApplyinst.getApplySubject();//(申办主体：1 单位，0 个人)
@@ -656,198 +696,6 @@ public class RestApproveServiceImpl implements RestApproveService {
         lifeCycleDiagramVo.setAeaParStages(paralleStages);
     }
 
-
-    public LifeCycleDiagramVo getLiftCycleDiagramInfo1(String projInfoId, String unitInfoId, String userInfoId) throws Exception {
-        LifeCycleDiagramVo lifeCycleDiagramVo = new LifeCycleDiagramVo();
-//        AeaProjInfo aeaProjInfo = aeaProjInfoService.getAeaProjInfoByProjInfoId(projInfoId);
-//        if (aeaProjInfo == null) throw new InvalidParameterException("查询项目不存在！");
-//        lifeCycleDiagramVo.setProjName(aeaProjInfo.getProjName());
-//        lifeCycleDiagramVo.setProjInfoId(aeaProjInfo.getProjInfoId());
-//        String themeId = aeaProjInfo.getThemeId();
-//        AeaParTheme aeaParTheme = aeaParThemeService.getAeaParThemeByThemeId(themeId);
-//        if (aeaParTheme == null) throw new InvalidParameterException("当前项目下无相关主题信息！");
-//        lifeCycleDiagramVo.setThemeName(aeaParTheme.getThemeName());
-//        //根据主题查询阶段
-//        List<AeaParStage> stages = aeaParStageService.listAeaParStageByThemeIdOrThemeVerId(themeId,"");
-//        //根据项目ID查询当前登录用户的所有申请实例ID
-//        List<AeaHiApplyinst> applyinsts = aeaHiApplyinstService.listApplyInstIdAndStateByProjInfoIdAndUser(projInfoId,unitInfoId,userInfoId);
-//        List<AeaHiIteminst> aeaHiIteminstList = new ArrayList<>();
-//        //List<ProjStateDto> projStateDtos = new ArrayList<>();
-//        //最新的项目状态
-//        logger.error("--getLiftCycleDiagramInfo---start----");
-//        long start=System.currentTimeMillis();
-//        //for (String applyinstId : applyinstIds) {
-//            //根据申请实例ID查询所有项目实例
-//            //aeaHiIteminstList.addAll(aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId));
-//           // projStateDtos.add(approveDataService.searchProjStateDtoByApplyinstId(applyinstId));
-//        //}
-//        List<String> applyinstIds = applyinsts.size()>0?applyinsts.stream().map(AeaHiApplyinst::getApplyinstId).collect(Collectors.toList()):new ArrayList<>();
-//        aeaHiIteminstList.addAll(aeaHiIteminstService.getAeaHiIteminstListByApplyinstIds(applyinstIds));
-//        logger.error("--getLiftCycleDiagramInfo---end----耗时："+(System.currentTimeMillis()-start));
-//        List<AeaParStageVo> paralleStages=new ArrayList<>();
-//        for (AeaParStage stage : stages){
-//            AeaParStageVo aeaParStageVo = new AeaParStageVo();
-//            if(!"1".equals(stage.getIsNode())) continue;//只查询主线的阶段
-//            aeaParStageVo.setStageName(stage.getStageName());
-//            aeaParStageVo.setStageId(stage.getStageId());
-//            AtomicReference<Boolean> hadStageApply = new AtomicReference<>(false);//阶段是否已申报过
-//            applyinsts.stream().forEach(applyinst -> {
-//                if (stage.getStageId().equals(applyinst.getStageId())){
-//                    if (ApplyState.COMPLETED .equals(applyinst.getApplyinstState())){
-//                        aeaParStageVo.setStateType("0");
-//                    }else {
-//                        aeaParStageVo.setStateType("1");
-//                    }
-//                    //aeaParStageVo.setStageInstId(applyinst.getStageInstId());
-//                    hadStageApply.set(true);
-//                }
-//            });
-//            if (!hadStageApply.get()){
-//                aeaParStageVo.setStateType("2");
-//            }
-//            //历时相关VO
-//            if (StringUtils.isNotBlank(aeaParStageVo.getStageInstId())){
-//                ActStoTimeruleInst actStoTimeruleInst = actStoTimeruleInstService.getProcessinstTimeruleInstByStageinstId(aeaParStageVo.getStageInstId());
-//                if (actStoTimeruleInst!=null) aeaParStageVo.setStageRunTime(actStoTimeruleInst.getUseLimitTime());
-//            }
-//
-//            if (aeaParStageVo.getStageRunTime()==null) aeaParStageVo.setStageRunTime(0D);
-//            //并联事项定义
-//            List<AeaItemBasic> parallelItems = aeaItemBasicService.getAeaItemBasicListByStageId(stage.getStageId(),"0","",SecurityContext.getCurrentOrgId());
-//            aeaItemBasicService.conversionBasicItemToSssx(parallelItems,aeaProjInfo.getRegionalism());
-//
-//            List<AeaItemBasicVo> parallelItemVos = new ArrayList<>();
-//            AtomicInteger paraEndItem= new AtomicInteger();//并联办结事项数
-//
-//            if (aeaHiIteminstList.size()>0){
-//                for (AeaItemBasic paraItem:parallelItems){
-//                    AeaItemBasicVo aeaItemBasicVo = new AeaItemBasicVo();
-//                    aeaItemBasicVo.setItemName(paraItem.getItemName());
-//                    aeaItemBasicVo.setItemVerId(paraItem.getItemVerId());
-//                    aeaItemBasicVo.setOrgName(paraItem.getOrgName());
-//                    aeaItemBasicVo.setDueNum(paraItem.getDueNum());
-//                    Boolean haveInst = false;
-//                    for (AeaHiIteminst itemInst:aeaHiIteminstList){
-//                        if (paraItem.getItemVerId().equals(itemInst.getItemVerId())){
-//                            //历时相关VO
-//                            if (StringUtils.isNotBlank(itemInst.getIteminstId())){
-//                                ActStoTimeruleInst itemActStoTimeruleInst = actStoTimeruleInstService.getProcessinstTimeruleInstByIteminstId(itemInst.getIteminstId());
-//                                if (itemActStoTimeruleInst!=null) {
-//                                    aeaItemBasicVo.setIteminstRunTime(itemActStoTimeruleInst.getUseLimitTime());
-//                                }
-//                            }
-//                            if (aeaItemBasicVo.getIteminstRunTime()==null)  aeaItemBasicVo.setIteminstRunTime(0D);
-//
-//                            aeaItemBasicVo.setIteminstState(itemInst.getIteminstState());
-//                            aeaItemBasicVo.setIteminstStartTime(itemInst.getStartTime());
-//                            aeaItemBasicVo.setIteminstEndTime(itemInst.getEndTime());
-//                            aeaItemBasicVo.setOrgName(itemInst.getApproveOrgName());
-//                            //事项状态类型
-//                            if (ItemStatus.isEnd(itemInst.getIteminstState())){
-//                                aeaItemBasicVo.setItemStateType("0");
-//                            }else {
-//                                aeaItemBasicVo.setItemStateType("1");
-//                            }
-//                            haveInst = true;
-//                        }else{
-//                            if (!haveInst) aeaItemBasicVo.setItemStateType("2");
-//                        }
-//                    }
-//                    parallelItemVos.add(aeaItemBasicVo);
-//                }
-//            }
-//            Collections.sort(parallelItemVos, Comparator.comparing(AeaItemBasicVo::getItemStateType));
-//            aeaParStageVo.setParallelItemList(parallelItemVos);
-//
-//
-//            //并行事项定义
-//            List<AeaItemBasic> seriItems = aeaItemBasicService.getAeaItemBasicListByStageId(stage.getStageId(),"1","",SecurityContext.getCurrentOrgId());
-//            aeaItemBasicService.conversionBasicItemToSssx(seriItems,aeaProjInfo.getRegionalism());
-//
-//            List<AeaItemBasicVo> corellelItemVos = new ArrayList<>();
-//            AtomicInteger coreEndItem= new AtomicInteger();//并行办结事项数
-//            if (aeaHiIteminstList.size()>0){
-//                for (AeaItemBasic seriItem:seriItems){
-//                    AeaItemBasicVo aeaItemBasicVo = new AeaItemBasicVo();
-//                    aeaItemBasicVo.setItemName(seriItem.getItemName());
-//                    aeaItemBasicVo.setItemVerId(seriItem.getItemVerId());
-//                    aeaItemBasicVo.setOrgName(seriItem.getOrgName());
-//                    aeaItemBasicVo.setDueNum(seriItem.getDueNum());
-//                    Boolean haveInst = false;
-//                    for(AeaHiIteminst itemInst:aeaHiIteminstList){
-//
-//                        if (seriItem.getItemVerId().equals(itemInst.getItemVerId())){
-//                            if (StringUtils.isNotBlank(itemInst.getIteminstId())){
-//                                ActStoTimeruleInst itemActStoTimeruleInst = actStoTimeruleInstService.getProcessinstTimeruleInstByIteminstId(itemInst.getIteminstId());
-//                                if (itemActStoTimeruleInst!=null) {
-//                                    aeaItemBasicVo.setIteminstRunTime(itemActStoTimeruleInst.getUseLimitTime());
-//                                }
-//                            }
-//                            if (aeaItemBasicVo.getIteminstRunTime()==null)  aeaItemBasicVo.setIteminstRunTime(0D);
-//
-//                            aeaItemBasicVo.setIteminstState(itemInst.getIteminstState());
-//                            aeaItemBasicVo.setIteminstStartTime(itemInst.getStartTime());
-//                            aeaItemBasicVo.setIteminstEndTime(itemInst.getEndTime());
-//                            aeaItemBasicVo.setOrgName(itemInst.getApproveOrgName());
-//                            //事项状态类型
-//                            if (ItemStatus.isEnd(itemInst.getIteminstState())){
-//                                aeaItemBasicVo.setItemStateType("0");
-//                            }else {
-//                                aeaItemBasicVo.setItemStateType("1");
-//                            }
-//                            haveInst = true;
-//                        }else{
-//                            if(!haveInst) aeaItemBasicVo.setItemStateType("2");
-//                        }
-//                    }
-//                    corellelItemVos.add(aeaItemBasicVo);
-//                }
-//            }
-//            Collections.sort(corellelItemVos, Comparator.comparing(AeaItemBasicVo::getItemStateType));
-//            aeaParStageVo.setCoreItemList(corellelItemVos);
-//            //并行事项办结数
-//            if (corellelItemVos.size() > 0) {
-//                corellelItemVos.stream().forEach(itemInst -> {
-//                    if (StringUtils.isNotBlank(itemInst.getIteminstState())&&ItemStatus.isEnd(itemInst.getIteminstState())) {
-//                        coreEndItem.getAndIncrement();
-//                    }
-//                });
-//            }
-//            //并联事项办结数
-//            if (parallelItemVos.size() > 0) {
-//                parallelItemVos.stream().forEach(itemInst -> {
-//                    if (StringUtils.isNotBlank(itemInst.getIteminstState())&&ItemStatus.isEnd(itemInst.getIteminstState())) {
-//                        paraEndItem.getAndIncrement();
-//                    }
-//                });
-//            }
-//            int doneNumber = paraEndItem.get()+coreEndItem.get();//并联并行办结数
-//            int itemNumver = (aeaParStageVo.getParallelItemList()!=null?aeaParStageVo.getParallelItemList().size():0)+
-//                    (aeaParStageVo.getCoreItemList()!=null?aeaParStageVo.getCoreItemList().size():0);
-//            if (doneNumber!=0&&itemNumver!=0){
-//                NumberFormat numberFormat = NumberFormat.getInstance();
-//                // 设置精确到小数点后2位
-//                numberFormat.setMaximumFractionDigits(0);
-//                aeaParStageVo.setEndProp(numberFormat.format((float)doneNumber/(float)itemNumver*100)+"%");
-//            }else {
-//                aeaParStageVo.setEndProp("0%");
-//            }
-//            aeaParStageVo.setParallelDoneNumber(paraEndItem.get());
-//            aeaParStageVo.setCoreDoneNumber(coreEndItem.get());
-//            aeaParStageVo.setStageItemNum(aeaParStageVo.getParallelItemList().size()+aeaParStageVo.getCoreItemList().size());
-//            paralleStages.add(aeaParStageVo);
-//        }
-//        //当前阶段ID
-//        for(int i=0;i<paralleStages.size();i++){
-//            //if (i==paralleStages.size()-1) break;
-//            if ("1".equals(paralleStages.get(i).getStateType())){
-//                lifeCycleDiagramVo.setCurrentStageId(paralleStages.get(i).getStageId());
-//            }
-//        }
-//        lifeCycleDiagramVo.setAeaParStages(paralleStages);
-
-        return lifeCycleDiagramVo;
-    }
     /**
      * 获取单项申报材料列表||并联审批单个事项材料
      *

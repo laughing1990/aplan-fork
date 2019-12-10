@@ -443,12 +443,15 @@ public class AeaHiApplyinstCorrectServiceImpl implements AeaHiApplyinstCorrectSe
         }
 
         Map<String, MatCorrectDto> map = new HashMap();
+        String itemVerIds = "";
         List<AeaHiIteminst> aeaHiIteminstList = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
         for (AeaHiIteminst aeaHiIteminst : aeaHiIteminstList) {
             itemNames += aeaHiIteminst.getIteminstName() + "，";
+            itemVerIds += aeaHiIteminst.getItemVerId()+"，";
             chargeOrgName += aeaHiIteminst.getApproveOrgName() + "，";
         }
-
+        //事项版本ID
+        aeaHiApplyinstCorrect.setItemVerIds(StringUtils.isNotBlank(itemVerIds)?itemVerIds.substring(0, itemVerIds.length() - 1):"");
         //获取业主名称
         this.getOwnerOfMatCorrectInfo(aeaHiApplyinstCorrect);
 
@@ -458,7 +461,8 @@ public class AeaHiApplyinstCorrectServiceImpl implements AeaHiApplyinstCorrectSe
 
         for (AeaHiApplyinstCorrectDueIninst applyinstCorrectDueIninst : aeaHipplyinstCorrectDueIninsts) {
             MatCorrectDto matCorrectDto = map.get(applyinstCorrectDueIninst.getMatId()) != null ? map.get(applyinstCorrectDueIninst.getMatId()) : new MatCorrectDto();
-
+            matCorrectDto.setMatProp(applyinstCorrectDueIninst.getMatProp());
+            matCorrectDto.setCertId(applyinstCorrectDueIninst.getCertId());
             if (StringUtils.isBlank(matCorrectDto.getMatinstName())) {
                 matCorrectDto.setMatId(applyinstCorrectDueIninst.getMatId());
                 matCorrectDto.setMatName(applyinstCorrectDueIninst.getMatinstName());
@@ -497,7 +501,6 @@ public class AeaHiApplyinstCorrectServiceImpl implements AeaHiApplyinstCorrectSe
 
             if (map.get(applyinstCorrectRealIninst.getMatId()) == null) continue;
             MatCorrectDto matCorrectDto = map.get(applyinstCorrectRealIninst.getMatId());
-
             if (applyinstCorrectRealIninst.getAttCount() != null && applyinstCorrectRealIninst.getAttCount() >= 0l) {
                 matCorrectDto.setAttCount(applyinstCorrectRealIninst.getAttCount());
                 matCorrectDto.setAttRealIninstId(applyinstCorrectRealIninst.getApplyinstRealIninstId());
@@ -542,7 +545,9 @@ public class AeaHiApplyinstCorrectServiceImpl implements AeaHiApplyinstCorrectSe
                 }
             }
         }
-
+        //当前补全，根据项目ID查询申报主体
+        String projInfoId = aeaHiApplyinstCorrect.getProjInfoId();
+        aeaHiApplyinstCorrect.setUnitInfos(aeaUnitInfoService.findOwerUnitProj(projInfoId));
         aeaHiApplyinstCorrect.setIteminstName(itemNames.substring(0, itemNames.length() - 1));
         aeaHiApplyinstCorrect.setChargeOrgName(chargeOrgName.substring(0, chargeOrgName.length() - 1));
         aeaHiApplyinstCorrect.setMatCorrectDtos(matCorrectDtos);

@@ -1,6 +1,5 @@
 package com.augurit.aplanmis.mall.userCenter.vo;
 
-import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

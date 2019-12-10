@@ -79,6 +79,8 @@ public class ProjPurchaseJob {
                                 updateAuditFlag(item.getProjPurchaseId(), "8", "9", "采购需求项目选取完成");
                                 updateApplyStatus(applyinstCode, "待确认中介机构", "8");
                                 logger.info("采购需求项目【{}】选取结束；中选【unitBiddingId：{}，biddingPriceId：{}】", item.getProjPurchaseId(), aeaImBiddingPrice.getUnitBiddingId(), aeaImBiddingPrice.getBiddingPriceId());
+                            } else {
+                                //没人报名，项目状态设置为无效
                             }
                         } else if ("3".equals(biddingType)) {//竞价选取
 

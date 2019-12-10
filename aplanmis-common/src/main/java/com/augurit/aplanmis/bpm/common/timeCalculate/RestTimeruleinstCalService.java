@@ -91,6 +91,7 @@ public class RestTimeruleinstCalService extends TimeCalculateEngineBase {
                 if (timeLimitRule == null) continue;
                 double timeCalculateResult = 0.0d;  //已经用时
                 if ("1".equals(timeruleInst.getTimeruleInstType())) {   //流程时限计算
+                    if (StringUtils.isBlank(timeruleInst.getProcInstId())) continue;
                     // 获取流程实例
                     HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(timeruleInst.getProcInstId()).singleResult();
                     if (processInstance == null) continue;
@@ -128,7 +129,7 @@ public class RestTimeruleinstCalService extends TimeCalculateEngineBase {
                     }
 
                     // 根据时限计算规则进行计算
-                    timeCalculateResult = timeLimitRule.calculate(startTime, currentTime, timeruleInst.getOrgId(), timeruleInst.getTimeruleInstType());
+                    timeCalculateResult = timeLimitRule.calculate(startTime, currentTime, timeruleInst.getOrgId());
                     // 获取流程实例的总挂起时间
                     timeCalculateResult = this.getProcessinstHangUpTime(startTime, timeCalculateResult, timeruleInst.getTimeruleUnit(), processInstance.getId(), null);
                     timeruleInst.setIsConcluding(currentTime == null ? IS_CONCLUDING_NO : IS_CONCLUDING_YES);

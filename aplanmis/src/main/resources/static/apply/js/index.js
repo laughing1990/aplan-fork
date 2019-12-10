@@ -386,6 +386,7 @@ var vm = new Vue({
       treeBtnLeft: '',
       childProjText: '', // 子项目工程备注
       childProjName: '', // 子项目工程名称
+        stageFlag: '', //阶段标志
       parentProjInfoId: '', // 父工程id
       loadingLinkMan: false,
       stageId: '',  // 所选阶段ID
@@ -483,6 +484,8 @@ var vm = new Vue({
       fileWinData: [], // 上传窗口上传参数列表
       uploadLogo: '',
       addChildProjShow: false, // 新增子项目input
+        isCreateSubproj: '1',  //是否允许创建子工程：1 允许，0 禁止
+        dybzspjdxh: [],  //对应国家标准审批阶段
       shareFileList: [], // 共享材料列表
       uploadTableData: [],
       selCoreItems: {}, // 选择分局承办的事项
@@ -584,6 +587,8 @@ var vm = new Vue({
       allApplySubjectInfo: [], // 证照库条件查询
       selApplySubject: {}, // 选中的建设单位 申报主体
       oneFormInputFlag: false, // 一张表单是否填写
+      preItemCheckkMsg: '',
+      itemFrontCheckFlag: true,
     }
   },
   mounted: function () {
@@ -1194,6 +1199,7 @@ var vm = new Vue({
       request('', {
         url: ctx + 'rest/theme/getMainThemeTypeCategory/'+category,
         type: 'get',
+        async: false,
       }, function (data) {
         if (data.success) {
           if(category==1){
@@ -1997,31 +2003,31 @@ var vm = new Vue({
       selStateIds=selStateIds.filter(function(item, index) {
         //当前元素，在原始数组中的第一个索引==当前索引值，否则返回当前元素
         return selStateIds.indexOf(item, 0) === index
-      })
-      return selStateIds;
-    },
-    // 根据阶段获取情形和材料
-    getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
-      var selStateIds = [];
-      var parentStateId = data.parentStateId?data.parentStateId:'ROOT';
-      var questionStateId = pData.parStateId?pData.parStateId:'';
-      var stateParallelItems=data.stateParallelItems?data.stateParallelItems:[];
-      var stateOptionItems=data.stateOptionItems?data.stateOptionItems:[];
-      var _that = this;
-      var _parentId = data.parStateId?data.parStateId:'ROOT';
-      if(checkFlag==false){
-        selStateIds = _that.getStatusListId();
-        for (var i = 0;i< _that.stateList.length;i++) { // 清空情形下所对应情形
-          var obj = _that.stateList[i];
-          if(obj&&(obj.parentStateId == _parentId)||(obj&&obj.parentStateId!=null&&(selStateIds.indexOf(obj.parentStateId)==-1))){
-            if(typeof(obj.selectAnswerId)=='object'&&obj.selectAnswerId.length>0){
-              obj.selectAnswerId.map(function(itemSel){
-                selStateIds=selStateIds.filter(function(item, index) {
-                  return item !== itemSel;
-                })
-              });
-            }else if(obj.selectAnswerId !== '') {
-              selStateIds=selStateIds.filter(function(item, index) {
+                  })
+    return selStateIds;
+},
+// 根据阶段获取情形和材料
+getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
+  var selStateIds = [];
+  var parentStateId = data.parentStateId?data.parentStateId:'ROOT';
+  var questionStateId = pData.parStateId?pData.parStateId:'';
+  var stateParallelItems=data.stateParallelItems?data.stateParallelItems:[];
+  var stateOptionItems=data.stateOptionItems?data.stateOptionItems:[];
+  var _that = this;
+  var _parentId = data.parStateId?data.parStateId:'ROOT';
+  if(checkFlag==false){
+    selStateIds = _that.getStatusListId();
+    for (var i = 0;i< _that.stateList.length;i++) { // 清空情形下所对应情形
+      var obj = _that.stateList[i];
+      if(obj&&(obj.parentStateId == _parentId)||(obj&&obj.parentStateId!=null&&(selStateIds.indexOf(obj.parentStateId)==-1))){
+        if(typeof(obj.selectAnswerId)=='object'&&obj.selectAnswerId.length>0){
+          obj.selectAnswerId.map(function(itemSel){
+            selStateIds=selStateIds.filter(function(item, index) {
+              return item !== itemSel;
+            })
+          });
+        }else if(obj.selectAnswerId !== '') {
+          selStateIds=selStateIds.filter(function(item, index) {
                 return item !== obj.selectAnswerId;
               })
             }
@@ -2379,6 +2385,24 @@ var vm = new Vue({
       this.optItemShowNum = data.optItemShowNum; // 并行事项展示条数
       this.noptItemShowNum = data.noptItemShowNum; // 并联事项展示条数
       this.parallelApplyinstId = '';
+        this.isCreateSubproj = data.isCreateSubproj;
+        this.dybzspjdxh = [];
+        var _that = this;
+        if (data.dybzspjdxh != null) {
+            // ---------广东模式需放开以下注释 start----------
+       /*         var _dybzspjdxh = data.dybzspjdxh.split(",");
+                if (_dybzspjdxh.length > 1) {
+                    _dybzspjdxh.forEach(function (item) {
+                        if (item != '') {
+                            _that.dybzspjdxh.push(item);
+                        }
+                    });
+                } else if(_dybzspjdxh.length == 1){
+                  _that.stageFlag = _dybzspjdxh[0];
+                }    */
+            // ---------广东模式需放开以下注释 end----------
+        }
+
       if(data&&(data.handWay==0)){
         this.parallelItemsQuestionFlag=false; // 简单合并办理
       }else {
@@ -2392,12 +2416,14 @@ var vm = new Vue({
       var param = {stageId: stageId,projInfoId:this.projInfoId};
       var _that = this;
       // 阶段前置检测
+      _that.loading = true;
       request('', {
         url: ctx + 'rest/check/stageFrontCheck',
         type: 'get',
         data: param,
       }, function (result) {
         if (result.success) {
+          _that.loading = false;
           _that.getStatusStateMats('','',stageId,'',true);  // 获取材料情形列表
           if(data.useOneForm==1){
             _that.getOneFormList(stageId);
@@ -2406,6 +2432,7 @@ var vm = new Vue({
           }
           _that.stageFrontCheckFlag = true;
         }else {
+          _that.loading = false;
           _that.stageFrontCheckFlag = false;
           _that.stageFrontCheckMsg = result.message?result.message:'阶段前置检测失败';
           confirmMsg('阶段前置检测不通过', result.message, function(){
@@ -2424,7 +2451,9 @@ var vm = new Vue({
             _that.model.matsTableData=[];
           },'继续申报','放弃申报', 'error', true);
         }
-      }, function (msg) {})
+      }, function (msg) {
+        _that.loading = false;
+      })
 
     },
     // 获取事项列表
@@ -3272,7 +3301,7 @@ var vm = new Vue({
             message: '删除成功',
             type: 'success'
           });
-          _that.getFileListWin(matData.content,matData);
+          _that.getFileListWin(res.content,matData);
         }else {
           _that.$message({
             message: res.message?res.message:'删除失败',
@@ -3469,10 +3498,6 @@ var vm = new Vue({
       var stateSel = _that.stateList;
       var stateSelLen = stateSel.length;
       var allowToApply=_that.getItemSelectionIsNotAllow(); // 获取已选事项是否有无匹配的行政区划
-      if(_that.stageFrontCheckFlag==false){
-        alertMsg('', _that.stageFrontCheckMsg, '关闭', 'error', true);
-        return false;
-      }
       _that.stateIds = [];
       _that.submitCommentsType = val;
       _that.submitCommentsMatFlag = flag;
@@ -3481,10 +3506,10 @@ var vm = new Vue({
         alertMsg('', '事项无匹配的行政区划及实施主体', '关闭', 'error', true);
         return true;
       }
-      if(_that.formUrlList&&_that.formUrlList.length>0&&!_that.oneFormInputFlag&&_that.submitCommentsType=='0'){
-        alertMsg('', '请填写一张表单', '关闭', 'error', true);
-        return false;
-      }
+      // if(_that.formUrlList&&_that.formUrlList.length>0&&!_that.oneFormInputFlag&&_that.submitCommentsType=='0'){
+      //   alertMsg('', '请填写一张表单', '关闭', 'error', true);
+      //   return false;
+      // }
       var selItemVer = (_that.parallelItems.length>0)?_that.$refs.parallelItemsTable.selection:[]; // 所有选择的并联审批事项
       var selCoreItems = (_that.coreItems.length>0)?_that.$refs.coreItemsTable.selection:[]; // 所有选择的并行审批事项
       for(var i=0;i<stateSelLen;i++){  // 并联情形id集合
@@ -3667,23 +3692,49 @@ var vm = new Vue({
               return false;
             }
             if(_that.smsInfoId||_that.submitCommentsType=='4'){
-              _that.getMatinstIds();
-              if(!_that.attIsRequireFlag&&_that.submitCommentsType!='4'&&_that.submitCommentsType!='5'){
-                alertMsg('', '请上传所有必传的电子件', '关闭', 'warning', true);
-                return false;
-              }
-              if (_that.submitCommentsType == '3') {
-                _that.submitCommentsTitle = '不予受理意见对话框'
-                _that.showMatList = true;
-                _that.submitCommentsFlag = true;
-                _that.getUserComments();
-              } else if(_that.submitCommentsType == '0') {
-                _that.submitCommentsTitle = '收件意见对话框'
-                _that.showMatList = false;
-                _that.submitCommentsFlag = true;
-                _that.getUserComments();
+              if(_that.oneFormData.length>0&&_that.submitCommentsType!='4'){
+                confirmMsg('确认信息', '是否已完成一张表单填写？', function(){
+                  _that.getMatinstIds();
+                  if(!_that.attIsRequireFlag&&_that.submitCommentsType!='4'&&_that.submitCommentsType!='5'){
+                    alertMsg('', '请上传所有必传的电子件', '关闭', 'warning', true);
+                    return false;
+                  }
+                  if (_that.submitCommentsType == '3') {
+                    _that.submitCommentsTitle = '不予受理意见对话框'
+                    _that.showMatList = true;
+                    _that.submitCommentsFlag = true;
+                    _that.getUserComments();
+                  } else if(_that.submitCommentsType == '0') {
+                    _that.submitCommentsTitle = '收件意见对话框'
+                    _that.showMatList = false;
+                    _that.submitCommentsFlag = true;
+                    _that.getUserComments();
+                  }else {
+                    _that.submitCommentsFlag = false;
+                  }
+                },function(){
+                  _that.showOneFormDialog(_that.oneFormData[0].oneformName);
+                  return false;
+                },'已完成','去填写', 'warning', true)
               }else {
-                _that.submitCommentsFlag = false;
+                _that.getMatinstIds();
+                if(!_that.attIsRequireFlag&&_that.submitCommentsType!='4'&&_that.submitCommentsType!='5'){
+                  alertMsg('', '请上传所有必传的电子件', '关闭', 'warning', true);
+                  return false;
+                }
+                if (_that.submitCommentsType == '3') {
+                  _that.submitCommentsTitle = '不予受理意见对话框'
+                  _that.showMatList = true;
+                  _that.submitCommentsFlag = true;
+                  _that.getUserComments();
+                } else if(_that.submitCommentsType == '0') {
+                  _that.submitCommentsTitle = '收件意见对话框'
+                  _that.showMatList = false;
+                  _that.submitCommentsFlag = true;
+                  _that.getUserComments();
+                }else {
+                  _that.submitCommentsFlag = false;
+                }
               }
             }else {
               alertMsg('', '请确认及保存办证取件方式！', '关闭', 'error', true);
@@ -3837,6 +3888,14 @@ var vm = new Vue({
       if(!_that.comments&&_that.submitCommentsType!=1&&_that.submitCommentsType!=4&&_that.submitCommentsType!=5){
         alertMsg('', '请填写收件意见', '关闭', 'error', true);
         return false;
+      }
+      if(_that.itemFrontCheckFlag==false&&(_that.submitCommentsType != '4'||_that.submitCommentsType != '3')){
+        confirmMsg('前置事项检测不通过', _that.preItemCheckkMsg, function(){
+          _that.itemFrontCheckFlag = true;
+        },function(){
+          _that.itemFrontCheckFlag = false
+          return false;
+        },'继续申报','放弃申报', 'error', true);
       }
       var projInfoIds=[],handleUnitIds=[]; // 项目ID集合 经办单位ID集合
       var branchOrgMap=[],itemVerIds=[]; // 分局承办 并联申报事项版本ID
@@ -4071,7 +4130,8 @@ var vm = new Vue({
         isSecond: false,
         parentProjInfoId: _that.parentProjInfoId,
         projName: _that.childProjName,
-        foreignRemark: _that.childProjText
+          foreignRemark: _that.childProjText,
+          stageFlag: _that.stageFlag
       }
       _that.addChildLoading = true;
       request('', {
@@ -4087,6 +4147,11 @@ var vm = new Vue({
           });
           _that.showProjTree();
           _that.addChildProjShow = false;
+        }else{
+          _that.$message({
+            message: data.message,
+            type: 'error'
+          });
         }
       }, function (msg) {
         _that.addChildLoading = false;
@@ -5973,11 +6038,18 @@ var vm = new Vue({
         },
       }, function (result) {
         console.log(result);
-        if(result.success){
+        if (result.success) {
           _that.itemFrontCheckFlag = true;
         }else {
           _that.itemFrontCheckFlag = false;
-          return false;
+          _that.preItemCheckkMsg = result.message
+          // _that.preItemCheckkMsg = result.message?result.message:'事项前置检测失败'
+          confirmMsg('前置事项检测不通过', result.message, function(){
+            _that.itemFrontCheckFlag = true;
+            return false;
+          },function(){
+            _that.itemFrontCheckFlag = false;
+          },'继续申报','放弃申报', 'error', true);
         }
       }, function (msg) {
 

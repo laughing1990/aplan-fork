@@ -3856,6 +3856,7 @@ _p[35] = {
         _p.r(81);
         _p.r(82);
         _p.r(83);
+        _p.r(84);
         module.exports = kityminder;
     }
 };
@@ -5957,6 +5958,25 @@ _p[52] = {
                 return selectedNode ? 0 : -1;
             }
         });
+
+        var NodeTypeCodeStateCommand = kity.createClass("NodeTypeCodeStateCommand", {
+            base: Command,
+            execute: function(km, text) {
+
+            },
+            queryState: function(km) {
+                var result='';
+                var nodes = km.getSelectedNodes();
+                if (!nodes.length){
+
+                }
+                else{
+                    result=nodes[0].data.nodeTypeCode;
+                }
+                return result;
+            }
+        });
+
         /**
      * @command AppendSiblingNode
      * @description 添加选中的节点的兄弟节点
@@ -6047,6 +6067,7 @@ _p[52] = {
                     AppendSiblingNode: AppendSiblingCommand,
                     RemoveNode: RemoveNodeCommand,
                     AppendParentNode: AppendParentCommand
+                    ,NodeTypeCodeStateCommand:NodeTypeCodeStateCommand
                 },
                 commandShortcutKeys: {
                     appendsiblingnode: "normal::Enter",
@@ -9764,7 +9785,171 @@ _p[79] = {
         }
     };
 
-var moduleMapping = {
+    _p[84] = {
+        value: function(require, exports, module) {
+            var kity = _p.r(17);
+            var utils = _p.r(33);
+            var Minder = _p.r(19);
+            var MinderNode = _p.r(21);
+            var Command = _p.r(9);
+            var Module = _p.r(20);
+            var Renderer = _p.r(27);
+
+            Module.register('IsInformCommitModule', function() {
+                var minder = this;
+
+                // Designed by Akikonata
+                // [MASK, BACK]
+                //['#FF1200', '#840023'],red
+                var ISINFORMCOMMIT_COLORS = [null, ['#f32f5d', '#f32f5d'], // 1 - red
+                    ['#0074FF', '#01467F'], // 2 - blue
+                    ['#00AF00', '#006300'], // 3 - green
+                    ['#00AF00', '#006300'], // 3 - green
+                    ['#FF962E', '#B25000'], // 4 - orange
+                    ['#A464FF', '#4720C4'], // 5 - purple
+                    ['#A3A3A3', '#515151'], // 6,7,8,9 - gray
+                    ['#A3A3A3', '#515151'],
+                    ['#A3A3A3', '#515151'],
+                    ['#A3A3A3', '#515151'],
+                ]; // hue from 1 to 5
+
+                // jscs:disable maximumLineLength
+                var BACK_PATH = 'M0,13c0,3.866,3.134,7,7,7h6c3.866,0,7-3.134,7-7V7H0V13z';
+                var MASK_PATH = 'M20,10c0,3.866-3.134,7-7,7H7c-3.866,0-7-3.134-7-7V7c0-3.866,3.134-7,7-7h6c3.866,0,7,3.134,7,7V10z';
+
+                var ISINFORMCOMMIT_DATA = 'isInformCommit';
+
+                // 进度图标的图形
+                var IsInformCommitIcon = kity.createClass('IsInformCommitIcon', {
+                    base: kity.Group,
+
+                    constructor: function() {
+                        this.callBase();
+                        this.setSize(20);
+                        this.create();
+                        this.setId(utils.uuid('node_isInformCommit'));
+                    },
+
+                    setSize: function(size) {
+                        this.width = this.height = size;
+                    },
+
+                    create: function() {
+                        var white, back, mask, number; // 4 layer
+
+                        white = new kity.Path().setPathData(MASK_PATH).fill('white');
+                        back = new kity.Path().setPathData(BACK_PATH).setTranslate(0.5, 0.5);
+                        mask = new kity.Path().setPathData(MASK_PATH).setOpacity(0.8).setTranslate(0.5, 0.5);
+
+                        number = new kity.Text()
+                            .setX(this.width / 2 - 0.5).setY(this.height / 2)
+                            .setTextAnchor('middle')
+                            .setVerticalAlign('middle')
+                            .setFontItalic(true)
+                            .setFontSize(12)
+                            .fill('white');
+
+                        this.addShapes([back, mask, number]);
+                        this.mask = mask;
+                        this.back = back;
+                        this.number = number;
+                    },
+
+                    setValue: function(value) {
+                        var back = this.back,
+                            mask = this.mask,
+                            number = this.number;
+
+                        var color = ISINFORMCOMMIT_COLORS[value];
+
+                        if (color) {
+                            back.fill(color[1]);
+                            mask.fill(color[0]);
+                        }
+
+                        number.setContent(value);
+                    }
+                });
+
+                /**
+                 * @command IsInformCommit
+                 * @description 设置节点的优先级信息
+                 * @param {number} value 要设置的优先级（添加一个优先级小图标）
+                 *     取值为 0 移除优先级信息；
+                 *     取值为 1 - 9 设置优先级，超过 9 的优先级不渲染
+                 * @state
+                 *    0: 当前有选中的节点
+                 *   -1: 当前没有选中的节点
+                 */
+                var IsInformCommitCommand = kity.createClass('SetIsInformCommitCommand', {
+                    base: Command,
+                    execute: function(km, value) {
+                        var nodes = km.getSelectedNodes();
+                        for (var i = 0; i < nodes.length; i++) {
+                            nodes[i].setData(ISINFORMCOMMIT_DATA, value || null).render();
+                        }
+                        km.layout();
+                    },
+                    queryValue: function(km) {
+                        var nodes = km.getSelectedNodes();
+                        var val;
+                        for (var i = 0; i < nodes.length; i++) {
+                            val = nodes[i].getData(ISINFORMCOMMIT_DATA);
+                            if (val) break;
+                        }
+                        return val || null;
+                    },
+
+                    queryState: function(km) {
+                        return km.getSelectedNodes().length ? 0 : -1;
+                    }
+                });
+                return {
+                    'commands': {
+                        'isInformCommit': IsInformCommitCommand
+                    },
+                    'renderers': {
+                        left: kity.createClass('IsInformCommitRenderer', {
+                            base: Renderer,
+
+                            create: function(node) {
+                                return new IsInformCommitIcon();
+                            },
+
+                            shouldRender: function(node) {
+                                return node.getData(ISINFORMCOMMIT_DATA);
+                            },
+
+                            update: function(icon, node, box) {
+                                var data = node.getData(ISINFORMCOMMIT_DATA);
+                                var spaceLeft = node.getStyle('space-left'),
+                                    x, y;
+
+                                icon.setValue(data);
+                                if(data == 1) {
+                                    icon.setValue('告');
+                                }
+                                x = box.left - icon.width - spaceLeft;
+                                y = -icon.height / 2;
+
+                                icon.setTranslate(x, y);
+
+                                return new kity.Box({
+                                    x: x,
+                                    y: y,
+                                    width: icon.width,
+                                    height: icon.height
+                                });
+                            }
+                        })
+                    }
+                };
+            });
+        }
+    };
+
+
+    var moduleMapping = {
     "expose-kityminder": 34
 };
 

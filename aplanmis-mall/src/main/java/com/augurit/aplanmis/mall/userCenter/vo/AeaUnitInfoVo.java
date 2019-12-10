@@ -8,12 +8,15 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 
 @Data
 @ApiModel("单位信息")
 public class AeaUnitInfoVo {
+    @Value("${mall.check.authority:false}")
+    private static boolean isCheckAuthority;
     private java.lang.String unitInfoId; // (主键)
     @ApiModelProperty("单位名称")
     private java.lang.String applicant; // (项目（法人）单位名称)
@@ -51,7 +54,9 @@ public class AeaUnitInfoVo {
     public static AeaUnitInfoVo build(AeaUnitInfo aeaUnitInfo) {
         AeaUnitInfoVo aeaUnitInfoVo = new AeaUnitInfoVo();
         BeanUtils.copyProperties(aeaUnitInfo, aeaUnitInfoVo);
-        aeaUnitInfoVo.setIdno(DesensitizedUtil.desensitizedIdNumber(aeaUnitInfoVo.getIdno()));
+        if (isCheckAuthority){
+            aeaUnitInfoVo.setIdno(DesensitizedUtil.desensitizedIdNumber(aeaUnitInfoVo.getIdno()));
+        }
         return aeaUnitInfoVo;
     }
 }

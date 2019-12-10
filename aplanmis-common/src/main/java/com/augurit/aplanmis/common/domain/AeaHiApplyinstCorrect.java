@@ -138,4 +138,6 @@ public class AeaHiApplyinstCorrect implements Serializable {
     private String applyinstSource;
     private String regionalism;//行政区划
     private String regionName;//行政名称
+    private List<AeaUnitInfo> unitInfos;//申报主体list（用于证照库选择申报主体）
+    private String itemVerIds;//事项版本id list（用于证照库查询证照使用）
 }

@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.front.apply.vo;
 
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaParStageItem;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -33,7 +34,7 @@ public class SeriesApplyCheckVo {
                     this.stageId = item.getStageId();
                     this.isParallel = item.getIsOptionItem();
                 }
-                themeStageList.add(new ThemeStageVo(item.getThemeId(), item.getThemeName(), item.getStageId(), item.getIsOptionItem()));
+                themeStageList.add(new ThemeStageVo(item.getThemeId(), item.getThemeName(), item.getStageId(), item.getStageName(), item.getIsOptionItem()));
             });
             this.themeStageList = themeStageList;
         }
@@ -55,9 +56,9 @@ public class SeriesApplyCheckVo {
         @ApiModelProperty(value = "是否并行事项", dataType = "string", notes = "0: 并联, 1: 并行")
         private String isParallel;
 
-        ThemeStageVo(String themeId, String themeName, String stageId, String isParallel) {
+        ThemeStageVo(String themeId, String themeName, String stageId, String stageName, String isParallel) {
             this.themeId = themeId;
-            this.themeName = themeName;
+            this.themeName = themeName + (StringUtils.isNotBlank(stageName) ? ("-" + stageName) : "");
             StageId = stageId;
             this.isParallel = isParallel;
         }

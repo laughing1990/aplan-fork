@@ -103,7 +103,7 @@
     <select id="findLinkmanTypes" resultType="AeaLinkmanInfo">
         SELECT ali.linkman_name linkmanName,aupl.LINKMAN_TYPE linkmanType,aupl.LINKMAN_INFO_ID linkmanInfoId
         from aea_unit_proj aup
-        LEFT JOIN aea_unit_proj_linkman aupl ON aup.UNIT_PROJ_ID=aupl.UNIT_PROJ_ID
+        right JOIN aea_unit_proj_linkman aupl ON aup.UNIT_PROJ_ID=aupl.UNIT_PROJ_ID
         left join aea_linkman_info ali on  aupl.linkman_info_id=ali.linkman_info_id
         where aup.PROJ_INFO_ID=#{projInfoId}  and aup.UNIT_INFO_ID=#{unitInfoId}
     </select>
@@ -669,5 +669,15 @@
         <foreach collection="linkmanIds" item="id" index="i" open="(" separator="," close=")">
             #{id}
         </foreach>
+    </select>
+    <!--查询单位下绑定的中介超市业务联系人-->
+    <select id="findAgentBindAccountLinkman" resultType="com.augurit.aplanmis.common.domain.AeaLinkmanInfo">
+        select
+        <include refid="alias_allColumns">
+            <property name="alias" value="ali"/>
+        </include>
+        from aea_linkman_info ali
+        left join aea_unit_linkman aul on aul.LINKMAN_INFO_ID=ali.LINKMAN_INFO_ID
+        where aul.IS_BIND_ACCOUNT='1' and aul.UNIT_INFO_ID=#{unitInfoId}
     </select>
 </mapper>

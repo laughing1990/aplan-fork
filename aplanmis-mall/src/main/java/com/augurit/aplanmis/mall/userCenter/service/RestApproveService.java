@@ -39,6 +39,8 @@ public interface RestApproveService {
      */
     PageInfo<ApproveProjInfoDto> searchWithdrawApplyListByUnitOrLinkman(String unitInfoId, String userInfoId, String keyword, int pageNum, int pageSize) throws Exception;
 
+    PageInfo<ApproveProjInfoDto> getDraftApplyList(String unitInfoId, String userInfoId, String keyword, int pageNum, int pageSize) throws Exception;
+
     /**
      * 根据登录信息查询审批进度数据
      * @param unitInfoId 登录后的单位ID

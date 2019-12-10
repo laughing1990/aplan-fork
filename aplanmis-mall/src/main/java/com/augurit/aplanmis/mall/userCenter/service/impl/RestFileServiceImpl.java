@@ -28,6 +28,7 @@ import com.augurit.aplanmis.mall.userCenter.service.RestFileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -72,7 +73,8 @@ public class RestFileServiceImpl implements RestFileService {
     private UploaderFactory uploaderFactory;
 
     private static int BUFFER_SIZE = 2048;
-
+    @Value("${mall.check.authority:false}")
+    private boolean isCheckAuthority;
     @Override
     public List<BscAttFileAndDir> getAttFiles(String matinstId) throws Exception {
         String[] recordIds = {matinstId};
@@ -270,97 +272,6 @@ public class RestFileServiceImpl implements RestFileService {
         }
         return modelAndView;
     }
-
-    @Override
-    public Boolean isMatBelong(String matinstId, HttpServletRequest request)throws Exception {
-        try {
-            AeaHiItemMatinst aeaHiItemMatinst = aeaHiItemMatinstMapper.getAeaHiItemMatinstById(matinstId);
-            if (aeaHiItemMatinst==null) return false;
-            LoginInfoVo user = SessionUtil.getLoginInfo(request);
-            if ("1".equals(aeaHiItemMatinst.getMatinstSource())){//个人 委托人
-                if(("1".equals(user.getIsPersonAccount())||StringUtils.isNotBlank(user.getUserId()))&&(user.getUserId().equals(aeaHiItemMatinst.getLinkmanInfoId()))){//个人
-                    return true;
-                }else if (("1".equals(user.getIsPersonAccount())||StringUtils.isNotBlank(user.getUserId()))&&(!user.getUserId().equals(aeaHiItemMatinst.getLinkmanInfoId()))){//企业
-                    return false;
-                } else{//企业
-                    return false;
-                }
-            }else {
-                if("1".equals(user.getIsPersonAccount())||StringUtils.isNotBlank(user.getUserId())){//个人
-                    return false;
-                }else if (user.getUnitId().equals(aeaHiItemMatinst.getUnitInfoId())){//企业
-                    return true;
-                }else {
-                    return false;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    @Override
-    public Boolean isFileBelong(String detailId,HttpServletRequest request)throws Exception{
-        LoginInfoVo loginInfoVo = SessionUtil.getLoginInfo(request);
-        BscAttLink param = new BscAttLink();
-        param.setDetailId(detailId);
-        //param.setPkName("MATINST_ID");
-        List<BscAttLink> links = bscAttMapper.listBscAttLink(param);
-        if (links.size()>1){//说明此detailId即是材料库文件，又是申请实例文件，亦或补全补正文件
-            if ("1".equals(loginInfoVo.getIsPersonAccount())||StringUtils.isNotBlank(loginInfoVo.getUserId())){//个人
-                param.setPkName("LINKMAN_INFO_ID");
-                List<BscAttLink> linkmanLinks = bscAttMapper.listBscAttLink(param);
-                if (linkmanLinks.size()==1) return true;
-                return false;
-            }else {
-                param.setPkName("UNIT_INFO_ID");
-                List<BscAttLink> linkmanLinks = bscAttMapper.listBscAttLink(param);
-                if (linkmanLinks.size()==1) return true;
-                return false;
-            }
-
-        }else if (links.size()==1){
-            String pkName = links.get(0).getPkName();
-            String recordId = links.get(0).getRecordId();
-            if ("WSBLLCT".equals(pkName)){//网上流程图，不需要查询权限，返回true
-                return true;
-            }else if ("UNIT_INFO_ID".equals(pkName)&&StringUtils.isNotBlank(recordId)
-                    &&recordId.equals(loginInfoVo.getUnitId())){//单位上传的材料
-                return true;
-            }else if ("LINKMAN_INFO_ID".equals(pkName)&&StringUtils.isNotBlank(recordId)
-                    &&recordId.equals(loginInfoVo.getUserId())){
-                return true;
-            }else if ("MATINST_ID".equals(pkName)){
-                return  this.isMatBelong(recordId,request);
-            }else if ("CERTINST_ID".equals(pkName)){
-                return false;
-            }else return false;
-        }else return false;
-    }
-
-//    @Override
-//    public Boolean isFileBelong(String detailId,HttpServletRequest request)throws Exception{
-//        BscAttLink param = new BscAttLink();
-//        param.setDetailId(detailId);
-//        param.setPkName("MATINST_ID");
-//        List<BscAttLink> links = bscAttMapper.listBscAttLink(param);
-//        if (links.size()==0) return true;
-//        String matInstId = links.get(0).getRecordId();
-//        return  this.isMatBelong(matInstId,request);
-//    }
-
-    @Override
-    public Boolean isMatInstFileBelong(String detailId,HttpServletRequest request)throws Exception{
-        BscAttLink param = new BscAttLink();
-        param.setDetailId(detailId);
-        param.setPkName("MATINST_ID");
-        List<BscAttLink> links = bscAttMapper.listBscAttLink(param);
-        if (links.size()==0) return false;
-        String matInstId = links.get(0).getRecordId();
-        return  this.isMatBelong(matInstId,request);
-    }
-
     @Override
     public Boolean isAllowFileType(HttpServletRequest request) {
 

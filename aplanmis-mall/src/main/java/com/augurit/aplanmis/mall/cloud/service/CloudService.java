@@ -57,6 +57,12 @@ public interface CloudService {
     void uploadCloudFiles(String dirId, HttpServletRequest request) throws Exception;
 
     /**
+     * 电子证照上传附件
+     * @param request
+     */
+    public String uploadCertFile(HttpServletRequest request) throws Exception;
+
+    /**
      * 根目录、文件及子目录、文件列表
      * @param request
      * @return

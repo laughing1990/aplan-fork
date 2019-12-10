@@ -212,15 +212,17 @@ public class ImPurchaseData {
         aeaImProjPurchase.setQuoteType("0");// 报价方式,0 金额 1 下浮率
         aeaImProjPurchase.setIsLiveWitness("0");// 是否现场见证：1 是， 0 否
         //竞价类型：1 随机中标，2 自主选择 3 竞价选取
-        if ("2".equals(this.biddingType) || "1".equals(this.biddingType)) {
+        if ("2".equals(this.biddingType)) {
             //直接选取
             aeaImProjPurchase.setAuditFlag(AuditFlagStatus.CHOOSE_END);
-        } else if ("3".equals(this.biddingType)) {
+        } else if ("3".equals(this.biddingType) || "1".equals(this.biddingType)) {
             aeaImProjPurchase.setAuditFlag(AuditFlagStatus.REGISTRATION_PROGRESS);
         }
         aeaImProjPurchase.setIsDelete("0");
         aeaImProjPurchase.setIsActive("1");
         aeaImProjPurchase.setCreateTime(new Date());
+        aeaImProjPurchase.setPublishTime(new Date());
+        aeaImProjPurchase.setAuditTime(new Date());
         return aeaImProjPurchase;
 
     }

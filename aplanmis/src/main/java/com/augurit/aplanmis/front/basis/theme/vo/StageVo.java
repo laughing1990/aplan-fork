@@ -12,6 +12,7 @@ import java.util.List;
 @ApiModel("并联申报中根据主题查询阶段信息")
 @Data
 public class StageVo {
+
     @ApiModelProperty(name = "stageId", value = "阶段id", dataType = "string")
     private String stageId;
     @ApiModelProperty(name = "themeVerId", value = "主题版本id", dataType = "string")
@@ -66,11 +67,15 @@ public class StageVo {
     @ApiModelProperty(value = "法定办结时限单位")
     protected String anticipateType;
 
+    @ApiModelProperty(value = "是否允许创建子工程：1 允许，0 禁止")
+    private String isCreateSubproj;
+
     public StageVo() {
         this.helperStages = new ArrayList<>();
     }
 
     public static StageVo build(AeaParStage aeaParStage) {
+
         StageVo stageVo = new StageVo();
         stageVo.setStageId(aeaParStage.getStageId());
         stageVo.setThemeVerId(aeaParStage.getThemeVerId());
@@ -93,6 +98,7 @@ public class StageVo {
         stageVo.setDybzspjdxh(aeaParStage.getDybzspjdxh());
         stageVo.setAnticipateDay(aeaParStage.getAnticipateDay());
         stageVo.setAnticipateType(aeaParStage.getAnticipateType());
+        stageVo.setIsCreateSubproj(aeaParStage.getIsCreateSubproj());
         return stageVo;
     }
 }

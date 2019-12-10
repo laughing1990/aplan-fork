@@ -24,19 +24,20 @@ var vm = new Vue({
   el: '#details',
   data: function () {
     return {
-      isScroll: true, // 页面是否出现滚动条
-      projPurchaseId: '',
-      purchaseDetails: {},
-      activeName: 4,
-      fileList: [],
-      qualificationTree: false, // 是否展示资质树
-      selectedQuals: [], // 资质列表
-      defaultProps: {
-        children: 'children',
-        label: 'name'
-      },
-      curHeight: (document.documentElement.clientHeight || document.body.clientHeight),//当前屏幕高度
-      contentMinHeight: '',
+	    isScroll: true, // 页面是否出现滚动条
+	    projPurchaseId: '',
+	    purchaseDetails: {},//采购项目详情
+	    approveProjInfo: {},//投资审批项目详情
+	    activeName: 4,
+	    fileList: [],
+	    qualificationTree: false, // 是否展示资质树
+	    selectedQuals: [], // 资质列表
+	    defaultProps: {
+		    children: 'children',
+		    label: 'name'
+	    },
+	    curHeight: (document.documentElement.clientHeight || document.body.clientHeight),//当前屏幕高度
+	    contentMinHeight: '',
       ctx:'',
     }
   },
@@ -56,7 +57,8 @@ var vm = new Vue({
         data: {projPurchaseId: _that.projPurchaseId}
       }, function (data) {
         if(data.content){
-          _that.purchaseDetails = data.content;
+	        _that.purchaseDetails = data.content;
+	        _that.approveProjInfo = data.content.approveProjInfo;
         }
       }, function (msg) {
         alertMsg('', '服务请求失败', '关闭', 'error', true);

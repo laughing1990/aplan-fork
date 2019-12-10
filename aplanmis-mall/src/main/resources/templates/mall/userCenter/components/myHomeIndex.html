@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="../../../../static/mall/css/common/base_wt.css"
         th:href="@{/mall/css/common/base_wt.css}">
     <style>
+        /* prefixed by https://autoprefixer.github.io (PostCSS: v7.0.23, autoprefixer: v9.7.3) */
+
         #myHomeindex {
             position: relative;
         }
@@ -19,7 +21,11 @@
             width: 930px;
             height: 120px;
             background: url("../../mall/images/userCenter/header-wraper-bg.png") #F8F8F8 no-repeat center;
+            display: -webkit-box;
+            display: -ms-flexbox;
             display: flex;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
             align-items: center;
             margin-bottom: 22px;
         }
@@ -29,8 +35,14 @@
             height: 90px;
             background-color: #ffffff;
             border-radius: 50%;
+            display: -webkit-box;
+            display: -ms-flexbox;
             display: flex;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
             align-items: center;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
             justify-content: center;
             margin-left: 25px;
             position: relative;
@@ -47,16 +59,31 @@
             margin-left: 27px;
             color: #ffffff;
             font-size: 14px;
+            display: -webkit-box;
+            display: -ms-flexbox;
             display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: column;
             flex-direction: column;
         }
 
         .header-wraper .head-user-approval {
             position: absolute;
             right: 80px;
+            top: 15px;
+            display: -webkit-box;
+            display: -ms-flexbox;
             display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: column;
             flex-direction: column;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
             justify-content: center;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
             align-items: center;
             color: #fff;
             font-size: 14px;
@@ -70,6 +97,8 @@
         }
 
         .header-wraper .head-user-info .nickName-des {
+            display: -webkit-box;
+            display: -ms-flexbox;
             display: flex;
         }
 
@@ -90,8 +119,6 @@
             color: #457EFF;
             font-size: 14px;
             text-align: center;
-            -webkit-border-radius: 25px;
-            -moz-border-radius: 25px;
             border-radius: 25px;
             margin-left: 45px;
         }
@@ -171,6 +198,8 @@
         .my-data-box ul.data-list li.data-list-item p {
             position: absolute;
             left: 50%;
+            -webkit-transform: translateX(-50%);
+            -ms-transform: translateX(-50%);
             transform: translateX(-50%);
             bottom: 20px;
             width: 112px;
@@ -180,9 +209,9 @@
             color: rgba(63, 64, 71, 1);
         }
 
-        .my-data-box ul.data-list li.data-list-item:hover p {
+      /*  .my-data-box ul.data-list li.data-list-item:hover p {
             display: none;
-        }
+        }*/
 
         .my-data-box ul.data-list li.data-list-item p.checkDetail {
             font-size: 14px;
@@ -197,9 +226,9 @@
             bottom: 12px;
         }
 
-        .my-data-box ul.data-list li.data-list-item:hover p.checkDetail {
+       /* .my-data-box ul.data-list li.data-list-item:hover p.checkDetail {
             display: block;
-        }
+        }*/
 
         .my-static-box {
             width: 930px;
@@ -227,19 +256,26 @@
             background: rgba(255, 255, 255, 1);
             border: 1px solid rgba(227, 230, 237, 1);
             border-radius: 4px;
+            display: -webkit-box;
+            display: -ms-flexbox;
             display: flex;
             margin-right: 15px;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
             align-items: center;
         }
 
         .my-static-box ul.static-list li.static-list-item img {
+            -ms-flex-negative: 1;
             flex-shrink: 1;
             width: 58px;
             height: 59px;
             margin-left: 27px;
             margin-right: 22px;
         }
-
+        .my-static-box ul.static-list li.static-list-item .type{
+            display: inline-block;
+        }
         .my-static-box ul.static-list li.static-list-item .type .type-num {
             font-size: 34px;
             font-weight: 700;
@@ -287,12 +323,9 @@
         .stageIteminstName-bg {
             background: rgba(238, 248, 255, 1);
             border-radius: 15px;
-            position: absolute;
-            left: -11px;
-            top: 50%;
             padding: 2px 15px;
-            transform: translateY(-50%);
             overflow: hidden;
+            -o-text-overflow: ellipsis;
             text-overflow: ellipsis;
             white-space: nowrap;
             word-wrap: normal;
@@ -352,46 +385,45 @@
             <div class="title-item">
                 快捷入口<span class="title-line"></span>
             </div>
-            <ul class="data-list">
-                <li class="data-list-item">
+            <ul class="data-list clearfix">
+                <li class="data-list-item fl"  @click="toDeclare">
                     <a target="_blank">
                         <img src="../../../../static/mall/images/userCenter/data-icon-1.png"
                             th:src="@{/mall/images/userCenter/data-icon-1.png}" alt="">
                         <p>我的项目库</p>
-                        <p class="checkDetail" @click="toDeclare">查看详情</p>
+<!--                        <p class="checkDetail" @click="toDeclare">查看详情</p>-->
                     </a>
                 </li>
-                <li class="data-list-item">
+                <li class="data-list-item fl" @click="toMyMaterials">
                     <a target="_blank">
                         <img src="../../../../static/mall/images/userCenter/data-icon-2.png"
                             th:src="@{/mall/images/userCenter/data-icon-2.png}" alt="">
                         <p>我的材料库</p>
-                        <p class="checkDetail" @click="toMyMaterials">查看详情</p>
+<!--                        <p class="checkDetail" @click="toMyMaterials">查看详情</p>-->
                     </a>
                 </li>
-                <!--<li class="data-list-item">
+             <!--   <li class="data-list-item fl" @click="toMyCertificateLibrary">
                     <a target="_blank" >
                         <img src="../../../../static/mall/images/userCenter/data-icon-3.png" th:src="@{/mall/images/userCenter/data-icon-3.png}" alt="">
                         <p>我的证照库</p>
-                        <p class="checkDetail">查看详情</p>
                     </a>
                 </li>-->
-                <li class="data-list-item">
+                <li class="data-list-item fl" @click="toMyCloundSpaces">
                     <a target="_blank">
                         <img src="../../../../static/mall/images/userCenter/data-icon-4.png"
                             th:src="@{/mall/images/userCenter/data-icon-4.png}" alt="">
                         <p>我的云盘</p>
-                        <p class="checkDetail" @click="toMyCloundSpaces">查看详情</p>
+<!--                        <p class="checkDetail" @click="toMyCloundSpaces">查看详情</p>-->
                     </a>
                 </li>
-                <li class="data-list-item">
+                <li class="data-list-item fl" @click="toCreditDetail">
                     <a target="_blank">
                         <img src="../../../../static/mall/images/userCenter/data-icon-5.png"
                             th:src="@{/mall/images/userCenter/data-icon-5.png}" alt="">
                         <p>企业信用<span v-show="isBlack"
                                 style="position:absolute;left: 90px;top: 2px;font-size:12px;display: block;width:39px;height:18px;background:rgba(255,75,71,1);border-radius:4px;color: #fff;">失信</span>
                         </p>
-                        <p class="checkDetail" @click="toCreditDetail">查看详情</p>
+<!--                        <p class="checkDetail" @click="toCreditDetail">查看详情</p>-->
                     </a>
                 </li>
             </ul>
@@ -401,8 +433,8 @@
             <div class="title-item">
                 统计分析<span class="title-line"></span>
             </div>
-            <ul class="static-list">
-                <li class="static-list-item">
+            <ul class="static-list clearfix">
+                <li class="static-list-item fl">
                     <img src="../../../../static/mall/images/userCenter/type-icon-1.png"
                         th:src="@{/mall/images/userCenter/type-icon-1.png}" alt="">
                     <div class="type">
@@ -410,7 +442,7 @@
                         <p class="type-txt">已申报</p>
                     </div>
                 </li>
-                <li class="static-list-item">
+                <li class="static-list-item fl">
                     <img src="../../../../static/mall/images/userCenter/type-icon-3.png"
                          th:src="@{/mall/images/userCenter/type-icon-3.png}" alt="">
                     <div class="type">
@@ -418,7 +450,7 @@
                         <p class="type-txt">已办结</p>
                     </div>
                 </li>
-                <li class="static-list-item">
+                <li class="static-list-item fl">
                     <img src="../../../../static/mall/images/userCenter/type-icon-2.png"
                         th:src="@{/mall/images/userCenter/type-icon-2.png}" alt="">
                     <div class="type">
@@ -426,7 +458,7 @@
                         <p class="type-txt">材料补全</p>
                     </div>
                 </li>
-                <li class="static-list-item">
+                <li class="static-list-item fl">
                     <img src="../../../../static/mall/images/userCenter/type-icon-4.png"
                         th:src="@{/mall/images/userCenter/type-icon-4.png}" alt="">
                     <div class="type">

@@ -43,7 +43,7 @@ public interface RestParallerApplyService {
      * @param factorIds
      * @return
      */
-    Map<String,Object> getThemeByFactorIds(String[] factorIds);
+    Map<String,Object> getThemeByFactorIds(String[] factorIds)throws Exception;
 
 
 

@@ -85,7 +85,7 @@
 
     <select id="getCorrectDueIninstByCorrectId" resultType="AeaHiItemCorrectDueIninst">
         SELECT
-        <include refid="allColumns_ahicdi" />,ahim.MATINST_ID matinstId,ahim.MATINST_NAME matinstName,ahim.MAT_ID matId,aim.REVIEW_KEY_POINTS reviewKeyPoints,aim.REVIEW_SAMPLE_DOC reviewSampleDoc,aim.SAMPLE_DOC sampleDoc,aim.TEMPLATE_DOC templateDoc
+        <include refid="allColumns_ahicdi" />,ahim.MATINST_ID matinstId,ahim.MATINST_NAME matinstName,ahim.MAT_PROP matProp,ahim.MAT_ID matId,aim.REVIEW_KEY_POINTS reviewKeyPoints,aim.REVIEW_SAMPLE_DOC reviewSampleDoc,aim.SAMPLE_DOC sampleDoc,aim.TEMPLATE_DOC templateDoc
         FROM AEA_HI_ITEM_CORRECT_DUE_ININST ahicdi, AEA_HI_ITEM_INOUTINST ahii,AEA_HI_ITEM_MATINST ahim,AEA_ITEM_MAT aim
         WHERE
         ahii.INOUTINST_ID = ahicdi.INOUTINST_ID

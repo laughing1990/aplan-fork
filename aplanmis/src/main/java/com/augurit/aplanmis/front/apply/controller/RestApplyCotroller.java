@@ -17,12 +17,14 @@ import com.augurit.aplanmis.front.apply.service.AeaParStageService;
 import com.augurit.aplanmis.front.apply.service.AeaSeriesService;
 import com.augurit.aplanmis.front.apply.service.RestApplyService;
 import com.augurit.aplanmis.front.apply.vo.ApplyinstIdVo;
+import com.augurit.aplanmis.front.apply.vo.ParallerStashResultVo;
 import com.augurit.aplanmis.front.apply.vo.SeriesApplyCheckVo;
 import com.augurit.aplanmis.front.apply.vo.SeriesApplyDataPageVo;
 import com.augurit.aplanmis.front.apply.vo.SeriesApplyDataVo;
 import com.augurit.aplanmis.front.apply.vo.SmsInfoVo;
 import com.augurit.aplanmis.front.apply.vo.StageApplyDataPageVo;
 import com.augurit.aplanmis.front.apply.vo.StageApplyDataVo;
+import com.augurit.aplanmis.front.apply.vo.StashVo;
 import io.jsonwebtoken.lang.Assert;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -197,6 +199,26 @@ public class RestApplyCotroller {
             }
         } else {
             return new ResultForm(false, "发起申报失败，查询不到申请实例信息！");
+        }
+    }
+
+    @PostMapping("/series/stash")
+    @ApiOperation(value = "单项申报 --> 暂存", notes = "单项申报 --> 暂存", httpMethod = "POST")
+    public ContentResultForm<String> stashSeries(@RequestBody StashVo.SeriesStashVo seriesStashVo) {
+        try {
+            return new ContentResultForm<>(true, aeaSeriesService.stash(seriesStashVo), "success");
+        } catch (Exception e) {
+            return new ContentResultForm<>(false, null, e.getMessage());
+        }
+    }
+
+    @PostMapping("/parallel/stash")
+    @ApiOperation(value = "并联申报 --> 暂存", notes = "并联申报 --> 暂存", httpMethod = "POST")
+    public ContentResultForm<ParallerStashResultVo> stashParallel(@RequestBody StashVo.ParallelStashVo parallelStashVo) {
+        try {
+            return new ContentResultForm<>(true, aeaParStageService.stash(parallelStashVo), "success");
+        } catch (Exception e) {
+            return new ContentResultForm<>(false, null, e.getMessage());
         }
     }
 }

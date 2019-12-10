@@ -16,10 +16,12 @@ import com.augurit.aplanmis.common.utils.Md5Utils;
 import com.augurit.aplanmis.common.vo.OwnerRegisterVo;
 import com.augurit.aplanmis.supermarket.certinst.service.AeaHiCertinstService;
 import com.augurit.aplanmis.supermarket.clientManage.service.ClientManageService;
+import com.augurit.aplanmis.supermarket.clientManage.vo.ClientManageVo;
 import com.augurit.aplanmis.supermarket.linkmanInfo.service.AeaLinkmanInfoService;
 import com.augurit.aplanmis.supermarket.register.service.AgentRegisterService;
 import com.augurit.aplanmis.supermarket.register.service.OwnerRegisterService;
 import com.augurit.aplanmis.supermarket.serviceMatter.service.ServiceMatterPublishService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,7 @@ import java.util.UUID;
 
 @Service
 @Transactional(rollbackFor = RuntimeException.class)
+@Slf4j
 public class OwnerRegisterServiceImpl implements OwnerRegisterService {
 
     @Autowired
@@ -83,11 +86,12 @@ public class OwnerRegisterServiceImpl implements OwnerRegisterService {
 
             unitInfo.setLoginName(loginName);
             unitInfo.setLoginPwd(Md5Utils.encrypt32(password));
+            unitInfo.setUnitType("1");//建设单位
             unitInfo.setIsOwnerUnit("1");
+            unitInfo.setAuditFlag("2");
 
             //保存单位信息
             aeaUnitInfoService.insertAeaUnitInfo(unitInfo);
-            System.out.println("**************"+unitInfo.getUnitInfoId());
             AeaLinkmanInfo contactManInfo = ownerRegisterVo.getContactManInfo();
             if (contactManInfo != null) {
                 contactManInfo.setUnitInfoId(unitInfo.getUnitInfoId());
@@ -108,19 +112,20 @@ public class OwnerRegisterServiceImpl implements OwnerRegisterService {
                 authorManInfo.setLinkmanType("u");
                 this.insertLinkmanInfo(authorManInfo);
 
-                /*String manLoginName = authorManInfo.getLoginName();
+                String manLoginName = authorManInfo.getLoginName();
                 if (StringUtils.isBlank(manLoginName) && StringUtils.isNotBlank(authorManInfo.getLinkmanCertNo())) {
                     manLoginName = authorManInfo.getLinkmanCertNo();//将身份证号作为登录名
                 }
-                String manPassword = GeneratePasswordUtils.generatePassword(8);*/
+                String manPassword = GeneratePasswordUtils.generatePassword(8);
 
                 //因为业主入驻放没有服务的，暂时不用下面这段代码
-                /*ClientManageVo clienManageVo = new ClientManageVo();
+                ClientManageVo clienManageVo = new ClientManageVo();
+                clienManageVo.setUnitInfoId(unitInfo.getUnitInfoId());
+                clienManageVo.setLinkmanInfoId(authorManInfo.getLinkmanInfoId());
                 clienManageVo.setIsBindAccount("1");
-                clienManageVo.setLoginName(authorManInfo.getLoginName());
-                clienManageVo.setLoginPwd(authorManInfo.getLoginPwd());
-                clienManageVo.setUnitServiceIds(authorManInfo.getUnitServiceIds());
-                clientManageService.updateAeaUnitLink(clienManageVo);*/
+                //clienManageVo.setLoginName(authorManInfo.getLoginName());
+                //clienManageVo.setLoginPwd(authorManInfo.getLoginPwd());
+                clientManageService.updateAeaUnitLink(clienManageVo);
 
                 List<MultipartFile> authorManFiles = this.getFileListByName(request, "authorManFile");
                 FileUtils.uploadFile("AEA_LINKMAN_INFO", "LINKMAN_INFO_ID", authorManInfo.getLinkmanInfoId(), authorManFiles);
@@ -128,7 +133,7 @@ public class OwnerRegisterServiceImpl implements OwnerRegisterService {
             }
 
         }
-
+        log.debug(unitInfo.getUnitInfoId() + "机构注册成功,账号：" + ownerRegisterVo.getLoginName() + "密码：" + ownerRegisterVo.getPassword());
     }
 
     private List<MultipartFile> getFileListByName(HttpServletRequest request, String fileName) {

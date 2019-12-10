@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.admin.market.register.service;
 
+import com.augurit.aplanmis.admin.market.register.vo.OwnerRegisterResultVo;
 import com.augurit.aplanmis.admin.market.register.vo.RegisterAuditVo;
 import com.augurit.aplanmis.admin.market.register.vo.RegisterResultVo;
 import com.augurit.aplanmis.admin.market.register.vo.RegisterSearch;
@@ -16,4 +17,8 @@ public interface RegisterService {
     RegisterResultVo getRegisterUnitDetail(String unitInfoId) throws Exception;
 
     void examineService(RegisterAuditVo registerAuditVo) throws Exception;
+
+    OwnerRegisterResultVo getOwnerRegisterDetail(String unitInfoId) throws Exception;
+
+    void examineOwnerUnitService(RegisterAuditVo registerAuditVo) throws Exception;
 }
