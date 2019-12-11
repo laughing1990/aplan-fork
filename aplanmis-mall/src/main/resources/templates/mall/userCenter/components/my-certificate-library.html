@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>我的证照库</title>
+    <title>我的证照</title>
     <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
     <link rel="stylesheet" href="../../../../static/mall/css/userCenter/my-certificate-library.css" th:href="@{/mall/css/userCenter/my-certificate-library.css}">
 </head>
@@ -31,7 +31,7 @@
     </section>
 
     <section class="my-certifiy-table-box" v-loading="mloading">
-        <div class="step-title">企业证照库</div>
+        <div class="step-title">企业证照</div>
         <div class="my-certifiy-table">
             <el-table :data="cCertificateList"   style="width:100%" class="certificateListTable" v-loading="tableLoading">
                 <el-table-column
@@ -60,7 +60,7 @@
                         <div class="fontSize">{{scope.row.createTime|formatDate}}</div>
                     </template>
                 </el-table-column>
-                <el-table-column
+                <!--<el-table-column
                         prop="matinstName"
                         label="可信等级"
                 >
@@ -76,7 +76,7 @@
                     <template slot-scope="scope">
                         <div class="fontSize">{{scope.row.matinstName}}</div>
                     </template>
-                </el-table-column>
+                </el-table-column>-->
 
                 <el-table-column
                         prop=""
@@ -99,7 +99,7 @@
     </section>
 
     <section class="my-certifiy-table-box" v-loading="mloading">
-        <div class="step-title">法人证照库</div>
+        <div class="step-title">法人证照</div>
         <div class="my-certifiy-table">
             <el-table :data="uCertificateList"   style="width:100%" class="certificateListTable" v-loading="tableLoading">
                 <el-table-column
@@ -166,7 +166,7 @@
     </section>
 
     <section class="my-certifiy-table-box" v-loading="mloading">
-        <div class="step-title">项目证照库</div>
+        <div class="step-title">项目证照</div>
         <div class="my-certifiy-table">
             <el-table :data="pCertificateList"   style="width:100%" class="certificateListTable" v-loading="tableLoading">
                 <el-table-column
@@ -195,7 +195,7 @@
                         <div class="fontSize">{{scope.row.createTime|formatDate}}</div>
                     </template>
                 </el-table-column>
-                <el-table-column
+               <!-- <el-table-column
                         prop="matinstName"
                         label="可信等级"
                 >
@@ -211,7 +211,7 @@
                     <template slot-scope="scope">
                         <div class="fontSize">{{scope.row.matinstName}}</div>
                     </template>
-                </el-table-column>
+                </el-table-column>-->
 
                 <el-table-column
                         prop=""
