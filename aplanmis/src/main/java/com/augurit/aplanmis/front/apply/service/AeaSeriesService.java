@@ -477,7 +477,6 @@ public class AeaSeriesService {
         String applySubject = seriesStashVo.getApplySubject();
         String linkmanInfoId = seriesStashVo.getLinkmanInfoId();
         String projInfoId = seriesStashVo.getProjInfoId();
-        String themeVerId = seriesStashVo.getThemeVerId();
         String branchOrgMap = seriesStashVo.getBranchOrgMap();
         String itemVerId = seriesStashVo.getItemVerId();
 
@@ -513,7 +512,7 @@ public class AeaSeriesService {
             aeaHiSeriesinst = aeaHiSeriesinstService.createAeaHiSeriesinst(applyinstId, appinstId, isParallel, seriesStashVo.getStageId());
         }
 
-        if (StringUtils.isNotBlank(themeVerId) && StringUtils.isNotBlank(seriesStashVo.getItemVerId())) {
+        if (StringUtils.isNotBlank(seriesStashVo.getStageId()) && StringUtils.isNotBlank(seriesStashVo.getItemVerId())) {
             aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), itemVerId, branchOrgMap, null, aeaHiSeriesinst.getAppinstId());
 
             String[] stateIds = seriesStashVo.getStateIds();
