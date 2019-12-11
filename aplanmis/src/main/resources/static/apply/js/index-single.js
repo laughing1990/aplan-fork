@@ -577,16 +577,22 @@ var vm = new Vue({
       oneFormInfo: [],
       oneFormDialogVisible: false,
       oneFormInputFlag: false, // 一张表单是否填写
+      showTempSaveBtn: false,
     }
   },
   mounted: function () {
     var _that = this;
+    var count = 4;
+    _that.loading = true;
     _that.itemVerId = itemVerId;
     _that.refusedRecepitForm.itemVerId = itemVerId;
-    _that.getItemInfo();
-    _that.getProjTypeNature('PROJ_UNIT_LINKMAN_TYPE,XM_DWLX,XM_PROJECT_STEP,XM_PROJECT_LEVEL,XM_TZLX,XM_ZJLY,XM_GBHY,XM_TDLY,XM_NATURE,XM_GCFL');
-    _that.getDistrictList();  // 获取行政区划
-    _that.getGbhy();
+    _that.getItemInfo(callback);
+    _that.getProjTypeNature(
+        'PROJ_UNIT_LINKMAN_TYPE,XM_DWLX,XM_PROJECT_STEP,XM_PROJECT_LEVEL,XM_TZLX,XM_ZJLY,XM_GBHY,XM_TDLY,XM_NATURE,XM_GCFL',
+        callback
+    );
+    _that.getDistrictList(callback);  // 获取行政区划
+    _that.getGbhy(callback);
     //_that.queryProvince();
     window.addEventListener('scroll', _that.handleScroll);
     window.addEventListener('resize', function (ev) {
@@ -594,7 +600,11 @@ var vm = new Vue({
     });
     _that.$nextTick(function () {
       this.$refs.searchProjInfo.$el.querySelector('input').click()
-    })
+    });
+    
+    function callback() {
+      --count == 0 &&_that.showTempData();
+    }
   },
   watch: {
     searchProjfilterText: function (val) {
@@ -608,6 +618,35 @@ var vm = new Vue({
     }
   },
   methods: {
+    // 回显
+    showTempData: function(){
+      var vm = this;
+      vm.loading = false;
+      var applyinstId = __STATIC.getUrlParam('applyinstId');
+      if (!applyinstId) return null;
+      vm.loading = true;
+      request('', {
+        url: ctx + 'rest/apply/unstash',
+        type: 'get',
+        data: { applyinstId: applyinstId },
+      },function(res){
+        vm.loading = false;
+        if (res.success){
+          //
+        } else {
+          vm.$message.error(res.message || '获取暂存数据失败');
+        }
+      }, function(){
+        vm.loading = false;
+        vm.$message.error('获取暂存数据失败');
+      });
+    },
+    // 暂时保存
+    tempSave: function () {
+      this.buttonStyle = 'tempSave';
+      this.startSingleApprove();
+    },
+    // 打开一张表单弹窗
     openOneFormDialog: function () {
       vm.oneFormDialogVisible = true;
       vm.getOneFormData();
@@ -753,6 +792,7 @@ var vm = new Vue({
             _that.stageId = result.content.stageId;
             _that.isParallel = result.content.isParallel;
             _that.themeInfoList = result.content.themeStageList;
+            _that.showTempSaveBtn = true;
             if (result.content.stageId) {
               _that.linkQuery();
               _that.selTheme = {};
@@ -783,7 +823,7 @@ var vm = new Vue({
         }
       }
     },
-    getGbhy: function () {
+    getGbhy: function (cb) {
       var _that = this;
       request('', {
         url: ctx + 'bsc/dic/code/getItemTreeByTypeId.do',
@@ -799,6 +839,7 @@ var vm = new Vue({
             }
           }
           _that.gbhySelectData = arr;
+          typeof cb == 'function' && cb();
         }
       }, function (msg) {
       })
@@ -914,13 +955,14 @@ var vm = new Vue({
       })
     },
     
-    getItemInfo: function () {
+    getItemInfo: function (cb) {
       var _that = this;
       request('', {
         url: ctx + 'rest/item/detail/' + _that.itemVerId,
         type: 'get',
       }, function (data) {
         if (data.success) {
+          typeof cb == 'function' && cb();
           if (data.content) {
             _that.itemBasicInfo = data.content;
           }
@@ -1196,7 +1238,7 @@ var vm = new Vue({
       this.showUnitMore = [];
     },
     // 获取项目性质项目类型
-    getProjTypeNature: function (code) {
+    getProjTypeNature: function (code, cb) {
       var _that = this;
       request('', {
         url: ctx + 'rest/dict/code/multi/items/list',
@@ -1214,6 +1256,7 @@ var vm = new Vue({
           _that.gcflList = result.content.XM_GCFL;
           _that.xmdwlxList = result.content.XM_DWLX;
           _that.projUnitLinkmanType = result.content.PROJ_UNIT_LINKMAN_TYPE;
+          typeof cb == 'function' && cb();
         }
       }, function (msg) {
         _that.$message({
@@ -3467,8 +3510,9 @@ var vm = new Vue({
     startSingleApprove: function () {
       var projInfoIds = [], handleUnitIds = []; // 项目ID集合 经办单位ID集合
       var branchOrgMap = [];// 分局承办
+      var errorMsg = '';
       var _that = this;
-      if (_that.preItemCheckPassed == false) {
+      if (_that.preItemCheckPassed == false && _that.buttonStyle != 'tempSave') {
         confirmMsg('前置事项检测不通过', result.message, function () {
           _that.preItemCheckPassed = true;
         }, function () {
@@ -3476,7 +3520,12 @@ var vm = new Vue({
           return false;
         }, '继续申报', '放弃申报', 'error', true);
       }
-      if (!_that.comments && _that.buttonStyle != 1 && _that.buttonStyle != 5 && _that.buttonStyle != 4) {
+      if (!_that.comments &&
+          _that.buttonStyle != 1 &&
+          _that.buttonStyle != 5 &&
+          _that.buttonStyle != 4 &&
+          _that.buttonStyle != 'tempSave'
+      ) {
         alertMsg('', '请填写收件意见', '关闭', 'error', true);
         return false;
       }
@@ -3525,6 +3574,7 @@ var vm = new Vue({
         _that.IsJustApplyinst = 1;
       }
       //选择的情形
+      
       var parmas = {
         applyLinkmanId: _that.rootApplyLinkmanId,
         applySource: 'win',
@@ -3553,15 +3603,30 @@ var vm = new Vue({
         url = 'rest/apply/series/inadmissible';
       } else if (_that.buttonStyle == '4') { // 仅实例化
         url = 'rest/apply/series/onlyInstApply';
+      } else if (_that.buttonStyle == 'tempSave') { // 暂时保存
+        url = 'rest/apply/series/stash';
+        errorMsg = '暂存失败';
+        parmas = {
+          applySubject: _that.applySubjectType + '',
+          applyinstId: _that.applyinstId,
+          branchOrgMap: branchOrgMap,
+          isParallel: _that.isParallel,
+          itemVerId: _that.itemVerId,
+          linkmanInfoId: _that.rootLinkmanInfoId,
+          matinstsIds: _that.selMatinstIds,
+          projInfoId: projInfoIds[0],
+          stageId: _that.stageId,
+          stateIds: _that.stateIds,
+        }
       }
       _that.progressIntervalStop = false;
       _that.setUploadPercentage();
       request('', {
         url: ctx + url,
         type: 'post',
-        ContentType: 'application/json',
         timeout: 1000000,
-        data: JSON.stringify(parmas)
+        ContentType: 'application/json',
+        data: JSON.stringify(parmas),
       }, function (res) {
         if (res.success) {
           _that.progressIntervalStop = true;
@@ -3585,7 +3650,7 @@ var vm = new Vue({
             _that.progressDialogVisible = false;
             if (_that.buttonStyle == 5) {
               _that.getLackMatsMatmend()
-            } else {
+            } else if (_that.buttonStyle != 'tempSave') {
               _that.queryReceiveList(applyinstId);
             }
           }, 300);
@@ -3817,7 +3882,7 @@ var vm = new Vue({
       return suffix;
     },
     // 根据顶级组织ID查询区划列表  rest/org/region/list
-    getDistrictList: function () {
+    getDistrictList: function (cb) {
       var _that = this;
       request('', {
         url: ctx + 'rest/org/region/list',
@@ -3825,6 +3890,7 @@ var vm = new Vue({
       }, function (result) {
         if (result.content) {
           _that.districtList = result.content;
+          typeof cb == 'function' && cb();
         } else {
           _that.$message({
             message: '获取行政区划列表失败',

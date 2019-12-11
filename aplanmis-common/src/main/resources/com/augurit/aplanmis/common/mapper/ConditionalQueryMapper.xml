@@ -3435,7 +3435,12 @@
         ahi_123.MODIFY_TIME dismissedTime,
         CONVERT ( MAX( aht_123.ID_ + 0 ), CHAR ) AS TASK_ID ,
         NULL AS busRecordId,
-        aht_123.NAME_ taskName
+        aht_123.NAME_ taskName,
+        ti.OVERDUE_TIME AS overdueTime,
+        ti.REMAINING_TIME AS remainingTime,
+        ti.INST_STATE AS instState,
+        ti.TIMERULE_UNIT AS timeruleUnit,
+        ti.IS_COMPLETED AS isCompleted
 
         FROM
         AEA_HI_ITEMINST ahi_123
@@ -3444,6 +3449,7 @@
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
+        LEFT JOIN AEA_TOLERANCE_TIME_INST ti ON ti.ITEMINST_ID = ahi_123.ITEMINST_ID
         <include refid="leftJoinApplyinstProj">
         </include>
         LEFT JOIN ACT_HI_TASKINST aht_123 ON aht_123.PROC_INST_ID_ = ahi_123.PROCINST_ID
@@ -3496,11 +3502,17 @@
         ahi_123.MODIFY_TIME dismissedTime,
         CONVERT ( MAX( aht_123.ID_ + 0 ), CHAR ) AS taskId,
         ahi_123.ITEMINST_ID AS busRecordId,
-        aht_123.NAME_ as taskName
+        aht_123.NAME_ as taskName,
+        ti.OVERDUE_TIME AS overdueTime,
+        ti.REMAINING_TIME AS remainingTime,
+        ti.INST_STATE AS instState,
+        ti.TIMERULE_UNIT AS timeruleUnit,
+        ti.IS_COMPLETED AS isCompleted
         FROM
         AEA_HI_ITEMINST ahi_123
         LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_TOLERANCE_TIME_INST ti ON ti.ITEMINST_ID = ahi_123.ITEMINST_ID
         <include refid="leftJoinApplyinstProj">
         </include>
         LEFT JOIN ACT_HI_TASKINST aht_123 ON aht_123.PROC_INST_ID_ = ahi_123.PROCINST_ID

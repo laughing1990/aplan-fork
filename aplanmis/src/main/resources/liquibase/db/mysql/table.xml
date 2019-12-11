@@ -1263,4 +1263,12 @@
             ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
         </sql>
     </changeSet>
+
+    <changeSet id="201912111631" author="chenzh" failOnError="false">
+        <comment>增加事项容缺办结时限实例表</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_im_proj_purchase`
+            ADD COLUMN `APPLYINST_ID` varchar(50) NULL COMMENT '该采购需求的申报实例ID' AFTER `ROOT_ORG_ID`;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

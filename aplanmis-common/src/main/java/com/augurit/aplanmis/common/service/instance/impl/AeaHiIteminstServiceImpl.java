@@ -343,8 +343,8 @@ public class AeaHiIteminstServiceImpl implements AeaHiIteminstService {
             throw new InvalidParameterException("事项实例ID为空！");
         if (StringUtils.isBlank(timeruleId))
             throw new InvalidParameterException("容缺时限规则id为空！");
-        if (toleranceTime <= 0)
-            throw new InvalidParameterException("容缺时限值必须大于0！");
+        if (toleranceTime < 0)
+            throw new InvalidParameterException("容缺时限值必须大于等于0！");
 
         AeaHiIteminst iteminst = new AeaHiIteminst();
         iteminst.setIteminstId(iteminstId);

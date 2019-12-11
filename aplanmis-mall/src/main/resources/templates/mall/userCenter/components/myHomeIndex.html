@@ -492,17 +492,25 @@
                     </el-table-column>
                     <el-table-column prop="stageIteminstName" label="阶段 / 事项" width="200">
                         <template slot-scope="scope">
+
                             <el-tooltip placement="top" effect="light" v-if="scope.row.isSeriesApprove == 1">
-                                <div slot="content">主题名称：{{scope.row.themeName}}<br /> <br />
-                                    事项名称：{{scope.row.stageIteminstName}}</div>
+                                <div slot="content">主题名称：{{scope.row.themeName}}<br/> <br/>
+                                    事项名称：【<span :style="'color:' + iteminstStateColorFormat(scope.row.iteminst[0].iteminstState)">{{scope.row.iteminst[0].iteminstState|iteminstStateFormat}}</span>】{{scope.row.stageIteminstName}}</div>
                                 <div>
-                                    <div>{{scope.row.stageIteminstName}}</div>
+                                    <span class=" pro-name" >{{scope.row.stageIteminstName}}</span>
                                 </div>
                             </el-tooltip>
                             <el-tooltip placement="top" effect="light" v-else>
-                                <div slot="content">主题名称：{{scope.row.themeName}}<br /> <br />
-                                    阶段名称：{{scope.row.stageIteminstName}}</div>
-                                <div class="stageIteminstName-bg">{{scope.row.stageIteminstName}}</div>
+                                <div slot="content">主题名称：{{scope.row.themeName}} <br/> <br/>
+                                    阶段名称：{{scope.row.stageIteminstName}}<br/> <br/>
+                                    办理事项:
+                                    <template v-for="dto in scope.row.iteminst">
+                                        <div style="line-height: 20px;">【<span :style="'color:' + iteminstStateColorFormat(dto.iteminstState)">{{dto.iteminstState|iteminstStateFormat }}</span>】{{ dto.iteminstName }}</div>
+                                    </template>
+                                </div>
+                                <div>
+                                    <span class="stageIteminstName-bg" >{{scope.row.stageIteminstName}}</span>
+                                </div>
                             </el-tooltip>
                         </template>
                     </el-table-column>
