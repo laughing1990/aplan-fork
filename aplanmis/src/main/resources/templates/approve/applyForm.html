@@ -137,6 +137,12 @@
     .file-list-tab:hover .file-icon-btn {
       display: inline-block;
     }
+    .text-btn:hover{
+      text-decoration: underline;
+    }
+    .text-btn+.text-btn{
+      margin-left:3px;
+    }
     
     
     /* 失信 end */
@@ -1462,6 +1468,14 @@
           <el-table-column prop="iteminstState" label="状态" width="120">
             <template slot-scope="scope">
               <span>{{getStatusText(scope.row.iteminstState)}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="iteminstState" label="容缺补全期限" width="150" v-if="hasRqItem">
+            <template slot-scope="scope">
+              <span>{{scope.row.toleranceTime+scope.row.toleranceTimelimitUnit}}</span>
+<!--              <span>3工作日</span>-->
+              <el-button size="medium" class="text-btn" type="text" @click="rqMoreTime(scope.row)" style="margin-left:3px;">延长</el-button>
+              <el-button size="medium" class="text-btn" type="text" @click="rqEnd(scope.row)">终止</el-button>
             </template>
           </el-table-column>
         </el-table>

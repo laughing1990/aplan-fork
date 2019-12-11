@@ -67,9 +67,25 @@ var vm = new Vue({
       matinstIds: '',
       matCodes: [],
       matIds: [],
+      hasRqItem: false,
     }
   },
   methods: {
+    // 容缺时限延长
+    rqMoreTime: function(row){
+      parent.vm.openRQmoreTimeDialog(row);
+    },
+    // 容缺终止
+    rqEnd: function(row){
+      var vm = this;
+      this.$confirm('此操作将终止容缺补全, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function(){
+        parent.vm.requestRQmoreTime(0, row);
+      }).catch(function(){});
+    },
     // 点击保存
     matFormSave: function(){
       var vm = this;
@@ -517,6 +533,13 @@ var vm = new Vue({
           var busRecordId = getUrlParam('busRecordId');
           var isNotSingle = (busRecordId == 'undefined' || busRecordId == 'null' || busRecordId == '');
           
+          if (isDevelop || isApprover == 1){
+            vm.iteminstList.forEach(function(u){
+              if (u.iteminstState=='12'){
+                vm.hasRqItem = true;
+              }
+            });
+          }
           if (isNotSingle) {
             if (isApprover == '1') {
               // 找到当前事项
