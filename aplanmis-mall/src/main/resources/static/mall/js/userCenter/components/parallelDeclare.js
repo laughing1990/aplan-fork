@@ -410,6 +410,7 @@ var module1 = new Vue({
       matListHistory: [], // 暂存的材料
       stateListHistory: [], // 暂存情形
       itemStateListHistory: [], // 事项暂存情形
+      propulsionItemApplyinstIdVos: [], // 并行事项实例
     }
   },
   mounted: function () {
@@ -3113,6 +3114,9 @@ var module1 = new Vue({
         parallelItemStateIds: _that.parallelItemStateIds,
         stageinstId: _that.stageinstId?_that.stageinstId:'',
         smsInfoVo: _that.projInfoFirstSave,
+        propulsionItemVerIds: _that.propulsionItemVerIds,
+        propulsionItemStateIds: _that.propulsionItemStateIds,
+        propulsionItemApplyinstIdVos: _that.propulsionItemApplyinstIdVos,
       };
       request('', {
         url: ctx + 'rest/apply/common/itemList/temporary',
@@ -3123,6 +3127,7 @@ var module1 = new Vue({
         if(result.success){
           _that.parallelApplyinstId = result.content.applyinstId;
           _that.stageinstId = result.content.stageinstId?result.content.stageinstId:'';
+          _that.propulsionItemApplyinstIdVos = result.content.propulsionItemApplyinstIdVos?result.content.propulsionItemApplyinstIdVos:[];
           // _that.
           _that.$message({
             message: '暂存成功',

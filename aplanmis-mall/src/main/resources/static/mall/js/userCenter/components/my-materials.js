@@ -16,7 +16,7 @@ var myMaterials = (function () {
             ts.getMatList();
         },
         methods:{
-            // 获取我的材料库列表
+            // 获取我的材料列表
             getMatList:function(){
                 var ts = this;
                 ts.tableLoading = true;

@@ -532,6 +532,7 @@ var vm = new Vue({
       projInfoId: '',
       itemVersionId: '',
       currentCertinstId: '',
+      // 容缺时限配置
       RQtimeVisible: false,
       RQtimeLoading: false,
       rqTimeForm: {
@@ -544,6 +545,14 @@ var vm = new Vue({
       },
       rqRulesList: [],
       isRQDialog: false,
+      // 容缺时限延长
+      RQmoreTimeVisible: false,
+      RQmoreTimeLoading: false,
+      rqMoreTimeForm: {
+        toleranceTime: 1,
+      },
+      rqMoreTimeformRules: {},
+      rqTargetRow: {},
     }
   },
   filters: {
@@ -580,6 +589,51 @@ var vm = new Vue({
     },
   },
   methods: {
+    // 打开延长容缺时限弹窗
+    openRQmoreTimeDialog: function(row){
+      this.rqTargetRow = row;
+      this.RQmoreTimeVisible = true;
+      this.rqMoreTimeForm.toleranceTime = 1;
+    },
+    // 保存延长容缺时限
+    ensureMoreTime: function(){
+      var vm = this;
+      if (vm.rqMoreTimeForm.toleranceTime < 1) {
+        return vm.$message.error('时限不能小于1')
+      }
+      this.requestRQmoreTime(vm.rqMoreTimeForm.toleranceTime);
+    },
+    // 请求保存
+    requestRQmoreTime: function(time, row){
+      var vm  = this;
+      if (row) {
+        vm.rqTargetRow = row;
+      }
+      this.parentPageLoading = true;
+      request('', {
+        url: ctx + 'rest/approve/iteminst/tolerance/update',
+        type: 'post',
+        data: {
+          toleranceTime: time,
+          iteminstId: vm.rqTargetRow.iteminstId,
+        },
+      }, function(res){
+        vm.parentPageLoading = false;
+        vm.RQmoreTimeVisible = false;
+        if (res.success) {
+          vm.RQmoreTimeVisible = false;
+          vm.$message.success('设置成功');
+          delayRefreshWindow();
+        } else {
+          vm.$message.error(res.message || '保存失败');
+        }
+      }, function(){
+        vm.parentPageLoading = false;
+        vm.$message.error('保存失败');
+      })
+    },
+    //  关闭容缺延时弹窗
+    closeRQmoreTimeDialog: function(){},
     // 得到容缺时限规则数据
     getRQRuleList: function(){
       var vm = this;

@@ -32,7 +32,7 @@ var userCenter = (function () {
                     name: '项目管理',
                     open: true,
                     childList: [{
-                        name: '我的项目库',
+                        name: '我的项目',
                         value: 'declare',
                         select: true,
                     }, {
@@ -56,7 +56,7 @@ var userCenter = (function () {
                             select: false,
                         },
                         {
-                            name: '撤回申报列表',
+                            name: '撤件列表',
                             value: 'withdrawApplyList',
                             select: false,
                         }
@@ -99,7 +99,7 @@ var userCenter = (function () {
                                 select: false,
                             },
                             {
-                                name: '我的材料库',
+                                name: '我的材料',
                                 value: 'MyMaterials',
                                 select: false,
                             },
@@ -111,7 +111,7 @@ var userCenter = (function () {
                         ]
                     },
                     {
-                        name: '企业信用',
+                        name: '我的信用',
                         open: true,
                         value: 'CreditDetail',
                     },

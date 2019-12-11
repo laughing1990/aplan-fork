@@ -14,40 +14,10 @@ import com.augurit.aplanmis.common.constants.ApplySource;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.constants.ApplyType;
 import com.augurit.aplanmis.common.constants.ItemStatus;
-import com.augurit.aplanmis.common.domain.AeaApplyinstProj;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaHiItemInoutinst;
-import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
-import com.augurit.aplanmis.common.domain.AeaHiItemStateinst;
-import com.augurit.aplanmis.common.domain.AeaHiIteminst;
-import com.augurit.aplanmis.common.domain.AeaHiParStageinst;
-import com.augurit.aplanmis.common.domain.AeaHiParStateinst;
-import com.augurit.aplanmis.common.domain.AeaHiSeriesinst;
-import com.augurit.aplanmis.common.domain.AeaItemBasic;
-import com.augurit.aplanmis.common.domain.AeaItemMat;
-import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
-import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
-import com.augurit.aplanmis.common.domain.AeaParStage;
-import com.augurit.aplanmis.common.domain.AeaParTheme;
-import com.augurit.aplanmis.common.domain.AeaParThemeVer;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiItemStateinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
-import com.augurit.aplanmis.common.mapper.AeaParThemeMapper;
-import com.augurit.aplanmis.common.mapper.AeaParThemeVerMapper;
-import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
+import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.apply.ApplyCommonService;
-import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiItemStateinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiParStateinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiSeriesinstService;
-import com.augurit.aplanmis.common.service.instance.AeaLogApplyStateHistService;
+import com.augurit.aplanmis.common.service.instance.*;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.item.AeaLogItemStateHistService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
@@ -57,16 +27,7 @@ import com.augurit.aplanmis.common.service.receive.ReceiveService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowService;
 import com.augurit.aplanmis.common.utils.BusinessUtil;
-import com.augurit.aplanmis.front.apply.vo.ApplyInstantiateResult;
-import com.augurit.aplanmis.front.apply.vo.ApplyinstIdVo;
-import com.augurit.aplanmis.front.apply.vo.BuildProjUnitVo;
-import com.augurit.aplanmis.front.apply.vo.ParallelItemApplyinstVo;
-import com.augurit.aplanmis.front.apply.vo.ParallelItemStateVo;
-import com.augurit.aplanmis.front.apply.vo.ParallelStashResultVo;
-import com.augurit.aplanmis.front.apply.vo.ParallelUnstashVo;
-import com.augurit.aplanmis.front.apply.vo.PropulsionItemStateVo;
-import com.augurit.aplanmis.front.apply.vo.StageApplyDataVo;
-import com.augurit.aplanmis.front.apply.vo.StashVo;
+import com.augurit.aplanmis.front.apply.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.flowable.engine.TaskService;
@@ -77,12 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -565,9 +521,9 @@ public class AeaParStageService {
     /**
      * 简单合并时即多事项直接合并办理，判断并联事项下是否有选择情形，保存对应的情形实例
      *
-     * @param itemVerIds       并联申报事项
-     * @param applyinstId      并联申报实例id
-     * @param stageinstId      阶段实例id
+     * @param itemVerIds  并联申报事项
+     * @param applyinstId 并联申报实例id
+     * @param stageinstId 阶段实例id
      */
     private void saveItemStateBySimpleMerge(String stageId, List<ParallelItemStateVo> parallelItemStateIds, List<String> itemVerIds, String applyinstId, String stageinstId) {
         AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageId);
@@ -578,10 +534,28 @@ public class AeaParStageService {
         if (parallelItemStateIds != null && parallelItemStateIds.size() > 0) {
             Map<String, List<String>> parallelItemStateIdMap = new HashMap<>();
             parallelItemStateIds.forEach(p -> parallelItemStateIdMap.put(p.getItemVerId(), p.getStateIds()));
+
+            List<AeaHiIteminst> iteminsts = new ArrayList();
+            try {
+                iteminsts.addAll(aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId));
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("事项实例查询失败！", e);
+            }
+
             itemVerIds.forEach(itemVerId -> {
                 if (CollectionUtils.isNotEmpty(parallelItemStateIdMap.get(itemVerId))) {
                     String[] itemStateIds = parallelItemStateIdMap.get(itemVerId).toArray(new String[0]);
+
                     try {
+                        for (AeaHiIteminst iteminst : iteminsts) {
+                            if (itemVerId.equals(iteminst.getItemVerId())) {
+                                //判断事项是否为告知承诺制
+                                applyCommonService.setInformCommit(itemStateIds, ApplyType.SERIES, iteminst);
+                                break;
+                            }
+                        }
+
                         aeaHiItemStateinstService.batchInsertAeaHiItemStateinst(applyinstId, null, stageinstId, itemStateIds, SecurityContext.getCurrentUserName());
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -776,6 +750,7 @@ public class AeaParStageService {
 
     /**
      * 暂存回显
+     *
      * @param applyinstId 申报实例id
      */
     public ParallelUnstashVo unstash(String applyinstId) throws Exception {
