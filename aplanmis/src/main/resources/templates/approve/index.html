@@ -858,14 +858,14 @@
                            @change="changeMutiMan(item)" :label="item.destActName"></el-checkbox>
             </el-checkbox-group>
           </el-form-item>
-          <el-form-item v-for="u in mutiCheckedMan" label-width="180px"
+          <el-form-item v-for="(u, index) in mutiCheckedMan" label-width="180px"
                         :label="u.destActName+'环节审批人：'" style="padding-bottom: 13px;">
             <el-col :span="20">
               <el-input :value="u.defaultSendAssignees|defaultManFilter" readonly size="medium"/>
             </el-col>
             <el-col :span="2">
               <el-button :disabled="!u.needSelectAssignee"
-                         @click="selectAssigneeDialog=true;mutiGetAssigneeTree(u)" type="primary"
+                         @click="selectAssigneeDialog=true;mutiGetAssigneeTree(u, index)" type="primary"
                          style="margin-left:21px;width:90px;"
                          size="medium"><i class="ag ag-add-person"></i>
               </el-button>

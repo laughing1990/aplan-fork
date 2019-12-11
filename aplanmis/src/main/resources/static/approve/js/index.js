@@ -436,6 +436,7 @@ var vm = new Vue({
       mutiCheckedNames: [],
       mutiCheckedMan: [],
       treeTargetRow: null,
+      targetManIndex: 0,
       // 特殊程序
       speTabIndex: 0,
       speBaseInfoForm: {
@@ -2502,10 +2503,11 @@ var vm = new Vue({
           }
       );
     },
-    mutiGetAssigneeTree: function (row) {
+    mutiGetAssigneeTree: function (row, index) {
       //1、记录临时变量
       var vm = this;
       vm.treeTargetRow = row;
+      vm.targetManIndex = index;
       vm.tempDefaultSelectedAssigneeId = row.defaultSendAssigneesId;
       vm.nextTaskAssignee = row.defaultSendAssignees;
       vm.nextTaskAssigneeId = row.defaultSendAssigneesId;
@@ -2573,12 +2575,15 @@ var vm = new Vue({
       //关闭选择框
       vm.selectAssigneeDialog = false;
       if (vm.isMultiFlow) {
-        vm.mutiCheckedMan.forEach(function (u) {
-          if (u.destActId == vm.treeBtnLeft.destActId) {
-            u.defaultSendAssignees = assigneeCn.substring(0, assigneeCn.length - 1);
-            u.defaultSendAssigneesId = assignee.substring(0, assignee.length - 1);
-          }
-        })
+        var u = vm.mutiCheckedMan[vm.targetManIndex];
+        u.defaultSendAssignees = assigneeCn.substring(0, assigneeCn.length - 1);
+        u.defaultSendAssigneesId = assignee.substring(0, assignee.length - 1);
+        // vm.mutiCheckedMan.forEach(function (u) {
+        //   if (u.destActId == vm.treeBtnLeft.destActId) {
+        //     u.defaultSendAssignees = assigneeCn.substring(0, assigneeCn.length - 1);
+        //     u.defaultSendAssigneesId = assignee.substring(0, assignee.length - 1);
+        //   }
+        // })
       }
     },
     handleSelectionChange: function () {
@@ -2905,8 +2910,8 @@ var vm = new Vue({
             vm.isNeedSelectAssignee = vm.sendTaskInfo.needSelectAssignee;
             if (vm.sendTaskInfo && vm.sendTaskInfo.multiFlow == true) {
               vm.isMultiFlow = true;
-              vm.mutiCheckedMan.push(vm.sendTaskInfo);
-              vm.mutiCheckedNames.push(vm.sendTaskInfo.destActName);
+              vm.mutiCheckedMan.push($.extend({},vm.sendTaskInfo));
+              vm.mutiCheckedNames.push(vm.sendTaskInfo.destActName+'');
             }
             //流程流转的提交参数
             vm.sendParam = {
