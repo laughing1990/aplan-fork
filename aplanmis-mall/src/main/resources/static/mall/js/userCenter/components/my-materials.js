@@ -171,7 +171,7 @@ var myMaterials = (function () {
         },
         filters: {
             formatDate: function(time) {
-                if(!time) return "";
+                if(!time) return "-";
                 var date = new Date(time);
                 return formatDate(date, 'yyyy-MM-dd');
             },

@@ -103,11 +103,11 @@ var userCenter = (function () {
                                 value: 'MyMaterials',
                                 select: false,
                             },
-                            // {
-                            //     name: '我的证照库',
-                            //     value: 'MyCertificateLibrary',
-                            //     select: false,
-                            // },
+                            {
+                                name: '我的证照库',
+                                value: 'MyCertificateLibrary',
+                                select: false,
+                            },
                         ]
                     },
                     {
