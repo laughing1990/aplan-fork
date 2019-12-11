@@ -1,9 +1,12 @@
 package com.augurit.aplanmis.common.dto;
 
+import com.augurit.aplanmis.common.domain.AeaHiIteminst;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class ApproveProjInfoDto {
@@ -33,4 +36,22 @@ public class ApproveProjInfoDto {
     private String itemVerId;
     private String stageinstId;
     private String stageId;
+    List<AeaHiIteminstStateDto> iteminst;//事项实例及其状态
+
+    public static List<AeaHiIteminstStateDto> formatList(List<AeaHiIteminst> aeaHiIteminsts) {
+        List<AeaHiIteminstStateDto> dtoList=new ArrayList<>();
+        if(aeaHiIteminsts.size()>0){
+            for (AeaHiIteminst iteminst:aeaHiIteminsts){
+                dtoList.add(format(iteminst));
+            }
+        }
+        return dtoList;
+    }
+
+    public static AeaHiIteminstStateDto format(AeaHiIteminst iteminst){
+        AeaHiIteminstStateDto dto=new AeaHiIteminstStateDto();
+        dto.setIteminstName(iteminst.getIteminstName());
+        dto.setIteminstState(iteminst.getIteminstState());
+        return dto;
+    }
 }

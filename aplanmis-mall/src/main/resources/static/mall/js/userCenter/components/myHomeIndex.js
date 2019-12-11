@@ -31,6 +31,24 @@ var myHomeIndex = (function () {
             ts.getUserinfo()
         },
         methods: {
+        iteminstStateColorFormat:function(val){
+            if(val==1) return "#457EFF";
+            if(val==2) return "#4EB1FD";
+            if(val==3) return "#00C161";
+            if(val==4) return "#eee";
+            if(val==5) return "#eee";
+            if(val==6) return "#447EFF";
+            if(val==7) return "#2BB49E";
+            if(val==8) return "#447EFF";
+            if(val==9) return "#447EFF";
+            if(val==10) return "#2BB49E";
+            if(val==11) return "#00C161";
+            if(val==12) return "#00C161";
+            if(val==13) return "#FF4B47";
+            if(val==14) return "#FF4B47";
+            if(val==15) return "#FF4B47";
+            return "#000";
+        },
             // 获取正在进行中的申报列表数据
             getApplyIngData: function () {
                 var ts = this;
@@ -206,6 +224,26 @@ var myHomeIndex = (function () {
                 this.getApplyIngData();
             }
         },
+        filters:{
+            iteminstStateFormat: function (val) {
+                if(val==1) return "已接件";
+                if(val==2) return "已撤件";
+                if(val==3) return "已受理";
+                if(val==4) return "不受理";
+                if(val==5) return "不予受理";
+                if(val==6) return "补正（开始）";
+                if(val==7) return "补正（结束）";
+                if(val==8) return "部门开始办理";
+                if(val==9) return "特别程序（开始）";
+                if(val==10) return "特别程序（结束）";
+                if(val==11) return "办结（通过）";
+                if(val==12) return "办结（容缺通过）";
+                if(val==13) return "办结（不通过）";
+                if(val==14) return "撤回";
+                if(val==15) return "撤销";
+                return "-";
+            }
+        }
     })
     return {
         vm: vm

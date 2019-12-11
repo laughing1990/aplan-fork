@@ -118,6 +118,8 @@ public class ApproveDataServiceImpl implements ApproveDataService {
 
     private void convertCommentByState(List<ApproveProjInfoDto> list) throws Exception {
         for (ApproveProjInfoDto dto : list) {
+            List<AeaHiIteminst> iteminst = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(dto.getApplyinstId());
+            dto.setIteminst(iteminst.size()>0?ApproveProjInfoDto.formatList(iteminst):new ArrayList<>());
             if (ApplyState.OUT_SCOPE.getValue().equals(dto.getApplyinstState())) {
                 AeaLogApplyStateHist query = new AeaLogApplyStateHist();
                 query.setRootOrgId(SecurityContext.getCurrentOrgId());
