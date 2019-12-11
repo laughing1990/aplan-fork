@@ -13,6 +13,8 @@
 
     <el-table
             :data="applyinstListTableData"
+            row-key="projInfoId"
+            :tree-props="{children: 'children'}"
             style="width: 100%"
             >
         <el-table-column

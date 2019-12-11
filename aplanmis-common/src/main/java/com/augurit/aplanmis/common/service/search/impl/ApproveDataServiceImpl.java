@@ -156,7 +156,12 @@ public class ApproveDataServiceImpl implements ApproveDataService {
     @Override
     public List<AeaProjInfo> getScheduleProjListByUnitInfoIdOrLinkman(String unitInfoId, String userInfoId, String keyword, int pageNum, int pageSize) {
         PageHelper.startPage(pageNum,pageSize);
-        return aeaHiIteminstMapper.getScheduleProjListByUnitInfoIdOrLinkman(keyword, unitInfoId, userInfoId);
+        return aeaHiIteminstMapper.getScheduleProjListByUnitInfoIdOrLinkman(keyword, unitInfoId, userInfoId,"root");
+    }
+
+    @Override
+    public List<AeaProjInfo>  getScheduleProjListByUnitInfoIdOrLinkmanNoPage(String unitInfoId, String userInfoId, String keyword,String parentProjInfoId){
+        return aeaHiIteminstMapper.getScheduleProjListByUnitInfoIdOrLinkman(keyword, unitInfoId, userInfoId,parentProjInfoId);
     }
 
 

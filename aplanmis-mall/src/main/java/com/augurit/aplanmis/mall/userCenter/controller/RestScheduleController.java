@@ -65,15 +65,22 @@ public class RestScheduleController {
         try {
             LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
             List<AeaProjInfo> list = new ArrayList<>();
-            if("1".equals(loginInfo.getIsPersonAccount())){//个人
-                list = approveDataService.getScheduleProjListByUnitInfoIdOrLinkman("", loginInfo.getUserId(), keyword, pageNum, pageSize);
-            }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
-                list = approveDataService.getScheduleProjListByUnitInfoIdOrLinkman(loginInfo.getUnitId(), loginInfo.getUserId(), keyword, pageNum, pageSize);
-            }else{//企业
-                list = approveDataService.getScheduleProjListByUnitInfoIdOrLinkman(loginInfo.getUnitId(), "", keyword, pageNum, pageSize);
-            }
+//            String unitInfoId="";
+//            String linkmanInfoId="";
+//            if("1".equals(loginInfo.getIsPersonAccount())){//个人
+//                linkmanInfoId=loginInfo.getUserId();
+//            }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
+//                linkmanInfoId=loginInfo.getUserId();
+//                unitInfoId=loginInfo.getUnitId();
+//            }else{//企业
+//                unitInfoId=loginInfo.getUnitId();
+//            }
+            list = approveDataService.getScheduleProjListByUnitInfoIdOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(), keyword, pageNum, pageSize);
             PageInfo origPageInfo = new PageInfo<>(list);
-            List<AeaProjInfoResultVo> projsByBuild = list.size() > 0 ? list.stream().map(AeaProjInfoResultVo::build).collect(Collectors.toList()) : new ArrayList<>();
+            List<AeaProjInfoResultVo> projsByBuild = list.size() > 0 ? list.stream().map(AeaProjInfoResultVo::build).peek(vo->{
+                List<AeaProjInfo> childs=approveDataService.getScheduleProjListByUnitInfoIdOrLinkmanNoPage(loginInfo.getUnitId(),loginInfo.getUserId(),keyword,vo.getProjInfoId());
+                vo.setChildren(childs.size()==0?new ArrayList<>():childs.stream().map(AeaProjInfoResultVo::build).collect(Collectors.toList()));
+            }).collect(Collectors.toList()) : new ArrayList<>();
             PageInfo<AeaProjInfoResultVo> pageInfo = new PageInfo<>(projsByBuild);
             BeanUtils.copyProperties(origPageInfo,pageInfo,"list");
             return new ContentResultForm<>(true,pageInfo);
