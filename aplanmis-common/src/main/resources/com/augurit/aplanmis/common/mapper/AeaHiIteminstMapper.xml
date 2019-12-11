@@ -695,7 +695,7 @@
             </if>
         </where>
         ) aea_123
-        order by aea_123.startTime desc
+        order by aea_123.startTime desc,aea_123.localCode desc
     </select>
     <select id="countApproveProjInfoListByUnitOrLinkman" resultType="long">
         select count(1) from (
