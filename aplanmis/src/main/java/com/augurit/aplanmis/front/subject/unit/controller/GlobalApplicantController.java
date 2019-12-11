@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -76,9 +75,7 @@ public class GlobalApplicantController {
             AeaUnitInfo aeaUnitInfo = globalApplicantService.getApplicantById(id);
             aeaUnitInfo.setFileList(list);
             return new ContentResultForm<>(true, aeaUnitInfo);
-//            return aeaUnitInfo;
         } else {
-//            return new AeaUnitInfo();
             return new ContentResultForm<>(true, new AeaUnitInfo());
         }
 
@@ -191,7 +188,7 @@ public class GlobalApplicantController {
         }
     }
 
-    @RequestMapping("/listApplicantsNoPage")
+    @GetMapping("/listApplicantsNoPage")
     @ApiOperation("获取单位信息")
     public List<AeaUnitInfo> listApplicantsNoPage(AeaUnitInfo aeaUnitInfo) {
         return globalApplicantService.listApplicantsNoPage(aeaUnitInfo);
