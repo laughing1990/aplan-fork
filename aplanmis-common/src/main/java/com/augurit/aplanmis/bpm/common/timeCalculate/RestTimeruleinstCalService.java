@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.bpm.common.timeCalculate;
 
+import com.augurit.agcloud.bpm.common.constant.TimeruleConstant;
 import com.augurit.agcloud.bpm.common.domain.ActStoAppinst;
 import com.augurit.agcloud.bpm.common.domain.ActStoTimerule;
 import com.augurit.agcloud.bpm.common.domain.ActStoTimeruleInst;
@@ -131,7 +132,7 @@ public class RestTimeruleinstCalService extends TimeCalculateEngineBase {
                     // 根据时限计算规则进行计算
                     timeCalculateResult = timeLimitRule.calculate(startTime, currentTime, timeruleInst.getOrgId());
                     // 获取流程实例的总挂起时间
-                    timeCalculateResult = this.getProcessinstHangUpTime(startTime, timeCalculateResult, timeruleInst.getTimeruleUnit(), processInstance.getId(), null);
+                    timeCalculateResult = this.getProcessinstHangUpTime(startTime, timeCalculateResult, timeruleInst.getTimeruleUnit(), processInstance.getId(), null, TimeruleConstant.SYSTEM_APLANMIS);
                     timeruleInst.setIsConcluding(currentTime == null ? IS_CONCLUDING_NO : IS_CONCLUDING_YES);
                 }
 
