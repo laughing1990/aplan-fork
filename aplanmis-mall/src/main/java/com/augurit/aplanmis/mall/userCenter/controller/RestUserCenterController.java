@@ -73,7 +73,7 @@ public class RestUserCenterController {
     }
 
     @GetMapping("/toMyMaterialsPage")
-    @ApiOperation(value = "我的材料库页面")
+    @ApiOperation(value = "我的材料页面")
     public ModelAndView toMyMaterialsPage(){
         return new ModelAndView("mall/userCenter/components/my-materials");
     }

@@ -406,7 +406,7 @@ public class RestApproveServiceImpl implements RestApproveService {
         long applyNum = 0;//已申报
         long withdrawalNum = 0;//已撤件
         long completedNum=0;//已办结
-        long withdrawNum=0;//撤回申报列表数目
+        long withdrawNum=0;//撤件列表数目
         if (loginInfo==null) return retVo;
         if("1".equals(loginInfo.getIsPersonAccount())){//个人
             matCompletionNum =this.searchMatComplet("",loginInfo.getUserId(),"",1,1).getTotal();

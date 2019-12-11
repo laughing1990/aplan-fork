@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("rest/user/mat")
-@Api(value = "我的材料列表" ,tags = "法人空间 --> 我的材料库相关接口")
+@Api(value = "我的材料列表" ,tags = "法人空间 --> 我的材料相关接口")
 public class RestMyMatController {
 
     @Autowired

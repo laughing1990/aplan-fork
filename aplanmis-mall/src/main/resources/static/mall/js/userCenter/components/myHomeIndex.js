@@ -132,7 +132,7 @@ var myHomeIndex = (function () {
 
             // 点击并联申报
             goToStageApply: function () {
-                userCenter.vm.selectNav = "我的项目库";
+                userCenter.vm.selectNav = "我的项目";
                 localStorage.setItem('selectNav', userCenter.vm.selectNav);
                 location.href = ctx + "rest/main/toIndexPage?projInfoId=null#declare";
             },
@@ -140,17 +140,17 @@ var myHomeIndex = (function () {
             // 点击我的项目库
             toDeclare: function () {
                 var mod = {
-                    name: '我的项目库',
+                    name: '我的项目',
                     value: 'declare',
                     select: true,
                 }
                 userCenter.vm.userCenterMenuSelect(mod)
             },
 
-            // 点击我的材料库
+            // 点击我的材料
             toMyMaterials: function () {
                 var mod = {
-                    name: '我的材料库',
+                    name: '我的材料',
                     value: 'MyMaterials',
                     select: true,
                 }
@@ -175,7 +175,7 @@ var myHomeIndex = (function () {
             // 点击企业信用
             toCreditDetail: function () {
                 var mod = {
-                    name: '企业信用',
+                    name: '我的信用',
                     open: true,
                     value: 'CreditDetail',
                 }
