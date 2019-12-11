@@ -26,7 +26,7 @@
                 <img src="../../route/imgs/database.png"/>
             </div>
             <div class="data-base-one">
-                <p class="ellipsis">
+                <p class="title-text ellipsis" @click="getJgProjList()">
                     应在省监管页面显示项目数：{{applyProjTrans.applyProjCount-applyProjTrans.nonAcceptCount-applyProjTrans.onlyA2Count}}</p>
                 <img src="../../route/imgs/browser.png"/>
             </div>
@@ -35,10 +35,18 @@
     <el-table class=""
               :data="projList"
               border stripe
-              style="width: 100%">
+              row-key="id"
+              style="width: 100%"
+              :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
         <el-table-column
                 prop="localCode"
                 label="项目代码"
+                min-width="100"
+                show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column
+                prop="gcbm"
+                label="工程代码"
                 min-width="100"
                 show-overflow-tooltip>
         </el-table-column>

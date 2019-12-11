@@ -8,13 +8,19 @@ var vm = new Vue({
                 hasBlxxxxCount: 0,
                 onlyA2Count: 0
             },
-            projList:[]
+            projList: [],
+            applyProjList: [],
+            nonAcceptList: [],
+            onlyA2CountList: []
         }
     },
     mounted: function () {
         var _that = this;
-        _that.getApplyProjAllCount();
+        _that.getApplyProjCount();
+        _that.getNonAcceptApplyProjCount();
+        _that.getOnlyA2ApplyProjCount();
         _that.getApplyProjList();
+        _that.getHasBlxxxxApplyProjCount();
     },
     methods: {
         getApplyProjAllCount: function () {
@@ -29,6 +35,18 @@ var vm = new Vue({
             }, function (msg) {
             })
         },
+        getApplyProjCount: function () {
+            var _that = this;
+            request('', {
+                url: ctx + 'data/route/aplanmis/apply_proj/count',
+                type: 'get',
+            }, function (result) {
+                if (result.success) {
+                    _that.applyProjTrans.applyProjCount = result.content;
+                }
+            }, function (msg) {
+            })
+        },
         getApplyProjList: function () {
             var _that = this;
             request('', {
@@ -37,6 +55,19 @@ var vm = new Vue({
             }, function (result) {
                 if (result.success) {
                     _that.projList = result.content;
+                    _that.applyProjList = result.content;
+                }
+            }, function (msg) {
+            })
+        },
+        getNonAcceptApplyProjCount: function () {
+            var _that = this;
+            request('', {
+                url: ctx + 'data/route/aplanmis/apply_proj/count/non_accept',
+                type: 'get',
+            }, function (result) {
+                if (result.success) {
+                    _that.applyProjTrans.nonAcceptCount = result.content;
                 }
             }, function (msg) {
             })
@@ -49,6 +80,19 @@ var vm = new Vue({
             }, function (result) {
                 if (result.success) {
                     _that.projList = result.content;
+                    _that.nonAcceptList = result.content;
+                }
+            }, function (msg) {
+            })
+        },
+        getHasBlxxxxApplyProjCount: function () {
+            var _that = this;
+            request('', {
+                url: ctx + 'data/route/aplanmis/apply_proj/count/has_blxxxx',
+                type: 'get',
+            }, function (result) {
+                if (result.success) {
+                    _that.applyProjTrans.hasBlxxxxCount = result.content;
                 }
             }, function (msg) {
             })
@@ -65,6 +109,18 @@ var vm = new Vue({
             }, function (msg) {
             })
         },
+        getOnlyA2ApplyProjCount: function () {
+            var _that = this;
+            request('', {
+                url: ctx + 'data/route/aplanmis/apply_proj/count/only_a2',
+                type: 'get',
+            }, function (result) {
+                if (result.success) {
+                    _that.applyProjTrans.onlyA2Count = result.content;
+                }
+            }, function (msg) {
+            })
+        },
         getOnlyA2ApplyProjList: function () {
             var _that = this;
             request('', {
@@ -73,32 +129,21 @@ var vm = new Vue({
             }, function (result) {
                 if (result.success) {
                     _that.projList = result.content;
+                    _that.onlyA2CountList = result.content;
                 }
             }, function (msg) {
             })
         },
-        formatterTableCell: function(row, column, cellValue, index){
-            if(!cellValue)return '-';
-            return cellValue;
-        },
-        load: function(row, treeNode, resolve) {
-            var ts = this;
-            // ts.loading = true;
-            request('', {
-                url: ctx + 'aea/proj/info/listChildProjInfoByProjInfoId',
-                type: 'get',
-                data: {projInfoId:row.projInfoId}
-            }, function (res) {
-                // ts.loading = false;
-                if (res.success) {
-                    resolve(res.content);
-                } else {
-                    return ts.apiMessage(res.message, 'error')
-                }
-            }, function () {
-                // ts.loading = false;
-                return ts.apiMessage('网络错误！', 'error')
-            });
-        },
+        getJgProjList: function () {
+            var _that = this;
+            var jgProjList = JSON.parse(JSON.stringify(this.applyProjList));
+            for(var i=0;i<_that.nonAcceptList.length;i++){
+                jgProjList.splice(jgProjList.indexOf(_that.nonAcceptList[i]),1);
+            }
+            for(var i=0;i<_that.onlyA2CountList.length;i++){
+                jgProjList.splice(jgProjList.indexOf(_that.onlyA2CountList[i]),1);
+            }
+            _that.projList = jgProjList;
+        }
     }
 });
