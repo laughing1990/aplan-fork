@@ -272,7 +272,7 @@ public class AplanmisTimeCalculateEngine extends TimeCalculateEngineBase {
                 aeaToleranceTimeInst.setRemainingTime(remainingTime);
                 aeaToleranceTimeInst.setOverdueTime(timeCount > 0.0d ? 0.0d : Math.abs(timeCount));// 未逾期取0.0，已逾期取timeCount的绝对值
                 String instState = null;
-                if (timeCount > 0.0d) {
+                if (timeCount >= 0.0d) {
                     if ("WD".equals(timerule.getTimeruleUnit()) || "ND".equals(timerule.getTimeruleUnit()))
                         instState = timeCount > 2 ? "1" : "2";  //小于或等于2天时，为预警状态
                     else
