@@ -121,6 +121,11 @@ public class SelectionNoticeVo {
 
     @ApiModelProperty(value = "是否有企业回避：1 是，0 否")
     private String isAvoid;
+    @ApiModelProperty(value = "批文文件")
+    private String officialRemarkFile;
+
+    @ApiModelProperty(value = "要求说明文件")
+    private String requireExplainFile;
 
     @ApiModelProperty(value = "【当IS_AVOID=1时必填】回避原因")
     private String avoidReason;
@@ -142,6 +147,9 @@ public class SelectionNoticeVo {
     private String projScale;
     @ApiModelProperty("采购项目规模内容")
     private java.lang.String projScaleContent;
+
+    @ApiModelProperty(value = "服务ID")
+    private String serviceId;
 
     @ApiModelProperty(value = "服务名称")
     private String serviceName;

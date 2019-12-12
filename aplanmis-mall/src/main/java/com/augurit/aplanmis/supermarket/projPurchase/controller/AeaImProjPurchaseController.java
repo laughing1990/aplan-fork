@@ -50,6 +50,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -226,6 +227,26 @@ public class AeaImProjPurchaseController {
     @PostMapping(value = "/getOfficialRemarkFileList/{officialRemarkFile}")
     public ContentRestResult<List<BscAttForm>> getOfficialRemarkFileList(@PathVariable("officialRemarkFile") String officialRemarkFile) throws Exception {
         return new ContentRestResult<>(true, projPurchaseService.getOfficialRemarkFileList(officialRemarkFile));
+    }
+
+    @ApiOperation(value = "获取采购需求批文文件列表||获取采购需求文件列表", notes = "获取采购需求批文文件列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "officialRemarkFile", value = "批文文件id", required = true),
+            @ApiImplicitParam(name = "requireExplainFile", value = "批文文件id", required = true)
+    })
+    @PostMapping(value = "/getPurchaseFileList")
+    public ContentRestResult<List<BscAttForm>> getPurchaseFileList(String requireExplainFile, String officialRemarkFile) throws Exception {
+        List<BscAttForm> list = new ArrayList<>();
+        if (StringUtils.isNotBlank(requireExplainFile)) {
+
+            List<BscAttForm> forms1 = projPurchaseService.getRequireExplainFileList(requireExplainFile);
+            if (null != forms1 && forms1.size() > 0) list.addAll(forms1);
+        }
+        if (StringUtils.isNotBlank(officialRemarkFile)) {
+            List<BscAttForm> forms = projPurchaseService.getOfficialRemarkFileList(officialRemarkFile);
+            if (null != forms && forms.size() > 0) list.addAll(forms);
+        }
+        return new ContentRestResult<>(true, list);
     }
 
     @ApiOperation(value = "下载文件", notes = "下载文件")
