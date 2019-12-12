@@ -14,6 +14,7 @@ import com.augurit.aplanmis.common.constants.ApplySource;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.constants.ApplyType;
 import com.augurit.aplanmis.common.constants.ItemStatus;
+import com.augurit.aplanmis.common.domain.AeaApplyinstForminst;
 import com.augurit.aplanmis.common.domain.AeaApplyinstProj;
 import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import com.augurit.aplanmis.common.domain.AeaHiItemInoutinst;
@@ -31,6 +32,7 @@ import com.augurit.aplanmis.common.domain.AeaParStage;
 import com.augurit.aplanmis.common.domain.AeaParTheme;
 import com.augurit.aplanmis.common.domain.AeaParThemeVer;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.common.mapper.AeaApplyinstForminstMapper;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemStateinstMapper;
@@ -60,6 +62,7 @@ import com.augurit.aplanmis.common.utils.BusinessUtil;
 import com.augurit.aplanmis.front.apply.vo.ApplyInstantiateResult;
 import com.augurit.aplanmis.front.apply.vo.ApplyinstIdVo;
 import com.augurit.aplanmis.front.apply.vo.BuildProjUnitVo;
+import com.augurit.aplanmis.front.apply.vo.ForminstVo;
 import com.augurit.aplanmis.front.apply.vo.ParallelItemApplyinstVo;
 import com.augurit.aplanmis.front.apply.vo.ParallelItemStateVo;
 import com.augurit.aplanmis.front.apply.vo.ParallelStashResultVo;
@@ -155,6 +158,8 @@ public class AeaParStageService {
     private AeaApplyinstProjMapper aeaApplyinstProjMapper;
     @Autowired
     private AeaHiItemStateinstMapper aeaHiItemStateinstMapper;
+    @Autowired
+    private AeaApplyinstForminstMapper aeaApplyinstForminstMapper;
 
     /**
      * 保存实例、启动流程（停留在收件节点）
@@ -818,6 +823,10 @@ public class AeaParStageService {
 
         parallelUnstashVo.setParallelItemStateIds(aeaHiItemStateinstMapper.listAeaHiItemStateinstByApplyinstIdOrStageinstId(null, aeaHiParStageinst.getStageinstId())
                 .stream().map(AeaHiItemStateinst::getExecStateId).collect(Collectors.toSet()));
+
+        List<AeaApplyinstForminst> aeaApplyinstForminsts = aeaApplyinstForminstMapper.listAeaApplyinstForminstByApplyinstId(applyinstId);
+        parallelUnstashVo.getForminstVos().addAll(aeaApplyinstForminsts.stream()
+                .map(ForminstVo::from).collect(Collectors.toList()));
 
         Map<String, String> branchOrg = new HashMap<>();
         List<AeaHiIteminst> aeaHiIteminsts = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);

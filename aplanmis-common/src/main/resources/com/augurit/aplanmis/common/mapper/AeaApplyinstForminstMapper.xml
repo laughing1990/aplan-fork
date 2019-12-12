@@ -47,15 +47,26 @@
         </foreach>
     </delete>
 
-    <select id="getAeaApplyinstForminstByForminstId"
+    <select id="getAeaApplyinstForminstByForminstIdAndApplyisntId"
             resultType="com.augurit.aplanmis.common.domain.AeaApplyinstForminst">
         select
-        <include refid="aliasColumns"></include>
+        <include refid="aliasColumns">
+            <property name="alias" value="aaf"/>
+        </include>
+        from aea_applyinst_forminst aaf
+        where forminst_id = #{forminstId} and applyinst_id=#{applyinstId}
     </select>
 
     <select id="listAeaApplyinstForminstByApplyinstId"
             resultType="com.augurit.aplanmis.common.domain.AeaApplyinstForminst">
-
+        select
+        <include refid="aliasColumns">
+            <property name="alias" value="aaf"/>
+        </include>
+        , atf.FORM_ID stoFormId
+        from aea_applyinst_forminst aaf
+        join act_sto_forminst atf on aaf.forminst_id=atf.STO_FORMINST_ID
+        where atf.IS_DELETE = '0' and aaf.applyinst_id = #{applyinstId}
     </select>
 
 </mapper>

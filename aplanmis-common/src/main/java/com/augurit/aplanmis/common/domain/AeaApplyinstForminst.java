@@ -32,4 +32,9 @@ public class AeaApplyinstForminst implements Serializable {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private java.util.Date modifierTime;
+
+    // 扩展字段
+
+    @ApiModelProperty(value = "表单定义id")
+    private String stoFormId;
 }

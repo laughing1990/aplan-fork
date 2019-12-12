@@ -340,6 +340,7 @@ function addOrgItem(isRoot, isCatalog){
     $("#add_item_under_dept select[name='isCheckPartform'] option:eq(0)").prop("selected", 'selected');
     $("#add_item_under_dept select[name='isCheckProj'] option:eq(0)").prop("selected", 'selected');
     $("#add_item_under_dept select[name='anticipateType'] option:eq(1)").prop("selected", 'selected');
+    $("#add_item_under_dept select[name='isGreenWay'] option:eq(0)").prop("selected", 'selected');
 
     if(isRoot){
         $("#add_item_under_dept input[name='itemCategoryMark']").removeAttr("readonly");
@@ -372,6 +373,7 @@ function editItemBasicById(itemBasicId, itemVerStatus, isCatalog) {
     $("#add_item_under_dept select[name='orgId'] option:eq(0)").prop("selected", 'selected');
     $("#add_item_under_dept input[name='regionId']").val('');
     $("#add_item_under_dept input[name='itemCategoryMark']").attr("readOnly", "true");
+    $("#add_item_under_dept select[name='isGreenWay'] option:eq(0)").prop("selected", 'selected');
     clearItemBasicFile();
 
     $.ajax({

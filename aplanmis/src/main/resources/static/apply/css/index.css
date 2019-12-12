@@ -4,6 +4,25 @@
 * @Last Modified by:   ZL
 * @Last Modified time: $ $
 */
+.c-f {
+    zoom: 1;
+}
+
+.c-f:after {
+    content: "";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+.l {
+    float: left;
+}
+
+.r {
+    float: right;
+}
 body {
   background-color: #f2f3f8;
   padding: 16px;
@@ -1775,3 +1794,85 @@ textarea {
 .show-one-form .el-tabs--left .el-tabs__header.is-left {
   margin-top: 50px;
 }
+/*一张表单平铺 start*/
+.one-form-collapse .el-collapse-item__wrap {
+    padding: 24px 0 0 20px;
+}
+.one-form-unit{
+    float: left;
+    width: 240px;
+    height: 60px;
+    border: 1px solid #FFB822;
+    border-radius: 4px;
+    color: #575962;
+    font-size: 14px;
+    margin: 0 24px 24px 0;
+    position: relative;
+    padding: 12px 8px 0 30px;
+    cursor: pointer;
+}
+.one-form-title{
+    margin-bottom: 3px;
+    width: 198px;
+    height: 14px;
+    line-height: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: normal;
+}
+.goto-fill-form{
+    cursor: pointer;
+    color: #FFB822;
+}
+.goto-fill-form:hover{
+    text-decoration: underline;
+}
+.of-state-icon{
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    top: 5px;
+    left: 8px;
+    color: #FFB822;
+}
+.is-fill.one-form-unit{
+    border: 1px solid #00C161;
+}
+.is-fill .of-state-icon{
+    color: #00C161;
+}
+.of-fill-time{
+    color:#CCCCCC;
+}
+/*一张表单平铺 end*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
