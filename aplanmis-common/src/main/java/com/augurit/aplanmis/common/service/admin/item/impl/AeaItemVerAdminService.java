@@ -348,12 +348,21 @@ public class AeaItemVerAdminService {
             String dateStr = df.format(new Date());
             String reg = "[0-9]{4}[0-9]{1,2}[0-9]{1,2}[0-9]{1,2}[0-9]{1,2}[0-9]{1,2}";
             String itemName = basic.getItemName();
+            String itemCode = basic.getItemCode();
+            // 事项名称
             Pattern pattern = Pattern.compile("【"+ reg +"复制】");
             Matcher matcher = pattern.matcher(itemName);
             while(matcher.find()){
                 itemName = itemName.replaceAll(matcher.group(),"");
             }
+            // 事项编号
+            pattern = Pattern.compile("【"+ reg +"】");
+            matcher = pattern.matcher(itemCode);
+            while(matcher.find()){
+                itemCode = itemCode.replaceAll(matcher.group(),"");
+            }
             basic.setItemName(itemName+"【"+ dateStr +"复制】");
+            basic.setItemCode(itemCode+"【"+ dateStr +"】");
             basic.setAppId(aeaItemBasicService.createAppIdByItemName(basic.getItemName()));
             basic.setItemBasicId(UuidUtil.generateUuid());
             basic.setItemId(newItemId);
