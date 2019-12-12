@@ -61,7 +61,8 @@
         QUOTE_TYPE quoteType,
         IS_AVOID isAvoid,
         AVOID_REASON avoidReason,
-        ROOT_ORG_ID rootOrgId
+        ROOT_ORG_ID rootOrgId,
+        APPLYINST_ID applyinstId
     </sql>
 
     <sql id="allColumnsAlias">
@@ -156,7 +157,8 @@
             ifnull(${alias}.IS_AVOID,'0') isAvoid,
         </if>
         ${alias}.AVOID_REASON avoidReason,
-        ${alias}.ROOT_ORG_ID rootOrgId
+        ${alias}.ROOT_ORG_ID rootOrgId,
+        ${alias}.APPLYINST_ID applyinstId
     </sql>
 
     <!-- 新增实体对象 -->
@@ -167,9 +169,9 @@ MODIFIER  ,MODIFY_TIME  ,BIDDING_TYPE  ,MEMO  ,HIGHEST_PRICE  ,SERVICE_TIME_EXPL
 PUBLISH_TIME  ,AMOUNT_EXPLAIN  ,IS_APPROVE_PROJ  ,APPLYINST_CODE  ,IS_LIVE_WITNESS  ,WITNESS_NAME1  ,WITNESS_NAME2  ,WITNESS_NAME3  ,WITNESS_PHONE1  ,WITNESS_PHONE2  ,
 WITNESS_PHONE3  ,IS_DISCLOSE_IM  ,IS_DISCLOSE_BIDDING  ,AUDIT_TIME  ,AUDIT_OPINION  ,OWNER_COMPLAINT_PHONE  ,UNIT_REQUIRE_ID  ,SERVICE_ID  ,OFFICIAL_REMARK_FILE  ,
 REQUIRE_EXPLAIN_FILE  ,SELECT_CONDITION  ,IS_DEFINE_AMOUNT,EXPIRATION_DATE,LINKMAN_INFO_ID,CHOICE_IMUNIT_TIME,SERVICE_START_TIME,SERVICE_END_TIME,BASE_RATE,
-HIGHEST_RATE,QUOTE_TYPE,ROOT_ORG_ID
+HIGHEST_RATE,QUOTE_TYPE,ROOT_ORG_ID,APPLYINST_ID
     )  values  (
-#{projPurchaseId},#{projInfoId},#{publishUnitInfoId},#{publishLinkmanInfoId},#{serviceItemId},#{basePrice},#{auditFlag},#{bidNum},#{bjType},#{isDelete},#{isActive},#{creater},#{createTime},#{modifier},#{modifyTime},#{biddingType},#{memo},#{highestPrice},#{serviceTimeExplain},#{serviceContent},#{contacts},#{moblie},#{isStage},#{stageId},#{stageItemVerId},#{publishTime},#{amountExplain},#{isApproveProj},#{applyinstCode},#{isLiveWitness},#{witnessName1},#{witnessName2},#{witnessName3},#{witnessPhone1},#{witnessPhone2},#{witnessPhone3},#{isDiscloseIm},#{isDiscloseBidding},#{auditTime},#{auditOpinion},#{ownerComplaintPhone},#{unitRequireId},#{serviceId},#{officialRemarkFile},#{requireExplainFile},#{selectCondition},  #{isDefineAmount} ,#{expirationDate},#{linkmanInfoId},#{choiceImunitTime},#{serviceStartTime},#{serviceEndTime},#{baseRate},#{highestRate},#{quoteType},#{rootOrgId}
+#{projPurchaseId},#{projInfoId},#{publishUnitInfoId},#{publishLinkmanInfoId},#{serviceItemId},#{basePrice},#{auditFlag},#{bidNum},#{bjType},#{isDelete},#{isActive},#{creater},#{createTime},#{modifier},#{modifyTime},#{biddingType},#{memo},#{highestPrice},#{serviceTimeExplain},#{serviceContent},#{contacts},#{moblie},#{isStage},#{stageId},#{stageItemVerId},#{publishTime},#{amountExplain},#{isApproveProj},#{applyinstCode},#{isLiveWitness},#{witnessName1},#{witnessName2},#{witnessName3},#{witnessPhone1},#{witnessPhone2},#{witnessPhone3},#{isDiscloseIm},#{isDiscloseBidding},#{auditTime},#{auditOpinion},#{ownerComplaintPhone},#{unitRequireId},#{serviceId},#{officialRemarkFile},#{requireExplainFile},#{selectCondition},  #{isDefineAmount} ,#{expirationDate},#{linkmanInfoId},#{choiceImunitTime},#{serviceStartTime},#{serviceEndTime},#{baseRate},#{highestRate},#{quoteType},#{rootOrgId},#{applyinstId}
     )
   </insert>
 
@@ -356,6 +358,9 @@ HIGHEST_RATE,QUOTE_TYPE,ROOT_ORG_ID
             </if>
             <if test="rootOrgId != null">
                 ROOT_ORG_ID = #{rootOrgId},
+            </if>
+            <if test="applyinstId != null">
+                APPLYINST_ID = #{applyinstId}
             </if>
         </set>
         where PROJ_PURCHASE_ID = #{projPurchaseId}
@@ -574,6 +579,9 @@ HIGHEST_RATE,QUOTE_TYPE,ROOT_ORG_ID
             </if>
             <if test="rootOrgId != null">
                 AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="applyinstId != null">
+                AND APPLYINST_ID = #{applyinstId}
             </if>
         </where>
     </select>

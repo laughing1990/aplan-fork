@@ -3,7 +3,7 @@
 <!--0 一些前置信息配置 -->
 <mapper namespace="com.augurit.aplanmis.common.mapper.ConditionalQueryMapper">
 
-    <sql id="leftJoinApplyinstProj">
+    <sql id="leftJoinApplyinstProj_bk">
         LEFT JOIN (
         SELECT
         ap.APPLYINST_ID AS APPLYINST_ID,
@@ -22,6 +22,11 @@
         LEFT JOIN aea_proj_info p ON ap.PROJ_INFO_ID = p.PROJ_INFO_ID
         GROUP BY ap.APPLYINST_ID
         ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+    </sql>
+
+    <sql id="leftJoinApplyinstProj">
+        LEFT JOIN aea_applyinst_proj ap ON ahap_123.APPLYINST_ID = ap.APPLYINST_ID
+        LEFT JOIN aea_proj_info temp1 ON temp1.PROJ_INFO_ID = ap.PROJ_INFO_ID
     </sql>
 
     <sql id="baseConditionalQuery">
@@ -772,11 +777,63 @@
 
     <select id="listWaitDoTasks" resultType="com.augurit.aplanmis.common.vo.conditional.TaskInfo">
         SELECT
-        *
+            temp_123.taskId,
+            temp_123.taskDefKey,
+            temp_123.procInstId,
+            temp_123.applyinstId,
+            temp_123.applyinstCode,
+            temp_123.stageName,
+            temp_123.applySource,
+            temp_123.arriveTime,
+            temp_123.acceptTime,
+            temp_123.applyTime,
+            temp_123.taskName,
+            temp_123.dueNum,
+            temp_123.isSeriesApprove,
+            temp_123.busRecordId,
+            temp_123.itemProperty,
+            temp_123.applyType,
+            temp_123.projName,
+            temp_123.localCode,
+            temp_123.gcbm,
+            temp_123.themeName,
+            temp_123.itemName,
+            temp_123.overdueTime,
+            temp_123.remainingTime,
+            temp_123.instState,
+            temp_123.timeruleUnit,
+            temp_123.signState,
+            temp_123.itemNature
         FROM
         (
         SELECT
-        ART_123.*
+            ART_123.taskId,
+            ART_123.taskDefKey,
+            ART_123.procInstId,
+            ART_123.applyinstId,
+            ART_123.applyinstCode,
+            ART_123.stageName,
+            ART_123.applySource,
+            ART_123.arriveTime,
+            ART_123.acceptTime,
+            ART_123.applyTime,
+            ART_123.taskName,
+            ART_123.dueNum,
+            ART_123.isSeriesApprove,
+            ART_123.busRecordId,
+            ART_123.itemProperty,
+            ART_123.applyType,
+            ART_123.projName,
+            ART_123.localCode,
+            ART_123.gcbm,
+            ART_123.themeName,
+            ART_123.itemName,
+            ART_123.overdueTime,
+            ART_123.remainingTime,
+            ART_123.instState,
+            ART_123.timeruleUnit,
+            ART_123.signState,
+            ART_123.itemNature
         FROM
         (
         (
@@ -821,13 +878,13 @@
         LEFT JOIN aea_par_theme theme ON theme.THEME_ID = ver.THEME_ID
         LEFT JOIN act_sto_timerule_inst ti ON (ti.PROC_INST_ID = AHP_123.PROC_INST_ID_ AND ti.TIMERULE_INST_TYPE = '1')
         <where>
-            ahap_123.IS_SERIES_APPROVE = '0'
+            art_123.ASSIGNEE_ = #{loginName}
+            AND ahap_123.IS_SERIES_APPROVE = '0'
             <if test="theme != null and theme != '' ">
                 AND theme.THEME_ID = #{theme}
             </if>
             <include refid="baseConditionalQuery">
             </include>
-            AND art_123.ASSIGNEE_ = #{loginName}
             AND ahap_123.APPLYINST_STATE NOT IN ('0', '1', '3', '5', '6')
         </where>
         )
@@ -877,7 +934,8 @@
         LEFT JOIN AEA_ITEM_BASIC ai_123 ON hi.ITEM_ID = ai_123.ITEM_ID AND hi.ITEM_VER_ID = ai_123.ITEM_VER_ID
         LEFT JOIN act_sto_timerule_inst ti ON (ti.PROC_INST_ID = hi.PROCINST_ID  AND ti.TIMERULE_INST_TYPE = '1')
         <where>
-            ahap_123.IS_SERIES_APPROVE = '0'
+            art_123.ASSIGNEE_ = #{loginName}
+            AND ahap_123.IS_SERIES_APPROVE = '0'
             AND hi.ITEMINST_STATE NOT IN (
             '1',
             '2',
@@ -888,7 +946,6 @@
             '15'
             )
             AND ahap_123.APPLYINST_STATE != '0'
-            AND art_123.ASSIGNEE_ = #{loginName}
             <if test="theme != null and theme != '' ">
                 AND theme.THEME_ID = #{theme}
             </if>
@@ -940,9 +997,9 @@
         LEFT JOIN aea_par_theme theme ON theme.THEME_ID = ver.THEME_ID
         LEFT JOIN act_sto_timerule_inst ti ON (ti.PROC_INST_ID = AHP_123.PROC_INST_ID_ AND ti.TIMERULE_INST_TYPE = '1')
         <where>
-            ahap_123.IS_SERIES_APPROVE = '0'
+            art_123.ASSIGNEE_ = #{loginName}
+            AND ahap_123.IS_SERIES_APPROVE = '0'
             AND ahap_123.APPLYINST_STATE != '0'
-            AND art_123.ASSIGNEE_ = #{loginName}
             <if test="theme != null and theme != '' ">
                 AND theme.THEME_ID = #{theme}
             </if>
@@ -992,7 +1049,8 @@
         LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID AND ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
         LEFT JOIN act_sto_timerule_inst ti ON (ti.PROC_INST_ID = ahi_123.PROCINST_ID AND ti.TIMERULE_INST_TYPE = '1')
         <where>
-            ahap_123.IS_SERIES_APPROVE = '1'
+            art_123.ASSIGNEE_ = #{loginName}
+            AND ahap_123.IS_SERIES_APPROVE = '1'
             AND ahi_123.ITEMINST_STATE NOT IN (
             '1',
             '2',
@@ -1003,7 +1061,6 @@
             '15'
             )
             AND ahap_123.APPLYINST_STATE != '0'
-            AND art_123.ASSIGNEE_ = #{loginName}
             <include refid="baseConditionalQuery">
             </include>
         </where>
@@ -1051,10 +1108,11 @@
         LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID AND ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
         LEFT JOIN act_sto_timerule_inst ti ON (ti.PROC_INST_ID = ahi_123.PROCINST_ID AND ti.TIMERULE_INST_TYPE = '1')
         <where>
-            ahap_123.IS_SERIES_APPROVE = '1'
+            art_123.ASSIGNEE_ = #{loginName}
+            AND ahap_123.IS_SERIES_APPROVE = '1'
             AND ahi_123.ITEMINST_STATE NOT IN ('2', '4', /*'5',*/ '6', '14', '15')
             AND ahap_123.APPLYINST_STATE != '0'
-            AND art_123.ASSIGNEE_ = #{loginName}
+
             <include refid="baseConditionalQuery">
             </include>
         </where>
@@ -1162,8 +1220,8 @@
         LEFT JOIN act_sto_timerule_inst ti ON (ti.PROC_INST_ID = hi.PROCINST_ID AND ti.TIMERULE_INST_TYPE = '1')
         LEFT JOIN act_sto_timerule_inst ati ON (ati.PROC_INST_ID = AHP_123.PROC_INST_ID_ AND ati.TIMERULE_INST_TYPE = '1')
         <where>
-            ahap_123.IS_SERIES_APPROVE = '0'
-            AND aht_123.ASSIGNEE_ = #{loginName}
+            aht_123.ASSIGNEE_ = #{loginName}
+            AND ahap_123.IS_SERIES_APPROVE = '0'
             AND aht_123.END_TIME_ IS NOT NULL
             AND aht_123.DELETE_REASON_ IS NULL
             AND ahap_123.APPLYINST_STATE !='6'
@@ -1223,9 +1281,8 @@
         LEFT JOIN act_sto_timerule_inst ati ON (ati.PROC_INST_ID = AHP_123.PROC_INST_ID_ AND ati.TIMERULE_INST_TYPE = '1')
 
         <where>
-
-            ahap_123.IS_SERIES_APPROVE = '0'
-            AND aht_123.ASSIGNEE_ = #{loginName}
+            aht_123.ASSIGNEE_ = #{loginName}
+            AND ahap_123.IS_SERIES_APPROVE = '0'
             AND aht_123.END_TIME_ IS NOT NULL
             AND aht_123.DELETE_REASON_ IS NULL
             AND ahap_123.APPLYINST_STATE !='6'
@@ -1276,8 +1333,8 @@
         LEFT JOIN act_sto_timerule_inst ti ON (ti.PROC_INST_ID = ahi_123.PROCINST_ID AND ti.TIMERULE_INST_TYPE = '1')
         LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID AND ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
         <where>
-            ahap_123.IS_SERIES_APPROVE = '1'
-            AND aht_123.ASSIGNEE_ = #{loginName}
+            aht_123.ASSIGNEE_ = #{loginName}
+            AND ahap_123.IS_SERIES_APPROVE = '1'
             AND aht_123.END_TIME_ IS NOT NULL
             AND aht_123.DELETE_REASON_ IS NULL
             AND ahap_123.APPLYINST_STATE !='6'
@@ -1326,8 +1383,8 @@
         LEFT JOIN act_sto_timerule_inst ti ON (ti.PROC_INST_ID = ahi_123.PROCINST_ID AND ti.TIMERULE_INST_TYPE = '1')
         LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID AND ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
         <where>
-            ahap_123.IS_SERIES_APPROVE = '1'
-            AND aht_123.ASSIGNEE_ = #{loginName}
+            aht_123.ASSIGNEE_ = #{loginName}
+            AND ahap_123.IS_SERIES_APPROVE = '1'
             AND aht_123.END_TIME_ IS NOT NULL
             AND aht_123.DELETE_REASON_ IS NULL
             AND ahap_123.APPLYINST_STATE !='6'
@@ -3378,7 +3435,12 @@
         ahi_123.MODIFY_TIME dismissedTime,
         CONVERT ( MAX( aht_123.ID_ + 0 ), CHAR ) AS TASK_ID ,
         NULL AS busRecordId,
-        aht_123.NAME_ taskName
+        aht_123.NAME_ taskName,
+        ti.OVERDUE_TIME AS overdueTime,
+        ti.REMAINING_TIME AS remainingTime,
+        ti.INST_STATE AS instState,
+        ti.TIMERULE_UNIT AS timeruleUnit,
+        ti.IS_COMPLETED AS isCompleted
 
         FROM
         AEA_HI_ITEMINST ahi_123
@@ -3387,6 +3449,7 @@
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
+        LEFT JOIN AEA_TOLERANCE_TIME_INST ti ON ti.ITEMINST_ID = ahi_123.ITEMINST_ID
         <include refid="leftJoinApplyinstProj">
         </include>
         LEFT JOIN ACT_HI_TASKINST aht_123 ON aht_123.PROC_INST_ID_ = ahi_123.PROCINST_ID
@@ -3439,11 +3502,17 @@
         ahi_123.MODIFY_TIME dismissedTime,
         CONVERT ( MAX( aht_123.ID_ + 0 ), CHAR ) AS taskId,
         ahi_123.ITEMINST_ID AS busRecordId,
-        aht_123.NAME_ as taskName
+        aht_123.NAME_ as taskName,
+        ti.OVERDUE_TIME AS overdueTime,
+        ti.REMAINING_TIME AS remainingTime,
+        ti.INST_STATE AS instState,
+        ti.TIMERULE_UNIT AS timeruleUnit,
+        ti.IS_COMPLETED AS isCompleted
         FROM
         AEA_HI_ITEMINST ahi_123
         LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_TOLERANCE_TIME_INST ti ON ti.ITEMINST_ID = ahi_123.ITEMINST_ID
         <include refid="leftJoinApplyinstProj">
         </include>
         LEFT JOIN ACT_HI_TASKINST aht_123 ON aht_123.PROC_INST_ID_ = ahi_123.PROCINST_ID

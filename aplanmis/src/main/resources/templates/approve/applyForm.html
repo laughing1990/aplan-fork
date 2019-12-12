@@ -105,43 +105,48 @@
     .upload-flie-dialog .upload-s-file .el-button {
       font-size: 12px;
     }
+    
     .mat-children {
       padding: 10px 73px;
     }
-
+    
     .mat-children .file-list-tab {
       line-height: 30px;
       height: 30px;
     }
+    
     .content-tables-u th:nth-child(2),
     .content-tables-u td:nth-child(2) {
       /*border-right: none;*/
     }
-
+    
     .content-tables-u .el-table__expanded-cell[class*=cell] {
       padding: 0;
     }
+    
     .file-icon-btn {
       margin-left: 25px;
       color: #169AFF;
       display: none;
     }
-
+    
     .file-icon-btn > span {
       display: inline-block;
       width: 25px;
       height: 25px;
       font-size: 16px;
     }
-
+    
     .file-list-tab:hover .file-icon-btn {
       display: inline-block;
     }
-    .text-btn:hover{
+    
+    .text-btn:hover {
       text-decoration: underline;
     }
-    .text-btn+.text-btn{
-      margin-left:3px;
+    
+    .text-btn + .text-btn {
+      margin-left: 3px;
     }
     
     
@@ -863,7 +868,8 @@
                   <el-form-item :prop="'matsTableData.' + scope.$index + '.realPaperCount'"
                                 :rules='(scope.row.zcqy==0&&scope.row.paperIsRequire==1)?model.rules.realPaperCount:[]'>
                     
-                    <el-input size="mini" :disabled="scope.row.paperDisabled" v-model="scope.row.realPaperCount"></el-input>
+                    <el-input size="mini" :disabled="scope.row.paperDisabled"
+                              v-model="scope.row.realPaperCount"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
@@ -889,7 +895,8 @@
               <el-table-column prop="realCopyCount" align="center" label="收/验" min-width="70">
                 <template slot-scope="scope">
                   <el-form-item :prop="'matsTableData.' + scope.$index + '.realCopyCount'">
-                    <el-input size="mini" :disabled="scope.row.copyDisabled" v-model="scope.row.realCopyCount"></el-input>
+                    <el-input size="mini" :disabled="scope.row.copyDisabled"
+                              v-model="scope.row.realCopyCount"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
@@ -919,7 +926,8 @@
             </el-table-column>
             <el-table-column label="附件" min-width="60" align="center">
               <template slot-scope="scope">
-                <i class="upload-flie-icon el-icon-upload" style="cursor: pointer;" @click="showUploadWindow(scope.row)"></i>
+                <i class="upload-flie-icon el-icon-upload" style="cursor: pointer;"
+                   @click="showUploadWindow(scope.row)"></i>
               </template>
             </el-table-column>
           </el-table-column>
@@ -1472,10 +1480,13 @@
           </el-table-column>
           <el-table-column prop="iteminstState" label="容缺补全期限" width="150" v-if="hasRqItem">
             <template slot-scope="scope">
-              <span>{{scope.row.toleranceTime+scope.row.toleranceTimelimitUnit}}</span>
-<!--              <span>3工作日</span>-->
-              <el-button size="medium" class="text-btn" type="text" @click="rqMoreTime(scope.row)" style="margin-left:3px;">延长</el-button>
-              <el-button size="medium" class="text-btn" type="text" @click="rqEnd(scope.row)">终止</el-button>
+              <span>{{scope.row.toleranceTime+scope.row.toleranceTimelimitUnit+(scope.row.toleranceIsCompleted==1?'（已终止）':'')}}</span>
+              <el-button v-if="isApprover==1&&scope.row.toleranceIsCompleted==0" size="medium" class="text-btn"
+                         type="text" @click="rqMoreTime(scope.row)" style="margin-left:3px;">延长
+              </el-button>
+              <el-button v-if="isApprover==1&&scope.row.toleranceIsCompleted==0" size="medium" class="text-btn"
+                         type="text" @click="rqEnd(scope.row)">终止
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -1505,9 +1516,9 @@
         <el-table-column label="操作" align="center" width="200">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="filePreview(scope.row)">预览</el-button>
-<!--            <el-button type="primary" size="mini" :disabled="getFileType(scope.row.fileName)!=='pdf'"-->
-<!--                       @click="filePreview(scope.row,'pdf')">查看施工图-->
-<!--            </el-button>-->
+            <!--            <el-button type="primary" size="mini" :disabled="getFileType(scope.row.fileName)!=='pdf'"-->
+            <!--                       @click="filePreview(scope.row,'pdf')">查看施工图-->
+            <!--            </el-button>-->
           </template>
         </el-table-column>
       </el-table>

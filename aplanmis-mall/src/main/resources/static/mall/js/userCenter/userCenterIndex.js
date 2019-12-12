@@ -103,11 +103,11 @@ var userCenter = (function () {
                                 value: 'MyMaterials',
                                 select: false,
                             },
-                            {
-                                name: '我的证照库',
-                                value: 'MyCertificateLibrary',
-                                select: false,
-                            },
+                            // {
+                            //     name: '我的证照库',
+                            //     value: 'MyCertificateLibrary',
+                            //     select: false,
+                            // },
                         ]
                     },
                     {
@@ -125,7 +125,7 @@ var userCenter = (function () {
                 approvalNum: 0,
                 matCompletionNum: 0,
                 withdrawNum: 0,
-				        draftNum:0,
+                draftNum:0,
                 applyNum:0,
                 supplyNum:0,
                 withdrawalNum:0,

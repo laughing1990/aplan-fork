@@ -3,10 +3,9 @@ if (isDevelop) {
   // ctx = '[[@{/}]]';
   // ctx = 'http://localhost:8083/aplanmis-front/'; // localhost
   ctx = 'http://106.52.77.101:8083/aplanmis-front/'; // 101
-  // ctx = 'http://106.52.77.101:8090/aplanmis-front/'; // 101
   // ctx = 'http://192.168.32.46:8083/aplanmis-front/'; // 李文钦
   // ctx = 'http://192.168.32.59:8083/aplanmis-front/'; // 赵雄
-  ctx = 'http://192.168.30.24:8083/aplanmis-front/'; // 陈锭星
+  // ctx = 'http://192.168.30.24:8083/aplanmis-front/'; // 陈锭星
   // ctx = 'http://192.168.30.110:8083/aplanmis-front/'; // 邹永胜
   // ctx = 'http://192.168.30.98:8083/aplanmis-front/'; // 邹永胜
   // ctx = 'http://192.168.14.2:8083/aplanmis-front/'; // 邓振强
@@ -18,6 +17,7 @@ if (isDevelop) {
   // ctx = 'http://192.168.30.120:8083/aplanmis-front/'; // 蒋进涛
   // ctx = 'http://192.168.15.101:8083/aplanmis-front/'; // 王超
   // ctx = 'http://192.168.30.125:8083/aplanmis-front/'; // 黄治亮
+  // ctx = 'http://192.168.32.47:8083/aplanmis-front/'; // 熊贻标
 }
 
 var __STATIC = {

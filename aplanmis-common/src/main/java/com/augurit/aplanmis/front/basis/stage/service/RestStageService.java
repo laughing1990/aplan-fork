@@ -1,11 +1,18 @@
 package com.augurit.aplanmis.front.basis.stage.service;
 
+import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.aplanmis.common.domain.AeaApplyinstForminst;
 import com.augurit.aplanmis.common.domain.AeaItem;
+import com.augurit.aplanmis.common.domain.AeaItemPartform;
 import com.augurit.aplanmis.common.domain.AeaOneform;
 import com.augurit.aplanmis.common.domain.AeaParStageItem;
+import com.augurit.aplanmis.common.domain.AeaParStagePartform;
+import com.augurit.aplanmis.common.mapper.AeaApplyinstForminstMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemPartformMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStageItemMapper;
+import com.augurit.aplanmis.common.mapper.AeaParStagePartformMapper;
 import com.augurit.aplanmis.common.service.admin.oneform.AeaOneformService;
 import com.augurit.aplanmis.front.basis.stage.vo.StageItemFormVo;
 import com.augurit.aplanmis.front.basis.stage.vo.StageOneFormVo;
@@ -13,8 +20,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +40,14 @@ public class RestStageService {
 
     @Autowired
     private AeaItemMapper aeaItemMapper;
+
+    @Autowired
+    private AeaParStagePartformMapper aeaParStagePartformMapper;
+    @Autowired
+    private AeaItemPartformMapper aeaItemPartformMapper;
+
+    @Autowired
+    private AeaApplyinstForminstMapper aeaApplyinstForminstMapper;
 
     /**
      * 根据阶段id查询所有关联的表单
@@ -103,5 +120,29 @@ public class RestStageService {
         }
 
         return result;
+    }
+
+    /**
+     * 根据阶段id获取阶段下的扩展表单
+     *
+     * @param stageId 阶段id
+     */
+    public List<AeaParStagePartform> listAeaParStagePartformsByStageId(String stageId) {
+        return aeaParStagePartformMapper.listAeaParStagePartformsByStageId(stageId);
+    }
+
+    public List<AeaItemPartform> listAeaItemPartformsByItemVerIds(List<String> itemVerIds) {
+        return aeaItemPartformMapper.listAeaItemPartformsByItemVerIds(itemVerIds);
+    }
+
+    public void bindForminst(AeaApplyinstForminst aeaApplyinstForminst) throws Exception {
+        Assert.hasText(aeaApplyinstForminst.getApplyinstId(), "applyinstId is null.");
+        Assert.hasText(aeaApplyinstForminst.getForminstId(), "forminstId is null.");
+
+        aeaApplyinstForminst.setApplyinstForminstId(UuidUtil.generateUuid());
+        aeaApplyinstForminst.setCreater(SecurityContext.getCurrentUserId());
+        aeaApplyinstForminst.setCreateTime(new Date());
+
+        aeaApplyinstForminstMapper.insertAeaApplyinstForminst(aeaApplyinstForminst);
     }
 }
