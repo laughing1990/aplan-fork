@@ -193,11 +193,15 @@ public class ApplyCommonServiceImpl implements ApplyCommonService {
     @Override
     public void bindApplyinstProj(String projInfoId, String applyinstId, String currentUserId) throws Exception {
         AeaApplyinstProj aeaApplyinstProj = new AeaApplyinstProj();
-        aeaApplyinstProj.setApplyinstProjId(UuidUtil.generateUuid());
         aeaApplyinstProj.setApplyinstId(applyinstId);
         aeaApplyinstProj.setProjInfoId(projInfoId);
-        aeaApplyinstProj.setCreater(currentUserId);
-        aeaApplyinstProj.setCreateTime(new Date());
-        aeaApplyinstProjMapper.insertAeaApplyinstProj(aeaApplyinstProj);
+        List<AeaApplyinstProj> aeaApplyinstProjs = aeaApplyinstProjMapper.listAeaApplyinstProj(aeaApplyinstProj);
+        // 如果之前已经绑定过，则略过
+        if (CollectionUtils.isEmpty(aeaApplyinstProjs)) {
+            aeaApplyinstProj.setApplyinstProjId(UuidUtil.generateUuid());
+            aeaApplyinstProj.setCreater(currentUserId);
+            aeaApplyinstProj.setCreateTime(new Date());
+            aeaApplyinstProjMapper.insertAeaApplyinstProj(aeaApplyinstProj);
+        }
     }
 }

@@ -1188,7 +1188,7 @@
             and aib.ROOT_ORG_ID=#{rootOrgId}
             and aiv.ROOT_ORG_ID=#{rootOrgId}
         </if>
-        ORDER BY aib.ACCEPT_MODE
+
     </select>
 
     <select id="getAeaItemBasicByItemVerId" resultType="AeaItemBasic">
@@ -1745,7 +1745,7 @@
                 )
             </if>
         </where>
-        order by org.ORG_LEVEL asc, org.ORG_SORT_NO asc, aib.CREATE_TIME desc
+        order by aib.ACCEPT_MODE,org.ORG_LEVEL asc, org.ORG_SORT_NO asc, aib.CREATE_TIME desc
     </select>
 
     <select id="listAeaItemBasicByOrgIds" resultType="com.augurit.aplanmis.common.domain.AeaItemBasic">

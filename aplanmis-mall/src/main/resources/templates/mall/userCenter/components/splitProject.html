@@ -1,5 +1,6 @@
 <link rel="stylesheet" href="../../../static/mall/css/userCenter/splitProject.css"
   th:href="@{/mall/css/userCenter/splitProject.css}">
+<link rel="stylesheet" href="../../../../static/mall/css/userCenter/my-cloundSpaces.css" th:href="@{/mall/css/userCenter/my-cloundSpaces.css}">
 <div class="wt-tab" id="splitProject" v-cloak v-loading.fullscreen.lock="mloading">
   <!-- 项目基本信息信息 -->
   <div class="mt20 proj-module pd-info-pandel">
@@ -12,7 +13,7 @@
       </p>
       <el-form-item label="项目/工程名称" class="wt100" prop="projName">
         <el-input class="w-775 btn-input" placeholder="请填写项目名称" v-model="projInfoForm.projName">
-        <el-button slot="append" type="primary" @click.stop="splitProject">拆分子项目</el-button>
+        <el-button slot="append" type="primary" @click.stop="clickStageFlag">拆分子项目</el-button>
         </el-input>
       </el-form-item>
 
@@ -238,6 +239,23 @@
 
 
     </el-form>
+    <!--新建文件夹弹窗
+    <el-dialog title="选择阶段" :visible.sync="selectStageFlag" width="800px" top="25vh" class="addDirDialog">
+      <div class="addDirForm-box" style="height: 167px">
+        <el-form  :model="selectFlagForm" ref="selectFlagForm" label-position="right" label-width="230px" :rules="stageRules">
+          <el-form-item label="请选择阶段：" class="wt448" prop="stageFlag">
+            <el-select v-model="selectFlagForm.stageFlag" clearable placeholder="请选择阶段" style="width: 357px" >
+              <el-option v-for="(value,key) in selectStageList" :key="key" :value="key" :label="value"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+                <el-button @click="selectStageFlag = false">取 消</el-button>
+                <el-button @click="clickStageFlag" type="primary">确 定</el-button>
+              </span>
+    </el-dialog> str-->
+    <!--新建文件夹弹窗 end-->
     <div class="handel mt60" style="text-align: center">
       <el-button class="mr25" @click="returnProjList" style="width:120px;">返 回</el-button>
       <el-button class="mr25" type="primary" style="width:120px;" @click="saveProjData">保 存</el-button>

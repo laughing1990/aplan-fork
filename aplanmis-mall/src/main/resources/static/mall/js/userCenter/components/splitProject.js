@@ -27,7 +27,9 @@ var module1 = new Vue({
       },
       // 子项目列表总数
       sonProjTotal: 0,
-
+      selectFlagForm:{
+        stageFlag:''//选择阶段
+      },
       // 项目基本信息
       projInfoForm: {
         gcbm: '', //工程编码
@@ -68,7 +70,13 @@ var module1 = new Vue({
         isDesignSolution: '0',
         projectAddress: '',
         isAreaEstimate: '0',
-          regionalism: ''
+        regionalism: '',
+      },
+
+      stageRules: {
+        stageFlag: [
+          {required: true, message: '请选择阶段', trigger: 'change'},
+        ],
       },
       // 项目基本信息-校验规则，必填
       rules: {
@@ -156,6 +164,9 @@ var module1 = new Vue({
       }, // 树配置信息，节点属性以及显示文案的属性
       gbhyShowMsg: '', // 国标行业选中数据的展示
       isShowGbhy: false, // 是否显示国标行业tree模块
+      stageFlag:'',//拆分子项目时选择的阶段
+      selectStageFlag:false,//是否展示选择阶段窗口
+      selectStageList:{1:'工程规划阶段',2:'施工许可阶段'}
     }
   },
   created: function () {
@@ -348,15 +359,51 @@ var module1 = new Vue({
       }
       return str
     },
+    splitProject:function(){
+      this.selectStageFlag = true;
+    },
     // 拆分子项目
-    splitProject: function () {
+    clickStageFlag: function () {
       var ts = this,
         _splitData = {};
       _splitData.projInfoId = ts.curEditProjData.projInfoId;
       _splitData.gcbm = ts.curEditProjData.gcbm;
       _splitData.projName = ts.curEditProjData.projName;
       _splitData.localCode = ts.curEditProjData.localCode;
+      _splitData.stageFlag = ts.selectFlagForm.stageFlag;
 
+      // ts.$refs['selectFlagForm'].validate(function(valid){
+      //     if (valid) {
+      //         ts.selectStageFlag = false;
+      //         ts.mloading = true;
+      //         request('', {
+      //             url: ctx + 'rest/user/getChildProject',
+      //             type: 'get',
+      //             data: _splitData
+      //         }, function (res) {
+      //             ts.mloading = false;
+      //             if (res.success) {
+      //                 // 拆分成功后，工程编码，项目名称改成拆出来的子项目的值，同时删除projInfoForm表单中projInfoId；并申明现在是保存的是子项目的信息
+      //                 ts.projInfoForm.gcbm = res.content.gcbm;
+      //                 ts.projInfoForm.gcbm = res.content.gcbm;
+      //                 ts.projInfoForm.projName = res.content.projName;
+      //                 if (!!res.content.projectAddress) {
+      //                     ts.projInfoForm.projectAddress = res.content.projectAddress.split(',');
+      //                 }
+      //                 delete ts.projInfoForm.projInfoId;
+      //                 ts.isSaveChildProj = true;
+      //                 // return ts.apiMessage('拆分成功！', 'success')
+      //             } else {
+      //                 return ts.apiMessage(res.message, 'error')
+      //             }
+      //         }, function () {
+      //             ts.mloading = false;
+      //             return ts.apiMessage('网络错误！', 'error')
+      //         });
+      //     }
+      // })
+
+      ts.selectStageFlag = false;
       ts.mloading = true;
       request('', {
         url: ctx + 'rest/user/getChildProject',
@@ -366,6 +413,7 @@ var module1 = new Vue({
         ts.mloading = false;
         if (res.success) {
           // 拆分成功后，工程编码，项目名称改成拆出来的子项目的值，同时删除projInfoForm表单中projInfoId；并申明现在是保存的是子项目的信息
+          ts.projInfoForm.gcbm = res.content.gcbm;
           ts.projInfoForm.gcbm = res.content.gcbm;
           ts.projInfoForm.projName = res.content.projName;
           if (!!res.content.projectAddress) {

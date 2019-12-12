@@ -25,7 +25,7 @@ public class LinkmanLibraryController {
     @GetMapping("/index")
     @ApiOperation("全局联系人库-主页列表")
     public ModelAndView index() {
-        return new ModelAndView("global/linkmanview");
+        return new ModelAndView("view/queryGlobalLinkmanInfoIndex");
     }
 
     @GetMapping("/detail")

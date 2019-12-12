@@ -45,15 +45,15 @@
                 </td>
                 <td class="al" width="18%">
                   <el-tooltip placement="top" effect="light" v-if="item.isSeriesApprove == 1">
-                    <div slot="content">主题名称：{{item.themeName}}<br/> <br/>
-                      事项名称：【<span :style="'color:' + iteminstStateColorFormat(item.iteminst[0].iteminstState)">{{item.iteminst[0].iteminstState|iteminstStateFormat}}</span>】{{item.stageIteminstName}}</div>
+                    <div slot="content">所属主题：{{item.themeName}}<br/> <br/>
+                      办理事项：【<span :style="'color:' + iteminstStateColorFormat(item.iteminst[0].iteminstState)">{{item.iteminst[0].iteminstState|iteminstStateFormat}}</span>】{{item.stageIteminstName}}</div>
                     <div>
                      <span class=" pro-name" >{{item.stageIteminstName}}</span>
                     </div>
                   </el-tooltip>
                   <el-tooltip placement="top" effect="light" v-else>
-                    <div slot="content">主题名称：{{item.themeName}} <br/> <br/>
-                      阶段名称：{{item.stageIteminstName}}<br/> <br/>
+                    <div slot="content">所属主题：{{item.themeName}} <br/> <br/>
+                      所属阶段：{{item.stageIteminstName}}<br/> <br/>
                       办理事项:
                       <template v-for="dto in item.iteminst">
                         <div style="line-height: 20px;">【<span :style="'color:' + iteminstStateColorFormat(dto.iteminstState)">{{dto.iteminstState|iteminstStateFormat }}</span>】{{ dto.iteminstName }}</div>
@@ -146,15 +146,15 @@
                     <!--:title="item.stageIteminstName">{{item.stageIteminstName}}</span>-->
 
                   <el-tooltip placement="top" effect="light" v-if="item.isSeriesApprove == 1">
-                    <div slot="content">主题名称：{{item.themeName}}<br/> <br/>
-                      事项名称：【<span :style="'color:' + iteminstStateColorFormat(item.iteminst[0].iteminstState)">{{item.iteminst[0].iteminstState|iteminstStateFormat}}</span>】{{item.stageIteminstName}}</div>
+                    <div slot="content">所属主题：{{item.themeName}}<br/> <br/>
+                      办理事项：【<span :style="'color:' + iteminstStateColorFormat(item.iteminst[0].iteminstState)">{{item.iteminst[0].iteminstState|iteminstStateFormat}}</span>】{{item.stageIteminstName}}</div>
                     <div>
                       <span class=" pro-name" >{{item.stageIteminstName}}</span>
                     </div>
                   </el-tooltip>
                   <el-tooltip placement="top" effect="light" v-else>
-                    <div slot="content">主题名称：{{item.themeName}} <br/> <br/>
-                      阶段名称：{{item.stageIteminstName}}<br/> <br/>
+                    <div slot="content">所属主题：{{item.themeName}} <br/> <br/>
+                      所属阶段：{{item.stageIteminstName}}<br/> <br/>
                       办理事项:
                       <template v-for="dto in item.iteminst">
                         <div style="line-height: 20px;">【<span :style="'color:' + iteminstStateColorFormat(dto.iteminstState)">{{dto.iteminstState|iteminstStateFormat }}</span>】{{ dto.iteminstName }}</div>

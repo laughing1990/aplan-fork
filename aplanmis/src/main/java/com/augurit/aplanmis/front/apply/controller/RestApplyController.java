@@ -43,7 +43,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/rest/apply")
 @Api(value = "启动流程接口", tags = "申报-发起申报")
-public class RestApplyCotroller {
+public class RestApplyController {
 
     @Autowired
     private RestApplyService restStartProcessService;

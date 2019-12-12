@@ -26,11 +26,11 @@
 <!--    }-->
 <!--  </style>-->
   <link rel="stylesheet" href="../../static/apply/css/index.css" th:href="@{/apply/css/index.css}">
-  
+  <script>
+    var ctx = '[[@{/}]]';
+  </script>
   <script src="../../static/approve/js/ip.js" th:src="@{/approve/js/ip.js}"></script>
   <script>
-    // var ctx = '[[@{/}]]';
-    /*var ctx = 'http://192.168.30.33:8083/aplanmis-front/';*/
     var itemVerId = '[[${itemVerId}]]';
     if (isDevelop) {
       itemVerId = '95a6016e-79ef-48cf-a280-86f0b292945f';//建筑工程施工许可证核发（鹤山市）

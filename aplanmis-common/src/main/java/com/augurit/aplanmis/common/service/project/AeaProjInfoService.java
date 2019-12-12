@@ -218,7 +218,7 @@ public interface AeaProjInfoService {
      * @return
      * @throws Exception
      */
-    public AeaProjInfo getChildProject(String projName, String projInfoId, String localCode, String gcbm) throws Exception;
+    public AeaProjInfo getChildProject(String projName, String projInfoId, String localCode, String gcbm,String stageFlag) throws Exception;
 
     /**
      * 查询项目的属地行政区划

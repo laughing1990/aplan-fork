@@ -289,7 +289,7 @@ public class RestApplyProjController {
             @ApiImplicitParam(value = "项目ID", name = "projInfoId", dataType = "string")})
     public ResultForm getChildProject(String projName, String projInfoId, String localCode, String gcbm) {
         try {
-            AeaProjInfo aeaProjInfo = aeaProjInfoService.getChildProject(projName, projInfoId, localCode, gcbm);
+            AeaProjInfo aeaProjInfo = aeaProjInfoService.getChildProject(projName, projInfoId, localCode, gcbm,"");
             return new ContentResultForm<>(true, aeaProjInfo);
         } catch (Exception e) {
             return new ResultForm(false, "无法分离子项目");
