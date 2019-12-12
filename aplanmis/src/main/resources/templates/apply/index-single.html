@@ -7,19 +7,24 @@
 
 <head>
   <!--公共css,js-->
-<!--  <th:block th:include="common/common :: commonheader('单项申报')"/>-->
-    <meta charset="UTF-8">
-    <title>单项申报</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}"/>
-    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
-    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css" th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
-    <style>
-      .custor{
-        cursor:pointer;
-      }
-    </style>
+  <!--  <th:block th:include="common/common :: commonheader('单项申报')"/>-->
+  <meta charset="UTF-8">
+  <title>单项申报</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+        th:href="@{/agcloud/framework/js-lib/element-2/element.css}"/>
+  <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css"
+        th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css"
+        th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
+  <style>
+    .custor {
+      cursor: pointer;
+    }
+  </style>
   <link rel="stylesheet" href="../../static/apply/css/index.css" th:href="@{/apply/css/index.css}">
   
   <script src="../../static/approve/js/ip.js" th:src="@{/approve/js/ip.js}"></script>
@@ -42,14 +47,15 @@
   </div>
   <el-form class="search-proj-info" label-width="200px">
     <el-form-item label="项目/工程查询" id="projCodeInfo">
-      <el-select v-model="searchKeyword" filterable remote autofocus reserve-keyword ref="searchProjInfo"
+      <el-select :disabled="isTempSavePage" v-model="searchKeyword" filterable remote autofocus reserve-keyword
+                 ref="searchProjInfo"
                  no-data-text="暂无匹配的项目/工程" placeholder="请输入项目（工程）的编码 / 名称" :remote-method="searchProjInfoByKeyword"
                  :loading="loadingProjInfo">
         <el-option v-for="item in projInfoList" :key="item.projInfoId" @click.native="projNameSel(item)"
                    :label="item.projName+' （'+item.localCode+'）'" :value="item.projInfoId">
         </el-option>
       </el-select>
-      <el-button type="primary" icon="el-icon-search" @click="beforeCheck()">联网查询</el-button>
+      <el-button :disabled="isTempSavePage" type="primary" icon="el-icon-search" @click="beforeCheck()">联网查询</el-button>
     </el-form-item>
   </el-form>
   <div class="content">
@@ -1839,19 +1845,24 @@
 
 <!--<th:block th:include="common/common :: commonfooter"/>-->
 <!--<th:block th:include="common/common :: gaopaiyi"/>-->
-<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
-<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/polyfill.min.js" th:src="@{/agcloud/framework/js-lib/element-2/polyfill.min.js}"></script>
-<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
-<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+        th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/polyfill.min.js"
+        th:src="@{/agcloud/framework/js-lib/element-2/polyfill.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+        th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+        th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
 <script src="../../static/common/js/axios.min.js" th:src="@{/common/js/axios.min.js}"></script>
-<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
+        th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
 <!--引入图片转pdf文件-->
 <script type="text/javascript" th:src="@{/common/js/pdfmake.js}"></script>
 <script src="../../static/common/js/qwebchannel.js" th:src="@{/common/js/qwebchannel.js}"></script>
 <script src="../../static/common/js/liangtian_gaopaoyi.js" th:src="@{/common/js/liangtian_gaopaoyi.js}"></script>
 <script src="../../static/common/js/fangzheng_gaopaiyi.js" th:src="@{/common/js/fangzheng_gaopaiyi.js}"></script>
 <!--InitializationCompleted 是方正高拍仪控件的事件，表示控件加载完成-->
-<script type="text/javascript" FOR="Capture" EVENT="InitializationCompleted" >
+<script type="text/javascript" FOR="Capture" EVENT="InitializationCompleted">
   catchInitFinishedMessage();
 </script>
 
