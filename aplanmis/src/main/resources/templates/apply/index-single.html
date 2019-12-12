@@ -7,33 +7,35 @@
 
 <head>
   <!--公共css,js-->
-  <!--  <th:block th:include="common/common :: commonheader('单项申报')"/>-->
-  <meta charset="UTF-8">
-  <title>单项申报</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
-        th:href="@{/agcloud/framework/js-lib/element-2/element.css}"/>
-  <link rel="stylesheet"
-        href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css"
-        th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
-  <link rel="stylesheet"
-        href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css"
-        th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
-  <style>
-    .custor {
-      cursor: pointer;
-    }
-  </style>
+    <th:block th:include="common/common :: commonheader('单项申报')"/>
+<!--  <meta charset="UTF-8">-->
+<!--  <title>单项申报</title>-->
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">-->
+<!--  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"-->
+<!--        th:href="@{/agcloud/framework/js-lib/element-2/element.css}"/>-->
+<!--  <link rel="stylesheet"-->
+<!--        href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css"-->
+<!--        th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">-->
+<!--  <link rel="stylesheet"-->
+<!--        href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css"-->
+<!--        th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">-->
+<!--  <style>-->
+<!--    .custor {-->
+<!--      cursor: pointer;-->
+<!--    }-->
+<!--  </style>-->
   <link rel="stylesheet" href="../../static/apply/css/index.css" th:href="@{/apply/css/index.css}">
-  
+  <script>
+    var ctx = '[[@{/}]]';
+  </script>
   <script src="../../static/approve/js/ip.js" th:src="@{/approve/js/ip.js}"></script>
   <script>
-    // var ctx = '[[@{/}]]';
-    /*var ctx = 'http://192.168.30.33:8083/aplanmis-front/';*/
     var itemVerId = '[[${itemVerId}]]';
     if (isDevelop) {
       itemVerId = '95a6016e-79ef-48cf-a280-86f0b292945f';//建筑工程施工许可证核发（鹤山市）
+      itemVerId = 'b5080b8d-9c6e-40dd-a09f-fdcc9630308a';//拥有一张表单
+      itemVerId = '015b5ac9-04b6-4473-829e-1064e58dffd2';//拥有一张表单
     }
   </script>
 </head>
@@ -1843,28 +1845,28 @@
 </div>
 </body>
 
-<!--<th:block th:include="common/common :: commonfooter"/>-->
-<!--<th:block th:include="common/common :: gaopaiyi"/>-->
-<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
-        th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
-<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/polyfill.min.js"
-        th:src="@{/agcloud/framework/js-lib/element-2/polyfill.min.js}"></script>
-<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
-        th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
-<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
-        th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
-<script src="../../static/common/js/axios.min.js" th:src="@{/common/js/axios.min.js}"></script>
-<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
-        th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
-<!--引入图片转pdf文件-->
-<script type="text/javascript" th:src="@{/common/js/pdfmake.js}"></script>
-<script src="../../static/common/js/qwebchannel.js" th:src="@{/common/js/qwebchannel.js}"></script>
-<script src="../../static/common/js/liangtian_gaopaoyi.js" th:src="@{/common/js/liangtian_gaopaoyi.js}"></script>
-<script src="../../static/common/js/fangzheng_gaopaiyi.js" th:src="@{/common/js/fangzheng_gaopaiyi.js}"></script>
-<!--InitializationCompleted 是方正高拍仪控件的事件，表示控件加载完成-->
-<script type="text/javascript" FOR="Capture" EVENT="InitializationCompleted">
-  catchInitFinishedMessage();
-</script>
+<th:block th:include="common/common :: commonfooter"/>
+<th:block th:include="common/common :: gaopaiyi"/>
+<!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"-->
+<!--        th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>-->
+<!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/polyfill.min.js"-->
+<!--        th:src="@{/agcloud/framework/js-lib/element-2/polyfill.min.js}"></script>-->
+<!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"-->
+<!--        th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>-->
+<!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"-->
+<!--        th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>-->
+<!--<script src="../../static/common/js/axios.min.js" th:src="@{/common/js/axios.min.js}"></script>-->
+<!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"-->
+<!--        th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>-->
+<!--&lt;!&ndash;引入图片转pdf文件&ndash;&gt;-->
+<!--<script type="text/javascript" th:src="@{/common/js/pdfmake.js}"></script>-->
+<!--<script src="../../static/common/js/qwebchannel.js" th:src="@{/common/js/qwebchannel.js}"></script>-->
+<!--<script src="../../static/common/js/liangtian_gaopaoyi.js" th:src="@{/common/js/liangtian_gaopaoyi.js}"></script>-->
+<!--<script src="../../static/common/js/fangzheng_gaopaiyi.js" th:src="@{/common/js/fangzheng_gaopaiyi.js}"></script>-->
+<!--&lt;!&ndash;InitializationCompleted 是方正高拍仪控件的事件，表示控件加载完成&ndash;&gt;-->
+<!--<script type="text/javascript" FOR="Capture" EVENT="InitializationCompleted">-->
+<!--  catchInitFinishedMessage();-->
+<!--</script>-->
 
 <script src="../../static/preview/pdfjs/build/pdf.js" th:src="@{/preview/pdfjs/build/pdf.js}"></script>
 <script src="../../static/apply/js/index-single.js" th:src="@{/apply/js/index-single.js}"></script>
