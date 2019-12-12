@@ -494,15 +494,15 @@
                         <template slot-scope="scope">
 
                             <el-tooltip placement="top" effect="light" v-if="scope.row.isSeriesApprove == 1">
-                                <div slot="content">主题名称：{{scope.row.themeName}}<br/> <br/>
-                                    事项名称：【<span :style="'color:' + iteminstStateColorFormat(scope.row.iteminst[0].iteminstState)">{{scope.row.iteminst[0].iteminstState|iteminstStateFormat}}</span>】{{scope.row.stageIteminstName}}</div>
+                                <div slot="content">所属主题：{{scope.row.themeName}}<br/> <br/>
+                                    办理事项：【<span :style="'color:' + iteminstStateColorFormat(scope.row.iteminst[0].iteminstState)">{{scope.row.iteminst[0].iteminstState|iteminstStateFormat}}</span>】{{scope.row.stageIteminstName}}</div>
                                 <div>
                                     <span class=" pro-name" >{{scope.row.stageIteminstName}}</span>
                                 </div>
                             </el-tooltip>
                             <el-tooltip placement="top" effect="light" v-else>
-                                <div slot="content">主题名称：{{scope.row.themeName}} <br/> <br/>
-                                    阶段名称：{{scope.row.stageIteminstName}}<br/> <br/>
+                                <div slot="content">所属主题：{{scope.row.themeName}} <br/> <br/>
+                                    所属阶段：{{scope.row.stageIteminstName}}<br/> <br/>
                                     办理事项:
                                     <template v-for="dto in scope.row.iteminst">
                                         <div style="line-height: 20px;">【<span :style="'color:' + iteminstStateColorFormat(dto.iteminstState)">{{dto.iteminstState|iteminstStateFormat }}</span>】{{ dto.iteminstName }}</div>

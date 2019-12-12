@@ -16,14 +16,14 @@ public interface AeaParStagePartformMapper {
       *
       * @param stagePartform
       */
-     void insertStagePartform(AeaParStagePartform stagePartform) ;
+     void insertStagePartform(AeaParStagePartform stagePartform);
 
      /**
       * 更新
       *
       * @param stagePartform
       */
-     void updateStagePartform(AeaParStagePartform stagePartform) ;
+     void updateStagePartform(AeaParStagePartform stagePartform);
 
      /**
       * 单条获取
@@ -31,14 +31,14 @@ public interface AeaParStagePartformMapper {
       * @param id
       * @return
       */
-     AeaParStagePartform getStagePartformById(@Param("id") String id) ;
+     AeaParStagePartform getStagePartformById(@Param("id") String id);
 
      /**
       * 通过id删除
       *
       * @param id
       */
-     void delStagePartformById(@Param("id") String id) ;
+     void delStagePartformById(@Param("id") String id);
 
      /**
       * 批量删除
@@ -46,7 +46,7 @@ public interface AeaParStagePartformMapper {
       * @param ids
       * @return
       */
-     void batchDelStagePartformByIds(@Param("ids") String[] ids) ;
+     void batchDelStagePartformByIds(@Param("ids") String[] ids);
 
      /**
       * 获取多条
@@ -54,7 +54,7 @@ public interface AeaParStagePartformMapper {
       * @param stagePartform
       * @return
       */
-     List<AeaParStagePartform> listStagePartform(AeaParStagePartform stagePartform) ;
+     List<AeaParStagePartform> listStagePartform(AeaParStagePartform stagePartform);
 
      /**
       * 获取多条
@@ -62,7 +62,7 @@ public interface AeaParStagePartformMapper {
       * @param stagePartform
       * @return
       */
-     List<AeaParStagePartform> listStagePartformRelFormInfo(AeaParStagePartform stagePartform) ;
+     List<AeaParStagePartform> listStagePartformRelFormInfo(AeaParStagePartform stagePartform);
 
      /**
       * 获取最大排序
@@ -78,4 +78,6 @@ public interface AeaParStagePartformMapper {
       * @return
       */
      List<AeaParStagePartform> listPartFormNoSelectForm(AeaParStagePartform stagePartform);
+
+    List<AeaParStagePartform> listAeaParStagePartformsByStageId(@Param("stageId") String stageId);
 }
