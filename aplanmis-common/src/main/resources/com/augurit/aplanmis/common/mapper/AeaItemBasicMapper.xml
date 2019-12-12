@@ -2362,16 +2362,21 @@
 
     <select id="checkUniqueItemCode" resultType="AeaItemBasic">
         select
-        itemBasic.ITEM_ID itemId,
-        itemBasic.ITEM_CODE itemCode
+            itemBasic.ITEM_ID itemId,
+            itemBasic.ITEM_CODE itemCode
         from AEA_ITEM_BASIC itemBasic, AEA_ITEM_VER itemVer
         <where>
+            and itemBasic.ITEM_ID = itemVer.ITEM_ID
             and itemBasic.ITEM_VER_ID = itemVer.ITEM_VER_ID
-            and itemBasic.ROOT_ORG_ID = itemVer.ROOT_ORG_ID
+            and itemBasic.ROOT_ORG_ID = #{rootOrgId}
+            and itemVer.ROOT_ORG_ID = #{rootOrgId}
             and itemVer.IS_DELETED = '0'
+            <if test="itemId!=null and itemId!='' ">
+            and itemBasic.ITEM_ID != #{itemId}
+            </if>
             and itemBasic.ITEM_CODE = #{itemCode}
         </where>
-        GROUP BY itemBasic.ITEM_CODE, itemBasic.ITEM_ID
+        group by itemBasic.ITEM_CODE, itemBasic.ITEM_ID
     </select>
 
     <select id="getAeaItemBasicByItemCode" resultType="AeaItemBasic">

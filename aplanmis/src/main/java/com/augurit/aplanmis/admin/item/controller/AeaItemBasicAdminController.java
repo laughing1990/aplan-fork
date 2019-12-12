@@ -304,6 +304,20 @@ public class AeaItemBasicAdminController {
         return new ContentResultForm<>(true, carryOutItems, "Query carry out items success");
     }
 
+    @ApiOperation(value = "查询编号是否唯一存在", notes = "查询编号是否唯一存在")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "itemId", value = "事项itemId", dataType = "String", paramType = "query"),
+        @ApiImplicitParam(name = "itemCode", value = "事项itemCode", dataType = "String", required = true, paramType = "query"),
+    })
+    @RequestMapping(value = "/checkUniqueItemCode.do", method = {RequestMethod.GET, RequestMethod.POST})
+    public String checkUniqueItemCode(String itemId, String itemCode) {
+
+        if (StringUtils.isBlank(itemCode)) {
+            return "false";
+        }
+        return aeaItemBasicAdminService.checkUniqueItemCode(itemId, itemCode, SecurityContext.getCurrentOrgId()) + "";
+    }
+
     @ApiOperation(value = "查询唯一分类编号是否唯一存在", notes = "查询唯一分类编号是否唯一存在")
     @ApiImplicitParams({
         @ApiImplicitParam(name = "itemId", value = "事项itemId", dataType = "String", paramType = "query"),

@@ -88,6 +88,19 @@ $(function() {
             itemCode: {
                 required: true,
                 maxlength: 50,
+                remote: {
+                    url: ctx + '/aea/item/basic/checkUniqueItemCode.do', //后台处理程序
+                    type: "post",               //数据发送方式
+                    dataType: "json",           //接受数据格式
+                    data: {   //要传递的数据
+                        itemId: function () {
+                            return $("#aedit_item_form input[name='itemId']").val();
+                        },
+                        itemCode: function () {
+                            return $("#aedit_item_form input[name='itemCode']").val();
+                        }
+                    }
+                }
             },
             orgName: {
                 required: true,
@@ -139,6 +152,7 @@ $(function() {
             itemCode: {
                 required: '<font color="red">此项必填！</font>',
                 maxlength: "长度不能超过50个字母!",
+                remote: "编号已存在！",
             },
             orgName: {
                 required: '<font color="red">此项必填！</font>',

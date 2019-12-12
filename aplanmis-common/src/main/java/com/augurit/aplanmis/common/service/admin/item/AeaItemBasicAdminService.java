@@ -90,6 +90,8 @@ public interface AeaItemBasicAdminService {
 
     List<AeaItemBasic> findCarryOutItemsByItemId(String parentItemId, String rootOrgId);
 
+    boolean checkUniqueItemCode(String itemBasicId, String itemCode, String rootOrgId);
+
     boolean checkUniqueItemCategoryMark(String itemId, String isCatalog, String itemCategoryMark, String rootOrgId);
 
     String getItemSeq(String itemId, String parentItemId);
