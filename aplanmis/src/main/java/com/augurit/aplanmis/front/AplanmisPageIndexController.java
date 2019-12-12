@@ -795,4 +795,10 @@ public class AplanmisPageIndexController {
         ModelAndView modelAndView = new ModelAndView("view/queryUploadServiceResultIndex");
         return modelAndView;
     }
+
+    @GetMapping("/apply/draft")
+    @ApiOperation("菜单-我的草稿箱")
+    public ModelAndView applyDraft() {
+        return new ModelAndView("apply/draft");
+    }
 }
