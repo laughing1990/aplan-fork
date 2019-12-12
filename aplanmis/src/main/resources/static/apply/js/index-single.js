@@ -581,6 +581,7 @@ var vm = new Vue({
       themeVerId: '',
       approveOrgId: '',
       isTempSavePage: false,
+      oneformActiveName: '',
     }
   },
   mounted: function () {
@@ -657,29 +658,38 @@ var vm = new Vue({
       this.startSingleApprove();
     },
     // 打开一张表单弹窗
-    openOneFormDialog: function () {
+    openOneFormDialog: function (row) {
+      var vm = this;
+      if (row) {
+        vm.oneformActiveName = row.itemPartformId;
+      } else {
+        vm.oneformActiveName = oneFormInfo[0].itemPartformId;
+      }
       vm.oneFormDialogVisible = true;
-      vm.getOneFormData();
+      // vm.getOneFormData();
     },
     // 得到一张表单信息
     getOneFormData: function () {
       var vm = this;
       request('', {
-        url: ctx + 'rest/oneform/common/getListForm4ItemOneForm',
+        // url: ctx + 'rest/oneform/common/getListForm4ItemOneForm',
+        url: ctx + 'rest/stage/item/part/forms',
         type: 'get',
         data: {
-          applyinstId: vm.applyinstId,
-          projInfoId: vm.projInfoId,
-          itemId: vm.itemVerId,
-          showBasicButton: true,
-          includePlatformResource: false,
+          // applyinstId: vm.applyinstId,
+          // projInfoId: vm.projInfoId,
+          // itemId: vm.itemVerId,
+          // showBasicButton: true,
+          // includePlatformResource: false,
+          itemVerIds: vm.itemVerId,
         },
       }, function (res) {
         if (res.success) {
           res.content.forEach(function (u, index) {
-            if (u.smartForm) {
+            if (u.isSmartForm == '1') {
               getHtml(u, index);
             }
+            u.isFilled = false;
           });
           vm.oneFormInfo = res.content;
         } else {
@@ -1144,7 +1154,7 @@ var vm = new Vue({
         _that.searchProjAllInfo();
         var param = {
           projInfoId: _that.projInfoId,
-          itemVerIds: _that.itemVerId
+          itemVerIds: _that.itemVerId,
         };
         if (_that.itemVerId) {
           request('', { // 判断并行实施事项是否可选
