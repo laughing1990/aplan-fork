@@ -980,7 +980,7 @@
                 <i class="of-state-icon ag" :class="!u.isFilled?'ag-edit-circle-fill':'ag-check-circle-fill'"></i>
                 <div class="one-form-title" :title="u.partformName">{{u.partformName}}</div>
                 <span class="goto-fill-form" v-if="!u.isFilled">去填写</span>
-                <span class="of-fill-tiem" v-if="u.isFilled">{{u.createTime|formatDate}}</span>
+                <span class="of-fill-time" v-if="u.isFilled">{{u.createTime|formatDate}}</span>
               </div>
             </div>
           </el-collapse-item>
