@@ -1188,6 +1188,7 @@
             and aib.ROOT_ORG_ID=#{rootOrgId}
             and aiv.ROOT_ORG_ID=#{rootOrgId}
         </if>
+        ORDER BY aib.ACCEPT_MODE
     </select>
 
     <select id="getAeaItemBasicByItemVerId" resultType="AeaItemBasic">
