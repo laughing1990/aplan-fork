@@ -55,6 +55,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -642,6 +644,45 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
 
         basic.setRootOrgId(SecurityContext.getCurrentOrgId());
         aeaItemBasicMapper.syncItemRegion(basic);
+    }
+
+    @Override
+    public void createItemUnionCode(){
+
+        String rootOrgId = SecurityContext.getCurrentOrgId();
+        AeaItem sitem = new AeaItem();
+        sitem.setRootOrgId(rootOrgId);
+        List<AeaItem> itemList = aeaItemMapper.listAeaItem(sitem);
+        if (itemList != null && itemList.size() > 0) {
+            Set<String> itemIdSet = new HashSet<String>();
+            for (AeaItem item : itemList) {
+                itemIdSet.add(item.getItemId());
+            }
+            String[] itemIds = itemIdSet.toArray(new String[]{});
+            List<AeaItemBasic> itemBasicList = aeaItemBasicMapper.listAeaItemBasicByItemIds(itemIds, rootOrgId);
+            if (itemBasicList != null && itemBasicList.size() > 0) {
+                SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+                String reg = "[0-9]{4}[0-9]{1,2}[0-9]{1,2}[0-9]{1,2}[0-9]{1,2}[0-9]{1,2}[0-9]{1,5}";
+                for (AeaItem item : itemList) {
+                    String dateStr = df.format(new Date());
+                    List<AeaItemBasic> needDelList = new ArrayList<>();
+                    Pattern pattern = Pattern.compile("【"+ reg +"】");
+                    for(AeaItemBasic basic:itemBasicList){
+                        if(item.getItemId().equals(basic.getItemId())){
+                            String itemCode = basic.getItemCode();
+                            Matcher matcher = pattern.matcher(itemCode);
+                            while(matcher.find()){
+                                itemCode = itemCode.replaceAll(matcher.group(),"");
+                            }
+                            basic.setItemCode(itemCode+"【"+ dateStr +"】");
+                            aeaItemBasicMapper.updateAeaItemBasic(basic);
+                            needDelList.add(basic);
+                        }
+                    }
+                    itemBasicList.removeAll(needDelList);
+                }
+            }
+        }
     }
 
     /**

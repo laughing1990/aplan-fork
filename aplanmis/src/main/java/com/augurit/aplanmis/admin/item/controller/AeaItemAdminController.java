@@ -218,6 +218,13 @@ public class AeaItemAdminController {
         return new ResultForm(true);
     }
 
+    @RequestMapping("/createUnionItemCode.do")
+    public ResultForm createItemUnionCode(){
+
+        aeaItemAdminService.createItemUnionCode();
+        return new ResultForm(true);
+    }
+
     /**
      * 事项前置检查--事项检查
      *

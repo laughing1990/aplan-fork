@@ -344,9 +344,9 @@ public class AeaItemVerAdminService {
         AeaItemBasic basic = aeaItemBasicMapper.getAeaItemBasicByItemVerId2(itemVerId, rootOrgId);
         if(basic!=null){
             // 14个字符
-            SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+            SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmssSSS");
             String dateStr = df.format(new Date());
-            String reg = "[0-9]{4}[0-9]{1,2}[0-9]{1,2}[0-9]{1,2}[0-9]{1,2}[0-9]{1,2}";
+            String reg = "[0-9]{4}[0-9]{1,2}[0-9]{1,2}[0-9]{1,2}[0-9]{1,2}[0-9]{1,2}[0-9]{1,5}";
             String itemName = basic.getItemName();
             String itemCode = basic.getItemCode();
             // 事项名称

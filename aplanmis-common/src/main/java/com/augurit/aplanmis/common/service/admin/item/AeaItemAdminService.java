@@ -38,6 +38,8 @@ public interface AeaItemAdminService {
 
     void syncItemRegion(AeaItemBasic basic);
 
+    void createItemUnionCode();
+
     AeaItem getAeaItemById(String id);
 
     //同步开普事项接口
