@@ -4301,6 +4301,7 @@
         theme.THEME_NAME AS themeName,
         aps_123.STAGE_NAME AS stageName,
         NULL AS itemName,
+        NULL as itemVerId,
         '已接件' AS applyState,
         ahap_123.CREATE_TIME AS applyTime,
         ahap_123.APPLYINST_SOURCE applySource
@@ -4321,6 +4322,7 @@
             AND ahap_123.APPLYINST_STATE = '1'
             AND ahap_123.IS_SERIES_APPROVE = '0'
             AND ahap_123.CREATER = #{loginName}
+            AND ahap_123.IS_TEMPORARY_SUBMIT = '1'
             AND art_123.ID_ is not null
             <if test="theme != null and theme != '' ">
                 AND theme.THEME_ID = #{theme}
@@ -4340,6 +4342,7 @@
         NULL AS themeName,
         NULL AS stageName,
         iteminst.ITEMINST_NAME AS itemName,
+        iteminst.item_ver_id as itemVerId,
         '已接件' AS applyState,
         ahap_123.CREATE_TIME AS applyTime,
         ahap_123.APPLYINST_SOURCE applySource
@@ -4359,6 +4362,7 @@
             AND ahap_123.APPLYINST_STATE = '1'
             AND ahap_123.IS_SERIES_APPROVE = '1'
             AND ahap_123.CREATER = #{loginName}
+            AND ahap_123.IS_TEMPORARY_SUBMIT = '1'
             AND art_123.ID_ is not null
             <include refid="baseConditionalQuery">
             </include>

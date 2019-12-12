@@ -796,9 +796,4 @@ public class AplanmisPageIndexController {
         return modelAndView;
     }
 
-    @GetMapping("/apply/draft")
-    @ApiOperation("菜单-我的草稿箱")
-    public ModelAndView applyDraft() {
-        return new ModelAndView("apply/draft");
-    }
 }
