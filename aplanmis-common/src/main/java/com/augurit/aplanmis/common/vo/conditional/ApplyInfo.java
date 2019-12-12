@@ -35,4 +35,7 @@ public class ApplyInfo extends BaseInfo implements Serializable {
     @ApiModelProperty(value = "视图id")
     private String viewId;
 
+    @ApiModelProperty(value = "事项版本id")
+    private String itemVerId;
+
 }
