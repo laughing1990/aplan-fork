@@ -19,7 +19,7 @@ public interface AeaApplyinstForminstMapper {
 
     void deleteAeaApplyinstForminstByForminstIds(@Param("forminstIds") List<String> forminstIds) throws Exception;
 
-    AeaApplyinstForminst getAeaApplyinstForminstByForminstId(@Param("forminstId") String forminstId) throws Exception;
+    AeaApplyinstForminst getAeaApplyinstForminstByForminstIdAndApplyisntId(@Param("forminstId") String forminstId, @Param("applyinstId") String applyinstId) throws Exception;
 
     /**
      * 根据申请实例获取表单实例列表

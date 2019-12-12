@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,4 +36,10 @@ public class ParallelUnstashVo {
     @ApiModelProperty(value = "并联事项与审批部门对应关系")
     private Map<String, String> branchOrg;
 
+    @ApiModelProperty(value = "已填表单列表")
+    private List<ForminstVo> forminstVos;
+
+    public ParallelUnstashVo() {
+        forminstVos = new ArrayList<>();
+    }
 }

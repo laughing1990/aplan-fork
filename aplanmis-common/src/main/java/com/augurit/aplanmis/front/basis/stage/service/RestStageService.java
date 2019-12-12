@@ -139,10 +139,16 @@ public class RestStageService {
         Assert.hasText(aeaApplyinstForminst.getApplyinstId(), "applyinstId is null.");
         Assert.hasText(aeaApplyinstForminst.getForminstId(), "forminstId is null.");
 
-        aeaApplyinstForminst.setApplyinstForminstId(UuidUtil.generateUuid());
-        aeaApplyinstForminst.setCreater(SecurityContext.getCurrentUserId());
-        aeaApplyinstForminst.setCreateTime(new Date());
-
-        aeaApplyinstForminstMapper.insertAeaApplyinstForminst(aeaApplyinstForminst);
+        AeaApplyinstForminst alreadyExists = aeaApplyinstForminstMapper.getAeaApplyinstForminstByForminstIdAndApplyisntId(aeaApplyinstForminst.getForminstId(), aeaApplyinstForminst.getApplyinstId());
+        if (alreadyExists != null) {
+            alreadyExists.setModifier(SecurityContext.getCurrentUserId());
+            alreadyExists.setModifierTime(new Date());
+            aeaApplyinstForminstMapper.updateAeaApplyinstForminst(alreadyExists);
+        } else {
+            aeaApplyinstForminst.setApplyinstForminstId(UuidUtil.generateUuid());
+            aeaApplyinstForminst.setCreater(SecurityContext.getCurrentUserId());
+            aeaApplyinstForminst.setCreateTime(new Date());
+            aeaApplyinstForminstMapper.insertAeaApplyinstForminst(aeaApplyinstForminst);
+        }
     }
 }
