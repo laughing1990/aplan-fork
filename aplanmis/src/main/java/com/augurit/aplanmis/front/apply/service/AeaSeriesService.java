@@ -485,7 +485,7 @@ public class AeaSeriesService {
         Assert.hasText(projInfoId, "projInfoId is null");
 
         AeaHiApplyinst aeaHiApplyinst;
-        AeaHiSeriesinst aeaHiSeriesinst;
+        AeaHiSeriesinst aeaHiSeriesinst = null;
 
         String applyinstId = seriesStashVo.getApplyinstId();
 
@@ -505,7 +505,8 @@ public class AeaSeriesService {
             applyinstId = aeaHiApplyinst.getApplyinstId();
 
             applyCommonService.bindApplyinstProj(projInfoId, applyinstId, SecurityContext.getCurrentUserId());
-
+        }
+        if (aeaHiSeriesinst == null) {
             // 预先生成流程模板实例ID
             String appinstId = UUID.randomUUID().toString();
             String isParallel = StringUtils.isNotBlank(seriesStashVo.getIsParallel()) ? seriesStashVo.getIsParallel() : Status.OFF;
