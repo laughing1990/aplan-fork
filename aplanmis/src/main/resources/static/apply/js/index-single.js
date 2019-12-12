@@ -578,6 +578,9 @@ var vm = new Vue({
       oneFormDialogVisible: false,
       oneFormInputFlag: false, // 一张表单是否填写
       showTempSaveBtn: false,
+      themeVerId: '',
+      approveOrgId: '',
+      isTempSavePage: false,
     }
   },
   mounted: function () {
@@ -603,7 +606,7 @@ var vm = new Vue({
     });
     
     function callback() {
-      --count == 0 &&_that.showTempData();
+      --count == 0 && _that.showTempData();
     }
   },
   watch: {
@@ -619,24 +622,31 @@ var vm = new Vue({
   },
   methods: {
     // 回显
-    showTempData: function(){
+    showTempData: function () {
       var vm = this;
       vm.loading = false;
       var applyinstId = __STATIC.getUrlParam('applyinstId');
-      if (!applyinstId) return null;
+      if (!applyinstId || applyinstId.length == 0) return null;
+      vm.isTempSavePage = true;
+      vm.applyinstId = applyinstId;
       vm.loading = true;
       request('', {
         url: ctx + 'rest/apply/unstash',
         type: 'get',
-        data: { applyinstId: applyinstId },
-      },function(res){
+        data: {applyinstId: applyinstId},
+      }, function (res) {
         vm.loading = false;
-        if (res.success){
-          //
+        if (res.success) {
+          vm.projInfoId = res.content.projInfoId;
+          vm.themeId = res.content.themeId;
+          vm.themeVerId = res.content.themeVerId;
+          vm.stageId = res.content.stageId;
+          vm.approveOrgId = res.content.approveOrgId;
+          vm.beforeCheck();
         } else {
           vm.$message.error(res.message || '获取暂存数据失败');
         }
-      }, function(){
+      }, function () {
         vm.loading = false;
         vm.$message.error('获取暂存数据失败');
       });
@@ -1104,7 +1114,9 @@ var vm = new Vue({
             _that.getStatusStateMats('', '', 'ROOT', '', '', true); // 获取阶段
           }
           _that.$nextTick(function () {
-            _that.showOneFormDialog1()
+            if (!_that.applyinstId || _that.applyinstId.length == 0) {
+              _that.showOneFormDialog1();
+            }
           });
           _that.loading = false;
         } else {

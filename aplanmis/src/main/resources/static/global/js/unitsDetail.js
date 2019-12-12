@@ -181,7 +181,7 @@ var vm = new Vue({
                     target: 'linkman'
                 }
             );
-            this.fetchRowDetail();
+            this.fetchRowDetail(this.unitInfoId);
             this.getLinkManData();
         } else {
             this.isEdit = false;
@@ -417,7 +417,7 @@ var vm = new Vue({
                 url: ctx + 'rest/applicant/getApplicantById',
                 type: 'get',
                 data: {
-                    id: '4bd06452-0e03-438f-b2d8-d798c1e0faf5'
+                    id: id
                 }
             }, function (res) {
                 ts.loading = false;

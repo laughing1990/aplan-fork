@@ -243,13 +243,13 @@ var vm = new Vue({
       var fileType = this.getFileType(fileName);
       var flashAttributes = '';
       _that.filePreviewCount++
-      if (flag == 'pdf') {
+      if (flag == 'pdf'||flag == 'PDF') {
         var tempwindow = window.open(); // 先打开页面
         setTimeout(function () {
           tempwindow.location = ctx + 'cod/drawing/drawingCheck?detailId=' + detailId;
         }, 1000)
       } else {
-        if (fileType == 'pdf') {
+        if (fileType == 'pdf'||flag == 'PDF') {
           var tempwindow = window.open(); // 先打开页面
           setTimeout(function () {
             tempwindow.location = ctx + 'previewPdf/view?detailId=' + detailId;
