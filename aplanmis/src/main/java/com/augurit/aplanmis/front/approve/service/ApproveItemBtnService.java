@@ -146,6 +146,9 @@ public class ApproveItemBtnService {
                 aeaToleranceTimeInst.setTimeruleId(timeruleId);
                 aeaToleranceTimeInst.setOrgId(SecurityContext.getCurrentOrgId());
                 aeaToleranceTimeInst.setIsCompleted("0");
+                aeaToleranceTimeInst.setUseLimitTime(0d);
+                aeaToleranceTimeInst.setOverdueTime(0d);
+                aeaToleranceTimeInst.setRemainingTime(toleranceTime);
                 aeaToleranceTimeInstService.saveAeaToleranceTimeInst(aeaToleranceTimeInst);
                 //创建短信通知联系人
                 aeaToleranceTimeInstService.createToleranceSmsRemindInfo(aeaToleranceTimeInst);
