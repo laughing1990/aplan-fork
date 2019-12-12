@@ -317,16 +317,28 @@
                             </div>
                         </div>
 
-                        <div id="isShareDiv" class="form-group m-form__group row" style="display: none;">
-                            <label class="col-lg-2 col-form-label" style="text-align: right;">是否共享:</label>
+                        <div class="form-group m-form__group row" >
+                            <label class="col-lg-2 col-form-label" style="text-align: right;">是否绿色通道:</label>
                             <div class="col-lg-4">
-                                <select type="text" class="form-control" name="isShare" value="">
+                                <select type="text" class="form-control" name="isGreenWay" value="">
                                     <option value="0">否</option>
                                     <option value="1">是</option>
                                 </select>
                             </div>
+
                             <div class="col-lg-6"></div>
                         </div>
+
+                        <%--<div id="isShareDiv" class="form-group m-form__group row" style="display: none;">--%>
+                            <%--<label class="col-lg-2 col-form-label" style="text-align: right;">是否共享:</label>--%>
+                            <%--<div class="col-lg-4">--%>
+                                <%--<select type="text" class="form-control" name="isShare" value="">--%>
+                                    <%--<option value="0">否</option>--%>
+                                    <%--<option value="1">是</option>--%>
+                                <%--</select>--%>
+                            <%--</div>--%>
+                            <%--<div class="col-lg-6"></div>--%>
+                        <%--</div>--%>
 
                         <div class="form-group m-form__group row" >
                             <label class="col-lg-2 col-form-label" style="text-align: right;">办理结果送达方式:</label>
