@@ -1216,7 +1216,7 @@ var module1 = new Vue({
     },
     // 判断文件类型是否存在规定的类型里
     isSpecifiedFileType: function (fileName) {
-      var fileTypes = [".jpg", ".png", ".rar", ".txt", ".zip", ".doc", ".ppt", ".xls", ".pdf", ".docx", ".xlsx"];
+      var fileTypes = [".jpg", ".png", ".rar", ".txt", ".zip", ".doc", ".ppt", ".xls", ".pdf", ".docx", ".xlsx",".dwg"];
       var getFileType = fileName.substring(fileName.lastIndexOf(".")).toLowerCase();
       if (fileTypes.indexOf(getFileType) > -1) {
         return true;
