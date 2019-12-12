@@ -268,7 +268,7 @@ var vm = new Vue({
         endTime: [
           { required: true,message: '请选择拟建成时间！', trigger: ['change'] },
         ],
-        foreignRemark: [
+        scaleContent: [
           { required: true,message: '请输入建设规模及内容！', trigger: ['change'] },
         ],
         xmYdmj: [
@@ -278,7 +278,7 @@ var vm = new Vue({
         xzydmj: [
           {validator:checkNumFloat, trigger: ['blur'] },
         ],
-        foreignBuildingArea: [
+        buildAreaSum: [
           {validator:checkNumFloat, trigger: ['blur'] },
           { required: true,message: '请填写建筑面积！', trigger: ['change'] }
         ],
