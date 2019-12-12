@@ -376,10 +376,11 @@ public class RestApplyProjController {
             @ApiImplicitParam(value = "项目名称", name = "projName", required = false, dataType = "string"),
             @ApiImplicitParam(value = "项目ID", name = "projInfoId", required = false, dataType = "string"),
             @ApiImplicitParam(value = "地方编码", name = "localCode", required = false, dataType = "string"),
-            @ApiImplicitParam(value = "项目ID", name = "projInfoId", required = false, dataType = "string")})
-    public ResultForm getChildProject(String projName, String projInfoId, String localCode, String gcbm) throws Exception {
+            @ApiImplicitParam(value = "项目ID", name = "projInfoId", required = false, dataType = "string"),
+            @ApiImplicitParam(value = "1:工程规划阶段，2：施工许可阶段", name = "stageFlag", required = false, dataType = "string")})
+    public ResultForm getChildProject(String projName, String projInfoId, String localCode, String gcbm,String stageFlag) throws Exception {
         try {
-            AeaProjInfo aeaProjInfo = aeaProjInfoService.getChildProject(projName, projInfoId, localCode, gcbm);
+            AeaProjInfo aeaProjInfo = aeaProjInfoService.getChildProject(projName, projInfoId, localCode, gcbm,stageFlag);
             return new ContentResultForm<AeaProjInfo>(true, aeaProjInfo);
         } catch (Exception e) {
             return new ResultForm(false, "无法分离子项目");

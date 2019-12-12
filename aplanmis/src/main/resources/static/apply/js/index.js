@@ -3515,7 +3515,6 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
       for(var i=0;i<stateSelLen;i++){  // 并联情形id集合
         if(stateSel[i].selectAnswerId==null||stateSel[i].selectAnswerId==''){
           if(selItemVer.length>0&&stateSel[i].mustAnswer==1){
-            _that.stateIds=[];
             if(_that.submitCommentsType!='4'){
               alertMsg('', '请选择情形', '关闭', 'error', true);
               return true;
@@ -3523,9 +3522,13 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
           }
         }else {
           if(typeof(stateSel[i].selectAnswerId)=='object'&&stateSel[i].selectAnswerId.length>0){
-            _that.stateIds = _that.stateIds.concat(stateSel[i].selectAnswerId);
+            if(_that.stateIds.indexOf(stateSel[i].selectAnswerId)<0){
+              _that.stateIds = _that.stateIds.concat(stateSel[i].selectAnswerId);
+            }
           }else if(stateSel[i].selectAnswerId !== '') {
-            _that.stateIds.push(stateSel[i].selectAnswerId);
+            if(_that.stateIds.indexOf(stateSel[i].selectAnswerId)<0){
+              _that.stateIds.push(stateSel[i].selectAnswerId);
+            }
           }
         }
       }
@@ -3556,10 +3559,12 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
           if(coreItemSelIds.indexOf(selCoreItems[j].implementItemVerId)<0){
             coreItemSelIds.push(selCoreItems[j].implementItemVerId);
           }
-          _that.propulsionItemStateIds.push({
-            "itemVerId": selCoreItems[j].implementItemVerId,
-            "stateIds": stateIds
-          });
+          if(stateIds&&stateIds.length>0){
+            _that.propulsionItemStateIds.push({
+              "itemVerId": selCoreItems[j].implementItemVerId,
+              "stateIds": stateIds
+            });
+          }
         }
       }
       if(coreItemSelIds.length>0){
@@ -3589,10 +3594,12 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
                 }
               }
             }
-            _that.parallelItemStateIds.push({
-              "itemVerId": selItemVer[ind].implementItemVerId,
-              "stateIds": stateIds
-            });
+            if(stateIds&&stateIds.length>0){
+              _that.parallelItemStateIds.push({
+                "itemVerId": selItemVer[ind].implementItemVerId,
+                "stateIds": stateIds
+              });
+            }
           }
         }
       }else {
@@ -4011,7 +4018,7 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
         parallelItemStateIds: _that.parallelItemStateIds,
         buildProjUnitMap: buildProjUnitMap,
         isJustApplyinst: _that.IsJustApplyinst,
-      }
+      };
       _that.progressDialogVisible = true;
       _that.submitCommentsFlag = false;
       var succMsg = '发起申报成功';
@@ -4942,7 +4949,7 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
           _that.model.matsTableData=_that.unique(_that.model.matsTableData.concat(stateMats),'mats'); // 合并去重材料
         }else {
           _that.$message({
-            message: '并联事项材料失败！',
+            message: result.message?result.message:'并联事项材料失败！',
             type: 'error'
           });
         }
@@ -5128,6 +5135,11 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
           var coreItemsMats = [];
           if(checkFlag==true){
             data.content.questionStates.map(function(item,ind){ // 情形下插入对应的情形
+              if(typeof item.itemShowFlag == "undefined"){
+                Vue.set(item, 'itemShowFlag', true);
+              }else {
+                item.itemShowFlag = true;
+              }
               if(item.answerType!='s'&&item.answerType!='y'){
                 if(typeof item.selValue == "undefined"){
                   Vue.set(item, 'selValue', []);
@@ -5136,6 +5148,17 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
                 }
 
                 item.selectAnswerId=item.selValue;
+              }
+              if(flag!=='coreItem'&&item.answerStates.length>0){
+                var itemShowFlag = 0;
+                item.answerStates.map(function (itemAnswer) {
+                  if(itemAnswer.isProcStartCond==1){
+                    itemShowFlag++
+                  }
+                });
+                if(itemShowFlag==item.answerStates.length){
+                  item.itemShowFlag = false;
+                }
               }
               cStateList.splice((indexQues+1+ind),0,item);
             });
@@ -5179,6 +5202,11 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
               }
             }
             data.content.questionStates.map(function (item, ind) { // 情形下插入对应的情形
+              if(typeof item.itemShowFlag == "undefined"){
+                Vue.set(item, 'itemShowFlag', true);
+              }else {
+                item.itemShowFlag = true;
+              }
               if (item.answerType != 's' && item.answerType != 'y') {
                 if(typeof item.selValue == "undefined"){
                   Vue.set(item, 'selValue', []);
@@ -5186,6 +5214,17 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
                   item.selValue = [];
                 }
                 item.selectAnswerId=item.selValue;
+              }
+              if(flag!=='coreItem'&&item.answerStates.length>0){
+                var itemShowFlag = 0;
+                item.answerStates.map(function (itemAnswer) {
+                  if(itemAnswer.isProcStartCond==1){
+                    itemShowFlag++
+                  }
+                });
+                if(itemShowFlag==item.answerStates.length){
+                  item.itemShowFlag = false;
+                }
               }
               cStateList.splice((indexQues + 1 + ind), 0, item);
             });
@@ -5343,7 +5382,7 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
       var _that = this;
       _that.uploadPercentage=0;
       var interval = setInterval(function(){
-        _that.uploadPercentage += 3;
+        _that.uploadPercentage+=3;
         if(_that.uploadPercentage >= 96 || _that.progressIntervalStop == true){
           clearInterval(interval);
         }
