@@ -19,14 +19,14 @@
   </div>
   <el-form class="search-proj-info" label-width="115px">
     <el-form-item label="项目/工程查询" id="projCodeInfo">
-      <el-select v-model="searchKeyword" filterable remote autofocus reserve-keyword ref="searchProjInfo"
+      <el-select v-model="searchKeyword" :disabled="isDraftsProj" filterable remote autofocus reserve-keyword ref="searchProjInfo"
                  no-data-text="暂无匹配的项目/工程" placeholder="请输入项目（工程）的编码 / 名称" :remote-method="searchProjInfoByKeyword"
                  :loading="loadingProjInfo">
         <el-option v-for="item in projInfoList" :key="item.projInfoId" @click.native="projNameSel(item)"
                    :label="item.projName+' （'+item.localCode+'）'" :value="item.projInfoId">
         </el-option>
       </el-select>
-      <el-button type="primary" icon="icon ag ag-search" @click="linkQuery()">联网查询</el-button>
+      <el-button type="primary" :disabled="isDraftsProj" icon="icon ag ag-search" @click="linkQuery()">联网查询</el-button>
     </el-form-item>
 
     </el-form>
@@ -243,7 +243,7 @@
               </el-form-item>
               <el-form-item class="input-inline" label="国标行业代码发布年代" prop="gbCodeYear">
                   <el-input disabled v-model="projBascInfoShow.gbCodeYear" placeholder="请输入国标行业代码发布年代"></el-input>
-              </el-form-item> 
+              </el-form-item>
             </div>
 
             <el-form-item prop="scaleContent">
@@ -1374,6 +1374,7 @@
         <el-button type="danger" :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('3')">不予<br />受理</el-button>
         <el-button circle :disabled="!stageFrontCheckFlag" @click="showCommentDialog('5')">材料<br />补全</el-button>
         <el-button circle :disabled="!stageFrontCheckFlag" @click="showCommentDialog('1')">打印<br />回执</el-button>
+        <!--<el-button :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('4','stash')">暂存</el-button>-->
         <el-button type="primary" :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('0')">发起<br />申报</el-button>
       </div>
       <!--项目树窗口 start-->
