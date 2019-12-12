@@ -69,13 +69,13 @@
                     </td>
                     <td class="al" width="15%">
                         <el-tooltip placement="top" effect="light" v-if="item.isSeriesApprove == '单项'">
-                            <div slot="content">主题名称：{{item.themeName}}<br/> <br/> 事项名称：{{item.iteminstName}}</div>
+                            <div slot="content">所属主题：{{item.themeName}}<br/> <br/> 办理事项：{{item.iteminstName}}</div>
                             <div>
                                 <span class="ellipsis pro-name" >{{item.iteminstName}}</span>
                             </div>
                         </el-tooltip>
                         <el-tooltip placement="top" effect="light" v-else>
-                            <div slot="content">主题名称：{{item.themeName}} <br/> <br/> 阶段名称：{{item.stageName}}</div>
+                            <div slot="content">所属主题：{{item.themeName}} <br/> <br/> 所属阶段：{{item.stageName}}</div>
                             <div class="stageIteminstName-bg">
                                 <span class="ellipsis pro-name" >{{item.stageName}}</span>
                             </div>
