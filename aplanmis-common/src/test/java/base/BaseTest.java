@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
@@ -29,6 +31,8 @@ public class BaseTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
+    protected MockMvc mockMvc;
+
     @BeforeEach
     public void setup() {
         OpusLoginUser user = new OpusLoginUser();
@@ -41,6 +45,8 @@ public class BaseTest {
 
         user.setUser(loginUser);
         SecurityContext.setCurrentLoginUser(user, 6000);
+
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
 }

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaApplyinstForminstMapper">
+    <sql id="aliasColumns">
+        ${alias}.applyinst_forminst_id  applyinstForminstId,
+        ${alias}.applyinst_id  applyinstId,
+        ${alias}.forminst_id  forminstId,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifierTime
+    </sql>
+
+    <insert id="insertAeaApplyinstForminst" parameterType="com.augurit.aplanmis.common.domain.AeaApplyinstForminst">
+        insert into aea_applyinst_forminst (applyinst_forminst_id, applyinst_id, forminst_id, CREATER, CREATE_TIME, MODIFIER, MODIFY_TIME)
+        values (#{applyinstForminstId}, #{applyinstId}, #{forminstId}, #{creater}, #{createTime}, #{modifier}, #{modifierTime})
+    </insert>
+
+    <update id="updateAeaApplyinstForminst" parameterType="com.augurit.aplanmis.common.domain.AeaApplyinstForminst">
+        update aea_applyinst_forminst
+        <set>
+            <if test="applyinstId != null">
+                applyinst_id = #{applyinstId},
+            </if>
+            <if test="forminstId != null">
+                forminst_id = #{forminstId},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifierTime != null">
+                MODIFY_TIME = #{modifierTime},
+            </if>
+        </set>
+        where applyinst_forminst_id = #{applyinstForminstId}
+    </update>
+
+    <delete id="deleteAeaApplyinstForminstByApplyinstId">
+        delete from aea_applyinst_forminst where  applyinst_id=#{applyinstId}
+    </delete>
+
+    <delete id="deleteAeaApplyinstForminstByForminstIds">
+        delete from aea_applyinst_forminst where forminst_id in
+        <foreach collection="forminstIds" close=")" open="(" separator="," item="forminstId">
+            #{forminstId}
+        </foreach>
+    </delete>
+
+    <select id="getAeaApplyinstForminstByForminstId"
+            resultType="com.augurit.aplanmis.common.domain.AeaApplyinstForminst">
+        select
+        <include refid="aliasColumns"></include>
+    </select>
+
+    <select id="listAeaApplyinstForminstByApplyinstId"
+            resultType="com.augurit.aplanmis.common.domain.AeaApplyinstForminst">
+
+    </select>
+
+</mapper>

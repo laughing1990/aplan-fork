@@ -255,5 +255,19 @@
         <result property="creater" column="CREATER"/>
         <result property="createTime" column="CREATE_TIME"/>
     </resultMap>
-    
+
+    <select id="listAeaParStagePartformsByStageId"
+            resultType="com.augurit.aplanmis.common.domain.AeaParStagePartform">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="partform"/>
+        </include>
+        , asf.FORM_NAME formName, asf.FORM_CODE formCode, asf.FORM_PROPERTY formProperty,
+        asf.FORM_ORG_ID formOrgId, asf.FORM_TMN_ID formTmnId, asf.CATEGORY_ID categoryId, asf.IS_INNER_FORM isInnerForm
+        from AEA_PAR_STAGE_PARTFORM partform
+        join act_sto_form asf on partform.STO_FORM_ID=asf.FORM_ID
+        where partform.STAGE_ID = #{stageId}
+        and asf.IS_DELETED = '0'
+    </select>
+
 </mapper>

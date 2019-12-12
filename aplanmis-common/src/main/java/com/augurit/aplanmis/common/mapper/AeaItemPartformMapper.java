@@ -29,4 +29,5 @@ public interface AeaItemPartformMapper {
 
     List<AeaItemPartform> listItemPartFormNoSelectForm(AeaItemPartform itemPartform);
 
+    List<AeaItemPartform> listAeaItemPartformsByItemVerIds(@Param("itemVerIds") List<String> itemVerIds);
 }
