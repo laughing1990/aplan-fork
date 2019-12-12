@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-07-04 17:12:22 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImApplyinstUnitBiddingMapper">
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="alias_columns">
+        ${alias}.APPLYINST_UNIT_BIDDING_ID  applyinstUnitBiddingId,
+        ${alias}.UNIT_BIDDING_ID  unitBiddingId,
+        ${alias}.APPLYINST_ID  applyinstId,
+        ${alias}.IS_DELETE  isDelete,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getOneById" resultType="AeaImApplyinstUnitBidding">
+        select
+        <include refid="alias_columns">
+            <property name="alias" value="aiaub"/>
+        </include>
+        from AEA_IM_APPLYINST_UNIT_BIDDING aiaub
+        where aiaub.APPLYINST_UNIT_BIDDING_ID = #{applyinstUnitBiddingId} and (aiaub.IS_DELETE='0' or aiaub.IS_DELETE is
+        null)
+    </select>
+
+    <select id="getOneByApplyinstIdOrBiddingId" resultType="AeaImApplyinstUnitBidding">
+        select
+        <include refid="alias_columns">
+            <property name="alias" value="aiaub"/>
+        </include>
+        from AEA_IM_APPLYINST_UNIT_BIDDING aiaub
+        <where>
+            (aiaub.IS_DELETE='0' or aiaub.IS_DELETE is null)
+            <if test="applyinstId!=null">
+                and aiaub.APPLYINST_ID=#{applyinstId}
+            </if>
+            <if test="unitBiddingId!=null">
+                and aiaub.UNIT_BIDDING_ID=#{unitBiddingId}
+            </if>
+        </where>
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertOne" parameterType="AeaImApplyinstUnitBidding">
+        insert into AEA_IM_APPLYINST_UNIT_BIDDING (
+            APPLYINST_UNIT_BIDDING_ID, APPLYINST_ID, UNIT_BIDDING_ID, IS_DELETE,  CREATER, CREATE_TIME, MODIFIER, MODIFY_TIME
+        )  values  (
+            #{applyinstUnitBiddingId}, #{applyinstId}, #{unitBiddingId}, #{isDelete, jdbcType=VARCHAR}, #{creater}, #{createTime}, #{modifier}, #{modifyTime}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaImApplyinstUnitBidding" parameterType="AeaImApplyinstUnitBidding">
+        update AEA_IM_APPLYINST_UNIT_BIDDING
+        <set>
+            <if test="applyinstId != null and applyinstId!='' ">
+                APPLYINST_ID = #{applyinstId},
+            </if>
+            <if test="unitBiddingId != null and unitBiddingId!='' ">
+                UNIT_BIDDING_ID = #{unitBiddingId},
+            </if>
+            <if test="isDelete != null">
+                IS_DELETE = #{isDelete, jdbcType=VARCHAR},
+            </if>
+            <if test="creater != null and creater!='' ">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null and modifier!='' ">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+        </set>
+        where APPLYINST_UNIT_BIDDING_ID = #{applyinstUnitBiddingId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <update id="deleteOneById" parameterType="java.lang.String">
+        update AEA_IM_APPLYINST_UNIT_BIDDING set IS_DELETE = '1' where APPLYINST_UNIT_BIDDING_ID = #{id}
+    </update>
+
+</mapper>

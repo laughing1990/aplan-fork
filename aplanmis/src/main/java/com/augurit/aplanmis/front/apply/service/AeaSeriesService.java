@@ -16,6 +16,7 @@ import com.augurit.aplanmis.common.constants.ApplySource;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.constants.ApplyType;
 import com.augurit.aplanmis.common.constants.ItemStatus;
+import com.augurit.aplanmis.common.domain.AeaApplyinstForminst;
 import com.augurit.aplanmis.common.domain.AeaApplyinstProj;
 import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import com.augurit.aplanmis.common.domain.AeaHiItemStateinst;
@@ -26,6 +27,7 @@ import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
 import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
 import com.augurit.aplanmis.common.domain.AeaParStage;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.common.mapper.AeaApplyinstForminstMapper;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemStateinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
@@ -45,6 +47,7 @@ import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowService;
 import com.augurit.aplanmis.front.apply.vo.ApplyInstantiateResult;
 import com.augurit.aplanmis.front.apply.vo.BuildProjUnitVo;
+import com.augurit.aplanmis.front.apply.vo.ForminstVo;
 import com.augurit.aplanmis.front.apply.vo.SeriesApplyDataVo;
 import com.augurit.aplanmis.front.apply.vo.SeriesUnstashVo;
 import com.augurit.aplanmis.front.apply.vo.StashVo;
@@ -114,6 +117,8 @@ public class AeaSeriesService {
     private AeaParStageMapper aeaParStageMapper;
     @Autowired
     private AeaHiItemStateinstMapper aeaHiItemStateinstMapper;
+    @Autowired
+    private AeaApplyinstForminstMapper aeaApplyinstForminstMapper;
 
     /**
      * 保存实例、启动流程（停留在收件节点）
@@ -556,6 +561,9 @@ public class AeaSeriesService {
         seriesUnstashVo.setStateIds(aeaHiItemStateinstMapper.listAeaHiItemStateinstByApplyinstIdOrSeriesinstId(applyinstId, null)
                 .stream().map(AeaHiItemStateinst::getExecStateId).collect(Collectors.toSet()));
 
+        List<AeaApplyinstForminst> aeaApplyinstForminsts = aeaApplyinstForminstMapper.listAeaApplyinstForminstByApplyinstId(applyinstId);
+        seriesUnstashVo.getForminstVos().addAll(aeaApplyinstForminsts.stream()
+                .map(ForminstVo::from).collect(Collectors.toList()));
         return seriesUnstashVo;
     }
 }

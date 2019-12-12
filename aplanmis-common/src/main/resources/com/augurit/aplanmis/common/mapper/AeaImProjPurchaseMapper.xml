@@ -1129,6 +1129,7 @@ HIGHEST_RATE,QUOTE_TYPE,ROOT_ORG_ID,APPLYINST_ID
         pinfo.PROJ_SCALE_CONTENT projScaleContent,
         bid.BIDDING_TIME biddingTime,
         aim.SERVICE_NAME serviceName,
+        aim.SERVICE_ID serviceId,
         (
             SELECT MAX(aibp.PRICE) FROM aea_im_bidding_price aibp
             WHERE aibp.IS_DELETE = '0' AND aibp.IS_CHOICE = '1'

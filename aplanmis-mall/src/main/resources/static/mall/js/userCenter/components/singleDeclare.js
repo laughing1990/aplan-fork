@@ -2436,13 +2436,13 @@ var module1 = new Vue({
       var fileType = this.getFileType(fileName);
       var flashAttributes = '';
       _that.filePreviewCount++
-      if (flag == 'pdf') {
+      if (flag == 'pdf'||flag == 'PDF') {
         var tempwindow = window.open(); // 先打开页面
         setTimeout(function () {
           tempwindow.location = ctx + 'cod/drawing/drawingCheck?detailId=' + detailId;
         }, 1000)
       } else {
-        if (fileType == 'pdf') {
+        if (fileType == 'pdf'||flag == 'PDF') {
           var tempwindow = window.open(); // 先打开页面
           setTimeout(function () {
             tempwindow.location = ctx + 'previewPdf/view?detailId=' + detailId;
@@ -2604,7 +2604,7 @@ var module1 = new Vue({
     },
     // 判断文件类型是否存在规定的类型里
     isSpecifiedFileType: function (fileName) {
-      var fileTypes = [".jpg", ".png", ".rar", ".txt", ".zip", ".doc", ".ppt", ".xls", ".pdf", ".docx", ".xlsx"];
+      var fileTypes = [".jpg", ".png", ".rar", ".txt", ".zip", ".doc", ".ppt", ".xls", ".pdf", ".docx", ".xlsx",".dwg"];
       var getFileType = fileName.substring(fileName.lastIndexOf(".")).toLowerCase();
       if (fileTypes.indexOf(getFileType) > -1) {
         return true;

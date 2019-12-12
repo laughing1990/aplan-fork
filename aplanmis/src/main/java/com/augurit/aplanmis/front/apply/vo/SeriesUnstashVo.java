@@ -5,6 +5,9 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @ApiModel("单项回显vo")
@@ -30,4 +33,11 @@ public class SeriesUnstashVo {
     @ApiModelProperty(value = "情形id")
     private Set<String> stateIds;
 
+    @ApiModelProperty(value = "已填表单列表")
+    private List<ForminstVo> forminstVos;
+
+    public SeriesUnstashVo() {
+        forminstVos = new ArrayList<>();
+        stateIds = new HashSet<>();
+    }
 }
