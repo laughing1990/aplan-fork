@@ -11,6 +11,8 @@
         ${alias}.PK_NAME  pkName,
         ${alias}.RECORD_ID  recordId,
         ${alias}.LEGAL_CLAUSE_ID  legalClauseId,
+        ${alias}.CREATER creater,
+        ${alias}.CREATE_TIME createTime,
         ${alias}.ROOT_ORG_ID  rootOrgId
     </sql>
 
@@ -51,8 +53,7 @@
         select
         <include refid="allColumns">
             <property name="alias" value="aisb"/>
-        </include>
-        ,
+        </include> ,
         asl.LEGAL_NAME legalName,
         asl.LEGAL_LEVEL legalLevel,
         asl.BASIC_NO basicNo,
@@ -137,9 +138,28 @@
 
     <!--5 新增实体对象 -->
     <insert id="insertAeaItemServiceBasic" parameterType="AeaItemServiceBasic">
-        insert into AEA_ITEM_SERVICE_BASIC (BASIC_ID, TABLE_NAME, PK_NAME, RECORD_ID, LEGAL_CLAUSE_ID, CREATER,
-                                            CREATE_TIME, ROOT_ORG_ID)
-        values (#{basicId}, #{tableName}, #{pkName}, #{recordId}, #{legalClauseId}, #{creater}, #{createTime},#{rootOrgId})
+        insert into AEA_ITEM_SERVICE_BASIC
+        (
+            BASIC_ID,
+            TABLE_NAME,
+            PK_NAME,
+            RECORD_ID,
+            LEGAL_CLAUSE_ID,
+            CREATER,
+            CREATE_TIME,
+            ROOT_ORG_ID
+       )
+        values
+        (
+            #{basicId},
+            #{tableName},
+            #{pkName},
+            #{recordId},
+            #{legalClauseId},
+            #{creater},
+            #{createTime},
+            #{rootOrgId}
+        )
     </insert>
     <!--6 修改实体对象 -->
     <update id="updateAeaItemServiceBasic" parameterType="AeaItemServiceBasic">
@@ -172,14 +192,14 @@
         </set>
         where BASIC_ID = #{basicId}
     </update>
+
     <!--7 删除实体对象,根据主键ID -->
     <delete id="deleteAeaItemServiceBasic">
         delete
         from AEA_ITEM_SERVICE_BASIC
         where BASIC_ID = #{id}
     </delete>
-    <!--8 删除实体对象列表,根据主键ID列表 -->
-    <!--9 返回所有字段的对象map,用于级联 -->
+
     <resultMap type="AeaItemServiceBasic" id="AeaItemServiceBasicMap">
         <id property="basicId" column="BASIC_ID"/>
         <result property="tableName" column="TABLE_NAME"/>
