@@ -19,6 +19,8 @@ import com.augurit.aplanmis.mall.cert.vo.AeaCertVo;
 import com.augurit.aplanmis.mall.cert.vo.AeaCertinstDetailResultVo;
 import com.augurit.aplanmis.mall.cert.vo.AeaCertinstParamVo;
 import com.augurit.aplanmis.mall.cert.vo.BindForminstVo;
+import com.augurit.aplanmis.mall.cloud.service.CloudService;
+import com.augurit.aplanmis.mall.userCenter.vo.MatUploadVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import io.jsonwebtoken.lang.Assert;
@@ -58,6 +60,8 @@ public class AeaCertMallController {
     private AeaCertTypeMapper aeaCertTypeMapper;
     @Autowired
     private AeaUnitInfoService aeaUnitInfoService;
+    @Autowired
+    private CloudService cloudService;
 
     @ApiOperation(value = "通过查询条件获取电子证照库数据", notes = "通过查询条件获取电子证照库数据")
     @ApiImplicitParams({
@@ -250,6 +254,15 @@ public class AeaCertMallController {
     }
 
     //约定电子证照文件夹不可编辑，文件夹编号为cert_code_用户ID  文件夹名为 本地电子证照
-
-
+    @PostMapping("/uploadCertFile")
+    @ApiOperation("电子证照文件上传")
+    public ResultForm uploadFile(HttpServletRequest request) {
+        try {
+            //if (!restFileService.isAllowFileType(request))return new ResultForm(false, "不允许上传的文件类型");
+            return new ContentResultForm(true,cloudService.uploadCertFile(request),"upload success!");
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ResultForm(false);
+        }
+    }
 }
