@@ -803,7 +803,8 @@
             temp_123.instState,
             temp_123.timeruleUnit,
             temp_123.signState,
-            temp_123.itemNature
+            temp_123.itemNature,
+            temp_123.isGreenWay
         FROM
         (
         SELECT
@@ -833,7 +834,8 @@
             ART_123.instState,
             ART_123.timeruleUnit,
             ART_123.signState,
-            ART_123.itemNature
+            ART_123.itemNature,
+            ART_123.isGreenWay
         FROM
         (
         (
@@ -864,7 +866,8 @@
         ti.INST_STATE AS instState,
         ti.TIMERULE_UNIT AS timeruleUnit,
         art_123.SIGN_STATE_ AS signState,
-        '0' as itemNature
+        '0' as itemNature,
+        NULL AS isGreenWay
         FROM
         ACT_RU_TASK art_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -917,7 +920,8 @@
         ti.INST_STATE AS instState,
         ti.TIMERULE_UNIT AS timeruleUnit,
         art_123.SIGN_STATE_ AS signState,
-        '0' as itemNature
+        '0' as itemNature,
+        ai_123.IS_GREEN_WAY AS isGreenWay
         FROM
         ACT_RU_TASK art_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -982,7 +986,8 @@
         ti.INST_STATE AS instState,
         ti.TIMERULE_UNIT AS timeruleUnit,
         art_123.SIGN_STATE_ AS signState,
-        '0' as itemNature
+        '0' as itemNature,
+        NULL AS isGreenWay
         FROM
         ACT_RU_TASK art_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -1036,7 +1041,8 @@
         ti.INST_STATE AS instState,
         ti.TIMERULE_UNIT AS timeruleUnit,
         art_123.SIGN_STATE_ AS signState,
-        ai_123.ITEM_NATURE AS itemNature
+        ai_123.ITEM_NATURE AS itemNature,
+        ai_123.IS_GREEN_WAY AS isGreenWay
         FROM
         ACT_RU_TASK art_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -1094,7 +1100,8 @@
         ti.INST_STATE AS instState,
         ti.TIMERULE_UNIT AS timeruleUnit,
         art_123.SIGN_STATE_ AS signState,
-        ai_123.ITEM_NATURE AS itemNature
+        ai_123.ITEM_NATURE AS itemNature,
+        ai_123.IS_GREEN_WAY AS isGreenWay
         FROM
         ACT_RU_TASK art_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -1144,7 +1151,8 @@
             ART_123.remainingTime,
             ART_123.instState,
             ART_123.timeruleUnit,
-            ART_123.signState
+            ART_123.signState,
+            ART_123.isGreenWay
         </if>
         <if test="_databaseId == 'mysql'">
             ART_123.taskId
@@ -1201,7 +1209,8 @@
         CASE when hi.ITEMINST_NAME IS NULL THEN ati.TIMERULE_UNIT else ti.TIMERULE_UNIT end AS timeruleUnit,
         aht_123.TASK_DEF_KEY_ AS taskDefKey,
         ahp_123.ID_ procInstId,
-        '0' as itemNature
+        '0' as itemNature,
+        ai_123.IS_GREEN_WAY AS isGreenWay
         FROM
         ACT_HI_TASKINST aht_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON aht_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -1260,7 +1269,8 @@
         CASE when hi.ITEMINST_NAME IS NULL THEN ati.TIMERULE_UNIT else ti.TIMERULE_UNIT end AS timeruleUnit,
         aht_123.TASK_DEF_KEY_ AS taskDefKey,
         ahp_123.ID_ procInstId,
-        '0' as itemNature
+        '0' as itemNature,
+        ai_123.IS_GREEN_WAY AS isGreenWay
         FROM
         ACT_HI_TASKINST aht_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON aht_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -1320,7 +1330,8 @@
         ti.TIMERULE_UNIT AS timeruleUnit,
         aht_123.TASK_DEF_KEY_ AS taskDefKey,
         ahp_123.ID_ procInstId,
-        ai_123.ITEM_NATURE as itemNature
+        ai_123.ITEM_NATURE as itemNature,
+        ai_123.IS_GREEN_WAY AS isGreenWay
         FROM
         ACT_HI_TASKINST aht_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON aht_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -1369,7 +1380,8 @@
         ti.TIMERULE_UNIT AS timeruleUnit,
         aht_123.TASK_DEF_KEY_ AS taskDefKey,
         ahp_123.ID_ procInstId,
-        ai_123.ITEM_NATURE as itemNature
+        ai_123.ITEM_NATURE as itemNature,
+        ai_123.IS_GREEN_WAY AS isGreenWay
         FROM
         ACT_HI_TASKINST aht_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON aht_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -1419,7 +1431,8 @@
             temp.instState,
             temp.timeruleUnit,
             temp.taskDefKey,
-            temp.procInstId
+            temp.procInstId,
+            temp.isGreenWay
         </if>
         <if test="_databaseId == 'mysql'">
             temp.taskId
@@ -1473,7 +1486,8 @@
         ti.REMAINING_TIME AS remainingTime,
         ti.INST_STATE AS instState,
         ti.TIMERULE_UNIT AS timeruleUnit,
-        ti.USE_LIMIT_TIME AS useLimitTime
+        ti.USE_LIMIT_TIME AS useLimitTime,
+        NULL AS isGreenWay
         FROM
         AEA_HI_APPLYINST ahap_123
         <include refid="leftJoinApplyinstProj">
@@ -1521,7 +1535,8 @@
         ti.REMAINING_TIME AS remainingTime,
         ti.INST_STATE AS instState,
         ti.TIMERULE_UNIT AS timeruleUnit,
-        ti.USE_LIMIT_TIME AS useLimitTime
+        ti.USE_LIMIT_TIME AS useLimitTime,
+        NULL AS isGreenWay
         FROM
         AEA_HI_APPLYINST ahap_123
         <include refid="leftJoinApplyinstProj">
@@ -1570,7 +1585,8 @@
         ti.REMAINING_TIME AS remainingTime,
         ti.INST_STATE AS instState,
         ti.TIMERULE_UNIT AS timeruleUnit,
-        ti.USE_LIMIT_TIME AS useLimitTime
+        ti.USE_LIMIT_TIME AS useLimitTime,
+        ai_123.IS_GREEN_WAY AS isGreenWay
         FROM
         AEA_HI_APPLYINST ahap_123
 
@@ -1617,7 +1633,8 @@
         ti.REMAINING_TIME AS remainingTime,
         ti.INST_STATE AS instState,
         ti.TIMERULE_UNIT AS timeruleUnit,
-        ti.USE_LIMIT_TIME AS useLimitTime
+        ti.USE_LIMIT_TIME AS useLimitTime,
+        ai_123.IS_GREEN_WAY AS isGreenWay
         FROM
         AEA_HI_APPLYINST ahap_123
         <include refid="leftJoinApplyinstProj">
@@ -1661,7 +1678,8 @@
             temp.remainingTime,
             temp.instState,
             temp.timeruleUnit,
-            temp.useLimitTime
+            temp.useLimitTime,
+            temp.isGreenWay
         </if>
         <if test="_databaseId == 'mysql'">
             temp.procInstId

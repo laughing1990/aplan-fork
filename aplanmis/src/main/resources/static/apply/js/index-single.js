@@ -582,6 +582,7 @@ var vm = new Vue({
       approveOrgId: '',
       isTempSavePage: false,
       oneformActiveName: '',
+      tempSaveProjName: '',
     }
   },
   mounted: function () {
@@ -1149,6 +1150,9 @@ var vm = new Vue({
             _that.showMoreProjInfo = true;
             _that.showVerLen = _that.verticalTabData.length;
             _that.projBascInfoShow = result; // 项目主要信息
+            if (_that.isTempSavePage){
+              _that.tempSaveProjName = _that.projBascInfoShow.projName;
+            }
             if (_that.themeId != '') {
               _that.projBascInfoShow.themeId = _that.themeId;
               _that.projBascInfoShow.projApplyType = _that.themeName;

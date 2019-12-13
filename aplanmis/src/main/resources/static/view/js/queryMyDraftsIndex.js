@@ -100,10 +100,10 @@ var vm = new Vue({
           var menuName= '';
           var menuInnerUrl =  '';
           var id = new Date().getTime();
-          if (row.applyType == '单项') {
+          if (row.applyType == '并联') {
             menuName = row.itemName;
             menuInnerUrl = ctx + '/apanmis/page/stageApplyIndex?applyinstId='+row.applyinstId;
-          } else if(row.applyType == '并联'){
+          } else if(row.applyType == '单项'){
             menuName = row.projName;
             menuInnerUrl = ctx + '/apanmis/page/singleApplyIndex/'+row.itemVerId+'?applyinstId='+row.applyinstId;
           }
@@ -116,7 +116,7 @@ var vm = new Vue({
           try{
             parent.vm.addTab('',data,'','');
           }catch (e) {
-            window.open(urltemp,'_blank');
+            window.open(menuInnerUrl,'_blank');
           }
           return null;
           // var url = ctx+'apanmis/page/stageApproveIndex?taskId='+row.taskId + "&viewId=" + row.viewId +'&draft=true';

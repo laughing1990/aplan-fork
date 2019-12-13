@@ -11,7 +11,7 @@ var vm = new Vue({
                     perpage: 10
                 },
                 sort:{
-                    field: 'acceptTime',
+                    field: 'isGreenWay,acceptTime',
                     sort: 'desc'
                 },
                 theme: '',
@@ -54,6 +54,10 @@ var vm = new Vue({
                     ts.apiMessage('到达开始时间不能大于结束时间', 'error');
                     return;
                 }
+            }
+
+            if(ts.searchFrom.sort["field"] == "acceptTime" && ts.searchFrom.sort["sort"] == "desc"){
+                ts.searchFrom.sort["field"] = "isGreenWay,acceptTime";
             }
 
             ts.loading = true;
