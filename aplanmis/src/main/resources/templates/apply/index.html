@@ -948,7 +948,12 @@
               <div v-show="parallelItems.length>0">
                 <div class="pro-core">
                   <!--                  <img :src="ctx+'apply/imgs/pro-core-icon-y.png'">-->
-                  &nbsp;并联审批事项列表
+                  <span class="pro-core-title">并联审批事项列表</span>
+                  <div class="fr pro-core-rigrt">
+                    <span class="pro-core-card"><span class="is-catalog">标准</span>标准事项</span>
+                    <span class="pro-core-card"><span class="is-catalog is-shishi">实施</span>实施事项</span>
+                    <span class="pro-core-card"><span class="is-catalog is-green">绿道</span>绿色通道</span>
+                  </div>
                 </div>
                 <el-table class="items-table" v-loading="parallelLoading" id="parallelItemsTable" ref="parallelItemsTable" :data="parallelItems" border :expand-row-keys="showParallelItemsKey"
                   row-key="itemBasicId" tooltip-effect="dark" @select="parallelItemsSelItem"
@@ -995,16 +1000,19 @@
                   </el-table-column>
                   <el-table-column label="事项名称" prop="sortNo" sortable>
                     <template slot-scope="scope">
-                      <span class="is-catalog"
-                        :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标':'实'}}</span>
+                      <span class="is-catalog" :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标准':'实施'}}</span>
+                      <span class="is-catalog is-green" v-show="scope.row.isGreenWay=='1'">绿道</span>
                       {{scope.row.itemName}}
-                      <span v-show="scope.row.isDone=='FINISHED'" class="isTag isDone"><i
-                          class="ag ag-check-circle-fill"></i>已通过</span>
-                      <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isTag isDone"><i
-                        class="ag ag-edit-circle-fill"></i>已通过</span>
-                      <span v-show="scope.row.isDone=='HANDLING'" class="isTag isDoing"><i
-                        class="ag ag-edit-circle-fill"></i>办理中</span>
-                      <span v-show="scope.row.isRecommend==1&&scope.row.isDone!='HANDLING'&&scope.row.isDone!='FINISHED'" class="isTag isRecommend">推荐</span>
+                      <span v-show="scope.row.isDone=='FINISHED'" class="isTag isDone">
+                        <!--<i class="ag ag-check-circle-fill"></i>-->
+                        已通过</span>
+                      <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isTag isDone">
+                        <!--<i class="ag ag-edit-circle-fill"></i>-->
+                        已通过</span>
+                      <span v-show="scope.row.isDone=='HANDLING'" class="isTag isDoing">
+                        <!--<i class="ag ag-edit-circle-fill"></i>-->
+                        办理中</span>
+                      <span v-show="scope.row.isRecommend==1&&scope.row.isDone!='HANDLING'&&scope.row.isDone!='FINISHED'" class="isTag isRecommend">推荐办理</span>
                       <p class="not-region-data" v-if="scope.row.itemHaved">* 该实施事项已存在，请勿重复选择!</p>
                       <p class="not-region-data" v-if="scope.row.notRegionData">* 该事项无匹配的行政区划及实施主体</p>
                     </template>
@@ -1049,7 +1057,12 @@
               <div v-show="coreItems.length>0">
                 <div class="pro-core">
                   <!--                  <img :src="ctx+'apply/imgs/pro-core-icon-b.png'">-->
-                  &nbsp;并行推进事项列表
+                  <span class="pro-core-title">并行推进事项列表</span>
+                  <div class="fr pro-core-rigrt">
+                    <span class="pro-core-card"><span class="is-catalog">标准</span>标准事项</span>
+                    <span class="pro-core-card"><span class="is-catalog is-shishi">实施</span>实施事项</span>
+                    <span class="pro-core-card"><span class="is-catalog is-green">绿道</span>绿色通道</span>
+                  </div>
                 </div>
                 <el-table class="items-table" ref="coreItemsTable" id="coreItemsTable" :data="coreItems" border tooltip-effect="dark"
                   :default-sort="{prop: 'sortNo', order: 'ascending'}" :expand-row-keys="showCoreItemsKey"
@@ -1090,15 +1103,19 @@
                   <el-table-column label="事项名称" prop="sortNo" sortable>
                     <template slot-scope="scope">
                       <span class="is-catalog"
-                        :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标':'实'}}</span>
+                        :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标准':'实施'}}</span>
+                      <span class="is-catalog is-green" v-show="scope.row.isGreenWay=='1'">绿道</span>
                       {{scope.row.itemName}}
-                      <span v-show="scope.row.isDone=='FINISHED'" class="isTag isDone"><i
-                        class="ag ag-check-circle-fill"></i>已通过</span>
-                      <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isTag isDone"><i
-                        class="ag ag-edit-circle-fill"></i>已通过</span>
-                      <span v-show="scope.row.isDone=='HANDLING'" class="isTag isDoing"><i
-                        class="ag ag-edit-circle-fill"></i>办理中</span>
-                      <span v-show="scope.row.isRecommend==1&&scope.row.isDone!='HANDLING'&&scope.row.isDone!='FINISHED'" class="isTag isRecommend">推荐</span>
+                      <span v-show="scope.row.isDone=='FINISHED'" class="isTag isDone">
+                        <!--<i class="ag ag-check-circle-fill"></i>-->
+                        已通过</span>
+                      <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isTag isDone">
+                        <!--<i class="ag ag-edit-circle-fill"></i>-->
+                        已通过</span>
+                      <span v-show="scope.row.isDone=='HANDLING'" class="isTag isDoing">
+                        <!--<i class="ag ag-edit-circle-fill"></i>-->
+                        办理中</span>
+                      <span v-show="scope.row.isRecommend==1&&scope.row.isDone!='HANDLING'&&scope.row.isDone!='FINISHED'" class="isTag isRecommend">推荐办理</span>
                       <p class="not-region-data" v-if="scope.row.itemHaved">* 该实施事项已存在，请勿重复选择!</p>
                       <p class="not-region-data" v-if="scope.row.notRegionData">* 该事项无匹配的行政区划及实施主体</p>
                     </template>

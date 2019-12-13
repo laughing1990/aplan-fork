@@ -4323,7 +4323,6 @@
             AND ahap_123.IS_SERIES_APPROVE = '0'
             AND ahap_123.CREATER = #{loginName}
             AND ahap_123.IS_TEMPORARY_SUBMIT = '1'
-            AND art_123.ID_ is not null
             <if test="theme != null and theme != '' ">
                 AND theme.THEME_ID = #{theme}
             </if>
@@ -4363,7 +4362,6 @@
             AND ahap_123.IS_SERIES_APPROVE = '1'
             AND ahap_123.CREATER = #{loginName}
             AND ahap_123.IS_TEMPORARY_SUBMIT = '1'
-            AND art_123.ID_ is not null
             <include refid="baseConditionalQuery">
             </include>
         </where>
