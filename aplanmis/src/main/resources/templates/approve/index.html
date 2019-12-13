@@ -838,17 +838,32 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="审批人：" style="padding-bottom: 13px;">
-            <el-col :span="20">
-              <el-input :value="sendForm.nextTaskAssignee" readonly ref="nextTaskAssignee" name="nextTaskAssignee"
-                        size="medium"/>
-            </el-col>
-            <el-col :span="2">
-              <el-button id='selectAsingee' :disabled="!isNeedSelectAssignee"
-                         @click="selectAssigneeDialog=true;getAssigneeTree()" type="primary"
-                         style="margin-left:21px;width:90px;"
-                         size="medium"><i class="ag ag-add-person"></i>
-              </el-button>
-            </el-col>
+            <div class="c-f">
+              <div class="l" style="width:670px;">
+                <el-input :value="sendForm.nextTaskAssignee" readonly ref="nextTaskAssignee" name="nextTaskAssignee"
+                          size="medium"/>
+              </div>
+              <div class="l">
+                <el-button id='selectAsingee' :disabled="!isNeedSelectAssignee"
+                           @click="selectAssigneeDialog=true;getAssigneeTree()" type="primary"
+                           style="margin-left:21px;width:90px;"
+                           size="medium"><i class="ag ag-add-person"></i>
+                </el-button>
+              </div>
+            </div>
+<!--            <el-row class="c-f">-->
+<!--              <el-col :span="20" class="l">-->
+<!--                <el-input :value="sendForm.nextTaskAssignee" readonly ref="nextTaskAssignee" name="nextTaskAssignee"-->
+<!--                          size="medium"/>-->
+<!--              </el-col>-->
+<!--              <el-col :span="2" class="l">-->
+<!--                <el-button id='selectAsingee' :disabled="!isNeedSelectAssignee"-->
+<!--                           @click="selectAssigneeDialog=true;getAssigneeTree()" type="primary"-->
+<!--                           style="margin-left:21px;width:90px;"-->
+<!--                           size="medium"><i class="ag ag-add-person"></i>-->
+<!--                </el-button>-->
+<!--              </el-col>-->
+<!--            </el-row>-->
           </el-form-item>
         </template>
         <template :data-title="多选" v-if="isMultiFlow">
@@ -860,16 +875,28 @@
           </el-form-item>
           <el-form-item v-for="(u, index) in mutiCheckedMan" label-width="180px"
                         :label="u.destActName+'环节审批人：'" style="padding-bottom: 13px;">
-            <el-col :span="20">
-              <el-input :value="u.defaultSendAssignees|defaultManFilter" readonly size="medium"/>
-            </el-col>
-            <el-col :span="2">
-              <el-button :disabled="!u.needSelectAssignee"
-                         @click="selectAssigneeDialog=true;mutiGetAssigneeTree(u, index)" type="primary"
-                         style="margin-left:21px;width:90px;"
-                         size="medium"><i class="ag ag-add-person"></i>
-              </el-button>
-            </el-col>
+            <div class="c-f">
+              <div class="l" style="width:670px;">
+                <el-input :value="u.defaultSendAssignees|defaultManFilter" readonly size="medium"/>
+              </div>
+              <div class="l">
+                <el-button :disabled="!u.needSelectAssignee"
+                           @click="selectAssigneeDialog=true;mutiGetAssigneeTree(u, index)" type="primary"
+                           style="margin-left:21px;width:90px;"
+                           size="medium"><i class="ag ag-add-person"></i>
+                </el-button>
+              </div>
+            </div>
+<!--            <el-col :span="20">-->
+<!--              <el-input :value="u.defaultSendAssignees|defaultManFilter" readonly size="medium"/>-->
+<!--            </el-col>-->
+<!--            <el-col :span="2">-->
+<!--              <el-button :disabled="!u.needSelectAssignee"-->
+<!--                         @click="selectAssigneeDialog=true;mutiGetAssigneeTree(u, index)" type="primary"-->
+<!--                         style="margin-left:21px;width:90px;"-->
+<!--                         size="medium"><i class="ag ag-add-person"></i>-->
+<!--              </el-button>-->
+<!--            </el-col>-->
           </el-form-item>
         </template>
       </div>
