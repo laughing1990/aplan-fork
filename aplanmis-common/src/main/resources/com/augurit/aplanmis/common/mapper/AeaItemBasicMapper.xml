@@ -1201,7 +1201,7 @@
             and aib.ROOT_ORG_ID=#{rootOrgId}
             and aiv.ROOT_ORG_ID=#{rootOrgId}
         </if>
-
+        ORDER BY aib.IS_GREEN_WAY desc,apsi.sort_no
     </select>
 
     <select id="getAeaItemBasicByItemVerId" resultType="AeaItemBasic">
