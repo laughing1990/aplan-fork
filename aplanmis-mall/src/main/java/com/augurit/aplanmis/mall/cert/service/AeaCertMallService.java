@@ -486,6 +486,7 @@ public class AeaCertMallService {
         String certHolder=aeaCertinstParamVo.getCertHolder();
         AeaHiCertinst aeaHiCertinst=new AeaHiCertinst();
         BeanUtils.copyProperties(aeaCertinstParamVo,aeaHiCertinst);
+        aeaHiCertinst.setCertinstSource("local");
         if("u".equals(certHolder) && StringUtils.isNotBlank(loginVo.getUserId())){//个人
             aeaHiCertinst.setLinkmanInfoId(loginVo.getUserId());
         }else if("c".equals(certHolder) && StringUtils.isNotBlank(loginVo.getUnitId())){//单位
