@@ -38,6 +38,7 @@ var vm = new Vue({
                 callback();
             }
         };
+
         return{
             loading: false, // 页面加载遮罩
             projInfoId:'',
@@ -84,6 +85,7 @@ var vm = new Vue({
                     { required: true,message: '请输入建设规模！', trigger: ['change','blur'] },
                 ],
                 contractPrice: [
+                    { validator: checkNumFloat, trigger: ['blur'] },
                     { required: true,message: '请输入合同价格！', trigger: ['change','blur'] },
                 ],
                 gczcbUnit: [

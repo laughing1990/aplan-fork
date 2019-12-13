@@ -175,7 +175,7 @@ public class DiagramServiceImpl implements DiagramService {
                     List<String> stageIdList = Lists.newArrayList(allStageIds);
                     stateItemBasicMap = queryAllStateItems(stageIdList);
 
-                    optionItemBasicMap = queryAllOptionItems(stageIdList);
+                    optionItemBasicMap = queryAllItems(stageIdList);
                     aeaParStages = aeaParStageMapper.listAeaParStageByIds(stageIdList);
                 }
 
@@ -309,11 +309,11 @@ public class DiagramServiceImpl implements DiagramService {
      *
      * @param stageIds 阶段id集合
      */
-    private Map<String, AeaItemBasic> queryAllOptionItems(List<String> stageIds) {
+    private Map<String, AeaItemBasic> queryAllItems(List<String> stageIds) {
         Map<String, AeaItemBasic> optionItemBasicMap = new HashMap<>();
-        List<AeaItemBasic> optionItems = aeaItemBasicMapper.listOptionAeaItemBasicListByStageIds(stageIds, "1", SecurityContext.getCurrentOrgId());
-        if (optionItems.size() > 0) {
-            optionItems.forEach(item -> optionItemBasicMap.put(item.getItemVerId(), item));
+        List<AeaItemBasic> allItems = aeaItemBasicMapper.listOptionAeaItemBasicListByStageIds(stageIds, null, SecurityContext.getCurrentOrgId());
+        if (allItems.size() > 0) {
+            allItems.forEach(item -> optionItemBasicMap.put(item.getItemVerId(), item));
         }
         return optionItemBasicMap;
     }

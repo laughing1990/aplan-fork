@@ -730,9 +730,9 @@ public class AeaParStageService {
             aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(ApplySource.WIN.getValue()
                     , applySubject, linkmanInfoId
                     , ApplyType.UNIT.getValue(), branchOrgMap, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), Status.ON);
-            applyCommonService.bindApplyinstProj(projInfoId, aeaHiApplyinst.getApplyinstId(), SecurityContext.getCurrentUserId());
             applyinstId = aeaHiApplyinst.getApplyinstId();
         }
+        applyCommonService.bindApplyinstProj(projInfoId, applyinstId, SecurityContext.getCurrentUserId());
         if (aeaHiParStageinst == null) {
             aeaHiParStageinst = stashStage(applyinstId, stageId, themeVerId);
         }

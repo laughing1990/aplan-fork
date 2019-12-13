@@ -7,8 +7,29 @@
 
 <head>
   <!--引入公共css-->
-  <th:block th:include="common/common :: commonheader('并联申报')" />
+<!--  <th:block th:include="common/common :: commonheader('并联申报')" />-->
+  <meta charset="UTF-8">
+  <title>并联申报</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+        th:href="@{/agcloud/framework/js-lib/element-2/element.css}"/>
+  <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css"
+        th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css"
+        th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
+  <style>
+    .custor {
+      cursor: pointer;
+    }
+  </style>
   <link rel="stylesheet" href="../../static/apply/css/index.css" th:href="@{/apply/css/index.css}">
+  <script>
+    var ctx = '[[@{/}]]';
+  </script>
+  <script src="../../static/approve/js/ip.js" th:src="@{/approve/js/ip.js}"></script>
 </head>
 
 <body class="gray-body">
@@ -63,7 +84,7 @@
                   项目代码
                 </template>
                 <el-input name="localCode" :disabled="linkQuerySucc" v-model="projBascInfoShow.localCode" placeholder="投资平台登记的项目代码">
-                  <el-button slot="append" type="primary" :disabled="!localCode==''"  @click="getLocalcode()">生成编码</el-button>
+                  <el-button slot="append" type="primary" :disabled="!localCode==''"  @click="getLocalcode()">本地赋码</el-button>
                 </el-input>
               </el-form-item>
               <el-form-item class="input-inline" prop="gcbm">
@@ -80,7 +101,7 @@
             <el-form-item label="项目/工程名称" class="proj-code-info" prop="projName">
               <el-input name="projName" :disabled="linkQuerySucc" v-model="projBascInfoShow.projName" placeholder="请输入项目/工程名称">
               </el-input>
-              <el-button type="primary" @click="showProjTree()">项目工程</el-button>
+              <el-button type="primary" @click="showProjTree()">工程管理</el-button>
             </el-form-item>
 
             <div class="clearfix">
@@ -927,7 +948,12 @@
               <div v-show="parallelItems.length>0">
                 <div class="pro-core">
                   <!--                  <img :src="ctx+'apply/imgs/pro-core-icon-y.png'">-->
-                  &nbsp;并联审批事项列表
+                  <span class="pro-core-title">并联审批事项列表</span>
+                  <div class="fr pro-core-rigrt">
+                    <span class="pro-core-card"><span class="is-catalog">标准</span>标准事项</span>
+                    <span class="pro-core-card"><span class="is-catalog is-shishi">实施</span>实施事项</span>
+                    <span class="pro-core-card"><span class="is-catalog is-green">绿道</span>绿色通道</span>
+                  </div>
                 </div>
                 <el-table class="items-table" v-loading="parallelLoading" id="parallelItemsTable" ref="parallelItemsTable" :data="parallelItems" border :expand-row-keys="showParallelItemsKey"
                   row-key="itemBasicId" tooltip-effect="dark" @select="parallelItemsSelItem"
@@ -974,16 +1000,19 @@
                   </el-table-column>
                   <el-table-column label="事项名称" prop="sortNo" sortable>
                     <template slot-scope="scope">
-                      <span class="is-catalog"
-                        :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标':'实'}}</span>
+                      <span class="is-catalog" :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标准':'实施'}}</span>
+                      <span class="is-catalog is-green" v-show="scope.row.isGreenWay=='1'">绿道</span>
                       {{scope.row.itemName}}
-                      <span v-show="scope.row.isDone=='FINISHED'" class="isTag isDone"><i
-                          class="ag ag-check-circle-fill"></i>已通过</span>
-                      <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isTag isDone"><i
-                        class="ag ag-edit-circle-fill"></i>已通过</span>
-                      <span v-show="scope.row.isDone=='HANDLING'" class="isTag isDoing"><i
-                        class="ag ag-edit-circle-fill"></i>办理中</span>
-                      <span v-show="scope.row.isRecommend==1&&scope.row.isDone!='HANDLING'&&scope.row.isDone!='FINISHED'" class="isTag isRecommend">推荐</span>
+                      <span v-show="scope.row.isDone=='FINISHED'" class="isTag isDone">
+                        <!--<i class="ag ag-check-circle-fill"></i>-->
+                        已通过</span>
+                      <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isTag isDone">
+                        <!--<i class="ag ag-edit-circle-fill"></i>-->
+                        已通过</span>
+                      <span v-show="scope.row.isDone=='HANDLING'" class="isTag isDoing">
+                        <!--<i class="ag ag-edit-circle-fill"></i>-->
+                        办理中</span>
+                      <span v-show="scope.row.isRecommend==1&&scope.row.isDone!='HANDLING'&&scope.row.isDone!='FINISHED'" class="isTag isRecommend">推荐办理</span>
                       <p class="not-region-data" v-if="scope.row.itemHaved">* 该实施事项已存在，请勿重复选择!</p>
                       <p class="not-region-data" v-if="scope.row.notRegionData">* 该事项无匹配的行政区划及实施主体</p>
                     </template>
@@ -1028,7 +1057,12 @@
               <div v-show="coreItems.length>0">
                 <div class="pro-core">
                   <!--                  <img :src="ctx+'apply/imgs/pro-core-icon-b.png'">-->
-                  &nbsp;并行推进事项列表
+                  <span class="pro-core-title">并行推进事项列表</span>
+                  <div class="fr pro-core-rigrt" v-show="parallelItems.length==0">
+                    <span class="pro-core-card"><span class="is-catalog">标准</span>标准事项</span>
+                    <span class="pro-core-card"><span class="is-catalog is-shishi">实施</span>实施事项</span>
+                    <span class="pro-core-card"><span class="is-catalog is-green">绿道</span>绿色通道</span>
+                  </div>
                 </div>
                 <el-table class="items-table" ref="coreItemsTable" id="coreItemsTable" :data="coreItems" border tooltip-effect="dark"
                   :default-sort="{prop: 'sortNo', order: 'ascending'}" :expand-row-keys="showCoreItemsKey"
@@ -1069,15 +1103,19 @@
                   <el-table-column label="事项名称" prop="sortNo" sortable>
                     <template slot-scope="scope">
                       <span class="is-catalog"
-                        :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标':'实'}}</span>
+                        :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标准':'实施'}}</span>
+                      <span class="is-catalog is-green" v-show="scope.row.isGreenWay=='1'">绿道</span>
                       {{scope.row.itemName}}
-                      <span v-show="scope.row.isDone=='FINISHED'" class="isTag isDone"><i
-                        class="ag ag-check-circle-fill"></i>已通过</span>
-                      <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isTag isDone"><i
-                        class="ag ag-edit-circle-fill"></i>已通过</span>
-                      <span v-show="scope.row.isDone=='HANDLING'" class="isTag isDoing"><i
-                        class="ag ag-edit-circle-fill"></i>办理中</span>
-                      <span v-show="scope.row.isRecommend==1&&scope.row.isDone!='HANDLING'&&scope.row.isDone!='FINISHED'" class="isTag isRecommend">推荐</span>
+                      <span v-show="scope.row.isDone=='FINISHED'" class="isTag isDone">
+                        <!--<i class="ag ag-check-circle-fill"></i>-->
+                        已通过</span>
+                      <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isTag isDone">
+                        <!--<i class="ag ag-edit-circle-fill"></i>-->
+                        已通过</span>
+                      <span v-show="scope.row.isDone=='HANDLING'" class="isTag isDoing">
+                        <!--<i class="ag ag-edit-circle-fill"></i>-->
+                        办理中</span>
+                      <span v-show="scope.row.isRecommend==1&&scope.row.isDone!='HANDLING'&&scope.row.isDone!='FINISHED'" class="isTag isRecommend">推荐办理</span>
                       <p class="not-region-data" v-if="scope.row.itemHaved">* 该实施事项已存在，请勿重复选择!</p>
                       <p class="not-region-data" v-if="scope.row.notRegionData">* 该事项无匹配的行政区划及实施主体</p>
                     </template>
@@ -1123,10 +1161,24 @@
           </el-collapse-item>
           <!--事项一单清 end-->
           <!--一张表单 start-->
-          <el-collapse-item name="4" v-if="oneFormData.length>0" id="oneForm" class="clearfix">
+          <el-collapse-item name="4" v-if="oneFormData.length>0" id="oneForm" class="clearfix one-form-collapse">
             <template slot="title">
               <i class="header-icon el-icon-edit-outline"></i>一张表单
             </template>
+<!--            <div class="" v-for="u in oneFormData">-->
+<!--              <div class="of-u-states">-->
+<!--                <div class="of-u-icon ag ag-edit"></div>-->
+<!--                <span>{{u.oneformName}}</span>-->
+<!--                <div class="of-u-state-box r c-f">-->
+<!--                  <div class="of-u-b-text l">总共</div>-->
+<!--                  <div class="of-u-b-number l">12</div>-->
+<!--                  <div class="of-u-b-text l">已填</div>-->
+<!--                  <div class="of-u-b-number green l">6</div>-->
+<!--                  <div class="of-u-b-text l">未填</div>-->
+<!--                  <div class="of-u-b-number yellow l">6</div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
             <div class="fl" v-for="item in oneFormData" @click="showOneFormDialog(item.oneformName)">
               <p class="one-form-name ellipsis">
                 <span class="icon el-icon-edit-outline"></span>
@@ -1964,8 +2016,29 @@
     </div>
   </div>
 </body>
-<th:block th:include="common/common :: commonfooter" />
-<th:block th:include="common/common :: gaopaiyi" />
+<!--<th:block th:include="common/common :: commonfooter" />-->
+<!--<th:block th:include="common/common :: gaopaiyi" />-->
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+        th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/polyfill.min.js"
+        th:src="@{/agcloud/framework/js-lib/element-2/polyfill.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+        th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+        th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="../../static/common/js/axios.min.js" th:src="@{/common/js/axios.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
+        th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+<!--引入图片转pdf文件-->
+<script type="text/javascript" th:src="@{/common/js/pdfmake.js}"></script>
+<script src="../../static/common/js/qwebchannel.js" th:src="@{/common/js/qwebchannel.js}"></script>
+<script src="../../static/common/js/liangtian_gaopaoyi.js" th:src="@{/common/js/liangtian_gaopaoyi.js}"></script>
+<script src="../../static/common/js/fangzheng_gaopaiyi.js" th:src="@{/common/js/fangzheng_gaopaiyi.js}"></script>
+<!--InitializationCompleted 是方正高拍仪控件的事件，表示控件加载完成-->
+<script type="text/javascript" FOR="Capture" EVENT="InitializationCompleted">
+  catchInitFinishedMessage();
+</script>
+
 <script th:src="@{/preview/pdfjs/build/pdf.js}"></script>
 <script src="../../static/apply/js/index.js" th:src="@{/apply/js/index.js}"></script>
 
