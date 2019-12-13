@@ -41,6 +41,9 @@
 .addDirDialog .el-dialog {
     background: #F0F3F6;
 }
+.el-form-item.is-success .el-input__inner, .el-form-item.is-success .el-input__inner:focus, .el-form-item.is-success .el-textarea__inner, .el-form-item.is-success .el-textarea__inner:focus {
+    border-color: #DCDFE6;
+}
 .tips {
     width: 930px;
     height: 48px;

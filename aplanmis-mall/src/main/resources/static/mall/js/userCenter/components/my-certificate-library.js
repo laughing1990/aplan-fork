@@ -12,13 +12,13 @@ var myCertificateLibs = (function () {
             u:'u',
             p:'p',
             cPageNum:1,
-            cPageSize:10,
+            cPageSize:5,
             cTotal:0,
             uPageNum:1,
-            uPageSize:10,
+            uPageSize:5,
             uTotal:0,
             pPageNum:1,
-            pPageSize:10,
+            pPageSize:5,
             pTotal:0,
             keyword:'',
             addDirDialogFlag:false,
@@ -31,6 +31,9 @@ var myCertificateLibs = (function () {
                     { required: true, message: '请选择证照类型', trigger:'blur'},
                 ],
                 certHolder:[
+                    { required: true, message: '请选择证照所属', trigger:'blur'},
+                ],
+                certinstCode:[
                     { required: true, message: '请选择证照所属', trigger:'blur'},
                 ],
             },
@@ -51,7 +54,7 @@ var myCertificateLibs = (function () {
                     value: 'p',
                     label: '法人证照库'
                 },
-            ]
+            ],
         },
         created:function(){
             this.getCerList(this.c,this.cPageNum,this.cPageSize);
@@ -78,20 +81,40 @@ var myCertificateLibs = (function () {
                         var content = res.content;
                         switch (certHolder) {
                             case 'c':
-                                ts.cCertificateList = content.list;
-                                ts.cTotal = content.total;
+                                if(content){
+                                    ts.cCertificateList = content.list;
+                                    ts.cTotal = content.total;
+                                }
                                 break;
                             case 'u':
-                                ts.uCertificateList = content.list;
-                                ts.uTotal = content.total;
+                                if(content){
+                                    ts.uCertificateList = content.list;
+                                    ts.uTotal = content.total;
+                                }
                                 break;
                             case 'p':
-                                if(content.list){
+                                if(content){
                                     ts.pCertificateList = content.list;
+                                    ts.pTotal = content.total;
                                 }
-                                ts.pTotal = content.total;
                                 break;
                         }
+                    }
+                }, function () {
+                    ts.tableLoading = false;
+                });
+            },
+
+            // 获取系统证照类型列表
+            getCertTypes:function(certHolder,pageNum,pageSize){
+                var ts = this;
+                request('', {
+                    url: ctx + '/aea/cert/getCertTypes',
+                    type: 'get',
+                }, function (res) {
+                    if (res) {
+                        var content = res;
+                        ts.chooseCertType = content;
                     }
                 }, function () {
                     ts.tableLoading = false;
@@ -103,24 +126,20 @@ var myCertificateLibs = (function () {
                 vm.$refs['addDirForm'].validate(function(valid){
                     if (valid) {
                         var addCertifiFormData = vm.addCertifiFormData;
-                        var parmas = {
-                            isRoot:1,// 是否根文件夹 0否 1是
-                            dirName:vm.addCertifiFormData.dirName,
-                            dirCode:vm.addCertifiFormData.dirCode,
-                        };
-                        if(addCertifiFormData.chooseSuperDir){
-                            parmas.isRoot = 0;
-                            parmas.parentId = addCertifiFormData.chooseSuperDir
-                        }
+                        console.log(addCertifiFormData)
+                        debugger
                         request('', {
                             url: ctx + '/aea/cert/saveCertint',
                             type: 'post',
-                            data:parmas,
+                            contentType: "application/json",
+                            data:JSON.stringify(addCertifiFormData),
                         }, function (res) {
                             if(res.success){
                                 vm.$message.success('新建成功');
                                 vm.addCertifiFormData ={};
-                                vm.getDirTree();
+                                vm.getCerList(vm.c,vm.cPageNum,vm.cPageSize);
+                                vm.getCerList(vm.u,vm.uPageNum,vm.uPageSize);
+                                vm.getCerList(vm.p,vm.pPageNum,vm.pPageSize);
                             }else{
                                 vm.$message.error('操作失败')
                             }
@@ -133,6 +152,38 @@ var myCertificateLibs = (function () {
                         //return false;
                     }
                 });
+            },
+
+            // 编辑
+            editCertifi:function(item){
+                console.log(item);
+                var ts = this;
+                ts.addDirDialogFlag = true;
+                ts.addCertifiFormData = item;
+            },
+            // 删除
+            delCertifi:function(item){
+                var _this = this;
+                var certinstId = item.certinstId;
+                confirmMsg('', '确定要删除吗？', function() {
+                    request('bpmAdminUrl', {
+                        type: 'post',
+                        url: ctx + 'aea/cert/deleteCertint/'+ certinstId,
+                    }, function(res) {
+                        if(res.success){
+                            _this.$message.success('删除成功');
+                            _this.getCerList(_this.c,_this.cPageNum,_this.cPageSize);
+                            _this.getCerList(_this.u,_this.uPageNum,_this.uPageSize);
+                            _this.getCerList(_this.p,_this.pPageNum,_this.pPageSize);
+                        }else{
+                            _this.$message.error('删除失败')
+                        }
+                    }, function(err) {
+                        _this.$message.error('请求接口出错了哦!');
+                    })
+                },function(){
+                    console.log("取消");
+                }, '确定', '取消')
             },
 
             // 查询
@@ -167,26 +218,36 @@ var myCertificateLibs = (function () {
                 });
             },
             ChandleSizeChange:function () {
-
+                this.cPageSize = val;
+                this.getCerList(this.c,this.cPageNum,this.cPageSize);
             },
             ChandleCurrentChange:function () {
-
+                this.cPageNum = val;
+                this.getCerList(this.c,this.cPageNum,this.cPageSize);
             },
-            phandleSizeChange:function (val) {
+            UhandleSizeChange:function (val) {
                 this.uPageSize = val;
                 this.getCerList(this.u,this.uPageNum,this.uPageSize);
             },
-            phandleCurrentChange:function (val) {
+            UhandleCurrentChange:function (val) {
                 this.uPageNum = val;
                 this.getCerList(this.u,this.uPageNum,this.uPageSize);
             },
+            PhandleSizeChange:function (val) {
+                this.pPageSize = val;
+                this.getCerList(this.p,this.pPageNum,this.pPageSize);
+            },
+            PhandleCurrentChange:function (val) {
+                this.pPageNum = val;
+                this.getCerList(this.p,this.pPageNum,this.pPageSize);
+            },
             retData:function(){
                 this.cPageNum = 1
-                this.cPageSize=10
+                this.cPageSize=5
                 this.uPageNum = 1
-                this.uPageSize=10
+                this.uPageSize=5
                 this.pPageNum = 1
-                this.pPageSize=10
+                this.pPageSize=5
             }
 
         },
