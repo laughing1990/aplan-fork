@@ -449,3 +449,8 @@ body .el-table th.gutter{
 .el-cascader{
   width:85%;
 }
+
+
+.current-stage-min-width{
+  min-width: 150px;
+}
