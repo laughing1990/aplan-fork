@@ -1433,7 +1433,7 @@
         <el-button type="danger" :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('3')">不予<br />受理</el-button>
         <el-button circle :disabled="!stageFrontCheckFlag" @click="showCommentDialog('5')">材料<br />补全</el-button>
         <el-button circle :disabled="!stageFrontCheckFlag" @click="showCommentDialog('1')">打印<br />回执</el-button>
-        <!--<el-button :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('4','stash')">暂存</el-button>-->
+        <el-button :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('4','stash')">暂存</el-button>
         <el-button type="primary" :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('0')">发起<br />申报</el-button>
       </div>
       <!--项目树窗口 start-->

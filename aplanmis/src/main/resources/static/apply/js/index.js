@@ -616,16 +616,11 @@ var vm = new Vue({
         _that.projInfoId = parent.vm.activeTabSelData.projInfoId;
         _that.linkQuery();
       }
-    }
-    // if(parent.vm&&parent.vm.activeTabSelData){
-    //   if(parent.vm.activeTabSelData.parallelApplyinstId){
-    //     _that.parallelApplyinstId = parent.vm.activeTabSelData.parallelApplyinstId;
-    //     _that.lookProjDetail()
-    //   }
-    // }
-    if(_that.parallelApplyinstId){
-      _that.isDraftsProj = true;
-      _that.lookProjDetail();
+      if(parent.vm.activeTabSelData.applyinstId){
+        _that.isDraftsProj = true;
+        _that.parallelApplyinstId = parent.vm.activeTabSelData.applyinstId;
+        _that.lookProjDetail()
+      }
     }
   },
   mounted: function () {
@@ -2355,20 +2350,23 @@ var vm = new Vue({
                 }
               };
               // 当前情形附带的并联事项列表
-              stateParallelItems.map(function(item,index){
-                _that.setImplementItem(item);
-                if(item._parStateId=='undefined'||item._parStateId==undefined){
-                  Vue.set(item, '_parStateId', [parentStateId]);
-                }else {
-                  var parInd = item._parStateId.indexOf(parentStateId)
-                  if(parInd==-1){
-                    item._parStateId.push(parentStateId);
+              if(stateParallelItems&&stateParallelItems.length>0){
+                _that.parallelItems= _that.unique(_that.parallelItems.concat(stateParallelItems),'stage');
+                stateParallelItems.map(function(item,index){
+                  _that.setImplementItem(item);
+                  if(item._parStateId=='undefined'||item._parStateId==undefined){
+                    Vue.set(item, '_parStateId', [parentStateId]);
+                  }else {
+                    var parInd = item._parStateId.indexOf(parentStateId)
+                    if(parInd==-1){
+                      item._parStateId.push(parentStateId);
+                    }
                   }
-                }
-                // if(_that.parallelItemsQuestionFlag==true){
+                  // if(_that.parallelItemsQuestionFlag==true){
                   _that.parallelItemsSelItem(_that.parallelItems,item,'autoGetSel');
-                // }
-              });
+                  // }
+                });
+              }
               for (var i = 0; i < _that.parallelItems.length; i++) { // 清空情形下所对应事项
                 var obj = _that.parallelItems[i];
                 if(obj._parStateId=='undefined'||obj._parStateId==undefined){
@@ -2474,7 +2472,14 @@ var vm = new Vue({
                     HisParallelItems.push(item);
                   }
                 }else {
-                  // if(){}
+                  if(item.carryOutItems&&item.carryOutItems.length>0&&!item.notRegionData){
+                    item.carryOutItems.map(function(carryItem){
+                      if(_that.branchOrgHis[carryItem.itemVerId]&&_that.branchOrgHis[item.itemVerId]!=''){
+                        item.implementItemVerId = carryItem.itemVerId;
+                        HisParallelItems.push(item);
+                      }
+                    });
+                  }
                 }
               }
             });
@@ -2607,8 +2612,10 @@ var vm = new Vue({
         data: {"stageId":stageId,"projInfoId":_that.projInfoId}
       }, function (data) {
         if(data.success){
-          _that.coreItems = data.content.coreItems;
-          _that.parallelItems = data.content.parallelItems;
+          // _that.coreItems = data.content.coreItems;
+          // _that.parallelItems = data.content.parallelItems;
+          _that.coreItems= _that.unique(_that.parallelItems.concat(data.content.coreItems),'stage');
+          _that.parallelItems= _that.unique(_that.parallelItems.concat(data.content.parallelItems),'stage');
           _that.coreItems.map(function(item){
             if(item){
               _that.setImplementItem(item);
@@ -2619,13 +2626,10 @@ var vm = new Vue({
               item._parStateId.push('ROOT');
             }
           });
-          var HisParallelItems = []; // 历史暂存事项
+          var HisParallelItems = []; // 历史暂存并联事项
           _that.parallelItems.map(function(item){
             if(item){
               _that.setImplementItem(item);
-              // if(item.isDone != 'FINISHED' && item.isDone != 'HANDLING'&&(!item.notRegionData)){
-//                 _that.showParallelItemsKey.push(item.itemBasicId)
-//               }
             }
             if(typeof item._parStateId == 'undefined'){
               Vue.set(item,'_parStateId',['ROOT']);
@@ -2638,7 +2642,14 @@ var vm = new Vue({
                   HisParallelItems.push(item);
                 }
               }else {
-
+                if(item.carryOutItems&&item.carryOutItems.length>0&&!item.notRegionData){
+                  item.carryOutItems.map(function(carryItem){
+                    if(_that.branchOrgHis[carryItem.itemVerId]&&_that.branchOrgHis[item.itemVerId]!=''){
+                      item.implementItemVerId = carryItem.itemVerId;
+                      HisParallelItems.push(item);
+                    }
+                  });
+                }
               }
             }
           });
