@@ -438,7 +438,7 @@ public class AeaCertMallService {
     public List<AeaHiCertinst> getCertintListByCertHolder(String certHolder, String keyword, int pageNum, int pageSize,LoginInfoVo loginInfo) {
         String linkmanInfoId=null;
         String unitInfoId=null;
-        List<String> projInfoIds=null;
+        String[] projInfoIds=null;
         if(CertHolderConstants.CERT_FROM_APPLICANT.equals(certHolder)){//企业证照
             unitInfoId=loginInfo.getUnitId();
         }else if(CertHolderConstants.CERT_FROM_CORPORATION.equals(certHolder)){//法人证照
@@ -457,7 +457,7 @@ public class AeaCertMallService {
             }else{//企业
                 projList=aeaProjInfoService.findRootAeaProjInfoByUnitInfoId(loginInfo.getUnitId());
             }
-            projInfoIds=projList.size()>0?projList.stream().map(AeaProjInfo::getProjInfoId).collect(Collectors.toList()):null;
+            projInfoIds=projList.size()>0?projList.stream().map(AeaProjInfo::getProjInfoId).toArray(String[]::new):null;
         }else{
             return new ArrayList<>();
         }
