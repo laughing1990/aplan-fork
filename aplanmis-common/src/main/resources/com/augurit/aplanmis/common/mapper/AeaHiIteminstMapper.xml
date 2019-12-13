@@ -2322,7 +2322,11 @@
         and aap.proj_info_id=#{projInfoId}
         and ahi.root_org_id=#{rootOrgId}
         union all
-        select ahi.* from aea_hi_iteminst ahi
+        select
+        <include refid="aliasColumns">
+            <property name="alias" value="ahi"/>
+        </include>
+        from aea_hi_iteminst ahi
         join aea_hi_par_stageinst ahps on ahps.stageinst_id=ahi.stageinst_id
         join aea_applyinst_proj aap on aap.applyinst_id=ahps.applyinst_id
         where ahi.item_ver_id in

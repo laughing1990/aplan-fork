@@ -582,6 +582,7 @@ var vm = new Vue({
       approveOrgId: '',
       isTempSavePage: false,
       oneformActiveName: '',
+      tempSaveProjName: '',
     }
   },
   mounted: function () {
@@ -981,6 +982,7 @@ var vm = new Vue({
         url: ctx + 'rest/item/detail/' + _that.itemVerId,
         type: 'get',
       }, function (data) {
+        _that.loading = false;
         if (data.success) {
           typeof cb == 'function' && cb();
           if (data.content) {
@@ -990,6 +992,7 @@ var vm = new Vue({
       }, function (msg) {
         //_that.showMoreProjInfo = false;
         //_that.showVerLen = 2;
+        _that.loading = false;
         alertMsg('', '服务请求失败', '关闭', 'error', true);
       });
     },
@@ -1067,6 +1070,9 @@ var vm = new Vue({
             _that.showMoreProjInfo = true;
             _that.showVerLen = _that.verticalTabData.length;
             _that.projBascInfoShow = result; // 项目主要信息
+            if (_that.isTempSavePage){
+              _that.tempSaveProjName = _that.projBascInfoShow.projName;
+            }
             if (_that.themeId != '') {
               _that.projBascInfoShow.themeId = _that.themeId;
               _that.projBascInfoShow.projApplyType = _that.themeName;

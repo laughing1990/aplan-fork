@@ -90,12 +90,32 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
             aeaParentProj.setChildProjId(aeaProjInfo.getProjInfoId());//更新childProjId
             aeaParentProj.setProjSeq(aeaProjInfo.getParentProjId() + "." + aeaParentProj.getChildProjId());//更新projSeq
             aeaProjInfoMapper.insertAeaParentProj(aeaParentProj); //insert新的aeaParentProj
+            //继承父项目的单位关系
+            updateProjUnitFromParent(aeaProjInfo.getParentProjId(),aeaProjInfo.getProjInfoId());
             //查询子项目的父项
             oldAeaProjInfo = aeaProjInfoMapper.getOnlyAeaProjInfoById(aeaParentProj.getParentProjId());
 //            insertAeaProjInfoLog(modify,aeaProjInfo,oldAeaProjInfo);
             oldAeaProjInfo=aeaProjInfo;
         }
         return oldAeaProjInfo.getProjInfoId();
+    }
+
+    private void updateProjUnitFromParent(String parentProjId,String projInfoId) throws Exception {
+        if(StringUtils.isNotBlank(parentProjId) && StringUtils.isNotBlank(projInfoId)){
+            AeaUnitProj query=new AeaUnitProj();
+            query.setProjInfoId(parentProjId);
+            query.setIsDeleted("0");
+            List<AeaUnitProj> list = aeaUnitProjMapper.listAeaUnitProj(query);
+            if(list.size()>0){
+                for (AeaUnitProj param:list){
+                    param.setProjInfoId(projInfoId);
+                    param.setCreateTime(new Date());
+                    param.setCreater(SecurityContext.getCurrentUserName());
+                    param.setUnitProjId(UUID.randomUUID().toString());
+                    aeaUnitProjMapper.insertAeaUnitProj(param);
+                }
+            }
+        }
     }
 
 

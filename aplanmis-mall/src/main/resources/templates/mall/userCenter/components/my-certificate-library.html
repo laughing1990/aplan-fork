@@ -106,11 +106,12 @@
                 <el-table-column
                         prop="certinstName"
                         label="证照名称"
-                        width="380px">
+                        width="250">
                 </el-table-column>
                 <el-table-column
                         prop=" certType"
                         label="证照类型"
+                        width="250"
                 >
                     <template slot-scope="scope">
                         <div class="fontSize">{{scope.row. certType}}</div>
@@ -122,7 +123,7 @@
                         prop="createTime"
                         align="center"
                         label="有效截止日期"
-                >
+                        width="250">
                     <template slot-scope="scope">
                         <div class="fontSize">{{scope.row.termEnd||"-"}}</div>
                     </template>
@@ -154,8 +155,8 @@
                 >
                     <template slot-scope="scope">
                         <el-button type="text"    @click="lookvViewLicenseURL(scope.row)">查看</el-button>
-                        <el-button type="text"    @click="editCertifi(scope.row)">编辑</el-button>
-                        <el-button type="text"   :disabled="scope.row.authCode"  @click="delCertifi(scope.row)">删除</el-button>
+                        <el-button type="text"   :disabled="scope.row.certinstSource=='local'?false:true" @click="editCertifi(scope.row)">编辑</el-button>
+                        <el-button type="text"   :disabled="scope.row.authCode?true:false"  @click="delCertifi(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
 
@@ -238,11 +239,11 @@
     </section>
 
     <!--新增弹窗 str-->
-    <el-dialog title="新增" :visible.sync="addDirDialogFlag"  top="25vh" class="addDirDialog">
+    <el-dialog :title="addCertifiTitle" :visible.sync="addDirDialogFlag"  top="25vh" class="addDirDialog">
         <div class="addDirForm-box">
             <el-form label-position="right" label-width="130px" :model="addCertifiFormData" ref="addDirForm" :rules="addDirFormRules">
                 <el-form-item label="证照所属："  prop="certHolder" required>
-                    <el-select v-model="addCertifiFormData.certHolder" clearable placeholder="请选择证照所属" style="width: 330px">
+                    <el-select v-model="addCertifiFormData.certHolder" clearable @change="certHolderHangChange" placeholder="请选择证照所属" style="width: 330px">
                         <el-option
                                 v-for="(item,index) in chooseCertHolder"
                                 :key="index"
@@ -252,12 +253,22 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="证照类型：" prop="certType"  required>
-                    <el-select v-model="addCertifiFormData.certType" clearable placeholder="请选择证照类型" style="width: 330px">
+                    <el-select v-model="addCertifiFormData.certType" clearable placeholder="请选择证照类型"  @change="certTypeHandleChange" style="width: 330px">
                         <el-option
                                 v-for="(item,index) in chooseCertType"
                                 :key="index"
                                 :label="item.typeName"
                                 :value="item.certTypeId">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="证照：" prop="certId" required>
+                    <el-select v-model="addCertifiFormData.certId" clearable placeholder="请先选择证照类型再选择证照" style="width: 330px">
+                        <el-option
+                                v-for="(item,index) in chooseCert"
+                                :key="index"
+                                :label="item.certName"
+                                :value="item.certId">
                         </el-option>
                     </el-select>
                 </el-form-item>

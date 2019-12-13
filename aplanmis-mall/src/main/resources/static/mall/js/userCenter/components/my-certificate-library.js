@@ -22,20 +22,24 @@ var myCertificateLibs = (function () {
             pTotal:0,
             keyword:'',
             addDirDialogFlag:false,
+            addCertifiTitle:'新增',
             addCertifiFormData: {},
             addDirFormRules:{
                 certinstName:[
                     { required: true, message: '请填写证照名称', trigger:'blur'},
                 ],
                 certType:[
-                    { required: true, message: '请选择证照类型', trigger:'blur'},
+                    { required: true, message: '请选择证照类型', trigger:'change'},
                 ],
                 certHolder:[
-                    { required: true, message: '请选择证照所属', trigger:'blur'},
+                    { required: true, message: '请选择证照所属', trigger:'change'},
                 ],
                 certinstCode:[
-                    { required: true, message: '请选择证照所属', trigger:'blur'},
+                    { required: true, message: '请填写证照编号', trigger:'blur'},
                 ],
+                chooseCert:[
+                    { required: true, message: '请选择证照', trigger:'change'},
+                ]
             },
             chooseCertHolder:[
                 {
@@ -55,6 +59,10 @@ var myCertificateLibs = (function () {
                     label: '法人证照库'
                 },
             ],
+            chooseCert:[],
+            certTypeId:'',
+            certHolder:'',
+
         },
         created:function(){
             this.getCerList(this.c,this.cPageNum,this.cPageSize);
@@ -120,6 +128,38 @@ var myCertificateLibs = (function () {
                     ts.tableLoading = false;
                 });
             },
+
+            certTypeHandleChange:function(val){
+                console.log(val)
+                if(val){
+                    this.certTypeId = val
+                    this.getCertListByType(this.certTypeId,this.certHolder)
+                }
+            },
+            certHolderHangChange:function(val){
+                console.log(val)
+                this.certHolder = val
+            },
+
+            // 获取系统证照定义列表
+            getCertListByType:function(certTypeId,certHolder){
+                var ts = this;
+                request('', {
+                    url: ctx + '/aea/cert/getCertListByType',
+                    type: 'get',
+                    data:{
+                        certTypeId:certTypeId,
+                        certHolder:certHolder
+                    }
+                }, function (res) {
+                    if (res) {
+                        var content = res;
+                        ts.chooseCert = content;
+                    }
+                }, function () {
+
+                });
+            },
             // 新增
             sureAddcertifi:function(){
                 var vm = this;
@@ -158,6 +198,7 @@ var myCertificateLibs = (function () {
             editCertifi:function(item){
                 console.log(item);
                 var ts = this;
+                ts.addCertifiTitle = "编辑"
                 ts.addDirDialogFlag = true;
                 ts.addCertifiFormData = item;
             },
