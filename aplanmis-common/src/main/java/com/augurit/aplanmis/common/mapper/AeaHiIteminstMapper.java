@@ -57,7 +57,7 @@ public interface AeaHiIteminstMapper {
 
     List<ApproveProjInfoDto> getScheduleInquireListByUnitInfoIdOrLinkman(@Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId, @Param("keyword") String keyword);
 
-    List<AeaProjInfo> getScheduleProjListByUnitInfoIdOrLinkman(@Param("keyword") String keyword, @Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId);
+    List<AeaProjInfo> getScheduleProjListByUnitInfoIdOrLinkman(@Param("keyword") String keyword, @Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId,@Param("parentProjInfoId")String parentProjInfoId);
 
     List<ApproveProjInfoDto> getIteminstApproveInfoListByUnitIdAndUserId(@Param("keyword") String keyword, @Param("unitInfoId") String unitInfoId, @Param("userId") String userId);
 

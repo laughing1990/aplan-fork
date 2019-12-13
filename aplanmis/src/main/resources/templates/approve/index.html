@@ -838,17 +838,32 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="审批人：" style="padding-bottom: 13px;">
-            <el-col :span="20">
-              <el-input :value="sendForm.nextTaskAssignee" readonly ref="nextTaskAssignee" name="nextTaskAssignee"
-                        size="medium"/>
-            </el-col>
-            <el-col :span="2">
-              <el-button id='selectAsingee' :disabled="!isNeedSelectAssignee"
-                         @click="selectAssigneeDialog=true;getAssigneeTree()" type="primary"
-                         style="margin-left:21px;width:90px;"
-                         size="medium"><i class="ag ag-add-person"></i>
-              </el-button>
-            </el-col>
+            <div class="c-f">
+              <div class="l" style="width:670px;">
+                <el-input :value="sendForm.nextTaskAssignee" readonly ref="nextTaskAssignee" name="nextTaskAssignee"
+                          size="medium"/>
+              </div>
+              <div class="l">
+                <el-button id='selectAsingee' :disabled="!isNeedSelectAssignee"
+                           @click="selectAssigneeDialog=true;getAssigneeTree()" type="primary"
+                           style="margin-left:21px;width:90px;"
+                           size="medium"><i class="ag ag-add-person"></i>
+                </el-button>
+              </div>
+            </div>
+<!--            <el-row class="c-f">-->
+<!--              <el-col :span="20" class="l">-->
+<!--                <el-input :value="sendForm.nextTaskAssignee" readonly ref="nextTaskAssignee" name="nextTaskAssignee"-->
+<!--                          size="medium"/>-->
+<!--              </el-col>-->
+<!--              <el-col :span="2" class="l">-->
+<!--                <el-button id='selectAsingee' :disabled="!isNeedSelectAssignee"-->
+<!--                           @click="selectAssigneeDialog=true;getAssigneeTree()" type="primary"-->
+<!--                           style="margin-left:21px;width:90px;"-->
+<!--                           size="medium"><i class="ag ag-add-person"></i>-->
+<!--                </el-button>-->
+<!--              </el-col>-->
+<!--            </el-row>-->
           </el-form-item>
         </template>
         <template :data-title="多选" v-if="isMultiFlow">
@@ -858,18 +873,30 @@
                            @change="changeMutiMan(item)" :label="item.destActName"></el-checkbox>
             </el-checkbox-group>
           </el-form-item>
-          <el-form-item v-for="u in mutiCheckedMan" label-width="180px"
+          <el-form-item v-for="(u, index) in mutiCheckedMan" label-width="180px"
                         :label="u.destActName+'环节审批人：'" style="padding-bottom: 13px;">
-            <el-col :span="20">
-              <el-input :value="u.defaultSendAssignees|defaultManFilter" readonly size="medium"/>
-            </el-col>
-            <el-col :span="2">
-              <el-button :disabled="!u.needSelectAssignee"
-                         @click="selectAssigneeDialog=true;mutiGetAssigneeTree(u)" type="primary"
-                         style="margin-left:21px;width:90px;"
-                         size="medium"><i class="ag ag-add-person"></i>
-              </el-button>
-            </el-col>
+            <div class="c-f">
+              <div class="l" style="width:670px;">
+                <el-input :value="u.defaultSendAssignees|defaultManFilter" readonly size="medium"/>
+              </div>
+              <div class="l">
+                <el-button :disabled="!u.needSelectAssignee"
+                           @click="selectAssigneeDialog=true;mutiGetAssigneeTree(u, index)" type="primary"
+                           style="margin-left:21px;width:90px;"
+                           size="medium"><i class="ag ag-add-person"></i>
+                </el-button>
+              </div>
+            </div>
+<!--            <el-col :span="20">-->
+<!--              <el-input :value="u.defaultSendAssignees|defaultManFilter" readonly size="medium"/>-->
+<!--            </el-col>-->
+<!--            <el-col :span="2">-->
+<!--              <el-button :disabled="!u.needSelectAssignee"-->
+<!--                         @click="selectAssigneeDialog=true;mutiGetAssigneeTree(u, index)" type="primary"-->
+<!--                         style="margin-left:21px;width:90px;"-->
+<!--                         size="medium"><i class="ag ag-add-person"></i>-->
+<!--              </el-button>-->
+<!--            </el-col>-->
           </el-form-item>
         </template>
       </div>
@@ -2070,7 +2097,7 @@
       <el-button size="medium" class="btn btn-secondary" @click="licenceDialogVisible=false">关闭</el-button>
     </div>
   </el-dialog>
-  <!-- 容缺实现配置弹窗 -->
+  <!-- 容缺时限配置弹窗 废弃 -->
   <el-dialog title="时限配置" top="15vh" @close="closeRQtimeDialog"
              width="700px" :visible.sync="RQtimeVisible" v-loading="RQtimeLoading">
     <div class="bz-dialog-wrap">
@@ -2117,6 +2144,26 @@
         </div>
       </div>
     </el-scrollbar>
+  </el-dialog>
+  <!-- 容缺时限延长弹窗 -->
+  <el-dialog title="容缺时限延长" top="15vh" @close="closeRQmoreTimeDialog"
+             width="700px" :visible.sync="RQmoreTimeVisible" v-loading="RQmoreTimeLoading">
+    <div class="bz-dialog-wrap">
+      <div class="bz-dialog-box" style="padding:15px 15px 15px 0px;">
+        <el-form label-width="110px" :model="rqMoreTimeForm"
+                 :rules="rqMoreTimeformRules" ref="rqMoreTimeFormRef" size="medium">
+          <el-form-item label="时限：">
+            <el-input type="number" :controls="false" placeholder="请填写延长时限" v-model="rqMoreTimeForm.toleranceTime">
+              <template slot="append">{{rqTargetRow.toleranceTimelimitUnit}}</template>
+            </el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+    </div>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="RQmoreTimeVisible=false" size="medium">取 消</el-button>
+      <el-button @click="ensureMoreTime" type="primary" size="medium">确 认</el-button>
+    </div>
   </el-dialog>
 </div>
 </body>

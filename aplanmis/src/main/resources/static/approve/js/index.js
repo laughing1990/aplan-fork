@@ -436,6 +436,7 @@ var vm = new Vue({
       mutiCheckedNames: [],
       mutiCheckedMan: [],
       treeTargetRow: null,
+      targetManIndex: 0,
       // 特殊程序
       speTabIndex: 0,
       speBaseInfoForm: {
@@ -532,6 +533,7 @@ var vm = new Vue({
       projInfoId: '',
       itemVersionId: '',
       currentCertinstId: '',
+      // 容缺时限配置
       RQtimeVisible: false,
       RQtimeLoading: false,
       rqTimeForm: {
@@ -544,6 +546,14 @@ var vm = new Vue({
       },
       rqRulesList: [],
       isRQDialog: false,
+      // 容缺时限延长
+      RQmoreTimeVisible: false,
+      RQmoreTimeLoading: false,
+      rqMoreTimeForm: {
+        toleranceTime: 1,
+      },
+      rqMoreTimeformRules: {},
+      rqTargetRow: {},
     }
   },
   filters: {
@@ -580,6 +590,51 @@ var vm = new Vue({
     },
   },
   methods: {
+    // 打开延长容缺时限弹窗
+    openRQmoreTimeDialog: function(row){
+      this.rqTargetRow = row;
+      this.RQmoreTimeVisible = true;
+      this.rqMoreTimeForm.toleranceTime = 1;
+    },
+    // 保存延长容缺时限
+    ensureMoreTime: function(){
+      var vm = this;
+      if (vm.rqMoreTimeForm.toleranceTime < 1) {
+        return vm.$message.error('时限不能小于1')
+      }
+      this.requestRQmoreTime(vm.rqMoreTimeForm.toleranceTime);
+    },
+    // 请求保存
+    requestRQmoreTime: function(time, row){
+      var vm  = this;
+      if (row) {
+        vm.rqTargetRow = row;
+      }
+      this.parentPageLoading = true;
+      request('', {
+        url: ctx + 'rest/approve/iteminst/tolerance/update',
+        type: 'post',
+        data: {
+          toleranceTime: time,
+          iteminstId: vm.rqTargetRow.iteminstId,
+        },
+      }, function(res){
+        vm.parentPageLoading = false;
+        vm.RQmoreTimeVisible = false;
+        if (res.success) {
+          vm.RQmoreTimeVisible = false;
+          vm.$message.success('设置成功');
+          delayRefreshWindow();
+        } else {
+          vm.$message.error(res.message || '保存失败');
+        }
+      }, function(){
+        vm.parentPageLoading = false;
+        vm.$message.error('保存失败');
+      })
+    },
+    //  关闭容缺延时弹窗
+    closeRQmoreTimeDialog: function(){},
     // 得到容缺时限规则数据
     getRQRuleList: function(){
       var vm = this;
@@ -2448,10 +2503,11 @@ var vm = new Vue({
           }
       );
     },
-    mutiGetAssigneeTree: function (row) {
+    mutiGetAssigneeTree: function (row, index) {
       //1、记录临时变量
       var vm = this;
       vm.treeTargetRow = row;
+      vm.targetManIndex = index;
       vm.tempDefaultSelectedAssigneeId = row.defaultSendAssigneesId;
       vm.nextTaskAssignee = row.defaultSendAssignees;
       vm.nextTaskAssigneeId = row.defaultSendAssigneesId;
@@ -2519,12 +2575,15 @@ var vm = new Vue({
       //关闭选择框
       vm.selectAssigneeDialog = false;
       if (vm.isMultiFlow) {
-        vm.mutiCheckedMan.forEach(function (u) {
-          if (u.destActId == vm.treeBtnLeft.destActId) {
-            u.defaultSendAssignees = assigneeCn.substring(0, assigneeCn.length - 1);
-            u.defaultSendAssigneesId = assignee.substring(0, assignee.length - 1);
-          }
-        })
+        var u = vm.mutiCheckedMan[vm.targetManIndex];
+        u.defaultSendAssignees = assigneeCn.substring(0, assigneeCn.length - 1);
+        u.defaultSendAssigneesId = assignee.substring(0, assignee.length - 1);
+        // vm.mutiCheckedMan.forEach(function (u) {
+        //   if (u.destActId == vm.treeBtnLeft.destActId) {
+        //     u.defaultSendAssignees = assigneeCn.substring(0, assigneeCn.length - 1);
+        //     u.defaultSendAssigneesId = assignee.substring(0, assignee.length - 1);
+        //   }
+        // })
       }
     },
     handleSelectionChange: function () {
@@ -2851,8 +2910,8 @@ var vm = new Vue({
             vm.isNeedSelectAssignee = vm.sendTaskInfo.needSelectAssignee;
             if (vm.sendTaskInfo && vm.sendTaskInfo.multiFlow == true) {
               vm.isMultiFlow = true;
-              vm.mutiCheckedMan.push(vm.sendTaskInfo);
-              vm.mutiCheckedNames.push(vm.sendTaskInfo.destActName);
+              vm.mutiCheckedMan.push($.extend({},vm.sendTaskInfo));
+              vm.mutiCheckedNames.push(vm.sendTaskInfo.destActName+'');
             }
             //流程流转的提交参数
             vm.sendParam = {

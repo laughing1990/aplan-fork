@@ -307,4 +307,10 @@
         </sql>
     </changeSet>
 
+    <changeSet id="201912121429" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_item_basic set IS_GREEN_WAY='0';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

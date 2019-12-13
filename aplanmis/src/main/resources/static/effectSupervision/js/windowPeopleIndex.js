@@ -591,7 +591,7 @@ var Index = new Vue({
       var _jumpData = {
         'menuName': this.parallelDeclarationTabData.menuName,
         'menuInnerUrl': _url,
-        'id': row.projInfoId,
+        'id': row.projInfoId + "_parallelDecal",
         'localCode':  row.localCode,
         'projInfoId': row.projInfoId
       };
@@ -708,7 +708,7 @@ var Index = new Vue({
     },
 
     // 待办列表中的办理操作
-    daibanbanliHand: function(){
+    daibanbanliHand: function(row){
       var url = ctx+'apanmis/page/stageApproveIndex?taskId='+row.taskId+'&viewId='+row.viewId;
       if(row.busRecordId){
           url = url + '&busRecordId='+row.busRecordId;

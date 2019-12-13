@@ -3,7 +3,7 @@
 <div class="wt-tab" id="withdrawApplyListVue" v-cloak v-loading.fullscreen.lock="mloading" style="position: relative;">
 
   <div>
-    <p class="p-header">撤回申报列表</p>
+    <p class="p-header">撤件列表</p>
     <div class="wt-tab-content">
       <div class="wt-tab-item" >
         <div class="search-input">
@@ -34,13 +34,13 @@
                 </td>
                 <td width="40%">
                   <el-tooltip placement="top" effect="light" v-if="item.isSeriesApprove == 1">
-                    <div slot="content">主题名称：{{item.themeName}}<br/> <br/> 事项名称：{{item.stageIteminstName}}</div>
+                    <div slot="content">所属主题：{{item.themeName}}<br/> <br/> 办理事项：{{item.stageIteminstName}}</div>
                     <div>
                      <span class=" pro-name" >{{item.stageIteminstName}}</span>
                     </div>
                   </el-tooltip>
                   <el-tooltip placement="top" effect="light" v-else>
-                    <div slot="content">主题名称：{{item.themeName}} <br/> <br/> 阶段名称：{{item.stageIteminstName}}</div>
+                    <div slot="content">所属主题：{{item.themeName}} <br/> <br/> 所属阶段：{{item.stageIteminstName}}</div>
                     <div>
                       <span class="stageIteminstName-bg" >{{item.stageIteminstName}}</span>
                     </div>

@@ -58,9 +58,9 @@
             <div class="vertical-tab">
                 <ul>
                     <li class="vertical-label" v-show="index<showVerLen" v-for="(item, index) in verticalTabData"
-                        :class="activeTab==index?'active':item.target" data-name="item.target" :key="index"
+                        :class="[activeTab==index?'active':item.target]" data-name="item.target" :key="index"
                         @click="targetCollapse(item.target,index)">
-                        <a :href="'#'+item.target">{{item.label}}</a>{{activeTab===index}}
+                        <a :href="'#'+item.target">{{item.label}}</a>
                     </li>
                 </ul>
             </div>
@@ -131,8 +131,7 @@
                                     建设地点
                                 </template>
                                 <el-select multiple v-model="projBascInfoShow.projectAddress" placeholder="请选择建设地点">
-                                    <el-option v-for="item in districtList" :key="item.regionNum"
-                                        :label="item.regionName" :value="item.regionNum">
+                                    <el-option v-for="item in districtList" :key="item.regionId" :label="item.regionName" :value="item.regionId">
                                     </el-option>
                                 </el-select>
                             </el-form-item>
@@ -236,8 +235,8 @@
                             <el-form-item class="input-inline" label="总投资（万元）" prop="investSum">
                                 <el-input v-model="projBascInfoShow.investSum" placeholder="请输入总投资"></el-input>
                             </el-form-item>
-                            <el-form-item class="input-inline" label="建筑面积（m&sup2;）" prop="foreignBuildingArea">
-                                <el-input v-model="projBascInfoShow.foreignBuildingArea" placeholder="请填写建筑面积">
+                            <el-form-item class="input-inline" label="建筑面积（m&sup2;）" prop="buildAreaSum">
+                                <el-input v-model="projBascInfoShow.buildAreaSum" placeholder="请填写建筑面积">
                                 </el-input>
                             </el-form-item>
                             <el-form-item class="input-inline" label="用地面积（m&sup2;）" prop="xmYdmj">
@@ -281,7 +280,7 @@
                             </el-form-item>
                         </div>
 
-                        <el-form-item prop="foreignRemark">
+                        <el-form-item prop="scaleContent">
                             <template slot="label">
                                 <el-tooltip class="item" effect="dark" content="对项目建设规模以及建设内容的文字描述。"
                                     placement="right-start">
@@ -289,7 +288,7 @@
                                 </el-tooltip>
                                 建设规模及内容
                             </template>
-                            <el-input v-model="projBascInfoShow.foreignRemark" type="textarea" placeholder="请填写建设内容">
+                            <el-input v-model="projBascInfoShow.scaleContent" type="textarea" placeholder="请填写建设内容">
                             </el-input>
                         </el-form-item>
 
@@ -331,469 +330,467 @@
                     <el-button type="primary" icon="el-icon-wallet" class="fr" @click="saveOrUpdateProjFrom(true)">保存
                     </el-button>
                 </el-collapse-item>
-                <!--  基本信息  end  -->
-                <template v-if="showMoreProjInfo">
-                    <!--<template>-->
-                    <!--  申办主体信息  start  -->
-                    <el-collapse-item name="2" id="applyInfo">
-                        <template slot="title">
-                            <i class="header-icon el-icon-info"></i>申报主体信息
-                        </template>
-                        <div class="checked-opt">
-                            <el-radio-group v-model="applySubjectType" @change="changeApplySubjectSelect">
-                                <el-radio-button :label="1" name="applySubject">&nbsp;企业&nbsp;</el-radio-button>
-                                <!--                <el-tooltip class="item" effect="dark" content="机关或事业单位" placement="top-start">-->
-                                <el-radio-button :label="2" name="applySubject">机关 / 事业单位</el-radio-button>
-                                <!--                </el-tooltip>-->
-                                <el-radio-button :label="0" name="applySubject">&nbsp;个人&nbsp;</el-radio-button>
-                            </el-radio-group>
-                            <el-switch class="is-jinban fr" v-show="applySubjectType!=0" v-model="agentChecked"
-                                inactive-text="是否经办">
-                            </el-switch>
-                        </div>
-                        <!--个人申报主体 start-->
-                        <el-form v-if="applySubjectType==0" ref="applyPerson" id="applyPerson" :model="applyPersonFrom">
-                            <el-form label-width="176px" class="clearfix" :model="applyPersonFrom"
-                                :rules="rulesApplyPersonForm" ref="applicantPer">
-                                <input type="hidden" v-model="applyPersonFrom.applyLinkmanId">
-                                <input type="hidden" v-model="applyPersonFrom.linkLinkmanId">
-                                <p class="apply-info-title">申请人信息</p>
-                                <!--<el-col :span="24">
-                  <el-form-item class="info-header" label="申请人信息">
-                  </el-form-item>
-                </el-col>-->
-                                <!-- 信用记录-->
-                                <div class="credit-box" v-show="applyPersonFrom.loseCreditCount>0">
-                                    <i class="credit-box-icon"
-                                        :class="applyPersonFrom.isBlack?'el-icon-error':'el-icon-warning'"></i>
-                                    当前申请人{{applyPersonFrom.isBlack?'已被纳入信用黑名单':'有失信记录'}}，可点击右侧查看详细历史记录。
-                                    <span class="see-credit-btn fr"
-                                        @click="creditDiaVisibleShow(applyPersonFrom)">查看信用记录</span>
-                                </div>
-                                <el-col :span="12">
-                                    <el-form-item label="申请人" prop="applyLinkmanName">
-                                        <el-autocomplete :trigger-on-focus="false"
-                                            :fetch-suggestions="querySearchLinkMan"
-                                            v-model="applyPersonFrom.applyLinkmanName" @select="querySearchApplyLinkMan"
-                                            placeholder="请输入申请人姓名">
-                                            <el-button slot="append" @click.native="clearApplyLinkManInfo(true)"
-                                                title="清空">清空</el-button>
-                                        </el-autocomplete>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="申请人身份证号" prop="applyLinkmanIdCard">
-                                        <el-input v-model="applyPersonFrom.applyLinkmanIdCard" placeholder="请输入申请人身份证号">
-                                        </el-input>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="申请人电话" prop="applyLinkmanTel">
-                                        <el-input v-model="applyPersonFrom.applyLinkmanTel" placeholder="请输入申请人电话">
-                                        </el-input>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="申请人邮箱">
-                                        <el-input v-model="applyPersonFrom.applyLinkmanEmail" id="apply_linkmanEmail"
-                                            placeholder="请输入申请人邮箱">
-                                        </el-input>
-                                    </el-form-item>
-                                </el-col>
-                                <p class="apply-info-title">联系人信息
-                                    <el-checkbox class="fr" v-model="sameAsApplyLink" @change="copyApplyLinkmanInfo">
-                                        与申请人信息一致 <span class="notice">（勾选后将自动获取联系人信息）</span></el-checkbox>
-                                </p>
+                <!--  基本信息  end  -->             
 
-                                <el-col :span="12">
-                                    <el-form-item label="联系人" prop="linkLinkmanName">
-                                        <el-autocomplete :trigger-on-focus="false" :disabled="sameAsApplyLink"
-                                            :fetch-suggestions="querySearchLinkMan" @select="querySearchLinkLinkMan"
-                                            v-model="applyPersonFrom.linkLinkmanName" placeholder="请输入联系人姓名">
-                                            <el-button slot="append" @click.native="clearApplyLinkManInfo(false)"
-                                                title="清空">清空</el-button>
-                                        </el-autocomplete>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="联系人身份证号" prop="linkLinkmanIdCard">
-                                        <el-input :disabled="sameAsApplyLink"
-                                            v-model="applyPersonFrom.linkLinkmanIdCard" placeholder="请输入联系人身份证号">
-                                        </el-input>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="联系人电话" prop="linkLinkmanTel">
-                                        <el-input :disabled="sameAsApplyLink" v-model="applyPersonFrom.linkLinkmanTel"
-                                            placeholder="请输入联系人电话"></el-input>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="联系人邮箱">
-                                        <el-input :disabled="sameAsApplyLink" v-model="applyPersonFrom.linkLinkmanEmail"
-                                            placeholder="请输入联系人邮箱">
-                                        </el-input>
-                                    </el-form-item>
-                                </el-col>
-                            </el-form>
-                            <el-col :span="24" class="ar">
-                                <el-form-item>
-                                    <el-button type="primary" icon="el-icon-wallet" @click="saveApplyAndLinkmanInfo">
-                                        保存</el-button>
+                <!--  申办主体信息  start  -->
+                <el-collapse-item name="2" id="applyInfo" v-if="showMoreProjInfo">
+                    <template slot="title">
+                        <i class="header-icon el-icon-info"></i>申报主体信息
+                    </template>
+                    <div class="checked-opt">
+                        <el-radio-group v-model="applySubjectType" @change="changeApplySubjectSelect">
+                            <el-radio-button :label="1" name="applySubject">&nbsp;企业&nbsp;</el-radio-button>
+                            <!--                <el-tooltip class="item" effect="dark" content="机关或事业单位" placement="top-start">-->
+                            <el-radio-button :label="2" name="applySubject">机关 / 事业单位</el-radio-button>
+                            <!--                </el-tooltip>-->
+                            <el-radio-button :label="0" name="applySubject">&nbsp;个人&nbsp;</el-radio-button>
+                        </el-radio-group>
+                        <el-switch class="is-jinban fr" v-show="applySubjectType!=0" v-model="agentChecked"
+                            inactive-text="是否经办">
+                        </el-switch>
+                    </div>
+                    <!--个人申报主体 start-->
+                    <el-form v-if="applySubjectType==0" ref="applyPerson" id="applyPerson" :model="applyPersonFrom">
+                        <el-form label-width="176px" class="clearfix" :model="applyPersonFrom"
+                            :rules="rulesApplyPersonForm" ref="applicantPer">
+                            <input type="hidden" v-model="applyPersonFrom.applyLinkmanId">
+                            <input type="hidden" v-model="applyPersonFrom.linkLinkmanId">
+                            <p class="apply-info-title">申请人信息</p>
+                            <!--<el-col :span="24">
+                <el-form-item class="info-header" label="申请人信息">
+                </el-form-item>
+            </el-col>-->
+                            <!-- 信用记录-->
+                            <div class="credit-box" v-show="applyPersonFrom.loseCreditCount>0">
+                                <i class="credit-box-icon"
+                                    :class="applyPersonFrom.isBlack?'el-icon-error':'el-icon-warning'"></i>
+                                当前申请人{{applyPersonFrom.isBlack?'已被纳入信用黑名单':'有失信记录'}}，可点击右侧查看详细历史记录。
+                                <span class="see-credit-btn fr"
+                                    @click="creditDiaVisibleShow(applyPersonFrom)">查看信用记录</span>
+                            </div>
+                            <el-col :span="12">
+                                <el-form-item label="申请人" prop="applyLinkmanName">
+                                    <el-autocomplete :trigger-on-focus="false"
+                                        :fetch-suggestions="querySearchLinkMan"
+                                        v-model="applyPersonFrom.applyLinkmanName" @select="querySearchApplyLinkMan"
+                                        placeholder="请输入申请人姓名">
+                                        <el-button slot="append" @click.native="clearApplyLinkManInfo(true)"
+                                            title="清空">清空</el-button>
+                                    </el-autocomplete>
                                 </el-form-item>
                             </el-col>
-                        </el-form>
-                        <!--个人申报主体 end-->
-                        <!--企业申报主体 start-->
-                        <el-form v-if="applySubjectType==1 || applySubjectType==2">
-                            <el-form label-width="176px" class="clearfix" v-for="(jiansheFromItem,index) in jiansheFrom"
-                                :ref="'jianshe_'+index" :key="index" :rules="rulesCompanyForm" :model="jiansheFromItem">
-                                <p v-show="index==0" class="apply-info-title">建设单位信息</p>
-                                <!--v-show="agentChecked && (index==0)"-->
-                                <!-- 信用记录-->
-                                <div class="credit-box" v-show="jiansheFromItem.loseCreditCount>0">
-                                    <i class="credit-box-icon"
-                                        :class="jiansheFromItem.isBlack?'el-icon-error':'el-icon-warning'"></i>
-                                    当前企业{{jiansheFromItem.isBlack?'已被纳入信用黑名单':'有失信记录'}}，可点击右侧查看详细历史记录。
-                                    <span class="see-credit-btn fr"
-                                        @click="creditDiaVisibleShow(jiansheFromItem)">查看信用记录</span>
-                                </div>
-                                <input type="hidden" name="applyinstId" :value="jiansheFromItem.applyinstId">
-                                <input type="hidden" name="unitInfoId" :value="jiansheFromItem.unitInfoId">
-                                <input type="hidden" name="linkmanId" :value="jiansheFromItem.linkmanId">
-                                <el-col :span="12">
-                                    <el-form-item label="单位类型" prop="unitType">
-                                        <el-select v-model="jiansheFromItem.unitType" placeholder="请选择">
-                                            <el-option v-for="(item,indexOp) in xmdwlxList" :key="indexOp"
-                                                :label="item.itemName" :value="item.itemCode"></el-option>
-                                        </el-select>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="统一社会信用代码" prop="unifiedSocialCreditCode">
-                                        <el-input v-model="jiansheFromItem.unifiedSocialCreditCode"
-                                            placeholder="请输入统一社会信用代码"></el-input>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="单位名称" prop="applicant">
-                                        <el-autocomplete :trigger-on-focus="false"
-                                            :fetch-suggestions="querySearchJiansheName"
-                                            @select="function(value) {selUnitInfo(value,'jianshe',index)}"
-                                            v-model="jiansheFromItem.applicant" placeholder="请输入单位名称">
-                                        </el-autocomplete>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="单位地址" prop="applicantDetailSite">
-                                        <el-input v-model="jiansheFromItem.applicantDetailSite" placeholder="请输入法定代表人">
-                                        </el-input>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="法定代表人" prop="idrepresentative">
-                                        <el-input v-model="jiansheFromItem.idrepresentative" placeholder="请输入法定代表人">
-                                        </el-input>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="法定代表人证件号">
-                                        <el-input v-model="jiansheFromItem.idno" placeholder="请输入法定代表人证件号">
-                                        </el-input>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="联系人名称" prop="linkmanName" class="sel-btn">
-                                        <el-select v-model="jiansheFromItem.linkmanName" remote
-                                            :loading="loadingLinkMan"
-                                            @click.native="getLinkManListByUnitId(jiansheFromItem)" required
-                                            placeholder="--请选择--">
-                                            <el-option class="select-option-ul"
-                                                v-for="(item2, index2) in jiansheFromItem.aeaLinkmanInfoList"
-                                                :key="index2" :label="item2.addressName"
-                                                @click.native="selLinkman(item2,index,true)" :value="item2.addressId">
-                                                <span class="fl">{{ item2.addressName }}</span>
-                                                <span class="fr el-icon-delete"
-                                                    @click.stop="delLinkman(item2,jiansheFromItem,index)"></span>
-                                            </el-option>
-                                        </el-select>
-                                        <el-button type="primary" class="add-link-man"
-                                            icon="el-icon-circle-plus-outline"
-                                            @click="addLinkman('',jiansheFromItem);jingbanFlag=false" title="新增">
-                                        </el-button>
-                                        <el-button icon="el-icon-edit-outline" type="primary" class="item-right-btn"
-                                            @click="addLinkman(jiansheFromItem,jiansheFromItem);jingbanFlag=false"
-                                            title="编辑"></el-button>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="联系人证件号" prop="linkmanCertNo">
-                                        <el-input v-model="jiansheFromItem.linkmanCertNo" disabled
-                                            placeholder="请输入联系人证件号">
-                                        </el-input>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="联系人手机" prop="linkmanMobilePhone">
-                                        <el-input v-model="jiansheFromItem.linkmanMobilePhone" disabled
-                                            placeholder="请输入联系人手机号"></el-input>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="联系人邮箱">
-                                        <el-input :id="'linkmanMail_'+index" v-model="jiansheFromItem.linkmanMail"
-                                            disabled placeholder="请输入联系人邮箱"></el-input>
-                                    </el-form-item>
-                                </el-col>
-                                <template v-if="showUnitMore.indexOf(index)>-1">
-                                    <el-col :span="12">
-                                        <el-form-item label="工商登记号" prop="induCommRegNum">
-                                            <el-input v-model="jiansheFromItem.induCommRegNum" placeholder="请输入工商登记号">
-                                            </el-input>
-                                        </el-form-item>
-                                    </el-col>
-                                    <el-col :span="12">
-                                        <el-form-item label="组织机构代码" prop="organizationalCode">
-                                            <el-input v-model="jiansheFromItem.organizationalCode"
-                                                placeholder="请输入组织机构代码"></el-input>
-                                        </el-form-item>
-                                    </el-col>
-                                    <el-col :span="12">
-                                        <el-form-item label="行政区（园区）" prop="applicantDistrict">
-                                            <el-input v-model="jiansheFromItem.applicantDistrict"
-                                                placeholder="请输入行政区（园区）"></el-input>
-                                        </el-form-item>
-                                    </el-col>
-                                    <el-col :span="12">
-                                        <el-form-item label="经营范围" prop="managementScope">
-                                            <el-input v-model="jiansheFromItem.managementScope" placeholder="请输入经营范围">
-                                            </el-input>
-                                        </el-form-item>
-                                    </el-col>
-                                    <el-col :span="12">
-                                        <el-form-item label="注册资本" prop="registerCapital">
-                                            <el-input v-model="jiansheFromItem.registerCapital" placeholder="请输入注册资本">
-                                            </el-input>
-                                        </el-form-item>
-                                    </el-col>
-                                    <el-col :span="12">
-                                        <el-form-item label="注册登记机关" prop="registerAuthority">
-                                            <el-input v-model="jiansheFromItem.registerAuthority"
-                                                placeholder="请输入注册登记机关"></el-input>
-                                        </el-form-item>
-                                    </el-col>
-                                    <el-col :span="12">
-                                        <el-form-item label="邮政编码" prop="postalCode">
-                                            <el-input v-model="jiansheFromItem.postalCode" placeholder="请输入邮政编码">
-                                            </el-input>
-                                        </el-form-item>
-                                    </el-col>
-                                    <el-col :span="12">
-                                        <el-form-item label="纳税人识别号" prop="taxpayerNum">
-                                            <el-input v-model="jiansheFromItem.taxpayerNum" placeholder="请输入纳税人识别号">
-                                            </el-input>
-                                        </el-form-item>
-                                    </el-col>
-                                    <el-col :span="12">
-                                        <el-form-item label="信用标记码" prop="creditFlagNum">
-                                            <el-input v-model="jiansheFromItem.creditFlagNum" placeholder="请输入信用标记码">
-                                            </el-input>
-                                        </el-form-item>
-                                    </el-col>
-                                </template>
-                                <el-col :span="24" class="ar">
-                                    <p class="more-base-info" @click="setShowUnitMore(index)">
-                                        {{(showUnitMore.indexOf(index)>-1)?'隐藏更多':'显示更多'}}
-                                        <i :class="showMoreBaseInfo?'el-icon-arrow-up':'el-icon-arrow-down'"></i></p>
-                                    <el-form-item>
-                                        <el-button type="primary" class="save-jansheUnit-info" icon="el-icon-wallet"
-                                            @click="saveProjinfoids(jiansheFromItem,index,'jianshe_')">保存</el-button>
-                                        <el-button type="warning" icon="el-icon-delete"
-                                            @click="delUnitInfoProj(jiansheFromItem,index,'jianshe')">删除</el-button>
-                                    </el-form-item>
-                                </el-col>
-                            </el-form>
-                            <el-col :span="24" class="ar">
-                                <el-form-item>
-                                    <el-button type="primary" size="small" plain @click="addUnitInfoForm(1)">+ 新增单位
-                                    </el-button>
+                            <el-col :span="12">
+                                <el-form-item label="申请人身份证号" prop="applyLinkmanIdCard">
+                                    <el-input v-model="applyPersonFrom.applyLinkmanIdCard" placeholder="请输入申请人身份证号">
+                                    </el-input>
                                 </el-form-item>
                             </el-col>
-                        </el-form>
-                        <!--企业申报主体 end-->
-                        <!--经办单位信息 start-->
-                        <el-form v-if="applySubjectType!=0&&agentChecked">
-                            <el-form label-width="176px" class="clearfix" :ref="'jingban_'+index"
-                                :rules="rulesCompanyForm" :key="index" v-for="(jingbanUnitsItem,index) in agentUnits"
-                                :model="jingbanUnitsItem">
-                                <p v-show="index==0" class="apply-info-title">经办单位信息</p>
-                                <input type="hidden" name="linkmanId" :value="jingbanUnitsItem.linkmanId">
-                                <input type="hidden" name="unitInfoId" :value="jingbanUnitsItem.unitInfoId">
-                                <el-col :span="12" class="input-inline">
-                                    <el-form-item label="单位类型" prop="unitType">
-                                        <el-select v-model="jingbanUnitsItem.unitType" placeholder="请选择">
-                                            <el-option v-for="(item,indexOp) in xmdwlxList" :key="indexOp"
-                                                :label="item.itemName" :value="item.itemCode"></el-option>
-                                        </el-select>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="统一社会信用代码" prop="unifiedSocialCreditCode">
-                                        <el-input v-model="jingbanUnitsItem.unifiedSocialCreditCode"
-                                            placeholder="请输入统一社会信用代码"></el-input>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="单位名称" prop="applicant">
-                                        <el-autocomplete :trigger-on-focus="false"
-                                            :fetch-suggestions="querySearchJiansheName"
-                                            @select="function(value) {selUnitInfo(value,'jingban',index)}"
-                                            v-model="jingbanUnitsItem.applicant" placeholder="请输入单位名称">
-                                        </el-autocomplete>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="单位地址" prop="applicantDetailSite">
-                                        <el-input v-model="jingbanUnitsItem.applicantDetailSite" placeholder="请输入法定代表人">
-                                        </el-input>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="法定代表人" prop="idrepresentative">
-                                        <el-input v-model="jingbanUnitsItem.idrepresentative" placeholder="请输入法定代表人">
-                                        </el-input>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="法定代表人证件号">
-                                        <el-input v-model="jingbanUnitsItem.idno" placeholder="请输入法定代表人证件号">
-                                        </el-input>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="联系人名称" prop="linkmanName" class="sel-btn">
-                                        <el-select v-model="jingbanUnitsItem.linkmanName" remote reserve-keyword
-                                            :loading="loadingLinkMan"
-                                            @click.native="getLinkManListByUnitId(jingbanUnitsItem)" required
-                                            placeholder="--请选择--">
-                                            <el-option class="select-option-ul"
-                                                v-for="(item2, index2) in jingbanUnitsItem.aeaLinkmanInfoList"
-                                                :label="item2.linkmanName" :key="index2"
-                                                @click.native="selLinkman(item2,index,false)"
-                                                :value="item2.linkmanName">
-                                                <span class="fl">{{ item2.linkmanName }}</span>
-                                                <span class="fr el-icon-delete"
-                                                    @click.stop="delLinkman(item2,jingbanUnitsItem,index)"></span>
-                                            </el-option>
-                                        </el-select>
-                                        <el-button type="primary" class="add-link-man"
-                                            icon="el-icon-circle-plus-outline"
-                                            @click="addLinkman('',jingbanUnitsItem);jingbanFlag=true" title="新增">
-                                        </el-button>
-                                        <el-button icon="el-icon-edit-outline" type="primary" class="item-right-btn"
-                                            @click="addLinkman(jingbanUnitsItem,jingbanUnitsItem);jingbanFlag=true"
-                                            title="编辑"></el-button>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="联系人证件号" prop="linkmanCertNo">
-                                        <el-input v-model="jingbanUnitsItem.linkmanCertNo" disabled
-                                            placeholder="请输入联系人证件号">
-                                        </el-input>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="联系人手机" prop="linkmanMobilePhone">
-                                        <el-input v-model="jingbanUnitsItem.linkmanMobilePhone" disabled
-                                            placeholder="请输入联系人手机"></el-input>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="联系人邮箱">
-                                        <el-input v-model="jingbanUnitsItem.linkmanMail" disabled
-                                            placeholder="请输入联系人邮箱"></el-input>
-                                    </el-form-item>
-                                </el-col>
-                                <template v-if="showUnitMore.indexOf(index)>-1">
-                                    <el-col :span="12">
-                                        <el-form-item label="工商登记号" prop="induCommRegNum">
-                                            <el-input v-model="jingbanUnitsItem.induCommRegNum" placeholder="请输入工商登记号">
-                                            </el-input>
-                                        </el-form-item>
-                                    </el-col>
-                                    <el-col :span="12">
-                                        <el-form-item label="组织机构代码" prop="organizationalCode">
-                                            <el-input v-model="jingbanUnitsItem.organizationalCode"
-                                                placeholder="请输入组织机构代码"></el-input>
-                                        </el-form-item>
-                                    </el-col>
-                                    <el-col :span="12">
-                                        <el-form-item label="行政区（园区）" prop="applicantDistrict">
-                                            <el-input v-model="jingbanUnitsItem.applicantDistrict"
-                                                placeholder="请输入行政区（园区）"></el-input>
-                                        </el-form-item>
-                                    </el-col>
-                                    <el-col :span="12">
-                                        <el-form-item label="经营范围" prop="managementScope">
-                                            <el-input v-model="jingbanUnitsItem.managementScope" placeholder="请输入经营范围">
-                                            </el-input>
-                                        </el-form-item>
-                                    </el-col>
-                                    <el-col :span="12">
-                                        <el-form-item label="注册资本" prop="registerCapital">
-                                            <el-input v-model="jingbanUnitsItem.registerCapital" placeholder="请输入注册资本">
-                                            </el-input>
-                                        </el-form-item>
-                                    </el-col>
-                                    <el-col :span="12">
-                                        <el-form-item label="注册登记机关" prop="registerAuthority">
-                                            <el-input v-model="jingbanUnitsItem.registerAuthority"
-                                                placeholder="请输入注册登记机关"></el-input>
-                                        </el-form-item>
-                                    </el-col>
-                                    <el-col :span="12">
-                                        <el-form-item label="邮政编码" prop="postalCode">
-                                            <el-input v-model="jingbanUnitsItem.postalCode" placeholder="请输入邮政编码">
-                                            </el-input>
-                                        </el-form-item>
-                                    </el-col>
-                                    <el-col :span="12">
-                                        <el-form-item label="纳税人识别号" prop="taxpayerNum">
-                                            <el-input v-model="jingbanUnitsItem.taxpayerNum" placeholder="请输入纳税人识别号">
-                                            </el-input>
-                                        </el-form-item>
-                                    </el-col>
-                                    <el-col :span="12">
-                                        <el-form-item label="信用标记码" prop="creditFlagNum">
-                                            <el-input v-model="jingbanUnitsItem.creditFlagNum" placeholder="请输入信用标记码">
-                                            </el-input>
-                                        </el-form-item>
-                                    </el-col>
-                                </template>
-                                <el-col :span="24" class="ar">
-                                    <p class="more-base-info" @click="setShowUnitMore(index)">
-                                        {{(showUnitMore.indexOf(index)>-1)?'隐藏更多':'显示更多'}}
-                                        <i :class="showMoreBaseInfo?'el-icon-arrow-up':'el-icon-arrow-down'"></i></p>
-                                    <el-form-item>
-                                        <el-button type="primary" class="save-jinbanUnit-info" icon="el-icon-wallet"
-                                            @click="saveProjinfoids(jingbanUnitsItem,index,'jingban_')">保存</el-button>
-                                        <el-button type="warning" icon="el-icon-delete"
-                                            @click="delUnitInfoProj(jingbanUnitsItem,index,'jingban')">删除</el-button>
-                                    </el-form-item>
-                                </el-col>
-                            </el-form>
-                            <el-col :span="24" class="ar">
-                                <el-form-item>
-                                    <el-button type="primary" size="small" plain @click="addUnitInfoForm(0)">+ 新增经办单位
-                                    </el-button>
+                            <el-col :span="12">
+                                <el-form-item label="申请人电话" prop="applyLinkmanTel">
+                                    <el-input v-model="applyPersonFrom.applyLinkmanTel" placeholder="请输入申请人电话">
+                                    </el-input>
                                 </el-form-item>
                             </el-col>
-                        </el-form>
+                            <el-col :span="12">
+                                <el-form-item label="申请人邮箱">
+                                    <el-input v-model="applyPersonFrom.applyLinkmanEmail" id="apply_linkmanEmail"
+                                        placeholder="请输入申请人邮箱">
+                                    </el-input>
+                                </el-form-item>
+                            </el-col>
+                            <p class="apply-info-title">联系人信息
+                                <el-checkbox class="fr" v-model="sameAsApplyLink" @change="copyApplyLinkmanInfo">
+                                    与申请人信息一致 <span class="notice">（勾选后将自动获取联系人信息）</span></el-checkbox>
+                            </p>
 
-                        <!--经办单位信息 end-->
-                    </el-collapse-item>
-                    <!--  申办主体信息  end  -->
-                </template>
+                            <el-col :span="12">
+                                <el-form-item label="联系人" prop="linkLinkmanName">
+                                    <el-autocomplete :trigger-on-focus="false" :disabled="sameAsApplyLink"
+                                        :fetch-suggestions="querySearchLinkMan" @select="querySearchLinkLinkMan"
+                                        v-model="applyPersonFrom.linkLinkmanName" placeholder="请输入联系人姓名">
+                                        <el-button slot="append" @click.native="clearApplyLinkManInfo(false)"
+                                            title="清空">清空</el-button>
+                                    </el-autocomplete>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="联系人身份证号" prop="linkLinkmanIdCard">
+                                    <el-input :disabled="sameAsApplyLink"
+                                        v-model="applyPersonFrom.linkLinkmanIdCard" placeholder="请输入联系人身份证号">
+                                    </el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="联系人电话" prop="linkLinkmanTel">
+                                    <el-input :disabled="sameAsApplyLink" v-model="applyPersonFrom.linkLinkmanTel"
+                                        placeholder="请输入联系人电话"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="联系人邮箱">
+                                    <el-input :disabled="sameAsApplyLink" v-model="applyPersonFrom.linkLinkmanEmail"
+                                        placeholder="请输入联系人邮箱">
+                                    </el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-form>
+                        <el-col :span="24" class="ar">
+                            <el-form-item>
+                                <el-button type="primary" icon="el-icon-wallet" @click="saveApplyAndLinkmanInfo">
+                                    保存</el-button>
+                            </el-form-item>
+                        </el-col>
+                    </el-form>
+                    <!--个人申报主体 end-->
+                    <!--企业申报主体 start-->
+                    <el-form v-if="applySubjectType==1 || applySubjectType==2">
+                        <el-form label-width="176px" class="clearfix" v-for="(jiansheFromItem,index) in jiansheFrom"
+                            :ref="'jianshe_'+index" :key="index" :rules="rulesCompanyForm" :model="jiansheFromItem">
+                            <p v-show="index==0" class="apply-info-title">建设单位信息</p>
+                            <!--v-show="agentChecked && (index==0)"-->
+                            <!-- 信用记录-->
+                            <div class="credit-box" v-show="jiansheFromItem.loseCreditCount>0">
+                                <i class="credit-box-icon"
+                                    :class="jiansheFromItem.isBlack?'el-icon-error':'el-icon-warning'"></i>
+                                当前企业{{jiansheFromItem.isBlack?'已被纳入信用黑名单':'有失信记录'}}，可点击右侧查看详细历史记录。
+                                <span class="see-credit-btn fr"
+                                    @click="creditDiaVisibleShow(jiansheFromItem)">查看信用记录</span>
+                            </div>
+                            <input type="hidden" name="applyinstId" :value="jiansheFromItem.applyinstId">
+                            <input type="hidden" name="unitInfoId" :value="jiansheFromItem.unitInfoId">
+                            <input type="hidden" name="linkmanId" :value="jiansheFromItem.linkmanId">
+                            <el-col :span="12">
+                                <el-form-item label="单位类型" prop="unitType">
+                                    <el-select v-model="jiansheFromItem.unitType" placeholder="请选择">
+                                        <el-option v-for="(item,indexOp) in xmdwlxList" :key="indexOp"
+                                            :label="item.itemName" :value="item.itemCode"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="统一社会信用代码" prop="unifiedSocialCreditCode">
+                                    <el-input v-model="jiansheFromItem.unifiedSocialCreditCode"
+                                        placeholder="请输入统一社会信用代码"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="单位名称" prop="applicant">
+                                    <el-autocomplete :trigger-on-focus="false"
+                                        :fetch-suggestions="querySearchJiansheName"
+                                        @select="function(value) {selUnitInfo(value,'jianshe',index)}"
+                                        v-model="jiansheFromItem.applicant" placeholder="请输入单位名称">
+                                    </el-autocomplete>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="单位地址" prop="applicantDetailSite">
+                                    <el-input v-model="jiansheFromItem.applicantDetailSite" placeholder="请输入法定代表人">
+                                    </el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="法定代表人" prop="idrepresentative">
+                                    <el-input v-model="jiansheFromItem.idrepresentative" placeholder="请输入法定代表人">
+                                    </el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="法定代表人证件号">
+                                    <el-input v-model="jiansheFromItem.idno" placeholder="请输入法定代表人证件号">
+                                    </el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="联系人名称" prop="linkmanName" class="sel-btn">
+                                    <el-select v-model="jiansheFromItem.linkmanName" remote
+                                        :loading="loadingLinkMan"
+                                        @click.native="getLinkManListByUnitId(jiansheFromItem)" required
+                                        placeholder="--请选择--">
+                                        <el-option class="select-option-ul"
+                                            v-for="(item2, index2) in jiansheFromItem.aeaLinkmanInfoList"
+                                            :key="index2" :label="item2.addressName"
+                                            @click.native="selLinkman(item2,index,true)" :value="item2.addressId">
+                                            <span class="fl">{{ item2.addressName }}</span>
+                                            <span class="fr el-icon-delete"
+                                                @click.stop="delLinkman(item2,jiansheFromItem,index)"></span>
+                                        </el-option>
+                                    </el-select>
+                                    <el-button type="primary" class="add-link-man"
+                                        icon="el-icon-circle-plus-outline"
+                                        @click="addLinkman('',jiansheFromItem);jingbanFlag=false" title="新增">
+                                    </el-button>
+                                    <el-button icon="el-icon-edit-outline" type="primary" class="item-right-btn"
+                                        @click="addLinkman(jiansheFromItem,jiansheFromItem);jingbanFlag=false"
+                                        title="编辑"></el-button>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="联系人证件号" prop="linkmanCertNo">
+                                    <el-input v-model="jiansheFromItem.linkmanCertNo" disabled
+                                        placeholder="请输入联系人证件号">
+                                    </el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="联系人手机" prop="linkmanMobilePhone">
+                                    <el-input v-model="jiansheFromItem.linkmanMobilePhone" disabled
+                                        placeholder="请输入联系人手机号"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="联系人邮箱">
+                                    <el-input :id="'linkmanMail_'+index" v-model="jiansheFromItem.linkmanMail"
+                                        disabled placeholder="请输入联系人邮箱"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <template v-if="showUnitMore.indexOf(index)>-1">
+                                <el-col :span="12">
+                                    <el-form-item label="工商登记号" prop="induCommRegNum">
+                                        <el-input v-model="jiansheFromItem.induCommRegNum" placeholder="请输入工商登记号">
+                                        </el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="组织机构代码" prop="organizationalCode">
+                                        <el-input v-model="jiansheFromItem.organizationalCode"
+                                            placeholder="请输入组织机构代码"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="行政区（园区）" prop="applicantDistrict">
+                                        <el-input v-model="jiansheFromItem.applicantDistrict"
+                                            placeholder="请输入行政区（园区）"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="经营范围" prop="managementScope">
+                                        <el-input v-model="jiansheFromItem.managementScope" placeholder="请输入经营范围">
+                                        </el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="注册资本" prop="registerCapital">
+                                        <el-input v-model="jiansheFromItem.registerCapital" placeholder="请输入注册资本">
+                                        </el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="注册登记机关" prop="registerAuthority">
+                                        <el-input v-model="jiansheFromItem.registerAuthority"
+                                            placeholder="请输入注册登记机关"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="邮政编码" prop="postalCode">
+                                        <el-input v-model="jiansheFromItem.postalCode" placeholder="请输入邮政编码">
+                                        </el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="纳税人识别号" prop="taxpayerNum">
+                                        <el-input v-model="jiansheFromItem.taxpayerNum" placeholder="请输入纳税人识别号">
+                                        </el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="信用标记码" prop="creditFlagNum">
+                                        <el-input v-model="jiansheFromItem.creditFlagNum" placeholder="请输入信用标记码">
+                                        </el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </template>
+                            <el-col :span="24" class="ar">
+                                <p class="more-base-info" @click="setShowUnitMore(index)">
+                                    {{(showUnitMore.indexOf(index)>-1)?'隐藏更多':'显示更多'}}
+                                    <i :class="showMoreBaseInfo?'el-icon-arrow-up':'el-icon-arrow-down'"></i></p>
+                                <el-form-item>
+                                    <el-button type="primary" class="save-jansheUnit-info" icon="el-icon-wallet"
+                                        @click="saveProjinfoids(jiansheFromItem,index,'jianshe_')">保存</el-button>
+                                    <el-button type="warning" icon="el-icon-delete"
+                                        @click="delUnitInfoProj(jiansheFromItem,index,'jianshe')">删除</el-button>
+                                </el-form-item>
+                            </el-col>
+                        </el-form>
+                        <el-col :span="24" class="ar">
+                            <el-form-item>
+                                <el-button type="primary" size="small" plain @click="addUnitInfoForm(1)">+ 新增单位
+                                </el-button>
+                            </el-form-item>
+                        </el-col>
+                    </el-form>
+                    <!--企业申报主体 end-->
+                    <!--经办单位信息 start-->
+                    <el-form v-if="applySubjectType!=0&&agentChecked">
+                        <el-form label-width="176px" class="clearfix" :ref="'jingban_'+index"
+                            :rules="rulesCompanyForm" :key="index" v-for="(jingbanUnitsItem,index) in agentUnits"
+                            :model="jingbanUnitsItem">
+                            <p v-show="index==0" class="apply-info-title">经办单位信息</p>
+                            <input type="hidden" name="linkmanId" :value="jingbanUnitsItem.linkmanId">
+                            <input type="hidden" name="unitInfoId" :value="jingbanUnitsItem.unitInfoId">
+                            <el-col :span="12" class="input-inline">
+                                <el-form-item label="单位类型" prop="unitType">
+                                    <el-select v-model="jingbanUnitsItem.unitType" placeholder="请选择">
+                                        <el-option v-for="(item,indexOp) in xmdwlxList" :key="indexOp"
+                                            :label="item.itemName" :value="item.itemCode"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="统一社会信用代码" prop="unifiedSocialCreditCode">
+                                    <el-input v-model="jingbanUnitsItem.unifiedSocialCreditCode"
+                                        placeholder="请输入统一社会信用代码"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="单位名称" prop="applicant">
+                                    <el-autocomplete :trigger-on-focus="false"
+                                        :fetch-suggestions="querySearchJiansheName"
+                                        @select="function(value) {selUnitInfo(value,'jingban',index)}"
+                                        v-model="jingbanUnitsItem.applicant" placeholder="请输入单位名称">
+                                    </el-autocomplete>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="单位地址" prop="applicantDetailSite">
+                                    <el-input v-model="jingbanUnitsItem.applicantDetailSite" placeholder="请输入法定代表人">
+                                    </el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="法定代表人" prop="idrepresentative">
+                                    <el-input v-model="jingbanUnitsItem.idrepresentative" placeholder="请输入法定代表人">
+                                    </el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="法定代表人证件号">
+                                    <el-input v-model="jingbanUnitsItem.idno" placeholder="请输入法定代表人证件号">
+                                    </el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="联系人名称" prop="linkmanName" class="sel-btn">
+                                    <el-select v-model="jingbanUnitsItem.linkmanName" remote reserve-keyword
+                                        :loading="loadingLinkMan"
+                                        @click.native="getLinkManListByUnitId(jingbanUnitsItem)" required
+                                        placeholder="--请选择--">
+                                        <el-option class="select-option-ul"
+                                            v-for="(item2, index2) in jingbanUnitsItem.aeaLinkmanInfoList"
+                                            :label="item2.linkmanName" :key="index2"
+                                            @click.native="selLinkman(item2,index,false)"
+                                            :value="item2.linkmanName">
+                                            <span class="fl">{{ item2.linkmanName }}</span>
+                                            <span class="fr el-icon-delete"
+                                                @click.stop="delLinkman(item2,jingbanUnitsItem,index)"></span>
+                                        </el-option>
+                                    </el-select>
+                                    <el-button type="primary" class="add-link-man"
+                                        icon="el-icon-circle-plus-outline"
+                                        @click="addLinkman('',jingbanUnitsItem);jingbanFlag=true" title="新增">
+                                    </el-button>
+                                    <el-button icon="el-icon-edit-outline" type="primary" class="item-right-btn"
+                                        @click="addLinkman(jingbanUnitsItem,jingbanUnitsItem);jingbanFlag=true"
+                                        title="编辑"></el-button>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="联系人证件号" prop="linkmanCertNo">
+                                    <el-input v-model="jingbanUnitsItem.linkmanCertNo" disabled
+                                        placeholder="请输入联系人证件号">
+                                    </el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="联系人手机" prop="linkmanMobilePhone">
+                                    <el-input v-model="jingbanUnitsItem.linkmanMobilePhone" disabled
+                                        placeholder="请输入联系人手机"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="联系人邮箱">
+                                    <el-input v-model="jingbanUnitsItem.linkmanMail" disabled
+                                        placeholder="请输入联系人邮箱"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <template v-if="showUnitMore.indexOf(index)>-1">
+                                <el-col :span="12">
+                                    <el-form-item label="工商登记号" prop="induCommRegNum">
+                                        <el-input v-model="jingbanUnitsItem.induCommRegNum" placeholder="请输入工商登记号">
+                                        </el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="组织机构代码" prop="organizationalCode">
+                                        <el-input v-model="jingbanUnitsItem.organizationalCode"
+                                            placeholder="请输入组织机构代码"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="行政区（园区）" prop="applicantDistrict">
+                                        <el-input v-model="jingbanUnitsItem.applicantDistrict"
+                                            placeholder="请输入行政区（园区）"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="经营范围" prop="managementScope">
+                                        <el-input v-model="jingbanUnitsItem.managementScope" placeholder="请输入经营范围">
+                                        </el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="注册资本" prop="registerCapital">
+                                        <el-input v-model="jingbanUnitsItem.registerCapital" placeholder="请输入注册资本">
+                                        </el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="注册登记机关" prop="registerAuthority">
+                                        <el-input v-model="jingbanUnitsItem.registerAuthority"
+                                            placeholder="请输入注册登记机关"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="邮政编码" prop="postalCode">
+                                        <el-input v-model="jingbanUnitsItem.postalCode" placeholder="请输入邮政编码">
+                                        </el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="纳税人识别号" prop="taxpayerNum">
+                                        <el-input v-model="jingbanUnitsItem.taxpayerNum" placeholder="请输入纳税人识别号">
+                                        </el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="信用标记码" prop="creditFlagNum">
+                                        <el-input v-model="jingbanUnitsItem.creditFlagNum" placeholder="请输入信用标记码">
+                                        </el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </template>
+                            <el-col :span="24" class="ar">
+                                <p class="more-base-info" @click="setShowUnitMore(index)">
+                                    {{(showUnitMore.indexOf(index)>-1)?'隐藏更多':'显示更多'}}
+                                    <i :class="showMoreBaseInfo?'el-icon-arrow-up':'el-icon-arrow-down'"></i></p>
+                                <el-form-item>
+                                    <el-button type="primary" class="save-jinbanUnit-info" icon="el-icon-wallet"
+                                        @click="saveProjinfoids(jingbanUnitsItem,index,'jingban_')">保存</el-button>
+                                    <el-button type="warning" icon="el-icon-delete"
+                                        @click="delUnitInfoProj(jingbanUnitsItem,index,'jingban')">删除</el-button>
+                                </el-form-item>
+                            </el-col>
+                        </el-form>
+                        <el-col :span="24" class="ar">
+                            <el-form-item>
+                                <el-button type="primary" size="small" plain @click="addUnitInfoForm(0)">+ 新增经办单位
+                                </el-button>
+                            </el-form-item>
+                        </el-col>
+                    </el-form>
+
+                    <!--经办单位信息 end-->
+                </el-collapse-item>
+                <!--  申办主体信息  end  -->
             </el-collapse>
             <!-- <div class="right-bottom-btn" v-if="showMoreProjInfo">
                 <el-button type="danger" circle @click="showCommentDialog('3')">不予<br />受理</el-button>

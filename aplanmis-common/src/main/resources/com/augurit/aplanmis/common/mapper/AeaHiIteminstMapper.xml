@@ -695,7 +695,7 @@
             </if>
         </where>
         ) aea_123
-        order by aea_123.startTime desc
+        order by aea_123.startTime desc,aea_123.localCode desc
     </select>
     <select id="countApproveProjInfoListByUnitOrLinkman" resultType="long">
         select count(1) from (
@@ -1027,6 +1027,14 @@
             api.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
             )
         </if>
+        <if test="parentProjInfoId != null and parentProjInfoId != ''and parentProjInfoId=='root'">
+            and api.PROJ_FLAG='p'
+        </if>
+        <if test="parentProjInfoId != null and parentProjInfoId != ''and parentProjInfoId!='root'">
+            and api.PROJ_INFO_ID IN (
+              select CHILD_PROJ_ID from aea_parent_proj where PARENT_PROJ_ID=#{parentProjInfoId}
+            )
+        </if>
         UNION ALL
         SELECT api.PROJ_INFO_ID projInfoId,api.PROJ_NAME projName,api.LOCAL_CODE localCode,api.gcbm,apt.THEME_ID
         themeId,apt.THEME_NAME themeName
@@ -1048,6 +1056,14 @@
             api.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
             api.GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
             api.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            )
+        </if>
+        <if test="parentProjInfoId != null and parentProjInfoId != ''and parentProjInfoId=='root'">
+            and (api.PROJ_FLAG='p' or api.PROJ_FLAG is null)
+        </if>
+        <if test="parentProjInfoId != null and parentProjInfoId != ''and parentProjInfoId!='root'">
+            and api.PROJ_INFO_ID IN (
+            select CHILD_PROJ_ID from aea_parent_proj where PARENT_PROJ_ID=#{parentProjInfoId}
             )
         </if>
         ) aea_123
@@ -2306,7 +2322,11 @@
         and aap.proj_info_id=#{projInfoId}
         and ahi.root_org_id=#{rootOrgId}
         union all
-        select ahi.* from aea_hi_iteminst ahi
+        select
+        <include refid="aliasColumns">
+            <property name="alias" value="ahi"/>
+        </include>
+        from aea_hi_iteminst ahi
         join aea_hi_par_stageinst ahps on ahps.stageinst_id=ahi.stageinst_id
         join aea_applyinst_proj aap on aap.applyinst_id=ahps.applyinst_id
         where ahi.item_ver_id in

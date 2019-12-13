@@ -95,10 +95,32 @@ var vm = new Vue({
         closeSendApplyDialog: function (){
             this.$refs.sendApplyRef.resetFields();
         },
-        //新的发起申报接口，直接进入审批页，可以做材料补正上传等操作
+        //发起申报
         viewDetail:function (row) {
-            var url = ctx+'apanmis/page/stageApproveIndex?taskId='+row.taskId + "&viewId=" + row.viewId +'&draft=true';
-            window.open(url,'_blank');
+          var menuName= '';
+          var menuInnerUrl =  '';
+          var id = new Date().getTime();
+          if (row.applyType == '并联') {
+            menuName = row.itemName;
+            menuInnerUrl = ctx + '/apanmis/page/stageApplyIndex?applyinstId='+row.applyinstId;
+          } else if(row.applyType == '单项'){
+            menuName = row.projName;
+            menuInnerUrl = ctx + '/apanmis/page/singleApplyIndex/'+row.itemVerId+'?applyinstId='+row.applyinstId;
+          }
+          var data = {
+            'menuName':menuName,
+            'menuInnerUrl':menuInnerUrl,
+            'id':id,
+            'applyinstId':row.applyinstId,
+          };
+          try{
+            parent.vm.addTab('',data,'','');
+          }catch (e) {
+            window.open(menuInnerUrl,'_blank');
+          }
+          return null;
+          // var url = ctx+'apanmis/page/stageApproveIndex?taskId='+row.taskId + "&viewId=" + row.viewId +'&draft=true';
+          // window.open(url,'_blank');
         },
     },
     created: function () {

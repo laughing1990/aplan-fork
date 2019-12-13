@@ -10,6 +10,7 @@ import com.augurit.aplanmis.common.vo.AeaItemServiceVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.List;
 
@@ -135,7 +136,9 @@ public interface AeaItemBasicMapper {
 
     List<AeaItemBasic> listAeaItemBasicByThemeVerId(@Param("themeVerId") String themeVerId);
 
-    List<AeaItemBasic> checkUniqueItemCode(@Param("itemCode") String itemCode);
+    List<AeaItemBasic> checkUniqueItemCode(@Param("itemId") String itemId,
+                                           @Param("itemCode") String itemCode,
+                                           @Param("rootOrgId") String rootOrgId);
 
     AeaItemBasic getAeaItemBasicByItemCode(@Param("itemCode") String itemCode);
 

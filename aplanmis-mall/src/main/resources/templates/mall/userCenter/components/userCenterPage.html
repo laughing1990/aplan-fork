@@ -558,7 +558,7 @@
       methods: {
         // 点击并联申报
         goToStageApply: function () {
-          userCenter.vm.selectNav = "我的项目库";
+          userCenter.vm.selectNav = "我的项目";
           localStorage.setItem('selectNav', userCenter.vm.selectNav);
           location.href = ctx + "rest/main/toIndexPage?projInfoId=null#declare";
         },

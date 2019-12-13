@@ -290,7 +290,7 @@ var module1 = new Vue({
         saveProjData: function () {
             var ts = this;
             ts.mloading = true;
-            _saveData = ts.projInfoForm;
+            var _saveData = ts.projInfoForm;
             if (!!ts.projInfoForm.projectAddress) {
                 _saveData.projectAddress = ts.projInfoForm.projectAddress.join(',');
             }
@@ -306,7 +306,7 @@ var module1 = new Vue({
                     if (!!ts.projInfoForm.projectAddress) {
                         ts.projInfoForm.projectAddress = ts.projInfoForm.projectAddress.split(',');
                     }
-                    userCenter.vm.selectNav="我的项目库";
+                    userCenter.vm.selectNav="我的项目";
                     localStorage.setItem('selectNav',userCenter.vm.selectNav);
                     location.href =ctx + "rest/main/toIndexPage?#declare";
                 } else {

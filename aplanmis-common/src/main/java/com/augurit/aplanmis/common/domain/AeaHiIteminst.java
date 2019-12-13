@@ -80,6 +80,8 @@ public class AeaHiIteminst implements Serializable {
     private String itemProperty;//办件类型
     private String applyinstCode;//申报流水号
     private String stageName;//阶段名称
+    private String toleranceTimelimitUnit;//办件容缺办结时的时限单位
+    private String toleranceIsCompleted; // (容缺补正是否完成：1 是，0 否)
     private List<Map<String, String>> itemStateinsts;//事项情形列表
 
     //取证登记参数

@@ -64,6 +64,9 @@ public class StageApplyDataPageVo {
     @ApiModelProperty(value = "事项与区划的键值对集合")
     private List<ItemRegionMap> itemRegionMapList;
 
+    @ApiModelProperty(value = "并行事项及其申请实例ID集合")
+    private List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos;
+
     public StageApplyDataVo toStageApplyDataVo(String appId, String themeVerId) {
         StageApplyDataVo stageApplyDataVo = new StageApplyDataVo();
         stageApplyDataVo.setApplyinstIds(this.applyinstIds);
@@ -95,6 +98,7 @@ public class StageApplyDataPageVo {
         stageApplyDataVo.setApplyLinkmanId(this.applyLinkmanId);
         stageApplyDataVo.setProjUnitIds(this.projUnitIds);
         stageApplyDataVo.setItemRegionMapList(this.itemRegionMapList);
+        stageApplyDataVo.setPropulsionItemApplyinstIdVos(this.propulsionItemApplyinstIdVos);
         return stageApplyDataVo;
     }
 

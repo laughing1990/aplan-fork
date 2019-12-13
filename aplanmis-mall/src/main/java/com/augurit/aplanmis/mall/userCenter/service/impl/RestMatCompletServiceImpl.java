@@ -11,6 +11,7 @@ import com.augurit.aplanmis.common.mapper.AeaLinkmanInfoMapper;
 import com.augurit.aplanmis.common.service.applyinst.AeaHiApplyinstCorrectRealIninstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
+import com.augurit.aplanmis.mall.userCenter.service.RestFileService;
 import com.augurit.aplanmis.mall.userCenter.service.RestMatCompletService;
 import com.augurit.aplanmis.mall.userCenter.vo.AeaLinkmanInfoVo;
 import com.augurit.aplanmis.mall.userCenter.vo.AeaUnitInfoVo;
@@ -44,6 +45,8 @@ public class RestMatCompletServiceImpl implements RestMatCompletService {
     AeaHiApplyinstService aeaHiApplyinstService;
     @Autowired
     AeaUnitInfoService aeaUnitInfoService;
+    @Autowired
+    RestFileService restFileService;
 
     public void uploadFileByCloud(String attRealIninstId, String  detailIds) throws Exception {
         AeaHiApplyinstCorrectRealIninst realIninst = aeaHiApplyinstCorrectRealIninstService.getAeaHiApplyinstCorrectRealIninstById(attRealIninstId);
@@ -72,6 +75,15 @@ public class RestMatCompletServiceImpl implements RestMatCompletService {
         realIninst.setModifyTime(new Date());
         realIninst.setModifier(SecurityContext.getCurrentUserName());
         aeaHiApplyinstCorrectRealIninstService.updateAeaHiApplyinstCorrectRealIninst(realIninst);
+    }
+
+    @Override
+    public void delelteAttFile(String detailIds, String attRealIninstId) throws Exception {
+        AeaHiApplyinstCorrectRealIninst realIninst = aeaHiApplyinstCorrectRealIninstService.getAeaHiApplyinstCorrectRealIninstById(attRealIninstId);
+        if (realIninst != null) {
+            restFileService.delelteAttachmentByCloud(detailIds.split(","),attRealIninstId);
+            updateAeaHiItemCorrectRealIninst(attRealIninstId,realIninst);
+        }
     }
 
     @Override

@@ -243,13 +243,13 @@ var vm = new Vue({
       var fileType = this.getFileType(fileName);
       var flashAttributes = '';
       _that.filePreviewCount++
-      if (flag == 'pdf') {
+      if (flag == 'pdf'||flag == 'PDF') {
         var tempwindow = window.open(); // 先打开页面
         setTimeout(function () {
           tempwindow.location = ctx + 'cod/drawing/drawingCheck?detailId=' + detailId;
         }, 1000)
       } else {
-        if (fileType == 'pdf') {
+        if (fileType == 'pdf'||flag == 'PDF') {
           var tempwindow = window.open(); // 先打开页面
           setTimeout(function () {
             tempwindow.location = ctx + 'previewPdf/view?detailId=' + detailId;
@@ -388,6 +388,24 @@ var vm = new Vue({
       this.receiveActive = ind;
       var fileUrl = ctx + '/rest/user/receive/toPDF/'+row.receiveId;
       this.pdfSrc=ctx + 'preview/pdfjs/web/viewer.html?file='+encodeURIComponent(fileUrl)
+    },
+    iteminstStateColorFormat:function(val){
+      if(val==1) return "#457EFF";
+      if(val==2) return "#4EB1FD";
+      if(val==3) return "#00C161";
+      if(val==4) return "#eee";
+      if(val==5) return "#eee";
+      if(val==6) return "#447EFF";
+      if(val==7) return "#2BB49E";
+      if(val==8) return "#447EFF";
+      if(val==9) return "#447EFF";
+      if(val==10) return "#2BB49E";
+      if(val==11) return "#00C161";
+      if(val==12) return "#00C161";
+      if(val==13) return "#FF4B47";
+      if(val==14) return "#FF4B47";
+      if(val==15) return "#FF4B47";
+      return "#000";
     }
   },
   filters: {

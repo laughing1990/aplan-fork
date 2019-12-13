@@ -2,6 +2,7 @@ package com.augurit.aplanmis.front.approve.controller;
 
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaUnitInfo;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -78,5 +80,22 @@ public class ApproveBasicInfoController {
     public ResultForm getApplyUnit(String applyinstId) throws Exception {
         List<AeaUnitInfo> applyUnitProj = aeaUnitInfoService.findApplyUnitProj(applyinstId, null);
         return new ContentResultForm<>(true, applyUnitProj);
+    }
+
+    @PostMapping("/iteminst/tolerance/update")
+    @ApiOperation(value = "4.0审批页 --> 更改事项实例容缺办结补正时限")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "iteminstId", value = "事项实例id", readOnly = true, dataType = "string", paramType = "query", required = true)
+            , @ApiImplicitParam(name = "toleranceTime", value = "容缺时限值,如果大于0则是延长的时限，如果等于0，表示终止容缺时限 ", readOnly = true, dataType = "Double", paramType = "query", required = true)
+    })
+    public ResultForm iteminstToleranceUpdate(String iteminstId,Double toleranceTime) throws Exception {
+        if(StringUtils.isBlank(iteminstId)){
+            return new ResultForm(false,"参数iteminstId不能为空！");
+        }
+        if(toleranceTime == null){
+            return new ResultForm(false,"参数toleranceTime不能为空！");
+        }
+        approveService.iteminstToleranceUpdate(iteminstId,toleranceTime);
+        return new ResultForm(true, "修改容缺办结补正时限成功！");
     }
 }

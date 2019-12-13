@@ -24,6 +24,8 @@
             <a :href="ctx+'rest/main/toIndexPage?#MyHomeIndex'">法人空间</a>
             <span class="local-span">&gt;</span>
             <a :href="ctx+'rest/main/toIndexPage#'+ userCenterItemSelect">{{selectNav}}</a>
+            <span v-if="selectNav2" class="local-span">&gt;</span>
+            <a href="javascript:;" v-if="selectNav2">{{selectNav2}}</a>
         </div>
         <section>
             <div class="my-pro-content clearfix">
@@ -46,8 +48,8 @@
                                                 <span class="warning" v-if="itemSub.name== '材料补全' && matCompletionNum ">{{matCompletionNum}}</span>
                                                 <span class="warning" v-if="itemSub.name== '材料补正'&& supplyNum  ">{{supplyNum}}</span>
                                                 <span class="warning" v-if="itemSub.name== '申报列表' && applyNum" >{{applyNum}}</span>
-                                                <span class="warning" v-if="itemSub.name== '撤回申报列表' && withdrawNum" >{{withdrawNum}}</span>
-                                                <span class="warning" v-if="itemSub.name== '待申报'&& draftNum ">{{draftNum}}</span>
+                                                <span class="warning" v-if="itemSub.name== '撤件列表' && withdrawNum" >{{withdrawNum}}</span>
+                                                <span class="warning" v-if="itemSub.name== '草稿箱'&& draftNum ">{{draftNum}}</span>
                                             </a>
                                         </li>
                                     </ul>

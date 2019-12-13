@@ -33,14 +33,14 @@ public class AeaBlueprintController {
     @RequestMapping(value = "/mapPage.do", method = {RequestMethod.GET, RequestMethod.POST})
     @ApiOperation("一张蓝图地图页面")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "xmdm", value = "项目代码", required = true, dataType = "String")
+            @ApiImplicitParam(name = "projectCode", value = "项目代码", required = true, dataType = "String")
     })
-    public ModelAndView mapPage(String xmdm) {
+    public ModelAndView mapPage(String projectCode) {
         String url = mapUrl + "?userName=" + user;
         ModelAndView modelAndView = new ModelAndView("blueprint/map_page");
         modelAndView.addObject("url", url);
         modelAndView.addObject("domain", domain);
-        modelAndView.addObject("xmdm", xmdm);
+        modelAndView.addObject("xmdm", projectCode);
         return modelAndView;
     }
 }

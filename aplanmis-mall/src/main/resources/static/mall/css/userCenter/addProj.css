@@ -469,10 +469,16 @@
     max-width: 150px;
 }
 
-.isDesignSolution > label {
-    width: 156px !important;
-}
 
 .gbCodeYear label {
     width: 248px !important;
+}
+
+.isDesignSolution > label {
+    width: 110px !important;
+    margin-left: 40px;
+}
+
+.twoLine label {
+    line-height: 20px;
 }

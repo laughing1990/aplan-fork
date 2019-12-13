@@ -227,7 +227,7 @@ public class RestMatCompletController {
             Assert.isTrue(StringUtils.isNotBlank(detailIds), "detailIds is null");
             Assert.isTrue(StringUtils.isNotBlank(attRealIninstId), "attRealIninstId is null");
 
-            aeaHiApplyinstCorrectService.delelteAttFile(detailIds, attRealIninstId);
+            restMatCompletService.delelteAttFile(detailIds, attRealIninstId);
             return new ResultForm(true, "文件删除成功！");
         } catch (Exception e) {
             e.printStackTrace();
@@ -262,7 +262,7 @@ public class RestMatCompletController {
         }
     }
 
-    @ApiOperation(value = "材料补正页面--> 从我的材料库或云盘上传电子件")
+    @ApiOperation(value = "材料补正页面--> 从我的材料或云盘上传电子件")
     @PostMapping("comp/att/uploadFileByCloud")
     @ApiImplicitParams({@ApiImplicitParam(name = "attRealIninstId", value = "材料补正实例ID", required = false, type = "string"),
             @ApiImplicitParam(name = "detailIds", value = "文件ID（英文状态逗号分隔）", required = true, type = "string")})

@@ -1308,6 +1308,16 @@ public class AeaItemBasicAdminServiceImpl implements AeaItemBasicAdminService {
         return carryOutItems;
     }
 
+    @Override
+    public boolean checkUniqueItemCode(String itemId, String itemCode, String rootOrgId){
+
+        List<AeaItemBasic> itemBasicList = aeaItemBasicMapper.checkUniqueItemCode(itemId, itemCode, rootOrgId);
+        if (itemBasicList != null && itemBasicList.size() > 0) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * 检查唯一分类标记编号是否唯一
      *

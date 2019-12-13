@@ -2485,4 +2485,60 @@ INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`
         </sql>
     </changeSet>
 
+    <changeSet id="20191212112758" author="xiong" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update act_sto_view set SQL_TEXT="
+            SELECT
+            ahap_123.APPLYINST_CODE,
+            ahap_123.APPLYINST_ID,
+            proj.PROJ_NAME,
+            '并联' IS_SERIES_APPROVE,
+            ps.STAGE_NAME,
+            '已接件' APPLYINST_STATE,
+            ahap_123.CREATE_TIME,
+            '窗口申报' APPLYINST_SOURCE,
+            ali_123.LINKMAN_NAME
+            FROM
+            aea_hi_applyinst ahap_123
+            LEFT JOIN aea_applyinst_proj ap ON ap.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN aea_proj_info proj ON proj.PROJ_INFO_ID = ap.PROJ_INFO_ID
+            LEFT JOIN aea_hi_par_stageinst stage ON stage.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN aea_par_stage ps ON ps.STAGE_ID = stage.STAGE_ID
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            WHERE
+            ahap_123.APPLYINST_SOURCE = 'win'
+            AND ahap_123.IS_DELETED = '0'
+            AND ahap_123.APPLYINST_STATE = '1'
+            AND ahap_123.IS_SERIES_APPROVE = '0'
+            AND ahap_123.IS_TEMPORARY_SUBMIT = '1'
+            AND ahap_123.CREATER = '#[currentUser]'
+            UNION ALL
+            SELECT
+            ahap_123.APPLYINST_CODE,
+            ahap_123.APPLYINST_ID,
+            proj.PROJ_NAME,
+            '串联' IS_SERIES_APPROVE,
+            iteminst.ITEMINST_NAME STAGE_NAME,
+            '已接件' APPLYINST_STATE,
+            ahap_123.CREATE_TIME,
+            '窗口申报' APPLYINST_SOURCE,
+            ali_123.LINKMAN_NAME
+            FROM
+            aea_hi_applyinst ahap_123
+            LEFT JOIN aea_applyinst_proj ap ON ap.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN aea_proj_info proj ON proj.PROJ_INFO_ID = ap.PROJ_INFO_ID
+            LEFT JOIN aea_hi_seriesinst ser ON ser.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN aea_hi_iteminst iteminst ON iteminst.seriesinst_id = ser.seriesinst_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            WHERE
+            ahap_123.APPLYINST_SOURCE = 'win'
+            AND ahap_123.IS_DELETED = '0'
+            AND ahap_123.APPLYINST_STATE = '1'
+            AND ahap_123.IS_SERIES_APPROVE = '1'
+            AND ahap_123.IS_TEMPORARY_SUBMIT = '1'
+            AND ahap_123.CREATER = '#[currentUser]'"
+            where view_comment='我的草稿箱';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

@@ -17,6 +17,7 @@
           <input type="text" placeholder="请输入工程代码 / 项目代码 / 项目名称"  v-model="keyword">
           <button class="search-btn" @click="pageNumDH = 1;getHadApplyItemList();"> <i class="el-icon-search" style="font-size: 16px;"></i>查询</button>
         </div>
+
         <table class="wt-table">
           <thead>
             <tr>
@@ -44,13 +45,20 @@
                 </td>
                 <td class="al" width="18%">
                   <el-tooltip placement="top" effect="light" v-if="item.isSeriesApprove == 1">
-                    <div slot="content">主题名称：{{item.themeName}}<br/> <br/> 事项名称：{{item.stageIteminstName}}</div>
+                    <div slot="content">所属主题：{{item.themeName}}<br/> <br/>
+                      办理事项：【<span :style="'color:' + iteminstStateColorFormat(item.iteminst[0].iteminstState)">{{item.iteminst[0].iteminstState|iteminstStateFormat}}</span>】{{item.stageIteminstName}}</div>
                     <div>
                      <span class=" pro-name" >{{item.stageIteminstName}}</span>
                     </div>
                   </el-tooltip>
                   <el-tooltip placement="top" effect="light" v-else>
-                    <div slot="content">主题名称：{{item.themeName}} <br/> <br/> 阶段名称：{{item.stageIteminstName}}</div>
+                    <div slot="content">所属主题：{{item.themeName}} <br/> <br/>
+                      所属阶段：{{item.stageIteminstName}}<br/> <br/>
+                      办理事项:
+                      <template v-for="dto in item.iteminst">
+                        <div style="line-height: 20px;">【<span :style="'color:' + iteminstStateColorFormat(dto.iteminstState)">{{dto.iteminstState|iteminstStateFormat }}</span>】{{ dto.iteminstName }}</div>
+                      </template>
+                    </div>
                     <div>
                       <span class="stageIteminstName-bg" >{{item.stageIteminstName}}</span>
                     </div>
@@ -86,7 +94,6 @@
                   <span class="applyinstState applyinstState7"
                         v-else="item.applyinstState=='6'">已办结</span>
                 </td>
-                <!--<td width="20%"><i class="applyintState" :class="applyState(item.applyinstState)"></i> {{item.applyinstState}}</td>-->
                 <td width="20%" style="cursor: pointer">
                   <a class="option-btn" style="display: inline-block;"  @click="lookProjDetail(item)">查看</a>
                   <a v-if="item.applyinstState=='0'" class="option-btn" style="display: inline-block"  @click="withDraw(item)">撤件</a>
@@ -134,9 +141,31 @@
                   {{item.localCode}}
                   <span class="ellipsis pro-name" :title="item.projName">{{item.projName}}</span>
                 </td>
-                <td class="al" width="20%"><span class="ellipsis pro-name"
-                    :title="item.stageIteminstName">{{item.stageIteminstName}}</span></td>
-                <!-- <td width="20%">{{item.businessState}}</td> -->
+                <td class="al" width="20%">
+                  <!--<span class="ellipsis pro-name"-->
+                    <!--:title="item.stageIteminstName">{{item.stageIteminstName}}</span>-->
+
+                  <el-tooltip placement="top" effect="light" v-if="item.isSeriesApprove == 1">
+                    <div slot="content">所属主题：{{item.themeName}}<br/> <br/>
+                      办理事项：【<span :style="'color:' + iteminstStateColorFormat(item.iteminst[0].iteminstState)">{{item.iteminst[0].iteminstState|iteminstStateFormat}}</span>】{{item.stageIteminstName}}</div>
+                    <div>
+                      <span class=" pro-name" >{{item.stageIteminstName}}</span>
+                    </div>
+                  </el-tooltip>
+                  <el-tooltip placement="top" effect="light" v-else>
+                    <div slot="content">所属主题：{{item.themeName}} <br/> <br/>
+                      所属阶段：{{item.stageIteminstName}}<br/> <br/>
+                      办理事项:
+                      <template v-for="dto in item.iteminst">
+                        <div style="line-height: 20px;">【<span :style="'color:' + iteminstStateColorFormat(dto.iteminstState)">{{dto.iteminstState|iteminstStateFormat }}</span>】{{ dto.iteminstName }}</div>
+                      </template>
+                    </div>
+                    <div>
+                      <span class="stageIteminstName-bg" >{{item.stageIteminstName}}</span>
+                    </div>
+                  </el-tooltip>
+
+                </td>
                 <td width="20%" style="cursor: pointer">
                   <span class="option-btn" style="display: inline-block" @click="lookProjDetail(item)">查看</span>
                   <span class="option-btn" style="display: inline-block"  @click="showReceive(item)">打印回执</span>

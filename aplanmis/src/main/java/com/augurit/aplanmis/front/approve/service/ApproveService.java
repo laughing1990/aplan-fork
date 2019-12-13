@@ -2,6 +2,7 @@ package com.augurit.aplanmis.front.approve.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.augurit.agcloud.bpm.common.mapper.ActStoTimeruleMapper;
 import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
 import com.augurit.agcloud.bsc.domain.BscAttLink;
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
@@ -21,6 +22,7 @@ import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
+import com.augurit.aplanmis.common.service.item.AeaToleranceTimeInstService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
@@ -120,6 +122,10 @@ public class ApproveService {
     private AeaCertMapper aeaCertMapper;
     @Autowired
     private AeaHiItemInoutinstMapper aeaHiItemInoutinstMapper;
+    @Autowired
+    private ActStoTimeruleMapper actStoTimeruleMapper;
+    @Autowired
+    private AeaToleranceTimeInstService aeaToleranceTimeInstService;
 
     public BpmApproveStateVo getApplyStylesAndState(String applyinstId, String taskId) throws Exception {
         BpmApproveStateVo bpmApproveStateVo = new BpmApproveStateVo();
@@ -464,9 +470,31 @@ public class ApproveService {
                         }
                     }
                 }
+                if(StringUtils.isNotBlank(temp.getTimeruleId()) && temp.getToleranceTime() != null && temp.getToleranceTime() > 0){
+                    AeaToleranceTimeInst query = new AeaToleranceTimeInst();
+                    query.setIteminstId(temp.getIteminstId());
+                    List<AeaToleranceTimeInst> aeaToleranceTimeInsts = aeaToleranceTimeInstService.listAeaToleranceTimeInst(query);
+                    if(aeaToleranceTimeInsts.size() > 0){
+                        temp.setToleranceTimelimitUnit(getTimeUnit(aeaToleranceTimeInsts.get(0).getTimeruleUnit()));
+                        temp.setToleranceIsCompleted(aeaToleranceTimeInsts.get(0).getIsCompleted());
+                    }
+                }
             }
         }
         return aeaHiIteminsts;
+    }
+
+    private String getTimeUnit(String timeruleUnit){
+        if ("WD".equalsIgnoreCase(timeruleUnit)) {
+            return "工作日";
+        } else if ("WH".equalsIgnoreCase(timeruleUnit)) {
+            return "工作时";
+        } else if ("ND".equalsIgnoreCase(timeruleUnit)) {
+            return "自然日";
+        } else if ("NH".equalsIgnoreCase(timeruleUnit)) {
+            return "自然时";
+        }
+        return null;
     }
 
     public AeaHiItemInfoVo projectDeclareInfo(String applyinstId, String busRecordId, boolean isItemSeek, String taskId) throws Exception {
@@ -1156,6 +1184,39 @@ public class ApproveService {
         if (StringUtils.isNotBlank(matinstId)) {
             aeaHiItemInoutinstMapper.getAeaHiItemInoutinstByMatinstId(matinstId);
             aeaHiItemMatinstMapper.deleteAeaHiItemMatinst(matinstId);
+        }
+    }
+
+    /**
+     * 办件容缺办结补正时限更新接口，
+     * @param iteminstId
+     * @param toleranceTime 值大于零表示延长时限，等于零表示终止计时
+     * @throws Exception
+     */
+    public void iteminstToleranceUpdate(String iteminstId,Double toleranceTime) throws Exception{
+        AeaHiIteminst aeaHiIteminst = aeaHiIteminstMapper.getAeaHiIteminstById(iteminstId);
+        if(aeaHiIteminst != null && StringUtils.isNotBlank(aeaHiIteminst.getTimeruleId())) {
+            if(toleranceTime == 0){
+                //终止计时
+                aeaToleranceTimeInstService.completeAeaToleranceTimeinst(iteminstId);
+            }else{
+                //延长时限
+                Double limit = aeaHiIteminst.getToleranceTime();
+                limit += toleranceTime;
+                aeaHiIteminstService.updateAeaHiIteminstToleranceTime(iteminstId,limit,aeaHiIteminst.getTimeruleId());
+                //更新实例
+                AeaToleranceTimeInst query = new AeaToleranceTimeInst();
+                query.setOrgId(SecurityContext.getCurrentOrgId());
+                query.setIsCompleted("0");
+                query.setIteminstId(iteminstId);
+                List<AeaToleranceTimeInst> aeaToleranceTimeInsts = aeaToleranceTimeInstService.listAeaToleranceTimeInst(query);
+                if (aeaToleranceTimeInsts.size() > 0) {
+                    AeaToleranceTimeInst temp = new AeaToleranceTimeInst();
+                    temp.setToleranceTimeInstId(aeaToleranceTimeInsts.get(0).getToleranceTimeInstId());
+                    temp.setTimeLimit(limit);
+                    aeaToleranceTimeInstService.updateAeaToleranceTimeInst(temp);
+                }
+            }
         }
     }
 }

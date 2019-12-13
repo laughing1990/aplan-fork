@@ -67,6 +67,20 @@ $(function() {
             },
             itemCode: {
                 required: true,
+                maxlength: 50,
+                remote: {
+                    url: ctx + '/aea/item/basic/checkUniqueItemCode.do', //后台处理程序
+                    type: "post",               //数据发送方式
+                    dataType: "json",           //接受数据格式
+                    data: {   //要传递的数据
+                        itemId: function () {
+                            return $("#add_item_under_dept input[name='itemId']").val();
+                        },
+                        itemCode: function () {
+                            return $("#add_item_under_dept input[name='itemCode']").val();
+                        }
+                    }
+                }
             },
             orgId: {
                 required: true,
@@ -78,9 +92,6 @@ $(function() {
             standardItemCode: {
                 maxlength: 100
             },
-            // sxmlzt:{
-            //     required: true,
-            // },
             itemNature:{
                 required: true,
             },
@@ -114,6 +125,8 @@ $(function() {
             },
             itemCode: {
                 required: '<font color="red">此项必填！</font>',
+                maxlength: "长度不能超过50个字母!",
+                remote: "编号已存在！",
             },
             orgId: {
                 required: '<font color="red">此项必填！</font>',
@@ -122,15 +135,9 @@ $(function() {
                 required: '<font color="red">此项必填！</font>',
                 maxlength: "长度不能超过10个字母!"
             },
-            // sxmlzt: {
-            //     required: '<font color="red">此项必填！</font>',
-            // },
             standardItemCode: {
                 maxlength: "长度不能超过100个字母!"
             },
-            // sxmlzt: {
-            //     required: '<font color="red">此项必填！</font>',
-            // },
             itemNature:{
                 required: '<font color="red">此项必填！</font>',
             },
@@ -340,6 +347,7 @@ function addOrgItem(isRoot, isCatalog){
     $("#add_item_under_dept select[name='isCheckPartform'] option:eq(0)").prop("selected", 'selected');
     $("#add_item_under_dept select[name='isCheckProj'] option:eq(0)").prop("selected", 'selected');
     $("#add_item_under_dept select[name='anticipateType'] option:eq(1)").prop("selected", 'selected');
+    $("#add_item_under_dept select[name='isGreenWay'] option:eq(0)").prop("selected", 'selected');
 
     if(isRoot){
         $("#add_item_under_dept input[name='itemCategoryMark']").removeAttr("readonly");
@@ -372,6 +380,7 @@ function editItemBasicById(itemBasicId, itemVerStatus, isCatalog) {
     $("#add_item_under_dept select[name='orgId'] option:eq(0)").prop("selected", 'selected');
     $("#add_item_under_dept input[name='regionId']").val('');
     $("#add_item_under_dept input[name='itemCategoryMark']").attr("readOnly", "true");
+    $("#add_item_under_dept select[name='isGreenWay'] option:eq(0)").prop("selected", 'selected');
     clearItemBasicFile();
 
     $.ajax({

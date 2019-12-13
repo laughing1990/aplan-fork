@@ -993,4 +993,12 @@
         </sql>
     </changeSet>
 
+
+    <changeSet id="201912121144" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_basic`
+            ADD COLUMN `IS_GREEN_WAY`  char(1) NULL DEFAULT '0' COMMENT '是否绿色通道  1 是 0 否' AFTER `ANTICIPATE_TYPE`;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

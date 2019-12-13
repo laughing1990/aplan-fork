@@ -41,7 +41,7 @@ var vm = new Vue({
       isZJItem: '',
       zjItemInfo: [],
       matsTableData: [],
-      showFileListKey:[],
+      showFileListKey: [],
       getPaperAll: false,
       getCopyAll: false,
       isShowMatForm: '',
@@ -67,40 +67,58 @@ var vm = new Vue({
       matinstIds: '',
       matCodes: [],
       matIds: [],
+      hasRqItem: false,
+      isApprover: 0,
     }
   },
   methods: {
+    // 容缺时限延长
+    rqMoreTime: function (row) {
+      parent.vm.openRQmoreTimeDialog(row);
+    },
+    // 容缺终止
+    rqEnd: function (row) {
+      var vm = this;
+      this.$confirm('此操作将终止容缺补全, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function () {
+        parent.vm.requestRQmoreTime(0, row);
+      }).catch(function () {
+      });
+    },
     // 点击保存
-    matFormSave: function(){
+    matFormSave: function () {
       var vm = this;
       var tmpArr = [];
-      vm.model.matsTableData.forEach(function(u){
-        var tmp = { matId: u.matId };
+      vm.model.matsTableData.forEach(function (u) {
+        var tmp = {matId: u.matId};
         var flag = false;
-        if (!u.paperMatinstId&&u.getPaper){
+        if (!u.paperMatinstId && u.getPaper) {
           if (u.duePaperCount == 0) {
-            if (u.realPaperCount !=0) {
+            if (u.realPaperCount != 0) {
               tmp.paperCnt = u.realPaperCount;
               tmp.paperMatinstId = u.paperMatinstId;
               flag = true;
             }
           } else {
-            if (u.realPaperCount!=0) {
+            if (u.realPaperCount != 0) {
               tmp.paperCnt = u.realPaperCount;
               tmp.paperMatinstId = u.paperMatinstId;
               flag = true;
             }
           }
         }
-        if (!u.copyMatinstId&&u.getCopy){
+        if (!u.copyMatinstId && u.getCopy) {
           if (u.dueCopyCount == 0) {
-            if (u.realCopyCount !=0) {
+            if (u.realCopyCount != 0) {
               tmp.copyCnt = u.realCopyCount;
               tmp.copyMatinstId = u.copyMatinstId;
               flag = true;
             }
           } else {
-            if (u.realCopyCount!=0) {
+            if (u.realCopyCount != 0) {
               tmp.copyCnt = u.realCopyCount;
               tmp.copyMatinstId = u.copyMatinstId;
               flag = true;
@@ -114,9 +132,9 @@ var vm = new Vue({
       }
       var params = {
         matCountVos: tmpArr,
-        unitInfoId: vm.zjItemInfo[0].publishUnitInfoId||'',
+        unitInfoId: vm.zjItemInfo[0].publishUnitInfoId || '',
         projInfoId: vm.zjItemInfo[0].projInfoId,
-        linkmanInfoId: vm.zjItemInfo[0].publishLinkmanInfoId||'',
+        linkmanInfoId: vm.zjItemInfo[0].publishLinkmanInfoId || '',
         applyinstId: vm.applyinstId,
         iteminstId: vm.iteminstId,
       };
@@ -128,15 +146,15 @@ var vm = new Vue({
         type: 'post',
         ContentType: 'application/json',
         data: JSON.stringify(params),
-      }, function(res) {
+      }, function (res) {
         vm.pageLoading = false;
-        if (res.success){
+        if (res.success) {
           vm.$message.success('保存成功');
           parent.delayCloseWindow();
         } else {
           vm.$message.error(res.message || '保存失败');
         }
-      }, function(){
+      }, function () {
         vm.pageLoading = false;
         vm.$message.error('保存失败');
       })
@@ -185,7 +203,7 @@ var vm = new Vue({
       }
       return suffix;
     },
-    filePreview: function(row){
+    filePreview: function (row) {
       parent.vm.filePreview(row);
     },
     // 文件上传弹窗页面-上传电子件
@@ -226,7 +244,7 @@ var vm = new Vue({
           message: '上传成功',
           type: 'success'
         });
-      
+        
       }).catch(function (error) {
         _that.loadingFileWin = false;
         if (error.response) {
@@ -245,7 +263,7 @@ var vm = new Vue({
             type: 'error'
           });
         }
-      
+        
       });
     },
     //文件上传弹窗页面- 删除电子件
@@ -427,7 +445,7 @@ var vm = new Vue({
         vm.$message.error('获取申请表数据失败');
       })
     },
-    getMatTableData: function(){
+    getMatTableData: function () {
       var vm = this;
       var _that = this;
       vm.pageLoading = true;
@@ -438,7 +456,7 @@ var vm = new Vue({
           applyinstId: vm.applyinstId,
           iteminstId: vm.iteminstId,
         },
-      }, function(res) {
+      }, function (res) {
         vm.pageLoading = false;
         if (res.success) {
           vm.model.matsTableData = res.content;
@@ -447,8 +465,8 @@ var vm = new Vue({
               if (item.matChild == 'undefined' || item.matChild == undefined) {
                 Vue.set(item, 'matChild', item.fileList);
               }
-              if(item.certChild=='undefined'||item.certChild==undefined){
-                Vue.set(item,'certChild',[]);
+              if (item.certChild == 'undefined' || item.certChild == undefined) {
+                Vue.set(item, 'certChild', []);
               }
               if (item.matinstId == 'undefined' || item.matinstId == undefined) {
                 Vue.set(item, 'matinstId', '');
@@ -466,7 +484,7 @@ var vm = new Vue({
                 Vue.set(item, 'realCopyCount', item.realCopyCount);
               }
               Vue.set(item, 'realPaperCount', item.realPaperCount || 0);
-              Vue.set(item, 'realCopyCount', item.realCopyCount ||0);
+              Vue.set(item, 'realCopyCount', item.realCopyCount || 0);
               if (item.paperMatinstId || item.duePaperCount <= item.realPaperCount) {
                 Vue.set(item, 'getPaper', true);
                 Vue.set(item, 'paperDisabled', true);
@@ -475,17 +493,17 @@ var vm = new Vue({
                 Vue.set(item, 'getCopy', true);
                 Vue.set(item, 'copyDisabled', true);
               }
-              if(_that.matCodes.indexOf(item.matCode)<0){
+              if (_that.matCodes.indexOf(item.matCode) < 0) {
                 _that.matCodes.push(item.matCode);
               }
               _that.matIds.push(item.matId);
-      
+              
             });
           });
         } else {
           vm.$message.error(res.message || '获取申请表数据失败');
         }
-      }, function(){
+      }, function () {
         vm.pageLoading = false;
         vm.$message.error('获取材料数据失败');
       })
@@ -514,9 +532,15 @@ var vm = new Vue({
           vm.linkmanInfo = res.content.linkmanInfoVo;
           vm.applySubject = res.content.applySubject;
           var isApprover = getUrlParam('isApprover');
+          vm.isApprover = isApprover;
           var busRecordId = getUrlParam('busRecordId');
           var isNotSingle = (busRecordId == 'undefined' || busRecordId == 'null' || busRecordId == '');
           
+          vm.iteminstList.forEach(function (u) {
+            if (u.iteminstState == '12') {
+              vm.hasRqItem = true;
+            }
+          });
           if (isNotSingle) {
             if (isApprover == '1') {
               // 找到当前事项
@@ -728,7 +752,8 @@ var vm = new Vue({
     },
   }
 });
-function getUrlParam(name){
+
+function getUrlParam(name) {
   var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
   var r = window.location.search.substr(1).match(reg);
   if (r != null) {

@@ -67,7 +67,7 @@ public class PreViewPdfController {
     public ResultForm loadPdf(String detailId, HttpServletResponse response, HttpServletRequest request)throws Exception{
         ResultForm resultForm = new ResultForm(false);
         BscAttDetail form = bscAttService.getAttDetailByDetailId(detailId);
-        boolean boo = previewPdfService.downLoadPdf(detailId,!FileType.pdf.equals(form.getAttFormat()), response);
+        boolean boo = previewPdfService.downLoadPdf(detailId,!FileType.pdf.equals(form.getAttFormat().toLowerCase()), response);
         resultForm.setSuccess(boo);
         return resultForm;
     }

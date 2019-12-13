@@ -306,6 +306,9 @@ public final class ItemPrivilegeComputationHandler {
         @ApiModelProperty(value = "实施事项换算方式", dataType = "string", notes = " 0:按照审批行政区划和属地行政区划换算, 1: 仅按照审批行政区划换算")
         private String itemExchangeWay;
 
+        @ApiModelProperty(value = "是否绿色通道", notes = "1: 是, 0: 否")
+        private String isGreenWay;
+
         @ApiModelProperty(value = "实施事项", notes = "列表, 当isCatalog=1时，该列表不为空，否则给出提示，说明标准事项下无法找到对应的实施事项")
         private List<CarryOutItem> carryOutItems;
 
@@ -328,6 +331,7 @@ public final class ItemPrivilegeComputationHandler {
             computedItem.setIsRecommend(origin.getIsRecommended());
             computedItem.setIsCatalog(origin.getIsCatalog());
             computedItem.setItemExchangeWay(origin.getItemExchangeWay());
+            computedItem.setIsGreenWay(origin.getIsGreenWay());
             return computedItem;
         }
     }

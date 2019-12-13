@@ -70,4 +70,7 @@ public class StageApplyDataVo {
 
     @ApiModelProperty(value = "事项与区划的键值对集合")
     private List<ItemRegionMap> itemRegionMapList;
+
+    @ApiModelProperty(value = "并行事项及其申请实例ID集合")
+    private List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos;
 }

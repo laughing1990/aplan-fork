@@ -120,5 +120,8 @@ public class TaskInfo extends BaseInfo implements Serializable {
     @ApiModelProperty(value = "事项性质大分类：0-行政事项，8-中介服务事项，9-服务协同，6-市政公用服务")
     private String itemNature;
 
+    @ApiModelProperty(value = "容缺补正是否完成：1 是，0 否")
+    private String isCompleted;
+
 
 }

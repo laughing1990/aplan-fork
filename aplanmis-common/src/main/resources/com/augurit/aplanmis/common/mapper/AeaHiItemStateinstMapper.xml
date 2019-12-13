@@ -89,7 +89,7 @@
             <if test="applyinstId!=null and applyinstId!=''">
                 AND ahis.APPLYINST_ID=#{applyinstId}
             </if>
-            <if test="seriesinstId!=null and seriesinstId!=''">
+            <if test="stageinstId!=null and stageinstId!=''">
                 AND ahis.STAGEINST_ID=#{stageinstId}
             </if>
         </where>
