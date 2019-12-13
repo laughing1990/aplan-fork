@@ -1058,7 +1058,7 @@
                 <div class="pro-core">
                   <!--                  <img :src="ctx+'apply/imgs/pro-core-icon-b.png'">-->
                   <span class="pro-core-title">并行推进事项列表</span>
-                  <div class="fr pro-core-rigrt">
+                  <div class="fr pro-core-rigrt" v-show="parallelItems.length==0">
                     <span class="pro-core-card"><span class="is-catalog">标准</span>标准事项</span>
                     <span class="pro-core-card"><span class="is-catalog is-shishi">实施</span>实施事项</span>
                     <span class="pro-core-card"><span class="is-catalog is-green">绿道</span>绿色通道</span>
