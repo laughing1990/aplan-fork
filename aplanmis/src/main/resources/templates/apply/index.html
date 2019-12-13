@@ -1165,27 +1165,34 @@
             <template slot="title">
               <i class="header-icon el-icon-edit-outline"></i>一张表单
             </template>
-<!--            <div class="" v-for="u in oneFormData">-->
-<!--              <div class="of-u-states">-->
-<!--                <div class="of-u-icon ag ag-edit"></div>-->
-<!--                <span>{{u.oneformName}}</span>-->
-<!--                <div class="of-u-state-box r c-f">-->
-<!--                  <div class="of-u-b-text l">总共</div>-->
-<!--                  <div class="of-u-b-number l">12</div>-->
-<!--                  <div class="of-u-b-text l">已填</div>-->
-<!--                  <div class="of-u-b-number green l">6</div>-->
-<!--                  <div class="of-u-b-text l">未填</div>-->
-<!--                  <div class="of-u-b-number yellow l">6</div>-->
-<!--                </div>-->
+            <div class="of-u-states">
+              <div class="of-u-icon ag ag-edit"></div>
+              <span>{{oneFormData[0].oneformName}}</span>
+<!--              <div class="of-u-state-box r c-f">-->
+<!--                <div class="of-u-b-text l">总共</div>-->
+<!--                <div class="of-u-b-number l">12</div>-->
+<!--                <div class="of-u-b-text l">已填</div>-->
+<!--                <div class="of-u-b-number green l">6</div>-->
+<!--                <div class="of-u-b-text l">未填</div>-->
+<!--                <div class="of-u-b-number yellow l">6</div>-->
 <!--              </div>-->
-<!--            </div>-->
-            <div class="fl" v-for="item in oneFormData" @click="showOneFormDialog(item.oneformName)">
-              <p class="one-form-name ellipsis">
-                <span class="icon el-icon-edit-outline"></span>
-                {{item.oneformName}}
-                <span v-show="item.filledOut==1" class="isTag isDone"><i class="el-icon-success"></i>已填</span>
-              </p>
             </div>
+            <div class="c-f">
+              <div class="one-form-unit" v-for="u in allFormInfoList"
+                   @click="openOneFormDialog(u)" :class="{'is-fill': u.isFilled}">
+                <i class="of-state-icon ag" :class="!u.isFilled?'ag-edit-circle-fill':'ag-check-circle-fill'"></i>
+                <div class="one-form-title" :title="u.partformName">{{u.partformName}}</div>
+                <span class="goto-fill-form" v-if="!u.isFilled">去填写</span>
+                <span class="of-fill-time" v-if="u.isFilled">{{u.createTime|formatDate}}</span>
+              </div>
+            </div>
+<!--            <div class="fl" v-for="item in oneFormData" @click="showOneFormDialog(item.oneformName)">-->
+<!--              <p class="one-form-name ellipsis">-->
+<!--                <span class="icon el-icon-edit-outline"></span>-->
+<!--                {{item.oneformName}}-->
+<!--                <span v-show="item.filledOut==1" class="isTag isDone"><i class="el-icon-success"></i>已填</span>-->
+<!--              </p>-->
+<!--            </div>-->
           </el-collapse-item>
           <!--一张表单 end-->
           <!--材料一单清 start-->
@@ -1784,14 +1791,15 @@
           :percentage="uploadPercentage"></el-progress>
       </el-dialog>
       <!--  一张表单  start-->
-      <el-dialog @closed="uploadPercentage=0;progressDialogVisible=false" class="show-one-form" :title="oneformNameTitle" :close-on-press-escape="false" :close-on-click-modal="false"
+      <el-dialog @closed="uploadPercentage=0;progressDialogVisible=false" class="show-one-form" title="一张表单" :close-on-press-escape="false" :close-on-click-modal="false"
         :width="(curWidth-20)+'px'" :visible.sync="oneFormDialogVisible">
         <!--<el-button type="primary" style="margin-left: 20px"><a target="_blank" :href="ctx+'rest/oneform/common/renderPage?applyinstId='+parallelApplyinstId+'&stageId='+stageId+'&'+formItemsIdStr+'&showBasicButton=false&includePlatformResource=true'">打印表单</a></el-button>-->
         <div :style="{height:(curHeight-64)+'px',overflow: 'auto'}">
-          <el-tabs tab-position="left">
-            <el-tab-pane v-for="(item,index) in formUrlList" :key="index" :label="item.formName">
+          <el-tabs tab-position="left" v-model="oneformActiveName">
+            <el-tab-pane v-for="(item,index) in allFormInfoList"
+                         :name="item.itemPartformId" :key="index" :label="item.partformName">
               <iframe :style="{height:(curHeight-68)+'px',overflow: 'auto',width:'100%'}"
-                      v-if="item.smartForm==false"
+                      v-if="item.isSmartForm=='0'"
                       :src="ctx+item.formUrl" frameborder="0"></iframe>
               <div v-else :style="{height:(curHeight-68)+'px',overflow: 'auto',width:'100%','padding-right':'10px'}">
                 <div :id="'formHtml_'+index"></div>
