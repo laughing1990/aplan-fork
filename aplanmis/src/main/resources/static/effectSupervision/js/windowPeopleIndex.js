@@ -591,7 +591,7 @@ var Index = new Vue({
       var _jumpData = {
         'menuName': this.parallelDeclarationTabData.menuName,
         'menuInnerUrl': _url,
-        'id': row.projInfoId,
+        'id': row.projInfoId + "_parallelDecal",
         'localCode':  row.localCode,
         'projInfoId': row.projInfoId
       };

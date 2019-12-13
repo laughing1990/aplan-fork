@@ -131,8 +131,8 @@ var myCertificateLibs = (function () {
                         request('', {
                             url: ctx + '/aea/cert/saveCertint',
                             type: 'post',
-                            contentType: "application/json",
-                            data:JSON.stringify(addCertifiFormData),
+                            //contentType: "application/json",
+                            data:addCertifiFormData,
                         }, function (res) {
                             if(res.success){
                                 vm.$message.success('新建成功');

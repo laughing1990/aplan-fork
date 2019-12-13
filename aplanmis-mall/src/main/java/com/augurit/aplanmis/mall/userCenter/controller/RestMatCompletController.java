@@ -227,7 +227,7 @@ public class RestMatCompletController {
             Assert.isTrue(StringUtils.isNotBlank(detailIds), "detailIds is null");
             Assert.isTrue(StringUtils.isNotBlank(attRealIninstId), "attRealIninstId is null");
 
-            aeaHiApplyinstCorrectService.delelteAttFile(detailIds, attRealIninstId);
+            restMatCompletService.delelteAttFile(detailIds, attRealIninstId);
             return new ResultForm(true, "文件删除成功！");
         } catch (Exception e) {
             e.printStackTrace();
