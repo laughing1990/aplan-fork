@@ -55,7 +55,7 @@ public class AeaItemOneformAdminServiceImpl implements AeaItemOneformAdminServic
                 aeaItemOneform.setItemVerId(itemVerId);
                 aeaItemOneform.setSortNo(getMaxSortNo(itemVerId));
                 aeaItemOneform.setOneformId(id);
-                aeaItemOneform.setIsActive(Status.ON);
+                aeaItemOneform.setIsActive(Status.OFF);
                 aeaItemOneform.setCreater(SecurityContext.getCurrentUserId());
                 aeaItemOneform.setCreateTime(new Date());
                 aeaItemOneformMapper.insertAeaItemOneform(aeaItemOneform);
@@ -71,6 +71,13 @@ public class AeaItemOneformAdminServiceImpl implements AeaItemOneformAdminServic
         PageHelper.startPage(page);
         List<AeaItemOneform> data = aeaItemOneformMapper.listAeaItemOneFormByItemVerId(itemVerId);
         return new PageInfo<>(data);
+    }
+
+    @Override
+    public List<AeaItemOneform> listAeaItemOneFormByItemVerId(String itemVerId){
+
+        List<AeaItemOneform> list = aeaItemOneformMapper.listAeaItemOneFormByItemVerId(itemVerId);
+        return list;
     }
 
     @Override
@@ -129,6 +136,15 @@ public class AeaItemOneformAdminServiceImpl implements AeaItemOneformAdminServic
         List<AeaItemOneform> list = aeaItemOneformMapper.listAeaItemOneform(aeaItemOneform);
         logger.debug("成功执行查询list！！");
         return list;
+    }
+
+    @Override
+    public void changIsActiveState(String id){
+
+        if (StringUtils.isBlank(id)) {
+            throw new InvalidParameterException("参数id为空!");
+        }
+        aeaItemOneformMapper.changIsActiveState(id);
     }
 }
 

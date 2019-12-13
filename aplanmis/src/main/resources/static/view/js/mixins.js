@@ -628,25 +628,25 @@ var mixins = {
                 var html = "<div class=\"flow_steps\">" +
                     "<ul class='stage'>";
                 if(row.stageName.indexOf("立项用地") != -1){
-                    html += "<li class=\"current\">立项用地</li>" +
+                    html += "<li class=\"current current-stage-min-width \">立项用地</li>" +
                         "<li>&nbsp;</li>" +
                         "<li>&nbsp;</li>" +
                         "<li >&nbsp;</li>";
                 }else if(row.stageName.indexOf("工程建设") != -1){
                     html += "<li class=\"stage-success\">&nbsp;</li>" +
-                        "<li class=\"current\">工程建设</li>" +
+                        "<li class=\"current current-stage-min-width \">工程建设</li>" +
                         "<li>&nbsp;</li>" +
                         "<li >&nbsp;</li>";
                 }else if(row.stageName.indexOf("施工许可") != -1){
                     html += "<li class=\"stage-success\">&nbsp;</li>" +
                         "<li class=\"stage-success\">&nbsp;</li>" +
-                        "<li class=\"current\">施工许可</li>" +
+                        "<li class=\"current current-stage-min-width \">施工许可</li>" +
                         "<li >&nbsp;</li>";
                 }else if(row.stageName.indexOf("竣工验收") != -1){
                     html += "<li class=\"stage-success\">&nbsp;</li>" +
                         "<li class=\"stage-success\">&nbsp;</li>" +
                         "<li class=\"stage-success\">&nbsp;</li>" +
-                        "<li class=\"current\">竣工验收</li>";
+                        "<li class=\"current current-stage-min-width \">竣工验收</li>";
                 }else{
                     return '<span>'+row.stageName+'</span>';
                 }

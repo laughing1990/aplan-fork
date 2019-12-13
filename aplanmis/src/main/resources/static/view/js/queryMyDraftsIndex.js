@@ -99,23 +99,24 @@ var vm = new Vue({
         viewDetail:function (row) {
           var menuName= '';
           var menuInnerUrl =  '';
-          var id = new Date().getTime();
-          if (row.applyType == '单项') {
-            menuName = row.itemName;
-            menuInnerUrl = ctx + '/apanmis/page/stageApplyIndex?applyinstId='+row.applyinstId;
-          } else if(row.applyType == '并联'){
+          var id = 'menu_'+new Date().getTime();
+          if (row.applyType == '并联') {
             menuName = row.projName;
+            menuInnerUrl = ctx + '/apanmis/page/stageApplyIndex?applyinstId='+row.applyinstId;
+          } else if(row.applyType == '单项'){
+            menuName = row.itemName;
             menuInnerUrl = ctx + '/apanmis/page/singleApplyIndex/'+row.itemVerId+'?applyinstId='+row.applyinstId;
           }
           var data = {
             'menuName':menuName,
             'menuInnerUrl':menuInnerUrl,
             'id':id,
+            'applyinstId':row.applyinstId,
           };
           try{
             parent.vm.addTab('',data,'','');
           }catch (e) {
-            window.open(urltemp,'_blank');
+            window.open(menuInnerUrl,'_blank');
           }
           return null;
           // var url = ctx+'apanmis/page/stageApproveIndex?taskId='+row.taskId + "&viewId=" + row.viewId +'&draft=true';

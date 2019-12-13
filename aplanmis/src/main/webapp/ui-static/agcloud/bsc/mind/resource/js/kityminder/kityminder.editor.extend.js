@@ -94,8 +94,8 @@ angular.module('kityminderEditor').run(['$templateCache', function ($templateCac
     );
 
     $templateCache.put('ui/directive/isMore/isMore.html',
-        "<ul class=\"km-priority tool-group\" ng-disabled=\"commandDisabled\" style='width:60px;'>" +
-        "<li class=\"km-priority-item tool-group-item\" ng-repeat=\"p in priorities\" ng-click=\"commandDisabled || minder.execCommand('priority', p)\" ng-class=\"{ active: commandValue == p }\" title=\"{{ getPriorityTitle(p) }}\">" +
+        "<ul class=\"km-priority tool-group\" ng-disabled=\"minder.queryCommandState('NodeTypeCodeStateCommand') != 'situation'\" style='width:60px;'>" +
+        "<li class=\"km-priority-item tool-group-item\" ng-repeat=\"p in priorities\" ng-click=\"(minder.queryCommandState('NodeTypeCodeStateCommand') != 'situation') || minder.execCommand('priority', p)\" ng-class=\"{ active: commandValue == p }\" title=\"{{ getPriorityTitle(p) }}\">" +
         "<div class=\"{{ getPriorityClass(p) }}\" title='{{ getPriorityTitle(p) }}'><div style='height: 3px;'></div>{{ getPriorityTitle(p) }}</div>" +
         "</li></ul>"
     );
@@ -200,7 +200,7 @@ angular.module('kityminderEditor').run(['$templateCache', function ($templateCac
     );
 
     $templateCache.put('ui/directive/mustSelect/mustSelect.html',
-        "<ul class=\"km-progress tool-group\" ng-disabled=\"commandDisabled\" style='width: 60px;'><li class=\"km-progress-item tool-group-item\" ng-repeat=\"p in progresses\" ng-click=\"commandDisabled || minder.execCommand('progress', p)\" ng-class=\"{ active: commandValue == p }\" title=\"{{ getProgressTitle(p) }}\"><div class=\"km-progress-icon tool-group-icon progress-{{p}}\"><div style='height: 3px;'></div>{{getProgressTitle(p)}}</div></li></ul>"
+        "<ul class=\"km-progress tool-group\" ng-disabled=\"minder.queryCommandState('NodeTypeCodeStateCommand') != 'situation'\" style='width: 60px;'><li class=\"km-progress-item tool-group-item\" ng-repeat=\"p in progresses\" ng-click=\"(minder.queryCommandState('NodeTypeCodeStateCommand') != 'situation') || minder.execCommand('progress', p)\" ng-class=\"{ active: commandValue == p }\" title=\"{{ getProgressTitle(p) }}\"><div class=\"km-progress-icon tool-group-icon progress-{{p}}\"><div style='height: 3px;'></div>{{getProgressTitle(p)}}</div></li></ul>"
     );
 
     $templateCache.put('ui/directive/question/question.html',

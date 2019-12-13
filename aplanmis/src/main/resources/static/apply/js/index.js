@@ -600,6 +600,8 @@ var vm = new Vue({
       stateIdsHis: [], // 已暂存情形id
       themeIdHis: '', // 已暂存主题id
       themeVerIdHis: '', // 已暂存主题版本id
+      allFormInfoList: [],
+      oneformActiveName: '',
     }
   },
   created: function () {
@@ -5740,6 +5742,7 @@ var vm = new Vue({
             _that.verticalTabData.splice(3, 1);
             _that.firstGetneForm=0
           }
+          _that.getAllForms(_stageId);
         }else {
           _that.$message({
             message: '获取一张表单失败！',
@@ -5749,6 +5752,57 @@ var vm = new Vue({
       }, function (msg) {
         alertMsg('', '网络加载失败！', '关闭', 'error', true);
       })
+    },
+    // 一张表单得到所有的表单信息
+    getAllForms: function (stageId) {
+      var vm = this;
+      request('', {
+        url: ctx + 'rest/stage/part/forms',
+        type: 'get',
+        data: {
+          stageId: stageId,
+        },
+      }, function (res) {
+        if (res.success) {
+          res.content.forEach(function (u, index) {
+            if (u.isSmartForm == '1') {
+              getHtml(u, index);
+            }
+            u.isFilled = false;
+          });
+          vm.allFormInfoList = res.content;
+        } else {
+          vm.$message.error(res.content || '获取一张表单信息失败');
+        }
+      }, function () {
+        vm.$message.error('获取一张表单信息失败');
+      });
+    
+      function getHtml(data, index) {
+        request('', {
+          url: ctx + data.formUrl,
+          type: 'get',
+        }, function (res) {
+          if (res.success) {
+            $('#formHtml_' + index).html(res.content);
+          } else {
+            // vm.$message.error('获取智能表单数据失败');
+          }
+        }, function () {
+          // vm.$message.error('获取智能表单数据失败');
+        })
+      }
+    },
+    // 打开一张表单弹窗
+    openOneFormDialog: function (row) {
+      var vm = this;
+      if (row) {
+        vm.oneformActiveName = row.itemPartformId;
+      } else {
+        vm.oneformActiveName = oneFormInfo[0].itemPartformId;
+      }
+      vm.oneFormDialogVisible = true;
+      // vm.getOneFormData();
     },
     getOneFormrender2: function(str,_applyinstId,_stageId){ // 获取一张表单render
       var _that = this;
