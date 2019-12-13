@@ -57,6 +57,8 @@ public interface RestApplyCommonService {
 
     public void deleteReInsertParStateinstUnderStageinst(String applyinstId, String stageinstId, String[] stateIds) throws Exception;
 
+    public void deleteMatUnderIteminst(List<AeaHiIteminst> iteminstList);
+
     public void saveItemStateBySimpleMerge(List<ParallelItemStateVo> parallelItemStateVoList, List<String> itemVerIds, String applyinstId, String stageinstId);
 
     public void deleteItemStates(String applyinstId) throws Exception;

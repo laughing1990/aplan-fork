@@ -410,6 +410,7 @@ var module1 = new Vue({
       matListHistory: [], // 暂存的材料
       stateListHistory: [], // 暂存情形
       itemStateListHistory: [], // 事项暂存情形
+      propulsionItemApplyinstIdVos: [], // 并行事项实例
     }
   },
   mounted: function () {
@@ -426,6 +427,7 @@ var module1 = new Vue({
     this.getDicContent(); // 数据字典
     this.getGbhy();
     userCenter.vm.myProLeftShow = false;
+    userCenter.vm.selectNav2 = '并联申报';
   },
   methods: {
     // 查看项目详情
@@ -3112,6 +3114,9 @@ var module1 = new Vue({
         parallelItemStateIds: _that.parallelItemStateIds,
         stageinstId: _that.stageinstId?_that.stageinstId:'',
         smsInfoVo: _that.projInfoFirstSave,
+        propulsionItemVerIds: _that.propulsionItemVerIds,
+        propulsionItemStateIds: _that.propulsionItemStateIds,
+        propulsionItemApplyinstIdVos: _that.propulsionItemApplyinstIdVos,
       };
       request('', {
         url: ctx + 'rest/apply/common/itemList/temporary',
@@ -3122,6 +3127,7 @@ var module1 = new Vue({
         if(result.success){
           _that.parallelApplyinstId = result.content.applyinstId;
           _that.stageinstId = result.content.stageinstId?result.content.stageinstId:'';
+          _that.propulsionItemApplyinstIdVos = result.content.propulsionItemApplyinstIdVos?result.content.propulsionItemApplyinstIdVos:[];
           // _that.
           _that.$message({
             message: '暂存成功',
@@ -3430,13 +3436,13 @@ var module1 = new Vue({
       var fileType = this.getFileType(fileName);
       var flashAttributes = '';
       _that.filePreviewCount++
-      if (flag == 'pdf') {
+      if (flag == 'pdf'||flag == 'PDF') {
         var tempwindow = window.open(); // 先打开页面
         setTimeout(function () {
           tempwindow.location = ctx + 'cod/drawing/drawingCheck?detailId=' + detailId;
         }, 1000)
       } else {
-        if (fileType == 'pdf') {
+        if (fileType == 'pdf'||flag == 'PDF') {
           var tempwindow = window.open(); // 先打开页面
           setTimeout(function () {
             tempwindow.location = ctx + 'previewPdf/view?detailId=' + detailId;
@@ -3598,8 +3604,8 @@ var module1 = new Vue({
     },
     // 判断文件类型是否存在规定的类型里
     isSpecifiedFileType: function (fileName) {
-      var fileTypes = [".jpg", ".png", ".rar", ".txt", ".zip", ".doc", ".ppt", ".xls", ".pdf", ".docx", ".xlsx"];
-      var getFileType = fileName.substring(fileName.indexOf(".")).toLowerCase();
+      var fileTypes = [".jpg", ".png", ".rar", ".txt", ".zip", ".doc", ".ppt", ".xls", ".pdf", ".docx", ".xlsx",".dwg"];
+      var getFileType = fileName.substring(fileName.lastIndexOf(".")).toLowerCase();
       if (fileTypes.indexOf(getFileType) > -1) {
         return true;
       } else {

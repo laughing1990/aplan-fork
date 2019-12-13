@@ -795,4 +795,5 @@ public class AplanmisPageIndexController {
         ModelAndView modelAndView = new ModelAndView("view/queryUploadServiceResultIndex");
         return modelAndView;
     }
+
 }

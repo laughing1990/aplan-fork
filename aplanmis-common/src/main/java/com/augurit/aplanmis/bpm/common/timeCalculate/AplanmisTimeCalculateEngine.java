@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.bpm.common.timeCalculate;
 
 
+import com.augurit.agcloud.bpm.common.constant.TimeruleConstant;
 import com.augurit.agcloud.bpm.common.domain.ActStoAppinst;
 import com.augurit.agcloud.bpm.common.domain.ActStoTimerule;
 import com.augurit.agcloud.bpm.common.domain.ActStoTimeruleInst;
@@ -154,7 +155,7 @@ public class AplanmisTimeCalculateEngine extends TimeCalculateEngineBase {
                             // 根据时限计算规则进行计算
                             timeCalculateResult = timeLimitRule.calculate(startTime, currentTime, timeruleInst.getOrgId());
                             // 获取流程实例的总挂起时间
-                            timeCalculateResult = this.getProcessinstHangUpTime(startTime, timeCalculateResult, timeruleInst.getTimeruleUnit(), processInstance.getId(), null);
+                            timeCalculateResult = this.getProcessinstHangUpTime(startTime, timeCalculateResult, timeruleInst.getTimeruleUnit(), processInstance.getId(), null, TimeruleConstant.SYSTEM_APLANMIS);
                             timeruleInst.setIsConcluding(currentTime == null ? IS_CONCLUDING_NO : IS_CONCLUDING_YES);
                         } else if ("2".equals(timeruleInst.getTimeruleInstType())) {    //节点时限计算
                             if (StringUtils.isBlank(timeruleInst.getTaskinstId())) continue;
@@ -164,7 +165,7 @@ public class AplanmisTimeCalculateEngine extends TimeCalculateEngineBase {
                             // 根据时限计算规则进行计算
                             timeCalculateResult = timeLimitRule.calculate(taskInstance.getStartTime(), taskInstance.getEndTime(), timeruleInst.getOrgId());
                             // 获取节点的总挂起时间
-                            timeCalculateResult = this.getProcessinstHangUpTime(null, timeCalculateResult, timeruleInst.getTimeruleUnit(), taskInstance.getProcessInstanceId(), taskInstance.getId());
+                            timeCalculateResult = this.getProcessinstHangUpTime(null, timeCalculateResult, timeruleInst.getTimeruleUnit(), taskInstance.getProcessInstanceId(), taskInstance.getId(), TimeruleConstant.SYSTEM_APLANMIS);
                             timeruleInst.setIsConcluding(taskInstance.getEndTime() == null ? IS_CONCLUDING_NO : IS_CONCLUDING_YES);
                         } else {    //虚拟组时限计算
                             if (StringUtils.isBlank(timeruleInst.getProcInstId())) continue;
@@ -178,7 +179,7 @@ public class AplanmisTimeCalculateEngine extends TimeCalculateEngineBase {
                                     // 根据时限计算规则进行计算
                                     timeCalculateResult = timeLimitRule.calculate(taskInstance.getStartTime(), taskInstance.getEndTime(), timeruleInst.getOrgId());
                                     // 获取节点的总挂起时间
-                                    timeCalculateResult = this.getProcessinstHangUpTime(null, timeCalculateResult, timeruleInst.getTimeruleUnit(), taskInstance.getProcessInstanceId(), taskInstance.getId());
+                                    timeCalculateResult = this.getProcessinstHangUpTime(null, timeCalculateResult, timeruleInst.getTimeruleUnit(), taskInstance.getProcessInstanceId(), taskInstance.getId(), TimeruleConstant.SYSTEM_APLANMIS);
                                     timeruleInst.setIsConcluding(taskInstance.getEndTime() == null ? IS_CONCLUDING_NO : IS_CONCLUDING_YES);
                                     break;
                                 }
@@ -272,7 +273,7 @@ public class AplanmisTimeCalculateEngine extends TimeCalculateEngineBase {
                 aeaToleranceTimeInst.setRemainingTime(remainingTime);
                 aeaToleranceTimeInst.setOverdueTime(timeCount > 0.0d ? 0.0d : Math.abs(timeCount));// 未逾期取0.0，已逾期取timeCount的绝对值
                 String instState = null;
-                if (timeCount > 0.0d) {
+                if (timeCount >= 0.0d) {
                     if ("WD".equals(timerule.getTimeruleUnit()) || "ND".equals(timerule.getTimeruleUnit()))
                         instState = timeCount > 2 ? "1" : "2";  //小于或等于2天时，为预警状态
                     else

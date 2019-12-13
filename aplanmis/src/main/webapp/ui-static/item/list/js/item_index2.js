@@ -566,6 +566,52 @@ function syncItemRegion() {
 	});
 }
 
+function createUnionItemCode() {
+
+    swal({
+        text: '此操作将为每个事项编号追加时间戳构建事项唯一编号，您确定执行吗？',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+    }).then(function (result) {
+        if (result.value) {
+
+            $("#uploadProgress").modal("show");
+            $('#uploadProgressMsg').html("数据构建中,请勿点击,耐心等候...");
+
+            $.ajax({
+                url: ctx + '/aea/item/createUnionItemCode.do',
+                type: 'post',
+                data: {},
+                success: function (result) {
+                    if (result.success) {
+
+                        setTimeout(function () {
+                            $("#uploadProgress").modal('hide');
+                            swal('提示信息', "构建事项唯一编号成功！", 'info');
+                            refreshAllItemList();
+                        }, 500);
+
+                    } else {
+
+                        setTimeout(function () {
+                            $("#uploadProgress").modal('hide');
+                            swal('错误信息', "构建事项唯一编号失败！", 'error');
+                        }, 500);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                    setTimeout(function () {
+                        $("#uploadProgress").modal('hide');
+                        swal('错误信息', XMLHttpRequest.responseText, 'error');
+                    }, 500);
+                }
+            });
+        }
+    });
+}
 
 function isSelectBscDicRegion(obj, isSearch) {
 

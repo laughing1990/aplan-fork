@@ -60,13 +60,13 @@
           </td>
           <td class="al" width="20%">
             <el-tooltip placement="top" effect="light" v-if="item.isSeriesApprove == '单项'">
-              <div slot="content">主题名称：{{item.themeName}}<br /> <br /> 事项名称：{{item.itemStageName}}</div>
+              <div slot="content">所属主题：{{item.themeName}}<br /> <br /> 办理事项：{{item.itemStageName}}</div>
               <div>
                 <span class="ellipsis pro-name">{{item.itemStageName}}</span>
               </div>
             </el-tooltip>
             <el-tooltip placement="top" effect="light" v-else>
-              <div slot="content">主题名称：{{item.themeName}} <br /> <br /> 阶段名称：{{item.itemStageName}}</div>
+              <div slot="content">所属主题：{{item.themeName}} <br /> <br /> 所属阶段：{{item.itemStageName}}</div>
               <div class="stageIteminstName-bg">
                 <span class="ellipsis pro-name">{{item.itemStageName}}</span>
               </div>
@@ -274,7 +274,7 @@
       </el-table-column>
       <el-table-column label="操作" width="100" align="center">
         <template slot-scope="scope">
-          <span class="file-icon-btn">
+          <span class="file-icon-btn" style="display: block">
             <span title="预览" class="el-icon-search" @click="filePreview(scope.row)"></span>
             <span title="删除" class="el-icon-delete" @click="delFileForMaterial(scope.row.fileId)"></span>
           </span>
@@ -424,7 +424,7 @@
     </el-dialog>
     <!--文件上传下载弹窗 end-->
 
-    <!--证照库弹窗 start-->
+    <!--证照库弹窗
     <el-dialog class="upload-flie-dialog" title="证照列表" :visible.sync="showCertWindowFlag"
                @closed="certMatTableData=[]" width="900px">
         <div class="upload-file-content">
@@ -462,13 +462,13 @@
                         <span class="op-btn" @click="cretPreview(scope.row.auth_code)">查看</span>
                         <span class="op-btn" v-if="scope.row.bind==false" @click="setCretLinked(scope.row)">关联</span>
                         <span class="op-btn" v-else style="cursor: not-allowed">已关联</span>
-                        <!--<span class="op-btn" v-else @click="unbindCert(scope.row.matinstId,selMatRowData.certChild,index)">解除关联</span>-->
+                         <span class="op-btn" v-else @click="unbindCert(scope.row.matinstId,selMatRowData.certChild,index)">解除关联</span>
 
                     </template>
                 </el-table-column>
             </el-table>
         </div>
-    </el-dialog>
+    </el-dialog>  start-->
     <!--证照库弹窗 end-->
     <!--  材料一张表单  start-->
     <el-dialog @closed="uploadPercentage=0;progressDialogVisible=false" class="show-one-form" :title="matformNameTitle"

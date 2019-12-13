@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.bpm.common.timeCalculate;
 
+import com.augurit.agcloud.bpm.common.constant.TimeruleConstant;
 import com.augurit.agcloud.bpm.common.domain.ActStoAppinst;
 import com.augurit.agcloud.bpm.common.domain.ActStoTimerule;
 import com.augurit.agcloud.bpm.common.domain.ActStoTimeruleInst;
@@ -131,7 +132,7 @@ public class RestTimeruleinstCalService extends TimeCalculateEngineBase {
                     // 根据时限计算规则进行计算
                     timeCalculateResult = timeLimitRule.calculate(startTime, currentTime, timeruleInst.getOrgId());
                     // 获取流程实例的总挂起时间
-                    timeCalculateResult = this.getProcessinstHangUpTime(startTime, timeCalculateResult, timeruleInst.getTimeruleUnit(), processInstance.getId(), null);
+                    timeCalculateResult = this.getProcessinstHangUpTime(startTime, timeCalculateResult, timeruleInst.getTimeruleUnit(), processInstance.getId(), null, TimeruleConstant.SYSTEM_APLANMIS);
                     timeruleInst.setIsConcluding(currentTime == null ? IS_CONCLUDING_NO : IS_CONCLUDING_YES);
                 }
 
@@ -144,7 +145,7 @@ public class RestTimeruleinstCalService extends TimeCalculateEngineBase {
                 timeruleInst.setOverdueTime(timeCount > 0.0d ? 0.0d : Math.abs(timeCount));// 未逾期取0.0，已逾期取timeCount的绝对值
                 timeruleInst.setModifyTime(new Date());
 
-                if (timeCount > 0.0d) {
+                if (timeCount >= 0.0d) {
                     if ("ND".equals(timerule.getTimeruleUnit()) || "WD".equals(timerule.getTimeruleUnit()))
                         instState = timeCount > 2 ? "1" : "2";  //小于或等于2天时，为预警状态
                     else

@@ -12,44 +12,16 @@ import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.bpm.common.timeCalculate.RestTimeruleinstCalService;
 import com.augurit.aplanmis.common.constants.ItemStatus;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaHiItemCorrect;
-import com.augurit.aplanmis.common.domain.AeaHiItemCorrectDueIninst;
-import com.augurit.aplanmis.common.domain.AeaHiItemCorrectRealIninst;
-import com.augurit.aplanmis.common.domain.AeaHiItemCorrectStateHist;
-import com.augurit.aplanmis.common.domain.AeaHiItemInoutinst;
-import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
-import com.augurit.aplanmis.common.domain.AeaHiItemStateinst;
-import com.augurit.aplanmis.common.domain.AeaHiIteminst;
-import com.augurit.aplanmis.common.domain.AeaHiParStageinst;
-import com.augurit.aplanmis.common.domain.AeaHiParStateinst;
-import com.augurit.aplanmis.common.domain.AeaItemMat;
-import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
-import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.common.domain.AeaUnitInfo;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.dto.CorrectinstDto;
 import com.augurit.aplanmis.common.dto.MatCorrectDto;
 import com.augurit.aplanmis.common.dto.MatCorrectInfoDto;
 import com.augurit.aplanmis.common.dto.MatCorrectinstDto;
 import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemMatinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiItemStateinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaItemMatMapper;
 import com.augurit.aplanmis.common.mapper.AeaLinkmanInfoMapper;
-import com.augurit.aplanmis.common.mapper.AeaParStageItemMapper;
-import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
-import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiItemCorrectDueIninstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiItemCorrectRealIninstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiItemCorrectService;
-import com.augurit.aplanmis.common.service.instance.AeaHiItemCorrectStateHistService;
-import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiParStateinstService;
-import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
+import com.augurit.aplanmis.common.service.instance.*;
 import com.augurit.aplanmis.common.service.item.AeaLogItemStateHistService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
@@ -69,15 +41,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Author: lucas Chan
@@ -91,12 +55,6 @@ public class RestMatCorrectService {
 
     @Autowired
     private AeaHiItemMatinstMapper aeaHiItemMatinstMapper;
-
-    @Autowired
-    private AeaHiItemStateinstMapper aeaHiItemStateinstMapper;
-
-    @Autowired
-    private AeaHiParStateinstService aeaHiParStateinstService;
 
     @Autowired
     private AeaItemMatService aeaItemMatService;
@@ -156,22 +114,7 @@ public class RestMatCorrectService {
     private BscAttDetailMapper bscAttDetailMapper;
 
     @Autowired
-    private AeaItemBasicService aeaItemBasicService;
-
-    @Autowired
-    private AeaHiItemMatinstService aeaHiItemMatinstService;
-
-    @Autowired
-    private AeaParStageMapper aeaParStageMapper;
-
-    @Autowired
-    private AeaParStageItemMapper aeaParStageItemMapper;
-
-    @Autowired
     private MatCorrectBaseService matCorrectBaseService;
-
-    @Autowired
-    private AeaItemMatMapper aeaItemMatMapper;
 
     @Autowired
     private AeaServiceWindowService aeaServiceWindowService;
@@ -209,82 +152,6 @@ public class RestMatCorrectService {
 
             mats.addAll(aeaItemMatService.getMatListByApplyinstIdContainsMatinst(applyinstId, iteminstId));
 
-//            boolean handWay = false;
-//
-//            if ("0".equals(aeaHiApplyinst.getIsSeriesApprove())) {
-//
-//                AeaHiParStageinst aeaHiParStageinst = aeaHiParStageinstService.getAeaHiParStageinstById(aeaHiIteminst.getStageinstId());
-//                if (aeaHiParStageinst == null) return new ContentResultForm(false, null, "找不到该阶段实例！");
-//
-//                AeaParStage stage = aeaParStageMapper.getAeaParStageById(aeaHiParStageinst.getStageId());
-//                if (stage == null) return new ContentResultForm(false, null, "找不到阶段定义");
-//
-//                // 多级情形组织事项办理
-//                if ("1".equals(stage.getHandWay())) {
-//                    handWay = true;
-//                    matinsts.addAll(aeaHiItemMatinstService.getMatinstListByStageIteminstId(iteminstId));
-//
-//                    AeaParStageItem aeaParStageItem = new AeaParStageItem();
-//                    aeaParStageItem.setStageId(stage.getStageId());
-//                    List<AeaParStageItem> stageItems = aeaParStageItemMapper.listAeaParStageItem(aeaParStageItem);
-//
-//                    String itemVerId = null;
-//                    boolean flag = false;
-//                    for (AeaParStageItem stageItem : stageItems) {
-//                        if (stageItem.getItemVerId().equals(aeaHiIteminst.getItemVerId())) {
-//                            itemVerId = aeaHiIteminst.getItemVerId();
-//                            flag = true;
-//                            break;
-//                        }
-//                    }
-//
-//                    if (!flag) {
-//                        //根据实施事项Id获取标准事项
-//                        AeaItemBasic parentAeaItemBasic = aeaItemBasicService.getCatalogItemByCarryOutItemId(aeaHiIteminst.getItemId());
-//                        if (parentAeaItemBasic == null) return new ContentResultForm(false, null, "找不到该阶段下的标准事项！");
-//                        itemVerId = parentAeaItemBasic.getItemVerId();
-//                    }
-//
-//                    //获取阶段下的事项材料（不包含情形材料）
-//                    mats.addAll(aeaItemMatService.getMatListByItemVerIdAndStageId(itemVerId, aeaHiParStageinst.getStageId(), null, null));
-//
-//                    //获取情形实例
-//                    List<AeaHiParStateinst> stateinsts = aeaHiParStateinstService.listAeaHiParStateinstByApplyinstIdOrStageinstId(applyinstId, null);
-//                    if (stateinsts.size() > 0) {
-//                        String[] stateIds = new String[stateinsts.size()];
-//                        for (int i = 0; i < stateinsts.size(); i++) {
-//                            stateIds[i] = stateinsts.get(i).getExecStateId();
-//                        }
-//                        //获取事项情形绑定的材料
-//                        mats.addAll(aeaItemMatService.getMatListByStageStateIdsAndItemVerId(stateIds, itemVerId));
-//                    }
-//
-//                    //添加批复文件
-//                    mats.addAll(aeaItemMatMapper.getOfficeMatsByStageItemVerIds(stage.getStageId(), new String[]{itemVerId}, SecurityContext.getCurrentOrgId()));
-//                }
-//            }
-//
-//            if ("1".equals(aeaHiApplyinst.getIsSeriesApprove()) || !handWay) {
-//
-//                matinsts.addAll(aeaHiItemMatinstService.getMatinstListByIteminstIds(new String[]{iteminstId}, "1"));
-//
-//                //获取材料定义列表（不包括情形材料）
-//                mats.addAll(aeaItemMatService.getMatListByIteminstId(iteminstId, "1", "0"));
-//
-//                //获取情形实例
-//                List<AeaHiItemStateinst> stateinsts = aeaHiItemStateinstMapper.listAeaHiItemStateinstByApplyinstIdOrSeriesinstId(applyinstId, null);
-//
-//                if (stateinsts.size() > 0) {
-//                    String[] stateIds = new String[stateinsts.size()];
-//                    for (int i = 0; i < stateinsts.size(); i++) {
-//                        stateIds[i] = stateinsts.get(i).getExecStateId();
-//                    }
-//                    //获取情形绑定的材料
-//                    mats.addAll(aeaItemMatService.getMatListByItemStateIds(stateIds));
-//                }
-//            }
-
-//            Map<String, List> map = this.getCorrectMatsAndSubmittedMats(mats, matinsts);
             Map<String, List> map = matCorrectBaseService.getCorrectMatsAndSubmittedMats(mats);
             matCorrectInfoDto.setSubmittedMats(map.get("SubmittedMats"));
             matCorrectInfoDto.setMatCorrectDtos(map.get("MatCorrectDtos"));

@@ -4,6 +4,9 @@ import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
+import com.augurit.aplanmis.data.exchange.convert.AeaProjInfoDataTreeConvert;
+import com.augurit.aplanmis.data.exchange.convert.DataTreeCovert;
+import com.augurit.aplanmis.data.exchange.convert.datatree.AeaProjInfoDataTree;
 import com.augurit.aplanmis.data.exchange.service.aplanmis.AplanmisDataService;
 import com.augurit.aplanmis.data.exchange.vo.ApplyProjTransVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,8 @@ public class DataRouteController {
 
     @Autowired
     AeaProjInfoService aeaProjInfoService;
+
+    private AeaProjInfoDataTreeConvert dataTreeCovert = new AeaProjInfoDataTreeConvert();
 
     @GetMapping("/index")
     public ModelAndView index(){
@@ -68,7 +73,8 @@ public class DataRouteController {
     public ResultForm findAplanmisProjList(){
         List<String> aplanmisProjLocalCodeList = aplanmisDataService.findAplanmisProjLocalCodeList();
         List<AeaProjInfo> projs = aeaProjInfoService.getProjListAndChildProjsByParent(aplanmisProjLocalCodeList.toArray(new String[aplanmisProjLocalCodeList.size()]));
-        return new ContentResultForm<>(true,projs);
+        List<AeaProjInfoDataTree> dataTrees = dataTreeCovert.convert(projs);
+        return new ContentResultForm<>(true,dataTrees);
     }
 
     /**
@@ -87,7 +93,8 @@ public class DataRouteController {
     public ResultForm findNonAcceptAplanmisProjList(){
         List<String> aplanmisProjLocalCodeList = aplanmisDataService.findNonAcceptAplanmisProjLocalCodeList();
         List<AeaProjInfo> projs = aeaProjInfoService.getProjListAndChildProjsByParent(aplanmisProjLocalCodeList.toArray(new String[aplanmisProjLocalCodeList.size()]));
-        return new ContentResultForm<>(true,projs);
+        List<AeaProjInfoDataTree> dataTrees = dataTreeCovert.convert(projs);
+        return new ContentResultForm<>(true,dataTrees);
     }
 
     /**
@@ -107,7 +114,8 @@ public class DataRouteController {
     public ResultForm findAplanmisProjListHasItemStateLog(){
         List<String> aplanmisProjLocalCodeList = aplanmisDataService.findAplanmisProjLocalCodeListHasItemStateLog();
         List<AeaProjInfo> projs = aeaProjInfoService.getProjListAndChildProjsByParent(aplanmisProjLocalCodeList.toArray(new String[aplanmisProjLocalCodeList.size()]));
-        return new ContentResultForm<>(true,projs);
+        List<AeaProjInfoDataTree> dataTrees = dataTreeCovert.convert(projs);
+        return new ContentResultForm<>(true,dataTrees);
     }
 
     /**
@@ -126,7 +134,8 @@ public class DataRouteController {
     public ResultForm getOnlyA2ProjList(){
         List<String> aplanmisProjLocalCodeList = aplanmisDataService.getOnlyA2ProjLocalCodeList();
         List<AeaProjInfo> projs = aeaProjInfoService.getProjListAndChildProjsByParent(aplanmisProjLocalCodeList.toArray(new String[aplanmisProjLocalCodeList.size()]));
-        return new ContentResultForm<>(true,projs);
+        List<AeaProjInfoDataTree> dataTrees = dataTreeCovert.convert(projs);
+        return new ContentResultForm<>(true,dataTrees);
     }
 
 

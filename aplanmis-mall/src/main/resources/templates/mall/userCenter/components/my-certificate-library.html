@@ -2,12 +2,12 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>我的证照库</title>
+    <title>我的证照</title>
     <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
     <link rel="stylesheet" href="../../../../static/mall/css/userCenter/my-certificate-library.css" th:href="@{/mall/css/userCenter/my-certificate-library.css}">
 </head>
 <body>
-<div id="my-materials">
+<div id="my-certificate-lib">
 
     <section>
         <div class="tips">
@@ -18,7 +18,7 @@
 
     <section class="search-box clearfix">
         <div class="fl">
-            <el-button  type="primary" class="add-btn">新增</el-button>
+            <el-button  type="primary" class="add-btn" @click.native="addDirDialogFlag = true;getCertTypes();">新增</el-button>
         </div>
         <div class="fr">
             <el-input style="display: inline-block;width: 350px;"
@@ -26,41 +26,108 @@
                     v-model="keyword">
                 <i slot="suffix" class="el-input__icon el-icon-search"></i>
             </el-input>
-            <el-button type="primary" icon="el-icon-search" class="search-certifi-btn">查询</el-button>
+            <el-button type="primary" icon="el-icon-search" class="search-certifi-btn" @click="searchcertificate">查询</el-button>
         </div>
     </section>
 
     <section class="my-certifiy-table-box" v-loading="mloading">
-        <div class="step-title">企业证照库</div>
+        <div class="step-title">企业证照</div>
         <div class="my-certifiy-table">
-            <el-table :data="matFileList"   style="width:100%" class="matFileListTable" v-loading="tableLoading">
+            <el-table :data="cCertificateList"   style="width:100%" class="certificateListTable" v-loading="tableLoading">
                 <el-table-column
-                        prop="matinstName"
+                        prop="certinstName"
                         label="证照名称"
                 >
-                    <template slot-scope="scope">
-                        <div class="fontSize">{{scope.row.matinstName}}</div>
-                    </template>
                 </el-table-column>
                 <el-table-column
-                        prop="matinstName"
+                        prop=" certType"
                         label="证照类型"
                 >
                     <template slot-scope="scope">
-                        <div class="fontSize">{{scope.row.matinstName}}</div>
+                        <div class="fontSize">{{scope.row. certType}}</div>
                     </template>
                 </el-table-column>
 
                 <el-table-column
-                        width="110"
+
                         prop="createTime"
+                        align="center"
                         label="有效截止日期"
                 >
                     <template slot-scope="scope">
-                        <div class="fontSize">{{scope.row.createTime|formatDate}}</div>
+                        <div class="fontSize">{{scope.row.termEnd||"-"}}</div>
                     </template>
                 </el-table-column>
+                <!-- <el-table-column
+                         prop="matinstName"
+                         label="可信等级"
+                 >
+                     <template slot-scope="scope">
+                         <div class="fontSize">{{scope.row.matinstName}}</div>
+                     </template>
+                 </el-table-column>
+
+                 <el-table-column
+                         prop="matinstName"
+                         label="证照状态"
+                         width="100"
+                 >
+                     <template slot-scope="scope">
+                         <div class="fontSize">{{scope.row.matinstName}}</div>
+                     </template>
+                 </el-table-column>-->
+
                 <el-table-column
+                        prop=""
+                        label="操作"
+                        width="150"
+                        align="center"
+                >
+                    <template slot-scope="scope">
+                        <span class="option-btn" style="display: inline-block" @click="lookvViewLicenseURL(scope.row)">查看</span>
+                        <span class="option-btn" style="display: inline-block"  @click="editCertifi(scope.row)">编辑</span>
+                        <span class="option-btn" style="display: inline-block;color: #FF4B47;"  @click="delCertifi(scope.row)">删除</span>
+                    </template>
+                </el-table-column>
+
+            </el-table>
+            <el-pagination class="mt20 mb20 mr20" background align="right" @size-change="ChandleSizeChange"
+                           @current-change="ChandleCurrentChange" :page-sizes="[5, 10, 15, 20]" :page-size="cPageSize"
+                           :current-page="cPageNum" layout="total,sizes, prev, pager, next, jumper" :total="cTotal"
+                           v-show="cTotal>10">
+            </el-pagination>
+        </div>
+    </section>
+
+    <section class="my-certifiy-table-box" v-loading="mloading">
+        <div class="step-title">法人证照</div>
+        <div class="my-certifiy-table">
+            <el-table :data="uCertificateList"   style="width:100%" class="certificateListTable" v-loading="tableLoading">
+                <el-table-column
+                        prop="certinstName"
+                        label="证照名称"
+                        width="380px">
+                </el-table-column>
+                <el-table-column
+                        prop=" certType"
+                        label="证照类型"
+                >
+                    <template slot-scope="scope">
+                        <div class="fontSize">{{scope.row. certType}}</div>
+                    </template>
+                </el-table-column>
+
+                <el-table-column
+
+                        prop="createTime"
+                        align="center"
+                        label="有效截止日期"
+                >
+                    <template slot-scope="scope">
+                        <div class="fontSize">{{scope.row.termEnd||"-"}}</div>
+                    </template>
+                </el-table-column>
+               <!-- <el-table-column
                         prop="matinstName"
                         label="可信等级"
                 >
@@ -72,32 +139,188 @@
                 <el-table-column
                         prop="matinstName"
                         label="证照状态"
+                        width="100"
                 >
                     <template slot-scope="scope">
                         <div class="fontSize">{{scope.row.matinstName}}</div>
                     </template>
-                </el-table-column>
+                </el-table-column>-->
 
                 <el-table-column
                         prop=""
                         label="操作"
+                        width="150"
+                        align="center"
                 >
                     <template slot-scope="scope">
-                        <span class="option-btn" style="display: inline-block" @click="lookProjDetail(item)">查看</span>
-                        <span class="option-btn" style="display: inline-block"  @click="showReceive(item)">编辑</span>
-                        <span class="option-btn" style="display: inline-block;color: #FF4B47;"  @click="showReceive(item)">删除</span>
+                        <el-button type="text"    @click="lookvViewLicenseURL(scope.row)">查看</el-button>
+                        <el-button type="text"    @click="editCertifi(scope.row)">编辑</el-button>
+                        <el-button type="text"   :disabled="scope.row.authCode"  @click="delCertifi(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
 
             </el-table>
-            <el-pagination class="mt20 mb20 mr20" background align="right" @size-change="handleSizeChange"
-                           @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 50]" :page-size="pageSize"
-                           :current-page="pageNum" layout="total,sizes, prev, pager, next, jumper" :total="total"
-                           v-show="total>10">
+            <el-pagination class="mt20 mb20 mr20" background align="right" @size-change="UhandleSizeChange"
+                           @current-change="UhandleCurrentChange" :page-sizes="[5, 10, 15, 20]" :page-size="uPageSize"
+                           :current-page="uPageNum" layout="total,sizes, prev, pager, next, jumper" :total="uTotal"
+                           v-show="uTotal>10">
             </el-pagination>
         </div>
     </section>
 
+    <section class="my-certifiy-table-box" v-loading="mloading">
+        <div class="step-title">项目证照</div>
+        <div class="my-certifiy-table">
+            <el-table :data="pCertificateList"   style="width:100%" class="certificateListTable" v-loading="tableLoading">
+                <el-table-column
+                        prop="certinstName"
+                        label="证照名称"
+                >
+                </el-table-column>
+                <el-table-column
+                        prop=" certType"
+                        label="证照类型"
+                >
+                    <template slot-scope="scope">
+                        <div class="fontSize">{{scope.row. certType}}</div>
+                    </template>
+                </el-table-column>
+
+                <el-table-column
+
+                        prop="createTime"
+                        align="center"
+                        label="有效截止日期"
+                >
+                    <template slot-scope="scope">
+                        <div class="fontSize">{{scope.row.termEnd||"-"}}</div>
+                    </template>
+                </el-table-column>
+                <!-- <el-table-column
+                         prop="matinstName"
+                         label="可信等级"
+                 >
+                     <template slot-scope="scope">
+                         <div class="fontSize">{{scope.row.matinstName}}</div>
+                     </template>
+                 </el-table-column>
+
+                 <el-table-column
+                         prop="matinstName"
+                         label="证照状态"
+                         width="100"
+                 >
+                     <template slot-scope="scope">
+                         <div class="fontSize">{{scope.row.matinstName}}</div>
+                     </template>
+                 </el-table-column>-->
+
+                <el-table-column
+                        prop=""
+                        label="操作"
+                        width="150"
+                        align="center"
+                >
+                    <template slot-scope="scope">
+                        <span class="option-btn" style="display: inline-block" @click="lookvViewLicenseURL(scope.row)">查看</span>
+                        <span class="option-btn" style="display: inline-block"  @click="editCertifi(scope.row)">编辑</span>
+                        <span class="option-btn" style="display: inline-block;color: #FF4B47;"  @click="delCertifi(scope.row)">删除</span>
+                    </template>
+                </el-table-column>
+
+            </el-table>
+            <el-pagination class="mt20 mb20 mr20" background align="right" @size-change="PhandleSizeChange"
+                           @current-change="PhandleCurrentChange" :page-sizes="[5, 10, 15, 20]" :page-size="pPageSize"
+                           :current-page="pPageNum" layout="total,sizes, prev, pager, next, jumper" :total="pTotal"
+                           v-show="pTotal>10">
+            </el-pagination>
+        </div>
+    </section>
+
+    <!--新增弹窗 str-->
+    <el-dialog title="新增" :visible.sync="addDirDialogFlag"  top="25vh" class="addDirDialog">
+        <div class="addDirForm-box">
+            <el-form label-position="right" label-width="130px" :model="addCertifiFormData" ref="addDirForm" :rules="addDirFormRules">
+                <el-form-item label="证照所属："  prop="certHolder" required>
+                    <el-select v-model="addCertifiFormData.certHolder" clearable placeholder="请选择证照所属" style="width: 330px">
+                        <el-option
+                                v-for="(item,index) in chooseCertHolder"
+                                :key="index"
+                                :label="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="证照类型：" prop="certType"  required>
+                    <el-select v-model="addCertifiFormData.certType" clearable placeholder="请选择证照类型" style="width: 330px">
+                        <el-option
+                                v-for="(item,index) in chooseCertType"
+                                :key="index"
+                                :label="item.typeName"
+                                :value="item.certTypeId">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="证照名称：" prop="certinstName" required>
+                    <el-input v-model="addCertifiFormData.certinstName" placeholder="请填写证照名称" style="width: 330px"></el-input>
+                </el-form-item>
+                <el-form-item label="证照编号：" prop="certinstCode" required>
+                    <el-input v-model="addCertifiFormData.certinstCode" placeholder="请填写证照编号" style="width: 330px"></el-input>
+                </el-form-item>
+                <el-form-item label="持证者：" prop="certOwner" >
+                    <el-input v-model="addCertifiFormData.certOwner" placeholder="请填写持证者" style="width: 330px" @keyup.enter.native="sureAddDir()"></el-input>
+                </el-form-item>
+                <el-form-item label="有效期（起始）:" prop="termStart" >
+                    <el-date-picker
+                            v-model="addCertifiFormData.termStart"
+                            type="date"
+                            placeholder="选择日期" style="width: 330px">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="有效期（截止）:" prop="termEnd" >
+                    <el-date-picker
+                            v-model="addCertifiFormData.termEnd"
+                            type="date"
+                            placeholder="选择日期" style="width: 330px">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="颁发单位：" prop="issueOrgName">
+                    <el-input v-model="addCertifiFormData.issueOrgName" placeholder="请填写颁发单位" style="width: 330px"></el-input>
+                </el-form-item>
+                <!--<el-form-item label="资质等级：" >
+                    <el-select v-model="addCertifiFormData.qualLevelId" clearable placeholder="请选择资质等级" style="width: 330px">
+                        <el-option
+                                v-for="(item,index) in chooseCertHolder"
+                                :key="index"
+                                :label="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>-->
+                <el-form-item label="业务范围：" >
+                    <el-input
+                            type="textarea"
+                            :rows="2"
+                            placeholder="请输入内容"
+                            v-model="addCertifiFormData.managementScope"  style="width: 796px">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="备注：" >
+                    <el-input
+                            type="textarea"
+                            :rows="2"
+                            placeholder="请输入内容"
+                            v-model="addCertifiFormData.memo"  style="width: 796px">
+                    </el-input>
+                </el-form-item>
+            </el-form>
+        </div>
+        <span slot="footer" class="dialog-footer">
+                <el-button @click="addDirDialogFlag = false">取 消</el-button>
+                <el-button @click="sureAddcertifi()" type="primary">确 定</el-button>
+              </span>
+    </el-dialog>
+    <!--新增弹窗 end-->
 </div>
 <script src="../../../../static/mall/js/userCenter/components/my-certificate-library.js" th:src="@{/mall/js/userCenter/components/my-certificate-library.js}" type="text/javascript"></script>
 </body>

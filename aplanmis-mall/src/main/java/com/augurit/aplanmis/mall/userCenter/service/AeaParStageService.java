@@ -48,12 +48,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * 并联申报service
@@ -261,7 +256,7 @@ public class AeaParStageService {
         List<BuildProjUnitVo> buildProjUnitMap = stageApplyDataVo.getBuildProjUnitMap();
         List<String> unitProjIds = stageApplyDataVo.getProjUnitIds();
         String applyLinkmanId = stageApplyDataVo.getApplyLinkmanId();
-
+        List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos = stageApplyDataVo.getPropulsionItemApplyinstIdVos();
 
         List<String> appinstIds = new ArrayList<>();
         List<String> applyinstIds = new ArrayList<>();
@@ -448,13 +443,27 @@ public class AeaParStageService {
             List<PropulsionItemStateVo> propulsionItemStateIds = stageApplyDataVo.getPropulsionItemStateIds();
             Map<String, List<String>> propulsionItemStateIdMap = new HashMap<>();
             propulsionItemStateIds.forEach(p -> propulsionItemStateIdMap.put(p.getItemVerId(), p.getStateIds()));
+            Map<String, String> propulsionItemApplyinstIdMap=new HashMap<>();
+            if(propulsionItemApplyinstIdVos!=null && propulsionItemApplyinstIdVos.size()>0){
+                propulsionItemApplyinstIdVos.forEach(p -> propulsionItemApplyinstIdMap.put(p.getItemVerId(), p.getSeriesApplyinstId()));
+            }
             //每个并行推进的事项发起一个单项申报
             for (String itemVerId : propulsionItemVerIds) {
                 ApplyInstantiateResult seriesResult=new ApplyInstantiateResult();
 
                 AeaCoreItemVo aeaCoreItemVo=new AeaCoreItemVo();
                 //实例化串联申请实例
-                AeaHiApplyinst seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "1", branchOrgMap,ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"0");
+                AeaHiApplyinst seriesApplyinst;
+                String itemApplyinstId=propulsionItemApplyinstIdMap.get(itemVerId);
+                if(StringUtils.isBlank(itemApplyinstId)){
+                    seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "1", branchOrgMap,ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"0");
+                }else{
+                    seriesApplyinst=aeaHiApplyinstService.getAeaHiApplyinstById(itemApplyinstId);
+                    seriesApplyinst.setIsTemporarySubmit("0");
+                    seriesApplyinst.setBranchOrg(branchOrgMap);
+                    seriesApplyinst.setLinkmanInfoId(linkmanInfoId);
+                    aeaHiApplyinstService.updateAeaHiApplyinst(seriesApplyinst);
+                }
 
                 if (seriesApplyinst == null)
                     throw new RuntimeException("实例化并行推进事项申请实例失败！");
@@ -466,10 +475,20 @@ public class AeaParStageService {
                 String propulsionAppinstId = UUID.randomUUID().toString();//预先生成并行推进单项模板实例ID
 
                 //1、保存单项实例
-                AeaHiSeriesinst aeaHiSeriesinst = aeaHiSeriesinstService.createAeaHiSeriesinst(seriesApplyinstId, propulsionAppinstId,"1",stageId);
+                AeaHiSeriesinst aeaHiSeriesinst;
+                aeaHiSeriesinst=aeaHiSeriesinstService.getAeaHiSeriesinstByApplyinstId(seriesApplyinstId);
+                if(aeaHiSeriesinst==null){
+                    aeaHiSeriesinst= aeaHiSeriesinstService.createAeaHiSeriesinst(seriesApplyinstId, propulsionAppinstId,"1",stageId);
+                }
 
                 //2、事项实例
-                AeaHiIteminst aeaHiIteminst = aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), itemVerId, propulsionBranchOrgMap,null,propulsionAppinstId);
+                AeaHiIteminst aeaHiIteminst;
+                List<AeaHiIteminst> aeaHiIteminstList=aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(seriesApplyinstId);
+                if(aeaHiIteminstList.size()>0){
+                    aeaHiIteminst=aeaHiIteminstList.get(0);
+                }else{
+                    aeaHiIteminst= aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), itemVerId, propulsionBranchOrgMap,null,propulsionAppinstId);
+                }
                 iteminstIds.add(aeaHiIteminst.getIteminstId());
                 aeaCoreItemVo.setIteminstCode(aeaHiIteminst.getIteminstCode());
                 aeaCoreItemVo.setIteminstState(aeaHiIteminst.getIteminstState());
@@ -492,6 +511,7 @@ public class AeaParStageService {
                 seriesApplyinst.setProjInfoId(projInfoIds[0]);
 
                 //4、情形实例
+                restApplyCommonService.deleteItemStates(seriesApplyinstId);
                 if (CollectionUtils.isNotEmpty(propulsionItemStateIdMap.get(itemVerId))) {
                     String[] itemStateIds = propulsionItemStateIdMap.get(itemVerId).toArray(new String[0]);
                     aeaHiItemStateinstService.batchInsertAeaHiItemStateinst(seriesApplyinstId, aeaHiSeriesinst.getSeriesinstId(), null,itemStateIds, SecurityContext.getCurrentUserName());
@@ -504,6 +524,7 @@ public class AeaParStageService {
                 aeaHiSmsInfoService.createAeaHiSmsInfo(seriesSms);
 
                 //5、材料输入输出实例
+                restApplyCommonService.deleteMatUnderIteminst(aeaHiIteminstList);//如果之前有实例化，则删除
                 aeaHiItemInoutinstService.batchInsertAeaHiItemInoutinst(matinstsIds, seriesApplyinstId, SecurityContext.getCurrentUserName());
 
                 //6、启动主流程

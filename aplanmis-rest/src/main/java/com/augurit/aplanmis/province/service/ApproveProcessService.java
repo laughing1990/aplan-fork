@@ -12,6 +12,7 @@ import com.augurit.agcloud.bpm.common.mapper.ActStoAppinstSubflowMapper;
 import com.augurit.agcloud.bpm.common.mapper.ActTplAppTriggerMapper;
 import com.augurit.agcloud.bpm.common.service.ActStoAppinstService;
 import com.augurit.agcloud.bpm.common.service.ActStoAppinstSubflowService;
+import com.augurit.agcloud.bsc.domain.BscAttForm;
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
 import com.augurit.agcloud.bsc.mapper.BscDicCodeMapper;
 import com.augurit.agcloud.bsc.sc.att.service.IBscAttService;
@@ -21,12 +22,14 @@ import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import com.augurit.aplanmis.common.domain.AeaHiIteminst;
 import com.augurit.aplanmis.common.mapper.AeaHiApplyinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiIteminstMapper;
+import com.augurit.aplanmis.province.vo.BpmHistoryCommentFormVo;
 import com.augurit.aplanmis.province.vo.HistoryProcessVo;
 import com.augurit.aplanmis.province.vo.ParallelApproveDataVo;
 import org.apache.commons.lang.StringUtils;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
+import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.task.api.Task;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.flowable.variable.api.history.HistoricVariableInstance;
@@ -85,6 +88,18 @@ public class ApproveProcessService {
             }
         }
         return new ArrayList<HistoryProcessVo>();
+    }
+
+    public List<BpmHistoryCommentFormVo> listHistoryCommentTree(String processInstanceId, boolean isNeedQueryDetail, String applyinstId) throws Exception {
+        // 保证processInstanceId属于一级流程节点
+        processInstanceId = getTopParentProcess(processInstanceId);
+        List<BpmHistoryCommentFormVo> parentNodeList = listHistoryComment(processInstanceId, isNeedQueryDetail, applyinstId);
+        List<BpmHistoryCommentFormVo> resultNodeList = new ArrayList<>();
+        //先过滤一级流程
+        filterNode(parentNodeList, resultNodeList);
+        convertToTree(resultNodeList, applyinstId);
+        addApproverToHistoryComment(resultNodeList);
+        return resultNodeList;
     }
 
     public List<ParallelApproveDataVo> listParallelApproveData(String project_code, String item_instance_code) throws Exception {
@@ -169,6 +184,90 @@ public class ApproveProcessService {
                 results.add(tempObj);
             }
         }
+        sortDgListHistoryCommentBySigeInDate_old(results);
+        return results;
+    }
+
+    public List<BpmHistoryCommentFormVo> listHistoryComment(String processInstanceId, boolean isNeedQueryDetail, String applyinstId) throws Exception {
+        // 获取流程历史意见列表
+        List<BpmHistoryCommentForm> historyComments = bpmTaskService.getHistoryCommentsByProcessInstanceId(processInstanceId);
+        List<BpmHistoryCommentFormVo> results = new ArrayList<>();
+        // 获取流程当前所处节点
+        List<Task> list = taskService.createTaskQuery().processInstanceId(processInstanceId).list();
+        // 是否存在活动节点
+        boolean isExistNode = false;
+        if (list != null && list.size() > 0) {
+            isExistNode = true;
+        }
+//        String topOrgId = SecurityContext.getCurrentOrgId();
+        if (historyComments != null && historyComments.size() > 0) {
+            for (BpmHistoryCommentForm temp : historyComments) {
+                // 去掉【已终止】状态的意见
+                if (5 == temp.getTaskState()) {
+                    continue;
+                }
+                OpuOmOrg org = null;
+                if (StringUtils.isNotBlank(applyinstId)) {
+                    AeaHiApplyinst applyinst = aeaHiApplyinstMapper.getAeaHiApplyinstById(applyinstId);
+                    if (applyinst != null) {
+                        String branchOrgStr = applyinst.getBranchOrg();
+                        if (StringUtils.isNotBlank(branchOrgStr)) {
+                            String itemVerId = "";
+                            String taskId = list.size() > 0 ? list.get(0).getId() : "";
+                            if (StringUtils.isNotBlank(taskId)) {
+//                                String iteminstId = approveService.getIteminstIdByTaskId(taskId);
+                                String iteminstId = this.getIteminstIdByTaskId(taskId);
+                                if (StringUtils.isNotBlank(iteminstId)) {
+                                    AeaHiIteminst iteminst = aeaHiIteminstMapper.getAeaHiIteminstById(iteminstId);
+                                    itemVerId = iteminst != null ? iteminst.getItemVerId() : "";
+
+                                    JSONArray mapList = JSONObject.parseArray(branchOrgStr);
+                                    if (mapList != null && mapList.size() > 0) {
+                                        for (int i = 0; i < mapList.size(); i++) {
+                                            Map<String, String> map = (Map<String, String>) mapList.get(i);
+                                            String branchOrgId = map.get("branchOrg");
+                                            String branchItemVerId = map.get("itemVerId");
+                                            if (StringUtils.isNotBlank(branchOrgId) && StringUtils.isNotBlank(branchItemVerId) && branchItemVerId.equals(itemVerId)) {
+                                                org = opuOmOrgMapper.getOrg(branchOrgId);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (org == null) {
+                    String orgId = temp.getOrgId();
+                    org = opuOmOrgMapper.getOrg(orgId);
+                }
+                String firstOrgShortName = "";
+                String secondOrgShortName = "";
+                String orgName = "";
+                if (org != null) {
+                    firstOrgShortName = org.getOrgShortName1();
+                    secondOrgShortName = org.getOrgShortName2();
+                    orgName = org.getOrgName();
+                }
+                BpmHistoryCommentFormVo tempObj = new BpmHistoryCommentFormVo();
+                BeanUtils.copyProperties(temp, tempObj);
+                if (StringUtils.isNotBlank(orgName)) {
+                    tempObj.setOrgName(orgName);
+                }
+                tempObj.setFirstOrgShortName(firstOrgShortName);
+                tempObj.setSecondOrgShortName(secondOrgShortName);
+                if (list.stream().anyMatch(temp1 -> tempObj.getTaskId().equals(temp1.getId()))) {
+                    tempObj.setDealingTask(isExistNode);
+                }
+                if (isNeedQueryDetail) {
+                    List<BscAttForm> bscAttForms = bscAttService.listAttLinkAndDetailNoPage("AEA_HI_TASK", "ID_", tempObj.getTaskId(), null, topOrgId, null);
+                    if (bscAttForms != null) {
+                        tempObj.setAttDetailNum(bscAttForms.size());
+                    }
+                }
+                results.add(tempObj);
+            }
+        }
         sortDgListHistoryCommentBySigeInDate(results);
         return results;
     }
@@ -204,7 +303,7 @@ public class ApproveProcessService {
         return null;
     }
 
-    private void sortDgListHistoryCommentBySigeInDate(List<HistoryProcessVo> list) {
+    private void sortDgListHistoryCommentBySigeInDate_old(List<HistoryProcessVo> list) {
         Collections.sort(list, new Comparator<HistoryProcessVo>() {
             @Override
             public int compare(HistoryProcessVo arg0, HistoryProcessVo arg1) {
@@ -345,6 +444,123 @@ public class ApproveProcessService {
         return resultList;
     }
 
+
+    public List<BpmHistoryCommentFormVo> listHistoryCommentByTaskId(String applyinstId, BpmHistoryCommentFormVo parentNode) throws Exception {
+        String processInstanceId = parentNode.getProcessInstanceId();
+        String taskId = parentNode.getTaskId();
+        List<BpmHistoryCommentFormVo> childNodes = null;
+        List<BpmHistoryCommentFormVo> results = new ArrayList<>();
+        String itemProcInstId = null;//事项关联的流程实例id
+        //根据父流程的流程变量获取子流程实例id
+        String subProcessInstanceId;
+        ActStoAppinst actStoAppinst = actStoAppinstMapper.getActStoAppinstByProcInstId(processInstanceId);
+        AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstMapper.getAeaHiApplyinstById(applyinstId);
+        //说明当前是一级流程，去找二级流程的procinstId
+        if (actStoAppinst != null) {
+            String appinstId = actStoAppinst.getAppinstId();
+            if (StringUtils.isNotBlank(appinstId)) {
+                ActStoAppinstSubflow query = new ActStoAppinstSubflow();
+                query.setAppinstId(appinstId);
+                query.setParentSubflowId(null);
+                query.setTriggerTaskinstId(taskId);
+                List<ActStoAppinstSubflow> actStoAppinstSubflows = actStoAppinstSubflowMapper.listActStoAppinstSubflow(query);
+                if (actStoAppinstSubflows != null && actStoAppinstSubflows.size() > 0) {
+                    subProcessInstanceId = actStoAppinstSubflows.get(0).getSubflowProcinstId();
+                    if (StringUtils.isNotBlank(subProcessInstanceId)) {
+                        itemProcInstId = subProcessInstanceId;
+                        results = listHistoryComment(subProcessInstanceId, true, applyinstId);
+                    }
+                }
+            }
+        } else {
+            // 当前是二级子流程，去找三级流程的procinstId
+            ActStoAppinstSubflow actStoAppinstSubflow = actStoAppinstSubflowMapper.getActStoAppinstSubflowBySubflowProcinstId(processInstanceId);
+            // parentSubflowId  = null  表示二级流程
+            if (actStoAppinstSubflow != null && actStoAppinstSubflow.getParentSubflowId() == null) {
+
+                // 并联审批才有三级流程，2019-04-26修改为单项和并联都允许三级流程
+                if (aeaHiApplyinst != null) {
+                    ActStoAppinstSubflow query = new ActStoAppinstSubflow();
+                    query.setTriggerTaskinstId(taskId);
+                    List<ActStoAppinstSubflow> appinstSubflows = actStoAppinstSubflowMapper.listActStoAppinstSubflow(query);
+                    if (appinstSubflows != null && appinstSubflows.size() > 0) {
+                        String procinstId = appinstSubflows.get(0).getSubflowProcinstId();
+                        if (StringUtils.isNotBlank(procinstId)) {
+                            itemProcInstId = procinstId;
+                            results = listHistoryComment(procinstId, true, applyinstId);
+                        }
+                    } else {
+                        // 如果查询不到子流程的（也就是在父子流程配置时，对接外部的节点不需要配置子流程），尝试查询外部对接同步的审批数据，使用 taskId，作为关联到同步表中查询出必要数据组装。
+                        // this.splitJointExternalComments(aeaHiApplyinst.getApplyinstCode(),taskId,results);
+                    }
+                }
+            } else if (actStoAppinstSubflow != null && actStoAppinstSubflow.getParentSubflowId() != null) {
+                if (aeaHiApplyinst != null) {
+                    ActStoAppinstSubflow query = new ActStoAppinstSubflow();
+                    query.setTriggerTaskinstId(taskId);
+                    List<ActStoAppinstSubflow> appinstSubflows = actStoAppinstSubflowMapper.listActStoAppinstSubflow(query);
+                    if (appinstSubflows != null && appinstSubflows.size() > 0) {
+                        String procinstId = appinstSubflows.get(0).getSubflowProcinstId();
+                        if (StringUtils.isNotBlank(procinstId)) {
+                            itemProcInstId = procinstId;
+                            results = listHistoryComment(procinstId, true, applyinstId);
+                        }
+                    }
+                }
+            }
+        }
+        //事项节点名称显示为事项名称
+        String nodeName = parentNode.getNodeName();
+        String isItemNode = "0";
+        String iteminstId = null;
+        String approveOrgName = null;
+        if (StringUtils.isNotBlank(itemProcInstId)) {
+            //这里通过流程实例获取事项实例的方式有点问题，如果出现多次触发同一事项的子流程则会出现覆盖和数据丢失的问题，所以原则上，同一个事项实例只能对应一个事项审批流程
+            AeaHiIteminst aeaHiIteminst = aeaHiIteminstMapper.getAeaHiIteminstByProcinstId(itemProcInstId);
+            if (aeaHiIteminst == null) {
+                //如果为空，尝试流程变量里面获取
+                HistoricVariableInstance variableInstance = historyService.createHistoricVariableInstanceQuery().processInstanceId(itemProcInstId).variableName("$BUS_CURRENT_ITEMINST_ID").singleResult();
+                if (variableInstance != null) {
+                    aeaHiIteminst = aeaHiIteminstMapper.getAeaHiIteminstById(variableInstance.getValue().toString());
+                }
+            }
+            if (aeaHiIteminst != null) {
+                nodeName = aeaHiIteminst.getIteminstName();
+                isItemNode = "1";
+                approveOrgName = aeaHiIteminst.getApproveOrgName();
+            }
+        }
+        if (aeaHiApplyinst != null && "1".equals(aeaHiApplyinst.getIsSeriesApprove()) && "部门审批".equals(parentNode.getNodeName()) && StringUtils.isNotBlank(itemProcInstId)) {
+            BpmHistoryCommentFormVo itemNode = new BpmHistoryCommentFormVo();
+            itemNode.setNodeName(nodeName);
+            itemNode.setIsItemNode("1");
+            itemNode.setDealingTask(parentNode.isDealingTask());
+            itemNode.setChildNode(results);
+            itemNode.setIteminstId(iteminstId);
+            itemNode.setOrgName(approveOrgName);
+            HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(itemProcInstId).singleResult();
+            if (historicProcessInstance != null && historicProcessInstance.getEndTime() != null) {
+                itemNode.setEndDate(historicProcessInstance.getEndTime());
+            }
+            childNodes = new ArrayList<>();
+            childNodes.add(itemNode);
+        } else {
+            childNodes = results;
+            parentNode.setNodeName(nodeName);
+            parentNode.setIsItemNode(isItemNode);
+            parentNode.setIteminstId(iteminstId);
+            if (StringUtils.isNotBlank(approveOrgName)) {
+                parentNode.setOrgName(approveOrgName);
+            }
+        }
+        //过滤重复的节点，即多工作项合并
+        List<BpmHistoryCommentFormVo> temp = new ArrayList<>();
+        filterNode(childNodes, temp);
+        parentNode.setChildNode(temp);
+        return temp;
+    }
+
+
     private void convertListToVo(List<HistoryProcessVo> oldList, List<HistoryProcessVo> newList, HistoryProcessVo copyForm) {
         for (HistoryProcessVo form2 : oldList) {//2级菜单
             if (form2.getChildNode() == null || form2.getChildNode().size() == 0) {
@@ -361,5 +577,81 @@ public class ApproveProcessService {
                 convertListToVo(newList, new ArrayList<>(), form2);
             }
         }
+    }
+
+    /**
+     * 过滤重复的节点，合并多工作项
+     *
+     * @param nodeList
+     * @param resultNodeList
+     */
+    private void filterNode(List<BpmHistoryCommentFormVo> nodeList, List<BpmHistoryCommentFormVo> resultNodeList) {
+        if (nodeList.size() > 1) {
+            for (int i = 0; i < nodeList.size() - 1; ) {
+                List<BpmHistoryCommentFormVo> childNode = new ArrayList<>();
+                BpmHistoryCommentFormVo temp = new BpmHistoryCommentFormVo();
+                BpmHistoryCommentFormVo voi = nodeList.get(i);
+                BeanUtils.copyProperties(voi, temp);
+                resultNodeList.add(temp);
+                for (int j = i + 1; j < nodeList.size(); j++) {
+                    i = j;
+                    BpmHistoryCommentFormVo voj = nodeList.get(j);
+                    if (voi.getNodeName().equals(voj.getNodeName())) {
+                        childNode.add(voj);
+                    } else {
+                        if (i == nodeList.size() - 1) {
+                            resultNodeList.add(voj);
+                        }
+                        break;
+                    }
+                }
+                if (childNode.size() > 0) {
+                    childNode.add(voi);
+                    temp.setChildNode(childNode);
+                    temp.setIsMultiTaskNode("1");
+                }
+            }
+        } else if (nodeList.size() > 0) {
+            resultNodeList.add(nodeList.get(0));
+        }
+    }
+
+    private void convertToTree(List<BpmHistoryCommentFormVo> parentNodeList, String applyinstId) throws Exception {
+        if (parentNodeList != null && parentNodeList.size() > 0) {
+            for (BpmHistoryCommentFormVo bpmHistoryCommentFormVo : parentNodeList) {
+                if (bpmHistoryCommentFormVo.getChildNode() == null) {
+                    List<BpmHistoryCommentFormVo> childNodeList = listHistoryCommentByTaskId(applyinstId, bpmHistoryCommentFormVo);
+                    if (childNodeList != null && childNodeList.size() > 0) {
+                        convertToTree(childNodeList, applyinstId);
+                    }
+                }
+            }
+        }
+    }
+
+    private void addApproverToHistoryComment(List<BpmHistoryCommentFormVo> nodeList) {
+        if (nodeList != null) {
+            for (BpmHistoryCommentFormVo node : nodeList) {
+                /*if (isPartOfOrg(node.getOrgId())) {
+                    node.setIsApprover("1");
+                }*/
+                addApproverToHistoryComment(node.getChildNode());
+            }
+        }
+    }
+
+    private void sortDgListHistoryCommentBySigeInDate(List<BpmHistoryCommentFormVo> list) {
+        Collections.sort(list, (arg0, arg1) -> {
+            if (arg0.getEndDate() != null && arg1.getEndDate() == null) {
+                return -1;
+            }
+            if (arg0.getEndDate() == null && arg1.getEndDate() != null) {
+                return 1;
+            }
+            if (arg0.getEndDate() != null && arg1.getEndDate() != null) {
+                return (arg0.getEndDate()).compareTo((arg1.getEndDate()));
+            }
+            return (arg0.getSigeInDate()).compareTo((arg1.getSigeInDate()));
+        });
     }
 }

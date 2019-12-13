@@ -229,8 +229,20 @@ public class ApproveItemController {
             @ApiImplicitParam(name = "access_token", value = "国家工程建设项目审批管理系统、省级工程建设项目审批管理系统调用城市工程建设项目审批管理系统身份认证服务接口获取", required = true, dataType = "String")})
     public ResultForm listHistoryApproveProcess(String project_code, String item_instance_code, String access_token) {
         try {
-            List<HistoryProcessVo> list = approveProcessService.listHistoryApproveProcess(project_code, item_instance_code);
-            return new ContentResultForm<>(true, list);
+//            List<HistoryProcessVo> list = approveProcessService.listHistoryApproveProcess(project_code, item_instance_code);
+//            AeaHiApplyinst applyinst = approveCommonService.getApplyinstByProjCodeAndIteminstId(project_code, item_instance_code);
+            String applyinstId = approveCommonService.getApplyinstIdByIteminstId(item_instance_code);
+            if (!org.springframework.util.StringUtils.isEmpty(applyinstId)) {
+//            if (applyinst != null) {
+//                String applyinstId = applyinst.getApplyinstId();
+                List<String> procInstIds = approveCommonService.getProcInstIdByApplyinstIdOrApplyinstCode(applyinstId, null);
+                if (procInstIds.size() > 0) {
+                    List<BpmHistoryCommentFormVo> bpmHistoryCommentFormVos = approveProcessService.listHistoryCommentTree(procInstIds.get(0), true, applyinstId);
+                    return new ContentResultForm<>(true, bpmHistoryCommentFormVos, "查询成功");
+                }
+            }
+            //return new ContentResultForm<>(true, list);
+            return new ResultForm(false, "query failed");
         } catch (Exception e) {
             e.getStackTrace();
             return new ResultForm(false, e.getMessage());

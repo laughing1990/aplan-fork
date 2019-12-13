@@ -27,12 +27,17 @@ public class ProjUnitLinkVo {
     }
 
     public void change2LinkmanVo(AeaLinkmanInfo info) {
-        BeanUtils.copyProperties(info, this.aeaLinkmanInfo);
-        this.ownerComplaintPhone = info.getLinkmanMobilePhone();
+        if (null != info) {
+            BeanUtils.copyProperties(info, this.aeaLinkmanInfo);
+            this.ownerComplaintPhone = info.getLinkmanMobilePhone();
+        }
+
     }
 
     public void change2UnitVo(AeaUnitInfo info) {
-        BeanUtils.copyProperties(info, this.aeaUnitInfo);
+        if (null != info) {
+            BeanUtils.copyProperties(info, this.aeaUnitInfo);
+        }
     }
 
     @Data

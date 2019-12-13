@@ -206,7 +206,7 @@ public class AeaCertMallController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "aeaCertinstParamVo", value = "证照实例", required = true , dataType = "Object" ,paramType = "query"),
     })
-    public ContentResultForm<AeaHiCertinst> saveCertint(@RequestBody AeaCertinstParamVo aeaCertinstParamVo, HttpServletRequest request){
+    public ContentResultForm<AeaHiCertinst> saveCertint(AeaCertinstParamVo aeaCertinstParamVo, HttpServletRequest request){
         LoginInfoVo loginVo = SessionUtil.getLoginInfo(request);
         try{
             AeaHiCertinst certinst = aeaCertService.saveCertint(aeaCertinstParamVo,loginVo);

@@ -10,7 +10,7 @@ import java.util.List;
 @ApiModel("并联申报暂存结果")
 @Getter
 @Setter
-public class ParallerStashResultVo {
+public class ParallelStashResultVo {
 
     @ApiModelProperty(value = "并联申报实例id")
     private String applyinstId;

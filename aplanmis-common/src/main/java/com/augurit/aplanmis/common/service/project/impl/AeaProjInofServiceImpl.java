@@ -692,11 +692,19 @@ public class AeaProjInofServiceImpl implements AeaProjInfoService {
     }
 
     //获取即将要生成的子项目
-    public AeaProjInfo getChildProject(String projName, String projInfoId, String localCode, String gcbm) throws Exception {
+    public AeaProjInfo getChildProject(String projName, String projInfoId, String localCode, String gcbm,String stageFlag) throws Exception {
+        String childGcbm = "";
         AeaProjInfo parentProjInfo = aeaProjInfoMapper.getAeaProjInfoById(projInfoId);
         AeaProjInfo aeaProjInfo = new AeaProjInfo();
         aeaProjInfo.setLocalCode(localCode);
-        aeaProjInfo.setGcbm(gcbmBscRuleCodeStrategy.generateCode(localCode, localCode, "工程编码", parentProjInfo.getRootOrgId()));
+        //广东模式
+                //String childGCBMCode = parentProjInfo.getGcbm() + "-" + stageFlag;
+                //childGcbm = gdGcbmBscRuleCodeStrategy.generateCode(childGCBMCode, childGCBMCode, "工程编码", parentProjInfo.getRootOrgId());
+
+        //非广东模式
+        childGcbm = gcbmBscRuleCodeStrategy.generateCode(localCode, localCode, "工程编码", parentProjInfo.getRootOrgId());
+
+        aeaProjInfo.setGcbm(childGcbm);
         aeaProjInfo.setProjName(projName);
         //返还新的aeaProjInfo,只有三个字段，localCode，gcbm和projName，其他都为null，localCode与父项目保持相同
         return aeaProjInfo;

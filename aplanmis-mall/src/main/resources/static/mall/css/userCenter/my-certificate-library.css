@@ -1,6 +1,49 @@
 .mt20{
     margin-top: 20px;
 }
+.el-dialog__header {
+    border: none;
+    height: 44px;
+    line-height: 44px;
+    color: #fff;
+    background: #457EFF;
+    padding: 0 15px;
+}
+.el-dialog__title {
+    color: #ffffff;
+    line-height: 45px;
+}
+.el-dialog__footer {
+    padding: 10px 20px 10px;
+}
+.el-dialog__headerbtn .el-dialog__close {
+    color: #ffffff;
+    -webkit-transition: all 0.2ms;
+    -o-transition: all 0.2ms;
+    transition: all 0.2ms;
+}
+.addDirDialog .el-dialog__body {
+    padding: 12px;
+}
+.addDirForm-box {
+    background: rgba(255,255,255,1);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    padding-top: 25px;
+}
+.addDirForm-box .el-form-item{
+    display: inline-block;
+}
+.addDirDialog .el-dialog {
+    background: #F0F3F6;
+}
+.el-form-item.is-success .el-input__inner, .el-form-item.is-success .el-input__inner:focus, .el-form-item.is-success .el-textarea__inner, .el-form-item.is-success .el-textarea__inner:focus {
+    border-color: #DCDFE6;
+}
 .tips {
     width: 930px;
     height: 48px;

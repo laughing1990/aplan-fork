@@ -403,9 +403,21 @@
 }
 
 .isDesignSolution > label {
-    width: 156px !important;
+    width: 110px !important;
+    margin-left: 40px;
 }
 
 .gbCodeYear label {
     width: 248px !important;
+}
+
+.twoLine label {
+  line-height: 20px;
+}
+
+.selectStageDialog .el-dialog,.selectStageDialog .el-dialog{
+  background: #F0F3F6;
+}
+.selectStageDialog .el-dialog__body{
+  padding: 12px;
 }

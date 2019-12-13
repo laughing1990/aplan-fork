@@ -281,7 +281,7 @@ public class RestFileServiceImpl implements RestFileService {
         String[] fileTypes = {".jpg", ".png", ".rar", ".txt", ".zip", ".doc", ".ppt", ".xls", ".pdf", ".docx", ".xlsx"};
 
         files.stream().forEach(file->{
-            String fileType = file.getOriginalFilename().substring(file.getOriginalFilename().indexOf(".")).toLowerCase();
+            String fileType = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")).toLowerCase();
             if (!Arrays.asList(fileTypes).contains(fileType)) {
                 isAllowFileType.set(false);
             }

@@ -88,6 +88,19 @@ $(function() {
             itemCode: {
                 required: true,
                 maxlength: 50,
+                remote: {
+                    url: ctx + '/aea/item/basic/checkUniqueItemCode.do', //后台处理程序
+                    type: "post",               //数据发送方式
+                    dataType: "json",           //接受数据格式
+                    data: {   //要传递的数据
+                        itemId: function () {
+                            return $("#aedit_item_form input[name='itemId']").val();
+                        },
+                        itemCode: function () {
+                            return $("#aedit_item_form input[name='itemCode']").val();
+                        }
+                    }
+                }
             },
             orgName: {
                 required: true,
@@ -139,6 +152,7 @@ $(function() {
             itemCode: {
                 required: '<font color="red">此项必填！</font>',
                 maxlength: "长度不能超过50个字母!",
+                remote: "编号已存在！",
             },
             orgName: {
                 required: '<font color="red">此项必填！</font>',
@@ -340,7 +354,6 @@ function addItemInfo(isRoot, isCatalog){
     $("#aedit_item_form select[name='outerSystemHandle'] option:eq(2)").prop("selected", 'selected');
     $("#aedit_item_form select[name='itemType'] option:eq(1)").prop("selected", 'selected');
     $("#aedit_item_form select[name='itemProperty'] option:eq(1)").prop("selected", 'selected');
-    // $("#aedit_item_form select[name='sxmlzt'] option:eq(1)").prop("selected", 'selected');
     $("#aedit_item_form select[name='sfsxgzcnz'] option:eq(0)").prop("selected", 'selected');
     $("#aedit_item_form select[name='bjType'] option:eq(1)").prop("selected", 'selected');
     $("#aedit_item_form input[name='appId']").val("");
@@ -350,6 +363,7 @@ function addItemInfo(isRoot, isCatalog){
     $("#aedit_item_form select[name='isCheckPartform'] option:eq(0)").prop("selected", 'selected');
     $("#aedit_item_form select[name='isCheckProj'] option:eq(0)").prop("selected", 'selected');
     $("#aedit_item_form select[name='anticipateType'] option:eq(1)").prop("selected", 'selected');
+    $("#aedit_item_form select[name='isGreenWay'] option:eq(0)").prop("selected", 'selected');
 
     if(isCatalog){
 
@@ -404,6 +418,7 @@ function editItemBasicById(itemBasicId,itemVerStatus,isCatalog) {
     $("#aedit_item_form input[name='regionId']").val('');
     $("#aedit_item_form input[name='sxmlzt']").val('');
     $("#aedit_item_form input[name='itemCategoryMark']").attr("readOnly", "true");
+    $("#aedit_item_form select[name='isGreenWay'] option:eq(0)").prop("selected", 'selected');
     clearItemBasicFile();
 
     if(isCatalog=='1'){

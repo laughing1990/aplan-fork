@@ -109,4 +109,6 @@ public interface ApproveDataService {
          * @throws Exception
          */
     ProjStateDto searchProjStateDtoByApplyinstId(String applyinstId) throws Exception;
+
+    List<AeaProjInfo>  getScheduleProjListByUnitInfoIdOrLinkmanNoPage(String unitId, String userId, String keyword,String parentProjInfoId);
 }

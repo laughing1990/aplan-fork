@@ -1263,4 +1263,45 @@
             ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
         </sql>
     </changeSet>
+
+    <changeSet id="201912111631" author="chenzh" failOnError="false">
+        <comment>增加事项容缺办结时限实例表</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_im_proj_purchase`
+            ADD COLUMN `APPLYINST_ID` varchar(50) NULL COMMENT '该采购需求的申报实例ID' AFTER `ROOT_ORG_ID`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20191211150844" author="xiong" failOnError="false">
+        <preConditions>
+            <not>
+                <tableExists tableName="aea_applyinst_forminst"/>
+            </not>
+        </preConditions>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            CREATE TABLE `aea_applyinst_forminst` (
+            `applyinst_forminst_id` varchar(50) NOT NULL COMMENT '主键ID',
+            `applyinst_id` varchar(50) NOT NULL COMMENT '申报实例id',
+            `forminst_id` varchar(50) NOT NULL COMMENT '表单实例id',
+            `CREATER` varchar(50) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            PRIMARY KEY (`applyinst_forminst_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='申报实例与表单实例关联表';
+        </sql>
+    </changeSet>
+
+    <changeSet id="20191212085700" author="xiong" failOnError="false">
+        <preConditions>
+            <not>
+                <indexExists columnNames="applyinst_id" tableName="aea_applyinst_forminst"
+                             indexName="aaf_applyisnt_id"/>
+            </not>
+        </preConditions>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            alter table aea_applyinst_forminst add index aaf_applyisnt_id(applyinst_id);
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

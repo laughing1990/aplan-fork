@@ -16,13 +16,23 @@ import com.augurit.aplanmis.common.constants.ApplySource;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.constants.ApplyType;
 import com.augurit.aplanmis.common.constants.ItemStatus;
+import com.augurit.aplanmis.common.domain.AeaApplyinstForminst;
+import com.augurit.aplanmis.common.domain.AeaApplyinstProj;
 import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
+import com.augurit.aplanmis.common.domain.AeaHiItemStateinst;
 import com.augurit.aplanmis.common.domain.AeaHiIteminst;
 import com.augurit.aplanmis.common.domain.AeaHiSeriesinst;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
 import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
+import com.augurit.aplanmis.common.domain.AeaParStage;
+import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.common.mapper.AeaApplyinstForminstMapper;
+import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiItemStateinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
+import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
+import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
 import com.augurit.aplanmis.common.service.apply.ApplyCommonService;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutinstService;
@@ -37,7 +47,9 @@ import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowService;
 import com.augurit.aplanmis.front.apply.vo.ApplyInstantiateResult;
 import com.augurit.aplanmis.front.apply.vo.BuildProjUnitVo;
+import com.augurit.aplanmis.front.apply.vo.ForminstVo;
 import com.augurit.aplanmis.front.apply.vo.SeriesApplyDataVo;
+import com.augurit.aplanmis.front.apply.vo.SeriesUnstashVo;
 import com.augurit.aplanmis.front.apply.vo.StashVo;
 import org.flowable.engine.TaskService;
 import org.flowable.task.api.Task;
@@ -52,6 +64,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * 单项申报service
@@ -96,6 +109,16 @@ public class AeaSeriesService {
     private AeaServiceWindowService aeaServiceWindowService;
     @Autowired
     private ApplyCommonService applyCommonService;
+    @Autowired
+    private AeaApplyinstProjMapper aeaApplyinstProjMapper;
+    @Autowired
+    private AeaProjInfoMapper aeaProjInfoMapper;
+    @Autowired
+    private AeaParStageMapper aeaParStageMapper;
+    @Autowired
+    private AeaHiItemStateinstMapper aeaHiItemStateinstMapper;
+    @Autowired
+    private AeaApplyinstForminstMapper aeaApplyinstForminstMapper;
 
     /**
      * 保存实例、启动流程（停留在收件节点）
@@ -336,6 +359,8 @@ public class AeaSeriesService {
             // 暂存后申报, 先清空实例
             if (Status.ON.equals(seriesApplyinst.getIsTemporarySubmit())) {
                 applyCommonService.clearHistoryInst(seriesApplyDataVo.getApplyinstId());
+                seriesApplyinst.setIsTemporarySubmit(Status.OFF);
+                aeaHiApplyinstService.updateAeaHiApplyinst(seriesApplyinst);
             }
             if (StringUtils.isNotBlank(seriesApplyinst.getApplyinstState())) {
                 aeaLogApplyStateHistService.insertTriggerAeaLogApplyStateHist(seriesApplyinst.getApplyinstId(), null, appinstId, null, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), opuWinId);
@@ -457,7 +482,6 @@ public class AeaSeriesService {
         String applySubject = seriesStashVo.getApplySubject();
         String linkmanInfoId = seriesStashVo.getLinkmanInfoId();
         String projInfoId = seriesStashVo.getProjInfoId();
-        String themeVerId = seriesStashVo.getThemeVerId();
         String branchOrgMap = seriesStashVo.getBranchOrgMap();
         String itemVerId = seriesStashVo.getItemVerId();
 
@@ -466,7 +490,7 @@ public class AeaSeriesService {
         Assert.hasText(projInfoId, "projInfoId is null");
 
         AeaHiApplyinst aeaHiApplyinst;
-        AeaHiSeriesinst aeaHiSeriesinst;
+        AeaHiSeriesinst aeaHiSeriesinst = null;
 
         String applyinstId = seriesStashVo.getApplyinstId();
 
@@ -475,6 +499,9 @@ public class AeaSeriesService {
             applyCommonService.clearHistoryInst(applyinstId);
 
             aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+            aeaHiApplyinst.setIsTemporarySubmit(Status.ON);
+            aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
+
             aeaHiSeriesinst = aeaHiSeriesinstService.getAeaHiSeriesinstByApplyinstId(applyinstId);
         } else {
             aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(ApplySource.WIN.getValue()
@@ -483,14 +510,15 @@ public class AeaSeriesService {
             applyinstId = aeaHiApplyinst.getApplyinstId();
 
             applyCommonService.bindApplyinstProj(projInfoId, applyinstId, SecurityContext.getCurrentUserId());
-
+        }
+        if (aeaHiSeriesinst == null) {
             // 预先生成流程模板实例ID
             String appinstId = UUID.randomUUID().toString();
             String isParallel = StringUtils.isNotBlank(seriesStashVo.getIsParallel()) ? seriesStashVo.getIsParallel() : Status.OFF;
             aeaHiSeriesinst = aeaHiSeriesinstService.createAeaHiSeriesinst(applyinstId, appinstId, isParallel, seriesStashVo.getStageId());
         }
 
-        if (StringUtils.isNotBlank(themeVerId) && StringUtils.isNotBlank(seriesStashVo.getItemVerId())) {
+        if (StringUtils.isNotBlank(seriesStashVo.getStageId()) && StringUtils.isNotBlank(seriesStashVo.getItemVerId())) {
             aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), itemVerId, branchOrgMap, null, aeaHiSeriesinst.getAppinstId());
 
             String[] stateIds = seriesStashVo.getStateIds();
@@ -501,5 +529,41 @@ public class AeaSeriesService {
             aeaHiItemInoutinstService.batchInsertAeaHiItemInoutinst(seriesStashVo.getMatinstsIds(), applyinstId, SecurityContext.getCurrentUserName());
         }
         return aeaHiApplyinst.getApplyinstId();
+    }
+
+    /**
+     * 暂存回显
+     * @param applyinstId 申报实例id
+     */
+    public SeriesUnstashVo unstash(String applyinstId) throws Exception {
+        SeriesUnstashVo seriesUnstashVo = new SeriesUnstashVo();
+
+        List<AeaApplyinstProj> aeaApplyinstProjs = aeaApplyinstProjMapper.getAeaApplyinstProjByApplyinstId(applyinstId);
+        Assert.state(aeaApplyinstProjs.size() > 0, "根据申报实例找不到对应的项目信息, applyinstId: " + applyinstId);
+        AeaProjInfo aeaProjInfo = aeaProjInfoMapper.getAeaProjInfoById(aeaApplyinstProjs.get(0).getProjInfoId());
+        seriesUnstashVo.setProjInfoId(aeaProjInfo.getProjInfoId());
+        seriesUnstashVo.setThemeId(aeaProjInfo.getThemeId());
+
+        AeaHiSeriesinst aeaHiSeriesinst = aeaHiSeriesinstService.getAeaHiSeriesinstByApplyinstId(applyinstId);
+        seriesUnstashVo.setStageId(aeaHiSeriesinst.getStageId());
+
+        if (StringUtils.isNotBlank(aeaHiSeriesinst.getStageId())) {
+            AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(aeaHiSeriesinst.getStageId());
+            seriesUnstashVo.setThemeVerId(aeaParStage.getThemeVerId());
+        }
+
+        List<AeaHiIteminst> aeaHiIteminsts = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
+        if (CollectionUtils.isNotEmpty(aeaHiIteminsts)) {
+            AeaHiIteminst aeaHiIteminst = aeaHiIteminsts.get(0);
+            seriesUnstashVo.setApproveOrgId(aeaHiIteminst.getApproveOrgId());
+        }
+
+        seriesUnstashVo.setStateIds(aeaHiItemStateinstMapper.listAeaHiItemStateinstByApplyinstIdOrSeriesinstId(applyinstId, null)
+                .stream().map(AeaHiItemStateinst::getExecStateId).collect(Collectors.toSet()));
+
+        List<AeaApplyinstForminst> aeaApplyinstForminsts = aeaApplyinstForminstMapper.listAeaApplyinstForminstByApplyinstId(applyinstId);
+        seriesUnstashVo.getForminstVos().addAll(aeaApplyinstForminsts.stream()
+                .map(ForminstVo::from).collect(Collectors.toList()));
+        return seriesUnstashVo;
     }
 }

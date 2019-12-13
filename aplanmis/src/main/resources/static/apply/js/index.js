@@ -94,9 +94,9 @@ var vm = new Vue({
       statusList: [],  // 申报阶段列表
       themeList: [
         {themeType: "",
-        themeTypeId: "",
-        themeTypeName: "并联审批",
-        themesList: []
+          themeTypeId: "",
+          themeTypeName: "并联审批",
+          themesList: []
         }
       ],  // 主题类型主题列表
       themeType: '', // 项目所属主题类型
@@ -386,7 +386,7 @@ var vm = new Vue({
       treeBtnLeft: '',
       childProjText: '', // 子项目工程备注
       childProjName: '', // 子项目工程名称
-        stageFlag: '', //阶段标志
+      stageFlag: '', //阶段标志
       parentProjInfoId: '', // 父工程id
       loadingLinkMan: false,
       stageId: '',  // 所选阶段ID
@@ -484,8 +484,8 @@ var vm = new Vue({
       fileWinData: [], // 上传窗口上传参数列表
       uploadLogo: '',
       addChildProjShow: false, // 新增子项目input
-        isCreateSubproj: '1',  //是否允许创建子工程：1 允许，0 禁止
-        dybzspjdxh: [],  //对应国家标准审批阶段
+      isCreateSubproj: '1',  //是否允许创建子工程：1 允许，0 禁止
+      dybzspjdxh: [],  //对应国家标准审批阶段
       shareFileList: [], // 共享材料列表
       uploadTableData: [],
       selCoreItems: {}, // 选择分局承办的事项
@@ -544,6 +544,7 @@ var vm = new Vue({
       },
       // isMend:true,//是否可以材料补全
       filePreviewCount: 0, // 查询预览是否成功次数
+      // parallelApplyinstId: '98d3627c-d333-462b-8e19-caf9619236fe', // 并联申报实例id
       parallelApplyinstId: '', // 并联申报实例id
       IsJustApplyinst: 0, //
       projInfoByKeyword: '', // 模糊查询项目Keyword
@@ -589,15 +590,44 @@ var vm = new Vue({
       oneFormInputFlag: false, // 一张表单是否填写
       preItemCheckkMsg: '',
       itemFrontCheckFlag: true,
+      themeVerId: '',  // 事项版本id
+      seriesApplyinstIds: [], // 并行事项实例
+      isDraftsProj: false, // 是否草稿箱进来
+      branchOrgHis: {}, // 已暂存并联事项 orgId
+      parallelItemStateIdsHis: [], // 已暂存并联事项情形
+      projInfoIdHis: '', // 已暂存项目id
+      stageIdHis: '', // 已暂存阶段id
+      stateIdsHis: [], // 已暂存情形id
+      themeIdHis: '', // 已暂存主题id
+      themeVerIdHis: '', // 已暂存主题版本id
     }
   },
-  mounted: function () {
+  created: function () {
     var _that = this;
     _that.getThemeInfo('0');
     _that.getThemeInfo('1');
     _that.getDistrictList();  // 获取行政区划
     _that.getGbhy();
     _that.getProjTypeNature('PROJ_UNIT_LINKMAN_TYPE,XM_DWLX,XM_PROJECT_STEP,XM_PROJECT_LEVEL,XM_TZLX,XM_ZJLY,XM_GBHY,XM_TDLY,XM_GCFL,XM_NATURE');
+    if(parent.vm&&parent.vm.activeTabSelData){
+      if(parent.vm.activeTabSelData.projInfoId){
+        _that.projInfoId = parent.vm.activeTabSelData.projInfoId;
+        _that.linkQuery();
+      }
+    }
+    // if(parent.vm&&parent.vm.activeTabSelData){
+    //   if(parent.vm.activeTabSelData.parallelApplyinstId){
+    //     _that.parallelApplyinstId = parent.vm.activeTabSelData.parallelApplyinstId;
+    //     _that.lookProjDetail()
+    //   }
+    // }
+    if(_that.parallelApplyinstId){
+      _that.isDraftsProj = true;
+      _that.lookProjDetail();
+    }
+  },
+  mounted: function () {
+    var _that = this;
     window.addEventListener('scroll',_that.handleScroll);
     window.addEventListener('resize', function (ev) {
       _that.curWidth=(document.documentElement.clientWidth || document.body.clientWidth);
@@ -605,12 +635,6 @@ var vm = new Vue({
     _that.$nextTick(function() {
       this.$refs.searchProjInfo.$el.querySelector('input').click()
     })
-    if(parent.vm&&parent.vm.activeTabSelData){
-      if(parent.vm.activeTabSelData.projInfoId){
-        _that.projInfoId = parent.vm.activeTabSelData.projInfoId;
-        _that.linkQuery();
-      }
-    }
   },
   watch: {
     searchProjfilterText: function(val) {
@@ -624,6 +648,38 @@ var vm = new Vue({
     }
   },
   methods: {
+    // 查看项目详情
+    lookProjDetail: function () {
+      var _that = this;
+      var _url = ctx + 'rest/apply/unstash';
+      _that.loading = true;
+      request('', {
+        url: _url,
+        type: 'get',
+        data: {applyinstId: _that.parallelApplyinstId}
+      }, function (res) {
+        _that.loading = false;
+        if (res.success) {
+          _that.branchOrgHis = res.content.branchOrg?res.content.branchOrg:{};
+          _that.parallelItemStateIdsHis = res.content.parallelItemStateIds?res.content.parallelItemStateIds:[];
+          _that.projInfoIdHis = res.content.projInfoId?res.content.projInfoId:'';
+          _that.projInfoId = res.content.projInfoId?res.content.projInfoId:'';
+          _that.stageIdHis = res.content.stageId?res.content.stageId:'';
+          _that.stateIdsHis = res.content.stateIds?res.content.stateIds:[];
+          _that.themeIdHis = res.content.themeId?res.content.themeId:'';
+          _that.themeVerIdHis = res.content.themeVerId?res.content.themeVerId:'';
+          _that.themeVerId = res.content.themeVerId?res.content.themeVerId:'';
+          _that.linkQuery();
+        } else {
+          _that.isDraftsProj = false;
+          alertMsg('', res.message?res.message:'获取暂存信息失败！', '关闭', 'error', true);
+        }
+      }, function (res) {
+        _that.loading = false;
+        _that.isDraftsProj = false;
+        alertMsg('', res.message?res.message:'获取暂存信息失败！', '关闭', 'error', true);
+      });
+    },
     // 生成项目编码
     getLocalcode: function(){
       var _that = this;
@@ -781,17 +837,17 @@ var vm = new Vue({
       }, function (msg) {})
     },
     handleCheckChange: function(data, checked, indeterminate) {
-        // console.log(data, checked, indeterminate);
-        var arr = this.$refs.gbhy.getCheckedNodes(true);
-        var str = [];
-        var ids = [];
-        for (var i = 0; i < arr.length; i++) {
-          str.push(arr[i].itemName);
-          ids.push(arr[i].itemCode);
-        }
+      // console.log(data, checked, indeterminate);
+      var arr = this.$refs.gbhy.getCheckedNodes(true);
+      var str = [];
+      var ids = [];
+      for (var i = 0; i < arr.length; i++) {
+        str.push(arr[i].itemName);
+        ids.push(arr[i].itemCode);
+      }
 
-        this.gbhyShowMsg = str.join(',');
-        this.projBascInfoShow.theIndustry = ids.join(',');
+      this.gbhyShowMsg = str.join(',');
+      this.projBascInfoShow.theIndustry = ids.join(',');
     },
     // 设置并联并行事项展示条数
     setItemShowLen: function(){
@@ -1019,7 +1075,8 @@ var vm = new Vue({
       this.parallelItems=[];
       this.coreItems=[];
       this.model.matsTableData=[];
-      this.parallelApplyinstId = '';
+      // this.parallelApplyinstId = '';
+      // this.seriesApplyinstIds = [];
     },
     // 获取项目详细信息
     searchProjAllInfo: function(){
@@ -1027,6 +1084,15 @@ var vm = new Vue({
       _that.loading = true;
       _that.matCodes = [];// 材料code集合
       _that.clearSearchData();
+      if(!_that.isDraftsProj){
+        this.parallelApplyinstId = '';
+        this.seriesApplyinstIds = [];
+        this.branchOrgHis = {};
+        this.parallelItemStateIdsHis = [];
+        this.stateIdsHis = [];
+        this.themeIdHis = '';
+        this.stageIdHis = '';
+      }
       request('', {
         url: ctx+'rest/project/one/'+_that.projInfoId,
         type: 'get',
@@ -1041,10 +1107,9 @@ var vm = new Vue({
             _that.showVerLen = _that.verticalTabData.length;
             _that.projBascInfoShow = result; // 项目主要信息
             _that.getProjThemeIdList();
-            _that.themeId = result.themeId;
+            _that.themeId = _that.themeIdHis?_that.themeIdHis:result.themeId;
             _that.themeType = result.themeType;
             _that.applySubjectType = Number(result.applySubjectType); // 申办主体类型
-
             if (!_that.projBascInfoShow.isAreaEstimate) _that.projBascInfoShow.isAreaEstimate = '0';
             if (!_that.projBascInfoShow.isDesignSolution) _that.projBascInfoShow.isDesignSolution = '0';
             if (!_that.projBascInfoShow.gbCodeYear) _that.projBascInfoShow.gbCodeYear = '2017';
@@ -1396,7 +1461,7 @@ var vm = new Vue({
         projInfoIds: '',
         linkmanTypes: [{
           linkmanInfoId: '',
-            linkmanType: '',
+          linkmanType: '',
           linkmanName: ''
         }]
       };
@@ -1728,25 +1793,25 @@ var vm = new Vue({
     saveApplyAndLinkmanInfo: function () {
       var _that = this;
       var personalInfos={personalInfos:[
-        {
-          applyOrLinkType: 'apply',
-          linkmanCertNo: _that.applyPersonFrom.applyLinkmanIdCard,
-          linkmanInfoId: _that.applyPersonFrom.applyLinkmanId,
-          linkmanMail: _that.applyPersonFrom.applyLinkmanEmail,
-          linkmanMobilePhone: _that.applyPersonFrom.applyLinkmanTel,
-          linkmanName: _that.applyPersonFrom.applyLinkmanName,
-          projInfoId: _that.projInfoId
-        },
-        {
-          applyOrLinkType: 'link',
-          linkmanCertNo: _that.applyPersonFrom.linkLinkmanIdCard,
-          linkmanInfoId: _that.applyPersonFrom.linkLinkmanId,
-          linkmanMail: _that.applyPersonFrom.linkLinkmanEmail,
-          linkmanMobilePhone: _that.applyPersonFrom.linkLinkmanTel,
-          linkmanName: _that.applyPersonFrom.linkLinkmanName,
-          projInfoId: _that.projInfoId
-        }
-      ]};
+          {
+            applyOrLinkType: 'apply',
+            linkmanCertNo: _that.applyPersonFrom.applyLinkmanIdCard,
+            linkmanInfoId: _that.applyPersonFrom.applyLinkmanId,
+            linkmanMail: _that.applyPersonFrom.applyLinkmanEmail,
+            linkmanMobilePhone: _that.applyPersonFrom.applyLinkmanTel,
+            linkmanName: _that.applyPersonFrom.applyLinkmanName,
+            projInfoId: _that.projInfoId
+          },
+          {
+            applyOrLinkType: 'link',
+            linkmanCertNo: _that.applyPersonFrom.linkLinkmanIdCard,
+            linkmanInfoId: _that.applyPersonFrom.linkLinkmanId,
+            linkmanMail: _that.applyPersonFrom.linkLinkmanEmail,
+            linkmanMobilePhone: _that.applyPersonFrom.linkLinkmanTel,
+            linkmanName: _that.applyPersonFrom.linkLinkmanName,
+            projInfoId: _that.projInfoId
+          }
+        ]};
       _that.$refs['applicantPer'].validate(function (valid) {
         if (valid) {
           _that.loading = true;
@@ -1823,6 +1888,12 @@ var vm = new Vue({
       _that.coreItems=[];
       _that.model.matsTableData=[];
       this.parallelApplyinstId = '';
+      this.seriesApplyinstIds = [];
+      this.branchOrgHis = {};
+      this.parallelItemStateIdsHis = [];
+      this.stateIdsHis = [];
+      this.themeIdHis = '';
+      this.stageIdHis = '';
       if(index==0&&flag=='single'){
         flag='parallel';
         if(_that.selTheme.themeId){
@@ -1835,6 +1906,12 @@ var vm = new Vue({
           _that.coreItems=[];
           _that.model.matsTableData=[];
           this.parallelApplyinstId = '';
+          this.seriesApplyinstIds = [];
+          this.branchOrgHis = {};
+          this.parallelItemStateIdsHis = [];
+          this.stateIdsHis = [];
+          this.themeIdHis = '';
+          this.stageIdHis = '';
         }
       }
       if(flag=='parallel'){
@@ -1870,17 +1947,23 @@ var vm = new Vue({
       var themeId = data.themeId;
       var themeName = data.themeName;
       this.parallelApplyinstId = '';
+      this.seriesApplyinstIds = [];
+      this.branchOrgHis = {};
+      this.parallelItemStateIdsHis = [];
+      this.stateIdsHis = [];
+      this.themeIdHis = '';
+      this.stageIdHis = '';
       var _that =this;
       // confirmMsg('注意：选择主题后不可更改','是否选择主题”'+themeName+'“？',function(){
-        if(flag=='parallel'){
-          _that.selThemeActive = index;
-        }else {
-          _that.selThemeActive1 = index;
-        }
-        _that.themeId = themeId;
-        _that.getSelThemeInfo(_that.themeType,_that.themeId,flag);
-        _that.getStageByThemeIdAndThemeStageId(_that.themeId,_that.projInfoId);
-        _that.selThemeDialogShow = false;
+      if(flag=='parallel'){
+        _that.selThemeActive = index;
+      }else {
+        _that.selThemeActive1 = index;
+      }
+      _that.themeId = themeId;
+      _that.getSelThemeInfo(_that.themeType,_that.themeId,flag);
+      _that.getStageByThemeIdAndThemeStageId(_that.themeId,_that.projInfoId);
+      _that.selThemeDialogShow = false;
       // },function(){},'','','',true)
     },
     // 获取stage by themeId
@@ -1943,7 +2026,8 @@ var vm = new Vue({
           var _stageId = '';
           var _isSelItem = '';
           if(_that.statusList.length>0){
-            _that.statusList.map(function (item) { // 图片切换为新的图片
+            var selStatusHis = {}, selIndexHis = 0;
+            _that.statusList.map(function (item,index) { // 图片切换为新的图片
               Vue.set(item,'classIcon','');
               if(item.stageName.indexOf('工程')==0){
                 item.bigImgPath = 'apply/imgs/工程.png';
@@ -1957,10 +2041,20 @@ var vm = new Vue({
               }else {
                 item.bigImgPath = 'apply/imgs/立项.png';
               }
+              if(_that.stageIdHis&&_that.stageIdHis==item.stageId){
+                selStatusHis=item;
+                selIndexHis = index;
+                _stageId = item.stageId;
+                _isSelItem = item.isSelItem;
+              }else {
+                // 默认选择阶段1
+                selStatusHis=_that.statusList[0];
+                selIndexHis = 0;
+                _stageId = _that.statusList[0].stageId;
+                _isSelItem = _that.statusList[0].isSelItem;
+              }
             });
-            _stageId = _that.statusList[0].stageId;
-            _isSelItem = _that.statusList[0].isSelItem;
-            _that.selStatus(_that.statusList[0],0,_stageId,_isSelItem); // 默认选择阶段1
+            _that.selStatus(selStatusHis,selIndexHis,_stageId,_isSelItem,'isHistory');
           }else {
             _that.stageId = '';
             _that.stateList = [];
@@ -2003,31 +2097,31 @@ var vm = new Vue({
       selStateIds=selStateIds.filter(function(item, index) {
         //当前元素，在原始数组中的第一个索引==当前索引值，否则返回当前元素
         return selStateIds.indexOf(item, 0) === index
-                  })
-    return selStateIds;
-},
+      })
+      return selStateIds;
+    },
 // 根据阶段获取情形和材料
-getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
-  var selStateIds = [];
-  var parentStateId = data.parentStateId?data.parentStateId:'ROOT';
-  var questionStateId = pData.parStateId?pData.parStateId:'';
-  var stateParallelItems=data.stateParallelItems?data.stateParallelItems:[];
-  var stateOptionItems=data.stateOptionItems?data.stateOptionItems:[];
-  var _that = this;
-  var _parentId = data.parStateId?data.parStateId:'ROOT';
-  if(checkFlag==false){
-    selStateIds = _that.getStatusListId();
-    for (var i = 0;i< _that.stateList.length;i++) { // 清空情形下所对应情形
-      var obj = _that.stateList[i];
-      if(obj&&(obj.parentStateId == _parentId)||(obj&&obj.parentStateId!=null&&(selStateIds.indexOf(obj.parentStateId)==-1))){
-        if(typeof(obj.selectAnswerId)=='object'&&obj.selectAnswerId.length>0){
-          obj.selectAnswerId.map(function(itemSel){
-            selStateIds=selStateIds.filter(function(item, index) {
-              return item !== itemSel;
-            })
-          });
-        }else if(obj.selectAnswerId !== '') {
-          selStateIds=selStateIds.filter(function(item, index) {
+    getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
+      var selStateIds = [];
+      var parentStateId = data.parentStateId?data.parentStateId:'ROOT';
+      var questionStateId = pData.parStateId?pData.parStateId:'';
+      var stateParallelItems=data.stateParallelItems?data.stateParallelItems:[];
+      var stateOptionItems=data.stateOptionItems?data.stateOptionItems:[];
+      var _that = this;
+      var _parentId = data.parStateId?data.parStateId:'ROOT';
+      if(checkFlag==false){
+        selStateIds = _that.getStatusListId();
+        for (var i = 0;i< _that.stateList.length;i++) { // 清空情形下所对应情形
+          var obj = _that.stateList[i];
+          if(obj&&(obj.parentStateId == _parentId)||(obj&&obj.parentStateId!=null&&(selStateIds.indexOf(obj.parentStateId)==-1))){
+            if(typeof(obj.selectAnswerId)=='object'&&obj.selectAnswerId.length>0){
+              obj.selectAnswerId.map(function(itemSel){
+                selStateIds=selStateIds.filter(function(item, index) {
+                  return item !== itemSel;
+                })
+              });
+            }else if(obj.selectAnswerId !== '') {
+              selStateIds=selStateIds.filter(function(item, index) {
                 return item !== obj.selectAnswerId;
               })
             }
@@ -2181,7 +2275,6 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
                       return item !== obj.selectAnswerId;
                     })
                   }
-                  // if(obj&&obj.stateSeq.indexOf(parentStateId)>-1&&(obj.parStateId!=parentStateId)){
                   _that.stateList.splice(i, 1);
                   i--
                 }
@@ -2296,7 +2389,7 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
             }
           }
           _that.matIds = [];
-          _that.stateList.map(function (item) {
+          _that.stateList.map(function (item,index) {
             if(item.answerType!='s'&&item.answerType!='y'){
               if(typeof item.selValue == "undefined"){
                 Vue.set(item, 'selValue', []);
@@ -2304,7 +2397,23 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
               }
             }
             item.answerStates = _that.sortByKey(item.answerStates,'sortNo');
-          })
+            // 回显情形
+            if(item.answerStates&&item.answerStates.length>0&&_that.stateIdsHis.length>0){
+              item.answerStates.map(function(itemAns){
+                if(_that.stateIdsHis.indexOf(itemAns.parStateId)>-1){
+                  if(typeof(item.selectAnswerId)=='object'&&item.selectAnswerId.length==0){
+                    if(item.selectAnswerId.indexOf(itemAns.parStateId)<0){
+                      item.selectAnswerId.push(itemAns.parStateId);
+                      _that.getStatusStateMats(item,itemAns,itemAns.stageId,index,false,true)
+                    };
+                  }else if(item.selectAnswerId=='') {
+                    item.selectAnswerId = itemAns.parStateId;
+                    _that.getStatusStateMats(item,itemAns,itemAns.stageId,index,false)
+                  }
+                }
+              });
+            }
+          });
           _that.coreItems= _that.unique(_that.coreItems.concat(stateOptionItems),'stage');
           _that.parallelItems= _that.unique(_that.parallelItems.concat(stateParallelItems),'stage');
           _that.model.matsTableData= _that.unique(_that.model.matsTableData.concat(data.content.stateMats),'mats');
@@ -2354,11 +2463,31 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
           _that.sortByKey(_that.model.matsTableData,'sortNo');
           _that.ifMatsSelAll();
           _that.matinstIds = matinstIdsObj.join(',');
-          // _that.parallelItemsSelAll(stateParallelItems);
+          var HisParallelItems = []; // 历史暂存并联事项
+          if(_that.parallelItems&&_that.parallelItems.length>0){
+            _that.parallelItems.map(function(item){
+              if(_that.branchOrgHis){
+                if(item.isCatalog==0){
+                  if(_that.branchOrgHis[item.implementItemVerId]&&_that.branchOrgHis[item.implementItemVerId]!=''){
+                    HisParallelItems.push(item);
+                  }
+                }else {
+                  // if(){}
+                }
+              }
+            });
+          }
           _that.$nextTick(function(){
-            _that.toggleSelection(_that.parallelItems,'parallelItemsTable');
-            if(_that.parallelItems){
-              _that.parallelItemsSelAll(_that.parallelItems,'autoGetSel');
+            if(_that.parallelItems.length>0){
+              if(_that.parallelApplyinstId!=''){
+                if(HisParallelItems.length>0) {
+                  _that.parallelItemsSelAll(HisParallelItems, 'autoGetSel');
+                  _that.toggleSelection(HisParallelItems, 'parallelItemsTable');
+                }
+              }else {
+                _that.parallelItemsSelAll(_that.parallelItems, 'autoGetSel');
+                _that.toggleSelection(_that.parallelItems,'parallelItemsTable');
+              }
             }
             _that.setItemShowLen(); // 事项展示长度
           });
@@ -2376,7 +2505,7 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
       });
     },
     // 点击选择申报阶段
-    selStatus: function (data,index,stageId,isSelItem) {
+    selStatus: function (data,index,stageId,isSelItem,optFlag) {
       this.isSelItem = isSelItem;
       this.statusActiveIndex = index;
       this.itemVerIdsStringAll = [];
@@ -2384,24 +2513,33 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
       this.matCodes = [];// 材料code集合
       this.optItemShowNum = data.optItemShowNum; // 并行事项展示条数
       this.noptItemShowNum = data.noptItemShowNum; // 并联事项展示条数
-      this.parallelApplyinstId = '';
-        this.isCreateSubproj = data.isCreateSubproj;
-        this.dybzspjdxh = [];
-        var _that = this;
-        if (data.dybzspjdxh != null) {
-            // ---------广东模式需放开以下注释 start----------
-       /*         var _dybzspjdxh = data.dybzspjdxh.split(",");
-                if (_dybzspjdxh.length > 1) {
-                    _dybzspjdxh.forEach(function (item) {
-                        if (item != '') {
-                            _that.dybzspjdxh.push(item);
-                        }
-                    });
-                } else if(_dybzspjdxh.length == 1){
-                  _that.stageFlag = _dybzspjdxh[0];
-                }    */
-            // ---------广东模式需放开以下注释 end----------
-        }
+      this.themeVerId = data.themeVerId; // 主题版本id
+      this.isCreateSubproj = data.isCreateSubproj;
+      this.dybzspjdxh = [];
+      if(optFlag=='isClick'){
+        this.parallelApplyinstId = '';
+        this.seriesApplyinstIds = [];
+        this.branchOrgHis = {};
+        this.parallelItemStateIdsHis = [];
+        this.stateIdsHis = [];
+        this.themeIdHis = '';
+        this.stageIdHis = '';
+      }
+      var _that = this;
+      if (data.dybzspjdxh != null) {
+        // ---------广东模式需放开以下注释 start----------
+        /*         var _dybzspjdxh = data.dybzspjdxh.split(",");
+                 if (_dybzspjdxh.length > 1) {
+                     _dybzspjdxh.forEach(function (item) {
+                         if (item != '') {
+                             _that.dybzspjdxh.push(item);
+                         }
+                     });
+                 } else if(_dybzspjdxh.length == 1){
+                   _that.stageFlag = _dybzspjdxh[0];
+                 }    */
+        // ---------广东模式需放开以下注释 end----------
+      }
 
       if(data&&(data.handWay==0)){
         this.parallelItemsQuestionFlag=false; // 简单合并办理
@@ -2479,6 +2617,7 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
               item._parStateId.push('ROOT');
             }
           });
+          var HisParallelItems = []; // 历史暂存事项
           _that.parallelItems.map(function(item){
             if(item){
               _that.setImplementItem(item);
@@ -2491,12 +2630,28 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
             }else {
               item._parStateId.push('ROOT');
             }
+            if(_that.branchOrgHis){
+              if(item.isCatalog==0){
+                if(_that.branchOrgHis[item.implementItemVerId]&&_that.branchOrgHis[item.implementItemVerId]!=''){
+                  HisParallelItems.push(item);
+                }
+              }else {
+
+              }
+            }
           });
-          if(_that.parallelItems){
-            _that.parallelItemsSelAll(_that.parallelItems,'autoGetSel');
-          }
           _that.$nextTick(function(){
-            _that.toggleSelection(_that.parallelItems,'parallelItemsTable');
+            if(_that.parallelItems.length>0){
+              if(_that.parallelApplyinstId!=''){
+                if(HisParallelItems.length>0) {
+                  _that.parallelItemsSelAll(HisParallelItems, 'autoGetSel');
+                  _that.toggleSelection(HisParallelItems, 'parallelItemsTable');
+                }
+              }else {
+                _that.parallelItemsSelAll(_that.parallelItems, 'autoGetSel');
+                _that.toggleSelection(_that.parallelItems,'parallelItemsTable');
+              }
+            }
             _that.setItemShowLen(); // 事项展示长度
           });
 
@@ -2601,7 +2756,7 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
     selStatusLine: function(data,index){
       this.statusLineListActive = index;
       this.statusList = data.statusList;
-      this.selStatus(data,0,data.statusList[0].stageId,data.statusList[0].isSelItem);
+      this.selStatus(data,0,data.statusList[0].stageId,data.statusList[0].isSelItem,'isClick');
     },
     toTree: function(data) {
       var result = []
@@ -2655,8 +2810,15 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
                   if(typeof item.itemVerId == 'undefined'){
                     Vue.set(item,'itemVerId','');
                   }else {
-                    if(item.itemVerId){
+                    if(item.itemVerId&&item.itemVerId.indexOf(newArr[i].itemVerId)<0){
                       newArr[i].itemVerId = newArr[i].itemVerId + ','+ item.itemVerId
+                    }
+                  }
+                  if(typeof item._itemType == 'undefined'){
+                    Vue.set(item,'_itemType','');
+                  }else {
+                    if(item._itemType&&item._itemType.indexOf(newArr[i]._itemType)<0){
+                      newArr[i]._itemType = newArr[i]._itemType + ','+ item._itemType
                     }
                   }
                   flag = false;
@@ -3057,7 +3219,7 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
         });
       });
     },
-    // 查看证照 
+    // 查看证照
     cretPreview: function (authCode) {
       var _that = this;
       request('', {
@@ -3515,7 +3677,6 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
       for(var i=0;i<stateSelLen;i++){  // 并联情形id集合
         if(stateSel[i].selectAnswerId==null||stateSel[i].selectAnswerId==''){
           if(selItemVer.length>0&&stateSel[i].mustAnswer==1){
-            _that.stateIds=[];
             if(_that.submitCommentsType!='4'){
               alertMsg('', '请选择情形', '关闭', 'error', true);
               return true;
@@ -3523,9 +3684,13 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
           }
         }else {
           if(typeof(stateSel[i].selectAnswerId)=='object'&&stateSel[i].selectAnswerId.length>0){
-            _that.stateIds = _that.stateIds.concat(stateSel[i].selectAnswerId);
+            if(_that.stateIds.indexOf(stateSel[i].selectAnswerId)<0){
+              _that.stateIds = _that.stateIds.concat(stateSel[i].selectAnswerId);
+            }
           }else if(stateSel[i].selectAnswerId !== '') {
-            _that.stateIds.push(stateSel[i].selectAnswerId);
+            if(_that.stateIds.indexOf(stateSel[i].selectAnswerId)<0){
+              _that.stateIds.push(stateSel[i].selectAnswerId);
+            }
           }
         }
       }
@@ -3556,10 +3721,12 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
           if(coreItemSelIds.indexOf(selCoreItems[j].implementItemVerId)<0){
             coreItemSelIds.push(selCoreItems[j].implementItemVerId);
           }
-          _that.propulsionItemStateIds.push({
-            "itemVerId": selCoreItems[j].implementItemVerId,
-            "stateIds": stateIds
-          });
+          if(stateIds&&stateIds.length>0){
+            _that.propulsionItemStateIds.push({
+              "itemVerId": selCoreItems[j].implementItemVerId,
+              "stateIds": stateIds
+            });
+          }
         }
       }
       if(coreItemSelIds.length>0){
@@ -3589,10 +3756,12 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
                 }
               }
             }
-            _that.parallelItemStateIds.push({
-              "itemVerId": selItemVer[ind].implementItemVerId,
-              "stateIds": stateIds
-            });
+            if(stateIds&&stateIds.length>0){
+              _that.parallelItemStateIds.push({
+                "itemVerId": selItemVer[ind].implementItemVerId,
+                "stateIds": stateIds
+              });
+            }
           }
         }
       }else {
@@ -3777,16 +3946,16 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
             paperCnt=item.realPaperCount;
           }
           if(item.getCopy==true||item.getPaper==true){
-              matCountVos.push({
-                "certId": item.certId,
-                "certName": item.certName,
-                "copyCnt": copyCnt,
-                "formName": item.formName,
-                "itemVerId": item.itemVerId,
-                "matId": item.matId,
-                "matProp": item.matProp,
-                "paperCnt": paperCnt,
-                "stoFormId": item.stoFormId
+            matCountVos.push({
+              "certId": item.certId,
+              "certName": item.certName,
+              "copyCnt": copyCnt,
+              "formName": item.formName,
+              "itemVerId": item.itemVerId,
+              "matId": item.matId,
+              "matProp": item.matProp,
+              "paperCnt": paperCnt,
+              "stoFormId": item.stoFormId
             })
           }
         }
@@ -3935,10 +4104,10 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
         }
         strVer += 'itemids='+item.itemId+'&'
         // if(item.isBranch==true){
-          branchOrgMap.push({
-            itemVerId: item.implementItemVerId,
-            branchOrg: item.orgId,
-          });
+        branchOrgMap.push({
+          itemVerId: item.implementItemVerId,
+          branchOrg: item.orgId,
+        });
         // }
       });
       if(branchOrgMap.length>0){
@@ -3957,10 +4126,10 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
           // return false;
         }
         // if(item.isBranch==true){
-          propulsionBranchOrgMap.push({
-            itemVerId: item.implementItemVerId,
-            branchOrg: item.orgId,
-          });
+        propulsionBranchOrgMap.push({
+          itemVerId: item.implementItemVerId,
+          branchOrg: item.orgId,
+        });
         // }
       });
       if(!(selItemVerFlag&&selCoreItemsFlag)){
@@ -4011,7 +4180,7 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
         parallelItemStateIds: _that.parallelItemStateIds,
         buildProjUnitMap: buildProjUnitMap,
         isJustApplyinst: _that.IsJustApplyinst,
-      }
+      };
       _that.progressDialogVisible = true;
       _that.submitCommentsFlag = false;
       var succMsg = '发起申报成功';
@@ -4026,9 +4195,32 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
         succMsg = '操作成功';
         errorMsg = '不受理失败！';
       }else if (_that.submitCommentsType == '4') { // 仅实例化
-        url = 'rest/apply/parallel/onlyInstApply';
-        succMsg = '实例化成功';
-        errorMsg = '实例化失败';
+        if(_that.submitCommentsMatFlag == 'stash'){
+          url = 'rest/apply/parallel/stash';
+          succMsg = '暂存成功';
+          errorMsg = '暂存失败';
+          parmas={
+            applySubject: applySubjectType,
+            applyinstId: _that.parallelApplyinstId,
+            branchOrgMap: branchOrgMap,
+            itemVerIds: itemVerIds,
+            linkmanInfoId: _that.rootLinkmanInfoId,
+            matinstsIds: _that.selMatinstIds,
+            projInfoId: _that.projInfoId,
+            propulsionBranchOrgMap: propulsionBranchOrgMap,
+            propulsionItemVerIds: propulsionItemVerIds,
+            stageId: _that.stageId,
+            stateIds: _that.stateIds,
+            propulsionItemStateIds: _that.propulsionItemStateIds,
+            parallelItemStateIds: _that.parallelItemStateIds,
+            themeVerId: _that.themeVerId,
+            seriesApplyinstIds: _that.seriesApplyinstIds
+          }
+        }else {
+          url = 'rest/apply/parallel/onlyInstApply';
+          succMsg = '实例化成功';
+          errorMsg = '实例化失败';
+        }
       }
       _that.progressIntervalStop=false;
       _that.setUploadPercentage();
@@ -4060,6 +4252,10 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
             if(_that.submitCommentsMatFlag == 'matForm'){
               _that.parallelApplyinstId=res.content;
               _that.getOneFormrender3(_that.parallelApplyinstId,_that.stoFormId);
+            }else if(_that.submitCommentsMatFlag == 'stash'){
+              _that.parallelApplyinstId=res.content.applyinstId?res.content.applyinstId:'';
+              _that.seriesApplyinstIds = res.content.seriesApplyinstIds?res.content.seriesApplyinstIds:[];
+              return false;
             }else {
               _that.parallelApplyinstId=res.content;
               _that.formItemsIdStr = strVer;
@@ -4130,8 +4326,8 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
         isSecond: false,
         parentProjInfoId: _that.parentProjInfoId,
         projName: _that.childProjName,
-          foreignRemark: _that.childProjText,
-          stageFlag: _that.stageFlag
+        foreignRemark: _that.childProjText,
+        stageFlag: _that.stageFlag
       }
       _that.addChildLoading = true;
       request('', {
@@ -4421,39 +4617,39 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
     },
     // 管理常用意见
     mUseComments: function(){
-        this.submitCommentsFlag1 = true;
+      this.submitCommentsFlag1 = true;
     },
     //保存常用意见
     setUseComment: function(){
       var _that = this;
       if(_that.comments&&_that.comments.trim()!=''){
         request('', {
-            url: ctx + 'rest/comment/saveUserOpinion',
-            type: 'post',
-            data: {message:_that.comments}
+          url: ctx + 'rest/comment/saveUserOpinion',
+          type: 'post',
+          data: {message:_that.comments}
         }, function (result) {
-            if(result.success){
-                _that.$message({
-                    message: '常用意见保存成功',
-                    type: 'success'
-                });
-                _that.getUserComments();
-            }else {
-                _that.$message({
-                    message: result.message?result.message:'常用意见保存失败',
-                    type: 'error'
-                });
-            }
-        },function(msg){
+          if(result.success){
             _that.$message({
-                message: msg.message ? msg.message : '常用意见保存失败',
-                type: 'error'
+              message: '常用意见保存成功',
+              type: 'success'
             });
+            _that.getUserComments();
+          }else {
+            _that.$message({
+              message: result.message?result.message:'常用意见保存失败',
+              type: 'error'
+            });
+          }
+        },function(msg){
+          _that.$message({
+            message: msg.message ? msg.message : '常用意见保存失败',
+            type: 'error'
+          });
         })
       }else {
         _that.$message({
-            message: '当前意见为空',
-            type: 'warning'
+          message: '当前意见为空',
+          type: 'warning'
         });
       }
     },
@@ -4473,8 +4669,8 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
           _that.commentsList = result.content;
         }else {
           _that.$message({
-              message: result.message?result.message:'获取常用意见失败',
-              type: 'error'
+            message: result.message?result.message:'获取常用意见失败',
+            type: 'error'
           });
         }
       },function(msg){
@@ -4494,59 +4690,59 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
     //修改常用意见
     updateComment: function(){
       var _that = this;
-        _that.submitCommentsFlag2 = false;
+      _that.submitCommentsFlag2 = false;
       request('', {
-          url: ctx + 'rest/comment/editUserOpinion',
-          type: 'put',
-          data:{opinionContent:_that.commentInfo.comment,opinionId:_that.commentInfo.id,sortNo:_that.commentInfo.sort}
+        url: ctx + 'rest/comment/editUserOpinion',
+        type: 'put',
+        data:{opinionContent:_that.commentInfo.comment,opinionId:_that.commentInfo.id,sortNo:_that.commentInfo.sort}
       }, function (result) {
-          if(result.success){
-              _that.$message({
-                  message: '意见修改成功',
-                  type: 'success'
-              });
-              _that.getUserComments();
-          }else {
-              _that.$message({
-                  message: result.message?result.message:'意见修改失败',
-                  type: 'error'
-              });
-          }
-      },function(msg){
+        if(result.success){
           _that.$message({
-              message: msg.message ? msg.message : '意见修改失败',
-              type: 'error'
+            message: '意见修改成功',
+            type: 'success'
           });
+          _that.getUserComments();
+        }else {
+          _that.$message({
+            message: result.message?result.message:'意见修改失败',
+            type: 'error'
+          });
+        }
+      },function(msg){
+        _that.$message({
+          message: msg.message ? msg.message : '意见修改失败',
+          type: 'error'
+        });
       })
     },
     //删除常用意见
     deleteUseComment: function(opinionId){
-          var _that = this;
-        confirmMsg('此操作影响：','确定要删除该意见吗？',function(){
-          request('', {
-              url: ctx + 'rest/comment/deleteUserOpinion/'+opinionId,
-              type: 'delete'
-          }, function (result) {
-              if(result.success){
-                  _that.$message({
-                      message: '删除意见成功',
-                      type: 'success'
-                  });
-                  _that.getUserComments();
-              }else {
-                  _that.$message({
-                      message: result.message?result.message:'删除常用意见失败',
-                      type: 'error'
-                  });
-              }
-          },function(msg){
-              _that.$message({
-                  message: msg.message ? msg.message : '删除常用意见失败',
-                  type: 'error'
-              });
-          })
-        },function(){},'确定','取消','warning',true)
-      },
+      var _that = this;
+      confirmMsg('此操作影响：','确定要删除该意见吗？',function(){
+        request('', {
+          url: ctx + 'rest/comment/deleteUserOpinion/'+opinionId,
+          type: 'delete'
+        }, function (result) {
+          if(result.success){
+            _that.$message({
+              message: '删除意见成功',
+              type: 'success'
+            });
+            _that.getUserComments();
+          }else {
+            _that.$message({
+              message: result.message?result.message:'删除常用意见失败',
+              type: 'error'
+            });
+          }
+        },function(msg){
+          _that.$message({
+            message: msg.message ? msg.message : '删除常用意见失败',
+            type: 'error'
+          });
+        })
+      },function(){},'确定','取消','warning',true)
+    },
     // 并行事项单选事件
     coreItemsSelItem: function(selArr,row) {
       var flag = false, spliceIndex=0;
@@ -4592,7 +4788,7 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
           // }, function (result) {
           //   if (result.success) {
           //     row.preItemCheckPassed = true;
-              _that.getStatusMatItemsByStatus(row,'coreItem');
+          _that.getStatusMatItemsByStatus(row,'coreItem');
           //   }else {
           //     row.preItemCheckPassed = false;
           //     selArr.splice(spliceIndex,1);
@@ -4684,7 +4880,7 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
             }
           });
           var objStateMats = data.content.stateMats;
-          objQuestionStates.map(function(item){
+          objQuestionStates.map(function(item,ind){
             if(typeof item.itemShowFlag == "undefined"){
               Vue.set(item, 'itemShowFlag', true);
             }else {
@@ -4705,6 +4901,17 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
                 if(itemAnswer.isProcStartCond==1){
                   itemShowFlag++
                 }
+                _that.$nextTick(function() {
+                  if (_that.parallelItemStateIdsHis.length > 0 && _that.parallelItemStateIdsHis.indexOf(itemAnswer.itemStateId) > -1) {
+                    if (typeof(item.selectAnswerId) == 'object' && item.selectAnswerId.length == 0) {
+                      item.selectAnswerId.push(itemAnswer.itemStateId);
+                      _that.getCoreItemsStateMats(row, item, itemAnswer, ind, 'parallelItem', true)
+                    } else if (item.selectAnswerId == '') {
+                      item.selectAnswerId = itemAnswer.itemStateId;
+                      _that.getCoreItemsStateMats(row, item, itemAnswer, ind, 'parallelItem')
+                    }
+                  }
+                })
               });
               if(itemShowFlag==item.answerStates.length){
                 item.itemShowFlag = false;
@@ -4756,18 +4963,19 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
         var selStateIds = _that.getStatusListId();
         for (var i = 0; i < _that.model.matsTableData.length; i++) { // 清空情形下所对应材料
           var obj = _that.model.matsTableData[i];
-          if(obj && (obj._itemType=='coreItem')){ // 清空事项下材料
-            if(typeof obj._parStateId=='undefined'||obj._parStateId.length==0||(obj.parStateId&&selStateIds.indexOf(obj.parStateId)<0)){
+          if(obj&&obj._itemType){ // 清空事项下材料
+            if(obj._itemType=='coreItem'){
               obj._itemVerIds = [];
               _that.model.matsTableData.splice(i, 1);
               i--
             }else {
-              var index = obj._itemVerIds.indexOf(row.itemVerId);
+              var itemTypeArr = obj._itemType.split(",");
+              var index = itemTypeArr.indexOf('coreItem');
               if (index > -1) {
-                obj._itemVerIds.splice(index, 1);
+                itemTypeArr.splice(index, 1);
               }
+              obj._itemType = itemTypeArr.join(',')
             }
-
           }
         }
         return false;
@@ -4792,7 +5000,7 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
             // }, function (result) {
             //   if (result.success) {
             //     row.preItemCheckPassed = true;
-                _that.getStatusMatItemsByStatus(row,'coreItem');
+            _that.getStatusMatItemsByStatus(row,'coreItem');
             //   }else {
             //     row.preItemCheckPassed = false;
             //     selArr.splice(index,1);
@@ -4835,51 +5043,51 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
         _that.itemVerIdsString = '';
       }else {
         // if(_that.parallelItemsQuestionFlag==true){
-          selArr.forEach(function (item) {
-            if(item.itemVerId==row.itemVerId){
-              flag=true;
-            }
-          });
-          // if(flag&&row.implementItemVerId&&(!(_that.parallelItemsQuestionFlag==true&&_that.stageQuestionFlag==true))){
-          if(flag&&row.implementItemVerId&&_that.parallelItemsQuestionFlag==false){
-            _that.getStatusMatItemsByStatus(row);
-          }else {
-            row.questionStates=[];
-            row.stateMats=[];
-            var selStateIds = _that.getStatusListId();
-            for (var i = 0; i < _that.model.matsTableData.length; i++) { // 清空情形下所对应材料
-              var obj = _that.model.matsTableData[i];
-              if(obj._itemVerIds=='undefined'||obj._itemVerIds==undefined){
-                Vue.set(obj, '_itemVerIds', []);
-              }else {
-                if (obj && (obj._itemVerIds.indexOf(row.itemVerId)>-1)) {
-                  if(obj._itemVerIds.length==1&&(typeof obj._parStateId=='undefined'||obj._parStateId.length==0||(obj.parStateId&&selStateIds.indexOf(obj.parStateId)<0))){
-                    obj._parStateId = [];
-                    _that.model.matsTableData.splice(i, 1);
-                    i--
-                  }else {
-                    var index = obj._itemVerIds.indexOf(row.itemVerId);
-                    if (index > -1) {
-                      obj._itemVerIds.splice(index, 1);
-                    }
+        selArr.forEach(function (item) {
+          if(item.itemVerId==row.itemVerId){
+            flag=true;
+          }
+        });
+        // if(flag&&row.implementItemVerId&&(!(_that.parallelItemsQuestionFlag==true&&_that.stageQuestionFlag==true))){
+        if(flag&&row.implementItemVerId&&_that.parallelItemsQuestionFlag==false){
+          _that.getStatusMatItemsByStatus(row);
+        }else {
+          row.questionStates=[];
+          row.stateMats=[];
+          var selStateIds = _that.getStatusListId();
+          for (var i = 0; i < _that.model.matsTableData.length; i++) { // 清空情形下所对应材料
+            var obj = _that.model.matsTableData[i];
+            if(obj._itemVerIds=='undefined'||obj._itemVerIds==undefined){
+              Vue.set(obj, '_itemVerIds', []);
+            }else {
+              if (obj && (obj._itemVerIds.indexOf(row.itemVerId)>-1)) {
+                if(obj._itemVerIds.length==1&&(typeof obj._parStateId=='undefined'||obj._parStateId.length==0||(obj.parStateId&&selStateIds.indexOf(obj.parStateId)<0))){
+                  obj._parStateId = [];
+                  _that.model.matsTableData.splice(i, 1);
+                  i--
+                }else {
+                  var index = obj._itemVerIds.indexOf(row.itemVerId);
+                  if (index > -1) {
+                    obj._itemVerIds.splice(index, 1);
                   }
                 }
               }
             }
-            _that.ifMatsSelAll();
-            _that.showParallelItemsKey = _that.showParallelItemsKey.filter(function(item) {
-              return item != row.itemBasicId;
-            });
           }
-        // }else {
-          var rowsItemVerIds = [];
-          selArr.forEach(function (item) {
-            if(item.itemVerId){
-              rowsItemVerIds.push(item.itemVerId);
-            }
+          _that.ifMatsSelAll();
+          _that.showParallelItemsKey = _that.showParallelItemsKey.filter(function(item) {
+            return item != row.itemBasicId;
           });
-          _that.itemVerIdsString = rowsItemVerIds.join(',');
         }
+        // }else {
+        var rowsItemVerIds = [];
+        selArr.forEach(function (item) {
+          if(item.itemVerId){
+            rowsItemVerIds.push(item.itemVerId);
+          }
+        });
+        _that.itemVerIdsString = rowsItemVerIds.join(',');
+      }
       // }
       if(_that.parallelItemsQuestionFlag!==true) {
         _that.getOfficeMats(_that.itemVerIdsString);
@@ -4942,7 +5150,7 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
           _that.model.matsTableData=_that.unique(_that.model.matsTableData.concat(stateMats),'mats'); // 合并去重材料
         }else {
           _that.$message({
-            message: '并联事项材料失败！',
+            message: result.message?result.message:'并联事项材料失败！',
             type: 'error'
           });
         }
@@ -4969,17 +5177,19 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
         var selStateIds = _that.getStatusListId();
         for(var i=0;i<tabListLen;i++){
           var obj = tabList[i];
-          if(obj && (obj._itemType=="parallelItems")){ // 清空事项下材料
-            if(obj._itemVerIds.length==1&&(typeof obj._parStateId=='undefined'||obj._parStateId.length==0||(obj.parStateId&&selStateIds.indexOf(obj.parStateId)<0))){
+          if(obj&&obj._itemType) { // 清空事项下材料
+            if (obj._itemType == "parallelItems") { // 清空事项下材料
               _that.removeParallelItemsMats.push(obj);
               _that.model.matsTableData.splice(i, 1);
               obj._itemVerIds = [];
               i--
-            }else {
-              var index = obj._itemVerIds.indexOf(row.itemVerId);
+            } else {
+              var itemTypeArr = obj._itemType.split(",");
+              var index = itemTypeArr.indexOf('parallelItems');
               if (index > -1) {
-                obj._itemVerIds.splice(index, 1);
+                itemTypeArr.splice(index, 1);
               }
+              obj._itemType = itemTypeArr.join(',')
             }
           }
         }
@@ -5062,7 +5272,7 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
     getCoreItemsStateMats: function (itemsData,pData,data,indexQues,flag,checkFlag) { // flag='coreItem' 并行事项， checkFlag复选框是否选中 选中true
       var parentStateId = data.parentStateId;
       var _that = this;
-      var cStateList = itemsData.questionStates;
+      var cStateList = itemsData.questionStates?itemsData.questionStates:[];
       var questionStateId = pData.itemStateId?pData.itemStateId:'';
       var _itemVerId = data.itemVerId;
       var _parentId = data.itemStateId?data.itemStateId:'ROOT';
@@ -5095,18 +5305,18 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
           var obj = _that.model.matsTableData[i];
           if(obj &&obj.itemStateId!=null&& (obj._parStateId.indexOf(_parentId)>-1||selStateIds.indexOf(obj.itemStateId)==-1||(obj.parStateId&&selStateIds.indexOf(obj.parStateId)<0))){
             // for(var j=0;j<_stateMats.length;j++){
-              if(obj._itemVerIds.indexOf(_itemVerId)>-1){
-                if(obj._parStateId.length==1){
-                  obj._parStateId = [];
-                  _that.model.matsTableData.splice(i, 1);
-                  i--
-                }else {
-                  var index = obj._parStateId.indexOf(_parentId);
-                  if (index > -1) {
-                    obj._parStateId.splice(index, 1);
-                  }
+            if(obj._itemVerIds.indexOf(_itemVerId)>-1){
+              if(obj._parStateId.length==1){
+                obj._parStateId = [];
+                _that.model.matsTableData.splice(i, 1);
+                i--
+              }else {
+                var index = obj._parStateId.indexOf(_parentId);
+                if (index > -1) {
+                  obj._parStateId.splice(index, 1);
                 }
               }
+            }
             // }
           }
         }
@@ -5128,6 +5338,11 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
           var coreItemsMats = [];
           if(checkFlag==true){
             data.content.questionStates.map(function(item,ind){ // 情形下插入对应的情形
+              if(typeof item.itemShowFlag == "undefined"){
+                Vue.set(item, 'itemShowFlag', true);
+              }else {
+                item.itemShowFlag = true;
+              }
               if(item.answerType!='s'&&item.answerType!='y'){
                 if(typeof item.selValue == "undefined"){
                   Vue.set(item, 'selValue', []);
@@ -5136,6 +5351,28 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
                 }
 
                 item.selectAnswerId=item.selValue;
+              }
+              if(flag!=='coreItem'&&item.answerStates.length>0){
+                var itemShowFlag = 0;
+                item.answerStates.map(function (itemAnswer) {
+                  if(itemAnswer.isProcStartCond==1){
+                    itemShowFlag++
+                  }
+                  _that.$nextTick(function() {
+                    if (_that.parallelItemStateIdsHis.length > 0 && _that.parallelItemStateIdsHis.indexOf(itemAnswer.itemStateId) > -1) {
+                      if (typeof(item.selectAnswerId) == 'object' && item.selectAnswerId.length == 0) {
+                        item.selectAnswerId.push(itemAnswer.itemStateId);
+                        _that.getCoreItemsStateMats(itemsData, item, itemAnswer, ind, 'parallelItem', true)
+                      } else if (item.selectAnswerId == '') {
+                        item.selectAnswerId = itemAnswer.itemStateId;
+                        _that.getCoreItemsStateMats(itemsData, item, itemAnswer, ind, 'parallelItem')
+                      }
+                    }
+                  })
+                });
+                if(itemShowFlag==item.answerStates.length){
+                  item.itemShowFlag = false;
+                }
               }
               cStateList.splice((indexQues+1+ind),0,item);
             });
@@ -5179,6 +5416,11 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
               }
             }
             data.content.questionStates.map(function (item, ind) { // 情形下插入对应的情形
+              if(typeof item.itemShowFlag == "undefined"){
+                Vue.set(item, 'itemShowFlag', true);
+              }else {
+                item.itemShowFlag = true;
+              }
               if (item.answerType != 's' && item.answerType != 'y') {
                 if(typeof item.selValue == "undefined"){
                   Vue.set(item, 'selValue', []);
@@ -5186,6 +5428,28 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
                   item.selValue = [];
                 }
                 item.selectAnswerId=item.selValue;
+              }
+              if(flag!=='coreItem'&&item.answerStates.length>0){
+                var itemShowFlag = 0;
+                item.answerStates.map(function (itemAnswer) {
+                  if(itemAnswer.isProcStartCond==1){
+                    itemShowFlag++
+                  }
+                  _that.$nextTick(function(){
+                    if(_that.parallelItemStateIdsHis.length>0&&_that.parallelItemStateIdsHis.indexOf(itemAnswer.itemStateId)>-1){
+                      if(typeof(item.selectAnswerId)=='object'&&item.selectAnswerId.length==0){
+                        item.selectAnswerId.push(itemAnswer.itemStateId);
+                        _that.getCoreItemsStateMats(itemsData,item,itemAnswer,ind,'parallelItem',true)
+                      }else if(item.selectAnswerId=='') {
+                        item.selectAnswerId = itemAnswer.itemStateId;
+                        _that.getCoreItemsStateMats(itemsData,item,itemAnswer,ind,'parallelItem')
+                      }
+                    }
+                  });
+                });
+                if(itemShowFlag==item.answerStates.length){
+                  item.itemShowFlag = false;
+                }
               }
               cStateList.splice((indexQues + 1 + ind), 0, item);
             });
@@ -5212,19 +5476,19 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
               }else {
                 if(obj &&obj.itemStateId!=null&&(obj._parStateId.indexOf(parentStateId)>-1||selStateIds.indexOf(obj.itemStateId)==-1)){
                   // for(var j=0;j<_stateMats.length;j++){
-                    if(obj._itemVerIds.indexOf(_itemVerId)>-1){
-                      if(obj._parStateId.length==1){
-                        obj._parStateId = [];
-                        _that.model.matsTableData.splice(i, 1);
-                        i--
-                      }else {
-                        var index = obj._parStateId.indexOf(_parentId);
-                        if (index > -1) {
-                          obj._parStateId.splice(index, 1);
-                        }
+                  if(obj._itemVerIds.indexOf(_itemVerId)>-1){
+                    if(obj._parStateId.length==1){
+                      obj._parStateId = [];
+                      _that.model.matsTableData.splice(i, 1);
+                      i--
+                    }else {
+                      var index = obj._parStateId.indexOf(_parentId);
+                      if (index > -1) {
+                        obj._parStateId.splice(index, 1);
                       }
                     }
                   }
+                }
                 // }
               }
             }
@@ -5343,7 +5607,7 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
       var _that = this;
       _that.uploadPercentage=0;
       var interval = setInterval(function(){
-        _that.uploadPercentage += 3;
+        _that.uploadPercentage+=3;
         if(_that.uploadPercentage >= 96 || _that.progressIntervalStop == true){
           clearInterval(interval);
         }
@@ -5988,23 +6252,23 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
     getUnitLinkManList: function(row){
       var _that = this;
       // if(row.unitInfoId){
-        _that.loadingUnitLinkMan = true;
-        request('', {
-          url: ctx + 'rest/linkman/list',
-          type: 'get',
-          data: {
-            keyword: '',
-            unitInfoId: row.unitInfoId?row.unitInfoId:'',
-            projInfoId: _that.projInfoId
-          }
-        }, function (data) {
-          _that.loadingUnitLinkMan = false;
-          if(data.success){
-            _that.unitLinkManOptions = data.content;
-          }
-        }, function (msg) {
-          _that.loadingUnitLinkMan = false;
-        });
+      _that.loadingUnitLinkMan = true;
+      request('', {
+        url: ctx + 'rest/linkman/list',
+        type: 'get',
+        data: {
+          keyword: '',
+          unitInfoId: row.unitInfoId?row.unitInfoId:'',
+          projInfoId: _that.projInfoId
+        }
+      }, function (data) {
+        _that.loadingUnitLinkMan = false;
+        if(data.success){
+          _that.unitLinkManOptions = data.content;
+        }
+      }, function (msg) {
+        _that.loadingUnitLinkMan = false;
+      });
       // }
     },
     // 人员设置选择人员
@@ -6061,7 +6325,7 @@ getStatusStateMats: function (pData,data,stageId,indexQues,flag,checkFlag) {
       var defaultValue='其他回执';
       //{{(itemBtn.receiptType==2)?'收件回执':(itemBtn.receiptType==1)?'物料回执':(itemBtn.receiptType==3)?'不受理回执':'其他回执'}}
       if(value){
-          switch(value) {
+        switch(value) {
           case '1':
             defaultValue='物料回执';
             break;

@@ -32,7 +32,7 @@ var userCenter = (function () {
                     name: '项目管理',
                     open: true,
                     childList: [{
-                        name: '我的项目库',
+                        name: '我的项目',
                         value: 'declare',
                         select: true,
                     }, {
@@ -56,7 +56,7 @@ var userCenter = (function () {
                             select: false,
                         },
                         {
-                            name: '撤回申报列表',
+                            name: '撤件列表',
                             value: 'withdrawApplyList',
                             select: false,
                         }
@@ -99,19 +99,19 @@ var userCenter = (function () {
                                 select: false,
                             },
                             {
-                                name: '我的材料库',
+                                name: '我的材料',
                                 value: 'MyMaterials',
                                 select: false,
                             },
-                            // {
-                            //     name: '我的证照库',
-                            //     value: 'MyCertificateLibrary',
-                            //     select: false,
-                            // },
+                            {
+                                name: '我的证照库',
+                                value: 'MyCertificateLibrary',
+                                select: false,
+                            },
                         ]
                     },
                     {
-                        name: '企业信用',
+                        name: '我的信用',
                         open: true,
                         value: 'CreditDetail',
                     },
@@ -121,10 +121,11 @@ var userCenter = (function () {
                 // 菜单栏选中
                 userCenterItemSelect: 'MyHomeIndex',
                 selectNav:'',
+                selectNav2: '',
                 approvalNum: 0,
                 matCompletionNum: 0,
                 withdrawNum: 0,
-				        draftNum:0,
+                draftNum:0,
                 applyNum:0,
                 supplyNum:0,
                 withdrawalNum:0,

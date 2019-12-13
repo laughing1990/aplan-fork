@@ -69,29 +69,8 @@ var vm = new Vue({
 		},
 		//查看详情
 		viewDetail: function (row) {
-			var ts = this;
-			ts.loading = true;
-			request('', {
-				url: ctx + 'rest/conditional/query/queryApplyInfoTaskId',
-				type: 'get',
-				data: {applyinstId: row.applyinstId}
-			}, function (res) {
-				ts.loading = false;
-				if (res.success) {
-					if (row.viewId) {
-						window.open(ctx + 'apanmis/page/stageApproveIndex?isNotCompareAssignee=true&taskId=' + res.content.taskId + '&viewId=' + row.viewId + '&busRecordId=' + row.busRecordId, '_blank');
-					} else {
-						window.open(ctx + 'apanmis/page/stageApproveIndex?isNotCompareAssignee=true&taskId=' + res.content.taskId + '&viewId=' + res.content.viewId + '&busRecordId=' + row.busRecordId, '_blank');
-					}
-				} else {
-					return ts.apiMessage(res.message, 'error')
-				}
-			}, function () {
-				ts.loading = false;
-				return ts.apiMessage('网络错误！', 'error')
-			});
-
-		}
+            window.open(ctx + 'apanmis/page/stageApproveIndex?isNotCompareAssignee=true&taskId=' + row.taskId + '&viewId=' + row.viewId + '&busRecordId=' + row.busRecordId, '_blank');
+        }
 
 
 	},

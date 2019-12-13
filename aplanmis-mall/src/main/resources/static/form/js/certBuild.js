@@ -186,8 +186,8 @@ var vm = new Vue({
                     if( data.content){
                         _that.certBuildFrom = data.content;
                         var time = data.content.contractPeriod.split("~");
-                        _that.certBuildFrom.contractStartBuildTime = time[0];
-                        _that.certBuildFrom.contractEndBuildTime = time[1];
+                        _that.$set(_that.certBuildFrom,"contractStartBuildTime",time[0]);
+                        _that.$set(_that.certBuildFrom,"contractEndBuildTime",time[1]);
                     }
                 }else {
                     _that.$message({
@@ -228,7 +228,7 @@ var vm = new Vue({
             // _that.certBuildFrom = JSON.parse (JSON.stringify(_that.certBuildFrom));
             _that.$refs['certBuildFrom'].validate(function (valid){
                 if(valid){
-                    _that.certBuildFrom.contractPeriod = _that.certBuildFrom.contractEndBuildTime.replace(/-/g,".") + '~' + _that.certBuildFrom.contractStartBuildTime.replace(/-/g,".");
+                    _that.certBuildFrom.contractPeriod = _that.certBuildFrom.contractStartBuildTime.replace(/-/g,".") + '~' + _that.certBuildFrom.contractEndBuildTime.replace(/-/g,".");
                     request('',{
                         url: ctx + '/rest/from/certbuild/saveAeaExProjCertBuild',
                         data: _that.certBuildFrom,

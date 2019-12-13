@@ -35,6 +35,9 @@ public class ParallelApplyResultVo {
     private String isCoreApply="1";
     @ApiModelProperty(value = "申报实例ID集合")
     private List<String> applyinstIds;
+    @ApiModelProperty(value = "并行事项及其申请实例ID集合")
+    private List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos;
+
 //    @ApiModelProperty(value = "回执VO")
 //    private ReceiveVo reveiceVo;
 
