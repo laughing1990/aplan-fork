@@ -45,6 +45,9 @@ textarea {
 .el-table, .el-table thead {
   color: #575962;
 }
+.el-table th {
+  background-color: #F3F6F9;
+}
 .el-collapse {
   border: none;
 }
