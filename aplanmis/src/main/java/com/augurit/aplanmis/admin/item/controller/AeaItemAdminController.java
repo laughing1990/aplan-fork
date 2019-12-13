@@ -219,9 +219,9 @@ public class AeaItemAdminController {
     }
 
     @RequestMapping("/createUnionItemCode.do")
-    public ResultForm createItemUnionCode(){
+    public ResultForm createItemUnionCode(AeaItemBasic basic){
 
-        aeaItemAdminService.createItemUnionCode();
+        aeaItemAdminService.createItemUnionCode(basic);
         return new ResultForm(true);
     }
 

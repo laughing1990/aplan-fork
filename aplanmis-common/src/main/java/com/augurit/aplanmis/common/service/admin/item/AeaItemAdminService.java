@@ -38,7 +38,7 @@ public interface AeaItemAdminService {
 
     void syncItemRegion(AeaItemBasic basic);
 
-    void createItemUnionCode();
+    void createItemUnionCode(AeaItemBasic basic);
 
     AeaItem getAeaItemById(String id);
 

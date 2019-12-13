@@ -647,15 +647,14 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
     }
 
     @Override
-    public void createItemUnionCode(){
+    public void createItemUnionCode(AeaItemBasic basic){
 
         String rootOrgId = SecurityContext.getCurrentOrgId();
-        AeaItem sitem = new AeaItem();
-        sitem.setRootOrgId(rootOrgId);
-        List<AeaItem> itemList = aeaItemMapper.listAeaItem(sitem);
-        if (itemList != null && itemList.size() > 0) {
+        basic.setRootOrgId(rootOrgId);
+        List<AeaItemBasic> list = aeaItemBasicMapper.listLatestAeaItemBasic(basic);
+        if (list != null && list.size() > 0) {
             Set<String> itemIdSet = new HashSet<String>();
-            for (AeaItem item : itemList) {
+            for (AeaItemBasic item : list) {
                 itemIdSet.add(item.getItemId());
             }
             String[] itemIds = itemIdSet.toArray(new String[]{});
@@ -663,20 +662,20 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
             if (itemBasicList != null && itemBasicList.size() > 0) {
                 SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmssSSS");
                 String reg = "[0-9]{4}[0-9]{1,2}[0-9]{1,2}[0-9]{1,2}[0-9]{1,2}[0-9]{1,2}[0-9]{1,5}";
-                for (AeaItem item : itemList) {
+                for (String itemId : itemIdSet) {
                     String dateStr = df.format(new Date());
                     List<AeaItemBasic> needDelList = new ArrayList<>();
                     Pattern pattern = Pattern.compile("【"+ reg +"】");
-                    for(AeaItemBasic basic:itemBasicList){
-                        if(item.getItemId().equals(basic.getItemId())){
-                            String itemCode = basic.getItemCode();
+                    for(AeaItemBasic basicInfo:itemBasicList){
+                        if(itemId.equals(basicInfo.getItemId())){
+                            String itemCode = basicInfo.getItemCode();
                             Matcher matcher = pattern.matcher(itemCode);
                             while(matcher.find()){
                                 itemCode = itemCode.replaceAll(matcher.group(),"");
                             }
-                            basic.setItemCode(itemCode+"【"+ dateStr +"】");
-                            aeaItemBasicMapper.updateAeaItemBasic(basic);
-                            needDelList.add(basic);
+                            basicInfo.setItemCode(itemCode+"【"+ dateStr +"】");
+                            aeaItemBasicMapper.updateAeaItemBasic(basicInfo);
+                            needDelList.add(basicInfo);
                         }
                     }
                     itemBasicList.removeAll(needDelList);
