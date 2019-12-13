@@ -1012,7 +1012,7 @@
               :expand-row-keys="selParallelItemsKey"
               @select="parallelItemsSelItem"
               @select-all="parallelItemsSelAll"
-              v-if="parallelItems&&parallelItems.length>0&&showParallelItems"
+              v-show="parallelItems&&parallelItems.length>0&&showParallelItems"
               :show-overflow-tooltip="true"
               class="matter-list mb20"
               row-key="itemId"
@@ -1142,7 +1142,7 @@
     <el-table ref="coreItemsTable"
               :data="coreItems"
               border
-              v-if="coreItems&&coreItems.length>0&&showCoreItems"
+              v-show="coreItems&&coreItems.length>0&&showCoreItems"
               class="matter-list mb20"
               :show-overflow-tooltip="true"
               tooltip-effect="dark"
