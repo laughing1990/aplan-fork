@@ -99,12 +99,12 @@ var vm = new Vue({
         viewDetail:function (row) {
           var menuName= '';
           var menuInnerUrl =  '';
-          var id = new Date().getTime();
+          var id = 'menu_'+new Date().getTime();
           if (row.applyType == '并联') {
-            menuName = row.itemName;
+            menuName = row.projName;
             menuInnerUrl = ctx + '/apanmis/page/stageApplyIndex?applyinstId='+row.applyinstId;
           } else if(row.applyType == '单项'){
-            menuName = row.projName;
+            menuName = row.itemName;
             menuInnerUrl = ctx + '/apanmis/page/singleApplyIndex/'+row.itemVerId+'?applyinstId='+row.applyinstId;
           }
           var data = {
