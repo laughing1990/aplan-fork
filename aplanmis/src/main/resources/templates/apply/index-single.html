@@ -56,6 +56,8 @@
                    :label="item.projName+' （'+item.localCode+'）'" :value="item.projInfoId">
         </el-option>
       </el-select>
+      <el-input style="position: absolute;left:0;top:0;"
+                :disabled="isTempSavePage" v-show="isTempSavePage" v-model="tempSaveProjName"></el-input>
       <el-button :disabled="isTempSavePage" type="primary" icon="el-icon-search" @click="beforeCheck()">联网查询</el-button>
     </el-form-item>
   </el-form>
