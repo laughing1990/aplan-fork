@@ -17,12 +17,26 @@
        MODIFY_TIME  modifyTime
     </sql>
 
+    <sql id="allColumns_alias" >
+        ${alias}.STAGE_ONEFORM_ID  stageOneformId,
+        ${alias}.PAR_STAGE_ID  parStageId,
+        ${alias}.ONEFORM_ID  oneformId,
+        ${alias}.LINK_NAME  linkName,
+        ${alias}.SORT_NO  sortNo,
+        ${alias}.IS_ACTIVE  isActive,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime
+    </sql>
+
     <!--3 根据条件查询实体list -->
     <select id="listAeaParStageOneform" resultType="AeaParStageOneform">
         select
-            apso.STAGE_ONEFORM_ID stageOneformId,
-            apo.ONEFORM_NAME oneformName,
-            apso.LINK_NAME linkName
+            <include refid="allColumns_alias">
+                <property name="alias" value="apso"/>
+            </include>,
+            apo.ONEFORM_NAME oneformName
         from aea_par_stage_oneform apso
         left join aea_oneform apo on apso.ONEFORM_ID = apo.ONEFORM_ID
         where apso.PAR_STAGE_ID = #{parStageId}
@@ -245,5 +259,16 @@
         from AEA_PAR_STAGE_ONEFORM
         where PAR_STAGE_ID = #{parStageId}
     </select>
+
+    <update id="changIsActiveState">
+        update AEA_PAR_STAGE_ONEFORM
+        set IS_ACTIVE = case IS_ACTIVE
+        when '1' then '0'
+        when '0' then '1'
+        end
+        <where>
+            and STAGE_ONEFORM_ID = #{id}
+        </where>
+    </update>
 
 </mapper>

@@ -115,7 +115,7 @@ public class AeaParStageOneformServiceImpl implements AeaParStageOneformService 
         aeaParStageOneform.setParStageId(parStageId);
         aeaParStageOneform.setOneformId(oneformId);
         aeaParStageOneform.setSortNo(getMaxSortNo(parStageId));
-        aeaParStageOneform.setIsActive(Status.ON);
+        aeaParStageOneform.setIsActive(Status.OFF);
         aeaParStageOneform.setCreater(SecurityContext.getCurrentUserId());
         aeaParStageOneform.setCreateTime(new Date());
         aeaParStageOneformMapper.insertAeaParStageOneform(aeaParStageOneform);
@@ -153,5 +153,21 @@ public class AeaParStageOneformServiceImpl implements AeaParStageOneformService 
         //获取事项表单列表
         List<AeaParStageItem> list = aeaParStageOneformMapper.listAeaStageItem(aeaParStageItem.getStageId(), SecurityContext.getCurrentOrgId());
         return list;
+    }
+
+    @Override
+    public List<AeaParStageOneform> listAeaParStageOneformNoRel(AeaParStageOneform stageOneform){
+
+        List<AeaParStageOneform> list = aeaParStageOneformMapper.listAeaParStageOneformNoRel(stageOneform);
+        return list;
+    }
+
+    @Override
+    public void changIsActiveState(String id){
+
+        if (StringUtils.isBlank(id)) {
+            throw new InvalidParameterException("参数id为空!");
+        }
+        aeaParStageOneformMapper.changIsActiveState(id);
     }
 }

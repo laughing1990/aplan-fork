@@ -23,4 +23,6 @@ public interface AeaParStageOneformService {
     EasyuiPageInfo<ActStoFormVo> getActStoFormList(ActStoForm actStoForm, Page page);
     List<AeaParStageItem> getAeaParStageItemListNoPage(AeaParStageItem aeaParStageItem);
     Double getMaxSortNo(String stageId);
+    List<AeaParStageOneform> listAeaParStageOneformNoRel(AeaParStageOneform aeaParStageOneform);
+    void changIsActiveState(String id);
 }
