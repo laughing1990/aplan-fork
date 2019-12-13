@@ -111,6 +111,7 @@ var vm = new Vue({
             'menuName':menuName,
             'menuInnerUrl':menuInnerUrl,
             'id':id,
+            'applyinstId':row.applyinstId,
           };
           try{
             parent.vm.addTab('',data,'','');

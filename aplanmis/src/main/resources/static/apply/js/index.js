@@ -5723,6 +5723,7 @@ var vm = new Vue({
       var _that = this;
       request('', {
         url: ctx + 'rest/stage/oneforms',
+        // url: ctx + 'rest/stage/part/forms',
         type: 'get',
         data: {stageId: _stageId}
       }, function (result) {
