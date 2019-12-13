@@ -75,9 +75,13 @@
                             </div>
                         </el-tooltip>
                         <el-tooltip placement="top" effect="light" v-else>
-                            <div slot="content">所属主题：{{item.themeName}} <br/> <br/> 所属阶段：{{item.stageName}}</div>
+                            <div slot="content">
+                                所属主题：{{item.themeName}} <br/> <br/>
+                                所属阶段：{{item.stageName}}<br/> <br/>
+                                办理事项：{{item.iteminstName}}
+                            </div>
                             <div class="stageIteminstName-bg">
-                                <span class="ellipsis pro-name" >{{item.stageName}}</span>
+                                <span class="ellipsis pro-name" >{{item.iteminstName}}</span>
                             </div>
                         </el-tooltip>
                     </td>
