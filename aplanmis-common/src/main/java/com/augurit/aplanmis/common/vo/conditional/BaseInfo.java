@@ -88,4 +88,7 @@ public class BaseInfo implements Serializable {
 
     @ApiModelProperty(value = "已用时显示")
     protected String useLimitTimeText;
+
+    @ApiModelProperty(value = "是否绿色通道")
+    protected String isGreenWay;
 }
