@@ -62,7 +62,9 @@ var myCertificateLibs = (function () {
             chooseCert:[],
             certTypeId:'',
             certHolder:'',
-
+            ctx:ctx,
+            dialogImageUrl: '',
+            dialogVisible: false,
         },
         created:function(){
             this.getCerList(this.c,this.cPageNum,this.cPageSize);
@@ -258,6 +260,18 @@ var myCertificateLibs = (function () {
 
                 });
             },
+            // 上传附件
+            handleRemove:function(file, fileList) {
+                console.log(file, fileList);
+            },
+            handlePictureCardPreview:function(file) {
+                this.dialogImageUrl = file.url;
+                this.dialogVisible = true;
+            },
+            handleError:function(err, file, fileList){
+                this.$message.error("上传文件失败，原因"+err);
+            },
+
             ChandleSizeChange:function () {
                 this.cPageSize = val;
                 this.getCerList(this.c,this.cPageNum,this.cPageSize);
