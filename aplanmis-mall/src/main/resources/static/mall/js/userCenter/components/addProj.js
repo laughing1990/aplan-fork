@@ -290,7 +290,7 @@ var module1 = new Vue({
         saveProjData: function () {
             var ts = this;
             ts.mloading = true;
-            _saveData = ts.projInfoForm;
+            var _saveData = ts.projInfoForm;
             if (!!ts.projInfoForm.projectAddress) {
                 _saveData.projectAddress = ts.projInfoForm.projectAddress.join(',');
             }
