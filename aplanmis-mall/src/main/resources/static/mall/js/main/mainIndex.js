@@ -201,23 +201,23 @@ var mainIndex = (function () {
                       vm.themeListData = content;
                       setTimeout(function(){
                           if(vm.themeListData.length  === 1){
-                              $(".theme-type .theme-type-list").css({'height':664+'px'});
+                              $(".theme-type .theme-type-list").css('height',664+'px');
                           }else if(vm.themeListData.length  === 2){
-                              $(".theme-type .theme-type-list").css({'height':604+'px'});
+                              $(".theme-type .theme-type-list").css('height',604+'px');
                           }else if(vm.themeListData.length  === 3){
-                              $(".theme-type .theme-type-list").css({'height':549+'px'});
+                              $(".theme-type .theme-type-list").css('height',549+'px');
                           }else if(vm.themeListData.length  === 4){
-                              $(".theme-type .theme-type-list").css({'height':494+'px'});
+                              $(".theme-type .theme-type-list").css('height',494+'px');
                           }else if(vm.themeListData.length  === 5){
-                              $(".theme-type .theme-type-list").css({'height':438+'px'});
+                              $(".theme-type .theme-type-list").css('height',438+'px');
                           }else if(vm.themeListData.length  === 6){
-                              $(".theme-type .theme-type-list").css({'height':386+'px'});
+                              $(".theme-type .theme-type-list").css('height',386+'px');
                           }else if(vm.themeListData.length  === 7){
-                              $(".theme-type .theme-type-list").css({'height':203+'px'});
+                              $(".theme-type .theme-type-list").css('height',203+'px');
                           }else if(vm.themeListData.length  === 8){
-                              $(".theme-type .theme-type-list").css({'height':146+'px'});
+                              $(".theme-type .theme-type-list").css('height',146+'px');
                           }
-                      },0);
+                      },200);
                   }else{
                       vm.themeLoading = false;
                       vm.$message.error(res.message);

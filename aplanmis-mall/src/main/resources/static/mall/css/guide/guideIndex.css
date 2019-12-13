@@ -6,7 +6,9 @@
     box-shadow: initial;
     height: auto;
 }
-
+#themeApproval .guide-content-left{
+    height: 713px;
+}
 #guideIndex .floor a {
     color: #3E97DF;
 }

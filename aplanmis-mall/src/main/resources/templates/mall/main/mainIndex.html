@@ -23,7 +23,7 @@
 			<section v-show="applyinstFlag == 1">
 				<div class="wt-content" style="padding-bottom: 50px;">
 					<!-- floor1分类申报 start -->
-					<div class="floor margin-top-40" style="overflow: hidden;" v-loading="themeLoading">
+					<div class="floor margin-top-40 clearfix"  v-loading="themeLoading">
 						<div class="wt-tab" id="floorTab">
 							<ul class="wt-tab-nav" id="mallThemeTypeList">
 								<li data-id="#themeApproval" :class="{'active':approvalwayTypeFlag}" @click="approvalwayTypeFlag = true">按主题申报</li>
