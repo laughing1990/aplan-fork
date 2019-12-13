@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.admin.par;
 
+import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.EasyuiPageInfo;
@@ -53,6 +54,13 @@ public class AeaParStageOneformController {
         return aeaParStageOneformService.getAeaParStageOneformList(parStageId, page);
     }
 
+    @RequestMapping("/listActiveStageOneformNoPage.do")
+    public List<AeaParStageOneform> listStageOneformNoPageByItemVerId(AeaParStageOneform stageOneform) {
+
+        stageOneform.setIsActive(Status.ON);
+        List<AeaParStageOneform> list = aeaParStageOneformService.listAeaParStageOneformNoRel(stageOneform);
+        return list;
+    }
 
     /**
      * 获取一张表单事项子表列表
@@ -248,5 +256,15 @@ public class AeaParStageOneformController {
     public Double getMaxSortNo(String stageId){
 
         return aeaParStageOneformService.getMaxSortNo(stageId);
+    }
+
+    @RequestMapping("/changIsActiveState.do")
+    public ResultForm changIsActiveState(String id){
+
+        if (StringUtils.isBlank(id)) {
+            throw new InvalidParameterException("参数id为空!");
+        }
+        aeaParStageOneformService.changIsActiveState(id);
+        return new ResultForm(true);
     }
 }

@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.admin.item.controller;
 
+import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.EasyuiPageInfo;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -50,8 +52,34 @@ private static Logger logger = LoggerFactory.getLogger(AeaItemOneformAdminContro
 
     @RequestMapping("/listAeaItemOneformByItemVerId.do")
     public EasyuiPageInfo<AeaItemOneform> listAeaItemOneform(String itemVerId, Page page) {
+
         PageInfo<AeaItemOneform> res = aeaItemOneformService.listAeaItemOneFormByItemVerId(itemVerId, page);
         return PageHelper.toEasyuiPageInfo(res);
+    }
+
+    @RequestMapping("/listItemOneformNoPageByItemVerId.do")
+    public List<AeaItemOneform> listItemOneformNoPageByItemVerId(String itemVerId) {
+
+        List<AeaItemOneform> list = aeaItemOneformService.listAeaItemOneFormByItemVerId(itemVerId);
+        return list;
+    }
+
+    @RequestMapping("/listActiveItemOneformNoPage.do")
+    public List<AeaItemOneform> listItemOneformNoPageByItemVerId(AeaItemOneform aeaItemOneform) {
+
+        aeaItemOneform.setIsActive(Status.ON);
+        List<AeaItemOneform> list = aeaItemOneformService.listAeaItemOneform(aeaItemOneform);
+        return list;
+    }
+
+    @RequestMapping("/changIsActiveState.do")
+    public ResultForm changIsActiveState(String id){
+
+        if (StringUtils.isBlank(id)) {
+            throw new InvalidParameterException("参数id为空!");
+        }
+        aeaItemOneformService.changIsActiveState(id);
+        return new ResultForm(true);
     }
 
     /**

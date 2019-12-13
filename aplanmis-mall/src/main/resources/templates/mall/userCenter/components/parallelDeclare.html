@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
-<link rel="stylesheet" href="../../../static/mall/css/userCenter/parallelDeclare.css"
+<link rel="stylesheet" href="../../../../static/mall/css/userCenter/parallelDeclare.css"
       th:href="@{/mall/css/userCenter/parallelDeclare.css}">
 <div class="wt-tab declare-content" id="parallelDeclare" v-cloak v-loading.fullscreen.lock="loading">
   <!-- 步骤 -->
@@ -991,7 +991,21 @@
     </div>
 
     <!-- 并联事项列表 -->
-    <h4 class="mt60 mt20" v-if="parallelItems&&parallelItems.length>0" @click="showParallelItems = !showParallelItems">并联事项列表<i class="fr" :class="showParallelItems?'el-icon-arrow-down':'el-icon-arrow-right'"></i></h4>
+    <h4 class="mt60 mt20" v-if="parallelItems&&parallelItems.length>0" @click="showParallelItems = !showParallelItems">
+      并联事项列表
+      <i class="fr" :class="showParallelItems?'el-icon-arrow-down':'el-icon-arrow-right'"></i>
+      <p v-if="parallelItems&&parallelItems.length>0" class="fr explain-box">
+        <span>
+          <span>标准</span>标准事项
+        </span>
+        <span>
+          <span class="is-shishi">实施</span>实施事项
+        </span>
+        <span>
+          <span class="is-greenWay">绿道</span>绿色通道
+        </span>
+      </p>
+    </h4>
     <el-table ref="parallelItemsTable"
               :data="parallelItems"
               border
@@ -1052,15 +1066,20 @@
 
       <el-table-column prop="sortNo" sortable label="事项名称" min-width="400" >
         <template slot-scope="scope">
-          <span class="is-catalog" :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标':'实'}}</span>
+          <span class="is-catalog" :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标准':'实施'}}</span>
+          <span v-if="scope.row.isGreenWay === '1'" class="is-catalog is-greenWay">绿道</span>
           {{scope.row.itemName}}
-          <span v-show="scope.row.isDone=='FINISHED'" class="isTag isDone"><i
+          <!-- <span v-show="scope.row.isDone=='FINISHED'" class="isTag isDone"><i
             class="ag ag-check-circle-fill"></i>已通过</span>
           <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isTag isDone"><i
             class="ag ag-edit-circle-fill"></i>已通过</span>
           <span v-show="scope.row.isDone=='HANDLING'" class="isTag isDoing"><i
             class="ag ag-edit-circle-fill"></i>办理中</span>
-          <span v-show="scope.row.isRecommend==1&& scope.row.isDone=='UN_FINISHED'" class="isTag isRecommend">推荐</span>
+          <span v-show="scope.row.isRecommend==1&& scope.row.isDone=='UN_FINISHED'" class="isTag isRecommend">推荐</span> -->
+          <span v-show="scope.row.isDone=='FINISHED'" class="isNewTag isDone">已通过</span>
+          <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isNewTag isDone">已通过</span>
+          <span v-show="scope.row.isDone=='HANDLING'" class="isNewTag isDoing">办理中</span>
+          <span v-show="scope.row.isRecommend==1&& scope.row.isDone=='UN_FINISHED'" class="isNewTag isRecommend">推荐办理</span>
           <p class="not-region-data" v-if="scope.row.notRegionData">* 该事项与项目区划不匹配，暂无办理权限</p>
           <p class="org-name" v-else-if="scope.row.orgName">{{ scope.row.orgName }}</p>
         </template>
@@ -1105,7 +1124,21 @@
         </template>
       </el-table-column>
     </el-table>
-    <h4 class="mt60 mt20" v-if="coreItems&&coreItems.length>0" @click="showCoreItems = !showCoreItems">并行推进事项 <span style="font-size: 14px;">（温馨提示：如若办理，需勾选对应的事项）</span><i class="fr" :class="showCoreItems?'el-icon-arrow-down':'el-icon-arrow-right'"></i></h4>
+    <h4 class="mt60 mt20" v-if="coreItems&&coreItems.length>0" @click="showCoreItems = !showCoreItems">
+      并行推进事项 <span style="font-size: 14px;">（温馨提示：如若办理，需勾选对应的事项）</span>
+      <i class="fr" :class="showCoreItems?'el-icon-arrow-down':'el-icon-arrow-right'"></i>
+      <p v-if="!(parallelItems&&parallelItems.length>0)" class="fr explain-box">
+        <span>
+          <span>标准</span>标准事项
+        </span>
+        <span>
+          <span class="is-shishi">实施</span>实施事项
+        </span>
+        <span>
+          <span class="is-greenWay">绿道</span>绿色通道
+        </span>
+      </p>
+    </h4>
     <el-table ref="coreItemsTable"
               :data="coreItems"
               border
@@ -1164,15 +1197,23 @@
       </el-table-column>
       <el-table-column label="事项名称" prop="sortNo" sortable  min-width="400" >
         <template slot-scope="scope">
-          <span class="is-catalog" :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标':'实'}}</span>
+          <span class="is-catalog" :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标准':'实施'}}</span>
+          <span v-if="scope.row.isGreenWay === '1'" class="is-catalog is-greenWay">绿道</span>
           {{scope.row.itemName}}
-          <span v-show="scope.row.isDone=='FINISHED'" class="isTag isDone"><i
+          <!-- <span v-show="scope.row.isDone=='FINISHED'" class="isTag isDone"><i
             class="ag ag-check-circle-fill"></i>已通过</span>
           <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isTag isDone"><i
             class="ag ag-edit-circle-fill"></i>已通过</span>
           <span v-show="scope.row.isDone=='HANDLING'" class="isTag isDoing"><i
             class="ag ag-edit-circle-fill"></i>办理中</span>
-          <span v-show="scope.row.isRecommend==1&& scope.row.isDone=='UN_FINISHED'" class="isTag isRecommend">推荐</span>
+          <span v-show="scope.row.isRecommend==1&& scope.row.isDone=='UN_FINISHED'" class="isTag isRecommend">推荐</span> -->
+          <span v-show="scope.row.isDone=='FINISHED'" class="isNewTag isDone"><i
+            class="ag ag-check-circle-fill"></i>已通过</span>
+          <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isNewTag isDone"><i
+            class="ag ag-edit-circle-fill"></i>已通过</span>
+          <span v-show="scope.row.isDone=='HANDLING'" class="isNewTag isDoing"><i
+            class="ag ag-edit-circle-fill"></i>办理中</span>
+          <span v-show="scope.row.isRecommend==1&& scope.row.isDone=='UN_FINISHED'" class="isNewTag isRecommend">推荐办理</span>
           <!--<p class="not-region-data" v-if="!scope.row.orgName">* 该事项与项目区划不匹配，暂无办理权限</p>-->
           <p class="not-region-data" v-if="scope.row.notRegionData">* 该事项与项目区划不匹配，暂无办理权限</p>
           <p class="org-name" v-else-if="scope.row.orgName">{{scope.row.orgName}}</p>

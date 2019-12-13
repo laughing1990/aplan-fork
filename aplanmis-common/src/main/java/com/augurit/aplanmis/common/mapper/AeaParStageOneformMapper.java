@@ -33,4 +33,6 @@ public interface AeaParStageOneformMapper {
     List<AeaParStageOneform> listAeaParStageOneformNoRel(AeaParStageOneform oneform);
 
     Double getMaxSortNo(@Param("parStageId") String parStageId);
+
+    void changIsActiveState(@Param("id") String id);
 }

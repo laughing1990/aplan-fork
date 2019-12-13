@@ -24,4 +24,6 @@ public interface AeaItemOneformMapper {
     List<AeaItemOneform> listAeaItemOneFormByItemVerId(@Param("itemVerId") String itemVerId);
 
     Double getMaxSortNo(@Param("itemVerId") String itemVerId);
+
+    void changIsActiveState(@Param("id") String id);
 }

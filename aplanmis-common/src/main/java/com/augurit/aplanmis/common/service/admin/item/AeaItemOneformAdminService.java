@@ -17,6 +17,8 @@ public interface AeaItemOneformAdminService {
 
     PageInfo<AeaItemOneform> listAeaItemOneFormByItemVerId(String itemVerId, Page page);
 
+    List<AeaItemOneform> listAeaItemOneFormByItemVerId(String itemVerId);
+
     PageInfo<AeaOneform> listAeaOneFormNotInItem(AeaOneform aeaOneform, Page page);
 
     void saveAeaItemOneform(AeaItemOneform aeaItemOneform);
@@ -32,4 +34,6 @@ public interface AeaItemOneformAdminService {
     List<AeaItemOneform> listAeaItemOneform(AeaItemOneform aeaItemOneform);
 
     Double getMaxSortNo(String itemVerId);
+
+    void changIsActiveState(String id);
 }

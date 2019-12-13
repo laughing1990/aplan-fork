@@ -502,6 +502,13 @@ var getStageOneformColumns = function () {
             align: 'left',
         },
         {
+            field: 'isActive',
+            align: 'center',
+            width: 50,
+            title: '是否启用',
+            formatter: oneformIsActiveFormatter
+        },
+        {
             field: 'operate_',
             align: 'center',
             title: '操作',
@@ -512,6 +519,78 @@ var getStageOneformColumns = function () {
     return columns;
 }
 
+function oneformIsActiveFormatter(value, row, index, field) {
+
+    if(row.isActive=='1'){
+        return  '<span class="m-switch m-switch--success">' +
+                '  <label>' +
+                '     <input type="checkbox" checked="checked" name="isActive" onclick="changeOneformIsActive(this,\''+ row.stageOneformId +'\',\''+ row.isActive +'\');">' +
+                '     <span></span>' +
+                '   </label>' +
+                '</span>'
+    }else{
+        return  '<span class="m-switch m-switch--success">' +
+                '  <label>' +
+                '     <input type="checkbox" name="isActive" onclick="changeOneformIsActive(this,\''+ row.stageOneformId +'\',\''+ row.isActive +'\');">' +
+                '     <span></span>' +
+                '   </label>' +
+                '</span>'
+    }
+}
+
+function changeOneformIsActive(obj, id, isActive){
+
+    if(id){
+        if(isActive=='0'){
+            $.ajax({
+                url: ctx+'/aea/par/stage/stageOneform/listActiveStageOneformNoPage.do',
+                type: 'POST',
+                data: {
+                    'parStageId': currentBusiId
+                },
+                success: function (data) {
+                    if(data&&data.length>0){
+                        swal('错误信息', '已经存在其他启用的总表单,如要启用当前总表单，请先禁用其他已启用总表单！', 'error');
+                        isActive=='1'?$(obj).prop("checked",true):$(obj).prop("checked",false);
+                        return;
+                    }
+                }
+            });
+        }
+        var action = isActive=='1'? "禁用" : "启用" ;
+        swal({
+            title: '提示信息',
+            text: "确定要" + action + "选中的记录吗?",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+        }).then(function(result) {
+            if (result.value){
+                $.ajax({
+                    url: ctx+'/aea/par/stage/stageOneform/changIsActiveState.do',
+                    type: 'POST',
+                    data: {'id': id},
+                    success: function (result) {
+                        if(result.success){
+                            // 列表数据重新加载
+                            refreshStageOneformTable();
+                        }else{
+                            swal('错误信息', result.message, 'error');
+                        }
+                    },
+                    error: function () {
+                        swal('错误信息', '服务器异常！', 'error');
+                    }
+                });
+            }else{
+                isActive=='1'?$(obj).prop("checked",true):$(obj).prop("checked",false);
+            }
+        });
+    }else{
+        swal('错误信息', '操作对象！', 'error');
+    }
+}
 
 var getOneformColumns = function () {
 

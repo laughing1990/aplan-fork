@@ -518,6 +518,28 @@
 .isTag.notDone {
   background-color: #aaa;
 }
+.isNewTag {
+  display: inline-block;
+  height: 20px;
+  line-height: 18px;
+  padding: 0 10px;
+  color: #1C9DFD;
+  border: 1px solid #1C9DFD;
+  font-size: 12px;
+  border-radius:10px;
+}
+.isNewTag.isRecommend{
+  color: #FFB822;
+  border: 1px solid #FFB822;
+}
+.isNewTag.isDone{
+  color: #00C062;
+  border: 1px solid #00C062;
+}
+.isNewTag.isDoing {
+  color: #1C9DFD;
+  border: 1px solid #1C9DFD;
+}
 .matter-list .el-table__expand-column {
   border-left: none;
   border-right: none;
@@ -623,18 +645,54 @@
   background: #f7f7f7;
   border-radius: 3px;
 }
+.explain-box {
+  font-size: 0;
+}
+.explain-box > span {
+  display: inline-block;
+  margin-right: 45px;
+  font-size: 14px;
+  color: #575962;
+  font-weight: normal;
+}
+.explain-box > span:last-child {
+  margin-right: 15px;
+}
+.explain-box > span span {
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #fff;
+  border-radius: 4px;
+  background-color: #86C937;
+  margin-right: 5px;
+}
+.explain-box > span span.is-shishi {
+  background: #FFCC61;
+}
+.explain-box > span span.is-greenWay {
+  background: #00C062;
+}
 .is-catalog {
   display: inline-block;
-  height: 25px;
-  width: 25px;
+  width: 40px;
+  height: 20px;
+  line-height: 20px;
   text-align: center;
-  background: #FDB929;
-  border-radius: 50%;
+  background: #86C937;
+  border-radius: 4px;
   color: #fff;
-  padding: 0px 0;
+  padding: 0;
+  margin-right: 4px;
 }
 .is-catalog.is-shishi {
-  background: #8ACB2C;
+  background: #FFCC61;
+}
+.is-catalog.is-greenWay {
+  background: #00C062;
 }
 .el-message-box__message p {
   word-break: break-all;
