@@ -508,9 +508,8 @@ public class AeaSeriesService {
                     , applySubject, linkmanInfoId, ApplyType.SERIES.getValue(), branchOrgMap
                     , ApplyState.RECEIVE_APPROVED_APPLY.getValue(), Status.ON);
             applyinstId = aeaHiApplyinst.getApplyinstId();
-
-            applyCommonService.bindApplyinstProj(projInfoId, applyinstId, SecurityContext.getCurrentUserId());
         }
+        applyCommonService.bindApplyinstProj(projInfoId, applyinstId, SecurityContext.getCurrentUserId());
         if (aeaHiSeriesinst == null) {
             // 预先生成流程模板实例ID
             String appinstId = UUID.randomUUID().toString();
