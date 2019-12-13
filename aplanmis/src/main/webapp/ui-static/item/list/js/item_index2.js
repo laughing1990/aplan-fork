@@ -566,7 +566,7 @@ function syncItemRegion() {
 	});
 }
 
-function createUnionItemCode() {
+function initUnionItemCode() {
 
     swal({
         text: '此操作将为每个事项编号追加时间戳构建事项唯一编号，您确定执行吗？',
