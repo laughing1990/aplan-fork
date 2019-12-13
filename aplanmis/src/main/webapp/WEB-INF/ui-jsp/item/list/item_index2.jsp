@@ -76,7 +76,7 @@
                                     <a class="dropdown-item" href="#" onclick="syncItemRegion();">
                                         <i class="la la-file-text-o"></i>同步事项行政区域
                                     </a>
-                                    <a class="dropdown-item" href="#" onclick="createUnionItemCode();">
+                                    <a class="dropdown-item" href="#" onclick="initUnionItemCode();">
                                         <i class="la la-file-text-o"></i>构建事项唯一编号
                                     </a>
                                 </div>
