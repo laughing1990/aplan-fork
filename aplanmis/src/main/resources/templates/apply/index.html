@@ -1245,7 +1245,7 @@
                     <el-table-column prop="realPaperCount" align="center" label="收/验" width="70">
                       <template slot-scope="scope">
                         <el-form-item :prop="'matsTableData.' + scope.$index + '.realPaperCount'"
-                          :rules='(scope.row.zcqy==0&&scope.row.paperIsRequire==1)?model.rules.realPaperCount:model.rules.realPaperCount1'>
+                          :rules='(scope.row.zcqy==0&&scope.row.paperIsRequire==1&&scope.row.realPaperCount>0)?model.rules.realPaperCount:model.rules.realPaperCount1'>
 
                           <el-input size="mini" v-model="scope.row.realPaperCount"></el-input>
                         </el-form-item>
@@ -1258,7 +1258,7 @@
                       </template>
                       <template slot-scope="scope">
                         <el-form-item :prop="'matsTableData.' + scope.$index + '.getPaper'"
-                          :rules='(scope.row.zcqy==0&&scope.row.paperIsRequire==1)?model.rules.getPaper:[]'>
+                          :rules='(scope.row.zcqy==0&&scope.row.paperIsRequire==1&&scope.row.realPaperCount>0)?model.rules.getPaper:[]'>
                           <el-checkbox v-model="scope.row.getPaper" :key="scope.row.matinstId"
                             @change="function(value) { checkedMatChange(value,scope.$index,'paper')}">已收/验</el-checkbox>
                         </el-form-item>

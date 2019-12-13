@@ -25,4 +25,12 @@ public interface RestMatCompletService {
      */
     UserInfoVo getAllApplyObject(HttpServletRequest request, String applyinstCorrectId) throws Exception;
 
+
+    /**
+     * 材料补全电子件删除
+     *
+     * @param detailIds
+     * @throws Exception
+     */
+    void delelteAttFile(String detailIds, String attRealIninstId) throws Exception;
 }
