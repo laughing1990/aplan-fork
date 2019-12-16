@@ -145,7 +145,7 @@
               :default-sort = "{prop: 'concludedTime', order: 'descending'}"
               @sort-change='sortChange'>
 
-        <el-table-column
+        <el-table-column v-if="showOrHideGreenWay()"
                 label=""
                 width="60"
                 align="center">
