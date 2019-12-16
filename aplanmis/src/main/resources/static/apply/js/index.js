@@ -180,7 +180,7 @@ var vm = new Vue({
       },
       coreItems: [], // 并行推进事项列表
       parallelItems: [], // 并联推进事项
-      isSelItem: 0, // 事项列表是否展示复选框 0否 1是
+      isSelItem: '1', // 是否允许申报时勾选审批事项 0否 1是
       addEditManModalTitle: '新增联系人',
       addEditManModalFlag: 'edit',
       addEditManModalShow: false, // 是否显示新增编辑联系人窗口
@@ -5028,6 +5028,10 @@ var vm = new Vue({
     parallelItemsSelItem: function(selArr,row,selflag){ // selflag 调用方式 autoGetSel手动触发
       var _that=this;
       var flag = false;
+      if(selflag!='autoGetSel'&&_that.isSelItem=='0'){
+        alertMsg('', '该阶段不允许申报时取消勾选并联审批事项！', '关闭', 'warning', true);
+        return false;
+      }
       if(selArr.length==0) {
         flag=false;
         _that.showParallelItemsKey = [];
@@ -5055,13 +5059,15 @@ var vm = new Vue({
         }
         _that.itemVerIdsString = '';
       }else {
-        // if(_that.parallelItemsQuestionFlag==true){
+        var rowsItemVerIds = [];
         selArr.forEach(function (item) {
           if(item.itemVerId==row.itemVerId){
             flag=true;
           }
+          if(item.itemVerId){
+            rowsItemVerIds.push(item.itemVerId);
+          }
         });
-        // if(flag&&row.implementItemVerId&&(!(_that.parallelItemsQuestionFlag==true&&_that.stageQuestionFlag==true))){
         if(flag&&row.implementItemVerId&&_that.parallelItemsQuestionFlag==false){
           _that.getStatusMatItemsByStatus(row);
         }else {
@@ -5092,22 +5098,17 @@ var vm = new Vue({
             return item != row.itemBasicId;
           });
         }
-        // }else {
-        var rowsItemVerIds = [];
-        selArr.forEach(function (item) {
-          if(item.itemVerId){
-            rowsItemVerIds.push(item.itemVerId);
-          }
-        });
         _that.itemVerIdsString = rowsItemVerIds.join(',');
       }
+      if(_that.parallelItemsQuestionFlag!==true||_that.stageQuestionFlag == false) {
+        _that.getOfficeMats(_that.itemVerIdsString);
+      }
+      if(_that.isSelItem=='0'){
+        row.preItemCheckPassed = false; // 不允许申报时勾选审批事项
+      }
+      // if(_that.stageQuestionFlag == false) {
+      //   _that.getOfficeMats(_that.itemVerIdsString);
       // }
-      if(_that.parallelItemsQuestionFlag!==true) {
-        _that.getOfficeMats(_that.itemVerIdsString);
-      }
-      if(_that.stageQuestionFlag == false) {
-        _that.getOfficeMats(_that.itemVerIdsString);
-      }
     },
     // 并联事项不包含情形时勾选并联事项获取的材料
     getOfficeMats: function(_itemVerIdS){ // rest/mats/getOfficeMats
@@ -5179,6 +5180,10 @@ var vm = new Vue({
     parallelItemsSelAll: function(selArr,selflag){ // selflag 调用方式 autoGetSel手动触发
       var _that = this;
       var flag = false;
+      if(selflag!='autoGetSel'&&_that.isSelItem=='0'){
+        alertMsg('', '该阶段不允许申报时取消勾选并联审批事项！', '关闭', 'warning', true);
+        return false;
+      }
       _that.showParallelItemsKey=[];
       if(selArr.length==0){
         flag=false;
@@ -5244,21 +5249,23 @@ var vm = new Vue({
                   rowsItemVerIds.push(row.itemVerId);
                 }
               }
-              // if(!(_that.parallelItemsQuestionFlag==true&&_that.stageQuestionFlag==true)){
               if(_that.parallelItemsQuestionFlag==false){
                 _that.getStatusMatItemsByStatus(row);
               }
+            }
+            if(_that.isSelItem=='0'){
+              row.preItemCheckPassed = false; // 不允许申报时勾选审批事项
             }
           }
         });
         _that.itemVerIdsString = rowsItemVerIds.join(',');
       }
-      if(_that.parallelItemsQuestionFlag!==true) {
+      if(_that.parallelItemsQuestionFlag!==true||_that.stageQuestionFlag == false) {
         _that.getOfficeMats(_that.itemVerIdsString);
       }
-      if(_that.stageQuestionFlag == false) {
-        _that.getOfficeMats(_that.itemVerIdsString);
-      }
+      // if(_that.stageQuestionFlag == false) {
+      //   _that.getOfficeMats(_that.itemVerIdsString);
+      // }
     },
     // 获取并行情形列表id
     getCoreItemsStatusListId: function(cStateList){
