@@ -39,4 +39,6 @@ public interface AeaApplyinstUnitProjMapper {
      * @return
      */
     List<AeaApplyinstUnitProj> getAeaApplyinstUnitProjByApplyinstId(@Param("applyinstId") String applyinstId);
+
+    void batchDeleteAeaApplyinstUnitProj(@Param("ids") String[] ids);
 }
