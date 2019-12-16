@@ -869,6 +869,23 @@ public class OfficialDocumentService {
                 aeaProjInfoService.updateAeaProjInfo(temp);
             }
         }
+
+        //保存到施工许可证表
+        if (aeaProjInfos.size() > 0) {
+            AeaExProjCertBuild aeaExProjCertBuild = new AeaExProjCertBuild();
+            aeaExProjCertBuild.setProjInfoId(aeaProjInfos.get(0).getProjInfoId());
+            List<AeaExProjCertBuild> certs = aeaExProjCertBuildMapper.listAeaExProjCertBuild(aeaExProjCertBuild);
+            if (certs != null || certs.size() > 0) {
+                AeaExProjCertBuild cert = certs.get(0);
+                cert.setCertBuildCode(certinstVo.getCertinstCode());
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                Date parse = sdf.parse(certinstVo.getIssueDate());
+                cert.setPublishTime(parse);
+                cert.setConstructionsSize(String.valueOf(certinstVo.getProjScale()));
+                cert.setCertBuildMemo(certinstVo.getMemo());
+                aeaExProjCertBuildMapper.updateAeaExProjCertBuild(cert);
+            }
+        }
     }
 
     /**
