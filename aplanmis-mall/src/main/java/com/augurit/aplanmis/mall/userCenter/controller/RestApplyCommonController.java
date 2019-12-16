@@ -174,18 +174,18 @@ public class RestApplyCommonController {
     public ContentResultForm itemListTemporary(@Valid @RequestBody ItemListTemporaryParamVo itemListTemporaryParamVo,HttpServletRequest request){
         Map<String,Object> map=new HashMap<>();
         ContentResultForm firstStepResult = temporarySaveOrUpdateSmsInfo(itemListTemporaryParamVo.getSmsInfoVo(), request);
+        LoginInfoVo loginVo = SessionUtil.getLoginInfo(request);
         String applyinstId="";
         if(firstStepResult.isSuccess()){
-            Map<String,Object> firstStepResultContent=(Map<String,Object>)(firstStepResult.getContent());
-            BeanUtils.copyProperties(firstStepResultContent,map);
-            applyinstId=(String)firstStepResultContent.get("applyinstId");
+            map=(Map<String,Object>)(firstStepResult.getContent());
+            applyinstId=(String)map.get("applyinstId");
         }else {
             return new ContentResultForm(false,"",firstStepResult.getMessage());
         }
         try{
             itemListTemporaryParamVo.setApplyinstId(applyinstId);
+            map.put("unitInfoId",loginVo.getUnitId());
             map=restApplyCommonService.submitItemList(itemListTemporaryParamVo,map);
-            map.put("applyinstId",applyinstId);
         }catch (Exception e){
             return new ContentResultForm(false,"",e.getMessage());
         }
@@ -199,16 +199,14 @@ public class RestApplyCommonController {
         ContentResultForm secondStepResult = itemListTemporary(matListStageTemporaryParamVo.getItemListTemporaryParamVo(), request);
         String applyinstId="";
         if(secondStepResult.isSuccess()){
-            Map<String,Object> secondStepResultContent=(Map<String,Object>)(secondStepResult.getContent());
-            BeanUtils.copyProperties(secondStepResultContent,map);
-            applyinstId=(String)secondStepResultContent.get("applyinstId");
+            map=(Map<String,Object>)(secondStepResult.getContent());
+            applyinstId=(String)map.get("applyinstId");
         }else {
             return new ContentResultForm(false,"",secondStepResult.getMessage());
         }
         try{
             matListStageTemporaryParamVo.setApplyinstId(applyinstId);
             restApplyCommonService.submitMatmList(matListStageTemporaryParamVo);
-            map.put("applyinstId",applyinstId);
         }catch (Exception e){
             return new ContentResultForm(false,"",e.getMessage());
         }
@@ -223,16 +221,14 @@ public class RestApplyCommonController {
         ContentResultForm secondStepResult = stateListSeriesTemporary(matListSeiesTemporaryParamVo.getStateListSeriesTemporaryParamVo(),request);//暂存情形
         String applyinstId="";
         if(secondStepResult.isSuccess()){
-            Map<String,Object> secondStepResultContent=(Map<String,Object>)(secondStepResult.getContent());
-            BeanUtils.copyProperties(secondStepResultContent,map);
-            applyinstId=(String)secondStepResultContent.get("applyinstId");
+            map=(Map<String,Object>)(secondStepResult.getContent());
+            applyinstId=(String)map.get("applyinstId");
         }else {
             return new ContentResultForm(false,"",secondStepResult.getMessage());
         }
         try{
             matListSeiesTemporaryParamVo.setApplyinstId(applyinstId);
             restApplyCommonService.submitMatmList(matListSeiesTemporaryParamVo);
-            map.put("applyinstId",applyinstId);
         }catch (Exception e){
             return new ContentResultForm(false,"",e.getMessage());
         }
@@ -249,17 +245,15 @@ public class RestApplyCommonController {
         String applyinstId="";
         String seriesinstId="";
         if(firstStepResult.isSuccess()){
-            Map<String,Object> firstStepResultContent=(Map<String,Object>)(firstStepResult.getContent());
-            BeanUtils.copyProperties(firstStepResultContent,map);
-            applyinstId=(String)firstStepResultContent.get("applyinstId");
-            seriesinstId=(String) firstStepResultContent.get("seriesinstId");
+            map=(Map<String,Object>)(firstStepResult.getContent());
+            applyinstId=(String)map.get("applyinstId");
+            seriesinstId=(String) map.get("seriesinstId");
         }else {
             return new ContentResultForm(false,"",firstStepResult.getMessage());
         }
         try{
             stateListSeriesTemporaryParamVo.setApplyinstId(applyinstId);
             restApplyCommonService.submitSeriesStateList(stateListSeriesTemporaryParamVo,seriesinstId,map);
-            map.put("applyinstId",applyinstId);
         }catch (Exception e){
             return new ContentResultForm(false,"",e.getMessage());
         }

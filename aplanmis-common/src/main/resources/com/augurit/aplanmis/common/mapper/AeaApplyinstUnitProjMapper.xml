@@ -68,6 +68,14 @@
         </foreach>
     </insert>
 
+    <delete id="batchDeleteAeaApplyinstUnitProj">
+        delete from AEA_APPLYINST_UNIT_PROJ
+        where APPLYINST_UNIT_PROJ_ID IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
     <!--6 修改实体对象 -->
     <update id="updateAeaApplyinstUnitProj" parameterType="AeaApplyinstUnitProj">
         update AEA_APPLYINST_UNIT_PROJ
