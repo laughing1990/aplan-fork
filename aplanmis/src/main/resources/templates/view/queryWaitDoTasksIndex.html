@@ -200,7 +200,7 @@
             @sort-change='sortChange'>
     <el-table-column
         label=""
-        width="65">
+        width="110">
       <template slot-scope="scope">
         <el-tooltip effect="light" placement="top">
           <div slot="content">未签收</div>
@@ -235,6 +235,12 @@
           <div slot="content">暂无未读催办信息</div>
           <span v-show="!scope.row.remindList || scope.row.remindList.length<=0"
                 class="color-C9C9C9 icon ag ag-message"></span>
+        </el-tooltip>
+
+        <el-tooltip effect="light" placement="top">
+          <div slot="content">绿色通道事项</div>
+          <span class="is-catalog is-green" v-show="scope.row.isGreenWay=='1'">绿道</span>
+          <!--<span class="is-catalog is-green">绿道</span>-->
         </el-tooltip>
       
       </template>
