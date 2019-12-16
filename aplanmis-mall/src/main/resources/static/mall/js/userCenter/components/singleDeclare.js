@@ -2268,8 +2268,7 @@ var module1 = new Vue({
           Vue.set(item, 'matinstId', '');
         }
         if (item.zcqy == 0 && item.attIsRequire == 1) {
-          console.log(item.matinstId);
-          if (!item.matinstId || item.childs.length == 0) {
+          if (item.childs&&item.childs.length == 0) {
             _that.attIsRequireFlag = false;
           }
         }
