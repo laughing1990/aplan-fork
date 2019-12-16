@@ -1169,10 +1169,18 @@ var vm = new Vue({
       var _that = this;
       var props = JSON.parse(JSON.stringify(_that.projBascInfoShow));
       props.projectAddress = props.projectAddress.join(',');
+
+      var url = '';
+      // 存在项目id为编辑状态，反之新增状态
+      if (_that.projInfoId) {
+        url = ctx + 'rest/project/edit';
+      } else {
+        url = ctx + 'rest/project/save';
+      }
       _that.$refs['projBascInfoShowFrom'].validate(function (valid) {
         if(valid){
           request('', {
-            url: ctx+'rest/project/edit',
+            url: url,
             data: props,
             type: 'post'
           }, function (data) {
