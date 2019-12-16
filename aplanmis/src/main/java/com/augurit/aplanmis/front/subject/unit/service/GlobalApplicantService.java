@@ -77,7 +77,7 @@ public class GlobalApplicantService {
     }
 
     public void deleteAeaApplicant(String id) {
-        aeaUnitInfoMapper.deleteAeaUnitInfo(id);
+        aeaUnitInfoMapper.deleteOrEnableAeaUnitInfo(id, SecurityContext.getCurrentUserName(), "1");
     }
 
     public void batchDeleteApplicantByIds(String[] ids) {

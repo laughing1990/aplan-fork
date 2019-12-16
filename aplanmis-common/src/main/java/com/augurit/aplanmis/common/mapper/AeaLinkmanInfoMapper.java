@@ -105,4 +105,13 @@ public interface AeaLinkmanInfoMapper {
      * @return List<AeaLinkmanInfo>
      */
     List<AeaLinkmanInfo> findAgentBindAccountLinkman(@Param("unitInfoId") String unitInfoId);
+
+    /**
+     * 删除||启用单位下所有的联系人
+     *
+     * @param unitInfoId
+     * @param modifier
+     */
+    void updateAllUnitLinkman(@Param("unitInfoId") String unitInfoId, @Param("modifier") String modifier, @Param("isDeleted") String isDeleted);
+
 }

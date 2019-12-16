@@ -104,8 +104,14 @@ CLIENT_SERVICE_ID  ,UNIT_SERVICE_ID  ,UNIT_LINKMAN_ID  ,IS_DELETED  ,CREATER  ,C
     </resultMap>
 
     <delete id="deleteAeaImClientServiceByUnitLinkmanId">
-        update AEA_IM_CLIENT_SERVICE set IS_DELETED = '1'
-        where UNIT_LINKMAN_ID = #{unitLinkmanId}
+        update AEA_IM_CLIENT_SERVICE set IS_DELETED = '1' where UNIT_LINKMAN_ID = #{unitLinkmanId}
+    </delete>
+    <!--删除单位所有服务下的所有委托人信息-->
+    <delete id="deleteOrEnableAllUnitClientService">
+        update AEA_IM_CLIENT_SERVICE set IS_DELETED = #{isDeleted} where UNIT_SERVICE_ID in
+        <foreach collection="unitServiceIds" close=")" open="(" separator="," item="unitServiceId">
+            #{unitServiceId}
+        </foreach>
     </delete>
 
     <select id="listClientServiceLinkmanInfo" resultType="AeaLinkmanInfo">

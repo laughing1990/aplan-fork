@@ -27,7 +27,15 @@ public interface AeaUnitInfoMapper {
 
     int updateAeaUnitInfo(AeaUnitInfo aeaUnitInfo);
 
-    int deleteAeaUnitInfo(@Param("id") String id);
+    /**
+     * 删除或启用单位
+     *
+     * @param id        单位ID
+     * @param modifier  修改人
+     * @param isDeleted 逻辑删除标记。0表示正常记录，1表示已删除记录。
+     * @return 删除的条数
+     */
+    int deleteOrEnableAeaUnitInfo(@Param("id") String id, @Param("modifier") String modifier, @Param("isDeleted") String isDeleted);
 
     int batchDeleteUnitInfo(@Param("ids") String[] ids);
 
@@ -37,7 +45,7 @@ public interface AeaUnitInfoMapper {
 
     List<AeaUnitInfo> findApplyUnitProj(@Param("applyinstId") String applyinstId, @Param("projInfoId") String projInfoId, @Param("isOwner") String isOwner);
 
-    List<AeaUnitInfo> findUnitProjByProjInfoIdAndType(@Param("projInfoId") String projInfoId, @Param("unitType") String unitType,@Param("rootOrgId") String rootOrgId);
+    List<AeaUnitInfo> findUnitProjByProjInfoIdAndType(@Param("projInfoId") String projInfoId, @Param("unitType") String unitType, @Param("rootOrgId") String rootOrgId);
 
     List<AeaUnitInfo> findUnitProjByProjInfoIdAndIsOwner(@Param("projInfoId") String projInfoId, @Param("isOwner") String isOwner);
 
@@ -76,9 +84,11 @@ public interface AeaUnitInfoMapper {
      * @param unitType 单位类型
      * @return
      */
-    List<AeaUnitInfo> getAeaUintListByProjInfoIdAndUnitYype(@Param("projInfoId") String projInfoId,@Param("unitType") String unitType);
+    List<AeaUnitInfo> getAeaUintListByProjInfoIdAndUnitYype(@Param("projInfoId") String projInfoId, @Param("unitType") String unitType);
+
     /**
      * 模糊查询，供施工和监理单位表单使用
+     *
      * @param keyword
      * @param rootOrgId
      * @return
@@ -86,4 +96,12 @@ public interface AeaUnitInfoMapper {
     List<ExSJUnitFromDetails> findAeaExProBuildUnitInfoByKeyword(@Param("keyword") String keyword, @Param("rootOrgId") String rootOrgId);
 
     List<AeaUnitInfo> getRegisterUnitList(AeaUnitInfo aeaUnitInfo);
+
+    /**
+     * 根据单位ID查询单位信息，包括已删除的信息
+     *
+     * @param unitInfoId 单位ID
+     * @return 单位信息
+     */
+    AeaUnitInfo getAeaUnitIncludeDeleteById(@Param("unitInfoId") String unitInfoId) throws Exception;
 }

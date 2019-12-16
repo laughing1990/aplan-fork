@@ -41,4 +41,11 @@ public interface AeaImServiceLinkmanMapper {
      * @return List<AeaImServiceLinkman>
      */
     List<AeaImServiceLinkman> listAeaImServiceLinkmanByUnitInfoIdAndServiceId(@Param("unitInfoId") String unitInfoId, @Param("serviceId") String serviceId);
+
+    /**
+     * 删除单位下所有的执业联系人
+     *
+     * @param unitInfoId
+     */
+    void deleteOrEnableAllServiceLinkman(@Param("unitInfoId") String unitInfoId, @Param("isDeleted") String isDeleted) throws Exception;
 }
