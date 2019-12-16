@@ -983,7 +983,7 @@
               <div class="one-form-unit" v-for="u in oneFormInfo"
                    @click="openOneFormDialog(u)" :class="{'is-fill': u.isFilled}">
                 <i class="of-state-icon ag" :class="!u.isFilled?'ag-edit-circle-fill':'ag-check-circle-fill'"></i>
-                <div class="one-form-title" :title="u.partformName">{{u.partformName}}</div>
+                <div class="one-form-title" :title="u.formName">{{u.formName}}</div>
                 <span class="goto-fill-form" v-if="!u.isFilled">去填写</span>
                 <span class="of-fill-time" v-if="u.isFilled">{{u.createTime|formatDate}}</span>
               </div>
@@ -1829,9 +1829,9 @@
     <div :style="{height:(curHeight-64)+'px',overflow: 'auto'}">
       <el-tabs tab-position="left" v-model="oneformActiveName">
         <el-tab-pane v-for="(item,index) in oneFormInfo" :key="index"
-                     :name="item.itemPartformId" :label="item.partformName">
+                     :name="item.formId" :label="item.formName">
           <iframe :style="{height:(curHeight-68)+'px',overflow: 'auto',width:'100%'}"
-                  v-if="item.isSmartForm=='0'"
+                  v-if="!item.smartForm"
                   :src="ctx+item.formUrl" frameborder="0"></iframe>
           <div v-else :style="{height:(curHeight-68)+'px',overflow: 'auto',width:'100%','padding-right':'10px'}">
             <div :id="'smartFormBox_'+index"></div>
