@@ -733,7 +733,7 @@ var vm = new Vue({
               vm.oneFormInfo.forEach(function(uu, ii) {
                 if (u.stoFormId == uu.formId){
                   uu.isFilled = true;
-                  uu.createTime = u.modifyTime;
+                  uu.createTime = u.modifyTime||u.createTime;
                 }
               });
             });
