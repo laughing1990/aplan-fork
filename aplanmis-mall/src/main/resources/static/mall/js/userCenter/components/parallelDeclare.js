@@ -411,6 +411,7 @@ var module1 = new Vue({
       stateListHistory: [], // 暂存情形
       itemStateListHistory: [], // 事项暂存情形
       propulsionItemApplyinstIdVos: [], // 并行事项实例
+      showFillForm: false,
     }
   },
   mounted: function () {
@@ -1160,6 +1161,7 @@ var module1 = new Vue({
       }, function (data) {
         _that.loading = false;
         if (data.success) {
+          _that.showFillForm = true;
           _that.projInfoDetail = data.content;
           _that.themeType = data.content.themeType;
           _that.themeId = data.content.themeId;
