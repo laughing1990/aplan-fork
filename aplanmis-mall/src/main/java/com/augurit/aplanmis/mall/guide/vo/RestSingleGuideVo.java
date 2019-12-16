@@ -24,7 +24,7 @@ public class RestSingleGuideVo {
     @ApiModelProperty("基本信息")
     private AeaItemGuide aeaItemGuide;
     @ApiModelProperty("中介服务")
-    private List<AeaItemGuideMaterials> materialsList;
+    private List<AeaItemBasic> intermediaryServices;
     @ApiModelProperty("情形信息")
     private List<AeaItemState> stateList;
     @ApiModelProperty("材料列表")

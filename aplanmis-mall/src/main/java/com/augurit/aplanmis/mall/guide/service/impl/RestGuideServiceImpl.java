@@ -12,6 +12,8 @@ import com.augurit.agcloud.bsc.upload.UploadType;
 import com.augurit.agcloud.bsc.upload.factory.UploaderFactory;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemRelevanceMapper;
 import com.augurit.aplanmis.common.service.guide.*;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
@@ -78,6 +80,10 @@ public class RestGuideServiceImpl implements RestGuideService {
     AeaServiceWindowItemService aeaServiceWindowItemService;
     @Autowired
     private AeaServiceWindowStageService aeaServiceWindowStageService;
+    @Autowired
+    private AeaItemRelevanceMapper aeaItemRelevanceMapper;
+    @Autowired
+    private AeaItemBasicMapper aeaItemBasicMapper;
 
     @Override
     public RestGuideVo getGuideByStageId(String stageId,String rootOrgId) throws Exception {
@@ -271,11 +277,12 @@ public class RestGuideServiceImpl implements RestGuideService {
             vo.setAeaItemGuideExtend(new AeaItemGuideExtend());
         }
         //中介服务
-        List<AeaItemGuideMaterials> materialsList = aeaItemGuideMaterialsService.listAeaitemGuideMaterials(itemVerId);
-        if (materialsList!=null&&materialsList.size()>0){
-            vo.setMaterialsList(materialsList);
+        AeaItemBasic itemBasic = aeaItemBasicMapper.getOneByItemVerId(itemVerId,rootOrgId);
+        List<AeaItemBasic> intermediaryServices = aeaItemRelevanceMapper.listAeaItemBasicByRelevance(itemBasic.getItemId());
+        if (intermediaryServices!=null&&intermediaryServices.size()>0){
+            vo.setIntermediaryServices(intermediaryServices);
         }else {
-            vo.setMaterialsList(new ArrayList<>());
+            vo.setIntermediaryServices(new ArrayList<>());
         }
         return vo;
     }
