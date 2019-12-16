@@ -18,6 +18,7 @@ import com.augurit.aplanmis.mall.userCenter.service.RestApplyCommonService;
 import com.augurit.aplanmis.mall.userCenter.service.RestMyMatService;
 import com.augurit.aplanmis.mall.userCenter.vo.*;
 import io.swagger.annotations.ApiModelProperty;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -386,7 +387,7 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
             }
         }
         map.put("stageinstId",stageinstId);
-
+        //暂存并行事项
         submitPropulsionItem(propulsionItemVerIds,propulsionItemStateIds,propulsionItemApplyinstIdVos,itemListTemporaryParamVo.getSmsInfoVo(),map);
         return map;
     }
@@ -402,10 +403,13 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
      */
     private void submitPropulsionItem(List<String> propulsionItemVerIds, List<PropulsionItemStateVo> propulsionItemStateIds, List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos,SmsInfoVo smsInfoVo, Map<String, Object> map) throws Exception {
         if(propulsionItemVerIds==null||propulsionItemVerIds.size()==0) return;
+        List<String> unitProjIds=(List<String>)map.get("unitProjIds");
+        String unitInfoId=(String) map.get("unitInfoId");
         if(propulsionItemApplyinstIdVos==null||propulsionItemApplyinstIdVos.size()==0){//第一次暂存并行
             //实例化申报实例，事项实例及其情形
             for (String itemVerId:propulsionItemVerIds){
-                saveSeriesApplyinstAndStateinst(itemVerId,propulsionItemStateIds,propulsionItemApplyinstIdVos,smsInfoVo);
+                AeaHiSeriesinst seriesApplyinstIdVo=saveSeriesApplyinstAndStateinst(itemVerId,propulsionItemStateIds,propulsionItemApplyinstIdVos,smsInfoVo,unitProjIds,unitInfoId);
+                saveUnitProjApplyinst(seriesApplyinstIdVo.getApplyinstId(),unitProjIds,unitInfoId,smsInfoVo.getProjInfoId(),smsInfoVo.getLinkmanInfoId());
             }
         }else{
             //跟propulsionItemVerIds对比，如果已经实例化的申报，无需实例化，只需删除重新实例化情形即可
@@ -419,8 +423,10 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
                         aeaHiItemStateinstService.batchInsertAeaHiItemStateinst(applyinstId, seriesinstId, null, stateIds.toArray(new String[stateIds.size()]), SecurityContext.getCurrentUserName());
                     }
                 }else{
-                    saveSeriesApplyinstAndStateinst(itemVerId,propulsionItemStateIds,propulsionItemApplyinstIdVos,smsInfoVo);
+                    AeaHiSeriesinst seriesApplyinstIdVo=saveSeriesApplyinstAndStateinst(itemVerId,propulsionItemStateIds,propulsionItemApplyinstIdVos,smsInfoVo,unitProjIds,unitInfoId);
+                    applyinstId=seriesApplyinstIdVo.getApplyinstId();
                 }
+                saveUnitProjApplyinst(applyinstId,unitProjIds,unitInfoId,smsInfoVo.getProjInfoId(),smsInfoVo.getLinkmanInfoId());
             }
         }
         map.put("propulsionItemApplyinstIdVos",propulsionItemApplyinstIdVos);
@@ -436,7 +442,7 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
         return null;
     }
 
-    private void saveSeriesApplyinstAndStateinst(String itemVerId, List<PropulsionItemStateVo> propulsionItemStateIds, List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos,SmsInfoVo smsInfoVo) throws Exception {
+    private AeaHiSeriesinst saveSeriesApplyinstAndStateinst(String itemVerId, List<PropulsionItemStateVo> propulsionItemStateIds, List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos,SmsInfoVo smsInfoVo,List<String> unitProjIds,String unitInfoId) throws Exception {
         PropulsionItemApplyinstIdVo propulsionItemApplyinstIdVo=new PropulsionItemApplyinstIdVo();
         AeaHiApplyinst seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinst("net", smsInfoVo.getApplySubject(), smsInfoVo.getLinkmanInfoId(), "1", null, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), "1");//实例化串联申请实例
         String seriesApplyinstId = seriesApplyinst.getApplyinstId();//申报实例ID
@@ -454,6 +460,81 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
         propulsionItemApplyinstIdVo.setSeriesApplyinstId(seriesApplyinstId);
         propulsionItemApplyinstIdVo.setSeriesinstId(aeaHiSeriesinst.getSeriesinstId());
         propulsionItemApplyinstIdVos.add(propulsionItemApplyinstIdVo);
+        return aeaHiSeriesinst;
+    }
+
+    public void saveUnitProjApplyinst(String seriesApplyinstId,List<String> unitProjIds,String unitInfoId,String projInfoId,String linkmanInfoId) throws Exception {
+        List<AeaApplyinstUnitProj> aeaApplyinstUnitProjs = aeaApplyinstUnitProjMapper.getAeaApplyinstUnitProjByApplyinstId(seriesApplyinstId);
+        if(unitProjIds!=null && unitProjIds.size()>0){
+            List<AeaApplyinstUnitProj> insertApplyinstUnitProjList=new ArrayList<>();
+            if(aeaApplyinstUnitProjs.size()>0){
+                String[] ids=aeaApplyinstUnitProjs.stream().map(AeaApplyinstUnitProj::getApplyinstUnitProjId).toArray(String[]::new);
+                aeaApplyinstUnitProjMapper.batchDeleteAeaApplyinstUnitProj(ids);
+            }
+            //当前用户的关系
+            if(StringUtils.isNotBlank(unitInfoId)){//企业用户
+                AeaUnitProj unitProj = aeaUnitProjMapper.findUnitPorojByProjInfoIdAndUnitInfoId(projInfoId, unitInfoId, "1");
+                String unitProjId="";
+                if(unitProj==null){
+                    AeaUnitProj insertEntity=new AeaUnitProj();
+                    insertEntity.setUnitProjId(UUID.randomUUID().toString());
+                    insertEntity.setUnitInfoId(unitInfoId);
+                    insertEntity.setIsOwner("1");
+                    insertEntity.setProjInfoId(projInfoId);
+                    insertEntity.setUnitType("1");
+                    insertEntity.setIsDeleted("0");
+                    insertEntity.setCreater(SecurityContext.getCurrentUserName());
+                    insertEntity.setCreateTime(new Date());
+                    insertEntity.setLinkmanInfoId(linkmanInfoId);
+                    aeaUnitProjMapper.insertAeaUnitProj(insertEntity);
+                    unitProjId=insertEntity.getUnitProjId();
+                }
+                //当前用户的关系
+                AeaApplyinstUnitProj currentParam=new AeaApplyinstUnitProj();
+                currentParam.setIsDeleted("0");
+                currentParam.setCreateTime(new Date());
+                currentParam.setCreater(SecurityContext.getCurrentUserName());
+                currentParam.setApplyinstUnitProjId(UUID.randomUUID().toString());
+                currentParam.setApplyinstId(seriesApplyinstId);
+                currentParam.setUnitProjId(StringUtils.isBlank(unitProjId)?unitProj.getUnitProjId():unitProjId);
+                insertApplyinstUnitProjList.add(currentParam);
+            }else{//个人用户 aea_proj_linkman
+                List<AeaProjLinkman> projLinkmans = aeaProjLinkmanMapper.getAeaProjLinkmanByApplyinstId(seriesApplyinstId, projInfoId);
+                if(projLinkmans.size()==0){
+                    AeaProjLinkman insertProjLinkman=new AeaProjLinkman();
+                    insertProjLinkman.setProjInfoId(projInfoId);
+                    insertProjLinkman.setLinkmanInfoId(linkmanInfoId);
+                    insertProjLinkman.setApplyinstId(seriesApplyinstId);
+                    insertProjLinkman.setType("apply");
+                    insertProjLinkman.setProjLinkmanId(UUID.randomUUID().toString());
+                    insertProjLinkman.setCreater(SecurityContext.getCurrentUserName());
+                    insertProjLinkman.setCreateTime(new Date());
+                    aeaProjLinkmanMapper.insertAeaProjLinkman(insertProjLinkman);
+                }
+            }
+
+            for (String unitProjId:unitProjIds){//除当前用户之外的关系
+                AeaApplyinstUnitProj param=new AeaApplyinstUnitProj();
+                param.setIsDeleted("0");
+                param.setCreateTime(new Date());
+                param.setCreater(SecurityContext.getCurrentUserName());
+                param.setApplyinstUnitProjId(UUID.randomUUID().toString());
+                param.setApplyinstId(seriesApplyinstId);
+                param.setUnitProjId(unitProjId);
+                insertApplyinstUnitProjList.add(param);
+            }
+            aeaApplyinstUnitProjMapper.batchInsertAeaApplyinstUnitProjMapper(insertApplyinstUnitProjList);
+        }
+        List<AeaApplyinstProj> aeaApplyinstProjs = aeaApplyinstProjMapper.getAeaApplyinstProjByApplyinstId(seriesApplyinstId);
+        if(aeaApplyinstProjs.size()==0){
+            AeaApplyinstProj param=new AeaApplyinstProj();
+            param.setApplyinstProjId(UUID.randomUUID().toString());
+            param.setApplyinstId(seriesApplyinstId);
+            param.setCreateTime(new Date());
+            param.setCreater(SecurityContext.getCurrentUserName());
+            param.setProjInfoId(projInfoId);
+            aeaApplyinstProjMapper.insertAeaApplyinstProj(param);
+        }
     }
 
     private String getApplyinstIdFromPpropulsionItemApplyinstIdVos(List<PropulsionItemApplyinstIdVo> list,String itemVerId){
