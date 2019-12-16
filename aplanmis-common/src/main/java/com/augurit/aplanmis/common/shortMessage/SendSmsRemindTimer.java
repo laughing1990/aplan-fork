@@ -18,7 +18,7 @@ import java.util.List;
  * 短信提醒发送定时器
  * @Author:sam
  */
-@Component
+//@Component
 @Slf4j
 public class SendSmsRemindTimer extends JobTimer {
     @Autowired
@@ -29,7 +29,7 @@ public class SendSmsRemindTimer extends JobTimer {
     public void trigger(){
         //短信发送如果关闭则跳过
         if(!smsConfigProperties.isEnable()) {
-            log.info("短信发送关闭,不发送短信");
+//            log.info("短信发送关闭,不发送短信");
             return;
         }
 
