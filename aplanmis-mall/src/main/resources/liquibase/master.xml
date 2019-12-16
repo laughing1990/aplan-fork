@@ -1,12 +1,12 @@
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
-    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <include file="classpath:liquibase/db/mysql/im.xml"/>
     <include file="classpath:liquibase/db/mysql/jjt_table_190724_after.xml"/>
     <include file="classpath:liquibase/db/mysql/jjt_data_190724_after.xml"/>
+    <include file="classpath:liquibase/db/mysql/data.xml"/>
+    <include file="classpath:liquibase/db/mysql/table.xml"/>
 
 </databaseChangeLog>

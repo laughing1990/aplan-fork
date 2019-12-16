@@ -583,6 +583,7 @@ var vm = new Vue({
       isTempSavePage: false,
       oneformActiveName: '',
       tempSaveProjName: '',
+      forminstVos: [],
     }
   },
   mounted: function () {
@@ -623,6 +624,31 @@ var vm = new Vue({
     }
   },
   methods: {
+    relateFormCallback: function(obj){
+      var vm = this;
+      request('', {
+        url: ctx + 'rest/stage/bind/forminst',
+        type: 'POST',
+        ContentType: 'application/json',
+        data: JSON.stringify({
+          applyinstId: vm.applyinstId,
+          forminstId: obj.actStoForminst.stoForminstId,
+        }),
+      }, function (res) {
+        if (res.success) {
+          vm.oneFormInfo.forEach(function(u){
+            if (u.formId == vm.oneformActiveName) {
+              u.isFilled = true;
+              u.createTime = new Date();
+            }
+          });
+        } else {
+          vm.$message.error(res.message || '表单关联失败');
+        }
+      }, function(){
+        vm.$message.error('表单关联失败');
+      });
+    },
     // 回显
     showTempData: function () {
       var vm = this;
@@ -644,6 +670,7 @@ var vm = new Vue({
           vm.themeVerId = res.content.themeVerId;
           vm.stageId = res.content.stageId;
           vm.approveOrgId = res.content.approveOrgId;
+          vm.forminstVos = res.content.forminstVos;
           vm.beforeCheck();
         } else {
           vm.$message.error(res.message || '获取暂存数据失败');
@@ -662,37 +689,55 @@ var vm = new Vue({
     openOneFormDialog: function (row) {
       var vm = this;
       if (row) {
-        vm.oneformActiveName = row.itemPartformId;
+        vm.oneformActiveName = row.formId;
       } else {
-        vm.oneformActiveName = oneFormInfo[0].itemPartformId;
+        vm.oneformActiveName = oneFormInfo[0].formId;
       }
       vm.oneFormDialogVisible = true;
+      vm.$nextTick(function(){
+        vm.oneFormInfo.forEach(function(u, index){
+          if (u.smartForm){
+            $('#smartFormBox_' + index).html(u.html);
+          }
+        });
+      });
       // vm.getOneFormData();
     },
     // 得到一张表单信息
     getOneFormData: function () {
       var vm = this;
       request('', {
-        // url: ctx + 'rest/oneform/common/getListForm4ItemOneForm',
-        url: ctx + 'rest/stage/item/part/forms',
+        url: ctx + 'rest/oneform/common/getListForm4ItemOneForm',
+        // url: ctx + 'rest/stage/item/part/forms',
         type: 'get',
         data: {
-          // applyinstId: vm.applyinstId,
-          // projInfoId: vm.projInfoId,
-          // itemId: vm.itemVerId,
-          // showBasicButton: true,
-          // includePlatformResource: false,
-          itemVerIds: vm.itemVerId,
+          applyinstId: vm.applyinstId,
+          projInfoId: vm.projInfoId,
+          itemId: vm.itemVerId,
+          showBasicButton: true,
+          includePlatformResource: false,
+          // itemVerIds: vm.itemVerId,
         },
       }, function (res) {
         if (res.success) {
           res.content.forEach(function (u, index) {
-            if (u.isSmartForm == '1') {
+            if (u.smartForm) {
               getHtml(u, index);
             }
             u.isFilled = false;
           });
           vm.oneFormInfo = res.content;
+          // 回显表单是否已填
+          if (vm.isTempSavePage) {
+            vm.forminstVos.forEach(function(u,i){
+              vm.oneFormInfo.forEach(function(uu, ii) {
+                if (u.stoFormId == uu.formId){
+                  uu.isFilled = true;
+                  uu.createTime = u.modifyTime||u.createTime;
+                }
+              });
+            });
+          }
         } else {
           vm.$message.error(res.content || '获取一张表单信息失败');
         }
@@ -706,7 +751,8 @@ var vm = new Vue({
           type: 'get',
         }, function (res) {
           if (res.success) {
-            $('#smartFormBox_' + index).html(res.content);
+            vm.oneFormInfo[index].html = res.content;
+            // $('#smartFormBox_' + index).html(res.content);
           } else {
             // vm.$message.error('获取智能表单数据失败');
           }
@@ -718,7 +764,7 @@ var vm = new Vue({
     // 获取可共享材料列表
     getShareMatsList: function (matData) {
       var _that = this, _matCode = '';
-      var matChild = _that.selMatRowData.matChild ? _that.selMatRowData.matChild : [];
+      var matChild = _that.selMatRowData&&_that.selMatRowData.matChild ? _that.selMatRowData.matChild : [];
       var matChildIds = [];
       if (matChild.length > 0) {
         matChild.map(function (item) {
@@ -1050,6 +1096,8 @@ var vm = new Vue({
           _that.$nextTick(function () {
             if (!_that.applyinstId || _that.applyinstId == '') {
               _that.showOneFormDialog1();
+            } else {
+              _that.getOneFormData();
             }
           });
         }
@@ -1212,6 +1260,8 @@ var vm = new Vue({
           _that.$nextTick(function () {
             if (!_that.applyinstId || _that.applyinstId == '') {
               _that.showOneFormDialog1();
+            } else {
+              _that.getOneFormData();
             }
           });
           _that.loading = false;
@@ -4480,23 +4530,29 @@ var vm = new Vue({
 
 function callbackAfterSaveSFForm(result, sFRenderConfig, formModelVal, actStoForminst) {
   console.log(result, sFRenderConfig.busiScence, formModelVal, actStoForminst);
-  if (sFRenderConfig.busiScence == 'mat') {
-    var parma = {
-      "linkmainInfoId": vm.rootApplyLinkmanId,
-      "matId": vm.selMatRowData.matId,
-      "projInfoId": vm.projInfoId,
-      "stoForminstId": actStoForminst.stoForminstId,
-      "unitInfoId": vm.rootUnitInfoId
-    };
-    request('', {
-      url: ctx + 'rest/mats/bind/form',
-      type: 'POST',
-      ContentType: 'application/json',
-      data: JSON.stringify(parma),
-    }, function (result1) {
-    }, function (msg) {
-    })
-  } else {
-    vm.oneFormInputFlag = true;
-  }
+  vm.relateFormCallback({
+    result: result,
+    sFRenderConfig: sFRenderConfig,
+    formModelVal: formModelVal,
+    actStoForminst: actStoForminst,
+  });
+  // if (sFRenderConfig.busiScence == 'mat') {
+  //   var parma = {
+  //     "linkmainInfoId": vm.rootApplyLinkmanId,
+  //     "matId": vm.selMatRowData.matId,
+  //     "projInfoId": vm.projInfoId,
+  //     "stoForminstId": actStoForminst.stoForminstId,
+  //     "unitInfoId": vm.rootUnitInfoId
+  //   };
+  //   request('', {
+  //     url: ctx + 'rest/mats/bind/form',
+  //     type: 'POST',
+  //     ContentType: 'application/json',
+  //     data: JSON.stringify(parma),
+  //   }, function (result1) {
+  //   }, function (msg) {
+  //   })
+  // } else {
+  //   vm.oneFormInputFlag = true;
+  // }
 }

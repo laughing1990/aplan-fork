@@ -49,7 +49,7 @@
         GROUP BY aiub.UNIT_INFO_ID
         ) temp1 ON temp1.UNIT_INFO_ID = aui.UNIT_INFO_ID
         <where>
-            aui.IS_DELETED = '0' AND aui.IS_IM_UNIT = '1'
+            aui.IS_DELETED = '0' AND aui.IS_IM_UNIT = '1' and aui.AUDIT_FLAG='1'
             <if test="applicant != null and applicant !=''">
                 AND aui.APPLICANT LIKE concat('%',concat(#{applicant},'%'))
             </if>
@@ -134,7 +134,8 @@
         GROUP BY aiub.UNIT_SERVICE_ID
         ) temp1 ON temp1.UNIT_SERVICE_ID = aius.UNIT_SERVICE_ID
         <where>
-            aius.AUDIT_FLAG = '1' AND aius.IS_DELETE = '0' AND aius.IS_ACTIVE = '1'
+            aius.AUDIT_FLAG = '1' AND aius.IS_DELETE = '0' AND aius.IS_ACTIVE = '1' and aui.IS_DELETED = '0' AND
+            aui.IS_IM_UNIT = '1' and aui.AUDIT_FLAG='1'
             <if test="applicant!=null and applicant!=''">
                 AND aui.APPLICANT LIKE concat('%',concat(#{applicant},'%'))
             </if>

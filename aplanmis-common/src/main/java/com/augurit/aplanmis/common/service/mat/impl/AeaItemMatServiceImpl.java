@@ -191,7 +191,7 @@ public class AeaItemMatServiceImpl implements AeaItemMatService {
 
                 if (!flag) {
                     //根据实施事项Id获取标准事项
-                    AeaItemBasic parentAeaItemBasic = aeaItemBasicService.getCatalogItemByCarryOutItemId(iteminst.getItemId());
+                    AeaItemBasic parentAeaItemBasic = aeaItemBasicService.getCatalogItemByCarryOutItemId(iteminst.getItemId(),null);
                     if (parentAeaItemBasic != null) baseItemVerIds.add(parentAeaItemBasic.getItemVerId());
                 }
             });

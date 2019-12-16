@@ -95,12 +95,49 @@ var vm = new Vue({
 		},
 		registerDeatail: function (row) {
 			var url;
-			if(row.isImUnit==='1') {
+			if (row.isImUnit === '1') {
 				url = ctx + '/supermarket/register/detail.html?unitInfoId=' + row.unitInfoId;//中介机构
-			}else if(row.isOwnerUnit==='1'){
+			} else if (row.isOwnerUnit === '1') {
 				url = ctx + '/supermarket/register/ownerDetail.html?unitInfoId=' + row.unitInfoId;//业主
 			}
 			window.location.href = url;
+		},
+		//删除单位
+		deleteUnit: function (row) {
+			var url = ctx + '/supermarket/register/delete/' + row.unitInfoId;
+			var _this = this;
+			request('', {
+				url: url,
+				type: 'post'
+			}, function (data) {
+				if (data.success) {
+					_this.$message({
+						type: 'success',
+						message: '删除成功!'
+					});
+					_this.getRegisterList();
+				}
+			}, function (msg) {
+				_this.$message({
+					message: msg.message ? msg.message : '服务请求失败',
+					type: 'error'
+				});
+			})
+		},
+		confirmDelete: function (row) {
+			var _this = this;
+			_this.$confirm('此操作将删除单位及发布的服务、人员, 是否继续?', '提示', {
+				confirmButtonText: '确定',
+				cancelButtonText: '取消',
+				type: 'warning'
+			}).then(() => {
+				_this.deleteUnit(row);
+			}).catch(() => {
+				_this.$message({
+					type: 'info',
+					message: '已取消删除'
+				});
+			});
 		},
 		// 预览电子件 必须要有detailId
 		filePreview: function (data) {

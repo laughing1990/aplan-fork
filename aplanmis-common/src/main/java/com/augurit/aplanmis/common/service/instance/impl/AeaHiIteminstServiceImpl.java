@@ -406,7 +406,7 @@ public class AeaHiIteminstServiceImpl implements AeaHiIteminstService {
         // 把对应的标准事项也放进去
         Map<String, HandleStatus> catalogMap = new HashMap<>(resultMap.size());
         for (Map.Entry<String, HandleStatus> entry : resultMap.entrySet()) {
-            AeaItemBasic catalogItem = aeaItemBasicService.getCatalogItemByCarryOutItemId(entry.getKey());
+            AeaItemBasic catalogItem = aeaItemBasicService.getCatalogItemByCarryOutItemId(entry.getKey(),null);
             if (catalogItem != null) {
                 catalogMap.put(catalogItem.getItemId(), entry.getValue());
             }
