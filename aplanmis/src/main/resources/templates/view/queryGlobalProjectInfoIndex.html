@@ -25,7 +25,7 @@
 <!--引入级联选择模块-->
 <div th:replace="../templates/view/components/syncCascader :: syncCascader"></div>
 
-<div class="search-table" id="searchTable" v-loading.fullscreen.lock="loading" v-cloak :style="{height: (curHeight-32)+'px'}">
+<div class="search-table" id="searchTable" v-loading.fullscreen.lock="loading" v-cloak :style="{minHeight: (curHeight-32)+'px'}">
   <div class="search-box">
     <el-form  class="search-from clearfix" label-width="100px" :rules="baseRules" ref="searchFrom" :model="searchFrom">
       <el-col :span="24" class="search-item-fif" style="width: 80%">
