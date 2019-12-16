@@ -584,6 +584,9 @@ var vm = new Vue({
       oneformActiveName: '',
       tempSaveProjName: '',
       forminstVos: [],
+      formAllNum: 0,
+      formFilledNum: 0,
+      formUnFillNum: 0,
     }
   },
   mounted: function () {
@@ -640,6 +643,8 @@ var vm = new Vue({
             if (u.formId == vm.oneformActiveName) {
               u.isFilled = true;
               u.createTime = new Date();
+              vm.formFilledNum++;
+              vm.formUnFillNum--;
             }
           });
         } else {
@@ -727,6 +732,8 @@ var vm = new Vue({
             u.isFilled = false;
           });
           vm.oneFormInfo = res.content;
+          vm.formAllNum = vm.oneFormInfo.length;
+          vm.formUnFillNum = vm.oneFormInfo.length;
           // 回显表单是否已填
           if (vm.isTempSavePage) {
             vm.forminstVos.forEach(function(u,i){
@@ -734,6 +741,8 @@ var vm = new Vue({
                 if (u.stoFormId == uu.formId){
                   uu.isFilled = true;
                   uu.createTime = u.modifyTime||u.createTime;
+                  vm.formFilledNum++;
+                  vm.formUnFillNum--;
                 }
               });
             });
