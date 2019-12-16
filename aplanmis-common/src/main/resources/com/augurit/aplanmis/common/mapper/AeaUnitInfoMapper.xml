@@ -698,9 +698,8 @@
     <select id="getRegisterUnitList" parameterType="AeaUnitInfo" resultType="AeaUnitInfo">
         select
         <include refid="allColumns" />
-        from AEA_UNIT_INFO aul
-        where 1=1
-        and AUDIT_FLAG is not null and AUDIT_FLAG !=''
+        from AEA_UNIT_INFO aui
+        where AUDIT_FLAG is not null and AUDIT_FLAG !=''
         <if test="applicant!=null and applicant!=''">
             and APPLICANT LIKE CONCAT(CONCAT('%',#{applicant}),'%')
         </if>
