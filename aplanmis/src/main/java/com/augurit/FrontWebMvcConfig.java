@@ -187,6 +187,7 @@ public class FrontWebMvcConfig implements WebMvcConfigurer/*, ApplicationListene
                 }
             }
             registry.addResourceHandler("/applet/**").addResourceLocations(appletPath);
+            logger.info("strClasspath:"+strClasspath);
             logger.info("appletPath:"+appletPath);
             registry.addResourceHandler("/resouce/**").addResourceLocations(strClasspath+File.separator+"templates"+File.separator);
         } catch (FileNotFoundException e) {

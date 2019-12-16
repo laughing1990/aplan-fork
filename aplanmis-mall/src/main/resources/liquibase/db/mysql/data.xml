@@ -604,59 +604,6 @@
         </sql>
     </changeSet>
 
-    <!--增加中介超市测试数据-->
-    <changeSet id="20191010192801" author="lwq" failOnError="false">
-        <comment>增加中介超市测试数据</comment>
-        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
-
-            INSERT INTO `aea_im_service_item`(`SERVICE_ITEM_ID`, `ITEM_VER_ID`, `SERVICE_ID`, `IS_DELETE`, `CREATER`,
-            `CREATE_TIME`) VALUES ('d3ac0368-689f-4b99-9d90-b1bae578b65a', '86c04bb0-fbfb-4cbe-86a6-c15a5b1f680e',
-            'e8037f55-b040-4c2d-8381-fdc3bd275d4c', '0', 'htry', '2019-10-10');
-
-            INSERT INTO `aea_item_relevance`(`RELEVANCE_ID`, `CHILD_ITEM_ID`, `PARENT_ITEM_ID`, `CREATER`,
-            `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_DELETE`) VALUES ('f88bb71a-dc01-49aa-a01c-c3aa36c29be7',
-            '479459ad-86a9-4c88-9ef2-56df4ccbac1c', 'c3441c45-0cc7-4320-816f-be0c5848450a', 'admin', '2019-10-10', NULL,
-            NULL, '0');
-
-        </sql>
-    </changeSet>
-
-    <changeSet id="20191011-001" author="小糊涂">
-        <comment>增加中介超市测试数据-aea_im_client_service</comment>
-        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
-            INSERT INTO `aea_im_client_service`(`CLIENT_SERVICE_ID`, `UNIT_SERVICE_ID`, `UNIT_LINKMAN_ID`, `IS_DELETED`,
-            `CREATER`, `CREATE_TIME`) VALUES ('a52cde00-c33a-4744-b2ad-89a1b1ff5c69',
-            '5ff5e1f4-4ade-4e20-a646-e404e53db46e', '5bfe1e6d-9652-487c-8bb8-32eead3f2e28', '0', 'xiaohutu', '2019-10-11
-            11:02:39');
-        </sql>
-    </changeSet>
-
-    <changeSet id="20191011-002" author="小糊涂">
-        <comment>增加中介超市测试数据-aea_im_client_service---222</comment>
-        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
-            INSERT INTO `aplanmis_prd`.`aea_im_client_service`(`CLIENT_SERVICE_ID`, `UNIT_SERVICE_ID`,
-            `UNIT_LINKMAN_ID`, `IS_DELETED`, `CREATER`, `CREATE_TIME`) VALUES ('45b9f2b5-c0b1-4932-9c73-ebbd9f001e73',
-            'e1af1f45-c007-407e-9a8f-dd25bd05d613', '6a02be7b-1b32-49ee-9ad4-3ca390ed71ab', '0', 'xiaohutu', '2019-10-11
-            11:17:24');
-            INSERT INTO `aplanmis_prd`.`aea_im_client_service`(`CLIENT_SERVICE_ID`, `UNIT_SERVICE_ID`,
-            `UNIT_LINKMAN_ID`, `IS_DELETED`, `CREATER`, `CREATE_TIME`) VALUES ('cfaeb10f-b56c-4ba4-9a4a-0f0e0cb63f67',
-            'e1af1f45-c007-407e-9a8f-dd25bd05d613', '6dbd16e1-fb5e-4407-9e36-86acf147e362', '0', 'xiaohutu', '2019-10-11
-            11:18:00');
-            INSERT INTO `aplanmis_prd`.`aea_im_client_service`(`CLIENT_SERVICE_ID`, `UNIT_SERVICE_ID`,
-            `UNIT_LINKMAN_ID`, `IS_DELETED`, `CREATER`, `CREATE_TIME`) VALUES ('aa96e5ea-06b6-47a0-919a-3487bc1e54bd',
-            'e1af1f45-c007-407e-9a8f-dd25bd05d613', 'f2430271-3585-4e89-8e09-a2cbc2060366', '0', 'xiaohutu', '2019-10-11
-            11:18:37');
-
-        </sql>
-    </changeSet>
-    <changeSet id="20191012-001" author="xiaohutu">
-        <comment>删除AEA_IM_SERVICE_ITEM 垃圾数据</comment>
-        <sql>
-            delete from AEA_IM_SERVICE_ITEM WHERE SERVICE_ITEM_ID NOT
-            IN('d3ac0368-689f-4b99-9d90-b1bae578b65a','2074d08a-6a04-410b-94ec-e4cf9dbf7268')
-            and DATE_FORMAT( CREATE_TIME, '%Y%m%d' ) &lt; '20190615';
-        </sql>
-    </changeSet>
     <changeSet id="20191121-001" author="小糊涂">
         <comment>修改表字段</comment>
         <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">

@@ -624,7 +624,7 @@ public class AeaParStageItemAdminServiceImpl implements AeaParStageItemAdminServ
             itemVerIds.add(itemVerId);
             AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(itemVerId, rootOrgId);
             // 获取标准事项
-            AeaItemBasic catalogItem = aeaItemBasicService.getCatalogItemByCarryOutItemId(aeaItemBasic.getItemId());
+            AeaItemBasic catalogItem = aeaItemBasicService.getCatalogItemByCarryOutItemId(aeaItemBasic.getItemId(),null);
             if (catalogItem != null) {
                 itemVerIds.add(catalogItem.getItemVerId());
             }

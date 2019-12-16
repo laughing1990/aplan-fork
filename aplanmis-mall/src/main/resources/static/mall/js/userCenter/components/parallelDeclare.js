@@ -200,7 +200,7 @@ var module1 = new Vue({
       showStageType: false, // 是否展示阶段分类
       statusLineList: [], // 主题下阶段类型
       statusLineListActive: 0, // 主题下阶段类型选中状态
-      isSelItem: 0, // 事项列表是否展示复选框 0否 1是
+      isSelItem: '1', // 是否允许申报时勾选审批事项 0否 1是
       statusActiveIndex: -1, // 申报阶段选中阶段index
       stageId: '', // 选中阶段id
       stageinstId: '', // 选中阶段实例id
@@ -411,6 +411,7 @@ var module1 = new Vue({
       stateListHistory: [], // 暂存情形
       itemStateListHistory: [], // 事项暂存情形
       propulsionItemApplyinstIdVos: [], // 并行事项实例
+      showFillForm: false,
     }
   },
   mounted: function () {
@@ -1160,6 +1161,7 @@ var module1 = new Vue({
       }, function (data) {
         _that.loading = false;
         if (data.success) {
+          _that.showFillForm = true;
           _that.projInfoDetail = data.content;
           _that.themeType = data.content.themeType;
           _that.themeId = data.content.themeId;
@@ -2681,7 +2683,7 @@ var module1 = new Vue({
       var _that = this;
       if (rows) {
         rows.forEach(function (row) {
-          if (row.orgName !== null && row.preItemCheckPassed && !row.notRegionData) {
+          if (row.orgName !== null && !row.notRegionData) {
             // if(row.isDone!='HANDLING'&&row.isDone!='FINISHED'&&row.orgName!==null){
             _that.$refs[tableRef].toggleRowSelection(row, true);
           }
@@ -2785,6 +2787,10 @@ var module1 = new Vue({
     // 并联事项单选事件
     parallelItemsSelItem: function (selArr, row, selflag) {
       var _that = this;
+      if(selflag!='autoGetSel'&&_that.isSelItem=='0'){
+        alertMsg('', '该阶段不允许申报时取消勾选并联审批事项！', '关闭', 'warning', true);
+        return false;
+      }
       if (selArr.length == 0) {
         _that.selParallelItemsKey = [];
         if (selflag != 'autoGetSel') {
@@ -2803,12 +2809,19 @@ var module1 = new Vue({
           }
         }
       });
+      if(_that.isSelItem=='0'){
+        row.preItemCheckPassed = false; // 不允许申报时勾选审批事项
+      }
       _that.selParallelItemsKey = _that.distinct(_that.selParallelItemsKey, [])
     },
     // 并联事项全选事件
     parallelItemsSelAll: function (selArr, selflag) { // selflag 调用方式 autoGetSel手动触发
       var _that = this;
       var flag = true;
+      if(selflag!='autoGetSel'&&_that.isSelItem=='0'){
+        alertMsg('', '该阶段不允许申报时取消勾选并联审批事项！', '关闭', 'warning', true);
+        return false;
+      }
       if (selArr.length == 0) {
         flag = false;
         _that.selParallelItemsKey = [];
@@ -2817,7 +2830,7 @@ var module1 = new Vue({
         }
       } else {
         selArr.map(function (row) {
-          if (row.orgName !== null && row.preItemCheckPassed && !row.notRegionData) {
+          if (row.orgName !== null && !row.notRegionData) {
             // if(row.isDone!='HANDLING'&&row.isDone!='FINISHED'&&row.orgName!==null){
             flag = true;
           } else {
@@ -2825,6 +2838,9 @@ var module1 = new Vue({
           }
           if (flag) {
             _that.selParallelItemsKey.push(row.itemId);
+          }
+          if(_that.isSelItem=='0'){
+            row.preItemCheckPassed = false; // 不允许申报时勾选审批事项
           }
         });
         _that.selParallelItemsKey = _that.distinct(_that.selParallelItemsKey, [])
@@ -3269,7 +3285,7 @@ var module1 = new Vue({
         }
         if (item.zcqy == 0 && item.attIsRequire == 1) {
           console.log(item.matinstId);
-          if (!item.matinstId || item.childs.length == 0) {
+          if (item.childs&&item.childs.length == 0) {
             _that.attIsRequireFlag = false;
           }
         }

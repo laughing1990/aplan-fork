@@ -137,4 +137,21 @@
             #{id}
         </foreach>
     </delete>
+
+    <select id="listAeaItemBasicByRelevance" resultType="AeaItemBasic">
+        SELECT
+        aib.ITEM_BASIC_ID  itemBasicId,
+        aib.ITEM_ID  itemId,
+        aib.ITEM_VER_ID  itemVerId,
+        aib.ITEM_CODE  itemCode,
+        aib.ITEM_NAME  itemName,
+        aib.ORG_ID  orgId,
+        ooo.org_name orgName
+        from aea_item_basic aib left join opu_om_org ooo on aib.org_id=ooo.org_id
+        where ITEM_ID in (
+         SELECT CHILD_ITEM_ID from AEA_ITEM_RELEVANCE where PARENT_ITEM_ID=#{itemId}
+        )
+    </select>
+
+
 </mapper>

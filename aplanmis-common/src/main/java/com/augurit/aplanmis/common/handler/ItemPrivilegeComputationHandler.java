@@ -24,6 +24,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -184,6 +185,10 @@ public final class ItemPrivilegeComputationHandler {
                 // 当前实施不为空 但实施事项列表为空 这种数据不应该存在
                 if (item.currentCarryOutItem != null && CollectionUtils.isEmpty(item.carryOutItems)) {
                     item.setCurrentCarryOutItem(null);
+                }
+                // 根据行政区划id自然序排序
+                if (CollectionUtils.isNotEmpty(item.getCarryOutItems())) {
+                    item.getCarryOutItems().sort(Comparator.comparing(CarryOutItem::getRegionId));
                 }
             });
         }

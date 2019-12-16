@@ -180,7 +180,7 @@ var vm = new Vue({
       },
       coreItems: [], // 并行推进事项列表
       parallelItems: [], // 并联推进事项
-      isSelItem: 0, // 事项列表是否展示复选框 0否 1是
+      isSelItem: '1', // 是否允许申报时勾选审批事项 0否 1是
       addEditManModalTitle: '新增联系人',
       addEditManModalFlag: 'edit',
       addEditManModalShow: false, // 是否显示新增编辑联系人窗口
@@ -602,6 +602,11 @@ var vm = new Vue({
       themeVerIdHis: '', // 已暂存主题版本id
       allFormInfoList: [],
       oneformActiveName: '',
+      forminstVos: [],
+      isTempSavePage: false,
+      formAllNum: 0,
+      formFilledNum: 0,
+      formUnFillNum: 0,
     }
   },
   created: function () {
@@ -619,6 +624,7 @@ var vm = new Vue({
       if(parent.vm.activeTabSelData.applyinstId){
         _that.isDraftsProj = true;
         _that.parallelApplyinstId = parent.vm.activeTabSelData.applyinstId;
+        _that.isTempSavePage = true;
         _that.lookProjDetail()
       }
     }
@@ -645,6 +651,33 @@ var vm = new Vue({
     }
   },
   methods: {
+    relateFormCallback: function(obj){
+      var vm = this;
+      request('', {
+        url: ctx + 'rest/stage/bind/forminst',
+        type: 'POST',
+        ContentType: 'application/json',
+        data: JSON.stringify({
+          applyinstId: vm.applyinstId,
+          forminstId: obj.actStoForminst.stoForminstId,
+        }),
+      }, function (res) {
+        if (res.success) {
+          vm.allFormInfoList.forEach(function(u){
+            if (u.formId == vm.oneformActiveName) {
+              u.isFilled = true;
+              u.createTime = new Date();
+              vm.formFilledNum++;
+              vm.formUnFillNum--;
+            }
+          });
+        } else {
+          vm.$message.error(res.message || '表单关联失败');
+        }
+      }, function(){
+        vm.$message.error('表单关联失败');
+      });
+    },
     // 查看项目详情
     lookProjDetail: function () {
       var _that = this;
@@ -666,6 +699,7 @@ var vm = new Vue({
           _that.themeIdHis = res.content.themeId?res.content.themeId:'';
           _that.themeVerIdHis = res.content.themeVerId?res.content.themeVerId:'';
           _that.themeVerId = res.content.themeVerId?res.content.themeVerId:'';
+          _that.forminstVos = res.content.forminstVos?res.content.forminstVos:[];
           _that.linkQuery();
         } else {
           _that.isDraftsProj = false;
@@ -5028,6 +5062,10 @@ var vm = new Vue({
     parallelItemsSelItem: function(selArr,row,selflag){ // selflag 调用方式 autoGetSel手动触发
       var _that=this;
       var flag = false;
+      if(selflag!='autoGetSel'&&_that.isSelItem=='0'){
+        alertMsg('', '该阶段不允许申报时取消勾选并联审批事项！', '关闭', 'warning', true);
+        return false;
+      }
       if(selArr.length==0) {
         flag=false;
         _that.showParallelItemsKey = [];
@@ -5055,13 +5093,15 @@ var vm = new Vue({
         }
         _that.itemVerIdsString = '';
       }else {
-        // if(_that.parallelItemsQuestionFlag==true){
+        var rowsItemVerIds = [];
         selArr.forEach(function (item) {
           if(item.itemVerId==row.itemVerId){
             flag=true;
           }
+          if(item.itemVerId){
+            rowsItemVerIds.push(item.itemVerId);
+          }
         });
-        // if(flag&&row.implementItemVerId&&(!(_that.parallelItemsQuestionFlag==true&&_that.stageQuestionFlag==true))){
         if(flag&&row.implementItemVerId&&_that.parallelItemsQuestionFlag==false){
           _that.getStatusMatItemsByStatus(row);
         }else {
@@ -5092,22 +5132,17 @@ var vm = new Vue({
             return item != row.itemBasicId;
           });
         }
-        // }else {
-        var rowsItemVerIds = [];
-        selArr.forEach(function (item) {
-          if(item.itemVerId){
-            rowsItemVerIds.push(item.itemVerId);
-          }
-        });
         _that.itemVerIdsString = rowsItemVerIds.join(',');
       }
+      if(_that.parallelItemsQuestionFlag!==true||_that.stageQuestionFlag == false) {
+        _that.getOfficeMats(_that.itemVerIdsString);
+      }
+      if(_that.isSelItem=='0'){
+        row.preItemCheckPassed = false; // 不允许申报时勾选审批事项
+      }
+      // if(_that.stageQuestionFlag == false) {
+      //   _that.getOfficeMats(_that.itemVerIdsString);
       // }
-      if(_that.parallelItemsQuestionFlag!==true) {
-        _that.getOfficeMats(_that.itemVerIdsString);
-      }
-      if(_that.stageQuestionFlag == false) {
-        _that.getOfficeMats(_that.itemVerIdsString);
-      }
     },
     // 并联事项不包含情形时勾选并联事项获取的材料
     getOfficeMats: function(_itemVerIdS){ // rest/mats/getOfficeMats
@@ -5179,6 +5214,10 @@ var vm = new Vue({
     parallelItemsSelAll: function(selArr,selflag){ // selflag 调用方式 autoGetSel手动触发
       var _that = this;
       var flag = false;
+      if(selflag!='autoGetSel'&&_that.isSelItem=='0'){
+        alertMsg('', '该阶段不允许申报时取消勾选并联审批事项！', '关闭', 'warning', true);
+        return false;
+      }
       _that.showParallelItemsKey=[];
       if(selArr.length==0){
         flag=false;
@@ -5244,21 +5283,23 @@ var vm = new Vue({
                   rowsItemVerIds.push(row.itemVerId);
                 }
               }
-              // if(!(_that.parallelItemsQuestionFlag==true&&_that.stageQuestionFlag==true)){
               if(_that.parallelItemsQuestionFlag==false){
                 _that.getStatusMatItemsByStatus(row);
               }
+            }
+            if(_that.isSelItem=='0'){
+              row.preItemCheckPassed = false; // 不允许申报时勾选审批事项
             }
           }
         });
         _that.itemVerIdsString = rowsItemVerIds.join(',');
       }
-      if(_that.parallelItemsQuestionFlag!==true) {
+      if(_that.parallelItemsQuestionFlag!==true||_that.stageQuestionFlag == false) {
         _that.getOfficeMats(_that.itemVerIdsString);
       }
-      if(_that.stageQuestionFlag == false) {
-        _that.getOfficeMats(_that.itemVerIdsString);
-      }
+      // if(_that.stageQuestionFlag == false) {
+      //   _that.getOfficeMats(_that.itemVerIdsString);
+      // }
     },
     // 获取并行情形列表id
     getCoreItemsStatusListId: function(cStateList){
@@ -5767,27 +5808,69 @@ var vm = new Vue({
     // 一张表单得到所有的表单信息
     getAllForms: function (stageId) {
       var vm = this;
+      
       request('', {
-        url: ctx + 'rest/stage/part/forms',
+        url: ctx + 'rest/oneform/common/getListForm4StageOneForm',
         type: 'get',
         data: {
+          applyinstId: vm.applyinstId,
           stageId: stageId,
+          projInfoId: vm.projInfoId,
+          showBasicButton: true,
+          includePlatformResource: false,
         },
-      }, function (res) {
+      }, function(res) {
         if (res.success) {
           res.content.forEach(function (u, index) {
-            if (u.isSmartForm == '1') {
+            if (u.smartForm) {
               getHtml(u, index);
             }
             u.isFilled = false;
           });
           vm.allFormInfoList = res.content;
+          vm.formAllNum = vm.allFormInfoList.length;
+          vm.formUnFillNum = vm.allFormInfoList.length;
+          // 回显表单是否已填
+          if (vm.isTempSavePage) {
+            vm.forminstVos.forEach(function(u,i){
+              vm.allFormInfoList.forEach(function(uu, ii) {
+                if (u.stoFormId == uu.formId){
+                  uu.isFilled = true;
+                  uu.createTime = u.modifyTime||u.createTime;
+                  vm.formFilledNum++;
+                  vm.formUnFillNum--;
+                }
+              });
+            });
+          }
         } else {
           vm.$message.error(res.content || '获取一张表单信息失败');
         }
-      }, function () {
+      },function(){
         vm.$message.error('获取一张表单信息失败');
-      });
+      })
+      
+      // request('', {
+      //   url: ctx + 'rest/stage/part/forms',
+      //   type: 'get',
+      //   data: {
+      //     stageId: stageId,
+      //   },
+      // }, function (res) {
+      //   if (res.success) {
+      //     res.content.forEach(function (u, index) {
+      //       if (u.isSmartForm == '1') {
+      //         getHtml(u, index);
+      //       }
+      //       u.isFilled = false;
+      //     });
+      //     vm.allFormInfoList = res.content;
+      //   } else {
+      //     vm.$message.error(res.content || '获取一张表单信息失败');
+      //   }
+      // }, function () {
+      //   vm.$message.error('获取一张表单信息失败');
+      // });
     
       function getHtml(data, index) {
         request('', {
@@ -5795,7 +5878,8 @@ var vm = new Vue({
           type: 'get',
         }, function (res) {
           if (res.success) {
-            $('#formHtml_' + index).html(res.content);
+            vm.allFormInfoList[index].html = res.content;
+            // $('#formHtml_' + index).html(res.content);
           } else {
             // vm.$message.error('获取智能表单数据失败');
           }
@@ -5808,11 +5892,18 @@ var vm = new Vue({
     openOneFormDialog: function (row) {
       var vm = this;
       if (row) {
-        vm.oneformActiveName = row.itemPartformId;
+        vm.oneformActiveName = row.formId;
       } else {
-        vm.oneformActiveName = oneFormInfo[0].itemPartformId;
+        vm.oneformActiveName = oneFormInfo[0].formId;
       }
       vm.oneFormDialogVisible = true;
+      vm.$nextTick(function(){
+        vm.allFormInfoList.forEach(function(u, index){
+          if (u.smartForm){
+            $('#smartFormBox_' + index).html(u.html);
+          }
+        });
+      });
       // vm.getOneFormData();
     },
     getOneFormrender2: function(str,_applyinstId,_stageId){ // 获取一张表单render
@@ -6472,23 +6563,29 @@ var vm = new Vue({
 });
 function callbackAfterSaveSFForm(result,sFRenderConfig,formModelVal,actStoForminst) {
   console.log(result,sFRenderConfig.busiScence,formModelVal,actStoForminst);
-  if(sFRenderConfig.busiScence=='mat'){
-    var parma = {
-      "linkmainInfoId": vm.rootApplyLinkmanId,
-      "matId": vm.selMatRowData.matId,
-      "projInfoId": vm.projInfoId,
-      "stoForminstId": actStoForminst.stoForminstId,
-      "unitInfoId": vm.rootUnitInfoId
-    };
-    request('', {
-      url: ctx + 'rest/mats/bind/form',
-      type: 'POST',
-      ContentType: 'application/json',
-      data: JSON.stringify(parma),
-    }, function (result1) {
-    }, function (msg) {})
-  }else {
-    vm.oneFormInputFlag = true;
-  }
+  vm.relateFormCallback({
+    result: result,
+    sFRenderConfig: sFRenderConfig,
+    formModelVal: formModelVal,
+    actStoForminst: actStoForminst,
+  });
+  // if(sFRenderConfig.busiScence=='mat'){
+  //   var parma = {
+  //     "linkmainInfoId": vm.rootApplyLinkmanId,
+  //     "matId": vm.selMatRowData.matId,
+  //     "projInfoId": vm.projInfoId,
+  //     "stoForminstId": actStoForminst.stoForminstId,
+  //     "unitInfoId": vm.rootUnitInfoId
+  //   };
+  //   request('', {
+  //     url: ctx + 'rest/mats/bind/form',
+  //     type: 'POST',
+  //     ContentType: 'application/json',
+  //     data: JSON.stringify(parma),
+  //   }, function (result1) {
+  //   }, function (msg) {})
+  // }else {
+  //   vm.oneFormInputFlag = true;
+  // }
 }
 

@@ -148,9 +148,9 @@ public class RestThemeController {
      */
     @GetMapping("/list")
     @ApiOperation("获取主线 or 辅线 or 其它 的主题")
-    public ContentResultForm<List<ThemeTypeVo>> themeCategories(ThemeCategory themeCategory) {
+    public ContentResultForm<List<ThemeTypeVo>> themeCategories(ThemeCategory themeCategory, @RequestParam(required = false) String themeId) {
         try {
-            return new ContentResultForm<>(true, parThemeService.getMainThemeTypeCategory(themeCategory), "Query success");
+            return new ContentResultForm<>(true, parThemeService.getThemesByTypeCategory(themeCategory, themeId), "Query success");
         } catch (Exception e) {
             e.printStackTrace();
             return new ContentResultForm<>(false, null, e.getMessage());
@@ -194,12 +194,16 @@ public class RestThemeController {
                                 return "1".equals(s.getIsNode());
                             // 辅线
                             case AUXILINE_51:
+                            case AUXILINE_52:
+                            case AUXILINE_53:
                             case AUXILINE_54C:
                             case AUXILINE_54Y:
                                 return "2".equals(s.getIsNode()) && themeCategory.getValue().equals(s.getDygjbzfxfw());
                             case OTHERS:
                                 return !"1".equals(s.getIsNode())
                                         && !ThemeCategory.AUXILINE_51.getValue().equals(s.getDygjbzfxfw())
+                                        && !ThemeCategory.AUXILINE_52.getValue().equals(s.getDygjbzfxfw())
+                                        && !ThemeCategory.AUXILINE_53.getValue().equals(s.getDygjbzfxfw())
                                         && !ThemeCategory.AUXILINE_54C.getValue().equals(s.getDygjbzfxfw())
                                         && !ThemeCategory.AUXILINE_54Y.getValue().equals(s.getDygjbzfxfw())
                                         ;

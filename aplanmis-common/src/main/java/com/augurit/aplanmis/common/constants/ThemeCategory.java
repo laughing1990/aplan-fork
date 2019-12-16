@@ -6,6 +6,8 @@ import lombok.Getter;
 public enum ThemeCategory {
     MAINLINE("并联申报", "mainline"),
     AUXILINE_51("辅线-多评合一", "51"),
+    AUXILINE_52("辅线-方案联审", "52"),
+    AUXILINE_53("辅线-联合审图", "53"),
     AUXILINE_54C("辅线-联合测绘", "54C"),
     AUXILINE_54Y("辅线-联合验收", "54Y"),
     OTHERS("辅线-其它", "others"),

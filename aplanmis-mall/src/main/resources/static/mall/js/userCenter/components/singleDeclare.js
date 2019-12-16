@@ -363,6 +363,7 @@ var module1 = new Vue({
       projInfoFirstSave: {}, // 第一步暂存的数据
       matListHistory: [], // 暂存的材料
       stateListHistory: [], // 暂存情形
+      showFillForm: false,
     }
   },
   created: function () {
@@ -1242,6 +1243,7 @@ var module1 = new Vue({
       }, function (data) {
         _that.loading = false;
         if (data.success) {
+          _that.showFillForm = true;
           _that.beforeCheck();
           _that.projInfoDetail = data.content.aeaProjInfo;
           _that.jiansheFrom = data.content.aeaUnitInfos ? data.content.aeaUnitInfos : [];
@@ -2268,8 +2270,7 @@ var module1 = new Vue({
           Vue.set(item, 'matinstId', '');
         }
         if (item.zcqy == 0 && item.attIsRequire == 1) {
-          console.log(item.matinstId);
-          if (!item.matinstId || item.childs.length == 0) {
+          if (item.childs&&item.childs.length == 0) {
             _that.attIsRequireFlag = false;
           }
         }

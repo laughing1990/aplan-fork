@@ -979,11 +979,23 @@
             <template slot="title">
               <i class="header-icon el-icon-edit-outline"></i>一张表单
             </template>
+            <div class="of-u-states">
+              <div class="of-u-icon ag ag-edit"></div>
+              <span>{{itemBasicInfo.itemName}}</span>
+              <div class="of-u-state-box r c-f">
+                <div class="of-u-b-text l">总共</div>
+                <div class="of-u-b-number l">{{formAllNum}}</div>
+                <div class="of-u-b-text l">已填</div>
+                <div class="of-u-b-number green l">{{formFilledNum}}</div>
+                <div class="of-u-b-text l">未填</div>
+                <div class="of-u-b-number yellow l">{{formUnFillNum}}</div>
+              </div>
+            </div>
             <div class="c-f">
               <div class="one-form-unit" v-for="u in oneFormInfo"
                    @click="openOneFormDialog(u)" :class="{'is-fill': u.isFilled}">
                 <i class="of-state-icon ag" :class="!u.isFilled?'ag-edit-circle-fill':'ag-check-circle-fill'"></i>
-                <div class="one-form-title" :title="u.partformName">{{u.partformName}}</div>
+                <div class="one-form-title" :title="u.formName">{{u.formName}}</div>
                 <span class="goto-fill-form" v-if="!u.isFilled">去填写</span>
                 <span class="of-fill-time" v-if="u.isFilled">{{u.createTime|formatDate}}</span>
               </div>
@@ -1032,7 +1044,7 @@
                 </el-table-column>
                 <el-table-column type="expand" v-if="showMatTableExpand" width="20" align="right">
                   <template slot-scope="props">
-                    <div class="mat-children" v-if="showMatTableExpand&&props.row.certChild.length>0">
+                    <div class="mat-children" v-if="showMatTableExpand&&props.row.certChild&&props.row.certChild.length>0">
                       <div v-for="(item,index) in props.row.certChild" class="file-list-tab">
                         <span class="file-name">
                           <span class="cert-icon icon ag ag-id-card"></span>
@@ -1045,7 +1057,7 @@
                         </span>
                       </div>
                     </div>
-                    <div class="mat-children" v-if="props.row.matChild.length>0">
+                    <div class="mat-children" v-if="props.row.matChild&&props.row.matChild.length>0">
                       <div v-for="item in props.row.matChild" class="file-list-tab" :key="item.fileId">
                         <span class="file-name">
                           <span class="icon ag ag-filetype-doc"
@@ -1060,7 +1072,7 @@
                         </span>
                       </div>
                     </div>
-                    <div class="mat-children" v-if="props.row.certChild.length==0&&props.row.matChild.length==0">
+                    <div class="mat-children" v-if="props.row.certChild&&props.row.certChild.length==0&&props.row.matChild&&props.row.matChild.length==0">
                       <div class="file-list-tab no-file">暂无附件</div>
                     </div>
                   </template>
@@ -1829,9 +1841,9 @@
     <div :style="{height:(curHeight-64)+'px',overflow: 'auto'}">
       <el-tabs tab-position="left" v-model="oneformActiveName">
         <el-tab-pane v-for="(item,index) in oneFormInfo" :key="index"
-                     :name="item.itemPartformId" :label="item.partformName">
+                     :name="item.formId" :label="item.formName">
           <iframe :style="{height:(curHeight-68)+'px',overflow: 'auto',width:'100%'}"
-                  v-if="item.isSmartForm=='0'"
+                  v-if="!item.smartForm"
                   :src="ctx+item.formUrl" frameborder="0"></iframe>
           <div v-else :style="{height:(curHeight-68)+'px',overflow: 'auto',width:'100%','padding-right':'10px'}">
             <div :id="'smartFormBox_'+index"></div>

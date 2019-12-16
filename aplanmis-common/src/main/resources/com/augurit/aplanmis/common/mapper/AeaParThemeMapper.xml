@@ -603,4 +603,43 @@
         </if>
     </select>
 
+    <select id="listAeaParThemeByThemeCategory" resultType="com.augurit.aplanmis.common.domain.AeaParTheme">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="apt"/>
+        </include>
+        from aea_par_theme apt
+        join aea_par_theme_ver aptv on apt.theme_id=aptv.theme_id
+        join (select aptv2.theme_id, max(aptv2.VER_NUM) maxNum from aea_par_theme_ver aptv2
+        where aptv2.IS_PUBLISH in ('1', '2') and aptv2.ROOT_ORG_ID=#{rootOrgId} and aptv2.IS_DELETED = '0'
+        group by aptv2.theme_id) maxVer on maxVer.theme_id=aptv.theme_id and maxVer.maxNum=aptv.VER_NUM
+        <where>
+            <if test="themeCategory != null and themeCategory == 'mainline'">
+                and apt.IS_AUXILINE='1'
+            </if>
+            <if test="themeCategory != null and (themeCategory == '51' or themeCategory == '52' or themeCategory == '53' or themeCategory == '54C' or themeCategory == '54Y' or themeCategory == 'others')">
+                and apt.IS_AUXILINE='1'
+            </if>
+            <if test="themeId != null and themeId != ''">
+                and apt.theme_id=#{themeId}
+            </if>
+            and EXISTS(
+            select 1 from aea_par_stage aps
+            where aps.theme_ver_id=aptv.theme_ver_id
+            and aps.is_deleted='0'
+            <if test="themeCategory != null and themeCategory == 'mainline'">
+                and is_node='1'
+            </if>
+            <if test="themeCategory != null and (themeCategory == '51' or themeCategory == '52' or themeCategory == '53' or themeCategory == '54C' or themeCategory == '54Y' or themeCategory == 'others')">
+                and is_node='2'
+            </if>
+            <choose>
+                <when test="themeCategory == '51' or themeCategory == '52' or themeCategory == '53' or themeCategory == '54C' or themeCategory == '54Y' ">
+                    and DYGJBZFXFW = #{themeCategory}
+                </when>
+            </choose>
+            )
+        </where>
+    </select>
+
 </mapper>

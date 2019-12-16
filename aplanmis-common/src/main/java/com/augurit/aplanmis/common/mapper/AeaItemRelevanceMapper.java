@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.common.mapper;
 
+import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaItemRelevance;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -38,4 +39,6 @@ public interface AeaItemRelevanceMapper {
      * @throws Exception
      */
     public void cancelItemRelation(@Param("itemId")String itemId,@Param("itemIds")String[] cancelItemIds)throws Exception;
+
+    List<AeaItemBasic> listAeaItemBasicByRelevance(String itemId);
 }
