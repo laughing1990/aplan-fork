@@ -1,10 +1,12 @@
 package com.augurit.aplanmis.front.basis.theme.service;
 
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
-import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.ThemeCategory;
 import com.augurit.aplanmis.common.domain.AeaParTheme;
+import com.augurit.aplanmis.common.mapper.AeaParThemeMapper;
+import com.augurit.aplanmis.common.service.dic.BscDicCodeItemService;
 import com.augurit.aplanmis.common.service.theme.AeaParThemeService;
 import com.augurit.aplanmis.front.basis.theme.vo.ThemeTypeVo;
 import com.augurit.aplanmis.front.basis.theme.vo.ThemeVo;
@@ -12,10 +14,10 @@ import com.augurit.aplanmis.front.common.service.RestOrgService;
 import io.jsonwebtoken.lang.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,6 +29,10 @@ public class ParThemeService {
     private AeaParThemeService aeaParThemeService;
     @Autowired
     private RestOrgService restOrgService;
+    @Autowired
+    private AeaParThemeMapper aeaParThemeMapper;
+    @Autowired
+    private BscDicCodeItemService bscDicCodeItemService;
 
     /**
      * she
@@ -34,6 +40,7 @@ public class ParThemeService {
      * @param category
      * @return
      */
+    @Deprecated
     public List<ThemeTypeVo> getMainThemeTypeCategory(String category) throws Exception {
         List<ThemeTypeVo> voList = new ArrayList<>();
         List<AeaParTheme> aeaParThemes = new ArrayList<>();
@@ -74,43 +81,29 @@ public class ParThemeService {
         return voList;
     }
 
-    public List<ThemeTypeVo> getMainThemeTypeCategory(ThemeCategory themeCategory) throws Exception {
+    public List<ThemeTypeVo> getThemesByTypeCategory(ThemeCategory themeCategory, String themeId) throws Exception {
         Assert.notNull(themeCategory, "themeCategory is null.");
-        AeaParTheme param = new AeaParTheme();
-        switch (themeCategory) {
-            // 主线
-            case MAINLINE:
-                param.setIsMainline(Status.ON);
-                break;
-            // 辅线
-            case AUXILINE_51:
-            case AUXILINE_54C:
-            case AUXILINE_54Y:
-            case OTHERS:
-                param.setIsAuxiline(Status.ON);
-                break;
-            default:
-                throw new Exception("unknown themeCategory: " + themeCategory.getValue());
-        }
         List<ThemeTypeVo> voList = new ArrayList<>();
-        ThemeTypeVo vo;
-        List<AeaParTheme> aeaParThemes = aeaParThemeService.listAeaParTheme(param);
+
         String currentOrgId = SecurityContext.getCurrentOrgId();
-        if (aeaParThemes.size() > 0) {
-            Set<String> themeTypes = aeaParThemes.stream().map(AeaParTheme::getThemeType).collect(Collectors.toSet());
-            Set<String> themeIds = aeaParThemes.stream().map(AeaParTheme::getThemeId).collect(Collectors.toSet());
-            for (String themeType : themeTypes) {
-                BscDicCodeItem itemByTypeCodeAndItemCode = restOrgService.getItemByTypeCodeAndItemCode("THEME_TYPE", themeType);
-                vo = new ThemeTypeVo();
-                List<AeaParTheme> themeList = aeaParThemeService.getTestRunOrPublishedVerAeaParTheme(themeType, currentOrgId);
-                if (itemByTypeCodeAndItemCode != null) {
-                    vo.buildThemeTypeVo(itemByTypeCodeAndItemCode);
-                }
-                List<ThemeVo> themeVos = Optional.ofNullable(themeList).orElse(new ArrayList<>()).stream().filter(theme -> themeIds.contains(theme.getThemeId())).map(ThemeVo::buildTheme).collect(Collectors.toList());
-                vo.getThemes().addAll(themeVos);
-                voList.add(vo);
-            }
+        List<AeaParTheme> aeaParThemeList = aeaParThemeMapper.listAeaParThemeByThemeCategory(themeId, themeCategory.getValue(), currentOrgId);
+        if (aeaParThemeList == null || aeaParThemeList.size() < 1) {
+            throw new Exception("没有符合条件的主题, 请检查配置是否正确");
         }
+        List<BscDicCodeItem> bscDicCodeItems = bscDicCodeItemService.getActiveItemsByTypeCode("THEME_TYPE", currentOrgId);
+        Map<String, BscDicCodeItem> itemMap = bscDicCodeItems.stream().collect(Collectors.toMap(BscDicCodeItem::getItemCode, item -> item));
+
+        aeaParThemeList.forEach(theme -> {
+            ThemeVo themeVo = ThemeVo.buildTheme(theme);
+            ThemeTypeVo themeTypeVo = new ThemeTypeVo();
+            themeTypeVo.getThemes().add(themeVo);
+            BscDicCodeItem bscDicCodeItem = itemMap.get(theme.getThemeType());
+            if (bscDicCodeItem != null) {
+                themeTypeVo.buildThemeTypeVo(bscDicCodeItem);
+            }
+            voList.add(themeTypeVo);
+        });
+
         return voList;
     }
 }

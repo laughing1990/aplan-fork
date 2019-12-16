@@ -68,5 +68,8 @@ public interface AeaParThemeMapper extends BaseMapper<AeaParTheme> {
     //根据主题名称，阶段名称查询主题列表
     List<AeaParTheme> listAeaParThemeByKeyword(AeaParTheme aeaParTheme);
 
-    List<AeaParTheme> listAeaParThemeByDygjbzfxfw(@Param("dygjbzfxfw")String dygjbzfxfw,@Param("isOnlineSb")String isOnlineSb);
+    List<AeaParTheme> listAeaParThemeByDygjbzfxfw(@Param("dygjbzfxfw") String dygjbzfxfw, @Param("isOnlineSb") String isOnlineSb);
+
+    List<AeaParTheme> listAeaParThemeByThemeCategory(@Param("themeId") String themeId, @Param("themeCategory") String themeCategory, @Param("rootOrgId") String rootOrgId);
+
 }
