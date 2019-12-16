@@ -449,8 +449,20 @@ body .el-table th.gutter{
 .el-cascader{
   width:85%;
 }
-
-
 .current-stage-min-width{
   min-width: 150px;
+}
+.is-catalog {
+  display: inline-block;
+  height: 20px;
+  width: 40px;
+  line-height: 20px;
+  text-align: center;
+  background: #86C937;
+  border-radius: 4px;
+  color: #fff;
+  padding: 0 0;
+}
+.is-catalog.is-green {
+  background: #00C062;
 }
