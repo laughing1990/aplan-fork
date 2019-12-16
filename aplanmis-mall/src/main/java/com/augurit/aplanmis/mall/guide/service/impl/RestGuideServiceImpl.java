@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class RestGuideServiceImpl implements RestGuideService {
@@ -278,7 +279,8 @@ public class RestGuideServiceImpl implements RestGuideService {
         }
         //中介服务
         AeaItemBasic itemBasic = aeaItemBasicMapper.getOneByItemVerId(itemVerId,rootOrgId);
-        List<AeaItemBasic> intermediaryServices = aeaItemRelevanceMapper.listAeaItemBasicByRelevance(itemBasic.getItemId());
+        AeaItemBasic bzsx = aeaItemBasicService.getCatalogItemByCarryOutItemId(itemBasic.getItemId(),rootOrgId);//标准事项
+        List<AeaItemBasic> intermediaryServices = aeaItemRelevanceMapper.listAeaItemBasicByRelevance(bzsx==null?itemBasic.getItemId():bzsx.getItemId());
         if (intermediaryServices!=null&&intermediaryServices.size()>0){
             vo.setIntermediaryServices(intermediaryServices);
         }else {

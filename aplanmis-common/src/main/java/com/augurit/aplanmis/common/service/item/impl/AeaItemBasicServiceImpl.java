@@ -264,10 +264,13 @@ public class AeaItemBasicServiceImpl implements AeaItemBasicService {
      * @param itemId 事项id
      */
     @Override
-    public AeaItemBasic getCatalogItemByCarryOutItemId(String itemId) {
-        AeaItemBasic parentAeaItemBasic = aeaItemBasicMapper.getLatestParentAeaItemBasicByChildItemId(itemId, SecurityContext.getCurrentOrgId());
+    public AeaItemBasic getCatalogItemByCarryOutItemId(String itemId,String rootOrgId) {
+        if(StringUtils.isBlank(rootOrgId)){
+            rootOrgId=SecurityContext.getCurrentOrgId();
+        }
+        AeaItemBasic parentAeaItemBasic = aeaItemBasicMapper.getLatestParentAeaItemBasicByChildItemId(itemId,rootOrgId );
         while (parentAeaItemBasic != null && !"1".equals(parentAeaItemBasic.getIsCatalog())) {
-            parentAeaItemBasic = aeaItemBasicMapper.getLatestParentAeaItemBasicByChildItemId(parentAeaItemBasic.getItemId(), SecurityContext.getCurrentOrgId());
+            parentAeaItemBasic = aeaItemBasicMapper.getLatestParentAeaItemBasicByChildItemId(parentAeaItemBasic.getItemId(), rootOrgId);
         }
         return parentAeaItemBasic;
     }
