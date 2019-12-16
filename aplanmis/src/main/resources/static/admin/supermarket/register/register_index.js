@@ -1,5 +1,6 @@
 var vm = new Vue({
 	el: '#mainContentPanel',
+	mixins: [mixins],
 	data: function () {
 		return {
 			// 审核情况下拉选项
