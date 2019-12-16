@@ -1032,7 +1032,7 @@
                 </el-table-column>
                 <el-table-column type="expand" v-if="showMatTableExpand" width="20" align="right">
                   <template slot-scope="props">
-                    <div class="mat-children" v-if="showMatTableExpand&&props.row.certChild.length>0">
+                    <div class="mat-children" v-if="showMatTableExpand&&props.row.certChild&&props.row.certChild.length>0">
                       <div v-for="(item,index) in props.row.certChild" class="file-list-tab">
                         <span class="file-name">
                           <span class="cert-icon icon ag ag-id-card"></span>
@@ -1045,7 +1045,7 @@
                         </span>
                       </div>
                     </div>
-                    <div class="mat-children" v-if="props.row.matChild.length>0">
+                    <div class="mat-children" v-if="props.row.matChild&&props.row.matChild.length>0">
                       <div v-for="item in props.row.matChild" class="file-list-tab" :key="item.fileId">
                         <span class="file-name">
                           <span class="icon ag ag-filetype-doc"
@@ -1060,7 +1060,7 @@
                         </span>
                       </div>
                     </div>
-                    <div class="mat-children" v-if="props.row.certChild.length==0&&props.row.matChild.length==0">
+                    <div class="mat-children" v-if="props.row.certChild&&props.row.certChild.length==0&&props.row.matChild&&props.row.matChild.length==0">
                       <div class="file-list-tab no-file">暂无附件</div>
                     </div>
                   </template>

@@ -718,7 +718,7 @@ var vm = new Vue({
     // 获取可共享材料列表
     getShareMatsList: function (matData) {
       var _that = this, _matCode = '';
-      var matChild = _that.selMatRowData ? _that.selMatRowData.matChild : [];
+      var matChild = _that.selMatRowData.matChild ? _that.selMatRowData.matChild : [];
       var matChildIds = [];
       if (matChild.length > 0) {
         matChild.map(function (item) {
