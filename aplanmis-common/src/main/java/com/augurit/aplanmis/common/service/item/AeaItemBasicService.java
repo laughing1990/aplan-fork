@@ -155,7 +155,7 @@ public interface AeaItemBasicService {
      * @param itemId
      * @return
      */
-    AeaItemBasic getCatalogItemByCarryOutItemId(String itemId);
+    AeaItemBasic getCatalogItemByCarryOutItemId(String itemId,String rootOrgId);
 
     List<OpuOmOrg> listOpuOmOrgByAeaItemBasic1(String s) throws Exception;
 

@@ -836,7 +836,7 @@ public class AeaParStageService {
                 AeaItemBasic aeaItemBasic = aeaItemBasicService.getAeaItemBasicByItemVerId(iteminst.getItemVerId());
                 // 如果是实施是事项， 对应的把标准事项也放进去
                 if (Status.OFF.equals(aeaItemBasic.getIsCatalog())) {
-                    AeaItemBasic catalogItem = aeaItemBasicService.getCatalogItemByCarryOutItemId(aeaItemBasic.getItemId());
+                    AeaItemBasic catalogItem = aeaItemBasicService.getCatalogItemByCarryOutItemId(aeaItemBasic.getItemId(),null);
                     if (catalogItem != null) {
                         branchOrg.put(catalogItem.getItemVerId(), iteminst.getApproveOrgId());
                     }

@@ -152,7 +152,7 @@ public class AeaHiItemInoutinstServiceImpl implements AeaHiItemInoutinstService 
             String iteminstId = aeaHiIteminst.getIteminstId();
             String itemId = aeaHiIteminst.getItemId();
             // 查找对应的标准事项
-            AeaItemBasic catalogItem = aeaItemBasicService.getCatalogItemByCarryOutItemId(aeaHiIteminst.getItemId());
+            AeaItemBasic catalogItem = aeaItemBasicService.getCatalogItemByCarryOutItemId(aeaHiIteminst.getItemId(),null);
             if (catalogItem == null) continue;
             String catalogItemId = catalogItem.getItemId();
 

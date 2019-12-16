@@ -352,7 +352,7 @@ public class MatCorrectBaseService {
 
             if (!flag) {
                 //根据实施事项Id获取标准事项
-                AeaItemBasic parentAeaItemBasic = aeaItemBasicService.getCatalogItemByCarryOutItemId(aeaHiIteminst.getItemId());
+                AeaItemBasic parentAeaItemBasic = aeaItemBasicService.getCatalogItemByCarryOutItemId(aeaHiIteminst.getItemId(),null);
                 if (parentAeaItemBasic == null) throw new Exception("找不到该阶段下的标准事项！");
                 itemVerId = parentAeaItemBasic.getItemVerId();
             }

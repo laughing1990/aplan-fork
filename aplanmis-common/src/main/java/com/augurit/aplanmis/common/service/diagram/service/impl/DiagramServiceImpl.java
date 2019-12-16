@@ -191,7 +191,7 @@ public class DiagramServiceImpl implements DiagramService {
                                 if ("1".equals(item.getIsCatalog())) {
                                     catalogItemBasicMap.put(item.getItemVerId(), item);
                                 } else {
-                                    AeaItemBasic catalogItem = aeaItemBasicService.getCatalogItemByCarryOutItemId(item.getItemId());
+                                    AeaItemBasic catalogItem = aeaItemBasicService.getCatalogItemByCarryOutItemId(item.getItemId(),null);
                                     catalogItemBasicMap.put(item.getItemVerId(), catalogItem);
                                 }
                             })
