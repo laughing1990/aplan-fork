@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -93,9 +94,15 @@ public class ParThemeService {
         List<BscDicCodeItem> bscDicCodeItems = bscDicCodeItemService.getActiveItemsByTypeCode("THEME_TYPE", currentOrgId);
         Map<String, BscDicCodeItem> itemMap = bscDicCodeItems.stream().collect(Collectors.toMap(BscDicCodeItem::getItemCode, item -> item));
 
+        Map<String, ThemeTypeVo> themeTypeVoMap = new HashMap<>();
         aeaParThemeList.forEach(theme -> {
+            ThemeTypeVo themeTypeVo;
+            if (themeTypeVoMap.get(theme.getThemeType()) != null) {
+                themeTypeVo = themeTypeVoMap.get(theme.getThemeType());
+            } else {
+                themeTypeVo = new ThemeTypeVo();
+            }
             ThemeVo themeVo = ThemeVo.buildTheme(theme);
-            ThemeTypeVo themeTypeVo = new ThemeTypeVo();
             themeTypeVo.getThemes().add(themeVo);
             BscDicCodeItem bscDicCodeItem = itemMap.get(theme.getThemeType());
             if (bscDicCodeItem != null) {
