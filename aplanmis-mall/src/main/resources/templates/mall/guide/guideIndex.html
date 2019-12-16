@@ -1123,15 +1123,11 @@
                                                 <el-table
                                                         border
                                                         class='el-table'
-                                                        :data="detailData.materuslsList"
+                                                        :data="detailData.intermediaryServices"
                                                         style="width: 100%">
-                                                    <el-table-column prop="intermediaryservices" label="中介服务事项名称"></el-table-column>
-                                                    <el-table-column prop="intermediaryservicescode" label="中介服务事项编码"></el-table-column>
-                                                    <el-table-column prop="itemType" label="详情">
-                                                        <template>
-                                                            <a href="javascript:void(0)">查看详情</a>
-                                                        </template>
-                                                    </el-table-column>
+                                                    <el-table-column prop="itemName" label="中介服务事项名称"></el-table-column>
+                                                    <el-table-column prop="itemCode" label="中介服务事项编码"></el-table-column>
+                                                    <el-table-column prop="orgName" label="主管/实施部门"></el-table-column>
                                                 </el-table>
                                             </div>
                                             <div class="div-step" id="div_step_10">
