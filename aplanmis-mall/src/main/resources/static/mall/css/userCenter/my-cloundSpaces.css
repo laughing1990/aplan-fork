@@ -1,4 +1,3 @@
-/* prefixed by https://autoprefixer.github.io (PostCSS: v7.0.23, autoprefixer: v9.7.3) */
 
 /*重置 element str */
 .el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner{
@@ -94,11 +93,6 @@
 }
 /*重置 element end */
 
-
-
-[v-cloak] {
-    display: none;
-}
 .mt20{
     margin-top: 20px;
 }

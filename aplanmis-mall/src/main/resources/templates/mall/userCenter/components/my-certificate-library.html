@@ -35,11 +35,13 @@
         <div class="my-certifiy-table">
             <el-table :data="cCertificateList"   style="width:100%" class="certificateListTable" v-loading="tableLoading">
                 <el-table-column
+                        width="250"
                         prop="certinstName"
                         label="证照名称"
                 >
                 </el-table-column>
                 <el-table-column
+                        width="250"
                         prop=" certType"
                         label="证照类型"
                 >
@@ -49,7 +51,7 @@
                 </el-table-column>
 
                 <el-table-column
-
+                        width="250"
                         prop="createTime"
                         align="center"
                         label="有效截止日期"
@@ -80,13 +82,12 @@
                 <el-table-column
                         prop=""
                         label="操作"
-                        width="150"
                         align="center"
                 >
                     <template slot-scope="scope">
-                        <span class="option-btn" style="display: inline-block" @click="lookvViewLicenseURL(scope.row)">查看</span>
-                        <span class="option-btn" style="display: inline-block"  @click="editCertifi(scope.row)">编辑</span>
-                        <span class="option-btn" style="display: inline-block;color: #FF4B47;"  @click="delCertifi(scope.row)">删除</span>
+                        <el-button type="text"   :disabled="scope.row.authCode?false:true" @click="lookvViewLicenseURL(scope.row)">预览</el-button>
+                        <el-button type="text"   :disabled="scope.row.certinstSource=='local'?false:true" @click="editCertifi(scope.row)">编辑</el-button>
+                        <el-button type="text"   :disabled="scope.row.authCode?true:false"  @click="delCertifi(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
 
@@ -150,7 +151,7 @@
                 <el-table-column
                         prop=""
                         label="操作"
-                        width="150"
+
                         align="center"
                 >
                     <template slot-scope="scope">
@@ -176,11 +177,13 @@
                 <el-table-column
                         prop="certinstName"
                         label="证照名称"
+                        width="250"
                 >
                 </el-table-column>
                 <el-table-column
                         prop=" certType"
                         label="证照类型"
+                        width="250"
                 >
                     <template slot-scope="scope">
                         <div class="fontSize">{{scope.row. certType}}</div>
@@ -188,10 +191,11 @@
                 </el-table-column>
 
                 <el-table-column
-
+                        width="250"
                         prop="createTime"
                         align="center"
                         label="有效截止日期"
+
                 >
                     <template slot-scope="scope">
                         <div class="fontSize">{{scope.row.termEnd||"-"}}</div>
@@ -219,13 +223,12 @@
                 <el-table-column
                         prop=""
                         label="操作"
-                        width="150"
                         align="center"
                 >
                     <template slot-scope="scope">
-                        <span class="option-btn" style="display: inline-block" @click="lookvViewLicenseURL(scope.row)">查看</span>
-                        <span class="option-btn" style="display: inline-block"  @click="editCertifi(scope.row)">编辑</span>
-                        <span class="option-btn" style="display: inline-block;color: #FF4B47;"  @click="delCertifi(scope.row)">删除</span>
+                        <el-button type="text"   :disabled="scope.row.authCode?false:true" @click="lookvViewLicenseURL(scope.row)">预览</el-button>
+                        <el-button type="text"   :disabled="scope.row.certinstSource=='local'?false:true" @click="editCertifi(scope.row)">编辑</el-button>
+                        <el-button type="text"   :disabled="scope.row.authCode?true:false"  @click="delCertifi(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
 
@@ -239,7 +242,7 @@
     </section>
 
     <!--新增弹窗 str-->
-    <el-dialog :title="addCertifiTitle" :visible.sync="addDirDialogFlag"  top="25vh" class="addDirDialog">
+    <el-dialog :title="addCertifiTitle" :visible.sync="addDirDialogFlag"  top="25vh" class="addDirDialog" width="1000px">
         <div class="addDirForm-box">
             <el-form label-position="right" label-width="130px" :model="addCertifiFormData" ref="addDirForm" :rules="addDirFormRules">
                 <el-form-item label="证照所属："  prop="certHolder" required>
@@ -296,7 +299,7 @@
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="颁发单位：" prop="issueOrgName">
-                    <el-input v-model="addCertifiFormData.issueOrgName" placeholder="请填写颁发单位" style="width: 330px"></el-input>
+                    <el-input v-model="addCertifiFormData.issueOrgName" placeholder="请填写颁发单位" style="width: 796px"></el-input>
                 </el-form-item>
                 <!--<el-form-item label="资质等级：" >
                     <el-select v-model="addCertifiFormData.qualLevelId" clearable placeholder="请选择资质等级" style="width: 330px">
@@ -324,12 +327,13 @@
                             v-model="addCertifiFormData.memo"  style="width: 796px">
                     </el-input>
                 </el-form-item>
-                <el-form-item label="附件：" >
+                <el-form-item label="附件:" >
                     <el-upload
                             :action="ctx+'/aea/cert/uploadCertFile'"
                             list-type="picture-card"
                             :on-preview="handlePictureCardPreview"
                             :on-remove="handleRemove"
+                            :on-success="handleSuccess"
                             :on-error="handleError">
                         <i class="el-icon-plus"></i>
                     </el-upload>
@@ -344,7 +348,7 @@
     <!--新增弹窗 end-->
 
     <!--文件预览弹窗 str-->
-    <el-dialog :visible.sync="dialogVisible" fullscreen="true">
+    <el-dialog :visible.sync="dialogVisible" :fullscreen="true">
         <img width="100%" :src="dialogImageUrl" alt="">
     </el-dialog>
     <!--文件预览弹窗 end-->
