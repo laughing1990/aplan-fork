@@ -100,6 +100,8 @@
                                         data-colspan="1" data-width="200">材料来源</th>
                                     <th data-field="matTypeName" data-align="left"
                                         data-colspan="1" data-width="200">材料类别</th>
+                                    <%--<th data-field="stdmatName" data-align="left"--%>
+                                        <%--data-colspan="1" data-width="200">关联标准材料</th>--%>
                                     <th data-field="" data-formatter="operatorFormatter"
                                         data-align="center" data-colspan="1" data-width="120">操作</th>
                                 </tr>
@@ -123,6 +125,9 @@
 
     <!-- 选择电子证照 -->
     <%@include file="../common/ztree/select_cert_no_right_ztree.jsp" %>
+
+    <!-- 选择标准材料 -->
+    <%@include file="../common/ztree/select_stdmat_no_right_ztree.jsp" %>
 
     <!-- 选择表单 -->
     <%@include file="../common/ztree/select_form_no_right_ztree.jsp" %>

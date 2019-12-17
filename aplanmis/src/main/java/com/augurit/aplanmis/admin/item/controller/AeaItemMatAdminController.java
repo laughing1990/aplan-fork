@@ -21,12 +21,10 @@ import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
 import com.augurit.aplanmis.common.constants.ActiveStatus;
 import com.augurit.aplanmis.common.constants.MindType;
-import com.augurit.aplanmis.common.domain.AeaCert;
-import com.augurit.aplanmis.common.domain.AeaItemInout;
-import com.augurit.aplanmis.common.domain.AeaItemMat;
-import com.augurit.aplanmis.common.domain.AeaItemMatType;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaCertMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemMatMapper;
+import com.augurit.aplanmis.common.mapper.AeaStdmatMapper;
 import com.augurit.aplanmis.common.service.admin.item.AeaItemInoutAdminService;
 import com.augurit.aplanmis.common.service.admin.item.AeaItemMatAdminService;
 import com.augurit.aplanmis.common.service.admin.item.AeaItemMatTypeAdminService;
@@ -89,6 +87,9 @@ public class AeaItemMatAdminController {
 
     @Autowired
     private AeaItemMatMapper matMapper;
+
+    @Autowired
+    private AeaStdmatMapper stdmatMapper;
 
     private String getRootOrgId(){
         return SecurityContext.getCurrentOrgId();
@@ -193,6 +194,12 @@ public class AeaItemMatAdminController {
                     ActStoForm form = matMapper.getActStoFormById(itemMat.getStoFormId());
                     if (form != null) {
                         itemMat.setFormName(form.getFormName());
+                    }
+                }
+                if (StringUtils.isNotBlank(itemMat.getStdmatId())) {
+                    AeaStdmat stdmat = stdmatMapper.getAeaStdmatById(itemMat.getStdmatId());
+                    if (stdmat != null) {
+                        itemMat.setStdmatName(stdmat.getStdmatName());
                     }
                 }
                 List<BscAttForm> kbList = bscAttService.listAttLinkAndDetailNoPage("AEA_ITEM_MAT", "TEMPLATE_DOC", id, null, orgId, null);
