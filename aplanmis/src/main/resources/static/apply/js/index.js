@@ -608,6 +608,8 @@ var vm = new Vue({
       formFilledNum: 0,
       formUnFillNum: 0,
       oneFormOpened: false,
+      canShowOneForm: true,
+      applyinstId: '',
     }
   },
   created: function () {
@@ -2094,6 +2096,12 @@ var vm = new Vue({
             _that.parallelItems = [];
             _that.model.matsTableData=[];
           }
+          _that.$nextTick(function () {
+            if (!_that.applyinstId || _that.applyinstId == '') {
+              _that.showCommentDialog('4');
+              _that.canShowOneForm = false;
+            }
+          });
         }else {
           _that.$message({
             message: '获取阶段失败',
@@ -4306,6 +4314,7 @@ var vm = new Vue({
               return false;
             }else {
               _that.parallelApplyinstId=res.content;
+              _that.applyinstId=res.content;
               _that.formItemsIdStr = strVer;
               _that.getOneFormrender2(strVer,_that.parallelApplyinstId,_that.stageId);
             }
@@ -5819,6 +5828,7 @@ var vm = new Vue({
           projInfoId: vm.projInfoId,
           showBasicButton: true,
           includePlatformResource: false,
+          itemVerId: [],
         },
       }, function(res) {
         if (res.success) {
@@ -5917,7 +5927,12 @@ var vm = new Vue({
         type: 'get',
       }, function (result) {
         if (result.success) {
-          _that.oneFormDialogVisible = true;
+          if (_that.canShowOneForm){
+            _that.oneFormDialogVisible = true;
+          } else {
+            _that.canShowOneForm = true;
+            return null;
+          }
           // _that.devFormUrl = [];
           // $('#oneFormContent').html(result.content.sfForm)
           // _that.$nextTick(function(){
