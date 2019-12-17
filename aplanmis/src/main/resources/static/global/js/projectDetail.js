@@ -604,6 +604,8 @@ var vm = new Vue({
           vm.$set(_that.projBascInfoShow, 'localCode', res.content.localCode);
           vm.$set(_that.projBascInfoShow, 'gcbm', res.content.gcbm);
           vm.$set(_that.projBascInfoShow, 'projInfoId', res.content.projInfoId);
+
+          vm.projInfoId = res.content.projInfoId;
         }
       }, function (msg) {})
     },
