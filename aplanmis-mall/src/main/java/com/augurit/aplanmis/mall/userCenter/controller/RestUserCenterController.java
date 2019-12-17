@@ -61,7 +61,7 @@ public class RestUserCenterController {
     }
 
     @GetMapping("/toMyCertificateLibraryPage")
-    @ApiOperation(value = "我的证照库")
+    @ApiOperation(value = "我的证照")
     public ModelAndView toMyCertificateLibraryPage(){
         return new ModelAndView("mall/userCenter/components/my-certificate-library");
     }

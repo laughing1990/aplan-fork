@@ -144,7 +144,7 @@ var userCenter = (function () {
                                 select: false,
                             },
                             {
-                                name: '我的证照库',
+                                name: '我的证照',
                                 value: 'MyCertificateLibrary',
                                 select: false,
                             },
