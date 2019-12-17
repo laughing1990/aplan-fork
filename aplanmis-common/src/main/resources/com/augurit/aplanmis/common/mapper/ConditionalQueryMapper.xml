@@ -212,7 +212,7 @@
         asp.PROCINST_ID AND tinst.ORG_ID = #{currentOrgId}
         WHERE
         ahap_123.IS_SERIES_APPROVE = '0'
-        AND ahap_123.IS_DELETED != '1'
+        AND ahap_123.IS_DELETED != '1' and ahap_123.IS_TEMPORARY_SUBMIT='0'
         <if test="isConcluding != null and isConcluding != ''">
             AND tinst.IS_CONCLUDING = #{isConcluding}
         </if>
@@ -349,7 +349,7 @@
             #{currentOrgId}
             WHERE
             ahap_123.IS_SERIES_APPROVE = '1'
-            AND ahap_123.IS_DELETED != '1'
+            AND ahap_123.IS_DELETED != '1' and ahap_123.IS_TEMPORARY_SUBMIT='0'
             <if test="isConcluding != null and isConcluding != ''">
                 AND tinst.IS_CONCLUDING = #{isConcluding}
             </if>
@@ -474,7 +474,7 @@
         LEFT JOIN act_sto_timerule_inst tinst ON tinst.PROC_INST_ID = ahi_123.PROCINST_ID AND tinst.ORG_ID =
         #{currentOrgId}
         WHERE ahi_123.IS_SERIES_APPROVE = '0'
-        AND ahap_123.IS_DELETED != '1'
+        AND ahap_123.IS_DELETED != '1' and ahap_123.IS_TEMPORARY_SUBMIT='0'
         <if test="isConcluding != null and isConcluding != ''">
             AND tinst.IS_CONCLUDING = #{isConcluding}
         </if>
@@ -591,7 +591,7 @@
             LEFT JOIN act_sto_timerule_inst tinst ON tinst.PROC_INST_ID = ahi_123.PROCINST_ID AND tinst.ORG_ID =
             #{currentOrgId}
             WHERE ahi_123.IS_SERIES_APPROVE = '1'
-            AND ahap_123.IS_DELETED != '1'
+            AND ahap_123.IS_DELETED != '1' and ahap_123.IS_TEMPORARY_SUBMIT='0'
             <if test="isConcluding != null and isConcluding != ''">
                 AND tinst.IS_CONCLUDING = #{isConcluding}
             </if>
@@ -1743,7 +1743,7 @@
         LEFT JOIN aea_par_theme theme ON theme.THEME_ID = ver.THEME_ID
 
         <where>
-            ahap_123.IS_SERIES_APPROVE = '0'
+            ahap_123.IS_SERIES_APPROVE = '0' and ahap_123.IS_TEMPORARY_SUBMIT='0'
             AND ahap_123.APPLYINST_STATE = '0'
             AND APPLYINST_SOURCE = 'net'
 
@@ -1792,7 +1792,7 @@
         LEFT JOIN aea_hi_iteminst ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
 
         <where>
-            ahap_123.IS_SERIES_APPROVE = '1'
+            ahap_123.IS_SERIES_APPROVE = '1' and ahap_123.IS_TEMPORARY_SUBMIT='0'
             AND ahap_123.APPLYINST_STATE = '0'
             AND APPLYINST_SOURCE = 'net'
             <include refid="baseConditionalQuery">
@@ -1843,7 +1843,7 @@
         LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = app.PROCINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
-            AND ahap_123.IS_DELETED != '1'
+            AND ahap_123.IS_DELETED != '1' and ahap_123.IS_TEMPORARY_SUBMIT='0'
             AND (ahap_123.APPLYINST_STATE = '0' or ahap_123.APPLYINST_STATE = '4')
             AND APPLYINST_SOURCE = 'net'
             AND t.ASSIGNEE_ = #{loginName}
@@ -1882,7 +1882,7 @@
         LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = apps.SUBFLOW_PROCINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
-            AND ahap_123.IS_DELETED != '1'
+            AND ahap_123.IS_DELETED != '1' and ahap_123.IS_TEMPORARY_SUBMIT='0'
             AND (ahap_123.APPLYINST_STATE = '0' or ahap_123.APPLYINST_STATE = '4')
             AND APPLYINST_SOURCE = 'net'
             AND t.ASSIGNEE_ = #{loginName}
@@ -1917,7 +1917,7 @@
         LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = app.PROCINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '1'
-            AND ahap_123.IS_DELETED != '1'
+            AND ahap_123.IS_DELETED != '1' and ahap_123.IS_TEMPORARY_SUBMIT='0'
             AND (ahap_123.APPLYINST_STATE = '0' or ahap_123.APPLYINST_STATE = '4')
             AND APPLYINST_SOURCE = 'net'
             AND t.ASSIGNEE_ = #{loginName}
@@ -1950,7 +1950,7 @@
         LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = apps.SUBFLOW_PROCINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '1'
-            AND ahap_123.IS_DELETED != '1'
+            AND ahap_123.IS_DELETED != '1' and ahap_123.IS_TEMPORARY_SUBMIT='0'
             AND (ahap_123.APPLYINST_STATE = '0' or ahap_123.APPLYINST_STATE = '4')
             AND APPLYINST_SOURCE = 'net'
             AND t.ASSIGNEE_ = #{loginName}
@@ -2015,7 +2015,7 @@
             LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
             LEFT JOIN act_hi_taskinst t ON t.PROC_INST_ID_ = app.PROCINST_ID
             <where>
-                ahap_123.IS_SERIES_APPROVE = '0'
+                ahap_123.IS_SERIES_APPROVE = '0' and ahap_123.IS_TEMPORARY_SUBMIT='0'
                 AND ahap_123.APPLYINST_STATE != '0'
                 AND ahap_123.APPLYINST_STATE != '4'
                 AND APPLYINST_SOURCE = 'net'
@@ -2060,7 +2060,7 @@
             LEFT JOIN act_sto_appinst_subflow apps ON apps.APPINST_ID = app.APPINST_ID
             LEFT JOIN act_hi_taskinst t ON t.PROC_INST_ID_ = apps.SUBFLOW_PROCINST_ID
             <where>
-                ahap_123.IS_SERIES_APPROVE = '0'
+                ahap_123.IS_SERIES_APPROVE = '0' and ahap_123.IS_TEMPORARY_SUBMIT='0'
                 AND ahap_123.APPLYINST_STATE != '0'
                 AND ahap_123.APPLYINST_STATE != '4'
                 AND APPLYINST_SOURCE = 'net'
@@ -2099,7 +2099,7 @@
             LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
             LEFT JOIN act_hi_taskinst t ON t.PROC_INST_ID_ = app.PROCINST_ID
             <where>
-                ahap_123.IS_SERIES_APPROVE = '1'
+                ahap_123.IS_SERIES_APPROVE = '1' and ahap_123.IS_TEMPORARY_SUBMIT='0'
                 AND ahap_123.APPLYINST_STATE != '0'
                 AND ahap_123.APPLYINST_STATE != '4'
                 AND APPLYINST_SOURCE = 'net'
@@ -2137,7 +2137,7 @@
             LEFT JOIN act_sto_appinst_subflow apps ON apps.APPINST_ID = app.APPINST_ID
             LEFT JOIN act_hi_taskinst t ON t.PROC_INST_ID_ = apps.SUBFLOW_PROCINST_ID
             <where>
-                ahap_123.IS_SERIES_APPROVE = '1'
+                ahap_123.IS_SERIES_APPROVE = '1' and ahap_123.IS_TEMPORARY_SUBMIT='0'
                 AND ahap_123.APPLYINST_STATE != '0'
                 AND ahap_123.APPLYINST_STATE != '4'
                 AND APPLYINST_SOURCE = 'net'
@@ -2208,7 +2208,7 @@
         LEFT JOIN aea_par_theme_ver ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
         LEFT JOIN aea_par_theme theme ON theme.THEME_ID = ver.THEME_ID
         <where>
-            ahap_123.IS_SERIES_APPROVE = '0'
+            ahap_123.IS_SERIES_APPROVE = '0' and ahap_123.IS_TEMPORARY_SUBMIT='0'
             AND ahap_123.APPLYINST_STATE = '5'
             <if test="theme != null and theme != '' ">
                 AND theme.THEME_ID = #{theme}
@@ -2249,7 +2249,7 @@
         LEFT JOIN aea_hi_iteminst ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
 
         <where>
-            ahap_123.IS_SERIES_APPROVE = '1'
+            ahap_123.IS_SERIES_APPROVE = '1' and ahap_123.IS_TEMPORARY_SUBMIT='0'
             AND ahap_123.APPLYINST_STATE = '5'
             <include refid="baseConditionalQuery">
             </include>
@@ -2317,7 +2317,7 @@
         ahic_123.ITEMINST_ID = ahi_123.ITEMINST_ID AND ahic_123.CORRECT_STATE = '6'
         LEFT JOIN opu_om_user oou ON ahic_123.CREATER = oou.USER_ID
         <where>
-            ahi_123.IS_SERIES_APPROVE = '0'
+            ahi_123.IS_SERIES_APPROVE = '0' and ahap_123.IS_TEMPORARY_SUBMIT='0'
             AND ahi_123.ITEMINST_STATE = '6'
             <if test="theme != null and theme != '' ">
                 AND theme.THEME_ID = #{theme}
@@ -2388,7 +2388,7 @@
         ahic_123.ITEMINST_ID = ahi_123.ITEMINST_ID AND ahic_123.CORRECT_STATE = '6'
         LEFT JOIN opu_om_user oou ON ahic_123.CREATER = oou.USER_ID
         <where>
-            ahi_123.IS_SERIES_APPROVE = '1'
+            ahi_123.IS_SERIES_APPROVE = '1' and ahap_123.IS_TEMPORARY_SUBMIT='0'
             AND ahi_123.ITEMINST_STATE = '6'
             <include refid="baseConditionalQuery">
             </include>
@@ -2745,7 +2745,7 @@
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
         <where>
-            ahap_123.IS_SERIES_APPROVE = '0'
+            ahap_123.IS_SERIES_APPROVE = '0' and ahap_123.IS_TEMPORARY_SUBMIT='0'
             AND ahap_123.APPLYINST_STATE IN ('6')
             AND (ahap_123.is_sms_send ='0' or ahap_123.IS_SMS_SEND is null )
             <if test="applyType != null and applyType != '' ">
@@ -2779,7 +2779,7 @@
         LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
 
         <where>
-            ahap_123.IS_SERIES_APPROVE = '1'
+            ahap_123.IS_SERIES_APPROVE = '1' and ahap_123.IS_TEMPORARY_SUBMIT='0'
             AND ahap_123.APPLYINST_STATE IN ('6')
 
             AND (ahap_123.is_sms_send ='0' or ahap_123.IS_SMS_SEND is null )
@@ -2869,7 +2869,7 @@
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
         <where>
-            ahap_123.IS_SERIES_APPROVE = '0'
+            ahap_123.IS_SERIES_APPROVE = '0' and ahap_123.IS_TEMPORARY_SUBMIT='0'
             AND ahap_123.APPLYINST_STATE IN ('6')
             AND ahap_123.is_sms_send ='1'
             <if test="applyType != null and applyType != '' ">
@@ -2902,7 +2902,7 @@
         LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
 
         <where>
-            ahap_123.IS_SERIES_APPROVE = '1'
+            ahap_123.IS_SERIES_APPROVE = '1' and ahap_123.IS_TEMPORARY_SUBMIT='0'
             AND ahap_123.APPLYINST_STATE IN ('6')
             AND ahap_123.is_sms_send ='1'
             <if test="applyType != null and applyType != '' ">
