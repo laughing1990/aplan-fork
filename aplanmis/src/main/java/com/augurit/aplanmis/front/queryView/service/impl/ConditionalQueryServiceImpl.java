@@ -1,8 +1,25 @@
 package com.augurit.aplanmis.front.queryView.service.impl;
 
-import com.augurit.agcloud.bpm.common.domain.*;
+import com.augurit.agcloud.bpm.common.domain.ActStoAppinst;
+import com.augurit.agcloud.bpm.common.domain.ActStoAppinstSubflow;
+import com.augurit.agcloud.bpm.common.domain.ActStoRemindAndReceiver;
+import com.augurit.agcloud.bpm.common.domain.ActStoRemindReceiver;
+import com.augurit.agcloud.bpm.common.domain.ActStoTimegroup;
+import com.augurit.agcloud.bpm.common.domain.ActStoTimegroupAct;
+import com.augurit.agcloud.bpm.common.domain.ActStoTimerule;
+import com.augurit.agcloud.bpm.common.domain.ActStoTimeruleInst;
+import com.augurit.agcloud.bpm.common.domain.ActTplAppTrigger;
+import com.augurit.agcloud.bpm.common.domain.BpmDestTaskConfig;
+import com.augurit.agcloud.bpm.common.domain.BpmTaskSendConfig;
+import com.augurit.agcloud.bpm.common.domain.BpmTaskSendObject;
 import com.augurit.agcloud.bpm.common.engine.BpmTaskService;
-import com.augurit.agcloud.bpm.common.mapper.*;
+import com.augurit.agcloud.bpm.common.mapper.ActStoAppinstMapper;
+import com.augurit.agcloud.bpm.common.mapper.ActStoAppinstSubflowMapper;
+import com.augurit.agcloud.bpm.common.mapper.ActStoRemindReceiverMapper;
+import com.augurit.agcloud.bpm.common.mapper.ActStoTimegroupActMapper;
+import com.augurit.agcloud.bpm.common.mapper.ActStoTimegroupMapper;
+import com.augurit.agcloud.bpm.common.mapper.ActStoTimeruleInstMapper;
+import com.augurit.agcloud.bpm.common.mapper.ActTplAppTriggerMapper;
 import com.augurit.agcloud.bpm.common.service.ActStoAppinstSubflowService;
 import com.augurit.agcloud.bpm.common.service.ActStoTimeruleService;
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
@@ -17,16 +34,41 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.domain.OpuOmUser;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
-import com.augurit.aplanmis.common.constants.*;
-import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.constants.ActiveStatus;
+import com.augurit.aplanmis.common.constants.ApplySource;
+import com.augurit.aplanmis.common.constants.ApplyState;
+import com.augurit.aplanmis.common.constants.ApplyType;
+import com.augurit.aplanmis.common.constants.DeletedStatus;
+import com.augurit.aplanmis.common.constants.DicConstants;
+import com.augurit.aplanmis.common.constants.ItemStatus;
+import com.augurit.aplanmis.common.constants.IteminstType;
+import com.augurit.aplanmis.common.constants.TimeruleInstState;
+import com.augurit.aplanmis.common.constants.TimeruleUnit;
+import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
+import com.augurit.aplanmis.common.domain.AeaHiIteminst;
+import com.augurit.aplanmis.common.domain.AeaItemBasic;
+import com.augurit.aplanmis.common.domain.AeaParStage;
+import com.augurit.aplanmis.common.domain.AeaParTheme;
+import com.augurit.aplanmis.common.domain.AeaParThemeVer;
+import com.augurit.aplanmis.common.domain.AeaServiceWindowUser;
 import com.augurit.aplanmis.common.event.AplanmisEventPublisher;
 import com.augurit.aplanmis.common.event.vo.ApplyEventVo;
 import com.augurit.aplanmis.common.event.vo.IteminstEventVo;
 import com.augurit.aplanmis.common.handler.BaseEnum;
-import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.mapper.AeaHiApplyinstMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiIteminstMapper;
+import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
+import com.augurit.aplanmis.common.mapper.AeaParThemeMapper;
+import com.augurit.aplanmis.common.mapper.AeaParThemeVerMapper;
+import com.augurit.aplanmis.common.mapper.AeaServiceWindowUserMapper;
+import com.augurit.aplanmis.common.mapper.ConditionalQueryMapper;
 import com.augurit.aplanmis.common.shortMessage.AplanmisSmsConfigProperties;
 import com.augurit.aplanmis.common.utils.ExcelUtils;
-import com.augurit.aplanmis.common.vo.conditional.*;
+import com.augurit.aplanmis.common.vo.conditional.ApplyInfo;
+import com.augurit.aplanmis.common.vo.conditional.BaseInfo;
+import com.augurit.aplanmis.common.vo.conditional.ConditionalQueryRequest;
+import com.augurit.aplanmis.common.vo.conditional.PartsInfo;
+import com.augurit.aplanmis.common.vo.conditional.TaskInfo;
 import com.augurit.aplanmis.front.queryView.service.ConditionalQueryService;
 import com.augurit.aplanmis.front.queryView.vo.ConditionalQueryDic;
 import com.github.pagehelper.Page;
@@ -41,7 +83,16 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -1428,7 +1479,10 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
     public PageInfo listMyDrafts(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception {
 
         String loginName = SecurityContext.getOpusLoginUser().getUser().getLoginName();
-        conditionalQueryRequest.setLoginName(loginName);
+        // 如果设置当前窗口，则查询我的草稿箱， 否则查窗口草稿箱
+        if (StringUtils.isBlank(conditionalQueryRequest.getWindowId())) {
+            conditionalQueryRequest.setLoginName(loginName);
+        }
 
         changeOrderBySql(page);
 

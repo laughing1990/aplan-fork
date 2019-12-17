@@ -4322,7 +4322,8 @@
         NULL as itemVerId,
         '已接件' AS applyState,
         ahap_123.CREATE_TIME AS applyTime,
-        ahap_123.APPLYINST_SOURCE applySource
+        ahap_123.APPLYINST_SOURCE applySource,
+        ahap_123.CREATER creater
         FROM
         aea_hi_applyinst ahap_123
         <include refid="leftJoinApplyinstProj">
@@ -4339,11 +4340,26 @@
             AND ahap_123.IS_DELETED = '0'
             AND ahap_123.APPLYINST_STATE = '1'
             AND ahap_123.IS_SERIES_APPROVE = '0'
-            AND ahap_123.CREATER = #{loginName}
             AND ahap_123.IS_TEMPORARY_SUBMIT = '1'
             <if test="theme != null and theme != '' ">
                 AND theme.THEME_ID = #{theme}
             </if>
+            <choose>
+                <when test="loginName != null and loginName != ''">
+                    AND ahap_123.CREATER = #{loginName}
+                </when>
+                <when test="windowId != null and windowId != ''">
+                    and exists (
+                    select 1 from aea_service_window_user aswu
+                    join opu_om_user oou on oou.user_id=aswu.user_id
+                    where oou.login_name = ahap_123.CREATER
+                    and aswu.window_id= #{windowId}
+                    )
+                </when>
+                <otherwise>
+                    AND ahap_123.CREATER is null
+                </otherwise>
+            </choose>
             <include refid="baseConditionalQuery">
             </include>
         </where>
@@ -4362,8 +4378,8 @@
         iteminst.item_ver_id as itemVerId,
         '已接件' AS applyState,
         ahap_123.CREATE_TIME AS applyTime,
-        ahap_123.APPLYINST_SOURCE applySource
-
+        ahap_123.APPLYINST_SOURCE applySource,
+        ahap_123.CREATER creater
         FROM
         aea_hi_applyinst ahap_123
         <include refid="leftJoinApplyinstProj">
@@ -4378,7 +4394,22 @@
             AND ahap_123.IS_DELETED = '0'
             AND ahap_123.APPLYINST_STATE = '1'
             AND ahap_123.IS_SERIES_APPROVE = '1'
-            AND ahap_123.CREATER = #{loginName}
+            <choose>
+                <when test="loginName != null and loginName != ''">
+                    AND ahap_123.CREATER = #{loginName}
+                </when>
+                <when test="windowId != null and windowId != ''">
+                    and exists (
+                    select 1 from aea_service_window_user aswu
+                    join opu_om_user oou on oou.user_id=aswu.user_id
+                    where oou.login_name = ahap_123.CREATER
+                    and aswu.window_id= #{windowId}
+                    )
+                </when>
+                <otherwise>
+                    AND ahap_123.CREATER is null
+                </otherwise>
+            </choose>
             AND ahap_123.IS_TEMPORARY_SUBMIT = '1'
             <include refid="baseConditionalQuery">
             </include>
