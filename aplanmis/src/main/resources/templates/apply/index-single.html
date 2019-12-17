@@ -1260,8 +1260,8 @@
       <el-button type="danger" circle @click="showCommentDialog('3')">不予<br/>受理</el-button>
       <el-button circle @click="showCommentDialog('5')">材料<br/>补全</el-button>
       <el-button circle @click="showCommentDialog('1')">打印<br/>回执</el-button>
+      <el-button circle @click="tempSave()" v-show="showTempSaveBtn">暂存</el-button>
       <el-button type="primary" circle @click="showCommentDialog('0')">发起<br/>申报</el-button>
-      <el-button type="primary" circle @click="tempSave()" v-show="showTempSaveBtn">暂时<br/>保存</el-button>
       <!--<el-button type="primary" circle @click="queryReceiveList('1')">回执<br/>列表</el-button>-->
     </div>
     <!--项目树窗口 start-->
