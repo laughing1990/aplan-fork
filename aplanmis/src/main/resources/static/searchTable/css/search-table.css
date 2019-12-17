@@ -454,12 +454,12 @@ body .el-table th.gutter{
 }
 .is-catalog {
   display: inline-block;
-  height: 20px;
-  width: 40px;
-  line-height: 20px;
+  height: 18px;
+  width: 18px;
+  line-height: 18px;
   text-align: center;
   background: #86C937;
-  border-radius: 4px;
+  border-radius: 18px;
   color: #fff;
   padding: 0 0;
 }

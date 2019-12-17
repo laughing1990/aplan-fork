@@ -412,6 +412,7 @@ var module1 = new Vue({
       itemStateListHistory: [], // 事项暂存情形
       propulsionItemApplyinstIdVos: [], // 并行事项实例
       showFillForm: false,
+      dygjbzfxfw: null,
     }
   },
   mounted: function () {
@@ -428,7 +429,24 @@ var module1 = new Vue({
     this.getDicContent(); // 数据字典
     this.getGbhy();
     userCenter.vm.myProLeftShow = false;
-    userCenter.vm.selectNav2 = '并联申报';
+    this.dygjbzfxfw = getUrlParam('fuxianCode');
+    var text = '并联申报';
+    if (this.dygjbzfxfw){
+      userCenter.vm.showSelectNav = false;
+      text = '辅线申报';
+      if (this.dygjbzfxfw == '51') {
+        text = '多评合一';
+      } else if (this.dygjbzfxfw == '52') {
+        text = '方案联审';
+      } else if (this.dygjbzfxfw == '53') {
+        text = '联合审图';
+      } else if (this.dygjbzfxfw == '54C') {
+        text = '联合测绘';
+      } else if (this.dygjbzfxfw == '54Y') {
+        text = '联合验收';
+      }
+    }
+    userCenter.vm.selectNav2 = text;
   },
   methods: {
     // 查看项目详情
@@ -1859,9 +1877,8 @@ var module1 = new Vue({
         projInfoId: _that.projInfoId,
         unitInfoId: _unitInfoId,
       };
-      var type = getUrlParam('fuxianCode');
-      if (type) {
-        params.dygjbzfxfw = type;
+      if (this.dygjbzfxfw) {
+        params.dygjbzfxfw = this.dygjbzfxfw;
       }
       request('', {
         url: ctx + 'rest/main/stage/list/' + _that.themeId,
@@ -4421,9 +4438,8 @@ var module1 = new Vue({
     querySelecTheme: function (themeType) {
       var _that = this;
       var params = {};
-      var type = getUrlParam('fuxianCode');
-      if (type) {
-        params.dygjbzfxfw = type;
+      if (this.dygjbzfxfw) {
+        params.dygjbzfxfw = this.dygjbzfxfw;
       }
       request('', {
         url: ctx + 'rest/user/getThemes',
@@ -4433,7 +4449,6 @@ var module1 = new Vue({
       }, function (result) {
         if (result.success) {
           _that.themeList = result.content;
-          console.log(_that.projInfoDetail);
           var flag = false;
           result.content.forEach(function(u) {
             if (u.themeId == _that.projInfoDetail.themeId){

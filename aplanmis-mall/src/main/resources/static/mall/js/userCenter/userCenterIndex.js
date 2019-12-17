@@ -171,13 +171,14 @@ var userCenter = (function () {
                 supplyNum:0,
                 withdrawalNum:0,
                 myProLeftShow: true,
-               clientRightH:980 + "px",
+               clientRightH:1580 + "px",
                 observer: null,
                 firedNum: 0,
                 recordOldValue: { // 记录下旧的宽高数据，避免重复触发回调函数
                     width: '0',
                     height: '0'
-                }
+                },
+              showSelectNav: true,
             }
         },
         computed: {
@@ -240,7 +241,7 @@ var userCenter = (function () {
             },
             toUserCenterPage: function () {
                 var mod = {
-                    name: '个人中心',
+                    name: '企业中心',
                     value: 'UserInfo',
                     select: true,
                 }
@@ -324,8 +325,8 @@ var userCenter = (function () {
                 setTimeout(function () {
                     var _h = $('#my-pro-right_m').height();
                     console.log(_h)
-                    if(_h < 900){
-                        _h = 1066
+                    if(_h < 1400){
+                        _h = $('.userCenterMenList').height()+250;
                     }
                     _this.clientRightH = _h +"px";
                 },1000)
