@@ -154,6 +154,16 @@ var vm = new Vue({
             this.msgDetail.sendUserName = remindInfo.sendUserName;
             this.msgDetail.sendDate = this.formatDatetimeCommon(remindInfo.sendDate,'yyyy-MM-dd hh:mm');
             this.isShowMsgDetail = true;
+        },
+        getFirstColumnWidth:function () {
+            if(this.tableData){
+                for(var i=0;i<this.tableData.length;i++){
+                    if(this.tableData[i].isGreenWay=='1'){
+                        return '90';
+                    }
+                }
+            }
+            return '65';
         }
 
     },

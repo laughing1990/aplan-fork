@@ -190,8 +190,7 @@
             @sort-change='sortChange'>
     <el-table-column
         label=""
-        width="85"
-        align="center">
+        :width="getFirstColumnWidth()">
       <template slot-scope="scope">
         <el-popover
             v-if="scope.row.remindList && scope.row.remindList.length>0"
@@ -218,7 +217,7 @@
         </el-tooltip>
 
         <el-tooltip effect="light" placement="top">
-          <div slot="content">绿色通道事项</div>
+          <div slot="content">绿色通道</div>
           <span class="is-catalog is-green" v-show="scope.row.isGreenWay=='1'">绿</span>
           <!--<span class="is-catalog is-green">绿道</span>-->
         </el-tooltip>
