@@ -49,6 +49,7 @@ public class OneFormCommonService {
      * */
     public List<FormFrofileVo> getListForm4StageOneForm(OneFormStageRequest oneFormStageRequest) throws Exception {
 
+        LinkedHashSet linkedHashSet=new LinkedHashSet<FormFrofileVo>();
         List<FormFrofileVo> result = new ArrayList<>();
         String projInfoId = oneFormStageRequest.getProjInfoId();
 
@@ -62,7 +63,8 @@ public class OneFormCommonService {
                 if (parStagePartform != null) {
                     FormFrofileVo formFrofileVo = getFormFrofileVo(parStagePartform.getStoFormId(), oneFormStageRequest.getApplyinstId(), projInfoId);
                     if (formFrofileVo != null) {
-                        result.add(formFrofileVo);
+//                        result.add(formFrofileVo);
+                        linkedHashSet.add(formFrofileVo);
                     }
                 }
             }
@@ -76,11 +78,18 @@ public class OneFormCommonService {
                 if (stageItemFormVo != null) {
                     FormFrofileVo formFrofileVo = getFormFrofileVo(stageItemFormVo.getSubFormId(), oneFormStageRequest.getApplyinstId(), projInfoId);
                     if (formFrofileVo != null) {
-                        result.add(formFrofileVo);
+//                        result.add(formFrofileVo);
+                        linkedHashSet.add(formFrofileVo);
                     }
                 }
             }
         }
+        Iterator iterator = linkedHashSet.iterator();
+        while(iterator.hasNext()){
+            Object abc = iterator.next();
+            result.add((FormFrofileVo)abc);
+        }
+
 
         return result;
     }
