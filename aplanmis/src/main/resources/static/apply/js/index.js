@@ -5903,7 +5903,7 @@ var vm = new Vue({
       vm.$nextTick(function(){
         vm.allFormInfoList.forEach(function(u, index){
           if (u.smartForm){
-            $('#smartFormBox_' + index).html(u.html);
+            $('#formHtml_' + index).html(u.html);
           }
         });
       });
@@ -5955,7 +5955,8 @@ var vm = new Vue({
         type: 'get',
       }, function (result) {
         if (result.success) {
-          $('#formHtml_'+index).html(result.content)
+          vm.allFormInfoList[index].html = res.content;
+          // $('#formHtml_'+index).html(result.content)
         }else {
           _that.$message({
             message: result.content?result.content:'获取智能表单失败！',
