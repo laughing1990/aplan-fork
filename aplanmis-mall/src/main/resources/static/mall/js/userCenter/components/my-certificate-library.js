@@ -44,19 +44,19 @@ var myCertificateLibs = (function () {
             chooseCertHolder:[
                 {
                     value: 'c',
-                    label: '企业证照库'
+                    label: '企业证照'
                 }, {
                     value: 'u',
-                    label: '法人证照库'
+                    label: '法人证照'
                 },
             ],
             chooseCertType:[
                 {
                     value: 'c',
-                    label: '企业证照库'
+                    label: '企业证照'
                 }, {
                     value: 'p',
-                    label: '法人证照库'
+                    label: '法人证照'
                 },
             ],
             chooseCert:[],
