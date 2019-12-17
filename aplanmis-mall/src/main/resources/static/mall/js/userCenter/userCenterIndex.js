@@ -27,28 +27,66 @@ var userCenter = (function () {
                         name: '我的首页',
                         value: 'MyHomeIndex',
                         open: true,
+                      icon:'icon-1'
                     },
-                    {
+                  {
                     name: '项目管理',
                     open: true,
+                    icon:'icon-2',
                     childList: [{
-                        name: '我的项目',
-                        value: 'declare',
-                        select: true,
+                      name: '我的项目',
+                      value: 'declare',
+                      select: true,
                     }, {
-                        name: '新增项目',
-                        value: 'AddProj',
-                        select: false,
-                    },
-                        {
-                            name: '项目进度',
-                            value: 'scheduleInquire',
-                            select: false,
-                        },
-                    ]
-                }, {
+                      name: '新增项目',
+                      value: 'AddProj',
+                      select: false,
+                    }, {
+                      name: '项目进度',
+                      value: 'scheduleInquire',
+                      select: false,
+                    }]
+                  },
+                    {
+                    name: '服务协同',
+                    open: true,
+                      icon:'icon-3',
+                    childList: [{
+                      name: '多评合一',
+                      value: 'fuxian1',
+                      type: 'fuxian',
+                      select: false,
+                      typeCode: '51',
+                    }, {
+                      name: '方案联审',
+                      value: 'fuxian2',
+                      type: 'fuxian',
+                      select: false,
+                      typeCode: '52',
+                    }, {
+                      name: '联合审图',
+                      value: 'fuxian3',
+                      type: 'fuxian',
+                      select: false,
+                      typeCode: '53',
+                    }, {
+                      name: '联合测绘',
+                      value: 'fuxian4',
+                      type: 'fuxian',
+                      select: false,
+                      typeCode: '54C',
+                    }, {
+                      name: '联合验收',
+                      value: 'fuxian5',
+                      type: 'fuxian',
+                      select: false,
+                      typeCode: '54Y',
+                    }]
+                },
+                  {
                     name: '申报管理',
                     open: true,
+                    icon:'icon-5',
                     childList: [
                         {
                             name: '申报列表',
@@ -76,6 +114,7 @@ var userCenter = (function () {
                     {
                         name: '办件管理',
                         open: true,
+                      icon:'icon-4',
                         childList: [
                             {
                                 name: '办件列表',
@@ -92,6 +131,7 @@ var userCenter = (function () {
                     {
                         name: '我的资料库',
                         open: true,
+                      icon:'icon-5',
                         childList: [
                             {
                                 name: '我的云盘',
@@ -113,6 +153,7 @@ var userCenter = (function () {
                     {
                         name: '我的信用',
                         open: true,
+                      icon:'icon-6',
                         value: 'CreditDetail',
                     },
 
@@ -167,13 +208,15 @@ var userCenter = (function () {
                 } else if(index === 1){
                     return "icon-2"
                 }else if(index === 2){
-                    return "icon-3"
+                  return "icon-3"
                 }else if(index === 3){
-                    return "icon-4"
+                  return "icon-5"
                 }else if(index === 4){
-                    return "icon-5"
+                    return "icon-4"
                 }else if(index === 5){
-                    return "icon-6"
+                    return "icon-5"
+                }else if(index === 6){
+                  return "icon-6"
                 }
             },
             // 消息数量
@@ -209,6 +252,10 @@ var userCenter = (function () {
                 // 当前选中菜单项赋值
                 ts.userCenterItemSelect = mod.value;
                 ts.selectNav = mod.name;
+                if (mod.type == 'fuxian') {
+                  window.location.href = ctx +"rest/main/toIndexPage?projInfoId=null&fuxianCode="+mod.typeCode+"#declare";
+                  return null;
+                }
                 // 如果选中的是 我的云盘则进行页面跳转
                 if(mod.value == "MyCloundSpaces"){
                     window.location.href = ctx + '/rest/main/toIndexPage?#/myCloundSpaces';

@@ -1,7 +1,6 @@
 package com.augurit.aplanmis.common.mapper;
 
 import com.augurit.aplanmis.common.domain.AeaImUnitService;
-import com.augurit.aplanmis.common.domain.AgentUnitService;
 import com.augurit.aplanmis.common.vo.ServiceMatterVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -27,16 +26,12 @@ public interface AeaImUnitServiceMapper {
     /**
      * 查询单位下中介服务列表
      */
-    List<AgentUnitService> listAgentUnitService(@Param("unitInfoId") String unitInfoId) throws Exception;
-//
+    List<AeaImUnitService> listAgentUnitService(@Param("unitInfoId") String unitInfoId) throws Exception;
 
+    AeaImUnitService getUnitServiceByUnitInfoIdAndServiceItemId(@Param("unitInfoId") String unitInfoId, @Param("serviceItemId") String serviceItemId) throws Exception;
 
+    List<AeaImUnitService> listUnitServiceByServiceItemId(@Param("serviceItemId") String serviceItemId) throws Exception;
 
-    AeaImUnitService getUnitServiceByUnitInfoIdAndServiceItemId(@Param("unitInfoId") String unitInfoId, @Param("serviceItemId") String serviceItemId)throws Exception;
-
-    List<AeaImUnitService> listUnitServiceByServiceItemId(@Param("serviceItemId") String serviceItemId)throws Exception;
-
-//
     List<ServiceMatterVo> listAeaImUnitServiceVo(ServiceMatterVo serviceMatterVo) throws Exception;
 
     AeaImUnitService getAeaImUnitServiceDetail(String unitServiceId) throws Exception;
@@ -47,4 +42,12 @@ public interface AeaImUnitServiceMapper {
 
 
     ServiceMatterVo getServiceMatterVoByUnitserviceId(@Param("unitServiceId") String unitServiceId);
+
+    /**
+     * 删除||启用中介机构下所有的发布的服务
+     *
+     * @param unitInfoId 单位ID
+     */
+    void deleteOrEnableAllUnitServiceByUnitInfoId(@Param("unitInfoId") String unitInfoId, @Param("modifier") String modifier, @Param("idDeteted") String idDeteted) throws Exception;
+
 }

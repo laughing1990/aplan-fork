@@ -614,9 +614,9 @@
             COMMENT '申报状态：0已接件未审核（适用于网厅）、1 已接件并审核、2窗口受理、3待补全、4补全待确认、5不予受理、6已办结' AFTER `APPLYINST_MEMO`;
         </sql>
     </changeSet>
-    <changeSet id="20191123-001" author="xiaohutu">
+    <changeSet id="20191217-001" author="xiaohutu">
         <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
-            ALTER TABLE `aplanmis_prd`.`aea_im_service_result`
+            ALTER TABLE `aea_im_service_result`
             MODIFY COLUMN `UPLOAD_TIME` datetime(0) NULL DEFAULT NULL COMMENT '上传时间' AFTER `SERVICE_RESULT_ID`,
             MODIFY COLUMN `END_TIME` datetime(0) NULL DEFAULT NULL COMMENT '结束时间' AFTER `UPLOAD_TIME`,
             MODIFY COLUMN `CREATE_TIME` datetime(0) NOT NULL AFTER `CREATER`,

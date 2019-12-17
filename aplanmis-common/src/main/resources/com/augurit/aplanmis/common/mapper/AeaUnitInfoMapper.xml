@@ -452,10 +452,10 @@
         where UNIT_INFO_ID = #{unitInfoId}
     </update>
     <!--7 删除实体对象,根据主键ID -->
-    <update id="deleteAeaUnitInfo">
+    <update id="deleteOrEnableAeaUnitInfo">
         update AEA_UNIT_INFO
         <set>
-            IS_DELETED = '1'
+            IS_DELETED = #{isDeleted},MODIFY_TIME=NOW(),MODIFIER=#{modifier}
         </set>
         where UNIT_INFO_ID = #{id}
     </update>
@@ -718,5 +718,12 @@
         <if test="rootOrgId!=null and rootOrgId!=''">
             AND ROOT_ORG_ID = #{rootOrgId}
         </if>
+        order by aui.create_time desc
+    </select>
+    <!--根据单位ID查询单位信息，包括已删除的信息-->
+    <select id="getAeaUnitIncludeDeleteById" resultType="com.augurit.aplanmis.common.domain.AeaUnitInfo">
+        select
+        <include refid="allColumns"/>
+        from AEA_UNIT_INFO where UNIT_INFO_ID = #{unitInfoId}
     </select>
 </mapper>

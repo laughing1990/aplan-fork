@@ -35,4 +35,11 @@ public interface AeaImClientServiceMapper {
     void deleteAeaImClientServiceByUnitLinkmanId(@Param("unitLinkmanId") String unitLinkmanId) throws Exception;
 
     List<AeaLinkmanInfo> listClientServiceLinkmanInfo(@Param("serviceId") String serviceId, @Param("unitInfoId") String unitInfoId) throws Exception;
+
+    /**
+     * 删除||启用单位所有服务下的所有委托人信息
+     *
+     * @param unitServiceIds
+     */
+    void deleteOrEnableAllUnitClientService(@Param("unitServiceIds") String[] unitServiceIds, @Param("isDeleted") String isDeleted) throws Exception;
 }

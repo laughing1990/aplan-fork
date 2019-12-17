@@ -197,9 +197,12 @@ SERVICE_LINKMAN_ID  ,SERVICE_ID  ,LINKMAN_INFO_ID  ,UNIT_INFO_ID  ,IS_DELETE  ,C
     </update>
     <!--7 删除实体对象,根据主键ID -->
     <delete id="deleteAeaImServiceLinkman">
-        delete from   AEA_IM_SERVICE_LINKMAN
-        where
-    SERVICE_LINKMAN_ID = #{id}
+        delete from   AEA_IM_SERVICE_LINKMAN where SERVICE_LINKMAN_ID = #{id}
+    </delete>
+
+    <!--删除||启用单位服务的所有执业人员-->
+    <delete id="deleteOrEnableAllServiceLinkman">
+        update AEA_IM_SERVICE_LINKMAN set IS_DELETE=#{isDeleted} where UNIT_INFO_ID=#{unitInfoId}
     </delete>
     <!--8 删除实体对象列表,根据主键ID列表 -->
     <!--9 返回所有字段的对象map,用于级联 -->

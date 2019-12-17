@@ -39,7 +39,7 @@
                     <div class="userCenterMenList">
                         <ul class="user-pro-list">
                             <li class="user-pro-item pro-appraval " v-for="(item ,index) in userCenterMenuList">
-                                 <div  :class="[item.value == userCenterItemSelect ? 'active': '']" style="cursor: pointer;" @click="handleOpenMenu(item,item.childList,index)"><span class="pro-title pro-icon" :class="hangleIcon(index)">{{item.name}}</span><i v-show="item.childList && item.childList.length>0" :class="[item.open ? '':'close']" class="el-icon-arrow-down" style="margin-left: 80px;"></i></div>
+                                 <div  :class="[item.value == userCenterItemSelect ? 'active': '']" style="cursor: pointer;" @click="handleOpenMenu(item,item.childList,index)"><span class="pro-title pro-icon" :class="[item.icon]">{{item.name}}</span><i v-show="item.childList && item.childList.length>0" :class="[item.open ? '':'close']" class="el-icon-arrow-down" style="margin-left: 80px;"></i></div>
                                 <el-collapse-transition>
                                     <ul v-show="item.open">
                                         <li  :class="[itemSub.value == userCenterItemSelect ? 'active': '']"  v-for="(itemSub,indexSub) in item.childList" @click="userCenterMenuSelect(itemSub)">

@@ -147,7 +147,7 @@ public interface AeaItemBasicService {
      * @param itemList
      * @param regionalism 区划ID
      */
-    void conversionBasicItemToSssx(List<AeaItemBasic> itemList, String regionalism, String projectAddress, String rootOrgId);
+    void conversionBasicItemToSssx(List<AeaItemBasic> itemList, String regionalism, String projectAddress, String rootOrgId) throws Exception;
 
     /**
      * 根据实施事项查找标准事项

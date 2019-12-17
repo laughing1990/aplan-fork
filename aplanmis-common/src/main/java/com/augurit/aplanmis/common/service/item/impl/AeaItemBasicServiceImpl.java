@@ -15,6 +15,7 @@ import com.augurit.aplanmis.common.service.admin.item.AeaItemFrontItemAdminServi
 import com.augurit.aplanmis.common.service.diagram.constant.HandleStatus;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
+import com.augurit.aplanmis.common.service.state.AeaItemStateService;
 import com.augurit.aplanmis.common.utils.CommonTools;
 import com.augurit.aplanmis.common.vo.PreItemCheckResultVo;
 import com.github.pagehelper.PageHelper;
@@ -49,6 +50,9 @@ public class AeaItemBasicServiceImpl implements AeaItemBasicService {
 
     @Autowired
     private AeaHiIteminstMapper aeaHiIteminstMapper;
+
+    @Autowired
+    private AeaItemStateService aeaItemStateService;
 
     @Override
     public List<AeaItemBasic> getAeaItemBasicListByStageId(String stageId, String isOptionItem, String projInfoId, String rootOrgId) throws Exception {
@@ -196,7 +200,7 @@ public class AeaItemBasicServiceImpl implements AeaItemBasicService {
     }
 
     @Override
-    public void conversionBasicItemToSssx(List<AeaItemBasic> itemList, String regionalism, String projectAddress, String rootOrgId) {
+    public void conversionBasicItemToSssx(List<AeaItemBasic> itemList, String regionalism, String projectAddress, String rootOrgId) throws Exception {
 
         if(itemList.size()==0 || StringUtils.isBlank(regionalism) ||"null".equalsIgnoreCase(regionalism)) {
             return;
@@ -212,6 +216,11 @@ public class AeaItemBasicServiceImpl implements AeaItemBasicService {
                     }
                 }
                 List<AeaItemBasic> sssxList = this.getSssxByItemIdAndRegionalism(aeaItemBasic.getItemId(), regionalism, arrRegionIdList.size() == 0 ? null : CommonTools.ListToArr(arrRegionIdList), rootOrgId);
+                if(sssxList.size()>0){
+                    for (AeaItemBasic item:sssxList){
+                        item.setParaStateList(aeaItemStateService.listAeaItemStateByParentId(item.getItemVerId(),"","ROOT",SecurityContext.getCurrentOrgId()));
+                    }
+                }
                 aeaItemBasic.setCarryOutItems(sssxList);
                 AeaItemBasic sssx=sssxList.size()>0?sssxList.get(0):null;
                 if(sssx!=null){
@@ -221,6 +230,8 @@ public class AeaItemBasicServiceImpl implements AeaItemBasicService {
                     //BeanUtils.copyProperties(sssx,vo);
                     //vo.setIsCatalog(flag);
                 }
+            }else{
+                aeaItemBasic.setParaStateList(aeaItemStateService.listAeaItemStateByParentId(aeaItemBasic.getItemVerId(),"","ROOT",SecurityContext.getCurrentOrgId()));
             }
         }
     }

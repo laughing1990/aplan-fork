@@ -6,6 +6,7 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.dto.ApproveProjInfoDto;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
+import com.augurit.aplanmis.mall.userCenter.service.RestApplyCommonService;
 import com.augurit.aplanmis.mall.userCenter.service.RestApproveService;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -16,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -31,6 +33,8 @@ public class RestDraftController {
 
     @Autowired
     RestApproveService restApproveService;
+    @Autowired
+    private RestApplyCommonService restApplyCommonService;
 
     @GetMapping("todraftsPage")
     @ApiOperation(value = "跳转草稿箱页面")
@@ -57,6 +61,20 @@ public class RestDraftController {
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             return new ResultForm(false,"查询已申报项目列表查询接口异常");
+        }
+    }
+
+    @GetMapping("draftApply/delete/{applyinstId}")
+    @ApiOperation(value = "草稿箱 --> 删除接口")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "申请实例ID",name = "applyinstId",required = true,dataType = "string")})
+    public ResultForm getDraftApplyList(@PathVariable String applyinstId){
+        try {
+            restApplyCommonService.deleteApplyinstAllInstData(applyinstId);
+            return new ResultForm(true,"删除成功");
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ResultForm(false,"删除数据接口异常"+e.getMessage());
         }
     }
 }

@@ -571,7 +571,13 @@
 
     <!--删除委托关系-->
     <delete id="deleteUnitLinkmanInfo" parameterType="AeaUnitLinkman">
+
         delete from AEA_UNIT_LINKMAN where UNIT_INFO_ID=#{unitInfoId} AND LINKMAN_INFO_ID=#{linkmanInfoId}
+    </delete>
+
+    <delete id="updateAllUnitLinkman">
+        update aea_linkman_info ali set ali.IS_DELETED=#{isDeleted},ali.MODIFY_TIME=NOW(),ali.MODIFIER=#{modifier}
+        where EXISTS(select 1 from aea_unit_linkman aul where aul.LINKMAN_INFO_ID=ali.LINKMAN_INFO_ID and aul.UNIT_INFO_ID=#{unitInfoId})
     </delete>
 
     <!--查询单位外未绑定人员列表-->
