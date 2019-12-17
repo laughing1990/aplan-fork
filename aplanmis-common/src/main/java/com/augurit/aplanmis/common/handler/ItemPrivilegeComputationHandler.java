@@ -223,7 +223,7 @@ public final class ItemPrivilegeComputationHandler {
                     if (item.getCurrentCarryOutItem() != null && !privItemVerIds.contains(item.getCurrentCarryOutItem().getItemVerId())) {
                         item.setCurrentCarryOutItem(null);
                     }
-                    item.setCarryOutItems(item.getCarryOutItems().stream().filter(co -> privItemVerIds.contains(item.getItemVerId())).collect(Collectors.toList()));
+                    item.setCarryOutItems(item.getCarryOutItems().stream().filter(co -> privItemVerIds.contains(co.getItemVerId())).collect(Collectors.toList()));
                 }
             });
         }

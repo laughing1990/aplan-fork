@@ -277,7 +277,7 @@
                             </span>
                             <p class="fileSize fr">
                                 <span><i :id="'uploadedSize'+index"></i> / {{item.filesSize}}</span>
-                                <span class="el-icon-success" v-show="item.uploadedPer == 100 " style="color: #00C161;margin-right: 9px;"></span>
+                                <span class="el-icon-success" v-show="item.uploadSun" style="color: #00C161;margin-right: 9px;"></span>
                                 <!-- <span class="el-icon-circle-close" v-else style="margin-right: 20px;"></span>-->
                                  <span class="el-icon-info" style="color:rgb(255, 75, 71);margin-right: 9px;" v-show="item.error" title="上传失败"></span>
                             </p>
@@ -290,7 +290,7 @@
         <!-- 上传文件进度提示 end--->
     </div>
     <!--左侧树右键展开 str-->
-    <div class="right-click-opt" id="right-click-opt-tree" @mouseleave="hideClickOpt">
+    <div class="right-click-opt" id="right-click-opt-tree" @mouseleave="hideClickOpt" style="display: none;">
         <p @click="addDirDialogFlag = true;clearFormData();" v-show="level == 1">新增</p>
         <p @click="deleteDir()">删除</p>
         <p @click="reNameDialogFlag = true;isReNameFile = 0">重命名</p>
@@ -298,7 +298,7 @@
     <!--左侧树右键展开 end-->
 
     <!--右侧table右键展开 str-->
-    <div class="right-click-opt" id="right-click-opt-table"  @mouseleave="hideClickOpt">
+    <div class="right-click-opt" id="right-click-opt-table"  @mouseleave="hideClickOpt" style="display: none;">
         <p @click="doDownload(0,TableClickRow.detailId)">下载</p>
         <p @click="reNameDialogFlag = true;isReNameFile = 1;detailId = TableClickRow.detailId">重命名</p>
         <p @click="moveFiles(0,TableClickRow)">移动</p>

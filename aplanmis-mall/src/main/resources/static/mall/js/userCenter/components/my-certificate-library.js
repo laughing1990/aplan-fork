@@ -37,7 +37,7 @@ var myCertificateLibs = (function () {
                 certinstCode:[
                     { required: true, message: '请填写证照编号', trigger:'blur'},
                 ],
-                chooseCert:[
+                certId:[
                     { required: true, message: '请选择证照', trigger:'change'},
                 ]
             },
@@ -46,7 +46,7 @@ var myCertificateLibs = (function () {
                     value: 'c',
                     label: '企业证照库'
                 }, {
-                    value: 'p',
+                    value: 'u',
                     label: '法人证照库'
                 },
             ],
@@ -132,15 +132,27 @@ var myCertificateLibs = (function () {
             },
 
             certTypeHandleChange:function(val){
-                console.log(val)
+                var vm = this;
                 if(val){
                     this.certTypeId = val
                     this.getCertListByType(this.certTypeId,this.certHolder)
+                    this.$set(this.addCertifiFormData,'certId','');
+                    setTimeout(function () {
+                        vm.$refs.addDirForm.clearValidate();
+                    },50)
                 }
             },
             certHolderHangChange:function(val){
-                console.log(val)
+                var vm = this;
                 this.certHolder = val
+                if(this.certTypeId){
+                    this.getCertListByType(this.certTypeId,this.certHolder)
+                };
+                this.$set(this.addCertifiFormData,'certId','');
+                setTimeout(function () {
+                    vm.$refs.addDirForm.clearValidate();
+                },50)
+
             },
 
             // 获取系统证照定义列表
@@ -169,7 +181,6 @@ var myCertificateLibs = (function () {
                     if (valid) {
                         var addCertifiFormData = vm.addCertifiFormData;
                         console.log(addCertifiFormData)
-                        debugger
                         request('', {
                             url: ctx + '/aea/cert/saveCertint',
                             type: 'post',
@@ -183,7 +194,7 @@ var myCertificateLibs = (function () {
                                 vm.getCerList(vm.u,vm.uPageNum,vm.uPageSize);
                                 vm.getCerList(vm.p,vm.pPageNum,vm.pPageSize);
                             }else{
-                                vm.$message.error('操作失败')
+                                vm.$message.error('操作失败,失败原因：'+res.message)
                             }
                         },function () {
                             vm.$message.error('请求接口错误，请稍后重试！');
@@ -268,9 +279,14 @@ var myCertificateLibs = (function () {
                 this.dialogImageUrl = file.url;
                 this.dialogVisible = true;
             },
+            handleSuccess:function(response, file, fileList){
+                console.log(response)
+                this.addCertifiFormData.attLinkId = response.content; // 附件关联ID
+            },
             handleError:function(err, file, fileList){
                 this.$message.error("上传文件失败，原因"+err);
             },
+
 
             ChandleSizeChange:function () {
                 this.cPageSize = val;

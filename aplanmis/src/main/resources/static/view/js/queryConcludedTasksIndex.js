@@ -78,6 +78,16 @@ var vm = new Vue({
                 url = url + '&busRecordId='+row.busRecordId;
             }
             window.open(url,'_blank');
+        },
+        showOrHideGreenWay:function () {
+            if(this.tableData){
+                for(var i=0;i<this.tableData.length;i++){
+                    if(this.tableData[i].isGreenWay=='1'){
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
     },

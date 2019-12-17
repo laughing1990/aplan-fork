@@ -3051,7 +3051,7 @@
         aps_123.STAGE_NAME stageName,
         ahi_123.ITEMINST_NAME itemName,
         ahi_123.MODIFY_TIME dismissedTime,
-        CONVERT ( MAX( aht_123.ID_ + 0 ), CHAR ) AS TASK_ID ,
+        aht_123.ID_ AS TASK_ID ,
         aht_123.NAME_ taskName
         FROM
         AEA_HI_ITEMINST ahi_123
@@ -3111,7 +3111,7 @@
         NULL AS stageName,
         ahi_123.ITEMINST_NAME itemName,
         ahi_123.MODIFY_TIME dismissedTime,
-        CONVERT ( MAX( aht_123.ID_ + 0 ), CHAR ) AS taskId,
+        aht_123.ID_ AS taskId,
         aht_123.NAME_ as taskName
         FROM
         AEA_HI_ITEMINST ahi_123
@@ -3185,7 +3185,7 @@
         aps_123.STAGE_NAME stageName,
         ahi_123.ITEMINST_NAME itemName,
         ahi_123.MODIFY_TIME dismissedTime,
-        CONVERT ( MAX( aht_123.ID_ + 0 ), CHAR ) AS taskId ,
+        aht_123.ID_ AS taskId ,
         aht_123.NAME_ taskName
         FROM
         AEA_HI_ITEMINST ahi_123
@@ -3246,7 +3246,7 @@
         NULL AS stageName,
         ahi_123.ITEMINST_NAME itemName,
         ahi_123.MODIFY_TIME dismissedTime,
-        CONVERT ( MAX( aht_123.ID_ + 0 ), CHAR ) AS taskId,
+        aht_123.ID_ AS taskId,
         aht_123.NAME_ as taskName
         FROM
         AEA_HI_ITEMINST ahi_123
@@ -3320,7 +3320,7 @@
         aps_123.STAGE_NAME stageName,
         ahi_123.ITEMINST_NAME itemName,
         ahi_123.MODIFY_TIME dismissedTime,
-        CONVERT ( MAX( aht_123.ID_ + 0 ), CHAR ) AS TASK_ID ,
+        aht_123.ID_ AS TASK_ID ,
         aht_123.NAME_ taskName
         FROM
         AEA_HI_ITEMINST ahi_123
@@ -3379,7 +3379,7 @@
         NULL AS stageName,
         ahi_123.ITEMINST_NAME itemName,
         ahi_123.MODIFY_TIME dismissedTime,
-        CONVERT ( MAX( aht_123.ID_ + 0 ), CHAR ) AS taskId,
+        aht_123.ID_ AS taskId,
         aht_123.NAME_ as taskName
         FROM
         AEA_HI_ITEMINST ahi_123
@@ -3923,7 +3923,7 @@
         ahis_123.SPECIAL_DUE_WAY AS specialDueWay,
         ahis_123.CREATE_TIME AS specialCreateTime,
         ahis_123.SPECIAL_DUE_TIME AS specialDueTime,
-        CONVERT ( MAX( aht_123.ID_ + 0 ), CHAR ) AS taskId,
+        aht_123.ID_ AS taskId,
         ahi_123.ITEMINST_ID AS busRecordId,
         aht_123.NAME_ as taskName
         FROM
@@ -4005,7 +4005,7 @@
         ahis_123.SPECIAL_DUE_WAY AS specialDueWay,
         ahis_123.CREATE_TIME AS specialCreateTime,
         ahis_123.SPECIAL_DUE_TIME AS specialDueTime,
-        CONVERT ( MAX( aht_123.ID_ + 0 ), CHAR ) AS taskId,
+        aht_123.ID_ AS taskId,
         ahi_123.ITEMINST_ID AS busRecordId,
         aht_123.NAME_ as taskName
         FROM
@@ -4819,7 +4819,7 @@
         aps_123.STAGE_NAME stageName,
         ahi_123.ITEMINST_NAME itemName,
         ahi_123.MODIFY_TIME dismissedTime,
-        CONVERT ( MAX( aht_123.ID_ + 0 ), CHAR ) AS TASK_ID ,
+        aht_123.ID_ AS TASK_ID ,
         aht_123.NAME_ taskName
         FROM
         AEA_HI_ITEMINST ahi_123
@@ -4886,7 +4886,7 @@
         NULL AS stageName,
         ahi_123.ITEMINST_NAME itemName,
         ahi_123.MODIFY_TIME dismissedTime,
-        CONVERT ( MAX( aht_123.ID_ + 0 ), CHAR ) AS taskId,
+        aht_123.ID_ AS taskId,
         aht_123.NAME_ as taskName
         FROM
         AEA_HI_ITEMINST ahi_123
