@@ -193,6 +193,10 @@ UNIT_SERVICE_ID  ,SERVICE_ID  ,PRICE  ,AUDIT_FLAG  ,IS_DELETE  ,IS_ACTIVE  ,CREA
         where
     UNIT_SERVICE_ID = #{id}
     </delete>
+    <!--删除单位下所有已发布的服务-->
+    <update id="deleteOrEnableAllUnitServiceByUnitInfoId">
+        update aea_im_unit_service aius set aius.IS_DELETE=#{idDeteted},aius.MODIFY_TIME=now(),aius.MODIFIER=#{modifier} where aius.UNIT_INFO_ID=#{unitInfoId}
+    </update>
     <!--8 删除实体对象列表,根据主键ID列表 -->
     <!--9 返回所有字段的对象map,用于级联 -->
     <resultMap type="AeaImUnitService" id="AeaImUnitServiceMap">
@@ -217,8 +221,9 @@ UNIT_SERVICE_ID  ,SERVICE_ID  ,PRICE  ,AUDIT_FLAG  ,IS_DELETE  ,IS_ACTIVE  ,CREA
     <select id="getAeaImUnitService" resultType="AeaImUnitService">
 
     </select>
+    <!--只查询单位发布的服务-->
     <select id="listAgentUnitService" resultType="AeaImUnitService">
-
+        select <include refid="allColumnsIm"></include> from aea_im_unit_service im where im.UNIT_INFO_ID=#{unitInfoId}
     </select>
     <select id="listAeaImUnitServiceVo" resultType="com.augurit.aplanmis.common.vo.ServiceMatterVo">
         select * from (

@@ -78,7 +78,7 @@ public class AeaUnitInfo implements Serializable {
     private String rootOrgId;//根组织ID
     private String unitProjUnitType;// 项目的单位类型
     private String isGd;//是否属于省内企业
-
+    private String auditFlag;//审核状态:0 审核失败，1 已审核，2 审核中
     //非表字段
     private String keyword;
     //非表字段
@@ -108,7 +108,6 @@ public class AeaUnitInfo implements Serializable {
     private String projectLeaderId;//项目负责人ID
     private String projectLeaderCertNum;//项目负责人 ID Card
 
-    private String auditFlag;//审批状态
 
     public AeaUnitInfo() {
 

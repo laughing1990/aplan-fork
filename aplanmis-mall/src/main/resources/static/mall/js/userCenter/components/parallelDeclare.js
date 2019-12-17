@@ -442,6 +442,7 @@ var module1 = new Vue({
       }, function (res) {
         _that.loading = false;
         if (res.success) {
+          _that.showFillForm = true
           // 项目基本信息
           _that.projInfoDetail = res.content.aeaProjInfo;
           _that.applyObjectInfo.role = res.content.role?res.content.role:'';
@@ -1853,10 +1854,19 @@ var module1 = new Vue({
         console.log(_that.applyObjectInfo.aeaUnitInfo.unitInfoId);
         _unitInfoId = _that.applyObjectInfo.aeaUnitInfo.unitInfoId
       }
+      var params = {
+        themeId: _that.themeId,
+        projInfoId: _that.projInfoId,
+        unitInfoId: _unitInfoId,
+      };
+      var type = getUrlParam('fuxianCode');
+      if (type) {
+        params.dygjbzfxfw = type;
+      }
       request('', {
         url: ctx + 'rest/main/stage/list/' + _that.themeId,
         type: 'get',
-        data: { themeId: _that.themeId, projInfoId: _that.projInfoId, unitInfoId: _unitInfoId }
+        data: params,
       }, function (data) {
         if (data.success) {
           _that.loading = false;
@@ -4410,13 +4420,30 @@ var module1 = new Vue({
 
     querySelecTheme: function (themeType) {
       var _that = this;
+      var params = {};
+      var type = getUrlParam('fuxianCode');
+      if (type) {
+        params.dygjbzfxfw = type;
+      }
       request('', {
         url: ctx + 'rest/user/getThemes',
         type: 'get',
+        data: params,
         //data: {themeType:themeType}
       }, function (result) {
         if (result.success) {
           _that.themeList = result.content;
+          console.log(_that.projInfoDetail);
+          var flag = false;
+          result.content.forEach(function(u) {
+            if (u.themeId == _that.projInfoDetail.themeId){
+              flag = true;
+            }
+          });
+          if (!flag){
+            // 没匹配上的设为空
+            _that.projInfoDetail.themeId = '';
+          }
         }
       }, function (msg) {
         alertMsg('', '网络加载失败！', '关闭', 'error', true);
@@ -4677,5 +4704,13 @@ function callbackAfterSaveSFForm(result,sFRenderConfig,formModelVal,actStoFormin
     }, function (result1) {
     }, function (msg) {})
   }
+}
+function getUrlParam(name){
+  var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+  var r = window.location.search.substr(1).match(reg);
+  if (r != null) {
+    return unescape(r[2]);
+  }
+  return null;
 }
 

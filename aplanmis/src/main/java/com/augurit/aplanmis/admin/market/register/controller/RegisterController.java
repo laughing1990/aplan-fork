@@ -5,20 +5,14 @@ import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.admin.market.register.service.RegisterService;
-import com.augurit.aplanmis.admin.market.register.vo.OwnerRegisterResultVo;
-import com.augurit.aplanmis.admin.market.register.vo.RegisterAuditVo;
-import com.augurit.aplanmis.admin.market.register.vo.RegisterResultVo;
-import com.augurit.aplanmis.admin.market.register.vo.RegisterSearch;
-import com.augurit.aplanmis.common.domain.AeaImProjPurchase;
+import com.augurit.aplanmis.admin.market.register.vo.*;
 import com.augurit.aplanmis.common.domain.AeaUnitInfo;
-import com.augurit.aplanmis.common.vo.AeaImProjPurchaseDetailVo;
-import com.augurit.aplanmis.common.vo.AgentRegisterVo;
-import com.augurit.aplanmis.common.vo.ServiceMatterVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import io.jsonwebtoken.lang.Assert;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,24 +47,22 @@ public class RegisterController {
     @PostMapping("/listRegister")
     @ApiOperation(value = "查询入驻机构列表")
     public ResultForm listRegister(RegisterSearch registerSearch, Integer pageSize, Integer pageNum) throws Exception {
-        if (null == pageNum) {
-            pageNum = 1;
-        }
-        if (null == pageSize) {
-            pageSize = 10;
-        }
+        pageNum = (pageNum == null ? 1 : pageNum);
+        pageSize = (pageSize == null ? 10 : pageSize);
         Page page = new Page(pageNum, pageSize);
         List<AeaUnitInfo> list = registerService.getRegisterUnitList(registerSearch, page);
-        return new ContentResultForm<>(true, PageHelper.toEasyuiPageInfo(new PageInfo(list)), "success");
+        List<AgentUnitVo> volist = AgentUnitVo.changeToVoList(list);
+        return new ContentResultForm<>(true, PageHelper.toEasyuiPageInfo(new PageInfo(volist)), "success");
     }
+
     @RequestMapping("/getRegisterDetail")
     @ApiOperation(value = "获取入驻的中介机构详情信息")
     public ResultForm getAgentRegisterDetail(String unitInfoId) throws Exception {
-        Assert.isTrue(StringUtils.isNotBlank(unitInfoId),"unitInfoId不能为空！");
+        Assert.isTrue(StringUtils.isNotBlank(unitInfoId), "unitInfoId不能为空！");
         RegisterResultVo registerResultVo = registerService.getRegisterUnitDetail(unitInfoId);
-        if(registerResultVo!=null && registerResultVo.getUnitInfo()!=null){
+        if (registerResultVo != null && registerResultVo.getUnitInfo() != null) {
             return new ContentResultForm<RegisterResultVo>(true, registerResultVo, "success");
-        }else {
+        } else {
             return new ContentResultForm<RegisterResultVo>(false, registerResultVo, "根据单位id查询不到该单位信息！");
         }
     }
@@ -96,6 +88,20 @@ public class RegisterController {
         registerService.examineService(registerAuditVo);
         return new ResultForm(true);
 
+    }
+
+    @RequestMapping("/delete/{unitInfoId}")
+    @ApiOperation(value = "删除中介机构")
+    public ResultForm deleteAgentUnit(@PathVariable String unitInfoId) throws Exception {
+        registerService.deleteOrEnableAgentUnit(unitInfoId, "1");
+        return new ResultForm(true);
+    }
+
+    @RequestMapping("/enable/{unitInfoId}")
+    @ApiOperation(value = "启用中介机构")
+    public ResultForm enableAgentUnit(@PathVariable String unitInfoId) throws Exception {
+        registerService.deleteOrEnableAgentUnit(unitInfoId, "0");
+        return new ResultForm(true);
     }
 
 

@@ -42,7 +42,7 @@ var vm = new Vue({
 		this.getRegisterList();
 	},
 	methods: {
-		findSearchForm:function(){
+		findSearchForm: function () {
 			this.getRegisterList();
 		},
 		clearSearchForm: function () {
@@ -87,6 +87,24 @@ var vm = new Vue({
 			var oTime = oYear + '-' + this.getzf(oMonth) + '-' + this.getzf(oDay) + ' ' + this.getzf(oHour) + ':' + this.getzf(oMin) + ':' + this.getzf(oSec);//最后拼接时间
 			return oTime;
 		},
+		formatStatus: function (row, column, cellValue, index) {
+			var deleted = row.isDeleted;
+			var auditFlag = row.auditFlag;
+			if (deleted && deleted == '0') {//未删除
+				switch (auditFlag) {
+					case "1":
+						return '已审核';
+					case "2":
+						return "审核中";
+					default:
+						return "审核失败";
+				}
+			} else if (deleted && deleted == '1') {
+				return '已删除';
+			} else {
+				return '';
+			}
+		},
 		//补0操作
 		getzf: function (num) {
 			if (parseInt(num) < 10) {
@@ -125,6 +143,7 @@ var vm = new Vue({
 				});
 			})
 		},
+		/*删除单位确认框*/
 		confirmDelete: function (row) {
 			var _this = this;
 			_this.$confirm('此操作将删除单位及发布的服务、人员, 是否继续?', '提示', {
@@ -140,6 +159,46 @@ var vm = new Vue({
 				});
 			});
 		},
+
+		/*启用已删除单位确认弹框*/
+		confirmEnableUnit: function (row) {
+			var _this = this;
+			_this.$confirm('启用已删除单位, 是否继续?', '提示', {
+				confirmButtonText: '确定',
+				cancelButtonText: '取消',
+				type: 'warning'
+			}).then(() => {
+				_this.enableUnit(row);
+			}).catch(() => {
+				_this.$message({
+					type: 'info',
+					message: '已取消删除'
+				});
+			});
+		},
+		//删除单位
+		enableUnit: function (row) {
+			var url = ctx + '/supermarket/register/enable/' + row.unitInfoId;
+			var _this = this;
+			request('', {
+				url: url,
+				type: 'post'
+			}, function (data) {
+				if (data.success) {
+					_this.$message({
+						type: 'success',
+						message: '启用成功!'
+					});
+					_this.getRegisterList();
+				}
+			}, function (msg) {
+				_this.$message({
+					message: msg.message ? msg.message : '服务请求失败',
+					type: 'error'
+				});
+			})
+		},
+
 		// 预览电子件 必须要有detailId
 		filePreview: function (data) {
 			if (!data.detailId) {

@@ -607,6 +607,7 @@ var vm = new Vue({
       formAllNum: 0,
       formFilledNum: 0,
       formUnFillNum: 0,
+      oneFormOpened: false,
     }
   },
   created: function () {
@@ -2385,7 +2386,7 @@ var vm = new Vue({
               };
               // 当前情形附带的并联事项列表
               if(stateParallelItems&&stateParallelItems.length>0){
-                _that.parallelItems= _that.unique(_that.parallelItems.concat(stateParallelItems),'stage');
+                // _that.parallelItems= _that.unique(_that.parallelItems.concat(stateParallelItems),'stage');
                 stateParallelItems.map(function(item,index){
                   _that.setImplementItem(item);
                   if(item._parStateId=='undefined'||item._parStateId==undefined){
@@ -2397,7 +2398,7 @@ var vm = new Vue({
                     }
                   }
                   // if(_that.parallelItemsQuestionFlag==true){
-                  _that.parallelItemsSelItem(_that.parallelItems,item,'autoGetSel');
+                  _that.parallelItemsSelItem(stateParallelItems,item,'autoGetSel');
                   // }
                 });
               }
@@ -5897,6 +5898,8 @@ var vm = new Vue({
         vm.oneformActiveName = oneFormInfo[0].formId;
       }
       vm.oneFormDialogVisible = true;
+      if (vm.oneFormOpened) return null;
+      vm.oneFormOpened = true;
       vm.$nextTick(function(){
         vm.allFormInfoList.forEach(function(u, index){
           if (u.smartForm){

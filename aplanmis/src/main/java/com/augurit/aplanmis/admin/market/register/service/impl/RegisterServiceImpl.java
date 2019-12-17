@@ -15,7 +15,6 @@ import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.dic.BscDicCodeItemService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
-import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.vo.AeaHiCertinstBVo;
 import com.augurit.aplanmis.common.vo.ServiceMatterVo;
 import com.github.pagehelper.Page;
@@ -59,22 +58,13 @@ public class RegisterServiceImpl implements RegisterService {
     private AeaUnitLinkmanMapper aeaUnitLinkmanMapper;
 
     @Autowired
-    private AeaUnitInfoService aeaUnitInfoService;
+    private AeaImClientServiceMapper aeaImClientServiceMapper;
 
     @Autowired
     private AeaLinkmanInfoService aeaLinkmanInfoService;
 
     @Autowired
     BscDicCodeItemService bscDicCodeItemService;
-
-   /* @Autowired
-    ServiceMatterPublishService serviceMatterPublishService;
-
-    @Autowired
-    private AeaHiCertinstService aeaHiCertinstService;
-
-    @Autowired
-    private ClientManageService clientManageService;*/
 
     @Autowired
     private AeaImUnitServiceMapper unitServiceMapper;
@@ -115,7 +105,7 @@ public class RegisterServiceImpl implements RegisterService {
             //List<BscAttForm> unitFileList = bscAttMapper.listAttLinkAndDetail("AEA_UNIT_INFO", "UNIT_INFO_ID", aeaUnitInfo.getUnitInfoId(), null, SecurityContext.getCurrentOrgId(), null);
 
             List<BscAttFileAndDir> unitFileList = bscAttDetailMapper.searchFileAndDirsSimple(null, SecurityContext.getCurrentOrgId(), "AEA_UNIT_INFO", "UNIT_INFO_ID", new String[]{aeaUnitInfo.getUnitInfoId()});
-           /// aeaHiCertinstBVo.setCertinstDetail(attInfoList);
+            /// aeaHiCertinstBVo.setCertinstDetail(attInfoList);
 
             //服务信息
             ServiceMatterVo serviceMatterVo = new ServiceMatterVo();
@@ -124,7 +114,7 @@ public class RegisterServiceImpl implements RegisterService {
             AeaImUnitService aeaImUnitService = new AeaImUnitService();
             AeaHiCertinstBVo aeaHiCertinstBVo = new AeaHiCertinstBVo();
             RegisterServiceAndQualVo registerServiceAndQualVo = new RegisterServiceAndQualVo();
-            List<AeaHiCertinstBVo> aeaHiCertinstBVoList=new ArrayList<AeaHiCertinstBVo>();
+            List<AeaHiCertinstBVo> aeaHiCertinstBVoList = new ArrayList<AeaHiCertinstBVo>();
             List<ServiceMatterVo> matterVoList = aeaImUnitServiceMapper.listAeaImUnitServiceVo(serviceMatterVo);
             if (CollectionUtils.isNotEmpty(matterVoList)) {
                 ServiceMatterVo matterVo = matterVoList.get(0);
@@ -299,4 +289,39 @@ public class RegisterServiceImpl implements RegisterService {
             aeaUnitInfoMapper.updateAeaUnitInfo(aeaUnitInfo);
         }
     }
+
+    /**
+     * 删除||启用入住机构
+     *
+     * @param unitInfoId 机构ID
+     * @param isDeleted
+     */
+    @Override
+    public void deleteOrEnableAgentUnit(String unitInfoId, String isDeleted) throws Exception {
+        if (StringUtils.isEmpty(unitInfoId)) return;
+        AeaUnitInfo unitInfo = aeaUnitInfoMapper.getAeaUnitIncludeDeleteById(unitInfoId);
+        if (null == unitInfo) return;
+        String modifier = SecurityContext.getCurrentUserName();
+        //更新单位
+        aeaUnitInfoMapper.deleteOrEnableAeaUnitInfo(unitInfoId, modifier, isDeleted);
+        //更新单位联系人
+        aeaLinkmanInfoMapper.updateAllUnitLinkman(unitInfoId, modifier, isDeleted);
+        String isImUnit = unitInfo.getIsImUnit();
+        if (StringUtils.isNotBlank(isImUnit) && "1".equals(isImUnit)) {
+            //中介机构
+
+            List<AeaImUnitService> unitServiceList = aeaImUnitServiceMapper.listAgentUnitService(unitInfoId);
+            if (!unitServiceList.isEmpty()) {
+                // 更新中介服务aea_im_unit_servcie
+                aeaImUnitServiceMapper.deleteOrEnableAllUnitServiceByUnitInfoId(unitInfoId, modifier, isDeleted);
+                // 更新服务执业人 aea_im_service_linkman
+                aeaImServiceLinkmanMapper.deleteOrEnableAllServiceLinkman(unitInfoId, isDeleted);
+                // 更新服务委托人 aea_im_client_service
+                String[] unitServiceIds = unitServiceList.stream().map(AeaImUnitService::getUnitServiceId).toArray(String[]::new);
+                aeaImClientServiceMapper.deleteOrEnableAllUnitClientService(unitServiceIds, isDeleted);
+            }
+        }
+    }
+
+
 }

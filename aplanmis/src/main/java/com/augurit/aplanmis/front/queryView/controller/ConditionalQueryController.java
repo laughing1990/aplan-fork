@@ -9,7 +9,9 @@ import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.aplanmis.common.domain.AeaParStage;
+import com.augurit.aplanmis.common.domain.AeaServiceWindow;
 import com.augurit.aplanmis.common.service.area.RegionService;
+import com.augurit.aplanmis.common.service.window.AeaServiceWindowService;
 import com.augurit.aplanmis.common.vo.conditional.ConditionalQueryRequest;
 import com.augurit.aplanmis.front.queryView.service.ConditionalQueryService;
 import com.augurit.aplanmis.front.queryView.vo.ConditionalQueryDic;
@@ -46,6 +48,9 @@ public class ConditionalQueryController {
 
     @Autowired
     private RegionService regionService;
+
+    @Autowired
+    private AeaServiceWindowService aeaServiceWindowService;
 
     private static String applyViewId;
 
@@ -550,6 +555,21 @@ public class ConditionalQueryController {
     @ApiOperation(value = "根据查询条件获取我的草稿箱列表")
     public ResultForm listMyDrafts(ConditionalQueryRequest conditionalQueryRequest, Page page) {
         try {
+            PageInfo myDrafts = conditionalQueryService.listMyDrafts(conditionalQueryRequest, page);
+            return new ContentResultForm<>(true, myDrafts);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return new ContentResultForm<>(false, null, e.getMessage());
+        }
+    }
+
+    @GetMapping("/listWindowDrafts")
+    @ApiOperation(value = "根据查询条件获取我的草稿箱列表")
+    public ResultForm listWindowDrafts(ConditionalQueryRequest conditionalQueryRequest, Page page) {
+        try {
+            AeaServiceWindow currentUserWindow = aeaServiceWindowService.getCurrentUserWindow();
+            if (currentUserWindow == null) throw new Exception("请配置当前用户归属窗口");
+            conditionalQueryRequest.setWindowId(currentUserWindow.getWindowId());
             PageInfo myDrafts = conditionalQueryService.listMyDrafts(conditionalQueryRequest, page);
             return new ContentResultForm<>(true, myDrafts);
         } catch (Exception e) {
