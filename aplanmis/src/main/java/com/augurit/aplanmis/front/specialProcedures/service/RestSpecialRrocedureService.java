@@ -287,7 +287,8 @@ public class RestSpecialRrocedureService {
                 }
             }
 
-            //找到最新的一条记录
+            updateItemAndSpecialHist(specialVo.getIteminstId(),specialVo.getSpecialId());
+           /* //找到最新的一条记录
             aeaLogItemStateHist.setIteminstId(specialVo.getIteminstId());
             aeaLogItemStateHist.setNewState(ItemStatus.SPECIFIC_PROC_START.getValue());
             aeaLogItemStateHist.setRootOrgId(SecurityContext.getCurrentOrgId());
@@ -300,7 +301,10 @@ public class RestSpecialRrocedureService {
             itemSpecialStateHist.setStateHistId(logItemStateHist2.getStateHistId());
             itemSpecialStateHist.setCreater(SecurityContext.getCurrentUserId());
             itemSpecialStateHist.setCreateTime(new Date());
-            itemSpecialStateHistMapper.insertAeaHiItemSpecialStateHist(itemSpecialStateHist);
+            itemSpecialStateHistMapper.insertAeaHiItemSpecialStateHist(itemSpecialStateHist);*/
+
+
+
         }
 
     }
@@ -358,7 +362,7 @@ public class RestSpecialRrocedureService {
 
             }
 
-        //找到最新的一条记录
+        /*//找到最新的一条记录
         aeaLogItemStateHist.setIteminstId(iteminstId);
         aeaLogItemStateHist.setNewState(ItemStatus.SPECIFIC_PROC_START.getValue());
         aeaLogItemStateHist.setRootOrgId(SecurityContext.getCurrentOrgId());
@@ -371,7 +375,52 @@ public class RestSpecialRrocedureService {
         itemSpecialStateHist.setStateHistId(logItemStateHist2.getStateHistId());
         itemSpecialStateHist.setCreater(SecurityContext.getCurrentUserId());
         itemSpecialStateHist.setCreateTime(new Date());
+        itemSpecialStateHistMapper.insertAeaHiItemSpecialStateHist(itemSpecialStateHist);*/
+
+        updateItemAndSpecialHist(iteminstId,currentSpecial.getSpecialId());
+
+    }
+
+    /**
+     *
+     * 更新插入aeaLogItemStateHist和itemSpecialStateHist记录
+     * @param iteminstId
+     */
+    private void updateItemAndSpecialHist(String iteminstId,String specialId) throws Exception {
+        //插入一条从9-》10的历史
+        AeaLogItemStateHist aeaLogItemStateHist = new AeaLogItemStateHist();
+        aeaLogItemStateHist.setIteminstId(iteminstId);
+        List<AeaLogItemStateHist> logItemStateHists = aeaLogItemStateHistService.findAeaLogItemStateHist(aeaLogItemStateHist);
+        AeaLogItemStateHist logItem = logItemStateHists.get(0);
+        String realState = logItem.getNewState();
+        logItem.setNewState(ItemStatus.SPECIFIC_PROC_END.getValue());
+        logItem.setOldState(ItemStatus.SPECIFIC_PROC_START.getValue());
+        aeaLogItemStateHistService.updateAeaLogItemStateHist(logItem);
+        //插入一条从10-》原本state的历史
+        AeaLogItemStateHist logItem2 = new AeaLogItemStateHist();
+        BeanUtils.copyProperties(logItem,logItem2);
+        logItem2.setStateHistId(UUID.randomUUID().toString());
+        logItem2.setOldState(ItemStatus.SPECIFIC_PROC_END.getValue());
+        logItem2.setNewState(realState);
+        logItem2.setTriggerTime(new Date());
+        aeaLogItemStateHistService.insertAeaLogItemStateHist(logItem2);
+
+        AeaHiItemSpecialStateHist itemSpecialStateHist = new AeaHiItemSpecialStateHist();
+        itemSpecialStateHist.setSpecialStateHistId(UUID.randomUUID().toString());
+        itemSpecialStateHist.setSpecialId(specialId);
+        itemSpecialStateHist.setStateHistId(logItem.getStateHistId());
+        itemSpecialStateHist.setCreater(SecurityContext.getCurrentUserId());
+        itemSpecialStateHist.setCreateTime(new Date());
         itemSpecialStateHistMapper.insertAeaHiItemSpecialStateHist(itemSpecialStateHist);
+
+        AeaHiItemSpecialStateHist itemSpecialStateHist2 = new AeaHiItemSpecialStateHist();
+        itemSpecialStateHist2.setSpecialStateHistId(UUID.randomUUID().toString());
+        itemSpecialStateHist2.setSpecialId(specialId);
+        itemSpecialStateHist2.setStateHistId(logItem2.getStateHistId());
+        itemSpecialStateHist2.setCreater(SecurityContext.getCurrentUserId());
+        itemSpecialStateHist2.setCreateTime(new Date());
+        itemSpecialStateHistMapper.insertAeaHiItemSpecialStateHist(itemSpecialStateHist2);
+
     }
 
     public List<OpuOmUser> getOrgUserList(String iteminstId) throws Exception{
@@ -449,5 +498,5 @@ public class RestSpecialRrocedureService {
         Date specialEndDate = workdayHolidayService.calWorkdayFrom(start,dueNum, currentOrgId);
         String endDate = this.format.format(specialEndDate);
         return endDate;
-    }
+}
 }
