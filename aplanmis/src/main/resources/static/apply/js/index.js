@@ -2386,7 +2386,7 @@ var vm = new Vue({
               };
               // 当前情形附带的并联事项列表
               if(stateParallelItems&&stateParallelItems.length>0){
-                _that.parallelItems= _that.unique(_that.parallelItems.concat(stateParallelItems),'stage');
+                // _that.parallelItems= _that.unique(_that.parallelItems.concat(stateParallelItems),'stage');
                 stateParallelItems.map(function(item,index){
                   _that.setImplementItem(item);
                   if(item._parStateId=='undefined'||item._parStateId==undefined){
@@ -2398,7 +2398,7 @@ var vm = new Vue({
                     }
                   }
                   // if(_that.parallelItemsQuestionFlag==true){
-                  _that.parallelItemsSelItem(_that.parallelItems,item,'autoGetSel');
+                  _that.parallelItemsSelItem(stateParallelItems,item,'autoGetSel');
                   // }
                 });
               }
