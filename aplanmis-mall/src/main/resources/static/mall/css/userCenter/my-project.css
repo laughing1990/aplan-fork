@@ -801,8 +801,13 @@ sel-status .radiobox {
 #declareVue .el-table th>.cell{
   font-weight: normal;
 }
-.my-pro-left .userCenterMenList ul.user-pro-list li.user-pro-item:nth-child(5) .el-icon-arrow-down{
-  margin-left: 66px!important;
+.my-pro-left .userCenterMenList ul.user-pro-list li.user-pro-item{
+  position: relative;
+}
+.my-pro-left .userCenterMenList ul.user-pro-list li.user-pro-item .el-icon-arrow-down{
+  position: absolute;
+  right: 20px;
+  top: 19px;
 }
 
 
