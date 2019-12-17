@@ -153,12 +153,12 @@ public class RestParallerApplyController {
             aeaItemBasicService.conversionBasicItemToSssx(itemList, regionalism, projectAddress, SecurityContext.getCurrentOrgId());
             List<AeaItemBasic> coreItemList = aeaItemBasicService.getAeaItemBasicListByStageIdAndStateId(stageId, stateId, "1", SecurityContext.getCurrentOrgId());
             aeaItemBasicService.conversionBasicItemToSssx(coreItemList, regionalism, projectAddress, SecurityContext.getCurrentOrgId());
-            for (AeaItemBasic item:itemList){
-                item.setParaStateList(aeaItemStateService.listAeaItemStateByParentId(item.getItemVerId(),"","ROOT",SecurityContext.getCurrentOrgId()));
-            }
-            for (AeaItemBasic coreItem:coreItemList){
-                coreItem.setCoreStateList(aeaItemStateService.listAeaItemStateByParentId(coreItem.getItemVerId(),"","ROOT",SecurityContext.getCurrentOrgId()));
-            }
+//            for (AeaItemBasic item:itemList){
+//                item.setParaStateList(aeaItemStateService.listAeaItemStateByParentId(item.getItemVerId(),"","ROOT",SecurityContext.getCurrentOrgId()));
+//            }
+//            for (AeaItemBasic coreItem:coreItemList){
+//                coreItem.setCoreStateList(aeaItemStateService.listAeaItemStateByParentId(coreItem.getItemVerId(),"","ROOT",SecurityContext.getCurrentOrgId()));
+//            }
             map.put("itemList",itemList);
             map.put("coreItemList",coreItemList);
             map.put("stateList",aeaParStateService.listAeaParStateByParentStateId(stageId,stateId,SecurityContext.getCurrentOrgId()));
