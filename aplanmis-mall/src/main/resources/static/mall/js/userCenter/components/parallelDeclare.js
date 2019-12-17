@@ -442,6 +442,7 @@ var module1 = new Vue({
       }, function (res) {
         _that.loading = false;
         if (res.success) {
+          _that.showFillForm = true
           // 项目基本信息
           _that.projInfoDetail = res.content.aeaProjInfo;
           _that.applyObjectInfo.role = res.content.role?res.content.role:'';
@@ -4410,9 +4411,15 @@ var module1 = new Vue({
 
     querySelecTheme: function (themeType) {
       var _that = this;
+      var params = {};
+      var type = getUrlParam('fuxianCode');
+      if (type) {
+        params.dygjbzfxfw = type;
+      }
       request('', {
         url: ctx + 'rest/user/getThemes',
         type: 'get',
+        data: params,
         //data: {themeType:themeType}
       }, function (result) {
         if (result.success) {
@@ -4677,5 +4684,13 @@ function callbackAfterSaveSFForm(result,sFRenderConfig,formModelVal,actStoFormin
     }, function (result1) {
     }, function (msg) {})
   }
+}
+function getUrlParam(name){
+  var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+  var r = window.location.search.substr(1).match(reg);
+  if (r != null) {
+    return unescape(r[2]);
+  }
+  return null;
 }
 

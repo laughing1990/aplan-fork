@@ -402,6 +402,7 @@ var module1 = new Vue({
         _that.loading = false;
         if (res.success) {
           console.log(res.content);
+          _that.showFillForm = true;
           // 项目基本信息
           _that.projInfoDetail = res.content.aeaProjInfo;
           _that.applyObjectInfo.role = res.content.role;
