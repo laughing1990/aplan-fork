@@ -10,6 +10,7 @@
         el:"#APP",
         data:{
             ctx:ctx,
+            winH:1800,
             indexUrl:'./main/mainIndex.html',
             activeName:null,
             topTabData: [{
@@ -45,6 +46,7 @@
                     hash:'/userCenterIndex',
                 },
             ],
+            // 要想切分复杂的页面为两个，可以参照下面routerInitData配置
             routerInitData:[
                 {
                     label: '我的云盘',
@@ -53,6 +55,14 @@
                     url: './userCenter/components/my-cloundSpaces.html',
                     thUrl:'rest/user/toMyCloundSpacesPage',
                     hash:'/myCloundSpaces',
+                },
+                {
+                    label: '我的单项办事指南',
+                    id: 'singlePage',
+                    activeName:1,
+                    url: './guide/components/single.html',
+                    thUrl:'rest/guide/toSinglePage',
+                    hash:'/singlePage',
                 },
             ],
             curentLoginInfo:{},
@@ -64,6 +74,7 @@
         },
         mounted:function() {
             //do something after mounting vue instance
+            this.winH = document.documentElement.clientHeight;
         },
         methods: {
           routerChange:function(hash,url,thUrl,index){

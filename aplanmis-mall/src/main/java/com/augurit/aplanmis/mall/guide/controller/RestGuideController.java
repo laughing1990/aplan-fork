@@ -81,6 +81,11 @@ public class RestGuideController {
         return new ModelAndView("mall/guide/guideIndex");
     }
 
+    @GetMapping("/toSinglePage")
+    public ModelAndView toSinglePage(){
+        return new ModelAndView("mall/guide/components/singlePage");
+    }
+
     @GetMapping("/item/list")
     @ApiOperation(value = "办事指南 --> 获取按部门申报时所有事项列表")
     @ApiImplicitParams({@ApiImplicitParam(value = "部门ID",name = "orgId",required = false,dataType = "string"),
