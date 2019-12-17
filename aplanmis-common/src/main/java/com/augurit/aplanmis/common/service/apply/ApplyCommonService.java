@@ -28,4 +28,6 @@ public interface ApplyCommonService {
     void clearHistoryInst(String applyinstId) throws Exception;
 
     void bindApplyinstProj(String projInfoId, String applyinstId, String currentUserId) throws Exception;
+
+    void bindThemeAndProject(String[] projInfoIds, String themeVerId);
 }

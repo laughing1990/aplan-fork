@@ -2,7 +2,9 @@ package com.augurit.aplanmis.common.service.apply.impl;
 
 import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.constant.Status;
+import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.CollectionUtils;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.ApplyType;
 import com.augurit.aplanmis.common.domain.AeaApplyinstProj;
 import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
@@ -14,6 +16,9 @@ import com.augurit.aplanmis.common.domain.AeaHiParStateinst;
 import com.augurit.aplanmis.common.domain.AeaItemState;
 import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
 import com.augurit.aplanmis.common.domain.AeaParState;
+import com.augurit.aplanmis.common.domain.AeaParTheme;
+import com.augurit.aplanmis.common.domain.AeaParThemeVer;
+import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiApplyinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
@@ -26,6 +31,9 @@ import com.augurit.aplanmis.common.mapper.AeaHiSeriesinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemStateMapper;
 import com.augurit.aplanmis.common.mapper.AeaLogItemStateHistMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStateMapper;
+import com.augurit.aplanmis.common.mapper.AeaParThemeMapper;
+import com.augurit.aplanmis.common.mapper.AeaParThemeVerMapper;
+import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
 import com.augurit.aplanmis.common.service.apply.ApplyCommonService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +76,12 @@ public class ApplyCommonServiceImpl implements ApplyCommonService {
     private AeaHiItemStateinstMapper aeaHiItemStateinstMapper;
     @Autowired
     private AeaLogItemStateHistMapper aeaLogItemStateHistMapper;
+    @Autowired
+    private AeaParThemeVerMapper aeaParThemeVerMapper;
+    @Autowired
+    private AeaParThemeMapper aeaParThemeMapper;
+    @Autowired
+    private AeaProjInfoMapper aeaProjInfoMapper;
 
 
     @Override
@@ -202,6 +216,30 @@ public class ApplyCommonServiceImpl implements ApplyCommonService {
             aeaApplyinstProj.setCreater(currentUserId);
             aeaApplyinstProj.setCreateTime(new Date());
             aeaApplyinstProjMapper.insertAeaApplyinstProj(aeaApplyinstProj);
+        }
+    }
+
+    @Override
+    public void bindThemeAndProject(String[] projInfoIds, String themeVerId) {
+
+        AeaParThemeVer themeVer = aeaParThemeVerMapper.selectOneById(themeVerId);
+        if (themeVer == null) {
+            return;
+        }
+        String themeId = themeVer.getThemeId();
+        AeaParTheme aeaParTheme = aeaParThemeMapper.selectOneById(themeId);
+        if (projInfoIds != null && projInfoIds.length > 0) {
+            for (String projInfoId : projInfoIds) {
+                AeaProjInfo projInfo = aeaProjInfoMapper.getAeaProjInfoById(projInfoId);
+                // 主线的才绑定
+                if (Status.ON.equals(aeaParTheme.getIsMainline()) || StringUtils.isBlank(projInfo.getThemeId())) {
+                    projInfo.setThemeId(themeId);
+                }
+                projInfo.setThemeVerId(themeVerId);
+                projInfo.setModifyTime(new Date());
+                projInfo.setModifier(SecurityContext.getCurrentUserId());
+                aeaProjInfoMapper.updateAeaProjInfo(projInfo);
+            }
         }
     }
 }

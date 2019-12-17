@@ -26,16 +26,12 @@ import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
 import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
 import com.augurit.aplanmis.common.domain.AeaParStage;
-import com.augurit.aplanmis.common.domain.AeaParTheme;
-import com.augurit.aplanmis.common.domain.AeaParThemeVer;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstForminstMapper;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemStateinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
-import com.augurit.aplanmis.common.mapper.AeaParThemeMapper;
-import com.augurit.aplanmis.common.mapper.AeaParThemeVerMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
 import com.augurit.aplanmis.common.service.apply.ApplyCommonService;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
@@ -64,7 +60,6 @@ import org.springframework.util.Assert;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -124,10 +119,6 @@ public class AeaSeriesService {
     private AeaHiItemStateinstMapper aeaHiItemStateinstMapper;
     @Autowired
     private AeaApplyinstForminstMapper aeaApplyinstForminstMapper;
-    @Autowired
-    private AeaParThemeVerMapper aeaParThemeVerMapper;
-    @Autowired
-    private AeaParThemeMapper aeaParThemeMapper;
 
     /**
      * 保存实例、启动流程（停留在收件节点）
@@ -475,7 +466,7 @@ public class AeaSeriesService {
         if (StringUtils.isNotBlank(stageId)) {
             AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageId);
             if (aeaParStage != null) {
-                bindThemeAndProject(projInfoIds, aeaParStage.getThemeVerId());
+                applyCommonService.bindThemeAndProject(projInfoIds, aeaParStage.getThemeVerId());
             }
         }
 
@@ -490,29 +481,6 @@ public class AeaSeriesService {
         applyInstantiateResult.setProcInstId(processInstance.getProcessInstance().getId());
 
         return applyInstantiateResult;
-    }
-
-    private void bindThemeAndProject(String[] projInfoIds, String themeVerId) {
-
-        AeaParThemeVer themeVer = aeaParThemeVerMapper.selectOneById(themeVerId);
-        if (themeVer == null) {
-            return;
-        }
-        String themeId = themeVer.getThemeId();
-        AeaParTheme aeaParTheme = aeaParThemeMapper.selectOneById(themeId);
-        if (projInfoIds != null && projInfoIds.length > 0) {
-            for (String projInfoId : projInfoIds) {
-                AeaProjInfo projInfo = aeaProjInfoMapper.getAeaProjInfoById(projInfoId);
-                // 主线的才绑定
-                if (Status.ON.equals(aeaParTheme.getIsMainline()) || StringUtils.isBlank(projInfo.getThemeId())) {
-                    projInfo.setThemeId(themeId);
-                }
-                projInfo.setThemeVerId(themeVerId);
-                projInfo.setModifyTime(new Date());
-                projInfo.setModifier(SecurityContext.getCurrentUserId());
-                aeaProjInfoMapper.updateAeaProjInfo(projInfo);
-            }
-        }
     }
 
     /**

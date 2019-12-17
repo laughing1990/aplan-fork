@@ -29,16 +29,12 @@ import com.augurit.aplanmis.common.domain.AeaItemMat;
 import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
 import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
 import com.augurit.aplanmis.common.domain.AeaParStage;
-import com.augurit.aplanmis.common.domain.AeaParTheme;
-import com.augurit.aplanmis.common.domain.AeaParThemeVer;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstForminstMapper;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemStateinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
-import com.augurit.aplanmis.common.mapper.AeaParThemeMapper;
-import com.augurit.aplanmis.common.mapper.AeaParThemeVerMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
 import com.augurit.aplanmis.common.service.apply.ApplyCommonService;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
@@ -102,10 +98,6 @@ public class AeaParStageService {
     private AeaHiParStageinstService aeaHiParStageinstService;
     @Autowired
     private AeaBpmProcessService aeaBpmProcessService;
-    @Autowired
-    private AeaParThemeVerMapper aeaParThemeVerMapper;
-    @Autowired
-    private AeaParThemeMapper aeaParThemeMapper;
     @Autowired
     private AeaHiParStateinstService aeaHiParStateinstService;
     @Autowired
@@ -461,7 +453,7 @@ public class AeaParStageService {
         this.insertApplySubject(applySubject, applyinstId, projInfoIds, applyLinkmanId, linkmanInfoId, buildProjUnitMap, handleUnitIds);
 
         // 项目与主题绑定
-        bindThemeAndProject(stageApplyDataVo.getProjInfoIds(), themeVerId);
+        applyCommonService.bindThemeAndProject(stageApplyDataVo.getProjInfoIds(), themeVerId);
 
         //8、并行推进事项
         if (!isInadmissible && propulsionItemVerIds != null && propulsionItemVerIds.size() > 0) {
@@ -616,29 +608,6 @@ public class AeaParStageService {
         }
     }
 
-    private void bindThemeAndProject(String[] projInfoIds, String themeVerId) {
-
-        AeaParThemeVer themeVer = aeaParThemeVerMapper.selectOneById(themeVerId);
-        if (themeVer == null) {
-            return;
-        }
-        String themeId = themeVer.getThemeId();
-        AeaParTheme aeaParTheme = aeaParThemeMapper.selectOneById(themeId);
-        if (projInfoIds != null && projInfoIds.length > 0) {
-            for (String projInfoId : projInfoIds) {
-                AeaProjInfo projInfo = aeaProjInfoMapper.getAeaProjInfoById(projInfoId);
-                // 主线的才绑定
-                if (Status.ON.equals(aeaParTheme.getIsMainline()) || StringUtils.isBlank(projInfo.getThemeId())) {
-                    projInfo.setThemeId(themeId);
-                }
-                projInfo.setThemeVerId(themeVerId);
-                projInfo.setModifyTime(new Date());
-                projInfo.setModifier(SecurityContext.getCurrentUserId());
-                aeaProjInfoMapper.updateAeaProjInfo(projInfo);
-            }
-        }
-    }
-
     private void insertApplySubject(String applySubject, String applyinstId, String[] projInfoIds, String applyLinkmanId, String linkmanInfoId, List<BuildProjUnitVo> buildProjUnits, String[] handleUnitIds) {
         if ("0".equals(applySubject)) { //申报主体为个人
             aeaLinkmanInfoService.insertApplyAndLinkProjLinkman(applyinstId, projInfoIds, applyLinkmanId, linkmanInfoId);
@@ -740,7 +709,7 @@ public class AeaParStageService {
 
         if (StringUtils.isNotBlank(themeVerId)) {
             Assert.hasText(stageId, "stageId is null.");
-            bindThemeAndProject(new String[]{projInfoId}, themeVerId);
+            applyCommonService.bindThemeAndProject(new String[]{projInfoId}, themeVerId);
 
             // 并联事项实例 和  事项日志实例
             if (itemVerIds != null && itemVerIds.size() > 0) {
