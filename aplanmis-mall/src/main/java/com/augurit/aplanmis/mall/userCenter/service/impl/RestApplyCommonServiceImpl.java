@@ -567,6 +567,12 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
     }
 
     @Override
+    public void deleteApplyinstAllInstData(String applyinstId) throws Exception {
+        //暂时仅删除申报实例，应该是需要删除事项，情形，材料等实例
+        aeaHiApplyinstService.deleteAeaHiApplyinstById(applyinstId);
+    }
+
+    @Override
     public void deleteItemStates(String applyinstId) throws Exception {
         if(StringUtils .isNotBlank(applyinstId)){
             List<AeaHiItemStateinst> itemStates = aeaHiItemStateinstService.listAeaItemStateinstByApplyinstIdOrSeriesinstId(applyinstId, null);

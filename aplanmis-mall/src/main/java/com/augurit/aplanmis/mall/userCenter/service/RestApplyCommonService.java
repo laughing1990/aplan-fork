@@ -66,4 +66,6 @@ public interface RestApplyCommonService {
     void submitMatmList(MatListCommonTemporaryParamVo matListTemporaryParamVo) throws Exception;
 
     void submitSeriesStateList(StateListSeriesTemporaryParamVo stateListSeriesTemporaryParamVo,String seriesinstId, Map<String, Object> map) throws Exception;
+
+    void deleteApplyinstAllInstData(String applyinstId) throws Exception;
 }
