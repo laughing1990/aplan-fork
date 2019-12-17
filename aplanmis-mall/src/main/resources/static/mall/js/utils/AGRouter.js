@@ -1,11 +1,11 @@
 /*!
- * router JavaScript Library v1.0.0 for web
+ * router JavaScript Library v1.1.0 for web
  *  http://39.107.139.174:8084
  *  author freddy_huang
  * /aplanmis-project/aplanmis-mall/src/main/resources/static/mall/js/utils
  *
  * Date: 2019-07-12 T15:04
- *
+ * update:2019-12-17 T14:48
  * describe： 目前只mode name 为 hash 的模式 ，今后有空封装增加其他的mode
  *
  */
