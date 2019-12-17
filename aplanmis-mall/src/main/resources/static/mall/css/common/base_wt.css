@@ -208,6 +208,8 @@ footer {
   color: #727475;
   text-align: center;
   line-height: 59px;
+  position: absolute;
+  bottom: -59px;
 }
 
 /* footer end */

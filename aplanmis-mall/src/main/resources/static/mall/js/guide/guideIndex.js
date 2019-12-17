@@ -1,5 +1,5 @@
 /* 
-* @Author: anchen
+* @Author: hua
 * @Date:   2019-07-15 09:32:28
 * @Last Modified by:   anchen
 * @Last Modified time: 2019-08-05 13:53:25
@@ -189,12 +189,11 @@ var guideIndex = (function () {
             filePreviewCount: 0,
             showProcessLoading: false,
             getViewIframeSrc: '',
-            imgUrl: ["common/stage/mainLine/images/立项用地许可.png", "common/stage/mainLine/images/工程建设许可.png", "common/stage/mainLine/images/施工许可.png", "common/stage/mainLine/images/竣工验收.png", "common/stage/mainLine/images/立项用地许可.png","common/stage/mainLine/images/5.png","common/stage/mainLine/images/5.png","common/stage/mainLine/images/5.png"],
+            imgUrl: ["common/stage/mainLine/images/立项用地许可.png", "common/stage/mainLine/images/工程建设许可.png", "common/stage/mainLine/images/施工许可.png", "common/stage/mainLine/images/竣工验收.png", "common/stage/mainLine/images/立项用地许可.png","common/stage/mainLine/images/5.png","common/stage/mainLine/images/5.png","common/stage/mainLine/images/5.png","common/stage/mainLine/images/工程建设许可.png","common/stage/mainLine/images/5.png","common/stage/mainLine/images/5.png","common/stage/mainLine/images/5.png"],
         },
         mounted: function () {
             var vm = this;
-
-            vm.stepScroll();
+            vm.init()
             vm.GetRequest();
             vm.getRegionList();
 
@@ -205,57 +204,6 @@ var guideIndex = (function () {
         methods: {
             init: function () {
                 this.getThemeList();
-            },
-            stepScroll:function(){
-                setTimeout(function () {
-                    ele = $('#floorTab .department-name');
-                    eleLen = ele.length;
-                    vm.init()
-                }, 20)
-                var flag = true;
-                // end 滚动时，固定左侧的menu 并导航到相对位置
-                // 点击左侧滚动导航条 start
-                $('.ciclebox').click(function () {
-                    var ele = $(this).children('a').attr('href');
-                    $(ele).addClass('active').siblings('.div_step').removeClass('active');
-                    $(this).addClass('active').siblings('.ciclebox').removeClass('active');
-                });
-                var rightFixed = $('.right-content .other');
-                var top = rightFixed.offset().top;
-                $(document).scroll(function () {
-                    var scroH = $(this).scrollTop();
-                    if (scroH > 630) {
-                        rightFixed.css({"position": "fixed"});
-                    } else if (scroH < 630) {
-                        rightFixed.css({"position": "static"});
-                    }
-
-                    if (flag) {
-
-                        var items = $(".div-step");
-                        var menu = $("#menu");
-                        var top = $(document).scrollTop();
-                        var currentId = ""; //滚动条现在所在位置的item id
-                        var cl = '';
-                        var h = $(window).height() / 2;
-                        items.each(function () {
-                            var m = $(this);
-                            //m.offset().top代表每一个item的顶部位置
-                            if (top > m.offset().top - h / 2) {
-                                currentId = "#" + m.attr("id");
-                                cl = m.attr("id");
-                            } else {
-                                return false;
-                            }
-                        });
-                        var currentLink = menu.find(".active");
-                        if (currentId && currentLink.attr("href") != currentId) {
-                            currentLink.removeClass("active");
-                            menu.find("[data-name=" + cl + "]").addClass("active");
-                            $(currentId).addClass("active").siblings().removeClass("active");
-                        }
-                    }
-                })
             },
             hideMoreDepart: function () {
                 for (var i = 0; i < eleLen; i++) {
@@ -908,6 +856,7 @@ var guideIndex = (function () {
                 var _this = this;
                 var id = row.itemVerId;
                 var outerSystemUrl = row.outerSystemUrl;
+                var singleTitle= row.itemName;
                 var isLink = row.isLink;
                 if (!!isLink && isLink == '1') {
                     if (!outerSystemUrl) {
@@ -916,30 +865,8 @@ var guideIndex = (function () {
                         window.open(outerSystemUrl);
                     }
                 } else {
-                    this.isSinglePage = true;
-                    request('', {
-                        url: ctx + 'rest/guide/guide/single/detailed/' + id,
-                        type: 'get',
-                    }, function (res) {
-                        if (res.success) {
-                            _this.detailData = res.content;
-                            _this.firstMat = _this.detailData.matList;
-                            $.each(_this.detailData.stateList, function (index, val) {
-                                if (val.mustAnswer == '1') {
-                                    _this.mustAnswer.push(val.itemStateId);
-                                }
-                            });
-                            if (_this.detailData.stateList.length > 0) {
-                                _this.stateListFlag = true;
-                            } else {
-                                _this.stateListFlag = false;
-                            }
-                        } else {
-                            vm.$message.error(res.message);
-                        }
-                    }, function () {
-                        vm.$message.error('单项办事指南接口失败，请重试！');
-                    });
+                   //this.isSinglePage = true;
+                    window.location.href = ctx + '/rest/main/toIndexPage?id='+id+'&singleTitle='+encodeURI(singleTitle)+'#/singlePage'
                 }
             },
             // 查看流程图

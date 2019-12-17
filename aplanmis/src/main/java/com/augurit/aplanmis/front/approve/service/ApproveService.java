@@ -6,6 +6,7 @@ import com.augurit.agcloud.bpm.common.mapper.ActStoTimeruleMapper;
 import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
 import com.augurit.agcloud.bsc.domain.BscAttLink;
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
+import com.augurit.agcloud.bsc.mapper.BscAttDetailMapper;
 import com.augurit.agcloud.bsc.mapper.BscAttMapper;
 import com.augurit.agcloud.bsc.mapper.BscDicCodeMapper;
 import com.augurit.agcloud.framework.security.SecurityContext;
@@ -41,6 +42,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -126,6 +128,8 @@ public class ApproveService {
     private ActStoTimeruleMapper actStoTimeruleMapper;
     @Autowired
     private AeaToleranceTimeInstService aeaToleranceTimeInstService;
+    @Autowired
+    private BscAttDetailMapper bscAttDetailMapper;
 
     public BpmApproveStateVo getApplyStylesAndState(String applyinstId, String taskId) throws Exception {
         BpmApproveStateVo bpmApproveStateVo = new BpmApproveStateVo();
@@ -1215,6 +1219,47 @@ public class ApproveService {
                     temp.setToleranceTimeInstId(aeaToleranceTimeInsts.get(0).getToleranceTimeInstId());
                     temp.setTimeLimit(limit);
                     aeaToleranceTimeInstService.updateAeaToleranceTimeInst(temp);
+                }
+            }
+        }
+    }
+
+    /**
+     * 一键下载申报材料
+     * @param applyinstId 申报实例ID
+     * @param response
+     * @param request
+     * @throws Exception
+     */
+    public void downloadAllApplyMatsByApplyinstId(String applyinstId, HttpServletResponse response, HttpServletRequest request) throws Exception {
+        if(StringUtils.isBlank(applyinstId))
+            throw new RuntimeException("申报实例ID为空！");
+
+        List<MatinstVo> matinstVoList = this.getSeriesMatinstByIteminstId(null,applyinstId);
+        if(matinstVoList!=null&&matinstVoList.size()>0){
+            List<String> matinstIds = new ArrayList<>();
+            for(MatinstVo matinstVo:matinstVoList){
+                if(StringUtils.isNotBlank(matinstVo.getAttMatinstId()))
+                    matinstIds.add(matinstVo.getAttMatinstId());
+            }
+
+            if(matinstIds.size()>0){
+                String[] matinstIdArray = new String[matinstIds.size()];
+                matinstIds.toArray(matinstIdArray);
+
+                List<BscAttFileAndDir> attFileList = bscAttDetailMapper.searchFileAndDirsSimple(null, SecurityContext.getCurrentOrgId(), "AEA_HI_ITEM_MATINST", "MATINST_ID", matinstIdArray);
+
+                if(attFileList!=null&&attFileList.size()>0){
+                    List<String> detailIds = new ArrayList<>();
+                    for(BscAttFileAndDir fileAndDir:attFileList){
+                        detailIds.add(fileAndDir.getFileId());
+                    }
+
+                    if(detailIds.size()>0) {
+                        String[] detailIdArray = new String[matinstIds.size()];
+                        detailIds.toArray(detailIdArray);
+                        fileUtilsService.downloadAttachment(detailIdArray, response, request, false);
+                    }
                 }
             }
         }
