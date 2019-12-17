@@ -240,7 +240,7 @@ var userCenter = (function () {
             },
             toUserCenterPage: function () {
                 var mod = {
-                    name: '个人中心',
+                    name: '企业中心',
                     value: 'UserInfo',
                     select: true,
                 }

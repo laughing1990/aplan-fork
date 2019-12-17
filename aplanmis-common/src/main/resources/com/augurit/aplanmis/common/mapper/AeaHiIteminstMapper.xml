@@ -511,7 +511,7 @@
                 ali.LINKMAN_INFO_ID is null
             </if>
             AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND ali.IS_DELETED !=1 AND apl.TYPE='apply' AND
-            aha.IS_SERIES_APPROVE='1'
+            aha.IS_SERIES_APPROVE='1' and aha.IS_TEMPORARY_SUBMIT='0'
             <choose>
                 <when test="state == '0'.toString()">
                     AND aha.APPLYINST_STATE in ('6')
@@ -565,7 +565,7 @@
                 ali.LINKMAN_INFO_ID is null
             </if>
             AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND ali.IS_DELETED !=1 AND
-            apl.TYPE='apply' AND aha.IS_SERIES_APPROVE='0'
+            apl.TYPE='apply' AND aha.IS_SERIES_APPROVE='0' and aha.IS_TEMPORARY_SUBMIT='0'
             <choose>
                 <when test="state == '0'.toString()">
                     AND aha.APPLYINST_STATE in ('6')
@@ -619,6 +619,7 @@
                 aui.UNIT_INFO_ID is null
             </if>
             AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND aui.IS_DELETED !=1 AND aup.IS_DELETED !=1 AND aha.IS_SERIES_APPROVE='1'
+            and aha.IS_TEMPORARY_SUBMIT='0'
             <choose>
                 <when test="state == '0'.toString()">
                     AND aha.APPLYINST_STATE in ('6')
@@ -673,7 +674,7 @@
                 aui.UNIT_INFO_ID is null
             </if>
             AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND aui.IS_DELETED !=1 AND aup.IS_DELETED !=1 AND
-            aha.IS_SERIES_APPROVE='0'
+            aha.IS_SERIES_APPROVE='0' and aha.IS_TEMPORARY_SUBMIT='0'
             <choose>
                 <when test="state == '0'.toString()">
                     AND aha.APPLYINST_STATE in ('6')
@@ -725,7 +726,7 @@
                 ali.LINKMAN_INFO_ID is null
             </if>
             AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND ali.IS_DELETED !=1 AND apl.TYPE='apply' AND
-            aha.IS_SERIES_APPROVE='1'
+            aha.IS_SERIES_APPROVE='1' and aha.IS_TEMPORARY_SUBMIT='0'
             <if test="isAll =='all'">
                 and  aha.APPLYINST_STATE in ('0','1','2','3','4','5','6')
             </if>
@@ -761,7 +762,7 @@
                 ali.LINKMAN_INFO_ID is null
             </if>
             AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND ali.IS_DELETED !=1 AND
-            apl.TYPE='apply' AND aha.IS_SERIES_APPROVE='0'
+            apl.TYPE='apply' AND aha.IS_SERIES_APPROVE='0' and aha.IS_TEMPORARY_SUBMIT='0'
             <if test="isAll =='all'">
                 and  aha.APPLYINST_STATE in ('0','1','2','3','4','5','6')
             </if>
@@ -797,7 +798,7 @@
             <if test="unitInfoId ==null || unitInfoId==''">
                 aui.UNIT_INFO_ID is null
             </if>
-            AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND aui.IS_DELETED !=1 AND aha.IS_SERIES_APPROVE='1'
+            AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND aui.IS_DELETED !=1 AND aha.IS_SERIES_APPROVE='1' and aha.IS_TEMPORARY_SUBMIT='0'
             <if test="isAll =='all'">
                 and  aha.APPLYINST_STATE in ('0','1','2','3','4','5','6')
             </if>
@@ -834,7 +835,7 @@
                 aui.UNIT_INFO_ID is null
             </if>
             AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND aui.IS_DELETED !=1 AND
-            aha.IS_SERIES_APPROVE='0'
+            aha.IS_SERIES_APPROVE='0' and aha.IS_TEMPORARY_SUBMIT='0'
             <if test="isAll =='all'">
                 and  aha.APPLYINST_STATE in ('0','1','2','3','4','5','6')
             </if>
@@ -1108,7 +1109,7 @@
             aup.UNIT_INFO_ID is null
         </if>
         AND aaup.APPLYINST_ID IS NOT NULL
-        AND aha.IS_DELETED !=1 and aup.IS_DELETED != 1
+        AND aha.IS_DELETED !=1 and aup.IS_DELETED != 1 and aha.IS_TEMPORARY_SUBMIT='0'
         ) temp ON temp.APPLYINST_ID = ahs.APPLYINST_ID
         INNER JOIN aea_proj_info api ON api.PROJ_INFO_ID = temp.PROJ_INFO_ID
         INNER JOIN aea_item_basic aib ON ahi.ITEM_VER_ID = aib.ITEM_VER_ID
@@ -1163,7 +1164,7 @@
             aup.UNIT_INFO_ID is null
         </if>
         AND aaup.APPLYINST_ID IS NOT NULL
-        AND aha.IS_DELETED !=1 and aup.IS_DELETED != 1
+        AND aha.IS_DELETED !=1 and aup.IS_DELETED != 1 and aha.IS_TEMPORARY_SUBMIT='0'
         ) temp ON temp.APPLYINST_ID = ahps.APPLYINST_ID
         INNER JOIN aea_proj_info api ON api.PROJ_INFO_ID = temp.PROJ_INFO_ID
         INNER JOIN aea_item_basic aib ON ahi.ITEM_VER_ID = aib.ITEM_VER_ID
@@ -1217,7 +1218,7 @@
             apl.LINKMAN_INFO_ID is null
         </if>
         AND apl.APPLYINST_ID IS NOT NULL
-        AND aha.IS_DELETED !=1
+        AND aha.IS_DELETED !=1 and aha.IS_TEMPORARY_SUBMIT='0'
         ) temp ON temp.APPLYINST_ID = ahs.APPLYINST_ID
         INNER JOIN aea_proj_info api ON api.PROJ_INFO_ID = temp.PROJ_INFO_ID
         INNER JOIN aea_item_basic aib ON ahi.ITEM_VER_ID = aib.ITEM_VER_ID
@@ -1271,7 +1272,7 @@
             apl.LINKMAN_INFO_ID is null
         </if>
         AND apl.APPLYINST_ID IS NOT NULL
-        AND aha.IS_DELETED !=1
+        AND aha.IS_DELETED !=1 and aha.IS_TEMPORARY_SUBMIT='0'
         ) temp ON temp.APPLYINST_ID = ahps.APPLYINST_ID
         INNER JOIN aea_proj_info api ON api.PROJ_INFO_ID = temp.PROJ_INFO_ID
         INNER JOIN aea_item_basic aib ON ahi.ITEM_VER_ID = aib.ITEM_VER_ID
