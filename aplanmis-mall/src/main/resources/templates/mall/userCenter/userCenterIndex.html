@@ -22,8 +22,8 @@
             <a :href= "ctx+'rest/main/toIndexPage'">首页</a>
             <span class="local-span">&gt;</span>
             <a :href="ctx+'rest/main/toIndexPage?#MyHomeIndex'">法人空间</a>
-            <span class="local-span">&gt;</span>
-            <a :href="ctx+'rest/main/toIndexPage#'+ userCenterItemSelect">{{selectNav}}</a>
+            <span class="local-span" v-if="showSelectNav">&gt;</span>
+            <a v-if="showSelectNav" :href="ctx+'rest/main/toIndexPage#'+ userCenterItemSelect">{{selectNav}}</a>
             <span v-if="selectNav2" class="local-span">&gt;</span>
             <a href="javascript:;" v-if="selectNav2">{{selectNav2}}</a>
         </div>

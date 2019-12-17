@@ -177,7 +177,8 @@ var userCenter = (function () {
                 recordOldValue: { // 记录下旧的宽高数据，避免重复触发回调函数
                     width: '0',
                     height: '0'
-                }
+                },
+              showSelectNav: true,
             }
         },
         computed: {
