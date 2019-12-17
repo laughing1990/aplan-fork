@@ -563,6 +563,13 @@ public class AplanmisPageIndexController {
         return modelAndView;
     }
 
+    @GetMapping("/queryWindowDraftsIndex.html")
+    @ApiOperation("菜单-窗口草稿箱")
+    public ModelAndView queryWindowDraftsIndex() {
+        ModelAndView modelAndView = new ModelAndView("view/queryWindowDraftsIndex");
+        return modelAndView;
+    }
+
     @GetMapping("/queryWindowWarnApplyIndex.html")
     @ApiOperation("菜单-窗口预警申报")
     public ModelAndView queryWindowWarnApplyIndex() {

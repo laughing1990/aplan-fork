@@ -38,4 +38,7 @@ public class ApplyInfo extends BaseInfo implements Serializable {
     @ApiModelProperty(value = "事项版本id")
     private String itemVerId;
 
+    @ApiModelProperty(value = "创建人")
+    private String creater;
+
 }
