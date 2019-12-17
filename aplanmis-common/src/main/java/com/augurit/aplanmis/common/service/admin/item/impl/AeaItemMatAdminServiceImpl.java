@@ -10,6 +10,7 @@ import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
 import com.augurit.agcloud.framework.util.JsonUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.constants.ActiveStatus;
 import com.augurit.aplanmis.common.constants.CommonConstant;
 import com.augurit.aplanmis.common.constants.DeletedStatus;
 import com.augurit.aplanmis.common.constants.MindType;
@@ -88,6 +89,9 @@ public class AeaItemMatAdminServiceImpl implements AeaItemMatAdminService {
 
     @Autowired
     private ActStoFormMapper actStoFormMapper;
+
+    @Autowired
+    private AeaStdmatMapper aeaStdmatMapper;
 
     @Override
     public void saveAeaItemMatAndParIn(HttpServletRequest request,
@@ -242,6 +246,23 @@ public class AeaItemMatAdminServiceImpl implements AeaItemMatAdminService {
 //                    for (AeaItemMatType matType : typeList) {
 //                        if (matType.getMatTypeId().equals(matInfo.getMatTypeId())) {
 //                            matInfo.setMatTypeName(matType.getTypeName());
+//                            break;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        if (list != null && list.size() > 0) {
+//            AeaStdmat mat = new AeaStdmat();
+//            mat.setIsActive(ActiveStatus.ACTIVE.getValue());
+//            mat.setIsDeleted(DeletedStatus.NOT_DELETED.getValue());
+//            mat.setRootOrgId(rootOrgId);
+//            List<AeaStdmat> matList = aeaStdmatMapper.listAeaStdmat(mat);
+//            if(matList!=null&&matList.size()>0) {
+//                for (AeaItemMat matInfo : list) {
+//                    for (AeaStdmat item : matList) {
+//                        if (item.getStdmatId().equals(matInfo.getStdmatId())) {
+//                            matInfo.setStdmatName(item.getStdmatName());
 //                            break;
 //                        }
 //                    }

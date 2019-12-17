@@ -44,7 +44,8 @@
         ROOT_ORG_ID rootOrgId,
         MAT_PROP matProp,
         CERT_ID certId,
-        STO_FORM_ID stoFormId
+        STO_FORM_ID stoFormId,
+        STDMAT_ID stdmatId
     </sql>
 
     <sql id="allColumns_aim">
@@ -86,7 +87,8 @@
         aim.ROOT_ORG_ID rootOrgId,
         aim.MAT_PROP matProp,
         aim.CERT_ID certId,
-        aim.STO_FORM_ID stoFormId
+        aim.STO_FORM_ID stoFormId,
+        aim.STDMAT_ID stdmatId
     </sql>
 
     <sql id="mat_allColumns">
@@ -128,7 +130,8 @@
         mat.ROOT_ORG_ID rootOrgId,
         mat.MAT_PROP matProp,
         mat.CERT_ID certId,
-        mat.STO_FORM_ID stoFormId
+        mat.STO_FORM_ID stoFormId,
+        mat.STDMAT_ID stdmatId
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
@@ -728,13 +731,13 @@
         MAT_BASIS, PAPER_IS_REQUIRE, SORT_NO, MAT_MEMO, IS_ACTIVE, IS_DELETED, CREATER,
         CREATE_TIME, MODIFIER, MODIFY_TIME, ATT_DIR_ID, MAT_HOLDER, IS_OFFICIAL_DOC,
         ATT_IS_REQUIRE, IS_COMMON, REVIEW_KEY_POINTS, REVIEW_SAMPLE_DOC, REVIEW_BASIS,
-        MAT_FROM_DEPT, DUE_PAPER_TYPE, DUE_COPY_TYPE, PAPER_MAT_TYPE, ZCQY,ROOT_ORG_ID,MAT_PROP,CERT_ID,STO_FORM_ID)
+        MAT_FROM_DEPT, DUE_PAPER_TYPE, DUE_COPY_TYPE, PAPER_MAT_TYPE, ZCQY,ROOT_ORG_ID,MAT_PROP,CERT_ID,STO_FORM_ID,STDMAT_ID)
         values (#{matId}, #{matCode}, #{matName}, #{isGlobalShare}, #{matTypeId}, #{receiveMode}, #{duePaperCount},
         #{dueCopyCount}, #{matFrom}, #{sampleDoc}, #{templateDoc}, #{matRequire}, #{matBasis},
         #{paperIsRequire}, #{sortNo}, #{matMemo}, #{isActive}, #{isDeleted}, #{creater}, #{createTime},
         #{modifier}, #{modifyTime}, #{attDirId}, #{matHolder}, #{isOfficialDoc}, #{attIsRequire}, #{isCommon},
         #{reviewKeyPoints}, #{reviewSampleDoc}, #{reviewBasis}, #{matFromDept}, #{duePaperType}, #{dueCopyType},
-        #{paperMatType}, #{zcqy},#{rootOrgId}, #{matProp}, #{certId}, #{stoFormId} )
+        #{paperMatType}, #{zcqy},#{rootOrgId}, #{matProp}, #{certId}, #{stoFormId}, #{stdmatId})
     </insert>
 
     <!--6 修改实体对象 -->
@@ -857,6 +860,9 @@
             </if>
             <if test="stoFormId != null">
                 STO_FORM_ID = #{stoFormId},
+            </if>
+            <if test="stdmatId != null">
+                STDMAT_ID = #{stdmatId},
             </if>
         </set>
         where MAT_ID = #{matId}
@@ -982,6 +988,9 @@
             <if test="stoFormId != null">
                 STO_FORM_ID = #{stoFormId},
             </if>
+            <if test="stdmatId != null">
+                STDMAT_ID = #{stdmatId},
+            </if>
         </set>
         where MAT_ID = #{matId}
     </update>
@@ -1036,6 +1045,7 @@
         <result property="matProp" column="MAT_PROP"/>
         <result property="certId" column="CERT_ID"/>
         <result property="stoFormId" column="STO_FORM_ID"/>
+        <result property="stdmatId" column="STDMAT_ID"/>
     </resultMap>
 
     <select id="listAeaItemMat" resultType="AeaItemMat">
@@ -1259,7 +1269,8 @@
             aim.PAPER_MAT_TYPE  paperMatType,
             aim.MAT_PROP matProp,
             aim.CERT_ID certId,
-            aim.STO_FORM_ID formId
+            aim.STO_FORM_ID formId,
+            aim.STDMAT_ID stdmatId
         FROM AEA_ITEM_MAT aim, AEA_ITEM_INOUT aii
         WHERE aim.MAT_ID = aii.MAT_ID
           AND aii.IS_INPUT = '1'

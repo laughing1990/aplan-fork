@@ -74,6 +74,13 @@ $(function () {
         openSelectFormModal(value);
     });
 
+    // 标准材料选择击事件绑定
+    $('.open-stdmat-type, input[name="stdmatName"]').click(function() {
+
+        var value = $('#aedit_mat_form input[name="stdmatId"]').val();
+        openSelectStdmatModal(value);
+    });
+
     // 双击事件
     $('#customTable').on('dbl-click-row.bs.table', function (e, row, element) {
         loadGlobalMatData(row.matId)
@@ -93,6 +100,9 @@ $(function () {
 
     // 选择表单
     $('#selectFormBtn').bind('click', selectForm);
+
+    // 选择标准材料
+    $('#selectStdmatBtn').bind('click', selectStdmat);
 });
 
 function handleSelectMatProNew(value){
@@ -525,6 +535,22 @@ function selectForm(){
         closeSelectFormModal();
     }else{
         swal('错误信息', "请选择表单！", 'error');
+    }
+}
+
+function selectStdmat(){
+
+    var selectStdmatTree = $.fn.zTree.getZTreeObj("selectStdmatTree");
+    var stdmats = selectStdmatTree.getCheckedNodes(true);
+    if(stdmats!=null&&stdmats.length>0){
+        var id = stdmats[0].id;
+        var name = stdmats[0].name;
+        $('#aedit_mat_form input[name="stdmatId"]').val(id);
+        $('#aedit_mat_form input[name="stdmatName"]').val(name);
+        // 关闭窗口
+        closeSelectStdmatModal();
+    }else{
+        swal('错误信息', "请选择标准材料！", 'error');
     }
 }
 

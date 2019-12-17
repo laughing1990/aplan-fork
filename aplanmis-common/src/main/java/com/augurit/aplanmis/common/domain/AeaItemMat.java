@@ -148,6 +148,15 @@ public class AeaItemMat extends MindBaseNode {
     @ApiModelProperty(value = "扩展字段：表单名称")
     private String formName;
 
+    @ApiModelProperty(value = "标准材料ID")
+    private String stdmatId;
+
+    @ApiModelProperty("标准材料编号")
+    private String stdmatCode;
+
+    @ApiModelProperty("标准材料名称")
+    private String stdmatName;
+
     /**
      * 扩展字段: 电子材料
      */
