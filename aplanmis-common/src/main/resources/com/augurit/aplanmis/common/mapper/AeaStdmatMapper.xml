@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaStdmatMapper" >
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+        STDMAT_ID  stdmatId,
+        STDMAT_CODE  stdmatCode,
+        STDMAT_NAME  stdmatName,
+        STDMAT_TYPE_ID  stdmatTypeId,
+        IS_AUTO_CHECK  isAutoCheck,
+        CHECK_KEYWORDS  checkKeywords,
+        SORT_NO  sortNo,
+        STDMAT_MEMO  stdmatMemo,
+        IS_ACTIVE  isActive,
+        IS_DELETED  isDeleted,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaStdmatById" resultType="AeaStdmat" >
+        select
+           <include refid="allColumns"/>
+        from  AEA_STDMAT
+        where STDMAT_ID = #{id}
+          and IS_DELETED = '0'
+    </select>
+
+    <select id="checkUniqueCode" resultType="java.lang.Long">
+        select
+          count(*)
+        from AEA_STDMAT
+        <where>
+            and IS_DELETED = '0'
+            and STDMAT_CODE = #{stdmatCode}
+            and ROOT_ORG_ID = #{rootOrgId}
+            <if test="id != null and id!='' ">
+            and STDMAT_ID != #{id}
+            </if>
+        </where>
+    </select>
+
+    <select id="getMaxSortNo" resultType="java.lang.Long">
+        select
+            max(SORT_NO)
+        from AEA_STDMAT
+        where ROOT_ORG_ID = #{rootOrgId}
+          and IS_DELETED = '0'
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaStdmat" resultType="AeaStdmat" >
+        select
+            <include refid="allColumns"/>
+        from    AEA_STDMAT
+        <where>
+            <if test="stdmatId != null" >
+            and    STDMAT_ID = #{stdmatId}
+            </if>
+            <if test="stdmatCode != null" >
+            and    STDMAT_CODE = #{stdmatCode}
+            </if>
+            <if test="stdmatName != null" >
+            and    STDMAT_NAME = #{stdmatName}
+            </if>
+            <if test="stdmatTypeId != null" >
+            and    STDMAT_TYPE_ID = #{stdmatTypeId}
+            </if>
+            <if test="isAutoCheck != null" >
+            and    IS_AUTO_CHECK = #{isAutoCheck}
+            </if>
+            <if test="checkKeywords != null" >
+            and    CHECK_KEYWORDS = #{checkKeywords}
+            </if>
+            <if test="sortNo != null" >
+            and    SORT_NO = #{sortNo}
+            </if>
+            <if test="stdmatMemo != null" >
+            and    STDMAT_MEMO = #{stdmatMemo}
+            </if>
+            <if test="isActive != null" >
+            and    IS_ACTIVE = #{isActive}
+            </if>
+            <if test="creater != null" >
+            and    CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+            and    CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null" >
+            and    MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null" >
+            and    MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null" >
+            and    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="keyWord != null and keyWord != ''">
+            and (
+                STDMAT_CODE like CONCAT(CONCAT('%',#{keyWord}),'%') or
+                STDMAT_NAME like CONCAT(CONCAT('%',#{keyWord}),'%') or
+                CHECK_KEYWORDS like CONCAT(CONCAT('%',#{keyWord}),'%') or
+                STDMAT_MEMO like CONCAT(CONCAT('%',#{keyWord}),'%')
+            )
+            </if>
+            and  IS_DELETED = '0'
+        </where>
+        order by SORT_NO asc, CREATE_TIME asc
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaStdmat" parameterType="AeaStdmat" >
+        insert into AEA_STDMAT (
+            STDMAT_ID,
+            STDMAT_CODE,
+            STDMAT_NAME,
+            STDMAT_TYPE_ID,
+            IS_AUTO_CHECK,
+            CHECK_KEYWORDS,
+            SORT_NO,
+            STDMAT_MEMO,
+            IS_ACTIVE,
+            IS_DELETED,
+            CREATER,
+            CREATE_TIME,
+            MODIFIER,
+            MODIFY_TIME,
+            ROOT_ORG_ID
+        )  values  (
+            #{stdmatId},
+            #{stdmatCode},
+            #{stdmatName},
+            #{stdmatTypeId},
+            #{isAutoCheck},
+            #{checkKeywords},
+            #{sortNo},
+            #{stdmatMemo},
+            #{isActive},
+            #{isDeleted},
+            #{creater},
+            #{createTime},
+            #{modifier},
+            #{modifyTime},
+            #{rootOrgId}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaStdmat" parameterType="AeaStdmat" >
+        update AEA_STDMAT
+        <set >
+            <if test="stdmatId != null" >
+            STDMAT_ID = #{stdmatId},
+            </if>
+            <if test="stdmatCode != null" >
+            STDMAT_CODE = #{stdmatCode},
+            </if>
+            <if test="stdmatName != null" >
+            STDMAT_NAME = #{stdmatName},
+            </if>
+            <if test="stdmatTypeId != null" >
+            STDMAT_TYPE_ID = #{stdmatTypeId},
+            </if>
+            <if test="isAutoCheck != null" >
+            IS_AUTO_CHECK = #{isAutoCheck},
+            </if>
+            <if test="checkKeywords != null" >
+            CHECK_KEYWORDS = #{checkKeywords},
+            </if>
+            <if test="sortNo != null" >
+            SORT_NO = #{sortNo},
+            </if>
+            <if test="stdmatMemo != null" >
+            STDMAT_MEMO = #{stdmatMemo},
+            </if>
+            <if test="isActive != null" >
+            IS_ACTIVE = #{isActive},
+            </if>
+            <if test="isDeleted != null" >
+            IS_DELETED = #{isDeleted},
+            </if>
+            <if test="creater != null" >
+            CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+            CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null" >
+            MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null" >
+            MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="rootOrgId != null" >
+            ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where STDMAT_ID = #{stdmatId}
+    </update>
+
+    <update id="deleteAeaStdmat">
+        update AEA_STDMAT
+        <set >
+            IS_DELETED = '1'
+        </set>
+        where STDMAT_ID = #{id}
+    </update>
+
+    <resultMap type="AeaStdmat" id="AeaStdmatMap">
+        <id property="stdmatId" column="STDMAT_ID"/>
+        <result property="stdmatCode" column="STDMAT_CODE"/>
+        <result property="stdmatName" column="STDMAT_NAME"/>
+        <result property="stdmatTypeId" column="STDMAT_TYPE_ID"/>
+        <result property="isAutoCheck" column="IS_AUTO_CHECK"/>
+        <result property="checkKeywords" column="CHECK_KEYWORDS"/>
+        <result property="sortNo" column="SORT_NO"/>
+        <result property="stdmatMemo" column="STDMAT_MEMO"/>
+        <result property="isActive" column="IS_ACTIVE"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+</mapper>

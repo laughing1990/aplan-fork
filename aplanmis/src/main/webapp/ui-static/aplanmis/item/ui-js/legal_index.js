@@ -1,4 +1,5 @@
 var legalTree = null;  // 菜单树
+var nodeList = [];
 var lastValue = '';
 var legalTreeSelectNode = null;
 var add_legal_validator = null;

@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaStdmatTypeMapper" >
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+        STDMAT_TYPE_ID  stdmatTypeId,
+        TYPE_CODE  typeCode,
+        TYPE_NAME  typeName,
+        SORT_NO  sortNo,
+        PARENT_TYPE_ID  parentTypeId,
+        TYPE_SEQ  typeSeq,
+        SUB_COUNT  subCount,
+        TYPE_MEMO  typeMemo,
+        IS_ACTIVE  isActive,
+        IS_DELETED  isDeleted,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <select id="checkUniqueTypeCode" resultType="java.lang.Long">
+        select
+            count(*)
+        from AEA_STDMAT_TYPE
+        <where>
+            and IS_DELETED = '0'
+            and TYPE_CODE = #{typeCode}
+            and ROOT_ORG_ID = #{rootOrgId}
+            <if test="id != null and id!='' ">
+            and STDMAT_TYPE_ID != #{id}
+            </if>
+        </where>
+    </select>
+
+    <select id="getMaxSortNo" resultType="java.lang.Long">
+        select
+            max(SORT_NO)
+        from AEA_STDMAT_TYPE
+        where ROOT_ORG_ID = #{rootOrgId}
+          and IS_DELETED = '0'
+    </select>
+
+    <select id="selectOneById" resultType="AeaStdmatType">
+        select
+           <include refid="allColumns"/>
+        from AEA_STDMAT_TYPE
+        where STDMAT_TYPE_ID = #{id}
+          and IS_DELETED = '0'
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaStdmatType" resultType="AeaStdmatType" >
+        select
+            <include refid="allColumns"/>
+        from    AEA_STDMAT_TYPE
+        <where>
+            <if test="stdmatTypeId != null" >
+            AND    STDMAT_TYPE_ID = #{stdmatTypeId}
+            </if>
+            <if test="typeCode != null" >
+            AND    TYPE_CODE = #{typeCode}
+            </if>
+            <if test="typeName != null" >
+            AND    TYPE_NAME = #{typeName}
+            </if>
+            <if test="sortNo != null " >
+            AND    SORT_NO = #{sortNo}
+            </if>
+            <if test="parentTypeId != null and parentTypeId!='' ">
+            AND   PARENT_TYPE_ID = #{parentTypeId}
+            </if>
+            <if test="typeSeq != null" >
+            AND    TYPE_SEQ = #{typeSeq}
+            </if>
+            <if test="subCount != null" >
+            AND    SUB_COUNT = #{subCount}
+            </if>
+            <if test="typeMemo != null" >
+            AND    TYPE_MEMO = #{typeMemo}
+            </if>
+            <if test="isActive != null" >
+            AND    IS_ACTIVE = #{isActive}
+            </if>
+            <if test="isDeleted != null" >
+            AND    IS_DELETED = #{isDeleted}
+            </if>
+            <if test="creater != null" >
+            AND    CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+            AND    CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null" >
+            AND    MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null" >
+            AND    MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null" >
+            AND    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="keyWord != null and keyWord != ''">
+            AND (
+                TYPE_NAME LIKE CONCAT(CONCAT('%',#{keyWord}),'%') OR
+                TYPE_CODE LIKE CONCAT(CONCAT('%',#{keyWord}),'%')
+            )
+            </if>
+           AND  IS_DELETED = '0'
+        </where>
+        order by SORT_NO asc, CREATE_TIME asc
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertOne" parameterType="AeaStdmatType" >
+        insert into AEA_STDMAT_TYPE (
+            STDMAT_TYPE_ID,
+            TYPE_CODE,
+            TYPE_NAME,
+            SORT_NO,
+            PARENT_TYPE_ID,
+            TYPE_SEQ,
+            SUB_COUNT,
+            TYPE_MEMO,
+            IS_ACTIVE,
+            IS_DELETED,
+            CREATER,
+            CREATE_TIME,
+            MODIFIER,
+            MODIFY_TIME,
+            ROOT_ORG_ID
+        )  values  (
+            #{stdmatTypeId},
+            #{typeCode},
+            #{typeName},
+            #{sortNo},
+            #{parentTypeId},
+            #{typeSeq},
+            #{subCount},
+            #{typeMemo},
+            #{isActive},
+            #{isDeleted},
+            #{creater},
+            #{createTime},
+            #{modifier},
+            #{modifyTime},
+            #{rootOrgId}
+        )
+    </insert>
+
+    <update id="updateOne" parameterType="AeaStdmatType">
+        update AEA_STDMAT_TYPE
+        <set >
+            <if test="stdmatTypeId != null" >
+            STDMAT_TYPE_ID = #{stdmatTypeId},
+            </if>
+            <if test="typeCode != null" >
+            TYPE_CODE = #{typeCode},
+            </if>
+            <if test="typeName != null" >
+            TYPE_NAME = #{typeName},
+            </if>
+            <if test="sortNo != null" >
+            SORT_NO = #{sortNo},
+            </if>
+            <if test="parentTypeId != null" >
+            PARENT_TYPE_ID = #{parentTypeId},
+            </if>
+            <if test="typeSeq != null" >
+            TYPE_SEQ = #{typeSeq},
+            </if>
+            <if test="subCount != null" >
+            SUB_COUNT = #{subCount},
+            </if>
+            <if test="typeMemo != null" >
+            TYPE_MEMO = #{typeMemo},
+            </if>
+            <if test="isActive != null" >
+            IS_ACTIVE = #{isActive},
+            </if>
+            <if test="isDeleted != null" >
+            IS_DELETED = #{isDeleted},
+            </if>
+            <if test="creater != null" >
+            CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+            CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null" >
+            MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null" >
+            MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="rootOrgId != null" >
+            ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where STDMAT_TYPE_ID = #{stdmatTypeId}
+    </update>
+
+    <update id="deleteById">
+        update AEA_STDMAT_TYPE
+        <set>
+            IS_DELETED = '1'
+        </set>
+        where STDMAT_TYPE_ID = #{id}
+    </update>
+
+    <delete id="deleteSelfAndAllChildById" parameterType="java.lang.String">
+        update AEA_STDMAT_TYPE set IS_DELETED = '1'
+        where TYPE_SEQ like concat('%',concat(#{id},'%'))
+          and ROOT_ORG_ID = #{rootOrgId}
+    </delete>
+
+    <select id="listOtherStdMatTypesById" resultType="AeaStdmatType">
+        select
+           <include refid="allColumns"/>
+        from AEA_STDMAT_TYPE
+        where IS_DELETED = '0'
+          and TYPE_SEQ not like CONCAT(CONCAT('%.', #{id}), '.%')
+          and ROOT_ORG_ID = #{rootOrgId}
+        order by SORT_NO asc , CREATE_TIME asc
+    </select>
+
+    <select id="listAllRelChildStdMatType" resultType="AeaStdmatType">
+        select
+            <include refid="allColumns"/>
+        from AEA_STDMAT_TYPE
+        where IS_DELETED = '0'
+          and STDMAT_TYPE_ID != #{id}
+          and TYPE_SEQ like CONCAT(CONCAT('%.', #{id}), '.%')
+          and ROOT_ORG_ID = #{rootOrgId}
+        order by SORT_NO asc , CREATE_TIME asc
+    </select>
+
+    <resultMap type="AeaStdmatType" id="AeaStdmatTypeMap">
+        <id property="stdmatTypeId" column="STDMAT_TYPE_ID"/>
+        <result property="typeCode" column="TYPE_CODE"/>
+        <result property="typeName" column="TYPE_NAME"/>
+        <result property="sortNo" column="SORT_NO"/>
+        <result property="parentTypeId" column="PARENT_TYPE_ID"/>
+        <result property="typeSeq" column="TYPE_SEQ"/>
+        <result property="subCount" column="SUB_COUNT"/>
+        <result property="typeMemo" column="TYPE_MEMO"/>
+        <result property="isActive" column="IS_ACTIVE"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+</mapper>
