@@ -97,20 +97,20 @@ public class ParThemeService {
         Map<String, ThemeTypeVo> themeTypeVoMap = new HashMap<>();
         aeaParThemeList.forEach(theme -> {
             ThemeTypeVo themeTypeVo;
+            BscDicCodeItem bscDicCodeItem = itemMap.get(theme.getThemeType());
             if (themeTypeVoMap.get(theme.getThemeType()) != null) {
                 themeTypeVo = themeTypeVoMap.get(theme.getThemeType());
             } else {
                 themeTypeVo = new ThemeTypeVo();
+                if (bscDicCodeItem != null) {
+                    themeTypeVo.buildThemeTypeVo(bscDicCodeItem);
+                }
+                themeTypeVoMap.put(theme.getThemeType(), themeTypeVo);
             }
             ThemeVo themeVo = ThemeVo.buildTheme(theme);
             themeTypeVo.getThemes().add(themeVo);
-            BscDicCodeItem bscDicCodeItem = itemMap.get(theme.getThemeType());
-            if (bscDicCodeItem != null) {
-                themeTypeVo.buildThemeTypeVo(bscDicCodeItem);
-            }
             voList.add(themeTypeVo);
         });
-
         return voList;
     }
 }
