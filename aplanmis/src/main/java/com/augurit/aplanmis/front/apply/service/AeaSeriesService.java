@@ -26,12 +26,16 @@ import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
 import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
 import com.augurit.aplanmis.common.domain.AeaParStage;
+import com.augurit.aplanmis.common.domain.AeaParTheme;
+import com.augurit.aplanmis.common.domain.AeaParThemeVer;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstForminstMapper;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemStateinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
+import com.augurit.aplanmis.common.mapper.AeaParThemeMapper;
+import com.augurit.aplanmis.common.mapper.AeaParThemeVerMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
 import com.augurit.aplanmis.common.service.apply.ApplyCommonService;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
@@ -60,6 +64,7 @@ import org.springframework.util.Assert;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,6 +124,10 @@ public class AeaSeriesService {
     private AeaHiItemStateinstMapper aeaHiItemStateinstMapper;
     @Autowired
     private AeaApplyinstForminstMapper aeaApplyinstForminstMapper;
+    @Autowired
+    private AeaParThemeVerMapper aeaParThemeVerMapper;
+    @Autowired
+    private AeaParThemeMapper aeaParThemeMapper;
 
     /**
      * 保存实例、启动流程（停留在收件节点）
@@ -326,7 +335,8 @@ public class AeaSeriesService {
         if (seriesApplyDataVo.getIsParallel() == null) {
             throw new InvalidParameterException("是否并行推进事项参数为空！");
         }
-        if ("1".equals(seriesApplyDataVo.getIsParallel()) && seriesApplyDataVo.getStageId() == null) {
+        String stageId = seriesApplyDataVo.getStageId();
+        if ("1".equals(seriesApplyDataVo.getIsParallel()) && stageId == null) {
             throw new InvalidParameterException("当前为并行推进事项申报，申报阶段ID参数不能为空！");
         }
 
@@ -380,7 +390,7 @@ public class AeaSeriesService {
         AeaHiIteminst aeaHiIteminst;
         if (seriesInst == null) {
             //1、保存单项实例
-            aeaHiSeriesinst = aeaHiSeriesinstService.createAeaHiSeriesinst(seriesApplyinstId, appinstId, seriesApplyDataVo.getIsParallel(), seriesApplyDataVo.getStageId());
+            aeaHiSeriesinst = aeaHiSeriesinstService.createAeaHiSeriesinst(seriesApplyinstId, appinstId, seriesApplyDataVo.getIsParallel(), stageId);
             //2、事项实例
             aeaHiIteminst = aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), itemVerId, branchOrgMap, null, appinstId);
         } else {
@@ -461,6 +471,13 @@ public class AeaSeriesService {
                 aeaUnitInfoService.insertApplyNonOwnerUnitProj(seriesApplyinstId, projInfoIds, handleUnitIds);
             }
         }
+        // 项目绑定主题
+        if (StringUtils.isNotBlank(stageId)) {
+            AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageId);
+            if (aeaParStage != null) {
+                bindThemeAndProject(projInfoIds, aeaParStage.getThemeVerId());
+            }
+        }
 
         //保存回执前需要更新aea_hi_sms数据，否则查询不到数据，回执无法保存
         /*if (isNeedSaveReceive) {
@@ -473,6 +490,29 @@ public class AeaSeriesService {
         applyInstantiateResult.setProcInstId(processInstance.getProcessInstance().getId());
 
         return applyInstantiateResult;
+    }
+
+    private void bindThemeAndProject(String[] projInfoIds, String themeVerId) {
+
+        AeaParThemeVer themeVer = aeaParThemeVerMapper.selectOneById(themeVerId);
+        if (themeVer == null) {
+            return;
+        }
+        String themeId = themeVer.getThemeId();
+        AeaParTheme aeaParTheme = aeaParThemeMapper.selectOneById(themeId);
+        if (projInfoIds != null && projInfoIds.length > 0) {
+            for (String projInfoId : projInfoIds) {
+                AeaProjInfo projInfo = aeaProjInfoMapper.getAeaProjInfoById(projInfoId);
+                // 主线的才绑定
+                if (Status.ON.equals(aeaParTheme.getIsMainline()) || StringUtils.isBlank(projInfo.getThemeId())) {
+                    projInfo.setThemeId(themeId);
+                }
+                projInfo.setThemeVerId(themeVerId);
+                projInfo.setModifyTime(new Date());
+                projInfo.setModifier(SecurityContext.getCurrentUserId());
+                aeaProjInfoMapper.updateAeaProjInfo(projInfo);
+            }
+        }
     }
 
     /**
