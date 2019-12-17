@@ -607,6 +607,7 @@ var vm = new Vue({
       formAllNum: 0,
       formFilledNum: 0,
       formUnFillNum: 0,
+      oneFormOpened: false,
     }
   },
   created: function () {
@@ -5897,6 +5898,8 @@ var vm = new Vue({
         vm.oneformActiveName = oneFormInfo[0].formId;
       }
       vm.oneFormDialogVisible = true;
+      if (vm.oneFormOpened) return null;
+      vm.oneFormOpened = true;
       vm.$nextTick(function(){
         vm.allFormInfoList.forEach(function(u, index){
           if (u.smartForm){
