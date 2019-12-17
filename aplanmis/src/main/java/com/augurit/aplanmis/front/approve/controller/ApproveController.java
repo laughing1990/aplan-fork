@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -277,4 +278,18 @@ public class ApproveController {
     }
 
 
+    @GetMapping("/apply/att/download/all")
+    @ApiOperation(value = "审批详情页--> 一键下载所有申报材料")
+    @ApiImplicitParam(name = "applyinstId", value = "申报实例ID", dataType = "string", required = true)
+    public ContentResultForm downloadAttachment(String applyinstId, HttpServletResponse response, HttpServletRequest request) {
+        try {
+            if (StringUtils.isBlank(applyinstId)) {
+                return new ContentResultForm<>(false, null, "申报实例ID不能为空!");
+            }
+            approveService.downloadAllApplyMatsByApplyinstId(applyinstId,response,request);
+            return new ContentResultForm<>(true);
+        } catch (Exception e) {
+            return new ContentResultForm<>(false, null, "找不到文件!");
+        }
+    }
 }
