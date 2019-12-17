@@ -105,12 +105,12 @@ public class ParThemeService {
                 if (bscDicCodeItem != null) {
                     themeTypeVo.buildThemeTypeVo(bscDicCodeItem);
                 }
-                themeTypeVoMap.put(theme.getThemeType(), themeTypeVo);
+                themeTypeVoMap.put(themeTypeVo.getThemeType(), themeTypeVo);
             }
             ThemeVo themeVo = ThemeVo.buildTheme(theme);
             themeTypeVo.getThemes().add(themeVo);
-            voList.add(themeTypeVo);
         });
+        voList.addAll(themeTypeVoMap.values());
         return voList;
     }
 }
