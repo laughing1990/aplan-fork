@@ -2789,10 +2789,43 @@ var vm = new Vue({
         data.itemHaved = false;
         data.orgId = item.orgId;
         data.implementItemVerId = item.itemVerId;
+        var tabList = _that.model.matsTableData;
+        var tabListLen = tabList.length;
+        var selStateIds = _that.getStatusListId();
         if(flag == 'core'){
           _that.coreItemsSelItem(selCoreItemVer,data);
+          for(var i=0;i<tabListLen;i++) {
+            var obj = tabList[i];
+            if (obj && (obj._itemType == "coreItem")) { // 清空事项下材料
+              if (obj._itemVerIds.length == 1 && obj._itemVerIds.indexOf(data.itemVerId)>-1&& (typeof obj._parStateId == 'undefined' || obj._parStateId.length == 0 || (obj.parStateId&&selStateIds.indexOf(obj.parStateId)<0))) {
+                _that.model.matsTableData.splice(i, 1);
+                obj._itemVerIds = [];
+                i--
+              } else {
+                var index = obj._itemVerIds.indexOf(data.itemVerId);
+                if (index > -1) {
+                  obj._itemVerIds.splice(index, 1);
+                }
+              }
+            }
+          }
         }else {
-          if(_that.itemVerIdsString == (_itemVerIdS.join(','))){
+          for(var i=0;i<tabListLen;i++) {
+            var obj = tabList[i];
+            if (obj && (obj._itemType == "parallelItems")) { // 清空事项下材料
+              if (obj._itemVerIds.length == 1 && obj._itemVerIds.indexOf(data.itemVerId)>-1 && (typeof obj._parStateId == 'undefined' || obj._parStateId.length == 0 || (obj.parStateId&&selStateIds.indexOf(obj.parStateId)<0))) {
+                _that.model.matsTableData.splice(i, 1);
+                obj._itemVerIds = [];
+                i--
+              } else {
+                var index = obj._itemVerIds.indexOf(data.itemVerId);
+                if (index > -1) {
+                  obj._itemVerIds.splice(index, 1);
+                }
+              }
+            }
+          }
+          if(_that.itemVerIdsString!=''&&_that.itemVerIdsString == (_itemVerIdS.join(','))){
             return false;
           }else {
             if(_that.parallelItemsQuestionFlag!==true) {
