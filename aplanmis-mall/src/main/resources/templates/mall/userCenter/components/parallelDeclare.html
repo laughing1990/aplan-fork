@@ -992,9 +992,9 @@
       </el-form>
     </div>
 
-    <!-- 并联事项列表 -->
+    <!-- 并联审批事项列表 -->
     <h4 class="mt60 mt20" v-if="parallelItems&&parallelItems.length>0" @click="showParallelItems = !showParallelItems">
-      并联事项
+      并联审批事项
       <i class="fr" :class="showParallelItems?'el-icon-arrow-down':'el-icon-arrow-right'"></i>
       <p v-if="parallelItems&&parallelItems.length>0" class="fr explain-box">
         <span>
@@ -1415,7 +1415,7 @@
         </tr>
       </table>
     </el-collapse-transition>
-    <h4 class="mt40" @click="applySuccessProjInfo3 = !applySuccessProjInfo3" v-if="applySuccessProjInfo.paraItemVoList&&applySuccessProjInfo.paraItemVoList.length>0">并联事项<i class="fr" :class="applySuccessProjInfo3?'el-icon-arrow-down':'el-icon-arrow-right'"></i> </h4>
+    <h4 class="mt40" @click="applySuccessProjInfo3 = !applySuccessProjInfo3" v-if="applySuccessProjInfo.paraItemVoList&&applySuccessProjInfo.paraItemVoList.length>0">并联审批事项<i class="fr" :class="applySuccessProjInfo3?'el-icon-arrow-down':'el-icon-arrow-right'"></i> </h4>
     <el-collapse-transition>
       <el-table border
                 v-show="applySuccessProjInfo3"
@@ -1447,7 +1447,7 @@
         </el-table-column>
       </el-table>
     </el-collapse-transition>
-    <h4 class="mt40" @click="applySuccessProjInfo4 = !applySuccessProjInfo4" v-if="applySuccessProjInfo.coreItemList&&applySuccessProjInfo.coreItemList.length>0">并行事项<i class="fr" :class="applySuccessProjInfo4?'el-icon-arrow-down':'el-icon-arrow-right'"></i> </h4>
+    <h4 class="mt40" @click="applySuccessProjInfo4 = !applySuccessProjInfo4" v-if="applySuccessProjInfo.coreItemList&&applySuccessProjInfo.coreItemList.length>0">并行推进事项<i class="fr" :class="applySuccessProjInfo4?'el-icon-arrow-down':'el-icon-arrow-right'"></i> </h4>
     <el-collapse-transition>
       <el-table border
                 v-show="applySuccessProjInfo4"

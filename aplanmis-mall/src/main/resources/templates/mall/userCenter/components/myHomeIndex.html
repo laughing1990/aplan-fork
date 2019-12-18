@@ -502,7 +502,7 @@
                             </el-tooltip>
                             <el-tooltip placement="top" effect="light" v-else>
                                 <div slot="content">所属主题：{{scope.row.themeName}} <br/> <br/>
-                                    所属阶段：{{scope.row.stageIteminstName}}<br/> <br/>
+                                    所处阶段：{{scope.row.stageIteminstName}}<br/> <br/>
                                     办理事项:
                                     <template v-for="dto in scope.row.iteminst">
                                         <div style="line-height: 20px;">【<span :style="'color:' + iteminstStateColorFormat(dto.iteminstState)">{{dto.iteminstState|iteminstStateFormat }}</span>】{{ dto.iteminstName }}</div>
