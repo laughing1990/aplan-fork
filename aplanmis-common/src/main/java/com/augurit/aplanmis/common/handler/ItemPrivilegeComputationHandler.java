@@ -314,6 +314,9 @@ public final class ItemPrivilegeComputationHandler {
         @ApiModelProperty(value = "是否绿色通道", notes = "1: 是, 0: 否")
         private String isGreenWay;
 
+        @ApiModelProperty(value = "是否必选事项", notes = "1: 是, 0: 否")
+        private String isOptionItem;
+
         @ApiModelProperty(value = "实施事项", notes = "列表, 当isCatalog=1时，该列表不为空，否则给出提示，说明标准事项下无法找到对应的实施事项")
         private List<CarryOutItem> carryOutItems;
 
@@ -337,6 +340,7 @@ public final class ItemPrivilegeComputationHandler {
             computedItem.setIsCatalog(origin.getIsCatalog());
             computedItem.setItemExchangeWay(origin.getItemExchangeWay());
             computedItem.setIsGreenWay(origin.getIsGreenWay());
+            computedItem.setIsOptionItem(origin.getIsOptionItem());
             return computedItem;
         }
     }

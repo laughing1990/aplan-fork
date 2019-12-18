@@ -172,6 +172,9 @@
     <!-- 选择表单 -->
     <%@include file="../../../common/ztree/select_form_no_right_ztree.jsp" %>
 
+    <!-- 选择标准材料 -->
+    <%@include file="../../../common/ztree/select_stdmat_no_right_ztree.jsp" %>
+
     <!-- 选择电子证照文件库 -->
     <%@include file="../../../aplanmis/cert/select_bsc_att_dir_ztree.jsp"%>
 

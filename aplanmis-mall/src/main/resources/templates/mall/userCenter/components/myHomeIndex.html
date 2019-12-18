@@ -402,12 +402,12 @@
 <!--                        <p class="checkDetail" @click="toMyMaterials">查看详情</p>-->
                     </a>
                 </li>
-<!--                <li class="data-list-item fl" @click="toMyCertificateLibrary">-->
-<!--                    <a target="_blank" >-->
-<!--                        <img src="../../../../static/mall/images/userCenter/data-icon-3.png" th:src="@{/mall/images/userCenter/data-icon-3.png}" alt="">-->
-<!--                        <p>我的证照库</p>-->
-<!--                    </a>-->
-<!--                </li>-->
+                <li class="data-list-item fl" @click="toMyCertificateLibrary">
+                    <a target="_blank" >
+                        <img src="../../../../static/mall/images/userCenter/data-icon-3.png" th:src="@{/mall/images/userCenter/data-icon-3.png}" alt="">
+                        <p>我的证照库</p>
+                    </a>
+                </li>
                 <li class="data-list-item fl" @click="toMyCloundSpaces">
                     <a target="_blank">
                         <img src="../../../../static/mall/images/userCenter/data-icon-4.png"
@@ -502,7 +502,7 @@
                             </el-tooltip>
                             <el-tooltip placement="top" effect="light" v-else>
                                 <div slot="content">所属主题：{{scope.row.themeName}} <br/> <br/>
-                                    所属阶段：{{scope.row.stageIteminstName}}<br/> <br/>
+                                    所处阶段：{{scope.row.stageIteminstName}}<br/> <br/>
                                     办理事项:
                                     <template v-for="dto in scope.row.iteminst">
                                         <div style="line-height: 20px;">【<span :style="'color:' + iteminstStateColorFormat(dto.iteminstState)">{{dto.iteminstState|iteminstStateFormat }}</span>】{{ dto.iteminstName }}</div>

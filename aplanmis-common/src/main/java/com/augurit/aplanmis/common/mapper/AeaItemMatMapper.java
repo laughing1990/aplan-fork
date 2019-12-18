@@ -31,8 +31,13 @@ public interface AeaItemMatMapper {
 
     List<AeaItemMat> getMatListByStageStateIds(@Param("ids") String[] StageStateId);
 
+    List<AeaItemMat> getMatListByStageStateIdsWithAllItemVerId(@Param("ids") String[] StageStateId);
+
     List<AeaItemMat> getMatListByStageId(@Param("stageId") String stageId,
                                          @Param("isNeedStateMat") String isNeedStateMat);
+
+    List<AeaItemMat> getMatListByStageIdWithAllItemVerId(@Param("stageId") String stageId,
+                                                         @Param("isNeedStateMat") String isNeedStateMat);
 
     List<AeaItemMat> listMatListByStageId(@Param("stageId") String stageId,
                                           @Param("itemVerIds") List<String> itemVerIds);

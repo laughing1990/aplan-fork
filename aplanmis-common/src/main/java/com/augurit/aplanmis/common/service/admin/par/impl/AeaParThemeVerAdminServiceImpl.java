@@ -498,7 +498,7 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
         basic.setPkName("STAGE_ID");
         basic.setRecordId(oldStageId);
         basic.setRootOrgId(topOrgId);
-        List<AeaItemServiceBasic> basicList = aeaItemServiceBasicMapper.listAeaItemServiceBasic(basic);
+        List<AeaItemServiceBasic> basicList = aeaItemServiceBasicMapper.listAeaItemServiceBasicNoRel(basic);
         if (basicList != null && basicList.size() > 0) {
             for (AeaItemServiceBasic item : basicList) {
                 item.setBasicId(UuidUtil.generateUuid());

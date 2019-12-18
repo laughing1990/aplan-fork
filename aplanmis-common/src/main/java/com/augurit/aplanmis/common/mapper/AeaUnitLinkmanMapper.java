@@ -33,9 +33,34 @@ public interface AeaUnitLinkmanMapper {
 
     int batchInsertAeaUnitLinkman(@Param("aeaUnitLinkmanList") List<AeaUnitLinkman> aeaUnitLinkmanList);
 
-    int deleteUnitLinkman(@Param("unitInfoId") String unitInfoId,@Param("linkmanInfoIds") String[] linkmanInfoIds);
+    int deleteUnitLinkman(@Param("unitInfoId") String unitInfoId, @Param("linkmanInfoIds") String[] linkmanInfoIds);
 
     void updateAeaUnitLinkmanByUnitAndLinkman(AeaUnitLinkman aeaUnitLinkman);
 
-    List<String> getLinkManIdByUnitInfoId(@Param("unitInfoId")String unitInfoId);
+    List<String> getLinkManIdByUnitInfoId(@Param("unitInfoId") String unitInfoId);
+
+    /**
+     * 查询联系人所属单位
+     *
+     * @param linkmanInfoId 联系人ID
+     * @return List<AeaUnitLinkman>
+     */
+    List<AeaUnitLinkman> getLinkManIdByLinkmanInfoId(@Param("linkmanInfoId") String linkmanInfoId) throws Exception;
+
+    /**
+     * 查询单位联系人关联表
+     *
+     * @param unitInfoId    单位ID
+     * @param linkmanInfoId 联系人ID
+     * @return List<AeaUnitLinkman>
+     */
+    List<AeaUnitLinkman> getAeaUnitLinkmanByUnitIdOrLinkId(@Param("unitInfoId") String unitInfoId, @Param("linkmanInfoId") String linkmanInfoId);
+
+    /**
+     * 物理删除单位与联系人关联表数据
+     *
+     * @param unitInfoId
+     * @param linkmanInfoId
+     */
+    int deleteAeaUnitLinkmanByUnitIdAndLinkmanId(@Param("unitInfoId") String unitInfoId, @Param("linkmanInfoId") String linkmanInfoId) throws Exception;
 }

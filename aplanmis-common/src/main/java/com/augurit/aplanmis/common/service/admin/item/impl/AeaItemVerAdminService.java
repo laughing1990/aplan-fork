@@ -722,7 +722,7 @@ public class AeaItemVerAdminService {
         basic.setPkName("ITEM_VER_ID");
         basic.setRecordId(oldItemVerId);
         basic.setRootOrgId(rootOrgId);
-        List<AeaItemServiceBasic> basicList = aeaItemServiceBasicMapper.listAeaItemServiceBasicWithLegal(basic);
+        List<AeaItemServiceBasic> basicList = aeaItemServiceBasicMapper.listAeaItemServiceBasicNoRel(basic);
         if(basicList!=null&&basicList.size()>0){
             for( AeaItemServiceBasic vo : basicList){
                 vo.setBasicId(UuidUtil.generateUuid());

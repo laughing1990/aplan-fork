@@ -735,6 +735,9 @@ function clearSearchLegal() {
     // 清空查询内容
     $('#keyWord').val('');
     showAllNode(legalTree.getNodes());
+    setTimeout(function() {
+        expandAll();
+    }, 300);
 }
 
 // == 附件部分 ==

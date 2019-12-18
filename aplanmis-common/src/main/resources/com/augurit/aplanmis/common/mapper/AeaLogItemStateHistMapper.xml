@@ -66,6 +66,20 @@
         ahicsh.CORRECT_ID = #{correctId}
     </select>
 
+    <select id="getLastAeaLogItemStateHistByState" resultType="AeaLogItemStateHist">
+        select
+        <include refid="allColumns"/>
+        from AEA_LOG_ITEM_STATE_HIST
+        where
+        ITEMINST_ID = #{iteminstId}
+        and
+        NEW_STATE = #{newState}
+        and
+        ROOT_ORG_ID = #{rootOrgId}
+        ORDER BY TRIGGER_TIME DESC
+        limit 1
+    </select>
+
     <!--3 根据条件查询实体list -->
     <select id="listAeaLogItemStateHist" resultType="AeaLogItemStateHist">
         select

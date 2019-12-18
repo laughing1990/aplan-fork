@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.common.service.apply;
 
 import com.augurit.aplanmis.common.constants.ApplyType;
+import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import com.augurit.aplanmis.common.domain.AeaHiIteminst;
 
 import java.util.Map;
@@ -30,4 +31,11 @@ public interface ApplyCommonService {
     void bindApplyinstProj(String projInfoId, String applyinstId, String currentUserId) throws Exception;
 
     void bindThemeAndProject(String[] projInfoIds, String themeVerId);
+
+    /**
+     * 更新申报流程及子流程流程主变量
+     * @param updateApplyinst 需要更新的申报实例
+     * @throws Exception
+     */
+    void updateApplyProcessVariable(AeaHiApplyinst updateApplyinst) throws Exception;
 }

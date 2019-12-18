@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-12-13 09:48:20 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiApplyinstCancelLogMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    CANCEL_LOG_ID  cancelLogId,
+    APPLYINST_CANCEL_ID  applyinstCancelId,
+    APPLY_STATE_HIST_ID  applyStateHistId,
+    CREATER  creater,
+    CREATE_TIME  createTime
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaHiApplyinstCancelLogById" resultType="AeaHiApplyinstCancelLog" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_HI_APPLYINST_CANCEL_LOG
+    where    CANCEL_LOG_ID = #{id}
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaHiApplyinstCancelLog" resultType="AeaHiApplyinstCancelLog" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_HI_APPLYINST_CANCEL_LOG
+    <where>
+        <if test="cancelLogId != null" >
+        AND    CANCEL_LOG_ID = #{cancelLogId}
+        </if>
+        <if test="applyinstCancelId != null" >
+        AND    APPLYINST_CANCEL_ID = #{applyinstCancelId}
+        </if>
+        <if test="applyStateHistId != null" >
+        AND    APPLY_STATE_HIST_ID = #{applyStateHistId}
+        </if>
+        <if test="creater != null" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaHiApplyinstCancelLog" parameterType="AeaHiApplyinstCancelLog" >
+    insert into AEA_HI_APPLYINST_CANCEL_LOG (
+CANCEL_LOG_ID  ,APPLYINST_CANCEL_ID  ,APPLY_STATE_HIST_ID  ,CREATER  ,CREATE_TIME  
+    )  values  (
+#{cancelLogId},#{applyinstCancelId},#{applyStateHistId},#{creater},  #{createTime}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaHiApplyinstCancelLog" parameterType="AeaHiApplyinstCancelLog" >
+    update AEA_HI_APPLYINST_CANCEL_LOG
+    <set >
+        <if test="cancelLogId != null" >
+        CANCEL_LOG_ID = #{cancelLogId},
+        </if>
+        <if test="applyinstCancelId != null" >
+        APPLYINST_CANCEL_ID = #{applyinstCancelId},
+        </if>
+        <if test="applyStateHistId != null" >
+        APPLY_STATE_HIST_ID = #{applyStateHistId},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+    </set>
+    where CANCEL_LOG_ID = #{cancelLogId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaHiApplyinstCancelLog">
+        delete from   AEA_HI_APPLYINST_CANCEL_LOG
+        where
+    CANCEL_LOG_ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaHiApplyinstCancelLog" id="AeaHiApplyinstCancelLogMap">
+        <id property="cancelLogId" column="CANCEL_LOG_ID"/>
+        <result property="applyinstCancelId" column="APPLYINST_CANCEL_ID"/>
+        <result property="applyStateHistId" column="APPLY_STATE_HIST_ID"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+    </resultMap>
+</mapper>

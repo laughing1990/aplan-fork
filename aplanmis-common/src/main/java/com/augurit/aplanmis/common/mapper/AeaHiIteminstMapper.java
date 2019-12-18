@@ -38,7 +38,8 @@ public interface AeaHiIteminstMapper {
 
     List<AeaHiIteminst> getAeaHiIteminstListByStageinstId(@Param("stageinstId") String stageinstId) throws Exception;
 
-    List<AeaHiIteminst> getAeaHiIteminstListByApplyinstId(@Param("applyinstId") String applyinstId);
+    //isDeleted  1 则包含 isDeleted字段
+    List<AeaHiIteminst> getAeaHiIteminstListByApplyinstId(@Param("applyinstId") String applyinstId,@Param("isDeleted") String isDeleted);
 
     List<ApproveProjInfoDto> getApproveProjInfoListByUnitOrLinkman(@Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId, @Param("state") String state, @Param("keyword") String keyword);
 
@@ -109,7 +110,7 @@ public interface AeaHiIteminstMapper {
 
     int countTotalItemByApplyType(@Param("isSeriesApprove") String isSeriesApprove, @Param("rootOrgId") String rootOrgId);
 
-    List<AeaHiIteminst> getAeaHiIteminstListByApplyinstIds(@Param("ids") List<String> applyinstIds, @Param("isSeriesApprove") String isSeriesApprove);
+    List<AeaHiIteminst> getAeaHiIteminstListByApplyinstIds(@Param("ids") List<String> applyinstIds, @Param("isSeriesApprove") String isSeriesApprove,@Param("isDeleted") String isDeleted);
 
     /**
      * 查询部门对应状态和来源办件数

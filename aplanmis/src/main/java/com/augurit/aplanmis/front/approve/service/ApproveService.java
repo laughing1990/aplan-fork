@@ -153,7 +153,7 @@ public class ApproveService {
         }
         String isApprove = applyInst.getIsSeriesApprove();
         //2、审批状态
-        List<AeaHiIteminst> iteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId);
+        List<AeaHiIteminst> iteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId,"0");
         if (iteminstList == null || iteminstList.size() == 0) {
             throw new RuntimeException("iteminstList is null");
         }

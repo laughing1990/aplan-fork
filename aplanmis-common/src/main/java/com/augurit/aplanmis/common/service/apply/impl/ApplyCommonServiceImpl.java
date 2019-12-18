@@ -1,5 +1,9 @@
 package com.augurit.aplanmis.common.service.apply.impl;
 
+import com.augurit.agcloud.bpm.common.domain.ActStoAppinst;
+import com.augurit.agcloud.bpm.common.domain.ActStoAppinstSubflow;
+import com.augurit.agcloud.bpm.common.mapper.ActStoAppinstMapper;
+import com.augurit.agcloud.bpm.common.mapper.ActStoAppinstSubflowMapper;
 import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
@@ -36,6 +40,7 @@ import com.augurit.aplanmis.common.mapper.AeaParThemeVerMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
 import com.augurit.aplanmis.common.service.apply.ApplyCommonService;
 import lombok.extern.slf4j.Slf4j;
+import org.flowable.engine.RuntimeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,6 +87,12 @@ public class ApplyCommonServiceImpl implements ApplyCommonService {
     private AeaParThemeMapper aeaParThemeMapper;
     @Autowired
     private AeaProjInfoMapper aeaProjInfoMapper;
+    @Autowired
+    private RuntimeService runtimeService;
+    @Autowired
+    private ActStoAppinstMapper actStoAppinstMapper;
+    @Autowired
+    private ActStoAppinstSubflowMapper actStoAppinstSubflowMapper;
 
 
     @Override
@@ -157,7 +168,7 @@ public class ApplyCommonServiceImpl implements ApplyCommonService {
         List<String> deletingItemStateinstIds = null;
         List<String> deletingStageStateinstIds = null;
 
-        deletingIteminstIds = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId)
+        deletingIteminstIds = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId,null)
                 .stream().map(AeaHiIteminst::getIteminstId).collect(Collectors.toList());
         if (CollectionUtils.isNotEmpty(deletingIteminstIds)) {
             List<AeaHiItemInoutinst> aeaHiItemInoutinsts = aeaHiItemInoutinstMapper.getAeaHiItemInoutinstByIteminstIds(deletingIteminstIds.toArray(new String[0]));
@@ -241,5 +252,36 @@ public class ApplyCommonServiceImpl implements ApplyCommonService {
                 aeaProjInfoMapper.updateAeaProjInfo(projInfo);
             }
         }
+    }
+
+    @Override
+    public void updateApplyProcessVariable(AeaHiApplyinst updateApplyinst) throws Exception {
+        if(updateApplyinst==null)
+            throw new RuntimeException("更新流程变量失败：更新的对象为空！");
+
+        String applyinstId = updateApplyinst.getApplyinstId();
+        ActStoAppinst actStoAppinst = new ActStoAppinst();
+        actStoAppinst.setMasterRecordId(applyinstId);
+        List <ActStoAppinst> appinstList = actStoAppinstMapper.listActStoAppinst(actStoAppinst);
+
+        if(appinstList!=null&&appinstList.size()>0){
+            ActStoAppinst masterAppinst = appinstList.get(0);
+
+            String masterProcinstId = masterAppinst.getProcinstId();
+
+            runtimeService.setVariable(masterProcinstId,"form",updateApplyinst);
+
+            ActStoAppinstSubflow subflow = new ActStoAppinstSubflow();
+            subflow.setAppinstId(masterAppinst.getAppinstId());
+            List<ActStoAppinstSubflow> subflowList = actStoAppinstSubflowMapper.listActStoAppinstSubflow(subflow);
+            if(subflowList!=null&&subflowList.size()>0){
+                for(ActStoAppinstSubflow stoAppinstSubflow:subflowList){
+                    String subflowProcinstId = stoAppinstSubflow.getSubflowProcinstId();
+
+                    runtimeService.setVariable(subflowProcinstId,"form",updateApplyinst);
+                }
+            }
+        }
+
     }
 }

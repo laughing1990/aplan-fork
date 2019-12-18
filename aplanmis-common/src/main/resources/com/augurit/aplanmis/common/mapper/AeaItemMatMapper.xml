@@ -210,6 +210,36 @@
         ORDER BY api.SORT_NO
     </select>
 
+    <select id="getMatListByStageStateIdsWithAllItemVerId" resultType="AeaItemMat">
+        SELECT
+        <include refid="allColumns_aim"/>,apsi.is_option_item isOptionItem, apsi.item_ver_id itemVerId, api.IN_ID
+        parInId,api.PAR_STATE_ID parStateId,
+        cert.cert_name certName,
+        form.form_name formName
+        FROM
+        aea_item_mat aim
+        join aea_par_in api on aim.MAT_ID = api.MAT_ID
+        join aea_par_stage aps on aps.STAGE_ID = api.STAGE_ID
+        join aea_par_stage_item apsi on apsi.stage_id=aps.stage_id
+        join aea_par_stage_item_in apsii on apsii.stage_item_id=apsi.stage_item_id and apsii.in_id=api.in_id
+        left join aea_cert cert on cert.cert_id=aim.cert_id
+        left join act_sto_form form on form.form_id=aim.sto_form_id
+        WHERE aim.IS_DELETED = '0'
+        AND api.IS_DELETED = '0'
+        AND api.IS_STATE_IN = '1'
+        AND api.PAR_STATE_ID IN
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="ids" item="item" open="(" separator="union all" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <foreach collection="ids" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
     <select id="getMatListByStageStateIdsAndItemVerId" resultType="AeaItemMat">
         SELECT
         <include refid="allColumns_aim"/>,api.IN_ID parInId,api.PAR_STATE_ID parStateId
@@ -324,9 +354,10 @@
         ORDER BY aim.SORT_NO_
     </select>
 
-    <select id="listMatListByStageId" resultType="AeaItemMat">
+    <select id="getMatListByStageIdWithAllItemVerId" resultType="AeaItemMat">
         SELECT
-        <include refid="allColumns_aim"/>, aim.itemVerId, cert.cert_name certName, form.form_name formName
+        <include refid="allColumns_aim"/>, aim.isOptionItem, aim.itemVerId, cert.cert_name certName, form.form_name
+        formName
         FROM
         (
         SELECT
@@ -335,6 +366,55 @@
         api.PAR_STATE_ID,
         api.SORT_NO AS SORT_NO_,
         apsi.item_ver_id itemVerId,
+        apsi.is_option_item isOptionItem,
+        mat.*
+        FROM
+        aea_par_in api
+        join aea_item_mat mat on api.MAT_ID = mat.MAT_ID
+        join aea_par_stage aps on aps.STAGE_ID = api.STAGE_ID
+        join aea_par_stage_item apsi on apsi.stage_id=aps.stage_id
+        join aea_par_stage_item_in apsii on apsii.stage_item_id=apsi.stage_item_id and apsii.in_id=api.in_id
+        WHERE api.IS_DELETED = '0'
+        AND mat.IS_DELETED = '0'
+        AND aps.STAGE_ID = #{stageId}
+        ) aim
+        left join aea_cert cert on cert.cert_id=aim.cert_id
+        left join act_sto_form form on form.form_id=aim.sto_form_id
+        WHERE
+        ( aim.IS_NEED_STATE = '1' AND aim.IS_STATE_IN = '0'
+        <if test="isNeedStateMat !=null and isNeedStateMat == 1">
+            OR (
+            aim.IS_STATE_IN = '1'
+            AND
+            aim.PAR_STATE_ID IN (
+            SELECT
+            PAR_STATE_ID
+            FROM
+            aea_par_state
+            WHERE
+            STAGE_ID = #{stageId}
+            AND PARENT_STATE_ID IS NULL
+            AND IS_DELETED = '0'
+            )
+            )
+        </if>
+        )
+        OR ( aim.IS_NEED_STATE = '0' )
+    </select>
+
+    <select id="listMatListByStageId" resultType="AeaItemMat">
+        SELECT
+        <include refid="allColumns_aim"/>, aim.isOptionItem, aim.itemVerId, cert.cert_name certName, form.form_name
+        formName
+        FROM
+        (
+        SELECT
+        aps.IS_NEED_STATE,
+        api.IS_STATE_IN,
+        api.PAR_STATE_ID,
+        api.SORT_NO AS SORT_NO_,
+        apsi.item_ver_id itemVerId,
+        apsi.is_option_item isOptionItem,
         mat.*
         FROM
         aea_par_in api

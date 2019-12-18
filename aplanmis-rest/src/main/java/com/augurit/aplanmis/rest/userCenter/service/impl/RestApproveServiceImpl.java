@@ -421,7 +421,7 @@ public class RestApproveServiceImpl implements RestApproveService {
 
         //最新的项目状态
         List<String> parallelApplyinstIds = parallelApplyinsts.size() > 0 ? parallelApplyinsts.stream().map(AeaHiApplyinst::getApplyinstId).collect(Collectors.toList()) : new ArrayList<>();
-        List<AeaHiIteminst> parallellAeaHiIteminstList = parallelApplyinstIds.size() > 0 ? aeaHiIteminstService.getAeaHiIteminstListByApplyinstIds(parallelApplyinstIds, ApplyType.UNIT.getValue()) : new ArrayList<>();
+        List<AeaHiIteminst> parallellAeaHiIteminstList = parallelApplyinstIds.size() > 0 ? aeaHiIteminstService.getAeaHiIteminstListByApplyinstIds(parallelApplyinstIds, ApplyType.UNIT.getValue(),"0") : new ArrayList<>();
         List<AeaParStageVo> paralleStages = new ArrayList<>();
         AtomicReference<Boolean> isCurrentStage = new AtomicReference<>(false);//是否是处于办理中的阶段
         for (AeaParStage stage : stages) {
@@ -513,7 +513,7 @@ public class RestApproveServiceImpl implements RestApproveService {
             //最新的项目状态
             List<String> coreApplyinstIds = coreApplyinsts.size() > 0 ? coreApplyinsts.stream().map(AeaHiApplyinst::getApplyinstId).collect(Collectors.toList()) : new ArrayList<>();
 
-            List<AeaHiIteminst> coreAeaHiIteminstList = coreApplyinstIds.size() > 0 ? aeaHiIteminstService.getAeaHiIteminstListByApplyinstIds(coreApplyinstIds, ApplyType.SERIES.getValue()) : new ArrayList<>();
+            List<AeaHiIteminst> coreAeaHiIteminstList = coreApplyinstIds.size() > 0 ? aeaHiIteminstService.getAeaHiIteminstListByApplyinstIds(coreApplyinstIds, ApplyType.SERIES.getValue(),"0") : new ArrayList<>();
             List<AeaItemBasicVo> corellelItemVos = new ArrayList<>();
             AtomicInteger coreEndItem = new AtomicInteger();//并行办结事项数
             //if (coreAeaHiIteminstList.size()>0){
