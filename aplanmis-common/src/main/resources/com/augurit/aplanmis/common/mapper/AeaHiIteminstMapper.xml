@@ -39,7 +39,8 @@
         PROCINST_ID procinstId,
         ITEMINST_TYPE iteminstType,
         TOLERANCE_TIME toleranceTime,
-        TIMERULE_ID timeruleId
+        TIMERULE_ID timeruleId,
+     IS_SUSPENDED_BEFORE  isSuspendedBefore
     </sql>
 
     <sql id="aliasColumns">
@@ -77,7 +78,8 @@
         ${alias}.PROCINST_ID procinstId,
         ${alias}.ITEMINST_TYPE iteminstType,
         ${alias}.TOLERANCE_TIME toleranceTime,
-        ${alias}.TIMERULE_ID timeruleId
+        ${alias}.TIMERULE_ID timeruleId,
+        ${alias}.IS_SUSPENDED_BEFORE  isSuspendedBefore
     </sql>
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaHiIteminstById" resultType="AeaHiIteminst">
@@ -208,6 +210,9 @@
             <if test="timeruleId != null">
                 AND TIMERULE_ID = #{timeruleId}
             </if>
+            <if test="isSuspendedBefore != null">
+                AND IS_SUSPENDED_BEFORE = #{isSuspendedBefore}
+            </if>
         </where>
     </select>
     <!--4 根据条件查询实体list,返回分页对象 -->
@@ -219,12 +224,12 @@
                                      START_TIME, REGISTER_TIME, SIGN_TIME, END_TIME, PUBLIC_MODE, ITEMINST_STATE, ACCEPT_TIME,
                                      INNER_APPINST_ID, CREATER, CREATE_TIME, MODIFIER, MODIFY_TIME, ITEMINST_LEVEL,
         BUSINESS_STATE, ITEM_VER_ID,
-        IS_JOIN_APPROVAL,ITEM_APPLY_CODE,IS_TOLERANCE_ACCEPT,ROOT_ORG_ID,PROCINST_ID,ITEMINST_TYPE,TOLERANCE_TIME,TIMERULE_ID)
+        IS_JOIN_APPROVAL,ITEM_APPLY_CODE,IS_TOLERANCE_ACCEPT,ROOT_ORG_ID,PROCINST_ID,ITEMINST_TYPE,TOLERANCE_TIME,TIMERULE_ID,IS_SUSPENDED_BEFORE)
         values (#{iteminstId}, #{itemId}, #{iteminstCode}, #{iteminstName}, #{approveOrgId}, #{isLackIteminst},
                 #{isSeriesApprove}, #{themeVerId}, #{stageinstId}, #{seriesinstId}, #{startTime}, #{registerTime},
                 #{signTime}, #{endTime}, #{publicMode}, #{iteminstState}, #{acceptTime}, #{innerAppinstId}, #{creater}, #{createTime},
         #{modifier}, #{modifyTime}, #{iteminstLevel}, #{businessState}, #{itemVerId},
-        #{isJoinApproval},#{itemApplyCode},#{isToleranceAccept},#{rootOrgId},#{procinstId},#{iteminstType},#{toleranceTime},#{timeruleId})
+        #{isJoinApproval},#{itemApplyCode},#{isToleranceAccept},#{rootOrgId},#{procinstId},#{iteminstType},#{toleranceTime},#{timeruleId},#{isSuspendedBefore})
     </insert>
     <!--6 修改实体对象 -->
     <update id="updateAeaHiIteminst" parameterType="AeaHiIteminst">
@@ -334,7 +339,10 @@
                 TOLERANCE_TIME = #{toleranceTime},
             </if>
             <if test="timeruleId != null">
-                TIMERULE_ID = #{timeruleId}
+                TIMERULE_ID = #{timeruleId},
+            </if>
+            <if test="isSuspendedBefore != null">
+                 IS_SUSPENDED_BEFORE = #{isSuspendedBefore}
             </if>
         </set>
         where ITEMINST_ID = #{iteminstId}
@@ -380,6 +388,7 @@
         <result property="iteminstType" column="ITEMINST_TYPE"/>
         <result property="toleranceTime" column="TOLERANCE_TIME"/>
         <result property="timeruleId" column="TIMERULE_ID"/>
+        <result property="isSuspendedBefore" column="IS_SUSPENDED_BEFORE"/>
     </resultMap>
 
     <select id="getAeaHiIteminstListByStageinstId" resultType="AeaHiIteminst">
@@ -511,7 +520,7 @@
                 ali.LINKMAN_INFO_ID is null
             </if>
             AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND ali.IS_DELETED !=1 AND apl.TYPE='apply' AND
-            aha.IS_SERIES_APPROVE='1' and aha.IS_TEMPORARY_SUBMIT='0'
+            aha.IS_SERIES_APPROVE='1'
             <choose>
                 <when test="state == '0'.toString()">
                     AND aha.APPLYINST_STATE in ('6')
@@ -565,7 +574,7 @@
                 ali.LINKMAN_INFO_ID is null
             </if>
             AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND ali.IS_DELETED !=1 AND
-            apl.TYPE='apply' AND aha.IS_SERIES_APPROVE='0' and aha.IS_TEMPORARY_SUBMIT='0'
+            apl.TYPE='apply' AND aha.IS_SERIES_APPROVE='0'
             <choose>
                 <when test="state == '0'.toString()">
                     AND aha.APPLYINST_STATE in ('6')

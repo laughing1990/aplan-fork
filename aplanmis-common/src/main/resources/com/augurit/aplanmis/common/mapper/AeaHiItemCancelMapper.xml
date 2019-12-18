@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-12-13 09:48:21 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiItemCancelMapper" >
+<!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+    ITEMINST_CANCEL_ID  iteminstCancelId,
+    APPLYINST_CANCEL_ID  applyinstCancelId,
+    ITEMINST_ID  iteminstId,
+    ITEM_STATE_HIST_ID  itemStateHistId,
+    ATT_ID  attId,
+    ITEMINST_NAME  iteminstName,
+    APPROVAL_OPINION  approvalOpinion,
+    APPROVAL_ORG_ID  approvalOrgId,
+    APPROVAL_ORG_NAME  approvalOrgName,
+    APPROVAL_USER_ID  approvalUserId,
+    APPROVAL_USER_NAME  approvalUserName,
+    APPROVAL_SIGN_TIME  approvalSignTime,
+    APPROVAL_END_TIME  approvalEndTime,
+    CANCEL_STATE  cancelState,
+    CANCEL_MEMO  cancelMemo,
+    IS_SUSPENDED_BEFORE  isSuspendedBefore,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    ROOT_ORG_ID  rootOrgId,
+    IS_CONCLUDING  isConcluding,
+    PROC_INST_ID  procInstId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaHiItemCancelById" resultType="AeaHiItemCancel" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_HI_ITEM_CANCEL
+        where    ITEMINST_CANCEL_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaHiItemCancel" resultType="AeaHiItemCancel" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_HI_ITEM_CANCEL
+        <where>
+            <if test="iteminstCancelId != null" >
+                AND    ITEMINST_CANCEL_ID = #{iteminstCancelId}
+            </if>
+            <if test="applyinstCancelId != null" >
+                AND    APPLYINST_CANCEL_ID = #{applyinstCancelId}
+            </if>
+            <if test="iteminstId != null" >
+                AND    ITEMINST_ID = #{iteminstId}
+            </if>
+            <if test="itemStateHistId != null" >
+                AND    ITEM_STATE_HIST_ID = #{itemStateHistId}
+            </if>
+            <if test="attId != null" >
+                AND    ATT_ID = #{attId}
+            </if>
+            <if test="iteminstName != null" >
+                AND    ITEMINST_NAME = #{iteminstName}
+            </if>
+            <if test="approvalOpinion != null" >
+                AND    APPROVAL_OPINION = #{approvalOpinion}
+            </if>
+            <if test="approvalOrgId != null" >
+                AND    APPROVAL_ORG_ID = #{approvalOrgId}
+            </if>
+            <if test="approvalOrgName != null" >
+                AND    APPROVAL_ORG_NAME = #{approvalOrgName}
+            </if>
+            <if test="approvalUserId != null" >
+                AND    APPROVAL_USER_ID = #{approvalUserId}
+            </if>
+            <if test="approvalUserName != null" >
+                AND    APPROVAL_USER_NAME = #{approvalUserName}
+            </if>
+            <if test="approvalSignTime != null" >
+                AND    APPROVAL_SIGN_TIME = #{approvalSignTime}
+            </if>
+            <if test="approvalEndTime != null" >
+                AND    APPROVAL_END_TIME = #{approvalEndTime}
+            </if>
+            <if test="cancelState != null" >
+                AND    CANCEL_STATE = #{cancelState}
+            </if>
+            <if test="cancelMemo != null" >
+                AND    CANCEL_MEMO = #{cancelMemo}
+            </if>
+            <if test="isSuspendedBefore != null" >
+                AND    IS_SUSPENDED_BEFORE = #{isSuspendedBefore}
+            </if>
+            <if test="creater != null" >
+                AND    CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+                AND    CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null" >
+                AND    MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null" >
+                AND    MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null" >
+                AND    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="isConcluding != null" >
+                AND    IS_CONCLUDING = #{isConcluding}
+            </if>
+            <if test="procInstId != null" >
+                AND    PROC_INST_ID = #{procInstId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaHiItemCancel" parameterType="AeaHiItemCancel" >
+    insert into AEA_HI_ITEM_CANCEL (
+ITEMINST_CANCEL_ID  ,APPLYINST_CANCEL_ID  ,ITEMINST_ID  ,ITEM_STATE_HIST_ID  ,ATT_ID  ,ITEMINST_NAME  ,APPROVAL_OPINION  ,APPROVAL_ORG_ID  ,APPROVAL_ORG_NAME  ,APPROVAL_USER_ID  ,APPROVAL_USER_NAME  ,APPROVAL_SIGN_TIME  ,APPROVAL_END_TIME  ,CANCEL_STATE  ,CANCEL_MEMO  ,IS_SUSPENDED_BEFORE  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID  ,IS_CONCLUDING  ,PROC_INST_ID
+    )  values  (
+#{iteminstCancelId},#{applyinstCancelId},#{iteminstId},#{itemStateHistId},#{attId},#{iteminstName},#{approvalOpinion},#{approvalOrgId},#{approvalOrgName},#{approvalUserId},#{approvalUserName},#{approvalSignTime},#{approvalEndTime},#{cancelState},#{cancelMemo},#{isSuspendedBefore},#{creater},#{createTime},#{modifier},#{modifyTime},#{rootOrgId},#{isConcluding},  #{procInstId}
+    )
+</insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaHiItemCancel" parameterType="AeaHiItemCancel" >
+        update AEA_HI_ITEM_CANCEL
+        <set >
+            <if test="iteminstCancelId != null" >
+                ITEMINST_CANCEL_ID = #{iteminstCancelId},
+            </if>
+            <if test="applyinstCancelId != null" >
+                APPLYINST_CANCEL_ID = #{applyinstCancelId},
+            </if>
+            <if test="iteminstId != null" >
+                ITEMINST_ID = #{iteminstId},
+            </if>
+            <if test="itemStateHistId != null" >
+                ITEM_STATE_HIST_ID = #{itemStateHistId},
+            </if>
+            <if test="attId != null" >
+                ATT_ID = #{attId},
+            </if>
+            <if test="iteminstName != null" >
+                ITEMINST_NAME = #{iteminstName},
+            </if>
+            <if test="approvalOpinion != null" >
+                APPROVAL_OPINION = #{approvalOpinion},
+            </if>
+            <if test="approvalOrgId != null" >
+                APPROVAL_ORG_ID = #{approvalOrgId},
+            </if>
+            <if test="approvalOrgName != null" >
+                APPROVAL_ORG_NAME = #{approvalOrgName},
+            </if>
+            <if test="approvalUserId != null" >
+                APPROVAL_USER_ID = #{approvalUserId},
+            </if>
+            <if test="approvalUserName != null" >
+                APPROVAL_USER_NAME = #{approvalUserName},
+            </if>
+            <if test="approvalSignTime != null" >
+                APPROVAL_SIGN_TIME = #{approvalSignTime},
+            </if>
+            <if test="approvalEndTime != null" >
+                APPROVAL_END_TIME = #{approvalEndTime},
+            </if>
+            <if test="cancelState != null" >
+                CANCEL_STATE = #{cancelState},
+            </if>
+            <if test="cancelMemo != null" >
+                CANCEL_MEMO = #{cancelMemo},
+            </if>
+            <if test="isSuspendedBefore != null" >
+                IS_SUSPENDED_BEFORE = #{isSuspendedBefore},
+            </if>
+            <if test="creater != null" >
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null" >
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null" >
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="rootOrgId != null" >
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+            <if test="isConcluding != null" >
+                IS_CONCLUDING = #{isConcluding},
+            </if>
+            <if test="procInstId != null" >
+                PROC_INST_ID = #{procInstId},
+            </if>
+        </set>
+        where ITEMINST_CANCEL_ID = #{iteminstCancelId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaHiItemCancel">
+        delete from   AEA_HI_ITEM_CANCEL
+        where
+    ITEMINST_CANCEL_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaHiItemCancel" id="AeaHiItemCancelMap">
+        <id property="iteminstCancelId" column="ITEMINST_CANCEL_ID"/>
+        <result property="applyinstCancelId" column="APPLYINST_CANCEL_ID"/>
+        <result property="iteminstId" column="ITEMINST_ID"/>
+        <result property="itemStateHistId" column="ITEM_STATE_HIST_ID"/>
+        <result property="attId" column="ATT_ID"/>
+        <result property="iteminstName" column="ITEMINST_NAME"/>
+        <result property="approvalOpinion" column="APPROVAL_OPINION"/>
+        <result property="approvalOrgId" column="APPROVAL_ORG_ID"/>
+        <result property="approvalOrgName" column="APPROVAL_ORG_NAME"/>
+        <result property="approvalUserId" column="APPROVAL_USER_ID"/>
+        <result property="approvalUserName" column="APPROVAL_USER_NAME"/>
+        <result property="approvalSignTime" column="APPROVAL_SIGN_TIME"/>
+        <result property="approvalEndTime" column="APPROVAL_END_TIME"/>
+        <result property="cancelState" column="CANCEL_STATE"/>
+        <result property="cancelMemo" column="CANCEL_MEMO"/>
+        <result property="isSuspendedBefore" column="IS_SUSPENDED_BEFORE"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+        <result property="isConcluding" column="IS_CONCLUDING"/>
+        <result property="procInstId" column="PROC_INST_ID"/>
+    </resultMap>
+</mapper>

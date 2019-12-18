@@ -11,6 +11,7 @@ import com.augurit.aplanmis.common.vo.SupplyOrSpacialCommentVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import io.jsonwebtoken.lang.Assert;
+import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +69,7 @@ public class AeaLogApplyStateHistServiceImpl implements AeaLogApplyStateHistServ
 
     @Override
     public void insertOpsAeaLogApplyStateHist(String applyinstId, String opsUserOpinion, String opsAction, String opsMemo, String oldState, String newState, String opuWindowId) {
-        this.insertOpsLinkBusAeaLogApplyStateHist(applyinstId, opsUserOpinion, opsAction, opsMemo, oldState, newState,opuWindowId, null, null, null);
+        this.insertOpsLinkBusAeaLogApplyStateHist(applyinstId, opsUserOpinion, opsAction, opsMemo, oldState, newState, opuWindowId, null, null, null);
     }
 
     @Override
@@ -148,9 +149,16 @@ public class AeaLogApplyStateHistServiceImpl implements AeaLogApplyStateHistServ
     }
 
     @Override
-    public  List<SupplyOrSpacialCommentVo> findApplyinstCorrectStateHist(String applyinstId, String taskInstId, String rootOrgId){
+    public List<SupplyOrSpacialCommentVo> findApplyinstCorrectStateHist(String applyinstId, String taskInstId, String rootOrgId) {
         Assert.notNull(taskInstId, "任务ID为空！");
-        return aeaLogApplyStateHistMapper.findApplyinstCorrectStateHist(applyinstId,taskInstId,rootOrgId);
+        return aeaLogApplyStateHistMapper.findApplyinstCorrectStateHist(applyinstId, taskInstId, rootOrgId);
+    }
+
+    @Override
+    public AeaLogApplyStateHist getLastApplyStageLogByState(String applyinstId, String newState) {
+        Assert.notNull(applyinstId, "申报ID为空！");
+        Assert.notNull(newState, "状态标志为空！");
+        return aeaLogApplyStateHistMapper.getLastApplyStageLogByState(applyinstId, newState, SecurityContext.getCurrentOrgId());
     }
 }
 

@@ -1304,4 +1304,86 @@
         </sql>
     </changeSet>
 
+    <changeSet id="20191218125400" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_iteminst`
+            ADD COLUMN `IS_SUSPENDED_BEFORE` char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '撤销之前是否有挂起：1 是，0 否（如果不同意撤销，将恢复流程实例之前的状态）' AFTER `IS_DELETED`;
+
+            CREATE TABLE `aea_hi_applyinst_cancel` (
+            `APPLYINST_CANCEL_ID` varchar(50) NOT NULL COMMENT '主键',
+            `APPLYINST_ID` varchar(50) NOT NULL COMMENT '申报实例ID',
+            `PROJ_INFO_ID` varchar(50) NOT NULL COMMENT '项目ID',
+            `APPINST_ID` varchar(50) DEFAULT NULL COMMENT '所属流程实例ID',
+            `ATT_ID` varchar(50) DEFAULT NULL COMMENT '电子附件关联ID',
+            `APPLY_REASON` varchar(1000) DEFAULT NULL COMMENT '撤件原因',
+            `APPLY_USER_ID` varchar(50) DEFAULT NULL COMMENT '申请人ID',
+            `APPLY_USER_NAME` varchar(255) DEFAULT NULL COMMENT '申请人姓名',
+            `APPLY_USER_IDNUMBER` varchar(255) DEFAULT NULL COMMENT '申请人身份证号',
+            `APPLY_USER_PHONE` varchar(255) DEFAULT NULL COMMENT '申请人联系方式',
+            `APPLY_TIME` datetime DEFAULT NULL COMMENT '申请时间',
+            `HANDLE_OPINION` varchar(1000) DEFAULT NULL COMMENT '办理意见',
+            `HANDLE_ORG_ID` varchar(50) DEFAULT NULL COMMENT '办理部门ID',
+            `HANDLE_ORG_NAME` varchar(255) DEFAULT NULL COMMENT '办理部门名称',
+            `HANDLE_USER_ID` varchar(50) DEFAULT NULL COMMENT '办理人ID',
+            `HANDLE_USER_NAME` varchar(255) DEFAULT NULL COMMENT '办理人姓名',
+            `HANDLE_SIGN_TIME` datetime DEFAULT NULL COMMENT '办理签收时间',
+            `HANDLE_END_TIME` datetime DEFAULT NULL COMMENT '办理结束时间',
+            `CANCEL_STATE` char(1) NOT NULL COMMENT '状态：0 已提交，1 已接收，2 已通过，3 未通过，4 无效',
+            `CANCEL_MEMO` varchar(1000) DEFAULT NULL COMMENT '备注',
+            `IS_DELETED` char(1) NOT NULL COMMENT '是否逻辑删除，0表示未删除，1表示已删除',
+            `CREATER` varchar(50) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '根组织ID',
+            `IS_SUSPENDED_BEFORE` char(1) DEFAULT NULL COMMENT '撤销之前是否有挂起：1 是，0 否（如果不同意撤销，将恢复流程实例之前的状态）',
+            PRIMARY KEY (`APPLYINST_CANCEL_ID`),
+            KEY `FK_AEA_HI_APPLYINST_REVOKE_A` (`APPLYINST_ID`),
+            KEY `FK_AEA_HI_APPLYINST_REVOKE_P` (`PROJ_INFO_ID`),
+            CONSTRAINT `FK_AEA_HI_APPLYINST_REVOKE_A` FOREIGN KEY (`APPLYINST_ID`) REFERENCES `aea_hi_applyinst` (`APPLYINST_ID`),
+            CONSTRAINT `FK_AEA_HI_APPLYINST_REVOKE_P` FOREIGN KEY (`PROJ_INFO_ID`) REFERENCES `aea_proj_info` (`PROJ_INFO_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='申报撤件实例表';
+
+            CREATE TABLE `aea_hi_applyinst_cancel_log` (
+            `CANCEL_LOG_ID` varchar(50) NOT NULL COMMENT '主键',
+            `APPLYINST_CANCEL_ID` varchar(50) NOT NULL COMMENT '申报撤件实例ID',
+            `APPLY_STATE_HIST_ID` varchar(50) NOT NULL COMMENT '申请实例历史状态ID',
+            `CREATER` varchar(50) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            PRIMARY KEY (`CANCEL_LOG_ID`),
+            KEY `FK_AEA_APPLYINST_REVOKE_HIST_R` (`APPLYINST_CANCEL_ID`),
+            CONSTRAINT `FK_AEA_APPLYINST_REVOKE_HIST_R` FOREIGN KEY (`APPLYINST_CANCEL_ID`) REFERENCES `aea_hi_applyinst_cancel` (`APPLYINST_CANCEL_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='申报撤件实例和申请实例历史状态关联表';
+
+            CREATE TABLE `aea_hi_item_cancel` (
+            `ITEMINST_CANCEL_ID` varchar(50) NOT NULL COMMENT '主键',
+            `APPLYINST_CANCEL_ID` varchar(50) NOT NULL COMMENT '申报撤件实例ID',
+            `ITEMINST_ID` varchar(50) NOT NULL COMMENT '事项实例ID',
+            `ITEM_STATE_HIST_ID` varchar(50) NOT NULL COMMENT '事项实例历史状态ID',
+            `ATT_ID` varchar(50) DEFAULT NULL COMMENT '电子附件关联ID',
+            `ITEMINST_NAME` varchar(255) DEFAULT NULL COMMENT '事项实例名称',
+            `APPROVAL_OPINION` varchar(1000) DEFAULT NULL COMMENT '审批意见',
+            `APPROVAL_ORG_ID` varchar(50) DEFAULT NULL COMMENT '审批部门ID',
+            `APPROVAL_ORG_NAME` varchar(255) DEFAULT NULL COMMENT '审批部门名称',
+            `APPROVAL_USER_ID` varchar(50) DEFAULT NULL COMMENT '审批人ID',
+            `APPROVAL_USER_NAME` varchar(255) DEFAULT NULL COMMENT '审批人姓名',
+            `APPROVAL_SIGN_TIME` datetime DEFAULT NULL COMMENT '办理签收时间',
+            `APPROVAL_END_TIME` datetime DEFAULT NULL COMMENT '办理结束时间',
+            `CANCEL_STATE` char(1) DEFAULT NULL COMMENT '状态：0 已提交，1 已接收，2 已通过，3 未通过，4 无效',
+            `CANCEL_MEMO` varchar(1000) DEFAULT NULL COMMENT '备注',
+            `IS_SUSPENDED_BEFORE` char(1) DEFAULT NULL COMMENT '撤销之前是否有挂起：1 是，0 否（如果不同意撤销，将恢复流程实例之前的状态）',
+            `CREATER` varchar(50) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) DEFAULT NULL COMMENT '根组织ID',
+            `IS_CONCLUDING` char(1) NOT NULL COMMENT '流程是否已办结：1 是，0 否',
+            `PROC_INST_ID` varchar(50) DEFAULT NULL COMMENT '流程实例ID',
+            PRIMARY KEY (`ITEMINST_CANCEL_ID`),
+            KEY `FK_AEA_ITEMINST_REVOKE_HIST_R` (`APPLYINST_CANCEL_ID`),
+            CONSTRAINT `FK_AEA_ITEMINST_REVOKE_HIST_R` FOREIGN KEY (`APPLYINST_CANCEL_ID`) REFERENCES `aea_hi_applyinst_cancel` (`APPLYINST_CANCEL_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='办件撤件实例表';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

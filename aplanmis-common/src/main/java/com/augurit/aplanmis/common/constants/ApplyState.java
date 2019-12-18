@@ -36,6 +36,15 @@ public enum ApplyState implements BaseEnum<TimeruleInstState, String> {
     @ApiModelProperty(value = "COMPLETED", name = "已办结", allowableValues = "COMPLETED")
     COMPLETED("已办结", "6"),
 
+    @ApiModelProperty(value = "WITHDRAWAL_SUBMITTED", name = "撤件待受理", allowableValues = "WITHDRAWAL_SUBMITTED")
+    WITHDRAWAL_SUBMITTED("撤件待受理", "12"),
+
+    @ApiModelProperty(value = "WITHDRAWAL_ACCEPTED", name = "撤件已受理", allowableValues = "WITHDRAWAL_ACCEPTED")
+    WITHDRAWAL_ACCEPTED("撤件已受理", "13"),
+
+    @ApiModelProperty(value = "WITHDRAWAL_COMPLETED", name = "撤件办结", allowableValues = "WITHDRAWAL_COMPLETED")
+    WITHDRAWAL_COMPLETED("撤件办结", "13"),
+
     //增加中介超市里程碑状态 2019.11.6
     @ApiModelProperty(value = "IM_MILESTONE_CHOOSE_IMUNIT", name = "待选取中介机构", allowableValues = "IM_MILESTONE_CHOOSE_IMUNIT")
     IM_MILESTONE_CHOOSE_IMUNIT("待选取中介机构", "7"),

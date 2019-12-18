@@ -133,4 +133,13 @@ public interface AeaLogApplyStateHistService {
      * @return
      */
     List<SupplyOrSpacialCommentVo> findApplyinstCorrectStateHist(String applyinstId, String taskInstId, String rootOrgId);
+
+    /**
+     * 获取某个状态下的最新一个记录
+     *
+     * @param applyinstId
+     * @param newState
+     * @return
+     */
+    AeaLogApplyStateHist getLastApplyStageLogByState(String applyinstId, String newState);
 }
