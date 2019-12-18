@@ -95,6 +95,7 @@ public abstract class ApplyinstCancelService {
     private AeaProjLinkmanMapper aeaProjLinkmanMapper;
     @Autowired
     private BscAttDetailMapper bscAttDetailMapper;
+    private String message = null;
 
     private final static int STATUS_CODE_200 = 200;
     private final static int STATUS_CODE_201 = 201;
@@ -116,31 +117,29 @@ public abstract class ApplyinstCancelService {
      * @return
      */
     public String checkApplyinstAndIteminstState(String applyinstId) {
-        String message = null;
-        return this.resultMessage(message, checkApplyinstAndIteminstState(applyinstId, message));
+        return this.resultMessage(this.message, checkApplyinstAndIteminstStates(applyinstId));
     }
 
     /**
      * 获取报实例或事项实例状态
      *
      * @param applyinstId
-     * @param message
      * @return
      */
-    private int checkApplyinstAndIteminstState(String applyinstId, String message) {
-        message = "符合撤件申请条件！";
+    private int checkApplyinstAndIteminstStates(String applyinstId) {
+        this.message = "符合撤件申请条件！";
         int flag = this.STATUS_CODE_200;
         try {
             if (StringUtils.isBlank(applyinstId)) {
-                message = "缺少参数！";
+                this.message = "缺少参数！";
                 flag = this.STATUS_CODE_104;
             } else {
                 AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstMapper.getAeaHiApplyinstById(applyinstId);
                 if (ApplyState.COMPLETED.getValue().equals(aeaHiApplyinst.getApplyinstState()) || ApplyState.WITHDRAWAL_COMPLETED.getValue().equals(aeaHiApplyinst.getApplyinstState())) {
-                    message = "该办件已经办结，无法撤销！";
+                    this.message = "该办件已经办结，无法撤销！";
                     flag = this.STATUS_CODE_101;
                 } else if (ApplyState.WITHDRAWAL_ACCEPTED.getValue().equals(aeaHiApplyinst.getApplyinstState()) || ApplyState.WITHDRAWAL_SUBMITTED.getValue().equals(aeaHiApplyinst.getApplyinstState())) {
-                    message = "该办件正在申请撤销中！";
+                    this.message = "该办件正在申请撤销中！";
                     flag = this.STATUS_CODE_102;
                 } else {
                     StringBuffer Message = new StringBuffer();
@@ -151,13 +150,13 @@ public abstract class ApplyinstCancelService {
                         }
                     }
                     if (Message.length() > 0) {
-                        message = Message.substring(0, Message.length() - 1) + "已完成部门审批！";
+                        this.message = Message.substring(0, Message.length() - 1) + "已完成部门审批！";
                         flag = this.STATUS_CODE_201;
                     }
                 }
             }
         } catch (Exception e) {
-            message = "检查申报实例和事项实例出错！";
+            this.message = "检查申报实例和事项实例出错！";
             flag = this.STATUS_CODE_103;
         }
         return flag;
@@ -428,9 +427,9 @@ public abstract class ApplyinstCancelService {
             if (appinsts.size() < 1) throw new Exception("找不到模板实例！");
             appinst = appinsts.get(0);
 
-            String message = null;
+//            String message = null;
             //判断是否符合撤件条件
-            int flag = this.checkApplyinstAndIteminstState(aeaHiApplyinstCancel.getApplyinstId(), message);
+            int flag = this.checkApplyinstAndIteminstStates(aeaHiApplyinstCancel.getApplyinstId());
             if (this.STATUS_CODE_200 == flag || (this.STATUS_CODE_201 == flag && "1".equals(aeaHiApplyinstCancel.getIsCancel()))) {
                 // 保存申请撤销实例数据
                 String applyinstCancelId = UUID.randomUUID().toString();
@@ -476,7 +475,7 @@ public abstract class ApplyinstCancelService {
                 //创建部门人员的撤件审批实例和更改事项实例状态
                 this.createIteminstCancelInfo(iteminstList, aeaHiApplyinstCancel.getHandleOpinion(), applyinstCancelId, appinst.getAppinstId());
             } else {
-                return message;
+                return this.message;
             }
         } catch (Exception e) {
             e.printStackTrace();

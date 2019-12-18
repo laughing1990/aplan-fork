@@ -102,7 +102,7 @@ public class ApplyinstCancelController {
     }
 
     @RequestMapping("/getAttFiles")
-    public List<BscAttFileAndDir> getAttFiles(String attId, String tableName) {
+    public ResultForm getAttFiles(String attId, String tableName) {
         List<BscAttFileAndDir> fileAndDirs = new ArrayList();
         try {
             if (StringUtils.isNotBlank(attId) && StringUtils.isNotBlank(tableName)) {
@@ -110,8 +110,9 @@ public class ApplyinstCancelController {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return new ContentResultForm(false, fileAndDirs, "获取数据失败！");
         }
-        return fileAndDirs;
+        return new ContentResultForm(true, fileAndDirs, "获取数据成功！");
     }
 
     @RequestMapping("/saveUnitLinkman")
@@ -126,7 +127,7 @@ public class ApplyinstCancelController {
     }
 
     @RequestMapping("/getLinkmanInfoList")
-    public List<AeaLinkmanInfo> getLinkmanInfoList(String applyinstId) {
+    public ResultForm getLinkmanInfoList(String applyinstId) {
         List<AeaLinkmanInfo> linkmanInfos = new ArrayList();
         try {
             if (StringUtils.isNotBlank(applyinstId)) {
@@ -134,12 +135,13 @@ public class ApplyinstCancelController {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return new ContentResultForm(false, linkmanInfos, "获取数据失败！");
         }
-        return linkmanInfos;
+        return new ContentResultForm(true, linkmanInfos, "获取数据成功！");
     }
 
     @RequestMapping("/getApplyinstCancelListByIteminstId")
-    public List<AeaHiApplyinstCancel> getApplyinstCancelListByIteminstId(String iteminstId) {
+    public ResultForm getApplyinstCancelListByIteminstId(String iteminstId) {
         List<AeaHiApplyinstCancel> aeaHiApplyinstCancels = new ArrayList();
         try {
             if (StringUtils.isNotBlank(iteminstId)) {
@@ -147,12 +149,13 @@ public class ApplyinstCancelController {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return new ContentResultForm(false, aeaHiApplyinstCancels, "获取数据失败！");
         }
-        return aeaHiApplyinstCancels;
+        return new ContentResultForm(true, aeaHiApplyinstCancels, "获取数据成功！");
     }
 
     @RequestMapping("/getApplyinstCancelListByApplyinstId")
-    public List<AeaHiApplyinstCancel> getApplyinstCancelListByApplyinstId(String applyinstId) {
+    public ResultForm getApplyinstCancelListByApplyinstId(String applyinstId) {
         List<AeaHiApplyinstCancel> aeaHiApplyinstCancels = new ArrayList();
         try {
             if (StringUtils.isNotBlank(applyinstId)) {
@@ -160,8 +163,9 @@ public class ApplyinstCancelController {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return new ContentResultForm(false, aeaHiApplyinstCancels, "获取数据失败！");
         }
-        return aeaHiApplyinstCancels;
+        return new ContentResultForm(true, aeaHiApplyinstCancels, "获取数据成功！");
     }
 
     @RequestMapping("/updateIteminstCancelInfo")
