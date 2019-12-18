@@ -3,6 +3,7 @@ var singlePage = (function () {
         el:"#singlePage",
         data:{
             ctx: ctx,
+            contentLoading: true,
             approvalwayTypeFlag: true,
             approvalWayActiveName: 1,
             tableData: [],
@@ -12,7 +13,7 @@ var singlePage = (function () {
             themeListData: [],
             ellipsisLn: [],
             activeSub: 0,
-            themeLoading: false,
+
             themeMemo: '',
             themeId: '',
             orgNum: 0,
@@ -95,10 +96,12 @@ var singlePage = (function () {
         methods:{
             getSingleData:function (id) {
                 var _this = this;
+                _this.contentLoading = true;
                 request('', {
                     url: ctx + 'rest/guide/guide/single/detailed/' + id,
                     type: 'get',
                 }, function (res) {
+                    _this.contentLoading = false;
                     if (res.success) {
                         _this.detailData = res.content;
                         _this.firstMat = _this.detailData.matList;
@@ -116,6 +119,7 @@ var singlePage = (function () {
                         vm.$message.error(res.message);
                     }
                 }, function () {
+                    _this.contentLoading = false;
                     vm.$message.error('单项办事指南接口失败，请重试！');
                 });
             },
