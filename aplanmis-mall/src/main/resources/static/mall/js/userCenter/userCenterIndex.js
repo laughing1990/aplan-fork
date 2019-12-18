@@ -27,7 +27,7 @@ var userCenter = (function () {
                         name: '我的首页',
                         value: 'MyHomeIndex',
                         open: true,
-                      icon:'icon-1'
+                        icon:'icon-1'
                     },
                   {
                     name: '项目管理',
@@ -144,7 +144,7 @@ var userCenter = (function () {
                                 select: false,
                             },
                             {
-                                name: '我的证照库',
+                                name: '我的证照',
                                 value: 'MyCertificateLibrary',
                                 select: false,
                             },
@@ -299,6 +299,9 @@ var userCenter = (function () {
             init: function () {
                 // 刷新回显当前模块
                var hashVal = location.hash.slice(1) || userCenterItemSelect;
+               if(hashVal == "myHomeIndex"){
+                   hashVal = "MyHomeIndex"
+               }
                var  mod = {
                    name: localStorage.getItem('selectNav') || '我的首页',
                    value:hashVal,
@@ -311,11 +314,11 @@ var userCenter = (function () {
                 if (_curLoginInfo) {
                     this.curentLoginInfo = JSON.parse(_curLoginInfo);
                 } else {
-                    // window.location.href = window.location.origin + '/aplanmis-mall/rest/mall/loginIndex';
-                    // return this.$message({
-                    //     message: '您尚未登陆，请先登陆！',
-                    //     type: 'warning'
-                    // })
+                    window.location.href = window.location.origin + '/aplanmis-mall/rest/mall/loginIndex';
+                    return this.$message({
+                        message: '您尚未登陆，请先登陆！',
+                        type: 'warning'
+                    })
                 }
             },
 
