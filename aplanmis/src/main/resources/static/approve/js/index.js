@@ -554,6 +554,24 @@ var vm = new Vue({
       },
       rqMoreTimeformRules: {},
       rqTargetRow: {},
+      cancelAppVisible: false,
+      cancelAppForm: {
+        applyUserId: '',
+        linkmanMobilePhone: '',
+        linkmanCertNo: '',
+        applyReason: '',
+        handleOpinion: '',
+        cancelUserAttId: '',
+        applyUserName: '',
+      },
+      cancelAppLinkManList: [],
+      cancelAppFormRule: {
+        applyReason: [{required: true, message: '请填写撤件原因', trigger: 'blur'}],
+        handleOpinion: [{required: true, message: '请填写窗口意见', trigger: 'blur'}],
+      },
+      cancelAppFileList: [],
+      cancelAppCkFileList: [],
+      cacelAppDialogLoading: false,
     }
   },
   filters: {
@@ -590,6 +608,129 @@ var vm = new Vue({
     },
   },
   methods: {
+    // 确认撤件操作
+    ensureAppCancel: function (){
+      var vm = this;
+      vm.$refs.cancelAppForm.validate(function(f){
+        if (f) {
+          vm.cacelAppDialogLoading = true;
+          request('', {
+            url: ctx + 'rest/applyinst/saveApplyinstCancelInfo',
+            type: 'post',
+            data: {
+              applyinstId: vm.masterEntityKey,
+              applyReason: vm.cancelAppForm.applyReason,
+              applyUserId: vm.cancelAppForm.applyUserId,
+              handleOpinion: vm.cancelAppForm.handleOpinion,
+              attId: vm.cancelAppForm.cancelUserAttId,
+              applyUserIdnumber: vm.cancelAppForm.linkmanCertNo,
+              applyUserPhone: vm.cancelAppForm.linkmanMobilePhone,
+              applyUserName: vm.cancelAppForm.applyUserName,
+            }
+          }, function (res) {
+            vm.cacelAppDialogLoading = false;
+            if (vm.success) {
+              delayRefreshWindow();
+            } else {
+              vm.$message.error(res.message||'保存成功');
+            }
+          }, function(){
+            vm.cacelAppDialogLoading = false;
+            vm.$message.error('保存失败');
+          })
+        }
+      });
+    },
+    // 关闭撤件弹窗
+    closeCancelAppDialog: function(){
+      this.cancelAppFileList = [];
+      this.cancelAppCkFileList = [];
+      this.cancelAppForm.cancelUserAttId = '';
+      this.cancelAppForm = {
+        applyUserId: '',
+        linkmanMobilePhone: '',
+        linkmanCertNo: '',
+        applyReason: '',
+        handleOpinion: '',
+      }
+    },
+    // 撤件选择联系人
+    cancelAppChooseLinkMan: function(id){
+      var vm = this;
+      vm.cancelAppForm.applyUserId = id;
+      vm.cancelAppLinkManList.forEach(function(u){
+        if (u.linkmanInfoId == id) {
+          vm.cancelAppForm.linkmanMobilePhone = u.linkmanMobilePhone;
+          vm.cancelAppForm.linkmanCertNo = u.linkmanCertNo;
+          vm.cancelAppForm.applyUserName = u.linkmanName;
+        }
+      })
+    },
+    // 点击撤件
+    applyinstCancel: function(){
+      var vm = this;
+      vm.parentPageLoading = true;
+      // 是否允许撤件
+      $.ajax({
+        url: ctx + 'rest/applyinst/checkState?applyinstId='+vm.masterEntityKey,
+        dataType: "json",
+        type: 'get',
+        headers: {
+          'Content-Type' :'application/x-www-form-urlencoded;',
+          'Authorization': 'bearer '+localStorage.getItem("access_token")
+        },
+        xhrFields: { withCredentials: true },
+        crossDomain: true,
+        timeout: 10000,
+        success: function(res) {
+          handler(res);
+        },
+        error: function(res){
+          handler(res);
+        },
+      });
+      function handler(res) {
+        var text = res.responseText;
+        text = text.replace(/'/g,'"');
+        res = JSON.parse(text);
+        if(res.flag=='200') {
+          requestLinkManInfo();
+        } else if(res.flag=='201') {
+          vm.parentPageLoading = false;
+          vm.$confirm(res.message, '是否继续撤件', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(function(){
+            requestLinkManInfo()
+          }).catch(function(){
+            //
+          });
+        } else {
+          vm.parentPageLoading = false;
+          vm.$message.error(res.message || '撤件失败');
+        }
+      }
+      function requestLinkManInfo(){
+        // 获取业主信息
+        request('', {
+          url: ctx + 'rest/applyinst/getLinkmanInfoList?applyinstId='+vm.masterEntityKey,
+          type: 'get',
+        }, function(res){
+          vm.parentPageLoading = false;
+          if(res.success) {
+            vm.cancelAppVisible = true;
+            vm.cancelAppLinkManList = res.content;
+            vm.cancelAppChooseLinkMan(vm.cancelAppLinkManList[0].linkmanInfoId);
+          } else {
+            vm.$message.error(res.message || '获取撤件业主信息失败');
+          }
+        }, function(){
+          vm.parentPageLoading = false;
+          vm.$message.error('获取撤件业主信息失败');
+        })
+      }
+    },
     // 打开延长容缺时限弹窗
     openRQmoreTimeDialog: function(row){
       this.rqTargetRow = row;
@@ -1235,6 +1376,72 @@ var vm = new Vue({
         vm.$message.error('文件上传失败');
       }).finally(function () {
         vm.speDiaLoading = false;
+      })
+    },
+    // 撤件删除附件
+    deleteCancelUserFile: function(id){
+      var vm = this;
+      vm.cacelAppDialogLoading = true;
+      request('', {
+        url: ctx + 'rest/applyinst/deleteAttFile',
+        type: 'post',
+        data: { detailIds: id },
+      }, function(res) {
+        vm.cacelAppDialogLoading = false;
+        if (res.success) {
+          vm.refreshAppCancelFileList();
+        } else {
+          vm.$message.error(res.message||'删除失败');
+        }
+      },function(){
+        vm.cacelAppDialogLoading = false;
+        vm.$message.error('删除失败');
+      })
+    },
+    // 撤件刷新附件列表
+    refreshAppCancelFileList: function(){
+      var vm = this;
+      vm.cacelAppDialogLoading = true;
+      // 刷新列表
+      request('', {
+        url: ctx + 'rest/applyinst/getAttFiles',
+        type: 'post',
+        data: {
+          tableName: 'AEA_HI_APPLYINST_CANCEL',
+          attId: vm.cancelAppForm.cancelUserAttId,
+        },
+      }, function(res2) {
+        vm.cacelAppDialogLoading = false;
+        if (res2.success) {
+          vm.cancelAppFileList = res2.content;
+        } else {
+          vm.$message.error(res2.message || '文件列表刷新失败');
+        }
+      }, function(){
+        vm.cacelAppDialogLoading = false;
+        vm.$message.error('文件列表刷新失败');
+      })
+    },
+    // 上传撤件用户附件
+    appCancelUserUploadFile: function (file) {
+      var vm = this;
+      var formData = new FormData();
+      formData.append('file', file.file);
+      formData.append('tableName', 'AEA_HI_APPLYINST_CANCEL');
+      formData.append('attId', vm.cancelAppForm.cancelUserAttId);
+      vm.cacelAppDialogLoading = true;
+      axios.post(ctx + 'rest/applyinst/uploadAttFile', formData).then(function (res) {
+        if (res.data && res.data.success) {
+          vm.$message.success('文件上传成功');
+          vm.cancelAppForm.cancelUserAttId = res.data.content;
+          vm.refreshAppCancelFileList();
+        } else {
+          vm.$message.error(res.message || '文件上传失败');
+        }
+      }).catch(function (e) {
+        vm.$message.error('文件上传失败');
+      }).finally(function () {
+        vm.cacelAppDialogLoading = false;
       })
     },
     setNowEndRow: function (row) {
@@ -2229,6 +2436,14 @@ var vm = new Vue({
         isHidden: '0',
         elementRender: '<button class="btn btn-outline-info" onclick="startSupplementForItem()">材料补正</button>'
       }];
+      var applyinstBtn = [{
+        elementName: "撤件",
+        elementCode: "wfBusSave",
+        columnType: "button",
+        isReadonly: '0',
+        isHidden: '0',
+        elementRender: '<button class="btn btn-outline-info" onclick="applyinstCancel()">撤件</button>'
+      }];
       var draftBtn = [{
         elementName: "发起申报",
         elementCode: "wfBusSave",
@@ -2246,6 +2461,8 @@ var vm = new Vue({
       }];
       if (vm.isApprover == 1) {
         defaultBtn = matBtn.concat(defaultBtn);
+      } else {
+        defaultBtn = applyinstBtn.concat(defaultBtn);
       }
       if (vm.isDraftPage == 'true') {
         defaultBtn = draftBtn.concat(defaultBtn);
@@ -5325,6 +5542,11 @@ function openSpecialDialog() {
   src += '&taskId=' + vm.taskId;
   src += '&processInstanceId=' + vm.processInstanceId;
   vm.specialSrc = src;
+}
+
+// 撤件
+function applyinstCancel(){
+  vm.applyinstCancel();
 }
 
 // 关闭特殊程序

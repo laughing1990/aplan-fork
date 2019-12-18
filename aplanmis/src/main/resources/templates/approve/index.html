@@ -2165,6 +2165,91 @@
       <el-button @click="ensureMoreTime" type="primary" size="medium">确 认</el-button>
     </div>
   </el-dialog>
+  <!-- 撤件弹窗 -->
+  <el-dialog title="撤件申请表" append-to-body top="10vh" class="cancel-app-dialog" v-loading="cacelAppDialogLoading"
+             :visible.sync="cancelAppVisible" width="900px" @close="closeCancelAppDialog">
+    <el-form class="send-dia-form" ref="cancelAppForm" :rules="cancelAppFormRule" size="small"
+             style='max-height: 580px;overflow:auto;' :model="cancelAppForm" label-width="110px">
+      <div class="send-form-part">
+<!--        <div class="part-title">业主信息</div>-->
+        <el-row style="padding:10px 10px 0 0px;">
+          <el-col :span="24">
+            <el-form-item label="联系人：" style="margin-bottom:0px">
+              <el-select placeholder="请选择" v-model="cancelAppForm.applyUserId" @change="cancelAppChooseLinkMan">
+                <el-option v-for="u in cancelAppLinkManList"
+                           :label="u.linkmanName" :value="u.linkmanInfoId"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row style="padding:0px 10px 5px 0px;">
+          <el-col :span="12">
+            <el-form-item label="联系电话：" style="margin-bottom:0px">
+              <el-input :disabled="true" placeholder="请填写联系电话" v-model="cancelAppForm.linkmanMobilePhone"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="证件号码：" style="margin-bottom:0px">
+              <el-input :disabled="true" placeholder="请填写证件号码" v-model="cancelAppForm.linkmanCertNo"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row style="padding:0px 10px 5px 0px;">
+          <el-col :span="24">
+            <el-form-item label="附件：" style="margin-bottom:0px">
+              <div class="file-opt-btn">
+                <el-upload ref="uploadCert1" class="upload-s-file" :action="ctx+'rest/certificate/certinst/att/upload'"
+                           :show-file-list="false" :http-request="appCancelUserUploadFile" :file-list="fileList">
+                  <el-button slot="trigger" size="small" type="primary">上传</el-button>
+                </el-upload>
+              </div>
+              <el-table :data="cancelAppFileList" border>
+                <el-table-column prop="fileName" label="文件名"></el-table-column>
+                <el-table-column prop="updateTime" width="160" label="上传时间">
+                  <template slot-scope="scope">
+                    {{scope.row.updateTime|formatDate}}
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" align="center" width="150">
+                  <template slot-scope="scope">
+<!--                    <el-button type="primary" size="mini" @click="filePreview(scope.row)">预览</el-button>-->
+                    <el-button type="primary" size="mini" @click="deleteCancelUserFile(scope.row.fileId)">删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row style="padding:0px 10px 5px 0px;">
+          <el-col :span="24">
+            <el-form-item porp="applyReason" label="撤件原因：" style="margin-bottom:0px">
+              <el-input placeholder="请填写撤件原因" type="textarea" :rows="3" v-model="cancelAppForm.applyReason"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row style="padding:0px 10px 5px 0px;">
+          <el-col :span="24">
+            <el-form-item porp="handleOpinion" label="窗口意见：" style="margin-bottom:0px">
+              <el-input placeholder="请填写窗口意见" type="textarea" :rows="3" v-model="cancelAppForm.handleOpinion"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </div>
+<!--      <div class="send-form-part">-->
+<!--        <el-row style="padding:5px 10px 5px 0px;">-->
+<!--          <el-col :span="24">-->
+<!--            <el-form-item label="窗口意见：" style="margin-bottom:0px">-->
+<!--              <el-input placeholder="请填写窗口意见" type="textarea" :rows="3" v-model="cancelAppForm.handleOpinion"></el-input>-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
+<!--        </el-row>-->
+<!--      </div>-->
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button size="medium" @click="cancelAppVisible = false">取 消</el-button>
+      <el-button size="medium" type="primary" @click="ensureAppCancel()">确 定</el-button>
+    </div>
+  </el-dialog>
 </div>
 </body>
 <!--引入公共js-->
