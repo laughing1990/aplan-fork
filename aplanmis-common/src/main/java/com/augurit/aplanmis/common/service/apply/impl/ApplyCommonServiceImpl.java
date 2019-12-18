@@ -168,7 +168,7 @@ public class ApplyCommonServiceImpl implements ApplyCommonService {
         List<String> deletingItemStateinstIds = null;
         List<String> deletingStageStateinstIds = null;
 
-        deletingIteminstIds = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId)
+        deletingIteminstIds = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId,null)
                 .stream().map(AeaHiIteminst::getIteminstId).collect(Collectors.toList());
         if (CollectionUtils.isNotEmpty(deletingIteminstIds)) {
             List<AeaHiItemInoutinst> aeaHiItemInoutinsts = aeaHiItemInoutinstMapper.getAeaHiItemInoutinstByIteminstIds(deletingIteminstIds.toArray(new String[0]));

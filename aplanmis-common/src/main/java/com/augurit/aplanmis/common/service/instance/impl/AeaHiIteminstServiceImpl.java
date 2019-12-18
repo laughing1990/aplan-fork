@@ -65,7 +65,7 @@ public class AeaHiIteminstServiceImpl implements AeaHiIteminstService {
     @Override
     public List<AeaHiIteminst> getAeaHiIteminstListByApplyinstId(String applyinstId) throws Exception {
         if (StringUtils.isBlank(applyinstId)) throw new InvalidParameterException("参数applyinstId为空！");
-        return aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId);
+        return aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId,"0");
     }
 
     @Override

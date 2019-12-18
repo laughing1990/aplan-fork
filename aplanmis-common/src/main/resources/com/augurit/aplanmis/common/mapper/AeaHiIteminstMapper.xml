@@ -422,6 +422,9 @@
         left join aea_item_basic aib on aiv.item_id=aib.item_id and aiv.item_ver_id=aib.item_ver_id
         WHERE
         aha.APPLYINST_ID = #{applyinstId}
+        <if test="isDeleted!='' and isDeleted !=null">
+         and   ahi.is_deleted=#{isDeleted}
+        </if>
         UNION ALL
         SELECT
         ahi.*,ooo.org_name,aib.due_num,aib.BJ_TYPE,aib.ITEM_PROPERTY
@@ -437,6 +440,10 @@
         ) ahi
         WHERE
         ahi.iteminst_id IS NOT NULL
+
+        <if test="isDeleted!='' and isDeleted !=null">
+        and   ahi.is_deleted=#{isDeleted}
+       </if>
     </select>
 
     <select id="getAeaHiIteminstListByApplyinstIds" resultType="AeaHiIteminst">

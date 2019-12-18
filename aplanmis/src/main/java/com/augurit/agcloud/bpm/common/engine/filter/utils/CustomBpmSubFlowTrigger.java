@@ -150,7 +150,7 @@ public class CustomBpmSubFlowTrigger implements BpmSubFlowTrigger {
 
             //先查询出所有的iteminst
             if (null != aeaHiApplyinst) {
-                List<AeaHiIteminst> aeaHiIteminsts = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(aeaHiApplyinst.getApplyinstId());
+                List<AeaHiIteminst> aeaHiIteminsts = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(aeaHiApplyinst.getApplyinstId(),"0");
                 if(aeaHiIteminsts!=null&&aeaHiIteminsts.size()>0){
                     for(AeaHiIteminst aeaHiIteminst:aeaHiIteminsts){
                         if(aeaHiIteminst.getItemId().equals(aeaItemBasic.getItemId())){

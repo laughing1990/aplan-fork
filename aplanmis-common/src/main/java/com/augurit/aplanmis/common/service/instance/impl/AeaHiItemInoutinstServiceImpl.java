@@ -87,7 +87,7 @@ public class AeaHiItemInoutinstServiceImpl implements AeaHiItemInoutinstService 
             return 0;
         }
         String isSeriesApprove = aeaHiApplyinst.getIsSeriesApprove();
-        List<AeaHiIteminst> aeaHiIteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId);
+        List<AeaHiIteminst> aeaHiIteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId,"0");
         if (aeaHiIteminstList.size() == 0) {
             return 0;
         }
