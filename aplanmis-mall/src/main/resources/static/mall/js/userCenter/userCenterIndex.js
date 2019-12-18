@@ -27,7 +27,7 @@ var userCenter = (function () {
                         name: '我的首页',
                         value: 'MyHomeIndex',
                         open: true,
-                      icon:'icon-1'
+                        icon:'icon-1'
                     },
                   {
                     name: '项目管理',
@@ -299,6 +299,9 @@ var userCenter = (function () {
             init: function () {
                 // 刷新回显当前模块
                var hashVal = location.hash.slice(1) || userCenterItemSelect;
+               if(hashVal == "myHomeIndex"){
+                   hashVal = "MyHomeIndex"
+               }
                var  mod = {
                    name: localStorage.getItem('selectNav') || '我的首页',
                    value:hashVal,

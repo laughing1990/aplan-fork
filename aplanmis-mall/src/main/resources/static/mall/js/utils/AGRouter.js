@@ -18,18 +18,12 @@
         return  factory.call(global,global.$,plug);
     }
 })(typeof window === 'undefined'? this:window,function($,plug){
-    console.log(plug)
     $.fn[plug] = function (ops) {
         var _THIS_ = $(this);
         var _DEFL_ = {};
-        console.log(123);
-        console.log($(this))
-        console.log(ops);
         var initRoter = ops.router;
         var APP = ops.APP;
         //初始化所有需要用的 路由：hash值 和 加载的内容  暂时没实现路由懒加载
-        console.log(initRoter)
-        console.log(APP)
         initRoter.forEach(function(item,index){
             var itemHash = item.hash;
             var itemUlr;
@@ -56,7 +50,7 @@
         this.refresh = function (e) {
             if(e.type=='load' && /div_step/igm.test(location.hash.slice(1))){
                 this.curUrl = '/guideIndex';
-            } else if (e.type == 'load' && /declare|scheduleInquire|declareHave|matCompletionList|approve|matSupplementList|lifeCycle|UserInfo|MyHomeIndex|MyMaterials|AddProj|MyCertificateLibrary|CreditDetail|withdrawApplyList|drafts/igm.test(location.hash.slice(1))) {
+            } else if (e.type == 'load' && /declare|scheduleInquire|declareHave|matCompletionList|approve|matSupplementList|lifeCycle|UserInfo|MyHomeIndex|myHomeIndex|MyMaterials|AddProj|MyCertificateLibrary|CreditDetail|withdrawApplyList|drafts/igm.test(location.hash.slice(1))) {
                this.curUrl = '/userCenterIndex'
             }else if(e.type="hashchange" && /userCenterIndex/igm.test(location.hash.slice(1))){
                this.curUrl = '/userCenterIndex'
