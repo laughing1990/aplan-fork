@@ -668,10 +668,12 @@ var vm = new Vue({
         if (res.success) {
           vm.allFormInfoList.forEach(function(u){
             if (u.formId == vm.oneformActiveName) {
-              u.isFilled = true;
               u.createTime = new Date();
-              vm.formFilledNum++;
-              vm.formUnFillNum--;
+              if (!u.isFilled) {
+                u.isFilled = true;
+                vm.formFilledNum++;
+                vm.formUnFillNum--;
+              }
             }
           });
         } else {
