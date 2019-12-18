@@ -311,11 +311,11 @@ var userCenter = (function () {
                 if (_curLoginInfo) {
                     this.curentLoginInfo = JSON.parse(_curLoginInfo);
                 } else {
-                    // window.location.href = window.location.origin + '/aplanmis-mall/rest/mall/loginIndex';
-                    // return this.$message({
-                    //     message: '您尚未登陆，请先登陆！',
-                    //     type: 'warning'
-                    // })
+                    window.location.href = window.location.origin + '/aplanmis-mall/rest/mall/loginIndex';
+                    return this.$message({
+                        message: '您尚未登陆，请先登陆！',
+                        type: 'warning'
+                    })
                 }
             },
 

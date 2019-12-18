@@ -1,7 +1,7 @@
 /*!
  * router JavaScript Library v1.1.0 for web
  *  http://39.107.139.174:8084
- *  author freddy_huang
+ *  author huangjunfu
  * /aplanmis-project/aplanmis-mall/src/main/resources/static/mall/js/utils
  *
  * Date: 2019-07-12 T15:04
@@ -18,7 +18,32 @@
         return  factory.call(global,global.$,plug);
     }
 })(typeof window === 'undefined'? this:window,function($,plug){
-    //$.fn[plug]
+    console.log(plug)
+    $.fn[plug] = function (ops) {
+        var _THIS_ = $(this);
+        var _DEFL_ = {};
+        console.log(123);
+        console.log($(this))
+        console.log(ops);
+        var initRoter = ops.router;
+        var APP = ops.APP;
+        //初始化所有需要用的 路由：hash值 和 加载的内容  暂时没实现路由懒加载
+        console.log(initRoter)
+        console.log(APP)
+        initRoter.forEach(function(item,index){
+            var itemHash = item.hash;
+            var itemUlr;
+            if (document.location.protocol == "file:") {
+                itemUlr = item.url;
+            } else {
+                itemUlr = ctx + item.thUrl;
+            }
+            R.route(itemHash,function () {
+                APP.activeName = item.activeName||0;
+                _THIS_.load(itemUlr);
+            })
+        })
+    };
     //路由构造器
     function Router() {
         //接受所有的配置路由内容
@@ -51,32 +76,4 @@
 
     R.init();//监听时间
 
-    var res = document.getElementById('app_frame');
-    //初始化所有需要用的 路由：hash值 和 加载的内容  暂时没实现路由懒加载
-    APP.topTabData.forEach(function(item,index){
-        var itemHash = item.hash;
-        var itemUlr;
-        if (document.location.protocol == "file:") {
-             itemUlr = item.url;
-        } else {
-            itemUlr = ctx + item.thUrl;
-        }
-        R.route(itemHash,function () {
-            APP.activeName = index||0;
-            $(res).load(itemUlr);
-        })
-    })
-    APP.routerInitData.forEach(function(item,index){
-        var itemHash = item.hash;
-        var itemUlr;
-        if (document.location.protocol == "file:") {
-            itemUlr = item.url;
-        } else {
-            itemUlr = ctx + item.thUrl;
-        }
-        R.route(itemHash,function () {
-            APP.activeName = item.activeName||0;
-            $(res).load(itemUlr);
-        })
-    })
-},'Router');
+},'AGRouter');
