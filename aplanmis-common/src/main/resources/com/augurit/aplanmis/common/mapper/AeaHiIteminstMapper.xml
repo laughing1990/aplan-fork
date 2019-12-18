@@ -40,7 +40,8 @@
         ITEMINST_TYPE iteminstType,
         TOLERANCE_TIME toleranceTime,
         TIMERULE_ID timeruleId,
-     IS_SUSPENDED_BEFORE  isSuspendedBefore
+     IS_SUSPENDED_BEFORE  isSuspendedBefore,
+     IS_DELETED isDeleted
     </sql>
 
     <sql id="aliasColumns">
@@ -79,7 +80,8 @@
         ${alias}.ITEMINST_TYPE iteminstType,
         ${alias}.TOLERANCE_TIME toleranceTime,
         ${alias}.TIMERULE_ID timeruleId,
-        ${alias}.IS_SUSPENDED_BEFORE  isSuspendedBefore
+        ${alias}.IS_SUSPENDED_BEFORE  isSuspendedBefore,
+        ${alias}.IS_DELETED isDeleted
     </sql>
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaHiIteminstById" resultType="AeaHiIteminst">
@@ -213,6 +215,9 @@
             <if test="isSuspendedBefore != null">
                 AND IS_SUSPENDED_BEFORE = #{isSuspendedBefore}
             </if>
+            <if test="isDeleted != null">
+                AND IS_DELETED = #{isDeleted}
+            </if>
         </where>
     </select>
     <!--4 根据条件查询实体list,返回分页对象 -->
@@ -224,12 +229,12 @@
                                      START_TIME, REGISTER_TIME, SIGN_TIME, END_TIME, PUBLIC_MODE, ITEMINST_STATE, ACCEPT_TIME,
                                      INNER_APPINST_ID, CREATER, CREATE_TIME, MODIFIER, MODIFY_TIME, ITEMINST_LEVEL,
         BUSINESS_STATE, ITEM_VER_ID,
-        IS_JOIN_APPROVAL,ITEM_APPLY_CODE,IS_TOLERANCE_ACCEPT,ROOT_ORG_ID,PROCINST_ID,ITEMINST_TYPE,TOLERANCE_TIME,TIMERULE_ID,IS_SUSPENDED_BEFORE)
+        IS_JOIN_APPROVAL,ITEM_APPLY_CODE,IS_TOLERANCE_ACCEPT,ROOT_ORG_ID,PROCINST_ID,ITEMINST_TYPE,TOLERANCE_TIME,TIMERULE_ID,IS_DELETED,IS_SUSPENDED_BEFORE)
         values (#{iteminstId}, #{itemId}, #{iteminstCode}, #{iteminstName}, #{approveOrgId}, #{isLackIteminst},
                 #{isSeriesApprove}, #{themeVerId}, #{stageinstId}, #{seriesinstId}, #{startTime}, #{registerTime},
                 #{signTime}, #{endTime}, #{publicMode}, #{iteminstState}, #{acceptTime}, #{innerAppinstId}, #{creater}, #{createTime},
         #{modifier}, #{modifyTime}, #{iteminstLevel}, #{businessState}, #{itemVerId},
-        #{isJoinApproval},#{itemApplyCode},#{isToleranceAccept},#{rootOrgId},#{procinstId},#{iteminstType},#{toleranceTime},#{timeruleId},#{isSuspendedBefore})
+        #{isJoinApproval},#{itemApplyCode},#{isToleranceAccept},#{rootOrgId},#{procinstId},#{iteminstType},#{toleranceTime},#{timeruleId},#{isDeleted},#{isSuspendedBefore})
     </insert>
     <!--6 修改实体对象 -->
     <update id="updateAeaHiIteminst" parameterType="AeaHiIteminst">
@@ -341,6 +346,9 @@
             <if test="timeruleId != null">
                 TIMERULE_ID = #{timeruleId},
             </if>
+            <if test="isDeleted != null">
+                IS_DELETED = #{isDeleted},
+            </if>
             <if test="isSuspendedBefore != null">
                  IS_SUSPENDED_BEFORE = #{isSuspendedBefore}
             </if>
@@ -388,6 +396,7 @@
         <result property="iteminstType" column="ITEMINST_TYPE"/>
         <result property="toleranceTime" column="TOLERANCE_TIME"/>
         <result property="timeruleId" column="TIMERULE_ID"/>
+        <result property="isDeleted" column="IS_DELETED"/>
         <result property="isSuspendedBefore" column="IS_SUSPENDED_BEFORE"/>
     </resultMap>
 
@@ -471,6 +480,9 @@
         <if test="isSeriesApprove!=null and isSeriesApprove!=''">
             and aha.IS_SERIES_APPROVE=#{isSeriesApprove}
         </if>
+        <if test="isDeleted!=null and isDeleted!=''">
+            and ahi.is_deleted=#{isDeleted}
+        </if>
         UNION ALL
         SELECT
         ahi.*,ooo.org_name,aib.due_num
@@ -488,6 +500,9 @@
         </foreach>
         <if test="isSeriesApprove!=null and isSeriesApprove!=''">
             and aha.IS_SERIES_APPROVE=#{isSeriesApprove}
+        </if>
+        <if test="isDeleted!=null and isDeleted!=''">
+            and ahi.is_deleted=#{isDeleted}
         </if>
         ) ahi
         WHERE

@@ -69,9 +69,9 @@ public class AeaHiIteminstServiceImpl implements AeaHiIteminstService {
     }
 
     @Override
-    public List<AeaHiIteminst> getAeaHiIteminstListByApplyinstIds(List<String> applyinstIds, String isSeriesApprove) throws Exception {
+    public List<AeaHiIteminst> getAeaHiIteminstListByApplyinstIds(List<String> applyinstIds, String isSeriesApprove, String isDeleted) throws Exception {
         if (applyinstIds == null || applyinstIds.size() == 0) throw new InvalidParameterException("参数applyinstIds为空！");
-        return aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstIds(applyinstIds, isSeriesApprove);
+        return aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstIds(applyinstIds, isSeriesApprove,isDeleted);
     }
 
     @Override

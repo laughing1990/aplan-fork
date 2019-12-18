@@ -33,7 +33,6 @@ import com.augurit.aplanmis.common.vo.MatCorrectConfirmVo;
 import com.augurit.aplanmis.mall.userCenter.constant.LoginUserRoleEnum;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyService;
 import com.augurit.aplanmis.mall.userCenter.service.RestApproveService;
-import com.augurit.aplanmis.mall.userCenter.service.RestMyMatService;
 import com.augurit.aplanmis.mall.userCenter.vo.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -101,15 +100,9 @@ public class RestApproveServiceImpl implements RestApproveService {
     @Autowired
     private AeaHiItemStateinstMapper aeaHiItemStateinstMapper;
     @Autowired
-    private RestMyMatService restMyMatService;
-    @Autowired
     private RestApplyService restApplyService;
     @Autowired
     private FileUtilsService fileUtilsService;
-    @Autowired
-    private AeaProjLinkmanMapper aeaProjLinkmanMapper;
-    @Autowired
-    private AeaUnitInfoMapper aeaUnitInfoMapper;
     @Autowired
     private OpuOmUserMapper opuOmUserMapper;
     @Autowired
@@ -268,7 +261,7 @@ public class RestApproveServiceImpl implements RestApproveService {
         }
 
         //事项实例列表/主题阶段信息
-        List<AeaHiIteminst> aeaHiIteminstList =  aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
+        List<AeaHiIteminst> aeaHiIteminstList =  aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId,null);
         if (aeaHiIteminstList!=null&&aeaHiIteminstList.size()>0){
             if("1".equals(isSeriesApprove)){
                 applyDetailVo.setIteminstName(aeaHiIteminstList.get(0).getIteminstName());
@@ -364,6 +357,7 @@ public class RestApproveServiceImpl implements RestApproveService {
 
     private void setItemStateinstList(List<AeaHiIteminst> aeaHiIteminstList, String stageinstId) throws Exception {
         for (AeaHiIteminst iteminst : aeaHiIteminstList) {
+            if("1".equals(iteminst.getIsDeleted())) continue;
             List<Map<String, String>> list = new ArrayList<>();
             AeaHiItemStateinst query = new AeaHiItemStateinst();
             query.setRootOrgId(SecurityContext.getCurrentOrgId());
@@ -481,7 +475,7 @@ public class RestApproveServiceImpl implements RestApproveService {
 
         //并联申请实例ID
         List<String> parallelApplyinstIds = parallelApplyinsts.size()>0?parallelApplyinsts.stream().map(AeaHiApplyinst::getApplyinstId).collect(Collectors.toList()):new ArrayList<>();
-        List<AeaHiIteminst> parallellAeaHiIteminstList = parallelApplyinstIds.size() > 0 ? aeaHiIteminstService.getAeaHiIteminstListByApplyinstIds(parallelApplyinstIds, ApplyType.UNIT.getValue()) : new ArrayList<>();
+        List<AeaHiIteminst> parallellAeaHiIteminstList = parallelApplyinstIds.size() > 0 ? aeaHiIteminstService.getAeaHiIteminstListByApplyinstIds(parallelApplyinstIds, ApplyType.UNIT.getValue(),"0") : new ArrayList<>();
         List<AeaParStageVo> paralleStages=new ArrayList<>();
         AtomicReference<Boolean> isCurrentStage = new AtomicReference<>(false);//是否是处于办理中的阶段
         for (AeaParStage stage : stages){
@@ -581,7 +575,7 @@ public class RestApproveServiceImpl implements RestApproveService {
             //最新的项目状态
             List<String> coreApplyinstIds = coreApplyinsts.size()>0?coreApplyinsts.stream().map(AeaHiApplyinst::getApplyinstId).collect(Collectors.toList()):new ArrayList<>();
 
-            List<AeaHiIteminst> coreAeaHiIteminstList = coreApplyinstIds.size() > 0 ? aeaHiIteminstService.getAeaHiIteminstListByApplyinstIds(coreApplyinstIds, ApplyType.SERIES.getValue()) : new ArrayList<>();
+            List<AeaHiIteminst> coreAeaHiIteminstList = coreApplyinstIds.size() > 0 ? aeaHiIteminstService.getAeaHiIteminstListByApplyinstIds(coreApplyinstIds, ApplyType.SERIES.getValue(),"0") : new ArrayList<>();
             List<AeaItemBasicVo> corellelItemVos = new ArrayList<>();
             AtomicInteger coreEndItem= new AtomicInteger();//并行办结事项数
             //if (coreAeaHiIteminstList.size()>0){

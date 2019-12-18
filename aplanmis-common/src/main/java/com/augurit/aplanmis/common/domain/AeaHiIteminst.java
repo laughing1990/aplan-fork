@@ -62,6 +62,7 @@ public class AeaHiIteminst implements Serializable {
     //private String isMatFull;//办件材料是否齐全(0表示必要材料不全（即不予受理），1表示必要材料齐全但有容缺，2表示所有材料齐全)
     private String itemApplyCode;//事项申报流水号
     private String rootOrgId;//根组织ID
+    private String isDeleted;
     private String isToleranceAccept;//是否容缺受理，1表示是，0表示否
 
     private String isSmsSend; //是否已出件，0表示未出件，1表示已出件

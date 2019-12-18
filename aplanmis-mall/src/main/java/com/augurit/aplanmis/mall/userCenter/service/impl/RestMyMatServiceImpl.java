@@ -60,7 +60,7 @@ public class RestMyMatServiceImpl implements RestMyMatService {
             if (applyinsts == null || applyinsts.size() == 0) return new PageInfo<>();
             List<String> applyinstIds = applyinsts.stream().map(AeaHiApplyinst::getApplyinstId).collect(Collectors.toList());
             if (applyinstIds.size() == 0) return new PageInfo<>();
-            iteminstList.addAll(aeaHiIteminstService.getAeaHiIteminstListByApplyinstIds(applyinstIds, null));
+            iteminstList.addAll(aeaHiIteminstService.getAeaHiIteminstListByApplyinstIds(applyinstIds, null,"0"));
             if (iteminstList.size() == 0) return new PageInfo<>();
             List<String> iteminstIds = iteminstList.stream().map(AeaHiIteminst::getIteminstId).collect(Collectors.toList());
 
@@ -88,7 +88,7 @@ public class RestMyMatServiceImpl implements RestMyMatService {
         if (applyinsts == null || applyinsts.size() == 0) return  new PageInfo<>();
         List<String> applyinstIds = applyinsts.stream().map(AeaHiApplyinst::getApplyinstId).collect(Collectors.toList());
         if (applyinstIds.size() == 0) return  new PageInfo<>();
-        iteminstList.addAll(aeaHiIteminstService.getAeaHiIteminstListByApplyinstIds(applyinstIds, null));
+        iteminstList.addAll(aeaHiIteminstService.getAeaHiIteminstListByApplyinstIds(applyinstIds, null,"0"));
         if (iteminstList.size() == 0) return  new PageInfo<>();
         List<String> iteminstIds = iteminstList.stream().map(AeaHiIteminst::getIteminstId).collect(Collectors.toList());
 

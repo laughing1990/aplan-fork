@@ -39,7 +39,7 @@ public interface AeaHiIteminstService {
      * @return
      * @throws Exception
      */
-    List<AeaHiIteminst> getAeaHiIteminstListByApplyinstIds(List<String> applyinstIds, String isSeriesApprove) throws Exception;
+    List<AeaHiIteminst> getAeaHiIteminstListByApplyinstIds(List<String> applyinstIds, String isSeriesApprove, String isDeleted) throws Exception;
 
     /**
      * 2.1 根据申请实例ID和事项实例ID查询事项实例列表(单项，并联统一接口)
