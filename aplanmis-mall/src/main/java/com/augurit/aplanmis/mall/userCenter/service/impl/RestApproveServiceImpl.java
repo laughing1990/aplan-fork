@@ -467,30 +467,6 @@ public class RestApproveServiceImpl implements RestApproveService {
         return lifeCycleDiagramVo;
     }
 
-    @Override
-    public Boolean isApplyBelong(String applyInstId,String projinfoId, HttpServletRequest request)throws Exception {
-        if (!isCheckAuthority) return true;
-        AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyInstId);
-        if (aeaHiApplyinst==null) throw new Exception("查询出错");
-        String applySubject = aeaHiApplyinst.getApplySubject();//(申办主体：1 单位，0 个人)
-        LoginInfoVo user = SessionUtil.getLoginInfo(request);
-        if ("0".equals(applySubject)){
-            AeaProjLinkman param = new AeaProjLinkman();
-            param.setApplyinstId(applyInstId);
-            param.setLinkmanInfoId(user.getUserId());
-            List<AeaProjLinkman> list = aeaProjLinkmanMapper.listAeaProjLinkman(param);
-            if (list.size()==0) return false;
-        }else {
-            List<AeaUnitInfo> unitInfos = aeaUnitInfoMapper.findApplyUnitProj(applyInstId,projinfoId,"1");
-            if (unitInfos.size()==0) return false;
-            List<String> unitInfoIds = unitInfos.stream()
-                    .map(AeaUnitInfo::getUnitInfoId).distinct()
-                    .collect(Collectors.toList());
-            if (!unitInfoIds.contains(user.getUnitId()))return false;
-        }
-        return true;
-    }
-
     private void setLifeCycleDiagramVoStageInfo(LifeCycleDiagramVo lifeCycleDiagramVo, String unitInfoId, String userInfoId) throws Exception {
         /**
          * 1.根据主题查询阶段
