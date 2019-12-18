@@ -609,8 +609,9 @@ var vm = new Vue({
       formUnFillNum: 0,
       oneFormOpened: false,
       canShowOneForm: true,
-      applyinstId: '',
+      // applyinstId: '',
       itemStatusFlag: false, // 阶段下情形是否含流程情形
+      itemverMatList: [], // 阶段下事项材料列表
     }
   },
   created: function () {
@@ -662,7 +663,7 @@ var vm = new Vue({
         type: 'POST',
         ContentType: 'application/json',
         data: JSON.stringify({
-          applyinstId: vm.applyinstId,
+          applyinstId: vm.parallelApplyinstId,
           forminstId: obj.actStoForminst.stoForminstId,
         }),
       }, function (res) {
@@ -2100,7 +2101,7 @@ var vm = new Vue({
             _that.model.matsTableData=[];
           }
           _that.$nextTick(function () {
-            if (!_that.applyinstId || _that.applyinstId == '') {
+            if (!_that.parallelApplyinstId || _that.parallelApplyinstId == '') {
               _that.showCommentDialog('4');
               _that.canShowOneForm = false;
             }
@@ -2237,7 +2238,7 @@ var vm = new Vue({
             _that.coreItems = [];
             _that.itemStatusFlag = false;
             _that.stateList = data.content.questionStates;
-            _that.model.matsTableData = _that.unique(data.content.stateMats,'mats');
+            // _that.model.matsTableData = _that.unique(data.content.stateMats,'mats');
             _that.popStateList = [];
             _that.model.matsTableData.map(function(item,index){
               if(item){
@@ -2299,7 +2300,9 @@ var vm = new Vue({
                   if(parInd==-1){
                     item._parStateId.push(_parentId);
                   }
-
+                }
+                if(item.questionStates=='undefined'||item.questionStates==undefined){
+                  Vue.set(item, 'questionStates', []);
                 }
               });
             }else {
@@ -2408,6 +2411,9 @@ var vm = new Vue({
                     if(parInd==-1){
                       item._parStateId.push(parentStateId);
                     }
+                  }
+                  if(item.questionStates=='undefined'||item.questionStates==undefined){
+                    Vue.set(item, 'questionStates', []);
                   }
                   // if(_that.parallelItemsQuestionFlag==true){
                   _that.parallelItemsSelItem(stateParallelItems,item,'autoGetSel');
@@ -2521,6 +2527,9 @@ var vm = new Vue({
           var HisParallelItems = []; // 历史暂存并联事项
           if(_that.parallelItems&&_that.parallelItems.length>0){
             _that.parallelItems.map(function(item){
+              if(item.questionStates=='undefined'||item.questionStates==undefined){
+                Vue.set(item, 'questionStates', []);
+              }
               if(_that.branchOrgHis){
                 if(item.isCatalog==0){
                   if(_that.branchOrgHis[item.implementItemVerId]&&_that.branchOrgHis[item.implementItemVerId]!=''){
@@ -2669,7 +2678,7 @@ var vm = new Vue({
         if(data.success){
           // _that.coreItems = data.content.coreItems;
           // _that.parallelItems = data.content.parallelItems;
-          _that.coreItems= _that.unique(_that.parallelItems.concat(data.content.coreItems),'stage');
+          _that.coreItems= _that.unique(_that.coreItems.concat(data.content.coreItems),'stage');
           _that.parallelItems= _that.unique(_that.parallelItems.concat(data.content.parallelItems),'stage');
           _that.coreItems.map(function(item){
             if(item){
@@ -4359,7 +4368,7 @@ var vm = new Vue({
               return false;
             }else {
               _that.parallelApplyinstId=res.content;
-              _that.applyinstId=res.content;
+              // _that.parallelApplyinstId=res.content;
               _that.formItemsIdStr = strVer;
               _that.getOneFormrender2(strVer,_that.parallelApplyinstId,_that.stageId);
             }
@@ -5258,7 +5267,6 @@ var vm = new Vue({
           });
         }
       },function(res){
-        // _that.parallelLoading = false;
         _that.$message({
           message: '并联事项材料失败！',
           type: 'error'
@@ -5868,7 +5876,7 @@ var vm = new Vue({
         url: ctx + 'rest/oneform/common/getListForm4StageOneForm',
         type: 'get',
         data: {
-          applyinstId: vm.applyinstId,
+          applyinstId: vm.parallelApplyinstId,
           stageId: stageId,
           projInfoId: vm.projInfoId,
           showBasicButton: true,
