@@ -16,24 +16,28 @@
             topTabData: [{
                 label: '首页',
                 id: '1',
+                activeName:0,
                 url: './main/mainIndex.html',
                 thUrl:'rest/main/toMainIndexPage',
                 hash:'/',
               }, {
                 label: '办事指南',
                 id: '2',
+                activeName:1,
                 url: './guide/guideIndex.html',
                 thUrl:'rest/guide/toGuideIndexPage',
                 hash:'/guideIndex',
               }, {
                 label: '中介服务超市',
                 id: '3',
+                activeName:2,
                 url: './supermarket/main/index.html',
                 thUrl:'supermarket/main/index.html',
                 hash:'/supermarketIndex',
               }, {
                 label: '政策法规',
                 id: '4',
+                activeName:3,
                 url: './regulation/regulationIndex.html',
                 thUrl:'rest/main/toRegulationIndexPage',
                 hash:'/regulationIndex',
@@ -41,6 +45,7 @@
                 {
                     label: '法人空间',
                     id: '5',
+                    activeName:4,
                     url: './userCenter/userCenterIndex.html',
                     thUrl:'rest/user/toUserCenterindexPage',
                     hash:'/userCenterIndex',
@@ -75,6 +80,7 @@
         mounted:function() {
             //do something after mounting vue instance
             this.winH = document.documentElement.clientHeight;
+            this.initAGRouter()
         },
         methods: {
           routerChange:function(hash,url,thUrl,index){
@@ -98,7 +104,6 @@
               }
           },
             init: function () {
-
                 // 登陆用户数据
                 var _curLoginInfo = localStorage.getItem('loginInfo');
                 if (_curLoginInfo) {
@@ -106,6 +111,17 @@
                 }else{
                     this.curentLoginInfo = null;
                 }
+            },
+            initAGRouter:function(){
+                var ts = this;
+                $("#app_frame").AGRouter({
+                    router: ts.routerInitData,
+                    APP:ts,
+                })
+                $("#app_frame").AGRouter({
+                    router: ts.topTabData,
+                    APP:ts,
+                })
             },
 
             // 切换单位信息

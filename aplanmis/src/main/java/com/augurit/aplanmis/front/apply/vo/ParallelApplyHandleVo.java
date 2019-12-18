@@ -105,6 +105,9 @@ public class ParallelApplyHandleVo {
         // 备注说明
         @ApiModelProperty(value = "备注说明")
         private String stateMemo;
+
+        @ApiModelProperty(value = "流程情形")
+        private String isProcStartCond;
         // 绑定的情形事项
         @ApiModelProperty(value = "绑定的并联审批事项")
         private List<ItemPrivilegeComputationHandler.ComputedItem> stateParallelItems;

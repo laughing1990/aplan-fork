@@ -441,6 +441,7 @@ public class AeaCertMallService {
         String[] projInfoIds=null;
         if(CertHolderConstants.CERT_FROM_APPLICANT.equals(certHolder)){//企业证照
             unitInfoId=loginInfo.getUnitId();
+            if(StringUtils.isBlank(unitInfoId)) return new ArrayList<>();
         }else if(CertHolderConstants.CERT_FROM_CORPORATION.equals(certHolder)){//法人证照
             if("1".equals(loginInfo.getIsPersonAccount())||com.augurit.agcloud.framework.util.StringUtils.isNotBlank(loginInfo.getUserId())){//个人
                 linkmanInfoId=loginInfo.getUserId();
@@ -448,6 +449,7 @@ public class AeaCertMallService {
                 List<AeaLinkmanInfo> linkmanList = aeaLinkmanInfoMapper.findCorporationByUnitInfoId(loginInfo.getUnitId());
                 linkmanInfoId=linkmanList.size()>0?linkmanList.get(0).getLinkmanInfoId():null;
             }
+            if(StringUtils.isBlank(linkmanInfoId)) return new ArrayList<>();
         }else if(CertHolderConstants.CERT_FROM_PROJ.equals(certHolder)){//项目证照
             List<AeaProjInfo> projList=null;
             if("1".equals(loginInfo.getIsPersonAccount())){//个人
@@ -458,6 +460,7 @@ public class AeaCertMallService {
                 projList=aeaProjInfoService.findRootAeaProjInfoByUnitInfoId(loginInfo.getUnitId());
             }
             projInfoIds=projList.size()>0?projList.stream().map(AeaProjInfo::getProjInfoId).toArray(String[]::new):null;
+            if(projInfoIds==null||projInfoIds.length==0) return new ArrayList<>();
         }else{
             return new ArrayList<>();
         }
