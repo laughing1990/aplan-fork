@@ -42,10 +42,9 @@ public class RestApplyInfoController {
         try {
             Map<String, List<ItemPrivilegeComputationHandler.ComputedItem>> items = new HashMap<>();
 
-            List<ItemPrivilegeComputationHandler.ComputedItem> requiredItems = restApplyService.getRequiredItems(stageId, projInfoId);
-            List<ItemPrivilegeComputationHandler.ComputedItem> optionalItems = restApplyService.getOptionalItems(stageId, projInfoId);
-            items.put(PARALLEL_ITEMS, requiredItems);// 并联
-            items.put(CORE_ITEMS, optionalItems);// 并行
+            Map<String, List<ItemPrivilegeComputationHandler.ComputedItem>> allItems = restApplyService.getItems(stageId, projInfoId);
+            items.put(PARALLEL_ITEMS, allItems.get("0"));// 并联
+            items.put(CORE_ITEMS, allItems.get("1"));// 并行
             return new ContentResultForm<>(true, items, "Query success");
         } catch (Exception e) {
             e.printStackTrace();
