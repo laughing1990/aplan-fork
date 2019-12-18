@@ -126,11 +126,11 @@
     <!-- 选择电子证照 -->
     <%@include file="../common/ztree/select_cert_no_right_ztree.jsp" %>
 
-    <!-- 选择标准材料 -->
-    <%@include file="../common/ztree/select_stdmat_no_right_ztree.jsp" %>
-
     <!-- 选择表单 -->
     <%@include file="../common/ztree/select_form_no_right_ztree.jsp" %>
+
+    <!-- 选择标准材料 -->
+    <%@include file="../common/ztree/select_stdmat_no_right_ztree.jsp" %>
 
     <!-- 进度弹窗 -->
     <%@include file="../common/show_loading.jsp" %>

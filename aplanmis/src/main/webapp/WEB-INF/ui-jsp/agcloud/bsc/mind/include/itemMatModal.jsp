@@ -8,6 +8,12 @@
         margin-right: 0px;
     }
 
+    .input-group[class*="col-"] {
+        float: none;
+        padding-right: 7px;
+        padding-left: 7px;
+    }
+
     label {
 
         text-align: right;
@@ -101,13 +107,26 @@
                         <input type="hidden" name="stoFormId" value=""/>
 
                         <div class="form-group m-form__group row">
-                            <label class="col-2 col-form-label" style="text-align: right;">材料类别<span style="color:red">*</span>:</label>
-                            <div class="col-10 input-group" style="padding-right: 8px;padding-left: 8px;">
+                            <label class="col-2 col-form-label">材料类别<span style="color:red">*</span>:</label>
+                            <div class="col-10 input-group">
                                 <input type="hidden" name="matTypeId" value=""/>
                                 <input type="text" class="form-control m-input"
                                        name="matTypeName" readonly placeholder="请选择材料类别..." >
                                 <div class="input-group-append">
                                     <span class="input-group-text open-mat-type">
+                                        <i class="la la-search"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group m-form__group row">
+                            <label class="col-2 col-form-label">标准材料:</label>
+                            <div class="col-10 input-group">
+                                <input type="hidden" name="stdmatId" value=""/>
+                                <input type="text" class="form-control m-input" name="stdmatName" readonly placeholder="请选择标准材料..." >
+                                <div class="input-group-append">
+                                    <span class="input-group-text open-stdmat-type">
                                         <i class="la la-search"></i>
                                     </span>
                                 </div>
@@ -437,6 +456,13 @@
             openSelectFormModal(value);
         });
 
+        // 标准材料选择击事件绑定
+        $('.open-stdmat-type, input[name="stdmatName"]').click(function() {
+
+            var value = $('#item_mat_add_form input[name="stdmatId"]').val();
+            openSelectStdmatModal(value);
+        });
+
         // 材料类型选择
         $("#item_mat_add_form select[name='matProp']").change(function(){
             var value = $(this).val();
@@ -448,7 +474,26 @@
 
         // 选择表单
         $('#selectFormBtn').bind('click', selectForm);
+
+        // 选择标准材料
+        $('#selectStdmatBtn').bind('click', selectStdmat);
     });
+
+    function selectStdmat(){
+
+        var selectStdmatTree = $.fn.zTree.getZTreeObj("selectStdmatTree");
+        var stdmats = selectStdmatTree.getCheckedNodes(true);
+        if(stdmats!=null&&stdmats.length>0){
+            var id = stdmats[0].id;
+            var name = stdmats[0].name;
+            $('#item_mat_add_form input[name="stdmatId"]').val(id);
+            $('#item_mat_add_form input[name="stdmatName"]').val(name);
+            // 关闭窗口
+            closeSelectStdmatModal();
+        }else{
+            swal('错误信息', "请选择标准材料！", 'error');
+        }
+    }
 
     function handleSelectMatProNew(value){
 

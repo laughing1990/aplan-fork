@@ -55,6 +55,7 @@ public class InoutMatEditDto {
     private String matProp;
     private String certId;
     private String stoFormId;
+    private String stdmatId;
 
     public AeaItemMat merge(AeaItemMat aeaItemMat, String userId) {
 
@@ -87,6 +88,7 @@ public class InoutMatEditDto {
         aeaItemMat.setMatProp(this.matProp);
         aeaItemMat.setCertId(this.certId);
         aeaItemMat.setStoFormId(this.stoFormId);
+        aeaItemMat.setStdmatId(this.stdmatId);
         return aeaItemMat;
     }
 }

@@ -27,7 +27,7 @@
     </style>
 </head>
 <body>
-    <div id="mainContentPanel" class="row" style="width: 100%;height: 99%;padding: 15px 10px 5px 10px;margin: 0px;"> <%--style="width: 100%;height: 99%;padding: 0px 5px 0px 0px;margin: 0px;">--%>
+    <div id="mainContentPanel" class="row" style="width: 100%;height: 99%;padding: 15px 10px 5px 10px;margin: 0px;">
         <div class="col-xl-12" style="padding: 0px 2px 0px 5px;">
             <div class="m-portlet" style="margin-bottom: 0px;width: 100%;height: 100%;">
                 <!-- 标题信息 -->
@@ -35,7 +35,7 @@
                     <div class="m-portlet__head-caption">
                         <div class="m-portlet__head-title">
                             <span class="m-portlet__head-icon m--hide"><i class="la la-gear"></i></span>
-                            <h3 class="m-portlet__head-text">法律法规/条款</h3>
+                            <h3 class="m-portlet__head-text">法律法规库（<span style="color: red;">* 点击节点右键操作</span>）</h3>
                         </div>
                     </div>
                 </div>

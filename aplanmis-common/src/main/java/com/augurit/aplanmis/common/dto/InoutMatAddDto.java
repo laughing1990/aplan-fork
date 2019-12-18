@@ -55,6 +55,7 @@ public class InoutMatAddDto {
     private String matProp;
     private String certId;
     private String stoFormId;
+    private String stdmatId;
 
 //    private String receiveMode;
 //    private String matRequire;
@@ -126,6 +127,7 @@ public class InoutMatAddDto {
         aeaItemMat.setMatProp(this.matProp);
         aeaItemMat.setCertId(this.certId);
         aeaItemMat.setStoFormId(this.stoFormId);
+        aeaItemMat.setStdmatId(this.stdmatId);
 //        aeaItemMat.setReceiveMode(this.receiveMode);
 //        aeaItemMat.setMatRequire(this.matRequire);
 //        aeaItemMat.setMatBasis(this.matBasis);

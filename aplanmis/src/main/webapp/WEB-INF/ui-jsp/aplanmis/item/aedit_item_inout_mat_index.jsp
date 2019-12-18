@@ -81,6 +81,19 @@
                         </div>
 
                         <div class="form-group m-form__group row">
+                            <label class="col-2 col-form-label">标准材料:</label>
+                            <div class="col-10 input-group">
+                                <input type="hidden" name="stdmatId" value=""/>
+                                <input type="text" class="form-control m-input" name="stdmatName" readonly placeholder="请选择标准材料..." >
+                                <div class="input-group-append">
+                                    <span class="input-group-text open-stdmat-type">
+                                        <i class="la la-search"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group m-form__group row">
                             <label class="col-2 col-form-label">材料名称<span style="color:red">*</span>:</label>
                             <div class="col-10">
                                 <input class="form-control m-input" type="text" value=""
