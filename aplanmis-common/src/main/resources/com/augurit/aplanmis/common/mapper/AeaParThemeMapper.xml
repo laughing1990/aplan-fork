@@ -251,7 +251,7 @@
     </select>
 
     <select id="listAeaParThemeByDygjbzfxfw" resultType="AeaParTheme">
-        select
+        select distinct
         <include refid="allColumns">
             <property name="alias" value="apt"/>
         </include>,temp1.THEME_VER_ID themeVerId
@@ -270,8 +270,7 @@
         FROM
         aea_par_theme_seq apts
         WHERE
-        apts.MAX_NUM = aptv.VER_NUM
-        AND apts.THEME_ID = aptv.THEME_ID
+         apts.THEME_ID = aptv.THEME_ID
         )
         AND aptv.IS_PUBLISH IN ('1', '2')
         ) temp1 ON temp1.THEME_ID = apt.THEME_ID

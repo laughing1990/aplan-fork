@@ -21,10 +21,10 @@
     $.fn[plug] = function (ops) {
         var _THIS_ = $(this);
         var _DEFL_ = {};
-        var initRoter = ops.router;
+        var initRouter = ops.router;
         var APP = ops.APP;
         //初始化所有需要用的 路由：hash值 和 加载的内容  暂时没实现路由懒加载
-        initRoter.forEach(function(item,index){
+        initRouter.forEach(function(item,index){
             var itemHash = item.hash;
             var itemUlr;
             if (document.location.protocol == "file:") {
