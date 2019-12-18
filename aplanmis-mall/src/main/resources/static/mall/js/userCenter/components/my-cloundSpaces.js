@@ -5,7 +5,7 @@
         el:"#myCloundSpaces",
         data:{
             ctx:ctx,
-            mloading:false,
+            mloading:true,
             tableLoading:false,
             keyword:'',
             pageNum:1,
@@ -84,7 +84,10 @@
                         })
                         vm.DirTreeData = content;
                         vm.DirTreeDataCopy = JSON.parse(JSON.stringify(content))
-                        vm.mloading = false;
+                        setTimeout(function(){
+                            vm.mloading = false;
+                            $("#myCloundSpaces .wt-content").css('display','block');
+                        },500);
                         for (var i = 0; i < content.length ; i++) {
                             if(content[i].childDirs && content[i].childDirs.length > 0 ) {
                                 vm.getFileList(content[i].childDirs[0]);
@@ -138,6 +141,7 @@
                     item.open = !item.open;
                 }
             },
+
             //Tree右键
             rigthClickTree:function($event,item,level){
                 var _this = this;
