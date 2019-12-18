@@ -131,8 +131,27 @@
     </delete>
 
     <select id="getLinkManIdByUnitInfoId" resultType="String">
-        select LINKMAN_INFO_ID FROM AEA_UNIT_LINKMAN
-        WHERE UNIT_INFO_ID = #{unitInfoId}
+        select LINKMAN_INFO_ID FROM AEA_UNIT_LINKMAN WHERE UNIT_INFO_ID = #{unitInfoId}
+    </select>
+    <!--查询联系人所属单位-->
+    <select id="getLinkManIdByLinkmanInfoId" resultType="com.augurit.aplanmis.common.domain.AeaUnitLinkman">
+        select
+        <include refid="allColumns"/>
+        from aea_unit_linkman where LINKMAN_INFO_ID=#{linkmanInfoId}
+    </select>
+    <!--查询单位联系人关联表-->
+    <select id="getAeaUnitLinkmanByUnitIdOrLinkId" resultType="com.augurit.aplanmis.common.domain.AeaUnitLinkman">
+        select
+        <include refid="allColumns"/>
+        from aea_unit_linkman
+        <where>
+            <if test="unitInfoId!=null and unitInfoId!='' ">
+                and UNIT_INFO_ID=#{unitInfoId}
+            </if>
+            <if test="linkmanInfoId!=null and linkmanInfoId!='' ">
+                and LINKMAN_INFO_ID=#{linkmanInfoId}
+            </if>
+        </where>
     </select>
 
     <delete id="deleteUnitLinkman">
@@ -143,6 +162,10 @@
         <foreach collection="linkmanInfoIds" item="linkmanInfoId" open="(" separator="," close=")">
             #{linkmanInfoId}
         </foreach>
+    </delete>
+    <!--物理删除单位联系人关联关系-->
+    <delete id="deleteAeaUnitLinkmanByUnitIdAndLinkmanId">
+        delete from aea_unit_linkman where UNIT_INFO_ID=#{unitInfoId} and LINKMAN_INFO_ID=#{linkmanInfoId}
     </delete>
     <!--8 删除实体对象列表,根据主键ID列表 -->
     <!--9 返回所有字段的对象map,用于级联 -->

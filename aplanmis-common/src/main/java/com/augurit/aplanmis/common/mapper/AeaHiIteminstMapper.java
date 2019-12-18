@@ -38,7 +38,8 @@ public interface AeaHiIteminstMapper {
 
     List<AeaHiIteminst> getAeaHiIteminstListByStageinstId(@Param("stageinstId") String stageinstId) throws Exception;
 
-    List<AeaHiIteminst> getAeaHiIteminstListByApplyinstId(@Param("applyinstId") String applyinstId);
+    //isDeleted  1 则包含 isDeleted字段
+    List<AeaHiIteminst> getAeaHiIteminstListByApplyinstId(@Param("applyinstId") String applyinstId,@Param("isDeleted") String isDeleted);
 
     List<ApproveProjInfoDto> getApproveProjInfoListByUnitOrLinkman(@Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId, @Param("state") String state, @Param("keyword") String keyword);
 

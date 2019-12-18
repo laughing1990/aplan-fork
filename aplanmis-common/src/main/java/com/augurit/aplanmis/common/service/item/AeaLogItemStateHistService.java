@@ -4,7 +4,6 @@ import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
 import com.augurit.aplanmis.common.vo.SupplyOrSpacialCommentVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -41,7 +40,7 @@ public interface AeaLogItemStateHistService {
      * @param newState   新事项状态
      * @param opuOrgId   办件所属委办局组织ID
      */
-    void insertTriggerAeaLogItemStateHist(String iteminstId, String taskinstId, String appinstId, String oldState, String newState,String opuOrgId);
+    void insertTriggerAeaLogItemStateHist(String iteminstId, String taskinstId, String appinstId, String oldState, String newState, String opuOrgId);
 
     /**
      * 构造对象流程触发变更事项状态记录
@@ -126,7 +125,18 @@ public interface AeaLogItemStateHistService {
     AeaLogItemStateHist getAeaLogItemStateHistByCorrectId(String correctId) throws Exception;
 
     /**
+     * 获取事项实例某个状态的最新一次记录
+     *
+     * @param iteminstId
+     * @param newState
+     * @return
+     * @throws Exception
+     */
+    AeaLogItemStateHist getLastAeaLogItemStateHistByState(String iteminstId, String newState) throws Exception;
+
+    /**
      * 查询特别程序的意见列表
+     *
      * @param taskInstId
      * @param rootOrgId
      * @return
@@ -135,6 +145,7 @@ public interface AeaLogItemStateHistService {
 
     /**
      * 查询补正的意见列表
+     *
      * @param taskInstId
      * @param rootOrgId
      * @return

@@ -5,6 +5,7 @@ import com.augurit.agcloud.bsc.mapper.BscAttDetailMapper;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.admin.market.register.service.RegisterService;
 import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
 import com.augurit.aplanmis.common.domain.AeaUnitInfo;
 import com.augurit.aplanmis.common.mapper.AeaLinkmanInfoMapper;
@@ -14,6 +15,7 @@ import com.augurit.aplanmis.common.utils.GeneratePasswordUtils;
 import com.augurit.aplanmis.common.utils.Md5Utils;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,7 @@ import java.util.*;
  * 全局单位库-Service服务调用接口类
  */
 @Service
+@Slf4j
 public class GlobalApplicantService {
 
     @Autowired
@@ -34,8 +37,8 @@ public class GlobalApplicantService {
     private AeaUnitInfoService aeaUnitInfoService;
     @Autowired
     private BscAttDetailMapper bscAttDetailMapper;
-   /* @Autowired
-    private BpmProcessRestService bpmProcessRestService;*/
+    @Autowired
+    private RegisterService registerService;
 
     public AeaUnitInfo getApplicantById(String id) {
         AeaUnitInfo aeaUnitInfo = aeaUnitInfoMapper.getAeaUnitInfoById(id);
@@ -45,7 +48,7 @@ public class GlobalApplicantService {
 
     public PageInfo<AeaUnitInfo> listApplicants(String keyword, Page page) {
         PageHelper.startPage(page);
-        List<AeaUnitInfo> listAeaUnitInfos = aeaUnitInfoMapper.findAeaUnitInfoByKeyword(keyword,SecurityContext.getCurrentOrgId());
+        List<AeaUnitInfo> listAeaUnitInfos = aeaUnitInfoMapper.findAeaUnitInfoByKeyword(keyword, SecurityContext.getCurrentOrgId());
         return new PageInfo<AeaUnitInfo>(listAeaUnitInfos);
     }
 
@@ -78,6 +81,14 @@ public class GlobalApplicantService {
 
     public void deleteAeaApplicant(String id) {
         aeaUnitInfoMapper.deleteOrEnableAeaUnitInfo(id, SecurityContext.getCurrentUserName(), "1");
+        //如果是中介超市单位，需要同步删除中介超市相关的数据
+        try {
+            registerService.deleteOrEnableAgentUnit(id, "1");
+        } catch (Exception e) {
+            log.error("单位删除成功，关联的中介超市数据删除失败");
+            e.printStackTrace();
+        }
+
     }
 
     public void batchDeleteApplicantByIds(String[] ids) {
@@ -85,7 +96,7 @@ public class GlobalApplicantService {
     }
 
     public Map generatePassWord(String unitInfoId, HttpServletRequest request) throws Exception {
-        Map<String,Object> map=new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         AeaUnitInfo unit = aeaUnitInfoMapper.getAeaUnitInfoById(unitInfoId);
         if (unit != null) {
             String key = GeneratePasswordUtils.generatePassword(8);
@@ -102,8 +113,8 @@ public class GlobalApplicantService {
             updateAeaApplicant(updateParam);
             request.getSession().setAttribute("applicantLoginName", loginName);
             request.getSession().setAttribute("applicantLoginPwd", key);
-            map.put("loginName",loginName);
-            map.put("loginPwd",key);
+            map.put("loginName", loginName);
+            map.put("loginPwd", key);
         }
         return map;
     }

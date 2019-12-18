@@ -63,10 +63,11 @@ public interface AeaLogItemStateHistMapper {
 
     AeaLogItemStateHist getInitStateAeaLogItemStateHist(@Param("iteminstId") String iteminstId, @Param("appinstId") String appinstId);
 
+    AeaLogItemStateHist getLastAeaLogItemStateHistByState(@Param("iteminstId") String iteminstId, @Param("newState") String newState, @Param("rootOrgId") String rootOrgId);
+
     List<SupplyOrSpacialCommentVo> findSpacialAeaLogItemStateHist(@Param("taskInstId") String taskInstId, @Param("rootOrgId") String rootOrgId);
 
     List<SupplyOrSpacialCommentVo> findItemCorrectStateHist(@Param("taskInstId") String taskInstId, @Param("rootOrgId") String rootOrgId);
 
     List<AeaLogItemStateHist> listAeaLogItemStateHistByIteminstIds(@Param("iteminstIds") List<String> iteminstIds);
-
 }

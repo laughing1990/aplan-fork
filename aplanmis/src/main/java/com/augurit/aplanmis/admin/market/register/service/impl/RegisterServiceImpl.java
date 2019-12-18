@@ -14,10 +14,10 @@ import com.augurit.aplanmis.admin.market.register.vo.*;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.dic.BscDicCodeItemService;
-import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.vo.AeaHiCertinstBVo;
 import com.augurit.aplanmis.common.vo.ServiceMatterVo;
 import com.github.pagehelper.Page;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@Slf4j
 public class RegisterServiceImpl implements RegisterService {
     @Autowired
     private AeaUnitInfoMapper aeaUnitInfoMapper;
@@ -59,9 +60,6 @@ public class RegisterServiceImpl implements RegisterService {
 
     @Autowired
     private AeaImClientServiceMapper aeaImClientServiceMapper;
-
-    @Autowired
-    private AeaLinkmanInfoService aeaLinkmanInfoService;
 
     @Autowired
     BscDicCodeItemService bscDicCodeItemService;
@@ -301,15 +299,33 @@ public class RegisterServiceImpl implements RegisterService {
         if (StringUtils.isEmpty(unitInfoId)) return;
         AeaUnitInfo unitInfo = aeaUnitInfoMapper.getAeaUnitIncludeDeleteById(unitInfoId);
         if (null == unitInfo) return;
+        if (StringUtils.isEmpty(unitInfo.getIsOwnerUnit()) && StringUtils.isEmpty(unitInfo.getIsImUnit())) return;
         String modifier = SecurityContext.getCurrentUserName();
         //更新单位
         aeaUnitInfoMapper.deleteOrEnableAeaUnitInfo(unitInfoId, modifier, isDeleted);
-        //更新单位联系人
+        //更新单位联系人---更新联系人之前需要判断该联系人是否属于多单位，如果属于多单位，则物理删除与当前单位的关联关系，否则，删除联系人
+        List<AeaUnitLinkman> unitLinkmens = aeaUnitLinkmanMapper.getAeaUnitLinkmanByUnitIdOrLinkId(unitInfoId, null);
+        for (AeaUnitLinkman unitLinkman : unitLinkmens) {
+            String linkmanInfoId = unitLinkman.getLinkmanInfoId();
+            List<AeaUnitLinkman> unitLinkmenList = aeaUnitLinkmanMapper.getLinkManIdByLinkmanInfoId(linkmanInfoId);
+            //属于多单位
+            if (!unitLinkmenList.isEmpty() && unitLinkmenList.size() > 1) {
+                //删除联系人与当前单位的关联关系---可能存在外键关联，删除失败后忽略继续删除其他
+                try {
+                    aeaUnitLinkmanMapper.deleteAeaUnitLinkmanByUnitIdAndLinkmanId(unitInfoId, linkmanInfoId);
+                } catch (Exception e) {
+                    log.info("物理删除单位与联系人关联信息失败，可能存在外键关联，ignore");
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
         aeaLinkmanInfoMapper.updateAllUnitLinkman(unitInfoId, modifier, isDeleted);
+
         String isImUnit = unitInfo.getIsImUnit();
         if (StringUtils.isNotBlank(isImUnit) && "1".equals(isImUnit)) {
             //中介机构
-
             List<AeaImUnitService> unitServiceList = aeaImUnitServiceMapper.listAgentUnitService(unitInfoId);
             if (!unitServiceList.isEmpty()) {
                 // 更新中介服务aea_im_unit_servcie

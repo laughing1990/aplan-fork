@@ -71,6 +71,7 @@ public class AeaHiIteminst implements Serializable {
     private String iteminstType; //事项实例类型： a 行政审批，p 告知承诺制
     private Double toleranceTime; //办件容缺办结时的时限
     private String timeruleId; //办件容缺办结时的时限计算规则id
+    private String isSuspendedBefore;// 撤销之前是否有挂起：1 是，0 否（如果不同意撤销，将恢复流程实例之前的状态）
 
     //非表字段
     private String approveOrgName;  //审批部门

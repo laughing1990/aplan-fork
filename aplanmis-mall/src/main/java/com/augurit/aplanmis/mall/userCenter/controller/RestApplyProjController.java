@@ -14,6 +14,7 @@ import com.augurit.aplanmis.common.domain.AeaParTheme;
 import com.augurit.aplanmis.common.domain.AeaParThemeVer;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
+import com.augurit.aplanmis.common.service.CommonCheckService;
 import com.augurit.aplanmis.common.service.admin.opus.AplanmisOpuOmOrgAdminService;
 import com.augurit.aplanmis.common.service.admin.par.AeaParThemeAdminService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
@@ -79,6 +80,8 @@ public class RestApplyProjController {
     private AplanmisOpuOmOrgAdminService aplanmisOpuOmOrgAdminService;
     @Autowired
     private AeaParThemeService aeaParThemeService;
+    @Autowired
+    private CommonCheckService commonCheckService;
 
     @GetMapping("todeclarePage")
     @ApiOperation(value = "跳转我要申报页面")
@@ -336,7 +339,7 @@ public class RestApplyProjController {
             @ApiImplicitParam(value = "1:单项 0:并联",name = "isSeriesApprove",required = true,dataType = "string")})
     public ContentResultForm<ApplyDetailVo> getApplyDetailByApplyinstIdAndProjInfoId(@PathVariable("projInfoId") String projInfoId, @PathVariable("applyinstId") String applyinstId, @PathVariable("isSeriesApprove")String isSeriesApprove, HttpServletRequest request){
         try {
-            if (!restApproveService.isApplyBelong(applyinstId,projInfoId,request)) return new ContentResultForm(false,"","查询出错");
+            if (!commonCheckService.isApplyBelong(applyinstId,projInfoId,request)) return new ContentResultForm(false,"","查询出错");
             return new ContentResultForm<>(true,restApproveService.getApplyDetailByApplyinstIdAndProjInfoId(applyinstId,projInfoId,isSeriesApprove,null,request));
         } catch (Exception e) {
             logger.error(e.getMessage(),e);

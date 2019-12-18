@@ -20,6 +20,8 @@ public interface AeaItemServiceBasicMapper {
 
      void deleteAeaItemServiceBasic(@Param("id") String id) ;
 
+     List<AeaItemServiceBasic> listAeaItemServiceBasicNoRel(AeaItemServiceBasic aeaItemServiceBasic) ;
+
      List<AeaItemServiceBasic> listAeaItemServiceBasic(AeaItemServiceBasic aeaItemServiceBasic) ;
 
      AeaItemServiceBasic getAeaItemServiceBasicById(@Param("id") String id) ;

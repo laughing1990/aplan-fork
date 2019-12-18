@@ -20,7 +20,6 @@
                 <input type="hidden" name="isActive" value=""/>
                 <input type="hidden" name="certId" value=""/>
                 <input type="hidden" name="stoFormId" value=""/>
-                <input type="hidden" name="stdmatId" value=""/>
 
                 <div class="form-group m-form__group row">
                     <label class="col-2 col-form-label">材料类别<span style="color:red">*</span>:</label>
@@ -39,6 +38,7 @@
                 <div class="form-group m-form__group row">
                     <label class="col-2 col-form-label">标准材料:</label>
                     <div class="col-10 input-group">
+                        <input type="hidden" name="stdmatId" value=""/>
                         <input type="text" class="form-control m-input" name="stdmatName" readonly placeholder="请选择标准材料..." >
                         <div class="input-group-append">
                             <span class="input-group-text open-stdmat-type">

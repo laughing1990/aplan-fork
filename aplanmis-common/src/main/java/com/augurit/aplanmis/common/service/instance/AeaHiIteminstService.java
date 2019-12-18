@@ -20,6 +20,8 @@ public interface AeaHiIteminstService {
      */
     List<AeaHiIteminst> getAeaHiIteminstListByStageinstId(String stageinstId) throws Exception;
 
+    public void updateAeaHiIteminst(AeaHiIteminst aeaHiIteminst) throws Exception;
+
     /**
      * 2.0 根据申请实例ID查询事项实例列表(单项，并联统一接口)
      *
@@ -32,12 +34,12 @@ public interface AeaHiIteminstService {
     /**
      * 2.0 根据申请实例ID查询事项实例列表(单项，并联统一接口)
      *
-     * @param applyinstIds 必须参数  申请实例ID
+     * @param applyinstIds    必须参数  申请实例ID
      * @param isSeriesApprove 0并联  1单项
      * @return
      * @throws Exception
      */
-    List<AeaHiIteminst> getAeaHiIteminstListByApplyinstIds(List<String> applyinstIds,String isSeriesApprove) throws Exception;
+    List<AeaHiIteminst> getAeaHiIteminstListByApplyinstIds(List<String> applyinstIds, String isSeriesApprove) throws Exception;
 
     /**
      * 2.1 根据申请实例ID和事项实例ID查询事项实例列表(单项，并联统一接口)
@@ -256,6 +258,7 @@ public interface AeaHiIteminstService {
 
     /**
      * 办件容缺办结时，更新容缺时限和时限规则到事项实例中
+     *
      * @param iteminstId
      * @param toleranceTime
      * @param timeruleId
@@ -263,7 +266,7 @@ public interface AeaHiIteminstService {
      */
     void updateAeaHiIteminstToleranceTime(String iteminstId, double toleranceTime, String timeruleId) throws Exception;
 
-    long countApproveProjInfoListByUnitOrLinkman (String unitInfoId,String userInfoId,String isAll);
+    long countApproveProjInfoListByUnitOrLinkman(String unitInfoId, String userInfoId, String isAll);
 
     /**
      * 查询项目相关的阶段事项办理状态
@@ -277,7 +280,8 @@ public interface AeaHiIteminstService {
 
     /**
      * 根据状态统计办件数
-     * @param states 状态数组。长度为0时，查询所有状态的办件数
+     *
+     * @param states    状态数组。长度为0时，查询所有状态的办件数
      * @param rootOrgId
      * @return
      */
@@ -285,7 +289,8 @@ public interface AeaHiIteminstService {
 
     /**
      * 根据状态统计当前月份办件数
-     * @param states 状态数组。长度为0时，查询所有状态的办件数
+     *
+     * @param states    状态数组。长度为0时，查询所有状态的办件数
      * @param rootOrgId
      * @return
      */

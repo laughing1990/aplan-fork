@@ -124,7 +124,7 @@ public class OfficialDocumentService {
         List<AeaHiIteminst> aeaHiItems = new ArrayList<>();
         // 部门人员用 iteminstId，窗口人员用 applyinstId
         if (StringUtils.isBlank(iteminstId)) {
-            aeaHiItems.addAll(aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId));
+            aeaHiItems.addAll(aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId,"0"));
         } else {
             aeaHiItems.add(aeaHiIteminstMapper.getAeaHiIteminstById(iteminstId));
         }
@@ -915,7 +915,7 @@ public class OfficialDocumentService {
         CertVo vo = new CertVo();
         List<AeaHiIteminst> aeaHiIteminstList = new ArrayList<>();
         if (StringUtils.isBlank(iteminstId)) {
-            aeaHiIteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId);
+            aeaHiIteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId,"0");
         } else {
             AeaHiIteminst iteminst = aeaHiIteminstMapper.getAeaHiIteminstById(iteminstId);
             if (null == iteminst) {
@@ -964,7 +964,7 @@ public class OfficialDocumentService {
         List<AeaItemMat> result = new ArrayList<>();
         List<AeaHiIteminst> aeaHiIteminstList = new ArrayList<>();
         if (StringUtils.isBlank(iteminstId) && "null".equals(iteminstId)) {
-            aeaHiIteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId);
+            aeaHiIteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId,"0");
         } else {
             AeaHiIteminst iteminst = aeaHiIteminstMapper.getAeaHiIteminstById(iteminstId);
             if (iteminst != null)

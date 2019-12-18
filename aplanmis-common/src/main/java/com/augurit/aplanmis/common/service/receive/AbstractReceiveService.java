@@ -73,7 +73,7 @@ public abstract class AbstractReceiveService {
         for (String applysinstId : applyinstIds) {
 
             //先根据申请实例ID查询事项实例
-            List<AeaHiIteminst> aeaHiIteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applysinstId);
+            List<AeaHiIteminst> aeaHiIteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applysinstId,"0");
 
             //在查询联系人信息
             AeaHiSmsInfo aeaHiSmsInfo = aeaHiSmsInfoMapper.getAeaHiSmsInfoByApplyinstId(applysinstId);
@@ -126,7 +126,7 @@ public abstract class AbstractReceiveService {
             return false;
         }
         //先根据申请实例ID查询事项实例
-        List<AeaHiIteminst> aeaHiIteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId);
+        List<AeaHiIteminst> aeaHiIteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId,"0");
 
         if (aeaHiIteminstList.size() == 0) {
             logger.info("[{}]参数异常，无法查询到申请实例", applyinstId);
