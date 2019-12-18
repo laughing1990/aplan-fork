@@ -610,6 +610,7 @@ var vm = new Vue({
       oneFormOpened: false,
       canShowOneForm: true,
       applyinstId: '',
+      itemStatusFlag: false, // 阶段下情形是否含流程情形
     }
   },
   created: function () {
@@ -668,10 +669,12 @@ var vm = new Vue({
         if (res.success) {
           vm.allFormInfoList.forEach(function(u){
             if (u.formId == vm.oneformActiveName) {
-              u.isFilled = true;
               u.createTime = new Date();
-              vm.formFilledNum++;
-              vm.formUnFillNum--;
+              if (!u.isFilled) {
+                u.isFilled = true;
+                vm.formFilledNum++;
+                vm.formUnFillNum--;
+              }
             }
           });
         } else {
@@ -2232,6 +2235,7 @@ var vm = new Vue({
             _that.matIds = [];
             _that.parallelItems = [];
             _that.coreItems = [];
+            _that.itemStatusFlag = false;
             _that.stateList = data.content.questionStates;
             _that.model.matsTableData = _that.unique(data.content.stateMats,'mats');
             _that.popStateList = [];
@@ -2440,6 +2444,14 @@ var vm = new Vue({
               }
             }
             item.answerStates = _that.sortByKey(item.answerStates,'sortNo');
+            // 判断是否流程情形
+            if(item.answerStates&&item.answerStates.length>0){
+              item.answerStates.map(function(itemAns){
+                if(itemAns.isProcStartCond==1){
+                  _that.itemStatusFlag = true;
+                }
+              });
+            }
             // 回显情形
             if(item.answerStates&&item.answerStates.length>0&&_that.stateIdsHis.length>0){
               item.answerStates.map(function(itemAns){
@@ -2529,7 +2541,7 @@ var vm = new Vue({
           }
           _that.$nextTick(function(){
             if(_that.parallelItems.length>0){
-              if(_that.parallelApplyinstId!=''){
+              if(_that.isDraftsProj&&_that.parallelApplyinstId!=''){
                 if(HisParallelItems.length>0) {
                   _that.parallelItemsSelAll(HisParallelItems, 'autoGetSel');
                   _that.toggleSelection(HisParallelItems, 'parallelItemsTable');
@@ -2698,7 +2710,7 @@ var vm = new Vue({
           });
           _that.$nextTick(function(){
             if(_that.parallelItems.length>0){
-              if(_that.parallelApplyinstId!=''){
+              if(_that.isDraftsProj&&_that.parallelApplyinstId!=''){
                 if(HisParallelItems.length>0) {
                   _that.parallelItemsSelAll(HisParallelItems, 'autoGetSel');
                   _that.toggleSelection(HisParallelItems, 'parallelItemsTable');
@@ -5003,7 +5015,7 @@ var vm = new Vue({
                   }
                 })
               });
-              if(itemShowFlag==item.answerStates.length){
+              if(itemShowFlag==item.answerStates.length&&_that.itemStatusFlag!==false){
                 item.itemShowFlag = false;
               }
             }
@@ -5467,7 +5479,7 @@ var vm = new Vue({
                     }
                   })
                 });
-                if(itemShowFlag==item.answerStates.length){
+                if(itemShowFlag==item.answerStates.length&&_that.itemStatusFlag!==false){
                   item.itemShowFlag = false;
                 }
               }
@@ -5544,7 +5556,7 @@ var vm = new Vue({
                     }
                   });
                 });
-                if(itemShowFlag==item.answerStates.length){
+                if(itemShowFlag==item.answerStates.length&&_that.itemStatusFlag!==false){
                   item.itemShowFlag = false;
                 }
               }

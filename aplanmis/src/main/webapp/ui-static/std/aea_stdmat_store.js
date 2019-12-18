@@ -70,15 +70,24 @@ $(function () {
     //关闭新增分类窗口
     $('#closeMatTypeBtn').click(function(){
 
-        $('#aedit_mat_type_modal').modal('hide');
+        $('#aedit_std_mat_type_modal').modal('hide');
         add_std_mat_type_validator.resetForm();
     });
 
     //关闭新增标准材料窗口
     $('#closeMatBtn').click(function(){
 
-        $('#aedit_mat_modal').modal('hide');
+        $('#aedit_std_mat_modal').modal('hide');
         add_std_mat_validator.resetForm();
+    });
+
+    $('#aedit_std_mat_form select[name="isAutoCheck"]').change(function(){
+        var value = $(this).val();
+        if(value=='0'){
+            $('#checkKeywordsDiv').hide();
+        }else{
+            $('#checkKeywordsDiv').show();
+        }
     });
 });
 
@@ -231,7 +240,7 @@ function initValidate(){
                                     if(result.value) { // 继续新增分类
                                         addMatType();
                                     }else{
-                                        $('#ae_mat_type_modal').modal('hide');
+                                        $('#aedit_std_mat_type_modal').modal('hide');
                                         var node = stdTypeMatTree.getNodeByParam("id", matTypeContent.stdmatTypeId, null);
                                         if(node){
                                             stdTypeMatTree.selectNode(node);
@@ -797,6 +806,15 @@ function editStdMat(){
 
                 // 记载表单数据
                 loadFormData(true, '#aedit_std_mat_form', data);
+
+                if(data){
+                    var value = data.isAutoCheck;
+                    if(value=='0'){
+                        $('#checkKeywordsDiv').hide();
+                    }else{
+                        $('#checkKeywordsDiv').show();
+                    }
+                }
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
 

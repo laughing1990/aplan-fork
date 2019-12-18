@@ -1,7 +1,7 @@
 /*!
  * router JavaScript Library v1.1.0 for web
  *  http://39.107.139.174:8084
- *  author freddy_huang
+ *  author huangjunfu
  * /aplanmis-project/aplanmis-mall/src/main/resources/static/mall/js/utils
  *
  * Date: 2019-07-12 T15:04
@@ -18,7 +18,26 @@
         return  factory.call(global,global.$,plug);
     }
 })(typeof window === 'undefined'? this:window,function($,plug){
-    //$.fn[plug]
+    $.fn[plug] = function (ops) {
+        var _THIS_ = $(this);
+        var _DEFL_ = {};
+        var initRouter = ops.router;
+        var APP = ops.APP;
+        //初始化所有需要用的 路由：hash值 和 加载的内容  暂时没实现路由懒加载
+        initRouter.forEach(function(item,index){
+            var itemHash = item.hash;
+            var itemUlr;
+            if (document.location.protocol == "file:") {
+                itemUlr = item.url;
+            } else {
+                itemUlr = ctx + item.thUrl;
+            }
+            R.route(itemHash,function () {
+                APP.activeName = item.activeName||0;
+                _THIS_.load(itemUlr);
+            })
+        })
+    };
     //路由构造器
     function Router() {
         //接受所有的配置路由内容
@@ -31,7 +50,7 @@
         this.refresh = function (e) {
             if(e.type=='load' && /div_step/igm.test(location.hash.slice(1))){
                 this.curUrl = '/guideIndex';
-            } else if (e.type == 'load' && /declare|scheduleInquire|declareHave|matCompletionList|approve|matSupplementList|lifeCycle|UserInfo|MyHomeIndex|MyMaterials|AddProj|MyCertificateLibrary|CreditDetail|withdrawApplyList|drafts/igm.test(location.hash.slice(1))) {
+            } else if (e.type == 'load' && /declare|scheduleInquire|declareHave|matCompletionList|approve|matSupplementList|lifeCycle|UserInfo|MyHomeIndex|myHomeIndex|MyMaterials|AddProj|MyCertificateLibrary|CreditDetail|withdrawApplyList|drafts/igm.test(location.hash.slice(1))) {
                this.curUrl = '/userCenterIndex'
             }else if(e.type="hashchange" && /userCenterIndex/igm.test(location.hash.slice(1))){
                this.curUrl = '/userCenterIndex'
@@ -51,32 +70,4 @@
 
     R.init();//监听时间
 
-    var res = document.getElementById('app_frame');
-    //初始化所有需要用的 路由：hash值 和 加载的内容  暂时没实现路由懒加载
-    APP.topTabData.forEach(function(item,index){
-        var itemHash = item.hash;
-        var itemUlr;
-        if (document.location.protocol == "file:") {
-             itemUlr = item.url;
-        } else {
-            itemUlr = ctx + item.thUrl;
-        }
-        R.route(itemHash,function () {
-            APP.activeName = index||0;
-            $(res).load(itemUlr);
-        })
-    })
-    APP.routerInitData.forEach(function(item,index){
-        var itemHash = item.hash;
-        var itemUlr;
-        if (document.location.protocol == "file:") {
-            itemUlr = item.url;
-        } else {
-            itemUlr = ctx + item.thUrl;
-        }
-        R.route(itemHash,function () {
-            APP.activeName = item.activeName||0;
-            $(res).load(itemUlr);
-        })
-    })
-},'Router');
+},'AGRouter');

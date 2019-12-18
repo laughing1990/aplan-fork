@@ -64,10 +64,10 @@ public class AeaCreditRedblackController {
             bizType = "l";
             bizCode = loginVo.getIdCard();
         }
-        List<AeaCreditRedblack> list = aeaCreditRedblackService.listPersonOrUnitBlackByBizCode(bizType, bizCode);
         CreditRedblackVo creditRedblackVo = new CreditRedblackVo();
-        if (list.size() > 0) BeanUtils.copyProperties(list.get(0), creditRedblackVo);
         try {
+            List<AeaCreditRedblack> list = aeaCreditRedblackService.listPersonOrUnitBlackByBizCode(bizType, bizCode);
+            if (list.size() > 0) BeanUtils.copyProperties(list.get(0), creditRedblackVo);
             List<AeaCreditSummaryAllDto> creditList = summaryService.listCreditSummaryDetailByByBizCode(bizType, bizCode);
             Boolean flag=false;
             if(creditList.size()>0){

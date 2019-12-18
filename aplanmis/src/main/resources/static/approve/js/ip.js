@@ -16,7 +16,7 @@ if (isDevelop) {
   // ctx = 'http://192.168.30.93:8083/aplanmis-front/'; // 张伟宁
   // ctx = 'http://192.168.30.120:8083/aplanmis-front/'; // 蒋进涛
   // ctx = 'http://192.168.15.101:8083/aplanmis-front/'; // 王超
-  // ctx = 'http://192.168.30.125:8083/aplanmis-front/'; // 黄治亮
+  ctx = 'http://192.168.30.125:8083/aplanmis-front/'; // 黄治亮
   // ctx = 'http://192.168.32.47:8083/aplanmis-front/'; // 熊贻标
 }
 

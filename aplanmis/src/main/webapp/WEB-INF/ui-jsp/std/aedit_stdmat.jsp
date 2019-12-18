@@ -47,7 +47,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group m-form__group row" >
+                    <div id="checkKeywordsDiv" class="form-group m-form__group row" style="display: none;">
                         <label class="col-lg-2 col-form-label" style="text-align: right;">匹配关键字:</label>
                         <div class="col-lg-10">
                             <textarea class="form-control" name="checkKeywords" rows="2"></textarea>
