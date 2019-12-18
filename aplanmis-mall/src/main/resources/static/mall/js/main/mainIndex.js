@@ -207,7 +207,7 @@ var mainIndex = (function () {
                           }else if(vm.themeListData.length  === 3){
                               $(".theme-type .theme-type-list").css('height',549+'px');
                           }else if(vm.themeListData.length  === 4){
-                              $(".theme-type .theme-type-list").css('height',494+'px');
+                              $(".theme-type .theme-type-list").css('height',503+'px');
                           }else if(vm.themeListData.length  === 5){
                               $(".theme-type .theme-type-list").css('height',438+'px');
                           }else if(vm.themeListData.length  === 6){

@@ -16,6 +16,10 @@
 .el-dialog__footer {
     padding: 10px 20px 10px;
 }
+.el-dialog__headerbtn{
+    top: 16px;
+    color: #ffffff;
+}
 .el-dialog__headerbtn .el-dialog__close {
     color: #ffffff;
     -webkit-transition: all 0.2ms;
