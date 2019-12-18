@@ -15,6 +15,7 @@ import com.augurit.agcloud.bpm.front.vo.ExtendBpmHistoryCommentForm;
 import com.augurit.agcloud.bsc.domain.BscAttForm;
 import com.augurit.agcloud.bsc.sc.att.service.IBscAttService;
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.domain.OpuOmUser;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
@@ -874,10 +875,10 @@ public class RestBpmService {
     /**
      * 获取任务节点的审批意见，如果包含子流程，则获取子流程的意见，最多两级子流程
      **/
-    public List getTaskComment(String taskId){
+    public List getTaskComment(String taskId) {
         List result = new ArrayList();
         HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
-        if(historicTaskInstance != null){
+        if (historicTaskInstance != null) {
             String processInstanceId = historicTaskInstance.getProcessInstanceId();
             try {
                 //当前节点的意见
@@ -887,23 +888,23 @@ public class RestBpmService {
                 ActStoAppinstSubflow query = new ActStoAppinstSubflow();
                 query.setTriggerTaskinstId(taskId);
                 List<ActStoAppinstSubflow> actStoAppinstSubflows = actStoAppinstSubflowService.listActStoAppinstSubflow(query);
-                if(actStoAppinstSubflows.size() > 0){
-                    for(int i=0,len=actStoAppinstSubflows.size(); i<len; i++){
+                if (actStoAppinstSubflows.size() > 0) {
+                    for (int i = 0, len = actStoAppinstSubflows.size(); i < len; i++) {
                         ActStoAppinstSubflow actStoAppinstSubflow = actStoAppinstSubflows.get(i);
                         query.setTriggerTaskinstId(null);
                         query.setParentSubflowId(actStoAppinstSubflow.getSubflowId());
                         List<ActStoAppinstSubflow> sSubflows = actStoAppinstSubflowService.listActStoAppinstSubflow(query);
-                        if(sSubflows.size() > 0){
-                            for(int j=0,lenj=sSubflows.size(); j<lenj; j++){
+                        if (sSubflows.size() > 0) {
+                            for (int j = 0, lenj = sSubflows.size(); j < lenj; j++) {
                                 List<BpmHistoryCommentForm> temp = bpmTaskService.getHistoryCommentsByProcessInstanceId(sSubflows.get(j).getSubflowProcinstId());
                                 result.addAll(temp);
                             }
-                        }else{
+                        } else {
                             List<BpmHistoryCommentForm> subHistoryComments = bpmTaskService.getHistoryCommentsByProcessInstanceId(actStoAppinstSubflow.getSubflowProcinstId());
                             result.addAll(subHistoryComments);
                         }
                     }
-                }else{
+                } else {
                     result.addAll(historyComments);
                 }
             } catch (Exception e) {
@@ -915,19 +916,20 @@ public class RestBpmService {
 
     /**
      * 获取任务节点的前一个节点的审批意见，如果包含子流程，则获取子流程的意见，最多两级子流程
+     *
      * @param taskId
      * @return
      */
-    public List getLastTaskComment(String taskId){
+    public List getLastTaskComment(String taskId) {
         HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
         String taskDefinitionKey = historicTaskInstance.getTaskDefinitionKey();
-        if(historicTaskInstance != null) {
+        if (historicTaskInstance != null) {
             String processInstanceId = historicTaskInstance.getProcessInstanceId();
             List<HistoricTaskInstance> list = historyService.createHistoricTaskInstanceQuery().processInstanceId(processInstanceId).list();
-            for(int i=list.size()-1; i>=1; i--){
+            for (int i = list.size() - 1; i >= 1; i--) {
                 HistoricTaskInstance temp = list.get(i);
                 HistoricTaskInstance temp1 = list.get(i - 1);
-                if(temp.getId().equals(taskId) && temp1.getTaskDefinitionKey() != taskDefinitionKey){
+                if (temp.getId().equals(taskId) && temp1.getTaskDefinitionKey() != taskDefinitionKey) {
                     return getTaskComment(temp1.getId());
                 }
             }
@@ -935,4 +937,12 @@ public class RestBpmService {
         return null;
     }
 
+    public ResultForm withdrawInformCommitIteminst(String applyinstId) throws Exception {
+
+
+
+
+        return null;
+
+    }
 }

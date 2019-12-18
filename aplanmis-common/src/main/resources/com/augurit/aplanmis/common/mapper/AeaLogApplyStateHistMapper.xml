@@ -269,6 +269,22 @@
         ORDER BY TRIGGER_TIME ASC
         limit 1
     </select>
+
+    <select id="getLastApplyStageLogByState" resultType="AeaLogApplyStateHist">
+        SELECT
+        <include refid="allColumns"/>
+        FROM
+            AEA_LOG_APPLY_STATE_HIST
+        where
+            APPLYINST_ID = #{applyinstId}
+        and
+            NEW_STATE = #{newState}
+        and
+            ROOT_ORG_ID = #{rootOrgId}
+        ORDER BY TRIGGER_TIME DESC
+        limit 1
+    </select>
+
     <select id="getApplyChangeHis" resultType="AeaLogApplyStateHist">
 
         select ahis.applyinst_id as applyinstId, ahis.new_state as newState ,ahp.APPLYINST_SOURCE applyinstSource

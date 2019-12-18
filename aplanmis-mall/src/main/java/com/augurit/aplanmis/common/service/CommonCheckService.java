@@ -5,8 +5,14 @@ import com.augurit.agcloud.bsc.domain.BscAttLink;
 import com.augurit.agcloud.bsc.mapper.BscAttMapper;
 import com.augurit.agcloud.bsc.sc.att.service.IBscAttService;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
+import com.augurit.aplanmis.common.domain.AeaProjLinkman;
+import com.augurit.aplanmis.common.domain.AeaUnitInfo;
 import com.augurit.aplanmis.common.mapper.AeaHiItemMatinstMapper;
+import com.augurit.aplanmis.common.mapper.AeaProjLinkmanMapper;
+import com.augurit.aplanmis.common.mapper.AeaUnitInfoMapper;
+import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CommonCheckService {
@@ -25,6 +32,12 @@ public class CommonCheckService {
     private AeaHiItemMatinstMapper aeaHiItemMatinstMapper;
     @Autowired
     private BscAttMapper bscAttMapper;
+    @Autowired
+    private AeaHiApplyinstService aeaHiApplyinstService;
+    @Autowired
+    private AeaProjLinkmanMapper aeaProjLinkmanMapper;
+    @Autowired
+    private AeaUnitInfoMapper aeaUnitInfoMapper;
     @Value("${mall.check.authority:false}")
     private boolean isCheckAuthority;
 
@@ -127,5 +140,28 @@ public class CommonCheckService {
         if (links.size()==0) return false;
         String matInstId = links.get(0).getRecordId();
         return  this.isMatBelong(matInstId,request);
+    }
+
+    public Boolean isApplyBelong(String applyInstId,String projinfoId, HttpServletRequest request)throws Exception {
+        if (!isCheckAuthority) return true;
+        AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyInstId);
+        if (aeaHiApplyinst==null) throw new Exception("查询出错");
+        String applySubject = aeaHiApplyinst.getApplySubject();//(申办主体：1 单位，0 个人)
+        LoginInfoVo user = SessionUtil.getLoginInfo(request);
+        if ("0".equals(applySubject)){
+            AeaProjLinkman param = new AeaProjLinkman();
+            param.setApplyinstId(applyInstId);
+            param.setLinkmanInfoId(user.getUserId());
+            List<AeaProjLinkman> list = aeaProjLinkmanMapper.listAeaProjLinkman(param);
+            if (list.size()==0) return false;
+        }else {
+            List<AeaUnitInfo> unitInfos = aeaUnitInfoMapper.findApplyUnitProj(applyInstId,projinfoId,"1");
+            if (unitInfos.size()==0) return false;
+            List<String> unitInfoIds = unitInfos.stream()
+                    .map(AeaUnitInfo::getUnitInfoId).distinct()
+                    .collect(Collectors.toList());
+            if (!unitInfoIds.contains(user.getUnitId()))return false;
+        }
+        return true;
     }
 }

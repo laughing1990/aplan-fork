@@ -106,6 +106,9 @@
 <!-- 选择表单 -->
 <%@include file="../../../common/ztree/select_form_no_right_ztree.jsp" %>
 
+<!-- 选择标准材料 -->
+<%@include file="../../../common/ztree/select_stdmat_no_right_ztree.jsp" %>
+
 <!-- 进度弹窗 -->
 <div id="uploadProgress" class="modal fade" tabindex="-1" role="dialog"
      aria-labelledby="uploadProgressModalLable" aria-hidden="true">

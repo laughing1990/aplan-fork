@@ -48,66 +48,100 @@
         where BASIC_ID = #{id}
     </select>
 
-    <!--3 根据条件查询实体list -->
-    <select id="listAeaItemServiceBasic" resultType="AeaItemServiceBasic">
+    <select id="listAeaItemServiceBasicNoRel" resultType="AeaItemServiceBasic">
         select
-        <include refid="allColumns">
-            <property name="alias" value="aisb"/>
-        </include> ,
-        asl.LEGAL_NAME legalName,
-        asl.LEGAL_LEVEL legalLevel,
-        asl.BASIC_NO basicNo,
-        asl.ISSUE_ORG issueOrg,
-        asl.EXE_DATE exeDate,
-        asl.UPDATE_DATE updateDate,
-        asl.SERVICE_LEGAL_ATT serviceLegalAtt,
-        asl.SERVICE_LEGAL_MEMO serviceLegalMemo,
-        aslc.CLAUSE_TITLE clauseTitle,
-        aslc.CLAUSE_CONTENT clauseContent,
-        aslc.SORT_NO sortNo
-        from aea_item_service_basic aisb
-        left join aea_service_legal_clause aslc on aisb.LEGAL_CLAUSE_ID=aslc.LEGAL_CLAUSE_ID
-        LEFT JOIN aea_service_legal asl on asl.LEGAL_ID=aslc.LEGAL_ID
+            <include refid="allColumns">
+                <property name="alias" value="aisb"/>
+            </include>
+        from AEA_ITEM_SERVICE_BASIC aisb
         <where>
             <if test="basicId != null">
-                AND BASIC_ID = #{basicId}
+                and aisb.BASIC_ID = #{basicId}
             </if>
             <if test="tableName != null">
-                AND TABLE_NAME = #{tableName}
+                and aisb.TABLE_NAME = #{tableName}
             </if>
             <if test="pkName != null">
-                AND PK_NAME = #{pkName}
+                and aisb.PK_NAME = #{pkName}
             </if>
             <if test="recordId != null">
-                AND RECORD_ID = #{recordId}
+                and aisb.RECORD_ID = #{recordId}
             </if>
             <if test="legalClauseId != null">
-                AND LEGAL_CLAUSE_ID = #{legalClauseId}
+                and aisb.LEGAL_CLAUSE_ID = #{legalClauseId}
             </if>
             <if test="creater != null">
-                AND CREATER = #{creater}
+                and aisb.CREATER = #{creater}
             </if>
             <if test="createTime != null">
-                AND CREATE_TIME = #{createTime}
+                and aisb.CREATE_TIME = #{createTime}
             </if>
             <if test="rootOrgId != null">
-                AND ROOT_ORG_ID = #{rootOrgId}
+                and aisb.ROOT_ORG_ID = #{rootOrgId}
             </if>
         </where>
     </select>
-    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaItemServiceBasic" resultType="AeaItemServiceBasic">
+        select
+            <include refid="allColumns">
+                <property name="alias" value="aisb"/>
+            </include> ,
+            asl.LEGAL_NAME legalName,
+            asl.LEGAL_LEVEL legalLevel,
+            asl.BASIC_NO basicNo,
+            asl.ISSUE_ORG issueOrg,
+            asl.EXE_DATE exeDate,
+            asl.UPDATE_DATE updateDate,
+            asl.SERVICE_LEGAL_ATT serviceLegalAtt,
+            asl.SERVICE_LEGAL_MEMO serviceLegalMemo,
+            aslc.CLAUSE_TITLE clauseTitle,
+            aslc.CLAUSE_CONTENT clauseContent,
+            aslc.SORT_NO sortNo
+        from aea_item_service_basic aisb
+        left join aea_service_legal_clause aslc on aisb.LEGAL_CLAUSE_ID=aslc.LEGAL_CLAUSE_ID
+        left join aea_service_legal asl on asl.LEGAL_ID=aslc.LEGAL_ID
+        <where>
+            <if test="basicId != null">
+                AND aisb.BASIC_ID = #{basicId}
+            </if>
+            <if test="tableName != null">
+                AND aisb.TABLE_NAME = #{tableName}
+            </if>
+            <if test="pkName != null">
+                AND aisb.PK_NAME = #{pkName}
+            </if>
+            <if test="recordId != null">
+                AND aisb.RECORD_ID = #{recordId}
+            </if>
+            <if test="legalClauseId != null">
+                AND aisb.LEGAL_CLAUSE_ID = #{legalClauseId}
+            </if>
+            <if test="creater != null">
+                AND aisb.CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND aisb.CREATE_TIME = #{createTime}
+            </if>
+            <if test="rootOrgId != null">
+                AND aisb.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
 
     <select id="listAeaItemServiceBasicAndClauseContent" resultType="AeaItemServiceBasic">
         select
-        <include refid="allColumns">
-            <property name="alias" value="aib"/>
-        </include>
-        ,aislc.clause_title clauseTitle,aislc.clause_content clauseContent,asl.LEGAL_NAME legalName,asl.EXE_DATE exeDate
+            <include refid="allColumns">
+                <property name="alias" value="aib"/>
+            </include>,
+            aislc.clause_title clauseTitle,
+            aislc.clause_content clauseContent,
+            asl.LEGAL_NAME legalName,
+            asl.EXE_DATE exeDate
         from AEA_ITEM_SERVICE_BASIC aib
-        left join aea_service_legal_clause aislc
-        on aib.legal_clause_id=aislc.legal_clause_id
-        left join aea_service_legal asl
-        on asl.LEGAL_ID=aislc.LEGAL_ID
+        left join aea_service_legal_clause aislc on aib.legal_clause_id=aislc.legal_clause_id
+        left join aea_service_legal asl on asl.LEGAL_ID=aislc.LEGAL_ID
         <where>
             <if test="basicId != null">
                 AND aib.BASIC_ID = #{basicId}

@@ -347,6 +347,7 @@
         $("#item_mat_add_form input[name='isOfficialDoc'][value='0']").prop("checked", true);  // 是否为批文批复
         $("#item_mat_add_form input[name='certId']").val("");
         $("#item_mat_add_form input[name='stoFormId']").val("");
+        $("#item_mat_add_form input[name='stdmatId']").val("");
         $("#item_mat_add_form input[name='matProp'][value='m']").prop("checked", true);
         handleSelectMatProNew('m');
 
@@ -475,6 +476,7 @@
         $("#item_mat_add_form input[name='fileType']").val('mat');
         $("#item_mat_add_form input[name='certId']").val("");
         $("#item_mat_add_form input[name='stoFormId']").val("");
+        $("#item_mat_add_form input[name='stdmatId']").val("");
 
         $("#templateDocFile").siblings('.custorm-style').find(".right-text").html("");
         $("#sampleDocFile").siblings('.custorm-style').find(".right-text").html("");

@@ -266,6 +266,7 @@
             $("#item_mat_add_form input[name='isOfficialDoc'][value='0']").prop("checked", true);  // 是否为批文批复
             $("#item_mat_add_form input[name='certId']").val("");
             $("#item_mat_add_form input[name='stoFormId']").val("");
+            $("#item_mat_add_form input[name='stdmatId']").val('');
             $("#item_mat_add_form input[name='matProp'][value='m']").prop("checked", true);
             handleSelectMatProNew('m');
 
@@ -432,7 +433,7 @@
             pagination: true,
             onlyInfoPagination: false,
             sidePagination: 'client',
-            clickToSelect: true,
+            clickToSelect: false,
             pageNumber: 1,
             pageSize: 5,
             pageList: [5],
@@ -483,6 +484,7 @@
                     width: 150,
                     align: "center",
                     formatter: function (value, row, index) {
+
                         var editBtn = '<a href="javascript:editMat(\'' + row.inoutId + '\',\'' + row.matId + '\',\'isNotCommon\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="编辑"><i class="la la-edit"></i></a>';
                         var deleteBtn = '<a href="javascript:deleteMat(\'' + row.inoutId + '\',\'' + row.matId + '\',\'isNotCommon\')" class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a> </span>';
                         return editBtn + deleteBtn;
@@ -514,7 +516,7 @@
             pagination: true,
             onlyInfoPagination: false,
             sidePagination: 'client',
-            clickToSelect: true,
+            clickToSelect: false,
             pageNumber: 1,
             pageSize: 5,
             pageList: [5],
@@ -565,6 +567,7 @@
                     width: 150,
                     align: "center",
                     formatter: function (value, row, index) {
+
                         var editBtn = '<a href="javascript:editMat(\'' + row.inoutId + '\',\'' + row.matId + '\',\'isCommon\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="编辑"><i class="la la-edit"></i></a>';
                         var deleteBtn = '<a href="javascript:deleteMat(\'' + row.inoutId + '\',\'' + row.matId + '\',\'isCommon\')" class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a> </span>';
                         return editBtn + deleteBtn;

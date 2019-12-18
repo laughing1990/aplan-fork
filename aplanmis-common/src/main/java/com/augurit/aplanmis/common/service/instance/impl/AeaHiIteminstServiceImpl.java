@@ -65,13 +65,13 @@ public class AeaHiIteminstServiceImpl implements AeaHiIteminstService {
     @Override
     public List<AeaHiIteminst> getAeaHiIteminstListByApplyinstId(String applyinstId) throws Exception {
         if (StringUtils.isBlank(applyinstId)) throw new InvalidParameterException("参数applyinstId为空！");
-        return aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId);
+        return aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId,"0");
     }
 
     @Override
-    public List<AeaHiIteminst> getAeaHiIteminstListByApplyinstIds(List<String> applyinstIds,String isSeriesApprove) throws Exception {
-        if (applyinstIds==null||applyinstIds.size()==0) throw new InvalidParameterException("参数applyinstIds为空！");
-        return aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstIds(applyinstIds,isSeriesApprove);
+    public List<AeaHiIteminst> getAeaHiIteminstListByApplyinstIds(List<String> applyinstIds, String isSeriesApprove) throws Exception {
+        if (applyinstIds == null || applyinstIds.size() == 0) throw new InvalidParameterException("参数applyinstIds为空！");
+        return aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstIds(applyinstIds, isSeriesApprove);
     }
 
     @Override
@@ -97,10 +97,16 @@ public class AeaHiIteminstServiceImpl implements AeaHiIteminstService {
     }
 
     @Override
+    public void updateAeaHiIteminst(AeaHiIteminst aeaHiIteminst) throws Exception {
+        if (StringUtils.isBlank(aeaHiIteminst.getIteminstId())) throw new Exception("缺少参数！");
+        aeaHiIteminstMapper.updateAeaHiIteminst(aeaHiIteminst);
+    }
+
+    @Override
     public AeaHiIteminst insertAeaHiIteminstAndTriggerAeaLogItemStateHist(String seriesinstId, String itemVerId, String branchOrgMap, String taskinstId, String appinstId) throws Exception {
         AeaHiIteminst aeaHiIteminst = this.insertAeaHiIteminst(seriesinstId, itemVerId, branchOrgMap);
         if (aeaHiIteminst != null) {
-            aeaLogItemStateHistService.insertTriggerAeaLogItemStateHist(aeaHiIteminst.getIteminstId(), taskinstId, appinstId, null, ItemStatus.RECEIVE_APPLY.getValue(),aeaHiIteminst.getApproveOrgId());
+            aeaLogItemStateHistService.insertTriggerAeaLogItemStateHist(aeaHiIteminst.getIteminstId(), taskinstId, appinstId, null, ItemStatus.RECEIVE_APPLY.getValue(), aeaHiIteminst.getApproveOrgId());
         }
         return aeaHiIteminst;
     }
@@ -122,7 +128,7 @@ public class AeaHiIteminstServiceImpl implements AeaHiIteminstService {
     public AeaHiIteminst insertAeaHiIteminstAndTriggerAeaLogItemStateHist(String themeVerId, String stageinstId, String itemVerId, String branchOrgMap, String taskinstId, String appinstId) throws Exception {
         AeaHiIteminst aeaHiIteminst = this.insertAeaHiIteminst(themeVerId, stageinstId, itemVerId, branchOrgMap);
         if (aeaHiIteminst != null) {
-            aeaLogItemStateHistService.insertTriggerAeaLogItemStateHist(aeaHiIteminst.getIteminstId(), taskinstId, appinstId, null, ItemStatus.RECEIVE_APPLY.getValue(),aeaHiIteminst.getApproveOrgId());
+            aeaLogItemStateHistService.insertTriggerAeaLogItemStateHist(aeaHiIteminst.getIteminstId(), taskinstId, appinstId, null, ItemStatus.RECEIVE_APPLY.getValue(), aeaHiIteminst.getApproveOrgId());
         }
         return aeaHiIteminst;
     }
@@ -146,7 +152,7 @@ public class AeaHiIteminstServiceImpl implements AeaHiIteminstService {
         List<AeaHiIteminst> aeaHiIteminstList = this.batchInsertAeaHiIteminst(seriesinstId, itemVerIds, branchOrgMap);
         List<AeaLogItemStateHist> aeaLogItemStateHistList = new ArrayList<>();
         for (AeaHiIteminst aeaHiIteminst : aeaHiIteminstList) {
-            AeaLogItemStateHist aeaLogItemStateHist = aeaLogItemStateHistService.constructTriggerAeaLogItemStateHist(aeaHiIteminst.getIteminstId(), taskinstId, appinstId, null, ItemStatus.RECEIVE_APPLY.getValue(),aeaHiIteminst.getApproveOrgId());
+            AeaLogItemStateHist aeaLogItemStateHist = aeaLogItemStateHistService.constructTriggerAeaLogItemStateHist(aeaHiIteminst.getIteminstId(), taskinstId, appinstId, null, ItemStatus.RECEIVE_APPLY.getValue(), aeaHiIteminst.getApproveOrgId());
             aeaLogItemStateHist.setRootOrgId(SecurityContext.getCurrentOrgId());
             aeaLogItemStateHistList.add(aeaLogItemStateHist);
         }
@@ -294,13 +300,13 @@ public class AeaHiIteminstServiceImpl implements AeaHiIteminstService {
     @Override
     public void updateAeaHiIteminstStateAndInsertOpsAeaLogItemStateHist(String iteminstId, String opsUserOpinion, String opsAction, String opsMemo, String iteminstState, String opuOrgId) throws Exception {
         AeaHiIteminst iteminst = saveAndReturnAeaHiIteminstState(iteminstId, iteminstState);
-        aeaLogItemStateHistService.insertOpsAeaLogItemStateHist(iteminstId, opsUserOpinion, opsAction, opsMemo, iteminst.getIteminstState(), iteminstState,opuOrgId);
+        aeaLogItemStateHistService.insertOpsAeaLogItemStateHist(iteminstId, opsUserOpinion, opsAction, opsMemo, iteminst.getIteminstState(), iteminstState, opuOrgId);
     }
 
     @Override
     public void updateAeaHiIteminstStateAndInsertOpsLinkBusAeaLogItemStateHist(String iteminstId, String opsUserOpinion, String opsAction, String opsMemo, String iteminstState, String opuOrgId, String busTableName, String busPkName, String busRecordId) throws Exception {
         AeaHiIteminst iteminst = saveAndReturnAeaHiIteminstState(iteminstId, iteminstState);
-        aeaLogItemStateHistService.insertOpsLinkBusAeaLogItemStateHist(iteminstId, opsUserOpinion, opsAction, opsMemo, iteminst.getIteminstState(), iteminstState,opuOrgId, busTableName, busPkName, busRecordId);
+        aeaLogItemStateHistService.insertOpsLinkBusAeaLogItemStateHist(iteminstId, opsUserOpinion, opsAction, opsMemo, iteminst.getIteminstState(), iteminstState, opuOrgId, busTableName, busPkName, busRecordId);
     }
 
     @Override
@@ -367,8 +373,8 @@ public class AeaHiIteminstServiceImpl implements AeaHiIteminstService {
     }
 
     @Override
-    public  long countApproveProjInfoListByUnitOrLinkman (String unitInfoId, String userInfoId,String isAll){
-        return aeaHiIteminstMapper.countApproveProjInfoListByUnitOrLinkman(unitInfoId,userInfoId,isAll);
+    public long countApproveProjInfoListByUnitOrLinkman(String unitInfoId, String userInfoId, String isAll) {
+        return aeaHiIteminstMapper.countApproveProjInfoListByUnitOrLinkman(unitInfoId, userInfoId, isAll);
     }
 
     @Override
@@ -406,7 +412,7 @@ public class AeaHiIteminstServiceImpl implements AeaHiIteminstService {
         // 把对应的标准事项也放进去
         Map<String, HandleStatus> catalogMap = new HashMap<>(resultMap.size());
         for (Map.Entry<String, HandleStatus> entry : resultMap.entrySet()) {
-            AeaItemBasic catalogItem = aeaItemBasicService.getCatalogItemByCarryOutItemId(entry.getKey(),null);
+            AeaItemBasic catalogItem = aeaItemBasicService.getCatalogItemByCarryOutItemId(entry.getKey(), null);
             if (catalogItem != null) {
                 catalogMap.put(catalogItem.getItemId(), entry.getValue());
             }
@@ -416,14 +422,15 @@ public class AeaHiIteminstServiceImpl implements AeaHiIteminstService {
     }
 
     @Override
-    public int countTotalItemByStates(String[] states, String rootOrgId) throws Exception{
-        return aeaHiIteminstMapper.countTotalItemByStates(states,rootOrgId);
+    public int countTotalItemByStates(String[] states, String rootOrgId) throws Exception {
+        return aeaHiIteminstMapper.countTotalItemByStates(states, rootOrgId);
     }
 
     @Override
-    public int countCurrentMonthCountItemByStates(String[] states, String rootOrgId) throws Exception{
-        return aeaHiIteminstMapper.countCurrentMonthCountItemByStates(states,rootOrgId);
+    public int countCurrentMonthCountItemByStates(String[] states, String rootOrgId) throws Exception {
+        return aeaHiIteminstMapper.countCurrentMonthCountItemByStates(states, rootOrgId);
     }
+
     @Override
     public void updateAeaHiIteminstStateAndInsertTriggerAeaLogApplyinstStateHist(String iteminstId, String taskinstId, String appinstId, String iteminstState) throws Exception {
         AeaHiIteminst iteminst = saveAndReturnAeaHiIteminstState(iteminstId, iteminstState);
@@ -436,13 +443,14 @@ public class AeaHiIteminstServiceImpl implements AeaHiIteminstService {
         AeaHiIteminst iteminst = saveAndReturnAeaHiIteminstState(iteminstId, iteminstState);
         aeaLogApplyStateHistService.insertOpsAeaLogApplyStateHist(iteminstId, opsUserOpinion, opsAction, opsMemo, iteminst.getIteminstState(), iteminstState, iteminst.getApproveOrgId());
     }
+
     @Override
-    public void batchDeleteAeaHiIteminstAndBatchDelAeaLogItemStateHist(String[] iteminstIds){
-        if(iteminstIds.length>0){
+    public void batchDeleteAeaHiIteminstAndBatchDelAeaLogItemStateHist(String[] iteminstIds) {
+        if (iteminstIds.length > 0) {
             aeaHiIteminstMapper.batchDeleteAeaHiIteminst(iteminstIds);
-            List<AeaLogItemStateHist> logs=aeaLogItemStateHistService.findAeaLogItemStateHistByIteminstIds(iteminstIds);
-            if(logs.size()>0){
-                List<String> ids=logs.stream().map(AeaLogItemStateHist::getStateHistId).collect(Collectors.toList());
+            List<AeaLogItemStateHist> logs = aeaLogItemStateHistService.findAeaLogItemStateHistByIteminstIds(iteminstIds);
+            if (logs.size() > 0) {
+                List<String> ids = logs.stream().map(AeaLogItemStateHist::getStateHistId).collect(Collectors.toList());
                 aeaLogItemStateHistService.batchDeleteAeaLogItemStateHist(ids);
             }
         }

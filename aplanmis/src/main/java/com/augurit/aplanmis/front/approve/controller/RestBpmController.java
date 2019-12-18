@@ -17,10 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -296,5 +293,17 @@ public class RestBpmController {
         }
         List<HistoryCommentsVo> voList = restBpmService.getLastTaskComment(taskId);
         return new ContentResultForm<>(true, voList);
+    }
+
+    @PostMapping("/informCommitIteminst/withdraw")
+    @ApiOperation(value = "撤回告知承诺制办件（如果是并联申报，则一起撤回所有办件）")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "applyinstId", value = "申请实例id", required = true, dataType = "string", paramType = "query", readOnly = true)
+    })
+    public ResultForm withdrawInformCommitIteminst(String applyinstId) throws Exception {
+        if (StringUtils.isBlank(applyinstId)) {
+            return new ResultForm(false, "申请实例id不能为空！");
+        }
+        return restBpmService.withdrawInformCommitIteminst(applyinstId);
     }
 }

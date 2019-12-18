@@ -125,56 +125,31 @@ public class RestApplyMatService {
         ParallelApplyHandleVo.AnswerStateVo answerStateVo;
         // 父问题情形
         String parentQuestionStateId = null;
-        //查询root情形下的材料
         String rootOrgId = SecurityContext.getCurrentOrgId();
-
-        //阶段下的root情形或父情形下的父子子情形
+        // 阶段下的root情形或父情形和子情形
         List<AeaParState> aeaParStates = aeaParStateMapper.listParStateByParentStateId(stageId, parentId, rootOrgId);
 
-        //阶段下或情形下的材料
+        // 阶段下或情形下的材料
         List<AeaItemMat> itemMatList;
         if ("ROOT".equalsIgnoreCase(parentId)) {
-            itemMatList = aeaItemMatService.getMatListByStageId(stageId, "1");
+            itemMatList = aeaItemMatMapper.getMatListByStageIdWithAllItemVerId(stageId, "1");
         } else {
             parentQuestionStateId = aeaParStateMapper.getAeaParStateById(parentId).getParentStateId();
-            String[] ids = {parentId};
-            itemMatList = aeaItemMatService.getMatListByStageStateIds(ids);
+            itemMatList = aeaItemMatMapper.getMatListByStageStateIdsWithAllItemVerId(new String[]{parentId});
         }
-        //转换材料数据
-        List<ParallelApplyHandleVo.MatVo> rootMats = new ArrayList<>();
-        for (AeaItemMat aeaItemMat : itemMatList) {
-            //情形下材料
-            addReplyIdentifier(aeaItemMat);
-            ParallelApplyHandleVo.MatVo matVo = new ParallelApplyHandleVo.MatVo();
-            BeanUtils.copyProperties(aeaItemMat, matVo);
-            rootMats.add(matVo);
-        }
-        vo.setStateMats(rootMats);
+        // 转换材料数据
+        vo.setStateMats(getMatVos(itemMatList));
         List<ParallelApplyHandleVo.QuestionStateVo> questionStateVos = new ArrayList<>();
 
+        // 查询阶段下事项已办信息
         AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageId);
         AeaServiceWindow currentUserWindow = Optional.ofNullable(aeaServiceWindowService.getCurrentUserWindow()).orElse(new AeaServiceWindow());
-
-        // 查询阶段下事项已办信息
         Map<String, HandleStatus> itemHandleStatusMap = aeaHiIteminstService.queryItemStatusByStageIdAndProjInfoId(Collections.singletonList(stageId), projInfoId, rootOrgId);
+
         for (AeaParState state : aeaParStates) {
             List<ParallelApplyHandleVo.AnswerStateVo> answerStateVos = new ArrayList<>();
-
             ParallelApplyHandleVo.QuestionStateVo questionStateVo = new ParallelApplyHandleVo.QuestionStateVo();
             BeanUtils.copyProperties(state, questionStateVo);
-            //查询questionStateVo下的材料
-            String[] quesStateId = {questionStateVo.getParStateId()};
-            List<AeaItemMat> quesStateMats = aeaItemMatService.getMatListByStageStateIds(quesStateId);
-            List<ParallelApplyHandleVo.MatVo> stateMats1 = new ArrayList<>();
-            for (AeaItemMat mat : quesStateMats) {
-                //情形下材料
-                addReplyIdentifier(mat);
-                ParallelApplyHandleVo.MatVo matVo = new ParallelApplyHandleVo.MatVo();
-                BeanUtils.copyProperties(mat, matVo);
-                stateMats1.add(matVo);
-            }
-            List<ParallelApplyHandleVo.MatVo> questionMats = new ArrayList<>(stateMats1);
-            questionStateVo.setStateMats(questionMats);
             questionStateVo.setParentQuestionStateId(parentQuestionStateId);
             List<AeaParState> answerStates = state.getAnswerStates();
             if (answerStates.size() > 0) {
@@ -220,7 +195,6 @@ public class RestApplyMatService {
 
                     answerStateVo.setStateParallelItems(stateParallelItems);
                     answerStateVo.setStateOptionItems(stateOptionItems);
-
                     answerStateVos.add(answerStateVo);
                 }
                 questionStateVo.setAnswerStates(answerStateVos);
@@ -228,8 +202,34 @@ public class RestApplyMatService {
             questionStateVos.add(questionStateVo);
         }
         vo.setQuestionStates(questionStateVos);
-
         return vo;
+    }
+
+    private List<ParallelApplyHandleVo.MatVo> getMatVos(List<AeaItemMat> itemMatList) {
+        List<ParallelApplyHandleVo.MatVo> matVos = new ArrayList<>();
+        Map<String, ParallelApplyHandleVo.MatVo> alreadHandedMats = new HashMap<>(itemMatList.size());
+        itemMatList.forEach(aeaItemMat -> {
+            addReplyIdentifier(aeaItemMat);
+            ParallelApplyHandleVo.MatVo matVo = alreadHandedMats.get(aeaItemMat.getMatId());
+            if (matVo == null) {
+                //情形下材料
+                matVo = new ParallelApplyHandleVo.MatVo();
+                BeanUtils.copyProperties(aeaItemMat, matVo);
+                // 材料绑定的是那种事项， 并联 or 并行？
+                matVo.setBindItemType(aeaItemMat.getIsOptionItem());
+                alreadHandedMats.put(matVo.getMatId(), matVo);
+            } else {
+                if (StringUtils.isNotBlank(matVo.getItemVerId()) && !matVo.getItemVerId().contains(aeaItemMat.getItemVerId())) {
+                    matVo.setItemVerId(matVo.getItemVerId() + "," + aeaItemMat.getItemVerId());
+                }
+                // 既绑定了并联事项，也绑定了并行事项
+                if (!aeaItemMat.getIsOptionItem().equals(matVo.getBindItemType())) {
+                    matVo.setBindItemType("2");
+                }
+            }
+        });
+        matVos.addAll(alreadHandedMats.values());
+        return matVos;
     }
 
     /**
@@ -290,13 +290,7 @@ public class RestApplyMatService {
     public ParallelApplyHandleVo listStageNoStateApplyStates(String stageId, List<String> itemVerIds) throws Exception {
         ParallelApplyHandleVo vo = new ParallelApplyHandleVo();
         List<AeaItemMat> itemMatList = aeaItemMatService.listMatListByStageId(stageId, itemVerIds);
-        List<ParallelApplyHandleVo.MatVo> stateMats = new ArrayList<>();
-        for (AeaItemMat itemMat : itemMatList) {
-            ParallelApplyHandleVo.MatVo matVo = new ParallelApplyHandleVo.MatVo();
-            BeanUtils.copyProperties(itemMat, matVo);
-            stateMats.add(matVo);
-        }
-        vo.setStateMats(stateMats);
+        vo.setStateMats(getMatVos(itemMatList));
         return vo;
 
     }

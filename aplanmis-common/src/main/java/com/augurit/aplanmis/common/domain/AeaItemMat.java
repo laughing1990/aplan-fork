@@ -219,6 +219,7 @@ public class AeaItemMat extends MindBaseNode {
     private String unitInfoId;
     private String iteminstId;
     private String inoutId;
+    private String isOptionItem;
 
     public Long setSortNo(Long sortNo){
         return sortNo==null ? 0:sortNo;

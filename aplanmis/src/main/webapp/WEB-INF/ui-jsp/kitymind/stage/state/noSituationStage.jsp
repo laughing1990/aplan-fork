@@ -171,6 +171,9 @@
     <!-- 选择表单 -->
     <%@include file="../../../common/ztree/select_form_no_right_ztree.jsp" %>
 
+    <!-- 选择标准材料 -->
+    <%@include file="../../../common/ztree/select_stdmat_no_right_ztree.jsp" %>
+
     <!-- 查看材料附件 -->
     <%@include file="../../../aplanmis/item/show_mat_att_modal.jsp"%>
 

@@ -118,7 +118,7 @@ public class ApproveDataServiceImpl implements ApproveDataService {
 
     private void convertCommentByState(List<ApproveProjInfoDto> list) throws Exception {
         for (ApproveProjInfoDto dto : list) {
-            List<AeaHiIteminst> iteminst = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(dto.getApplyinstId());
+            List<AeaHiIteminst> iteminst = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(dto.getApplyinstId(),"0");
             dto.setIteminst(iteminst.size()>0?ApproveProjInfoDto.formatList(iteminst):new ArrayList<>());
             if (ApplyState.OUT_SCOPE.getValue().equals(dto.getApplyinstState())) {
                 AeaLogApplyStateHist query = new AeaLogApplyStateHist();
@@ -251,7 +251,7 @@ public class ApproveDataServiceImpl implements ApproveDataService {
         //projStateDto.setApplyinstState(dicApplyinstState==null?"":dicApplyinstState.getItemName());
         projStateDto.setIsSeriesApprove(applyinst.getIsSeriesApprove());
         if("1".equals(applyinst.getIsSeriesApprove())){//单项
-            List<AeaHiIteminst> iteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId);
+            List<AeaHiIteminst> iteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId,"0");
             if(iteminstList.size()==0) return projStateDto;
             AeaItemBasic itemBasic = aeaItemBasicService.getAeaItemBasicByItemVerId(iteminstList.get(0).getItemVerId());
             if(itemBasic==null) return projStateDto;
