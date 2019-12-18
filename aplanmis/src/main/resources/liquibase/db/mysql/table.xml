@@ -1421,4 +1421,30 @@
         </sql>
     </changeSet>
 
+    <changeSet id="20191217170457" author="xiong" failOnError="false">
+        <preConditions>
+            <not>
+                <indexExists columnNames="PARENT_STATE_ID" tableName="aea_par_state"
+                             indexName="aps_parent_state_id"/>
+            </not>
+        </preConditions>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_par_state`
+            ADD INDEX `aps_parent_state_id` (`PARENT_STATE_ID`) USING BTREE ;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20191218114735" author="xiong" failOnError="false">
+        <preConditions>
+            <not>
+                <indexExists columnNames="STAGE_ITEM_ID, IN_ID" tableName="aea_par_stage_item_in"
+                             indexName="apsii_stage_item_in_id"/>
+            </not>
+        </preConditions>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_par_stage_item_in`
+            ADD INDEX `apsii_stage_item_in_id` (`STAGE_ITEM_ID`, `IN_ID`) USING BTREE ;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

@@ -1140,6 +1140,7 @@
                 ahi.ITEMINST_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
+            and ahi.is_deleted!=1
         </where>
 
         UNION ALL
@@ -1196,6 +1197,7 @@
                 ahi.ITEMINST_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
+            and ahi.is_deleted!=1
         </where>
         UNION ALL
         SELECT
@@ -1249,6 +1251,7 @@
                 ahi.ITEMINST_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
+            and ahi.is_deleted!=1
         </where>
         UNION ALL
         SELECT
@@ -1304,6 +1307,7 @@
                 ahi.ITEMINST_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
+            and ahi.is_deleted!=1
         </where>
     </select>
 

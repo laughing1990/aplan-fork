@@ -125,56 +125,31 @@ public class RestApplyMatService {
         ParallelApplyHandleVo.AnswerStateVo answerStateVo;
         // 父问题情形
         String parentQuestionStateId = null;
-        //查询root情形下的材料
         String rootOrgId = SecurityContext.getCurrentOrgId();
-
-        //阶段下的root情形或父情形下的父子子情形
+        // 阶段下的root情形或父情形和子情形
         List<AeaParState> aeaParStates = aeaParStateMapper.listParStateByParentStateId(stageId, parentId, rootOrgId);
 
-        //阶段下或情形下的材料
+        // 阶段下或情形下的材料
         List<AeaItemMat> itemMatList;
         if ("ROOT".equalsIgnoreCase(parentId)) {
             itemMatList = aeaItemMatService.getMatListByStageId(stageId, "1");
         } else {
             parentQuestionStateId = aeaParStateMapper.getAeaParStateById(parentId).getParentStateId();
-            String[] ids = {parentId};
-            itemMatList = aeaItemMatService.getMatListByStageStateIds(ids);
+            itemMatList = aeaItemMatService.getMatListByStageStateIds(new String[]{parentId});
         }
-        //转换材料数据
-        List<ParallelApplyHandleVo.MatVo> rootMats = new ArrayList<>();
-        for (AeaItemMat aeaItemMat : itemMatList) {
-            //情形下材料
-            addReplyIdentifier(aeaItemMat);
-            ParallelApplyHandleVo.MatVo matVo = new ParallelApplyHandleVo.MatVo();
-            BeanUtils.copyProperties(aeaItemMat, matVo);
-            rootMats.add(matVo);
-        }
-        vo.setStateMats(rootMats);
+        // 转换材料数据
+        vo.setStateMats(getMatVos(itemMatList));
         List<ParallelApplyHandleVo.QuestionStateVo> questionStateVos = new ArrayList<>();
 
+        // 查询阶段下事项已办信息
         AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageId);
         AeaServiceWindow currentUserWindow = Optional.ofNullable(aeaServiceWindowService.getCurrentUserWindow()).orElse(new AeaServiceWindow());
-
-        // 查询阶段下事项已办信息
         Map<String, HandleStatus> itemHandleStatusMap = aeaHiIteminstService.queryItemStatusByStageIdAndProjInfoId(Collections.singletonList(stageId), projInfoId, rootOrgId);
+
         for (AeaParState state : aeaParStates) {
             List<ParallelApplyHandleVo.AnswerStateVo> answerStateVos = new ArrayList<>();
-
             ParallelApplyHandleVo.QuestionStateVo questionStateVo = new ParallelApplyHandleVo.QuestionStateVo();
             BeanUtils.copyProperties(state, questionStateVo);
-            //查询questionStateVo下的材料
-            String[] quesStateId = {questionStateVo.getParStateId()};
-            List<AeaItemMat> quesStateMats = aeaItemMatService.getMatListByStageStateIds(quesStateId);
-            List<ParallelApplyHandleVo.MatVo> stateMats1 = new ArrayList<>();
-            for (AeaItemMat mat : quesStateMats) {
-                //情形下材料
-                addReplyIdentifier(mat);
-                ParallelApplyHandleVo.MatVo matVo = new ParallelApplyHandleVo.MatVo();
-                BeanUtils.copyProperties(mat, matVo);
-                stateMats1.add(matVo);
-            }
-            List<ParallelApplyHandleVo.MatVo> questionMats = new ArrayList<>(stateMats1);
-            questionStateVo.setStateMats(questionMats);
             questionStateVo.setParentQuestionStateId(parentQuestionStateId);
             List<AeaParState> answerStates = state.getAnswerStates();
             if (answerStates.size() > 0) {
@@ -220,7 +195,6 @@ public class RestApplyMatService {
 
                     answerStateVo.setStateParallelItems(stateParallelItems);
                     answerStateVo.setStateOptionItems(stateOptionItems);
-
                     answerStateVos.add(answerStateVo);
                 }
                 questionStateVo.setAnswerStates(answerStateVos);
@@ -228,8 +202,19 @@ public class RestApplyMatService {
             questionStateVos.add(questionStateVo);
         }
         vo.setQuestionStates(questionStateVos);
-
         return vo;
+    }
+
+    private List<ParallelApplyHandleVo.MatVo> getMatVos(List<AeaItemMat> itemMatList) {
+        List<ParallelApplyHandleVo.MatVo> matVos = new ArrayList<>();
+        itemMatList.forEach(aeaItemMat -> {
+            //情形下材料
+            addReplyIdentifier(aeaItemMat);
+            ParallelApplyHandleVo.MatVo matVo = new ParallelApplyHandleVo.MatVo();
+            BeanUtils.copyProperties(aeaItemMat, matVo);
+            matVos.add(matVo);
+        });
+        return matVos;
     }
 
     /**
