@@ -110,7 +110,7 @@ public interface AeaHiIteminstMapper {
 
     int countTotalItemByApplyType(@Param("isSeriesApprove") String isSeriesApprove, @Param("rootOrgId") String rootOrgId);
 
-    List<AeaHiIteminst> getAeaHiIteminstListByApplyinstIds(@Param("ids") List<String> applyinstIds, @Param("isSeriesApprove") String isSeriesApprove);
+    List<AeaHiIteminst> getAeaHiIteminstListByApplyinstIds(@Param("ids") List<String> applyinstIds, @Param("isSeriesApprove") String isSeriesApprove,@Param("isDeleted") String isDeleted);
 
     /**
      * 查询部门对应状态和来源办件数
