@@ -172,6 +172,9 @@ public class RestApplyCommonController {
     @PostMapping("/itemList/temporary")
     @ApiOperation(value = "阶段申报-->暂存阶段，情形及事项(含事项情形)")
     public ContentResultForm itemListTemporary(@Valid @RequestBody ItemListTemporaryParamVo itemListTemporaryParamVo,HttpServletRequest request){
+        SmsInfoVo smsInfoVo=itemListTemporaryParamVo.getSmsInfoVo();
+        smsInfoVo.setApplyinstId(itemListTemporaryParamVo.getApplyinstId());
+        itemListTemporaryParamVo.setSmsInfoVo(smsInfoVo);
         Map<String,Object> map=new HashMap<>();
         ContentResultForm firstStepResult = temporarySaveOrUpdateSmsInfo(itemListTemporaryParamVo.getSmsInfoVo(), request);
         LoginInfoVo loginVo = SessionUtil.getLoginInfo(request);
@@ -195,6 +198,9 @@ public class RestApplyCommonController {
     @PostMapping("/matList/stage/temporary")
     @ApiOperation(value = "阶段申报-->暂存材料)")
     public ContentResultForm matListStageTemporary(@Valid @RequestBody MatListStageTemporaryParamVo matListStageTemporaryParamVo,HttpServletRequest request){
+        ItemListTemporaryParamVo itemListTemporaryParamVo=matListStageTemporaryParamVo.getItemListTemporaryParamVo();
+        itemListTemporaryParamVo.setApplyinstId(matListStageTemporaryParamVo.getApplyinstId());
+        matListStageTemporaryParamVo.setItemListTemporaryParamVo(itemListTemporaryParamVo);
         Map<String,Object> map=new HashMap<>();
         ContentResultForm secondStepResult = itemListTemporary(matListStageTemporaryParamVo.getItemListTemporaryParamVo(), request);
         String applyinstId="";
@@ -217,6 +223,9 @@ public class RestApplyCommonController {
     @PostMapping("/matList/series/temporary")
     @ApiOperation(value = "单项申报-->暂存材料)")
     public ContentResultForm matListSeriesTemporary(@Valid @RequestBody MatListSeiesTemporaryParamVo matListSeiesTemporaryParamVo,HttpServletRequest request){
+        StateListSeriesTemporaryParamVo vo=matListSeiesTemporaryParamVo.getStateListSeriesTemporaryParamVo();
+        vo.setApplyinstId(matListSeiesTemporaryParamVo.getApplyinstId());
+        matListSeiesTemporaryParamVo.setStateListSeriesTemporaryParamVo(vo);
         Map<String,Object> map=new HashMap<>();
         ContentResultForm secondStepResult = stateListSeriesTemporary(matListSeiesTemporaryParamVo.getStateListSeriesTemporaryParamVo(),request);//暂存情形
         String applyinstId="";
@@ -240,6 +249,9 @@ public class RestApplyCommonController {
     @PostMapping("/stateList/series/temporary")
     @ApiOperation(value = "单项申报-->暂存情形)")
     public ContentResultForm stateListSeriesTemporary(@Valid @RequestBody StateListSeriesTemporaryParamVo stateListSeriesTemporaryParamVo,HttpServletRequest request){
+        SmsInfoVo vo=stateListSeriesTemporaryParamVo.getSmsInfoVo();
+        vo.setApplyinstId(stateListSeriesTemporaryParamVo.getApplyinstId());
+        stateListSeriesTemporaryParamVo.setSmsInfoVo(vo);
         Map<String,Object> map=new HashMap<>();
         ContentResultForm firstStepResult = temporarySaveOrUpdateSmsInfo(stateListSeriesTemporaryParamVo.getSmsInfoVo(), request);
         String applyinstId="";
