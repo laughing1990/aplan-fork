@@ -196,6 +196,16 @@
         </where>
     </select>
 
+    <select id="getSeriesAeaHiApplyinstListByParentApplyinstId" resultType="AeaHiApplyinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_APPLYINST
+        <where>
+            PARENT_APPLYINST_ID = #{applyinstId}
+            AND IS_DELETED = '0' AND IS_TEMPORARY_SUBMIT='0'
+        </where>
+    </select>
+
     <select id="listAeaHiApplyinstByState" resultType="AeaHiApplyinst">
         select
         <include refid="allColumns"/>

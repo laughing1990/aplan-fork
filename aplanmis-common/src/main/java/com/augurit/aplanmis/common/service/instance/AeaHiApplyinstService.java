@@ -4,6 +4,7 @@ import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -218,5 +219,13 @@ public interface AeaHiApplyinstService {
      * @return
      */
     List<AeaHiApplyinst> getAllApplyinstesByProjInfoId(String projInfoId, String rootOrgId) throws Exception;
+
+    /**
+     *
+     * 查询并联申报下的并行申报列表
+     * @param applyinstId 并联申报实例ID
+     * @return
+     */
+    List<AeaHiApplyinst> getSeriesAeaHiApplyinstListByParentApplyinstId(String applyinstId) throws Exception;
 
 }

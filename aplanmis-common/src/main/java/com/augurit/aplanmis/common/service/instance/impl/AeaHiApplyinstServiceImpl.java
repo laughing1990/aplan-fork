@@ -16,6 +16,7 @@ import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaLogApplyStateHistService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -268,5 +269,11 @@ public class AeaHiApplyinstServiceImpl implements AeaHiApplyinstService {
     public List<AeaHiApplyinst> getAllApplyinstesByProjInfoId(String projInfoId, String rootOrgId) throws Exception {
         if (StringUtils.isBlank(projInfoId)) throw new Exception("项目ID为空！");
         return aeaHiApplyinstMapper.getAllApplyinstesByProjInfoId(projInfoId, rootOrgId);
+    }
+
+    @Override
+    public List<AeaHiApplyinst> getSeriesAeaHiApplyinstListByParentApplyinstId(String applyinstId) throws Exception {
+        if (StringUtils.isBlank(applyinstId)) throw new Exception("申报实例ID为空！");
+        return aeaHiApplyinstMapper.getSeriesAeaHiApplyinstListByParentApplyinstId(applyinstId);
     }
 }
