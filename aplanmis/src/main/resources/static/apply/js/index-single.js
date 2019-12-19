@@ -588,6 +588,7 @@ var vm = new Vue({
       formFilledNum: 0,
       formUnFillNum: 0,
       oneFormOpened: false,
+      needCallOneFormCb: false,
     }
   },
   mounted: function () {
@@ -693,6 +694,17 @@ var vm = new Vue({
       this.buttonStyle = 'tempSave';
       this.startSingleApprove();
     },
+    // 渲染表单回调
+    oneFormCallback: function(){
+      var vm = this;
+      vm.$nextTick(function(){
+        vm.oneFormInfo.forEach(function(u, index){
+          if (u.smartForm){
+            $('#smartFormBox_' + index).html(u.html);
+          }
+        });
+      });
+    },
     // 打开一张表单弹窗
     openOneFormDialog: function (row) {
       var vm = this;
@@ -704,13 +716,21 @@ var vm = new Vue({
       vm.oneFormDialogVisible = true;
       if (vm.oneFormOpened) return null;
       vm.oneFormOpened = true;
-      vm.$nextTick(function(){
-        vm.oneFormInfo.forEach(function(u, index){
-          if (u.smartForm){
-            $('#smartFormBox_' + index).html(u.html);
-          }
-        });
-      });
+      if (vm.applyinstId == '') {
+        vm.showOneFormDialog1();
+        vm.needCallOneFormCb = true;
+      } else {
+        vm.oneFormCallback();
+      }
+      // vm.oneFormOpened = true;
+      // vm.$nextTick(function(){
+      //   vm.getOneFormData();
+      //   vm.oneFormInfo.forEach(function(u, index){
+      //     if (u.smartForm){
+      //       $('#smartFormBox_' + index).html(u.html);
+      //     }
+      //   });
+      // });
       // vm.getOneFormData();
     },
     // 得到一张表单信息
@@ -731,7 +751,7 @@ var vm = new Vue({
       }, function (res) {
         if (res.success) {
           res.content.forEach(function (u, index) {
-            if (u.smartForm) {
+            if (u.smartForm && vm.applyinstId!='') {
               getHtml(u, index);
             }
             u.isFilled = false;
@@ -765,6 +785,9 @@ var vm = new Vue({
           type: 'get',
         }, function (res) {
           if (res.success) {
+            vm.$nextTick(function(){
+              $('#smartFormBox_' + index).html(res.content);
+            });
             vm.oneFormInfo[index].html = res.content;
             // $('#smartFormBox_' + index).html(res.content);
           } else {
@@ -1108,8 +1131,9 @@ var vm = new Vue({
           }
           _that.getStatusStateMats('', '', 'ROOT', '', '', true); // 获取阶段
           _that.$nextTick(function () {
-            if (!_that.applyinstId || _that.applyinstId == '') {
-              _that.showOneFormDialog1();
+            if ((!_that.applyinstId || _that.applyinstId == '')&&vm.needCallOneFormCb) {
+              // _that.showOneFormDialog1();
+              vm.oneFormCallback();
             } else {
               _that.getOneFormData();
             }
@@ -1272,8 +1296,9 @@ var vm = new Vue({
             _that.getStatusStateMats('', '', 'ROOT', '', '', true); // 获取阶段
           }
           _that.$nextTick(function () {
-            if (!_that.applyinstId || _that.applyinstId == '') {
-              _that.showOneFormDialog1();
+            if ((!_that.applyinstId || _that.applyinstId == '')&&vm.needCallOneFormCb) {
+              // _that.showOneFormDialog1();
+              vm.oneFormCallback();
             } else {
               _that.getOneFormData();
             }
