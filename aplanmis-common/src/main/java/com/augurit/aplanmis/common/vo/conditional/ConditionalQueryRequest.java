@@ -163,4 +163,7 @@ public class ConditionalQueryRequest implements Serializable {
     private String isInformCommit;
 
     private String iteminstType;
+
+    @ApiModelProperty(value = "过滤办结", hidden = true)
+    private boolean filterConcluding;
 }
