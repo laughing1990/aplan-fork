@@ -550,11 +550,40 @@ var Index = new Vue({
 
     // 待办列表-办理操作
     daibanbanli: function(row){
-      var url = ctx+'/apanmis/page/stageApproveIndex?taskId='+row.taskId+'&viewId='+row.viewId;
+      var url = ctx+'/apanmis/page/stageApproveIndex?taskId='+row.taskId+'&viewId='+row.viewId + '&itemNature=' + row.itemNature;
       if(row.busRecordId){
           url = url + '&busRecordId='+row.busRecordId;
       }
       window.open(url,'_blank');
+    },
+
+    // 待办列表中的签收操作
+    signTask: function (event, row) {
+      var ts = this;
+      var taskId = row.taskId;
+      var viewId = row.viewId;
+      var busRecordId = row.busRecordId;
+      event.preventDefault();
+      ts.loading = true;
+      request('bpmFrontUrl', {
+        url: ctx + 'rest/front/task/signTask/' + taskId,
+        type: 'get',
+        data: {}
+      }, function (result) {
+        ts.loading = false;
+        if (result.success) {
+          ts.$message.success(result.message);
+          window.setTimeout(function () {
+            window.open(ctx + 'apanmis/page/stageApproveIndex?taskId=' + taskId + '&viewId=' + viewId + '&busRecordId=' + busRecordId + '&itemNature=' + row.itemNature, '_blank');
+            window.location.reload();
+          }, 500);
+        } else {
+          ts.$message.error(result.message);
+        }
+      }, function () {
+        ts.loading = false;
+        ts.$message.error("签收失败！");
+      });
     },
 
     // 补正待确认-补正确认操作

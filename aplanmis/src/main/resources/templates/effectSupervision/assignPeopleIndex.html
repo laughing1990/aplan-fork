@@ -106,7 +106,8 @@
             </el-table-column>
             <el-table-column label="操作" width="60">
               <template slot-scope="scope">
-                <a href="javascript:;" class="color-169AFF" @click="daibanbanli(scope.row)">办理</a>
+                <a href="javascript:;" v-if="isSign(scope.row)" class="color-169AFF" @click="daibanbanli(scope.row)">办理</a>
+                <a href="javascript:;" v-if="!isSign(scope.row)" class="color-169AFF"@click="signTask($event,scope.row)">签收</a>
               </template>
             </el-table-column>
           </el-table>
