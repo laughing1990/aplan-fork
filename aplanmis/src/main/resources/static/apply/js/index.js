@@ -4942,6 +4942,27 @@ var vm = new Vue({
         }
         return false;
       }
+      var rowMatList = [];
+      if(row.implementItemVerId&&_that.itemverMatList.length>0){
+        for (var i = 0; i < _that.itemverMatList.length; i++) { // 清空情形下所对应材料
+          var obj = _that.itemverMatList[i];
+          if(obj.itemVerId&&obj.itemVerId != ''){
+            var itemVerIdArr = obj.itemVerId.split(',');
+            if(obj._itemType=='undefined'||obj._itemType==undefined){
+              Vue.set(obj,'_itemType','');
+            }
+            if(itemVerIdArr.indexOf(row.itemVerId)>-1){
+              if(obj.bindItemType == '1'){
+                obj._itemType = 'coreItem'
+              }else {
+                obj._itemType = 'coreItem,parallelItems'
+              }
+              rowMatList.push(obj);
+            }
+          }
+        }
+        _that.model.matsTableData=_that.unique(_that.model.matsTableData.concat(rowMatList),'mats');
+      }
       selArr.forEach(function (item,index) {
         if(item){
           if(item.itemVerId==row.itemVerId){
@@ -5019,39 +5040,6 @@ var vm = new Vue({
         itemVerId: row.implementItemVerId,
         parentId: row.parentId?row.parentId:'ROOT',
       };
-      var rowMatList = [];
-      if(row&&_that.itemverMatList.length>0){
-        for (var i = 0; i < _that.itemverMatList.length; i++) { // 清空情形下所对应材料
-          var obj = _that.itemverMatList[i];
-          if(obj.itemVerId&&obj.itemVerId != ''){
-            var itemVerIdArr = obj.itemVerId.split(',');
-            if(obj._itemType=='undefined'||obj._itemType==undefined){
-              Vue.set(obj,'_itemType','');
-            }
-            if(flag=='coreItem'){
-              if(itemVerIdArr.indexOf(row.itemVerId)>-1){
-                if(obj.bindItemType == '1'){
-                  obj._itemType = 'coreItem'
-                }else {
-                  obj._itemType = 'coreItem,parallelItems'
-                }
-                rowMatList.push(obj);
-              }
-            }else {
-              if(itemVerIdArr.indexOf(row.itemVerId)>-1){
-                if(obj.bindItemType == '0'){
-                  obj._itemType = 'parallelItems'
-                }else {
-                  obj._itemType = 'coreItem,parallelItems'
-                }
-                rowMatList.push(obj);
-              }
-            }
-
-          }
-        }
-      }
-      _that.model.matsTableData=_that.unique(_that.model.matsTableData.concat(rowMatList),'mats');
       if(!row.implementItemVerId){
         return false;
       }
@@ -5231,6 +5219,27 @@ var vm = new Vue({
       }
       selArr.map(function(row,index){
         if(row){
+          var rowMatList = [];
+          if(row.implementItemVerId&&_that.itemverMatList.length>0){
+            for (var i = 0; i < _that.itemverMatList.length; i++) { // 清空情形下所对应材料
+              var obj = _that.itemverMatList[i];
+              if(obj.itemVerId&&obj.itemVerId != ''){
+                var itemVerIdArr = obj.itemVerId.split(',');
+                if(obj._itemType=='undefined'||obj._itemType==undefined){
+                  Vue.set(obj,'_itemType','');
+                }
+                if(itemVerIdArr.indexOf(row.itemVerId)>-1){
+                  if(obj.bindItemType == '1'){
+                    obj._itemType = 'coreItem'
+                  }else {
+                    obj._itemType = 'coreItem,parallelItems'
+                  }
+                  rowMatList.push(obj);
+                }
+              }
+            }
+            _that.model.matsTableData=_that.unique(_that.model.matsTableData.concat(rowMatList),'mats');
+          }
           _that.showCoreItemsKey.push(row.itemBasicId);
           // if(row.isDone == 'FINISHED' || row.isDone == 'HANDLING' || row.notRegionData){
           if(row.notRegionData){
@@ -5325,6 +5334,28 @@ var vm = new Vue({
         _that.itemVerIdsString = '';
       }else {
         var rowsItemVerIds = [];
+        var rowMatList = [];
+        // if(row.isDone !== 'FINISHED' && row.isDone !== 'HANDLING'&&(!row.notRegionData)){
+        if(row.implementItemVerId&&_that.itemverMatList.length>0){
+          for (var i = 0; i < _that.itemverMatList.length; i++) { // 清空情形下所对应材料
+            var obj = _that.itemverMatList[i];
+            if(obj.itemVerId&&obj.itemVerId != ''){
+              var itemVerIdArr = obj.itemVerId.split(',');
+              if(obj._itemType=='undefined'||obj._itemType==undefined){
+                Vue.set(obj,'_itemType','');
+              }
+              if(itemVerIdArr.indexOf(row.itemVerId)>-1){
+                if(obj.bindItemType == '0'){
+                  obj._itemType = 'parallelItems'
+                }else {
+                  obj._itemType = 'coreItem,parallelItems'
+                }
+                rowMatList.push(obj);
+              }
+            }
+          }
+          _that.model.matsTableData=_that.unique(_that.model.matsTableData.concat(rowMatList),'mats');
+        }
         selArr.forEach(function (item) {
           if(item.itemVerId==row.itemVerId){
             flag=true;
@@ -5522,7 +5553,28 @@ var vm = new Vue({
         var rowsItemVerIds = [];
         selArr.map(function(row){
           if(row){
+            var rowMatList = [];
             // if(row.isDone !== 'FINISHED' && row.isDone !== 'HANDLING'&&(!row.notRegionData)){
+            if(row.implementItemVerId&&_that.itemverMatList.length>0){
+              for (var i = 0; i < _that.itemverMatList.length; i++) { // 清空情形下所对应材料
+                var obj = _that.itemverMatList[i];
+                if(obj.itemVerId&&obj.itemVerId != ''){
+                  var itemVerIdArr = obj.itemVerId.split(',');
+                  if(obj._itemType=='undefined'||obj._itemType==undefined){
+                    Vue.set(obj,'_itemType','');
+                  }
+                  if(itemVerIdArr.indexOf(row.itemVerId)>-1){
+                    if(obj.bindItemType == '0'){
+                      obj._itemType = 'parallelItems'
+                    }else {
+                      obj._itemType = 'coreItem,parallelItems'
+                    }
+                    rowMatList.push(obj);
+                  }
+                }
+              }
+              _that.model.matsTableData=_that.unique(_that.model.matsTableData.concat(rowMatList),'mats');
+            }
             if(!row.notRegionData){
               flag=true;
             }else {

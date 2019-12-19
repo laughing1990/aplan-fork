@@ -229,7 +229,11 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
     public Map<String, Object> getStringObjectMap(@RequestBody SmsInfoVo smsInfoVo, Map<String, Object> resultMap, AeaProjInfo aeaProjInfo) throws Exception {
         String smsId;//保存或修改领件人信息
         if (StringUtils.isBlank(smsInfoVo.getId())) {
-            AeaHiSmsInfo aeaHiSmsInfo = aeaHiSmsInfoService.createAeaHiSmsInfo(smsInfoVo.toSmsInfo());
+            AeaHiSmsInfo aeaHiSmsInfo=null;
+            if(StringUtils.isNotBlank(smsInfoVo.getApplyinstId())){
+                aeaHiSmsInfo=aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(smsInfoVo.getApplyinstId());
+            }
+            if(aeaHiSmsInfo==null) aeaHiSmsInfo = aeaHiSmsInfoService.createAeaHiSmsInfo(smsInfoVo.toSmsInfo());
             smsId = aeaHiSmsInfo.getId();
         } else {
             AeaHiSmsInfo aeaHiSmsInfo = aeaHiSmsInfoService.getAeaHiSmsInfoById(smsInfoVo.getId());
@@ -370,7 +374,9 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
             }
         }else{//第一次暂存阶段信息
             //2、实例化并联实例
-            AeaHiParStageinst aeaHiParStageinst = aeaHiParStageinstService.createAeaHiParStageinst(applyinstId, stageId, themeVerId, appinstId, null);
+            AeaHiParStageinst aeaHiParStageinst= aeaHiParStageinstService.getAeaHiParStageinstByApplyinstId(applyinstId);
+            if(aeaHiParStageinst==null)
+                aeaHiParStageinst = aeaHiParStageinstService.createAeaHiParStageinst(applyinstId, stageId, themeVerId, appinstId, null);
             stageinstId=aeaHiParStageinst.getStageinstId();
             //3、实例化事项----此处已经做了事项实例表中的分局承办字段，
             if(itemVerIds.size()>0){
