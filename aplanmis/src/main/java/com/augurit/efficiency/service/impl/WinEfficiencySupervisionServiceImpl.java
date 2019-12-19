@@ -435,9 +435,11 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         ApplyStatisticsVo v4 = queryBuyushouli(conditionalQueryRequest);
         //查询申报时限预警
         conditionalQueryRequest.setInstState(TimeruleInstState.WARN.getValue());
+        conditionalQueryRequest.setFilterConcluding(true);
         ApplyStatisticsVo v5 = queryShenbaoxianshiyujing(conditionalQueryRequest);
         //查询申报时限逾期
         conditionalQueryRequest.setInstState(TimeruleInstState.OVERDUE.getValue());
+        conditionalQueryRequest.setFilterConcluding(true);
         ApplyStatisticsVo v6 = queryShenbaoxianshiyuqi(conditionalQueryRequest);
         list.add(v1);
         list.add(v2);
@@ -473,9 +475,11 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         ApplyStatisticsVo v4 = queryBuyushouli(conditionalQueryRequest);
         //查询申报时限预警
         conditionalQueryRequest.setInstState(TimeruleInstState.WARN.getValue());
+        conditionalQueryRequest.setFilterConcluding(true);
         ApplyStatisticsVo v5 = queryShenbaoxianshiyujing(conditionalQueryRequest);
         //查询申报时限逾期
         conditionalQueryRequest.setInstState(TimeruleInstState.OVERDUE.getValue());
+        conditionalQueryRequest.setFilterConcluding(true);
         ApplyStatisticsVo v6 = queryShenbaoxianshiyuqi(conditionalQueryRequest);
         list.add(v1);
         list.add(v2);
@@ -739,6 +743,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         conditionalQueryRequest.setHandler(false);
         conditionalQueryRequest.setCurrentOrgId(SecurityContext.getCurrentOrgId());
         conditionalQueryRequest.setInstState(TimeruleInstState.WARN.getValue());
+        conditionalQueryRequest.setFilterConcluding(true);
 
         if (StringUtils.isNotBlank(conditionalQueryRequest.getIndustry())) {
             conditionalQueryRequest.setIndustries(conditionalQueryRequest.getIndustry().trim().split(","));
@@ -770,6 +775,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         conditionalQueryRequest.setHandler(false);
         conditionalQueryRequest.setCurrentOrgId(SecurityContext.getCurrentOrgId());
         conditionalQueryRequest.setInstState(TimeruleInstState.OVERDUE.getValue());
+        conditionalQueryRequest.setFilterConcluding(true);
 
         changeOrderBySql(page);
 

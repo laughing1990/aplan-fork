@@ -43,7 +43,7 @@
           <el-table :data="needHandelList" class="scrollable mt20" style="width: 100%;" height="291" border
             :default-sort="{prop: 'dueNum', order: 'ascending'}" @sort-change="needHandelListSurplusSort" @row-dblclick="needHandelListRowDbFn"
             :header-cell-style="{background:'#F3F6F9',padding:'8px 0', color: '#575962'}" :cell-class-name="tabCellName">
-            <el-table-column  width="64">
+            <el-table-column  :width="getFirstColumnWidth()">
               <template slot-scope="scope">
                 <!-- <i class="icon ag ag-mail-o color-C9C9C9" v-if="isSign(scope.row)"></i>
                 <i class="icon ag ag-mail color-FFB822" v-if="!isSign(scope.row)"></i>
@@ -76,6 +76,11 @@
                   <span v-show="!scope.row.remindList || scope.row.remindList.length<=0"
                     class="color-C9C9C9 icon ag ag-message"></span>
                 </el-tooltip>
+
+                <el-tooltip effect="light" placement="top">
+                  <div slot="content">绿色通道事项</div>
+                  <span class="is-catalog is-green" v-show="scope.row.isGreenWay=='1'">绿</span>
+                </el-tooltip>
               </template>
             </el-table-column>
             <el-table-column prop="applySource" label="来源" width="50" >
@@ -84,9 +89,9 @@
             </el-table-column>
             <el-table-column prop="applyinstCode" label="申报流水号" width="160" :formatter="formatterTableCell" :show-overflow-tooltip ="true">
             </el-table-column>
-            <el-table-column label="项目/工程名称" prop="projName" min-width="150" :show-overflow-tooltip ="true">
+            <el-table-column label="项目/工程名称" prop="projName" min-width="110" :show-overflow-tooltip ="true">
             </el-table-column>
-            <el-table-column label="阶段/事项/辅线名称" min-width="200">
+            <el-table-column label="阶段/事项/辅线名称" min-width="180">
               <template slot-scope="scope">
                 <el-tooltip  effect="light" placement="top" >
                   <div slot="content" v-html="showThemeStageItemInfo(scope.row)"></div>
@@ -94,7 +99,7 @@
                 </el-tooltip>
               </template>
             </el-table-column>
-            <el-table-column label="剩余时间" width="100" sortable  v-if="!pcClientSmallTag">
+            <el-table-column label="剩余时间" width="120" sortable  v-if="!pcClientSmallTag">
               <template slot-scope="scope">
                 <span class="day-success-badge" :class="dueNumFn(scope.row.dueNum)">{{scope.row.dueNum | dueNumFormat}}</span>
               </template>
@@ -187,7 +192,7 @@
             </el-table-column>
             <el-table-column label="项目/工程名称" prop="projName" min-width="170" :show-overflow-tooltip ="true">
             </el-table-column>
-            <el-table-column label="阶段/事项/辅线名称" min-width="220">
+            <el-table-column label="阶段/事项/辅线名称" min-width="220" :show-overflow-tooltip ="true">
               <template slot-scope="scope">
                 <el-tooltip  effect="light" placement="top" >
                   <div slot="content" v-html="showThemeStageItemInfo(scope.row)"></div>

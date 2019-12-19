@@ -576,8 +576,8 @@
         <if test='isParallel == "0"'>
             select aly.APPLYINST_ID as applyinstId, ahps.STAGE_ID as stageId from AEA_LOG_APPLY_STATE_HIST alysh
             left join AEA_HI_APPLYINST aly on alysh.APPLYINST_ID = aly.APPLYINST_ID
-            left join AEA_LOG_APPLY_STATE_HIST tmp_a on alysh.APPLYINST_ID = tmp_a.APPLYINST_ID and alysh.NEW_STATE =
-            tmp_a.NEW_STATE and alysh.trigger_time > tmp_a.trigger_time
+            left join AEA_LOG_APPLY_STATE_HIST tmp_a on alysh.APPLYINST_ID = tmp_a.APPLYINST_ID and
+            tmp_a.NEW_STATE in ('2','3','5') and alysh.trigger_time > tmp_a.trigger_time
             left join AEA_HI_PAR_STAGEINST ahps on ahps.APPLYINST_ID = aly.APPLYINST_ID
             <where>
                 and alysh.ROOT_ORG_ID = #{rootOrgId}
@@ -610,8 +610,8 @@
         </if>
         select aly.APPLYINST_ID as applyinstId, ahs.STAGE_ID as stageId from AEA_LOG_APPLY_STATE_HIST alysh
         left join AEA_HI_APPLYINST aly on alysh.APPLYINST_ID = aly.APPLYINST_ID
-        left join AEA_LOG_APPLY_STATE_HIST tmp_a on alysh.APPLYINST_ID = tmp_a.APPLYINST_ID and alysh.NEW_STATE =
-        tmp_a.NEW_STATE and alysh.TRIGGER_TIME > tmp_a.TRIGGER_TIME
+        left join AEA_LOG_APPLY_STATE_HIST tmp_a on alysh.APPLYINST_ID = tmp_a.APPLYINST_ID and
+        tmp_a.NEW_STATE in ('2','3','5') and alysh.TRIGGER_TIME > tmp_a.TRIGGER_TIME
         left join AEA_HI_SERIESINST ahs on ahs.APPLYINST_ID = aly.APPLYINST_ID
         <where>
             and alysh.ROOT_ORG_ID = #{rootOrgId}
@@ -648,8 +648,8 @@
         <if test='isParallel == "0"'>
             select aly.APPLYINST_ID as applyinstId from AEA_LOG_APPLY_STATE_HIST alysh
             left join AEA_HI_APPLYINST aly on alysh.APPLYINST_ID = aly.APPLYINST_ID
-            left join AEA_LOG_APPLY_STATE_HIST tmp_a on alysh.APPLYINST_ID = tmp_a.APPLYINST_ID and alysh.NEW_STATE =
-            tmp_a.NEW_STATE and alysh.TRIGGER_TIME > tmp_a.TRIGGER_TIME
+            left join AEA_LOG_APPLY_STATE_HIST tmp_a on alysh.APPLYINST_ID = tmp_a.APPLYINST_ID and
+            tmp_a.NEW_STATE in ('2','3','5') and alysh.TRIGGER_TIME > tmp_a.TRIGGER_TIME
             left join AEA_HI_PAR_STAGEINST ahps on ahps.APPLYINST_ID = aly.APPLYINST_ID
             <where>
                 and alysh.ROOT_ORG_ID = #{rootOrgId}
@@ -683,8 +683,8 @@
         </if>
         select aly.APPLYINST_ID as applyinstId from AEA_LOG_APPLY_STATE_HIST alysh
         left join AEA_HI_APPLYINST aly on alysh.APPLYINST_ID = aly.APPLYINST_ID
-        left join AEA_LOG_APPLY_STATE_HIST tmp_a on alysh.APPLYINST_ID = tmp_a.APPLYINST_ID and alysh.NEW_STATE =
-        tmp_a.NEW_STATE and alysh.TRIGGER_TIME > tmp_a.TRIGGER_TIME
+        left join AEA_LOG_APPLY_STATE_HIST tmp_a on alysh.APPLYINST_ID = tmp_a.APPLYINST_ID and
+        tmp_a.NEW_STATE in ('2','3','5') and alysh.TRIGGER_TIME > tmp_a.TRIGGER_TIME
         left join AEA_HI_SERIESINST ahs on ahs.APPLYINST_ID = aly.APPLYINST_ID
         <where>
             and alysh.ROOT_ORG_ID = #{rootOrgId}

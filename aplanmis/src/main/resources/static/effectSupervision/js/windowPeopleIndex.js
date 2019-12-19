@@ -709,12 +709,24 @@ var Index = new Vue({
 
     // 待办列表中的办理操作
     daibanbanliHand: function(row){
-      var url = ctx+'apanmis/page/stageApproveIndex?taskId='+row.taskId+'&viewId='+row.viewId;
+      var url = ctx+'apanmis/page/stageApproveIndex?taskId='+row.taskId+'&viewId='+row.viewId + '&itemNature=' + row.itemNature;
       if(row.busRecordId){
           url = url + '&busRecordId='+row.busRecordId;
       }
       window.open(url,'_blank');
     },
+
+    // 计算待办列表第一列的宽度
+    getFirstColumnWidth: function () {
+      if (this.needHandelList) {
+        for (var i = 0; i < this.needHandelList.length; i++) {
+          if (this.needHandelList[i].isGreenWay == '1') {
+            return '90';
+          }
+        }
+      }
+      return '65';
+    }
   },
   mounted: function () {
     var ts = this;
