@@ -612,19 +612,29 @@ var vm = new Vue({
   methods: {
     // 加载撤件历史数据
     loadAppCancelData: function(){
-      // var vm = this;
-      // request('', {
-      //   url: ctx + '',
-      //   type: 'get',
-      // }, function (res) {
-      //   if (res.success) {
-      //     //
-      //   } else {
-      //     vm.$message.error(res.message || '加载撤件历史数据失败');
-      //   }
-      // }, function(res) {
-      //   vm.$message.error('加载撤件历史数据失败');
-      // })
+      var vm = this;
+      var params = {};
+      var reqUrl = ctx;
+      if (vm.isApprover == 1) {
+        params.applyinstId = vm.masterEntityKey;
+        reqUrl += 'rest/applyinst/getApplyinstCancelListByApplyinstId';
+      } else {
+        params.iteminstId = vm.iteminstId;
+        reqUrl += 'rest/applyinst/getApplyinstCancelListByIteminstId';
+      }
+      request('', {
+        url: reqUrl,
+        type: 'get',
+        data: params,
+      }, function (res) {
+        if (res.success) {
+          //
+        } else {
+          vm.$message.error(res.message || '加载撤件历史数据失败');
+        }
+      }, function(res) {
+        vm.$message.error('加载撤件历史数据失败');
+      })
     },
     // 确认撤件操作
     ensureAppCancel: function (){
