@@ -573,7 +573,7 @@ var vm = new Vue({
       cancelAppFileList: [],
       cancelAppCkFileList: [],
       cacelAppDialogLoading: false,
-      cancelAppDetailList: [],
+      cancelAppDetailList: [{}],
     }
   },
   filters: {
@@ -2006,7 +2006,7 @@ var vm = new Vue({
           vm.recordIds = res.content.recordIds;// 附件关联id
           vm.attLink.recordId = vm.taskId;
           vm.isApprover = (vm.iteminstProcessinstId != null && vm.iteminstProcessinstId == vm.processInstanceId) ? '1' : '0';
-          // vm.isApprover = 0;
+          vm.isApprover = 0;
           vm.getWayAType();
         } else {
           vm.$message.error(res.message);
@@ -2633,8 +2633,7 @@ var vm = new Vue({
           vm.projectCode = res.content.projCode;
           vm.hasSpecial = res.content.hasSpecial;
           vm.hasSupply = res.content.hasSupply;
-          vm.hasAppCancel = res.content.hasAppCancel;
-          // vm.hasAppCancel = 1;
+          vm.hasAppCancel = res.content.ishasApplyinstCancel;
           vm.isShowOneForm = res.content.isShowOneForm;
           vm.stageId = res.content.stageId;
           vm.projInfoId = res.content.projId;
