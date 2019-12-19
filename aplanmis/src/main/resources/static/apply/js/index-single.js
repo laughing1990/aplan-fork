@@ -678,6 +678,7 @@ var vm = new Vue({
           vm.themeId = res.content.themeId;
           vm.themeVerId = res.content.themeVerId;
           vm.stageId = res.content.stageId;
+          vm.stateIds = res.content.stateIds;
           vm.approveOrgId = res.content.approveOrgId;
           vm.forminstVos = res.content.forminstVos;
           vm.beforeCheck();
@@ -2059,6 +2060,12 @@ var vm = new Vue({
                 _that.matCodes.push(item.matCode);
               }
             });
+            // 回显
+            if (_that.stateIds.length&&_that.stateList.length){
+              _that.stateList.forEach(function(u, index){
+                u.selectAnswerId = _that.stateIds[index];
+              });
+            }
             _that.getShareMatsList();
           } else {
             if (checkFlag == true) {
