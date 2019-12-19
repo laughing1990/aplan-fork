@@ -612,6 +612,7 @@ var vm = new Vue({
       // applyinstId: '',
       // itemStatusFlag: false, // 阶段下情形是否含流程情形
       itemverMatList: [], // 阶段下事项材料列表
+      needCallOneFormCb: false,
     }
   },
   created: function () {
@@ -2101,9 +2102,10 @@ var vm = new Vue({
             _that.model.matsTableData=[];
           }
           _that.$nextTick(function () {
-            if (!_that.parallelApplyinstId || _that.parallelApplyinstId == '') {
-              _that.showCommentDialog('4');
-              _that.canShowOneForm = false;
+            if ((!_that.parallelApplyinstId || _that.parallelApplyinstId == '')&&vm.needCallOneFormCb) {
+              vm.getAllForms(_stageId);
+              // _that.showCommentDialog('4');
+              // _that.canShowOneForm = false;
             }
           });
         }else {
@@ -6158,7 +6160,7 @@ var vm = new Vue({
       }, function(res) {
         if (res.success) {
           res.content.forEach(function (u, index) {
-            if (u.smartForm) {
+            if (u.smartForm && vm.parallelApplyinstId!='') {
               getHtml(u, index);
             }
             u.isFilled = false;
@@ -6214,6 +6216,9 @@ var vm = new Vue({
           type: 'get',
         }, function (res) {
           if (res.success) {
+            vm.$nextTick(function(){
+              $('#formHtml_' + index).html(res.content);
+            });
             vm.allFormInfoList[index].html = res.content;
             // $('#formHtml_' + index).html(res.content);
           } else {
@@ -6223,6 +6228,17 @@ var vm = new Vue({
           // vm.$message.error('获取智能表单数据失败');
         })
       }
+    },
+    // 渲染表单回调
+    oneFormCallback: function(){
+      var vm = this;
+      vm.$nextTick(function(){
+        vm.allFormInfoList.forEach(function(u, index){
+          if (u.smartForm){
+            $('#formHtml_' + index).html(u.html);
+          }
+        });
+      });
     },
     // 打开一张表单弹窗
     openOneFormDialog: function (row) {
@@ -6235,13 +6251,20 @@ var vm = new Vue({
       vm.oneFormDialogVisible = true;
       if (vm.oneFormOpened) return null;
       vm.oneFormOpened = true;
-      vm.$nextTick(function(){
-        vm.allFormInfoList.forEach(function(u, index){
-          if (u.smartForm){
-            $('#formHtml_' + index).html(u.html);
-          }
-        });
-      });
+      if (vm.parallelApplyinstId == ''){
+        vm.showCommentDialog('4');
+        vm.needCallOneFormCb = true;
+      } else {
+        vm.oneFormCallback();
+      }
+      
+      // vm.$nextTick(function(){
+      //   vm.allFormInfoList.forEach(function(u, index){
+      //     if (u.smartForm){
+      //       $('#formHtml_' + index).html(u.html);
+      //     }
+      //   });
+      // });
       // vm.getOneFormData();
     },
     getOneFormrender2: function(str,_applyinstId,_stageId){ // 获取一张表单render
@@ -6295,7 +6318,7 @@ var vm = new Vue({
         type: 'get',
       }, function (result) {
         if (result.success) {
-          vm.allFormInfoList[index].html = res.content;
+          vm.allFormInfoList[index].html = result.content;
           // $('#formHtml_'+index).html(result.content)
         }else {
           _that.$message({
