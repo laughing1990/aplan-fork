@@ -2099,6 +2099,10 @@ input[type="number"] {
     width: 60px;
 }
 
+.td-bg-grey.w8 {
+    width: 90px;
+}
+
 .spe-table-file-u {
     height: 25px;
     line-height: 25px;
@@ -2360,6 +2364,16 @@ input[type="number"] {
     text-overflow: ellipsis;
     word-wrap: normal;
 }
+/*撤件 start*/
+.cancel-app-dialog .el-table th{
+    padding:0;
+}
+.cancel-app-dialog .el-table__empty-text,
+.cancel-app-dialog .el-table__empty-block{
+    line-height: 50px;
+    min-height: 40px;
+}
+/*撤件 end*/
 
 
 
