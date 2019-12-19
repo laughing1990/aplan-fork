@@ -250,6 +250,7 @@ var userCenter = (function () {
             // 业主单位菜单栏选中
             userCenterMenuSelect: function (mod) {
                 var ts = this;
+                ts.setNavHeight(); // 动态设置左边菜单高度
                 // 当前选中菜单项赋值
                 ts.userCenterItemSelect = mod.value;
                 ts.selectNav = mod.name;
@@ -271,7 +272,6 @@ var userCenter = (function () {
                     return false;
                 }
                 ts.moduleLoad(mod.value + '.html', '#' + mod.value);
-                ts.setNavHeight();
             },
 
             // 模块加载
