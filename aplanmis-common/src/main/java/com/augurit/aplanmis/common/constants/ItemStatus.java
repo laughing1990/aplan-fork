@@ -59,7 +59,7 @@ public enum ItemStatus implements BaseEnum<TimeruleInstState, String> {
     REVOKE("撤销", "15"),
 
     @ApiModelProperty(value = "APPLY_REVOKE", name = "撤件待确认", allowableValues = "APPLY_REVOKE")
-    APPLY_REVOKE("撤件待确认", "17");
+    APPLY_REVOKE("撤件待确认", "16");
 
     private String name;
     private String value;

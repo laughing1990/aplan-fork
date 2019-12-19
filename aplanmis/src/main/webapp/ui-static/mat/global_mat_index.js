@@ -471,6 +471,7 @@ function addGlobalMat() {
     $("#aedit_mat_form input[name='isOfficialDoc'][value='0']").prop("checked", true);
     $("#aedit_mat_form input[name='certId']").val("");
     $("#aedit_mat_form input[name='stoFormId']").val("");
+    $("#aedit_mat_form input[name='stdmatId']").val("");
     $("#aedit_mat_form input[name='matProp'][value='m']").prop("checked", true);
     handleSelectMatProNew('m');
 
