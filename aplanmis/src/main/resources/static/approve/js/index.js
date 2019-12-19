@@ -464,6 +464,7 @@ var vm = new Vue({
       speEndPkName: 'SPECIAL_END_MAT_ID',
       hasSpecial: 0,
       hasSupply: 0,
+      hasAppCancel: 0,
       specialStartMatId: '',
       specialEndMatId: '',
       specialDetailInfo: [],
@@ -572,6 +573,7 @@ var vm = new Vue({
       cancelAppFileList: [],
       cancelAppCkFileList: [],
       cacelAppDialogLoading: false,
+      cancelAppDetailList: [],
     }
   },
   filters: {
@@ -608,6 +610,22 @@ var vm = new Vue({
     },
   },
   methods: {
+    // 加载撤件历史数据
+    loadAppCancelData: function(){
+      // var vm = this;
+      // request('', {
+      //   url: ctx + '',
+      //   type: 'get',
+      // }, function (res) {
+      //   if (res.success) {
+      //     //
+      //   } else {
+      //     vm.$message.error(res.message || '加载撤件历史数据失败');
+      //   }
+      // }, function(res) {
+      //   vm.$message.error('加载撤件历史数据失败');
+      // })
+    },
     // 确认撤件操作
     ensureAppCancel: function (){
       var vm = this;
@@ -2224,6 +2242,7 @@ var vm = new Vue({
         {label: '材料附件', labelId: "2", src: './materialAnnex.html'},
         {label: '审批过程', labelId: "3", src: './opinionForm.html'},
         {label: '材料补正', labelId: "4", src: './opinionForm.html'},
+        {label: '撤件历史', labelId: "appCancel", src: './opinionForm.html'},
         {label: '特殊程序', labelId: "5", src: './opinionForm.html'},
         {label: '批文批复', labelId: "6", src: './approvalOpinions.html',}
       ];
@@ -2408,6 +2427,18 @@ var vm = new Vue({
       } else {
         vm.getSpecialType();
         vm.loadSpecialDetail();
+      }
+      // 撤件历史
+      var tmpIndex = -1;
+      vm.lTabsData.forEach(function (u, i) {
+        if (u.labelId == 'appCancel') {
+          tmpIndex = i
+        }
+      })
+      if (vm.hasAppCancel != 1) {
+        vm.lTabsData.splice(tmpIndex, 1);
+      } else {
+        vm.loadAppCancelData();
       }
     },
     // 初始化左边按钮组
@@ -2602,6 +2633,8 @@ var vm = new Vue({
           vm.projectCode = res.content.projCode;
           vm.hasSpecial = res.content.hasSpecial;
           vm.hasSupply = res.content.hasSupply;
+          vm.hasAppCancel = res.content.hasAppCancel;
+          // vm.hasAppCancel = 1;
           vm.isShowOneForm = res.content.isShowOneForm;
           vm.stageId = res.content.stageId;
           vm.projInfoId = res.content.projId;

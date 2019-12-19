@@ -87,7 +87,7 @@
             </el-tab-pane>
           </el-tabs>
         </div>
-        <!--特殊程序-->
+        <!-- 特殊程序 -->
         <div v-else-if="u.labelId==5" style="height:100%;overflow:auto;">
           <div class="spe-pane-wrap">
             <!-- 审批人员 特殊程序详情 -->
@@ -365,7 +365,7 @@
             </el-collapse>
           </div>
         </div>
-        <!--材料补正-->
+        <!-- 材料补正 -->
         <div v-else-if="u.labelId==4" style="height:100%;overflow:auto;">
           <div class="spe-pane-wrap">
             <!-- 审批人员 材料补正详情 -->
@@ -588,6 +588,139 @@
                 </div>
               </el-collapse-item>
             </el-collapse>
+          </div>
+        </div>
+        <!-- 撤件历史 -->
+        <div v-else-if="u.labelId=='appCancel'" style="height:100%;overflow:auto;">
+          <div class="spe-pane-wrap">
+            <!-- 审批人员 撤件历史 -->
+            <div>
+              <div class="spe-item-uboxs">
+                <div class="spe-item-u" v-for="(item,index) in cancelAppDetailList">
+                  <div class="top-time-text-box c-f" :class="{'is-blue': item.correctState==6}">
+                    <div class="ttt-f"></div>
+                    <div class="ttt-s">
+                      第{{getChineseIndex(index,cancelAppDetailList.length)}}次发起（{{item.correctState==6?'待确认':'已完成'}}）
+                    </div>
+                    <div class="ttt-t"></div>
+                  </div>
+                  <table class="spe-info-table">
+                    <div class="table-section-title">基本信息</div>
+                    <tr>
+                      <td class="td-bg-grey">申请流水号</td>
+                      <td>{{item.applyinstCode}}</td>
+                      <td class="td-bg-grey">项目/工程编号</td>
+                      <td>{{item.applyinstCode}}</td>
+                      <td class="td-bg-grey">项目/工程名称</td>
+                      <td>{{item.projInfoName}}</td>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey">业主单位</td>
+                      <td>{{item.owner}}</td>
+                      <td class="td-bg-grey">联系人</td>
+                      <td>{{item.linkman}}</td>
+                      <td class="td-bg-grey">联系电话</td>
+                      <td>{{item.linkmanPhone}}</td>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey">事项名称</td>
+                      <td colspan="3">{{item.iteminstName}}</td>
+                      <td class="td-bg-grey">实施主体</td>
+                      <td>{{item.approveOrgName}}</td>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey">补正发起日期</td>
+                      <td>{{formatDateStr(item.createTime, 'yyyy-MM-dd')}}</td>
+                      <td class="td-bg-grey">补正截止日期</td>
+                      <td>{{formatDateStr(item.correctDueTime, 'yyyy-MM-dd')}}</td>
+                      <td class="td-bg-grey">办结时限</td>
+                      <td>{{item.correctDueDays}}（工作日）</td>
+                    </tr>
+                  </table>
+                  <table class="spe-info-table">
+                    <div class="table-section-title">补正材料列表</div>
+                    <tr>
+                      <td class="td-bg-grey w1">序号</td>
+                      <td class="td-bg-grey w2">材料名称</td>
+                      <td class="td-bg-grey w3">类型</td>
+                      <td class="td-bg-grey w4">补正份数</td>
+                      <td class="td-bg-grey w5">已收份数</td>
+                      <td class="td-bg-grey w6">补正意见</td>
+                      <td class="td-bg-grey w7">操作</td>
+                    </tr>
+                    <tr v-for="(uu, index2) in item.bzMatList">
+                      <template v-if="uu.colspan&&uu.rowspan">
+                        <td :colspan="uu.colspan" :rowspan="uu.rowspan" align="center">{{uu.uIndex+1}}</td>
+                        <td :colspan="uu.colspan" :rowspan="uu.rowspan">{{uu.matinstName}}</td>
+                      </template>
+                      <td>{{uu.rowType==1?'原件':uu.rowType==2?'复印件':'电子件'}}</td>
+                      <td>{{uu.rowType==1?uu.paperCount:(uu.rowType==2?uu.copyCount:'-')}}</td>
+                      <td>{{uu.rowType==1?uu.realPaperCount:(uu.rowType==2?uu.realCopyCount:uu.attCount)}}</td>
+                      <td>
+                        {{uu.rowType==1?uu.paperDueIninstOpinion:(uu.rowType==2?uu.copyDueIninstOpinion:uu.attDueIninstOpinion)}}
+                      </td>
+                      <td>
+                        <template v-if="uu.rowType==3&&uu.attFiles&&uu.attFiles.length">
+                          <el-popover
+                              placement="left"
+                              width="600"
+                              trigger="hover">
+                            <el-table :data="uu.attFiles" border stripe style="width:100%">
+                              <el-table-column width="50" label="序号" type="index"></el-table-column>
+                              <el-table-column prop="fileName" label="文件名称">
+                                <template slot-scope="scope">
+                                  <i class="ag" v-html="getIconText(scope.row.fileType)"
+                                     :style="{color:getIconColor(scope.row.fileType)}"></i>
+                                  {{scope.row.fileName}}
+                                </template>
+                              </el-table-column>
+                              <el-table-column width="100" property="address" label="操作">
+                                <template slot-scope="scope">
+                                  <el-button type="text" @click="filePreview(scope.row)">预览</el-button>
+                                  <el-button type="text" @click="downOneFile(scope.row)">下载</el-button>
+                                </template>
+                              </el-table-column>
+                            </el-table>
+                            <el-button slot="reference" type="text" style="padding:0">查看</el-button>
+                          </el-popover>
+                        </template>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey w1">备注</td>
+                      <td colspan="6">{{item.correctMemo}}</td>
+                    </tr>
+                  </table>
+                  <table class="spe-info-table">
+                    <div class="table-section-title">经办信息</div>
+                    <tr>
+                      <td class="td-bg-grey" colspan="1">补正发起人</td>
+                      <td colspan="5">{{item.createrName}}</td>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey">经办人</td>
+                      <td>{{item.opsUserName}}</td>
+                      <td class="td-bg-grey">经办日期</td>
+                      <td>{{formatDateStr(item.opsTime, 'yyyy-MM-dd')}}</td>
+                      <td class="td-bg-grey">补正结束人</td>
+                      <td>{{item.correctUserName}}</td>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey">补正结束日期</td>
+                      <td>{{formatDateStr(item.correctEndTime, 'yyyy-MM-dd')}}</td>
+                      <td class="td-bg-grey">打印人</td>
+                      <td>{{item.printUserName}}</td>
+                      <td class="td-bg-grey">打印日期</td>
+                      <td>{{formatDateStr(item.printTime, 'yyyy-MM-dd')}}</td>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey" colspan="1">补正意见</td>
+                      <td colspan="5">{{item.correctDesc}}</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <iframe v-else :src="u.src" class="ltab-iframe"></iframe>
