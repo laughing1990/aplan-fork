@@ -49,7 +49,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,14 +70,17 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
 
     private static Logger logger = LoggerFactory.getLogger(AeaItemAdminServiceImpl.class);
 
-    @Value("${spring.datasource.url}")
+   /* @Value("${spring.datasource.url}")
     private String jdbcUrl;
 
     @Value("${spring.datasource.username}")
     private String jdbcUserName;
 
     @Value("${spring.datasource.password}")
-    private String jdbcPwd;
+    private String jdbcPwd;*/
+
+    @Autowired
+    DataSourceProperties dataSourceProperties;
 
     @Autowired
     AeaItemBasicMapper aeaItemBasicMapper;
@@ -139,28 +142,28 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
     public static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Override
-    public void syncActTplAppDefLimitTime(String appId,Long dueNum,String dueUnit){
+    public void syncActTplAppDefLimitTime(String appId, Long dueNum, String dueUnit) {
 
         try {
-            if(dueNum!=null) {
-                int limitTime = Integer.parseInt(dueNum+"");
+            if (dueNum != null) {
+                int limitTime = Integer.parseInt(dueNum + "");
                 String timeUnit = "d";
                 String isWorkDay = "1";
 
-                if("2".equals(dueUnit)){//自然日
+                if ("2".equals(dueUnit)) {//自然日
                     isWorkDay = "0";
                 }
 
-                if("4".equals(dueUnit)){//分钟
+                if ("4".equals(dueUnit)) {//分钟
                     timeUnit = "m";
-                }else if("3".equals(dueUnit)){//小时
+                } else if ("3".equals(dueUnit)) {//小时
                     timeUnit = "m";
                     limitTime = limitTime * 60;
                 }
-                dgActTplAppAdminService.syncActTplAppDefLimitTime(appId,limitTime,timeUnit, isWorkDay);
+                dgActTplAppAdminService.syncActTplAppDefLimitTime(appId, limitTime, timeUnit, isWorkDay);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(),e);
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -269,7 +272,7 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
     }
 
     @Override
-    public List<AeaItem> gtreeTestRunOrPublishedItem(AeaItemBasic basic){
+    public List<AeaItem> gtreeTestRunOrPublishedItem(AeaItemBasic basic) {
 
         List<AeaItem> allNodes = new ArrayList<>();
         String title = "工程建设审批事项库";
@@ -284,8 +287,8 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
         // 所有最新版本事项,没有考虑是否发布
         basic.setRootOrgId(SecurityContext.getCurrentOrgId());
         List<AeaItemBasic> allItems = aeaItemBasicMapper.listLatestOkAeaItemBasic(basic);
-        if(allItems!=null&&allItems.size()>0){
-            for(AeaItemBasic itemBasic : allItems){
+        if (allItems != null && allItems.size() > 0) {
+            for (AeaItemBasic itemBasic : allItems) {
                 AeaItem item = convertItemNode(itemBasic);
                 allNodes.add(item);
             }
@@ -294,7 +297,7 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
     }
 
     @Override
-    public List<AeaItem> gtreeLatestItem(AeaItemBasic basic){
+    public List<AeaItem> gtreeLatestItem(AeaItemBasic basic) {
 
         List<AeaItem> allNodes = new ArrayList<>();
         String title = "工程建设审批事项库";
@@ -310,8 +313,8 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
         // 所有最新版本事项,没有考虑是否发布
         basic.setRootOrgId(SecurityContext.getCurrentOrgId());
         List<AeaItemBasic> allItems = aeaItemBasicMapper.listLatestAeaItemBasic(basic);
-        if(allItems!=null&&allItems.size()>0){
-            for(AeaItemBasic itemBasic : allItems){
+        if (allItems != null && allItems.size() > 0) {
+            for (AeaItemBasic itemBasic : allItems) {
                 AeaItem item = convertItemNode(itemBasic);
                 allNodes.add(item);
             }
@@ -320,7 +323,7 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
     }
 
     @Override
-    public List<AeaItem> gtreeOkVerItemNoRelSelf(AeaItemBasic basic){
+    public List<AeaItem> gtreeOkVerItemNoRelSelf(AeaItemBasic basic) {
 
         List<AeaItem> allNodes = new ArrayList<>();
         String title = "工程建设审批事项库";
@@ -337,27 +340,27 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
         String rootOrgId = SecurityContext.getCurrentOrgId();
         String itemVerId = basic.getItemVerId();
         List<String> notRelItemIds = new ArrayList<>();
-        if(StringUtils.isNotBlank(itemVerId)) {
+        if (StringUtils.isNotBlank(itemVerId)) {
             AeaItemBasic curItemBasic = aeaItemBasicMapper.getItemBasicNoRelOtherByItemVerId(itemVerId, rootOrgId);
-            if(curItemBasic!=null){
+            if (curItemBasic != null) {
                 String curItemId = curItemBasic.getItemId();
-                if(StringUtils.isNotBlank(curItemId)){
+                if (StringUtils.isNotBlank(curItemId)) {
                     // 获取子级
                     List<AeaItem> childItems = aeaItemMapper.listAllChildItem(curItemId, rootOrgId);
-                    if(childItems!=null&&childItems.size()>0){
-                        for(AeaItem child:childItems){
+                    if (childItems != null && childItems.size() > 0) {
+                        for (AeaItem child : childItems) {
                             notRelItemIds.add(child.getItemId());
                         }
                     }
                     // 获取父级和自己
                     AeaItem curItem = aeaItemMapper.getAeaItemById(curItemId);
-                    if(curItem!=null){
+                    if (curItem != null) {
                         String itemSeq = curItem.getItemSeq();
-                        if(StringUtils.isNotBlank(itemSeq)){
+                        if (StringUtils.isNotBlank(itemSeq)) {
                             String[] itemIds = itemSeq.split("\\.");
-                            if(itemIds!=null&&itemIds.length>0){
-                                for(String vo:itemIds){
-                                    if(StringUtils.isNotBlank(vo)){
+                            if (itemIds != null && itemIds.length > 0) {
+                                for (String vo : itemIds) {
+                                    if (StringUtils.isNotBlank(vo)) {
                                         notRelItemIds.add(vo);
                                     }
                                 }
@@ -373,8 +376,8 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
         basic.setRootOrgId(rootOrgId);
         basic.setNotRelItemIds(notRelItemIds);
         List<AeaItemBasic> allItems = aeaItemBasicMapper.listLatestOkAeaItemBasic(basic);
-        if(allItems!=null&&allItems.size()>0){
-            for(AeaItemBasic itemBasic : allItems){
+        if (allItems != null && allItems.size() > 0) {
+            for (AeaItemBasic itemBasic : allItems) {
                 AeaItem item = convertItemNode(itemBasic);
                 allNodes.add(item);
             }
@@ -388,7 +391,7 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
      * @param itemBasic
      * @return
      */
-    private AeaItem convertItemNode(AeaItemBasic itemBasic){
+    private AeaItem convertItemNode(AeaItemBasic itemBasic) {
 
         AeaItem item = new AeaItem();
         item.setItemId(itemBasic.getItemId());
@@ -406,15 +409,15 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
         item.setItemNature(itemBasic.getItemNature());
         if (StringUtils.isNotBlank(itemBasic.getIsCatalog())) {
             // 标准事项
-            if(itemBasic.getIsCatalog().equals(Status.ON)){
+            if (itemBasic.getIsCatalog().equals(Status.ON)) {
                 item.setName("【标准事项】" + item.getName());
-                if(StringUtils.isNotBlank(itemBasic.getGuideOrgName())){
+                if (StringUtils.isNotBlank(itemBasic.getGuideOrgName())) {
                     item.setName(item.getName() + "【" + itemBasic.getGuideOrgName() + "】");
                 }
-            // 实施事项
-            }else{
+                // 实施事项
+            } else {
                 item.setName("【实施事项】" + item.getName());
-                if(StringUtils.isNotBlank(itemBasic.getOrgName())){
+                if (StringUtils.isNotBlank(itemBasic.getOrgName())) {
                     item.setName(item.getName() + "【" + itemBasic.getOrgName() + "】");
                 }
             }
@@ -427,51 +430,51 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
     }
 
     @Override
-    public void initItemVerSeq(AeaItemBasic basic){
+    public void initItemVerSeq(AeaItemBasic basic) {
 
         String userId = SecurityContext.getCurrentUserId();
         String rootOrgId = SecurityContext.getCurrentOrgId();
         basic.setRootOrgId(rootOrgId);
         List<AeaItemBasic> itemList = aeaItemBasicMapper.listLatestAeaItemBasic(basic);
-        if(itemList!=null&&itemList.size()>0){
-            for(AeaItemBasic item : itemList){
+        if (itemList != null && itemList.size() > 0) {
+            for (AeaItemBasic item : itemList) {
                 String itemId = item.getItemId();
                 AeaItemVer ver = new AeaItemVer();
                 ver.setItemId(itemId);
                 ver.setRootOrgId(rootOrgId);
                 List<AeaItemVer> vers = aeaItemVerMapper.listAeaItemVer(ver);
-                if(vers!=null&&vers.size()>0){
+                if (vers != null && vers.size() > 0) {
                     // 查询那些事项版本已经用到的
                     List<AeaItemVer> oldOkVerList = new ArrayList<AeaItemVer>();
-                    for(AeaItemVer vo : vers){
+                    for (AeaItemVer vo : vers) {
                         List<AeaParThemeVer> themeVers = aeaParThemeVerMapper.listThemeVerByItemIdAndItemVerId(itemId, vo.getItemVerId(), rootOrgId);
-                        if(themeVers!=null&&themeVers.size()>0){
+                        if (themeVers != null && themeVers.size() > 0) {
                             oldOkVerList.add(vo);
                             break;
                         }
                     }
-                    for(AeaItemVer vo : vers){
+                    for (AeaItemVer vo : vers) {
                         double d = vo.getVerNum();
                         String dstr = String.valueOf(d);
                         // 存在小数
-                        if(dstr.indexOf(".01")>-1){
+                        if (dstr.indexOf(".01") > -1) {
                             dstr = dstr.substring(0, dstr.indexOf(".01"));
                             d = Double.parseDouble(dstr) + 1;
                         }
                         vo.setVerNum(d);
 
                         // 当前自己是最大版本
-                        if(item.getItemVerId().equals(vo.getItemVerId())){
+                        if (item.getItemVerId().equals(vo.getItemVerId())) {
                             vo.setItemVerStatus(PublishStatus.TEST_RUN.getValue());
 
                             //更新阶段事项关联表单的事项版本id
-                            if(oldOkVerList!=null&&oldOkVerList.size()>0){
-                                for(AeaItemVer oldVo : oldOkVerList){
+                            if (oldOkVerList != null && oldOkVerList.size() > 0) {
+                                for (AeaItemVer oldVo : oldOkVerList) {
                                     AeaParStageItem aeaParStageItem = new AeaParStageItem();
                                     aeaParStageItem.setItemId(itemId);
                                     aeaParStageItem.setItemVerId(oldVo.getItemVerId());
                                     List<AeaParStageItem> parStageItems = aeaParStageItemAdminService.listAeaParStageItem(aeaParStageItem);
-                                    if(parStageItems != null && parStageItems.size() > 0){
+                                    if (parStageItems != null && parStageItems.size() > 0) {
                                         parStageItems.forEach(parStageItem -> {
                                             parStageItem.setItemVerId(vo.getItemVerId());
                                             aeaParStageItemAdminService.updateAeaParStageItem(parStageItem);
@@ -479,7 +482,7 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
                                     }
                                 }
                             }
-                        }else{
+                        } else {
                             // 先前的版本都要过时掉
                             vo.setItemVerStatus(PublishStatus.DEPRECATED.getValue());
                         }
@@ -492,12 +495,12 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
                         sstateVer.setItemVerId(vo.getItemVerId());
                         sstateVer.setRootOrgId(rootOrgId);
                         List<AeaItemStateVer> stateVerList = aeaItemStateVerMapper.listAeaItemStateVersion(sstateVer);
-                        if(stateVerList!=null&&stateVerList.size()>0){
+                        if (stateVerList != null && stateVerList.size() > 0) {
                             double nextstateVerNum = stateVerList.size();
                             int num = stateVerList.size();
                             // 未发布版本
                             AeaItemStateVer unPublishedVer = null;
-                            for(AeaItemStateVer entity : stateVerList) {
+                            for (AeaItemStateVer entity : stateVerList) {
                                 if (entity.isUnPublishedVer()) {
                                     unPublishedVer = entity;
                                     break;
@@ -505,34 +508,34 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
                             }
                             // 试运行或者已发布版本
                             AeaItemStateVer okVer = null;
-                            for(AeaItemStateVer entity : stateVerList) {
-                                if(entity.isPublishedVer()||entity.isTestRunVer()){
+                            for (AeaItemStateVer entity : stateVerList) {
+                                if (entity.isPublishedVer() || entity.isTestRunVer()) {
                                     okVer = entity;
                                     break;
                                 }
                             }
                             // 存在未发布版本且存在试运行或者已发布版本
-                            if(unPublishedVer!=null){
+                            if (unPublishedVer != null) {
                                 stateVerList.remove(unPublishedVer);
-                                nextstateVerNum = num-1;
+                                nextstateVerNum = num - 1;
                                 stateVerMaxNum = stateVerMaxNum + nextstateVerNum;
                                 unPublishedVer.setVerNum(stateVerMaxNum);
                                 unPublishedVer.setModifier(userId);
                                 unPublishedVer.setModifyTime(new Date());
                                 aeaItemStateVerMapper.updateAeaItemStateVer(unPublishedVer);
                                 // 存在试运行或者已发布版本
-                                if(okVer!=null){
+                                if (okVer != null) {
                                     stateVerList.remove(okVer);
                                     okVer.setVerNum(nextstateVerNum);
                                     okVer.setModifier(userId);
                                     okVer.setModifyTime(new Date());
                                     aeaItemStateVerMapper.updateAeaItemStateVer(okVer);
-                                    nextstateVerNum = num-1;
+                                    nextstateVerNum = num - 1;
                                 }
                                 // 不存在未发布版本仅存在试运行或者已发布版本
-                            }else if(okVer!=null){
+                            } else if (okVer != null) {
                                 stateVerList.remove(okVer);
-                                nextstateVerNum = num-1;
+                                nextstateVerNum = num - 1;
                                 stateVerMaxNum = num;
                                 okVer.setVerNum(stateVerMaxNum);
                                 okVer.setModifier(userId);
@@ -541,8 +544,8 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
                             }
 
                             // 处理其他版本数据
-                            if(stateVerList!=null&&stateVerList.size()>0){
-                                for(AeaItemStateVer entity : stateVerList){
+                            if (stateVerList != null && stateVerList.size() > 0) {
+                                for (AeaItemStateVer entity : stateVerList) {
                                     entity.setVerNum(nextstateVerNum);
                                     entity.setVerStatus(PublishStatus.DEPRECATED.getValue());
                                     entity.setModifier(userId);
@@ -551,7 +554,7 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
                                     nextstateVerNum--;
                                 }
                             }
-                        }else{
+                        } else {
                             AuditVo auditVo = AuditVo.newOne(userId, rootOrgId);
                             AeaItemStateVer initStateVer = AeaItemStateVer.initVer(itemId, vo.getItemVerId(), auditVo);
                             aeaItemStateVerMapper.insertAeaItemStateVer(initStateVer);
@@ -559,11 +562,11 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
 
                         // 更新序列
                         AeaItemSeq seq = aeaItemSeqMapper.getSeqByItemIdAndVerId(itemId, vo.getItemVerId(), rootOrgId);
-                        if(seq == null){
+                        if (seq == null) {
                             AeaItemSeq aeaItemSeq = AeaItemSeq.initOne(itemId, vo.getItemVerId(), userId, rootOrgId);
                             aeaItemSeq.setItemVerMax(vo.getVerNum());
                             aeaItemSeqMapper.insertAeaItemSeq(aeaItemSeq);
-                        }else{
+                        } else {
                             seq.setItemVerMax(vo.getVerNum());
                             seq.setStateVerMax(stateVerMaxNum);
                             seq.setModifier(userId);
@@ -571,7 +574,7 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
                             aeaItemSeqMapper.updateAeaItemSeq(seq);
                         }
                     }
-                }else{
+                } else {
 
                     // 不存在版本把版本序列也删除
                     aeaItemSeqMapper.deleteSeqByItemId(itemId, rootOrgId);
@@ -585,7 +588,7 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
                     aeaItemSeqMapper.insertAeaItemSeq(aeaItemSeq);
 
                     // 事项基本信息
-                    if(StringUtils.isBlank(item.getItemBasicId())){
+                    if (StringUtils.isBlank(item.getItemBasicId())) {
                         item.setItemBasicId(UuidUtil.generateUuid());
                     }
                     item.setItemVerId(aeaItemVer.getItemVerId());
@@ -596,7 +599,7 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
     }
 
     @Override
-    public void initStandItem(AeaItemBasic basic){
+    public void initStandItem(AeaItemBasic basic) {
 
         String userId = SecurityContext.getCurrentUserId();
         String rootOrgId = SecurityContext.getCurrentOrgId();
@@ -607,47 +610,47 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
         List<AeaItemBasic> list = aeaItemBasicMapper.listLatestAeaItemBasic(basic);
         if (list != null && list.size() > 0) {
             for (AeaItemBasic itemBasic : list) {
-                 // 旧的关系
-                 AeaItem oldItem = new AeaItem();
-                 oldItem.setItemId(itemBasic.getItemId());
-                 oldItem.setParentItemId(itemBasic.getParentItemId());
-                 oldItem.setRootOrgId(itemBasic.getRootOrgId());
+                // 旧的关系
+                AeaItem oldItem = new AeaItem();
+                oldItem.setItemId(itemBasic.getItemId());
+                oldItem.setParentItemId(itemBasic.getParentItemId());
+                oldItem.setRootOrgId(itemBasic.getRootOrgId());
 
-                 // 复制成新的标准事项
-                 itemBasic.setItemBasicId(UUID.randomUUID().toString());
-                 itemBasic.setOrgId(null);
-                 itemBasic.setItemId(null);
-                 itemBasic.setParentItemId(null);
-                 itemBasic.setItemVerId(null);
-                 itemBasic.setIsCatalog(Status.ON);
-                 aeaItemBasicAdminService.saveAeaItemBasic(itemBasic);
+                // 复制成新的标准事项
+                itemBasic.setItemBasicId(UUID.randomUUID().toString());
+                itemBasic.setOrgId(null);
+                itemBasic.setItemId(null);
+                itemBasic.setParentItemId(null);
+                itemBasic.setItemVerId(null);
+                itemBasic.setIsCatalog(Status.ON);
+                aeaItemBasicAdminService.saveAeaItemBasic(itemBasic);
 
                 // 更新旧的顶级实施事项
-                 String newItemId = itemBasic.getItemId();
-                 // 新的顶级实施事项序号
-                 String newExtItemSeq = CommonConstant.SEQ_SEPARATOR + newItemId + CommonConstant.SEQ_SEPARATOR + oldItem.getItemId() + CommonConstant.SEQ_SEPARATOR;
-                 oldItem.setParentItemId(newItemId);
-                 oldItem.setItemSeq(newExtItemSeq);
-                 oldItem.setRootOrgId(rootOrgId);
-                 oldItem.setModifier(userId);
-                 oldItem.setModifyTime(new Date());
-                 aeaItemMapper.updateAeaItem(oldItem);
+                String newItemId = itemBasic.getItemId();
+                // 新的顶级实施事项序号
+                String newExtItemSeq = CommonConstant.SEQ_SEPARATOR + newItemId + CommonConstant.SEQ_SEPARATOR + oldItem.getItemId() + CommonConstant.SEQ_SEPARATOR;
+                oldItem.setParentItemId(newItemId);
+                oldItem.setItemSeq(newExtItemSeq);
+                oldItem.setRootOrgId(rootOrgId);
+                oldItem.setModifier(userId);
+                oldItem.setModifyTime(new Date());
+                aeaItemMapper.updateAeaItem(oldItem);
 
-                 // 处理子集序列
-                 handChildItemSeq(oldItem.getItemId(), newExtItemSeq, rootOrgId, userId);
+                // 处理子集序列
+                handChildItemSeq(oldItem.getItemId(), newExtItemSeq, rootOrgId, userId);
             }
         }
     }
 
     @Override
-    public void syncItemRegion(AeaItemBasic basic){
+    public void syncItemRegion(AeaItemBasic basic) {
 
         basic.setRootOrgId(SecurityContext.getCurrentOrgId());
         aeaItemBasicMapper.syncItemRegion(basic);
     }
 
     @Override
-    public void createItemUnionCode(AeaItemBasic basic){
+    public void createItemUnionCode(AeaItemBasic basic) {
 
         String rootOrgId = SecurityContext.getCurrentOrgId();
         basic.setRootOrgId(rootOrgId);
@@ -665,15 +668,15 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
                 for (String itemId : itemIdSet) {
                     String dateStr = df.format(new Date());
                     List<AeaItemBasic> needDelList = new ArrayList<>();
-                    Pattern pattern = Pattern.compile("【"+ reg +"】");
-                    for(AeaItemBasic basicInfo:itemBasicList){
-                        if(itemId.equals(basicInfo.getItemId())){
+                    Pattern pattern = Pattern.compile("【" + reg + "】");
+                    for (AeaItemBasic basicInfo : itemBasicList) {
+                        if (itemId.equals(basicInfo.getItemId())) {
                             String itemCode = basicInfo.getItemCode();
                             Matcher matcher = pattern.matcher(itemCode);
-                            while(matcher.find()){
-                                itemCode = itemCode.replaceAll(matcher.group(),"");
+                            while (matcher.find()) {
+                                itemCode = itemCode.replaceAll(matcher.group(), "");
                             }
-                            basicInfo.setItemCode(itemCode+"【"+ dateStr +"】");
+                            basicInfo.setItemCode(itemCode + "【" + dateStr + "】");
                             aeaItemBasicMapper.updateAeaItemBasic(basicInfo);
                             needDelList.add(basicInfo);
                         }
@@ -691,14 +694,14 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
      * @param parentItemSeq
      * @param rootOrgId
      */
-    private void handChildItemSeq(String oldParentItemId, String parentItemSeq, String rootOrgId, String userId){
+    private void handChildItemSeq(String oldParentItemId, String parentItemSeq, String rootOrgId, String userId) {
 
         // 获取子级事项
         List<AeaItem> childItems = aeaItemMapper.listAllChildItem(oldParentItemId, rootOrgId);
         if (childItems != null && childItems.size() > 0) {
             for (AeaItem item : childItems) {
                 String oldParentItemSeq = CommonConstant.SEQ_SEPARATOR + oldParentItemId + CommonConstant.SEQ_SEPARATOR;
-                if(StringUtils.isNotBlank(item.getItemSeq())){
+                if (StringUtils.isNotBlank(item.getItemSeq())) {
                     item.setItemSeq(item.getItemSeq().replaceAll(oldParentItemSeq, parentItemSeq));
                 }
                 item.setModifier(userId);
@@ -952,13 +955,13 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
 
     @Override
     public boolean checkHadTrigger(ActTplAppTrigger actTplAppTrigger) throws Exception {
-        if(StringUtils.isBlank(actTplAppTrigger.getTriggerId())){
+        if (StringUtils.isBlank(actTplAppTrigger.getTriggerId())) {
             ActTplAppTrigger query = new ActTplAppTrigger();
             query.setTriggerAppFlowdefId(actTplAppTrigger.getTriggerAppFlowdefId());
             query.setAppFlowdefId(actTplAppTrigger.getAppFlowdefId());
             query.setTriggerElementId(actTplAppTrigger.getTriggerElementId());
             List<ActTplAppTrigger> actTplAppTriggers = actTplAppTriggerMapper.listActTplAppTrigger(query);
-            if(actTplAppTriggers != null && actTplAppTriggers.size() > 0){
+            if (actTplAppTriggers != null && actTplAppTriggers.size() > 0) {
                 return true;
             }
         }
@@ -982,15 +985,15 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
             flowElements.stream().sorted(new Comparator<FlowElement>() {
                 @Override
                 public int compare(FlowElement o1, FlowElement o2) {
-                    UserTask u1 = (UserTask)o1;
-                    UserTask u2 = (UserTask)o2;
-                    if(StringUtils.isNotBlank(u1.getPriority()) && StringUtils.isNotBlank(u2.getPriority())){
+                    UserTask u1 = (UserTask) o1;
+                    UserTask u2 = (UserTask) o2;
+                    if (StringUtils.isNotBlank(u1.getPriority()) && StringUtils.isNotBlank(u2.getPriority())) {
                         return u1.getPriority().compareTo(u2.getPriority());
-                    }else if(StringUtils.isNotBlank(u1.getPriority()) && StringUtils.isBlank(u2.getPriority())){
+                    } else if (StringUtils.isNotBlank(u1.getPriority()) && StringUtils.isBlank(u2.getPriority())) {
                         return 1;
-                    }else if(StringUtils.isBlank(u1.getPriority()) && StringUtils.isNotBlank(u2.getPriority())){
+                    } else if (StringUtils.isBlank(u1.getPriority()) && StringUtils.isNotBlank(u2.getPriority())) {
                         return -1;
-                    }else{
+                    } else {
                         return 0;
                     }
                 }
@@ -1010,11 +1013,11 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
     }
 
     @Override
-    public List<AeaItemCond> gtreeItemCond(String itemId){
+    public List<AeaItemCond> gtreeItemCond(String itemId) {
 
         List<AeaItemCond> listNode = new ArrayList<AeaItemCond>();
         AeaItem item = aeaItemMapper.getAeaItemById(itemId);
-        if(item!=null){
+        if (item != null) {
             AeaItemCond rootNode = new AeaItemCond();
             rootNode.setId(itemId);
             rootNode.setType("root");
@@ -1026,21 +1029,21 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
             searchCond.setItemId(itemId);
             searchCond.setRootOrgId(SecurityContext.getCurrentOrgId());
             List<AeaItemCond> condList = aeaItemCondAdminService.listAeaItemCond(searchCond);
-            if(condList!=null&&condList.size()>0){
-                for(AeaItemCond cond:condList){
+            if (condList != null && condList.size() > 0) {
+                for (AeaItemCond cond : condList) {
                     AeaItemCond condNode = new AeaItemCond();
                     condNode.setId(cond.getItemCondId());
                     String sfzz = "";
                     String muiltSelect = "";
-                    if(StringUtils.isNotBlank(cond.getSfzz())&& "1".equals(cond.getSfzz())){
+                    if (StringUtils.isNotBlank(cond.getSfzz()) && "1".equals(cond.getSfzz())) {
                         sfzz = "[终止]";
                     }
-                    if(cond.getMuiltSelect()!=null&&cond.getMuiltSelect()>0){
-                        muiltSelect = "["+ cond.getMuiltSelect() +"]";
+                    if (cond.getMuiltSelect() != null && cond.getMuiltSelect() > 0) {
+                        muiltSelect = "[" + cond.getMuiltSelect() + "]";
                     }
-                    condNode.setName(cond.getCondName()+ sfzz + muiltSelect);
+                    condNode.setName(cond.getCondName() + sfzz + muiltSelect);
                     condNode.setpId(itemId);
-                    if(StringUtils.isNotBlank(cond.getParentCondId())){
+                    if (StringUtils.isNotBlank(cond.getParentCondId())) {
                         condNode.setpId(cond.getParentCondId());
                     }
                     condNode.setType("cond");
@@ -1050,7 +1053,7 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
                     listNode.add(condNode);
                 }
             }
-        }else {
+        } else {
             AeaItemCond rootNode = new AeaItemCond();
             rootNode.setId(itemId);
             rootNode.setName("事项数据为空!");
@@ -1170,7 +1173,8 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
 
         List<ZtreeNode> allNodes = new ArrayList<>();
         if (StringUtils.isBlank(id)) {
-            MetaDbConn metaDbConn = metaDbConnMapper.getMetaDbConnByConInfo(jdbcUrl, jdbcUserName, jdbcPwd);
+//            MetaDbConn metaDbConn = metaDbConnMapper.getMetaDbConnByConInfo(jdbcUrl, jdbcUserName, jdbcPwd);
+            MetaDbConn metaDbConn = metaDbConnMapper.getMetaDbConnByConInfo(dataSourceProperties.getUrl(), dataSourceProperties.getUsername(), dataSourceProperties.getPassword());
             if (metaDbConn != null) {
                 // 获取表数据
                 List<MetaDbTable> tableList = metaDbTableMapper.listMetaDbTableByConnId(metaDbConn.getConnId());
@@ -1223,7 +1227,8 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
     public List<ZtreeNode> gtreeTableColumnSyncZTree() {
 
         List<ZtreeNode> allNodes = new ArrayList<>();
-        MetaDbConn metaDbConn = metaDbConnMapper.getMetaDbConnByConInfo(jdbcUrl, jdbcUserName, jdbcPwd);
+//        MetaDbConn metaDbConn = metaDbConnMapper.getMetaDbConnByConInfo(jdbcUrl, jdbcUserName, jdbcPwd);
+        MetaDbConn metaDbConn = metaDbConnMapper.getMetaDbConnByConInfo(dataSourceProperties.getUrl(), dataSourceProperties.getUsername(), dataSourceProperties.getPassword());
         if (metaDbConn != null) {
             // 获取表数据
             List<MetaDbTable> tableList = metaDbTableMapper.listMetaDbTableByConnId(metaDbConn.getConnId());
@@ -1274,11 +1279,11 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
     @Override
     public Set<String> getItemParentIdsByItemId(String parentItemId, Set<String> sets) {
         AeaItem item = aeaItemMapper.getAeaItemById(parentItemId);
-        if(item != null && item.getParentItemId() != null){
-            if(!item.getParentItemId().equalsIgnoreCase("root")){
+        if (item != null && item.getParentItemId() != null) {
+            if (!item.getParentItemId().equalsIgnoreCase("root")) {
                 sets.add(item.getItemId());
                 getItemParentIdsByItemId(item.getParentItemId(), sets);
-            }else{
+            } else {
                 sets.add(item.getItemId());
             }
         }
@@ -1287,32 +1292,32 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
     }
 
     @Override
-    public List<AeaItem> getUnSelectedParFrontItemTree(String stageId,String frontItemId){
+    public List<AeaItem> getUnSelectedParFrontItemTree(String stageId, String frontItemId) {
         // 所有最新版本事项,没有考虑是否发布
         List<AeaItemBasic> allItems;
-        if(StringUtils.isNotBlank(stageId)){
-            allItems = aeaItemBasicMapper.listUnSelectedParFrontItemBasicByStageId(stageId,frontItemId,SecurityContext.getCurrentOrgId());
-        }else{
+        if (StringUtils.isNotBlank(stageId)) {
+            allItems = aeaItemBasicMapper.listUnSelectedParFrontItemBasicByStageId(stageId, frontItemId, SecurityContext.getCurrentOrgId());
+        } else {
             allItems = new ArrayList<>();
         }
         return loadItemTree(allItems);
     }
 
     @Override
-    public List<AeaItem> getUnSelectedItemFrontItemTree(String itemVerId,String frontItemId){
+    public List<AeaItem> getUnSelectedItemFrontItemTree(String itemVerId, String frontItemId) {
 
         // 所有最新版本事项,没有考虑是否发布
         List<AeaItemBasic> allItems;
-        if(StringUtils.isNotBlank(itemVerId)){
-            allItems = aeaItemBasicMapper.listUnSelectedItemFrontItemBasicByItemVerId(itemVerId,frontItemId,SecurityContext.getCurrentOrgId());
-        }else{
+        if (StringUtils.isNotBlank(itemVerId)) {
+            allItems = aeaItemBasicMapper.listUnSelectedItemFrontItemBasicByItemVerId(itemVerId, frontItemId, SecurityContext.getCurrentOrgId());
+        } else {
             allItems = new ArrayList<>();
         }
 
         return loadItemTree(allItems);
     }
 
-    private List<AeaItem> loadItemTree(List<AeaItemBasic> allItems){
+    private List<AeaItem> loadItemTree(List<AeaItemBasic> allItems) {
         List<AeaItem> allNodes = new ArrayList<>();
         String title = "工程建设审批事项库";
         AeaItem rootNode = new AeaItem();
@@ -1323,8 +1328,8 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
         rootNode.setIsParent(true);
         rootNode.setNocheck(true);
         allNodes.add(rootNode);
-        if(allItems!=null&&allItems.size()>0){
-            for(AeaItemBasic itemBasic : allItems){
+        if (allItems != null && allItems.size() > 0) {
+            for (AeaItemBasic itemBasic : allItems) {
                 AeaItem item = convertItemNode(itemBasic);
                 allNodes.add(item);
             }

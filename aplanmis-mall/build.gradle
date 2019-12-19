@@ -9,6 +9,7 @@ dependencies {
     compile ('net.glxn.qrgen:javase:2.0')
 
     compile "com.augurit.agcloud:agcloud-bpm-common:${agcloudVersion}"
+    compile('org.springframework.boot:spring-boot-starter-aop')
     //compile ('com.augurit.agcloud:agcloud-framework-no-sso:5.0.0')
     //compile('org.springframework.boot:spring-boot-devtools')
 //    compile fileTree(include: ['*.jar'], dir: 'src\\main\\webapp\\WEB-INF\\lib')
