@@ -272,8 +272,8 @@ public class AeaHiApplyinstServiceImpl implements AeaHiApplyinstService {
     }
 
     @Override
-    public List<AeaHiApplyinst> getSeriesAeaHiApplyinstListByParentApplyinstId(String applyinstId) throws Exception {
+    public List<AeaHiApplyinst> getSeriesAeaHiApplyinstListByParentApplyinstId(String applyinstId,String isTemporarySubmit) throws Exception {
         if (StringUtils.isBlank(applyinstId)) throw new Exception("申报实例ID为空！");
-        return aeaHiApplyinstMapper.getSeriesAeaHiApplyinstListByParentApplyinstId(applyinstId);
+        return aeaHiApplyinstMapper.getSeriesAeaHiApplyinstListByParentApplyinstId(applyinstId,isTemporarySubmit);
     }
 }

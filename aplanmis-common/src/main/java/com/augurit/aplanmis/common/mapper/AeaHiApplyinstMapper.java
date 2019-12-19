@@ -130,5 +130,5 @@ public interface AeaHiApplyinstMapper {
      * @param applyinstId 并联申报实例ID
      * @return
      */
-    List<AeaHiApplyinst> getSeriesAeaHiApplyinstListByParentApplyinstId(@Param("applyinstId") String applyinstId);
+    List<AeaHiApplyinst> getSeriesAeaHiApplyinstListByParentApplyinstId(@Param("applyinstId") String applyinstId,@Param("isTemporarySubmit")String isTemporarySubmit);
 }

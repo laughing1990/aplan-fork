@@ -202,7 +202,10 @@
         from AEA_HI_APPLYINST
         <where>
             PARENT_APPLYINST_ID = #{applyinstId}
-            AND IS_DELETED = '0' AND IS_TEMPORARY_SUBMIT='0'
+            AND IS_DELETED = '0'
+            <if test="isTemporarySubmit!=null and isTemporarySubmit!=''">
+                AND IS_TEMPORARY_SUBMIT=#{isTemporarySubmit}
+            </if>
         </where>
     </select>
 

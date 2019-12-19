@@ -224,8 +224,9 @@ public interface AeaHiApplyinstService {
      *
      * 查询并联申报下的并行申报列表
      * @param applyinstId 并联申报实例ID
+     * @param isTemporarySubmit 非必须参数  是否暂存 1 是  0否
      * @return
      */
-    List<AeaHiApplyinst> getSeriesAeaHiApplyinstListByParentApplyinstId(String applyinstId) throws Exception;
+    List<AeaHiApplyinst> getSeriesAeaHiApplyinstListByParentApplyinstId(String applyinstId,String isTemporarySubmit) throws Exception;
 
 }
