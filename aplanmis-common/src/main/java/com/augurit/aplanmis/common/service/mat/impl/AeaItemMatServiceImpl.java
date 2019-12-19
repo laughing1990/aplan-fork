@@ -295,7 +295,7 @@ public class AeaItemMatServiceImpl implements AeaItemMatService {
         String[] parallelItemVerIds = (String[]) ArrayUtils.addAll(parallelItemVerIdsDef, parallelParentItemVerIds);
         String[] coreItemVerIds = (String[]) ArrayUtils.addAll(coreItemVerIdsDef, coreParentItemVerIds);
         if (StringUtils.isNotBlank(stageId)) {//说明是并联申报
-
+            AeaParStage stage = aeaParStageService.getAeaParStageById(stageId);
             //并联的情形材料
             if (parallelItemVerIds != null && stageStateIds != null && parallelItemVerIds.length > 0 && stageStateIds.length > 0) {
                 List<AeaItemMat> stageStateMatList = new ArrayList();
@@ -307,8 +307,8 @@ public class AeaItemMatServiceImpl implements AeaItemMatService {
 
             //`HAND_WAY` char(1) DEFAULT NULL COMMENT '办理方式 0 多事项直接合并办理  1 按阶段多级情形组织事项办理',
             //如果该阶段是沿用情形组织事项办理，那么需要去掉对应的实施事项版本ID，免得带出了实施事项所配的材料
-            if (parallelParentItemVerIds.length > 0) {
-                AeaParStage stage = aeaParStageService.getAeaParStageById(stageId);
+
+            if (parallelParentItemVerIds.length > 0) {//标准事项
                 if (stage != null && "1".equals(stage.getHandWay())) {//沿用情形
                     List<String> allSssxList = new ArrayList<>();
                     for (String itemVerId : parallelParentItemVerIds) {
@@ -324,17 +324,18 @@ public class AeaItemMatServiceImpl implements AeaItemMatService {
             if (parallelItemVerIds.length > 0) {
                 list.addAll(getMatListByItemVerIdsAndStageId(parallelItemVerIds, stageId, null));
             }
-
+            if (stage != null && "0".equals(stage.getHandWay())) {//多事项直接合并
+                //并联事项材料
+                List<AeaItemMat> parallelItemMatList = (parallelItemVerIds != null && parallelItemVerIds.length > 0) ? getMatListByItemVerIds(parallelItemVerIds, "1", null) : new ArrayList<AeaItemMat>();
+                list.addAll(parallelItemMatList);
+            }
         }
         //并行事项材料,或者单项事项材料
         List<AeaItemMat> coreItemMatList = (coreItemVerIds != null && coreItemVerIds.length > 0) ? getMatListByItemVerIds(coreItemVerIds, "1", null) : new ArrayList<AeaItemMat>();
-        //并联事项材料
-        List<AeaItemMat> parallelItemMatList = (parallelItemVerIds != null && parallelItemVerIds.length > 0) ? getMatListByItemVerIds(parallelItemVerIds, "1", null) : new ArrayList<AeaItemMat>();
 
         List<AeaItemMat> itemStateMatList = (itemStateIds != null && itemStateIds.length > 0) ? getMatListByItemStateIds(itemStateIds) : new ArrayList<AeaItemMat>();//事项的情形材料
         list.addAll(coreItemMatList);
         list.addAll(itemStateMatList);
-        list.addAll(parallelItemMatList);
         if (list.size() > 0)
             return list.stream()
                     .filter(CommonTools.distinctByKey(AeaItemMat::getMatId))
