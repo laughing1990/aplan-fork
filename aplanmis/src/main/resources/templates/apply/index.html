@@ -842,12 +842,12 @@
             <!--主题类型 start-->
             <div class="col-status-z" :class="(colStatusActive==0)?'active':''" @click="setColStatusActive(0)">
               <p class="col-s-title content-center">选主题</p>
-              <div class="theme-type-list" v-show="themeList.length>1">
-                <span class="theme-type" style="width: 180px;" v-for="(item, index) in themeList"
-                  :class="(themeTypeIndex==index)?'active':''" @click="changeThemeType(item,index,'single')">
-                  {{item.themeTypeName}}
-                </span>
-              </div>
+              <!--<div class="theme-type-list" v-show="themeList.length>1">-->
+                <!--<span class="theme-type" style="width: 180px;" v-for="(item, index) in themeList"-->
+                  <!--:class="(themeTypeIndex==index)?'active':''" @click="changeThemeType(item,index,'single')">-->
+                  <!--{{item.themeTypeName}}-->
+                <!--</span>-->
+              <!--</div>-->
               <div class="apply-theme clearfix" v-if="themeTypeIndex==0">
                 <div class="theme-list-item" v-if="selTheme.themeId">
                   <img class="text-left" src="../../apply/imgs/pro_type_4.png">
@@ -879,14 +879,14 @@
               v-show="statusLineList.length>1||statusList.length>0">
               <p class="col-s-title content-center">{{((statusLineList.length>1)&&(statusList.length>0))?'选阶段或服务':'选阶段'}}
               </p>
-              <div class="line-type" v-show="statusLineList.length>1">
-                <ul>
-                  <li class="fl" v-for="(item,ind) in statusLineList" @click="selStatusLine(item,ind)"
-                    :class="statusLineListActive==ind?'active':''">
-                    {{item.title}}
-                  </li>
-                </ul>
-              </div>
+              <!--<div class="line-type" v-show="statusLineList.length>1">-->
+                <!--<ul>-->
+                  <!--<li class="fl" v-for="(item,ind) in statusLineList" @click="selStatusLine(item,ind)"-->
+                    <!--:class="statusLineListActive==ind?'active':''">-->
+                    <!--{{item.title}}-->
+                  <!--</li>-->
+                <!--</ul>-->
+              <!--</div>-->
               <div class="status-img clearfix">
                 <div class="status-img-item" v-for="(item,index) in statusList"
                   :class="statusActiveIndex==index?'active':''"
@@ -1536,10 +1536,10 @@
             </span>
           </div>
           <div class="pro-type-item"
-               :class="selThemeActive==index?'active':''"
-               v-for="(item,index) in themeInfoListP"
-               :key="index"
-            @click="chooseTheme(item,index,'parallel');">
+               :class="selThemeActive==ind?'active':''"
+               v-for="(item,ind) in themeInfoListP"
+               :key="ind"
+            @click="chooseTheme(item,ind,'parallel');">
             <img class="text-left" src="../../apply/imgs/pro_type_4.png">
             <span class="theme-name ellipsis">{{item.themeName}}</span>
           </div>
