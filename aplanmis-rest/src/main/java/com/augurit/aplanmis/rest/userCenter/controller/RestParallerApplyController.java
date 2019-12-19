@@ -126,7 +126,7 @@ public class RestParallerApplyController {
     @ApiOperation(value = "阶段申报--> 一张表单提前实例化申请")
     public ContentResultForm<String> startInstApply(String applySource, String applySubject, String linkmanInfoId) {
         try {
-            AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "0", null, ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"0");
+            AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "0", null, ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"0",null);
             return new ContentResultForm<>(true, aeaHiApplyinst.getApplyinstId(), "申报成功!");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

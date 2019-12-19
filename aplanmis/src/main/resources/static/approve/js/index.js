@@ -464,6 +464,7 @@ var vm = new Vue({
       speEndPkName: 'SPECIAL_END_MAT_ID',
       hasSpecial: 0,
       hasSupply: 0,
+      hasAppCancel: 0,
       specialStartMatId: '',
       specialEndMatId: '',
       specialDetailInfo: [],
@@ -554,6 +555,30 @@ var vm = new Vue({
       },
       rqMoreTimeformRules: {},
       rqTargetRow: {},
+      cancelAppVisible: false,
+      cancelAppForm: {
+        applyUserId: '',
+        linkmanMobilePhone: '',
+        linkmanCertNo: '',
+        applyReason: '',
+        handleOpinion: '',
+        cancelUserAttId: '',
+        applyUserName: '',
+      },
+      cancelAppLinkManList: [],
+      cancelAppFormRule: {
+        applyReason: [{required: true, message: '请填写撤件原因', trigger: 'blur'}],
+        handleOpinion: [{required: true, message: '请填写窗口意见', trigger: 'blur'}],
+        applyUserId: [{required: true, message: '请选择联系人', trigger: 'blur'}],
+        linkmanMobilePhone: [{required: true, message: '请填写联系电话', trigger: 'blur'}],
+        linkmanCertNo: [{required: true, message: '请填写证件号码', trigger: 'blur'}],
+      },
+      cancelAppFileList: [],
+      cancelAppCkFileList: [],
+      cacelAppDialogLoading: false,
+      cancelAppDetailList: [],
+      ckHandleOpinion: '',
+      bmHandleOpinion: '',
     }
   },
   filters: {
@@ -590,6 +615,346 @@ var vm = new Vue({
     },
   },
   methods: {
+    // 撤件部门删除附件
+    deleteCancelUserFile: function(id){
+      var vm = this;
+      vm.parentPageLoading = true;
+      request('', {
+        url: ctx + 'rest/applyinst/deleteAttFile',
+        type: 'post',
+        data: { detailIds: id },
+      }, function(res) {
+        vm.parentPageLoading = false;
+        if (res.success) {
+          vm.refreshAppCancelBmFileList();
+        } else {
+          vm.$message.error(res.message||'删除失败');
+        }
+      },function(){
+        vm.parentPageLoading = false;
+        vm.$message.error('删除失败');
+      })
+    },
+    // 撤件部门刷新附件列表
+    refreshAppCancelBmFileList: function(){
+      var vm = this;
+      vm.parentPageLoading = true;
+      // 刷新列表
+      request('', {
+        url: ctx + 'rest/applyinst/getAttFiles',
+        type: 'post',
+        data: {
+          tableName: 'AEA_HI_ITEM_CANCEL',
+          attId: vm.cancelAppForm.cancelUserAttId,
+        },
+      }, function(res2) {
+        vm.parentPageLoading = false;
+        if (res2.success) {
+          vm.cancelAppFileList = res2.content;
+        } else {
+          vm.$message.error(res2.message || '文件列表刷新失败');
+        }
+      }, function(){
+        vm.parentPageLoading = false;
+        vm.$message.error('文件列表刷新失败');
+      })
+    },
+    // 部门上传撤件用附件
+    appCancelBmUploadFile: function (file) {
+      var vm = this;
+      var formData = new FormData();
+      formData.append('file', file.file);
+      formData.append('tableName', 'AEA_HI_ITEM_CANCEL');
+      formData.append('attId', vm.cancelAppForm.cancelUserAttId);
+      vm.parentPageLoading = true;
+      axios.post(ctx + 'rest/applyinst/uploadAttFile', formData).then(function (res) {
+        if (res.data && res.data.success) {
+          vm.$message.success('文件上传成功');
+          vm.cancelAppForm.cancelUserAttId = res.data.content;
+          vm.refreshAppCancelBmFileList();
+        } else {
+          vm.$message.error(res.message || '文件上传失败');
+        }
+      }).catch(function (e) {
+        vm.$message.error('文件上传失败');
+      }).finally(function () {
+        vm.parentPageLoading = false;
+      })
+    },
+    // 撤件删除附件
+    deleteCancelUserFile: function(id){
+      var vm = this;
+      vm.cacelAppDialogLoading = true;
+      request('', {
+        url: ctx + 'rest/applyinst/deleteAttFile',
+        type: 'post',
+        data: { detailIds: id },
+      }, function(res) {
+        vm.cacelAppDialogLoading = false;
+        if (res.success) {
+          vm.refreshAppCancelFileList();
+        } else {
+          vm.$message.error(res.message||'删除失败');
+        }
+      },function(){
+        vm.cacelAppDialogLoading = false;
+        vm.$message.error('删除失败');
+      })
+    },
+    // 撤件刷新附件列表
+    refreshAppCancelFileList: function(){
+      var vm = this;
+      vm.cacelAppDialogLoading = true;
+      // 刷新列表
+      request('', {
+        url: ctx + 'rest/applyinst/getAttFiles',
+        type: 'post',
+        data: {
+          tableName: 'AEA_HI_APPLYINST_CANCEL',
+          attId: vm.cancelAppForm.cancelUserAttId,
+        },
+      }, function(res2) {
+        vm.cacelAppDialogLoading = false;
+        if (res2.success) {
+          vm.cancelAppFileList = res2.content;
+        } else {
+          vm.$message.error(res2.message || '文件列表刷新失败');
+        }
+      }, function(){
+        vm.cacelAppDialogLoading = false;
+        vm.$message.error('文件列表刷新失败');
+      })
+    },
+    // 上传撤件用户附件
+    appCancelUserUploadFile: function (file) {
+      var vm = this;
+      var formData = new FormData();
+      formData.append('file', file.file);
+      formData.append('tableName', 'AEA_HI_APPLYINST_CANCEL');
+      formData.append('attId', vm.cancelAppForm.cancelUserAttId);
+      vm.cacelAppDialogLoading = true;
+      axios.post(ctx + 'rest/applyinst/uploadAttFile', formData).then(function (res) {
+        if (res.data && res.data.success) {
+          vm.$message.success('文件上传成功');
+          vm.cancelAppForm.cancelUserAttId = res.data.content;
+          vm.refreshAppCancelFileList();
+        } else {
+          vm.$message.error(res.message || '文件上传失败');
+        }
+      }).catch(function (e) {
+        vm.$message.error('文件上传失败');
+      }).finally(function () {
+        vm.cacelAppDialogLoading = false;
+      })
+    },
+    // 撤件状态转换
+    changeCancelState: function(val){
+      var arr = ['已提交','已受理','已同意','未同意','无效'];
+      return arr[val];
+    },
+    // 部门人员处理撤件
+    bmHanderCancel: function(val, item){
+      var vm = this;
+      if (!vm.bmHandleOpinion.length) {
+        return vm.$message.error('意见不能为空');
+      }
+      request('', {
+        url: ctx + 'rest/applyinst/saveIteminstCancelInfo',
+        type: 'get',
+        data: {
+          applyinstId: vm.masterEntityKey,
+          iteminstCancelId: vm.iteminstCancelId,
+          approvalOpinion: vm.bmHandleOpinion,
+          cancelState: val,
+          attId: vm.cancelAppForm.cancelUserAttId,
+        },
+      }, function(res){
+        if (res.success) {
+          vm.$message.success('操作成功');
+          delayRefreshWindow();
+        } else {
+          vm.$message.error(res.message||'操作失败');
+        }
+      }, function(){
+        vm.$message.error('操作失败');
+      });
+    },
+    // 窗口人员处理撤件
+    ckHanderCancel: function(val, item){
+      var vm = this;
+      if (!vm.ckHandleOpinion.length) {
+        return vm.$message.error('意见不能为空');
+      }
+      request('', {
+        url: ctx + 'rest/applyinst/updateIteminstCancelInfo',
+        type: 'get',
+        data: {
+          applyinstCancelId: item.applyinstCancelId,
+          handleOpinion: vm.ckHandleOpinion,
+          cancelState: val,
+        },
+      }, function(res){
+        if (res.success) {
+          vm.$message.success('操作成功');
+          delayRefreshWindow();
+        } else {
+          vm.$message.error(res.message||'操作失败');
+        }
+      }, function(){
+        vm.$message.error('操作失败');
+      });
+    },
+    // 加载撤件历史数据
+    loadAppCancelData: function(){
+      var vm = this;
+      var params = {};
+      var reqUrl = ctx;
+      // if (window) return null;
+      if (vm.isApprover == 0) {
+        params.applyinstId = vm.masterEntityKey;
+        reqUrl += 'rest/applyinst/getApplyinstCancelListByApplyinstId';
+      } else {
+        params.iteminstId = vm.iteminstId;
+        reqUrl += 'rest/applyinst/getApplyinstCancelListByIteminstId';
+      }
+      request('', {
+        url: reqUrl,
+        type: 'get',
+        data: params,
+      }, function (res) {
+        if (res.success) {
+          vm.cancelAppDetailList = res.content;
+        } else {
+          vm.$message.error(res.message || '加载撤件历史数据失败');
+        }
+      }, function(res) {
+        vm.$message.error('加载撤件历史数据失败');
+      })
+    },
+    // 确认撤件操作
+    ensureAppCancel: function (){
+      var vm = this;
+      vm.$refs.cancelAppForm.validate(function(f){
+        if (f) {
+          vm.cacelAppDialogLoading = true;
+          request('', {
+            url: ctx + 'rest/applyinst/saveApplyinstCancelInfo',
+            type: 'post',
+            data: {
+              applyinstId: vm.masterEntityKey,
+              applyReason: vm.cancelAppForm.applyReason,
+              applyUserId: vm.cancelAppForm.applyUserId,
+              handleOpinion: vm.cancelAppForm.handleOpinion,
+              attId: vm.cancelAppForm.cancelUserAttId,
+              applyUserIdnumber: vm.cancelAppForm.linkmanCertNo,
+              applyUserPhone: vm.cancelAppForm.linkmanMobilePhone,
+              applyUserName: vm.cancelAppForm.applyUserName,
+            }
+          }, function (res) {
+            vm.cacelAppDialogLoading = false;
+            if (res.success) {
+              delayRefreshWindow();
+              vm.$message.success('保存成功');
+            } else {
+              vm.$message.error(res.message||'保存失败');
+            }
+          }, function(){
+            vm.cacelAppDialogLoading = false;
+            vm.$message.error('保存失败');
+          })
+        }
+      });
+    },
+    // 关闭撤件弹窗
+    closeCancelAppDialog: function(){
+      this.cancelAppFileList = [];
+      this.cancelAppCkFileList = [];
+      this.cancelAppForm.cancelUserAttId = '';
+      this.cancelAppForm = {
+        applyUserId: '',
+        linkmanMobilePhone: '',
+        linkmanCertNo: '',
+        applyReason: '',
+        handleOpinion: '',
+      }
+    },
+    // 撤件选择联系人
+    cancelAppChooseLinkMan: function(id){
+      var vm = this;
+      vm.cancelAppForm.applyUserId = id;
+      vm.cancelAppLinkManList.forEach(function(u){
+        if (u.linkmanInfoId == id) {
+          vm.cancelAppForm.linkmanMobilePhone = u.linkmanMobilePhone;
+          vm.cancelAppForm.linkmanCertNo = u.linkmanCertNo;
+          vm.cancelAppForm.applyUserName = u.linkmanName;
+        }
+      })
+    },
+    // 点击撤件
+    applyinstCancel: function(){
+      var vm = this;
+      vm.parentPageLoading = true;
+      // 是否允许撤件
+      $.ajax({
+        url: ctx + 'rest/applyinst/checkState?applyinstId='+vm.masterEntityKey,
+        dataType: "json",
+        type: 'get',
+        headers: {
+          'Content-Type' :'application/x-www-form-urlencoded;',
+          'Authorization': 'bearer '+localStorage.getItem("access_token")
+        },
+        xhrFields: { withCredentials: true },
+        crossDomain: true,
+        timeout: 10000,
+        success: function(res) {
+          handler(res);
+        },
+        error: function(res){
+          handler(res);
+        },
+      });
+      function handler(res) {
+        var text = res.responseText;
+        text = text.replace(/'/g,'"');
+        res = JSON.parse(text);
+        if(res.flag=='200') {
+          requestLinkManInfo();
+        } else if(res.flag=='201') {
+          vm.parentPageLoading = false;
+          vm.$confirm(res.message, '是否继续撤件', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(function(){
+            requestLinkManInfo()
+          }).catch(function(){
+            //
+          });
+        } else {
+          vm.parentPageLoading = false;
+          vm.$message.error(res.message || '撤件失败');
+        }
+      }
+      function requestLinkManInfo(){
+        // 获取业主信息
+        request('', {
+          url: ctx + 'rest/applyinst/getLinkmanInfoList?applyinstId='+vm.masterEntityKey,
+          type: 'get',
+        }, function(res){
+          vm.parentPageLoading = false;
+          if(res.success) {
+            vm.cancelAppVisible = true;
+            vm.cancelAppLinkManList = res.content;
+            vm.cancelAppLinkManList.length && vm.cancelAppChooseLinkMan(vm.cancelAppLinkManList[0].linkmanInfoId);
+          } else {
+            vm.$message.error(res.message || '获取撤件业主信息失败');
+          }
+        }, function(){
+          vm.parentPageLoading = false;
+          vm.$message.error('获取撤件业主信息失败');
+        })
+      }
+    },
     // 打开延长容缺时限弹窗
     openRQmoreTimeDialog: function(row){
       this.rqTargetRow = row;
@@ -2017,6 +2382,7 @@ var vm = new Vue({
         {label: '材料附件', labelId: "2", src: './materialAnnex.html'},
         {label: '审批过程', labelId: "3", src: './opinionForm.html'},
         {label: '材料补正', labelId: "4", src: './opinionForm.html'},
+        {label: '撤件历史', labelId: "appCancel", src: './opinionForm.html'},
         {label: '特殊程序', labelId: "5", src: './opinionForm.html'},
         {label: '批文批复', labelId: "6", src: './approvalOpinions.html',}
       ];
@@ -2202,6 +2568,18 @@ var vm = new Vue({
         vm.getSpecialType();
         vm.loadSpecialDetail();
       }
+      // 撤件历史
+      var tmpIndex = -1;
+      vm.lTabsData.forEach(function (u, i) {
+        if (u.labelId == 'appCancel') {
+          tmpIndex = i
+        }
+      })
+      if (vm.hasAppCancel != 1) {
+        vm.lTabsData.splice(tmpIndex, 1);
+      } else {
+        vm.loadAppCancelData();
+      }
     },
     // 初始化左边按钮组
     initButtons: function () {
@@ -2229,6 +2607,14 @@ var vm = new Vue({
         isHidden: '0',
         elementRender: '<button class="btn btn-outline-info" onclick="startSupplementForItem()">材料补正</button>'
       }];
+      var applyinstBtn = [{
+        elementName: "撤件",
+        elementCode: "wfBusSave",
+        columnType: "button",
+        isReadonly: '0',
+        isHidden: '0',
+        elementRender: '<button class="btn btn-outline-info" onclick="applyinstCancel()">撤件</button>'
+      }];
       var draftBtn = [{
         elementName: "发起申报",
         elementCode: "wfBusSave",
@@ -2246,6 +2632,8 @@ var vm = new Vue({
       }];
       if (vm.isApprover == 1) {
         defaultBtn = matBtn.concat(defaultBtn);
+      } else {
+        defaultBtn = applyinstBtn.concat(defaultBtn);
       }
       if (vm.isDraftPage == 'true') {
         defaultBtn = draftBtn.concat(defaultBtn);
@@ -2385,6 +2773,7 @@ var vm = new Vue({
           vm.projectCode = res.content.projCode;
           vm.hasSpecial = res.content.hasSpecial;
           vm.hasSupply = res.content.hasSupply;
+          vm.hasAppCancel = res.content.ishasApplyinstCancel;
           vm.isShowOneForm = res.content.isShowOneForm;
           vm.stageId = res.content.stageId;
           vm.projInfoId = res.content.projId;
@@ -5325,6 +5714,11 @@ function openSpecialDialog() {
   src += '&taskId=' + vm.taskId;
   src += '&processInstanceId=' + vm.processInstanceId;
   vm.specialSrc = src;
+}
+
+// 撤件
+function applyinstCancel(){
+  vm.applyinstCancel();
 }
 
 // 关闭特殊程序

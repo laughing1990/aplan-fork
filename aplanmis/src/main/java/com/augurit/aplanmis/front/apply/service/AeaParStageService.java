@@ -363,7 +363,7 @@ public class AeaParStageService {
                 aeaLogApplyStateHistService.insertTriggerAeaLogApplyStateHist(aeaHiApplyinst.getApplyinstId(), null, appinstId, null, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), opuWinId);
             }
         } else {
-            aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinstAndTriggerAeaLogApplyStateHist(applySource, applySubject, linkmanInfoId, "0", branchOrgMap, null, appinstId, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), opuWinId);
+            aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinstAndTriggerAeaLogApplyStateHist(applySource, applySubject, linkmanInfoId, "0", branchOrgMap, null, appinstId, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), opuWinId,null);
         }
 
         if (aeaHiApplyinst == null)
@@ -465,7 +465,7 @@ public class AeaParStageService {
                 String propulsionAppinstId = UUID.randomUUID().toString();//预先生成并行推进单项模板实例ID
 
                 //实例化串联申请实例
-                AeaHiApplyinst seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinstAndTriggerAeaLogApplyStateHist(applySource, applySubject, linkmanInfoId, "1", branchOrgMap, null, propulsionAppinstId, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), opuWinId);
+                AeaHiApplyinst seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinstAndTriggerAeaLogApplyStateHist(applySource, applySubject, linkmanInfoId, "1", branchOrgMap, null, propulsionAppinstId, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), opuWinId,applyinstId);
 
                 if (seriesApplyinst == null)
                     throw new RuntimeException("实例化并行推进事项申请实例失败！");
@@ -698,7 +698,7 @@ public class AeaParStageService {
         } else {
             aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(ApplySource.WIN.getValue()
                     , applySubject, linkmanInfoId
-                    , ApplyType.UNIT.getValue(), branchOrgMap, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), Status.ON);
+                    , ApplyType.UNIT.getValue(), branchOrgMap, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), Status.ON,null);
             applyinstId = aeaHiApplyinst.getApplyinstId();
         }
         applyCommonService.bindApplyinstProj(projInfoId, applyinstId, SecurityContext.getCurrentUserId());

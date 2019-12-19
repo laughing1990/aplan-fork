@@ -555,7 +555,7 @@ public class RestApplyService {
         String applySubject = stageApplyDataVo.getApplySubject();
         String linkmanInfoId = stageApplyDataVo.getLinkmanInfoId();
         String branchOrgMap = stageApplyDataVo.getBranchOrgMap();//是否分局承办，允许为空
-        AeaHiApplyinst applyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "0", branchOrgMap, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), "0");
+        AeaHiApplyinst applyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "0", branchOrgMap, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), "0",null);
         return applyinst == null ? null : applyinst.getApplyinstId();
     }
 
@@ -564,7 +564,7 @@ public class RestApplyService {
         String applySubject = seriesApplyDataPageVo.getApplySubject();
         String linkmanInfoId = seriesApplyDataPageVo.getLinkmanInfoId();
         String branchOrgMap = seriesApplyDataPageVo.getBranchOrgMap();//是否分局承办，允许为空
-        AeaHiApplyinst applyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "1", branchOrgMap, ApplyState.RECEIVE_APPROVED_APPLY.getValue(),"0");
+        AeaHiApplyinst applyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "1", branchOrgMap, ApplyState.RECEIVE_APPROVED_APPLY.getValue(),"0",null);
         return applyinst.getApplyinstId();
     }
 }

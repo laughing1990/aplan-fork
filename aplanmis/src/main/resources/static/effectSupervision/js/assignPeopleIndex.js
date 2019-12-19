@@ -622,6 +622,18 @@ var Index = new Vue({
       this.msgDetail.sendDate = this.formatDatetimeCommon(remindInfo.sendDate, 'yyyy-MM-dd hh:mm');
       this.isShowMsgDetail = true;
     },
+
+     // 计算待办列表第一列的宽度
+    getFirstColumnWidth: function () {
+      if (this.needHandelList) {
+        for (var i = 0; i < this.needHandelList.length; i++) {
+          if (this.needHandelList[i].isGreenWay == '1') {
+            return '90';
+          }
+        }
+      }
+      return '65';
+    }
   },
   mounted: function () {
     var ts = this;

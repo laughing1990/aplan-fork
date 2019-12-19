@@ -46,6 +46,7 @@ public class AeaHiApplyinst implements Serializable, FlowObject {
     private java.util.Date smsSendTime; // (最新出件时间)
     private String rootOrgId;//根组织ID
     private String isTemporarySubmit; //是否临时提交  0否  1是
+    private String parentApplyinstId;//父申报实例ID【用于并联申报时，并行事项的单项申报与并联申报之间的关系】
 
 
     // 窗口受理时间
