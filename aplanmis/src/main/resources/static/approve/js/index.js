@@ -647,10 +647,11 @@ var vm = new Vue({
             }
           }, function (res) {
             vm.cacelAppDialogLoading = false;
-            if (vm.success) {
+            if (res.success) {
               delayRefreshWindow();
+              vm.$message('保存成功');
             } else {
-              vm.$message.error(res.message||'保存成功');
+              vm.$message.error(res.message||'保存失败');
             }
           }, function(){
             vm.cacelAppDialogLoading = false;
