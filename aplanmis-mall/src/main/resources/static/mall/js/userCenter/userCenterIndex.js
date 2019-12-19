@@ -329,7 +329,7 @@ var userCenter = (function () {
                     var _h = $('#my-pro-right_m').height();
                     console.log(_h)
                     if(_h < 1400){
-                        _h = $('.userCenterMenList').height()+250;
+                        _h = $('.userCenterMenList').height()+150;
                     }
                     _this.clientRightH = _h +"px";
                 },1000)
