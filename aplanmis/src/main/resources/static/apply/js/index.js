@@ -2237,10 +2237,12 @@ var vm = new Vue({
             _that.parallelItems = [];
             _that.coreItems = [];
             _that.itemStatusFlag = false;
+            _that.itemverMatList = [];
             _that.stateList = data.content.questionStates;
             // _that.model.matsTableData = _that.unique(data.content.stateMats,'mats');
             _that.popStateList = [];
-            _that.model.matsTableData.map(function(item,index){
+            for (var i = 0; i < data.content.stateMats.length; i++) { // 清空情形下所对应材料
+              var item = data.content.stateMats[i];
               if(item){
                 _that.matIds.push(item.matId);
                 if(item._parStateId=='undefined'||item._parStateId==undefined){
@@ -2251,14 +2253,44 @@ var vm = new Vue({
                     item._parStateId.push(_parentId);
                   }
                 }
+                if(item.matChild=='undefined'||item.matChild==undefined){
+                  Vue.set(item,'matChild',[]);
+                }
+                if(item.certChild=='undefined'||item.certChild==undefined){
+                  Vue.set(item,'certChild',[]);
+                }
+                if(item.matinstId=='undefined'||item.matinstId==undefined){
+                  Vue.set(item,'matinstId','');
+                }
+                if(item.getPaper=='undefined'||item.getPaper==undefined){
+                  Vue.set(item,'getPaper','');
+                }
+                if(item.getCopy=='undefined'||item.getCopy==undefined){
+                  Vue.set(item,'getCopy','');
+                }
+                if(item.realPaperCount=='undefined'||item.realPaperCount==undefined){
+                  Vue.set(item,'realPaperCount',item.duePaperCount);
+                }
+                if(item.realCopyCount=='undefined'||item.realCopyCount==undefined){
+                  Vue.set(item,'realCopyCount',item.dueCopyCount);
+                }
                 if(item._itemVerIds=='undefined'||item._itemVerIds==undefined){
                   Vue.set(item,'_itemVerIds',['ROOT']);
+                }
+                if(item._itemVerMat=='undefined'||item._itemVerMat==undefined){
+                  Vue.set(item,'_itemVerMat',false);
                 }
                 if(_that.matCodes.indexOf(item.matCode)<0){
                   _that.matCodes.push(item.matCode);
                 }
+                if(item.itemVerId&&item.itemVerId!=''){
+                  item._itemVerMat = true;
+                  _that.itemverMatList.push(item);
+                  data.content.stateMats.splice(i, 1);
+                  i--
+                }
               }
-            });
+            }
             _that.getShareMatsList();
             _that.stateList = _that.sortByKey(_that.stateList,'sortNo');
             _that.getStageItems(stageId); // 获取事项列表
@@ -4857,14 +4889,43 @@ var vm = new Vue({
     // 并行事项单选事件
     coreItemsSelItem: function(selArr,row) {
       var flag = false, spliceIndex=0;
-      var _that = this;
+      var _that = this, itemAllVerIds=[];
+      var selItemVer = (this.parallelItems.length>0)?this.$refs.parallelItemsTable.selection:[]; // 所有选择的并联审批事项
+      var selCoreItemVer = (this.coreItems.length>0)?this.$refs.coreItemsTable.selection:[]; // 所有选择的并行审批事项
+      if(selCoreItemVer.length>0){
+        selCoreItemVer.map(function(item){
+          if(itemAllVerIds.indexOf(item.itemVerId)<0){
+            itemAllVerIds.push(item.itemVerId)
+          }
+        });
+      }
+      if(selItemVer.length>0){
+        selItemVer.map(function(item){
+          if(itemAllVerIds.indexOf(item.itemVerId)<0){
+            itemAllVerIds.push(item.itemVerId)
+          }
+        });
+      };
       if(selArr.length==0){
         flag=false;
         _that.showCoreItemsKey=[];
         var selStateIds = _that.getStatusListId();
         for (var i = 0; i < _that.model.matsTableData.length; i++) { // 清空情形下所对应材料
           var obj = _that.model.matsTableData[i];
-          if(obj && (obj._itemVerIds&&(obj._itemVerIds.indexOf(row.itemVerId)>-1))){ // 清空事项下材料
+          if(obj&&obj.itemVerId&&obj._itemVerMat){
+            var itemVerIdArr = obj.itemVerId.split(',');
+            var spliceFlag = true;
+            for(var j=0;j<itemVerIdArr.length;j++){
+              if(itemAllVerIds.indexOf(itemVerIdArr[j])>-1){
+                spliceFlag = false;
+                break;
+              }
+            }
+            if(spliceFlag){
+              _that.model.matsTableData.splice(i, 1);
+              i--
+            }
+          }else if(obj && (obj._itemVerIds&&(obj._itemVerIds.indexOf(row.itemVerId)>-1))){ // 清空事项下材料
             if(obj._itemVerIds.length==1&&(typeof obj._parStateId=='undefined'||obj._parStateId.length==0||(obj.parStateId&&selStateIds.indexOf(obj.parStateId)<0))){
               obj._itemVerIds = [];
               _that.model.matsTableData.splice(i, 1);
@@ -4916,7 +4977,20 @@ var vm = new Vue({
           if(obj._itemVerIds=='undefined'||obj._itemVerIds==undefined){
             Vue.set(obj, '_itemVerIds', []);
           }else {
-            if (obj._itemVerIds.indexOf(row.itemVerId) > -1) {
+            if(obj&&obj.itemVerId&&obj._itemVerMat){
+              var itemVerIdArr = obj.itemVerId.split(',');
+              var spliceFlag = true;
+              for(var j=0;j<itemVerIdArr.length;j++){
+                if(itemAllVerIds.indexOf(itemVerIdArr[j])>-1){
+                  spliceFlag = false;
+                  break;
+                }
+              }
+              if(spliceFlag){
+                _that.model.matsTableData.splice(i, 1);
+                i--
+              }
+            }else if (obj._itemVerIds.indexOf(row.itemVerId) > -1) {
               if (obj._itemVerIds.length == 1 && (typeof obj._parStateId == 'undefined' || obj._parStateId.length == 0 || (obj.parStateId&&selStateIds.indexOf(obj.parStateId)<0))) {
                 obj._itemVerIds = [];
                 _that.model.matsTableData.splice(i, 1);
@@ -4942,7 +5016,40 @@ var vm = new Vue({
       var params={
         itemVerId: row.implementItemVerId,
         parentId: row.parentId?row.parentId:'ROOT',
+      };
+      var rowMatList = [];
+      if(row&&_that.itemverMatList.length>0){
+        for (var i = 0; i < _that.itemverMatList.length; i++) { // 清空情形下所对应材料
+          var obj = _that.itemverMatList[i];
+          if(obj.itemVerId&&obj.itemVerId != ''){
+            var itemVerIdArr = obj.itemVerId.split(',');
+            if(obj._itemType=='undefined'||obj._itemType==undefined){
+              Vue.set(obj,'_itemType','');
+            }
+            if(flag=='coreItem'){
+              if(itemVerIdArr.indexOf(row.itemVerId)>-1){
+                if(obj.bindItemType == '1'){
+                  obj._itemType = 'coreItem'
+                }else {
+                  obj._itemType = 'coreItem,parallelItems'
+                }
+                rowMatList.push(obj);
+              }
+            }else {
+              if(itemVerIdArr.indexOf(row.itemVerId)>-1){
+                if(obj.bindItemType == '0'){
+                  obj._itemType = 'parallelItems'
+                }else {
+                  obj._itemType = 'coreItem,parallelItems'
+                }
+                rowMatList.push(obj);
+              }
+            }
+
+          }
+        }
       }
+      _that.model.matsTableData=_that.unique(_that.model.matsTableData.concat(rowMatList),'mats');
       if(!row.implementItemVerId){
         return false;
       }
@@ -5067,14 +5174,43 @@ var vm = new Vue({
     // 并行事项全选
     coreItemsSelAll: function(selArr){
       var _that = this;
-      var flag = true;
+      var flag = true, itemAllVerIds=[];
+      var selItemVer = (this.parallelItems.length>0)?this.$refs.parallelItemsTable.selection:[]; // 所有选择的并联审批事项
+      var selCoreItemVer = selArr; // 所有选择的并行审批事项
+      if(selCoreItemVer.length>0){
+        selCoreItemVer.map(function(item){
+          if(itemAllVerIds.indexOf(item.itemVerId)<0){
+            itemAllVerIds.push(item.itemVerId)
+          }
+        });
+      }
+      if(selItemVer.length>0){
+        selItemVer.map(function(item){
+          if(itemAllVerIds.indexOf(item.itemVerId)<0){
+            itemAllVerIds.push(item.itemVerId)
+          }
+        });
+      };
       _that.showCoreItemsKey=[];
       if(selArr.length==0){
         flag=false;
         var selStateIds = _that.getStatusListId();
         for (var i = 0; i < _that.model.matsTableData.length; i++) { // 清空情形下所对应材料
           var obj = _that.model.matsTableData[i];
-          if(obj&&obj._itemType){ // 清空事项下材料
+          if(obj&&obj.itemVerId&&obj._itemVerMat){
+            var itemVerIdArr = obj.itemVerId.split(',');
+            var spliceFlag = true;
+            for(var j=0;j<itemVerIdArr.length;j++){
+              if(itemAllVerIds.indexOf(itemVerIdArr[j])>-1){
+                spliceFlag = false;
+                break;
+              }
+            }
+            if(spliceFlag){
+              _that.model.matsTableData.splice(i, 1);
+              i--
+            }
+          }else if(obj&&obj._itemType){ // 清空事项下材料
             if(obj._itemType=='coreItem'){
               obj._itemVerIds = [];
               _that.model.matsTableData.splice(i, 1);
@@ -5125,7 +5261,23 @@ var vm = new Vue({
     // 并联事项单选事件
     parallelItemsSelItem: function(selArr,row,selflag){ // selflag 调用方式 autoGetSel手动触发
       var _that=this;
-      var flag = false;
+      var flag = false, itemAllVerIds=[];
+      var selItemVer = (this.parallelItems.length>0)?this.$refs.parallelItemsTable.selection:[]; // 所有选择的并联审批事项
+      var selCoreItemVer = (this.coreItems.length>0)?this.$refs.coreItemsTable.selection:[]; // 所有选择的并行审批事项
+      if(selCoreItemVer.length>0){
+        selCoreItemVer.map(function(item){
+          if(itemAllVerIds.indexOf(item.itemVerId)<0){
+            itemAllVerIds.push(item.itemVerId)
+          }
+        });
+      }
+      if(selItemVer.length>0){
+        selItemVer.map(function(item){
+          if(itemAllVerIds.indexOf(item.itemVerId)<0){
+            itemAllVerIds.push(item.itemVerId)
+          }
+        });
+      }
       if(selflag!='autoGetSel'&&_that.isSelItem=='0'){
         alertMsg('', '该阶段不允许申报时取消勾选并联审批事项！', '关闭', 'warning', true);
         return false;
@@ -5141,7 +5293,20 @@ var vm = new Vue({
         var selStateIds = _that.getStatusListId();
         for (var i = 0; i < tabListLen; i++) {
           var obj = tabList[i];
-          if(obj && (obj._itemVerIds&&(obj._itemVerIds.indexOf(row.itemVerId)>-1))){ // 清空事项下材料
+          if(obj&&obj.itemVerId&&obj._itemVerMat){
+            var itemVerIdArr = obj.itemVerId.split(',');
+            var spliceFlag = true;
+            for(var j=0;j<itemVerIdArr.length;j++){
+              if(itemAllVerIds.indexOf(itemVerIdArr[j])>-1){
+                spliceFlag = false;
+                break;
+              }
+            }
+            if(spliceFlag){
+              _that.model.matsTableData.splice(i, 1);
+              i--
+            }
+          }else if(obj && (obj._itemVerIds&&(obj._itemVerIds.indexOf(row.itemVerId)>-1))){ // 清空事项下材料
             if(obj._itemVerIds.length==1&&(typeof obj._parStateId=='undefined'||obj._parStateId.length==0||(obj.parStateId&&selStateIds.indexOf(obj.parStateId)<0))){
               _that.removeParallelItemsMats.push(obj);
               obj._itemVerIds = [];
@@ -5174,7 +5339,20 @@ var vm = new Vue({
           var selStateIds = _that.getStatusListId();
           for (var i = 0; i < _that.model.matsTableData.length; i++) { // 清空情形下所对应材料
             var obj = _that.model.matsTableData[i];
-            if(obj._itemVerIds=='undefined'||obj._itemVerIds==undefined){
+            if(obj&&obj.itemVerId&&obj._itemVerMat){
+              var itemVerIdArr = obj.itemVerId.split(',');
+              var spliceFlag = true;
+              for(var j=0;j<itemVerIdArr.length;j++){
+                if(itemAllVerIds.indexOf(itemVerIdArr[j])>-1){
+                  spliceFlag = false;
+                  break;
+                }
+              }
+              if(spliceFlag){
+                _that.model.matsTableData.splice(i, 1);
+                i--
+              }
+            }else if(obj._itemVerIds=='undefined'||obj._itemVerIds==undefined){
               Vue.set(obj, '_itemVerIds', []);
             }else {
               if (obj && (obj._itemVerIds.indexOf(row.itemVerId)>-1)) {
@@ -5276,7 +5454,23 @@ var vm = new Vue({
     // 并联事项全选事件
     parallelItemsSelAll: function(selArr,selflag){ // selflag 调用方式 autoGetSel手动触发
       var _that = this;
-      var flag = false;
+      var flag = false, itemAllVerIds=[];
+      var selItemVer = selArr; // 所有选择的并联审批事项
+      var selCoreItemVer = (this.coreItems.length>0)?this.$refs.coreItemsTable.selection:[]; // 所有选择的并行审批事项
+      if(selCoreItemVer.length>0){
+        selCoreItemVer.map(function(item){
+          if(itemAllVerIds.indexOf(item.itemVerId)<0){
+            itemAllVerIds.push(item.itemVerId)
+          }
+        });
+      }
+      if(selItemVer.length>0){
+        selItemVer.map(function(item){
+          if(itemAllVerIds.indexOf(item.itemVerId)<0){
+            itemAllVerIds.push(item.itemVerId)
+          }
+        });
+      }
       if(selflag!='autoGetSel'&&_that.isSelItem=='0'){
         alertMsg('', '该阶段不允许申报时取消勾选并联审批事项！', '关闭', 'warning', true);
         return false;
@@ -5292,7 +5486,20 @@ var vm = new Vue({
         var selStateIds = _that.getStatusListId();
         for(var i=0;i<tabListLen;i++){
           var obj = tabList[i];
-          if(obj&&obj._itemType) { // 清空事项下材料
+          if(obj&&obj.itemVerId&&obj._itemVerMat){
+            var itemVerIdArr = obj.itemVerId.split(',');
+            var spliceFlag = true;
+            for(var j=0;j<itemVerIdArr.length;j++){
+              if(itemAllVerIds.indexOf(itemVerIdArr[j])>-1){
+                spliceFlag = false;
+                break;
+              }
+            }
+            if(spliceFlag){
+              _that.model.matsTableData.splice(i, 1);
+              i--
+            }
+          }else if(obj&&obj._itemType) { // 清空事项下材料
             if (obj._itemType == "parallelItems") { // 清空事项下材料
               _that.removeParallelItemsMats.push(obj);
               _that.model.matsTableData.splice(i, 1);
@@ -5326,7 +5533,20 @@ var vm = new Vue({
                 var selStateIds = _that.getStatusListId();
                 for(var i=0;i<tabListLen;i++) {
                   var obj = tabList[i];
-                  if (obj && (obj._itemType == "parallelItems")) { // 清空事项下材料
+                  if(obj&&obj.itemVerId&&obj._itemVerMat){
+                    var itemVerIdArr = obj.itemVerId.split(',');
+                    var spliceFlag = true;
+                    for(var j=0;j<itemVerIdArr.length;j++){
+                      if(itemAllVerIds.indexOf(itemVerIdArr[j])>-1){
+                        spliceFlag = false;
+                        break;
+                      }
+                    }
+                    if(spliceFlag){
+                      _that.model.matsTableData.splice(i, 1);
+                      i--
+                    }
+                  }else if (obj && (obj._itemType == "parallelItems")) { // 清空事项下材料
                     if (obj._itemVerIds.length == 1 && (typeof obj._parStateId == 'undefined' || obj._parStateId.length == 0 || (obj.parStateId&&selStateIds.indexOf(obj.parStateId)<0))) {
                       _that.removeParallelItemsMats.push(obj);
                       _that.model.matsTableData.splice(i, 1);
@@ -5871,7 +6091,7 @@ var vm = new Vue({
     // 一张表单得到所有的表单信息
     getAllForms: function (stageId) {
       var vm = this;
-      
+
       request('', {
         url: ctx + 'rest/oneform/common/getListForm4StageOneForm',
         type: 'get',
@@ -5913,7 +6133,7 @@ var vm = new Vue({
       },function(){
         vm.$message.error('获取一张表单信息失败');
       })
-      
+
       // request('', {
       //   url: ctx + 'rest/stage/part/forms',
       //   type: 'get',
@@ -5935,7 +6155,7 @@ var vm = new Vue({
       // }, function () {
       //   vm.$message.error('获取一张表单信息失败');
       // });
-    
+
       function getHtml(data, index) {
         request('', {
           url: ctx + data.formUrl,
