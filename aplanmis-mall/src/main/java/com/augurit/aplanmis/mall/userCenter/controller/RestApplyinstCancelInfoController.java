@@ -4,13 +4,13 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
-import com.augurit.aplanmis.common.apply.ApplyinstCancelService;
 import com.augurit.aplanmis.common.apply.vo.ApplyinstCancelInfoVo;
 import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
-import com.augurit.aplanmis.common.domain.AeaParTheme;
-import com.augurit.aplanmis.common.domain.AeaParThemeVer;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.common.utils.SessionUtil;
+import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyinstCancelService;
+import com.augurit.aplanmis.mall.userCenter.service.RestFileService;
+import com.augurit.aplanmis.mall.userCenter.vo.CurrentLinkmansVo;
 import com.augurit.aplanmis.supermarket.linkmanInfo.service.AeaLinkmanInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -22,9 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("rest/apply/cancel")
@@ -36,6 +38,8 @@ public class RestApplyinstCancelInfoController {
     private RestApplyinstCancelService applyinstCancelService;
     @Autowired
     private AeaLinkmanInfoService aeaLinkmanInfoService;
+    @Autowired
+    private RestFileService restFileService;
 
 
     @GetMapping("check/{applyinstId}")
@@ -131,5 +135,27 @@ public class RestApplyinstCancelInfoController {
         }
     }
 
+    @GetMapping("/getAttFiles/{attId}")
+    @ApiOperation("撤回申报 --> 获取文件列表")
+    @ApiImplicitParams({@ApiImplicitParam(name = "attId", value = "附件ID", required = true, type = "string")})
+    public ResultForm getAttFiles(@PathVariable String attId) throws Exception {
+        if ("null".equalsIgnoreCase(attId) || "undefined".equalsIgnoreCase(attId) || StringUtils.isBlank(attId))
+            return new ContentResultForm<>(true, new ArrayList<>());
+        return new ContentResultForm<>(true, restFileService.getAttFiles(attId));
+    }
+
+    @GetMapping("/getCurrentLinkmans")
+    @ApiOperation("撤回申报 --> 获取当前用户的联系人列表")
+    public ResultForm getCurrentLinkmans(HttpServletRequest request) throws Exception {
+        LoginInfoVo loginVo = SessionUtil.getLoginInfo(request);
+        List<AeaLinkmanInfo> list=new ArrayList<>();
+        if(StringUtils.isNotBlank(loginVo.getUserId())){
+            AeaLinkmanInfo aeaLinkmanInfo = aeaLinkmanInfoService.getOneById(loginVo.getUserId());
+            list.add(aeaLinkmanInfo);
+        }else{
+            list = aeaLinkmanInfoService.getAeaLinkmanInfoByUnitInfoId(loginVo.getUnitId(), null);
+        }
+        return new ContentResultForm<>(true, list.size()>0?list.stream().map(CurrentLinkmansVo::format).collect(Collectors.toList()):new ArrayList<>());
+    }
 
 }
