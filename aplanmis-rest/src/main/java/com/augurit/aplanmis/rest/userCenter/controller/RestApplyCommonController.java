@@ -98,7 +98,11 @@ public class RestApplyCommonController {
         String smsId;
         //保存或修改领件人信息
         if (StringUtils.isBlank(smsInfoVo.getId())) {
-            AeaHiSmsInfo aeaHiSmsInfo = aeaHiSmsInfoService.createAeaHiSmsInfo(smsInfoVo.toSmsInfo());
+            AeaHiSmsInfo aeaHiSmsInfo=null;
+            if(StringUtils.isNotBlank(smsInfoVo.getApplyinstId())){
+                aeaHiSmsInfo =aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(smsInfoVo.getApplyinstId());
+            }
+            if(aeaHiSmsInfo==null) aeaHiSmsInfo = aeaHiSmsInfoService.createAeaHiSmsInfo(smsInfoVo.toSmsInfo());
             smsId = aeaHiSmsInfo.getId();
         } else {
             AeaHiSmsInfo aeaHiSmsInfo = aeaHiSmsInfoService.getAeaHiSmsInfoById(smsInfoVo.getId());

@@ -45,7 +45,7 @@ public class AeaHiApplyinstServiceImpl implements AeaHiApplyinstService {
     private ApplyinstCodeService applyinstCodeService;
 
     @Override
-    public AeaHiApplyinst createAeaHiApplyinst(String applySource, String applySubject, String linkmanInfoId, String isSeriesApprove, String branchOrgMap, String applyState,String isTemporarySubmit) throws Exception {
+    public AeaHiApplyinst createAeaHiApplyinst(String applySource, String applySubject, String linkmanInfoId, String isSeriesApprove, String branchOrgMap, String applyState,String isTemporarySubmit,String parentApplyinstId) throws Exception {
         AeaHiApplyinst aeaHiApplyinst = new AeaHiApplyinst();
 
         if (applySource == null)
@@ -79,14 +79,15 @@ public class AeaHiApplyinstServiceImpl implements AeaHiApplyinstService {
         aeaHiApplyinst.setCreateTime(new Date());
         aeaHiApplyinst.setRootOrgId(SecurityContext.getCurrentOrgId());
         aeaHiApplyinst.setIsTemporarySubmit(isTemporarySubmit);
+        aeaHiApplyinst.setParentApplyinstId(parentApplyinstId);
         aeaHiApplyinstMapper.insertAeaHiApplyinst(aeaHiApplyinst);
 
         return aeaHiApplyinst;
     }
 
     @Override
-    public AeaHiApplyinst createAeaHiApplyinstAndTriggerAeaLogApplyStateHist(String applySource, String applySubject, String linkmanInfoId, String isSeriesApprove, String branchOrgMap, String taskId, String appinstId, String applyState, String opuWindowId) throws Exception {
-        AeaHiApplyinst aeaHiApplyinst = this.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, isSeriesApprove, branchOrgMap, applyState,"0");
+    public AeaHiApplyinst createAeaHiApplyinstAndTriggerAeaLogApplyStateHist(String applySource, String applySubject, String linkmanInfoId, String isSeriesApprove, String branchOrgMap, String taskId, String appinstId, String applyState, String opuWindowId,String parentApplyinstId) throws Exception {
+        AeaHiApplyinst aeaHiApplyinst = this.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, isSeriesApprove, branchOrgMap, applyState,"0",parentApplyinstId);
         if (aeaHiApplyinst != null && StringUtils.isNotBlank(aeaHiApplyinst.getApplyinstState())) {
             aeaLogApplyStateHistService.insertTriggerAeaLogApplyStateHist(aeaHiApplyinst.getApplyinstId(), taskId, appinstId, null, applyState, opuWindowId);
         }

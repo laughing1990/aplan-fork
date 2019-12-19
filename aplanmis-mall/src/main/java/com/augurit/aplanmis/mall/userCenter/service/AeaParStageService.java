@@ -320,7 +320,7 @@ public class AeaParStageService {
                     }
                 }
             }else {
-                aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "0", branchOrgMap,ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"0");
+                aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "0", branchOrgMap,ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"0",null);
                 applyinstId = aeaHiApplyinst.getApplyinstId();//获取申报实例ID
                 appinstId = UUID.randomUUID().toString();//预先生成流程模板实例ID
                 //2、实例化并联实例
@@ -418,10 +418,13 @@ public class AeaParStageService {
             this.insertApplySubject(applySubject, applyinstId, projInfoIds, applyLinkmanId, linkmanInfoId, unitProjIds);
 
             //更新办件结果领取方式
-            AeaHiSmsInfo aeaSmsInfo=new AeaHiSmsInfo();
-            aeaSmsInfo.setId(smsInfoId);
-            aeaSmsInfo.setApplyinstId(applyinstId);
-            aeaHiSmsInfoService.updateAeaHiSmsInfo(aeaSmsInfo);
+            AeaHiSmsInfo aeaSmsInfo=aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(applyinstId);
+            if(aeaSmsInfo==null){
+                aeaSmsInfo=new AeaHiSmsInfo();
+                aeaSmsInfo.setId(smsInfoId);
+                aeaSmsInfo.setApplyinstId(applyinstId);
+                aeaHiSmsInfoService.updateAeaHiSmsInfo(aeaSmsInfo);
+            }
 
             appinstIds.add(bpmProcessInstance.getActStoAppinst().getAppinstId());
             procinstIds.add(bpmProcessInstance.getProcessInstance().getId());
@@ -456,7 +459,7 @@ public class AeaParStageService {
                 AeaHiApplyinst seriesApplyinst;
                 String itemApplyinstId=propulsionItemApplyinstIdMap.get(itemVerId);
                 if(StringUtils.isBlank(itemApplyinstId)){
-                    seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "1", branchOrgMap,ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"0");
+                    seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "1", branchOrgMap,ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"0",applyInstId);
                 }else{
                     seriesApplyinst=aeaHiApplyinstService.getAeaHiApplyinstById(itemApplyinstId);
                     seriesApplyinst.setIsTemporarySubmit("0");
@@ -518,10 +521,13 @@ public class AeaParStageService {
                 }
 
                 //更新办件结果领取方式
-                AeaHiSmsInfo seriesSms =aeaHiSmsInfoService.getAeaHiSmsInfoById(smsInfoId);
-                seriesSms.setId(UUID.randomUUID().toString());
-                seriesSms.setApplyinstId(seriesApplyinstId);
-                aeaHiSmsInfoService.createAeaHiSmsInfo(seriesSms);
+                AeaHiSmsInfo seriesSms=aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(seriesApplyinstId);
+                if(seriesSms==null){
+                    seriesSms =aeaHiSmsInfoService.getAeaHiSmsInfoById(smsInfoId);
+                    seriesSms.setId(UUID.randomUUID().toString());
+                    seriesSms.setApplyinstId(seriesApplyinstId);
+                    aeaHiSmsInfoService.createAeaHiSmsInfo(seriesSms);
+                }
 
                 //5、材料输入输出实例
                 restApplyCommonService.deleteMatUnderIteminst(aeaHiIteminstList);//如果之前有实例化，则删除

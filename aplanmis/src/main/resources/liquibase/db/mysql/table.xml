@@ -1447,4 +1447,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="201912191404" author="qinjp" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_applyinst`
+            ADD COLUMN `PARENT_APPLYINST_ID`  varchar(50) NULL COMMENT '父申报实例ID【用于并联申报时，并行事项的单项申报与并联申报之间的关系】';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

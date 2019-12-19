@@ -24,7 +24,7 @@ public interface AeaHiApplyinstService {
      * @return
      * @throws Exception
      */
-    public AeaHiApplyinst createAeaHiApplyinst(String applySource, String applySubject, String linkmanInfoId, String isSeriesApprove, String branchOrgMap, String applyState, String isTemporarySubmit) throws Exception;
+    public AeaHiApplyinst createAeaHiApplyinst(String applySource, String applySubject, String linkmanInfoId, String isSeriesApprove, String branchOrgMap, String applyState, String isTemporarySubmit,String parentApplyinstId) throws Exception;
 
     /**
      * 创建申请实例信息并保存状态变更记录
@@ -38,7 +38,7 @@ public interface AeaHiApplyinstService {
      * @return
      * @throws Exception
      */
-    AeaHiApplyinst createAeaHiApplyinstAndTriggerAeaLogApplyStateHist(String applySource, String applySubject, String linkmanInfoId, String isSeriesApprove, String branchOrgMap, String taskId, String appinstId, String applyState, String opuWindowId) throws Exception;
+    AeaHiApplyinst createAeaHiApplyinstAndTriggerAeaLogApplyStateHist(String applySource, String applySubject, String linkmanInfoId, String isSeriesApprove, String branchOrgMap, String taskId, String appinstId, String applyState, String opuWindowId,String parentApplyinstId) throws Exception;
 
 
     /**

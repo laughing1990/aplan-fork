@@ -264,7 +264,7 @@ public class AeaSeriesService {
             appinstId=aeaHiSeriesinst.getAppinstId();
             aeaHiIteminst=aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId).get(0);
         }else{
-            seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "1", null,ApplyState.RECEIVE_APPROVED_APPLY.getValue(),"0");//实例化串联申请实例
+            seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "1", null,ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"0",null);//实例化串联申请实例
             seriesApplyinstId = seriesApplyinst.getApplyinstId();//申报实例ID
             seriesApplyinst.setProjInfoId(projInfoIds[0]);
             seriesApplyDataVo.setApplyinstId(seriesApplyinstId);//回填申请实例ID

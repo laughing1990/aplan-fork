@@ -26,7 +26,8 @@
         IS_SMS_SEND isSmsSend,
         SMS_SEND_TIME smsSendTime,
         ROOT_ORG_ID rootOrgId,
-        IS_TEMPORARY_SUBMIT isTemporarySubmit
+        IS_TEMPORARY_SUBMIT isTemporarySubmit,
+        PARENT_APPLYINST_ID parentApplyinstId
     </sql>
     <sql id="allas_Columns">
         ${alias}.APPLYINST_ID  applyinstId,
@@ -50,7 +51,8 @@
         ${alias}.IS_SMS_SEND isSmsSend,
         ${alias}.SMS_SEND_TIME smsSendTime,
         ${alias}.ROOT_ORG_ID rootOrgId,
-        ${alias}.IS_TEMPORARY_SUBMIT isTemporarySubmit
+        ${alias}.IS_TEMPORARY_SUBMIT isTemporarySubmit,
+        ${alias}.PARENT_APPLYINST_ID parentApplyinstId
     </sql>
     <sql id="applyinstColumns">
         aha.APPLYINST_ID  applyinstId,
@@ -69,7 +71,8 @@
         aha.MODIFY_TIME  modifyTime,
         aha.LINKMAN_INFO_ID linkmanInfoId,
         aha.APPLY_SUBJECT applySubject,
-        aha.BRANCH_ORG branchOrg
+        aha.BRANCH_ORG branchOrg,
+        aha.PARENT_APPLYINST_ID parentApplyinstId
     </sql>
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaHiApplyinstById" resultType="AeaHiApplyinst">
@@ -176,6 +179,9 @@
             <if test="isTemporarySubmit!=null">
                 AND IS_TEMPORARY_SUBMIT=#{isTemporarySubmit}
             </if>
+            <if test="parentApplyinstId!=null">
+                AND PARENT_APPLYINST_ID=#{parentApplyinstId}
+            </if>
             AND IS_DELETED = '0'
         </where>
     </select>
@@ -228,10 +234,10 @@
     <insert id="insertAeaHiApplyinst" parameterType="AeaHiApplyinst">
         insert into AEA_HI_APPLYINST (APPLYINST_ID, APPLYINST_CODE, APPLYINST_SOURCE, QUEUE_NO, IS_SERIES_APPROVE,
                                       APPLYINST_MEMO, APPLYINST_STATE, ACCEPT_TIME,END_TIME, IS_DELETED, CREATER, CREATE_TIME, MODIFIER,
-                                      MODIFY_TIME, LINKMAN_INFO_ID, BRANCH_ORG, APPLY_SUBJECT, IS_SERVICE_COOPERATIVE,IS_SMS_SEND,SMS_SEND_TIME,ROOT_ORG_ID,IS_TEMPORARY_SUBMIT)
+                                      MODIFY_TIME, LINKMAN_INFO_ID, BRANCH_ORG, APPLY_SUBJECT, IS_SERVICE_COOPERATIVE,IS_SMS_SEND,SMS_SEND_TIME,ROOT_ORG_ID,IS_TEMPORARY_SUBMIT,PARENT_APPLYINST_ID)
         values (#{applyinstId}, #{applyinstCode}, #{applyinstSource}, #{queueNo}, #{isSeriesApprove}, #{applyinstMemo},
                 #{applyinstState}, #{acceptTime},#{endTime}, #{isDeleted}, #{creater}, #{createTime}, #{modifier}, #{modifyTime},
-                #{linkmanInfoId}, #{branchOrg}, #{applySubject}, #{isServiceCooperative},#{isSmsSend},#{smsSendTime},#{rootOrgId},#{isTemporarySubmit})
+                #{linkmanInfoId}, #{branchOrg}, #{applySubject}, #{isServiceCooperative},#{isSmsSend},#{smsSendTime},#{rootOrgId},#{isTemporarySubmit},#{parentApplyinstId})
     </insert>
     <!--6 修改实体对象 -->
     <update id="updateAeaHiApplyinst" parameterType="AeaHiApplyinst">
@@ -302,6 +308,9 @@
             </if>
             <if test="isTemporarySubmit != null">
                 IS_TEMPORARY_SUBMIT = #{isTemporarySubmit},
+            </if>
+            <if test="parentApplyinstId!=null">
+               PARENT_APPLYINST_ID=#{parentApplyinstId},
             </if>
         </set>
         where APPLYINST_ID = #{applyinstId}

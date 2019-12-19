@@ -228,15 +228,16 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
     @Override
     public Map<String, Object> getStringObjectMap(@RequestBody SmsInfoVo smsInfoVo, Map<String, Object> resultMap, AeaProjInfo aeaProjInfo) throws Exception {
         String smsId;//保存或修改领件人信息
+        AeaHiSmsInfo aeaHiSmsInfo=null;
+        if(StringUtils.isNotBlank(smsInfoVo.getApplyinstId())){
+            aeaHiSmsInfo=aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(smsInfoVo.getApplyinstId());
+        }
         if (StringUtils.isBlank(smsInfoVo.getId())) {
-            AeaHiSmsInfo aeaHiSmsInfo=null;
-            if(StringUtils.isNotBlank(smsInfoVo.getApplyinstId())){
-                aeaHiSmsInfo=aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(smsInfoVo.getApplyinstId());
-            }
             if(aeaHiSmsInfo==null) aeaHiSmsInfo = aeaHiSmsInfoService.createAeaHiSmsInfo(smsInfoVo.toSmsInfo());
             smsId = aeaHiSmsInfo.getId();
         } else {
-            AeaHiSmsInfo aeaHiSmsInfo = aeaHiSmsInfoService.getAeaHiSmsInfoById(smsInfoVo.getId());
+            if(aeaHiSmsInfo==null) aeaHiSmsInfo = aeaHiSmsInfoService.getAeaHiSmsInfoById(smsInfoVo.getId());
+            smsInfoVo.setApplyinstId(aeaHiSmsInfo.getApplyinstId());
             aeaHiSmsInfoService.updateAeaHiSmsInfo(smsInfoVo.merge(aeaHiSmsInfo));
             smsId = smsInfoVo.getId();
         }
@@ -411,10 +412,11 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
         if(propulsionItemVerIds==null||propulsionItemVerIds.size()==0) return;
         List<String> unitProjIds=(List<String>)map.get("unitProjIds");
         String unitInfoId=(String) map.get("unitInfoId");
+        String parentApplyinstId=(String) map.get("applyinstId");//并联的申报实例ID
         if(propulsionItemApplyinstIdVos==null||propulsionItemApplyinstIdVos.size()==0){//第一次暂存并行
             //实例化申报实例，事项实例及其情形
             for (String itemVerId:propulsionItemVerIds){
-                AeaHiSeriesinst seriesApplyinstIdVo=saveSeriesApplyinstAndStateinst(itemVerId,propulsionItemStateIds,propulsionItemApplyinstIdVos,smsInfoVo,unitProjIds,unitInfoId);
+                AeaHiSeriesinst seriesApplyinstIdVo=saveSeriesApplyinstAndStateinst(itemVerId,propulsionItemStateIds,propulsionItemApplyinstIdVos,smsInfoVo,parentApplyinstId,unitProjIds,unitInfoId);
                 saveUnitProjApplyinst(seriesApplyinstIdVo.getApplyinstId(),unitProjIds,unitInfoId,smsInfoVo.getProjInfoId(),smsInfoVo.getLinkmanInfoId());
             }
         }else{
@@ -429,7 +431,7 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
                         aeaHiItemStateinstService.batchInsertAeaHiItemStateinst(applyinstId, seriesinstId, null, stateIds.toArray(new String[stateIds.size()]), SecurityContext.getCurrentUserName());
                     }
                 }else{
-                    AeaHiSeriesinst seriesApplyinstIdVo=saveSeriesApplyinstAndStateinst(itemVerId,propulsionItemStateIds,propulsionItemApplyinstIdVos,smsInfoVo,unitProjIds,unitInfoId);
+                    AeaHiSeriesinst seriesApplyinstIdVo=saveSeriesApplyinstAndStateinst(itemVerId,propulsionItemStateIds,propulsionItemApplyinstIdVos,smsInfoVo,parentApplyinstId,unitProjIds,unitInfoId);
                     applyinstId=seriesApplyinstIdVo.getApplyinstId();
                 }
                 saveUnitProjApplyinst(applyinstId,unitProjIds,unitInfoId,smsInfoVo.getProjInfoId(),smsInfoVo.getLinkmanInfoId());
@@ -447,10 +449,10 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
         }
         return null;
     }
-
-    private AeaHiSeriesinst saveSeriesApplyinstAndStateinst(String itemVerId, List<PropulsionItemStateVo> propulsionItemStateIds, List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos,SmsInfoVo smsInfoVo,List<String> unitProjIds,String unitInfoId) throws Exception {
+     //并行事项申报
+    private AeaHiSeriesinst saveSeriesApplyinstAndStateinst(String itemVerId, List<PropulsionItemStateVo> propulsionItemStateIds, List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos,SmsInfoVo smsInfoVo,String parentApplyinstId,List<String> unitProjIds,String unitInfoId) throws Exception {
         PropulsionItemApplyinstIdVo propulsionItemApplyinstIdVo=new PropulsionItemApplyinstIdVo();
-        AeaHiApplyinst seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinst("net", smsInfoVo.getApplySubject(), smsInfoVo.getLinkmanInfoId(), "1", null, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), "1");//实例化串联申请实例
+        AeaHiApplyinst seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinst("net", smsInfoVo.getApplySubject(), smsInfoVo.getLinkmanInfoId(), "1", null, ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(), "1",parentApplyinstId);//实例化串联申请实例
         String seriesApplyinstId = seriesApplyinst.getApplyinstId();//申报实例ID
         seriesApplyinst.setProjInfoId(smsInfoVo.getProjInfoId());
         String appinstId = UUID.randomUUID().toString();//预先生成流程模板实例ID
