@@ -979,7 +979,7 @@
                             <el-radio-group v-model="item.selectAnswerId">
                               <el-radio v-for="(itemAns,ind) in item.answerStates"
                                         :key="ind"
-                                        v-if="item.itemShowFlag||itemAns.isProcStartCond!='1'"
+                                        v-if="itemAns.isProcStartCond!='1'"
                                 @change="getCoreItemsStateMats(scope.row,item,itemAns,index,'parallelItem')"
                                 :value="itemAns.itemStateId" :label="itemAns.itemStateId" name="answer">
                                 {{itemAns.stateName}}</el-radio>
@@ -988,7 +988,7 @@
                           <template v-else>
                             <el-checkbox-group v-model="item.selectAnswerId" :required="item.mustAnswer==1">
                               <el-checkbox v-for="(itemAns,indAns) in item.answerStates"
-                                           v-if="item.itemShowFlag||itemAns.isProcStartCond!='1'"
+                                           v-if="itemAns.isProcStartCond!='1'"
                                            :key="indAns" :value="itemAns.itemStateId"
                                 @change="function(value){getCoreItemsStateMats(scope.row,item,itemAns,index,'parallelItem',value)}"
                                 :label="itemAns.itemStateId" name="answer">{{itemAns.stateName}}</el-checkbox>

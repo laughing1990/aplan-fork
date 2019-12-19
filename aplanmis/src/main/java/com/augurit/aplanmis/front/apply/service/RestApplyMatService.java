@@ -132,10 +132,10 @@ public class RestApplyMatService {
         // 阶段下或情形下的材料
         List<AeaItemMat> itemMatList;
         if ("ROOT".equalsIgnoreCase(parentId)) {
-            itemMatList = aeaItemMatService.getMatListByStageId(stageId, "1");
+            itemMatList = aeaItemMatMapper.getMatListByStageIdWithAllItemVerId(stageId, "1");
         } else {
             parentQuestionStateId = aeaParStateMapper.getAeaParStateById(parentId).getParentStateId();
-            itemMatList = aeaItemMatService.getMatListByStageStateIds(new String[]{parentId});
+            itemMatList = aeaItemMatMapper.getMatListByStageStateIdsWithAllItemVerId(new String[]{parentId});
         }
         // 转换材料数据
         vo.setStateMats(getMatVos(itemMatList));
@@ -207,13 +207,28 @@ public class RestApplyMatService {
 
     private List<ParallelApplyHandleVo.MatVo> getMatVos(List<AeaItemMat> itemMatList) {
         List<ParallelApplyHandleVo.MatVo> matVos = new ArrayList<>();
+        Map<String, ParallelApplyHandleVo.MatVo> alreadHandedMats = new HashMap<>(itemMatList.size());
         itemMatList.forEach(aeaItemMat -> {
-            //情形下材料
             addReplyIdentifier(aeaItemMat);
-            ParallelApplyHandleVo.MatVo matVo = new ParallelApplyHandleVo.MatVo();
-            BeanUtils.copyProperties(aeaItemMat, matVo);
-            matVos.add(matVo);
+            ParallelApplyHandleVo.MatVo matVo = alreadHandedMats.get(aeaItemMat.getMatId());
+            if (matVo == null) {
+                //情形下材料
+                matVo = new ParallelApplyHandleVo.MatVo();
+                BeanUtils.copyProperties(aeaItemMat, matVo);
+                // 材料绑定的是那种事项， 并联 or 并行？
+                matVo.setBindItemType(aeaItemMat.getIsOptionItem());
+                alreadHandedMats.put(matVo.getMatId(), matVo);
+            } else {
+                if (StringUtils.isNotBlank(matVo.getItemVerId()) && !matVo.getItemVerId().contains(aeaItemMat.getItemVerId())) {
+                    matVo.setItemVerId(matVo.getItemVerId() + "," + aeaItemMat.getItemVerId());
+                }
+                // 既绑定了并联事项，也绑定了并行事项
+                if (!aeaItemMat.getIsOptionItem().equals(matVo.getBindItemType())) {
+                    matVo.setBindItemType("2");
+                }
+            }
         });
+        matVos.addAll(alreadHandedMats.values());
         return matVos;
     }
 
@@ -275,13 +290,7 @@ public class RestApplyMatService {
     public ParallelApplyHandleVo listStageNoStateApplyStates(String stageId, List<String> itemVerIds) throws Exception {
         ParallelApplyHandleVo vo = new ParallelApplyHandleVo();
         List<AeaItemMat> itemMatList = aeaItemMatService.listMatListByStageId(stageId, itemVerIds);
-        List<ParallelApplyHandleVo.MatVo> stateMats = new ArrayList<>();
-        for (AeaItemMat itemMat : itemMatList) {
-            ParallelApplyHandleVo.MatVo matVo = new ParallelApplyHandleVo.MatVo();
-            BeanUtils.copyProperties(itemMat, matVo);
-            stateMats.add(matVo);
-        }
-        vo.setStateMats(stateMats);
+        vo.setStateMats(getMatVos(itemMatList));
         return vo;
 
     }

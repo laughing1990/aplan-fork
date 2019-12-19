@@ -220,6 +220,9 @@ public class ParallelApplyHandleVo {
 
         @ApiModelProperty(value = "材料绑定的事项版本id", notes = "证照材料需要这个字段去获取证照库的证照列表")
         private String itemVerId;
+
+        @ApiModelProperty(value = "材料绑定的是并行事项还是并联事项", notes = "0: 并联, 1: 并行, 2: 同时绑定")
+        private String bindItemType;
     }
 
 }
