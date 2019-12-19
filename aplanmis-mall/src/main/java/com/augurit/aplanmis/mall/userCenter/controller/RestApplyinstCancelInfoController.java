@@ -2,6 +2,7 @@ package com.augurit.aplanmis.mall.userCenter.controller;
 
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
+import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.apply.ApplyinstCancelService;
 import com.augurit.aplanmis.common.apply.vo.ApplyinstCancelInfoVo;
@@ -9,6 +10,7 @@ import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
 import com.augurit.aplanmis.common.domain.AeaParTheme;
 import com.augurit.aplanmis.common.domain.AeaParThemeVer;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.mall.userCenter.service.RestApplyinstCancelService;
 import com.augurit.aplanmis.supermarket.linkmanInfo.service.AeaLinkmanInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -31,7 +33,7 @@ public class RestApplyinstCancelInfoController {
     Logger logger= LoggerFactory.getLogger(RestApplyCommonController.class);
 
     @Autowired
-    private ApplyinstCancelService applyinstCancelService;
+    private RestApplyinstCancelService applyinstCancelService;
     @Autowired
     private AeaLinkmanInfoService aeaLinkmanInfoService;
 
@@ -113,18 +115,19 @@ public class RestApplyinstCancelInfoController {
         }
     }
 
-    @GetMapping("uploadAttFile")
+    @GetMapping("deleteAttFile/{detailId}")
     @ApiOperation(value = "撤回申报 --> 删除文件接口")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "文件ID", name = "detailId", required = true, dataType = "string")
     })
-        public ContentResultForm<Boolean> deleteAttFile(String detailId,HttpServletRequest request){
+        public ResultForm deleteAttFile(@PathVariable String detailId){
         try {
+
             boolean result=applyinstCancelService.deleteAttFile(detailId);
-            return new ContentResultForm<>(result,result,"");
+            return new ResultForm(result,"");
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
-            return new ContentResultForm(false,"","删除文件接口异常");
+            return new ResultForm(false,"删除文件接口异常");
         }
     }
 
