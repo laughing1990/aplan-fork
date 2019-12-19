@@ -394,22 +394,22 @@ $(function(){
             matName: {
                 required: true,
                 maxlength: 500,
-                remote: {
-                    url: ctx + '/aea/item/mat/checkMatName.do', //后台处理程序
-                    type: "post",               //数据发送方式
-                    dataType: "json",           //接受数据格式
-                    data: {   //要传递的数据
-                        matId: function () {
-                            return $("#aedit_item_inout_mat_form input[name='matId']").val();
-                        },
-                        matName: function () {
-                            return $("#aedit_item_inout_mat_form input[name='matName']").val();
-                        },
-                        isCommon: function () {
-                            return $("#aedit_item_inout_mat_form input[name='isCommon']").val();
-                        },
-                    }
-                }
+                // remote: {
+                //     url: ctx + '/aea/item/mat/checkMatName.do', //后台处理程序
+                //     type: "post",               //数据发送方式
+                //     dataType: "json",           //接受数据格式
+                //     data: {   //要传递的数据
+                //         matId: function () {
+                //             return $("#aedit_item_inout_mat_form input[name='matId']").val();
+                //         },
+                //         matName: function () {
+                //             return $("#aedit_item_inout_mat_form input[name='matName']").val();
+                //         },
+                //         isCommon: function () {
+                //             return $("#aedit_item_inout_mat_form input[name='isCommon']").val();
+                //         },
+                //     }
+                // }
             },
             matCode: {
                 required: true,
@@ -442,7 +442,7 @@ $(function(){
             matName: {
                 required: '<font color="red">材料名称必填！</font>',
                 maxlength: "最大长度不能超过500字符!",
-                remote: '材料名称已存在!'
+                // remote: '材料名称已存在!'
             },
             matCode:{
                 required: '<font color="red">材料编号必填！</font>',
