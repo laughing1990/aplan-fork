@@ -1,5 +1,14 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 
+<style>
+    .ztree li span.button.chk {
+        width: 13px;
+        height: 13px;
+        margin: 3px 3px 0 3px;
+        cursor: auto;
+    }
+</style>
+
 <div id="aedit_stdmat_ztree_modal" class="modal fade" tabindex="-1" role="dialog"
      aria-labelledby="aedit_stdmat_ztree_modal_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document" style="max-width: 850px;">
@@ -74,11 +83,19 @@
             },
             //用于捕获节点被点击的事件回调函数
             callback: {
+
+                beforeCheck: beforeStdmatCheck,
                 onCheck: onSelectStdmatCheck,
                 onClick: onClickSelectStdmatNode,
                 onDblClick: onDblClickSelectStdmatNode,
             }
         };
+
+    function beforeStdmatCheck(treeId, treeNode){
+
+        var treeObj = $.fn.zTree.getZTreeObj(treeId);
+        treeObj.checkAllNodes(false);
+    }
 
     /**
      * 选择事件
@@ -91,7 +108,6 @@
 
         var treeObj = $.fn.zTree.getZTreeObj(treeId);
         if (treeNode && treeNode.type == 'stdMat') {
-            treeObj.cancelSelectedNode();
             if (treeNode.checked) {
                 treeObj.selectNode(treeNode);
             }else{
