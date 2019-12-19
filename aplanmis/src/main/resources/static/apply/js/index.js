@@ -2243,56 +2243,6 @@ var vm = new Vue({
             _that.stateList = data.content.questionStates;
             // _that.model.matsTableData = _that.unique(data.content.stateMats,'mats');
             _that.popStateList = [];
-            for (var i = 0; i < data.content.stateMats.length; i++) { // 清空情形下所对应材料
-              var item = data.content.stateMats[i];
-              if(item){
-                _that.matIds.push(item.matId);
-                if(item._parStateId=='undefined'||item._parStateId==undefined){
-                  Vue.set(item, '_parStateId', [_parentId]);
-                }else {
-                  var parInd = item._parStateId.indexOf(_parentId)
-                  if(parInd==-1){
-                    item._parStateId.push(_parentId);
-                  }
-                }
-                if(item.matChild=='undefined'||item.matChild==undefined){
-                  Vue.set(item,'matChild',[]);
-                }
-                if(item.certChild=='undefined'||item.certChild==undefined){
-                  Vue.set(item,'certChild',[]);
-                }
-                if(item.matinstId=='undefined'||item.matinstId==undefined){
-                  Vue.set(item,'matinstId','');
-                }
-                if(item.getPaper=='undefined'||item.getPaper==undefined){
-                  Vue.set(item,'getPaper','');
-                }
-                if(item.getCopy=='undefined'||item.getCopy==undefined){
-                  Vue.set(item,'getCopy','');
-                }
-                if(item.realPaperCount=='undefined'||item.realPaperCount==undefined){
-                  Vue.set(item,'realPaperCount',item.duePaperCount);
-                }
-                if(item.realCopyCount=='undefined'||item.realCopyCount==undefined){
-                  Vue.set(item,'realCopyCount',item.dueCopyCount);
-                }
-                if(item._itemVerIds=='undefined'||item._itemVerIds==undefined){
-                  Vue.set(item,'_itemVerIds',['ROOT']);
-                }
-                if(item._itemVerMat=='undefined'||item._itemVerMat==undefined){
-                  Vue.set(item,'_itemVerMat',false);
-                }
-                if(_that.matCodes.indexOf(item.matCode)<0){
-                  _that.matCodes.push(item.matCode);
-                }
-                if(item.itemVerId&&item.itemVerId!=''){
-                  item._itemVerMat = true;
-                  _that.itemverMatList.push(item);
-                  data.content.stateMats.splice(i, 1);
-                  i--
-                }
-              }
-            }
             _that.getShareMatsList();
             _that.stateList = _that.sortByKey(_that.stateList,'sortNo');
             _that.getStageItems(stageId); // 获取事项列表
@@ -2509,6 +2459,56 @@ var vm = new Vue({
               });
             }
           });
+          for (var i = 0; i < data.content.stateMats.length; i++) { // 清空情形下所对应材料
+            var item = data.content.stateMats[i];
+            if(item){
+              _that.matIds.push(item.matId);
+              if(item._parStateId=='undefined'||item._parStateId==undefined){
+                Vue.set(item, '_parStateId', [_parentId]);
+              }else {
+                var parInd = item._parStateId.indexOf(_parentId)
+                if(parInd==-1){
+                  item._parStateId.push(_parentId);
+                }
+              }
+              if(item.matChild=='undefined'||item.matChild==undefined){
+                Vue.set(item,'matChild',[]);
+              }
+              if(item.certChild=='undefined'||item.certChild==undefined){
+                Vue.set(item,'certChild',[]);
+              }
+              if(item.matinstId=='undefined'||item.matinstId==undefined){
+                Vue.set(item,'matinstId','');
+              }
+              if(item.getPaper=='undefined'||item.getPaper==undefined){
+                Vue.set(item,'getPaper','');
+              }
+              if(item.getCopy=='undefined'||item.getCopy==undefined){
+                Vue.set(item,'getCopy','');
+              }
+              if(item.realPaperCount=='undefined'||item.realPaperCount==undefined){
+                Vue.set(item,'realPaperCount',item.duePaperCount);
+              }
+              if(item.realCopyCount=='undefined'||item.realCopyCount==undefined){
+                Vue.set(item,'realCopyCount',item.dueCopyCount);
+              }
+              if(item._itemVerIds=='undefined'||item._itemVerIds==undefined){
+                Vue.set(item,'_itemVerIds',['ROOT']);
+              }
+              if(item._itemVerMat=='undefined'||item._itemVerMat==undefined){
+                Vue.set(item,'_itemVerMat',false);
+              }
+              if(_that.matCodes.indexOf(item.matCode)<0){
+                _that.matCodes.push(item.matCode);
+              }
+              if(item.itemVerId&&item.itemVerId!=''){
+                item._itemVerMat = true;
+                _that.itemverMatList.push(item);
+                data.content.stateMats.splice(i, 1);
+                i--
+              }
+            }
+          }
           _that.coreItems= _that.unique(_that.coreItems.concat(stateOptionItems),'stage');
           _that.parallelItems= _that.unique(_that.parallelItems.concat(stateParallelItems),'stage');
           _that.model.matsTableData= _that.unique(_that.model.matsTableData.concat(data.content.stateMats),'mats');
@@ -6257,7 +6257,7 @@ var vm = new Vue({
       } else {
         vm.oneFormCallback();
       }
-      
+
       // vm.$nextTick(function(){
       //   vm.allFormInfoList.forEach(function(u, index){
       //     if (u.smartForm){
