@@ -1674,21 +1674,23 @@ var module1 = new Vue({
       // 判断单位必填是否已填
       var jiansheUnitFormEleLen = _that.jiansheFrom.length;
       var jiansheUnitFlag = true;
-      for (var i = 0; i < jiansheUnitFormEleLen; i++) {
-        var formRef = 'jianshe_' + i;
-        var validFun;
-        if ((typeof (_that.$refs[formRef].validate)) == 'function') {
-          validFun = _that.$refs[formRef].validate
-        } else {
-          validFun = _that.$refs[formRef][0].validate
-        }
-        validFun(function (valid) {
-          if (!valid) {
-            jiansheUnitFlag = false;
-            perUnitMsg = "请完善申办主体建设单位信息"
-            return false;
+      if(_that.applyObjectInfo.role==2){
+        for (var i = 0; i < jiansheUnitFormEleLen; i++) {
+          var formRef = 'jianshe_' + i;
+          var validFun;
+          if ((typeof (_that.$refs[formRef].validate)) == 'function') {
+            validFun = _that.$refs[formRef].validate
+          } else {
+            validFun = _that.$refs[formRef][0].validate
           }
-        });
+          validFun(function (valid) {
+            if (!valid) {
+              jiansheUnitFlag = false;
+              perUnitMsg = "请完善申办主体建设单位信息"
+              return false;
+            }
+          });
+        }
       }
       _that.projInfoDetail.projName = _that.projInfoDetail.projName?_that.projInfoDetail.projName.trim():'';
       _that.projInfoDetail.localCode = _that.projInfoDetail.localCode?_that.projInfoDetail.localCode.trim():'';
