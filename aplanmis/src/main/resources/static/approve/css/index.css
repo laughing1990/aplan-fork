@@ -2099,6 +2099,10 @@ input[type="number"] {
     width: 60px;
 }
 
+.td-bg-grey.w8 {
+    width: 90px;
+}
+
 .spe-table-file-u {
     height: 25px;
     line-height: 25px;

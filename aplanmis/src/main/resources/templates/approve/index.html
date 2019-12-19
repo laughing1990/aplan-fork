@@ -597,127 +597,108 @@
             <div>
               <div class="spe-item-uboxs">
                 <div class="spe-item-u" v-for="(item,index) in cancelAppDetailList">
-                  <div class="top-time-text-box c-f" :class="{'is-blue': item.correctState==6}">
+                  <div class="top-time-text-box c-f" :class="{'is-blue': item.cancelState==0||item.cancelState==1}">
                     <div class="ttt-f"></div>
                     <div class="ttt-s">
-                      第{{getChineseIndex(index,cancelAppDetailList.length)}}次发起（{{item.correctState==6?'待确认':'已完成'}}）
+                      第{{getChineseIndex(index,cancelAppDetailList.length)}}次发起（{{item.cancelState==0||item.cancelState==1?'未完成':'已完成'}}）
                     </div>
                     <div class="ttt-t"></div>
                   </div>
                   <table class="spe-info-table">
-                    <div class="table-section-title">基本信息</div>
+                    <div class="table-section-title">业主信息</div>
                     <tr>
-                      <td class="td-bg-grey">申请流水号</td>
-                      <td>{{item.applyinstCode}}</td>
-                      <td class="td-bg-grey">项目/工程编号</td>
-                      <td>{{item.applyinstCode}}</td>
-                      <td class="td-bg-grey">项目/工程名称</td>
-                      <td>{{item.projInfoName}}</td>
-                    </tr>
-                    <tr>
-                      <td class="td-bg-grey">业主单位</td>
-                      <td>{{item.owner}}</td>
                       <td class="td-bg-grey">联系人</td>
-                      <td>{{item.linkman}}</td>
-                      <td class="td-bg-grey">联系电话</td>
-                      <td>{{item.linkmanPhone}}</td>
+                      <td>{{item.applyUserName}}</td>
+                      <td class="td-bg-grey">联系人电话</td>
+                      <td>{{item.applyUserPhone}}</td>
+                      <td class="td-bg-grey">联系人证件号码</td>
+                      <td>{{item.applyUserIdnumber}}</td>
                     </tr>
                     <tr>
-                      <td class="td-bg-grey">事项名称</td>
-                      <td colspan="3">{{item.iteminstName}}</td>
-                      <td class="td-bg-grey">实施主体</td>
-                      <td>{{item.approveOrgName}}</td>
+                      <td class="td-bg-grey">撤件原因</td>
+                      <td colspan="5">
+                        {{item.applyReason}}
+                      </td>
                     </tr>
                     <tr>
-                      <td class="td-bg-grey">补正发起日期</td>
-                      <td>{{formatDateStr(item.createTime, 'yyyy-MM-dd')}}</td>
-                      <td class="td-bg-grey">补正截止日期</td>
-                      <td>{{formatDateStr(item.correctDueTime, 'yyyy-MM-dd')}}</td>
-                      <td class="td-bg-grey">办结时限</td>
-                      <td>{{item.correctDueDays}}（工作日）</td>
+                      <td class="td-bg-grey">附件</td>
+                      <td colspan="5">
+                        <template v-if="item.bscAttFileAndDirs&&item.bscAttFileAndDirs.length">
+                          <div class="spe-table-file-u" v-for="file in item.bscAttFileAndDirs">
+                            <i class="ag" v-html="getIconText(file.fileType)"
+                               :style="{color:getIconColor(file.fileType)}"></i>
+                            {{file.fileName}}
+                            <i class="ag ag-ope-btn ag-search" title="预览" @click="filePreview(file)"></i>
+                            <i class="ag ag-ope-btn ag-download" title="下载" @click="downOneFile(file)"></i>
+                          </div>
+                        </template>
+                        <div v-else class="non-file-text">无</div>
+                      </td>
                     </tr>
                   </table>
+                  
                   <table class="spe-info-table">
-                    <div class="table-section-title">补正材料列表</div>
+                    <div class="table-section-title">受理信息</div>
                     <tr>
-                      <td class="td-bg-grey w1">序号</td>
-                      <td class="td-bg-grey w2">材料名称</td>
-                      <td class="td-bg-grey w3">类型</td>
-                      <td class="td-bg-grey w4">补正份数</td>
-                      <td class="td-bg-grey w5">已收份数</td>
-                      <td class="td-bg-grey w6">补正意见</td>
-                      <td class="td-bg-grey w7">操作</td>
-                    </tr>
-                    <tr v-for="(uu, index2) in item.bzMatList">
-                      <template v-if="uu.colspan&&uu.rowspan">
-                        <td :colspan="uu.colspan" :rowspan="uu.rowspan" align="center">{{uu.uIndex+1}}</td>
-                        <td :colspan="uu.colspan" :rowspan="uu.rowspan">{{uu.matinstName}}</td>
-                      </template>
-                      <td>{{uu.rowType==1?'原件':uu.rowType==2?'复印件':'电子件'}}</td>
-                      <td>{{uu.rowType==1?uu.paperCount:(uu.rowType==2?uu.copyCount:'-')}}</td>
-                      <td>{{uu.rowType==1?uu.realPaperCount:(uu.rowType==2?uu.realCopyCount:uu.attCount)}}</td>
-                      <td>
-                        {{uu.rowType==1?uu.paperDueIninstOpinion:(uu.rowType==2?uu.copyDueIninstOpinion:uu.attDueIninstOpinion)}}
+                      <td class="td-bg-grey w8">受理人</td>
+                      <td colspan="6">
+                        {{item.handleUserName}}
                       </td>
-                      <td>
-                        <template v-if="uu.rowType==3&&uu.attFiles&&uu.attFiles.length">
-                          <el-popover
-                              placement="left"
-                              width="600"
-                              trigger="hover">
-                            <el-table :data="uu.attFiles" border stripe style="width:100%">
-                              <el-table-column width="50" label="序号" type="index"></el-table-column>
-                              <el-table-column prop="fileName" label="文件名称">
-                                <template slot-scope="scope">
-                                  <i class="ag" v-html="getIconText(scope.row.fileType)"
-                                     :style="{color:getIconColor(scope.row.fileType)}"></i>
-                                  {{scope.row.fileName}}
-                                </template>
-                              </el-table-column>
-                              <el-table-column width="100" property="address" label="操作">
-                                <template slot-scope="scope">
-                                  <el-button type="text" @click="filePreview(scope.row)">预览</el-button>
-                                  <el-button type="text" @click="downOneFile(scope.row)">下载</el-button>
-                                </template>
-                              </el-table-column>
-                            </el-table>
-                            <el-button slot="reference" type="text" style="padding:0">查看</el-button>
-                          </el-popover>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey w8">意见</td>
+                      <td colspan="6">
+                        <template v-if="item.isOnlyRead==1">{{item.handleOpinion}}</template>
+                        <template v-else>
+                          <el-input type="textarea" v-model="ckHandleOpinion" :rows="3" placeholder="请输入意见"></el-input>
+                          <div style="margin-top:10px">
+                            <el-button type="primary" size="medium" @click="ckHanderCancel(1, item)">同意</el-button>
+                            <el-button size="medium" @click="ckHanderCancel(3, item)">不同意</el-button>
+                          </div>
                         </template>
                       </td>
                     </tr>
-                    <tr>
-                      <td class="td-bg-grey w1">备注</td>
-                      <td colspan="6">{{item.correctMemo}}</td>
-                    </tr>
                   </table>
-                  <table class="spe-info-table">
-                    <div class="table-section-title">经办信息</div>
-                    <tr>
-                      <td class="td-bg-grey" colspan="1">补正发起人</td>
-                      <td colspan="5">{{item.createrName}}</td>
-                    </tr>
-                    <tr>
-                      <td class="td-bg-grey">经办人</td>
-                      <td>{{item.opsUserName}}</td>
-                      <td class="td-bg-grey">经办日期</td>
-                      <td>{{formatDateStr(item.opsTime, 'yyyy-MM-dd')}}</td>
-                      <td class="td-bg-grey">补正结束人</td>
-                      <td>{{item.correctUserName}}</td>
-                    </tr>
-                    <tr>
-                      <td class="td-bg-grey">补正结束日期</td>
-                      <td>{{formatDateStr(item.correctEndTime, 'yyyy-MM-dd')}}</td>
-                      <td class="td-bg-grey">打印人</td>
-                      <td>{{item.printUserName}}</td>
-                      <td class="td-bg-grey">打印日期</td>
-                      <td>{{formatDateStr(item.printTime, 'yyyy-MM-dd')}}</td>
-                    </tr>
-                    <tr>
-                      <td class="td-bg-grey" colspan="1">补正意见</td>
-                      <td colspan="5">{{item.correctDesc}}</td>
-                    </tr>
+                  <table class="spe-info-table" v-if="item.cancelState!=0">
+                    <div class="table-section-title">部门意见</div>
                   </table>
+                  <el-table border :data="item.aeaHiItemCancels" v-if="item.aeaHiItemCancels&&item.aeaHiItemCancels.length">
+                    <el-table-column label="部门" property="approvalOrgName"></el-table-column>
+                    <el-table-column label="事项名称" property="iteminstName"></el-table-column>
+                    <el-table-column label="部门意见" property="approvalOpinion"></el-table-column>
+                    <el-table-column label="状态" property="cancelState">
+                      <template slot-scope="scope">
+                        {{changeCancelState(scope.row.cancelState)}}
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                  <template v-if="isApprove==1">
+                    <div class="file-opt-btn" style="margin-top:10px">
+                      <el-upload ref="uploadCert2" class="upload-s-file" :action="ctx+'rest/certificate/certinst/att/upload'"
+                                 :show-file-list="false" :http-request="appCancelBmUploadFile" :file-list="fileList">
+                        <el-button slot="trigger" size="small" type="primary">上传</el-button>
+                      </el-upload>
+                    </div>
+                    <el-table :data="cancelAppFileList" border>
+                      <el-table-column prop="fileName" label="文件名"></el-table-column>
+                      <el-table-column prop="updateTime" width="160" label="上传时间">
+                        <template slot-scope="scope">
+                          {{scope.row.updateTime|formatDate}}
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="操作" align="center" width="150">
+                        <template slot-scope="scope">
+                          <!-- <el-button type="primary" size="mini" @click="filePreview(scope.row)">预览</el-button> -->
+                          <el-button type="primary" size="mini" @click="deleteCancelUserFile(scope.row.fileId)">删除</el-button>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                    <el-input style="margin-top:10px" type="textarea" v-model="bmHandleOpinion" :rows="3" placeholder="请输入意见"></el-input>
+                    <div style="margin-top:10px">
+                      <el-button type="primary" size="medium" @click="bmHanderCancel(2, item)">同意</el-button>
+                      <el-button size="medium" @click="bmHanderCancel(3, item)">不同意</el-button>
+                    </div>
+                  </template>
                 </div>
               </div>
             </div>
@@ -2307,7 +2288,7 @@
 <!--        <div class="part-title">业主信息</div>-->
         <el-row style="padding:10px 10px 0 0px;">
           <el-col :span="24">
-            <el-form-item label="联系人：" style="margin-bottom:0px">
+            <el-form-item prop="applyUserId" label="联系人：" style="margin-bottom:0px">
               <el-select placeholder="请选择" v-model="cancelAppForm.applyUserId" @change="cancelAppChooseLinkMan">
                 <el-option v-for="u in cancelAppLinkManList"
                            :label="u.linkmanName" :value="u.linkmanInfoId"></el-option>
@@ -2317,12 +2298,12 @@
         </el-row>
         <el-row style="padding:0px 10px 5px 0px;">
           <el-col :span="12">
-            <el-form-item label="联系电话：" style="margin-bottom:0px">
+            <el-form-item prop="linkmanMobilePhone" label="联系电话：" style="margin-bottom:0px">
               <el-input :disabled="true" placeholder="请填写联系电话" v-model="cancelAppForm.linkmanMobilePhone"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="证件号码：" style="margin-bottom:0px">
+            <el-form-item prop="linkmanCertNo" label="证件号码：" style="margin-bottom:0px">
               <el-input :disabled="true" placeholder="请填写证件号码" v-model="cancelAppForm.linkmanCertNo"></el-input>
             </el-form-item>
           </el-col>
@@ -2355,14 +2336,14 @@
         </el-row>
         <el-row style="padding:0px 10px 5px 0px;">
           <el-col :span="24">
-            <el-form-item porp="applyReason" label="撤件原因：" style="margin-bottom:0px">
+            <el-form-item prop="applyReason" label="撤件原因：" style="margin-bottom:0px">
               <el-input placeholder="请填写撤件原因" type="textarea" :rows="3" v-model="cancelAppForm.applyReason"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row style="padding:0px 10px 5px 0px;">
           <el-col :span="24">
-            <el-form-item porp="handleOpinion" label="窗口意见：" style="margin-bottom:0px">
+            <el-form-item prop="handleOpinion" label="窗口意见：" style="margin-bottom:0px">
               <el-input placeholder="请填写窗口意见" type="textarea" :rows="3" v-model="cancelAppForm.handleOpinion"></el-input>
             </el-form-item>
           </el-col>
