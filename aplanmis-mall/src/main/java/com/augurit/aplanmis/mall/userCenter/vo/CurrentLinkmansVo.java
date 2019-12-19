@@ -21,7 +21,7 @@ public class CurrentLinkmansVo {
     public static CurrentLinkmansVo format(AeaLinkmanInfo aeaLinkmanInfo){
         CurrentLinkmansVo currentLinkmansVo=new CurrentLinkmansVo();
         currentLinkmansVo.setApplyUserId(aeaLinkmanInfo.getLinkmanInfoId());
-        currentLinkmansVo.setApplyUserIdnumber(aeaLinkmanInfo.getLinkmanMobilePhone());
+        currentLinkmansVo.setApplyUserPhone(aeaLinkmanInfo.getLinkmanMobilePhone());
         currentLinkmansVo.setApplyUserIdnumber(aeaLinkmanInfo.getLinkmanCertNo());
         currentLinkmansVo.setApplyUserName(aeaLinkmanInfo.getLinkmanName());
         return currentLinkmansVo;
