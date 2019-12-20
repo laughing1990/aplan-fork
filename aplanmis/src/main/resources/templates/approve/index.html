@@ -600,7 +600,7 @@
                   <div class="top-time-text-box c-f" :class="{'is-blue': item.cancelState==0||item.cancelState==1}">
                     <div class="ttt-f"></div>
                     <div class="ttt-s">
-                      第{{getChineseIndex(index,cancelAppDetailList.length)}}次发起（{{item.cancelState==0||item.cancelState==1?'未完成':'已完成'}}）
+                      第{{getChineseIndex(index,cancelAppDetailList.length)}}次发起（{{changeCancelState(item.cancelState)}}）
                     </div>
                     <div class="ttt-t"></div>
                   </div>
