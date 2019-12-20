@@ -2,7 +2,6 @@ package com.augurit.aplanmis.front.approve.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.augurit.agcloud.bpm.common.mapper.ActStoTimeruleMapper;
 import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
 import com.augurit.agcloud.bsc.domain.BscAttLink;
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
@@ -18,6 +17,7 @@ import com.augurit.aplanmis.common.constants.CertinstSource;
 import com.augurit.aplanmis.common.constants.UnitType;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.service.applyinstCancel.AeaHiApplyinstCancelService;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutinstService;
@@ -125,11 +125,11 @@ public class ApproveService {
     @Autowired
     private AeaHiItemInoutinstMapper aeaHiItemInoutinstMapper;
     @Autowired
-    private ActStoTimeruleMapper actStoTimeruleMapper;
-    @Autowired
     private AeaToleranceTimeInstService aeaToleranceTimeInstService;
     @Autowired
     private BscAttDetailMapper bscAttDetailMapper;
+    @Autowired
+    private AeaHiApplyinstCancelService aeaHiApplyinstCancelService;
 
     public BpmApproveStateVo getApplyStylesAndState(String applyinstId, String taskId) throws Exception {
         BpmApproveStateVo bpmApproveStateVo = new BpmApproveStateVo();
@@ -142,6 +142,12 @@ public class ApproveService {
         bpmApproveStateVo.setApplyStyle(applyInst.getApplyinstSource());
         bpmApproveStateVo.setIsSeriesinst(applyInst.getIsSeriesApprove());
 
+        AeaHiApplyinstCancel aeaHiApplyinstCancel = new AeaHiApplyinstCancel();
+        aeaHiApplyinstCancel.setApplyinstId(applyinstId);
+        aeaHiApplyinstCancel.setRootOrgId(SecurityContext.getCurrentOrgId());
+        List<AeaHiApplyinstCancel> aeaHiApplyinstCancels = aeaHiApplyinstCancelService.listAeaHiApplyinstCancel(aeaHiApplyinstCancel);
+        if (aeaHiApplyinstCancels.size() > 0) bpmApproveStateVo.setIshasApplyinstCancel("1");
+
         List<AeaProjInfo> aeaProjInfos = aeaProjInfoService.findApplyProj(applyinstId);
         if (aeaProjInfos.size() > 0) {
             String projName = aeaProjInfos.stream().map(AeaProjInfo::getProjName).collect(Collectors.joining("、"));
@@ -153,7 +159,7 @@ public class ApproveService {
         }
         String isApprove = applyInst.getIsSeriesApprove();
         //2、审批状态
-        List<AeaHiIteminst> iteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId,"0");
+        List<AeaHiIteminst> iteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId, "0");
         if (iteminstList == null || iteminstList.size() == 0) {
             throw new RuntimeException("iteminstList is null");
         }
@@ -174,8 +180,8 @@ public class ApproveService {
                     }
                 }
 
-                AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(iteminst.getItemVerId(),SecurityContext.getCurrentOrgId());
-                if(aeaItemBasic!=null)
+                AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(iteminst.getItemVerId(), SecurityContext.getCurrentOrgId());
+                if (aeaItemBasic != null)
                     bpmApproveStateVo.setIsShowOneForm(aeaItemBasic.getUseOneForm());
                 bpmApproveStateVo.setItemVerId(iteminst.getItemVerId());
             }
@@ -474,11 +480,11 @@ public class ApproveService {
                         }
                     }
                 }
-                if(StringUtils.isNotBlank(temp.getTimeruleId()) && temp.getToleranceTime() != null && temp.getToleranceTime() > 0){
+                if (StringUtils.isNotBlank(temp.getTimeruleId()) && temp.getToleranceTime() != null && temp.getToleranceTime() > 0) {
                     AeaToleranceTimeInst query = new AeaToleranceTimeInst();
                     query.setIteminstId(temp.getIteminstId());
                     List<AeaToleranceTimeInst> aeaToleranceTimeInsts = aeaToleranceTimeInstService.listAeaToleranceTimeInst(query);
-                    if(aeaToleranceTimeInsts.size() > 0){
+                    if (aeaToleranceTimeInsts.size() > 0) {
                         temp.setToleranceTimelimitUnit(getTimeUnit(aeaToleranceTimeInsts.get(0).getTimeruleUnit()));
                         temp.setToleranceIsCompleted(aeaToleranceTimeInsts.get(0).getIsCompleted());
                     }
@@ -488,7 +494,7 @@ public class ApproveService {
         return aeaHiIteminsts;
     }
 
-    private String getTimeUnit(String timeruleUnit){
+    private String getTimeUnit(String timeruleUnit) {
         if ("WD".equalsIgnoreCase(timeruleUnit)) {
             return "工作日";
         } else if ("WH".equalsIgnoreCase(timeruleUnit)) {
@@ -1193,21 +1199,22 @@ public class ApproveService {
 
     /**
      * 办件容缺办结补正时限更新接口，
+     *
      * @param iteminstId
      * @param toleranceTime 值大于零表示延长时限，等于零表示终止计时
      * @throws Exception
      */
-    public void iteminstToleranceUpdate(String iteminstId,Double toleranceTime) throws Exception{
+    public void iteminstToleranceUpdate(String iteminstId, Double toleranceTime) throws Exception {
         AeaHiIteminst aeaHiIteminst = aeaHiIteminstMapper.getAeaHiIteminstById(iteminstId);
-        if(aeaHiIteminst != null && StringUtils.isNotBlank(aeaHiIteminst.getTimeruleId())) {
-            if(toleranceTime == 0){
+        if (aeaHiIteminst != null && StringUtils.isNotBlank(aeaHiIteminst.getTimeruleId())) {
+            if (toleranceTime == 0) {
                 //终止计时
                 aeaToleranceTimeInstService.completeAeaToleranceTimeinst(iteminstId);
-            }else{
+            } else {
                 //延长时限
                 Double limit = aeaHiIteminst.getToleranceTime();
                 limit += toleranceTime;
-                aeaHiIteminstService.updateAeaHiIteminstToleranceTime(iteminstId,limit,aeaHiIteminst.getTimeruleId());
+                aeaHiIteminstService.updateAeaHiIteminstToleranceTime(iteminstId, limit, aeaHiIteminst.getTimeruleId());
                 //更新实例
                 AeaToleranceTimeInst query = new AeaToleranceTimeInst();
                 query.setOrgId(SecurityContext.getCurrentOrgId());
@@ -1226,36 +1233,37 @@ public class ApproveService {
 
     /**
      * 一键下载申报材料
+     *
      * @param applyinstId 申报实例ID
      * @param response
      * @param request
      * @throws Exception
      */
     public void downloadAllApplyMatsByApplyinstId(String applyinstId, HttpServletResponse response, HttpServletRequest request) throws Exception {
-        if(StringUtils.isBlank(applyinstId))
+        if (StringUtils.isBlank(applyinstId))
             throw new RuntimeException("申报实例ID为空！");
 
-        List<MatinstVo> matinstVoList = this.getSeriesMatinstByIteminstId(null,applyinstId);
-        if(matinstVoList!=null&&matinstVoList.size()>0){
+        List<MatinstVo> matinstVoList = this.getSeriesMatinstByIteminstId(null, applyinstId);
+        if (matinstVoList != null && matinstVoList.size() > 0) {
             List<String> matinstIds = new ArrayList<>();
-            for(MatinstVo matinstVo:matinstVoList){
-                if(StringUtils.isNotBlank(matinstVo.getAttMatinstId()))
+            for (MatinstVo matinstVo : matinstVoList) {
+                if (StringUtils.isNotBlank(matinstVo.getAttMatinstId()))
                     matinstIds.add(matinstVo.getAttMatinstId());
             }
 
-            if(matinstIds.size()>0){
+            if (matinstIds.size() > 0) {
                 String[] matinstIdArray = new String[matinstIds.size()];
                 matinstIds.toArray(matinstIdArray);
 
                 List<BscAttFileAndDir> attFileList = bscAttDetailMapper.searchFileAndDirsSimple(null, SecurityContext.getCurrentOrgId(), "AEA_HI_ITEM_MATINST", "MATINST_ID", matinstIdArray);
 
-                if(attFileList!=null&&attFileList.size()>0){
+                if (attFileList != null && attFileList.size() > 0) {
                     List<String> detailIds = new ArrayList<>();
-                    for(BscAttFileAndDir fileAndDir:attFileList){
+                    for (BscAttFileAndDir fileAndDir : attFileList) {
                         detailIds.add(fileAndDir.getFileId());
                     }
 
-                    if(detailIds.size()>0) {
+                    if (detailIds.size() > 0) {
                         String[] detailIdArray = new String[matinstIds.size()];
                         detailIds.toArray(detailIdArray);
                         fileUtilsService.downloadAttachment(detailIdArray, response, request, false);
