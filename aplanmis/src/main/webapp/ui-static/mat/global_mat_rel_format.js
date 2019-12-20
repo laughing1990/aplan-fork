@@ -1,6 +1,6 @@
 function matNameFormatter(value, row, index, field) {
 
-    var name = value+'&nbsp;&nbsp;';
+    var name = value+'&nbsp;';
     var tag = "";
     if(row.isCommon=='1'){
         tag += '<span class="circleIcon blueColor">通用</span>';
@@ -23,6 +23,5 @@ function matNameFormatter(value, row, index, field) {
     if(row.attIsRequire=='1'){
         tag += '<span class="circleIcon blueColor">电需</span>';
     }
-    tag += '&nbsp;&nbsp;';
     return name + tag ;
 }
