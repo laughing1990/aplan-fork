@@ -16,6 +16,7 @@ import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaLogApplyStateHistService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ public class AeaHiApplyinstServiceImpl implements AeaHiApplyinstService {
     private ApplyinstCodeService applyinstCodeService;
 
     @Override
-    public AeaHiApplyinst createAeaHiApplyinst(String applySource, String applySubject, String linkmanInfoId, String isSeriesApprove, String branchOrgMap, String applyState,String isTemporarySubmit) throws Exception {
+    public AeaHiApplyinst createAeaHiApplyinst(String applySource, String applySubject, String linkmanInfoId, String isSeriesApprove, String branchOrgMap, String applyState,String isTemporarySubmit,String parentApplyinstId) throws Exception {
         AeaHiApplyinst aeaHiApplyinst = new AeaHiApplyinst();
 
         if (applySource == null)
@@ -79,14 +80,15 @@ public class AeaHiApplyinstServiceImpl implements AeaHiApplyinstService {
         aeaHiApplyinst.setCreateTime(new Date());
         aeaHiApplyinst.setRootOrgId(SecurityContext.getCurrentOrgId());
         aeaHiApplyinst.setIsTemporarySubmit(isTemporarySubmit);
+        aeaHiApplyinst.setParentApplyinstId(parentApplyinstId);
         aeaHiApplyinstMapper.insertAeaHiApplyinst(aeaHiApplyinst);
 
         return aeaHiApplyinst;
     }
 
     @Override
-    public AeaHiApplyinst createAeaHiApplyinstAndTriggerAeaLogApplyStateHist(String applySource, String applySubject, String linkmanInfoId, String isSeriesApprove, String branchOrgMap, String taskId, String appinstId, String applyState, String opuWindowId) throws Exception {
-        AeaHiApplyinst aeaHiApplyinst = this.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, isSeriesApprove, branchOrgMap, applyState,"0");
+    public AeaHiApplyinst createAeaHiApplyinstAndTriggerAeaLogApplyStateHist(String applySource, String applySubject, String linkmanInfoId, String isSeriesApprove, String branchOrgMap, String taskId, String appinstId, String applyState, String opuWindowId,String parentApplyinstId) throws Exception {
+        AeaHiApplyinst aeaHiApplyinst = this.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, isSeriesApprove, branchOrgMap, applyState,"0",parentApplyinstId);
         if (aeaHiApplyinst != null && StringUtils.isNotBlank(aeaHiApplyinst.getApplyinstState())) {
             aeaLogApplyStateHistService.insertTriggerAeaLogApplyStateHist(aeaHiApplyinst.getApplyinstId(), taskId, appinstId, null, applyState, opuWindowId);
         }
@@ -267,5 +269,11 @@ public class AeaHiApplyinstServiceImpl implements AeaHiApplyinstService {
     public List<AeaHiApplyinst> getAllApplyinstesByProjInfoId(String projInfoId, String rootOrgId) throws Exception {
         if (StringUtils.isBlank(projInfoId)) throw new Exception("项目ID为空！");
         return aeaHiApplyinstMapper.getAllApplyinstesByProjInfoId(projInfoId, rootOrgId);
+    }
+
+    @Override
+    public List<AeaHiApplyinst> getSeriesAeaHiApplyinstListByParentApplyinstId(String applyinstId,String isTemporarySubmit) throws Exception {
+        if (StringUtils.isBlank(applyinstId)) throw new Exception("申报实例ID为空！");
+        return aeaHiApplyinstMapper.getSeriesAeaHiApplyinstListByParentApplyinstId(applyinstId,isTemporarySubmit);
     }
 }

@@ -123,4 +123,12 @@ public interface AeaHiApplyinstMapper {
      * @return
      */
     List<AeaHiApplyinst> getAeaHiApplyinstByStageIdAndStatesIsParallel(@Param("stageId") String stageId, @Param("states") String[] states, @Param("startTime") String startTime, @Param("endTime") String endTime, @Param("rootOrgId") String currentOrgId, @Param("isParallel") String isParallel, @Param("source") String source);
+
+    /**
+     *
+     * 查询并联申报下的并行申报列表
+     * @param applyinstId 并联申报实例ID
+     * @return
+     */
+    List<AeaHiApplyinst> getSeriesAeaHiApplyinstListByParentApplyinstId(@Param("applyinstId") String applyinstId,@Param("isTemporarySubmit")String isTemporarySubmit);
 }

@@ -53,14 +53,14 @@ public class AeaItemInout implements Serializable {
      */
     private String aeaMatCertCode;
     private String keyword;
+
+    private String zcqy;
     private String isCommon;
+    private String isOfficialDoc;
+    private String attIsRequire;
+    private String paperIsRequire;
 
     private String formId;
-
-    /**
-     * 是否批文批复
-     */
-    private String isOfficialDoc;
 
     /**
      * 主题版本

@@ -119,11 +119,14 @@
                                 </select>
                             </div>
 
-                            <label class="col-2 col-form-label" style="padding-top: 8px;">是否批文批复<font color="red">*</font>:</label>
+                            <label class="col-2 col-form-label" style="text-align: right;">纸质材料类型:</label>
                             <div class="col-4">
-                                <select name="isOfficialDoc" class="form-control m-input">
-                                    <option value="0">否</option>
-                                    <option value="1">是</option>
+                                <select name="paperMatType" class="form-control m-input">
+                                    <option value="">请选择</option>
+                                    <option value="0">无</option>
+                                    <option value="1">A3</option>
+                                    <option value="2">A4</option>
+                                    <option value="3">A5</option>
                                 </select>
                             </div>
                         </div>
@@ -154,13 +157,13 @@
 
                         <div class="form-group m-form__group row">
                             <label class="col-2 col-form-label" style="padding-top: 8px;">是否通用材料<font color="red">*</font>:</label>
-                            <div class="col-4">
+                                <div class="col-4">
                                 <div class="m-radio-inline">
                                     <label class="m-radio">
-                                        <input type="radio" name="isCommon" value="1" checked>是<span></span>
+                                        <input type="radio" name="isCommon" value="1" checked onclick="return false;">通用<span></span>
                                     </label>
                                     <label class="m-radio">
-                                        <input type="radio" name="isCommon" value="0">否<span></span>
+                                        <input type="radio" name="isCommon" value="0" onclick="return false;">情形<span></span>
                                     </label>
                                 </div>
                             </div>
@@ -171,56 +174,58 @@
                             <div class="col-4">
                                 <div class="m-radio-inline">
                                     <label class="m-radio">
-                                        <input type="radio" name="zcqy" value="1" checked>是<span></span>
+                                        <input type="radio" name="zcqy" value="1" checked>支持<span></span>
                                     </label>
                                     <label class="m-radio">
-                                        <input type="radio" name="zcqy" value="0">否<span></span>
+                                        <input type="radio" name="zcqy" value="0">不支持<span></span>
                                     </label>
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group m-form__group row">
-                            <label class="col-2 col-form-label" style="text-align: right;">纸质是否必需:</label>
+                            <label class="col-2 col-form-label" style="text-align: right;padding-top: 8px;">
+                                纸质是否必需<font color="red">*</font>:
+                            </label>
                             <div class="col-4">
                                 <div class="m-radio-inline">
                                     <label class="m-radio">
-                                        <input type="radio" name="paperIsRequire" value="1">必须
-                                        <span for="inlineRadio1"></span>
+                                        <input type="radio" name="paperIsRequire" value="1">必须<span></span>
                                     </label>
                                     <label class="m-radio">
-                                        <input type="radio" name="paperIsRequire" value="0">非必须
-                                        <span for="inlineRadio0"></span>
+                                        <input type="radio" name="paperIsRequire" value="0" checked>非必须<span></span>
                                     </label>
                                 </div>
                             </div>
 
-                            <label class="col-2 col-form-label" style="text-align: right;">电子是否必需:</label>
+                            <label class="col-2 col-form-label" style="text-align: right;padding-top: 8px;">
+                                电子是否必需<font color="red">*</font>:
+                            </label>
                             <div class="col-4">
                                 <div class="m-radio-inline">
                                     <label class="m-radio">
-                                        <input type="radio" name="attIsRequire" value="1" >必须
-                                        <span for="inlineRadio2"></span>
+                                        <input type="radio" name="attIsRequire" value="1">必须<span></span>
                                     </label>
                                     <label class="m-radio">
-                                        <input type="radio" name="attIsRequire" value="0">非必须
-                                        <span for="inlineRadio3"></span>
+                                        <input type="radio" name="attIsRequire" value="0" checked>非必须<span></span>
                                     </label>
                                 </div>
-
                             </div>
                         </div>
 
                         <div class="form-group m-form__group row">
-                            <label class="col-2 col-form-label" style="text-align: right;">纸质材料类型:</label>
+                            <label class="col-2 col-form-label" style="text-align: right;padding-top: 8px;">
+                                是否批文批复<font color="red">*</font>:
+                            </label>
                             <div class="col-4">
-                                <select name="paperMatType" class="form-control m-input">
-                                    <option value="">请选择</option>
-                                    <option value="0">无</option>
-                                    <option value="1">A3</option>
-                                    <option value="2">A4</option>
-                                    <option value="3">A5</option>
-                                </select>
+                                <div class="m-radio-inline">
+                                    <label class="m-radio">
+                                        <input type="radio" name="isOfficialDoc" value="1">是&nbsp;&nbsp;&nbsp;&nbsp;<span></span>
+                                    </label>
+                                    <label class="m-radio">
+                                        <input type="radio" name="isOfficialDoc" value="0" checked>否<span></span>
+                                    </label>
+                                </div>
                             </div>
                             <div class="col-6"></div>
                         </div>

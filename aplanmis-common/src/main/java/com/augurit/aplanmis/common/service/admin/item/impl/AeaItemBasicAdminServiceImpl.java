@@ -55,7 +55,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -155,14 +155,17 @@ public class AeaItemBasicAdminServiceImpl implements AeaItemBasicAdminService {
 
     public static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    @Value("${spring.datasource.url}")
+   /* @Value("${spring.datasource.url}")
     private String jdbcUrl;
 
     @Value("${spring.datasource.username}")
     private String jdbcUserName;
 
     @Value("${spring.datasource.password}")
-    private String jdbcPwd;
+    private String jdbcPwd;*/
+
+    @Autowired
+    DataSourceProperties dataSourceProperties;
 
     @Autowired
     private ActTplAppMapper actTplAppMapper;
@@ -229,13 +232,13 @@ public class AeaItemBasicAdminServiceImpl implements AeaItemBasicAdminService {
         }
         try {
             AeaItemBasic oldBaisc = aeaItemBasicMapper.getAeaItemBasicById(aeaItemBasic.getItemBasicId());
-            if(oldBaisc != null ){
-                if((oldBaisc.getItemName() != null && aeaItemBasic.getItemName() != null &&!aeaItemBasic.getItemName().equals(oldBaisc.getItemName())) || (aeaItemBasic.getDueNum().intValue() != oldBaisc.getDueNum().intValue())){
+            if (oldBaisc != null) {
+                if ((oldBaisc.getItemName() != null && aeaItemBasic.getItemName() != null && !aeaItemBasic.getItemName().equals(oldBaisc.getItemName())) || (aeaItemBasic.getDueNum().intValue() != oldBaisc.getDueNum().intValue())) {
                     aeaParThemeVerAdminService.updateDiagramActivityName(aeaItemBasic);
                 }
             }
         } catch (Exception e) {
-            logger.error("",e);
+            logger.error("", e);
         }
         aeaItemBasic.setModifier(SecurityContext.getCurrentUserId());
         aeaItemBasic.setModifyTime(new Date());
@@ -560,7 +563,8 @@ public class AeaItemBasicAdminServiceImpl implements AeaItemBasicAdminService {
 
         List<ZtreeNode> allNodes = new ArrayList<>();
         if (StringUtils.isBlank(id)) {
-            MetaDbConn metaDbConn = metaDbConnMapper.getMetaDbConnByConInfo(jdbcUrl, jdbcUserName, jdbcPwd);
+//            MetaDbConn metaDbConn = metaDbConnMapper.getMetaDbConnByConInfo(jdbcUrl, jdbcUserName, jdbcPwd);
+            MetaDbConn metaDbConn = metaDbConnMapper.getMetaDbConnByConInfo(dataSourceProperties.getUrl(), dataSourceProperties.getUsername(), dataSourceProperties.getPassword());
             if (metaDbConn != null) {
                 // 获取表数据
                 List<MetaDbTable> tableList = metaDbTableMapper.listMetaDbTableByConnId(metaDbConn.getConnId());
@@ -612,7 +616,8 @@ public class AeaItemBasicAdminServiceImpl implements AeaItemBasicAdminService {
     @Override
     public List<ZtreeNode> gtreeTableColumnSyncZTree() {
         List<ZtreeNode> allNodes = new ArrayList<>();
-        MetaDbConn metaDbConn = metaDbConnMapper.getMetaDbConnByConInfo(jdbcUrl, jdbcUserName, jdbcPwd);
+//        MetaDbConn metaDbConn = metaDbConnMapper.getMetaDbConnByConInfo(jdbcUrl, jdbcUserName, jdbcPwd);
+        MetaDbConn metaDbConn = metaDbConnMapper.getMetaDbConnByConInfo(dataSourceProperties.getUrl(), dataSourceProperties.getUsername(), dataSourceProperties.getPassword());
         if (metaDbConn != null) {
             // 获取表数据
             List<MetaDbTable> tableList = metaDbTableMapper.listMetaDbTableByConnId(metaDbConn.getConnId());
@@ -1309,7 +1314,7 @@ public class AeaItemBasicAdminServiceImpl implements AeaItemBasicAdminService {
     }
 
     @Override
-    public boolean checkUniqueItemCode(String itemId, String itemCode, String rootOrgId){
+    public boolean checkUniqueItemCode(String itemId, String itemCode, String rootOrgId) {
 
         List<AeaItemBasic> itemBasicList = aeaItemBasicMapper.checkUniqueItemCode(itemId, itemCode, rootOrgId);
         if (itemBasicList != null && itemBasicList.size() > 0) {

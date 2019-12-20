@@ -23,58 +23,8 @@
     <script src="${pageContext.request.contextPath}/ui-static/kitymind/js/kitymind_constant.js"></script>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/ui-static/agcloud/bsc/mind/resource/js/layui/css/layui.global.css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/ui-static/agcloud/bsc/mind/resource/js/layui/css/modules/layui-icon-extend/iconfont.css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/ui-static/mat/css/global_mat_index.css">
     <style type="text/css">
-
-        .row{
-            margin-left: 0px;
-            margin-right: 0px;
-        }
-
-        .form-group label{
-
-            display: block;
-            float: left;
-            position: relative;
-        }
-
-        .form-group input[type="file"]{
-
-            position: absolute;
-            width: 10%;
-            opacity: 0;
-        }
-
-        .form-group .custorm-style{
-
-            display: block;
-            width: 100%;
-            height: 38px;
-            border: 1px solid #d9d9d9;
-            border-radius: 4px;
-        }
-
-        .form-group .custorm-style .left-button{
-
-            width: 71px;
-            font-size: 13px !important;
-            height: 22px;
-            line-height: 13px;
-            float: left;
-            border:1px solid #b1b1b1;
-            background: linear-gradient(to bottom, #fff, #ccc);
-            color: #444;
-            margin-top: 0.9%;
-            margin-left: 1%;
-        }
-
-        .form-group .custorm-style .right-text{
-
-            width: 80%;
-            height: 99%;
-            line-height: 2.7em;
-            display: block;
-            overflow: hidden;
-        }
 
         .hid{
 
@@ -191,6 +141,6 @@
 
     <!-- 业务js -->
     <script type="text/javascript" src="${pageContext.request.contextPath}/ui-static/agcloud/bsc/mind/resource/js/cache/affair/catalogues/issuesManagement/itemSituation/no_item_state_index.js?<%=isDebugMode%>"></script>
-
+    <script src="${pageContext.request.contextPath}/ui-static/mat/global_mat_rel_format.js" type="text/javascript"></script>
 </body>
 </html>

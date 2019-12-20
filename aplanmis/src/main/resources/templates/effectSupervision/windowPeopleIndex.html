@@ -90,7 +90,7 @@
         <div class="mt-18 table-box ag-table">
           <el-table :data="needHandelList" class="scrollable mt20" style="width: 100%;" height="291" border
             :header-cell-style="{background:'#F3F6F9',padding:'8px 0', color: '#575962'}" :cell-class-name="tabCellName" @row-dblclick="needHandelListRowDbFn">
-            <el-table-column  width="64">
+            <el-table-column  :width="getFirstColumnWidth()">
               <template slot-scope="scope">
                  <!-- <i class="icon ag ag-mail-o color-C9C9C9" v-if="isSign(scope.row)"></i>
                 <i class="icon ag ag-mail color-FFB822" v-if="!isSign(scope.row)"></i> -->
@@ -123,7 +123,10 @@
                   <span v-show="!scope.row.remindList || scope.row.remindList.length<=0"
                     class="color-C9C9C9 icon ag ag-message"></span>
                 </el-tooltip>
-
+                <el-tooltip effect="light" placement="top">
+                  <div slot="content">绿色通道事项</div>
+                  <span class="is-catalog is-green" v-show="scope.row.isGreenWay=='1'">绿</span>
+                </el-tooltip>
               </template>
             </el-table-column>
             <el-table-column prop="applySource" label="来源" width="50">
@@ -132,7 +135,7 @@
             </el-table-column>
             <el-table-column prop="applyinstCode" label="申报流水号" width="160" :formatter="formatterTableCell" :show-overflow-tooltip ="true">
             </el-table-column>
-            <el-table-column label="项目/工程名称" prop="projName" min-width="170" :formatter="formatterTableCell" :show-overflow-tooltip ="true">
+            <el-table-column label="项目/工程名称" prop="projName" min-width="130" :formatter="formatterTableCell" :show-overflow-tooltip ="true">
             </el-table-column>
             <el-table-column label="阶段/事项/辅线名称" min-width="180">
               <template slot-scope="scope">
@@ -142,7 +145,7 @@
                 </el-tooltip>
               </template>
             </el-table-column>
-            <el-table-column label="剩余时限" width="140"  v-if="!pcClientSmallTag">
+            <el-table-column label="剩余时限" width="120"  v-if="!pcClientSmallTag">
               <template slot-scope="scope">
                 <span class="day-success-badge" :class="dueNumFn(scope.row.dueNum)">{{scope.row.dueNum | dueNumFormat}}</span>
               </template>
@@ -151,7 +154,8 @@
               <template slot-scope="scope">
                 <!-- <a href="javascript:;" class="color-169AFF" @click="yushen(scope.row)">办理</a> -->
                 <!-- <a href="javascript:;" class="urgent-tabop-btn" @click="yushen(scope.row)">办理</a> -->
-                <a href="javascript:;" class="color-169AFF" @click="daibanbanliHand(scope.row)">办理</a>
+                <a href="javascript:;"  v-if="isSign(scope.row)" class="color-169AFF" @click="daibanbanliHand(scope.row)">办理</a>
+                <a href="javascript:;"  v-if="!isSign(scope.row)" class="color-169AFF"@click="signTask($event,scope.row)">签收</a>
               </template>
             </el-table-column>
           </el-table>

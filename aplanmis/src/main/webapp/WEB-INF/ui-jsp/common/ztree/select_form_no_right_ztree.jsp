@@ -74,11 +74,19 @@
             },
             //用于捕获节点被点击的事件回调函数
             callback: {
+
+                beforeCheck: beforeFormCheck,
                 onCheck: onSelectFormCheck,
                 onClick: onClickSelectFormNode,
                 onDblClick: onDblClickSelectFormNode,
             }
         };
+
+    function beforeFormCheck(treeId, treeNode){
+
+        var treeObj = $.fn.zTree.getZTreeObj(treeId);
+        treeObj.checkAllNodes(false);
+    }
 
     /**
      * 选择事件

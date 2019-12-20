@@ -227,7 +227,7 @@ public class AeaSeriesService {
         String[] stateIds = seriesApplyDataVo.getStateIds();
         String unitInfoId = seriesApplyDataVo.getUnitInfoId();
         AeaItemBasic itemBasicByItemVerId = aeaItemBasicMapper.getAeaItemBasicByItemVerId(itemVerId, SecurityContext.getCurrentOrgId());
-        AeaHiApplyinst seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "1", null, ApplyState.RECEIVE_APPROVED_APPLY.getValue(),"0");//实例化串联申请实例
+        AeaHiApplyinst seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "1", null, ApplyState.RECEIVE_APPROVED_APPLY.getValue(),"0",null);//实例化串联申请实例
 
         String seriesApplyinstId = seriesApplyinst.getApplyinstId();//申报实例ID
         seriesApplyinst.setProjInfoId(projInfoIds[0]);

@@ -139,7 +139,7 @@ public class RestApplyCommonController {
             if(StringUtils.isNotBlank(applyinstId)){//已暂存过，需要删除历史记录，重新插入数据
                 restApplyCommonService.deleteReInsertAeaApplyinstUnitProj(applyinstId,(List<String>)map.get("unitProjIds"));
             }else{//第一次暂存
-                AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst("net", smsInfoVo.getApplySubject(), smsInfoVo.getLinkmanInfoId(), smsInfoVo.getIsSeriesApprove(), null, ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"1");
+                AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst("net", smsInfoVo.getApplySubject(), smsInfoVo.getLinkmanInfoId(), smsInfoVo.getIsSeriesApprove(), null, ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"1",null);
                 applyinstId=aeaHiApplyinst==null?"":aeaHiApplyinst.getApplyinstId();
                 restApplyCommonService.insertAeaApplyinstUnitProj(applyinstId,(List<String>)map.get("unitProjIds"));
                 if("1".equals(smsInfoVo.getIsSeriesApprove()) && StringUtils.isNotBlank(smsInfoVo.getItemVerId())){
@@ -148,9 +148,10 @@ public class RestApplyCommonController {
             }
             resultMap.put("applyinstId", applyinstId);
             if(StringUtils.isNotBlank(applyinstId)){//回填sms表的申请实例ID
+                AeaHiSmsInfo sms=aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(applyinstId);
                 String smsId=(String) resultMap.get("smsId");
-                if(StringUtils.isNotBlank(smsId)) {
-                    AeaHiSmsInfo sms=aeaHiSmsInfoService.getAeaHiSmsInfoById(smsId);
+                if(sms==null&&StringUtils.isNotBlank(smsId)) {
+                    sms=aeaHiSmsInfoService.getAeaHiSmsInfoById(smsId);
                     sms.setApplyinstId(applyinstId);
                     aeaHiSmsInfoService.updateAeaHiSmsInfo(sms);
                 }
@@ -172,6 +173,9 @@ public class RestApplyCommonController {
     @PostMapping("/itemList/temporary")
     @ApiOperation(value = "阶段申报-->暂存阶段，情形及事项(含事项情形)")
     public ContentResultForm itemListTemporary(@Valid @RequestBody ItemListTemporaryParamVo itemListTemporaryParamVo,HttpServletRequest request){
+        SmsInfoVo smsInfoVo=itemListTemporaryParamVo.getSmsInfoVo();
+        smsInfoVo.setApplyinstId(itemListTemporaryParamVo.getApplyinstId());
+        itemListTemporaryParamVo.setSmsInfoVo(smsInfoVo);
         Map<String,Object> map=new HashMap<>();
         ContentResultForm firstStepResult = temporarySaveOrUpdateSmsInfo(itemListTemporaryParamVo.getSmsInfoVo(), request);
         LoginInfoVo loginVo = SessionUtil.getLoginInfo(request);
@@ -195,6 +199,9 @@ public class RestApplyCommonController {
     @PostMapping("/matList/stage/temporary")
     @ApiOperation(value = "阶段申报-->暂存材料)")
     public ContentResultForm matListStageTemporary(@Valid @RequestBody MatListStageTemporaryParamVo matListStageTemporaryParamVo,HttpServletRequest request){
+        ItemListTemporaryParamVo itemListTemporaryParamVo=matListStageTemporaryParamVo.getItemListTemporaryParamVo();
+        itemListTemporaryParamVo.setApplyinstId(matListStageTemporaryParamVo.getApplyinstId());
+        matListStageTemporaryParamVo.setItemListTemporaryParamVo(itemListTemporaryParamVo);
         Map<String,Object> map=new HashMap<>();
         ContentResultForm secondStepResult = itemListTemporary(matListStageTemporaryParamVo.getItemListTemporaryParamVo(), request);
         String applyinstId="";
@@ -217,6 +224,9 @@ public class RestApplyCommonController {
     @PostMapping("/matList/series/temporary")
     @ApiOperation(value = "单项申报-->暂存材料)")
     public ContentResultForm matListSeriesTemporary(@Valid @RequestBody MatListSeiesTemporaryParamVo matListSeiesTemporaryParamVo,HttpServletRequest request){
+        StateListSeriesTemporaryParamVo vo=matListSeiesTemporaryParamVo.getStateListSeriesTemporaryParamVo();
+        vo.setApplyinstId(matListSeiesTemporaryParamVo.getApplyinstId());
+        matListSeiesTemporaryParamVo.setStateListSeriesTemporaryParamVo(vo);
         Map<String,Object> map=new HashMap<>();
         ContentResultForm secondStepResult = stateListSeriesTemporary(matListSeiesTemporaryParamVo.getStateListSeriesTemporaryParamVo(),request);//暂存情形
         String applyinstId="";
@@ -240,6 +250,9 @@ public class RestApplyCommonController {
     @PostMapping("/stateList/series/temporary")
     @ApiOperation(value = "单项申报-->暂存情形)")
     public ContentResultForm stateListSeriesTemporary(@Valid @RequestBody StateListSeriesTemporaryParamVo stateListSeriesTemporaryParamVo,HttpServletRequest request){
+        SmsInfoVo vo=stateListSeriesTemporaryParamVo.getSmsInfoVo();
+        vo.setApplyinstId(stateListSeriesTemporaryParamVo.getApplyinstId());
+        stateListSeriesTemporaryParamVo.setSmsInfoVo(vo);
         Map<String,Object> map=new HashMap<>();
         ContentResultForm firstStepResult = temporarySaveOrUpdateSmsInfo(stateListSeriesTemporaryParamVo.getSmsInfoVo(), request);
         String applyinstId="";

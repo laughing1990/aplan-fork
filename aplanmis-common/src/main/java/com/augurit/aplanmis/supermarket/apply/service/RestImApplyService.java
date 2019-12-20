@@ -459,7 +459,7 @@ public class RestImApplyService {
         String appinstId = UUID.randomUUID().toString();//预先生成流程模板实例ID
         String opuWinId = aeaServiceWindowService.getCurrentUserWindow() == null ? "" : aeaServiceWindowService.getCurrentUserWindow().getWindowId();
         AeaHiApplyinst seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinstAndTriggerAeaLogApplyStateHist(applyData.getApplySource(),
-                applyData.getApplySubject(), applyData.getLinkmanInfoId(), "1", null, null, appinstId, ApplyState.IM_MILESTONE_CHOOSE_IMUNIT.getValue(), opuWinId);//实例化串联申请实例
+                applyData.getApplySubject(), applyData.getLinkmanInfoId(), "1", null, null, appinstId, ApplyState.IM_MILESTONE_CHOOSE_IMUNIT.getValue(), opuWinId,null);//实例化串联申请实例
         result.setApplyinstId(seriesApplyinst.getApplyinstId());
         result.setApplyinstCode(seriesApplyinst.getApplyinstCode());
 

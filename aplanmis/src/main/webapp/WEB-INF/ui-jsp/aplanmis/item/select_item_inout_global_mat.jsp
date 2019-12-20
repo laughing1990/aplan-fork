@@ -63,11 +63,12 @@
                                 data-url="${pageContext.request.contextPath}/aea/item/mat/listItemInOutNoSelectGlobalMat.do">
                             <thead>
                                 <tr>
-                                    <th data-field="#" data-checkbox="true" data-align="left" data-width="10">ID</th>
-                                    <th data-field="matName" data-align="left" data-width="300">材料名称</th>
-                                    <th data-field="matCode" data-align="left" data-width="150">材料编号</th>
+                                    <th data-field="#" data-checkbox="true" data-align="center" data-width="10">ID</th>
                                     <th data-field="matProp" data-formatter="matPropormatter"
-                                        data-align="center" data-colspan="1" data-width="80">材料性质</th>
+                                        data-align="left" data-colspan="1" data-width="60">材料性质</th>
+                                    <th data-field="matName" data-formatter="matNameFormatter"
+                                        data-align="left" data-width="300">材料名称</th>
+                                    <th data-field="matCode" data-align="left" data-width="150">材料编号</th>
                                     <th data-field="_operator" data-formatter="globalMatFormatter"
                                         data-align="center" data-width="50">操作</th>
                                 </tr>

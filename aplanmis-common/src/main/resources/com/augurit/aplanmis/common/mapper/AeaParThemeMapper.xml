@@ -614,7 +614,7 @@
         group by aptv2.theme_id) maxVer on maxVer.theme_id=aptv.theme_id and maxVer.maxNum=aptv.VER_NUM
         <where>
             <if test="themeCategory != null and themeCategory == 'mainline'">
-                and apt.IS_AUXILINE='1'
+                and apt.IS_MAINLINE='1'
             </if>
             <if test="themeCategory != null and (themeCategory == '51' or themeCategory == '52' or themeCategory == '53' or themeCategory == '54C' or themeCategory == '54Y' or themeCategory == 'others')">
                 and apt.IS_AUXILINE='1'

@@ -70,7 +70,8 @@
                                 <th data-field="#" data-checkbox="true" data-align="center" data-width="10">ID</th>
                                 <th data-field="matProp" data-formatter="matPropormatter"
                                     data-align="left" data-width=80>材料性质</th>
-                                <th data-field="aeaMatCertName" data-align="left" data-width="250">名称</th>
+                                <th data-field="aeaMatCertName" data-formatter="matNameFormatter"
+                                    data-align="left" data-width="250">名称</th>
                                 <th data-field="aeaMatCertCode" data-align="left" data-width="250">编号</th>
                                 <th data-field="itemName" data-align="left"
                                     data-colspan="1" data-width="250">关联事项</th>

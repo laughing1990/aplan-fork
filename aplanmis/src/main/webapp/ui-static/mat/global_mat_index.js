@@ -270,13 +270,11 @@ function operatorFormatter(value, row, index, field) {
     return operatorStr;
 }
 
-
 //格式化材料来源yjy2018
 function operatorFormatterMatFrom(value, row, index, field) {
 
-    var bb = "未选择";
-    if(row.matFrom!=null) {
-
+    var bb = "-";
+    if(row.matFrom!=null&&row.matFrom!=''&&row.matFrom!=undefined) {
         var matFrom = row.matFrom.split(",");
         var aa = [];
         for (qee in matFrom) {
@@ -313,22 +311,22 @@ function initValidate() {
             matName: {
                 required: true,
                 maxlength: 500,
-                remote: {
-                    url: MAT_URL_PREFIX + 'checkMatName.do', //后台处理程序
-                    type: "post",               //数据发送方式
-                    dataType: "json",           //接受数据格式
-                    data: {   //要传递的数据
-                        matId: function () {
-                            return $("#aedit_mat_form input[name='matId']").val();
-                        },
-                        matName: function () {
-                            return $("#aedit_mat_form input[name='matName']").val();
-                        },
-                        isCommon: function () {
-                            return $("#aedit_mat_form input[name='isCommon']").val();
-                        },
-                    }
-                }
+                // remote: {
+                //     url: MAT_URL_PREFIX + 'checkMatName.do', //后台处理程序
+                //     type: "post",               //数据发送方式
+                //     dataType: "json",           //接受数据格式
+                //     data: {   //要传递的数据
+                //         matId: function () {
+                //             return $("#aedit_mat_form input[name='matId']").val();
+                //         },
+                //         matName: function () {
+                //             return $("#aedit_mat_form input[name='matName']").val();
+                //         },
+                //         isCommon: function () {
+                //             return $("#aedit_mat_form input[name='isCommon']").val();
+                //         },
+                //     }
+                // }
             },
             matCode:{
                 required: true,
@@ -367,7 +365,7 @@ function initValidate() {
             matName: {
                 required: '<font color="red">材料名称必填！</font>',
                 maxlength: "最大长度不能超过500字符!",
-                remote: '材料名称已存在!'
+                // remote: '材料名称已存在!'
             },
             matCode:{
                 required: '<font color="red">材料编号必填！</font>',
@@ -471,6 +469,7 @@ function addGlobalMat() {
     $("#aedit_mat_form input[name='isOfficialDoc'][value='0']").prop("checked", true);
     $("#aedit_mat_form input[name='certId']").val("");
     $("#aedit_mat_form input[name='stoFormId']").val("");
+    $("#aedit_mat_form input[name='stdmatId']").val("");
     $("#aedit_mat_form input[name='matProp'][value='m']").prop("checked", true);
     handleSelectMatProNew('m');
 

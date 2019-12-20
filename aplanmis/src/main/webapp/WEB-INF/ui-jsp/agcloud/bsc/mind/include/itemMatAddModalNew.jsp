@@ -452,23 +452,11 @@
                     checkbox: true,
                     filed: "matId",
                     title: "#",
-                    width: 30,
+                    width: 10,
                     align: "center",
                     formatter: function (value, row, index) {
                         return true;
                     }
-                },
-                {
-                    field: "aeaItemMat.matCode",
-                    title: "材料编号",
-                    align: "left",
-                    width: 300,
-                },
-                {
-                    field: "aeaItemMat.matName",
-                    title: "材料名称",
-                    align: "left",
-                    width: 450,
                 },
                 {
                     field: "aeaItemMat.matProp",
@@ -476,6 +464,22 @@
                     align: "center",
                     width: 110,
                     formatter: matPropormatter
+                },
+                {
+                    field: "aeaItemMat.matName",
+                    title: "材料名称",
+                    align: "left",
+                    width: 450,
+                    formatter: function (value, row, index, field) {
+
+                        return matNameFormatter(value, row.aeaItemMat, index, field);
+                    }
+                },
+                {
+                    field: "aeaItemMat.matCode",
+                    title: "材料编号",
+                    align: "left",
+                    width: 300,
                 },
                 {
                     field: '_operate',
@@ -535,23 +539,11 @@
                     checkbox: true,
                     filed: "matId",
                     title: "#",
-                    width: 30,
+                    width: 10,
                     align: "center",
                     formatter: function (value, row, index) {
                         return true;
                     }
-                },
-                {
-                    field: "aeaItemMat.matCode",
-                    title: "材料编号",
-                    align: "left",
-                    width: 300,
-                },
-                {
-                    field: "aeaItemMat.matName",
-                    title: "材料名称",
-                    align: "left",
-                    width: 450,
                 },
                 {
                     field: "aeaItemMat.matProp",
@@ -559,6 +551,22 @@
                     align: "center",
                     width: 110,
                     formatter: matPropormatter
+                },
+                {
+                    field: "aeaItemMat.matName",
+                    title: "材料名称",
+                    align: "left",
+                    width: 450,
+                    formatter: function (value, row, index, field) {
+
+                        return matNameFormatter(value, row.aeaItemMat, index, field);
+                    }
+                },
+                {
+                    field: "aeaItemMat.matCode",
+                    title: "材料编号",
+                    align: "left",
+                    width: 300,
                 },
                 {
                     field: '_operate',
@@ -758,22 +766,22 @@
                 matName: {
                     required: true,
                     maxlength: 500,
-                    remote: {
-                        url: ctx + '/aea/item/mat/checkMatName.do', //后台处理程序
-                        type: "post",               //数据发送方式
-                        dataType: "json",           //接受数据格式
-                        data: {   //要传递的数据
-                            matId: function () {
-                                return $("#item_mat_add_form input[name='matId']").val();
-                            },
-                            matName: function () {
-                                return $("#item_mat_add_form input[name='matName']").val();
-                            },
-                            isCommon: function () {
-                                return $("#item_mat_add_form input[name='isCommon']").val();
-                            },
-                        }
-                    }
+                    // remote: {
+                    //     url: ctx + '/aea/item/mat/checkMatName.do', //后台处理程序
+                    //     type: "post",               //数据发送方式
+                    //     dataType: "json",           //接受数据格式
+                    //     data: {   //要传递的数据
+                    //         matId: function () {
+                    //             return $("#item_mat_add_form input[name='matId']").val();
+                    //         },
+                    //         matName: function () {
+                    //             return $("#item_mat_add_form input[name='matName']").val();
+                    //         },
+                    //         isCommon: function () {
+                    //             return $("#item_mat_add_form input[name='isCommon']").val();
+                    //         },
+                    //     }
+                    // }
                 },
                 matCode: {
                     required: true,
@@ -806,7 +814,7 @@
                 matName: {
                     required: '<font color="red">材料名称必填！</font>',
                     maxlength: "最大长度不能超过500字符!",
-                    remote: '材料名称已存在!'
+                    // remote: '材料名称已存在!'
                 },
                 matCode:{
                     required: '<font color="red">材料编号必填！</font>',

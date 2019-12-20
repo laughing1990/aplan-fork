@@ -54,10 +54,11 @@
                         data-width="10" data-formatter="checkStateMat"></th>
                     <th data-field="inId"  data-align="left" data-width="10">ID</th>
                     <th data-field="matId"  data-align="left" data-width="10">MATID</th>
-                    <th data-field="aeaMatCertName" data-align="left" data-width="230">材料名称</th>
-                    <th data-field="aeaMatCertCode" data-align="left" data-width="230">材料编号</th>
                     <th data-field="matProp" data-formatter="matPropormatter"
-                        data-align="center" data-colspan="1" data-width="80">材料性质</th>
+                        data-align="left" data-colspan="1" data-width="80">材料性质</th>
+                    <th data-field="aeaMatCertName" data-formatter="matNameFormatter"
+                        data-align="left" data-width=310>材料名称</th>
+                    <th data-field="aeaMatCertCode" data-align="left" data-width="150">材料编号</th>
                     <th data-field="_operator" data-formatter="stageStateMatFormatter"
                         data-align="center" data-width="100">操作</th>
                 </tr>
@@ -172,15 +173,20 @@
     function stageStateMatFormatter(value, row, index) {
 
         var editBtn = '<a href="javascript:editStageMat(false,\''+row.matId + '\',\'1\')" ' +
-            'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
-            'title="编辑"><i class="la la-edit"></i>' +
-            '</a>';
+                        'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
+                        'title="编辑"><i class="la la-edit"></i>' +
+                     '</a>';
+
+        // var editStageItemInBtn = '<a href="javascript:editCommonMatItem(\''+row.matId + '\')" ' +
+        //                             'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
+        //                             'title="关联事项"><i class="la la-cog"></i>' +
+        //                         '</a>';
 
 
         var deleteBtn = '<a href="javascript:deleteStageMat(false,\''+row.inId + '\')" ' +
-            'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
-            'title="删除"><i class="la la-trash"></i>' +
-            '</a>';
+                            'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
+                            'title="删除"><i class="la la-trash"></i>' +
+                        '</a>';
 
         return editBtn + deleteBtn;
     }

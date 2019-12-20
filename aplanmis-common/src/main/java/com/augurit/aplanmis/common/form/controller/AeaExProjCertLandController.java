@@ -202,7 +202,7 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjCertLandControll
             aeaExProjSite.setLandAreaValue(aeaCertiVo.getLandAreaValueSite());
             aeaExProjSite.setLandAreaUnit(aeaCertiVo.getLandAreaUnit());
             aeaExProjSite.setConstructionSize(aeaCertiVo.getConstructionSize());
-            aeaExProjSite.setGovOrgCode(aeaCertiVo.getGovOrgNameSite());
+            aeaExProjSite.setGovOrgCode(aeaCertiVo.getGovOrgCodeSite());
             aeaExProjSite.setGovOrgName(aeaCertiVo.getGovOrgNameSite());
             aeaExProjSite.setPublishTime(aeaCertiVo.getPublishTimeSite());
             aeaExProjSiteService.updateAeaExProjSite(aeaExProjSite);

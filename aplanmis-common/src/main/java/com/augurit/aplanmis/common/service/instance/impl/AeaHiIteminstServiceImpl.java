@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.common.service.instance.impl;
 
+import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.AeaHiApplyinstConstants;
@@ -224,7 +225,9 @@ public class AeaHiIteminstServiceImpl implements AeaHiIteminstService {
         aeaHiIteminst.setCreateTime(date);
         aeaHiIteminst.setRegisterTime(date);
         aeaHiIteminst.setCreater(SecurityContext.getCurrentUserName());
+        aeaHiIteminst.setIsDeleted(Status.OFF);
         aeaHiIteminst.setRootOrgId(rootOrgId);
+        aeaHiIteminst.setIsDeleted("0");
         aeaHiIteminstMapper.insertAeaHiIteminst(aeaHiIteminst); //    新增事项实例
         return aeaHiIteminst;
     }
@@ -234,6 +237,7 @@ public class AeaHiIteminstServiceImpl implements AeaHiIteminstService {
         if (StringUtils.isBlank(aeaHiIteminst.getIteminstId())) {
             aeaHiIteminst.setIteminstId(UUID.randomUUID().toString());
             aeaHiIteminst.setRootOrgId(SecurityContext.getCurrentOrgId());
+            aeaHiIteminst.setIsDeleted("0");
             aeaHiIteminstMapper.insertAeaHiIteminst(aeaHiIteminst);
         } else {
             aeaHiIteminstMapper.updateAeaHiIteminst(aeaHiIteminst);

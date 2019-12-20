@@ -88,22 +88,19 @@
                             <thead>
                                 <tr>
                                     <th data-field="#" data-checkbox="true" data-align="center"
-                                        data-colspan="1" data-width="10"></th>
-                                    <th data-field="matCode" data-align="left"
-                                        data-colspan="1" data-width="200">材料编号</th>
-                                    <th data-field="matName" data-align="left"
-                                        data-colspan="1" data-width="200">材料名称</th>
+                                        data-colspan="1" data-width="5"></th>
                                     <th data-field="matProp" data-formatter="matPropormatter"
-                                        data-align="center" data-colspan="1" data-width="80">材料性质</th>
-                                    <th data-field="matFrom" data-align="center"
-                                        data-formatter="operatorFormatterMatFrom"
-                                        data-colspan="1" data-width="200">材料来源</th>
-                                    <th data-field="matTypeName" data-align="left"
-                                        data-colspan="1" data-width="200">材料类别</th>
-                                    <%--<th data-field="stdmatName" data-align="left"--%>
-                                        <%--data-colspan="1" data-width="200">关联标准材料</th>--%>
+                                        data-align="left" data-colspan="1" data-width="60">材料性质</th>
+                                    <th data-field="matName" data-formatter="matNameFormatter"
+                                        data-align="left" data-colspan="1" data-width="250">材料名称</th>
+                                    <th data-field="matCode" data-align="left"
+                                        data-colspan="1" data-width="150">材料编号</th>
+                                    <th data-field="matFrom" data-formatter="operatorFormatterMatFrom"
+                                        data-align="left" data-colspan="1" data-width="150">材料来源</th>
+                                    <th data-field="stdmatName" data-align="left"
+                                        data-colspan="1" data-width="150">关联标准材料</th>
                                     <th data-field="" data-formatter="operatorFormatter"
-                                        data-align="center" data-colspan="1" data-width="120">操作</th>
+                                        data-align="center" data-colspan="1" data-width="100">操作</th>
                                 </tr>
                             </thead>
                         </table>
@@ -136,5 +133,6 @@
     <%@include file="../common/show_loading.jsp" %>
 
     <script src="${pageContext.request.contextPath}/ui-static/mat/global_mat_index.js" type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/ui-static/mat/global_mat_rel_format.js" type="text/javascript"></script>
 </body>
 </html>

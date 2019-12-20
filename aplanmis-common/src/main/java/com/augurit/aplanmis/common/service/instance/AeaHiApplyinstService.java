@@ -4,6 +4,7 @@ import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public interface AeaHiApplyinstService {
      * @return
      * @throws Exception
      */
-    public AeaHiApplyinst createAeaHiApplyinst(String applySource, String applySubject, String linkmanInfoId, String isSeriesApprove, String branchOrgMap, String applyState, String isTemporarySubmit) throws Exception;
+    public AeaHiApplyinst createAeaHiApplyinst(String applySource, String applySubject, String linkmanInfoId, String isSeriesApprove, String branchOrgMap, String applyState, String isTemporarySubmit,String parentApplyinstId) throws Exception;
 
     /**
      * 创建申请实例信息并保存状态变更记录
@@ -38,7 +39,7 @@ public interface AeaHiApplyinstService {
      * @return
      * @throws Exception
      */
-    AeaHiApplyinst createAeaHiApplyinstAndTriggerAeaLogApplyStateHist(String applySource, String applySubject, String linkmanInfoId, String isSeriesApprove, String branchOrgMap, String taskId, String appinstId, String applyState, String opuWindowId) throws Exception;
+    AeaHiApplyinst createAeaHiApplyinstAndTriggerAeaLogApplyStateHist(String applySource, String applySubject, String linkmanInfoId, String isSeriesApprove, String branchOrgMap, String taskId, String appinstId, String applyState, String opuWindowId,String parentApplyinstId) throws Exception;
 
 
     /**
@@ -218,5 +219,14 @@ public interface AeaHiApplyinstService {
      * @return
      */
     List<AeaHiApplyinst> getAllApplyinstesByProjInfoId(String projInfoId, String rootOrgId) throws Exception;
+
+    /**
+     *
+     * 查询并联申报下的并行申报列表
+     * @param applyinstId 并联申报实例ID
+     * @param isTemporarySubmit 非必须参数  是否暂存 1 是  0否
+     * @return
+     */
+    List<AeaHiApplyinst> getSeriesAeaHiApplyinstListByParentApplyinstId(String applyinstId,String isTemporarySubmit) throws Exception;
 
 }

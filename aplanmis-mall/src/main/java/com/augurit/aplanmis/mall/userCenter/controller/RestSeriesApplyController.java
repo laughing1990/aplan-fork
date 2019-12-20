@@ -166,7 +166,7 @@ public class RestSeriesApplyController {
     public ContentResultForm<String> startInstApply(String applySource,String applySubject,String  linkmanInfoId,String applyinstId){
         try {
             if(StringUtils.isNotBlank(applyinstId)) return new ContentResultForm<>(true, applyinstId, "申请实例已创建!");
-            AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, AeaHiApplyinstConstants.SERIESINST_APPLY, null, ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"1");
+            AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, AeaHiApplyinstConstants.SERIESINST_APPLY, null, ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"1",null);
             return new ContentResultForm<>(true, aeaHiApplyinst.getApplyinstId(), "申报成功!");
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
