@@ -45,4 +45,9 @@ public class AeaParIn implements Serializable {
     private String formId; // 表单id
     private String formProperty;
     private String matProp;
+
+    private String zcqy;
+    private String isOfficialDoc;
+    private String attIsRequire;
+    private String paperIsRequire;
 }

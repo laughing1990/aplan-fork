@@ -56,6 +56,24 @@
             display: block;
             overflow: hidden;
         }
+
+        .blueColor {
+
+            background-color: #52B6FD;
+        }
+
+        .circleIcon {
+
+            display: inline-block;
+            width: 34px;
+            height: 24px;
+            border-radius: 4px;
+            color: white;
+            text-align: center;
+            line-height: 24px;
+            font-size: 12px;
+            margin: 0px 2px;
+        }
     </style>
     <script type="text/javascript">
        var currentBusiType = '${currentBusiType}';
@@ -135,10 +153,9 @@
                                     <th data-field="#" data-checkbox="true" data-align="center" data-width="10">ID</th>
                                     <th data-field="matProp" data-formatter="matPropormatter"
                                         data-align="left" data-width=80>材料性质</th>
-                                    <th data-field="aeaMatCertName" data-align="left" data-width="250">名称</th>
+                                    <th data-field="aeaMatCertName" data-formatter="threeMatNameFormatter"
+                                        data-align="left" data-width="250">名称</th>
                                     <th data-field="aeaMatCertCode" data-align="left" data-width="250">编号</th>
-                                    <%--<th data-field="matProp" data-formatter="matPropormatter"--%>
-                                        <%--data-align="center" data-colspan="1" data-width="80">材料性质</th>--%>
                                     <th data-field="_operator" data-formatter="itemOutMatCertFormatter"
                                         data-align="center" data-width="120">操作</th>
                                 </tr>

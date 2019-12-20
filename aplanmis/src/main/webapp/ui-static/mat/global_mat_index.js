@@ -270,13 +270,40 @@ function operatorFormatter(value, row, index, field) {
     return operatorStr;
 }
 
+function matNameFormatter(value, row, index, field) {
+
+    var name = row.matName+'&nbsp;&nbsp;';
+    var tag = "";
+    if(row.isCommon=='1'){
+        tag += '<span class="circleIcon blueColor">通用</span>';
+    }else{
+        tag += '<span class="circleIcon blueColor">情形</span>';
+    }
+
+    if(row.zcqy=='1'){
+        tag += '<span class="circleIcon blueColor">容缺</span>';
+    }
+
+    if(row.isOfficialDoc=='1'){
+        tag += '<span class="circleIcon blueColor">批复</span>';
+    }
+
+    if(row.paperIsRequire=='1'){
+        tag += '<span class="circleIcon blueColor">纸必</span>';
+    }
+
+    if(row.attIsRequire=='1'){
+        tag += '<span class="circleIcon blueColor">电必</span>';
+    }
+    tag += '&nbsp;&nbsp;';
+    return name + tag ;
+}
 
 //格式化材料来源yjy2018
 function operatorFormatterMatFrom(value, row, index, field) {
 
-    var bb = "未选择";
-    if(row.matFrom!=null) {
-
+    var bb = "-";
+    if(row.matFrom!=null&&row.matFrom!=''&&row.matFrom!=undefined) {
         var matFrom = row.matFrom.split(",");
         var aa = [];
         for (qee in matFrom) {
