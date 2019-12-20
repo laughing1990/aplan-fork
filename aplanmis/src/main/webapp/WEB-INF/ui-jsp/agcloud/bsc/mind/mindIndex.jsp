@@ -39,25 +39,6 @@
         // 事项与情形版本下是否可以编辑
         var curIsEditable = ${curIsEditable};
     </script>
-    <style type="text/css">
-        .blueColor {
-
-            background-color: #52B6FD;
-        }
-
-        .circleIcon {
-
-            display: inline-block;
-            width: 34px;
-            height: 24px;
-            border-radius: 4px;
-            color: white;
-            text-align: center;
-            line-height: 24px;
-            font-size: 12px;
-            margin: 0px 2px;
-        }
-    </style>
     <script src="${pageContext.request.contextPath}/ui-static/kitymind/js/kitymind_constant.js"></script>
     <%@ include file="/ui-static/agcloud/framework/jsp/agcloud-bsc-mind.jsp"%>
 </head>
@@ -88,6 +69,7 @@
 <%@ include file="/ui-static/agcloud/framework/jsp/lib-agtree3.jsp"%>
 <%@ include file="/ui-static/agcloud/framework/jsp/lib-bootstrap-table.jsp"%>
 <script src="${pageContext.request.contextPath}/ui-static/dg_aplanmis/framework/js/jquery.nicescroll.js" type="text/javascript"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/ui-static/mat/css/global_mat_index.css">
 
 <!-- 思维导图导入  -->
 <jsp:include page="include/mindFileImportModal.jsp"></jsp:include>
@@ -140,7 +122,6 @@
         </div>
     </div>
 </div>
-
 <script type="text/javascript">
 
     $(document).ready(function(){
@@ -171,5 +152,6 @@
         });
     });
 </script>
+<script src="${pageContext.request.contextPath}/ui-static/mat/global_mat_rel_format.js" type="text/javascript"></script>
 </body>
 </html>

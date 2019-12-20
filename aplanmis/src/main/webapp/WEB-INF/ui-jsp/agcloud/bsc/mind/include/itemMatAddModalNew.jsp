@@ -1018,33 +1018,4 @@
             agcloud.ui.metronic.showSwal({type: 'info', message: '请选择记录!'});
         }
     }
-
-    // function threeMatNameFormatter(value, row, index, field) {
-    //
-    //     var name = row.aeaItemMat.matName+'&nbsp;&nbsp;';
-    //     var tag = "";
-    //     if(row.aeaItemMat.isCommon=='1'){
-    //         tag += '<span class="circleIcon blueColor">通用</span>';
-    //     }else{
-    //         tag += '<span class="circleIcon blueColor">情形</span>';
-    //     }
-    //
-    //     if(row.aeaItemMat.zcqy=='1'){
-    //         tag += '<span class="circleIcon blueColor">容缺</span>';
-    //     }
-    //
-    //     if(row.aeaItemMat.isOfficialDoc=='1'){
-    //         tag += '<span class="circleIcon blueColor">批复</span>';
-    //     }
-    //
-    //     if(row.aeaItemMat.paperIsRequire=='1'){
-    //         tag += '<span class="circleIcon blueColor">纸必</span>';
-    //     }
-    //
-    //     if(row.aeaItemMat.attIsRequire=='1'){
-    //         tag += '<span class="circleIcon blueColor">电必</span>';
-    //     }
-    //     tag += '&nbsp;&nbsp;';
-    //     return name + tag ;
-    // }
 </script>

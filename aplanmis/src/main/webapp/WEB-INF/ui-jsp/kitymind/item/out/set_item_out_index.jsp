@@ -15,66 +15,7 @@
     <%@ include file="/ui-static/agcloud/framework/jsp/lib-bootstrap-table.jsp"%>
     <%@ include file="/ui-static/agcloud/framework/jsp/lib-sortable1.jsp"%>
     <script src="${pageContext.request.contextPath}/ui-static/dg_aplanmis/framework/js/jquery.nicescroll.js" type="text/javascript"></script>
-    <style type="text/css">
-        .row{
-            margin-left: 0px;
-            margin-right: 0px;
-        }
-        .form-group label{
-            display: block;
-            float: left;
-            position: relative;
-        }
-        .form-group input[type="file"]{
-            position: absolute;
-            width: 10%;
-            opacity: 0;
-        }
-        .form-group .custorm-style{
-            display: block;
-            width: 100%;
-            height: 38px;
-            border: 1px solid #d9d9d9;
-            border-radius: 4px;
-        }
-        .form-group .custorm-style .left-button{
-            width: 71px;
-            font-size: 13px !important;
-            height: 22px;
-            line-height: 13px;
-            float: left;
-            border:1px solid #b1b1b1;
-            background: linear-gradient(to bottom, #fff, #ccc);
-            color: #444;
-            margin-top: 0.9%;
-            margin-left: 1%;
-        }
-        .form-group .custorm-style .right-text{
-            width: 80%;
-            height: 99%;
-            line-height: 2.7em;
-            display: block;
-            overflow: hidden;
-        }
-
-        .blueColor {
-
-            background-color: #52B6FD;
-        }
-
-        .circleIcon {
-
-            display: inline-block;
-            width: 34px;
-            height: 24px;
-            border-radius: 4px;
-            color: white;
-            text-align: center;
-            line-height: 24px;
-            font-size: 12px;
-            margin: 0px 2px;
-        }
-    </style>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/ui-static/mat/css/global_mat_index.css">
     <script type="text/javascript">
        var currentBusiType = '${currentBusiType}';
        var currentBusiId = '${currentBusiId}';
@@ -153,7 +94,7 @@
                                     <th data-field="#" data-checkbox="true" data-align="center" data-width="10">ID</th>
                                     <th data-field="matProp" data-formatter="matPropormatter"
                                         data-align="left" data-width=80>材料性质</th>
-                                    <th data-field="aeaMatCertName" data-formatter="threeMatNameFormatter"
+                                    <th data-field="aeaMatCertName" data-formatter="matNameFormatter"
                                         data-align="left" data-width="250">名称</th>
                                     <th data-field="aeaMatCertCode" data-align="left" data-width="250">编号</th>
                                     <th data-field="_operator" data-formatter="itemOutMatCertFormatter"
@@ -215,6 +156,7 @@
     </div>
 
     <!-- 业务js -->
-    <script src="${pageContext.request.contextPath}/ui-static/aplanmis/item/ui-js/set_item_out_index.js?<%=isDebugMode%>" type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/ui-static/aplanmis/item/ui-js/set_item_out_index.js" type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/ui-static/mat/global_mat_rel_format.js" type="text/javascript"></script>
 </body>
 </html>

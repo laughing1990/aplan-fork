@@ -177,7 +177,7 @@
                         name += '在线表单材料';
                     }
                     name += '】';
-                    name += threeMatNameFormatter(data[i].aeaMatCertName, data[i], null, null);
+                    name += matNameFormatter(data[i].aeaMatCertName, data[i], null, null);
                     var liHtml = '<li name="sortItemInLi" category-id="'+ id +'" category-type="'+ type +'">' +
                                      '<span class="drag-handle_td">&#9776;</span>' +
                                      '<span class="org_name_td" style="width: 90%;">'+ name +'</span>' +
