@@ -3,13 +3,16 @@ package com.augurit.aplanmis.common.mapper;
 import com.augurit.aplanmis.common.domain.AeaExProjCertBuild;
 import io.swagger.annotations.ApiModel;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Mapper
+@Repository
 public interface AeaExProjCertBuildMapper {
     /**
      * 新增
+     *
      * @param aeaExProjCertBuild
      * @return
      * @throws Exception
@@ -18,6 +21,7 @@ public interface AeaExProjCertBuildMapper {
 
     /**
      * 删除
+     *
      * @param buildId
      * @return
      * @throws Exception
@@ -26,13 +30,16 @@ public interface AeaExProjCertBuildMapper {
 
     /**
      * 修改
+     *
      * @param aeaExProjCertBuild
      * @return
      * @throws Exception
      */
     void updateAeaExProjCertBuild(AeaExProjCertBuild aeaExProjCertBuild) throws Exception;
+
     /**
      * 查询
+     *
      * @param aeaExProjCertBuild
      * @return
      */
