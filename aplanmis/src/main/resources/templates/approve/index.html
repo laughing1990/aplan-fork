@@ -679,9 +679,14 @@
                       <el-table-column label="部门" width="200" property="approvalOrgName"></el-table-column>
                       <el-table-column label="事项名称" property="iteminstName"></el-table-column>
                       <el-table-column label="部门意见" property="approvalOpinion"></el-table-column>
+                      <el-table-column label="审批时间" property="approvalEndTime">
+                        <template slot-scope="scope">
+                          {{scope.row.approvalEndTime|formatDate}}
+                        </template>
+                      </el-table-column>
                       <el-table-column label="状态" width="100" property="cancelState">
                         <template slot-scope="scope">
-                          {{changeCancelState(scope.row.cancelState)}}
+                          {{changeSpCancelState(scope.row.cancelState)}}
                         </template>
                       </el-table-column>
                     </el-table>

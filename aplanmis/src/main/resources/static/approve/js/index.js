@@ -752,6 +752,16 @@ var vm = new Vue({
       var arr = ['已提交','已受理','已同意','未同意','无效'];
       return arr[val];
     },
+    // 撤件审批状态转换
+    changeSpCancelState: function(val){
+      var text = '审批中';
+      if (val == 2){
+        text = '已同意';
+      } else if (val == 3) {
+        text = '未同意';
+      }
+      return text;
+    },
     // 部门人员处理撤件
     bmHanderCancel: function(val, item){
       var vm = this;
