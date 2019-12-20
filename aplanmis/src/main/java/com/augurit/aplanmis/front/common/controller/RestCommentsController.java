@@ -12,7 +12,13 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 import java.util.List;
@@ -40,7 +46,7 @@ public class RestCommentsController {
     @ApiOperation("保存常用审批意见")
     @ApiImplicitParam(name = "message", value = "意见", required = true, type = "string")
     public ResultForm saveUserOpinion(String message) {
-        String uid =SecurityContext.getCurrentUser().getUserId();
+        String uid = SecurityContext.getCurrentUser().getUserId();
         ActUserOpinion sort = new ActUserOpinion();
         sort.setUserId(uid);
         if (!StringUtils.isEmpty(message)) {
@@ -92,7 +98,7 @@ public class RestCommentsController {
             @ApiImplicitParam(name = "sortNo", value = "排序号", required = true, type = "int")})
     public ContentResultForm<String> editUserOpinion(String opinionId, String opinionContent, String userId, int sortNo) {
 
-        String uid =SecurityContext.getCurrentUser().getUserId();
+        String uid = SecurityContext.getCurrentUser().getUserId();
         ActUserOpinion sort = new ActUserOpinion();
         sort.setUserId(uid);
 
@@ -112,26 +118,26 @@ public class RestCommentsController {
             List<ActUserOpinion> allUserActUserOpinionByUserId = actUserOpinionService.listActUserOpinion(sort);
             ActUserOpinion actUserOpinionById = actUserOpinionService.getActUserOpinionById(opinionId);
 
-            for (ActUserOpinion actUserOpinion   :allUserActUserOpinionByUserId) {
-                if (actUserOpinion.getOpinionId()!=opinionId){
+            for (ActUserOpinion actUserOpinion : allUserActUserOpinionByUserId) {
+                if (actUserOpinion.getOpinionId() != opinionId) {
 
-                   //小变大
-                    if(actUserOpinionById.getSortNo()<sortNo ){
-                        if (actUserOpinion.getSortNo()<=sortNo&&actUserOpinion.getSortNo()>actUserOpinionById.getSortNo()){
-                            actUserOpinion.setSortNo(actUserOpinion.getSortNo()-1);
+                    //小变大
+                    if (actUserOpinionById.getSortNo() < sortNo) {
+                        if (actUserOpinion.getSortNo() <= sortNo && actUserOpinion.getSortNo() > actUserOpinionById.getSortNo()) {
+                            actUserOpinion.setSortNo(actUserOpinion.getSortNo() - 1);
                             actUserOpinionService.updateActUserOpinion(actUserOpinion);
                         }
-                    //大变小
-                    }else {
-                        if (actUserOpinion.getSortNo()>=sortNo&&actUserOpinion.getSortNo()<actUserOpinionById.getSortNo()){
-                            actUserOpinion.setSortNo(actUserOpinion.getSortNo()+1);
+                        //大变小
+                    } else {
+                        if (actUserOpinion.getSortNo() >= sortNo && actUserOpinion.getSortNo() < actUserOpinionById.getSortNo()) {
+                            actUserOpinion.setSortNo(actUserOpinion.getSortNo() + 1);
                             actUserOpinionService.updateActUserOpinion(actUserOpinion);
                         }
                     }
                 }
-                }
+            }
 
-             actUserOpinionService.updateActUserOpinion(userOpinion);
+            actUserOpinionService.updateActUserOpinion(userOpinion);
         }
         return new ContentResultForm<>(true, opinionId, "保存成功");
     }

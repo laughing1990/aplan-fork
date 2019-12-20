@@ -752,6 +752,16 @@ var vm = new Vue({
       var arr = ['已提交','已受理','已同意','未同意','无效'];
       return arr[val];
     },
+    // 撤件审批状态转换
+    changeSpCancelState: function(val){
+      var text = '审批中';
+      if (val == 2){
+        text = '已同意';
+      } else if (val == 3) {
+        text = '未同意';
+      }
+      return text;
+    },
     // 部门人员处理撤件
     bmHanderCancel: function(val, item){
       var vm = this;
@@ -763,7 +773,7 @@ var vm = new Vue({
         type: 'get',
         data: {
           applyinstId: vm.masterEntityKey,
-          iteminstCancelId: vm.iteminstCancelId,
+          iteminstCancelId: item.iteminstCancelId,
           approvalOpinion: vm.bmHandleOpinion,
           cancelState: val,
           attId: vm.cancelAppForm.cancelUserAttId,
@@ -824,6 +834,7 @@ var vm = new Vue({
       }, function (res) {
         if (res.success) {
           vm.cancelAppDetailList = res.content;
+          vm.cancelAppDetailList.aeaHiItemCancels = vm.cancelAppDetailList.aeaHiItemCancels || [];
         } else {
           vm.$message.error(res.message || '加载撤件历史数据失败');
         }
@@ -2146,7 +2157,7 @@ var vm = new Vue({
           vm.recordIds = res.content.recordIds;// 附件关联id
           vm.attLink.recordId = vm.taskId;
           vm.isApprover = (vm.iteminstProcessinstId != null && vm.iteminstProcessinstId == vm.processInstanceId) ? '1' : '0';
-          // vm.isApprover = 0;
+          // vm.isApprover = 1;
           vm.getWayAType();
         } else {
           vm.$message.error(res.message);
