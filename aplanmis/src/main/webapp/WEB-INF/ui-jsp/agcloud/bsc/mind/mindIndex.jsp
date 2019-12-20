@@ -39,6 +39,25 @@
         // 事项与情形版本下是否可以编辑
         var curIsEditable = ${curIsEditable};
     </script>
+    <style type="text/css">
+        .blueColor {
+
+            background-color: #52B6FD;
+        }
+
+        .circleIcon {
+
+            display: inline-block;
+            width: 34px;
+            height: 24px;
+            border-radius: 4px;
+            color: white;
+            text-align: center;
+            line-height: 24px;
+            font-size: 12px;
+            margin: 0px 2px;
+        }
+    </style>
     <script src="${pageContext.request.contextPath}/ui-static/kitymind/js/kitymind_constant.js"></script>
     <%@ include file="/ui-static/agcloud/framework/jsp/agcloud-bsc-mind.jsp"%>
 </head>

@@ -27,6 +27,14 @@ public interface AeaItemMatMapper {
 
     List<AeaItemMat> listAeaItemMat(AeaItemMat aeaItemMat);
 
+    /**
+     * 获取材料定义并携带定义类型与标准材料字段
+     *
+     * @param aeaItemMat
+     * @return
+     */
+    List<AeaItemMat> listAeaItemMatRelTypeAndStd(AeaItemMat aeaItemMat);
+
     List<AeaItemMat> getMatListByItemStateIds(@Param("ids") String[] ItemStateId);
 
     List<AeaItemMat> getMatListByStageStateIds(@Param("ids") String[] StageStateId);

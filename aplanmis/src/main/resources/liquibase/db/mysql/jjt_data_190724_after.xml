@@ -321,4 +321,12 @@
         </sql>
     </changeSet>
 
+    <changeSet id="201912200958" author="qjp" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_hi_iteminst
+            set is_deleted=0
+            where ( is_deleted is null or is_deleted = '' );
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

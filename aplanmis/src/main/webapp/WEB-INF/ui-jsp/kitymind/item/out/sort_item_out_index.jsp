@@ -165,12 +165,15 @@
                     var id = data[i].inoutId;
                     var name = '【';
                     if(data[i].matProp=='m'){
-                        name += '材料';
+                        name += '普通材料';
                     }else if(data[i].matProp=='c'){
-                        name += '证照';
+                        name += '证照材料';
+                    }else if(data[i].matProp=='f'){
+                        name += '在线表单材料';
                     }
                     name += '】';
-                    name += data[i].aeaMatCertName;
+                    // name += data[i].aeaMatCertName;
+                    name += threeMatNameFormatter(data[i].aeaMatCertName, data[i], null, null);
                     var liHtml = '<li name="sortItemOutLi" category-id="'+ id +'">' +
                                      '<span class="drag-handle_td">&#9776;</span>' +
                                      '<span class="org_name_td" style="width: 90%;">'+ name +'</span>' +

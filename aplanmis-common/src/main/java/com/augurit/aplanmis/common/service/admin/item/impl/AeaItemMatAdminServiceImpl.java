@@ -235,7 +235,7 @@ public class AeaItemMatAdminServiceImpl implements AeaItemMatAdminService {
         String rootOrgId = SecurityContext.getCurrentOrgId();
         aeaItemMat.setRootOrgId(rootOrgId);
         PageHelper.startPage(page);
-        List<AeaItemMat> list = aeaItemMatMapper.listAeaItemMat(aeaItemMat);
+        List<AeaItemMat> list = aeaItemMatMapper.listAeaItemMatRelTypeAndStd(aeaItemMat);
         logger.debug("成功执行分页查询！！");
 //        if (list != null && list.size() > 0) {
 //            AeaItemMatType aeaItemMatType = new AeaItemMatType();

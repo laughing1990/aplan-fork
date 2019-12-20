@@ -49,3 +49,21 @@ label {
     display: block;
     overflow: hidden;
 }
+
+.blueColor {
+
+    background-color: #52B6FD;
+}
+
+.circleIcon {
+
+    display: inline-block;
+    width: 34px;
+    height: 24px;
+    border-radius: 4px;
+    color: white;
+    text-align: center;
+    line-height: 24px;
+    font-size: 12px;
+    margin: 0px 2px;
+}

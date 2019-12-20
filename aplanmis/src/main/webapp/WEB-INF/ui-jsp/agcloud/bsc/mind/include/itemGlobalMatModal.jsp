@@ -145,11 +145,25 @@
                     checkbox: true,
                     filed: "matId",
                     title: "#",
-                    width: 30,
+                    width: 10,
                     align: "center",
                     formatter: function (value, row, index) {
                         return row.itemStateId != null && row.itemStateId != '';
                     }
+                },
+                {
+                    field: "matProp",
+                    title: "材料性质",
+                    align: "left",
+                    width: 80,
+                    formatter: matPropormatter
+                },
+                {
+                    field: "matName",
+                    title: "材料名称",
+                    align: "left",
+                    width: 400,
+                    formatter: matNameFormatter
                 },
                 {
                     field: "matCode",
@@ -158,23 +172,10 @@
                     width: 300,
                 },
                 {
-                    field: "matName",
-                    title: "材料名称",
-                    align: "left",
-                    width: 450,
-                },
-                {
-                    field: "matProp",
-                    title: "材料性质",
-                    align: "center",
-                    width: 110,
-                    formatter: matPropormatter
-                },
-                {
                     field: '_operate',
                     title: '操作',
                     sortable: false,
-                    width: 150,
+                    width: 120,
                     align: "center",
                     formatter: function (value, row, index) {
                         var editBtn = '<a href="javascript:editMat(\'null\',\'' + row.matId + '\',\'isGlobal\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="编辑"><i class="la la-edit"></i></a>';
@@ -260,5 +261,34 @@
             }
         }
         return linkMatArr;
+    }
+
+    function matNameFormatter(value, row, index, field) {
+
+        var name = value+'&nbsp;&nbsp;';
+        var tag = "";
+        if(row.isCommon=='1'){
+            tag += '<span class="circleIcon blueColor">通用</span>';
+        }else{
+            tag += '<span class="circleIcon blueColor">情形</span>';
+        }
+
+        if(row.zcqy=='1'){
+            tag += '<span class="circleIcon blueColor">容缺</span>';
+        }
+
+        if(row.isOfficialDoc=='1'){
+            tag += '<span class="circleIcon blueColor">批复</span>';
+        }
+
+        if(row.paperIsRequire=='1'){
+            tag += '<span class="circleIcon blueColor">纸必</span>';
+        }
+
+        if(row.attIsRequire=='1'){
+            tag += '<span class="circleIcon blueColor">电必</span>';
+        }
+        tag += '&nbsp;&nbsp;';
+        return name + tag ;
     }
 </script>
