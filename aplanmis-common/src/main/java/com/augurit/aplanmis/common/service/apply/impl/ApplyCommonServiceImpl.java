@@ -2,6 +2,7 @@ package com.augurit.aplanmis.common.service.apply.impl;
 
 import com.augurit.agcloud.bpm.common.domain.ActStoAppinst;
 import com.augurit.agcloud.bpm.common.domain.ActStoAppinstSubflow;
+import com.augurit.agcloud.bpm.common.engine.BpmProcessService;
 import com.augurit.agcloud.bpm.common.mapper.ActStoAppinstMapper;
 import com.augurit.agcloud.bpm.common.mapper.ActStoAppinstSubflowMapper;
 import com.augurit.agcloud.bsc.util.UuidUtil;
@@ -93,6 +94,8 @@ public class ApplyCommonServiceImpl implements ApplyCommonService {
     private ActStoAppinstMapper actStoAppinstMapper;
     @Autowired
     private ActStoAppinstSubflowMapper actStoAppinstSubflowMapper;
+    @Autowired
+    private BpmProcessService bpmProcessService;
 
 
     @Override
@@ -268,8 +271,17 @@ public class ApplyCommonServiceImpl implements ApplyCommonService {
             ActStoAppinst masterAppinst = appinstList.get(0);
 
             String masterProcinstId = masterAppinst.getProcinstId();
-
+            //加上流程是否挂起判断
+            boolean masterIsSuspended = false;
+            if (bpmProcessService.isProcessSuspended(masterProcinstId)) {
+                bpmProcessService.activateProcessInstanceById(masterProcinstId);
+                masterIsSuspended = true;
+            }
             runtimeService.setVariable(masterProcinstId,"form",updateApplyinst);
+            //如果原来流程是挂起的，则继续将流程挂起
+            if(masterIsSuspended){
+                bpmProcessService.suspendProcessInstanceById(masterProcinstId);
+            }
 
             ActStoAppinstSubflow subflow = new ActStoAppinstSubflow();
             subflow.setAppinstId(masterAppinst.getAppinstId());
@@ -278,7 +290,19 @@ public class ApplyCommonServiceImpl implements ApplyCommonService {
                 for(ActStoAppinstSubflow stoAppinstSubflow:subflowList){
                     String subflowProcinstId = stoAppinstSubflow.getSubflowProcinstId();
 
+                    //加上流程是否挂起判断
+                    boolean subFlowIsSuspended = false;
+                    if (bpmProcessService.isProcessSuspended(subflowProcinstId)) {
+                        bpmProcessService.activateProcessInstanceById(subflowProcinstId);
+                        subFlowIsSuspended = true;
+                    }
+
                     runtimeService.setVariable(subflowProcinstId,"form",updateApplyinst);
+
+                    //如果原来流程是挂起的，则继续将流程挂起
+                    if(subFlowIsSuspended){
+                        bpmProcessService.suspendProcessInstanceById(subflowProcinstId);
+                    }
                 }
             }
         }
