@@ -63,11 +63,12 @@
                                 data-url="${pageContext.request.contextPath}/aea/item/mat/listItemInOutNoSelectGlobalMat.do">
                             <thead>
                                 <tr>
-                                    <th data-field="#" data-checkbox="true" data-align="left" data-width="10">ID</th>
-                                    <th data-field="matName" data-align="left" data-width="300">材料名称</th>
-                                    <th data-field="matCode" data-align="left" data-width="150">材料编号</th>
+                                    <th data-field="#" data-checkbox="true" data-align="center" data-width="10">ID</th>
                                     <th data-field="matProp" data-formatter="matPropormatter"
-                                        data-align="center" data-colspan="1" data-width="80">材料性质</th>
+                                        data-align="left" data-colspan="1" data-width="60">材料性质</th>
+                                    <th data-field="matName" data-formatter="matNameFormatter"
+                                        data-align="left" data-width="300">材料名称</th>
+                                    <th data-field="matCode" data-align="left" data-width="150">材料编号</th>
                                     <th data-field="_operator" data-formatter="globalMatFormatter"
                                         data-align="center" data-width="50">操作</th>
                                 </tr>
@@ -80,3 +81,35 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+
+    function matNameFormatter(value, row, index, field) {
+
+        var name = row.matName+'&nbsp;&nbsp;';
+        var tag = "";
+        if(row.isCommon=='1'){
+            tag += '<span class="circleIcon blueColor">通用</span>';
+        }else{
+            tag += '<span class="circleIcon blueColor">情形</span>';
+        }
+
+        if(row.zcqy=='1'){
+            tag += '<span class="circleIcon blueColor">容缺</span>';
+        }
+
+        if(row.isOfficialDoc=='1'){
+            tag += '<span class="circleIcon blueColor">批复</span>';
+        }
+
+        if(row.paperIsRequire=='1'){
+            tag += '<span class="circleIcon blueColor">纸必</span>';
+        }
+
+        if(row.attIsRequire=='1'){
+            tag += '<span class="circleIcon blueColor">电必</span>';
+        }
+        tag += '&nbsp;&nbsp;';
+        return name + tag ;
+    }
+
+</script>
