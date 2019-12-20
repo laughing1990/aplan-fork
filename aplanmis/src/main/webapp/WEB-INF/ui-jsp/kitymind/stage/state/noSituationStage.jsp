@@ -130,6 +130,24 @@
             margin-top: 2%;
             max-width: 100% !important;
         }
+
+        .blueColor {
+
+            background-color: #52B6FD;
+        }
+
+        .circleIcon {
+
+            display: inline-block;
+            width: 34px;
+            height: 24px;
+            border-radius: 4px;
+            color: white;
+            text-align: center;
+            line-height: 24px;
+            font-size: 12px;
+            margin: 0px 2px;
+        }
     </style>
 </head>
 <body>
