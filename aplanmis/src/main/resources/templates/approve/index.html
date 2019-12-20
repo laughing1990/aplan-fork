@@ -636,7 +636,7 @@
                       </td>
                     </tr>
                   </table>
-                  
+                  <!-- 窗口人员 -->
                   <table class="spe-info-table">
                     <div class="table-section-title">受理信息</div>
                     <tr>
@@ -659,20 +659,35 @@
                       </td>
                     </tr>
                   </table>
-                  <table class="spe-info-table" v-if="item.cancelState!=0">
-                    <div class="table-section-title">部门意见</div>
-                  </table>
-                  <el-table border :data="item.aeaHiItemCancels" v-if="item.aeaHiItemCancels&&item.aeaHiItemCancels.length">
-                    <el-table-column label="部门" property="approvalOrgName"></el-table-column>
-                    <el-table-column label="事项名称" property="iteminstName"></el-table-column>
-                    <el-table-column label="部门意见" property="approvalOpinion"></el-table-column>
-                    <el-table-column label="状态" property="cancelState">
-                      <template slot-scope="scope">
-                        {{changeCancelState(scope.row.cancelState)}}
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                  <template v-if="isApprove==1">
+                  <!-- 各个审批部门意见-->
+                  <template v-if="item.cancelState!=0">
+                    <table class="spe-info-table">
+                      <div class="table-section-title">部门意见</div>
+                    </table>
+                    <el-table border :data="item.aeaHiItemCancels">
+                      <el-table-column width="25" type="expand">
+                        <template slot-scope="scope">
+                          <div class="spe-table-file-u" v-if="scope.row.bscAttFileAndDirs&&scope.row.bscAttFileAndDirs.length" v-for="file in scope.row.bscAttFileAndDirs">
+                            <i class="ag" v-html="getIconText(file.fileType)"
+                               :style="{color:getIconColor(file.fileType)}"></i>
+                            {{file.fileName}}
+                            <i class="ag ag-ope-btn ag-search" title="预览" @click="filePreview(file)"></i>
+                            <i class="ag ag-ope-btn ag-download" title="下载" @click="downOneFile(file)"></i>
+                          </div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="部门" width="200" property="approvalOrgName"></el-table-column>
+                      <el-table-column label="事项名称" property="iteminstName"></el-table-column>
+                      <el-table-column label="部门意见" property="approvalOpinion"></el-table-column>
+                      <el-table-column label="状态" width="100" property="cancelState">
+                        <template slot-scope="scope">
+                          {{changeCancelState(scope.row.cancelState)}}
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </template>
+                  <!-- 审批人员处理-->
+                  <template v-if="isApprover==1&&item.isOnlyRead==0&&item.iteminstCancelId">
                     <div class="file-opt-btn" style="margin-top:10px">
                       <el-upload ref="uploadCert2" class="upload-s-file" :action="ctx+'rest/certificate/certinst/att/upload'"
                                  :show-file-list="false" :http-request="appCancelBmUploadFile" :file-list="fileList">

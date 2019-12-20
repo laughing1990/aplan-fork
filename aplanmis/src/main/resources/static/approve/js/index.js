@@ -763,7 +763,7 @@ var vm = new Vue({
         type: 'get',
         data: {
           applyinstId: vm.masterEntityKey,
-          iteminstCancelId: vm.iteminstCancelId,
+          iteminstCancelId: item.iteminstCancelId,
           approvalOpinion: vm.bmHandleOpinion,
           cancelState: val,
           attId: vm.cancelAppForm.cancelUserAttId,
@@ -824,6 +824,7 @@ var vm = new Vue({
       }, function (res) {
         if (res.success) {
           vm.cancelAppDetailList = res.content;
+          vm.cancelAppDetailList.aeaHiItemCancels = vm.cancelAppDetailList.aeaHiItemCancels || [];
         } else {
           vm.$message.error(res.message || '加载撤件历史数据失败');
         }
@@ -2146,7 +2147,7 @@ var vm = new Vue({
           vm.recordIds = res.content.recordIds;// 附件关联id
           vm.attLink.recordId = vm.taskId;
           vm.isApprover = (vm.iteminstProcessinstId != null && vm.iteminstProcessinstId == vm.processInstanceId) ? '1' : '0';
-          // vm.isApprover = 0;
+          // vm.isApprover = 1;
           vm.getWayAType();
         } else {
           vm.$message.error(res.message);
