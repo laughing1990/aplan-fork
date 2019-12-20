@@ -641,13 +641,17 @@
                     <div class="table-section-title">受理信息</div>
                     <tr>
                       <td class="td-bg-grey w8">受理人</td>
-                      <td colspan="6">
+                      <td colspan="3">
                         {{item.handleUserName}}
+                      </td>
+                      <td class="td-bg-grey w8">受理时间</td>
+                      <td colspan="3">
+                        {{item.handleEndTime|formatDate}}
                       </td>
                     </tr>
                     <tr>
                       <td class="td-bg-grey w8">意见</td>
-                      <td colspan="6">
+                      <td colspan="7">
                         <template v-if="item.isOnlyRead==1">{{item.handleOpinion}}</template>
                         <template v-else>
                           <el-input type="textarea" v-model="ckHandleOpinion" :rows="3" placeholder="请输入意见"></el-input>
