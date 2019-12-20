@@ -53,17 +53,30 @@ label {
 .blueColor {
 
     background-color: #52B6FD;
+    color: white;
 }
 
 .circleIcon {
 
+    /*display: inline-block;*/
+    /*width: 34px;*/
+    /*height: 24px;*/
+    /*border-radius: 0px;*/
+    /*color: white;*/
+    /*text-align: center;*/
+    /*line-height: 24px;*/
+    /*font-size: 12px;*/
+    /*margin: 0px 1px;*/
+
+    width: 30px;
+    height: 30px;
     display: inline-block;
-    width: 34px;
-    height: 24px;
-    border-radius: 0px;
-    color: white;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    line-height: 24px;
-    font-size: 12px;
+    vertical-align: middle;
+    border-radius: 100%;
     margin: 0px 1px;
+    line-height: 29px;
+    font-size: 12px;
 }
