@@ -9,8 +9,8 @@ if (isDevelop) {
   // ctx = 'http://192.168.30.110:8083/aplanmis-front/'; // 邹永胜
   // ctx = 'http://192.168.30.98:8083/aplanmis-front/'; // 邹永胜
   // ctx = 'http://192.168.14.2:8083/aplanmis-front/'; // 邓振强
-  ctx = 'http://192.168.30.71:8083/aplanmis-front/'; // 陈泽浩
-  ctx = 'http://192.168.3.59:8083/aplanmis-front/'; // 陈泽浩
+  // ctx = 'http://192.168.30.71:8083/aplanmis-front/'; // 陈泽浩
+  // ctx = 'http://192.168.3.59:8083/aplanmis-front/'; // 陈泽浩
   // ctx = 'http://192.168.15.59:8083/aplanmis-front/'; // 王玲
   // ctx = 'http://192.168.15.179:8083/aplanmis-front/'; // 陈健锋
   // ctx = 'http://192.168.32.53:8083/aplanmis-front/'; // 陈杰文

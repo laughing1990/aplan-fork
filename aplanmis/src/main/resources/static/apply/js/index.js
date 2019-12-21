@@ -4446,6 +4446,11 @@ var vm = new Vue({
             _that.IsJustApplyinst = 2;
           }
           if(_that.submitCommentsType==4){
+            if (_that.needCallOneFormCb) {
+              _that.parallelApplyinstId=res.content;
+              _that.needCallOneFormCb = false;
+              vm.getAllForms(vm.stageId);
+            }
             if(_that.submitCommentsMatFlag == 'matForm'){
               _that.parallelApplyinstId=res.content;
               _that.getOneFormrender3(_that.parallelApplyinstId,_that.stoFormId);
@@ -6306,13 +6311,17 @@ var vm = new Vue({
         vm.oneformActiveName = oneFormInfo[0].formId;
       }
       vm.oneFormDialogVisible = true;
-      if (vm.oneFormOpened) return null;
-      vm.oneFormOpened = true;
+      // if (vm.oneFormOpened) return null;
+      // vm.oneFormOpened = true;
       if (vm.parallelApplyinstId == ''){
-        vm.showCommentDialog('4');
-        vm.needCallOneFormCb = true;
+        vm.$nextTick(function(){
+          vm.showCommentDialog('4');
+          vm.needCallOneFormCb = true;
+        })
       } else {
-        vm.oneFormCallback();
+        vm.$nextTick(function(){
+          vm.getAllForms(vm.stageId);
+        })
       }
 
       // vm.$nextTick(function(){
