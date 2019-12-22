@@ -533,6 +533,7 @@ var vm = new Vue({
       stageId: '',
       projInfoId: '',
       itemVersionId: '',
+      itemId: '',
       currentCertinstId: '',
       // 容缺时限配置
       RQtimeVisible: false,
@@ -2441,7 +2442,7 @@ var vm = new Vue({
         if (vm.isSeriesinst == '0') { // 多事项
           var targetUrl = oneFromSrc;
           if (vm.isApprover == '1') {
-            targetUrl += '&enableParamItem=true&itemId=' + vm.itemVersionId;
+            targetUrl += '&enableParamItem=true&itemId=' + vm.itemId;
           } else {
             targetUrl += '&enableParamItem=false';
           }
@@ -2482,7 +2483,7 @@ var vm = new Vue({
               applyinstId: vm.masterEntityKey,
               // stageId: vm.stageId,
               projInfoId: vm.projInfoId,
-              itemId: vm.itemVersionId,
+              itemId: vm.itemId,
               // applyinstId: 'fcf9d937-f670-4871-a430-34b01cafde9b',
               // stageId: 'f39985ed-9119-444f-b744-4167762a3872',
               // projInfoId: '347db5f9-f55f-44eb-9d1a-983ca263e8c4',
@@ -2789,6 +2790,7 @@ var vm = new Vue({
           vm.stageId = res.content.stageId;
           vm.projInfoId = res.content.projId;
           vm.itemVersionId = res.content.itemVerId;
+          vm.itemId = res.content.itemId;
           vm.initFormElementPriv();
         } else {
           vm.$message.error(res.message);
