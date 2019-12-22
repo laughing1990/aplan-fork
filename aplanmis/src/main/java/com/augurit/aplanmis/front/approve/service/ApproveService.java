@@ -213,6 +213,7 @@ public class ApproveService {
                             AeaHiIteminst iteminst = aeaHiIteminstMapper.getAeaHiIteminstById(iteminstId);
                             if (iteminst != null) {
                                 bpmApproveStateVo.setItemVerId(iteminst.getItemVerId());
+                                bpmApproveStateVo.setItemId(iteminst.getItemId());
                                 code = iteminst.getIteminstState();
                                 bpmApproveStateVo.setCurrentStateValue(iteminst.getIteminstState());
                             }

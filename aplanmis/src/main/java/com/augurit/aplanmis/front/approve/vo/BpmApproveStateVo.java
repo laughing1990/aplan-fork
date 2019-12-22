@@ -47,4 +47,7 @@ public class BpmApproveStateVo {
 
     @ApiModelProperty(value = "事项版本ID", required = true, dataType = "string")
     private String itemVerId;
+
+    @ApiModelProperty(value = "事项ID", required = true, dataType = "string")
+    private String itemId;
 }
