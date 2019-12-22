@@ -208,11 +208,11 @@ public class ApproveService {
                         //审批人员
                         currentIteminstId = iteminstId;
                         if (StringUtils.isNotBlank(iteminstId)) {
-
                             bpmApproveStateVo.setIsApprover("1");
 //                            if (StringUtils.isNotBlank(iteminstId)) {
                             AeaHiIteminst iteminst = aeaHiIteminstMapper.getAeaHiIteminstById(iteminstId);
                             if (iteminst != null) {
+                                bpmApproveStateVo.setItemVerId(iteminst.getItemVerId());
                                 code = iteminst.getIteminstState();
                                 bpmApproveStateVo.setCurrentStateValue(iteminst.getIteminstState());
                             }
@@ -244,6 +244,7 @@ public class ApproveService {
                 }
             }
         }
+
         bpmApproveStateVo.setCurrentState(currentState);
         //增加是否发起补正和特殊程序状态
         if (StringUtils.isNotBlank(currentIteminstId)) {
