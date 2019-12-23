@@ -1252,6 +1252,16 @@
             <el-button class="fr" type="primary" icon="el-icon-wallet" @click="saveSmsinfo">保存</el-button>
           </el-collapse-item>
           <!--办证结果取件方式 end-->
+            <!--是否设置为绿色通道 start-->
+            <el-collapse-item name="6" id="isGreenWay">
+                <template slot="title">
+                    <i class="header-icon el-icon-info"></i>其他设置
+                </template>
+                <el-checkbox v-model="isGreenWay">
+                    设为绿色通道（图例：<span class="is-circle-green">绿</span>）
+                </el-checkbox>
+            </el-collapse-item>
+            <!--是否设置为绿色通道 end-->
         </template>
       
       </template>
