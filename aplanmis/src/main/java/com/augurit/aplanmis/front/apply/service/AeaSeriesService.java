@@ -126,13 +126,14 @@ public class AeaSeriesService {
      * @param seriesApplyDataVo 单项申报参数实体
      */
     public String stagingApply(SeriesApplyDataVo seriesApplyDataVo) throws Exception {
-
         //创建事项、情形、申请实例，并启动流程
         ApplyInstantiateResult applyResult = this.instantiateSeriesApply(seriesApplyDataVo);
         seriesApplyDataVo.setApplyinstCode(applyResult.getApplyinstCode());
-        //挂起流程
-        bpmProcessService.suspendProcessInstanceById(applyResult.getProcInstId());
 
+        if (StringUtils.isNotBlank(applyResult.getProcInstId())) {
+            //挂起流程
+            bpmProcessService.suspendProcessInstanceById(applyResult.getProcInstId());
+        }
         return seriesApplyDataVo.getApplyinstId();
     }
 
@@ -352,16 +353,18 @@ public class AeaSeriesService {
         String opuWinId = aeaServiceWindowService.getCurrentUserWindow() == null ? "" : aeaServiceWindowService.getCurrentUserWindow().getWindowId();
         AeaHiApplyinst seriesApplyinst;
         // 一张表单仅仅实例化了申报实例的情况
-        if (Status.ON.equals(seriesApplyDataVo.getIsJustApplyinst())) {
+        if (Status.ON.equals(seriesApplyDataVo.getIsJustApplyinst()) || StringUtils.isNotBlank(seriesApplyDataVo.getApplyinstId())) {
             seriesApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(seriesApplyDataVo.getApplyinstId());
             if (seriesApplyinst == null) {
                 throw new Exception("找不到申报实例 applyinstId: " + seriesApplyDataVo.getApplyinstId());
             }
             // 暂存后申报, 先清空实例
-            if (Status.ON.equals(seriesApplyinst.getIsTemporarySubmit())) {
+            if (Status.ON.equals(seriesApplyinst.getIsTemporarySubmit()) || "2".equals(seriesApplyinst.getIsTemporarySubmit())) {
                 applyCommonService.clearHistoryInst(seriesApplyDataVo.getApplyinstId());
-                seriesApplyinst.setIsTemporarySubmit(Status.OFF);
-                aeaHiApplyinstService.updateAeaHiApplyinst(seriesApplyinst);
+                if (Status.ON.equals(seriesApplyinst.getIsTemporarySubmit())) {
+                    seriesApplyinst.setIsTemporarySubmit(Status.OFF);
+                    aeaHiApplyinstService.updateAeaHiApplyinst(seriesApplyinst);
+                }
             }
             if (StringUtils.isNotBlank(seriesApplyinst.getApplyinstState())) {
                 aeaLogApplyStateHistService.insertTriggerAeaLogApplyStateHist(seriesApplyinst.getApplyinstId(), null, appinstId, null, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), opuWinId);
@@ -383,6 +386,9 @@ public class AeaSeriesService {
             //1、保存单项实例
             aeaHiSeriesinst = aeaHiSeriesinstService.createAeaHiSeriesinst(seriesApplyinstId, appinstId, seriesApplyDataVo.getIsParallel(), stageId);
             //2、事项实例
+            aeaHiIteminst = aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), itemVerId, branchOrgMap, null, appinstId);
+        } else if ("2".equals(seriesApplyinst.getIsTemporarySubmit())) {
+            aeaHiSeriesinst = seriesInst;
             aeaHiIteminst = aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), itemVerId, branchOrgMap, null, appinstId);
         } else {
             aeaHiSeriesinst = seriesInst;
@@ -423,24 +429,30 @@ public class AeaSeriesService {
         //4、材料输入输出实例
         aeaHiItemInoutinstService.batchInsertAeaHiItemInoutinst(matinstsIds, seriesApplyinstId, SecurityContext.getCurrentUserName());
 
-        //5、启动主流程
-        BpmProcessInstance processInstance = aeaBpmProcessService.startFlow(appId, appinstId, seriesApplyinst);
+        if ("2".equals(seriesApplyinst.getIsTemporarySubmit())) {
+            applyCommonService.updateApplyProcessVariable(seriesApplyinst);
+        } else {
+            //5、启动主流程
+            BpmProcessInstance processInstance = aeaBpmProcessService.startFlow(appId, appinstId, seriesApplyinst);
 
-        if (processInstance == null || processInstance.getProcessInstance() == null) {
-            throw new RuntimeException("流程启动失败！");
+            if (processInstance == null || processInstance.getProcessInstance() == null) {
+                throw new RuntimeException("流程启动失败！");
+            }
+
+            //查询出流程第一个节点
+            List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstance().getId()).list();
+            //6.流程发起后，更新初始事项历史的taskId
+            AeaLogItemStateHist logItemStateHist = aeaLogItemStateHistService.getInitStateAeaLogItemStateHist(aeaHiIteminst.getIteminstId(), appinstId);
+            logItemStateHist.setTaskinstId(tasks.get(0).getId());
+            aeaLogItemStateHistService.updateAeaLogItemStateHist(logItemStateHist);
+
+            //流程发起后，更新初始申请历史的taskId
+            AeaLogApplyStateHist applyStateHist = aeaLogApplyStateHistService.getInitStateAeaLogApplyStateHist(seriesApplyinstId, appinstId);
+            applyStateHist.setTaskinstId(tasks.get(0).getId());
+            aeaLogApplyStateHistService.updateAeaLogApplyStateHist(applyStateHist);
+
+            applyInstantiateResult.setProcInstId(processInstance.getProcessInstance().getId());
         }
-
-        //查询出流程第一个节点
-        List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstance().getId()).list();
-        //6.流程发起后，更新初始事项历史的taskId
-        AeaLogItemStateHist logItemStateHist = aeaLogItemStateHistService.getInitStateAeaLogItemStateHist(aeaHiIteminst.getIteminstId(), appinstId);
-        logItemStateHist.setTaskinstId(tasks.get(0).getId());
-        aeaLogItemStateHistService.updateAeaLogItemStateHist(logItemStateHist);
-
-        //流程发起后，更新初始申请历史的taskId
-        AeaLogApplyStateHist applyStateHist = aeaLogApplyStateHistService.getInitStateAeaLogApplyStateHist(seriesApplyinstId, appinstId);
-        applyStateHist.setTaskinstId(tasks.get(0).getId());
-        aeaLogApplyStateHistService.updateAeaLogApplyStateHist(applyStateHist);
 
         //8.保存申请实例与项目之间的关系 aea_applyinst_proj
         applyCommonService.bindApplyinstProj(projInfoIds[0], seriesApplyinst.getApplyinstId(), SecurityContext.getCurrentUserId());
@@ -470,16 +482,9 @@ public class AeaSeriesService {
             }
         }
 
-        //保存回执前需要更新aea_hi_sms数据，否则查询不到数据，回执无法保存
-        /*if (isNeedSaveReceive) {
-            receiveService.saveReceive(new String[]{seriesApplyinstId}, receiptTypes, SecurityContext.getCurrentUserName());
-        }*/
-
         applyInstantiateResult.setAppinstId(appinstId);
         applyInstantiateResult.setApplyinstId(seriesApplyinstId);
         applyInstantiateResult.setApplyinstCode(seriesApplyinst.getApplyinstCode());
-        applyInstantiateResult.setProcInstId(processInstance.getProcessInstance().getId());
-
         return applyInstantiateResult;
     }
 

@@ -4346,7 +4346,7 @@
             AND ahap_123.IS_DELETED = '0'
             AND ahap_123.APPLYINST_STATE = '1'
             AND ahap_123.IS_SERIES_APPROVE = '0'
-            AND ahap_123.IS_TEMPORARY_SUBMIT = '1'
+            AND ahap_123.IS_TEMPORARY_SUBMIT in('1', '2')
             <if test="theme != null and theme != '' ">
                 AND theme.THEME_ID = #{theme}
             </if>
@@ -4416,7 +4416,7 @@
                     AND ahap_123.CREATER is null
                 </otherwise>
             </choose>
-            AND ahap_123.IS_TEMPORARY_SUBMIT = '1'
+            AND ahap_123.IS_TEMPORARY_SUBMIT in('1', '2')
             <include refid="baseConditionalQuery">
             </include>
         </where>

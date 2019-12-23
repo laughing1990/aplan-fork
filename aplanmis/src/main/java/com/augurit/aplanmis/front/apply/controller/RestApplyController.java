@@ -155,6 +155,12 @@ public class RestApplyController {
     @ApiOperation(value = "并联申报 --> 保存领件人信息", httpMethod = "POST")
     public ContentResultForm<String> saveOrUpdateSmsInfo(@Valid SmsInfoVo smsInfoVo) throws Exception {
         String id;
+        if (StringUtils.isNotBlank(smsInfoVo.getApplyinstId())) {
+            AeaHiSmsInfo aeaHiSmsInfo = aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(smsInfoVo.getApplyinstId());
+            if (aeaHiSmsInfo != null) {
+                return new ContentResultForm<>(true, aeaHiSmsInfo.getId(), "Save aeaHiSmsInfo success");
+            }
+        }
         if (StringUtils.isBlank(smsInfoVo.getId())) {
             AeaHiSmsInfo aeaHiSmsInfo = aeaHiSmsInfoService.createAeaHiSmsInfo(smsInfoVo.toSmsInfo());
             id = aeaHiSmsInfo.getId();

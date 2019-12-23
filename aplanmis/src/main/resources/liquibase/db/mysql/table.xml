@@ -1447,6 +1447,17 @@
         </sql>
     </changeSet>
 
+    <changeSet id="20191219114659" author="xiong" failOnError="false">
+        <preConditions>
+            <columnExists tableName="aea_hi_applyinst" columnName="IS_TEMPORARY_SUBMIT"/>
+        </preConditions>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_applyinst`
+            MODIFY COLUMN `IS_TEMPORARY_SUBMIT` char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '0'
+            COMMENT '申报实例产生方式 0: 正常申报, 1: 暂存, 2: 打印回执' AFTER `ROOT_ORG_ID`;
+        </sql>
+    </changeSet>
+
     <changeSet id="201912191404" author="qinjp" failOnError="false">
         <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
             ALTER TABLE `aea_hi_applyinst`

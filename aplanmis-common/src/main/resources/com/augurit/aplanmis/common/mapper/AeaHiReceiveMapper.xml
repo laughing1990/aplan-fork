@@ -163,6 +163,13 @@
         delete from AEA_HI_RECEIVE where RECEIVE_ID = #{id}
     </delete>
 
+    <delete id="deleteAeaHiReceives">
+        delete from AEA_HI_RECEIVE where RECEIVE_ID in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
     <select id="getAeaHiReceiveByApplyinstIdAndReceiptType" resultType="AeaHiReceive">
         select
         <include refid="allColumns"/>
@@ -250,8 +257,8 @@
                 </foreach>
             </if>
             <if test="receiptTypes!=null">
-                RECEIPT_TYPE in
-                <foreach collection="receiptTypes" close=")" item="receiptType" open="(" separator=",">#{receiptTypes}
+                and RECEIPT_TYPE in
+                <foreach collection="receiptTypes" close=")" item="receiptType" open="(" separator=",">#{receiptType}
                 </foreach>
             </if>
         </where>

@@ -30,9 +30,7 @@ import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemMatinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemStateinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiIteminstMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiParStageinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiParStateinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiSeriesinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemStateMapper;
 import com.augurit.aplanmis.common.mapper.AeaLogItemStateHistMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStateMapper;
@@ -68,10 +66,6 @@ public class ApplyCommonServiceImpl implements ApplyCommonService {
     private AeaApplyinstProjMapper aeaApplyinstProjMapper;
     @Autowired
     private AeaHiApplyinstMapper aeaHiApplyinstMapper;
-    @Autowired
-    private AeaHiSeriesinstMapper aeaHiSeriesinstMapper;
-    @Autowired
-    private AeaHiParStageinstMapper aeaHiParStageinstMapper;
     @Autowired
     private AeaHiItemMatinstMapper aeaHiItemMatinstMapper;
     @Autowired
