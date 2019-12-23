@@ -54,6 +54,11 @@ public class AeaParStageItem implements Serializable {
     private String isOptionItem;
 
     /**
+     * 是否必办事项  1 是 0 否
+     */
+    private String isDoneItem;
+
+    /**
      * 智能表单Id
      */
     private String subFormId;

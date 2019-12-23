@@ -329,4 +329,10 @@
         </sql>
     </changeSet>
 
+    <changeSet id="201912231200" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_par_stage_item set IS_DONE_ITEM = case IS_OPTION_ITEM when '0' THEN '1' ELSE '0' END;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

@@ -29,22 +29,12 @@ var selectItemKey,
             showHorizontal: false//设置是否水平平铺树（自定义属性）
 
         },
-        // async: {
-        //     //设置 zTree 是否开启异步加载模式
-        //     enable: false,
-        //     autoParam: ["id","name","type"],
-        //     url:ctx+"/aea/item/gtreeItemAsyncZTree.do"
-        // },
         //用于捕获节点被点击的事件回调函数
         callback: {
             beforeCheck: beforeSelectItemCheck,
             onCheck: onSelectItemCheck,
             beforeClick: beforeSelectItemClick,
             onClick: onClickSelectItemNode,
-            //onAsyncSuccess: onAsyncSuccessSelectItemNode
-            // beforeAsync: beforeAsync,
-            // onAsyncSuccess: onAsyncSuccess,
-            // onAsyncError: onAsyncError
         }
     };
 
@@ -68,6 +58,45 @@ function beforeSelectItemClick(treeId, treeNode, clickFlag) {
     }
 };
 
+/**
+ * 
+ * 处理是否必选功能
+ *
+ * @param isShowData 是否回显示数据
+ * @param data
+ *
+ */
+function handleIsSel(isShowData, data){
+
+    var iSel = data.isDoneItem;
+    var itemId = data.itemId;
+    var itemVerId = data.itemVerId;
+    if(isShowData){
+        if(iSel=='1'){
+            return  '&nbsp;<label class="isSelLabel">' +
+                        '<input type="radio" name="'+itemId+'*'+itemVerId+'" value="1" checked>&nbsp;必办&nbsp;&nbsp;' +
+                    '</label>' +
+                    '<label class="isSelLabel">'+
+                        '<input type="radio" name="'+itemId+'*'+itemVerId+'" value="0">&nbsp;非必办' +
+                    '</label>';
+        }else{
+            return  '&nbsp;<label class="isSelLabel">' +
+                        '<input type="radio" name="'+itemId+'*'+itemVerId+'" value="1">&nbsp;必办&nbsp;&nbsp;' +
+                    '</label>' +
+                    '<label class="isSelLabel">'+
+                        '<input type="radio" name="'+itemId+'*'+itemVerId+'" value="0" checked>&nbsp;非必办' +
+                    '</label>';
+        }
+    }else{
+        return  '&nbsp;<label>' +
+                    '<input type="radio" name="'+itemId+'*'+itemVerId+'" value="1" checked>&nbsp;必办&nbsp;&nbsp;' +
+                '</label>' +
+                '<label class="isSelLabel">'+
+                    '<input type="radio" name="'+itemId+'*'+itemVerId+'" value="0">&nbsp;非必办' +
+                '</label>';
+    }
+}
+
 
 /**
  * onCheck事件响应函数
@@ -86,6 +115,7 @@ function onSelectItemCheck(event, treeId, treeNode){
                 var liHtml = '<li name="selectItemLi" category-id="'+treeNode.itemId + '*' +treeNode.itemVerId+'">' +
                                  '<span class="drag-handle_td" onclick="removeSelectedItem(\''+treeNode.itemId+'\');">×</span>' +
                                  '<span class="org_name_td">'+ treeNode.name +'</span>' +
+                                 handleIsSel(false, treeNode)+
                              '</li>';
                 var i=0;
                 $('li[name="selectItemLi"]').each(function(){
@@ -120,7 +150,8 @@ function onSelectItemCheck(event, treeId, treeNode){
                 treeObj.selectNode(treeNode);
                 var liHtml = '<li name="selectNotNeedItemLi" category-id="'+treeNode.itemId + '*' +treeNode.itemVerId+'">' +
                                  '<span class="drag-handle_td" onclick="removeNoNeedSelectedItem(\''+treeNode.itemId+'\');">×</span>' +
-                                 '<span class="org_name_td">'+treeNode.name+'</span>' +
+                                 '<span class="org_name_td">'+ treeNode.name +'</span>' +
+                                 handleIsSel(false, treeNode)+
                              '</li>';
                 var i=0;
                 $('li[name="selectNotNeedItemLi"]').each(function(){
@@ -155,6 +186,7 @@ function onSelectItemCheck(event, treeId, treeNode){
                 var liHtml = '<li name="selectFrontCheckItemLi" category-id="'+treeNode.itemId + '*' +treeNode.itemVerId+'">' +
                                 '<span class="drag-handle_td" onclick="removeFrontCheckSelectedItem(\''+treeNode.itemId+'\');">×</span>' +
                                 '<span class="org_name_td">'+treeNode.name+'</span>' +
+                                handleIsSel(false, treeNode)+
                              '</li>';
                 var i=0;
                 $('li[name="selectFrontCheckItemLi"]').each(function(){
@@ -207,6 +239,7 @@ function onClickSelectItemNode(event, treeId, treeNode) {
                 var liHtml = '<li name="selectItemLi" category-id="' + treeNode.itemId + '*' + treeNode.itemVerId + '">' +
                                 '<span class="drag-handle_td" onclick="removeSelectedItem(\'' + treeNode.itemId + '\');">×</span>' +
                                 '<span class="org_name_td">' + treeNode.name+ '</span>' +
+                                handleIsSel(false, treeNode)+
                              '</li>';
                 var i = 0;
                 $('li[name="selectItemLi"]').each(function () {
@@ -242,6 +275,7 @@ function onClickSelectItemNode(event, treeId, treeNode) {
                 var liHtml = '<li name="selectNotNeedItemLi" category-id="' + treeNode.itemId + '*' + treeNode.itemVerId + '">' +
                                 '<span class="drag-handle_td" onclick="removeNoNeedSelectedItem(\'' + treeNode.itemId + '\');">×</span>' +
                                 '<span class="org_name_td">' + treeNode.name + '</span>' +
+                                handleIsSel(false, treeNode)+
                              '</li>';
                 var i = 0;
                 $('li[name="selectNotNeedItemLi"]').each(function () {
@@ -276,6 +310,7 @@ function onClickSelectItemNode(event, treeId, treeNode) {
                 var liHtml = '<li name="selectFrontCheckItemLi" category-id="' + treeNode.itemId + '*' + treeNode.itemVerId + '">' +
                                  '<span class="drag-handle_td" onclick="removeFrontCheckSelectedItem(\'' + treeNode.itemId + '\');">×</span>' +
                                  '<span class="org_name_td">' + treeNode.name + '</span>' +
+                                 handleIsSel(false, treeNode)+
                              '</li>';
                 var i = 0;
                 $('li[name="selectFrontCheckItemLi"]').each(function () {
@@ -460,11 +495,13 @@ $(function(){
         if(curIsEditable){
             var itemIds = [];
             var sortNos = [];
-            var itemVerIds = [];
+            var isDoneItems = [];
             var liObjs = document.getElementsByName('selectItemLi');
             for (var i = 0; i < liObjs.length; i++) {
-                itemIds.push($(liObjs[i]).attr('category-id'));
-                sortNos.push(i + 1);
+                var itemId = $(liObjs[i]).attr('category-id');
+                itemIds.push(itemId);
+                sortNos.push(i+1);
+                isDoneItems.push($("#selectedItemUl input[name='"+itemId+"']:checked").val());
             }
             swal({
                 title: '此操作影响：',
@@ -478,7 +515,13 @@ $(function(){
                     $.ajax({
                         url: ctx + '/aea/par/stage/item/batchSaveStageItem.do',
                         type: 'POST',
-                        data: {'itemIds': itemIds.toString(), 'sortNos': sortNos.toString(), 'stageId': currentBusiId, 'isOptionItem':'0'},
+                        data: {
+                            'itemIds': itemIds.toString(),
+                            'sortNos': sortNos.toString(),
+                            'isDoneItems': isDoneItems.toString(),
+                            'stageId': currentBusiId,
+                            'isOptionItem':'0'
+                        },
                         async: false,
                         success: function (result) {
                             if (result.success) {
@@ -508,11 +551,13 @@ $(function(){
         if(curIsEditable){
             var itemIds = [];
             var sortNos = [];
-            var itemVerIds = [];
+            var isDoneItems = [];
             var liObjs = document.getElementsByName('selectNotNeedItemLi');
             for (var i = 0; i < liObjs.length; i++) {
-                itemIds.push($(liObjs[i]).attr('category-id'));
-                sortNos.push(i + 1);
+                var itemId = $(liObjs[i]).attr('category-id');
+                itemIds.push(itemId);
+                sortNos.push(i+1);
+                isDoneItems.push($("#selectedNotNeedItemUl input[name='"+itemId+"']:checked").val());
             }
             swal({
                 title: '此操作影响：',
@@ -526,7 +571,13 @@ $(function(){
                     $.ajax({
                         url: ctx + '/aea/par/stage/item/batchSaveStageItem.do',
                         type: 'POST',
-                        data: {'itemIds': itemIds.toString(), 'sortNos': sortNos.toString(), 'stageId': currentBusiId, 'isOptionItem':'1'},
+                        data: {
+                            'itemIds': itemIds.toString(),
+                            'sortNos': sortNos.toString(),
+                            'isDoneItems': isDoneItems.toString(),
+                            'stageId': currentBusiId,
+                            'isOptionItem':'1'
+                        },
                         async: false,
                         success: function (result) {
                             if (result.success) {
@@ -555,11 +606,13 @@ $(function(){
         if(curIsEditable){
             var itemIds = [];
             var sortNos = [];
-            var itemVerIds = [];
+            var isDoneItems = [];
             var liObjs = document.getElementsByName('selectFrontCheckItemLi');
             for (var i = 0; i < liObjs.length; i++) {
-                itemIds.push($(liObjs[i]).attr('category-id'));
-                sortNos.push(i + 1);
+                var itemId = $(liObjs[i]).attr('category-id');
+                itemIds.push(itemId);
+                sortNos.push(i+1);
+                isDoneItems.push($("#selectedFrontCheckItemUl input[name='"+itemId+"']:checked").val());
             }
             swal({
                 title: '此操作影响：',
@@ -573,7 +626,13 @@ $(function(){
                     $.ajax({
                         url: ctx + '/aea/par/stage/item/batchSaveStageItem.do',
                         type: 'POST',
-                        data: {'itemIds': itemIds.toString(), 'sortNos': sortNos.toString(), 'stageId': currentBusiId, 'isOptionItem':'2'},
+                        data: {
+                            'itemIds': itemIds.toString(),
+                            'sortNos': sortNos.toString(),
+                            'isDoneItems': isDoneItems.toString(),
+                            'stageId': currentBusiId,
+                            'isOptionItem':'2'
+                        },
                         async: false,
                         success: function (result) {
                             if (result.success) {
@@ -980,6 +1039,7 @@ function loadSelectedItemData(){
                     var liHtml = '<li name="selectItemLi" category-id="' + data[i].itemId + '*' + data[i].itemVerId + '">' +
                                     '<span class="drag-handle_td" onclick="removeSelectedItem(\'' + data[i].itemId + '\');">×</span>' +
                                     '<span class="org_name_td">' + itemName + '</span>' +
+                                    handleIsSel(true, data[i])+
                                 '</li>';
                     $('#selectedItemUl').append(liHtml);
                 }
@@ -1035,6 +1095,7 @@ function loadNotNeedSelectedItemData(){
                     var liHtml = '<li name="selectNotNeedItemLi" category-id="' + data[i].itemId + '*' + data[i].itemVerId + '">' +
                                     '<span class="drag-handle_td" onclick="removeNoNeedSelectedItem(\'' + data[i].itemId + '\');">×</span>' +
                                     '<span class="org_name_td">' + itemName + '</span>' +
+                                    handleIsSel(true, data[i])+
                                  '</li>';
                     $('#selectedNotNeedItemUl').append(liHtml);
                 }
@@ -1078,6 +1139,7 @@ function loadFrontCheckSelectedItemData(){
                     var liHtml = '<li name="selectFrontCheckItemLi" category-id="' + data[i].itemId + '*' + data[i].itemVerId + '">' +
                                      '<span class="drag-handle_td" onclick="removeFrontCheckSelectedItem(\'' + data[i].itemId + '\');">×</span>' +
                                      '<span class="org_name_td">' + itemName +'</span>' +
+                                     handleIsSel(true, data[i])+
                                  '</li>';
                     $('#selectedFrontCheckItemUl').append(liHtml);
                 }

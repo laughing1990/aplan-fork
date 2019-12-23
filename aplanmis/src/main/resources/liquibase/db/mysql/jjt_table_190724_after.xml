@@ -1128,4 +1128,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="201912231005" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_par_stage_item`
+            ADD COLUMN `IS_DONE_ITEM`  char(1) NULL COMMENT '是否必办事项  1 是 0 否' AFTER `IS_OPTION_ITEM`;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

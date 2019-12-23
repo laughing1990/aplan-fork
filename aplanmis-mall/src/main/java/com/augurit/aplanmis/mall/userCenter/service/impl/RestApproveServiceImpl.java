@@ -367,7 +367,7 @@ public class RestApproveServiceImpl implements RestApproveService {
                 for (AeaHiApplyinst seriesApplyinst:list){
                     ParallelApplyItemStateDetailVo parallelApplyItemStateDetailVo=new ParallelApplyItemStateDetailVo();
                     parallelApplyItemStateDetailVo.setSeriesApplyinstId(seriesApplyinst.getApplyinstId());
-                    List<AeaHiIteminst> aeaHiIteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId, null);
+                    List<AeaHiIteminst> aeaHiIteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(seriesApplyinst.getApplyinstId(), null);
                     List<Map<String, String>> stateList = aeaHiItemStateinstService.listSelectedAeaItemStateinstBySeriesinstIdOrApplyinstId(seriesApplyinst.getApplyinstId(), "");
                     if(aeaHiIteminstList.size()>0){
                         parallelApplyItemStateDetailVo.setIteminstId(aeaHiIteminstList.get(0).getIteminstId());
