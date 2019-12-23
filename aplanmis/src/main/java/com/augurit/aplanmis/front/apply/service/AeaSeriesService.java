@@ -361,10 +361,6 @@ public class AeaSeriesService {
             // 暂存后申报, 先清空实例
             if (Status.ON.equals(seriesApplyinst.getIsTemporarySubmit()) || "2".equals(seriesApplyinst.getIsTemporarySubmit())) {
                 applyCommonService.clearHistoryInst(seriesApplyDataVo.getApplyinstId());
-                if (Status.ON.equals(seriesApplyinst.getIsTemporarySubmit())) {
-                    seriesApplyinst.setIsTemporarySubmit(Status.OFF);
-                    aeaHiApplyinstService.updateAeaHiApplyinst(seriesApplyinst);
-                }
             }
             if (StringUtils.isNotBlank(seriesApplyinst.getApplyinstState())) {
                 aeaLogApplyStateHistService.insertTriggerAeaLogApplyStateHist(seriesApplyinst.getApplyinstId(), null, appinstId, null, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), opuWinId);
@@ -390,7 +386,7 @@ public class AeaSeriesService {
             aeaHiSeriesinst = aeaHiSeriesinstService.createAeaHiSeriesinst(seriesApplyinstId, appinstId, seriesApplyDataVo.getIsParallel(), stageId);
             //2、事项实例
             aeaHiIteminst = aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), itemVerId, branchOrgMap, null, appinstId);
-        } else if ("2".equals(seriesApplyinst.getIsTemporarySubmit())) {
+        } else if ("2".equals(seriesApplyinst.getIsTemporarySubmit()) || Status.ON.equals(seriesApplyinst.getIsTemporarySubmit())) {
             aeaHiSeriesinst = seriesInst;
             aeaHiIteminst = aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), itemVerId, branchOrgMap, null, appinstId);
         } else {
