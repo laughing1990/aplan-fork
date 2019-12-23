@@ -83,7 +83,7 @@ public class DiagramController {
                 modelAndView.addObject("projInfoId", aeaProjInfo.getProjInfoId());
 
                 if(globalDiagramStatus == null || StringUtils.isBlank(globalDiagramStatus.getDiagramJson())){
-                    errorMsg = "当前项目未绑定主题或所属主题未设置全景图！";
+                    errorMsg = "当前项目未绑定主题或项目类型未设置全景图！";
                     modelAndView.addObject("errorMsg", errorMsg);
                     return modelAndView;
                 }

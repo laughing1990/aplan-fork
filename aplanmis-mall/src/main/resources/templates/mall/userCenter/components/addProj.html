@@ -33,7 +33,7 @@
                 <el-input class="w-320" v-model="projInfoForm.gcbm" placeholder="请填写工程代码"></el-input>
             </el-form-item>
 
-            <el-form-item class="wt448" label="所属主题">
+            <el-form-item class="wt448" label="项目类型">
                 <el-select filterable clearable class="w-320" v-model="projInfoForm.themeId">
                     <el-option v-for="item in themeList" :key="item.themeId" :label="item.themeName"
                                :value="item.themeId">

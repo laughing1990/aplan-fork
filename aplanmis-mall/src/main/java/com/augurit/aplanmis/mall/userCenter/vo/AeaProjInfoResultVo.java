@@ -23,9 +23,9 @@ public class AeaProjInfoResultVo implements Serializable {
     private String localCode;
     @ApiModelProperty(value = "工程编码")
     private String gcbm;
-    @ApiModelProperty(value = "所属主题")
+    @ApiModelProperty(value = "项目类型")
     private String themeName;
-    @ApiModelProperty(value = "所属主题ID")
+    @ApiModelProperty(value = "项目类型ID")
     private String themeId;
 //    @ApiModelProperty("是否有子项目")
 //    private boolean hasChildren;

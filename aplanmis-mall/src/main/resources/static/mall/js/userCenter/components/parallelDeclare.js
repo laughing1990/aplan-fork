@@ -290,7 +290,7 @@ var module1 = new Vue({
           { required: true, message: '请选择立项类型', trigger: 'change' },
         ],
         themeId: [
-          { required: true, message: '请选择所属主题', trigger: 'change' },
+          { required: true, message: '请选择项目类型', trigger: 'change' },
         ],
         projNature: [
           { required: true, message: '请选择建设性质', trigger: 'change' },

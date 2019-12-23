@@ -44,9 +44,9 @@
                                     <ul v-show="item.open">
                                         <li  :class="[itemSub.value == userCenterItemSelect ? 'active': '']"  v-for="(itemSub,indexSub) in item.childList" @click="userCenterMenuSelect(itemSub)">
                                             <a href="javascript:void(0);">{{itemSub.name}}
-                                                <span class="warning" v-if="itemSub.name== '办件列表'&& approvalNum">{{approvalNum}}</span>
-                                                <span class="warning" v-if="itemSub.name== '材料补全' && matCompletionNum ">{{matCompletionNum}}</span>
-                                                <span class="warning" v-if="itemSub.name== '材料补正'&& supplyNum  ">{{supplyNum}}</span>
+                                                <!--<span class="warning" v-if="itemSub.name== '办件列表'&& approvalNum">{{approvalNum}}</span>-->
+                                                <span class="warning" v-if="itemSub.name== '补齐补正' && matCompletionNum ">{{matCompletionNum}}</span>
+                                                <!--<span class="warning" v-if="itemSub.name== '材料补正'&& supplyNum  ">{{supplyNum}}</span>-->
                                                 <span class="warning" v-if="itemSub.name== '申报列表' && applyNum" >{{applyNum}}</span>
                                                 <span class="warning" v-if="itemSub.name== '撤件列表' && withdrawNum" >{{withdrawNum}}</span>
                                                 <span class="warning" v-if="itemSub.name== '草稿箱'&& draftNum ">{{draftNum}}</span>

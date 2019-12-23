@@ -106,38 +106,38 @@ var userCenter = (function () {
                         }
                         ,
                         {
-                            name: '材料补全',
+                            name: '补齐补正',
                             value: 'matCompletionList',
                             select: false,
                         }]
                     },
-                    {
-                        name: '办件管理',
-                        open: true,
-                      icon:'icon-4',
-                        childList: [
-                            {
-                                name: '办件列表',
-                                value: 'approve',
-                                select: false,
-                            }
-                            , {
-                                name: '材料补正',
-                                value: 'matSupplementList',
-                                select: false,
-                            }
-                        ]
-                    },
+                    // {
+                    //     name: '办件管理',
+                    //     open: true,
+                    //   icon:'icon-4',
+                    //     childList: [
+                    //         {
+                    //             name: '办件列表',
+                    //             value: 'approve',
+                    //             select: false,
+                    //         }
+                    //         , {
+                    //             name: '材料补正',
+                    //             value: 'matSupplementList',
+                    //             select: false,
+                    //         }
+                    //     ]
+                    // },
                     {
                         name: '我的资料库',
                         open: true,
                       icon:'icon-5',
                         childList: [
-                            {
-                                name: '我的云盘',
-                                value: 'MyCloundSpaces',
-                                select: false,
-                            },
+                            // {
+                            //     name: '我的云盘',
+                            //     value: 'MyCloundSpaces',
+                            //     select: false,
+                            // },
                             {
                                 name: '我的材料',
                                 value: 'MyMaterials',

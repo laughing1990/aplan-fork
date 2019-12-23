@@ -45,14 +45,14 @@
                 </td>
                 <td class="al" width="18%">
                   <el-tooltip placement="top" effect="light" v-if="item.isSeriesApprove == 1">
-                    <div slot="content">所属主题：{{item.themeName}}<br/> <br/>
+                    <div slot="content">项目类型：{{item.themeName}}<br/> <br/>
                       办理事项：【<span :style="'color:' + iteminstStateColorFormat(item.iteminst[0].iteminstState)">{{item.iteminst[0].iteminstState|iteminstStateFormat}}</span>】{{item.stageIteminstName}}</div>
                     <div>
                      <span class=" pro-name" >{{item.stageIteminstName}}</span>
                     </div>
                   </el-tooltip>
                   <el-tooltip placement="top" effect="light" v-else>
-                    <div slot="content">所属主题：{{item.themeName}} <br/> <br/>
+                    <div slot="content">项目类型：{{item.themeName}} <br/> <br/>
                       所处阶段：{{item.stageIteminstName}}<br/> <br/>
                       办理事项:
                       <template v-for="dto in item.iteminst">
@@ -146,14 +146,14 @@
                     <!--:title="item.stageIteminstName">{{item.stageIteminstName}}</span>-->
 
                   <el-tooltip placement="top" effect="light" v-if="item.isSeriesApprove == 1">
-                    <div slot="content">所属主题：{{item.themeName}}<br/> <br/>
+                    <div slot="content">项目类型：{{item.themeName}}<br/> <br/>
                       办理事项：【<span :style="'color:' + iteminstStateColorFormat(item.iteminst[0].iteminstState)">{{item.iteminst[0].iteminstState|iteminstStateFormat}}</span>】{{item.stageIteminstName}}</div>
                     <div>
                       <span class=" pro-name" >{{item.stageIteminstName}}</span>
                     </div>
                   </el-tooltip>
                   <el-tooltip placement="top" effect="light" v-else>
-                    <div slot="content">所属主题：{{item.themeName}} <br/> <br/>
+                    <div slot="content">项目类型：{{item.themeName}} <br/> <br/>
                       所处阶段：{{item.stageIteminstName}}<br/> <br/>
                       办理事项:
                       <template v-for="dto in item.iteminst">
