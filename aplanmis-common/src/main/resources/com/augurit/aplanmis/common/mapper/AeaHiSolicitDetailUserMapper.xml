@@ -21,6 +21,23 @@
     MODIFY_TIME  modifyTime
     </sql>
 
+    <sql id="allAlisColumns" >
+        ahsdu.DETAIL_TASK_ID  detailTaskId,
+        ahsdu.SOLICIT_DETAIL_ID  solicitDetailId,
+        ahsdu.USER_ID  userId,
+        ahsdu.USER_CONCLUSION  userConclusion,
+        ahsdu.USER_OPINION  userOpinion,
+        ahsdu.SIGN_TIME  signTime,
+        ahsdu.FILL_TIME  fillTime,
+        ahsdu.TASK_ACTION  taskAction,
+        ahsdu.PARENT_ID  parentId,
+        ahsdu.IS_DELETED  isDeleted,
+        ahsdu.CREATER  creater,
+        ahsdu.CREATE_TIME  createTime,
+        ahsdu.MODIFIER  modifier,
+        ahsdu.MODIFY_TIME  modifyTime
+    </sql>
+
 <!--2 根据主键ID查询单个实体 -->
 <select id="getAeaHiSolicitDetailUserById" resultType="AeaHiSolicitDetailUser" >
     select
@@ -29,6 +46,27 @@
     where    DETAIL_TASK_ID = #{id}
     AND  IS_DELETED = '0'
 </select>
+
+    <!--2.1 根据主键SOLICIT_DETAIL_ID查询一个detail下的所有用户信息 -->
+    <select id="getAeaHiSolicitDetailUserBySolicitDetailId" resultType="AeaHiSolicitDetailUser" >
+        select
+        <include refid="allAlisColumns"/>
+        from AEA_HI_SOLICIT_DETAIL_USER ahsdu
+        LEFT JOIN AEA_HI_SOLICIT_DETAIL ahsd on ahsdu.SOLICIT_DETAIL_ID = ahsd.SOLICIT_DETAIL_ID
+        where ahsdu.SOLICIT_DETAIL_ID = #{solicitDetailId}
+        AND ahsdu.IS_DELETED = '0' AND ahsd.IS_DELETED = '0'
+    </select>
+
+    <!--2.2 根据主键SOLICIT_ID查询一个solicit下的所有用户信息 -->
+    <select id="getAeaHiSolicitDetailUserBySolicitId" resultType="AeaHiSolicitDetailUser" >
+        select
+        <include refid="allAlisColumns"/>
+        from AEA_HI_SOLICIT_DETAIL_USER ahsdu
+        LEFT JOIN AEA_HI_SOLICIT_DETAIL ahsd on ahsdu.SOLICIT_DETAIL_ID = ahsd.SOLICIT_DETAIL_ID
+        LEFT JOIN AEA_HI_SOLICIT ahs on ahs.SOLICIT_ID = ahsd.SOLICIT_ID
+        where ahs.SOLICIT_ID = #{solicitId}
+        AND ahsdu.IS_DELETED = '0' AND ahsd.IS_DELETED = '0'
+    </select>
 
 <!--3 根据条件查询实体list -->
     <select id="listAeaHiSolicitDetailUser" resultType="AeaHiSolicitDetailUser" >

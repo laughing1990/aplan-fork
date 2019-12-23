@@ -17,4 +17,5 @@ import java.util.List;
     public void deleteAeaHiSolicitDetail(@Param("id") String id) throws Exception;
     public List <AeaHiSolicitDetail> listAeaHiSolicitDetail(AeaHiSolicitDetail aeaHiSolicitDetail) throws Exception;
     public AeaHiSolicitDetail getAeaHiSolicitDetailById(@Param("id") String id) throws Exception;
+    public AeaHiSolicitDetail getAeaHiSolicitDetailBySolicitId(@Param("solicitId") String solicitId) throws Exception;
     }
