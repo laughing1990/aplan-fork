@@ -184,6 +184,8 @@ public class ApproveService {
                 if (aeaItemBasic != null)
                     bpmApproveStateVo.setIsShowOneForm(aeaItemBasic.getUseOneForm());
                 bpmApproveStateVo.setItemVerId(iteminst.getItemVerId());
+                bpmApproveStateVo.setItemId(iteminst.getItemId());
+
             }
 
         } else {//并联
