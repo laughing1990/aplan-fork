@@ -176,7 +176,7 @@ public class RestApplyService {
         ApplyinstIdVo applyinstIdVo = new ApplyinstIdVo();
         // 先删除以前的 receiveType=1, 2 的回执实例
         if (StringUtils.isNotBlank(stageApplyDataPageVo.getParallelApplyinstId()) || (stageApplyDataPageVo.getApplyinstIds() != null && stageApplyDataPageVo.getApplyinstIds().length > 0)) {
-            String[] applyinstIds = ArrayUtils.addAll(applyinstIdVo.getApplyinstIds(), applyinstIdVo.getParallelApplyinstId());
+            String[] applyinstIds = ArrayUtils.addAll(stageApplyDataPageVo.getApplyinstIds(), stageApplyDataPageVo.getParallelApplyinstId());
             List<AeaHiReceive> aeaHiReceives = aeaHiReceiveMapper.listReceiveByApplyinstIdAndTypes(applyinstIds, new String[]{"1", "2"});
             if (CollectionUtils.isNotEmpty(aeaHiReceives)) {
                 aeaHiReceiveMapper.deleteAeaHiReceives(aeaHiReceives.stream().map(AeaHiReceive::getReceiveId).collect(Collectors.toList()));
