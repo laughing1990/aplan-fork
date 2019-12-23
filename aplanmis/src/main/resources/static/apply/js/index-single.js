@@ -682,6 +682,7 @@ var vm = new Vue({
           vm.stateIds = res.content.stateIds;
           vm.approveOrgId = res.content.approveOrgId;
           vm.forminstVos = res.content.forminstVos;
+            vm.isGreenWay = res.content.aeaHiApplyinst.isGreenWay == '1' ? true : false;
           vm.beforeCheck();
         } else {
           vm.$message.error(res.message || '获取暂存数据失败');
