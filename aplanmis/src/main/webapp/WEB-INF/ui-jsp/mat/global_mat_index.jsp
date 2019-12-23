@@ -133,5 +133,6 @@
     <%@include file="../common/show_loading.jsp" %>
 
     <script src="${pageContext.request.contextPath}/ui-static/mat/global_mat_index.js" type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/ui-static/mat/global_mat_rel_format.js" type="text/javascript"></script>
 </body>
 </html>

@@ -1390,23 +1390,12 @@ var vm = new Vue({
                 _that.selThemeActive = i;
                 _that.themeDialogIndex = j;
                 _that.themeId = pData[j].themes[i].themeId;
-                // _that.chooseTheme(pData[j].themes[i],i,flag);
                 return false;
               }else {
                 _that.selThemeActive = -1;
-                _that.themeDialogIndex = -1;
-                _that.themeId = '';
               }
             }
             return true;
-          }else {
-            _that.themeDialogIndex = 0;
-            _that.selThemeActive = -1;
-            _that.themeId = '';
-            // if(themeId){
-            //   _that.themeTypeIndex = _that.themeList.length-1;
-            // }
-            // _that.getSelThemeInfo(themeType,themeId,'single');
           }
         }
       // }
@@ -1962,19 +1951,19 @@ var vm = new Vue({
     // 切换申报主题类型
     changeThemeType: function (item,index,flag) {
       var _that = this;
-      _that.statusLineList = [];
-      _that.statusList = [];
-      _that.stateList = [];
-      _that.parallelItems=[];
-      _that.coreItems=[];
-      _that.model.matsTableData=[];
-      this.parallelApplyinstId = '';
-      this.seriesApplyinstIds = [];
-      this.branchOrgHis = {};
-      this.parallelItemStateIdsHis = [];
-      this.stateIdsHis = [];
-      this.themeIdHis = '';
-      this.stageIdHis = '';
+      // _that.statusLineList = [];
+      // _that.statusList = [];
+      // _that.stateList = [];
+      // _that.parallelItems=[];
+      // _that.coreItems=[];
+      // _that.model.matsTableData=[];
+      // this.parallelApplyinstId = '';
+      // this.seriesApplyinstIds = [];
+      // this.branchOrgHis = {};
+      // this.parallelItemStateIdsHis = [];
+      // this.stateIdsHis = [];
+      // this.themeIdHis = '';
+      // this.stageIdHis = '';
       // if(index==0&&flag=='single'){
       //   flag='parallel';
       //   if(_that.selTheme.themeId){
@@ -2036,6 +2025,12 @@ var vm = new Vue({
     chooseTheme: function (data,index,flag) {
       var themeId = data.themeId;
       var themeName = data.themeName;
+      this.statusLineList = [];
+      this.statusList = [];
+      this.stateList = [];
+      this.parallelItems=[];
+      this.coreItems=[];
+      this.model.matsTableData=[];
       this.parallelApplyinstId = '';
       this.seriesApplyinstIds = [];
       this.branchOrgHis = {};
@@ -4451,6 +4446,11 @@ var vm = new Vue({
             _that.IsJustApplyinst = 2;
           }
           if(_that.submitCommentsType==4){
+            if (_that.needCallOneFormCb) {
+              _that.parallelApplyinstId=res.content;
+              _that.needCallOneFormCb = false;
+              vm.getAllForms(vm.stageId);
+            }
             if(_that.submitCommentsMatFlag == 'matForm'){
               _that.parallelApplyinstId=res.content;
               _that.getOneFormrender3(_that.parallelApplyinstId,_that.stoFormId);
@@ -6311,13 +6311,17 @@ var vm = new Vue({
         vm.oneformActiveName = oneFormInfo[0].formId;
       }
       vm.oneFormDialogVisible = true;
-      if (vm.oneFormOpened) return null;
-      vm.oneFormOpened = true;
+      // if (vm.oneFormOpened) return null;
+      // vm.oneFormOpened = true;
       if (vm.parallelApplyinstId == ''){
-        vm.showCommentDialog('4');
-        vm.needCallOneFormCb = true;
+        vm.$nextTick(function(){
+          vm.showCommentDialog('4');
+          vm.needCallOneFormCb = true;
+        })
       } else {
-        vm.oneFormCallback();
+        vm.$nextTick(function(){
+          vm.getAllForms(vm.stageId);
+        })
       }
 
       // vm.$nextTick(function(){

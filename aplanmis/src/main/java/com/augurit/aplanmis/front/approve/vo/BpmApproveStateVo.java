@@ -41,8 +41,13 @@ public class BpmApproveStateVo {
     private String hasSupply = "0";
     @ApiModelProperty(value = "是否显示一张表单：1是 0否", required = true, dataType = "string")
     private String isShowOneForm = "0";
+    @ApiModelProperty(value = "是否有撤件申请：1是 0否", required = true, dataType = "string")
+    private String ishasApplyinstCancel = "0";
 
 
     @ApiModelProperty(value = "事项版本ID", required = true, dataType = "string")
     private String itemVerId;
+
+    @ApiModelProperty(value = "事项ID", required = true, dataType = "string")
+    private String itemId;
 }

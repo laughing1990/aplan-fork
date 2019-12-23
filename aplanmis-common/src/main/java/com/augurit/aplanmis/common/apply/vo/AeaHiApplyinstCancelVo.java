@@ -10,5 +10,4 @@ public class AeaHiApplyinstCancelVo implements Serializable {
     private String applyinstCancelId;
     private String handleOpinion;
     private String cancelState;
-    private String attId;
 }

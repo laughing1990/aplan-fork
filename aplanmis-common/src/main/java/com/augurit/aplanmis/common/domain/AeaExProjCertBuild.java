@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.sql.Blob;
 import java.util.Date;
 
 /**
@@ -85,4 +84,7 @@ public class AeaExProjCertBuild {
     @ApiModelProperty("打印时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date printTime;
+
+    //扩展字段
+    private String formId;
 }

@@ -688,7 +688,6 @@
             mat.TEMPLATE_DOC,
             mat.MAT_REQUIRE,
             mat.MAT_BASIS,
-            mat.PAPER_IS_REQUIRE,
             mat.SORT_NO,
             mat.MAT_MEMO,
             mat.IS_ACTIVE,
@@ -699,9 +698,6 @@
             mat.MODIFY_TIME,
             mat.ATT_DIR_ID,
             mat.MAT_HOLDER,
-            mat.IS_OFFICIAL_DOC,
-            mat.ATT_IS_REQUIRE,
-            mat.IS_COMMON,
             mat.REVIEW_KEY_POINTS,
             mat.REVIEW_SAMPLE_DOC,
             mat.REVIEW_BASIS,
@@ -709,6 +705,10 @@
             mat.CERT_ID,
             mat.STO_FORM_ID,
             mat.ZCQY zcqy,
+            mat.IS_COMMON,
+            mat.IS_OFFICIAL_DOC,
+            mat.ATT_IS_REQUIRE,
+            mat.PAPER_IS_REQUIRE,
             iout.INOUT_ID,
             iout.ITEM_VER_ID,
             iout.IS_OWNER,
@@ -1316,6 +1316,7 @@
             <result property="isOfficialDoc" column="IS_OFFICIAL_DOC"/>
             <result property="attIsRequire" column="ATT_IS_REQUIRE"/>
             <result property="isCommon" column="IS_COMMON"/>
+            <result property="zcqy" column="ZCQY"/>
             <result property="reviewKeyPoints" column="REVIEW_KEY_POINTS"/>
             <result property="reviewSampleDoc" column="REVIEW_SAMPLE_DOC"/>
             <result property="reviewBasis" column="REVIEW_BASIS"/>

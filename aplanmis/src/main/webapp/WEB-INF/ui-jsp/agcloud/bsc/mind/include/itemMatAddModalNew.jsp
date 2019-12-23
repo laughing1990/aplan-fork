@@ -452,23 +452,11 @@
                     checkbox: true,
                     filed: "matId",
                     title: "#",
-                    width: 30,
+                    width: 10,
                     align: "center",
                     formatter: function (value, row, index) {
                         return true;
                     }
-                },
-                {
-                    field: "aeaItemMat.matCode",
-                    title: "材料编号",
-                    align: "left",
-                    width: 300,
-                },
-                {
-                    field: "aeaItemMat.matName",
-                    title: "材料名称",
-                    align: "left",
-                    width: 450,
                 },
                 {
                     field: "aeaItemMat.matProp",
@@ -476,6 +464,22 @@
                     align: "center",
                     width: 110,
                     formatter: matPropormatter
+                },
+                {
+                    field: "aeaItemMat.matName",
+                    title: "材料名称",
+                    align: "left",
+                    width: 450,
+                    formatter: function (value, row, index, field) {
+
+                        return matNameFormatter(value, row.aeaItemMat, index, field);
+                    }
+                },
+                {
+                    field: "aeaItemMat.matCode",
+                    title: "材料编号",
+                    align: "left",
+                    width: 300,
                 },
                 {
                     field: '_operate',
@@ -535,23 +539,11 @@
                     checkbox: true,
                     filed: "matId",
                     title: "#",
-                    width: 30,
+                    width: 10,
                     align: "center",
                     formatter: function (value, row, index) {
                         return true;
                     }
-                },
-                {
-                    field: "aeaItemMat.matCode",
-                    title: "材料编号",
-                    align: "left",
-                    width: 300,
-                },
-                {
-                    field: "aeaItemMat.matName",
-                    title: "材料名称",
-                    align: "left",
-                    width: 450,
                 },
                 {
                     field: "aeaItemMat.matProp",
@@ -559,6 +551,22 @@
                     align: "center",
                     width: 110,
                     formatter: matPropormatter
+                },
+                {
+                    field: "aeaItemMat.matName",
+                    title: "材料名称",
+                    align: "left",
+                    width: 450,
+                    formatter: function (value, row, index, field) {
+
+                        return matNameFormatter(value, row.aeaItemMat, index, field);
+                    }
+                },
+                {
+                    field: "aeaItemMat.matCode",
+                    title: "材料编号",
+                    align: "left",
+                    width: 300,
                 },
                 {
                     field: '_operate',

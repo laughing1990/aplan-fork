@@ -10,8 +10,9 @@ import com.augurit.agcloud.bpm.common.service.ActStoAppinstSubflowService;
 import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
 import com.augurit.agcloud.bsc.mapper.BscAttDetailMapper;
 import com.augurit.agcloud.framework.security.SecurityContext;
-import com.augurit.agcloud.framework.security.user.OpuOmOrg;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
+import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.aplanmis.common.apply.vo.AeaHiApplyinstCancelVo;
 import com.augurit.aplanmis.common.apply.vo.AeaHiItemCancelVo;
 import com.augurit.aplanmis.common.apply.vo.ApplyinstCancelInfoVo;
@@ -95,7 +96,8 @@ public abstract class ApplyinstCancelService {
     private AeaProjLinkmanMapper aeaProjLinkmanMapper;
     @Autowired
     private BscAttDetailMapper bscAttDetailMapper;
-    private String message = null;
+    @Autowired
+    private OpuOmOrgMapper opuOmOrgMapper;
 
     private final static int STATUS_CODE_200 = 200;
     private final static int STATUS_CODE_201 = 201;
@@ -117,7 +119,8 @@ public abstract class ApplyinstCancelService {
      * @return
      */
     public String checkApplyinstAndIteminstState(String applyinstId) {
-        return this.resultMessage(this.message, checkApplyinstAndIteminstStates(applyinstId));
+        Map result = checkApplyinstAndIteminstStates(applyinstId);
+        return this.resultMessage((String) result.get("message"), (int) result.get("flag"));
     }
 
     /**
@@ -126,20 +129,20 @@ public abstract class ApplyinstCancelService {
      * @param applyinstId
      * @return
      */
-    private int checkApplyinstAndIteminstStates(String applyinstId) {
-        this.message = "符合撤件申请条件！";
+    private Map checkApplyinstAndIteminstStates(String applyinstId) {
+        String message = "符合撤件申请条件！";
         int flag = this.STATUS_CODE_200;
         try {
             if (StringUtils.isBlank(applyinstId)) {
-                this.message = "缺少参数！";
+                message = "缺少参数！";
                 flag = this.STATUS_CODE_104;
             } else {
                 AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstMapper.getAeaHiApplyinstById(applyinstId);
                 if (ApplyState.COMPLETED.getValue().equals(aeaHiApplyinst.getApplyinstState()) || ApplyState.WITHDRAWAL_COMPLETED.getValue().equals(aeaHiApplyinst.getApplyinstState())) {
-                    this.message = "该办件已经办结，无法撤销！";
+                    message = "该办件已经办结，无法撤销！";
                     flag = this.STATUS_CODE_101;
                 } else if (ApplyState.WITHDRAWAL_ACCEPTED.getValue().equals(aeaHiApplyinst.getApplyinstState()) || ApplyState.WITHDRAWAL_SUBMITTED.getValue().equals(aeaHiApplyinst.getApplyinstState())) {
-                    this.message = "该办件正在申请撤销中！";
+                    message = "该办件正在申请撤销中！";
                     flag = this.STATUS_CODE_102;
                 } else {
                     StringBuffer Message = new StringBuffer();
@@ -150,16 +153,19 @@ public abstract class ApplyinstCancelService {
                         }
                     }
                     if (Message.length() > 0) {
-                        this.message = Message.substring(0, Message.length() - 1) + "已完成部门审批！";
+                        message = Message.substring(0, Message.length() - 1) + "已完成部门审批！";
                         flag = this.STATUS_CODE_201;
                     }
                 }
             }
         } catch (Exception e) {
-            this.message = "检查申报实例和事项实例出错！";
+            message = "检查申报实例和事项实例出错！";
             flag = this.STATUS_CODE_103;
         }
-        return flag;
+        Map reuslt = new HashMap();
+        reuslt.put("flag", flag);
+        reuslt.put("message", message);
+        return reuslt;
     }
 
     /**
@@ -314,7 +320,6 @@ public abstract class ApplyinstCancelService {
             return "该撤件申请已受理！";
         aeaHiApplyinstCancel.setHandleOpinion(cancelVo.getHandleOpinion());
         aeaHiApplyinstCancel.setCancelState(cancelVo.getCancelState());
-        aeaHiApplyinstCancel.setAttId(cancelVo.getAttId());
         aeaHiApplyinstCancel.setHandleEndTime(new Date());
         aeaHiApplyinstCancel.setModifier(SecurityContext.getCurrentUserId());
         aeaHiApplyinstCancel.setModifyTime(new Date());
@@ -410,7 +415,7 @@ public abstract class ApplyinstCancelService {
                 aeaHiApplyinstCancel.setApplyUserPhone(linkmanInfo.getLinkmanMobilePhone());
             }
             //查询接收人部门信息
-            List<OpuOmOrg> orgs = SecurityContext.getOrgs();
+            List<OpuOmOrg> orgs = opuOmOrgMapper.listBelongOrgByUserId(SecurityContext.getCurrentUserId());
             if (orgs.size() < 1) return "找不到当前受理人部门信息！";
             if (orgs.get(0).getOrgId().equals(SecurityContext.getCurrentOrgId())) {
                 aeaHiApplyinstCancel.setHandleOrgName(orgs.get(orgs.size() - 1).getOrgName());
@@ -429,8 +434,8 @@ public abstract class ApplyinstCancelService {
 
 //            String message = null;
             //判断是否符合撤件条件
-            int flag = this.checkApplyinstAndIteminstStates(aeaHiApplyinstCancel.getApplyinstId());
-            if (this.STATUS_CODE_200 == flag || (this.STATUS_CODE_201 == flag && "1".equals(aeaHiApplyinstCancel.getIsCancel()))) {
+            Map result = this.checkApplyinstAndIteminstStates(aeaHiApplyinstCancel.getApplyinstId());
+            if (this.STATUS_CODE_200 == (int) result.get("flag") || (this.STATUS_CODE_201 == (int) result.get("flag") && "1".equals(aeaHiApplyinstCancel.getIsCancel()))) {
                 // 保存申请撤销实例数据
                 String applyinstCancelId = UUID.randomUUID().toString();
                 aeaHiApplyinstCancel.setApplyTime(new Date());
@@ -475,7 +480,7 @@ public abstract class ApplyinstCancelService {
                 //创建部门人员的撤件审批实例和更改事项实例状态
                 this.createIteminstCancelInfo(iteminstList, aeaHiApplyinstCancel.getHandleOpinion(), applyinstCancelId, appinst.getAppinstId());
             } else {
-                return this.message;
+                return (String) result.get("message");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -761,6 +766,9 @@ public abstract class ApplyinstCancelService {
                 if (projInfos.size() < 1) throw new Exception("找不到项目信息！");
                 //获取项目的联系人
                 linkmanInfos.addAll(aeaLinkmanInfoService.findAllUnitLinkman(projInfos.get(0).getProjInfoId()));
+                if (linkmanInfos.size() < 1) {
+                    linkmanInfos.add(aeaLinkmanInfoService.getAeaLinkmanInfoByLinkmanInfoId(aeaHiApplyinst.getLinkmanInfoId()));
+                }
             }
         }
         return linkmanInfos;
@@ -845,10 +853,10 @@ public abstract class ApplyinstCancelService {
                             itemCancel.setBscAttFileAndDirs(this.getAttFiles(itemCancel.getAttId(), "AEA_HI_ITEM_CANCEL"));
                         }
                     }
-                    if (StringUtils.isNotBlank(aeaHiApplyinstCancel1.getAttId()))
-                        aeaHiApplyinstCancel.setBscAttFileAndDirs(this.getAttFiles(aeaHiApplyinstCancel1.getAttId(), "AEA_HI_APPLYINST_CANCEL"));
                     aeaHiApplyinstCancel1.setAeaHiItemCancels(hiItemCancels);
                 }
+                if (StringUtils.isNotBlank(aeaHiApplyinstCancel1.getAttId()))
+                    aeaHiApplyinstCancel1.setBscAttFileAndDirs(this.getAttFiles(aeaHiApplyinstCancel1.getAttId(), "AEA_HI_APPLYINST_CANCEL"));
             }
         }
         return aeaHiApplyinstCancels;
@@ -892,12 +900,12 @@ public abstract class ApplyinstCancelService {
                 aeaHiItemCancel.setApplyinstCancelId(applyinstCancelId);
                 aeaHiItemCancel.setApprovalOrgId(iteminst.getApproveOrgId());
                 aeaHiItemCancel.setApprovalOrgName(iteminst.getApproveOrgName());
-                aeaHiItemCancel.setCancelState(ApplyinstCancelConstants.SUBMITTED.getValue());
+//                aeaHiItemCancel.setCancelState(ApplyinstCancelConstants.SUBMITTED.getValue());
                 aeaHiItemCancel.setCreater(SecurityContext.getCurrentUserId());
                 aeaHiItemCancel.setCreateTime(new Date());
                 aeaHiItemCancel.setRootOrgId(SecurityContext.getCurrentOrgId());
                 aeaHiItemCancel.setProcInstId(iteminst.getProcinstId());
-
+                aeaHiItemCancel.setIteminstName(iteminst.getIteminstName());
                 //如果是业主网上申请撤件，则子流程已经挂起
                 if (ItemStatus.APPLY_REVOKE.getValue().equals(iteminst.getIteminstState())) {
                     aeaHiItemCancel.setIsConcluding("0");

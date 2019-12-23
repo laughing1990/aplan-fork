@@ -533,6 +533,7 @@ var vm = new Vue({
       stageId: '',
       projInfoId: '',
       itemVersionId: '',
+      itemId: '',
       currentCertinstId: '',
       // 容缺时限配置
       RQtimeVisible: false,
@@ -752,6 +753,16 @@ var vm = new Vue({
       var arr = ['已提交','已受理','已同意','未同意','无效'];
       return arr[val];
     },
+    // 撤件审批状态转换
+    changeSpCancelState: function(val){
+      var text = '审批中';
+      if (val == 2){
+        text = '已同意';
+      } else if (val == 3) {
+        text = '未同意';
+      }
+      return text;
+    },
     // 部门人员处理撤件
     bmHanderCancel: function(val, item){
       var vm = this;
@@ -763,7 +774,7 @@ var vm = new Vue({
         type: 'get',
         data: {
           applyinstId: vm.masterEntityKey,
-          iteminstCancelId: vm.iteminstCancelId,
+          iteminstCancelId: item.iteminstCancelId,
           approvalOpinion: vm.bmHandleOpinion,
           cancelState: val,
           attId: vm.cancelAppForm.cancelUserAttId,
@@ -824,6 +835,7 @@ var vm = new Vue({
       }, function (res) {
         if (res.success) {
           vm.cancelAppDetailList = res.content;
+          vm.cancelAppDetailList.aeaHiItemCancels = vm.cancelAppDetailList.aeaHiItemCancels || [];
         } else {
           vm.$message.error(res.message || '加载撤件历史数据失败');
         }
@@ -2146,7 +2158,7 @@ var vm = new Vue({
           vm.recordIds = res.content.recordIds;// 附件关联id
           vm.attLink.recordId = vm.taskId;
           vm.isApprover = (vm.iteminstProcessinstId != null && vm.iteminstProcessinstId == vm.processInstanceId) ? '1' : '0';
-          // vm.isApprover = 0;
+          // vm.isApprover = 1;
           vm.getWayAType();
         } else {
           vm.$message.error(res.message);
@@ -2430,7 +2442,7 @@ var vm = new Vue({
         if (vm.isSeriesinst == '0') { // 多事项
           var targetUrl = oneFromSrc;
           if (vm.isApprover == '1') {
-            targetUrl += '&enableParamItem=true&itemId=' + vm.itemVersionId;
+            targetUrl += '&enableParamItem=true&itemId=' + vm.itemId;
           } else {
             targetUrl += '&enableParamItem=false';
           }
@@ -2471,7 +2483,7 @@ var vm = new Vue({
               applyinstId: vm.masterEntityKey,
               // stageId: vm.stageId,
               projInfoId: vm.projInfoId,
-              itemId: vm.itemVersionId,
+              itemId: vm.itemId,
               // applyinstId: 'fcf9d937-f670-4871-a430-34b01cafde9b',
               // stageId: 'f39985ed-9119-444f-b744-4167762a3872',
               // projInfoId: '347db5f9-f55f-44eb-9d1a-983ca263e8c4',
@@ -2778,6 +2790,7 @@ var vm = new Vue({
           vm.stageId = res.content.stageId;
           vm.projInfoId = res.content.projId;
           vm.itemVersionId = res.content.itemVerId;
+          vm.itemId = res.content.itemId;
           vm.initFormElementPriv();
         } else {
           vm.$message.error(res.message);
