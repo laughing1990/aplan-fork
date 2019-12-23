@@ -1465,4 +1465,16 @@
         </sql>
     </changeSet>
 
+    <changeSet id="20191223090726" author="xiong" failOnError="false">
+        <preConditions>
+            <not>
+                <columnExists tableName="aea_hi_applyinst" columnName="IS_GREEN_WAY"/>
+            </not>
+        </preConditions>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_applyinst`
+            ADD COLUMN `IS_GREEN_WAY` char(1) NULL DEFAULT '0' COMMENT '是否绿色通道 1 是 0 否';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
