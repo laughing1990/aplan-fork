@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Augurit    2019-12-23 09:54:35 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiSolicitMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    SOLICIT_ID  solicitId,
+    SOLICIT_TYPE  solicitType,
+    SOLICIT_ORG_ID  solicitOrgId,
+    SOLICIT_ITEM_ID  solicitItemId,
+    APPLYINST_ID  applyinstId,
+    PROCINST_ID  procinstId,
+    HI_TASKINST_ID  hiTaskinstId,
+    SOLICIT_CODE  solicitCode,
+    SOLICIT_TOPIC  solicitTopic,
+    SOLICIT_CONTENT  solicitContent,
+    SOLICIT_DUE_DAYS  solicitDueDays,
+    SOLICIT_REAL_DAYS  solicitRealDays,
+    SOLICIT_DAYS_UNIT  solicitDaysUnit,
+    SOLICIT_START_TIME  solicitStartTime,
+    SOLICIT_END_TIME  solicitEndTime,
+    IS_CALC_TIMERULE  isCalcTimerule,
+    SOLICIT_TIMERULE_ID  solicitTimeruleId,
+    CONCLUSION_FLAG  conclusionFlag,
+    CONCLUSION_DESC  conclusionDesc,
+    CONCLUSION_TIME  conclusionTime,
+    CONCLUSION_USER_ID  conclusionUserId,
+    CONCLUSION_USER_NAME  conclusionUserName,
+    INITIATOR_ORG_ID  initiatorOrgId,
+    INITIATOR_ORG_NAME  initiatorOrgName,
+    INITIATOR_USER_ID  initiatorUserId,
+    INITIATOR_USER_NAME  initiatorUserName,
+    COUNT_LIMIT  countLimit,
+    SOLICIT_STATE  solicitState,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    ROOT_ORG_ID  rootOrgId
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaHiSolicitById" resultType="AeaHiSolicit" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_HI_SOLICIT
+    where    SOLICIT_ID = #{id}
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaHiSolicit" resultType="AeaHiSolicit" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_HI_SOLICIT
+    <where>
+        <if test="solicitId != null AND solicitId != ''" >
+        AND    SOLICIT_ID = #{solicitId}
+        </if>
+        <if test="solicitType != null AND solicitType != ''" >
+        AND    SOLICIT_TYPE = #{solicitType}
+        </if>
+        <if test="solicitOrgId != null AND solicitOrgId != ''" >
+        AND    SOLICIT_ORG_ID = #{solicitOrgId}
+        </if>
+        <if test="solicitItemId != null AND solicitItemId != ''" >
+        AND    SOLICIT_ITEM_ID = #{solicitItemId}
+        </if>
+        <if test="applyinstId != null AND applyinstId != ''" >
+        AND    APPLYINST_ID = #{applyinstId}
+        </if>
+        <if test="procinstId != null AND procinstId != ''" >
+        AND    PROCINST_ID = #{procinstId}
+        </if>
+        <if test="hiTaskinstId != null AND hiTaskinstId != ''" >
+        AND    HI_TASKINST_ID = #{hiTaskinstId}
+        </if>
+        <if test="solicitCode != null AND solicitCode != ''" >
+        AND    SOLICIT_CODE = #{solicitCode}
+        </if>
+        <if test="solicitTopic != null AND solicitTopic != ''" >
+        AND    SOLICIT_TOPIC = #{solicitTopic}
+        </if>
+        <if test="solicitContent != null AND solicitContent != ''" >
+        AND    SOLICIT_CONTENT = #{solicitContent}
+        </if>
+        <if test="solicitDueDays != null AND solicitDueDays != ''" >
+        AND    SOLICIT_DUE_DAYS = #{solicitDueDays}
+        </if>
+        <if test="solicitRealDays != null AND solicitRealDays != ''" >
+        AND    SOLICIT_REAL_DAYS = #{solicitRealDays}
+        </if>
+        <if test="solicitDaysUnit != null AND solicitDaysUnit != ''" >
+        AND    SOLICIT_DAYS_UNIT = #{solicitDaysUnit}
+        </if>
+        <if test="solicitStartTime != null AND solicitStartTime != ''" >
+        AND    SOLICIT_START_TIME = #{solicitStartTime}
+        </if>
+        <if test="solicitEndTime != null AND solicitEndTime != ''" >
+        AND    SOLICIT_END_TIME = #{solicitEndTime}
+        </if>
+        <if test="isCalcTimerule != null AND isCalcTimerule != ''" >
+        AND    IS_CALC_TIMERULE = #{isCalcTimerule}
+        </if>
+        <if test="solicitTimeruleId != null AND solicitTimeruleId != ''" >
+        AND    SOLICIT_TIMERULE_ID = #{solicitTimeruleId}
+        </if>
+        <if test="conclusionFlag != null AND conclusionFlag != ''" >
+        AND    CONCLUSION_FLAG = #{conclusionFlag}
+        </if>
+        <if test="conclusionDesc != null AND conclusionDesc != ''" >
+        AND    CONCLUSION_DESC = #{conclusionDesc}
+        </if>
+        <if test="conclusionTime != null AND conclusionTime != ''" >
+        AND    CONCLUSION_TIME = #{conclusionTime}
+        </if>
+        <if test="conclusionUserId != null AND conclusionUserId != ''" >
+        AND    CONCLUSION_USER_ID = #{conclusionUserId}
+        </if>
+        <if test="conclusionUserName != null AND conclusionUserName != ''" >
+        AND    CONCLUSION_USER_NAME = #{conclusionUserName}
+        </if>
+        <if test="initiatorOrgId != null AND initiatorOrgId != ''" >
+        AND    INITIATOR_ORG_ID = #{initiatorOrgId}
+        </if>
+        <if test="initiatorOrgName != null AND initiatorOrgName != ''" >
+        AND    INITIATOR_ORG_NAME = #{initiatorOrgName}
+        </if>
+        <if test="initiatorUserId != null AND initiatorUserId != ''" >
+        AND    INITIATOR_USER_ID = #{initiatorUserId}
+        </if>
+        <if test="initiatorUserName != null AND initiatorUserName != ''" >
+        AND    INITIATOR_USER_NAME = #{initiatorUserName}
+        </if>
+        <if test="countLimit != null AND countLimit != ''" >
+        AND    COUNT_LIMIT = #{countLimit}
+        </if>
+        <if test="solicitState != null AND solicitState != ''" >
+        AND    SOLICIT_STATE = #{solicitState}
+        </if>
+        <if test="creater != null AND creater != ''" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null AND createTime != ''" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+        <if test="modifier != null AND modifier != ''" >
+        AND    MODIFIER = #{modifier}
+        </if>
+        <if test="modifyTime != null AND modifyTime != ''" >
+        AND    MODIFY_TIME = #{modifyTime}
+        </if>
+        <if test="rootOrgId != null AND rootOrgId != ''" >
+        AND    ROOT_ORG_ID = #{rootOrgId}
+        </if>
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaHiSolicit" parameterType="AeaHiSolicit" >
+    insert into AEA_HI_SOLICIT (
+SOLICIT_ID  ,SOLICIT_TYPE  ,SOLICIT_ORG_ID  ,SOLICIT_ITEM_ID  ,APPLYINST_ID  ,PROCINST_ID  ,HI_TASKINST_ID  ,SOLICIT_CODE  ,SOLICIT_TOPIC  ,SOLICIT_CONTENT  ,SOLICIT_DUE_DAYS  ,SOLICIT_REAL_DAYS  ,SOLICIT_DAYS_UNIT  ,SOLICIT_START_TIME  ,SOLICIT_END_TIME  ,IS_CALC_TIMERULE  ,SOLICIT_TIMERULE_ID  ,CONCLUSION_FLAG  ,CONCLUSION_DESC  ,CONCLUSION_TIME  ,CONCLUSION_USER_ID  ,CONCLUSION_USER_NAME  ,INITIATOR_ORG_ID  ,INITIATOR_ORG_NAME  ,INITIATOR_USER_ID  ,INITIATOR_USER_NAME  ,COUNT_LIMIT  ,SOLICIT_STATE  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID  
+    )  values  (
+#{solicitId},#{solicitType},#{solicitOrgId},#{solicitItemId},#{applyinstId},#{procinstId},#{hiTaskinstId},#{solicitCode},#{solicitTopic},#{solicitContent},#{solicitDueDays},#{solicitRealDays},#{solicitDaysUnit},#{solicitStartTime},#{solicitEndTime},#{isCalcTimerule},#{solicitTimeruleId},#{conclusionFlag},#{conclusionDesc},#{conclusionTime},#{conclusionUserId},#{conclusionUserName},#{initiatorOrgId},#{initiatorOrgName},#{initiatorUserId},#{initiatorUserName},#{countLimit},#{solicitState},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaHiSolicit" parameterType="AeaHiSolicit" >
+    update AEA_HI_SOLICIT
+    <set >
+        <if test="solicitId != null AND solicitId != '' " >
+        SOLICIT_ID = #{solicitId},
+        </if>
+        <if test="solicitType != null AND solicitType != '' " >
+        SOLICIT_TYPE = #{solicitType},
+        </if>
+        <if test="solicitOrgId != null AND solicitOrgId != '' " >
+        SOLICIT_ORG_ID = #{solicitOrgId},
+        </if>
+        <if test="solicitItemId != null AND solicitItemId != '' " >
+        SOLICIT_ITEM_ID = #{solicitItemId},
+        </if>
+        <if test="applyinstId != null AND applyinstId != '' " >
+        APPLYINST_ID = #{applyinstId},
+        </if>
+        <if test="procinstId != null AND procinstId != '' " >
+        PROCINST_ID = #{procinstId},
+        </if>
+        <if test="hiTaskinstId != null AND hiTaskinstId != '' " >
+        HI_TASKINST_ID = #{hiTaskinstId},
+        </if>
+        <if test="solicitCode != null AND solicitCode != '' " >
+        SOLICIT_CODE = #{solicitCode},
+        </if>
+        <if test="solicitTopic != null AND solicitTopic != '' " >
+        SOLICIT_TOPIC = #{solicitTopic},
+        </if>
+        <if test="solicitContent != null AND solicitContent != '' " >
+        SOLICIT_CONTENT = #{solicitContent},
+        </if>
+        <if test="solicitDueDays != null AND solicitDueDays != '' " >
+        SOLICIT_DUE_DAYS = #{solicitDueDays},
+        </if>
+        <if test="solicitRealDays != null AND solicitRealDays != '' " >
+        SOLICIT_REAL_DAYS = #{solicitRealDays},
+        </if>
+        <if test="solicitDaysUnit != null AND solicitDaysUnit != '' " >
+        SOLICIT_DAYS_UNIT = #{solicitDaysUnit},
+        </if>
+        <if test="solicitStartTime != null AND solicitStartTime != '' " >
+        SOLICIT_START_TIME = #{solicitStartTime},
+        </if>
+        <if test="solicitEndTime != null AND solicitEndTime != '' " >
+        SOLICIT_END_TIME = #{solicitEndTime},
+        </if>
+        <if test="isCalcTimerule != null AND isCalcTimerule != '' " >
+        IS_CALC_TIMERULE = #{isCalcTimerule},
+        </if>
+        <if test="solicitTimeruleId != null AND solicitTimeruleId != '' " >
+        SOLICIT_TIMERULE_ID = #{solicitTimeruleId},
+        </if>
+        <if test="conclusionFlag != null AND conclusionFlag != '' " >
+        CONCLUSION_FLAG = #{conclusionFlag},
+        </if>
+        <if test="conclusionDesc != null AND conclusionDesc != '' " >
+        CONCLUSION_DESC = #{conclusionDesc},
+        </if>
+        <if test="conclusionTime != null AND conclusionTime != '' " >
+        CONCLUSION_TIME = #{conclusionTime},
+        </if>
+        <if test="conclusionUserId != null AND conclusionUserId != '' " >
+        CONCLUSION_USER_ID = #{conclusionUserId},
+        </if>
+        <if test="conclusionUserName != null AND conclusionUserName != '' " >
+        CONCLUSION_USER_NAME = #{conclusionUserName},
+        </if>
+        <if test="initiatorOrgId != null AND initiatorOrgId != '' " >
+        INITIATOR_ORG_ID = #{initiatorOrgId},
+        </if>
+        <if test="initiatorOrgName != null AND initiatorOrgName != '' " >
+        INITIATOR_ORG_NAME = #{initiatorOrgName},
+        </if>
+        <if test="initiatorUserId != null AND initiatorUserId != '' " >
+        INITIATOR_USER_ID = #{initiatorUserId},
+        </if>
+        <if test="initiatorUserName != null AND initiatorUserName != '' " >
+        INITIATOR_USER_NAME = #{initiatorUserName},
+        </if>
+        <if test="countLimit != null AND countLimit != '' " >
+        COUNT_LIMIT = #{countLimit},
+        </if>
+        <if test="solicitState != null AND solicitState != '' " >
+        SOLICIT_STATE = #{solicitState},
+        </if>
+        <if test="creater != null AND creater != '' " >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null AND createTime != '' " >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="modifier != null AND modifier != '' " >
+        MODIFIER = #{modifier},
+        </if>
+        <if test="modifyTime != null AND modifyTime != '' " >
+        MODIFY_TIME = #{modifyTime},
+        </if>
+        <if test="rootOrgId != null AND rootOrgId != '' " >
+        ROOT_ORG_ID = #{rootOrgId},
+        </if>
+    </set>
+    where SOLICIT_ID = #{solicitId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaHiSolicit">
+        delete from   AEA_HI_SOLICIT
+        where
+    SOLICIT_ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaHiSolicit" id="AeaHiSolicitMap">
+        <id property="solicitId" column="SOLICIT_ID"/>
+        <result property="solicitType" column="SOLICIT_TYPE"/>
+        <result property="solicitOrgId" column="SOLICIT_ORG_ID"/>
+        <result property="solicitItemId" column="SOLICIT_ITEM_ID"/>
+        <result property="applyinstId" column="APPLYINST_ID"/>
+        <result property="procinstId" column="PROCINST_ID"/>
+        <result property="hiTaskinstId" column="HI_TASKINST_ID"/>
+        <result property="solicitCode" column="SOLICIT_CODE"/>
+        <result property="solicitTopic" column="SOLICIT_TOPIC"/>
+        <result property="solicitContent" column="SOLICIT_CONTENT"/>
+        <result property="solicitDueDays" column="SOLICIT_DUE_DAYS"/>
+        <result property="solicitRealDays" column="SOLICIT_REAL_DAYS"/>
+        <result property="solicitDaysUnit" column="SOLICIT_DAYS_UNIT"/>
+        <result property="solicitStartTime" column="SOLICIT_START_TIME"/>
+        <result property="solicitEndTime" column="SOLICIT_END_TIME"/>
+        <result property="isCalcTimerule" column="IS_CALC_TIMERULE"/>
+        <result property="solicitTimeruleId" column="SOLICIT_TIMERULE_ID"/>
+        <result property="conclusionFlag" column="CONCLUSION_FLAG"/>
+        <result property="conclusionDesc" column="CONCLUSION_DESC"/>
+        <result property="conclusionTime" column="CONCLUSION_TIME"/>
+        <result property="conclusionUserId" column="CONCLUSION_USER_ID"/>
+        <result property="conclusionUserName" column="CONCLUSION_USER_NAME"/>
+        <result property="initiatorOrgId" column="INITIATOR_ORG_ID"/>
+        <result property="initiatorOrgName" column="INITIATOR_ORG_NAME"/>
+        <result property="initiatorUserId" column="INITIATOR_USER_ID"/>
+        <result property="initiatorUserName" column="INITIATOR_USER_NAME"/>
+        <result property="countLimit" column="COUNT_LIMIT"/>
+        <result property="solicitState" column="SOLICIT_STATE"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+</mapper>
