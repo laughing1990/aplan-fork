@@ -3556,6 +3556,7 @@ var vm = new Vue({
     saveSmsinfo: function () {
       var _that = this;
       _that.getResultForm.id = _that.smsInfoId;
+      _that.getResultForm.applyinstId = _that.applyinstId;
       _that.$refs['resultForm'].validate(function (valid) {
         if (valid) {
           _that.loading = true;
