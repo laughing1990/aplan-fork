@@ -188,8 +188,9 @@ public class AeaParStageService {
                 AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
                 if (!Status.OFF.equals(aeaHiApplyinst.getIsTemporarySubmit())) {
                     aeaHiApplyinst.setIsTemporarySubmit(Status.OFF);
-                    aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
                 }
+                aeaHiApplyinst.setIsGreenWay(stageApplyDataVo.getIsGreenWay());
+                aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
                 ActStoAppinst actStoAppinst = new ActStoAppinst();
                 actStoAppinst.setMasterRecordId(applyinstId);
                 actStoAppinst.setFlowMode("proc");
@@ -375,6 +376,9 @@ public class AeaParStageService {
 
         if (aeaHiApplyinst == null)
             throw new RuntimeException("实例化申请实例失败！");
+
+        aeaHiApplyinst.setIsGreenWay(stageApplyDataVo.getIsGreenWay());
+        aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
 
         ApplyInstantiateResult stageResult = new ApplyInstantiateResult();
         List<String> applyinstIds = new ArrayList<>();
@@ -783,6 +787,9 @@ public class AeaParStageService {
      */
     public ParallelUnstashVo unstash(String applyinstId) throws Exception {
         ParallelUnstashVo parallelUnstashVo = new ParallelUnstashVo();
+
+        AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+        parallelUnstashVo.setAeaHiApplyinst(aeaHiApplyinst);
 
         List<AeaApplyinstProj> aeaApplyinstProjs = aeaApplyinstProjMapper.getAeaApplyinstProjByApplyinstId(applyinstId);
         Assert.state(aeaApplyinstProjs.size() > 0, "根据申报实例找不到对应的项目信息, applyinstId: " + applyinstId);

@@ -373,6 +373,9 @@ public class AeaSeriesService {
             seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinstAndTriggerAeaLogApplyStateHist(applySource, applySubject, linkmanInfoId, "1", branchOrgMap, null, appinstId, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), opuWinId,null);//实例化串联申请实例
         }
 
+        seriesApplyinst.setIsGreenWay(seriesApplyDataVo.getIsGreenWay());
+        aeaHiApplyinstService.updateAeaHiApplyinst(seriesApplyinst);
+
         String seriesApplyinstId = seriesApplyinst.getApplyinstId();//申报实例ID
         seriesApplyinst.setProjInfoId(projInfoIds[0]);
 
@@ -549,6 +552,9 @@ public class AeaSeriesService {
      */
     public SeriesUnstashVo unstash(String applyinstId) throws Exception {
         SeriesUnstashVo seriesUnstashVo = new SeriesUnstashVo();
+
+        AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+        seriesUnstashVo.setAeaHiApplyinst(aeaHiApplyinst);
 
         List<AeaApplyinstProj> aeaApplyinstProjs = aeaApplyinstProjMapper.getAeaApplyinstProjByApplyinstId(applyinstId);
         Assert.state(aeaApplyinstProjs.size() > 0, "根据申报实例找不到对应的项目信息, applyinstId: " + applyinstId);
