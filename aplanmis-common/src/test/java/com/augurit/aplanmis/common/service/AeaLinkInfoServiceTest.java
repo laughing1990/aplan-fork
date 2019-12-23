@@ -97,14 +97,6 @@ public class AeaLinkInfoServiceTest extends BaseTest{
     }
 
     @Test
-    @DisplayName("查询项目的联系人")
-    public void testGetProjLinkman(){
-        AeaLinkmanInfo  aeaLinkmanInfo = aeaLinkmanInfoService.getProjLinkman("a316e0dd-fad5-484b-ae03-f3b292fde81f","87e25032-5f52-409d-b3dd-8a6ce49f7994");
-        Assert.notNull(aeaLinkmanInfo,"未查询到联系人信息");
-        System.out.println(JSON.toJSONString(aeaLinkmanInfo));
-    }
-
-    @Test
     @DisplayName("查询项目申请人")
     public void testGetApplyProjLinkman(){
         AeaLinkmanInfo  aeaLinkmanInfo = aeaLinkmanInfoService.getApplyProjLinkman("a316e0dd-fad5-484b-ae03-f3b292fde81f","87e25032-5f52-409d-b3dd-8a6ce49f7994");

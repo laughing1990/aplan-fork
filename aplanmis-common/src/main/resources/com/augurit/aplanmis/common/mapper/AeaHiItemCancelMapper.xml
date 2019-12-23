@@ -27,7 +27,8 @@
     MODIFY_TIME  modifyTime,
     ROOT_ORG_ID  rootOrgId,
     IS_CONCLUDING  isConcluding,
-    PROC_INST_ID  procInstId
+    PROC_INST_ID  procInstId,
+    SIGN_STATE signState
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
@@ -113,6 +114,9 @@
             <if test="procInstId != null" >
                 AND    PROC_INST_ID = #{procInstId}
             </if>
+            <if test="signState != null" >
+                AND    SIGN_STATE = #{signState}
+            </if>
         </where>
     </select>
     <!--4 根据条件查询实体list,返回分页对象 -->
@@ -120,9 +124,9 @@
     <!--5 新增实体对象 -->
     <insert id="insertAeaHiItemCancel" parameterType="AeaHiItemCancel" >
     insert into AEA_HI_ITEM_CANCEL (
-ITEMINST_CANCEL_ID  ,APPLYINST_CANCEL_ID  ,ITEMINST_ID  ,ITEM_STATE_HIST_ID  ,ATT_ID  ,ITEMINST_NAME  ,APPROVAL_OPINION  ,APPROVAL_ORG_ID  ,APPROVAL_ORG_NAME  ,APPROVAL_USER_ID  ,APPROVAL_USER_NAME  ,APPROVAL_SIGN_TIME  ,APPROVAL_END_TIME  ,CANCEL_STATE  ,CANCEL_MEMO  ,IS_SUSPENDED_BEFORE  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID  ,IS_CONCLUDING  ,PROC_INST_ID
+ITEMINST_CANCEL_ID  ,APPLYINST_CANCEL_ID  ,ITEMINST_ID  ,ITEM_STATE_HIST_ID  ,ATT_ID  ,ITEMINST_NAME  ,APPROVAL_OPINION  ,APPROVAL_ORG_ID  ,APPROVAL_ORG_NAME  ,APPROVAL_USER_ID  ,APPROVAL_USER_NAME  ,APPROVAL_SIGN_TIME  ,APPROVAL_END_TIME  ,CANCEL_STATE  ,CANCEL_MEMO  ,IS_SUSPENDED_BEFORE  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID  ,IS_CONCLUDING  ,PROC_INST_ID,SIGN_STATE
     )  values  (
-#{iteminstCancelId},#{applyinstCancelId},#{iteminstId},#{itemStateHistId},#{attId},#{iteminstName},#{approvalOpinion},#{approvalOrgId},#{approvalOrgName},#{approvalUserId},#{approvalUserName},#{approvalSignTime},#{approvalEndTime},#{cancelState},#{cancelMemo},#{isSuspendedBefore},#{creater},#{createTime},#{modifier},#{modifyTime},#{rootOrgId},#{isConcluding},  #{procInstId}
+#{iteminstCancelId},#{applyinstCancelId},#{iteminstId},#{itemStateHistId},#{attId},#{iteminstName},#{approvalOpinion},#{approvalOrgId},#{approvalOrgName},#{approvalUserId},#{approvalUserName},#{approvalSignTime},#{approvalEndTime},#{cancelState},#{cancelMemo},#{isSuspendedBefore},#{creater},#{createTime},#{modifier},#{modifyTime},#{rootOrgId},#{isConcluding},  #{procInstId},#{signState}
     )
 </insert>
     <!--6 修改实体对象 -->
@@ -198,6 +202,9 @@ ITEMINST_CANCEL_ID  ,APPLYINST_CANCEL_ID  ,ITEMINST_ID  ,ITEM_STATE_HIST_ID  ,AT
             <if test="procInstId != null" >
                 PROC_INST_ID = #{procInstId},
             </if>
+            <if test="signState != null" >
+                SIGN_STATE = #{signState}
+            </if>
         </set>
         where ITEMINST_CANCEL_ID = #{iteminstCancelId}
     </update>
@@ -233,5 +240,6 @@ ITEMINST_CANCEL_ID  ,APPLYINST_CANCEL_ID  ,ITEMINST_ID  ,ITEM_STATE_HIST_ID  ,AT
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
         <result property="isConcluding" column="IS_CONCLUDING"/>
         <result property="procInstId" column="PROC_INST_ID"/>
+        <result property="signState" column="SIGN_STATE"/>
     </resultMap>
 </mapper>

@@ -136,7 +136,7 @@ public class AeaLinkmanInfoServiceImpl implements AeaLinkmanInfoService {
     }
 
     @Override
-    public AeaLinkmanInfo getProjLinkman(String applyinstId, String projInfoId) {
+    public List<AeaLinkmanInfo> getProjLinkman(String applyinstId, String projInfoId) {
         LOGGER.debug("查项目：{}，联系人", projInfoId);
         return aeaLinkmanInfoMapper.getProjLinkman(applyinstId, projInfoId);
     }

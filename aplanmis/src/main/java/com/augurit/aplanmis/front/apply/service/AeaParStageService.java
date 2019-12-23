@@ -387,8 +387,11 @@ public class AeaParStageService {
 
         aeaHiApplyinst.setProjInfoId(projInfoIds[0]);
 
-        //2、实例化并联实例
-        AeaHiParStageinst aeaHiParStageinst = aeaHiParStageinstService.createAeaHiParStageinst(applyinstId, stageId, themeVerId, appinstId, null);
+        AeaHiParStageinst aeaHiParStageinst = aeaHiParStageinstService.getAeaHiParStageinstByApplyinstId(applyinstId);
+        if (aeaHiParStageinst == null) {
+            //2、实例化并联实例
+            aeaHiParStageinst = aeaHiParStageinstService.createAeaHiParStageinst(applyinstId, stageId, themeVerId, appinstId, null);
+        }
 
         //3、实例化事项----此处已经做了事项实例表中的分局承办字段，
 //        List<AeaHiIteminst> aeaHiIteminsts = aeaHiIteminstService.batchInsertAeaHiIteminst(themeVerId, aeaHiParStageinst.getStageinstId(), itemVerIds, branchOrgMap);
@@ -702,9 +705,9 @@ public class AeaParStageService {
         // 申报实例不为空时，先删除之前的所有实例化数据
         if (StringUtils.isNotBlank(applyinstId)) {
             aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
-            aeaHiApplyinst.setIsTemporarySubmit(Status.ON);
-
-            aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
+            if (!"2".equals(aeaHiApplyinst.getIsTemporarySubmit())) {
+                aeaHiApplyinst.setIsTemporarySubmit(Status.ON);
+            }
             applyCommonService.clearHistoryInst(applyinstId);
 
             aeaHiParStageinst = aeaHiParStageinstService.getAeaHiParStageinstByApplyinstId(applyinstId);
@@ -714,6 +717,9 @@ public class AeaParStageService {
                     , ApplyType.UNIT.getValue(), branchOrgMap, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), Status.ON,null);
             applyinstId = aeaHiApplyinst.getApplyinstId();
         }
+        aeaHiApplyinst.setIsGreenWay(parallelStashVo.getIsGreenWay());
+        aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
+
         applyCommonService.bindApplyinstProj(projInfoId, applyinstId, SecurityContext.getCurrentUserId());
         if (aeaHiParStageinst == null) {
             aeaHiParStageinst = stashStage(applyinstId, stageId, themeVerId);
