@@ -481,9 +481,10 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
             }
             //当前用户的关系
             if(StringUtils.isNotBlank(unitInfoId)){//企业用户
-                AeaUnitProj unitProj = aeaUnitProjMapper.findUnitPorojByProjInfoIdAndUnitInfoId(projInfoId, unitInfoId, "1");
+                //AeaUnitProj unitProj = aeaUnitProjMapper.findUnitPorojByProjInfoIdAndUnitInfoId(projInfoId, unitInfoId, "1");
+                List<AeaUnitProj> unitProjList = aeaUnitProjMapper.findUnitProjByProjIdAndUnitIdAndunitType(projInfoId,unitInfoId,"1");//先判断有无关联关系
                 String unitProjId="";
-                if(unitProj==null){
+                if(unitProjList==null||unitProjList.size()==0){
                     AeaUnitProj insertEntity=new AeaUnitProj();
                     insertEntity.setUnitProjId(UUID.randomUUID().toString());
                     insertEntity.setUnitInfoId(unitInfoId);
@@ -504,7 +505,7 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
                 currentParam.setCreater(SecurityContext.getCurrentUserName());
                 currentParam.setApplyinstUnitProjId(UUID.randomUUID().toString());
                 currentParam.setApplyinstId(seriesApplyinstId);
-                currentParam.setUnitProjId(StringUtils.isBlank(unitProjId)?unitProj.getUnitProjId():unitProjId);
+                currentParam.setUnitProjId(StringUtils.isBlank(unitProjId)?unitProjList.get(0).getUnitProjId():unitProjId);
                 insertApplyinstUnitProjList.add(currentParam);
             }else{//个人用户 aea_proj_linkman
                 List<AeaProjLinkman> projLinkmans = aeaProjLinkmanMapper.getAeaProjLinkmanByApplyinstId(seriesApplyinstId, projInfoId);
