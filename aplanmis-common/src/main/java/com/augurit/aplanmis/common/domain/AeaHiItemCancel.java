@@ -53,6 +53,7 @@ public class AeaHiItemCancel implements Serializable {
     private String rootOrgId; // (根组织ID)
     private String isConcluding;// 流程是否已办结：1 是，0 否
     private String procInstId;
+    private String signState;// 签收状态：1 已签收，0 未签收
 
     //扩展字段
     private String applyinstId;
