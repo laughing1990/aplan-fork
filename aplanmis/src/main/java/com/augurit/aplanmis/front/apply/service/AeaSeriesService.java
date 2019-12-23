@@ -515,7 +515,9 @@ public class AeaSeriesService {
             applyCommonService.clearHistoryInst(applyinstId);
 
             aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
-            aeaHiApplyinst.setIsTemporarySubmit(Status.ON);
+            if (!"2".equals(aeaHiApplyinst.getIsTemporarySubmit())) {
+                aeaHiApplyinst.setIsTemporarySubmit(Status.ON);
+            }
             aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
 
             aeaHiSeriesinst = aeaHiSeriesinstService.getAeaHiSeriesinstByApplyinstId(applyinstId);
