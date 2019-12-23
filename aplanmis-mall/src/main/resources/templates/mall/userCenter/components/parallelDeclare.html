@@ -1003,9 +1003,6 @@
         <span>
           <span class="is-shishi">实施</span>实施事项
         </span>
-        <span>
-          <span class="is-greenWay">绿道</span>绿色通道
-        </span>
       </p>
     </h4>
     <el-table ref="parallelItemsTable"
@@ -1068,7 +1065,6 @@
       <el-table-column prop="sortNo" sortable label="事项名称" min-width="400" >
         <template slot-scope="scope">
           <span class="is-catalog" :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标准':'实施'}}</span>
-          <span v-if="scope.row.isGreenWay === '1'" class="is-catalog is-greenWay">绿道</span>
           {{scope.row.itemName}}
           <!-- <span v-show="scope.row.isDone=='FINISHED'" class="isTag isDone"><i
             class="ag ag-check-circle-fill"></i>已通过</span>
@@ -1135,9 +1131,6 @@
         <span>
           <span class="is-shishi">实施</span>实施事项
         </span>
-        <span>
-          <span class="is-greenWay">绿道</span>绿色通道
-        </span>
       </p>
     </h4>
     <el-table ref="coreItemsTable"
@@ -1199,7 +1192,6 @@
       <el-table-column label="事项名称" prop="sortNo" sortable  min-width="400" >
         <template slot-scope="scope">
           <span class="is-catalog" :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标准':'实施'}}</span>
-          <span v-if="scope.row.isGreenWay === '1'" class="is-catalog is-greenWay">绿道</span>
           {{scope.row.itemName}}
           <!-- <span v-show="scope.row.isDone=='FINISHED'" class="isTag isDone"><i
             class="ag ag-check-circle-fill"></i>已通过</span>
@@ -1208,12 +1200,9 @@
           <span v-show="scope.row.isDone=='HANDLING'" class="isTag isDoing"><i
             class="ag ag-edit-circle-fill"></i>办理中</span>
           <span v-show="scope.row.isRecommend==1&& scope.row.isDone=='UN_FINISHED'" class="isTag isRecommend">推荐</span> -->
-          <span v-show="scope.row.isDone=='FINISHED'" class="isNewTag isDone"><i
-            class="ag ag-check-circle-fill"></i>已通过</span>
-          <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isNewTag isDone"><i
-            class="ag ag-edit-circle-fill"></i>已通过</span>
-          <span v-show="scope.row.isDone=='HANDLING'" class="isNewTag isDoing"><i
-            class="ag ag-edit-circle-fill"></i>办理中</span>
+          <span v-show="scope.row.isDone=='FINISHED'" class="isNewTag isDone">已通过</span>
+          <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isNewTag isDone">已通过</span>
+          <span v-show="scope.row.isDone=='HANDLING'" class="isNewTag isDoing">办理中</span>
           <span v-show="scope.row.isRecommend==1&& scope.row.isDone=='UN_FINISHED'" class="isNewTag isRecommend">推荐办理</span>
           <!--<p class="not-region-data" v-if="!scope.row.orgName">* 该事项与项目区划不匹配，暂无办理权限</p>-->
           <p class="not-region-data" v-if="scope.row.notRegionData">* 该事项与项目区划不匹配，暂无办理权限</p>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Augurit    2019-12-23 09:59:58 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiSolicitDetailUserMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    DETAIL_TASK_ID  detailTaskId,
+    SOLICIT_DETAIL_ID  solicitDetailId,
+    USER_ID  userId,
+    USER_CONCLUSION  userConclusion,
+    USER_OPINION  userOpinion,
+    SIGN_TIME  signTime,
+    FILL_TIME  fillTime,
+    TASK_ACTION  taskAction,
+    PARENT_ID  parentId,
+    IS_DELETED  isDeleted,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaHiSolicitDetailUserById" resultType="AeaHiSolicitDetailUser" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_HI_SOLICIT_DETAIL_USER
+    where    DETAIL_TASK_ID = #{id}
+    AND  IS_DELETED = '0'
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaHiSolicitDetailUser" resultType="AeaHiSolicitDetailUser" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_HI_SOLICIT_DETAIL_USER
+    <where>
+        <if test="detailTaskId != null AND detailTaskId != ''" >
+        AND    DETAIL_TASK_ID = #{detailTaskId}
+        </if>
+        <if test="solicitDetailId != null AND solicitDetailId != ''" >
+        AND    SOLICIT_DETAIL_ID = #{solicitDetailId}
+        </if>
+        <if test="userId != null AND userId != ''" >
+        AND    USER_ID = #{userId}
+        </if>
+        <if test="userConclusion != null AND userConclusion != ''" >
+        AND    USER_CONCLUSION = #{userConclusion}
+        </if>
+        <if test="userOpinion != null AND userOpinion != ''" >
+        AND    USER_OPINION = #{userOpinion}
+        </if>
+        <if test="signTime != null AND signTime != ''" >
+        AND    SIGN_TIME = #{signTime}
+        </if>
+        <if test="fillTime != null AND fillTime != ''" >
+        AND    FILL_TIME = #{fillTime}
+        </if>
+        <if test="taskAction != null AND taskAction != ''" >
+        AND    TASK_ACTION = #{taskAction}
+        </if>
+        <if test="parentId != null AND parentId != ''" >
+        AND    PARENT_ID = #{parentId}
+        </if>
+        <if test="isDeleted != null AND isDeleted != ''" >
+        AND    IS_DELETED = #{isDeleted}
+        </if>
+        <if test="creater != null AND creater != ''" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null AND createTime != ''" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+        <if test="modifier != null AND modifier != ''" >
+        AND    MODIFIER = #{modifier}
+        </if>
+        <if test="modifyTime != null AND modifyTime != ''" >
+        AND    MODIFY_TIME = #{modifyTime}
+        </if>
+      AND  IS_DELETED = '0'
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaHiSolicitDetailUser" parameterType="AeaHiSolicitDetailUser" >
+    insert into AEA_HI_SOLICIT_DETAIL_USER (
+DETAIL_TASK_ID  ,SOLICIT_DETAIL_ID  ,USER_ID  ,USER_CONCLUSION  ,USER_OPINION  ,SIGN_TIME  ,FILL_TIME  ,TASK_ACTION  ,PARENT_ID  ,IS_DELETED  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  
+    )  values  (
+#{detailTaskId},#{solicitDetailId},#{userId},#{userConclusion},#{userOpinion},#{signTime},#{fillTime},#{taskAction},#{parentId},#{isDeleted},#{creater},#{createTime},#{modifier},  #{modifyTime}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaHiSolicitDetailUser" parameterType="AeaHiSolicitDetailUser" >
+    update AEA_HI_SOLICIT_DETAIL_USER
+    <set >
+        <if test="detailTaskId != null AND detailTaskId != '' " >
+        DETAIL_TASK_ID = #{detailTaskId},
+        </if>
+        <if test="solicitDetailId != null AND solicitDetailId != '' " >
+        SOLICIT_DETAIL_ID = #{solicitDetailId},
+        </if>
+        <if test="userId != null AND userId != '' " >
+        USER_ID = #{userId},
+        </if>
+        <if test="userConclusion != null AND userConclusion != '' " >
+        USER_CONCLUSION = #{userConclusion},
+        </if>
+        <if test="userOpinion != null AND userOpinion != '' " >
+        USER_OPINION = #{userOpinion},
+        </if>
+        <if test="signTime != null AND signTime != '' " >
+        SIGN_TIME = #{signTime},
+        </if>
+        <if test="fillTime != null AND fillTime != '' " >
+        FILL_TIME = #{fillTime},
+        </if>
+        <if test="taskAction != null AND taskAction != '' " >
+        TASK_ACTION = #{taskAction},
+        </if>
+        <if test="parentId != null AND parentId != '' " >
+        PARENT_ID = #{parentId},
+        </if>
+        <if test="isDeleted != null AND isDeleted != '' " >
+        IS_DELETED = #{isDeleted},
+        </if>
+        <if test="creater != null AND creater != '' " >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null AND createTime != '' " >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="modifier != null AND modifier != '' " >
+        MODIFIER = #{modifier},
+        </if>
+        <if test="modifyTime != null AND modifyTime != '' " >
+        MODIFY_TIME = #{modifyTime},
+        </if>
+    </set>
+    where DETAIL_TASK_ID = #{detailTaskId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <update id="deleteAeaHiSolicitDetailUser"  >
+        update AEA_HI_SOLICIT_DETAIL_USER
+    <set >
+        IS_DELETED = '1'
+    </set>
+        where DETAIL_TASK_ID = #{id}
+    </update>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaHiSolicitDetailUser" id="AeaHiSolicitDetailUserMap">
+        <id property="detailTaskId" column="DETAIL_TASK_ID"/>
+        <result property="solicitDetailId" column="SOLICIT_DETAIL_ID"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="userConclusion" column="USER_CONCLUSION"/>
+        <result property="userOpinion" column="USER_OPINION"/>
+        <result property="signTime" column="SIGN_TIME"/>
+        <result property="fillTime" column="FILL_TIME"/>
+        <result property="taskAction" column="TASK_ACTION"/>
+        <result property="parentId" column="PARENT_ID"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+    </resultMap>
+</mapper>
