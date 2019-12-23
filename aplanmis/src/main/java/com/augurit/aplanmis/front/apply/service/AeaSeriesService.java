@@ -373,6 +373,9 @@ public class AeaSeriesService {
             seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinstAndTriggerAeaLogApplyStateHist(applySource, applySubject, linkmanInfoId, "1", branchOrgMap, null, appinstId, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), opuWinId,null);//实例化串联申请实例
         }
 
+        seriesApplyinst.setIsGreenWay(seriesApplyDataVo.getIsGreenWay());
+        aeaHiApplyinstService.updateAeaHiApplyinst(seriesApplyinst);
+
         String seriesApplyinstId = seriesApplyinst.getApplyinstId();//申报实例ID
         seriesApplyinst.setProjInfoId(projInfoIds[0]);
 

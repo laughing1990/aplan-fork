@@ -311,9 +311,6 @@ public final class ItemPrivilegeComputationHandler {
         @ApiModelProperty(value = "实施事项换算方式", dataType = "string", notes = " 0:按照审批行政区划和属地行政区划换算, 1: 仅按照审批行政区划换算")
         private String itemExchangeWay;
 
-        @ApiModelProperty(value = "是否绿色通道", notes = "1: 是, 0: 否")
-        private String isGreenWay;
-
         @ApiModelProperty(value = "是否必选事项", notes = "1: 是, 0: 否")
         private String isOptionItem;
 
