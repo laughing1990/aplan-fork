@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Augurit    2019-12-23 09:57:46 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiSolicitDetailMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    SOLICIT_DETAIL_ID  solicitDetailId,
+    SOLICIT_ID  solicitId,
+    DETAIL_ORG_ID  detailOrgId,
+    DETAIL_ORG_NAME  detailOrgName,
+    ITEM_ID  itemId,
+    ITEM_VER_ID  itemVerId,
+    DETAIL_DUE_DAYS  detailDueDays,
+    DETAIL_REAL_DAYS  detailRealDays,
+    DETAIL_DAYS_UNIT  detailDaysUnit,
+    DETAIL_START_TIME  detailStartTime,
+    DETAIL_END_TIME  detailEndTime,
+    DETAIL_STATE  detailState,
+    IS_DELETED  isDeleted,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime
+    </sql>
+
+    <sql id="allAlisColumns" >
+        SOLICIT_DETAIL_ID  solicitDetailId,
+        SOLICIT_ID  solicitId,
+        DETAIL_ORG_ID  detailOrgId,
+        DETAIL_ORG_NAME  detailOrgName,
+        ITEM_ID  itemId,
+        ITEM_VER_ID  itemVerId,
+        DETAIL_DUE_DAYS  detailDueDays,
+        DETAIL_REAL_DAYS  detailRealDays,
+        DETAIL_DAYS_UNIT  detailDaysUnit,
+        DETAIL_START_TIME  detailStartTime,
+        DETAIL_END_TIME  detailEndTime,
+        DETAIL_STATE  detailState,
+        IS_DELETED  isDeleted,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaHiSolicitDetailById" resultType="AeaHiSolicitDetail" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_HI_SOLICIT_DETAIL
+    where    SOLICIT_DETAIL_ID = #{id}
+    AND  IS_DELETED = '0'
+</select>
+
+    <!--2.1 根据SOLICIT_ID查询多个意见征求详情实体 -->
+    <select id="getAeaHiSolicitDetailBySolicitId" resultType="AeaHiSolicitDetail" >
+        select
+        <include refid="allAlisColumns"/>
+        from    AEA_HI_SOLICIT_DETAIL ahsd
+        LEFT JOIN AEA_HI_SOLICTI ahs ON ahsd.SOLICIT_ID = ahs.SOLICIT_ID
+        where    ahsd.SOLICIT_ID = #{solicitId}
+        AND  ahsd.IS_DELETED = '0'
+    </select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaHiSolicitDetail" resultType="AeaHiSolicitDetail" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_HI_SOLICIT_DETAIL
+    <where>
+        <if test="solicitDetailId != null AND solicitDetailId != ''" >
+        AND    SOLICIT_DETAIL_ID = #{solicitDetailId}
+        </if>
+        <if test="solicitId != null AND solicitId != ''" >
+        AND    SOLICIT_ID = #{solicitId}
+        </if>
+        <if test="detailOrgId != null AND detailOrgId != ''" >
+        AND    DETAIL_ORG_ID = #{detailOrgId}
+        </if>
+        <if test="detailOrgName != null AND detailOrgName != ''" >
+        AND    DETAIL_ORG_NAME = #{detailOrgName}
+        </if>
+        <if test="itemId != null AND itemId != ''" >
+        AND    ITEM_ID = #{itemId}
+        </if>
+        <if test="itemVerId != null AND itemVerId != ''" >
+        AND    ITEM_VER_ID = #{itemVerId}
+        </if>
+        <if test="detailDueDays != null AND detailDueDays != ''" >
+        AND    DETAIL_DUE_DAYS = #{detailDueDays}
+        </if>
+        <if test="detailRealDays != null AND detailRealDays != ''" >
+        AND    DETAIL_REAL_DAYS = #{detailRealDays}
+        </if>
+        <if test="detailDaysUnit != null AND detailDaysUnit != ''" >
+        AND    DETAIL_DAYS_UNIT = #{detailDaysUnit}
+        </if>
+        <if test="detailStartTime != null AND detailStartTime != ''" >
+        AND    DETAIL_START_TIME = #{detailStartTime}
+        </if>
+        <if test="detailEndTime != null AND detailEndTime != ''" >
+        AND    DETAIL_END_TIME = #{detailEndTime}
+        </if>
+        <if test="detailState != null AND detailState != ''" >
+        AND    DETAIL_STATE = #{detailState}
+        </if>
+        <if test="isDeleted != null AND isDeleted != ''" >
+        AND    IS_DELETED = #{isDeleted}
+        </if>
+        <if test="creater != null AND creater != ''" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null AND createTime != ''" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+        <if test="modifier != null AND modifier != ''" >
+        AND    MODIFIER = #{modifier}
+        </if>
+        <if test="modifyTime != null AND modifyTime != ''" >
+        AND    MODIFY_TIME = #{modifyTime}
+        </if>
+      AND  IS_DELETED = '0'
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaHiSolicitDetail" parameterType="AeaHiSolicitDetail" >
+    insert into AEA_HI_SOLICIT_DETAIL (
+SOLICIT_DETAIL_ID  ,SOLICIT_ID  ,DETAIL_ORG_ID  ,DETAIL_ORG_NAME  ,ITEM_ID  ,ITEM_VER_ID  ,DETAIL_DUE_DAYS  ,DETAIL_REAL_DAYS  ,DETAIL_DAYS_UNIT  ,DETAIL_START_TIME  ,DETAIL_END_TIME  ,DETAIL_STATE  ,IS_DELETED  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  
+    )  values  (
+#{solicitDetailId},#{solicitId},#{detailOrgId},#{detailOrgName},#{itemId},#{itemVerId},#{detailDueDays},#{detailRealDays},#{detailDaysUnit},#{detailStartTime},#{detailEndTime},#{detailState},#{isDeleted},#{creater},#{createTime},#{modifier},  #{modifyTime}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaHiSolicitDetail" parameterType="AeaHiSolicitDetail" >
+    update AEA_HI_SOLICIT_DETAIL
+    <set >
+        <if test="solicitDetailId != null AND solicitDetailId != '' " >
+        SOLICIT_DETAIL_ID = #{solicitDetailId},
+        </if>
+        <if test="solicitId != null AND solicitId != '' " >
+        SOLICIT_ID = #{solicitId},
+        </if>
+        <if test="detailOrgId != null AND detailOrgId != '' " >
+        DETAIL_ORG_ID = #{detailOrgId},
+        </if>
+        <if test="detailOrgName != null AND detailOrgName != '' " >
+        DETAIL_ORG_NAME = #{detailOrgName},
+        </if>
+        <if test="itemId != null AND itemId != '' " >
+        ITEM_ID = #{itemId},
+        </if>
+        <if test="itemVerId != null AND itemVerId != '' " >
+        ITEM_VER_ID = #{itemVerId},
+        </if>
+        <if test="detailDueDays != null AND detailDueDays != '' " >
+        DETAIL_DUE_DAYS = #{detailDueDays},
+        </if>
+        <if test="detailRealDays != null AND detailRealDays != '' " >
+        DETAIL_REAL_DAYS = #{detailRealDays},
+        </if>
+        <if test="detailDaysUnit != null AND detailDaysUnit != '' " >
+        DETAIL_DAYS_UNIT = #{detailDaysUnit},
+        </if>
+        <if test="detailStartTime != null AND detailStartTime != '' " >
+        DETAIL_START_TIME = #{detailStartTime},
+        </if>
+        <if test="detailEndTime != null AND detailEndTime != '' " >
+        DETAIL_END_TIME = #{detailEndTime},
+        </if>
+        <if test="detailState != null AND detailState != '' " >
+        DETAIL_STATE = #{detailState},
+        </if>
+        <if test="isDeleted != null AND isDeleted != '' " >
+        IS_DELETED = #{isDeleted},
+        </if>
+        <if test="creater != null AND creater != '' " >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null AND createTime != '' " >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="modifier != null AND modifier != '' " >
+        MODIFIER = #{modifier},
+        </if>
+        <if test="modifyTime != null AND modifyTime != '' " >
+        MODIFY_TIME = #{modifyTime},
+        </if>
+    </set>
+    where SOLICIT_DETAIL_ID = #{solicitDetailId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <update id="deleteAeaHiSolicitDetail"  >
+        update AEA_HI_SOLICIT_DETAIL
+    <set >
+        IS_DELETED = '1'
+    </set>
+        where SOLICIT_DETAIL_ID = #{id}
+    </update>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaHiSolicitDetail" id="AeaHiSolicitDetailMap">
+        <id property="solicitDetailId" column="SOLICIT_DETAIL_ID"/>
+        <result property="solicitId" column="SOLICIT_ID"/>
+        <result property="detailOrgId" column="DETAIL_ORG_ID"/>
+        <result property="detailOrgName" column="DETAIL_ORG_NAME"/>
+        <result property="itemId" column="ITEM_ID"/>
+        <result property="itemVerId" column="ITEM_VER_ID"/>
+        <result property="detailDueDays" column="DETAIL_DUE_DAYS"/>
+        <result property="detailRealDays" column="DETAIL_REAL_DAYS"/>
+        <result property="detailDaysUnit" column="DETAIL_DAYS_UNIT"/>
+        <result property="detailStartTime" column="DETAIL_START_TIME"/>
+        <result property="detailEndTime" column="DETAIL_END_TIME"/>
+        <result property="detailState" column="DETAIL_STATE"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+    </resultMap>
+</mapper>
