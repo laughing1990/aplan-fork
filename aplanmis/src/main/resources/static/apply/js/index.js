@@ -131,7 +131,7 @@ var vm = new Vue({
       themeInfoList: [], // 主题列表
       themeInfoListP: [], // 并联主题列表
       parallelThemeList: [], // 并联主题列表
-      activeNames: ['1', '2', '3', '4', '5', '6'], // el-collapse 默认展开列表
+      activeNames: ['1', '2', '3', '4', '5', '6', '7'], // el-collapse 默认展开列表
       ctx: ctx,
       verticalTabData: [ // 左侧纵向导航数据
         {
@@ -615,6 +615,7 @@ var vm = new Vue({
       needCallOneFormCb: false,
       themeCategory: '',
       themeCategoryMsg: '', // 没有符合条件的主题, 请检查配置是否正确
+      isGreenWay: false, // 是否设置为绿色通道
     }
   },
   created: function () {
@@ -4354,6 +4355,7 @@ var vm = new Vue({
         _that.rootApplyLinkmanId = _that.applyPersonFrom.applyLinkmanId;
         _that.rootLinkmanInfoId = _that.applyPersonFrom.linkLinkmanId
       };
+      var _isGreenWay = _that.isGreenWay==true?'1':'0';
       var parmas={
         applyLinkmanId: _that.rootApplyLinkmanId,
         applySource: 'win',
@@ -4377,6 +4379,7 @@ var vm = new Vue({
         parallelItemStateIds: _that.parallelItemStateIds,
         buildProjUnitMap: buildProjUnitMap,
         isJustApplyinst: _that.IsJustApplyinst,
+        isGreenWay: _isGreenWay,
       };
       _that.progressDialogVisible = true;
       _that.submitCommentsFlag = false;
@@ -4411,7 +4414,8 @@ var vm = new Vue({
             propulsionItemStateIds: _that.propulsionItemStateIds,
             parallelItemStateIds: _that.parallelItemStateIds,
             themeVerId: _that.themeVerId,
-            seriesApplyinstIds: _that.seriesApplyinstIds
+            seriesApplyinstIds: _that.seriesApplyinstIds,
+            isGreenWay: _isGreenWay,
           }
         }else {
           url = 'rest/apply/parallel/onlyInstApply';
@@ -4765,6 +4769,7 @@ var vm = new Vue({
     saveSmsinfo: function () {
       var _that = this;
       _that.getResultForm.id=_that.smsInfoId;
+      _that.getResultForm.applyinstId = _that.parallelApplyinstId;
       _that.$refs['resultForm'].validate(function (valid) {
         if(valid){
           _that.loading = true;

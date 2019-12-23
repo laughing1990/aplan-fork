@@ -2374,7 +2374,11 @@ input[type="number"] {
     min-height: 40px;
 }
 /*撤件 end*/
-
+/*联系人新增编辑弹窗 start*/
+.dg-modal-add-linkmain-info .el-select {
+    width: 100%;
+}
+/*联系人新增编辑弹窗 end*/
 
 
 

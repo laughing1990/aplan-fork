@@ -589,6 +589,7 @@ var vm = new Vue({
       formUnFillNum: 0,
       oneFormOpened: false,
       needCallOneFormCb: false,
+      isGreenWay: false, // 是否设置为绿色通道
     }
   },
   mounted: function () {
@@ -3556,6 +3557,7 @@ var vm = new Vue({
     saveSmsinfo: function () {
       var _that = this;
       _that.getResultForm.id = _that.smsInfoId;
+      _that.getResultForm.applyinstId = _that.applyinstId;
       _that.$refs['resultForm'].validate(function (valid) {
         if (valid) {
           _that.loading = true;
@@ -3778,7 +3780,7 @@ var vm = new Vue({
         _that.IsJustApplyinst = 1;
       }
       //选择的情形
-      
+      var _isGreenWay = _that.isGreenWay==true?'1':'0';
       var parmas = {
         applyLinkmanId: _that.rootApplyLinkmanId,
         applySource: 'win',
@@ -3797,6 +3799,7 @@ var vm = new Vue({
         stageId: _that.stageId,
         isParallel: _that.isParallel,
         isJustApplyinst: _that.IsJustApplyinst,
+        isGreenWay: _isGreenWay,
       }
       _that.progressDialogVisible = true;
       _that.submitCommentsFlag = false;
@@ -3821,6 +3824,7 @@ var vm = new Vue({
           projInfoId: projInfoIds[0],
           stageId: _that.stageId,
           stateIds: _that.stateIds,
+          isGreenWay: _isGreenWay,
         }
       }
       _that.progressIntervalStop = false;

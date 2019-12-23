@@ -1,24 +1,32 @@
 package com.augurit.aplanmis.common.form.service.impl;
 
+import com.augurit.agcloud.bpm.admin.sto.service.impl.AbstractFormDataOptManager;
+import com.augurit.agcloud.bpm.common.constant.EDataOpt;
+import com.augurit.agcloud.bpm.common.domain.ActStoForm;
+import com.augurit.agcloud.bpm.common.domain.ActStoForminst;
+import com.augurit.agcloud.bpm.common.domain.vo.FormDataOptResult;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaExProjMoney;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.common.service.form.AeaExProjMoneyService;
-import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.form.service.AeaExProjCertBuildService;
 import com.augurit.aplanmis.common.form.service.RestExProjFormService;
 import com.augurit.aplanmis.common.form.vo.ExProjFormVo;
+import com.augurit.aplanmis.common.service.form.AeaExProjMoneyService;
+import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
-public class RestExProjFormServiceImpl implements RestExProjFormService {
+public class RestExProjFormServiceImpl extends AbstractFormDataOptManager implements RestExProjFormService {
 
     @Autowired
     private AeaExProjMoneyService aeaExProjMoneyService;
@@ -88,8 +96,27 @@ public class RestExProjFormServiceImpl implements RestExProjFormService {
             aeaExProjMoney.setCreater(SecurityContext.getCurrentUserName());
             aeaExProjMoney.setCreateTime(new Date());
             aeaExProjMoneyService.saveAeaExProjMoney(aeaExProjMoney);
+
+            if (StringUtils.isBlank(exProjFormVo.getFormId())) throw new Exception("缺少formId");
+            this.formSave(exProjFormVo.getFormId(), aeaExProjMoney.getMoneyId(), EDataOpt.INSERT.getOpareteType(), null);
         }
         aeaExProjCertBuildService.SynchronizeDataByExProjForm(exProjFormVo);//同步信息
         return new ResultForm(true, "建设项目登记信息保存成功！");
+    }
+
+    @Override
+    public FormDataOptResult doformSave(String formId, String metaTableId, Integer opType, Object dataEntity) throws Exception {
+        FormDataOptResult result = new FormDataOptResult();
+        result.setSuccess(true);
+        ActStoForminst actStoForminst = new ActStoForminst();
+        actStoForminst.setFormId(formId);
+        actStoForminst.setFormPrimaryKey(metaTableId);
+        result.setActStoForminst(actStoForminst);
+        return result;
+    }
+
+    @Override
+    public FormDataOptResult doformDelete(ActStoForm formVo, Object dataEntity) throws Exception {
+        return null;
     }
 }

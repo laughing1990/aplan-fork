@@ -22,32 +22,29 @@ import java.util.List;
 @Repository
 public interface AeaHiReceiveMapper {
 
-    public void insertAeaHiReceive(AeaHiReceive aeaHiReceive) throws Exception;
+    void insertAeaHiReceive(AeaHiReceive aeaHiReceive) throws Exception;
 
-    public void updateAeaHiReceive(AeaHiReceive aeaHiReceive) throws Exception;
+    void updateAeaHiReceive(AeaHiReceive aeaHiReceive) throws Exception;
 
-    public void deleteAeaHiReceive(@Param("id") String id) throws Exception;
+    void deleteAeaHiReceive(@Param("id") String id) throws Exception;
 
-    public List<AeaHiReceive> listAeaHiReceive(AeaHiReceive aeaHiReceive) throws Exception;
+    void deleteAeaHiReceives(@Param("ids") List<String> ids) throws Exception;
 
-    public AeaHiReceive getAeaHiReceiveById(@Param("id") String id) throws Exception;
+    List<AeaHiReceive> listAeaHiReceive(AeaHiReceive aeaHiReceive) throws Exception;
+
+    AeaHiReceive getAeaHiReceiveById(@Param("id") String id) throws Exception;
 
     List<AeaHiReceive> getAeaHiReceiveByApplyinstIdAndReceiptType(@Param("applyinstId") String applyinstId, @Param("receiveType") String receiveType);
 
     /**
      * 根据申请实例ID集合获取回执列表--只查AEA_HI_RECEIVE 不区分回执所属事项或阶段
      *
-     * @param applyinstIds
-     * @return
      */
     List<AeaHiReceive> getAeaHiReceiveByApplyinstIds(@Param("applyinstIds") String[] applyinstIds);
 
     /**
      * 获取指定申报实例下指定类型的回执列表
      *
-     * @param applyinstIds
-     * @param receiptTypes
-     * @return
      */
     List<AeaHiReceive> listReceiveByApplyinstIdAndTypes(@Param("applyinstIds") String[] applyinstIds, @Param("receiptTypes") String[] receiptTypes);
 
@@ -55,8 +52,6 @@ public interface AeaHiReceiveMapper {
      * 根据申请实例ID集合获取回执列表及回执所属事项或阶段
      * 方法有问题，启用
      *
-     * @param applyinstIds
-     * @return
      */
     List<AeaHiReceiveDto> getAeaHiReceiveListByApplyinstIds(@Param("applyinstIds") String[] applyinstIds);
 

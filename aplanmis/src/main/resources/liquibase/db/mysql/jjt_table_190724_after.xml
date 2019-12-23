@@ -1054,4 +1054,78 @@
         </sql>
     </changeSet>
 
+    <changeSet id="201912230922" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_basic` DROP COLUMN `IS_GREEN_WAY`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201912231001" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            CREATE TABLE `aea_solicit_item` (
+            `SOLICIT_ITEM_ID` varchar(50) NOT NULL COMMENT '主键',
+            `ITEM_ID` varchar(50) DEFAULT NULL COMMENT '事项ID',
+            `ITEM_VER_ID` varchar(50) DEFAULT NULL COMMENT '事项版本ID',
+            `SOLICIT_TYPE` char(1) DEFAULT NULL COMMENT '征求意见模式：0表示多人征求模式，1表示单人征求模式',
+            `CREATER` varchar(255) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(255) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '根组织ID',
+            PRIMARY KEY (`SOLICIT_ITEM_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='按事项征求配置表';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201912231002" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            CREATE TABLE `aea_solicit_item_user` (
+            `ITEM_USER_ID` varchar(50) NOT NULL COMMENT '主键',
+            `SOLICIT_ITEM_ID` varchar(50) DEFAULT NULL COMMENT '按组织征求配置ID',
+            `USER_ID` varchar(50) DEFAULT NULL COMMENT '用户ID',
+            `SORT_NO` int(3) DEFAULT NULL COMMENT '排列顺序号',
+            `IS_ACTIVE` char(1) DEFAULT NULL COMMENT '是否启用，0表示禁用，1表示启用',
+            `CREATER` varchar(255) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(255) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            PRIMARY KEY (`ITEM_USER_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='按事项征求的人员名单表';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201912231003" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            CREATE TABLE `aea_solicit_org` (
+            `SOLICIT_ORG_ID` varchar(50) NOT NULL COMMENT '主键',
+            `ORG_ID` varchar(50) DEFAULT NULL COMMENT '征求部门ID',
+            `BUS_TYPE` varchar(50) DEFAULT NULL COMMENT '征求业务类型，来自于数据字典',
+            `SOLICIT_TYPE` char(1) DEFAULT NULL COMMENT '征求意见模式：0表示多人征求模式，1表示单人征求模式',
+            `CREATER` varchar(255) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(255) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '根组织ID',
+            PRIMARY KEY (`SOLICIT_ORG_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='按组织征求配置表';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201912231004" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            CREATE TABLE `aea_solicit_org_user` (
+            `ORG_USER_ID` varchar(50) NOT NULL COMMENT '主键',
+            `SOLICIT_ORG_ID` varchar(50) DEFAULT NULL COMMENT '按组织征求配置ID',
+            `USER_ID` varchar(50) DEFAULT NULL COMMENT '用户ID',
+            `SORT_NO` int(3) DEFAULT NULL COMMENT '排列顺序号',
+            `IS_ACTIVE` char(1) DEFAULT NULL COMMENT '是否启用，0表示禁用，1表示启用',
+            `CREATER` varchar(255) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(255) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            PRIMARY KEY (`ORG_USER_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='按组织征求的人员名单表';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

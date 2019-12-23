@@ -2,14 +2,15 @@ package com.augurit.aplanmis.front.apply.service;
 
 import com.alibaba.fastjson.JSON;
 import com.augurit.agcloud.bsc.util.UuidUtil;
-import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
+import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.admin.market.item.service.AeaItemRelevanceService;
 import com.augurit.aplanmis.admin.market.service.service.AeaImServiceService;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
+import com.augurit.aplanmis.common.domain.AeaHiReceive;
 import com.augurit.aplanmis.common.domain.AeaHiSmsInfo;
 import com.augurit.aplanmis.common.domain.AeaImProjPurchase;
 import com.augurit.aplanmis.common.domain.AeaImPurchaseinst;
@@ -20,6 +21,8 @@ import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
 import com.augurit.aplanmis.common.domain.AeaParStage;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.domain.AeaUnitInfo;
+import com.augurit.aplanmis.common.mapper.AeaHiApplyinstMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiReceiveMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiSmsInfoMapper;
 import com.augurit.aplanmis.common.mapper.AeaImProjPurchaseMapper;
 import com.augurit.aplanmis.common.mapper.AeaImPurchaseinstMapper;
@@ -55,6 +58,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -74,7 +78,11 @@ public class RestApplyService {
     @Autowired
     private ReceiveService receiveService;
     @Autowired
+    private AeaHiReceiveMapper aeaHiReceiveMapper;
+    @Autowired
     private AeaHiApplyinstService aeaHiApplyinstService;
+    @Autowired
+    private AeaHiApplyinstMapper aeaHiApplyinstMapper;
     @Autowired
     private AeaProjInfoService aeaProjInfoService;
     @Autowired
@@ -118,14 +126,21 @@ public class RestApplyService {
      * @return applyinstId 申请实例ID
      */
     public String instantiateSeriesFlow(SeriesApplyDataPageVo seriesApplyDataPageVo) throws Exception {
-        // 如果是多次打印回执，直接返回申报实例
-        if (StringUtils.isNotBlank(seriesApplyDataPageVo.getApplyinstId()) && !Status.ON.equals(seriesApplyDataPageVo.getIsJustApplyinst())) {
-            return seriesApplyDataPageVo.getApplyinstId();
+        // 先删除以前的 receiveType=1, 2 的回执实例
+        if (StringUtils.isNotBlank(seriesApplyDataPageVo.getApplyinstId())) {
+            List<AeaHiReceive> aeaHiReceives = aeaHiReceiveMapper.listReceiveByApplyinstIdAndTypes(new String[]{seriesApplyDataPageVo.getApplyinstId()}, new String[]{"1", "2"});
+            if (CollectionUtils.isNotEmpty(aeaHiReceives)) {
+                aeaHiReceiveMapper.deleteAeaHiReceives(aeaHiReceives.stream().map(AeaHiReceive::getReceiveId).collect(Collectors.toList()));
+            }
         }
         AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(seriesApplyDataPageVo.getItemVerId(), SecurityContext.getCurrentOrgId());
         SeriesApplyDataVo dataVo = seriesApplyDataPageVo.toSeriesApplyDataVo(aeaItemBasic.getAppId());
         dataVo.setIsParallel("0");
         String applyinstId = aeaSeriesService.stagingApply(dataVo);
+        AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstMapper.getAeaHiApplyinstById(applyinstId);
+        aeaHiApplyinst.setIsTemporarySubmit("2");
+        aeaHiApplyinstMapper.updateAeaHiApplyinst(aeaHiApplyinst);
+
         updateAeaSmsInfo(seriesApplyDataPageVo.getSmsInfoId(), new String[]{applyinstId});
         //保存受理回执，物料回执---fixme ?应该只有物料回执
         String[] receiveTypes = new String[]{"1", "2"};
@@ -159,11 +174,13 @@ public class RestApplyService {
      */
     public ApplyinstIdVo instantiateStageProcess(StageApplyDataPageVo stageApplyDataPageVo) throws Exception {
         ApplyinstIdVo applyinstIdVo = new ApplyinstIdVo();
-        // 如果是多次打印回执，直接返回申报实例
-        if ("1".equals(stageApplyDataPageVo.getIsPrintReceive())) {
-            applyinstIdVo.setApplyinstIds(stageApplyDataPageVo.getApplyinstIds());
-            applyinstIdVo.setParallelApplyinstId(stageApplyDataPageVo.getParallelApplyinstId());
-            return applyinstIdVo;
+        // 先删除以前的 receiveType=1, 2 的回执实例
+        if (StringUtils.isNotBlank(stageApplyDataPageVo.getParallelApplyinstId()) || (stageApplyDataPageVo.getApplyinstIds() != null && stageApplyDataPageVo.getApplyinstIds().length > 0)) {
+            String[] applyinstIds = ArrayUtils.addAll(applyinstIdVo.getApplyinstIds(), applyinstIdVo.getParallelApplyinstId());
+            List<AeaHiReceive> aeaHiReceives = aeaHiReceiveMapper.listReceiveByApplyinstIdAndTypes(applyinstIds, new String[]{"1", "2"});
+            if (CollectionUtils.isNotEmpty(aeaHiReceives)) {
+                aeaHiReceiveMapper.deleteAeaHiReceives(aeaHiReceives.stream().map(AeaHiReceive::getReceiveId).collect(Collectors.toList()));
+            }
         }
         String[] applyinstIds;
         //20190819 小糊涂 并联申报可以支持只申报并行推进事项，不申报并联申报事项；
@@ -190,6 +207,11 @@ public class RestApplyService {
             applyinstIdVo.setApplyinstIds(applyinstIds);
         }
         if (null != applyinstIds && applyinstIds.length > 0) {
+            List<AeaHiApplyinst> aeaHiApplyinsts = aeaHiApplyinstMapper.listAeaHiApplyinstByIds(Arrays.asList(applyinstIds));
+            for (AeaHiApplyinst ahi : aeaHiApplyinsts) {
+                ahi.setIsTemporarySubmit("2");
+                aeaHiApplyinstMapper.updateAeaHiApplyinst(ahi);
+            }
             updateAeaSmsInfo(stageApplyDataPageVo.getSmsInfoId(), applyinstIds);
             // 保存回执
             String[] receiptTypes = {"1", "2"};

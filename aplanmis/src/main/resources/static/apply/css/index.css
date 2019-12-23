@@ -1376,6 +1376,18 @@ textarea {
   color: #fff;
   padding: 0 0;
 }
+.is-circle-green {
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+  line-height: 20px;
+  text-align: center;
+  background: #86C937;
+  border-radius: 50%;
+  color: #fff;
+  padding: 0 0;
+  background: #00C062;
+}
 .is-catalog.is-shishi {
   background: #FFCC61;
 }
