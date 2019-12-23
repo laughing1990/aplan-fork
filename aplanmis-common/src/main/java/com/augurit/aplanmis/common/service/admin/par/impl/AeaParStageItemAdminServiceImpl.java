@@ -263,7 +263,7 @@ public class AeaParStageItemAdminServiceImpl implements AeaParStageItemAdminServ
      * @param isOptionItem 是否必选事项
      */
     @Override
-    public void batchSaveStageItem(String stageId, String[] itemIds, String[] sortNos,String isOptionItem) {
+    public void batchSaveStageItem(String stageId, String[] itemIds, String[] sortNos, String[] isDoneItems, String isOptionItem) {
 
         if (StringUtils.isNotBlank(stageId)) {
             AeaParStage queryStage = new AeaParStage();
@@ -333,6 +333,7 @@ public class AeaParStageItemAdminServiceImpl implements AeaParStageItemAdminServ
                         stageItem1.setItemId(itemMapList.get(i).get("itemId"));
                         stageItem1.setItemVerId(itemMapList.get(i).get("itemVerId"));
                         stageItem1.setSortNo(new Long(sortNos[i]));
+                        stageItem1.setIsDoneItem(isDoneItems[i]);
                         stageItem1.setCreater(userId);
                         stageItem1.setCreateTime(new Date());
                         stageItem1.setIsOptionItem(isOptionItem);
@@ -355,6 +356,7 @@ public class AeaParStageItemAdminServiceImpl implements AeaParStageItemAdminServ
                             for(AeaParStageItem oldStageItem : oldStageItemList){
                                 if((oldStageItem.getItemId()+"*"+oldStageItem.getItemVerId()).equals(flag)){
                                     oldStageItem.setSortNo(new Long(sortNos[i]));
+                                    oldStageItem.setIsDoneItem(isDoneItems[i]);
                                     aeaParStageItemMapper.updateAeaParStageItem(oldStageItem);
                                     break;
                                 }

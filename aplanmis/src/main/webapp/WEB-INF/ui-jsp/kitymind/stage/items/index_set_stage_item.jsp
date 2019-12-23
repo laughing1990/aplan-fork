@@ -71,6 +71,7 @@
             * 移动到li样式
         */
         .block_ul_td li:hover {
+
             background: #e7e8eb;
             cursor: move;
             cursor: -webkit-grabbing;
@@ -79,22 +80,28 @@
         .selectedItemSortDiv .drag-handle_th {
             text-align: center;
             display: inline-block;
-            width: 8%;
+            width: 5%;
             font-weight: 600;
         }
 
         /**拖拽手把**/
         .selectedItemSortDiv .drag-handle_td {
+
             text-align: center;
             font: bold 16px Sans-Serif;
             color: #5F9EDF;
             display: inline-block;
-            width: 8%;
+            width: 5%;
         }
 
         .selectedItemSortDiv .ostage_name_td{
             display: inline-block;
             width: 45%;
+        }
+
+        .isSelLabel{
+
+            margin-bottom: 2px;
         }
 
         #selectItemTree::-webkit-scrollbar{

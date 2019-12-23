@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<!--created by chenzh    2019-07-04 16:18:34 -->
+
 <!--0 一些前置信息配置 -->
 <mapper namespace="com.augurit.aplanmis.common.mapper.AeaParStageItemMapper">
 
@@ -9,12 +9,13 @@
         ${alias}.STAGE_ITEM_ID  stageItemId,
         ${alias}.STAGE_ID  stageId,
         ${alias}.ITEM_ID  itemId,
-        ${alias}.CREATER  creater,
-        ${alias}.CREATE_TIME  createTime,
-        ${alias}.SORT_NO  sortNo,
         ${alias}.ITEM_VER_ID  itemVerId,
         ${alias}.IS_OPTION_ITEM  isOptionItem,
-        ${alias}.SUB_FORM_ID subFormId
+        ${alias}.IS_DONE_ITEM isDoneItem,
+        ${alias}.SORT_NO  sortNo,
+        ${alias}.SUB_FORM_ID subFormId,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
@@ -30,7 +31,9 @@
     <!--3 根据条件查询实体list -->
     <select id="listAeaParStageItem" resultType="AeaParStageItem">
         select
-        <include refid="allColumns"><property name="alias" value="apsi"/></include>
+            <include refid="allColumns">
+                <property name="alias" value="apsi"/>
+            </include>
         from AEA_PAR_STAGE_ITEM apsi
         <where>
             <if test="stageItemId != null">
@@ -48,12 +51,30 @@
             <if test="isOptionItem != null">
                 AND IS_OPTION_ITEM = #{isOptionItem}
             </if>
+            <if test="isDoneItem!=null ">
+                AND IS_DONE_ITEM = #{isDoneItem}
+            </if>
+            <if test="sortNo != null">
+                AND SORT_NO = #{sortNo}
+            </if>
+            <if test="subFormId != null">
+                AND SUB_FORM_ID = #{subFormId}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
         </where>
     </select>
+
     <!--根据id查询事项列表-->
-    <select id="listAeaStageItemByParInId" resultType="com.augurit.aplanmis.common.domain.AeaParStageItem">
+    <select id="listAeaStageItemByParInId" resultType="AeaParStageItem">
         select
-        <include refid="allColumns"><property name="alias" value="apsi"/></include>
+            <include refid="allColumns">
+                <property name="alias" value="apsi"/>
+            </include>
         from AEA_PAR_STAGE_ITEM apsi,AEA_PAR_STAGE_ITEM_IN parin
         where parin.IN_ID = #{parInId}
         and apsi.stage_item_id = parin.stage_item_id
@@ -62,19 +83,47 @@
 
     <select id="listAeaStageItemByParInIds" resultType="AeaParStageItem">
         select
-        <include refid="allColumns"><property name="alias" value="apsi"/></include>,parin.IN_ID parInId
+            <include refid="allColumns">
+               <property name="alias" value="apsi"/>
+            </include>,
+            parin.IN_ID parInId
         from AEA_PAR_STAGE_ITEM apsi,AEA_PAR_STAGE_ITEM_IN parin
-        where parin.IN_ID in <foreach collection="parInIds" separator="," open="(" close=")" item="parInId">#{parInId}</foreach>
+        where parin.IN_ID in
+        <foreach collection="parInIds" separator="," open="(" close=")" item="parInId">
+            #{parInId}
+        </foreach>
         and apsi.stage_item_id = parin.stage_item_id
         order by apsi.SORT_NO asc,apsi.CREATE_TIME asc
     </select>
 
     <!--5 新增实体对象 -->
     <insert id="insertAeaParStageItem" parameterType="AeaParStageItem">
-        insert into AEA_PAR_STAGE_ITEM (STAGE_ITEM_ID, STAGE_ID, ITEM_ID, CREATER, CREATE_TIME, SORT_NO, ITEM_VER_ID,
-                                        IS_OPTION_ITEM)
-        values (#{stageItemId}, #{stageId}, #{itemId}, #{creater}, #{createTime}, #{sortNo}, #{itemVerId},
-                #{isOptionItem})
+        insert into AEA_PAR_STAGE_ITEM
+        (
+            STAGE_ITEM_ID,
+            STAGE_ID,
+            ITEM_ID,
+            ITEM_VER_ID,
+            IS_OPTION_ITEM,
+            IS_DONE_ITEM,
+            SORT_NO,
+            SUB_FORM_ID,
+            CREATER,
+            CREATE_TIME
+        )
+        values
+        (
+            #{stageItemId},
+            #{stageId},
+            #{itemId},
+            #{itemVerId},
+            #{isOptionItem},
+            #{isDoneItem},
+            #{sortNo},
+            #{subFormId},
+            #{creater},
+            #{createTime}
+        )
     </insert>
 
     <!--6 修改实体对象 -->
@@ -90,23 +139,26 @@
             <if test="itemId != null">
                 ITEM_ID = #{itemId},
             </if>
-            <if test="creater != null">
-                CREATER = #{creater},
-            </if>
-            <if test="createTime != null">
-                CREATE_TIME = #{createTime},
-            </if>
-            <if test="sortNo != null">
-                SORT_NO = #{sortNo},
-            </if>
             <if test="itemVerId != null">
                 ITEM_VER_ID = #{itemVerId},
             </if>
             <if test="isOptionItem != null">
                 IS_OPTION_ITEM = #{isOptionItem},
             </if>
+            <if test="isDoneItem!=null ">
+                IS_DONE_ITEM = #{isDoneItem},
+            </if>
+            <if test="sortNo != null">
+                SORT_NO = #{sortNo},
+            </if>
             <if test="subFormId != null">
                 SUB_FORM_ID = #{subFormId},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
             </if>
         </set>
         where STAGE_ITEM_ID = #{stageItemId}
@@ -497,14 +549,15 @@
                   and ROOT_ORG_ID = #{rootOrgId}
            )
     </update>
+
     <select id="countStageItemByisOptionItem" resultType="Integer">
         select count(1) from aea_par_stage_item apsi
         join aea_item_ver aiv on apsi.ITEM_VER_ID = aiv.ITEM_VER_ID and apsi.ITEM_ID = aiv.ITEM_ID and aiv.IS_DELETED = '0'
         and aiv.root_org_id = #{rootOrgId}
         where  1=1 and apsi.STAGE_ID = #{stageId}
         and apsi.IS_OPTION_ITEM = #{isOptionItem}
-
     </select>
+
     <select id="rappidFindStageAllBasicItemGroupByisOptionItem" resultMap="rappidFindStageAllBasicItemGroupByisOptionItemMap">
 
         (

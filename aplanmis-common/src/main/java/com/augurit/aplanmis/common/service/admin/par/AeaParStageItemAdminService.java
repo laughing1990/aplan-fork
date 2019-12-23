@@ -36,7 +36,7 @@ public interface AeaParStageItemAdminService {
 
     List<AeaParStageItem> listAeaStageItemInfoByStageId(String stageId);
 
-    void batchSaveStageItem(String stageId, String[] itemIds, String[] sortNos, String isOptionItem);
+    void batchSaveStageItem(String stageId, String[] itemIds, String[] sortNos, String[] isDoneItems, String isOptionItem);
 
     List<ZtreeNode> listStageItemTreeByStageId(String stageId);
 

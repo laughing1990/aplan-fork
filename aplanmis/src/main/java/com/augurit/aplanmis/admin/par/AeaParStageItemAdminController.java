@@ -84,13 +84,13 @@ public class AeaParStageItemAdminController {
     }
 
     @RequestMapping("/batchSaveStageItem.do")
-    public ResultForm batchSaveStageItem(String stageId, String[] itemIds, String[] sortNos,String isOptionItem) {
+    public ResultForm batchSaveStageItem(String stageId, String[] itemIds, String[] sortNos, String[] isDoneItems, String isOptionItem) {
 
         if (itemIds != null && itemIds.length > 0) {
             if (StringUtils.isBlank(stageId)) {
                 return new ResultForm(false, "参数阶段id为空!");
             }
-            aeaParStageItemAdminService.batchSaveStageItem(stageId, itemIds, sortNos,isOptionItem);
+            aeaParStageItemAdminService.batchSaveStageItem(stageId, itemIds, sortNos, isDoneItems, isOptionItem);
         } else {
             aeaParStageItemAdminService.batchDeleteOneTypeStageItem(stageId, isOptionItem);
         }
