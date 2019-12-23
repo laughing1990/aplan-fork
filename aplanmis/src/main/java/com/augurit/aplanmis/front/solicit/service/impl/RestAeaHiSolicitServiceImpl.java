@@ -5,6 +5,8 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.service.om.OpuOmOrgService;
 import com.augurit.aplanmis.front.solicit.service.RestAeaHiSolicitService;
+import com.augurit.aplanmis.front.solicit.vo.SolicitListVo;
+import com.github.pagehelper.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,11 +46,24 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService{
             list = opuOmOrgService.listOpuOmOrg(opuOmOrg);
         }
 
-        if("1".equals(isRoot)){
+        if ("1".equals(isRoot)) {
             OpuOmOrg opuOmOrg = opuOmOrgService.getOrg(topOrgId);
             list.add(opuOmOrg);
         }
 
         return list;
+    }
+
+    /**
+     * 意见征求列表
+     *
+     * @param type 查询类型，0 意见征求，1 一次征求，2 联合评审 ...
+     * @param page 分页参数
+     * @return List<SolicitListVo>
+     */
+    @Override
+    public List<SolicitListVo> listSolicit(String type, Page page) throws Exception {
+        //TODO
+        return null;
     }
 }

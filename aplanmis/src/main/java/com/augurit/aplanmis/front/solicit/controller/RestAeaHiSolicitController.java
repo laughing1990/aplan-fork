@@ -5,6 +5,8 @@ import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.aplanmis.front.solicit.service.RestAeaHiSolicitService;
+import com.augurit.aplanmis.front.solicit.vo.SolicitListVo;
+import com.github.pagehelper.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -37,21 +39,33 @@ public class RestAeaHiSolicitController {
             @ApiImplicitParam(name = "isRoot", value = "是否为根组织，1表示是，0表示否")
             , @ApiImplicitParam(name = "parentOrgId", value = "父组织ID，当isRoot=0时，非空")
     })
-    public ResultForm listOrg(String isRoot, String parentOrgId){
-        if(StringUtils.isBlank(isRoot))
-            return new ResultForm(false,"参数isRoot不能为空！");
-        if(StringUtils.isNotBlank(isRoot)&&"0".equals(isRoot)
-                &&StringUtils.isBlank(parentOrgId))
-            return new ResultForm(false,"非根组织，参数parentOrgId不能为空！");
+    public ResultForm listOrg(String isRoot, String parentOrgId) {
+        if (StringUtils.isBlank(isRoot))
+            return new ResultForm(false, "参数isRoot不能为空！");
+        if (StringUtils.isNotBlank(isRoot) && "0".equals(isRoot)
+                && StringUtils.isBlank(parentOrgId))
+            return new ResultForm(false, "非根组织，参数parentOrgId不能为空！");
 
         List<OpuOmOrg> list = null;
         try {
-            list = restAeaHiSolicitService.listOrg(isRoot,parentOrgId);
+            list = restAeaHiSolicitService.listOrg(isRoot, parentOrgId);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResultForm(false,"错误信息："+e.getLocalizedMessage());
+            return new ResultForm(false, "错误信息：" + e.getLocalizedMessage());
         }
 
-        return new ContentResultForm<List<OpuOmOrg>>(true,list);
+        return new ContentResultForm<List<OpuOmOrg>>(true, list);
+    }
+
+    @GetMapping("/list/solicit")
+    @ApiOperation(value = "意见征求 --> 获取意见征求列表", notes = "获取意见征求列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "type", value = "查询类型，0 意见征求，1 一次征求，2 联合评审 ...")
+            , @ApiImplicitParam(name = "page", value = "分页参数")
+    })
+    public ResultForm listSolicit(String type, Page page) throws Exception {
+
+        List<SolicitListVo> listSolicit = restAeaHiSolicitService.listSolicit(type, page);
+        return new ContentResultForm<>(true, listSolicit, "success");
     }
 }
