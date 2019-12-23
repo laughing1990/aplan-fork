@@ -1190,6 +1190,8 @@ var vm = new Vue({
               // 保存成功后显示‘申报主体信息’模块
               _that.showVerLen = _that.verticalTabData.length;
               _that.showMoreProjInfo = true;
+
+              if (!_that.projInfoId) _that.projInfoId = data.content;
               
               _that.$message({
                 message: '信息保存成功',
@@ -1391,6 +1393,11 @@ var vm = new Vue({
             _that.backDLinkmanInfo(data,parData);
           }
         }else {
+          if(!parData.applicant){
+            alertMsg('提示信息', '请先完善单位信息！', '关闭', 'error', true);
+            return;
+          }
+
           _that.addEditManModalTitle = '新增联系人';
           _that.addEditManform = {};
           _that.addEditManModalFlag = 'add';
