@@ -580,8 +580,28 @@ var vm = new Vue({
       cancelAppDetailList: [],
       ckHandleOpinion: '',
       bmHandleOpinion: '',
+      saveLinkManLoading: false,
       addEditManModalShow: false,
-      addEditManform: {},
+      addEditManform: {
+        linkmanName: '',
+        linkmanCertNo: '',
+        linkmanMobilePhone: '',
+        linkmanMail: '',
+        linkmanAddr: '',
+        linkmanMemo: '',
+        linkmanInfoId: '',
+      },
+      addLinkManRules: { // 新增编辑联系人校验
+        linkmanName: [
+          { required: true,validator: checkMissValue, trigger: 'blur' },
+        ],
+        linkmanCertNo: [
+          { required: true,validator: checkMissValue, trigger: 'blur' },
+        ],
+        linkmanMobilePhone:[
+          { required: true,validator: checkPhoneNum, trigger: 'blur' },
+        ]
+      },
     }
   },
   filters: {
@@ -618,6 +638,59 @@ var vm = new Vue({
     },
   },
   methods: {
+    // 打开新增或者编辑联系人弹窗
+    openEditLinkMan: function(id){
+      var vm = this;
+      vm.addEditManform = {
+        linkmanName: '',
+        linkmanCertNo: '',
+        linkmanMobilePhone: '',
+        linkmanMail: '',
+        linkmanAddr: '',
+        linkmanMemo: '',
+        linkmanInfoId: '',
+      };
+      if (id && id.length) {
+        vm.cancelAppLinkManList.forEach(function(u){
+          if (u.linkmanInfoId == id) {
+            vm.addEditManform.linkmanName = u.linkmanName;
+            vm.addEditManform.linkmanCertNo = u.linkmanCertNo;
+            vm.addEditManform.linkmanMobilePhone = u.linkmanMobilePhone;
+            vm.addEditManform.linkmanMail = u.linkmanMail;
+            vm.addEditManform.linkmanAddr = u.linkmanAddr;
+            vm.addEditManform.linkmanMemo = u.linkmanMemo;
+            vm.addEditManform.linkmanInfoId = u.linkmanInfoId;
+          }
+        });
+      }
+      vm.addEditManModalShow = true;
+    },
+    // 新增或者编辑联系人
+    saveAeaLinkmanInfo: function(){
+      var vm = this;
+      vm.$refs.addEditManform.validate(function(f){
+        if (f) {
+          vm.saveLinkManLoading = true;
+          vm.addEditManform.applyinstId = vm.masterEntityKey;
+          request('', {
+            url: ctx + 'rest/applyinst/saveUnitLinkman',
+            type: 'post',
+            data: vm.addEditManform,
+          }, function(res) {
+            vm.saveLinkManLoading = false;
+            if (res.success) {
+              vm.requestLinkManInfo();
+              vm.addEditManModalShow = false;
+            } else {
+              vm.$message.error(res.message || '保存失败');
+            }
+          }, function(){
+            vm.saveLinkManLoading = false;
+            vm.$message.error('保存失败');
+          });
+        }
+      });
+    },
     // 撤件部门删除附件
     deleteCancelUserFile: function(id){
       var vm = this;
@@ -932,7 +1005,7 @@ var vm = new Vue({
         text = text.replace(/'/g,'"');
         res = JSON.parse(text);
         if(res.flag=='200') {
-          requestLinkManInfo();
+          vm.requestLinkManInfo();
         } else if(res.flag=='201') {
           vm.parentPageLoading = false;
           vm.$confirm(res.message, '是否继续撤件', {
@@ -940,7 +1013,7 @@ var vm = new Vue({
             cancelButtonText: '取消',
             type: 'warning'
           }).then(function(){
-            requestLinkManInfo()
+            vm.requestLinkManInfo();
           }).catch(function(){
             //
           });
@@ -949,25 +1022,26 @@ var vm = new Vue({
           vm.$message.error(res.message || '撤件失败');
         }
       }
-      function requestLinkManInfo(){
-        // 获取业主信息
-        request('', {
-          url: ctx + 'rest/applyinst/getLinkmanInfoList?applyinstId='+vm.masterEntityKey,
-          type: 'get',
-        }, function(res){
-          vm.parentPageLoading = false;
-          if(res.success) {
-            vm.cancelAppVisible = true;
-            vm.cancelAppLinkManList = res.content;
-            vm.cancelAppLinkManList.length && vm.cancelAppChooseLinkMan(vm.cancelAppLinkManList[0].linkmanInfoId);
-          } else {
-            vm.$message.error(res.message || '获取撤件业主信息失败');
-          }
-        }, function(){
-          vm.parentPageLoading = false;
-          vm.$message.error('获取撤件业主信息失败');
-        })
-      }
+    },
+    requestLinkManInfo: function(){
+      var vm = this;
+      // 获取业主信息
+      request('', {
+        url: ctx + 'rest/applyinst/getLinkmanInfoList?applyinstId='+vm.masterEntityKey,
+        type: 'get',
+      }, function(res){
+        vm.parentPageLoading = false;
+        if(res.success) {
+          vm.cancelAppVisible = true;
+          vm.cancelAppLinkManList = res.content;
+          vm.cancelAppLinkManList.length && vm.cancelAppChooseLinkMan(vm.cancelAppLinkManList[0].linkmanInfoId);
+        } else {
+          vm.$message.error(res.message || '获取撤件业主信息失败');
+        }
+      }, function(){
+        vm.parentPageLoading = false;
+        vm.$message.error('获取撤件业主信息失败');
+      })
     },
     // 打开延长容缺时限弹窗
     openRQmoreTimeDialog: function(row){
