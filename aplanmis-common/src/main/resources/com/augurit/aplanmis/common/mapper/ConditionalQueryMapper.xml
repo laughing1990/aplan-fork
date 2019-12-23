@@ -873,7 +873,7 @@
         ti.TIMERULE_UNIT AS timeruleUnit,
         art_123.SIGN_STATE_ AS signState,
         '0' as itemNature,
-        NULL AS isGreenWay
+        ahap_123.IS_GREEN_WAY AS isGreenWay
         FROM
         ACT_RU_TASK art_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -927,7 +927,7 @@
         ti.TIMERULE_UNIT AS timeruleUnit,
         art_123.SIGN_STATE_ AS signState,
         '0' as itemNature,
-        ai_123.IS_GREEN_WAY AS isGreenWay
+        ahap_123.IS_GREEN_WAY AS isGreenWay
         FROM
         ACT_RU_TASK art_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -993,7 +993,7 @@
         ti.TIMERULE_UNIT AS timeruleUnit,
         art_123.SIGN_STATE_ AS signState,
         '0' as itemNature,
-        NULL AS isGreenWay
+        ahap_123.IS_GREEN_WAY AS isGreenWay
         FROM
         ACT_RU_TASK art_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -1048,7 +1048,7 @@
         ti.TIMERULE_UNIT AS timeruleUnit,
         art_123.SIGN_STATE_ AS signState,
         ai_123.ITEM_NATURE AS itemNature,
-        ai_123.IS_GREEN_WAY AS isGreenWay
+        ahap_123.IS_GREEN_WAY AS isGreenWay
         FROM
         ACT_RU_TASK art_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -1107,7 +1107,7 @@
         ti.TIMERULE_UNIT AS timeruleUnit,
         art_123.SIGN_STATE_ AS signState,
         ai_123.ITEM_NATURE AS itemNature,
-        ai_123.IS_GREEN_WAY AS isGreenWay
+        ahap_123.IS_GREEN_WAY AS isGreenWay
         FROM
         ACT_RU_TASK art_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -1216,7 +1216,7 @@
         aht_123.TASK_DEF_KEY_ AS taskDefKey,
         ahp_123.ID_ procInstId,
         '0' as itemNature,
-        ai_123.IS_GREEN_WAY AS isGreenWay
+        ahap_123.IS_GREEN_WAY AS isGreenWay
         FROM
         ACT_HI_TASKINST aht_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON aht_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -1276,7 +1276,7 @@
         aht_123.TASK_DEF_KEY_ AS taskDefKey,
         ahp_123.ID_ procInstId,
         '0' as itemNature,
-        ai_123.IS_GREEN_WAY AS isGreenWay
+        ahap_123.IS_GREEN_WAY AS isGreenWay
         FROM
         ACT_HI_TASKINST aht_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON aht_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -1337,7 +1337,7 @@
         aht_123.TASK_DEF_KEY_ AS taskDefKey,
         ahp_123.ID_ procInstId,
         ai_123.ITEM_NATURE as itemNature,
-        ai_123.IS_GREEN_WAY AS isGreenWay
+        ahap_123.IS_GREEN_WAY AS isGreenWay
         FROM
         ACT_HI_TASKINST aht_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON aht_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -1387,7 +1387,7 @@
         aht_123.TASK_DEF_KEY_ AS taskDefKey,
         ahp_123.ID_ procInstId,
         ai_123.ITEM_NATURE as itemNature,
-        ai_123.IS_GREEN_WAY AS isGreenWay
+        ahap_123.IS_GREEN_WAY AS isGreenWay
         FROM
         ACT_HI_TASKINST aht_123
         LEFT JOIN ACT_HI_PROCINST ahp_123 ON aht_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
@@ -1493,7 +1493,7 @@
         ti.INST_STATE AS instState,
         ti.TIMERULE_UNIT AS timeruleUnit,
         ti.USE_LIMIT_TIME AS useLimitTime,
-        NULL AS isGreenWay
+        ahap_123.IS_GREEN_WAY AS isGreenWay
         FROM
         AEA_HI_APPLYINST ahap_123
         <include refid="leftJoinApplyinstProj">
@@ -1542,7 +1542,7 @@
         ti.INST_STATE AS instState,
         ti.TIMERULE_UNIT AS timeruleUnit,
         ti.USE_LIMIT_TIME AS useLimitTime,
-        NULL AS isGreenWay
+        ahap_123.IS_GREEN_WAY AS isGreenWay
         FROM
         AEA_HI_APPLYINST ahap_123
         <include refid="leftJoinApplyinstProj">
@@ -1592,7 +1592,7 @@
         ti.INST_STATE AS instState,
         ti.TIMERULE_UNIT AS timeruleUnit,
         ti.USE_LIMIT_TIME AS useLimitTime,
-        ai_123.IS_GREEN_WAY AS isGreenWay
+        ahap_123.IS_GREEN_WAY AS isGreenWay
         FROM
         AEA_HI_APPLYINST ahap_123
 
@@ -1640,7 +1640,7 @@
         ti.INST_STATE AS instState,
         ti.TIMERULE_UNIT AS timeruleUnit,
         ti.USE_LIMIT_TIME AS useLimitTime,
-        ai_123.IS_GREEN_WAY AS isGreenWay
+        ahap_123.IS_GREEN_WAY AS isGreenWay
         FROM
         AEA_HI_APPLYINST ahap_123
         <include refid="leftJoinApplyinstProj">
