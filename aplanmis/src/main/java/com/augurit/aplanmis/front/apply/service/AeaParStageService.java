@@ -788,6 +788,9 @@ public class AeaParStageService {
     public ParallelUnstashVo unstash(String applyinstId) throws Exception {
         ParallelUnstashVo parallelUnstashVo = new ParallelUnstashVo();
 
+        AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+        parallelUnstashVo.setAeaHiApplyinst(aeaHiApplyinst);
+
         List<AeaApplyinstProj> aeaApplyinstProjs = aeaApplyinstProjMapper.getAeaApplyinstProjByApplyinstId(applyinstId);
         Assert.state(aeaApplyinstProjs.size() > 0, "根据申报实例找不到对应的项目信息, applyinstId: " + applyinstId);
         AeaProjInfo aeaProjInfo = aeaProjInfoMapper.getAeaProjInfoById(aeaApplyinstProjs.get(0).getProjInfoId());

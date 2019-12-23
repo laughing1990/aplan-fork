@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.front.apply.vo;
 
+import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -14,6 +15,9 @@ import java.util.Set;
 @Getter
 @Setter
 public class ParallelUnstashVo {
+
+    @ApiModelProperty(value = "申报实例")
+    private AeaHiApplyinst aeaHiApplyinst;
 
     @ApiModelProperty(value = "项目id")
     private String projInfoId;
