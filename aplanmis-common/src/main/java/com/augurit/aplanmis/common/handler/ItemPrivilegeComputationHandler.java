@@ -339,7 +339,6 @@ public final class ItemPrivilegeComputationHandler {
             computedItem.setIsRecommend(origin.getIsRecommended());
             computedItem.setIsCatalog(origin.getIsCatalog());
             computedItem.setItemExchangeWay(origin.getItemExchangeWay());
-            computedItem.setIsGreenWay(origin.getIsGreenWay());
             computedItem.setIsOptionItem(origin.getIsOptionItem());
             return computedItem;
         }

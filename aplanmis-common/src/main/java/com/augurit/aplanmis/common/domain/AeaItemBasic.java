@@ -103,9 +103,6 @@ public class AeaItemBasic implements Serializable {
     @ApiModelProperty(value = "法定办结时限单位")
     private String anticipateType;
 
-    @ApiModelProperty(value = "是否绿色通道")
-    private String isGreenWay;
-
     /**
      * 行政区域
      */
