@@ -580,6 +580,8 @@ var vm = new Vue({
       cancelAppDetailList: [],
       ckHandleOpinion: '',
       bmHandleOpinion: '',
+      addEditManModalShow: false,
+      addEditManform: {},
     }
   },
   filters: {
