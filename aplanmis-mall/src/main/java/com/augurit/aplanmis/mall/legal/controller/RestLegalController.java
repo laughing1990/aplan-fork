@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,6 +34,8 @@ public class RestLegalController {
     IBscAttService bscAttService;
     @Autowired
     AeaServiceLegalAdminService legalAdminService;
+    @Value("${dg.sso.access.platform.org.top-org-id:0368948a-1cdf-4bf8-a828-71d796ba89f6}")
+    protected String topOrgId;
 
     @GetMapping("/list")
     @ApiOperation(value = "法律法规 --> 法律法规列表查询接口")
@@ -61,8 +64,7 @@ public class RestLegalController {
         if (StringUtils.isNotBlank(id)) {
             AeaServiceLegal legal = legalAdminService.getAeaServiceLegalById(id);
             if(legal!=null){
-                String orgId = SecurityContext.getCurrentOrgId();
-                List<BscAttForm> attList = bscAttService.listAttLinkAndDetailNoPage("AEA_SERVICE_LEGAL", "SERVICE_LEGAL_ATT", id, null, orgId, null);
+                List<BscAttForm> attList = bscAttService.listAttLinkAndDetailNoPage("AEA_SERVICE_LEGAL", "SERVICE_LEGAL_ATT", id, null, topOrgId, null);
                 legal.setLegalAtts((attList == null||attList.size()==0) ?new ArrayList<>(0):attList.subList(0,1));
                 legal.setServiceLegalAttCount(attList == null ? 0L : attList.size());
             }
