@@ -186,9 +186,6 @@ public class AeaParStageService {
             //applyinstIds = stageApplyDataVo.getApplyinstIds();
             for (String applyinstId : stageApplyDataVo.getApplyinstIds()) {
                 AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
-                if (!Status.OFF.equals(aeaHiApplyinst.getIsTemporarySubmit())) {
-                    aeaHiApplyinst.setIsTemporarySubmit(Status.OFF);
-                }
                 aeaHiApplyinst.setIsGreenWay(stageApplyDataVo.getIsGreenWay());
                 aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
                 ActStoAppinst actStoAppinst = new ActStoAppinst();

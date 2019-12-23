@@ -2,6 +2,7 @@ package com.augurit.aplanmis.front.apply.service;
 
 import com.alibaba.fastjson.JSON;
 import com.augurit.agcloud.bsc.util.UuidUtil;
+import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.CollectionUtils;
@@ -110,10 +111,27 @@ public class RestApplyService {
         String applyinstIdParam = seriesApplyDataPageVo.getApplyinstId();
         AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(seriesApplyDataPageVo.getItemVerId(), SecurityContext.getCurrentOrgId());
         SeriesApplyDataVo dataVo = seriesApplyDataPageVo.toSeriesApplyDataVo(aeaItemBasic.getAppId());
+        // 如果是打印回执进来的
+        if (StringUtils.isNotBlank(seriesApplyDataPageVo.getApplyinstId())) {
+            AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstMapper.getAeaHiApplyinstById(seriesApplyDataPageVo.getApplyinstId());
+            if (aeaHiApplyinst != null && "2".equals(aeaHiApplyinst.getIsTemporarySubmit())) {
+                dataVo.setIsJustApplyinst(Status.OFF);
+            }
+        }
         String applyinstId = aeaSeriesService.stageApplay(dataVo);
+
+        AeaHiApplyinst seriesApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+        seriesApplyinst.setIsTemporarySubmit(Status.OFF);
+        aeaHiApplyinstService.updateAeaHiApplyinst(seriesApplyinst);
+
         updateAeaSmsInfo(seriesApplyDataPageVo.getSmsInfoId(), new String[]{applyinstId});
         //保存受理回执，物料回执
         if (StringUtils.isNotBlank(applyinstIdParam)) {
+            // 先删除以前的 receiveType=1, 2 的回执实例
+            List<AeaHiReceive> aeaHiReceives = aeaHiReceiveMapper.listReceiveByApplyinstIdAndTypes(new String[]{applyinstIdParam}, new String[]{"1", "2"});
+            if (CollectionUtils.isNotEmpty(aeaHiReceives)) {
+                aeaHiReceiveMapper.deleteAeaHiReceives(aeaHiReceives.stream().map(AeaHiReceive::getReceiveId).collect(Collectors.toList()));
+            }
             receiveService.saveReceive(new String[]{applyinstId}, new String[]{"1", "2"}, SecurityContext.getCurrentUserName(), "");
         }
         return applyinstId;
@@ -254,7 +272,19 @@ public class RestApplyService {
             applyinstIdVo.setApplyinstIds(applyinstIds);
         }
         if (null != applyinstIds) {
+            for (String applyinstId : applyinstIds) {
+                AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstMapper.getAeaHiApplyinstById(applyinstId);
+                if (!Status.OFF.equals(aeaHiApplyinst.getIsTemporarySubmit())) {
+                    aeaHiApplyinst.setIsTemporarySubmit(Status.OFF);
+                    aeaHiApplyinstMapper.updateAeaHiApplyinst(aeaHiApplyinst);
+                }
+            }
             updateAeaSmsInfo(stageApplyDataPageVo.getSmsInfoId(), applyinstIds);
+            // 先删除以前的 receiveType=1, 2 的回执实例
+            List<AeaHiReceive> aeaHiReceives = aeaHiReceiveMapper.listReceiveByApplyinstIdAndTypes(applyinstIds, new String[]{"1", "2"});
+            if (CollectionUtils.isNotEmpty(aeaHiReceives)) {
+                aeaHiReceiveMapper.deleteAeaHiReceives(aeaHiReceives.stream().map(AeaHiReceive::getReceiveId).collect(Collectors.toList()));
+            }
             // 保存回执
             String[] receiptTypes = {"1", "2"};
             receiveService.saveReceive(applyinstIds, receiptTypes, SecurityContext.getCurrentUserName(), stageApplyDataPageVo.getComments());
