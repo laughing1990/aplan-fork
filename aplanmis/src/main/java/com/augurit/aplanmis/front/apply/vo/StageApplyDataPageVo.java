@@ -86,6 +86,9 @@ public class StageApplyDataPageVo {
     @ApiModelProperty(value = "是否实例化过回执 1是 0否", required = true)
     private String isPrintReceive;
 
+    @ApiModelProperty(value = "是否绿色通道", notes = "1: 是, 0: 否")
+    private String isGreenWay;
+
 
     public StageApplyDataVo toStageApplyDataVo(String appId, String themeVerId) {
         StageApplyDataVo stageApplyDataVo = new StageApplyDataVo();
@@ -112,6 +115,7 @@ public class StageApplyDataPageVo {
         stageApplyDataVo.setComments(this.comments);
         stageApplyDataVo.setApplyLinkmanId(this.applyLinkmanId);
         stageApplyDataVo.setStateIds(this.stateIds);
+        stageApplyDataVo.setIsGreenWay(this.isGreenWay);
         return stageApplyDataVo;
     }
 

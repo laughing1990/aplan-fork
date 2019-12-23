@@ -45,6 +45,8 @@ public class SeriesApplyDataPageVo {
     private String stageId;
     @ApiModelProperty(value = "是否只实例化了申报实例", notes = "1: 是; 0: 否")
     private String isJustApplyinst;
+    @ApiModelProperty(value = "是否绿色通道", notes = "1: 是, 0: 否")
+    private String isGreenWay;
 
     public SeriesApplyDataVo toSeriesApplyDataVo(String appId) {
         SeriesApplyDataVo seriesApplyDataVo = new SeriesApplyDataVo();
@@ -65,6 +67,7 @@ public class SeriesApplyDataPageVo {
         seriesApplyDataVo.setStageId(this.stageId);
         seriesApplyDataVo.setIsParallel(this.isParallel);
         seriesApplyDataVo.setIsJustApplyinst(this.isJustApplyinst);
+        seriesApplyDataVo.setIsGreenWay(this.isGreenWay);
         return seriesApplyDataVo;
     }
 
