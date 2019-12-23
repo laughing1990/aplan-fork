@@ -27,7 +27,13 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.text.SimpleDateFormat;
@@ -115,7 +121,7 @@ public class RestProjectController {
     public ContentResultForm<String> addProject(AeaProjInfo aeaProjInfo) {
         Assert.isTrue(StringUtils.isNotBlank(aeaProjInfo.getLocalCode()), "LocalCode is null");
         aeaProjInfoService.insertAeaProjInfo(aeaProjInfo);
-        return new ContentResultForm<>(true, "projInfoId", "Add project success");
+        return new ContentResultForm<>(true, aeaProjInfo.getProjInfoId(), "Add project success");
     }
 
     @ApiOperation(value = "新增子项目")
