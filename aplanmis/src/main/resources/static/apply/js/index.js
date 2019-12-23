@@ -616,6 +616,21 @@ var vm = new Vue({
       themeCategory: '',
       themeCategoryMsg: '', // 没有符合条件的主题, 请检查配置是否正确
       isGreenWay: false, // 是否设置为绿色通道
+      // 意见征求 start
+      solicitOpinionVisible: false,
+      solicitOpinionLoading: false,
+      soActiveTabIndex: 0,
+      soTabList: ['按事项征询', '按部门征询'],
+      soTableData1: [],
+      soTableData2: [],
+      soTabOrgList: [],
+      soTreeProps: {
+        label: 'orgName',
+        children: 'childNodes',
+        isLeaf: 'isLeaf'
+      },
+      soTreeData: [],
+      // 意见征求 end
     }
   },
   created: function () {
@@ -668,6 +683,48 @@ var vm = new Vue({
     }
   },
   methods: {
+    // 意见征询 start
+    // 切换表标签页
+    changeOsTab: function(i){
+      this.soActiveTabIndex = i;
+      if (i == 1 && this.soTabOrgList.length==0){
+        // this.loadOrgData();
+      }
+    },
+    // 加载树节点
+    loadSoNode: function(node, resolve){
+      var id = null;
+      if (node.level != 0) {
+        id = node.data.orgId;
+      }
+      this.loadOrgData(id, resolve);
+    },
+    // 加载部门数据
+    loadOrgData: function(id, resolve){
+      var vm = this;
+      var params = {
+        'isRoot': 1,
+        'parentOrgId': '',
+      };
+      if (id && id.length) {
+        params.isRoot = 0;
+        params.parentOrgId = id;
+      }
+      request('', {
+        url: ctx + 'rest/solicit/list/org',
+        type: 'get',
+        data: params,
+      }, function(res) {
+        if (res.success) {
+          resolve(res.content);
+        } else {
+          vm.$message.error(res.message||'加载部门数据失败');
+        }
+      }, function(res) {
+        vm.$message.error('加载部门数据失败');
+      })
+    },
+    // 意见征询 end
     // 查询主题信息
     getThemeInfoByThemeCategory: function () {
       var _that = this;
