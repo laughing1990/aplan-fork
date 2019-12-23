@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaSolicitOrgUserMapper" >
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+        ORG_USER_ID  orgUserId,
+        SOLICIT_ORG_ID  solicitOrgId,
+        USER_ID  userId,
+        SORT_NO  sortNo,
+        IS_ACTIVE  isActive,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaSolicitOrgUserById" resultType="AeaSolicitOrgUser" >
+        select
+           <include refid="allColumns"/>
+        from    AEA_SOLICIT_ORG_USER
+        where    ORG_USER_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaSolicitOrgUser" resultType="AeaSolicitOrgUser" >
+        select
+           <include refid="allColumns"/>
+        from    AEA_SOLICIT_ORG_USER
+        <where>
+            <if test="orgUserId != null" >
+            and    ORG_USER_ID = #{orgUserId}
+            </if>
+            <if test="solicitOrgId != null" >
+            and    SOLICIT_ORG_ID = #{solicitOrgId}
+            </if>
+            <if test="userId != null" >
+            and    USER_ID = #{userId}
+            </if>
+            <if test="sortNo != null" >
+            and    SORT_NO = #{sortNo}
+            </if>
+            <if test="isActive != null" >
+            and    IS_ACTIVE = #{isActive}
+            </if>
+            <if test="creater != null" >
+            and    CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+            and    CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null" >
+            and    MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null" >
+            and    MODIFY_TIME = #{modifyTime}
+            </if>
+        </where>
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaSolicitOrgUser" parameterType="AeaSolicitOrgUser" >
+        insert into AEA_SOLICIT_ORG_USER (
+            ORG_USER_ID,
+            SOLICIT_ORG_ID,
+            USER_ID,
+            SORT_NO,
+            IS_ACTIVE,
+            CREATER,
+            CREATE_TIME,
+            MODIFIER,
+            MODIFY_TIME
+        )  values  (
+            #{orgUserId},
+            #{solicitOrgId},
+            #{userId},
+            #{sortNo},
+            #{isActive},
+            #{creater},
+            #{createTime},
+            #{modifier},
+            #{modifyTime}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaSolicitOrgUser" parameterType="AeaSolicitOrgUser" >
+        update AEA_SOLICIT_ORG_USER
+        <set >
+            <if test="orgUserId != null" >
+            ORG_USER_ID = #{orgUserId},
+            </if>
+            <if test="solicitOrgId != null" >
+            SOLICIT_ORG_ID = #{solicitOrgId},
+            </if>
+            <if test="userId != null" >
+            USER_ID = #{userId},
+            </if>
+            <if test="sortNo != null" >
+            SORT_NO = #{sortNo},
+            </if>
+            <if test="isActive != null" >
+            IS_ACTIVE = #{isActive},
+            </if>
+            <if test="creater != null" >
+            CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+            CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null" >
+            MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null" >
+            MODIFY_TIME = #{modifyTime},
+            </if>
+        </set>
+        where ORG_USER_ID = #{orgUserId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaSolicitOrgUser">
+        delete from AEA_SOLICIT_ORG_USER where ORG_USER_ID = #{id}
+    </delete>
+
+    <resultMap type="AeaSolicitOrgUser" id="AeaSolicitOrgUserMap">
+        <id property="orgUserId" column="ORG_USER_ID"/>
+        <result property="solicitOrgId" column="SOLICIT_ORG_ID"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="sortNo" column="SORT_NO"/>
+        <result property="isActive" column="IS_ACTIVE"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+    </resultMap>
+
+</mapper>
