@@ -2453,6 +2453,13 @@ function rejectForItem() {
     urlForItem();
 }
 
+//事项-不予受理
+function outForItem() {
+    vm.enumItemStatus = 'OUT_SCOPE';
+    vm.requestMappingType = 'put';
+    urlForItem();
+}
+
 //事项-办结（通过）
 function passForItem() {
     vm.enumItemStatus = 'AGREE';
