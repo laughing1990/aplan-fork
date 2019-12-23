@@ -38,6 +38,9 @@ public class StashVo {
     @ApiModelProperty(value = "材料实例ID集合")
     protected String[] matinstsIds;
 
+    @ApiModelProperty(value = "是否绿色通道", notes = "1: 是, 0: 否")
+    protected String isGreenWay;
+
     @ApiModel("并联申报暂存vo")
     @Getter
     @Setter

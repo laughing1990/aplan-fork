@@ -518,8 +518,6 @@ public class AeaSeriesService {
             if (!"2".equals(aeaHiApplyinst.getIsTemporarySubmit())) {
                 aeaHiApplyinst.setIsTemporarySubmit(Status.ON);
             }
-            aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
-
             aeaHiSeriesinst = aeaHiSeriesinstService.getAeaHiSeriesinstByApplyinstId(applyinstId);
         } else {
             aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(ApplySource.WIN.getValue()
@@ -527,6 +525,9 @@ public class AeaSeriesService {
                     , ApplyState.RECEIVE_APPROVED_APPLY.getValue(), Status.ON,null);
             applyinstId = aeaHiApplyinst.getApplyinstId();
         }
+        aeaHiApplyinst.setIsGreenWay(seriesStashVo.getIsGreenWay());
+        aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
+
         applyCommonService.bindApplyinstProj(projInfoId, applyinstId, SecurityContext.getCurrentUserId());
         if (aeaHiSeriesinst == null) {
             // 预先生成流程模板实例ID
