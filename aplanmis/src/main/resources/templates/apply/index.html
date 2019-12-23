@@ -952,7 +952,7 @@
                   <div class="fr pro-core-rigrt">
                     <span class="pro-core-card"><span class="is-catalog">标准</span>标准事项</span>
                     <span class="pro-core-card"><span class="is-catalog is-shishi">实施</span>实施事项</span>
-                    <span class="pro-core-card"><span class="is-catalog is-green">绿道</span>绿色通道</span>
+                    <!--<span class="pro-core-card"><span class="is-catalog is-green">绿道</span>绿色通道</span>-->
                   </div>
                 </div>
                 <el-table class="items-table" v-loading="parallelLoading" id="parallelItemsTable" ref="parallelItemsTable" :data="parallelItems" border :expand-row-keys="showParallelItemsKey"
@@ -1001,7 +1001,7 @@
                   <el-table-column label="事项名称" prop="sortNo" sortable>
                     <template slot-scope="scope">
                       <span class="is-catalog" :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标准':'实施'}}</span>
-                      <span class="is-catalog is-green" v-show="scope.row.isGreenWay=='1'">绿道</span>
+                      <!--<span class="is-catalog is-green" v-show="scope.row.isGreenWay=='1'">绿道</span>-->
                       {{scope.row.itemName}}
                       <span v-show="scope.row.isDone=='FINISHED'" class="isTag isDone">
                         <!--<i class="ag ag-check-circle-fill"></i>-->
@@ -1061,7 +1061,7 @@
                   <div class="fr pro-core-rigrt" v-show="parallelItems.length==0">
                     <span class="pro-core-card"><span class="is-catalog">标准</span>标准事项</span>
                     <span class="pro-core-card"><span class="is-catalog is-shishi">实施</span>实施事项</span>
-                    <span class="pro-core-card"><span class="is-catalog is-green">绿道</span>绿色通道</span>
+                    <!--<span class="pro-core-card"><span class="is-catalog is-green">绿道</span>绿色通道</span>-->
                   </div>
                 </div>
                 <el-table class="items-table" ref="coreItemsTable" id="coreItemsTable" :data="coreItems" border tooltip-effect="dark"
@@ -1104,7 +1104,7 @@
                     <template slot-scope="scope">
                       <span class="is-catalog"
                         :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标准':'实施'}}</span>
-                      <span class="is-catalog is-green" v-show="scope.row.isGreenWay=='1'">绿道</span>
+                      <!--<span class="is-catalog is-green" v-show="scope.row.isGreenWay=='1'">绿道</span>-->
                       {{scope.row.itemName}}
                       <span v-show="scope.row.isDone=='FINISHED'" class="isTag isDone">
                         <!--<i class="ag ag-check-circle-fill"></i>-->
@@ -1427,6 +1427,16 @@
             <el-button class="fr" type="primary" icon="el-icon-wallet" @click="saveSmsinfo">保存</el-button>
           </el-collapse-item>
           <!--办证结果取件方式 end-->
+          <!--是否设置为绿色通道 start-->
+          <el-collapse-item name="7" id="isGreenWay" v-show="selTheme&&selTheme.themeId">
+            <template slot="title">
+              <i class="header-icon el-icon-info"></i>其他设置
+            </template>
+            <el-checkbox v-model="isGreenWay">
+              设为绿色通道（图例：<span class="is-circle-green">绿</span>）
+            </el-checkbox>
+          </el-collapse-item>
+          <!--是否设置为绿色通道 end-->
         </template>
       </el-collapse>
       <div class="right-bottom-btn" v-if="showMoreProjInfo">
