@@ -163,9 +163,10 @@ public class AeaParStageService {
         List<ApplyInstantiateResult> results = this.instantiateStageApply(stageApplyDataVo, false);
 
         for (ApplyInstantiateResult result : results) {
-            String procinstId = result.getProcInstId();
-            //挂起流程
-            bpmProcessService.suspendProcessInstanceById(procinstId);
+            if (StringUtils.isNotBlank(result.getProcInstId())) {
+                // 挂起流程
+                bpmProcessService.suspendProcessInstanceById(result.getProcInstId());
+            }
         }
         return covertResults(results);
     }
@@ -185,6 +186,11 @@ public class AeaParStageService {
             //applyinstIds = stageApplyDataVo.getApplyinstIds();
             for (String applyinstId : stageApplyDataVo.getApplyinstIds()) {
                 AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+                if (!Status.OFF.equals(aeaHiApplyinst.getIsTemporarySubmit())) {
+                    aeaHiApplyinst.setIsTemporarySubmit(Status.OFF);
+                }
+                aeaHiApplyinst.setIsGreenWay(stageApplyDataVo.getIsGreenWay());
+                aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
                 ActStoAppinst actStoAppinst = new ActStoAppinst();
                 actStoAppinst.setMasterRecordId(applyinstId);
                 actStoAppinst.setFlowMode("proc");
@@ -351,15 +357,17 @@ public class AeaParStageService {
         AeaHiApplyinst aeaHiApplyinst;
         //1、实例化申请实例
         String opuWinId = aeaServiceWindowService.getCurrentUserWindow() == null ? "" : aeaServiceWindowService.getCurrentUserWindow().getWindowId();
-        if (StringUtils.isNotBlank(stageApplyDataVo.getParallelApplyinstId()) && "1".equals(isJustApplyinst)) {//说明之前仅实例化了申报实例
+        if (StringUtils.isNotBlank(stageApplyDataVo.getParallelApplyinstId())) {//说明之前仅实例化了申报实例
             aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(stageApplyDataVo.getParallelApplyinstId());
             // 暂存后申报, 先清空实例
-            if (Status.ON.equals(aeaHiApplyinst.getIsTemporarySubmit())) {
+            if (Status.ON.equals(aeaHiApplyinst.getIsTemporarySubmit()) || "2".equals(aeaHiApplyinst.getIsTemporarySubmit())) {
                 applyCommonService.clearHistoryInst(aeaHiApplyinst.getApplyinstId());
-                aeaHiApplyinst.setIsTemporarySubmit(Status.OFF);
-                aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
+                if (Status.ON.equals(aeaHiApplyinst.getIsTemporarySubmit())) {
+                    aeaHiApplyinst.setIsTemporarySubmit(Status.OFF);
+                    aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
+                }
             }
-            if (aeaHiApplyinst != null && StringUtils.isNotBlank(aeaHiApplyinst.getApplyinstState())) {
+            if (StringUtils.isNotBlank(aeaHiApplyinst.getApplyinstState())) {
                 aeaLogApplyStateHistService.insertTriggerAeaLogApplyStateHist(aeaHiApplyinst.getApplyinstId(), null, appinstId, null, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), opuWinId);
             }
         } else {
@@ -368,6 +376,9 @@ public class AeaParStageService {
 
         if (aeaHiApplyinst == null)
             throw new RuntimeException("实例化申请实例失败！");
+
+        aeaHiApplyinst.setIsGreenWay(stageApplyDataVo.getIsGreenWay());
+        aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
 
         ApplyInstantiateResult stageResult = new ApplyInstantiateResult();
         List<String> applyinstIds = new ArrayList<>();
@@ -426,28 +437,34 @@ public class AeaParStageService {
         // 用于流程启动情形
         aeaHiApplyinst.setStateinsts(applyCommonService.filterProcessStartConditions(stateIds, ApplyType.UNIT));
 
-        //6、启动主流程
-        BpmProcessInstance bpmProcessInstance = aeaBpmProcessService.startFlow(appId, appinstId, aeaHiApplyinst);
+        if ("2".equals(aeaHiApplyinst.getIsTemporarySubmit())) {
+            applyCommonService.updateApplyProcessVariable(aeaHiApplyinst);
+        } else {
+            //6、启动主流程
+            BpmProcessInstance bpmProcessInstance = aeaBpmProcessService.startFlow(appId, appinstId, aeaHiApplyinst);
 
-        if (bpmProcessInstance == null) {
-            throw new RuntimeException("并联申报流程实例化失败！阶段ID为：" + stageId);
+            if (bpmProcessInstance == null) {
+                throw new RuntimeException("并联申报流程实例化失败！阶段ID为：" + stageId);
+            }
+
+            //流程发起后，更新初始事项历史的taskId
+            List<Task> tasks = taskService.createTaskQuery().processInstanceId(bpmProcessInstance.getProcessInstance().getId()).list();//查询出流程第一个节点
+            aeaHiIteminsts.forEach(aeaHiIteminst -> {
+                AeaLogItemStateHist logItemStateHist = aeaLogItemStateHistService.getInitStateAeaLogItemStateHist(aeaHiIteminst.getIteminstId(), appinstId);
+                logItemStateHist.setTaskinstId(tasks.get(0).getId());
+                aeaLogItemStateHistService.updateAeaLogItemStateHist(logItemStateHist);
+            });
+
+            //流程发起后，更新初始申请历史的taskId
+            if (tasks != null && tasks.size() > 0) {
+                AeaLogApplyStateHist applyStateHist = aeaLogApplyStateHistService.getInitStateAeaLogApplyStateHist(applyinstId, appinstId);
+                applyStateHist.setTaskinstId(tasks.get(0).getId());
+                aeaLogApplyStateHistService.updateAeaLogApplyStateHist(applyStateHist);
+            }
+
+            stageResult.setProcInstId(bpmProcessInstance.getProcessInstance().getId());
+            stageResult.setAppinstId(bpmProcessInstance.getActStoAppinst().getAppinstId());
         }
-
-        //流程发起后，更新初始事项历史的taskId
-        List<Task> tasks = taskService.createTaskQuery().processInstanceId(bpmProcessInstance.getProcessInstance().getId()).list();//查询出流程第一个节点
-        aeaHiIteminsts.forEach(aeaHiIteminst -> {
-            AeaLogItemStateHist logItemStateHist = aeaLogItemStateHistService.getInitStateAeaLogItemStateHist(aeaHiIteminst.getIteminstId(), appinstId);
-            logItemStateHist.setTaskinstId(tasks.get(0).getId());
-            aeaLogItemStateHistService.updateAeaLogItemStateHist(logItemStateHist);
-        });
-
-        //流程发起后，更新初始申请历史的taskId
-        if (tasks != null && tasks.size() > 0) {
-            AeaLogApplyStateHist applyStateHist = aeaLogApplyStateHistService.getInitStateAeaLogApplyStateHist(applyinstId, appinstId);
-            applyStateHist.setTaskinstId(tasks.get(0).getId());
-            aeaLogApplyStateHistService.updateAeaLogApplyStateHist(applyStateHist);
-        }
-
 
         //7、申报主体
         this.insertApplySubject(applySubject, applyinstId, projInfoIds, applyLinkmanId, linkmanInfoId, buildProjUnitMap, handleUnitIds);
@@ -538,13 +555,9 @@ public class AeaParStageService {
 
                 //7、申报主体
                 this.insertApplySubject(applySubject, seriesApplyinstId, projInfoIds, applyLinkmanId, linkmanInfoId, buildProjUnitMap, handleUnitIds);
-
             }
-
         }
 
-        stageResult.setProcInstId(bpmProcessInstance.getProcessInstance().getId());
-        stageResult.setAppinstId(bpmProcessInstance.getActStoAppinst().getAppinstId());
         stageResult.setApplyinstId(applyinstId);
         stageResult.setIsSeriesApprove(ApplyType.UNIT.getValue());
         result.add(stageResult);
@@ -774,6 +787,9 @@ public class AeaParStageService {
      */
     public ParallelUnstashVo unstash(String applyinstId) throws Exception {
         ParallelUnstashVo parallelUnstashVo = new ParallelUnstashVo();
+
+        AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+        parallelUnstashVo.setAeaHiApplyinst(aeaHiApplyinst);
 
         List<AeaApplyinstProj> aeaApplyinstProjs = aeaApplyinstProjMapper.getAeaApplyinstProjByApplyinstId(applyinstId);
         Assert.state(aeaApplyinstProjs.size() > 0, "根据申报实例找不到对应的项目信息, applyinstId: " + applyinstId);

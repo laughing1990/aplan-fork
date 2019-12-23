@@ -564,7 +564,7 @@ public class ConditionalQueryController {
     }
 
     @GetMapping("/listWindowDrafts")
-    @ApiOperation(value = "根据查询条件获取我的草稿箱列表")
+    @ApiOperation(value = "根据查询条件获取当前窗口草稿箱列表")
     public ResultForm listWindowDrafts(ConditionalQueryRequest conditionalQueryRequest, Page page) {
         try {
             AeaServiceWindow currentUserWindow = aeaServiceWindowService.getCurrentUserWindow();

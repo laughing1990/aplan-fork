@@ -84,8 +84,7 @@
         IS_CHECK_PROJ  isCheckProj,
         IS_SHARE isShare,
         ANTICIPATE_DAY  anticipateDay,
-        ANTICIPATE_TYPE  anticipateType,
-        IS_GREEN_WAY isGreenWay
+        ANTICIPATE_TYPE  anticipateType
     </sql>
 
     <sql id="aib_allColumns">
@@ -167,8 +166,7 @@
         aib.IS_CHECK_PROJ  isCheckProj,
         aib.IS_SHARE isShare,
         aib.ANTICIPATE_DAY  anticipateDay,
-        aib.ANTICIPATE_TYPE  anticipateType,
-        aib.IS_GREEN_WAY isGreenWay
+        aib.ANTICIPATE_TYPE  anticipateType
     </sql>
 
     <sql id="allColumns2">
@@ -250,8 +248,7 @@
         ${alias}.IS_CHECK_PROJ  isCheckProj,
         ${alias}.IS_SHARE isShare,
         ${alias}.ANTICIPATE_DAY  anticipateDay,
-        ${alias}.ANTICIPATE_TYPE  anticipateType,
-        ${alias}.IS_GREEN_WAY isGreenWay
+        ${alias}.ANTICIPATE_TYPE  anticipateType
     </sql>
 
     <sql id="allColumns3">
@@ -333,8 +330,7 @@
         ${alias}.isCheckProj,
         ${alias}.isShare,
         ${alias}.anticipateDay,
-        ${alias}.anticipateType,
-        ${alias}.isGreenWay
+        ${alias}.anticipateType
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
@@ -588,9 +584,6 @@
             <if test="anticipateType != null" >
                 AND aib.ANTICIPATE_TYPE = #{anticipateType}
             </if>
-            <if test="isGreenWay != null and isGreenWay !='' ">
-                AND aib.IS_GREEN_WAY = #{isGreenWay}
-            </if>
             <if test="keyword != null and keyword !='' ">
                 AND aib.ITEM_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
             </if>
@@ -758,8 +751,7 @@
             IS_CHECK_PROJ,
             IS_SHARE,
             ANTICIPATE_DAY,
-            ANTICIPATE_TYPE,
-            IS_GREEN_WAY
+            ANTICIPATE_TYPE
         )
         values(
             #{itemBasicId},
@@ -840,8 +832,7 @@
             #{isCheckProj},
             #{isShare},
             #{anticipateDay},
-            #{anticipateType},
-            #{isGreenWay}
+            #{anticipateType}
         )
     </insert>
 
@@ -1086,9 +1077,6 @@
             <if test="anticipateType != null" >
                 ANTICIPATE_TYPE = #{anticipateType},
             </if>
-            <if test="isGreenWay != null">
-                IS_GREEN_WAY = #{isGreenWay},
-            </if>
         </set>
         where ITEM_BASIC_ID = #{itemBasicId}
     </update>
@@ -1179,7 +1167,6 @@
         <result property="isShare" column="IS_SHARE"/>
         <result property="anticipateDay" column="ANTICIPATE_DAY"/>
         <result property="anticipateType" column="ANTICIPATE_TYPE"/>
-        <result property="isGreenWay" column="IS_GREEN_WAY"/>
     </resultMap>
 
     <!--10.根据阶段ID查询事项定义列表-->
@@ -1202,7 +1189,7 @@
             and aib.ROOT_ORG_ID=#{rootOrgId}
             and aiv.ROOT_ORG_ID=#{rootOrgId}
         </if>
-        ORDER BY aib.IS_GREEN_WAY desc,apsi.sort_no
+        ORDER BY apsi.sort_no
     </select>
 
     <select id="getAeaItemBasicByItemVerId" resultType="AeaItemBasic">

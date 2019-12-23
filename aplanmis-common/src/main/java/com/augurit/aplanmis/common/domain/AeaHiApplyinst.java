@@ -48,6 +48,8 @@ public class AeaHiApplyinst implements Serializable, FlowObject {
     private String isTemporarySubmit; //是否临时提交  0否  1是
     private String parentApplyinstId;//父申报实例ID【用于并联申报时，并行事项的单项申报与并联申报之间的关系】
 
+    // 是否绿色通道 1: 是, 0: 否
+    private String isGreenWay;
 
     // 窗口受理时间
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

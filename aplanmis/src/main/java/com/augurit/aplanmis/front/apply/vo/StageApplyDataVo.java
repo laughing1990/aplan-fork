@@ -80,4 +80,7 @@ public class StageApplyDataVo {
 
     @ApiModelProperty(value = "是否实例化过回执 1是 0否", required = true)
     private String isPrintReceive;
+
+    @ApiModelProperty(value = "是否绿色通道", notes = "1: 是, 0: 否")
+    private String isGreenWay;
 }
