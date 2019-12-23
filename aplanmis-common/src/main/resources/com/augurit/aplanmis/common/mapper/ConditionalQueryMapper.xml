@@ -5269,4 +5269,98 @@
             </if>
         </where>
     </select>
+
+    <!--根据查询条件查询中介服务事项待上传服务结果列表-->
+    <select id="listWaitCancelApplyInfo" resultType="com.augurit.aplanmis.common.vo.conditional.TaskInfo">
+        SELECT
+            *
+        FROM
+        (
+            SELECT
+                task.ID_ AS taskId,
+                task.TASK_DEF_KEY_ AS taskDefKey,
+                task.PROC_INST_ID_ AS procInstId,
+                ha.APPLYINST_ID AS applyinstId,
+                ha.APPLYINST_CODE AS applyinstCode,
+                aps.STAGE_NAME AS stageName,
+                ha.APPLYINST_SOURCE AS applySource,
+                task.start_TIME_ AS arriveTime,
+                ha.ACCEPT_TIME AS acceptTime,
+                ha.CREATE_TIME AS applyTime,
+                task.NAME_ AS taskName,
+                aps.DUE_NUM AS dueNum,
+                '0' AS isSeriesApprove,
+                NULL AS busRecordId,
+                NULL AS itemProperty,
+                '并联' AS applyType,
+                proj.PROJ_NAME AS projName,
+                proj.LOCAL_CODE AS localCode,
+                proj.GCBM AS gcbm,
+                theme.THEME_NAME AS themeName,
+                NULL AS itemName,
+                ti.OVERDUE_TIME AS overdueTime,
+                ti.REMAINING_TIME AS remainingTime,
+                ti.INST_STATE AS instState,
+                ti.TIMERULE_UNIT AS timeruleUnit,
+                task.SIGN_STATE_ AS signState,
+                '0' AS itemNature,
+                NULL AS isGreenWay
+            FROM
+                aea_hi_applyinst ha,
+                act_sto_appinst appinst,
+                act_hi_taskinst task,
+                aea_applyinst_proj ap,
+                aea_proj_info proj,
+                aea_hi_par_stageinst stage,
+                aea_par_stage aps,
+                AEA_PAR_THEME_VER tv,
+                aea_par_theme theme,
+                act_sto_timerule_inst ti,
+                (
+                SELECT
+                taskinst.proc_inst_id_,
+                aswu.user_id
+                FROM
+                act_hi_taskinst taskinst,
+                aea_service_window_user swu,
+                opu_om_user oou,
+                aea_service_window_user aswu
+                WHERE
+                taskinst.ASSIGNEE_ = oou.login_name
+                AND oou.user_id = swu.user_id
+                AND aswu.window_id = swu.window_id
+                and taskinst.TASK_DEF_KEY_ in ('shoujian','wangshangshouli')
+                ) temp
+            WHERE
+                ha.APPLYINST_STATE = '12'
+            AND ha.APPLYINST_ID = appinst.MASTER_RECORD_ID
+            AND appinst.PROCINST_ID = task.PROC_INST_ID_
+            AND proj.PROJ_INFO_ID = ap.proj_info_id
+            AND ha.APPLYINST_ID = ap.APPLYINST_ID
+            AND ha.APPLYINST_ID = stage.applyinst_id
+            AND tv.THEME_VER_ID = stage.theme_ver_id
+            AND stage.STAGE_ID = aps.STAGE_ID
+            AND tv.THEME_ID = theme.THEME_ID
+            AND ti.PROC_INST_ID = task.PROC_INST_ID_
+            AND ti.TIMERULE_INST_TYPE = '1'
+            AND temp.proc_inst_id_ = appinst.PROCINST_ID
+            and task.TASK_DEF_KEY_ in ('shoujian','wangshangshouli')
+            AND task.ASSIGNEE_ = #{}
+            AND temp.user_id = #{}
+
+        ) temp_123
+
+        <where>
+            <if test="keyword != null and keyword != '' ">
+                AND (
+                temp_123.projName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.applyinstCode LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.localCode LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+    </select>
 </mapper>

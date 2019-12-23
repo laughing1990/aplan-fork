@@ -197,4 +197,12 @@ public interface ConditionalQueryMapper {
      * @return List<TaskInfo>
      */
     List<TaskInfo> listWaitUploadServiceResult(ConditionalQueryRequest conditionalQueryRequest) throws Exception;
+
+    /**
+     *
+     * @param conditionalQueryRequest
+     * @return
+     * @throws Exception
+     */
+    List<TaskInfo> listWaitCancelApplyInfo(ConditionalQueryRequest conditionalQueryRequest) throws Exception;
 }
