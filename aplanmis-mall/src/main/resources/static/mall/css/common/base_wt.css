@@ -275,6 +275,20 @@ footer {
   height: 166px;
   background-color:#EAEBEB;
 }
+.footer-box .footer-center .inlineblock .title{
+  text-align: left;
+  margin-left: 20px;
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
+}
+.footer-box .footer-center .inlineblock .title-intro{
+  text-align: left;
+  margin-left: 20px;
+  margin-top: 20px;
+  color: #000;
+}
 .footer-box .footer-center .website-msg{
 
  }
