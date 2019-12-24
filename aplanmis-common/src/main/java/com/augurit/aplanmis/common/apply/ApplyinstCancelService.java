@@ -278,6 +278,7 @@ public abstract class ApplyinstCancelService {
         aeaHiItemCancel.setCancelState(ApplyinstCancelConstants.ACCEPTED.getValue());
         aeaHiItemCancel.setModifier(opsUserId);
         aeaHiItemCancel.setModifyTime(new Date());
+        aeaHiItemCancel.setSignState("1");
         aeaHiItemCancelService.updateAeaHiItemCancel(aeaHiItemCancel);
     }
 
@@ -299,6 +300,7 @@ public abstract class ApplyinstCancelService {
         aeaHiApplyinstCancel.setCancelState(ApplyinstCancelConstants.ACCEPTED.getValue());
         aeaHiApplyinstCancel.setModifier(opsUserId);
         aeaHiApplyinstCancel.setModifyTime(new Date());
+        aeaHiApplyinstCancel.setSignState("1");
         aeaHiApplyinstCancelService.updateAeaHiApplyinstCancel(aeaHiApplyinstCancel);
     }
 
@@ -735,6 +737,7 @@ public abstract class ApplyinstCancelService {
                     aeaProjLinkman.setLinkmanInfoId(linkmanInfo.getLinkmanInfoId());
                     aeaProjLinkman.setProjInfoId(projInfos.get(0).getProjInfoId());
                     aeaProjLinkman.setApplyinstId(applyinstId);
+                    aeaProjLinkman.setType("link");
                     aeaProjLinkman.setCreater(SecurityContext.getCurrentUserId());
                     aeaProjLinkman.setCreateTime(new Date());
                     aeaProjLinkmanMapper.insertAeaProjLinkman(aeaProjLinkman);
@@ -765,10 +768,16 @@ public abstract class ApplyinstCancelService {
                 List<AeaProjInfo> projInfos = aeaProjInfoService.findApplyProj(applyinstId);
                 if (projInfos.size() < 1) throw new Exception("找不到项目信息！");
                 //获取项目的联系人
-                linkmanInfos.addAll(aeaLinkmanInfoService.findAllUnitLinkman(projInfos.get(0).getProjInfoId()));
-                if (linkmanInfos.size() < 1) {
-                    linkmanInfos.add(aeaLinkmanInfoService.getAeaLinkmanInfoByLinkmanInfoId(aeaHiApplyinst.getLinkmanInfoId()));
+                linkmanInfos.addAll(aeaLinkmanInfoService.getProjLinkman(applyinstId, projInfos.get(0).getProjInfoId()));
+                boolean isOwn = false;
+                for (AeaLinkmanInfo linkmanInfo : linkmanInfos) {
+                    if (linkmanInfo.getLinkmanInfoId().equals(aeaHiApplyinst.getLinkmanInfoId())) {
+                        isOwn = true;
+                        break;
+                    }
                 }
+                if (!isOwn)
+                    linkmanInfos.add(aeaLinkmanInfoService.getAeaLinkmanInfoByLinkmanInfoId(aeaHiApplyinst.getLinkmanInfoId()));
             }
         }
         return linkmanInfos;

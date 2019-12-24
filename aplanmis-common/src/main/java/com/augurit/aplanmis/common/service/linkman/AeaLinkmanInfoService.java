@@ -109,7 +109,7 @@ public interface AeaLinkmanInfoService {
      * @param projInfoId 项目ID
      * @return 联系人信息
      */
-    AeaLinkmanInfo getProjLinkman(String applyinstId, String projInfoId);
+    List<AeaLinkmanInfo> getProjLinkman(String applyinstId, String projInfoId);
 
     /**
      * 查询项目申请人

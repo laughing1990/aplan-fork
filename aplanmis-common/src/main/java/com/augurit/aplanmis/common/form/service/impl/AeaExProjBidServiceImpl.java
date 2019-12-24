@@ -1,14 +1,19 @@
 package com.augurit.aplanmis.common.form.service.impl;
 
+import com.augurit.agcloud.bpm.admin.sto.service.impl.AbstractFormDataOptManager;
+import com.augurit.agcloud.bpm.common.constant.EDataOpt;
+import com.augurit.agcloud.bpm.common.domain.ActStoForm;
+import com.augurit.agcloud.bpm.common.domain.ActStoForminst;
+import com.augurit.agcloud.bpm.common.domain.vo.FormDataOptResult;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.UnitProjLinkmanType;
 import com.augurit.aplanmis.common.domain.*;
-import com.augurit.aplanmis.common.mapper.*;
-import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.form.service.AeaExProjBidService;
 import com.augurit.aplanmis.common.form.vo.AeaExProjBidVo;
+import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,19 +24,19 @@ import java.util.List;
 import java.util.UUID;
 
 /**
-* 招投标信息-Service服务接口实现类
-<ul>
-    <li>项目名：奥格erp3.0--第一期建设项目</li>
-    <li>版本信息：v1.0</li>
-    <li>版权所有(C)2016广州奥格智能科技有限公司-版权所有</li>
-    <li>创建人:刘赵雄</li>
-    <li>创建时间：2019-10-31 15:56:12</li>
-</ul>
-*/
+ * 招投标信息-Service服务接口实现类
+ * <ul>
+ * <li>项目名：奥格erp3.0--第一期建设项目</li>
+ * <li>版本信息：v1.0</li>
+ * <li>版权所有(C)2016广州奥格智能科技有限公司-版权所有</li>
+ * <li>创建人:刘赵雄</li>
+ * <li>创建时间：2019-10-31 15:56:12</li>
+ * </ul>
+ */
 @Service
 @Transactional
 @Slf4j
-public class AeaExProjBidServiceImpl implements AeaExProjBidService {
+public class AeaExProjBidServiceImpl extends AbstractFormDataOptManager implements AeaExProjBidService {
 
     @Autowired
     private AeaUnitInfoService aeaUnitInfoService;
@@ -46,21 +51,24 @@ public class AeaExProjBidServiceImpl implements AeaExProjBidService {
     @Autowired
     private AeaUnitLinkmanMapper aeaUnitLinkmanMapper;
 
-    public void saveAeaExProjBid(AeaExProjBid aeaExProjBid) throws Exception{
+    public void saveAeaExProjBid(AeaExProjBid aeaExProjBid) throws Exception {
         aeaExProjBid.setCreater(SecurityContext.getCurrentUserName());
         aeaExProjBid.setCreateTime(new Date());
         aeaExProjBid.setRootOrgId(SecurityContext.getCurrentUserId());
         aeaExProjBidMapper.insertAeaExProjBid(aeaExProjBid);
+
+        if (StringUtils.isBlank(aeaExProjBid.getFormId())) throw new Exception("缺少formId");
+        this.formSave(aeaExProjBid.getFormId(), aeaExProjBid.getBidId(), EDataOpt.INSERT.getOpareteType(), null);
     }
 
-    public void updateAeaExProjBid(AeaExProjBid aeaExProjBid) throws Exception{
+    public void updateAeaExProjBid(AeaExProjBid aeaExProjBid) throws Exception {
         aeaExProjBid.setModifier(SecurityContext.getCurrentUserId());
         aeaExProjBid.setModifyTime(new Date());
         aeaExProjBidMapper.updateAeaExProjBid(aeaExProjBid);
     }
 
-    public AeaExProjBid getAeaExProjBidByProjId(String projId) throws Exception{
-        if(projId == null){
+    public AeaExProjBid getAeaExProjBidByProjId(String projId) throws Exception {
+        if (projId == null) {
             throw new InvalidParameterException(projId);
         }
         log.debug("根据ID获取Form对象，ID为：{}", projId);
@@ -68,8 +76,8 @@ public class AeaExProjBidServiceImpl implements AeaExProjBidService {
     }
 
     @Override
-    public AeaProjInfo getProjInfoByProjId(String projId){
-        if(projId == null){
+    public AeaProjInfo getProjInfoByProjId(String projId) {
+        if (projId == null) {
             throw new InvalidParameterException(projId);
         }
         log.debug("根据ID获取Form对象，ID为：{}", projId);
@@ -79,24 +87,26 @@ public class AeaExProjBidServiceImpl implements AeaExProjBidService {
 
     /**
      * 根据项目id和类型查找单位信息
+     *
      * @param projInfoId
      * @param unitType
      * @return
      */
     @Override
-    public List<AeaUnitInfo> findUnitProjByProjInfoIdAndType(String projInfoId, String unitType){
+    public List<AeaUnitInfo> findUnitProjByProjInfoIdAndType(String projInfoId, String unitType) {
         log.debug("根据类型查询项目单位，projInfoId：{}，unitType：{}", projInfoId, unitType);
-        return aeaExProjBidMapper.findUnitProjByProjInfoIdAndType(projInfoId, unitType,SecurityContext.getCurrentOrgId());
+        return aeaExProjBidMapper.findUnitProjByProjInfoIdAndType(projInfoId, unitType, SecurityContext.getCurrentOrgId());
     }
 
 
     @Override
-    public int updateAeaUnitProj(AeaUnitProj aeaUnitProj) throws Exception{
+    public int updateAeaUnitProj(AeaUnitProj aeaUnitProj) throws Exception {
         return aeaUnitProjMapper.updateAeaUnitProj(aeaUnitProj);
     }
 
     /**
      * 更新项目单位关联表
+     *
      * @param projId
      * @param unitId
      * @param unitProjId
@@ -104,8 +114,8 @@ public class AeaExProjBidServiceImpl implements AeaExProjBidService {
      * @throws Exception
      */
     @Override
-    public void updateUnitProjInfo(String projId,String unitId,String unitProjId,String unitType) throws Exception{
-        AeaUnitProj aeaUnitProj =new AeaUnitProj();
+    public void updateUnitProjInfo(String projId, String unitId, String unitProjId, String unitType) throws Exception {
+        AeaUnitProj aeaUnitProj = new AeaUnitProj();
         aeaUnitProj.setProjInfoId(projId);
         aeaUnitProj.setUnitInfoId(unitId);
         aeaUnitProj.setUnitProjId(unitProjId);
@@ -116,17 +126,18 @@ public class AeaExProjBidServiceImpl implements AeaExProjBidService {
 
     /**
      * 删除项目单位关联表
+     *
      * @param projId
      * @param unitTypes
      * @throws Exception
      */
     @Override
-    public void delUnitProjInfo(String projId,List<String> unitTypes,String isOwner) throws Exception{
-        aeaExProjBidMapper.batchDeleteUnitProjByType(projId,unitTypes,isOwner);
+    public void delUnitProjInfo(String projId, List<String> unitTypes, String isOwner) throws Exception {
+        aeaExProjBidMapper.batchDeleteUnitProjByType(projId, unitTypes, isOwner);
     }
 
     @Override
-    public void saveOrUpdateUnitInfo(AeaExProjBidVo aeaExProjBidVo, List<AeaUnitInfo> aeaUnitInfos, String unitType) throws Exception{
+    public void saveOrUpdateUnitInfo(AeaExProjBidVo aeaExProjBidVo, List<AeaUnitInfo> aeaUnitInfos, String unitType) throws Exception {
         if (aeaUnitInfos != null) {
             for (AeaUnitInfo aeaUnitInfo : aeaUnitInfos) {
                 if (aeaUnitInfo.getUnitInfoId() != null && !"".equals(aeaUnitInfo.getUnitInfoId())) {
@@ -190,28 +201,42 @@ public class AeaExProjBidServiceImpl implements AeaExProjBidService {
     }
 
     /**
-     *
-     * @param aeaUnitInfo 单位信息
+     * @param aeaUnitInfo   单位信息
      * @param projLinkmanId 主键取值
-     * @param type  c创建，u更新
+     * @param type          c创建，u更新
      * @return
      */
-    private AeaUnitProjLinkman getUnitProjLinkman(AeaUnitInfo aeaUnitInfo,String projLinkmanId,String type){
+    private AeaUnitProjLinkman getUnitProjLinkman(AeaUnitInfo aeaUnitInfo, String projLinkmanId, String type) {
         AeaUnitProjLinkman man = new AeaUnitProjLinkman();
         man.setProjLinkmanId(projLinkmanId);
         man.setLinkmanInfoId(aeaUnitInfo.getProjectLeaderId());
         man.setUnitProjId(aeaUnitInfo.getUnitProjId());
         man.setLinkmanType(UnitProjLinkmanType.FZR.getValue());
-        if("c".equals(type)) {
+        if ("c".equals(type)) {
             man.setCreater(SecurityContext.getCurrentUserId());
             man.setCreateTime(new Date());
-        }else{
+        } else {
             man.setModifier(SecurityContext.getCurrentUserId());
             man.setModifyTime(new Date());
         }
         man.setIsDeleted("0");
-        return  man;
+        return man;
     }
 
+    @Override
+    public FormDataOptResult doformSave(String formId, String metaTableId, Integer opType, Object dataEntity) throws Exception {
+        FormDataOptResult result = new FormDataOptResult();
+        result.setSuccess(true);
+        ActStoForminst actStoForminst = new ActStoForminst();
+        actStoForminst.setFormId(formId);
+        actStoForminst.setFormPrimaryKey(metaTableId);
+        result.setActStoForminst(actStoForminst);
+        return result;
+    }
+
+    @Override
+    public FormDataOptResult doformDelete(ActStoForm formVo, Object dataEntity) throws Exception {
+        return null;
+    }
 }
 

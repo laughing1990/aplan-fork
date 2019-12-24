@@ -1329,7 +1329,8 @@
                     </el-table-column>
                     <el-table-column prop="realCopyCount" align="center" label="收/验" width="70">
                       <template slot-scope="scope">
-                        <el-form-item :prop="'matsTableData.' + scope.$index + '.realCopyCount'">
+                        <el-form-item :prop="'matsTableData.' + scope.$index + '.realCopyCount'"
+                                      :rules='(scope.row.realPaperCount==0&&scope.row.zcqy==0&&scope.row.paperIsRequire==1&&scope.row.realCopyCount>0)?model.rules.realCopyCount:[]'>
                           <el-input size="mini" v-model="scope.row.realCopyCount"></el-input>
                         </el-form-item>
                       </template>
@@ -1340,7 +1341,8 @@
                         </el-checkbox>
                       </template>
                       <template slot-scope="scope">
-                        <el-form-item :prop="'matsTableData.' + scope.$index + '.getCopy'">
+                        <el-form-item :prop="'matsTableData.' + scope.$index + '.getCopy'"
+                                      :rules='(scope.row.realPaperCount==0&&scope.row.zcqy==0&&scope.row.paperIsRequire==1&&scope.row.realCopyCount>0)?model.rules.getCopy:[]'>
                           <el-checkbox v-model="scope.row.getCopy" :key="scope.row.matinstId"
                             @change="function(value) { checkedMatChange(value,scope.$index,'copy')}">已收/验</el-checkbox>
                         </el-form-item>

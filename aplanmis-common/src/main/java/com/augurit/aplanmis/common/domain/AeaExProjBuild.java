@@ -49,4 +49,7 @@ public class AeaExProjBuild implements Serializable {
 
     private String aeaExProjBuildUnitInfo;
 
+    //扩展字段
+    private String formId;
+
 }

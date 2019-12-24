@@ -589,7 +589,7 @@ var vm = new Vue({
       formUnFillNum: 0,
       oneFormOpened: false,
       needCallOneFormCb: false,
-        isGreenWay: false, // 是否设置为绿色通道
+      isGreenWay: false, // 是否设置为绿色通道
     }
   },
   mounted: function () {
@@ -682,7 +682,7 @@ var vm = new Vue({
           vm.stateIds = res.content.stateIds;
           vm.approveOrgId = res.content.approveOrgId;
           vm.forminstVos = res.content.forminstVos;
-            vm.isGreenWay = res.content.aeaHiApplyinst.isGreenWay == '1' ? true : false;
+          vm.isGreenWay = res.content.aeaHiApplyinst.isGreenWay=='1'?true:false;
           vm.beforeCheck();
         } else {
           vm.$message.error(res.message || '获取暂存数据失败');
@@ -3774,12 +3774,11 @@ var vm = new Vue({
       if (_that.applySubjectType == 0 && _that.applyPersonFrom.applyLinkmanId) {
         _that.rootApplyLinkmanId = _that.applyPersonFrom.applyLinkmanId;
         _that.rootLinkmanInfoId = _that.applyPersonFrom.linkLinkmanId;
-      }
-      ;
+      };
       _that.IsJustApplyinst = 1;
 
       //选择的情形
-        var _isGreenWay = _that.isGreenWay == true ? '1' : '0';
+      var _isGreenWay = _that.isGreenWay==true?'1':'0';
       var parmas = {
         applyLinkmanId: _that.rootApplyLinkmanId,
         applySource: 'win',
@@ -3798,7 +3797,7 @@ var vm = new Vue({
         stageId: _that.stageId,
         isParallel: _that.isParallel,
         isJustApplyinst: _that.IsJustApplyinst,
-          isGreenWay: _isGreenWay,
+        isGreenWay: _isGreenWay,
       }
       _that.progressDialogVisible = true;
       _that.submitCommentsFlag = false;
@@ -3823,7 +3822,7 @@ var vm = new Vue({
           projInfoId: projInfoIds[0],
           stageId: _that.stageId,
           stateIds: _that.stateIds,
-            isGreenWay: _isGreenWay,
+          isGreenWay: _isGreenWay,
         }
       }
       _that.progressIntervalStop = false;
