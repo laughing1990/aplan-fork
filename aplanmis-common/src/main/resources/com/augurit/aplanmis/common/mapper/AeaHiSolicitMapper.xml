@@ -291,6 +291,24 @@
         from AEA_HI_SOLICIT ahs
         where ahs.SOLICIT_CODE = #{solicitCode}
     </select>
+    <!--查询意见征求，一次征询，部门征求等意见列表-->
+    <select id="listSolicit" resultType="com.augurit.aplanmis.common.vo.solicit.AeaHiSolicitVo">
+        select
+        ahs.SOLICIT_ID,ahs.SOLICIT_TYPE
+        from aea_hi_solicit ahs
+        LEFT JOIN aea_hi_solicit_detail ahsd on ahsd.SOLICIT_ID=ahs.SOLICIT_ID
+        left join aea_hi_solicit_detail_user ahsdu on ahsdu.SOLICIT_DETAIL_ID=ahsd.SOLICIT_DETAIL_ID
+        INNER JOIN aea_solicit_item asi on asi.ITEM_VER_ID=ahsd.ITEM_VER_ID
+        where ahs.SOLICIT_TYPE='i' and asi.BUS_TYPE='1'
+        UNION all
+        select
+        ahs.SOLICIT_ID,ahs.SOLICIT_TYPE
+        from aea_hi_solicit ahs
+        LEFT JOIN aea_hi_solicit_detail ahsd on ahsd.SOLICIT_ID=ahs.SOLICIT_ID
+        left join aea_hi_solicit_detail_user ahsdu on ahsdu.SOLICIT_DETAIL_ID=ahsd.SOLICIT_DETAIL_ID
+        inner JOIN aea_solicit_org aso on aso.ORG_ID=ahsd.DETAIL_ORG_ID
+        where ahs.SOLICIT_TYPE='d' and aso.BUS_TYPE='1'
+    </select>
 
     <!--8 删除实体对象列表,根据主键ID列表 -->
     <!--9 返回所有字段的对象map,用于级联 -->
