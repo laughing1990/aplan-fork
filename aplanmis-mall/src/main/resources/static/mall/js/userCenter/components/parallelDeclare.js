@@ -2618,7 +2618,7 @@ var module1 = new Vue({
             });
           }
           _that.$nextTick(function () {
-            if (_that.draftsProj == true && draftsProjFlag == 'isHistory') {
+            if (_that.draftsProj == true&&(_that.stageinstId&&_that.stageinstId!='')) {
               if (draftsItems && draftsItems.length > 0) {
                 _that.toggleSelection(draftsItems, 'parallelItemsTable');
                 _that.parallelItemsSelAll(draftsItems, 'autoGetSel');
@@ -3064,8 +3064,8 @@ var module1 = new Vue({
               }
             } else {
               if (typeof (coreStateSel[i].selectAnswerId) == 'object') {
-                coreStateIds.concat(coreStateSel[i].selectAnswerId);
-                _itemStateIds.concat(coreStateSel[i].selectAnswerId);
+                coreStateIds = coreStateIds.concat(coreStateSel[i].selectAnswerId);
+                _itemStateIds = _itemStateIds.concat(coreStateSel[i].selectAnswerId);
               } else {
                 coreStateIds.push(coreStateSel[i].selectAnswerId);
                 _itemStateIds.push(coreStateSel[i].selectAnswerId);
@@ -3097,8 +3097,8 @@ var module1 = new Vue({
               } else {
                 if (typeof (parallelStateSel[ind1].selectAnswerId) == 'object') {
                   if(parallelStateSel[ind1].selectAnswerId&&parallelStateSel[ind1].selectAnswerId!=[]){
-                    _itemStateIds.concat(parallelStateSel[ind1].selectAnswerId);
-                    parallelStateIds.concat(parallelStateSel[ind1].selectAnswerId);
+                    _itemStateIds = _itemStateIds.concat(parallelStateSel[ind1].selectAnswerId);
+                    parallelStateIds = parallelStateIds.concat(parallelStateSel[ind1].selectAnswerId);
                   }
                 } else {
                   if(parallelStateSel[ind1].selectAnswerId&&parallelStateSel[ind1].selectAnswerId!=''){
