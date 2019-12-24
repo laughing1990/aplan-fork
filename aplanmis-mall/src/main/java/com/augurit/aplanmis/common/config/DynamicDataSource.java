@@ -13,11 +13,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
     @Override
     protected Object determineCurrentLookupKey() {
         String db = DataSourceType.getDB();
-        /*if (StringUtils.isEmpty(db)) {
-            DataSourceType.setDB(DataSourceType.DEFAULT_DB);
-            db = DataSourceType.getDB();
-        }*/
-        log.info("当前数据源为------：" + db);
+        log.info("当前数据源为：" + db+"；数据库连接为：");
         String format = String.format("url:%s;username:%s;password:%s", dataSourceProperties.getUrl(), dataSourceProperties.getUsername(), dataSourceProperties.getPassword());
         log.info(format);
         return db;

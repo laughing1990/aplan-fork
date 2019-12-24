@@ -31,7 +31,8 @@
     MODIFIER  modifier,
     MODIFY_TIME  modifyTime,
     ROOT_ORG_ID  rootOrgId,
-    IS_SUSPENDED_BEFORE  isSuspendedBefore
+    IS_SUSPENDED_BEFORE  isSuspendedBefore,
+    SIGN_STATE signState
     </sql>
 
     <sql id="allColumns_aac">
@@ -61,7 +62,8 @@
     aac.MODIFIER  modifier,
     aac.MODIFY_TIME  modifyTime,
     aac.ROOT_ORG_ID  rootOrgId,
-    aac.IS_SUSPENDED_BEFORE  isSuspendedBefore
+    aac.IS_SUSPENDED_BEFORE  isSuspendedBefore,
+    aac.SIGN_STATE signState
     </sql>
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaHiApplyinstCancelById" resultType="AeaHiApplyinstCancel">
@@ -159,6 +161,9 @@
             <if test="isSuspendedBefore != null">
                 AND IS_SUSPENDED_BEFORE = #{isSuspendedBefore}
             </if>
+            <if test="signState != null">
+                AND SIGN_STATE = #{signState}
+            </if>
             AND IS_DELETED = '0'
         </where>
         order by
@@ -180,9 +185,9 @@
     <!--5 新增实体对象 -->
     <insert id="insertAeaHiApplyinstCancel" parameterType="AeaHiApplyinstCancel">
     insert into AEA_HI_APPLYINST_CANCEL (
-APPLYINST_CANCEL_ID  ,APPLYINST_ID  ,PROJ_INFO_ID  ,APPINST_ID  ,ATT_ID  ,APPLY_REASON  ,APPLY_USER_ID  ,APPLY_USER_NAME  ,APPLY_USER_IDNUMBER  ,APPLY_USER_PHONE  ,APPLY_TIME  ,HANDLE_OPINION  ,HANDLE_ORG_ID  ,HANDLE_ORG_NAME  ,HANDLE_USER_ID  ,HANDLE_USER_NAME  ,HANDLE_SIGN_TIME  ,HANDLE_END_TIME  ,CANCEL_STATE  ,CANCEL_MEMO  ,IS_DELETED  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID,IS_SUSPENDED_BEFORE
+APPLYINST_CANCEL_ID  ,APPLYINST_ID  ,PROJ_INFO_ID  ,APPINST_ID  ,ATT_ID  ,APPLY_REASON  ,APPLY_USER_ID  ,APPLY_USER_NAME  ,APPLY_USER_IDNUMBER  ,APPLY_USER_PHONE  ,APPLY_TIME  ,HANDLE_OPINION  ,HANDLE_ORG_ID  ,HANDLE_ORG_NAME  ,HANDLE_USER_ID  ,HANDLE_USER_NAME  ,HANDLE_SIGN_TIME  ,HANDLE_END_TIME  ,CANCEL_STATE  ,CANCEL_MEMO  ,IS_DELETED  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID,IS_SUSPENDED_BEFORE,SIGN_STATE
     )  values  (
-#{applyinstCancelId},#{applyinstId},#{projInfoId},#{appinstId},#{attId},#{applyReason},#{applyUserId},#{applyUserName},#{applyUserIdnumber},#{applyUserPhone},#{applyTime},#{handleOpinion},#{handleOrgId},#{handleOrgName},#{handleUserId},#{handleUserName},#{handleSignTime},#{handleEndTime},#{cancelState},#{cancelMemo},#{isDeleted},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId},#{isSuspendedBefore}
+#{applyinstCancelId},#{applyinstId},#{projInfoId},#{appinstId},#{attId},#{applyReason},#{applyUserId},#{applyUserName},#{applyUserIdnumber},#{applyUserPhone},#{applyTime},#{handleOpinion},#{handleOrgId},#{handleOrgName},#{handleUserId},#{handleUserName},#{handleSignTime},#{handleEndTime},#{cancelState},#{cancelMemo},#{isDeleted},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId},#{isSuspendedBefore},#{signState}
     )
 </insert>
     <!--6 修改实体对象 -->
@@ -270,6 +275,9 @@ APPLYINST_CANCEL_ID  ,APPLYINST_ID  ,PROJ_INFO_ID  ,APPINST_ID  ,ATT_ID  ,APPLY_
             <if test="isSuspendedBefore != null">
                 IS_SUSPENDED_BEFORE = #{isSuspendedBefore}
             </if>
+            <if test="signState != null">
+                SIGN_STATE = #{signState}
+            </if>
         </set>
         where APPLYINST_CANCEL_ID = #{applyinstCancelId}
     </update>
@@ -311,5 +319,6 @@ APPLYINST_CANCEL_ID  ,APPLYINST_ID  ,PROJ_INFO_ID  ,APPINST_ID  ,ATT_ID  ,APPLY_
         <result property="modifyTime" column="MODIFY_TIME"/>
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
         <result property="isSuspendedBefore" column="IS_SUSPENDED_BEFORE"/>
+        <result property="signState" column="SIGN_STATE"/>
     </resultMap>
 </mapper>

@@ -58,6 +58,7 @@ public class AeaHiApplyinstCancel implements Serializable {
     private java.util.Date modifyTime; // (修改时间)
     private String rootOrgId; // (根组织ID)
     private String isSuspendedBefore;//撤销之前是否有挂起：1 是，0 否（如果不同意撤销，将恢复流程实例之前的状态）
+    private String signState;// 签收状态：1 已签收，0 未签收
 
     //扩展字段
     private String isCancel;

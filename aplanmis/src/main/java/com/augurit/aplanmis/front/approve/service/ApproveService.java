@@ -184,6 +184,8 @@ public class ApproveService {
                 if (aeaItemBasic != null)
                     bpmApproveStateVo.setIsShowOneForm(aeaItemBasic.getUseOneForm());
                 bpmApproveStateVo.setItemVerId(iteminst.getItemVerId());
+                bpmApproveStateVo.setItemId(iteminst.getItemId());
+
             }
 
         } else {//并联
@@ -605,8 +607,9 @@ public class ApproveService {
                         aeaHiItemInfoVo.setApplyUnit(applyProjLinkman.getLinkmanName());
                         aeaHiItemInfoVo.setApplyIDCard(applyProjLinkman.getLinkmanCertNo());
                     }
-                    AeaLinkmanInfo projLinkman = aeaLinkmanInfoService.getProjLinkman(applyinstId, projInfoId);
-                    if (projLinkman != null) {
+                    List<AeaLinkmanInfo> projLinkmans = aeaLinkmanInfoService.getProjLinkman(applyinstId, projInfoId);
+                    if (projLinkmans.size() > 0) {
+                        AeaLinkmanInfo projLinkman = projLinkmans.get(0);
                         aeaHiItemInfoVo.setContact(projLinkman.getLinkmanName());
                         aeaHiItemInfoVo.setContactIdNo(projLinkman.getLinkmanCertNo());
                         aeaHiItemInfoVo.setContactMobile(projLinkman.getLinkmanMobilePhone());

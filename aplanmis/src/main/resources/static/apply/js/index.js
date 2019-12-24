@@ -740,7 +740,7 @@ var vm = new Vue({
           _that.themeVerIdHis = res.content.themeVerId?res.content.themeVerId:'';
           _that.themeVerId = res.content.themeVerId?res.content.themeVerId:'';
           _that.forminstVos = res.content.forminstVos?res.content.forminstVos:[];
-            _that.isGreenWay = res.content.aeaHiApplyinst.isGreenWay == '1' ? true : false;
+          _that.isGreenWay = res.content.aeaHiApplyinst.isGreenWay=='1'?true:false;
           _that.linkQuery();
         } else {
           _that.isDraftsProj = false;
@@ -1158,7 +1158,7 @@ var vm = new Vue({
       _that.clearSearchData();
       if(!_that.isDraftsProj){
         this.parallelApplyinstId = '';
-          this.isGreenWay = false;
+        this.isGreenWay = false;
         this.seriesApplyinstIds = [];
         this.branchOrgHis = {};
         this.parallelItemStateIdsHis = [];
@@ -2035,7 +2035,7 @@ var vm = new Vue({
       this.coreItems=[];
       this.model.matsTableData=[];
       this.parallelApplyinstId = '';
-        this.isGreenWay = false;
+      this.isGreenWay = false;
       this.seriesApplyinstIds = [];
       this.branchOrgHis = {};
       this.parallelItemStateIdsHis = [];
@@ -2680,7 +2680,7 @@ var vm = new Vue({
       this.dybzspjdxh = [];
       if(optFlag=='isClick'){
         this.parallelApplyinstId = '';
-          this.isGreenWay = false;
+        this.isGreenWay = false;
         this.seriesApplyinstIds = [];
         this.branchOrgHis = {};
         this.parallelItemStateIdsHis = [];
