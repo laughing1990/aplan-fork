@@ -6,6 +6,7 @@ import com.augurit.agcloud.bpm.common.domain.ActStoForminst;
 import com.augurit.agcloud.bpm.common.domain.vo.FormDataOptResult;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaExProjContract;
 import com.augurit.aplanmis.common.mapper.AeaExProjContractMapper;
 import com.augurit.aplanmis.common.service.form.AeaExProjContractService;
@@ -44,7 +45,7 @@ public class AeaExProjContractServiceImpl extends AbstractFormDataOptManager imp
         aeaExProjContract.setCreateTime(new Date());
         aeaExProjContract.setRootOrgId(SecurityContext.getCurrentOrgId());
         aeaExProjContractMapper.insertAeaExProjContract(aeaExProjContract);
-        //            if (StringUtils.isBlank(aeaExProjCertBuild.getFormId())) throw new Exception("缺少formId");
+        if (StringUtils.isBlank(aeaExProjContract.getFormId())) throw new Exception("缺少formId");
         this.formSave(aeaExProjContract.getFormId(), aeaExProjContract.getContractId(), EDataOpt.INSERT.getOpareteType(), null);
     }
     public void updateAeaExProjContract(AeaExProjContract aeaExProjContract) throws Exception{

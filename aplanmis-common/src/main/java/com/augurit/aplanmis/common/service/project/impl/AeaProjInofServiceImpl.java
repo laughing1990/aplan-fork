@@ -761,7 +761,7 @@ public class AeaProjInofServiceImpl extends AbstractFormDataOptManager implement
                 aeaProjInfo.setCreateTime(new Date());
                 aeaProjInfo.setProjectCreateDate(dateFormat.format(new Date()));
                 aeaProjInfoMapper.insertAeaProjInfo(aeaProjInfo);
-                //            if (StringUtils.isBlank(aeaExProjCertBuild.getFormId())) throw new Exception("缺少formId");
+                if (StringUtils.isBlank(aeaProjInfo.getFormId())) throw new Exception("缺少formId");
                 this.formSave(aeaProjInfo.getFormId(), aeaProjInfo.getProjInfoId(), EDataOpt.INSERT.getOpareteType(), null);
                 //增加父子项目关联
                 AeaParentProj aeaParentProj = new AeaParentProj();

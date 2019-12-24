@@ -8,6 +8,7 @@ import com.augurit.agcloud.bpm.common.domain.ActStoForminst;
 import com.augurit.agcloud.bpm.common.domain.vo.FormDataOptResult;
 import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.GDUnitType;
 import com.augurit.aplanmis.common.constants.UnitProjLinkmanType;
 import com.augurit.aplanmis.common.domain.*;
@@ -44,7 +45,7 @@ public class RestExSJUnitFormService extends AbstractFormDataOptManager {
                 aeaExProjBuild.setRootOrgId(SecurityContext.getCurrentOrgId());
                 aeaExProjBuildMapper.insertAeaExProjBuild(aeaExProjBuild);
 
-                //            if (StringUtils.isBlank(aeaExProjCertBuild.getFormId())) throw new Exception("缺少formId");
+                if (StringUtils.isBlank(aeaExProjBuild.getFormId())) throw new Exception("缺少formId");
                 this.formSave(aeaExProjBuild.getFormId(), aeaExProjBuild.getBuildId(), EDataOpt.INSERT.getOpareteType(), null);
             }else {
                 aeaExProjBuildMapper.updateAeaExProjBuild(aeaExProjBuild);
