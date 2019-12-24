@@ -19,7 +19,7 @@
   color: #457EFF;
 }
 .wt-tab .wt-tab-nav li.active {
-  border-bottom: 4px solid #457EFF;
+  border-bottom: 5px solid rgba(66, 147, 244, 1);
 }
 .wt-tab .wt-tab-nav li.active a{
   color: #457EFF;
@@ -96,10 +96,13 @@ header{
   padding: 0 20px 0 10px;
   display: inline-block;
 }
-.wt-title {
-  border-left: 1px solid #CBCBCB;
-  padding-left: 20px;
-  font-size: 24px;
+.header-logo .dividing-line{
+  display: inline-block;
+  width: 1px;
+  height: 48px;
+  background-color: #ffffff;
+  vertical-align: bottom;
+  margin: 0 10px;
 }
 .go-login {
   float: right;
@@ -141,17 +144,41 @@ header{
   border-top: 1px solid #eee;
 }
 
-.banner-img {
-  width: 100%;
-  background: url(../../images/index/xtopbg.png) no-repeat center center;
-  height: 300px;
-  background-size: cover;
+/*.banner-img {*/
+/*  width: 100%;*/
+/*  background: url(../../images/index/xtopbg.png) no-repeat center center;*/
+/*  height: 300px;*/
+/*  background-size: cover;*/
+/*}*/
+.banner-img{
+  position: absolute;
+  z-index: 2;
+  top: 185px;
+  left: 50%;
+  margin-left: -600px;
+}
+.banner-img .wt-index-title{
+  font-family: '微软雅黑';
+  font-weight: 400;
+  font-style: normal;
+  font-size: 36px;
+  color: #FFFFFF;
+  text-align: center;
+}
+.banner-img .wt-index-subtitle{
+  font-family: '微软雅黑';
+  font-weight: 400;
+  font-style: normal;
+  font-size: 24px;
+  color: #FFFFFF;
+  text-align: center;
+  margin-top: 25px;
+  margin-bottom: 25px;
 }
 .banner-img .wt-search {
   width: 1200px;
   margin: auto;
   color: #fff;
-  padding-top: 211px;
   text-align: center;
 }
 .banner-img .banner-title {
@@ -165,11 +192,11 @@ header{
   margin-top: 0px;
 }
 .banner-img .search-input input {
-  width: 460px;
+  width: 610px;
   border: none;
   padding: 0px 10px;
-  height: 48px;
-  line-height: 48px;
+  height: 56px;
+  line-height: 56px;
   font-size: 16px;
   color: #666;
   box-shadow: 0px 2px 10px 0px rgba(12,88,143,0.51);
@@ -177,7 +204,7 @@ header{
 
 .banner-img .search-input .search-btn {
   width:100px;
-  height:48px;
+  height:56px;
   background:#f13939;
   border: none;
   color: #fff;
@@ -202,14 +229,79 @@ header{
 /* footer start */
 footer {
   width: 100%;
-  height:59px;
-  background:rgba(223,225,226,1);
+  background:#F1F2F3;
   font-size: 14px;
   color: #727475;
   text-align: center;
-  line-height: 59px;
+  /*line-height: 59px;*/
   position: absolute;
-  bottom: -59px;
+  /*bottom: -59px;*/
+}
+.footer-box ul::after{
+  content: "";
+  display: block;
+  width: 100%;
+  height: 1px;
+  background-color:#e7e7e7;
+  margin-top: 25px;
+}
+.footer-box ul{
+  width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 25px;
+}
+.footer-box ul li{
+  display: inline-block;
+}
+.footer-box ul .line-limit{
+  display: inline-block;
+  width:1px;
+  height: 10px;
+  background-color:#969696;
+  margin-left: 25px;
+  margin-right: 25px;
+}
+.footer-box .footer-center{
+  width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+.footer-box .footer-center .inlineblock{
+  display: inline-block;
+  width: 272px;
+  height: 166px;
+  background-color:#EAEBEB;
+}
+.footer-box .footer-center .website-msg{
+
+ }
+.footer-box .footer-center .contact-us{
+  margin-left: 30px;
+  margin-right: 30px;
+}
+.footer-box .footer-center .qrcode-msg{
+  margin-right: 30px;
+}
+.footer-box .footer-bottom{
+  width:100%;
+  height: 60px;
+  line-height: 60px;
+
+  background: #EAEBEB;
+}
+.footer-box .footer-bottom .footer-bottom-box{
+  width: 1200px;
+  margin-right:auto;
+  margin-left:auto;
+}
+.footer-box .footer-bottom p{
+  display: inline-block;
+}
+.footer-box .footer-bottom span{
+  color: #484c4e;
 }
 
 /* footer end */
@@ -311,15 +403,14 @@ footer {
   /*color: #3E97DF;*/
 /*}*/
 .p-header {
-  padding-left: 16px;
+  padding-bottom: 16px;
   /* border-left: 4px solid #3e97df; */
-  margin-bottom:20px;
+  margin-bottom:30px;
   position: relative;
   color: #3e97df;
   line-height: 31px;
-  font-size:24px;
+  font-size:20px;
   font-family:Microsoft YaHei;
-  font-weight:bold;
   color:rgba(63,64,71,1);
   letter-spacing: 1px;
 }
@@ -327,12 +418,11 @@ footer {
   content: '';
   display: inline-block;
   position: absolute;
-  width: 4px;
-  height: 20px;
-  background:rgba(69,126,255,1);
-  border-radius:2px;
+  width: 100%;
+  height: 4px;
+  background-color: rgba(51, 51, 51, 1);
   left: 0;
-  top: 7px;
+  top: 40px;
 }
 .wt-table {
   font-size: 14px;

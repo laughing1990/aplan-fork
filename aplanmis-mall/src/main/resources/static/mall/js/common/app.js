@@ -43,7 +43,7 @@
                 hash:'/regulationIndex',
               },
                 {
-                    label: '法人空间',
+                    label: '用户中心',
                     id: '5',
                     activeName:4,
                     url: './userCenter/userCenterIndex.html',

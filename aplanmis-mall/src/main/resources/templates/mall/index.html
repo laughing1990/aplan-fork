@@ -25,13 +25,15 @@
 		</div>
 	</div>
 	<![endif]-->
-	<div id="APP" v-cloak style="position: relative;" :style="{minHeight:winH +'px'}">
+	<div id="APP"  v-cloak style="position: relative;" :style="{minHeight:winH +'px'}" >
 
-		<header>
+		<header class="index-bg">
 			<div class="wt-header-nav clearfix">
 				<div class="header-logo">
-					<a class="logo" href="#"></a>
-					<span class="logo-title"><a href="/aplanmis-mall/aea/mall/main/mainIndex.do">河北政务服务网</a></span>
+				<!--	<a class="logo" href="#"></a>
+					<span class="logo-title"><a href="/aplanmis-mall/aea/mall/main/mainIndex.do">河北政务服务网</a></span>-->
+					<img th:src="@{/mall/images/index/u33.png}" width="223px" height="48px"  alt="" />
+					<span class="dividing-line"></span>
 					<span class="wt-title">唐山市工程建设项目审批管理系统网上办事大厅</span>
 				</div>
 
@@ -83,7 +85,70 @@
 		</main>
 
 		<footer>
-			唐山市一体化政务服务中心版权所有
+			<div class="footer-box">
+				<ul>
+					<li>
+						<a href="javascript:;">中国政府网</a>
+					</li>
+					<div class="line-limit"></div>
+					<li>
+						<a href="javascript:;">国务院部门网站<i class="el-icon-arrow-down"></i></a>
+					</li>
+					<div class="line-limit"></div>
+					<li>
+						<a href="javascript:;">驻港澳机构网站<i class="el-icon-arrow-down"></i></a>
+					</li>
+					<div class="line-limit"></div>
+					<li>
+						<a href="javascript:;">省政府机构网站<i class="el-icon-arrow-down"></i></a>
+					</li>
+					<div class="line-limit"></div>
+					<li>
+						<a href="javascript:;">地级以上市网站<i class="el-icon-arrow-down"></i></a>
+					</li>
+					<div class="line-limit"></div>
+					<li>
+						<a href="javascript:;">各省区网站<i class="el-icon-arrow-down"></i></a>
+					</li>
+					<div class="line-limit"></div>
+					<li>
+						<a href="javascript:;">省内专业性网站<i class="el-icon-arrow-down"></i></a>
+					</li>
+					<div class="line-limit"></div>
+					<li>
+						<a href="javascript:;">推荐网站<i class="el-icon-arrow-down"></i></a>
+					</li>
+				</ul>
+				<div class="footer-center">
+					<div class="website-msg inlineblock">
+
+					</div>
+					<div class="contact-us inlineblock">
+
+					</div>
+					<div class="qrcode-msg inlineblock">
+
+					</div>
+					<div class="more-msg inlineblock">
+
+					</div>
+				</div>
+				<div class="footer-bottom clearfix">
+					<div class="footer-bottom-box">
+						<div class="left fl">
+							<p>主办:</p>
+							<span>广东省人民政网办公厅</span>
+							<p style="margin-left: 25px;">承办:</p>
+							<span>数字广东网络建设有限公司</span>
+						</div>
+						<div class="right fr">
+							<p>版权所有:</p>
+							<span>广东省人民政网办公厅</span>
+							<p>网站标识码4400000084</p>
+						</div>
+					</div>
+				</div>
+			</div>
 		</footer>
 	</div>
 

@@ -1,3 +1,73 @@
+/*我要办 str*/
+.wanttodo-box{
+    width: 100%;
+    height: 200px;
+    background-color: rgba(242, 246, 252, 1);
+    border: none;
+}
+.wanttodo-box .link-bg{
+    width: 340px;
+    height: 136px;
+    margin-top: 42px;
+    margin-left: 44px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    display: inline-block;
+}
+.wanttodo-box .link-bg .text{
+    width: 208px;
+    margin-left: 20px;
+    margin-top: 24px;
+}
+.wanttodo-box .link-bg img{
+    margin-top: 24px;
+    margin-left: 25px;
+}
+.wanttodo-box .link-bg .text .name{
+    font-family: '微软雅黑 Bold', '微软雅黑';
+    font-weight: 700;
+    font-style: normal;
+    font-size: 20px;
+    color: #FFFFFF;
+}
+.wanttodo-box .link-bg .text .name-intro{
+    font-family: '微软雅黑 Bold', '微软雅黑';
+    font-weight: 700;
+    font-style: normal;
+    font-size: 14px;
+    color: #FFFFFF;
+    margin-top:2px;
+}
+
+.wanttodo-box .guide-box{
+    background-image: url("../../images/index/u19.png");
+}
+.wanttodo-box .declare-box{
+    background-image: url("../../images/index/u13.png");
+}
+.wanttodo-box .userCenter-box{
+    background-image: url("../../images/index/u7.png");
+}
+/*我要办 end*/
+/*统计分析 str*/
+.all-pro-done-bg{
+    height: 400px;
+    width: 100%;
+    background-image: url(../../images/index/u25.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: absolute;
+    left: 0px;
+}
+.all-pro-done {
+    width:100%;
+    -webkit-box-flex: 0.74;
+    flex: 0.74;
+    -ms-flex: 0.74;
+    margin-right: 37px;
+}
+/*统计分析 end*/
+
 #mainIndex{
     padding-top:10px;
     background: #ffffff;
@@ -48,13 +118,7 @@
     display: -webkit-box;
     display: flex;
 }
-.all-pro-done {
-    width: 385px;
-    -webkit-box-flex: 0.74;
-    flex: 0.74;
-    -ms-flex: 0.74;
-    margin-right: 37px;
-}
+
 .news {
     -webkit-box-flex: 1.5;
     flex: 1.5;
@@ -264,10 +328,6 @@
 .guide-content-left .pro-type.project-invest:hover .pro-icon,.guide-content-left .project-invest.active .pro-icon{
     background-position: -396px -102px;
 }
-/*.guide-content-left .active{*/
-/*    color:#ffffff;*/
-/*    background: #3e97df;*/
-/*}*/
 .wt-header-tab {
     -webkit-box-shadow: none;
     box-shadow: none;

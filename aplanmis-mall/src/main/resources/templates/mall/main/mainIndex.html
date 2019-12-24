@@ -2,213 +2,55 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 	<head>
 		<title>唐山市工程建设项目联合审批系统网上办事大厅</title>
+		<link rel="stylesheet" href="../../static/mall/css/main/main.css" th:href="@{/mall/css/main/main.css}">
 	</head>
 	<body>
 		<div id="mainIndex" v-cloak>
 			<section>
 				<div class="banner-img">
+					<p class="wt-index-title">欢迎来到佛山市工程建设审批管理系统网上办事大厅</p>
+					<p class="wt-index-subtitle">马上就办 &nbsp;●&nbsp; 全程网办 &nbsp;●&nbsp;一网通办</p>
 					<div class="wt-search">
 						<div class="search-input index-input">
 							<div>
-								<input type="text" v-model.trim="itemListKeyword" @keyup.13="searchItemList();"placeholder="查询事项 / 主题（请输入事项名称 / 主题名称 / 阶段名称）  "><el-button class="search-btn" @click="searchItemList();">查询</el-button>
+								<input type="text" v-model.trim="itemListKeyword" @keyup.13="searchItemList();"placeholder="  查询项目类型/事项/结果物  "><el-button class="search-btn" @click="searchItemList();">查询</el-button>
 							</div>
-							<!--<div v-else>
-								<input type="text" v-model="themeListKeyword" @keyup.13="searchThemeList();"  placeholder="请输入事项名称 / 主题名称 / 阶段名称 " ><el-button  class="search-btn"   @click="searchThemeList();">查询</el-button>
-							</div>-->
-<!--							<div class="triangle"></div>-->
 						</div>
 					</div>
 				</div>
 			</section>
 			<section v-show="applyinstFlag == 1">
 				<div class="wt-content" style="padding-bottom: 50px;">
-					<!-- floor1分类申报 start -->
-					<div class="floor margin-top-40 clearfix"  v-loading="themeLoading">
-						<div class="wt-tab" id="floorTab">
-							<ul class="wt-tab-nav" id="mallThemeTypeList">
-								<li data-id="#themeApproval" :class="{'active':approvalwayTypeFlag}" @click="approvalwayTypeFlag = true">按主题申报</li>
-								<li data-id="#proApproval" :class="{'active':!approvalwayTypeFlag}" @click="approvalwayTypeFlag = false">按部门申报</li>
-							</ul>
-							<div class="wt-tab-content" style="padding-top: 18px;">
-								<!-- 按主题申报 start -->
-								<!--<transition name="el-fade-in-linear">-->
-									<div class="wt-tab-item" id="themeApproval" v-show="approvalwayTypeFlag">
-										<div class="guide-content-left" v-loading="themeLoading">
-											<ul id="themeul">
-												<el-collapse accordion v-model="approvalWayActiveName" @change="approvelWayActiveChange">
-													<el-collapse-item :name="index+1" v-for="(item, index) in themeListData" :key="index">
-														<template slot="title">
-															<li class="theme-type" :class="{'active':approvalWayActiveName === (index+1)}">
-																<p class="theme-type-name ellipsis">
-																	<i class="theme-type-icon"></i>
-																	{{item.themeTypeName}} <i class="tooggle-icon"></i></p>
-															</li>
-														</template>
-														<li class="theme-type active">
-															<ul class="theme-type-list">
-																<li class="theme-type-item ellipsisLn" :class="{'active':activeSub === indexSub}" @click="goToGuid(itemSub,indexSub)"
-																 v-for="(itemSub, indexSub) in item.themeList" :key="indexSub">{{(indexSub+1)+'、'+itemSub.themeName}}</li>
-															</ul>
-														</li>
-													</el-collapse-item>
-												</el-collapse>
-											</ul>
-											<div class="toggle" style="display: none;">
-												<ul class="toggle-dots">
-													<li class="active"></li>
-													<li></li>
-												</ul>
-											</div>
-										</div>
-										<div class="guide-content-right" >
-											<p class="theme-type-header">
-												<span><i class="notice"></i> 申报说明：</span>
-												<button class="red-btn" :loading="showProcessLoading" style="cursor: pointer;" id="showProcessButton" @click="showProcess()">查看流程图</button>
-											</p>
-											<p class="theme-type-explain" id="themeMemo" style="line-height: 25px;" v-html="themeMemo"></p>
-
-											<div v-show="isNode" class="wt-phase1" style="padding-top: 20px;">
-												<div class="wt-tab-item" id="mainLine">
-													<p class="p-header-phase1"><i class="approve-icon"></i> 并联申报</p>
-													<ul class="index-phase1 clearfix" id="stageImg">
-														<li class="show">
-															<img src="../../static/mall/images/index/立项用地许可.png" alt="">
-															<div class="stage-name">
-																<p class="ellipsis">立项用地许可阶段</p>
-																<p class="stage-dealine">14个工作日</p>
-															</div>
-														</li>
-														<li class="show" onclick="goToStage('A00001','03b61f98-a815-491a-8a41-bb1b29d9885d','e86e64f3-c9ef-4098-b3f9-bc62909b447f')">
-															<img src="../../static/mall/images/index/工程建设许可.png" alt="">
-															<div class="stage-name">
-																<p class="ellipsis">工程建设许可阶段</p>
-																<p class="stage-dealine">10个工作日</p>
-															</div>
-														</li>
-														<li class="show" onclick="goToStage('A00001','03b61f98-a815-491a-8a41-bb1b29d9885d','d3f58fd3-71bf-4bc6-a147-a46cc3b62db1')"><img
-															 src="../../static/mall/images/index/施工许可.png" alt="">
-															<div class="stage-name">
-																<p class="ellipsis">施工许可阶段</p>
-																<p class="stage-dealine">13个工作日</p>
-															</div>
-														</li>
-														<li class="show" onclick="goToStage('A00001','03b61f98-a815-491a-8a41-bb1b29d9885d','8001b4ab-a0f2-45a0-b58f-35e86827ab2a')"><img
-															 src="../../static/mall/images/index/竣工验收.png" alt="">
-															<div class="stage-name">
-																<p class="ellipsis">竣工验收阶段</p>
-																<p class="stage-dealine">8个工作日</p>
-															</div>
-														</li>
-													</ul>
-													<div class="prev-item" onclick="prevItem(this,'#mainLine #stageImg li')" style="display: none;">&lt;</div>
-													<div class="next-item" onclick="nextItem(this,'#mainLine #stageImg li')" style="display: none;">&gt;</div>
-												</div>
-												<div class="wt-tab-item" id="auxiliaryLine">
-													<p class="p-header-phase1"><i class="serve-icon"></i>服务协同</p>
-													<ul class="index-phase1 clearfix" id="stageAuxiliaryImg">
-														<li class="show" onclick="goToStage('A00001','03b61f98-a815-491a-8a41-bb1b29d9885d','97ed335a-691a-4173-8767-9afa94273988')">
-															<img src="../../static/mall/images/index/" alt="">
-															<div class="stage-name">
-																<p class="ellipsis">服务协同测试</p>
-																<p class="stage-dealine">1个工作日</p>
-															</div>
-														</li>
-													</ul>
-													<div class="prev-item" onclick="prevItem(this,'#auxiliaryLine #stageAuxiliaryImg li')" style="display:none;">&lt;</div>
-													<div class="next-item" onclick="nextItem(this,'#auxiliaryLine #stageAuxiliaryImg li')" style="display: none;">&gt;</div>
-												</div>
-											</div>
-
-											<div  v-show="!isNode" class="wt-phase1" style="padding-top: 20px;">
-												<div class="wt-phase-style-2">
-													<div class="wt-tab-item" id="mainLine2">
-<!--														<p class="p-header-phase1"><i class="approve-icon"></i> 并联申报</p>-->
-														<ul class="index-phase1 clearfix" id="stageImg2">
-															<li class="show">
-																<img src="../../static/mall/images/index/立项用地许可.png" alt="">
-																<div class="stage-name">
-																	<p class="ellipsis">立项用地许可阶段</p>
-																	<p class="stage-dealine">14个工作日</p>
-																</div>
-															</li>
-															<li class="show" onclick="goToStage('A00001','03b61f98-a815-491a-8a41-bb1b29d9885d','e86e64f3-c9ef-4098-b3f9-bc62909b447f')">
-																<img src="../../static/mall/images/index/工程建设许可.png" alt="">
-																<div class="stage-name">
-																	<p class="ellipsis">工程建设许可阶段</p>
-																	<p class="stage-dealine">10个工作日</p>
-																</div>
-															</li>
-															<li class="show" onclick="goToStage('A00001','03b61f98-a815-491a-8a41-bb1b29d9885d','d3f58fd3-71bf-4bc6-a147-a46cc3b62db1')"><img
-																	src="../../static/mall/images/index/施工许可.png" alt="">
-																<div class="stage-name">
-																	<p class="ellipsis">施工许可阶段</p>
-																	<p class="stage-dealine">13个工作日</p>
-																</div>
-															</li>
-															<li class="show" onclick="goToStage('A00001','03b61f98-a815-491a-8a41-bb1b29d9885d','8001b4ab-a0f2-45a0-b58f-35e86827ab2a')"><img
-																	src="../../static/mall/images/index/竣工验收.png" alt="">
-																<div class="stage-name">
-																	<p class="ellipsis">竣工验收阶段</p>
-																	<p class="stage-dealine">8个工作日</p>
-																</div>
-															</li>
-														</ul>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								<!--</transition>-->
-								<!-- 按主题申报 end -->
-								<!-- 按部门申报 start -->
-								<transition name="el-fade-in-linear">
-									<div class="wt-tab-item" id="proApproval" v-show="!approvalwayTypeFlag">
-										<div class="sel-department">
-											<div  style="position: relative;">
-												<span class="el-dropdown-link" @click="chooseCityItem">
-												  <span class="unitName ellipsis">{{cityOrgName}}</span>
-													<i v-show="secAeaOrgVo.length>0" class="el-icon-arrow-right" style="vertical-align: sub;cursor: pointer;margin-left: 0px;"></i>
-												</span>
-												<span class="el-dropdown-link" style="margin-left: 10px;margin-right: 10px;" v-show="secAeaOrgVo.length>0">
-												  <span class="unitName ellipsis">{{aeaActiveOrgName}}</span>
-													<i  class="el-icon-arrow-down el-icon--right"></i>
-													<ul class="el-dropdown-menu el-popper">
-														<div class="location">当前定位：<span>{{aeaActiveOrgName}}</span></div>
-														<li class="el-dropdown-menu__item" :class="{areaOn:areaOnIndex == index}"  v-for="(item,index) in secAeaOrgVo" @click="chooseAreaItem(item,index)">
-															{{item.orgName}}
-														</li>
-													</ul>
-												</span>
-												<span class="el-dropdown-link" style="margin-left: 10px;margin-right: 10px;"  v-show="childAeaOrgVo.length>0">
-													<span class="unitName ellipsis">{{childAeaOrgVoOrgName}}</span>
-													  <i  class="el-icon-arrow-down el-icon--right"></i>
-													  <ul class="el-dropdown-menu el-popper" >
-														  <div class="location">当前定位：<span>{{childAeaOrgVoOrgName}}</span></div>
-														  <li class="el-dropdown-menu__item" :class="{cityOn:cityOnIndex == index}" v-for="(item,index) in childAeaOrgVo"  @click="choosechildAeaOrgVoItem(item,index)">
-															  {{item.orgName}}
-														  </li>
-													  </ul>
-												</span>
-												<span class="total-department">共{{OrgListData.length}}个部门</span>
-											</div>
-										</div>
-										<div class="department-list" style="margin-top: 12px;" v-if="OrgListData.length>0">
-											<span class="department-name" v-for="(item, index) in OrgListData" onclick="goToOrg(this)" :key="index" :id="item.orgId"
-											 :name="item.orgName">{{item.orgName}}</span>
-											<a href="#" class="show-more-department" ref="showmoredepartment" @click="expandAllDep">全部展开</a>
-										</div>
-										<div class="department-list" style="margin-top: 12px;" v-else>
-											<div class="contract-box contract-non-box"></div>
-										</div>
-									</div>
-								</transition>
-								<!-- 按部门申报 end -->
+					<!-- 我要办 start -->
+					<div class="margin-top-40">
+						<p class="p-header">我要办</p>
+						<div class="wanttodo-box">
+							<div class="guide-box link-bg clearfix">
+								<img class="fl" src="../../static/mall/images/index/u22.png" th:src="@{/mall/images/index/u22.png}" alt="" width="68px" height="60px" />
+								<div class="text fl">
+									<p class="name">办事指南</p>
+									<p class="name-intro">查看办事指南，了解项目类型，准备申报材料</p>
+								</div>
+							</div>
+							<div class="declare-box link-bg clearfix">
+								<img class="fl" src="../../static/mall/images/index/u16.png" th:src="@{/mall/images/index/u22.png}" alt="" width="68px" height="60px" />
+								<div class="text fl">
+									<p class="name">我要申报</p>
+									<p class="name-intro">新建项目，完善项目信息，按阶段进行申报</p>
+								</div>
+							</div>
+							<div class="userCenter-box link-bg clearfix">
+								<img class="fl" src="../../static/mall/images/index/u10.png" th:src="@{/mall/images/index/u22.png}" alt="" width="68px" height="60px" />
+								<div class="text fl">
+									<p class="name">用户中心</p>
+									<p class="name-intro">查看个人信息，项目申报和实时掌握项目的审批情况</p>
+								</div>
 							</div>
 						</div>
 					</div>
-					<!-- floor1分类申报 end -->
+					<!-- 我要办 end -->
 					<div class="quick-entry margin-top-40">
-						<p class="p-header">快捷入口</p>
+						<p class="p-header">我要查</p>
 						<ul class="publicity clearfix">
 							<li class="fl"><a target="_blank" th:href="@{/mall/file/tangshan/shortcutEntry/唐政办发（2019）1号唐山市深化工程建设项目审批制度改革实施方案.pdf}">
 									<img src="../../static/mall/images/index/entry-icon1.png" th:src="@{/mall/images/index/entry-icon1.png}" alt="" />
@@ -318,8 +160,10 @@
 					<!-- floor3统计 公告 start -->
 					<div class="floor row-floor margin-top-40 clearfix">
 						<!-- 办件统计 start -->
+						<div class="all-pro-done-bg">
+
+						</div>
 						<div class="all-pro-done fl">
-							<p class="p-header">办件统计</p>
 							<div class="pro-done-item">
 								<div class="count-box clearfix">
 									<div class="count-icon fl bg1" ></div>
@@ -355,8 +199,11 @@
 							</div>
 						</div>
 						<!-- 办件统计 end -->
+
+
+
 						<!-- 公告动态 start -->
-						<div class="news fl">
+						<!--	<div class="news fl">
 							<p class="p-header">审批信息公示</p>
 							<ul class="publicity clearfix">
 								<li class="fl"><a href="javascript:;">
@@ -384,15 +231,18 @@
 									</div>
 								</li>
 							</ul>
-						</div>
+						</div>-->
 						<!-- 公告动态 end -->
+
+
+
 					</div>
 					<!-- floor3统计 公告 end -->
 				</div>
 			</section>
 			<!--所有办件 str-->
 			<section v-show="applyinstFlag == 2">
-				<div class="wt-content" style="padding-bottom: 50px;">
+				<div class="wt-content">
 					<div class="floor margin-top-40" style="position:relative;">
 						<p class="p-header">所有办件</p>
 						<div class="back">
