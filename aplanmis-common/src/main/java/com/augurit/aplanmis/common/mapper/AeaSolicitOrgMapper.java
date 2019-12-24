@@ -73,4 +73,11 @@ public interface AeaSolicitOrgMapper {
       * @return
       */
      List<AeaSolicitOrg> listAeaSolicitOrgRelOrgInfo(AeaSolicitOrg aeaSolicitOrg);
+
+     /**
+      * 删除
+      *
+      * @param rootOrgId
+      */
+     void batchDelSolicitOrgByRootOrgId(@Param("rootOrgId") String rootOrgId);
 }

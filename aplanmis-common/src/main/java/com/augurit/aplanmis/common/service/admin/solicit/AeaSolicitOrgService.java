@@ -89,4 +89,18 @@ public interface AeaSolicitOrgService {
       * @return
       */
      List<AeaSolicitOrg> listAeaSolicitOrgRelOrgInfo(AeaSolicitOrg aeaSolicitOrg);
+
+     /**
+      * 批量保存
+      *
+      * @param orgIds
+      */
+     void batchSaveSolicitOrg(String[] orgIds);
+
+     /**
+      * 删除
+      *
+      * @param rootOrgId
+      */
+     void batchDelSolicitOrgByRootOrgId(String rootOrgId);
 }

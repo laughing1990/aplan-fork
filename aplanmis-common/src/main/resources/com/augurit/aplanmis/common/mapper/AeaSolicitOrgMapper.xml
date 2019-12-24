@@ -206,6 +206,10 @@
         </if>
     </delete>
 
+    <delete id="batchDelSolicitOrgByRootOrgId">
+        delete from AEA_SOLICIT_ORG where ROOT_ORG_ID = #{rootOrgId}
+    </delete>
+
     <resultMap type="AeaSolicitOrg" id="AeaSolicitOrgMap">
         <id property="solicitOrgId" column="SOLICIT_ORG_ID"/>
         <result property="orgId" column="ORG_ID"/>
