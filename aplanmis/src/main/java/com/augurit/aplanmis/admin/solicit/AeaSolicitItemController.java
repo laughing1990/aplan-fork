@@ -27,10 +27,10 @@ private static Logger logger = LoggerFactory.getLogger(AeaSolicitItemController.
     @Autowired
     private AeaSolicitItemService aeaSolicitItemService;
 
-    @RequestMapping("/indexAeaSolicitItem.do")
-    public ModelAndView indexAeaSolicitItem(AeaSolicitItem aeaSolicitItem){
+    @RequestMapping("/index.do")
+    public ModelAndView index(AeaSolicitItem aeaSolicitItem){
 
-        return new ModelAndView("aea/solicit/item_index");
+        return new ModelAndView("ui-jsp/solicit/item/index");
     }
 
     @RequestMapping("/listAeaSolicitItem.do")
