@@ -237,81 +237,81 @@ var vm = new Vue({
                 }
             },
             rulesShigongzhuanyefenbaoFrom: {
-                organizationalCode: [
-                    { validator: checkJigoudaima, trigger: ['blur'] },
-                    { required: true, message: '请输入组织机构代码!', trigger: ['change'] },
-                ],
-                unifiedSocialCreditCode: [
-                    { validator: checkOrg, trigger: ['blur'] },
-                    { required: true, message: '请输入统一社会信用代码!', trigger: ['change'] },
-                ],
-                applicant: [
-                    { required: true, message: '请输入单位名称!', trigger: ['change'] },
-                ],
-                // qualificationLevel:[
-                //     { required: true,message: '请输入资质等级!', trigger: ['change'] },
+                // organizationalCode: [
+                //     { validator: checkJigoudaima, trigger: ['blur'] },
+                //     { required: true, message: '请输入组织机构代码!', trigger: ['change'] },
                 // ],
-                certinstCode: [
-                    { required: true, message: '请输入证书编号!', trigger: ['change'] },
-                ],
-                unitSafeLicenceNum: [
-                    { required: true, message: '请输入安全生产许可证编号!', trigger: ['change'] },
-                ],
-                idrepresentative: [
-                    { required: true, message: '请输入法定代表人!', trigger: ['change'] },
-                ],
-                idmobile: [
-                    { required: true, message: '请输入法定代表人联系电话!', trigger: ['change'] },
-                ],
-                linkmanName: [
-                    { required: true, message: '请输入专业分包技术负责人!', trigger: ['change'] },
-                ],
-                registerNum: [
-                    { required: true, message: '请输入注册编号!', trigger: ['change'] },
-                ],
-                personSafeLicenceNum: [
-                    { required: true, message: '请输入安全生产考核合格证号!', trigger: ['change'] },
-                ],
-                linkmanMobilePhone: [
-                    { required: true, message: '请输入专业分包技术负责人联系电话!', trigger: ['change'] },
-                ]
+                // unifiedSocialCreditCode: [
+                //     { validator: checkOrg, trigger: ['blur'] },
+                //     { required: true, message: '请输入统一社会信用代码!', trigger: ['change'] },
+                // ],
+                // applicant: [
+                //     { required: true, message: '请输入单位名称!', trigger: ['change'] },
+                // ],
+                // // qualificationLevel:[
+                // //     { required: true,message: '请输入资质等级!', trigger: ['change'] },
+                // // ],
+                // certinstCode: [
+                //     { required: true, message: '请输入证书编号!', trigger: ['change'] },
+                // ],
+                // unitSafeLicenceNum: [
+                //     { required: true, message: '请输入安全生产许可证编号!', trigger: ['change'] },
+                // ],
+                // idrepresentative: [
+                //     { required: true, message: '请输入法定代表人!', trigger: ['change'] },
+                // ],
+                // idmobile: [
+                //     { required: true, message: '请输入法定代表人联系电话!', trigger: ['change'] },
+                // ],
+                // linkmanName: [
+                //     { required: true, message: '请输入专业分包技术负责人!', trigger: ['change'] },
+                // ],
+                // registerNum: [
+                //     { required: true, message: '请输入注册编号!', trigger: ['change'] },
+                // ],
+                // personSafeLicenceNum: [
+                //     { required: true, message: '请输入安全生产考核合格证号!', trigger: ['change'] },
+                // ],
+                // linkmanMobilePhone: [
+                //     { required: true, message: '请输入专业分包技术负责人联系电话!', trigger: ['change'] },
+                // ]
             },
             rulesShigonglaowufenbaoFrom: {
-                organizationalCode: [
-                    { validator: checkJigoudaima, trigger: ['blur'] },
-                    { required: true, message: '请输入组织机构代码!', trigger: ['change'] },
-                ],
-                unifiedSocialCreditCode: [
-                    { validator: checkOrg, trigger: ['blur'] },
-                    { required: true, message: '请输入统一社会信用代码!', trigger: ['change'] },
-                ],
-                applicant: [
-                    { required: true, message: '单位名称!', trigger: ['change'] },
-                ],
-                certinstCode: [
-                    { required: true, message: '请输入证书编号!', trigger: ['change'] },
-                ],
-                unitSafeLicenceNum: [
-                    { required: true, message: '请输入安全生产许可证编号!', trigger: ['change'] },
-                ],
-                idrepresentative: [
-                    { required: true, message: '请输入法定代表人!', trigger: ['change'] },
-                ],
-                idmobile: [
-                    { required: true, message: '请输入法定代表人联系电话!', trigger: ['change'] },
-                ],
-                linkmanName: [
-                    { required: true, message: '请输入劳务分包技术负责人!', trigger: ['change'] },
-                ],
-                registerNum: [
-                    { required: true, message: '请输入注册编号!', trigger: ['change'] },
-                ],
-                personSafeLicenceNum: [
-                    { required: true, message: '请输入安全生产考核合格证号!', trigger: ['change'] },
-                ],
-                linkmanMobilePhone: [
-                    { required: true, message: '请输入劳务分包技术负责人联系电话!', trigger: ['change'] },
-                ]
+                // organizationalCode: [
+                //     { validator: checkJigoudaima, trigger: ['blur'] },
+                //     { required: true, message: '请输入组织机构代码!', trigger: ['change'] },
+                // ],
+                // unifiedSocialCreditCode: [
+                //     { validator: checkOrg, trigger: ['blur'] },
+                //     { required: true, message: '请输入统一社会信用代码!', trigger: ['change'] },
+                // ],
+                // applicant: [
+                //     { required: true, message: '单位名称!', trigger: ['change'] },
+                // ],
+                // certinstCode: [
+                //     { required: true, message: '请输入证书编号!', trigger: ['change'] },
+                // ],
+                // unitSafeLicenceNum: [
+                //     { required: true, message: '请输入安全生产许可证编号!', trigger: ['change'] },
+                // ],
+                // idrepresentative: [
+                //     { required: true, message: '请输入法定代表人!', trigger: ['change'] },
+                // ],
+                // idmobile: [
+                //     { required: true, message: '请输入法定代表人联系电话!', trigger: ['change'] },
+                // ],
+                // linkmanName: [
+                //     { required: true, message: '请输入劳务分包技术负责人!', trigger: ['change'] },
+                // ],
+                // registerNum: [
+                //     { required: true, message: '请输入注册编号!', trigger: ['change'] },
+                // ],
+                // personSafeLicenceNum: [
+                //     { required: true, message: '请输入安全生产考核合格证号!', trigger: ['change'] },
+                // ],
+                // linkmanMobilePhone: [
+                //     { required: true, message: '请输入劳务分包技术负责人联系电话!', trigger: ['change'] },
+                // ]
             },
             rulesJianliFrom: {
                 organizationalCode: [
