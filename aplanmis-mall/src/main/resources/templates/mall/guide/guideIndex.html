@@ -12,25 +12,42 @@
 <body>
 <div id="guideIndex">
     <section>
+        <div class="guid-banner">
+            <div class="guide-banner-opactity">
+                <div class="guide-banner-content">
+                    <p class="guid-banner-title">欢迎使用办事指南</p>
+                    <div class="wt-search">
+                        <div class="search-input index-input">
+                            <div>
+                                <input type="text" v-model.trim="itemListKeyword" @keyup.13="searchItemList();"placeholder="  查询项目类型/事项/结果物  "><el-button class="search-btn" @click="searchItemList();">查询</el-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
         <div class="wt-content">
-            <div class="local-main">
+           <!-- <div class="local-main">
                 <span class="local-icon"></span>
                 <span class="local-span">当前位置：</span>
                 <a class="local-a" :href="ctx+'rest/main/toIndexPage'">首页</a>
                 <span class="local-span">&gt;</span>
                 <a class="local-a active" href="javascript:void(0);" @click="isSinglePage=false">办事指南 </a>
-            </div>
+            </div>-->
 
             <div class="floor margin-top-40" v-show="!isSinglePage">
                 <div class="wt-tab" id="floorTab">
                     <ul class="wt-tab-nav" id="mallThemeTypeList">
                         <li data-id="#themeApproval" :class="{'active':approvalwayTypeFlag}" @click="approvalwayTypeFlag = true">
-                            按主题申报
-                        </li>
-                        <li data-id="#proApproval" :class="{'active':!approvalwayTypeFlag}" @click="approvalwayTypeFlag = false;getOrgId()">
-                            按部门申报
+                            项目类型
                         </li>
                     </ul>
+                    <div class="guide-tip">
+                        <img src="../../static/mall/images/guide/u736.png" th:src="@{/mall/images/guide/u736.png}" />
+                       <span>智能引导</span>
+                    </div>
                     <div class="sel-department" v-show="!approvalwayTypeFlag">
                         <div style="position: relative;">
                   <span class="el-dropdown-link" @click="chooseCityItem" style="margin-left: 10px;margin-right: 10px;">
@@ -93,419 +110,103 @@
                                 </div>
                             </div>
                             <div class="guide-content-right" v-loading='memoLoading'>
-                                <p class="theme-type-header">
-                                    <span><i class="notice"></i>申报说明：</span>
-                                    <button class="red-btn" style="cursor: pointer;" id="showProcessButton" @click="showProcess()">
-                                        查看流程图
-                                    </button>
-                                </p>
-                                <p class="theme-type-explain" id="themeMemo" v-html="themeMemo"></p>
-                                <div class="wt-phase1" id="guideMainLine" style="padding-top: 20px;">
+                                <div class="wt-phase1" id="guideMainLine">
                                     <div class="wt-tab-item" id="mainLine" v-show="countStageType1">
-                                        <p class="p-header-phase1"><i class="approve-icon"></i> 并联申报</p>
+                                        <p class="p-header-phase1">
+<!--                                            <i class="approve-icon"></i>-->
+                                            阶段选择</p>
                                         <ul class="index-phase1 clearfix" id="stageImg">
 
                                         </ul>
-                                        <div class="mainContent">
-                                            <ul class="items">
-                                                <li v-for="(item,index) in infoData" :class="index==0?'activeLi':''" :title="item" @click="tableToggle($event,index)" v-show="item">
-                                                    <span>{{item}}</span></li>
-                                            </ul>
-                                            <div class="table table0" v-if='curIndex==0' v-bind="guideDetailed" style="margin-top: 10px;">
-                                                <table class="wt-custom_table" style="width:912px;">
-                                                    <tbody>
-                                                    <tr>
-                                                        <td width="20%" class="left-td-custom_bg">审批对象</td>
-                                                        <td width="30%" class="right-td-custom">
-                                                            {{guideDetailed.applyObj?guideDetailed.applyObj:'无'}}
-                                                        </td>
-                                                        <td width="20%" class="left-td-custom_bg">受理时间</td>
-                                                        <td width="30%" class="right-td-custom">
-                                                            <div style="line-height: 23px;">
-                                                                {{guideDetailed.slsj?guideDetailed.slsj:'无'}}
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="20%" class="left-td-custom_bg">收费标准及依据</td>
-                                                        <td width="30%" class="right-td-custom">
-                                                            <div>
-                                                                <p>
-                                                                    收费标准：{{guideDetailed.byLaw?guideDetailed.byLaw:'无'}}</p>
-                                                                <p>
-                                                                    收费依据：{{guideDetailed.feeStand?guideDetailed.feeStand:'无'}}</p>
-                                                            </div>
-                                                        </td>
-                                                        <td width="20%" class="left-td-custom_bg">投诉监督电话</td>
-                                                        <td width="30%" class="right-td-custom">
-                                                            <div>
-                                                                {{guideDetailed.comsupTel?guideDetailed.comsupTel:'无'}}
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="20%" class="left-td-custom_bg">办理地点</td>
-                                                        <td width="80%" class="right-td-custom" colspan="3">
-                                                            <div v-if="guideDetailed.blddList !== undefined && guideDetailed.blddList.length >0">
-                                                                <p v-for="item in guideDetailed.blddList">{{item}}</p>
-                                                            </div>
-                                                            <div v-else>
-                                                                无
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="20%" class="left-td-custom_bg">温馨提示</td>
-                                                        <td width="80%" class="right-td-custom" colspan="3">
-                                                            <div style="line-height: 23px;">
-                                                                <p v-html="guideDetailed.warmPrompt"
-                                                                   v-if='guideDetailed.warmPrompt'></p>
-                                                                <p v-else>无</p>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="20%" class="left-td-custom_bg">申请条件</td>
-                                                        <td width="80%" class="right-td-custom" colspan="3">
-                                                            <div>
-                                                                <p v-html="guideDetailed.acceptCond"
-                                                                   v-if='guideDetailed.acceptCond'></p>
-                                                                <p v-else>无</p>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="20%" class="left-td-custom_bg">申报方式</td>
-                                                        <td width="80%" class="right-td-custom" colspan="3">
-                                                            <div style="line-height: 23px;">
-                                                                <p v-for="sbfsItem in guideDetailed.sbfsList"
-                                                                   v-html="sbfsItem" v-if='guideDetailed.sbfsList'></p>
-                                                                <p v-else>无</p>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="20%" class="left-td-custom_bg">办理时限</td>
-                                                        <td width="80%" class="right-td-custom" colspan="3">
-                                                            <div style="line-height: 23px;">
-                                                                <p v-html="guideDetailed.handleTimelimitDesc"
-                                                                   v-if='guideDetailed.handleTimelimitDesc'></p>
-                                                                <p v-else>无</p>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="20%" class="left-td-custom_bg">备注</td>
-                                                        <td width="80%" class="right-td-custom" colspan="3">
-                                                            <div style="line-height: 23px;">
-                                                                <p v-html="guideDetailed.guideDemo"
-                                                                   v-if='guideDetailed.guideDemo'></p>
-                                                                <p v-else style="padding-top: 10px;">无</p>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div class="table table1" v-if='curIndex==1'>
-                                                <div v-for="(basicItem,index) in guideDetailed.basicList">
-                                                    <p class="detail-title">{{index+1+'、'+basicItem.itemName}}</p>
-                                                    <div class="guide-detail-atr" v-if="basicItem.list!== undefined && basicItem.list.length >0">
-                                                        <el-table
-                                                                :data="basicItem.list"
-                                                                border
-                                                                style="width: 100%">
-                                                            <el-table-column
-                                                                    prop="legalName"
-                                                                    label="法律法规名称"
-                                                                    width="180">
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="clauseTitle"
-                                                                    label="条款名称"
-                                                                    width="180">
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="clauseContent"
-                                                                    label="条款具体内容">
-                                                            </el-table-column>
-                                                        </el-table>
-                                                    </div>
-                                                    <span v-else style="padding-left: 20px;">暂无审批依据</span>
-                                                </div>
-                                            </div>
-                                            <div class="table table2" v-if='curIndex==2' v-html='guideDetailed.handleFlow'></div>
-                                            <div class="table table3" v-if='curIndex==3' style="height: 500px;">
-                                                <iframe v-if="guideDetailed.guideAtt" :src="getViewIframeSrc" frameborder="0" height="100%" width="100%"></iframe>
-                                                <p v-else>【暂无流程图】</p>
-                                            </div>
-                                            <div class="table table0" v-if='curIndex==4'>
-                                                <el-table
-                                                        border
-                                                        class='el-table'
-                                                        :data="guideDetailed.concList"
-                                                        style="width: 100%">
-                                                    <el-table-column prop="itemName" label="事项名称" min-width="320"></el-table-column>
-                                                    <el-table-column prop="itemCode" label="事项编号" width="240"></el-table-column>
-                                                    <el-table-column prop="dueNum" label="时限(工作日)" width="120"></el-table-column>
-                                                    <el-table-column prop="orgName" label="实施主体" width="200"></el-table-column>
-                                                </el-table>
-                                            </div>
-                                            <div class="table table0" v-if='curIndex==5'>
-                                                <el-table
-                                                        border
-                                                        class='el-table'
-                                                        :data="guideDetailed.parallelList"
-                                                        style="width: 100%">
-                                                    <el-table-column prop="itemName" label="事项名称" min-width="320"></el-table-column>
-                                                    <el-table-column prop="itemCode" label="事项编号" width="240"></el-table-column>
-                                                    <el-table-column prop="dueNum" label="时限(工作日)" width="120"></el-table-column>
-                                                    <el-table-column prop="orgName" label="实施主体" width="200"></el-table-column>
-                                                </el-table>
-                                            </div>
-                                            <div class="table table1" v-if='curIndex==6'>
-                                                <!--<div v-if="guideDetailed.handWay==1 && guideDetailed.matList!=undefined && guideDetailed.matList.length >0">-->
-                                                <!--<div v-for="(matItem,index) in guideDetailed.matList">-->
-                                                <!--<p class="detail-title">{{(index+1)+'、'+matItem.matName}}</p>-->
-                                                <!--</div>-->
-                                                <!--</div>-->
-                                                <div>
-                                                    <div v-for="(concItem,index) in guideDetailed.concList">
-                                                        <p class="detail-title">{{index+1+'、'+concItem.itemName}}</p>
-                                                        <div v-if="concItem.matList!== undefined && concItem.matList.length >0">
-                                                            <p class="guide-detail-atr" style="padding-left: 20px;"
-                                                               v-for="(metrailItem,metrailIndex in concItem.matList">
-                                                                {{(metrailIndex+1)+'、'+metrailItem.matName}}
-                                                                <a href="javascript:void(0);" @click="showMatFiles(metrailItem,'TEMPLATE_DOC')">(空表下载、</a>
-                                                                <a href="javascript:void(0);" @click="showMatFiles(metrailItem,'SAMPLE_DOC')">样表下载）</a>
-                                                            </p>
-                                                        </div>
-                                                        <p v-else style="padding-left: 44px;color: gray;">该事项暂无材料</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="table table1" v-if='curIndex==7'>
-                                                <div v-for="(concItem,index) in guideDetailed.parallelList">
-                                                    <p class="detail-title">{{index+1+'、'+concItem.itemName}}</p>
-                                                    <div v-if="concItem.matList!== undefined && concItem.matList.length >0">
-                                                        <p class="guide-detail-atr" style="padding-left: 20px;" v-for="(metrailItem,metrailIndex in concItem.matList" v-if="concItem.matList">
-                                                            {{(metrailIndex+1)+'、'+metrailItem.matName}}
-                                                            <a href="javascript:void(0);" @click="showMatFiles(metrailItem,'TEMPLATE_DOC')">(空表下载、</a>
-                                                            <a href="javascript:void(0);" @click="showMatFiles(metrailItem,'SAMPLE_DOC')">样表下载）</a>
-                                                        </p>
-                                                    </div>
-                                                    <p v-else style="padding-left: 44px;color: gray">该事项暂无材料</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="prev-item" onclick="prevItem(this,'#mainLine #stageImg li')" style="display: none;">
-                                            &lt;
-                                        </div>
-                                        <div class="next-item" onclick="nextItem(this,'#mainLine #stageImg li')" style="display: none;">
-                                            &gt;
-                                        </div>
+
                                     </div>
                                     <div class="wt-tab-item" id="auxiliaryLine" v-show="countStageType2">
-                                        <p class="p-header-phase1"><i class="serve-icon"></i>服务协同</p>
-                                        <ul class="index-phase1 clearfix" id="stageAuxiliaryImg">
-
+                                        <p class="parallel-matters-title">
+<!--                                            <i class="serve-icon"></i>-->
+                                            并联事项
+                                        </p>
+                                        <ul class="index-phase1 clearfix" id="stageAuxiliaryImg" style="display: none;"></ul>
+                                        <ul class="paraller-wraper">
+                                            <li class="item">
+                                                <p class="title">第一阶段并联事项</p>
+                                                <div class="item-strip">
+                                                    建设项目选址意见书核准
+                                                    <div class="item-strip-bg">查看事项指南</div>
+                                                </div>
+                                                <div class="item-strip">项目建议书/可行性研究报告批复</div>
+                                                <div class="item-strip">建设项目用地预审</div>
+                                                <div class="item-strip">建设用地 (含临时用地)规划许可证客户</div>
+                                            </li>
+                                            <li class="item">
+                                                <p class="title">第一阶段并联事项</p>
+                                                <div class="item-strip">建设项目选址意见书核准</div>
+                                                <div class="item-strip">项目建议书/可行性研究报告批复</div>
+                                                <div class="item-strip">建设项目用地预审</div>
+                                                <div class="item-strip">建设用地 (含临时用地)规划许可证客户</div>
+                                            </li>
+                                            <li class="item">
+                                                <p class="title">第一阶段并联事项</p>
+                                                <div class="item-strip">建设项目选址意见书核准</div>
+                                                <div class="item-strip">项目建议书/可行性研究报告批复</div>
+                                                <div class="item-strip">建设项目用地预审</div>
+                                                <div class="item-strip">建设用地 (含临时用地)规划许可证客户</div>
+                                            </li>
+                                            <li class="item">
+                                                <p class="title">第一阶段并联事项</p>
+                                                <div class="item-strip">建设项目选址意见书核准</div>
+                                                <div class="item-strip">项目建议书/可行性研究报告批复</div>
+                                                <div class="item-strip">建设项目用地预审</div>
+                                                <div class="item-strip">建设用地 (含临时用地)规划许可证客户</div>
+                                            </li>
                                         </ul>
-                                        <!-- <div class="line-wrappper">
-                                           <div class="triang"></div>
-                                         </div>-->
-                                        <div class="mainContent">
-                                            <ul class="items2">
-                                                <li v-for="(item,index) in infoData" :class="index==0?'activeLi':''" :title="item" @click="tableToggle2($event,index)" v-show="item">
-                                                    <span>{{item}}</span></li>
-                                            </ul>
-                                            <div class="table table0" v-if='curIndex2==0' v-bind="guideDetailed2" style="margin-top: 10px;">
-                                                <table class="wt-custom_table" style="width:912px;">
-                                                    <tbody>
-                                                    <tr>
-                                                        <td width="20%" class="left-td-custom_bg">审批对象</td>
-                                                        <td width="30%" class="right-td-custom">
-                                                            {{guideDetailed2.applyObj?guideDetailed2.applyObj:'无'}}
-                                                        </td>
-                                                        <td width="20%" class="left-td-custom_bg">受理时间</td>
-                                                        <td width="30%" class="right-td-custom">
-                                                            <div style="line-height: 23px;">
-                                                                {{guideDetailed2.slsj?guideDetailed2.slsj:'无'}}
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="20%" class="left-td-custom_bg">收费标准及依据</td>
-                                                        <td width="30%" class="right-td-custom">
-                                                            <div>
-                                                                <p>
-                                                                    收费标准：{{guideDetailed2.byLaw?guideDetailed2.byLaw:'无'}}</p>
-                                                                <p>
-                                                                    收费依据：{{guideDetailed2.feeStand?guideDetailed2.feeStand:'无'}}</p>
-                                                            </div>
-                                                        </td>
-                                                        <td width="20%" class="left-td-custom_bg">投诉监督电话</td>
-                                                        <td width="30%" class="right-td-custom">
-                                                            <div>
-                                                                {{guideDetailed2.comsupTel?guideDetailed2.comsupTel:'无'}}
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="20%" class="left-td-custom_bg">办理地点</td>
-                                                        <td width="80%" class="right-td-custom" colspan="3">
-                                                            <div v-if="guideDetailed2.blddList !== undefined && guideDetailed2.blddList.length >0">
-                                                                <p v-for="item in guideDetailed2.blddList">{{item}}</p>
-                                                            </div>
-                                                            <div v-else>
-                                                                无
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="20%" class="left-td-custom_bg">温馨提示</td>
-                                                        <td width="80%" class="right-td-custom" colspan="3">
-                                                            <div style="line-height: 23px;">
-                                                                <p v-html="guideDetailed2.warmPrompt"
-                                                                   v-if='guideDetailed2.warmPrompt'></p>
-                                                                <p v-else>无</p>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="20%" class="left-td-custom_bg">申请条件</td>
-                                                        <td width="80%" class="right-td-custom" colspan="3">
-                                                            <div>
-                                                                <p v-html="guideDetailed2.acceptCond"
-                                                                   v-if='guideDetailed2.acceptCond'></p>
-                                                                <p v-else>无</p>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="20%" class="left-td-custom_bg">申报方式</td>
-                                                        <td width="80%" class="right-td-custom" colspan="3">
-                                                            <div style="line-height: 23px;">
-                                                                <p v-for="sbfsItem in guideDetailed2.sbfsList"
-                                                                   v-html="sbfsItem" v-if='guideDetailed2.sbfsList'></p>
-                                                                <p v-else>无</p>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="20%" class="left-td-custom_bg">办理时限</td>
-                                                        <td width="80%" class="right-td-custom" colspan="3">
-                                                            <div style="line-height: 23px;">
-                                                                <p v-html="guideDetailed2.handleTimelimitDesc"
-                                                                   v-if='guideDetailed2.handleTimelimitDesc'></p>
-                                                                <p v-else>无</p>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="20%" class="left-td-custom_bg">备注</td>
-                                                        <td width="80%" class="right-td-custom" colspan="3">
-                                                            <div style="line-height: 23px;">
-                                                                <p v-html="guideDetailed2.guideDemo"
-                                                                   v-if='guideDetailed2.guideDemo'></p>
-                                                                <p v-else style="padding-top: 10px;">无</p>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div class="table table1" v-if='curIndex2==1'>
-                                                <div v-for="(basicItem,index) in guideDetailed2.basicList">
-                                                    <p class="detail-title">{{index+1+'、'+basicItem.itemName}}</p>
-                                                    <div class="guide-detail-atr" v-if="basicItem.list!== undefined && basicItem.list.length >0">
-                                                        <!--<span v-for="subBasicItem in basicItem.list">{{subBasicItem.clauseContent}}; </span>-->
-                                                        <el-table
-                                                                :data="basicItem.list"
-                                                                border
-                                                                style="width: 100%">
-                                                            <el-table-column
-                                                                    prop="legalName"
-                                                                    label="法律法规名称"
-                                                                    width="180">
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="clauseTitle"
-                                                                    label="条款名称"
-                                                                    width="180">
-                                                            </el-table-column>
-                                                            <el-table-column
-                                                                    prop="clauseContent"
-                                                                    label="条款具体内容">
-                                                            </el-table-column>
-                                                        </el-table>
-                                                    </div>
-                                                    <span v-else style="padding-left: 20px;">暂无审批依据</span>
+                                    </div>
+                                    <div class="wt-tab-item" style="margin-top: 45px;">
+                                        <p class="parallel-matters-title">
+                                            <!--                                            <i class="serve-icon"></i>-->
+                                            并行推进事项
+                                        </p>
+                                        <ul class="index-phase1 clearfix" id="stageAuxiliaryImg" style="display: none;"></ul>
+                                        <ul class="paraller-wraper">
+                                            <li class="item">
+                                                <p class="title">第一阶段并联事项</p>
+                                                <div class="item-strip">
+                                                    建设项目选址意见书核准
+                                                    <div class="item-strip-bg">查看事项指南</div>
                                                 </div>
-                                            </div>
-                                            <div class="table table2" v-if='curIndex2==2' v-html='guideDetailed2.handleFlow'></div>
-                                            <div class="table table3" v-if='curIndex2==3'>
-                                                <img src="" alt="" v-if="guideDetailed2.guideAtt"/>
-                                                <p v-else>【暂无流程图】</p>
-                                            </div>
-                                            <div class="table table0" v-if='curIndex2==4'>
-                                                <el-table
-                                                        border
-                                                        class='el-table'
-                                                        :data="guideDetailed2.concList"
-                                                        style="width: 100%">
-                                                    <el-table-column prop="itemName" label="事项名称" min-width="320"></el-table-column>
-                                                    <el-table-column prop="itemCode" label="事项编号" width="240"></el-table-column>
-                                                    <el-table-column prop="dueNum" label="时限(工作日)" width="120"></el-table-column>
-                                                    <el-table-column prop="orgName" label="实施主体" width="200"></el-table-column>
-                                                </el-table>
-                                            </div>
-                                            <div class="table table0" v-if='curIndex2==5'>
-                                                <el-table
-                                                        border
-                                                        class='el-table'
-                                                        :data="guideDetailed2.parallelList"
-                                                        style="width: 100%">
-                                                    <el-table-column prop="itemName" label="事项名称" min-width="320"></el-table-column>
-                                                    <el-table-column prop="itemCode" label="事项编号" width="240"></el-table-column>
-                                                    <el-table-column prop="dueNum" label="时限(工作日)" width="120"></el-table-column>
-                                                    <el-table-column prop="orgName" label="实施主体" width="200"></el-table-column>
-                                                </el-table>
-                                            </div>
-                                            <div class="table table1" v-if='curIndex2==6'>
-                                                <!--<div v-if="guideDetailed2.handWay==1 && guideDetailed2.matList!=undefined && guideDetailed2.matList.length >0">-->
-                                                <!--<div v-for="(matItem,index) in guideDetailed2.matList">-->
-                                                <!--<p class="detail-title">{{(index+1)+'、'+matItem.matName}}</p>-->
-                                                <!--</div>-->
-                                                <!--</div>-->
-                                                <div>
-                                                    <div v-for="(concItem,index) in guideDetailed2.concList">
-                                                        <p class="detail-title">{{index+1+'、'+concItem.itemName}}</p>
-                                                        <div v-if="concItem.matList!== undefined && concItem.matList.length >0">
-                                                            <p class="guide-detail-atr" style="padding-left: 20px;"
-                                                               v-for="(metrailItem,metrailIndex in concItem.matList">
-                                                                {{(metrailIndex+1)+'、'+metrailItem.matName}}</p>
-                                                        </div>
-                                                        <p v-else style="padding-left: 44px;color: gray">该事项暂无材料</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="table table1" v-if='curIndex2==7'>
-                                                <div v-for="(concItem,index) in guideDetailed2.parallelList">
-                                                    <p class="detail-title">{{index+1+'、'+concItem.itemName}}</p>
-                                                    <div v-if="concItem.matList!== undefined && concItem.matList.length >0">
-                                                        <p class="guide-detail-atr" style="padding-left: 20px;" v-for="(metrailItem,metrailIndex in concItem.matList">
-                                                            {{(metrailIndex+1)+'、'+metrailItem.matName}}</p>
-                                                    </div>
-                                                    <p v-else style="padding-left: 44px;color: gray">该事项暂无材料</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="prev-item" onclick="prevItem(this,'#mainLine #stageImg li')" style="display: none;">
-                                            &lt;
-                                        </div>
-                                        <div class="next-item" onclick="nextItem(this,'#mainLine #stageImg li')" style="display: none;">
-                                            &gt;
-                                        </div>
+                                                <div class="item-strip">项目建议书/可行性研究报告批复</div>
+                                                <div class="item-strip">建设项目用地预审</div>
+                                                <div class="item-strip">建设用地 (含临时用地)规划许可证客户</div>
+                                            </li>
+                                            <li class="item">
+                                                <p class="title">第一阶段并联事项</p>
+                                                <div class="item-strip">建设项目选址意见书核准</div>
+                                                <div class="item-strip">项目建议书/可行性研究报告批复</div>
+                                                <div class="item-strip">建设项目用地预审</div>
+                                                <div class="item-strip">建设用地 (含临时用地)规划许可证客户</div>
+                                            </li>
+                                            <li class="item">
+                                                <p class="title">第一阶段并联事项</p>
+                                                <div class="item-strip">建设项目选址意见书核准</div>
+                                                <div class="item-strip">项目建议书/可行性研究报告批复</div>
+                                                <div class="item-strip">建设项目用地预审</div>
+                                                <div class="item-strip">建设用地 (含临时用地)规划许可证客户</div>
+                                            </li>
+                                            <li class="item">
+                                                <p class="title">第一阶段并联事项</p>
+                                                <div class="item-strip">建设项目选址意见书核准</div>
+                                                <div class="item-strip">项目建议书/可行性研究报告批复</div>
+                                                <div class="item-strip">建设项目用地预审</div>
+                                                <div class="item-strip">建设用地 (含临时用地)规划许可证客户</div>
+                                            </li>
+
+                                            <li class="item" style="width: 685px;">
+                                                <p class="title">第一、第二、第三阶段可并联或并行办理事项</p>
+                                                <div class="item-strip">建设项目选址意见书核准</div>
+                                                <div class="item-strip">项目建议书/可行性研究报告批复</div>
+                                                <div class="item-strip">建设项目用地预审</div>
+                                                <div class="item-strip">建设用地 (含临时用地)规划许可证客户</div>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
 

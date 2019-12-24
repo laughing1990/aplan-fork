@@ -475,7 +475,7 @@ var guideIndex = (function () {
                                     mainId.push(result[i].stageId)
                                     content += '<li class="show" style="cursor: pointer;" onclick=getGuideDetail(this,"' + result[i].stageId + '") id=' + result[i].stageId + '>';
                                     content += '<img src="' + ctx + imgUrl[i] + '" alt=""><div class="stage-name"><p class="ellipsis">' + result[i].stageName + '</p><p class="stage-dealine">' + result[i].dueNum + '个工作日</p></div><img src="' + ctx + 'mall/images/icon/1.png" alt="" class="sing"><p class="sing-text">' + (i + 1) + '</p><div class="wrapperGuide">\n' +
-                                        '<p  onclick="goToStageApply()">我要申报</p>\n' +
+                                        '<p  onclick="goToStageApply()">查看并联办事指南</p>\n' +
                                         '</div></li>';
                                     vm.countStageType1 = true;
                                 } else {//辅线
@@ -484,7 +484,7 @@ var guideIndex = (function () {
                                     assitId.push(result[i].stageId)
                                     content_aux += '<li class="show" style="cursor: pointer;" onclick=getGuideDetail2(this,"' + result[i].stageId + '") id=' + result[i].stageId + '>';
                                     content_aux += '<img src="' + ctx + imgUrl[i] + '" alt=""><div class="stage-name"><p class="ellipsis">' + result[i].stageName + '</p><p class="stage-dealine">' + result[i].dueNum + '个工作日</p></div><img src="' + ctx + 'mall/images/icon/1.png" alt="" class="sing"><p class="sing-text">1</p><div class="wrapperGuide">\n' +
-                                        '<p  onclick="goToStageApply()">我要申报</p>\n' +
+                                        '<p  onclick="goToStageApply()">查看并联办事指南</p>\n' +
                                         '</div></li>';
                                     vm.countStageType2 = true;
                                 }

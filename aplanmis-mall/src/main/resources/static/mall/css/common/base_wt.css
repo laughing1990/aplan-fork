@@ -79,7 +79,7 @@ header{
 }
 
 .header-logo{
-  margin: 20px 0;
+  margin: 20px 0 5px;
   float: left;
   font-size: 18px;
   font-weight: bold;
@@ -96,11 +96,18 @@ header{
   padding: 0 20px 0 10px;
   display: inline-block;
 }
+.header-logo .wt-title{
+  font-family: '微软雅黑';
+  font-weight: 400;
+  font-style: normal;
+  font-size: 24px;
+  color: #3F4047;
+}
 .header-logo .dividing-line{
   display: inline-block;
   width: 1px;
   height: 48px;
-  background-color: #ffffff;
+  background-color: rgba(215, 215, 215, 0.4);
   vertical-align: bottom;
   margin: 0 10px;
 }
@@ -114,7 +121,7 @@ header{
   display: inline-block;
 }
 .wt-header-tab .wt-tab-nav li {
-  margin-right: 90px;
+  margin-right: 60px;
   padding-top: 20px;
   font-size: 16px;
   color: #0D1C28;

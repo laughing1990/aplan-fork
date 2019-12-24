@@ -32,9 +32,10 @@
 				<div class="header-logo">
 				<!--	<a class="logo" href="#"></a>
 					<span class="logo-title"><a href="/aplanmis-mall/aea/mall/main/mainIndex.do">河北政务服务网</a></span>-->
-					<img th:src="@{/mall/images/index/u33.png}" width="223px" height="48px"  alt="" />
+					<img th:src="@{/mall/images/index/u33.png}" width="203px" height="43px" alt="" v-if="activeName==0" />
+					<img th:src="@{/mall/images/index/u185.png}" width="203px" height="43px" alt=""  v-else/>
 					<span class="dividing-line"></span>
-					<span class="wt-title">唐山市工程建设项目审批管理系统网上办事大厅</span>
+					<span class="wt-title">佛山市工程建设项目审批管理系统网上办事大厅</span>
 				</div>
 
 				<div class="go-login">
