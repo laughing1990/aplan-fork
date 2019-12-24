@@ -107,7 +107,7 @@ var userCenter = (function () {
                         ,
                         {
                             name: '补齐补正',
-                            value: 'matCompletionList',
+                            value: 'MatSupplement',
                             select: false,
                         }]
                     },
