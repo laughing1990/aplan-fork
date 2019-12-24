@@ -31,12 +31,15 @@
                           </el-tooltip>
                       </template>
                   </el-table-column>
-                  <el-table-column label="操作" width="120" align="center">
+                  <el-table-column label="操作" width="140" align="center">
                     <template slot-scope="scope">
                       <span class="option-btn">
                           <!--<a href="#">继续申报</a>-->
                         <a v-if="scope.row.isSeriesApprove=='0'" :href="ctx + 'rest/main/toIndexPage?projInfoId='+scope.row.projInfoId+'&applyinstId='+scope.row.applyinstId+'#declare'">继续申报</a>
                         <a v-else :href="ctx+'rest/main/toIndexPage?itemVerId='+scope.row.itemVerId+'&applyinstId='+scope.row.applyinstId+'&projInfoId='+scope.row.projInfoId+'&flag=singleD#declare'">继续申报</a>
+                      </span>
+                      <span class="option-btn">
+                        <a href="javascript:;" @click="delDraftApply(scope.row.applyinstId)">删除</a>
                       </span>
                     </template>
                   </el-table-column>
