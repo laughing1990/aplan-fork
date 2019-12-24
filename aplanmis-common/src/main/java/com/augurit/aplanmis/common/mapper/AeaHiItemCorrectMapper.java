@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.common.mapper;
 
 import com.augurit.aplanmis.common.domain.AeaHiItemCorrect;
+import com.augurit.aplanmis.common.dto.MatCorrectAndSuppleDto;
 import com.augurit.aplanmis.common.vo.MatCorrectConfirmVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -31,4 +32,13 @@ import java.util.List;
         List<MatCorrectConfirmVo> searchStayMatCorrectListByKeyword(@Param("keyword") String keyword, @Param("currentOrgId") String currentOrgId, @Param("currentUserId") String currentUserId);
 
         List<MatCorrectConfirmVo> searchStayMatCorrectListByCurrentUser(@Param("unitInfoId") String unitInfoId, @Param("userId") String userId, @Param("keyword") String keyword);
+
+        /**
+         * 材料补齐补正dao
+         * @param unitInfoId
+         * @param userId
+         * @param keyword
+         * @return
+         */
+    List<MatCorrectAndSuppleDto> searchMatSupportAndCompletByUser(@Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userId, @Param("keyword") String keyword);
     }

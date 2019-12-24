@@ -124,11 +124,25 @@
 <!--5 新增实体对象 -->
 <insert id="insertAeaHiSolicitDetailUser" parameterType="AeaHiSolicitDetailUser" >
     insert into AEA_HI_SOLICIT_DETAIL_USER (
-DETAIL_TASK_ID  ,SOLICIT_DETAIL_ID  ,USER_ID  ,USER_CONCLUSION  ,USER_OPINION  ,SIGN_TIME  ,FILL_TIME  ,TASK_ACTION  ,PARENT_ID  ,IS_DELETED  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  
+DETAIL_TASK_ID  ,SOLICIT_DETAIL_ID  ,USER_ID  ,USER_CONCLUSION  ,USER_OPINION  ,SIGN_TIME  ,FILL_TIME  ,TASK_ACTION  ,PARENT_ID  ,IS_DELETED  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME
     )  values  (
 #{detailTaskId},#{solicitDetailId},#{userId},#{userConclusion},#{userOpinion},#{signTime},#{fillTime},#{taskAction},#{parentId},#{isDeleted},#{creater},#{createTime},#{modifier},  #{modifyTime}
     )
 </insert>
+    <!--5 新增实体对象 -->
+    <insert id="batchInsertAeaHiSolicitDetailUser" parameterType="AeaHiSolicitDetailUser" >
+        insert into AEA_HI_SOLICIT_DETAIL_USER (
+        DETAIL_TASK_ID  ,SOLICIT_DETAIL_ID  ,USER_ID  ,USER_CONCLUSION  ,USER_OPINION  ,SIGN_TIME  ,FILL_TIME  ,TASK_ACTION  ,PARENT_ID  ,IS_DELETED  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME
+        )  values
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.detailTaskId},#{item.solicitDetailId},#{item.userId},#{item.userConclusion},#{item.userOpinion},
+            #{item.signTime},#{item.fillTime},#{item.taskAction},#{item.parentId},#{item.isDeleted},#{item.creater},
+            #{item.createTime},#{item.modifier},#{item.modifyTime}
+            )
+        </foreach>
+
+    </insert>
 <!--6 修改实体对象 -->
 <update id="updateAeaHiSolicitDetailUser" parameterType="AeaHiSolicitDetailUser" >
     update AEA_HI_SOLICIT_DETAIL_USER

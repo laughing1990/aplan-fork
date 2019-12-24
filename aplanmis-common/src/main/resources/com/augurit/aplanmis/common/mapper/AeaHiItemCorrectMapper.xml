@@ -427,6 +427,313 @@ and ahic_123.creater = #{currentUserId}
 
     </resultMap>
 
+    <sql id="searchMatCompletByUser">
+        SELECT
+        '1' as isCorrect,
+        case ahap_123.IS_SERIES_APPROVE WHEN '1' THEN '单项' ELSE '并联' end AS isSeriesApprove,
+        ahap_123.APPLYINST_ID  AS applyinstId,
+        ahap_123.APPLYINST_CODE AS applyinstCode,
+        API.PROJ_NAME AS projName,
+        API.LOCAL_CODE AS localCode,
+        API.GCBM AS gcbm,
+        '' as stageName,
+        '' as iteminstName,
+        aps_123.STAGE_NAME AS itemStageName,
+        theme.THEME_NAME AS themeName,
+        ahac_123.APPLYINST_CORRECT_ID as applyinstCorrectAndSuppleId
+        FROM
+        AEA_HI_APPLYINST ahap_123
+        LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahap_123.APPLYINST_ID = ahs_123.APPLYINST_ID
+        LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+        LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+        LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+        LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
+        INNER JOIN AEA_HI_APPLYINST_CORRECT ahac_123 ON ahac_123.APPLYINST_ID = ahap_123.APPLYINST_ID AND ( ahac_123.CORRECT_STATE = '6' OR ahac_123.CORRECT_STATE IS NULL )
+        INNER JOIN AEA_APPLYINST_UNIT_PROJ AAUP ON AAUP.APPLYINST_ID  = ahap_123.APPLYINST_ID
+        INNER JOIN AEA_UNIT_PROJ AUP ON AUP.UNIT_PROJ_ID = AAUP.UNIT_PROJ_ID
+        INNER JOIN aea_proj_info API ON API.PROJ_INFO_ID = AUP.PROJ_INFO_ID
+        where
+        ahap_123.IS_SERIES_APPROVE = '0'
+        AND ahap_123.APPLYINST_STATE = '3' and aup.IS_DELETED != 1
+        <if test="keyword !=null and keyword!=''">
+            and (ahap_123.APPLYINST_CODE like CONCAT(CONCAT('%',#{keyword}),'%') or
+            API.PROJ_NAME like CONCAT(CONCAT('%',#{keyword}),'%') )
+        </if>
+        <if test="unitInfoId !=null and unitInfoId!=''">
+            AND AUP.UNIT_INFO_ID=#{unitInfoId}
+        </if>
+        <if test="unitInfoId ==null || unitInfoId==''">
+            AND AUP.UNIT_INFO_ID  is null
+        </if>
+        UNION
+
+
+
+        SELECT
+        '1' as isCorrect,
+        case ahap_123.IS_SERIES_APPROVE WHEN '1' THEN '单项' ELSE '并联' end AS isSeriesApprove,
+        ahap_123.APPLYINST_ID  AS applyinstId,
+        ahap_123.APPLYINST_CODE AS applyinstCode,
+        API.PROJ_NAME AS projName,
+        API.LOCAL_CODE AS localCode,
+        API.GCBM AS gcbm,
+        '' as stageName,
+        '' as iteminstName,
+        aps_123.STAGE_NAME AS itemStageName,
+        theme.THEME_NAME AS themeName,
+        ahac_123.APPLYINST_CORRECT_ID as applyinstCorrectAndSuppleId
+        FROM
+        AEA_HI_APPLYINST ahap_123
+        LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahap_123.APPLYINST_ID = ahs_123.APPLYINST_ID
+        LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+        LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+        LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+        LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
+        INNER JOIN AEA_HI_APPLYINST_CORRECT ahac_123 ON ahac_123.APPLYINST_ID = ahap_123.APPLYINST_ID AND ( ahac_123.CORRECT_STATE = '6' OR ahac_123.CORRECT_STATE IS NULL )
+        INNER JOIN AEA_PROJ_LINKMAN APL ON APL.APPLYINST_ID  = ahap_123.APPLYINST_ID
+        INNER JOIN AEA_PROJ_INFO API ON API.PROJ_INFO_ID = APL.PROJ_INFO_ID
+        where
+        ahap_123.IS_SERIES_APPROVE = '0'
+        AND ahap_123.APPLYINST_STATE = '3'
+        <if test="keyword !=null and keyword!=''">
+            and (ahap_123.APPLYINST_CODE like CONCAT(CONCAT('%',#{keyword}),'%') or
+            API.PROJ_NAME like CONCAT(CONCAT('%',#{keyword}),'%') )
+        </if>
+        <if test="userInfoId !=null and userInfoId!=''">
+            AND APL.LINKMAN_INFO_ID=#{userInfoId}
+        </if>
+        <if test="userInfoId ==null || userInfoId==''">
+            AND APL.LINKMAN_INFO_ID  is null
+        </if>
+        UNION
+
+
+        SELECT
+        '1' as isCorrect,
+        case ahap_123.IS_SERIES_APPROVE WHEN '1' THEN '单项' ELSE '并联' end AS isSeriesApprove,
+        ahap_123.APPLYINST_ID  AS applyinstId,
+        ahap_123.APPLYINST_CODE AS applyinstCode,
+        API.PROJ_NAME AS projName,
+        API.LOCAL_CODE AS localCode,
+        API.GCBM AS gcbm,
+        '' as stageName,
+        '' as iteminstName,
+        ahi_123.ITEMINST_NAME AS itemStageName,
+        apt.THEME_NAME AS themeName,
+        ahac_123.APPLYINST_CORRECT_ID as applyinstCorrectAndSuppleId
+        FROM
+        AEA_HI_APPLYINST ahap_123
+        LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+        LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+        INNER JOIN AEA_HI_APPLYINST_CORRECT ahac_123 ON ahac_123.APPLYINST_ID = ahap_123.APPLYINST_ID AND ( ahac_123.CORRECT_STATE = '6' OR ahac_123.CORRECT_STATE IS NULL )
+        INNER JOIN AEA_APPLYINST_UNIT_PROJ AAUP ON AAUP.APPLYINST_ID  = ahap_123.APPLYINST_ID
+        INNER JOIN AEA_UNIT_PROJ AUP ON AUP.UNIT_PROJ_ID = AAUP.UNIT_PROJ_ID
+        INNER JOIN aea_proj_info API ON API.PROJ_INFO_ID = AUP.PROJ_INFO_ID
+        LEFT JOIN aea_par_theme apt ON apt.theme_id = API.theme_id
+        where
+        ahap_123.IS_SERIES_APPROVE = '1'
+        AND ahap_123.APPLYINST_STATE = '3' and aup.IS_DELETED != 1
+        <if test="keyword !=null and keyword!=''">
+            and (ahap_123.APPLYINST_CODE like CONCAT(CONCAT('%',#{keyword}),'%') or
+            API.PROJ_NAME like CONCAT(CONCAT('%',#{keyword}),'%') )
+        </if>
+        <if test="unitInfoId !=null and unitInfoId!=''">
+            AND AUP.UNIT_INFO_ID=#{unitInfoId}
+        </if>
+        <if test="unitInfoId ==null || unitInfoId==''">
+            AND AUP.UNIT_INFO_ID is null
+        </if>
+        UNION
+
+        SELECT
+        '1' as isCorrect,
+        case ahap_123.IS_SERIES_APPROVE WHEN '1' THEN '单项' ELSE '并联' end AS isSeriesApprove,
+        ahap_123.APPLYINST_ID  AS applyinstId,
+        ahap_123.APPLYINST_CODE AS applyinstCode,
+        API.PROJ_NAME AS projName,
+        API.LOCAL_CODE AS localCode,
+        API.GCBM AS gcbm,
+        '' as stageName,
+        '' as iteminstName,
+        ahi_123.ITEMINST_NAME AS itemStageName,
+        apt.THEME_NAME AS themeName,
+        ahac_123.APPLYINST_CORRECT_ID as applyinstCorrectAndSuppleId
+        FROM
+        AEA_HI_APPLYINST ahap_123
+        LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+        LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+        INNER JOIN AEA_HI_APPLYINST_CORRECT ahac_123 ON ahac_123.APPLYINST_ID = ahap_123.APPLYINST_ID AND ( ahac_123.CORRECT_STATE = '6' OR ahac_123.CORRECT_STATE IS NULL )
+        INNER JOIN AEA_PROJ_LINKMAN APL ON APL.APPLYINST_ID  = ahap_123.APPLYINST_ID
+        INNER JOIN AEA_PROJ_INFO API ON API.PROJ_INFO_ID = APL.PROJ_INFO_ID
+        LEFT JOIN aea_par_theme apt ON apt.theme_id = API.theme_id
+        where
+        ahap_123.IS_SERIES_APPROVE = '1'
+        AND ahap_123.APPLYINST_STATE = '3'
+        <if test="keyword !=null and keyword!=''">
+            and (ahap_123.APPLYINST_CODE like CONCAT(CONCAT('%',#{keyword}),'%') or
+            APL.PROJ_NAME like CONCAT(CONCAT('%',#{keyword}),'%') )
+        </if>
+        <if test="userInfoId !=null and userInfoId!=''">
+            AND APL.LINKMAN_INFO_ID=#{userInfoId}
+        </if>
+        <if test="userInfoId ==null || userInfoId==''">
+            AND APL.LINKMAN_INFO_ID is null
+        </if>
+    </sql>
+
+
+    <sql id="searchStayMatCorrectListByCurrentUser">
+        SELECT
+        '0' as isCorrect,
+        '并联' isSeriesApprove,
+        ''  AS applyinstId,
+        ahap_123.APPLYINST_CODE applyinstCode,
+        temp1.PROJ_NAME projName,
+        temp1.LOCAL_CODE AS localCode,
+        temp1.GCBM AS gcbm,
+        aps_123.STAGE_NAME stageName,
+        ahi_123.ITEMINST_NAME iteminstName,
+        '' AS itemStageName,
+        theme.THEME_NAME themeName,
+        ahic_123.CORRECT_ID as applyinstCorrectAndSuppleId
+        FROM
+        AEA_HI_ITEMINST ahi_123
+        LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahi_123.STAGEINST_ID = ahs_123.STAGEINST_ID
+        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+        LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+        LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
+        INNER JOIN AEA_HI_ITEM_CORRECT ahic_123 ON ahic_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        AND ahic_123.ITEMINST_ID = ahi_123.ITEMINST_ID
+        AND ahic_123.CORRECT_STATE = '6'
+        LEFT JOIN (
+        SELECT
+        ap.APPLYINST_ID,
+        p.PROJ_NAME AS PROJ_NAME,
+        p.LOCAL_CODE AS LOCAL_CODE,
+        p.GCBM AS GCBM
+        FROM
+        aea_applyinst_proj ap
+        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+        GROUP BY
+        ap.APPLYINST_ID
+        ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+        WHERE
+        ahi_123.IS_SERIES_APPROVE = '0'
+        AND ahi_123.ITEMINST_STATE = '6'
+        AND (
+        (
+        ahap_123.APPLY_SUBJECT = '0'
+        <if test="userInfoId !=null and userInfoId!=''">
+            AND ahap_123.LINKMAN_INFO_ID = #{userInfoId}
+        </if>
+        <if test="userInfoId ==null || userInfoId==''">
+            AND ahap_123.LINKMAN_INFO_ID is null
+        </if>
+        )
+        OR (
+        ahap_123.APPLY_SUBJECT = '1'
+        AND ahap_123.APPLYINST_ID IN (
+        SELECT
+        aaup.APPLYINST_ID
+        FROM
+        aea_applyinst_unit_proj aaup
+        LEFT JOIN aea_unit_proj aup ON aaup.UNIT_PROJ_ID = aup.UNIT_PROJ_ID
+        WHERE
+        aaup.IS_DELETED != 1 and aup.is_Owner = 1 and aup.IS_DELETED != 1
+        <if test="unitInfoId !=null and unitInfoId!=''">
+            and aup.UNIT_INFO_ID = #{unitInfoId}
+        </if>
+        <if test="unitInfoId ==null || unitInfoId==''">
+            and aup.UNIT_INFO_ID is null
+        </if>
+        )
+        )
+        )
+        <if test="keyword != null and keyword != ''">
+            AND (
+            ahi_123.ITEMINST_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
+            ahap_123.APPLYINST_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+            temp1.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')OR
+            ahi_123.ITEMINST_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            )
+        </if>
+        UNION
+        SELECT
+        '0' as isCorrect,
+        '单项' isSeriesApprove,
+        ''  AS applyinstId,
+        ahap_123.APPLYINST_CODE applyinstCode,
+        temp1.PROJ_NAME projName,
+        temp1.LOCAL_CODE AS localCode,
+        temp1.GCBM AS gcbm,
+        NULL AS STAGE_NAME,
+        ahi_123.ITEMINST_NAME iteminstName,
+        '' AS itemStageName,
+        temp1.THEME_NAME themeName,
+        ahic_123.CORRECT_ID as applyinstCorrectAndSuppleId
+        FROM
+        AEA_HI_ITEMINST ahi_123
+        LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+        INNER JOIN AEA_HI_ITEM_CORRECT ahic_123 ON ahic_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        AND ahic_123.ITEMINST_ID = ahi_123.ITEMINST_ID
+        AND ahic_123.CORRECT_STATE = '6'
+        LEFT JOIN (
+        SELECT
+        ap.APPLYINST_ID,
+        p.PROJ_NAME AS PROJ_NAME,
+        p.LOCAL_CODE AS LOCAL_CODE,
+        apt.THEME_NAME AS THEME_NAME,
+        p.GCBM AS GCBM
+        FROM
+        aea_applyinst_proj ap
+        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+        LEFT JOIN aea_par_theme apt on apt.theme_id = p.theme_id
+        GROUP BY
+        ap.APPLYINST_ID
+        ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+        WHERE
+        ahi_123.IS_SERIES_APPROVE = '1'
+        AND ahi_123.ITEMINST_STATE = '6'
+        AND (
+        (
+        ahap_123.APPLY_SUBJECT = '0'
+        AND ahap_123.LINKMAN_INFO_ID = #{userInfoId}
+        )
+        OR (
+        ahap_123.APPLY_SUBJECT = '1'
+        AND ahap_123.APPLYINST_ID IN (
+        SELECT
+        aaup.APPLYINST_ID
+        FROM
+        aea_applyinst_unit_proj aaup
+        LEFT JOIN aea_unit_proj aup ON aaup.UNIT_PROJ_ID = aup.UNIT_PROJ_ID
+        WHERE
+        aaup.IS_DELETED != 1 and aup.is_Owner = 1 and aup.IS_DELETED != 1
+        <if test="unitInfoId !=null and unitInfoId!=''">
+            and aup.UNIT_INFO_ID = #{unitInfoId}
+        </if>
+        <if test="unitInfoId ==null || unitInfoId==''">
+            and aup.UNIT_INFO_ID is null
+        </if>
+        )
+        )
+        )
+        <if test="keyword != null and keyword != ''">
+            AND (
+            ahi_123.ITEMINST_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
+            ahap_123.APPLYINST_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+            temp1.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')OR
+            ahi_123.ITEMINST_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            )
+        </if>
+    </sql>
+
+
     <!-- 根据当前登录人/单位的ID，获取材料补正列表 -->
     <select id="searchStayMatCorrectListByCurrentUser" resultType="com.augurit.aplanmis.common.vo.MatCorrectConfirmVo">
         SELECT
@@ -579,5 +886,12 @@ and ahic_123.creater = #{currentUserId}
             ahi_123.ITEMINST_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
             )
         </if>
+    </select>
+
+
+    <select id="searchMatSupportAndCompletByUser" resultType="com.augurit.aplanmis.common.dto.MatCorrectAndSuppleDto">
+        <include refid="searchMatCompletByUser"></include>
+            union
+        <include refid="searchStayMatCorrectListByCurrentUser"></include>
     </select>
 </mapper>

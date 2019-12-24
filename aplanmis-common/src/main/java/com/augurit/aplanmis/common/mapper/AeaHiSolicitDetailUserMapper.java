@@ -13,6 +13,7 @@ import java.util.List;
     public interface AeaHiSolicitDetailUserMapper {
 
     public void insertAeaHiSolicitDetailUser(AeaHiSolicitDetailUser aeaHiSolicitDetailUser) throws Exception;
+    public void batchInsertAeaHiSolicitDetailUser(List<AeaHiSolicitDetailUser> aeaHiSolicitDetailUser) throws Exception;
     public void updateAeaHiSolicitDetailUser(AeaHiSolicitDetailUser aeaHiSolicitDetailUser) throws Exception;
     public void deleteAeaHiSolicitDetailUser(@Param("id") String id) throws Exception;
     public List <AeaHiSolicitDetailUser> listAeaHiSolicitDetailUser(AeaHiSolicitDetailUser aeaHiSolicitDetailUser) throws Exception;

@@ -17,12 +17,32 @@
         MODIFY_TIME  modifyTime
     </sql>
 
+    <sql id="allAlisColumns" >
+        asou.ORG_USER_ID  orgUserId,
+        asou.SOLICIT_ORG_ID  solicitOrgId,
+        asou.USER_ID  userId,
+        asou.SORT_NO  sortNo,
+        asou.IS_ACTIVE  isActive,
+        asou.CREATER  creater,
+        asou.CREATE_TIME  createTime,
+        asou.MODIFIER  modifier,
+        asou.MODIFY_TIME  modifyTime
+    </sql>
+
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaSolicitOrgUserById" resultType="AeaSolicitOrgUser" >
         select
            <include refid="allColumns"/>
         from    AEA_SOLICIT_ORG_USER
         where    ORG_USER_ID = #{id}
+    </select>
+
+    <!--2.1 根据orgId查询所有用户信息 -->
+    <select id="listAeaSolicitOrgUserByOrgId" resultType="AeaSolicitOrgUser" >
+        select
+           <include refid="allAlisColumns"/>
+        from    AEA_SOLICIT_ORG_USER asou
+        LEFT JOIN AEA_SOLICIT_ORG aso ON aso.SOLICIT_ORG_ID = asou.SOLICIT_ORG_ID AND aso.ORG_ID = #{orgId}
     </select>
 
     <!--3 根据条件查询实体list -->
