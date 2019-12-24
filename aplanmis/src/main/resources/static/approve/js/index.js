@@ -1013,7 +1013,7 @@ var vm = new Vue({
             cancelButtonText: '取消',
             type: 'warning'
           }).then(function(){
-            vm.requestLinkManInfo();
+            vm.requestLinkManInfo(true);
           }).catch(function(){
             //
           });
@@ -1023,11 +1023,15 @@ var vm = new Vue({
         }
       }
     },
-    requestLinkManInfo: function(){
+    requestLinkManInfo: function(f){
       var vm = this;
+      var reqUrl = ctx + 'rest/applyinst/getLinkmanInfoList?applyinstId='+vm.masterEntityKey;
+      if (f) {
+        reqUrl += '&isCancel=true';
+      }
       // 获取业主信息
       request('', {
-        url: ctx + 'rest/applyinst/getLinkmanInfoList?applyinstId='+vm.masterEntityKey,
+        url: reqUrl,
         type: 'get',
       }, function(res){
         vm.parentPageLoading = false;
