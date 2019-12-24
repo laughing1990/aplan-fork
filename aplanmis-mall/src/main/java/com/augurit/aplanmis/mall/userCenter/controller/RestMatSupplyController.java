@@ -54,6 +54,11 @@ public class RestMatSupplyController {
         return new ModelAndView("mall/userCenter/components/matSupplementList");
     }
 
+    @GetMapping("toMatSupplementPage")
+    @ApiOperation(value = "跳转补齐补正页面")
+    public ModelAndView toMatSupplementPage(){
+        return new ModelAndView("mall/userCenter/components/matSupplement");
+    }
 
     @GetMapping("matSupply/list")
     @ApiOperation(value = "材料补正 --> 材料补正列表查询接口")
