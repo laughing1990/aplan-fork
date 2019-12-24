@@ -78,13 +78,7 @@ public class RestMatCompletController {
     public ResultForm searchMatComplet(int pageNum, int pageSize,String keyword,HttpServletRequest request){
         try {
             LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
-            if("1".equals(loginInfo.getIsPersonAccount())){//个人
-                return new ContentResultForm<>(true,restApproveService.searchMatComplet("",loginInfo.getUserId(),keyword,pageNum,pageSize));
-            }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
-                return new ContentResultForm<>(true,restApproveService.searchMatComplet(loginInfo.getUnitId(),loginInfo.getUserId(),keyword,pageNum,pageSize));
-            }else{//企业
-                return new ContentResultForm<>(true,restApproveService.searchMatComplet(loginInfo.getUnitId(),"",keyword,pageNum,pageSize));
-            }
+            return new ContentResultForm<>(true,restApproveService.searchMatComplet(loginInfo.getUnitId(),loginInfo.getUserId(),keyword,pageNum,pageSize));
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             return new ResultForm(false,"查材料补全列表查询接口异常");
