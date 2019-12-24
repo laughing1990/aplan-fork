@@ -90,6 +90,12 @@ public class ImportService {
     ItemOthersMatService itemOthersMatService;
     @Autowired
     OfficialDocService officialDocService;
+    @Autowired
+    ItemSpecialService itemSpecialService;
+    @Autowired
+    ProjPurchaseService projPurchaseService;
+    @Autowired
+    ProjPurchaseOpinionService projPurchaseOpinionService;
 
     @Autowired
     LandRedLineService landRedLineService;
@@ -116,6 +122,12 @@ public class ImportService {
     SpglXmspsxpfwjxxbService spglXmspsxpfwjxxbService;
     @Autowired
     SpglXmqtfjxxbService spglXmqtfjxxbService;
+    @Autowired
+    SpglXmspsxbltbcxxxbService spglXmspsxbltbcxxxbService;
+    @Autowired
+    SpglZjfwsxblxxbService spglZjfwsxblxxbService;
+    @Autowired
+    SpglZjfwsxblgcxxbService spglZjfwsxblgcxxbService;
 
     @Autowired
     SpglXmydhxjzxxbService spglXmydhxjzxxbService;
@@ -288,6 +300,36 @@ public class ImportService {
         }.wrapper(startTime, endTime);
     }
 
+    public void importItemSpecialAndLog(Date startTime, Date endTime, String operateSource) {
+        new ImportJobLogWrapper(operateSource) {
+
+            @Override
+            protected void executeImport(Date startTime, Date endTime) {
+                importItemSpecial(startTime, endTime);
+            }
+        }.wrapper(startTime, endTime);
+    }
+
+    public void importProjPurchaseAndLog(Date startTime, Date endTime, String operateSource) {
+        new ImportJobLogWrapper(operateSource) {
+
+            @Override
+            protected void executeImport(Date startTime, Date endTime) {
+                importProjPurchase(startTime, endTime);
+            }
+        }.wrapper(startTime, endTime);
+    }
+
+    public void importProjPurchaseOpinionAndLog(Date startTime, Date endTime, String operateSource) {
+        new ImportJobLogWrapper(operateSource) {
+
+            @Override
+            protected void executeImport(Date startTime, Date endTime) {
+                importProjPurchaseOpinion(startTime, endTime);
+            }
+        }.wrapper(startTime, endTime);
+    }
+
     public void importByTableName(EtlReuploadVo etlReuploadVo, String operateSource) {
         new ImportJobLogWrapper(operateSource) {
 
@@ -323,6 +365,15 @@ public class ImportService {
                 }
                 if (tableNames.contains(TableNameConstant.SPGL_XMQTFJXXB)) {
                     importItemMatinst(startTime, endTime);
+                }
+                if (tableNames.contains(TableNameConstant.SPGL_XMSPSXBLTBCXXXB)) {
+                    importItemSpecial(startTime, endTime);
+                }
+                if (tableNames.contains(TableNameConstant.SPGL_ZJFWSXBLXXB)) {
+                    importProjPurchase(startTime, endTime);
+                }
+                if (tableNames.contains(TableNameConstant.SPGL_ZJFWSXBLGCXXB)) {
+                    importProjPurchaseOpinion(startTime, endTime);
                 }
                 if (uploadDuoGui) {
                     if (tableNames.contains(TableNameConstant.SPGL_XMYDHXJZXXB)) {
@@ -426,6 +477,15 @@ public class ImportService {
         this.importOfficDoc(startTime, endTime);
         //9.项目其他附件信息表
         this.importItemMatinst(startTime, endTime);
+
+        //10.项目审批事项办理特别程序信息表
+        this.importItemSpecial(startTime, endTime);
+
+        //11.中介服务事项办理信息表
+        this.importProjPurchase(startTime, endTime);
+
+        //12.中介服务事项办理过程信息表
+        this.importProjPurchaseOpinion(startTime, endTime);
 
         log.info("工改所有表数据上传成功");
         /*
@@ -614,6 +674,27 @@ public class ImportService {
             }
         }.commonImport(startTime, endTime, TableNameConstant.SPGL_XMQTFJXXB);
     }
+
+    private void importItemSpecial(Date startTime, Date endTime) {
+        new AbstractImporter<SpglXmspsxbltbcxxxb>(itemSpecialService, spglXmspsxbltbcxxxbService) {
+            @Override
+            protected void prepareHandle(SpglXmspsxbltbcxxxb item, Iterator<SpglXmspsxbltbcxxxb> iterator) {
+                validateProj(item);
+                validateItmeinst(item);
+            }
+        }.commonImport(startTime, endTime, TableNameConstant.SPGL_XMSPSXBLTBCXXXB);
+    }
+
+    private void importProjPurchase(Date startTime, Date endTime) {
+        new AbstractImporter<SpglZjfwsxblxxb>(projPurchaseService, spglZjfwsxblxxbService) {
+        }.commonImport(startTime, endTime, TableNameConstant.SPGL_ZJFWSXBLXXB);
+    }
+
+    private void importProjPurchaseOpinion(Date startTime, Date endTime) {
+        new AbstractImporter<SpglZjfwsxblgcxxb>(projPurchaseOpinionService, spglZjfwsxblgcxxbService) {
+        }.commonImport(startTime, endTime, TableNameConstant.SPGL_ZJFWSXBLGCXXB);
+    }
+
 
     //项目用地红线界址信息表
     private void importLandRedLine(Date startTime, Date endTime) {

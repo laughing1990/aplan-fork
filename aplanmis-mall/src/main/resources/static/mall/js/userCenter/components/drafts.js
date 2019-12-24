@@ -21,6 +21,39 @@ var vm = new Vue({
         this.getDraftApplyList()
     },
     methods: {
+        // 删除草稿
+        delDraftApply: function(_applyinstId){
+          var _that = this;
+          confirmMsg('确认信息', '是否确定删除此条暂存草稿？', function(){
+            _that.mloading = true;
+            request('', {
+              url: ctx + 'rest/user/draftApply/delete/'+_applyinstId,
+              type: 'get',
+            }, function (res) {
+              _that.mloading = false;
+              if (res.success) {
+                _that.getDraftApplyList();
+                return _that.$message({
+                  message: '删除成功！',
+                  type: 'success'
+                })
+              } else {
+                return _that.$message({
+                  message: res.message?res.message:'删除失败！',
+                  type: 'error'
+                })
+              }
+            }, function () {
+              _that.mloading = false;
+              return _that.$message({
+                message: res.message?res.message:'删除失败！',
+                type: 'error'
+              })
+            });
+          },function(){
+            return false;
+          },'确认','取消', 'warning', true)
+        },
         getDraftApplyList: function () {
             var vm = this;
             vm.mloading = true;
