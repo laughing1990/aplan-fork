@@ -680,10 +680,10 @@
                           </div>
                         </template>
                       </el-table-column>
-                      <el-table-column label="部门" width="200" property="approvalOrgName"></el-table-column>
-                      <el-table-column label="事项名称" property="iteminstName"></el-table-column>
-                      <el-table-column label="部门意见" property="approvalOpinion"></el-table-column>
-                      <el-table-column label="审批时间" property="approvalEndTime">
+                      <el-table-column label="部门" width="300" property="approvalOrgName"></el-table-column>
+                      <el-table-column label="审批人" width="100"  property="approvalUserName"></el-table-column>
+                      <el-table-column label="意见" property="approvalOpinion"></el-table-column>
+                      <el-table-column label="办结时间" property="approvalEndTime">
                         <template slot-scope="scope">
                           {{scope.row.approvalEndTime|formatDate}}
                         </template>
