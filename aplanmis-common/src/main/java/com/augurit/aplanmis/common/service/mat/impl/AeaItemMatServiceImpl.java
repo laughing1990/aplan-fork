@@ -345,7 +345,7 @@ public class AeaItemMatServiceImpl implements AeaItemMatService {
     }
 
     public List<AeaItemMat> getOfficeMatsByStageItemVerIds(String stageId, String[] itemVerIds) throws Exception {
-
+        if(itemVerIds==null||itemVerIds.length==0) return new ArrayList<>();
         return aeaItemMatMapper.getOfficeMatsByStageItemVerIds(stageId, itemVerIds, SecurityContext.getCurrentOrgId());
     }
 
