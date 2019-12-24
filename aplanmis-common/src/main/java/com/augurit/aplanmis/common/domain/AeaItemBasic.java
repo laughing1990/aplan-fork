@@ -213,6 +213,8 @@ public class AeaItemBasic implements Serializable {
     是否必选事项 0表示否 1表示是
      */
     private String isOptionItem;
+
+    private String isDoneItem;//是否必办事项  1 是 0 否
     /**
      * 事项排序字段
      */

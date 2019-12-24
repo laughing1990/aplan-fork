@@ -1173,7 +1173,7 @@
     <select id="getAeaItemBasicListByStageId" resultType="AeaItemBasic">
         select distinct
         <include refid="aib_allColumns"/>,ooo.ORG_NAME orgName, apsi.sort_no sortNo, bdr.region_name regionName,
-        apsi.is_option_item isOptionItem
+        apsi.is_option_item isOptionItem,apsi.IS_DONE_ITEM isDoneItem
         FROM aea_par_stage aps
         LEFT JOIN aea_par_stage_item apsi ON aps.STAGE_ID=apsi.STAGE_ID AND aps.STAGE_ID=#{stageId}
         LEFT JOIN aea_item_ver aiv ON aiv.ITEM_VER_ID=apsi.ITEM_VER_ID AND aiv.ITEM_ID=apsi.ITEM_ID

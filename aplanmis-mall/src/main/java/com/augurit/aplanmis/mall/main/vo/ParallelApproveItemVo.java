@@ -55,6 +55,9 @@ public class ParallelApproveItemVo {
     private String regionId;
     @ApiModelProperty(name = "regionName", value = "行政区划名称", dataType = "string")
     private String regionName;
+    @ApiModelProperty(name = "isDoneItem", value = "是否必办事项  1 是 0 否'", dataType = "string")
+    private String isDoneItem;
+
 
     public static ParallelApproveItemVo build(AeaItemBasic aeaItemBasic) {
         Assert.notNull(aeaItemBasic, "事项基本信息不能为空");
