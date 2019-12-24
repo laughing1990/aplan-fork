@@ -1,6 +1,8 @@
 package com.augurit.aplanmis.common.mapper;
 
 import com.augurit.aplanmis.common.domain.AeaHiSolicit;
+import com.augurit.aplanmis.common.vo.solicit.AeaHiSolicitVo;
+import com.augurit.aplanmis.common.vo.solicit.QueryCondVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -32,4 +34,10 @@ public interface AeaHiSolicitMapper {
      * @throws Exception e
      */
     AeaHiSolicit getAeaHiSolicitBySolicitCode(@Param("solicitCode") String solicitCode) throws Exception;
+
+    /**
+     * @param condVo
+     * @return
+     */
+    List<AeaHiSolicitVo> listSolicit(QueryCondVo condVo) throws Exception;
 }
