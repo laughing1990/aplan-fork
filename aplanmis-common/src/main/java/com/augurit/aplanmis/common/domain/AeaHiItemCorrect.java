@@ -83,4 +83,5 @@ public class AeaHiItemCorrect implements Serializable {
     private String createrName;
     private String itemVerId;
     private List<AeaUnitInfo> unitInfos;
+    private List<AeaHiIteminst> aeaHiIteminstList;
 }
