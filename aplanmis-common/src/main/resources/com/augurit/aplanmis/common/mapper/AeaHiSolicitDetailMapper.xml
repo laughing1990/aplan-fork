@@ -24,6 +24,26 @@
     MODIFY_TIME  modifyTime
     </sql>
 
+    <sql id="allAlisColumns" >
+        SOLICIT_DETAIL_ID  solicitDetailId,
+        SOLICIT_ID  solicitId,
+        DETAIL_ORG_ID  detailOrgId,
+        DETAIL_ORG_NAME  detailOrgName,
+        ITEM_ID  itemId,
+        ITEM_VER_ID  itemVerId,
+        DETAIL_DUE_DAYS  detailDueDays,
+        DETAIL_REAL_DAYS  detailRealDays,
+        DETAIL_DAYS_UNIT  detailDaysUnit,
+        DETAIL_START_TIME  detailStartTime,
+        DETAIL_END_TIME  detailEndTime,
+        DETAIL_STATE  detailState,
+        IS_DELETED  isDeleted,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime
+    </sql>
+
 <!--2 根据主键ID查询单个实体 -->
 <select id="getAeaHiSolicitDetailById" resultType="AeaHiSolicitDetail" >
     select
@@ -32,6 +52,16 @@
     where    SOLICIT_DETAIL_ID = #{id}
     AND  IS_DELETED = '0'
 </select>
+
+    <!--2.1 根据SOLICIT_ID查询多个意见征求详情实体 -->
+    <select id="getAeaHiSolicitDetailBySolicitId" resultType="AeaHiSolicitDetail" >
+        select
+        <include refid="allAlisColumns"/>
+        from    AEA_HI_SOLICIT_DETAIL ahsd
+        LEFT JOIN AEA_HI_SOLICTI ahs ON ahsd.SOLICIT_ID = ahs.SOLICIT_ID
+        where    ahsd.SOLICIT_ID = #{solicitId}
+        AND  ahsd.IS_DELETED = '0'
+    </select>
 
 <!--3 根据条件查询实体list -->
     <select id="listAeaHiSolicitDetail" resultType="AeaHiSolicitDetail" >

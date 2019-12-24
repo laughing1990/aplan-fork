@@ -352,7 +352,38 @@ public class RestApproveServiceImpl implements RestApproveService {
         //建设单位信息
         applyDetailVo.setAeaUnitInfos(restApplyService.getAeaUnitInfosByProjInfoId(projInfoId,request));
         if (applyDetailVo.getAeaLinkmanInfoList()==null)applyDetailVo.setAeaHiIteminstList(new ArrayList<>());
+
+        //拼接并行申报
+        joinParallelApply(isSeriesApprove,applyinstId,applyinst.getIsTemporarySubmit(),applyDetailVo);
         return applyDetailVo;
+    }
+
+    private void joinParallelApply(String isSeriesApprove, String applyinstId,String isTemporarySubmit, ApplyDetailVo applyDetailVo) throws Exception {
+        if("0".equals(isSeriesApprove)){
+            List<MatinstVo> matList = applyDetailVo.getMatList();
+            List<ParallelApplyItemStateDetailVo> parallelApplyItemStateDetailVos=new ArrayList<>();
+            List<AeaHiApplyinst> list = aeaHiApplyinstService.getSeriesAeaHiApplyinstListByParentApplyinstId(applyinstId, isTemporarySubmit);
+            if(list.size()>0){
+                for (AeaHiApplyinst seriesApplyinst:list){
+                    ParallelApplyItemStateDetailVo parallelApplyItemStateDetailVo=new ParallelApplyItemStateDetailVo();
+                    parallelApplyItemStateDetailVo.setSeriesApplyinstId(seriesApplyinst.getApplyinstId());
+                    List<AeaHiIteminst> aeaHiIteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(seriesApplyinst.getApplyinstId(), null);
+                    List<Map<String, String>> stateList = aeaHiItemStateinstService.listSelectedAeaItemStateinstBySeriesinstIdOrApplyinstId(seriesApplyinst.getApplyinstId(), "");
+                    if(aeaHiIteminstList.size()>0){
+                        parallelApplyItemStateDetailVo.setIteminstId(aeaHiIteminstList.get(0).getIteminstId());
+                        parallelApplyItemStateDetailVo.setItemVerId(aeaHiIteminstList.get(0).getItemVerId());
+                        List<MatinstVo> matinstVoList =  getSeriesMatinstByIteminstId(aeaHiIteminstList.get(0).getIteminstId(),seriesApplyinst.getApplyinstId());
+                        if(matinstVoList.size()>0){
+                            matList.addAll(matinstVoList);
+                        }
+                    }
+                    parallelApplyItemStateDetailVo.setStateList(stateList);
+                    parallelApplyItemStateDetailVos.add(parallelApplyItemStateDetailVo);
+                }
+            }
+            applyDetailVo.setMatList(matList);
+            applyDetailVo.setParallelApplyItemStateDetailVoList(parallelApplyItemStateDetailVos);
+        }
     }
 
     private void setItemStateinstList(List<AeaHiIteminst> aeaHiIteminstList, String stageinstId) throws Exception {

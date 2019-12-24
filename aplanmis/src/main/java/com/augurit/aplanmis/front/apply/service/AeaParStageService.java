@@ -186,9 +186,6 @@ public class AeaParStageService {
             //applyinstIds = stageApplyDataVo.getApplyinstIds();
             for (String applyinstId : stageApplyDataVo.getApplyinstIds()) {
                 AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
-                if (!Status.OFF.equals(aeaHiApplyinst.getIsTemporarySubmit())) {
-                    aeaHiApplyinst.setIsTemporarySubmit(Status.OFF);
-                }
                 aeaHiApplyinst.setIsGreenWay(stageApplyDataVo.getIsGreenWay());
                 aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
                 ActStoAppinst actStoAppinst = new ActStoAppinst();
@@ -708,8 +705,6 @@ public class AeaParStageService {
             if (!"2".equals(aeaHiApplyinst.getIsTemporarySubmit())) {
                 aeaHiApplyinst.setIsTemporarySubmit(Status.ON);
             }
-
-            aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
             applyCommonService.clearHistoryInst(applyinstId);
 
             aeaHiParStageinst = aeaHiParStageinstService.getAeaHiParStageinstByApplyinstId(applyinstId);
@@ -719,6 +714,9 @@ public class AeaParStageService {
                     , ApplyType.UNIT.getValue(), branchOrgMap, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), Status.ON,null);
             applyinstId = aeaHiApplyinst.getApplyinstId();
         }
+        aeaHiApplyinst.setIsGreenWay(parallelStashVo.getIsGreenWay());
+        aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
+
         applyCommonService.bindApplyinstProj(projInfoId, applyinstId, SecurityContext.getCurrentUserId());
         if (aeaHiParStageinst == null) {
             aeaHiParStageinst = stashStage(applyinstId, stageId, themeVerId);

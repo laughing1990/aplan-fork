@@ -2,6 +2,7 @@ package com.augurit.aplanmis.front.apply.service;
 
 import com.alibaba.fastjson.JSON;
 import com.augurit.agcloud.bsc.util.UuidUtil;
+import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.CollectionUtils;
@@ -9,25 +10,8 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.admin.market.item.service.AeaItemRelevanceService;
 import com.augurit.aplanmis.admin.market.service.service.AeaImServiceService;
 import com.augurit.aplanmis.common.constants.ApplyState;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaHiReceive;
-import com.augurit.aplanmis.common.domain.AeaHiSmsInfo;
-import com.augurit.aplanmis.common.domain.AeaImProjPurchase;
-import com.augurit.aplanmis.common.domain.AeaImPurchaseinst;
-import com.augurit.aplanmis.common.domain.AeaImService;
-import com.augurit.aplanmis.common.domain.AeaItemBasic;
-import com.augurit.aplanmis.common.domain.AeaItemRelevance;
-import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
-import com.augurit.aplanmis.common.domain.AeaParStage;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.common.domain.AeaUnitInfo;
-import com.augurit.aplanmis.common.mapper.AeaHiApplyinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiReceiveMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiSmsInfoMapper;
-import com.augurit.aplanmis.common.mapper.AeaImProjPurchaseMapper;
-import com.augurit.aplanmis.common.mapper.AeaImPurchaseinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
-import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
+import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.admin.item.AeaItemBasicAdminService;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
@@ -35,12 +19,7 @@ import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.receive.ReceiveService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.utils.BusinessUtil;
-import com.augurit.aplanmis.front.apply.vo.ApplyinstIdVo;
-import com.augurit.aplanmis.front.apply.vo.PropulsionItemStateVo;
-import com.augurit.aplanmis.front.apply.vo.SeriesApplyDataPageVo;
-import com.augurit.aplanmis.front.apply.vo.SeriesApplyDataVo;
-import com.augurit.aplanmis.front.apply.vo.StageApplyDataPageVo;
-import com.augurit.aplanmis.front.apply.vo.StageApplyDataVo;
+import com.augurit.aplanmis.front.apply.vo.*;
 import com.augurit.aplanmis.supermarket.apply.vo.ImServiceItemPurchaseVo;
 import io.jsonwebtoken.lang.Assert;
 import lombok.extern.slf4j.Slf4j;
@@ -50,14 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -110,10 +82,27 @@ public class RestApplyService {
         String applyinstIdParam = seriesApplyDataPageVo.getApplyinstId();
         AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(seriesApplyDataPageVo.getItemVerId(), SecurityContext.getCurrentOrgId());
         SeriesApplyDataVo dataVo = seriesApplyDataPageVo.toSeriesApplyDataVo(aeaItemBasic.getAppId());
+        // 如果是打印回执进来的
+        if (StringUtils.isNotBlank(seriesApplyDataPageVo.getApplyinstId())) {
+            AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstMapper.getAeaHiApplyinstById(seriesApplyDataPageVo.getApplyinstId());
+            if (aeaHiApplyinst != null && "2".equals(aeaHiApplyinst.getIsTemporarySubmit())) {
+                dataVo.setIsJustApplyinst(Status.OFF);
+            }
+        }
         String applyinstId = aeaSeriesService.stageApplay(dataVo);
+
+        AeaHiApplyinst seriesApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+        seriesApplyinst.setIsTemporarySubmit(Status.OFF);
+        aeaHiApplyinstService.updateAeaHiApplyinst(seriesApplyinst);
+
         updateAeaSmsInfo(seriesApplyDataPageVo.getSmsInfoId(), new String[]{applyinstId});
         //保存受理回执，物料回执
-        if (StringUtils.isNotBlank(applyinstIdParam)) {
+        if (StringUtils.isNotBlank(applyinstId)) {
+            // 先删除以前的 receiveType=1, 2 的回执实例
+            List<AeaHiReceive> aeaHiReceives = aeaHiReceiveMapper.listReceiveByApplyinstIdAndTypes(new String[]{applyinstIdParam}, new String[]{"1", "2"});
+            if (CollectionUtils.isNotEmpty(aeaHiReceives)) {
+                aeaHiReceiveMapper.deleteAeaHiReceives(aeaHiReceives.stream().map(AeaHiReceive::getReceiveId).collect(Collectors.toList()));
+            }
             receiveService.saveReceive(new String[]{applyinstId}, new String[]{"1", "2"}, SecurityContext.getCurrentUserName(), "");
         }
         return applyinstId;
@@ -254,7 +243,19 @@ public class RestApplyService {
             applyinstIdVo.setApplyinstIds(applyinstIds);
         }
         if (null != applyinstIds) {
+            for (String applyinstId : applyinstIds) {
+                AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstMapper.getAeaHiApplyinstById(applyinstId);
+                if (!Status.OFF.equals(aeaHiApplyinst.getIsTemporarySubmit())) {
+                    aeaHiApplyinst.setIsTemporarySubmit(Status.OFF);
+                    aeaHiApplyinstMapper.updateAeaHiApplyinst(aeaHiApplyinst);
+                }
+            }
             updateAeaSmsInfo(stageApplyDataPageVo.getSmsInfoId(), applyinstIds);
+            // 先删除以前的 receiveType=1, 2 的回执实例
+            List<AeaHiReceive> aeaHiReceives = aeaHiReceiveMapper.listReceiveByApplyinstIdAndTypes(applyinstIds, new String[]{"1", "2"});
+            if (CollectionUtils.isNotEmpty(aeaHiReceives)) {
+                aeaHiReceiveMapper.deleteAeaHiReceives(aeaHiReceives.stream().map(AeaHiReceive::getReceiveId).collect(Collectors.toList()));
+            }
             // 保存回执
             String[] receiptTypes = {"1", "2"};
             receiveService.saveReceive(applyinstIds, receiptTypes, SecurityContext.getCurrentUserName(), stageApplyDataPageVo.getComments());

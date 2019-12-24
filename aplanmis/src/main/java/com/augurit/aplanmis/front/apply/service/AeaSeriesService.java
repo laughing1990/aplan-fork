@@ -16,41 +16,16 @@ import com.augurit.aplanmis.common.constants.ApplySource;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.constants.ApplyType;
 import com.augurit.aplanmis.common.constants.ItemStatus;
-import com.augurit.aplanmis.common.domain.AeaApplyinstForminst;
-import com.augurit.aplanmis.common.domain.AeaApplyinstProj;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaHiItemStateinst;
-import com.augurit.aplanmis.common.domain.AeaHiIteminst;
-import com.augurit.aplanmis.common.domain.AeaHiSeriesinst;
-import com.augurit.aplanmis.common.domain.AeaItemBasic;
-import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
-import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
-import com.augurit.aplanmis.common.domain.AeaParStage;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.common.mapper.AeaApplyinstForminstMapper;
-import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiItemStateinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
-import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
-import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
+import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.apply.ApplyCommonService;
-import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiItemStateinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiSeriesinstService;
-import com.augurit.aplanmis.common.service.instance.AeaLogApplyStateHistService;
+import com.augurit.aplanmis.common.service.instance.*;
 import com.augurit.aplanmis.common.service.item.AeaLogItemStateHistService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.process.AeaBpmProcessService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowService;
-import com.augurit.aplanmis.front.apply.vo.ApplyInstantiateResult;
-import com.augurit.aplanmis.front.apply.vo.BuildProjUnitVo;
-import com.augurit.aplanmis.front.apply.vo.ForminstVo;
-import com.augurit.aplanmis.front.apply.vo.SeriesApplyDataVo;
-import com.augurit.aplanmis.front.apply.vo.SeriesUnstashVo;
-import com.augurit.aplanmis.front.apply.vo.StashVo;
+import com.augurit.aplanmis.front.apply.vo.*;
 import org.flowable.engine.TaskService;
 import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,11 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -353,7 +324,7 @@ public class AeaSeriesService {
         String opuWinId = aeaServiceWindowService.getCurrentUserWindow() == null ? "" : aeaServiceWindowService.getCurrentUserWindow().getWindowId();
         AeaHiApplyinst seriesApplyinst;
         // 一张表单仅仅实例化了申报实例的情况
-        if (Status.ON.equals(seriesApplyDataVo.getIsJustApplyinst()) || StringUtils.isNotBlank(seriesApplyDataVo.getApplyinstId())) {
+        if (Status.ON.equals(seriesApplyDataVo.getIsJustApplyinst()) && StringUtils.isNotBlank(seriesApplyDataVo.getApplyinstId())) {
             seriesApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(seriesApplyDataVo.getApplyinstId());
             if (seriesApplyinst == null) {
                 throw new Exception("找不到申报实例 applyinstId: " + seriesApplyDataVo.getApplyinstId());
@@ -361,10 +332,6 @@ public class AeaSeriesService {
             // 暂存后申报, 先清空实例
             if (Status.ON.equals(seriesApplyinst.getIsTemporarySubmit()) || "2".equals(seriesApplyinst.getIsTemporarySubmit())) {
                 applyCommonService.clearHistoryInst(seriesApplyDataVo.getApplyinstId());
-                if (Status.ON.equals(seriesApplyinst.getIsTemporarySubmit())) {
-                    seriesApplyinst.setIsTemporarySubmit(Status.OFF);
-                    aeaHiApplyinstService.updateAeaHiApplyinst(seriesApplyinst);
-                }
             }
             if (StringUtils.isNotBlank(seriesApplyinst.getApplyinstState())) {
                 aeaLogApplyStateHistService.insertTriggerAeaLogApplyStateHist(seriesApplyinst.getApplyinstId(), null, appinstId, null, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), opuWinId);
@@ -390,7 +357,7 @@ public class AeaSeriesService {
             aeaHiSeriesinst = aeaHiSeriesinstService.createAeaHiSeriesinst(seriesApplyinstId, appinstId, seriesApplyDataVo.getIsParallel(), stageId);
             //2、事项实例
             aeaHiIteminst = aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), itemVerId, branchOrgMap, null, appinstId);
-        } else if ("2".equals(seriesApplyinst.getIsTemporarySubmit())) {
+        } else if ("2".equals(seriesApplyinst.getIsTemporarySubmit()) || Status.ON.equals(seriesApplyinst.getIsTemporarySubmit())) {
             aeaHiSeriesinst = seriesInst;
             aeaHiIteminst = aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), itemVerId, branchOrgMap, null, appinstId);
         } else {
@@ -518,8 +485,6 @@ public class AeaSeriesService {
             if (!"2".equals(aeaHiApplyinst.getIsTemporarySubmit())) {
                 aeaHiApplyinst.setIsTemporarySubmit(Status.ON);
             }
-            aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
-
             aeaHiSeriesinst = aeaHiSeriesinstService.getAeaHiSeriesinstByApplyinstId(applyinstId);
         } else {
             aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(ApplySource.WIN.getValue()
@@ -527,6 +492,9 @@ public class AeaSeriesService {
                     , ApplyState.RECEIVE_APPROVED_APPLY.getValue(), Status.ON,null);
             applyinstId = aeaHiApplyinst.getApplyinstId();
         }
+        aeaHiApplyinst.setIsGreenWay(seriesStashVo.getIsGreenWay());
+        aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
+
         applyCommonService.bindApplyinstProj(projInfoId, applyinstId, SecurityContext.getCurrentUserId());
         if (aeaHiSeriesinst == null) {
             // 预先生成流程模板实例ID

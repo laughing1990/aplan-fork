@@ -682,6 +682,7 @@ var vm = new Vue({
           vm.stateIds = res.content.stateIds;
           vm.approveOrgId = res.content.approveOrgId;
           vm.forminstVos = res.content.forminstVos;
+          vm.isGreenWay = res.content.aeaHiApplyinst.isGreenWay=='1'?true:false;
           vm.beforeCheck();
         } else {
           vm.$message.error(res.message || '获取暂存数据失败');
@@ -3694,7 +3695,6 @@ var vm = new Vue({
           _that.receiveList.map(function (item) {
             Vue.set(item, 'show', true);
           });
-        debugger;
           // 默认选择第一个回执
           _that.printReceive1(_that.receiveList[0].receiveList[0], 0, 0);
           //显示列表弹框
@@ -3776,9 +3776,8 @@ var vm = new Vue({
         _that.rootLinkmanInfoId = _that.applyPersonFrom.linkLinkmanId;
       }
       ;
-      if (_that.buttonStyle == 4) {
-        _that.IsJustApplyinst = 1;
-      }
+      _that.IsJustApplyinst = 1;
+
       //选择的情形
       var _isGreenWay = _that.isGreenWay==true?'1':'0';
       var parmas = {

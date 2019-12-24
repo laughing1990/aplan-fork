@@ -16,5 +16,7 @@ import java.util.List;
     public void updateAeaHiSolicitDetailUser(AeaHiSolicitDetailUser aeaHiSolicitDetailUser) throws Exception;
     public void deleteAeaHiSolicitDetailUser(@Param("id") String id) throws Exception;
     public List <AeaHiSolicitDetailUser> listAeaHiSolicitDetailUser(AeaHiSolicitDetailUser aeaHiSolicitDetailUser) throws Exception;
+    public List <AeaHiSolicitDetailUser> getAeaHiSolicitDetailUserBySolicitDetailId(@Param("solicitDetailId") String solicitDetailId) throws Exception;
+    public List <AeaHiSolicitDetailUser> getAeaHiSolicitDetailUserBySolicitId(@Param("solicitId") String solicitId) throws Exception;
     public AeaHiSolicitDetailUser getAeaHiSolicitDetailUserById(@Param("id") String id) throws Exception;
     }

@@ -607,8 +607,9 @@ public class ApproveService {
                         aeaHiItemInfoVo.setApplyUnit(applyProjLinkman.getLinkmanName());
                         aeaHiItemInfoVo.setApplyIDCard(applyProjLinkman.getLinkmanCertNo());
                     }
-                    AeaLinkmanInfo projLinkman = aeaLinkmanInfoService.getProjLinkman(applyinstId, projInfoId);
-                    if (projLinkman != null) {
+                    List<AeaLinkmanInfo> projLinkmans = aeaLinkmanInfoService.getProjLinkman(applyinstId, projInfoId);
+                    if (projLinkmans.size() > 0) {
+                        AeaLinkmanInfo projLinkman = projLinkmans.get(0);
                         aeaHiItemInfoVo.setContact(projLinkman.getLinkmanName());
                         aeaHiItemInfoVo.setContactIdNo(projLinkman.getLinkmanCertNo());
                         aeaHiItemInfoVo.setContactMobile(projLinkman.getLinkmanMobilePhone());
