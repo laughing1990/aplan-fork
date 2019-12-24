@@ -47,42 +47,42 @@ var userCenter = (function () {
                       select: false,
                     }]
                   },
-                    {
-                    name: '服务协同',
-                    open: true,
-                      icon:'icon-3',
-                    childList: [{
-                      name: '多评合一',
-                      value: 'fuxian1',
-                      type: 'fuxian',
-                      select: false,
-                      typeCode: '51',
-                    }, {
-                      name: '方案联审',
-                      value: 'fuxian2',
-                      type: 'fuxian',
-                      select: false,
-                      typeCode: '52',
-                    }, {
-                      name: '联合审图',
-                      value: 'fuxian3',
-                      type: 'fuxian',
-                      select: false,
-                      typeCode: '53',
-                    }, {
-                      name: '联合测绘',
-                      value: 'fuxian4',
-                      type: 'fuxian',
-                      select: false,
-                      typeCode: '54C',
-                    }, {
-                      name: '联合验收',
-                      value: 'fuxian5',
-                      type: 'fuxian',
-                      select: false,
-                      typeCode: '54Y',
-                    }]
-                },
+                //     {
+                //     name: '服务协同',
+                //     open: true,
+                //       icon:'icon-3',
+                //     childList: [{
+                //       name: '多评合一',
+                //       value: 'fuxian1',
+                //       type: 'fuxian',
+                //       select: false,
+                //       typeCode: '51',
+                //     }, {
+                //       name: '方案联审',
+                //       value: 'fuxian2',
+                //       type: 'fuxian',
+                //       select: false,
+                //       typeCode: '52',
+                //     }, {
+                //       name: '联合审图',
+                //       value: 'fuxian3',
+                //       type: 'fuxian',
+                //       select: false,
+                //       typeCode: '53',
+                //     }, {
+                //       name: '联合测绘',
+                //       value: 'fuxian4',
+                //       type: 'fuxian',
+                //       select: false,
+                //       typeCode: '54C',
+                //     }, {
+                //       name: '联合验收',
+                //       value: 'fuxian5',
+                //       type: 'fuxian',
+                //       select: false,
+                //       typeCode: '54Y',
+                //     }]
+                // },
                   {
                     name: '申报管理',
                     open: true,

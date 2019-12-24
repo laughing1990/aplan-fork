@@ -2373,6 +2373,11 @@ input[type="number"] {
     line-height: 50px;
     min-height: 40px;
 }
+.cancel-app-dialog .el-input.is-disabled .el-input__inner{
+    background-color:#FFF;
+    border-color: #DCDFE6;
+    color: #606266;
+}
 /*撤件 end*/
 /*联系人新增编辑弹窗 start*/
 .dg-modal-add-linkmain-info .el-select {
