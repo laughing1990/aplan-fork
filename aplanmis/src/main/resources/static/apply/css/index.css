@@ -2036,6 +2036,21 @@ textarea {
 .el-form.so-form-c{
     padding: 15px 26px 0 0;
 }
+.so-checked-org{
+    margin-bottom: 10px;
+    line-height: 20px;
+    padding: 9px 30px 9px 18px;
+    border: 1px solid #CEDAE8;
+    border-radius: 4px;
+    position: relative;
+}
+.so-checked-org i{
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    margin-top: -6px;
+    cursor: pointer;
+}
 /*意见征求 end*/
 
 
