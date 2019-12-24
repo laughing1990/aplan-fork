@@ -314,7 +314,7 @@
             AND IS_MILESTONE_ITEM = '1'
     </select>
     
-    <select id="findEndIteminstByProjInfoAndItemId" resultType="AeaHiIteminst">
+    <select id="findEndIteminstByProjInfoAndItemIds" resultType="AeaHiIteminst">
         SELECT
         <include refid="aea_hi_iteminst_cloums">
             <property name="alias" value="ahi_123"/>
