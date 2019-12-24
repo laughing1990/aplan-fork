@@ -1,0 +1,304 @@
+<div id="matCompletionDetail" class="matCompletionDetail">
+  <div class="return-list">
+    <el-button @click="returnPageList">返回</el-button>
+  </div>
+  <h4 class="mt40 collapse-item_zl">基本信息
+  </h4>
+  <div class="mt20 mb20 module-content">
+    <table class="nor-table" border="0" cellpadding="0" cellspacing="0">
+      <tbody>
+        <tr>
+          <th>办件流水号</th>
+          <td>{{supplemetForm.applyinstCode || '暂无'}}</td>
+          <th>项目编号</th>
+          <td>{{supplemetForm.localCode || '暂无'}}</td>
+        </tr>
+        <tr>
+          <th>项目名称</th>
+          <td>{{supplemetForm.projInfoName || '暂无'}}</td>
+          <th>客户名称</th>
+          <td>{{supplemetForm.owner}}</td>
+        </tr>
+        <tr>
+          <th>补全截止日期</th>
+          <td>{{$options.filters.formatDate(supplemetForm.correctDueTime)}}</td>
+          <th>补全天数(工作日)</th>
+          <td>{{supplemetForm.correctDueDays || '暂无'}}</td>
+        </tr>
+        <tr>
+          <th>事项名称</th>
+          <td>{{supplemetForm.iteminstName || '暂无'}}</td>
+          <th>部门名称</th>
+          <td>{{supplemetForm.chargeOrgName || '暂无'}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <h4 class="mt40 collapse-item_zl">材料补全</i>
+  </h4>
+  <el-form :rules="materialListForm.rules" :model="materialListForm" ref="materialListForm" class="material-form">
+    <p class="ye-notice" style="line-height: 24px;margin-bottom: 20px;"><i
+        class="el-icon-warning-outline"></i>操作指引：</br>
+      原件、复印件请按照缺失份数准备材料，前往<span
+        style="color: red;">{{supplemetForm.regionName}}政务办事大厅窗口</span>办理补全。材料补完后方可点击【补全】按钮，否则只能【暂存】操作。
+    </p>
+    <!-- test -->
+    <el-table :data="materialListForm.materialList" row-key="matId" style="width: 100%" border class="my-el-table"
+      :header-cell-style="{background:'#f7f8fa'}">
+      <el-table-column align="center" label="序号" width="80">
+        <template slot-scope="scope">
+          <span>{{scope.$index+1}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="matinstName" label="材料名称" align="left">
+      </el-table-column>
+      <el-table-column label="补全要点" width="100" align="center">
+        <template slot-scope="scope">
+          <el-tooltip class="my-el-tooltip" effect="dark" placement="top">
+            <div class="white-wrap lineh15" slot="content">{{scope.row.reviewKeyPoints || '无'}}</div>
+            <i class="el-icon-info"></i>
+          </el-tooltip>
+        </template>
+      </el-table-column>
+      <el-table-column label="类型" width="80" align="center">
+        <template slot-scope="scope">
+          <div class="cell-div" v-if="scope.row.paperDueIninstId">原件</div>
+          <div class="cell-div" v-if="scope.row.copyDueIninstId">复印件</div>
+          <div class="cell-div" v-if="scope.row.attDueIninstId">电子件</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="应收" width="80" align="center">
+        <template slot-scope="scope">
+          <div class="cell-div" v-if="scope.row.paperDueIninstId">{{scope.row.paperCount || '0'}}</div>
+          <div class="cell-div" v-if="scope.row.copyDueIninstId">{{scope.row.copyCount || '0'}}</div>
+          <div class="cell-div" v-if="scope.row.attDueIninstId">{{scope.row.isNeedAtt? '必须': '非必须'}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="已收" width="100" align="center">
+        <template slot-scope="scope">
+          <div class="cell-div" v-if="scope.row.paperDueIninstId">
+            <el-form-item :prop="'materialList.' + scope.$index + '.realPaperCount'"
+              :rules='(scope.row.paperDueIninstId)?materialListForm.rules.realPaperCount: []'
+              v-if="scope.row.paperDueIninstId">
+              <!--<el-input size="mini" v-model="scope.row.realPaperCount">-->
+              <!--</el-input>-->
+              <span>{{scope.row.realPaperCount || '0'}}</span>
+            </el-form-item>
+            <span v-else style="line-height: 42px">无</span>
+          </div>
+          <div class="cell-div" v-if="scope.row.copyDueIninstId">
+            <el-form-item :prop="'materialList.' + scope.$index + '.realCopyCount'"
+              :rules='(scope.row.copyDueIninstId)?materialListForm.rules.realCopyCount: []'
+              v-if="scope.row.copyDueIninstId">
+              <!--<el-input size="mini" v-model="scope.row.realCopyCount">-->
+              <!--</el-input>-->
+              <span>{{scope.row.realCopyCount || '0'}}</span>
+            </el-form-item>
+            <span v-else style="line-height: 42px">无</span>
+          </div>
+          <div class="cell-div" v-if="scope.row.attDueIninstId">
+            <el-form-item :prop="'materialList.' + scope.$index + '.attCount'"
+              :rules="(scope.row.isNeedAtt && scope.row.attRealIninstId)?materialListForm.rules.attCount : []"
+              v-if="scope.row.attMatinstId">
+              <span>{{scope.row.attCount || '0'}}</span>
+            </el-form-item>
+            <span v-else style="line-height: 42px">无</span>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="补全意见" align="center" width="200">
+        <template slot-scope="scope">
+          <div class="cell-div" v-if="scope.row.paperDueIninstId">
+            <p>{{scope.row.paperDueIninstOpinion || '暂无'}}</p>
+          </div>
+          <div class="cell-div" v-if="scope.row.copyDueIninstId">
+            <p>{{scope.row.copyDueIninstOpinion || '暂无'}}</p>
+          </div>
+          <div class="cell-div" v-if="scope.row.attDueIninstId">
+            <p>{{scope.row.attDueIninstOpinion || '暂无'}}</p>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="操作" width="100">
+        <template slot-scope="scope">
+          <div class="cell-div" v-if="scope.row.paperDueIninstId">
+            <p>/</p>
+          </div>
+          <div class="cell-div" v-if="scope.row.copyDueIninstId">
+            <p>/</p>
+          </div>
+          <div class="cell-div att-btn-opt" v-if="scope.row.attDueIninstId">
+            <el-button size="mini" type="primary" @click="showFileListDialog(scope.row)">查看</el-button>
+            <el-button size="mini" type="success" @click="showUploadWindow(scope.row,scope.$index)">上传</el-button>
+            <!--              <el-button v-if="scope.row.matProp=='c'" class="mt10 ml0" size="mini" type="success" @click="showUploadWindow(scope.row,scope.$index,'certList')">证照库</el-button>-->
+            <!--              <el-button v-if="scope.row.matProp=='f'" class="mt10 ml0" size="mini" type="success" @click="showOneFormDialog1(scope.row)">填写</el-button>-->
+          </div>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <el-form-item class="fill-item mt20" label="备注：">
+      <el-input type="textarea" :disabled="true" v-model="materialListForm.materialSupplementRemark">
+      </el-input>
+    </el-form-item>
+  </el-form>
+  <div class="footer-stage-btn" style="text-align: center;">
+    <el-button class="mt20" @click="saveMaterialList('6')" style="width: 120px;">暂存</el-button>
+    <el-button class="mt20" type="primary" @click="saveMaterialList('7')" style="width: 120px;">补全</el-button>
+  </div>
+
+  <!-- 材料补全列表电子件附件的dialog -->
+  <el-dialog title="文件列表" :visible.sync="fileListDialog" @closed="uploadAttRow" width="1000px">
+    <el-button class="ml20" size="mini" type="danger" @click="delFileForMaterial('batch')">删除</el-button>
+    <el-table :data="enclosureListForMaterial" class="mt20" style="width: 100%;"
+      :header-cell-style="{background:'#f7f8fa'}" @selection-change="handleSelectionChangeForMaterial">
+      <el-table-column type="selection" width="55">
+      </el-table-column>
+      <el-table-column type="index" width="60" label="序号">
+      </el-table-column>
+      <el-table-column prop="fileName" label="文件名称">
+      </el-table-column>
+      <el-table-column label="上传时间">
+        <template slot-scope="scope">{{scope.row.updateTime | formatDate('yyyy-MM-dd')}}</template>
+      </el-table-column>
+      <el-table-column label="操作" width="100" align="center">
+        <template slot-scope="scope">
+          <span class="file-icon-btn" style="display: block">
+            <span title="预览" class="el-icon-search" @click="filePreview(scope.row)"></span>
+            <span title="删除" class="el-icon-delete" @click="delFileForMaterial(scope.row.fileId)"></span>
+          </span>
+        </template>
+      </el-table-column>
+    </el-table>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="fileListDialog = false">关 闭</el-button>
+    </span>
+  </el-dialog>
+
+  <el-dialog class="upload-flie-dialog" title="材料上传" :visible.sync="showUploadWindowFlag" @closed="uploadTableData=[]"
+    v-loading="loadingFileWin" top="50px" width="1200px">
+    <p class="parallel-appr-title al"><i class="ag ag-warn-circle"></i> 材料附件单次上传最大为100M，总云盘不超过10G。</p>
+    <h4 class="mt20 dia-mat-name">{{selMatRowDataInd+1 }}.{{ selMatRowData.matinstName}}</h4>
+    <div class="upload-file-content clearfix" element-loading-text="文件上传中"
+      element-loading-background="rgba(0, 0, 0, 0.3)" element-loading-spinner="el-icon-loading">
+      <div class="file-content-left fl" v-loading="mySpaceLoading">
+        <el-tabs v-model="fileSpaceActive" type="card" @tab-click="fileSpaceTabClick">
+          <el-tab-pane label="我的材料" name="myMats">
+            <div class="search-mat">
+              <el-input v-model="myMatsKeyword" placeholder="搜索你要找的材料" @keyup.enter.native="getMyMatsList"></el-input>
+              <el-button type="primary" icon="icon ag ag-search" @click="getMyMatsList()"> 搜索</el-button>
+            </div>
+            <el-table :data="myMatsList" class="mt20" :style="{height:(curHeight-555)+'px',overflow: 'auto'}">
+              <el-table-column prop="fileName" label="材料名称"></el-table-column>
+              <el-table-column prop="fileName" label="日期" width="140">
+                <template slot-scope="scope">
+                  <span>{{$options.filters.formatDate(scope.row.updateTime)}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="选择" align="center" width="55">
+                <template slot-scope="scope">
+                  <el-checkbox v-model="scope.row.checked" :checked="scope.row.checked"
+                    @change="function(val){changeMyMatSel(val,scope.row)}"></el-checkbox>
+                </template>
+              </el-table-column>
+            </el-table>
+            <el-pagination @size-change="myMatSizeChange" @current-change="myMatCurrentChange" :pager-count="5"
+              :current-page="myMatsPageNum" :page-sizes="[5,10, 20, 50, 100]" :page-size="myMatsPageSize"
+              :total="myMatsTotal" layout="sizes, prev, pager, next, jumper">
+            </el-pagination>
+          </el-tab-pane>
+          <el-tab-pane label="我的云盘" name="myDir">
+            <div class="search-mat">
+              <el-input v-model="myDirKeyword" placeholder="搜索你要找的材料" @keyup.enter.native="getMyDirsListByKeyword">
+              </el-input>
+              <el-button type="primary" icon="icon ag ag-search" @click="getMyDirsListByKeyword()"> 搜索</el-button>
+            </div>
+            <el-table :data="myDirsList" row-key="id" lazy :load="getMyDirsList"
+              :tree-props="{children: 'children', hasChildren: 'hasChildren'}" class="mt20 my-dir-table"
+              :style="{height:(curHeight-515)+'px',overflow: 'auto'}">
+              <el-table-column label="材料名称">
+                <template slot-scope="scope">
+                  <span v-if="scope.row.hasCheck==true" class="ellipsis dir-file-name" :title="scope.row.attName">
+                    <i class="ag ag-fileType-doc"
+                      :class="'ag-filetype-'+getFileType(scope.row.attName)"></i>{{scope.row.attName}}
+                  </span>
+                  <span v-else class="ellipsis dir-file-name">
+                    <i class="ag ag-folder-open-fill"></i>{{scope.row.dirName}}
+                  </span>
+                </template>
+              </el-table-column>
+              <el-table-column label="日期" width="140">
+                <template slot-scope="scope">
+                  <span>{{$options.filters.formatDate(scope.row.createTime)}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="选择" align="center" width="55">
+                <template slot-scope="scope">
+                  <el-checkbox v-if="scope.row.hasCheck==true" v-model="scope.row.checked" :checked="scope.row.checked"
+                    @change="function(val){changeMyMatSel(val,scope.row,'dir')}"></el-checkbox>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+      <div class="file-content-right fr" v-loading="selMatLoading">
+        <el-tabs v-model="fileSelActive" type="card">
+          <el-tab-pane :label="'已上传的文件（'+uploadFilesCount+'）'" name="myUploadMat">
+            <el-table class="upload-file-list" :data="uploadTableData"
+              :style="{height:(curHeight-500)+'px',overflow: 'auto'}">
+              <el-table-column type="index" label="序号" width="50" align="center"></el-table-column>
+              <el-table-column prop="fileName" label="文件名称"></el-table-column>
+              <!--<el-table-column prop="" label="材料来源" width="80"></el-table-column>-->
+              <el-table-column label="操作" align="center" width="100">
+                <template slot-scope="scope">
+                  <a :href="ctx+'rest/file/applydetail/mat/download/'+scope.row.fileId"><span title="下载"
+                      class="file-btn el-icon-download"></span></a>
+                  <span title="预览" class="file-btn el-icon-search" @click="filePreview(scope.row)"></span>
+                  <span title="删除" class="file-btn el-icon-delete"
+                    @click="delSelectFileCom(selMatRowData,scope.row,scope.$index)"></span>
+                </template>
+              </el-table-column>
+            </el-table>
+            <div class="file-opt-btn">
+              <el-upload ref="uploadFileWin" class="upload-s-file" multiple :action="ctx+'rest/user/att/upload'"
+                :show-file-list="false" :http-request="debounceHandler" :file-list="fileList">
+                <el-button slot="trigger" type="primary">本地上传</el-button>
+              </el-upload>
+            </div>
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+    </div>
+    <div slot="footer" class="dialog-footer clearfix">
+      <div class="fl">
+        <el-button type="primary" :disabled="selMatRowDataInd<=0" plain @click="changeRowDataSel('prev')">上一个
+        </el-button>
+        <el-button type="primary" :disabled="selMatRowDataInd>=(allMatsTableData.length-1)" plain
+          @click="changeRowDataSel('next')">下一个</el-button>
+      </div>
+      <div class="fr">
+        <el-button @click="showUploadWindowFlag = false">关 闭</el-button>
+      </div>
+    </div>
+  </el-dialog>
+
+  <!--  材料一张表单  start-->
+  <el-dialog @closed="uploadPercentage=0;progressDialogVisible=false" class="show-one-form" :title="matformNameTitle"
+    width="750px" :visible.sync="matFormDialogVisible">
+    <div>
+      <div id="matFormContent"></div>
+    </div>
+  </el-dialog>
+  <!--  材料一张表单  end-->
+
+  <!--  进度条  start-->
+  <el-dialog class="show-loading-prog" fullscreen :show-close="false" :close-on-press-escape="false"
+    :close-on-click-modal="false" :visible.sync="progressDialogVisible">
+    <el-progress type="circle" :width="110" :stroke-width="10" :status="progressStus" :percentage="uploadPercentage">
+    </el-progress>
+  </el-dialog>
+</div>
+
+<script src="../../../static/mall/js/userCenter/components/matCompletionDetail.js"
+  th:src="@{/mall/js/userCenter/components/matCompletionDetail.js}" type="text/javascript"></script>

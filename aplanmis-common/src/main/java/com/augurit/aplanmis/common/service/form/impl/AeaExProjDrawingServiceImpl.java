@@ -1,6 +1,12 @@
 package com.augurit.aplanmis.common.service.form.impl;
+import com.augurit.agcloud.bpm.admin.sto.service.impl.AbstractFormDataOptManager;
+import com.augurit.agcloud.bpm.common.constant.EDataOpt;
+import com.augurit.agcloud.bpm.common.domain.ActStoForm;
+import com.augurit.agcloud.bpm.common.domain.ActStoForminst;
+import com.augurit.agcloud.bpm.common.domain.vo.FormDataOptResult;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaExProjDrawing;
 import com.augurit.aplanmis.common.mapper.AeaExProjDrawingMapper;
 import com.augurit.aplanmis.common.service.form.AeaExProjDrawingService;
@@ -21,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 */
 @Service
 @Transactional
-public class AeaExProjDrawingServiceImpl implements AeaExProjDrawingService {
+public class AeaExProjDrawingServiceImpl extends AbstractFormDataOptManager implements AeaExProjDrawingService {
 
     private static Logger logger = LoggerFactory.getLogger(AeaExProjDrawingServiceImpl.class);
 
@@ -33,6 +39,8 @@ public class AeaExProjDrawingServiceImpl implements AeaExProjDrawingService {
         aeaExProjDrawing.setCreateTime(new Date());
         aeaExProjDrawing.setRootOrgId(SecurityContext.getCurrentOrgId());
         aeaExProjDrawingMapper.insertAeaExProjDrawing(aeaExProjDrawing);
+        if (StringUtils.isBlank(aeaExProjDrawing.getFormId())) throw new Exception("缺少formId");
+        this.formSave(aeaExProjDrawing.getFormId(), aeaExProjDrawing.getDrawingId(), EDataOpt.INSERT.getOpareteType(), null);
     }
     public void updateAeaExProjDrawing(AeaExProjDrawing aeaExProjDrawing) throws Exception{
         aeaExProjDrawingMapper.updateAeaExProjDrawing(aeaExProjDrawing);
@@ -58,6 +66,22 @@ public class AeaExProjDrawingServiceImpl implements AeaExProjDrawingService {
         List<AeaExProjDrawing> list = aeaExProjDrawingMapper.listAeaExProjDrawing(aeaExProjDrawing);
         logger.debug("成功执行查询list！！");
         return list;
+    }
+
+    @Override
+    public FormDataOptResult doformSave(String formId, String metaTableId, Integer opType, Object dataEntity) throws Exception {
+        FormDataOptResult result = new FormDataOptResult();
+        result.setSuccess(true);
+        ActStoForminst actStoForminst = new ActStoForminst();
+        actStoForminst.setFormId(formId);
+        actStoForminst.setFormPrimaryKey(metaTableId);
+        result.setActStoForminst(actStoForminst);
+        return result;
+    }
+
+    @Override
+    public FormDataOptResult doformDelete(ActStoForm formVo, Object dataEntity) throws Exception {
+        return null;
     }
 }
 

@@ -43,4 +43,9 @@ public class AeaCertiVo implements Serializable {
     private String govOrgNameSite; // (核发机关)
     @DateTimeFormat(pattern="yyyy-MM-dd")
     private java.util.Date publishTimeSite; // (核发日期)
+
+    //扩展字段
+    private String formId;
+
+
 }

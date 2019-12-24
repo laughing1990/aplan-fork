@@ -335,4 +335,13 @@
         </sql>
     </changeSet>
 
+    <changeSet id="201912241653" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `bsc_dic_code_type` (`TYPE_ID`, `TYPE_CODE`, `TYPE_NAME`, `IS_TREE`, `IS_ACTIVE`, `TYPE_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('c4230b57-c869-49c0-8a3c-0ff8ff67fea6', 'SOLICIT_BUS_TYPE', '意见征求类型', '0', '1', NULL, NULL, '2019-12-24 09:34:02', NULL, '2019-12-24 09:34:02', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('1f3c3344-36dc-4d85-92db-53960b184082', 'c4230b57-c869-49c0-8a3c-0ff8ff67fea6', 'LHPS', '联合评审', '1', '1', '', NULL, NULL, '0', NULL, NULL, '2019-12-24 09:34:02', NULL, '2019-12-24 09:37:45', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('25113be4-13e6-46c9-9697-3ec59321f285', 'c4230b57-c869-49c0-8a3c-0ff8ff67fea6', 'YCZX', '一次征询', '1', '2', '', NULL, NULL, '0', NULL, NULL, '2019-12-24 09:34:02', NULL, '2019-12-24 09:38:28', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('7cb36f8e-168c-47f1-b35b-f8c7f4106f7c', 'c4230b57-c869-49c0-8a3c-0ff8ff67fea6', 'YJZQ', '意见征求', '1', '3', '', NULL, '0', '0', NULL, NULL, '2019-12-24 09:39:43', NULL, '2019-12-24 09:39:43', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

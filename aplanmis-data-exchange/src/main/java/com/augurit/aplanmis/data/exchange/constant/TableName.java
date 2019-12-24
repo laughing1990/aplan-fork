@@ -24,8 +24,10 @@ public enum TableName implements BaseEnum<EtlError, String> {
     SPGL_XMSPSXPFWJXXB(TableNameConstant.SPGL_XMSPSXPFWJXXB, StepNameConstant.OFFICIAL_DOC_STEP),
     SPGL_DFGHKZXXXB(TableNameConstant.SPGL_DFGHKZXXXB, StepNameConstant.PLAN_CONTROL_LINE_STEP),
     SPGL_XMQQYJXXB(TableNameConstant.SPGL_XMQQYJXXB, StepNameConstant.PRE_IDEA_STEP),
-    SPGL_XMYDHXJZXXB(TableNameConstant.SPGL_XMYDHXJZXXB, StepNameConstant.LAND_RED_LINE_STEP);
-
+    SPGL_XMYDHXJZXXB(TableNameConstant.SPGL_XMYDHXJZXXB, StepNameConstant.LAND_RED_LINE_STEP),
+    SPGL_XMSPSXBLTBCXXXB(TableNameConstant.SPGL_XMSPSXBLTBCXXXB, StepNameConstant.ITEM_SPECIAL_STEP),
+    SPGL_ZJFWSXBLXXB(TableNameConstant.SPGL_ZJFWSXBLXXB, StepNameConstant.PROJ_PURCHASE_STEP),
+    SPGL_ZJFWSXBLGCXXB(TableNameConstant.SPGL_ZJFWSXBLGCXXB, StepNameConstant.PROJ_PURCHASE_OPINION_STEP);
     private String name;
     private String value;
 

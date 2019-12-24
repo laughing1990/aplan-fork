@@ -5270,7 +5270,7 @@
         </where>
     </select>
 
-    <!--根据查询条件查询中介服务事项待上传服务结果列表-->
+    <!--窗口人员查询撤件申请待办列表-->
     <select id="listWaitCancelApplyInfo" resultType="com.augurit.aplanmis.common.vo.conditional.TaskInfo">
         SELECT
             *

@@ -11,10 +11,82 @@ import java.util.List;
 */
 public interface AeaSolicitOrgService {
 
-     void saveAeaSolicitOrg(AeaSolicitOrg aeaSolicitOrg) ;
-     void updateAeaSolicitOrg(AeaSolicitOrg aeaSolicitOrg) ;
-     void deleteAeaSolicitOrgById(String id) ;
-     PageInfo<AeaSolicitOrg> listAeaSolicitOrg(AeaSolicitOrg aeaSolicitOrg, Page page) ;
-     AeaSolicitOrg getAeaSolicitOrgById(String id) ;
-     List<AeaSolicitOrg> listAeaSolicitOrg(AeaSolicitOrg aeaSolicitOrg) ;
+     /**
+      * 保存
+      *
+      * @param aeaSolicitOrg
+      */
+     void saveAeaSolicitOrg(AeaSolicitOrg aeaSolicitOrg);
+
+     /**
+      * 更新
+      *
+      * @param aeaSolicitOrg
+      */
+     void updateAeaSolicitOrg(AeaSolicitOrg aeaSolicitOrg);
+
+     /**
+      * 删除
+      *
+      * @param id
+      */
+     void deleteAeaSolicitOrgById(String id);
+
+     /**
+      * 批量删除
+      *
+      * @param ids
+      */
+     void batchDelSolicitOrgByIds(String[] ids);
+
+     /**
+      * 分页获取
+      *
+      * @param aeaSolicitOrg
+      * @param page
+      * @return
+      */
+     PageInfo<AeaSolicitOrg> listAeaSolicitOrg(AeaSolicitOrg aeaSolicitOrg, Page page);
+
+     /**
+      * 通过id获取
+      *
+      * @param id
+      * @return
+      */
+     AeaSolicitOrg getAeaSolicitOrgById(String id);
+
+
+     /**
+      * 通过id获取,并获取组织信息
+      *
+      * @param id
+      * @return
+      */
+     AeaSolicitOrg getSolicitOrgRelOrgInfoById(String id);
+
+     /**
+      * 获取列表不携带组织信息
+      *
+      * @param aeaSolicitOrg
+      * @return
+      */
+     List<AeaSolicitOrg> listAeaSolicitOrg(AeaSolicitOrg aeaSolicitOrg);
+
+     /**
+      * 分页获取列表携带组织信息
+      *
+      * @param aeaSolicitOrg
+      * @param page
+      * @return
+      */
+     PageInfo<AeaSolicitOrg> listAeaSolicitOrgRelOrgInfo(AeaSolicitOrg aeaSolicitOrg,Page page);
+
+     /**
+      * 获取列表携带组织信息
+      *
+      * @param aeaSolicitOrg
+      * @return
+      */
+     List<AeaSolicitOrg> listAeaSolicitOrgRelOrgInfo(AeaSolicitOrg aeaSolicitOrg);
 }

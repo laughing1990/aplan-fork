@@ -429,15 +429,13 @@ and ahic_123.creater = #{currentUserId}
 
     <sql id="searchMatCompletByUser">
         SELECT
-        '1' as isCorrect,
-        case ahap_123.IS_SERIES_APPROVE WHEN '1' THEN '单项' ELSE '并联' end AS isSeriesApprove,
+        '0' as isCorrect,
+        ahap_123.IS_SERIES_APPROVE AS isSeriesApprove,
         ahap_123.APPLYINST_ID  AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
         API.PROJ_NAME AS projName,
         API.LOCAL_CODE AS localCode,
         API.GCBM AS gcbm,
-        '' as stageName,
-        '' as iteminstName,
         aps_123.STAGE_NAME AS itemStageName,
         theme.THEME_NAME AS themeName,
         ahac_123.APPLYINST_CORRECT_ID as applyinstCorrectAndSuppleId
@@ -470,15 +468,13 @@ and ahic_123.creater = #{currentUserId}
 
 
         SELECT
-        '1' as isCorrect,
-        case ahap_123.IS_SERIES_APPROVE WHEN '1' THEN '单项' ELSE '并联' end AS isSeriesApprove,
+        '0' as isCorrect,
+        ahap_123.IS_SERIES_APPROVE AS isSeriesApprove,
         ahap_123.APPLYINST_ID  AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
         API.PROJ_NAME AS projName,
         API.LOCAL_CODE AS localCode,
         API.GCBM AS gcbm,
-        '' as stageName,
-        '' as iteminstName,
         aps_123.STAGE_NAME AS itemStageName,
         theme.THEME_NAME AS themeName,
         ahac_123.APPLYINST_CORRECT_ID as applyinstCorrectAndSuppleId
@@ -509,15 +505,13 @@ and ahic_123.creater = #{currentUserId}
 
 
         SELECT
-        '1' as isCorrect,
-        case ahap_123.IS_SERIES_APPROVE WHEN '1' THEN '单项' ELSE '并联' end AS isSeriesApprove,
+        '0' as isCorrect,
+        ahap_123.IS_SERIES_APPROVE isSeriesApprove,
         ahap_123.APPLYINST_ID  AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
         API.PROJ_NAME AS projName,
         API.LOCAL_CODE AS localCode,
         API.GCBM AS gcbm,
-        '' as stageName,
-        '' as iteminstName,
         ahi_123.ITEMINST_NAME AS itemStageName,
         apt.THEME_NAME AS themeName,
         ahac_123.APPLYINST_CORRECT_ID as applyinstCorrectAndSuppleId
@@ -547,15 +541,13 @@ and ahic_123.creater = #{currentUserId}
         UNION
 
         SELECT
-        '1' as isCorrect,
-        case ahap_123.IS_SERIES_APPROVE WHEN '1' THEN '单项' ELSE '并联' end AS isSeriesApprove,
+        '0' as isCorrect,
+        ahap_123.IS_SERIES_APPROVE isSeriesApprove,
         ahap_123.APPLYINST_ID  AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
         API.PROJ_NAME AS projName,
         API.LOCAL_CODE AS localCode,
         API.GCBM AS gcbm,
-        '' as stageName,
-        '' as iteminstName,
         ahi_123.ITEMINST_NAME AS itemStageName,
         apt.THEME_NAME AS themeName,
         ahac_123.APPLYINST_CORRECT_ID as applyinstCorrectAndSuppleId
@@ -586,16 +578,14 @@ and ahic_123.creater = #{currentUserId}
 
     <sql id="searchStayMatCorrectListByCurrentUser">
         SELECT
-        '0' as isCorrect,
-        '并联' isSeriesApprove,
+        '1' as isCorrect,
+        '0' isSeriesApprove,
         ''  AS applyinstId,
         ahap_123.APPLYINST_CODE applyinstCode,
         temp1.PROJ_NAME projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        aps_123.STAGE_NAME stageName,
-        ahi_123.ITEMINST_NAME iteminstName,
-        '' AS itemStageName,
+        aps_123.STAGE_NAME as itemStageName,
         theme.THEME_NAME themeName,
         ahic_123.CORRECT_ID as applyinstCorrectAndSuppleId
         FROM
@@ -662,16 +652,14 @@ and ahic_123.creater = #{currentUserId}
         </if>
         UNION
         SELECT
-        '0' as isCorrect,
-        '单项' isSeriesApprove,
+        '1' as isCorrect,
+        '1' isSeriesApprove,
         ''  AS applyinstId,
         ahap_123.APPLYINST_CODE applyinstCode,
         temp1.PROJ_NAME projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        NULL AS STAGE_NAME,
-        ahi_123.ITEMINST_NAME iteminstName,
-        '' AS itemStageName,
+        ahi_123.ITEMINST_NAME as itemStageName,
         temp1.THEME_NAME themeName,
         ahic_123.CORRECT_ID as applyinstCorrectAndSuppleId
         FROM

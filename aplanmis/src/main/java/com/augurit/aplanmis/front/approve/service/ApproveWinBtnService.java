@@ -134,9 +134,16 @@ public class ApproveWinBtnService {
 
         String applyStatus = ApplyState.valueOf(applyState).getValue();
         String opuWinId = aeaServiceWindowService.getCurrentUserWindow() == null ? "" : aeaServiceWindowService.getCurrentUserWindow().getWindowId();
-        //更新申请状态及维护状态历史
-        aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(applyinstId, sendObject.getTaskId(), appinsts.get(0).getAppinstId(), applyStatus, opuWinId);
 
+        AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+        if (aeaHiApplyinst == null) throw new Exception("找不到申请实例信息！");
+        //如果该件是撤件已受理状态，则状态改为撤件办结
+        if (ApplyState.WITHDRAWAL_ACCEPTED.getValue().equals(aeaHiApplyinst.getApplyinstState())) {
+            aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(applyinstId, sendObject.getTaskId(), appinsts.get(0).getAppinstId(), ApplyState.WITHDRAWAL_COMPLETED.getValue(), opuWinId);
+        } else {
+            //更新申请状态及维护状态历史
+            aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(applyinstId, sendObject.getTaskId(), appinsts.get(0).getAppinstId(), applyStatus, opuWinId);
+        }
         //触发流程发送事件 已废弃
 //        Task currTask = bpmTaskService.getRuTaskByTaskId(sendObject.getTaskId());
 //        publisher.publishEvent(new BpmNodeSendAplanmisEvent(this,sendObject));
@@ -167,7 +174,7 @@ public class ApproveWinBtnService {
         String opsAction = OpsActionConstants.valueOf(opsActionCode).getName();
         String applyStatus = ApplyState.valueOf(applyinstState).getValue();
         //更新申请状态及维护状态历史
-        aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertOpsAeaLogItemStateHist(applyinstId,userOpinion,opsAction,null,applyStatus,null);
+        aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertOpsAeaLogItemStateHist(applyinstId, userOpinion, opsAction, null, applyStatus, null);
 
     }
 

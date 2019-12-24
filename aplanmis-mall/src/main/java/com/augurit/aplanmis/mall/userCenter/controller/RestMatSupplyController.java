@@ -60,6 +60,18 @@ public class RestMatSupplyController {
         return new ModelAndView("mall/userCenter/components/matSupplement");
     }
 
+    @GetMapping("toMatSupplementDetail")
+    @ApiOperation(value = "跳转补齐补正补正详情")
+    public ModelAndView toMatSupplementDetail(){
+        return new ModelAndView("mall/userCenter/components/matSupplementDetail");
+    }
+
+    @GetMapping("toMatCompletionDetail")
+    @ApiOperation(value = "跳转补齐补正补全详情")
+    public ModelAndView toMatCompletionDetail(){
+        return new ModelAndView("mall/userCenter/components/matCompletionDetail");
+    }
+
     @GetMapping("matSupply/list")
     @ApiOperation(value = "材料补正 --> 材料补正列表查询接口")
     @ApiImplicitParams({@ApiImplicitParam(value = "页面数量",name = "pageNum",required = true,dataType = "int"),

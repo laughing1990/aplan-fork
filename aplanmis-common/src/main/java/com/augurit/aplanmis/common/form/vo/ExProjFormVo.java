@@ -86,4 +86,8 @@ public class ExProjFormVo {
 
     @ApiModelProperty(value = "建设行业主管部门行政单位区域码", required = true)
     private String govAreaCode; // (建设行业主管部门行政单位区域码)
+
+
+    //扩展字段
+    private String formId;
 }

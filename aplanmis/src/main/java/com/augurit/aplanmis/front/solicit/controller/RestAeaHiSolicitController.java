@@ -5,8 +5,9 @@ import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.aplanmis.common.domain.AeaHiSolicit;
+import com.augurit.aplanmis.common.vo.solicit.AeaHiSolicitVo;
+import com.augurit.aplanmis.common.vo.solicit.QueryCondVo;
 import com.augurit.aplanmis.front.solicit.service.RestAeaHiSolicitService;
-import com.augurit.aplanmis.front.solicit.vo.SolicitListVo;
 import com.augurit.aplanmis.front.solicit.vo.SolicitVo;
 import com.github.pagehelper.Page;
 import io.swagger.annotations.Api;
@@ -61,12 +62,12 @@ public class RestAeaHiSolicitController {
     @GetMapping("/list/solicit")
     @ApiOperation(value = "意见征求 --> 获取意见征求列表", notes = "获取意见征求列表")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "type", value = "查询类型，0 意见征求，1 一次征求，2 联合评审 ...")
+            @ApiImplicitParam(name = "busType", value = "查询类型，0 意见征求，1 一次征求，2 联合评审 ...")
             , @ApiImplicitParam(name = "page", value = "分页参数")
     })
-    public ResultForm listSolicit(String type, Page page) throws Exception {
+    public ResultForm listSolicit(Page page, QueryCondVo condVo) throws Exception {
 
-        List<SolicitListVo> listSolicit = restAeaHiSolicitService.listSolicit(type, page);
+        List<AeaHiSolicitVo> listSolicit = restAeaHiSolicitService.listSolicit(condVo, page);
         return new ContentResultForm<>(true, listSolicit, "success");
     }
 

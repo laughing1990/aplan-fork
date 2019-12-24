@@ -1037,7 +1037,7 @@
       <i :class="[isShowAll ? 'el-icon-arrow-up':'el-icon-arrow-down']"></i>
     </div>
     <div class="footer-stage-btn">
-      <el-button class="mt60" @click="prevPage(4)">上一步</el-button>
+      <el-button class="mt60" @click="prevPage(4);setmatinstIdVo()">上一步</el-button>
       <el-button class="mt60" type="primary" @click="matListTemporary">暂存</el-button>
       <el-button class="mt60" type="primary" @click="startParalleApprove">提交申请</el-button>
     </div>

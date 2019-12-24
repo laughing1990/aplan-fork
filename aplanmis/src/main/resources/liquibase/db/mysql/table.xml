@@ -1477,4 +1477,12 @@
         </sql>
     </changeSet>
 
+    <changeSet id="20191223121100" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_applyinst_cancel`
+            ADD COLUMN `SIGN_STATE` char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 0 COMMENT '签收状态：1 已签收，0 未签收' AFTER `IS_SUSPENDED_BEFORE`;
+            ALTER TABLE `aea_hi_item_cancel`
+            ADD COLUMN `SIGN_STATE` char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 0 COMMENT '签收状态：1 已签收，0 未签收' AFTER `PROC_INST_ID`;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

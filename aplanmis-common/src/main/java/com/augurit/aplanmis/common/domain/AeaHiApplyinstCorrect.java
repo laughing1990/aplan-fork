@@ -133,7 +133,8 @@ public class AeaHiApplyinstCorrect implements Serializable {
 
     @ApiModelProperty(name = "chargeOrgName", value = "审批部门")
     private String chargeOrgName;
-
+    @ApiModelProperty(name = "事项实例列表", value = "审批部门")
+    private List<AeaHiIteminst> aeaHiIteminstList;
     //扩展字段
     private String applyinstSource;
     private String regionalism;//行政区划

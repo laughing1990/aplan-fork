@@ -721,6 +721,10 @@ public class RestMatSupplyCommonServiceImpl implements RestMatCorrectCommonServi
             //BscDicRegion bscDicRegion = bscDicRegionMapper.getBscDicRegionById(aeaHiItemCorrect.getRegionalism());
             List<AeaItemBasic> list = aeaItemBasicMapper.listAeaItemBasicByIteminstId(aeaHiItemCorrect.getIteminstId());
             if (list.size() > 0) aeaHiItemCorrect.setRegionName(list.get(0).getRegionName());
+            AeaHiIteminst aeaHiIteminst = aeaHiIteminstService.getAeaHiIteminstById(aeaHiItemCorrect.getIteminstId());
+            List<AeaHiIteminst> aeaHiIteminstList = new ArrayList<>();
+            aeaHiIteminstList.add(aeaHiIteminst);
+            aeaHiItemCorrect.setAeaHiIteminstList(aeaHiIteminstList);
         }
         if ("1".equals(aeaHiItemCorrect.getApplySubject())) {
             List<AeaUnitInfo> aeaUnitInfos = aeaUnitInfoService.findApplyOwnerUnitProj(aeaHiItemCorrect.getApplyinstId(), aeaHiItemCorrect.getProjInfoId());

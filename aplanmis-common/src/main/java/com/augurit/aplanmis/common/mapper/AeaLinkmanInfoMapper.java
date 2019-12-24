@@ -35,7 +35,7 @@ public interface AeaLinkmanInfoMapper {
 
     AeaLinkmanInfo getAeaLinkmanInfoById(@Param("id") String id);
 
-    AeaLinkmanInfo getProjLinkman(@Param("applyinstId") String applyinstId, @Param("projInfoId") String projInfoId);
+    List<AeaLinkmanInfo> getProjLinkman(@Param("applyinstId") String applyinstId, @Param("projInfoId") String projInfoId);
 
     AeaLinkmanInfo getApplyProjLinkman(@Param("applyinstId") String applyinstId, @Param("projInfoId") String projInfoId);
 
