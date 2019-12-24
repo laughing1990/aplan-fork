@@ -31,6 +31,8 @@ private static final long serialVersionUID = 1L;
     @DateTimeFormat(pattern="yyyy-MM-dd")
         private java.util.Date modifyTime; // (修改时间)
         private java.lang.String rootOrgId; // (所属根组织ID)
+        //扩展字段
+        private String formId;
 
     public String getContractNum() {
         return contractNum;
@@ -142,6 +144,12 @@ private static final long serialVersionUID = 1L;
     }
     public void setRootOrgId( java.lang.String rootOrgId ) {
         this.rootOrgId = rootOrgId == null ? null : rootOrgId.trim();
+    }
+    public java.lang.String getFormId(){
+        return formId;
+    }
+    public void setFormId( java.lang.String formId ) {
+        this.formId = formId == null ? null : formId.trim();
     }
     //public String getTableName()  {
     //    return "AeaExProjContract";

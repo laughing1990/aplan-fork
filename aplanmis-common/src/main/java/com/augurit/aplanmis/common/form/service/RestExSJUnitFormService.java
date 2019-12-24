@@ -1,8 +1,14 @@
 package com.augurit.aplanmis.common.form.service;
 
 import com.alibaba.fastjson.JSON;
+import com.augurit.agcloud.bpm.admin.sto.service.impl.AbstractFormDataOptManager;
+import com.augurit.agcloud.bpm.common.constant.EDataOpt;
+import com.augurit.agcloud.bpm.common.domain.ActStoForm;
+import com.augurit.agcloud.bpm.common.domain.ActStoForminst;
+import com.augurit.agcloud.bpm.common.domain.vo.FormDataOptResult;
 import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.GDUnitType;
 import com.augurit.aplanmis.common.constants.UnitProjLinkmanType;
 import com.augurit.aplanmis.common.domain.*;
@@ -15,7 +21,7 @@ import java.util.*;
 
 @Service
 @Transactional
-public class RestExSJUnitFormService {
+public class RestExSJUnitFormService extends AbstractFormDataOptManager {
     @Autowired
     private AeaExProjBuildMapper aeaExProjBuildMapper;
     @Autowired
@@ -37,7 +43,10 @@ public class RestExSJUnitFormService {
                 aeaExProjBuild.setBuildId(UuidUtil.generateUuid());
                 aeaExProjBuild.setCreateTime(new Date());
                 aeaExProjBuild.setRootOrgId(SecurityContext.getCurrentOrgId());
-                int i = aeaExProjBuildMapper.insertAeaExProjBuild(aeaExProjBuild);
+                aeaExProjBuildMapper.insertAeaExProjBuild(aeaExProjBuild);
+
+                if (StringUtils.isBlank(aeaExProjBuild.getFormId())) throw new Exception("缺少formId");
+                this.formSave(aeaExProjBuild.getFormId(), aeaExProjBuild.getBuildId(), EDataOpt.INSERT.getOpareteType(), null);
             }else {
                 aeaExProjBuildMapper.updateAeaExProjBuild(aeaExProjBuild);
             }
@@ -45,135 +54,137 @@ public class RestExSJUnitFormService {
         String aeaExProjBuildUnitInfo = aeaExProjBuild.getAeaExProjBuildUnitInfo();
         List<AeaExProjBuildUnitInfo> list = JSON.parseArray(aeaExProjBuildUnitInfo,AeaExProjBuildUnitInfo.class);
         for (AeaExProjBuildUnitInfo exProjBuildUnitInfo : list) {
-            //单位基本信息aeaUnitInfo
-            AeaUnitInfo aeaUnitInfo = new AeaUnitInfo();
-            aeaUnitInfo.setUnitInfoId(exProjBuildUnitInfo.getUnitInfoId());
-            aeaUnitInfo.setApplicant(exProjBuildUnitInfo.getApplicant());
-            aeaUnitInfo.setIdrepresentative(exProjBuildUnitInfo.getIdrepresentative());
-            aeaUnitInfo.setIdmobile(exProjBuildUnitInfo.getIdmobile());
-            aeaUnitInfo.setOrganizationalCode(exProjBuildUnitInfo.getOrganizationalCode());
-            aeaUnitInfo.setUnifiedSocialCreditCode(exProjBuildUnitInfo.getUnifiedSocialCreditCode());
-            aeaUnitInfo.setIsGd(exProjBuildUnitInfo.getIsGd());
-            if(aeaUnitInfo.getUnitInfoId() !=null){
-                aeaUnitInfoMapper.updateAeaUnitInfo(aeaUnitInfo);
-            }else {
-                String s = UuidUtil.generateUuid();
-                aeaUnitInfo.setUnitInfoId(s);
-                exProjBuildUnitInfo.setUnitInfoId(s);//回填单位ID
-                aeaUnitInfo.setCreateTime(new Date());
-                aeaUnitInfo.setRootOrgId(SecurityContext.getCurrentOrgId());
-                aeaUnitInfo.setCreater(SecurityContext.getCurrentUserName());
-                aeaUnitInfoMapper.insertAeaUnitInfo(aeaUnitInfo);
-            }
-
-            //插入证书编号
-            AeaHiCertinst aeaHiCertinst = new AeaHiCertinst();
-            aeaHiCertinst.setCertinstId(exProjBuildUnitInfo.getCertinstId());
-            aeaHiCertinst.setCertinstCode(exProjBuildUnitInfo.getCertinstCode());
-            if(aeaHiCertinst.getCertinstId()!=null&&aeaHiCertinst.getCertinstId()!=""){
-                aeaHiCertinstMapper.updateAeaHiCertinst(aeaHiCertinst);
-            }else {
-                if(exProjBuildUnitInfo.getCertinstCode()!=null){
+            if (exProjBuildUnitInfo.getApplicant()!=null && !"".equals(exProjBuildUnitInfo.getApplicant())){
+                //单位基本信息aeaUnitInfo
+                AeaUnitInfo aeaUnitInfo = new AeaUnitInfo();
+                aeaUnitInfo.setUnitInfoId(exProjBuildUnitInfo.getUnitInfoId());
+                aeaUnitInfo.setApplicant(exProjBuildUnitInfo.getApplicant());
+                aeaUnitInfo.setIdrepresentative(exProjBuildUnitInfo.getIdrepresentative());
+                aeaUnitInfo.setIdmobile(exProjBuildUnitInfo.getIdmobile());
+                aeaUnitInfo.setOrganizationalCode(exProjBuildUnitInfo.getOrganizationalCode());
+                aeaUnitInfo.setUnifiedSocialCreditCode(exProjBuildUnitInfo.getUnifiedSocialCreditCode());
+                aeaUnitInfo.setIsGd(exProjBuildUnitInfo.getIsGd());
+                if(aeaUnitInfo.getUnitInfoId() !=null){
+                    aeaUnitInfoMapper.updateAeaUnitInfo(aeaUnitInfo);
+                }else {
                     String s = UuidUtil.generateUuid();
-                    aeaHiCertinst.setCertinstId(s);
-                    exProjBuildUnitInfo.setCertinstId(s);//回填证书ID
-                    aeaHiCertinst.setCreateTime(new Date());
-                    aeaHiCertinst.setRootOrgId(SecurityContext.getCurrentOrgId());
-                    aeaHiCertinst.setCreater(SecurityContext.getCurrentUserName());
-                    aeaHiCertinst.setCertId(UuidUtil.generateUuid());
-                    aeaHiCertinstMapper.insertAeaHiCertinst(aeaHiCertinst);
+                    aeaUnitInfo.setUnitInfoId(s);
+                    exProjBuildUnitInfo.setUnitInfoId(s);//回填单位ID
+                    aeaUnitInfo.setCreateTime(new Date());
+                    aeaUnitInfo.setRootOrgId(SecurityContext.getCurrentOrgId());
+                    aeaUnitInfo.setCreater(SecurityContext.getCurrentUserName());
+                    aeaUnitInfoMapper.insertAeaUnitInfo(aeaUnitInfo);
                 }
-            }
 
-            //插入负责人信息linkmaninfo表
-            AeaLinkmanInfo linkman = new AeaLinkmanInfo();
-            linkman.setLinkmanInfoId(exProjBuildUnitInfo.getLinkmanInfoId());
-            linkman.setLinkmanName(exProjBuildUnitInfo.getLinkmanName());
-            linkman.setLinkmanMobilePhone(exProjBuildUnitInfo.getLinkmanMobilePhone());
-            linkman.setLinkmanCertNo(exProjBuildUnitInfo.getLinkmanCertNo());
-            if(exProjBuildUnitInfo.getLinkmanInfoId() == null && exProjBuildUnitInfo.getLinkmanName()!=null){
-                String linkmanId = UuidUtil.generateUuid();
-                linkman.setLinkmanInfoId(linkmanId);
-                linkman.setLinkmanType("u");
-                linkman.setIsActive("1");
-                linkman.setIsDeleted("0");
-                linkman.setCreater(SecurityContext.getCurrentUserName());
-                linkman.setCreateTime(new Date());
-                linkman.setRootOrgId(SecurityContext.getCurrentOrgId());
-                exProjBuildUnitInfo.setLinkmanInfoId(linkmanId);//负责人ID回填
-                aeaLinkmanInfoMapper.insertAeaLinkmanInfo(linkman);
-            }else {
-                aeaLinkmanInfoMapper.updateAeaLinkmanInfo(linkman);
-            }
+                //插入证书编号
+                AeaHiCertinst aeaHiCertinst = new AeaHiCertinst();
+                aeaHiCertinst.setCertinstId(exProjBuildUnitInfo.getCertinstId());
+                aeaHiCertinst.setCertinstCode(exProjBuildUnitInfo.getCertinstCode());
+                if(aeaHiCertinst.getCertinstId()!=null&&aeaHiCertinst.getCertinstId()!=""){
+                    aeaHiCertinstMapper.updateAeaHiCertinst(aeaHiCertinst);
+                }else {
+                    if(exProjBuildUnitInfo.getCertinstCode()!=null){
+                        String s = UuidUtil.generateUuid();
+                        aeaHiCertinst.setCertinstId(s);
+                        exProjBuildUnitInfo.setCertinstId(s);//回填证书ID
+                        aeaHiCertinst.setCreateTime(new Date());
+                        aeaHiCertinst.setRootOrgId(SecurityContext.getCurrentOrgId());
+                        aeaHiCertinst.setCreater(SecurityContext.getCurrentUserName());
+                        aeaHiCertinst.setCertId(UuidUtil.generateUuid());
+                        aeaHiCertinstMapper.insertAeaHiCertinst(aeaHiCertinst);
+                    }
+                }
 
-            //单位项目信息表aea_unit_proj
-            AeaUnitProj aeaUnitProj = new AeaUnitProj();
-            aeaUnitProj.setUnitProjId(exProjBuildUnitInfo.getUnitProjId());
-            aeaUnitProj.setProjInfoId(aeaExProjBuild.getProjInfoId());
-            aeaUnitProj.setUnitInfoId(exProjBuildUnitInfo.getUnitInfoId());
-            aeaUnitProj.setUnitType(exProjBuildUnitInfo.getUnitType());
-            aeaUnitProj.setLinkmanInfoId(exProjBuildUnitInfo.getLinkmanInfoId());
-            aeaUnitProj.setQualLevelId(exProjBuildUnitInfo.getQualLevelId());
-            aeaUnitProj.setCertinstId(exProjBuildUnitInfo.getCertinstId());
-            aeaUnitProj.setSafeLicenceNum(exProjBuildUnitInfo.getUnitSafeLicenceNum());
-            if(aeaUnitProj.getUnitProjId() != null){
-                int i = aeaUnitProjMapper.updateAeaUnitProj(aeaUnitProj);
-            }else {
-                String s = UuidUtil.generateUuid();
-                aeaUnitProj.setUnitProjId(s);
-                exProjBuildUnitInfo.setUnitProjId(s);//回填单位项目id
-                aeaUnitProj.setCreateTime(new Date());
-                aeaUnitProj.setCreater(SecurityContext.getCurrentUserName());
-                aeaUnitProj.setIsOwner("0");
-                aeaUnitProj.setIsDeleted("0");
-                int i = aeaUnitProjMapper.insertAeaUnitProj(aeaUnitProj);
-            }
+                //插入负责人信息linkmaninfo表
+                AeaLinkmanInfo linkman = new AeaLinkmanInfo();
+                linkman.setLinkmanInfoId(exProjBuildUnitInfo.getLinkmanInfoId());
+                linkman.setLinkmanName(exProjBuildUnitInfo.getLinkmanName());
+                linkman.setLinkmanMobilePhone(exProjBuildUnitInfo.getLinkmanMobilePhone());
+                linkman.setLinkmanCertNo(exProjBuildUnitInfo.getLinkmanCertNo());
+                if(exProjBuildUnitInfo.getLinkmanInfoId() == null && exProjBuildUnitInfo.getLinkmanName()!=null){
+                    String linkmanId = UuidUtil.generateUuid();
+                    linkman.setLinkmanInfoId(linkmanId);
+                    linkman.setLinkmanType("u");
+                    linkman.setIsActive("1");
+                    linkman.setIsDeleted("0");
+                    linkman.setCreater(SecurityContext.getCurrentUserName());
+                    linkman.setCreateTime(new Date());
+                    linkman.setRootOrgId(SecurityContext.getCurrentOrgId());
+                    exProjBuildUnitInfo.setLinkmanInfoId(linkmanId);//负责人ID回填
+                    aeaLinkmanInfoMapper.insertAeaLinkmanInfo(linkman);
+                }else {
+                    aeaLinkmanInfoMapper.updateAeaLinkmanInfo(linkman);
+                }
 
-            //负责人信息aea_unit_proj_linkman表
-            AeaUnitProjLinkman manager = new AeaUnitProjLinkman();
-            manager.setProjLinkmanId(exProjBuildUnitInfo.getProjLinkmanId());
-            manager.setRegisterNum(exProjBuildUnitInfo.getRegisterNum());
-            manager.setSafeLicenceNum(exProjBuildUnitInfo.getPersonSafeLicenceNum());
-            manager.setProfessionSealNum(exProjBuildUnitInfo.getProfessionSealNum());
-            manager.setTitleGrade(exProjBuildUnitInfo.getTitleGrade());
-            manager.setTitleCertNum(exProjBuildUnitInfo.getTitleCertNum());
-            manager.setLinkmanType(exProjBuildUnitInfo.getLinkmanType());
-            manager.setUnitProjId(exProjBuildUnitInfo.getUnitProjId());
-            manager.setLinkmanInfoId(exProjBuildUnitInfo.getLinkmanInfoId());
-            manager.setProfessionCertType(exProjBuildUnitInfo.getProfessionCertType());
-            if(manager.getProjLinkmanId()!=null){
-                aeaUnitProjLinkmanMapper.updateAeaUnitProjLinkman(manager);
-            }else {
-                String s = UuidUtil.generateUuid();
-                manager.setProjLinkmanId(s);
-                manager.setCreateTime(new Date());
-                manager.setCreater(SecurityContext.getCurrentUserName());
-                exProjBuildUnitInfo.setProjLinkmanId(s);//回填项目单位联系人Id
-                aeaUnitProjLinkmanMapper.insertAeaUnitProjLinkman(manager);
-            }
+                //单位项目信息表aea_unit_proj
+                AeaUnitProj aeaUnitProj = new AeaUnitProj();
+                aeaUnitProj.setUnitProjId(exProjBuildUnitInfo.getUnitProjId());
+                aeaUnitProj.setProjInfoId(aeaExProjBuild.getProjInfoId());
+                aeaUnitProj.setUnitInfoId(exProjBuildUnitInfo.getUnitInfoId());
+                aeaUnitProj.setUnitType(exProjBuildUnitInfo.getUnitType());
+                aeaUnitProj.setLinkmanInfoId(exProjBuildUnitInfo.getLinkmanInfoId());
+                aeaUnitProj.setQualLevelId(exProjBuildUnitInfo.getQualLevelId());
+                aeaUnitProj.setCertinstId(exProjBuildUnitInfo.getCertinstId());
+                aeaUnitProj.setSafeLicenceNum(exProjBuildUnitInfo.getUnitSafeLicenceNum());
+                if(aeaUnitProj.getUnitProjId() != null){
+                    int i = aeaUnitProjMapper.updateAeaUnitProj(aeaUnitProj);
+                }else {
+                    String s = UuidUtil.generateUuid();
+                    aeaUnitProj.setUnitProjId(s);
+                    exProjBuildUnitInfo.setUnitProjId(s);//回填单位项目id
+                    aeaUnitProj.setCreateTime(new Date());
+                    aeaUnitProj.setCreater(SecurityContext.getCurrentUserName());
+                    aeaUnitProj.setIsOwner("0");
+                    aeaUnitProj.setIsDeleted("0");
+                    int i = aeaUnitProjMapper.insertAeaUnitProj(aeaUnitProj);
+                }
 
-            //人员设置
-            String personSettings = exProjBuildUnitInfo.getPersonSetting();
-            List<PersonSetting> listpersonSettings = JSON.parseArray(personSettings, PersonSetting.class);
-            if(listpersonSettings!=null&&listpersonSettings.size()>0){
-                for (PersonSetting person : listpersonSettings) {
-                    if(person.getLinkmanName()!=null){
-                        AeaUnitProjLinkman aeaUnitProjLinkman = new AeaUnitProjLinkman();
-                        aeaUnitProjLinkman.setProjLinkmanId(person.getProjLinkmanId());
-                        aeaUnitProjLinkman.setLinkmanInfoId(person.getLinkmanInfoId());
-                        aeaUnitProjLinkman.setLinkmanType(person.getLinkmanType());
-                        aeaUnitProjLinkman.setProfessionCertType(person.getProfessionCertType());
-                        aeaUnitProjLinkman.setProfessionSealNum(person.getSafeLicenceNum());
-                        aeaUnitProjLinkman.setTitleCertNum(person.getTitleCertNum());
-                        aeaUnitProjLinkman.setSafeLicenceNum(person.getSafeLicenceNum());
-                        aeaUnitProjLinkman.setUnitProjId(exProjBuildUnitInfo.getUnitProjId());
-                        if(aeaUnitProjLinkman.getProjLinkmanId()!=null){
-                            aeaUnitProjLinkmanMapper.updateAeaUnitProjLinkman(aeaUnitProjLinkman);
-                        }else {
-                            aeaUnitProjLinkman.setProjLinkmanId(UuidUtil.generateUuid());
-                            aeaUnitProjLinkman.setCreateTime(new Date());
-                            aeaUnitProjLinkman.setCreater(SecurityContext.getCurrentUserName());
-                            aeaUnitProjLinkmanMapper.insertAeaUnitProjLinkman(aeaUnitProjLinkman);
+                //负责人信息aea_unit_proj_linkman表
+                AeaUnitProjLinkman manager = new AeaUnitProjLinkman();
+                manager.setProjLinkmanId(exProjBuildUnitInfo.getProjLinkmanId());
+                manager.setRegisterNum(exProjBuildUnitInfo.getRegisterNum());
+                manager.setSafeLicenceNum(exProjBuildUnitInfo.getPersonSafeLicenceNum());
+                manager.setProfessionSealNum(exProjBuildUnitInfo.getProfessionSealNum());
+                manager.setTitleGrade(exProjBuildUnitInfo.getTitleGrade());
+                manager.setTitleCertNum(exProjBuildUnitInfo.getTitleCertNum());
+                manager.setLinkmanType(exProjBuildUnitInfo.getLinkmanType());
+                manager.setUnitProjId(exProjBuildUnitInfo.getUnitProjId());
+                manager.setLinkmanInfoId(exProjBuildUnitInfo.getLinkmanInfoId());
+                manager.setProfessionCertType(exProjBuildUnitInfo.getProfessionCertType());
+                if(manager.getProjLinkmanId()!=null){
+                    aeaUnitProjLinkmanMapper.updateAeaUnitProjLinkman(manager);
+                }else {
+                    String s = UuidUtil.generateUuid();
+                    manager.setProjLinkmanId(s);
+                    manager.setCreateTime(new Date());
+                    manager.setCreater(SecurityContext.getCurrentUserName());
+                    exProjBuildUnitInfo.setProjLinkmanId(s);//回填项目单位联系人Id
+                    aeaUnitProjLinkmanMapper.insertAeaUnitProjLinkman(manager);
+                }
+
+                //人员设置
+                String personSettings = exProjBuildUnitInfo.getPersonSetting();
+                List<PersonSetting> listpersonSettings = JSON.parseArray(personSettings, PersonSetting.class);
+                if(listpersonSettings!=null&&listpersonSettings.size()>0){
+                    for (PersonSetting person : listpersonSettings) {
+                        if(person.getLinkmanName()!=null){
+                            AeaUnitProjLinkman aeaUnitProjLinkman = new AeaUnitProjLinkman();
+                            aeaUnitProjLinkman.setProjLinkmanId(person.getProjLinkmanId());
+                            aeaUnitProjLinkman.setLinkmanInfoId(person.getLinkmanInfoId());
+                            aeaUnitProjLinkman.setLinkmanType(person.getLinkmanType());
+                            aeaUnitProjLinkman.setProfessionCertType(person.getProfessionCertType());
+                            aeaUnitProjLinkman.setProfessionSealNum(person.getSafeLicenceNum());
+                            aeaUnitProjLinkman.setTitleCertNum(person.getTitleCertNum());
+                            aeaUnitProjLinkman.setSafeLicenceNum(person.getSafeLicenceNum());
+                            aeaUnitProjLinkman.setUnitProjId(exProjBuildUnitInfo.getUnitProjId());
+                            if(aeaUnitProjLinkman.getProjLinkmanId()!=null){
+                                aeaUnitProjLinkmanMapper.updateAeaUnitProjLinkman(aeaUnitProjLinkman);
+                            }else {
+                                aeaUnitProjLinkman.setProjLinkmanId(UuidUtil.generateUuid());
+                                aeaUnitProjLinkman.setCreateTime(new Date());
+                                aeaUnitProjLinkman.setCreater(SecurityContext.getCurrentUserName());
+                                aeaUnitProjLinkmanMapper.insertAeaUnitProjLinkman(aeaUnitProjLinkman);
+                            }
                         }
                     }
                 }
@@ -332,5 +343,21 @@ public class RestExSJUnitFormService {
             person.setLinkmanCertNo(aeaLinkmanInfoById.getLinkmanCertNo());
         }
         return person;
+    }
+
+    @Override
+    public FormDataOptResult doformSave(String formId, String metaTableId, Integer opType, Object dataEntity) throws Exception {
+        FormDataOptResult result = new FormDataOptResult();
+        result.setSuccess(true);
+        ActStoForminst actStoForminst = new ActStoForminst();
+        actStoForminst.setFormId(formId);
+        actStoForminst.setFormPrimaryKey(metaTableId);
+        result.setActStoForminst(actStoForminst);
+        return result;
+    }
+
+    @Override
+    public FormDataOptResult doformDelete(ActStoForm formVo, Object dataEntity) throws Exception {
+        return null;
     }
 }

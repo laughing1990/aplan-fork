@@ -68,9 +68,9 @@ public class ApplyinstCancelController {
     }
 
     @RequestMapping("/signUpApplyinstCancelTask")
-    public ResultForm SignUpApplyinstCancelTask(String applyinstCancelId) {
+    public ResultForm SignUpApplyinstCancelTask(String applyinstCancelId, String taskId) {
         try {
-            restApplyinstCancelService.signUpApplyinstCancelTask(applyinstCancelId);
+            restApplyinstCancelService.signUpApplyinstCancelTask(applyinstCancelId, taskId);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultForm(false, "系统内部出错!");

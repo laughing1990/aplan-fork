@@ -123,5 +123,21 @@ public class TaskInfo extends BaseInfo implements Serializable {
     @ApiModelProperty(value = "容缺补正是否完成：1 是，0 否")
     private String isCompleted;
 
+    @ApiModelProperty(value = "部门人员的撤件实例签收状态")
+    private String BmSignState;
 
+    @ApiModelProperty(value = "窗口人员的撤件实例签收状态")
+    private String CkSignState;
+
+    @ApiModelProperty(value = "申报撤件实例")
+    private String applyinstCancelId;
+
+    @ApiModelProperty(value = "事项撤件实例")
+    private String iteminstCancelId;
+
+    @ApiModelProperty(value = "申请实例状态")
+    private String applyinstState;
+
+    @ApiModelProperty(value = "撤件实例状态")
+    private String signState_;
 }

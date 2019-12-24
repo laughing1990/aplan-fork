@@ -24,64 +24,65 @@ var app = new Vue({
       fieldType: [],
       landAreaUnitSite: [],
       rules: {
-        certLandCode: [
-          { required: true, message: '请输入建设项目用地规划许可证编号' },
-        ],
-        landNature: [
-          { required: true, message: '请输入用地性质可用地性质ID', trigger: 'blur' },
-        ],
-        landAreaValue: [
-          { required: true, message: '请输入用地面积' },
-        ],
-        govOrgCodeLand: [
-          { required: true, message: '请输入发证机关机构代码' },
-        ],
-        govOrgNameLand: [
-          { required: true, message: '请输入发证机关' },
-        ],
-        publishTimeLand: [
-          { required: true, message: '请选择发证日期' },
-        ]
+        // certLandCode: [
+        //   { required: true, message: '请输入建设项目用地规划许可证编号' },
+        // ],
+        // landNature: [
+        //   { required: true, message: '请输入用地性质可用地性质ID', trigger: 'blur' },
+        // ],
+        // landAreaValue: [
+        //   { required: true, message: '请输入用地面积' },
+        // ],
+        // govOrgCodeLand: [
+        //   { required: true, message: '请输入发证机关机构代码' },
+        // ],
+        // govOrgNameLand: [
+        //   { required: true, message: '请输入发证机关' },
+        // ],
+        // publishTimeLand: [
+        //   { required: true, message: '请选择发证日期' },
+        // ]
       },
       rules2: {
-        certProjectCode: [
-          { required: true, message: '请输入建设工程规划许可证编号' },
-        ],
-        publishOrgCodeProject: [
-          { required: true, message: '请输入核发机关组织机构代码' },
-        ],
-        publishOrgNameProject: [
-          { required: true, message: '请输入核发机关' },
-        ],
-        publishTimeProject: [
-          { required: true, message: '请选择核发日期' },
-        ]
+        // certProjectCode: [
+        //   { required: true, message: '请输入建设工程规划许可证编号' },
+        // ],
+        // publishOrgCodeProject: [
+        //   { required: true, message: '请输入核发机关组织机构代码' },
+        // ],
+        // publishOrgNameProject: [
+        //   { required: true, message: '请输入核发机关' },
+        // ],
+        // publishTimeProject: [
+        //   { required: true, message: '请选择核发日期' },
+        // ]
       },
       rules3: {
-        siteCode: [
-          { required: true, message: '请输入建设项目选址意见书批文号' },
-        ],
-        landAreaValueSite: [
-          { required: true, message: '请输入拟用地面积' },
-        ],
-        constructionSize: [
-          { required: true, message: '请输入拟建设规模' },
-        ],
-        govOrgCodeSite: [
-          { required: true, message: '请输入核发机关组织机构代码' },
-        ],
-        govOrgNameSite: [
-          { required: true, message: '请输入核发机关' },
-        ],
-        publishTimeSite: [
-          { required: true, message: '请选择核发日期' },
-        ],
+        // siteCode: [
+        //   { required: true, message: '请输入建设项目选址意见书批文号' },
+        // ],
+        // landAreaValueSite: [
+        //   { required: true, message: '请输入拟用地面积' },
+        // ],
+        // constructionSize: [
+        //   { required: true, message: '请输入拟建设规模' },
+        // ],
+        // govOrgCodeSite: [
+        //   { required: true, message: '请输入核发机关组织机构代码' },
+        // ],
+        // govOrgNameSite: [
+        //   { required: true, message: '请输入核发机关' },
+        // ],
+        // publishTimeSite: [
+        //   { required: true, message: '请选择核发日期' },
+        // ],
       },
 
     }
   },
   created: function() {
     this.projInfoId = this.getUrlParam('projInfoId');
+    this.formId = this.getUrlParam('formId');
     // this.projInfoId = '0';
 
 

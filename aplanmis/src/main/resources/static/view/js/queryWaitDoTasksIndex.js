@@ -5,12 +5,12 @@ var vm = new Vue({
         return {
             //查询数据
             searchFrom: {
-                pagination:{
-                    page:  1,
+                pagination: {
+                    page: 1,
                     pages: 1,
                     perpage: 10
                 },
-                sort:{
+                sort: {
                     field: 'isGreenWay,acceptTime',
                     sort: 'desc'
                 },
@@ -19,17 +19,17 @@ var vm = new Vue({
                 acceptEndTime: '',
                 applySource: '',
                 applyType: '',
-                instState:'',
-                arriveStartTime:'',
-                arriveEndTime:'',
-                keyword:''
+                instState: '',
+                arriveStartTime: '',
+                arriveEndTime: '',
+                keyword: ''
             },
 
-            isShowMsgDetail:false,
-            msgDetail :{
-                remindContent:'',
-                sendUserName:'',
-                sendDate:''
+            isShowMsgDetail: false,
+            msgDetail: {
+                remindContent: '',
+                sendUserName: '',
+                sendDate: ''
             }
 
         }
@@ -42,21 +42,21 @@ var vm = new Vue({
 
             this.searchFrom.pagination.pages = this.searchFrom.pagination.page;
 
-            if(ts.searchFrom.acceptStartTime!='' && ts.searchFrom.acceptEndTime!=''){
-                if(ts.searchFrom.acceptStartTime > ts.searchFrom.acceptEndTime){
+            if (ts.searchFrom.acceptStartTime != '' && ts.searchFrom.acceptEndTime != '') {
+                if (ts.searchFrom.acceptStartTime > ts.searchFrom.acceptEndTime) {
                     ts.apiMessage('受理开始时间不能大于结束时间', 'error');
                     return;
                 }
             }
 
-            if(ts.searchFrom.arriveStartTime!='' && ts.searchFrom.arriveEndTime!=''){
-                if(ts.searchFrom.arriveStartTime > ts.searchFrom.arriveEndTime){
+            if (ts.searchFrom.arriveStartTime != '' && ts.searchFrom.arriveEndTime != '') {
+                if (ts.searchFrom.arriveStartTime > ts.searchFrom.arriveEndTime) {
                     ts.apiMessage('到达开始时间不能大于结束时间', 'error');
                     return;
                 }
             }
 
-            if(ts.searchFrom.sort["field"] == "acceptTime" && ts.searchFrom.sort["sort"] == "desc"){
+            if (ts.searchFrom.sort["field"] == "acceptTime" && ts.searchFrom.sort["sort"] == "desc") {
                 ts.searchFrom.sort["field"] = "isGreenWay,acceptTime";
             }
 
@@ -80,18 +80,18 @@ var vm = new Vue({
             });
         },
         //办理
-        viewDetail:function (row) {
+        viewDetail: function (row) {
             var url = ctx + 'apanmis/page/stageApproveIndex?taskId=' + row.taskId + '&viewId=' + row.viewId + '&itemNature=' + row.itemNature;
-            if(row.busRecordId){
-                url = url + '&busRecordId='+row.busRecordId;
+            if (row.busRecordId) {
+                url = url + '&busRecordId=' + row.busRecordId;
             }
-            window.open(url,'_blank');
+            window.open(url, '_blank');
         },
 
         //判断是否已签收
-        isSign : function (row) {
-            if(row.signState){
-                if(1.0==row.signState){
+        isSign: function (row) {
+            if (row.signState) {
+                if (1.0 == row.signState) {
                     return true;
                 }
             }
@@ -99,45 +99,53 @@ var vm = new Vue({
             return false;
         },
         //签收
-        signTask: function (event,row) {
+        signTask: function (event, row) {
             var ts = this;
-            var taskId = row.taskId;
-            var viewId = row.viewId;
-            var busRecordId = row.busRecordId;
-            event.preventDefault();
-            ts.loading = true;
-            request('bpmFrontUrl', {
-                url: ctx + 'rest/front/task/signTask/' + taskId,
-                type: 'get',
-                data: {}
-            }, function (result) {
+            if ('12' == row.applyinstState) {
                 ts.loading = false;
-                if (result.success) {
-                    ts.$message.success(result.message);
-                    window.setTimeout(function(){
-                        window.open(ctx + 'apanmis/page/stageApproveIndex?taskId=' + taskId + '&viewId=' + viewId + '&busRecordId=' + busRecordId + '&itemNature=' + row.itemNature, '_blank');
-                        window.location.reload();
-                    }, 500);
-                } else {
-                    ts.$message.error(result.message);
-                }
-            }, function () {
+                ts.$message.error("该办件已申请撤件，等待受理！");
+            } else if ('13' == row.applyinstState) {
                 ts.loading = false;
-                ts.$message.error("签收失败！");
-            });
+                ts.$message.error("该办件正申请撤件，请在“撤件待办件”菜单签收！");
+            } else {
+                var taskId = row.taskId;
+                var viewId = row.viewId;
+                var busRecordId = row.busRecordId;
+                event.preventDefault();
+                ts.loading = true;
+                request('bpmFrontUrl', {
+                    url: ctx + 'rest/front/task/signTask/' + taskId,
+                    type: 'get',
+                    data: {}
+                }, function (result) {
+                    ts.loading = false;
+                    if (result.success) {
+                        ts.$message.success(result.message);
+                        window.setTimeout(function () {
+                            window.open(ctx + 'apanmis/page/stageApproveIndex?taskId=' + taskId + '&viewId=' + viewId + '&busRecordId=' + busRecordId + '&itemNature=' + row.itemNature, '_blank');
+                            window.location.reload();
+                        }, 500);
+                    } else {
+                        ts.$message.error(result.message);
+                    }
+                }, function () {
+                    ts.loading = false;
+                    ts.$message.error("签收失败！");
+                });
+            }
         },
-        setRemindMessageRead:function (row,remindReceiverId) {
+        setRemindMessageRead: function (row, remindReceiverId) {
 
             var ts = this;
             request('', {
                 url: ctx + 'rest/conditional/query/updateRemindRead',
                 type: 'get',
-                data: {'remindReceiverIds':remindReceiverId}
+                data: {'remindReceiverIds': remindReceiverId}
             }, function (res) {
                 if (res.success) {
-                    for(var i=0;i<row.remindList.length;i++){
-                        if(row.remindList[i].remindReceiverId==remindReceiverId){
-                            row.remindList.splice(i,1);
+                    for (var i = 0; i < row.remindList.length; i++) {
+                        if (row.remindList[i].remindReceiverId == remindReceiverId) {
+                            row.remindList.splice(i, 1);
                             break;
                         }
                     }
@@ -148,17 +156,17 @@ var vm = new Vue({
                 return ts.apiMessage('网络错误！', 'error')
             });
         },
-        showRemindInfo:function (row,remindInfo) {
-            this.setRemindMessageRead(row,remindInfo.remindReceiverId);
+        showRemindInfo: function (row, remindInfo) {
+            this.setRemindMessageRead(row, remindInfo.remindReceiverId);
             this.msgDetail.remindContent = remindInfo.remindContent;
             this.msgDetail.sendUserName = remindInfo.sendUserName;
-            this.msgDetail.sendDate = this.formatDatetimeCommon(remindInfo.sendDate,'yyyy-MM-dd hh:mm');
+            this.msgDetail.sendDate = this.formatDatetimeCommon(remindInfo.sendDate, 'yyyy-MM-dd hh:mm');
             this.isShowMsgDetail = true;
         },
-        getFirstColumnWidth:function () {
-            if(this.tableData){
-                for(var i=0;i<this.tableData.length;i++){
-                    if(this.tableData[i].isGreenWay=='1'){
+        getFirstColumnWidth: function () {
+            if (this.tableData) {
+                for (var i = 0; i < this.tableData.length; i++) {
+                    if (this.tableData[i].isGreenWay == '1') {
                         return '90';
                     }
                 }

@@ -220,27 +220,27 @@ var app = new Vue({
         ],
       },
       rules3: {
-        'organizationalCode': [
-          { required: true, validator: checkOrganizationalCode, trigger: ['blur'] },
-        ],
-        'unifiedSocialCreditCode': [
-          { required: true, validator: checkUnifiedSocialCreditCode, trigger: ['blur'] },
-        ],
-        'applicant': [
-          { required: true, message: '请输入单位名称' },
-        ],
-        'unitType': [
-          { required: true, message: '请选择项目主体类型' },
-        ],
-        'prjSpty': [
-          { required: true, message: '请选择审查专业' },
-        ],
-        'projectLeader': [
-          { required: true, message: '请选择勘查单位项目负责人' },
-        ],
-        'projectLeaderCertNum': [
-          { required: true, validator: checkProjectLeaderCertNum, trigger: ['blur'] },
-        ],
+        // 'organizationalCode': [
+        //   { required: true, validator: checkOrganizationalCode, trigger: ['blur'] },
+        // ],
+        // 'unifiedSocialCreditCode': [
+        //   { required: true, validator: checkUnifiedSocialCreditCode, trigger: ['blur'] },
+        // ],
+        // 'applicant': [
+        //   { required: true, message: '请输入单位名称' },
+        // ],
+        // 'unitType': [
+        //   { required: true, message: '请选择项目主体类型' },
+        // ],
+        // 'prjSpty': [
+        //   { required: true, message: '请选择审查专业' },
+        // ],
+        // 'projectLeader': [
+        //   { required: true, message: '请选择勘查单位项目负责人' },
+        // ],
+        // 'projectLeaderCertNum': [
+        //   { required: true, validator: checkProjectLeaderCertNum, trigger: ['blur'] },
+        // ],
       },
       rules4: {
         'organizationalCode': [
@@ -271,6 +271,7 @@ var app = new Vue({
   created: function() {
     // this.projInfoId = '0087be4f-acb6-4727-ab3a-e7f8440ff815';
     this.projInfoId = this.getUrlParam('projInfoId');
+    this.formId = this.getUrlParam('formId');
   },
   mounted: function() {
 
@@ -850,7 +851,7 @@ var app = new Vue({
               _this.formData.approveEndTime = _this.formatTime(_this.formData.approveEndTime, 'Y-M-D') || '';
               // _this.formData.approveConfirmTime = _this.formatTime(_this.formData.approveConfirmTime, 'Y-M-D') || '';
               _this.formData.projInfoId = _this.projInfoId;
-
+              _this.formData.formId = _this.formId;
               aeaExProjDrawing = _this.formData;
               aeaExProjDrawing.aeaProjDrawing = drawings;
               request('', {

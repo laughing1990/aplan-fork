@@ -45,6 +45,7 @@ public class AplanmisPageIndexController {
 
     @Autowired
     private OpuOmUserInfoMapper opuOmUserInfoMapper;
+
     /**
      * 并联申报首页
      *
@@ -135,13 +136,13 @@ public class AplanmisPageIndexController {
         return new ModelAndView("approve/opinionForm");
     }
 
-        /**
-         * 并联申报 一张表单url构造
-         * enableParamItem 是否启用参数 itemId，用于只查看指定事项的情况
-         * itemId 指定事项的id
-         * */
-        @GetMapping("/urlStageOneForm.html")
-        public ResultForm urlStageOneForm(String masterEntityKey,boolean enableParamItem,String itemId,String projInfoId, HttpServletRequest request, HttpServletResponse response) {
+    /**
+     * 并联申报 一张表单url构造
+     * enableParamItem 是否启用参数 itemId，用于只查看指定事项的情况
+     * itemId 指定事项的id
+     */
+    @GetMapping("/urlStageOneForm.html")
+    public ResultForm urlStageOneForm(String masterEntityKey, boolean enableParamItem, String itemId, String projInfoId, HttpServletRequest request, HttpServletResponse response) {
 //        String realUrl = request.getContextPath() + "/rest/oneform/common/renderHtmlFormContainer?";
         String realUrl = request.getContextPath() + "/rest/oneform/common/getListForm4StageOneForm?";
         String params = "";
@@ -154,22 +155,21 @@ public class AplanmisPageIndexController {
                     params += "&stageId=" + aeaHiParStageinst.getStageId();
                 }
 
-                if(enableParamItem){
+                if (enableParamItem) {
                     params += "&itemids=" + itemId;
-                }
-                else{
+                } else {
                     List<AeaHiIteminst> aeaHiIteminstList = null;
-                    aeaHiIteminstList=aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(aeaHiApplyinst.getApplyinstId());
+                    aeaHiIteminstList = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(aeaHiApplyinst.getApplyinstId());
                     for (AeaHiIteminst aeaHiIteminst : aeaHiIteminstList) {
                         params += "&itemids=" + aeaHiIteminst.getItemId();
                     }
                 }
             }
-            if(StringUtils.isNotBlank(projInfoId)){
-                params+="&projInfoId="+projInfoId;
+            if (StringUtils.isNotBlank(projInfoId)) {
+                params += "&projInfoId=" + projInfoId;
             }
-            params+="&showBasicButton=false";
-            params+="&includePlatformResource=false";
+            params += "&showBasicButton=false";
+            params += "&includePlatformResource=false";
             realUrl += params;
             return new ContentResultForm(true, realUrl);
         } catch (Exception e) {
@@ -312,6 +312,45 @@ public class AplanmisPageIndexController {
     }
 
     /**
+     * 撤件待受理
+     *
+     * @return
+     */
+    @GetMapping("/queryWaitCancelTasksByCkIndex.html")
+    @ApiOperation("菜单-撤件待受理")
+    public ModelAndView queryWaitCancelTasksIndexByCk() {
+        ModelAndView modelAndView = new ModelAndView("view/queryWaitCancelTasksByCkIndex");
+        modelAndView.addObject("state", 0);
+        return modelAndView;
+    }
+
+    /**
+     * 撤件已受理
+     *
+     * @return
+     */
+    @GetMapping("/queryDoneCancelTasksByCkIndex.html")
+    @ApiOperation("菜单-撤件已受理")
+    public ModelAndView queryDoneCancelTasksIndexByCk() {
+        ModelAndView modelAndView = new ModelAndView("view/queryWaitCancelTasksByCkIndex");
+        modelAndView.addObject("state", 1);
+        return modelAndView;
+    }
+
+    /**
+     * 撤件已受理
+     *
+     * @return
+     */
+    @GetMapping("/queryDoneCancelTasksByBmIndex.html")
+    @ApiOperation("菜单-撤件已受理")
+    public ModelAndView queryDoneCancelTasksIndexByBm() {
+        ModelAndView modelAndView = new ModelAndView("view/queryWaitCancelTasksByBmIndex");
+        modelAndView.addObject("state", 1);
+        return modelAndView;
+    }
+
+    /**
      * 已办任务
      *
      * @return
@@ -410,7 +449,8 @@ public class AplanmisPageIndexController {
 
     /**
      * 取件登记-窗口取件
-     *唐山需求
+     * 唐山需求
+     *
      * @return
      */
     @GetMapping("/queryPickupCheckWin.html")
@@ -419,9 +459,11 @@ public class AplanmisPageIndexController {
         ModelAndView modelAndView = new ModelAndView("view/queryPickupCheckWin");
         return modelAndView;
     }
+
     /**
      * 取件登记-快递取件
-     *唐山需求
+     * 唐山需求
+     *
      * @return
      */
     @GetMapping("/queryPickupCheckExpress.html")
@@ -430,6 +472,7 @@ public class AplanmisPageIndexController {
         ModelAndView modelAndView = new ModelAndView("view/queryPickupCheckExpress");
         return modelAndView;
     }
+
     /**
      * 取件登记-已取件
      *
@@ -441,6 +484,7 @@ public class AplanmisPageIndexController {
         ModelAndView modelAndView = new ModelAndView("view/queryPickupCheckFinish");
         return modelAndView;
     }
+
     /**
      * 网上已预审
      *
@@ -782,7 +826,7 @@ public class AplanmisPageIndexController {
     @GetMapping("/queryStageConcludedApplyInfo/{stageIndex}/index.html")
     @ApiOperation("菜单-阶段已办结的工程项目")
     public ModelAndView queryStageConcludedApplyInfo(@PathVariable("stageIndex") int stageIndex) {
-        if(stageIndex<=0 || stageIndex>4){
+        if (stageIndex <= 0 || stageIndex > 4) {
             throw new InvalidParameterException("地址有误!");
         }
         ModelAndView modelAndView = new ModelAndView("view/queryStageConcludedApplyInfoIndex");

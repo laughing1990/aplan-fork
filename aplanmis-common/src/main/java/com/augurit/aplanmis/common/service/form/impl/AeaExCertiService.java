@@ -103,18 +103,21 @@ public class AeaExCertiService extends AbstractFormDataOptManager {
                 aeaExProjCertLand.setPublishTime(aeaCertiVo.getPublishTimeLand());
                 aeaExProjCertLandService.updateAeaExProjCertLand(aeaExProjCertLand);
             } else {
-                if (aeaCertiVo.getCertLandId() == null || "".equals(aeaCertiVo.getCertLandId()))
-                    aeaExProjCertLand.setCertLandId(UUID.randomUUID().toString());
-                aeaExProjCertLand.setProjInfoId(aeaCertiVo.getProjInfoId());
-                aeaExProjCertLand.setCertLandCode(aeaCertiVo.getCertLandCode());
-                aeaExProjCertLand.setLandNature(aeaCertiVo.getLandNature());
-                aeaExProjCertLand.setLandAreaValue(aeaCertiVo.getLandAreaValue());
-                aeaExProjCertLand.setLandAreaUnit(aeaCertiVo.getLandAreaUnit());
-                aeaExProjCertLand.setGovOrgCode(aeaCertiVo.getGovOrgCodeLand());
-                aeaExProjCertLand.setGovOrgName(aeaCertiVo.getGovOrgNameLand());
-                aeaExProjCertLand.setPublishTime(aeaCertiVo.getPublishTimeLand());
-                aeaExProjCertLandService.saveAeaExProjCertLand(aeaExProjCertLand);
-                this.formSave(aeaCertiVo.getFormId(), aeaExProjCertLand.getCertLandId(), EDataOpt.INSERT.getOpareteType(), null);
+                if (aeaCertiVo.getCertLandId() == null || "".equals(aeaCertiVo.getCertLandId())) {
+                    if(aeaCertiVo.getCertLandCode() != null&&!"".equals(aeaCertiVo.getCertLandCode())){
+                        aeaExProjCertLand.setCertLandId(UUID.randomUUID().toString());
+                        aeaExProjCertLand.setProjInfoId(aeaCertiVo.getProjInfoId());
+                        aeaExProjCertLand.setCertLandCode(aeaCertiVo.getCertLandCode());
+                        aeaExProjCertLand.setLandNature(aeaCertiVo.getLandNature());
+                        aeaExProjCertLand.setLandAreaValue(aeaCertiVo.getLandAreaValue());
+                        aeaExProjCertLand.setLandAreaUnit(aeaCertiVo.getLandAreaUnit());
+                        aeaExProjCertLand.setGovOrgCode(aeaCertiVo.getGovOrgCodeLand());
+                        aeaExProjCertLand.setGovOrgName(aeaCertiVo.getGovOrgNameLand());
+                        aeaExProjCertLand.setPublishTime(aeaCertiVo.getPublishTimeLand());
+                        aeaExProjCertLandService.saveAeaExProjCertLand(aeaExProjCertLand);
+                        this.formSave(aeaCertiVo.getFormId(), aeaExProjCertLand.getCertLandId(), EDataOpt.INSERT.getOpareteType(), null);
+                    }
+                }
             }
 
             //建设工程规划许可证
@@ -128,16 +131,18 @@ public class AeaExCertiService extends AbstractFormDataOptManager {
                 aeaExProjCertProject.setPublishTime(aeaCertiVo.getPublishTimeProject());
                 aeaExProjCertProjectService.updateAeaExProjCertProject(aeaExProjCertProject);
             } else {
-                if (aeaCertiVo.getCertProjectId() == null || "".equals(aeaCertiVo.getCertProjectId()))
-
-                    aeaExProjCertProject.setCertProjectId(UUID.randomUUID().toString());
-                aeaExProjCertProject.setProjInfoId(aeaCertiVo.getProjInfoId());
-                aeaExProjCertProject.setCertProjectCode(aeaCertiVo.getCertProjectCode());
-                aeaExProjCertProject.setPublishOrgCode(aeaCertiVo.getPublishOrgCodeProject());
-                aeaExProjCertProject.setPublishOrgName(aeaCertiVo.getPublishOrgNameProject());
-                aeaExProjCertProject.setPublishTime(aeaCertiVo.getPublishTimeProject());
-                aeaExProjCertProjectService.saveAeaExProjCertProject(aeaExProjCertProject);
-                this.formSave(aeaCertiVo.getFormId(), aeaExProjCertProject.getCertProjectId(), EDataOpt.INSERT.getOpareteType(), null);
+                if (aeaCertiVo.getCertProjectId() == null || "".equals(aeaCertiVo.getCertProjectId())){
+                    if (aeaCertiVo.getCertProjectCode() != null && !"".equals(aeaCertiVo.getCertProjectCode())) {
+                        aeaExProjCertProject.setCertProjectId(UUID.randomUUID().toString());
+                        aeaExProjCertProject.setProjInfoId(aeaCertiVo.getProjInfoId());
+                        aeaExProjCertProject.setCertProjectCode(aeaCertiVo.getCertProjectCode());
+                        aeaExProjCertProject.setPublishOrgCode(aeaCertiVo.getPublishOrgCodeProject());
+                        aeaExProjCertProject.setPublishOrgName(aeaCertiVo.getPublishOrgNameProject());
+                        aeaExProjCertProject.setPublishTime(aeaCertiVo.getPublishTimeProject());
+                        aeaExProjCertProjectService.saveAeaExProjCertProject(aeaExProjCertProject);
+                        this.formSave(aeaCertiVo.getFormId(), aeaExProjCertProject.getCertProjectId(), EDataOpt.INSERT.getOpareteType(), null);
+                    }
+                }
             }
 
             //建设项目选址意见书
@@ -154,22 +159,23 @@ public class AeaExCertiService extends AbstractFormDataOptManager {
                 aeaExProjSite.setPublishTime(aeaCertiVo.getPublishTimeSite());
                 aeaExProjSiteService.updateAeaExProjSite(aeaExProjSite);
             } else {
-                if (aeaCertiVo.getSiteId() == null || "".equals(aeaCertiVo.getSiteId()))
-                    aeaExProjSite.setSiteId(UUID.randomUUID().toString());
-                aeaExProjSite.setProjInfoId(aeaCertiVo.getProjInfoId());
-                aeaExProjSite.setSiteCode(aeaCertiVo.getSiteCode());
-                aeaExProjSite.setLandAreaValue(aeaCertiVo.getLandAreaValueSite());
-                aeaExProjSite.setLandAreaUnit(aeaCertiVo.getLandAreaUnit());
-                aeaExProjSite.setConstructionSize(aeaCertiVo.getConstructionSize());
-                aeaExProjSite.setGovOrgCode(aeaCertiVo.getGovOrgNameSite());
-                aeaExProjSite.setGovOrgName(aeaCertiVo.getGovOrgNameSite());
-                aeaExProjSite.setPublishTime(aeaCertiVo.getPublishTimeSite());
-                aeaExProjSiteService.saveAeaExProjSite(aeaExProjSite);
+                if (aeaCertiVo.getSiteId() == null || "".equals(aeaCertiVo.getSiteId())){
+                    if(aeaCertiVo.getSiteCode() != null&&!"".equals(aeaCertiVo.getSiteCode())){
+                        aeaExProjSite.setSiteId(UUID.randomUUID().toString());
+                        aeaExProjSite.setProjInfoId(aeaCertiVo.getProjInfoId());
+                        aeaExProjSite.setSiteCode(aeaCertiVo.getSiteCode());
+                        aeaExProjSite.setLandAreaValue(aeaCertiVo.getLandAreaValueSite());
+                        aeaExProjSite.setLandAreaUnit(aeaCertiVo.getLandAreaUnit());
+                        aeaExProjSite.setConstructionSize(aeaCertiVo.getConstructionSize());
+                        aeaExProjSite.setGovOrgCode(aeaCertiVo.getGovOrgNameSite());
+                        aeaExProjSite.setGovOrgName(aeaCertiVo.getGovOrgNameSite());
+                        aeaExProjSite.setPublishTime(aeaCertiVo.getPublishTimeSite());
+                        aeaExProjSiteService.saveAeaExProjSite(aeaExProjSite);
 
-                this.formSave(aeaCertiVo.getFormId(), aeaExProjSite.getSiteId(), EDataOpt.INSERT.getOpareteType(), null);
+                        this.formSave(aeaCertiVo.getFormId(), aeaExProjSite.getSiteId(), EDataOpt.INSERT.getOpareteType(), null);
+                    }
+                }
             }
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
