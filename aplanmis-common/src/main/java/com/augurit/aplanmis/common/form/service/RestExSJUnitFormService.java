@@ -1,6 +1,11 @@
 package com.augurit.aplanmis.common.form.service;
 
 import com.alibaba.fastjson.JSON;
+import com.augurit.agcloud.bpm.admin.sto.service.impl.AbstractFormDataOptManager;
+import com.augurit.agcloud.bpm.common.constant.EDataOpt;
+import com.augurit.agcloud.bpm.common.domain.ActStoForm;
+import com.augurit.agcloud.bpm.common.domain.ActStoForminst;
+import com.augurit.agcloud.bpm.common.domain.vo.FormDataOptResult;
 import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.aplanmis.common.constants.GDUnitType;
@@ -15,7 +20,7 @@ import java.util.*;
 
 @Service
 @Transactional
-public class RestExSJUnitFormService {
+public class RestExSJUnitFormService extends AbstractFormDataOptManager {
     @Autowired
     private AeaExProjBuildMapper aeaExProjBuildMapper;
     @Autowired
@@ -37,7 +42,10 @@ public class RestExSJUnitFormService {
                 aeaExProjBuild.setBuildId(UuidUtil.generateUuid());
                 aeaExProjBuild.setCreateTime(new Date());
                 aeaExProjBuild.setRootOrgId(SecurityContext.getCurrentOrgId());
-                int i = aeaExProjBuildMapper.insertAeaExProjBuild(aeaExProjBuild);
+                aeaExProjBuildMapper.insertAeaExProjBuild(aeaExProjBuild);
+
+                //            if (StringUtils.isBlank(aeaExProjCertBuild.getFormId())) throw new Exception("缺少formId");
+                this.formSave(aeaExProjBuild.getFormId(), aeaExProjBuild.getBuildId(), EDataOpt.INSERT.getOpareteType(), null);
             }else {
                 aeaExProjBuildMapper.updateAeaExProjBuild(aeaExProjBuild);
             }
@@ -332,5 +340,21 @@ public class RestExSJUnitFormService {
             person.setLinkmanCertNo(aeaLinkmanInfoById.getLinkmanCertNo());
         }
         return person;
+    }
+
+    @Override
+    public FormDataOptResult doformSave(String formId, String metaTableId, Integer opType, Object dataEntity) throws Exception {
+        FormDataOptResult result = new FormDataOptResult();
+        result.setSuccess(true);
+        ActStoForminst actStoForminst = new ActStoForminst();
+        actStoForminst.setFormId(formId);
+        actStoForminst.setFormPrimaryKey(metaTableId);
+        result.setActStoForminst(actStoForminst);
+        return result;
+    }
+
+    @Override
+    public FormDataOptResult doformDelete(ActStoForm formVo, Object dataEntity) throws Exception {
+        return null;
     }
 }
