@@ -452,6 +452,7 @@ var vm = new Vue({
         initPage: function() {
             var _that = this;
             _that.unitInfoShowFrom.projInfoId = _that.getUrlParam('projInfoId');
+            _that.unitInfoShowFrom.formId = _that.getUrlParam('formId');
             this.applyJianliFrom.unitType = _that.C_PRJ_ENT_TYPE.gongchengjianli;
             this.applyJianliFrom.linkmanType = _that.C_PRJ_PERSON_POST.gongchengjianli;
         },

@@ -86,6 +86,7 @@ var vm = new Vue({
     mounted: function () {
         var _that = this;
         _that.exProjFrom.projInfoId = projInfoId;
+        _that.exProjFrom.formId = formId;
         _that.getDictList('XM_JZLX,XM_NATURE,XM_FUNCTION,XM_SCALE_TYPE,XM_PROJECT_LEVEL');
         _that.getGovAreaCodeList();
         _that.getExProjForm();
