@@ -3774,11 +3774,9 @@ var vm = new Vue({
       if (_that.applySubjectType == 0 && _that.applyPersonFrom.applyLinkmanId) {
         _that.rootApplyLinkmanId = _that.applyPersonFrom.applyLinkmanId;
         _that.rootLinkmanInfoId = _that.applyPersonFrom.linkLinkmanId;
-      }
-      ;
-      if (_that.buttonStyle == 4) {
-        _that.IsJustApplyinst = 1;
-      }
+      };
+      _that.IsJustApplyinst = 1;
+
       //选择的情形
       var _isGreenWay = _that.isGreenWay==true?'1':'0';
       var parmas = {
