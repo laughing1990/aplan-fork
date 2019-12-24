@@ -551,6 +551,7 @@ public class AeaHiApplyinstCorrectServiceImpl implements AeaHiApplyinstCorrectSe
         aeaHiApplyinstCorrect.setIteminstName(itemNames.substring(0, itemNames.length() - 1));
         aeaHiApplyinstCorrect.setChargeOrgName(chargeOrgName.substring(0, chargeOrgName.length() - 1));
         aeaHiApplyinstCorrect.setMatCorrectDtos(matCorrectDtos);
+        aeaHiApplyinstCorrect.setAeaHiIteminstList(aeaHiIteminstList);
         return new ContentResultForm(true, aeaHiApplyinstCorrect, "待补全材料清单查询成功！");
     }
 
