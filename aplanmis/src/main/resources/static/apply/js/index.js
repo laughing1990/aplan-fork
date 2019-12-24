@@ -630,6 +630,21 @@ var vm = new Vue({
         isLeaf: 'isLeaf'
       },
       soTreeData: [],
+      soSeachText: '',
+      solicitForm: {
+        solicitTopic: '',
+        solicitContent: '',
+        solicitType:'i',
+        solicitDueDays: 1,
+        solicitTimeruleId: '0',
+        solicitTopic: '',
+      },
+      solicitFormRules: {
+        solicitTopic: [{required: true,message: '请填写征询主题', trigger: 'change'}],
+        solicitContent: [{required: true,message: '请填写征询内容', trigger: 'change'}],
+        solicitDueDays: [{required: true,message: '请填写征询时限', trigger: 'change'}],
+      },
+      soRulesList: [],
       // 意见征求 end
     }
   },
@@ -684,6 +699,45 @@ var vm = new Vue({
   },
   methods: {
     // 意见征询 start
+    // 发起征询
+    startSolicit: function(){
+      var vm = this;
+    },
+    // 打开征询弹窗
+    openSoDialog: function(){
+      this.getTimeRuleList();
+      this.solicitOpinionVisible = true;
+    },
+    // 得到容缺时限规则数据
+    getTimeRuleList: function(){
+      var vm = this;
+      if (vm.soRulesList.length) {
+        return null;
+      }
+      request('', {
+        url: ctx + 'rest/act/sto/timerule/getActStoTimeruleByOrgId',
+        type: 'get',
+      }, function(res){
+        if (res.success) {
+          vm.soRulesList = res.content;
+          if(vm.soRulesList.length > 0){
+            //格式化一下label
+            for(var i=0; i<vm.soRulesList.length; i++){
+              var timeruleName = vm.soRulesList[i].timeruleName;
+              if(timeruleName && timeruleName.length > 3)
+                vm.soRulesList[i].timeruleName = timeruleName.substring(0,3);
+            }
+            //默认选择工作日
+            vm.solicitForm.solicitTimeruleId = vm.soRulesList[0].timeruleId;
+            vm.solicitForm.solicitDueDays = 1;
+          }
+        } else {
+          vm.$message.error(res.message || '获取时限规则数据失败');
+        }
+      },function(){
+        vm.$message.error('获取时限规则数据失败');
+      })
+    },
     // 切换表标签页
     changeOsTab: function(i){
       this.soActiveTabIndex = i;
