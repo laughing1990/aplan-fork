@@ -429,7 +429,7 @@ and ahic_123.creater = #{currentUserId}
 
     <sql id="searchMatCompletByUser">
         SELECT
-        '1' as isCorrect,
+        '0' as isCorrect,
         ahap_123.IS_SERIES_APPROVE AS isSeriesApprove,
         ahap_123.APPLYINST_ID  AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
@@ -468,7 +468,7 @@ and ahic_123.creater = #{currentUserId}
 
 
         SELECT
-        '1' as isCorrect,
+        '0' as isCorrect,
         ahap_123.IS_SERIES_APPROVE AS isSeriesApprove,
         ahap_123.APPLYINST_ID  AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
@@ -505,7 +505,7 @@ and ahic_123.creater = #{currentUserId}
 
 
         SELECT
-        '1' as isCorrect,
+        '0' as isCorrect,
         ahap_123.IS_SERIES_APPROVE isSeriesApprove,
         ahap_123.APPLYINST_ID  AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
@@ -541,7 +541,7 @@ and ahic_123.creater = #{currentUserId}
         UNION
 
         SELECT
-        '1' as isCorrect,
+        '0' as isCorrect,
         ahap_123.IS_SERIES_APPROVE isSeriesApprove,
         ahap_123.APPLYINST_ID  AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
@@ -578,7 +578,7 @@ and ahic_123.creater = #{currentUserId}
 
     <sql id="searchStayMatCorrectListByCurrentUser">
         SELECT
-        '0' as isCorrect,
+        '1' as isCorrect,
         '0' isSeriesApprove,
         ''  AS applyinstId,
         ahap_123.APPLYINST_CODE applyinstCode,
@@ -652,7 +652,7 @@ and ahic_123.creater = #{currentUserId}
         </if>
         UNION
         SELECT
-        '0' as isCorrect,
+        '1' as isCorrect,
         '1' isSeriesApprove,
         ''  AS applyinstId,
         ahap_123.APPLYINST_CODE applyinstCode,
