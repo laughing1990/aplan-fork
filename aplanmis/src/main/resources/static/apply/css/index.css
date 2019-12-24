@@ -2051,6 +2051,9 @@ textarea {
     margin-top: -6px;
     cursor: pointer;
 }
+.solicit-o-wrap .el-textarea__inner{
+    padding: 5px 10px;
+}
 /*意见征求 end*/
 
 
