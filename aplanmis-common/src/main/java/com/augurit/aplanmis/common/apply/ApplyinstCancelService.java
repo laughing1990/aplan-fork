@@ -107,11 +107,15 @@ public abstract class ApplyinstCancelService {
     private final static int STATUS_CODE_103 = 103;
     private final static int STATUS_CODE_104 = 104;
 
-    //撤件时触发的外部事件
+    //撤件受理时触发的外部事件
     public abstract void preCustomEvents(String applyinstId) throws Exception;
 
-    //撤件后触发的外部事件
+    //撤件完成部门审批后触发的外部事件
     public abstract void postCustomEvents(String applyinstId) throws Exception;
+
+    //业主提交撤件时触发的外部事件
+    public abstract void ApplySubmittedEvents(String applyinstId) throws Exception;
+
 
     /**
      * 检测申报实例或事项实例是否满足撤件申请
@@ -261,6 +265,13 @@ public abstract class ApplyinstCancelService {
                 aeaHiIteminstService.updateAeaHiIteminstStateAndInsertOpsAeaLogItemStateHist(iteminst.getIteminstId(), "业主申请撤件", "申报撤件", null, ItemStatus.APPLY_REVOKE.getValue(), iteminst.getApproveOrgId());
             }
         }
+
+        try {
+            this.preCustomEvents(applyinstCancelInfoVo.getApplyinstId());    //调用外部事件
+        } catch (Exception e) {
+            return "调用外部事件发生错误！";
+        }
+
         return null;
     }
 
@@ -424,6 +435,13 @@ public abstract class ApplyinstCancelService {
             }
         }
         aeaHiApplyinstCancelService.updateAeaHiApplyinstCancel(aeaHiApplyinstCancel);
+
+        try {
+            this.preCustomEvents(aeaHiApplyinstCancel.getApplyinstId());    //调用外部事件
+        } catch (Exception e) {
+            return "调用外部事件发生错误！";
+        }
+
         return null;
     }
 
