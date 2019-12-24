@@ -4,8 +4,10 @@ import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
+import com.augurit.aplanmis.common.domain.AeaHiSolicit;
 import com.augurit.aplanmis.front.solicit.service.RestAeaHiSolicitService;
 import com.augurit.aplanmis.front.solicit.vo.SolicitListVo;
+import com.augurit.aplanmis.front.solicit.vo.SolicitVo;
 import com.github.pagehelper.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -13,10 +15,9 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -67,5 +68,20 @@ public class RestAeaHiSolicitController {
 
         List<SolicitListVo> listSolicit = restAeaHiSolicitService.listSolicit(type, page);
         return new ContentResultForm<>(true, listSolicit, "success");
+    }
+
+    @ApiOperation("意见征求接口")
+    @PostMapping("/create")
+    public ResultForm solicitByDept(@Valid @RequestBody SolicitVo solicitVo) throws Exception{
+        if(StringUtils.isBlank(solicitVo.getDetailInfo())){
+            return new ResultForm(false,"参数征求详细信息detailInfo不能为空！");
+        }
+        try{
+            AeaHiSolicit aeaHiSolicit = solicitVo.convertToAeaHiSolicit();
+            restAeaHiSolicitService.createSolicit(aeaHiSolicit,solicitVo.getSolicitType(),solicitVo.getDetailInfo(),solicitVo.getBusType());
+            return new ResultForm(true);
+        }catch (Exception e){
+            return new ResultForm(false,"按事项发起失败！");
+        }
     }
 }

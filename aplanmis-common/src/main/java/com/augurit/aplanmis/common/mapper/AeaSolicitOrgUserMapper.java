@@ -19,4 +19,6 @@ public interface AeaSolicitOrgUserMapper {
      void deleteAeaSolicitOrgUser(@Param("id") String id) ;
      List <AeaSolicitOrgUser> listAeaSolicitOrgUser(AeaSolicitOrgUser aeaSolicitOrgUser) ;
      AeaSolicitOrgUser getAeaSolicitOrgUserById(@Param("id") String id) ;
+
+     List <AeaSolicitOrgUser> listAeaSolicitOrgUserByOrgId(@Param("orgId") String orgId, @Param("rootOrgId") String rootOrgId) ;
 }

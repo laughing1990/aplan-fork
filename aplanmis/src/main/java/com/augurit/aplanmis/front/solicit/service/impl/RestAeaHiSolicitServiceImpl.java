@@ -1,18 +1,26 @@
 package com.augurit.aplanmis.front.solicit.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.service.om.OpuOmOrgService;
+import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.front.solicit.service.RestAeaHiSolicitService;
+import com.augurit.aplanmis.front.solicit.service.SolicitCodeService;
 import com.augurit.aplanmis.front.solicit.vo.SolicitListVo;
 import com.github.pagehelper.Page;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author:chendx
@@ -22,8 +30,27 @@ import java.util.List;
 @Service
 @Transactional
 public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService{
+
+    @Autowired
+    private AeaHiSolicitDetailMapper aeaHiSolicitDetailMapper;
+
+    @Autowired
+    private AeaHiSolicitMapper aeaHiSolicitMapper;
+
+    @Autowired
+    private AeaHiSolicitDetailUserMapper aeaHiSolicitDetailUserMapper;
+
+    @Autowired
+    private SolicitCodeService solicitCodeService;
+
     @Autowired
     private OpuOmOrgService opuOmOrgService;
+
+    @Autowired
+    private AeaSolicitItemUserMapper aeaSolicitItemUserMapper;
+
+    @Autowired
+    private AeaSolicitOrgUserMapper aeaSolicitOrgUserMapper;
 
     @Override
     public List<OpuOmOrg> listOrg(String isRoot, String parentOrgId) throws Exception {
@@ -65,5 +92,103 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService{
     public List<SolicitListVo> listSolicit(String type, Page page) throws Exception {
         //TODO
         return null;
+    }
+
+
+    /**
+     * 创建意见征求实例
+     * @param aeaHiSolicit 征求基本信息
+     * @param type 征求类型，i事项征求，d部门征询
+     * @param busType 征求业务类型，一次征询、意见征求、部门辅导
+     * @param detailInfo 征求详细信息 格式[{\"itemId\":\"123\",\"itemVerId\":\"123\",\"orgId\":\"123\",\"orgName\":\"123\"}]"
+     * @throws Exception
+     */
+    @Override
+    public void createSolicit(AeaHiSolicit aeaHiSolicit, String type, String detailInfo,String busType) throws Exception {
+        //1、先解析事项信息
+        JSONArray jsonArray = JSONArray.parseArray(detailInfo);
+        if(jsonArray == null || jsonArray.size() == 0){
+            //事项信息为空则直接返回
+            throw new RuntimeException("征求的事项或部门信息不能为空！");
+        }
+        String state = "1";//征求中
+        String currentUserName = SecurityContext.getCurrentUserName();
+        String currentUserId = SecurityContext.getCurrentUserId();
+        String topOrgId = SecurityContext.getCurrentOrgId();
+        String currentOrgId = null;
+        String currentOrgName = null;
+        List<OpuOmOrg> orgs = opuOmOrgService.listOpuOmOrgByUserId(currentUserId);
+        if(orgs.size() > 0){
+            currentOrgId = orgs.get(0).getOrgId();
+            currentOrgName = orgs.get(0).getOrgName();
+        }
+        Date date = new Date();
+        String solicitId = UUID.randomUUID().toString();
+        //2、保存意见征求主表信息
+        aeaHiSolicit.setSolicitId(solicitId);
+        aeaHiSolicit.setSolicitType(type);
+        aeaHiSolicit.setSolicitStartTime(date);
+        aeaHiSolicit.setSolicitState(state);
+        aeaHiSolicit.setInitiatorOrgId(currentOrgId);
+        aeaHiSolicit.setInitiatorOrgName(currentOrgName);
+        aeaHiSolicit.setInitiatorUserId(currentUserId);
+        aeaHiSolicit.setInitiatorUserName(currentUserName);
+        aeaHiSolicit.setCreater(currentUserName);
+        aeaHiSolicit.setCreateTime(date);
+        aeaHiSolicit.setRootOrgId(topOrgId);
+        aeaHiSolicitMapper.insertAeaHiSolicit(aeaHiSolicit);
+
+        //保存意见征求的事项详细信息
+        for(Object temp : jsonArray){
+            JSONObject jsonObject = (JSONObject) temp;
+            AeaHiSolicitDetail detail = new AeaHiSolicitDetail();
+            String detailId = UUID.randomUUID().toString();
+            detail.setSolicitId(solicitId);
+            detail.setSolicitDetailId(detailId);
+            if("i".equals(type)) {
+                detail.setItemId(jsonObject.getString("itemId"));
+                detail.setItemVerId(jsonObject.getString("itemVerId"));
+            }
+            detail.setDetailOrgId(jsonObject.getString("orgId"));
+            detail.setDetailOrgName(jsonObject.getString("orgName"));
+            detail.setDetailDueDays(aeaHiSolicit.getSolicitDueDays());
+            detail.setDetailOrgId(topOrgId);
+            detail.setCreater(currentUserName);
+            detail.setCreateTime(date);
+            detail.setDetailStartTime(date);
+            detail.setIsDeleted("0");
+            detail.setDetailState(state);
+            aeaHiSolicitDetailMapper.insertAeaHiSolicitDetail(detail);
+            //创建征求的用户详情信息实例
+            List<AeaHiSolicitDetailUser> detailUsers = Lists.newArrayList();
+            if("i".equals(type)){
+                //查询事项配置的用户信息
+                List<AeaSolicitItemUser> aeaSolicitItemUsers = aeaSolicitItemUserMapper.listSolicitItemUserByItemVerId(detail.getItemVerId(), topOrgId);
+                for(int i=0,len=aeaSolicitItemUsers.size(); i<len; i++){
+                    AeaHiSolicitDetailUser detailUser = createDetailUser(currentUserName, date, detailId, aeaSolicitItemUsers.get(i).getUserId());
+                    detailUsers.add(detailUser);
+                }
+            }else {
+                List<AeaSolicitOrgUser> aeaSolicitOrgUsers = aeaSolicitOrgUserMapper.listAeaSolicitOrgUserByOrgId(detail.getDetailOrgId(), topOrgId);
+                for(int j=0,len=aeaSolicitOrgUsers.size(); j<len; j++){
+                    AeaHiSolicitDetailUser detailUser = createDetailUser(currentUserName, date, detailId, aeaSolicitOrgUsers.get(j).getUserId());
+                    detailUsers.add(detailUser);
+                }
+            }
+            if(detailUsers.size() > 0){
+                aeaHiSolicitDetailUserMapper.batchInsertAeaHiSolicitDetailUser(detailUsers);
+            }
+        }
+    }
+
+    private AeaHiSolicitDetailUser createDetailUser(String currentUserName, Date date, String detailId,String userId) {
+        AeaHiSolicitDetailUser detailUser = new AeaHiSolicitDetailUser();
+        detailUser.setDetailTaskId(UUID.randomUUID().toString());
+        detailUser.setSolicitDetailId(detailId);
+        detailUser.setUserId(userId);
+        detailUser.setIsDeleted("0");
+        detailUser.setCreater(currentUserName);
+        detailUser.setCreateTime(date);
+        return detailUser;
     }
 }

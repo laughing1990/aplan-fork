@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.front.solicit.service;
 
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
+import com.augurit.aplanmis.common.domain.AeaHiSolicit;
 import com.augurit.aplanmis.front.solicit.vo.SolicitListVo;
 import com.github.pagehelper.Page;
 
@@ -30,4 +31,7 @@ public interface RestAeaHiSolicitService {
      * @return List<SolicitListVo>
      */
     List<SolicitListVo> listSolicit(String type, Page page) throws Exception;
+
+    public void createSolicit(AeaHiSolicit aeaHiSolicit, String type, String detailInfo,String busType) throws Exception;
+
 }
