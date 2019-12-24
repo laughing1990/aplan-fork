@@ -616,7 +616,7 @@ var vm = new Vue({
       themeCategory: '',
       themeCategoryMsg: '', // 没有符合条件的主题, 请检查配置是否正确
       isGreenWay: false, // 是否设置为绿色通道
-      // 意见征求 start
+      // 意见征求 start----------------------
       solicitOpinionVisible: false,
       solicitOpinionLoading: false,
       soActiveTabIndex: 0,
@@ -648,7 +648,7 @@ var vm = new Vue({
       soParallelItems: [],
       soCoreItems: [],
       soCheckedOrgList: [],
-      // 意见征求 end
+      // 意见征求 end--------------------------
     }
   },
   created: function () {
@@ -701,7 +701,7 @@ var vm = new Vue({
     }
   },
   methods: {
-    // 意见征求 start
+    // 意见征求 start-----------------------
     // 发起征求
     startSolicit: function(){
       var vm = this;
@@ -769,6 +769,11 @@ var vm = new Vue({
           })
         }
       });
+    },
+    // 选择orgId
+    soSelectedOrg: function(row, item){
+      row.orgId = item.orgId;
+      row.orgName = item.orgName;
     },
     // 关闭征求弹窗
     closeSoDialog: function(){
@@ -890,7 +895,7 @@ var vm = new Vue({
         vm.$message.error('加载部门数据失败');
       })
     },
-    // 意见征求 end
+    // 意见征求 end---------------------
     // 查询主题信息
     getThemeInfoByThemeCategory: function () {
       var _that = this;

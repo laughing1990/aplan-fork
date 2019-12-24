@@ -2154,7 +2154,8 @@
                                placeholder="请选择行政区划">
                       <el-option v-for="(item,indexOp) in scope.row.carryOutItems" :label="item.regionName"
                                  :key="indexOp"
-                                 @click.native="getItemOrgId(scope.row,scope.$index,item, 'core')" :value="item.itemVerId"></el-option>
+                                 @click.native="getItemOrgId(scope.row,scope.$index,item, 'core')||soSelectedOrg(scope.row,item)"
+                                 :value="item.itemVerId"></el-option>
                     </el-select>
                   </div>
                   <div v-else>
@@ -2169,7 +2170,8 @@
                                placeholder="请选择实施主体">
                       <el-option v-for="(item,indexOp) in scope.row.carryOutItems" :label="item.orgName"
                                  :key="indexOp"
-                                 @click.native="getItemOrgId(scope.row,scope.$index,item,'croe')" :value="item.itemVerId"></el-option>
+                                 @click.native="getItemOrgId(scope.row,scope.$index,item,'croe')||soSelectedOrg(scope.row,item)"
+                                 :value="item.itemVerId"></el-option>
                     </el-select>
                   </div>
                   <div v-else>
@@ -2247,7 +2249,8 @@
                                placeholder="请选择行政区划">
                       <el-option v-for="(item,indexOp) in scope.row.carryOutItems" :label="item.regionName"
                                  :key="indexOp"
-                                 @click.native="getItemOrgId(scope.row,scope.$index,item, 'core')" :value="item.itemVerId"></el-option>
+                                 @click.native="getItemOrgId(scope.row,scope.$index,item, 'core')||soSelectedOrg(scope.row,item)"
+                                 :value="item.itemVerId"></el-option>
                     </el-select>
                   </div>
                   <div v-else>
@@ -2262,7 +2265,8 @@
                                placeholder="请选择实施主体">
                       <el-option v-for="(item,indexOp) in scope.row.carryOutItems" :label="item.orgName"
                                  :key="indexOp"
-                                 @click.native="getItemOrgId(scope.row,scope.$index,item,'croe')" :value="item.itemVerId"></el-option>
+                                 @click.native="getItemOrgId(scope.row,scope.$index,item,'croe')||soSelectedOrg(scope.row,item)"
+                                 :value="item.itemVerId"></el-option>
                     </el-select>
                   </div>
                   <div v-else>
