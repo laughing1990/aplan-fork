@@ -1,7 +1,6 @@
 var commonQueryParams = [],
     aedit_solicit_org_validator,
     solicit_org_tb,
-    aedit_solicit_org_user_validator,
     solicit_org_user_tb;
 
 $(function () {

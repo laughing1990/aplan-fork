@@ -37,13 +37,13 @@
             <div class="m-portlet__body" style="padding: 10px 0px;">
                 <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 10px;">
                     <li class="nav-item">
-                        <a id="solicitOrgTab" class="nav-link active" data-toggle="tab" href="#m_tabs_1" onclick="clearSearchSolicitOrgList();">
+                        <a class="nav-link active" data-toggle="tab" href="#m_tabs_1" onclick="clearSearchSolicitOrgList();">
                             <i class="la la-gear"></i>
                             征求部门
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a id="solicitUserTab" class="nav-link" data-toggle="tab" href="#m_tabs_2" onclick="clickToLoadSolicitOrgUser()">
+                        <a class="nav-link" data-toggle="tab" href="#m_tabs_2" onclick="clickToLoadSolicitOrgUser()">
                             <i class="la la-gear"></i>
                             征求人员
                         </a>

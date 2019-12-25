@@ -38,7 +38,7 @@
         where SOLICIT_ITEM_ID = #{id}
     </select>
 
-    <select id="getAeaSolicitItemRelInfoById"  resultType="AeaItemUser">
+    <select id="getAeaSolicitItemRelInfoById"  resultType="AeaSolicitItem" >
         select
             <include refid="alias_allColumns">
                 <property name="alias" value="soliItem"/>
@@ -63,7 +63,7 @@
                 aib.BJ_TYPE,
                 aib.IS_CATALOG,
                 aib.GUIDE_ORG_NAME,
-                org.ORG_NAME,
+                org.ORG_NAME
             from AEA_ITEM_BASIC aib
             left join OPU_OM_ORG org on org.ORG_ID = aib.ORG_ID and org.ORG_DELETED = '0'
         )item on item.ITEM_ID = soliItem.ITEM_ID and item.ITEM_VER_ID = soliItem.ITEM_VER_ID
@@ -134,7 +134,7 @@
                 aib.BJ_TYPE,
                 aib.IS_CATALOG,
                 aib.GUIDE_ORG_NAME,
-                org.ORG_NAME,
+                org.ORG_NAME
             from AEA_ITEM_BASIC aib
             left join OPU_OM_ORG org on org.ORG_ID = aib.ORG_ID and org.ORG_DELETED = '0'
         )item on item.ITEM_ID = soliItem.ITEM_ID and item.ITEM_VER_ID = soliItem.ITEM_VER_ID
