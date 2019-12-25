@@ -179,7 +179,7 @@ public class AeaHiSolicitVo {
     private String isSeriesApprove;
 
     @ApiModelProperty(value = "")
-    private String iteminstName;
+    private String itemName;
 
     @ApiModelProperty(value = "")
     private String stageName;
@@ -197,5 +197,14 @@ public class AeaHiSolicitVo {
 
     @ApiModelProperty(value = "提醒信息列表")
     private List<ActStoRemindAndReceiver> remindList;
+
+    private String taskId;
+    @ApiModelProperty(value = "申报来源")
+    private String applyinstSource;
+    @ApiModelProperty(value = "申报来源：网厅，窗口")
+    private String applySource;
+    @ApiModelProperty(value = "申报类型，单项 并联")
+    private String applyType;
+
 
 }

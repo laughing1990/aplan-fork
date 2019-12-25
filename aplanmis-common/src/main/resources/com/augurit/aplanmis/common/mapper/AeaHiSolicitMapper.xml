@@ -298,6 +298,12 @@
         from AEA_HI_SOLICIT ahs
         where ahs.SOLICIT_CODE = #{solicitCode}
     </select>
+
+    <sql id="queryByThemeId">
+        <if test="theme!=null and theme!=''">
+            and theme.THEME_ID=#{theme}
+        </if>
+    </sql>
     <!--查询意见征求，一次征询，部门征求等意见列表-->
     <select id="listSolicit" resultType="com.augurit.aplanmis.common.vo.solicit.AeaHiSolicitVo">
 
@@ -316,12 +322,18 @@
         ahs.OVERDUE_TIME overdueTime,
         ahs.REMAINING_TIME remainingTime,
         ahs.TIMERULE_UNIT as timeruleUnit,
+        ahs.taskId as taskId,
+        ahs.SOLICIT_DETAIL_ID as solicitDetailId,
+        ahs.DETAIL_TASK_ID as detailTaskId,
         aha.APPLYINST_CODE as applyinstCode,
         aha.IS_SERIES_APPROVE as isSeriesApprove,
+        ( CASE aha.IS_SERIES_APPROVE WHEN '0' THEN '并联' ELSE '单项' END ) AS applyType,
         aha.CREATE_TIME as createTime,
-        aha.ITEMINST_NAME as iteminstName,
+        aha.ITEMINST_NAME as itemName,
         aha.STAGE_NAME as stageName,
         aha.THEME_NAME as themeName,
+        aha.APPLYINST_SOURCE as applyinstSource,
+        ( CASE aha.APPLYINST_SOURCE WHEN 'win' THEN '网厅' ELSE '窗口' END ) AS applySource,
         api.PROJ_NAME as projName,
         api.PROJ_INFO_ID as projInfoId,
         api.LOCAL_CODE as localCode
@@ -339,11 +351,16 @@
         ahs.INITIATOR_ORG_NAME,
         ahs.INITIATOR_USER_ID,
         ahs.INITIATOR_USER_NAME,
+        ahsd.SOLICIT_DETAIL_ID,
+        ahsdu.DETAIL_TASK_ID,
         ahsdu.USER_ID,
         asti.OVERDUE_TIME,
         asti.REMAINING_TIME,
-        asti.TIMERULE_UNIT
+        asti.TIMERULE_UNIT,
+        art.ID_ as taskId
         FROM AEA_HI_SOLICIT ahs
+        left join ACT_RU_TASK art on art.PROC_INST_ID_=ahs.PROCINST_ID
+        left join act_hi_taskinst aht on aht.ID_=ahs.HI_TASKINST_ID
         LEFT JOIN AEA_HI_SOLICIT_DETAIL ahsd ON ahsd.SOLICIT_ID = ahs.SOLICIT_ID
         LEFT JOIN AEA_HI_SOLICIT_DETAIL_USER ahsdu ON ahsdu.SOLICIT_DETAIL_ID = ahsd.SOLICIT_DETAIL_ID
         LEFT JOIN AEA_SOLICIT_ITEM asi ON asi.ITEM_VER_ID = ahsd.ITEM_VER_ID
@@ -366,11 +383,16 @@
         ahs.INITIATOR_ORG_NAME,
         ahs.INITIATOR_USER_ID,
         ahs.INITIATOR_USER_NAME,
+        ahsd.SOLICIT_DETAIL_ID,
+        ahsdu.DETAIL_TASK_ID,
         ahsdu.USER_ID,
         asti.OVERDUE_TIME,
         asti.REMAINING_TIME,
-        asti.TIMERULE_UNIT
+        asti.TIMERULE_UNIT,
+        art.ID_ as taskId
         FROM AEA_HI_SOLICIT ahs
+        left join ACT_RU_TASK art on art.PROC_INST_ID_=ahs.PROCINST_ID
+        left join act_hi_taskinst aht on aht.ID_=ahs.HI_TASKINST_ID
         LEFT JOIN AEA_HI_SOLICIT_DETAIL ahsd ON ahsd.SOLICIT_ID = ahs.SOLICIT_ID
         LEFT JOIN AEA_HI_SOLICIT_DETAIL_USER ahsdu ON ahsdu.SOLICIT_DETAIL_ID = ahsd.SOLICIT_DETAIL_ID
         LEFT JOIN AEA_SOLICIT_ORG aso ON aso.ORG_ID = ahsd.DETAIL_ORG_ID
@@ -387,7 +409,7 @@
         aha.APPLYINST_CODE,
         aha.IS_SERIES_APPROVE,
         aha.CREATE_TIME,
-        ( CASE aha.APPLYINST_SOURCE WHEN 'win' THEN '网厅申报' ELSE '窗口申报' END ) AS APPLYINST_SOURCE,
+        aha.APPLYINST_SOURCE,
         NULL AS ITEMINST_NAME,
         aps_123.STAGE_NAME,
         theme.THEME_NAME
@@ -396,14 +418,18 @@
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
-        WHERE aha.IS_SERIES_APPROVE = '0'
+        <where>
+            aha.IS_SERIES_APPROVE = '0'
+            <include refid="queryByThemeId"></include>
+        </where>
+
         UNION
         SELECT
         aha.APPLYINST_ID,
         aha.APPLYINST_CODE,
         aha.IS_SERIES_APPROVE,
         aha.CREATE_TIME,
-        ( CASE aha.APPLYINST_SOURCE WHEN 'win' THEN '网厅申报' ELSE '窗口申报' END ) AS APPLYINST_SOURCE,
+        aha.APPLYINST_SOURCE,
         NULL AS ITEMINST_NAME,
         aps_123.STAGE_NAME,
         theme.THEME_NAME
@@ -412,21 +438,28 @@
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
-        WHERE aha.IS_SERIES_APPROVE = '1' AND ahs.stage_id IS NOT NULL AND ahs.IS_PARALLEL = '1'
+        <where>
+            aha.IS_SERIES_APPROVE = '1' AND ahs.stage_id IS NOT NULL AND ahs.IS_PARALLEL = '1'
+            <include refid="queryByThemeId"></include>
+        </where>
         UNION
         SELECT
         aha.APPLYINST_ID,
         aha.APPLYINST_CODE,
         aha.IS_SERIES_APPROVE,
         aha.CREATE_TIME,
-        ( CASE aha.APPLYINST_SOURCE WHEN 'win' THEN '网厅申报' ELSE '窗口申报' END ) AS APPLYINST_SOURCE,
+        aha.APPLYINST_SOURCE,
         iteminst.ITEMINST_NAME AS ITEMINST_NAME,
         NULL AS STAGE_NAME,
         NULL AS THEME_NAME
         FROM AEA_HI_APPLYINST aha
         INNER JOIN AEA_HI_SERIESINST ahs ON ahs.applyinst_id = aha.applyinst_id
         LEFT JOIN AEA_HI_ITEMINST iteminst ON iteminst.SERIESINST_ID = ahs.SERIESINST_ID
-        WHERE aha.IS_SERIES_APPROVE = '1' AND ahs.IS_PARALLEL = '0'
+        <where>
+            aha.IS_SERIES_APPROVE = '1' AND ahs.IS_PARALLEL = '0'
+            <include refid="queryByThemeId"></include>
+        </where>
+
         ) aha ON ahs.APPLYINST_ID = aha.APPLYINST_ID
         LEFT JOIN aea_applyinst_proj aap ON ahs.APPLYINST_ID = aap.APPLYINST_ID
         LEFT JOIN aea_proj_info api ON aap.PROJ_INFO_ID = api.PROJ_INFO_ID
@@ -441,6 +474,9 @@
                 OR aha.ITEMINST_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR aha.STAGE_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
+            </if>
+            <if test="applyType!=null and applyType!=''">
+                and aha.IS_SERIES_APPROVE=#{applyType}
             </if>
         </where>
 
