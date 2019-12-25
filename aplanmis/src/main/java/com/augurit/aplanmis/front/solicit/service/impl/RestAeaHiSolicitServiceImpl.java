@@ -14,6 +14,7 @@ import com.augurit.aplanmis.common.vo.solicit.QueryCondVo;
 import com.augurit.aplanmis.front.solicit.service.RestAeaHiSolicitService;
 import com.augurit.aplanmis.front.solicit.service.SolicitCodeService;
 import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,10 +51,8 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService{
 
     @Autowired
     private OpuOmOrgService opuOmOrgService;
-
     @Autowired
     private AeaSolicitItemUserMapper aeaSolicitItemUserMapper;
-
     @Autowired
     private AeaSolicitOrgUserMapper aeaSolicitOrgUserMapper;
 
@@ -93,11 +92,13 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService{
      * @return List<SolicitListVo>
      */
     @Override
-    public List<AeaHiSolicitVo> listSolicit(QueryCondVo condVo, Page page) throws Exception{
-        //TODO
-        return null;
+    public List<AeaHiSolicitVo> listSolicit(QueryCondVo condVo, Page page) throws Exception {
+        this.changeOrderBySql(page);
+        this.buildQueryCondvo(condVo);
+        PageHelper.startPage(page);
+        List<AeaHiSolicitVo> voList = aeaHiSolicitMapper.listSolicit(condVo);
+        return voList;
     }
-
 
     /**
      * 创建意见征求实例
@@ -187,7 +188,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService{
         }
     }
 
-    private AeaHiSolicitDetailUser createDetailUser(String currentUserName, Date date, String detailId,String userId) {
+    private AeaHiSolicitDetailUser createDetailUser(String currentUserName, Date date, String detailId, String userId) {
         AeaHiSolicitDetailUser detailUser = new AeaHiSolicitDetailUser();
         detailUser.setDetailTaskId(UUID.randomUUID().toString());
         detailUser.setSolicitDetailId(detailId);
@@ -196,6 +197,70 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService{
         detailUser.setCreater(currentUserName);
         detailUser.setCreateTime(date);
         return detailUser;
+    }
+
+    /**
+     * 处理多字段排序
+     *
+     * @param page
+     * @return
+     */
+    private Page changeOrderBySql(Page page) {
+        if (page != null && StringUtils.isNotBlank(page.getOrderBy())) {
+            String[] sqls = page.getOrderBy().split(" ");
+            int pageNum = page.getPageNum();
+            int pageSize = page.getPageSize();
+            if (sqls != null && sqls.length == 2) {
+                String fields = sqls[0];
+                String orderBy = sqls[1];
+
+                if (fields.contains(",")) {
+                    String replaceSql = " " + orderBy + ",";
+                    page.setOrderBy(page.getOrderBy().replaceAll(",", replaceSql));
+                }
+            }
+        }
+
+        return page;
+    }
+
+    private void buildQueryCondvo(QueryCondVo condVo) {
+        condVo.setRootOrgId(SecurityContext.getCurrentOrgId());
+        condVo.setUserId(SecurityContext.getCurrentUserId());
+    }
+
+
+    /**
+     * 查询催办信息
+     * todo
+     *
+     * @param solicitVoList
+     */
+    private void loadRemindInfo(List<AeaHiSolicitVo> solicitVoList) {
+        /*if (!taskList.isEmpty()) {
+            List<String> taskIds = new ArrayList<>();
+            for (TaskInfo taskInfo : taskList) {
+                if (StringUtils.isNotBlank(taskInfo.getTaskId())) {
+                    taskIds.add(taskInfo.getTaskId());
+                }
+            }
+            List<ActStoRemindAndReceiver> actStoRemindAndReceivers = conditionalQueryMapper.listTaskRemindInfo(SecurityContext.getCurrentUserId(), taskIds);
+
+            for (ActStoRemindAndReceiver actStoRemindAndReceiver : actStoRemindAndReceivers) {
+                for (TaskInfo taskInfo : taskList) {
+                    if (StringUtils.isNotBlank(taskInfo.getTaskId())) {
+                        if (taskInfo.getTaskId().equals(actStoRemindAndReceiver.getTaskInstId())) {
+                            if (taskInfo.getRemindList() == null) {
+                                List<ActStoRemindAndReceiver> remindList = new ArrayList<>();
+                                taskInfo.setRemindList(remindList);
+                            }
+                            taskInfo.getRemindList().add(actStoRemindAndReceiver);
+                        }
+                    }
+                }
+            }
+
+        }*/
     }
 
 

@@ -293,21 +293,150 @@
     </select>
     <!--查询意见征求，一次征询，部门征求等意见列表-->
     <select id="listSolicit" resultType="com.augurit.aplanmis.common.vo.solicit.AeaHiSolicitVo">
-        select
-        ahs.SOLICIT_ID,ahs.SOLICIT_TYPE
-        from aea_hi_solicit ahs
-        LEFT JOIN aea_hi_solicit_detail ahsd on ahsd.SOLICIT_ID=ahs.SOLICIT_ID
-        left join aea_hi_solicit_detail_user ahsdu on ahsdu.SOLICIT_DETAIL_ID=ahsd.SOLICIT_DETAIL_ID
-        INNER JOIN aea_solicit_item asi on asi.ITEM_VER_ID=ahsd.ITEM_VER_ID
-        where ahs.SOLICIT_TYPE='i' and asi.BUS_TYPE='1'
-        UNION all
-        select
-        ahs.SOLICIT_ID,ahs.SOLICIT_TYPE
-        from aea_hi_solicit ahs
-        LEFT JOIN aea_hi_solicit_detail ahsd on ahsd.SOLICIT_ID=ahs.SOLICIT_ID
-        left join aea_hi_solicit_detail_user ahsdu on ahsdu.SOLICIT_DETAIL_ID=ahsd.SOLICIT_DETAIL_ID
-        inner JOIN aea_solicit_org aso on aso.ORG_ID=ahsd.DETAIL_ORG_ID
-        where ahs.SOLICIT_TYPE='d' and aso.BUS_TYPE='1'
+
+        SELECT
+        ahs.SOLICIT_ID as solicitId,
+        ahs.SOLICIT_TYPE as solicitType,
+        ahs.PROCINST_ID as procinstId,
+        ahs.HI_TASKINST_ID as hiTaskinstId,
+        ahs.SOLICIT_CODE as solicitCode,
+        ahs.SOLICIT_TOPIC as solicitTopic,
+        ahs.APPLYINST_ID as applyinstId,
+        ahs.INITIATOR_ORG_ID as initiatorOrgId,
+        ahs.INITIATOR_ORG_NAME as initiatorOrgName,
+        ahs.INITIATOR_USER_ID as initiatorUserId,
+        ahs.INITIATOR_USER_NAME as initiatorUserName,
+        ahs.OVERDUE_TIME overdueTime,
+        ahs.REMAINING_TIME remainingTime,
+        ahs.TIMERULE_UNIT as timeruleUnit,
+        aha.APPLYINST_CODE as applyinstCode,
+        aha.IS_SERIES_APPROVE as isSeriesApprove,
+        aha.CREATE_TIME as createTime,
+        aha.ITEMINST_NAME as iteminstName,
+        aha.STAGE_NAME as stageName,
+        aha.THEME_NAME as themeName,
+        api.PROJ_NAME as projName,
+        api.PROJ_INFO_ID as projInfoId,
+        api.LOCAL_CODE as localCode
+        FROM
+        (
+        SELECT
+        ahs.SOLICIT_ID,
+        ahs.SOLICIT_TYPE,
+        ahs.PROCINST_ID,
+        ahs.HI_TASKINST_ID,
+        ahs.SOLICIT_CODE,
+        ahs.SOLICIT_TOPIC,
+        ahs.APPLYINST_ID,
+        ahs.INITIATOR_ORG_ID,
+        ahs.INITIATOR_ORG_NAME,
+        ahs.INITIATOR_USER_ID,
+        ahs.INITIATOR_USER_NAME,
+        ahsdu.USER_ID,
+        asti.OVERDUE_TIME,
+        asti.REMAINING_TIME,
+        asti.TIMERULE_UNIT
+        FROM AEA_HI_SOLICIT ahs
+        LEFT JOIN AEA_HI_SOLICIT_DETAIL ahsd ON ahsd.SOLICIT_ID = ahs.SOLICIT_ID
+        LEFT JOIN AEA_HI_SOLICIT_DETAIL_USER ahsdu ON ahsdu.SOLICIT_DETAIL_ID = ahsd.SOLICIT_DETAIL_ID
+        LEFT JOIN AEA_SOLICIT_ITEM asi ON asi.ITEM_VER_ID = ahsd.ITEM_VER_ID
+        LEFT JOIN ACT_STO_TIMERULE ast ON ast.TIMERULE_ID = ahs.SOLICIT_TIMERULE_ID
+        LEFT JOIN ACT_STO_TIMERULE_INST asti ON asti.TIMERULE_ID = ast.TIMERULE_ID AND ahs.PROCINST_ID =
+        asti.PROC_INST_ID
+        WHERE ahs.SOLICIT_TYPE = 'i' AND asi.BUS_TYPE = #{busType} and ahs.SOLICIT_STATE in('0','1')
+        AND ( ahs.INITIATOR_USER_ID = #{userId} OR ahsdu.USER_ID =#{userId} )
+        AND ahs.ROOT_ORG_ID = #{rootOrgId}
+        UNION
+        SELECT
+        ahs.SOLICIT_ID,
+        ahs.SOLICIT_TYPE,
+        ahs.PROCINST_ID,
+        ahs.HI_TASKINST_ID,
+        ahs.SOLICIT_CODE,
+        ahs.SOLICIT_TOPIC,
+        ahs.APPLYINST_ID,
+        ahs.INITIATOR_ORG_ID,
+        ahs.INITIATOR_ORG_NAME,
+        ahs.INITIATOR_USER_ID,
+        ahs.INITIATOR_USER_NAME,
+        ahsdu.USER_ID,
+        asti.OVERDUE_TIME,
+        asti.REMAINING_TIME,
+        asti.TIMERULE_UNIT
+        FROM AEA_HI_SOLICIT ahs
+        LEFT JOIN AEA_HI_SOLICIT_DETAIL ahsd ON ahsd.SOLICIT_ID = ahs.SOLICIT_ID
+        LEFT JOIN AEA_HI_SOLICIT_DETAIL_USER ahsdu ON ahsdu.SOLICIT_DETAIL_ID = ahsd.SOLICIT_DETAIL_ID
+        LEFT JOIN AEA_SOLICIT_ORG aso ON aso.ORG_ID = ahsd.DETAIL_ORG_ID
+        LEFT JOIN ACT_STO_TIMERULE ast ON ast.TIMERULE_ID = ahs.SOLICIT_TIMERULE_ID
+        LEFT JOIN ACT_STO_TIMERULE_INST asti ON asti.TIMERULE_ID = ast.TIMERULE_ID AND ahs.PROCINST_ID =
+        asti.PROC_INST_ID
+        WHERE ahs.SOLICIT_TYPE = 'd' AND aso.BUS_TYPE = #{busType} and ahs.SOLICIT_STATE in('0','1')
+        AND ( ahs.INITIATOR_USER_ID = #{userId} OR ahsdu.USER_ID = #{userId} )
+        AND ahs.ROOT_ORG_ID = #{rootOrgId}
+        ) ahs
+        LEFT JOIN (
+        SELECT
+        aha.APPLYINST_ID,
+        aha.APPLYINST_CODE,
+        aha.IS_SERIES_APPROVE,
+        aha.CREATE_TIME,
+        ( CASE aha.APPLYINST_SOURCE WHEN 'win' THEN '网厅申报' ELSE '窗口申报' END ) AS APPLYINST_SOURCE,
+        NULL AS ITEMINST_NAME,
+        aps_123.STAGE_NAME,
+        theme.THEME_NAME
+        FROM AEA_HI_APPLYINST aha
+        INNER JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = aha.APPLYINST_ID
+        LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+        LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+        LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
+        WHERE aha.IS_SERIES_APPROVE = '0'
+        UNION
+        SELECT
+        aha.APPLYINST_ID,
+        aha.APPLYINST_CODE,
+        aha.IS_SERIES_APPROVE,
+        aha.CREATE_TIME,
+        ( CASE aha.APPLYINST_SOURCE WHEN 'win' THEN '网厅申报' ELSE '窗口申报' END ) AS APPLYINST_SOURCE,
+        NULL AS ITEMINST_NAME,
+        aps_123.STAGE_NAME,
+        theme.THEME_NAME
+        FROM AEA_HI_APPLYINST aha
+        INNER JOIN aea_hi_seriesinst ahs ON ahs.applyinst_id = aha.applyinst_id
+        LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs.STAGE_ID
+        LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+        LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
+        WHERE aha.IS_SERIES_APPROVE = '1' AND ahs.stage_id IS NOT NULL AND ahs.IS_PARALLEL = '1'
+        UNION
+        SELECT
+        aha.APPLYINST_ID,
+        aha.APPLYINST_CODE,
+        aha.IS_SERIES_APPROVE,
+        aha.CREATE_TIME,
+        ( CASE aha.APPLYINST_SOURCE WHEN 'win' THEN '网厅申报' ELSE '窗口申报' END ) AS APPLYINST_SOURCE,
+        iteminst.ITEMINST_NAME AS ITEMINST_NAME,
+        NULL AS STAGE_NAME,
+        NULL AS THEME_NAME
+        FROM AEA_HI_APPLYINST aha
+        INNER JOIN AEA_HI_SERIESINST ahs ON ahs.applyinst_id = aha.applyinst_id
+        LEFT JOIN AEA_HI_ITEMINST iteminst ON iteminst.SERIESINST_ID = ahs.SERIESINST_ID
+        WHERE aha.IS_SERIES_APPROVE = '1' AND ahs.IS_PARALLEL = '0'
+        ) aha ON ahs.APPLYINST_ID = aha.APPLYINST_ID
+        LEFT JOIN aea_applyinst_proj aap ON ahs.APPLYINST_ID = aap.APPLYINST_ID
+        LEFT JOIN aea_proj_info api ON aap.PROJ_INFO_ID = api.PROJ_INFO_ID
+
+        <where>
+            <if test="keyword!=null and keyword!=''">
+                AND (
+                api.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR api.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR api.GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR aha.APPLYINST_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR aha.ITEMINST_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR aha.STAGE_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+
     </select>
 
     <!--8 删除实体对象列表,根据主键ID列表 -->
