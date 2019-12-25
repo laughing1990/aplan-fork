@@ -188,6 +188,24 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService{
         }
     }
 
+    @Override
+    public List<AeaHiSolicit> listAeaHiSolicitByApplyinstId(String applyinstId, String busType) throws Exception {
+        if(StringUtils.isBlank(applyinstId))
+            throw new RuntimeException("参数applyinstId不能为空！");
+        if(StringUtils.isBlank(busType))
+            throw new RuntimeException("参数busType业务类型不能为空！");
+
+        AeaHiSolicit solicit = new AeaHiSolicit();
+        solicit.setApplyinstId(applyinstId);
+        List<AeaHiSolicit> list = aeaHiSolicitMapper.listAeaHiSolicit(solicit);
+
+        if(list!=null&&list.size()>0){
+
+        }
+
+        return list;
+    }
+
     private AeaHiSolicitDetailUser createDetailUser(String currentUserName, Date date, String detailId, String userId) {
         AeaHiSolicitDetailUser detailUser = new AeaHiSolicitDetailUser();
         detailUser.setDetailTaskId(UUID.randomUUID().toString());
