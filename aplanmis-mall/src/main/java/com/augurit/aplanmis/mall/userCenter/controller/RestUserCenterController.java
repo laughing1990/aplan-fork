@@ -98,6 +98,11 @@ public class RestUserCenterController {
         return new ModelAndView("mall/userCenter/components/creditDetail");
     }
 
+    @GetMapping("/toMyProjList")
+    @ApiOperation(value = "跳转我的项目列表页")
+    public ModelAndView toMyProjList(){
+        return new ModelAndView("mall/userCenter/components/myProjList");
+    }
 
     @PostMapping("unitInfo/save")
     @ApiOperation("保存单位信息")
