@@ -1,20 +1,21 @@
-package com.augurit.aplanmis.front.apply.vo;
+package com.augurit.aplanmis.front.apply.vo.stash;
 
 import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
+import com.augurit.aplanmis.front.apply.vo.ForminstVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-@ApiModel("单项回显vo")
+@ApiModel("并联回显vo")
 @Getter
 @Setter
-public class SeriesUnstashVo {
+public class ParallelUnstashVo {
 
     @ApiModelProperty(value = "申报实例")
     private AeaHiApplyinst aeaHiApplyinst;
@@ -31,17 +32,19 @@ public class SeriesUnstashVo {
     @ApiModelProperty(value = "阶段id")
     private String stageId;
 
-    @ApiModelProperty(value = "审批部门")
-    private String approveOrgId;
-
-    @ApiModelProperty(value = "情形id")
+    @ApiModelProperty(value = "阶段所选情形")
     private Set<String> stateIds;
+
+    @ApiModelProperty(value = "简单合并申报，选择的并联事项情形", dataType = "string")
+    private Set<String> parallelItemStateIds;
+
+    @ApiModelProperty(value = "并联事项与审批部门对应关系")
+    private Map<String, String> branchOrg;
 
     @ApiModelProperty(value = "已填表单列表")
     private List<ForminstVo> forminstVos;
 
-    public SeriesUnstashVo() {
+    public ParallelUnstashVo() {
         forminstVos = new ArrayList<>();
-        stateIds = new HashSet<>();
     }
 }

@@ -1,7 +1,10 @@
-package com.augurit.aplanmis.front.apply.vo;
+package com.augurit.aplanmis.front.apply.vo.stash;
 
 import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.front.apply.vo.ParallelItemApplyinstVo;
+import com.augurit.aplanmis.front.apply.vo.ParallelItemStateVo;
+import com.augurit.aplanmis.front.apply.vo.PropulsionItemStateVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
