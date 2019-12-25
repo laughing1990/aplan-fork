@@ -479,7 +479,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
             if (solicitDetailUsers != null && solicitDetailUsers.size() > 0) {
                 int i = 0;
                 for (AeaHiSolicitDetailUser solicitDetailUser : solicitDetailUsers) {
-                    detailUserIds[i] = solicitDetailUser.getDetailTaskId();
+                    detailUserIds[i] = solicitDetailUser.getDetailUserId();
                     i++;
 
                     if (currUserId != null && currUserId.equals(solicitDetailUser.getUserId()))
@@ -516,7 +516,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
 
                 if (solicitDetailUsers != null && solicitDetailUsers.size() > 0) {
                     for (AeaHiSolicitDetailUser solicitDetailUser : solicitDetailUsers) {
-                        List<BscAttFileAndDir> files = fileAndDirMap.get(solicitDetailUser.getDetailTaskId());
+                        List<BscAttFileAndDir> files = fileAndDirMap.get(solicitDetailUser.getDetailUserId());
                         if (files != null)
                             solicitDetailUser.setFileAndDirs(files);
                     }
