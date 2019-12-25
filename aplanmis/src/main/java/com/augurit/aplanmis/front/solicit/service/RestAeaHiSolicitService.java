@@ -5,6 +5,7 @@ import com.augurit.aplanmis.common.domain.AeaHiSolicit;
 import com.augurit.aplanmis.common.domain.AeaHiSolicitDetailUser;
 import com.augurit.aplanmis.common.vo.solicit.AeaHiSolicitVo;
 import com.augurit.aplanmis.common.vo.solicit.QueryCondVo;
+import com.augurit.aplanmis.front.solicit.vo.AeaHiSolicitInfo;
 import com.github.pagehelper.Page;
 
 import java.util.List;
@@ -46,5 +47,5 @@ public interface RestAeaHiSolicitService {
      * @return
      * @throws Exception
      */
-    public List<AeaHiSolicit> listAeaHiSolicitByApplyinstId(String applyinstId,String busType) throws Exception;
+    public List<AeaHiSolicitInfo> listAeaHiSolicitByApplyinstId(String applyinstId, String busType) throws Exception;
 }

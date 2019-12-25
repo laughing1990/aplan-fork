@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.augurit.agcloud.bpm.common.domain.ActStoTimerule;
 import com.augurit.agcloud.bpm.common.mapper.ActStoTimeruleMapper;
+import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
+import com.augurit.agcloud.bsc.mapper.BscAttDetailMapper;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.security.user.OpuOmUser;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
@@ -19,16 +21,15 @@ import com.augurit.aplanmis.common.vo.solicit.QueryCondVo;
 import com.augurit.aplanmis.front.constant.SolicitConstant;
 import com.augurit.aplanmis.front.solicit.service.RestAeaHiSolicitService;
 import com.augurit.aplanmis.front.solicit.service.SolicitCodeService;
+import com.augurit.aplanmis.common.constants.SolicitBusTypeEnum;
+import com.augurit.aplanmis.front.solicit.vo.AeaHiSolicitInfo;
 import com.github.pagehelper.Page;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author:chendx
@@ -60,6 +61,8 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService{
     private AeaSolicitItemUserMapper aeaSolicitItemUserMapper;
     @Autowired
     private AeaSolicitOrgUserMapper aeaSolicitOrgUserMapper;
+    @Autowired
+    private BscAttDetailMapper bscAttDetailMapper;
 
     @Autowired
     private ActStoTimeruleMapper actStoTimeruleMapper;
@@ -206,23 +209,109 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService{
     }
 
     @Override
-    public List<AeaHiSolicit> listAeaHiSolicitByApplyinstId(String applyinstId, String busType) throws Exception {
+    public List<AeaHiSolicitInfo> listAeaHiSolicitByApplyinstId(String applyinstId, String busType) throws Exception {
         if(StringUtils.isBlank(applyinstId))
             throw new RuntimeException("参数applyinstId不能为空！");
         if(StringUtils.isBlank(busType))
             throw new RuntimeException("参数busType业务类型不能为空！");
 
+        List<AeaHiSolicitInfo> solicitInfoList = new ArrayList<>();
+
         AeaHiSolicit solicit = new AeaHiSolicit();
         solicit.setApplyinstId(applyinstId);
-        List<AeaHiSolicit> list = aeaHiSolicitMapper.listAeaHiSolicit(solicit);
+        List<AeaHiSolicit> solicits = aeaHiSolicitMapper.listAeaHiSolicit(solicit);
 
-        if(list!=null&&list.size()>0){
-            for(AeaHiSolicit hiSolicit:list){
+        if(solicits!=null&&solicits.size()>0){
+            String currUserId = SecurityContext.getCurrentUserId();
+            AeaHiSolicitDetailUser currDetailUser = null;
+
+            List<String> solicitIds = new ArrayList<>();
+            for(AeaHiSolicit hiSolicit:solicits){
                 hiSolicit.setSolicitTypeName(SolicitBusTypeEnum.valueOf(hiSolicit.getBusType()).getName());
+                solicitIds.add(hiSolicit.getSolicitId());
+            }
+
+            List<AeaHiSolicitDetail> solicitDetails = aeaHiSolicitDetailMapper.listAeaHiSolicitDetailBySolicitIds(solicitIds);
+            List<AeaHiSolicitDetailUser> solicitDetailUsers = aeaHiSolicitDetailUserMapper.listAeaHiSolicitDetailUserBySolicitIds(solicitIds);
+
+            Map<String,List<AeaHiSolicitDetail>> detailMap = new HashMap<>();
+            Map<String,List<AeaHiSolicitDetailUser>> detailUserMap = new HashMap<>();
+
+            String[] detailUserIds = new String[solicitDetailUsers.size()];
+            if(solicitDetailUsers!=null&&solicitDetailUsers.size()>0){
+                int i = 0;
+                for(AeaHiSolicitDetailUser solicitDetailUser:solicitDetailUsers){
+                    detailUserIds[i] = solicitDetailUser.getDetailTaskId();
+                    i++;
+
+                    if(currUserId!=null&&currUserId.equals(solicitDetailUser.getUserId()))
+                        currDetailUser = solicitDetailUser;
+
+                    List<AeaHiSolicitDetailUser> users = detailUserMap.get(solicitDetailUser.getSolicitDetailId());
+                    if(users!=null){
+                        users.add(solicitDetailUser);
+                    }else{
+                        users = new ArrayList<>();
+                        users.add(solicitDetailUser);
+                        detailUserMap.put(solicitDetailUser.getSolicitDetailId(),users);
+                    }
+                }
+            }
+
+            List<BscAttFileAndDir> attFileList = new ArrayList<>();
+            if(detailUserIds.length>0)
+                attFileList = bscAttDetailMapper.searchFileAndDirsSimple(null, SecurityContext.getCurrentOrgId(), "AEA_HI_SOLICIT_DETAIL_USER", "DETAIL_USER_ID", detailUserIds);
+
+            Map<String,List<BscAttFileAndDir>> fileAndDirMap = new HashMap<>();
+            if(attFileList!=null&&attFileList.size()>0){
+                for(BscAttFileAndDir fileAndDir:attFileList){
+                    List<BscAttFileAndDir> files = fileAndDirMap.get(fileAndDir.getBscAttLink().getRecordId());
+
+                    if(files!=null){
+                        files.add(fileAndDir);
+                    }else{
+                        files = new ArrayList<>();
+                        files.add(fileAndDir);
+                        fileAndDirMap.put(fileAndDir.getBscAttLink().getRecordId(),files);
+                    }
+                }
+
+                if(solicitDetailUsers!=null&&solicitDetailUsers.size()>0){
+                    for(AeaHiSolicitDetailUser solicitDetailUser:solicitDetailUsers){
+                        List<BscAttFileAndDir> files = fileAndDirMap.get(solicitDetailUser.getDetailTaskId());
+                        if(files!=null)
+                            solicitDetailUser.setFileAndDirs(files);
+                    }
+                }
+            }
+
+            if(solicitDetails!=null&&solicitDetails.size()>0){
+                for(AeaHiSolicitDetail solicitDetail:solicitDetails){
+                    List<AeaHiSolicitDetailUser> users = detailUserMap.get(solicitDetail.getSolicitDetailId());
+                    solicitDetail.setDetailUsers(users);
+                    List<AeaHiSolicitDetail> details = detailMap.get(solicitDetail.getSolicitId());
+                    if(details!=null){
+                        details.add(solicitDetail);
+                    }else{
+                        details = new ArrayList<>();
+                        details.add(solicitDetail);
+                        detailMap.put(solicitDetail.getSolicitId(),details);
+                    }
+                }
+            }
+
+            for(AeaHiSolicit hiSolicit:solicits){
+                List<AeaHiSolicitDetail> details = detailMap.get(hiSolicit.getSolicitId());
+
+                AeaHiSolicitInfo solicitInfo = new AeaHiSolicitInfo();
+                solicitInfo.setSolicit(solicit);
+                solicitInfo.setSolicitDetailUser(currDetailUser);
+                solicitInfo.setSolicitDetails(details);
+                solicitInfoList.add(solicitInfo);
             }
         }
 
-        return list;
+        return solicitInfoList;
     }
 
     private AeaHiSolicitDetailUser createDetailUser(String currentUserName, Date date, String detailId, String userId) {
@@ -348,4 +437,6 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService{
 
         }*/
     }
+
+
 }

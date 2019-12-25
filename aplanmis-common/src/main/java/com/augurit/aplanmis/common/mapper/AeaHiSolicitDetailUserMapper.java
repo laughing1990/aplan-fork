@@ -29,4 +29,7 @@ public interface AeaHiSolicitDetailUserMapper {
     public List<AeaHiSolicitDetailUser> getAeaHiSolicitDetailUserBySolicitId(@Param("solicitId") String solicitId) throws Exception;
 
     public AeaHiSolicitDetailUser getAeaHiSolicitDetailUserById(@Param("id") String id) throws Exception;
+
+    //根据征求ID集合查询所有的征求用户信息
+    public List<AeaHiSolicitDetailUser> listAeaHiSolicitDetailUserBySolicitIds(@Param("solicitIds") List<String> solicitIds) throws Exception;
 }

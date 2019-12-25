@@ -220,4 +220,16 @@ SOLICIT_DETAIL_ID  ,SOLICIT_ID  ,DETAIL_ORG_ID  ,DETAIL_ORG_NAME  ,ITEM_ID  ,ITE
         <result property="modifier" column="MODIFIER"/>
         <result property="modifyTime" column="MODIFY_TIME"/>
     </resultMap>
+
+    <select id="listAeaHiSolicitDetailBySolicitIds" resultType="AeaHiSolicitDetail" >
+        SELECT
+            <include refid="allAlisColumns"/>
+        FROM
+            aea_hi_solicit_detail ahsd
+        where
+        ahsd.SOLICIT_ID in
+        <foreach collection="solicitIds" item="solicitId" open="(" separator="," close=")">
+            #{solicitId}
+        </foreach>
+    </select>
 </mapper>
