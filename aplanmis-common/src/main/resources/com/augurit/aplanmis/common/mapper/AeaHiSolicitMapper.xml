@@ -59,106 +59,106 @@
         </include>
         from AEA_HI_SOLICIT ahs
         <where>
-            <if test="solicitId != null AND solicitId != ''">
+            <if test="solicitId != null ">
                 AND ahs.SOLICIT_ID = #{solicitId}
             </if>
-            <if test="busType != null AND busType != ''">
+            <if test="busType != null ">
                 AND ahs.BUS_TYPE = #{busType}
             </if>
-            <if test="solicitType != null AND solicitType != ''">
+            <if test="solicitType != null ">
                 AND ahs.SOLICIT_TYPE = #{solicitType}
             </if>
-            <if test="solicitOrgId != null AND solicitOrgId != ''">
+            <if test="solicitOrgId != null ">
                 AND ahs.SOLICIT_ORG_ID = #{solicitOrgId}
             </if>
-            <if test="solicitItemId != null AND solicitItemId != ''">
+            <if test="solicitItemId != null ">
                 AND ahs.SOLICIT_ITEM_ID = #{solicitItemId}
             </if>
-            <if test="applyinstId != null AND applyinstId != ''">
+            <if test="applyinstId != null ">
                 AND ahs.APPLYINST_ID = #{applyinstId}
             </if>
-            <if test="procinstId != null AND procinstId != ''">
+            <if test="procinstId != null ">
                 AND ahs.PROCINST_ID = #{procinstId}
             </if>
-            <if test="hiTaskinstId != null AND hiTaskinstId != ''">
+            <if test="hiTaskinstId != null ">
                 AND ahs.HI_TASKINST_ID = #{hiTaskinstId}
             </if>
-            <if test="solicitCode != null AND solicitCode != ''">
+            <if test="solicitCode != null ">
                 AND ahs.SOLICIT_CODE = #{solicitCode}
             </if>
-            <if test="solicitTopic != null AND solicitTopic != ''">
+            <if test="solicitTopic != null ">
                 AND ahs.SOLICIT_TOPIC = #{solicitTopic}
             </if>
-            <if test="solicitContent != null AND solicitContent != ''">
+            <if test="solicitContent != null ">
                 AND ahs.SOLICIT_CONTENT = #{solicitContent}
             </if>
-            <if test="solicitDueDays != null AND solicitDueDays != ''">
+            <if test="solicitDueDays != null ">
                 AND ahs.SOLICIT_DUE_DAYS = #{solicitDueDays}
             </if>
-            <if test="solicitRealDays != null AND solicitRealDays != ''">
+            <if test="solicitRealDays != null ">
                 AND ahs.SOLICIT_REAL_DAYS = #{solicitRealDays}
             </if>
-            <if test="solicitDaysUnit != null AND solicitDaysUnit != ''">
+            <if test="solicitDaysUnit != null ">
                 AND ahs.SOLICIT_DAYS_UNIT = #{solicitDaysUnit}
             </if>
-            <if test="solicitStartTime != null AND solicitStartTime != ''">
+            <if test="solicitStartTime != null ">
                 AND ahs.SOLICIT_START_TIME = #{solicitStartTime}
             </if>
-            <if test="solicitEndTime != null AND solicitEndTime != ''">
+            <if test="solicitEndTime != null ">
                 AND ahs.SOLICIT_END_TIME = #{solicitEndTime}
             </if>
-            <if test="isCalcTimerule != null AND isCalcTimerule != ''">
+            <if test="isCalcTimerule != null ">
                 AND ahs.IS_CALC_TIMERULE = #{isCalcTimerule}
             </if>
-            <if test="solicitTimeruleId != null AND solicitTimeruleId != ''">
+            <if test="solicitTimeruleId != null ">
                 AND ahs.SOLICIT_TIMERULE_ID = #{solicitTimeruleId}
             </if>
-            <if test="conclusionFlag != null AND conclusionFlag != ''">
+            <if test="conclusionFlag != null ">
                 AND ahs.CONCLUSION_FLAG = #{conclusionFlag}
             </if>
-            <if test="conclusionDesc != null AND conclusionDesc != ''">
+            <if test="conclusionDesc != null ">
                 AND ahs.CONCLUSION_DESC = #{conclusionDesc}
             </if>
-            <if test="conclusionTime != null AND conclusionTime != ''">
+            <if test="conclusionTime != null ">
                 AND ahs.CONCLUSION_TIME = #{conclusionTime}
             </if>
-            <if test="conclusionUserId != null AND conclusionUserId != ''">
+            <if test="conclusionUserId != null ">
                 AND ahs.CONCLUSION_USER_ID = #{conclusionUserId}
             </if>
-            <if test="conclusionUserName != null AND conclusionUserName != ''">
+            <if test="conclusionUserName != null ">
                 AND ahs.CONCLUSION_USER_NAME = #{conclusionUserName}
             </if>
-            <if test="initiatorOrgId != null AND initiatorOrgId != ''">
+            <if test="initiatorOrgId != null ">
                 AND ahs.INITIATOR_ORG_ID = #{initiatorOrgId}
             </if>
-            <if test="initiatorOrgName != null AND initiatorOrgName != ''">
+            <if test="initiatorOrgName != null ">
                 AND ahs.INITIATOR_ORG_NAME = #{initiatorOrgName}
             </if>
-            <if test="initiatorUserId != null AND initiatorUserId != ''">
+            <if test="initiatorUserId != null ">
                 AND ahs.INITIATOR_USER_ID = #{initiatorUserId}
             </if>
-            <if test="initiatorUserName != null AND initiatorUserName != ''">
+            <if test="initiatorUserName != null ">
                 AND ahs.INITIATOR_USER_NAME = #{initiatorUserName}
             </if>
-            <if test="countLimit != null AND countLimit != ''">
+            <if test="countLimit != null ">
                 AND ahs.COUNT_LIMIT = #{countLimit}
             </if>
-            <if test="solicitState != null AND solicitState != ''">
+            <if test="solicitState != null ">
                 AND ahs.SOLICIT_STATE = #{solicitState}
             </if>
-            <if test="creater != null AND creater != ''">
+            <if test="creater != null ">
                 AND ahs.CREATER = #{creater}
             </if>
-            <if test="createTime != null AND createTime != ''">
+            <if test="createTime != null ">
                 AND ahs.CREATE_TIME = #{createTime}
             </if>
-            <if test="modifier != null AND modifier != ''">
+            <if test="modifier != null ">
                 AND ahs.MODIFIER = #{modifier}
             </if>
-            <if test="modifyTime != null AND modifyTime != ''">
+            <if test="modifyTime != null ">
                 AND ahs.MODIFY_TIME = #{modifyTime}
             </if>
-            <if test="rootOrgId != null AND rootOrgId != ''">
+            <if test="rootOrgId != null ">
                 AND ahs.ROOT_ORG_ID = #{rootOrgId}
             </if>
         </where>
@@ -177,106 +177,106 @@
     <update id="updateAeaHiSolicit" parameterType="AeaHiSolicit">
         update AEA_HI_SOLICIT
         <set>
-            <if test="solicitId != null AND solicitId != '' ">
+            <if test="solicitId != null  ">
                 SOLICIT_ID = #{solicitId},
             </if>
-            <if test="busType != null AND busType != '' ">
+            <if test="busType != null  ">
                 BUS_TYPE = #{busType},
             </if>
-            <if test="solicitType != null AND solicitType != '' ">
+            <if test="solicitType != null  ">
                 SOLICIT_TYPE = #{solicitType},
             </if>
-            <if test="solicitOrgId != null AND solicitOrgId != '' ">
+            <if test="solicitOrgId != null  ">
                 SOLICIT_ORG_ID = #{solicitOrgId},
             </if>
-            <if test="solicitItemId != null AND solicitItemId != '' ">
+            <if test="solicitItemId != null  ">
                 SOLICIT_ITEM_ID = #{solicitItemId},
             </if>
-            <if test="applyinstId != null AND applyinstId != '' ">
+            <if test="applyinstId != null  ">
                 APPLYINST_ID = #{applyinstId},
             </if>
-            <if test="procinstId != null AND procinstId != '' ">
+            <if test="procinstId != null  ">
                 PROCINST_ID = #{procinstId},
             </if>
-            <if test="hiTaskinstId != null AND hiTaskinstId != '' ">
+            <if test="hiTaskinstId != null  ">
                 HI_TASKINST_ID = #{hiTaskinstId},
             </if>
-            <if test="solicitCode != null AND solicitCode != '' ">
+            <if test="solicitCode != null  ">
                 SOLICIT_CODE = #{solicitCode},
             </if>
-            <if test="solicitTopic != null AND solicitTopic != '' ">
+            <if test="solicitTopic != null  ">
                 SOLICIT_TOPIC = #{solicitTopic},
             </if>
-            <if test="solicitContent != null AND solicitContent != '' ">
+            <if test="solicitContent != null  ">
                 SOLICIT_CONTENT = #{solicitContent},
             </if>
-            <if test="solicitDueDays != null AND solicitDueDays != '' ">
+            <if test="solicitDueDays != null  ">
                 SOLICIT_DUE_DAYS = #{solicitDueDays},
             </if>
-            <if test="solicitRealDays != null AND solicitRealDays != '' ">
+            <if test="solicitRealDays != null  ">
                 SOLICIT_REAL_DAYS = #{solicitRealDays},
             </if>
-            <if test="solicitDaysUnit != null AND solicitDaysUnit != '' ">
+            <if test="solicitDaysUnit != null  ">
                 SOLICIT_DAYS_UNIT = #{solicitDaysUnit},
             </if>
-            <if test="solicitStartTime != null AND solicitStartTime != '' ">
+            <if test="solicitStartTime != null  ">
                 SOLICIT_START_TIME = #{solicitStartTime},
             </if>
-            <if test="solicitEndTime != null AND solicitEndTime != '' ">
+            <if test="solicitEndTime != null  ">
                 SOLICIT_END_TIME = #{solicitEndTime},
             </if>
-            <if test="isCalcTimerule != null AND isCalcTimerule != '' ">
+            <if test="isCalcTimerule != null  ">
                 IS_CALC_TIMERULE = #{isCalcTimerule},
             </if>
-            <if test="solicitTimeruleId != null AND solicitTimeruleId != '' ">
+            <if test="solicitTimeruleId != null  ">
                 SOLICIT_TIMERULE_ID = #{solicitTimeruleId},
             </if>
-            <if test="conclusionFlag != null AND conclusionFlag != '' ">
+            <if test="conclusionFlag != null  ">
                 CONCLUSION_FLAG = #{conclusionFlag},
             </if>
-            <if test="conclusionDesc != null AND conclusionDesc != '' ">
+            <if test="conclusionDesc != null  ">
                 CONCLUSION_DESC = #{conclusionDesc},
             </if>
-            <if test="conclusionTime != null AND conclusionTime != '' ">
+            <if test="conclusionTime != null  ">
                 CONCLUSION_TIME = #{conclusionTime},
             </if>
-            <if test="conclusionUserId != null AND conclusionUserId != '' ">
+            <if test="conclusionUserId != null  ">
                 CONCLUSION_USER_ID = #{conclusionUserId},
             </if>
-            <if test="conclusionUserName != null AND conclusionUserName != '' ">
+            <if test="conclusionUserName != null  ">
                 CONCLUSION_USER_NAME = #{conclusionUserName},
             </if>
-            <if test="initiatorOrgId != null AND initiatorOrgId != '' ">
+            <if test="initiatorOrgId != null  ">
                 INITIATOR_ORG_ID = #{initiatorOrgId},
             </if>
-            <if test="initiatorOrgName != null AND initiatorOrgName != '' ">
+            <if test="initiatorOrgName != null  ">
                 INITIATOR_ORG_NAME = #{initiatorOrgName},
             </if>
-            <if test="initiatorUserId != null AND initiatorUserId != '' ">
+            <if test="initiatorUserId != null  ">
                 INITIATOR_USER_ID = #{initiatorUserId},
             </if>
-            <if test="initiatorUserName != null AND initiatorUserName != '' ">
+            <if test="initiatorUserName != null  ">
                 INITIATOR_USER_NAME = #{initiatorUserName},
             </if>
-            <if test="countLimit != null AND countLimit != '' ">
+            <if test="countLimit != null  ">
                 COUNT_LIMIT = #{countLimit},
             </if>
-            <if test="solicitState != null AND solicitState != '' ">
+            <if test="solicitState != null  ">
                 SOLICIT_STATE = #{solicitState},
             </if>
-            <if test="creater != null AND creater != '' ">
+            <if test="creater != null  ">
                 CREATER = #{creater},
             </if>
-            <if test="createTime != null AND createTime != '' ">
+            <if test="createTime != null  ">
                 CREATE_TIME = #{createTime},
             </if>
-            <if test="modifier != null AND modifier != '' ">
+            <if test="modifier != null  ">
                 MODIFIER = #{modifier},
             </if>
-            <if test="modifyTime != null AND modifyTime != '' ">
+            <if test="modifyTime != null  ">
                 MODIFY_TIME = #{modifyTime},
             </if>
-            <if test="rootOrgId != null AND rootOrgId != '' ">
+            <if test="rootOrgId != null  ">
                 ROOT_ORG_ID = #{rootOrgId},
             </if>
         </set>
