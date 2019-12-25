@@ -158,4 +158,15 @@ public class AeaSolicitOrgController {
             throw new InvalidParameterException("参数ids为空!");
         }
     }
+
+    @RequestMapping("/batchSaveSolicitOrg.do")
+    public ResultForm batchSaveSolicitOrg(String[] orgIds) throws Exception{
+
+        if (orgIds != null && orgIds.length > 0) {
+            aeaSolicitOrgService.batchSaveSolicitOrg(orgIds);
+        } else {
+            aeaSolicitOrgService.batchDelSolicitOrgByRootOrgId(SecurityContext.getCurrentOrgId());
+        }
+        return new ResultForm(true);
+    }
 }

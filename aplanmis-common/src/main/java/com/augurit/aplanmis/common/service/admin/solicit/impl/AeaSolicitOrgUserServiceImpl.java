@@ -1,6 +1,5 @@
 package com.augurit.aplanmis.common.service.admin.solicit.impl;
 
-import ch.qos.logback.core.util.StringCollectionUtil;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.util.StringUtils;
@@ -9,13 +8,11 @@ import com.augurit.aplanmis.common.mapper.AeaSolicitOrgUserMapper;
 import com.augurit.aplanmis.common.service.admin.solicit.AeaSolicitOrgUserService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
-import org.jsoup.helper.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.swing.StringUIClientPropertyKey;
 
 import java.util.List;
 

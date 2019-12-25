@@ -112,8 +112,11 @@
     </div>
 </div>
 
-<!-- 编辑征求部门 -->
+<!-- 新增/编辑征求部门 -->
 <%@include file="aedit_solicit_org.jsp" %>
+
+<!-- 选择征求部门 -->
+<%@include file="select_solicit_org_ztree.jsp" %>
 
 <!-- 进度弹窗 -->
 <div id="uploadProgress" class="modal fade" tabindex="-1" role="dialog"

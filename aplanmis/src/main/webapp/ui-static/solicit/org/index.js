@@ -15,7 +15,7 @@ $(function () {
     // 组织机构事项列表
     $('#solicit_org_list_tb').bootstrapTable('resetView', {
 
-        height: $('#westPanel').height() - 116
+        height: $('#westPanel').height() - 165
     });
 
     // 处理事项表格滚动条

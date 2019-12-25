@@ -15,8 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
+
 /**
 * 按组织征求配置表-Service服务接口实现类
 */
@@ -121,6 +124,83 @@ public class AeaSolicitOrgServiceImpl implements AeaSolicitOrgService {
         List<AeaSolicitOrg> list = aeaSolicitOrgMapper.listAeaSolicitOrgRelOrgInfo(aeaSolicitOrg);
         logger.debug("成功执行查询list！！");
         return list;
+    }
+
+    @Override
+    public void batchSaveSolicitOrg(String[] orgIds){
+
+        String userId = SecurityContext.getCurrentUserId();
+        String rootOrgId = SecurityContext.getCurrentOrgId();
+        if(orgIds!=null&&orgIds.length>0) {
+            // 查找需要删除的
+            List<String> needDelIdList = new ArrayList<String>();
+            List<AeaSolicitOrg> needDelList = new ArrayList<AeaSolicitOrg>();
+            AeaSolicitOrg sSolicitOrg = new AeaSolicitOrg();
+            sSolicitOrg.setRootOrgId(rootOrgId);
+            List<AeaSolicitOrg> orgList = aeaSolicitOrgMapper.listAeaSolicitOrg(sSolicitOrg);
+            if(orgList!=null&&orgList.size()>0){
+                for(AeaSolicitOrg item : orgList){
+                    int count=0;
+                    for (String orgId : orgIds) {
+                        if(item.getOrgId().equals(orgId)){
+                            break;
+                        }else{
+                            count++;
+                        }
+                    }
+                    if(count==orgIds.length){
+                        needDelList.add(item);
+                        needDelIdList.add(item.getSolicitOrgId());
+                    }
+                }
+            }
+            // 先删除
+            if(needDelList!=null&&needDelList.size()>0){
+
+                orgList.removeAll(needDelList);
+                String[] needDelIdArr = new String[needDelIdList.size()];
+                needDelIdList.toArray(needDelIdArr);
+                aeaSolicitOrgMapper.batchDelSolicitOrgByIds(needDelIdArr);
+            }
+
+            // 保存
+            for (int i=0; i<orgIds.length;i++) {
+                AeaSolicitOrg updateVo = null;
+                if (orgList != null && orgList.size() > 0) {
+                    for (AeaSolicitOrg item : orgList) {
+                        if(item.getOrgId().equals(orgIds[i])){
+                            updateVo = item;
+                            break;
+                        }
+                    }
+                }
+                if(updateVo==null){
+                    AeaSolicitOrg aeaItemUser = new AeaSolicitOrg();
+                    aeaItemUser.setSolicitOrgId(UUID.randomUUID().toString());
+                    aeaItemUser.setOrgId(orgIds[i]);
+                    aeaItemUser.setBusType("0");
+                    aeaItemUser.setSolicitType("YJZQ");
+                    aeaItemUser.setCreater(userId);
+                    aeaItemUser.setCreateTime(new Date());
+                    aeaItemUser.setRootOrgId(rootOrgId);
+                    aeaSolicitOrgMapper.insertAeaSolicitOrg(aeaItemUser);
+                }else{
+                    updateVo.setModifier(userId);
+                    updateVo.setModifyTime(new Date());
+                    aeaSolicitOrgMapper.updateAeaSolicitOrg(updateVo);
+                }
+            }
+        }else{
+            batchDelSolicitOrgByRootOrgId(rootOrgId);
+        }
+    }
+
+    @Override
+    public void batchDelSolicitOrgByRootOrgId(String rootOrgId){
+
+        if(StringUtils.isNotBlank(rootOrgId)){
+            aeaSolicitOrgMapper.batchDelSolicitOrgByRootOrgId(rootOrgId);
+        }
     }
 }
 

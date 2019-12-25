@@ -35,5 +35,12 @@ public interface RestAeaHiSolicitService {
 
     public void createSolicit(AeaHiSolicit aeaHiSolicit, String type, String detailInfo, String busType) throws Exception;
 
-
+    /**
+     * 根据申报编号获取所有的征求信息
+     * @param applyinstId 申报实例ID
+     * @param busType 业务类型
+     * @return
+     * @throws Exception
+     */
+    public List<AeaHiSolicit> listAeaHiSolicitByApplyinstId(String applyinstId,String busType) throws Exception;
 }
