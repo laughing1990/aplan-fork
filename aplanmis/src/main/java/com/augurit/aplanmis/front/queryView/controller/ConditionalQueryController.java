@@ -354,28 +354,31 @@ public class ConditionalQueryController {
             return new ContentResultForm<>(false, null, e.getMessage());
         }
     }
+
     @GetMapping("/listPickupCheckTasksWin")
     @ApiOperation(value = "根据查询条件获取窗口待取证列表")//唐山需求
     public ResultForm listPickupCheckTasksWin(ConditionalQueryRequest conditionalQueryRequest, Page page) {
         try {
-            PageInfo doneTasks = conditionalQueryService.listPickupCheckTasksByPageState(conditionalQueryRequest, page,"1");
+            PageInfo doneTasks = conditionalQueryService.listPickupCheckTasksByPageState(conditionalQueryRequest, page, "1");
             return new ContentResultForm<>(true, doneTasks);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             return new ContentResultForm<>(false, null, e.getMessage());
         }
     }
+
     @GetMapping("/listPickupCheckTasksExpress")
     @ApiOperation(value = "根据查询条件获取待取证列表[邮寄]")
     public ResultForm listPickupCheckTasksExpress(ConditionalQueryRequest conditionalQueryRequest, Page page) {
         try {
-            PageInfo doneTasks = conditionalQueryService.listPickupCheckTasksByPageState(conditionalQueryRequest, page,"0");
+            PageInfo doneTasks = conditionalQueryService.listPickupCheckTasksByPageState(conditionalQueryRequest, page, "0");
             return new ContentResultForm<>(true, doneTasks);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             return new ContentResultForm<>(false, null, e.getMessage());
         }
     }
+
     @GetMapping("/listPickupCheckTasksFinish")
     @ApiOperation(value = "根据查询条件获取【出件登记-已取证】列表")
     public ResultForm listPickupCheckFinishTasks(ConditionalQueryRequest conditionalQueryRequest, Page page) {
@@ -581,7 +584,7 @@ public class ConditionalQueryController {
 
     @GetMapping("/sendSms")
     @ApiOperation(value = "短信提醒")
-    public ResultForm sendSms(String applyinstId,String iteminstId) {
+    public ResultForm sendSms(String applyinstId, String iteminstId) {
         try {
             conditionalQueryService.sendSms(applyinstId, iteminstId);
             return new ResultForm(true);
@@ -686,8 +689,8 @@ public class ConditionalQueryController {
             String orgId = SecurityContext.getCurrentOrgId();
             List<BscDicRegion> list = regionService.getBscDicRegionTreeList(orgId);
             return new ContentResultForm<>(true, list);
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
             return new ResultForm(false, e.getMessage());
         }
     }
@@ -711,6 +714,54 @@ public class ConditionalQueryController {
         try {
 //            PageInfo waitDoTasks = conditionalQueryService.listWaitDoTasksByPage(conditionalQueryRequest, page);
             PageInfo waitDoTasks = conditionalQueryService.listWaitUploadServiceResult(conditionalQueryRequest, page);
+            return new ContentResultForm<>(true, waitDoTasks);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return new ContentResultForm<>(false, null, e.getMessage());
+        }
+    }
+
+    @GetMapping("/listWaitCancelTasks")
+    @ApiOperation(value = "根据查询条件获取待办列表")
+    public ResultForm listWaitCancelTasks(ConditionalQueryRequest conditionalQueryRequest, Page page) {
+        try {
+            PageInfo waitDoTasks = conditionalQueryService.listWaitCancelTasks(conditionalQueryRequest, page);
+            return new ContentResultForm<>(true, waitDoTasks);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return new ContentResultForm<>(false, null, e.getMessage());
+        }
+    }
+
+    @GetMapping("/listDoneCancelTasks")
+    @ApiOperation(value = "根据查询条件获取已办列表")
+    public ResultForm listDoneCancelTasks(ConditionalQueryRequest conditionalQueryRequest, Page page) {
+        try {
+            PageInfo waitDoTasks = conditionalQueryService.listDoneCancelTasks(conditionalQueryRequest, page);
+            return new ContentResultForm<>(true, waitDoTasks);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return new ContentResultForm<>(false, null, e.getMessage());
+        }
+    }
+
+    @GetMapping("/listDoneCancelTasksByBm")
+    @ApiOperation(value = "根据查询条件获取已办列表")
+    public ResultForm listDoneCancelApplyInfoByBm(ConditionalQueryRequest conditionalQueryRequest, Page page) {
+        try {
+            PageInfo waitDoTasks = conditionalQueryService.listDoneCancelApplyInfoByBm(conditionalQueryRequest, page);
+            return new ContentResultForm<>(true, waitDoTasks);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return new ContentResultForm<>(false, null, e.getMessage());
+        }
+    }
+
+    @GetMapping("/listWaitCancelTasksByBm")
+    @ApiOperation(value = "根据查询条件获取待办列表")
+    public ResultForm listWaitCancelTasksByBm(ConditionalQueryRequest conditionalQueryRequest, Page page) {
+        try {
+            PageInfo waitDoTasks = conditionalQueryService.listWaitCancelApplyInfoByBm(conditionalQueryRequest, page);
             return new ContentResultForm<>(true, waitDoTasks);
         } catch (Exception e) {
             log.error(e.getMessage(), e);

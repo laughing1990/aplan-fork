@@ -1,4 +1,4 @@
-package com.augurit.aplanmis.front.solicit.vo;
+package com.augurit.aplanmis.common.constants;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

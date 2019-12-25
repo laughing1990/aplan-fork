@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 public enum ApplyinstCancelConstants implements BaseEnum<TimeruleInstState, String> {
     SUBMITTED("已提交", "0"),
-    ACCEPTED("已接收", "1"),
+    ACCEPTED("已受理", "1"),
     PASS("已通过", "2"),
     NOT_PASS("未通过", "3"),
     INVALID("无效", "4");

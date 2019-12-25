@@ -76,6 +76,7 @@ public class AeaExProjDrawingServiceImpl extends AbstractFormDataOptManager impl
         actStoForminst.setFormId(formId);
         actStoForminst.setFormPrimaryKey(metaTableId);
         result.setActStoForminst(actStoForminst);
+        result.setDataOpt(EDataOpt.INSERT);
         return result;
     }
 

@@ -582,40 +582,60 @@ var module1 = new Vue({
     // 页面保存
     saveMaterialList: function (state) {
       var ts = this;
-      var saveUrl = '';
-      saveUrl = 'rest/user/saveMatCompCorrectInfo';
-      debugger
-      this.$refs['materialListForm'].validate(function (valid) {
-        console.log(valid);
-        if (valid || state == '6') {
-          var _saveData = {
-            correctId: ts.applyinstCorrectId,
-            correctState: state,
-            matCorrectDtosJson: JSON.stringify(ts.materialListForm.materialList),
-          };
-          ts.mloading = true;
-          request('', {
-            url: ctx + saveUrl,
-            type: 'post',
-            data: _saveData
-          }, function (res) {
-            ts.mloading = false;
-            if (res.success) {
-              ts.getMaterialList();
-              ts.isProjDetail = false;
-              ts.allPageInfoData.correctState = state;
-              return ts.apiMessage('操作成功！', 'success');
-            } else {
-              return ts.apiMessage(res.message ? res.message : '操作失败', 'error')
+      if(state == '6'){
+        return ts.saveMaterialListApi(state);
+      }
+      ts.$refs['materialListForm'].validate(function (valid) {
+        if (valid) {
+          var _alllist = ts.materialListForm.materialList,
+            _canSave = true;
+          if (ts.allPageInfoData.correctState == 6) {
+            for (var i = 0; i < _alllist.length; i++) {
+              if (_alllist[i].paperDueIninstId && _alllist[i].realPaperCount <= 0 ||
+                _alllist[i].copyDueIninstId && _alllist[i].realCopyCount <= 0 ||
+                _alllist[i].attDueIninstId && _alllist[i].attCount <= 0) {
+                _canSave = false;
+                break;
+              }
             }
-          }, function (msg) {
-            ts.mloading = false;
-            alertMsg('', '服务请求失败', '关闭', 'error', true);
-          });
+          }
+          if (!_canSave) {
+            return ts.apiMessage('原件、复印件请前往政务办事大厅窗口办理。目前可【暂存】', 'warning');
+          }
+          ts.saveMaterialListApi(state)
         } else {
           return ts.apiMessage('请完善材料列表', 'warning');
         }
       })
+    },
+    saveMaterialListApi: function (state) {
+      var ts = this;
+      var saveUrl = '';
+      saveUrl = 'rest/user/saveMatCompCorrectInfo';
+      var _saveData = {
+        correctId: ts.applyinstCorrectId,
+        correctState: state,
+        matCorrectDtosJson: JSON.stringify(ts.materialListForm.materialList),
+      };
+      ts.mloading = true;
+      request('', {
+        url: ctx + saveUrl,
+        type: 'post',
+        data: _saveData
+      }, function (res) {
+        ts.mloading = false;
+        if (res.success) {
+          ts.getMaterialList();
+          ts.isProjDetail = false;
+          ts.allPageInfoData.correctState = state;
+          return ts.apiMessage('操作成功！', 'success');
+        } else {
+          return ts.apiMessage(res.message ? res.message : '操作失败', 'error')
+        }
+      }, function (msg) {
+        ts.mloading = false;
+        alertMsg('', '服务请求失败', '关闭', 'error', true);
+      });
     },
     // 文件上传dialog-打开，每次都先清掉文件暂存的数据数据
     openUploadDialog: function (row) {
@@ -1759,8 +1779,14 @@ var module1 = new Vue({
       })
     },
 
+    // 材料列表-下载空表样表
+    downLoadEmptyAndSampleTable: function(row){
+      if(!row.ybKbDetailIds || !row.ybKbDetailIds.length) return this.apiMessage('暂无空表样表', 'info');
+      window.open(ctx + 'rest/cloud/att/download?detailIds=' + row.ybKbDetailIds);
+    },
+
     // 点击返回调用pager下的方法，隐藏补全详情，显示补齐补正列表
-    returnPageList: function(){
+    returnPageList: function () {
       return pager.isProjDetail = false;
     },
 

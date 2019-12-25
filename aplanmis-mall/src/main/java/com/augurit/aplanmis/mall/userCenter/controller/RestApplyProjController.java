@@ -123,7 +123,7 @@ public class RestApplyProjController {
 
 
     @GetMapping("proj/list")
-    @ApiOperation(value = "我的项目 --> 查询用户项目列表")
+    @ApiOperation(value = "我的项目 --> 查询用户项目及子工程列表")
     @ApiImplicitParams({@ApiImplicitParam(value = "页面数量",name = "pageNum",required = true,dataType = "string"),
             @ApiImplicitParam(value = "页面页数",name = "pageSize",required = true,dataType = "string")})
     public ResultForm getMyProjList(int pageNum, int pageSize, HttpServletRequest request){
@@ -159,6 +159,31 @@ public class RestApplyProjController {
            } catch (Exception e) {
             logger.error(e.getMessage(),e);
             return new ResultForm(false,"查询用户项目列表异常");
+        }
+    }
+
+    @GetMapping("root/proj/list")
+    @ApiOperation(value = "我的项目 --> 查询用户根项目列表")
+    @ApiImplicitParams({@ApiImplicitParam(value = "页面数量",name = "pageNum",required = true,dataType = "string"),
+            @ApiImplicitParam(value = "页面页数",name = "pageSize",required = true,dataType = "string")})
+    public ResultForm getMyRootProjList(int pageNum, int pageSize, HttpServletRequest request){
+        try {
+            List<AeaProjInfo> list = new ArrayList<AeaProjInfo>();
+            LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
+            if (loginInfo == null) return new ResultForm(false, "用户身份信息失效，请重新登录！");
+            PageHelper.startPage(pageNum, pageSize);
+            if("1".equals(loginInfo.getIsPersonAccount())){//个人
+                list=aeaProjInfoService.findRootAeaProjInfoByLinkmanInfoId(loginInfo.getUserId());
+            }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
+                list=aeaProjInfoService.findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(loginInfo.getUserId(),loginInfo.getUnitId());
+            }else{//企业
+                list=aeaProjInfoService.findRootAeaProjInfoByUnitInfoId(loginInfo.getUnitId());
+            }
+            PageInfo origPageInfo = new PageInfo<>(list);
+            return new ContentResultForm<>(true,origPageInfo);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ResultForm(false,"查询用户根项目列表异常");
         }
     }
 

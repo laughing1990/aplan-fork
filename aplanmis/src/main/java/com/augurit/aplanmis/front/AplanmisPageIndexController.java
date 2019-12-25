@@ -312,6 +312,58 @@ public class AplanmisPageIndexController {
     }
 
     /**
+     * 窗口撤件待办件
+     *
+     * @return
+     */
+    @GetMapping("/queryWaitCancelTasksByCkIndex.html")
+    @ApiOperation("菜单-撤件待办件")
+    public ModelAndView queryWaitCancelTasksIndexByCk() {
+        ModelAndView modelAndView = new ModelAndView("view/queryWaitCancelTasksByCkIndex");
+        modelAndView.addObject("state", 0);
+        return modelAndView;
+    }
+
+    /**
+     * 窗口撤件经办件
+     *
+     * @return
+     */
+    @GetMapping("/queryDoneCancelTasksByCkIndex.html")
+    @ApiOperation("菜单-撤件经办件")
+    public ModelAndView queryDoneCancelTasksIndexByCk() {
+        ModelAndView modelAndView = new ModelAndView("view/queryWaitCancelTasksByCkIndex");
+        modelAndView.addObject("state", 1);
+        return modelAndView;
+    }
+
+    /**
+     * 部门撤件经办件
+     *
+     * @return
+     */
+    @GetMapping("/queryDoneCancelTasksByBmIndex.html")
+    @ApiOperation("菜单-撤件经办件")
+    public ModelAndView queryDoneCancelTasksIndexByBm() {
+        ModelAndView modelAndView = new ModelAndView("view/queryWaitCancelTasksByBmIndex");
+        modelAndView.addObject("state", 1);
+        return modelAndView;
+    }
+
+    /**
+     * 部门撤件待办件
+     *
+     * @return
+     */
+    @GetMapping("/queryWaitCancelTasksByBmIndex.html")
+    @ApiOperation("菜单-撤件待办件")
+    public ModelAndView queryWaitCancelTasksByBmIndex() {
+        ModelAndView modelAndView = new ModelAndView("view/queryWaitCancelTasksByBmIndex");
+        modelAndView.addObject("state", 0);
+        return modelAndView;
+    }
+
+    /**
      * 已办任务
      *
      * @return

@@ -1,5 +1,6 @@
 <div id="matCompletionDetail" class="matCompletionDetail">
   <div class="return-list">
+    <h2 class="ellipsis">{{allPageInfoData.projInfoName || '-'}}</h2>
     <el-button @click="returnPageList">返回</el-button>
   </div>
   <h4 class="mt40 collapse-item_zl">基本信息
@@ -25,15 +26,31 @@
           <th>补全天数(工作日)</th>
           <td>{{supplemetForm.correctDueDays || '暂无'}}</td>
         </tr>
-        <tr>
+        <!-- <tr>
           <th>事项名称</th>
           <td>{{supplemetForm.iteminstName || '暂无'}}</td>
           <th>部门名称</th>
           <td>{{supplemetForm.chargeOrgName || '暂无'}}</td>
-        </tr>
+        </tr> -->
       </tbody>
     </table>
   </div>
+  <!-- 新增事项清单start -->
+  <h4 class="mt40 collapse-item_zl">事项清单</i>
+  </h4>
+  <el-table :data="allPageInfoData.aeaHiIteminstList" class="scrollable" style="width: 100%;" border
+  :header-cell-style="{height: '60px'}">
+    <el-table-column label="序号" width="60" align="center">
+      <template slot-scope="scope">
+        <span>{{scope.$index + 1}}</span>
+      </template>
+    </el-table-column>
+    <el-table-column label="事项名称" prop="iteminstName" :show-overflow-tooltip="true">
+    </el-table-column>
+    <el-table-column label="部门名称" prop="approveOrgName" :show-overflow-tooltip="true"  width="288">
+    </el-table-column>
+  </el-table>
+  <!-- 新增事项清单end -->
   <h4 class="mt40 collapse-item_zl">材料补全</i>
   </h4>
   <el-form :rules="materialListForm.rules" :model="materialListForm" ref="materialListForm" class="material-form">
@@ -50,9 +67,9 @@
           <span>{{scope.$index+1}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="matinstName" label="材料名称" align="left">
+      <el-table-column prop="matinstName" label="材料名称" width="200">
       </el-table-column>
-      <el-table-column label="补全要点" width="100" align="center">
+      <el-table-column label="收件标准" width="80" align="center">
         <template slot-scope="scope">
           <el-tooltip class="my-el-tooltip" effect="dark" placement="top">
             <div class="white-wrap lineh15" slot="content">{{scope.row.reviewKeyPoints || '无'}}</div>
@@ -60,21 +77,21 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column label="类型" width="80" align="center">
+      <el-table-column label="类型" width="80" align="center" v-if="false">
         <template slot-scope="scope">
           <div class="cell-div" v-if="scope.row.paperDueIninstId">原件</div>
           <div class="cell-div" v-if="scope.row.copyDueIninstId">复印件</div>
           <div class="cell-div" v-if="scope.row.attDueIninstId">电子件</div>
         </template>
       </el-table-column>
-      <el-table-column label="应收" width="80" align="center">
+      <el-table-column label="应收" width="80" align="center" v-if="false">
         <template slot-scope="scope">
           <div class="cell-div" v-if="scope.row.paperDueIninstId">{{scope.row.paperCount || '0'}}</div>
           <div class="cell-div" v-if="scope.row.copyDueIninstId">{{scope.row.copyCount || '0'}}</div>
           <div class="cell-div" v-if="scope.row.attDueIninstId">{{scope.row.isNeedAtt? '必须': '非必须'}}</div>
         </template>
       </el-table-column>
-      <el-table-column label="已收" width="100" align="center">
+      <el-table-column label="已收" width="100" align="center" v-if="false">
         <template slot-scope="scope">
           <div class="cell-div" v-if="scope.row.paperDueIninstId">
             <el-form-item :prop="'materialList.' + scope.$index + '.realPaperCount'"
@@ -106,32 +123,44 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="补全意见" align="center" width="200">
+      <el-table-column label="补全意见" align="center">
         <template slot-scope="scope">
-          <div class="cell-div" v-if="scope.row.paperDueIninstId">
+          <!-- <div class="cell-div" v-if="scope.row.paperDueIninstId">
             <p>{{scope.row.paperDueIninstOpinion || '暂无'}}</p>
           </div>
           <div class="cell-div" v-if="scope.row.copyDueIninstId">
             <p>{{scope.row.copyDueIninstOpinion || '暂无'}}</p>
-          </div>
-          <div class="cell-div" v-if="scope.row.attDueIninstId">
+          </div> -->
+          <div v-if="scope.row.attDueIninstId">
             <p>{{scope.row.attDueIninstOpinion || '暂无'}}</p>
           </div>
+          <div v-else>暂无</div>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="操作" width="100">
+      <el-table-column align="center" label="空表样表" width="80">
         <template slot-scope="scope">
-          <div class="cell-div" v-if="scope.row.paperDueIninstId">
+          <a href="javascript:;" class="color3e97df" @click="downLoadEmptyAndSampleTable(scope.row)">
+            <i class="ag ag-download-cloud" style="font-size: 20px;"></i>
+          </a> 
+        </template>
+      </el-table-column>
+      <el-table-column  label="操作" width="120">
+        <template slot-scope="scope">
+          <!-- <div class="cell-div" v-if="scope.row.paperDueIninstId">
             <p>/</p>
           </div>
           <div class="cell-div" v-if="scope.row.copyDueIninstId">
             <p>/</p>
-          </div>
-          <div class="cell-div att-btn-opt" v-if="scope.row.attDueIninstId">
-            <el-button size="mini" type="primary" @click="showFileListDialog(scope.row)">查看</el-button>
-            <el-button size="mini" type="success" @click="showUploadWindow(scope.row,scope.$index)">上传</el-button>
-            <!--              <el-button v-if="scope.row.matProp=='c'" class="mt10 ml0" size="mini" type="success" @click="showUploadWindow(scope.row,scope.$index,'certList')">证照库</el-button>-->
-            <!--              <el-button v-if="scope.row.matProp=='f'" class="mt10 ml0" size="mini" type="success" @click="showOneFormDialog1(scope.row)">填写</el-button>-->
+          </div> -->
+          <div class="att-btn-opt">
+            <!-- <el-button size="mini" type="primary" @click="showFileListDialog(scope.row)">查看</el-button>
+            <el-button size="mini" type="success" @click="showUploadWindow(scope.row,scope.$index)">上传</el-button> -->
+            <div v-if="scope.row.attDueIninstId">
+              <a href="javascript:;"  class="color3e97df" @click="showFileListDialog(scope.row)">查看</a> 
+              <span style="color: #999;">|</span>
+              <a href="javascript:;"  class="color3e97df" @click="showUploadWindow(scope.row,scope.$index)">上传</a>
+            </div>
+            <div v-else>/</div>
           </div>
         </template>
       </el-table-column>

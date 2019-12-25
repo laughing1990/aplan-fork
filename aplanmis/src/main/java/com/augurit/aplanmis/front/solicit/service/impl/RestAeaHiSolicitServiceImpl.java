@@ -2,19 +2,23 @@ package com.augurit.aplanmis.front.solicit.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.augurit.agcloud.bpm.common.domain.ActStoTimerule;
+import com.augurit.agcloud.bpm.common.mapper.ActStoTimeruleMapper;
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.agcloud.framework.security.user.OpuOmUser;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.agcloud.opus.common.service.om.OpuOmOrgService;
+import com.augurit.aplanmis.common.constants.SolicitBusTypeEnum;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.vo.solicit.AeaHiSolicitVo;
 import com.augurit.aplanmis.common.vo.solicit.QueryCondVo;
+import com.augurit.aplanmis.front.constant.SolicitConstant;
 import com.augurit.aplanmis.front.solicit.service.RestAeaHiSolicitService;
 import com.augurit.aplanmis.front.solicit.service.SolicitCodeService;
-import com.augurit.aplanmis.front.solicit.vo.SolicitBusTypeEnum;
 import com.github.pagehelper.Page;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +60,9 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService{
     private AeaSolicitItemUserMapper aeaSolicitItemUserMapper;
     @Autowired
     private AeaSolicitOrgUserMapper aeaSolicitOrgUserMapper;
+
+    @Autowired
+    private ActStoTimeruleMapper actStoTimeruleMapper;
 
     @Override
     public List<OpuOmOrg> listOrg(String isRoot, String parentOrgId) throws Exception {
@@ -117,8 +124,9 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService{
             //事项信息为空则直接返回
             throw new RuntimeException("征求的事项或部门信息不能为空！");
         }
-        String state = "1";//征求中
-        String currentUserName = SecurityContext.getCurrentUserName();
+        String state = SolicitConstant.SOLICIT_STATE_DO;//征求中
+        String currentLoginName = SecurityContext.getCurrentUserName();
+        String currentUserName = SecurityContext.getCurrentUser().getUserName();
         String currentUserId = SecurityContext.getCurrentUserId();
         String topOrgId = SecurityContext.getCurrentOrgId();
         String currentOrgId = null;
@@ -127,6 +135,13 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService{
         if(orgs.size() > 0){
             currentOrgId = orgs.get(0).getOrgId();
             currentOrgName = orgs.get(0).getOrgName();
+        }
+        String timeUnit = null;
+        if(StringUtils.isNotBlank(aeaHiSolicit.getSolicitTimeruleId())){
+            ActStoTimerule actStoTimerule = actStoTimeruleMapper.getActStoTimeruleById(aeaHiSolicit.getSolicitTimeruleId());
+            if(actStoTimerule != null){
+                timeUnit = actStoTimerule.getTimeruleUnit();
+            }
         }
         Date date = new Date();
         String solicitId = UUID.randomUUID().toString();
@@ -140,9 +155,10 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService{
         aeaHiSolicit.setInitiatorOrgName(currentOrgName);
         aeaHiSolicit.setInitiatorUserId(currentUserId);
         aeaHiSolicit.setInitiatorUserName(currentUserName);
-        aeaHiSolicit.setCreater(currentUserName);
+        aeaHiSolicit.setCreater(currentLoginName);
         aeaHiSolicit.setCreateTime(date);
         aeaHiSolicit.setRootOrgId(topOrgId);
+        aeaHiSolicit.setSolicitDaysUnit(timeUnit);
         aeaHiSolicitMapper.insertAeaHiSolicit(aeaHiSolicit);
 
         //保存意见征求的事项详细信息
@@ -161,11 +177,12 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService{
             detail.setDetailDueDays(aeaHiSolicit.getSolicitDueDays());
             detail.setDetailStartTime(date);
             detail.setDetailOrgId(topOrgId);
-            detail.setCreater(currentUserName);
+            detail.setCreater(currentLoginName);
             detail.setCreateTime(date);
             detail.setDetailStartTime(date);
             detail.setIsDeleted("0");
             detail.setDetailState(state);
+            detail.setDetailDaysUnit(timeUnit);
             aeaHiSolicitDetailMapper.insertAeaHiSolicitDetail(detail);
             //创建征求的用户详情信息实例
             List<AeaHiSolicitDetailUser> detailUsers = Lists.newArrayList();
@@ -173,13 +190,13 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService{
                 //查询事项配置的用户信息
                 List<AeaSolicitItemUser> aeaSolicitItemUsers = aeaSolicitItemUserMapper.listSolicitItemUserByItemVerId(detail.getItemVerId(), topOrgId);
                 for(int i=0,len=aeaSolicitItemUsers.size(); i<len; i++){
-                    AeaHiSolicitDetailUser detailUser = createDetailUser(currentUserName, date, detailId, aeaSolicitItemUsers.get(i).getUserId());
+                    AeaHiSolicitDetailUser detailUser = createDetailUser(currentLoginName, date, detailId, aeaSolicitItemUsers.get(i).getUserId());
                     detailUsers.add(detailUser);
                 }
             }else {
                 List<AeaSolicitOrgUser> aeaSolicitOrgUsers = aeaSolicitOrgUserMapper.listAeaSolicitOrgUserByOrgId(detail.getDetailOrgId(), topOrgId);
                 for(int j=0,len=aeaSolicitOrgUsers.size(); j<len; j++){
-                    AeaHiSolicitDetailUser detailUser = createDetailUser(currentUserName, date, detailId, aeaSolicitOrgUsers.get(j).getUserId());
+                    AeaHiSolicitDetailUser detailUser = createDetailUser(currentLoginName, date, detailId, aeaSolicitOrgUsers.get(j).getUserId());
                     detailUsers.add(detailUser);
                 }
             }
@@ -218,6 +235,55 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService{
         detailUser.setCreater(currentUserName);
         detailUser.setCreateTime(date);
         return detailUser;
+    }
+
+    @Override
+    public void createSolicitOpinion(AeaHiSolicitDetailUser aeaHiSolicitDetailUser) throws Exception {
+        String solicitDetailId = aeaHiSolicitDetailUser.getSolicitDetailId();
+        String currentUserName = SecurityContext.getCurrentUserName();
+        Date date = new Date();
+        //更新征求的用户填写的意见
+        if(StringUtils.isBlank(aeaHiSolicitDetailUser.getTaskAction())){
+            aeaHiSolicitDetailUser.setTaskAction(SolicitConstant.SOLICIT_TASK_ACTION_NARMAL);
+        }
+        aeaHiSolicitDetailUser.setFillTime(date);
+        aeaHiSolicitDetailUser.setModifier(currentUserName);
+        aeaHiSolicitDetailUser.setModifyTime(date);
+        aeaHiSolicitDetailUserMapper.updateAeaHiSolicitDetailUser(aeaHiSolicitDetailUser);
+
+        //判断是否需要更新detail信息，如果detail下的所有用户都征求完成，则结束。
+        boolean flag = true;
+        List<AeaHiSolicitDetailUser> aeaHiSolicitDetailUsers = aeaHiSolicitDetailUserMapper.getAeaHiSolicitDetailUserBySolicitDetailId(solicitDetailId);
+        for(int i=0,len=aeaHiSolicitDetailUsers.size(); i<len; i++){
+            if(!aeaHiSolicitDetailUsers.get(i).getDetailTaskId().equals(aeaHiSolicitDetailUser.getDetailTaskId()) &&
+                    aeaHiSolicitDetailUsers.get(i).getFillTime() == null){
+                flag = false;
+            }
+        }
+        if(flag){
+            AeaHiSolicitDetail aeaHiSolicitDetail = new AeaHiSolicitDetail();
+            aeaHiSolicitDetail.setSolicitDetailId(solicitDetailId);
+            aeaHiSolicitDetail.setDetailEndTime(date);
+            aeaHiSolicitDetail.setDetailState(SolicitConstant.SOLICIT_STATE_DONE);
+            aeaHiSolicitDetail.setModifier(currentUserName);
+            aeaHiSolicitDetail.setModifyTime(date);
+            aeaHiSolicitDetailMapper.updateAeaHiSolicitDetail(aeaHiSolicitDetail);
+        }
+    }
+
+    @Override
+    public void createSolicitCollectOpinion(AeaHiSolicit aeaHiSolicit) throws Exception {
+        Date date = new Date();
+        OpuOmUser currentUser = SecurityContext.getCurrentUser();
+        aeaHiSolicit.setModifyTime(date);
+        aeaHiSolicit.setModifier(currentUser.getLoginName());
+        aeaHiSolicit.setConclusionTime(date);
+        aeaHiSolicit.setSolicitEndTime(date);
+        aeaHiSolicit.setConclusionUserName(currentUser.getUserName());
+        aeaHiSolicit.setConclusionUserId(currentUser.getUserId());
+        aeaHiSolicit.setSolicitState(SolicitConstant.SOLICIT_STATE_DONE);
+
+        aeaHiSolicitMapper.updateAeaHiSolicit(aeaHiSolicit);
     }
 
     /**
@@ -283,6 +349,4 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService{
 
         }*/
     }
-
-
 }
