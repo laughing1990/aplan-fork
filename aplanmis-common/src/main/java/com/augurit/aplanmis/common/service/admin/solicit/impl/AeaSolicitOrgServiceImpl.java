@@ -1,7 +1,9 @@
 package com.augurit.aplanmis.common.service.admin.solicit.impl;
 
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
+import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
+import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaSolicitOrg;
 import com.augurit.aplanmis.common.mapper.AeaSolicitOrgMapper;
@@ -14,7 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
+
 /**
 * 按组织征求配置表-Service服务接口实现类
 */
@@ -30,12 +36,17 @@ public class AeaSolicitOrgServiceImpl implements AeaSolicitOrgService {
     @Override
     public void saveAeaSolicitOrg(AeaSolicitOrg aeaSolicitOrg) {
 
+        aeaSolicitOrg.setRootOrgId(SecurityContext.getCurrentOrgId());
+        aeaSolicitOrg.setCreater(SecurityContext.getCurrentUserId());
+        aeaSolicitOrg.setCreateTime(new Date());
         aeaSolicitOrgMapper.insertAeaSolicitOrg(aeaSolicitOrg);
     }
 
     @Override
     public void updateAeaSolicitOrg(AeaSolicitOrg aeaSolicitOrg) {
 
+        aeaSolicitOrg.setModifier(SecurityContext.getCurrentUserId());
+        aeaSolicitOrg.setModifyTime(new Date());
         aeaSolicitOrgMapper.updateAeaSolicitOrg(aeaSolicitOrg);
     }
 
@@ -49,8 +60,19 @@ public class AeaSolicitOrgServiceImpl implements AeaSolicitOrgService {
     }
 
     @Override
+    public void batchDelSolicitOrgByIds(String[] ids){
+
+        if(ids!=null&&ids.length>0){
+            aeaSolicitOrgMapper.batchDelSolicitOrgByIds(ids);
+        }else{
+            throw new InvalidParameterException("参数ids为空!");
+        }
+    }
+
+    @Override
     public PageInfo<AeaSolicitOrg> listAeaSolicitOrg(AeaSolicitOrg aeaSolicitOrg,Page page) {
 
+        aeaSolicitOrg.setRootOrgId(SecurityContext.getCurrentOrgId());
         PageHelper.startPage(page);
         List<AeaSolicitOrg> list = aeaSolicitOrgMapper.listAeaSolicitOrg(aeaSolicitOrg);
         logger.debug("成功执行分页查询！！");
@@ -68,11 +90,157 @@ public class AeaSolicitOrgServiceImpl implements AeaSolicitOrgService {
     }
 
     @Override
+    public AeaSolicitOrg getSolicitOrgRelOrgInfoById(String id){
+
+        if(StringUtils.isBlank(id)){
+            throw new InvalidParameterException("参数id为空!");
+        }
+        logger.debug("根据ID获取Form对象，ID为：{}", id);
+        return aeaSolicitOrgMapper.getSolicitOrgRelOrgInfoById(id);
+    }
+
+    @Override
     public List<AeaSolicitOrg> listAeaSolicitOrg(AeaSolicitOrg aeaSolicitOrg) {
 
+        aeaSolicitOrg.setRootOrgId(SecurityContext.getCurrentOrgId());
         List<AeaSolicitOrg> list = aeaSolicitOrgMapper.listAeaSolicitOrg(aeaSolicitOrg);
         logger.debug("成功执行查询list！！");
         return list;
+    }
+
+    @Override
+    public PageInfo<AeaSolicitOrg> listAeaSolicitOrgRelOrgInfo(AeaSolicitOrg aeaSolicitOrg,Page page) {
+
+        aeaSolicitOrg.setRootOrgId(SecurityContext.getCurrentOrgId());
+        PageHelper.startPage(page);
+        List<AeaSolicitOrg> list = aeaSolicitOrgMapper.listAeaSolicitOrgRelOrgInfo(aeaSolicitOrg);
+        logger.debug("成功执行分页查询！！");
+        return new PageInfo<AeaSolicitOrg>(list);
+    }
+
+    @Override
+    public List<AeaSolicitOrg> listAeaSolicitOrgRelOrgInfo(AeaSolicitOrg aeaSolicitOrg) {
+
+        aeaSolicitOrg.setRootOrgId(SecurityContext.getCurrentOrgId());
+        List<AeaSolicitOrg> list = aeaSolicitOrgMapper.listAeaSolicitOrgRelOrgInfo(aeaSolicitOrg);
+        logger.debug("成功执行查询list！！");
+        return list;
+    }
+
+    @Override
+    public void batchSaveSolicitOrg(String[] orgIds){
+
+        String userId = SecurityContext.getCurrentUserId();
+        String rootOrgId = SecurityContext.getCurrentOrgId();
+        if(orgIds!=null&&orgIds.length>0) {
+            // 查找需要删除的
+            List<String> needDelIdList = new ArrayList<String>();
+            List<AeaSolicitOrg> needDelList = new ArrayList<AeaSolicitOrg>();
+            AeaSolicitOrg sSolicitOrg = new AeaSolicitOrg();
+            sSolicitOrg.setRootOrgId(rootOrgId);
+            List<AeaSolicitOrg> orgList = aeaSolicitOrgMapper.listAeaSolicitOrg(sSolicitOrg);
+            if(orgList!=null&&orgList.size()>0){
+                for(AeaSolicitOrg item : orgList){
+                    int count=0;
+                    for (String orgId : orgIds) {
+                        if(item.getOrgId().equals(orgId)){
+                            break;
+                        }else{
+                            count++;
+                        }
+                    }
+                    if(count==orgIds.length){
+                        needDelList.add(item);
+                        needDelIdList.add(item.getSolicitOrgId());
+                    }
+                }
+            }
+            // 先删除
+            if(needDelList!=null&&needDelList.size()>0){
+
+                orgList.removeAll(needDelList);
+                String[] needDelIdArr = new String[needDelIdList.size()];
+                needDelIdList.toArray(needDelIdArr);
+                aeaSolicitOrgMapper.batchDelSolicitOrgByIds(needDelIdArr);
+            }
+
+            // 保存
+            for (int i=0; i<orgIds.length;i++) {
+                AeaSolicitOrg updateVo = null;
+                if (orgList != null && orgList.size() > 0) {
+                    for (AeaSolicitOrg item : orgList) {
+                        if(item.getOrgId().equals(orgIds[i])){
+                            updateVo = item;
+                            break;
+                        }
+                    }
+                }
+                if(updateVo==null){
+                    AeaSolicitOrg solicitOrg = new AeaSolicitOrg();
+                    solicitOrg.setSolicitOrgId(UUID.randomUUID().toString());
+                    solicitOrg.setOrgId(orgIds[i]);
+                    solicitOrg.setBusType("YJZQ");
+                    solicitOrg.setSolicitType("0");
+                    solicitOrg.setCreater(userId);
+                    solicitOrg.setCreateTime(new Date());
+                    solicitOrg.setRootOrgId(rootOrgId);
+                    aeaSolicitOrgMapper.insertAeaSolicitOrg(solicitOrg);
+                }else{
+                    updateVo.setModifier(userId);
+                    updateVo.setModifyTime(new Date());
+                    aeaSolicitOrgMapper.updateAeaSolicitOrg(updateVo);
+                }
+            }
+        }else{
+            batchDelSolicitOrgByRootOrgId(rootOrgId);
+        }
+    }
+
+    @Override
+    public void batchDelSolicitOrgByRootOrgId(String rootOrgId){
+
+        if(StringUtils.isNotBlank(rootOrgId)){
+            aeaSolicitOrgMapper.batchDelSolicitOrgByRootOrgId(rootOrgId);
+        }
+    }
+
+    @Override
+    public List<ZtreeNode> gtreeSolicitOrg(String rootOrgId){
+
+        if(StringUtils.isBlank(rootOrgId)){
+            rootOrgId = SecurityContext.getCurrentOrgId();
+        }
+        List<ZtreeNode> allNodes = new ArrayList<>();
+        ZtreeNode rootNode = new ZtreeNode();
+        rootNode.setId("root");
+        rootNode.setName("征求部门");
+        rootNode.setType("root");
+        rootNode.setOpen(true);
+        rootNode.setIsParent(true);
+        rootNode.setNocheck(true);
+        allNodes.add(rootNode);
+        AeaSolicitOrg sSolicitOrg = new AeaSolicitOrg();
+        sSolicitOrg.setRootOrgId(rootOrgId);
+        List<AeaSolicitOrg> list = aeaSolicitOrgMapper.listAeaSolicitOrgRelOrgInfo(sSolicitOrg);
+        if(list!=null&&list.size()>0){
+            for(AeaSolicitOrg org : list){
+                allNodes.add(convertSolicitOrgNode(org));
+            }
+        }
+        return allNodes;
+    }
+
+    private ZtreeNode convertSolicitOrgNode(AeaSolicitOrg org){
+
+        ZtreeNode node = new ZtreeNode();
+        node.setId(org.getSolicitOrgId());
+        node.setName(org.getOrgName());
+        node.setpId("root");
+        node.setType("org");
+        node.setOpen(true);
+        node.setIsParent(false);
+        node.setNocheck(false);
+        return node;
     }
 }
 

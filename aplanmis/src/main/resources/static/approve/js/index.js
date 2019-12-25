@@ -602,6 +602,9 @@ var vm = new Vue({
           { required: true,validator: checkPhoneNum, trigger: 'blur' },
         ]
       },
+      // 意见征求 start
+      hasSolicit: 0,
+      // 意见征求  end
     }
   },
   filters: {
@@ -638,6 +641,11 @@ var vm = new Vue({
     },
   },
   methods: {
+    // 意见征求 start
+    loadSolicitData: function(){
+      var vm = this;
+    },
+    // 意见征求 end
     // 打开新增或者编辑联系人弹窗
     openEditLinkMan: function(id){
       var vm = this;
@@ -2464,7 +2472,7 @@ var vm = new Vue({
         vm.initButtons();
       }
     },
-    // 初始化左边 iframe
+    // 初始化左边 iframe/tab
     initForms: function () {
       var vm = this;
       var oneFromSrc = '';
@@ -2474,6 +2482,7 @@ var vm = new Vue({
         {label: '材料附件', labelId: "2", src: './materialAnnex.html'},
         {label: '审批过程', labelId: "3", src: './opinionForm.html'},
         {label: '材料补正', labelId: "4", src: './opinionForm.html'},
+        {label: '意见征求', labelId: "solicit", src: './opinionForm.html'},
         {label: '撤件历史', labelId: "appCancel", src: './opinionForm.html'},
         {label: '特殊程序', labelId: "5", src: './opinionForm.html'},
         {label: '批文批复', labelId: "6", src: './approvalOpinions.html',}
@@ -2492,19 +2501,11 @@ var vm = new Vue({
           })
         }
       });
+      // 给iframe传参数
       var urlParam = [
-        'taskId',
-        'isSeriesinst',
-        // 'itemInstId',
-        'iteminstId',
-        'processInstanceId',
-        'busRecordId',
-        'isApprover',
-        'isZJItem',
-        'masterEntityKey',
-        'projectCode',
-        'viewId',
-        'projInfoId',
+        'taskId', 'isSeriesinst', 'iteminstId', 'processInstanceId',
+        'busRecordId', 'isApprover', 'isZJItem', 'masterEntityKey',
+        'projectCode', 'viewId', 'projInfoId'
       ];
       var oneFormIndex = -1;
       lTabsData.forEach(function (u, i) {
@@ -2518,6 +2519,7 @@ var vm = new Vue({
         });
       });
       vm.lTabsData = lTabsData;
+      // 是否有一张表单tab
       if (vm.isShowOneForm == '1' && !vm.isZJItem) { // 中介事项也不显示一张表单
         if (vm.isSeriesinst == '0') { // 多事项
           var targetUrl = oneFromSrc;
@@ -2561,12 +2563,8 @@ var vm = new Vue({
             type: 'get',
             data: {
               applyinstId: vm.masterEntityKey,
-              // stageId: vm.stageId,
               projInfoId: vm.projInfoId,
               itemId: vm.itemId,
-              // applyinstId: 'fcf9d937-f670-4871-a430-34b01cafde9b',
-              // stageId: 'f39985ed-9119-444f-b744-4167762a3872',
-              // projInfoId: '347db5f9-f55f-44eb-9d1a-983ca263e8c4',
               showBasicButton: false,
               includePlatformResource: false,
             },
@@ -2603,74 +2601,37 @@ var vm = new Vue({
             // vm.$message.error('获取智能表单数据失败');
           })
         }
-        
-        // request('', {
-        //   url: oneFromSrc,
-        //   type: 'get',
-        // }, function (res) {
-        //   if (res.success) {
-        //     var reder2Url = res.content;
-        //     request('', {
-        //       url: reder2Url,
-        //       type: 'get',
-        //     }, function (res2) {
-        //       if (res2.success) {
-        //         $('#oneForm').html(res2.content);
-        //         vm.$nextTick(function () {
-        //           $('#oneForm').html(res2.content)
-        //         });
-        //       }
-        //     }, function (res) {
-        //       vm.$message.error(res.message);
-        //       $('#oneForm').html(res.message);
-        //
-        //     });
-        //   }
-        // }, function () {
-        //   $('#oneForm').html('未配置一张表单信息');
-        // });
       } else {
         //下面是删除一张表单的tab，注意依赖数组的脚标
         if (oneFormIndex != -1) {
           vm.lTabsData.splice(oneFormIndex, 1);
         }
       }
-      // 材料补正
-      var tmpIndex = -1;
-      vm.lTabsData.forEach(function (u, i) {
-        if (u.labelId == 4) {
-          tmpIndex = i
-        }
-      })
-      if (vm.hasSupply != 1) {
-        vm.lTabsData.splice(tmpIndex, 1);
-      } else {
-        vm.loadSupplyDetail();
-      }
-      // 特殊程序
-      var tmpIndex = -1;
-      vm.lTabsData.forEach(function (u, i) {
-        if (u.labelId == 5) {
-          tmpIndex = i
-        }
-      })
-      if (vm.hasSpecial != 1) {
-        vm.lTabsData.splice(tmpIndex, 1);
-      } else {
+      // 是否有材料补正
+      loadTab('4', 'hasSupply', vm.loadSupplyDetail);
+      // 是否有特殊程序
+      loadTab('5', 'hasSpecial', function(){
         vm.getSpecialType();
         vm.loadSpecialDetail();
-      }
-      // 撤件历史
-      var tmpIndex = -1;
-      vm.lTabsData.forEach(function (u, i) {
-        if (u.labelId == 'appCancel') {
-          tmpIndex = i
+      });
+      // 是否有撤件历史
+      loadTab('appCancel', 'hasAppCancel', vm.loadAppCancelData);
+      // 是否有意见征求
+      loadTab('solicit', 'hasSolicit', vm.loadSolicitData);
+      
+      // 加载对应标签数据
+      function loadTab(labelId, key, cb){
+        var index = -1;
+        vm.lTabsData.forEach(function (u, i) {
+          if (u.labelId == labelId) {
+            index = i
+          }
+        })
+        if (vm[key] == 1) {
+          typeof cb == 'function' && cb();
+        } else if (index != -1) {
+          vm.lTabsData.splice(index, 1);
         }
-      })
-      if (vm.hasAppCancel != 1) {
-        vm.lTabsData.splice(tmpIndex, 1);
-      } else {
-        vm.loadAppCancelData();
       }
     },
     // 初始化左边按钮组
@@ -2866,11 +2827,13 @@ var vm = new Vue({
           vm.hasSpecial = res.content.hasSpecial;
           vm.hasSupply = res.content.hasSupply;
           vm.hasAppCancel = res.content.ishasApplyinstCancel;
+          vm.hasSolicit = res.content.hasSolicit;
           vm.isShowOneForm = res.content.isShowOneForm;
           vm.stageId = res.content.stageId;
           vm.projInfoId = res.content.projId;
           vm.itemVersionId = res.content.itemVerId;
           vm.itemId = res.content.itemId;
+          // vm.hasSolicit = 1;
           vm.initFormElementPriv();
         } else {
           vm.$message.error(res.message);

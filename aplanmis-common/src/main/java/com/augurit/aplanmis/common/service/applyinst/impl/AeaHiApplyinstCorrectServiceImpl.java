@@ -5,9 +5,11 @@ import com.augurit.agcloud.bpm.common.domain.ActStoAppinst;
 import com.augurit.agcloud.bpm.common.engine.BpmProcessService;
 import com.augurit.agcloud.bpm.common.service.ActStoAppinstService;
 import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
+import com.augurit.agcloud.bsc.domain.BscAttForm;
 import com.augurit.agcloud.bsc.domain.BscDicRegion;
 import com.augurit.agcloud.bsc.mapper.BscAttDetailMapper;
 import com.augurit.agcloud.bsc.mapper.BscDicRegionMapper;
+import com.augurit.agcloud.bsc.sc.att.service.IBscAttService;
 import com.augurit.agcloud.bsc.sc.day.service.WorkdayHolidayService;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
@@ -68,6 +70,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -153,6 +156,10 @@ public class AeaHiApplyinstCorrectServiceImpl implements AeaHiApplyinstCorrectSe
     private BscDicRegionMapper bscDicRegionMapper;
     @Autowired
     private RestTimeruleinstCalService restTimeruleinstCalService;
+    @Autowired
+    private IBscAttService bscAttService;
+    @Value("${dg.sso.access.platform.org.top-org-id:0368948a-1cdf-4bf8-a828-71d796ba89f6}")
+    private String topOrgId;
 
     public void saveAeaHiApplyinstCorrect(AeaHiApplyinstCorrect aeaHiApplyinstCorrect) throws Exception {
         aeaHiApplyinstCorrectMapper.insertAeaHiApplyinstCorrect(aeaHiApplyinstCorrect);
@@ -544,6 +551,12 @@ public class AeaHiApplyinstCorrectServiceImpl implements AeaHiApplyinstCorrectSe
                     matCorrectDto.setAttCount(0l);
                 }
             }
+
+            List<BscAttForm> kbList = bscAttService.listAttLinkAndDetailNoPage("AEA_ITEM_MAT", "TEMPLATE_DOC", matCorrectDto.getMatId(), null, topOrgId, null);
+            List<BscAttForm> ybList = bscAttService.listAttLinkAndDetailNoPage("AEA_ITEM_MAT", "SAMPLE_DOC", matCorrectDto.getMatId(), null, topOrgId, null);
+            kbList.addAll(ybList);
+            String ybKbDetailIds = kbList.stream().map(bscAttForm -> bscAttForm.getDetailId()).collect(Collectors.joining(","));
+            matCorrectDto.setYbKbDetailIds(ybKbDetailIds);
         }
         //当前补全，根据项目ID查询申报主体
         String projInfoId = aeaHiApplyinstCorrect.getProjInfoId();

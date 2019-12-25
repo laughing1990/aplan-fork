@@ -5,17 +5,18 @@
 .my-pro-content {
   width: 100%;
 }
-.my-pro-left {
-  width: 240px;
+.my-pro-left1 {
+  width: 160px;
   height: 100%;
   margin-right: 30px;
-  background: #F9FBFD;
+  /* background: #F9FBFD; */
   /*box-shadow: 0px 4px 16px 0px rgba(9,41,77,0.12);*/
   float: left;
-  box-shadow: 0px 5px 6px rgba(120,47,224,0.08);
+  /* box-shadow: 0px 5px 6px rgba(120,47,224,0.08); */
+  border-right: 1px solid #F2F2F2;
 }
 .my-pro-right {
-  width: 930px;
+  width: 1010px;
   float: left;
 }
 .my-pro-right-full {
@@ -86,7 +87,8 @@
   position: relative;
   font-weight: bold;
   line-height: 50px;
-  padding-left: 70px;
+  padding-left: 34px;
+  font-size: 16px;
 }
 .user-pro-item.active .pro-title {
   color: #457EFF;
@@ -131,22 +133,26 @@
 }
 
 .user-pro-item>div.active{
-  background: #fff;
+  /* background: #fff; */
   border-left: 3px solid #457EFF;
   color: #457EFF;
+  background-color: rgba(235, 244, 251, 1);
 }
 .user-pro-item li a {
-  height: 40px;
-  line-height: 40px;
+  height: 50px;
+  line-height: 50px;
   padding-left: 80px;
+  padding-left: 48px;
   border-left: 3px solid transparent;
   display: inline-block;
   width: 100%;
+  color: #7A7A7A;
 }
 .user-pro-item li.active a {
-  background: #fff;
+  /* background: #fff; */
   border-left-color: #457EFF;
   color: #457EFF;
+  background-color: rgba(235, 244, 251, 1);
 }
 .search-input {
   text-align: left;
@@ -771,7 +777,7 @@ sel-status .radiobox {
   color: #3E97DF;
 }
 .userCenterMenList {
-  background: #F9FBFD;
+  /* background: #F9FBFD; */
 }
 [v-cloak] {
   display: none;
@@ -801,13 +807,13 @@ sel-status .radiobox {
 #declareVue .el-table th>.cell{
   font-weight: normal;
 }
-.my-pro-left .userCenterMenList ul.user-pro-list li.user-pro-item{
+.my-pro-left1 .userCenterMenList ul.user-pro-list li.user-pro-item{
   position: relative;
 }
-.my-pro-left .userCenterMenList ul.user-pro-list li.user-pro-item .el-icon-arrow-down{
+.my-pro-left1 .userCenterMenList ul.user-pro-list li.user-pro-item .el-icon-arrow-down{
   position: absolute;
   right: 20px;
-  top: 19px;
+  top: 18px;
 }
 
 

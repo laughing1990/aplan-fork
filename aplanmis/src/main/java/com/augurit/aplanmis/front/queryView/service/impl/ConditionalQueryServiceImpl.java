@@ -677,6 +677,84 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
         return new PageInfo<>(taskList);
     }
 
+    @Override
+    public PageInfo listWaitCancelTasks(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception {
+        conditionalQueryRequest.setHandler(true);
+
+        loadConditionalQueryRequest(conditionalQueryRequest);
+
+        changeOrderBySql(page);
+
+        PageHelper.startPage(page);
+
+        List<TaskInfo> taskList = conditionalQueryMapper.listWaitCancelApplyInfo(conditionalQueryRequest);
+
+        loadTaskInfo(taskList, "已办");
+
+        loadRemindInfo(taskList);
+
+        return new PageInfo<>(taskList);
+    }
+
+    @Override
+    public PageInfo listDoneCancelTasks(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception {
+        conditionalQueryRequest.setHandler(true);
+
+        loadConditionalQueryRequest(conditionalQueryRequest);
+
+        changeOrderBySql(page);
+
+        PageHelper.startPage(page);
+
+        List<TaskInfo> taskList = conditionalQueryMapper.listDoneCancelApplyInfo(conditionalQueryRequest);
+
+        loadTaskInfo(taskList, "已办");
+
+        loadRemindInfo(taskList);
+
+        return new PageInfo<>(taskList);
+    }
+
+    @Override
+    public PageInfo listDoneCancelApplyInfoByBm(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception {
+        conditionalQueryRequest.setHandler(true);
+
+        loadConditionalQueryRequest(conditionalQueryRequest);
+
+        changeOrderBySql(page);
+
+        PageHelper.startPage(page);
+
+        List<TaskInfo> taskList = conditionalQueryMapper.listDoneCancelApplyInfoByBm(conditionalQueryRequest);
+
+        loadTaskInfo(taskList, "已办");
+
+        loadRemindInfo(taskList);
+
+        return new PageInfo<>(taskList);
+    }
+
+    @Override
+    public PageInfo listWaitCancelApplyInfoByBm(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception {
+        conditionalQueryRequest.setHandler(true);
+
+        loadConditionalQueryRequest(conditionalQueryRequest);
+
+        changeOrderBySql(page);
+
+        PageHelper.startPage(page);
+
+        List<TaskInfo> taskList = conditionalQueryMapper.listWaitCancelApplyInfoByBm(conditionalQueryRequest);
+
+        loadTaskInfo(taskList, "已办");
+
+        loadRemindInfo(taskList);
+
+        return new PageInfo<>(taskList);
+    }
+
+
+
     /**
      * 查询催办信息
      *
@@ -1741,7 +1819,7 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
         PageHelper.startPage(page);
         List<TaskInfo> taskList = conditionalQueryMapper.listWaitUploadServiceResult(conditionalQueryRequest);
 
-        loadTaskInfo(taskList, "待办");
+        loadTaskInfo(taskList, "已办");
 
         loadRemindInfo(taskList);
 

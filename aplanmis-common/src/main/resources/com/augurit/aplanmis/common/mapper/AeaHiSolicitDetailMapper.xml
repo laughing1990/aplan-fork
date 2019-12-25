@@ -69,55 +69,55 @@
         <include refid="allColumns"/>
         from    AEA_HI_SOLICIT_DETAIL
     <where>
-        <if test="solicitDetailId != null AND solicitDetailId != ''" >
+        <if test="solicitDetailId != null" >
         AND    SOLICIT_DETAIL_ID = #{solicitDetailId}
         </if>
-        <if test="solicitId != null AND solicitId != ''" >
+        <if test="solicitId != null" >
         AND    SOLICIT_ID = #{solicitId}
         </if>
-        <if test="detailOrgId != null AND detailOrgId != ''" >
+        <if test="detailOrgId != null" >
         AND    DETAIL_ORG_ID = #{detailOrgId}
         </if>
-        <if test="detailOrgName != null AND detailOrgName != ''" >
+        <if test="detailOrgName != null" >
         AND    DETAIL_ORG_NAME = #{detailOrgName}
         </if>
-        <if test="itemId != null AND itemId != ''" >
+        <if test="itemId != null" >
         AND    ITEM_ID = #{itemId}
         </if>
-        <if test="itemVerId != null AND itemVerId != ''" >
+        <if test="itemVerId != null" >
         AND    ITEM_VER_ID = #{itemVerId}
         </if>
-        <if test="detailDueDays != null AND detailDueDays != ''" >
+        <if test="detailDueDays != null" >
         AND    DETAIL_DUE_DAYS = #{detailDueDays}
         </if>
-        <if test="detailRealDays != null AND detailRealDays != ''" >
+        <if test="detailRealDays != null" >
         AND    DETAIL_REAL_DAYS = #{detailRealDays}
         </if>
-        <if test="detailDaysUnit != null AND detailDaysUnit != ''" >
+        <if test="detailDaysUnit != null" >
         AND    DETAIL_DAYS_UNIT = #{detailDaysUnit}
         </if>
-        <if test="detailStartTime != null AND detailStartTime != ''" >
+        <if test="detailStartTime != null" >
         AND    DETAIL_START_TIME = #{detailStartTime}
         </if>
-        <if test="detailEndTime != null AND detailEndTime != ''" >
+        <if test="detailEndTime != null" >
         AND    DETAIL_END_TIME = #{detailEndTime}
         </if>
-        <if test="detailState != null AND detailState != ''" >
+        <if test="detailState != null" >
         AND    DETAIL_STATE = #{detailState}
         </if>
-        <if test="isDeleted != null AND isDeleted != ''" >
+        <if test="isDeleted != null" >
         AND    IS_DELETED = #{isDeleted}
         </if>
-        <if test="creater != null AND creater != ''" >
+        <if test="creater != null" >
         AND    CREATER = #{creater}
         </if>
-        <if test="createTime != null AND createTime != ''" >
+        <if test="createTime != null" >
         AND    CREATE_TIME = #{createTime}
         </if>
-        <if test="modifier != null AND modifier != ''" >
+        <if test="modifier != null" >
         AND    MODIFIER = #{modifier}
         </if>
-        <if test="modifyTime != null AND modifyTime != ''" >
+        <if test="modifyTime != null" >
         AND    MODIFY_TIME = #{modifyTime}
         </if>
       AND  IS_DELETED = '0'
@@ -137,55 +137,55 @@ SOLICIT_DETAIL_ID  ,SOLICIT_ID  ,DETAIL_ORG_ID  ,DETAIL_ORG_NAME  ,ITEM_ID  ,ITE
 <update id="updateAeaHiSolicitDetail" parameterType="AeaHiSolicitDetail" >
     update AEA_HI_SOLICIT_DETAIL
     <set >
-        <if test="solicitDetailId != null AND solicitDetailId != '' " >
+        <if test="solicitDetailId != null" >
         SOLICIT_DETAIL_ID = #{solicitDetailId},
         </if>
-        <if test="solicitId != null AND solicitId != '' " >
+        <if test="solicitId != null" >
         SOLICIT_ID = #{solicitId},
         </if>
-        <if test="detailOrgId != null AND detailOrgId != '' " >
+        <if test="detailOrgId != null" >
         DETAIL_ORG_ID = #{detailOrgId},
         </if>
-        <if test="detailOrgName != null AND detailOrgName != '' " >
+        <if test="detailOrgName != null" >
         DETAIL_ORG_NAME = #{detailOrgName},
         </if>
-        <if test="itemId != null AND itemId != '' " >
+        <if test="itemId != null" >
         ITEM_ID = #{itemId},
         </if>
-        <if test="itemVerId != null AND itemVerId != '' " >
+        <if test="itemVerId != null" >
         ITEM_VER_ID = #{itemVerId},
         </if>
-        <if test="detailDueDays != null AND detailDueDays != '' " >
+        <if test="detailDueDays != null" >
         DETAIL_DUE_DAYS = #{detailDueDays},
         </if>
-        <if test="detailRealDays != null AND detailRealDays != '' " >
+        <if test="detailRealDays != null" >
         DETAIL_REAL_DAYS = #{detailRealDays},
         </if>
-        <if test="detailDaysUnit != null AND detailDaysUnit != '' " >
+        <if test="detailDaysUnit != null" >
         DETAIL_DAYS_UNIT = #{detailDaysUnit},
         </if>
-        <if test="detailStartTime != null AND detailStartTime != '' " >
+        <if test="detailStartTime != null" >
         DETAIL_START_TIME = #{detailStartTime},
         </if>
-        <if test="detailEndTime != null AND detailEndTime != '' " >
+        <if test="detailEndTime != null" >
         DETAIL_END_TIME = #{detailEndTime},
         </if>
-        <if test="detailState != null AND detailState != '' " >
+        <if test="detailState != null" >
         DETAIL_STATE = #{detailState},
         </if>
-        <if test="isDeleted != null AND isDeleted != '' " >
+        <if test="isDeleted != null" >
         IS_DELETED = #{isDeleted},
         </if>
-        <if test="creater != null AND creater != '' " >
+        <if test="creater != null" >
         CREATER = #{creater},
         </if>
-        <if test="createTime != null AND createTime != '' " >
+        <if test="createTime != null" >
         CREATE_TIME = #{createTime},
         </if>
-        <if test="modifier != null AND modifier != '' " >
+        <if test="modifier != null" >
         MODIFIER = #{modifier},
         </if>
-        <if test="modifyTime != null AND modifyTime != '' " >
+        <if test="modifyTime != null" >
         MODIFY_TIME = #{modifyTime},
         </if>
     </set>

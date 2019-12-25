@@ -16,6 +16,18 @@
         ROOT_ORG_ID  rootOrgId
     </sql>
 
+    <sql id="alias_allColumns">
+        ${alias}.SOLICIT_ORG_ID  solicitOrgId,
+        ${alias}.ORG_ID  orgId,
+        ${alias}.BUS_TYPE  busType,
+        ${alias}.SOLICIT_TYPE  solicitType,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.ROOT_ORG_ID  rootOrgId
+    </sql>
+
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaSolicitOrgById" resultType="AeaSolicitOrg" >
         select
@@ -23,12 +35,24 @@
         from  AEA_SOLICIT_ORG
         where SOLICIT_ORG_ID = #{id}
     </select>
+    
+    <select id="getSolicitOrgRelOrgInfoById" resultType="AeaSolicitOrg">
+        select
+            <include refid="alias_allColumns">
+                <property name="alias" value="soliOrg"/>
+            </include>,
+            org.ORG_NAME orgName,
+            org.ORG_CODE orgCode
+        from AEA_SOLICIT_ORG soliOrg
+        left join opu_om_org org on ( org.ORG_ID = soliOrg.ORG_ID and org.ORG_DELETED = '0' )
+        where SOLICIT_ORG_ID = #{id}
+    </select>
 
     <!--3 根据条件查询实体list -->
-    <select id="listAeaSolicitOrg" resultType="AeaSolicitOrg" >
+    <select id="listAeaSolicitOrg" resultType="AeaSolicitOrg">
         select
            <include refid="allColumns"/>
-        from    AEA_SOLICIT_ORG
+        from AEA_SOLICIT_ORG
         <where>
             <if test="solicitOrgId != null" >
             and    SOLICIT_ORG_ID = #{solicitOrgId}
@@ -59,10 +83,57 @@
             </if>
         </where>
     </select>
+    
+    <select id="listAeaSolicitOrgRelOrgInfo" resultType="AeaSolicitOrg">
+        select
+            <include refid="alias_allColumns">
+                <property name="alias" value="soliOrg"/>
+            </include>,
+            org.ORG_NAME orgName,
+            org.ORG_CODE orgCode
+        from AEA_SOLICIT_ORG soliOrg
+        left join OPU_OM_ORG org on ( org.ORG_ID = soliOrg.ORG_ID and org.ORG_DELETED = '0' )
+        <where>
+            <if test="solicitOrgId != null" >
+            and    soliOrg.SOLICIT_ORG_ID = #{solicitOrgId}
+            </if>
+            <if test="orgId != null" >
+            and    soliOrg.ORG_ID = #{orgId}
+            </if>
+            <if test="busType != null" >
+            and    soliOrg.BUS_TYPE = #{busType}
+            </if>
+            <if test="solicitType != null" >
+            and    soliOrg.SOLICIT_TYPE = #{solicitType}
+            </if>
+            <if test="creater != null" >
+            and    soliOrg.CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+            and    soliOrg.CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null" >
+            and    soliOrg.MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null" >
+            and    soliOrg.MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null" >
+            and    soliOrg.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="keyword!=null and keyword!='' ">
+            and (
+                org.ORG_NAME like concat('%', concat( #{keyword}, '%')) or
+                org.ORG_CODE like concat('%', concat( #{keyword}, '%'))
+            )
+            </if>
+        </where>
+    </select>
 
     <!--5 新增实体对象 -->
     <insert id="insertAeaSolicitOrg" parameterType="AeaSolicitOrg" >
-        insert into AEA_SOLICIT_ORG (
+        insert into AEA_SOLICIT_ORG
+        (
             SOLICIT_ORG_ID,
             ORG_ID,
             BUS_TYPE,
@@ -72,7 +143,9 @@
             MODIFIER,
             MODIFY_TIME,
             ROOT_ORG_ID
-        )  values  (
+        )
+        values
+        (
             #{solicitOrgId},
             #{orgId},
             #{busType},
@@ -122,6 +195,19 @@
 
     <delete id="deleteAeaSolicitOrg">
         delete from AEA_SOLICIT_ORG where SOLICIT_ORG_ID = #{id}
+    </delete>
+    
+    <delete id="batchDelSolicitOrgByIds">
+        <if test="ids!=null and ids!='' ">
+            delete from AEA_SOLICIT_ORG where SOLICIT_ORG_ID in
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+    </delete>
+
+    <delete id="batchDelSolicitOrgByRootOrgId">
+        delete from AEA_SOLICIT_ORG where ROOT_ORG_ID = #{rootOrgId}
     </delete>
 
     <resultMap type="AeaSolicitOrg" id="AeaSolicitOrgMap">

@@ -11,41 +11,60 @@ var vm = new Vue({
 					perpage: 10
 				},
 				sort: {
-					field: 'applyTime',
+					field: 'createTime',
 					sort: 'desc'
 				},
 				theme: '',
-				applyStartTime: '',
-				applyEndTime: '',
+				acceptStartTime: '',
+				acceptEndTime: '',
+				applySource: '',
 				applyType: '',
-				keyword: ''
+				instState: '',
+				arriveStartTime: '',
+				arriveEndTime: '',
+				keyword: '',
+				busType: 'YJZQ'
 			},
-			sendApplyVisible: false,
-			sendApplyLoading: false,
-			sendApplyComment: {
-				comment: ''
-			},
-			applyinstId: ''
+
+			isShowMsgDetail: false,
+			msgDetail: {
+				remindContent: '',
+				sendUserName: '',
+				sendDate: ''
+			}
+
 		}
 	},
 	methods: {
 		//刷新列表
 		fetchTableData: function () {
+
 			var ts = this;
 
 			this.searchFrom.pagination.pages = this.searchFrom.pagination.page;
 
-			if (ts.searchFrom.applyStartTime != '' && ts.searchFrom.applyEndTime != '') {
-				if (ts.searchFrom.applyStartTime > ts.searchFrom.applyEndTime) {
-					ts.apiMessage('收件开始时间不能大于结束时间', 'error');
+			if (ts.searchFrom.acceptStartTime != '' && ts.searchFrom.acceptEndTime != '') {
+				if (ts.searchFrom.acceptStartTime > ts.searchFrom.acceptEndTime) {
+					ts.apiMessage('受理开始时间不能大于结束时间', 'error');
 					return;
 				}
+			}
+
+			if (ts.searchFrom.arriveStartTime != '' && ts.searchFrom.arriveEndTime != '') {
+				if (ts.searchFrom.arriveStartTime > ts.searchFrom.arriveEndTime) {
+					ts.apiMessage('到达开始时间不能大于结束时间', 'error');
+					return;
+				}
+			}
+
+			if (ts.searchFrom.sort["field"] == "acceptTime" && ts.searchFrom.sort["sort"] == "desc") {
+				ts.searchFrom.sort["field"] = "isGreenWay,acceptTime";
 			}
 
 			ts.loading = true;
 
 			request('', {
-				url: ctx + 'rest/conditional/query/listMyDrafts',
+				url: ctx + '/rest/solicit/list/solicit',
 				type: 'get',
 				data: ts.searchFrom
 			}, function (res) {
@@ -61,67 +80,93 @@ var vm = new Vue({
 				return ts.apiMessage('网络错误！', 'error')
 			});
 		},
-		//发起申报
-		sendApply: function () {
-			var ts = this;
-			confirmMsg('提示信息：', '你确定发起申报吗？', function () {
-				ts.sendApplyLoading = true;
-				request('', {
-					url: ctx + "rest/apply/common/processflow/start",
-					type: 'post',
-					data: {applyinstId: ts.applyinstId, comment: ts.sendApplyComment.comment}
-				}, function (result) {
-					ts.sendApplyLoading = false;
-					if (result.success) {
-						this.sendApplyVisible = false;
-						ts.$message.success('申报成功！');
+		//办理
+		viewDetail: function (row) {
+			var url = ctx + 'apanmis/page/stageApproveIndex?taskId=' + row.taskId + '&viewId=' + row.viewId + '&itemNature=' + row.itemNature;
+			if (row.busRecordId) {
+				url = url + '&busRecordId=' + row.busRecordId;
+			}
+			window.open(url, '_blank');
+		},
 
-						window.setTimeout(function () {
-							location.reload();
-						}, 500);
-					} else {
-						ts.apiMessage('发起申报失败!', 'error');
-					}
-				}, function () {
-					ts.sendApplyLoading = false;
-					ts.apiMessage('发起申报失败!', 'error');
-				}, '确定', '取消', 'warning', true);
+		//判断是否已签收
+		isSign: function (row) {
+			if (row.signState) {
+				if (1.0 == row.signState) {
+					return true;
+				}
+			}
+
+			return false;
+		},
+		//签收
+		signTask: function (event, row) {
+			var ts = this;
+			var taskId = row.taskId;
+			var viewId = row.viewId;
+			var busRecordId = row.busRecordId;
+			event.preventDefault();
+			ts.loading = true;
+			request('bpmFrontUrl', {
+				url: ctx + 'rest/front/task/signTask/' + taskId,
+				type: 'get',
+				data: {}
+			}, function (result) {
+				ts.loading = false;
+				if (result.success) {
+					ts.$message.success(result.message);
+					window.setTimeout(function () {
+						window.open(ctx + 'apanmis/page/stageApproveIndex?taskId=' + taskId + '&viewId=' + viewId + '&busRecordId=' + busRecordId + '&itemNature=' + row.itemNature, '_blank');
+						window.location.reload();
+					}, 500);
+				} else {
+					ts.$message.error(result.message);
+				}
+			}, function () {
+				ts.loading = false;
+				ts.$message.error("签收失败！");
 			});
 		},
-		openSendApplyDialog: function (row) {
-			this.sendApplyVisible = true;
-			this.applyinstId = row.applyinstId;
+		setRemindMessageRead: function (row, remindReceiverId) {
+
+			var ts = this;
+			request('', {
+				url: ctx + 'rest/conditional/query/updateRemindRead',
+				type: 'get',
+				data: {'remindReceiverIds': remindReceiverId}
+			}, function (res) {
+				if (res.success) {
+					for (var i = 0; i < row.remindList.length; i++) {
+						if (row.remindList[i].remindReceiverId == remindReceiverId) {
+							row.remindList.splice(i, 1);
+							break;
+						}
+					}
+				} else {
+					return ts.apiMessage(res.message, 'error')
+				}
+			}, function () {
+				return ts.apiMessage('网络错误！', 'error')
+			});
 		},
-		closeSendApplyDialog: function () {
-			this.$refs.sendApplyRef.resetFields();
+		showRemindInfo: function (row, remindInfo) {
+			this.setRemindMessageRead(row, remindInfo.remindReceiverId);
+			this.msgDetail.remindContent = remindInfo.remindContent;
+			this.msgDetail.sendUserName = remindInfo.sendUserName;
+			this.msgDetail.sendDate = this.formatDatetimeCommon(remindInfo.sendDate, 'yyyy-MM-dd hh:mm');
+			this.isShowMsgDetail = true;
 		},
-		//发起申报
-		viewDetail: function (row) {
-			var menuName = '';
-			var menuInnerUrl = '';
-			var id = 'menu_' + new Date().getTime();
-			if (row.applyType == '并联') {
-				menuName = row.projName;
-				menuInnerUrl = ctx + '/apanmis/page/stageApplyIndex?applyinstId=' + row.applyinstId;
-			} else if (row.applyType == '单项') {
-				menuName = row.itemName;
-				menuInnerUrl = ctx + '/apanmis/page/singleApplyIndex/' + row.itemVerId + '?applyinstId=' + row.applyinstId;
+		getFirstColumnWidth: function () {
+			if (this.tableData) {
+				for (var i = 0; i < this.tableData.length; i++) {
+					if (this.tableData[i].isGreenWay == '1') {
+						return '90';
+					}
+				}
 			}
-			var data = {
-				'menuName': menuName,
-				'menuInnerUrl': menuInnerUrl,
-				'id': id,
-				'applyinstId': row.applyinstId,
-			};
-			try {
-				parent.vm.addTab('', data, '', '');
-			} catch (e) {
-				window.open(menuInnerUrl, '_blank');
-			}
-			return null;
-			// var url = ctx+'apanmis/page/stageApproveIndex?taskId='+row.taskId + "&viewId=" + row.viewId +'&draft=true';
-			// window.open(url,'_blank');
-		},
+			return '65';
+		}
+
 	},
 	created: function () {
 		this.conditionalQueryDic();

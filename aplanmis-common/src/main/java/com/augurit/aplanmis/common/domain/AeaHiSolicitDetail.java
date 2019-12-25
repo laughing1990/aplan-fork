@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.common.domain;
 
+import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Size;
@@ -8,6 +9,7 @@ import java.io.Serializable;
 /**
  * 征求意见详情表-模型
  */
+@Data
 public class AeaHiSolicitDetail implements Serializable {
 // ----------------------------------------------------- Properties
 
@@ -35,146 +37,4 @@ public class AeaHiSolicitDetail implements Serializable {
     private String modifier; // (更新人)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private java.util.Date modifyTime; // (更新时间)
-
-    // ----------------------------------------------------- Constructors
-// ----------------------------------------------------- Methods
-    public String getSolicitDetailId() {
-        return solicitDetailId;
-    }
-
-    public void setSolicitDetailId(String solicitDetailId) {
-        this.solicitDetailId = solicitDetailId == null ? null : solicitDetailId.trim();
-    }
-
-    public String getSolicitId() {
-        return solicitId;
-    }
-
-    public void setSolicitId(String solicitId) {
-        this.solicitId = solicitId == null ? null : solicitId.trim();
-    }
-
-    public String getDetailOrgId() {
-        return detailOrgId;
-    }
-
-    public void setDetailOrgId(String detailOrgId) {
-        this.detailOrgId = detailOrgId == null ? null : detailOrgId.trim();
-    }
-
-    public String getDetailOrgName() {
-        return detailOrgName;
-    }
-
-    public void setDetailOrgName(String detailOrgName) {
-        this.detailOrgName = detailOrgName == null ? null : detailOrgName.trim();
-    }
-
-    public String getItemId() {
-        return itemId;
-    }
-
-    public void setItemId(String itemId) {
-        this.itemId = itemId == null ? null : itemId.trim();
-    }
-
-    public String getItemVerId() {
-        return itemVerId;
-    }
-
-    public void setItemVerId(String itemVerId) {
-        this.itemVerId = itemVerId == null ? null : itemVerId.trim();
-    }
-
-    public Long getDetailDueDays() {
-        return detailDueDays;
-    }
-
-    public void setDetailDueDays(Long detailDueDays) {
-        this.detailDueDays = detailDueDays;
-    }
-
-    public Long getDetailRealDays() {
-        return detailRealDays;
-    }
-
-    public void setDetailRealDays(Long detailRealDays) {
-        this.detailRealDays = detailRealDays;
-    }
-
-    public String getDetailDaysUnit() {
-        return detailDaysUnit;
-    }
-
-    public void setDetailDaysUnit(String detailDaysUnit) {
-        this.detailDaysUnit = detailDaysUnit == null ? null : detailDaysUnit.trim();
-    }
-
-    public java.util.Date getDetailStartTime() {
-        return detailStartTime;
-    }
-
-    public void setDetailStartTime(java.util.Date detailStartTime) {
-        this.detailStartTime = detailStartTime;
-    }
-
-    public java.util.Date getDetailEndTime() {
-        return detailEndTime;
-    }
-
-    public void setDetailEndTime(java.util.Date detailEndTime) {
-        this.detailEndTime = detailEndTime;
-    }
-
-    public String getDetailState() {
-        return detailState;
-    }
-
-    public void setDetailState(String detailState) {
-        this.detailState = detailState == null ? null : detailState.trim();
-    }
-
-    public String getIsDeleted() {
-        return isDeleted;
-    }
-
-    public void setIsDeleted(String isDeleted) {
-        this.isDeleted = isDeleted == null ? null : isDeleted.trim();
-    }
-
-    public String getCreater() {
-        return creater;
-    }
-
-    public void setCreater(String creater) {
-        this.creater = creater == null ? null : creater.trim();
-    }
-
-    public java.util.Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(java.util.Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getModifiear() {
-        return modifier;
-    }
-
-    public void setModifier(String modifier) {
-        this.modifier = modifier == null ? null : modifier.trim();
-    }
-
-    public java.util.Date getModifyTime() {
-        return modifyTime;
-    }
-
-    public void setModifyTime(java.util.Date modifyTime) {
-        this.modifyTime = modifyTime;
-    }
-
-    //public String getTableName()  {
-    //    return "AeaHiSolicitDetail";
-    //}
 }

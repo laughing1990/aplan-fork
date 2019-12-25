@@ -1,8 +1,12 @@
 package com.augurit.aplanmis.admin.solicit;
 
+import com.augurit.agcloud.framework.exception.InvalidParameterException;
+import com.augurit.agcloud.framework.ui.pager.EasyuiPageInfo;
+import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.domain.AeaSolicitOrg;
 import com.augurit.aplanmis.common.domain.AeaSolicitOrgUser;
 import com.augurit.aplanmis.common.service.admin.solicit.AeaSolicitOrgUserService;
 import com.github.pagehelper.Page;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -28,23 +33,42 @@ private static Logger logger = LoggerFactory.getLogger(AeaSolicitOrgUserControll
     @Autowired
     private AeaSolicitOrgUserService aeaSolicitOrgUserService;
 
-    @RequestMapping("/indexAeaSolicitOrgUser.do")
-    public ModelAndView indexAeaSolicitOrgUser(AeaSolicitOrgUser aeaSolicitOrgUser){
+    @RequestMapping("/listAeaSolicitOrgUserByPage.do")
+    public EasyuiPageInfo<AeaSolicitOrgUser> listAeaSolicitOrg(AeaSolicitOrgUser aeaSolicitOrgUser, Page page) throws Exception {
 
-        return new ModelAndView("aea/solicit/org/org_user_index");
+        logger.debug("分页查询，过滤条件为{}，查询关键字为{}", aeaSolicitOrgUser);
+        PageInfo<AeaSolicitOrgUser> pageInfo = aeaSolicitOrgUserService.listAeaSolicitOrgUser(aeaSolicitOrgUser, page);
+        return PageHelper.toEasyuiPageInfo(pageInfo);
+    }
+
+    @RequestMapping("/listAeaSolicitOrgUserRelInfoByPage.do")
+    public EasyuiPageInfo<AeaSolicitOrgUser> listAeaSolicitOrgRelOrgInfo(AeaSolicitOrgUser aeaSolicitOrgUser, Page page) throws Exception {
+
+        logger.debug("分页查询，过滤条件为{}，查询关键字为{}", aeaSolicitOrgUser);
+        PageInfo<AeaSolicitOrgUser> pageInfo = aeaSolicitOrgUserService.listAeaSolicitOrgUserRelInfo(aeaSolicitOrgUser, page);
+        return PageHelper.toEasyuiPageInfo(pageInfo);
     }
 
     @RequestMapping("/listAeaSolicitOrgUser.do")
-    public PageInfo<AeaSolicitOrgUser> listAeaSolicitOrgUser(AeaSolicitOrgUser aeaSolicitOrgUser, Page page) throws Exception {
+    public List<AeaSolicitOrgUser> listAeaSolicitOrgUser(AeaSolicitOrgUser aeaSolicitOrgUser) throws Exception {
 
         logger.debug("分页查询，过滤条件为{}，查询关键字为{}", aeaSolicitOrgUser);
-        return aeaSolicitOrgUserService.listAeaSolicitOrgUser(aeaSolicitOrgUser,page);
+        List<AeaSolicitOrgUser> list = aeaSolicitOrgUserService.listAeaSolicitOrgUser(aeaSolicitOrgUser);
+        return list;
+    }
+
+    @RequestMapping("/listAeaSolicitOrgUserRelInfo.do")
+    public List<AeaSolicitOrgUser> listAeaSolicitOrgUserRelInfo(AeaSolicitOrgUser aeaSolicitOrgUser) throws Exception {
+
+        logger.debug("分页查询，过滤条件为{}，查询关键字为{}", aeaSolicitOrgUser);
+        List<AeaSolicitOrgUser> list = aeaSolicitOrgUserService.listAeaSolicitOrgUserRelInfo(aeaSolicitOrgUser);
+        return list;
     }
 
     @RequestMapping("/getAeaSolicitOrgUser.do")
     public AeaSolicitOrgUser getAeaSolicitOrgUser(String id) throws Exception {
 
-        if (id != null){
+        if (StringUtils.isNotBlank(id)){
             logger.debug("根据ID获取AeaSolicitOrgUser对象，ID为：{}", id);
             return aeaSolicitOrgUserService.getAeaSolicitOrgUserById(id);
         }else {
@@ -81,12 +105,47 @@ private static Logger logger = LoggerFactory.getLogger(AeaSolicitOrgUserControll
         return  new ContentResultForm<AeaSolicitOrgUser>(true,aeaSolicitOrgUser);
     }
 
-    @RequestMapping("/deleteAeaSolicitOrgUserById.do")
+    @RequestMapping("/delSolicitOrgUserById.do")
     public ResultForm deleteAeaSolicitOrgUserById(String id) throws Exception{
 
         if(id!=null) {
             aeaSolicitOrgUserService.deleteAeaSolicitOrgUserById(id);
         }
+        return new ResultForm(true);
+    }
+
+    @RequestMapping("/batchDelSolicitOrgUserByIds.do")
+    public ResultForm batchDelSolicitOrgUserByIds(String[] ids) throws Exception{
+
+        if(ids!=null&&ids.length>0){
+            aeaSolicitOrgUserService.batchDelSolicitOrgUserByIds(ids);
+            return new ResultForm(true);
+        }else{
+            throw new InvalidParameterException("参数ids为空!");
+        }
+    }
+
+    @RequestMapping("/batchSaveSolicitOrgUser.do")
+    public ResultForm batchSaveSolicitOrgUser(String solicitOrgId, String[] userIds, String[] sortNos) throws Exception{
+
+        if(StringUtils.isBlank(solicitOrgId)){
+            throw new InvalidParameterException("参数solicitOrgId为空!");
+        }
+        if (userIds != null && userIds.length > 0) {
+            aeaSolicitOrgUserService.batchSaveSolicitOrgUser(solicitOrgId, userIds, sortNos);
+        } else {
+            aeaSolicitOrgUserService.batchDelSolicitOrgUserBySolicitOrgId(solicitOrgId);
+        }
+        return new ResultForm(true);
+    }
+
+    @RequestMapping("/changeIsActive.do")
+    public ResultForm changeIsActive(String id) throws Exception{
+
+        if(StringUtils.isBlank(id)){
+            throw new InvalidParameterException("参数id为空!");
+        }
+        aeaSolicitOrgUserService.changeIsActive(id);
         return new ResultForm(true);
     }
 }

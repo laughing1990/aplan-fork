@@ -14,9 +14,70 @@ import java.util.List;
 @Repository
 public interface AeaSolicitItemMapper {
 
-     void insertAeaSolicitItem(AeaSolicitItem aeaSolicitItem) ;
-     void updateAeaSolicitItem(AeaSolicitItem aeaSolicitItem) ;
-     void deleteAeaSolicitItem(@Param("id") String id) ;
-     List <AeaSolicitItem> listAeaSolicitItem(AeaSolicitItem aeaSolicitItem) ;
-     AeaSolicitItem getAeaSolicitItemById(@Param("id") String id) ;
+     /**
+      * 保存
+      *
+      * @param aeaSolicitItem
+      */
+     void insertAeaSolicitItem(AeaSolicitItem aeaSolicitItem);
+
+     /**
+      * 更新
+      *
+      * @param aeaSolicitItem
+      */
+     void updateAeaSolicitItem(AeaSolicitItem aeaSolicitItem);
+
+     /**
+      * 删除
+      *
+      * @param id
+      */
+     void deleteAeaSolicitItem(@Param("id") String id);
+
+     /**
+      * 批量删除
+      *
+      * @param ids
+      */
+     void batchDelSolicitItemByIds(@Param("ids") String[] ids);
+
+     /**
+      * 获取，不携带组织信息
+      *
+      * @param id
+      * @return
+      */
+     AeaSolicitItem getAeaSolicitItemById(@Param("id") String id);
+
+     /**
+      * 获取，携带组织信息
+      *
+      * @param id
+      * @return
+      */
+     AeaSolicitItem getAeaSolicitItemRelInfoById(@Param("id") String id);
+
+     /**
+      * 获取列表，不携带组织信息
+      *
+      * @param aeaSolicitItem
+      * @return
+      */
+     List<AeaSolicitItem> listAeaSolicitItem(AeaSolicitItem aeaSolicitItem);
+
+     /**
+      * 获取列表，携带组织信息
+      *
+      * @param aeaSolicitItem
+      * @return
+      */
+     List<AeaSolicitItem> listAeaSolicitItemRelInfo(AeaSolicitItem aeaSolicitItem);
+
+     /**
+      * 删除
+      *
+      * @param rootOrgId
+      */
+     void batchDelSolicitItemByRootOrgId(@Param("rootOrgId") String rootOrgId);
 }

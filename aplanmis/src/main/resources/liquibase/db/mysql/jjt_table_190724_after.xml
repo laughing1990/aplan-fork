@@ -1135,4 +1135,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="201912240915" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_solicit_item`
+            ADD COLUMN `BUS_TYPE`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '征求业务类型，来自于数据字典' AFTER `ITEM_VER_ID`;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

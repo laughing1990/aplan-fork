@@ -2,6 +2,7 @@ package com.augurit.aplanmis.front.solicit.service;
 
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.aplanmis.common.domain.AeaHiSolicit;
+import com.augurit.aplanmis.common.domain.AeaHiSolicitDetailUser;
 import com.augurit.aplanmis.common.vo.solicit.AeaHiSolicitVo;
 import com.augurit.aplanmis.common.vo.solicit.QueryCondVo;
 import com.github.pagehelper.Page;
@@ -35,5 +36,15 @@ public interface RestAeaHiSolicitService {
 
     public void createSolicit(AeaHiSolicit aeaHiSolicit, String type, String detailInfo, String busType) throws Exception;
 
+    public void createSolicitOpinion(AeaHiSolicitDetailUser aeaHiSolicitDetailUser) throws Exception;
 
+    public void createSolicitCollectOpinion(AeaHiSolicit aeaHiSolicit) throws Exception;
+    /**
+     * 根据申报编号获取所有的征求信息
+     * @param applyinstId 申报实例ID
+     * @param busType 业务类型(来自数据字典)
+     * @return
+     * @throws Exception
+     */
+    public List<AeaHiSolicit> listAeaHiSolicitByApplyinstId(String applyinstId,String busType) throws Exception;
 }

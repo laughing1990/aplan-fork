@@ -6,6 +6,7 @@
     <!--1 返回所有字段的SQL字句 -->
     <sql id="allColumns">
     ${alias}.SOLICIT_ID  solicitId,
+    ${alias}.BUS_TYPE  busType,
     ${alias}.SOLICIT_TYPE  solicitType,
     ${alias}.SOLICIT_ORG_ID  solicitOrgId,
     ${alias}.SOLICIT_ITEM_ID  solicitItemId,
@@ -58,103 +59,106 @@
         </include>
         from AEA_HI_SOLICIT ahs
         <where>
-            <if test="solicitId != null AND solicitId != ''">
+            <if test="solicitId != null ">
                 AND ahs.SOLICIT_ID = #{solicitId}
             </if>
-            <if test="solicitType != null AND solicitType != ''">
+            <if test="busType != null ">
+                AND ahs.BUS_TYPE = #{busType}
+            </if>
+            <if test="solicitType != null ">
                 AND ahs.SOLICIT_TYPE = #{solicitType}
             </if>
-            <if test="solicitOrgId != null AND solicitOrgId != ''">
+            <if test="solicitOrgId != null ">
                 AND ahs.SOLICIT_ORG_ID = #{solicitOrgId}
             </if>
-            <if test="solicitItemId != null AND solicitItemId != ''">
+            <if test="solicitItemId != null ">
                 AND ahs.SOLICIT_ITEM_ID = #{solicitItemId}
             </if>
-            <if test="applyinstId != null AND applyinstId != ''">
+            <if test="applyinstId != null ">
                 AND ahs.APPLYINST_ID = #{applyinstId}
             </if>
-            <if test="procinstId != null AND procinstId != ''">
+            <if test="procinstId != null ">
                 AND ahs.PROCINST_ID = #{procinstId}
             </if>
-            <if test="hiTaskinstId != null AND hiTaskinstId != ''">
+            <if test="hiTaskinstId != null ">
                 AND ahs.HI_TASKINST_ID = #{hiTaskinstId}
             </if>
-            <if test="solicitCode != null AND solicitCode != ''">
+            <if test="solicitCode != null ">
                 AND ahs.SOLICIT_CODE = #{solicitCode}
             </if>
-            <if test="solicitTopic != null AND solicitTopic != ''">
+            <if test="solicitTopic != null ">
                 AND ahs.SOLICIT_TOPIC = #{solicitTopic}
             </if>
-            <if test="solicitContent != null AND solicitContent != ''">
+            <if test="solicitContent != null ">
                 AND ahs.SOLICIT_CONTENT = #{solicitContent}
             </if>
-            <if test="solicitDueDays != null AND solicitDueDays != ''">
+            <if test="solicitDueDays != null ">
                 AND ahs.SOLICIT_DUE_DAYS = #{solicitDueDays}
             </if>
-            <if test="solicitRealDays != null AND solicitRealDays != ''">
+            <if test="solicitRealDays != null ">
                 AND ahs.SOLICIT_REAL_DAYS = #{solicitRealDays}
             </if>
-            <if test="solicitDaysUnit != null AND solicitDaysUnit != ''">
+            <if test="solicitDaysUnit != null ">
                 AND ahs.SOLICIT_DAYS_UNIT = #{solicitDaysUnit}
             </if>
-            <if test="solicitStartTime != null AND solicitStartTime != ''">
+            <if test="solicitStartTime != null ">
                 AND ahs.SOLICIT_START_TIME = #{solicitStartTime}
             </if>
-            <if test="solicitEndTime != null AND solicitEndTime != ''">
+            <if test="solicitEndTime != null ">
                 AND ahs.SOLICIT_END_TIME = #{solicitEndTime}
             </if>
-            <if test="isCalcTimerule != null AND isCalcTimerule != ''">
+            <if test="isCalcTimerule != null ">
                 AND ahs.IS_CALC_TIMERULE = #{isCalcTimerule}
             </if>
-            <if test="solicitTimeruleId != null AND solicitTimeruleId != ''">
+            <if test="solicitTimeruleId != null ">
                 AND ahs.SOLICIT_TIMERULE_ID = #{solicitTimeruleId}
             </if>
-            <if test="conclusionFlag != null AND conclusionFlag != ''">
+            <if test="conclusionFlag != null ">
                 AND ahs.CONCLUSION_FLAG = #{conclusionFlag}
             </if>
-            <if test="conclusionDesc != null AND conclusionDesc != ''">
+            <if test="conclusionDesc != null ">
                 AND ahs.CONCLUSION_DESC = #{conclusionDesc}
             </if>
-            <if test="conclusionTime != null AND conclusionTime != ''">
+            <if test="conclusionTime != null ">
                 AND ahs.CONCLUSION_TIME = #{conclusionTime}
             </if>
-            <if test="conclusionUserId != null AND conclusionUserId != ''">
+            <if test="conclusionUserId != null ">
                 AND ahs.CONCLUSION_USER_ID = #{conclusionUserId}
             </if>
-            <if test="conclusionUserName != null AND conclusionUserName != ''">
+            <if test="conclusionUserName != null ">
                 AND ahs.CONCLUSION_USER_NAME = #{conclusionUserName}
             </if>
-            <if test="initiatorOrgId != null AND initiatorOrgId != ''">
+            <if test="initiatorOrgId != null ">
                 AND ahs.INITIATOR_ORG_ID = #{initiatorOrgId}
             </if>
-            <if test="initiatorOrgName != null AND initiatorOrgName != ''">
+            <if test="initiatorOrgName != null ">
                 AND ahs.INITIATOR_ORG_NAME = #{initiatorOrgName}
             </if>
-            <if test="initiatorUserId != null AND initiatorUserId != ''">
+            <if test="initiatorUserId != null ">
                 AND ahs.INITIATOR_USER_ID = #{initiatorUserId}
             </if>
-            <if test="initiatorUserName != null AND initiatorUserName != ''">
+            <if test="initiatorUserName != null ">
                 AND ahs.INITIATOR_USER_NAME = #{initiatorUserName}
             </if>
-            <if test="countLimit != null AND countLimit != ''">
+            <if test="countLimit != null ">
                 AND ahs.COUNT_LIMIT = #{countLimit}
             </if>
-            <if test="solicitState != null AND solicitState != ''">
+            <if test="solicitState != null ">
                 AND ahs.SOLICIT_STATE = #{solicitState}
             </if>
-            <if test="creater != null AND creater != ''">
+            <if test="creater != null ">
                 AND ahs.CREATER = #{creater}
             </if>
-            <if test="createTime != null AND createTime != ''">
+            <if test="createTime != null ">
                 AND ahs.CREATE_TIME = #{createTime}
             </if>
-            <if test="modifier != null AND modifier != ''">
+            <if test="modifier != null ">
                 AND ahs.MODIFIER = #{modifier}
             </if>
-            <if test="modifyTime != null AND modifyTime != ''">
+            <if test="modifyTime != null ">
                 AND ahs.MODIFY_TIME = #{modifyTime}
             </if>
-            <if test="rootOrgId != null AND rootOrgId != ''">
+            <if test="rootOrgId != null ">
                 AND ahs.ROOT_ORG_ID = #{rootOrgId}
             </if>
         </where>
@@ -164,112 +168,115 @@
     <!--5 新增实体对象 -->
     <insert id="insertAeaHiSolicit" parameterType="AeaHiSolicit">
         insert into AEA_HI_SOLICIT (
-    SOLICIT_ID  ,SOLICIT_TYPE  ,SOLICIT_ORG_ID  ,SOLICIT_ITEM_ID  ,APPLYINST_ID  ,PROCINST_ID  ,HI_TASKINST_ID  ,SOLICIT_CODE  ,SOLICIT_TOPIC  ,SOLICIT_CONTENT  ,SOLICIT_DUE_DAYS  ,SOLICIT_REAL_DAYS  ,SOLICIT_DAYS_UNIT  ,SOLICIT_START_TIME  ,SOLICIT_END_TIME  ,IS_CALC_TIMERULE  ,SOLICIT_TIMERULE_ID  ,CONCLUSION_FLAG  ,CONCLUSION_DESC  ,CONCLUSION_TIME  ,CONCLUSION_USER_ID  ,CONCLUSION_USER_NAME  ,INITIATOR_ORG_ID  ,INITIATOR_ORG_NAME  ,INITIATOR_USER_ID  ,INITIATOR_USER_NAME  ,COUNT_LIMIT  ,SOLICIT_STATE  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
+    SOLICIT_ID  ,BUS_TYPE  ,SOLICIT_TYPE  ,SOLICIT_ORG_ID  ,SOLICIT_ITEM_ID  ,APPLYINST_ID  ,PROCINST_ID  ,HI_TASKINST_ID  ,SOLICIT_CODE  ,SOLICIT_TOPIC  ,SOLICIT_CONTENT  ,SOLICIT_DUE_DAYS  ,SOLICIT_REAL_DAYS  ,SOLICIT_DAYS_UNIT  ,SOLICIT_START_TIME  ,SOLICIT_END_TIME  ,IS_CALC_TIMERULE  ,SOLICIT_TIMERULE_ID  ,CONCLUSION_FLAG  ,CONCLUSION_DESC  ,CONCLUSION_TIME  ,CONCLUSION_USER_ID  ,CONCLUSION_USER_NAME  ,INITIATOR_ORG_ID  ,INITIATOR_ORG_NAME  ,INITIATOR_USER_ID  ,INITIATOR_USER_NAME  ,COUNT_LIMIT  ,SOLICIT_STATE  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
         )  values  (
-    #{solicitId},#{solicitType},#{solicitOrgId},#{solicitItemId},#{applyinstId},#{procinstId},#{hiTaskinstId},#{solicitCode},#{solicitTopic},#{solicitContent},#{solicitDueDays},#{solicitRealDays},#{solicitDaysUnit},#{solicitStartTime},#{solicitEndTime},#{isCalcTimerule},#{solicitTimeruleId},#{conclusionFlag},#{conclusionDesc},#{conclusionTime},#{conclusionUserId},#{conclusionUserName},#{initiatorOrgId},#{initiatorOrgName},#{initiatorUserId},#{initiatorUserName},#{countLimit},#{solicitState},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+    #{solicitId},#{busType},#{solicitType},#{solicitOrgId},#{solicitItemId},#{applyinstId},#{procinstId},#{hiTaskinstId},#{solicitCode},#{solicitTopic},#{solicitContent},#{solicitDueDays},#{solicitRealDays},#{solicitDaysUnit},#{solicitStartTime},#{solicitEndTime},#{isCalcTimerule},#{solicitTimeruleId},#{conclusionFlag},#{conclusionDesc},#{conclusionTime},#{conclusionUserId},#{conclusionUserName},#{initiatorOrgId},#{initiatorOrgName},#{initiatorUserId},#{initiatorUserName},#{countLimit},#{solicitState},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
         )
     </insert>
     <!--6 修改实体对象 -->
     <update id="updateAeaHiSolicit" parameterType="AeaHiSolicit">
         update AEA_HI_SOLICIT
         <set>
-            <if test="solicitId != null AND solicitId != '' ">
+            <if test="solicitId != null  ">
                 SOLICIT_ID = #{solicitId},
             </if>
-            <if test="solicitType != null AND solicitType != '' ">
+            <if test="busType != null  ">
+                BUS_TYPE = #{busType},
+            </if>
+            <if test="solicitType != null  ">
                 SOLICIT_TYPE = #{solicitType},
             </if>
-            <if test="solicitOrgId != null AND solicitOrgId != '' ">
+            <if test="solicitOrgId != null  ">
                 SOLICIT_ORG_ID = #{solicitOrgId},
             </if>
-            <if test="solicitItemId != null AND solicitItemId != '' ">
+            <if test="solicitItemId != null  ">
                 SOLICIT_ITEM_ID = #{solicitItemId},
             </if>
-            <if test="applyinstId != null AND applyinstId != '' ">
+            <if test="applyinstId != null  ">
                 APPLYINST_ID = #{applyinstId},
             </if>
-            <if test="procinstId != null AND procinstId != '' ">
+            <if test="procinstId != null  ">
                 PROCINST_ID = #{procinstId},
             </if>
-            <if test="hiTaskinstId != null AND hiTaskinstId != '' ">
+            <if test="hiTaskinstId != null  ">
                 HI_TASKINST_ID = #{hiTaskinstId},
             </if>
-            <if test="solicitCode != null AND solicitCode != '' ">
+            <if test="solicitCode != null  ">
                 SOLICIT_CODE = #{solicitCode},
             </if>
-            <if test="solicitTopic != null AND solicitTopic != '' ">
+            <if test="solicitTopic != null  ">
                 SOLICIT_TOPIC = #{solicitTopic},
             </if>
-            <if test="solicitContent != null AND solicitContent != '' ">
+            <if test="solicitContent != null  ">
                 SOLICIT_CONTENT = #{solicitContent},
             </if>
-            <if test="solicitDueDays != null AND solicitDueDays != '' ">
+            <if test="solicitDueDays != null  ">
                 SOLICIT_DUE_DAYS = #{solicitDueDays},
             </if>
-            <if test="solicitRealDays != null AND solicitRealDays != '' ">
+            <if test="solicitRealDays != null  ">
                 SOLICIT_REAL_DAYS = #{solicitRealDays},
             </if>
-            <if test="solicitDaysUnit != null AND solicitDaysUnit != '' ">
+            <if test="solicitDaysUnit != null  ">
                 SOLICIT_DAYS_UNIT = #{solicitDaysUnit},
             </if>
-            <if test="solicitStartTime != null AND solicitStartTime != '' ">
+            <if test="solicitStartTime != null  ">
                 SOLICIT_START_TIME = #{solicitStartTime},
             </if>
-            <if test="solicitEndTime != null AND solicitEndTime != '' ">
+            <if test="solicitEndTime != null  ">
                 SOLICIT_END_TIME = #{solicitEndTime},
             </if>
-            <if test="isCalcTimerule != null AND isCalcTimerule != '' ">
+            <if test="isCalcTimerule != null  ">
                 IS_CALC_TIMERULE = #{isCalcTimerule},
             </if>
-            <if test="solicitTimeruleId != null AND solicitTimeruleId != '' ">
+            <if test="solicitTimeruleId != null  ">
                 SOLICIT_TIMERULE_ID = #{solicitTimeruleId},
             </if>
-            <if test="conclusionFlag != null AND conclusionFlag != '' ">
+            <if test="conclusionFlag != null  ">
                 CONCLUSION_FLAG = #{conclusionFlag},
             </if>
-            <if test="conclusionDesc != null AND conclusionDesc != '' ">
+            <if test="conclusionDesc != null  ">
                 CONCLUSION_DESC = #{conclusionDesc},
             </if>
-            <if test="conclusionTime != null AND conclusionTime != '' ">
+            <if test="conclusionTime != null  ">
                 CONCLUSION_TIME = #{conclusionTime},
             </if>
-            <if test="conclusionUserId != null AND conclusionUserId != '' ">
+            <if test="conclusionUserId != null  ">
                 CONCLUSION_USER_ID = #{conclusionUserId},
             </if>
-            <if test="conclusionUserName != null AND conclusionUserName != '' ">
+            <if test="conclusionUserName != null  ">
                 CONCLUSION_USER_NAME = #{conclusionUserName},
             </if>
-            <if test="initiatorOrgId != null AND initiatorOrgId != '' ">
+            <if test="initiatorOrgId != null  ">
                 INITIATOR_ORG_ID = #{initiatorOrgId},
             </if>
-            <if test="initiatorOrgName != null AND initiatorOrgName != '' ">
+            <if test="initiatorOrgName != null  ">
                 INITIATOR_ORG_NAME = #{initiatorOrgName},
             </if>
-            <if test="initiatorUserId != null AND initiatorUserId != '' ">
+            <if test="initiatorUserId != null  ">
                 INITIATOR_USER_ID = #{initiatorUserId},
             </if>
-            <if test="initiatorUserName != null AND initiatorUserName != '' ">
+            <if test="initiatorUserName != null  ">
                 INITIATOR_USER_NAME = #{initiatorUserName},
             </if>
-            <if test="countLimit != null AND countLimit != '' ">
+            <if test="countLimit != null  ">
                 COUNT_LIMIT = #{countLimit},
             </if>
-            <if test="solicitState != null AND solicitState != '' ">
+            <if test="solicitState != null  ">
                 SOLICIT_STATE = #{solicitState},
             </if>
-            <if test="creater != null AND creater != '' ">
+            <if test="creater != null  ">
                 CREATER = #{creater},
             </if>
-            <if test="createTime != null AND createTime != '' ">
+            <if test="createTime != null  ">
                 CREATE_TIME = #{createTime},
             </if>
-            <if test="modifier != null AND modifier != '' ">
+            <if test="modifier != null  ">
                 MODIFIER = #{modifier},
             </if>
-            <if test="modifyTime != null AND modifyTime != '' ">
+            <if test="modifyTime != null  ">
                 MODIFY_TIME = #{modifyTime},
             </if>
-            <if test="rootOrgId != null AND rootOrgId != '' ">
+            <if test="rootOrgId != null  ">
                 ROOT_ORG_ID = #{rootOrgId},
             </if>
         </set>
@@ -291,29 +298,205 @@
         from AEA_HI_SOLICIT ahs
         where ahs.SOLICIT_CODE = #{solicitCode}
     </select>
+
+    <sql id="queryByThemeId">
+        <if test="theme!=null and theme!=''">
+            and theme.THEME_ID=#{theme}
+        </if>
+    </sql>
     <!--查询意见征求，一次征询，部门征求等意见列表-->
     <select id="listSolicit" resultType="com.augurit.aplanmis.common.vo.solicit.AeaHiSolicitVo">
-        select
-        ahs.SOLICIT_ID,ahs.SOLICIT_TYPE
-        from aea_hi_solicit ahs
-        LEFT JOIN aea_hi_solicit_detail ahsd on ahsd.SOLICIT_ID=ahs.SOLICIT_ID
-        left join aea_hi_solicit_detail_user ahsdu on ahsdu.SOLICIT_DETAIL_ID=ahsd.SOLICIT_DETAIL_ID
-        INNER JOIN aea_solicit_item asi on asi.ITEM_VER_ID=ahsd.ITEM_VER_ID
-        where ahs.SOLICIT_TYPE='i' and asi.BUS_TYPE='1'
-        UNION all
-        select
-        ahs.SOLICIT_ID,ahs.SOLICIT_TYPE
-        from aea_hi_solicit ahs
-        LEFT JOIN aea_hi_solicit_detail ahsd on ahsd.SOLICIT_ID=ahs.SOLICIT_ID
-        left join aea_hi_solicit_detail_user ahsdu on ahsdu.SOLICIT_DETAIL_ID=ahsd.SOLICIT_DETAIL_ID
-        inner JOIN aea_solicit_org aso on aso.ORG_ID=ahsd.DETAIL_ORG_ID
-        where ahs.SOLICIT_TYPE='d' and aso.BUS_TYPE='1'
+
+        SELECT
+        ahs.SOLICIT_ID as solicitId,
+        ahs.SOLICIT_TYPE as solicitType,
+        ahs.PROCINST_ID as procinstId,
+        ahs.HI_TASKINST_ID as hiTaskinstId,
+        ahs.SOLICIT_CODE as solicitCode,
+        ahs.SOLICIT_TOPIC as solicitTopic,
+        ahs.APPLYINST_ID as applyinstId,
+        ahs.INITIATOR_ORG_ID as initiatorOrgId,
+        ahs.INITIATOR_ORG_NAME as initiatorOrgName,
+        ahs.INITIATOR_USER_ID as initiatorUserId,
+        ahs.INITIATOR_USER_NAME as initiatorUserName,
+        ahs.OVERDUE_TIME overdueTime,
+        ahs.REMAINING_TIME remainingTime,
+        ahs.TIMERULE_UNIT as timeruleUnit,
+        ahs.taskId as taskId,
+        ahs.taskName as taskName,
+        ahs.SOLICIT_DETAIL_ID as solicitDetailId,
+        ahs.DETAIL_TASK_ID as detailTaskId,
+        aha.APPLYINST_CODE as applyinstCode,
+        aha.IS_SERIES_APPROVE as isSeriesApprove,
+        ( CASE aha.IS_SERIES_APPROVE WHEN '0' THEN '并联' ELSE '单项' END ) AS applyType,
+        aha.CREATE_TIME as createTime,
+        aha.ITEMINST_NAME as itemName,
+        aha.STAGE_NAME as stageName,
+        aha.THEME_NAME as themeName,
+        aha.APPLYINST_SOURCE as applyinstSource,
+        ( CASE aha.APPLYINST_SOURCE WHEN 'win' THEN '网厅' ELSE '窗口' END ) AS applySource,
+        api.PROJ_NAME as projName,
+        api.PROJ_INFO_ID as projInfoId,
+        api.LOCAL_CODE as localCode
+        FROM
+        (
+        SELECT DISTINCT
+        ahs.SOLICIT_ID,
+        ahs.SOLICIT_TYPE,
+        ahs.BUS_TYPE,
+        ahs.PROCINST_ID,
+        ahs.HI_TASKINST_ID,
+        ahs.SOLICIT_CODE,
+        ahs.SOLICIT_TOPIC,
+        ahs.APPLYINST_ID,
+        ahs.INITIATOR_ORG_ID,
+        ahs.INITIATOR_ORG_NAME,
+        ahs.INITIATOR_USER_ID,
+        ahs.INITIATOR_USER_NAME,
+        ahsd.SOLICIT_DETAIL_ID,
+        ahsdu.DETAIL_TASK_ID,
+        ahsdu.USER_ID,
+        art.ID_ AS taskId,
+        art.NAME_ AS taskName ,
+        asti.OVERDUE_TIME,
+        asti.REMAINING_TIME,
+        asti.TIMERULE_UNIT
+
+        FROM
+        AEA_HI_SOLICIT_DETAIL ahsd
+        LEFT JOIN AEA_HI_SOLICIT ahs ON ahsd.SOLICIT_ID = ahs.SOLICIT_ID
+        LEFT JOIN opu_om_user oou on oou.user_Id=ahs.INITIATOR_USER_ID
+        LEFT JOIN ACT_RU_TASK art ON art.PROC_INST_ID_ = ahs.PROCINST_ID and oou.user_name=art.ASSIGNEE_NAME_
+        LEFT JOIN act_hi_taskinst aht ON aht.ID_ = ahs.HI_TASKINST_ID
+        LEFT JOIN AEA_HI_SOLICIT_DETAIL_USER ahsdu ON ahsdu.SOLICIT_DETAIL_ID = ahsd.SOLICIT_DETAIL_ID
+        LEFT JOIN ACT_STO_TIMERULE ast ON ast.TIMERULE_ID = ahs.SOLICIT_TIMERULE_ID
+        LEFT JOIN ACT_STO_TIMERULE_INST asti ON asti.TIMERULE_ID = ast.TIMERULE_ID and
+        asti.TASKINST_ID=ahs.HI_TASKINST_ID
+        AND ahs.PROCINST_ID = asti.PROC_INST_ID
+        WHERE ahs.BUS_TYPE = #{busType} AND ahs.SOLICIT_STATE IN ( '0', '1' )
+        AND ahsdu.USER_ID=#{userId}
+        AND ahs.ROOT_ORG_ID = #{rootOrgId}
+        UNION
+        SELECT DISTINCT
+        ahs.SOLICIT_ID,
+        ahs.SOLICIT_TYPE,
+        ahs.BUS_TYPE,
+        ahs.PROCINST_ID,
+        ahs.HI_TASKINST_ID,
+        ahs.SOLICIT_CODE,
+        ahs.SOLICIT_TOPIC,
+        ahs.APPLYINST_ID,
+        ahs.INITIATOR_ORG_ID,
+        ahs.INITIATOR_ORG_NAME,
+        ahs.INITIATOR_USER_ID,
+        ahs.INITIATOR_USER_NAME,
+        null as SOLICIT_DETAIL_ID,
+        null as DETAIL_TASK_ID,
+        null as USER_ID,
+        art.ID_ AS taskId,
+        art.NAME_ AS taskName ,
+        asti.OVERDUE_TIME,
+        asti.REMAINING_TIME,
+        asti.TIMERULE_UNIT
+
+        FROM
+        AEA_HI_SOLICIT ahs
+        LEFT JOIN opu_om_user oou on oou.user_Id=ahs.INITIATOR_USER_ID
+        LEFT JOIN ACT_RU_TASK art ON art.PROC_INST_ID_ = ahs.PROCINST_ID and oou.user_name=art.ASSIGNEE_NAME_
+        LEFT JOIN act_hi_taskinst aht ON aht.ID_ = ahs.HI_TASKINST_ID
+        LEFT JOIN ACT_STO_TIMERULE ast ON ast.TIMERULE_ID = ahs.SOLICIT_TIMERULE_ID
+        LEFT JOIN ACT_STO_TIMERULE_INST asti ON asti.TIMERULE_ID = ast.TIMERULE_ID and
+        asti.TASKINST_ID=ahs.HI_TASKINST_ID
+        AND ahs.PROCINST_ID = asti.PROC_INST_ID
+        WHERE ahs.BUS_TYPE = #{busType} AND ahs.SOLICIT_STATE IN ( '0', '1' )
+        AND ahs.INITIATOR_USER_ID = #{userId}
+        AND ahs.ROOT_ORG_ID = #{rootOrgId}
+
+        ) ahs
+        left JOIN (
+        SELECT
+        aha.APPLYINST_ID,
+        aha.APPLYINST_CODE,
+        aha.IS_SERIES_APPROVE,
+        aha.CREATE_TIME,
+        aha.APPLYINST_SOURCE,
+        NULL AS ITEMINST_NAME,
+        aps_123.STAGE_NAME,
+        theme.THEME_NAME
+        FROM AEA_HI_APPLYINST aha
+        INNER JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = aha.APPLYINST_ID
+        LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+        LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+        LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
+        <where>
+            aha.IS_SERIES_APPROVE = '0'
+            <include refid="queryByThemeId"></include>
+        </where>
+
+        UNION
+        SELECT
+        aha.APPLYINST_ID,
+        aha.APPLYINST_CODE,
+        aha.IS_SERIES_APPROVE,
+        aha.CREATE_TIME,
+        aha.APPLYINST_SOURCE,
+        NULL AS ITEMINST_NAME,
+        aps_123.STAGE_NAME,
+        theme.THEME_NAME
+        FROM AEA_HI_APPLYINST aha
+        INNER JOIN aea_hi_seriesinst ahs ON ahs.applyinst_id = aha.applyinst_id
+        LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs.STAGE_ID
+        LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+        LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
+        <where>
+            aha.IS_SERIES_APPROVE = '1' AND ahs.stage_id IS NOT NULL AND ahs.IS_PARALLEL = '1'
+            <include refid="queryByThemeId"></include>
+        </where>
+        UNION
+        SELECT
+        aha.APPLYINST_ID,
+        aha.APPLYINST_CODE,
+        aha.IS_SERIES_APPROVE,
+        aha.CREATE_TIME,
+        aha.APPLYINST_SOURCE,
+        iteminst.ITEMINST_NAME AS ITEMINST_NAME,
+        NULL AS STAGE_NAME,
+        NULL AS THEME_NAME
+        FROM AEA_HI_APPLYINST aha
+        INNER JOIN AEA_HI_SERIESINST ahs ON ahs.applyinst_id = aha.applyinst_id
+        LEFT JOIN AEA_HI_ITEMINST iteminst ON iteminst.SERIESINST_ID = ahs.SERIESINST_ID
+        <where>
+            aha.IS_SERIES_APPROVE = '1' AND ahs.IS_PARALLEL = '0'
+            <include refid="queryByThemeId"></include>
+        </where>
+
+        ) aha ON ahs.APPLYINST_ID = aha.APPLYINST_ID
+        LEFT JOIN aea_applyinst_proj aap ON ahs.APPLYINST_ID = aap.APPLYINST_ID
+        LEFT JOIN aea_proj_info api ON aap.PROJ_INFO_ID = api.PROJ_INFO_ID
+
+        <where>
+            <if test="keyword!=null and keyword!=''">
+                AND (
+                api.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR api.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR api.GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR aha.APPLYINST_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR aha.ITEMINST_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR aha.STAGE_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+            <if test="applyType!=null and applyType!=''">
+                and aha.IS_SERIES_APPROVE=#{applyType}
+            </if>
+        </where>
+
     </select>
 
     <!--8 删除实体对象列表,根据主键ID列表 -->
     <!--9 返回所有字段的对象map,用于级联 -->
     <resultMap type="AeaHiSolicit" id="AeaHiSolicitMap">
         <id property="solicitId" column="SOLICIT_ID"/>
+        <result property="busType" column="BUS_TYPE"/>
         <result property="solicitType" column="SOLICIT_TYPE"/>
         <result property="solicitOrgId" column="SOLICIT_ORG_ID"/>
         <result property="solicitItemId" column="SOLICIT_ITEM_ID"/>

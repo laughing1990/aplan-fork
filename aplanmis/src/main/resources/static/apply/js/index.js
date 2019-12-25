@@ -60,7 +60,7 @@ var vm = new Vue({
       }
     };
     var checkUnifiedSocialCreditCode = function (rule, value, callback) {
-      if (value === '' || value === undefined || value.trim() === '') {
+      if (value === '' || value === undefined || value.trim() === ''|| value == null) {
         callback(new Error('请输入统一社会信用代码！'));
       } else if (value) {
         var flag = !/^[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}$/.test(value);
@@ -616,6 +616,39 @@ var vm = new Vue({
       themeCategory: '',
       themeCategoryMsg: '', // 没有符合条件的主题, 请检查配置是否正确
       isGreenWay: false, // 是否设置为绿色通道
+      // 意见征求 start----------------------
+      solicitOpinionVisible: false,
+      solicitOpinionLoading: false,
+      soActiveTabIndex: 0,
+      soTabList: ['按事项征求', '按部门征求'],
+      soTableData1: [],
+      soTableData2: [],
+      soTabOrgList: [],
+      soTreeProps: {
+        label: 'orgName',
+        children: 'childNodes',
+        isLeaf: 'isLeaf'
+      },
+      soTreeData: [],
+      soSeachText: '',
+      solicitForm: {
+        solicitTopic: '',
+        solicitContent: '',
+        solicitType:'i',
+        solicitDueDays: 1,
+        solicitTimeruleId: '0',
+        solicitTopic: '',
+      },
+      solicitFormRules: {
+        solicitTopic: [{required: true,message: '请填写征求主题', trigger: 'blur'}],
+        solicitContent: [{required: true,message: '请填写征求内容', trigger: 'blur'}],
+        solicitDueDays: [{required: true,message: '请填写征求时限', trigger: 'blur'}],
+      },
+      soRulesList: [],
+      soParallelItems: [],
+      soCoreItems: [],
+      soCheckedOrgList: [],
+      // 意见征求 end--------------------------
     }
   },
   created: function () {
@@ -668,6 +701,208 @@ var vm = new Vue({
     }
   },
   methods: {
+    // 意见征求 start-----------------------
+    // 发起征求
+    startSolicit: function(){
+      var vm = this;
+      var list1 = this.$refs.soParallelItems.selection || [];
+      var list2 = this.$refs.soCoreItems.selection || [];
+      var itemList = [];
+      var params = {
+        applyinstId: "002bf0e6-ba95-48c2-a866-7d230b6a1007",
+        procinstId: "1c0439c4-42fa-4823-b17b-fd9f4ac8a8ec",
+        hiTaskinstId: "00b0407d-55bb-42e7-ab2f-443267a7a859",
+        solicitTopic: vm.solicitForm.solicitTopic,
+        solicitContent: vm.solicitForm.solicitContent,
+        solicitDueDays: vm.solicitForm.solicitDueDays,
+        solicitType: vm.solicitForm.solicitType,
+        isCalcTimerule: 1,
+        solicitTimeruleId: vm.solicitForm.solicitTimeruleId,
+        busType: 'YJZQ',
+      };
+      if (this.solicitForm.solicitType == 'i') {
+        // 校验勾选事项
+        if (!list1.length && !list2.length) {
+          return this.$message.error('请至少勾选一个事项')
+        }
+        var tmp = list1.concat(list2);
+        var hasOrgId = true;
+        tmp.forEach(function(u){
+          if (!(u.orgId&&u.orgId.length)){
+            hasOrgId = false;
+          }
+          itemList.push({
+            itemId: u.itemId,
+            itemVerId: u.itemVerId,
+            orgId: u.orgId,
+            orgName: u.orgName,
+            opinion: u.opinion,
+          })
+        });
+        if (!hasOrgId) {
+          return vm.$message.error('请选择行政区划或者实施主体');
+        }
+      } else if (this.solicitForm.solicitType == 'd') {
+        // 校验勾选部门
+        if (!vm.soCheckedOrgList.length) {
+          return vm.$message.error('请至少勾选一个部门');
+        }
+        vm.soCheckedOrgList.forEach(function(u){
+          itemList.push({
+            orgId: u.orgId,
+            orgName: u.orgName,
+          })
+        });
+      }
+      params.detailInfo = JSON.stringify(itemList);
+      this.$refs.solicitForm.validate(function(f){
+        if (f) {
+          vm.solicitOpinionLoading = true;
+          request('', {
+            url: ctx + 'rest/solicit/create',
+            type: 'post',
+            ContentType: 'application/json',
+            data: JSON.stringify(params),
+          }, function(res) {
+            vm.solicitOpinionLoading = false;
+            if (res.success) {
+              vm.$message.success('意见征求发起成功');
+            } else {
+              vm.$message.error(res.message||'意见征求发起失败');
+            }
+          }, function(){
+            vm.solicitOpinionLoading = false;
+            vm.$message.error('意见征求发起失败');
+          })
+        }
+      });
+    },
+    // 选择orgId
+    soSelectedOrg: function(row, item){
+      row.orgId = item.orgId;
+      row.orgName = item.orgName;
+    },
+    // 关闭征求弹窗
+    closeSoDialog: function(){
+      this.$refs.solicitForm.clearValidate();
+    },
+    // 打开征求弹窗
+    openSoDialog: function(){
+      this.getTimeRuleList();
+      var list1 = this.$refs.parallelItemsTable.selection || [];
+      var list2 = this.$refs.coreItemsTable.selection || [];
+      if (!list1.length) {
+        return this.$message('稍等，正在加载事项数据');
+      }
+      list1.forEach(function(u) {
+        vm.$set(u, 'opinion', '');
+      });
+      list2.forEach(function(u) {
+        vm.$set(u, 'opinion', '');
+      });
+      this.soParallelItems = list1.concat([]);
+      this.soCoreItems = list2.concat([]);
+      this.solicitOpinionVisible = true;
+    },
+    // 得到容缺时限规则数据
+    getTimeRuleList: function(){
+      var vm = this;
+      if (vm.soRulesList.length) {
+        return null;
+      }
+      request('', {
+        url: ctx + 'rest/act/sto/timerule/getActStoTimeruleByOrgId',
+        type: 'get',
+      }, function(res){
+        if (res.success) {
+          vm.soRulesList = res.content;
+          if(vm.soRulesList.length > 0){
+            //格式化一下label
+            for(var i=0; i<vm.soRulesList.length; i++){
+              var timeruleName = vm.soRulesList[i].timeruleName;
+              if(timeruleName && timeruleName.length > 3)
+                vm.soRulesList[i].timeruleName = timeruleName.substring(0,3);
+            }
+            //默认选择工作日
+            vm.solicitForm.solicitTimeruleId = vm.soRulesList[0].timeruleId;
+            vm.solicitForm.solicitDueDays = 1;
+          }
+        } else {
+          vm.$message.error(res.message || '获取时限规则数据失败');
+        }
+      },function(){
+        vm.$message.error('获取时限规则数据失败');
+      })
+    },
+    // 切换表标签页
+    changeOsTab: function(i){
+      this.soActiveTabIndex = i;
+    },
+    // 加载树节点
+    loadSoNode: function(node, resolve){
+      var id = null;
+      if (node.level != 0) {
+        id = node.data.orgId;
+      }
+      this.loadOrgData(id, resolve, node);
+    },
+    // 勾选部门数据
+    soTreeCheckChange: function(node, flag){
+      var vm = this;
+      if (flag) {
+        vm.soCheckedOrgList.push(node);
+      } else {
+        var index = -1;
+        vm.soCheckedOrgList.forEach(function(u, i) {
+          if (u.orgId == node.orgId){
+            index = i;
+          }
+        });
+        if (index != -1) {
+          vm.soCheckedOrgList.splice(index, 1);
+        }
+      }
+    },
+    // 取消勾选部门
+    removeSoOrg: function(node){
+      this.$refs.soTree.setChecked(node.orgId, false, false);
+    },
+    // 加载部门数据
+    loadOrgData: function(id, resolve, node){
+      var vm = this;
+      var params = {
+        'isRoot': 1,
+        'parentOrgId': '',
+      };
+      if (id && id.length) {
+        params.isRoot = 0;
+        params.parentOrgId = id;
+      }
+      request('', {
+        url: ctx + 'rest/solicit/list/org',
+        type: 'get',
+        data: params,
+      }, function(res) {
+        if (res.success) {
+          if (node.level == 0) {
+            res.content.forEach(function(u) {
+              u.disabled = true;
+            });
+          }
+          resolve(res.content);
+          if (node.level == 0) {
+            vm.$nextTick(function(){
+              $('.so-tree .el-tree-node__expand-icon').trigger('click');
+            });
+          }
+        } else {
+          vm.$message.error(res.message||'加载部门数据失败');
+        }
+      }, function(res) {
+        vm.$message.error('加载部门数据失败');
+      })
+    },
+    // 意见征求 end---------------------
     // 查询主题信息
     getThemeInfoByThemeCategory: function () {
       var _that = this;

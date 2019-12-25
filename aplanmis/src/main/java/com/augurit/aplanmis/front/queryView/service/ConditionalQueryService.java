@@ -21,12 +21,14 @@ public interface ConditionalQueryService {
 
     /**
      * 申报查询条件数据
+     *
      * @return
      */
     ConditionalQueryDic applyConditionalQueryDic();
 
     /**
      * 根据主题ID获取主题下阶段
+     *
      * @param themeId
      * @return
      */
@@ -34,6 +36,7 @@ public interface ConditionalQueryService {
 
     /**
      * 分页查询申报信息
+     *
      * @param conditionalQueryRequest
      * @param page
      * @return
@@ -43,6 +46,7 @@ public interface ConditionalQueryService {
 
     /**
      * 导出申报数据
+     *
      * @param conditionalQueryRequest
      * @param req
      * @param resp
@@ -52,12 +56,14 @@ public interface ConditionalQueryService {
 
     /**
      * 办件查询条件数据
+     *
      * @return
      */
     ConditionalQueryDic parsConditionalQueryDic();
 
     /**
      * 分页查询办件信息
+     *
      * @param conditionalQueryRequest
      * @param page
      * @return
@@ -67,6 +73,7 @@ public interface ConditionalQueryService {
 
     /**
      * 导出办件数据
+     *
      * @param conditionalQueryRequest
      * @param req
      * @param resp
@@ -76,12 +83,14 @@ public interface ConditionalQueryService {
 
     /**
      * 查询行业树
+     *
      * @return
      */
     List<BscDicCodeItem> listIndustryTree();
 
     /**
      * 根据applyinstId查询对应流程下任一taskId
+     *
      * @param applyinstId
      * @return
      */
@@ -89,6 +98,7 @@ public interface ConditionalQueryService {
 
     /**
      * 根据iteminstId查询对应流程下任一taskId
+     *
      * @param iteminstId
      * @param entrust
      * @return
@@ -97,6 +107,7 @@ public interface ConditionalQueryService {
 
     /**
      * 根据关键字查视图id
+     *
      * @param keyword
      * @return
      */
@@ -104,12 +115,14 @@ public interface ConditionalQueryService {
 
     /**
      * 查询条件数据
+     *
      * @return
      */
     ConditionalQueryDic taskConditionalQueryDic();
 
     /**
      * 分页查询待办任务
+     *
      * @param conditionalQueryRequest
      * @param page
      * @return
@@ -119,6 +132,7 @@ public interface ConditionalQueryService {
 
     /**
      * 分页查询已办任务
+     *
      * @param conditionalQueryRequest
      * @param page
      * @return
@@ -128,6 +142,7 @@ public interface ConditionalQueryService {
 
     /**
      * 分页查询办结任务
+     *
      * @param conditionalQueryRequest
      * @param page
      * @return
@@ -136,8 +151,8 @@ public interface ConditionalQueryService {
     PageInfo listConcludedTasksByPage(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception;
 
     /**
-     *
      * 分页查询待预审列表
+     *
      * @param conditionalQueryRequest
      * @param page
      * @return
@@ -147,6 +162,7 @@ public interface ConditionalQueryService {
 
     /**
      * 分页查询不予受理列表
+     *
      * @param conditionalQueryRequest
      * @param page
      * @return
@@ -156,6 +172,7 @@ public interface ConditionalQueryService {
 
     /**
      * 分页查询待补正办件列表
+     *
      * @param conditionalQueryRequest
      * @param page
      * @return
@@ -165,6 +182,7 @@ public interface ConditionalQueryService {
 
     /**
      * 分页查询待补全申报列表
+     *
      * @param conditionalQueryRequest
      * @param page
      * @return
@@ -173,8 +191,8 @@ public interface ConditionalQueryService {
     PageInfo listNeedCompletedApplyByPage(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception;
 
     /**
-     *
      * 分页查询补全待确认申报列表
+     *
      * @param conditionalQueryRequest
      * @param page
      * @return
@@ -183,6 +201,7 @@ public interface ConditionalQueryService {
     PageInfo listNeedConfirmCompletedApplyByPage(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception;
 
     PageInfo listPickupCheckTasksByPage(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception;
+
     PageInfo listPickupCheckTasksByPageFinish(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception;
 
     PageInfo listDoneliminaryTasks(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception;
@@ -268,6 +287,7 @@ public interface ConditionalQueryService {
 
     /**
      * 获取单项申报事项
+     *
      * @param conditionalQueryRequest
      * @param page
      * @return
@@ -278,14 +298,16 @@ public interface ConditionalQueryService {
     PageInfo listPickupCheckTasksByPageState(ConditionalQueryRequest conditionalQueryRequest, Page page, String express) throws Exception;
 
     /**
-     *  更新提醒的已读状态
+     * 更新提醒的已读状态
+     *
      * @param remindReceiverIds
      * @throws Exception
      */
-    void updateRemindRead(String remindReceiverIds)throws Exception;
+    void updateRemindRead(String remindReceiverIds) throws Exception;
 
     /**
      * 分页查询我的草稿箱
+     *
      * @param conditionalQueryRequest
      * @param page
      * @return
@@ -295,14 +317,16 @@ public interface ConditionalQueryService {
 
     /**
      * 短信发送申请
+     *
      * @param applyinstId
      * @param iteminstId
      * @throws Exception
      */
-    void sendSms(String applyinstId,String iteminstId) throws Exception;
+    void sendSms(String applyinstId, String iteminstId) throws Exception;
 
     /**
      * 分页查询窗口经办办件信息
+     *
      * @param conditionalQueryRequest
      * @param page
      * @return
@@ -313,6 +337,7 @@ public interface ConditionalQueryService {
 
     /**
      * 导出窗口经办办件数据
+     *
      * @param conditionalQueryRequest
      * @param req
      * @param resp
@@ -322,6 +347,7 @@ public interface ConditionalQueryService {
 
     /**
      * 分页查询辅线申报信息
+     *
      * @param conditionalQueryRequest
      * @param page
      * @return
@@ -332,6 +358,7 @@ public interface ConditionalQueryService {
 
     /**
      * 导出辅线申报数据
+     *
      * @param conditionalQueryRequest
      * @param req
      * @param resp
@@ -341,6 +368,7 @@ public interface ConditionalQueryService {
 
     /**
      * 分页查询辅线办件
+     *
      * @param conditionalQueryRequest
      * @param page
      * @return
@@ -350,6 +378,7 @@ public interface ConditionalQueryService {
 
     /**
      * 导出辅线办件查询结果
+     *
      * @param conditionalQueryRequest
      * @param req
      * @param resp
@@ -369,6 +398,7 @@ public interface ConditionalQueryService {
 
     /**
      * 根据查询条件获取阶段已办结的申报
+     *
      * @param conditionalQueryRequest
      * @param page
      * @return
@@ -384,5 +414,45 @@ public interface ConditionalQueryService {
      * @return PageInfo
      */
     PageInfo listWaitUploadServiceResult(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception;
+
+    /**
+     * 窗口人员查询撤件申请待受理的列表
+     *
+     * @param conditionalQueryRequest
+     * @param page
+     * @return
+     * @throws Exception
+     */
+    PageInfo listWaitCancelTasks(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception;
+
+    /**
+     * 窗口人员查询撤件申请已受理的列表
+     *
+     * @param conditionalQueryRequest
+     * @param page
+     * @return
+     * @throws Exception
+     */
+    PageInfo listDoneCancelTasks(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception;
+
+    /**
+     * 部门人员查询撤件申请已受理的列表
+     *
+     * @param conditionalQueryRequest
+     * @param page
+     * @return
+     * @throws Exception
+     */
+    PageInfo listDoneCancelApplyInfoByBm(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception;
+
+    /**
+     * 部门人员查询撤件申请待受理的列表
+     *
+     * @param conditionalQueryRequest
+     * @param page
+     * @return
+     * @throws Exception
+     */
+    PageInfo listWaitCancelApplyInfoByBm(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception;
 }
 
