@@ -5,6 +5,7 @@ import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.aplanmis.common.domain.AeaHiSolicit;
+import com.augurit.aplanmis.common.domain.AeaHiSolicitDetailUser;
 import com.augurit.aplanmis.common.vo.solicit.AeaHiSolicitVo;
 import com.augurit.aplanmis.common.vo.solicit.QueryCondVo;
 import com.augurit.aplanmis.front.solicit.service.RestAeaHiSolicitService;
@@ -98,8 +99,27 @@ public class RestAeaHiSolicitController {
     @ApiOperation("意见征求回复接口")
     @PostMapping("/answer")
     public ResultForm solicitAnswer(@Valid @RequestBody SolicitDetailUserVo solicitDetailUserVo) throws Exception {
+        try {
+            AeaHiSolicitDetailUser detailUser = solicitDetailUserVo.convertToAeaHiDetailUser();
+            restAeaHiSolicitService.createSolicitOpinion(detailUser);
+            return new ResultForm(true);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResultForm(false);
+        }
+    }
 
-        return new ResultForm(true);
+    @ApiOperation("意见征求汇总意见接口")
+    @PostMapping("/collect/opinion")
+    public ResultForm solicitCollectOpinion(@Valid @RequestBody SolicitVo soliciVo) throws Exception {
+        try {
+            AeaHiSolicit aeaHiSolicit = soliciVo.convertToAeaHiSolicit();
+            restAeaHiSolicitService.createSolicitCollectOpinion(aeaHiSolicit);
+            return new ResultForm(true);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResultForm(false);
+        }
     }
 
     @ApiOperation("根据申报实例ID和业务类型获取所有的征求信息")
