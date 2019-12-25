@@ -728,6 +728,81 @@
             </div>
           </div>
         </div>
+        <!-- 意见征求 -->
+        <div v-else-if="u.labelId=='solicit'" style="height:100%;overflow:auto;">
+          <div class="spe-pane-wrap">
+            <!-- 审批人员 意见征求 -->
+            <div class="spe-item-uboxs">
+                <div class="spe-item-u" v-for="(item,index) in cancelAppDetailList">
+                  <div class="top-time-text-box c-f" :class="{'is-blue': item.cancelState==0||item.cancelState==1}">
+                    <div class="ttt-f"></div>
+                    <div class="ttt-s">
+                      第{{getChineseIndex(index,cancelAppDetailList.length)}}次发起（{{changeCancelState(item.cancelState)}}）
+                    </div>
+                    <div class="ttt-t"></div>
+                  </div>
+                  <table class="spe-info-table">
+                    <div class="table-section-title">征求信息</div>
+                    <tr>
+                      <td class="td-bg-grey">征求主题</td>
+                      <td colspan="5">{{item.applyUserName}}</td>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey">征求内容</td>
+                      <td colspan="5">{{item.applyUserIdnumber}}</td>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey">征求类型</td>
+                      <td>{{item.applyReason}}</td>
+                      <td class="td-bg-grey">征求时限</td>
+                      <td>{{item.applyReason}}</td>
+                      <td class="td-bg-grey">征求状态</td>
+                      <td>{{item.applyReason}}</td>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey">发起征求时间</td>
+                      <td>{{item.applyReason}}</td>
+                      <td class="td-bg-grey">发起征求部门</td>
+                      <td>{{item.applyReason}}</td>
+                      <td class="td-bg-grey">发起征求人员</td>
+                      <td>{{item.applyReason}}</td>
+                    </tr>
+                    <tr>
+                    </tr>
+                  </table>
+                  <!-- 各部门意见 -->
+                  <template>
+                    <table class="spe-info-table">
+                      <div class="table-section-title">各部门意见</div>
+                    </table>
+                    <el-table border :data="item.aeaHiItemCancels">
+                      <el-table-column label="部门" width="200" property="approvalOrgName"></el-table-column>
+                      <el-table-column label="事项名称" property="iteminstName"></el-table-column>
+                      <el-table-column label="部门意见" property="approvalOpinion"></el-table-column>
+                      <el-table-column label="审批时间" property="approvalEndTime">
+                        <template slot-scope="scope">
+                          {{scope.row.approvalEndTime|formatDate}}
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="状态" width="100" property="cancelState">
+                        <template slot-scope="scope">
+                          {{changeSpCancelState(scope.row.cancelState)}}
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </template>
+                  <!-- 审批人员处理-->
+                  <template>
+                    <el-input style="margin-top:10px" type="textarea" v-model="bmHandleOpinion" :rows="3" placeholder="请输入意见"></el-input>
+                    <div style="margin-top:10px">
+                      <el-button type="primary" size="medium" @click="bmHanderCancel(2, item)">提交意见</el-button>
+<!--                      <el-button size="medium" @click="bmHanderCancel(3, item)">不同意</el-button>-->
+                    </div>
+                  </template>
+                </div>
+              </div>
+          </div>
+        </div>
         <iframe v-else :src="u.src" class="ltab-iframe"></iframe>
       </el-tab-pane>
     </el-tabs>

@@ -602,6 +602,9 @@ var vm = new Vue({
           { required: true,validator: checkPhoneNum, trigger: 'blur' },
         ]
       },
+      // 意见征求 start
+      hasSolicit: 0,
+      // 意见征求  end
     }
   },
   filters: {
@@ -638,6 +641,11 @@ var vm = new Vue({
     },
   },
   methods: {
+    // 意见征求 start
+    loadSolicitData: function(){
+      var vm = this;
+    },
+    // 意见征求 end
     // 打开新增或者编辑联系人弹窗
     openEditLinkMan: function(id){
       var vm = this;
@@ -2464,7 +2472,7 @@ var vm = new Vue({
         vm.initButtons();
       }
     },
-    // 初始化左边 iframe
+    // 初始化左边 iframe/tab
     initForms: function () {
       var vm = this;
       var oneFromSrc = '';
@@ -2474,6 +2482,7 @@ var vm = new Vue({
         {label: '材料附件', labelId: "2", src: './materialAnnex.html'},
         {label: '审批过程', labelId: "3", src: './opinionForm.html'},
         {label: '材料补正', labelId: "4", src: './opinionForm.html'},
+        {label: '意见征求', labelId: "solicit", src: './opinionForm.html'},
         {label: '撤件历史', labelId: "appCancel", src: './opinionForm.html'},
         {label: '特殊程序', labelId: "5", src: './opinionForm.html'},
         {label: '批文批复', labelId: "6", src: './approvalOpinions.html',}
@@ -2635,7 +2644,7 @@ var vm = new Vue({
           vm.lTabsData.splice(oneFormIndex, 1);
         }
       }
-      // 材料补正
+      // 是否有材料补正
       var tmpIndex = -1;
       vm.lTabsData.forEach(function (u, i) {
         if (u.labelId == 4) {
@@ -2647,7 +2656,7 @@ var vm = new Vue({
       } else {
         vm.loadSupplyDetail();
       }
-      // 特殊程序
+      // 是否有特殊程序
       var tmpIndex = -1;
       vm.lTabsData.forEach(function (u, i) {
         if (u.labelId == 5) {
@@ -2660,7 +2669,7 @@ var vm = new Vue({
         vm.getSpecialType();
         vm.loadSpecialDetail();
       }
-      // 撤件历史
+      // 是否有撤件历史
       var tmpIndex = -1;
       vm.lTabsData.forEach(function (u, i) {
         if (u.labelId == 'appCancel') {
@@ -2672,6 +2681,19 @@ var vm = new Vue({
       } else {
         vm.loadAppCancelData();
       }
+      // 是否有意见征求
+      var tmpIndex = -1;
+      vm.lTabsData.forEach(function (u, i) {
+        if (u.labelId == 'solicit') {
+          tmpIndex = i
+        }
+      })
+      if (vm.hasSolicit != 1) {
+        vm.lTabsData.splice(tmpIndex, 1);
+      } else {
+        vm.loadSolicitData();
+      }
+      
     },
     // 初始化左边按钮组
     initButtons: function () {
@@ -2866,11 +2888,13 @@ var vm = new Vue({
           vm.hasSpecial = res.content.hasSpecial;
           vm.hasSupply = res.content.hasSupply;
           vm.hasAppCancel = res.content.ishasApplyinstCancel;
+          vm.hasSolicit = res.content.hasSolicit;
           vm.isShowOneForm = res.content.isShowOneForm;
           vm.stageId = res.content.stageId;
           vm.projInfoId = res.content.projId;
           vm.itemVersionId = res.content.itemVerId;
           vm.itemId = res.content.itemId;
+          // vm.hasSolicit = 1;
           vm.initFormElementPriv();
         } else {
           vm.$message.error(res.message);
