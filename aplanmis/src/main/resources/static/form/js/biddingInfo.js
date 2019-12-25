@@ -27,7 +27,7 @@
         }
       };
       var checkUnifiedSocialCreditCode = function(rule, value, callback) {
-        if (value === '' || value === undefined || value.trim() === '') {
+        if (value === '' || value === undefined || value.trim() === ''|| value == null) {
           callback(new Error('请输入统一社会信用代码！'));
         } else if (value) {
           var flag = !/^[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}$/.test(value);
