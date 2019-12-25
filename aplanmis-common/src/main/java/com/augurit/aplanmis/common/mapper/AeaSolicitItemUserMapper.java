@@ -15,10 +15,24 @@ import java.util.List;
 public interface AeaSolicitItemUserMapper {
 
      void insertAeaSolicitItemUser(AeaSolicitItemUser aeaSolicitItemUser) ;
+
      void updateAeaSolicitItemUser(AeaSolicitItemUser aeaSolicitItemUser) ;
+
      void deleteAeaSolicitItemUser(@Param("id") String id) ;
-     List<AeaSolicitItemUser> listAeaSolicitItemUser(AeaSolicitItemUser aeaSolicitItemUser) ;
+
+     void batchDelSolicitItemUserByIds(@Param("ids") String[] ids);
+
+     void batchDelSolicitItemUserBySolicitItemId(@Param("solicitItemId") String solicitItemId);
+
      AeaSolicitItemUser getAeaSolicitItemUserById(@Param("id") String id) ;
+
+     List<AeaSolicitItemUser> listAeaSolicitItemUser(AeaSolicitItemUser aeaSolicitItemUser) ;
+
+     List<AeaSolicitItemUser> listAeaSolicitItemUserRelInfo(AeaSolicitItemUser aeaSolicitItemUser) ;
+
+     Long getMaxSortNo();
+
+     void changeIsActive(@Param("id") String id) ;
 
      /**
       * 通过事项版本id获取关联的用户表数据

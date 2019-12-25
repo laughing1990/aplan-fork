@@ -193,7 +193,7 @@
 <%@include file="select_solicit_item_ztree.jsp" %>
 
 <!-- 选事项征求人员 -->
-<%@include file="select_solicit_item_ztree.jsp"%>
+<%@include file="select_solicit_user_ztree.jsp"%>
 
 <!-- 进度弹窗 -->
 <div id="uploadProgress" class="modal fade" tabindex="-1" role="dialog"

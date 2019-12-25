@@ -240,13 +240,13 @@ public class AeaSolicitItemServiceImpl implements AeaSolicitItemService {
         if (StringUtils.isNotBlank(item.getIsCatalog())) {
             // 标准事项
             if (item.getIsCatalog().equals(Status.ON)) {
-                item.setItemName("【标准事项】" + item.getItemName());
+//                item.setItemName("【标准事项】" + item.getItemName());
                 if (StringUtils.isNotBlank(item.getGuideOrgName())) {
                     item.setItemName(item.getItemName() + "【" + item.getGuideOrgName() + "】");
                 }
             // 实施事项
             } else {
-                item.setItemName("【实施事项】" + item.getItemName());
+//                item.setItemName("【实施事项】" + item.getItemName());
                 if (StringUtils.isNotBlank(item.getOrgName())) {
                     item.setItemName(item.getItemName() + "【" + item.getOrgName() + "】");
                 }

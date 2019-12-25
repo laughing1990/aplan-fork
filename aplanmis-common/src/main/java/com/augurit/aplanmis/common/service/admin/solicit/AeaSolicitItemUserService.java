@@ -12,10 +12,28 @@ import java.util.List;
 public interface AeaSolicitItemUserService {
 
      void saveAeaSolicitItemUser(AeaSolicitItemUser aeaSolicitItemUser) ;
+
      void updateAeaSolicitItemUser(AeaSolicitItemUser aeaSolicitItemUser) ;
+
      void deleteAeaSolicitItemUserById(String id) ;
-     PageInfo<AeaSolicitItemUser> listAeaSolicitItemUser(AeaSolicitItemUser aeaSolicitItemUser, Page page) ;
+
+     void batchDelSolicitItemUserByIds(String[] ids) ;
+
      AeaSolicitItemUser getAeaSolicitItemUserById(String id) ;
+
+     PageInfo<AeaSolicitItemUser> listAeaSolicitItemUser(AeaSolicitItemUser aeaSolicitItemUser, Page page) ;
+
      List<AeaSolicitItemUser> listAeaSolicitItemUser(AeaSolicitItemUser aeaSolicitItemUser) ;
 
+     PageInfo<AeaSolicitItemUser> listAeaSolicitItemUserRelInfo(AeaSolicitItemUser aeaSolicitItemUser, Page page) ;
+
+     List<AeaSolicitItemUser> listAeaSolicitItemUserRelInfo(AeaSolicitItemUser aeaSolicitItemUser) ;
+
+     void batchSaveSolicitItemUser(String solicitItemId, String[] userIds, String[] sortNos);
+
+     void batchDelSolicitItemUserBySolicitItemId(String solicitItemId);
+
+     Long getMaxSortNo();
+
+     void changeIsActive(String id);
 }

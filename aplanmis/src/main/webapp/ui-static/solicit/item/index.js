@@ -77,6 +77,19 @@ function clickToLoadSolicitItemUser(){
 
         height: $('#westPanel').height() - 175
     });
+
+    // 处理事项表格滚动条
+    $(".fixed-table-body").niceScroll({
+
+        cursorcolor: "#e2e5ec",//#CC0071 光标颜色
+        cursoropacitymin: 0, // 当滚动条是隐藏状态时改变透明度, 值范围 1 到 0
+        cursoropacitymax: 1, // 当滚动条是显示状态时改变透明度, 值范围 1 到 0
+        touchbehavior: false, //使光标拖动滚动像在台式电脑触摸设备
+        cursorwidth: "4px", //像素光标的宽度
+        cursorborder: "0", //   游标边框css定义
+        cursorborderradius: "2px",//以像素为光标边界半径
+        autohidemode: true  //是否隐藏滚动条
+    });
 }
 
 function initValidateSolicitItem(){
@@ -501,7 +514,7 @@ var selectSolicitItem2Key,
 function onClickSelectSolicitItem2Node(event, treeId, treeNode) {
 
     var treeObj = $.fn.zTree.getZTreeObj(treeId);
-    if (treeNode && treeNode.type == 'org') {
+    if (treeNode && treeNode.type == 'item') {
         treeObj.checkAllNodes(false);
         if (treeNode.checked) {
             treeObj.checkNode(treeNode, false, false, true);
@@ -691,10 +704,11 @@ function initSolicitItemUserTb() {
         pageList: [10, 20, 50, 100],
         method: 'post',
         contentType: "application/x-www-form-urlencoded",
-        queryParams: SolicitItemUserParam,
+        queryParams: solicitItemUserParam,
         sidePagination: 'server',
         singleSelect: false,
         clickToSelect: true,
+        height: $('#westPanel').height() - 175
     });
 }
 
@@ -743,26 +757,26 @@ var getSolicitItemUserColumns = function () {
             title: '是否启用',
             align: 'center',
             width: 100,
-            formatter: SolicitItemUserIsActiveFormatter
+            formatter: solicitItemUserIsActiveFormatter
         },
         {
             field: 'operate_',
             align: 'center',
             title: '操作',
             width: 100,
-            formatter: SolicitItemUserFormatter
+            formatter: solicitItemUserFormatter
         }
     ];
     return columns;
 }
 
-function SolicitItemUserIsActiveFormatter(value, row, index, field) {
+function solicitItemUserIsActiveFormatter(value, row, index, field) {
 
     if(value=='1'){
 
         return  '<span class="m-switch m-switch--success">' +
             '  <label>' +
-            '     <input type="checkbox" checked="checked" name="isActive" onclick="changeSolicitItemUserIsActive(this, \''+ row.orgUserId +'\', \''+ row.isActive +'\');">' +
+            '     <input type="checkbox" checked="checked" name="isActive" onclick="changeSolicitItemUserIsActive(this, \''+ row.itemUserId +'\', \''+ row.isActive +'\');">' +
             '     <span></span>' +
             '   </label>' +
             '</span>'
@@ -770,7 +784,7 @@ function SolicitItemUserIsActiveFormatter(value, row, index, field) {
 
         return  '<span class="m-switch m-switch--success">' +
             '  <label>' +
-            '     <input type="checkbox" name="isActive" onclick="changeSolicitItemUserIsActive(this, \''+ row.orgUserId +'\', \''+ row.isActive +'\');">' +
+            '     <input type="checkbox" name="isActive" onclick="changeSolicitItemUserIsActive(this, \''+ row.itemUserId +'\', \''+ row.isActive +'\');">' +
             '     <span></span>' +
             '   </label>' +
             '</span>'
@@ -815,18 +829,18 @@ function changeSolicitItemUserIsActive(obj, id, isActive){
     }
 }
 
-function SolicitItemUserFormatter(value, row, index, field) {
+function solicitItemUserFormatter(value, row, index, field) {
 
-    var delBtn = '<a href="javascript:deleteSolicitItemUserById(\'' + row.orgUserId + '\')" ' +
-        'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
-        'title="移除"><i class="la la-trash"></i>' +
-        '</a>';
+    var delBtn = '<a href="javascript:deleteSolicitItemUserById(\'' + row.itemUserId + '\')" ' +
+                    'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
+                    'title="移除"><i class="la la-trash"></i>' +
+                 '</a>';
 
     return delBtn;
 
 }
 
-function SolicitItemUserParam(params) {
+function solicitItemUserParam(params) {
 
     var pageNum = (params.offset / params.limit) + 1;
     var pagination = {
@@ -952,7 +966,7 @@ function batchDelSolicitItemUser(){
     if(rows!=null&&rows.length>0){
         var ids = [];
         for(var i=0;i<rows.length;i++){
-            ids.push(rows[i].orgUserId);
+            ids.push(rows[i].itemUserId);
         }
         swal({
             text: '此操作将批量移除配置的征求人员数据，您确定执行吗？',

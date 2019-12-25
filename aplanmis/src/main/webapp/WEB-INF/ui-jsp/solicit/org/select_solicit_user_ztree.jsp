@@ -589,32 +589,36 @@
 
     function loadSolicitOrgUserSelectedData(){
 
-        $.ajax({
-            url: ctx+'/aea/solicit/org/user/listAeaSolicitOrgUserRelInfo.do',
-            type: 'post',
-            data: {},
-            async: false,
-            success: function (data) {
-                if(data!=null&&data.length>0){
-                    for(var i=0;i<data.length;i++) {
-                        var name = data[i].userName;
-                        // 选择事项库树节点
-                        var node = selectSolicitOrgUserTree.getNodeByParam("id", data[i].userId, null);
-                        if (node) {
-                            selectSolicitOrgUserTree.checkNode(node, true, true, false);
-                            name = node.name;
-                        }
-                        // 加载右侧数据，已经选择的事项
-                        var liHtml = '<li name="selectSolicitOrgUserLi" category-id="' + data[i].userId + '">' +
-                                        '<span class="drag-handle_td" onclick="removeSolicitOrgUserSelected(\'' + data[i].userId + '\');">×</span>' +
-                                        '<span class="org_name_td">' + name +'</span>' +
-                                     '</li>';
+        var solicitOrgId = null;
+        if (curSelectSolicitOrg2TreeNode != null) {
+            solicitOrgId = curSelectSolicitOrg2TreeNode.id;
+            $.ajax({
+                url: ctx + '/aea/solicit/org/user/listAeaSolicitOrgUserRelInfo.do',
+                type: 'post',
+                data: {'solicitOrgId': solicitOrgId},
+                async: false,
+                success: function (data) {
+                    if (data != null && data.length > 0) {
+                        for (var i = 0; i < data.length; i++) {
+                            var name = data[i].userName;
+                            // 选择事项库树节点
+                            var node = selectSolicitOrgUserTree.getNodeByParam("id", data[i].userId, null);
+                            if (node) {
+                                selectSolicitOrgUserTree.checkNode(node, true, true, false);
+                                name = node.name;
+                            }
+                            // 加载右侧数据，已经选择的事项
+                            var liHtml = '<li name="selectSolicitOrgUserLi" category-id="' + data[i].userId + '">' +
+                                            '<span class="drag-handle_td" onclick="removeSolicitOrgUserSelected(\'' + data[i].userId + '\');">×</span>' +
+                                            '<span class="org_name_td">' + name + '</span>' +
+                                         '</li>';
 
-                        $('#selectedCheckSolicitOrgUserUl').append(liHtml);
+                            $('#selectedCheckSolicitOrgUserUl').append(liHtml);
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
     }
 
 </script>

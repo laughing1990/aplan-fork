@@ -163,7 +163,7 @@ public class AeaItemUserAdminServiceImpl implements AeaItemUserAdminService {
         user.setId(user.getUserId());
         user.setName(user.getLoginName());
         if (StringUtils.isNotBlank(user.getOrgName())) {
-            user.setName(user.getLoginName() + "【" + user.getOrgName() + "】");
+            user.setName(user.getUserName() + "【" + user.getOrgName() + "】");
         }
         user.setpId("root");
         user.setType("user");
