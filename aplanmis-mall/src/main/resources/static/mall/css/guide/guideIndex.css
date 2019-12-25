@@ -656,9 +656,9 @@
 }
 
 .theme-type.active .theme-type-name {
-    background: #457EFF;
+    background:rgba(245,245,245,1);
     box-shadow: 0px 4px 16px 0px rgba(9, 41, 77, 0.12);
-    color: #fff;
+    color: #333333;
 }
 
 .theme-type.active .theme-type-icon {
@@ -689,7 +689,7 @@
 }
 
 .theme-type .theme-type-list {
-    /*display: none;*/
+    border:1px solid rgba(238,238,238,1);
     overflow: auto;
 }
 
@@ -1345,6 +1345,10 @@
     padding-left: 4px;
     padding-right: 4px;
     position: relative;
+}
+.guide-content-right .paraller-wraper .item .item-strip.active{
+    color: #4293F4;
+    border-color: #4293F4;
 }
 .guide-content-right .paraller-wraper .item .item-strip .item-strip-bg {
     width: 100%;

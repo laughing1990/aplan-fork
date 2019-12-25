@@ -8,8 +8,10 @@ import com.augurit.aplanmis.common.domain.AeaHiSolicit;
 import com.augurit.aplanmis.common.vo.solicit.AeaHiSolicitVo;
 import com.augurit.aplanmis.common.vo.solicit.QueryCondVo;
 import com.augurit.aplanmis.front.solicit.service.RestAeaHiSolicitService;
+import com.augurit.aplanmis.front.solicit.vo.SolicitDetailUserVo;
 import com.augurit.aplanmis.front.solicit.vo.SolicitVo;
 import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -68,21 +70,58 @@ public class RestAeaHiSolicitController {
     public ResultForm listSolicit(Page page, QueryCondVo condVo) throws Exception {
 
         List<AeaHiSolicitVo> listSolicit = restAeaHiSolicitService.listSolicit(condVo, page);
-        return new ContentResultForm<>(true, listSolicit, "success");
+        return new ContentResultForm<>(true, new PageInfo<>(listSolicit), "success");
     }
 
     @ApiOperation("意见征求接口")
     @PostMapping("/create")
-    public ResultForm solicitByDept(@Valid @RequestBody SolicitVo solicitVo) throws Exception{
-        if(StringUtils.isBlank(solicitVo.getDetailInfo())){
-            return new ResultForm(false,"参数征求详细信息detailInfo不能为空！");
+    public ResultForm solicitByDept(@Valid @RequestBody SolicitVo solicitVo) throws Exception {
+        if (StringUtils.isBlank(solicitVo.getDetailInfo())) {
+            return new ResultForm(false, "参数征求详细信息detailInfo不能为空！");
         }
-        try{
+        try {
             AeaHiSolicit aeaHiSolicit = solicitVo.convertToAeaHiSolicit();
-            restAeaHiSolicitService.createSolicit(aeaHiSolicit,solicitVo.getSolicitType(),solicitVo.getDetailInfo(),solicitVo.getBusType());
+            restAeaHiSolicitService.createSolicit(aeaHiSolicit, solicitVo.getSolicitType(), solicitVo.getDetailInfo(), solicitVo.getBusType());
             return new ResultForm(true);
-        }catch (Exception e){
-            return new ResultForm(false,"按事项发起失败！");
+        } catch (Exception e) {
+            return new ResultForm(false, "按事项发起失败！");
         }
+    }
+
+    @ApiOperation("审批页意见征求列表")
+    @PostMapping("/approve/list")
+    public ResultForm approveSolicitList() throws Exception {
+
+        return new ResultForm(true);
+    }
+
+    @ApiOperation("意见征求回复接口")
+    @PostMapping("/answer")
+    public ResultForm solicitAnswer(@Valid @RequestBody SolicitDetailUserVo solicitDetailUserVo) throws Exception {
+
+        return new ResultForm(true);
+    }
+
+    @ApiOperation("根据申报实例ID和业务类型获取所有的征求信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "applyinstId", value = "申报实例ID")
+            , @ApiImplicitParam(name = "busType", value = "业务类型")
+    })
+    @GetMapping("/listAeaHiSolicitByApplyinstId")
+    public ResultForm listAeaHiSolicitByApplyinstId(String applyinstId, String busType){
+        if(StringUtils.isBlank(applyinstId))
+            return new ResultForm(false,"参数applyinstId不能为空！");
+        if(StringUtils.isBlank(busType))
+            return new ResultForm(false,"参数busType业务类型不能为空！");
+
+        List<AeaHiSolicit> list = null;
+        try {
+            list = restAeaHiSolicitService.listAeaHiSolicitByApplyinstId(applyinstId,busType);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultForm(false,"请求出错了，错误信息为："+e.getLocalizedMessage());
+        }
+
+        return new ContentResultForm<List<AeaHiSolicit>>(true,list);
     }
 }

@@ -709,9 +709,9 @@ var vm = new Vue({
       var list2 = this.$refs.soCoreItems.selection || [];
       var itemList = [];
       var params = {
-        applyinstId: 1,
-        procinstId: 2,
-        hiTaskinstId: 3,
+        applyinstId: "002bf0e6-ba95-48c2-a866-7d230b6a1007",
+        procinstId: "1c0439c4-42fa-4823-b17b-fd9f4ac8a8ec",
+        hiTaskinstId: "00b0407d-55bb-42e7-ab2f-443267a7a859",
         solicitTopic: vm.solicitForm.solicitTopic,
         solicitContent: vm.solicitForm.solicitContent,
         solicitDueDays: vm.solicitForm.solicitDueDays,
@@ -726,7 +726,11 @@ var vm = new Vue({
           return this.$message.error('请至少勾选一个事项')
         }
         var tmp = list1.concat(list2);
+        var hasOrgId = true;
         tmp.forEach(function(u){
+          if (!(u.orgId&&u.orgId.length)){
+            hasOrgId = false;
+          }
           itemList.push({
             itemId: u.itemId,
             itemVerId: u.itemVerId,
@@ -735,6 +739,9 @@ var vm = new Vue({
             opinion: u.opinion,
           })
         });
+        if (!hasOrgId) {
+          return vm.$message.error('请选择行政区划或者实施主体');
+        }
       } else if (this.solicitForm.solicitType == 'd') {
         // 校验勾选部门
         if (!vm.soCheckedOrgList.length) {
