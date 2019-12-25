@@ -176,7 +176,6 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService{
             detail.setDetailOrgName(jsonObject.getString("orgName"));
             detail.setDetailDueDays(aeaHiSolicit.getSolicitDueDays());
             detail.setDetailStartTime(date);
-            detail.setDetailOrgId(topOrgId);
             detail.setCreater(currentLoginName);
             detail.setCreateTime(date);
             detail.setDetailStartTime(date);
