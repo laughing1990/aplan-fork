@@ -9,6 +9,7 @@ import com.augurit.aplanmis.common.domain.AeaHiSolicitDetailUser;
 import com.augurit.aplanmis.common.vo.solicit.AeaHiSolicitVo;
 import com.augurit.aplanmis.common.vo.solicit.QueryCondVo;
 import com.augurit.aplanmis.front.solicit.service.RestAeaHiSolicitService;
+import com.augurit.aplanmis.front.solicit.vo.AeaHiSolicitInfo;
 import com.augurit.aplanmis.front.solicit.vo.SolicitDetailUserVo;
 import com.augurit.aplanmis.front.solicit.vo.SolicitVo;
 import com.github.pagehelper.Page;
@@ -134,7 +135,7 @@ public class RestAeaHiSolicitController {
         if(StringUtils.isBlank(busType))
             return new ResultForm(false,"参数busType业务类型不能为空！");
 
-        List<AeaHiSolicit> list = null;
+        List<AeaHiSolicitInfo> list = null;
         try {
             list = restAeaHiSolicitService.listAeaHiSolicitByApplyinstId(applyinstId,busType);
         } catch (Exception e) {
@@ -142,6 +143,6 @@ public class RestAeaHiSolicitController {
             return new ResultForm(false,"请求出错了，错误信息为："+e.getLocalizedMessage());
         }
 
-        return new ContentResultForm<List<AeaHiSolicit>>(true,list);
+        return new ContentResultForm<List<AeaHiSolicitInfo>>(true,list);
     }
 }

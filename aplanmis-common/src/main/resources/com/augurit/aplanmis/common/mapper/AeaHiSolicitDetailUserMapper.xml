@@ -218,4 +218,23 @@ DETAIL_USER_ID  ,SOLICIT_DETAIL_ID  ,USER_ID  ,USER_CONCLUSION  ,USER_OPINION  ,
         <result property="modifier" column="MODIFIER"/>
         <result property="modifyTime" column="MODIFY_TIME"/>
     </resultMap>
+
+    <select id="listAeaHiSolicitDetailUserBySolicitIds" resultType="AeaHiSolicitDetailUser">
+        SELECT
+            <include refid="allAlisColumns"/>
+        FROM
+            aea_hi_solicit_detail_user ahsdu
+        WHERE
+            ahsdu.SOLICIT_DETAIL_ID IN (
+                SELECT
+                    detail.SOLICIT_DETAIL_ID
+                FROM
+                    aea_hi_solicit_detail detail
+                WHERE
+                    detail.SOLICIT_ID IN
+                    <foreach collection="solicitIds" item="solicitId" open="(" separator="," close=")">
+                        #{solicitId}
+                    </foreach>
+            )
+    </select>
 </mapper>
