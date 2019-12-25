@@ -267,18 +267,32 @@ public class AeaProjInofServiceImpl extends AbstractFormDataOptManager implement
     @Override
     public List<AeaProjInfo> findRootAeaProjInfoByLinkmanInfoId(String linkmanInfoId) {
         LOGGER.debug("根据项目联系人查询项目信息");
-        return aeaProjInfoMapper.findRootAeaProjInfoByLinkmanInfoId(linkmanInfoId);
+        List<AeaProjInfo> list = aeaProjInfoMapper.findRootAeaProjInfoByLinkmanInfoId(linkmanInfoId);
+        return setThemeName(list);
     }
 
     @Override
     public List<AeaProjInfo> findRootAeaProjInfoByUnitInfoId(String unitInfoId) {
         List<AeaProjInfo> aeaProjInfos = aeaProjInfoMapper.findRootAeaProjInfoByUnitInfoId(unitInfoId);
-        return aeaProjInfos;
+        return setThemeName(aeaProjInfos);
     }
 
     @Override
     public List<AeaProjInfo> findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(String linkmanInfoId, String unitInfoId) {
-        return aeaProjInfoMapper.findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(linkmanInfoId, unitInfoId);
+        List<AeaProjInfo> list = aeaProjInfoMapper.findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(linkmanInfoId, unitInfoId);
+        return setThemeName(list);
+    }
+
+    private List<AeaProjInfo> setThemeName(List<AeaProjInfo> list) {
+        try {
+            for (AeaProjInfo aeaProjInfo : list) {
+                AeaParTheme aeaParTheme = aeaParThemeService.getAeaParThemeByThemeId(aeaProjInfo.getThemeId());
+                if (aeaParTheme != null) aeaProjInfo.setThemeName(aeaParTheme.getThemeName());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
     @Override

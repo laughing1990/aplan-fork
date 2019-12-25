@@ -140,6 +140,7 @@ public class ProjectCodeServiceImpl implements ProjectCodeService {
                         aeaProjInfo.setCreater(SecurityContext.getCurrentUserName());
                         aeaProjInfo.setCreateTime(new Date());
                         aeaProjInfo.setRootOrgId(SecurityContext.getCurrentOrgId());
+                        aeaProjInfo.setProjFlag("p");//p表示发改项目，  l 表示本地项目
 
                         if ("1".equals(aObject.getString("foreignAbroadFlag"))) {//外商投资项目
                             aeaProjInfo.setForeignInvolveSecurity(aObject.getString("isCountrySecurity"));//是否涉及国家安全
