@@ -40,12 +40,16 @@ public interface RestAeaHiSolicitService {
     public void createSolicitOpinion(AeaHiSolicitDetailUser aeaHiSolicitDetailUser) throws Exception;
 
     public void createSolicitCollectOpinion(AeaHiSolicit aeaHiSolicit) throws Exception;
+
     /**
      * 根据申报编号获取所有的征求信息
+     *
      * @param applyinstId 申报实例ID
-     * @param busType 业务类型(来自数据字典)
+     * @param busType     业务类型(来自数据字典)
      * @return
      * @throws Exception
      */
     public List<AeaHiSolicitInfo> listAeaHiSolicitByApplyinstId(String applyinstId, String busType) throws Exception;
+
+    void signSolicitDetail(String solicitUserId) throws Exception;
 }

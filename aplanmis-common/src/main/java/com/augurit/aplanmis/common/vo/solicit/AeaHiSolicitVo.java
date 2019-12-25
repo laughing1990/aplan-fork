@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.common.vo.solicit;
 
 import com.augurit.agcloud.bpm.common.domain.ActStoRemindAndReceiver;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -43,7 +44,7 @@ public class AeaHiSolicitVo {
     private String solicitContent;
 
     @ApiModelProperty(value = "意见征求承诺时限，例如：5个工作日，那该字段为5")
-    private Long solicitDueDays;
+    private Double solicitDueDays;
 
     @ApiModelProperty(value = "意见征求实际时限，例如：5个工作日，那该字段为5")
     private Long solicitRealDays;
@@ -102,7 +103,13 @@ public class AeaHiSolicitVo {
     private String creater;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value = "受理时间")
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private java.util.Date acceptTime;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @ApiModelProperty(value = "受理时间")
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private java.util.Date createTime;
 
     //aea_hi_solicit_detail
@@ -143,7 +150,7 @@ public class AeaHiSolicitVo {
 
     // aea_hi_solicit_detail_user
     @ApiModelProperty(value = "主键")
-    private String detailTaskId;
+    private String detailUserId;
 
     @ApiModelProperty(value = "用户ID")
     private String userId;
@@ -168,16 +175,22 @@ public class AeaHiSolicitVo {
     @ApiModelProperty(value = "父ID【当TASK_ACTION=1或2时必填】")
     private String parentId;
 
-    //
+    //时限相关
+//    private Double dueNum;
+    @ApiModelProperty(value = "时限状态")
+    protected String instState;
     @ApiModelProperty(value = "")
-    private String overdueTime;
+    private Double overdueTime;
 
     @ApiModelProperty(value = "")
-    private String remainingTime;
+    private Double remainingTime;
 
     @ApiModelProperty(value = "")
     private String timeruleUnit;
+    @ApiModelProperty(value = "节点时限列表")
+    private List nodeTimelimitList;
 
+    //申报实例相关
     @ApiModelProperty(value = "")
     private String applyinstCode;
 
@@ -206,6 +219,7 @@ public class AeaHiSolicitVo {
 
     private String taskId;
     private String taskName;
+    private String taskDefKey;
 
     @ApiModelProperty(value = "申报来源")
     private String applyinstSource;
@@ -215,4 +229,9 @@ public class AeaHiSolicitVo {
     private String applyType;
 
 
+    @ApiModelProperty(value = "剩余/逾期用时显示文本")
+    protected String remainingOrOverTimeText;
+
+    @ApiModelProperty(value = "法定办结时限显示")
+    protected String dueNumText;
 }
