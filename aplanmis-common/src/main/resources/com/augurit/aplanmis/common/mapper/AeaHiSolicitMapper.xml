@@ -323,6 +323,7 @@
         ahs.REMAINING_TIME remainingTime,
         ahs.TIMERULE_UNIT as timeruleUnit,
         ahs.taskId as taskId,
+        ahs.taskName as taskName,
         ahs.SOLICIT_DETAIL_ID as solicitDetailId,
         ahs.DETAIL_TASK_ID as detailTaskId,
         aha.APPLYINST_CODE as applyinstCode,
@@ -342,6 +343,7 @@
         SELECT
         ahs.SOLICIT_ID,
         ahs.SOLICIT_TYPE,
+        ahs.BUS_TYPE,
         ahs.PROCINST_ID,
         ahs.HI_TASKINST_ID,
         ahs.SOLICIT_CODE,
@@ -357,23 +359,24 @@
         asti.OVERDUE_TIME,
         asti.REMAINING_TIME,
         asti.TIMERULE_UNIT,
-        art.ID_ as taskId
+        art.ID_ as taskId,
+        art.NAME_ as taskName
         FROM AEA_HI_SOLICIT ahs
         left join ACT_RU_TASK art on art.PROC_INST_ID_=ahs.PROCINST_ID
         left join act_hi_taskinst aht on aht.ID_=ahs.HI_TASKINST_ID
         LEFT JOIN AEA_HI_SOLICIT_DETAIL ahsd ON ahsd.SOLICIT_ID = ahs.SOLICIT_ID
         LEFT JOIN AEA_HI_SOLICIT_DETAIL_USER ahsdu ON ahsdu.SOLICIT_DETAIL_ID = ahsd.SOLICIT_DETAIL_ID
-        LEFT JOIN AEA_SOLICIT_ITEM asi ON asi.ITEM_VER_ID = ahsd.ITEM_VER_ID
         LEFT JOIN ACT_STO_TIMERULE ast ON ast.TIMERULE_ID = ahs.SOLICIT_TIMERULE_ID
         LEFT JOIN ACT_STO_TIMERULE_INST asti ON asti.TIMERULE_ID = ast.TIMERULE_ID AND ahs.PROCINST_ID =
         asti.PROC_INST_ID
-        WHERE ahs.SOLICIT_TYPE = 'i' AND asi.BUS_TYPE = #{busType} and ahs.SOLICIT_STATE in('0','1')
+        WHERE ahs.SOLICIT_TYPE = 'i' AND ahs.BUS_TYPE = #{busType} and ahs.SOLICIT_STATE in('0','1')
         AND ( ahs.INITIATOR_USER_ID = #{userId} OR ahsdu.USER_ID =#{userId} )
         AND ahs.ROOT_ORG_ID = #{rootOrgId}
         UNION
         SELECT
         ahs.SOLICIT_ID,
         ahs.SOLICIT_TYPE,
+        ahs.BUS_TYPE,
         ahs.PROCINST_ID,
         ahs.HI_TASKINST_ID,
         ahs.SOLICIT_CODE,
@@ -389,17 +392,17 @@
         asti.OVERDUE_TIME,
         asti.REMAINING_TIME,
         asti.TIMERULE_UNIT,
-        art.ID_ as taskId
+        art.ID_ as taskId,
+        art.NAME_ as taskName
         FROM AEA_HI_SOLICIT ahs
         left join ACT_RU_TASK art on art.PROC_INST_ID_=ahs.PROCINST_ID
         left join act_hi_taskinst aht on aht.ID_=ahs.HI_TASKINST_ID
         LEFT JOIN AEA_HI_SOLICIT_DETAIL ahsd ON ahsd.SOLICIT_ID = ahs.SOLICIT_ID
         LEFT JOIN AEA_HI_SOLICIT_DETAIL_USER ahsdu ON ahsdu.SOLICIT_DETAIL_ID = ahsd.SOLICIT_DETAIL_ID
-        LEFT JOIN AEA_SOLICIT_ORG aso ON aso.ORG_ID = ahsd.DETAIL_ORG_ID
         LEFT JOIN ACT_STO_TIMERULE ast ON ast.TIMERULE_ID = ahs.SOLICIT_TIMERULE_ID
         LEFT JOIN ACT_STO_TIMERULE_INST asti ON asti.TIMERULE_ID = ast.TIMERULE_ID AND ahs.PROCINST_ID =
         asti.PROC_INST_ID
-        WHERE ahs.SOLICIT_TYPE = 'd' AND aso.BUS_TYPE = #{busType} and ahs.SOLICIT_STATE in('0','1')
+        WHERE ahs.SOLICIT_TYPE = 'd' AND ahs.BUS_TYPE = #{busType} and ahs.SOLICIT_STATE in('0','1')
         AND ( ahs.INITIATOR_USER_ID = #{userId} OR ahsdu.USER_ID = #{userId} )
         AND ahs.ROOT_ORG_ID = #{rootOrgId}
         ) ahs
