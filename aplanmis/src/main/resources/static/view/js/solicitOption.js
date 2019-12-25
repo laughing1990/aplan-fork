@@ -11,7 +11,7 @@ var vm = new Vue({
 					perpage: 10
 				},
 				sort: {
-					field: 'createTime',
+					field: 'acceptTime',
 					sort: 'desc'
 				},
 				theme: '',
@@ -56,10 +56,10 @@ var vm = new Vue({
 					return;
 				}
 			}
-
-			if (ts.searchFrom.sort["field"] == "acceptTime" && ts.searchFrom.sort["sort"] == "desc") {
-				ts.searchFrom.sort["field"] = "isGreenWay,acceptTime";
-			}
+			/*
+						if (ts.searchFrom.sort["field"] == "acceptTime" && ts.searchFrom.sort["sort"] == "desc") {
+							ts.searchFrom.sort["field"] = "isGreenWay,acceptTime";
+						}*/
 
 			ts.loading = true;
 
@@ -91,10 +91,12 @@ var vm = new Vue({
 
 		//判断是否已签收
 		isSign: function (row) {
-			if (row.signState) {
-				if (1.0 == row.signState) {
-					return true;
-				}
+			if (row.solicitId && !row.detailUserId) {
+				return true;
+			} else if (row.detailUserId && row.signTime) {
+				return true;
+			} else if (row.detailUserId && !row.signTime) {
+				return false;
 			}
 
 			return false;
