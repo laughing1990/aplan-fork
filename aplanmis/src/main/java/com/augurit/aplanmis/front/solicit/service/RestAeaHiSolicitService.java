@@ -38,7 +38,7 @@ public interface RestAeaHiSolicitService {
     /**
      * 根据申报编号获取所有的征求信息
      * @param applyinstId 申报实例ID
-     * @param busType 业务类型
+     * @param busType 业务类型(来自数据字典)
      * @return
      * @throws Exception
      */

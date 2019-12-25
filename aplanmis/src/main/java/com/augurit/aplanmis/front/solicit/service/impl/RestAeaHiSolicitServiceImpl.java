@@ -14,6 +14,7 @@ import com.augurit.aplanmis.common.vo.solicit.AeaHiSolicitVo;
 import com.augurit.aplanmis.common.vo.solicit.QueryCondVo;
 import com.augurit.aplanmis.front.solicit.service.RestAeaHiSolicitService;
 import com.augurit.aplanmis.front.solicit.service.SolicitCodeService;
+import com.augurit.aplanmis.front.solicit.vo.SolicitBusTypeEnum;
 import com.github.pagehelper.Page;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -200,7 +201,9 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService{
         List<AeaHiSolicit> list = aeaHiSolicitMapper.listAeaHiSolicit(solicit);
 
         if(list!=null&&list.size()>0){
-
+            for(AeaHiSolicit hiSolicit:list){
+                hiSolicit.setSolicitTypeName(SolicitBusTypeEnum.valueOf(hiSolicit.getBusType()).getName());
+            }
         }
 
         return list;
