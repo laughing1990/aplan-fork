@@ -5,7 +5,7 @@
 <mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiSolicitDetailUserMapper" >
 <!--1 返回所有字段的SQL字句 -->
 <sql id="allColumns" >
-    DETAIL_TASK_ID  detailTaskId,
+    DETAIL_USER_ID  detailUserId,
     SOLICIT_DETAIL_ID  solicitDetailId,
     USER_ID  userId,
     USER_CONCLUSION  userConclusion,
@@ -22,7 +22,7 @@
     </sql>
 
     <sql id="allAlisColumns" >
-        ahsdu.DETAIL_TASK_ID  detailTaskId,
+        ahsdu.DETAIL_USER_ID  detailUserId,
         ahsdu.SOLICIT_DETAIL_ID  solicitDetailId,
         ahsdu.USER_ID  userId,
         ahsdu.USER_CONCLUSION  userConclusion,
@@ -43,7 +43,7 @@
     select
     <include refid="allColumns"/>
     from    AEA_HI_SOLICIT_DETAIL_USER
-    where    DETAIL_TASK_ID = #{id}
+    where    DETAIL_USER_ID = #{id}
     AND  IS_DELETED = '0'
 </select>
 
@@ -74,8 +74,8 @@
         <include refid="allColumns"/>
         from    AEA_HI_SOLICIT_DETAIL_USER
     <where>
-        <if test="detailTaskId != null" >
-        AND    DETAIL_TASK_ID = #{detailTaskId}
+        <if test="detailUserId != null" >
+        AND    DETAIL_USER_ID = #{detailUserId}
         </if>
         <if test="solicitDetailId != null" >
         AND    SOLICIT_DETAIL_ID = #{solicitDetailId}
@@ -124,19 +124,19 @@
 <!--5 新增实体对象 -->
 <insert id="insertAeaHiSolicitDetailUser" parameterType="AeaHiSolicitDetailUser" >
     insert into AEA_HI_SOLICIT_DETAIL_USER (
-DETAIL_TASK_ID  ,SOLICIT_DETAIL_ID  ,USER_ID  ,USER_CONCLUSION  ,USER_OPINION  ,SIGN_TIME  ,FILL_TIME  ,TASK_ACTION  ,PARENT_ID  ,IS_DELETED  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME
+DETAIL_USER_ID  ,SOLICIT_DETAIL_ID  ,USER_ID  ,USER_CONCLUSION  ,USER_OPINION  ,SIGN_TIME  ,FILL_TIME  ,TASK_ACTION  ,PARENT_ID  ,IS_DELETED  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME
     )  values  (
-#{detailTaskId},#{solicitDetailId},#{userId},#{userConclusion},#{userOpinion},#{signTime},#{fillTime},#{taskAction},#{parentId},#{isDeleted},#{creater},#{createTime},#{modifier},  #{modifyTime}
+#{detailUserId},#{solicitDetailId},#{userId},#{userConclusion},#{userOpinion},#{signTime},#{fillTime},#{taskAction},#{parentId},#{isDeleted},#{creater},#{createTime},#{modifier},  #{modifyTime}
     )
 </insert>
     <!--5 新增实体对象 -->
     <insert id="batchInsertAeaHiSolicitDetailUser" parameterType="AeaHiSolicitDetailUser" >
         insert into AEA_HI_SOLICIT_DETAIL_USER (
-        DETAIL_TASK_ID  ,SOLICIT_DETAIL_ID  ,USER_ID  ,USER_CONCLUSION  ,USER_OPINION  ,SIGN_TIME  ,FILL_TIME  ,TASK_ACTION  ,PARENT_ID  ,IS_DELETED  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME
+        DETAIL_USER_ID  ,SOLICIT_DETAIL_ID  ,USER_ID  ,USER_CONCLUSION  ,USER_OPINION  ,SIGN_TIME  ,FILL_TIME  ,TASK_ACTION  ,PARENT_ID  ,IS_DELETED  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME
         )  values
         <foreach collection="list" item="item" separator=",">
             (
-            #{item.detailTaskId},#{item.solicitDetailId},#{item.userId},#{item.userConclusion},#{item.userOpinion},
+            #{item.detailUserId},#{item.solicitDetailId},#{item.userId},#{item.userConclusion},#{item.userOpinion},
             #{item.signTime},#{item.fillTime},#{item.taskAction},#{item.parentId},#{item.isDeleted},#{item.creater},
             #{item.createTime},#{item.modifier},#{item.modifyTime}
             )
@@ -147,8 +147,8 @@ DETAIL_TASK_ID  ,SOLICIT_DETAIL_ID  ,USER_ID  ,USER_CONCLUSION  ,USER_OPINION  ,
 <update id="updateAeaHiSolicitDetailUser" parameterType="AeaHiSolicitDetailUser" >
     update AEA_HI_SOLICIT_DETAIL_USER
     <set >
-        <if test="detailTaskId != null" >
-        DETAIL_TASK_ID = #{detailTaskId},
+        <if test="detailUserId != null" >
+        DETAIL_USER_ID = #{detailUserId},
         </if>
         <if test="solicitDetailId != null" >
         SOLICIT_DETAIL_ID = #{solicitDetailId},
@@ -190,7 +190,7 @@ DETAIL_TASK_ID  ,SOLICIT_DETAIL_ID  ,USER_ID  ,USER_CONCLUSION  ,USER_OPINION  ,
         MODIFY_TIME = #{modifyTime},
         </if>
     </set>
-    where DETAIL_TASK_ID = #{detailTaskId}
+    where DETAIL_USER_ID = #{detailUserId}
 </update>
 <!--7 删除实体对象,根据主键ID -->
     <update id="deleteAeaHiSolicitDetailUser"  >
@@ -198,12 +198,12 @@ DETAIL_TASK_ID  ,SOLICIT_DETAIL_ID  ,USER_ID  ,USER_CONCLUSION  ,USER_OPINION  ,
     <set >
         IS_DELETED = '1'
     </set>
-        where DETAIL_TASK_ID = #{id}
+        where DETAIL_USER_ID = #{id}
     </update>
 <!--8 删除实体对象列表,根据主键ID列表 -->
 <!--9 返回所有字段的对象map,用于级联 -->
     <resultMap type="AeaHiSolicitDetailUser" id="AeaHiSolicitDetailUserMap">
-        <id property="detailTaskId" column="DETAIL_TASK_ID"/>
+        <id property="detailUserId" column="DETAIL_USER_ID"/>
         <result property="solicitDetailId" column="SOLICIT_DETAIL_ID"/>
         <result property="userId" column="USER_ID"/>
         <result property="userConclusion" column="USER_CONCLUSION"/>
