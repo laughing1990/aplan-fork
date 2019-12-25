@@ -320,7 +320,6 @@ var guideIndex = (function () {
                             });
                             return
                         }
-                        // window.open(ctx + 'rest/file/att/preview/' + res.content.detailId);
                        vm.previewFile(res.content)
                     } else {
                         vm.$message.error(res.message);
@@ -414,7 +413,6 @@ var guideIndex = (function () {
             }
           },
             previewResultGuide:function(detailId){
-                debugger;
                     window.open(ctx+'rest/file/att/preview?detailId='+detailId);
             },
 
