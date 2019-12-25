@@ -1,5 +1,6 @@
 <div id="matSupplementDetail" class="matSupplementDetail">
   <div class="return-list">
+    <h2 class="ellipsis">{{allPageInfoData.projInfoName || '-'}}</h2>
     <el-button @click="returnToPageList">返回</el-button>
   </div>
 
@@ -7,7 +8,7 @@
   <div class="mb20 proj-module">
     <h4 class="mb20">基本信息</h4>
     <div class="mt20 module-content">
-      <table class="nor-table" border="0" cellpadding="0" cellspacing="0">
+      <table class="nor-table line-table" border="0" cellpadding="0" cellspacing="0">
         <tbody>
           <tr>
             <th>办件流水号</th>
@@ -27,17 +28,37 @@
             <th>补正天数(工作日)</th>
             <td>{{supplemetForm.correctDueDays || '暂无'}}</td>
           </tr>
-          <tr>
+          <!-- <tr>
             <th>事项名称</th>
             <td>{{supplemetForm.iteminstName || '暂无'}}</td>
             <th>部门名称</th>
             <td>{{supplemetForm.chargeOrgName || '暂无'}}</td>
-          </tr>
+          </tr> -->
         </tbody>
       </table>
     </div>
   </div>
   <!--  基本信息  end  -->
+
+  <!--  事项清单  start  -->
+  <div class="mb20 proj-module">
+    <h4 class="mb20">事项清单</h4>
+    <div class="mt20">
+      <el-table :data="allPageInfoData.aeaHiIteminstList" class="scrollable" style="width: 100%;" border
+        :header-cell-style="{height: '60px'}">
+        <el-table-column label="序号" width="60" align="center">
+          <template slot-scope="scope">
+            <span>{{scope.$index + 1}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="事项名称" prop="iteminstName" :show-overflow-tooltip="true">
+        </el-table-column>
+        <el-table-column label="部门名称" prop="approveOrgName" :show-overflow-tooltip="true" width="288">
+        </el-table-column>
+      </el-table>
+    </div>
+  </div>
+  <!--  事项清单  end  -->
 
   <!--  材料补正  start  -->
   <div class="mb20 proj-module">
@@ -60,7 +81,7 @@
         </el-table-column>
         <el-table-column prop="matinstName" label="材料名称" width="200" align="left">
         </el-table-column>
-        <el-table-column label="补正要点" width="80" align="center">
+        <el-table-column label="收件标准" width="80" align="center">
           <template slot-scope="scope">
             <el-tooltip class="my-el-tooltip" effect="dark" placement="top">
               <div class="white-wrap lineh15" slot="content">{{scope.row.reviewKeyPoints || '无'}}</div>
@@ -68,21 +89,21 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column label="类型" width="80" align="center">
+        <el-table-column label="类型" width="80" align="center" v-if="false">
           <template slot-scope="scope">
             <div class="cell-div" v-if="scope.row.paperDueIninstId">原件</div>
             <div class="cell-div" v-if="scope.row.copyDueIninstId">复印件</div>
             <div class="cell-div" v-if="scope.row.attDueIninstId">电子件</div>
           </template>
         </el-table-column>
-        <el-table-column label="应收" width="80" align="center">
+        <el-table-column label="应收" width="80" align="center" v-if="false">
           <template slot-scope="scope">
             <div class="cell-div" v-if="scope.row.paperDueIninstId">{{scope.row.paperCount || '0'}}</div>
             <div class="cell-div" v-if="scope.row.copyDueIninstId">{{scope.row.copyCount || '0'}}</div>
             <div class="cell-div" v-if="scope.row.attDueIninstId">{{scope.row.isNeedAtt? '必须': '非必须'}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="已收" width="80" align="center">
+        <el-table-column label="已收" width="80" align="center" v-if="false">
           <template slot-scope="scope">
             <div class="cell-div" v-if="scope.row.paperDueIninstId">
               <el-form-item :prop="'materialList.' + scope.$index + '.realPaperCount'"
@@ -118,7 +139,7 @@
         </el-table-column>
         <el-table-column label="补正意见" align="center">
           <template slot-scope="scope">
-            <div class="cell-div" v-if="scope.row.paperDueIninstId">
+            <!-- <div class="cell-div" v-if="scope.row.paperDueIninstId">
               <el-scrollbar class="cell-scroll">
                 <p>{{scope.row.paperDueIninstOpinion || '暂无'}}</p>
               </el-scrollbar>
@@ -127,25 +148,35 @@
               <el-scrollbar class="cell-scroll">
                 <p>{{scope.row.copyDueIninstOpinion || '暂无'}}</p>
               </el-scrollbar>
-            </div>
-            <div class="cell-div" v-if="scope.row.attDueIninstId">
-              <el-scrollbar class="cell-scroll">
+            </div> -->
+            <div  v-if="scope.row.attDueIninstId">
+              <!-- <el-scrollbar class="cell-scroll"> -->
                 <p>{{scope.row.attDueIninstOpinion || '暂无'}}</p>
-              </el-scrollbar>
+              <!-- </el-scrollbar> -->
             </div>
+            <div v-else>暂无</div>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作" width="80">
+        <el-table-column align="center" label="空表样表" width="80">
           <template slot-scope="scope">
-            <el-button class="mt10" size="mini" type="primary"
+            <a href="javascript:;" class="color3e97df" @click="downLoadEmptyAndSampleTable(scope.row)">
+              <i class="ag ag-download-cloud" style="font-size: 20px;"></i>
+            </a> 
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="操作" width="120">
+          <template slot-scope="scope">
+            <!-- <el-button class="mt10" size="mini" type="primary"
               :disabled="!scope.row.attMatinstId || allPageInfoData.correctState !=6"
               @click="showFileListDialog(scope.row)">查看</el-button>
             <el-button class="mt10 ml0" size="mini" type="success" @click="showUploadWindow(scope.row,scope.$index)"
-              :disabled="!scope.row.attMatinstId || allPageInfoData.correctState !=6">上传</el-button>
-            <!--                            <el-button v-if="scope.row.matProp=='c'" class="mt10 ml0" size="mini" type="success" @click="showUploadWindow(scope.row,scope.$index,'certList')"-->
-            <!--                                       :disabled="!scope.row.attMatinstId || allPageInfoData.correctState !=6">证照库</el-button>-->
-            <!--                            <el-button v-if="scope.row.matProp=='f'" class="mt10 ml0" size="mini" type="success" @click="showOneFormDialog1(scope.row)"-->
-            <!--                                       :disabled="!scope.row.attMatinstId || allPageInfoData.correctState !=6">填写</el-button>-->
+              :disabled="!scope.row.attMatinstId || allPageInfoData.correctState !=6">上传</el-button> -->
+            <div v-if="scope.row.attMatinstId && allPageInfoData.correctState ==6">
+              <a href="javascript:;"  class="color3e97df" @click="showFileListDialog(scope.row)">查看</a> 
+              <span style="color: #999;">|</span>
+              <a href="javascript:;"  class="color3e97df" @click="showUploadWindow(scope.row,scope.$index)">上传</a>
+            </div>
+            <div v-else>/</div>
           </template>
         </el-table-column>
       </el-table>
@@ -248,8 +279,7 @@
               <el-button type="primary" icon="icon ag ag-search" @click="getMyDirsListByKeyword()"> 搜索</el-button>
             </div>
             <el-table :data="myDirsList" row-key="id" lazy :load="getMyDirsList"
-              :tree-props="{children: 'children', hasChildren: 'hasChildren'}" class="mt20 my-dir-table"
-              :style="{height:(curHeight-515)+'px',overflow: 'auto'}">
+              :tree-props="{children: 'children', hasChildren: 'hasChildren'}" class="mt20 my-dir-table" height="538">
               <el-table-column label="材料名称">
                 <template slot-scope="scope">
                   <span v-if="scope.row.hasCheck==true" class="ellipsis dir-file-name" :title="scope.row.attName">
@@ -279,8 +309,7 @@
       <div class="file-content-right fr" v-loading="selMatLoading">
         <el-tabs v-model="fileSelActive" type="card">
           <el-tab-pane :label="'已上传的文件（'+uploadFilesCount+'）'" name="myUploadMat">
-            <el-table class="upload-file-list" :data="uploadTableData"
-              :style="{height:(curHeight-500)+'px',overflow: 'auto'}">
+            <el-table class="upload-file-list" :data="uploadTableData" height="591">
               <el-table-column type="index" label="序号" width="50" align="center"></el-table-column>
               <el-table-column prop="fileName" label="文件名称"></el-table-column>
               <!--<el-table-column prop="" label="材料来源" width="80"></el-table-column>-->

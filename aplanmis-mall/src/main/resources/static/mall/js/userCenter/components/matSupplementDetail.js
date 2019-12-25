@@ -291,6 +291,7 @@ var module = new Vue({
     _that.navLeft()
     _that.getMaterialList();
     _that.fetchPageInfo();
+    _that.correctId = pager.correctId;  //correctId赋值
   },
   watch: {
 
@@ -656,8 +657,24 @@ var module = new Vue({
       } else {
         this.$refs['materialListForm'].validate(function (valid, obj) {
           if (valid) {
+            console.log(ts.materialListForm.materialList)
+            var _alllist = ts.materialListForm.materialList,
+              _canSave = true;
+            if(ts.allPageInfoData.correctState == 6){
+              for(var i = 0; i<_alllist.length; i++){
+                if(_alllist[i].paperDueIninstId && _alllist[i].realPaperCount<=0 || 
+                  _alllist[i].copyDueIninstId && _alllist[i].realCopyCount<=0 ||
+                  _alllist[i].attDueIninstId && _alllist[i].attCount<=0){
+                    _canSave = false;
+                    break;
+                  }
+              }
+            }
+            if(!_canSave){
+              return ts.apiMessage('原件、复印件请前往政务办事大厅窗口办理。目前可【暂存】', 'warning');
+            }
             ts.ajaxMaterialList(state);
-          } else {
+          } else {   
             return ts.apiMessage('原件、复印件请前往政务办事大厅窗口办理。目前可【暂存】', 'warning');
           }
         })
@@ -1862,6 +1879,12 @@ var module = new Vue({
           });
         }
       })
+    },
+
+    // 材料列表-下载空表样表
+    downLoadEmptyAndSampleTable: function(row){
+      if(!row.ybKbDetailIds || !row.ybKbDetailIds.length) return this.apiMessage('暂无空表样表', 'info');
+      window.open(ctx + 'rest/cloud/att/download?detailIds=' + row.ybKbDetailIds);
     },
 
     // 点击返回按钮，调用pager下的方法，显示pager下的列表
