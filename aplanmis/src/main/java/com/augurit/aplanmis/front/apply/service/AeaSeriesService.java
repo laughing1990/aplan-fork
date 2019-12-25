@@ -24,6 +24,7 @@ import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import com.augurit.aplanmis.common.domain.AeaHiItemStateinst;
 import com.augurit.aplanmis.common.domain.AeaHiIteminst;
 import com.augurit.aplanmis.common.domain.AeaHiSeriesinst;
+import com.augurit.aplanmis.common.domain.AeaHiSmsInfo;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
 import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
@@ -32,6 +33,7 @@ import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstForminstMapper;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemStateinstMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiSmsInfoMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
 import com.augurit.aplanmis.common.mapper.AeaLogApplyStateHistMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
@@ -65,6 +67,7 @@ import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -124,6 +127,8 @@ public class AeaSeriesService {
     private AeaApplyinstForminstMapper aeaApplyinstForminstMapper;
     @Autowired
     private AeaLogApplyStateHistMapper aeaLogApplyStateHistMapper;
+    @Autowired
+    private AeaHiSmsInfoMapper aeaHiSmsInfoMapper;
 
     /**
      * 打印回执
@@ -607,6 +612,7 @@ public class AeaSeriesService {
         List<AeaApplyinstForminst> aeaApplyinstForminsts = aeaApplyinstForminstMapper.listAeaApplyinstForminstByApplyinstId(applyinstId);
         seriesUnstashVo.getForminstVos().addAll(aeaApplyinstForminsts.stream()
                 .map(ForminstVo::from).collect(Collectors.toList()));
+        seriesUnstashVo.setSmsInfoId(Optional.ofNullable(aeaHiSmsInfoMapper.getAeaHiSmsInfoByApplyinstId(applyinstId)).orElse(new AeaHiSmsInfo()).getId());
         return seriesUnstashVo;
     }
 }

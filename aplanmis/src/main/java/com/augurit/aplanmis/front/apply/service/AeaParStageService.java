@@ -24,6 +24,7 @@ import com.augurit.aplanmis.common.domain.AeaHiIteminst;
 import com.augurit.aplanmis.common.domain.AeaHiParStageinst;
 import com.augurit.aplanmis.common.domain.AeaHiParStateinst;
 import com.augurit.aplanmis.common.domain.AeaHiSeriesinst;
+import com.augurit.aplanmis.common.domain.AeaHiSmsInfo;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaItemMat;
 import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
@@ -34,6 +35,7 @@ import com.augurit.aplanmis.common.mapper.AeaApplyinstForminstMapper;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemStateinstMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiSmsInfoMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
 import com.augurit.aplanmis.common.service.apply.ApplyCommonService;
@@ -81,6 +83,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -152,6 +155,8 @@ public class AeaParStageService {
     private AeaHiItemStateinstMapper aeaHiItemStateinstMapper;
     @Autowired
     private AeaApplyinstForminstMapper aeaApplyinstForminstMapper;
+    @Autowired
+    private AeaHiSmsInfoMapper aeaHiSmsInfoMapper;
 
     /**
      * 保存实例、启动流程（停留在收件节点）
@@ -835,6 +840,7 @@ public class AeaParStageService {
             }
         });
         parallelUnstashVo.setBranchOrg(branchOrg);
+        parallelUnstashVo.setSmsInfoId(Optional.ofNullable(aeaHiSmsInfoMapper.getAeaHiSmsInfoByApplyinstId(applyinstId)).orElse(new AeaHiSmsInfo()).getId());
         return parallelUnstashVo;
     }
 }
