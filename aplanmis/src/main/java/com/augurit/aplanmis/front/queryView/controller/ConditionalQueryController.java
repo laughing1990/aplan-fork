@@ -756,4 +756,16 @@ public class ConditionalQueryController {
             return new ContentResultForm<>(false, null, e.getMessage());
         }
     }
+
+    @GetMapping("/listWaitCancelTasksByBm")
+    @ApiOperation(value = "根据查询条件获取待办列表")
+    public ResultForm listWaitCancelTasksByBm(ConditionalQueryRequest conditionalQueryRequest, Page page) {
+        try {
+            PageInfo waitDoTasks = conditionalQueryService.listWaitCancelApplyInfoByBm(conditionalQueryRequest, page);
+            return new ContentResultForm<>(true, waitDoTasks);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return new ContentResultForm<>(false, null, e.getMessage());
+        }
+    }
 }

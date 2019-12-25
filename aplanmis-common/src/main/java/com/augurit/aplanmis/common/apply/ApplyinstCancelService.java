@@ -281,7 +281,7 @@ public abstract class ApplyinstCancelService {
      * @param iteminstCancelId
      * @throws Exception
      */
-    public void signUpIteminstCancelTask(String iteminstCancelId) throws Exception {
+    public void signUpIteminstCancelTask(String iteminstCancelId, String taskId) throws Exception {
         if (StringUtils.isBlank(iteminstCancelId)) throw new Exception("缺少参数!");
         AeaHiItemCancel aeaHiItemCancel = aeaHiItemCancelService.getAeaHiItemCancelById(iteminstCancelId);
         if (aeaHiItemCancel == null) throw new Exception("找不到撤件申请信息!");
@@ -294,6 +294,18 @@ public abstract class ApplyinstCancelService {
         aeaHiItemCancel.setModifyTime(new Date());
         aeaHiItemCancel.setSignState("1");
         aeaHiItemCancelService.updateAeaHiItemCancel(aeaHiItemCancel);
+
+        //判断用户是否已经签收了该task，如果未签收则进行签收该task.
+        if (StringUtils.isNotBlank(taskId)) {
+            HistoricTaskInstance task = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
+            if (task != null && !"1".equals(task.getSignState())) {
+                if (bpmProcessService.isProcessSuspended(task.getProcessInstanceId())) {
+                    bpmProcessService.activateProcessInstanceById(task.getProcessInstanceId());
+                }
+                bpmTaskService.signTask(taskId);
+                bpmProcessService.suspendProcessInstanceById(task.getProcessInstanceId());
+            }
+        }
     }
 
     /**

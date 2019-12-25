@@ -734,6 +734,27 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
         return new PageInfo<>(taskList);
     }
 
+    @Override
+    public PageInfo listWaitCancelApplyInfoByBm(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception {
+        conditionalQueryRequest.setHandler(true);
+
+        loadConditionalQueryRequest(conditionalQueryRequest);
+
+        changeOrderBySql(page);
+
+        PageHelper.startPage(page);
+
+        List<TaskInfo> taskList = conditionalQueryMapper.listWaitCancelApplyInfoByBm(conditionalQueryRequest);
+
+        loadTaskInfo(taskList, "已办");
+
+        loadRemindInfo(taskList);
+
+        return new PageInfo<>(taskList);
+    }
+
+
+
     /**
      * 查询催办信息
      *
