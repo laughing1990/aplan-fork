@@ -107,6 +107,8 @@ public class RestApproveServiceImpl implements RestApproveService {
     private OpuOmUserMapper opuOmUserMapper;
     @Autowired
     private AeaHiIteminstMapper aeaHiIteminstMapper;
+    @Autowired
+    RestCorrectAndSuppleServiceImpl restCorrectAndSuppleServiceImpl;
     @Value("${mall.check.authority:false}")
     private boolean isCheckAuthority;
     @Override
@@ -421,40 +423,22 @@ public class RestApproveServiceImpl implements RestApproveService {
         StatisticsNumVo retVo=new StatisticsNumVo();
         LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
         // 已申报，已撤件，草稿箱，材料补全，材料补正
-        long matCompletionNum = 0;//材料补全
-        long approvalNum = 0;//已审批
-        long draftNum = 0;//草稿箱
-        long supplyNum = 0;//材料补正
-        long applyNum = 0;//已申报
         long withdrawalNum = 0;//已撤件
-        long completedNum=0;//已办结
-        long withdrawNum=0;//撤件列表数目
         if (loginInfo==null) return retVo;
-        if("1".equals(loginInfo.getIsPersonAccount())){//个人
-            matCompletionNum =this.searchMatComplet("",loginInfo.getUserId(),"",1,1).getTotal();
-            approvalNum = this.searchIteminstApproveInfoListByUnitIdAndUserId("","",loginInfo.getUserId(),1,1).getTotal();
-            draftNum=this.getDraftApplyList("",loginInfo.getUserId(),"",1,1).getTotal();
-            supplyNum=this.searchSupplyInfoList("",loginInfo.getUserId(),1,1,"").getTotal();
-            applyNum=aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId(),"all");
-            completedNum=aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId(),"completed");
-            withdrawNum = this.searchWithdrawApplyListByUnitOrLinkman("",loginInfo.getUserId(),null,1,1).getTotal();
-        }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
-            matCompletionNum =this.searchMatComplet(loginInfo.getUnitId(),loginInfo.getUserId(),"",1,1).getTotal();
-            approvalNum = this.searchIteminstApproveInfoListByUnitIdAndUserId("",loginInfo.getUnitId(),loginInfo.getUserId(),1,1).getTotal();
-            draftNum=this.getDraftApplyList(loginInfo.getUnitId(),loginInfo.getUserId(),"",1,1).getTotal();
-            supplyNum=this.searchSupplyInfoList(loginInfo.getUnitId(),loginInfo.getUserId(),1,1,"").getTotal();
-            applyNum=aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),"all");
-            completedNum=aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),"completed");
-            withdrawNum = this.searchWithdrawApplyListByUnitOrLinkman("",loginInfo.getUserId(),null,1,1).getTotal();
-        }else{//企业
-            matCompletionNum =this.searchMatComplet(loginInfo.getUnitId(),"","",1,1).getTotal();
-            approvalNum = this.searchIteminstApproveInfoListByUnitIdAndUserId("",loginInfo.getUnitId(),"",1,1).getTotal();
-            draftNum=this.getDraftApplyList(loginInfo.getUnitId(),"","",1,1).getTotal();
-            supplyNum=this.searchSupplyInfoList(loginInfo.getUnitId(),"",1,1,"").getTotal();
-            applyNum=aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"","all");
-            completedNum=aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"","completed");
-            withdrawNum = this.searchWithdrawApplyListByUnitOrLinkman(loginInfo.getUnitId(),"",null,1,1).getTotal();
-        }
+        //材料补全
+        long matCompletionNum =restCorrectAndSuppleServiceImpl.getCorrectAndSuppleList(loginInfo.getUnitId(),loginInfo.getUserId(),"",1,1).getTotal();
+        //已申报
+        long approvalNum = this.searchIteminstApproveInfoListByUnitIdAndUserId("",loginInfo.getUnitId(),loginInfo.getUserId(),1,1).getTotal();
+        //草稿箱
+        long draftNum=this.getDraftApplyList(loginInfo.getUnitId(),loginInfo.getUserId(),"",1,1).getTotal();
+        //材料补正
+        long supplyNum=this.searchSupplyInfoList(loginInfo.getUnitId(),loginInfo.getUserId(),1,1,"").getTotal();
+        //已申报
+        long applyNum=aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),"all");
+        //已办结
+        long completedNum=aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),"completed");
+        //撤件列表数目
+        long withdrawNum = this.searchWithdrawApplyListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),null,1,1).getTotal();
         retVo.setApplyNum(applyNum);
         retVo.setApprovalNum(approvalNum);
         retVo.setDraftNum(draftNum);

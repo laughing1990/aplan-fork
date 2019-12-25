@@ -35,5 +35,4 @@ public interface RestAeaHiSolicitService {
 
     public void createSolicit(AeaHiSolicit aeaHiSolicit, String type, String detailInfo, String busType) throws Exception;
 
-
 }

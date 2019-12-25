@@ -8,6 +8,7 @@ import com.augurit.aplanmis.common.domain.AeaHiSolicit;
 import com.augurit.aplanmis.common.vo.solicit.AeaHiSolicitVo;
 import com.augurit.aplanmis.common.vo.solicit.QueryCondVo;
 import com.augurit.aplanmis.front.solicit.service.RestAeaHiSolicitService;
+import com.augurit.aplanmis.front.solicit.vo.SolicitDetailUserVo;
 import com.augurit.aplanmis.front.solicit.vo.SolicitVo;
 import com.github.pagehelper.Page;
 import io.swagger.annotations.Api;
@@ -82,7 +83,22 @@ public class RestAeaHiSolicitController {
             restAeaHiSolicitService.createSolicit(aeaHiSolicit,solicitVo.getSolicitType(),solicitVo.getDetailInfo(),solicitVo.getBusType());
             return new ResultForm(true);
         }catch (Exception e){
+            e.printStackTrace();
             return new ResultForm(false,"按事项发起失败！");
         }
+    }
+
+    @ApiOperation("审批页意见征求列表")
+    @PostMapping("/approve/list")
+    public ResultForm approveSolicitList() throws Exception{
+
+        return new ResultForm(true);
+    }
+
+    @ApiOperation("意见征求回复接口")
+    @PostMapping("/answer")
+    public ResultForm solicitAnswer(@Valid @RequestBody SolicitDetailUserVo solicitDetailUserVo) throws Exception{
+
+        return new ResultForm(true);
     }
 }
