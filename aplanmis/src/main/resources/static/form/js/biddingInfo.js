@@ -122,10 +122,12 @@
             organizationalCode: { required: true, validator: checkOrganizationalCode, trigger: ["change"] },
             unifiedSocialCreditCode: { required: true, validator: checkUnifiedSocialCreditCode, trigger: ["change"] },
           }],
-          costUnits: [{
-            organizationalCode: { required: true, validator: checkOrganizationalCode, trigger: ["change"] },
-            unifiedSocialCreditCode: { required: true, validator: checkUnifiedSocialCreditCode, trigger: ["change"] },
-          }]
+          costUnits: [
+          // {
+          //   organizationalCode: { required: true, validator: checkOrganizationalCode, trigger: ["change"] },
+          //   unifiedSocialCreditCode: { required: true, validator: checkUnifiedSocialCreditCode, trigger: ["change"] },
+          // }
+          ]
         },
         bidTypeOptions: [], // 招标类型下拉选项arr
         bidModeOptions: [], // 招标方式下拉选项arr

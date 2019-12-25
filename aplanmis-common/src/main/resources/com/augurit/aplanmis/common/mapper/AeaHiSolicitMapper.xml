@@ -340,7 +340,7 @@
         api.LOCAL_CODE as localCode
         FROM
         (
-        SELECT
+        SELECT DISTINCT
         ahs.SOLICIT_ID,
         ahs.SOLICIT_TYPE,
         ahs.BUS_TYPE,
@@ -356,24 +356,28 @@
         ahsd.SOLICIT_DETAIL_ID,
         ahsdu.DETAIL_TASK_ID,
         ahsdu.USER_ID,
+        art.ID_ AS taskId,
+        art.NAME_ AS taskName ,
         asti.OVERDUE_TIME,
         asti.REMAINING_TIME,
-        asti.TIMERULE_UNIT,
-        art.ID_ as taskId,
-        art.NAME_ as taskName
-        FROM AEA_HI_SOLICIT ahs
-        left join ACT_RU_TASK art on art.PROC_INST_ID_=ahs.PROCINST_ID
-        left join act_hi_taskinst aht on aht.ID_=ahs.HI_TASKINST_ID
-        LEFT JOIN AEA_HI_SOLICIT_DETAIL ahsd ON ahsd.SOLICIT_ID = ahs.SOLICIT_ID
+        asti.TIMERULE_UNIT
+
+        FROM
+        AEA_HI_SOLICIT_DETAIL ahsd
+        LEFT JOIN AEA_HI_SOLICIT ahs ON ahsd.SOLICIT_ID = ahs.SOLICIT_ID
+        LEFT JOIN opu_om_user oou on oou.user_Id=ahs.INITIATOR_USER_ID
+        LEFT JOIN ACT_RU_TASK art ON art.PROC_INST_ID_ = ahs.PROCINST_ID and oou.user_name=art.ASSIGNEE_NAME_
+        LEFT JOIN act_hi_taskinst aht ON aht.ID_ = ahs.HI_TASKINST_ID
         LEFT JOIN AEA_HI_SOLICIT_DETAIL_USER ahsdu ON ahsdu.SOLICIT_DETAIL_ID = ahsd.SOLICIT_DETAIL_ID
         LEFT JOIN ACT_STO_TIMERULE ast ON ast.TIMERULE_ID = ahs.SOLICIT_TIMERULE_ID
-        LEFT JOIN ACT_STO_TIMERULE_INST asti ON asti.TIMERULE_ID = ast.TIMERULE_ID AND ahs.PROCINST_ID =
-        asti.PROC_INST_ID
-        WHERE ahs.SOLICIT_TYPE = 'i' AND ahs.BUS_TYPE = #{busType} and ahs.SOLICIT_STATE in('0','1')
-        AND ( ahs.INITIATOR_USER_ID = #{userId} OR ahsdu.USER_ID =#{userId} )
+        LEFT JOIN ACT_STO_TIMERULE_INST asti ON asti.TIMERULE_ID = ast.TIMERULE_ID and
+        asti.TASKINST_ID=ahs.HI_TASKINST_ID
+        AND ahs.PROCINST_ID = asti.PROC_INST_ID
+        WHERE ahs.BUS_TYPE = #{busType} AND ahs.SOLICIT_STATE IN ( '0', '1' )
+        AND ahsdu.USER_ID=#{userId}
         AND ahs.ROOT_ORG_ID = #{rootOrgId}
         UNION
-        SELECT
+        SELECT DISTINCT
         ahs.SOLICIT_ID,
         ahs.SOLICIT_TYPE,
         ahs.BUS_TYPE,
@@ -386,27 +390,30 @@
         ahs.INITIATOR_ORG_NAME,
         ahs.INITIATOR_USER_ID,
         ahs.INITIATOR_USER_NAME,
-        ahsd.SOLICIT_DETAIL_ID,
-        ahsdu.DETAIL_TASK_ID,
-        ahsdu.USER_ID,
+        null as SOLICIT_DETAIL_ID,
+        null as DETAIL_TASK_ID,
+        null as USER_ID,
+        art.ID_ AS taskId,
+        art.NAME_ AS taskName ,
         asti.OVERDUE_TIME,
         asti.REMAINING_TIME,
-        asti.TIMERULE_UNIT,
-        art.ID_ as taskId,
-        art.NAME_ as taskName
-        FROM AEA_HI_SOLICIT ahs
-        left join ACT_RU_TASK art on art.PROC_INST_ID_=ahs.PROCINST_ID
-        left join act_hi_taskinst aht on aht.ID_=ahs.HI_TASKINST_ID
-        LEFT JOIN AEA_HI_SOLICIT_DETAIL ahsd ON ahsd.SOLICIT_ID = ahs.SOLICIT_ID
-        LEFT JOIN AEA_HI_SOLICIT_DETAIL_USER ahsdu ON ahsdu.SOLICIT_DETAIL_ID = ahsd.SOLICIT_DETAIL_ID
+        asti.TIMERULE_UNIT
+
+        FROM
+        AEA_HI_SOLICIT ahs
+        LEFT JOIN opu_om_user oou on oou.user_Id=ahs.INITIATOR_USER_ID
+        LEFT JOIN ACT_RU_TASK art ON art.PROC_INST_ID_ = ahs.PROCINST_ID and oou.user_name=art.ASSIGNEE_NAME_
+        LEFT JOIN act_hi_taskinst aht ON aht.ID_ = ahs.HI_TASKINST_ID
         LEFT JOIN ACT_STO_TIMERULE ast ON ast.TIMERULE_ID = ahs.SOLICIT_TIMERULE_ID
-        LEFT JOIN ACT_STO_TIMERULE_INST asti ON asti.TIMERULE_ID = ast.TIMERULE_ID AND ahs.PROCINST_ID =
-        asti.PROC_INST_ID
-        WHERE ahs.SOLICIT_TYPE = 'd' AND ahs.BUS_TYPE = #{busType} and ahs.SOLICIT_STATE in('0','1')
-        AND ( ahs.INITIATOR_USER_ID = #{userId} OR ahsdu.USER_ID = #{userId} )
+        LEFT JOIN ACT_STO_TIMERULE_INST asti ON asti.TIMERULE_ID = ast.TIMERULE_ID and
+        asti.TASKINST_ID=ahs.HI_TASKINST_ID
+        AND ahs.PROCINST_ID = asti.PROC_INST_ID
+        WHERE ahs.BUS_TYPE = #{busType} AND ahs.SOLICIT_STATE IN ( '0', '1' )
+        AND ahs.INITIATOR_USER_ID = #{userId}
         AND ahs.ROOT_ORG_ID = #{rootOrgId}
+
         ) ahs
-        LEFT JOIN (
+        left JOIN (
         SELECT
         aha.APPLYINST_ID,
         aha.APPLYINST_CODE,
