@@ -350,8 +350,6 @@ var app = new Vue({
               }
             }
           }
-
-          debugger;
           if (vm.formDataTuShen.linkmen == undefined || vm.formDataTuShen.linkmen.length == 0) {
             vm.formDataTuShen.linkmen = [];
             vm.init('tushen');

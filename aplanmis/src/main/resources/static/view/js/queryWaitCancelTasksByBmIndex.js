@@ -92,11 +92,11 @@ var vm = new Vue({
         //判断是否已签收
         isSign: function (row) {
             if (row.bmSignState) {
-                if ('1' == row.ckSignState) {
-                    return false;
+                if ('1' == row.bmSignState) {
+                    return true;
                 }
             }
-            return true;
+            return false;
         },
 
         //签收

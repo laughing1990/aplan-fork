@@ -319,7 +319,7 @@ public class AeaExProjCerBuildServiceImpl extends AbstractFormDataOptManager imp
             aeaExProjCertBuild.setCreater(SecurityContext.getCurrentUserName());
             aeaExProjCertBuild.setRootOrgId(SecurityContext.getCurrentOrgCode());
             aeaExProjCertBuildMapper.insertAeaExProjCertBuild(aeaExProjCertBuild);
-//            if (StringUtils.isBlank(aeaExProjCertBuild.getFormId())) throw new Exception("缺少formId");
+            if (StringUtils.isBlank(aeaExProjCertBuild.getFormId())) throw new Exception("缺少formId");
             this.formSave(aeaExProjCertBuild.getFormId(), aeaExProjCertBuild.getBuildId(), EDataOpt.INSERT.getOpareteType(), null);
         } else {
             aeaExProjCertBuildMapper.updateAeaExProjCertBuild(aeaExProjCertBuild);
