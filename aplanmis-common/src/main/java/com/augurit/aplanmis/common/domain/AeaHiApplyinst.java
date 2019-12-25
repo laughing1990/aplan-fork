@@ -110,6 +110,9 @@ public class AeaHiApplyinst implements Serializable, FlowObject {
 
     private String isParallel;//是否（是否有）并行推进事项。0表示否，1表示是',(主題階段申报用到)
 
+    private String appinstId;// 流程模板实例
+    private String appId;// 流程模板
+
     private Map<String, Boolean> stateinsts;//所有情形map集合，格式为，存在的情形id:true
     @Override
     public String getMasterRecordId() {

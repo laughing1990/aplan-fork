@@ -19,6 +19,8 @@ public interface AeaLogApplyStateHistMapper {
 
     void deleteAeaLogApplyStateHist(@Param("id") String id);
 
+    void batchDeleteAeaLogApplyStateHist(@Param("ids") List<String> ids);
+
     List<AeaLogApplyStateHist> listAeaLogApplyStateHist(AeaLogApplyStateHist aeaLogApplyStateHist);
 
     AeaLogApplyStateHist getAeaLogApplyStateHistById(@Param("id") String id);

@@ -4,23 +4,28 @@ import com.alibaba.fastjson.JSON;
 import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
-import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
-import com.augurit.aplanmis.admin.market.item.service.AeaItemRelevanceService;
-import com.augurit.aplanmis.admin.market.service.service.AeaImServiceService;
 import com.augurit.aplanmis.common.constants.ApplyState;
-import com.augurit.aplanmis.common.domain.*;
-import com.augurit.aplanmis.common.mapper.*;
-import com.augurit.aplanmis.common.service.admin.item.AeaItemBasicAdminService;
+import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
+import com.augurit.aplanmis.common.domain.AeaHiReceive;
+import com.augurit.aplanmis.common.domain.AeaHiSmsInfo;
+import com.augurit.aplanmis.common.domain.AeaItemBasic;
+import com.augurit.aplanmis.common.domain.AeaParStage;
+import com.augurit.aplanmis.common.mapper.AeaHiApplyinstMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiReceiveMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiSmsInfoMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
+import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
-import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
-import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.receive.ReceiveService;
-import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
+import com.augurit.aplanmis.common.service.receive.constant.ReceiveConstant;
 import com.augurit.aplanmis.common.utils.BusinessUtil;
-import com.augurit.aplanmis.front.apply.vo.*;
-import com.augurit.aplanmis.supermarket.apply.vo.ImServiceItemPurchaseVo;
+import com.augurit.aplanmis.front.apply.vo.ApplyinstIdVo;
+import com.augurit.aplanmis.front.apply.vo.PropulsionItemStateVo;
+import com.augurit.aplanmis.front.apply.vo.SeriesApplyDataVo;
+import com.augurit.aplanmis.front.apply.vo.StageApplyDataPageVo;
+import com.augurit.aplanmis.front.apply.vo.StageApplyDataVo;
 import io.jsonwebtoken.lang.Assert;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
@@ -29,7 +34,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,104 +65,61 @@ public class RestApplyService {
     private AeaHiApplyinstService aeaHiApplyinstService;
     @Autowired
     private AeaHiApplyinstMapper aeaHiApplyinstMapper;
-    @Autowired
-    private AeaProjInfoService aeaProjInfoService;
-    @Autowired
-    private AeaLinkmanInfoService aeaLinkmanInfoService;
-    @Autowired
-    private AeaUnitInfoService aeaUnitInfoService;
-    @Autowired
-    private AeaItemBasicAdminService aeaItemBasicAdminService;
-    @Autowired
-    private AeaImServiceService aeaImServiceService;
-    @Autowired
-    private AeaItemRelevanceService aeaItemRelevanceService;
-    @Autowired
-    private AeaImProjPurchaseMapper aeaImProjPurchaseMapper;
-    @Autowired
-    private AeaImPurchaseinstMapper aeaImPurchaseinstMapper;
 
     /**
-     * 现场登记 --> 收件，发起申报
+     * 单项申报 --> 收件，发起申报
      *
      * @param seriesApplyDataPageVo 申报参数
      * @return applyinstId 申请实例ID
      */
-    public String startSeriesFlow(SeriesApplyDataPageVo seriesApplyDataPageVo) throws Exception {
-        String applyinstIdParam = seriesApplyDataPageVo.getApplyinstId();
-        AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(seriesApplyDataPageVo.getItemVerId(), SecurityContext.getCurrentOrgId());
-        SeriesApplyDataVo dataVo = seriesApplyDataPageVo.toSeriesApplyDataVo(aeaItemBasic.getAppId());
-        // 如果是打印回执进来的
+    public String startSeriesFlow(SeriesApplyDataVo seriesApplyDataPageVo) throws Exception {
+        String applyinstId = aeaSeriesService.startApply(seriesApplyDataPageVo);
+        clearHistoryReceiptsAndSaveAgain(seriesApplyDataPageVo, applyinstId, new String[]{ReceiveConstant.ReceiveTypeEnum.MAT_TYPE.getCode(), ReceiveConstant.ReceiveTypeEnum.ACCEPT_TYPE.getCode()});
+        return applyinstId;
+    }
+
+    /**
+     * 单项申报 --> 生成实例，打印回执
+     *
+     * @param seriesApplyDataVo 申报餐宿
+     * @return applyinstId 申请实例ID
+     */
+    public String printReceipts(SeriesApplyDataVo seriesApplyDataVo) throws Exception {
+        seriesApplyDataVo.setIsParallel("0");
+        String applyinstId = aeaSeriesService.printReceipts(seriesApplyDataVo);
+        // 先删除以前的 receiveType=1, 2 的回执实例
+        clearHistoryReceiptsAndSaveAgain(seriesApplyDataVo, applyinstId, new String[]{ReceiveConstant.ReceiveTypeEnum.MAT_TYPE.getCode(), ReceiveConstant.ReceiveTypeEnum.ACCEPT_TYPE.getCode()});
+        return applyinstId;
+    }
+
+    private void clearHistoryReceiptsAndSaveAgain(SeriesApplyDataVo seriesApplyDataPageVo, String applyinstId, String[] receiveTypes) throws Exception {
+        Assert.isTrue(receiveTypes.length > 0, "回执类型不能为空");
         if (StringUtils.isNotBlank(seriesApplyDataPageVo.getApplyinstId())) {
-            AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstMapper.getAeaHiApplyinstById(seriesApplyDataPageVo.getApplyinstId());
-            if (aeaHiApplyinst != null && "2".equals(aeaHiApplyinst.getIsTemporarySubmit())) {
-                dataVo.setIsJustApplyinst(Status.OFF);
+            // 先删除以前的 receiveType=1, 2 的回执实例
+            List<AeaHiReceive> aeaHiReceives = aeaHiReceiveMapper.listReceiveByApplyinstIdAndTypes(new String[]{seriesApplyDataPageVo.getApplyinstId()}, new String[]{ReceiveConstant.ReceiveTypeEnum.MAT_TYPE.getCode(), ReceiveConstant.ReceiveTypeEnum.ACCEPT_TYPE.getCode()});
+            if (CollectionUtils.isNotEmpty(aeaHiReceives)) {
+                aeaHiReceiveMapper.deleteAeaHiReceives(aeaHiReceives.stream().map(AeaHiReceive::getReceiveId).collect(Collectors.toList()));
             }
         }
-        String applyinstId = aeaSeriesService.stageApplay(dataVo);
-
-        AeaHiApplyinst seriesApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
-        seriesApplyinst.setIsTemporarySubmit(Status.OFF);
-        aeaHiApplyinstService.updateAeaHiApplyinst(seriesApplyinst);
-
         updateAeaSmsInfo(seriesApplyDataPageVo.getSmsInfoId(), new String[]{applyinstId});
         //保存受理回执，物料回执
-        if (StringUtils.isNotBlank(applyinstId)) {
-            // 先删除以前的 receiveType=1, 2 的回执实例
-            List<AeaHiReceive> aeaHiReceives = aeaHiReceiveMapper.listReceiveByApplyinstIdAndTypes(new String[]{applyinstIdParam}, new String[]{"1", "2"});
-            if (CollectionUtils.isNotEmpty(aeaHiReceives)) {
-                aeaHiReceiveMapper.deleteAeaHiReceives(aeaHiReceives.stream().map(AeaHiReceive::getReceiveId).collect(Collectors.toList()));
-            }
-            receiveService.saveReceive(new String[]{applyinstId}, new String[]{"1", "2"}, SecurityContext.getCurrentUserName(), "");
-        }
-        return applyinstId;
-    }
-
-    /**
-     * 现场登记 --> 生成实例，打印回执
-     *
-     * @param seriesApplyDataPageVo 申报餐宿
-     * @return applyinstId 申请实例ID
-     */
-    public String instantiateSeriesFlow(SeriesApplyDataPageVo seriesApplyDataPageVo) throws Exception {
-        // 先删除以前的 receiveType=1, 2 的回执实例
-        if (StringUtils.isNotBlank(seriesApplyDataPageVo.getApplyinstId())) {
-            List<AeaHiReceive> aeaHiReceives = aeaHiReceiveMapper.listReceiveByApplyinstIdAndTypes(new String[]{seriesApplyDataPageVo.getApplyinstId()}, new String[]{"1", "2"});
-            if (CollectionUtils.isNotEmpty(aeaHiReceives)) {
-                aeaHiReceiveMapper.deleteAeaHiReceives(aeaHiReceives.stream().map(AeaHiReceive::getReceiveId).collect(Collectors.toList()));
-            }
-        }
-        AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(seriesApplyDataPageVo.getItemVerId(), SecurityContext.getCurrentOrgId());
-        SeriesApplyDataVo dataVo = seriesApplyDataPageVo.toSeriesApplyDataVo(aeaItemBasic.getAppId());
-        dataVo.setIsParallel("0");
-        String applyinstId = aeaSeriesService.stagingApply(dataVo);
-        AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstMapper.getAeaHiApplyinstById(applyinstId);
-        aeaHiApplyinst.setIsTemporarySubmit("2");
-        aeaHiApplyinstMapper.updateAeaHiApplyinst(aeaHiApplyinst);
-
-        updateAeaSmsInfo(seriesApplyDataPageVo.getSmsInfoId(), new String[]{applyinstId});
-        //保存受理回执，物料回执---fixme ?应该只有物料回执
-        String[] receiveTypes = new String[]{"1", "2"};
         receiveService.saveReceive(new String[]{applyinstId}, receiveTypes, SecurityContext.getCurrentUserName(), "");
-        return applyinstId;
     }
 
     /**
-     * 现场登记 --> 不予受理，生成实例，启动流程，打印不受理回执
+     * 单项申报 --> 不予受理
      *
-     * @param seriesApplyDataPageVo 申报入参
+     * @param seriesApplyDataVo 申报入参
      * @return applyinstId 申请实例ID
      */
-    public String inadmissibleSeriesFlow(SeriesApplyDataPageVo seriesApplyDataPageVo) throws Exception {
-
-        AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(seriesApplyDataPageVo.getItemVerId(), SecurityContext.getCurrentOrgId());
-        SeriesApplyDataVo seriesApplyDataVo = seriesApplyDataPageVo.toSeriesApplyDataVo(aeaItemBasic.getAppId());
+    public String inadmissibleSeriesFlow(SeriesApplyDataVo seriesApplyDataVo) throws Exception {
+        AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(seriesApplyDataVo.getItemVerId(), SecurityContext.getCurrentOrgId());
+        seriesApplyDataVo.setAppId(aeaItemBasic.getAppId());
         seriesApplyDataVo.setIsParallel("0");
         String applyinstId = aeaSeriesService.inadmissible(seriesApplyDataVo);
-        updateAeaSmsInfo(seriesApplyDataPageVo.getSmsInfoId(), new String[]{applyinstId});
-        //保存不受理回执
-        String[] receiveTypes = new String[]{"3"};
-        receiveService.saveReceive(new String[]{applyinstId}, receiveTypes, SecurityContext.getCurrentUserName(), seriesApplyDataPageVo.getComments());
+
+        // 打印不受理回执
+        clearHistoryReceiptsAndSaveAgain(seriesApplyDataVo, applyinstId, new String[]{ReceiveConstant.ReceiveTypeEnum.REJECT_TYPE.getCode()});
         return applyinstId;
     }
 
@@ -189,7 +156,7 @@ public class RestApplyService {
             for (SeriesApplyDataVo vo : applyDataVos) {
                 vo.setIsParallel("1");
                 vo.setStageId(stageApplyDataPageVo.getStageId());
-                String applyinstId = aeaSeriesService.stagingApply(vo);
+                String applyinstId = aeaSeriesService.printReceipts(vo);
                 list.add(applyinstId);
             }
             applyinstIds = list.toArray(new String[0]);
@@ -236,7 +203,7 @@ public class RestApplyService {
             for (SeriesApplyDataVo vo : applyDataVos) {
                 vo.setIsParallel("1");
                 vo.setStageId(stageApplyDataPageVo.getStageId());
-                String applyinstId = aeaSeriesService.stageApplay(vo);
+                String applyinstId = aeaSeriesService.startApply(vo);
                 ids.add(applyinstId);
             }
             applyinstIds = ids.toArray(new String[0]);
@@ -380,194 +347,6 @@ public class RestApplyService {
         }
     }
 
-    /**
-     * 根据材料ID获取相关中介服务事项信息和项目信息
-     *
-     */
-    public Map getImServiceItemsAndProjInfo(String matId, String applyinstId) throws Exception {
-
-        if (StringUtils.isBlank(matId) || StringUtils.isBlank(applyinstId)) return null;
-
-        Map<String, Object> map = new HashMap<>();
-
-        ImServiceItemPurchaseVo imServiceItemPurchaseVo = new ImServiceItemPurchaseVo();
-
-        AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
-        if (aeaHiApplyinst == null) return null;
-
-        List<AeaProjInfo> projInfos = aeaProjInfoService.findApplyProj(applyinstId);
-        if (projInfos.size() < 1) return null;
-        AeaProjInfo projInfo = projInfos.get(0);
-
-        imServiceItemPurchaseVo.setApplyinstId(applyinstId);
-        imServiceItemPurchaseVo.setApplyinstCode(aeaHiApplyinst.getApplyinstCode());
-        imServiceItemPurchaseVo.setPurchaseCode(projInfo.getDistrict() + aeaHiApplyinst.getApplyinstCode());
-
-        imServiceItemPurchaseVo.setProjInfoId(projInfo.getProjInfoId());
-        imServiceItemPurchaseVo.setLocalCode(projInfo.getLocalCode());
-        imServiceItemPurchaseVo.setPurchaseName(projInfo.getProjName());
-
-        Map<String, Double> projScale = new HashMap<>();
-        projScale.put("buildAreaSum", projInfo.getBuildAreaSum());// 建筑面积
-        projScale.put("investSum", projInfo.getInvestSum());// 总投资
-        projScale.put("xmYdmj", projInfo.getXmYdmj());// 用地面积
-
-        AeaLinkmanInfo linkmanInfo = aeaLinkmanInfoService.getAeaLinkmanInfoByLinkmanInfoId(aeaHiApplyinst.getLinkmanInfoId());
-        if (linkmanInfo == null) return null;
-        imServiceItemPurchaseVo.setLinkmanInfoId(aeaHiApplyinst.getLinkmanInfoId());
-        imServiceItemPurchaseVo.setLinkmanName(linkmanInfo.getLinkmanName());
-        imServiceItemPurchaseVo.setLinkmanMobilePhone(linkmanInfo.getLinkmanMobilePhone());
-
-        //申办主体为单位
-        if ("1".equals(aeaHiApplyinst.getApplySubject())) {
-
-            List<AeaUnitInfo> aeaUnitInfos = aeaUnitInfoService.findApplyOwnerUnitProj(applyinstId, projInfo.getProjInfoId());
-            if (aeaUnitInfos.size() < 1) return null;
-            AeaUnitInfo unitInfo = aeaUnitInfos.get(0);
-            imServiceItemPurchaseVo.setUnitInfoId(unitInfo.getUnitInfoId());
-            imServiceItemPurchaseVo.setApplicant(unitInfo.getApplicant());
-            imServiceItemPurchaseVo.setApplySubject("1");
-        } else {
-            imServiceItemPurchaseVo.setApplySubject("0");
-            imServiceItemPurchaseVo.setUnitInfoId(linkmanInfo.getLinkmanInfoId());
-            imServiceItemPurchaseVo.setApplicant(linkmanInfo.getLinkmanName());
-        }
-
-        //根据输出材料ID获取对应的中介服务事项
-        List<AeaItemBasic> itemBasics = aeaItemBasicAdminService.getAeaItemBasicsListByOutputMatId(matId);
-
-        List<Map> serviceItemsInfo = new ArrayList<>();
-        Map<String, AeaImService> serviceMap = new HashMap<>();
-
-        for (AeaItemBasic itemBasic : itemBasics) {
-
-            AeaItemRelevance aeaItemRelevance = new AeaItemRelevance();
-            aeaItemRelevance.setChildItemId(itemBasic.getItemId());
-            aeaItemRelevance.setIsDelete("0");
-
-            Map<String, Object> itemVo = new HashMap<>();
-            itemVo.put("itemName", itemBasic.getItemName());
-            itemVo.put("parItem", aeaItemRelevanceService.listAeaItemRelevance(aeaItemRelevance));// 获取关联行政事项
-
-            //获取中介服务事项所关联的所有中介服务
-            List<AeaImService> services = aeaImServiceService.listAeaImServiceNoPageByItemVerId(itemBasic.getItemVerId());
-            for (AeaImService service : services) {
-
-                serviceMap.put(service.getServiceId(), service);
-                itemVo.put("serviceItemId", service.getServiceItemId());
-                itemVo.put("serviceId", service.getServiceId());
-                serviceItemsInfo.add(itemVo);
-            }
-        }
-
-        List<Map> _services = new ArrayList<>();
-
-        if (serviceItemsInfo.size() > 0) {
-
-            Collection<AeaImService> valueCollection = serviceMap.values();
-            List<AeaImService> services = new ArrayList<>(valueCollection);
-
-            //按照中介服务来分类
-            for (AeaImService service : services) {
-                Map<String, Object> serviceVo = new HashMap<>();
-                serviceVo.put("serviceId", service.getServiceId());
-                serviceVo.put("serviceName", service.getServiceName());
-
-                List<Map> temp = new ArrayList<>();
-                for (Map itemVo : serviceItemsInfo) {
-                    if (itemVo.get("serviceId").equals(service.getServiceId())) {
-                        temp.add(itemVo);
-                    }
-                }
-                serviceVo.put("serviceItem", temp);
-                _services.add(serviceVo);
-            }
-        }
-
-        map.put("purchaseInfo", imServiceItemPurchaseVo);
-        map.put("projScale", projScale);
-        map.put("serviceItemsInfo", _services);
-
-        return map;
-    }
-
-    /**
-     * 发布项目采购需求
-     *
-     */
-    public ResultForm createImServiceItemPurchase(ImServiceItemPurchaseVo imServiceItemPurchaseVo) throws Exception {
-
-        try {
-
-            if (StringUtils.isBlank(imServiceItemPurchaseVo.getServiceItemId()))
-                return new ResultForm(false, "缺少参数：ServiceItemId ");
-            if (StringUtils.isBlank(imServiceItemPurchaseVo.getProjInfoId()))
-                return new ResultForm(false, "缺少参数：ProjInfoId ");
-            if (StringUtils.isBlank(imServiceItemPurchaseVo.getLinkmanInfoId()))
-                return new ResultForm(false, "缺少参数：LinkmanInfoId ");
-            if (StringUtils.isBlank(imServiceItemPurchaseVo.getBiddingType()))
-                return new ResultForm(false, "缺少参数：BiddingType ");
-            if (imServiceItemPurchaseVo.getChoiceImunitTime() == null)
-                return new ResultForm(false, "缺少参数：ChoiceImunitTime ");
-            if (imServiceItemPurchaseVo.getExpirationDate() == null)
-                return new ResultForm(false, "缺少参数：ExpirationDate ");
-
-            //初始化采购需求实体信息
-            AeaImProjPurchase aeaImProjPurchase = new AeaImProjPurchase();
-            aeaImProjPurchase.setProjPurchaseId(UUID.randomUUID().toString());
-            aeaImProjPurchase.setProjInfoId(imServiceItemPurchaseVo.getProjInfoId());
-            aeaImProjPurchase.setServiceItemId(imServiceItemPurchaseVo.getServiceItemId());// 服务和中介服务事项关联ID
-            aeaImProjPurchase.setQuoteType("0");// 报价方式,0 金额 1 下浮率
-            aeaImProjPurchase.setChoiceImunitTime(imServiceItemPurchaseVo.getChoiceImunitTime());// 选取中介时间
-            aeaImProjPurchase.setExpirationDate(imServiceItemPurchaseVo.getExpirationDate());// 截止日期
-            aeaImProjPurchase.setIsDefineAmount(imServiceItemPurchaseVo.getIsDefineAmount());// 是否确认金额，1 是 0 否
-            aeaImProjPurchase.setSelectCondition(imServiceItemPurchaseVo.getSelectCondition());// 服务选择条件：1 多个服务具备其一，0 多个服务都具备
-            aeaImProjPurchase.setOwnerComplaintPhone(imServiceItemPurchaseVo.getLinkmanMobilePhone());// 业主投诉电话
-            aeaImProjPurchase.setIsDiscloseIm(imServiceItemPurchaseVo.getIsDiscloseIm());// 是否公示中选机构： 1 是， 0 否
-            aeaImProjPurchase.setIsDiscloseBidding(imServiceItemPurchaseVo.getIsDiscloseBidding());// 是否公示中标公告：1 是， 0 否
-            aeaImProjPurchase.setIsLiveWitness("0");// 是否现场见证：1 是， 0 否
-            aeaImProjPurchase.setApplyinstCode(imServiceItemPurchaseVo.getApplyinstCode());// 关联的审批流水号
-            aeaImProjPurchase.setIsApproveProj("1");// 是否为投资审批项目：1 是，0 否
-            aeaImProjPurchase.setContacts(imServiceItemPurchaseVo.getLinkmanName());// 业主联系人
-            aeaImProjPurchase.setMoblie(imServiceItemPurchaseVo.getLinkmanMobilePhone());// 联系电话
-            aeaImProjPurchase.setBiddingType(imServiceItemPurchaseVo.getBiddingType());// 竞价类型：1 随机中标，2 自主选择
-            aeaImProjPurchase.setAuditFlag("0");// 采购需求状态：0：未提交，1：服务中，2：服务完成，3：服务中止，4：审核中，5：退回，6：报名中，7：选取中，8：选取开始，9：已选取，10：无效，11：待选取，12：已过时
-            aeaImProjPurchase.setBasePrice(imServiceItemPurchaseVo.getBasePrice());// 最低价格（万元）
-            aeaImProjPurchase.setHighestPrice(imServiceItemPurchaseVo.getHighestPrice());// 最高价格（万元）
-            aeaImProjPurchase.setServiceContent(imServiceItemPurchaseVo.getServiceContent());// 服务内容
-            aeaImProjPurchase.setLinkmanInfoId(imServiceItemPurchaseVo.getLinkmanInfoId());// 业主委托人信息ID
-            aeaImProjPurchase.setIsDelete("0");
-            aeaImProjPurchase.setIsActive("1");
-            aeaImProjPurchase.setCreater(SecurityContext.getCurrentUserId());
-            aeaImProjPurchase.setCreateTime(new Date());
-            aeaImProjPurchase.setRootOrgId(SecurityContext.getCurrentOrgId());
-            //申报主体为单位时
-            if ("1".equals(imServiceItemPurchaseVo.getApplySubject())) {
-                aeaImProjPurchase.setPublishUnitInfoId(imServiceItemPurchaseVo.getUnitInfoId());// 业主单位ID
-            }
-            aeaImProjPurchaseMapper.insertAeaImProjPurchase(aeaImProjPurchase);
-
-            //初始化采购需求历史状态信息
-            AeaImPurchaseinst aeaImPurchaseinst = new AeaImPurchaseinst();
-            aeaImPurchaseinst.setPurchaseinstId(UUID.randomUUID().toString());
-            aeaImPurchaseinst.setProjPurchaseId(aeaImProjPurchase.getProjPurchaseId());
-            aeaImPurchaseinst.setNewPurchaseFlag("0");// 采购需求状态：0：未提交，1：服务中，2：服务完成，3：服务中止，4：审核中，5：退回，6：报名中，7：选取中，8：选取开始，9：已选取，10：无效，11：待选取，12：已过时
-            aeaImPurchaseinst.setOldPurchaseFlag("0");// 采购需求状态：0：未提交，1：服务中，2：服务完成，3：服务中止，4：审核中，5：退回，6：报名中，7：选取中，8：选取开始，9：已选取，10：无效，11：待选取，12：已过时
-            aeaImPurchaseinst.setParentPurchaseinstId("root");
-            aeaImPurchaseinst.setLinkmanInfoId(imServiceItemPurchaseVo.getLinkmanInfoId());
-            aeaImPurchaseinst.setIsOwnFile("0");// 是否拥有附件
-            aeaImPurchaseinst.setCreater(SecurityContext.getCurrentUserId());
-            aeaImPurchaseinst.setCreateTime(new Date());
-            aeaImPurchaseinst.setRootOrgId(SecurityContext.getCurrentOrgId());
-            aeaImPurchaseinstMapper.insertPurchaseinst(aeaImPurchaseinst);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResultForm(false, "采购需求发布失败！");
-        }
-
-        return new ResultForm(true, "采购需求发布成功！");
-    }
-
     public String onlyInstApply(StageApplyDataPageVo stageApplyDataPageVo) throws Exception {
         AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageApplyDataPageVo.getStageId());
         Assert.notNull(aeaParStage, "aeaParStage is null");
@@ -582,11 +361,11 @@ public class RestApplyService {
         return applyinst == null ? null : applyinst.getApplyinstId();
     }
 
-    public String seriesOnlyInstApply(SeriesApplyDataPageVo seriesApplyDataPageVo) throws Exception {
-        String applySource = seriesApplyDataPageVo.getApplySource();
-        String applySubject = seriesApplyDataPageVo.getApplySubject();
-        String linkmanInfoId = seriesApplyDataPageVo.getLinkmanInfoId();
-        String branchOrgMap = seriesApplyDataPageVo.getBranchOrgMap();//是否分局承办，允许为空
+    public String seriesOnlyInstApply(SeriesApplyDataVo seriesApplyDataVo) throws Exception {
+        String applySource = seriesApplyDataVo.getApplySource();
+        String applySubject = seriesApplyDataVo.getApplySubject();
+        String linkmanInfoId = seriesApplyDataVo.getLinkmanInfoId();
+        String branchOrgMap = seriesApplyDataVo.getBranchOrgMap();//是否分局承办，允许为空
         AeaHiApplyinst applyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "1", branchOrgMap, ApplyState.RECEIVE_APPROVED_APPLY.getValue(),"0",null);
         return applyinst.getApplyinstId();
     }
