@@ -76,7 +76,7 @@ public class RestAeaHiSolicitController {
 
     @ApiOperation("意见征求接口")
     @PostMapping("/create")
-    public ResultForm solicitByDept(@Valid @RequestBody SolicitVo solicitVo) throws Exception {
+    public ResultForm create(@Valid @RequestBody SolicitVo solicitVo) throws Exception {
         if (StringUtils.isBlank(solicitVo.getDetailInfo())) {
             return new ResultForm(false, "参数征求详细信息detailInfo不能为空！");
         }
