@@ -752,19 +752,19 @@
                       <td colspan="5">{{item.applyUserIdnumber}}</td>
                     </tr>
                     <tr>
+                      <td class="td-bg-grey">征求状态</td>
+                      <td>{{item.applyReason}}</td>
                       <td class="td-bg-grey">征求类型</td>
                       <td>{{item.applyReason}}</td>
                       <td class="td-bg-grey">征求时限</td>
                       <td>{{item.applyReason}}</td>
-                      <td class="td-bg-grey">征求状态</td>
-                      <td>{{item.applyReason}}</td>
                     </tr>
                     <tr>
-                      <td class="td-bg-grey">发起征求时间</td>
-                      <td>{{item.applyReason}}</td>
                       <td class="td-bg-grey">发起征求部门</td>
                       <td>{{item.applyReason}}</td>
                       <td class="td-bg-grey">发起征求人员</td>
+                      <td>{{item.applyReason}}</td>
+                      <td class="td-bg-grey">发起征求时间</td>
                       <td>{{item.applyReason}}</td>
                     </tr>
                     <tr>
@@ -793,10 +793,29 @@
                   </template>
                   <!-- 审批人员处理-->
                   <template>
+                    <div class="file-opt-btn" style="margin-top:10px">
+                      <el-upload ref="uploadCert2" class="upload-s-file" :action="ctx+'rest/certificate/certinst/att/upload'"
+                                 :show-file-list="false" :http-request="appCancelBmUploadFile" :file-list="fileList">
+                        <el-button slot="trigger" size="small" type="primary">上传</el-button>
+                      </el-upload>
+                    </div>
+                    <el-table :data="cancelAppFileList" border>
+                      <el-table-column prop="fileName" label="文件名"></el-table-column>
+                      <el-table-column prop="updateTime" width="160" label="上传时间">
+                        <template slot-scope="scope">
+                          {{scope.row.updateTime|formatDate}}
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="操作" align="center" width="150">
+                        <template slot-scope="scope">
+                          <!-- <el-button type="primary" size="mini" @click="filePreview(scope.row)">预览</el-button> -->
+                          <el-button type="primary" size="mini" @click="deleteCancelUserFile(scope.row.fileId)">删除</el-button>
+                        </template>
+                      </el-table-column>
+                    </el-table>
                     <el-input style="margin-top:10px" type="textarea" v-model="bmHandleOpinion" :rows="3" placeholder="请输入意见"></el-input>
                     <div style="margin-top:10px">
-                      <el-button type="primary" size="medium" @click="bmHanderCancel(2, item)">提交意见</el-button>
-<!--                      <el-button size="medium" @click="bmHanderCancel(3, item)">不同意</el-button>-->
+                      <el-button type="primary" size="medium">提交意见</el-button>
                     </div>
                   </template>
                 </div>

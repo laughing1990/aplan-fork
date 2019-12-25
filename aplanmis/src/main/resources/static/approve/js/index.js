@@ -2501,19 +2501,11 @@ var vm = new Vue({
           })
         }
       });
+      // 给iframe传参数
       var urlParam = [
-        'taskId',
-        'isSeriesinst',
-        // 'itemInstId',
-        'iteminstId',
-        'processInstanceId',
-        'busRecordId',
-        'isApprover',
-        'isZJItem',
-        'masterEntityKey',
-        'projectCode',
-        'viewId',
-        'projInfoId',
+        'taskId', 'isSeriesinst', 'iteminstId', 'processInstanceId',
+        'busRecordId', 'isApprover', 'isZJItem', 'masterEntityKey',
+        'projectCode', 'viewId', 'projInfoId'
       ];
       var oneFormIndex = -1;
       lTabsData.forEach(function (u, i) {
@@ -2527,6 +2519,7 @@ var vm = new Vue({
         });
       });
       vm.lTabsData = lTabsData;
+      // 是否有一张表单tab
       if (vm.isShowOneForm == '1' && !vm.isZJItem) { // 中介事项也不显示一张表单
         if (vm.isSeriesinst == '0') { // 多事项
           var targetUrl = oneFromSrc;
@@ -2570,12 +2563,8 @@ var vm = new Vue({
             type: 'get',
             data: {
               applyinstId: vm.masterEntityKey,
-              // stageId: vm.stageId,
               projInfoId: vm.projInfoId,
               itemId: vm.itemId,
-              // applyinstId: 'fcf9d937-f670-4871-a430-34b01cafde9b',
-              // stageId: 'f39985ed-9119-444f-b744-4167762a3872',
-              // projInfoId: '347db5f9-f55f-44eb-9d1a-983ca263e8c4',
               showBasicButton: false,
               includePlatformResource: false,
             },
@@ -2612,32 +2601,6 @@ var vm = new Vue({
             // vm.$message.error('获取智能表单数据失败');
           })
         }
-        
-        // request('', {
-        //   url: oneFromSrc,
-        //   type: 'get',
-        // }, function (res) {
-        //   if (res.success) {
-        //     var reder2Url = res.content;
-        //     request('', {
-        //       url: reder2Url,
-        //       type: 'get',
-        //     }, function (res2) {
-        //       if (res2.success) {
-        //         $('#oneForm').html(res2.content);
-        //         vm.$nextTick(function () {
-        //           $('#oneForm').html(res2.content)
-        //         });
-        //       }
-        //     }, function (res) {
-        //       vm.$message.error(res.message);
-        //       $('#oneForm').html(res.message);
-        //
-        //     });
-        //   }
-        // }, function () {
-        //   $('#oneForm').html('未配置一张表单信息');
-        // });
       } else {
         //下面是删除一张表单的tab，注意依赖数组的脚标
         if (oneFormIndex != -1) {
@@ -2645,55 +2608,31 @@ var vm = new Vue({
         }
       }
       // 是否有材料补正
-      var tmpIndex = -1;
-      vm.lTabsData.forEach(function (u, i) {
-        if (u.labelId == 4) {
-          tmpIndex = i
-        }
-      })
-      if (vm.hasSupply != 1) {
-        vm.lTabsData.splice(tmpIndex, 1);
-      } else {
-        vm.loadSupplyDetail();
-      }
+      loadTab('4', 'hasSupply', vm.loadSupplyDetail);
       // 是否有特殊程序
-      var tmpIndex = -1;
-      vm.lTabsData.forEach(function (u, i) {
-        if (u.labelId == 5) {
-          tmpIndex = i
-        }
-      })
-      if (vm.hasSpecial != 1) {
-        vm.lTabsData.splice(tmpIndex, 1);
-      } else {
+      loadTab('5', 'hasSpecial', function(){
         vm.getSpecialType();
         vm.loadSpecialDetail();
-      }
+      });
       // 是否有撤件历史
-      var tmpIndex = -1;
-      vm.lTabsData.forEach(function (u, i) {
-        if (u.labelId == 'appCancel') {
-          tmpIndex = i
-        }
-      })
-      if (vm.hasAppCancel != 1) {
-        vm.lTabsData.splice(tmpIndex, 1);
-      } else {
-        vm.loadAppCancelData();
-      }
+      loadTab('appCancel', 'hasAppCancel', vm.loadAppCancelData);
       // 是否有意见征求
-      var tmpIndex = -1;
-      vm.lTabsData.forEach(function (u, i) {
-        if (u.labelId == 'solicit') {
-          tmpIndex = i
-        }
-      })
-      if (vm.hasSolicit != 1) {
-        vm.lTabsData.splice(tmpIndex, 1);
-      } else {
-        vm.loadSolicitData();
-      }
+      loadTab('solicit', 'hasSolicit', vm.loadSolicitData);
       
+      // 加载对应标签数据
+      function loadTab(labelId, key, cb){
+        var index = -1;
+        vm.lTabsData.forEach(function (u, i) {
+          if (u.labelId == labelId) {
+            index = i
+          }
+        })
+        if (vm[key] == 1) {
+          typeof cb == 'function' && cb();
+        } else if (index != -1) {
+          vm.lTabsData.splice(index, 1);
+        }
+      }
     },
     // 初始化左边按钮组
     initButtons: function () {
