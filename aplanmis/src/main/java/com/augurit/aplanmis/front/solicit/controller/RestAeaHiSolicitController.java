@@ -86,6 +86,7 @@ public class RestAeaHiSolicitController {
             restAeaHiSolicitService.createSolicit(aeaHiSolicit, solicitVo.getSolicitType(), solicitVo.getDetailInfo(), solicitVo.getBusType());
             return new ResultForm(true);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResultForm(false, "按事项发起失败！");
         }
     }

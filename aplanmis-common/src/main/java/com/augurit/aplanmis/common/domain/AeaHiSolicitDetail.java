@@ -1,6 +1,5 @@
 package com.augurit.aplanmis.common.domain;
 
-import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Size;
@@ -10,7 +9,6 @@ import java.util.List;
 /**
  * 征求意见详情表-模型
  */
-@Data
 public class AeaHiSolicitDetail implements Serializable {
 // ----------------------------------------------------- Properties
 

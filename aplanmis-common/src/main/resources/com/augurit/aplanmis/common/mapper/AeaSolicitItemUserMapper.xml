@@ -130,6 +130,7 @@
             <include refid="allColumns"/>
         from  AEA_SOLICIT_ITEM_USER
         <where>
+            IS_ACTIVE = '1'
             and SOLICIT_ITEM_ID in (
                 select
                    SOLICIT_ITEM_ID

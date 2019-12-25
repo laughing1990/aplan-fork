@@ -1,7 +1,6 @@
 package com.augurit.aplanmis.common.domain;
 
 import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
-import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -10,7 +9,6 @@ import java.util.List;
 /**
  * 征求意见详情用户任务表-模型
  */
-@Data
 public class AeaHiSolicitDetailUser implements Serializable {
 // ----------------------------------------------------- Properties
 
@@ -37,12 +35,13 @@ public class AeaHiSolicitDetailUser implements Serializable {
     private List<BscAttFileAndDir> fileAndDirs;//附件集合
     // ----------------------------------------------------- Constructors
 // ----------------------------------------------------- Methods
-    public String getDetailTaskId() {
-        return detailTaskId;
+
+    public String getDetailUserId() {
+        return detailUserId;
     }
 
-    public void setDetailTaskId(String detailTaskId) {
-        this.detailTaskId = detailTaskId == null ? null : detailTaskId.trim();
+    public void setDetailUserId(String detailUserId) {
+        this.detailUserId = detailUserId;
     }
 
     public String getSolicitDetailId() {
