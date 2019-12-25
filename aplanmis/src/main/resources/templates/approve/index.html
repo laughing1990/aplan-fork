@@ -652,14 +652,14 @@
                     <tr>
                       <td class="td-bg-grey">意见</td>
                       <td colspan="3">
-                        <template v-if="item.isOnlyRead==1">{{item.handleOpinion}}</template>
-                        <template v-else>
+                        <template v-if="isApprove==0&&item.isOnlyRead==0">
                           <el-input type="textarea" v-model="ckHandleOpinion" :rows="3" placeholder="请输入意见"></el-input>
                           <div style="margin-top:10px">
                             <el-button type="primary" size="medium" @click="ckHanderCancel(1, item)">同意</el-button>
                             <el-button size="medium" @click="ckHanderCancel(3, item)">不同意</el-button>
                           </div>
                         </template>
+                        <template v-else>{{item.handleOpinion}}</template>
                       </td>
                     </tr>
                   </table>
