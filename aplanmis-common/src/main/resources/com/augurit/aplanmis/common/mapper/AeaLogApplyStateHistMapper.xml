@@ -204,6 +204,15 @@
         from AEA_LOG_APPLY_STATE_HIST
         where STATE_HIST_ID = #{id}
     </delete>
+
+    <delete id="batchDeleteAeaLogApplyStateHist">
+        delete
+        from AEA_LOG_APPLY_STATE_HIST
+        where STATE_HIST_ID in
+        <foreach collection="ids" close=")" open="(" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
     <!--8 删除实体对象列表,根据主键ID列表 -->
     <!--9 返回所有字段的对象map,用于级联 -->
     <resultMap type="AeaLogApplyStateHist" id="AeaLogApplyStateHistMap">
@@ -232,7 +241,8 @@
         select
         <include refid="allColumns"/>
         from AEA_LOG_APPLY_STATE_HIST
-        where APPLYINST_ID = #{applyinstId} AND APPINST_ID = #{appinstId} AND IS_FLOW_TRIGGER = '1' AND TASKINST_ID IS null AND OLD_STATE is null
+        where APPLYINST_ID = #{applyinstId} AND APPINST_ID = #{appinstId} AND IS_FLOW_TRIGGER = '1' AND OLD_STATE is
+        null
     </select>
 
     <select id="getAeaLogApplyStateHistByApplyinstCorrectId" resultType="AeaLogApplyStateHist">

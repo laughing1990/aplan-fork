@@ -19,6 +19,7 @@ import com.augurit.aplanmis.common.domain.AeaHiItemStateinst;
 import com.augurit.aplanmis.common.domain.AeaHiIteminst;
 import com.augurit.aplanmis.common.domain.AeaHiParStateinst;
 import com.augurit.aplanmis.common.domain.AeaItemState;
+import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
 import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
 import com.augurit.aplanmis.common.domain.AeaParState;
 import com.augurit.aplanmis.common.domain.AeaParTheme;
@@ -32,6 +33,7 @@ import com.augurit.aplanmis.common.mapper.AeaHiItemStateinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiIteminstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiParStateinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemStateMapper;
+import com.augurit.aplanmis.common.mapper.AeaLogApplyStateHistMapper;
 import com.augurit.aplanmis.common.mapper.AeaLogItemStateHistMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStateMapper;
 import com.augurit.aplanmis.common.mapper.AeaParThemeMapper;
@@ -90,6 +92,8 @@ public class ApplyCommonServiceImpl implements ApplyCommonService {
     private ActStoAppinstSubflowMapper actStoAppinstSubflowMapper;
     @Autowired
     private BpmProcessService bpmProcessService;
+    @Autowired
+    private AeaLogApplyStateHistMapper aeaLogApplyStateHistMapper;
 
 
     @Override
@@ -182,6 +186,9 @@ public class ApplyCommonServiceImpl implements ApplyCommonService {
             deletingItemStateinstIds = aeaHiItemStateinstMapper.listAeaHiItemStateinstByApplyinstIdOrSeriesinstId(applyinstId, null)
                     .stream().map(AeaHiItemStateinst::getItemStateinstId).collect(Collectors.toList());
         }
+
+        AeaLogApplyStateHist aeaLogApplyStateHist = new AeaLogApplyStateHist();
+        aeaLogApplyStateHist.setApplyinstId(applyinstId);
 
         if (ApplyType.UNIT.getValue().equals(aeaHiApplyinst.getIsSeriesApprove())) { // 并联
             deletingStageStateinstIds = aeaHiParStateinstMapper.listAeaHiParStateinstByApplyinstIdOrStageinstId(applyinstId, null)

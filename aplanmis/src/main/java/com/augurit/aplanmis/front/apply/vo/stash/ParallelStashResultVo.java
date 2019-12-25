@@ -1,5 +1,6 @@
-package com.augurit.aplanmis.front.apply.vo;
+package com.augurit.aplanmis.front.apply.vo.stash;
 
+import com.augurit.aplanmis.front.apply.vo.ParallelItemApplyinstVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

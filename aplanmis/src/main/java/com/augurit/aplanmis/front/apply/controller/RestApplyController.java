@@ -17,14 +17,12 @@ import com.augurit.aplanmis.front.apply.service.AeaParStageService;
 import com.augurit.aplanmis.front.apply.service.AeaSeriesService;
 import com.augurit.aplanmis.front.apply.service.RestApplyService;
 import com.augurit.aplanmis.front.apply.vo.ApplyinstIdVo;
-import com.augurit.aplanmis.front.apply.vo.ParallelStashResultVo;
 import com.augurit.aplanmis.front.apply.vo.SeriesApplyCheckVo;
-import com.augurit.aplanmis.front.apply.vo.SeriesApplyDataPageVo;
 import com.augurit.aplanmis.front.apply.vo.SeriesApplyDataVo;
 import com.augurit.aplanmis.front.apply.vo.SmsInfoVo;
 import com.augurit.aplanmis.front.apply.vo.StageApplyDataPageVo;
-import com.augurit.aplanmis.front.apply.vo.StageApplyDataVo;
-import com.augurit.aplanmis.front.apply.vo.StashVo;
+import com.augurit.aplanmis.front.apply.vo.stash.ParallelStashResultVo;
+import com.augurit.aplanmis.front.apply.vo.stash.StashVo;
 import io.jsonwebtoken.lang.Assert;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -62,28 +60,28 @@ public class RestApplyController {
 
     @PostMapping("/series/processflow/start")
     @ApiOperation(value = "单项申报 --> 收件，发起申报", httpMethod = "POST")
-    public ContentResultForm<String> startSeriesFlow(@RequestBody SeriesApplyDataPageVo seriesApplyDataPageVo) throws Exception {
-        String applyinstId = restStartProcessService.startSeriesFlow(seriesApplyDataPageVo);
+    public ContentResultForm<String> startSeriesFlow(@RequestBody SeriesApplyDataVo seriesApplyDataVo) throws Exception {
+        String applyinstId = restStartProcessService.startSeriesFlow(seriesApplyDataVo);
         return new ContentResultForm<>(true, applyinstId, "Series start process success");
     }
 
     @PostMapping("/series/onlyInstApply")
     @ApiOperation(value = "单项申报 --> 仅保存申报实例", notes = "并联申报 --> 仅保存申报实例", httpMethod = "POST")
-    public ContentResultForm<String> seriesOnlyInstApply(@RequestBody SeriesApplyDataPageVo seriesApplyDataPageVo) throws Exception {
-        String applyinstId = restStartProcessService.seriesOnlyInstApply(seriesApplyDataPageVo);
+    public ContentResultForm<String> seriesOnlyInstApply(@RequestBody SeriesApplyDataVo seriesApplyDataVo) throws Exception {
+        String applyinstId = restStartProcessService.seriesOnlyInstApply(seriesApplyDataVo);
         return new ContentResultForm<>(true, applyinstId, "Inst apply success.");
     }
 
     @PostMapping("/series/inst")
     @ApiOperation(value = "单项申报 --> 生成实例，打印回执", httpMethod = "POST")
-    public ContentResultForm<String> instantiateSeriesFlow(@RequestBody SeriesApplyDataPageVo seriesApplyDataVo) throws Exception {
-        String applyinstId = restStartProcessService.instantiateSeriesFlow(seriesApplyDataVo);
-        return new ContentResultForm<>(true, applyinstId, "Series instantiate process success");
+    public ContentResultForm<String> printReceipts(@RequestBody SeriesApplyDataVo seriesApplyDataVo) throws Exception {
+        String applyinstId = restStartProcessService.printReceipts(seriesApplyDataVo);
+        return new ContentResultForm<>(true, applyinstId, "Print Receipts success.");
     }
 
     @PostMapping("/series/inadmissible")
     @ApiOperation(value = "单项申报 --> 不予受理，生成实例，启动流程，打印不受理回执", httpMethod = "POST")
-    public ContentResultForm<String> inadmissible(@RequestBody SeriesApplyDataPageVo seriesApplyDataVo) throws Exception {
+    public ContentResultForm<String> inadmissible(@RequestBody SeriesApplyDataVo seriesApplyDataVo) throws Exception {
         String applyinstId = restStartProcessService.inadmissibleSeriesFlow(seriesApplyDataVo);
         return new ContentResultForm<>(true, applyinstId, "Series instantiate process success");
     }
@@ -170,42 +168,6 @@ public class RestApplyController {
             id = smsInfoVo.getId();
         }
         return new ContentResultForm<>(true, id, "Save aeaHiSmsInfo success");
-    }
-
-    @PostMapping("/common/processflow/start")
-    @ApiOperation(value = "草稿箱视图的申报 --> 发起申报", notes = "草稿箱视图的申报 --> 发起申报", httpMethod = "POST")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "applyinstId", value = "申请实例id", required = true, dataType = "string", paramType = "query", readOnly = true),
-            @ApiImplicitParam(name = "comment", value = "办理意见", dataType = "string", paramType = "query", readOnly = true)
-    })
-    public ResultForm startProcessFlow(String applyinstId, String comment) throws Exception {
-        if (StringUtils.isBlank(applyinstId)) {
-            return new ResultForm(false, "发起申报失败，参数申请实例id不能为空！");
-        }
-        AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
-        if (aeaHiApplyinst != null) {
-            try {
-                String isSeriesApprove = aeaHiApplyinst.getIsSeriesApprove();
-                if (ApplyType.SERIES.getValue().equals(isSeriesApprove)) {
-                    SeriesApplyDataVo seriesApplyDataVo = new SeriesApplyDataVo();
-                    seriesApplyDataVo.setApplyinstId(applyinstId);
-                    seriesApplyDataVo.setComments(comment);
-                    aeaSeriesService.stageApplay(seriesApplyDataVo);
-                } else {
-                    StageApplyDataVo stageApplyDataVo = new StageApplyDataVo();
-                    stageApplyDataVo.setApplyinstIds(new String[]{applyinstId});
-                    stageApplyDataVo.setComments(comment);
-                    stageApplyDataVo.setIsJustApplyinst("2");
-                    aeaParStageService.stageApply(stageApplyDataVo);
-                }
-                return new ResultForm(true, "发起申报成功！");
-            } catch (Exception e) {
-                e.printStackTrace();
-                return new ResultForm(false, "发起申报失败！");
-            }
-        } else {
-            return new ResultForm(false, "发起申报失败，查询不到申请实例信息！");
-        }
     }
 
     @PostMapping("/series/stash")
