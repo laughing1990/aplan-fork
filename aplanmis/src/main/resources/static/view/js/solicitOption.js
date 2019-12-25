@@ -11,14 +11,15 @@ var vm = new Vue({
 					perpage: 10
 				},
 				sort: {
-					field: 'applyTime',
+					field: 'CREATE_TIME',
 					sort: 'desc'
 				},
 				theme: '',
 				applyStartTime: '',
 				applyEndTime: '',
 				applyType: '',
-				keyword: ''
+				keyword: '',
+				busType: '1'
 			},
 			sendApplyVisible: false,
 			sendApplyLoading: false,
@@ -45,7 +46,7 @@ var vm = new Vue({
 			ts.loading = true;
 
 			request('', {
-				url: ctx + 'rest/conditional/query/listMyDrafts',
+				url: ctx + '/rest/solicit/list/solicit',
 				type: 'get',
 				data: ts.searchFrom
 			}, function (res) {

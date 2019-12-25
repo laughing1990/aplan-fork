@@ -9,6 +9,7 @@ import com.augurit.agcloud.bsc.domain.BscAttForm;
 import com.augurit.agcloud.bsc.domain.BscAttLink;
 import com.augurit.agcloud.bsc.mapper.BscAttDetailMapper;
 import com.augurit.agcloud.bsc.mapper.BscAttMapper;
+import com.augurit.agcloud.bsc.sc.att.service.IBscAttService;
 import com.augurit.agcloud.bsc.sc.day.service.WorkdayHolidayService;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
@@ -64,6 +65,7 @@ import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -79,6 +81,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -164,7 +167,10 @@ public class RestMatSupplyCommonServiceImpl implements RestMatCorrectCommonServi
     private BscAttMapper bscAttMapper;
     @Autowired
     private AeaItemBasicMapper aeaItemBasicMapper;
-
+    @Autowired
+    private IBscAttService bscAttService;
+    @Value("${dg.sso.access.platform.org.top-org-id:0368948a-1cdf-4bf8-a828-71d796ba89f6}")
+    private String topOrgId;
     /**
      * 计算事项少交或者未交的材料
      *
@@ -756,7 +762,7 @@ public class RestMatSupplyCommonServiceImpl implements RestMatCorrectCommonServi
         Map<String, MatCorrectDto> map = new HashMap();
         for (AeaHiItemCorrectDueIninst correctDueIninst : aeaHiItemCorrectDueIninsts) {
             MatCorrectDto matCorrectDto = map.get(correctDueIninst.getMatId()) != null ? map.get(correctDueIninst.getMatId()) : new MatCorrectDto();
-
+            matCorrectDto.setMatId(correctDueIninst.getMatId());
             if (StringUtils.isBlank(matCorrectDto.getMatinstName())) {
                 matCorrectDto.setMatinstName(correctDueIninst.getMatinstName());
             }
@@ -790,7 +796,7 @@ public class RestMatSupplyCommonServiceImpl implements RestMatCorrectCommonServi
 
             if (map.get(correctRealIninst.getMatId()) == null) continue;
             MatCorrectDto matCorrectDto = map.get(correctRealIninst.getMatId());
-
+            matCorrectDto.setMatId(correctRealIninst.getMatId());
             if (correctRealIninst.getAttCount() != null && correctRealIninst.getAttCount() > 0) {
                 matCorrectDto.setAttCount(correctRealIninst.getAttCount());
                 matCorrectDto.setAttRealIninstId(correctRealIninst.getRealIninstId());
@@ -829,6 +835,11 @@ public class RestMatSupplyCommonServiceImpl implements RestMatCorrectCommonServi
                 matCorrectDto.setAttRealIninstId(realInstId);
                 matCorrectDto.setAttCount(0l);
             }
+            List<BscAttForm> kbList = bscAttService.listAttLinkAndDetailNoPage("AEA_ITEM_MAT", "TEMPLATE_DOC", matCorrectDto.getMatId(), null, topOrgId, null);
+            List<BscAttForm> ybList = bscAttService.listAttLinkAndDetailNoPage("AEA_ITEM_MAT", "SAMPLE_DOC", matCorrectDto.getMatId(), null, topOrgId, null);
+            kbList.addAll(ybList);
+            String ybKbDetailIds = kbList.stream().map(bscAttForm -> bscAttForm.getDetailId()).collect(Collectors.joining(","));
+            matCorrectDto.setYbKbDetailIds(ybKbDetailIds);
         }
         String projInfoId = aeaHiItemCorrect.getProjInfoId();
         aeaHiItemCorrect.setUnitInfos(aeaUnitInfoService.findOwerUnitProj(projInfoId));

@@ -15,6 +15,7 @@ public class AeaHiSolicit implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private String solicitId; // (主键)
+    private String busType; // (征求业务类型，来自于数据字典)
     private String solicitType; // (征求意见类型：i表示按事项征求，d表示按部门征求)
     private String solicitOrgId; // (按组织征求配置ID【当SOLICIT_TYPE=d】)
     private String solicitItemId; // (按事项征求配置ID【当SOLICIT_TYPE=i】)
@@ -56,4 +57,5 @@ public class AeaHiSolicit implements Serializable {
     private java.util.Date modifyTime; // (修改时间)
     private String rootOrgId; // (根组织ID)
 
+    private String solicitTypeName; // 非表字段 (征求意见类型：i表示按事项征求，d表示按部门征求)
 }
