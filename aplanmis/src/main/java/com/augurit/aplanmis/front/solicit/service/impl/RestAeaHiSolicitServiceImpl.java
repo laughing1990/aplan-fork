@@ -3,6 +3,7 @@ package com.augurit.aplanmis.front.solicit.service.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
@@ -13,8 +14,8 @@ import com.augurit.aplanmis.common.vo.solicit.AeaHiSolicitVo;
 import com.augurit.aplanmis.common.vo.solicit.QueryCondVo;
 import com.augurit.aplanmis.front.solicit.service.RestAeaHiSolicitService;
 import com.augurit.aplanmis.front.solicit.service.SolicitCodeService;
+import com.augurit.aplanmis.common.constants.SolicitBusTypeEnum;
 import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -186,6 +187,26 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService{
                 aeaHiSolicitDetailUserMapper.batchInsertAeaHiSolicitDetailUser(detailUsers);
             }
         }
+    }
+
+    @Override
+    public List<AeaHiSolicit> listAeaHiSolicitByApplyinstId(String applyinstId, String busType) throws Exception {
+        if(StringUtils.isBlank(applyinstId))
+            throw new RuntimeException("参数applyinstId不能为空！");
+        if(StringUtils.isBlank(busType))
+            throw new RuntimeException("参数busType业务类型不能为空！");
+
+        AeaHiSolicit solicit = new AeaHiSolicit();
+        solicit.setApplyinstId(applyinstId);
+        List<AeaHiSolicit> list = aeaHiSolicitMapper.listAeaHiSolicit(solicit);
+
+        if(list!=null&&list.size()>0){
+            for(AeaHiSolicit hiSolicit:list){
+                hiSolicit.setSolicitTypeName(SolicitBusTypeEnum.valueOf(hiSolicit.getBusType()).getName());
+            }
+        }
+
+        return list;
     }
 
     private AeaHiSolicitDetailUser createDetailUser(String currentUserName, Date date, String detailId, String userId) {

@@ -101,4 +101,27 @@ public class RestAeaHiSolicitController {
 
         return new ResultForm(true);
     }
+
+    @ApiOperation("根据申报实例ID和业务类型获取所有的征求信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "applyinstId", value = "申报实例ID")
+            , @ApiImplicitParam(name = "busType", value = "业务类型")
+    })
+    @GetMapping("/listAeaHiSolicitByApplyinstId")
+    public ResultForm listAeaHiSolicitByApplyinstId(String applyinstId, String busType){
+        if(StringUtils.isBlank(applyinstId))
+            return new ResultForm(false,"参数applyinstId不能为空！");
+        if(StringUtils.isBlank(busType))
+            return new ResultForm(false,"参数busType业务类型不能为空！");
+
+        List<AeaHiSolicit> list = null;
+        try {
+            list = restAeaHiSolicitService.listAeaHiSolicitByApplyinstId(applyinstId,busType);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultForm(false,"请求出错了，错误信息为："+e.getLocalizedMessage());
+        }
+
+        return new ContentResultForm<List<AeaHiSolicit>>(true,list);
+    }
 }

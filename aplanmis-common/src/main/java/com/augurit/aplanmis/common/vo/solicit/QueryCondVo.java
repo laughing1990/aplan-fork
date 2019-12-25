@@ -16,6 +16,11 @@ public class QueryCondVo {
     @ApiModelProperty(value = "当前根组织ID", required = true)
     private String rootOrgId;
 
+    @ApiModelProperty(value = "审批类型 0 并联，1 单项 “” 所有")
+    private String applyType;
+
+    private String theme;
+
     private String keyword;
 
 }

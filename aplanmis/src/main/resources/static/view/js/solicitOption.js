@@ -19,7 +19,7 @@ var vm = new Vue({
 				applyEndTime: '',
 				applyType: '',
 				keyword: '',
-				busType: '1'
+				busType: 'YJZQ'
 			},
 			sendApplyVisible: false,
 			sendApplyLoading: false,

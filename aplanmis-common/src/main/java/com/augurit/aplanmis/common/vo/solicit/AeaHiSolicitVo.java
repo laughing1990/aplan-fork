@@ -13,12 +13,17 @@ import java.util.List;
 public class AeaHiSolicitVo {
     // aea_hi_solicit
     private String solicitId; // (主键)
-    @ApiModelProperty(value = "")
-    private String solicitType; // (征求意见类型：i表示按事项征求，d表示按部门征求)
-    @ApiModelProperty(value = "")
-    private String solicitOrgId; // (按组织征求配置ID【当SOLICIT_TYPE=d】)
-    @ApiModelProperty(value = "")
-    private String solicitItemId; // (按事项征求配置ID【当SOLICIT_TYPE=i】)
+    @ApiModelProperty(value = "征求意见类型：i表示按事项征求，d表示按部门征求")
+    private String solicitType;
+    @ApiModelProperty(value = "业务类型，来源数据字典")
+    private String busType;
+
+    @ApiModelProperty(value = "按组织征求配置ID【当SOLICIT_TYPE=d】")
+    private String solicitOrgId;
+
+    @ApiModelProperty(value = "按事项征求配置ID【当SOLICIT_TYPE=i】")
+    private String solicitItemId;
+
     @ApiModelProperty(value = "发起征求的申报ID")
     private String applyinstId;
 
@@ -37,13 +42,14 @@ public class AeaHiSolicitVo {
     @ApiModelProperty(value = "征求意见内容")
     private String solicitContent;
 
-    @ApiModelProperty(value = "")
-    private Long solicitDueDays; // (意见征求承诺时限，例如：5个工作日，那该字段为5)
+    @ApiModelProperty(value = "意见征求承诺时限，例如：5个工作日，那该字段为5")
+    private Long solicitDueDays;
 
-    @ApiModelProperty(value = "")
-    private Long solicitRealDays; // (意见征求实际时限，例如：5个工作日，那该字段为5)
-    @ApiModelProperty(value = "")
-    private String solicitDaysUnit; // (意见征求时限单位，z表示自然日，g表示工作日)
+    @ApiModelProperty(value = "意见征求实际时限，例如：5个工作日，那该字段为5")
+    private Long solicitRealDays;
+
+    @ApiModelProperty(value = "意见征求时限单位，z表示自然日，g表示工作日")
+    private String solicitDaysUnit;
     @ApiModelProperty(value = "意见征求开始时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private java.util.Date solicitStartTime;
@@ -179,7 +185,7 @@ public class AeaHiSolicitVo {
     private String isSeriesApprove;
 
     @ApiModelProperty(value = "")
-    private String iteminstName;
+    private String itemName;
 
     @ApiModelProperty(value = "")
     private String stageName;
@@ -197,5 +203,16 @@ public class AeaHiSolicitVo {
 
     @ApiModelProperty(value = "提醒信息列表")
     private List<ActStoRemindAndReceiver> remindList;
+
+    private String taskId;
+    private String taskName;
+
+    @ApiModelProperty(value = "申报来源")
+    private String applyinstSource;
+    @ApiModelProperty(value = "申报来源：网厅，窗口")
+    private String applySource;
+    @ApiModelProperty(value = "申报类型，单项 并联")
+    private String applyType;
+
 
 }
