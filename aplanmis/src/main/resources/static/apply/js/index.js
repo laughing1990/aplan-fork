@@ -5210,6 +5210,9 @@ var vm = new Vue({
           }
         });
       };
+      if(row.questionStates=='undefined'||row.questionStates==undefined){
+        Vue.set(row, 'questionStates', []);
+      }
       if(selArr.length==0){
         flag=false;
         _that.showCoreItemsKey=[];
@@ -5521,6 +5524,9 @@ var vm = new Vue({
       }
       selArr.map(function(row,index){
         if(row){
+          if(row.questionStates=='undefined'||row.questionStates==undefined){
+            Vue.set(row, 'questionStates', []);
+          }
           var rowMatList = [];
           if(row.implementItemVerId&&_that.itemverMatList.length>0){
             for (var i = 0; i < _that.itemverMatList.length; i++) { // 清空情形下所对应材料
@@ -5583,6 +5589,9 @@ var vm = new Vue({
             itemAllVerIds.push(item.itemVerId)
           }
         });
+      }
+      if(row.questionStates=='undefined'||row.questionStates==undefined){
+        Vue.set(row, 'questionStates', []);
       }
       if(selItemVer.length>0){
         selItemVer.map(function(item){
@@ -5859,6 +5868,9 @@ var vm = new Vue({
         var rowsItemVerIds = [];
         selArr.map(function(row){
           if(row){
+            if(row.questionStates=='undefined'||row.questionStates==undefined){
+              Vue.set(row, 'questionStates', []);
+            }
             var rowMatList = [];
             // if(row.isDone !== 'FINISHED' && row.isDone !== 'HANDLING'&&(!row.notRegionData)){
             if(row.implementItemVerId&&_that.itemverMatList.length>0){

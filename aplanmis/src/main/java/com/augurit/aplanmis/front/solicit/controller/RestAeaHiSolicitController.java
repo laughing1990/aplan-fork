@@ -105,7 +105,7 @@ public class RestAeaHiSolicitController {
             AeaHiSolicitDetailUser detailUser = solicitDetailUserVo.convertToAeaHiDetailUser();
             restAeaHiSolicitService.createSolicitOpinion(detailUser);
             return new ResultForm(true);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResultForm(false);
         }
@@ -118,7 +118,7 @@ public class RestAeaHiSolicitController {
             AeaHiSolicit aeaHiSolicit = soliciVo.convertToAeaHiSolicit();
             restAeaHiSolicitService.createSolicitCollectOpinion(aeaHiSolicit);
             return new ResultForm(true);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResultForm(false);
         }
@@ -130,20 +130,30 @@ public class RestAeaHiSolicitController {
             , @ApiImplicitParam(name = "busType", value = "业务类型")
     })
     @GetMapping("/listAeaHiSolicitByApplyinstId")
-    public ResultForm listAeaHiSolicitByApplyinstId(String applyinstId, String busType){
-        if(StringUtils.isBlank(applyinstId))
-            return new ResultForm(false,"参数applyinstId不能为空！");
-        if(StringUtils.isBlank(busType))
-            return new ResultForm(false,"参数busType业务类型不能为空！");
+    public ResultForm listAeaHiSolicitByApplyinstId(String applyinstId, String busType) {
+        if (StringUtils.isBlank(applyinstId))
+            return new ResultForm(false, "参数applyinstId不能为空！");
+        if (StringUtils.isBlank(busType))
+            return new ResultForm(false, "参数busType业务类型不能为空！");
 
         List<AeaHiSolicitInfo> list = null;
         try {
-            list = restAeaHiSolicitService.listAeaHiSolicitByApplyinstId(applyinstId,busType);
+            list = restAeaHiSolicitService.listAeaHiSolicitByApplyinstId(applyinstId, busType);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResultForm(false,"请求出错了，错误信息为："+e.getLocalizedMessage());
+            return new ResultForm(false, "请求出错了，错误信息为：" + e.getLocalizedMessage());
         }
 
-        return new ContentResultForm<List<AeaHiSolicitInfo>>(true,list);
+        return new ContentResultForm<List<AeaHiSolicitInfo>>(true, list);
+    }
+
+    @ApiOperation("被征集人签收")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "solicitUserId", value = "被征集人主键")
+    })
+    @GetMapping("/sign")
+    public ResultForm signSolicitUserDetail(String solicitUserId) throws Exception {
+        restAeaHiSolicitService.signSolicitDetail(solicitUserId);
+        return new ResultForm(true, "success");
     }
 }
