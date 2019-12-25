@@ -14,7 +14,7 @@ import com.augurit.aplanmis.common.vo.solicit.AeaHiSolicitVo;
 import com.augurit.aplanmis.common.vo.solicit.QueryCondVo;
 import com.augurit.aplanmis.front.solicit.service.RestAeaHiSolicitService;
 import com.augurit.aplanmis.front.solicit.service.SolicitCodeService;
-import com.augurit.aplanmis.front.solicit.vo.SolicitBusTypeEnum;
+import com.augurit.aplanmis.common.constants.SolicitBusTypeEnum;
 import com.github.pagehelper.Page;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
