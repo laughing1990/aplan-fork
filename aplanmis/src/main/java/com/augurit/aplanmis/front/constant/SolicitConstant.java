@@ -8,6 +8,15 @@ package com.augurit.aplanmis.front.constant;
  */
 public class SolicitConstant {
 
+    //征求业务类型，联合评审
+    public static final String SOLICIT_BUSTYPE_LHPS = "LHPS";
+
+    //征求业务类型，一次征询
+    public static final String SOLICIT_BUSTYPE_YCZX = "YCZX";
+
+    //征求业务类型，意见征求
+    public static final String SOLICIT_BUSTYPE_YJZQ = "YJZQ";
+
     //征求类型，按事项征求
     public static final String SOLICIT_TYPE_ITEM = "i";
 
