@@ -169,6 +169,7 @@ public class AeaExProjDrawingController {
         aeaExProjDrawing.setGovOrgAreaCode(aeaProjDrawingVo.getGovOrgAreaCode());
         aeaExProjDrawing.setGovOrgCode(aeaProjDrawingVo.getGovOrgCode());
         aeaExProjDrawing.setGovOrgName(aeaProjDrawingVo.getGovOrgName());
+        aeaExProjDrawing.setFormId(aeaProjDrawingVo.getFormId());
         return aeaExProjDrawing;
     }
 

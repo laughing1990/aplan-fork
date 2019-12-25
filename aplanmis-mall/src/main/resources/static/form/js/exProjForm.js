@@ -86,7 +86,6 @@ var vm = new Vue({
     mounted: function () {
         var _that = this;
         _that.exProjFrom.projInfoId = projInfoId;
-        _that.exProjFrom.formId = formId;
         _that.getDictList('XM_JZLX,XM_NATURE,XM_FUNCTION,XM_SCALE_TYPE,XM_PROJECT_LEVEL');
         _that.getGovAreaCodeList();
         _that.getExProjForm();
@@ -195,6 +194,7 @@ var vm = new Vue({
 
             _that.$refs['exProjFrom'].validate(function (valid) {
                 if (valid) {
+                    _that.exProjFrom.formId = formId;
                     request('', {
                         url: ctx + 'rest/form/ex/project/save',
                         data: _that.exProjFrom,

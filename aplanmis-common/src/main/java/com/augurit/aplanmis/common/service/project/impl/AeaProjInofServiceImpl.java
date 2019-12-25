@@ -1079,6 +1079,7 @@ public class AeaProjInofServiceImpl extends AbstractFormDataOptManager implement
         actStoForminst.setFormId(formId);
         actStoForminst.setFormPrimaryKey(metaTableId);
         result.setActStoForminst(actStoForminst);
+        result.setDataOpt(EDataOpt.INSERT);
         return result;
     }
 

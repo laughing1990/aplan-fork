@@ -353,6 +353,7 @@ public class RestExSJUnitFormService extends AbstractFormDataOptManager {
         actStoForminst.setFormId(formId);
         actStoForminst.setFormPrimaryKey(metaTableId);
         result.setActStoForminst(actStoForminst);
+        result.setDataOpt(EDataOpt.INSERT);
         return result;
     }
 

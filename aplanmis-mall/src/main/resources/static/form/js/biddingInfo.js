@@ -122,10 +122,12 @@
             organizationalCode: { required: true, validator: checkOrganizationalCode, trigger: ["change"] },
             unifiedSocialCreditCode: { required: true, validator: checkUnifiedSocialCreditCode, trigger: ["change"] },
           }],
-          costUnits: [{
-            organizationalCode: { required: true, validator: checkOrganizationalCode, trigger: ["change"] },
-            unifiedSocialCreditCode: { required: true, validator: checkUnifiedSocialCreditCode, trigger: ["change"] },
-          }]
+          costUnits: [
+          // {
+          //   organizationalCode: { required: true, validator: checkOrganizationalCode, trigger: ["change"] },
+          //   unifiedSocialCreditCode: { required: true, validator: checkUnifiedSocialCreditCode, trigger: ["change"] },
+          // }
+        ]
         },
         bidTypeOptions: [], // 招标类型下拉选项arr
         bidModeOptions: [], // 招标方式下拉选项arr
@@ -153,6 +155,7 @@
     },
     created: function() {
       this.projInfoId = this.getUrlParam('projInfoId');
+      this.formId = this.getUrlParam('formId');
       // this.projInfoId = 'ceb078f2-4f57-48d1-9d5e-68137de3e704';
     },
     mounted: function() {
@@ -166,7 +169,7 @@
         var _that = this;
         var params = this.biddingInfo;
         params.projInfoId = this.projInfoId;
-
+        params.formId = this.formId;
         if (params.bidMode == '3') {
           // 直接委托
           params.agencyUnits.splice(0, 1);
