@@ -46,6 +46,9 @@
         from AEA_SOLICIT_ORG_USER asou
         left join AEA_SOLICIT_ORG aso on aso.SOLICIT_ORG_ID = asou.SOLICIT_ORG_ID
         where asou.IS_ACTIVE = '1' and aso.ORG_ID = #{orgId}
+        <if test="busType != null">
+            and aso.BUS_TYPE = #{busType}
+        </if>
     </select>
 
     <!--3 根据条件查询实体list -->

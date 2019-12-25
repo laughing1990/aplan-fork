@@ -215,13 +215,13 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
             List<AeaHiSolicitDetailUser> detailUsers = Lists.newArrayList();
             if ("i".equals(type)) {
                 //查询事项配置的用户信息
-                List<AeaSolicitItemUser> aeaSolicitItemUsers = aeaSolicitItemUserMapper.listSolicitItemUserByItemVerId(detail.getItemVerId(), topOrgId);
+                List<AeaSolicitItemUser> aeaSolicitItemUsers = aeaSolicitItemUserMapper.listSolicitItemUserByItemVerId(detail.getItemVerId(), topOrgId,aeaHiSolicit.getBusType());
                 for (int i = 0, len = aeaSolicitItemUsers.size(); i < len; i++) {
                     AeaHiSolicitDetailUser detailUser = createDetailUser(currentLoginName, date, detailId, aeaSolicitItemUsers.get(i).getUserId());
                     detailUsers.add(detailUser);
                 }
             } else {
-                List<AeaSolicitOrgUser> aeaSolicitOrgUsers = aeaSolicitOrgUserMapper.listAeaSolicitOrgUserByOrgId(detail.getDetailOrgId(), topOrgId);
+                List<AeaSolicitOrgUser> aeaSolicitOrgUsers = aeaSolicitOrgUserMapper.listAeaSolicitOrgUserByOrgId(detail.getDetailOrgId(), topOrgId,aeaHiSolicit.getBusType());
                 for (int j = 0, len = aeaSolicitOrgUsers.size(); j < len; j++) {
                     AeaHiSolicitDetailUser detailUser = createDetailUser(currentLoginName, date, detailId, aeaSolicitOrgUsers.get(j).getUserId());
                     detailUsers.add(detailUser);

@@ -30,7 +30,7 @@ public interface AeaSolicitOrgUserMapper {
 
      List<AeaSolicitOrgUser> listAeaSolicitOrgUserRelInfo(AeaSolicitOrgUser aeaSolicitOrgUser) ;
 
-     List<AeaSolicitOrgUser> listAeaSolicitOrgUserByOrgId(@Param("orgId") String orgId, @Param("rootOrgId") String rootOrgId) ;
+     List<AeaSolicitOrgUser> listAeaSolicitOrgUserByOrgId(@Param("orgId") String orgId, @Param("rootOrgId") String rootOrgId, @Param("busType") String busType) ;
 
      Long getMaxSortNo();
 

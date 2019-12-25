@@ -27,5 +27,5 @@ public interface AeaSolicitItemUserMapper {
       * @param rootOrgId
       * @return
       */
-     List<AeaSolicitItemUser> listSolicitItemUserByItemVerId(@Param("itemVerId") String itemVerId, @Param("rootOrgId") String rootOrgId) ;
+     List<AeaSolicitItemUser> listSolicitItemUserByItemVerId(@Param("itemVerId") String itemVerId, @Param("rootOrgId") String rootOrgId, @Param("busType") String busType) ;
 }

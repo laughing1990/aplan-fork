@@ -138,6 +138,9 @@
                 <where>
                     and ITEM_VER_ID = #{itemVerId}
                     and ROOT_ORG_ID = #{rootOrgId}
+                    <if test="busType != null">
+                        and BUS_TYPE = #{busType}
+                    </if>
                 </where>
             )
         </where>
