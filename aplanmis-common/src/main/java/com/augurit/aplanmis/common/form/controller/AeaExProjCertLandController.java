@@ -83,8 +83,12 @@ public class AeaExProjCertLandController {
         if (aeaProjInfoByProjInfoId == null) {
             return new ResultForm(false, "获取项目信息失败，项目id " + aeaCertiVo.getProjInfoId());
         }
-        aeaExCertiService.save(aeaCertiVo);
-        return new ContentResultForm<AeaCertiVo>(true, aeaCertiVo);
+        ResultForm save = aeaExCertiService.save(aeaCertiVo);
+        if (save.isSuccess()){
+            return new ContentResultForm<AeaCertiVo>(true, aeaCertiVo);
+        }else {
+            return new ContentResultForm<String>(false, save.getMessage());
+        }
     }
 
     @RequestMapping("/deleteAeaExProjCertLandById.do")

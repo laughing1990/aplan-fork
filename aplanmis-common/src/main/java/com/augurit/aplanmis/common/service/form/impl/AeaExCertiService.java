@@ -5,6 +5,8 @@ import com.augurit.agcloud.bpm.common.constant.EDataOpt;
 import com.augurit.agcloud.bpm.common.domain.ActStoForm;
 import com.augurit.agcloud.bpm.common.domain.ActStoForminst;
 import com.augurit.agcloud.bpm.common.domain.vo.FormDataOptResult;
+import com.augurit.agcloud.framework.ui.result.ContentResultForm;
+import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaExProjCertLand;
 import com.augurit.aplanmis.common.domain.AeaExProjCertProject;
@@ -86,7 +88,7 @@ public class AeaExCertiService extends AbstractFormDataOptManager {
     }
 
 
-    public void save(AeaCertiVo aeaCertiVo) {
+    public ResultForm save(AeaCertiVo aeaCertiVo) {
 
         try {
             if (StringUtils.isBlank(aeaCertiVo.getFormId())) throw new Exception("缺少formId");
@@ -176,8 +178,10 @@ public class AeaExCertiService extends AbstractFormDataOptManager {
                     }
                 }
             }
+            return new ContentResultForm<String>(true,"保存成功");
         } catch (Exception e) {
             e.printStackTrace();
+            return new ContentResultForm<String>(false,"保存失败：" + e.getMessage());
         }
 
     }
@@ -191,6 +195,7 @@ public class AeaExCertiService extends AbstractFormDataOptManager {
         actStoForminst.setFormId(formId);
         actStoForminst.setFormPrimaryKey(metaTableId);
         result.setActStoForminst(actStoForminst);
+        result.setDataOpt(EDataOpt.INSERT);
         return result;
     }
 
