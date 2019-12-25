@@ -40,5 +40,20 @@ public class AeaSolicitOrgUser implements Serializable{
 
     @ApiModelProperty("修改时间")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private java.util.Date modifyTime; 
+    private java.util.Date modifyTime;
+
+    @ApiModelProperty("扩展字段：姓名")
+    private String userName;
+
+    @ApiModelProperty("扩展字段：登录名")
+    private String loginName;
+
+    @ApiModelProperty("扩展字段：性别")
+    private String userSex;
+
+    @ApiModelProperty("扩展字段：手机号")
+    private String userMobile;
+
+    @ApiModelProperty("扩展字段：关键字查询")
+    private String keyword;
 }

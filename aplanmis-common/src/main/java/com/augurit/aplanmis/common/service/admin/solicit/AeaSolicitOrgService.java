@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.common.service.admin.solicit;
 
+import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
 import com.augurit.aplanmis.common.domain.AeaSolicitOrg;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
@@ -103,4 +104,6 @@ public interface AeaSolicitOrgService {
       * @param rootOrgId
       */
      void batchDelSolicitOrgByRootOrgId(String rootOrgId);
+
+     List<ZtreeNode> gtreeSolicitOrg(String rootOrgId);
 }

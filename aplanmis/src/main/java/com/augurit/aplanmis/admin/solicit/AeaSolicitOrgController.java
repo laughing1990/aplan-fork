@@ -8,6 +8,7 @@ import com.augurit.agcloud.framework.ui.pager.EasyuiPageInfo;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
+import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaSolicitOrg;
 import com.augurit.aplanmis.common.service.admin.solicit.AeaSolicitOrgService;
@@ -168,5 +169,11 @@ public class AeaSolicitOrgController {
             aeaSolicitOrgService.batchDelSolicitOrgByRootOrgId(SecurityContext.getCurrentOrgId());
         }
         return new ResultForm(true);
+    }
+
+    @RequestMapping("/gtreeSolicitOrg.do")
+    public List<ZtreeNode> gtreeSolicitOrg() throws Exception{
+
+        return aeaSolicitOrgService.gtreeSolicitOrg(SecurityContext.getCurrentOrgId());
     }
 }

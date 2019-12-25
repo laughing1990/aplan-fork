@@ -17,32 +17,34 @@
         MODIFY_TIME  modifyTime
     </sql>
 
-    <sql id="allAlisColumns" >
-        asou.ORG_USER_ID  orgUserId,
-        asou.SOLICIT_ORG_ID  solicitOrgId,
-        asou.USER_ID  userId,
-        asou.SORT_NO  sortNo,
-        asou.IS_ACTIVE  isActive,
-        asou.CREATER  creater,
-        asou.CREATE_TIME  createTime,
-        asou.MODIFIER  modifier,
-        asou.MODIFY_TIME  modifyTime
+    <sql id="alias_allColumns">
+        ${alias}.ORG_USER_ID  orgUserId,
+        ${alias}.SOLICIT_ORG_ID  solicitOrgId,
+        ${alias}.USER_ID  userId,
+        ${alias}.SORT_NO  sortNo,
+        ${alias}.IS_ACTIVE  isActive,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaSolicitOrgUserById" resultType="AeaSolicitOrgUser" >
         select
            <include refid="allColumns"/>
-        from    AEA_SOLICIT_ORG_USER
-        where    ORG_USER_ID = #{id}
+        from AEA_SOLICIT_ORG_USER
+        where ORG_USER_ID = #{id}
     </select>
 
     <!--2.1 根据orgId查询所有用户信息 -->
     <select id="listAeaSolicitOrgUserByOrgId" resultType="AeaSolicitOrgUser" >
         select
-           <include refid="allAlisColumns"/>
-        from    AEA_SOLICIT_ORG_USER asou
-        LEFT JOIN AEA_SOLICIT_ORG aso ON aso.SOLICIT_ORG_ID = asou.SOLICIT_ORG_ID AND aso.ORG_ID = #{orgId}
+            <include refid="alias_allColumns">
+                <property name="alias" value="asou"/>
+            </include>
+        from AEA_SOLICIT_ORG_USER asou
+        left join AEA_SOLICIT_ORG aso on aso.SOLICIT_ORG_ID = asou.SOLICIT_ORG_ID and aso.ORG_ID = #{orgId}
     </select>
 
     <!--3 根据条件查询实体list -->
@@ -79,6 +81,44 @@
             and    MODIFY_TIME = #{modifyTime}
             </if>
         </where>
+        order by SORT_NO asc, CREATE_TIME asc
+    </select>
+    
+    <select id="listAeaSolicitOrgUserRelInfo" resultType="AeaSolicitOrgUser">
+        select
+            <include refid="alias_allColumns">
+                <property name="alias" value="asou"/>
+            </include>,
+            omuser.USER_NAME as userName,
+            omuser.LOGIN_NAME as loginName,
+            omuser.USER_SEX as userSex,
+            userInfo.USER_MOBILE as userMobile
+        from AEA_SOLICIT_ORG_USER asou
+        left join OPU_OM_USER omuser on omuser.USER_ID = asou.USER_ID
+        left join OPU_OM_USER_INFO userInfo on omuser.USER_ID = userInfo.USER_ID
+        <where>
+            <if test="orgUserId != null" >
+                and    asou.ORG_USER_ID = #{orgUserId}
+            </if>
+            <if test="solicitOrgId != null" >
+                and    asou.SOLICIT_ORG_ID = #{solicitOrgId}
+            </if>
+            <if test="userId != null" >
+                and    asou.USER_ID = #{userId}
+            </if>
+            <if test="isActive != null" >
+                and    asou.IS_ACTIVE = #{isActive}
+            </if>
+            <if test="keyword!=null and keyword!='' ">
+                and (
+                    omuser.USER_NAME like concat('%', concat(#{keyword}, '%')) or
+                    omuser.LOGIN_NAME like concat('%', concat(#{keyword}, '%')) or
+                    omuser.USER_SEX like concat('%', concat(#{keyword}, '%')) or
+                    userInfo.USER_MOBILE like concat('%', concat(#{keyword}, '%'))
+                )
+            </if>
+        </where>
+        order by asou.SORT_NO asc, asou.CREATE_TIME asc
     </select>
 
     <!--5 新增实体对象 -->
@@ -145,6 +185,34 @@
     <delete id="deleteAeaSolicitOrgUser">
         delete from AEA_SOLICIT_ORG_USER where ORG_USER_ID = #{id}
     </delete>
+    
+    <delete id="batchDelSolicitOrgUserByIds">
+        <if test="ids!=null and ids.length>0 ">
+            delete from AEA_SOLICIT_ORG_USER where ORG_USER_ID in
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+    </delete>
+
+    <delete id="batchDelSolicitOrgUserBySolicitOrgId">
+         delete from AEA_SOLICIT_ORG_USER where SOLICIT_ORG_ID = #{solicitOrgId}
+    </delete>
+    
+    <select id="getMaxSortNo" resultType="java.lang.Long">
+        select max(SORT_NO) from AEA_SOLICIT_ORG_USER
+    </select>
+
+    <update id="changeIsActive">
+        update AEA_SOLICIT_ORG_USER
+        set IS_ACTIVE = case IS_ACTIVE
+        when '1' then '0'
+        when '0' then '1'
+        end
+        <where>
+            and ORG_USER_ID = #{id}
+        </where>
+    </update>
 
     <resultMap type="AeaSolicitOrgUser" id="AeaSolicitOrgUserMap">
         <id property="orgUserId" column="ORG_USER_ID"/>

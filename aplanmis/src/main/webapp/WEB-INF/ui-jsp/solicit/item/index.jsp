@@ -50,11 +50,65 @@
                 </ul>
                 <div class="tab-content">
 
-                    <!-- 征求部门 -->
+                    <!-- 征求事项 -->
                     <div id="m_tabs_1" class="tab-pane active" role="tabpanel">
                         <div class="m-portlet" style="margin-bottom: 0px;width: 100%;height: 100%;border:0px;">
                             <div class="m-portlet__body" style="padding: 0px;">
+                                <div class="m-form m-form--label-align-right m--margin-bottom-5">
+                                    <div class="row" style="margin: 0px;">
+                                        <div class="col-md-4" style="text-align: left;">
+                                            <button type="button" class="btn btn-info"
+                                                    onclick="importSolicitItem();">导入事项</button>
+                                            <button type="button" class="btn btn-secondary"
+                                                    onclick="batchDelSolicitItem();">批量移除</button>
+                                            <button type="button" class="btn btn-secondary"
+                                                    onclick="refreshSolicitItem();">刷新</button>
+                                        </div>
+                                        <div class="col-md-8" style="padding: 0px;">
+                                            <form id="search_all_item_list_form" method="post">
+                                                <div class="row" style="margin: 0px;">
+                                                    <div class="col-5">
+                                                        <div class="form-group m-form__group row">
+                                                            <label class="col-lg-4 col-form-label" style="text-align: right;">事项类型:</label>
+                                                            <div class="col-lg-8">
+                                                                <select id="searchItemNature" type="text" class="form-control m-input"
+                                                                        name="itemNature" value="">
+                                                                    <option value="">请选择</option>
+                                                                    <option value="0">行政事项</option>
+                                                                    <option value="9">服务协同</option>
+                                                                    <option value="8">中介服务事项</option>
+                                                                    <option value="6">市政公用服务</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-4" style="text-align: right;">
+                                                        <div class="m-input-icon m-input-icon--left">
+                                                            <input type="text" class="form-control m-input"
+                                                                   placeholder="请输入关键字..." name="keyword" value=""/>
+                                                            <span class="m-input-icon__icon m-input-icon__icon--left">
+                                                                <span><i class="la la-search"></i></span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
 
+                                                    <div class="col-3" style="text-align: center;">
+                                                        <button type="button" class="btn btn-info"
+                                                                onclick="searchSolicitItem();">查询
+                                                        </button>
+                                                        <button type="button" class="btn btn-secondary"
+                                                                onclick="clearSearchSolicitItem();">清空
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="margin: 5px 0px;border-bottom: 1px solid #e8e8e8;"></div>
+                                <div class="base" style="padding: 5px">
+                                    <table id="solicit_item_list_tb"></table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -90,5 +144,17 @@
 
 <!-- 业务js -->
 <script src="${pageContext.request.contextPath}/ui-static/solicit/item/index.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+    function solicitBusTypeFormatter(value, row, index, field) {
+
+        <c:forEach items="${solicitBusTypes}" var="solicitBusType">
+        if (value == '${solicitBusType.itemCode}') {
+            return '${solicitBusType.itemName}';
+        }
+        </c:forEach>
+    }
+
+</script>
 </body>
 </html>

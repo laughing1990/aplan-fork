@@ -75,7 +75,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body" style="padding: 10px 0px;">
+            <div class="modal-body" style="padding: 5px 0px;">
                 <div style="width: 100%;height: 100%; padding: 5px;">
                     <div class="row" style="width: 100%;height: 100%;margin: 0px;">
                         <div class="col-xl-6" style="padding: 0px 2px 0px 8px;">
@@ -371,7 +371,7 @@
         });
     });
 
-    function initUserCheckItem() {
+    function initSolicitOrgCheck() {
 
         // 打开弹窗
         $('#select_solicit_org_ztree_modal').modal('show');
@@ -468,6 +468,9 @@
         // 清空查询内容
         $('#selectSolicitOrgKeyWord').val('');
         showSelectSolicitOrgAllNode(selectSolicitOrgTree.getNodes());
+        setTimeout(function() {
+            expandSelectSolicitOrgAllNode();
+        }, 300);
     }
 
     //隐藏所有节点
@@ -584,10 +587,16 @@
             success: function (data) {
                 if(data!=null&&data.length>0){
                     for(var i=0;i<data.length;i++) {
+                        var name = data[i].orgName;
+                        var node = selectSolicitOrgTree.getNodeByParam("id", data[i].orgId, null);
+                        if (node) {
+                            selectSolicitOrgTree.checkNode(node, true, true, false);
+                            name = node.name;
+                        }
 
-                        var liHtml = '<li name="selectSolicitOrgCheckLi" category-id="' + data[i].id + '">' +
-                                        '<span class="drag-handle_td" onclick="removeSolicitOrgCheck(\'' + data[i].id + '\');">×</span>' +
-                                        '<span class="org_name_td">' + data[i].orgName +'</span>' +
+                        var liHtml = '<li name="selectSolicitOrgCheckLi" category-id="' + data[i].orgId + '">' +
+                                        '<span class="drag-handle_td" onclick="removeSolicitOrgCheck(\'' + data[i].orgId + '\');">×</span>' +
+                                        '<span class="org_name_td">' + name +'</span>' +
                                      '</li>';
 
                         $('#selectSolicitOrgCheckUl').append(liHtml);

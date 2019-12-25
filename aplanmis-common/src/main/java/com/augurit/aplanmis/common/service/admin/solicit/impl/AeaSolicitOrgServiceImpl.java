@@ -3,6 +3,7 @@ package com.augurit.aplanmis.common.service.admin.solicit.impl;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
+import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaSolicitOrg;
 import com.augurit.aplanmis.common.mapper.AeaSolicitOrgMapper;
@@ -175,15 +176,15 @@ public class AeaSolicitOrgServiceImpl implements AeaSolicitOrgService {
                     }
                 }
                 if(updateVo==null){
-                    AeaSolicitOrg aeaItemUser = new AeaSolicitOrg();
-                    aeaItemUser.setSolicitOrgId(UUID.randomUUID().toString());
-                    aeaItemUser.setOrgId(orgIds[i]);
-                    aeaItemUser.setBusType("0");
-                    aeaItemUser.setSolicitType("YJZQ");
-                    aeaItemUser.setCreater(userId);
-                    aeaItemUser.setCreateTime(new Date());
-                    aeaItemUser.setRootOrgId(rootOrgId);
-                    aeaSolicitOrgMapper.insertAeaSolicitOrg(aeaItemUser);
+                    AeaSolicitOrg solicitOrg = new AeaSolicitOrg();
+                    solicitOrg.setSolicitOrgId(UUID.randomUUID().toString());
+                    solicitOrg.setOrgId(orgIds[i]);
+                    solicitOrg.setBusType("YJZQ");
+                    solicitOrg.setSolicitType("0");
+                    solicitOrg.setCreater(userId);
+                    solicitOrg.setCreateTime(new Date());
+                    solicitOrg.setRootOrgId(rootOrgId);
+                    aeaSolicitOrgMapper.insertAeaSolicitOrg(solicitOrg);
                 }else{
                     updateVo.setModifier(userId);
                     updateVo.setModifyTime(new Date());
@@ -201,6 +202,45 @@ public class AeaSolicitOrgServiceImpl implements AeaSolicitOrgService {
         if(StringUtils.isNotBlank(rootOrgId)){
             aeaSolicitOrgMapper.batchDelSolicitOrgByRootOrgId(rootOrgId);
         }
+    }
+
+    @Override
+    public List<ZtreeNode> gtreeSolicitOrg(String rootOrgId){
+
+        if(StringUtils.isBlank(rootOrgId)){
+            rootOrgId = SecurityContext.getCurrentOrgId();
+        }
+        List<ZtreeNode> allNodes = new ArrayList<>();
+        ZtreeNode rootNode = new ZtreeNode();
+        rootNode.setId("root");
+        rootNode.setName("征求部门");
+        rootNode.setType("root");
+        rootNode.setOpen(true);
+        rootNode.setIsParent(true);
+        rootNode.setNocheck(true);
+        allNodes.add(rootNode);
+        AeaSolicitOrg sSolicitOrg = new AeaSolicitOrg();
+        sSolicitOrg.setRootOrgId(rootOrgId);
+        List<AeaSolicitOrg> list = aeaSolicitOrgMapper.listAeaSolicitOrgRelOrgInfo(sSolicitOrg);
+        if(list!=null&&list.size()>0){
+            for(AeaSolicitOrg org : list){
+                allNodes.add(convertSolicitOrgNode(org));
+            }
+        }
+        return allNodes;
+    }
+
+    private ZtreeNode convertSolicitOrgNode(AeaSolicitOrg org){
+
+        ZtreeNode node = new ZtreeNode();
+        node.setId(org.getSolicitOrgId());
+        node.setName(org.getOrgName());
+        node.setpId("root");
+        node.setType("org");
+        node.setOpen(true);
+        node.setIsParent(false);
+        node.setNocheck(false);
+        return node;
     }
 }
 

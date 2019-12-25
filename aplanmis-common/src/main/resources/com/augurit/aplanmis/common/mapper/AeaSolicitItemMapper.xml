@@ -8,6 +8,7 @@
         SOLICIT_ITEM_ID  solicitItemId,
         ITEM_ID  itemId,
         ITEM_VER_ID  itemVerId,
+        BUS_TYPE  busType,
         SOLICIT_TYPE  solicitType,
         CREATER  creater,
         CREATE_TIME  createTime,
@@ -16,18 +17,63 @@
         ROOT_ORG_ID  rootOrgId
     </sql>
 
+    <sql id="alias_allColumns">
+        ${alias}.SOLICIT_ITEM_ID  solicitItemId,
+        ${alias}.ITEM_ID  itemId,
+        ${alias}.ITEM_VER_ID  itemVerId,
+        ${alias}.BUS_TYPE  busType,
+        ${alias}.SOLICIT_TYPE  solicitType,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.ROOT_ORG_ID  rootOrgId
+    </sql>
+
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaSolicitItemById" resultType="AeaSolicitItem" >
         select
           <include refid="allColumns"/>
-        from    AEA_SOLICIT_ITEM
-        where    SOLICIT_ITEM_ID = #{id}
+        from AEA_SOLICIT_ITEM
+        where SOLICIT_ITEM_ID = #{id}
+    </select>
+
+    <select id="getAeaSolicitItemRelInfoById"  resultType="AeaItemUser">
+        select
+            <include refid="alias_allColumns">
+                <property name="alias" value="soliItem"/>
+            </include>,
+            item.ITEM_BASIC_ID as itemBasicId,
+            item.ITEM_NAME as itemName,
+            item.ITEM_CODE as itemCode,
+            item.ITEM_NATURE as itemNature,
+            item.IS_CATALOG as isCatalog,
+            item.GUIDE_ORG_NAME as guideOrgName,
+            item.ORG_NAME as orgName
+        from AEA_SOLICIT_ITEM soliItem
+        left join (
+            select
+                aib.ITEM_ID,
+                aib.ITEM_VER_ID,
+                aib.ITEM_BASIC_ID,
+                aib.ITEM_NAME,
+                aib.ITEM_CODE,
+                aib.ITEM_NATURE,
+                aib.DUE_NUM,
+                aib.BJ_TYPE,
+                aib.IS_CATALOG,
+                aib.GUIDE_ORG_NAME,
+                org.ORG_NAME,
+            from AEA_ITEM_BASIC aib
+            left join OPU_OM_ORG org on org.ORG_ID = aib.ORG_ID and org.ORG_DELETED = '0'
+        )item on item.ITEM_ID = soliItem.ITEM_ID and item.ITEM_VER_ID = soliItem.ITEM_VER_ID
+        where SOLICIT_ITEM_ID = #{id}
     </select>
 
     <!--3 根据条件查询实体list -->
     <select id="listAeaSolicitItem" resultType="AeaSolicitItem" >
         select
-        <include refid="allColumns"/>
+            <include refid="allColumns"/>
         from    AEA_SOLICIT_ITEM
         <where>
             <if test="solicitItemId != null" >
@@ -38,6 +84,9 @@
             </if>
             <if test="itemVerId != null" >
             and    ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="busType != null" >
+            and    BUS_TYPE = #{busType}
             </if>
             <if test="solicitType != null" >
             and    SOLICIT_TYPE = #{solicitType}
@@ -60,12 +109,73 @@
         </where>
     </select>
 
+    <select id="listAeaSolicitItemRelInfo" resultType="AeaSolicitItem">
+        select
+            <include refid="alias_allColumns">
+                <property name="alias" value="soliItem"/>
+            </include>,
+            item.ITEM_BASIC_ID as itemBasicId,
+            item.ITEM_NAME as itemName,
+            item.ITEM_CODE as itemCode,
+            item.ITEM_NATURE as itemNature,
+            item.IS_CATALOG as isCatalog,
+            item.GUIDE_ORG_NAME as guideOrgName,
+            item.ORG_NAME as orgName
+        from AEA_SOLICIT_ITEM soliItem
+        left join (
+            select
+                aib.ITEM_ID,
+                aib.ITEM_VER_ID,
+                aib.ITEM_BASIC_ID,
+                aib.ITEM_NAME,
+                aib.ITEM_CODE,
+                aib.ITEM_NATURE,
+                aib.DUE_NUM,
+                aib.BJ_TYPE,
+                aib.IS_CATALOG,
+                aib.GUIDE_ORG_NAME,
+                org.ORG_NAME,
+            from AEA_ITEM_BASIC aib
+            left join OPU_OM_ORG org on org.ORG_ID = aib.ORG_ID and org.ORG_DELETED = '0'
+        )item on item.ITEM_ID = soliItem.ITEM_ID and item.ITEM_VER_ID = soliItem.ITEM_VER_ID
+        <where>
+            <if test="solicitItemId != null" >
+            and    soliItem.SOLICIT_ITEM_ID = #{solicitItemId}
+            </if>
+            <if test="itemId != null" >
+            and    soliItem.ITEM_ID = #{itemId}
+            </if>
+            <if test="itemVerId != null" >
+            and    soliItem.ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="busType != null" >
+            and    soliItem.BUS_TYPE = #{busType}
+            </if>
+            <if test="solicitType != null" >
+            and    soliItem.SOLICIT_TYPE = #{solicitType}
+            </if>
+            <if test="rootOrgId != null" >
+            and    soliItem.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="keyword != null and keyword !='' ">
+            and (
+                item.ITEM_NAME like concat('%',concat(#{keyword},'%')) or
+                item.ITEM_CODE like concat('%',concat(#{keyword},'%')) or
+                item.GUIDE_ORG_NAME like concat('%',concat(#{keyword},'%')) or
+                item.ORG_NAME like concat('%',concat(#{keyword},'%'))
+            )
+            </if>
+        </where>
+        order by soliItem.CREATE_TIME desc
+    </select>
+
     <!--5 新增实体对象 -->
     <insert id="insertAeaSolicitItem" parameterType="AeaSolicitItem" >
         insert into AEA_SOLICIT_ITEM (
             SOLICIT_ITEM_ID,
             ITEM_ID,
             ITEM_VER_ID,
+            BUS_TYPE,
             SOLICIT_TYPE,
             CREATER,
             CREATE_TIME,
@@ -76,6 +186,7 @@
             #{solicitItemId},
             #{itemId},
             #{itemVerId},
+            #{busType},
             #{solicitType},
             #{creater},
             #{createTime},
@@ -97,6 +208,9 @@
             </if>
             <if test="itemVerId != null" >
             ITEM_VER_ID = #{itemVerId},
+            </if>
+            <if test="itemVerId != null" >
+            BUS_TYPE = #{busType},
             </if>
             <if test="solicitType != null" >
             SOLICIT_TYPE = #{solicitType},
@@ -125,10 +239,24 @@
         delete from AEA_SOLICIT_ITEM where SOLICIT_ITEM_ID = #{id}
     </delete>
 
+    <delete id="batchDelSolicitItemByIds">
+        <if test="ids!=null and ids!='' ">
+            delete from AEA_SOLICIT_ITEM where SOLICIT_ITEM_ID in
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+    </delete>
+
+    <delete id="batchDelSolicitItemByRootOrgId">
+        delete from AEA_SOLICIT_ITEM where ROOT_ORG_ID = #{rootOrgId}
+    </delete>
+
     <resultMap type="AeaSolicitItem" id="AeaSolicitItemMap">
         <id property="solicitItemId" column="SOLICIT_ITEM_ID"/>
         <result property="itemId" column="ITEM_ID"/>
         <result property="itemVerId" column="ITEM_VER_ID"/>
+        <result property="busType" column="BUS_TYPE"/>
         <result property="solicitType" column="SOLICIT_TYPE"/>
         <result property="creater" column="CREATER"/>
         <result property="createTime" column="CREATE_TIME"/>
