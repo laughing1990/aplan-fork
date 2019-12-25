@@ -50,6 +50,8 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
     private AeaUnitInfoService aeaUnitInfoService;
     @Autowired
     private AeaUnitLinkmanMapper aeaUnitLinkmanMapper;
+    @Autowired
+    private AeaProjLinkmanMapper aeaProjLinkmanMapper;
     @Value("${mall.check.authority:false}")
     private boolean isCheckAuthority;
 
@@ -121,6 +123,11 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
 
     @Override
     public String saveProjectInfo(HttpServletRequest request, AeaProjInfo aeaProjInfo) throws Exception {
+        String isNeedGeneCode = aeaProjInfo.getIsNeedGeneCode();
+        if (StringUtils.isNotBlank(isNeedGeneCode)&&"1".equals(isNeedGeneCode)){//需要生成编码
+
+        }
+
 
         if (StringUtils.isNotBlank(aeaProjInfo.getProjInfoId())) {
             aeaProjInfoService.updateAeaProjInfo(aeaProjInfo);
@@ -132,14 +139,14 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
         LoginInfoVo loginInfoVo = SessionUtil.getLoginInfo(request);
         String userId = loginInfoVo.getUserId();
         if (StringUtils.isNotBlank(userId)) {//用户id不为空，则为个人用户，或者委托人用户
-//            AeaProjLinkman aeaProjLinkman=new AeaProjLinkman();
-//            aeaProjLinkman.setProjLinkmanId(UUID.randomUUID().toString());
-//            aeaProjLinkman.setProjInfoId(aeaProjInfo.getProjInfoId());
-//            aeaProjLinkman.setLinkmanInfoId(userId);
-//            aeaProjLinkman.setType("link");
-//            aeaProjLinkman.setProjLinkmanId(UUID.randomUUID().toString());
-//            aeaProjLinkman.setProjLinkmanId(UUID.randomUUID().toString());
-//            aeaProjLinkmanMapper.insertAeaProjLinkman(aeaProjLinkman);
+            AeaProjLinkman aeaProjLinkman=new AeaProjLinkman();
+            aeaProjLinkman.setProjLinkmanId(UUID.randomUUID().toString());
+            aeaProjLinkman.setProjInfoId(aeaProjInfo.getProjInfoId());
+            aeaProjLinkman.setLinkmanInfoId(userId);
+            aeaProjLinkman.setType("link");
+            aeaProjLinkman.setProjLinkmanId(UUID.randomUUID().toString());
+            aeaProjLinkman.setProjLinkmanId(UUID.randomUUID().toString());
+            aeaProjLinkmanMapper.insertAeaProjLinkman(aeaProjLinkman);
         } else {//企业用户
             AeaUnitProj aeaUnitProj = new AeaUnitProj();
             aeaUnitProj.setUnitProjId(UUID.randomUUID().toString());
