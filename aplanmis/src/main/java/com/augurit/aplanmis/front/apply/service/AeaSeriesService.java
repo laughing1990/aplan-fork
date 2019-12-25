@@ -168,7 +168,7 @@ public class AeaSeriesService {
 
         AeaHiApplyinst aeaHiApplyinst = instantiate(seriesApplyDataVo, currentWindowId);
 
-        // 启动并挂起流程
+        // 启动并结束流程
         doInadmissible(aeaHiApplyinst, seriesApplyDataVo);
 
         // 确认申报实例的最终状态
