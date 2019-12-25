@@ -228,7 +228,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService{
 
     private AeaHiSolicitDetailUser createDetailUser(String currentUserName, Date date, String detailId, String userId) {
         AeaHiSolicitDetailUser detailUser = new AeaHiSolicitDetailUser();
-        detailUser.setDetailTaskId(UUID.randomUUID().toString());
+        detailUser.setDetailUserId(UUID.randomUUID().toString());
         detailUser.setSolicitDetailId(detailId);
         detailUser.setUserId(userId);
         detailUser.setIsDeleted("0");
@@ -255,7 +255,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService{
         boolean flag = true;
         List<AeaHiSolicitDetailUser> aeaHiSolicitDetailUsers = aeaHiSolicitDetailUserMapper.getAeaHiSolicitDetailUserBySolicitDetailId(solicitDetailId);
         for(int i=0,len=aeaHiSolicitDetailUsers.size(); i<len; i++){
-            if(!aeaHiSolicitDetailUsers.get(i).getDetailTaskId().equals(aeaHiSolicitDetailUser.getDetailTaskId()) &&
+            if(!aeaHiSolicitDetailUsers.get(i).getDetailUserId().equals(aeaHiSolicitDetailUser.getDetailUserId()) &&
                     aeaHiSolicitDetailUsers.get(i).getFillTime() == null){
                 flag = false;
             }
