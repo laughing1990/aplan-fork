@@ -788,6 +788,7 @@
             temp_123.procInstId,
             temp_123.applyinstId,
             temp_123.applyinstCode,
+            temp_123.applyinstState,
             temp_123.stageName,
             temp_123.applySource,
             temp_123.arriveTime,
@@ -819,6 +820,7 @@
             ART_123.procInstId,
             ART_123.applyinstId,
             ART_123.applyinstCode,
+            ART_123.applyinstState,
             ART_123.stageName,
             ART_123.applySource,
             ART_123.arriveTime,
@@ -851,6 +853,7 @@
         ahp_123.ID_ AS procInstId,
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
+        ahap_123.APPLYINST_STATE AS applyinstState,
         aps_123.STAGE_NAME AS stageName,
         ahap_123.APPLYINST_SOURCE AS applySource,
         art_123.CREATE_TIME_ AS arriveTime,
@@ -894,7 +897,7 @@
             </if>
             <include refid="baseConditionalQuery">
             </include>
-            AND ahap_123.APPLYINST_STATE NOT IN ('0', '1', '3', '5', '6')
+            AND ahap_123.APPLYINST_STATE NOT IN ('0', '1', '3', '5', '6','14')
         </where>
         )
         UNION
@@ -905,6 +908,7 @@
         ahp_123.ID_ AS procInstId,
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
+        ahap_123.APPLYINST_STATE AS applyinstState,
         aps_123.STAGE_NAME AS stageName,
         ahap_123.APPLYINST_SOURCE AS applySource,
         art_123.CREATE_TIME_ AS arriveTime,
@@ -971,6 +975,7 @@
         ahp_123.ID_ AS procInstId,
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
+        ahap_123.APPLYINST_STATE AS applyinstState,
         aps_123.STAGE_NAME AS stageName,
         ahap_123.APPLYINST_SOURCE AS applySource,
         art_123.CREATE_TIME_ AS arriveTime,
@@ -1026,6 +1031,7 @@
         ahp_123.ID_ AS procInstId,
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
+        ahap_123.APPLYINST_STATE AS applyinstState,
         NULL AS stageName,
         ahap_123.APPLYINST_SOURCE AS applySource,
         art_123.CREATE_TIME_ AS arriveTime,
@@ -1085,6 +1091,7 @@
         ahp_123.ID_ AS procInstId,
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
+        ahap_123.APPLYINST_STATE AS applyinstState,
         NULL AS stageName,
         ahap_123.APPLYINST_SOURCE AS applySource,
         art_123.CREATE_TIME_ AS arriveTime,
@@ -5273,81 +5280,729 @@
     <!--窗口人员查询撤件申请待办列表-->
     <select id="listWaitCancelApplyInfo" resultType="com.augurit.aplanmis.common.vo.conditional.TaskInfo">
         SELECT
-            *
+        *
         FROM
         (
-            SELECT
-                task.ID_ AS taskId,
-                task.TASK_DEF_KEY_ AS taskDefKey,
-                task.PROC_INST_ID_ AS procInstId,
-                ha.APPLYINST_ID AS applyinstId,
-                ha.APPLYINST_CODE AS applyinstCode,
-                aps.STAGE_NAME AS stageName,
-                ha.APPLYINST_SOURCE AS applySource,
-                task.start_TIME_ AS arriveTime,
-                ha.ACCEPT_TIME AS acceptTime,
-                ha.CREATE_TIME AS applyTime,
-                task.NAME_ AS taskName,
-                aps.DUE_NUM AS dueNum,
-                '0' AS isSeriesApprove,
-                NULL AS busRecordId,
-                NULL AS itemProperty,
-                '并联' AS applyType,
-                proj.PROJ_NAME AS projName,
-                proj.LOCAL_CODE AS localCode,
-                proj.GCBM AS gcbm,
-                theme.THEME_NAME AS themeName,
-                NULL AS itemName,
-                ti.OVERDUE_TIME AS overdueTime,
-                ti.REMAINING_TIME AS remainingTime,
-                ti.INST_STATE AS instState,
-                ti.TIMERULE_UNIT AS timeruleUnit,
-                task.SIGN_STATE_ AS signState,
-                '0' AS itemNature,
-                NULL AS isGreenWay
-            FROM
-                aea_hi_applyinst ha,
-                act_sto_appinst appinst,
-                act_hi_taskinst task,
-                aea_applyinst_proj ap,
-                aea_proj_info proj,
-                aea_hi_par_stageinst stage,
-                aea_par_stage aps,
-                AEA_PAR_THEME_VER tv,
-                aea_par_theme theme,
-                act_sto_timerule_inst ti,
-                (
-                SELECT
-                taskinst.proc_inst_id_,
-                aswu.user_id
-                FROM
-                act_hi_taskinst taskinst,
-                aea_service_window_user swu,
-                opu_om_user oou,
-                aea_service_window_user aswu
-                WHERE
-                taskinst.ASSIGNEE_ = oou.login_name
-                AND oou.user_id = swu.user_id
-                AND aswu.window_id = swu.window_id
-                and taskinst.TASK_DEF_KEY_ in ('shoujian','wangshangshouli')
-                ) temp
-            WHERE
-                ha.APPLYINST_STATE = '12'
-            AND ha.APPLYINST_ID = appinst.MASTER_RECORD_ID
-            AND appinst.PROCINST_ID = task.PROC_INST_ID_
-            AND proj.PROJ_INFO_ID = ap.proj_info_id
-            AND ha.APPLYINST_ID = ap.APPLYINST_ID
-            AND ha.APPLYINST_ID = stage.applyinst_id
-            AND tv.THEME_VER_ID = stage.theme_ver_id
-            AND stage.STAGE_ID = aps.STAGE_ID
-            AND tv.THEME_ID = theme.THEME_ID
-            AND ti.PROC_INST_ID = task.PROC_INST_ID_
-            AND ti.TIMERULE_INST_TYPE = '1'
-            AND temp.proc_inst_id_ = appinst.PROCINST_ID
-            and task.TASK_DEF_KEY_ in ('shoujian','wangshangshouli')
-            AND task.ASSIGNEE_ = #{}
-            AND temp.user_id = #{}
+        (
+        SELECT
+        task.ID_ AS taskId,
+        task.TASK_DEF_KEY_ AS taskDefKey,
+        task.PROC_INST_ID_ AS procInstId,
+        ha.APPLYINST_ID AS applyinstId,
+        ha.APPLYINST_CODE AS applyinstCode,
+        aps.STAGE_NAME AS stageName,
+        ha.APPLYINST_SOURCE AS applySource,
+        ahac.CREATE_TIME AS arriveTime,
+        ahac.HANDLE_SIGN_TIME AS acceptTime,
+        ha.CREATE_TIME AS applyTime,
+        task.NAME_ AS taskName,
+        aps.DUE_NUM AS dueNum,
+        '0' AS isSeriesApprove,
+        NULL AS busRecordId,
+        NULL AS itemProperty,
+        '并联' AS applyType,
+        proj.PROJ_NAME AS projName,
+        proj.LOCAL_CODE AS localCode,
+        proj.GCBM AS gcbm,
+        theme.THEME_NAME AS themeName,
+        NULL AS itemName,
+        ti.OVERDUE_TIME AS overdueTime,
+        ti.REMAINING_TIME AS remainingTime,
+        ti.INST_STATE AS instState,
+        ti.TIMERULE_UNIT AS timeruleUnit,
+        CASE ahac.CANCEL_STATE
+        WHEN '0' THEN
+        '未签收'
+        WHEN '1' THEN
+        '待受理'
+        WHEN '2' THEN
+        '已同意'
+        ELSE
+        '未同意'
+        end AS signState_,
+        '0' AS itemNature,
+        NULL AS isGreenWay,
+        ahac.APPLYINST_CANCEL_ID AS applyinstCancelId,
+        ahac.SIGN_STATE AS CkSignState
+        FROM
+        aea_hi_applyinst ha,
+        act_sto_appinst appinst,
+        act_hi_taskinst task,
+        aea_applyinst_proj ap,
+        aea_proj_info proj,
+        aea_hi_par_stageinst stage,
+        aea_par_stage aps,
+        AEA_PAR_THEME_VER tv,
+        aea_par_theme theme,
+        act_sto_timerule_inst ti,
+        aea_hi_applyinst_cancel ahac
+        WHERE
+        ha.APPLYINST_STATE = '12'
+        AND ha.APPLYINST_ID = appinst.MASTER_RECORD_ID
+        AND appinst.PROCINST_ID = task.PROC_INST_ID_
+        AND proj.PROJ_INFO_ID = ap.proj_info_id
+        AND ha.APPLYINST_ID = ap.APPLYINST_ID
+        AND ha.APPLYINST_ID = stage.applyinst_id
+        AND tv.THEME_VER_ID = stage.theme_ver_id
+        AND stage.STAGE_ID = aps.STAGE_ID
+        AND tv.THEME_ID = theme.THEME_ID
+        AND ti.PROC_INST_ID = task.PROC_INST_ID_
+        AND ti.TIMERULE_INST_TYPE = '1'
+        AND task.TASK_DEF_KEY_ IN ( 'shoujian', 'wangshangshouli' )
+        AND task.ASSIGNEE_ = #{loginName}
+        AND ahac.APPLYINST_ID = ha.APPLYINST_ID
+        and ahac.CANCEL_STATE = '0'
+        order by
+        ahac.CREATE_TIME desc
+        ) UNION
+        (
+        SELECT
+        task.ID_ AS taskId,
+        task.TASK_DEF_KEY_ AS taskDefKey,
+        task.PROC_INST_ID_ AS procInstId,
+        ha.APPLYINST_ID AS applyinstId,
+        ha.APPLYINST_CODE AS applyinstCode,
+        NULL AS stageName,
+        ha.APPLYINST_SOURCE AS applySource,
+        ahac.CREATE_TIME AS arriveTime,
+        ahac.HANDLE_SIGN_TIME AS acceptTime,
+        ha.CREATE_TIME AS applyTime,
+        task.NAME_ AS taskName,
+        ai_123.DUE_NUM AS dueNum,
+        '1' AS isSeriesApprove,
+        ahi_123.ITEMINST_ID AS busRecordId,
+        ai_123.ITEM_PROPERTY AS itemProperty,
+        '单项' AS applyType,
+        proj.PROJ_NAME AS projName,
+        proj.LOCAL_CODE AS localCode,
+        proj.GCBM AS gcbm,
+        NULL AS themeName,
+        ahi_123.ITEMINST_NAME AS itemName,
+        ti.OVERDUE_TIME AS overdueTime,
+        ti.REMAINING_TIME AS remainingTime,
+        ti.INST_STATE AS instState,
+        ti.TIMERULE_UNIT AS timeruleUnit,
+        CASE ahac.CANCEL_STATE
+        WHEN '0' THEN
+        '未签收'
+        WHEN '1' THEN
+        '待受理'
+        WHEN '2' THEN
+        '已同意'
+        ELSE
+        '未同意'
+        end AS signState_,
+        ai_123.ITEM_NATURE AS itemNature,
+        NULL AS isGreenWay,
+        ahac.APPLYINST_CANCEL_ID AS applyinstCancelId,
+        ahac.SIGN_STATE AS CkSignState
+        FROM
+        aea_hi_applyinst ha,
+        act_sto_appinst appinst,
+        act_hi_taskinst task,
+        aea_applyinst_proj ap,
+        aea_proj_info proj,
+        act_sto_timerule_inst ti,
+        AEA_HI_SERIESINST ahs_123,
+        AEA_HI_ITEMINST ahi_123,
+        AEA_ITEM_BASIC ai_123,
+        aea_hi_applyinst_cancel ahac
+        WHERE
+        ha.APPLYINST_STATE = '12'
+        AND ha.APPLYINST_ID = appinst.MASTER_RECORD_ID
+        AND appinst.PROCINST_ID = task.PROC_INST_ID_
+        AND proj.PROJ_INFO_ID = ap.proj_info_id
+        AND ha.APPLYINST_ID = ap.APPLYINST_ID
+        AND ahi_123.ITEM_ID = ai_123.ITEM_ID
+        AND ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+        AND ha.APPLYINST_ID = ahs_123.applyinst_id
+        AND ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+        AND ti.PROC_INST_ID = task.PROC_INST_ID_
+        AND ti.TIMERULE_INST_TYPE = '1'
+        AND task.TASK_DEF_KEY_ IN ( 'shoujian', 'wangshangshouli' )
+        AND task.ASSIGNEE_ = #{loginName}
+        AND ahac.APPLYINST_ID = ha.APPLYINST_ID
+        and ahac.CANCEL_STATE = '0'
+        order by
+        ahac.CREATE_TIME desc
+        )
+        ) temp_123
 
+        <where>
+            <if test="keyword != null and keyword != '' ">
+                AND (
+                temp_123.projName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.applyinstCode LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.localCode LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+    </select>
+
+    <!--窗口人员查询撤件申请已办列表-->
+    <select id="listDoneCancelApplyInfo" resultType="com.augurit.aplanmis.common.vo.conditional.TaskInfo">
+        SELECT
+        *
+        FROM
+        (
+        (
+        SELECT
+        task.ID_ AS taskId,
+        task.TASK_DEF_KEY_ AS taskDefKey,
+        task.PROC_INST_ID_ AS procInstId,
+        ha.APPLYINST_ID AS applyinstId,
+        ha.APPLYINST_CODE AS applyinstCode,
+        aps.STAGE_NAME AS stageName,
+        ha.APPLYINST_SOURCE AS applySource,
+        ahac.CREATE_TIME AS arriveTime,
+        ahac.HANDLE_END_TIME AS acceptTime,
+        ha.CREATE_TIME AS applyTime,
+        task.NAME_ AS taskName,
+        aps.DUE_NUM AS dueNum,
+        '0' AS isSeriesApprove,
+        NULL AS busRecordId,
+        NULL AS itemProperty,
+        '并联' AS applyType,
+        proj.PROJ_NAME AS projName,
+        proj.LOCAL_CODE AS localCode,
+        proj.GCBM AS gcbm,
+        theme.THEME_NAME AS themeName,
+        NULL AS itemName,
+        ti.OVERDUE_TIME AS overdueTime,
+        ti.REMAINING_TIME AS remainingTime,
+        ti.INST_STATE AS instState,
+        ti.TIMERULE_UNIT AS timeruleUnit,
+        CASE ahac.CANCEL_STATE
+        WHEN '0' THEN
+        '已提交'
+        WHEN '1' THEN
+        '已受理'
+        WHEN '2' THEN
+        '已同意'
+        ELSE
+        '未同意'
+        end AS signState_,
+        '0' AS itemNature,
+        NULL AS isGreenWay,
+        ahac.APPLYINST_CANCEL_ID AS applyinstCancelId,
+        ahac.SIGN_STATE AS CkSignState
+        FROM
+        aea_hi_applyinst ha,
+        act_sto_appinst appinst,
+        act_hi_taskinst task,
+        aea_applyinst_proj ap,
+        aea_proj_info proj,
+        aea_hi_par_stageinst stage,
+        aea_par_stage aps,
+        AEA_PAR_THEME_VER tv,
+        aea_par_theme theme,
+        act_sto_timerule_inst ti,
+        aea_hi_applyinst_cancel ahac
+        WHERE
+        ha.APPLYINST_ID = appinst.MASTER_RECORD_ID
+        AND appinst.PROCINST_ID = task.PROC_INST_ID_
+        AND proj.PROJ_INFO_ID = ap.proj_info_id
+        AND ha.APPLYINST_ID = ap.APPLYINST_ID
+        AND ha.APPLYINST_ID = stage.applyinst_id
+        AND tv.THEME_VER_ID = stage.theme_ver_id
+        AND stage.STAGE_ID = aps.STAGE_ID
+        AND tv.THEME_ID = theme.THEME_ID
+        AND ti.PROC_INST_ID = task.PROC_INST_ID_
+        AND ti.TIMERULE_INST_TYPE = '1'
+        AND task.TASK_DEF_KEY_ IN ( 'shoujian', 'wangshangshouli' )
+        AND ahac.HANDLE_USER_ID = #{userId}
+        AND ahac.APPLYINST_ID = ha.APPLYINST_ID
+        and ahac.CANCEL_STATE != '0'
+        and ahac.SIGN_STATE = '1'
+        order by
+        ahac.CREATE_TIME desc
+        ) UNION
+        (
+        SELECT
+        task.ID_ AS taskId,
+        task.TASK_DEF_KEY_ AS taskDefKey,
+        task.PROC_INST_ID_ AS procInstId,
+        ha.APPLYINST_ID AS applyinstId,
+        ha.APPLYINST_CODE AS applyinstCode,
+        NULL AS stageName,
+        ha.APPLYINST_SOURCE AS applySource,
+        ahac.CREATE_TIME AS arriveTime,
+        ahac.HANDLE_END_TIME AS acceptTime,
+        ha.CREATE_TIME AS applyTime,
+        task.NAME_ AS taskName,
+        ai_123.DUE_NUM AS dueNum,
+        '1' AS isSeriesApprove,
+        ahi_123.ITEMINST_ID AS busRecordId,
+        ai_123.ITEM_PROPERTY AS itemProperty,
+        '单项' AS applyType,
+        proj.PROJ_NAME AS projName,
+        proj.LOCAL_CODE AS localCode,
+        proj.GCBM AS gcbm,
+        NULL AS themeName,
+        ahi_123.ITEMINST_NAME AS itemName,
+        ti.OVERDUE_TIME AS overdueTime,
+        ti.REMAINING_TIME AS remainingTime,
+        ti.INST_STATE AS instState,
+        ti.TIMERULE_UNIT AS timeruleUnit,
+        CASE ahac.CANCEL_STATE
+        WHEN '0' THEN
+        '已提交'
+        WHEN '1' THEN
+        '已受理'
+        WHEN '2' THEN
+        '已同意'
+        ELSE
+        '未同意'
+        end AS signState_,
+        ai_123.ITEM_NATURE AS itemNature,
+        NULL AS isGreenWay,
+        ahac.APPLYINST_CANCEL_ID AS applyinstCancelId,
+        ahac.SIGN_STATE AS CkSignState
+        FROM
+        aea_hi_applyinst ha,
+        act_sto_appinst appinst,
+        act_hi_taskinst task,
+        aea_applyinst_proj ap,
+        aea_proj_info proj,
+        act_sto_timerule_inst ti,
+        AEA_HI_SERIESINST ahs_123,
+        AEA_HI_ITEMINST ahi_123,
+        AEA_ITEM_BASIC ai_123,
+        aea_hi_applyinst_cancel ahac
+        WHERE
+        ha.APPLYINST_ID = appinst.MASTER_RECORD_ID
+        AND appinst.PROCINST_ID = task.PROC_INST_ID_
+        AND proj.PROJ_INFO_ID = ap.proj_info_id
+        AND ha.APPLYINST_ID = ap.APPLYINST_ID
+        AND ahi_123.ITEM_ID = ai_123.ITEM_ID
+        AND ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+        AND ha.APPLYINST_ID = ahs_123.applyinst_id
+        AND ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+        AND ti.PROC_INST_ID = task.PROC_INST_ID_
+        AND ti.TIMERULE_INST_TYPE = '1'
+        AND task.TASK_DEF_KEY_ IN ( 'shoujian', 'wangshangshouli' )
+        AND ahac.HANDLE_USER_ID = #{userId}
+        AND ahac.APPLYINST_ID = ha.APPLYINST_ID
+        and ahac.CANCEL_STATE != '0'
+        and ahac.SIGN_STATE = '1'
+        order by
+        ahac.CREATE_TIME desc
+        )
+        ) temp_123
+
+        <where>
+            <if test="keyword != null and keyword != '' ">
+                AND (
+                temp_123.projName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.applyinstCode LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.localCode LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+    </select>
+
+    <!--部门人员查询撤件申请经办列表-->
+    <select id="listDoneCancelApplyInfoByBm" resultType="com.augurit.aplanmis.common.vo.conditional.TaskInfo">
+        SELECT
+        *
+        FROM
+        (
+        (
+        SELECT
+        temp2.ID_ AS taskId,
+        temp2.TASK_DEF_KEY_ AS taskDefKey,
+        temp2.PROC_INST_ID_ AS procInstId,
+        ha.APPLYINST_ID AS applyinstId,
+        ha.APPLYINST_CODE AS applyinstCode,
+        aps.STAGE_NAME AS stageName,
+        ha.APPLYINST_SOURCE AS applySource,
+        temp2.CREATE_TIME AS arriveTime,
+        temp2.APPROVAL_END_TIME AS acceptTime,
+        ha.CREATE_TIME AS applyTime,
+        ai_123.DUE_NUM AS dueNum,
+        '0' AS isSeriesApprove,
+        ahi_123.ITEMINST_ID AS busRecordId,
+        ai_123.ITEM_PROPERTY AS itemProperty,
+        '并联' AS applyType,
+        proj.PROJ_NAME AS projName,
+        proj.LOCAL_CODE AS localCode,
+        proj.GCBM AS gcbm,
+        theme.THEME_NAME AS themeName,
+        ahi_123.ITEMINST_NAME AS itemName,
+        ti.OVERDUE_TIME AS overdueTime,
+        ti.REMAINING_TIME AS remainingTime,
+        ti.INST_STATE AS instState,
+        ti.TIMERULE_UNIT AS timeruleUnit,
+        CASE
+        temp2.CANCEL_STATE
+        WHEN NULL THEN
+        '待受理'
+        WHEN '1' THEN
+        '已受理'
+        WHEN '2' THEN
+        '已同意' ELSE '未同意'
+        END AS signState_,
+        ai_123.ITEM_NATURE AS itemNature,
+        NULL AS isGreenWay,
+        temp2.ITEMINST_CANCEL_ID AS iteminstCancelId,
+        temp2.SIGN_STATE AS BmSignState
+        FROM
+        aea_hi_applyinst ha,
+        aea_applyinst_proj ap,
+        aea_proj_info proj,
+        act_sto_timerule_inst ti,
+        aea_hi_par_stageinst stage,
+        AEA_HI_ITEMINST ahi_123,
+        AEA_ITEM_BASIC ai_123,
+        aea_par_stage aps,
+        AEA_PAR_THEME_VER tv,
+        aea_par_theme theme,
+        (
+        SELECT
+        temp.*,
+        ahic.CREATE_TIME,
+        ahic.APPROVAL_END_TIME,
+        ahic.ITEMINST_CANCEL_ID,
+        ahic.CANCEL_STATE,
+        ahic.SIGN_STATE
+        FROM
+        aea_hi_item_cancel ahic,
+        (
+        SELECT
+        temp1.*,
+        ahi.ITEMINST_ID
+        FROM
+        aea_hi_iteminst ahi,
+        ( SELECT ID_, TASK_DEF_KEY_, PROC_INST_ID_, SIGN_STATE_ FROM act_hi_taskinst WHERE ASSIGNEE_ = #{loginName} GROUP BY PROC_INST_ID_ ORDER BY START_TIME_ DESC ) temp1
+        WHERE
+        ahi.PROCINST_ID = temp1.PROC_INST_ID_
+        ) temp
+        WHERE
+        ahic.ITEMINST_ID = temp.ITEMINST_ID
+        and ahic.ROOT_ORG_ID = #{currentOrgId}
+        AND ahic.CANCEL_STATE IN ( '2', '3' )
+        AND ahic.SIGN_STATE = '1'
+        AND ahic.APPROVAL_USER_ID = #{userId}
+        ) temp2
+        WHERE
+        temp2.ITEMINST_ID = ahi_123.ITEMINST_ID
+        AND ahi_123.ROOT_ORG_ID = #{currentOrgId}
+        AND ahi_123.STAGEINST_ID = stage.STAGEINST_ID
+        AND stage.applyinst_id = ha.applyinst_id
+        AND ha.ROOT_ORG_ID = #{currentOrgId}
+        AND tv.THEME_VER_ID = stage.theme_ver_id
+        AND tv.THEME_ID = theme.THEME_ID
+        AND stage.STAGE_ID = aps.STAGE_ID
+        AND ap.APPLYINST_ID = ha.APPLYINST_ID
+        AND proj.PROJ_INFO_ID = ap.proj_info_id
+        AND ahi_123.ITEM_ID = ai_123.ITEM_ID
+        AND ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+        AND ti.PROC_INST_ID = temp2.PROC_INST_ID_
+        AND ti.TIMERULE_INST_TYPE = '1'
+        order by
+        temp2.CREATE_TIME desc
+        ) UNION
+        (
+        SELECT
+        temp2.ID_ AS taskId,
+        temp2.TASK_DEF_KEY_ AS taskDefKey,
+        temp2.PROC_INST_ID_ AS procInstId,
+        ha.APPLYINST_ID AS applyinstId,
+        ha.APPLYINST_CODE AS applyinstCode,
+        NULL AS stageName,
+        ha.APPLYINST_SOURCE AS applySource,
+        temp2.CREATE_TIME AS arriveTime,
+        temp2.APPROVAL_END_TIME AS acceptTime,
+        ha.CREATE_TIME AS applyTime,
+        ai_123.DUE_NUM AS dueNum,
+        '1' AS isSeriesApprove,
+        ahi_123.ITEMINST_ID AS busRecordId,
+        ai_123.ITEM_PROPERTY AS itemProperty,
+        '单项' AS applyType,
+        proj.PROJ_NAME AS projName,
+        proj.LOCAL_CODE AS localCode,
+        proj.GCBM AS gcbm,
+        NULL AS themeName,
+        ahi_123.ITEMINST_NAME AS itemName,
+        ti.OVERDUE_TIME AS overdueTime,
+        ti.REMAINING_TIME AS remainingTime,
+        ti.INST_STATE AS instState,
+        ti.TIMERULE_UNIT AS timeruleUnit,
+        CASE
+        temp2.CANCEL_STATE
+        WHEN NULL THEN
+        '待受理'
+        WHEN '1' THEN
+        '已受理'
+        WHEN '2' THEN
+        '已同意' ELSE '未同意'
+        END AS signState_,
+        ai_123.ITEM_NATURE AS itemNature,
+        NULL AS isGreenWay,
+        temp2.ITEMINST_CANCEL_ID AS iteminstCancelId,
+        temp2.SIGN_STATE AS BmSignState
+        FROM
+        aea_hi_applyinst ha,
+        aea_applyinst_proj ap,
+        aea_proj_info proj,
+        act_sto_timerule_inst ti,
+        AEA_HI_SERIESINST ahs_123,
+        AEA_HI_ITEMINST ahi_123,
+        AEA_ITEM_BASIC ai_123,
+        (
+        SELECT
+        temp.*,
+        ahic.CREATE_TIME,
+        ahic.APPROVAL_END_TIME,
+        ahic.ITEMINST_CANCEL_ID,
+        ahic.CANCEL_STATE,
+        ahic.SIGN_STATE
+        FROM
+        aea_hi_item_cancel ahic,
+        (
+        SELECT
+        temp1.*,
+        ahi.ITEMINST_ID
+        FROM
+        aea_hi_iteminst ahi,
+        ( SELECT ID_, TASK_DEF_KEY_, PROC_INST_ID_, SIGN_STATE_ FROM act_hi_taskinst WHERE ASSIGNEE_ = #{loginName} GROUP BY PROC_INST_ID_ ORDER BY START_TIME_ DESC ) temp1
+        WHERE
+        ahi.PROCINST_ID = temp1.PROC_INST_ID_
+        ) temp
+        WHERE
+        ahic.ITEMINST_ID = temp.ITEMINST_ID
+        AND ahic.ROOT_ORG_ID = #{currentOrgId}
+        AND ahic.CANCEL_STATE IN ( '2', '3' )
+        AND ahic.SIGN_STATE = '1'
+        AND ahic.APPROVAL_USER_ID = #{userId}
+        ) temp2
+        WHERE
+        temp2.ITEMINST_ID = ahi_123.ITEMINST_ID
+        AND ahi_123.ROOT_ORG_ID = #{currentOrgId}
+        AND ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+        AND ahs_123.applyinst_id = ha.applyinst_id
+        AND ha.ROOT_ORG_ID = #{currentOrgId}
+        AND ap.APPLYINST_ID = ha.APPLYINST_ID
+        AND proj.PROJ_INFO_ID = ap.proj_info_id
+        AND ahi_123.ITEM_ID = ai_123.ITEM_ID
+        AND ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+        AND ti.PROC_INST_ID = temp2.PROC_INST_ID_
+        AND ti.TIMERULE_INST_TYPE = '1'
+        order by
+        temp2.CREATE_TIME desc
+        )
+        ) temp_123
+
+        <where>
+            <if test="keyword != null and keyword != '' ">
+                AND (
+                temp_123.projName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.applyinstCode LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.localCode LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+    </select>
+
+    <!--部门人员查询撤件申请待办列表-->
+    <select id="listWaitCancelApplyInfoByBm" resultType="com.augurit.aplanmis.common.vo.conditional.TaskInfo">
+        SELECT
+        *
+        FROM
+        (
+        (
+        SELECT
+        temp2.ID_ AS taskId,
+        temp2.TASK_DEF_KEY_ AS taskDefKey,
+        temp2.PROC_INST_ID_ AS procInstId,
+        ha.APPLYINST_ID AS applyinstId,
+        ha.APPLYINST_CODE AS applyinstCode,
+        aps.STAGE_NAME AS stageName,
+        ha.APPLYINST_SOURCE AS applySource,
+        temp2.CREATE_TIME AS arriveTime,
+        temp2.APPROVAL_SIGN_TIME AS acceptTime,
+        ha.CREATE_TIME AS applyTime,
+        ai_123.DUE_NUM AS dueNum,
+        '0' AS isSeriesApprove,
+        ahi_123.ITEMINST_ID AS busRecordId,
+        ai_123.ITEM_PROPERTY AS itemProperty,
+        '并联' AS applyType,
+        proj.PROJ_NAME AS projName,
+        proj.LOCAL_CODE AS localCode,
+        proj.GCBM AS gcbm,
+        theme.THEME_NAME AS themeName,
+        ahi_123.ITEMINST_NAME AS itemName,
+        ti.OVERDUE_TIME AS overdueTime,
+        ti.REMAINING_TIME AS remainingTime,
+        ti.INST_STATE AS instState,
+        ti.TIMERULE_UNIT AS timeruleUnit,
+        CASE
+        temp2.CANCEL_STATE
+        WHEN '3' THEN
+        '未同意'
+        WHEN '1' THEN
+        '已受理'
+        WHEN '2' THEN
+        '已同意' ELSE '待受理'
+        END AS signState_,
+        ai_123.ITEM_NATURE AS itemNature,
+        NULL AS isGreenWay,
+        temp2.ITEMINST_CANCEL_ID AS iteminstCancelId,
+        temp2.SIGN_STATE AS BmSignState
+        FROM
+        aea_hi_applyinst ha,
+        aea_applyinst_proj ap,
+        aea_proj_info proj,
+        act_sto_timerule_inst ti,
+        aea_hi_par_stageinst stage,
+        AEA_HI_ITEMINST ahi_123,
+        AEA_ITEM_BASIC ai_123,
+        aea_par_stage aps,
+        AEA_PAR_THEME_VER tv,
+        aea_par_theme theme,
+        (
+        SELECT
+        temp.*,
+        ahic.APPROVAL_SIGN_TIME,
+        ahic.APPROVAL_END_TIME,
+        ahic.CREATE_TIME,
+        ahic.ITEMINST_CANCEL_ID,
+        ahic.CANCEL_STATE,
+        ahic.SIGN_STATE
+        FROM
+        aea_hi_item_cancel ahic,
+        (
+        SELECT
+        temp1.*,
+        ahi.ITEMINST_ID
+        FROM
+        aea_hi_iteminst ahi,
+        ( SELECT ID_, TASK_DEF_KEY_, PROC_INST_ID_, SIGN_STATE_ FROM act_hi_taskinst WHERE ASSIGNEE_ = #{loginName} GROUP BY PROC_INST_ID_ ORDER BY START_TIME_ DESC ) temp1
+        WHERE
+        ahi.PROCINST_ID = temp1.PROC_INST_ID_
+        ) temp
+        WHERE
+        ahic.ITEMINST_ID = temp.ITEMINST_ID
+        and ahic.ROOT_ORG_ID = #{currentOrgId}
+        AND ahic.CANCEL_STATE is NULL
+        AND ( ahic.APPROVAL_USER_ID = #{userId} OR ahic.APPROVAL_USER_ID IS NULL)
+        ) temp2
+        WHERE
+        temp2.ITEMINST_ID = ahi_123.ITEMINST_ID
+        AND ahi_123.ROOT_ORG_ID = #{currentOrgId}
+        AND ahi_123.STAGEINST_ID = stage.STAGEINST_ID
+        AND stage.applyinst_id = ha.applyinst_id
+        AND ha.ROOT_ORG_ID = #{currentOrgId}
+        AND tv.THEME_VER_ID = stage.theme_ver_id
+        AND tv.THEME_ID = theme.THEME_ID
+        AND stage.STAGE_ID = aps.STAGE_ID
+        AND ap.APPLYINST_ID = ha.APPLYINST_ID
+        AND proj.PROJ_INFO_ID = ap.proj_info_id
+        AND ahi_123.ITEM_ID = ai_123.ITEM_ID
+        AND ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+        AND ti.PROC_INST_ID = temp2.PROC_INST_ID_
+        AND ti.TIMERULE_INST_TYPE = '1'
+        order by
+        temp2.CREATE_TIME desc
+        ) UNION
+        (
+        SELECT
+        temp2.ID_ AS taskId,
+        temp2.TASK_DEF_KEY_ AS taskDefKey,
+        temp2.PROC_INST_ID_ AS procInstId,
+        ha.APPLYINST_ID AS applyinstId,
+        ha.APPLYINST_CODE AS applyinstCode,
+        NULL AS stageName,
+        ha.APPLYINST_SOURCE AS applySource,
+        temp2.CREATE_TIME AS arriveTime,
+        temp2.APPROVAL_SIGN_TIME AS acceptTime,
+        ha.CREATE_TIME AS applyTime,
+        ai_123.DUE_NUM AS dueNum,
+        '1' AS isSeriesApprove,
+        ahi_123.ITEMINST_ID AS busRecordId,
+        ai_123.ITEM_PROPERTY AS itemProperty,
+        '单项' AS applyType,
+        proj.PROJ_NAME AS projName,
+        proj.LOCAL_CODE AS localCode,
+        proj.GCBM AS gcbm,
+        NULL AS themeName,
+        ahi_123.ITEMINST_NAME AS itemName,
+        ti.OVERDUE_TIME AS overdueTime,
+        ti.REMAINING_TIME AS remainingTime,
+        ti.INST_STATE AS instState,
+        ti.TIMERULE_UNIT AS timeruleUnit,
+        CASE
+        temp2.CANCEL_STATE
+        WHEN '3' THEN
+        '未同意'
+        WHEN '1' THEN
+        '已受理'
+        WHEN '2' THEN
+        '已同意' ELSE '待受理'
+        END AS signState_,
+        ai_123.ITEM_NATURE AS itemNature,
+        NULL AS isGreenWay,
+        temp2.ITEMINST_CANCEL_ID AS iteminstCancelId,
+        temp2.SIGN_STATE AS BmSignState
+        FROM
+        aea_hi_applyinst ha,
+        aea_applyinst_proj ap,
+        aea_proj_info proj,
+        act_sto_timerule_inst ti,
+        AEA_HI_SERIESINST ahs_123,
+        AEA_HI_ITEMINST ahi_123,
+        AEA_ITEM_BASIC ai_123,
+        (
+        SELECT
+        temp.*,
+        ahic.APPROVAL_SIGN_TIME,
+        ahic.APPROVAL_END_TIME,
+        ahic.CREATE_TIME,
+        ahic.ITEMINST_CANCEL_ID,
+        ahic.CANCEL_STATE,
+        ahic.SIGN_STATE
+        FROM
+        aea_hi_item_cancel ahic,
+        (
+        SELECT
+        temp1.*,
+        ahi.ITEMINST_ID
+        FROM
+        aea_hi_iteminst ahi,
+        ( SELECT ID_, TASK_DEF_KEY_, PROC_INST_ID_, SIGN_STATE_ FROM act_hi_taskinst WHERE ASSIGNEE_ = #{loginName} GROUP BY PROC_INST_ID_ ORDER BY START_TIME_ DESC ) temp1
+        WHERE
+        ahi.PROCINST_ID = temp1.PROC_INST_ID_
+        ) temp
+        WHERE
+        ahic.ITEMINST_ID = temp.ITEMINST_ID
+        AND ahic.ROOT_ORG_ID = #{currentOrgId}
+        AND ahic.CANCEL_STATE is NULL
+        AND ( ahic.APPROVAL_USER_ID = #{userId} OR ahic.APPROVAL_USER_ID IS NULL)
+        ) temp2
+        WHERE
+        temp2.ITEMINST_ID = ahi_123.ITEMINST_ID
+        AND ahi_123.ROOT_ORG_ID = #{currentOrgId}
+        AND ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+        AND ahs_123.applyinst_id = ha.applyinst_id
+        AND ha.ROOT_ORG_ID = #{currentOrgId}
+        AND ap.APPLYINST_ID = ha.APPLYINST_ID
+        AND proj.PROJ_INFO_ID = ap.proj_info_id
+        AND ahi_123.ITEM_ID = ai_123.ITEM_ID
+        AND ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+        AND ti.PROC_INST_ID = temp2.PROC_INST_ID_
+        AND ti.TIMERULE_INST_TYPE = '1'
+        order by
+        temp2.CREATE_TIME desc
+        )
         ) temp_123
 
         <where>

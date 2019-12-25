@@ -111,7 +111,7 @@ public class OneFormCommonService {
                 formFrofileVo.setFormUrl(genUrl4SamrtForm(item));
             } else {
                 formFrofileVo.setSmartForm(false);
-                formFrofileVo.setFormUrl(actStoForm.getFormLoadUrl().replace("{projInfoId}", "projInfoId=" + projInfoId));
+                formFrofileVo.setFormUrl(actStoForm.getFormLoadUrl().replace("{projInfoId}", "projInfoId=" + projInfoId).replace("{formId}","formId=" + formId));
             }
         }
 

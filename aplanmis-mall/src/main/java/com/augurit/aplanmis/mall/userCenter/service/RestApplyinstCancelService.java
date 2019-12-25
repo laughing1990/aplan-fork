@@ -14,4 +14,9 @@ public class RestApplyinstCancelService extends ApplyinstCancelService {
     public void postCustomEvents(String applyinstId) throws Exception {
 
     }
+
+    @Override
+    public void ApplySubmittedEvents(String applyinstId) throws Exception {
+
+    }
 }

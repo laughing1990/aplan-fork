@@ -194,6 +194,7 @@ var vm = new Vue({
 
             _that.$refs['exProjFrom'].validate(function (valid) {
                 if (valid) {
+                    _that.exProjFrom.formId = formId;
                     request('', {
                         url: ctx + 'rest/form/ex/project/save',
                         data: _that.exProjFrom,

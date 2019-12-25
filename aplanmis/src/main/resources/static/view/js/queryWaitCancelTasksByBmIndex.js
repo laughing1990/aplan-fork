@@ -26,6 +26,7 @@ var vm = new Vue({
             },
 
             isShowMsgDetail: false,
+            state: state,
             msgDetail: {
                 remindContent: '',
                 sendUserName: '',
@@ -61,9 +62,9 @@ var vm = new Vue({
             }
 
             ts.loading = true;
-
+            var _url = ts.state == 1 ? ctx + 'rest/conditional/query/listDoneCancelTasksByBm' : ctx + 'rest/conditional/query/listWaitCancelTasksByBm';
             request('', {
-                url: ctx + 'rest/conditional/query/listWaitDoTasks',
+                url: _url,
                 type: 'get',
                 data: ts.searchFrom
             }, function (res) {
@@ -90,49 +91,42 @@ var vm = new Vue({
 
         //判断是否已签收
         isSign: function (row) {
-            if (row.signState) {
-                if (1.0 == row.signState) {
-                    return true;
+            if (row.bmSignState) {
+                if ('1' == row.ckSignState) {
+                    return false;
                 }
             }
-
-            return false;
+            return true;
         },
+
         //签收
         signTask: function (event, row) {
             var ts = this;
-            if ('12' == row.applyinstState) {
+            var taskId = row.taskId;
+            var viewId = row.viewId;
+            var busRecordId = row.busRecordId;
+            var iteminstCancelId = row.iteminstCancelId;
+            event.preventDefault();
+            ts.loading = true;
+            request('bpmFrontUrl', {
+                url: ctx + 'rest/applyinst/signUpIteminstCancelTask?iteminstCancelId=' + iteminstCancelId + '&taskId=' + taskId,
+                type: 'get',
+                data: {}
+            }, function (result) {
                 ts.loading = false;
-                ts.$message.error("该办件已申请撤件，等待受理！");
-            } else if ('13' == row.applyinstState) {
+                if (result.success) {
+                    ts.$message.success(result.message);
+                    window.setTimeout(function () {
+                        window.open(ctx + 'apanmis/page/stageApproveIndex?taskId=' + taskId + '&viewId=' + viewId + '&busRecordId=' + busRecordId + '&itemNature=' + row.itemNature, '_blank');
+                        window.location.reload();
+                    }, 500);
+                } else {
+                    ts.$message.error(result.message);
+                }
+            }, function () {
                 ts.loading = false;
-                ts.$message.error("该办件正申请撤件，请在“撤件待办件”菜单签收！");
-            } else {
-                var taskId = row.taskId;
-                var viewId = row.viewId;
-                var busRecordId = row.busRecordId;
-                event.preventDefault();
-                ts.loading = true;
-                request('bpmFrontUrl', {
-                    url: ctx + 'rest/front/task/signTask/' + taskId,
-                    type: 'get',
-                    data: {}
-                }, function (result) {
-                    ts.loading = false;
-                    if (result.success) {
-                        ts.$message.success(result.message);
-                        window.setTimeout(function () {
-                            window.open(ctx + 'apanmis/page/stageApproveIndex?taskId=' + taskId + '&viewId=' + viewId + '&busRecordId=' + busRecordId + '&itemNature=' + row.itemNature, '_blank');
-                            window.location.reload();
-                        }, 500);
-                    } else {
-                        ts.$message.error(result.message);
-                    }
-                }, function () {
-                    ts.loading = false;
-                    ts.$message.error("签收失败！");
-                });
-            }
+                ts.$message.error("签收失败！");
+            });
         },
         setRemindMessageRead: function (row, remindReceiverId) {
 

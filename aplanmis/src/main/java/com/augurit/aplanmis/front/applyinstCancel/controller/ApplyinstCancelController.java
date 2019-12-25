@@ -57,9 +57,9 @@ public class ApplyinstCancelController {
     }
 
     @RequestMapping("/signUpIteminstCancelTask")
-    public ResultForm SignUpIteminstCancelTask(String iteminstCancelId) {
+    public ResultForm SignUpIteminstCancelTask(String iteminstCancelId, String taskId) {
         try {
-            restApplyinstCancelService.signUpIteminstCancelTask(iteminstCancelId);
+            restApplyinstCancelService.signUpIteminstCancelTask(iteminstCancelId, taskId);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultForm(false, "系统内部出错!");
@@ -68,9 +68,9 @@ public class ApplyinstCancelController {
     }
 
     @RequestMapping("/signUpApplyinstCancelTask")
-    public ResultForm SignUpApplyinstCancelTask(String applyinstCancelId) {
+    public ResultForm SignUpApplyinstCancelTask(String applyinstCancelId, String taskId) {
         try {
-            restApplyinstCancelService.signUpApplyinstCancelTask(applyinstCancelId);
+            restApplyinstCancelService.signUpApplyinstCancelTask(applyinstCancelId, taskId);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultForm(false, "系统内部出错!");

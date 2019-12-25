@@ -26,10 +26,10 @@ import java.util.*;
 @Configuration
 @Slf4j
 @MapperScan(
-        basePackages = {"com.augurit.demo.mapper",
+        basePackages = {"com.augurit.**.mapper"/*,
                 "com.augurit.agcloud.**.mapper",
                 "com.augurit.aplanmis.common.mapper",
-                "com.augurit.aplanmis.supermarket.dataexchange.mapper"
+                "com.augurit.aplanmis.supermarket.dataexchange.mapper"*/
         },
         sqlSessionFactoryRef = "sqlSessionFactory")
 public class DataSourceConfig {//extends ApplicationObjectSupport

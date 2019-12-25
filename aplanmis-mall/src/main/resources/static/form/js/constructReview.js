@@ -271,6 +271,7 @@ var app = new Vue({
   created: function() {
     // this.projInfoId = '0087be4f-acb6-4727-ab3a-e7f8440ff815';
     this.projInfoId = this.getUrlParam('projInfoId');
+    this.formId = this.getUrlParam('formId');
   },
   mounted: function() {
 
@@ -850,7 +851,7 @@ var app = new Vue({
               _this.formData.approveEndTime = _this.formatTime(_this.formData.approveEndTime, 'Y-M-D') || '';
               // _this.formData.approveConfirmTime = _this.formatTime(_this.formData.approveConfirmTime, 'Y-M-D') || '';
               _this.formData.projInfoId = _this.projInfoId;
-
+              _this.formData.formId = _this.formId;
               aeaExProjDrawing = _this.formData;
               aeaExProjDrawing.aeaProjDrawing = drawings;
               request('', {

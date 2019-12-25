@@ -205,4 +205,28 @@ public interface ConditionalQueryMapper {
      * @throws Exception
      */
     List<TaskInfo> listWaitCancelApplyInfo(ConditionalQueryRequest conditionalQueryRequest) throws Exception;
+
+    /**
+     *
+     * @param conditionalQueryRequest
+     * @return
+     * @throws Exception
+     */
+    List<TaskInfo> listDoneCancelApplyInfo(ConditionalQueryRequest conditionalQueryRequest) throws Exception;
+
+    /**
+     *
+     * @param conditionalQueryRequest
+     * @return
+     * @throws Exception
+     */
+    List<TaskInfo> listDoneCancelApplyInfoByBm(ConditionalQueryRequest conditionalQueryRequest) throws Exception;
+
+    /**
+     *
+     * @param conditionalQueryRequest
+     * @return
+     * @throws Exception
+     */
+    List<TaskInfo> listWaitCancelApplyInfoByBm(ConditionalQueryRequest conditionalQueryRequest) throws Exception;
 }
