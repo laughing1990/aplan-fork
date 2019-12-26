@@ -2420,6 +2420,135 @@ input[type="number"] {
     border-color: #B8C8DC;
     color: #B8C8DC;
 }
+.solicit-opinion-dialog .el-dialog__body,
+.solicit-opinion-dialog .el-dialog__footer{
+    background: #F0F3F6;
+}
+.solicit-opinion-dialog .el-dialog__footer{
+    padding: 12px 25px;
+}
+.solicit-opinion-dialog .el-dialog__body{
+    padding: 14px 14px 0 14px;
+}
+.solicit-o-wrap {
+    background: #fff;
+}
+.s-o-tabs{
+    padding: 0px 0 0 19px;
+    height: 39px;
+    border-bottom: 1px solid #F0F3F6;
+}
+.so-tab-text{
+    float: left;
+    line-height: 36px;
+    color: #575962;
+    font-size: 16px;
+    font-weight: bold;
+    margin-left: 24px;
+    padding: 0 8px;
+    cursor: pointer;
+}
+.so-tab-text:hover{
+    color: #169AFF;
+    opacity: 0.7;
+}
+.so-tab-text.active{
+    color: #169AFF;
+    border-bottom: 3px solid #169AFF;
+}
+.so-content-u{
+    padding: 0px 26px 12px 32px;
+}
+.so-hint-box{
+    position: relative;
+    border: 1px solid #FFB822;
+    border-radius: 4px;
+    color: #3F4047;
+    font-size: 14px;
+    line-height: 20px;
+    padding: 11px 15px 11px 44px;
+    background:rgba(255,252,238,1);
+}
+.so-hint-box .ag{
+    position: absolute;
+    left: 16px;
+    top: 12px;
+    display: block;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 20px;
+    color: #FFB822;
+}
+.so-table-title{
+    height: 44px;
+    line-height: 44px;
+    color:#575962;
+    font-weight: bold;
+    padding-left: 14px;
+    position: relative;
+}
+.so-table-title::before{
+    content: '';
+    display:block;
+    position: absolute;
+    left: 0;
+    top: 14px;
+    width: 6px;
+    height: 16px;
+    border-radius: 3px;
+    background: #169AFF;
+}
+.so-content-u .el-textarea__inner{
+    padding: 5px 10px;
+}
+.so-transfer-u{
+    float: left;
+    width: 47%;
+    border: 1px solid #CEDAE8;
+    border-radius: 4px;
+    width: 49%;
+}
+.so-transfer-u+.so-transfer-u{
+    margin-left: 2%
+}
+.so-center-btns{
+    float: left;
+    width: 6%;
+    min-height: 200px;
+    overflow: visible;
+}
+.so-transfer-title{
+    padding: 0 20px;
+    line-height: 46px;
+    border-bottom: 1px solid #CEDAE8;
+    background: #F3F6F9;
+}
+.so-ope-content{
+    /*min-height: 200px;*/
+    padding: 10px;
+}
+.el-form.so-form-c{
+    padding: 15px 26px 0 0;
+}
+.so-checked-org{
+    margin-bottom: 10px;
+    line-height: 20px;
+    padding: 9px 30px 9px 18px;
+    border: 1px solid #CEDAE8;
+    border-radius: 4px;
+    position: relative;
+}
+.so-checked-org i{
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    margin-top: -6px;
+    cursor: pointer;
+}
+.solicit-o-wrap .el-textarea__inner{
+    padding: 5px 10px;
+}
 /*意见征求end*/
 
 
