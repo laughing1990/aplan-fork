@@ -17,6 +17,8 @@
           </template>
           <el-form label-width="210px" ref="unitInfoShowFrom" :rules="unitInfoShowFromRules" :model="unitInfoShowFrom">
             <input type="hidden" name="projInfoId" :value="unitInfoShowFrom.projInfoId">
+            <input type="hidden" name="formId" :value="unitInfoShowFrom.formId">
+            <input type="hidden" name="refEntityId" :value="unitInfoShowFrom.refEntityId">
             <div class="clearfix">
               <!-- <el-form-item class="input-inline" prop="provinceProjCode">
                             <template slot="label">

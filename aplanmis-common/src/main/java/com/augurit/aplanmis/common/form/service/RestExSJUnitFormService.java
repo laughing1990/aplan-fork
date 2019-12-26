@@ -43,7 +43,7 @@ public class RestExSJUnitFormService extends AbstractFormDataOptManager {
 
     public void saveOrUpdateSJUnitInfo(AeaExProjBuild aeaExProjBuild) throws Exception {
         if (aeaExProjBuild != null){
-            if(aeaExProjBuild.getBuildId()==null || aeaExProjBuild.getBuildId() ==""){
+            if(aeaExProjBuild.getBuildId()==null || "".equals(aeaExProjBuild.getBuildId())){
                 aeaExProjBuild.setBuildId(UuidUtil.generateUuid());
                 aeaExProjBuild.setCreateTime(new Date());
                 aeaExProjBuild.setRootOrgId(SecurityContext.getCurrentOrgId());

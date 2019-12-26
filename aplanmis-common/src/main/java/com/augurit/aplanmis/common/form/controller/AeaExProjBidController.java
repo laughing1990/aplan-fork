@@ -158,8 +158,11 @@ public class AeaExProjBidController {
 
                     //造价咨询单位信息
                     List<AeaUnitInfo> costUnits = aeaExProjBidVo.getCostUnits();
-                    if (costUnits.get(0).getApplicant() != null && !"".equals(costUnits.get(0).getApplicant()))
-                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo, costUnits, GDUnitType.COST_CONSULTING.getValue());
+                    if(costUnits.size() > 0 && costUnits != null){
+                        if (costUnits.get(0).getApplicant() != null && !"".equals(costUnits.get(0).getApplicant())){
+                            aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo, costUnits, GDUnitType.COST_CONSULTING.getValue());
+                        }
+                    }
 
 
                     resultForm.setSuccess(true);

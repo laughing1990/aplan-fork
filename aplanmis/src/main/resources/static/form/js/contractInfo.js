@@ -63,6 +63,7 @@ var app = new Vue({
   created: function() {
     this.projInfoId = this.getUrlParam('projInfoId');
     this.formId = this.getUrlParam('formId');
+    this.refEntityId = this.getUrlParam('refEntityId');
   },
   mounted: function() {
 
@@ -166,6 +167,7 @@ var app = new Vue({
         var param = {
           projInfoId: _this.projInfoId,
           formId:_this.formId,
+          refEntityId:_this.refEntityId,
           contractId: _this.formData.contractId || '',
           provinceProjCode: _this.formData.provinceProjCode || '',
           contractCode: _this.formData.contractCode || '',
