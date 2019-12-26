@@ -130,6 +130,8 @@ public class ApproveService {
     private BscAttDetailMapper bscAttDetailMapper;
     @Autowired
     private AeaHiApplyinstCancelService aeaHiApplyinstCancelService;
+    @Autowired
+    private AeaHiSolicitMapper aeaHiSolicitMapper;
 
     public BpmApproveStateVo getApplyStylesAndState(String applyinstId, String taskId) throws Exception {
         BpmApproveStateVo bpmApproveStateVo = new BpmApproveStateVo();
@@ -138,6 +140,13 @@ public class ApproveService {
 
         if (applyInst == null) {
             throw new RuntimeException("查询不到申请实例");
+        }
+        //20191226新增判断是否有意见征求
+        AeaHiSolicit solicit = new AeaHiSolicit();
+        solicit.setApplyinstId(applyinstId);
+        List<AeaHiSolicit> solicits = aeaHiSolicitMapper.listAeaHiSolicit(solicit);
+        if(solicits != null && solicits.size() > 0){
+            bpmApproveStateVo.setHasSolicit("1");
         }
         bpmApproveStateVo.setApplyStyle(applyInst.getApplyinstSource());
         bpmApproveStateVo.setIsSeriesinst(applyInst.getIsSeriesApprove());

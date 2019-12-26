@@ -11,8 +11,11 @@ import java.util.List;
  * 意见征求信息复合对象
  */
 public class AeaHiSolicitInfo implements Serializable {
+    //征求主表实体信息
     private AeaHiSolicit solicit;
+    //当前需要被征求部门给意见的实体信息
     private AeaHiSolicitDetailUser solicitDetailUser;
+    //所有的被征求的详细信息
     private List<AeaHiSolicitDetail> solicitDetails;
 
     public AeaHiSolicit getSolicit() {

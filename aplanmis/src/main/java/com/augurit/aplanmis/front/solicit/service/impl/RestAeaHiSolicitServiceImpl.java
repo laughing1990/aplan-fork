@@ -340,6 +340,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                 if(hiSolicit.getSolicitDaysUnit() != null){
                     hiSolicit.setSolicitDaysUnitCn(TimeruleUnit.valueOf(hiSolicit.getSolicitDaysUnit()).getName());
                 }
+                //如果是事项征求则查询事项名称
                 if(SolicitConstant.SOLICIT_TYPE_ITEM.equals(hiSolicit.getSolicitType())){
                     List<String> itemVerIds = Lists.newArrayList();
                     for(int i=0,len=details.size(); i<len; i++){
@@ -355,9 +356,28 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                         }
                     }
                 }
+
+                //判断当前发起的征求信息是否可以被结束，填写汇总意见
+                if(currUserId.equals(hiSolicit.getInitiatorUserId())){
+                    //判断当前意见征求是否各个部门已经给出了审批意见结果
+                    boolean hasDone = true;
+                    for(int i=0,len=details.size(); i<len; i++){
+                        if(details.get(i).getDetailEndTime() == null || !SolicitConstant.SOLICIT_STATE_DONE.equals(details.get(i).getDetailState())){
+                            hasDone = false;
+                            break;
+                        }
+                    }
+                    if(hasDone) {
+                        hiSolicit.setSolicitCanBeFinish("1");
+                    }
+                }
+                //组装返回内容
                 AeaHiSolicitInfo solicitInfo = new AeaHiSolicitInfo();
+                //征求主表实体信息
                 solicitInfo.setSolicit(hiSolicit);
+                //当前需要被征求部门给意见的实体信息
                 solicitInfo.setSolicitDetailUser(currDetailUser);
+                //所有的被征求的详细信息
                 solicitInfo.setSolicitDetails(details);
                 solicitInfoList.add(solicitInfo);
             }

@@ -162,6 +162,7 @@
                 AND ahs.ROOT_ORG_ID = #{rootOrgId}
             </if>
         </where>
+        ORDER BY SOLICIT_START_TIME
     </select>
     <!--4 根据条件查询实体list,返回分页对象 -->
 

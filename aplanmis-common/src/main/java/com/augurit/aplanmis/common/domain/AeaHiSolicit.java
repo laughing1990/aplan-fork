@@ -59,4 +59,5 @@ public class AeaHiSolicit implements Serializable {
 
     private String solicitTypeName; // 非表字段 (征求意见类型：i表示按事项征求，d表示按部门征求)
     private String solicitDaysUnitCn; // 非表字段 (意见征求时限单位中文，自然日，工作日)
+    private String solicitCanBeFinish; // 非表字段 (意见征求是否可以被结束，发起人填写汇总意见，1是0否)
 }
