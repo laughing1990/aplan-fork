@@ -51,5 +51,11 @@ public interface RestAeaHiSolicitService {
      */
     public List<AeaHiSolicitInfo> listAeaHiSolicitByApplyinstId(String applyinstId, String busType) throws Exception;
 
-    void signSolicitDetail(String solicitUserId) throws Exception;
+    /**
+     * 签收功能
+     *
+     * @param detailUserId 签收人主键
+     * @throws Exception e
+     */
+    void signSolicitDetail(String detailUserId) throws Exception;
 }

@@ -151,9 +151,11 @@ public class RestAeaHiSolicitController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "solicitUserId", value = "被征集人主键")
     })
-    @GetMapping("/sign")
-    public ResultForm signSolicitUserDetail(String solicitUserId) throws Exception {
-        restAeaHiSolicitService.signSolicitDetail(solicitUserId);
+    @GetMapping("/sign/{detailUserId}")
+    public ResultForm signSolicitUserDetail(@PathVariable String detailUserId) throws Exception {
+        if (!StringUtils.isEmpty(detailUserId)) {
+            restAeaHiSolicitService.signSolicitDetail(detailUserId);
+        }
         return new ResultForm(true, "success");
     }
 }

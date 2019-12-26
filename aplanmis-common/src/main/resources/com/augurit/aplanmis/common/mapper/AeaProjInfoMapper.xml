@@ -716,6 +716,12 @@
         AND TYPE = 'link'
         )
         AND IS_DELETED = '0' and (PROJ_FLAG = 'p' or PROJ_FLAG = 'r' or PROJ_FLAG is null )
+        <if test="keyword!=null and keyword!=''">
+            AND(proj.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR proj.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR proj.CENTRAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR proj.GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%'))
+        </if>
     </select>
 
     <select id="findRootAeaProjInfoByUnitInfoId" resultType="AeaProjInfo">
@@ -728,6 +734,12 @@
         WHERE aup.UNIT_INFO_ID = #{unitInfoId}
         and aup.is_deleted='0'
         AND proj.IS_DELETED = '0' and (proj.PROJ_FLAG = 'p' or proj.PROJ_FLAG = 'r' or proj.PROJ_FLAG is null )
+        <if test="keyword!=null and keyword!=''">
+            AND(proj.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR proj.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR proj.CENTRAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR proj.GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%'))
+        </if>
         order by proj.CREATE_TIME
     </select>
 
@@ -750,7 +762,14 @@
         </if>
         AND TYPE = 'link'
         )
-        AND proj.IS_DELETED = '0' and (proj.PROJ_FLAG = 'p' or proj.PROJ_FLAG = 'r' or proj.PROJ_FLAG is null ) )
+        AND proj.IS_DELETED = '0' and (proj.PROJ_FLAG = 'p' or proj.PROJ_FLAG = 'r' or proj.PROJ_FLAG is null )
+        <if test="keyword!=null and keyword!=''">
+            AND(proj.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR proj.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR proj.CENTRAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR proj.GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%'))
+        </if>
+        )
         union all
         (SELECT DISTINCT
         <include refid="allColumnsAlias">
@@ -766,7 +785,14 @@
             aup.UNIT_INFO_ID is null
         </if>
         and aup.is_deleted='0'
-        AND proj.IS_DELETED = '0' and (proj.PROJ_FLAG = 'p' or proj.PROJ_FLAG = 'r' or proj.PROJ_FLAG is null ))
+        AND proj.IS_DELETED = '0' and (proj.PROJ_FLAG = 'p' or proj.PROJ_FLAG = 'r' or proj.PROJ_FLAG is null )
+        <if test="keyword!=null and keyword!=''">
+            AND(proj.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR proj.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR proj.CENTRAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR proj.GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%'))
+        </if>
+        )
         ) aea_123
     </select>
     <select id="getAeaParentProjByChildId" resultType="com.augurit.aplanmis.common.domain.AeaParentProj">

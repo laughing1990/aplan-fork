@@ -265,21 +265,21 @@ public class AeaProjInofServiceImpl extends AbstractFormDataOptManager implement
     }
 
     @Override
-    public List<AeaProjInfo> findRootAeaProjInfoByLinkmanInfoId(String linkmanInfoId) {
+    public List<AeaProjInfo> findRootAeaProjInfoByLinkmanInfoId(String linkmanInfoId,String keyword) {
         LOGGER.debug("根据项目联系人查询项目信息");
-        List<AeaProjInfo> list = aeaProjInfoMapper.findRootAeaProjInfoByLinkmanInfoId(linkmanInfoId);
+        List<AeaProjInfo> list = aeaProjInfoMapper.findRootAeaProjInfoByLinkmanInfoId(linkmanInfoId,keyword);
         return setThemeName(list);
     }
 
     @Override
-    public List<AeaProjInfo> findRootAeaProjInfoByUnitInfoId(String unitInfoId) {
-        List<AeaProjInfo> aeaProjInfos = aeaProjInfoMapper.findRootAeaProjInfoByUnitInfoId(unitInfoId);
+    public List<AeaProjInfo> findRootAeaProjInfoByUnitInfoId(String unitInfoId,String keyword) {
+        List<AeaProjInfo> aeaProjInfos = aeaProjInfoMapper.findRootAeaProjInfoByUnitInfoId(unitInfoId,keyword);
         return setThemeName(aeaProjInfos);
     }
 
     @Override
-    public List<AeaProjInfo> findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(String linkmanInfoId, String unitInfoId) {
-        List<AeaProjInfo> list = aeaProjInfoMapper.findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(linkmanInfoId, unitInfoId);
+    public List<AeaProjInfo> findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(String linkmanInfoId, String unitInfoId,String keyword) {
+        List<AeaProjInfo> list = aeaProjInfoMapper.findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(linkmanInfoId, unitInfoId,keyword);
         return setThemeName(list);
     }
 

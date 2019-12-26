@@ -455,11 +455,11 @@ public class AeaCertMallService {
             flag=true;
             List<AeaProjInfo> projList=null;
             if("1".equals(loginInfo.getIsPersonAccount())){//个人
-                projList=aeaProjInfoService.findRootAeaProjInfoByLinkmanInfoId(loginInfo.getUserId());
+                projList=aeaProjInfoService.findRootAeaProjInfoByLinkmanInfoId(loginInfo.getUserId(),"");
             }else if(com.augurit.agcloud.framework.util.StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
-                projList=aeaProjInfoService.findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(loginInfo.getUserId(),loginInfo.getUnitId());
+                projList=aeaProjInfoService.findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(loginInfo.getUserId(),loginInfo.getUnitId(),"");
             }else{//企业
-                projList=aeaProjInfoService.findRootAeaProjInfoByUnitInfoId(loginInfo.getUnitId());
+                projList=aeaProjInfoService.findRootAeaProjInfoByUnitInfoId(loginInfo.getUnitId(),"");
             }
             projInfoIds=projList.size()>0?projList.stream().map(AeaProjInfo::getProjInfoId).toArray(String[]::new):null;
             if(projInfoIds==null||projInfoIds.length==0) return new ArrayList<>();

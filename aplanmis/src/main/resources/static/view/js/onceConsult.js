@@ -23,7 +23,7 @@ var vm = new Vue({
 				arriveStartTime: '',
 				arriveEndTime: '',
 				keyword: '',
-				busType: 'YJZQ'
+				busType: 'YCZX'
 			},
 
 			isShowMsgDetail: false,

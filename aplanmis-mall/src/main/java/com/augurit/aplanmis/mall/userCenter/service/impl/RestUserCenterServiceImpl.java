@@ -139,20 +139,25 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
         LoginInfoVo loginInfoVo = SessionUtil.getLoginInfo(request);
         String userId = loginInfoVo.getUserId();
         if (StringUtils.isNotBlank(userId)) {//用户id不为空，则为个人用户，或者委托人用户
+
             AeaProjLinkman aeaProjLinkman=new AeaProjLinkman();
-            aeaProjLinkman.setProjLinkmanId(UUID.randomUUID().toString());
             aeaProjLinkman.setProjInfoId(aeaProjInfo.getProjInfoId());
             aeaProjLinkman.setLinkmanInfoId(userId);
+            List<AeaProjLinkman> list = aeaProjLinkmanMapper.listAeaProjLinkman(aeaProjLinkman);
+            if (list.size()>0) return aeaProjInfo.getProjInfoId();
+            aeaProjLinkman.setProjLinkmanId(UUID.randomUUID().toString());
             aeaProjLinkman.setType("link");
-            aeaProjLinkman.setProjLinkmanId(UUID.randomUUID().toString());
-            aeaProjLinkman.setProjLinkmanId(UUID.randomUUID().toString());
             aeaProjLinkmanMapper.insertAeaProjLinkman(aeaProjLinkman);
         } else {//企业用户
             AeaUnitProj aeaUnitProj = new AeaUnitProj();
-            aeaUnitProj.setUnitProjId(UUID.randomUUID().toString());
+
             aeaUnitProj.setUnitInfoId(loginInfoVo.getUnitId());
             aeaUnitProj.setIsOwner("1");  //是否业主单位，0表示代建单位，1表示业主/建设单位
             aeaUnitProj.setProjInfoId(aeaProjInfo.getProjInfoId());
+            //
+            List<AeaUnitProj> list = aeaUnitProjMapper.listAeaUnitProj(aeaUnitProj);
+            if (list.size()>0) return aeaProjInfo.getProjInfoId();
+            aeaUnitProj.setUnitProjId(UUID.randomUUID().toString());
             aeaUnitProj.setCreater(SecurityContext.getCurrentUserName());
             aeaUnitProj.setCreateTime(new Date());
             aeaUnitProj.setUnitType(UnitType.DEVELOPMENT_UNIT.getValue());

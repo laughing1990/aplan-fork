@@ -732,18 +732,17 @@
         <div v-else-if="u.labelId=='solicit'" style="height:100%;overflow:auto;">
           <div class="spe-pane-wrap">
             <!-- 审批人员 意见征求 -->
-            <div class="spe-item-uboxs">
-                <div class="spe-item-u" v-for="(item,index) in cancelAppDetailList">
-                  <div class="top-time-text-box c-f" :class="{'is-blue': item.cancelState==0||item.cancelState==1}">
+            <div class="spe-item-uboxs solicit-table">
+                <div class="spe-item-u" v-for="(item,index) in solicitList">
+                  <div class="top-time-text-box c-f" :class="{'is-blue': item.solicit.solicitState==2||item.solicit.solicitState==3}">
                     <div class="ttt-f"></div>
                     <div class="ttt-s">
-                      第{{getChineseIndex(index,cancelAppDetailList.length)}}次发起（{{changeCancelState(item.cancelState)}}）
+                      第{{getChineseIndex(index,solicitList.length)}}次发起（{{item.solicit.solicitState|changeSolicitState}}）
                     </div>
                     <div class="ttt-t"></div>
                   </div>
                   <!-- 审批人员处理-->
-                  <template>
-<!--                    <div class="table-section-title">填写意见</div>-->
+                  <template v-if="item.solicitDetailUser.detailUserId&&item.solicitDetailUser.detailUserId.length">
                     <el-form size="medium" style="margin-top:10px;"
                              :model="solicitBmForm" :rules="solicitBmFormRules" label-width="85px">
                       <el-form-item label="征求意见" require>
@@ -756,11 +755,11 @@
                       <el-form-item label="附件列表">
                         <div class="file-opt-btn" style="margin-top:0px">
                           <el-upload ref="uploadCert3" class="upload-s-file" :action="ctx+'rest/certificate/certinst/att/upload'"
-                                     :show-file-list="false" :http-request="solicitUploadFile" :file-list="fileList">
+                                     :show-file-list="false" :http-request="function(file){solicitUploadFile(file, item)}" :file-list="fileList">
                             <el-button slot="trigger" size="small" type="primary">上传</el-button>
                           </el-upload>
                         </div>
-                        <el-table :data="solicitUploadFileList" border>
+                        <el-table :data="solicitUploadFileList" border class="solict-pt">
                           <el-table-column label='序号' type="index" width="50"></el-table-column>
                           <el-table-column label="附件名称" prop="attName">
                             <template slot-scope="scope">
@@ -791,27 +790,27 @@
                     <div class="table-section-title">征求信息</div>
                     <tr>
                       <td class="td-bg-grey">征求主题</td>
-                      <td colspan="5">{{item.applyUserName}}</td>
+                      <td colspan="5">{{item.solicit.solicitTopic}}</td>
                     </tr>
                     <tr>
                       <td class="td-bg-grey">征求内容</td>
-                      <td colspan="5">{{item.applyUserIdnumber}}</td>
+                      <td colspan="5">{{item.solicit.solicitContent}}</td>
                     </tr>
                     <tr>
                       <td class="td-bg-grey">征求状态</td>
-                      <td>{{item.applyReason}}</td>
+                      <td>{{item.solicit.solicitState|changeSolicitState}}</td>
                       <td class="td-bg-grey">征求类型</td>
-                      <td>{{item.applyReason}}</td>
+                      <td>{{item.solicit.solicitType|changeSolicitType}}</td>
                       <td class="td-bg-grey">征求时限</td>
-                      <td>{{item.applyReason}}</td>
+                      <td>{{item.solicit.solicitDueDays+item.solicit.solicitDaysUnitCn}}</td>
                     </tr>
                     <tr>
                       <td class="td-bg-grey">发起征求部门</td>
-                      <td>{{item.applyReason}}</td>
+                      <td>{{item.solicit.initiatorOrgName}}</td>
                       <td class="td-bg-grey">发起征求人员</td>
-                      <td>{{item.applyReason}}</td>
+                      <td>{{item.solicit.initiatorUserName}}</td>
                       <td class="td-bg-grey">发起征求时间</td>
-                      <td>{{item.applyReason}}</td>
+                      <td>{{item.solicit.createTime|formatDate}}</td>
                     </tr>
                     <tr>
                     </tr>
@@ -821,18 +820,45 @@
                     <table class="spe-info-table">
                       <div class="table-section-title">各部门意见</div>
                     </table>
-                    <el-table border :data="item.aeaHiItemCancels">
-                      <el-table-column label="部门" width="200" property="approvalOrgName"></el-table-column>
-                      <el-table-column label="事项名称" property="iteminstName"></el-table-column>
-                      <el-table-column label="部门意见" property="approvalOpinion"></el-table-column>
-                      <el-table-column label="审批时间" property="approvalEndTime">
+                    <el-table border :data="item.solicitDetails">
+                      <el-table-column label="序号" type="index" width="50"></el-table-column>
+                      <el-table-column type="expand" width="20">
                         <template slot-scope="scope">
-                          {{scope.row.approvalEndTime|formatDate}}
+                          <el-table border :data="scope.row.detailUsers">
+                            <el-table-column label="序号" type="index" width="50"></el-table-column>
+                            <el-table-column type="expand" width="20">
+                              <template slot-scope="scope2">
+                                <div v-if="scope2.row.fileAndDirs&&scope2.row.fileAndDirs.length"
+                                     class="spe-table-file-u" v-for="file in scope2.row.fileDir">
+                                  <i class="ag" v-html="getIconText(file.attFormat)"
+                                     :style="{color:getIconColor(file.attFormat)}"></i>
+                                  {{file.attName}}
+                                  <i class="ag ag-ope-btn ag-search" title="预览" @click="filePreview(file)"></i>
+                                  <i class="ag ag-ope-btn ag-download" title="下载" @click="downOneFile(file)"></i>
+                                </div>
+                                <div v-else>暂无附件</div>
+                              </template>
+                            </el-table-column>
+                            <el-table-column label="人员" property="userName"></el-table-column>
+                            <el-table-column label="意见状态" property="userConclusion">
+                              <template slot-scope="scope">
+                                {{scope.row.userConclusion|changeBmOpinType}}
+                              </template>
+                            </el-table-column>
+                            <el-table-column label="时间" property="fillTime">
+                              <template slot-scope="scope">
+                                {{scope.row.fillTime|formatDate}}
+                              </template>
+                            </el-table-column>
+                            <el-table-column label="意见描述" property="userOpinion"></el-table-column>
+                          </el-table>
                         </template>
                       </el-table-column>
-                      <el-table-column label="状态" width="100" property="cancelState">
+                      <el-table-column label="部门" property="detailOrgName"></el-table-column>
+                      <el-table-column v-if="item.solicit.solicitType=='i'" label="事项名称" property="itemName"></el-table-column>
+                      <el-table-column label="状态" width="100" property="detailState">
                         <template slot-scope="scope">
-                          {{changeSpCancelState(scope.row.cancelState)}}
+                          {{changeSpCancelState(scope.row.detailState)}}
                         </template>
                       </el-table-column>
                     </el-table>

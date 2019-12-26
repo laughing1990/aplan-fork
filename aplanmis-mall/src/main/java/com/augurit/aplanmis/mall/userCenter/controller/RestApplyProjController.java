@@ -133,11 +133,11 @@ public class RestApplyProjController {
             if (loginInfo == null) return new ResultForm(false, "用户身份信息失效，请重新登录！");
             PageHelper.startPage(pageNum, pageSize);
             if("1".equals(loginInfo.getIsPersonAccount())){//个人
-                list=aeaProjInfoService.findRootAeaProjInfoByLinkmanInfoId(loginInfo.getUserId());
+                list=aeaProjInfoService.findRootAeaProjInfoByLinkmanInfoId(loginInfo.getUserId(),"");
             }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
-                list=aeaProjInfoService.findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(loginInfo.getUserId(),loginInfo.getUnitId());
+                list=aeaProjInfoService.findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(loginInfo.getUserId(),loginInfo.getUnitId(),"");
             }else{//企业
-                list=aeaProjInfoService.findRootAeaProjInfoByUnitInfoId(loginInfo.getUnitId());
+                list=aeaProjInfoService.findRootAeaProjInfoByUnitInfoId(loginInfo.getUnitId(),"");
             }
             //String[] localCodes = list.size() > 0 ? list.stream().map(AeaProjInfo::getLocalCode).toArray(String[]::new) : new String[0];
             //使用lamada，分页数据会丢失，在lambda之前，先搞一个pageinfo, lambda之后，把分页信息copy进去
@@ -165,19 +165,20 @@ public class RestApplyProjController {
     @GetMapping("root/proj/list")
     @ApiOperation(value = "我的项目 --> 查询用户根项目列表")
     @ApiImplicitParams({@ApiImplicitParam(value = "页面数量",name = "pageNum",required = true,dataType = "string"),
-            @ApiImplicitParam(value = "页面页数",name = "pageSize",required = true,dataType = "string")})
-    public ResultForm getMyRootProjList(int pageNum, int pageSize, HttpServletRequest request){
+            @ApiImplicitParam(value = "页面页数",name = "pageSize",required = true,dataType = "string"),
+            @ApiImplicitParam(value = "搜索关键词",name = "keyword",required = false,dataType = "string")})
+    public ResultForm getMyRootProjList(int pageNum, int pageSize,String keyword, HttpServletRequest request){
         try {
             List<AeaProjInfo> list = new ArrayList<AeaProjInfo>();
             LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
             if (loginInfo == null) return new ResultForm(false, "用户身份信息失效，请重新登录！");
             PageHelper.startPage(pageNum, pageSize);
             if("1".equals(loginInfo.getIsPersonAccount())){//个人
-                list=aeaProjInfoService.findRootAeaProjInfoByLinkmanInfoId(loginInfo.getUserId());
+                list=aeaProjInfoService.findRootAeaProjInfoByLinkmanInfoId(loginInfo.getUserId(),keyword);
             }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
-                list=aeaProjInfoService.findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(loginInfo.getUserId(),loginInfo.getUnitId());
+                list=aeaProjInfoService.findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(loginInfo.getUserId(),loginInfo.getUnitId(),keyword);
             }else{//企业
-                list=aeaProjInfoService.findRootAeaProjInfoByUnitInfoId(loginInfo.getUnitId());
+                list=aeaProjInfoService.findRootAeaProjInfoByUnitInfoId(loginInfo.getUnitId(),keyword);
             }
             PageInfo origPageInfo = new PageInfo<>(list);
             return new ContentResultForm<>(true,origPageInfo);
@@ -294,6 +295,8 @@ public class RestApplyProjController {
         }
     }
 
+
+
     @GetMapping("searchProj/projlist/{keyWord}")
     @ApiOperation(value = "单项/并联申报 --> 查询项目列表下拉框")
     @ApiImplicitParams({@ApiImplicitParam(value = "搜索关键字",name = "keyWord",required = false,dataType = "string")})
@@ -309,6 +312,22 @@ public class RestApplyProjController {
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             return new ContentResultForm(false,"查询项目列表异常");
+        }
+    }
+
+    @GetMapping("projInfo/thirdPlatform/{keyWord}")
+    @ApiOperation(value = "项目管理 --> 我的项目:查询监管平台下的项目信息")
+    @ApiImplicitParams({@ApiImplicitParam(value = "搜索关键字",name = "keyWord",required = false,dataType = "string")})
+    public ContentResultForm<AeaProjInfo> getProjInfoFromThirdPlatform(HttpServletRequest request, @PathVariable("keyWord") String keyWord) {
+        try {
+            List<AeaProjInfo> list = new ArrayList<>();
+            if (!keyWord.contains("#") && !keyWord.contains("ZBM") && CommonTools.isComplianceWithRules(keyWord)) {
+                list = projectCodeService.getProjInfoFromThirdPlatform(keyWord, "","");
+            }
+            return new ContentResultForm<>(true,list.get(0));
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ContentResultForm(false,"","查询项目列表异常");
         }
     }
 
