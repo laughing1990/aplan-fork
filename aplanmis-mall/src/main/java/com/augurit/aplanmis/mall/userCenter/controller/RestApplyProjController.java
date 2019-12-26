@@ -321,7 +321,7 @@ public class RestApplyProjController {
     public ContentResultForm<AeaProjInfo> getProjInfoFromThirdPlatform(HttpServletRequest request, @PathVariable("keyWord") String keyWord) {
         try {
             List<AeaProjInfo> list = aeaProjInfoService.findAeaProjInfoByKeyword(keyWord);
-            if (!keyWord.contains("#") && !keyWord.contains("ZBM") && CommonTools.isComplianceWithRules(keyWord)) {
+            if (list.size()==0&&!keyWord.contains("#") && !keyWord.contains("ZBM") && CommonTools.isComplianceWithRules(keyWord)) {
                 list = projectCodeService.getProjInfoFromThirdPlatform(keyWord, "","");
             }
             return new ContentResultForm<>(true,list.get(0));
