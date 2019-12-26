@@ -60,7 +60,7 @@ var module1 = new Vue({
       rules: {
         projName: [{
           required: true,
-          message: '请输入项目/工程名称',
+          message: '请输入项目名称',
           trigger: 'blur'
         }, ],
         localCode: [{
@@ -399,7 +399,7 @@ var module1 = new Vue({
             return ts.apiMessage('网络错误！', 'error')
           });
         } else {
-          ts.apiMessage('请完善项目信息！', 'warnning')
+          ts.apiMessage('请完善项目信息！', 'warning')
           return false;
         }
       });
@@ -451,7 +451,7 @@ var module1 = new Vue({
 
     // 打开新增本地项目pandel
     openAddLocalProjPandel: function(){
-      parent.loadAddLocalProjPandel();
+      pager.loadAddLocalProjPandel();
     },
   },
   mounted: function () {

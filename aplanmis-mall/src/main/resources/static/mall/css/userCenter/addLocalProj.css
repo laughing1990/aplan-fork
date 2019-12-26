@@ -10,6 +10,9 @@
 .mt60 {
   margin-top: 60px;
 }
+.ml20 {
+  margin-left: 20px;
+}
 .pd10 {
   padding: 10px;
 }
@@ -33,6 +36,9 @@
 }
 .w-310 {
   width: 310px;
+}
+.w-100 {
+  width: 100px;
 }
 .w-775 {
   width: 775px;
@@ -411,7 +417,7 @@
 }
 .tip-search-box .tip-box {
   padding: 18px 40px;
-  height: 80px;
+  height: 100px;
   line-height: 24px;
   background: #fbfafa;
   padding-left: 72px;
@@ -430,4 +436,24 @@
 }
 .tip-search-box .search-box .search-title {
   width: 150px;
+}
+.local-pro-wrap h4.info-title {
+  font-size: 17px;
+  font-weight: bold;
+  padding-left: 10px;
+  margin-top: 40px;
+  position: relative;
+  color: #666;
+  line-height: 31px;
+  font-weight: normal;
+}
+.local-pro-wrap h4.info-title:after {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  width: 4px;
+  height: 20px;
+  background: #3e97df;
+  left: 0;
+  top: 5px;
 }
