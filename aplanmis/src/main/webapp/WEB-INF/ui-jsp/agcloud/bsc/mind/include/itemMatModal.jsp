@@ -192,6 +192,8 @@
                                         <i class="la la-search"></i>
                                     </span>
                                 </div>
+                                <button id="editActStoFormBtn" type="button" class="btn btn-info"
+                                        onclick="editActStoFormFunc('#item_mat_add_form');" style="margin-left: 3px;">编辑</button>
                             </div>
                         </div>
 
@@ -472,7 +474,7 @@
         // 材料类型选择
         $("#item_mat_add_form select[name='matProp']").change(function(){
             var value = $(this).val();
-            handleSelectMatProNew(value);
+            handleSelectMatProNew('#item_mat_add_form',value);
         });
 
         // 选择电子证照
@@ -498,42 +500,6 @@
             closeSelectStdmatModal();
         }else{
             swal('错误信息', "请选择标准材料！", 'error');
-        }
-    }
-
-    function handleSelectMatProNew(value){
-
-        if(value=='m'){
-
-            $('#selectCertDiv').hide();
-            $('#selectFormDiv').hide();
-
-            $('#item_mat_add_form input[name="certName"]').rules('remove');
-            $('#item_mat_add_form input[name="formName"]').rules('remove');
-
-        }else if(value=='c'){
-
-            $('#selectCertDiv').show();
-            $('#selectFormDiv').hide();
-            $('#item_mat_add_form input[name="certName"]').rules('add',{
-                required: true,
-                messages:{
-                    required: '<font color="red">请选择电子证照！</font>'
-                }
-            });
-            $('#item_mat_add_form input[name="formName"]').rules('remove');
-
-        }else{
-
-            $('#selectCertDiv').hide();
-            $('#selectFormDiv').show();
-            $('#item_mat_add_form input[name="certName"]').rules('remove');
-            $('#item_mat_add_form input[name="formName"]').rules('add',{
-                required: true,
-                messages:{
-                    required: '<font color="red">请选择表单！</font>'
-                }
-            });
         }
     }
 

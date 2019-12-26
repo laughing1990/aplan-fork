@@ -81,6 +81,7 @@
     <script src="${pageContext.request.contextPath}/ui-static/theme/js/par_share_mat.js?<%=isDebugMode%>" type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/ui-static/common/ztree/in_item_ztree.js" type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/ui-static/common/ztree/out_item_ztree.js" type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/ui-static/mat/global_mat_rel_format.js" type="text/javascript"></script>
 </head>
 <body>
 <div style="height: 95%; padding: 10px 10px 5px 10px;">
