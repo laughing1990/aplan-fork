@@ -674,7 +674,7 @@ var vm = new Vue({
   methods: {
     // 意见征求 start
     // 部门人员提交意见
-    solicitSaveOpinion: function(){
+    solicitSaveOpinion: function(item){
       var vm = this;
       if (!(vm.solicitBmForm.userOpinion&&vm.solicitBmForm.userOpinion.length)){
         return vm.$message.error('请填写意见');
@@ -687,14 +687,14 @@ var vm = new Vue({
         data: JSON.stringify({
           userConclusion: vm.solicitBmForm.userConclusion,
           userOpinion: vm.solicitBmForm.userOpinion,
-          detailUserId: '31b9c3be-3bab-4afa-91b3-c46a347f1879',
-          solicitDetailId: '403a1a5b-b3a6-445e-8558-5f0e812d7e95',
+          detailUserId: item.solicitDetailUser.detailUserId,
+          solicitDetailId: item.solicitDetailUser.solicitDetailId,
         }),
       }, function(res) {
         vm.parentPageLoading = false;
         if (res.success) {
           vm.$message.success('提交成功');
-          delayRefreshWindow();
+          // delayRefreshWindow();
         } else {
           vm.$message.error(res.message||'提交失败');
         }

@@ -1,5 +1,44 @@
 /* 页面公共部分 */
-
+.wt-collapse-box{
+  margin-top: 60px;
+  margin-bottom: 30px;
+}
+.wt-collapse{
+  border-bottom: 4px solid rgba(51,51,51,1);
+  padding-bottom: 10px;
+}
+.wt-collapse-title{
+  font-family: '苹方 中等', '苹方';
+  font-weight: 400;
+  font-style: normal;
+  font-size: 20px;
+  color: #333333
+}
+.wt-collapse-title-des{
+  color: #7A7A7A;
+}
+ .p-header-phase1{
+  font-size: 18px;
+  color:#333333;
+  margin-bottom: 12px;
+  font-family: '微软雅黑 Regular', '微软雅黑';
+  font-style: normal;
+  font-size: 18px;
+  font-weight: 100;
+  padding-left: 10px;
+   position: relative;
+}
+ .p-header-phase1::before{
+  content: "";
+  display: inline-block;
+  width: 4px;
+  border-radius: 4px;
+  height: 20px;
+  background-color: rgba(66, 143, 235, 1);
+  position: absolute;
+  top: 2px;
+  left: 0px;
+}
 /* tab */
 .wt-tab-nav {
   display: -webkit-flex;

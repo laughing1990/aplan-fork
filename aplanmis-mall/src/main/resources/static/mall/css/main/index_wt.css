@@ -793,7 +793,8 @@
 }
 /* 快捷入口 */
 .quick-entry .publicity li{
-    width:286px;
+    width:278px;
+    height: 280px;
     border-radius: 4px;
     _margin-right: 12px;
     margin-right: 12px\0;
@@ -832,7 +833,7 @@
     height: inherit;
 }
 .publicity li img{
-    margin-top: 36px;
+    margin-top: 53px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
 }
@@ -1062,13 +1063,6 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
-}
-.p-header-phase1 {
-    font-size:18px;
-    font-family:Microsoft YaHei;
-    font-weight:bold;
-    color:rgba(63,64,71,1);
-    margin-bottom: 12px;
 }
 .back{
     position:absolute;

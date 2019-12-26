@@ -69,6 +69,14 @@
                     thUrl:'rest/guide/toSinglePage',
                     hash:'/singlePage',
                 },
+                {
+                    label: '办事指南事项一清单',
+                    id: 'listmatter',
+                    activeName:1,
+                    url: './listmatter/listmatter.html',
+                    thUrl:'rest/guide/tolistmatterPage',
+                    hash:'/listmatter',
+                },
             ],
             curentLoginInfo:{},
             isShowCompatibleTips: true // 是否显示浏览器兼容模块提示
@@ -85,7 +93,8 @@
         methods: {
           routerChange:function(hash,url,thUrl,index){
               if(index === 2){
-                    w.open(ctx+thUrl);
+                  //  w.open(ctx+thUrl);
+                  w.open('http://zj.fsxzfw.gov.cn/gdfs-zjcs-pub/home')
                     return false;
               }else{
                   this.activeName = index;

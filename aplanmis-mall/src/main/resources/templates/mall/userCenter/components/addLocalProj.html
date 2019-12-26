@@ -1,0 +1,35 @@
+<link rel="stylesheet" href="../../../static/mall/css/userCenter/addLocalProj.css"
+  th:href="@{/mall/css/userCenter/addLocalProj.css}">
+
+<div class="wt-tab" id="addLocalProject" v-cloak v-loading.fullscreen.lock="mloading">
+  <!-- 头部提示及项目基本信息获取-start -->
+  <div class="tip-search-box">
+    <div class="tip-box">
+      <i class="el-icon-warning-outline color-4293f4"></i>
+      <p>
+        工程建设项目申报前，请您登陆“ <a href="http://www.gdtz.gov.cn/tybm/index!index6.action" class="color-4293f4"
+          target="_blank">广东省投资项目在线审批监管平台</a>
+        ”进行项目登记，如已登记成功，请在下面输入项目代码获取项目信息。如无法登记项目，请您
+        <a href="javascript:;" class="color-4293f4">新增本地项目</a>
+      </p>
+    </div>
+  </div>
+  <!-- 头部提示及项目基本信息获取-end -->
+
+  <!-- 项目基本信息信息 -->
+  <div class="mt20 proj-module pd-info-pandel">
+    <el-form :inline="true" :model="projInfoForm" :rules="rules" class="" label-width="160px" ref="projInfoForm">
+      <p class="p-header">新增本地项目</p>
+      
+
+
+    </el-form>
+    <div class="handel mt60" style="text-align: center">
+      <el-button class="mr25">返 回</el-button>
+      <el-button class="mr25" type="primary" style="width: 120px;">本地项目存档</el-button>
+    </div>
+  </div>
+</div>
+
+<script src="../../../static/mall/js/userCenter/components/addLocalProj.js"
+  th:src="@{/mall/js/userCenter/components/addLocalProj.js}" type="text/javascript"></script>
