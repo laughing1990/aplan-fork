@@ -126,6 +126,9 @@ public class AeaItemVerAdminService {
     @Autowired
     private AeaParFrontItemMapper parFrontItemMapper;
 
+    @Autowired
+    private AeaSolicitItemMapper solicitItemMapper;
+
     public AeaItemVer initAeaItemVer(String itemId, String isCatalog, String userId, String rootOrgId) {
 
         Assert.notNull(itemId, "itemId不能为空");
@@ -852,6 +855,21 @@ public class AeaItemVerAdminService {
                     for(ActTplAppTrigger trigger : triggers){
                         trigger.setBusRecordId(itemVerId);
                         actTplAppTriggerMapper.updateActTplAppTrigger(trigger);
+                    }
+                }
+
+                // 处理征求事项
+                AeaSolicitItem solicitItem = new AeaSolicitItem();
+                solicitItem.setRootOrgId(rootOrgId);
+                solicitItem.setItemId(itemId);
+                solicitItem.setItemVerId(oldItemVerId);
+                List<AeaSolicitItem> solicitItems = solicitItemMapper.listAeaSolicitItem(solicitItem);
+                if(solicitItems!=null&&solicitItems.size()>0){
+                    for(AeaSolicitItem vo:solicitItems){
+                        vo.setItemVerId(itemVerId);
+                        vo.setModifier(userId);
+                        vo.setModifyTime(new Date());
+                        solicitItemMapper.updateAeaSolicitItem(vo);
                     }
                 }
             }
