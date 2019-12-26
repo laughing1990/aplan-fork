@@ -318,15 +318,13 @@ public class RestApplyProjController {
     @GetMapping("projInfo/thirdPlatform/{keyWord}")
     @ApiOperation(value = "项目管理 --> 我的项目:查询监管平台下的项目信息")
     @ApiImplicitParams({@ApiImplicitParam(value = "搜索关键字",name = "keyWord",required = false,dataType = "string")})
-    public ContentResultForm<AeaProjInfoResultVo> getProjInfoFromThirdPlatform(HttpServletRequest request, @PathVariable("keyWord") String keyWord) {
+    public ContentResultForm<AeaProjInfo> getProjInfoFromThirdPlatform(HttpServletRequest request, @PathVariable("keyWord") String keyWord) {
         try {
             List<AeaProjInfo> list = new ArrayList<>();
             if (!keyWord.contains("#") && !keyWord.contains("ZBM") && CommonTools.isComplianceWithRules(keyWord)) {
                 list = projectCodeService.getProjInfoFromThirdPlatform(keyWord, "","");
             }
-            AeaProjInfoResultVo aeaProjInfoResultVo = new AeaProjInfoResultVo();
-            BeanUtils.copyProperties(list.get(0), aeaProjInfoResultVo);
-            return new ContentResultForm<>(true,aeaProjInfoResultVo);
+            return new ContentResultForm<>(true,list.get(0));
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             return new ContentResultForm(false,"查询项目列表异常");
