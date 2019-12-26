@@ -251,7 +251,7 @@
                                         <div class="spe-ope-line"></div>
                                         <div class="spe-file-btn" @click="downOneFile(scope.row)">下载</div>
                                         <div class="spe-ope-line"></div>
-                                        <div class="spe-file-btn delete" @click="delSpeFile(scope.row, true)">删除</div>
+                                        <div class="spe-file-btn delete" @click="delSpeFile(scope.row, 'getSepEndFileList')">删除</div>
                                       </div>
                                     </template>
                                   </el-table-column>
@@ -741,6 +741,52 @@
                     </div>
                     <div class="ttt-t"></div>
                   </div>
+                  <!-- 审批人员处理-->
+                  <template>
+<!--                    <div class="table-section-title">填写意见</div>-->
+                    <el-form size="medium" style="margin-top:10px;"
+                             :model="solicitBmForm" :rules="solicitBmFormRules" label-width="85px">
+                      <el-form-item label="征求意见" require>
+                        <el-radio v-model="solicitBmForm.userConclusion" label="1">同意</el-radio>
+                        <el-radio v-model="solicitBmForm.userConclusion" label="0">不同意</el-radio>
+                      </el-form-item>
+                      <el-form-item label="意见描述" require prop="userOpinion">
+                        <el-input type="textarea" v-model="solicitBmForm.userOpinion" :rows="3" placeholder="请输入意见描述"></el-input>
+                      </el-form-item>
+                      <el-form-item label="附件列表">
+                        <div class="file-opt-btn" style="margin-top:0px">
+                          <el-upload ref="uploadCert3" class="upload-s-file" :action="ctx+'rest/certificate/certinst/att/upload'"
+                                     :show-file-list="false" :http-request="solicitUploadFile" :file-list="fileList">
+                            <el-button slot="trigger" size="small" type="primary">上传</el-button>
+                          </el-upload>
+                        </div>
+                        <el-table :data="solicitUploadFileList" border>
+                          <el-table-column label='序号' type="index" width="50"></el-table-column>
+                          <el-table-column label="附件名称" prop="attName">
+                            <template slot-scope="scope">
+                              <i class="ag" v-html="getIconText(scope.row.attFormat)"
+                                 :style="{color:getIconColor(scope.row.attFormat)}"></i>
+                              {{scope.row.attName}}
+                            </template>
+                          </el-table-column>
+                          <el-table-column label="操作" width="140">
+                            <template slot-scope="scope">
+                              <div class="spe-file-btns c-f">
+                                <div class="spe-file-btn" @click="filePreview(scope.row,'parentPageLoading')">预览</div>
+                                <div class="spe-ope-line"></div>
+                                <div class="spe-file-btn" @click="downOneFile(scope.row)">下载</div>
+                                <div class="spe-ope-line"></div>
+                                <div class="spe-file-btn delete" @click="delSpeFile(scope.row, 'refreshSolicitFileList')">删除</div>
+                              </div>
+                            </template>
+                          </el-table-column>
+                        </el-table>
+                        <div style="margin-top:10px">
+                          <el-button type="primary" size="medium" @click="solicitSaveOpinion">提交意见</el-button>
+                        </div>
+                      </el-form-item>
+                    </el-form>
+                  </template>
                   <table class="spe-info-table">
                     <div class="table-section-title">征求信息</div>
                     <tr>
@@ -790,33 +836,6 @@
                         </template>
                       </el-table-column>
                     </el-table>
-                  </template>
-                  <!-- 审批人员处理-->
-                  <template>
-                    <div class="file-opt-btn" style="margin-top:10px">
-                      <el-upload ref="uploadCert2" class="upload-s-file" :action="ctx+'rest/certificate/certinst/att/upload'"
-                                 :show-file-list="false" :http-request="appCancelBmUploadFile" :file-list="fileList">
-                        <el-button slot="trigger" size="small" type="primary">上传</el-button>
-                      </el-upload>
-                    </div>
-                    <el-table :data="cancelAppFileList" border>
-                      <el-table-column prop="fileName" label="文件名"></el-table-column>
-                      <el-table-column prop="updateTime" width="160" label="上传时间">
-                        <template slot-scope="scope">
-                          {{scope.row.updateTime|formatDate}}
-                        </template>
-                      </el-table-column>
-                      <el-table-column label="操作" align="center" width="150">
-                        <template slot-scope="scope">
-                          <!-- <el-button type="primary" size="mini" @click="filePreview(scope.row)">预览</el-button> -->
-                          <el-button type="primary" size="mini" @click="deleteCancelUserFile(scope.row.fileId)">删除</el-button>
-                        </template>
-                      </el-table-column>
-                    </el-table>
-                    <el-input style="margin-top:10px" type="textarea" v-model="bmHandleOpinion" :rows="3" placeholder="请输入意见"></el-input>
-                    <div style="margin-top:10px">
-                      <el-button type="primary" size="medium">提交意见</el-button>
-                    </div>
                   </template>
                 </div>
               </div>
@@ -2201,14 +2220,14 @@
                     {{scope.row.attName}}
                   </template>
                 </el-table-column>
-                <el-table-column label="操作" width="190">
+                <el-table-column label="操作" width="140">
                   <template slot-scope="scope">
                     <div class="spe-file-btns c-f">
                       <div class="spe-file-btn" @click="filePreview(scope.row,'speDiaLoading')">预览</div>
                       <div class="spe-ope-line"></div>
                       <div class="spe-file-btn" @click="downOneFile(scope.row)">下载</div>
                       <div class="spe-ope-line"></div>
-                      <div class="spe-file-btn delete" @click="delSpeFile(scope.row)">删除</div>
+                      <div class="spe-file-btn delete" @click="delSpeFile(scope.row, 'getSpeFileList')">删除</div>
                     </div>
                   </template>
                 </el-table-column>

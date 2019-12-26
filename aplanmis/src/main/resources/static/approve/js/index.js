@@ -145,6 +145,7 @@ var vm = new Vue({
       viewId: null,//视图id，从哪个视图进入审批界面
       busRecordId: null,//业务数据id，单项时为iteminstId，并联==undefined
       masterEntityKey: null,//流程关联的主业务表数据id---applyinstId 申请实例ID
+      applyinstId: null,//流程关联的主业务表数据id---applyinstId 申请实例ID
       appFlowdefId: null,//业务流程模板和流程关联id
       flowModel: null,//模板元素权限配置模式
       currTaskDefId: null,//当前任务节点定义id（节点编号）
@@ -604,6 +605,16 @@ var vm = new Vue({
       },
       // 意见征求 start
       hasSolicit: 0,
+      solicitList: [],
+      solicitUploadFileList: [],
+      solictBmOpinion: '',
+      solicitBmForm: {
+        userConclusion: '1',
+        userOpinion: '',
+      },
+      solicitBmFormRules: {
+        // userOpinion: [{required: true, message: '请填写意见', trigger: 'blur'}],
+      },
       // 意见征求  end
     }
   },
@@ -642,8 +653,109 @@ var vm = new Vue({
   },
   methods: {
     // 意见征求 start
+    // 部门人员提交意见
+    solicitSaveOpinion: function(){
+      var vm = this;
+      vm.parentPageLoading = true;
+      request('', {
+        url: ctx + 'rest/solicit/answer',
+        type: 'post',
+        data: {
+          userConclusion: vm.solicitBmForm.userConclusion,
+          userOpinion: vm.solicitBmForm.userOpinion,
+          detailUserId: '31b9c3be-3bab-4afa-91b3-c46a347f1879',
+          solicitDetailId: '403a1a5b-b3a6-445e-8558-5f0e812d7e95\n',
+        },
+      }, function(res) {
+        vm.parentPageLoading = false;
+        if (res.success) {
+          vm.$message.success('提交成功');
+          delayRefreshWindow();
+        } else {
+          vm.$message.error(res.message||'提交失败');
+        }
+      }, function(){
+        vm.parentPageLoading = false;
+        vm.$message.error('提交失败');
+      })
+    },
+    // 刷新部门附件列表
+    refreshSolicitFileList: function(){
+      var vm = this;
+      vm.parentPageLoading = true;
+      request('', {
+        url: ctx + 'rest/approve/att/dirs/file/list',
+        type: 'get',
+        data: {
+          tableName: 'AEA_HI_SOLICIT_DETAIL_USER',
+          pkName: 'DETAIL_TASK_ID',
+          recordIds: '123',
+        },
+      }, function (res) {
+        vm.parentPageLoading = false;
+        if (res.success) {
+          vm.solicitUploadFileList = res.content.files || [];
+        } else {
+          vm.$message.error(res.message || '获取文件列表失败')
+        }
+      }, function () {
+        vm.parentPageLoading = false;
+        vm.$message.error('获取文件列表失败')
+      });
+    },
+    // 部门上传附件
+    solicitUploadFile: function (file) {
+      var vm = this;
+      var formData = new FormData();
+      formData.append('files', file.file);
+      formData.append('tableName', 'AEA_HI_SOLICIT_DETAIL_USER');
+      formData.append('pkName', 'DETAIL_TASK_ID');
+      formData.append('recordId', '123');
+      vm.parentPageLoading = true;
+      axios.post(ctx + 'rest/approve/att/file/upload', formData).then(function (res) {
+        if (res.data && res.data.success) {
+          vm.$message.success('文件上传成功');
+          vm.refreshSolicitFileList();
+        } else {
+          vm.$message.error(res.message || '文件上传失败');
+        }
+      }).catch(function (e) {
+        vm.$message.error('文件上传失败');
+      }).finally(function () {
+        vm.parentPageLoading = false;
+      })
+    },
+    // 加载意见征求历史记录
     loadSolicitData: function(){
       var vm = this;
+      this.requestSolicit('YJZQ', function(data){
+        vm.solicitList = data || [];
+      });
+    },
+    // 获取意见征求等历史记录通用接口
+    requestSolicit: function(typeCode, cb){
+      var vm = this;
+      // if (vm) return null;
+      vm.parentPageLoading = true;
+      request('', {
+        url: ctx + 'rest/solicit/listAeaHiSolicitByApplyinstId',
+        type: 'get',
+        data: {
+          // applyinstId: vm.masterEntityKey,
+          applyinstId: '002bf0e6-ba95-48c2-a866-7d230b6a1007',
+          busType: typeCode,
+        }
+      }, function(res){
+        vm.parentPageLoading = false;
+        if (res.success) {
+          typeof cb == 'function' && cb(res.content);
+        } else {
+          vm.$message.error(res.message || '获取意见征求历史数据失败');
+        }
+      }, function(){
+        vm.parentPageLoading = false;
+        vm.$message.error('获取意见征求历史数据失败');
+      })
     },
     // 意见征求 end
     // 打开新增或者编辑联系人弹窗
@@ -1754,7 +1866,7 @@ var vm = new Vue({
         vm.$message.error('获取特殊程序附件列表失败')
       });
     },
-    delSpeFile: function (row, isEnd) {
+    delSpeFile: function (row, func) {
       var vm = this;
       this.$confirm('此操作将永久删除该文件, 是否继续?', '删除文件', {
         confirmButtonText: '确定',
@@ -1778,7 +1890,7 @@ var vm = new Vue({
           if (res.success) {
             vm.speDiaLoading = false;
             vm.$message.success('文件已删除');
-            isEnd ? vm.getSepEndFileList() : vm.getSpeFileList();
+            typeof vm[func] == 'function' && vm[func]();
           } else {
             vm.$messsage.error(res.message || '删除文件失败');
           }
@@ -2238,6 +2350,7 @@ var vm = new Vue({
           vm.currProcDefVersion = res.content.currProcDefVersion;
           vm.isSuspended = res.content.isSuspended;//挂起流程
           vm.masterEntityKey = res.content.masterEntityKey;//applyinstId
+          vm.applyinstId = res.content.masterEntityKey;//applyinstId
           vm.isCheck = res.content.isCheck;
           //附件管理相关参数
           vm._tableName = res.content.masterEntityKey;
@@ -2833,7 +2946,9 @@ var vm = new Vue({
           vm.projInfoId = res.content.projId;
           vm.itemVersionId = res.content.itemVerId;
           vm.itemId = res.content.itemId;
-          // vm.hasSolicit = 1;
+          if (isDevelop) {
+            vm.hasSolicit = 1;
+          }
           vm.initFormElementPriv();
         } else {
           vm.$message.error(res.message);
