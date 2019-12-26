@@ -2391,6 +2391,35 @@ input[type="number"] {
 .solict-pt.el-table th{
     padding: 0;
 }
+.status-span {
+    display: inline-block;
+    height: 24px;
+    line-height: 22px;
+    border-radius: 12px;
+    color: #4EB2FD;
+    border: 1px solid #4EB2FD;
+    padding: 0 12px;
+}
+
+.status-span.done {
+    border-color: #00C161;
+    color: #00C161;
+}
+
+.status-span.back {
+    border-color: #B8C8DC;
+    color: #B8C8DC;
+}
+
+.status-span.forward {
+    border-color: #B8C8DC;
+    color: #B8C8DC;
+}
+
+.status-span.unuse {
+    border-color: #B8C8DC;
+    color: #B8C8DC;
+}
 /*意见征求end*/
 
 

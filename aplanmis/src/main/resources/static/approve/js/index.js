@@ -673,6 +673,12 @@ var vm = new Vue({
   },
   methods: {
     // 意见征求 start
+    // 节点class
+    getStatusClass: function (status) {
+      var val = +status;
+      var arr = ['', '', 'done', 'done'];
+      return arr[val] || '';
+    },
     // 发起人员结束意见征求
     ensureEndSolicit: function(item){
       var vm = this;

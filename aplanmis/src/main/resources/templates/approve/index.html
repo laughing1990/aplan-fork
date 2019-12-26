@@ -753,7 +753,11 @@
                     </tr>
                     <tr>
                       <td class="td-bg-grey">征求状态</td>
-                      <td>{{item.solicit.solicitState|changeSolicitState}}</td>
+                      <td>
+                        <span class="status-span" :class="[getStatusClass(item.solicit.solicitState)]">
+                          {{item.solicit.solicitState|changeSolicitState}}
+                        </span>
+                      </td>
                       <td class="td-bg-grey">征求类型</td>
                       <td>{{item.solicit.solicitType|changeSolicitType}}</td>
                       <td class="td-bg-grey">征求时限</td>
@@ -907,7 +911,9 @@
                             <el-table-column label="人员" property="modifier"></el-table-column>
                             <el-table-column label="意见状态" property="userConclusion">
                               <template slot-scope="scope">
-                                {{scope.row.userConclusion|changeBmOpinType}}
+                                <span class="status-span" :class="[getStatusClass(scope.row.userConclusion)]">
+                                  {{scope.row.userConclusion|changeBmOpinType}}
+                                </span>
                               </template>
                             </el-table-column>
                             <el-table-column label="时间" property="fillTime">
@@ -923,7 +929,9 @@
                       <el-table-column v-if="item.solicit.solicitType=='i'" label="事项名称" property="itemName"></el-table-column>
                       <el-table-column label="状态" width="100" property="detailState">
                         <template slot-scope="scope">
-                          {{scope.row.detailState|changeSolicitState}}
+                          <span class="status-span" :class="[getStatusClass(scope.row.detailState)]">
+                            {{scope.row.detailState|changeSolicitState}}
+                          </span>
                         </template>
                       </el-table-column>
                     </el-table>
