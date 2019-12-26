@@ -295,6 +295,8 @@ public class RestApplyProjController {
         }
     }
 
+
+
     @GetMapping("searchProj/projlist/{keyWord}")
     @ApiOperation(value = "单项/并联申报 --> 查询项目列表下拉框")
     @ApiImplicitParams({@ApiImplicitParam(value = "搜索关键字",name = "keyWord",required = false,dataType = "string")})
@@ -307,6 +309,24 @@ public class RestApplyProjController {
                 list.addAll(projectCodeService.getProjInfoFromThirdPlatform(keyWord, "",""));
             }
             return new ContentResultForm<List<AeaProjInfoResultVo>>(true, list.size() > 0 ? list.stream().map(AeaProjInfoResultVo::build).collect(Collectors.toList()) : new ArrayList<>());
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ContentResultForm(false,"查询项目列表异常");
+        }
+    }
+
+    @GetMapping("projInfo/thirdPlatform/{keyWord}")
+    @ApiOperation(value = "项目管理 --> 我的项目:查询监管平台下的项目信息")
+    @ApiImplicitParams({@ApiImplicitParam(value = "搜索关键字",name = "keyWord",required = false,dataType = "string")})
+    public ContentResultForm<AeaProjInfoResultVo> getProjInfoFromThirdPlatform(HttpServletRequest request, @PathVariable("keyWord") String keyWord) {
+        try {
+            List<AeaProjInfo> list = new ArrayList<>();
+            if (!keyWord.contains("#") && !keyWord.contains("ZBM") && CommonTools.isComplianceWithRules(keyWord)) {
+                list = projectCodeService.getProjInfoFromThirdPlatform(keyWord, "","");
+            }
+            AeaProjInfoResultVo aeaProjInfoResultVo = new AeaProjInfoResultVo();
+            BeanUtils.copyProperties(list.get(0), aeaProjInfoResultVo);
+            return new ContentResultForm<>(true,aeaProjInfoResultVo);
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             return new ContentResultForm(false,"查询项目列表异常");
