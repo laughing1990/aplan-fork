@@ -448,6 +448,11 @@ var module1 = new Vue({
       pager.isShowAddProjPandel = false;
       pager.fetchMyProjList();
     },
+
+    // 打开新增本地项目pandel
+    openAddLocalProjPandel: function(){
+      parent.loadAddLocalProjPandel();
+    },
   },
   mounted: function () {
     // 当前编辑的项目数据（从项目列表那里获取）

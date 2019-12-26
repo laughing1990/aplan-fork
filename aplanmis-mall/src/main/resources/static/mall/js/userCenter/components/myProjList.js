@@ -58,10 +58,17 @@ var pager = new Vue({
         ts.$message.error('获取我的项目列表失败')
       });
     },
-    // 打开新增项目的面板
+    // 打开新增发改项目的面板
     loadAddProjPandel: function(){
       this.isShowAddProjPandel = true;
       $.get(ctx + 'rest/user/toAddFgProj', function (result) {
+        $('#addProjPandel').html(result);
+      });
+    },
+    // 打开新增本地项目的面板
+    loadAddLocalProjPandel: function(){
+      this.isShowAddProjPandel = true;
+      $.get(ctx + 'rest/user/toAddLocalProj', function (result) {
         $('#addProjPandel').html(result);
       });
     },

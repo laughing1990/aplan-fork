@@ -110,6 +110,12 @@ public class RestUserCenterController {
         return new ModelAndView("mall/userCenter/components/addFgProj");
     }
 
+    @GetMapping("/toAddLocalProj")
+    @ApiOperation(value = "跳转新增本地项目页")
+    public ModelAndView toAddLocalProj(){
+        return new ModelAndView("mall/userCenter/components/addLocalProj");
+    }
+
     @PostMapping("unitInfo/save")
     @ApiOperation("保存单位信息")
     public ResultForm save(AeaUnitInfo aeaUnitInfo, HttpServletRequest request){

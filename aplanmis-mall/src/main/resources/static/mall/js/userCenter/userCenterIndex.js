@@ -33,7 +33,7 @@ var userCenter = (function () {
                     name: '项目管理',
                     open: true,
                     icon:'icon-2',
-                    childList: [, {
+                    childList: [{
                       name: '我的项目',
                       value: 'MyProjList',
                       select: false,
