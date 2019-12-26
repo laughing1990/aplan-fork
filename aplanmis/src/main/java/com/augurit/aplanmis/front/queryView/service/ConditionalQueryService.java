@@ -444,5 +444,15 @@ public interface ConditionalQueryService {
      * @throws Exception
      */
     PageInfo listDoneCancelApplyInfoByBm(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception;
+
+    /**
+     * 部门人员查询撤件申请待受理的列表
+     *
+     * @param conditionalQueryRequest
+     * @param page
+     * @return
+     * @throws Exception
+     */
+    PageInfo listWaitCancelApplyInfoByBm(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception;
 }
 

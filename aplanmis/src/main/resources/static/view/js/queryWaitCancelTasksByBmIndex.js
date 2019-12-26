@@ -62,7 +62,7 @@ var vm = new Vue({
             }
 
             ts.loading = true;
-            var _url = ts.state == 1 ? ctx + 'rest/conditional/query/listDoneCancelTasksByBm' : ctx + 'rest/conditional/query/listWaitCancelTasks';
+            var _url = ts.state == 1 ? ctx + 'rest/conditional/query/listDoneCancelTasksByBm' : ctx + 'rest/conditional/query/listWaitCancelTasksByBm';
             request('', {
                 url: _url,
                 type: 'get',
@@ -91,8 +91,8 @@ var vm = new Vue({
 
         //判断是否已签收
         isSign: function (row) {
-            if (row.ckSignState) {
-                if ('1' == row.ckSignState) {
+            if (row.bmSignState) {
+                if ('1' == row.bmSignState) {
                     return true;
                 }
             }
@@ -105,11 +105,11 @@ var vm = new Vue({
             var taskId = row.taskId;
             var viewId = row.viewId;
             var busRecordId = row.busRecordId;
-            var applyinstCancelId = row.applyinstCancelId;
+            var iteminstCancelId = row.iteminstCancelId;
             event.preventDefault();
             ts.loading = true;
             request('bpmFrontUrl', {
-                url: ctx + 'rest/applyinst/signUpApplyinstCancelTask?applyinstCancelId=' + applyinstCancelId + '&taskId=' + taskId,
+                url: ctx + 'rest/applyinst/signUpIteminstCancelTask?iteminstCancelId=' + iteminstCancelId + '&taskId=' + taskId,
                 type: 'get',
                 data: {}
             }, function (result) {
