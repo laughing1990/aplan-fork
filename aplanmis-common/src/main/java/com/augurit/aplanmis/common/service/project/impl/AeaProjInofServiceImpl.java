@@ -1,5 +1,10 @@
 package com.augurit.aplanmis.common.service.project.impl;
 
+import com.augurit.agcloud.bpm.admin.sto.service.impl.AbstractFormDataOptManager;
+import com.augurit.agcloud.bpm.common.constant.EDataOpt;
+import com.augurit.agcloud.bpm.common.domain.ActStoForm;
+import com.augurit.agcloud.bpm.common.domain.ActStoForminst;
+import com.augurit.agcloud.bpm.common.domain.vo.FormDataOptResult;
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
 import com.augurit.agcloud.bsc.domain.BscDicRegion;
 import com.augurit.agcloud.bsc.mapper.BscDicRegionMapper;
@@ -44,7 +49,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Transactional(rollbackFor = RuntimeException.class)
-public class AeaProjInofServiceImpl implements AeaProjInfoService {
+public class AeaProjInofServiceImpl extends AbstractFormDataOptManager implements AeaProjInfoService {
 
     private static Logger LOGGER = LoggerFactory.getLogger(AeaProjInofServiceImpl.class);
 
@@ -756,7 +761,8 @@ public class AeaProjInofServiceImpl implements AeaProjInfoService {
                 aeaProjInfo.setCreateTime(new Date());
                 aeaProjInfo.setProjectCreateDate(dateFormat.format(new Date()));
                 aeaProjInfoMapper.insertAeaProjInfo(aeaProjInfo);
-
+                if (StringUtils.isBlank(aeaProjInfo.getFormId())) throw new Exception("缺少formId");
+                this.formSave(aeaProjInfo.getFormId(), aeaProjInfo.getProjInfoId(), EDataOpt.INSERT.getOpareteType(), null);
                 //增加父子项目关联
                 AeaParentProj aeaParentProj = new AeaParentProj();
                 aeaParentProj.setNodeProjId(UUID.randomUUID().toString());
@@ -1065,4 +1071,20 @@ public class AeaProjInofServiceImpl implements AeaProjInfoService {
         }
     }
 
+    @Override
+    public FormDataOptResult doformSave(String formId, String metaTableId, Integer opType, Object dataEntity) throws Exception {
+        FormDataOptResult result = new FormDataOptResult();
+        result.setSuccess(true);
+        ActStoForminst actStoForminst = new ActStoForminst();
+        actStoForminst.setFormId(formId);
+        actStoForminst.setFormPrimaryKey(metaTableId);
+        result.setActStoForminst(actStoForminst);
+        result.setDataOpt(EDataOpt.INSERT);
+        return result;
+    }
+
+    @Override
+    public FormDataOptResult doformDelete(ActStoForm formVo, Object dataEntity) throws Exception {
+        return null;
+    }
 }

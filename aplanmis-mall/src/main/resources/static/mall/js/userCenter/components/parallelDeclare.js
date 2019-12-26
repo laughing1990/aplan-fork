@@ -48,7 +48,7 @@ var module1 = new Vue({
       }
     };
     var checkUnifiedSocialCreditCode = function (rule, value, callback) {
-      if (value === '' || value === undefined || value.trim() === '') {
+      if (value === '' || value === undefined || value.trim() === ''|| value == null) {
         callback(new Error('请输入统一社会信用代码！'));
       } else if (value) {
         var flag = !/^[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}$/.test(value);
@@ -413,6 +413,8 @@ var module1 = new Vue({
       propulsionItemApplyinstIdVos: [], // 并行事项实例
       showFillForm: false,
       dygjbzfxfw: null,
+      applyCoreItemStateVoList: [], // 暂存并行事项情形
+      applyCoreItemStateList: [], // 并行事项
     }
   },
   mounted: function () {
@@ -475,6 +477,7 @@ var module1 = new Vue({
           _that.stateListHistory = res.content.stateList?res.content.stateList:[];
           _that.matListHistory = [];
           _that.itemStateListHistory = [];
+          _that.applyCoreItemStateVoList = res.content.parallelApplyItemStateDetailVoList?res.content.parallelApplyItemStateDetailVoList:[];
           if(res.content.matList&&res.content.matList.length>0){
             res.content.matList.map(function(historyMatItem){
               if(historyMatItem.fileList&&historyMatItem.fileList.length>0){
@@ -485,6 +488,11 @@ var module1 = new Vue({
           _that.aeaHiIteminstList.map(function(itemHistory){
             if (itemHistory.itemStateinsts && itemHistory.itemStateinsts.length > 0) {
               _that.itemStateListHistory = _that.itemStateListHistory.concat(itemHistory.itemStateinsts);
+            }
+          });
+          _that.applyCoreItemStateVoList.map(function(itemHistory){
+            if (itemHistory.stateList && itemHistory.stateList.length > 0) {
+              _that.applyCoreItemStateList = _that.applyCoreItemStateList.concat(itemHistory.stateList);
             }
           });
           if (res.content.aeaLinkmanInfoList && res.content.aeaLinkmanInfoList.length > 0) {
@@ -1644,16 +1652,19 @@ var module1 = new Vue({
         })
       }
       if (_that.applyObjectInfo.role == 0) {
-        _that.unitInfoId = '';
-        _that.unifiedSocialCreditCode = '';
+        // _that.unitInfoId = '';
+        // _that.unifiedSocialCreditCode = '';
         _that.userInfoId = _that.applyObjectInfo.aeaLinkmanInfo.linkmanInfoId;
         _that.userLinkmanCertNo = _that.applyObjectInfo.aeaLinkmanInfo.linkmanCertNo;
+        unitFlag = true;
       } else {
         _that.unitInfoId = _that.applyObjectInfo.aeaUnitInfo.unitInfoId;
         _that.unifiedSocialCreditCode = _that.applyObjectInfo.aeaUnitInfo.unifiedSocialCreditCode;
-      }
-      if (aeaUnitInfo.applicant || aeaUnitInfo.unifiedSocialCreditCode || aeaUnitInfo.idrepresentative || aeaLinkmanInfo.linkmanName || aeaLinkmanInfo.linkmanMobilePhone || aeaLinkmanInfo.linkmanCertNo) {
-        unitFlag = true;
+        if (aeaUnitInfo.applicant || aeaUnitInfo.unifiedSocialCreditCode || aeaUnitInfo.idrepresentative || aeaLinkmanInfo.linkmanName || aeaLinkmanInfo.linkmanMobilePhone || aeaLinkmanInfo.linkmanCertNo) {
+          unitFlag = true;
+        }else {
+          unitFlag = false;
+        }
       }
       if (this.applyObjectInfo.role == 0) {
         if (!this.userInfoId) {
@@ -2143,7 +2154,8 @@ var module1 = new Vue({
                     if(itemHistory.questionId==itemState.itemStateId){
                       var itemAns = {
                         itemStateId: itemHistory.answerId,
-                        parentStateId: itemHistory.questionId
+                        parentStateId: itemHistory.questionId,
+                        itemVerId: item.itemVerId,
                       }
                       if (itemState.answerType != 's' && itemState.answerType != 'y') {
                         itemState.selectAnswerId.push(itemHistory.answerId);
@@ -2161,10 +2173,28 @@ var module1 = new Vue({
           // 当前情形附带的并行事项列表
           res.content.coreItemList.map(function (item) {
             if (item.coreStateList && item.coreStateList.length > 0) {
-              item.coreStateList.map(function (itemState) {
+              item.coreStateList.map(function (itemState,ind) {
                 if (itemState.answerType != 's' && itemState.answerType != 'y') {
                   Vue.set(itemState, 'selValue', []);
                   itemState.selectAnswerId = itemState.selValue;
+                };
+                if(_that.draftsProj==true&&_that.applyCoreItemStateList.length>0){
+                  _that.applyCoreItemStateList.map(function(itemHistory){
+                    if(itemHistory.questionId==itemState.itemStateId){
+                      var itemAns = {
+                        itemStateId: itemHistory.answerId,
+                        parentStateId: itemHistory.questionId,
+                        itemVerId: item.itemVerId,
+                      }
+                      if (itemState.answerType != 's' && itemState.answerType != 'y') {
+                        itemState.selectAnswerId.push(itemHistory.answerId);
+                        _that.getCoreStateBystatus(item.paraStateList,itemState,itemAns,ind,true);
+                      }else {
+                        itemState.selectAnswerId = itemHistory.answerId;
+                        _that.getCoreStateBystatus(item.paraStateList,itemState,itemAns,ind);
+                      }
+                    }
+                  })
                 }
               });
             }
@@ -2183,7 +2213,7 @@ var module1 = new Vue({
           });
           _that.declareStep = 5;
           if(_that.draftsProj==true&&draftsProjFlag=='isHistory') {
-            var draftsItemVerIds = [], draftsItems = [];
+            var draftsItems = [], draftsCoreItems = [];
             _that.parallelItems.map(function (item) {
               _that.aeaHiIteminstList.map(function (itemHistory) {
                 if (itemHistory.itemVerId == item.itemVerId) {
@@ -2191,13 +2221,25 @@ var module1 = new Vue({
                 }
               });
             });
+            _that.coreItems.map(function (item) {
+              _that.applyCoreItemStateVoList.map(function (itemHistory) {
+                if (itemHistory.itemVerId == item.itemVerId) {
+                  draftsCoreItems.push(item);
+                }
+              });
+            });
           }
           _that.$nextTick(function () {
-            if(_that.draftsProj==true&&draftsProjFlag=='isHistory'){
-              _that.toggleSelection(draftsItems, 'parallelItemsTable');
-              _that.parallelItemsSelAll(draftsItems, 'autoGetSel');
-
-            }else {
+            if (_that.draftsProj == true && draftsProjFlag == 'isHistory') {
+              if (draftsItems && draftsItems.length > 0) {
+                _that.toggleSelection(draftsItems, 'parallelItemsTable');
+                _that.parallelItemsSelAll(draftsItems, 'autoGetSel');
+              }
+              if (draftsCoreItems && draftsCoreItems.length > 0) {
+                _that.toggleSelection(draftsCoreItems, 'coreItemsTable');
+                _that.coreItemsSelAll(draftsCoreItems);
+              }
+            } else {
               _that.toggleSelection(_that.parallelItems, 'parallelItemsTable');
               _that.parallelItemsSelAll(_that.parallelItems, 'autoGetSel');
             }
@@ -2319,7 +2361,8 @@ var module1 = new Vue({
                       if(itemHistory.questionId==itemState.itemStateId){
                         var itemAns = {
                           itemStateId: itemHistory.answerId,
-                          parentStateId: itemHistory.questionId
+                          parentStateId: itemHistory.questionId,
+                          itemVerId: item.itemVerId,
                         }
                         if (itemState.answerType != 's' && itemState.answerType != 'y') {
                           itemState.selectAnswerId.push(itemHistory.answerId);
@@ -2344,10 +2387,28 @@ var module1 = new Vue({
                 }
               }
               if (item.coreStateList && item.coreStateList.length > 0) {
-                item.coreStateList.map(function (itemState) {
+                item.coreStateList.map(function (itemState,ind) {
                   if (itemState.answerType != 's' && itemState.answerType != 'y') {
                     Vue.set(itemState, 'selValue', []);
                     itemState.selectAnswerId = itemState.selValue;
+                  }
+                  if(_that.draftsProj==true&&_that.applyCoreItemStateList.length>0){
+                    _that.applyCoreItemStateList.map(function(itemHistory){
+                      if(itemHistory.questionId==itemState.itemStateId){
+                        var itemAns = {
+                          itemStateId: itemHistory.answerId,
+                          parentStateId: itemHistory.questionId,
+                          itemVerId: item.itemVerId,
+                        }
+                        if (itemState.answerType != 's' && itemState.answerType != 'y') {
+                          itemState.selectAnswerId.push(itemHistory.answerId);
+                          _that.getCoreStateBystatus(item.paraStateList,itemState,itemAns,ind,true);
+                        }else {
+                          itemState.selectAnswerId = itemHistory.answerId;
+                          _that.getCoreStateBystatus(item.paraStateList,itemState,itemAns,ind);
+                        }
+                      }
+                    })
                   }
                 });
               }
@@ -2479,7 +2540,8 @@ var module1 = new Vue({
                       if(itemHistory.questionId==itemState.itemStateId){
                         var itemAns = {
                           itemStateId: itemHistory.answerId,
-                          parentStateId: itemHistory.questionId
+                          parentStateId: itemHistory.questionId,
+                          itemVerId: item.itemVerId,
                         }
                         if (itemState.answerType != 's' && itemState.answerType != 'y') {
                           itemState.selectAnswerId.push(itemHistory.answerId);
@@ -2508,10 +2570,28 @@ var module1 = new Vue({
                 }
               }
               if (item.coreStateList && item.coreStateList.length > 0) {
-                item.coreStateList.map(function (itemState) {
+                item.coreStateList.map(function (itemState,ind) {
                   if (itemState.answerType != 's' && itemState.answerType != 'y') {
                     Vue.set(itemState, 'selValue', []);
                     itemState.selectAnswerId = itemState.selValue;
+                  }
+                  if(_that.draftsProj==true&&_that.applyCoreItemStateList.length>0){
+                    _that.applyCoreItemStateList.map(function(itemHistory){
+                      if(itemHistory.questionId==itemState.itemStateId){
+                        var itemAns = {
+                          itemStateId: itemHistory.answerId,
+                          parentStateId: itemHistory.questionId,
+                          itemVerId: item.itemVerId,
+                        }
+                        if (itemState.answerType != 's' && itemState.answerType != 'y') {
+                          itemState.selectAnswerId.push(itemHistory.answerId);
+                          _that.getCoreStateBystatus(item.paraStateList,itemState,itemAns,ind,true);
+                        }else {
+                          itemState.selectAnswerId = itemHistory.answerId;
+                          _that.getCoreStateBystatus(item.paraStateList,itemState,itemAns,ind);
+                        }
+                      }
+                    })
                   }
                 });
               }
@@ -2521,7 +2601,7 @@ var module1 = new Vue({
           _that.coreItems = _that.unique(_that.coreItems.concat(res.content.coreItemList), 'stage');
           _that.parallelItems = _that.unique(_that.parallelItems.concat(res.content.itemList), 'stage');
           if(_that.draftsProj==true&&(_that.stageinstId&&_that.stageinstId!='')) {
-            var draftsItems = [];
+            var draftsItems = [], draftsCoreItems = [];
             _that.parallelItems.map(function (item) {
               _that.aeaHiIteminstList.map(function (itemHistory) {
                 if (itemHistory.itemVerId == item.itemVerId) {
@@ -2529,12 +2609,25 @@ var module1 = new Vue({
                 }
               });
             });
+            _that.coreItems.map(function (item) {
+              _that.applyCoreItemStateVoList.map(function (itemHistory) {
+                if (itemHistory.itemVerId == item.itemVerId) {
+                  draftsCoreItems.push(item);
+                }
+              });
+            });
           }
           _that.$nextTick(function () {
-            if(_that.draftsProj==true&&(_that.stageinstId&&_that.stageinstId!='')){
-              _that.toggleSelection(draftsItems, 'parallelItemsTable');
-              _that.parallelItemsSelAll(draftsItems, 'autoGetSel');
-            }else {
+            if (_that.draftsProj == true&&(_that.stageinstId&&_that.stageinstId!='')) {
+              if (draftsItems && draftsItems.length > 0) {
+                _that.toggleSelection(draftsItems, 'parallelItemsTable');
+                _that.parallelItemsSelAll(draftsItems, 'autoGetSel');
+              }
+              if (draftsCoreItems && draftsCoreItems.length > 0) {
+                _that.toggleSelection(draftsCoreItems, 'coreItemsTable');
+                _that.coreItemsSelAll(draftsCoreItems)
+              }
+            } else {
               _that.toggleSelection(_that.parallelItems, 'parallelItemsTable');
               _that.parallelItemsSelAll(_that.parallelItems, 'autoGetSel');
             }
@@ -2568,7 +2661,7 @@ var module1 = new Vue({
       var _parentId = answerData.itemStateId ? answerData.itemStateId : 'ROOT';
       var selStateIds = [];
       if (checkFlag == false) {
-        var stateListLen = cStateList.length;
+        var stateListLen = cStateList?cStateList.length:0;
         selStateIds = _that.getCoreItemsStatusListId(cStateList);
         for (var i = 0; i < stateListLen; i++) { // 清空情形下所对应情形
           var obj = cStateList[i];
@@ -2606,7 +2699,7 @@ var module1 = new Vue({
               cStateList.splice((index + 1 + ind), 0, item);
             });
           } else {
-            var stateListLen = cStateList.length;
+            var stateListLen = cStateList?cStateList.length:0;
             selStateIds = _that.getCoreItemsStatusListId(cStateList);
             for (var i = 0; i < stateListLen; i++) { // 清空情形下所对应情形
               var obj = cStateList[i];
@@ -2651,7 +2744,7 @@ var module1 = new Vue({
     },
     // 获取单事项情形列表id
     getCoreItemsStatusListId: function (cStateList) {
-      var stateListLen = cStateList.length;
+      var stateListLen = cStateList?cStateList.length:0;
       var selStateIds = [];
       for (var i = 0; i < stateListLen; i++) {  // 已选并联情形id集合
         if (cStateList[i].selectAnswerId !== undefined || cStateList[i].selectAnswerId !== null) {
@@ -2732,33 +2825,9 @@ var module1 = new Vue({
           selArr.splice(index, 1);
         } else {
           if (item.itemVerId == row.itemVerId && row.preItemCheckPassed == true) {
-            // request('', { // 判断并行实施事项是否可选
-            //   url: ctx + 'rest/check/itemFrontCheck',
-            //   type: 'POST',
-            //   data: {
-            //     projInfoId: _that.projInfoId,
-            //     itemVerIds: row.itemVerId
-            //   },
-            // }, function (result) {
-            //   if (result.success) {
-            //     row.preItemCheckPassed = true;
-                if(_that.selCoreItemsKey.indexOf(row.itemId)<0){
-                  _that.selCoreItemsKey.push(row.itemId);
-                }
-            //   }else {
-            //     row.preItemCheckPassed = false;
-            //     selArr.splice(index,1);
-            //     _that.checkboxInit(row);
-            //     if (row.preItemCheckPassed == false) {
-            //       _that.$message({
-            //         message: '该事项前置事项检测失败！',
-            //         type: 'error'
-            //       });
-            //     }
-            //   }
-            // }, function (msg) {
-            //
-            // })
+            if(_that.selCoreItemsKey.indexOf(row.itemId)<0){
+              _that.selCoreItemsKey.push(row.itemId);
+            }
           } else {
             for (var i = 0; i < _that.selCoreItemsKey.length; i++) {
               if (_that.selCoreItemsKey[i] == row.itemId) {
@@ -2788,29 +2857,11 @@ var module1 = new Vue({
             flag = true;
           }
           if(flag){
-            _that.selCoreItemsKey.push(item.itemId);
-            // request('', { // 判断并行实施事项是否可选
-            //   url: ctx + 'rest/check/itemFrontCheck',
-            //   type: 'post',
-            //   data: {
-            //     projInfoId: _that.projInfoId,
-            //     itemVerIds: [item.itemVerId]
-            //   },
-            // }, function (result) {
-            //   if (result.success) {
-            //     item.preItemCheckPassed = true;
-                if(_that.selCoreItemsKey.indexOf(item.itemId)<0){
-                  _that.selCoreItemsKey.push(item.itemId);
-                }
-            //   }else {
-            //     item.preItemCheckPassed = false;
-            //     selArr.splice(index,1);
-            //     _that.checkboxInit(item);
-            //   }
-            // }, function (msg) {})
+            if(_that.selCoreItemsKey.indexOf(item.itemId)<0){
+              _that.selCoreItemsKey.push(item.itemId);
+            }
           }
         });
-        _that.selCoreItemsKey = _that.distinct(_that.selCoreItemsKey, [])
       }
     },
     // 并联事项单选事件
@@ -3013,18 +3064,20 @@ var module1 = new Vue({
               }
             } else {
               if (typeof (coreStateSel[i].selectAnswerId) == 'object') {
-                coreStateIds.concat(coreStateSel[i].selectAnswerId);
-                _itemStateIds.concat(coreStateSel[i].selectAnswerId);
+                coreStateIds = coreStateIds.concat(coreStateSel[i].selectAnswerId);
+                _itemStateIds = _itemStateIds.concat(coreStateSel[i].selectAnswerId);
               } else {
                 coreStateIds.push(coreStateSel[i].selectAnswerId);
                 _itemStateIds.push(coreStateSel[i].selectAnswerId);
               }
             }
           }
-          _that.propulsionItemStateIds.push({
-            "itemVerId": selCoreItems[j].itemVerId,
-            "stateIds": coreStateIds
-          });
+          if(coreStateIds&&coreStateIds.length>0){
+            _that.propulsionItemStateIds.push({
+              "itemVerId": selCoreItems[j].itemVerId,
+              "stateIds": coreStateIds
+            });
+          }
         }
       }
       if (_that.parallelItemsQuestionFlag == true) {
@@ -3044,8 +3097,8 @@ var module1 = new Vue({
               } else {
                 if (typeof (parallelStateSel[ind1].selectAnswerId) == 'object') {
                   if(parallelStateSel[ind1].selectAnswerId&&parallelStateSel[ind1].selectAnswerId!=[]){
-                    _itemStateIds.concat(parallelStateSel[ind1].selectAnswerId);
-                    parallelStateIds.concat(parallelStateSel[ind1].selectAnswerId);
+                    _itemStateIds = _itemStateIds.concat(parallelStateSel[ind1].selectAnswerId);
+                    parallelStateIds = parallelStateIds.concat(parallelStateSel[ind1].selectAnswerId);
                   }
                 } else {
                   if(parallelStateSel[ind1].selectAnswerId&&parallelStateSel[ind1].selectAnswerId!=''){
@@ -3231,10 +3284,15 @@ var module1 = new Vue({
           if(typeof item.certChild=='undefined'||item.certChild==undefined){
             Vue.set(item,'certChild',[]);
           }
+          if(typeof item.matinstId=='undefined'||item.matinstId==undefined){
+            Vue.set(item,'matinstId','');
+          }
           if(_that.matListHistory&&_that.matListHistory.length>0){
             _that.matListHistory.map(function(historyItem){
               if(historyItem.matId == item.matId){
                 item.childs = historyItem.fileList;
+                item.matinstId = historyItem.attMatinstId;
+                item.certChild = historyItem.certChild?historyItem.certChild:[];
                 if(_that.showFileListKey.indexOf(item.matId)<0){
                   _that.showFileListKey.push(item.matId);
                 }
@@ -3720,6 +3778,9 @@ var module1 = new Vue({
         parallelItemStateIds: _that.parallelItemStateIds,
         stageinstId: _that.stageinstId?_that.stageinstId:'',
         smsInfoVo: _that.projInfoFirstSave,
+        propulsionItemVerIds: _that.propulsionItemVerIds,
+        propulsionItemStateIds: _that.propulsionItemStateIds,
+        propulsionItemApplyinstIdVos: _that.propulsionItemApplyinstIdVos,
       };
       var matListStageTemporaryParamVo = {
         matinstsIds: _that.matinstIds,
@@ -3749,6 +3810,26 @@ var module1 = new Vue({
           message: '暂存失败',
           type: 'error'
         });
+      })
+    },
+    // 材料列表上一步保存已上传材料
+    setmatinstIdVo: function(){
+      var _that = this;
+      _that.matListHistory = [];
+      _that.allMatsTableData.map(function (item) {
+        if ((typeof item.childs !== "undefined" && item.childs.length>0)||(typeof item.certChild !== "undefined" && item.certChild.length>0)) {
+          if (item.fileList == 'undefined' || item.fileList == undefined) {
+            Vue.set(item, 'fileList', item.childs);
+          }else {
+            item.fileList = item.childs;
+          }
+          if(item.attMatinstId=='undefined'||item.attMatinstId==undefined){
+            Vue.set(item,'attMatinstId',item.matinstId);
+          }else {
+            item.attMatinstId = item.matinstId;
+          }
+          _that.matListHistory.push(item);
+        }
       })
     },
     // 提交申请
@@ -4475,7 +4556,7 @@ var module1 = new Vue({
         _bizCode = _that.userLinkmanCertNo;
         _bizType = 'l';
       } else if (_that.applyObjectInfo.role == 2) {
-        if (unitItem) {
+        if (unitItem&&unitItem.unifiedSocialCreditCode) {
           _bizCode = unitItem.unifiedSocialCreditCode;
         } else {
           _bizCode = _that.unifiedSocialCreditCode;
@@ -4530,10 +4611,28 @@ var module1 = new Vue({
           item.paraStateList = item.currentCarryOutItem.paraStateList;
           item.coreStateList = item.currentCarryOutItem.coreStateList;
           if (item.coreStateList && item.coreStateList.length > 0) {
-            item.coreStateList.map(function (itemState) {
+            item.coreStateList.map(function (itemState,ind) {
               if (itemState.answerType != 's' && itemState.answerType != 'y') {
                 Vue.set(itemState, 'selValue', []);
                 itemState.selectAnswerId = itemState.selValue;
+              }
+              if(_that.draftsProj==true&&_that.applyCoreItemStateList.length>0){
+                _that.applyCoreItemStateList.map(function(itemHistory){
+                  if(itemHistory.questionId==itemState.itemStateId){
+                    var itemAns = {
+                      itemStateId: itemHistory.answerId,
+                      parentStateId: itemHistory.questionId,
+                      itemVerId: item.itemVerId,
+                    }
+                    if (itemState.answerType != 's' && itemState.answerType != 'y') {
+                      itemState.selectAnswerId.push(itemHistory.answerId);
+                      _that.getCoreStateBystatus(item.paraStateList,itemState,itemAns,ind,true);
+                    }else {
+                      itemState.selectAnswerId = itemHistory.answerId;
+                      _that.getCoreStateBystatus(item.paraStateList,itemState,itemAns,ind);
+                    }
+                  }
+                })
               }
             });
           }
@@ -4548,7 +4647,8 @@ var module1 = new Vue({
                   if(itemHistory.questionId==itemState.itemStateId){
                     var itemAns = {
                       itemStateId: itemHistory.answerId,
-                      parentStateId: itemHistory.questionId
+                      parentStateId: itemHistory.questionId,
+                      itemVerId: item.itemVerId,
                     }
                     if (itemState.answerType != 's' && itemState.answerType != 'y') {
                       itemState.selectAnswerId.push(itemHistory.answerId);
@@ -4607,10 +4707,28 @@ var module1 = new Vue({
         data.orgName = item.orgName;
         data.itemVerId = item.itemVerId;
         if (item.coreStateList && item.coreStateList.length > 0) {
-          item.coreStateList.map(function (itemState) {
+          item.coreStateList.map(function (itemState,ind) {
             if (itemState.answerType != 's' && itemState.answerType != 'y') {
               Vue.set(itemState, 'selValue', []);
               itemState.selectAnswerId = itemState.selValue;
+            }
+            if(_that.draftsProj==true&&_that.applyCoreItemStateList.length>0){
+              _that.applyCoreItemStateList.map(function(itemHistory){
+                if(itemHistory.questionId==itemState.itemStateId){
+                  var itemAns = {
+                    itemStateId: itemHistory.answerId,
+                    parentStateId: itemHistory.questionId,
+                    itemVerId: item.itemVerId,
+                  }
+                  if (itemState.answerType != 's' && itemState.answerType != 'y') {
+                    itemState.selectAnswerId.push(itemHistory.answerId);
+                    _that.getCoreStateBystatus(item.paraStateList,itemState,itemAns,ind,true);
+                  }else {
+                    itemState.selectAnswerId = itemHistory.answerId;
+                    _that.getCoreStateBystatus(item.paraStateList,itemState,itemAns,ind);
+                  }
+                }
+              })
             }
           });
         }
@@ -4625,7 +4743,8 @@ var module1 = new Vue({
                 if(itemHistory.questionId==itemState.itemStateId){
                   var itemAns = {
                     itemStateId: itemHistory.answerId,
-                    parentStateId: itemHistory.questionId
+                    parentStateId: itemHistory.questionId,
+                    itemVerId: item.itemVerId,
                   }
                   if (itemState.answerType != 's' && itemState.answerType != 'y') {
                     itemState.selectAnswerId.push(itemHistory.answerId);

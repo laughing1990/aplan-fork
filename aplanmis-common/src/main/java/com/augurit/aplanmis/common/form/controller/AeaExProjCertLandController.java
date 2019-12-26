@@ -40,9 +40,10 @@ public class AeaExProjCertLandController {
 
 
     @RequestMapping("/index.html")
-    public ModelAndView indexAeaExProjCertLand(String projInfoId) {
+    public ModelAndView indexAeaExProjCertLand(String projInfoId,String formId) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("projInfoId", projInfoId);
+        modelAndView.addObject("formId", formId);
         modelAndView.setViewName("form/cardBookForm");
         return modelAndView;
     }
@@ -82,11 +83,12 @@ public class AeaExProjCertLandController {
         if (aeaProjInfoByProjInfoId == null) {
             return new ResultForm(false, "获取项目信息失败，项目id " + aeaCertiVo.getProjInfoId());
         }
-
-        aeaExCertiService.save(aeaCertiVo);
-        aeaExProjCertBuildService.SynchronizeDataByAeaExProjCertLandForm(aeaCertiVo);//同步表单信息
-
-        return new ContentResultForm<AeaCertiVo>(true, aeaCertiVo);
+        ResultForm save = aeaExCertiService.save(aeaCertiVo);
+        if (save.isSuccess()){
+            return new ContentResultForm<AeaCertiVo>(true, aeaCertiVo);
+        }else {
+            return new ContentResultForm<String>(false, save.getMessage());
+        }
     }
 
     @RequestMapping("/deleteAeaExProjCertLandById.do")

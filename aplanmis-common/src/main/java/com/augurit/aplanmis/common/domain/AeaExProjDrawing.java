@@ -41,6 +41,9 @@ private static final long serialVersionUID = 1L;
 
         private String reviewNum;//省级施工图审查合格书编号(三库一平台返回)'
 
+    //扩展字段
+    private String formId;
+
     public String getReviewNum() {
         return reviewNum;
     }
@@ -181,6 +184,13 @@ private static final long serialVersionUID = 1L;
     }
     public void setRootOrgId( java.lang.String rootOrgId ) {
         this.rootOrgId = rootOrgId == null ? null : rootOrgId.trim();
+    }
+
+    public java.lang.String getFormId(){
+        return formId;
+    }
+    public void setFormId( java.lang.String formId ) {
+        this.formId = formId == null ? null : formId.trim();
     }
     //public String getTableName()  {
     //    return "AeaExProjDrawing";

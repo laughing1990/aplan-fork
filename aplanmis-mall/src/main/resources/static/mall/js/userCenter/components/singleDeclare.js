@@ -48,7 +48,7 @@ var module1 = new Vue({
       }
     };
     var checkUnifiedSocialCreditCode = function (rule, value, callback) {
-      if (value === '' || value === undefined || value.trim() === '') {
+      if (value === '' || value === undefined || value.trim() === ''|| value == null) {
         callback(new Error('请输入统一社会信用代码！'));
       } else if (value) {
         var flag = !/^[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}$/.test(value);
@@ -1571,16 +1571,19 @@ var module1 = new Vue({
         })
       }
       if (_that.applyObjectInfo.role == 0) {
-        _that.unitInfoId = '';
-        _that.unifiedSocialCreditCode = '';
+        // _that.unitInfoId = '';
+        // _that.unifiedSocialCreditCode = '';
         _that.userInfoId = _that.applyObjectInfo.aeaLinkmanInfo.linkmanInfoId;
         _that.userLinkmanCertNo = _that.applyObjectInfo.aeaLinkmanInfo.linkmanCertNo;
+        unitFlag = false;
       } else {
         _that.unitInfoId = _that.applyObjectInfo.aeaUnitInfo.unitInfoId;
         _that.unifiedSocialCreditCode = _that.applyObjectInfo.aeaUnitInfo.unifiedSocialCreditCode;
-      }
-      if (aeaUnitInfo.applicant || aeaUnitInfo.unifiedSocialCreditCode || aeaUnitInfo.idrepresentative || aeaLinkmanInfo.linkmanName || aeaLinkmanInfo.linkmanMobilePhone || aeaLinkmanInfo.linkmanCertNo) {
-        unitFlag = true;
+        if (aeaUnitInfo.applicant || aeaUnitInfo.unifiedSocialCreditCode || aeaUnitInfo.idrepresentative || aeaLinkmanInfo.linkmanName || aeaLinkmanInfo.linkmanMobilePhone || aeaLinkmanInfo.linkmanCertNo) {
+          unitFlag = true;
+        }else {
+          unitFlag = false;
+        }
       }
       if (this.applyObjectInfo.role == 0) {
         if (!this.userInfoId) {
@@ -1928,7 +1931,7 @@ var module1 = new Vue({
       var _that = this;
       var questionStateId = pData.itemStateId;
       var cStateList = _that.stateList;
-      var _itemVerId = data.itemVerId;
+      var _itemVerId = _that.itemVerId;
       var _parentId = data.itemStateId ? data.itemStateId : 'ROOT';
       var selStateIds = [];
       if (checkFlag == false) {
@@ -2138,10 +2141,15 @@ var module1 = new Vue({
           if(typeof item.certChild=='undefined'||item.certChild==undefined){
             Vue.set(item,'certChild',[]);
           }
+          if(typeof item.matinstId=='undefined'||item.matinstId==undefined){
+            Vue.set(item,'matinstId','');
+          }
           if(_that.matListHistory&&_that.matListHistory.length>0){
             _that.matListHistory.map(function(historyItem){
               if(historyItem.matId == item.matId){
                 item.childs = historyItem.fileList;
+                item.matinstId = historyItem.attMatinstId;
+                item.certChild = historyItem.certChild?historyItem.certChild:[];
                 if(_that.showFileListKey.indexOf(item.matId)<0){
                   _that.showFileListKey.push(item.matId);
                 }
@@ -2616,6 +2624,26 @@ var module1 = new Vue({
         return false;
       }
     },
+    // 材料列表上一步保存已上传材料
+    setmatinstIdVo: function(){
+      var _that = this;
+      _that.matListHistory = [];
+      _that.allMatsTableData.map(function (item) {
+        if ((typeof item.childs !== "undefined" && item.childs.length>0)||(typeof item.certChild !== "undefined" && item.certChild.length>0)) {
+          if (item.fileList == 'undefined' || item.fileList == undefined) {
+            Vue.set(item, 'fileList', item.childs);
+          }else {
+            item.fileList = item.childs;
+          }
+          if(item.attMatinstId=='undefined'||item.attMatinstId==undefined){
+            Vue.set(item,'attMatinstId',item.matinstId);
+          }else {
+            item.attMatinstId = item.matinstId;
+          }
+          _that.matListHistory.push(item);
+        }
+      })
+    },
     // 发起申报
     startParalleApprove: function () {
       var _that = this;
@@ -2629,8 +2657,8 @@ var module1 = new Vue({
         applySubjectType = 0;
       }
       if (applySubjectType == 0) {
-        _that.unitInfoId = '';
-        _that.unifiedSocialCreditCode = '';
+        // _that.unitInfoId = '';
+        // _that.unifiedSocialCreditCode = '';
         _that.userInfoId = _that.applyObjectInfo.aeaLinkmanInfo.linkmanInfoId;
         _that.userLinkmanCertNo = _that.applyObjectInfo.aeaLinkmanInfo.linkmanCertNo;
       } else {

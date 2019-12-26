@@ -262,30 +262,26 @@ public class RestApproveServiceImpl implements RestApproveService {
 
         //事项实例列表/主题阶段信息
         List<AeaHiIteminst> aeaHiIteminstList =  aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId,null);
-        if (aeaHiIteminstList!=null&&aeaHiIteminstList.size()>0){
-            if("1".equals(isSeriesApprove)){
-                applyDetailVo.setIteminstName(aeaHiIteminstList.get(0).getIteminstName());
-                applyDetailVo.setApproveOrgName(aeaHiIteminstList.get(0).getApproveOrgName());
-            }else{
-                AeaHiParStageinst stageinst = aeaHiParStageinstService.getAeaHiParStageinstByApplyinstId(applyinstId);
-                if(stageinst!=null) {
-                    AeaParStage stage = aeaParStageService.getAeaParStageById(stageinst.getStageId());
-                    isNeedState = (stage != null && StringUtils.isNotBlank(stage.getIsNeedState())) ? stage.getIsNeedState() : "1";
-                    //办理方式 0 多事项直接合并办理  1 按阶段多级情形组织事项办理
-                    if (stage != null&&"0".equals(stage.getHandWay())) {
-                        setItemStateinstList(aeaHiIteminstList, stageinst.getStageinstId());
-                    }
-                    applyDetailVo.setStageId(stage==null?"":stage.getStageId());
-                    applyDetailVo.setStageinstId(stageinst==null?"":stageinst.getStageinstId());
-                    AeaParTheme theme = aeaParThemeService.getAeaParThemeByThemeVerId(stageinst.getThemeVerId());
-                    applyDetailVo.setThemeStageName((stage==null||theme==null)?"":"【"+theme.getThemeName()+"】"+stage.getStageName());
-                    applyDetailVo.setThemeId(theme==null?"":theme.getThemeId());
-                    applyDetailVo.setThemeVerId(stageinst==null?"":stageinst.getThemeVerId());
+        if("1".equals(isSeriesApprove)){
+            applyDetailVo.setIteminstName(aeaHiIteminstList.size()>0?aeaHiIteminstList.get(0).getIteminstName():"");
+            applyDetailVo.setApproveOrgName(aeaHiIteminstList.size()>0?aeaHiIteminstList.get(0).getApproveOrgName():"");
+        }else{
+            AeaHiParStageinst stageinst = aeaHiParStageinstService.getAeaHiParStageinstByApplyinstId(applyinstId);
+            if(stageinst!=null) {
+                AeaParStage stage = aeaParStageService.getAeaParStageById(stageinst.getStageId());
+                isNeedState = (stage != null && StringUtils.isNotBlank(stage.getIsNeedState())) ? stage.getIsNeedState() : "1";
+                //办理方式 0 多事项直接合并办理  1 按阶段多级情形组织事项办理
+                if (stage != null&&"0".equals(stage.getHandWay())) {
+                    setItemStateinstList(aeaHiIteminstList, stageinst.getStageinstId());
                 }
-                applyDetailVo.setAeaHiIteminstList(aeaHiIteminstList);
+                applyDetailVo.setStageId(stage==null?"":stage.getStageId());
+                applyDetailVo.setStageinstId(stageinst==null?"":stageinst.getStageinstId());
+                AeaParTheme theme = aeaParThemeService.getAeaParThemeByThemeVerId(stageinst.getThemeVerId());
+                applyDetailVo.setThemeStageName((stage==null||theme==null)?"":"【"+theme.getThemeName()+"】"+stage.getStageName());
+                applyDetailVo.setThemeId(theme==null?"":theme.getThemeId());
+                applyDetailVo.setThemeVerId(stageinst==null?"":stageinst.getThemeVerId());
             }
-        }else {
-            applyDetailVo.setAeaHiIteminstList(new ArrayList<>());
+            applyDetailVo.setAeaHiIteminstList(aeaHiIteminstList);
         }
 
         //情形、前置条件
@@ -387,6 +383,7 @@ public class RestApproveServiceImpl implements RestApproveService {
     }
 
     private void setItemStateinstList(List<AeaHiIteminst> aeaHiIteminstList, String stageinstId) throws Exception {
+        if(aeaHiIteminstList.size()==0) return;
         for (AeaHiIteminst iteminst : aeaHiIteminstList) {
             if("1".equals(iteminst.getIsDeleted())) continue;
             List<Map<String, String>> list = new ArrayList<>();

@@ -1,6 +1,12 @@
 package com.augurit.aplanmis.common.service.form.impl;
+import com.augurit.agcloud.bpm.admin.sto.service.impl.AbstractFormDataOptManager;
+import com.augurit.agcloud.bpm.common.constant.EDataOpt;
+import com.augurit.agcloud.bpm.common.domain.ActStoForm;
+import com.augurit.agcloud.bpm.common.domain.ActStoForminst;
+import com.augurit.agcloud.bpm.common.domain.vo.FormDataOptResult;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaExProjContract;
 import com.augurit.aplanmis.common.mapper.AeaExProjContractMapper;
 import com.augurit.aplanmis.common.service.form.AeaExProjContractService;
@@ -27,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 */
 @Service
 @Transactional
-public class AeaExProjContractServiceImpl implements AeaExProjContractService {
+public class AeaExProjContractServiceImpl extends AbstractFormDataOptManager implements AeaExProjContractService {
 
     private static Logger logger = LoggerFactory.getLogger(AeaExProjContractServiceImpl.class);
 
@@ -39,6 +45,8 @@ public class AeaExProjContractServiceImpl implements AeaExProjContractService {
         aeaExProjContract.setCreateTime(new Date());
         aeaExProjContract.setRootOrgId(SecurityContext.getCurrentOrgId());
         aeaExProjContractMapper.insertAeaExProjContract(aeaExProjContract);
+        if (StringUtils.isBlank(aeaExProjContract.getFormId())) throw new Exception("缺少formId");
+        this.formSave(aeaExProjContract.getFormId(), aeaExProjContract.getContractId(), EDataOpt.INSERT.getOpareteType(), null);
     }
     public void updateAeaExProjContract(AeaExProjContract aeaExProjContract) throws Exception{
         aeaExProjContract.setModifier(SecurityContext.getCurrentUser().getUserName());
@@ -66,6 +74,23 @@ public class AeaExProjContractServiceImpl implements AeaExProjContractService {
         List<AeaExProjContract> list = aeaExProjContractMapper.listAeaExProjContract(aeaExProjContract);
         logger.debug("成功执行查询list！！");
         return list;
+    }
+
+    @Override
+    public FormDataOptResult doformSave(String formId, String metaTableId, Integer opType, Object dataEntity) throws Exception {
+        FormDataOptResult result = new FormDataOptResult();
+        result.setSuccess(true);
+        ActStoForminst actStoForminst = new ActStoForminst();
+        actStoForminst.setFormId(formId);
+        actStoForminst.setFormPrimaryKey(metaTableId);
+        result.setActStoForminst(actStoForminst);
+        result.setDataOpt(EDataOpt.INSERT);
+        return result;
+    }
+
+    @Override
+    public FormDataOptResult doformDelete(ActStoForm formVo, Object dataEntity) throws Exception {
+        return null;
     }
 }
 
