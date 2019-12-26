@@ -5,9 +5,11 @@ import com.augurit.agcloud.bpm.common.constant.EDataOpt;
 import com.augurit.agcloud.bpm.common.domain.ActStoForm;
 import com.augurit.agcloud.bpm.common.domain.ActStoForminst;
 import com.augurit.agcloud.bpm.common.domain.vo.FormDataOptResult;
+import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.domain.AeaApplyinstForminst;
 import com.augurit.aplanmis.common.domain.AeaExProjCertLand;
 import com.augurit.aplanmis.common.domain.AeaExProjCertProject;
 import com.augurit.aplanmis.common.domain.AeaExProjSite;
@@ -15,10 +17,12 @@ import com.augurit.aplanmis.common.service.form.AeaExProjCertLandService;
 import com.augurit.aplanmis.common.service.form.AeaExProjCertProjectService;
 import com.augurit.aplanmis.common.service.form.AeaExProjSiteService;
 import com.augurit.aplanmis.common.vo.AeaCertiVo;
+import com.augurit.aplanmis.front.basis.stage.service.RestStageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,6 +37,8 @@ public class AeaExCertiService extends AbstractFormDataOptManager {
 
     @Autowired
     private AeaExProjSiteService aeaExProjSiteService;
+    @Autowired
+    private RestStageService restStageService;
 
     public AeaCertiVo  index ( String projInfoId ){
         AeaCertiVo aeaCertiVo = new AeaCertiVo();
@@ -117,7 +123,15 @@ public class AeaExCertiService extends AbstractFormDataOptManager {
                         aeaExProjCertLand.setGovOrgName(aeaCertiVo.getGovOrgNameLand());
                         aeaExProjCertLand.setPublishTime(aeaCertiVo.getPublishTimeLand());
                         aeaExProjCertLandService.saveAeaExProjCertLand(aeaExProjCertLand);
-                        this.formSave(aeaCertiVo.getFormId(), aeaExProjCertLand.getCertLandId(), EDataOpt.INSERT.getOpareteType(), null);
+                        FormDataOptResult formDataOptResult =    this.formSave(aeaCertiVo.getFormId(), aeaExProjCertLand.getCertLandId(), EDataOpt.INSERT.getOpareteType(), null);
+                        //关联表单实例和申请实例
+                        AeaApplyinstForminst aeaApplyinstForminst = new AeaApplyinstForminst();
+                        aeaApplyinstForminst.setApplyinstId(aeaCertiVo.getRefEntityId());
+                        aeaApplyinstForminst.setForminstId(formDataOptResult.getActStoForminst().getStoForminstId());
+                        aeaApplyinstForminst.setStoFormId(aeaCertiVo.getFormId());
+                        aeaApplyinstForminst.setCreateTime(new Date());
+                        aeaApplyinstForminst.setCreater(SecurityContext.getCurrentUserId());
+                        restStageService.bindForminst(aeaApplyinstForminst);
                     }
                 }
             }
@@ -142,7 +156,6 @@ public class AeaExCertiService extends AbstractFormDataOptManager {
                         aeaExProjCertProject.setPublishOrgName(aeaCertiVo.getPublishOrgNameProject());
                         aeaExProjCertProject.setPublishTime(aeaCertiVo.getPublishTimeProject());
                         aeaExProjCertProjectService.saveAeaExProjCertProject(aeaExProjCertProject);
-                        this.formSave(aeaCertiVo.getFormId(), aeaExProjCertProject.getCertProjectId(), EDataOpt.INSERT.getOpareteType(), null);
                     }
                 }
             }
@@ -174,7 +187,6 @@ public class AeaExCertiService extends AbstractFormDataOptManager {
                         aeaExProjSite.setPublishTime(aeaCertiVo.getPublishTimeSite());
                         aeaExProjSiteService.saveAeaExProjSite(aeaExProjSite);
 
-                        this.formSave(aeaCertiVo.getFormId(), aeaExProjSite.getSiteId(), EDataOpt.INSERT.getOpareteType(), null);
                     }
                 }
             }

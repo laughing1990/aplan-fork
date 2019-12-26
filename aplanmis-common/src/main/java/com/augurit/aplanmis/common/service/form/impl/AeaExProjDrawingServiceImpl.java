@@ -7,9 +7,11 @@ import com.augurit.agcloud.bpm.common.domain.vo.FormDataOptResult;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.domain.AeaApplyinstForminst;
 import com.augurit.aplanmis.common.domain.AeaExProjDrawing;
 import com.augurit.aplanmis.common.mapper.AeaExProjDrawingMapper;
 import com.augurit.aplanmis.common.service.form.AeaExProjDrawingService;
+import com.augurit.aplanmis.front.basis.stage.service.RestStageService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,8 @@ public class AeaExProjDrawingServiceImpl extends AbstractFormDataOptManager impl
 
     @Autowired
     private AeaExProjDrawingMapper aeaExProjDrawingMapper;
+    @Autowired
+    private RestStageService restStageService;
 
     public void saveAeaExProjDrawing(AeaExProjDrawing aeaExProjDrawing) throws Exception{
         aeaExProjDrawing.setCreater(SecurityContext.getCurrentUser().getUserName());
@@ -40,7 +44,15 @@ public class AeaExProjDrawingServiceImpl extends AbstractFormDataOptManager impl
         aeaExProjDrawing.setRootOrgId(SecurityContext.getCurrentOrgId());
         aeaExProjDrawingMapper.insertAeaExProjDrawing(aeaExProjDrawing);
         if (StringUtils.isBlank(aeaExProjDrawing.getFormId())) throw new Exception("缺少formId");
-        this.formSave(aeaExProjDrawing.getFormId(), aeaExProjDrawing.getDrawingId(), EDataOpt.INSERT.getOpareteType(), null);
+        FormDataOptResult formDataOptResult =  this.formSave(aeaExProjDrawing.getFormId(), aeaExProjDrawing.getDrawingId(), EDataOpt.INSERT.getOpareteType(), null);
+        //关联表单实例和申请实例
+        AeaApplyinstForminst aeaApplyinstForminst = new AeaApplyinstForminst();
+        aeaApplyinstForminst.setApplyinstId(aeaExProjDrawing.getRefEntityId());
+        aeaApplyinstForminst.setForminstId(formDataOptResult.getActStoForminst().getStoForminstId());
+        aeaApplyinstForminst.setStoFormId(aeaExProjDrawing.getFormId());
+        aeaApplyinstForminst.setCreateTime(new Date());
+        aeaApplyinstForminst.setCreater(SecurityContext.getCurrentUserId());
+        restStageService.bindForminst(aeaApplyinstForminst);
     }
     public void updateAeaExProjDrawing(AeaExProjDrawing aeaExProjDrawing) throws Exception{
         aeaExProjDrawingMapper.updateAeaExProjDrawing(aeaExProjDrawing);

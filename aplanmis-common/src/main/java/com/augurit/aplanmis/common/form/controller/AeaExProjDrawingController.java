@@ -49,10 +49,11 @@ public class AeaExProjDrawingController {
 
 
     @RequestMapping("/index.html")
-    public ModelAndView indexAeaExProjDrawing(String projInfoId,String formId){
+    public ModelAndView indexAeaExProjDrawing(String projInfoId,String formId,String refEntityId){
         ModelAndView modelAndView = new ModelAndView("form/constructReview");
         modelAndView.addObject("projInfoId",projInfoId);
         modelAndView.addObject("formId",formId);
+        modelAndView.addObject("refEntityId",refEntityId);
         return modelAndView;
     }
 

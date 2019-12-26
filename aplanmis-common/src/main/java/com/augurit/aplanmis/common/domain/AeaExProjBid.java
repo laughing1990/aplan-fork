@@ -63,10 +63,19 @@ public class AeaExProjBid implements Serializable {
     //扩展字段
     private String tenderNum;  //''省级中标通知书编号(广东三库一平台返回)',
 
+    private String refEntityId;  //申请实例ID
     private String formId;
 
     // ----------------------------------------------------- Constructors
 // ----------------------------------------------------- Methods
+
+    public String getRefEntityId() {
+        return refEntityId;
+    }
+
+    public void setRefEntityId(String refEntityId) {
+        this.refEntityId = refEntityId;
+    }
 
     public String getFormId() {
         return formId;

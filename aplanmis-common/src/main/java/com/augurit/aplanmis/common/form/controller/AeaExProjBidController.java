@@ -55,9 +55,10 @@ public class AeaExProjBidController {
     private AeaLinkmanInfoMapper aeaLinkmanInfoMapper;
 
     @RequestMapping("/index.html")
-    public ModelAndView projectBidIndex(){
+    public ModelAndView projectBidIndex(String refEntityId){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("form/biddingInfo");
+        modelAndView.addObject("refEntityId",refEntityId);
         return modelAndView;
     }
 
