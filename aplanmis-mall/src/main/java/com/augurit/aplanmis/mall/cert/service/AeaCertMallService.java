@@ -439,6 +439,7 @@ public class AeaCertMallService {
         String linkmanInfoId=null;
         String unitInfoId=null;
         String[] projInfoIds=null;
+        boolean flag=false;//控制是否查询项目证照
         if(CertHolderConstants.CERT_FROM_APPLICANT.equals(certHolder)){//企业证照
             unitInfoId=loginInfo.getUnitId();
             if(StringUtils.isBlank(unitInfoId)) return new ArrayList<>();
@@ -451,6 +452,7 @@ public class AeaCertMallService {
             }
             if(StringUtils.isBlank(linkmanInfoId)) return new ArrayList<>();
         }else if(CertHolderConstants.CERT_FROM_PROJ.equals(certHolder)){//项目证照
+            flag=true;
             List<AeaProjInfo> projList=null;
             if("1".equals(loginInfo.getIsPersonAccount())){//个人
                 projList=aeaProjInfoService.findRootAeaProjInfoByLinkmanInfoId(loginInfo.getUserId());
@@ -465,8 +467,10 @@ public class AeaCertMallService {
             return new ArrayList<>();
         }
         com.github.pagehelper.PageHelper.startPage(pageNum, pageSize);
-        List<AeaHiCertinst>list=aeaHiCertinstMapper.getCertintList(linkmanInfoId,unitInfoId,projInfoIds,keyword,SecurityContext.getCurrentOrgId());
-        return list;
+        if(flag){
+            return aeaHiCertinstMapper.getCertintListByProjInfoIds(linkmanInfoId,unitInfoId,projInfoIds,keyword,SecurityContext.getCurrentOrgId());
+        }
+        return aeaHiCertinstMapper.getCertintListByUnitInfoIdOrLinkmanInfoId(linkmanInfoId,unitInfoId,keyword,SecurityContext.getCurrentOrgId());
     }
 
     public List<AeaCertVo> getCertTypesAndCertList(String certHolder) {
@@ -505,6 +509,7 @@ public class AeaCertMallService {
             aeaHiCertinst.setCertinstId(UUID.randomUUID().toString());
             aeaHiCertinst.setCreater(SecurityContext.getCurrentUserName());
             aeaHiCertinst.setCreateTime(new Date());
+            aeaHiCertinst.setRootOrgId(SecurityContext.getCurrentOrgId());
             //aeaHiCertinst.setCertinstSource("external");
             aeaHiCertinstMapper.insertAeaHiCertinst(aeaHiCertinst);
         }

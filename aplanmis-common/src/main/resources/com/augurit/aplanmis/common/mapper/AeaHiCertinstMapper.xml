@@ -570,7 +570,38 @@
         </where>
     </select>
 
-    <select id="getCertintList" resultType="AeaHiCertinst">
+    <select id="getCertintListByUnitInfoIdOrLinkmanInfoId" resultType="AeaHiCertinst">
+        SELECT
+        <include refid="aliasColumns">
+            <property name="alias" value="ahc"/>
+        </include>,act.TYPE_NAME certType
+        FROM aea_hi_certinst ahc
+        left join aea_cert ac on ahc.cert_id=ac.cert_id
+        left join aea_cert_type act on ac.cert_type_id=act.cert_type_id
+        <where>
+            ac.IS_DELETED !=1 and act.IS_DELETED !=1
+            <if test="unitInfoId != null">
+                AND ahc.UNIT_INFO_ID = #{unitInfoId}
+            </if>
+            <if test="linkmanInfoId != null">
+                AND ahc.LINKMAN_INFO_ID = #{linkmanInfoId}
+            </if>
+            <if test="rootOrgId != null">
+                AND ahc.ROOT_ORG_ID = #{rootOrgId}
+                AND ac.ROOT_ORG_ID = #{rootOrgId}
+                AND act.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="keyword !=null and keyword !=''">
+                AND (
+                  ahc.CERTINST_NAME LIKE  CONCAT(CONCAT('%',#{keyword}),'%')
+                  or ac.CERT_NAME LIKE  CONCAT(CONCAT('%',#{keyword}),'%')
+                  or act.TYPE_NAME LIKE  CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+    </select>
+
+    <select id="getCertintListByProjInfoIds" resultType="AeaHiCertinst">
         SELECT
         <include refid="aliasColumns">
             <property name="alias" value="ahc"/>
@@ -607,9 +638,9 @@
             </if>
             <if test="keyword !=null and keyword !=''">
                 AND (
-                  ahc.CERTINST_NAME LIKE  CONCAT(CONCAT('%',#{keyword}),'%')
-                  or ac.CERT_NAME LIKE  CONCAT(CONCAT('%',#{keyword}),'%')
-                  or act.TYPE_NAME LIKE  CONCAT(CONCAT('%',#{keyword}),'%')
+                ahc.CERTINST_NAME LIKE  CONCAT(CONCAT('%',#{keyword}),'%')
+                or ac.CERT_NAME LIKE  CONCAT(CONCAT('%',#{keyword}),'%')
+                or act.TYPE_NAME LIKE  CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
