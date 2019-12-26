@@ -51,10 +51,10 @@
     </el-table-column>
   </el-table>
   <!-- 新增事项清单end -->
-  <h4 class="mt40 collapse-item_zl">材料补全</i>
+  <h4 class="mt40 collapse-item_zl">材料补齐补正</i>
   </h4>
   <el-form :rules="materialListForm.rules" :model="materialListForm" ref="materialListForm" class="material-form">
-    <p class="ye-notice" style="line-height: 24px;margin-bottom: 20px;"><i
+    <p class="ye-notice" style="line-height: 24px;margin-bottom: 20px; display: none;"><i
         class="el-icon-warning-outline"></i>操作指引：</br>
       原件、复印件请按照缺失份数准备材料，前往<span
         style="color: red;">{{supplemetForm.regionName}}政务办事大厅窗口</span>办理补全。材料补完后方可点击【补全】按钮，否则只能【暂存】操作。
@@ -139,8 +139,8 @@
       </el-table-column>
       <el-table-column align="center" label="空表样表" width="80">
         <template slot-scope="scope">
-          <a href="javascript:;" class="color3e97df" @click="downLoadEmptyAndSampleTable(scope.row)">
-            <i class="ag ag-download-cloud" style="font-size: 20px;"></i>
+          <a href="javascript:;" class="empty-sample-downbtn" @click="downLoadEmptyAndSampleTable(scope.row)">
+            <!-- <i class="ag ag-download-cloud" style="font-size: 20px;"></i> -->
           </a> 
         </template>
       </el-table-column>
@@ -172,8 +172,8 @@
     </el-form-item>
   </el-form>
   <div class="footer-stage-btn" style="text-align: center;">
-    <el-button class="mt20" @click="saveMaterialList('6')" style="width: 120px;">暂存</el-button>
-    <el-button class="mt20" type="primary" @click="saveMaterialList('7')" style="width: 120px;">补全</el-button>
+    <el-button class="mt20" type="normal" @click="saveMaterialList('6')" style="width: 120px;">保存</el-button>
+    <el-button class="mt20" type="primary" @click="saveMaterialList('7')" style="width: 120px;">提交</el-button>
   </div>
 
   <!-- 材料补全列表电子件附件的dialog -->

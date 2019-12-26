@@ -23,7 +23,8 @@ var vm = new Vue({
 				arriveStartTime: '',
 				arriveEndTime: '',
 				keyword: '',
-				busType: 'YCZX'
+				// busType: 'YCZX',
+				busType: 'YJZQ'
 			},
 
 			isShowMsgDetail: false,
@@ -104,16 +105,17 @@ var vm = new Vue({
 		//签收
 		signTask: function (event, row) {
 			var ts = this;
-			var solicitDetailId = row.solicitDetailId;
+			var detailUserId = row.detailUserId;
 			event.preventDefault();
 			ts.loading = true;
-			request('bpmFrontUrl', {
-				url: ctx + 'rest/solicit/sign/' + solicitDetailId,
+			request('', {
+				url: ctx + 'rest/solicit/sign/' + detailUserId,
 				type: 'get',
 				data: {}
 			}, function (result) {
 				ts.loading = false;
 				if (result.success) {
+					ts.fetchTableData();
 				} else {
 					ts.$message.error(result.message);
 				}
@@ -160,6 +162,48 @@ var vm = new Vue({
 				}
 			}
 			return '65';
+		},
+		solicitStateFormatter: function (row) {
+
+		},
+		formatState: function (row, column, cellValue, index) {
+			if (['2', '3'].indexOf(row.solicitState) != -1) {
+				if (row.conclusionFlag && row.conclusionFlag == '1') {
+					return "已结束";
+				} else {
+					return "待整改"
+				}
+			} else if (row.solicitState == '1') {//进行中
+				return row.rateProgress;
+			}
+		},
+		//按钮格式化
+		stateBtnFormat: function (row, column, cellValue, index) {
+			if (['2', '3'].indexOf(row.solicitState) != -1) {// 已完成或终止
+				//判断是否发起人，只有发起人才能结束征询或重新发起
+				if (!row.countLimit || row.countLimit > 0) {//判断重新发起限制次数
+					if (row.promoter) {
+						return '<span class="op-btn" @click="viewDetail(scope.row)">牵头部门重新发起</span>';
+					} else {
+						return '<span class="op-btn"  @click="viewDetail(scope.row)">被征集人查看</span>';
+					}
+				}
+			} else if (row.solicitState == '1') {//进行中
+				if (row.finishProgressNum === row.allProgressNum) {//全部征询完
+					if (row.promoter) {
+
+						return '<span class="op-btn"  @click="viewDetail(scope.row)">结束一次征询</span>';
+					} else {
+						return '<span class="op-btn"  @click="viewDetail(scope.row)">被征集人查看</span>';
+					}
+				} else {
+					if (row.promoter) {
+						return '<span class="op-btn" @click="viewDetail(scope.row)">发起人查看</span>';
+					} else {
+						return '<span class="op-btn" @click="viewDetail(scope.row)">回复一次征询</span>';
+					}
+				}
+			}
 		}
 
 	},

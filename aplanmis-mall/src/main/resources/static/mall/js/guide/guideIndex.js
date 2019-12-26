@@ -1,10 +1,3 @@
-/* 
-* @Author: hua
-* @Date:   2019-07-15 09:32:28
-* @Last Modified by:   anchen
-* @Last Modified time: 2019-08-05 13:53:25
-*/
-
 var guideIndex = (function () {
     var ele,
         eleLen;
@@ -190,6 +183,7 @@ var guideIndex = (function () {
             showProcessLoading: false,
             getViewIframeSrc: '',
             imgUrl: ["common/stage/mainLine/images/立项用地许可.png", "common/stage/mainLine/images/工程建设许可.png", "common/stage/mainLine/images/施工许可.png", "common/stage/mainLine/images/竣工验收.png", "common/stage/mainLine/images/立项用地许可.png","common/stage/mainLine/images/5.png","common/stage/mainLine/images/5.png","common/stage/mainLine/images/5.png","common/stage/mainLine/images/工程建设许可.png","common/stage/mainLine/images/5.png","common/stage/mainLine/images/5.png","common/stage/mainLine/images/5.png"],
+            itemListKeyword:'',
         },
         mounted: function () {
             var vm = this;
@@ -304,6 +298,9 @@ var guideIndex = (function () {
             },
             toUserCenterindexPage: function (itemVerId) {
                 window.location.href = ctx + "rest/main/toIndexPage?itemVerId=" + itemVerId + '&&projInfoId=null&&flag=singleD#declare';
+            },
+            tolistMatter:function(){
+                window.location.href =ctx + "rest/main/toIndexPage?#/listmatter";
             },
             //查看主题流程图
             showProcess: function () {
@@ -472,8 +469,8 @@ var guideIndex = (function () {
                                     mainLine = true;
                                     mainId.push(result[i].stageId)
                                     content += '<li class="show" style="cursor: pointer;" onclick=getGuideDetail(this,"' + result[i].stageId + '") id=' + result[i].stageId + '>';
-                                    content += '<img src="' + ctx + imgUrl[i] + '" alt=""><div class="stage-name"><p class="ellipsis">' + result[i].stageName + '</p><p class="stage-dealine">' + result[i].dueNum + '个工作日</p></div><img src="' + ctx + 'mall/images/icon/1.png" alt="" class="sing"><p class="sing-text">' + (i + 1) + '</p><div class="wrapperGuide">\n' +
-                                        '<p  onclick="goToStageApply()">查看并联办事指南</p>\n' +
+                                    content += '<img src="' + ctx + imgUrl[i] + '" alt=""><div class="stage-name"><p class="ellipsis">' + result[i].stageName + '</p><p class="stage-dealine">' + result[i].dueNum + '个工作日</p></div><img src="' + ctx + 'mall/images/icon/1.png" alt="" class="sing"><p class="sing-text">' + (i + 1) + '</p><div class="wrapperGuide" onclick="goToStageApply()">\n' +
+                                        '<p >查看并联办事指南</p>\n' +
                                         '</div></li>';
                                     vm.countStageType1 = true;
                                 } else {//辅线
@@ -481,8 +478,8 @@ var guideIndex = (function () {
                                     assitLine = true;
                                     assitId.push(result[i].stageId)
                                     content_aux += '<li class="show" style="cursor: pointer;" onclick=getGuideDetail2(this,"' + result[i].stageId + '") id=' + result[i].stageId + '>';
-                                    content_aux += '<img src="' + ctx + imgUrl[i] + '" alt=""><div class="stage-name"><p class="ellipsis">' + result[i].stageName + '</p><p class="stage-dealine">' + result[i].dueNum + '个工作日</p></div><img src="' + ctx + 'mall/images/icon/1.png" alt="" class="sing"><p class="sing-text">1</p><div class="wrapperGuide">\n' +
-                                        '<p  onclick="goToStageApply()">查看并联办事指南</p>\n' +
+                                    content_aux += '<img src="' + ctx + imgUrl[i] + '" alt=""><div class="stage-name"><p class="ellipsis">' + result[i].stageName + '</p><p class="stage-dealine">' + result[i].dueNum + '个工作日</p></div><img src="' + ctx + 'mall/images/icon/1.png" alt="" class="sing"><p class="sing-text">1</p><div class="wrapperGuide" onclick="goToStageApply()">\n' +
+                                        '<p>查看并联办事指南</p>\n' +
                                         '</div></li>';
                                     vm.countStageType2 = true;
                                 }
@@ -895,7 +892,7 @@ var guideIndex = (function () {
         watch: {}
     })
     function goToStageApply(){
-        location.href =ctx + "rest/main/toIndexPage?projInfoId=null#declare";
+        window.location.href =ctx + "rest/main/toIndexPage?#/listmatter";
     }
 
     window.goToStageApply = goToStageApply;

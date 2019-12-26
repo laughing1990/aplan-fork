@@ -725,6 +725,11 @@ var mainIndex = (function () {
             $('body,html').animate({scrollTop:0},500);
             return false;
         },
+
+        // 跳转视频操作指引
+        tovideoTeaching:function () {
+            window.location.href = ctx +"rest/main/toIndexPage?#/videoTeaching"
+        },
     },
         filters: {
             formatDate: function(time) {

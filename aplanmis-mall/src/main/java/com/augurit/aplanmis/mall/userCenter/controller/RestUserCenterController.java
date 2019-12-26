@@ -98,10 +98,22 @@ public class RestUserCenterController {
         return new ModelAndView("mall/userCenter/components/creditDetail");
     }
 
-    @GetMapping("/toMyProjList")
+    @GetMapping("/toMyProjListPage")
     @ApiOperation(value = "跳转我的项目列表页")
-    public ModelAndView toMyProjList(){
+    public ModelAndView toMyProjListPage(){
         return new ModelAndView("mall/userCenter/components/myProjList");
+    }
+
+    @GetMapping("/toAddFgProj")
+    @ApiOperation(value = "跳转新增发改项目页")
+    public ModelAndView toAddFgProj(){
+        return new ModelAndView("mall/userCenter/components/addFgProj");
+    }
+
+    @GetMapping("/toAddLocalProj")
+    @ApiOperation(value = "跳转新增本地项目页")
+    public ModelAndView toAddLocalProj(){
+        return new ModelAndView("mall/userCenter/components/addLocalProj");
     }
 
     @PostMapping("unitInfo/save")

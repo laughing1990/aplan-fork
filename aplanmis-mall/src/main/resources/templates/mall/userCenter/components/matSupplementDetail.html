@@ -62,11 +62,11 @@
 
   <!--  材料补正  start  -->
   <div class="mb20 proj-module">
-    <h4 class="mb20">材料补正</h4>
+    <h4 class="mb20">材料补齐补正</h4>
     <!--            <div class="title-nav">-->
     <!--                <span>操作指引:1.原件、复印件请按照缺失份数准备材料，前往政务办事大厅窗口办理补正。材料补完后方可点击【补正】按钮，否则只能【暂存】操作。</span>-->
     <!--            </div>-->
-    <p class="ye-notice" style="line-height: 24px;margin-bottom: 20px;"><i
+    <p class="ye-notice" style="line-height: 24px;margin-bottom: 20px; display: none;"><i
         class="el-icon-warning-outline"></i>操作指引：</br>
       原件、复印件请按照缺失份数准备材料，前往<span
         style="color: red;">{{supplemetForm.regionName}}政务办事大厅窗口</span>办理补正。材料补完后方可点击【补正】按钮，否则只能【暂存】操作。
@@ -159,8 +159,8 @@
         </el-table-column>
         <el-table-column align="center" label="空表样表" width="80">
           <template slot-scope="scope">
-            <a href="javascript:;" class="color3e97df" @click="downLoadEmptyAndSampleTable(scope.row)">
-              <i class="ag ag-download-cloud" style="font-size: 20px;"></i>
+            <a href="javascript:;" class="empty-sample-downbtn" @click="downLoadEmptyAndSampleTable(scope.row)">
+              <!-- <i class="ag ag-download-cloud" style="font-size: 20px;"></i> -->
             </a> 
           </template>
         </el-table-column>
@@ -195,10 +195,10 @@
     <div class="right-bottom-btn">
       <!--<el-button type="primary" circle @click="saveMaterialList('6')" :disabled="allPageInfoData.correctState !=6">-->
       <!--待补正</el-button>-->
-      <el-button type="success" style="width: 120px;" @click="saveMaterialList('6')"
-        :disabled="allPageInfoData.correctState !=6">暂存</el-button>
+      <el-button type="normal" style="width: 120px;" @click="saveMaterialList('6')"
+        :disabled="allPageInfoData.correctState !=6">保存</el-button>
       <el-button type="primary" style="width: 120px;" @click="saveMaterialList('7')"
-        :disabled="allPageInfoData.correctState !=6">补正</el-button>
+        :disabled="allPageInfoData.correctState !=6">提交</el-button>
       <!-- <el-button type="primary" circle @click="saveMaterialList('5')" :disabled="allPageInfoData.correctState !=6">
            不予<br />受理</el-button>
          <el-button type="success" circle>打印<br />回执</el-button> -->

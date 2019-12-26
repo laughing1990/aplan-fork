@@ -163,6 +163,7 @@ public class AeaHiSolicitVo {
 
     @ApiModelProperty(value = "签收时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private java.util.Date signTime;
 
     @ApiModelProperty(value = "填写意见时间")
@@ -232,8 +233,27 @@ public class AeaHiSolicitVo {
 
 
     @ApiModelProperty(value = "剩余/逾期用时显示文本")
-    protected String remainingOrOverTimeText;
+    private String remainingOrOverTimeText;
 
     @ApiModelProperty(value = "法定办结时限显示")
-    protected String dueNumText;
+    private String dueNumText;
+
+    @ApiModelProperty(value = "一次征询回复进度或状态")
+    private String rateProgress;
+
+    @ApiModelProperty(value = "所有被征询部门数量")
+    private int allProgressNum;
+
+    @ApiModelProperty(value = "已完成征询部门数量")
+    private int finishProgressNum;
+
+    @ApiModelProperty(value = "待完成征询部门数量")
+    private int pendingProgressNum;
+
+    private String viewId;
+    @ApiModelProperty(value = "是否发起人，true 是，false 否")
+    private boolean promoter;
+    @ApiModelProperty(value = "当前征集的次数")
+    private int solicitIndex;
+
 }

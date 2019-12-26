@@ -63,6 +63,12 @@ public class RestMainController {
         return new ModelAndView("mall/regulation/regulationIndex");
     }
 
+    @GetMapping("/tovideoTeachingPage")
+    @ApiOperation(value = "首页-->跳转tovideoTeachingPage页面接口")
+    public ModelAndView tovideoTeachingPage() {
+        return new ModelAndView("mall/main/components/videoTeaching");
+    }
+
     @GetMapping("/toMainIndexPage")
     @ApiOperation(value = "首页-->跳转mainIndex页面接口")
     public ModelAndView toMainIndexPage() {

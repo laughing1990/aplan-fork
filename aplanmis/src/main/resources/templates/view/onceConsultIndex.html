@@ -214,7 +214,8 @@
 
 			</template>
 		</el-table-column>
-		<el-table-column
+
+		<!--<el-table-column
 				prop="applySource"
 				label="来源"
 				min-width="50"
@@ -228,21 +229,22 @@
 				label="类型"
 				show-overflow-tooltip
 				:formatter="formatTableCell">
-		</el-table-column>
+		</el-table-column>-->
+
 		<el-table-column
 				prop="applyinstCode"
-				min-width="140"
+				min-width="150"
 				label="申报流水号"
 				show-overflow-tooltip
 				:formatter="formatTableCell">
 		</el-table-column>
-		<el-table-column
+		<!--<el-table-column
 				prop="localCode"
 				min-width="220"
 				label="项目/工程代码"
 				show-overflow-tooltip
 				:formatter="formatTableCell">
-		</el-table-column>
+		</el-table-column>-->
 		<el-table-column
 				prop="projName"
 				min-width="150"
@@ -254,6 +256,15 @@
 				</el-tooltip>
 			</template>
 		</el-table-column>
+
+		<el-table-column
+				prop="themeName"
+				min-width="220"
+				label="项目类型"
+				show-overflow-tooltip
+				:formatter="formatTableCell">
+		</el-table-column>
+
 		<el-table-column
 				min-width="260px"
 				prop="stageItemName"
@@ -265,13 +276,31 @@
 				</el-tooltip>
 			</template>
 		</el-table-column>
-		<el-table-column
+
+		<!--<el-table-column
 				prop="taskName"
 				min-width="100"
 				label="当前节点"
 				show-overflow-tooltip
 				:formatter="formatTableCell">
+		</el-table-column>-->
+
+		<el-table-column
+				prop="initiatorOrgName"
+				min-width="100"
+				label="发起部门"
+				show-overflow-tooltip
+				:formatter="formatTableCell">
 		</el-table-column>
+
+		<el-table-column
+				prop="solicitTopic"
+				min-width="150"
+				label="主题"
+				show-overflow-tooltip
+				:formatter="formatTableCell">
+		</el-table-column>
+
 		<el-table-column
 				sortable="custom"
 				prop="instState,timeruleUnit,overdueTime,remainingTime"
@@ -307,20 +336,34 @@
 				</el-popover>
 			</template>
 		</el-table-column>
+
 		<el-table-column
+				prop="rateProgress"
+				min-width="120"
+				label="回复进度/状态"
+				show-overflow-tooltip
+				:formatter="formatState">
+			<!--<template slot-scope="scope">
+				<span v-if=" ['2','3'].indexOf(scope.row.solicitState)!=-1">已完成</span>
+				<span v-html="solicitStateFormatter(scope.row)"></span>
+			</template>-->
+		</el-table-column>
+
+		<!--<el-table-column
 				sortable="custom"
 				min-width="140"
 				prop="acceptTime"
 				label="受理时间"
 				show-overflow-tooltip
 				:formatter="formatTableCell">
-		</el-table-column>
+		</el-table-column>-->
 		<el-table-column
-				min-width="60"
+				min-width="120"
 				label="操作">
 			<template slot-scope="scope">
-				<span class="op-btn" v-if="isSign(scope.row)" @click="viewDetail(scope.row)">办理</span>
-				<span class="op-btn" v-if="!isSign(scope.row)" @click="signTask($event,scope.row)">签收</span>
+				<span v-html="stateBtnFormat(scope.row)"></span>
+				<!--<span class="op-btn" v-if="isSign(scope.row)" @click="viewDetail(scope.row)">办理</span>
+				<span class="op-btn" v-if="!isSign(scope.row)" @click="signTask($event,scope.row)">签收</span>-->
 			</template>
 		</el-table-column>
 	</el-table>

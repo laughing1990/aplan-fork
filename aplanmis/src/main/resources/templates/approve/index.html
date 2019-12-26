@@ -741,11 +741,108 @@
                     </div>
                     <div class="ttt-t"></div>
                   </div>
-                  <!-- 审批人员处理-->
-                  <template v-if="item.solicitDetailUser.detailUserId&&item.solicitDetailUser.detailUserId.length">
+                  <table class="spe-info-table">
+                    <div class="table-section-title">征求信息</div>
+                    <tr>
+                      <td class="td-bg-grey">征求主题</td>
+                      <td colspan="5">{{item.solicit.solicitTopic}}</td>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey">征求内容</td>
+                      <td colspan="5">{{item.solicit.solicitContent}}</td>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey">征求状态</td>
+                      <td>
+                        <span class="status-span" :class="[getStatusClass(item.solicit.solicitState)]">
+                          {{item.solicit.solicitState|changeSolicitState}}
+                        </span>
+                      </td>
+                      <td class="td-bg-grey">征求类型</td>
+                      <td>{{item.solicit.solicitType|changeSolicitType}}</td>
+                      <td class="td-bg-grey">征求时限</td>
+                      <td>{{item.solicit.solicitDueDays+item.solicit.solicitDaysUnitCn}}</td>
+                    </tr>
+                    <tr>
+                      <td class="td-bg-grey">发起征求部门</td>
+                      <td>{{item.solicit.initiatorOrgName}}</td>
+                      <td class="td-bg-grey">发起征求人员</td>
+                      <td>{{item.solicit.initiatorUserName}}</td>
+                      <td class="td-bg-grey">发起征求时间</td>
+                      <td>{{item.solicit.createTime|formatDate}}</td>
+                    </tr>
+                  </table>
+                  <!--展示汇总意见-->
+                  <template v-if="item.solicit.solicitState==2||item.solicit.solicitState==3">
+                    <table class="spe-info-table">
+                      <div class="table-section-title">意见汇总信息</div>
+                      <tr>
+                        <td class="td-bg-grey">是否通过</td>
+                        <td colspan="5">{{item.solicit.conclusionFlag==1?'通过':'不通过'}}</td>
+                      </tr>
+                      <tr>
+                        <td class="td-bg-grey">汇总意见</td>
+                        <td colspan="5">{{item.solicit.conclusionDesc}}</td>
+                      </tr>
+                    </table>
+                  </template>
+                  <!-- 发起人结束意见征求-->
+                  <template v-else-if="item.solicit.solicitCanBeFinish">
+<!--                  <template v-else>-->
+                    <div class="table-section-title">结束意见征求</div>
                     <el-form size="medium" style="margin-top:10px;"
-                             :model="solicitBmForm" :rules="solicitBmFormRules" label-width="85px">
-                      <el-form-item label="征求意见" require>
+                             :model="solicitBmForm" :rules="solicitBmFormRules" label-width="80px">
+                      <el-form-item label="是否通过" require>
+                        <el-radio v-model="solicitBmForm.userConclusion" label="1">同意</el-radio>
+                        <el-radio v-model="solicitBmForm.userConclusion" label="0">不同意</el-radio>
+                      </el-form-item>
+                      <el-form-item label="意见汇总" require prop="userOpinion">
+                        <el-input type="textarea" v-model="solicitBmForm.userOpinion" :rows="3" placeholder="请输入意见描述"></el-input>
+                        <div style="margin-top:10px">
+                          <el-button type="primary" size="medium" @click="ensureEndSolicit(item)">确认结束</el-button>
+                        </div>
+                      </el-form-item>
+<!--                      <el-form-item label="附件列表">-->
+<!--                        <div class="file-opt-btn" style="margin-top:0px">-->
+<!--                          <el-upload ref="uploadCert3" class="upload-s-file" :action="ctx+'rest/certificate/certinst/att/upload'"-->
+<!--                                     :show-file-list="false" :http-request="function(file){solicitUploadFile(file, item)}" :file-list="fileList">-->
+<!--                            <el-button slot="trigger" size="small" type="primary">上传</el-button>-->
+<!--                          </el-upload>-->
+<!--                        </div>-->
+<!--                        <el-table :data="solicitUploadFileList" border class="solict-pt">-->
+<!--                          <el-table-column label='序号' type="index" width="50"></el-table-column>-->
+<!--                          <el-table-column label="附件名称" prop="attName">-->
+<!--                            <template slot-scope="scope">-->
+<!--                              <i class="ag" v-html="getIconText(scope.row.attFormat)"-->
+<!--                                 :style="{color:getIconColor(scope.row.attFormat)}"></i>-->
+<!--                              {{scope.row.attName}}-->
+<!--                            </template>-->
+<!--                          </el-table-column>-->
+<!--                          <el-table-column label="操作" width="140">-->
+<!--                            <template slot-scope="scope">-->
+<!--                              <div class="spe-file-btns c-f">-->
+<!--                                <div class="spe-file-btn" @click="filePreview(scope.row,'parentPageLoading')">预览</div>-->
+<!--                                <div class="spe-ope-line"></div>-->
+<!--                                <div class="spe-file-btn" @click="downOneFile(scope.row)">下载</div>-->
+<!--                                <div class="spe-ope-line"></div>-->
+<!--                                <div class="spe-file-btn delete" @click="delSpeFile(scope.row, 'refreshSolicitFileList')">删除</div>-->
+<!--                              </div>-->
+<!--                            </template>-->
+<!--                          </el-table-column>-->
+<!--                        </el-table>-->
+<!--                        <div style="margin-top:10px">-->
+<!--                          <el-button type="primary" size="medium" @click="ensureEndSolicit(item)">确认结束</el-button>-->
+<!--                        </div>-->
+<!--                      </el-form-item>-->
+                    </el-form>
+                  </template>
+                  <!-- 部门审批人员处理-->
+                  <template v-if="item.solicitDetailUser&&item.solicitDetailUser.detailUserId&&item.solicitDetailUser.detailUserId.length">
+<!--                  <template>-->
+                    <div class="table-section-title">填写意见</div>
+                    <el-form size="medium" style="margin-top:10px;"
+                             :model="solicitBmForm" :rules="solicitBmFormRules" label-width="80px">
+                      <el-form-item label="是否同意" require>
                         <el-radio v-model="solicitBmForm.userConclusion" label="1">同意</el-radio>
                         <el-radio v-model="solicitBmForm.userConclusion" label="0">不同意</el-radio>
                       </el-form-item>
@@ -781,40 +878,11 @@
                           </el-table-column>
                         </el-table>
                         <div style="margin-top:10px">
-                          <el-button type="primary" size="medium" @click="solicitSaveOpinion">提交意见</el-button>
+                          <el-button type="primary" size="medium" @click="solicitSaveOpinion(item)">提交意见</el-button>
                         </div>
                       </el-form-item>
                     </el-form>
                   </template>
-                  <table class="spe-info-table">
-                    <div class="table-section-title">征求信息</div>
-                    <tr>
-                      <td class="td-bg-grey">征求主题</td>
-                      <td colspan="5">{{item.solicit.solicitTopic}}</td>
-                    </tr>
-                    <tr>
-                      <td class="td-bg-grey">征求内容</td>
-                      <td colspan="5">{{item.solicit.solicitContent}}</td>
-                    </tr>
-                    <tr>
-                      <td class="td-bg-grey">征求状态</td>
-                      <td>{{item.solicit.solicitState|changeSolicitState}}</td>
-                      <td class="td-bg-grey">征求类型</td>
-                      <td>{{item.solicit.solicitType|changeSolicitType}}</td>
-                      <td class="td-bg-grey">征求时限</td>
-                      <td>{{item.solicit.solicitDueDays+item.solicit.solicitDaysUnitCn}}</td>
-                    </tr>
-                    <tr>
-                      <td class="td-bg-grey">发起征求部门</td>
-                      <td>{{item.solicit.initiatorOrgName}}</td>
-                      <td class="td-bg-grey">发起征求人员</td>
-                      <td>{{item.solicit.initiatorUserName}}</td>
-                      <td class="td-bg-grey">发起征求时间</td>
-                      <td>{{item.solicit.createTime|formatDate}}</td>
-                    </tr>
-                    <tr>
-                    </tr>
-                  </table>
                   <!-- 各部门意见 -->
                   <template>
                     <table class="spe-info-table">
@@ -827,22 +895,25 @@
                           <el-table border :data="scope.row.detailUsers">
                             <el-table-column label="序号" type="index" width="50"></el-table-column>
                             <el-table-column type="expand" width="20">
-                              <template slot-scope="scope2">
-                                <div v-if="scope2.row.fileAndDirs&&scope2.row.fileAndDirs.length"
-                                     class="spe-table-file-u" v-for="file in scope2.row.fileDir">
-                                  <i class="ag" v-html="getIconText(file.attFormat)"
-                                     :style="{color:getIconColor(file.attFormat)}"></i>
-                                  {{file.attName}}
-                                  <i class="ag ag-ope-btn ag-search" title="预览" @click="filePreview(file)"></i>
-                                  <i class="ag ag-ope-btn ag-download" title="下载" @click="downOneFile(file)"></i>
+                              <template slot-scope="scope">
+                                <div v-if="scope.row.fileAndDirs&&scope.row.fileAndDirs.length">
+                                  <div class="spe-table-file-u" v-for="file in scope.row.fileAndDirs">
+                                    <i class="ag" v-html="getIconText(file.fileType)"
+                                       :style="{color:getIconColor(file.fileType)}"></i>
+                                    {{file.fileName}}
+                                    <i class="ag ag-ope-btn ag-search" title="预览" @click="filePreview(file)"></i>
+                                    <i class="ag ag-ope-btn ag-download" title="下载" @click="downOneFile(file)"></i>
+                                  </div>
                                 </div>
                                 <div v-else>暂无附件</div>
                               </template>
                             </el-table-column>
-                            <el-table-column label="人员" property="userName"></el-table-column>
+                            <el-table-column label="人员" property="modifier"></el-table-column>
                             <el-table-column label="意见状态" property="userConclusion">
                               <template slot-scope="scope">
-                                {{scope.row.userConclusion|changeBmOpinType}}
+                                <span class="status-span" :class="[getStatusClass(scope.row.userConclusion)]">
+                                  {{scope.row.userConclusion|changeBmOpinType}}
+                                </span>
                               </template>
                             </el-table-column>
                             <el-table-column label="时间" property="fillTime">
@@ -858,11 +929,14 @@
                       <el-table-column v-if="item.solicit.solicitType=='i'" label="事项名称" property="itemName"></el-table-column>
                       <el-table-column label="状态" width="100" property="detailState">
                         <template slot-scope="scope">
-                          {{changeSpCancelState(scope.row.detailState)}}
+                          <span class="status-span" :class="[getStatusClass(scope.row.detailState)]">
+                            {{scope.row.detailState|changeSolicitState}}
+                          </span>
                         </template>
                       </el-table-column>
                     </el-table>
                   </template>
+                  <!-- qiantou bumen jieshu  -->
                 </div>
               </div>
           </div>
@@ -2572,6 +2646,294 @@
     </div>
   </el-dialog>
   <!--新增编辑联系人 end-->
+  <!-- 意见征求 start -->
+  <el-dialog title="意见征求" class="solicit-opinion-dialog" v-loading="solicitOpinionLoading"
+             :close-on-click-modal="false" :visible.sync="solicitOpinionVisible" @close="closeSoDialog"
+             :width="curWidth>1220?'1200px':(curWidth-20)+'px'" top="20px">
+    <div class="solicit-o-wrap" :style="{height: (curHeight-210)+'px',overflow: 'auto'}">
+      <el-form :model="solicitForm" :rules="solicitFormRules" ref="solicitForm"
+               label-width="140px" size="small" class="so-form-c">
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="意见征求主题" prop="solicitTopic" required>
+              <el-input v-model="solicitForm.solicitTopic" placeholder="请输入意见征求主题"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="意见征求内容" prop="solicitContent" required>
+              <el-input v-model="solicitForm.solicitContent" type="textarea" :rows="3" placeholder="请输入意见征求内容"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="意见征求类型">
+              <el-select v-model="solicitForm.solicitType" style="width:100%" @change="changeOsTab">
+                <el-option label="按事项征求" value="i"></el-option>
+                <el-option label="按部门征求" value="d"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="意见征求时限" prop="solicitDueDays" required>
+              <el-input v-model="solicitForm.solicitDueDays" type="number">
+                <el-select v-model="solicitForm.solicitTimeruleId" slot="prepend" style="width:100px">
+                  <el-option v-for="item in soRulesList" :label="item.timeruleName"
+                             :value="item.timeruleId"></el-option>
+                </el-select>
+              </el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <!--          <div class="s-o-tabs c-f">-->
+      <!--            <div v-for="(u,i) in soTabList" @click="changeOsTab(i)"-->
+      <!--                 class="so-tab-text" :class="{'active':soActiveTabIndex==i}">{{u}}</div>-->
+      <!--          </div>-->
+      <div class="so-content-u" v-show="solicitForm.solicitType=='i'">
+        <div class="so-hint-box">
+          <i class="ag ag-warn-circle"></i>
+          勾选要征求的事项，点击“开始征求”，即可发送意见征求。
+        </div>
+        <div class="so-table-title">并联审批事项列表</div>
+        <el-table class="items-table" ref="soParallelItems" :data="soParallelItems" border
+                  row-key="itemBasicId" tooltip-effect="dark" :default-sort="{prop: 'sortNo', order: 'ascending'}"
+                  style="width: 100%">
+          <el-table-column type="selection" align="center"
+                           width="55">
+          </el-table-column>
+          <!--              <el-table-column type="expand" width="5px" v-if="!parallelItemsQuestionFlag">-->
+          <!--                <template slot-scope="scope">-->
+          <!--                  <el-form :model="stateSelVal" class="expand-coreItem">-->
+          <!--                    <el-form-item class="sel-status-item" :required="item.mustAnswer==1"-->
+          <!--                                  v-if="item.itemShowFlag"-->
+          <!--                                  v-for="(item,index) in scope.row.questionStates"-->
+          <!--                                  :key="index" :label="item.stateName">-->
+          <!--                      <p class="status-label">-->
+          <!--                        <el-tooltip class="item" effect="light" :content="item.stateMemo?item.stateMemo:'无'"-->
+          <!--                                    placement="right">-->
+          <!--                          <i class="el-icon-question"></i>-->
+          <!--                        </el-tooltip>-->
+          <!--                      </p>-->
+          <!--                      <template v-if="item.answerType=='s'||item.answerType=='y'">-->
+          <!--                        <el-radio-group v-model="item.selectAnswerId">-->
+          <!--                          <el-radio v-for="(itemAns,ind) in item.answerStates"-->
+          <!--                                    :key="ind"-->
+          <!--                                    v-if="itemAns.isProcStartCond!='1'"-->
+          <!--                                    @change="getCoreItemsStateMats(scope.row,item,itemAns,index,'parallelItem')"-->
+          <!--                                    :value="itemAns.itemStateId" :label="itemAns.itemStateId" name="answer">-->
+          <!--                            {{itemAns.stateName}}</el-radio>-->
+          <!--                        </el-radio-group>-->
+          <!--                      </template>-->
+          <!--                      <template v-else>-->
+          <!--                        <el-checkbox-group v-model="item.selectAnswerId" :required="item.mustAnswer==1">-->
+          <!--                          <el-checkbox v-for="(itemAns,indAns) in item.answerStates"-->
+          <!--                                       v-if="itemAns.isProcStartCond!='1'"-->
+          <!--                                       :key="indAns" :value="itemAns.itemStateId"-->
+          <!--                                       @change="function(value){getCoreItemsStateMats(scope.row,item,itemAns,index,'parallelItem',value)}"-->
+          <!--                                       :label="itemAns.itemStateId" name="answer">{{itemAns.stateName}}</el-checkbox>-->
+          <!--                        </el-checkbox-group>-->
+          <!--                      </template>-->
+          <!--                    </el-form-item>-->
+          <!--                  </el-form>-->
+          <!--                </template>-->
+          <!--              </el-table-column>-->
+          <el-table-column label="事项名称" prop="sortNo" sortable>
+            <template slot-scope="scope">
+              <span class="is-catalog" :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标准':'实施'}}</span>
+              <!--<span class="is-catalog is-green" v-show="scope.row.isGreenWay=='1'">绿道</span>-->
+              {{scope.row.itemName}}
+              <span v-show="scope.row.isDone=='FINISHED'" class="isTag isDone">
+                        <!--<i class="ag ag-check-circle-fill"></i>-->
+                        已通过</span>
+              <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isTag isDone">
+                        <!--<i class="ag ag-edit-circle-fill"></i>-->
+                        已通过</span>
+              <span v-show="scope.row.isDone=='HANDLING'" class="isTag isDoing">
+                        <!--<i class="ag ag-edit-circle-fill"></i>-->
+                        办理中</span>
+              <span v-show="scope.row.isRecommend==1&&scope.row.isDone!='HANDLING'&&scope.row.isDone!='FINISHED'" class="isTag isRecommend">推荐办理</span>
+              <p class="not-region-data" v-if="scope.row.itemHaved">* 该实施事项已存在，请勿重复选择!</p>
+              <p class="not-region-data" v-if="scope.row.notRegionData">* 该事项无匹配的行政区划及实施主体</p>
+            </template>
+          </el-table-column>
+          <el-table-column label="行政区划" width="100" prop="regionName">
+            <template slot-scope="scope">
+              <div v-if="scope.row.isImplement==false">
+                <el-select v-model="scope.row.implementItemVerId"
+                           placeholder="请选择行政区划">
+                  <el-option v-for="(item,indexOp) in scope.row.carryOutItems" :label="item.regionName"
+                             :key="indexOp"
+                             @click.native="getItemOrgId(scope.row,scope.$index,item, 'core')||soSelectedOrg(scope.row,item)"
+                             :value="item.itemVerId"></el-option>
+                </el-select>
+              </div>
+              <div v-else>
+                <span>{{scope.row.regionName}}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="orgName" label="实施主体" width="200">
+            <template slot-scope="scope">
+              <div v-if="scope.row.isImplement==false">
+                <el-select v-model="scope.row.implementItemVerId"
+                           placeholder="请选择实施主体">
+                  <el-option v-for="(item,indexOp) in scope.row.carryOutItems" :label="item.orgName"
+                             :key="indexOp"
+                             @click.native="getItemOrgId(scope.row,scope.$index,item,'croe')||soSelectedOrg(scope.row,item)"
+                             :value="item.itemVerId"></el-option>
+                </el-select>
+              </div>
+              <div v-else>
+                <span>{{scope.row.orgName}}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="opinion" label="征求意见" width="200">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.opinion" type="textarea" :rows="1" placeholder="请输入意见"></el-input>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="so-table-title" style="margin-top:15px;">并行推进事项列表</div>
+        <el-table class="items-table" ref="soCoreItems" :data="soCoreItems" border tooltip-effect="dark"
+                  :default-sort="{prop: 'sortNo', order: 'ascending'}"
+                  row-key="itemBasicId" style="width: 100%">
+          <el-table-column type="selection" align="center" width="55">
+          </el-table-column>
+          <!--              <el-table-column type="expand" width="5px" v-if="coreItemQuestionFlag">-->
+          <!--                <template slot-scope="scope">-->
+          <!--                  <el-form :model="stateSelVal" class="expand-coreItem">-->
+          <!--                    <el-form-item class="sel-status-item" :required="item.mustAnswer==1"-->
+          <!--                                  v-for="(item,index) in scope.row.questionStates" :key="index" :label="item.stateName">-->
+          <!--                      <p class="status-label">-->
+          <!--                        <el-tooltip class="item" effect="light" :content="item.stateMemo?item.stateMemo:'无'"-->
+          <!--                                    placement="right">-->
+          <!--                          <i class="el-icon-question"></i>-->
+          <!--                        </el-tooltip>-->
+          <!--                      </p>-->
+          <!--                      <template v-if="item.answerType=='s'||item.answerType=='y'">-->
+          <!--                        <el-radio-group v-model="item.selectAnswerId">-->
+          <!--                          <el-radio v-for="(itemAns,ind) in item.answerStates"-->
+          <!--                                    :key="ind"-->
+          <!--                                    @change="getCoreItemsStateMats(scope.row,item,itemAns,index,'coreItem')"-->
+          <!--                                    :value="itemAns.itemStateId" :label="itemAns.itemStateId" name="answer">-->
+          <!--                            {{itemAns.stateName}}</el-radio>-->
+          <!--                        </el-radio-group>-->
+          <!--                      </template>-->
+          <!--                      <template v-else>-->
+          <!--                        <el-checkbox-group v-model="item.selectAnswerId" :required="item.mustAnswer==1">-->
+          <!--                          <el-checkbox v-for="(itemAns,indAns) in item.answerStates" :key="indAns" :value="itemAns.itemStateId"-->
+          <!--                                       @change="function(value){getCoreItemsStateMats(scope.row,item,itemAns,index,'coreItem',value)}"-->
+          <!--                                       :label="itemAns.itemStateId" name="answer">{{itemAns.stateName}}</el-checkbox>-->
+          <!--                        </el-checkbox-group>-->
+          <!--                      </template>-->
+          <!--                    </el-form-item>-->
+          <!--                  </el-form>-->
+          <!--                </template>-->
+          <!--              </el-table-column>-->
+          <el-table-column label="事项名称" prop="sortNo" sortable>
+            <template slot-scope="scope">
+                      <span class="is-catalog"
+                            :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标准':'实施'}}</span>
+              <!--<span class="is-catalog is-green" v-show="scope.row.isGreenWay=='1'">绿道</span>-->
+              {{scope.row.itemName}}
+              <span v-show="scope.row.isDone=='FINISHED'" class="isTag isDone">
+                        <!--<i class="ag ag-check-circle-fill"></i>-->
+                        已通过</span>
+              <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isTag isDone">
+                        <!--<i class="ag ag-edit-circle-fill"></i>-->
+                        已通过</span>
+              <span v-show="scope.row.isDone=='HANDLING'" class="isTag isDoing">
+                        <!--<i class="ag ag-edit-circle-fill"></i>-->
+                        办理中</span>
+              <span v-show="scope.row.isRecommend==1&&scope.row.isDone!='HANDLING'&&scope.row.isDone!='FINISHED'" class="isTag isRecommend">推荐办理</span>
+              <p class="not-region-data" v-if="scope.row.itemHaved">* 该实施事项已存在，请勿重复选择!</p>
+              <p class="not-region-data" v-if="scope.row.notRegionData">* 该事项无匹配的行政区划及实施主体</p>
+            </template>
+          </el-table-column>
+          <el-table-column label="行政区划" width="100" prop="regionName">
+            <template slot-scope="scope">
+              <div v-if="scope.row.isImplement==false">
+                <el-select v-model="scope.row.implementItemVerId"
+                           placeholder="请选择行政区划">
+                  <el-option v-for="(item,indexOp) in scope.row.carryOutItems" :label="item.regionName"
+                             :key="indexOp"
+                             @click.native="getItemOrgId(scope.row,scope.$index,item, 'core')||soSelectedOrg(scope.row,item)"
+                             :value="item.itemVerId"></el-option>
+                </el-select>
+              </div>
+              <div v-else>
+                <span>{{scope.row.regionName}}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="orgName" label="实施主体" width="200">
+            <template slot-scope="scope">
+              <div v-if="scope.row.isImplement==false">
+                <el-select v-model="scope.row.implementItemVerId"
+                           placeholder="请选择实施主体">
+                  <el-option v-for="(item,indexOp) in scope.row.carryOutItems" :label="item.orgName"
+                             :key="indexOp"
+                             @click.native="getItemOrgId(scope.row,scope.$index,item,'croe')||soSelectedOrg(scope.row,item)"
+                             :value="item.itemVerId"></el-option>
+                </el-select>
+              </div>
+              <div v-else>
+                <span>{{scope.row.orgName}}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="opinion" label="征求意见" width="200">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.opinion" type="textarea" :rows="1" placeholder="请输入意见"></el-input>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div class="so-content-u" v-show="solicitForm.solicitType=='d'">
+        <div class="so-hint-box">
+          <i class="ag ag-warn-circle"></i>
+          勾选要征求的部门，点击“开始征求”，即可发送意见征求。
+        </div>
+        <div class="c-f" style="margin-top:18px;position: relative;">
+          <div class="so-transfer-u">
+            <div class="so-transfer-title">组织结构</div>
+            <div class="so-ope-content"  :style="{height:curHeight-540+'px',overflow: 'auto',}">
+              <!--                  <div style="margin-bottom:10px">-->
+              <!--                    <el-input placeholder="请输入内容" v-model="soSeachText" size="small">-->
+              <!--                      <el-button slot="append" icon="el-icon-search"></el-button>-->
+              <!--                    </el-input>-->
+              <!--                  </div>-->
+              <el-tree class="so-tree" ref="soTree"
+                       :data="soTreeData"@check-change="soTreeCheckChange"
+                       node-key="orgId" :check-strictly="true" :props="soTreeProps"
+                       :load="loadSoNode" lazy show-checkbox>
+              </el-tree>
+            </div>
+          </div>
+          <!--              <div class="so-center-btns">-->
+          <!--                <el-button type="primary" circle icon="el-icon-edit"></el-button>-->
+          <!--              </div>-->
+          <div class="so-transfer-u">
+            <div class="so-transfer-title">已选部门列表</div>
+            <div class="so-ope-content"  :style="{height:curHeight-540+'px',overflow: 'auto',}">
+              <div class="so-checked-org" v-for="u in soCheckedOrgList">
+                {{u.orgName}}<i class="el-icon-close" @click="removeSoOrg(u)"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="solicitOpinionVisible = false">取 消</el-button>
+      <el-button type="primary" @click="startSolicit">开始征求</el-button>
+    </div>
+  </el-dialog>
+  <!-- 意见征求 end -->
 </div>
 </body>
 <!--引入公共js-->

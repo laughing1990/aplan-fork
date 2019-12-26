@@ -108,7 +108,7 @@
                             </span>
                         </div>
                         <button id="editActStoFormBtn" type="button" class="btn btn-info"
-                                onclick="editActStoFormFunc();" style="margin-left: 3px;">编辑</button>
+                                onclick="editActStoFormFunc('#aedit_mat_form');" style="margin-left: 3px;">编辑</button>
                     </div>
                 </div>
 

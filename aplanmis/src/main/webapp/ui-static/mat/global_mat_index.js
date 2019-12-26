@@ -89,7 +89,7 @@ $(function () {
     // 材料类型选择
     $("#aedit_mat_form select[name='matProp']").change(function(){
         var value = $(this).val();
-        handleSelectMatProNew(value);
+        handleSelectMatProNew('#aedit_mat_form', value);
     });
 
     // 材料类别确定事件
@@ -104,56 +104,6 @@ $(function () {
     // 选择标准材料
     $('#selectStdmatBtn').bind('click', selectStdmat);
 });
-
-function handleSelectMatProNew(value){
-
-    if(value=='m'){
-
-        $('#selectCertDiv').hide();
-        $('#selectFormDiv').hide();
-
-        $('#aedit_mat_form input[name="certName"]').rules('remove');
-        $('#aedit_mat_form input[name="formName"]').rules('remove');
-
-    }else if(value=='c'){
-
-        $('#selectCertDiv').show();
-        $('#selectFormDiv').hide();
-        $('#aedit_mat_form input[name="certName"]').rules('add',{
-            required: true,
-            messages:{
-                required: '<font color="red">请选择电子证照！</font>'
-            }
-        });
-        $('#aedit_mat_form input[name="formName"]').rules('remove');
-
-    }else{
-
-        $('#selectCertDiv').hide();
-        $('#selectFormDiv').show();
-        $('#aedit_mat_form input[name="certName"]').rules('remove');
-        $('#aedit_mat_form input[name="formName"]').rules('add',{
-            required: true,
-            messages:{
-                required: '<font color="red">请选择表单！</font>'
-            }
-        });
-    }
-}
-
-function matPropormatter(value, row, index){
-
-    var matProp = row.matProp;
-    if(matProp){
-        if(matProp=='m'){
-            return '普通材料';
-        }else if(matProp=='c'){
-            return '证照材料';
-        }else{
-            return '在线表单材料';
-        }
-    }
-}
 
 function clearAllFile(){
 
@@ -471,7 +421,7 @@ function addGlobalMat() {
     $("#aedit_mat_form input[name='stoFormId']").val("");
     $("#aedit_mat_form input[name='stdmatId']").val("");
     $("#aedit_mat_form input[name='matProp'][value='m']").prop("checked", true);
-    handleSelectMatProNew('m');
+    handleSelectMatProNew('#aedit_mat_form', 'm');
 
     // 编号赋值
     $.ajax({
@@ -626,7 +576,7 @@ function loadGlobalMatData(id) {
                 }
 
                 if (data.matProp){
-                    handleSelectMatProNew(data.matProp);
+                    handleSelectMatProNew('#aedit_mat_form', data.matProp);
                 }
 
                 // 记载表单数据
@@ -876,14 +826,3 @@ function deleteMatAttrByDetailId(id){
         swal('提示信息', '请选择操作记录！', 'info');
     }
 }
-
-function editActStoFormFunc(){
-
-    var formId = $('#aedit_mat_form input[name="stoFormId"]').val();
-    if(formId){
-        openFullWindow(ctx + '/design?formId='+formId+'&needCallBackSaveActStoForm=0&requiredField=refEntityId');
-    }else{
-        swal('提示信息','请选择表单!','info');
-    }
-}
-

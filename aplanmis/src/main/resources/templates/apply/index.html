@@ -1442,7 +1442,7 @@
         </template>
       </el-collapse>
       <div class="right-bottom-btn" v-if="showMoreProjInfo">
-        <el-button type="success" @click="openSoDialog" circle>意见<br />征求</el-button>
+        <el-button v-if="showSolicitBtn" type="success" @click="openSoDialog" circle>意见<br />征求</el-button>
         <el-button type="danger" :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('3')">不予<br />受理</el-button>
         <el-button circle :disabled="!stageFrontCheckFlag" @click="showCommentDialog('5')">材料<br />补全</el-button>
         <el-button circle :disabled="!stageFrontCheckFlag" @click="showCommentDialog('1')">打印<br />回执</el-button>
