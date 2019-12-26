@@ -547,6 +547,29 @@ public abstract class ApplyinstCancelService {
                 List<AeaHiIteminst> iteminstList = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(aeaHiApplyinstCancel.getApplyinstId());
                 //创建部门人员的撤件审批实例和更改事项实例状态
                 this.createIteminstCancelInfo(iteminstList, aeaHiApplyinstCancel.getHandleOpinion(), applyinstCancelId, appinst.getAppinstId());
+                //在预审节点或者其他主流程节点且没有启动部门流程的情况下撤件,则直接流转到结束节点
+                AeaHiItemCancel hiItemCancel = new AeaHiItemCancel();
+                hiItemCancel.setApplyinstCancelId(aeaHiApplyinstCancel.getApplyinstCancelId());
+                hiItemCancel.setRootOrgId(SecurityContext.getCurrentOrgId());
+                List<AeaHiItemCancel> itemCancels = aeaHiItemCancelService.listAeaHiItemCancel(hiItemCancel);
+                if (itemCancels.size() < 1) {
+                    List<Task> taskList = taskService.createTaskQuery().processInstanceId(appinst.getProcinstId()).list();
+                    if (taskList.size() < 1) throw new Exception("找不到主流程的节点！");
+                    for (Task task : taskList) {
+                        HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(appinst.getProcinstId()).singleResult();
+                        if (historicProcessInstance.getEndTime() == null) {
+                            if (bpmProcessService.isProcessSuspended(historicProcessInstance.getId())) {
+                                bpmProcessService.activateProcessInstanceById(historicProcessInstance.getId());
+                            }
+                            bpmTaskService.taskChangeToEnd(task.getId(), historicProcessInstance.getEndActivityId(), StringUtils.isBlank(aeaHiApplyinstCancel.getApplyReason()) ? "同意撤件，终止流程" : aeaHiApplyinstCancel.getApplyReason());
+                        }
+                    }
+                    aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(aeaHiApplyinstCancel.getApplyinstId(), aeaLogApplyStateHist.getTaskinstId(), aeaHiApplyinstCancel.getAppinstId(), ApplyState.WITHDRAWAL_COMPLETED.getValue(), opuWinId);
+                    for (AeaHiIteminst iteminst : iteminstList) {
+                        aeaHiIteminstService.updateAeaHiIteminstStateAndInsertOpsAeaLogItemStateHist(iteminst.getIteminstId(), aeaHiApplyinstCancel.getApplyReason(), "申报撤件", null, ItemStatus.BACK_APPLY.getValue(), iteminst.getApproveOrgId());
+                    }
+                    aeaHiApplyinstCancel.setCancelState(ApplyinstCancelConstants.PASS.getValue());
+                }
             } else {
                 return (String) result.get("message");
             }
