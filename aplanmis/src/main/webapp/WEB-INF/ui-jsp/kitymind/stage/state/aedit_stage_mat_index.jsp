@@ -123,6 +123,8 @@
                                         <i class="la la-search"></i>
                                     </span>
                                 </div>
+                                <button id="editActStoFormBtn" type="button" class="btn btn-info"
+                                        onclick="editActStoFormFunc('#aedit_stage_mat_form');" style="margin-left: 3px;">编辑</button>
                             </div>
                         </div>
 

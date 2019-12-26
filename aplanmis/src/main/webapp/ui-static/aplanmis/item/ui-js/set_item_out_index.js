@@ -565,7 +565,7 @@ $(function(){
     // 材料类型选择
     $("#aedit_item_inout_mat_form select[name='matProp']").change(function(){
         var value = $(this).val();
-        handleSelectMatProNew(value);
+        handleSelectMatProNew('#aedit_item_inout_mat_form', value);
     });
 
     searchItemOutMatCert();
@@ -584,42 +584,6 @@ function selectStdmat(){
         closeSelectStdmatModal();
     }else{
         swal('错误信息', "请选择标准材料！", 'error');
-    }
-}
-
-function handleSelectMatProNew(value){
-
-    if(value=='m'){
-
-        $('#selectCertDiv').hide();
-        $('#selectFormDiv').hide();
-
-        $('#aedit_item_inout_mat_form input[name="certName"]').rules('remove');
-        $('#aedit_item_inout_mat_form input[name="formName"]').rules('remove');
-
-    }else if(value=='c'){
-
-        $('#selectCertDiv').show();
-        $('#selectFormDiv').hide();
-        $('#aedit_item_inout_mat_form input[name="certName"]').rules('add',{
-            required: true,
-            messages:{
-                required: '<font color="red">请选择电子证照！</font>'
-            }
-        });
-        $('#aedit_item_inout_mat_form input[name="formName"]').rules('remove');
-
-    }else{
-
-        $('#selectCertDiv').hide();
-        $('#selectFormDiv').show();
-        $('#aedit_item_inout_mat_form input[name="certName"]').rules('remove');
-        $('#aedit_item_inout_mat_form input[name="formName"]').rules('add',{
-            required: true,
-            messages:{
-                required: '<font color="red">请选择表单！</font>'
-            }
-        });
     }
 }
 
@@ -672,20 +636,6 @@ function uploadFileChange(obj){
     }
 }
 
-function matPropormatter(value, row, index){
-
-    var matProp = row.matProp;
-    if(matProp){
-        if(matProp=='m'){
-            return '普通材料';
-        }else if(matProp=='c'){
-            return '证照材料';
-        }else{
-            return '在线表单材料';
-        }
-    }
-}
-
 function clearAllFile(){
 
     $("#templateDocFile").siblings('.custorm-style').find(".right-text").html("");
@@ -727,7 +677,7 @@ function addItemOutMat(){
         $("#aedit_item_inout_mat_form input[name='certId']").val('');
         $("#aedit_item_inout_mat_form input[name='stoFormId']").val('');
         $("#aedit_item_inout_mat_form input[name='stdmatId']").val('');
-        handleSelectMatProNew('m');
+        handleSelectMatProNew('#aedit_item_inout_mat_form', 'm');
 
         // 编号赋值
         $.ajax({
@@ -999,7 +949,7 @@ function loadGlobalMatData(isView,inoutId,matId){
                     }
                 }
                 if (data.matProp){
-                    handleSelectMatProNew(data.matProp);
+                    handleSelectMatProNew('#aedit_item_inout_mat_form', data.matProp);
                 }
                 // 记载表单数据
                 loadFormData(true,'#aedit_item_inout_mat_form',data);
