@@ -75,8 +75,8 @@
 									<p>改革流程图</p>
 									<span>查看和下载国家、广东省、佛山的政策法规</span>
 								</a></li>
-							<li class="fl"  style="margin-left: 20px;">
-								<a href="#">
+							<li class="fl"  style="margin-left: 20px;" @click="tovideoTeaching()">
+								<a href="javascript:;">
 									<img src="../../static/mall/images/index/download.png" th:src="@{/mall/images/index/u162.png}" alt="" />
 									<p>操作指引</p>
 									<span>查看视频指引和报建指引</span>
@@ -176,9 +176,9 @@
 					<!-- floor2审批情况 start -->
 					<div class="floor margin-top-40" style="position: relative;">
 						<p class="p-header">审批情况</p>
-						<p class="look-more" @click="getApplyinstList()">
+						<!--<p class="look-more" @click="getApplyinstList()">
 							<img src="../../static/mall/images/index/MORE.png" th:src="@{/mall/images/index/MORE.png}" alt="" />
-						</p>
+						</p>-->
 						<table class="wt-table">
 							<thead>
 							<tr>

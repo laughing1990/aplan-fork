@@ -62,6 +62,14 @@
                     hash:'/myCloundSpaces',
                 },
                 {
+                    label: '视频教学',
+                    id: 'videoTeaching',
+                    activeName:0,
+                    url: './main/components/videoTeaching.html',
+                    thUrl:'rest/main/tovideoTeachingPage',
+                    hash:'/videoTeaching',
+                },
+                {
                     label: '我的单项办事指南',
                     id: 'singlePage',
                     activeName:1,
