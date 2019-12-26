@@ -215,13 +215,13 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
             List<AeaHiSolicitDetailUser> detailUsers = Lists.newArrayList();
             if ("i".equals(type)) {
                 //查询事项配置的用户信息
-                List<AeaSolicitItemUser> aeaSolicitItemUsers = aeaSolicitItemUserMapper.listSolicitItemUserByItemVerId(detail.getItemVerId(), topOrgId,aeaHiSolicit.getBusType());
+                List<AeaSolicitItemUser> aeaSolicitItemUsers = aeaSolicitItemUserMapper.listSolicitItemUserByItemVerId(detail.getItemVerId(), topOrgId, aeaHiSolicit.getBusType());
                 for (int i = 0, len = aeaSolicitItemUsers.size(); i < len; i++) {
                     AeaHiSolicitDetailUser detailUser = createDetailUser(currentLoginName, date, detailId, aeaSolicitItemUsers.get(i).getUserId());
                     detailUsers.add(detailUser);
                 }
             } else {
-                List<AeaSolicitOrgUser> aeaSolicitOrgUsers = aeaSolicitOrgUserMapper.listAeaSolicitOrgUserByOrgId(detail.getDetailOrgId(), topOrgId,aeaHiSolicit.getBusType());
+                List<AeaSolicitOrgUser> aeaSolicitOrgUsers = aeaSolicitOrgUserMapper.listAeaSolicitOrgUserByOrgId(detail.getDetailOrgId(), topOrgId, aeaHiSolicit.getBusType());
                 for (int j = 0, len = aeaSolicitOrgUsers.size(); j < len; j++) {
                     AeaHiSolicitDetailUser detailUser = createDetailUser(currentLoginName, date, detailId, aeaSolicitOrgUsers.get(j).getUserId());
                     detailUsers.add(detailUser);
@@ -342,12 +342,16 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
     /**
      * 签收
      *
-     * @param solicitUserId
-     * @throws Exception
+     * @param detailUserId 签收人主键
+     * @throws Exception e
      */
     @Override
-    public void signSolicitDetail(String solicitUserId) throws Exception {
-        //todo
+    public void signSolicitDetail(String detailUserId) throws Exception {
+        if (StringUtils.isEmpty(detailUserId)) return;
+        AeaHiSolicitDetailUser aeaHiSolicitDetailUser = new AeaHiSolicitDetailUser();
+        aeaHiSolicitDetailUser.setDetailUserId(detailUserId);
+        aeaHiSolicitDetailUser.setSignTime(new Date());
+        aeaHiSolicitDetailUserMapper.updateAeaHiSolicitDetailUser(aeaHiSolicitDetailUser);
     }
 
     private AeaHiSolicitDetailUser createDetailUser(String currentUserName, Date date, String detailId, String userId) {

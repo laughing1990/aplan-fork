@@ -104,23 +104,16 @@ var vm = new Vue({
 		//签收
 		signTask: function (event, row) {
 			var ts = this;
-			var taskId = row.taskId;
-			var viewId = row.viewId;
-			var busRecordId = row.busRecordId;
+			var solicitDetailId = row.solicitDetailId;
 			event.preventDefault();
 			ts.loading = true;
 			request('bpmFrontUrl', {
-				url: ctx + 'rest/solicit/sign' + taskId,
+				url: ctx + 'rest/solicit/sign/' + solicitDetailId,
 				type: 'get',
 				data: {}
 			}, function (result) {
 				ts.loading = false;
 				if (result.success) {
-					ts.$message.success(result.message);
-					window.setTimeout(function () {
-						window.open(ctx + 'apanmis/page/stageApproveIndex?taskId=' + taskId + '&viewId=' + viewId + '&busRecordId=' + busRecordId + '&itemNature=' + row.itemNature, '_blank');
-						window.location.reload();
-					}, 500);
 				} else {
 					ts.$message.error(result.message);
 				}
