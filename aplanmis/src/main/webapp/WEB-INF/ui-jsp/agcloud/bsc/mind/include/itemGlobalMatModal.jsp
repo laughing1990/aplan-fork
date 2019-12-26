@@ -210,20 +210,6 @@
         });
     }
 
-    function matPropormatter(value, row, index){
-
-        var matProp = row.matProp;
-        if(matProp){
-            if(matProp=='m'){
-                return '普通材料';
-            }else if(matProp=='c'){
-                return '证照材料';
-            }else{
-                return '在线表单材料';
-            }
-        }
-    }
-
     function globalMatSearch() {
 
         var keyword = $('#item_overmat_import_search').val();

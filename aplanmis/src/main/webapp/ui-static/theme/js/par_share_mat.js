@@ -205,10 +205,18 @@ var getOutItemMatColumns = function () {
             }
         },
         {
+            field: 'matProp',
+            title: '材料性质',
+            width: 85,
+            align: 'left',
+            formatter: matPropormatter
+        },
+        {
             field: 'aeaMatCertName',
             title: '材料名称',
             align: 'left',
             width: 300,
+            // formatter: matNameFormatter
         },
         {
             field: 'aeaMatCertCode',
@@ -216,29 +224,8 @@ var getOutItemMatColumns = function () {
             width: 300,
             align: 'left'
         },
-        {
-            field: 'matProp',
-            title: '材料性质',
-            width: 85,
-            align: 'center',
-            formatter: matPropormatter
-        },
     ];
     return columns;
-}
-
-function matPropormatter(value, row, index){
-
-    var matProp = row.matProp;
-    if(matProp){
-        if(matProp=='m'){
-            return '普通材料';
-        }else if(matProp=='c'){
-            return '证照材料';
-        }else{
-            return '在线表单材料';
-        }
-    }
 }
 
 function outItemMatParam(params) {
@@ -287,23 +274,25 @@ var getInItemMatColumns = function () {
 
         },
         {
-            field: 'aeaMatCertName',
-            title: '材料名称',
-            align: 'left',
-            width: 300,
-        },
-        {
-            field: 'aeaMatCertCode',
-            title: '材料编号',
-            width: 300,
-            align: 'left'
-        },
-        {
             field: 'matProp',
             title: '材料性质',
             width: 85,
             align: 'center',
             formatter: matPropormatter
+        },
+        {
+            field: 'aeaMatCertName',
+            title: '材料名称',
+            align: 'left',
+            width: 300,
+            // formatter: matNameFormatter
+        },
+        
+        {
+            field: 'aeaMatCertCode',
+            title: '材料编号',
+            width: 300,
+            align: 'left'
         },
     ];
     return columns;

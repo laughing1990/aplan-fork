@@ -25,3 +25,63 @@ function matNameFormatter(value, row, index, field) {
     }
     return name + tag ;
 }
+
+function handleSelectMatProNew(id, value){
+
+    if(value=='m'){
+
+        $('#selectCertDiv').hide();
+        $('#selectFormDiv').hide();
+
+        $(id+' input[name="certName"]').rules('remove');
+        $(id+' input[name="formName"]').rules('remove');
+
+    }else if(value=='c'){
+
+        $('#selectCertDiv').show();
+        $('#selectFormDiv').hide();
+        $(id+' input[name="certName"]').rules('add',{
+            required: true,
+            messages:{
+                required: '<font color="red">请选择电子证照！</font>'
+            }
+        });
+        $(id+' input[name="formName"]').rules('remove');
+
+    }else{
+
+        $('#selectCertDiv').hide();
+        $('#selectFormDiv').show();
+        $(id+' input[name="certName"]').rules('remove');
+        $(id+' input[name="formName"]').rules('add',{
+            required: true,
+            messages:{
+                required: '<font color="red">请选择表单！</font>'
+            }
+        });
+    }
+}
+
+function matPropormatter(value, row, index){
+
+    var matProp = row.matProp;
+    if(matProp){
+        if(matProp=='m'){
+            return '普通材料';
+        }else if(matProp=='c'){
+            return '证照材料';
+        }else{
+            return '在线表单材料';
+        }
+    }
+}
+
+function editActStoFormFunc(id){
+
+    var formId = $(id + ' input[name="stoFormId"]').val();
+    if(formId){
+        openFullWindow(ctx + '/design?formId='+formId+'&needCallBackSaveActStoForm=0&requiredField=refEntityId');
+    }else{
+        swal('提示信息','请选择表单!','info');
+    }
+}
