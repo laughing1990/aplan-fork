@@ -88,6 +88,9 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
     @Autowired
     private ActStoTimegroupMapper actStoTimegroupMapper;
 
+    @Autowired
+    private AeaItemBasicMapper aeaItemBasicMapper;
+
     @Override
     public List<OpuOmOrg> listOrg(String isRoot, String parentOrgId) throws Exception {
         String topOrgId = SecurityContext.getCurrentOrgId();
@@ -269,8 +272,10 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                     detailUserIds[i] = solicitDetailUser.getDetailUserId();
                     i++;
 
-                    if (currUserId != null && currUserId.equals(solicitDetailUser.getUserId()))
+                    //如果是当前审批人需要填写意见的，则单独拿出来，等待填写
+                    if (currUserId != null && currUserId.equals(solicitDetailUser.getUserId()) && solicitDetailUser.getFillTime() == null){
                         currDetailUser = solicitDetailUser;
+                    }
 
                     List<AeaHiSolicitDetailUser> users = detailUserMap.get(solicitDetailUser.getSolicitDetailId());
                     if (users != null) {
@@ -327,9 +332,27 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
 
             for (AeaHiSolicit hiSolicit : solicits) {
                 List<AeaHiSolicitDetail> details = detailMap.get(hiSolicit.getSolicitId());
-
+                //时限单位转换
+                if(hiSolicit.getSolicitDaysUnit() != null){
+                    hiSolicit.setSolicitDaysUnitCn(TimeruleUnit.valueOf(hiSolicit.getSolicitDaysUnit()).getName());
+                }
+                if(SolicitConstant.SOLICIT_TYPE_ITEM.equals(hiSolicit.getSolicitType())){
+                    List<String> itemVerIds = Lists.newArrayList();
+                    for(int i=0,len=details.size(); i<len; i++){
+                        itemVerIds.add(details.get(i).getItemVerId());
+                    }
+                    List<AeaItemBasic> aeaItemBasics = aeaItemBasicMapper.getAeaItemBasicListByItemVerIds(itemVerIds);
+                    for(int i=0,len=details.size(); i<len; i++){
+                        for(int j=0,lenj=aeaItemBasics.size(); j<lenj; j++){
+                            if(details.get(i).getItemVerId().equals(aeaItemBasics.get(j).getItemVerId())){
+                                details.get(i).setItemName(aeaItemBasics.get(j).getItemName());
+                                break;
+                            }
+                        }
+                    }
+                }
                 AeaHiSolicitInfo solicitInfo = new AeaHiSolicitInfo();
-                solicitInfo.setSolicit(solicit);
+                solicitInfo.setSolicit(hiSolicit);
                 solicitInfo.setSolicitDetailUser(currDetailUser);
                 solicitInfo.setSolicitDetails(details);
                 solicitInfoList.add(solicitInfo);

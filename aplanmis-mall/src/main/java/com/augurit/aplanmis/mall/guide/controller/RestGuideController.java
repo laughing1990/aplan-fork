@@ -81,6 +81,11 @@ public class RestGuideController {
         return new ModelAndView("mall/guide/guideIndex");
     }
 
+    @GetMapping("/tolistmatterPage")
+    public ModelAndView tolistmatterPage(){
+        return new ModelAndView("mall/listmatter/listmatter");
+    }
+
     @GetMapping("/toSinglePage")
     public ModelAndView toSinglePage(){
         return new ModelAndView("mall/guide/components/singlePage");

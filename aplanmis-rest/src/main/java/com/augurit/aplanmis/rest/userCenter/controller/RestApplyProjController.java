@@ -34,12 +34,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -111,9 +106,9 @@ public class RestApplyProjController {
             List<AeaProjInfo> list;
             PageHelper.startPage(pageNum, pageSize);
             if (AuthContext.isPersionAccount()) {//个人
-                list = aeaProjInfoService.findRootAeaProjInfoByLinkmanInfoId(AuthContext.getCurrentLinkmanInfoId());
+                list = aeaProjInfoService.findRootAeaProjInfoByLinkmanInfoId(AuthContext.getCurrentLinkmanInfoId(), null);
             } else {//企业
-                list = aeaProjInfoService.findRootAeaProjInfoByUnitInfoId(AuthContext.getCurrentUnitInfoId());
+                list = aeaProjInfoService.findRootAeaProjInfoByUnitInfoId(AuthContext.getCurrentUnitInfoId(), null);
             }
             String[] localCodes = list.size() > 0 ? list.stream().map(AeaProjInfo::getLocalCode).toArray(String[]::new) : new String[0];
             return new ContentResultForm<>(true, new PageInfo<>(localCodes.length > 0 ? aeaProjInfoService.getProjListAndChildProjsByParent(localCodes) : list));

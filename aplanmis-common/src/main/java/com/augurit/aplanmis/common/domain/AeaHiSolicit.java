@@ -29,7 +29,7 @@ public class AeaHiSolicit implements Serializable {
     private Long solicitDueDays; // (意见征求承诺时限，例如：5个工作日，那该字段为5)
     @Size(max = 10)
     private Long solicitRealDays; // (意见征求实际时限，例如：5个工作日，那该字段为5)
-    private String solicitDaysUnit; // (意见征求时限单位，z表示自然日，g表示工作日)
+    private String solicitDaysUnit; // (意见征求时限单位，ND表示自然日，WD表示工作日)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private java.util.Date solicitStartTime; // (意见征求开始时间)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -58,4 +58,5 @@ public class AeaHiSolicit implements Serializable {
     private String rootOrgId; // (根组织ID)
 
     private String solicitTypeName; // 非表字段 (征求意见类型：i表示按事项征求，d表示按部门征求)
+    private String solicitDaysUnitCn; // 非表字段 (意见征求时限单位中文，自然日，工作日)
 }

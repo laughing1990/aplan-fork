@@ -615,10 +615,30 @@ var vm = new Vue({
       solicitBmFormRules: {
         // userOpinion: [{required: true, message: '请填写意见', trigger: 'blur'}],
       },
+      uploadRecordId: '',
       // 意见征求  end
     }
   },
   filters: {
+    // 意见征求状态转换
+    changeSolicitState: function(val){
+      var arr = ['未开始', '征求中', '已完成', '已终止'];
+      return arr[val] || '-';
+    },
+    // 意见征求类型转换
+    changeSolicitType: function(val){
+      var obj = {
+        'i': '按事项征求',
+        'd': '按部门征求',
+      }
+      return obj[val] || '-';
+    },
+    // 部门人员意见状态转换
+    changeBmOpinType: function(val){
+      if (val == 1) return '同意';
+      if (val == 0) return '不同意';
+      return '处理中';
+    },
     defaultManFilter: function (value) {
       return value || '暂无审批人';
     },
@@ -656,16 +676,20 @@ var vm = new Vue({
     // 部门人员提交意见
     solicitSaveOpinion: function(){
       var vm = this;
+      if (!(vm.solicitBmForm.userOpinion&&vm.solicitBmForm.userOpinion.length)){
+        return vm.$message.error('请填写意见');
+      }
       vm.parentPageLoading = true;
       request('', {
         url: ctx + 'rest/solicit/answer',
         type: 'post',
-        data: {
+        ContentType: 'application/json',
+        data: JSON.stringify({
           userConclusion: vm.solicitBmForm.userConclusion,
           userOpinion: vm.solicitBmForm.userOpinion,
           detailUserId: '31b9c3be-3bab-4afa-91b3-c46a347f1879',
-          solicitDetailId: '403a1a5b-b3a6-445e-8558-5f0e812d7e95\n',
-        },
+          solicitDetailId: '403a1a5b-b3a6-445e-8558-5f0e812d7e95',
+        }),
       }, function(res) {
         vm.parentPageLoading = false;
         if (res.success) {
@@ -688,8 +712,8 @@ var vm = new Vue({
         type: 'get',
         data: {
           tableName: 'AEA_HI_SOLICIT_DETAIL_USER',
-          pkName: 'DETAIL_TASK_ID',
-          recordIds: '123',
+          pkName: 'DETAIL_USER_ID',
+          recordIds: vm.uploadRecordId,
         },
       }, function (res) {
         vm.parentPageLoading = false;
@@ -704,13 +728,14 @@ var vm = new Vue({
       });
     },
     // 部门上传附件
-    solicitUploadFile: function (file) {
+    solicitUploadFile: function (file, item) {
       var vm = this;
       var formData = new FormData();
+      vm.uploadRecordId = item.solicitDetailUser.detailUserId;
       formData.append('files', file.file);
       formData.append('tableName', 'AEA_HI_SOLICIT_DETAIL_USER');
-      formData.append('pkName', 'DETAIL_TASK_ID');
-      formData.append('recordId', '123');
+      formData.append('pkName', 'DETAIL_USER_ID');
+      formData.append('recordId', vm.uploadRecordId);
       vm.parentPageLoading = true;
       axios.post(ctx + 'rest/approve/att/file/upload', formData).then(function (res) {
         if (res.data && res.data.success) {

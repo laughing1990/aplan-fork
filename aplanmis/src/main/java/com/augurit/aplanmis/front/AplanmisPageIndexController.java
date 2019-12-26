@@ -849,7 +849,8 @@ public class AplanmisPageIndexController {
 
 
     /**
-     * 待办任务
+     * 菜单-上传服务结果
+     * 中介超市服务结果上传列表页
      *
      * @return
      */
@@ -860,10 +861,39 @@ public class AplanmisPageIndexController {
         return modelAndView;
     }
 
+    /**
+     * 菜单-意见征求列表
+     *
+     * @return
+     */
     @GetMapping("/solicitOpinionIndex.html")
     @ApiOperation("菜单-意见征求")
     public ModelAndView SolicitOpinionIndex() {
         ModelAndView modelAndView = new ModelAndView("view/solicitOptionIndex.html");
+        return modelAndView;
+    }
+
+    /**
+     * 菜单-一次征询列表
+     *
+     * @return onceConsultIndex.html
+     */
+    @GetMapping("/onceConsultIndex.html")
+    @ApiOperation("菜单-一次征询列表")
+    public ModelAndView onceConsultIndex() {
+        ModelAndView modelAndView = new ModelAndView("view/onceConsultIndex.html");
+        return modelAndView;
+    }
+
+    /**
+     * 菜单-联合评审列表
+     *
+     * @return jointReviewIndex.html
+     */
+    @GetMapping("/jointReviewIndex.html")
+    @ApiOperation("菜单-联合评审列表")
+    public ModelAndView jointReviewIndex() {
+        ModelAndView modelAndView = new ModelAndView("view/jointReviewIndex.html");
         return modelAndView;
     }
 

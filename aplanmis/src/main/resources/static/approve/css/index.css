@@ -2384,6 +2384,14 @@ input[type="number"] {
     width: 100%;
 }
 /*联系人新增编辑弹窗 end*/
+/*意见征求start*/
+.solicit-table .el-table__expand-column{
+    border-right: 0 !important;
+}
+.solict-pt.el-table th{
+    padding: 0;
+}
+/*意见征求end*/
 
 
 
