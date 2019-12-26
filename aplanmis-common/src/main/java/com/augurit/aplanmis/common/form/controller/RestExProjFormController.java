@@ -23,10 +23,11 @@ public class RestExProjFormController {
 
     @RequestMapping("/index")
     @ApiOperation(value = "跳转到建设项目登记信息表单")
-    public ModelAndView index(String projInfoId,String formId) {
+    public ModelAndView index(String projInfoId,String formId,String refEntityId) {
         ModelAndView view = new ModelAndView("form/exProjForm");
         view.addObject("projInfoId", projInfoId);
         view.addObject("formId",formId);
+        view.addObject("refEntityId",refEntityId);
         return view;
     }
 
