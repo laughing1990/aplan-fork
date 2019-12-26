@@ -635,8 +635,8 @@ var vm = new Vue({
     },
     // 部门人员意见状态转换
     changeBmOpinType: function(val){
-      if (val == 1) return '同意';
-      if (val == 0) return '不同意';
+      if (val == 1) return '征求中';
+      if (val == 2) return '已完成';
       return '处理中';
     },
     defaultManFilter: function (value) {
@@ -673,6 +673,35 @@ var vm = new Vue({
   },
   methods: {
     // 意见征求 start
+    // 发起人员结束意见征求
+    ensureEndSolicit: function(item){
+      var vm = this;
+      if (!(vm.solicitBmForm.userOpinion&&vm.solicitBmForm.userOpinion.length)){
+        return vm.$message.error('请填写汇总意见');
+      }
+      vm.parentPageLoading = true;
+      request('', {
+        url: ctx + 'rest/solicit/collect/opinion',
+        type: 'post',
+        ContentType: 'application/json',
+        data: JSON.stringify({
+          conclusionFlag: vm.solicitBmForm.userConclusion,
+          conclusionDesc: vm.solicitBmForm.userOpinion,
+          solicitId: item.solicit.solicitId,
+        }),
+      }, function(res) {
+        vm.parentPageLoading = false;
+        if (res.success) {
+          vm.$message.success('提交成功');
+          delayRefreshWindow();
+        } else {
+          vm.$message.error(res.message||'提交失败');
+        }
+      }, function(){
+        vm.parentPageLoading = false;
+        vm.$message.error('提交失败');
+      })
+    },
     // 部门人员提交意见
     solicitSaveOpinion: function(item){
       var vm = this;
@@ -694,7 +723,7 @@ var vm = new Vue({
         vm.parentPageLoading = false;
         if (res.success) {
           vm.$message.success('提交成功');
-          // delayRefreshWindow();
+          delayRefreshWindow();
         } else {
           vm.$message.error(res.message||'提交失败');
         }
@@ -2986,7 +3015,7 @@ var vm = new Vue({
       // 清空容器
       $('#flowChartBox').html('');
       // 渲染流程图
-      _showProcessDiagram(this.processInstanceId, this.isCheck)
+      _showProcessDiagram(this.processInstanceId, this.isCheck);
       this.processDialogVisible = true;
     },
     //获取右边所有的意见列表
