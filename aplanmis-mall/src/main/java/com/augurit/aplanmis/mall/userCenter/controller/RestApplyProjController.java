@@ -320,7 +320,7 @@ public class RestApplyProjController {
     @ApiImplicitParams({@ApiImplicitParam(value = "搜索关键字",name = "keyWord",required = false,dataType = "string")})
     public ContentResultForm<AeaProjInfo> getProjInfoFromThirdPlatform(HttpServletRequest request, @PathVariable("keyWord") String keyWord) {
         try {
-            List<AeaProjInfo> list = new ArrayList<>();
+            List<AeaProjInfo> list = aeaProjInfoService.findAeaProjInfoByKeyword(keyWord);
             if (!keyWord.contains("#") && !keyWord.contains("ZBM") && CommonTools.isComplianceWithRules(keyWord)) {
                 list = projectCodeService.getProjInfoFromThirdPlatform(keyWord, "","");
             }
