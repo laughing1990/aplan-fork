@@ -24,7 +24,7 @@ public interface AeaHiSolicitDetailMapper {
 
     AeaHiSolicitDetail getAeaHiSolicitDetailById(@Param("id") String id) throws Exception;
 
-    AeaHiSolicitDetail getAeaHiSolicitDetailBySolicitId(@Param("solicitId") String solicitId) throws Exception;
+    List<AeaHiSolicitDetail> getAeaHiSolicitDetailBySolicitId(@Param("solicitId") String solicitId) throws Exception;
 
     //根据征求ID集合获取征询明细集合
     List<AeaHiSolicitDetail> listAeaHiSolicitDetailBySolicitIds(@Param("solicitIds") List<String> solicitIds) throws Exception;

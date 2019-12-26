@@ -35,9 +35,15 @@ var userCenter = (function () {
                     icon:'icon-2',
                     childList: [{
                       name: '我的项目',
-                      value: 'declare',
-                      select: true,
-                    }, {
+                      value: 'MyProjList',
+                      select: false,
+                    },
+                    // {
+                    //   name: '我的项目',
+                    //   value: 'declare',
+                    //   select: true,
+                    // }, 
+                    {
                       name: '新增项目',
                       value: 'AddProj',
                       select: false,

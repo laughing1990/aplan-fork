@@ -221,9 +221,9 @@ DETAIL_USER_ID  ,SOLICIT_DETAIL_ID  ,USER_ID  ,USER_CONCLUSION  ,USER_OPINION  ,
 
     <select id="listAeaHiSolicitDetailUserBySolicitIds" resultType="AeaHiSolicitDetailUser">
         SELECT
-            <include refid="allAlisColumns"/>
+            <include refid="allAlisColumns"/>,oou.USER_NAME  userName
         FROM
-            aea_hi_solicit_detail_user ahsdu
+            aea_hi_solicit_detail_user ahsdu LEFT JOIN opu_om_user oou on ahsdu.user_id = oou.user_id
         WHERE
             ahsdu.SOLICIT_DETAIL_ID IN (
                 SELECT

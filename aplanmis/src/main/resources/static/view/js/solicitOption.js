@@ -104,16 +104,17 @@ var vm = new Vue({
 		//签收
 		signTask: function (event, row) {
 			var ts = this;
-			var solicitDetailId = row.solicitDetailId;
+			var detailUserId = row.detailUserId;
 			event.preventDefault();
 			ts.loading = true;
 			request('bpmFrontUrl', {
-				url: ctx + 'rest/solicit/sign/' + solicitDetailId,
+				url: ctx + 'rest/solicit/sign/' + detailUserId,
 				type: 'get',
 				data: {}
 			}, function (result) {
 				ts.loading = false;
 				if (result.success) {
+					ts.fetchTableData();
 				} else {
 					ts.$message.error(result.message);
 				}

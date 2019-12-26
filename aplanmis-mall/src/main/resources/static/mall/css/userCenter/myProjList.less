@@ -1,0 +1,104 @@
+// 灰色
+.color-999{
+  color: #999;
+}
+.color-4293f4{
+  color: #4293f4;
+}
+// 手势pointer
+.pointer{
+  cursor: pointer;
+}
+.my-proj-wrap {
+  position: relative;
+  // 卡片列表wrap
+  .card-proj-wrap {
+    margin-top: 40px;
+
+    .proj-wrap {
+
+      // 卡片项
+      .proj-item {
+        float: left;
+        width: 316px;
+        height: 160px;
+        margin: 0 20px 20px 0;
+        cursor: pointer;
+
+        .box-card {
+          position: relative;
+          width: 100%;
+          height: 100%;
+
+          &:hover {
+            background-color: rgba(235, 244, 251, 1);
+          }
+
+          .right-content {
+            padding-left: 60px;
+
+            .proj-name {
+              font-size: 16px;
+              font-weight: bold;
+            }
+
+            .code-sub {
+              margin-top: 20px;
+              color: #8D8D8D;
+              font-size: 14px;
+            }
+          }
+
+          .proj-tag {
+            position: absolute;
+            left: 18px;
+            top: 20px;
+            width: 40px;
+            height: 40px;
+          }
+
+          // 发改项目标识
+          .tag-fg {
+            background: url("../../images/userCenter/proj-type-fg.png") no-repeat center;
+            background-size: 100%;
+          }
+
+          // 本地项目标识
+          .tag-bd {
+            background: url("../../images/userCenter/proj-type-bd.png") no-repeat center;
+            background-size: 100%;
+          }
+        }
+      }
+
+      // 新增项目
+      .proj-add {
+        text-align: center;
+        line-height: 160px;
+        border: 1px dashed #4293f4;
+        border-radius: 4px;
+        color: #4293f4;
+        font-size: 16px;
+
+        &:hover {
+          background-color: rgba(235, 244, 251, 1);
+        }
+      }
+    }
+
+    // 加载更多
+    .proj-load-more{
+      width: 100%;
+      height: 52px;
+      line-height: 52px;
+      text-align: center;
+      font-size: 16px;
+      color: #4293f4;
+    }
+  }
+
+  // 新增项目面板
+  .add-proj-pandel{
+
+  }
+}

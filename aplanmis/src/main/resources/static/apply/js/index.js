@@ -648,6 +648,7 @@ var vm = new Vue({
       soParallelItems: [],
       soCoreItems: [],
       soCheckedOrgList: [],
+      showSolicitBtn: isDevelop,
       // 意见征求 end--------------------------
     }
   },
