@@ -22,6 +22,7 @@ import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.vo.solicit.AeaHiSolicitVo;
 import com.augurit.aplanmis.common.vo.solicit.QueryCondVo;
 import com.augurit.aplanmis.front.constant.SolicitConstant;
+import com.augurit.aplanmis.front.queryView.service.ConditionalQueryService;
 import com.augurit.aplanmis.front.solicit.service.RestAeaHiSolicitService;
 import com.augurit.aplanmis.front.solicit.service.SolicitCodeService;
 import com.augurit.aplanmis.front.solicit.vo.AeaHiSolicitInfo;
@@ -87,6 +88,8 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
     private ActStoTimeruleService actStoTimeruleService;
     @Autowired
     private ActStoTimegroupMapper actStoTimegroupMapper;
+    @Autowired
+    private ConditionalQueryService conditionalQueryService;
 
     @Override
     public List<OpuOmOrg> listOrg(String isRoot, String parentOrgId) throws Exception {
@@ -129,8 +132,9 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
         this.buildQueryCondvo(condVo);
         PageHelper.startPage(page);
         List<AeaHiSolicitVo> voList = aeaHiSolicitMapper.listSolicit(condVo);
+
         this.loadRemainingOrOverTimeText(voList);
-        this.loadDueNumText(voList);
+//        this.loadDueNumText(voList);
         return voList;
     }
 
@@ -452,6 +456,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
      * @param solicitVoList
      */
     private void loadRemindInfo(List<AeaHiSolicitVo> solicitVoList) {
+
         /*if (!taskList.isEmpty()) {
             List<String> taskIds = new ArrayList<>();
             for (TaskInfo taskInfo : taskList) {
@@ -494,19 +499,54 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
 
     }
 
-    private void loadRemainingOrOverTimeText(List<AeaHiSolicitVo> voList) {
+    private void loadRemainingOrOverTimeText(List<AeaHiSolicitVo> voList) throws Exception {
         for (AeaHiSolicitVo info : voList) {
+            if (info == null) {
+                return;
+            }
+            String busType = info.getBusType();
+            if (true) {//"YCZX".equals(busType)
+                String solicitId = info.getSolicitId();
+                List<AeaHiSolicitDetail> solicitDetail = aeaHiSolicitDetailMapper.getAeaHiSolicitDetailBySolicitId(solicitId);
+                int allNum = solicitDetail.size();
+                info.setAllProgressNum(allNum);
+                //已完成数量
+                int finishNum = 0;
+                //征求意见状态：0表示未开始，1表示征求中，2表示已完成，3表示已终止
+                String[] states = {"2", "3"};
+                for (AeaHiSolicitDetail detailUser : solicitDetail) {
+                    String detailState = detailUser.getDetailState();
+                    if (Arrays.binarySearch(states, detailState) > 0) {
+                        finishNum++;
+                    }
+                }
+                info.setFinishProgressNum(finishNum);
+                info.setRateProgress(finishNum + "/" + allNum);
+            }
+
+            //设置承诺时限文本
+            String dueNumText = getTimeText(info.getTimeruleUnit(), info.getSolicitDueDays());
+            if (StringUtils.isBlank(dueNumText)) {
+                dueNumText = "-天";
+            }
+            info.setDueNumText(dueNumText);
+
+            //设置viewId
+            String viewId = conditionalQueryService.queryViewId(info.getBusType());
+            if (StringUtils.isBlank(viewId)) {
+                viewId = conditionalQueryService.queryViewId("所有办件");
+            }
+            info.setViewId(viewId);
+
+            //设置剩余时限文本
             if (StringUtils.isBlank(info.getTimeruleUnit())) {
                 return;
             }
-
             Double time = info.getRemainingTime();
             if (TimeruleInstState.OVERDUE.getValue().equals(info.getInstState())) {
                 time = info.getOverdueTime();
             }
-
             String timeText = getTimeText(info.getTimeruleUnit(), time);
-
             if (StringUtils.isNotBlank(timeText)) {
                 timeText = (TimeruleInstState.OVERDUE.getValue().equals(info.getInstState()) ? "逾期" : "剩余") + timeText;
                 info.setRemainingOrOverTimeText(timeText);
