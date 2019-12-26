@@ -102,16 +102,15 @@ public class OneFormCommonService {
             ActStoForm actStoForm = actStoFormMapper.getActStoFormById(formId);
             formFrofileVo.setFormId(formId);
             formFrofileVo.setFormName(actStoForm.getFormName());
+            SFFormParam sfFormParam = new SFFormParam();
+            sfFormParam.setFormId(formId);
+            sfFormParam.setRefEntityId(refEntityId);
             if (isSmartForm(actStoForm)) {
                 formFrofileVo.setSmartForm(true);
-
-                SFFormParam item = new SFFormParam();
-                item.setFormId(formId);
-                item.setRefEntityId(refEntityId);
-                formFrofileVo.setFormUrl(genUrl4SamrtForm(item));
+                formFrofileVo.setFormUrl(genUrl4SamrtForm(sfFormParam));
             } else {
                 formFrofileVo.setSmartForm(false);
-                formFrofileVo.setFormUrl(actStoForm.getFormLoadUrl().replace("{projInfoId}", "projInfoId=" + projInfoId).replace("{formId}","formId=" + formId));
+                formFrofileVo.setFormUrl(genUrl4DevForm(sfFormParam,actStoForm.getFormLoadUrl(),projInfoId));
             }
         }
 
@@ -139,6 +138,17 @@ public class OneFormCommonService {
         result = strBuilder.toString();
         return result;
     }
+
+    private String genUrl4DevForm(SFFormParam sFFormParam,String urlSrc,String projInfoId) {
+        String result = "";
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append(urlSrc.replace("{projInfoId}", "projInfoId=" + projInfoId));
+        strBuilder.append("&refEntityId=" + sFFormParam.getRefEntityId());
+        strBuilder.append("&formId=" + sFFormParam.getFormId());
+        result = strBuilder.toString();
+        return result;
+    }
+
 
     public List<SFFormParam> genListSFFormParam4OneForm(OneFormStageRequest oneFormStageRequest, boolean isIncludeDevForm) {
         List<SFFormParam> result = null;
