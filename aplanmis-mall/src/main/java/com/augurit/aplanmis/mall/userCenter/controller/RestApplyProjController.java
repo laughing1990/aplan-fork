@@ -327,7 +327,7 @@ public class RestApplyProjController {
             return new ContentResultForm<>(true,list.get(0));
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
-            return new ContentResultForm(false,"查询项目列表异常");
+            return new ContentResultForm(false,"","查询项目列表异常");
         }
     }
 
