@@ -37,13 +37,13 @@ input[type="number"] {
     color: #575962;
 }
 
-#approvePage .ltabs>.el-tabs__header .el-tabs__item {
+#approvePage .ltabs > .el-tabs__header .el-tabs__item {
     font-size: 16px;
     height: 44px;
     line-height: 44px;
 }
 
-#approvePage .ltabs>.el-tabs__header .el-tabs__nav {
+#approvePage .ltabs > .el-tabs__header .el-tabs__nav {
     height: 46px;
 }
 
@@ -731,7 +731,7 @@ input[type="number"] {
     color: #FF4B47;
 }
 
-.ltabs>.el-tabs__content>.el-tab-pane {
+.ltabs > .el-tabs__content > .el-tab-pane {
     position: absolute;
     top: 0;
     right: 0;
@@ -807,7 +807,7 @@ input[type="number"] {
     right: 0;
 }
 
-.left-content>.ltabs>.el-tabs__content {
+.left-content > .ltabs > .el-tabs__content {
     position: absolute;
     top: 46px;
     right: 0;
@@ -2313,11 +2313,13 @@ input[type="number"] {
 .mat-table-btn:hover {
     text-decoration: underline;
 }
-.mat-table-btn.ope-disabled{
+
+.mat-table-btn.ope-disabled {
     color: #8c939d;
     cursor: text;
 }
-.mat-table-btn.ope-disabled:hover{
+
+.mat-table-btn.ope-disabled:hover {
     text-decoration: none;
 }
 
@@ -2337,12 +2339,14 @@ input[type="number"] {
 .mat-form-dialog .el-dialog {
     width: 80%;
 }
+
 .form-el-tabs,
 .form-el-tabs .el-tabs__content,
-.form-el-tabs .el-tab-pane{
+.form-el-tabs .el-tab-pane {
     height: 100%;
 }
-.process-dia-btn-u{
+
+.process-dia-btn-u {
     cursor: pointer;
     border: 1px solid #DCDFE6;
     color: #575962;
@@ -2351,46 +2355,56 @@ input[type="number"] {
     padding: 5px 10px;
     margin: 5px 0;
 }
-.process-dia-btn-u:hover{
+
+.process-dia-btn-u:hover {
     opacity: 0.7;
 }
-.form-el-tabs .el-tabs__nav-scroll{
+
+.form-el-tabs .el-tabs__nav-scroll {
     padding: 0px;
 }
-.form-el-tabs .el-tabs__item{
+
+.form-el-tabs .el-tabs__item {
     max-width: 150px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     word-wrap: normal;
 }
+
 /*撤件 start*/
-.cancel-app-dialog .el-table th{
-    padding:0;
+.cancel-app-dialog .el-table th {
+    padding: 0;
 }
+
 .cancel-app-dialog .el-table__empty-text,
-.cancel-app-dialog .el-table__empty-block{
+.cancel-app-dialog .el-table__empty-block {
     line-height: 50px;
     min-height: 40px;
 }
-.cancel-app-dialog .el-input.is-disabled .el-input__inner{
-    background-color:#FFF;
+
+.cancel-app-dialog .el-input.is-disabled .el-input__inner {
+    background-color: #FFF;
     border-color: #DCDFE6;
     color: #606266;
 }
+
 /*撤件 end*/
 /*联系人新增编辑弹窗 start*/
 .dg-modal-add-linkmain-info .el-select {
     width: 100%;
 }
+
 /*联系人新增编辑弹窗 end*/
 /*意见征求start*/
-.solicit-table .el-table__expand-column{
+.solicit-table .el-table__expand-column {
     border-right: 0 !important;
 }
-.solict-pt.el-table th{
+
+.solict-pt.el-table th {
     padding: 0;
 }
+
 .status-span {
     display: inline-block;
     height: 24px;
@@ -2420,25 +2434,31 @@ input[type="number"] {
     border-color: #B8C8DC;
     color: #B8C8DC;
 }
+
 .solicit-opinion-dialog .el-dialog__body,
-.solicit-opinion-dialog .el-dialog__footer{
+.solicit-opinion-dialog .el-dialog__footer {
     background: #F0F3F6;
 }
-.solicit-opinion-dialog .el-dialog__footer{
+
+.solicit-opinion-dialog .el-dialog__footer {
     padding: 12px 25px;
 }
-.solicit-opinion-dialog .el-dialog__body{
+
+.solicit-opinion-dialog .el-dialog__body {
     padding: 14px 14px 0 14px;
 }
+
 .solicit-o-wrap {
     background: #fff;
 }
-.s-o-tabs{
+
+.s-o-tabs {
     padding: 0px 0 0 19px;
     height: 39px;
     border-bottom: 1px solid #F0F3F6;
 }
-.so-tab-text{
+
+.so-tab-text {
     float: left;
     line-height: 36px;
     color: #575962;
@@ -2448,18 +2468,22 @@ input[type="number"] {
     padding: 0 8px;
     cursor: pointer;
 }
-.so-tab-text:hover{
+
+.so-tab-text:hover {
     color: #169AFF;
     opacity: 0.7;
 }
-.so-tab-text.active{
+
+.so-tab-text.active {
     color: #169AFF;
     border-bottom: 3px solid #169AFF;
 }
-.so-content-u{
+
+.so-content-u {
     padding: 0px 26px 12px 32px;
 }
-.so-hint-box{
+
+.so-hint-box {
     position: relative;
     border: 1px solid #FFB822;
     border-radius: 4px;
@@ -2467,9 +2491,10 @@ input[type="number"] {
     font-size: 14px;
     line-height: 20px;
     padding: 11px 15px 11px 44px;
-    background:rgba(255,252,238,1);
+    background: rgba(255, 252, 238, 1);
 }
-.so-hint-box .ag{
+
+.so-hint-box .ag {
     position: absolute;
     left: 16px;
     top: 12px;
@@ -2480,17 +2505,19 @@ input[type="number"] {
     font-size: 20px;
     color: #FFB822;
 }
-.so-table-title{
+
+.so-table-title {
     height: 44px;
     line-height: 44px;
-    color:#575962;
+    color: #575962;
     font-weight: bold;
     padding-left: 14px;
     position: relative;
 }
-.so-table-title::before{
+
+.so-table-title::before {
     content: '';
-    display:block;
+    display: block;
     position: absolute;
     left: 0;
     top: 14px;
@@ -2499,39 +2526,47 @@ input[type="number"] {
     border-radius: 3px;
     background: #169AFF;
 }
-.so-content-u .el-textarea__inner{
+
+.so-content-u .el-textarea__inner {
     padding: 5px 10px;
 }
-.so-transfer-u{
+
+.so-transfer-u {
     float: left;
     width: 47%;
     border: 1px solid #CEDAE8;
     border-radius: 4px;
     width: 49%;
 }
-.so-transfer-u+.so-transfer-u{
+
+.so-transfer-u + .so-transfer-u {
     margin-left: 2%
 }
-.so-center-btns{
+
+.so-center-btns {
     float: left;
     width: 6%;
     min-height: 200px;
     overflow: visible;
 }
-.so-transfer-title{
+
+.so-transfer-title {
     padding: 0 20px;
     line-height: 46px;
     border-bottom: 1px solid #CEDAE8;
     background: #F3F6F9;
 }
-.so-ope-content{
+
+.so-ope-content {
     /*min-height: 200px;*/
     padding: 10px;
 }
-.el-form.so-form-c{
+
+.el-form.so-form-c {
     padding: 15px 26px 0 0;
 }
-.so-checked-org{
+
+.so-checked-org {
     margin-bottom: 10px;
     line-height: 20px;
     padding: 9px 30px 9px 18px;
@@ -2539,16 +2574,19 @@ input[type="number"] {
     border-radius: 4px;
     position: relative;
 }
-.so-checked-org i{
+
+.so-checked-org i {
     position: absolute;
     right: 18px;
     top: 50%;
     margin-top: -6px;
     cursor: pointer;
 }
-.solicit-o-wrap .el-textarea__inner{
+
+.solicit-o-wrap .el-textarea__inner {
     padding: 5px 10px;
 }
+
 /*意见征求end*/
 
 

@@ -594,13 +594,13 @@ var vm = new Vue({
       },
       addLinkManRules: { // 新增编辑联系人校验
         linkmanName: [
-          { required: true,validator: checkMissValue, trigger: 'blur' },
+          {required: true, validator: checkMissValue, trigger: 'blur'},
         ],
         linkmanCertNo: [
-          { required: true,validator: checkMissValue, trigger: 'blur' },
+          {required: true, validator: checkMissValue, trigger: 'blur'},
         ],
-        linkmanMobilePhone:[
-          { required: true,validator: checkPhoneNum, trigger: 'blur' },
+        linkmanMobilePhone: [
+          {required: true, validator: checkPhoneNum, trigger: 'blur'},
         ]
       },
       // 意见征求 start
@@ -621,15 +621,15 @@ var vm = new Vue({
       solicitForm: {
         solicitTopic: '',
         solicitContent: '',
-        solicitType:'i',
+        solicitType: 'i',
         solicitDueDays: 1,
         solicitTimeruleId: '0',
         solicitTopic: '',
       },
       solicitFormRules: {
-        solicitTopic: [{required: true,message: '请填写征求主题', trigger: 'blur'}],
-        solicitContent: [{required: true,message: '请填写征求内容', trigger: 'blur'}],
-        solicitDueDays: [{required: true,message: '请填写征求时限', trigger: 'blur'}],
+        solicitTopic: [{required: true, message: '请填写征求主题', trigger: 'blur'}],
+        solicitContent: [{required: true, message: '请填写征求内容', trigger: 'blur'}],
+        solicitDueDays: [{required: true, message: '请填写征求时限', trigger: 'blur'}],
       },
       soRulesList: [],
       soParallelItems: [],
@@ -655,12 +655,12 @@ var vm = new Vue({
   },
   filters: {
     // 意见征求状态转换
-    changeSolicitState: function(val){
+    changeSolicitState: function (val) {
       var arr = ['未开始', '征求中', '已完成', '已终止'];
       return arr[val] || '-';
     },
     // 意见征求类型转换
-    changeSolicitType: function(val){
+    changeSolicitType: function (val) {
       var obj = {
         'i': '按事项征求',
         'd': '按部门征求',
@@ -668,7 +668,7 @@ var vm = new Vue({
       return obj[val] || '-';
     },
     // 部门人员意见状态转换
-    changeBmOpinType: function(val){
+    changeBmOpinType: function (val) {
       if (val == 1) return '征求中';
       if (val == 2) return '已完成';
       return '处理中';
@@ -707,12 +707,12 @@ var vm = new Vue({
   },
   methods: {
     // 意见征求 start-----------------------
-    clickStartSolicit: function(){
+    clickStartSolicit: function () {
       var vm = this;
       vm.openSoDialog();
     },
     // 发起征求
-    startSolicit: function(){
+    startSolicit: function () {
       var vm = this;
       var list1 = this.$refs.soParallelItems.selection || [];
       var list2 = this.$refs.soCoreItems.selection || [];
@@ -736,8 +736,8 @@ var vm = new Vue({
         }
         var tmp = list1.concat(list2);
         var hasOrgId = true;
-        tmp.forEach(function(u){
-          if (!(u.orgId&&u.orgId.length)){
+        tmp.forEach(function (u) {
+          if (!(u.orgId && u.orgId.length)) {
             hasOrgId = false;
           }
           itemList.push({
@@ -756,7 +756,7 @@ var vm = new Vue({
         if (!vm.soCheckedOrgList.length) {
           return vm.$message.error('请至少勾选一个部门');
         }
-        vm.soCheckedOrgList.forEach(function(u){
+        vm.soCheckedOrgList.forEach(function (u) {
           itemList.push({
             orgId: u.orgId,
             orgName: u.orgName,
@@ -764,7 +764,7 @@ var vm = new Vue({
         });
       }
       params.detailInfo = JSON.stringify(itemList);
-      this.$refs.solicitForm.validate(function(f){
+      this.$refs.solicitForm.validate(function (f) {
         if (f) {
           vm.solicitOpinionLoading = true;
           request('', {
@@ -772,14 +772,14 @@ var vm = new Vue({
             type: 'post',
             ContentType: 'application/json',
             data: JSON.stringify(params),
-          }, function(res) {
+          }, function (res) {
             vm.solicitOpinionLoading = false;
             if (res.success) {
               vm.$message.success('意见征求发起成功');
             } else {
-              vm.$message.error(res.message||'意见征求发起失败');
+              vm.$message.error(res.message || '意见征求发起失败');
             }
-          }, function(){
+          }, function () {
             vm.solicitOpinionLoading = false;
             vm.$message.error('意见征求发起失败');
           })
@@ -787,26 +787,26 @@ var vm = new Vue({
       });
     },
     // 选择orgId
-    soSelectedOrg: function(row, item){
+    soSelectedOrg: function (row, item) {
       row.orgId = item.orgId;
       row.orgName = item.orgName;
     },
     // 关闭征求弹窗
-    closeSoDialog: function(){
+    closeSoDialog: function () {
       this.$refs.solicitForm.clearValidate();
     },
     // 打开征求弹窗
-    openSoDialog: function(){
+    openSoDialog: function () {
       this.getTimeRuleList();
       var list1 = [{}];
       var list2 = [];
       if (!list1.length) {
         return this.$message('稍等，正在加载事项数据');
       }
-      list1.forEach(function(u) {
+      list1.forEach(function (u) {
         vm.$set(u, 'opinion', '');
       });
-      list2.forEach(function(u) {
+      list2.forEach(function (u) {
         vm.$set(u, 'opinion', '');
       });
       this.soParallelItems = list1.concat([]);
@@ -814,7 +814,7 @@ var vm = new Vue({
       this.solicitOpinionVisible = true;
     },
     // 得到容缺时限规则数据
-    getTimeRuleList: function(){
+    getTimeRuleList: function () {
       var vm = this;
       if (vm.soRulesList.length) {
         return null;
@@ -822,15 +822,15 @@ var vm = new Vue({
       request('', {
         url: ctx + 'rest/act/sto/timerule/getActStoTimeruleByOrgId',
         type: 'get',
-      }, function(res){
+      }, function (res) {
         if (res.success) {
           vm.soRulesList = res.content;
-          if(vm.soRulesList.length > 0){
+          if (vm.soRulesList.length > 0) {
             //格式化一下label
-            for(var i=0; i<vm.soRulesList.length; i++){
+            for (var i = 0; i < vm.soRulesList.length; i++) {
               var timeruleName = vm.soRulesList[i].timeruleName;
-              if(timeruleName && timeruleName.length > 3)
-                vm.soRulesList[i].timeruleName = timeruleName.substring(0,3);
+              if (timeruleName && timeruleName.length > 3)
+                vm.soRulesList[i].timeruleName = timeruleName.substring(0, 3);
             }
             //默认选择工作日
             vm.solicitForm.solicitTimeruleId = vm.soRulesList[0].timeruleId;
@@ -839,16 +839,16 @@ var vm = new Vue({
         } else {
           vm.$message.error(res.message || '获取时限规则数据失败');
         }
-      },function(){
+      }, function () {
         vm.$message.error('获取时限规则数据失败');
       })
     },
     // 切换表标签页
-    changeOsTab: function(i){
+    changeOsTab: function (i) {
       this.soActiveTabIndex = i;
     },
     // 加载树节点
-    loadSoNode: function(node, resolve){
+    loadSoNode: function (node, resolve) {
       var id = null;
       if (node.level != 0) {
         id = node.data.orgId;
@@ -856,14 +856,14 @@ var vm = new Vue({
       this.loadOrgData(id, resolve, node);
     },
     // 勾选部门数据
-    soTreeCheckChange: function(node, flag){
+    soTreeCheckChange: function (node, flag) {
       var vm = this;
       if (flag) {
         vm.soCheckedOrgList.push(node);
       } else {
         var index = -1;
-        vm.soCheckedOrgList.forEach(function(u, i) {
-          if (u.orgId == node.orgId){
+        vm.soCheckedOrgList.forEach(function (u, i) {
+          if (u.orgId == node.orgId) {
             index = i;
           }
         });
@@ -873,11 +873,11 @@ var vm = new Vue({
       }
     },
     // 取消勾选部门
-    removeSoOrg: function(node){
+    removeSoOrg: function (node) {
       this.$refs.soTree.setChecked(node.orgId, false, false);
     },
     // 加载部门数据
-    loadOrgData: function(id, resolve, node){
+    loadOrgData: function (id, resolve, node) {
       var vm = this;
       var params = {
         'isRoot': 1,
@@ -891,23 +891,23 @@ var vm = new Vue({
         url: ctx + 'rest/solicit/list/org',
         type: 'get',
         data: params,
-      }, function(res) {
+      }, function (res) {
         if (res.success) {
           if (node.level == 0) {
-            res.content.forEach(function(u) {
+            res.content.forEach(function (u) {
               u.disabled = true;
             });
           }
           resolve(res.content);
           if (node.level == 0) {
-            vm.$nextTick(function(){
+            vm.$nextTick(function () {
               $('.so-tree .el-tree-node__expand-icon').trigger('click');
             });
           }
         } else {
-          vm.$message.error(res.message||'加载部门数据失败');
+          vm.$message.error(res.message || '加载部门数据失败');
         }
-      }, function(res) {
+      }, function (res) {
         vm.$message.error('加载部门数据失败');
       })
     },
@@ -918,9 +918,9 @@ var vm = new Vue({
       return arr[val] || '';
     },
     // 发起人员结束意见征求
-    ensureEndSolicit: function(item){
+    ensureEndSolicit: function (item) {
       var vm = this;
-      if (!(vm.solicitBmForm.userOpinion&&vm.solicitBmForm.userOpinion.length)){
+      if (!(vm.solicitBmForm.userOpinion && vm.solicitBmForm.userOpinion.length)) {
         return vm.$message.error('请填写汇总意见');
       }
       vm.parentPageLoading = true;
@@ -933,23 +933,23 @@ var vm = new Vue({
           conclusionDesc: vm.solicitBmForm.userOpinion,
           solicitId: item.solicit.solicitId,
         }),
-      }, function(res) {
+      }, function (res) {
         vm.parentPageLoading = false;
         if (res.success) {
           vm.$message.success('提交成功');
           delayRefreshWindow();
         } else {
-          vm.$message.error(res.message||'提交失败');
+          vm.$message.error(res.message || '提交失败');
         }
-      }, function(){
+      }, function () {
         vm.parentPageLoading = false;
         vm.$message.error('提交失败');
       })
     },
     // 部门人员提交意见
-    solicitSaveOpinion: function(item){
+    solicitSaveOpinion: function (item) {
       var vm = this;
-      if (!(vm.solicitBmForm.userOpinion&&vm.solicitBmForm.userOpinion.length)){
+      if (!(vm.solicitBmForm.userOpinion && vm.solicitBmForm.userOpinion.length)) {
         return vm.$message.error('请填写意见');
       }
       vm.parentPageLoading = true;
@@ -963,21 +963,21 @@ var vm = new Vue({
           detailUserId: item.solicitDetailUser.detailUserId,
           solicitDetailId: item.solicitDetailUser.solicitDetailId,
         }),
-      }, function(res) {
+      }, function (res) {
         vm.parentPageLoading = false;
         if (res.success) {
           vm.$message.success('提交成功');
           delayRefreshWindow();
         } else {
-          vm.$message.error(res.message||'提交失败');
+          vm.$message.error(res.message || '提交失败');
         }
-      }, function(){
+      }, function () {
         vm.parentPageLoading = false;
         vm.$message.error('提交失败');
       })
     },
     // 刷新部门附件列表
-    refreshSolicitFileList: function(){
+    refreshSolicitFileList: function () {
       var vm = this;
       vm.parentPageLoading = true;
       request('', {
@@ -1024,14 +1024,14 @@ var vm = new Vue({
       })
     },
     // 加载意见征求历史记录
-    loadSolicitData: function(){
+    loadSolicitData: function () {
       var vm = this;
-      this.requestSolicit('YJZQ', function(data){
+      this.requestSolicit('YJZQ', function (data) {
         vm.solicitList = data || [];
       });
     },
     // 获取意见征求等历史记录通用接口
-    requestSolicit: function(typeCode, cb){
+    requestSolicit: function (typeCode, cb) {
       var vm = this;
       // if (vm) return null;
       vm.parentPageLoading = true;
@@ -1043,21 +1043,21 @@ var vm = new Vue({
           applyinstId: '002bf0e6-ba95-48c2-a866-7d230b6a1007',
           busType: typeCode,
         }
-      }, function(res){
+      }, function (res) {
         vm.parentPageLoading = false;
         if (res.success) {
           typeof cb == 'function' && cb(res.content);
         } else {
           vm.$message.error(res.message || '获取意见征求历史数据失败');
         }
-      }, function(){
+      }, function () {
         vm.parentPageLoading = false;
         vm.$message.error('获取意见征求历史数据失败');
       })
     },
     // 意见征求 end
     // 打开新增或者编辑联系人弹窗
-    openEditLinkMan: function(id){
+    openEditLinkMan: function (id) {
       var vm = this;
       vm.addEditManform = {
         linkmanName: '',
@@ -1069,7 +1069,7 @@ var vm = new Vue({
         linkmanInfoId: '',
       };
       if (id && id.length) {
-        vm.cancelAppLinkManList.forEach(function(u){
+        vm.cancelAppLinkManList.forEach(function (u) {
           if (u.linkmanInfoId == id) {
             vm.addEditManform.linkmanName = u.linkmanName;
             vm.addEditManform.linkmanCertNo = u.linkmanCertNo;
@@ -1084,9 +1084,9 @@ var vm = new Vue({
       vm.addEditManModalShow = true;
     },
     // 新增或者编辑联系人
-    saveAeaLinkmanInfo: function(){
+    saveAeaLinkmanInfo: function () {
       var vm = this;
-      vm.$refs.addEditManform.validate(function(f){
+      vm.$refs.addEditManform.validate(function (f) {
         if (f) {
           vm.saveLinkManLoading = true;
           vm.addEditManform.applyinstId = vm.masterEntityKey;
@@ -1094,7 +1094,7 @@ var vm = new Vue({
             url: ctx + 'rest/applyinst/saveUnitLinkman',
             type: 'post',
             data: vm.addEditManform,
-          }, function(res) {
+          }, function (res) {
             vm.saveLinkManLoading = false;
             if (res.success) {
               vm.requestLinkManInfo();
@@ -1102,7 +1102,7 @@ var vm = new Vue({
             } else {
               vm.$message.error(res.message || '保存失败');
             }
-          }, function(){
+          }, function () {
             vm.saveLinkManLoading = false;
             vm.$message.error('保存失败');
           });
@@ -1110,27 +1110,27 @@ var vm = new Vue({
       });
     },
     // 撤件部门删除附件
-    deleteCancelUserFile: function(id){
+    deleteCancelUserFile: function (id) {
       var vm = this;
       vm.parentPageLoading = true;
       request('', {
         url: ctx + 'rest/applyinst/deleteAttFile',
         type: 'post',
-        data: { detailIds: id },
-      }, function(res) {
+        data: {detailIds: id},
+      }, function (res) {
         vm.parentPageLoading = false;
         if (res.success) {
           vm.refreshAppCancelBmFileList();
         } else {
-          vm.$message.error(res.message||'删除失败');
+          vm.$message.error(res.message || '删除失败');
         }
-      },function(){
+      }, function () {
         vm.parentPageLoading = false;
         vm.$message.error('删除失败');
       })
     },
     // 撤件部门刷新附件列表
-    refreshAppCancelBmFileList: function(){
+    refreshAppCancelBmFileList: function () {
       var vm = this;
       vm.parentPageLoading = true;
       // 刷新列表
@@ -1141,14 +1141,14 @@ var vm = new Vue({
           tableName: 'AEA_HI_ITEM_CANCEL',
           attId: vm.cancelAppForm.cancelUserAttId,
         },
-      }, function(res2) {
+      }, function (res2) {
         vm.parentPageLoading = false;
         if (res2.success) {
           vm.cancelAppFileList = res2.content;
         } else {
           vm.$message.error(res2.message || '文件列表刷新失败');
         }
-      }, function(){
+      }, function () {
         vm.parentPageLoading = false;
         vm.$message.error('文件列表刷新失败');
       })
@@ -1176,27 +1176,27 @@ var vm = new Vue({
       })
     },
     // 撤件删除附件
-    deleteCancelUserFile: function(id){
+    deleteCancelUserFile: function (id) {
       var vm = this;
       vm.cacelAppDialogLoading = true;
       request('', {
         url: ctx + 'rest/applyinst/deleteAttFile',
         type: 'post',
-        data: { detailIds: id },
-      }, function(res) {
+        data: {detailIds: id},
+      }, function (res) {
         vm.cacelAppDialogLoading = false;
         if (res.success) {
           vm.refreshAppCancelFileList();
         } else {
-          vm.$message.error(res.message||'删除失败');
+          vm.$message.error(res.message || '删除失败');
         }
-      },function(){
+      }, function () {
         vm.cacelAppDialogLoading = false;
         vm.$message.error('删除失败');
       })
     },
     // 撤件刷新附件列表
-    refreshAppCancelFileList: function(){
+    refreshAppCancelFileList: function () {
       var vm = this;
       vm.cacelAppDialogLoading = true;
       // 刷新列表
@@ -1207,14 +1207,14 @@ var vm = new Vue({
           tableName: 'AEA_HI_APPLYINST_CANCEL',
           attId: vm.cancelAppForm.cancelUserAttId,
         },
-      }, function(res2) {
+      }, function (res2) {
         vm.cacelAppDialogLoading = false;
         if (res2.success) {
           vm.cancelAppFileList = res2.content;
         } else {
           vm.$message.error(res2.message || '文件列表刷新失败');
         }
-      }, function(){
+      }, function () {
         vm.cacelAppDialogLoading = false;
         vm.$message.error('文件列表刷新失败');
       })
@@ -1242,14 +1242,14 @@ var vm = new Vue({
       })
     },
     // 撤件状态转换
-    changeCancelState: function(val){
-      var arr = ['已提交','已受理','已同意','未同意','无效'];
+    changeCancelState: function (val) {
+      var arr = ['已提交', '已受理', '已同意', '未同意', '无效'];
       return arr[val];
     },
     // 撤件审批状态转换
-    changeSpCancelState: function(val){
+    changeSpCancelState: function (val) {
       var text = '审批中';
-      if (val == 2){
+      if (val == 2) {
         text = '已同意';
       } else if (val == 3) {
         text = '未同意';
@@ -1257,7 +1257,7 @@ var vm = new Vue({
       return text;
     },
     // 部门人员处理撤件
-    bmHanderCancel: function(val, item){
+    bmHanderCancel: function (val, item) {
       var vm = this;
       if (!vm.bmHandleOpinion.length) {
         return vm.$message.error('意见不能为空');
@@ -1272,19 +1272,19 @@ var vm = new Vue({
           cancelState: val,
           attId: vm.cancelAppForm.cancelUserAttId,
         },
-      }, function(res){
+      }, function (res) {
         if (res.success) {
           vm.$message.success('操作成功');
           delayRefreshWindow();
         } else {
-          vm.$message.error(res.message||'操作失败');
+          vm.$message.error(res.message || '操作失败');
         }
-      }, function(){
+      }, function () {
         vm.$message.error('操作失败');
       });
     },
     // 窗口人员处理撤件
-    ckHanderCancel: function(val, item){
+    ckHanderCancel: function (val, item) {
       var vm = this;
       if (!vm.ckHandleOpinion.length) {
         return vm.$message.error('意见不能为空');
@@ -1297,19 +1297,19 @@ var vm = new Vue({
           handleOpinion: vm.ckHandleOpinion,
           cancelState: val,
         },
-      }, function(res){
+      }, function (res) {
         if (res.success) {
           vm.$message.success('操作成功');
           delayRefreshWindow();
         } else {
-          vm.$message.error(res.message||'操作失败');
+          vm.$message.error(res.message || '操作失败');
         }
-      }, function(){
+      }, function () {
         vm.$message.error('操作失败');
       });
     },
     // 加载撤件历史数据
-    loadAppCancelData: function(){
+    loadAppCancelData: function () {
       var vm = this;
       var params = {};
       var reqUrl = ctx;
@@ -1332,14 +1332,14 @@ var vm = new Vue({
         } else {
           vm.$message.error(res.message || '加载撤件历史数据失败');
         }
-      }, function(res) {
+      }, function (res) {
         vm.$message.error('加载撤件历史数据失败');
       })
     },
     // 确认撤件操作
-    ensureAppCancel: function (){
+    ensureAppCancel: function () {
       var vm = this;
-      vm.$refs.cancelAppForm.validate(function(f){
+      vm.$refs.cancelAppForm.validate(function (f) {
         if (f) {
           vm.cacelAppDialogLoading = true;
           request('', {
@@ -1361,9 +1361,9 @@ var vm = new Vue({
               delayRefreshWindow();
               vm.$message.success('保存成功');
             } else {
-              vm.$message.error(res.message||'保存失败');
+              vm.$message.error(res.message || '保存失败');
             }
-          }, function(){
+          }, function () {
             vm.cacelAppDialogLoading = false;
             vm.$message.error('保存失败');
           })
@@ -1371,7 +1371,7 @@ var vm = new Vue({
       });
     },
     // 关闭撤件弹窗
-    closeCancelAppDialog: function(){
+    closeCancelAppDialog: function () {
       this.cancelAppFileList = [];
       this.cancelAppCkFileList = [];
       this.cancelAppForm.cancelUserAttId = '';
@@ -1384,10 +1384,10 @@ var vm = new Vue({
       }
     },
     // 撤件选择联系人
-    cancelAppChooseLinkMan: function(id){
+    cancelAppChooseLinkMan: function (id) {
       var vm = this;
       vm.cancelAppForm.applyUserId = id;
-      vm.cancelAppLinkManList.forEach(function(u){
+      vm.cancelAppLinkManList.forEach(function (u) {
         if (u.linkmanInfoId == id) {
           vm.cancelAppForm.linkmanMobilePhone = u.linkmanMobilePhone;
           vm.cancelAppForm.linkmanCertNo = u.linkmanCertNo;
@@ -1396,43 +1396,44 @@ var vm = new Vue({
       })
     },
     // 点击撤件
-    applyinstCancel: function(){
+    applyinstCancel: function () {
       var vm = this;
       vm.parentPageLoading = true;
       // 是否允许撤件
       $.ajax({
-        url: ctx + 'rest/applyinst/checkState?applyinstId='+vm.masterEntityKey,
+        url: ctx + 'rest/applyinst/checkState?applyinstId=' + vm.masterEntityKey,
         dataType: "json",
         type: 'get',
         headers: {
-          'Content-Type' :'application/x-www-form-urlencoded;',
-          'Authorization': 'bearer '+localStorage.getItem("access_token")
+          'Content-Type': 'application/x-www-form-urlencoded;',
+          'Authorization': 'bearer ' + localStorage.getItem("access_token")
         },
-        xhrFields: { withCredentials: true },
+        xhrFields: {withCredentials: true},
         crossDomain: true,
         timeout: 10000,
-        success: function(res) {
+        success: function (res) {
           handler(res);
         },
-        error: function(res){
+        error: function (res) {
           handler(res);
         },
       });
+      
       function handler(res) {
         var text = res.responseText;
-        text = text.replace(/'/g,'"');
+        text = text.replace(/'/g, '"');
         res = JSON.parse(text);
-        if(res.flag=='200') {
+        if (res.flag == '200') {
           vm.requestLinkManInfo();
-        } else if(res.flag=='201') {
+        } else if (res.flag == '201') {
           vm.parentPageLoading = false;
           vm.$confirm(res.message, '是否继续撤件', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
-          }).then(function(){
+          }).then(function () {
             vm.requestLinkManInfo(true);
-          }).catch(function(){
+          }).catch(function () {
             //
           });
         } else {
@@ -1441,9 +1442,9 @@ var vm = new Vue({
         }
       }
     },
-    requestLinkManInfo: function(f){
+    requestLinkManInfo: function (f) {
       var vm = this;
-      var reqUrl = ctx + 'rest/applyinst/getLinkmanInfoList?applyinstId='+vm.masterEntityKey;
+      var reqUrl = ctx + 'rest/applyinst/getLinkmanInfoList?applyinstId=' + vm.masterEntityKey;
       if (f) {
         reqUrl += '&isCancel=true';
       }
@@ -1451,28 +1452,28 @@ var vm = new Vue({
       request('', {
         url: reqUrl,
         type: 'get',
-      }, function(res){
+      }, function (res) {
         vm.parentPageLoading = false;
-        if(res.success) {
+        if (res.success) {
           vm.cancelAppVisible = true;
           vm.cancelAppLinkManList = res.content;
           vm.cancelAppLinkManList.length && vm.cancelAppChooseLinkMan(vm.cancelAppLinkManList[0].linkmanInfoId);
         } else {
           vm.$message.error(res.message || '获取撤件业主信息失败');
         }
-      }, function(){
+      }, function () {
         vm.parentPageLoading = false;
         vm.$message.error('获取撤件业主信息失败');
       })
     },
     // 打开延长容缺时限弹窗
-    openRQmoreTimeDialog: function(row){
+    openRQmoreTimeDialog: function (row) {
       this.rqTargetRow = row;
       this.RQmoreTimeVisible = true;
       this.rqMoreTimeForm.toleranceTime = 1;
     },
     // 保存延长容缺时限
-    ensureMoreTime: function(){
+    ensureMoreTime: function () {
       var vm = this;
       if (vm.rqMoreTimeForm.toleranceTime < 1) {
         return vm.$message.error('时限不能小于1')
@@ -1480,8 +1481,8 @@ var vm = new Vue({
       this.requestRQmoreTime(vm.rqMoreTimeForm.toleranceTime);
     },
     // 请求保存
-    requestRQmoreTime: function(time, row){
-      var vm  = this;
+    requestRQmoreTime: function (time, row) {
+      var vm = this;
       if (row) {
         vm.rqTargetRow = row;
       }
@@ -1493,7 +1494,7 @@ var vm = new Vue({
           toleranceTime: time,
           iteminstId: vm.rqTargetRow.iteminstId,
         },
-      }, function(res){
+      }, function (res) {
         vm.parentPageLoading = false;
         vm.RQmoreTimeVisible = false;
         if (res.success) {
@@ -1503,15 +1504,16 @@ var vm = new Vue({
         } else {
           vm.$message.error(res.message || '保存失败');
         }
-      }, function(){
+      }, function () {
         vm.parentPageLoading = false;
         vm.$message.error('保存失败');
       })
     },
     //  关闭容缺延时弹窗
-    closeRQmoreTimeDialog: function(){},
+    closeRQmoreTimeDialog: function () {
+    },
     // 得到容缺时限规则数据
-    getRQRuleList: function(){
+    getRQRuleList: function () {
       var vm = this;
       if (vm.rqRulesList.length) {
         return null;
@@ -1519,35 +1521,35 @@ var vm = new Vue({
       request('', {
         url: ctx + 'rest/act/sto/timerule/getActStoTimeruleByOrgId',
         type: 'get',
-      }, function(res){
+      }, function (res) {
         if (res.success) {
           vm.rqRulesList = res.content;
-          if(vm.rqRulesList.length > 0){
+          if (vm.rqRulesList.length > 0) {
             //格式化一下label
-            for(var i=0; i<vm.rqRulesList.length; i++){
+            for (var i = 0; i < vm.rqRulesList.length; i++) {
               var timeruleName = vm.rqRulesList[i].timeruleName;
-              if(timeruleName && timeruleName.length > 3)
-                vm.rqRulesList[i].timeruleName = timeruleName.substring(0,3);
+              if (timeruleName && timeruleName.length > 3)
+                vm.rqRulesList[i].timeruleName = timeruleName.substring(0, 3);
             }
             //默认选择工作日
             vm.sendForm.timeruleId = vm.rqRulesList[0].timeruleId;
-
+            
             vm.rqTimeForm.timeruleId = vm.rqRulesList[0].timeruleId;
             vm.rqTimeForm.toleranceTime = 1;
           }
         } else {
           vm.$message.error(res.message || '获取时限规则数据失败');
         }
-      },function(){
+      }, function () {
         vm.$message.error('获取时限规则数据失败');
       })
     },
     // 关闭容缺时限配置弹窗
-    closeRQtimeDialog: function(){
+    closeRQtimeDialog: function () {
       this.$refs.rqTimeFormRef.resetFields();
     },
     // 打开容缺时限配置弹窗
-    openRQtimeDialog: function(){
+    openRQtimeDialog: function () {
       var vm = this;
       if (vm.rqRulesList.length) {
         vm.rqTimeForm.timeruleId = vm.rqRulesList[0].timeruleId;
@@ -1559,7 +1561,7 @@ var vm = new Vue({
       request('', {
         url: ctx + 'rest/act/sto/timerule/getActStoTimeruleByOrgId',
         type: 'get',
-      }, function(res){
+      }, function (res) {
         vm.parentPageLoading = false;
         if (res.success) {
           vm.rqRulesList = res.content;
@@ -1569,7 +1571,7 @@ var vm = new Vue({
         } else {
           vm.$message.error(res.message || '获取时限规则数据失败');
         }
-      },function(){
+      }, function () {
         vm.parentPageLoading = false;
         vm.$message.error('获取时限规则数据失败');
       })
@@ -2429,7 +2431,7 @@ var vm = new Vue({
     },
     // 点击下载证件
     clickDownloadLicense: function () {
-      window.open(ctx+'rest/docTemplate/downLoad?certinstId='+vm.currentCertinstId);
+      window.open(ctx + 'rest/docTemplate/downLoad?certinstId=' + vm.currentCertinstId);
     },
     // 点击打印证件
     clickPrintLicense: function () {
@@ -3021,7 +3023,7 @@ var vm = new Vue({
       // 是否有材料补正
       loadTab('4', 'hasSupply', vm.loadSupplyDetail);
       // 是否有特殊程序
-      loadTab('5', 'hasSpecial', function(){
+      loadTab('5', 'hasSpecial', function () {
         vm.getSpecialType();
         vm.loadSpecialDetail();
       });
@@ -3031,7 +3033,7 @@ var vm = new Vue({
       loadTab('solicit', 'hasSolicit', vm.loadSolicitData);
       
       // 加载对应标签数据
-      function loadTab(labelId, key, cb){
+      function loadTab(labelId, key, cb) {
         var index = -1;
         vm.lTabsData.forEach(function (u, i) {
           if (u.labelId == labelId) {
@@ -3244,9 +3246,7 @@ var vm = new Vue({
           vm.projInfoId = res.content.projId;
           vm.itemVersionId = res.content.itemVerId;
           vm.itemId = res.content.itemId;
-          if (isDevelop) {
-            vm.hasSolicit = 1;
-          }
+          vm.hasSolicit = 1;
           vm.initFormElementPriv();
         } else {
           vm.$message.error(res.message);
@@ -3418,7 +3418,7 @@ var vm = new Vue({
       } else {
         vm.nextTaskAssignee = vm.sendTaskInfo.defaultSendAssignees;
         vm.nextTaskAssigneeId = vm.sendTaskInfo.defaultSendAssigneesId;
-        if (vm.treeTargetRow){
+        if (vm.treeTargetRow) {
           vm.nextTaskAssignee = vm.treeTargetRow.defaultSendAssignees;
           vm.nextTaskAssigneeId = vm.treeTargetRow.defaultSendAssigneesId;
         }
@@ -3768,8 +3768,8 @@ var vm = new Vue({
             vm.isNeedSelectAssignee = vm.sendTaskInfo.needSelectAssignee;
             if (vm.sendTaskInfo && vm.sendTaskInfo.multiFlow == true) {
               vm.isMultiFlow = true;
-              vm.mutiCheckedMan.push($.extend({},vm.sendTaskInfo));
-              vm.mutiCheckedNames.push(vm.sendTaskInfo.destActName+'');
+              vm.mutiCheckedMan.push($.extend({}, vm.sendTaskInfo));
+              vm.mutiCheckedNames.push(vm.sendTaskInfo.destActName + '');
             }
             //流程流转的提交参数
             vm.sendParam = {
@@ -3886,10 +3886,10 @@ var vm = new Vue({
         if (!vm.sendForm.toleranceTime) {
           return vm.$message.error('请填写容缺期限');
         }
-        if (vm.sendForm.toleranceTime&&vm.sendForm.toleranceTime<=0) {
+        if (vm.sendForm.toleranceTime && vm.sendForm.toleranceTime <= 0) {
           return vm.$message.error('容缺期限值必须大于0');
         }
-        if(!vm.sendForm.timeruleId){
+        if (!vm.sendForm.timeruleId) {
           return vm.$message.error('请选择容缺期限类型');
         }
       }
@@ -5831,7 +5831,7 @@ var vm = new Vue({
     var _this = this;
     window.addEventListener("resize", function () {
       vm.setButtonShow();
-      _this.curWidth=(document.documentElement.clientWidth || document.body.clientWidth);
+      _this.curWidth = (document.documentElement.clientWidth || document.body.clientWidth);
     });
     var fileInput = $('.upload-input')
     $('.upload-input').change(function (e) {
@@ -5972,9 +5972,9 @@ function rejectForItem() {
 
 //事项-不予受理
 function outForItem() {
-    vm.enumItemStatus = 'OUT_SCOPE';
-    vm.requestMappingType = 'put';
-    urlForItem();
+  vm.enumItemStatus = 'OUT_SCOPE';
+  vm.requestMappingType = 'put';
+  urlForItem();
 }
 
 //事项-办结（通过）
@@ -6017,17 +6017,19 @@ function urlForItem() {
 }
 
 // 中介事项  三个按钮事件
-function zjItem1(){
+function zjItem1() {
   vm.sendUrlPath = ctx + "market/approve/btn/win/wfSendAndChangeApplyState";
   vm.requestMappingType = 'put';
   vm.wfBusSend();
 }
-function zjItem2(){
+
+function zjItem2() {
   vm.sendUrlPath = ctx + "market/approve/btn/win/wfSendAndChangeApplyAndItemState";
   vm.requestMappingType = 'put';
   vm.wfBusSend();
 }
-function zjItem3(){
+
+function zjItem3() {
   vm.sendUrlPath = ctx + "market/approve/btn/item/wfSendAndChangeItemState";
   vm.requestMappingType = 'put';
   vm.wfBusSend();
@@ -6194,7 +6196,7 @@ function openSpecialDialog() {
 }
 
 // 撤件
-function applyinstCancel(){
+function applyinstCancel() {
   vm.applyinstCancel();
 }
 
@@ -6284,7 +6286,7 @@ function startDeclare() {
   vm.startDeclare();
 }
 
-function clickStartSolicit(){
+function clickStartSolicit() {
   vm.clickStartSolicit();
 }
 
