@@ -17,7 +17,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class SolicitDetailUserVo {
 
     @ApiModelProperty(value = "主键", required = false, dataType="string")
-    private String detailTaskId;
+    private String detailUserId;
 
     @ApiModelProperty(value = "征求意见详情ID", required = false, dataType="string")
     private String solicitDetailId;
