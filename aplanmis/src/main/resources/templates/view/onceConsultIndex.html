@@ -233,7 +233,7 @@
 
 		<el-table-column
 				prop="applyinstCode"
-				min-width="140"
+				min-width="150"
 				label="申报流水号"
 				show-overflow-tooltip
 				:formatter="formatTableCell">
@@ -295,7 +295,7 @@
 
 		<el-table-column
 				prop="solicitTopic"
-				min-width="100"
+				min-width="150"
 				label="主题"
 				show-overflow-tooltip
 				:formatter="formatTableCell">
@@ -339,10 +339,14 @@
 
 		<el-table-column
 				prop="rateProgress"
-				min-width="100"
+				min-width="120"
 				label="回复进度/状态"
 				show-overflow-tooltip
-				:formatter="formatTableCell">
+				:formatter="formatState">
+			<!--<template slot-scope="scope">
+				<span v-if=" ['2','3'].indexOf(scope.row.solicitState)!=-1">已完成</span>
+				<span v-html="solicitStateFormatter(scope.row)"></span>
+			</template>-->
 		</el-table-column>
 
 		<!--<el-table-column
@@ -354,11 +358,12 @@
 				:formatter="formatTableCell">
 		</el-table-column>-->
 		<el-table-column
-				min-width="60"
+				min-width="120"
 				label="操作">
 			<template slot-scope="scope">
-				<span class="op-btn" v-if="isSign(scope.row)" @click="viewDetail(scope.row)">办理</span>
-				<span class="op-btn" v-if="!isSign(scope.row)" @click="signTask($event,scope.row)">签收</span>
+				<span v-html="stateBtnFormat(scope.row)"></span>
+				<!--<span class="op-btn" v-if="isSign(scope.row)" @click="viewDetail(scope.row)">办理</span>
+				<span class="op-btn" v-if="!isSign(scope.row)" @click="signTask($event,scope.row)">签收</span>-->
 			</template>
 		</el-table-column>
 	</el-table>
