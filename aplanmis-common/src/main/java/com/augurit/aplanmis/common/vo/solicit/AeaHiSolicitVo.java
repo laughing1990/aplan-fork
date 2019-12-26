@@ -203,15 +203,17 @@ public class AeaHiSolicitVo {
     @ApiModelProperty(value = "")
     private String stageName;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "主题ID")
+    private String themeId;
+    @ApiModelProperty(value = "主题名称")
     private String themeName;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "项目工程名称")
     private String projName;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "项目ID")
     private String projInfoId;
-
+    @ApiModelProperty(value = "项目代码")
     private String localCode;
 
     @ApiModelProperty(value = "提醒信息列表")

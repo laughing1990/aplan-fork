@@ -299,9 +299,23 @@
         where ahs.SOLICIT_CODE = #{solicitCode}
     </select>
 
-    <sql id="queryByThemeId">
-        <if test="theme!=null and theme!=''">
-            and theme.THEME_ID=#{theme}
+    <sql id="queryByTime">
+        <if test="_databaseId == 'oracle'">
+            <if test="acceptStartTime != null and acceptStartTime != '' ">
+                <![CDATA[ AND to_char(aha.ACCEPT_TIME , 'yyyy-mm-dd')>=  #{acceptStartTime}   ]]>
+            </if>
+            <if test="acceptEndTime != null and acceptEndTime != '' ">
+                <![CDATA[ AND to_char(aha.ACCEPT_TIME , 'yyyy-mm-dd')<=  #{acceptEndTime}   ]]>
+            </if>
+        </if>
+        <if test="_databaseId == 'mysql'">
+
+            <if test="acceptStartTime != null and acceptStartTime != '' ">
+                <![CDATA[ AND DATE_FORMAT(aha.ACCEPT_TIME , '%Y-%m-%d')>=  #{acceptStartTime}   ]]>
+            </if>
+            <if test="acceptEndTime != null and acceptEndTime != '' ">
+                <![CDATA[ AND DATE_FORMAT(aha.ACCEPT_TIME , '%Y-%m-%d')<=  #{acceptEndTime}   ]]>
+            </if>
         </if>
     </sql>
     <!--查询意见征求，一次征询，部门征求等意见列表-->
@@ -337,9 +351,10 @@
         aha.createTime as createTime,
         aha.ITEMINST_NAME as itemName,
         aha.STAGE_NAME as stageName,
+        aha.THEME_ID as themeId,
         aha.THEME_NAME as themeName,
         aha.APPLYINST_SOURCE as applyinstSource,
-        ( CASE aha.APPLYINST_SOURCE WHEN 'win' THEN '网厅' ELSE '窗口' END ) AS applySource,
+        ( CASE aha.APPLYINST_SOURCE WHEN 'win' THEN '窗口' ELSE '网厅' END ) AS applySource,
         api.PROJ_NAME as projName,
         api.PROJ_INFO_ID as projInfoId,
         api.LOCAL_CODE as localCode
@@ -370,14 +385,13 @@
         asti.REMAINING_TIME,
         asti.TIMERULE_UNIT,
         asti.INST_STATE
-
-        FROM
-        AEA_HI_SOLICIT_DETAIL ahsd
+        FROM AEA_HI_SOLICIT_DETAIL_USER ahsdu
+        LEFT JOIN AEA_HI_SOLICIT_DETAIL ahsd ON ahsdu.SOLICIT_DETAIL_ID = ahsd.SOLICIT_DETAIL_ID
         LEFT JOIN AEA_HI_SOLICIT ahs ON ahsd.SOLICIT_ID = ahs.SOLICIT_ID
         LEFT JOIN opu_om_user oou on oou.user_Id=ahs.INITIATOR_USER_ID
         LEFT JOIN ACT_RU_TASK art ON art.PROC_INST_ID_ = ahs.PROCINST_ID and oou.user_name=art.ASSIGNEE_NAME_
         LEFT JOIN act_hi_taskinst aht ON aht.ID_ = ahs.HI_TASKINST_ID
-        LEFT JOIN AEA_HI_SOLICIT_DETAIL_USER ahsdu ON ahsdu.SOLICIT_DETAIL_ID = ahsd.SOLICIT_DETAIL_ID
+
         LEFT JOIN ACT_STO_TIMERULE ast ON ast.TIMERULE_ID = ahs.SOLICIT_TIMERULE_ID
         LEFT JOIN ACT_STO_TIMERULE_INST asti ON asti.TIMERULE_ID = ast.TIMERULE_ID and
         asti.TASKINST_ID=ahs.HI_TASKINST_ID
@@ -436,6 +450,7 @@
         aha.APPLYINST_SOURCE,
         NULL AS ITEMINST_NAME,
         aps_123.STAGE_NAME,
+        theme.THEME_ID,
         theme.THEME_NAME
         FROM AEA_HI_APPLYINST aha
         INNER JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = aha.APPLYINST_ID
@@ -444,7 +459,9 @@
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
         <where>
             aha.IS_SERIES_APPROVE = '0'
-            <include refid="queryByThemeId"></include>
+            <if test="theme!=null and theme!=''">
+                and theme.THEME_ID=#{theme}
+            </if>
         </where>
 
         UNION
@@ -457,6 +474,7 @@
         aha.APPLYINST_SOURCE,
         NULL AS ITEMINST_NAME,
         aps_123.STAGE_NAME,
+        theme.THEME_ID,
         theme.THEME_NAME
         FROM AEA_HI_APPLYINST aha
         INNER JOIN aea_hi_seriesinst ahs ON ahs.applyinst_id = aha.applyinst_id
@@ -465,7 +483,9 @@
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
         <where>
             aha.IS_SERIES_APPROVE = '1' AND ahs.stage_id IS NOT NULL AND ahs.IS_PARALLEL = '1'
-            <include refid="queryByThemeId"></include>
+            <if test="theme!=null and theme!=''">
+                and theme.THEME_ID=#{theme}
+            </if>
         </where>
         UNION
         SELECT
@@ -477,13 +497,13 @@
         aha.APPLYINST_SOURCE,
         iteminst.ITEMINST_NAME AS ITEMINST_NAME,
         NULL AS STAGE_NAME,
+        NULL AS THEME_ID,
         NULL AS THEME_NAME
         FROM AEA_HI_APPLYINST aha
         INNER JOIN AEA_HI_SERIESINST ahs ON ahs.applyinst_id = aha.applyinst_id
         LEFT JOIN AEA_HI_ITEMINST iteminst ON iteminst.SERIESINST_ID = ahs.SERIESINST_ID
         <where>
             aha.IS_SERIES_APPROVE = '1' AND ahs.IS_PARALLEL = '0'
-            <include refid="queryByThemeId"></include>
         </where>
 
         ) aha ON ahs.APPLYINST_ID = aha.APPLYINST_ID
@@ -501,9 +521,19 @@
                 OR aha.STAGE_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
-            <if test="applyType!=null and applyType!=''">
+            <if test="applyType!=null and applyType!='' ">
                 and aha.IS_SERIES_APPROVE=#{applyType}
             </if>
+            <if test="applySource!=null and applySource!='' ">
+                and aha.APPLYINST_SOURCE=#{applySource}
+            </if>
+            <if test="theme!=null and theme !=''">
+                and aha.THEME_ID=#{theme}
+            </if>
+            <if test="theme!=null and theme !=''">
+                and ahs.INST_STATE=#{instState}
+            </if>
+            <include refid="queryByTime"></include>
         </where>
 
     </select>

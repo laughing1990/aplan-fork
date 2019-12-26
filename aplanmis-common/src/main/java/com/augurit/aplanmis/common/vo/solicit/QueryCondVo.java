@@ -19,6 +19,17 @@ public class QueryCondVo {
     @ApiModelProperty(value = "审批类型 0 并联，1 单项 “” 所有")
     private String applyType;
 
+    @ApiModelProperty(value = "申报来源，win窗口或net网厅")
+    private String applySource;
+
+    @ApiModelProperty(value = "审批时限状态：1 正常，2 预警，3 逾期")
+    private String instState;
+    @ApiModelProperty(value = "受理开始时间")
+    private String acceptStartTime;
+    @ApiModelProperty(value = "受理结束时间")
+    private String acceptEndTime;
+
+
     private String theme;
 
     private String keyword;
