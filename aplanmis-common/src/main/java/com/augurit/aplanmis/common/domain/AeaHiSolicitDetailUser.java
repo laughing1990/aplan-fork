@@ -35,6 +35,7 @@ public class AeaHiSolicitDetailUser implements Serializable {
     private java.util.Date modifyTime; // (更新时间)
 
     private List<BscAttFileAndDir> fileAndDirs;//附件集合
+    private String userName; //扩展字段 (用户名)
 
     //public String getTableName()  {
     //    return "AeaHiSolicitDetailUser";
