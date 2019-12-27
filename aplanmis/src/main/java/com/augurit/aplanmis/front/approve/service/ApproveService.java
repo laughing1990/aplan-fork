@@ -355,6 +355,8 @@ public class ApproveService {
     public AeaHiIteminst getIteminstByTaskId(String taskId) {
         try {
             HistoricTaskInstance task = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
+            if(task == null)
+                return null;
 
             String processInstanceId = task.getProcessInstanceId();
 
