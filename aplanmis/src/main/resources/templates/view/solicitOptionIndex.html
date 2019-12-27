@@ -231,7 +231,7 @@
 		</el-table-column>
 		<el-table-column
 				prop="applyinstCode"
-				min-width="140"
+				min-width="160"
 				label="申报流水号"
 				show-overflow-tooltip
 				:formatter="formatTableCell">
@@ -275,14 +275,20 @@
 		<el-table-column
 				sortable="custom"
 				prop="instState,timeruleUnit,overdueTime,remainingTime"
-				min-width="150"
+				min-width="180"
 				label="剩余时限">
 			<template slot-scope="scope">
-				<span class="bg-status green-deadline" v-if="!scope.row.instState">{{'剩余'+scope.row.dueNumText}}</span>
-				<span class="bg-status green-deadline" v-else-if="scope.row.instState=='1'">{{scope.row.remainingOrOverTimeText}}</span>
-				<span class="bg-status yellow-deadline" v-else-if="scope.row.instState=='2'">{{scope.row.remainingOrOverTimeText}}</span>
-				<span class="bg-status red-deadline"
-				      v-else-if="scope.row.instState=='3'">{{scope.row.remainingOrOverTimeText}}</span>
+				<div v-if="scope.row.isCalcTimerule && scope.row.isCalcTimerule==0">
+					<span class="bg-status green-deadline">{{scope.row.dueNumText}}</span>
+				</div>
+				<div v-else>
+					<span class="bg-status green-deadline" v-if="!scope.row.instState">{{'剩余'+scope.row.dueNumText}}</span>
+					<span class="bg-status green-deadline" v-else-if="scope.row.instState=='1'">{{scope.row.remainingOrOverTimeText}}</span>
+					<span class="bg-status yellow-deadline" v-else-if="scope.row.instState=='2'">{{scope.row.remainingOrOverTimeText}}</span>
+					<span class="bg-status red-deadline"
+					      v-else-if="scope.row.instState=='3'">{{scope.row.remainingOrOverTimeText}}</span>
+				</div>
+
 				<el-popover
 						v-if="scope.row.nodeTimelimitList&&scope.row.nodeTimelimitList.length"
 						placement="right"
@@ -309,7 +315,7 @@
 		</el-table-column>
 		<el-table-column
 				sortable="custom"
-				min-width="140"
+				min-width="160"
 				prop="acceptTime"
 				label="受理时间"
 				show-overflow-tooltip

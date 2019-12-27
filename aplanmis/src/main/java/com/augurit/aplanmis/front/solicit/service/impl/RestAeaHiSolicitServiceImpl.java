@@ -560,9 +560,15 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
         Map<String, List<String>> map = new HashMap<>();//保存根据applyinstId已经查询到的solicitId
         Set<String> applyinstIds = new HashSet<>();//保存已经查询的applyinstId
         for (AeaHiSolicitVo info : voList) {
-            if (info == null) {
-                return;
+            if (info == null) return;
+            //设置viewId
+            String viewId = conditionalQueryService.queryViewId(info.getBusType());
+            if (StringUtils.isBlank(viewId)) {
+                viewId = conditionalQueryService.queryViewId("所有办件");
             }
+            info.setViewId(viewId);
+
+            //设置发起的次数
             String solicitId = info.getSolicitId();
             String applyinstId = info.getApplyinstId();
             List<String> solicitIds;
@@ -581,7 +587,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
             info.setSolicitIndex(solicitIds.indexOf(solicitId) + 1);
             info.setPromoter(info.getInitiatorUserId().equals(SecurityContext.getCurrentUserId()));
             String busType = info.getBusType();
-            if (true) {//"YCZX".equals(busType)
+            if (!"YJZQ".equals(busType)) {
                 List<AeaHiSolicitDetail> solicitDetail = aeaHiSolicitDetailMapper.getAeaHiSolicitDetailBySolicitId(solicitId);
                 int allNum = solicitDetail.size();
                 info.setAllProgressNum(allNum);
@@ -598,34 +604,33 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                 info.setFinishProgressNum(finishNum);
                 info.setRateProgress(finishNum + "/" + allNum);
             }
+            if ("1".equals(info.getIsCalcTimerule())) {//加入计时
+                //设置承诺时限文本
+                String dueNumText = getTimeText(info.getTimeruleUnit(), info.getSolicitDueDays());
+                if (StringUtils.isBlank(dueNumText)) {
+                    dueNumText = "-天";
+                }
+                info.setDueNumText(dueNumText);
 
-            //设置承诺时限文本
-            String dueNumText = getTimeText(info.getTimeruleUnit(), info.getSolicitDueDays());
-            if (StringUtils.isBlank(dueNumText)) {
-                dueNumText = "-天";
-            }
-            info.setDueNumText(dueNumText);
 
-            //设置viewId
-            String viewId = conditionalQueryService.queryViewId(info.getBusType());
-            if (StringUtils.isBlank(viewId)) {
-                viewId = conditionalQueryService.queryViewId("所有办件");
+                //设置剩余时限文本
+                if (StringUtils.isBlank(info.getTimeruleUnit())) {
+                    return;
+                }
+                Double time = info.getRemainingTime();
+                if (TimeruleInstState.OVERDUE.getValue().equals(info.getInstState())) {
+                    time = info.getOverdueTime();
+                }
+                String timeText = getTimeText(info.getTimeruleUnit(), time);
+                if (StringUtils.isNotBlank(timeText)) {
+                    timeText = (TimeruleInstState.OVERDUE.getValue().equals(info.getInstState()) ? "逾期" : "剩余") + timeText;
+                    info.setRemainingOrOverTimeText(timeText);
+                }
+            } else {
+                info.setDueNumText("不计时");
+                info.setRemainingOrOverTimeText("不计时");
             }
-            info.setViewId(viewId);
 
-            //设置剩余时限文本
-            if (StringUtils.isBlank(info.getTimeruleUnit())) {
-                return;
-            }
-            Double time = info.getRemainingTime();
-            if (TimeruleInstState.OVERDUE.getValue().equals(info.getInstState())) {
-                time = info.getOverdueTime();
-            }
-            String timeText = getTimeText(info.getTimeruleUnit(), time);
-            if (StringUtils.isNotBlank(timeText)) {
-                timeText = (TimeruleInstState.OVERDUE.getValue().equals(info.getInstState()) ? "逾期" : "剩余") + timeText;
-                info.setRemainingOrOverTimeText(timeText);
-            }
             loadTaskRemainingOrOverTimeText(info);
         }
 

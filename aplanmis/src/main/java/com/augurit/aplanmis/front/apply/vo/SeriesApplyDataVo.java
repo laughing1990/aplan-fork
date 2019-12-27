@@ -4,7 +4,9 @@ import com.augurit.aplanmis.common.constants.ApplyType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel("单项申报参数实体vo")
 public class SeriesApplyDataVo extends ApplyDataVo {
