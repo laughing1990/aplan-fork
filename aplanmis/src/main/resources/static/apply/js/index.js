@@ -391,6 +391,7 @@ var vm = new Vue({
       loadingLinkMan: false,
       stageId: '',  // 所选阶段ID
       applyinstIds: [], // 申请实例id
+      _applyinstIds: [], // 所有申报实例id
       stateIds: [], // 情形id集合
       getPaperAll: false,
       getCopyAll: false,
@@ -4476,7 +4477,7 @@ var vm = new Vue({
             return false;
           }else {
             applyinstIdsParallelApplyinstId=res.content.applyinstIds;
-            // applyinstIdsParallelApplyinstId.push(res.content.parallelApplyinstId);
+            applyinstIdsParallelApplyinstId.push(res.content.parallelApplyinstId);
             _that.parallelApplyinstId=res.content.parallelApplyinstId;
           }
           var applyinstIdsList = [];
@@ -4486,15 +4487,16 @@ var vm = new Vue({
               applyinstIdsList.push(applyinstIdsParallelApplyinstId[i]);
             }
           }
-          _that.applyinstIds = applyinstIdsList;
-          var applyinstIds=applyinstIdsList.join(',');
+          _that.applyinstIds = res.content.applyinstIds;
+          _that._applyinstIds = applyinstIdsList;
+          var _applyinstIds=applyinstIdsList.join(',');
           setTimeout(function(){
             // _that.progressDialogVisible = false;
             // _that.uploadPercentage=0;
             if(_that.submitCommentsType==5){
               _that.getLackMatsMatmend()
             } else{
-              _that.queryReceiveList(applyinstIds);
+              _that.queryReceiveList(_applyinstIds);
             }
           },500);
         }else {
@@ -6743,7 +6745,7 @@ var vm = new Vue({
               // ts.$message.success('保存成功！');
               ts.isShowMatmend = false;
               confirmMsg('提示信息：','材料补全成功，是否打印回执？',function(){
-                ts.queryReceiveList(ts.applyinstIds.join(','));
+                ts.queryReceiveList(ts._applyinstIds.join(','));
               },function(){
                 ts.reloadPage();
               },'是','否','success',true)
@@ -6853,7 +6855,7 @@ var vm = new Vue({
     isGetReceiveList: function(){
       var _that = this;
       confirmMsg('提示信息：','是否打印回执？',function(){
-        _that.queryReceiveList(_that.applyinstIds.join(','));
+        _that.queryReceiveList(_that._applyinstIds.join(','));
       },function(){
         _that.reloadPage();
       },'是','否','success',true)
