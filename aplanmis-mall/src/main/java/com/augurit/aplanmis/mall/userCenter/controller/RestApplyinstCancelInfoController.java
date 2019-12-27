@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.mall.userCenter.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
@@ -47,10 +48,11 @@ public class RestApplyinstCancelInfoController {
     @ApiImplicitParams({
             @ApiImplicitParam(value = "申请实例ID", name = "applyinstId", required = true, dataType = "string")
     })
-    public ContentResultForm<String> checkApplyinstAndIteminstState(@PathVariable("applyinstId")String applyinstId){
+    public ContentResultForm<Object> checkApplyinstAndIteminstState(@PathVariable("applyinstId")String applyinstId){
         try {
             String checkResult=applyinstCancelService.checkApplyinstAndIteminstState(applyinstId);
-            return new ContentResultForm<>(true,checkResult,"");
+            Object object=JSONObject.parse(checkResult);
+            return new ContentResultForm<>(true,object,"");
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             return new ContentResultForm(false,"","检测申报实例或事项实例是否满足撤件申请接口异常");

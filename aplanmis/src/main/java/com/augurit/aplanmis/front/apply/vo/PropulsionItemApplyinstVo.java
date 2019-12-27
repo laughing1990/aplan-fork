@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @ApiModel("并联申报中并行申报实例与事项映射vo")
-public class ParallelItemApplyinstVo {
+public class PropulsionItemApplyinstVo {
 
     @ApiModelProperty(value = "事项版本id", dataType = "string")
     private String itemVerId;
@@ -14,11 +14,9 @@ public class ParallelItemApplyinstVo {
     @ApiModelProperty(value = "单项申报实例id")
     private String seriesApplyinstId;
 
-    public ParallelItemApplyinstVo(String itemVerId, String seriesApplyinstId) {
+    public PropulsionItemApplyinstVo(String itemVerId, String seriesApplyinstId) {
         this.itemVerId = itemVerId;
         this.seriesApplyinstId = seriesApplyinstId;
     }
 
-    public ParallelItemApplyinstVo() {
-    }
 }

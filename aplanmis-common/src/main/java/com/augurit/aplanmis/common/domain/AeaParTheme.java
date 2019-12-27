@@ -69,4 +69,6 @@ public class AeaParTheme implements Serializable {
     private String themeVerName; // 主题版本定义最新版本
     @ApiModelProperty("主题下的阶段")
     private List<AeaParStage> stageList;//主题下的阶段列表
+    @ApiModelProperty(value = "是否被选中1:是,0:否")
+    private String isSelected = "0";
 }

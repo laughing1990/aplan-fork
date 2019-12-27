@@ -8,7 +8,6 @@ import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaServiceLegalClause;
-import com.augurit.aplanmis.common.mapper.AeaItemServiceBasicMapper;
 import com.augurit.aplanmis.common.service.admin.item.AeaItemServiceBasicAdminService;
 import com.augurit.aplanmis.common.service.admin.legal.AeaServiceLegalClauseAdminService;
 import com.github.pagehelper.Page;
@@ -151,7 +150,7 @@ public class AeaServiceLegalClauseAdminController {
     public ResultForm batchDeleteLegalClause(String[] ids) {
 
         try {
-            logger.debug("删除设立依据，对象id为：{}", ids);
+            logger.debug("删除设立依据，对象id为：{}", (Object) ids);
             if (ids != null && ids.length > 0) {
                 aeaItemServiceBasicAdminService.batchDeleteServiceBasic(ids);
             }

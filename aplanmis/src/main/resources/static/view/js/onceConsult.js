@@ -88,7 +88,7 @@ var vm = new Vue({
 		},
 		//办理
 		viewDetail: function (row) {
-			var url = ctx + 'apanmis/page/stageApproveIndex?taskId=' + row.taskId + '&viewId=' + row.viewId + '&itemNature=' + row.itemNature + '&busType=yczx';
+			var url = ctx + 'apanmis/page/stageApproveIndex?taskId=' + row.taskId + '&viewId=' + row.viewId + '&itemNature=' + row.itemNature + '&busType=yczx&isNotCompareAssignee=true';
 			if (row.busRecordId) {
 				url = url + '&busRecordId=' + row.busRecordId;
 			}
@@ -120,7 +120,11 @@ var vm = new Vue({
 			}, function (result) {
 				ts.loading = false;
 				if (result.success) {
-					ts.fetchTableData();
+					//ts.fetchTableData();
+					window.setTimeout(function () {
+						window.open(ctx + 'apanmis/page/stageApproveIndex?taskId=' + taskId + '&viewId=' + viewId + '&busRecordId=' + busRecordId + '&itemNature=' + row.itemNature + '&busType=yczx&isNotCompareAssignee=true', '_blank');
+						window.location.reload();
+					}, 500);
 				} else {
 					ts.$message.error(result.message);
 				}
