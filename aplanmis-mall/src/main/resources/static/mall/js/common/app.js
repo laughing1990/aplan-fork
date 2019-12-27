@@ -85,6 +85,14 @@
                     thUrl:'rest/guide/tolistmatterPage',
                     hash:'/listmatter',
                 },
+                {
+                    label: '并联申报',
+                    id: 'parallelDeclare',
+                    activeName:4,
+                    url: './apply/index.html',
+                    thUrl:'rest/user/toParallelDeclarePage',
+                    hash:'/myParallelPage',
+                },
             ],
             curentLoginInfo:{},
             isShowCompatibleTips: true // 是否显示浏览器兼容模块提示

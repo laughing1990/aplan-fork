@@ -5,6 +5,7 @@ import com.augurit.agcloud.framework.util.DateUtils;
 import com.augurit.aplanmis.common.constants.AeaItemBasicContants;
 import com.augurit.aplanmis.common.constants.AeaParStageConstants;
 import com.augurit.aplanmis.common.constants.AeaProjStageConstants;
+import com.augurit.aplanmis.common.constants.StandardStageCode;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
@@ -261,5 +262,39 @@ public class AeaProjStageServiceImpl implements AeaProjStageService {
             return aeaLogApplyStateHist.getTriggerTime();
         }
         return null;
+    }
+
+    @Override
+    public List<AeaProjStage> findProjStageByTimeRange(Date startTime, Date endTime) {
+        return aeaProjStageMapper.findProjStageByTimeRange(startTime, endTime);
+    }
+
+    @Override
+    public Date getPassTimeByProjInfoId(String projInfoId) {
+        AeaProjStage condi = new AeaProjStage();
+        condi.setProjInfoId(projInfoId);
+        condi.setStageState(AeaProjStageConstants.STAGE_STATE_COMPLETED);
+        //查询已经办结的阶段
+        List<AeaProjStage> list = aeaProjStageMapper.listAeaProjStage(condi);
+        if(list==null ||list.size()==0){
+            return null;
+        }
+        //阶段标准序号按‘,’分割后去重
+        Set<String> standardSortNoSet = new HashSet<>();
+        list.stream().forEach(aeaProjStage->{
+            String standardSortNo = aeaProjStage.getStandardSortNo();
+            String[] split = standardSortNo.trim().split(",");
+            for(String sortNo:split){
+                standardSortNoSet.add(sortNo);
+            }
+        });
+        //判断是否保护了所有阶段1，2，3，4
+        for (StandardStageCode standardStageCode : StandardStageCode.values()) {
+            if(!standardSortNoSet.contains(standardStageCode.getValue())){
+                return null;
+            }
+        }
+        //返回最新阶段的办结时间作为项目的办结时间
+        return list.get(0).getPassTime();
     }
 }
