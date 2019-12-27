@@ -500,7 +500,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
             //联合评审只查询未完成状态
             condVo.setSolicitState(new String[]{"1"});
         } else {
-            condVo.setSolicitState(new String[]{"0", "1", "2", "3"});
+            condVo.setSolicitState(new String[]{"0", "1"});
         }
 
     }

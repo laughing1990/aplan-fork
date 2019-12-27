@@ -86,6 +86,27 @@
         ${alias}.COUNT_LIMIT,
         ${alias}.CONCLUSION_USER_NAME
     </sql>
+    <sql id="querySolicitStateCol">
+        <choose>
+            <when test="solicitState!=null and solicitState.length>0">
+                AND ahs.SOLICIT_STATE IN
+                <if test="_databaseId == 'oracle'">
+                    <foreach collection="solicitState" item="state" open="(" separator="union all" close=")">
+                        #{state}
+                    </foreach>
+                </if>
+                <if test="_databaseId == 'mysql'">
+                    <foreach collection="solicitState" item="state" separator="," open="(" close=")">
+                        #{state}
+                    </foreach>
+                </if>
+
+            </when>
+            <otherwise>
+                AND ahs.SOLICIT_STATE IN ( '0', '1','2','3' )
+            </otherwise>
+        </choose>
+    </sql>
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaHiSolicitById" resultType="AeaHiSolicit">
         select
@@ -422,7 +443,8 @@
         LEFT JOIN ACT_STO_TIMERULE_INST asti ON asti.TIMERULE_ID = ast.TIMERULE_ID and
         asti.TASKINST_ID=ahs.HI_TASKINST_ID
         AND ahs.PROCINST_ID = asti.PROC_INST_ID
-        WHERE ahs.BUS_TYPE = #{busType} AND ahs.SOLICIT_STATE IN ( '0', '1' )
+        WHERE ahs.BUS_TYPE = #{busType}
+        <include refid="querySolicitStateCol"></include>
         AND ahsdu.USER_ID=#{userId} AND ahs.ROOT_ORG_ID = #{rootOrgId}
         UNION
         SELECT
@@ -451,7 +473,8 @@
         LEFT JOIN ACT_STO_TIMERULE_INST asti ON asti.TIMERULE_ID = ast.TIMERULE_ID and
         asti.TASKINST_ID=ahs.HI_TASKINST_ID
         AND ahs.PROCINST_ID = asti.PROC_INST_ID
-        WHERE ahs.BUS_TYPE = #{busType} AND ahs.SOLICIT_STATE IN ( '0', '1' )
+        WHERE ahs.BUS_TYPE = #{busType}
+        <include refid="querySolicitStateCol"></include>
         AND ahs.INITIATOR_USER_ID = #{userId} AND ahs.ROOT_ORG_ID = #{rootOrgId}
         ) ahs
         left JOIN (

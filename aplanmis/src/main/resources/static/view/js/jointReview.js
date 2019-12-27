@@ -115,7 +115,11 @@ var vm = new Vue({
 			}, function (result) {
 				ts.loading = false;
 				if (result.success) {
-					this.fetchTableData();
+					// this.fetchTableData();
+					window.setTimeout(function () {
+						window.open(ctx + 'apanmis/page/stageApproveIndex?taskId=' + taskId + '&viewId=' + viewId + '&busRecordId=' + busRecordId + '&itemNature=' + row.itemNature + '&busType=lhps&isNotCompareAssignee=true', '_blank');
+						window.location.reload();
+					}, 500);
 				} else {
 					ts.$message.error(result.message);
 				}
