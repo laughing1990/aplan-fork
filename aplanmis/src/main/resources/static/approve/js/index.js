@@ -3087,7 +3087,14 @@ var vm = new Vue({
         isHidden: '0',
         elementRender: '<button class="btn btn-outline-info" onclick="showDiagramDialog()">查看流程图</button>'
       }];
-      var matBtn = [{
+      var approverBtn = [{
+        elementName: "意见征求",
+        elementCode: "wfBusSave",
+        columnType: "button",
+        isReadonly: '0',
+        isHidden: '0',
+        elementRender: '<button class="btn btn-outline-info" onclick="clickStartSolicit()">意见征求</button>'
+      }, {
         elementName: "材料补正",
         elementCode: "wfBusSave",
         columnType: "button",
@@ -3095,7 +3102,7 @@ var vm = new Vue({
         isHidden: '0',
         elementRender: '<button class="btn btn-outline-info" onclick="startSupplementForItem()">材料补正</button>'
       }];
-      var applyinstBtn = [{
+      var notApproverBtn = [{
         elementName: "撤件",
         elementCode: "wfBusSave",
         columnType: "button",
@@ -3119,9 +3126,9 @@ var vm = new Vue({
         elementRender: '<button class="btn btn-outline-info" onclick="getPrintList()">打印回执</button>'
       }];
       if (vm.isApprover == 1) {
-        defaultBtn = matBtn.concat(defaultBtn);
+        defaultBtn = approverBtn.concat(defaultBtn);
       } else {
-        defaultBtn = applyinstBtn.concat(defaultBtn);
+        defaultBtn = notApproverBtn.concat(defaultBtn);
       }
       if (vm.isDraftPage == 'true') {
         defaultBtn = draftBtn.concat(defaultBtn);
