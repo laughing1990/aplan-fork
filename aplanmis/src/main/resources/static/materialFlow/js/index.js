@@ -29,6 +29,7 @@ var app = new Vue({
   },
   created: function() {
     this.showData();
+    this.applyinstId = getUrlParam('masterEntityKey');
   },
   methods: {
     // 请求table数据
@@ -39,7 +40,7 @@ var app = new Vue({
         type: 'get',
         url: ctx + '/gd-tywl/queryOrderByApplyInstId.do',
         data: {
-          applyinstId: 'ee689ab6-5c8e-4bd3-9e0b-daca78c36a35'
+          applyinstId: this.applyinstId
         },
       }, function(res) {
         vm.tableData = res.content.data.rows;
@@ -128,4 +129,13 @@ var app = new Vue({
   watch: {
 
   }
-})
+});
+
+function getUrlParam(name) {
+  var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+  var r = window.location.search.substr(1).match(reg);
+  if (r != null) {
+    return unescape(r[2]);
+  }
+  return null;
+}
