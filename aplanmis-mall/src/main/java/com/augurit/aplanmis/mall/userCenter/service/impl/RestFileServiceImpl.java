@@ -86,6 +86,16 @@ public class RestFileServiceImpl implements RestFileService {
     }
 
     @Override
+    public List<BscAttFileAndDir> getAttFilesByPK(String tableName,String pkName,String recordId) throws Exception {
+        String[] recordIds = {recordId};
+        List<BscAttFileAndDir> bscAttFileAndDirs = new ArrayList<BscAttFileAndDir>();
+        if (recordIds.length > 0) {
+            bscAttFileAndDirs.addAll(bscAttDetailMapper.searchFileAndDirsSimple(null, SecurityContext.getCurrentOrgId(), tableName, pkName, recordIds));
+        }
+        return bscAttFileAndDirs;
+    }
+
+    @Override
     public ResultForm delelteAttachment(String[] detailIds, String matinstId) throws Exception {
         boolean flag = delelteFiles(detailIds, matinstId);
         AeaHiItemMatinst aeaHiItemMatinst = aeaHiItemMatinstService.getAeaHiItemMatinstById(matinstId);
