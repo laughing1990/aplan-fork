@@ -27,7 +27,7 @@ public enum ThemeCategory {
                 return s;
             }
         }
-        throw new IllegalArgumentException("参数不正确，请检查");
+        return OTHERS;
     }
 
 

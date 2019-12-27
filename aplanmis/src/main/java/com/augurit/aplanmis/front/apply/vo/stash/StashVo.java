@@ -1,16 +1,23 @@
 package com.augurit.aplanmis.front.apply.vo.stash;
 
 import com.augurit.agcloud.framework.constant.Status;
+import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
-import com.augurit.aplanmis.front.apply.vo.ParallelItemApplyinstVo;
+import com.augurit.aplanmis.common.utils.BusinessUtil;
 import com.augurit.aplanmis.front.apply.vo.ParallelItemStateVo;
+import com.augurit.aplanmis.front.apply.vo.PropulsionItemApplyinstVo;
 import com.augurit.aplanmis.front.apply.vo.PropulsionItemStateVo;
+import com.augurit.aplanmis.front.apply.vo.StageApplyDataVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @ApiModel("暂存vo")
 @Getter
@@ -68,23 +75,54 @@ public class StashVo {
         private String propulsionBranchOrgMap;
 
         @ApiModelProperty(value = "并行事项申报实例id")
-        private List<ParallelItemApplyinstVo> seriesApplyinstIds;
+        private List<PropulsionItemApplyinstVo> seriesApplyinstIds;
 
-        public SeriesStashVo toSeriesStashVo(String propulsionItemVerId, String[] propulsionStateIds, String propulsionBranchOrgMap, String seriesApplyinstId, String parallelApplyinstId) {
-            SeriesStashVo seriesStashVo = new SeriesStashVo();
-            seriesStashVo.setItemVerId(propulsionItemVerId);
-            seriesStashVo.setStateIds(propulsionStateIds);
-            seriesStashVo.setIsParallel(Status.ON);
-            seriesStashVo.setThemeVerId(this.themeVerId);
-            seriesStashVo.setStageId(this.stageId);
-            seriesStashVo.setProjInfoId(this.projInfoId);
-            seriesStashVo.setApplyinstId(seriesApplyinstId);
-            seriesStashVo.setApplySubject(this.applySubject);
-            seriesStashVo.setLinkmanInfoId(this.linkmanInfoId);
-            seriesStashVo.setBranchOrgMap(StringUtils.isNotBlank(propulsionBranchOrgMap) ? propulsionBranchOrgMap : null);
-            seriesStashVo.setMatinstsIds(this.matinstsIds);
-            seriesStashVo.setParallelApplyinstId(parallelApplyinstId);
-            return seriesStashVo;
+        public List<SeriesStashVo> toSeriesStashVos() {
+            List<SeriesStashVo> seriesStashVos = new ArrayList<>();
+            if (CollectionUtils.isNotEmpty(this.getPropulsionItemVerIds())) {
+                Map<String, String> itemApplyinstMap = new HashMap<>();
+                if (CollectionUtils.isNotEmpty(this.seriesApplyinstIds)) {
+                    itemApplyinstMap = seriesApplyinstIds.stream().collect(Collectors.toMap(PropulsionItemApplyinstVo::getItemVerId, PropulsionItemApplyinstVo::getSeriesApplyinstId));
+                }
+                Map<String, List<String>> itemStateMap = new HashMap<>();
+                if (CollectionUtils.isNotEmpty(this.propulsionItemStateIds)) {
+                    itemStateMap = propulsionItemStateIds.stream().collect(Collectors.toMap(PropulsionItemStateVo::getItemVerId, PropulsionItemStateVo::getStateIds));
+                }
+                for (String propulsionItemVerId : this.propulsionItemVerIds) {
+                    String[] propulsionStateIds = itemStateMap.get(propulsionItemVerId) == null ? null : itemStateMap.get(propulsionItemVerId).toArray(new String[0]);
+                    String propulsionBranchOrgMap = BusinessUtil.getOrgIdFromBranchOrgMap(this.propulsionBranchOrgMap, propulsionItemVerId);
+                    if (StringUtils.isNotBlank(propulsionBranchOrgMap)) {
+                        propulsionBranchOrgMap = "[{\"itemVerId\":\"" + propulsionItemVerId + "\", \"branchOrg\": \"" + propulsionBranchOrgMap + "\"}]";
+                    }
+                    String seriesApplyinstId = itemApplyinstMap.get(propulsionItemVerId);
+
+                    SeriesStashVo seriesStashVo = new SeriesStashVo();
+                    seriesStashVo.setItemVerId(propulsionItemVerId);
+                    seriesStashVo.setStateIds(propulsionStateIds);
+                    seriesStashVo.setIsParallel(Status.ON);
+                    seriesStashVo.setThemeVerId(this.themeVerId);
+                    seriesStashVo.setStageId(this.stageId);
+                    seriesStashVo.setProjInfoId(this.projInfoId);
+                    seriesStashVo.setApplyinstId(seriesApplyinstId);
+                    seriesStashVo.setApplySubject(this.applySubject);
+                    seriesStashVo.setLinkmanInfoId(this.linkmanInfoId);
+                    seriesStashVo.setBranchOrgMap(StringUtils.isNotBlank(propulsionBranchOrgMap) ? propulsionBranchOrgMap : null);
+                    seriesStashVo.setMatinstsIds(this.matinstsIds);
+                    seriesStashVo.setParallelApplyinstId(this.applyinstId);
+                    seriesStashVos.add(seriesStashVo);
+                }
+            }
+            return seriesStashVos;
+        }
+
+        public StageApplyDataVo toStageApplyDataVo() {
+            StageApplyDataVo stageApplyDataVo = new StageApplyDataVo();
+            stageApplyDataVo.setApplySource(this.applySubject);
+            stageApplyDataVo.setLinkmanInfoId(this.linkmanInfoId);
+            stageApplyDataVo.setBranchOrgMap(this.branchOrgMap);
+            stageApplyDataVo.setStageId(this.stageId);
+            stageApplyDataVo.setThemeVerId(this.themeVerId);
+            return stageApplyDataVo;
         }
     }
 

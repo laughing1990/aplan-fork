@@ -41,4 +41,7 @@ public class ApplyInfo extends BaseInfo implements Serializable {
     @ApiModelProperty(value = "创建人")
     private String creater;
 
+    @ApiModelProperty(value = "阶段对应的主辅线信息")
+    private String themeCategory;
+
 }
