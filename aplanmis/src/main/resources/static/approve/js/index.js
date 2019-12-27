@@ -2629,7 +2629,7 @@ var vm = new Vue({
       vm.taskId = vm.getUrlParam('taskId');
       vm.isDraftPage = vm.getUrlParam('draft');
       vm.isZJItem = (vm.getUrlParam('itemNature') == '8');
-      vm.isYjzq = (vm.getUrlParam('solicitType') == 'yjzq');
+      vm.isYjzq = (vm.getUrlParam('busType') == 'yjzq');
       // vm.isZJItem = true;
       // vm.isDraftPage = 'true';
       vm.getIteminstIdByTaskId(callback);
@@ -2812,6 +2812,13 @@ var vm = new Vue({
     //根据初始化参数，获取页面元素权限信息
     initFormElementPriv: function () {
       var vm = this;
+      if (this.isYjzq) {
+        this.isShowMatiPanel = true;
+        this.initButtons();
+        this.initForms();
+        this.getAttachment();
+        return null;
+      }
       if (vm.checkNotNull(vm.currTaskDefId) && vm.currProcDefVersion > 0) {
         var params = {
           version: vm.currProcDefVersion,
