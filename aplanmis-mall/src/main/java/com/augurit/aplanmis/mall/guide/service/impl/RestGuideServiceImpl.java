@@ -25,6 +25,8 @@ import com.augurit.aplanmis.common.service.window.AeaServiceWindowItemService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowStageService;
 import com.augurit.aplanmis.mall.guide.service.RestGuideService;
 import com.augurit.aplanmis.mall.guide.vo.*;
+import com.augurit.aplanmis.mall.main.service.RestMainService;
+import com.augurit.aplanmis.mall.main.vo.ThemeTypeVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,9 +40,8 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.OutputStream;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -89,6 +90,8 @@ public class RestGuideServiceImpl implements RestGuideService {
     private AeaItemBasicMapper aeaItemBasicMapper;
     @Autowired
     private AeaParThemeService aeaParThemeService;
+    @Autowired
+    private RestMainService restMainService;
     @Value("${dg.sso.access.platform.org.top-org-id:0368948a-1cdf-4bf8-a828-71d796ba89f6}")
     private String topOrgId;
     @Override
@@ -399,6 +402,7 @@ public class RestGuideServiceImpl implements RestGuideService {
                 List<AeaItemBasic> parallelItems = aeaItemBasicService.getAeaItemBasicListByStageId(stageVos.get(i).getStageId(),"0","", SecurityContext.getCurrentOrgId());
                 RestItemListVo restItemListVo = setSssxInfo(searchItem, parallelItems);
                 restItemListVo.setTitle("第"+NumToChinese.getChiness(i+1)+"阶段并联事项");
+                restItemListVo.setIndex(i+1);
                 paraItemListVos.add(restItemListVo);
             }
 
@@ -408,12 +412,83 @@ public class RestGuideServiceImpl implements RestGuideService {
                 List<AeaItemBasic> seriItems = aeaItemBasicService.getAeaItemBasicListByStageId(stageVos.get(i).getStageId(),"1","", SecurityContext.getCurrentOrgId());
                 RestItemListVo restItemListVo = setSssxInfo(searchItem, seriItems);
                 restItemListVo.setTitle("第"+NumToChinese.getChiness(i+1)+"阶段并行事项");
+                restItemListVo.setIndex(i+1);
                 seriItemListVos.add(restItemListVo);
             }
 
             restStageAndItemVo.setParallelItems(paraItemListVos);
             restStageAndItemVo.setSeriItems(seriItemListVos);
             return restStageAndItemVo;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception(e);
+        }
+    }
+
+    @Override
+    public List<ThemeTypeVo> searchThemeAndStageAndItemByKeyword(String keyword) throws Exception {
+        try {
+
+            //1.从主题列表根据项目类型查找符合条件主题并标记
+            List<ThemeTypeVo> themeTypeVos = restMainService.getThemeTypeList(topOrgId);
+            themeTypeVos.stream().forEach(themeTypeVo -> {
+                themeTypeVo.getThemeList().stream().forEach(aeaParTheme -> {
+                    if (StringUtils.isNotBlank(aeaParTheme.getThemeName())&&aeaParTheme.getThemeName().contains(keyword))
+                        aeaParTheme.setIsSelected("1");
+                });
+            });
+
+            //2.从事项及结果物反推查询符合条件主题并标记
+            AeaItemBasic param = new AeaItemBasic();
+            param.setItemName(keyword);
+            List<AeaItemBasic> aeaItemBasics = aeaItemBasicService.getAeaItemBasicListByKeyword(keyword,"1");
+            Set<AeaParStage> stages = new HashSet<>();
+            if (aeaItemBasics.size()>0){
+                for (AeaItemBasic aeaItemBasic : aeaItemBasics) {
+                    stages.addAll(aeaParStageService.listAeaParStageByThemeIdOrThemeVerId(aeaItemBasic.getItemId(),aeaItemBasic.getBaseItemVerId(),topOrgId));
+                }
+            }
+            if (stages.size()>0){
+                themeTypeVos.stream().forEach(themeTypeVo -> {
+                    themeTypeVo.getThemeList().stream().forEach(aeaParTheme -> {
+                        stages.stream().forEach(stage->{
+                            if (aeaParTheme.getThemeVerId().equals(stage.getThemeVerId())){
+                                aeaParTheme.setIsSelected("1");
+                            }
+                        });
+                    });
+                });
+            }
+            return themeTypeVos;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception(e);
+        }
+    }
+
+    @Override
+    public RestStageAndItemVo searchStageAndItemByKeywordAndThemeId(String themeId, String keyword) throws Exception {
+        try {
+        //1.设置所有符合条件的事项及标记符合条件的阶段的index
+        RestStageAndItemVo vo = this.getStageAndItemByThemeId(themeId);
+        Set<Integer> indexs = new HashSet<>();
+        vo.getParallelItems().stream().forEach(parallelItem->{
+            parallelItem.getItems().stream().forEach(item->{
+                if (item.getItemName().contains(keyword)){
+                    item.setIsSelected("1");
+                    indexs.add(parallelItem.getIndex());
+                }
+            });
+        });
+        //2.循环步骤一符合条件的阶段index将阶段标记
+        for (int i = 0; i < vo.getStages().size(); i++) {
+            for (Integer j:indexs){
+                if (j==i+1){
+                    vo.getStages().get(i).setIsSelected("1");
+                }
+            }
+        }
+            return vo;
         } catch (Exception e) {
             e.printStackTrace();
             throw new Exception(e);
