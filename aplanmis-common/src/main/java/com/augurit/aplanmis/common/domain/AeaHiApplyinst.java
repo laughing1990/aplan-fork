@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 项目申报实例表-模型
@@ -112,6 +113,7 @@ public class AeaHiApplyinst implements Serializable, FlowObject {
 
     private String appinstId;// 流程模板实例
     private String appId;// 流程模板
+    private Set<String> iteminstIds;// 并联申报事项实例id
 
     private Map<String, Boolean> stateinsts;//所有情形map集合，格式为，存在的情形id:true
     @Override

@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 项目申报实例表-Mapper数据与持久化接口类
@@ -131,4 +132,6 @@ public interface AeaHiApplyinstMapper {
      * @return
      */
     List<AeaHiApplyinst> getSeriesAeaHiApplyinstListByParentApplyinstId(@Param("applyinstId") String applyinstId,@Param("isTemporarySubmit")String isTemporarySubmit);
+
+    List<AeaHiApplyinst> listSeriesAeaHiIteminstByApplyinstIds(@Param("seriesApplyinstIds") Set<String> seriesApplyinstIds);
 }
