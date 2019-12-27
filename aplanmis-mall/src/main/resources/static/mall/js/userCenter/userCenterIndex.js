@@ -47,11 +47,12 @@ var userCenter = (function () {
                     //   value: 'declare',
                     //   select: true,
                     // }, 
-                    {
-                      name: '新增项目',
-                      value: 'AddProj',
-                      select: false,
-                    }, {
+                    // {
+                    //   name: '新增项目',
+                    //   value: 'AddProj',
+                    //   select: false,
+                    // },
+                     {
                       name: '项目进度',
                       value: 'scheduleInquire',
                       select: false,

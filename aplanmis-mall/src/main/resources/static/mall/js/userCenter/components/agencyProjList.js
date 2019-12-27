@@ -73,6 +73,6 @@ var pager = new Vue({
     },
   },
   created: function () {
-    this.fetchMyProjList();
+    this.fetchAgencyProjList();
   },
 })

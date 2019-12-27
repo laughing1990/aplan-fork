@@ -7,7 +7,7 @@ var pager = new Vue({
     // 页面列表查询参数
     checkData: {
       pageNum: 1,
-      pageSize: 8,
+      pageSize: 9,
       keyword: ''
     },
     // 页面列表数据
