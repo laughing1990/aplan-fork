@@ -102,7 +102,13 @@ var vm = new Vue({
           var id = 'menu_'+new Date().getTime();
           if (row.applyType == '并联') {
             menuName = row.projName;
-            menuInnerUrl = ctx + '/apanmis/page/stageApplyIndex?applyinstId='+row.applyinstId;
+              var themeCategory;
+              if (!!row.themeCategory) {
+                  themeCategory = row.themeCategory.toUpperCase();
+              } else {
+                  themeCategory = 'OTHERS';
+              }
+              menuInnerUrl = ctx + '/apanmis/page/stageApplyIndex?applyinstId=' + row.applyinstId + '&themeCategory=' + themeCategory;
           } else if(row.applyType == '单项'){
             menuName = row.itemName;
             menuInnerUrl = ctx + '/apanmis/page/singleApplyIndex/'+row.itemVerId+'?applyinstId='+row.applyinstId;
