@@ -15,7 +15,8 @@ public enum EtlError implements BaseEnum<EtlError, String> {
     PROJ_NOT_FOUND("011", "未上传项目"),
     ITEM_UNBIND_THEME("020", "单事项未绑定主题"),
     ITEM_NOT_FOUND("021", "未上传事项"),
-    ITEMINST_NOT_FOUND("030", "未上传事项实例");
+    ITEMINST_NOT_FOUND("030", "未上传事项实例"),
+    PASS_TIME_UPLOAD_ERROR("PASS_TIME_UPLOAD_ERROR", "上传项目完全办结时间错误");
 
     private String name;
     private String value;

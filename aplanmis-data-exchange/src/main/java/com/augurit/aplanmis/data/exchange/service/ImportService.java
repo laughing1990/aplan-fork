@@ -2,6 +2,10 @@ package com.augurit.aplanmis.data.exchange.service;
 
 import com.augurit.agcloud.framework.util.ReflectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.common.domain.AeaProjStage;
+import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
+import com.augurit.aplanmis.common.service.project.AeaProjStageService;
 import com.augurit.aplanmis.data.exchange.constant.EtlConstant;
 import com.augurit.aplanmis.data.exchange.constant.StorageCacheKeyConstants;
 import com.augurit.aplanmis.data.exchange.constant.TableNameConstant;
@@ -146,6 +150,12 @@ public class ImportService {
     @Autowired
     EtlJobDetailLogService etlJobDetailLogService;
 
+    @Autowired
+    private AeaProjInfoService aeaProjInfoService;
+
+    @Autowired
+    private AeaProjStageService aeaProjStageService;
+
     private static String OPERATE_SOURCE = EtlConstant.PROGRAM_OPERATE;
 
     /**
@@ -162,6 +172,7 @@ public class ImportService {
         updateJob.setRunStatus("1");
         etlJobService.updateEtlJob(updateJob);
         this.importAllTableAndLog(startTime, endTime, OPERATE_SOURCE);
+        this.uploadProjEndTime(startTime, endTime);
         Date nextTime = new Date();
         updateJob.setStartTime(endTime);
         updateJob.setEndTime(nextTime);
@@ -171,6 +182,41 @@ public class ImportService {
         //线程池线程中线程会重用，需要手动清理线程变量
         ThreadEtlJobLog.clear();
         return writtenNum;
+    }
+
+    /**
+     * 上传项目完全办结时间
+     */
+    public void uploadProjEndTime(Date startTime, Date endTime) {
+        try {
+            //查询办结阶段
+            List<AeaProjStage> aeaProjStageList = aeaProjStageService.findProjStageByTimeRange(startTime, endTime);
+            aeaProjStageList.stream().map(AeaProjStage::getProjInfoId).distinct().forEach(projInfoId->{
+                SpglXmjbxxb spglXmjbxxb = null;
+                try {
+                    Date passTime = aeaProjStageService.getPassTimeByProjInfoId(projInfoId);
+                    if(passTime!=null){
+                        AeaProjInfo proj = aeaProjInfoService.getAeaProjInfoByProjInfoId(projInfoId);
+                        String gcdm = proj.getGcbm().replace("#", "-");
+                        spglXmjbxxb = (SpglXmjbxxb) redisUtil.hget(StorageCacheKeyConstants.PROJ_CACHE_KEY, gcdm);
+                        if (spglXmjbxxb != null) {
+                            spglXmjbxxb.setSjsczt(0L);
+                            spglXmjbxxb.setXmsfwqbj(1L);
+                            spglXmjbxxb.setXmwqbjsj(passTime);
+                            spglXmjbxxbService.insert(spglXmjbxxb);
+                        }
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                    ProjPassTimeUploadException projPassTimeUploadException = new ProjPassTimeUploadException(spglXmjbxxb.getGcdm(),e);
+                    etlErrorLogService.insertEtlErrorLogWithException(spglXmjbxxb,projPassTimeUploadException,ThreadEtlJobLog.getJobLogId());
+                    log.error("上传项目完全办结时间出错");
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+            log.error("上传项目完全办结时间出错");
+        }
     }
 
     public void importAllTableAndLog(Date startTime, Date endTime, String operateSource) {
