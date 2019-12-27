@@ -3,6 +3,7 @@ package com.augurit.aplanmis.mall.guide.service;
 
 import com.augurit.aplanmis.mall.guide.vo.RestGuideVo;
 import com.augurit.aplanmis.mall.guide.vo.RestSingleGuideVo;
+import com.augurit.aplanmis.mall.guide.vo.RestStageAndItemVo;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -32,5 +33,10 @@ public interface RestGuideService {
      */
     ModelAndView preview(String detailId, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) throws Exception;
 
-
+    /**
+     * 办事指南-根据主题id查询阶段及事项列表
+     * @param themeId
+     * @throws Exception
+     */
+    RestStageAndItemVo getStageAndItemByThemeId(String themeId)throws Exception;
     }
