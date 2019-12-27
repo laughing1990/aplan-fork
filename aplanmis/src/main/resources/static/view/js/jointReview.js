@@ -83,7 +83,7 @@ var vm = new Vue({
 		},
 		//办理
 		viewDetail: function (row) {
-			var url = ctx + 'apanmis/page/stageApproveIndex?taskId=' + row.taskId + '&viewId=' + row.viewId + '&itemNature=' + row.itemNature + '&busType=lhps';
+			var url = ctx + 'apanmis/page/stageApproveIndex?taskId=' + row.taskId + '&viewId=' + row.viewId + '&itemNature=' + row.itemNature + '&busType=lhps&isNotCompareAssignee=true';
 			if (row.busRecordId) {
 				url = url + '&busRecordId=' + row.busRecordId;
 			}

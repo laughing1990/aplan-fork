@@ -185,6 +185,7 @@
             <if test="createTime != null">
                 AND CREATE_TIME = #{createTime}
             </if>
+            order by create_time desc
         </where>
     </select>
     <!--4 根据条件查询实体list,返回分页对象 -->
@@ -330,4 +331,16 @@
             AND ITEMINST_STATE IN ('11','12')
     </select>
 
+    <select id="findProjStageByTimeRange" resultType="AeaProjStage">
+        SELECT
+        <include refid="allColumns"/>
+        FROM AEA_PROJ_STAGE
+        WHERE STAGE_STATE = '2'
+        <if test="startTime != null">
+            AND CREATE_TIME &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+            AND CREATE_TIME &lt; #{endTime}
+        </if>
+    </select>
 </mapper>

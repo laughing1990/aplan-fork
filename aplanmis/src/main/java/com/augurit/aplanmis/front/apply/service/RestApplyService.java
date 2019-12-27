@@ -18,6 +18,7 @@ import com.augurit.aplanmis.common.constants.ItemStatus;
 import com.augurit.aplanmis.common.domain.AeaApplyinstProj;
 import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import com.augurit.aplanmis.common.domain.AeaHiReceive;
+import com.augurit.aplanmis.common.domain.AeaHiSmsInfo;
 import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
 import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
@@ -46,6 +47,7 @@ import com.augurit.aplanmis.front.apply.vo.SeriesApplyDataVo;
 import com.augurit.aplanmis.front.apply.vo.receipt.SaveReceiptsVo;
 import com.augurit.aplanmis.front.apply.vo.stash.UnStashVo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.BeanUtils;
 import org.flowable.engine.TaskService;
 import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +55,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -192,8 +195,43 @@ public class RestApplyService {
                 aeaHiReceiveMapper.deleteAeaHiReceives(aeaHiReceives.stream().map(AeaHiReceive::getReceiveId).collect(Collectors.toList()));
             }
         }
+
+        // 检查收件人
+        updateAeaSmsInfo(saveReceiptsVo.getSmsInfoId(), saveReceiptsVo.getCurrentApplyinstIds());
+
         //保存受理回执，物料回执
         receiveService.saveReceive(saveReceiptsVo.getCurrentApplyinstIds().toArray(new String[0]), saveReceiptsVo.getReceiptTypes(), SecurityContext.getCurrentUserName(), saveReceiptsVo.getComments());
+    }
+
+    /**
+     * 目前一个申报实例对应一个领件人
+     *
+     * @param smsInfoId    领件人id
+     * @param applyinstIds 申报实例id
+     */
+    private void updateAeaSmsInfo(String smsInfoId, Set<String> applyinstIds) throws Exception {
+        if (CollectionUtils.isNotEmpty(applyinstIds)) {
+            AeaHiSmsInfo aeaHiSmsInfo = aeaHiSmsInfoMapper.getAeaHiSmsInfoById(smsInfoId);
+            for (String applyinstId : applyinstIds) {
+                // 先判断是否存在申请号或者申请实例ID与传过来的不一致：因为数据库applyisnt_id不能为空，默认第一次是item_code
+                if (StringUtils.isBlank(aeaHiSmsInfo.getApplyinstId())) {
+                    aeaHiSmsInfo.setApplyinstId(applyinstId);
+                    aeaHiSmsInfoMapper.updateAeaHiSmsInfo(aeaHiSmsInfo);
+                    continue;
+                }
+                if (applyinstId.equals(aeaHiSmsInfo.getApplyinstId())) {
+                    continue;
+                }
+                AeaHiSmsInfo newOne = new AeaHiSmsInfo();
+                BeanUtils.copyProperties(newOne, aeaHiSmsInfo);
+                newOne.setId(UuidUtil.generateUuid());
+                newOne.setApplyinstId(applyinstId);
+                newOne.setCreater(SecurityContext.getCurrentUserId());
+                newOne.setCreateTime(new Date());
+                newOne.setRootOrgId(SecurityContext.getCurrentOrgId());
+                aeaHiSmsInfoMapper.insertAeaHiSmsInfo(newOne);
+            }
+        }
     }
 
     protected void saveApplySubject(AeaHiApplyinst aeaHiApplyinst, ApplyDataVo applyDataVo) {

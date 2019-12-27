@@ -1,6 +1,9 @@
 package com.augurit.aplanmis.common.service.project;
 
+import com.augurit.aplanmis.common.domain.AeaProjStage;
+
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -60,4 +63,15 @@ public interface AeaProjStageService {
      * @return
      */
     Date getProjFirstApplyStageTime(String projInfoId, String stageId);
+
+    /**
+     * 通过开始时间和结束时间查询时间段内办结的项目阶段信息
+     *
+     * @param startTime 大于等于开始时间
+     * @param endTime   小于结束时间
+     * @return
+     */
+    List<AeaProjStage> findProjStageByTimeRange(Date startTime, Date endTime);
+
+    Date getPassTimeByProjInfoId(String projInfoId);
 }
