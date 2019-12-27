@@ -625,6 +625,7 @@ var vm = new Vue({
         solicitDueDays: 1,
         solicitTimeruleId: '0',
         solicitTopic: '',
+        isCalcTimerule: '1',
       },
       solicitFormRules: {
         solicitTopic: [{required: true, message: '请填写征求主题', trigger: 'blur'}],
@@ -650,6 +651,7 @@ var vm = new Vue({
       uploadRecordId: '',
       curWidth: (document.documentElement.clientWidth || document.body.clientWidth),//当前屏幕宽度
       curHeight: (document.documentElement.clientHeight || document.body.clientHeight),//当前屏幕高度
+      allItemsData:[],
       // 意见征求  end
     }
   },
@@ -709,13 +711,32 @@ var vm = new Vue({
     // 意见征求 start-----------------------
     clickStartSolicit: function () {
       var vm = this;
-      vm.openSoDialog();
+      if (vm.allItemsData.length){
+        vm.openSoDialog();
+        return null;
+      }
+      vm.parentPageLoading = true;
+      request('', {
+        url: ctx + 'rest/solicit/apply/items',
+        type: 'get',
+        data: { applyinstId: vm.masterEntityKey },
+      }, function(res) {
+        vm.parentPageLoading = false;
+        if (res.success){
+          vm.allItemsData = res.content;
+          vm.openSoDialog();
+        } else {
+          vm.$message.error(res.message||'加载事项列表失败');
+        }
+      }, function(){
+        vm.parentPageLoading = false;
+        vm.$message.error('加载事项列表失败');
+      });
     },
     // 发起征求
     startSolicit: function () {
       var vm = this;
       var list1 = this.$refs.soParallelItems.selection || [];
-      var list2 = this.$refs.soCoreItems.selection || [];
       var itemList = [];
       var params = {
         applyinstId: vm.masterEntityKey,
@@ -723,20 +744,21 @@ var vm = new Vue({
         hiTaskinstId: vm.taskId,
         solicitTopic: vm.solicitForm.solicitTopic,
         solicitContent: vm.solicitForm.solicitContent,
-        solicitDueDays: vm.solicitForm.solicitDueDays,
         solicitType: vm.solicitForm.solicitType,
-        isCalcTimerule: 1,
+        isCalcTimerule: vm.solicitForm.isCalcTimerule,
         solicitTimeruleId: vm.solicitForm.solicitTimeruleId,
         busType: 'YJZQ',
       };
+      if (vm.solicitForm.isCalcTimerule==1){
+        parmas.solicitDueDays = vm.solicitForm.solicitDueDays;
+      }
       if (this.solicitForm.solicitType == 'i') {
-        // 校验勾选事项
-        if (!list1.length && !list2.length) {
+        // 按事项征求
+        if (!list1.length) {
           return this.$message.error('请至少勾选一个事项')
         }
-        var tmp = list1.concat(list2);
         var hasOrgId = true;
-        tmp.forEach(function (u) {
+        list1.forEach(function (u) {
           if (!(u.orgId && u.orgId.length)) {
             hasOrgId = false;
           }
@@ -752,7 +774,7 @@ var vm = new Vue({
           return vm.$message.error('请选择行政区划或者实施主体');
         }
       } else if (this.solicitForm.solicitType == 'd') {
-        // 校验勾选部门
+        // 按部门征求
         if (!vm.soCheckedOrgList.length) {
           return vm.$message.error('请至少勾选一个部门');
         }
@@ -776,6 +798,7 @@ var vm = new Vue({
             vm.solicitOpinionLoading = false;
             if (res.success) {
               vm.$message.success('意见征求发起成功');
+              delayRefreshWindow();
             } else {
               vm.$message.error(res.message || '意见征求发起失败');
             }
@@ -798,19 +821,9 @@ var vm = new Vue({
     // 打开征求弹窗
     openSoDialog: function () {
       this.getTimeRuleList();
-      var list1 = [{}];
-      var list2 = [];
-      if (!list1.length) {
-        return this.$message('稍等，正在加载事项数据');
-      }
-      list1.forEach(function (u) {
+      this.allItemsData.forEach(function (u) {
         vm.$set(u, 'opinion', '');
       });
-      list2.forEach(function (u) {
-        vm.$set(u, 'opinion', '');
-      });
-      this.soParallelItems = list1.concat([]);
-      this.soCoreItems = list2.concat([]);
       this.solicitOpinionVisible = true;
     },
     // 得到容缺时限规则数据

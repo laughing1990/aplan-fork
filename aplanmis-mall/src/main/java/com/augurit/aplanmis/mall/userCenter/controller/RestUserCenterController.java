@@ -116,6 +116,12 @@ public class RestUserCenterController {
         return new ModelAndView("mall/userCenter/components/addLocalProj");
     }
 
+    @GetMapping("/toAgencyProjListPage")
+    @ApiOperation(value = "跳转项目代办列表页")
+    public ModelAndView toAgencyProjListPage(){
+        return new ModelAndView("mall/userCenter/components/agencyProjList");
+    }
+
     @PostMapping("unitInfo/save")
     @ApiOperation("保存单位信息")
     public ResultForm save(AeaUnitInfo aeaUnitInfo, HttpServletRequest request){

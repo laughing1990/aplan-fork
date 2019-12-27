@@ -36,8 +36,18 @@ public interface AeaHiSolicitMapper {
     AeaHiSolicit getAeaHiSolicitBySolicitCode(@Param("solicitCode") String solicitCode) throws Exception;
 
     /**
-     * @param condVo
-     * @return
+     * 征询列表
+     *
+     * @param condVo 查询条件
+     * @return List<AeaHiSolicitVo>
      */
     List<AeaHiSolicitVo> listSolicit(QueryCondVo condVo) throws Exception;
+
+    /**
+     * 获取当前申报下所有的意见征询数量
+     *
+     * @param applyinstId 申报实例
+     * @return List<AeaHiSolicit>
+     */
+    List<AeaHiSolicit> getAeaHiSolicitByApplyinstId(String applyinstId) throws Exception;
 }

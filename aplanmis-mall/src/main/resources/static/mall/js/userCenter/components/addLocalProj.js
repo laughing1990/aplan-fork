@@ -59,7 +59,9 @@ var module1 = new Vue({
         // 单位信息中的联系人id
         linkmanInfoId: '',
         // 本地项目多个标识字段
-        projFlag: "l"
+        projFlag: "l",
+        // 控制生成项目代码(后端说写死的)
+        isNeedGeneCode: '1',
       },
       // 项目基本信息-校验规则，必填
       rules: {
@@ -389,8 +391,8 @@ var module1 = new Vue({
           if (!!ts.projInfoForm.projectAddress) {
             _saveData.projectAddress = ts.projInfoForm.projectAddress.join(',');
           }
-          console.log(_saveData)
-          return
+          // console.log(_saveData)
+          // return
           request('', {
             url: ctx + 'rest/user/saveProjectInfo',
             type: 'post',
@@ -465,6 +467,7 @@ var module1 = new Vue({
 
     // 返回我的项目列表
     returnList: function () {
+      pager.checkData.pageNum = 1;
       pager.isShowAddProjPandel = false;
       pager.fetchMyProjList();
     },

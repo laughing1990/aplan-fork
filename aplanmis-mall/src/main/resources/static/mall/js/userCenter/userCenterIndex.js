@@ -37,17 +37,22 @@ var userCenter = (function () {
                       name: '我的项目',
                       value: 'MyProjList',
                       select: false,
+                    },{
+                      name: '项目代办',
+                      value: 'AgencyProjList',
+                      select: false,
                     },
                     // {
                     //   name: '我的项目',
                     //   value: 'declare',
                     //   select: true,
                     // }, 
-                    {
-                      name: '新增项目',
-                      value: 'AddProj',
-                      select: false,
-                    }, {
+                    // {
+                    //   name: '新增项目',
+                    //   value: 'AddProj',
+                    //   select: false,
+                    // },
+                     {
                       name: '项目进度',
                       value: 'scheduleInquire',
                       select: false,

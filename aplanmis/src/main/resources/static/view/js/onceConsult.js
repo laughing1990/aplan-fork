@@ -23,8 +23,8 @@ var vm = new Vue({
 				arriveStartTime: '',
 				arriveEndTime: '',
 				keyword: '',
-				// busType: 'YCZX',
-				busType: 'YJZQ'
+				busType: 'YCZX',
+				// busType: 'YJZQ',//测试用
 			},
 
 			isShowMsgDetail: false,
@@ -32,7 +32,12 @@ var vm = new Vue({
 				remindContent: '',
 				sendUserName: '',
 				sendDate: ''
-			}
+			},
+
+			chnNumChar: ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九"],
+			chnUnitSection: ["", "万", "亿", "万亿", "亿亿"],
+			chnUnitChar: ["", "十", "百", "千"],
+
 
 		}
 	},
@@ -179,6 +184,7 @@ var vm = new Vue({
 		},
 		//按钮格式化
 		stateBtnFormat: function (row, column, cellValue, index) {
+			var _this = this;
 			if (['2', '3'].indexOf(row.solicitState) != -1) {// 已完成或终止
 				//判断是否发起人，只有发起人才能结束征询或重新发起
 				if (!row.countLimit || row.countLimit > 0) {//判断重新发起限制次数
@@ -191,8 +197,7 @@ var vm = new Vue({
 			} else if (row.solicitState == '1') {//进行中
 				if (row.finishProgressNum === row.allProgressNum) {//全部征询完
 					if (row.promoter) {
-
-						return '<span class="op-btn"  @click="viewDetail(scope.row)">结束一次征询</span>';
+						return '<span class="op-btn"  @click="viewDetail(scope.row)">结束' + _this.TransformToChinese(row.solicitIndex) + '次征询</span>';
 					} else {
 						return '<span class="op-btn"  @click="viewDetail(scope.row)">被征集人查看</span>';
 					}
@@ -200,11 +205,83 @@ var vm = new Vue({
 					if (row.promoter) {
 						return '<span class="op-btn" @click="viewDetail(scope.row)">发起人查看</span>';
 					} else {
-						return '<span class="op-btn" @click="viewDetail(scope.row)">回复一次征询</span>';
+						if (row.solicitIndex === 1) {
+							return '<span class="op-btn" @click="viewDetail(scope.row)">回复一次征询</span>';
+						} else {
+							return '<span class="op-btn" @click="viewDetail(scope.row)">' + _this.TransformToChinese(row.solicitIndex) + '次征询</span>';
+						}
 					}
 				}
 			}
-		}
+		},
+
+		numToChn: function (num) {
+			var _this = this;
+			var index = num.toString().indexOf(".");
+			if (index != -1) {
+				var str = num.toString().slice(index);
+				var a = "点";
+				for (var i = 1; i < str.length; i++) {
+					a += _this.chnNumChar[parseInt(str[i])];
+				}
+				return a;
+			} else {
+				return;
+			}
+		},
+
+//定义在每个小节的内部进行转化的方法，其他部分则与小节内部转化方法相同
+		sectionToChinese: function (section) {
+			var _this = this;
+			var str = '', chnstr = '', zero = false, count = 0;   //zero为是否进行补零， 第一次进行取余由于为个位数，默认不补零
+			while (section > 0) {
+				var v = section % 10;  //对数字取余10，得到的数即为个位数
+				if (v == 0) {                    //如果数字为零，则对字符串进行补零
+					if (zero) {
+						zero = false;        //如果遇到连续多次取余都是0，那么只需补一个零即可
+						chnstr = _this.chnNumChar[v] + chnstr;
+					}
+				} else {
+					zero = true;           //第一次取余之后，如果再次取余为零，则需要补零
+					str = _this.chnNumChar[v];
+					str += _this.chnUnitChar[count];
+					chnstr = str + chnstr;
+				}
+				count++;
+				section = Math.floor(section / 10);
+			}
+			return chnstr;
+		},
+
+
+//定义整个数字全部转换的方法，需要依次对数字进行10000为单位的取余，然后分成小节，按小节计算，当每个小节的数不足1000时，则需要进行补零
+
+		TransformToChinese: function (num) {
+			var _this = this;
+			//var a = _this.numToChn(num);
+			num = Math.floor(num);
+			var unitPos = 0;
+			var strIns = '', chnStr = '';
+			var needZero = false;
+
+			if (num === 0) {
+				return _this.chnNumChar[0];
+			}
+			while (num > 0) {
+				var section = num % 10000;
+				if (needZero) {
+					chnStr = _this.chnNumChar[0] + chnStr;
+				}
+				strIns = _this.sectionToChinese(section);
+				strIns += (section !== 0) ? _this.chnUnitSection[unitPos] : _this.chnUnitSection[0];
+				chnStr = strIns + chnStr;
+				needZero = (section < 1000) && (section > 0);
+				num = Math.floor(num / 10000);
+				unitPos++;
+			}
+
+			return chnStr;//+ a;
+		},
 
 	},
 	created: function () {

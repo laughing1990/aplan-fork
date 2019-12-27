@@ -24,6 +24,7 @@ var vm = new Vue({
 				arriveEndTime: '',
 				keyword: '',
 				busType: 'LHPS'
+				// busType: 'YJZQ',//测试用
 			},
 
 			isShowMsgDetail: false,
@@ -122,6 +123,7 @@ var vm = new Vue({
 				ts.$message.error("签收失败！");
 			});
 		},
+
 		setRemindMessageRead: function (row, remindReceiverId) {
 
 			var ts = this;
@@ -144,6 +146,7 @@ var vm = new Vue({
 				return ts.apiMessage('网络错误！', 'error')
 			});
 		},
+
 		showRemindInfo: function (row, remindInfo) {
 			this.setRemindMessageRead(row, remindInfo.remindReceiverId);
 			this.msgDetail.remindContent = remindInfo.remindContent;
@@ -151,6 +154,7 @@ var vm = new Vue({
 			this.msgDetail.sendDate = this.formatDatetimeCommon(remindInfo.sendDate, 'yyyy-MM-dd hh:mm');
 			this.isShowMsgDetail = true;
 		},
+
 		getFirstColumnWidth: function () {
 			if (this.tableData) {
 				for (var i = 0; i < this.tableData.length; i++) {
@@ -160,7 +164,23 @@ var vm = new Vue({
 				}
 			}
 			return '65';
-		}
+		},
+		//状态转换
+		formatState: function (row, column, cellValue, index) {
+			if (row.finishProgressNum == row.allProgressNum && row.promoter) {
+				return "结束联合评审"
+			} else {
+				return "联合评审"
+			}
+		},
+		//按钮转换
+		stateBtnFormat: function (row, column, cellValue, index) {
+			if (row.finishProgressNum == row.allProgressNum && row.promoter) {
+				return '<span class="op-btn" @click="viewDetail(scope.row)">结束联合评审</span>';
+			} else {
+				return '<span class="op-btn"  @click="viewDetail(scope.row)">联合评审</span>';
+			}
+		},
 
 	},
 	created: function () {

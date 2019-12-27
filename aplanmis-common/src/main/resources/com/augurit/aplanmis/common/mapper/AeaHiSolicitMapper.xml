@@ -41,6 +41,49 @@
     ${alias}.ROOT_ORG_ID  rootOrgId
     </sql>
 
+    <sql id="queryByTime">
+        <if test="_databaseId == 'oracle'">
+            <if test="acceptStartTime != null and acceptStartTime != '' ">
+                <![CDATA[ AND to_char(aha.ACCEPT_TIME , 'yyyy-mm-dd')>=  #{acceptStartTime}   ]]>
+            </if>
+            <if test="acceptEndTime != null and acceptEndTime != '' ">
+                <![CDATA[ AND to_char(aha.ACCEPT_TIME , 'yyyy-mm-dd')<=  #{acceptEndTime}   ]]>
+            </if>
+        </if>
+        <if test="_databaseId == 'mysql'">
+
+            <if test="acceptStartTime != null and acceptStartTime != '' ">
+                <![CDATA[ AND DATE_FORMAT(aha.ACCEPT_TIME , '%Y-%m-%d')>=  #{acceptStartTime}   ]]>
+            </if>
+            <if test="acceptEndTime != null and acceptEndTime != '' ">
+                <![CDATA[ AND DATE_FORMAT(aha.ACCEPT_TIME , '%Y-%m-%d')<=  #{acceptEndTime}   ]]>
+            </if>
+        </if>
+    </sql>
+
+    <!--查询意见征求，一次征询，部门征求等意见列表返回字段-->
+    <sql id="solicitAliasCol">
+        ${alias}.SOLICIT_ID,
+        ${alias}.SOLICIT_TYPE,
+        ${alias}.BUS_TYPE,
+        ${alias}.PROCINST_ID,
+        ${alias}.HI_TASKINST_ID,
+        ${alias}.SOLICIT_CODE,
+        ${alias}.SOLICIT_TOPIC,
+        ${alias}.APPLYINST_ID,
+        ${alias}.INITIATOR_ORG_ID,
+        ${alias}.INITIATOR_ORG_NAME,
+        ${alias}.INITIATOR_USER_ID,
+        ${alias}.INITIATOR_USER_NAME,
+        ${alias}.SOLICIT_DUE_DAYS,
+        ${alias}.SOLICIT_STATE,
+        ${alias}.CONCLUSION_FLAG,
+        ${alias}.CONCLUSION_DESC,
+        ${alias}.CONCLUSION_TIME,
+        ${alias}.CONCLUSION_USER_ID,
+        ${alias}.COUNT_LIMIT,
+        ${alias}.CONCLUSION_USER_NAME
+    </sql>
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaHiSolicitById" resultType="AeaHiSolicit">
         select
@@ -300,50 +343,6 @@
         where ahs.SOLICIT_CODE = #{solicitCode}
     </select>
 
-    <sql id="queryByTime">
-        <if test="_databaseId == 'oracle'">
-            <if test="acceptStartTime != null and acceptStartTime != '' ">
-                <![CDATA[ AND to_char(aha.ACCEPT_TIME , 'yyyy-mm-dd')>=  #{acceptStartTime}   ]]>
-            </if>
-            <if test="acceptEndTime != null and acceptEndTime != '' ">
-                <![CDATA[ AND to_char(aha.ACCEPT_TIME , 'yyyy-mm-dd')<=  #{acceptEndTime}   ]]>
-            </if>
-        </if>
-        <if test="_databaseId == 'mysql'">
-
-            <if test="acceptStartTime != null and acceptStartTime != '' ">
-                <![CDATA[ AND DATE_FORMAT(aha.ACCEPT_TIME , '%Y-%m-%d')>=  #{acceptStartTime}   ]]>
-            </if>
-            <if test="acceptEndTime != null and acceptEndTime != '' ">
-                <![CDATA[ AND DATE_FORMAT(aha.ACCEPT_TIME , '%Y-%m-%d')<=  #{acceptEndTime}   ]]>
-            </if>
-        </if>
-    </sql>
-
-    <sql id="solicitAliasCol">
-        ${alias}.SOLICIT_ID,
-        ${alias}.SOLICIT_TYPE,
-        ${alias}.BUS_TYPE,
-        ${alias}.PROCINST_ID,
-        ${alias}.HI_TASKINST_ID,
-        ${alias}.SOLICIT_CODE,
-        ${alias}.SOLICIT_TOPIC,
-        ${alias}.APPLYINST_ID,
-        ${alias}.INITIATOR_ORG_ID,
-        ${alias}.INITIATOR_ORG_NAME,
-        ${alias}.INITIATOR_USER_ID,
-        ${alias}.INITIATOR_USER_NAME,
-        ${alias}.SOLICIT_DUE_DAYS,
-        ${alias}.SOLICIT_STATE,
-        ${alias}.CONCLUSION_FLAG,
-        ${alias}.CONCLUSION_DESC,
-        ${alias}.CONCLUSION_TIME,
-        ${alias}.CONCLUSION_USER_ID,
-        ${alias}.COUNT_LIMIT,
-        ${alias}.CONCLUSION_USER_NAME
-    </sql>
-
-    <!--查询意见征求，一次征询，部门征求等意见列表-->
     <select id="listSolicit" resultType="com.augurit.aplanmis.common.vo.solicit.AeaHiSolicitVo">
 
         SELECT
@@ -419,7 +418,15 @@
         LEFT JOIN ACT_STO_TIMERULE_INST asti ON asti.TIMERULE_ID = ast.TIMERULE_ID and
         asti.TASKINST_ID=ahs.HI_TASKINST_ID
         AND ahs.PROCINST_ID = asti.PROC_INST_ID
-        WHERE ahs.BUS_TYPE = #{busType} AND ahs.SOLICIT_STATE IN ( '0', '1' ,'2','3' )
+        WHERE ahs.BUS_TYPE = #{busType}
+        <choose>
+            <when test="busType!=null and busType=='LHPS'">
+                AND ahs.SOLICIT_STATE ='1'
+            </when>
+            <otherwise>
+                AND ahs.SOLICIT_STATE IN ( '0', '1' ,'2','3' )
+            </otherwise>
+        </choose>
         AND ahsdu.USER_ID=#{userId}
         AND ahs.ROOT_ORG_ID = #{rootOrgId}
         UNION
@@ -449,7 +456,15 @@
         LEFT JOIN ACT_STO_TIMERULE_INST asti ON asti.TIMERULE_ID = ast.TIMERULE_ID and
         asti.TASKINST_ID=ahs.HI_TASKINST_ID
         AND ahs.PROCINST_ID = asti.PROC_INST_ID
-        WHERE ahs.BUS_TYPE = #{busType} AND ahs.SOLICIT_STATE IN ( '0', '1','2','3' )
+        WHERE ahs.BUS_TYPE = #{busType}
+        <choose>
+            <when test="busType!=null and busType=='LHPS'">
+                AND ahs.SOLICIT_STATE ='1'
+            </when>
+            <otherwise>
+                AND ahs.SOLICIT_STATE IN ( '0', '1' ,'2','3' )
+            </otherwise>
+        </choose>
         AND ahs.INITIATOR_USER_ID = #{userId}
         AND ahs.ROOT_ORG_ID = #{rootOrgId}
 
@@ -552,6 +567,14 @@
 
     </select>
 
+
+    <select id="getAeaHiSolicitByApplyinstId" resultType="AeaHiSolicit">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="ahs"/>
+        </include>
+        from aea_hi_solicit ahs where ahs.APPLYINST_ID=#{applyinstId} order by ahs.CREATE_TIME desc
+    </select>
     <!--8 删除实体对象列表,根据主键ID列表 -->
     <!--9 返回所有字段的对象map,用于级联 -->
     <resultMap type="AeaHiSolicit" id="AeaHiSolicitMap">

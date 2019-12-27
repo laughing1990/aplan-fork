@@ -952,7 +952,6 @@
                     </el-table-column>
                   </el-table>
                 </template>
-                <!-- qiantou bumen jieshu  -->
               </div>
             </div>
           </div>
@@ -2671,7 +2670,7 @@
              :width="curWidth>1220?'1200px':(curWidth-20)+'px'" top="20px">
     <div class="solicit-o-wrap" :style="{height: (curHeight-210)+'px',overflow: 'auto'}">
       <el-form :model="solicitForm" :rules="solicitFormRules" ref="solicitForm"
-               label-width="140px" size="small" class="so-form-c">
+               label-width="140px" size="medium" class="so-form-c">
         <el-row>
           <el-col :span="24">
             <el-form-item label="意见征求主题" prop="solicitTopic" required>
@@ -2689,14 +2688,14 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="意见征求类型">
-              <el-select v-model="solicitForm.solicitType" style="width:100%" @change="changeOsTab">
-                <el-option label="按事项征求" value="i"></el-option>
-                <el-option label="按部门征求" value="d"></el-option>
-              </el-select>
+            <el-form-item label="是否纳入计时">
+              <el-radio-group v-model="solicitForm.isCalcTimerule" @change="changeOsTab">
+                <el-radio label="1">计时</el-radio>
+                <el-radio label="0">不计时</el-radio>
+              </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col v-show="solicitForm.isCalcTimerule==1" :span="12">
             <el-form-item label="意见征求时限" prop="solicitDueDays" required>
               <el-input v-model="solicitForm.solicitDueDays" type="number">
                 <el-select v-model="solicitForm.solicitTimeruleId" slot="prepend" style="width:100px">
@@ -2704,6 +2703,16 @@
                              :value="item.timeruleId"></el-option>
                 </el-select>
               </el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row style="margin-bottom:5px;">
+          <el-col :span="12">
+            <el-form-item label="意见征求类型">
+              <el-radio-group v-model="solicitForm.solicitType" @change="changeOsTab">
+                <el-radio label="i">按事项征求</el-radio>
+                <el-radio label="d">按部门征求</el-radio>
+              </el-radio-group>
             </el-form-item>
           </el-col>
         </el-row>
@@ -2717,8 +2726,8 @@
           <i class="ag ag-warn-circle"></i>
           勾选要征求的事项，点击“开始征求”，即可发送意见征求。
         </div>
-        <div class="so-table-title">并联审批事项列表</div>
-        <el-table class="items-table" ref="soParallelItems" :data="soParallelItems" border
+        <div class="so-table-title">审批事项列表</div>
+        <el-table class="items-table" ref="soParallelItems" :data="allItemsData" border
                   row-key="itemBasicId" tooltip-effect="dark" :default-sort="{prop: 'sortNo', order: 'ascending'}"
                   style="width: 100%">
           <el-table-column type="selection" align="center"
@@ -2726,119 +2735,17 @@
           </el-table-column>
           <el-table-column label="事项名称" prop="sortNo" sortable>
             <template slot-scope="scope">
-              <span class="is-catalog" :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标准':'实施'}}</span>
-              <!--<span class="is-catalog is-green" v-show="scope.row.isGreenWay=='1'">绿道</span>-->
               {{scope.row.itemName}}
-              <span v-show="scope.row.isDone=='FINISHED'" class="isTag isDone">
-                        <!--<i class="ag ag-check-circle-fill"></i>-->
-                        已通过</span>
-              <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isTag isDone">
-                        <!--<i class="ag ag-edit-circle-fill"></i>-->
-                        已通过</span>
-              <span v-show="scope.row.isDone=='HANDLING'" class="isTag isDoing">
-                        <!--<i class="ag ag-edit-circle-fill"></i>-->
-                        办理中</span>
-              <span v-show="scope.row.isRecommend==1&&scope.row.isDone!='HANDLING'&&scope.row.isDone!='FINISHED'"
-                    class="isTag isRecommend">推荐办理</span>
-              <p class="not-region-data" v-if="scope.row.itemHaved">* 该实施事项已存在，请勿重复选择!</p>
-              <p class="not-region-data" v-if="scope.row.notRegionData">* 该事项无匹配的行政区划及实施主体</p>
             </template>
           </el-table-column>
           <el-table-column label="行政区划" width="100" prop="regionName">
             <template slot-scope="scope">
-              <div v-if="scope.row.isImplement==false">
-                <el-select v-model="scope.row.implementItemVerId"
-                           placeholder="请选择行政区划">
-                  <el-option v-for="(item,indexOp) in scope.row.carryOutItems" :label="item.regionName"
-                             :key="indexOp"
-                             @click.native="getItemOrgId(scope.row,scope.$index,item, 'core')||soSelectedOrg(scope.row,item)"
-                             :value="item.itemVerId"></el-option>
-                </el-select>
-              </div>
-              <div v-else>
-                <span>{{scope.row.regionName}}</span>
-              </div>
+              <span>{{scope.row.regionName}}</span>
             </template>
           </el-table-column>
           <el-table-column prop="orgName" label="实施主体" width="200">
             <template slot-scope="scope">
-              <div v-if="scope.row.isImplement==false">
-                <el-select v-model="scope.row.implementItemVerId"
-                           placeholder="请选择实施主体">
-                  <el-option v-for="(item,indexOp) in scope.row.carryOutItems" :label="item.orgName"
-                             :key="indexOp"
-                             @click.native="getItemOrgId(scope.row,scope.$index,item,'croe')||soSelectedOrg(scope.row,item)"
-                             :value="item.itemVerId"></el-option>
-                </el-select>
-              </div>
-              <div v-else>
-                <span>{{scope.row.orgName}}</span>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="opinion" label="征求意见" width="200">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.opinion" type="textarea" :rows="1" placeholder="请输入意见"></el-input>
-            </template>
-          </el-table-column>
-        </el-table>
-        <div class="so-table-title" style="margin-top:15px;">并行推进事项列表</div>
-        <el-table class="items-table" ref="soCoreItems" :data="soCoreItems" border tooltip-effect="dark"
-                  :default-sort="{prop: 'sortNo', order: 'ascending'}"
-                  row-key="itemBasicId" style="width: 100%">
-          <el-table-column type="selection" align="center" width="55">
-          </el-table-column>
-          <el-table-column label="事项名称" prop="sortNo" sortable>
-            <template slot-scope="scope">
-                      <span class="is-catalog"
-                            :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标准':'实施'}}</span>
-              <!--<span class="is-catalog is-green" v-show="scope.row.isGreenWay=='1'">绿道</span>-->
-              {{scope.row.itemName}}
-              <span v-show="scope.row.isDone=='FINISHED'" class="isTag isDone">
-                        <!--<i class="ag ag-check-circle-fill"></i>-->
-                        已通过</span>
-              <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isTag isDone">
-                        <!--<i class="ag ag-edit-circle-fill"></i>-->
-                        已通过</span>
-              <span v-show="scope.row.isDone=='HANDLING'" class="isTag isDoing">
-                        <!--<i class="ag ag-edit-circle-fill"></i>-->
-                        办理中</span>
-              <span v-show="scope.row.isRecommend==1&&scope.row.isDone!='HANDLING'&&scope.row.isDone!='FINISHED'"
-                    class="isTag isRecommend">推荐办理</span>
-              <p class="not-region-data" v-if="scope.row.itemHaved">* 该实施事项已存在，请勿重复选择!</p>
-              <p class="not-region-data" v-if="scope.row.notRegionData">* 该事项无匹配的行政区划及实施主体</p>
-            </template>
-          </el-table-column>
-          <el-table-column label="行政区划" width="100" prop="regionName">
-            <template slot-scope="scope">
-              <div v-if="scope.row.isImplement==false">
-                <el-select v-model="scope.row.implementItemVerId"
-                           placeholder="请选择行政区划">
-                  <el-option v-for="(item,indexOp) in scope.row.carryOutItems" :label="item.regionName"
-                             :key="indexOp"
-                             @click.native="getItemOrgId(scope.row,scope.$index,item, 'core')||soSelectedOrg(scope.row,item)"
-                             :value="item.itemVerId"></el-option>
-                </el-select>
-              </div>
-              <div v-else>
-                <span>{{scope.row.regionName}}</span>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="orgName" label="实施主体" width="200">
-            <template slot-scope="scope">
-              <div v-if="scope.row.isImplement==false">
-                <el-select v-model="scope.row.implementItemVerId"
-                           placeholder="请选择实施主体">
-                  <el-option v-for="(item,indexOp) in scope.row.carryOutItems" :label="item.orgName"
-                             :key="indexOp"
-                             @click.native="getItemOrgId(scope.row,scope.$index,item,'croe')||soSelectedOrg(scope.row,item)"
-                             :value="item.itemVerId"></el-option>
-                </el-select>
-              </div>
-              <div v-else>
-                <span>{{scope.row.orgName}}</span>
-              </div>
+              <span>{{scope.row.orgName}}</span>
             </template>
           </el-table-column>
           <el-table-column prop="opinion" label="征求意见" width="200">
