@@ -185,4 +185,12 @@ public interface AeaItemBasicService {
      * @throws Exception
      */
     List<AeaItemBasic> getAeaItemBasicListByOrgId(String orgId,String isCatalog) throws Exception;
+
+    /**
+     * 根据搜索关键字查询事项列表
+     * @param keyword(网厅办事指南使用，关键字为事项名称、结果物)
+     * @param isCatalog
+     * @return
+     */
+    List<AeaItemBasic> getAeaItemBasicListByKeyword(String keyword,String isCatalog)throws Exception;
 }

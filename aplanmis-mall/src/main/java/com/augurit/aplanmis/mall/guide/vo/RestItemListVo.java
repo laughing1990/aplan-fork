@@ -17,8 +17,10 @@ public class RestItemListVo {
     private List<RestitemVo> items;
     @ApiModelProperty("列表title，如:第一阶段并联事项")
     private String title;
-    @ApiModel("事项VO")
+    private int index;
 
+
+    @ApiModel("事项VO")
     @Data
     public static class RestitemVo{
 
@@ -28,6 +30,8 @@ public class RestItemListVo {
         private String itemName;
         @ApiModelProperty("事项版本ID")
         private String itemVerId;
+        @ApiModelProperty("是否被选中1:是,0:否")
+        private String isSelected = "0";
 
         public static RestitemVo build(AeaItemBasic aeaItemBasic){
             RestitemVo restitemVo = new RestitemVo();

@@ -1397,6 +1397,42 @@
         </if>
     </select>
 
+    <select id="getAeaItemBasicListByKeyword" resultType="AeaItemBasic">
+        SELECT
+        <include refid="aib_allColumns"/>
+        FROM
+        AEA_ITEM_BASIC aib
+        JOIN (
+        SELECT
+        item_ver_id,
+        ver_num,
+        ITEM_VER_STATUS
+        FROM
+        aea_item_ver ver
+        JOIN (
+        SELECT
+        ITEM_ID,
+        max(VER_NUM) maxNum
+        FROM
+        aea_item_ver
+        WHERE
+        IS_DELETED = '0'
+        GROUP BY
+        ITEM_ID
+        ) maxVer ON ver.item_id = maxVer.item_id
+        AND ver.VER_NUM = maxVer.maxNum
+        ) itemVer ON aib.ITEM_VER_ID = itemVer.ITEM_VER_ID
+        LEFT JOIN AEA_ITEM item ON item.item_id = aib.Item_Id
+        WHERE
+        aib.SXMLZT IN ('0', '1')
+        <if test="keyword!=null and keyword!=''">
+            AND aib.item_name like CONCAT('%',#{keyword},'%')
+        </if>
+        <if test="isCatalog!=null and isCatalog!=''">
+            AND aib.IS_CATALOG=#{isCatalog}
+        </if>
+    </select>
+
     <select id="getAeaItemBasicListByItemVerIds" resultType="AeaItemBasic">
         SELECT
         <include refid="aib_allColumns"/>,ooo.ORG_NAME orgName
