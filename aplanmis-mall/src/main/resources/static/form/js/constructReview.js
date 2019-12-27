@@ -549,10 +549,10 @@ var app = new Vue({
           _that.loading = true;
           var url, msg;
           if (_that.addEditManModalFlag == 'edit') {
-            url = 'rest/linkman/edit';
+            url = '/rest/form/drawing/editlinkman';
             msg = '编辑联系人信息保存成功';
           } else {
-            url = 'rest/linkman/save'
+            url = '/rest/form/drawing/savelinkman'
             msg = '新增联系人信息保存成功';
           }
           request('', {
@@ -614,7 +614,7 @@ var app = new Vue({
       var _that = this;
       if (data.linkmanInfoId) {
         request('', {
-          url: ctx + 'rest/linkman/one/' + data.linkmanInfoId,
+          url: ctx + '/rest/form/drawing/onelinkman' + data.linkmanInfoId,
           type: 'get'
         }, function(result) {
           if (result.success) {
@@ -723,7 +723,7 @@ var app = new Vue({
       if (typeof(queryString) != 'undefined') queryString = queryString.trim();
       if (queryString != '' && queryString.length >= 2) {
         request('', {
-          url: ctx + 'rest/unit/list',
+          url: ctx + '/rest/form/drawing/listUnit',
           type: 'get',
           data: { "keyword": queryString, "projInfoId": _that.projInfoId },
         }, function(result) {

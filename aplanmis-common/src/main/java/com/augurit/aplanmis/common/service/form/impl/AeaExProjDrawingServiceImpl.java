@@ -4,13 +4,17 @@ import com.augurit.agcloud.bpm.common.constant.EDataOpt;
 import com.augurit.agcloud.bpm.common.domain.ActStoForm;
 import com.augurit.agcloud.bpm.common.domain.ActStoForminst;
 import com.augurit.agcloud.bpm.common.domain.vo.FormDataOptResult;
+import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
-import com.augurit.aplanmis.common.domain.AeaApplyinstForminst;
-import com.augurit.aplanmis.common.domain.AeaExProjDrawing;
+import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.form.vo.LinkmanAddVo;
 import com.augurit.aplanmis.common.mapper.AeaExProjDrawingMapper;
+import com.augurit.aplanmis.common.mapper.AeaProjLinkmanMapper;
+import com.augurit.aplanmis.common.mapper.AeaUnitLinkmanMapper;
 import com.augurit.aplanmis.common.service.form.AeaExProjDrawingService;
+import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.front.basis.stage.service.RestStageService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
@@ -37,6 +41,13 @@ public class AeaExProjDrawingServiceImpl extends AbstractFormDataOptManager impl
     private AeaExProjDrawingMapper aeaExProjDrawingMapper;
     @Autowired
     private RestStageService restStageService;
+
+    @Autowired
+    private AeaLinkmanInfoService aeaLinkmanInfoService;
+    @Autowired
+    private AeaUnitLinkmanMapper aeaUnitLinkmanMapper;
+    @Autowired
+    private AeaProjLinkmanMapper aeaProjLinkmanMapper;
 
     public void saveAeaExProjDrawing(AeaExProjDrawing aeaExProjDrawing) throws Exception{
         aeaExProjDrawing.setCreater(SecurityContext.getCurrentUser().getUserName());
@@ -78,6 +89,53 @@ public class AeaExProjDrawingServiceImpl extends AbstractFormDataOptManager impl
         List<AeaExProjDrawing> list = aeaExProjDrawingMapper.listAeaExProjDrawing(aeaExProjDrawing);
         logger.debug("成功执行查询list！！");
         return list;
+    }
+
+
+    public String save(LinkmanAddVo linkmanAddVo) {
+        AeaLinkmanInfo aeaLinkmanInfo = linkmanAddVo.toAeaLinkmanInfo();
+        aeaLinkmanInfoService.insertAeaLinkmanInfo(aeaLinkmanInfo);
+        // 企业单位关联
+        if (StringUtils.isNotBlank(linkmanAddVo.getUnitInfoId())) {
+            insertAeaUnitLinkman(aeaLinkmanInfo.getLinkmanInfoId(), linkmanAddVo.getUnitInfoId());
+        }
+        // 项目关联
+        if (StringUtils.isNotBlank(linkmanAddVo.getProjInfoId())) {
+            insertAeaProjLinkman(aeaLinkmanInfo.getLinkmanInfoId(), linkmanAddVo.getProjInfoId());
+        }
+        return aeaLinkmanInfo.getLinkmanInfoId();
+    }
+
+    private void insertAeaProjLinkman(String linkmanInfoId, String projInfoId) {
+        aeaProjLinkmanMapper.insertAeaProjLinkman(buildAeaProjLinkman(linkmanInfoId, projInfoId));
+    }
+
+    private void insertAeaUnitLinkman(String linkmanInfoId, String unitInfoId) {
+        try {
+            aeaUnitLinkmanMapper.insertAeaUnitLinkman(buildAeaUnitLinkman(linkmanInfoId, unitInfoId));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Linkman associate unit failed, linkmanInfoId: " + linkmanInfoId + ", unitInfoId: " + unitInfoId, e);
+        }
+    }
+    private AeaUnitLinkman buildAeaUnitLinkman(String linkmanInfoId, String unitInfoId) {
+        AeaUnitLinkman aeaUnitLinkman = new AeaUnitLinkman();
+        aeaUnitLinkman.setUnitLinkmanId(UuidUtil.generateUuid());
+        aeaUnitLinkman.setUnitInfoId(unitInfoId);
+        aeaUnitLinkman.setLinkmanInfoId(linkmanInfoId);
+        aeaUnitLinkman.setCreater(SecurityContext.getCurrentUserId());
+        aeaUnitLinkman.setCreateTime(new Date());
+        return aeaUnitLinkman;
+    }
+    private AeaProjLinkman buildAeaProjLinkman(String linkmanInfoId, String projInfoId) {
+        AeaProjLinkman aeaProjLinkman = new AeaProjLinkman();
+        aeaProjLinkman.setProjLinkmanId(UuidUtil.generateUuid());
+        aeaProjLinkman.setProjInfoId(projInfoId);
+        aeaProjLinkman.setLinkmanInfoId(linkmanInfoId);
+        aeaProjLinkman.setType("link");
+        aeaProjLinkman.setCreater(SecurityContext.getCurrentUserId());
+        aeaProjLinkman.setCreateTime(new Date());
+        return aeaProjLinkman;
     }
 
     @Override
