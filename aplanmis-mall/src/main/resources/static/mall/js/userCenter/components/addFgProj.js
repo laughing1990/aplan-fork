@@ -445,6 +445,7 @@ var module1 = new Vue({
 
     // 返回我的项目列表
     returnList: function () {
+      pager.checkData.pageNum = 1;
       pager.isShowAddProjPandel = false;
       pager.fetchMyProjList();
     },
