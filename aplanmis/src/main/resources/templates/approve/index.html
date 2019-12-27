@@ -769,7 +769,12 @@
                     <td class="td-bg-grey">征询类型</td>
                     <td>{{item.solicit.solicitType|changeSolicitType}}</td>
                     <td class="td-bg-grey">征询时限</td>
-                    <td>{{item.solicit.solicitDueDays+item.solicit.solicitDaysUnitCn}}</td>
+                    <td>
+                      <template v-if="item.solicit.isCalcTimerule==1">
+                        {{item.solicit.solicitDueDays+item.solicit.solicitDaysUnitCn}}
+                      </template>
+                      <template v-else>不计时</template>
+                    </td>
                   </tr>
                   <tr>
                     <td class="td-bg-grey">发起征询部门</td>
