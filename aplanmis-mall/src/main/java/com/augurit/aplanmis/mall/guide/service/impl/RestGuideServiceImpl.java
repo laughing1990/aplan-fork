@@ -11,6 +11,7 @@ import com.augurit.agcloud.bsc.upload.MongoDbAchieve;
 import com.augurit.agcloud.bsc.upload.UploadType;
 import com.augurit.agcloud.bsc.upload.factory.UploaderFactory;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
+import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemRelevanceMapper;
@@ -19,13 +20,14 @@ import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
 import com.augurit.aplanmis.common.service.stage.AeaParStageService;
 import com.augurit.aplanmis.common.service.state.AeaItemStateService;
+import com.augurit.aplanmis.common.service.theme.AeaParThemeService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowItemService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowStageService;
 import com.augurit.aplanmis.mall.guide.service.RestGuideService;
-import com.augurit.aplanmis.mall.guide.vo.RestGuideVo;
-import com.augurit.aplanmis.mall.guide.vo.RestSingleGuideVo;
+import com.augurit.aplanmis.mall.guide.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -85,7 +87,10 @@ public class RestGuideServiceImpl implements RestGuideService {
     private AeaItemRelevanceMapper aeaItemRelevanceMapper;
     @Autowired
     private AeaItemBasicMapper aeaItemBasicMapper;
-
+    @Autowired
+    private AeaParThemeService aeaParThemeService;
+    @Value("${dg.sso.access.platform.org.top-org-id:0368948a-1cdf-4bf8-a828-71d796ba89f6}")
+    private String topOrgId;
     @Override
     public RestGuideVo getGuideByStageId(String stageId,String rootOrgId) throws Exception {
         RestGuideVo restGuideVo = new RestGuideVo();
@@ -369,6 +374,61 @@ public class RestGuideServiceImpl implements RestGuideService {
             modelAndView.addObject("emtpyResult", "1");
         }
         return modelAndView;
+    }
+
+    @Override
+    public RestStageAndItemVo getStageAndItemByThemeId(String themeId) throws Exception {
+        try {
+            RestStageAndItemVo restStageAndItemVo = new RestStageAndItemVo();
+            AeaParTheme theme = aeaParThemeService.getAeaParThemeByThemeId(themeId);
+            if (theme == null) return restStageAndItemVo;
+            List<AeaParTheme> publishedThemes = aeaParThemeService.getTestRunOrPublishedVerAeaParTheme(theme.getThemeType(), topOrgId);
+            if (publishedThemes.size() == 0) return restStageAndItemVo;
+            List<String> themeVerIds = publishedThemes.stream().filter(parTheme -> themeId.equals(parTheme.getThemeId())).map(AeaParTheme::getThemeVerId).collect(Collectors.toList());
+            if (themeVerIds.size() == 0) return restStageAndItemVo;
+            List<AeaParStage> stageList = aeaParStageService.listAeaParStageByThemeIdOrThemeVerId(StringUtils.EMPTY, themeVerIds.get(0), topOrgId);
+            List<RestStageVo> stageVos = stageList.stream().map(RestStageVo::build).collect(Collectors.toList());
+            restStageAndItemVo.setStages(stageVos);
+
+            AeaItemBasic searchItem = new AeaItemBasic();
+            searchItem.setRootOrgId(topOrgId);
+
+            //并联事项
+            List<RestItemListVo> paraItemListVos = new ArrayList<>();
+            for (int i=0;i<stageVos.size();i++){
+                List<AeaItemBasic> parallelItems = aeaItemBasicService.getAeaItemBasicListByStageId(stageVos.get(i).getStageId(),"0","", SecurityContext.getCurrentOrgId());
+                RestItemListVo restItemListVo = setSssxInfo(searchItem, parallelItems);
+                restItemListVo.setTitle("第"+NumToChinese.getChiness(i+1)+"阶段并联事项");
+                paraItemListVos.add(restItemListVo);
+            }
+
+            //并行事项
+            List<RestItemListVo> seriItemListVos = new ArrayList<>();
+            for (int i=0;i<stageVos.size();i++){
+                List<AeaItemBasic> seriItems = aeaItemBasicService.getAeaItemBasicListByStageId(stageVos.get(i).getStageId(),"1","", SecurityContext.getCurrentOrgId());
+                RestItemListVo restItemListVo = setSssxInfo(searchItem, seriItems);
+                restItemListVo.setTitle("第"+NumToChinese.getChiness(i+1)+"阶段并行事项");
+                seriItemListVos.add(restItemListVo);
+            }
+
+            restStageAndItemVo.setParallelItems(paraItemListVos);
+            restStageAndItemVo.setSeriItems(seriItemListVos);
+            return restStageAndItemVo;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception(e);
+        }
+    }
+
+    private RestItemListVo setSssxInfo(AeaItemBasic searchItem, List<AeaItemBasic> parallelItems) {
+        RestItemListVo restItemListVo = new RestItemListVo();
+        for (AeaItemBasic parallelItem : parallelItems) {
+            searchItem.setItemSeq(parallelItem.getItemId());
+            List<AeaItemBasic> childItems = aeaItemBasicMapper.listLatestAeaItemBasic(searchItem);
+            if (childItems.size() > 0) parallelItem.setItemVerId(childItems.get(0).getItemVerId());
+        }
+        restItemListVo.setItems(parallelItems.stream().map(RestItemListVo.RestitemVo::build).collect(Collectors.toList()));
+        return restItemListVo;
     }
 
     public void readFile(String detailId,HttpServletRequest request, HttpServletResponse response)  throws Exception {

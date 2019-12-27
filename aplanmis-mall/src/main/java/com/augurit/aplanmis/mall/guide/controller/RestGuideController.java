@@ -229,4 +229,19 @@ public class RestGuideController {
             return new ContentResultForm(false,"","根据父情形ID查找(事项)子情形列表失败!");
         }
     }
+
+
+    /**********************************4.1版本办事指南接口************************************/
+
+    @GetMapping("/stageAndItem/list/{themeId}")
+    @ApiOperation("办事指南 --> 根据主题ID查询阶段及事项列表")
+    @ApiImplicitParam()
+    public ContentResultForm getStageAndItemByThemeId(String themeId){
+        try {
+            return new ContentResultForm<>(true,restGuideService.getStageAndItemByThemeId(themeId));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ContentResultForm(false,"","发生异常");
+        }
+    }
 }
