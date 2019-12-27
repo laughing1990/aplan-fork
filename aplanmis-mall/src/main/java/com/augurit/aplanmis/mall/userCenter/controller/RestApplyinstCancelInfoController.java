@@ -141,7 +141,7 @@ public class RestApplyinstCancelInfoController {
     public ResultForm getAttFiles(@PathVariable String attId) throws Exception {
         if ("null".equalsIgnoreCase(attId) || "undefined".equalsIgnoreCase(attId) || StringUtils.isBlank(attId))
             return new ContentResultForm<>(true, new ArrayList<>());
-        return new ContentResultForm<>(true, restFileService.getAttFiles(attId));
+        return new ContentResultForm<>(true, restFileService.getAttFilesByPK("AEA_HI_APPLYINST_CANCEL","ATT_ID",attId));
     }
 
     @GetMapping("/getCurrentLinkmans")
