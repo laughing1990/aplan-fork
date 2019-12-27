@@ -4476,7 +4476,7 @@ var vm = new Vue({
             return false;
           }else {
             applyinstIdsParallelApplyinstId=res.content.applyinstIds;
-            applyinstIdsParallelApplyinstId.push(res.content.parallelApplyinstId);
+            // applyinstIdsParallelApplyinstId.push(res.content.parallelApplyinstId);
             _that.parallelApplyinstId=res.content.parallelApplyinstId;
           }
           var applyinstIdsList = [];
