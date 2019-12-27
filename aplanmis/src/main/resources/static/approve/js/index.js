@@ -3275,7 +3275,7 @@ var vm = new Vue({
           vm.projInfoId = res.content.projId;
           vm.itemVersionId = res.content.itemVerId;
           vm.itemId = res.content.itemId;
-          vm.hasSolicit = 1;
+          // vm.hasSolicit = 1;
           vm.initFormElementPriv();
         } else {
           vm.$message.error(res.message);
