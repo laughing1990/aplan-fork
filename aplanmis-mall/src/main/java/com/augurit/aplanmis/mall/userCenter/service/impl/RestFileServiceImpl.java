@@ -77,12 +77,7 @@ public class RestFileServiceImpl implements RestFileService {
     private boolean isCheckAuthority;
     @Override
     public List<BscAttFileAndDir> getAttFiles(String matinstId) throws Exception {
-        String[] recordIds = {matinstId};
-        List<BscAttFileAndDir> bscAttFileAndDirs = new ArrayList<BscAttFileAndDir>();
-        if (recordIds.length > 0) {
-            bscAttFileAndDirs.addAll(bscAttDetailMapper.searchFileAndDirsSimple(null, SecurityContext.getCurrentOrgId(), "AEA_HI_ITEM_MATINST", "MATINST_ID", recordIds));
-        }
-        return bscAttFileAndDirs;
+        return getAttFilesByPK("AEA_HI_ITEM_MATINST","MATINST_ID",matinstId);
     }
 
     @Override
