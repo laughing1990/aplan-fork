@@ -923,15 +923,15 @@
                               <div v-else>暂无附件</div>
                             </template>
                           </el-table-column>
-                          <el-table-column label="人员" property="modifier"></el-table-column>
-                          <el-table-column label="意见状态" property="userConclusion">
+                          <el-table-column label="人员" property="userName" width="100"></el-table-column>
+                          <el-table-column label="意见状态" property="userConclusion" width="100">
                             <template slot-scope="scope">
                                 <span class="status-span" :class="[getStatusClass(scope.row.userConclusion)]">
                                   {{scope.row.userConclusion|changeBmOpinType}}
                                 </span>
                             </template>
                           </el-table-column>
-                          <el-table-column label="时间" property="fillTime">
+                          <el-table-column label="时间" property="fillTime" width="160">
                             <template slot-scope="scope">
                               {{scope.row.fillTime|formatDate}}
                             </template>
@@ -2664,8 +2664,8 @@
     </div>
   </el-dialog>
   <!--新增编辑联系人 end-->
-  <!-- 意见征询 start -->
-  <el-dialog title="意见征询" class="solicit-opinion-dialog" v-loading="solicitOpinionLoading"
+  <!-- 意见征询、联合评审 弹窗 start -->
+  <el-dialog :title="dialogConfig.dialogTitle" class="solicit-opinion-dialog" v-loading="solicitOpinionLoading"
              :close-on-click-modal="false" :visible.sync="solicitOpinionVisible" @close="closeSoDialog"
              :width="curWidth>1220?'1200px':(curWidth-20)+'px'" top="20px">
     <div class="solicit-o-wrap" :style="{height: (curHeight-210)+'px',overflow: 'auto'}">
@@ -2673,16 +2673,16 @@
                label-width="140px" size="medium" class="so-form-c">
         <el-row>
           <el-col :span="24">
-            <el-form-item label="意见征询主题" prop="solicitTopic" required>
-              <el-input v-model="solicitForm.solicitTopic" placeholder="请输入意见征询主题"></el-input>
+            <el-form-item :label="dialogConfig.formLabel+'主题'" prop="solicitTopic" required>
+              <el-input v-model="solicitForm.solicitTopic" placeholder="请输入主题"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="意见征询内容" prop="solicitContent" required>
+            <el-form-item :label="dialogConfig.formLabel+'内容'" prop="solicitContent" required>
               <el-input v-model="solicitForm.solicitContent" type="textarea" :rows="3"
-                        placeholder="请输入意见征询内容"></el-input>
+                        placeholder="请输入内容"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -2696,7 +2696,7 @@
             </el-form-item>
           </el-col>
           <el-col v-show="solicitForm.isCalcTimerule==1" :span="12">
-            <el-form-item label="意见征询时限" prop="solicitDueDays" required>
+            <el-form-item :label="dialogConfig.formLabel+'时限'" prop="solicitDueDays" required>
               <el-input v-model="solicitForm.solicitDueDays" type="number">
                 <el-select v-model="solicitForm.solicitTimeruleId" slot="prepend" style="width:100px">
                   <el-option v-for="item in soRulesList" :label="item.timeruleName"
@@ -2706,9 +2706,9 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row style="margin-bottom:5px;">
+        <el-row style="margin-bottom:5px;" v-show="dialogConfig.showType">
           <el-col :span="12">
-            <el-form-item label="意见征询类型">
+            <el-form-item :label="dialogConfig.formLabel+'类型'">
               <el-radio-group v-model="solicitForm.solicitType" @change="changeOsTab">
                 <el-radio label="i">按事项征询</el-radio>
                 <el-radio label="d">按部门征询</el-radio>
@@ -2724,7 +2724,7 @@
       <div class="so-content-u" v-show="solicitForm.solicitType=='i'">
         <div class="so-hint-box">
           <i class="ag ag-warn-circle"></i>
-          勾选要征询的事项，点击“开始征询”，即可发送意见征询。
+          {{dialogConfig.hintText1}}
         </div>
         <div class="so-table-title">审批事项列表</div>
         <el-table class="items-table" ref="soParallelItems" :data="allItemsData" border
@@ -2753,7 +2753,7 @@
       <div class="so-content-u" v-show="solicitForm.solicitType=='d'">
         <div class="so-hint-box">
           <i class="ag ag-warn-circle"></i>
-          勾选要征询的部门，点击“开始征询”，即可发送意见征询。
+          {{dialogConfig.hintText2}}
         </div>
         <div class="c-f" style="margin-top:18px;position: relative;">
           <div class="so-transfer-u">
@@ -2779,7 +2779,7 @@
     </div>
     <div slot="footer" class="dialog-footer">
       <el-button size="small" @click="solicitOpinionVisible = false">取 消</el-button>
-      <el-button size="small" type="primary" @click="startSolicit">开始征询</el-button>
+      <el-button size="small" type="primary" @click="ensureConfigDialog">{{dialogConfig.ensureText}}</el-button>
     </div>
   </el-dialog>
   <!-- 意见征询 end -->

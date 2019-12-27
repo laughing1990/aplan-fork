@@ -653,7 +653,38 @@ var vm = new Vue({
       curHeight: (document.documentElement.clientHeight || document.body.clientHeight),//当前屏幕高度
       allItemsData:[],
       isYjzq: false, // 是否为意见征询页面
+      dialogConfig: {
+        showType: true,
+        dialogType: 'YJZQ',
+        dialogTitle: '',
+        formLabel: '',
+        ensureText: '',
+        hintText1: '',
+        hintText2: '',
+      },
+      dialogConfigSolicit: {
+        showType: true,
+        dialogType: 'YJZQ',
+        dialogTitle: '意见征询',
+        formLabel: '意见征询',
+        ensureText: '开始征询',
+        hintText1: '勾选要征询的事项，点击“开始征询”，即可发送意见征询。',
+        hintText2: '勾选要征询的部门，点击“开始征询”，即可发送意见征询。',
+      },
       // 意见征询  end
+      //联合评审 start
+      hasUnionReview: 0,
+      unionReviewList: [],
+      dialogConfigUnion: {
+        showType: false,
+        dialogType: 'LHPS',
+        dialogTitle: '联合评审',
+        formLabel: '联合评审',
+        ensureText: '联合评审',
+        hintText1: '',
+        hintText2: '请选择参与联合评审的部门，再点击“发起联合评审”。',
+      },
+      //联合评审 end
     }
   },
   filters: {
@@ -709,33 +740,26 @@ var vm = new Vue({
     },
   },
   methods: {
-    // 意见征询 start-----------------------
-    clickStartSolicit: function () {
+    // 联合评审  start
+    // 点击联合评审按钮
+    clickUnionReview: function(){
       var vm = this;
-      if (vm.allItemsData.length){
-        vm.openSoDialog();
-        return null;
-      }
-      vm.parentPageLoading = true;
-      request('', {
-        url: ctx + 'rest/solicit/apply/items',
-        type: 'get',
-        data: { applyinstId: vm.masterEntityKey },
-      }, function(res) {
-        vm.parentPageLoading = false;
-        if (res.success){
-          vm.allItemsData = res.content;
-          vm.openSoDialog();
-        } else {
-          vm.$message.error(res.message||'加载事项列表失败');
-        }
-      }, function(){
-        vm.parentPageLoading = false;
-        vm.$message.error('加载事项列表失败');
-      });
+      this.dialogConfig = this.dialogConfigUnion;
+      this.solicitForm.solicitType = 'd'
+      this.openSoDialog();
     },
-    // 发起征询
-    startSolicit: function () {
+    // 加载联合评审历史数据
+    loadUnionReviewData: function(){
+      var vm = this;
+      vm.unionReviewList = [{}];
+      // this.requestSolicit('LHPS', function (data) {
+      //   vm.solicitList = data || [];
+      // });
+    },
+    // 联合评审  end
+    // 意见征询 start-----------------------
+    // 确认按钮 通用方法
+    ensureConfigDialog: function () {
       var vm = this;
       var list1 = this.$refs.soParallelItems.selection || [];
       var itemList = [];
@@ -748,7 +772,7 @@ var vm = new Vue({
         solicitType: vm.solicitForm.solicitType,
         isCalcTimerule: vm.solicitForm.isCalcTimerule,
         solicitTimeruleId: vm.solicitForm.solicitTimeruleId,
-        busType: 'YJZQ',
+        busType: vm.dialogConfig.dialogType,
       };
       if (vm.solicitForm.isCalcTimerule==1){
         params.solicitDueDays = vm.solicitForm.solicitDueDays;
@@ -781,8 +805,8 @@ var vm = new Vue({
         }
         vm.soCheckedOrgList.forEach(function (u) {
           itemList.push({
-            orgId: u.approveOrgId,
-            orgName: u.approveOrgName,
+            orgId: u.orgId,
+            orgName: u.orgName,
           })
         });
       }
@@ -798,16 +822,42 @@ var vm = new Vue({
           }, function (res) {
             vm.solicitOpinionLoading = false;
             if (res.success) {
-              vm.$message.success('意见征询发起成功');
+              vm.$message.success(vm.dialogConfig.dialogTitle+'发起成功');
               delayRefreshWindow();
             } else {
-              vm.$message.error(res.message || '意见征询发起失败');
+              vm.$message.error(res.message || vm.dialogConfig.dialogTitle+'发起失败');
             }
           }, function () {
             vm.solicitOpinionLoading = false;
-            vm.$message.error('意见征询发起失败');
+            vm.$message.error(vm.dialogConfig.dialogTitle+'发起失败');
           })
         }
+      });
+    },
+    // 点击意见征询
+    clickStartSolicit: function () {
+      var vm = this;
+      this.dialogConfig = this.dialogConfigSolicit;
+      if (vm.allItemsData.length){
+        vm.openSoDialog();
+        return null;
+      }
+      vm.parentPageLoading = true;
+      request('', {
+        url: ctx + 'rest/solicit/apply/items',
+        type: 'get',
+        data: { applyinstId: vm.masterEntityKey },
+      }, function(res) {
+        vm.parentPageLoading = false;
+        if (res.success){
+          vm.allItemsData = res.content;
+          vm.openSoDialog();
+        } else {
+          vm.$message.error(res.message||'加载事项列表失败');
+        }
+      }, function(){
+        vm.parentPageLoading = false;
+        vm.$message.error('加载事项列表失败');
       });
     },
     // 选择orgId
@@ -1062,11 +1112,11 @@ var vm = new Vue({
         if (res.success) {
           typeof cb == 'function' && cb(res.content);
         } else {
-          vm.$message.error(res.message || '获取意见征询历史数据失败');
+          vm.$message.error(res.message || '获取'+typeCode+'历史数据失败');
         }
       }, function () {
         vm.parentPageLoading = false;
-        vm.$message.error('获取意见征询历史数据失败');
+        vm.$message.error('获取'+typeCode+'历史数据失败');
       })
     },
     // 意见征询 end
@@ -2674,7 +2724,9 @@ var vm = new Vue({
           vm.recordIds = res.content.recordIds;// 附件关联id
           vm.attLink.recordId = vm.taskId;
           vm.isApprover = (vm.iteminstProcessinstId != null && vm.iteminstProcessinstId == vm.processInstanceId) ? '1' : '0';
-          // vm.isApprover = 1;
+          if (isDevelop) {
+            vm.isApprover = 1;
+          }
           vm.getWayAType();
         } else {
           vm.$message.error(res.message);
@@ -2918,6 +2970,7 @@ var vm = new Vue({
         {label: '审批过程', labelId: "3", src: './opinionForm.html'},
         {label: '材料补正', labelId: "4", src: './opinionForm.html'},
         {label: '意见征询', labelId: "solicit", src: './opinionForm.html'},
+        {label: '联合评审', labelId: "unionReview", src: './opinionForm.html'},
         {label: '撤件历史', labelId: "appCancel", src: './opinionForm.html'},
         {label: '特殊程序', labelId: "5", src: './opinionForm.html'},
         {label: '批文批复', labelId: "6", src: './approvalOpinions.html',}
@@ -3053,6 +3106,8 @@ var vm = new Vue({
       loadTab('appCancel', 'hasAppCancel', vm.loadAppCancelData);
       // 是否有意见征询
       loadTab('solicit', 'hasSolicit', vm.loadSolicitData);
+      // 是否有联合评审
+      loadTab('unionReview', 'hasUnionReview', vm.loadUnionReviewData);
       
       // 加载对应标签数据
       function loadTab(labelId, key, cb) {
@@ -3102,6 +3157,30 @@ var vm = new Vue({
         isHidden: '0',
         elementRender: '<button class="btn btn-outline-info" onclick="startSupplementForItem()">材料补正</button>'
       }];
+      if (isDevelop) {
+        approverBtn = [{
+          elementName: "意见征询",
+          elementCode: "wfBusSave",
+          columnType: "button",
+          isReadonly: '0',
+          isHidden: '0',
+          elementRender: '<button class="btn btn-outline-info" onclick="clickStartSolicit()">意见征询</button>'
+        }, {
+          elementName: "联合评审",
+          elementCode: "wfBusSave",
+          columnType: "button",
+          isReadonly: '0',
+          isHidden: '0',
+          elementRender: '<button class="btn btn-outline-info" onclick="clickUnionReview()">联合评审</button>'
+        }, {
+          elementName: "材料补正",
+          elementCode: "wfBusSave",
+          columnType: "button",
+          isReadonly: '0',
+          isHidden: '0',
+          elementRender: '<button class="btn btn-outline-info" onclick="startSupplementForItem()">材料补正</button>'
+        }]
+      }
       var notApproverBtn = [{
         elementName: "撤件",
         elementCode: "wfBusSave",
@@ -3275,6 +3354,10 @@ var vm = new Vue({
           vm.projInfoId = res.content.projId;
           vm.itemVersionId = res.content.itemVerId;
           vm.itemId = res.content.itemId;
+          vm.hasUnionReview = res.content.hasUnionReview;
+          if (isDevelop) {
+            vm.hasUnionReview = 1;
+          }
           // vm.hasSolicit = 1;
           vm.initFormElementPriv();
         } else {
@@ -6317,6 +6400,10 @@ function startDeclare() {
 
 function clickStartSolicit() {
   vm.clickStartSolicit();
+}
+
+function clickUnionReview(){
+  vm.clickUnionReview();
 }
 
 /**
