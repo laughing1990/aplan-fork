@@ -39,7 +39,7 @@ public interface AeaHiIteminstMapper {
     List<AeaHiIteminst> getAeaHiIteminstListByStageinstId(@Param("stageinstId") String stageinstId) throws Exception;
 
     //isDeleted  1 则包含 isDeleted字段
-    List<AeaHiIteminst> getAeaHiIteminstListByApplyinstId(@Param("applyinstId") String applyinstId,@Param("isDeleted") String isDeleted);
+    List<AeaHiIteminst> getAeaHiIteminstListByApplyinstId(@Param("applyinstId") String applyinstId, @Param("isDeleted") String isDeleted);
 
     List<ApproveProjInfoDto> getApproveProjInfoListByUnitOrLinkman(@Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId, @Param("state") String state, @Param("keyword") String keyword);
 
@@ -54,11 +54,11 @@ public interface AeaHiIteminstMapper {
      */
     List<ApproveProjInfoDto> getWithdrawApplyListByUnitOrLinkman(@Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId, @Param("keyword") String keyword);
 
-    long countApproveProjInfoListByUnitOrLinkman(@Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId,@Param("isAll")String isAll);
+    long countApproveProjInfoListByUnitOrLinkman(@Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId, @Param("isAll") String isAll);
 
     List<ApproveProjInfoDto> getScheduleInquireListByUnitInfoIdOrLinkman(@Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId, @Param("keyword") String keyword);
 
-    List<AeaProjInfo> getScheduleProjListByUnitInfoIdOrLinkman(@Param("keyword") String keyword, @Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId,@Param("parentProjInfoId")String parentProjInfoId);
+    List<AeaProjInfo> getScheduleProjListByUnitInfoIdOrLinkman(@Param("keyword") String keyword, @Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId, @Param("parentProjInfoId") String parentProjInfoId);
 
     List<ApproveProjInfoDto> getIteminstApproveInfoListByUnitIdAndUserId(@Param("keyword") String keyword, @Param("unitInfoId") String unitInfoId, @Param("userId") String userId);
 
@@ -67,7 +67,7 @@ public interface AeaHiIteminstMapper {
 
     List<SupplementInfoDto> searchMatComplet(@Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId, @Param("supplyState") String supplyState);
 
-    List<SupplementInfoDto> searchMatCompletByUser(@Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId,@Param("keyword")  String keyword);
+    List<SupplementInfoDto> searchMatCompletByUser(@Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId, @Param("keyword") String keyword);
 
 
     List<SupplementInfoDto> searchSupplementInfo(@Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId, @Param("supplyState") String supplyState);
@@ -110,7 +110,7 @@ public interface AeaHiIteminstMapper {
 
     int countTotalItemByApplyType(@Param("isSeriesApprove") String isSeriesApprove, @Param("rootOrgId") String rootOrgId);
 
-    List<AeaHiIteminst> getAeaHiIteminstListByApplyinstIds(@Param("ids") List<String> applyinstIds, @Param("isSeriesApprove") String isSeriesApprove,@Param("isDeleted") String isDeleted);
+    List<AeaHiIteminst> getAeaHiIteminstListByApplyinstIds(@Param("ids") List<String> applyinstIds, @Param("isSeriesApprove") String isSeriesApprove, @Param("isDeleted") String isDeleted);
 
     /**
      * 查询部门对应状态和来源办件数
@@ -123,7 +123,7 @@ public interface AeaHiIteminstMapper {
      * @param endTime
      * @return
      */
-    int countApproveIteminst(@Param("itemId") String itemId, @Param("state") String state, @Param("orgId") String orgId,@Param("applySource") String applySource, @Param("startTime") String startTime, @Param("endTime") String endTime);
+    int countApproveIteminst(@Param("itemId") String itemId, @Param("state") String state, @Param("orgId") String orgId, @Param("applySource") String applySource, @Param("startTime") String startTime, @Param("endTime") String endTime);
 
     /**
      * 查询部门事项实例对应状态和来源数（不查询历史表）
@@ -134,7 +134,7 @@ public interface AeaHiIteminstMapper {
      * @param applySource
      * @return
      */
-    int countTotalIteminst(@Param("itemId") String itemId, @Param("orgId") String orgId, @Param("state") String state,@Param("applySource") String applySource);
+    int countTotalIteminst(@Param("itemId") String itemId, @Param("orgId") String orgId, @Param("state") String state, @Param("applySource") String applySource);
 
     /**
      * 查询部门待补正办件数和补正待确认办件数

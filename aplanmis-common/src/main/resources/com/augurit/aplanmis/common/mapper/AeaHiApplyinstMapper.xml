@@ -1089,4 +1089,21 @@ AND t.ASSIGNEE_ = #{userName}
         and aha.ROOT_ORG_ID = #{rootOrgId}
         and ahs.IS_PARALLEL = #{isParallel}
     </select>
+
+    <select id="listSeriesAeaHiIteminstByApplyinstIds" resultType="AeaHiApplyinst">
+        select
+        <include refid="allas_Columns">
+            <property name="alias" value="aha"/>
+        </include>
+        , ahi.item_ver_id itemVerId
+        from aea_hi_applyinst aha
+        join aea_hi_seriesinst ahs on aha.applyinst_id=ahs.applyinst_id
+        join AEA_HI_ITEMINST ahi on ahs.SERIESINST_ID=ahi.SERIESINST_ID
+        where aha.IS_DELETED='0'
+        and ahi.IS_DELETED='0'
+        and ahs.APPLYINST_ID in
+        <foreach collection="seriesApplyinstIds" item="applyinstId" separator="," open="(" close=")">
+            #{applyinstId}
+        </foreach>
+    </select>
 </mapper>

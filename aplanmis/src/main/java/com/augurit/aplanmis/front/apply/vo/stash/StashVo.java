@@ -70,7 +70,7 @@ public class StashVo {
         @ApiModelProperty(value = "并行事项申报实例id")
         private List<ParallelItemApplyinstVo> seriesApplyinstIds;
 
-        public SeriesStashVo toSeriesStashVo(String propulsionItemVerId, String[] propulsionStateIds, String propulsionBranchOrgMap, String seriesApplyinstId) {
+        public SeriesStashVo toSeriesStashVo(String propulsionItemVerId, String[] propulsionStateIds, String propulsionBranchOrgMap, String seriesApplyinstId, String parallelApplyinstId) {
             SeriesStashVo seriesStashVo = new SeriesStashVo();
             seriesStashVo.setItemVerId(propulsionItemVerId);
             seriesStashVo.setStateIds(propulsionStateIds);
@@ -83,6 +83,7 @@ public class StashVo {
             seriesStashVo.setLinkmanInfoId(this.linkmanInfoId);
             seriesStashVo.setBranchOrgMap(StringUtils.isNotBlank(propulsionBranchOrgMap) ? propulsionBranchOrgMap : null);
             seriesStashVo.setMatinstsIds(this.matinstsIds);
+            seriesStashVo.setParallelApplyinstId(parallelApplyinstId);
             return seriesStashVo;
         }
     }
@@ -100,6 +101,9 @@ public class StashVo {
 
         @ApiModelProperty(value = "是否并行推行", notes = "0: 否，1: 是")
         private String isParallel;
+
+        @ApiModelProperty(value = "并联申报实例id", notes = "并联申报时， 并行申报需要与并联申报关联", hidden = true)
+        private String parallelApplyinstId;
 
     }
 }

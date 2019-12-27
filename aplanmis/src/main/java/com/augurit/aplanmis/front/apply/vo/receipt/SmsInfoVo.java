@@ -1,4 +1,4 @@
-package com.augurit.aplanmis.front.apply.vo;
+package com.augurit.aplanmis.front.apply.vo.receipt;
 
 import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.aplanmis.common.domain.AeaHiSmsInfo;

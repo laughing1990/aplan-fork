@@ -19,8 +19,8 @@ import com.augurit.aplanmis.front.apply.service.RestApplyService;
 import com.augurit.aplanmis.front.apply.vo.ApplyinstIdVo;
 import com.augurit.aplanmis.front.apply.vo.SeriesApplyCheckVo;
 import com.augurit.aplanmis.front.apply.vo.SeriesApplyDataVo;
-import com.augurit.aplanmis.front.apply.vo.SmsInfoVo;
-import com.augurit.aplanmis.front.apply.vo.StageApplyDataPageVo;
+import com.augurit.aplanmis.front.apply.vo.StageApplyDataVo;
+import com.augurit.aplanmis.front.apply.vo.receipt.SmsInfoVo;
 import com.augurit.aplanmis.front.apply.vo.stash.ParallelStashResultVo;
 import com.augurit.aplanmis.front.apply.vo.stash.StashVo;
 import io.jsonwebtoken.lang.Assert;
@@ -44,7 +44,7 @@ import java.util.List;
 public class RestApplyController {
 
     @Autowired
-    private RestApplyService restStartProcessService;
+    private RestApplyService restApplyService;
     @Autowired
     private AeaHiSmsInfoService aeaHiSmsInfoService;
     @Autowired
@@ -61,28 +61,28 @@ public class RestApplyController {
     @PostMapping("/series/processflow/start")
     @ApiOperation(value = "单项申报 --> 收件，发起申报", httpMethod = "POST")
     public ContentResultForm<String> startSeriesFlow(@RequestBody SeriesApplyDataVo seriesApplyDataVo) throws Exception {
-        String applyinstId = restStartProcessService.startSeriesFlow(seriesApplyDataVo);
+        String applyinstId = aeaSeriesService.startApply(seriesApplyDataVo);
         return new ContentResultForm<>(true, applyinstId, "Series start process success");
     }
 
     @PostMapping("/series/onlyInstApply")
     @ApiOperation(value = "单项申报 --> 仅保存申报实例", notes = "并联申报 --> 仅保存申报实例", httpMethod = "POST")
     public ContentResultForm<String> seriesOnlyInstApply(@RequestBody SeriesApplyDataVo seriesApplyDataVo) throws Exception {
-        String applyinstId = restStartProcessService.seriesOnlyInstApply(seriesApplyDataVo);
+        String applyinstId = restApplyService.onlyInstApply(seriesApplyDataVo);
         return new ContentResultForm<>(true, applyinstId, "Inst apply success.");
     }
 
     @PostMapping("/series/inst")
     @ApiOperation(value = "单项申报 --> 生成实例，打印回执", httpMethod = "POST")
     public ContentResultForm<String> printReceipts(@RequestBody SeriesApplyDataVo seriesApplyDataVo) throws Exception {
-        String applyinstId = restStartProcessService.printReceipts(seriesApplyDataVo);
+        String applyinstId = aeaSeriesService.printReceipts(seriesApplyDataVo);
         return new ContentResultForm<>(true, applyinstId, "Print Receipts success.");
     }
 
     @PostMapping("/series/inadmissible")
     @ApiOperation(value = "单项申报 --> 不予受理，生成实例，启动流程，打印不受理回执", httpMethod = "POST")
     public ContentResultForm<String> inadmissible(@RequestBody SeriesApplyDataVo seriesApplyDataVo) throws Exception {
-        String applyinstId = restStartProcessService.inadmissibleSeriesFlow(seriesApplyDataVo);
+        String applyinstId = aeaSeriesService.inadmissible(seriesApplyDataVo);
         return new ContentResultForm<>(true, applyinstId, "Series instantiate process success");
     }
 
@@ -123,29 +123,29 @@ public class RestApplyController {
 
     @PostMapping("/parallel/inst")
     @ApiOperation(value = "并联申报 --> 生成实例，打印回执", httpMethod = "POST")
-    public ContentResultForm<ApplyinstIdVo> instantiateStageProcess(@Valid @RequestBody StageApplyDataPageVo StageApplyDataPageVo) throws Exception {
-        ApplyinstIdVo applyinstIdVo = restStartProcessService.instantiateStageProcess(StageApplyDataPageVo);
+    public ContentResultForm<ApplyinstIdVo> instantiateStageProcess(@Valid @RequestBody StageApplyDataVo stageApplyDataVo) throws Exception {
+        ApplyinstIdVo applyinstIdVo = aeaParStageService.printReceipts(stageApplyDataVo);
         return new ContentResultForm<>(true, applyinstIdVo, "Parallel instantiate process success.");
     }
 
     @PostMapping("/parallel/processflow/start")
     @ApiOperation(value = "并联申报 --> 发起申报", notes = "并联申报 --> 发起申报", httpMethod = "POST")
-    public ContentResultForm<ApplyinstIdVo> startStageProcess(@Valid @RequestBody StageApplyDataPageVo stageApplyDataPageVo) throws Exception {
-        ApplyinstIdVo applyinstIdVo = restStartProcessService.startStageProcess(stageApplyDataPageVo);
+    public ContentResultForm<ApplyinstIdVo> startStageProcess(@RequestBody StageApplyDataVo stageApplyDataVo) throws Exception {
+        ApplyinstIdVo applyinstIdVo = aeaParStageService.startApply(stageApplyDataVo);
         return new ContentResultForm<>(true, applyinstIdVo, "Parall start process success.");
     }
 
     @PostMapping("/parallel/onlyInstApply")
     @ApiOperation(value = "并联申报 --> 仅保存申报实例", notes = "并联申报 --> 仅保存申报实例", httpMethod = "POST")
-    public ContentResultForm<String> onlyInstApply(@RequestBody StageApplyDataPageVo stageApplyDataPageVo) throws Exception {
-        String applyinstId = restStartProcessService.onlyInstApply(stageApplyDataPageVo);
+    public ContentResultForm<String> onlyInstApply(@RequestBody StageApplyDataVo stageApplyDataPageVo) throws Exception {
+        String applyinstId = restApplyService.onlyInstApply(stageApplyDataPageVo);
         return new ContentResultForm<>(true, applyinstId, "Inst apply success.");
     }
 
     @PostMapping("/parallel/processflow/inadmissible")
     @ApiOperation(value = "并联申报 --> 发起申报，不予受理", notes = "并联申报 --> 发起申报，不予受理", httpMethod = "POST")
-    public ContentResultForm<ApplyinstIdVo> inadmissibleStageProcess(@Valid @RequestBody StageApplyDataPageVo stageApplyDataPageVo) throws Exception {
-        ApplyinstIdVo applyinstIdVo = restStartProcessService.inadmissibleStageProcess(stageApplyDataPageVo);
+    public ContentResultForm<ApplyinstIdVo> inadmissibleStageProcess(@RequestBody StageApplyDataVo stageApplyDataVo) throws Exception {
+        ApplyinstIdVo applyinstIdVo = aeaParStageService.inadmissible(stageApplyDataVo);
         return new ContentResultForm<>(true, applyinstIdVo, "Parall start process success.");
     }
 
