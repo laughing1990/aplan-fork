@@ -236,7 +236,7 @@ public class RestGuideController {
     @GetMapping("/stageAndItem/list/{themeId}")
     @ApiOperation("办事指南 --> 根据主题ID查询阶段及事项列表")
     @ApiImplicitParam()
-    public ContentResultForm getStageAndItemByThemeId(String themeId){
+    public ContentResultForm getStageAndItemByThemeId(@PathVariable("themeId")String themeId){
         try {
             return new ContentResultForm<>(true,restGuideService.getStageAndItemByThemeId(themeId));
         } catch (Exception e) {

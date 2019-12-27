@@ -59,7 +59,7 @@ public class RestApplyinstCancelInfoController {
 
 
     @PostMapping("createApplyinstCancelInfo")
-    @ApiOperation(value = "撤回申报 --> 检测申报实例或事项实例是否满足撤件申请接口")
+    @ApiOperation(value = "撤回申报 --> 保存撤件申请接口")
     public ContentResultForm<String> createApplyinstCancelInfo(ApplyinstCancelInfoVo applyinstCancelInfoVo){
         try {
             if(StringUtils.isBlank(applyinstCancelInfoVo.getApplyUserId())){
@@ -97,7 +97,7 @@ public class RestApplyinstCancelInfoController {
             }
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
-            return new ContentResultForm(false,"","检测申报实例或事项实例是否满足撤件申请接口异常");
+            return new ContentResultForm(false,"","保存撤件申请接口异常");
         }
     }
 

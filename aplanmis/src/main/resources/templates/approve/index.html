@@ -2735,17 +2735,12 @@
           </el-table-column>
           <el-table-column label="事项名称" prop="sortNo" sortable>
             <template slot-scope="scope">
-              {{scope.row.itemName}}
+              {{scope.row.iteminstName}}
             </template>
           </el-table-column>
-          <el-table-column label="行政区划" width="100" prop="regionName">
+          <el-table-column label="审批部门" width="100" prop="regionName">
             <template slot-scope="scope">
-              <span>{{scope.row.regionName}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="orgName" label="实施主体" width="200">
-            <template slot-scope="scope">
-              <span>{{scope.row.orgName}}</span>
+              <span>{{scope.row.approveOrgName}}</span>
             </template>
           </el-table-column>
           <el-table-column prop="opinion" label="征求意见" width="200">
