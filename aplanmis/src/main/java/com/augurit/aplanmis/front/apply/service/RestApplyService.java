@@ -1,45 +1,63 @@
 package com.augurit.aplanmis.front.apply.service;
 
-import com.alibaba.fastjson.JSON;
+import com.augurit.agcloud.bpm.common.domain.ActStoAppinst;
+import com.augurit.agcloud.bpm.common.engine.BpmProcessService;
+import com.augurit.agcloud.bpm.common.engine.BpmTaskService;
+import com.augurit.agcloud.bpm.common.engine.form.BpmProcessInstance;
+import com.augurit.agcloud.bpm.common.exception.ProcessAlreadyActivateException;
+import com.augurit.agcloud.bpm.common.service.ActStoAppinstService;
 import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.aplanmis.common.constants.ApplyState;
+import com.augurit.aplanmis.common.constants.ApplyType;
+import com.augurit.aplanmis.common.constants.ItemStatus;
+import com.augurit.aplanmis.common.domain.AeaApplyinstProj;
 import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import com.augurit.aplanmis.common.domain.AeaHiReceive;
-import com.augurit.aplanmis.common.domain.AeaHiSmsInfo;
-import com.augurit.aplanmis.common.domain.AeaItemBasic;
-import com.augurit.aplanmis.common.domain.AeaParStage;
-import com.augurit.aplanmis.common.mapper.AeaHiApplyinstMapper;
+import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
+import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
+import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.common.mapper.AeaApplyinstForminstMapper;
+import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiReceiveMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiSmsInfoMapper;
-import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
+import com.augurit.aplanmis.common.mapper.AeaLogApplyStateHistMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
+import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
+import com.augurit.aplanmis.common.service.apply.ApplyCommonService;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemStateinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
+import com.augurit.aplanmis.common.service.instance.AeaLogApplyStateHistService;
+import com.augurit.aplanmis.common.service.item.AeaLogItemStateHistService;
+import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
+import com.augurit.aplanmis.common.service.process.AeaBpmProcessService;
 import com.augurit.aplanmis.common.service.receive.ReceiveService;
-import com.augurit.aplanmis.common.service.receive.constant.ReceiveConstant;
-import com.augurit.aplanmis.common.utils.BusinessUtil;
-import com.augurit.aplanmis.front.apply.vo.ApplyinstIdVo;
-import com.augurit.aplanmis.front.apply.vo.PropulsionItemStateVo;
+import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
+import com.augurit.aplanmis.common.service.window.AeaServiceWindowService;
+import com.augurit.aplanmis.front.apply.vo.ApplyDataVo;
+import com.augurit.aplanmis.front.apply.vo.BuildProjUnitVo;
 import com.augurit.aplanmis.front.apply.vo.SeriesApplyDataVo;
-import com.augurit.aplanmis.front.apply.vo.StageApplyDataPageVo;
-import com.augurit.aplanmis.front.apply.vo.StageApplyDataVo;
-import io.jsonwebtoken.lang.Assert;
+import com.augurit.aplanmis.front.apply.vo.receipt.SaveReceiptsVo;
+import com.augurit.aplanmis.front.apply.vo.stash.UnStashVo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang3.ArrayUtils;
+import org.flowable.engine.TaskService;
+import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,325 +66,315 @@ import java.util.stream.Collectors;
 public class RestApplyService {
 
     @Autowired
-    private AeaSeriesService aeaSeriesService;
+    protected AeaBpmProcessService aeaBpmProcessService;
     @Autowired
-    private AeaParStageService aeaParStageService;
+    protected ApplyCommonService applyCommonService;
     @Autowired
-    private AeaParStageMapper aeaParStageMapper;
+    protected ActStoAppinstService actStoAppinstService;
     @Autowired
-    private AeaHiSmsInfoMapper aeaHiSmsInfoMapper;
+    protected BpmProcessService bpmProcessService;
     @Autowired
-    private AeaItemBasicMapper aeaItemBasicMapper;
+    protected TaskService taskService;
+    @Autowired
+    protected BpmTaskService bpmTaskService;
+    @Autowired
+    protected AeaLogItemStateHistService aeaLogItemStateHistService;
+    @Autowired
+    protected AeaLogApplyStateHistService aeaLogApplyStateHistService;
+    @Autowired
+    protected AeaHiIteminstService aeaHiIteminstService;
+    @Autowired
+    protected AeaServiceWindowService aeaServiceWindowService;
+    @Autowired
+    protected AeaLogApplyStateHistMapper aeaLogApplyStateHistMapper;
+    @Autowired
+    protected AeaLinkmanInfoService aeaLinkmanInfoService;
+    @Autowired
+    protected AeaUnitInfoService aeaUnitInfoService;
+    @Autowired
+    protected AeaHiApplyinstService aeaHiApplyinstService;
+    @Autowired
+    protected AeaHiItemInoutinstService aeaHiItemInoutinstService;
+    @Autowired
+    protected AeaHiItemStateinstService aeaHiItemStateinstService;
+    @Autowired
+    protected AeaHiSmsInfoMapper aeaHiSmsInfoMapper;
+    @Autowired
+    protected OpuOmOrgMapper opuOmOrgMapper;
+    @Autowired
+    protected AeaProjInfoMapper aeaProjInfoMapper;
+    @Autowired
+    protected AeaParStageMapper aeaParStageMapper;
+    @Autowired
+    protected AeaApplyinstForminstMapper aeaApplyinstForminstMapper;
+    @Autowired
+    protected AeaApplyinstProjMapper aeaApplyinstProjMapper;
+
     @Autowired
     private ReceiveService receiveService;
     @Autowired
     private AeaHiReceiveMapper aeaHiReceiveMapper;
-    @Autowired
-    private AeaHiApplyinstService aeaHiApplyinstService;
-    @Autowired
-    private AeaHiApplyinstMapper aeaHiApplyinstMapper;
 
-    /**
-     * 单项申报 --> 收件，发起申报
-     *
-     * @param seriesApplyDataPageVo 申报参数
-     * @return applyinstId 申请实例ID
-     */
-    public String startSeriesFlow(SeriesApplyDataVo seriesApplyDataPageVo) throws Exception {
-        String applyinstId = aeaSeriesService.startApply(seriesApplyDataPageVo);
-        clearHistoryReceiptsAndSaveAgain(seriesApplyDataPageVo, applyinstId, new String[]{ReceiveConstant.ReceiveTypeEnum.MAT_TYPE.getCode(), ReceiveConstant.ReceiveTypeEnum.ACCEPT_TYPE.getCode()});
-        return applyinstId;
+    protected void validate(ApplyDataVo applyDataVo) {
+        Assert.hasText(applyDataVo.getApplySource(), "申报来源参数为空!");
+
+        Assert.hasText(applyDataVo.getApplySubject(), "申报主体参数为空！");
+
+        Assert.isTrue(StringUtils.isNotBlank(applyDataVo.getLinkmanInfoId()) || StringUtils.isNotBlank(applyDataVo.getApplyLinkmanId()), "联系人ID参数为空！");
+
+        Assert.isTrue(applyDataVo.getProjInfoIds().length > 0, "项目ID参数为空！");
+
     }
 
-    /**
-     * 单项申报 --> 生成实例，打印回执
-     *
-     * @param seriesApplyDataVo 申报餐宿
-     * @return applyinstId 申请实例ID
-     */
-    public String printReceipts(SeriesApplyDataVo seriesApplyDataVo) throws Exception {
-        seriesApplyDataVo.setIsParallel("0");
-        String applyinstId = aeaSeriesService.printReceipts(seriesApplyDataVo);
-        // 先删除以前的 receiveType=1, 2 的回执实例
-        clearHistoryReceiptsAndSaveAgain(seriesApplyDataVo, applyinstId, new String[]{ReceiveConstant.ReceiveTypeEnum.MAT_TYPE.getCode(), ReceiveConstant.ReceiveTypeEnum.ACCEPT_TYPE.getCode()});
-        return applyinstId;
-    }
-
-    private void clearHistoryReceiptsAndSaveAgain(SeriesApplyDataVo seriesApplyDataPageVo, String applyinstId, String[] receiveTypes) throws Exception {
-        Assert.isTrue(receiveTypes.length > 0, "回执类型不能为空");
-        if (StringUtils.isNotBlank(seriesApplyDataPageVo.getApplyinstId())) {
-            // 先删除以前的 receiveType=1, 2 的回执实例
-            List<AeaHiReceive> aeaHiReceives = aeaHiReceiveMapper.listReceiveByApplyinstIdAndTypes(new String[]{seriesApplyDataPageVo.getApplyinstId()}, new String[]{ReceiveConstant.ReceiveTypeEnum.MAT_TYPE.getCode(), ReceiveConstant.ReceiveTypeEnum.ACCEPT_TYPE.getCode()});
-            if (CollectionUtils.isNotEmpty(aeaHiReceives)) {
-                aeaHiReceiveMapper.deleteAeaHiReceives(aeaHiReceives.stream().map(AeaHiReceive::getReceiveId).collect(Collectors.toList()));
-            }
+    protected AeaHiApplyinst createAeaHiApplyinstIfNotExists(ApplyDataVo applyDataVo, String applyinstId) throws Exception {
+        AeaHiApplyinst aeaHiApplyinst;
+        String parallelApplyinstId = null;
+        if (applyDataVo instanceof SeriesApplyDataVo) {
+            parallelApplyinstId = ((SeriesApplyDataVo) applyDataVo).getParallelApplyinstId();
         }
-        updateAeaSmsInfo(seriesApplyDataPageVo.getSmsInfoId(), new String[]{applyinstId});
-        //保存受理回执，物料回执
-        receiveService.saveReceive(new String[]{applyinstId}, receiveTypes, SecurityContext.getCurrentUserName(), "");
-    }
-
-    /**
-     * 单项申报 --> 不予受理
-     *
-     * @param seriesApplyDataVo 申报入参
-     * @return applyinstId 申请实例ID
-     */
-    public String inadmissibleSeriesFlow(SeriesApplyDataVo seriesApplyDataVo) throws Exception {
-        AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(seriesApplyDataVo.getItemVerId(), SecurityContext.getCurrentOrgId());
-        seriesApplyDataVo.setAppId(aeaItemBasic.getAppId());
-        seriesApplyDataVo.setIsParallel("0");
-        String applyinstId = aeaSeriesService.inadmissible(seriesApplyDataVo);
-
-        // 打印不受理回执
-        clearHistoryReceiptsAndSaveAgain(seriesApplyDataVo, applyinstId, new String[]{ReceiveConstant.ReceiveTypeEnum.REJECT_TYPE.getCode()});
-        return applyinstId;
-    }
-
-    /**
-     * 并联申报 --> 生成实例，打印回执
-     * 并联申报可以支持只申报并行推进事项，不申报并联申报事项；
-     *
-     */
-    public ApplyinstIdVo instantiateStageProcess(StageApplyDataPageVo stageApplyDataPageVo) throws Exception {
-        ApplyinstIdVo applyinstIdVo = new ApplyinstIdVo();
-        // 先删除以前的 receiveType=1, 2 的回执实例
-        if (StringUtils.isNotBlank(stageApplyDataPageVo.getParallelApplyinstId()) || (stageApplyDataPageVo.getApplyinstIds() != null && stageApplyDataPageVo.getApplyinstIds().length > 0)) {
-            String[] applyinstIds = ArrayUtils.addAll(stageApplyDataPageVo.getApplyinstIds(), stageApplyDataPageVo.getParallelApplyinstId());
-            List<AeaHiReceive> aeaHiReceives = aeaHiReceiveMapper.listReceiveByApplyinstIdAndTypes(applyinstIds, new String[]{"1", "2"});
-            if (CollectionUtils.isNotEmpty(aeaHiReceives)) {
-                aeaHiReceiveMapper.deleteAeaHiReceives(aeaHiReceives.stream().map(AeaHiReceive::getReceiveId).collect(Collectors.toList()));
+        if (StringUtils.isNotBlank(applyinstId)) {
+            aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+            // 与并联申报实例关联
+            if (StringUtils.isNotBlank(parallelApplyinstId)) {
+                aeaHiApplyinst.setParentApplyinstId(parallelApplyinstId);
             }
-        }
-        String[] applyinstIds;
-        //20190819 小糊涂 并联申报可以支持只申报并行推进事项，不申报并联申报事项；
-        List<String> itemVerIds = stageApplyDataPageVo.getItemVerIds();
-        if (null != itemVerIds && itemVerIds.size() > 0) {
-            AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageApplyDataPageVo.getStageId());
-            Assert.notNull(aeaParStage, "aeaParStage is null");
-            String appId = aeaParStage.getAppId();
-            String themeVerId = aeaParStage.getThemeVerId();
-            StageApplyDataVo stageApplyDataVo = stageApplyDataPageVo.toStageApplyDataVo(appId, themeVerId);
-            applyinstIdVo = aeaParStageService.stagingApply(stageApplyDataVo);
-            applyinstIds = ArrayUtils.addAll(applyinstIdVo.getApplyinstIds(), applyinstIdVo.getParallelApplyinstId());
         } else {
-            //并联下只申报并行事项（单事项申报）
-            List<SeriesApplyDataVo> applyDataVos = this.getSeriesApplyDataVoListFromStage(stageApplyDataPageVo);
-            List<String> list = new ArrayList<>(applyDataVos.size());
-            for (SeriesApplyDataVo vo : applyDataVos) {
-                vo.setIsParallel("1");
-                vo.setStageId(stageApplyDataPageVo.getStageId());
-                String applyinstId = aeaSeriesService.printReceipts(vo);
-                list.add(applyinstId);
-            }
-            applyinstIds = list.toArray(new String[0]);
-            applyinstIdVo.setApplyinstIds(applyinstIds);
+            aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applyDataVo.getApplySource(),
+                    applyDataVo.getApplySubject(), applyDataVo.getLinkmanInfoId(), applyDataVo.getApplyType().getValue(),
+                    applyDataVo.getBranchOrgMap(), ApplyState.RECEIVE_APPROVED_APPLY.getValue(), Status.OFF, parallelApplyinstId);
         }
-        if (null != applyinstIds && applyinstIds.length > 0) {
-            List<AeaHiApplyinst> aeaHiApplyinsts = aeaHiApplyinstMapper.listAeaHiApplyinstByIds(Arrays.asList(applyinstIds));
-            for (AeaHiApplyinst ahi : aeaHiApplyinsts) {
-                ahi.setIsTemporarySubmit("2");
-                aeaHiApplyinstMapper.updateAeaHiApplyinst(ahi);
-            }
-            updateAeaSmsInfo(stageApplyDataPageVo.getSmsInfoId(), applyinstIds);
-            // 保存回执
-            String[] receiptTypes = {"1", "2"};
-            if (!receiveService.saveReceive(applyinstIds, receiptTypes, SecurityContext.getCurrentUserName(), stageApplyDataPageVo.getComments())) {
-                log.error("Save aea_hi_receive error. applyinstIds: {}", Arrays.asList(applyinstIds));
-            }
-        }
+        Assert.notNull(aeaHiApplyinst, "获取申报实例异常");
+        return aeaHiApplyinst;
+    }
 
-        return applyinstIdVo;
+    protected void clearHistoryDataIfNecessary(AeaHiApplyinst aeaHiApplyinst) throws Exception {
+        // 之前已经打印过回执 或者 暂存过
+        if (alreadyPrintedBefore(aeaHiApplyinst.getIsTemporarySubmit())
+                || alreadyStashedBefore(aeaHiApplyinst.getIsTemporarySubmit())) {
+            applyCommonService.clearHistoryInst(aeaHiApplyinst.getApplyinstId());
+        }
+    }
+
+    private boolean alreadyStashedBefore(String isTemporarySubmit) {
+        return Status.ON.equals(isTemporarySubmit);
+    }
+
+    private boolean alreadyPrintedBefore(String isTemporarySubmit) {
+        return "2".equals(isTemporarySubmit);
+    }
+
+    protected String createAeaLogApplyStateHistIfNotExists(AeaHiApplyinst aeaHiApplyinst, String currentWindowId) {
+        String appinstId;
+        AeaLogApplyStateHist aeaLogApplyStateHist = new AeaLogApplyStateHist();
+        aeaLogApplyStateHist.setApplyinstId(aeaHiApplyinst.getApplyinstId());
+        List<AeaLogApplyStateHist> aeaLogApplyStateHists = aeaLogApplyStateHistMapper.listAeaLogApplyStateHist(aeaLogApplyStateHist);
+        if (CollectionUtils.isEmpty(aeaLogApplyStateHists)) {
+            appinstId = UuidUtil.generateUuid();
+            aeaLogApplyStateHistService.insertTriggerAeaLogApplyStateHist(aeaHiApplyinst.getApplyinstId(), null, appinstId, null,
+                    ApplyState.RECEIVE_APPROVED_APPLY.getValue(), currentWindowId);
+        } else {
+            appinstId = aeaLogApplyStateHists.get(0).getAppinstId();
+        }
+        Assert.hasText(appinstId, "获取流程模板实例id异常");
+        return appinstId;
     }
 
     /**
-     * 并联申报 --> 发起申报
+     * 打印回执
      *
-     * @return applyinstIds 申请实例集合
+     * @param saveReceiptsVo 打印回执参数
      */
-    public ApplyinstIdVo startStageProcess(StageApplyDataPageVo stageApplyDataPageVo) throws Exception {
-        ApplyinstIdVo applyinstIdVo = new ApplyinstIdVo();
-        String[] applyinstIds;
-        //20190819 小糊涂 并联申报可以支持只申报并行推进事项，不申报并联申报事项；
-        List<String> itemVerIds = stageApplyDataPageVo.getItemVerIds();
-        if (null != itemVerIds && itemVerIds.size() > 0) {
-            AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageApplyDataPageVo.getStageId());
-            Assert.notNull(aeaParStage, "aeaParStage is null");
-            String appId = aeaParStage.getAppId();
-            String themeVerId = aeaParStage.getThemeVerId();
-            StageApplyDataVo stageApplyDataVo = stageApplyDataPageVo.toStageApplyDataVo(appId, themeVerId);
-            applyinstIdVo = aeaParStageService.stageApply(stageApplyDataVo);
-            applyinstIds = ArrayUtils.addAll(applyinstIdVo.getApplyinstIds(), applyinstIdVo.getParallelApplyinstId());
-        } else { //仅进行并行事项申报
-            List<SeriesApplyDataVo> applyDataVos = this.getSeriesApplyDataVoListFromStage(stageApplyDataPageVo);
-            List<String> ids = new ArrayList<>(applyDataVos.size());
-            for (SeriesApplyDataVo vo : applyDataVos) {
-                vo.setIsParallel("1");
-                vo.setStageId(stageApplyDataPageVo.getStageId());
-                String applyinstId = aeaSeriesService.startApply(vo);
-                ids.add(applyinstId);
-            }
-            applyinstIds = ids.toArray(new String[0]);
-            applyinstIdVo.setApplyinstIds(applyinstIds);
-        }
-        if (null != applyinstIds) {
-            for (String applyinstId : applyinstIds) {
-                AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstMapper.getAeaHiApplyinstById(applyinstId);
-                if (!Status.OFF.equals(aeaHiApplyinst.getIsTemporarySubmit())) {
-                    aeaHiApplyinst.setIsTemporarySubmit(Status.OFF);
-                    aeaHiApplyinstMapper.updateAeaHiApplyinst(aeaHiApplyinst);
-                }
-            }
-            updateAeaSmsInfo(stageApplyDataPageVo.getSmsInfoId(), applyinstIds);
+    public void clearHistoryReceiptsAndSaveAgain(SaveReceiptsVo saveReceiptsVo) throws Exception {
+        if (CollectionUtils.isNotEmpty(saveReceiptsVo.getAlreadExistsApplyinstIds())) {
             // 先删除以前的 receiveType=1, 2 的回执实例
-            List<AeaHiReceive> aeaHiReceives = aeaHiReceiveMapper.listReceiveByApplyinstIdAndTypes(applyinstIds, new String[]{"1", "2"});
+            List<AeaHiReceive> aeaHiReceives = aeaHiReceiveMapper.listReceiveByApplyinstIdAndTypes(saveReceiptsVo.getAlreadExistsApplyinstIds().toArray(new String[0]), saveReceiptsVo.getReceiptTypes());
             if (CollectionUtils.isNotEmpty(aeaHiReceives)) {
                 aeaHiReceiveMapper.deleteAeaHiReceives(aeaHiReceives.stream().map(AeaHiReceive::getReceiveId).collect(Collectors.toList()));
             }
-            // 保存回执
-            String[] receiptTypes = {"1", "2"};
-            receiveService.saveReceive(applyinstIds, receiptTypes, SecurityContext.getCurrentUserName(), stageApplyDataPageVo.getComments());
         }
-
-        return applyinstIdVo;
+        //保存受理回执，物料回执
+        receiveService.saveReceive(saveReceiptsVo.getCurrentApplyinstIds().toArray(new String[0]), saveReceiptsVo.getReceiptTypes(), SecurityContext.getCurrentUserName(), saveReceiptsVo.getComments());
     }
 
-
-    /**
-     * 并联申报 --> 发起申报，不予受理
-     *
-     */
-    public ApplyinstIdVo inadmissibleStageProcess(StageApplyDataPageVo stageApplyDataPageVo) throws Exception {
-        ApplyinstIdVo applyinstIdVo = new ApplyinstIdVo();
-        String[] applyinstIds;
-        //20190820 小糊涂 并联申报可以支持只申报并行推进事项，不申报并联申报事项；
-        List<String> itemVerIds = stageApplyDataPageVo.getItemVerIds();
-        if (null != itemVerIds && itemVerIds.size() > 0) {
-            AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageApplyDataPageVo.getStageId());
-            Assert.notNull(aeaParStage, "aeaParStage is null");
-            String appId = aeaParStage.getAppId();
-            String themeVerId = aeaParStage.getThemeVerId();
-            StageApplyDataVo stageApplyDataVo = stageApplyDataPageVo.toStageApplyDataVo(appId, themeVerId);
-            applyinstIdVo = aeaParStageService.inadmissible(stageApplyDataVo);
-            applyinstIds = ArrayUtils.addAll(applyinstIdVo.getApplyinstIds(), applyinstIdVo.getParallelApplyinstId());
-        } else {//仅进行并行申报
-            List<SeriesApplyDataVo> applyDataVos = this.getSeriesApplyDataVoListFromStage(stageApplyDataPageVo);
-            List<String> ids = new ArrayList<>(applyDataVos.size());
-            for (SeriesApplyDataVo vo : applyDataVos) {
-                vo.setIsParallel("1");
-                vo.setStageId(stageApplyDataPageVo.getStageId());
-                String applyinstId = aeaSeriesService.inadmissible(vo);
-                ids.add(applyinstId);
+    protected void saveApplySubject(AeaHiApplyinst aeaHiApplyinst, ApplyDataVo applyDataVo) {
+        // 申报主体为个人
+        if ("0".equals(applyDataVo.getApplySubject())) {
+            aeaLinkmanInfoService.insertApplyAndLinkProjLinkman(aeaHiApplyinst.getApplyinstId(), applyDataVo.getProjInfoIds(), applyDataVo.getApplyLinkmanId(), applyDataVo.getLinkmanInfoId());
+        } else {
+            // 建设单位
+            List<BuildProjUnitVo> buildProjUnits = applyDataVo.getBuildProjUnitMap();
+            if (CollectionUtils.isNotEmpty(buildProjUnits)) {
+                Map<String, List<String>> puMap = new HashMap<>(buildProjUnits.size());
+                buildProjUnits.forEach(pu -> puMap.put(pu.getProjectInfoId(), pu.getUnitIds()));
+                aeaUnitInfoService.insertApplyOwnerUnitProj(aeaHiApplyinst.getApplyinstId(), puMap);
             }
-            applyinstIds = ids.toArray(new String[0]);
-            applyinstIdVo.setApplyinstIds(applyinstIds);
-        }
-        if (null != applyinstIds) {
-            updateAeaSmsInfo(stageApplyDataPageVo.getSmsInfoId(), applyinstIds);
-            // 保存不受理回执
-            String[] receiptTypes = {"3"};
-            receiveService.saveReceive(applyinstIds, receiptTypes, SecurityContext.getCurrentUserName(), stageApplyDataPageVo.getComments());
-        }
-        return applyinstIdVo;
-    }
-
-
-    /**
-     * 并联申报时，如果只勾选并行事项，则转换参数到单项申报
-     *
-     */
-    private List<SeriesApplyDataVo> getSeriesApplyDataVoListFromStage(StageApplyDataPageVo applyDataPageVo) {
-        List<SeriesApplyDataVo> list = new ArrayList<>();
-        List<String> itemVerIds = applyDataPageVo.getPropulsionItemVerIds();
-        String branchOrgMap = applyDataPageVo.getPropulsionBranchOrgMap();
-        List<PropulsionItemStateVo> itemStateIds = applyDataPageVo.getPropulsionItemStateIds();
-        for (String itemVerId : itemVerIds) {
-            AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(itemVerId, SecurityContext.getCurrentOrgId());
-            if (null == aeaItemBasic) return list;
-
-            SeriesApplyDataVo vo = new SeriesApplyDataVo();
-            org.springframework.beans.BeanUtils.copyProperties(applyDataPageVo, vo);
-            vo.setItemVerId(itemVerId);
-            vo.setAppId(aeaItemBasic.getAppId());
-            String orgId = BusinessUtil.getOrgIdFromBranchOrgMap(branchOrgMap, itemVerId);
-            if (StringUtils.isNotBlank(orgId)) {
-                Map<String, String> map = new HashMap<>();
-                map.put("branchOrg", orgId);
-                map.put("itemVerId", itemVerId);
-                List<Map> temp = new ArrayList<>();
-                temp.add(map);
-                vo.setBranchOrgMap(JSON.toJSONString(temp));
-            } else {
-                vo.setBranchOrgMap("");
-            }
-            //获取当前并行事项下已选择的情形ID
-            for (PropulsionItemStateVo stateVo : itemStateIds) {
-                if (stateVo.getItemVerId().equals(itemVerId)) {
-                    List<String> stateIds = stateVo.getStateIds();
-                    if (null != stateIds) {
-                        vo.setStateIds(stateIds.toArray(new String[0]));
-                    } else {
-                        vo.setStateIds(new String[0]);
-                    }
-                    break;
-                }
-            }
-            list.add(vo);
-        }
-        return list;
-    }
-
-    /**
-     * 目前一个申报实例对应一个领件人
-     *
-     * @param smsInfoId    领件人id
-     * @param applyinstIds 申报实例id
-     */
-    private void updateAeaSmsInfo(String smsInfoId, String[] applyinstIds) throws Exception {
-        if (applyinstIds.length > 0) {
-            AeaHiSmsInfo aeaHiSmsInfo = aeaHiSmsInfoMapper.getAeaHiSmsInfoById(smsInfoId);
-            for (String applyinstId : applyinstIds) {
-                //先判断是否存在申请号或者申请实例ID与传过来的不一致：因为数据库applyisnt_id不能为空，默认第一次是item_code
-                if (StringUtils.isBlank(aeaHiSmsInfo.getApplyinstId())) {
-                    aeaHiSmsInfo.setApplyinstId(applyinstId);
-                    aeaHiSmsInfoMapper.updateAeaHiSmsInfo(aeaHiSmsInfo);
-                    continue;
-                }
-                if (applyinstId.equals(aeaHiSmsInfo.getApplyinstId())) {
-                    continue;
-                }
-                AeaHiSmsInfo newOne = new AeaHiSmsInfo();
-                BeanUtils.copyProperties(newOne, aeaHiSmsInfo);
-                newOne.setId(UuidUtil.generateUuid());
-                newOne.setApplyinstId(applyinstId);
-                newOne.setCreater(SecurityContext.getCurrentUserId());
-                newOne.setCreateTime(new Date());
-                newOne.setRootOrgId(SecurityContext.getCurrentOrgId());
-                aeaHiSmsInfoMapper.insertAeaHiSmsInfo(newOne);
+            // 经办单位
+            String[] handleUnitIds = applyDataVo.getHandleUnitIds();
+            if (handleUnitIds != null && handleUnitIds.length > 0) {
+                aeaUnitInfoService.insertApplyNonOwnerUnitProj(aeaHiApplyinst.getApplyinstId(), applyDataVo.getProjInfoIds(), handleUnitIds);
             }
         }
     }
 
-    public String onlyInstApply(StageApplyDataPageVo stageApplyDataPageVo) throws Exception {
-        AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageApplyDataPageVo.getStageId());
-        Assert.notNull(aeaParStage, "aeaParStage is null");
-        String appId = aeaParStage.getAppId();
-        String themeVerId = aeaParStage.getThemeVerId();
-        StageApplyDataVo stageApplyDataVo = stageApplyDataPageVo.toStageApplyDataVo(appId, themeVerId);
-        String applySource = stageApplyDataVo.getApplySource();
-        String applySubject = stageApplyDataVo.getApplySubject();
-        String linkmanInfoId = stageApplyDataVo.getLinkmanInfoId();
-        String branchOrgMap = stageApplyDataVo.getBranchOrgMap();//是否分局承办，允许为空
-        AeaHiApplyinst applyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "0", branchOrgMap, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), "0",null);
-        return applyinst == null ? null : applyinst.getApplyinstId();
+    protected void confirmAeaHiApplyinst(AeaHiApplyinst aeaHiApplyinst, ApplyDataVo applyDataVo, String isTemporarySubmit) throws Exception {
+        aeaHiApplyinst.setProjInfoId(applyDataVo.getProjInfoIds()[0]);
+        aeaHiApplyinst.setIsGreenWay(StringUtils.isNotBlank(applyDataVo.getIsGreenWay()) ? applyDataVo.getIsGreenWay() : Status.OFF);
+        aeaHiApplyinst.setIsTemporarySubmit(isTemporarySubmit);
+        aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
     }
 
-    public String seriesOnlyInstApply(SeriesApplyDataVo seriesApplyDataVo) throws Exception {
-        String applySource = seriesApplyDataVo.getApplySource();
-        String applySubject = seriesApplyDataVo.getApplySubject();
-        String linkmanInfoId = seriesApplyDataVo.getLinkmanInfoId();
-        String branchOrgMap = seriesApplyDataVo.getBranchOrgMap();//是否分局承办，允许为空
-        AeaHiApplyinst applyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "1", branchOrgMap, ApplyState.RECEIVE_APPROVED_APPLY.getValue(),"0",null);
+    public String onlyInstApply(ApplyDataVo applyDataVo) throws Exception {
+        String applySource = applyDataVo.getApplySource();
+        String applySubject = applyDataVo.getApplySubject();
+        String linkmanInfoId = applyDataVo.getLinkmanInfoId();
+        String branchOrgMap = applyDataVo.getBranchOrgMap();//是否分局承办，允许为空
+        AeaHiApplyinst applyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, applyDataVo.getApplyType().getValue(), branchOrgMap, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), "0",null);
         return applyinst.getApplyinstId();
+    }
+
+    protected void doStartApply(AeaHiApplyinst aeaHiApplyinst, String comments, String currentWindowId) throws Exception {
+        Assert.hasText(aeaHiApplyinst.getAppinstId(), "流程模板实例id不能为空");
+        Assert.hasText(aeaHiApplyinst.getAppId(), "流程模板id不能为空");
+
+        String appinstId = aeaHiApplyinst.getAppinstId();
+        String appId = aeaHiApplyinst.getAppId();
+        String procInstId;
+        // 如果之前已经打印过回执，这时候流程是挂起状态
+        if ("2".equals(aeaHiApplyinst.getIsTemporarySubmit())) {
+            applyCommonService.updateApplyProcessVariable(aeaHiApplyinst);
+            // 实例和流程已经启动，下一节点是部门审批
+            ActStoAppinst actStoAppinst = actStoAppinstService.getActStoAppinstById(appinstId);
+            Assert.notNull(actStoAppinst, "找不到流程模板实例: appinstId: " + appinstId);
+            procInstId = actStoAppinst.getProcinstId();
+            bpmProcessService.activateProcessInstanceById(actStoAppinst.getProcinstId());//激活流程
+        } else {
+            // 启动主流程
+            BpmProcessInstance processInstance = aeaBpmProcessService.startFlow(appId, appinstId, aeaHiApplyinst);
+            Assert.isTrue(processInstance != null && processInstance.getProcessInstance() != null, "流程启动失败！");
+            procInstId = processInstance.getProcessInstance().getId();
+        }
+        // 查询出流程第一个节点
+        List<Task> tasks = taskService.createTaskQuery().processInstanceId(procInstId).list();
+        if (tasks.size() > 0) {
+            Task task = tasks.get(0);
+            Set<String> iteminstIds = updateLogInstTaskId(aeaHiApplyinst, task);
+
+            //收件意见
+            bpmTaskService.addTaskComment(task.getId(), task.getProcessInstanceId(), comments);
+            //推动流程流转
+            taskService.complete(task.getId(), new String[]{"bumenshenpi"}, null);
+
+            for (String iteminstId : iteminstIds) {
+                // 更新事项状态
+                aeaHiIteminstService.updateAeaHiIteminstStateAndInsertTriggerAeaLogItemStateHist(iteminstId, task.getId(), appinstId, ItemStatus.ACCEPT_DEAL.getValue(), SecurityContext.getCurrentOrgId());
+            }
+
+            // 更新申请状态
+            aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(aeaHiApplyinst.getApplyinstId(), task.getId(), appinstId, ApplyState.ACCEPT_DEAL.getValue(), currentWindowId);
+
+        } else {
+            throw new RuntimeException("流程流转失败！");
+        }
+    }
+
+    protected void doStartApplyAndSuspend(AeaHiApplyinst aeaHiApplyinst) throws Exception {
+        Assert.hasText(aeaHiApplyinst.getAppinstId(), "流程模板实例id不能为空");
+        Assert.hasText(aeaHiApplyinst.getAppId(), "流程模板id不能为空");
+
+        String appinstId = aeaHiApplyinst.getAppinstId();
+        String appId = aeaHiApplyinst.getAppId();
+
+        String procInstId;
+        // 如果之前已经打印过回执，这时候流程是挂起状态
+        if ("2".equals(aeaHiApplyinst.getIsTemporarySubmit())) {
+            applyCommonService.updateApplyProcessVariable(aeaHiApplyinst);
+            ActStoAppinst actStoAppinst = actStoAppinstService.getActStoAppinstById(aeaHiApplyinst.getAppinstId());
+            procInstId = actStoAppinst.getProcinstId();
+        } else {
+            // 启动主流程
+            BpmProcessInstance processInstance = aeaBpmProcessService.startFlow(appId, appinstId, aeaHiApplyinst);
+            Assert.isTrue(processInstance != null && processInstance.getProcessInstance() != null, "流程启动失败！");
+            procInstId = processInstance.getProcessInstance().getId();
+            bpmProcessService.suspendProcessInstanceById(procInstId);
+        }
+        List<Task> tasks = taskService.createTaskQuery().processInstanceId(procInstId).list();
+        if (tasks.size() > 0) {
+            //6.流程发起后，更新初始事项历史的taskId
+            updateLogInstTaskId(aeaHiApplyinst, tasks.get(0));
+        }
+    }
+
+    protected void doInadmissible(AeaHiApplyinst aeaHiApplyinst, String comments) throws Exception {
+        Assert.hasText(aeaHiApplyinst.getAppinstId(), "流程模板实例id不能为空");
+        Assert.hasText(aeaHiApplyinst.getIteminstId(), "事项实例id不能为空");
+
+        String appinstId = aeaHiApplyinst.getAppinstId();
+
+        ActStoAppinst actStoAppinst = actStoAppinstService.getActStoAppinstById(appinstId);
+        String procInstId;
+        if (actStoAppinst == null) {
+            // 启动主流程
+            BpmProcessInstance processInstance = aeaBpmProcessService.startFlow(aeaHiApplyinst.getAppId(), appinstId, aeaHiApplyinst);
+            Assert.isTrue(processInstance != null && processInstance.getProcessInstance() != null, "流程启动失败！");
+            procInstId = processInstance.getProcessInstance().getId();
+        } else {
+            procInstId = actStoAppinst.getProcinstId();
+        }
+        //推动流程转向结束
+        List<Task> list = taskService.createTaskQuery().processInstanceId(procInstId).list();
+        if (list != null && list.size() > 0) {
+            Task task = list.get(0);
+            try {
+                bpmProcessService.activateProcessInstanceById(task.getProcessInstanceId());
+            } catch (ProcessAlreadyActivateException e) {
+                log.info(e.getMessage());
+            }
+            //收件意见
+            bpmTaskService.addTaskComment(task.getId(), task.getProcessInstanceId(), comments);
+            //推动流程流转
+            taskService.complete(task.getId(), new String[]{"jieshu"}, null);
+
+            String opuWinId = aeaServiceWindowService.getCurrentUserWindow() == null ? "" : aeaServiceWindowService.getCurrentUserWindow().getWindowId();
+            String currentOrgId = SecurityContext.getCurrentOrgId();
+
+            // 更改 事项实例状态 和 新增事项日志记录为 不予受理
+            aeaHiIteminstService.updateAeaHiIteminstStateAndInsertTriggerAeaLogItemStateHist(aeaHiApplyinst.getIteminstId(), task.getId(), appinstId, ItemStatus.OUT_SCOPE.getValue(), currentOrgId);
+            // 更改 申报实例状态 和 新增申报日志实例记录
+            aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(aeaHiApplyinst.getApplyinstId(), task.getId(), appinstId, ApplyState.OUT_SCOPE.getValue(), opuWinId);
+        }
+    }
+
+    protected Set<String> updateLogInstTaskId(AeaHiApplyinst aeaHiApplyinst, Task task) {
+        Set<String> iteminstIds = new HashSet<>();
+        if (ApplyType.SERIES.getValue().equals(aeaHiApplyinst.getIsSeriesApprove())) {
+            iteminstIds.add(aeaHiApplyinst.getIteminstId());
+        } else if (ApplyType.UNIT.getValue().equals(aeaHiApplyinst.getIsSeriesApprove())) {
+            iteminstIds.addAll(aeaHiApplyinst.getIteminstIds());
+        }
+        Assert.notEmpty(iteminstIds, "更新事项日志实例状态时，找不到对应的事项实例");
+        for (String iteminstId : iteminstIds) {
+            // 流程发起后，更新初始事项历史的taskId
+            AeaLogItemStateHist logItemStateHist = aeaLogItemStateHistService.getInitStateAeaLogItemStateHist(iteminstId, aeaHiApplyinst.getAppinstId());
+            logItemStateHist.setTaskinstId(task.getId());
+            aeaLogItemStateHistService.updateAeaLogItemStateHist(logItemStateHist);
+        }
+
+        // 流程发起后，更新初始申请历史的taskId
+        AeaLogApplyStateHist applyStateHist = aeaLogApplyStateHistService.getInitStateAeaLogApplyStateHist(aeaHiApplyinst.getApplyinstId(), aeaHiApplyinst.getAppinstId());
+        applyStateHist.setTaskinstId(task.getId());
+        aeaLogApplyStateHistService.updateAeaLogApplyStateHist(applyStateHist);
+
+        return iteminstIds;
+    }
+
+    protected void unstashCommonProperties(UnStashVo unStashVo, String applyinstId) throws Exception {
+        AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+        unStashVo.setAeaHiApplyinst(aeaHiApplyinst);
+
+        List<AeaApplyinstProj> aeaApplyinstProjs = aeaApplyinstProjMapper.getAeaApplyinstProjByApplyinstId(applyinstId);
+        Assert.state(aeaApplyinstProjs.size() > 0, "根据申报实例找不到对应的项目信息, applyinstId: " + applyinstId);
+        AeaProjInfo aeaProjInfo = aeaProjInfoMapper.getAeaProjInfoById(aeaApplyinstProjs.get(0).getProjInfoId());
+        unStashVo.setProjInfoId(aeaProjInfo.getProjInfoId());
+        unStashVo.setThemeId(aeaProjInfo.getThemeId());
     }
 }
