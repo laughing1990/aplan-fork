@@ -59,7 +59,11 @@ public class RestUserCenterController {
     public ModelAndView toMyCloundSpacesPage(){
         return new ModelAndView("mall/userCenter/components/my-cloundSpaces");
     }
-
+    @GetMapping("toParallelDeclarePage")
+    @ApiOperation(value = "跳转并联审批页面")
+    public ModelAndView toParallelDeclarePage () throws Exception {
+        return new ModelAndView("mall/apply/index");
+    }
     @GetMapping("/toMyCertificateLibraryPage")
     @ApiOperation(value = "我的证照")
     public ModelAndView toMyCertificateLibraryPage(){
