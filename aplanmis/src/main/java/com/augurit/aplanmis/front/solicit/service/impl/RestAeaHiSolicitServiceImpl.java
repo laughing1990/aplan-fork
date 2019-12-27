@@ -34,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author:chendx
@@ -277,7 +278,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                     i++;
 
                     //如果是当前审批人需要填写意见的，则单独拿出来，等待填写
-                    if (currUserId != null && currUserId.equals(solicitDetailUser.getUserId()) && solicitDetailUser.getFillTime() == null){
+                    if (currUserId != null && currUserId.equals(solicitDetailUser.getUserId()) && solicitDetailUser.getFillTime() == null) {
                         currDetailUser = solicitDetailUser;
                     }
 
@@ -337,19 +338,19 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
             for (AeaHiSolicit hiSolicit : solicits) {
                 List<AeaHiSolicitDetail> details = detailMap.get(hiSolicit.getSolicitId());
                 //时限单位转换
-                if(hiSolicit.getSolicitDaysUnit() != null){
+                if (hiSolicit.getSolicitDaysUnit() != null) {
                     hiSolicit.setSolicitDaysUnitCn(TimeruleUnit.valueOf(hiSolicit.getSolicitDaysUnit()).getName());
                 }
                 //如果是事项征求则查询事项名称
-                if(SolicitConstant.SOLICIT_TYPE_ITEM.equals(hiSolicit.getSolicitType())){
+                if (SolicitConstant.SOLICIT_TYPE_ITEM.equals(hiSolicit.getSolicitType())) {
                     List<String> itemVerIds = Lists.newArrayList();
-                    for(int i=0,len=details.size(); i<len; i++){
+                    for (int i = 0, len = details.size(); i < len; i++) {
                         itemVerIds.add(details.get(i).getItemVerId());
                     }
                     List<AeaItemBasic> aeaItemBasics = aeaItemBasicMapper.getAeaItemBasicListByItemVerIds(itemVerIds);
-                    for(int i=0,len=details.size(); i<len; i++){
-                        for(int j=0,lenj=aeaItemBasics.size(); j<lenj; j++){
-                            if(details.get(i).getItemVerId().equals(aeaItemBasics.get(j).getItemVerId())){
+                    for (int i = 0, len = details.size(); i < len; i++) {
+                        for (int j = 0, lenj = aeaItemBasics.size(); j < lenj; j++) {
+                            if (details.get(i).getItemVerId().equals(aeaItemBasics.get(j).getItemVerId())) {
                                 details.get(i).setItemName(aeaItemBasics.get(j).getItemName());
                                 break;
                             }
@@ -358,16 +359,16 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                 }
 
                 //判断当前发起的征求信息是否可以被结束，填写汇总意见
-                if(currUserId.equals(hiSolicit.getInitiatorUserId())){
+                if (currUserId.equals(hiSolicit.getInitiatorUserId())) {
                     //判断当前意见征求是否各个部门已经给出了审批意见结果
                     boolean hasDone = true;
-                    for(int i=0,len=details.size(); i<len; i++){
-                        if(details.get(i).getDetailEndTime() == null || !SolicitConstant.SOLICIT_STATE_DONE.equals(details.get(i).getDetailState())){
+                    for (int i = 0, len = details.size(); i < len; i++) {
+                        if (details.get(i).getDetailEndTime() == null || !SolicitConstant.SOLICIT_STATE_DONE.equals(details.get(i).getDetailState())) {
                             hasDone = false;
                             break;
                         }
                     }
-                    if(hasDone) {
+                    if (hasDone) {
                         hiSolicit.setSolicitCanBeFinish("1");
                     }
                 }
@@ -543,14 +544,31 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
     }
 
     private void loadRemainingOrOverTimeText(List<AeaHiSolicitVo> voList) throws Exception {
+        Map<String, List<String>> map = new HashMap<>();//保存根据applyinstId已经查询到的solicitId
+        Set<String> applyinstIds = new HashSet<>();//保存已经查询的applyinstId
         for (AeaHiSolicitVo info : voList) {
             if (info == null) {
                 return;
             }
+            String solicitId = info.getSolicitId();
+            String applyinstId = info.getApplyinstId();
+            List<String> solicitIds;
+            if (applyinstIds.contains(applyinstId)) {//已经查询过了
+                solicitIds = map.get(applyinstId);
+//                info.setSolicitIndex(solicitIds.indexOf(solicitId) + 1);
+            } else {
+                //不存在
+                applyinstIds.add(applyinstId);
+                // 查询当前申报实例下的发起的总的意见征询数量
+                List<AeaHiSolicit> solicits = aeaHiSolicitMapper.getAeaHiSolicitByApplyinstId(applyinstId);
+                solicitIds = solicits.stream().map(AeaHiSolicit::getSolicitId).collect(Collectors.toList());
+                map.put(applyinstId, solicitIds);
+
+            }
+            info.setSolicitIndex(solicitIds.indexOf(solicitId) + 1);
             info.setPromoter(info.getInitiatorUserId().equals(SecurityContext.getCurrentUserId()));
             String busType = info.getBusType();
             if (true) {//"YCZX".equals(busType)
-                String solicitId = info.getSolicitId();
                 List<AeaHiSolicitDetail> solicitDetail = aeaHiSolicitDetailMapper.getAeaHiSolicitDetailBySolicitId(solicitId);
                 int allNum = solicitDetail.size();
                 info.setAllProgressNum(allNum);
