@@ -44,4 +44,11 @@ public class SolicitConstant {
     //任务动作，2表示添加同一委办局的其他人员进来
     public static final String SOLICIT_TASK_ACTION_ADD = "2";
 
+    //审批结论 ，0表示不通过或不同意
+    public static final String SOLICIT_CONCLUSION_FLAG_BTG = "0";
+    //审批结论 ，1表示通过或同意
+    public static final String SOLICIT_CONCLUSION_FLAG_TG = "1";
+    //审批结论 ，2表示不涉及
+    public static final String SOLICIT_CONCLUSION_FLAG_BSJ = "2";
+
 }

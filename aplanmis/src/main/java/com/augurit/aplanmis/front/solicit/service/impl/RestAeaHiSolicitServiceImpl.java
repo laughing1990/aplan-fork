@@ -3,6 +3,7 @@ package com.augurit.aplanmis.front.solicit.service.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.augurit.agcloud.bpm.common.domain.*;
+import com.augurit.agcloud.bpm.common.engine.BpmProcessService;
 import com.augurit.agcloud.bpm.common.mapper.*;
 import com.augurit.agcloud.bpm.common.service.ActStoTimeruleService;
 import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
@@ -98,6 +99,9 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
 
     @Autowired
     private AeaHiIteminstService aeaHiIteminstService;
+
+    @Autowired
+    private BpmProcessService bpmProcessService;
 
     @Override
     public List<OpuOmOrg> listOrg(String isRoot, String parentOrgId) throws Exception {
@@ -242,6 +246,10 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
             if (detailUsers.size() > 0) {
                 aeaHiSolicitDetailUserMapper.batchInsertAeaHiSolicitDetailUser(detailUsers);
             }
+        }
+        //处理流程挂起操作
+        if(StringUtils.isNotBlank(aeaHiSolicit.getProcinstId()) && !bpmProcessService.isProcessSuspended(aeaHiSolicit.getProcinstId())){
+            bpmProcessService.suspendProcessInstanceById(aeaHiSolicit.getProcinstId());
         }
     }
 
@@ -464,6 +472,11 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
         aeaHiSolicit.setSolicitState(SolicitConstant.SOLICIT_STATE_DONE);
 
         aeaHiSolicitMapper.updateAeaHiSolicit(aeaHiSolicit);
+        //处理流程激活操作，先默认是通过则激活流程
+        if(StringUtils.isNotBlank(aeaHiSolicit.getProcinstId()) && SolicitConstant.SOLICIT_CONCLUSION_FLAG_TG.equals(aeaHiSolicit.getConclusionFlag()) &&
+                bpmProcessService.isProcessSuspended(aeaHiSolicit.getProcinstId())){
+            bpmProcessService.activateProcessInstanceById(aeaHiSolicit.getProcinstId());
+        }
     }
 
     /**
