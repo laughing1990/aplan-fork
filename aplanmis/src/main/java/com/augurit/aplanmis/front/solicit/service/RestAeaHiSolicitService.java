@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.front.solicit.service;
 
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
+import com.augurit.aplanmis.common.domain.AeaHiIteminst;
 import com.augurit.aplanmis.common.domain.AeaHiSolicit;
 import com.augurit.aplanmis.common.domain.AeaHiSolicitDetailUser;
 import com.augurit.aplanmis.common.vo.solicit.AeaHiSolicitVo;
@@ -58,4 +59,7 @@ public interface RestAeaHiSolicitService {
      * @throws Exception e
      */
     void signSolicitDetail(String detailUserId) throws Exception;
+
+    public List<AeaHiIteminst> getApplyItems(String applyinstId) throws Exception;
+
 }

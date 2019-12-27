@@ -19,6 +19,7 @@ import com.augurit.aplanmis.common.constants.TimeruleInstState;
 import com.augurit.aplanmis.common.constants.TimeruleUnit;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.vo.solicit.AeaHiSolicitVo;
 import com.augurit.aplanmis.common.vo.solicit.QueryCondVo;
 import com.augurit.aplanmis.front.constant.SolicitConstant;
@@ -94,6 +95,9 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
 
     @Autowired
     private AeaItemBasicMapper aeaItemBasicMapper;
+
+    @Autowired
+    private AeaHiIteminstService aeaHiIteminstService;
 
     @Override
     public List<OpuOmOrg> listOrg(String isRoot, String parentOrgId) throws Exception {
@@ -803,4 +807,8 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
         return timeText;
     }
 
+    @Override
+    public List<AeaHiIteminst> getApplyItems(String applyinstId) throws Exception {
+        return aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
+    }
 }
