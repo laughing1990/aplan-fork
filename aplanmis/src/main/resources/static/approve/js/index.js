@@ -603,11 +603,11 @@ var vm = new Vue({
           {required: true, validator: checkPhoneNum, trigger: 'blur'},
         ]
       },
-      // 意见征求 start
+      // 意见征询 start
       solicitOpinionVisible: false,
       solicitOpinionLoading: false,
       soActiveTabIndex: 0,
-      soTabList: ['按事项征求', '按部门征求'],
+      soTabList: ['按事项征询', '按部门征询'],
       soTableData1: [],
       soTableData2: [],
       soTabOrgList: [],
@@ -628,9 +628,9 @@ var vm = new Vue({
         isCalcTimerule: '1',
       },
       solicitFormRules: {
-        solicitTopic: [{required: true, message: '请填写征求主题', trigger: 'blur'}],
-        solicitContent: [{required: true, message: '请填写征求内容', trigger: 'blur'}],
-        solicitDueDays: [{required: true, message: '请填写征求时限', trigger: 'blur'}],
+        solicitTopic: [{required: true, message: '请填写征询主题', trigger: 'blur'}],
+        solicitContent: [{required: true, message: '请填写征询内容', trigger: 'blur'}],
+        solicitDueDays: [{required: true, message: '请填写征询时限', trigger: 'blur'}],
       },
       soRulesList: [],
       soParallelItems: [],
@@ -652,27 +652,27 @@ var vm = new Vue({
       curWidth: (document.documentElement.clientWidth || document.body.clientWidth),//当前屏幕宽度
       curHeight: (document.documentElement.clientHeight || document.body.clientHeight),//当前屏幕高度
       allItemsData:[],
-      isYjzq: false, // 是否为意见征求页面
-      // 意见征求  end
+      isYjzq: false, // 是否为意见征询页面
+      // 意见征询  end
     }
   },
   filters: {
-    // 意见征求状态转换
+    // 意见征询状态转换
     changeSolicitState: function (val) {
-      var arr = ['未开始', '征求中', '已完成', '已终止'];
+      var arr = ['未开始', '征询中', '已完成', '已终止'];
       return arr[val] || '-';
     },
-    // 意见征求类型转换
+    // 意见征询类型转换
     changeSolicitType: function (val) {
       var obj = {
-        'i': '按事项征求',
-        'd': '按部门征求',
+        'i': '按事项征询',
+        'd': '按部门征询',
       }
       return obj[val] || '-';
     },
     // 部门人员意见状态转换
     changeBmOpinType: function (val) {
-      if (val == 1) return '征求中';
+      if (val == 1) return '征询中';
       if (val == 2) return '已完成';
       return '处理中';
     },
@@ -709,7 +709,7 @@ var vm = new Vue({
     },
   },
   methods: {
-    // 意见征求 start-----------------------
+    // 意见征询 start-----------------------
     clickStartSolicit: function () {
       var vm = this;
       if (vm.allItemsData.length){
@@ -734,7 +734,7 @@ var vm = new Vue({
         vm.$message.error('加载事项列表失败');
       });
     },
-    // 发起征求
+    // 发起征询
     startSolicit: function () {
       var vm = this;
       var list1 = this.$refs.soParallelItems.selection || [];
@@ -754,7 +754,7 @@ var vm = new Vue({
         params.solicitDueDays = vm.solicitForm.solicitDueDays;
       }
       if (this.solicitForm.solicitType == 'i') {
-        // 按事项征求
+        // 按事项征询
         if (!list1.length) {
           return this.$message.error('请至少勾选一个事项')
         }
@@ -775,7 +775,7 @@ var vm = new Vue({
           return vm.$message.error('请选择行政区划或者实施主体');
         }
       } else if (this.solicitForm.solicitType == 'd') {
-        // 按部门征求
+        // 按部门征询
         if (!vm.soCheckedOrgList.length) {
           return vm.$message.error('请至少勾选一个部门');
         }
@@ -798,14 +798,14 @@ var vm = new Vue({
           }, function (res) {
             vm.solicitOpinionLoading = false;
             if (res.success) {
-              vm.$message.success('意见征求发起成功');
+              vm.$message.success('意见征询发起成功');
               delayRefreshWindow();
             } else {
-              vm.$message.error(res.message || '意见征求发起失败');
+              vm.$message.error(res.message || '意见征询发起失败');
             }
           }, function () {
             vm.solicitOpinionLoading = false;
-            vm.$message.error('意见征求发起失败');
+            vm.$message.error('意见征询发起失败');
           })
         }
       });
@@ -815,11 +815,11 @@ var vm = new Vue({
       row.orgId = item.orgId;
       row.orgName = item.orgName;
     },
-    // 关闭征求弹窗
+    // 关闭征询弹窗
     closeSoDialog: function () {
       this.$refs.solicitForm.clearValidate();
     },
-    // 打开征求弹窗
+    // 打开征询弹窗
     openSoDialog: function () {
       this.getTimeRuleList();
       this.allItemsData.forEach(function (u) {
@@ -931,7 +931,7 @@ var vm = new Vue({
       var arr = ['', '', 'done', 'done'];
       return arr[val] || '';
     },
-    // 发起人员结束意见征求
+    // 发起人员结束意见征询
     ensureEndSolicit: function (item) {
       var vm = this;
       if (!(vm.solicitBmForm.userOpinion && vm.solicitBmForm.userOpinion.length)) {
@@ -1037,14 +1037,14 @@ var vm = new Vue({
         vm.parentPageLoading = false;
       })
     },
-    // 加载意见征求历史记录
+    // 加载意见征询历史记录
     loadSolicitData: function () {
       var vm = this;
       this.requestSolicit('YJZQ', function (data) {
         vm.solicitList = data || [];
       });
     },
-    // 获取意见征求等历史记录通用接口
+    // 获取意见征询等历史记录通用接口
     requestSolicit: function (typeCode, cb) {
       var vm = this;
       // if (vm) return null;
@@ -1062,14 +1062,14 @@ var vm = new Vue({
         if (res.success) {
           typeof cb == 'function' && cb(res.content);
         } else {
-          vm.$message.error(res.message || '获取意见征求历史数据失败');
+          vm.$message.error(res.message || '获取意见征询历史数据失败');
         }
       }, function () {
         vm.parentPageLoading = false;
-        vm.$message.error('获取意见征求历史数据失败');
+        vm.$message.error('获取意见征询历史数据失败');
       })
     },
-    // 意见征求 end
+    // 意见征询 end
     // 打开新增或者编辑联系人弹窗
     openEditLinkMan: function (id) {
       var vm = this;
@@ -2917,7 +2917,7 @@ var vm = new Vue({
         {label: '材料附件', labelId: "2", src: './materialAnnex.html'},
         {label: '审批过程', labelId: "3", src: './opinionForm.html'},
         {label: '材料补正', labelId: "4", src: './opinionForm.html'},
-        {label: '意见征求', labelId: "solicit", src: './opinionForm.html'},
+        {label: '意见征询', labelId: "solicit", src: './opinionForm.html'},
         {label: '撤件历史', labelId: "appCancel", src: './opinionForm.html'},
         {label: '特殊程序', labelId: "5", src: './opinionForm.html'},
         {label: '批文批复', labelId: "6", src: './approvalOpinions.html',}
@@ -3051,7 +3051,7 @@ var vm = new Vue({
       });
       // 是否有撤件历史
       loadTab('appCancel', 'hasAppCancel', vm.loadAppCancelData);
-      // 是否有意见征求
+      // 是否有意见征询
       loadTab('solicit', 'hasSolicit', vm.loadSolicitData);
       
       // 加载对应标签数据
@@ -3088,12 +3088,12 @@ var vm = new Vue({
         elementRender: '<button class="btn btn-outline-info" onclick="showDiagramDialog()">查看流程图</button>'
       }];
       var approverBtn = [{
-        elementName: "意见征求",
+        elementName: "意见征询",
         elementCode: "wfBusSave",
         columnType: "button",
         isReadonly: '0',
         isHidden: '0',
-        elementRender: '<button class="btn btn-outline-info" onclick="clickStartSolicit()">意见征求</button>'
+        elementRender: '<button class="btn btn-outline-info" onclick="clickStartSolicit()">意见征询</button>'
       }, {
         elementName: "材料补正",
         elementCode: "wfBusSave",
