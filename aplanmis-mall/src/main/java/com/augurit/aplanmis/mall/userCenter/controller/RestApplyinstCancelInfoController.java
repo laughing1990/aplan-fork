@@ -104,7 +104,7 @@ public class RestApplyinstCancelInfoController {
 
 
 
-    @GetMapping("uploadAttFile")
+    @PostMapping("uploadAttFile")
     @ApiOperation(value = "撤回申报 --> 文件上传接口")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "附件ID", name = "attId", required = true, dataType = "string")
