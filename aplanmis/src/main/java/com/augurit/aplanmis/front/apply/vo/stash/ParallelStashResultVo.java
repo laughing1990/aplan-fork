@@ -1,6 +1,6 @@
 package com.augurit.aplanmis.front.apply.vo.stash;
 
-import com.augurit.aplanmis.front.apply.vo.ParallelItemApplyinstVo;
+import com.augurit.aplanmis.front.apply.vo.PropulsionItemApplyinstVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -17,5 +17,5 @@ public class ParallelStashResultVo {
     private String applyinstId;
 
     @ApiModelProperty(value = "并行申报实例id")
-    private List<ParallelItemApplyinstVo> seriesApplyinstIds;
+    private List<PropulsionItemApplyinstVo> seriesApplyinstIds;
 }

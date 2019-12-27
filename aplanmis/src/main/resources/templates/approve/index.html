@@ -860,6 +860,7 @@
                     <el-form-item label="是否同意" require>
                       <el-radio v-model="solicitBmForm.userConclusion" label="1">同意</el-radio>
                       <el-radio v-model="solicitBmForm.userConclusion" label="0">不同意</el-radio>
+                      <el-radio v-model="solicitBmForm.userConclusion" label="2">不涉及</el-radio>
                     </el-form-item>
                     <el-form-item label="意见描述" require prop="userOpinion">
                       <el-input type="textarea" v-model="solicitBmForm.userOpinion" :rows="3"
@@ -929,16 +930,16 @@
                             </template>
                           </el-table-column>
                           <el-table-column label="人员" property="userName" width="100"></el-table-column>
-                          <el-table-column label="意见状态" property="userConclusion" width="100">
-                            <template slot-scope="scope">
-                                <span class="status-span" :class="[getStatusClass(scope.row.userConclusion)]">
-                                  {{scope.row.userConclusion|changeBmOpinType}}
-                                </span>
-                            </template>
-                          </el-table-column>
                           <el-table-column label="时间" property="fillTime" width="160">
                             <template slot-scope="scope">
                               {{scope.row.fillTime|formatDate}}
+                            </template>
+                          </el-table-column>
+                          <el-table-column label="意见结论" property="userConclusion" width="100">
+                            <template slot-scope="scope">
+                                <span class="status-span" :class="[getStatusClass2(scope.row.userConclusion)]">
+                                  {{scope.row.userConclusion|changeBmOpinType}}
+                                </span>
                             </template>
                           </el-table-column>
                           <el-table-column label="意见描述" property="userOpinion"></el-table-column>

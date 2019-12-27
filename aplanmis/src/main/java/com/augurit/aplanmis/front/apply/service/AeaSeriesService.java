@@ -271,15 +271,9 @@ public class AeaSeriesService extends RestApplyService {
      * 单项申报 暂存
      */
     public String stash(StashVo.SeriesStashVo seriesStashVo) throws Exception {
-        String applySubject = seriesStashVo.getApplySubject();
-        String linkmanInfoId = seriesStashVo.getLinkmanInfoId();
-        String projInfoId = seriesStashVo.getProjInfoId();
-        String branchOrgMap = seriesStashVo.getBranchOrgMap();
-        String itemVerId = seriesStashVo.getItemVerId();
-
-        Assert.hasText(applySubject, "applySubject is null");
-        Assert.hasText(linkmanInfoId, "linkmanInfoId is null");
-        Assert.hasText(projInfoId, "projInfoId is null");
+        Assert.hasText(seriesStashVo.getApplySubject(), "applySubject is null");
+        Assert.hasText(seriesStashVo.getLinkmanInfoId(), "linkmanInfoId is null");
+        Assert.hasText(seriesStashVo.getProjInfoId(), "projInfoId is null");
 
         AeaHiApplyinst aeaHiApplyinst;
         AeaHiSeriesinst aeaHiSeriesinst = null;
@@ -297,14 +291,14 @@ public class AeaSeriesService extends RestApplyService {
             aeaHiSeriesinst = aeaHiSeriesinstService.getAeaHiSeriesinstByApplyinstId(applyinstId);
         } else {
             aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(ApplySource.WIN.getValue()
-                    , applySubject, linkmanInfoId, ApplyType.SERIES.getValue(), branchOrgMap
+                    , seriesStashVo.getApplySubject(), seriesStashVo.getLinkmanInfoId(), ApplyType.SERIES.getValue(), seriesStashVo.getBranchOrgMap()
                     , ApplyState.RECEIVE_APPROVED_APPLY.getValue(), Status.ON, seriesStashVo.getParallelApplyinstId());
             applyinstId = aeaHiApplyinst.getApplyinstId();
         }
         aeaHiApplyinst.setIsGreenWay(seriesStashVo.getIsGreenWay());
         aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
 
-        applyCommonService.bindApplyinstProj(projInfoId, applyinstId, SecurityContext.getCurrentUserId());
+        applyCommonService.bindApplyinstProj(seriesStashVo.getProjInfoId(), applyinstId, SecurityContext.getCurrentUserId());
         if (aeaHiSeriesinst == null) {
             // 预先生成流程模板实例ID
             String appinstId = UUID.randomUUID().toString();
@@ -313,13 +307,12 @@ public class AeaSeriesService extends RestApplyService {
         }
 
         if (StringUtils.isNotBlank(seriesStashVo.getStageId()) && StringUtils.isNotBlank(seriesStashVo.getItemVerId())) {
-            aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), itemVerId, branchOrgMap, null, aeaHiSeriesinst.getAppinstId());
+            aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), seriesStashVo.getItemVerId(), seriesStashVo.getBranchOrgMap(), null, aeaHiSeriesinst.getAppinstId());
 
             String[] stateIds = seriesStashVo.getStateIds();
             if (stateIds != null && stateIds.length > 0) {
                 aeaHiItemStateinstService.batchInsertAeaHiItemStateinst(applyinstId, aeaHiSeriesinst.getSeriesinstId(), null, stateIds, SecurityContext.getCurrentUserName());
             }
-
             aeaHiItemInoutinstService.batchInsertAeaHiItemInoutinst(seriesStashVo.getMatinstsIds(), applyinstId, SecurityContext.getCurrentUserName());
         }
         return aeaHiApplyinst.getApplyinstId();

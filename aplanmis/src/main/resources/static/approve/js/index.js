@@ -703,8 +703,9 @@ var vm = new Vue({
     },
     // 部门人员意见状态转换
     changeBmOpinType: function (val) {
-      if (val == 1) return '征询中';
-      if (val == 2) return '已完成';
+      if (val == 0) return '不同意';
+      if (val == 1) return '同意';
+      if (val == 2) return '不涉及';
       return '处理中';
     },
     defaultManFilter: function (value) {
@@ -979,6 +980,11 @@ var vm = new Vue({
     getStatusClass: function (status) {
       var val = +status;
       var arr = ['', '', 'done', 'done'];
+      return arr[val] || '';
+    },
+    getStatusClass2: function (status) {
+      var val = +status;
+      var arr = ['', 'done', 'unuse'];
       return arr[val] || '';
     },
     // 发起人员结束意见征询
@@ -3128,6 +3134,13 @@ var vm = new Vue({
     initButtons: function () {
       var vm = this;
       var defaultBtn = [{
+        elementName: "意见征询",
+        elementCode: "wfBusSave",
+        columnType: "button",
+        isReadonly: '0',
+        isHidden: '0',
+        elementRender: '<button class="btn btn-outline-info" onclick="clickStartSolicit()">意见征询</button>'
+      }, {
         elementName: "全景图",
         elementCode: "wfBusSave",
         columnType: "button",
@@ -3143,13 +3156,6 @@ var vm = new Vue({
         elementRender: '<button class="btn btn-outline-info" onclick="showDiagramDialog()">查看流程图</button>'
       }];
       var approverBtn = [{
-        elementName: "意见征询",
-        elementCode: "wfBusSave",
-        columnType: "button",
-        isReadonly: '0',
-        isHidden: '0',
-        elementRender: '<button class="btn btn-outline-info" onclick="clickStartSolicit()">意见征询</button>'
-      }, {
         elementName: "材料补正",
         elementCode: "wfBusSave",
         columnType: "button",
@@ -3159,13 +3165,6 @@ var vm = new Vue({
       }];
       if (isDevelop) {
         approverBtn = [{
-          elementName: "意见征询",
-          elementCode: "wfBusSave",
-          columnType: "button",
-          isReadonly: '0',
-          isHidden: '0',
-          elementRender: '<button class="btn btn-outline-info" onclick="clickStartSolicit()">意见征询</button>'
-        }, {
           elementName: "联合评审",
           elementCode: "wfBusSave",
           columnType: "button",
