@@ -319,6 +319,30 @@
             </if>
         </if>
     </sql>
+
+    <sql id="solicitAliasCol">
+        ${alias}.SOLICIT_ID,
+        ${alias}.SOLICIT_TYPE,
+        ${alias}.BUS_TYPE,
+        ${alias}.PROCINST_ID,
+        ${alias}.HI_TASKINST_ID,
+        ${alias}.SOLICIT_CODE,
+        ${alias}.SOLICIT_TOPIC,
+        ${alias}.APPLYINST_ID,
+        ${alias}.INITIATOR_ORG_ID,
+        ${alias}.INITIATOR_ORG_NAME,
+        ${alias}.INITIATOR_USER_ID,
+        ${alias}.INITIATOR_USER_NAME,
+        ${alias}.SOLICIT_DUE_DAYS,
+        ${alias}.SOLICIT_STATE,
+        ${alias}.CONCLUSION_FLAG,
+        ${alias}.CONCLUSION_DESC,
+        ${alias}.CONCLUSION_TIME,
+        ${alias}.CONCLUSION_USER_ID,
+        ${alias}.COUNT_LIMIT,
+        ${alias}.CONCLUSION_USER_NAME
+    </sql>
+
     <!--查询意见征求，一次征询，部门征求等意见列表-->
     <select id="listSolicit" resultType="com.augurit.aplanmis.common.vo.solicit.AeaHiSolicitVo">
 
@@ -341,6 +365,12 @@
         ahs.INST_STATE as instState,
         ahs.SOLICIT_DUE_DAYS as solicitDueDays,
         ahs.SOLICIT_STATE as solicitState,
+        ahs.CONCLUSION_FLAG as conclusionFlag,
+        ahs.CONCLUSION_DESC as conclusionDesc,
+        ahs.CONCLUSION_TIME as conclusionTime,
+        ahs.CONCLUSION_USER_ID as conclusionUserId,
+        ahs.COUNT_LIMIT as countLimit,
+        ahs.CONCLUSION_USER_NAME as conclusionUserName,
         ahs.taskId as taskId,
         ahs.taskName as taskName,
         ahs.TASK_DEF_KEY_ as taskDefKey,
@@ -362,25 +392,16 @@
         api.LOCAL_CODE as localCode
         FROM
         (
-        SELECT DISTINCT
-        ahs.SOLICIT_ID,
-        ahs.SOLICIT_TYPE,
-        ahs.BUS_TYPE,
-        ahs.PROCINST_ID,
-        ahs.HI_TASKINST_ID,
-        ahs.SOLICIT_CODE,
-        ahs.SOLICIT_TOPIC,
-        ahs.APPLYINST_ID,
-        ahs.INITIATOR_ORG_ID,
-        ahs.INITIATOR_ORG_NAME,
-        ahs.INITIATOR_USER_ID,
-        ahs.INITIATOR_USER_NAME,
-        ahs.SOLICIT_DUE_DAYS,
-        ahs.SOLICIT_STATE,
+        SELECT
+        <include refid="solicitAliasCol">
+            <property name="alias" value="ahs"/>
+        </include>
+        ,
         ahsd.SOLICIT_DETAIL_ID,
         ahsdu.DETAIL_USER_ID,
         ahsdu.USER_ID,
         ahsdu.SIGN_TIME,
+
         art.ID_ AS taskId,
         art.NAME_ AS taskName ,
         art.TASK_DEF_KEY_ ,
@@ -394,30 +415,19 @@
         LEFT JOIN opu_om_user oou on oou.user_Id=ahs.INITIATOR_USER_ID
         LEFT JOIN ACT_RU_TASK art ON art.PROC_INST_ID_ = ahs.PROCINST_ID and oou.user_name=art.ASSIGNEE_NAME_
         LEFT JOIN act_hi_taskinst aht ON aht.ID_ = ahs.HI_TASKINST_ID
-
         LEFT JOIN ACT_STO_TIMERULE ast ON ast.TIMERULE_ID = ahs.SOLICIT_TIMERULE_ID
         LEFT JOIN ACT_STO_TIMERULE_INST asti ON asti.TIMERULE_ID = ast.TIMERULE_ID and
         asti.TASKINST_ID=ahs.HI_TASKINST_ID
         AND ahs.PROCINST_ID = asti.PROC_INST_ID
-        WHERE ahs.BUS_TYPE = #{busType} AND ahs.SOLICIT_STATE IN ( '0', '1' )
+        WHERE ahs.BUS_TYPE = #{busType} AND ahs.SOLICIT_STATE IN ( '0', '1' ,'2','3' )
         AND ahsdu.USER_ID=#{userId}
         AND ahs.ROOT_ORG_ID = #{rootOrgId}
         UNION
-        SELECT DISTINCT
-        ahs.SOLICIT_ID,
-        ahs.SOLICIT_TYPE,
-        ahs.BUS_TYPE,
-        ahs.PROCINST_ID,
-        ahs.HI_TASKINST_ID,
-        ahs.SOLICIT_CODE,
-        ahs.SOLICIT_TOPIC,
-        ahs.APPLYINST_ID,
-        ahs.INITIATOR_ORG_ID,
-        ahs.INITIATOR_ORG_NAME,
-        ahs.INITIATOR_USER_ID,
-        ahs.INITIATOR_USER_NAME,
-        ahs.SOLICIT_DUE_DAYS,
-        ahs.SOLICIT_STATE,
+        SELECT
+        <include refid="solicitAliasCol">
+            <property name="alias" value="ahs"/>
+        </include>
+        ,
         null as SOLICIT_DETAIL_ID,
         null as DETAIL_USER_ID,
         null as USER_ID,
@@ -439,7 +449,7 @@
         LEFT JOIN ACT_STO_TIMERULE_INST asti ON asti.TIMERULE_ID = ast.TIMERULE_ID and
         asti.TASKINST_ID=ahs.HI_TASKINST_ID
         AND ahs.PROCINST_ID = asti.PROC_INST_ID
-        WHERE ahs.BUS_TYPE = #{busType} AND ahs.SOLICIT_STATE IN ( '0', '1' )
+        WHERE ahs.BUS_TYPE = #{busType} AND ahs.SOLICIT_STATE IN ( '0', '1','2','3' )
         AND ahs.INITIATOR_USER_ID = #{userId}
         AND ahs.ROOT_ORG_ID = #{rootOrgId}
 

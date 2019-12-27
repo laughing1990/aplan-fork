@@ -251,5 +251,9 @@ public class AeaHiSolicitVo {
     private int pendingProgressNum;
 
     private String viewId;
+    @ApiModelProperty(value = "是否发起人，true 是，false 否")
+    private boolean promoter;
+    @ApiModelProperty(value = "当前征集的次数")
+    private int solicitIndex;
 
 }

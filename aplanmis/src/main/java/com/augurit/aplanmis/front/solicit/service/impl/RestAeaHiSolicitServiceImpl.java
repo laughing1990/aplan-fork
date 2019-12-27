@@ -547,6 +547,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
             if (info == null) {
                 return;
             }
+            info.setPromoter(info.getInitiatorUserId().equals(SecurityContext.getCurrentUserId()));
             String busType = info.getBusType();
             if (true) {//"YCZX".equals(busType)
                 String solicitId = info.getSolicitId();
