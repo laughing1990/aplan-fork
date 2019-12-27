@@ -83,7 +83,7 @@ var vm = new Vue({
 		},
 		//办理
 		viewDetail: function (row) {
-			var url = ctx + 'apanmis/page/stageApproveIndex?taskId=' + row.taskId + '&viewId=' + row.viewId + '&itemNature=' + row.itemNature;
+			var url = ctx + 'apanmis/page/stageApproveIndex?taskId=' + row.taskId + '&viewId=' + row.viewId + '&itemNature=' + row.itemNature + '&solicitType=lhps';
 			if (row.busRecordId) {
 				url = url + '&busRecordId=' + row.busRecordId;
 			}
@@ -115,6 +115,7 @@ var vm = new Vue({
 			}, function (result) {
 				ts.loading = false;
 				if (result.success) {
+					this.fetchTableData();
 				} else {
 					ts.$message.error(result.message);
 				}

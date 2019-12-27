@@ -113,7 +113,7 @@ public class AeaItemUserAdminController {
 
         if(ids!=null&&ids.length>0){
 
-            logger.debug("批量删除用户事项，对象ids为：{}", ids);
+            logger.debug("批量删除用户事项，对象ids为：{}", (Object) ids);
             aeaItemUserService.batchDelItemUserByIds(ids);
             return new ResultForm(true);
         }else{
