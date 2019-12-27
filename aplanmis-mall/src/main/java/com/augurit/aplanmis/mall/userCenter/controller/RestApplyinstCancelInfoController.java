@@ -97,7 +97,7 @@ public class RestApplyinstCancelInfoController {
             }
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
-            return new ContentResultForm(false,"","检测申报实例或事项实例是否满足撤件申请接口异常");
+            return new ContentResultForm(false,"","保存撤件申请接口异常");
         }
     }
 
