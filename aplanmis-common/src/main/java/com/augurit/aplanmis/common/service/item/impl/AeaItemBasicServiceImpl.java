@@ -109,6 +109,11 @@ public class AeaItemBasicServiceImpl implements AeaItemBasicService {
     }
 
     @Override
+    public List<AeaItemBasic> getAeaItemBasicListByKeyword(String keyword,String isCatalog) throws Exception {
+        return aeaItemBasicMapper.getAeaItemBasicListByKeyword(keyword,isCatalog);
+    }
+
+    @Override
     public void saveAeaItemBasic(AeaItemBasic aeaItemBasic) throws Exception {
         if (StringUtils.isBlank(aeaItemBasic.getItemBasicId())) {//新增
             aeaItemBasic.setItemBasicId(UUID.randomUUID().toString());

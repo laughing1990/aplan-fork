@@ -20,7 +20,7 @@
         .header-wraper {
             width: 930px;
             height: 120px;
-            background: url("../../mall/images/userCenter/header-wraper-bg.png") #F8F8F8 no-repeat center;
+            background-color: rgba(66, 147, 244, 0.996078431372549);
             display: -webkit-box;
             display: -ms-flexbox;
             display: flex;
@@ -48,16 +48,15 @@
             position: relative;
         }
 
-        .header-wraper .head-img-url .garden-min {
-            position: absolute;
-            bottom: 36px;
-            right: -4px;
+        .header-wraper .garden-min {
+            margin-right: 10px;
+            margin-top: 10px;
             cursor: pointer;
         }
 
         .header-wraper .head-user-info {
             margin-left: 27px;
-            color: #ffffff;
+            color: #BDDBFF;
             font-size: 14px;
             display: -webkit-box;
             display: -ms-flexbox;
@@ -94,6 +93,7 @@
             font-size: 18px;
             font-family: Microsoft YaHei;
             margin-bottom: 14px;
+            color: #ffffff;
         }
 
         .header-wraper .head-user-info .nickName-des {
@@ -178,8 +178,8 @@
         }
 
         .my-data-box ul.data-list li.data-list-item {
-            width: 170px;
-            height: 150px;
+            width: 220px;
+            height: 140px;
             text-align: center;
             background: rgba(255, 255, 255, 1);
             border: 1px solid rgba(240, 243, 246, 1);
@@ -201,12 +201,11 @@
             -webkit-transform: translateX(-50%);
             -ms-transform: translateX(-50%);
             transform: translateX(-50%);
-            bottom: 20px;
+            bottom: 14px;
             width: 112px;
             font-size: 16px;
             font-family: Microsoft YaHei;
-            font-weight: bold;
-            color: rgba(63, 64, 71, 1);
+            color: #333333;
         }
 
       /*  .my-data-box ul.data-list li.data-list-item:hover p {
@@ -345,8 +344,6 @@
                 <div class="head-img-url" style="cursor: pointer;" @click="toUserCenterPage">
                     <img src="../../../../static/mall/images/userCenter/avatar.png"
                         th:src="@{/mall/images/userCenter/avatar.png}">
-                    <img src="../../../../static/mall/images/userCenter/garden-min.png"
-                        th:src="@{/mall/images/userCenter/garden-min.png}" class="garden-min">
                 </div>
                 <div class="head-user-info">
                     <p class="nickName"
@@ -375,9 +372,10 @@
                     </div>
                 </div>
                 <div class="head-user-approval" @click="goToStageApply">
-                    <img src="../../../../static/mall/images/userCenter/icon.png"
-                        th:src="@{/mall/images/userCenter/icon.png}" alt="并联申报图标">
-                    <p style="margin-top:3px;">并联申报</p>
+                   <!-- <img src="../../../../static/mall/images/userCenter/icon.png"
+                        th:src="@{/mall/images/userCenter/icon.png}" alt="并联申报图标">-->
+                    <img src="../../../../static/mall/images/userCenter/editUser.png"
+                         th:src="@{/mall/images/userCenter/editUser.png}" class="garden-min" alt="编辑个人信息图标">
                 </div>
             </div>
         </header>

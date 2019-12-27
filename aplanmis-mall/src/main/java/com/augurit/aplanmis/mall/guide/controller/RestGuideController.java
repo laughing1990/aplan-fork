@@ -236,6 +236,9 @@ public class RestGuideController {
     @GetMapping("/stageAndItem/list/{themeId}")
     @ApiOperation("办事指南 --> 根据主题ID查询阶段及事项列表")
     @ApiImplicitParam()
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "主题ID",name = "themeId",required = true,dataType = "string")
+    })
     public ContentResultForm getStageAndItemByThemeId(@PathVariable("themeId")String themeId){
         try {
             return new ContentResultForm<>(true,restGuideService.getStageAndItemByThemeId(themeId));
@@ -244,4 +247,34 @@ public class RestGuideController {
             return new ContentResultForm(false,"","发生异常");
         }
     }
+
+    @GetMapping("search/theme/list/{keyword}")
+    @ApiOperation("办事指南 --> 先根据关键字查询符合条件主题")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "关键字",name = "keyword",required = true,dataType = "string")
+    })
+    public ContentResultForm searchThemeAndStageAndItemByKeyword(@PathVariable("keyword")String keyword){
+        try {
+            return new ContentResultForm<>(true,restGuideService.searchThemeAndStageAndItemByKeyword(keyword));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ContentResultForm(false,"","发生异常");
+        }
+    }
+
+    @GetMapping("search/stageAndItem/list/{themeId}/{keyword}")
+    @ApiOperation("办事指南 --> 再根据主题ID及关键字查询符合条件阶段事项")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "关键字",name = "keyword",required = true,dataType = "string"),
+            @ApiImplicitParam(value = "主题ID",name = "themeId",required = true,dataType = "string")
+    })
+    public ContentResultForm searchStageAndItemByKeywordAndThemeId(@PathVariable("keyword")String keyword,@PathVariable("themeId")String themeId){
+        try {
+            return new ContentResultForm<>(true,restGuideService.searchStageAndItemByKeywordAndThemeId(themeId,keyword));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ContentResultForm(false,"","发生异常");
+        }
+    }
+
 }
