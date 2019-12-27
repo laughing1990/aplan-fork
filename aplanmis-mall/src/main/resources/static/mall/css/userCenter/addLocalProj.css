@@ -417,7 +417,6 @@
 }
 .tip-search-box .tip-box {
   padding: 18px 40px;
-  height: 100px;
   line-height: 24px;
   background: #fbfafa;
   padding-left: 72px;
@@ -456,4 +455,11 @@
   background: #3e97df;
   left: 0;
   top: 5px;
+}
+.tip-bottom-box {
+  padding: 18px 40px;
+  line-height: 24px;
+  background: #fbfafa;
+  font-size: 14px;
+  color: #999;
 }
