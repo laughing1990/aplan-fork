@@ -14,7 +14,10 @@ public class RestStageVo {
     private String stageId;
     @ApiModelProperty("阶段名称")
     private String stageName;
-
+    @ApiModelProperty(value = "承诺办结时限")
+    private Double dueNum;
+    @ApiModelProperty(value = "承诺办结时限单位")
+    private String dueUnit;
     public static RestStageVo build(AeaParStage aeaParStage){
         RestStageVo restStageVo = new RestStageVo();
         BeanUtils.copyProperties(aeaParStage,restStageVo);
