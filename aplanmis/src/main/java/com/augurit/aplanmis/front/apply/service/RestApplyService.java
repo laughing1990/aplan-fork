@@ -214,22 +214,22 @@ public class RestApplyService {
             AeaHiSmsInfo aeaHiSmsInfo = aeaHiSmsInfoMapper.getAeaHiSmsInfoById(smsInfoId);
             for (String applyinstId : applyinstIds) {
                 // 先判断是否存在申请号或者申请实例ID与传过来的不一致：因为数据库applyisnt_id不能为空，默认第一次是item_code
-                if (StringUtils.isBlank(aeaHiSmsInfo.getApplyinstId())) {
+                if (aeaHiSmsInfo != null && StringUtils.isBlank(aeaHiSmsInfo.getApplyinstId())) {
                     aeaHiSmsInfo.setApplyinstId(applyinstId);
                     aeaHiSmsInfoMapper.updateAeaHiSmsInfo(aeaHiSmsInfo);
                     continue;
                 }
-                if (applyinstId.equals(aeaHiSmsInfo.getApplyinstId())) {
-                    continue;
+                AeaHiSmsInfo aeaHiSmsInfoByApplyinstId = aeaHiSmsInfoMapper.getAeaHiSmsInfoByApplyinstId(applyinstId);
+                if (aeaHiSmsInfoByApplyinstId == null) {
+                    AeaHiSmsInfo newOne = new AeaHiSmsInfo();
+                    BeanUtils.copyProperties(newOne, aeaHiSmsInfo);
+                    newOne.setId(UuidUtil.generateUuid());
+                    newOne.setApplyinstId(applyinstId);
+                    newOne.setCreater(SecurityContext.getCurrentUserId());
+                    newOne.setCreateTime(new Date());
+                    newOne.setRootOrgId(SecurityContext.getCurrentOrgId());
+                    aeaHiSmsInfoMapper.insertAeaHiSmsInfo(newOne);
                 }
-                AeaHiSmsInfo newOne = new AeaHiSmsInfo();
-                BeanUtils.copyProperties(newOne, aeaHiSmsInfo);
-                newOne.setId(UuidUtil.generateUuid());
-                newOne.setApplyinstId(applyinstId);
-                newOne.setCreater(SecurityContext.getCurrentUserId());
-                newOne.setCreateTime(new Date());
-                newOne.setRootOrgId(SecurityContext.getCurrentOrgId());
-                aeaHiSmsInfoMapper.insertAeaHiSmsInfo(newOne);
             }
         }
     }

@@ -15,6 +15,8 @@ public interface RestFileService {
 
     List<BscAttFileAndDir> getAttFiles(String matinstId) throws Exception;
 
+    public List<BscAttFileAndDir> getAttFilesByPK(String tableName,String pkName,String recordId) throws Exception;
+
     ResultForm delelteAttachment(String[] detailIds, String matinstId) throws Exception;
 
     void delelteAttachmentByCloud(String[] detailIds, String recordId) throws Exception;

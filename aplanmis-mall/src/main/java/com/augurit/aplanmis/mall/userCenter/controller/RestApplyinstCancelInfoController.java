@@ -104,7 +104,7 @@ public class RestApplyinstCancelInfoController {
 
 
 
-    @GetMapping("uploadAttFile")
+    @PostMapping("uploadAttFile")
     @ApiOperation(value = "撤回申报 --> 文件上传接口")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "附件ID", name = "attId", required = true, dataType = "string")
@@ -141,7 +141,7 @@ public class RestApplyinstCancelInfoController {
     public ResultForm getAttFiles(@PathVariable String attId) throws Exception {
         if ("null".equalsIgnoreCase(attId) || "undefined".equalsIgnoreCase(attId) || StringUtils.isBlank(attId))
             return new ContentResultForm<>(true, new ArrayList<>());
-        return new ContentResultForm<>(true, restFileService.getAttFiles(attId));
+        return new ContentResultForm<>(true, restFileService.getAttFilesByPK("AEA_HI_APPLYINST_CANCEL","ATT_ID",attId));
     }
 
     @GetMapping("/getCurrentLinkmans")

@@ -77,6 +77,8 @@
         ${alias}.INITIATOR_USER_NAME,
         ${alias}.SOLICIT_DUE_DAYS,
         ${alias}.SOLICIT_STATE,
+        ${alias}.IS_CALC_TIMERULE  ,
+        ${alias}.SOLICIT_TIMERULE_ID ,
         ${alias}.CONCLUSION_FLAG,
         ${alias}.CONCLUSION_DESC,
         ${alias}.CONCLUSION_TIME,
@@ -364,6 +366,8 @@
         ahs.INST_STATE as instState,
         ahs.SOLICIT_DUE_DAYS as solicitDueDays,
         ahs.SOLICIT_STATE as solicitState,
+        ahs.IS_CALC_TIMERULE as isCalcTimerule,
+        ahs.SOLICIT_TIMERULE_ID as solicitTimeruleId,
         ahs.CONCLUSION_FLAG as conclusionFlag,
         ahs.CONCLUSION_DESC as conclusionDesc,
         ahs.CONCLUSION_TIME as conclusionTime,
@@ -418,17 +422,8 @@
         LEFT JOIN ACT_STO_TIMERULE_INST asti ON asti.TIMERULE_ID = ast.TIMERULE_ID and
         asti.TASKINST_ID=ahs.HI_TASKINST_ID
         AND ahs.PROCINST_ID = asti.PROC_INST_ID
-        WHERE ahs.BUS_TYPE = #{busType}
-        <choose>
-            <when test="busType!=null and busType=='LHPS'">
-                AND ahs.SOLICIT_STATE ='1'
-            </when>
-            <otherwise>
-                AND ahs.SOLICIT_STATE IN ( '0', '1' ,'2','3' )
-            </otherwise>
-        </choose>
-        AND ahsdu.USER_ID=#{userId}
-        AND ahs.ROOT_ORG_ID = #{rootOrgId}
+        WHERE ahs.BUS_TYPE = #{busType} AND ahs.SOLICIT_STATE IN ( '0', '1' )
+        AND ahsdu.USER_ID=#{userId} AND ahs.ROOT_ORG_ID = #{rootOrgId}
         UNION
         SELECT
         <include refid="solicitAliasCol">
@@ -456,18 +451,8 @@
         LEFT JOIN ACT_STO_TIMERULE_INST asti ON asti.TIMERULE_ID = ast.TIMERULE_ID and
         asti.TASKINST_ID=ahs.HI_TASKINST_ID
         AND ahs.PROCINST_ID = asti.PROC_INST_ID
-        WHERE ahs.BUS_TYPE = #{busType}
-        <choose>
-            <when test="busType!=null and busType=='LHPS'">
-                AND ahs.SOLICIT_STATE ='1'
-            </when>
-            <otherwise>
-                AND ahs.SOLICIT_STATE IN ( '0', '1' ,'2','3' )
-            </otherwise>
-        </choose>
-        AND ahs.INITIATOR_USER_ID = #{userId}
-        AND ahs.ROOT_ORG_ID = #{rootOrgId}
-
+        WHERE ahs.BUS_TYPE = #{busType} AND ahs.SOLICIT_STATE IN ( '0', '1' )
+        AND ahs.INITIATOR_USER_ID = #{userId} AND ahs.ROOT_ORG_ID = #{rootOrgId}
         ) ahs
         left JOIN (
         SELECT

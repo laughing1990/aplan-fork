@@ -184,6 +184,7 @@ var guideIndex = (function () {
             getViewIframeSrc: '',
             imgUrl: ["common/stage/mainLine/images/立项用地许可.png", "common/stage/mainLine/images/工程建设许可.png", "common/stage/mainLine/images/施工许可.png", "common/stage/mainLine/images/竣工验收.png", "common/stage/mainLine/images/立项用地许可.png","common/stage/mainLine/images/5.png","common/stage/mainLine/images/5.png","common/stage/mainLine/images/5.png","common/stage/mainLine/images/工程建设许可.png","common/stage/mainLine/images/5.png","common/stage/mainLine/images/5.png","common/stage/mainLine/images/5.png"],
             itemListKeyword:'',
+            stagesData:{}, // 某主题下的阶段和事项
         },
         mounted: function () {
             var vm = this;
@@ -429,16 +430,16 @@ var guideIndex = (function () {
                         }
                     }
                 }
-
                 this.memoLoading = true;
-                // onloadStageTypeList(isMainline,isAuxiline,mainlineAlias,auxilineAlias);
                 $.ajax({
-                    url: ctx + "rest/main/stage/list/" + themeId,  // 根据主题获取阶段接口
+                    url: ctx + "rest/guide/stageAndItem/list/" + themeId,  // 根据主题获取阶段接口
                     type: "get",
                     async: false,
                     success: function (res) {
                         var result = res.content
-                        if (result == null || result.length == 0 || result == "" || result == "根据主题获取阶段接口异常") {
+                        vm.memoLoading = false;
+                        vm.stagesData = result;
+                        /*if (result == null || result.length == 0 || result == "" || result == "根据主题获取阶段接口异常") {
                             $("#mainLine #stageImg").empty();
                             $('#auxiliaryLine #stageAuxiliaryImg').empty();
                             $("#mainLine #stageImg").append("该主题下暂无阶段信息，请配置");
@@ -516,7 +517,8 @@ var guideIndex = (function () {
                                     getGuideDetail2('', assitId[0]);
                                 }
                             }
-                        }
+                        }*/
+
                     }
                 })
             },
