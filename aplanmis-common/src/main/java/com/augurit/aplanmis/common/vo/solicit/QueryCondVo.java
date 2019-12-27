@@ -24,12 +24,20 @@ public class QueryCondVo {
 
     @ApiModelProperty(value = "审批时限状态：1 正常，2 预警，3 逾期")
     private String instState;
+
     @ApiModelProperty(value = "受理开始时间")
     private String acceptStartTime;
+
     @ApiModelProperty(value = "受理结束时间")
     private String acceptEndTime;
 
+    @ApiModelProperty(value = "征求意见状态：0表示未开始，1表示征求中，2表示已完成，3表示已终止")
+    private String[] solicitState;
 
+    @ApiModelProperty(value = "征求意见详情状态：0表示未开始，1表示征求中，2表示已完成，3表示已终止")
+    private String[] detailState;
+
+    @ApiModelProperty(value = "所属主题ID")
     private String theme;
 
     private String keyword;

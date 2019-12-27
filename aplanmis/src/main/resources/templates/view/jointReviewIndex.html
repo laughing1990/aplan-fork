@@ -222,7 +222,7 @@
 				:formatter="formatTableCell">
 
 		</el-table-column>
-		<el-table-column
+		<!--<el-table-column
 				prop="applyType"
 				min-width="50"
 				label="类型"
@@ -235,7 +235,7 @@
 				label="申报流水号"
 				show-overflow-tooltip
 				:formatter="formatTableCell">
-		</el-table-column>
+		</el-table-column>-->
 		<el-table-column
 				prop="localCode"
 				min-width="220"
@@ -254,10 +254,19 @@
 				</el-tooltip>
 			</template>
 		</el-table-column>
+
+		<el-table-column
+				prop="themeName"
+				min-width="220"
+				label="项目类型"
+				show-overflow-tooltip
+				:formatter="formatTableCell">
+		</el-table-column>
+
 		<el-table-column
 				min-width="260px"
 				prop="stageItemName"
-				label="阶段/事项/辅线名称">
+				label="阶段"><!--/事项/辅线名称-->
 			<template scope="scope">
 				<el-tooltip effect="light" placement="top">
 					<div slot="content" v-html="showThemeStageItemInfo(scope.row)"></div>
@@ -265,10 +274,25 @@
 				</el-tooltip>
 			</template>
 		</el-table-column>
-		<el-table-column
+		<!--<el-table-column
 				prop="taskName"
 				min-width="100"
 				label="当前节点"
+				show-overflow-tooltip
+				:formatter="formatTableCell">
+		</el-table-column>-->
+		<el-table-column
+				prop="solicitState"
+				min-width="100"
+				label="状态"
+				show-overflow-tooltip
+				:formatter="formatState">
+		</el-table-column>
+		<el-table-column
+				sortable="custom"
+				min-width="160"
+				prop="acceptTime"
+				label="到达时间"
 				show-overflow-tooltip
 				:formatter="formatTableCell">
 		</el-table-column>
@@ -307,20 +331,19 @@
 				</el-popover>
 			</template>
 		</el-table-column>
-		<el-table-column
+		<!--<el-table-column
 				sortable="custom"
 				min-width="140"
 				prop="acceptTime"
 				label="受理时间"
 				show-overflow-tooltip
 				:formatter="formatTableCell">
-		</el-table-column>
+		</el-table-column>-->
 		<el-table-column
 				min-width="60"
 				label="操作">
 			<template slot-scope="scope">
-				<span class="op-btn" v-if="isSign(scope.row)" @click="viewDetail(scope.row)">办理</span>
-				<span class="op-btn" v-if="!isSign(scope.row)" @click="signTask($event,scope.row)">签收</span>
+				<span v-html="stateBtnFormat(scope.row)"></span>
 			</template>
 		</el-table-column>
 	</el-table>
