@@ -124,7 +124,7 @@ public class AeaItemServiceBasicAdminController {
     @RequestMapping("/batchDeleteServiceBasic.do")
     public ResultForm batchDeleteServiceBasic(String[] ids) throws Exception {
 
-        logger.debug("删除材料信息表Form对象，对象id为：{}", ids);
+        logger.debug("删除材料信息表Form对象，对象id为：{}", (Object[]) ids);
         if (ids != null && ids.length > 0) {
             aeaItemServiceBasicAdminService.batchDeleteServiceBasic(ids);
         }

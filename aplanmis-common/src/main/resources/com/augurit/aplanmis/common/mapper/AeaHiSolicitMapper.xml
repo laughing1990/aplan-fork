@@ -552,6 +552,13 @@
 
     </select>
 
+    <select id="getAeaHiSolicitByApplyinstId" resultType="AeaHiSolicit">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="ahs"/>
+        </include>
+        from aea_hi_solicit ahs where ahs.APPLYINST_ID=#{applyinstId} order by ahs.CREATE_TIME desc
+    </select>
     <!--8 删除实体对象列表,根据主键ID列表 -->
     <!--9 返回所有字段的对象map,用于级联 -->
     <resultMap type="AeaHiSolicit" id="AeaHiSolicitMap">
