@@ -652,6 +652,7 @@ var vm = new Vue({
       curWidth: (document.documentElement.clientWidth || document.body.clientWidth),//当前屏幕宽度
       curHeight: (document.documentElement.clientHeight || document.body.clientHeight),//当前屏幕高度
       allItemsData:[],
+      isYjzq: false, // 是否为意见征求页面
       // 意见征求  end
     }
   },
@@ -750,7 +751,7 @@ var vm = new Vue({
         busType: 'YJZQ',
       };
       if (vm.solicitForm.isCalcTimerule==1){
-        parmas.solicitDueDays = vm.solicitForm.solicitDueDays;
+        params.solicitDueDays = vm.solicitForm.solicitDueDays;
       }
       if (this.solicitForm.solicitType == 'i') {
         // 按事项征求
@@ -759,14 +760,14 @@ var vm = new Vue({
         }
         var hasOrgId = true;
         list1.forEach(function (u) {
-          if (!(u.orgId && u.orgId.length)) {
+          if (!(u.approveOrgId && u.approveOrgId.length)) {
             hasOrgId = false;
           }
           itemList.push({
             itemId: u.itemId,
             itemVerId: u.itemVerId,
-            orgId: u.orgId,
-            orgName: u.orgName,
+            orgId: u.approveOrgId,
+            orgName: u.approveOrgName,
             opinion: u.opinion,
           })
         });
@@ -780,8 +781,8 @@ var vm = new Vue({
         }
         vm.soCheckedOrgList.forEach(function (u) {
           itemList.push({
-            orgId: u.orgId,
-            orgName: u.orgName,
+            orgId: u.approveOrgId,
+            orgName: u.approveOrgName,
           })
         });
       }
@@ -1052,8 +1053,8 @@ var vm = new Vue({
         url: ctx + 'rest/solicit/listAeaHiSolicitByApplyinstId',
         type: 'get',
         data: {
-          // applyinstId: vm.masterEntityKey,
-          applyinstId: '002bf0e6-ba95-48c2-a866-7d230b6a1007',
+          applyinstId: vm.masterEntityKey,
+          // applyinstId: '002bf0e6-ba95-48c2-a866-7d230b6a1007',
           busType: typeCode,
         }
       }, function (res) {
@@ -2628,6 +2629,7 @@ var vm = new Vue({
       vm.taskId = vm.getUrlParam('taskId');
       vm.isDraftPage = vm.getUrlParam('draft');
       vm.isZJItem = (vm.getUrlParam('itemNature') == '8');
+      vm.isYjzq = (vm.getUrlParam('busType') == 'yjzq');
       // vm.isZJItem = true;
       // vm.isDraftPage = 'true';
       vm.getIteminstIdByTaskId(callback);
@@ -2810,6 +2812,13 @@ var vm = new Vue({
     //根据初始化参数，获取页面元素权限信息
     initFormElementPriv: function () {
       var vm = this;
+      if (this.isYjzq) {
+        this.isShowMatiPanel = true;
+        this.initButtons();
+        this.initForms();
+        this.getAttachment();
+        return null;
+      }
       if (vm.checkNotNull(vm.currTaskDefId) && vm.currProcDefVersion > 0) {
         var params = {
           version: vm.currProcDefVersion,
@@ -3078,7 +3087,14 @@ var vm = new Vue({
         isHidden: '0',
         elementRender: '<button class="btn btn-outline-info" onclick="showDiagramDialog()">查看流程图</button>'
       }];
-      var matBtn = [{
+      var approverBtn = [{
+        elementName: "意见征求",
+        elementCode: "wfBusSave",
+        columnType: "button",
+        isReadonly: '0',
+        isHidden: '0',
+        elementRender: '<button class="btn btn-outline-info" onclick="clickStartSolicit()">意见征求</button>'
+      }, {
         elementName: "材料补正",
         elementCode: "wfBusSave",
         columnType: "button",
@@ -3086,7 +3102,7 @@ var vm = new Vue({
         isHidden: '0',
         elementRender: '<button class="btn btn-outline-info" onclick="startSupplementForItem()">材料补正</button>'
       }];
-      var applyinstBtn = [{
+      var notApproverBtn = [{
         elementName: "撤件",
         elementCode: "wfBusSave",
         columnType: "button",
@@ -3110,9 +3126,9 @@ var vm = new Vue({
         elementRender: '<button class="btn btn-outline-info" onclick="getPrintList()">打印回执</button>'
       }];
       if (vm.isApprover == 1) {
-        defaultBtn = matBtn.concat(defaultBtn);
+        defaultBtn = approverBtn.concat(defaultBtn);
       } else {
-        defaultBtn = applyinstBtn.concat(defaultBtn);
+        defaultBtn = notApproverBtn.concat(defaultBtn);
       }
       if (vm.isDraftPage == 'true') {
         defaultBtn = draftBtn.concat(defaultBtn);

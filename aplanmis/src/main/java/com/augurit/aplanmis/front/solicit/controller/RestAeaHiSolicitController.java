@@ -158,4 +158,13 @@ public class RestAeaHiSolicitController {
         }
         return new ResultForm(true, "success");
     }
+
+    @ApiOperation("")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "applyinstId", value = "被征集人主键")
+    })
+    @GetMapping("/apply/items")
+    public ResultForm getApplyItems(String applyinstId) throws Exception{
+        return new ContentResultForm<>(true,restAeaHiSolicitService.getApplyItems(applyinstId));
+    }
 }

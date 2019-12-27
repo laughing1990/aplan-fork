@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -85,4 +86,6 @@ public interface AeaProjStageMapper {
      * @return
      */
     List<AeaHiIteminst> findEndIteminstByProjInfoAndItemIds(@Param("projInfoId") String projInfoId, @Param("itemIds") String[] itemIds);
+
+    List<AeaProjStage> findProjStageByTimeRange(@Param("startTime") Date startTime, @Param("endTime") Date endTime);
 }
