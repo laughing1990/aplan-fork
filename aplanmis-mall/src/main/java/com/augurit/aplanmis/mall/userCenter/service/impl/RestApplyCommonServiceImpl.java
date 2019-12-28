@@ -437,7 +437,26 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
                 saveUnitProjApplyinst(applyinstId,unitProjIds,unitInfoId,smsInfoVo.getProjInfoId(),smsInfoVo.getLinkmanInfoId());
             }
         }
+        //清除已经不办的并行事项
+        clearChildApplyinstByParentApplyinst(parentApplyinstId,propulsionItemApplyinstIdVos);
         map.put("propulsionItemApplyinstIdVos",propulsionItemApplyinstIdVos);
+    }
+
+    private void clearChildApplyinstByParentApplyinst(String parentApplyinstId, List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos) throws Exception {
+        List<AeaHiApplyinst> childApplyinsts = aeaHiApplyinstService.getSeriesAeaHiApplyinstListByParentApplyinstId(parentApplyinstId,"1");
+        if(childApplyinsts.size()==0) return;
+        if(propulsionItemApplyinstIdVos.size()>0){
+            List<String> alreadyApplys=propulsionItemApplyinstIdVos.stream().map(PropulsionItemApplyinstIdVo::getSeriesApplyinstId).collect(Collectors.toList());
+            for (AeaHiApplyinst child:childApplyinsts){
+                if(!alreadyApplys.contains(child.getApplyinstId())){
+                    aeaHiApplyinstService.deleteAeaHiApplyinstById(child.getApplyinstId());
+                }
+            }
+        }else{
+            for (AeaHiApplyinst child:childApplyinsts){
+                aeaHiApplyinstService.deleteAeaHiApplyinstById(child.getApplyinstId());
+            }
+        }
     }
 
     private String getSeriesinstIdFromPpropulsionItemApplyinstIdVos(List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos, String itemVerId) {

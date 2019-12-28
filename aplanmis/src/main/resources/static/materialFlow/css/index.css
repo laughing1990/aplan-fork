@@ -1,0 +1,381 @@
+ul,
+li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+.el-upload-list__item-name [class^=el-icon] {
+  height: auto;
+}
+
+/* 重置 element css STR */
+[v-cloak] {
+  display: none;
+}
+
+.el-table th>.cell {
+  font-size: 13px;
+}
+
+.el-table .cell {
+  font-size: 12px;
+}
+
+/* 重置 element css END */
+.add-search .btn {
+  margin-right: 5px;
+}
+
+.label {
+  line-height: 40px;
+  display: inline-block;
+}
+
+.float-right {
+  display: flex;
+}
+
+.form-control {
+  padding: 1.336rem 0.713rem;
+}
+
+.el-dialog {
+  width: 66%;
+}
+
+.dialog2 .el-dialog {
+  width: 34%;
+}
+
+.el-input--suffix .el-input__inner {
+  height: 40px;
+}
+
+.add-search {
+  padding: 0 15px;
+}
+
+#app {
+  padding: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+.el-table td,
+.el-table th {
+  text-align: center;
+}
+
+.edit-row1 .el-dialog {
+  height: 750px;
+}
+
+.edit-row1 .el-dialog .el-dialog__body {
+  height: 600px;
+  overflow-y: scroll;
+}
+
+.edit-row1 .el-dialog .el-select,
+.edit-row1 .el-dialog .el-input-number {
+  width: 100%;
+}
+
+.loading {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  z-index: 7;
+}
+
+.loading .tips {
+  width: 20%;
+  height: 20%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  color: #fff;
+  text-align: center;
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.el-table__empty-block {
+  max-height: 22px;
+}
+
+.el-dialog__headerbtn {
+  top: 12px;
+}
+
+.el-dialog__header {
+  /*padding-top: 10px;*/
+}
+
+.el-dialog__body {
+  padding: 15px 20px;
+}
+
+.dialog2 .el-dialog__body {
+  height: 500px;
+  overflow-y: auto;
+}
+
+/* 滚动条 */
+::-webkit-scrollbar-thumb:horizontal {
+  /*水平滚动条的样式*/
+  width: 8px;
+  background-color: #bbb;
+  -webkit-border-radius: 6px;
+}
+
+::-webkit-scrollbar-track-piece {
+  background-color: #fff;
+  /*滚动条的背景颜色*/
+  -webkit-border-radius: 0;
+  /*滚动条的圆角宽度*/
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  /*滚动条的宽度*/
+  height: 8px;
+  /*滚动条的高度*/
+  background-color: #bbb;
+  -webkit-border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:vertical {
+  /*垂直滚动条的样式*/
+  height: 50px;
+  background-color: #bbbbbb;
+  outline: 2px solid #fff;
+  outline-offset: -2px;
+  border: 2px solid #fff;
+  -webkit-border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  /*滚动条的hover样式*/
+  height: 50px;
+  background-color: #9f9f9f;
+  -webkit-border-radius: 4px;
+}
+
+.el-tabs__nav-wrap::after {
+  height: 1px;
+}
+
+/*thead .el-table-column--selection  .cell,
+thead .el-table_1_column_1  .cell{
+display: none;
+}*/
+.cup {
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btns {
+  margin-bottom: 27px;
+}
+
+.search {
+  display: inline-block;
+  float: right;
+}
+
+.radioGroup {
+  padding-top: 10px;
+}
+
+.orgUser,
+.windows,
+.selectUser {
+  width: 38%;
+  height: 760px;
+  overflow-y: auto;
+  float: left;
+  margin-left: 10px;
+  border: 1px solid #ccc;
+}
+
+.orgUser {
+  overflow-y: hidden;
+}
+
+.windows {
+  width: 20%;
+}
+
+.orgUser>ul>li:nth-child(1),
+.selectUser>ul>li:nth-child(1) {
+  padding: 13px 21px 19px 12px;
+}
+
+.orgUser>ul>li:nth-child(2) {
+  padding: 0 0 20px 10px;
+}
+
+.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
+  background: #bedcff;
+}
+
+.userList .file {
+  background: url(../image/spritPic.png) no-repeat;
+  width: 14px;
+  background-position: -112px -30px;
+  height: 16px;
+  display: inline-block;
+}
+
+.userList {
+  height: 84%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.userList .el-checkbox {
+  display: block;
+  margin: 7px 0px;
+}
+
+.userList>li {
+  padding-left: 20px;
+}
+
+.userList>li>span {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  display: inline-block;
+  background: url(../image/spritPic.png) no-repeat;
+  background-position: -93px 0px;
+}
+
+.userList>li>i {
+  width: 20px;
+  height: 16px;
+  display: inline-block;
+  background: url(../image/spritPic.png) no-repeat;
+  background-position: -108px 1px;
+}
+
+.userList .el-checkbox-group {
+  margin-left: 40px;
+}
+
+.userShrink {
+  background-position: -74px 0px !important;
+}
+
+.selectUser>ul>li:nth-child(2) {
+  padding-left: 20px;
+}
+
+.selectUser .selectedList {
+  margin-top: 15px;
+  overflow-y: auto;
+  height: 652px;
+}
+
+.selectUser .selectedList>li {
+  background-color: #fff;
+  padding: 6px 0px;
+  font-size: 15px;
+  text-align: left;
+  border: 1px solid transparent;
+  border-bottom: 1px solid #ebebeb;
+}
+
+.selectUser .selectedList>li>i {
+  text-align: center;
+  font: bold 16px Sans-Serif;
+  color: #5F9EDF;
+  display: inline-block;
+  width: 8%;
+  cursor: pointer;
+}
+
+/*.stage-tree .el-tree-node__label:before {
+  content: "";
+  background: url(../image/spritPic.png) no-repeat;
+  width: 19px;
+  background-position: -109px -14px;
+  height: 16px;
+  display: inline-block;
+}*/
+/*.stage-tree .el-tree-node__children .el-tree-node__label:before {
+  content: "";
+  background: url(../image/spritPic.png) no-repeat;
+  width: 19px;
+  background-position: -109px -30px;
+  height: 16px;
+  display: inline-block;
+}*/
+.edit-row2 .dialog-footer,
+.dialog-footer {
+  margin-right: 38px;
+}
+
+/*.edit-row1 .dialog-footer{
+  margin-right: 118px;
+  margin-top: 10px;
+}*/
+.el-table {
+  margin-bottom: 15px;
+}
+
+.demo-table-expand {
+  font-size: 0;
+  width: 46%;
+  display: inline-block;
+}
+
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
+
+.sub-title {
+  text-align: left;
+  font-size: 14px;
+  color: #989898;
+}
+
+.el-table .el-table__header thead tr th {
+  background: #F3F6F9;
+}
+
+.sende {
+  width: 88px;
+  height: 28px;
+  background: rgba(184, 200, 220, 1);
+  border-radius: 4px;
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+  color: rgba(254, 255, 255, 1);
+  line-height: 30px;
+}
+
+.receive {
+  background: rgba(0, 193, 97, 1);
+}
+
+.el-dialog__title {
+  line-height: 48px;
+}

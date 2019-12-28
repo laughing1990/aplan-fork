@@ -9,6 +9,8 @@
     // var ctx = '[[@{/}]]';
         /*var ctx = 'http://192.168.30.33:8083/aplanmis-front/';*/
         var projInfoId = '[[${projInfoId}]]';
+        var formId = '[[${formId}]]';
+        var refEntityId = '[[${refEntityId}]]';
     </script>
 </head>
 
@@ -55,7 +57,7 @@
             </el-form-item>
             <div class="clearfix">
               <el-form-item class="input-inline" label="立项文号" prop="projNum">
-                <el-input v-model="exProjFrom.projNum" placeholder="请填写立项文号"></el-input>
+                <el-input v-model="exProjFrom.projNum" placeholder="请填写立项文号,房建和市政项目必填"></el-input>
               </el-form-item>
               <el-form-item class="input-inline" label="立项级别" prop="projLevel">
                 <el-select v-model="exProjFrom.projLevel" placeholder="请选择立项级别">

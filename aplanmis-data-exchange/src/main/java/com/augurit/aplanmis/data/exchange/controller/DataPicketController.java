@@ -5,6 +5,7 @@ import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.aplanmis.data.exchange.constant.EtlConstant;
 import com.augurit.aplanmis.data.exchange.dto.ThreadEtlJobLog;
 import com.augurit.aplanmis.data.exchange.service.ImportService;
+import com.augurit.aplanmis.data.exchange.vo.EtlReuploadVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Date;
 
 /**
- * 数据纠察
+ * 数据重新上传
  *
  * @author yinlf
  * @Date 2019/11/22
@@ -31,9 +32,18 @@ public class DataPicketController {
     /**
      * 鲁普洛德所有
      */
+    @PostMapping("/reupload/table_name")
+    public ResultForm reuploadByTableName(EtlReuploadVo etlReuploadVo) {
+        importService.importByTableName(etlReuploadVo, EtlConstant.MAN_OPERATE);
+        return new ContentResultForm<>(true, ThreadEtlJobLog.get());
+    }
+
+    /**
+     * 鲁普洛德所有
+     */
     @PostMapping("/reupload/all")
     public ResultForm reuploadAll(Date startTime, Date endTime) {
-        importService.importThemeVerAndLog(startTime, endTime, EtlConstant.MAN_OPERATE);
+        importService.importAllTableAndLog(startTime, endTime, EtlConstant.MAN_OPERATE);
         return new ContentResultForm<>(true, ThreadEtlJobLog.get());
     }
 
@@ -124,6 +134,33 @@ public class DataPicketController {
     @PostMapping("/reupload/item_matinst")
     public ResultForm reuploadItemMatinst(Date startTime, Date endTime) {
         importService.importItemMatinstAndLog(startTime, endTime, EtlConstant.MAN_OPERATE);
+        return new ContentResultForm<>(true, ThreadEtlJobLog.get());
+    }
+
+    /**
+     * 鲁普洛德
+     */
+    @PostMapping("/reupload/item_special")
+    public ResultForm reuploadItemSpecial(Date startTime, Date endTime) {
+        importService.importItemSpecialAndLog(startTime, endTime, EtlConstant.MAN_OPERATE);
+        return new ContentResultForm<>(true, ThreadEtlJobLog.get());
+    }
+
+    /**
+     * 鲁普洛德
+     */
+    @PostMapping("/reupload/proj_purchase")
+    public ResultForm reuploadProjPurchase(Date startTime, Date endTime) {
+        importService.importProjPurchaseAndLog(startTime, endTime, EtlConstant.MAN_OPERATE);
+        return new ContentResultForm<>(true, ThreadEtlJobLog.get());
+    }
+
+    /**
+     * 鲁普洛德
+     */
+    @PostMapping("/reupload/proj_purchase_opinion")
+    public ResultForm reuploadProjPurchaseOpinion(Date startTime, Date endTime) {
+        importService.importProjPurchaseOpinionAndLog(startTime, endTime, EtlConstant.MAN_OPERATE);
         return new ContentResultForm<>(true, ThreadEtlJobLog.get());
     }
 

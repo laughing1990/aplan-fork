@@ -20,6 +20,7 @@ import com.augurit.aplanmis.common.mapper.AeaUnitProjMapper;
 import com.augurit.aplanmis.common.vo.AeaCertiVo;
 import com.augurit.aplanmis.common.vo.AeaProjDrawing;
 import com.augurit.aplanmis.common.vo.AeaProjDrawingVo;
+import com.augurit.aplanmis.front.basis.stage.service.RestStageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +37,8 @@ public class AeaExProjCerBuildServiceImpl extends AbstractFormDataOptManager imp
     private AeaProjInfoMapper aeaProjInfoMapper;
     @Autowired
     private AeaUnitProjMapper aeaUnitProjMapper;
+    @Autowired
+    private RestStageService restStageService;
 
     @Override
     public ContentResultForm<String> SynchronizeDataByExProjForm(ExProjFormVo vo) {
@@ -319,8 +322,16 @@ public class AeaExProjCerBuildServiceImpl extends AbstractFormDataOptManager imp
             aeaExProjCertBuild.setCreater(SecurityContext.getCurrentUserName());
             aeaExProjCertBuild.setRootOrgId(SecurityContext.getCurrentOrgCode());
             aeaExProjCertBuildMapper.insertAeaExProjCertBuild(aeaExProjCertBuild);
-//            if (StringUtils.isBlank(aeaExProjCertBuild.getFormId())) throw new Exception("缺少formId");
-            this.formSave(aeaExProjCertBuild.getFormId(), aeaExProjCertBuild.getBuildId(), EDataOpt.INSERT.getOpareteType(), null);
+            if (StringUtils.isBlank(aeaExProjCertBuild.getFormId())) throw new Exception("缺少formId");
+            FormDataOptResult formDataOptResult = this.formSave(aeaExProjCertBuild.getFormId(), aeaExProjCertBuild.getBuildId(), EDataOpt.INSERT.getOpareteType(), null);
+            //关联表单实例和申请实例
+            AeaApplyinstForminst aeaApplyinstForminst = new AeaApplyinstForminst();
+            aeaApplyinstForminst.setApplyinstId(aeaExProjCertBuild.getRefEntityId());
+            aeaApplyinstForminst.setForminstId(formDataOptResult.getActStoForminst().getStoForminstId());
+            aeaApplyinstForminst.setStoFormId(aeaExProjCertBuild.getFormId());
+            aeaApplyinstForminst.setCreateTime(new Date());
+            aeaApplyinstForminst.setCreater(SecurityContext.getCurrentUserId());
+            restStageService.bindForminst(aeaApplyinstForminst);
         } else {
             aeaExProjCertBuildMapper.updateAeaExProjCertBuild(aeaExProjCertBuild);
         }
@@ -353,6 +364,7 @@ public class AeaExProjCerBuildServiceImpl extends AbstractFormDataOptManager imp
         actStoForminst.setFormId(formId);
         actStoForminst.setFormPrimaryKey(metaTableId);
         result.setActStoForminst(actStoForminst);
+        result.setDataOpt(EDataOpt.INSERT);
         return result;
     }
 

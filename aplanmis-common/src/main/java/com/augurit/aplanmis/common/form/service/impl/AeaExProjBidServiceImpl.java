@@ -14,6 +14,7 @@ import com.augurit.aplanmis.common.form.service.AeaExProjBidService;
 import com.augurit.aplanmis.common.form.vo.AeaExProjBidVo;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
+import com.augurit.aplanmis.front.basis.stage.service.RestStageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,6 +51,8 @@ public class AeaExProjBidServiceImpl extends AbstractFormDataOptManager implemen
     private AeaUnitProjLinkmanMapper aeaUnitProjLinkmanMapper;
     @Autowired
     private AeaUnitLinkmanMapper aeaUnitLinkmanMapper;
+    @Autowired
+    private RestStageService restStageService;
 
     public void saveAeaExProjBid(AeaExProjBid aeaExProjBid) throws Exception {
         aeaExProjBid.setCreater(SecurityContext.getCurrentUserName());
@@ -58,7 +61,15 @@ public class AeaExProjBidServiceImpl extends AbstractFormDataOptManager implemen
         aeaExProjBidMapper.insertAeaExProjBid(aeaExProjBid);
 
         if (StringUtils.isBlank(aeaExProjBid.getFormId())) throw new Exception("缺少formId");
-        this.formSave(aeaExProjBid.getFormId(), aeaExProjBid.getBidId(), EDataOpt.INSERT.getOpareteType(), null);
+        FormDataOptResult formDataOptResult = this.formSave(aeaExProjBid.getFormId(), aeaExProjBid.getBidId(), EDataOpt.INSERT.getOpareteType(), null);
+        //关联表单实例和申请实例
+        AeaApplyinstForminst aeaApplyinstForminst = new AeaApplyinstForminst();
+        aeaApplyinstForminst.setApplyinstId(aeaExProjBid.getRefEntityId());
+        aeaApplyinstForminst.setForminstId(formDataOptResult.getActStoForminst().getStoForminstId());
+        aeaApplyinstForminst.setStoFormId(aeaExProjBid.getFormId());
+        aeaApplyinstForminst.setCreateTime(new Date());
+        aeaApplyinstForminst.setCreater(SecurityContext.getCurrentUserId());
+        restStageService.bindForminst(aeaApplyinstForminst);
     }
 
     public void updateAeaExProjBid(AeaExProjBid aeaExProjBid) throws Exception {
@@ -231,6 +242,7 @@ public class AeaExProjBidServiceImpl extends AbstractFormDataOptManager implemen
         actStoForminst.setFormId(formId);
         actStoForminst.setFormPrimaryKey(metaTableId);
         result.setActStoForminst(actStoForminst);
+        result.setDataOpt(EDataOpt.INSERT);
         return result;
     }
 

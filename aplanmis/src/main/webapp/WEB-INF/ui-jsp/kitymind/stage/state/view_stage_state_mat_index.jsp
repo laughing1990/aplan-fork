@@ -349,7 +349,7 @@
         $("#item_mat_add_form input[name='stoFormId']").val("");
         $("#item_mat_add_form input[name='stdmatId']").val("");
         $("#item_mat_add_form input[name='matProp'][value='m']").prop("checked", true);
-        handleSelectMatProNew('m');
+        handleSelectMatProNew('#item_mat_add_form','m');
 
         $("#templateDocFile").siblings('.custorm-style').find(".right-text").html("");
         $("#sampleDocFile").siblings('.custorm-style').find(".right-text").html("");
@@ -551,7 +551,7 @@
                         }
                     }
                     if (data.matProp){
-                        handleSelectMatProNew(data.matProp);
+                        handleSelectMatProNew('#item_mat_add_form',data.matProp);
                     }
                 }
             },

@@ -268,7 +268,7 @@
             $("#item_mat_add_form input[name='stoFormId']").val("");
             $("#item_mat_add_form input[name='stdmatId']").val('');
             $("#item_mat_add_form input[name='matProp'][value='m']").prop("checked", true);
-            handleSelectMatProNew('m');
+            handleSelectMatProNew('#item_mat_add_form','m');
 
             getMatCodeByAjax();//获取材料编码
         });
@@ -688,7 +688,7 @@
                     }
 
                     if (data.matProp){
-                        handleSelectMatProNew(data.matProp);
+                        handleSelectMatProNew('#item_mat_add_form',data.matProp);
                     }
                 }
             },

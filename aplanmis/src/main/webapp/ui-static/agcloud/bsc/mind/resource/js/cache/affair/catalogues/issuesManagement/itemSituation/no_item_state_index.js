@@ -15,41 +15,41 @@ function itemInMatCertFormatter(value, row, index) {
     }
 
     editBtn = '<a href="javascript:editItemInMatCertById(\''+ row.inoutId +'\',\'' + row.matId + '\',\'mat\')" ' +
-        'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" ' +
-        'title="'+ title +'"><i class="'+ icoCss +'"></i>' +
-        '</a>';
+                  'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" ' +
+                  'title="'+ title +'"><i class="'+ icoCss +'"></i>' +
+              '</a>';
 
-    if(row.matProp=='m'){
+    // if(row.matProp=='m'){
 
         deleteBtn = '<a href="javascript:deleteItemInMatCertFormById(\''+ row.inoutId +'\',\''+row.matId + '\',\'mat\')" ' +
                         'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
                         'title="删除"><i class="la la-trash"></i>' +
                     '</a>';
 
-    }else if(row.matProp=='c'){
-
-        // editBtn = '<a href="javascript:editItemInMatCertById(\''+ row.inoutId +'\',\'' + row.certId + '\',\'cert\')" ' +
-        //              'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" ' +
-        //              'title="查看"><i class="la la-search"></i>' +
-        //           '</a>';
-
-        deleteBtn = '<a href="javascript:deleteItemInMatCertFormById(\''+ row.inoutId +'\',\''+row.certId + '\',\'cert\')" ' +
-                        'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
-                        'title="删除"><i class="la la-trash"></i>' +
-                    '</a>';
-
-    }else if(row.matProp=='f'){
-
-        // editBtn = '<a href="javascript:void(0);"' +
-        //               'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" ' +
-        //               'title="">-' +
-        //           '</a>';
-
-        deleteBtn = '<a href="javascript:deleteItemInMatCertFormById(\''+ row.inoutId +'\',\''+row.formId + '\',\'form\')" ' +
-                        'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
-                        'title="删除表单"><i class="la la-trash"></i>' +
-                    '</a>';
-    }
+    // }else if(row.matProp=='c'){
+    //
+    //     // editBtn = '<a href="javascript:editItemInMatCertById(\''+ row.inoutId +'\',\'' + row.certId + '\',\'cert\')" ' +
+    //     //              'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" ' +
+    //     //              'title="查看"><i class="la la-search"></i>' +
+    //     //           '</a>';
+    //
+    //     deleteBtn = '<a href="javascript:deleteItemInMatCertFormById(\''+ row.inoutId +'\',\''+row.certId + '\',\'cert\')" ' +
+    //                     'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
+    //                     'title="删除"><i class="la la-trash"></i>' +
+    //                 '</a>';
+    //
+    // }else if(row.matProp=='f'){
+    //
+    //     // editBtn = '<a href="javascript:void(0);"' +
+    //     //               'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" ' +
+    //     //               'title="">-' +
+    //     //           '</a>';
+    //
+    //     deleteBtn = '<a href="javascript:deleteItemInMatCertFormById(\''+ row.inoutId +'\',\''+row.formId + '\',\'form\')" ' +
+    //                     'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
+    //                     'title="删除表单"><i class="la la-trash"></i>' +
+    //                 '</a>';
+    // }
 
     if(curIsEditable){
         return editBtn + deleteBtn;
@@ -726,7 +726,7 @@ $(function(){
     // 材料类型选择
     $("#aedit_item_inout_mat_form select[name='matProp']").change(function(){
         var value = $(this).val();
-        handleSelectMatProNew(value);
+        handleSelectMatProNew('#aedit_item_inout_mat_form', value);
     });
 
     searchItemInMatCert();
@@ -745,42 +745,6 @@ function selectStdmat(){
         closeSelectStdmatModal();
     }else{
         swal('错误信息', "请选择标准材料！", 'error');
-    }
-}
-
-function handleSelectMatProNew(value){
-
-    if(value=='m'){
-
-        $('#selectCertDiv').hide();
-        $('#selectFormDiv').hide();
-
-        $('#aedit_item_inout_mat_form input[name="certName"]').rules('remove');
-        $('#aedit_item_inout_mat_form input[name="formName"]').rules('remove');
-
-    }else if(value=='c'){
-
-        $('#selectCertDiv').show();
-        $('#selectFormDiv').hide();
-        $('#aedit_item_inout_mat_form input[name="certName"]').rules('add',{
-            required: true,
-            messages:{
-                required: '<font color="red">请选择电子证照！</font>'
-            }
-        });
-        $('#aedit_item_inout_mat_form input[name="formName"]').rules('remove');
-
-    }else{
-
-        $('#selectCertDiv').hide();
-        $('#selectFormDiv').show();
-        $('#aedit_item_inout_mat_form input[name="certName"]').rules('remove');
-        $('#aedit_item_inout_mat_form input[name="formName"]').rules('add',{
-            required: true,
-            messages:{
-                required: '<font color="red">请选择表单！</font>'
-            }
-        });
     }
 }
 
@@ -817,20 +781,6 @@ function selectForm(){
         closeSelectFormModal();
     }else{
         swal('错误信息', "请选择表单！", 'error');
-    }
-}
-
-function matPropormatter(value, row, index){
-
-    var matProp = row.matProp;
-    if(matProp){
-        if(matProp=='m'){
-            return '普通材料';
-        }else if(matProp=='c'){
-            return '证照材料';
-        }else{
-            return '在线表单材料';
-        }
     }
 }
 
@@ -888,7 +838,7 @@ function addItemInMat(){
         $("#aedit_item_inout_mat_form input[name='stoFormId']").val('');
         $("#aedit_item_inout_mat_form input[name='stdmatId']").val('');
         $("#aedit_item_inout_mat_form input[name='matProp'][value='m']").prop("checked", true);
-        handleSelectMatProNew('m');
+        handleSelectMatProNew('#aedit_item_inout_mat_form','m');
 
         // 编号赋值
         $.ajax({
@@ -1183,7 +1133,7 @@ function loadGlobalMatData(isView,inoutId,matId){
                 }
 
                 if (data.matProp){
-                    handleSelectMatProNew(data.matProp);
+                    handleSelectMatProNew('#aedit_item_inout_mat_form',data.matProp);
                 }
 
                 // 记载表单数据

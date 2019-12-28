@@ -8,6 +8,7 @@ import com.augurit.agcloud.bpm.common.domain.vo.FormDataOptResult;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.domain.AeaApplyinstForminst;
 import com.augurit.aplanmis.common.domain.AeaExProjMoney;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.form.service.AeaExProjCertBuildService;
@@ -15,6 +16,7 @@ import com.augurit.aplanmis.common.form.service.RestExProjFormService;
 import com.augurit.aplanmis.common.form.vo.ExProjFormVo;
 import com.augurit.aplanmis.common.service.form.AeaExProjMoneyService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
+import com.augurit.aplanmis.front.basis.stage.service.RestStageService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,8 @@ public class RestExProjFormServiceImpl extends AbstractFormDataOptManager implem
     private AeaProjInfoService aeaProjInfoService;
     @Autowired
     private AeaExProjCertBuildService aeaExProjCertBuildService;
+    @Autowired
+    private RestStageService restStageService;
 
     @Override
     public ExProjFormVo getExProjForm(String projInfoId) throws Exception {
@@ -98,7 +102,15 @@ public class RestExProjFormServiceImpl extends AbstractFormDataOptManager implem
             aeaExProjMoneyService.saveAeaExProjMoney(aeaExProjMoney);
 
             if (StringUtils.isBlank(exProjFormVo.getFormId())) throw new Exception("缺少formId");
-            this.formSave(exProjFormVo.getFormId(), aeaExProjMoney.getMoneyId(), EDataOpt.INSERT.getOpareteType(), null);
+            FormDataOptResult formDataOptResult = this.formSave(exProjFormVo.getFormId(), aeaExProjMoney.getMoneyId(), EDataOpt.INSERT.getOpareteType(), null);
+            //关联表单实例和申请实例
+            AeaApplyinstForminst aeaApplyinstForminst = new AeaApplyinstForminst();
+            aeaApplyinstForminst.setApplyinstId(exProjFormVo.getRefEntityId());
+            aeaApplyinstForminst.setForminstId(formDataOptResult.getActStoForminst().getStoForminstId());
+            aeaApplyinstForminst.setStoFormId(exProjFormVo.getFormId());
+            aeaApplyinstForminst.setCreateTime(new Date());
+            aeaApplyinstForminst.setCreater(SecurityContext.getCurrentUserId());
+            restStageService.bindForminst(aeaApplyinstForminst);
         }
         aeaExProjCertBuildService.SynchronizeDataByExProjForm(exProjFormVo);//同步信息
         return new ResultForm(true, "建设项目登记信息保存成功！");
@@ -112,6 +124,7 @@ public class RestExProjFormServiceImpl extends AbstractFormDataOptManager implem
         actStoForminst.setFormId(formId);
         actStoForminst.setFormPrimaryKey(metaTableId);
         result.setActStoForminst(actStoForminst);
+        result.setDataOpt(EDataOpt.INSERT);
         return result;
     }
 

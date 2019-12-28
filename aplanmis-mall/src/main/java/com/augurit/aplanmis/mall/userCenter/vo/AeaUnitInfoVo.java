@@ -54,9 +54,6 @@ public class AeaUnitInfoVo {
     public static AeaUnitInfoVo build(AeaUnitInfo aeaUnitInfo) {
         AeaUnitInfoVo aeaUnitInfoVo = new AeaUnitInfoVo();
         BeanUtils.copyProperties(aeaUnitInfo, aeaUnitInfoVo);
-        if (isCheckAuthority){
-            aeaUnitInfoVo.setIdno(DesensitizedUtil.desensitizedIdNumber(aeaUnitInfoVo.getIdno()));
-        }
         return aeaUnitInfoVo;
     }
 }

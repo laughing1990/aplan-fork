@@ -32,4 +32,7 @@ public class AeaProjDrawingVo {
 
     List<AeaProjDrawing> aeaProjDrawing;//单位信息
 
+    private String formId;//扩展字段
+    private String refEntityId;//申报实例Id
+
 }

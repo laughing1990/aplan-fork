@@ -5,7 +5,11 @@ import com.augurit.agcloud.bpm.common.constant.EDataOpt;
 import com.augurit.agcloud.bpm.common.domain.ActStoForm;
 import com.augurit.agcloud.bpm.common.domain.ActStoForminst;
 import com.augurit.agcloud.bpm.common.domain.vo.FormDataOptResult;
+import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.agcloud.framework.ui.result.ContentResultForm;
+import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.domain.AeaApplyinstForminst;
 import com.augurit.aplanmis.common.domain.AeaExProjCertLand;
 import com.augurit.aplanmis.common.domain.AeaExProjCertProject;
 import com.augurit.aplanmis.common.domain.AeaExProjSite;
@@ -13,10 +17,12 @@ import com.augurit.aplanmis.common.service.form.AeaExProjCertLandService;
 import com.augurit.aplanmis.common.service.form.AeaExProjCertProjectService;
 import com.augurit.aplanmis.common.service.form.AeaExProjSiteService;
 import com.augurit.aplanmis.common.vo.AeaCertiVo;
+import com.augurit.aplanmis.front.basis.stage.service.RestStageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,6 +37,8 @@ public class AeaExCertiService extends AbstractFormDataOptManager {
 
     @Autowired
     private AeaExProjSiteService aeaExProjSiteService;
+    @Autowired
+    private RestStageService restStageService;
 
     public AeaCertiVo  index ( String projInfoId ){
         AeaCertiVo aeaCertiVo = new AeaCertiVo();
@@ -86,7 +94,7 @@ public class AeaExCertiService extends AbstractFormDataOptManager {
     }
 
 
-    public void save(AeaCertiVo aeaCertiVo) {
+    public ResultForm save(AeaCertiVo aeaCertiVo) {
 
         try {
             if (StringUtils.isBlank(aeaCertiVo.getFormId())) throw new Exception("缺少formId");
@@ -103,18 +111,29 @@ public class AeaExCertiService extends AbstractFormDataOptManager {
                 aeaExProjCertLand.setPublishTime(aeaCertiVo.getPublishTimeLand());
                 aeaExProjCertLandService.updateAeaExProjCertLand(aeaExProjCertLand);
             } else {
-                if (aeaCertiVo.getCertLandId() == null || "".equals(aeaCertiVo.getCertLandId()))
-                    aeaExProjCertLand.setCertLandId(UUID.randomUUID().toString());
-                aeaExProjCertLand.setProjInfoId(aeaCertiVo.getProjInfoId());
-                aeaExProjCertLand.setCertLandCode(aeaCertiVo.getCertLandCode());
-                aeaExProjCertLand.setLandNature(aeaCertiVo.getLandNature());
-                aeaExProjCertLand.setLandAreaValue(aeaCertiVo.getLandAreaValue());
-                aeaExProjCertLand.setLandAreaUnit(aeaCertiVo.getLandAreaUnit());
-                aeaExProjCertLand.setGovOrgCode(aeaCertiVo.getGovOrgCodeLand());
-                aeaExProjCertLand.setGovOrgName(aeaCertiVo.getGovOrgNameLand());
-                aeaExProjCertLand.setPublishTime(aeaCertiVo.getPublishTimeLand());
-                aeaExProjCertLandService.saveAeaExProjCertLand(aeaExProjCertLand);
-                this.formSave(aeaCertiVo.getFormId(), aeaExProjCertLand.getCertLandId(), EDataOpt.INSERT.getOpareteType(), null);
+                if (aeaCertiVo.getCertLandId() == null || "".equals(aeaCertiVo.getCertLandId())) {
+                    if(aeaCertiVo.getCertLandCode() != null&&!"".equals(aeaCertiVo.getCertLandCode())){
+                        aeaExProjCertLand.setCertLandId(UUID.randomUUID().toString());
+                        aeaExProjCertLand.setProjInfoId(aeaCertiVo.getProjInfoId());
+                        aeaExProjCertLand.setCertLandCode(aeaCertiVo.getCertLandCode());
+                        aeaExProjCertLand.setLandNature(aeaCertiVo.getLandNature());
+                        aeaExProjCertLand.setLandAreaValue(aeaCertiVo.getLandAreaValue());
+                        aeaExProjCertLand.setLandAreaUnit(aeaCertiVo.getLandAreaUnit());
+                        aeaExProjCertLand.setGovOrgCode(aeaCertiVo.getGovOrgCodeLand());
+                        aeaExProjCertLand.setGovOrgName(aeaCertiVo.getGovOrgNameLand());
+                        aeaExProjCertLand.setPublishTime(aeaCertiVo.getPublishTimeLand());
+                        aeaExProjCertLandService.saveAeaExProjCertLand(aeaExProjCertLand);
+                        FormDataOptResult formDataOptResult =    this.formSave(aeaCertiVo.getFormId(), aeaExProjCertLand.getCertLandId(), EDataOpt.INSERT.getOpareteType(), null);
+                        //关联表单实例和申请实例
+                        AeaApplyinstForminst aeaApplyinstForminst = new AeaApplyinstForminst();
+                        aeaApplyinstForminst.setApplyinstId(aeaCertiVo.getRefEntityId());
+                        aeaApplyinstForminst.setForminstId(formDataOptResult.getActStoForminst().getStoForminstId());
+                        aeaApplyinstForminst.setStoFormId(aeaCertiVo.getFormId());
+                        aeaApplyinstForminst.setCreateTime(new Date());
+                        aeaApplyinstForminst.setCreater(SecurityContext.getCurrentUserId());
+                        restStageService.bindForminst(aeaApplyinstForminst);
+                    }
+                }
             }
 
             //建设工程规划许可证
@@ -128,16 +147,17 @@ public class AeaExCertiService extends AbstractFormDataOptManager {
                 aeaExProjCertProject.setPublishTime(aeaCertiVo.getPublishTimeProject());
                 aeaExProjCertProjectService.updateAeaExProjCertProject(aeaExProjCertProject);
             } else {
-                if (aeaCertiVo.getCertProjectId() == null || "".equals(aeaCertiVo.getCertProjectId()))
-
-                    aeaExProjCertProject.setCertProjectId(UUID.randomUUID().toString());
-                aeaExProjCertProject.setProjInfoId(aeaCertiVo.getProjInfoId());
-                aeaExProjCertProject.setCertProjectCode(aeaCertiVo.getCertProjectCode());
-                aeaExProjCertProject.setPublishOrgCode(aeaCertiVo.getPublishOrgCodeProject());
-                aeaExProjCertProject.setPublishOrgName(aeaCertiVo.getPublishOrgNameProject());
-                aeaExProjCertProject.setPublishTime(aeaCertiVo.getPublishTimeProject());
-                aeaExProjCertProjectService.saveAeaExProjCertProject(aeaExProjCertProject);
-                this.formSave(aeaCertiVo.getFormId(), aeaExProjCertProject.getCertProjectId(), EDataOpt.INSERT.getOpareteType(), null);
+                if (aeaCertiVo.getCertProjectId() == null || "".equals(aeaCertiVo.getCertProjectId())){
+                    if (aeaCertiVo.getCertProjectCode() != null && !"".equals(aeaCertiVo.getCertProjectCode())) {
+                        aeaExProjCertProject.setCertProjectId(UUID.randomUUID().toString());
+                        aeaExProjCertProject.setProjInfoId(aeaCertiVo.getProjInfoId());
+                        aeaExProjCertProject.setCertProjectCode(aeaCertiVo.getCertProjectCode());
+                        aeaExProjCertProject.setPublishOrgCode(aeaCertiVo.getPublishOrgCodeProject());
+                        aeaExProjCertProject.setPublishOrgName(aeaCertiVo.getPublishOrgNameProject());
+                        aeaExProjCertProject.setPublishTime(aeaCertiVo.getPublishTimeProject());
+                        aeaExProjCertProjectService.saveAeaExProjCertProject(aeaExProjCertProject);
+                    }
+                }
             }
 
             //建设项目选址意见书
@@ -154,24 +174,26 @@ public class AeaExCertiService extends AbstractFormDataOptManager {
                 aeaExProjSite.setPublishTime(aeaCertiVo.getPublishTimeSite());
                 aeaExProjSiteService.updateAeaExProjSite(aeaExProjSite);
             } else {
-                if (aeaCertiVo.getSiteId() == null || "".equals(aeaCertiVo.getSiteId()))
-                    aeaExProjSite.setSiteId(UUID.randomUUID().toString());
-                aeaExProjSite.setProjInfoId(aeaCertiVo.getProjInfoId());
-                aeaExProjSite.setSiteCode(aeaCertiVo.getSiteCode());
-                aeaExProjSite.setLandAreaValue(aeaCertiVo.getLandAreaValueSite());
-                aeaExProjSite.setLandAreaUnit(aeaCertiVo.getLandAreaUnit());
-                aeaExProjSite.setConstructionSize(aeaCertiVo.getConstructionSize());
-                aeaExProjSite.setGovOrgCode(aeaCertiVo.getGovOrgNameSite());
-                aeaExProjSite.setGovOrgName(aeaCertiVo.getGovOrgNameSite());
-                aeaExProjSite.setPublishTime(aeaCertiVo.getPublishTimeSite());
-                aeaExProjSiteService.saveAeaExProjSite(aeaExProjSite);
+                if (aeaCertiVo.getSiteId() == null || "".equals(aeaCertiVo.getSiteId())){
+                    if(aeaCertiVo.getSiteCode() != null&&!"".equals(aeaCertiVo.getSiteCode())){
+                        aeaExProjSite.setSiteId(UUID.randomUUID().toString());
+                        aeaExProjSite.setProjInfoId(aeaCertiVo.getProjInfoId());
+                        aeaExProjSite.setSiteCode(aeaCertiVo.getSiteCode());
+                        aeaExProjSite.setLandAreaValue(aeaCertiVo.getLandAreaValueSite());
+                        aeaExProjSite.setLandAreaUnit(aeaCertiVo.getLandAreaUnit());
+                        aeaExProjSite.setConstructionSize(aeaCertiVo.getConstructionSize());
+                        aeaExProjSite.setGovOrgCode(aeaCertiVo.getGovOrgNameSite());
+                        aeaExProjSite.setGovOrgName(aeaCertiVo.getGovOrgNameSite());
+                        aeaExProjSite.setPublishTime(aeaCertiVo.getPublishTimeSite());
+                        aeaExProjSiteService.saveAeaExProjSite(aeaExProjSite);
 
-                this.formSave(aeaCertiVo.getFormId(), aeaExProjSite.getSiteId(), EDataOpt.INSERT.getOpareteType(), null);
+                    }
+                }
             }
-
-
+            return new ContentResultForm<String>(true,"保存成功");
         } catch (Exception e) {
             e.printStackTrace();
+            return new ContentResultForm<String>(false,"保存失败：" + e.getMessage());
         }
 
     }
@@ -185,6 +207,7 @@ public class AeaExCertiService extends AbstractFormDataOptManager {
         actStoForminst.setFormId(formId);
         actStoForminst.setFormPrimaryKey(metaTableId);
         result.setActStoForminst(actStoForminst);
+        result.setDataOpt(EDataOpt.INSERT);
         return result;
     }
 

@@ -38,9 +38,11 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjContractControll
 
 
     @RequestMapping("/index.html")
-    public ModelAndView indexAeaExProjContract(String projInfoId){
+    public ModelAndView indexAeaExProjContract(String projInfoId,String formId,String refEntityId){
         ModelAndView view = new ModelAndView("form/contractInfo");
         view.addObject("projInfoId", projInfoId);
+        view.addObject("refEntityId",refEntityId);
+        view.addObject("formId",formId);
         return view;
     }
 

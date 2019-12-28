@@ -60,7 +60,7 @@ var vm = new Vue({
       }
     };
     var checkUnifiedSocialCreditCode = function (rule, value, callback) {
-      if (value === '' || value === undefined || value.trim() === '') {
+      if (value === '' || value === undefined || value.trim() === ''|| value == null) {
         callback(new Error('请输入统一社会信用代码！'));
       } else if (value) {
         var flag = !/^[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}$/.test(value);
@@ -391,6 +391,7 @@ var vm = new Vue({
       loadingLinkMan: false,
       stageId: '',  // 所选阶段ID
       applyinstIds: [], // 申请实例id
+      _applyinstIds: [], // 所有申报实例id
       stateIds: [], // 情形id集合
       getPaperAll: false,
       getCopyAll: false,
@@ -4486,15 +4487,16 @@ var vm = new Vue({
               applyinstIdsList.push(applyinstIdsParallelApplyinstId[i]);
             }
           }
-          _that.applyinstIds = applyinstIdsList;
-          var applyinstIds=applyinstIdsList.join(',');
+          _that.applyinstIds = res.content.applyinstIds;
+          _that._applyinstIds = applyinstIdsList;
+          var _applyinstIds=applyinstIdsList.join(',');
           setTimeout(function(){
             // _that.progressDialogVisible = false;
             // _that.uploadPercentage=0;
             if(_that.submitCommentsType==5){
               _that.getLackMatsMatmend()
             } else{
-              _that.queryReceiveList(applyinstIds);
+              _that.queryReceiveList(_applyinstIds);
             }
           },500);
         }else {
@@ -4975,6 +4977,9 @@ var vm = new Vue({
           }
         });
       };
+      if(row.questionStates=='undefined'||row.questionStates==undefined){
+        Vue.set(row, 'questionStates', []);
+      }
       if(selArr.length==0){
         flag=false;
         _that.showCoreItemsKey=[];
@@ -5286,6 +5291,9 @@ var vm = new Vue({
       }
       selArr.map(function(row,index){
         if(row){
+          if(row.questionStates=='undefined'||row.questionStates==undefined){
+            Vue.set(row, 'questionStates', []);
+          }
           var rowMatList = [];
           if(row.implementItemVerId&&_that.itemverMatList.length>0){
             for (var i = 0; i < _that.itemverMatList.length; i++) { // 清空情形下所对应材料
@@ -5348,6 +5356,9 @@ var vm = new Vue({
             itemAllVerIds.push(item.itemVerId)
           }
         });
+      }
+      if(row.questionStates=='undefined'||row.questionStates==undefined){
+        Vue.set(row, 'questionStates', []);
       }
       if(selItemVer.length>0){
         selItemVer.map(function(item){
@@ -5624,6 +5635,9 @@ var vm = new Vue({
         var rowsItemVerIds = [];
         selArr.map(function(row){
           if(row){
+            if(row.questionStates=='undefined'||row.questionStates==undefined){
+              Vue.set(row, 'questionStates', []);
+            }
             var rowMatList = [];
             // if(row.isDone !== 'FINISHED' && row.isDone !== 'HANDLING'&&(!row.notRegionData)){
             if(row.implementItemVerId&&_that.itemverMatList.length>0){
@@ -6731,7 +6745,7 @@ var vm = new Vue({
               // ts.$message.success('保存成功！');
               ts.isShowMatmend = false;
               confirmMsg('提示信息：','材料补全成功，是否打印回执？',function(){
-                ts.queryReceiveList(ts.applyinstIds.join(','));
+                ts.queryReceiveList(ts._applyinstIds.join(','));
               },function(){
                 ts.reloadPage();
               },'是','否','success',true)
@@ -6841,7 +6855,7 @@ var vm = new Vue({
     isGetReceiveList: function(){
       var _that = this;
       confirmMsg('提示信息：','是否打印回执？',function(){
-        _that.queryReceiveList(_that.applyinstIds.join(','));
+        _that.queryReceiveList(_that._applyinstIds.join(','));
       },function(){
         _that.reloadPage();
       },'是','否','success',true)

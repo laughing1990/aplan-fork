@@ -143,6 +143,8 @@ var vm = new Vue({
         var _that = this;
         _that.initPage();
         //_that.getQualLevel('danweizilidengji');
+        _that.formId = _that.getUrlParam('formId');
+        _that.refEntityId = _that.getUrlParam('refEntityId');
         _that.initFromPage();
     },
     methods:{
@@ -230,6 +232,8 @@ var vm = new Vue({
             _that.$refs['certBuildFrom'].validate(function (valid){
                 if(valid){
                     _that.certBuildFrom.contractPeriod = _that.certBuildFrom.contractStartBuildTime.replace(/-/g,".") + '~' + _that.certBuildFrom.contractEndBuildTime.replace(/-/g,".");
+                    _that.certBuildFrom.formId = _that.formId;
+                    _that.certBuildFrom.refEntityId = _that.refEntityId;
                     request('',{
                         url: ctx + '/rest/from/certbuild/saveAeaExProjCertBuild',
                         data: _that.certBuildFrom,

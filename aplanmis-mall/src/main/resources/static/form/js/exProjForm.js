@@ -38,9 +38,9 @@ var vm = new Vue({
                     { required: true, message: '请填写建设规模', trigger: 'blur' },
                     { max: 500, message: '最大长度500个字符', trigger: 'blur' }
                 ],
-                projNum: [
-                    { required: true, message: '请填写立项文号', trigger: 'blur' }
-                ],
+                // projNum: [
+                //     { required: true, message: '请填写立项文号', trigger: 'blur' }
+                // ],
                 projLevel: [
                     { required: true, message: '请选择立项级别', trigger: 'change' }
                 ],
@@ -194,6 +194,8 @@ var vm = new Vue({
 
             _that.$refs['exProjFrom'].validate(function (valid) {
                 if (valid) {
+                    _that.exProjFrom.formId = formId;
+                    _that.exProjFrom.refEntityId = refEntityId;
                     request('', {
                         url: ctx + 'rest/form/ex/project/save',
                         data: _that.exProjFrom,

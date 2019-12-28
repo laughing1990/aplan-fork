@@ -11,7 +11,9 @@
   <link rel="stylesheet" href="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css" th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
   <script>
     var ctx = '[[@{/}]]';
-    var projInfoId= '[[${projInfoId}]]'; 
+    var projInfoId= '[[${projInfoId}]]';
+    var formId= '[[${formId}]]';
+    var refEntityId= '[[${refEntityId}]]';
   // var ctx = 'http://192.168.32.48:8083/aplanmis-front/';
   // var ctx = 'http://192.168.17.15:8083/aplanmis-front/';
   // var ctx = 'http://192.168.15.26:8083/aplanmis-front/';
@@ -179,7 +181,12 @@
             </el-form-item>
           </el-form>
           <el-form-item class="form-title">
-            <p class='header'>勘察单位</p>
+            <p class='header'>勘察单位
+              <label class="notice" style="margin-left: 45px;color: #FF0000;">
+                <i class="ag ag-warn-circle"></i>
+                <span>市政工程、房屋建筑工程必须填写勘察单位信息</span>
+              </label>
+            </p>
           </el-form-item>
           <el-form label-width="220px" :model="formDataKanCha" ref="form3" :rules="rules3" v-if="formDataKanCha">
             <div class="clearfix">

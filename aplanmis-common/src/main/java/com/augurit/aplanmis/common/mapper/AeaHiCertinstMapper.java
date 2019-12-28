@@ -93,5 +93,7 @@ public interface AeaHiCertinstMapper {
 
     List<AeaHiCertinst> getCertinsts(@Param("certId") String certId, @Param("linkmanInfoId") String linkmanInfoId, @Param("projInfoId") String projInfoId, @Param("unInfoIds") String[] unInfoIds, @Param("rootOrgId") String rootOrgId);
 
-    List<AeaHiCertinst> getCertintList(@Param("linkmanInfoId") String linkmanInfoId, @Param("unitInfoId") String unitInfoId, @Param("projInfoIds") String[] projInfoIds,@Param("keyword") String keyword, @Param("rootOrgId") String rootOrgId);
+    List<AeaHiCertinst> getCertintListByProjInfoIds(@Param("linkmanInfoId") String linkmanInfoId, @Param("unitInfoId") String unitInfoId, @Param("projInfoIds") String[] projInfoIds,@Param("keyword") String keyword, @Param("rootOrgId") String rootOrgId);
+
+    List<AeaHiCertinst> getCertintListByUnitInfoIdOrLinkmanInfoId(@Param("linkmanInfoId") String linkmanInfoId, @Param("unitInfoId") String unitInfoId, @Param("keyword") String keyword, @Param("rootOrgId") String rootOrgId);
 }

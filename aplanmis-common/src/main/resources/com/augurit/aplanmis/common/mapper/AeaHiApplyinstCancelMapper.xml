@@ -273,7 +273,7 @@ APPLYINST_CANCEL_ID  ,APPLYINST_ID  ,PROJ_INFO_ID  ,APPINST_ID  ,ATT_ID  ,APPLY_
                 ROOT_ORG_ID = #{rootOrgId},
             </if>
             <if test="isSuspendedBefore != null">
-                IS_SUSPENDED_BEFORE = #{isSuspendedBefore}
+                IS_SUSPENDED_BEFORE = #{isSuspendedBefore},
             </if>
             <if test="signState != null">
                 SIGN_STATE = #{signState}

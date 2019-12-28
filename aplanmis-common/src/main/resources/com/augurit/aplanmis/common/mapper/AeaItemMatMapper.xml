@@ -1322,6 +1322,7 @@
             count(*)
         from AEA_ITEM_MAT
         <where>
+            and IS_DELETED = '0'
             and ROOT_ORG_ID = #{rootOrgId}
             and MAT_CODE = #{matCode}
             <if test="matId != null and matId!='' ">

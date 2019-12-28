@@ -65,6 +65,8 @@
         },
         created: function () {
             this.projInfoId = this.getUrlParam('projInfoId');
+            this.formId = this.getUrlParam('formId');
+            this.refEntityId = this.getUrlParam('refEntityId');
             // this.projInfoId = '01263565-b7b4-4088-88b8-fb7959d219e1';
         },
         mounted: function () {
@@ -167,7 +169,9 @@
                                 underDepth: _that.formData.underDepth,
                                 length: _that.formData.length,
                                 span: _that.formData.span,
-                                parentProjId: _that.projInfoId
+                                parentProjId: _that.projInfoId,
+                                formId:_that.formId,
+                                refEntityId:_that.refEntityId,
                             };
                             // 新增
                             request('', {
