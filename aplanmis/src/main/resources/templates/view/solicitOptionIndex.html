@@ -279,7 +279,7 @@
 				label="剩余时限">
 			<template slot-scope="scope">
 				<div v-if="scope.row.isCalcTimerule && scope.row.isCalcTimerule==0">
-					<span class="bg-status green-deadline">{{scope.row.dueNumText}}</span>
+					<span class="bg-status">不计时</span>
 				</div>
 				<div v-else>
 					<span class="bg-status green-deadline" v-if="!scope.row.instState">{{'剩余'+scope.row.dueNumText}}</span>

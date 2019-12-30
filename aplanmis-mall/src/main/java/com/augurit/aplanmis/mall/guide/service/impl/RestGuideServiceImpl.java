@@ -12,24 +12,31 @@ import com.augurit.agcloud.bsc.upload.UploadType;
 import com.augurit.agcloud.bsc.upload.factory.UploaderFactory;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
+import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemRelevanceMapper;
+import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
+import com.augurit.aplanmis.common.mapper.AeaParStateMapper;
 import com.augurit.aplanmis.common.service.guide.*;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
+import com.augurit.aplanmis.common.service.item.AeaItemPrivService;
 import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
 import com.augurit.aplanmis.common.service.stage.AeaParStageService;
 import com.augurit.aplanmis.common.service.state.AeaItemStateService;
 import com.augurit.aplanmis.common.service.theme.AeaParThemeService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowItemService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowStageService;
+import com.augurit.aplanmis.common.utils.CommonTools;
 import com.augurit.aplanmis.mall.guide.service.RestGuideService;
 import com.augurit.aplanmis.mall.guide.vo.*;
 import com.augurit.aplanmis.mall.main.service.RestMainService;
+import com.augurit.aplanmis.mall.main.vo.ItemListVo;
+import com.augurit.aplanmis.mall.main.vo.ParallelApproveItemVo;
 import com.augurit.aplanmis.mall.main.vo.ThemeTypeVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -92,8 +99,16 @@ public class RestGuideServiceImpl implements RestGuideService {
     private AeaParThemeService aeaParThemeService;
     @Autowired
     private RestMainService restMainService;
-    @Value("${dg.sso.access.platform.org.top-org-id:0368948a-1cdf-4bf8-a828-71d796ba89f6}")
-    private String topOrgId;
+
+    @Autowired
+    private AeaParStageMapper aeaParStageMapper;
+    @Autowired
+    private AeaParStateMapper aeaParStateMapper;
+    @Autowired
+    private AeaItemPrivService aeaItemPrivService;
+    @Autowired
+    private OpuOmOrgMapper opuOmOrgMapper;
+
     @Override
     public RestGuideVo getGuideByStageId(String stageId,String rootOrgId) throws Exception {
         RestGuideVo restGuideVo = new RestGuideVo();
@@ -380,21 +395,21 @@ public class RestGuideServiceImpl implements RestGuideService {
     }
 
     @Override
-    public RestStageAndItemVo getStageAndItemByThemeId(String themeId) throws Exception {
+    public RestStageAndItemVo getStageAndItemByThemeId(String themeId,String rootOrgId) throws Exception {
         try {
             RestStageAndItemVo restStageAndItemVo = new RestStageAndItemVo();
             AeaParTheme theme = aeaParThemeService.getAeaParThemeByThemeId(themeId);
             if (theme == null) return restStageAndItemVo;
-            List<AeaParTheme> publishedThemes = aeaParThemeService.getTestRunOrPublishedVerAeaParTheme(theme.getThemeType(), topOrgId);
+            List<AeaParTheme> publishedThemes = aeaParThemeService.getTestRunOrPublishedVerAeaParTheme(theme.getThemeType(), rootOrgId);
             if (publishedThemes.size() == 0) return restStageAndItemVo;
             List<String> themeVerIds = publishedThemes.stream().filter(parTheme -> themeId.equals(parTheme.getThemeId())).map(AeaParTheme::getThemeVerId).collect(Collectors.toList());
             if (themeVerIds.size() == 0) return restStageAndItemVo;
-            List<AeaParStage> stageList = aeaParStageService.listAeaParStageByThemeIdOrThemeVerId(StringUtils.EMPTY, themeVerIds.get(0), topOrgId);
+            List<AeaParStage> stageList = aeaParStageService.listAeaParStageByThemeIdOrThemeVerId(StringUtils.EMPTY, themeVerIds.get(0), rootOrgId);
             List<RestStageVo> stageVos = stageList.stream().map(RestStageVo::build).collect(Collectors.toList());
             restStageAndItemVo.setStages(stageVos);
 
             AeaItemBasic searchItem = new AeaItemBasic();
-            searchItem.setRootOrgId(topOrgId);
+            searchItem.setRootOrgId(rootOrgId);
 
             //并联事项
             List<RestItemListVo> paraItemListVos = new ArrayList<>();
@@ -426,11 +441,11 @@ public class RestGuideServiceImpl implements RestGuideService {
     }
 
     @Override
-    public List<ThemeTypeVo> searchThemeAndStageAndItemByKeyword(String keyword) throws Exception {
+    public List<ThemeTypeVo> searchThemeAndStageAndItemByKeyword(String keyword,String rootOrgId) throws Exception {
         try {
 
             //1.从主题列表根据项目类型查找符合条件主题并标记
-            List<ThemeTypeVo> themeTypeVos = restMainService.getThemeTypeList(topOrgId);
+            List<ThemeTypeVo> themeTypeVos = restMainService.getThemeTypeList(rootOrgId);
             themeTypeVos.stream().forEach(themeTypeVo -> {
                 themeTypeVo.getThemeList().stream().forEach(aeaParTheme -> {
                     if (StringUtils.isNotBlank(aeaParTheme.getThemeName())&&aeaParTheme.getThemeName().contains(keyword))
@@ -445,7 +460,7 @@ public class RestGuideServiceImpl implements RestGuideService {
             Set<AeaParStage> stages = new HashSet<>();
             if (aeaItemBasics.size()>0){
                 for (AeaItemBasic aeaItemBasic : aeaItemBasics) {
-                    stages.addAll(aeaParStageService.listAeaParStageByThemeIdOrThemeVerId(aeaItemBasic.getItemId(),aeaItemBasic.getBaseItemVerId(),topOrgId));
+                    stages.addAll(aeaParStageService.listAeaParStageByThemeIdOrThemeVerId(aeaItemBasic.getItemId(),aeaItemBasic.getBaseItemVerId(),rootOrgId));
                 }
             }
             if (stages.size()>0){
@@ -466,11 +481,175 @@ public class RestGuideServiceImpl implements RestGuideService {
         }
     }
 
+
     @Override
-    public RestStageAndItemVo searchStageAndItemByKeywordAndThemeId(String themeId, String keyword) throws Exception {
+    public ItemListVo listItemAndStateByStageId(String stageId,String rootOrgId) throws Exception {
+        ItemListVo vo = new ItemListVo();
+        AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageId);
+
+        //情形
+        List<AeaParState> stateList = null;
+        //并联
+        List<ParallelApproveItemVo> paraItemList = this.getRequiredItems(stageId,rootOrgId);
+        //并行
+        List<ParallelApproveItemVo> coreItemList = this.getOptionalItems(stageId,rootOrgId);
+        for (ParallelApproveItemVo item:coreItemList){
+            if ("1".equals(item.getIsCatalog())) {//标准事项
+                List<AeaItemBasic> carryOutItems = item.getCarryOutItems();//实施事项列表
+                AeaItemBasic currentCarryOutItem = item.getCurrentCarryOutItem();//默认实施事项
+                if (carryOutItems.size() > 0) {
+                    for (AeaItemBasic basic : carryOutItems) {
+                        List<AeaItemState> coreStateList = aeaItemStateService.listAeaItemStateByParentId(basic.getItemVerId(), "", "ROOT", rootOrgId);
+                        basic.setCoreStateList(coreStateList.size() > 0 ? coreStateList : new ArrayList<>());
+                        if (basic.getItemVerId().equals(currentCarryOutItem.getItemVerId())) {
+                            currentCarryOutItem.setCoreStateList(coreStateList);
+                        }
+                    }
+                }
+            } else {
+                item.setCoreStateList(aeaItemStateService.listAeaItemStateByParentId(item.getItemVerId(), "", "ROOT",rootOrgId));
+            }
+            if (item.getCarryOutItems()==null||item.getCarryOutItems().size()==0){
+                item.setCarryOutItems(new ArrayList<>());
+            }
+            if (item.getCurrentCarryOutItem()==null) item.setCurrentCarryOutItem(new AeaItemBasic());
+        }
+        //getIsNeedState 为1时为分情形
+        if ("1".equals(aeaParStage.getIsNeedState())){
+            stateList= aeaParStateMapper.listParStateByParentStateId(stageId, "ROOT",rootOrgId);
+        }
+        //hand_way为0时，需展示并联事项情形
+        if ("0".equals(aeaParStage.getHandWay())){
+            for (ParallelApproveItemVo item:paraItemList){
+                if ("1".equals(item.getIsCatalog())) {//标准事项
+                    List<AeaItemBasic> carryOutItems = item.getCarryOutItems();//实施事项列表
+                    AeaItemBasic currentCarryOutItem = item.getCurrentCarryOutItem();//默认实施事项
+                    if (carryOutItems.size() > 0) {
+                        for (AeaItemBasic basic : carryOutItems) {
+                            List<AeaItemState> paraStateList = aeaItemStateService.listAeaItemStateByParentId(basic.getItemVerId(), "", "ROOT", rootOrgId);
+                            basic.setCoreStateList(paraStateList.size() > 0 ? paraStateList : new ArrayList<>());
+                            if (basic.getItemVerId().equals(currentCarryOutItem.getItemVerId())) {
+                                currentCarryOutItem.setParaStateList(paraStateList);
+                            }
+                        }
+                    }
+                } else {
+                    item.setParaStateList(aeaItemStateService.listAeaItemStateByParentId(item.getItemVerId(), "", "ROOT", rootOrgId));
+                }
+                if (item.getCarryOutItems()==null||item.getCarryOutItems().size()==0){
+                    item.setCarryOutItems(new ArrayList<>());
+                }
+                if (item.getCurrentCarryOutItem()==null) item.setCurrentCarryOutItem(new AeaItemBasic());
+            }
+        }
+
+        vo.setParallelItemList(paraItemList==null?new ArrayList<>():paraItemList);
+        vo.setCoreItemList(coreItemList==null?new ArrayList<>():coreItemList);
+        vo.setStateList(stateList==null?new ArrayList<>():stateList);
+        return vo;
+    }
+
+
+    /**
+     * 查询阶段必选事项
+     *
+     * @param stageId    阶段id
+     */
+    public List<ParallelApproveItemVo> getRequiredItems(String stageId,String rootOrgId) throws Exception {
+        List<AeaItemBasic> coreItems = aeaItemBasicService.getAeaItemBasicListByStageId(stageId, "0", null,rootOrgId);
+        if (coreItems.size() == 0) return new ArrayList<>();
+
+        return postHandle(coreItems, stageId, "0",rootOrgId);
+    }
+
+    /**
+     * 查询阶段可选事项
+     *
+     * @param stageId    阶段id
+     */
+    public List<ParallelApproveItemVo> getOptionalItems(String stageId,String rootOrgId) throws Exception {
+        List<AeaItemBasic> optionItems = aeaItemBasicService.getAeaItemBasicListByStageId(stageId, "1", null,rootOrgId);
+        if (optionItems.size() == 0) return new ArrayList<>();
+        return postHandle(optionItems, stageId, "1",rootOrgId);
+    }
+
+    /**
+     * 判断是否需要过滤情形事项，在不分情形时，不用过滤
+     *
+     * @param aeaItemBasics 阶段下的所有事项
+     * @param stageId       阶段
+     * @param isOptionItem  是并联审批还是并行推进
+     * @return 返回事项vo
+     * @throws Exception 查询事项异常
+     */
+    private List<ParallelApproveItemVo> postHandle(List<AeaItemBasic> aeaItemBasics, String stageId, String isOptionItem,String rootOrgId) throws Exception {
+        AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageId);
+
+        // 设置事项的审批组织信息
+        List<String> itemVerIds = aeaItemBasics.stream().map(AeaItemBasic::getItemVerId).collect(Collectors.toList());
+        List<String> orgIds = new ArrayList<>();
+        final Map<String, String> orgNameMap = new HashMap<>();
+        final Map<String, AeaItemPriv> privMap = new HashMap<>();
+
+        if (itemVerIds.size() > 0) {
+            List<AeaItemPriv> currentUserItemPriv = aeaItemPrivService.findCurrentUserItemPriv(itemVerIds.toArray(new String[0]));
+            if (currentUserItemPriv != null) {
+                currentUserItemPriv.forEach(priv -> {
+                    orgIds.add(priv.getOrgId());
+                    privMap.put(priv.getItemVerId(), priv);
+                });
+
+                if (orgIds.size() > 0) {
+                    List<OpuOmOrg> orgNameByOrgIds = opuOmOrgMapper.getOrgNameByOrgIds(orgIds.toArray(new String[0]));
+                    orgNameByOrgIds.forEach(org -> orgNameMap.put(org.getOrgId(), org.getOrgName()));
+                }
+            }
+        }
+
+        List<AeaItemBasic> resultItems = new ArrayList<>(aeaItemBasics.size());
+        // 分情形时要过滤情形事项
+        if ("1".equals(aeaParStage.getIsNeedState())) {
+            // 情形事项
+            Set<String> stateItemVerIds = aeaItemBasicService.getAeaItemBasicListByStageIdAndStateId(stageId, null, isOptionItem,rootOrgId)
+                    .stream().map(AeaItemBasic::getItemVerId).collect(Collectors.toSet());
+            // 过滤情形事项
+            aeaItemBasics.forEach(item -> {
+                if (!stateItemVerIds.contains(item.getItemVerId())) {
+                    resultItems.add(item);
+                }
+            });
+        } else {
+            resultItems.addAll(aeaItemBasics);
+        }
+        return  resultItems.stream().filter(CommonTools.distinctByKey(AeaItemBasic::getItemVerId)).map(ParallelApproveItemVo::build).peek(vo -> {
+            String flag=vo.getIsCatalog();
+            if("1".equals(flag)){//标准事项
+
+                List<AeaItemBasic> sssxList = aeaItemBasicService.getSssxByItemIdAndRegionalism(vo.getItemId(), null, null, rootOrgId);
+                vo.setCarryOutItems(sssxList);
+                AeaItemBasic sssx=sssxList.size()>0?sssxList.get(0):null;
+                if(sssx!=null){
+                    vo.setCurrentCarryOutItem(sssx);
+                    vo.setBaseItemVerId(vo.getItemVerId());
+                    vo.setBaseItemName(vo.getItemName());
+                }
+            }
+            AeaItemPriv aeaItemPriv = privMap.get(vo.getItemVerId());
+            if (aeaItemPriv != null) {
+                vo.setAllowManual(aeaItemPriv.getAllowManual());
+                vo.setOrgId(aeaItemPriv.getOrgId());
+                vo.setOrgName(orgNameMap.get(aeaItemPriv.getOrgId()));
+            }
+        })
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public RestStageAndItemVo searchStageAndItemByKeywordAndThemeId(String themeId, String keyword,String rootOrgId) throws Exception {
         try {
         //1.设置所有符合条件的事项及标记符合条件的阶段的index
-        RestStageAndItemVo vo = this.getStageAndItemByThemeId(themeId);
+        RestStageAndItemVo vo = this.getStageAndItemByThemeId(themeId,rootOrgId);
         Set<Integer> indexs = new HashSet<>();
         vo.getParallelItems().stream().forEach(parallelItem->{
             parallelItem.getItems().stream().forEach(item->{

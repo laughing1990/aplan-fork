@@ -18,6 +18,7 @@ import com.augurit.aplanmis.common.service.theme.AeaParThemeService;
 import com.augurit.aplanmis.mall.guide.service.RestGuideService;
 import com.augurit.aplanmis.mall.guide.vo.RestGuideVo;
 import com.augurit.aplanmis.mall.guide.vo.RestSingleGuideVo;
+import com.augurit.aplanmis.mall.main.vo.ItemListVo;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -241,7 +242,7 @@ public class RestGuideController {
     })
     public ContentResultForm getStageAndItemByThemeId(@PathVariable("themeId")String themeId){
         try {
-            return new ContentResultForm<>(true,restGuideService.getStageAndItemByThemeId(themeId));
+            return new ContentResultForm<>(true,restGuideService.getStageAndItemByThemeId(themeId,topOrgId));
         } catch (Exception e) {
             e.printStackTrace();
             return new ContentResultForm(false,"","发生异常");
@@ -255,7 +256,7 @@ public class RestGuideController {
     })
     public ContentResultForm searchThemeAndStageAndItemByKeyword(@PathVariable("keyword")String keyword){
         try {
-            return new ContentResultForm<>(true,restGuideService.searchThemeAndStageAndItemByKeyword(keyword));
+            return new ContentResultForm<>(true,restGuideService.searchThemeAndStageAndItemByKeyword(keyword,topOrgId));
         } catch (Exception e) {
             e.printStackTrace();
             return new ContentResultForm(false,"","发生异常");
@@ -270,10 +271,26 @@ public class RestGuideController {
     })
     public ContentResultForm searchStageAndItemByKeywordAndThemeId(@PathVariable("keyword")String keyword,@PathVariable("themeId")String themeId){
         try {
-            return new ContentResultForm<>(true,restGuideService.searchStageAndItemByKeywordAndThemeId(themeId,keyword));
+            return new ContentResultForm<>(true,restGuideService.searchStageAndItemByKeywordAndThemeId(themeId,keyword,topOrgId));
         } catch (Exception e) {
             e.printStackTrace();
             return new ContentResultForm(false,"","发生异常");
+        }
+    }
+
+    @GetMapping("itemAndState/list/{stageId}")
+    @ApiOperation(value = "办事指南 --> 根据阶段ID获取事项一单清列表数据")
+    @ApiImplicitParams({@ApiImplicitParam(value = "阶段ID",name = "stageId",required = true,dataType = "string")})
+    public ContentResultForm<ItemListVo> listItemAndStateByStageId(@PathVariable("stageId") String stageId) {
+        try {
+            logger.error("-----listItemAndStateByStageId----start--------");
+            long l=System.currentTimeMillis();
+            ItemListVo vo = restGuideService.listItemAndStateByStageId(stageId,topOrgId);
+            logger.error("-----listItemAndStateByStageId----end--------耗时："+(System.currentTimeMillis()-l));
+            return new ContentResultForm<>(true,vo);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ContentResultForm(false,"","根据阶段id获取事项一单清列表数据异常");
         }
     }
 

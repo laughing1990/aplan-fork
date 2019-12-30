@@ -2979,8 +2979,8 @@ var vm = new Vue({
         {label: '材料附件', labelId: "2", src: './materialAnnex.html'},
         {label: '审批过程', labelId: "3", src: './opinionForm.html'},
         {label: '材料补正', labelId: "4", src: './opinionForm.html'},
-        {label: '意见征询', labelId: "solicit", src: './opinionForm.html'},
-        {label: '联合评审', labelId: "unionReview", src: './opinionForm.html'},
+        {label: '意见征询', labelId: "yjzq", src: './opinionForm.html'},
+        {label: '联合评审', labelId: "lhps", src: './opinionForm.html'},
         {label: '撤件历史', labelId: "appCancel", src: './opinionForm.html'},
         {label: '特殊程序', labelId: "5", src: './opinionForm.html'},
         {label: '批文批复', labelId: "6", src: './approvalOpinions.html',}
@@ -3115,16 +3115,14 @@ var vm = new Vue({
       // 是否有撤件历史
       loadTab('appCancel', 'hasAppCancel', vm.loadAppCancelData);
       // 是否有意见征询
-      loadTab('solicit', 'hasSolicit', vm.loadSolicitData);
+      loadTab('yjzq', 'hasSolicit', vm.loadSolicitData);
       // 是否有联合评审
-      loadTab('unionReview', 'hasUnionReview', vm.loadUnionReviewData);
+      loadTab('lhps', 'hasUnionReview', vm.loadUnionReviewData);
 
       // 进入页面是否需要展示对应的某个标签页
       if (vm.urlBusType) {
-        var tmpMap = {
-          'yjzq': 'solicit',
-        };
-        vm.pageLeftActiveId = tmpMap[vm.urlBusType] || '1';
+        // 根据浏览器url上的busType选中el-tab
+        vm.pageLeftActiveId = vm.urlBusType || '1';
       }
       
       // 加载对应标签数据
