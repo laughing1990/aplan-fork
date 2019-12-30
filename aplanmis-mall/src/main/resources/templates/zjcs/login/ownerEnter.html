@@ -186,7 +186,7 @@
 									<el-option key="单位" label="单位" value="u"></el-option>
 								</el-select>
 							</el-form-item>
-							<el-form-item class="input-inline" label="联系人证件类型" prop="">
+							<el-form-item class="input-inline" label="证件类型" prop="">
 								<el-select v-model="formData2.idCard">
 									<el-option key="身份证" label="身份证" value="1">
 									</el-option>
@@ -244,38 +244,58 @@
 						</el-form-item> -->
 						<div class="clearfix">
 							<el-form-item class="input-inline" label="采购委托人姓名">
-								<el-input name="linkmanName" v-model="formDatawtr.linkmanName" placeholder="请输入采购人姓名">
+								<el-input name="linkmanName" v-model="formDatawtr.linkmanName" placeholder="请输入采购人姓名"></el-input>
 							</el-form-item>
 							<el-form-item class="input-inline" label="移动电话">
-								<el-input name="linkmanMobilePhone" v-model="formDatawtr.linkmanMobilePhone" placeholder="请输入移动电话">
+								<el-input name="linkmanMobilePhone" v-model="formDatawtr.linkmanMobilePhone" placeholder="请输入移动电话"></el-input>
+							</el-form-item>
+							<el-form-item class="input-inline" label="联系人类型" prop="linkmanType">
+								<el-select v-model="formDatawtr.linkmanType">
+									<el-option key="个人" label="个人" value="c"></el-option>
+									<el-option key="单位" label="单位" value="u"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item class="input-inline" label="证件类型" prop="">
+								<el-select v-model="formDatawtr.idCard">
+									<el-option key="身份证" label="身份证" value="1">
+									</el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="联系人证件号" class="input-inline" prop="linkmanCertNo">
+								<el-input name="linkmanCertNo" v-model="formDatawtr.linkmanCertNo" placeholder="请输入采购委托人证件号" @blur="checknum">
+								</el-input>
+							</el-form-item>
+							<el-form-item class="input-inline" label="邮箱">
+								<el-input name="linkmanMail" v-model="formDatawtr.linkmanMail" placeholder="请输入邮箱">
+								</el-input>
 							</el-form-item>
 						</div>
-						<el-form-item label="采购委托人证件号" class="proj-code-info" prop="linkmanCertNo">
+
+
+						<!--<el-form-item label="采购委托人证件号" class="proj-code-info" prop="linkmanCertNo">
 							<el-select v-model="idCard" style="width:15%;">
 								<el-option key="身份证" label="身份证" value="1">
 								</el-option>
 							</el-select>
 							<el-input name="linkmanCertNo" v-model="formDatawtr.linkmanCertNo" placeholder="请输入采购委托人证件号" style="width:50%;" @blur="checknum">
 							</el-input>
-						</el-form-item>
+						</el-form-item>-->
+
 						<!-- <el-form-item class="proj-code-info" label="采购委托人账号">
 							<el-input name="projName" v-model="formDatawtr.projName" placeholder="请输入采购委托人账号">
 						</el-form-item> -->
-						<div class="clearfix">
-							<!--  <el-form-item class="input-inline" label="职务">
-								<el-input name="projName" v-model="formDatawtr.projName" placeholder="请输入职务">
-							</el-form-item> -->
-							<el-form-item class="input-inline" label="邮箱">
-								<el-input name="linkmanMail" v-model="formDatawtr.linkmanMail" placeholder="请输入邮箱">
-								</el-input>
+						<!--<div class="clearfix">
+							  <el-form-item class="input-inline" label="职务">
+								  <el-input name="projName" v-model="formDatawtr.projName" placeholder="请输入职务"></el-input>
 							</el-form-item>
-							<!-- <el-form-item class="input-inline" prop="regionalism" label="自个有效期起">
-								<el-date-picker v-model="formDatawtr.contractSignTime" type="date" placeholder="请选择自个有效期起">
+
+							 <el-form-item class="input-inline" prop="regionalism" label="自个有效期起">
+								 <el-date-picker v-model="formDatawtr.contractSignTime" type="date" placeholder="请选择自个有效期起"></el-date-picker>
 							</el-form-item>
 							<el-form-item class="input-inline" prop="projectAddress" label="资格有效期止">
-								<el-date-picker v-model="formDatawtr.contractSignTime" type="date" placeholder="请选择资格有效期止">
-							</el-form-item> -->
-						</div>
+								<el-date-picker v-model="formDatawtr.contractSignTime" type="date" placeholder="请选择资格有效期止"></el-date-picker>
+							</el-form-item>
+						</div>-->
 						<!--  <el-form-item label="备注" class="proj-code-info" prop="projName">
 							<el-input name="projName" type="textarea" :rows="5" v-model="formDatawtr.projName" placeholder="请输入备注">
 							</el-input>

@@ -114,4 +114,11 @@ public interface AeaLinkmanInfoMapper {
      */
     void updateAllUnitLinkman(@Param("unitInfoId") String unitInfoId, @Param("modifier") String modifier, @Param("isDeleted") String isDeleted);
 
+    /**
+     * 根据证件号查找联系人信息
+     *
+     * @param linkmanCertNo 联系人证件号
+     * @return List<AeaLinkmanInfo>
+     */
+    List<AeaLinkmanInfo> getAeaLinkmanByCertNo(@Param("linkmanCertNo") String linkmanCertNo) throws Exception;
 }

@@ -2,6 +2,9 @@ package com.augurit.aplanmis.common.domain;
 
 import com.augurit.agcloud.bsc.domain.BscAttDetail;
 import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
+import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.aplanmis.common.constants.DeletedStatus;
+import com.augurit.aplanmis.common.utils.GeneratePasswordUtils;
 import com.augurit.aplanmis.common.vo.AeaHiCertinstBVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -11,6 +14,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 联系人表-模型
@@ -76,4 +80,14 @@ public class AeaLinkmanInfo implements Serializable {
     private String serviceName;
     private String auditFlag;
     private String unitServiceIds;//中介发布服务ID
+
+    public void create() {
+        this.setLinkmanInfoId(UUID.randomUUID().toString());
+        this.setLoginName(this.getLinkmanCertNo());
+        this.setLoginPwd(GeneratePasswordUtils.generatePassword(8));
+        this.setCreater(SecurityContext.getCurrentUserId());
+        this.setCreateTime(new Date());
+        this.setIsActive("1");
+        this.setIsDeleted(DeletedStatus.NOT_DELETED.getValue());
+    }
 }
