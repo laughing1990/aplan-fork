@@ -628,9 +628,9 @@ var vm = new Vue({
         isCalcTimerule: '1',
       },
       solicitFormRules: {
-        solicitTopic: [{required: true, message: '请填写征询主题', trigger: 'blur'}],
-        solicitContent: [{required: true, message: '请填写征询内容', trigger: 'blur'}],
-        solicitDueDays: [{required: true, message: '请填写征询时限', trigger: 'blur'}],
+        solicitTopic: [{required: true, message: '', trigger: 'blur'}],
+        solicitContent: [{required: true, message: '', trigger: 'blur'}],
+        solicitDueDays: [{required: true, message: '', trigger: 'blur'}],
       },
       soRulesList: [],
       soParallelItems: [],
@@ -3134,6 +3134,13 @@ var vm = new Vue({
     initButtons: function () {
       var vm = this;
       var defaultBtn = [{
+        elementName: "联合评审",
+        elementCode: "wfBusSave",
+        columnType: "button",
+        isReadonly: '0',
+        isHidden: '0',
+        elementRender: '<button class="btn btn-primary btn-outline-info" onclick="clickUnionReview()">发起联合评审</button>'
+      }, {
         elementName: "意见征询",
         elementCode: "wfBusSave",
         columnType: "button",
@@ -3163,23 +3170,6 @@ var vm = new Vue({
         isHidden: '0',
         elementRender: '<button class="btn btn-outline-info" onclick="startSupplementForItem()">材料补正</button>'
       }];
-      if (isDevelop) {
-        approverBtn = [{
-          elementName: "联合评审",
-          elementCode: "wfBusSave",
-          columnType: "button",
-          isReadonly: '0',
-          isHidden: '0',
-          elementRender: '<button class="btn btn-outline-info" onclick="clickUnionReview()">联合评审</button>'
-        }, {
-          elementName: "材料补正",
-          elementCode: "wfBusSave",
-          columnType: "button",
-          isReadonly: '0',
-          isHidden: '0',
-          elementRender: '<button class="btn btn-outline-info" onclick="startSupplementForItem()">材料补正</button>'
-        }]
-      }
       var notApproverBtn = [{
         elementName: "撤件",
         elementCode: "wfBusSave",
