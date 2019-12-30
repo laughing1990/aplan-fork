@@ -177,6 +177,8 @@ public class AeaItemMat extends MindBaseNode {
 
     private List<AeaHiItemMatinst> certinstList;
 
+    private String ybKbDetailIds;//空表样表ID(用逗号拼接)
+
     /**
      * aea_par_in 主键
      */

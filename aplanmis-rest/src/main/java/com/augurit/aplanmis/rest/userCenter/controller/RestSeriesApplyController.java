@@ -102,7 +102,7 @@ public class RestSeriesApplyController {
     public ContentResultForm<List<AeaItemMat>> listMatForItem(@RequestBody SeriesMatParamVo vo) {
         try {
             //单项都是实施事项
-            return new ContentResultForm<>(true, aeaItemMatService.getMatListByStateListAndItemListAndStageId(vo.getStateIds(), null, new String[]{vo.getItemVerId()}, null, null, null, null), "");
+            return new ContentResultForm<>(true, aeaItemMatService.getMatListByStateListAndItemListAndStageId(vo.getStateIds(), null, new String[]{vo.getItemVerId()}, null, null, null, null,null), "");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ContentResultForm<>(false, null, "根据情形ID、事项版本ID集合获取材料一单清列表数据异常");

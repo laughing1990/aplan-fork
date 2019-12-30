@@ -142,10 +142,11 @@ public interface AeaItemMatService {
      * @param coreParentItemVerIds     单项/并行事项(标准事项)版本ID列表
      * @param parallelParentItemVerIds 并联事项(标准事项)版本ID列表
      * @param stageId                  阶段ID
+     * @param rootOrgId
      * @return
      * @throws Exception
      */
-    List<AeaItemMat> getMatListByStateListAndItemListAndStageId(String[] itemStateIds, String[] stageStateIds, String[] coreItemVerIds, String[] parallelItemVerIds, String[] coreParentItemVerIds, String[] parallelParentItemVerIds, String stageId) throws Exception;
+    List<AeaItemMat> getMatListByStateListAndItemListAndStageId(String[] itemStateIds, String[] stageStateIds, String[] coreItemVerIds, String[] parallelItemVerIds, String[] coreParentItemVerIds, String[] parallelParentItemVerIds, String stageId,String rootOrgId) throws Exception;
 
     /**
      * 获取阶段下事项的共享材料

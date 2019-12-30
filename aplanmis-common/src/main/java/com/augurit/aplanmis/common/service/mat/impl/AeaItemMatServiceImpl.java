@@ -1,5 +1,7 @@
 package com.augurit.aplanmis.common.service.mat.impl;
 
+import com.augurit.agcloud.bsc.domain.BscAttForm;
+import com.augurit.agcloud.bsc.mapper.BscAttMapper;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.*;
@@ -62,6 +64,8 @@ public class AeaItemMatServiceImpl implements AeaItemMatService {
     private AeaParStageMapper aeaParStageMapper;
     @Autowired
     private AeaParStageItemMapper aeaParStageItemMapper;
+    @Autowired
+    private BscAttMapper bscAttMapper;
 
     //根据事项ID获取（输入或输出）材料列表
     @Override
@@ -197,7 +201,7 @@ public class AeaItemMatServiceImpl implements AeaItemMatService {
             });
         }
         String[] itemStateIds = itemStateList.size() > 0 ? itemStateList.stream().map(AeaItemState::getItemStateId).toArray(String[]::new) : new String[]{};
-        return getMatListByStateListAndItemListAndStageId(itemStateIds, stageStateIds, coreItemVerIds.toArray(new String[coreItemVerIds.size()]), parallelItemVerIds.toArray(new String[parallelItemVerIds.size()]), null, baseItemVerIds.toArray(new String[baseItemVerIds.size()]), stageId);
+        return getMatListByStateListAndItemListAndStageId(itemStateIds, stageStateIds, coreItemVerIds.toArray(new String[coreItemVerIds.size()]), parallelItemVerIds.toArray(new String[parallelItemVerIds.size()]), null, baseItemVerIds.toArray(new String[baseItemVerIds.size()]), stageId,null);
     }
 
     @Override
@@ -290,7 +294,8 @@ public class AeaItemMatServiceImpl implements AeaItemMatService {
     }
 
     @Override
-    public List<AeaItemMat> getMatListByStateListAndItemListAndStageId(String[] itemStateIds, String[] stageStateIds, String[] coreItemVerIdsDef, String[] parallelItemVerIdsDef, String[] coreParentItemVerIds, String[] parallelParentItemVerIds, String stageId) throws Exception {
+    public List<AeaItemMat> getMatListByStateListAndItemListAndStageId(String[] itemStateIds, String[] stageStateIds, String[] coreItemVerIdsDef, String[] parallelItemVerIdsDef, String[] coreParentItemVerIds, String[] parallelParentItemVerIds, String stageId,String rootOrgId) throws Exception {
+        if(StringUtils.isNotBlank(rootOrgId)) rootOrgId=SecurityContext.getCurrentOrgId();
         List<AeaItemMat> list = new ArrayList<>();
         String[] parallelItemVerIds = (String[]) ArrayUtils.addAll(parallelItemVerIdsDef, parallelParentItemVerIds);
         String[] coreItemVerIds = (String[]) ArrayUtils.addAll(coreItemVerIdsDef, coreParentItemVerIds);
@@ -314,7 +319,7 @@ public class AeaItemMatServiceImpl implements AeaItemMatService {
                     for (String itemVerId : parallelParentItemVerIds) {
                         AeaItemBasic itemBasic = aeaItemBasicService.getAeaItemBasicByItemVerId(itemVerId);
                         if (itemBasic != null) {
-                            List<AeaItemBasic> sssxList = aeaItemBasicService.getSssxByItemIdAndRegionalism(itemBasic.getItemId(), null, null, SecurityContext.getCurrentOrgId());
+                            List<AeaItemBasic> sssxList = aeaItemBasicService.getSssxByItemIdAndRegionalism(itemBasic.getItemId(), null, null, rootOrgId);
                             allSssxList.addAll(sssxList.stream().map(AeaItemBasic::getItemVerId).collect(Collectors.toList()));
                         }
                     }
@@ -336,11 +341,19 @@ public class AeaItemMatServiceImpl implements AeaItemMatService {
         List<AeaItemMat> itemStateMatList = (itemStateIds != null && itemStateIds.length > 0) ? getMatListByItemStateIds(itemStateIds) : new ArrayList<AeaItemMat>();//事项的情形材料
         list.addAll(coreItemMatList);
         list.addAll(itemStateMatList);
-        if (list.size() > 0)
+        if (list.size() > 0) {
+            String finalRootOrgId = rootOrgId;
             return list.stream()
-                    .filter(CommonTools.distinctByKey(AeaItemMat::getMatId))
+                    .filter(CommonTools.distinctByKey(AeaItemMat::getMatId)).peek(v->{
+                        List<BscAttForm> kbList = bscAttMapper.listAttLinkAndDetail("AEA_ITEM_MAT", "TEMPLATE_DOC", v.getMatId(), null, finalRootOrgId, null);
+                        List<BscAttForm> ybList = bscAttMapper.listAttLinkAndDetail("AEA_ITEM_MAT", "SAMPLE_DOC", v.getMatId(), null, finalRootOrgId, null);
+                        kbList.addAll(ybList);
+                        String ybKbDetailIds = kbList.stream().map(bscAttForm -> bscAttForm.getDetailId()).collect(Collectors.joining(","));
+                        v.setYbKbDetailIds(ybKbDetailIds);
+                    })
                     //.sorted(Comparator.comparing(AeaItemMat::getSortNo))
                     .collect(Collectors.toList());
+        }
         return list;
     }
 
