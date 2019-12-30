@@ -112,13 +112,6 @@ var guideIndex = (function () {
             orgNum: 0,
             OrgListData: [],
             orgLoading: false,
-            secOrgId:'',
-            firAeaOrgVo:[{orgName:''}], // 区域市
-            secAeaOrgVo:[{orgName:''}], // 区域 宣城
-            childAeaOrgVo:[],
-            cityOrgName:'',
-            aeaActiveOrgName:'',
-            childAeaOrgVoOrgName:'选择区县',
             areaOnIndex:'',
             cityOnIndex:'',
             orgItem: '',
@@ -191,7 +184,6 @@ var guideIndex = (function () {
             var vm = this;
             vm.init()
             vm.GetRequest();
-            vm.getRegionList();
 
             this.sessionStorage = JSON.parse(sessionStorage.getItem("stageData"))|| {origin:false};
             this.sessionStorage2 = JSON.parse(sessionStorage.getItem("orgData")) || {origin2:false};
@@ -307,27 +299,60 @@ var guideIndex = (function () {
             tolistMatter:function(){
                 window.location.href =ctx + "rest/main/toIndexPage?#/listmatter";
             },
-            //查看主题流程图
-            showProcess: function () {
+            // 办事指南 搜索
+            searchItemList:function(){
+                this.getSearchThemeList();
+            },
+            getSearchThemeList:function () {
                 var vm = this;
+                if(!vm.itemListKeyword){
+                    vm.$message.warning('请输入关键词，再进行查询！')
+                    return
+                }
+                vm.themeLoading = true;
                 request('', {
-                    url: ctx + 'rest/guide/theme/file/list/' + vm.themeId,
-                    type: 'get'
+                    url: ctx + 'rest/guide/search/theme/list/'+ vm.itemListKeyword,
+                    type: 'get',
                 }, function (res) {
+                    vm.themeLoading = false;
+                    vm.fullscreenLoading = false;
                     if (res.success) {
-                        if (!res.content.detailId) {
-                            vm.$message({
-                                message: '暂无流程图',
-                                type: 'error'
-                            });
-                            return
+                        var content = res.content;
+                        vm.themeListData = content;
+                        if (vm.sessionStorage && vm.sessionStorage.origin) {
+                            vm.$nextTick(function () {
+                                vm.goToGuid('', vm.sessionStorage.themeId, 0, vm.sessionStorage.themeMemo);
+                            })
                         }
-                       vm.previewFile(res.content)
+                        setTimeout(function(){
+                            if(vm.themeListData.length  === 1){
+                                $(".theme-type .theme-type-list").css('height',664+'px');
+                            }else if(vm.themeListData.length  === 2){
+                                $(".theme-type .theme-type-list").css('height',604+'px');
+                            }else if(vm.themeListData.length  === 3){
+                                $(".theme-type .theme-type-list").css('height',549+'px');
+                            }else if(vm.themeListData.length  === 4){
+                                $(".theme-type .theme-type-list").css('height',494+'px');
+                            }else if(vm.themeListData.length  === 5){
+                                $(".theme-type .theme-type-list").css('height',438+'px');
+                            }else if(vm.themeListData.length  === 6){
+                                $(".theme-type .theme-type-list").css('height',386+'px');
+                            }else if(vm.themeListData.length  === 7){
+                                $(".theme-type .theme-type-list").css('height',203+'px');
+                            }else if(vm.themeListData.length  === 8){
+                                $(".theme-type .theme-type-list").css('height',146+'px');
+                            }
+                        },200);
                     } else {
+                        vm.themeLoading = false;
                         vm.$message.error(res.message);
                     }
-                }, function () {
-                    vm.$message.error('获取附件失败，请重试！');
+                    if (!vm.sessionStorage.origin && vm.themeListData.length > 0) {
+                        vm.goToGuid('', vm.themeListData[0].themeList[0].themeId, 0, vm.themeListData[0].themeList[0].themeMemo);
+                    }
+                },function () {
+                    vm.$message.error('查询接口请求失败');
+                    vm.themeLoading = false;
                 });
             },
             // 获取文件后缀
@@ -347,14 +372,6 @@ var guideIndex = (function () {
             var flashAttributes = '';
             _that.filePreviewCount++
             if(fileType=='pdf'){
-                // if(getSrc){
-                //     _that.getViewIframeSrc = ctx+'cod/drawing/drawingCheck?detailId='+detailId;
-                // }else {
-                //     var tempwindow=window.open(); // 先打开页面
-                //     setTimeout(function(){
-                //         tempwindow.location=ctx+'cod/drawing/drawingCheck?detailId='+detailId;
-                //     },1000)
-                // }
                 var tempwindow=window.open(); // 先打开页面
                 setTimeout(function(){
                     tempwindow.location=ctx+'/previewPdf/view?detailId='+detailId;
@@ -418,11 +435,13 @@ var guideIndex = (function () {
                     window.open(ctx+'rest/file/att/preview?detailId='+detailId);
             },
 
+            // 根据主题获取阶段接口
             goToGuid: function (e, themeId, indexSub, themeMemo) {
                 var vm = this;
                 vm.activeSub = indexSub;
                 vm.themeMemo = themeMemo;
                 vm.themeId = themeId;
+                var keyword = vm.itemListKeyword?vm.itemListKeyword:'%E2%80%98%20%E2%80%99';
                 var item = $('.theme-type-item');
                 $('.theme-type-item').removeClass('active');
                 if (e.target) {
@@ -436,93 +455,14 @@ var guideIndex = (function () {
                 }
                 this.memoLoading = true;
                 $.ajax({
-                    url: ctx + "rest/guide/stageAndItem/list/" + themeId,  // 根据主题获取阶段接口
+                    //url: ctx + "rest/guide/stageAndItem/list/" + themeId,
+                    url: ctx + "rest/guide/search/stageAndItem/list/"+themeId+"/"+ keyword,
                     type: "get",
                     async: false,
                     success: function (res) {
                         var result = res.content
                         vm.memoLoading = false;
                         vm.stagesData = result;
-                        /*if (result == null || result.length == 0 || result == "" || result == "根据主题获取阶段接口异常") {
-                            $("#mainLine #stageImg").empty();
-                            $('#auxiliaryLine #stageAuxiliaryImg').empty();
-                            $("#mainLine #stageImg").append("该主题下暂无阶段信息，请配置");
-                            $('#auxiliaryLine #stageAuxiliaryImg').append("该主题下暂无阶段信息，请配置");
-                            vm.countStageType1 = false;
-                            vm.countStageType2 = false;
-                            $('#mainLine').children("p").css("display", 'none');
-                            $('#auxiliaryLine').children("p").css("display", 'none');
-                            vm.memoLoading = false;
-                        } else {
-                            vm.memoLoading = false;
-
-                            $("#stageImg").empty();
-                            $('#stageAuxiliaryImg').empty();
-                            var content = "";
-                            var content_aux = "";
-                            var countStageType = 0;
-
-                            var mainLine = false;
-                            var assitLine = false;
-                            var mainId = [];
-                            var assitId = [];
-                            var imgUrl= vm.imgUrl;
-                            for (var i = 0; i < result.length; i++) {
-                                countStageType++;
-                                if (result[i].isNode == "1") {//主线
-                                    // flag=firstFlag?false:true;
-                                    mainLine = true;
-                                    mainId.push(result[i].stageId)
-                                    content += '<li class="show" style="cursor: pointer;" onclick=getGuideDetail(this,"' + result[i].stageId + '") id=' + result[i].stageId + '>';
-                                    content += '<img src="' + ctx + imgUrl[i] + '" alt=""><div class="stage-name"><p class="ellipsis">' + result[i].stageName + '</p><p class="stage-dealine">' + result[i].dueNum + '个工作日</p></div><img src="' + ctx + 'mall/images/icon/1.png" alt="" class="sing"><p class="sing-text">' + (i + 1) + '</p><div class="wrapperGuide" onclick="goToStageApply()">\n' +
-                                        '<p >查看并联办事指南</p>\n' +
-                                        '</div></li>';
-                                    vm.countStageType1 = true;
-                                } else {//辅线
-                                    // flag=firstFlag?true:false;  备注 之前的动态图片路径   ctx + result[i].hugeImgPath
-                                    assitLine = true;
-                                    assitId.push(result[i].stageId)
-                                    content_aux += '<li class="show" style="cursor: pointer;" onclick=getGuideDetail2(this,"' + result[i].stageId + '") id=' + result[i].stageId + '>';
-                                    content_aux += '<img src="' + ctx + imgUrl[i] + '" alt=""><div class="stage-name"><p class="ellipsis">' + result[i].stageName + '</p><p class="stage-dealine">' + result[i].dueNum + '个工作日</p></div><img src="' + ctx + 'mall/images/icon/1.png" alt="" class="sing"><p class="sing-text">1</p><div class="wrapperGuide" onclick="goToStageApply()">\n' +
-                                        '<p>查看并联办事指南</p>\n' +
-                                        '</div></li>';
-                                    vm.countStageType2 = true;
-                                }
-                            }
-                            if (mainLine) {
-                                vm.countStageType1 = true;
-                            } else {
-                                vm.countStageType1 = false;
-                            }
-                            if (assitLine) {
-                                vm.countStageType2 = true;
-                            } else {
-                                vm.countStageType2 = false;
-                            }
-                            if (mainLine && assitLine) {
-                                // $('#mainLine').children("p").css("display", 'block');
-                                $('#auxiliaryLine').children("p").css("display", 'block');
-                            } else {
-                                // $('#mainLine').children("p").css("display", 'none');
-                                $('#auxiliaryLine').children("p").css("display", 'none');
-                            }
-                            $("#mainLine #stageImg").append(content);
-                            $('#auxiliaryLine #stageAuxiliaryImg').append(content_aux);
-
-                            if (mainId.length > 0) {
-                                if (vm.sessionStorage.origin && vm.sessionStorage.mainLineStageId) {
-                                    getGuideDetail('', vm.sessionStorage.mainLineStageId);
-                                } else {
-                                    getGuideDetail('', mainId[0]);
-                                }
-                                if (vm.sessionStorage.origin && vm.sessionStorage.auxiliaryLineStageId) {
-                                    getGuideDetail2('', vm.sessionStorage.auxiliaryLineStageId);
-                                } else {
-                                    getGuideDetail2('', assitId[0]);
-                                }
-                            }
-                        }*/
-
                     }
                 })
             },
@@ -565,127 +505,6 @@ var guideIndex = (function () {
                 var secOrgId = this.secOrgId;
                 this.getOrgList(secOrgId);
             },
-            //首页 --> 按部门申报 --> 获取所有区域列表
-            getRegionList:function(){
-                var vm = this;
-                request('', {
-                    url: ctx + 'rest/main/region/list',
-                    type: 'get'
-                }, function (res) {
-                    if(res.success){
-                        var content = res.content;
-                        vm.firAeaOrgVo = [];
-                        vm.firAeaOrgVo.push(content.firAeaOrgVo);
-                        vm.secAeaOrgVo = content.secAeaOrgVo;
-                        vm.secAeaOrgVo = content.secAeaOrgVo;
-
-                        if(vm.secAeaOrgVo[0]  && vm.secAeaOrgVo[0].childAeaOrgVo){
-                            vm.childAeaOrgVo = vm.secAeaOrgVo[0].childAeaOrgVo;
-                        }
-
-
-                        vm.cityOrgName = vm.firAeaOrgVo[0].orgName;
-
-                        if(vm.sessionStorage2 && vm.sessionStorage2.aeaActiveOrgName){
-                            vm.aeaActiveOrgName = vm.sessionStorage2.aeaActiveOrgName;
-                            vm.childAeaOrgVoOrgName = vm.sessionStorage2.childAeaOrgVoOrgName;
-
-                            vm.childAeaOrgVo = vm.sessionStorage2.childAeaOrgVo;
-
-                            vm.areaOnIndex = vm.sessionStorage2.areaOnIndex;
-                            vm.cityOnIndex = vm.sessionStorage2.cityOnIndex;
-                            vm.secOrgId = vm.sessionStorage2.secOrgId;
-                            vm.getOrgList(vm.secOrgId);
-                            return;
-                        }else{
-                            if(vm.secAeaOrgVo[0] && vm.secAeaOrgVo[0].orgName){
-                                vm.aeaActiveOrgName = vm.secAeaOrgVo[0].orgName;
-                            }
-                        }
-
-                        if(content.firAeaOrgVo && content.firAeaOrgVo.orgDeptList.length>0){
-                            vm.OrgListData = content.firAeaOrgVo.orgDeptList;
-                            vm.orgNum = content.firAeaOrgVo.orgDeptList.length;
-                            vm.aeaActiveOrgName = "请选择"
-                            vm.childAeaOrgVoOrgName = "请选择"
-                        }else{
-                            vm.secOrgId = vm.secAeaOrgVo[0].orgId;
-                            vm.getOrgList(vm.secAeaOrgVo[0].orgId);
-                        }
-
-                    }else{
-                        vm.$message.error(res.message);
-                    }
-                },function () {
-                    vm.$message.error('获取部门列表数据接口失败，请重试！');
-                });
-            },
-            // 选城市或省
-            chooseCityItem:function(){
-                var vm = this;
-                if(this.firAeaOrgVo[0].orgDeptList instanceof Array){
-                    if(this.firAeaOrgVo[0].orgDeptList.length>0){
-                        this.OrgListData = this.firAeaOrgVo[0].orgDeptList;
-                        this.aeaActiveOrgName = "请选择"
-                        this.childAeaOrgVoOrgName = "请选择"
-                    }else{
-                        this.$message.warning("选择的地方暂时没有部门列表呢")
-                    }
-                }else{
-                    console.log("接口返回的orgDeptList不是一个数组类型")
-                }
-            },
-            // 选择区
-            chooseAreaItem:function(item,index){
-                this.areaOnIndex = index;
-                this.aeaActiveOrgName = item.orgName;
-                vm.childAeaOrgVo = item.childAeaOrgVo;
-                this.secOrgId = item.orgId;
-                this.childAeaOrgVoOrgName = "选择区县"
-                this.cityOnIndex = "-1";
-                this.getOrgList(item.orgId);
-            },
-            choosechildAeaOrgVoItem:function(item,index){
-                this.cityOnIndex = index;
-                this.childAeaOrgVoOrgName = item.orgName;
-                this.secOrgId = item.orgId;
-                this.getOrgList(item.orgId);
-            },
-            //获取部门列表
-            getOrgList: function (orgId) {
-                var vm = this;
-                vm.orgLoading = true;
-                request('', {
-                    url: ctx + 'rest/main/org/list?orgId='+ orgId,
-                    type: 'get'
-                }, function (res) {
-                    if (res.success) {
-                        vm.OrgListData = res.content;
-                        vm.orgNum = res.content.length;
-                        if(vm.orgNum>0){
-                            vm.getItemList(res.content[0].orgId);
-                            vm.orgId = res.content[0].orgId;
-                            vm.orgLoading = false;
-                            vm.orgItem = res.content[0].orgName;
-                            vm.$nextTick(function () {
-                                if (vm.sessionStorage2.origin2) {
-                                    vm.approvalwayTypeFlag = false;
-                                    vm.toggleOrg('', vm.sessionStorage2);
-                                }
-                            })
-                        }else{
-                            vm.orgLoading = false;
-                            //vm.$message.warning('获取部门数据为空');
-                        }
-                    } else {
-                        vm.$message.error(res.message);
-                        vm.orgLoading = false;
-                    }
-                }, function () {
-                    vm.$message.error('获取部门列表数据接口失败，请重试！');
-                });
-            },
-
             //根据父情形查找子情形
             findByParentItemStateId: function (itemStateId, parentId) {
                 var vm = this;
@@ -774,50 +593,8 @@ var guideIndex = (function () {
                     vm.$message.error('根据情形获取材料接口失败，请重试！');
                 });
             },
-            //按部门获取列表
-            getItemList: function (orgId) {
-                var vm = this;
-                vm.orgLoading = true;
-                request('', {
-                    url: ctx + 'rest/guide/item/list',
-                    type: 'get',
-                    data: {
-                        pageNum: this.page,
-                        pageSize: this.pageSize,
-                        orgId: orgId
-                    }
-                }, function (res) {
-                    vm.orgLoading = false;
-                    if (res.success) {
-                        vm.tableData = res.content.list;
-                        vm.orgNum = res.content.total;
-                        vm.total = res.content.total;
-                    } else {
-                        vm.orgLoading = false;
-                        vm.$message.error(res.message);
-                    }
-                }, function () {
-                    vm.$message.error('按部门获取事项列表接口失败，请重试！');
-                });
-            },
-            toggleOrg: function (e, item) {
-                this.getItemList(item.orgId);
-                this.orgId = item.orgId;
-                this.orgItem = item.orgName;
-                if (e) {
-                    $(e.target).addClass('orgActive').siblings().removeClass('orgActive');
-                } else {
-                    var orgs = $('.department-name');
-                    orgs.removeClass('orgActive');
-                    for (var i = 0; i < orgs.length; i++) {
-                        if (orgs.eq(i).attr('id') == item.orgId) {
-                            orgs.eq(i).addClass('orgActive');
-                            this.getItemList(item.orgId);
-                        }
-                    }
-                }
 
-            },
+
             tableToggle: function (e, index) {
 
                 e.cancelBubble = true;

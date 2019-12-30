@@ -3,9 +3,6 @@
     <meta charset="UTF-8">
     <title>事项一单清</title>
     <link rel="stylesheet" href="../../static/mall/css/listmatter/listmatter.css" th:href="@{/mall/css/listmatter/listmatter.css}">
-    <script>
-        var ctx = "[[@{/}]]";
-    </script>
 </head>
 <body>
     <div id="listmatter" class="listmatter">
@@ -20,6 +17,9 @@
                      <span class="local-span">&gt;</span>
                      <a class="local-a active" href="javascript:void(0);" >事项一单清 </a>
                  </div>
+            </div>
+            <div class="back" @click="gotoGuideIndex">
+              返回
             </div>
         </section>
         <section>
