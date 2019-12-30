@@ -92,9 +92,9 @@ var module1 = new Vue({
 				isApproveProj: [
 					{required: true, message: '请选择投资审批项目', trigger: 'change'}
 				],
-				approvalCode: [
+				/*approvalCode: [
 					{required: true, message: '投资审批项目编码', trigger: 'change'}
-				],
+				],*/
 				contact: [
 					{required: true, message: '请输入项目联系人', trigger: 'change'}
 				],
