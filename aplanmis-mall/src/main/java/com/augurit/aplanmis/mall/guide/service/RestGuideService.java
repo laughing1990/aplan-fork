@@ -4,6 +4,7 @@ package com.augurit.aplanmis.mall.guide.service;
 import com.augurit.aplanmis.mall.guide.vo.RestGuideVo;
 import com.augurit.aplanmis.mall.guide.vo.RestSingleGuideVo;
 import com.augurit.aplanmis.mall.guide.vo.RestStageAndItemVo;
+import com.augurit.aplanmis.mall.main.vo.ItemListVo;
 import com.augurit.aplanmis.mall.main.vo.ThemeTypeVo;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -40,7 +41,7 @@ public interface RestGuideService {
      * @param themeId
      * @throws Exception
      */
-    RestStageAndItemVo getStageAndItemByThemeId(String themeId)throws Exception;
+    RestStageAndItemVo getStageAndItemByThemeId(String themeId,String rootOrgId)throws Exception;
 
     /**
      * 办事指南页根据搜索关键字查符合条件的主题、阶段、事项
@@ -48,7 +49,7 @@ public interface RestGuideService {
      * @return
      * @throws Exception
      */
-    List<ThemeTypeVo> searchThemeAndStageAndItemByKeyword(String keyword)throws Exception;
+    List<ThemeTypeVo> searchThemeAndStageAndItemByKeyword(String keyword,String rootOrgId)throws Exception;
 
 
     /**
@@ -56,5 +57,7 @@ public interface RestGuideService {
      * @param themeId
      * @throws Exception
      */
-    RestStageAndItemVo searchStageAndItemByKeywordAndThemeId(String themeId,String keyword)throws Exception;
-    }
+    RestStageAndItemVo searchStageAndItemByKeywordAndThemeId(String themeId,String keyword,String rootOrgId)throws Exception;
+
+    ItemListVo listItemAndStateByStageId(String stageId,String rootOrgId) throws Exception;
+}
