@@ -2,6 +2,7 @@ package com.augurit.aplanmis.mall.log.vo;
 
 import com.augurit.aplanmis.common.constants.DeletedStatus;
 import com.augurit.aplanmis.common.domain.AeaHiIteminst;
+import com.augurit.aplanmis.common.domain.AeaItemInout;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -39,7 +40,8 @@ public class IteminstConfirmVo {
     private String isApplySelected;
     @ApiModelProperty(value = "是否部门辅导选择")
     private String isDeptSelected;
-
+    @ApiModelProperty(name = "resultMats", value = "结果物", dataType = "list")
+    private List<AeaItemInout> resultMats;
 
     public static IteminstConfirmVo format(AeaHiIteminst aeaHiIteminst){
         IteminstConfirmVo vo=new IteminstConfirmVo();

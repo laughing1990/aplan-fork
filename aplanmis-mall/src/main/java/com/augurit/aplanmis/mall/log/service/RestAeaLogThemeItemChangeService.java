@@ -9,6 +9,7 @@ import com.augurit.aplanmis.common.mapper.AeaHiItemStateinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemStateMapper;
 import com.augurit.aplanmis.common.mapper.AeaLogThemeItemChangeMapper;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutService;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
@@ -41,6 +42,8 @@ public class RestAeaLogThemeItemChangeService {
     private AeaHiItemStateinstMapper aeaHiItemStateinstMapper;
     @Autowired
     private AeaItemStateMapper aeaItemStateMapper;
+    @Autowired
+    private AeaHiItemInoutService aeaHiItemInoutService;
     /**
      *  1.根据applyinstId去aea_log_theme_item_change表找变更项目类型的数据，若有，则表示变更了项目类型，若没有，则表示没有变更项目类型。
      * 2.1若变更了项目类型，则只需根据applyinstId查出事项实例（关联log表带出部门意见）即可。
@@ -96,6 +99,8 @@ public class RestAeaLogThemeItemChangeService {
                     vo.setIsDeptSelected("1");
                     vo.setIsApplySelected("1");
                 }
+                List<AeaItemInout> resultMats=aeaHiItemInoutService.getAeaItemInoutMatCertByItemVerId(vo.getItemVerId(),SecurityContext.getCurrentOrgId());
+                vo.setResultMats(resultMats);
                 setIsMustSelectedAndDeptComments(applyinstId, vo);
             }).collect(Collectors.toList());
             applyIteminstConfirmVo.setParallelIteminstList(parallelIteminsts.size()>0?parallelIteminsts:new ArrayList<>());
@@ -136,6 +141,8 @@ public class RestAeaLogThemeItemChangeService {
                     vo.setIsApplySelected("1");
                     vo.setIsDeptSelected("1");
                 }
+                List<AeaItemInout> resultMats=aeaHiItemInoutService.getAeaItemInoutMatCertByItemVerId(vo.getItemVerId(),SecurityContext.getCurrentOrgId());
+                vo.setResultMats(resultMats);
                 coreIteminsts.add(vo);
             }
             applyIteminstConfirmVo.setCoreIteminstList(coreIteminsts.size()>0?coreIteminsts:new ArrayList<>());
