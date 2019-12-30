@@ -279,7 +279,7 @@ public class RestGuideController {
     }
 
     @GetMapping("itemAndState/list/{stageId}")
-    @ApiOperation(value = "阶段申报 --> 根据阶段ID、项目ID获取事项一单清列表数据")
+    @ApiOperation(value = "办事指南 --> 根据阶段ID获取事项一单清列表数据")
     @ApiImplicitParams({@ApiImplicitParam(value = "阶段ID",name = "stageId",required = true,dataType = "string")})
     public ContentResultForm<ItemListVo> listItemAndStateByStageId(@PathVariable("stageId") String stageId) {
         try {
