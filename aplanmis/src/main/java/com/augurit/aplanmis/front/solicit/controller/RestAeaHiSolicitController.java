@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -90,12 +91,20 @@ public class RestAeaHiSolicitController {
             return new ResultForm(false, "按事项发起失败！");
         }
     }
-
-    @ApiOperation("审批页意见征求列表")
-    @PostMapping("/approve/list")
-    public ResultForm approveSolicitList() throws Exception {
-
-        return new ResultForm(true);
+    @ApiOperation(value = "意见征求 --> 发起同时上传附件接口", notes = "获取意见征求列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "busType", value = "查询类型，0 意见征求，1 一次征求，2 联合评审 ...")
+            , @ApiImplicitParam(name = "page", value = "分页参数")
+    })
+    @RequestMapping("/uploadAttFile")
+    public ResultForm uploadAttFile(String solicitId, String tableName,String pkName, HttpServletRequest request) {
+        try {
+            solicitId = restAeaHiSolicitService.uploadAttFile(solicitId, tableName,pkName, request);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultForm(false, "附件上传失败!");
+        }
+        return new ContentResultForm(true, solicitId, "保存成功!");
     }
 
     @ApiOperation("意见征求回复接口")

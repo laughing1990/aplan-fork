@@ -56,6 +56,8 @@ public class AeaHiSolicit implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private java.util.Date modifyTime; // (修改时间)
     private String rootOrgId; // (根组织ID)
+    private String solicitLinkmanName; // (联系人姓名)
+    private String solicitLinkmanPhone; // (联系人手机号码)
 
     private String solicitTypeName; // 非表字段 (征求意见类型：i表示按事项征求，d表示按部门征求)
     private String solicitDaysUnitCn; // 非表字段 (意见征求时限单位中文，自然日，工作日)

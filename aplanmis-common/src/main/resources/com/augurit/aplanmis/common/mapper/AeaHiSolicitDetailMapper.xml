@@ -136,9 +136,6 @@ SOLICIT_DETAIL_ID  ,SOLICIT_ID  ,DETAIL_ORG_ID  ,DETAIL_ORG_NAME  ,ITEM_ID  ,ITE
     <update id="updateAeaHiSolicitDetail" parameterType="AeaHiSolicitDetail">
         update AEA_HI_SOLICIT_DETAIL
         <set>
-            <if test="solicitDetailId != null">
-                SOLICIT_DETAIL_ID = #{solicitDetailId},
-            </if>
             <if test="solicitId != null">
                 SOLICIT_ID = #{solicitId},
             </if>
