@@ -628,9 +628,9 @@ var vm = new Vue({
         isCalcTimerule: '1',
       },
       solicitFormRules: {
-        solicitTopic: [{required: true, message: '', trigger: 'blur'}],
-        solicitContent: [{required: true, message: '', trigger: 'blur'}],
-        solicitDueDays: [{required: true, message: '', trigger: 'blur'}],
+        solicitTopic: [{required: true, message: ' ', trigger: 'blur'}],
+        solicitContent: [{required: true, message: ' ', trigger: 'blur'}],
+        solicitDueDays: [{required: true, message: ' ', trigger: 'blur'}],
       },
       soRulesList: [],
       soParallelItems: [],
@@ -684,13 +684,26 @@ var vm = new Vue({
       dialogConfigUnion: {
         showType: false,
         dialogType: 'LHPS',
-        dialogTitle: '联合评审',
+        dialogTitle: '发起联合评审',
         formLabel: '联合评审',
-        ensureText: '联合评审',
+        ensureText: '发起联合评审',
         hintText1: '',
         hintText2: '请选择参与联合评审的部门，再点击“发起联合评审”。',
       },
       //联合评审 end
+      // 一次征询 start
+      hasOneSolicit: 0,
+      oneSolicitList: [],
+      dialogConfigOneSolict: {
+        showType: false,
+        dialogType: 'LHPS',
+        dialogTitle: '发起一次征询',
+        formLabel: '一次征询',
+        ensureText: '发起一次征询',
+        hintText1: '',
+        hintText2: '请选择参与一次征询的部门，再点击“发起一次征询”。',
+      },
+      // 一次征询 end
     }
   },
   filters: {
@@ -747,6 +760,22 @@ var vm = new Vue({
     },
   },
   methods: {
+    // 一次征询 start
+    // 点击发起一次征询按钮
+    clickOneSolicit: function(){
+      var vm = this;
+      this.dialogConfig = this.dialogConfigOneSolict;
+      this.solicitForm.solicitType = 'd'
+      this.openSoDialog();
+    },
+    // 加载一次征询历史数据
+    loadOneSolicitData: function(){
+      var vm = this;
+      this.requestSolicit('YCZX', function (data) {
+        vm.oneSolicitList = data || [];
+      });
+    },
+    //一次征询 end
     // 联合评审  start
     // 点击联合评审按钮
     clickUnionReview: function(){
@@ -2981,6 +3010,7 @@ var vm = new Vue({
         {label: '材料补正', labelId: "4", src: './opinionForm.html'},
         {label: '意见征询', labelId: "yjzq", src: './opinionForm.html'},
         {label: '联合评审', labelId: "lhps", src: './opinionForm.html'},
+        {label: '一次征询', labelId: "yczx", src: './opinionForm.html'},
         {label: '撤件历史', labelId: "appCancel", src: './opinionForm.html'},
         {label: '特殊程序', labelId: "5", src: './opinionForm.html'},
         {label: '批文批复', labelId: "6", src: './approvalOpinions.html',}
@@ -3118,6 +3148,8 @@ var vm = new Vue({
       loadTab('yjzq', 'hasSolicit', vm.loadSolicitData);
       // 是否有联合评审
       loadTab('lhps', 'hasUnionReview', vm.loadUnionReviewData);
+      // 是否有一次征询
+      loadTab('yczx', 'hasOneSolicit', vm.loadOneSolicitData);
 
       // 进入页面是否需要展示对应的某个标签页
       if (vm.urlBusType) {
@@ -3144,6 +3176,13 @@ var vm = new Vue({
     initButtons: function () {
       var vm = this;
       var defaultBtn = [{
+        elementName: "一次征询",
+        elementCode: "wfBusSave",
+        columnType: "button",
+        isReadonly: '0',
+        isHidden: '0',
+        elementRender: '<button class="btn btn-primary btn-outline-info" onclick="clickOneSolicit()">发起一次征询</button>'
+      }, {
         elementName: "联合评审",
         elementCode: "wfBusSave",
         columnType: "button",
@@ -3156,7 +3195,7 @@ var vm = new Vue({
         columnType: "button",
         isReadonly: '0',
         isHidden: '0',
-        elementRender: '<button class="btn btn-outline-info" onclick="clickStartSolicit()">意见征询</button>'
+        elementRender: '<button class="btn btn-primary btn-outline-info" onclick="clickStartSolicit()">意见征询</button>'
       }, {
         elementName: "全景图",
         elementCode: "wfBusSave",
@@ -3356,6 +3395,7 @@ var vm = new Vue({
           vm.hasUnionReview = res.content.hasUnionReview;
           if (isDevelop) {
             vm.hasUnionReview = 1;
+            vm.hasOneSolicit = 1;
           }
           // vm.hasSolicit = 1;
           vm.initFormElementPriv();
@@ -6403,6 +6443,10 @@ function clickStartSolicit() {
 
 function clickUnionReview(){
   vm.clickUnionReview();
+}
+
+function clickOneSolicit(){
+  vm.clickOneSolicit();
 }
 
 /**
