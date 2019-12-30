@@ -64,12 +64,12 @@ public class RestAeaLogThemeItemChangeService {
             applyIteminstConfirmVo.setOldThemeName(aeaLogThemeItemChange.getOldThemeName());
             applyIteminstConfirmVo.setThemeId(aeaLogThemeItemChange.getNewThemeId());
             applyIteminstConfirmVo.setThemeName(aeaLogThemeItemChange.getNewThemeName());
-            List<AeaHiIteminst> coreItems = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
+            List<AeaHiIteminst> parallelItems = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
             //办理方式 0 多事项直接合并办理  1 按阶段多级情形组织事项办理
             if (stage != null && "0".equals(stage.getHandWay())) {
-                setItemStateinstList(coreItems, aeaHiParStateinst.getStageinstId(),applyinstId);
+                setItemStateinstList(parallelItems, aeaHiParStateinst.getStageinstId(),applyinstId);
             }
-            applyIteminstConfirmVo.setCoreIteminstList(coreItems.size()>0?coreItems.stream().map(IteminstConfirmVo::format).peek(vo->{
+            applyIteminstConfirmVo.setParallelIteminstList(parallelItems.size()>0?parallelItems.stream().map(IteminstConfirmVo::format).peek(vo->{
                 vo.setIsApplySelected("0");
                 vo.setIsDeptSelected("1");
                 setIsMustSelectedAndDeptComments(applyinstId, vo);
@@ -86,7 +86,7 @@ public class RestAeaLogThemeItemChangeService {
             }
             List<String> addIteminstIds=itemLogs.stream().filter(v->("a".equals(v.getChangeAction())||("c".equals(v.getChangeAction())&&StringUtils.isNotBlank(v.getNewIteminstId())))).map(AeaLogThemeItemChange::getNewIteminstId).collect(Collectors.toList());
             List<String> delChangeIteminstIds=itemLogs.stream().filter(v->!"a".equals(v.getChangeAction())).map(AeaLogThemeItemChange::getOldIteminstId).collect(Collectors.toList());
-            List<IteminstConfirmVo> coreIteminsts = iteminsts.stream().map(IteminstConfirmVo::format).peek(vo -> {
+            List<IteminstConfirmVo> parallelIteminsts = iteminsts.stream().map(IteminstConfirmVo::format).peek(vo -> {
                 if(addIteminstIds.contains(vo.getIteminstId())){
                     vo.setIsApplySelected("0");
                     vo.setIsDeptSelected("1");
@@ -98,13 +98,13 @@ public class RestAeaLogThemeItemChangeService {
                 }
                 setIsMustSelectedAndDeptComments(applyinstId, vo);
             }).collect(Collectors.toList());
-            applyIteminstConfirmVo.setCoreIteminstList(coreIteminsts.size()>0?coreIteminsts:new ArrayList<>());
+            applyIteminstConfirmVo.setParallelIteminstList(parallelIteminsts.size()>0?parallelIteminsts:new ArrayList<>());
         }
 
         //并行申报
         List<AeaHiApplyinst> seriesApplyinsts = aeaHiApplyinstService.getSeriesAeaHiApplyinstListByParentApplyinstId(applyinstId, null);
         if(seriesApplyinsts.size()>0){//说明申报了并行事项
-            List<IteminstConfirmVo> parallelIteminsts=new ArrayList<>();
+            List<IteminstConfirmVo> coreIteminsts=new ArrayList<>();
             for (AeaHiApplyinst applyinst:seriesApplyinsts){
                List<AeaHiIteminst> iteminsts = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinst.getApplyinstId());
                 setItemStateinstList(iteminsts,null,applyinst.getApplyinstId());
@@ -136,11 +136,11 @@ public class RestAeaLogThemeItemChangeService {
                     vo.setIsApplySelected("1");
                     vo.setIsDeptSelected("1");
                 }
-                parallelIteminsts.add(vo);
+                coreIteminsts.add(vo);
             }
-            applyIteminstConfirmVo.setParallelIteminstList(parallelIteminsts.size()>0?parallelIteminsts:new ArrayList<>());
+            applyIteminstConfirmVo.setCoreIteminstList(coreIteminsts.size()>0?coreIteminsts:new ArrayList<>());
         }else{
-            applyIteminstConfirmVo.setParallelIteminstList(new ArrayList<>());
+            applyIteminstConfirmVo.setCoreIteminstList(new ArrayList<>());
         }
         return applyIteminstConfirmVo;
     }
