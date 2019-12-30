@@ -1,5 +1,15 @@
+[v-cloak] {
+    display: none;
+}
+.el-loading-spinner .circular {
+    height: 80px;
+    width: 80px;
+    webkit-animation: loading-rotate 1s linear infinite;
+    animation: loading-rotate 1s linear infinite;
+}
 #guideIndex {
     padding-bottom: 50px;
+    position: relative;
 }
 .guid-banner{
     width: 100%;

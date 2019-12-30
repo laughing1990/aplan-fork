@@ -628,9 +628,9 @@ var vm = new Vue({
         isCalcTimerule: '1',
       },
       solicitFormRules: {
-        solicitTopic: [{required: true, message: '请填写征询主题', trigger: 'blur'}],
-        solicitContent: [{required: true, message: '请填写征询内容', trigger: 'blur'}],
-        solicitDueDays: [{required: true, message: '请填写征询时限', trigger: 'blur'}],
+        solicitTopic: [{required: true, message: '', trigger: 'blur'}],
+        solicitContent: [{required: true, message: '', trigger: 'blur'}],
+        solicitDueDays: [{required: true, message: '', trigger: 'blur'}],
       },
       soRulesList: [],
       soParallelItems: [],
@@ -652,7 +652,6 @@ var vm = new Vue({
       curWidth: (document.documentElement.clientWidth || document.body.clientWidth),//当前屏幕宽度
       curHeight: (document.documentElement.clientHeight || document.body.clientHeight),//当前屏幕高度
       allItemsData:[],
-      isYjzq: false, // 是否为意见征询页面
       dialogConfig: {
         showType: true,
         dialogType: 'YJZQ',
@@ -671,6 +670,13 @@ var vm = new Vue({
         hintText1: '勾选要征询的事项，点击“开始征询”，即可发送意见征询。',
         hintText2: '勾选要征询的部门，点击“开始征询”，即可发送意见征询。',
       },
+      urlBusType: null,
+      busTypeMap: {
+        'yjzq': 'yjzq', // 意见征询
+        'lhps': 'lhps', // 联合评审
+        'yczx': 'yczx', // 一次征询
+      },
+      pageLeftActiveId: '1',
       // 意见征询  end
       //联合评审 start
       hasUnionReview: 0,
@@ -2682,13 +2688,11 @@ var vm = new Vue({
     },
     initPage: function () {
       var vm = this;
-      vm.taskId = vm.getUrlParam('taskId');
-      vm.isDraftPage = vm.getUrlParam('draft');
-      vm.isZJItem = (vm.getUrlParam('itemNature') == '8');
-      vm.isYjzq = (vm.getUrlParam('busType') == 'yjzq');
-      // vm.isZJItem = true;
-      // vm.isDraftPage = 'true';
-      vm.getIteminstIdByTaskId(callback);
+      this.taskId = this.getUrlParam('taskId');
+      vm.isDraftPage = this.getUrlParam('draft');
+      this.isZJItem = (this.getUrlParam('itemNature') == '8');
+      this.urlBusType = this.busTypeMap[this.getUrlParam('busType')];
+      this.getIteminstIdByTaskId(callback);
       
       function callback() {
         vm.busRecordId = this.getUrlParam('busRecordId');
@@ -2870,7 +2874,7 @@ var vm = new Vue({
     //根据初始化参数，获取页面元素权限信息
     initFormElementPriv: function () {
       var vm = this;
-      if (this.isYjzq) {
+      if (this.urlBusType) {
         this.isShowMatiPanel = true;
         this.initButtons();
         this.initForms();
@@ -2975,8 +2979,8 @@ var vm = new Vue({
         {label: '材料附件', labelId: "2", src: './materialAnnex.html'},
         {label: '审批过程', labelId: "3", src: './opinionForm.html'},
         {label: '材料补正', labelId: "4", src: './opinionForm.html'},
-        {label: '意见征询', labelId: "solicit", src: './opinionForm.html'},
-        {label: '联合评审', labelId: "unionReview", src: './opinionForm.html'},
+        {label: '意见征询', labelId: "yjzq", src: './opinionForm.html'},
+        {label: '联合评审', labelId: "lhps", src: './opinionForm.html'},
         {label: '撤件历史', labelId: "appCancel", src: './opinionForm.html'},
         {label: '特殊程序', labelId: "5", src: './opinionForm.html'},
         {label: '批文批复', labelId: "6", src: './approvalOpinions.html',}
@@ -3111,9 +3115,15 @@ var vm = new Vue({
       // 是否有撤件历史
       loadTab('appCancel', 'hasAppCancel', vm.loadAppCancelData);
       // 是否有意见征询
-      loadTab('solicit', 'hasSolicit', vm.loadSolicitData);
+      loadTab('yjzq', 'hasSolicit', vm.loadSolicitData);
       // 是否有联合评审
-      loadTab('unionReview', 'hasUnionReview', vm.loadUnionReviewData);
+      loadTab('lhps', 'hasUnionReview', vm.loadUnionReviewData);
+
+      // 进入页面是否需要展示对应的某个标签页
+      if (vm.urlBusType) {
+        // 根据浏览器url上的busType选中el-tab
+        vm.pageLeftActiveId = vm.urlBusType || '1';
+      }
       
       // 加载对应标签数据
       function loadTab(labelId, key, cb) {
@@ -3134,6 +3144,13 @@ var vm = new Vue({
     initButtons: function () {
       var vm = this;
       var defaultBtn = [{
+        elementName: "联合评审",
+        elementCode: "wfBusSave",
+        columnType: "button",
+        isReadonly: '0',
+        isHidden: '0',
+        elementRender: '<button class="btn btn-primary btn-outline-info" onclick="clickUnionReview()">发起联合评审</button>'
+      }, {
         elementName: "意见征询",
         elementCode: "wfBusSave",
         columnType: "button",
@@ -3163,23 +3180,6 @@ var vm = new Vue({
         isHidden: '0',
         elementRender: '<button class="btn btn-outline-info" onclick="startSupplementForItem()">材料补正</button>'
       }];
-      if (isDevelop) {
-        approverBtn = [{
-          elementName: "联合评审",
-          elementCode: "wfBusSave",
-          columnType: "button",
-          isReadonly: '0',
-          isHidden: '0',
-          elementRender: '<button class="btn btn-outline-info" onclick="clickUnionReview()">联合评审</button>'
-        }, {
-          elementName: "材料补正",
-          elementCode: "wfBusSave",
-          columnType: "button",
-          isReadonly: '0',
-          isHidden: '0',
-          elementRender: '<button class="btn btn-outline-info" onclick="startSupplementForItem()">材料补正</button>'
-        }]
-      }
       var notApproverBtn = [{
         elementName: "撤件",
         elementCode: "wfBusSave",

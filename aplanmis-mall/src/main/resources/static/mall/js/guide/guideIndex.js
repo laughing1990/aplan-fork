@@ -185,6 +185,7 @@ var guideIndex = (function () {
             imgUrl: ["common/stage/mainLine/images/立项用地许可.png", "common/stage/mainLine/images/工程建设许可.png", "common/stage/mainLine/images/施工许可.png", "common/stage/mainLine/images/竣工验收.png", "common/stage/mainLine/images/立项用地许可.png","common/stage/mainLine/images/5.png","common/stage/mainLine/images/5.png","common/stage/mainLine/images/5.png","common/stage/mainLine/images/工程建设许可.png","common/stage/mainLine/images/5.png","common/stage/mainLine/images/5.png","common/stage/mainLine/images/5.png"],
             itemListKeyword:'',
             stagesData:{}, // 某主题下的阶段和事项
+            fullscreenLoading: false,
         },
         mounted: function () {
             var vm = this;
@@ -254,11 +255,13 @@ var guideIndex = (function () {
             getThemeList: function () {
                 var vm = this;
                 vm.themeLoading = true;
+                vm.fullscreenLoading = true;
                 request('', {
                     url: ctx + 'rest/main/theme/list',
                     type: 'get'
                 }, function (res) {
                     vm.themeLoading = false;
+                    vm.fullscreenLoading = false;
                     if (res.success) {
                         var content = res.content;
                         vm.themeListData = content;
@@ -288,6 +291,7 @@ var guideIndex = (function () {
                         },200);
                     } else {
                         vm.themeLoading = false;
+                        vm.fullscreenLoading =false;
                         vm.$message.error(res.message);
                     }
                     if (!vm.sessionStorage.origin && vm.themeListData.length > 0) {

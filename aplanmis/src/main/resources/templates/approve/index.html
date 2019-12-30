@@ -73,8 +73,9 @@
       </div>
     </div>
     <!-- 申请表、材料附件、审批意见、意见汇总表 -->
-    <el-tabs class="ltabs">
-      <el-tab-pane v-for="u in lTabsData" :label="u.label" :key="u.label">
+    <el-tabs class="ltabs" v-model="pageLeftActiveId">
+      <el-tab-pane v-for="u in lTabsData" :label="u.label" :key="u.label" :name="u.labelId">
+        <!-- 一张表单tab -->
         <div v-if="u.labelId=='oneFrom'" id="oneForm">
           <el-tabs tab-position="left" class="form-el-tabs">
             <el-tab-pane v-for="(item,index) in smartFormInfo" :key="index" :label="item.formName">
@@ -87,7 +88,7 @@
             </el-tab-pane>
           </el-tabs>
         </div>
-        <!-- 特殊程序 -->
+        <!-- 特殊程序tab -->
         <div v-else-if="u.labelId==5" style="height:100%;overflow:auto;">
           <div class="spe-pane-wrap">
             <!-- 审批人员 特殊程序详情 -->
@@ -367,7 +368,7 @@
             </el-collapse>
           </div>
         </div>
-        <!-- 材料补正 -->
+        <!-- 材料补正tab -->
         <div v-else-if="u.labelId==4" style="height:100%;overflow:auto;">
           <div class="spe-pane-wrap">
             <!-- 审批人员 材料补正详情 -->
@@ -592,7 +593,7 @@
             </el-collapse>
           </div>
         </div>
-        <!-- 撤件历史 -->
+        <!-- 撤件历史tab -->
         <div v-else-if="u.labelId=='appCancel'" style="height:100%;overflow:auto;">
           <div class="spe-pane-wrap">
             <!-- 审批人员 撤件历史 -->
@@ -735,8 +736,8 @@
             </div>
           </div>
         </div>
-        <!-- 意见征询 -->
-        <div v-else-if="u.labelId=='solicit'" style="height:100%;overflow:auto;">
+        <!-- 意见征询tab -->
+        <div v-else-if="u.labelId=='yjzq'" style="height:100%;overflow:auto;">
           <div class="spe-pane-wrap">
             <!-- 审批人员 意见征询 -->
             <div class="spe-item-uboxs solicit-table">
@@ -961,6 +962,10 @@
               </div>
             </div>
           </div>
+        </div>
+        <!-- 联合评审tab -->
+        <div v-else-if="u.labelId=='lhps'" style="height:100%;overflow:auto;">
+          联合评审历史记录，开发中...
         </div>
         <iframe v-else :src="u.src" class="ltab-iframe"></iframe>
       </el-tab-pane>

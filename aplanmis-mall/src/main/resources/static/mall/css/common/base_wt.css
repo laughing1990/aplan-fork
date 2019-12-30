@@ -279,9 +279,8 @@ footer {
   font-size: 14px;
   color: #727475;
   text-align: center;
-  /*line-height: 59px;*/
   position: absolute;
-  /*bottom: -59px;*/
+  bottom: -356px;
 }
 .footer-box ul::after{
   content: "";

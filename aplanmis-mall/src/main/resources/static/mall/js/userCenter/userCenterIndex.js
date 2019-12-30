@@ -29,6 +29,11 @@ var userCenter = (function () {
                         open: true,
                         icon:'icon-1'
                     },
+                    {
+                        name: '用户管理',
+                        value: 'UserInfo',
+                        select: false,
+                    },
                   {
                     name: '项目管理',
                     open: true,

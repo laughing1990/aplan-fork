@@ -20,11 +20,11 @@
 
 <body>
   <div id="userCenterPage" v-cloak>
-    <div class="back" @click="backToMyHomeIndex">
+ <!--   <div class="back" @click="backToMyHomeIndex">
       返回
-    </div>
+    </div>-->
 
-    <header>
+   <!-- <header>
       <div class="header-wraper">
         <div class="head-img-url">
           <img src="../../../../static/mall/images/userCenter/avatar.png"
@@ -57,14 +57,14 @@
           </div>
         </div>
         <div class="head-user-approval" @click="goToStageApply">
-          <!--                    <a href="javascript:;" class="btn" @click="goToStageApply">并联申报</a>-->
-          <!--                    <a href="javascript:;" class="btn">单项申报</a>-->
+          &lt;!&ndash;                    <a href="javascript:;" class="btn" @click="goToStageApply">并联申报</a>&ndash;&gt;
+          &lt;!&ndash;                    <a href="javascript:;" class="btn">单项申报</a>&ndash;&gt;
           <img src="../../../../static/mall/images/userCenter/icon.png" th:src="@{/mall/images/userCenter/icon.png}"
             alt="并联申报图标">
           <p style="margin-top:3px;">并联申报</p>
         </div>
       </div>
-    </header>
+    </header>-->
 
     <div class="first" v-if="user=='1'">
       <div class="tabs-container normal">
@@ -81,7 +81,7 @@
       <div class="table-card">
         <div class="table1" v-if="curTab=='0'">
           <div class="single-table" v-bind="aeaLinkmanInfo">
-            <p>用户信息</p>
+            <p class="p-header-phase1">用户信息</p>
             <el-row>
               <el-col :span="3" class="tr">
                 <div class="grid-content">用户名 <span class="required">*</span></div>
@@ -126,7 +126,7 @@
                 <el-input v-model="aeaLinkmanInfo.linkmanMemo" placeholder="请填写经营范围"></el-input>
               </el-col>
             </el-row>
-            <p>账号信息</p>
+            <p class="p-header-phase1">账号信息</p>
             <el-row>
               <el-col :span="3" class="tr">
                 <div class="grid-content">登录名</div>
@@ -259,7 +259,7 @@
       <div class="table-card">
         <div class="table1" v-if="curTab2=='0'">
           <div class="single-table" v-bind="aeaUnitInfo">
-            <p>单位信息</p>
+            <p class="p-header-phase1">单位信息</p>
             <el-row>
               <el-col :span="3" class="tr">
                 <div class="grid-content">单位名称 <span class="required">*</span></div>
@@ -360,7 +360,7 @@
                 <el-input v-model="aeaUnitInfo.managementScope" placeholder="请填写经营范围"></el-input>
               </el-col>
             </el-row>
-            <p>账号信息</p>
+            <p class="p-header-phase1">账号信息</p>
             <el-row>
               <el-col :span="3" class="tr">
                 <div class="grid-content">登录名</div>
