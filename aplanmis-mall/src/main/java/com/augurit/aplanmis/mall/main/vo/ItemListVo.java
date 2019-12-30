@@ -19,4 +19,10 @@ public class ItemListVo {
     List<ParallelApproveItemVo> coreItemList;
     @ApiModelProperty(value = "情形列表")
     List<AeaParState> stateList;
+    @ApiModelProperty(value = "主题名称")
+    String themeName;
+    @ApiModelProperty(value = "阶段名称")
+    String stageName;
+    @ApiModelProperty(value = "工作日")
+    Double dueNum;
 }

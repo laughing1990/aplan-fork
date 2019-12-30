@@ -489,7 +489,10 @@ public class RestGuideServiceImpl implements RestGuideService {
     public ItemListVo listItemAndStateByStageId(String stageId,String rootOrgId) throws Exception {
         ItemListVo vo = new ItemListVo();
         AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageId);
-
+        vo.setStageName(aeaParStage.getStageName());
+        vo.setDueNum(aeaParStage.getDueNum());
+        AeaParTheme aeaParTheme = aeaParThemeService.getAeaParThemeByThemeId(aeaParStage.getThemeId());
+        vo.setThemeName(aeaParTheme.getThemeName());
         //情形
         List<AeaParState> stateList = null;
         //并联
