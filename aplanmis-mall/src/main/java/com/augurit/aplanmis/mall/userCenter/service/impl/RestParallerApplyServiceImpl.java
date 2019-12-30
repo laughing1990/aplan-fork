@@ -1,14 +1,12 @@
 package com.augurit.aplanmis.mall.userCenter.service.impl;
 
-import com.augurit.agcloud.bsc.mapper.BscDicRegionMapper;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
-import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
-import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.item.AeaItemPrivService;
 import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
@@ -19,9 +17,6 @@ import com.augurit.aplanmis.common.utils.CommonTools;
 import com.augurit.aplanmis.mall.main.vo.ItemListVo;
 import com.augurit.aplanmis.mall.main.vo.ParallelApproveItemVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestParallerApplyService;
-import com.augurit.aplanmis.mall.userCenter.vo.StageApplyDataPageVo;
-import com.augurit.aplanmis.mall.userCenter.vo.StageApplyDataVo;
-import io.jsonwebtoken.lang.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,9 +52,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
     @Autowired
     private AeaParThemeService aeaParThemeService;
     @Autowired
-    private BscDicRegionMapper bscDicRegionMapper;
-    @Autowired
-    private AeaHiApplyinstService aeaHiApplyinstService;
+    private AeaHiItemInoutService aeaHiItemInoutService;
 
     @Override
     public ItemListVo listItemAndStateByStageId(String stageId, String projInfoId, String regionalism, String projectAddress) throws Exception {
@@ -307,6 +300,12 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
                 }
 
                 List<AeaItemBasic> sssxList = aeaItemBasicService.getSssxByItemIdAndRegionalism(vo.getItemId(), regionalism, arrRegionIdList.size() == 0 ? null : CommonTools.ListToArr(arrRegionIdList), SecurityContext.getCurrentOrgId());
+                if(sssxList.size()>0){
+                    sssxList.stream().forEach(ss->{
+                        List<AeaItemInout> resultMats=aeaHiItemInoutService.getAeaItemInoutMatCertByItemVerId(vo.getItemVerId(),SecurityContext.getCurrentOrgId());
+                        ss.setResultMats(resultMats);
+                    });
+                }
                 vo.setCarryOutItems(sssxList);
                 AeaItemBasic sssx=sssxList.size()>0?sssxList.get(0):null;
                 if(sssx!=null){
@@ -316,6 +315,9 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
                     //BeanUtils.copyProperties(sssx,vo);
                     //vo.setIsCatalog(flag);
                 }
+            }else{
+                List<AeaItemInout> resultMats=aeaHiItemInoutService.getAeaItemInoutMatCertByItemVerId(vo.getItemVerId(),SecurityContext.getCurrentOrgId());
+                vo.setResultMats(resultMats.size()>0?resultMats:new ArrayList<>());
             }
             AeaItemPriv aeaItemPriv = privMap.get(vo.getItemVerId());
             if (aeaItemPriv != null) {

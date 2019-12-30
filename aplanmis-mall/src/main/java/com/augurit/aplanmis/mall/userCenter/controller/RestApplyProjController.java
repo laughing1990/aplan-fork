@@ -42,10 +42,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -481,6 +479,18 @@ public class RestApplyProjController {
         } catch (Exception e) {
             return new ResultForm(false, e.getMessage());
         }
+    }
+
+
+    @PostMapping("/generatorProjectCode")
+    @ApiOperation(value = "生成项目自编码")
+    public ResultForm generatorProjectCode() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Date date = new Date();
+        String num = String.valueOf(date.getTime());
+        //zbm表示自编码，r表示root，日期加8位数字（当前时间毫秒值截取后8位）例如：ZBM-R-20181203-56899466
+        String code = "ZBM-R-" + sdf.format(date) + "-" + num.substring(num.length() - 8);
+        return new ResultForm(true,code);
     }
 
     //------------------保存项目信息--------------

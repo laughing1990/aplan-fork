@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.mall.log.vo;
 
+import com.augurit.aplanmis.common.domain.AeaItemInout;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
