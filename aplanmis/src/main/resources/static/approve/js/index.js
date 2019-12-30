@@ -626,11 +626,16 @@ var vm = new Vue({
         solicitTimeruleId: '0',
         solicitTopic: '',
         isCalcTimerule: '1',
+        solicitId: '',
+        solicitLinkmanName: '',
+        solicitLinkmanPhone: '',
       },
       solicitFormRules: {
         solicitTopic: [{required: true, message: ' ', trigger: 'blur'}],
         solicitContent: [{required: true, message: ' ', trigger: 'blur'}],
         solicitDueDays: [{required: true, message: ' ', trigger: 'blur'}],
+        solicitLinkmanName: [{required: true, message: ' ', trigger: 'blur'}],
+        solicitLinkmanPhone: [{required: true, message: ' ', trigger: 'blur'}],
       },
       soRulesList: [],
       soParallelItems: [],
@@ -694,8 +699,10 @@ var vm = new Vue({
       // 一次征询 start
       hasOneSolicit: 0,
       oneSolicitList: [],
+      oneSolicitFileList: [],
       dialogConfigOneSolict: {
         showType: false,
+        showFileBox: true,
         dialogType: 'LHPS',
         dialogTitle: '发起一次征询',
         formLabel: '一次征询',
@@ -761,6 +768,53 @@ var vm = new Vue({
   },
   methods: {
     // 一次征询 start
+    // 一次征询刷新附件列表
+    refreshOneSolicitFileList: function () {
+      var vm = this;
+      vm.solicitOpinionLoading = true;
+      request('', {
+        url: ctx + 'rest/approve/att/dirs/file/list',
+        type: 'get',
+        data: {
+          tableName: 'AEA_HI_SOLICIT',
+          pkName: 'SOLICIT_ID',
+          recordIds: vm.solicitForm.solicitId,
+        },
+      }, function (res) {
+        vm.solicitOpinionLoading = false;
+        if (res.success) {
+          vm.oneSolicitFileList = res.content.files || [];
+        } else {
+          vm.$message.error(res.message || '获取文件列表失败')
+        }
+      }, function () {
+        vm.solicitOpinionLoading = false;
+        vm.$message.error('获取文件列表失败')
+      });
+    },
+    // 一次征询上传附件
+    oneSolicitUploadFile: function (file) {
+      var vm = this;
+      var formData = new FormData();
+      formData.append('file', file.file);
+      formData.append('tableName', 'AEA_HI_SOLICIT');
+      formData.append('pkName', 'SOLICIT_ID');
+      formData.append('solicitId', vm.solicitForm.solicitId);
+      vm.solicitOpinionLoading = true;
+      axios.post(ctx + 'rest/solicit/uploadAttFile', formData).then(function (res) {
+        if (res.data && res.data.success) {
+          vm.$message.success('文件上传成功');
+          vm.solicitForm.solicitId = res.data.content;
+          vm.refreshOneSolicitFileList();
+        } else {
+          vm.$message.error(res.message || '文件上传失败');
+        }
+      }).catch(function (e) {
+        vm.$message.error('文件上传失败');
+      }).finally(function () {
+        vm.solicitOpinionLoading = false;
+      })
+    },
     // 点击发起一次征询按钮
     clickOneSolicit: function(){
       var vm = this;
@@ -808,6 +862,7 @@ var vm = new Vue({
         solicitType: vm.solicitForm.solicitType,
         isCalcTimerule: vm.solicitForm.isCalcTimerule,
         solicitTimeruleId: vm.solicitForm.solicitTimeruleId,
+        solicitId: vm.solicitForm.solicitId,
         busType: vm.dialogConfig.dialogType,
       };
       if (vm.solicitForm.isCalcTimerule==1){
@@ -903,6 +958,7 @@ var vm = new Vue({
     },
     // 关闭征询弹窗
     closeSoDialog: function () {
+      this.solicitForm.solicitId = '';
       this.$refs.solicitForm.clearValidate();
     },
     // 打开征询弹窗

@@ -2731,6 +2731,51 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <template v-if="dialogConfig.showFileBox">
+          <el-row style="margin-bottom:5px;">
+            <el-col :span="12">
+              <el-form-item label="联系人" prop="linkMan" required>
+                <el-input v-model="solicitForm.solicitLinkmanName"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="联系人电话" prop="phone" required>
+                <el-input v-model="solicitForm.solicitLinkmanPhone" type="number"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row style="margin-bottom:5px;">
+            <el-col :span="24">
+              <el-form-item label="附件">
+                <el-upload ref="uploadCert3" class="upload-s-file" :action="ctx+'rest/certificate/certinst/att/upload'"
+                           :show-file-list="false" :http-request="oneSolicitUploadFile" :file-list="fileList">
+                  <el-button slot="trigger" size="small" type="primary">上传附件</el-button>
+                </el-upload>
+                <el-table border stripe :data="oneSolicitFileList">
+                  <el-table-column label='序号' type="index" width="50"></el-table-column>
+                  <el-table-column label="附件名称" prop="attName">
+                    <template slot-scope="scope">
+                      <i class="ag" v-html="getIconText(scope.row.attFormat)"
+                         :style="{color:getIconColor(scope.row.attFormat)}"></i>
+                      {{scope.row.attName}}
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="操作" width="140">
+                    <template slot-scope="scope">
+                      <div class="spe-file-btns c-f">
+                        <div class="spe-file-btn" @click="filePreview(scope.row,'solicitOpinionLoading')">预览</div>
+                        <div class="spe-ope-line"></div>
+                        <div class="spe-file-btn" @click="downOneFile(scope.row)">下载</div>
+                        <div class="spe-ope-line"></div>
+                        <div class="spe-file-btn delete" @click="delSpeFile(scope.row, 'refreshOneSolicitFileList')">删除</div>
+                      </div>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </template>
       </el-form>
       <!--          <div class="s-o-tabs c-f">-->
       <!--            <div v-for="(u,i) in soTabList" @click="changeOsTab(i)"-->
