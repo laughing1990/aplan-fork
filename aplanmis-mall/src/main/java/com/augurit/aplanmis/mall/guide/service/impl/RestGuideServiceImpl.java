@@ -20,6 +20,7 @@ import com.augurit.aplanmis.common.mapper.AeaItemRelevanceMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStateMapper;
 import com.augurit.aplanmis.common.service.guide.*;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.item.AeaItemPrivService;
 import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
@@ -108,6 +109,8 @@ public class RestGuideServiceImpl implements RestGuideService {
     private AeaItemPrivService aeaItemPrivService;
     @Autowired
     private OpuOmOrgMapper opuOmOrgMapper;
+    @Autowired
+    private AeaHiItemInoutService aeaHiItemInoutService;
 
     @Override
     public RestGuideVo getGuideByStageId(String stageId,String rootOrgId) throws Exception {
@@ -657,7 +660,14 @@ public class RestGuideServiceImpl implements RestGuideService {
                     item.setIsSelected("1");
                     indexs.add(parallelItem.getIndex());
                 }
+                item.getResultMats().stream().forEach(resultMat->{
+                    if (resultMat.getAeaMatCertName().contains(keyword)){
+                        item.setIsSelected("1");
+                        indexs.add(parallelItem.getIndex());
+                    }
+                });
             });
+
         });
         //2.循环步骤一符合条件的阶段index将阶段标记
         for (int i = 0; i < vo.getStages().size(); i++) {
@@ -680,6 +690,8 @@ public class RestGuideServiceImpl implements RestGuideService {
             searchItem.setItemSeq(parallelItem.getItemId());
             List<AeaItemBasic> childItems = aeaItemBasicMapper.listLatestAeaItemBasic(searchItem);
             if (childItems.size() > 0) parallelItem.setItemVerId(childItems.get(0).getItemVerId());
+            List<AeaItemInout> resultMats=aeaHiItemInoutService.getAeaItemInoutMatCertByItemVerId(parallelItem.getItemVerId(),SecurityContext.getCurrentOrgId());
+            parallelItem.setResultMats(resultMats);
         }
         restItemListVo.setItems(parallelItems.stream().map(RestItemListVo.RestitemVo::build).collect(Collectors.toList()));
         return restItemListVo;

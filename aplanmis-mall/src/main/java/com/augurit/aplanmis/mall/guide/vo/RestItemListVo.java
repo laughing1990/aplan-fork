@@ -2,6 +2,7 @@ package com.augurit.aplanmis.mall.guide.vo;
 
 
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
+import com.augurit.aplanmis.common.domain.AeaItemInout;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -30,8 +31,11 @@ public class RestItemListVo {
         private String itemName;
         @ApiModelProperty("事项版本ID")
         private String itemVerId;
+        @ApiModelProperty(name = "resultMats", value = "结果物", dataType = "list")
+        private List<AeaItemInout> resultMats;
         @ApiModelProperty("是否被选中1:是,0:否")
         private String isSelected = "0";
+
 
         public static RestitemVo build(AeaItemBasic aeaItemBasic){
             RestitemVo restitemVo = new RestitemVo();
