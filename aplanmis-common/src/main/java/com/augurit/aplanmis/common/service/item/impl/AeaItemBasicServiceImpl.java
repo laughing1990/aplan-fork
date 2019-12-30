@@ -9,10 +9,12 @@ import com.augurit.aplanmis.common.constants.AeaItemBasicContants;
 import com.augurit.aplanmis.common.domain.AeaHiIteminst;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaItemFrontItem;
+import com.augurit.aplanmis.common.domain.AeaItemInout;
 import com.augurit.aplanmis.common.mapper.AeaHiIteminstMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
 import com.augurit.aplanmis.common.service.admin.item.AeaItemFrontItemAdminService;
 import com.augurit.aplanmis.common.service.diagram.constant.HandleStatus;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutService;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.state.AeaItemStateService;
@@ -53,6 +55,8 @@ public class AeaItemBasicServiceImpl implements AeaItemBasicService {
 
     @Autowired
     private AeaItemStateService aeaItemStateService;
+    @Autowired
+    private AeaHiItemInoutService aeaHiItemInoutService;
 
     @Override
     public List<AeaItemBasic> getAeaItemBasicListByStageId(String stageId, String isOptionItem, String projInfoId, String rootOrgId) throws Exception {
@@ -223,6 +227,8 @@ public class AeaItemBasicServiceImpl implements AeaItemBasicService {
                 List<AeaItemBasic> sssxList = this.getSssxByItemIdAndRegionalism(aeaItemBasic.getItemId(), regionalism, arrRegionIdList.size() == 0 ? null : CommonTools.ListToArr(arrRegionIdList), rootOrgId);
                 if(sssxList.size()>0){
                     for (AeaItemBasic item:sssxList){
+                        List<AeaItemInout> resultMats=aeaHiItemInoutService.getAeaItemInoutMatCertByItemVerId(item.getItemVerId(),SecurityContext.getCurrentOrgId());
+                        item.setResultMats(resultMats);//结果物列表
                         item.setParaStateList(aeaItemStateService.listAeaItemStateByParentId(item.getItemVerId(),"","ROOT",SecurityContext.getCurrentOrgId()));
                     }
                 }
@@ -236,6 +242,8 @@ public class AeaItemBasicServiceImpl implements AeaItemBasicService {
                     //vo.setIsCatalog(flag);
                 }
             }else{
+                List<AeaItemInout> resultMats=aeaHiItemInoutService.getAeaItemInoutMatCertByItemVerId(aeaItemBasic.getItemVerId(),SecurityContext.getCurrentOrgId());
+                aeaItemBasic.setResultMats(resultMats);//结果物列表
                 aeaItemBasic.setParaStateList(aeaItemStateService.listAeaItemStateByParentId(aeaItemBasic.getItemVerId(),"","ROOT",SecurityContext.getCurrentOrgId()));
             }
         }
