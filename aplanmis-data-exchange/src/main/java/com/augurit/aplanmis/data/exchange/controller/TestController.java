@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.data.exchange.controller;
 
 import com.augurit.aplanmis.common.domain.AeaItem;
+import com.augurit.aplanmis.common.service.project.AeaProjStageService;
 import com.augurit.aplanmis.data.exchange.domain.spgl.SpglDfxmsplcjdsxxxb;
 import com.augurit.aplanmis.data.exchange.service.ImportService;
 import com.augurit.aplanmis.data.exchange.service.aplanmis.ItemBasicService;
@@ -32,6 +33,9 @@ public class TestController {
     @Autowired
     ItemBasicService itemBasicService;
 
+    @Autowired
+    AeaProjStageService aeaProjStageService;
+
     @RequestMapping("/findProj")
     public List<SpglDfxmsplcjdsxxxb> findProj(SpglDfxmsplcjdsxxxb spglDfxmsplcjdsxxxb) {
         return itemService.findSpglDfxmsplcjdsxxxb(spglDfxmsplcjdsxxxb);
@@ -51,5 +55,10 @@ public class TestController {
     @RequestMapping("/find/item/time_limit")
     public Long findItemTimeLimit(String itemId, String stageId) {
         return itemBasicService.findStageItemDueNumByItemIdAndStageId(itemId, stageId);
+    }
+
+    @RequestMapping("/calculate")
+    public void calculate() {
+        aeaProjStageService.calculateAllProjStageState();
     }
 }

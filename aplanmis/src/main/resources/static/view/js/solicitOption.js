@@ -116,7 +116,7 @@ var vm = new Vue({
 				if (result.success) {
 					//ts.fetchTableData();
 					window.setTimeout(function () {
-						window.open(ctx + 'apanmis/page/stageApproveIndex?taskId=' + taskId + '&viewId=' + viewId + '&busRecordId=' + busRecordId + '&itemNature=' + row.itemNature + '&busType=yjzq&isNotCompareAssignee=true', '_blank');
+						window.open(ctx + 'apanmis/page/stageApproveIndex?taskId=' + row.taskId + '&viewId=' + row.viewId + '&busRecordId=' + row.busRecordId + '&itemNature=' + row.itemNature + '&busType=yjzq&isNotCompareAssignee=true', '_blank');
 						window.location.reload();
 					}, 500);
 				} else {

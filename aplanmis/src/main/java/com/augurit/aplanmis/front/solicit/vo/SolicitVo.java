@@ -126,6 +126,12 @@ public class SolicitVo {
     @ApiModelProperty(value = "根组织ID", required = false, dataType="string")
     private String rootOrgId;
 
+    @ApiModelProperty(value = "联系人姓名", required = false, dataType="string")
+    private String solicitLinkmanName;
+
+    @ApiModelProperty(value = "联系人手机号码", required = false, dataType="string")
+    private String solicitLinkmanPhone;
+
     public AeaHiSolicit convertToAeaHiSolicit(){
         AeaHiSolicit aeaHiSolicit = new AeaHiSolicit();
         BeanUtils.copyProperties(this,aeaHiSolicit);

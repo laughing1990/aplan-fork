@@ -20,6 +20,7 @@ import com.augurit.aplanmis.common.constants.TimeruleInstState;
 import com.augurit.aplanmis.common.constants.TimeruleUnit;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.vo.solicit.AeaHiSolicitVo;
 import com.augurit.aplanmis.common.vo.solicit.QueryCondVo;
@@ -33,7 +34,10 @@ import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -102,6 +106,9 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
 
     @Autowired
     private BpmProcessService bpmProcessService;
+
+    @Autowired
+    private FileUtilsService fileUtilsService;
 
     @Override
     public List<OpuOmOrg> listOrg(String isRoot, String parentOrgId) throws Exception {
@@ -188,9 +195,10 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
             }
         }
         Date date = new Date();
-        String solicitId = UUID.randomUUID().toString();
+        if(StringUtils.isBlank(aeaHiSolicit.getSolicitId())){
+            aeaHiSolicit.setSolicitId(UUID.randomUUID().toString());
+        }
         //2、保存意见征求主表信息
-        aeaHiSolicit.setSolicitId(solicitId);
         aeaHiSolicit.setSolicitCode(solicitCodeService.createSolicitCode());
         aeaHiSolicit.setSolicitType(type);
         aeaHiSolicit.setSolicitStartTime(date);
@@ -210,7 +218,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
             JSONObject jsonObject = (JSONObject) temp;
             AeaHiSolicitDetail detail = new AeaHiSolicitDetail();
             String detailId = UUID.randomUUID().toString();
-            detail.setSolicitId(solicitId);
+            detail.setSolicitId(aeaHiSolicit.getSolicitId());
             detail.setSolicitDetailId(detailId);
             if ("i".equals(type)) {
                 detail.setItemId(jsonObject.getString("itemId"));
@@ -291,7 +299,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                     i++;
 
                     //如果是当前审批人需要填写意见的，则单独拿出来，等待填写
-                    if (currUserId != null && currUserId.equals(solicitDetailUser.getUserId()) && solicitDetailUser.getFillTime() == null) {
+                    if (currUserId != null && currUserId.equals(solicitDetailUser.getUserId()) && solicitDetailUser.getUserConclusion() == null) {
                         currDetailUser = solicitDetailUser;
                     }
 
@@ -829,5 +837,31 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
     @Override
     public List<AeaHiIteminst> getApplyItems(String applyinstId) throws Exception {
         return aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
+    }
+
+    /**
+     * 上传电子附件
+     *
+     * @param solicitId
+     * @param tableName
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    public String uploadAttFile(String solicitId, String tableName,String pkName, HttpServletRequest request) throws Exception {
+
+        if (StringUtils.isBlank(tableName)) throw new Exception("缺少表名参数！");
+        if (StringUtils.isBlank(pkName)) throw new Exception("缺少表主键字段名参数！");
+
+        if (StringUtils.isBlank(solicitId)) {
+            solicitId = UUID.randomUUID().toString();
+        }
+
+        StandardMultipartHttpServletRequest req = (StandardMultipartHttpServletRequest) request;
+        List<MultipartFile> files = req.getFiles("file");
+        if (files.size() > 0) {
+            fileUtilsService.uploadAttachments(tableName, pkName, solicitId, files);
+        }
+        return solicitId;
     }
 }

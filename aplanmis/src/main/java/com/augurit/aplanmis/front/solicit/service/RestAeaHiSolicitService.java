@@ -9,6 +9,7 @@ import com.augurit.aplanmis.common.vo.solicit.QueryCondVo;
 import com.augurit.aplanmis.front.solicit.vo.AeaHiSolicitInfo;
 import com.github.pagehelper.Page;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -62,4 +63,5 @@ public interface RestAeaHiSolicitService {
 
     public List<AeaHiIteminst> getApplyItems(String applyinstId) throws Exception;
 
+    public String uploadAttFile(String solicitId, String tableName,String pkName, HttpServletRequest request) throws Exception;
 }
