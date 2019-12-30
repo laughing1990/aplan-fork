@@ -1,4 +1,15 @@
 //  var ctx = "http://192.168.15.101:8084/aplanmis-mall/"
+ //定义一个手机号码校验
+ var validPhone=function(rule, value,callback){
+   var phoneRex = /^1[34578]\d{9}$/;
+  if (!value){
+      callback(new Error('请输入联系人号码'))
+  }else if(!phoneRex.test(value)){
+    callback(new Error('请输入正确的11位手机号码'))
+  }else {
+    callback()
+  }
+};
 var vm = new Vue({
   el: "#declareHaveVue",
   data: {
@@ -67,6 +78,78 @@ var vm = new Vue({
     receiveItemActive: '', // 回执列表li active状态
     receiveActive: '', // 回执列表 div active状态
     pdfSrc: '', // 回执预览地址
+
+    // 撤件相关
+    // 是否展示撤件dialog
+    isShowWithdrawalDialog: false,
+    // 当前撤件行
+    curWithDrawalRow: {},
+    // 撤件表单
+    withDrawalForm: {
+      applyUserName: '',  //申请人名称
+      applyUserId: '',   //申请人linkmanInfoId
+      applyUserPhone: '',  //联系电话
+      applyUserIdnumber: '',  //申请人身份证-证件号码
+      applyReason: '',   //撤件原因
+      applyinstId: '',   //申请实例ID
+      attId: '',         //附件id
+    },
+    // 撤件校验
+    withDrawalRules: {
+      applyUserName: [{
+        required: true,
+        message: '请输入联系人名称',
+        trigger: 'blur'
+      }],
+      applyUserId: [{
+        required: true,
+        message: '请选择联系人',
+        trigger: 'change'
+      }],
+      applyUserPhone: [{
+        required: true,
+        trigger: 'blur',
+        validator: validPhone
+      }
+      // {
+      //   required: true,
+      //   message: '请输入联系电话',
+      //   trigger: 'blur'
+      // }
+      ],
+      applyUserIdnumber: [{
+        required: true,
+        message: '请输入证件号码',
+        trigger: 'blur'
+      }],
+      applyReason: [{
+        required: true,
+        message: '请输入撤件原因',
+        trigger: 'blur'
+      }],
+    },
+    // 联系人列表
+    linkmanlist: [],
+    // 当前选择联系人是自定义输入还是下拉选择
+    isDiyLinkman: false,
+    // 选中的联系人
+    linkmanSelected: {},
+    // 上传的url
+    withDrwalFileUploadAction: ctx + 'rest/apply/cancel/uploadAttFile',
+    // 已上传的文件列表
+    withDrawalAlreadyFileList:[],
+
+  },
+  watch: {
+    // 撤件-如果是自定义输入联系人，则清除原来的联系人id,身份证信息与电话与名称
+    isDiyLinkman: function(val){
+      if(val){
+        this.withDrawalForm.applyUserName = '';
+        this.withDrawalForm.applyUserId = '';
+        this.withDrawalForm.applyUserPhone = '';
+        this.withDrawalForm.applyUserIdnumber = '';
+      }
+    },
   },
   mounted: function () {
     this.getHadApplyItemList()
@@ -406,7 +489,210 @@ var vm = new Vue({
       if(val==14) return "#FF4B47";
       if(val==15) return "#FF4B47";
       return "#000";
-    }
+    },
+
+    // 撤件相关
+    withDrawFn: function(row){
+      var ts = this;
+      // ts.curWithDrawalRow = row;
+      // ts.isShowWithdrawalDialog = true;
+      // ts.fetchLinkmanList();
+      // return
+      var _url = ctx + 'rest/apply/cancel/check/' + row.applyinstId;
+      request('', {
+        url: _url,
+        type: 'get',
+      }, function (res) {
+        if (res.success && res.content.flag == 200) {
+          ts.curWithDrawalRow = row;
+          ts.isShowWithdrawalDialog = true;
+          ts.fetchLinkmanList();
+        }else {
+          ts.$message({
+            message: '该申报不可撤回',
+            type: 'error'
+          });
+        }
+      }, function (msg) {
+        ts.$message({
+          message: '网络错误！',
+          type: 'error'
+        });
+      });
+    
+    },
+    // 打开撤件dialog后，获取联系人列表
+    fetchLinkmanList: function(){
+      var _that = this;
+      request('', {
+        url: ctx + 'rest/apply/cancel/getCurrentLinkmans',
+        type: 'get',
+      }, function (res) {
+        if (res.success) {
+           _that.linkmanlist = res.content;
+        }else {
+          _that.$message({
+            message: res.message?res.message:'获取联系人列表失败',
+            type: 'error'
+          });
+        }
+      }, function (msg) {
+        _that.$message({
+          message: '获取联系人列表失败',
+          type: 'error'
+        });
+      });
+    },
+    // 选择联系人
+    selectLinkmanList: function(id){
+      var allList = this.linkmanlist;
+      for(var i = 0, ln = allList.length; i<ln; i++){
+        if(allList[i].applyUserId === id){
+          this.linkmanSelected = allList[i];
+          break;
+        }
+      }
+      this.withDrawalForm.applyUserIdnumber = this.linkmanSelected.applyUserIdnumber;
+      this.withDrawalForm.applyUserPhone = this.linkmanSelected.applyUserPhone;
+      this.withDrawalForm.applyUserId = this.linkmanSelected.applyUserId;
+      this.withDrawalForm.applyUserName = this.linkmanSelected.applyUserName;
+    },
+    // 附件上传before
+    enclosureFileUploadBefore: function(file){
+      var ts = this,
+        file = file;
+      var fileMaxSize = 1024 * 1024 * 10; // 10MB为最大限制
+      // 文件类型
+      // 检查文件类型
+      var index = file.name.lastIndexOf(".");
+      var ext = file.name.substr(index + 1);
+      if (['exe', 'sh', 'bat', 'com', 'dll'].indexOf(ext) !== -1) {
+        ts.$message({
+          message: '请上传非.exe,.sh,.bat,.com,.dll文件',
+        });
+        return false;
+      };
+      // 检查文件大小
+      if (file.size > fileMaxSize) {
+        ts.$message({
+          message: '请上传大小在10M以内的文件',
+        });
+        return false;
+      };
+      return true;
+    }, 
+    // 附件上传-success
+    enclosureFileUploadSuccess: function(response, file, fileList){
+      if(response.success ){
+        this.withDrawalForm.attId = response.content;
+        this.fetchWithDrawalUploadFileList();
+        this.$message({
+          message: '上传成功！',
+          type: 'success'
+        });
+      }else{
+        return;
+      }
+
+    },
+    // 附件上传-error
+    enclosureFileUploadError: function(err, file, fileList){
+      this.$message({
+        message: err.message,
+        type: 'error'
+      });
+    },
+    // 获取上传后的文件列表
+    fetchWithDrawalUploadFileList: function(){
+      var ts = this,
+        _url = ctx + 'rest/apply/cancel/getAttFiles/' + ts.withDrawalForm.attId;
+      ts.mloading = true;
+      request('', {
+        url: _url,
+        type: 'get',
+      }, function (res) {
+        ts.mloading = false;
+        if (res.success) {
+          ts.withDrawalAlreadyFileList = res.content;
+        }else {
+          ts.$message({
+            message: res.message,
+            type: 'error'
+          });
+        }
+      }, function (msg) {
+        ts.mloading = false;
+        ts.$message({
+          message: '网络错误！',
+          type: 'error'
+        });
+      });
+    },
+    // 删除已有的文件
+    delWithDrawalFile: function(row){
+      var ts = this;
+      confirmMsg('','你确定删除此文件吗？',function(){
+        ts.mloading = true;
+        request('',{
+          type:'get',
+          url:ctx+'rest/apply/cancel/deleteAttFile/'+ row.fileId,
+        },function (res) {
+          ts.mloading = false;
+          if(res.success){
+            ts.$message.success('删除成功！')
+            ts.fetchWithDrawalUploadFileList();
+          }else{
+            ts.$message.error(res.message)
+          }
+        },function (err) {
+          ts.mloading = false;
+          ts.$message.error('服务器错了哦!');
+        })
+      })
+    },  
+    // 提交撤件数据
+    submitWithDrawalData: function(){
+      // console.log(this.withDrawalForm)
+      var ts = this,
+        saveData = {};
+     
+      this.$refs['withDrawalForm'].validate(function(valid) {
+        if (valid) {
+          saveData = JSON.parse(JSON.stringify(ts.withDrawalForm));
+          saveData.applyinstId = ts.curWithDrawalRow.applyinstId;
+          // console.log(saveData)
+          // return
+          ts.mloading = true;
+          request('',{
+            type:'post',
+            url:ctx+'rest/apply/cancel/createApplyinstCancelInfo',
+            data: saveData
+          },function (res) {
+            ts.mloading = false;
+            if(res.success){
+              ts.$message.success('撤件成功！')
+              ts.isShowWithdrawalDialog = false;
+              ts.getHadApplyItemList();
+            }else{
+              ts.$message.error(res.message)
+            }
+          },function (err) {
+            ts.$message.error('服务器错了哦!');
+          })
+        } else {
+          ts.mloading = false;
+          ts.$message.warning('请完善撤件内容')
+          return false;
+        }
+      });
+    },
+    // 关闭撤件模态框
+    closedWithDrawalDialog: function(){
+      for(var k in this.withDrawalForm){
+        this.withDrawalForm[k] = "";
+      }
+      this.$refs['withDrawalForm'].resetFields();
+    },
   },
   filters: {
     projTypeFormat: function (val) {
