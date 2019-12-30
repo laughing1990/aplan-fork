@@ -264,6 +264,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
 
         AeaHiSolicit solicit = new AeaHiSolicit();
         solicit.setApplyinstId(applyinstId);
+        solicit.setBusType(busType);
         List<AeaHiSolicit> solicits = aeaHiSolicitMapper.listAeaHiSolicit(solicit);
 
         if (solicits != null && solicits.size() > 0) {
