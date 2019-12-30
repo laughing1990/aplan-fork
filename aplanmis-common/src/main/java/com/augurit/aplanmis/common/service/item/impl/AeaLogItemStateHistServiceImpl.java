@@ -170,6 +170,11 @@ public class AeaLogItemStateHistServiceImpl implements AeaLogItemStateHistServic
     }
 
     @Override
+    public List<AeaLogItemStateHist> findItemComplateByIteminstId(String[] iteminstIds) {
+        return aeaLogItemStateHistMapper.findItemComplateByIteminstId(iteminstIds);
+    }
+
+    @Override
     public AeaLogItemStateHist getLastAeaLogItemStateHistByState(String iteminstId, String newState) throws Exception {
         Assert.notNull(iteminstId, "事项实例ID为空！");
         Assert.notNull(newState, "状态标志为空！");

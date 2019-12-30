@@ -155,4 +155,12 @@ public interface AeaLogItemStateHistService {
     void batchDeleteAeaLogItemStateHist(List<String> ids);
 
     List<AeaLogItemStateHist> findAeaLogItemStateHistByIteminstIds(String[] iteminstIds);
+
+    /**
+     * 查询办结通过的状态（11，12）事项实例状态历史
+     *
+     * @param iteminstIds
+     * @return
+     */
+    List<AeaLogItemStateHist> findItemComplateByIteminstId(String[] iteminstIds);
 }

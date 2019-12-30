@@ -1,6 +1,8 @@
 package com.augurit.aplanmis.common.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
@@ -59,4 +61,12 @@ public class AeaProjStage implements Serializable {
      */
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private java.util.Date createTime;
+
+    private List<ProjStageApplyForm> projStageApplyFormList = new ArrayList<>();
+
+    private ProjStageApplyForm lastApplyStageinst;
+
+    public void addForm(ProjStageApplyForm form){
+        this.projStageApplyFormList.add(form);
+    }
 }

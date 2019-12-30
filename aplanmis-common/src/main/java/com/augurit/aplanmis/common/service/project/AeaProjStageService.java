@@ -44,7 +44,7 @@ public interface AeaProjStageService {
      * @param projInfoId 项目ID
      * @param userId     用户ID
      */
-    void stageApplyUpdateAeaProjStageState(String stageId,String projInfoId, String userId);
+    void stageApplyUpdateAeaProjStageState(String stageId, String projInfoId, String userId);
 
     /**
      * 事项办结时更新阶段办结状态
@@ -73,5 +73,16 @@ public interface AeaProjStageService {
      */
     List<AeaProjStage> findProjStageByTimeRange(Date startTime, Date endTime);
 
+    /**
+     * 获取项目的完全办结时间
+     *
+     * @param projInfoId
+     * @return
+     */
     Date getPassTimeByProjInfoId(String projInfoId);
+
+    /**
+     * 计算所有项目的阶段申报状态
+     */
+    void calculateAllProjStageState();
 }

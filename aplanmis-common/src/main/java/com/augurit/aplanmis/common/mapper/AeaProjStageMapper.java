@@ -88,4 +88,6 @@ public interface AeaProjStageMapper {
     List<AeaHiIteminst> findEndIteminstByProjInfoAndItemIds(@Param("projInfoId") String projInfoId, @Param("itemIds") String[] itemIds);
 
     List<AeaProjStage> findProjStageByTimeRange(@Param("startTime") Date startTime, @Param("endTime") Date endTime);
+
+    List<ProjStageApplyForm> findAllAeaProjStageApply();
 }

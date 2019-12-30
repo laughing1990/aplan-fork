@@ -319,4 +319,16 @@
         </foreach>
     </select>
 
+    <select id="findItemComplateByIteminstId"
+            resultType="com.augurit.aplanmis.common.domain.AeaLogItemStateHist">
+        select
+        <include refid="allColumns"/>
+        from AEA_LOG_ITEM_STATE_HIST
+        where NEW_STATE IN ('11','12') AND ITEMINST_ID in
+        <foreach collection="iteminstIds" close=")" open="(" separator="," item="hist">
+            #{hist}
+        </foreach>
+        ORDER BY TRIGGER_TIME ASC
+    </select>
+
 </mapper>

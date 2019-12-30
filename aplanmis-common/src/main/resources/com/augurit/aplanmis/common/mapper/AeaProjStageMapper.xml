@@ -343,4 +343,15 @@
             AND CREATE_TIME &lt; #{endTime}
         </if>
     </select>
+
+    <select id="findAllAeaProjStageApply" resultType="ProjStageApplyForm">
+        SELECT hps.APPLYINST_ID AS applyinstId,aap.PROJ_INFO_ID AS projInfoId,stage.STAGE_ID AS stageId,lcbsxlx,stage.DYBZSPJDXH,aha.ACCEPT_TIME AS acceptTime
+        FROM aea_applyinst_proj aap
+            INNER JOIN aea_hi_par_stageinst hps ON hps.APPLYINST_ID = aap.APPLYINST_ID
+            INNER JOIN aea_par_stage stage ON stage.STAGE_ID = hps.STAGE_ID
+            INNER JOIN aea_hi_applyinst aha
+                ON aha.APPLYINST_ID = aap.APPLYINST_ID
+                AND ACCEPT_TIME IS NOT NULL
+        ORDER BY ACCEPT_TIME ASC
+    </select>
 </mapper>
