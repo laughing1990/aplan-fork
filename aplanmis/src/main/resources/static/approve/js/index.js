@@ -649,6 +649,8 @@ var vm = new Vue({
       solicitBmForm: {
         userConclusion: '1',
         userOpinion: '',
+        solicitLinkmanName: '',
+        solicitLinkmanPhone: '',
       },
       solicitBmFormRules: {
         // userOpinion: [{required: true, message: '请填写意见', trigger: 'blur'}],
@@ -714,6 +716,9 @@ var vm = new Vue({
         solicit: {},
         solicitDetails: [],
       },
+      oneSolicitHandleCount: 0,
+      oneSolicitNotHandleCount: 0,
+      oneSolicitOrgData: [],
       // 一次征询 end
     }
   },
@@ -831,23 +836,34 @@ var vm = new Vue({
     loadOneSolicitData: function(){
       var vm = this;
       this.requestSolicit('YCZX', function (data) {
-        vm.oneSolicitList = data;
-        var len = vm.oneSolicitList.length;
-        vm.newestOneSolicit = vm.oneSolicitList[len-1];
-        vm.oneSolicitList.splice(len-1, 1);
-        var aCount = 0;
-        var dCount = 0;
-        vm.newestOneSolicit.solicitDetails.forEach(function(u){
+        // 显示头部信息
+        vm.oneSolicitHandleCount = 0;
+        vm.oneSolicitNotHandleCount = 0;
+        var tmp = [];
+        data[0].solicitDetails.forEach(function(u){
+          var tmpO = { detailOrgName: u.detailOrgName, };
           if (u.detailState==0||u.detailState==1){
-            vm.$set(u, 'isHandled', false);
-            dCount++;
+            vm.oneSolicitNotHandleCount++;
+            tmpO.isHandled = false;
           } else {
-            vm.$set(u, 'isHandled', true);
-            aCount++;
+            vm.oneSolicitHandleCount++;
+            tmpO.isHandled = true;
           }
+          tmp.push(tmpO);
         });
-        vm.$set(vm.newestOneSolicit.solicit, 'aCount', aCount);
-        vm.$set(vm.newestOneSolicit.solicit, 'dCount', dCount);
+        vm.oneSolicitOrgData = tmp;
+        // 三级数据组装成两级
+        data.forEach(function(u){
+          var tmp = [];
+          u.solicitDetails.forEach(function(uu){
+            uu.detailUsers = uu.detailUsers || [];
+            uu.detailUsers.forEach(function(uuu){
+              tmp.push($.extend({}, uu, uuu));
+            });
+          });
+          u.solicitDetails = tmp;
+        });
+        vm.newestOneSolicit = data[0];
       });
     },
     //一次征询 end
@@ -1138,22 +1154,33 @@ var vm = new Vue({
       })
     },
     // 部门人员提交意见
-    solicitSaveOpinion: function (item) {
+    solicitSaveOpinion: function (item, code) {
       var vm = this;
       if (!(vm.solicitBmForm.userOpinion && vm.solicitBmForm.userOpinion.length)) {
         return vm.$message.error('请填写意见');
+      }
+      var params = {
+        userConclusion: vm.solicitBmForm.userConclusion,
+        userOpinion: vm.solicitBmForm.userOpinion,
+        detailUserId: item.solicitDetailUser.detailUserId,
+        solicitDetailId: item.solicitDetailUser.solicitDetailId,
+      };
+      if (code == 'YCZX'){
+        if (!(vm.solicitBmForm.solicitLinkmanName && vm.solicitBmForm.solicitLinkmanName.length)) {
+          return vm.$message.error('请填写联系人');
+        }
+        if (!(vm.solicitBmForm.solicitLinkmanPhone && vm.solicitBmForm.solicitLinkmanPhone.length)) {
+          return vm.$message.error('请填写联系人电话');
+        }
+        params.solicitLinkmanName = vm.solicitBmForm.solicitLinkmanName;
+        params.solicitLinkmanPhone = vm.solicitBmForm.solicitLinkmanPhone;
       }
       vm.parentPageLoading = true;
       request('', {
         url: ctx + 'rest/solicit/answer',
         type: 'post',
         ContentType: 'application/json',
-        data: JSON.stringify({
-          userConclusion: vm.solicitBmForm.userConclusion,
-          userOpinion: vm.solicitBmForm.userOpinion,
-          detailUserId: item.solicitDetailUser.detailUserId,
-          solicitDetailId: item.solicitDetailUser.solicitDetailId,
-        }),
+        data: JSON.stringify(params),
       }, function (res) {
         vm.parentPageLoading = false;
         if (res.success) {
