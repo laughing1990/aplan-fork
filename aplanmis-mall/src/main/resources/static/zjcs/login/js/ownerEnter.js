@@ -12,7 +12,7 @@ var vm = new Vue({
       dialogTitie: '',
       pageLoading: false,
       formData: {},
-      formData2: {},
+      formData2: {linkmanType: 'u', idCard: '1'},
       formDatawtr: {},
       activeNames: ['1', '2', '3'],
       activeNames2: ['1', '2', '3'],
