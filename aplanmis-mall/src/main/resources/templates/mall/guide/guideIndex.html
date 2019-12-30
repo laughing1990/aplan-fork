@@ -41,35 +41,7 @@
                             <img src="../../static/mall/images/guide/u736.png" th:src="@{/mall/images/guide/u736.png}" />
                             <span>智能引导</span>
                         </div>
-                        <div class="sel-department" v-show="!approvalwayTypeFlag">
-                            <div style="position: relative;">
-                  <span class="el-dropdown-link" @click="chooseCityItem" style="margin-left: 10px;margin-right: 10px;">
-                    <span class="unitName ellipsis">{{cityOrgName}}</span>
-                      <i v-show="secAeaOrgVo.length>0" class="el-icon-arrow-right" style="vertical-align: sub;cursor: pointer;margin-left: 0px;"></i>
-                  </span>
-                                <span class="el-dropdown-link" v-show="secAeaOrgVo.length>0" style="margin-right: 10px;">
-                    <span class="unitName ellipsis">{{aeaActiveOrgName}}</span>
-                      <i class="el-icon-arrow-down el-icon--right"></i>
-                      <ul class="el-dropdown-menu el-popper">
-                          <div class="location">当前定位：<span>{{aeaActiveOrgName}}</span></div>
-                          <li class="el-dropdown-menu__item" :class="{areaOn:areaOnIndex == index}" v-for="(item,index) in secAeaOrgVo" @click="chooseAreaItem(item,index)">
-                              {{item.orgName}}
-                          </li>
-                      </ul>
-                  </span>
-                                <span class="el-dropdown-link" v-show="childAeaOrgVo.length>0" style="margin-left: 10px;margin-right: 10px;">
-                    <span class="unitName ellipsis">{{childAeaOrgVoOrgName}}</span>
-                      <i class="el-icon-arrow-down el-icon--right"></i>
-                      <ul class="el-dropdown-menu el-popper">
-                          <div class="location">当前定位：<span>{{childAeaOrgVoOrgName}}</span></div>
-                          <li class="el-dropdown-menu__item" :class="{cityOn:cityOnIndex == index}" v-for="(item,index) in childAeaOrgVo" @click="choosechildAeaOrgVoItem(item,index)">
-                              {{item.orgName}}
-                          </li>
-                      </ul>
-                  </span>
-                                <span class="total-department">共{{OrgListData.length}}个部门</span>
-                            </div>
-                        </div>
+
                         <div class="wt-tab-content" style="padding-top: 16px;">
                             <!-- 按主题申报 start -->
                             <!--<transition name="el-fade-in-linear">-->
@@ -86,7 +58,7 @@
                                                 </template>
                                                 <li class="theme-type active">
                                                     <ul class="theme-type-list">
-                                                        <li class="theme-type-item ellipsisLn" :id='itemSub.themeId' :class="index==0 && indexSub==0?'active':''" @click="goToGuid($event,itemSub.themeId,indexSub,itemSub.themeMemo)" v-for="(itemSub, indexSub) in item.themeList" :key="indexSub">
+                                                        <li class="theme-type-item ellipsisLn" :id='itemSub.themeId' :class="{active:index==0 && indexSub==0 , selected : itemSub.isSelected && itemSub.isSelected == '1'}" @click="goToGuid($event,itemSub.themeId,indexSub,itemSub.themeMemo)" v-for="(itemSub, indexSub) in item.themeList" :key="indexSub">
                                                             <el-tooltip placement="bottom" effect="light">
                                                                 <div slot="content" style="width: 200px">
                                                                     <div v-html="itemSub.themeMemo" ></div>
@@ -139,11 +111,11 @@
                                             <ul class="paraller-wraper" v-if="stagesData.parallelItems && stagesData.parallelItems.length>0">
                                                 <li class="item" v-for="(item,index) in stagesData.parallelItems">
                                                     <p class="title">{{item.title}}</p>
-                                                    <div class="item-strip" v-for="(itemSub,indexSub) in item.items">
+                                                    <div class="item-strip" :class="{selected:itemSub.isSelected=='1'}" v-for="(itemSub,indexSub) in item.items">
                                                         {{itemSub.itemName}}
                                                         <div class="item-strip-bg">查看事项指南</div>
                                                     </div>
-                                                    <!-- <div class="item-strip active">项目建议书/可行性研究报告批复</div>
+                                                    <!-- <div class="item-strip selected">项目建议书/可行性研究报告批复</div>
                                                      <div class="item-strip">建设项目用地预审</div>
                                                      <div class="item-strip">建设用地 (含临时用地)规划许可证客户</div>-->
                                                 </li>
@@ -182,7 +154,7 @@
                                             <ul class="paraller-wraper" v-if="stagesData.seriItems && stagesData.seriItems.length>0">
                                                 <li class="item" v-for="(item,index) in stagesData.seriItems">
                                                     <p class="title">{{item.title}}</p>
-                                                    <div class="item-strip" v-for="(itemSub,indexSub) in item.items">
+                                                    <div class="item-strip" :class="{selected:itemSub.isSelected=='1'}" v-for="(itemSub,indexSub) in item.items">
                                                         {{itemSub.itemName}}
                                                         <div class="item-strip-bg">查看事项指南</div>
                                                     </div>
@@ -232,59 +204,7 @@
                                 <!--<a :href="ctx+'rest/main/toIndexPage#/userCenterIndex'"><el-button type="primary" class="imediaBtn">立即办理</el-button></a>-->
                             </div>
                             <!-- 按主题申报 end -->
-                            <!-- 按部门申报 start -->
-                            <transition name="el-fade-in-linear">
-                                <div class="wt-tab-item" id="proApproval" v-show="!approvalwayTypeFlag">
-                                    <div class="department-list">
-                                        <span class="department-name" @click="toggleOrg($event,item)" v-for="(item, index) in OrgListData" :id="item.orgId" :key="index" :class="index==0?'orgActive':''">{{item.orgName}}</span>
-                                    </div>
-                                    <!--  <div class="department-list" style="margin-top: 12px;" v-else>
-                                        <div class="contract-box contract-non-box"></div>
-                                      </div>-->
-                                </div>
-                            </transition>
-                            <transition name="el-fade-in-linear">
-                                <div class="wt-tab-item" id="proApproval2" v-show="!approvalwayTypeFlag" v-loading="orgLoading">
-                                    <p class="table-title">
-                                        <span>部门：{{orgItem}}</span>
-                                        (共{{orgNum}}个事项)
-                                    </p>
-                                    <el-table :data="tableData" class="scrollable" border ref="singleTable" width="100%" :header-cell-style="{background:'#f7f8fa',fontSize:'14px'}">
-                                        <el-table-column prop="itemName" label="事项列表">
-                                        </el-table-column>
-                                        <el-table-column prop="orgName" label="审批部门"></el-table-column>
-                                        <el-table-column prop="dueNum" label="审批时限" width="80" align="center">
-                                        </el-table-column>
-                                        <el-table-column prop="time1" label="办事指南" width="80" align="center">
-                                            <template slot-scope="scope">
-                                                <img src="../../static/mall/images/icon/guide.png" th:src="@{/mall/images/icon/guide.png}"
-                                                     height="22" width="20" alt=""
-                                                     @click="switchSinglePage(scope.row)"/>
-                                            </template>
-                                        </el-table-column>
-                                        <el-table-column prop="time2" label="单项申报" width="80" align="center">
-                                            <template slot-scope="scope">
-                                                <a :href="ctx+'rest/main/toIndexPage?itemVerId='+scope.row.itemVerId+'&&projInfoId='+itemProjInfoId+'&&flag=singleD#declare'">
-                                                    <img src="../../static/mall/images/icon/declare.png" th:src="@{/mall/images/icon/declare.png}" height="22" width="20" alt=""/>
-                                                </a>
-                                            </template>
-                                        </el-table-column>
-                                    </el-table>
-                                    <el-pagination
-                                            background
-                                            align="right"
-                                            :pager-count="5"
-                                            @size-change="handleSizeChange"
-                                            @current-change="handleCurrentChange"
-                                            :page-sizes="[10, 20, 30, 50]"
-                                            :page-size="pageSize"
-                                            :current-page="page"
-                                            layout="total,sizes, prev, pager, next, jumper"
-                                            :total="total">
-                                    </el-pagination>
-                                </div>
-                            </transition>
-                            <!-- 按部门申报 end -->
+
                         </div>
                     </div>
                 </div>
@@ -322,7 +242,7 @@
             </el-dialog>
         </section>
     </div>
-    <div v-loading="fullscreenLoading" style="width: 100%; height: 100%;position: absolute;top: 180px;"></div>
+    <div v-loading="fullscreenLoading"  v-show="fullscreenLoading" style="width: 100%; height: 100%;position: absolute;top: 180px;"></div>
 </div>
 
 <script src="../../static/mall/js/guide/viewer.min.js" th:src="@{/mall/js/guide/viewer.min.js}" type="text/javascript"></script>
