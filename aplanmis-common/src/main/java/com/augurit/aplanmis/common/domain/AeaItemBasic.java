@@ -269,6 +269,8 @@ public class AeaItemBasic implements Serializable {
     @ApiModelProperty(value = "服务对象文本")
     private String serveTypeText;
 
+    @ApiModelProperty(name = "resultMats", value = "结果物", dataType = "list")
+    private List<AeaItemInout> resultMats;
 
     public AeaItemBasic(String itemNature, String isDeleted, String rootOrgId) {
         this.itemNature = itemNature;

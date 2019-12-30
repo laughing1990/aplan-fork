@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.mall.main.vo;
 
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
+import com.augurit.aplanmis.common.domain.AeaItemInout;
 import com.augurit.aplanmis.common.domain.AeaItemState;
 import io.jsonwebtoken.lang.Assert;
 import io.swagger.annotations.ApiModel;
@@ -57,6 +58,8 @@ public class ParallelApproveItemVo {
     private String regionName;
     @ApiModelProperty(name = "isDoneItem", value = "是否必办事项  1 是 0 否'", dataType = "string")
     private String isDoneItem;
+    @ApiModelProperty(name = "resultMats", value = "结果物", dataType = "list")
+    private List<AeaItemInout> resultMats;
 
 
     public static ParallelApproveItemVo build(AeaItemBasic aeaItemBasic) {
