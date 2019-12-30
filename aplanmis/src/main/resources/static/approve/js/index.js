@@ -652,7 +652,6 @@ var vm = new Vue({
       curWidth: (document.documentElement.clientWidth || document.body.clientWidth),//当前屏幕宽度
       curHeight: (document.documentElement.clientHeight || document.body.clientHeight),//当前屏幕高度
       allItemsData:[],
-      isYjzq: false, // 是否为意见征询页面
       dialogConfig: {
         showType: true,
         dialogType: 'YJZQ',
@@ -671,6 +670,13 @@ var vm = new Vue({
         hintText1: '勾选要征询的事项，点击“开始征询”，即可发送意见征询。',
         hintText2: '勾选要征询的部门，点击“开始征询”，即可发送意见征询。',
       },
+      urlBusType: null,
+      busTypeMap: {
+        'yjzq': 'yjzq', // 意见征询
+        'lhps': 'lhps', // 联合评审
+        'yczx': 'yczx', // 一次征询
+      },
+      pageLeftActiveId: '1',
       // 意见征询  end
       //联合评审 start
       hasUnionReview: 0,
@@ -2682,13 +2688,11 @@ var vm = new Vue({
     },
     initPage: function () {
       var vm = this;
-      vm.taskId = vm.getUrlParam('taskId');
-      vm.isDraftPage = vm.getUrlParam('draft');
-      vm.isZJItem = (vm.getUrlParam('itemNature') == '8');
-      vm.isYjzq = (vm.getUrlParam('busType') == 'yjzq');
-      // vm.isZJItem = true;
-      // vm.isDraftPage = 'true';
-      vm.getIteminstIdByTaskId(callback);
+      this.taskId = this.getUrlParam('taskId');
+      vm.isDraftPage = this.getUrlParam('draft');
+      this.isZJItem = (this.getUrlParam('itemNature') == '8');
+      this.urlBusType = this.busTypeMap[this.getUrlParam('busType')];
+      this.getIteminstIdByTaskId(callback);
       
       function callback() {
         vm.busRecordId = this.getUrlParam('busRecordId');
@@ -2870,7 +2874,7 @@ var vm = new Vue({
     //根据初始化参数，获取页面元素权限信息
     initFormElementPriv: function () {
       var vm = this;
-      if (this.isYjzq) {
+      if (this.urlBusType) {
         this.isShowMatiPanel = true;
         this.initButtons();
         this.initForms();
@@ -3114,6 +3118,14 @@ var vm = new Vue({
       loadTab('solicit', 'hasSolicit', vm.loadSolicitData);
       // 是否有联合评审
       loadTab('unionReview', 'hasUnionReview', vm.loadUnionReviewData);
+
+      // 进入页面是否需要展示对应的某个标签页
+      if (vm.urlBusType) {
+        var tmpMap = {
+          'yjzq': 'solicit',
+        };
+        vm.pageLeftActiveId = tmpMap[vm.urlBusType] || '1';
+      }
       
       // 加载对应标签数据
       function loadTab(labelId, key, cb) {

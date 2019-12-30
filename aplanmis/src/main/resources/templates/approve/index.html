@@ -73,8 +73,8 @@
       </div>
     </div>
     <!-- 申请表、材料附件、审批意见、意见汇总表 -->
-    <el-tabs class="ltabs">
-      <el-tab-pane v-for="u in lTabsData" :label="u.label" :key="u.label">
+    <el-tabs class="ltabs" v-model="pageLeftActiveId">
+      <el-tab-pane v-for="u in lTabsData" :label="u.label" :key="u.label" :name="u.labelId">
         <div v-if="u.labelId=='oneFrom'" id="oneForm">
           <el-tabs tab-position="left" class="form-el-tabs">
             <el-tab-pane v-for="(item,index) in smartFormInfo" :key="index" :label="item.formName">
