@@ -300,7 +300,7 @@ public class RestApplyService {
             //收件意见
             bpmTaskService.addTaskComment(task.getId(), task.getProcessInstanceId(), comments);
             //推动流程流转
-            taskService.complete(task.getId(), new String[]{"bumenshenpi"}, null);
+            taskService.complete(task.getId(), new String[]{"bumenshouli"}, null);
 
             for (String iteminstId : iteminstIds) {
                 // 更新事项状态

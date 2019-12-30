@@ -134,6 +134,7 @@ public class AeaHiApplyinstServiceImpl implements AeaHiApplyinstService {
                 aeaHiApplyinst.setEndTime(new Date());
             }
             this.updateAeaHiApplyinst(aeaHiApplyinst);
+            System.out.println("++++++++++++++sshhshshshshhshshshshshshhshshshshhshshshshhs+++++++++++++++++++++++++");
             aeaLogApplyStateHistService.insertTriggerAeaLogApplyStateHist(applyinstId, taskinstId, appinstId, old.getApplyinstState(), applyinstState, opuWindowId);
 
             // 根据条件判断是否发送事件
