@@ -93,7 +93,7 @@
                                                         </div>
                                                         <img :src=" ctx + 'mall/images/icon/1.png'" alt="" class="sing">
                                                         <p class="sing-text">{{index+1}}</p>
-                                                        <div class="wrapperGuide" onclick="goToStageApply()">
+                                                        <div class="wrapperGuide" @click="goToStageApply(item.stageId)">
                                                             <p >查看并联办事指南</p>
                                                         </div>
                                                     </li>

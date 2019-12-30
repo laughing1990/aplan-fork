@@ -647,6 +647,14 @@ var guideIndex = (function () {
                     window.location.href = ctx + '/rest/main/toIndexPage?id='+id+'&singleTitle='+encodeURI(singleTitle)+'#/singlePage'
                 }
             },
+             // 跳转办事指南一单清
+            goToStageApply:function(stageId){
+                if(!stageId){
+                    this.$message.error("获取不到当前阶段id,无法跳转")
+                    return
+                }
+                window.location.href =ctx + "rest/main/toIndexPage?stageId="+stageId+"#/listmatter";
+              },
             // 查看流程图
             previewRow:function (detailId) {
                 if(viewer)viewer.destroy();//当存在viewer对象，先销毁
@@ -674,11 +682,7 @@ var guideIndex = (function () {
         },
         watch: {}
     })
-    function goToStageApply(){
-        window.location.href =ctx + "rest/main/toIndexPage?#/listmatter";
-    }
 
-    window.goToStageApply = goToStageApply;
 
     return {
         vm: vm,

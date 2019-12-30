@@ -111,7 +111,7 @@
               if(index === 2){
                   //  w.open(ctx+thUrl);
                   w.open('http://zj.fsxzfw.gov.cn/gdfs-zjcs-pub/home')
-                    return false;
+                  return false;
               }else{
                   this.activeName = index;
                   if(index === 1){
