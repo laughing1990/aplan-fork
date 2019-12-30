@@ -703,12 +703,16 @@ var vm = new Vue({
       dialogConfigOneSolict: {
         showType: false,
         showFileBox: true,
-        dialogType: 'LHPS',
+        dialogType: 'YCZX',
         dialogTitle: '发起一次征询',
         formLabel: '一次征询',
         ensureText: '发起一次征询',
         hintText1: '',
         hintText2: '请选择参与一次征询的部门，再点击“发起一次征询”。',
+      },
+      newestOneSolicit: {
+        solicit: {},
+        solicitDetails: [],
       },
       // 一次征询 end
     }
@@ -716,7 +720,7 @@ var vm = new Vue({
   filters: {
     // 意见征询状态转换
     changeSolicitState: function (val) {
-      var arr = ['未开始', '征询中', '已完成', '已终止'];
+      var arr = ['未开始', '进行中', '已完成', '已终止'];
       return arr[val] || '-';
     },
     // 意见征询类型转换
@@ -819,14 +823,31 @@ var vm = new Vue({
     clickOneSolicit: function(){
       var vm = this;
       this.dialogConfig = this.dialogConfigOneSolict;
-      this.solicitForm.solicitType = 'd'
+      this.solicitForm.solicitType = 'd';
+      this.solicitForm.isCalcTimerule = '0';
       this.openSoDialog();
     },
     // 加载一次征询历史数据
     loadOneSolicitData: function(){
       var vm = this;
       this.requestSolicit('YCZX', function (data) {
-        vm.oneSolicitList = data || [];
+        vm.oneSolicitList = data;
+        var len = vm.oneSolicitList.length;
+        vm.newestOneSolicit = vm.oneSolicitList[len-1];
+        vm.oneSolicitList.splice(len-1, 1);
+        var aCount = 0;
+        var dCount = 0;
+        vm.newestOneSolicit.solicitDetails.forEach(function(u){
+          if (u.detailState==0||u.detailState==1){
+            vm.$set(u, 'isHandled', false);
+            dCount++;
+          } else {
+            vm.$set(u, 'isHandled', true);
+            aCount++;
+          }
+        });
+        vm.$set(vm.newestOneSolicit.solicit, 'aCount', aCount);
+        vm.$set(vm.newestOneSolicit.solicit, 'dCount', dCount);
       });
     },
     //一次征询 end
@@ -867,6 +888,10 @@ var vm = new Vue({
       };
       if (vm.solicitForm.isCalcTimerule==1){
         params.solicitDueDays = vm.solicitForm.solicitDueDays;
+      }
+      if (vm.dialogConfig.dialogType=='YCZX') {
+        params.solicitLinkmanName = vm.solicitForm.solicitLinkmanName;
+        params.solicitLinkmanPhone = vm.solicitForm.solicitLinkmanPhone;
       }
       if (this.solicitForm.solicitType == 'i') {
         // 按事项征询
@@ -922,6 +947,8 @@ var vm = new Vue({
             vm.solicitOpinionLoading = false;
             vm.$message.error(vm.dialogConfig.dialogTitle+'发起失败');
           })
+        } else {
+          vm.$message.error('还有必填项未填写');
         }
       });
     },
@@ -959,6 +986,9 @@ var vm = new Vue({
     // 关闭征询弹窗
     closeSoDialog: function () {
       this.solicitForm.solicitId = '';
+      this.solicitForm.solicitType = 'i';
+      this.solicitForm.isCalcTimerule = '1';
+      this.oneSolicitFileList = [];
       this.$refs.solicitForm.clearValidate();
     },
     // 打开征询弹窗
@@ -1201,13 +1231,18 @@ var vm = new Vue({
         type: 'get',
         data: {
           applyinstId: vm.masterEntityKey,
-          // applyinstId: '002bf0e6-ba95-48c2-a866-7d230b6a1007',
           busType: typeCode,
         }
       }, function (res) {
         vm.parentPageLoading = false;
         if (res.success) {
-          typeof cb == 'function' && cb(res.content);
+          if (typeof cb == 'function') {
+            if (res.content && res.content.length) {
+              cb(res.content.reverse());
+            } else {
+              cb([]);
+            }
+          }
         } else {
           vm.$message.error(res.message || '获取'+typeCode+'历史数据失败');
         }
