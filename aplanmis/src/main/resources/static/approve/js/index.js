@@ -736,10 +736,17 @@ var vm = new Vue({
       }
       return obj[val] || '-';
     },
-    // 部门人员意见状态转换
+    // 意见状态转换
     changeBmOpinType: function (val) {
       if (val == 0) return '不同意';
       if (val == 1) return '同意';
+      if (val == 2) return '不涉及';
+      return '处理中';
+    },
+    // 意见状态转换
+    changeBmOneOpinType: function (val) {
+      if (val == 0) return '不通过';
+      if (val == 1) return '通过';
       if (val == 2) return '不涉及';
       return '处理中';
     },
@@ -864,6 +871,7 @@ var vm = new Vue({
           u.solicitDetails = tmp;
         });
         vm.newestOneSolicit = data[0];
+        vm.oneSolicitList = data.slice(1);
       });
     },
     //一次征询 end
