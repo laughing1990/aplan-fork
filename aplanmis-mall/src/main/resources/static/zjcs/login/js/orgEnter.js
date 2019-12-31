@@ -274,9 +274,9 @@ var vm = new Vue({
         termEnd: [
           { required: true, message: '请选择资格有效期止' },
         ],
-        managementScope: [
-          { required: true, message: '请输入业务范围' },
-        ]
+        // managementScope: [
+        //   { required: true, message: '请输入业务范围' },
+        // ]
       },
       rulesPersonInfo: {
         linkmanName: [
@@ -750,7 +750,7 @@ var vm = new Vue({
                 return;
               } else {
                 var certinstId = [];
-                _that.jobPeopleDetailObj.certinstBVos.forEach(function (item) {
+                _that.jobPeopleDetailObj.certinstBVos.forEach(function(item) {
                   certinstId.push(item.certinstId);
                 })
                 var param = {
