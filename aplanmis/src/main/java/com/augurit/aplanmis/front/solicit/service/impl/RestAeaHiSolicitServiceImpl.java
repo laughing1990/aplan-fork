@@ -195,7 +195,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
             }
         }
         Date date = new Date();
-        if(StringUtils.isBlank(aeaHiSolicit.getSolicitId())){
+        if (StringUtils.isBlank(aeaHiSolicit.getSolicitId())) {
             aeaHiSolicit.setSolicitId(UUID.randomUUID().toString());
         }
         //2、保存意见征求主表信息
@@ -256,7 +256,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
             }
         }
         //处理流程挂起操作
-        if(StringUtils.isNotBlank(aeaHiSolicit.getProcinstId()) && !bpmProcessService.isProcessSuspended(aeaHiSolicit.getProcinstId())){
+        if (StringUtils.isNotBlank(aeaHiSolicit.getProcinstId()) && !bpmProcessService.isProcessSuspended(aeaHiSolicit.getProcinstId())) {
             bpmProcessService.suspendProcessInstanceById(aeaHiSolicit.getProcinstId());
         }
     }
@@ -482,8 +482,8 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
 
         aeaHiSolicitMapper.updateAeaHiSolicit(aeaHiSolicit);
         //处理流程激活操作，先默认是通过则激活流程
-        if(StringUtils.isNotBlank(aeaHiSolicit.getProcinstId()) && SolicitConstant.SOLICIT_CONCLUSION_FLAG_TG.equals(aeaHiSolicit.getConclusionFlag()) &&
-                bpmProcessService.isProcessSuspended(aeaHiSolicit.getProcinstId())){
+        if (StringUtils.isNotBlank(aeaHiSolicit.getProcinstId()) && SolicitConstant.SOLICIT_CONCLUSION_FLAG_TG.equals(aeaHiSolicit.getConclusionFlag()) &&
+                bpmProcessService.isProcessSuspended(aeaHiSolicit.getProcinstId())) {
             bpmProcessService.activateProcessInstanceById(aeaHiSolicit.getProcinstId());
         }
     }
@@ -518,13 +518,20 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
 
         condVo.setRootOrgId(SecurityContext.getCurrentOrgId());
         condVo.setUserId(SecurityContext.getCurrentUserId());
+        //测试部门辅导，查找所有
+        /*if (true) {
+            //部门辅导查询所有
+            condVo.setSolicitState(new String[]{"2", "1", "3"});
+        } else*/
         if (SolicitBusTypeEnum.LHPS.getValue().equals(condVo.getBusType())) {
             //联合评审只查询未完成状态
             condVo.setSolicitState(new String[]{"1"});
+        } else if (SolicitBusTypeEnum.BMFD.getValue().equals(condVo.getBusType())) {
+            //部门辅导查询所有
+            condVo.setSolicitState(new String[]{"2", "1", "3"});
         } else {
             condVo.setSolicitState(new String[]{"0", "1"});
         }
-
     }
 
 
@@ -848,7 +855,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
      * @return
      * @throws Exception
      */
-    public String uploadAttFile(String solicitId, String tableName,String pkName, HttpServletRequest request) throws Exception {
+    public String uploadAttFile(String solicitId, String tableName, String pkName, HttpServletRequest request) throws Exception {
 
         if (StringUtils.isBlank(tableName)) throw new Exception("缺少表名参数！");
         if (StringUtils.isBlank(pkName)) throw new Exception("缺少表主键字段名参数！");

@@ -187,7 +187,7 @@
 						width="700"
 						trigger="hover">
 					<el-row :class="scope.row.remindList.length==1?'popover-item':'popover-item-border-bottom'"
-					        v-for="mesItem in scope.row.remindList">
+					        v-for="mesItem in scope.row.remindList" :key="mesItem.remindId">
 						<el-col class="ye-color" :span="5"
 						        v-html="formatDatetimeCommon(mesItem.sendDate,'yyyy-MM-dd hh:mm')"></el-col>
 						<el-col class="ye-color remind_text" :span="4">{{mesItem.sendUserName}}</el-col>
@@ -246,7 +246,7 @@
 				prop="projName"
 				min-width="150"
 				label="项目/工程名称">
-			<template scope="scope">
+			<template slot-scope="scope">
 				<el-tooltip effect="light" placement="top">
 					<div slot="content" v-html="showProjInfo(scope.row)"></div>
 					<span>{{scope.row.projName?scope.row.projName:'-'}}</span>
@@ -265,13 +265,22 @@
 		<el-table-column
 				min-width="260px"
 				prop="stageItemName"
-				label="阶段"><!--/事项/辅线名称-->
+				label="所处阶段"><!--/事项/辅线名称-->
 			<template scope="scope">
 				<el-tooltip effect="light" placement="top">
 					<div slot="content" v-html="showThemeStageItemInfo(scope.row)"></div>
 					<span v-html="stageFormatter(scope.row)"></span>
 				</el-tooltip>
 			</template>
+
+		</el-table-column>
+		<el-table-column
+				sortable="custom"
+				min-width="160"
+				prop="createTime"
+				label="申请时间"
+				show-overflow-tooltip
+				:formatter="formatTableCell">
 		</el-table-column>
 		<!--<el-table-column
 				prop="taskName"
@@ -280,21 +289,6 @@
 				show-overflow-tooltip
 				:formatter="formatTableCell">
 		</el-table-column>-->
-		<el-table-column
-				prop="solicitState"
-				min-width="100"
-				label="状态"
-				show-overflow-tooltip
-				:formatter="formatState">
-		</el-table-column>
-		<el-table-column
-				sortable="custom"
-				min-width="160"
-				prop="acceptTime"
-				label="到达时间"
-				show-overflow-tooltip
-				:formatter="formatTableCell">
-		</el-table-column>
 		<el-table-column
 				sortable="custom"
 				prop="instState,timeruleUnit,overdueTime,remainingTime"
@@ -316,7 +310,7 @@
 							width="300"
 							trigger="hover">
 						<el-row :class="scope.row.nodeTimelimitList.length==1?'popover-item':'popover-item-border-bottom'"
-						        v-for="uu in scope.row.nodeTimelimitList">
+						        v-for="uu in scope.row.nodeTimelimitList" :key="uu.name">
 							<el-col class="wit-opc-color remind_text" :span="16">
 								{{uu.name}}：
 							</el-col>
@@ -335,7 +329,16 @@
 				</div>
 
 			</template>
+
 		</el-table-column>
+		<el-table-column
+				prop="solicitState"
+				min-width="120"
+				label="状态"
+				show-overflow-tooltip
+				:formatter="formatState">
+		</el-table-column>
+
 		<!--<el-table-column
 				sortable="custom"
 				min-width="140"
@@ -344,11 +347,16 @@
 				show-overflow-tooltip
 				:formatter="formatTableCell">
 		</el-table-column>-->
+
 		<el-table-column
 				min-width="120"
 				label="操作">
 			<template slot-scope="scope">
-				<span v-html="stateBtnFormat(scope.row)"></span>
+				<span v-if="scope.row.solicitState && scope.row.solicitState == 2" class="op-btn" @click="viewDetail(scope.row)">部门辅导完成</span>
+				<span v-else-if="scope.row.solicitState && scope.row.solicitState == 3" class="op-btn" @click="viewDetail(scope.row)">部门辅导中止</span>
+				<span v-else-if="scope.row.finishProgressNum == scope.row.allProgressNum && scope.row.promoter" class="op-btn" @click="viewDetail(scope.row)">结束部门辅导</span>
+				<span v-else-if="scope.row.solicitState && scope.row.solicitState == 2" class="op-btn" @click="viewDetail(scope.row)">牵头部门辅导</span>
+				<span v-else-if="scope.row.solicitState && scope.row.solicitState == 2" class="op-btn" @click="viewDetail(scope.row)">部门辅导</span>
 			</template>
 		</el-table-column>
 	</el-table>

@@ -84,7 +84,8 @@
         ${alias}.CONCLUSION_TIME,
         ${alias}.CONCLUSION_USER_ID,
         ${alias}.COUNT_LIMIT,
-        ${alias}.CONCLUSION_USER_NAME
+        ${alias}.CONCLUSION_USER_NAME,
+        ${alias}.CREATE_TIME
     </sql>
     <sql id="querySolicitStateCol">
         <choose>
@@ -392,6 +393,7 @@
         ahs.CONCLUSION_USER_ID as conclusionUserId,
         ahs.COUNT_LIMIT as countLimit,
         ahs.CONCLUSION_USER_NAME as conclusionUserName,
+        ahs.CREATE_TIME as createTime,
         ahs.taskId as taskId,
         ahs.taskName as taskName,
         ahs.TASK_DEF_KEY_ as taskDefKey,
@@ -401,7 +403,7 @@
         aha.IS_SERIES_APPROVE as isSeriesApprove,
         ( CASE aha.IS_SERIES_APPROVE WHEN '0' THEN '并联' ELSE '单项' END ) AS applyType,
         aha.ACCEPT_TIME as acceptTime,
-        aha.createTime as createTime,
+        aha.applyTime as applyTime,
         aha.ITEMINST_NAME as itemName,
         aha.STAGE_NAME as stageName,
         aha.THEME_ID as themeId,
@@ -480,7 +482,7 @@
         aha.APPLYINST_CODE,
         aha.IS_SERIES_APPROVE,
         aha.ACCEPT_TIME,
-        aha.CREATE_TIME AS createTime,
+        aha.CREATE_TIME AS applyTime,
         aha.APPLYINST_SOURCE,
         NULL AS ITEMINST_NAME,
         aps_123.STAGE_NAME,
@@ -504,7 +506,7 @@
         aha.APPLYINST_CODE,
         aha.IS_SERIES_APPROVE,
         aha.ACCEPT_TIME,
-        aha.CREATE_TIME AS createTime,
+        aha.CREATE_TIME AS applyTime,
         aha.APPLYINST_SOURCE,
         NULL AS ITEMINST_NAME,
         aps_123.STAGE_NAME,
@@ -527,7 +529,7 @@
         aha.APPLYINST_CODE,
         aha.IS_SERIES_APPROVE,
         aha.ACCEPT_TIME,
-        aha.CREATE_TIME AS createTime,
+        aha.CREATE_TIME AS applyTime,
         aha.APPLYINST_SOURCE,
         iteminst.ITEMINST_NAME AS ITEMINST_NAME,
         NULL AS STAGE_NAME,
