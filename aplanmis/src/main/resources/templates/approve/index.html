@@ -839,7 +839,8 @@
                       <div class="file-opt-btn" style="margin-top:0px">
                         <el-upload ref="uploadCert3" class="upload-s-file"
                                    :action="ctx+'rest/certificate/certinst/att/upload'"
-                                   :show-file-list="false" :http-request="function(file){solicitUploadFile(file, item)}"
+                                   :show-file-list="false"
+                                   :http-request="function(file){solicitUploadFile(file, item.solicitDetailUser.detailUserId)}"
                                    :file-list="fileList">
                           <el-button slot="trigger" size="small" type="primary">上传</el-button>
                         </el-upload>
@@ -995,22 +996,23 @@
                       <el-table-column label='序号' type="index" width="50"></el-table-column>
                       <el-table-column label="附件名称" prop="attName">
                         <template slot-scope="scope">
-                          <i class="ag" v-html="getIconText(scope.row.attFormat)"
-                             :style="{color:getIconColor(scope.row.attFormat)}"></i>
-                          {{scope.row.attName}}
+                          <i class="ag" v-html="getIconText(scope.row.fileType)"
+                             :style="{color:getIconColor(scope.row.fileType)}"></i>
+                          {{scope.row.fileName}}
                         </template>
                       </el-table-column>
-                      <el-table-column label="操作" width="140">
+                      <el-table-column label="操作" width="120">
                         <template slot-scope="scope">
                           <div class="spe-file-btns c-f">
                             <div class="spe-file-btn" @click="filePreview(scope.row,'parentPageLoading')">预览</div>
                             <div class="spe-ope-line"></div>
                             <div class="spe-file-btn" @click="downOneFile(scope.row)">下载</div>
-                            <div class="spe-ope-line"></div>
                           </div>
                         </template>
                       </el-table-column>
                     </el-table>
+                    <el-button v-if="newestOneSolicit.solicit.conclusionFlag!=1" style="margin-top:12px;"
+                               type="primary" @click="clickOneSolicit">重新发起一次征询</el-button>
                   </el-form-item>
                 </el-form>
               </div>
@@ -1049,7 +1051,7 @@
                     <div class="file-opt-btn" style="margin-top:0px">
                       <el-upload ref="uploadCert4" class="upload-s-file"
                                  :action="ctx+'rest/certificate/certinst/att/upload'"
-                                 :show-file-list="false" :http-request="function(file){solicitUploadFile(file, newestOneSolicit)}"
+                                 :show-file-list="false" :http-request="function(file){solicitUploadFile(file, newestOneSolicit.solicitDetailUser.detailUserId)}"
                                  :file-list="fileList">
                         <el-button slot="trigger" size="small" type="primary">上传</el-button>
                       </el-upload>
@@ -1117,12 +1119,12 @@
                     <div class="file-opt-btn" style="margin-top:0px">
                       <el-upload ref="uploadCert4" class="upload-s-file"
                                  :action="ctx+'rest/certificate/certinst/att/upload'"
-                                 :show-file-list="false" :http-request="function(file){solicitUploadFile(file, newestOneSolicit)}"
+                                 :show-file-list="false" :http-request="function(file){oneSolicitUploadFile(file, newestOneSolicit.solicit.solicitId)}"
                                  :file-list="fileList">
                         <el-button slot="trigger" size="small" type="primary">上传</el-button>
                       </el-upload>
                     </div>
-                    <el-table :data="solicitUploadFileList" border class="solict-pt">
+                    <el-table border stripe :data="oneSolicitFileList">
                       <el-table-column label='序号' type="index" width="50"></el-table-column>
                       <el-table-column label="附件名称" prop="attName">
                         <template slot-scope="scope">
@@ -1134,19 +1136,17 @@
                       <el-table-column label="操作" width="140">
                         <template slot-scope="scope">
                           <div class="spe-file-btns c-f">
-                            <div class="spe-file-btn" @click="filePreview(scope.row,'parentPageLoading')">预览</div>
+                            <div class="spe-file-btn" @click="filePreview(scope.row,'solicitOpinionLoading')">预览</div>
                             <div class="spe-ope-line"></div>
                             <div class="spe-file-btn" @click="downOneFile(scope.row)">下载</div>
                             <div class="spe-ope-line"></div>
-                            <div class="spe-file-btn delete" @click="delSpeFile(scope.row, 'refreshSolicitFileList')">
-                              删除
-                            </div>
+                            <div class="spe-file-btn delete" @click="delSpeFile(scope.row, 'refreshOneSolicitFileList')">删除</div>
                           </div>
                         </template>
                       </el-table-column>
                     </el-table>
                     <div style="margin-top:10px">
-                      <el-button type="primary" size="medium" @click="solicitSaveOpinion(newestOneSolicit, 'YCZX')">结 束</el-button>
+                      <el-button type="primary" size="medium" @click="ensureEndSolicit(newestOneSolicit, 'YCZX')">结 束</el-button>
                     </div>
                   </el-form-item>
                 </el-form>

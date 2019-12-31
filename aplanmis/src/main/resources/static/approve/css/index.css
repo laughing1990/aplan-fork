@@ -2434,6 +2434,10 @@ input[type="number"] {
     border-color: #B8C8DC;
     color: #B8C8DC;
 }
+.status-span.red {
+     border-color: #FF4B47;
+     color: #FF4B47;
+ }
 
 .solicit-opinion-dialog .el-dialog__body,
 .solicit-opinion-dialog .el-dialog__footer {
@@ -2480,7 +2484,7 @@ input[type="number"] {
 }
 
 .so-content-u {
-    padding: 0px 26px 12px 32px;
+    padding: 0px 16px 12px 32px;
 }
 
 .so-hint-box {
@@ -2563,7 +2567,7 @@ input[type="number"] {
 }
 
 .el-form.so-form-c {
-    padding: 15px 26px 0 0;
+    padding: 15px 16px 0 0;
 }
 
 .so-checked-org {

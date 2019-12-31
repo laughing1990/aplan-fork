@@ -785,7 +785,7 @@ var vm = new Vue({
   methods: {
     // 一次征询 start
     // 一次征询刷新附件列表
-    refreshOneSolicitFileList: function () {
+    refreshOneSolicitFileList: function (id) {
       var vm = this;
       vm.solicitOpinionLoading = true;
       request('', {
@@ -794,7 +794,7 @@ var vm = new Vue({
         data: {
           tableName: 'AEA_HI_SOLICIT',
           pkName: 'SOLICIT_ID',
-          recordIds: vm.solicitForm.solicitId,
+          recordIds: id || vm.solicitForm.solicitId,
         },
       }, function (res) {
         vm.solicitOpinionLoading = false;
@@ -809,19 +809,20 @@ var vm = new Vue({
       });
     },
     // 一次征询上传附件
-    oneSolicitUploadFile: function (file) {
+    oneSolicitUploadFile: function (file, id) {
       var vm = this;
       var formData = new FormData();
+      var solicitId = id || vm.solicitForm.solicitId;
       formData.append('file', file.file);
       formData.append('tableName', 'AEA_HI_SOLICIT');
       formData.append('pkName', 'SOLICIT_ID');
-      formData.append('solicitId', vm.solicitForm.solicitId);
+      formData.append('solicitId', solicitId);
       vm.solicitOpinionLoading = true;
       axios.post(ctx + 'rest/solicit/uploadAttFile', formData).then(function (res) {
         if (res.data && res.data.success) {
           vm.$message.success('文件上传成功');
           vm.solicitForm.solicitId = res.data.content;
-          vm.refreshOneSolicitFileList();
+          vm.refreshOneSolicitFileList(id);
         } else {
           vm.$message.error(res.message || '文件上传失败');
         }
@@ -1129,25 +1130,36 @@ var vm = new Vue({
     },
     getStatusClass2: function (status) {
       var val = +status;
-      var arr = ['', 'done', 'unuse'];
+      var arr = ['red', 'done', 'red'];
       return arr[val] || '';
     },
     // 发起人员结束意见征询
-    ensureEndSolicit: function (item) {
+    ensureEndSolicit: function (item, typeCode) {
       var vm = this;
       if (!(vm.solicitBmForm.userOpinion && vm.solicitBmForm.userOpinion.length)) {
         return vm.$message.error('请填写汇总意见');
+      }
+      var params = {
+        conclusionFlag: vm.solicitBmForm.userConclusion,
+        conclusionDesc: vm.solicitBmForm.userOpinion,
+        solicitId: item.solicit.solicitId,
+      };
+      if (typeCode == 'YCZX'){
+        if (!(vm.solicitBmForm.solicitLinkmanName && vm.solicitBmForm.solicitLinkmanName.length)) {
+          return vm.$message.error('请填写联系人');
+        }
+        if (!(vm.solicitBmForm.solicitLinkmanPhone && vm.solicitBmForm.solicitLinkmanPhone.length)) {
+          return vm.$message.error('请填写联系人电话');
+        }
+        params.solicitLinkmanName = vm.solicitBmForm.solicitLinkmanName;
+        params.solicitLinkmanPhone = vm.solicitBmForm.solicitLinkmanPhone;
       }
       vm.parentPageLoading = true;
       request('', {
         url: ctx + 'rest/solicit/collect/opinion',
         type: 'post',
         ContentType: 'application/json',
-        data: JSON.stringify({
-          conclusionFlag: vm.solicitBmForm.userConclusion,
-          conclusionDesc: vm.solicitBmForm.userOpinion,
-          solicitId: item.solicit.solicitId,
-        }),
+        data: JSON.stringify(params),
       }, function (res) {
         vm.parentPageLoading = false;
         if (res.success) {
@@ -1230,7 +1242,8 @@ var vm = new Vue({
     solicitUploadFile: function (file, item) {
       var vm = this;
       var formData = new FormData();
-      vm.uploadRecordId = item.solicitDetailUser.detailUserId;
+      // vm.uploadRecordId = item.solicitDetailUser.detailUserId;
+      vm.uploadRecordId = item;
       formData.append('files', file.file);
       formData.append('tableName', 'AEA_HI_SOLICIT_DETAIL_USER');
       formData.append('pkName', 'DETAIL_USER_ID');
@@ -3302,13 +3315,6 @@ var vm = new Vue({
     initButtons: function () {
       var vm = this;
       var defaultBtn = [{
-        elementName: "一次征询",
-        elementCode: "wfBusSave",
-        columnType: "button",
-        isReadonly: '0',
-        isHidden: '0',
-        elementRender: '<button class="btn btn-primary btn-outline-info" onclick="clickOneSolicit()">发起一次征询</button>'
-      }, {
         elementName: "联合评审",
         elementCode: "wfBusSave",
         columnType: "button",
@@ -3336,6 +3342,14 @@ var vm = new Vue({
         isReadonly: '0',
         isHidden: '0',
         elementRender: '<button class="btn btn-outline-info" onclick="showDiagramDialog()">查看流程图</button>'
+      }];
+      var oneSolicitBtn = [{
+        elementName: "一次征询",
+        elementCode: "wfBusSave",
+        columnType: "button",
+        isReadonly: '0',
+        isHidden: '0',
+        elementRender: '<button class="btn btn-primary btn-outline-info" onclick="clickOneSolicit()">发起一次征询</button>'
       }];
       var approverBtn = [{
         elementName: "材料补正",
@@ -3373,12 +3387,16 @@ var vm = new Vue({
       } else {
         defaultBtn = notApproverBtn.concat(defaultBtn);
       }
+      if (vm.hasOneSolicit==0){
+        // 没有发起过一次征询的加上一次征询按钮
+        defaultBtn = oneSolicitBtn.concat(defaultBtn);
+      }
       if (vm.isDraftPage == 'true') {
         defaultBtn = draftBtn.concat(defaultBtn);
       }
       if (!vm.checkNull(vm.taskId)) {
         //如果不是起草界面则加上流程跟踪按钮
-        vm.buttonData = vm.buttonData.concat(defaultBtn)
+        vm.buttonData = vm.buttonData.concat(defaultBtn);
       }
       var buttonDatas = vm.buttonData;
       var newButtonData = [];
