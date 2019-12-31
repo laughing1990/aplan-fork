@@ -297,7 +297,7 @@ public class RestGuideController {
 
 
     @PostMapping("mat/list")
-    @ApiOperation(value = "阶段申报 --> 根据阶段ID、阶段情形ID集合、事项情形ID集合、事项版本ID集合获取材料一单清列表数据")
+    @ApiOperation(value = "办事指南 --> 根据阶段ID、阶段情形ID集合、事项情形ID集合、事项版本ID集合获取必选、可选材料列表")
     public ContentResultForm<RestGuideMatVo> listItemAndStateeByStageId(@RequestBody MatListParamVo matListParamVo){
         try {
             RestGuideMatVo  restGuideMatVo = new RestGuideMatVo();
@@ -310,7 +310,7 @@ public class RestGuideController {
             return new ContentResultForm(true,restGuideMatVo);
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
-            return new ContentResultForm(false,"","根据阶段ID、阶段情形ID集合、事项情形ID集合、事项版本ID集合获取材料一单清列表数据异常");
+            return new ContentResultForm(false,"","办事指南 --> 根据阶段ID、阶段情形ID集合、事项情形ID集合、事项版本ID集合获取必选、可选材料列表异常");
         }
     }
 }
