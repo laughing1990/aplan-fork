@@ -104,17 +104,23 @@ var module1 = new Vue({
                     {required: true, message: '请输入总投资', trigger: 'blur'},
                 ],
                 foreignBuildingArea: [
-                    {required: true, message: '请输入总建筑面积', trigger: 'blur'},
+                    {required: true, message: '请输入建筑面积', trigger: 'blur'},
+                    {required: true, validator: checkNumber, trigger: 'blur'}
                 ],
                 xmYdmj: [
                     {required: true, message: '请输入用地面积', trigger: 'blur'},
+                    {required: true, validator: checkNumber, trigger: 'blur'}
                 ],
                 gbCodeYear: [
                     {required: true, message: '请输入国标行业代码发布年代', trigger: 'blur'},
+                    {required: true, validator: checkNumber, trigger: 'blur'}
                 ],
                 foreignRemark: [
                     {required: true, message: '请输入建设规模及内容', trigger: 'blur'},
-                ]
+                ],
+                compareTime: [
+                  {required: true, message: '开工时间必须小于建成时间', trigger: ['change', 'blur']},
+                ],
             },
             themeList: [], // 主题列表
             orgList: [], // 组织列表
@@ -318,6 +324,23 @@ var module1 = new Vue({
                 ts.projInfoForm.projectAddress = ts.projInfoForm.projectAddress.split(',');
                 return ts.apiMessage('网络错误！', 'error')
             });
+        },
+
+        // 项目代码-生成编码fn:自动生成项目代码
+        generateLocalCodeFn: function () {
+          var date = new Date();
+          var year = date.getFullYear();
+          var month = (date.getMonth() + 1).toString();
+          var day = (date.getDate()).toString();
+          if (month.length == 1) {
+            month = "0" + month;
+          }
+          if (day.length == 1) {
+            day = "0" + day;
+          }
+          var dateTime = year + month + day;
+          var now = date.getTime();
+          this.projInfoForm.localCode =  "ZBM-R-" + dateTime + "-" + String(now).slice(-8);
         },
     },
     mounted: function () {

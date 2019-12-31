@@ -20,7 +20,9 @@
                     </el-tooltip>
                     项目代码
                 </template>
-                <el-input class="w-320" v-model="projInfoForm.localCode" placeholder="请填写项目代码"></el-input>
+                <el-input class="w-320" v-model="projInfoForm.localCode" placeholder="请填写项目代码">
+                  <el-button slot="append" style="padding: 4px;" @click="generateLocalCodeFn">生成编码</el-button>
+                </el-input>
             </el-form-item>
             <el-form-item class="wt448" prop="gcbm">
                 <template slot="label">
@@ -143,20 +145,30 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item class="wt448" label="项目开工时间" prop="nstartTime">
+            <!-- <el-form-item class="wt448" label="项目开工时间" prop="nstartTime">
                 <el-date-picker type="date" placeholder="项目开工时间" value-format="yyyy-MM-dd" class="w-320"
                                 v-model="projInfoForm.nstartTime">
                 </el-date-picker>
-            </el-form-item>
-            <el-form-item class="wt448" label="项目建成时间" prop="endTime">
+            </el-form-item> -->
+            <el-form-item class="wt448" label="项目开工时间" :prop="projInfoForm.nstartTime>projInfoForm.endTime ?'compareTime': 'nstartTime'">
+              <el-date-picker type="date" placeholder="项目开工时间" value-format="yyyy-MM-dd" class="w-320"
+                              v-model="projInfoForm.nstartTime">
+              </el-date-picker>
+          </el-form-item>
+            <!-- <el-form-item class="wt448" label="项目建成时间" prop="endTime">
                 <el-date-picker type="date" placeholder="项目建成时间" value-format="yyyy-MM-dd" class="w-320"
                                 v-model="projInfoForm.endTime">
                 </el-date-picker>
-            </el-form-item>
+            </el-form-item> -->
+            <el-form-item class="wt448" label="项目建成时间" :prop="projInfoForm.nstartTime>projInfoForm.endTime ?'compareTime': 'endTime'">
+              <el-date-picker type="date" placeholder="项目建成时间" value-format="yyyy-MM-dd" class="w-320"
+                              v-model="projInfoForm.endTime">
+              </el-date-picker>
+          </el-form-item>
             <el-form-item class="wt448" label="总投资（万元）" prop="investSum">
                 <el-input class="w-320" v-model="projInfoForm.investSum" placeholder="请填写总投资金额"></el-input>
             </el-form-item>
-            <el-form-item class="wt448" label="总建筑面积（m&sup2;）" prop="foreignBuildingArea">
+            <el-form-item class="wt448" label="建筑面积（m&sup2;）" prop="foreignBuildingArea">
                 <el-input class="w-320" v-model="projInfoForm.foreignBuildingArea" placeholder="请填写建筑面积"></el-input>
             </el-form-item>
             <el-form-item class="wt448" label="用地面积（m&sup2;）" prop="xmYdmj">
