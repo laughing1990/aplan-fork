@@ -47,7 +47,7 @@ public class AeaParStageItemAdminController {
         }
         AeaParStageItem stageItem = aeaParStageItemAdminService.getAeaParStageItemById(stageItemId);
         if(stageItem!=null) {
-            aeaParStageItem.setSubFormId(formId);
+            stageItem.setSubFormId(formId);
             aeaParStageItemAdminService.updateAeaParStageItem(stageItem);
         }else{
             if(aeaParStageItem==null){
