@@ -175,4 +175,15 @@
             INNER JOIN AEA_PROJ_INFO proj ON proj.PROJ_INFO_ID = aap.PROJ_INFO_ID
         WHERE replace(proj.GCBM, '#', '-') = #{gcdm}
     </select>
+
+    <select id="getItemTimeLimitAtStage" resultType="string">
+        SELECT flod.TIME_LIMIT
+        FROM ACT_TPL_APP_FLOWDEF flod
+            INNER JOIN act_tpl_app_trigger trg ON flod.APP_FLOWDEF_ID = trg.TRIGGER_APP_FLOWDEF_ID
+            INNER JOIN aea_item_ver iv ON iv.ITEM_VER_ID = trg.BUS_RECORD_ID
+        WHERE trg.IS_DELETED = '0'
+            AND flod.APP_ID = #{appId}
+            AND iv.item_id = #{itemId}
+        LIMIT 1
+    </select>
 </mapper>

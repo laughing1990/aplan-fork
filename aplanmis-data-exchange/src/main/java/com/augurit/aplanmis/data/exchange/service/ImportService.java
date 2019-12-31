@@ -603,6 +603,17 @@ public class ImportService {
                         redisUtil.hset(StorageCacheKeyConstants.ITEM_CACHE_KEY, item.getSpsxbm() + ":" + item.getSplcbm(), item);
                     }
                 }
+                //查询事项的阶段时限
+                if (item.getSpsxblsx() == null) {
+                    String itemId = item.getItemId();
+                    String appId = item.getAppId();
+                    String timeLimit = itemBasicService.getItemTimeLimitAtStage(itemId,appId);
+                    if (timeLimit != null) {
+                        item.setSpsxblsx(Long.valueOf(timeLimit));
+                    }else {
+                        iterator.remove();
+                    }
+                }
             }
         }.commonImport(startTime, endTime, TableNameConstant.SPGL_DFXMSPLCJDSXXXB);
     }
