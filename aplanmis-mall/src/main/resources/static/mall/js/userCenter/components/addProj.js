@@ -8,6 +8,16 @@ var checkNumber = function (rule, value, callback) {
         return callback(new Error('请输入数字'));
     }
 };
+// / 校验不能纯数字(非必填)
+var checkNotAllNumber = function (rule, value, callback) {
+    var reg = /[^\d^\.]+/g
+    // console.log(reg.test(value));
+    if (!value || reg.test(value)) {
+        callback();
+    } else {
+        return callback(new Error('不能为纯数字'));
+    }
+};
 var module1 = new Vue({
     el: "#addProject",
     data: function () {
@@ -95,13 +105,14 @@ var module1 = new Vue({
                     {required: true, message: '请选择工程分类', trigger: 'change'},
                 ],
                 nstartTime: [
-                    {required: true, message: '请选择拟开工时间', trigger: 'blur'},
+                    {required: true, message: '请选择拟开工时间', trigger: ['change', 'blur']},
                 ],
                 endTime: [
-                    {required: true, message: '请选择拟建成时间', trigger: 'change'},
+                    {required: true, message: '请选择拟建成时间', trigger: ['change', 'blur']},
                 ],
                 investSum: [
                     {required: true, message: '请输入总投资', trigger: 'blur'},
+                    {required: true, validator: checkNumber, trigger: 'blur'}
                 ],
                 foreignBuildingArea: [
                     {required: true, message: '请输入建筑面积', trigger: 'blur'},
@@ -120,6 +131,9 @@ var module1 = new Vue({
                 ],
                 compareTime: [
                   {required: true, message: '开工时间必须小于建成时间', trigger: ['change', 'blur']},
+                ],
+                projAddr: [
+                  {validator: checkNotAllNumber, trigger: 'blur'}
                 ],
             },
             themeList: [], // 主题列表
@@ -149,6 +163,25 @@ var module1 = new Vue({
             gbhyShowMsg: '', // 国标行业选中数据的展示
             isShowGbhy: false, // 是否显示国标行业tree模块
         }
+    },
+    watch: {
+      'projInfoForm.nstartTime': function(val){
+        if(!val) return;
+        this.$refs.projInfoForm.validateField('endTime');
+        var ts = this;
+        setTimeout(function(){
+          ts.$refs.projInfoForm.validateField('endTime');
+        },500)
+        
+      },
+      'projInfoForm.endTime': function(val){
+        if(!val) return;
+        this.$refs.projInfoForm.validateField('nstartTime');
+        var ts = this;
+        setTimeout(function(){
+          ts.$refs.projInfoForm.validateField('nstartTime');
+        },500)
+      },
     },
     created: function () {
         this.getRegionListData();

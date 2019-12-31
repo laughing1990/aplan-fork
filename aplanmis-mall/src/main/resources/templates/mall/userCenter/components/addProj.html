@@ -150,8 +150,8 @@
                                 v-model="projInfoForm.nstartTime">
                 </el-date-picker>
             </el-form-item> -->
-            <el-form-item class="wt448" label="项目开工时间" :prop="projInfoForm.nstartTime>projInfoForm.endTime ?'compareTime': 'nstartTime'">
-              <el-date-picker type="date" placeholder="项目开工时间" value-format="yyyy-MM-dd" class="w-320"
+            <el-form-item class="wt448" label="项目开工时间" :prop="projInfoForm.endTime && projInfoForm.nstartTime>projInfoForm.endTime ?'compareTime': 'nstartTime'">
+              <el-date-picker type="date" placeholder="项目开工时间" value-format="yyyy-MM-dd" style="width: 300px!important;"
                               v-model="projInfoForm.nstartTime">
               </el-date-picker>
           </el-form-item>
@@ -160,8 +160,8 @@
                                 v-model="projInfoForm.endTime">
                 </el-date-picker>
             </el-form-item> -->
-            <el-form-item class="wt448" label="项目建成时间" :prop="projInfoForm.nstartTime>projInfoForm.endTime ?'compareTime': 'endTime'">
-              <el-date-picker type="date" placeholder="项目建成时间" value-format="yyyy-MM-dd" class="w-320"
+            <el-form-item class="wt448" label="项目建成时间" :prop="projInfoForm.nstartTime && projInfoForm.nstartTime>projInfoForm.endTime ?'compareTime': 'endTime'">
+              <el-date-picker type="date" placeholder="项目建成时间" value-format="yyyy-MM-dd" style="width: 300px!important;"
                               v-model="projInfoForm.endTime">
               </el-date-picker>
           </el-form-item>
@@ -226,7 +226,7 @@
                           placeholder="请填写建设内容"></el-input>
             </el-form-item>
 
-            <el-form-item label="项目地址">
+            <el-form-item label="项目地址" prop="projAddr">
                 <el-input class="w-775"  v-model="projInfoForm.projAddr" placeholder="请填写项目地址"></el-input>
             </el-form-item>
 
