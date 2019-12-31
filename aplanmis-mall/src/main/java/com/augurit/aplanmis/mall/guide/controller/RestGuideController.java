@@ -8,6 +8,7 @@ import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.aplanmis.common.constants.AeaItemBasicContants;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
+import com.augurit.aplanmis.common.domain.AeaItemMat;
 import com.augurit.aplanmis.common.domain.AeaItemState;
 import com.augurit.aplanmis.common.domain.AeaParTheme;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
@@ -16,9 +17,11 @@ import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
 import com.augurit.aplanmis.common.service.state.AeaItemStateService;
 import com.augurit.aplanmis.common.service.theme.AeaParThemeService;
 import com.augurit.aplanmis.mall.guide.service.RestGuideService;
+import com.augurit.aplanmis.mall.guide.vo.RestGuideMatVo;
 import com.augurit.aplanmis.mall.guide.vo.RestGuideVo;
 import com.augurit.aplanmis.mall.guide.vo.RestSingleGuideVo;
 import com.augurit.aplanmis.mall.main.vo.ItemListVo;
+import com.augurit.aplanmis.mall.userCenter.vo.MatListParamVo;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -30,14 +33,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("rest/guide")
@@ -294,4 +295,22 @@ public class RestGuideController {
         }
     }
 
+
+    @PostMapping("mat/list")
+    @ApiOperation(value = "阶段申报 --> 根据阶段ID、阶段情形ID集合、事项情形ID集合、事项版本ID集合获取材料一单清列表数据")
+    public ContentResultForm<RestGuideMatVo> listItemAndStateeByStageId(@RequestBody MatListParamVo matListParamVo){
+        try {
+            RestGuideMatVo  restGuideMatVo = new RestGuideMatVo();
+            List<AeaItemMat> list = aeaItemMatService.getMatListByStateListAndItemListAndStageId(matListParamVo.getItemStateIds(),matListParamVo.getStageStateIds(),
+                    matListParamVo.getCoreItemVerIds(),matListParamVo.getParallelItemVerIds(),matListParamVo.getCoreParentItemVerIds(),matListParamVo.getParaParentllelItemVerIds(),matListParamVo.getStageId(),null);
+            //必选材料
+            restGuideMatVo.setRequireMat(list.stream().filter(item->("1".equals(item.getAttIsRequire()))).collect(Collectors.toList()));
+            //可选材料
+            restGuideMatVo.setNoRequireMat(list.stream().filter(item->("0".equals(item.getAttIsRequire()))).collect(Collectors.toList()));
+            return new ContentResultForm(true,restGuideMatVo);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ContentResultForm(false,"","根据阶段ID、阶段情形ID集合、事项情形ID集合、事项版本ID集合获取材料一单清列表数据异常");
+        }
+    }
 }
