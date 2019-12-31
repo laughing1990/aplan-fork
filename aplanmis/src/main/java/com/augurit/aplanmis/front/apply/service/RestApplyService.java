@@ -255,10 +255,14 @@ public class RestApplyService {
     }
 
     protected void confirmAeaHiApplyinst(AeaHiApplyinst aeaHiApplyinst, ApplyDataVo applyDataVo, String isTemporarySubmit) throws Exception {
-        aeaHiApplyinst.setProjInfoId(applyDataVo.getProjInfoIds()[0]);
-        aeaHiApplyinst.setIsGreenWay(StringUtils.isNotBlank(applyDataVo.getIsGreenWay()) ? applyDataVo.getIsGreenWay() : Status.OFF);
-        aeaHiApplyinst.setIsTemporarySubmit(isTemporarySubmit);
-        aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
+        if (StringUtils.isNotBlank(aeaHiApplyinst.getApplyinstId())) {
+            AeaHiApplyinst newOne = new AeaHiApplyinst();
+            newOne.setApplyinstId(aeaHiApplyinst.getApplyinstId());
+            newOne.setProjInfoId(applyDataVo.getProjInfoIds()[0]);
+            newOne.setIsGreenWay(StringUtils.isNotBlank(applyDataVo.getIsGreenWay()) ? applyDataVo.getIsGreenWay() : Status.OFF);
+            newOne.setIsTemporarySubmit(isTemporarySubmit);
+            aeaHiApplyinstService.updateAeaHiApplyinst(newOne);
+        }
     }
 
     public String onlyInstApply(ApplyDataVo applyDataVo) throws Exception {

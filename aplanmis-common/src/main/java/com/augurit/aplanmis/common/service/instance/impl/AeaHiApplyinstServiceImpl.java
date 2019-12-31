@@ -8,7 +8,6 @@ import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
 import com.augurit.aplanmis.common.event.AplanmisEventPublisher;
-import com.augurit.aplanmis.common.event.def.ApplyAcceptAplanmisEvent;
 import com.augurit.aplanmis.common.event.vo.ApplyEventVo;
 import com.augurit.aplanmis.common.mapper.AeaHiApplyinstMapper;
 import com.augurit.aplanmis.common.service.dic.ApplyinstCodeService;
@@ -16,7 +15,6 @@ import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaLogApplyStateHistService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
-import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,7 +132,6 @@ public class AeaHiApplyinstServiceImpl implements AeaHiApplyinstService {
                 aeaHiApplyinst.setEndTime(new Date());
             }
             this.updateAeaHiApplyinst(aeaHiApplyinst);
-            System.out.println("++++++++++++++sshhshshshshhshshshshshshhshshshshhshshshshhs+++++++++++++++++++++++++");
             aeaLogApplyStateHistService.insertTriggerAeaLogApplyStateHist(applyinstId, taskinstId, appinstId, old.getApplyinstState(), applyinstState, opuWindowId);
 
             // 根据条件判断是否发送事件
