@@ -101,11 +101,11 @@ public class OwnerRegisterServiceImpl implements OwnerRegisterService {
                     contactManInfo.setUnitInfoId(unitInfoId);
                     contactManInfo.setLinkmanType("u");
                     contactManInfo.setIsBindAccount("1");
-                    contactManInfo.setIsAdministrators("1");
+                    contactManInfo.setIsAdministrators("0");
                     //保存联系人信息
                     this.insertLinkmanInfo(contactManInfo);
                 } else {
-                    throw new Exception("授权用户已存在");
+                    throw new Exception("联系人已存在");
                 }
             }
             List<MultipartFile> unitFiles = this.getFileListByName(request, "unitFile");
@@ -124,7 +124,7 @@ public class OwnerRegisterServiceImpl implements OwnerRegisterService {
                     if (linkman.isEmpty()) {
                         authorManInfo.setUnitInfoId(unitInfo.getUnitInfoId());
                         authorManInfo.setLinkmanType("u");
-                        authorManInfo.setIsAdministrators("0");
+                        authorManInfo.setIsAdministrators("1");
                         authorManInfo.setIsBindAccount("1");
                         this.insertLinkmanInfo(authorManInfo);
                     } else {

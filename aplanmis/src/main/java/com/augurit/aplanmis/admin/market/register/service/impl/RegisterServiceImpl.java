@@ -258,18 +258,23 @@ public class RegisterServiceImpl implements RegisterService {
             aeaUnitInfo.setUnitNature("1".equals(aeaUnitInfo.getUnitNature()) ? "企业" : "2".equals(aeaUnitInfo.getUnitNature()) ? "事业单位" : "3".equals(aeaUnitInfo.getUnitNature()) ? "社会组织" : "");
 
             //联系人列表：包括授权人列表，执业人员列表
-            List<AeaLinkmanInfo> contactManList = aeaLinkmanInfoMapper.getAeaLinkmanInfoByUnitInfoId(unitInfoId, 0);
 
             List<BscAttFileAndDir> unitFileList = bscAttDetailMapper.searchFileAndDirsSimple(null, SecurityContext.getCurrentOrgId(), "AEA_UNIT_INFO", "UNIT_INFO_ID", new String[]{aeaUnitInfo.getUnitInfoId()});
 
-            //授权人列表
-            List<AeaLinkmanInfo> authorManList = aeaLinkmanInfoMapper.listBindLinkmanByUnitId(aeaUnitInfo.getUnitInfoId(), null, "1", null);
-            if (CollectionUtils.isNotEmpty(authorManList)) {
-                AeaLinkmanInfo authorMan = authorManList.get(0);
-                //授权人附件
-                List<BscAttFileAndDir> authorManFiles = bscAttDetailMapper.searchFileAndDirsSimple(null, SecurityContext.getCurrentOrgId(), "AEA_LINKMAN_INFO", "LINKMAN_INFO_ID", new String[]{authorMan.getLinkmanInfoId()});
-                ownerRegisterResultVo.setAuthorManInfo(authorMan);
-                ownerRegisterResultVo.setAuthorManFileList(authorManFiles);
+            //授权人列表及联系人列表
+            List<AeaLinkmanInfo> contactManList = aeaLinkmanInfoMapper.listBindLinkmanByUnitId(aeaUnitInfo.getUnitInfoId(), null, "1", null);
+
+            if (!contactManList.isEmpty()) {
+                for (AeaLinkmanInfo info : contactManList) {
+                    String linkmanInfoId = info.getLinkmanInfoId();
+                    String isAdministrators = info.getIsAdministrators();
+                    if (!StringUtils.isEmpty(isAdministrators) && "1".equals(isAdministrators)) {
+                        //授权人附件
+                        List<BscAttFileAndDir> authorManFiles = bscAttDetailMapper.searchFileAndDirsSimple(null, SecurityContext.getCurrentOrgId(), "AEA_LINKMAN_INFO", "LINKMAN_INFO_ID", new String[]{linkmanInfoId});
+                        ownerRegisterResultVo.setAuthorManInfo(info);
+                        ownerRegisterResultVo.setAuthorManFileList(authorManFiles);
+                    }
+                }
             }
             ownerRegisterResultVo.setContactManList(contactManList);
             ownerRegisterResultVo.setUnitFileList(unitFileList);
