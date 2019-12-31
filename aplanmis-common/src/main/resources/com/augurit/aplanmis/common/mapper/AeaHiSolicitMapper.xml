@@ -38,7 +38,9 @@
     ${alias}.CREATE_TIME  createTime,
     ${alias}.MODIFIER  modifier,
     ${alias}.MODIFY_TIME  modifyTime,
-    ${alias}.ROOT_ORG_ID  rootOrgId
+    ${alias}.ROOT_ORG_ID  rootOrgId,
+    ${alias}.SOLICIT_LINKMAN_NAME  solicitLinkmanName,
+    ${alias}.SOLICIT_LINKMAN_PHONE  solicitLinkmanPhone
     </sql>
 
     <sql id="queryByTime">
@@ -85,7 +87,9 @@
         ${alias}.CONCLUSION_USER_ID,
         ${alias}.COUNT_LIMIT,
         ${alias}.CONCLUSION_USER_NAME,
-        ${alias}.CREATE_TIME
+        ${alias}.CREATE_TIME,
+        ${alias}.SOLICIT_LINKMAN_NAME,
+        ${alias}.SOLICIT_LINKMAN_PHONE
     </sql>
     <sql id="querySolicitStateCol">
         <choose>
@@ -228,6 +232,12 @@
             <if test="rootOrgId != null ">
                 AND ahs.ROOT_ORG_ID = #{rootOrgId}
             </if>
+            <if test="solicitLinkmanName != null ">
+                AND ahs.SOLICIT_LINKMAN_NAME = #{solicitLinkmanName}
+            </if>
+            <if test="solicitLinkmanPhone != null ">
+                AND ahs.SOLICIT_LINKMAN_PHONE = #{solicitLinkmanPhone}
+            </if>
         </where>
         ORDER BY SOLICIT_START_TIME
     </select>
@@ -236,9 +246,15 @@
     <!--5 新增实体对象 -->
     <insert id="insertAeaHiSolicit" parameterType="AeaHiSolicit">
         insert into AEA_HI_SOLICIT (
-    SOLICIT_ID  ,BUS_TYPE  ,SOLICIT_TYPE  ,SOLICIT_ORG_ID  ,SOLICIT_ITEM_ID  ,APPLYINST_ID  ,PROCINST_ID  ,HI_TASKINST_ID  ,SOLICIT_CODE  ,SOLICIT_TOPIC  ,SOLICIT_CONTENT  ,SOLICIT_DUE_DAYS  ,SOLICIT_REAL_DAYS  ,SOLICIT_DAYS_UNIT  ,SOLICIT_START_TIME  ,SOLICIT_END_TIME  ,IS_CALC_TIMERULE  ,SOLICIT_TIMERULE_ID  ,CONCLUSION_FLAG  ,CONCLUSION_DESC  ,CONCLUSION_TIME  ,CONCLUSION_USER_ID  ,CONCLUSION_USER_NAME  ,INITIATOR_ORG_ID  ,INITIATOR_ORG_NAME  ,INITIATOR_USER_ID  ,INITIATOR_USER_NAME  ,COUNT_LIMIT  ,SOLICIT_STATE  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
+    SOLICIT_ID  ,BUS_TYPE  ,SOLICIT_TYPE  ,SOLICIT_ORG_ID  ,SOLICIT_ITEM_ID  ,APPLYINST_ID  ,PROCINST_ID  ,HI_TASKINST_ID  ,SOLICIT_CODE  ,SOLICIT_TOPIC  ,SOLICIT_CONTENT  ,
+    SOLICIT_DUE_DAYS  ,SOLICIT_REAL_DAYS  ,SOLICIT_DAYS_UNIT  ,SOLICIT_START_TIME  ,SOLICIT_END_TIME  ,IS_CALC_TIMERULE  ,SOLICIT_TIMERULE_ID  ,CONCLUSION_FLAG  ,
+    CONCLUSION_DESC  ,CONCLUSION_TIME  ,CONCLUSION_USER_ID  ,CONCLUSION_USER_NAME  ,INITIATOR_ORG_ID  ,INITIATOR_ORG_NAME  ,INITIATOR_USER_ID  ,INITIATOR_USER_NAME  ,
+    COUNT_LIMIT  ,SOLICIT_STATE  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID,SOLICIT_LINKMAN_NAME,SOLICIT_LINKMAN_PHONE
         )  values  (
-    #{solicitId},#{busType},#{solicitType},#{solicitOrgId},#{solicitItemId},#{applyinstId},#{procinstId},#{hiTaskinstId},#{solicitCode},#{solicitTopic},#{solicitContent},#{solicitDueDays},#{solicitRealDays},#{solicitDaysUnit},#{solicitStartTime},#{solicitEndTime},#{isCalcTimerule},#{solicitTimeruleId},#{conclusionFlag},#{conclusionDesc},#{conclusionTime},#{conclusionUserId},#{conclusionUserName},#{initiatorOrgId},#{initiatorOrgName},#{initiatorUserId},#{initiatorUserName},#{countLimit},#{solicitState},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+    #{solicitId},#{busType},#{solicitType},#{solicitOrgId},#{solicitItemId},#{applyinstId},#{procinstId},#{hiTaskinstId},#{solicitCode},#{solicitTopic},#{solicitContent},
+    #{solicitDueDays},#{solicitRealDays},#{solicitDaysUnit},#{solicitStartTime},#{solicitEndTime},#{isCalcTimerule},#{solicitTimeruleId},#{conclusionFlag},#{conclusionDesc},
+    #{conclusionTime},#{conclusionUserId},#{conclusionUserName},#{initiatorOrgId},#{initiatorOrgName},#{initiatorUserId},#{initiatorUserName},#{countLimit},#{solicitState},
+    #{creater},#{createTime},#{modifier},#{modifyTime},#{rootOrgId},#{solicitLinkmanName},#{solicitLinkmanPhone}
         )
     </insert>
     <!--6 修改实体对象 -->
@@ -344,6 +360,12 @@
             <if test="rootOrgId != null  ">
                 ROOT_ORG_ID = #{rootOrgId},
             </if>
+            <if test="solicitLinkmanName != null  ">
+                SOLICIT_LINKMAN_NAME = #{solicitLinkmanName},
+            </if>
+            <if test="solicitLinkmanPhone != null  ">
+                SOLICIT_LINKMAN_PHONE = #{solicitLinkmanPhone},
+            </if>
         </set>
         where SOLICIT_ID = #{solicitId}
     </update>
@@ -387,6 +409,8 @@
         ahs.SOLICIT_STATE as solicitState,
         ahs.IS_CALC_TIMERULE as isCalcTimerule,
         ahs.SOLICIT_TIMERULE_ID as solicitTimeruleId,
+        ahs.SOLICIT_LINKMAN_NAME as solicitLinkmanName,
+        ahs.SOLICIT_LINKMAN_PHONE as solicitLinkmanPhone,
         ahs.CONCLUSION_FLAG as conclusionFlag,
         ahs.CONCLUSION_DESC as conclusionDesc,
         ahs.CONCLUSION_TIME as conclusionTime,
@@ -529,7 +553,7 @@
         aha.APPLYINST_CODE,
         aha.IS_SERIES_APPROVE,
         aha.ACCEPT_TIME,
-        aha.CREATE_TIME AS applyTime,
+        aha.CREATE_TIME AS createTime,
         aha.APPLYINST_SOURCE,
         iteminst.ITEMINST_NAME AS ITEMINST_NAME,
         NULL AS STAGE_NAME,
@@ -619,5 +643,7 @@
         <result property="modifier" column="MODIFIER"/>
         <result property="modifyTime" column="MODIFY_TIME"/>
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
+        <result property="solicitLinkmanName" column="SOLICIT_LINKMAN_NAME"/>
+        <result property="solicitLinkmanPhone" column="SOLICIT_LINKMAN_PHONE"/>
     </resultMap>
 </mapper>

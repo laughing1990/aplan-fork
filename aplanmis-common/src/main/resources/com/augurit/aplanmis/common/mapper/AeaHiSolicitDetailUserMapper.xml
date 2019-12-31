@@ -18,7 +18,9 @@
     CREATER  creater,
     CREATE_TIME  createTime,
     MODIFIER  modifier,
-    MODIFY_TIME  modifyTime
+    MODIFY_TIME  modifyTime,
+    LINKMAN_NAME linkmanName,
+    LINKMAN_PHONE linkmanPhone
     </sql>
 
     <sql id="allAlisColumns" >
@@ -35,7 +37,9 @@
         ahsdu.CREATER  creater,
         ahsdu.CREATE_TIME  createTime,
         ahsdu.MODIFIER  modifier,
-        ahsdu.MODIFY_TIME  modifyTime
+        ahsdu.MODIFY_TIME  modifyTime,
+        ahsdu.LINKMAN_NAME linkmanName,
+        ahsdu.LINKMAN_PHONE linkmanPhone
     </sql>
 
 <!--2 根据主键ID查询单个实体 -->
@@ -124,21 +128,24 @@
 <!--5 新增实体对象 -->
 <insert id="insertAeaHiSolicitDetailUser" parameterType="AeaHiSolicitDetailUser" >
     insert into AEA_HI_SOLICIT_DETAIL_USER (
-DETAIL_USER_ID  ,SOLICIT_DETAIL_ID  ,USER_ID  ,USER_CONCLUSION  ,USER_OPINION  ,SIGN_TIME  ,FILL_TIME  ,TASK_ACTION  ,PARENT_ID  ,IS_DELETED  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME
+DETAIL_USER_ID  ,SOLICIT_DETAIL_ID  ,USER_ID  ,USER_CONCLUSION  ,USER_OPINION  ,SIGN_TIME  ,FILL_TIME  ,TASK_ACTION  ,PARENT_ID  ,IS_DELETED  ,
+CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME, LINKMAN_NAME, LINKMAN_PHONE
     )  values  (
-#{detailUserId},#{solicitDetailId},#{userId},#{userConclusion},#{userOpinion},#{signTime},#{fillTime},#{taskAction},#{parentId},#{isDeleted},#{creater},#{createTime},#{modifier},  #{modifyTime}
+#{detailUserId},#{solicitDetailId},#{userId},#{userConclusion},#{userOpinion},#{signTime},#{fillTime},#{taskAction},#{parentId},#{isDeleted},
+#{creater},#{createTime},#{modifier},  #{modifyTime},  #{linkmanName},  #{linkmanPhone}
     )
 </insert>
     <!--5 新增实体对象 -->
     <insert id="batchInsertAeaHiSolicitDetailUser" parameterType="AeaHiSolicitDetailUser" >
         insert into AEA_HI_SOLICIT_DETAIL_USER (
-        DETAIL_USER_ID  ,SOLICIT_DETAIL_ID  ,USER_ID  ,USER_CONCLUSION  ,USER_OPINION  ,SIGN_TIME  ,FILL_TIME  ,TASK_ACTION  ,PARENT_ID  ,IS_DELETED  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME
+        DETAIL_USER_ID  ,SOLICIT_DETAIL_ID  ,USER_ID  ,USER_CONCLUSION  ,USER_OPINION  ,SIGN_TIME  ,FILL_TIME  ,TASK_ACTION  ,PARENT_ID  ,IS_DELETED  ,
+        CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME, LINKMAN_NAME, LINKMAN_PHONE
         )  values
         <foreach collection="list" item="item" separator=",">
             (
             #{item.detailUserId},#{item.solicitDetailId},#{item.userId},#{item.userConclusion},#{item.userOpinion},
             #{item.signTime},#{item.fillTime},#{item.taskAction},#{item.parentId},#{item.isDeleted},#{item.creater},
-            #{item.createTime},#{item.modifier},#{item.modifyTime}
+            #{item.createTime},#{item.modifier},#{item.modifyTime},  #{item.linkmanName},  #{item.linkmanPhone}
             )
         </foreach>
 
@@ -186,6 +193,12 @@ DETAIL_USER_ID  ,SOLICIT_DETAIL_ID  ,USER_ID  ,USER_CONCLUSION  ,USER_OPINION  ,
         <if test="modifyTime != null" >
         MODIFY_TIME = #{modifyTime},
         </if>
+        <if test="linkmanName != null" >
+            LINKMAN_NAME = #{linkmanName},
+        </if>
+        <if test="linkmanPhone != null" >
+            LINKMAN_PHONE = #{linkmanPhone},
+        </if>
     </set>
     where DETAIL_USER_ID = #{detailUserId}
 </update>
@@ -214,6 +227,8 @@ DETAIL_USER_ID  ,SOLICIT_DETAIL_ID  ,USER_ID  ,USER_CONCLUSION  ,USER_OPINION  ,
         <result property="createTime" column="CREATE_TIME"/>
         <result property="modifier" column="MODIFIER"/>
         <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="linkmanName" column="LINKMAN_NAME"/>
+        <result property="linkmanPhone" column="LINKMAN_PHONE"/>
     </resultMap>
 
     <select id="listAeaHiSolicitDetailUserBySolicitIds" resultType="AeaHiSolicitDetailUser">

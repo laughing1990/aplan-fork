@@ -100,6 +100,12 @@ public class AeaHiSolicitVo {
     @ApiModelProperty(value = "征求意见状态：0表示未开始，1表示征求中，2表示已完成，3表示已终止")
     private String solicitState;
 
+    @ApiModelProperty(value = "联系人姓名")
+    private String solicitLinkmanName;
+
+    @ApiModelProperty(value = "联系人手机号码")
+    private String solicitLinkmanPhone;
+
     @ApiModelProperty(value = "创建人")
     private String creater;
 
