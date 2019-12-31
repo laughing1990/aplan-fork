@@ -7,6 +7,7 @@ import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.JsonUtils;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.admin.market.service.service.AeaImServiceService;
 import com.augurit.aplanmis.common.domain.AeaImService;
 import com.augurit.aplanmis.common.mapper.AeaImServiceMapper;
@@ -102,14 +103,15 @@ public class AeaImServiceController {
             throw new InvalidParameterException(aeaImService);
         }
 
-        if (aeaImService.getServiceId() != null && !"".equals(aeaImService.getServiceId())) {
+        if (!StringUtils.isEmpty(aeaImService.getServiceId())) {
             aeaImServiceService.updateAeaImService(aeaImService);
         } else {
-            if (aeaImService.getServiceId() == null || "".equals(aeaImService.getServiceId()))
+            if (StringUtils.isEmpty(aeaImService.getServiceId()))
                 aeaImService.setServiceId(UUID.randomUUID().toString());
             aeaImService.setCreateTime(new Date());
             aeaImService.setCreater(SecurityContext.getCurrentUserName());
             aeaImService.setIsDelete("0");
+            aeaImService.setRootOrgId(SecurityContext.getCurrentOrgId());
             aeaImServiceService.saveAeaImService(aeaImService);
         }
 
