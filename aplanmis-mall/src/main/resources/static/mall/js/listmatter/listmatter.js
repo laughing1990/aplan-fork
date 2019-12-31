@@ -3,7 +3,9 @@ var listmatter = (function(window){
         el:"#listmatter",
         data:{
             ctx:ctx,
+            show1:true,
             contentLoading:false,
+            materialLoading:false,
             tableData: [{
                 date: '2016-05-03',
                 name: '王小虎',
@@ -35,12 +37,17 @@ var listmatter = (function(window){
             }],
             radio:'1',
             stageId:null,// 当前阶段id
+            listmatterData:{},
+            coreItemList:[],
+            parallelItemList:[],
+            itemStateList:[], // 事项情形列表
         },
         created:function(){
             this.GetRequest();
         },
         methods:{
-            getlistMatter:function (stageId) {
+            // 获取事项一单清
+            getItemList:function (stageId) {
                 var vm = this;
                 this.contentLoading = true
                 request('', {
@@ -51,14 +58,64 @@ var listmatter = (function(window){
                     if (res.success) {
                         vm.contentLoading = false;
                         var content = res.content;
+                        vm.listmatterData = content;
+                        vm.parallelItemList = content.parallelItemList; //  并联事项
+                        vm.coreItemList = content.coreItemList; // 并行推进事项
+
+                    } else {
+                        vm.$message.error(res.message);
+                    }
+                }, function () {
+                    vm.contentLoading = false;
+                    vm.$message.error('获取事项一清单数据接口失败，请稍后重试！');
+                });
+            },
+            // 获取材料一单清
+            getMateriallist:function(){
+                var vm = this;
+                this.materialLoading = true
+                request('', {
+                    url: ctx + 'rest/userCenter/apply/mat/list',
+                    type: 'post',
+                    data:{
+                        "coreItemVerIds": [], // 并行事项版本ID数组
+                        "coreParentItemVerIds": [], // 并行标准事项版本ID数组
+                        "itemStateIds": [], // 事项情形ID数组
+                        "paraParentllelItemVerIds": [], // 并联标准事项版本ID数组
+                        "parallelItemVerIds": [], // 并联事项版本ID数组
+                        "stageId":vm.stageId, // 阶段id
+                        "stageStateIds": [], //阶段情形ID数组
+                    }
+                }, function (res) {
+                    if (res.success) {
 
                     } else {
                         vm.$message.error(res.message);
                     }
 
                 }, function () {
-                    vm.contentLoading = false;
-                    vm.$message.error('获取事项一清单数据接口失败，请稍后重试！');
+                    vm.materialLoading = false;
+                    vm.$message.error('获取材料一清单数据接口失败，请稍后重试！');
+                });
+            },
+            //根据事项版本号获取根情形列表
+            currentItemVerIdChangehandle:function(itemVerId){
+                this.getItemStateList(itemVerId);
+            },
+            getItemStateList:function(itemVerId){
+                var vm = this;
+                request('', {
+                    url: ctx + 'rest/userCenter/apply/series/itemState/list/'+itemVerId,
+                    type: 'get',
+                }, function (res) {
+                    if (res.success) {
+                        vm.itemStateList = res.content;
+                    } else {
+                        vm.$message.error(res.message);
+                    }
+
+                }, function () {
+                    vm.$message.error('根据事项版本号获取根情形列表接口失败，请稍后重试！');
                 });
             },
             gotoGuideIndex:function () {
@@ -77,7 +134,7 @@ var listmatter = (function(window){
                     }
                 }
                 this.stageId = theRequest.stageId? theRequest.stageId : null;
-                this.getlistMatter(this.stageId);
+                this.getItemList(this.stageId);
                 return theRequest;
             },
         }
