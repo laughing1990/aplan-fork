@@ -33,6 +33,9 @@ public class AeaHiSolicitDetailUser implements Serializable {
     private String modifier; // (更新人)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private java.util.Date modifyTime; // (更新时间)
+    private String linkmanName; // (联系人)
+    private String linkmanPhone; // (联系人联系方式)
+
 
     private List<BscAttFileAndDir> fileAndDirs;//附件集合
     private String userName; //扩展字段 (用户名)

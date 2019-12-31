@@ -50,4 +50,6 @@ public interface ItemBasicMapper {
     AeaItemBasic findParentItemByItemVerId(@Param("itemVerId") String itemVerId);
 
     List<SpglDfxmsplcjdsxxxb> findItemByGcdm(@Param("gcdm") String gcdm);
+
+    String getItemTimeLimitAtStage(@Param("itemId") String itemId, @Param("appId") String appId);
 }

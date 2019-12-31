@@ -14,6 +14,7 @@ import com.augurit.agcloud.opus.common.domain.OpuOmUser;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.agcloud.opus.common.mapper.OpuOmUserMapper;
 import com.augurit.aplanmis.common.constants.CertinstSource;
+import com.augurit.aplanmis.common.constants.SolicitBusTypeEnum;
 import com.augurit.aplanmis.common.constants.UnitType;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
@@ -146,7 +147,15 @@ public class ApproveService {
         solicit.setApplyinstId(applyinstId);
         List<AeaHiSolicit> solicits = aeaHiSolicitMapper.listAeaHiSolicit(solicit);
         if(solicits != null && solicits.size() > 0){
-            bpmApproveStateVo.setHasSolicit("1");
+            for(AeaHiSolicit solicit1:solicits){
+                if(SolicitBusTypeEnum.YJZQ.getValue().equals(solicit1.getBusType())){
+                    bpmApproveStateVo.setHasYJZQ("1");
+                }else if(SolicitBusTypeEnum.YCZX.getValue().equals(solicit1.getBusType())){
+                    bpmApproveStateVo.setHasYCZX("1");
+                }else if(SolicitBusTypeEnum.LHPS.getValue().equals(solicit1.getBusType())){
+                    bpmApproveStateVo.setHasLHPS("1");
+                }
+            }
         }
         bpmApproveStateVo.setApplyStyle(applyInst.getApplyinstSource());
         bpmApproveStateVo.setIsSeriesinst(applyInst.getIsSeriesApprove());

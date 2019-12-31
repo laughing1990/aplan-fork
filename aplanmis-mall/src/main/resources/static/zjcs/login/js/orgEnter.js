@@ -332,7 +332,7 @@ var vm = new Vue({
       var _this = this;
       request('', {
         type: 'post',
-        url: ctx + 'supermarket/purchase/getAllService ',
+        url: ctx + 'supermarket/purchase/getAllService',
         data: {}
       }, function(res) {
         _this.serviceType = res.content;

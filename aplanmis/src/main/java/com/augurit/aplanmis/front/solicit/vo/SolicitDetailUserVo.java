@@ -62,6 +62,12 @@ public class SolicitDetailUserVo {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private java.util.Date modifyTime;
 
+    @ApiModelProperty(value = "联系人姓名", required = false, dataType="string")
+    private String linkmanName;
+
+    @ApiModelProperty(value = "联系人手机号码", required = false, dataType="string")
+    private String linkmanPhone;
+
     public AeaHiSolicitDetailUser convertToAeaHiDetailUser(){
         AeaHiSolicitDetailUser user = new AeaHiSolicitDetailUser();
         BeanUtils.copyProperties(this,user);

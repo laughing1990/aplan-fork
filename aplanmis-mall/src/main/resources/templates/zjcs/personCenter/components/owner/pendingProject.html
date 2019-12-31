@@ -13,7 +13,7 @@
 					服务类型：
 					<el-select :popper-append-to-body="false" placeholder="请选择" style="width:300px" v-model="serviceId">
 						<el-option :key="item.serviceName" :label="item.serviceName" :value="item.serviceId"
-							v-for="item in serviceTypeOptions">
+						           v-for="item in serviceTypeOptions">
 						</el-option>
 					</el-select>
 				</el-col>
@@ -22,9 +22,9 @@
 				<el-col :span="12">
 					选取方式：
 					<el-select :popper-append-to-body="false" placeholder="请选择" style="width:300px"
-						v-model="biddingType">
+					           v-model="biddingType">
 						<el-option :key="item.value" :label="item.label" :value="item.value"
-							v-for="item in selectionMethodOptions">
+						           v-for="item in selectionMethodOptions">
 						</el-option>
 					</el-select>
 				</el-col>
@@ -32,21 +32,21 @@
 					状态：
 					<el-select :popper-append-to-body="false" placeholder="请选择" style="width:235px" v-model="auditFlag">
 						<el-option :key="item.value" :label="item.label" :value="item.value"
-							v-for="item in statusOptions">
+						           v-for="item in statusOptions">
 						</el-option>
 					</el-select>
 					<el-button @click="listPendingProjPurchase" class="ml20" size="medium" type="primary">查询</el-button>
 				</el-col>
 			</el-row>
 			<el-table :data="pendingProjectList" :header-cell-style="{background:'#f7f8fa'}" border
-				class="scrollable mt20" style="width: 100%;">
+			          class="scrollable mt20" style="width: 100%;">
 				<el-table-column label="项目名称">
 					<template scope="scope">
 						<!-- <a @click="showProjectDetail2(scope.row)" class="a-color4879E4"
 							href="javascript:;">{{scope.row.projName}}</a> -->
 						<a class="a-color4879E4"
-							:href="ctx + '/supermarket/main/showPorjDetail.html?id=' + scope.row.projPurchaseId"
-							target="_blank">{{scope.row.projName}}</a>
+						   :href="ctx + '/supermarket/main/showPorjDetail.html?id=' + scope.row.projPurchaseId"
+						   target="_blank">{{scope.row.projName}}</a>
 					</template>
 				</el-table-column>
 				<el-table-column label="服务类型" prop="serviceName"></el-table-column>
@@ -59,21 +59,21 @@
 				<el-table-column label="操作">
 					<template scope="scope">
 						<a @click="serviceAppraise(scope.row)" class="a-color4879E4" href="javascript:;"
-							v-if="scope.row.auditFlag==2">服务评价</a>
+						   v-if="scope.row.auditFlag==2">服务评价</a>
 						<a @click="showIntermediary(scope.row)" class="a-color4879E4" href="javascript:;"
-							v-if="scope.row.auditFlag==8">选取中介</a>
+						   v-if="scope.row.auditFlag==8">选取中介</a>
 						<a @click="saveContract(scope.row)" class="a-color4879E4" href="javascript:;"
-							v-if="['9', '16'].indexOf(scope.row.auditFlag) > -1">上传</a>
+						   v-if="['9', '16'].indexOf(scope.row.auditFlag) > -1">上传</a>
 						<a @click="saveContract(scope.row)" class="a-color4879E4" href="javascript:;"
-							v-if="['17'].indexOf(scope.row.auditFlag) > -1">确认合同</a>
+						   v-if="['17'].indexOf(scope.row.auditFlag) > -1">确认合同</a>
 						<a @click="" class="a-color4879E4" href="javascript:;" v-if="scope.row.auditFlag==1">确认服务结果</a>
 					</template>
 				</el-table-column>
 			</el-table>
 			<el-pagination :current-page="pendingProjectCheckData.pageNum" :page-size="pendingProjectCheckData.pageSize"
-				:page-sizes="[10, 20, 30, 50]" :total="pendingProjectTotal" @current-change="handleCurrentChange"
-				@size-change="handleSizeChange" align="right" background
-				layout="total,sizes, prev, pager, next, jumper">
+			               :page-sizes="[10, 20, 30, 50]" :total="pendingProjectTotal" @current-change="handleCurrentChange"
+			               @size-change="handleSizeChange" align="right" background
+			               layout="total,sizes, prev, pager, next, jumper">
 			</el-pagination>
 		</div>
 
@@ -86,7 +86,7 @@
 			</div>
 
 			<el-table :data="intermediaryList" :header-cell-style="{background:'#f7f8fa'}" border
-				class="scrollable mt20" style="width: 100%;">
+			          class="scrollable mt20" style="width: 100%;">
 				<el-table-column label="单位名称">
 					<template scope="scope">
 						{{scope.row.applicant}}
@@ -113,14 +113,14 @@
 				<el-table-column label="操作">
 					<template scope="scope">
 						<a @click="isWonBid(scope.row)" class="a-color4879E4" href="javascript:;"
-							v-if="scope.row.isWonBid==0">选取</a>
+						   v-if="scope.row.isWonBid==0">选取</a>
 					</template>
 				</el-table-column>
 			</el-table>
 			<el-pagination :current-page="pendingProjectCheckData.pageNum" :page-size="pendingProjectCheckData.pageSize"
-				:page-sizes="[10, 20, 30, 50]" :total="pendingProjectTotal" @current-change="intermediaryCurrentChange"
-				@size-change="intermediarySizeChange" align="right" background
-				layout="total,sizes, prev, pager, next, jumper">
+			               :page-sizes="[10, 20, 30, 50]" :total="pendingProjectTotal" @current-change="intermediaryCurrentChange"
+			               @size-change="intermediarySizeChange" align="right" background
+			               layout="total,sizes, prev, pager, next, jumper">
 			</el-pagination>
 		</div>
 	</div>
@@ -135,7 +135,7 @@
 		<el-form :inline=true :model="contractDetailObj" class="form" label-width="150px" ref="form">
 			<el-form-item label="提交时间：">
 				<el-date-picker :disabled="isSureHandelRow" placeholder="选择日期时间" style="width:260px;" type="date"
-					v-model="submitTime" value-format="yyyy-MM-dd">
+				                v-model="submitTime" value-format="yyyy-MM-dd">
 				</el-date-picker>
 			</el-form-item>
 
@@ -147,7 +147,7 @@
 
 			<el-form-item label="合同签订时间：">
 				<el-date-picker :disabled="isSureHandelRow" placeholder="选择日期时间" style="width:260px;" type="date"
-					v-model="contractDetailObj.signTime" value-format="yyyy-MM-dd">
+				                v-model="contractDetailObj.signTime" value-format="yyyy-MM-dd">
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item label="合同编码：">
@@ -163,21 +163,21 @@
 			</el-form-item>
 			<el-form-item label="合同服务开始日期：">
 				<el-date-picker :disabled="isSureHandelRow" class="w-300" style="width:260px;" type="date"
-					v-model="contractDetailObj.serviceStartTime" value-format="yyyy-MM-dd">
+				                v-model="contractDetailObj.serviceStartTime" value-format="yyyy-MM-dd">
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item label="合同服务截止日期：">
 				<el-date-picker :disabled="isSureHandelRow" class="w-300" style="width:260px;" type="date"
-					v-model="contractDetailObj.serviceEndTime" value-format="yyyy-MM-dd">
+				                v-model="contractDetailObj.serviceEndTime" value-format="yyyy-MM-dd">
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item label="服务内容：">
 				<el-input :disabled="isSureHandelRow" style="width:684px;" type="textarea"
-					v-model="contractDetailObj.serviceContent"></el-input>
+				          v-model="contractDetailObj.serviceContent"></el-input>
 			</el-form-item>
 			<el-form-item label="备注：">
 				<el-input :disabled="isSureHandelRow" style="width:684px;" type="textarea"
-					v-model="contractDetailObj.memo"></el-input>
+				          v-model="contractDetailObj.memo"></el-input>
 			</el-form-item>
 		</el-form>
 		<div class="upload">
@@ -187,8 +187,8 @@
 				<!-- 查看合同的时候不显示上传组件 -->
 				<div v-if="isAttrHandelRow">
 					<el-upload :auto-upload="false" :file-list="fileList" :multiple="true"
-						:on-change="enclosureFileSelectChange2" :on-remove="enclosureFileSelectRemove2" action=""
-						class="upload-demo" ref="enclosureUploadRef" style="width:684px;">
+					           :on-change="enclosureFileSelectChange2" :on-remove="enclosureFileSelectRemove2" action=""
+					           class="upload-demo" ref="enclosureUploadRef" style="width:684px;">
 						<el-button size="medium" slot="trigger" type="normal">上传文件</el-button>
 						<span>上传的附件不可超过10MB，禁止上传以下的附件类型：.exe,.sh,.bat,.com,.dll</span>
 					</el-upload>
@@ -196,7 +196,7 @@
 				<ul class="pjfile-list" v-else>
 					<li v-for="item in contractDetailObj.bscAttForms">{{item.attName}}
 						<a @click="deleteContractOne(item)" class="debtn" href="javascript:;"
-							v-if="!isSureHandelRow">删除</a>
+						   v-if="!isSureHandelRow">删除</a>
 						<a @click="downloadContractEnclosure(item)" class="debtn" href="javascript:;">下载</a>
 					</li>
 				</ul>
@@ -429,7 +429,7 @@
 			// 获取服务类型下拉列表options
 			fetchServiceTypeOptions: function () {
 				var ts = this,
-					_getData = {};
+						_getData = {};
 				_getData.unitInfoId = JSON.parse(localStorage.getItem('loginInfo')).unitId;
 				ts.mloading = true;
 				request('', {
@@ -505,12 +505,12 @@
 								_this.isSignupProjectInfo = 0;
 								_this.listPendingProjPurchase();
 							} else {
-								vm.$message({ message: res.message, type: 'error' });
+								vm.$message({message: res.message, type: 'error'});
 							}
 						},
 						error: function () {
 							vm.loading = false;
-							vm.$message({ message: '保存失败', type: 'error' });
+							vm.$message({message: '保存失败', type: 'error'});
 						}
 					});
 				}).catch(() => {
@@ -576,7 +576,7 @@
 			// 编辑（或者查看）时获取对应的合同合同数据
 			fetchEditOrLookContractData: function (row) {
 				var ts = this,
-					_url = ctx + 'supermarket/contract/getAeaImContract/' + row.contractId;
+						_url = ctx + 'supermarket/contract/getAeaImContract/' + row.contractId;
 				ts.mloading = true;
 				request('', {
 					url: _url,
@@ -586,7 +586,7 @@
 					if (res.success) {
 						ts.initEditOrLookContractData(res.content);
 						ts.submitTime = tempFormatDate(res.content.modifyTime || res.content
-							.createTime); //编辑合同时，提交时间是最后修改时间
+								.createTime); //编辑合同时，提交时间是最后修改时间
 					} else {
 						ts.$message({
 							message: res.message,
@@ -620,13 +620,13 @@
 				}
 				ts.contractDetailObj.signTime = tempFormatDate(ts.contractDetailObj.signTime);
 				ts.contractDetailObj.serviceStartTime = tempFormatDate(ts.contractDetailObj
-					.serviceStartTime);
+						.serviceStartTime);
 				ts.contractDetailObj.serviceEndTime = tempFormatDate(ts.contractDetailObj.serviceEndTime);
 			},
 			// 附件删除（删除已上传的附件）
 			deleteContractOne: function (obj) {
 				var ts = this,
-					_delData = {};
+						_delData = {};
 				confirmMsg('', '您确定删除当前附件吗？', function () {
 					_delData.detailId = obj.detailId;
 					ts.mloading = true;
@@ -662,7 +662,7 @@
 			// 先获取合同的初始化数据
 			fetchUploadContractInitData: function (row) {
 				var ts = this,
-					_url = ctx + 'supermarket/contract/getNewContract/' + row.projPurchaseId;
+						_url = ctx + 'supermarket/contract/getNewContract/' + row.projPurchaseId;
 				ts.mloading = true;
 				request('', {
 					url: _url,
@@ -702,7 +702,7 @@
 				}
 				ts.contractDetailObj.signTime = tempFormatDate(ts.contractDetailObj.signTime);
 				ts.contractDetailObj.serviceStartTime = tempFormatDate(ts.contractDetailObj
-					.serviceStartTime);
+						.serviceStartTime);
 				ts.contractDetailObj.serviceEndTime = tempFormatDate(ts.contractDetailObj.serviceEndTime);
 			},
 			// 附件上传文件列表变动
@@ -804,7 +804,7 @@
 
 
 				this.fileList.forEach(function (item) {
-					formData.append('file', item)
+					formData.append('files', item)
 				})
 				$.ajax({
 					url: ctx + '/supermarket/contract/postContract',
@@ -839,7 +839,7 @@
 				_sureUrl = ctx + 'supermarket/contract/confirmContractByContractId/' + this.contractDetailObj.contractId;
 				request('', {
 					url: _sureUrl,
-					data: { projPurchaseId: ts.contractDetailObj.projPurchaseId },
+					data: {projPurchaseId: ts.contractDetailObj.projPurchaseId},
 					type: 'post',
 				}, function (res) {
 					ts.mloading = false;

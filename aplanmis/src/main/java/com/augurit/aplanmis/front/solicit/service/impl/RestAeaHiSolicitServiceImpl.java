@@ -13,7 +13,9 @@ import com.augurit.agcloud.framework.security.user.OpuOmUser;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
+import com.augurit.agcloud.opus.common.domain.OpuOmUserInfo;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
+import com.augurit.agcloud.opus.common.mapper.OpuOmUserInfoMapper;
 import com.augurit.agcloud.opus.common.service.om.OpuOmOrgService;
 import com.augurit.aplanmis.common.constants.SolicitBusTypeEnum;
 import com.augurit.aplanmis.common.constants.TimeruleInstState;
@@ -31,6 +33,7 @@ import com.augurit.aplanmis.front.solicit.service.SolicitCodeService;
 import com.augurit.aplanmis.front.solicit.vo.AeaHiSolicitInfo;
 import com.github.pagehelper.Page;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -109,6 +112,9 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
 
     @Autowired
     private FileUtilsService fileUtilsService;
+
+    @Autowired
+    private OpuOmUserInfoMapper opuOmUserInfoMapper;
 
     @Override
     public List<OpuOmOrg> listOrg(String isRoot, String parentOrgId) throws Exception {
@@ -195,7 +201,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
             }
         }
         Date date = new Date();
-        if(StringUtils.isBlank(aeaHiSolicit.getSolicitId())){
+        if (StringUtils.isBlank(aeaHiSolicit.getSolicitId())) {
             aeaHiSolicit.setSolicitId(UUID.randomUUID().toString());
         }
         //2、保存意见征求主表信息
@@ -256,7 +262,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
             }
         }
         //处理流程挂起操作
-        if(StringUtils.isNotBlank(aeaHiSolicit.getProcinstId()) && !bpmProcessService.isProcessSuspended(aeaHiSolicit.getProcinstId())){
+        if (StringUtils.isNotBlank(aeaHiSolicit.getProcinstId()) && !bpmProcessService.isProcessSuspended(aeaHiSolicit.getProcinstId())) {
             bpmProcessService.suspendProcessInstanceById(aeaHiSolicit.getProcinstId());
         }
     }
@@ -267,15 +273,18 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
             throw new RuntimeException("参数applyinstId不能为空！");
         if (StringUtils.isBlank(busType))
             throw new RuntimeException("参数busType业务类型不能为空！");
-
+        //结果集
         List<AeaHiSolicitInfo> solicitInfoList = new ArrayList<>();
 
+        //通过申请实例id和征求业务类型，查询对应的征求内容，可能有多次
         AeaHiSolicit solicit = new AeaHiSolicit();
         solicit.setApplyinstId(applyinstId);
         solicit.setBusType(busType);
         List<AeaHiSolicit> solicits = aeaHiSolicitMapper.listAeaHiSolicit(solicit);
 
         if (solicits != null && solicits.size() > 0) {
+            //当前登录人信息
+            String currUserName = SecurityContext.getCurrentUser().getUserName();
             String currUserId = SecurityContext.getCurrentUserId();
             AeaHiSolicitDetailUser currDetailUser = null;
 
@@ -284,12 +293,13 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                 hiSolicit.setSolicitTypeName(SolicitBusTypeEnum.valueOf(hiSolicit.getBusType()).getName());
                 solicitIds.add(hiSolicit.getSolicitId());
             }
-
+            //先一次查出所有征求的详情信息和涉及的审批人员信息
             List<AeaHiSolicitDetail> solicitDetails = aeaHiSolicitDetailMapper.listAeaHiSolicitDetailBySolicitIds(solicitIds);
             List<AeaHiSolicitDetailUser> solicitDetailUsers = aeaHiSolicitDetailUserMapper.listAeaHiSolicitDetailUserBySolicitIds(solicitIds);
 
             Map<String, List<AeaHiSolicitDetail>> detailMap = new HashMap<>();
             Map<String, List<AeaHiSolicitDetailUser>> detailUserMap = new HashMap<>();
+            Map<String, AeaHiSolicitDetailUser> currentAnswerUserMap = new HashMap<>();
 
             String[] detailUserIds = new String[solicitDetailUsers.size()];
             if (solicitDetailUsers != null && solicitDetailUsers.size() > 0) {
@@ -301,8 +311,21 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                     //如果是当前审批人需要填写意见的，则单独拿出来，等待填写
                     if (currUserId != null && currUserId.equals(solicitDetailUser.getUserId()) && solicitDetailUser.getUserConclusion() == null) {
                         currDetailUser = solicitDetailUser;
+                        //查询用户详细信息，姓名，联系方式等
+                        OpuOmUserInfo opuOmUserInfo = opuOmUserInfoMapper.getOpuOmUserInfoByUserId(currUserId);
+                        if(opuOmUserInfo != null){
+                            currDetailUser.setLinkmanName(currUserName);
+                            currDetailUser.setLinkmanPhone(opuOmUserInfo.getUserMobile());
+                        }
+                        for(int j=0,len=solicitDetails.size(); j<len; j++){
+                            AeaHiSolicitDetail aeaHiSolicitDetail = solicitDetails.get(j);
+                            if(aeaHiSolicitDetail.getSolicitDetailId().equals(currDetailUser.getSolicitDetailId())){
+                                currentAnswerUserMap.put(aeaHiSolicitDetail.getSolicitId(),currDetailUser);
+                                break;
+                            }
+                        }
                     }
-
+                    //将一条详情对应的用户放到一个map中
                     List<AeaHiSolicitDetailUser> users = detailUserMap.get(solicitDetailUser.getSolicitDetailId());
                     if (users != null) {
                         users.add(solicitDetailUser);
@@ -313,11 +336,11 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                     }
                 }
             }
-
+            //查询当前这个详情下所有用户上传的附件
             List<BscAttFileAndDir> attFileList = new ArrayList<>();
             if (detailUserIds.length > 0)
                 attFileList = bscAttDetailMapper.searchFileAndDirsSimple(null, SecurityContext.getCurrentOrgId(), "AEA_HI_SOLICIT_DETAIL_USER", "DETAIL_USER_ID", detailUserIds);
-
+            //遍历再挂到各个用户下
             Map<String, List<BscAttFileAndDir>> fileAndDirMap = new HashMap<>();
             if (attFileList != null && attFileList.size() > 0) {
                 for (BscAttFileAndDir fileAndDir : attFileList) {
@@ -340,7 +363,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                     }
                 }
             }
-
+            //遍历所有详情详细，并根据征求的主表id挂到各个征求下
             if (solicitDetails != null && solicitDetails.size() > 0) {
                 for (AeaHiSolicitDetail solicitDetail : solicitDetails) {
                     List<AeaHiSolicitDetailUser> users = detailUserMap.get(solicitDetail.getSolicitDetailId());
@@ -356,7 +379,30 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                 }
             }
 
+            //查询征求主表信息关联的附件
+            Map<String, List<BscAttFileAndDir>> solicitFileAndDirMap = Maps.newHashMap();
+            if(solicitIds.size() > 0) {
+                String[] solicitIdArr = new String[solicitIds.size()];
+                solicitIds.toArray(solicitIdArr);
+                List<BscAttFileAndDir> solicitAttFileList = bscAttDetailMapper.searchFileAndDirsSimple(null, SecurityContext.getCurrentOrgId(),
+                        "AEA_HI_SOLICIT", "SOLICIT_ID", solicitIdArr);
+                for (BscAttFileAndDir fileAndDir : solicitAttFileList) {
+                    List<BscAttFileAndDir> files = solicitFileAndDirMap.get(fileAndDir.getBscAttLink().getRecordId());
+                    if (files != null) {
+                        files.add(fileAndDir);
+                    } else {
+                        files = new ArrayList<>();
+                        files.add(fileAndDir);
+                        solicitFileAndDirMap.put(fileAndDir.getBscAttLink().getRecordId(), files);
+                    }
+                }
+            }
+
+            //遍历征求主表信息，组装数据
             for (AeaHiSolicit hiSolicit : solicits) {
+                //组装附件信息
+                hiSolicit.setFileAndDirs(solicitFileAndDirMap.get(hiSolicit.getSolicitId()));
+
                 List<AeaHiSolicitDetail> details = detailMap.get(hiSolicit.getSolicitId());
                 //时限单位转换
                 if (hiSolicit.getSolicitDaysUnit() != null) {
@@ -391,6 +437,12 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                     }
                     if (hasDone) {
                         hiSolicit.setSolicitCanBeFinish("1");
+                        //查询用户详细信息，姓名，联系方式等
+                        OpuOmUserInfo opuOmUserInfo = opuOmUserInfoMapper.getOpuOmUserInfoByUserId(currUserId);
+                        if(opuOmUserInfo != null){
+                            hiSolicit.setSolicitLinkmanName(currUserName);
+                            hiSolicit.setSolicitLinkmanPhone(opuOmUserInfo.getUserMobile());
+                        }
                     }
                 }
                 //组装返回内容
@@ -398,7 +450,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                 //征求主表实体信息
                 solicitInfo.setSolicit(hiSolicit);
                 //当前需要被征求部门给意见的实体信息
-                solicitInfo.setSolicitDetailUser(currDetailUser);
+                solicitInfo.setSolicitDetailUser(currentAnswerUserMap.get(hiSolicit.getSolicitId()));
                 //所有的被征求的详细信息
                 solicitInfo.setSolicitDetails(details);
                 solicitInfoList.add(solicitInfo);
@@ -482,8 +534,8 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
 
         aeaHiSolicitMapper.updateAeaHiSolicit(aeaHiSolicit);
         //处理流程激活操作，先默认是通过则激活流程
-        if(StringUtils.isNotBlank(aeaHiSolicit.getProcinstId()) && SolicitConstant.SOLICIT_CONCLUSION_FLAG_TG.equals(aeaHiSolicit.getConclusionFlag()) &&
-                bpmProcessService.isProcessSuspended(aeaHiSolicit.getProcinstId())){
+        if (StringUtils.isNotBlank(aeaHiSolicit.getProcinstId()) && SolicitConstant.SOLICIT_CONCLUSION_FLAG_TG.equals(aeaHiSolicit.getConclusionFlag()) &&
+                bpmProcessService.isProcessSuspended(aeaHiSolicit.getProcinstId())) {
             bpmProcessService.activateProcessInstanceById(aeaHiSolicit.getProcinstId());
         }
     }
@@ -518,13 +570,20 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
 
         condVo.setRootOrgId(SecurityContext.getCurrentOrgId());
         condVo.setUserId(SecurityContext.getCurrentUserId());
+        //测试部门辅导，查找所有
+        /*if (true) {
+            //部门辅导查询所有
+            condVo.setSolicitState(new String[]{"2", "1", "3"});
+        } else*/
         if (SolicitBusTypeEnum.LHPS.getValue().equals(condVo.getBusType())) {
             //联合评审只查询未完成状态
             condVo.setSolicitState(new String[]{"1"});
+        } else if (SolicitBusTypeEnum.BMFD.getValue().equals(condVo.getBusType())) {
+            //部门辅导查询所有
+            condVo.setSolicitState(new String[]{"2", "1", "3"});
         } else {
             condVo.setSolicitState(new String[]{"0", "1"});
         }
-
     }
 
 
@@ -848,7 +907,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
      * @return
      * @throws Exception
      */
-    public String uploadAttFile(String solicitId, String tableName,String pkName, HttpServletRequest request) throws Exception {
+    public String uploadAttFile(String solicitId, String tableName, String pkName, HttpServletRequest request) throws Exception {
 
         if (StringUtils.isBlank(tableName)) throw new Exception("缺少表名参数！");
         if (StringUtils.isBlank(pkName)) throw new Exception("缺少表主键字段名参数！");

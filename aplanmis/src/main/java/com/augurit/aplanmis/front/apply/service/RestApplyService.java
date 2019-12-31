@@ -257,6 +257,7 @@ public class RestApplyService {
     protected void confirmAeaHiApplyinst(AeaHiApplyinst aeaHiApplyinst, ApplyDataVo applyDataVo, String isTemporarySubmit) throws Exception {
         if (StringUtils.isNotBlank(aeaHiApplyinst.getApplyinstId())) {
             AeaHiApplyinst newOne = new AeaHiApplyinst();
+            newOne.setParentApplyinstId(aeaHiApplyinst.getParentApplyinstId());
             newOne.setApplyinstId(aeaHiApplyinst.getApplyinstId());
             newOne.setProjInfoId(applyDataVo.getProjInfoIds()[0]);
             newOne.setIsGreenWay(StringUtils.isNotBlank(applyDataVo.getIsGreenWay()) ? applyDataVo.getIsGreenWay() : Status.OFF);

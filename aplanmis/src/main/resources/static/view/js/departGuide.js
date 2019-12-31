@@ -23,7 +23,7 @@ var vm = new Vue({
 				arriveStartTime: '',
 				arriveEndTime: '',
 				keyword: '',
-				// busType: 'LHPS'
+				// busType: 'BMFD'
 				busType: 'YJZQ',//测试用
 			},
 
@@ -172,10 +172,16 @@ var vm = new Vue({
 		},
 		//状态转换
 		formatState: function (row, column, cellValue, index) {
-			if (row.finishProgressNum == row.allProgressNum && row.promoter) {
-				return "结束联合评审"
+			if (row.solicitState && row.solicitState == 2) {
+				return '部门辅导完成';
+			} else if (row.solicitState && row.solicitState == 3) {
+				return '部门辅导中止';
+			} else if (row.finishProgressNum == row.allProgressNum && row.promoter) {
+				return "结束部门辅导";
+			} else if (row.finishProgressNum == row.allProgressNum && !row.promoter) {
+				return "牵头部门辅导";
 			} else {
-				return "联合评审"
+				return "部门辅导";
 			}
 		},
 		//按钮转换

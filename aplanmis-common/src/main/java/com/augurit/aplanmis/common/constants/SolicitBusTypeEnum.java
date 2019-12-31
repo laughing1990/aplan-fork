@@ -14,7 +14,10 @@ public enum SolicitBusTypeEnum {
     YCZX("一次征询", "YCZX"),
 
     @ApiModelProperty(value = "SOLICIT_BUSTYPE_YJZQ", name = "意见征求", allowableValues = "SOLICIT_BUSTYPE_YJZQ")
-    YJZQ("意见征求", "YJZQ");
+    YJZQ("意见征求", "YJZQ"),
+
+    @ApiModelProperty(value = "SOLICIT_BUSTYPE_BMFD", name = "部门辅导", allowableValues = "SOLICIT_BUSTYPE_BMFD")
+    BMFD("部门辅导", "BMFD");
 
     private String name;
     private String value;

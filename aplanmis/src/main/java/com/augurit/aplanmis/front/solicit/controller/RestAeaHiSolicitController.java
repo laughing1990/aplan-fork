@@ -88,7 +88,7 @@ public class RestAeaHiSolicitController {
             return new ResultForm(true);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResultForm(false, "按事项发起失败！");
+            return new ResultForm(false, "发起失败！");
         }
     }
     @ApiOperation(value = "意见征求 --> 发起同时上传附件接口", notes = "获取意见征求列表")

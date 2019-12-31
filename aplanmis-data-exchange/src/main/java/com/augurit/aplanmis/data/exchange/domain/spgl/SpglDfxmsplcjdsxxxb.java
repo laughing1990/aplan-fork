@@ -127,6 +127,27 @@ public class SpglDfxmsplcjdsxxxb extends SpglEntity implements Serializable {
 
     private java.util.Date endTime;
 
+    //扩展字段
+    /**
+     * 事项ID
+     */
+    private String itemId;
+
+    /**
+     * 事项基本信息ID
+     */
+    private String itemBasicId;
+
+    /**
+     * 阶段ID
+     */
+    private String stageId;
+
+    /**
+     *
+     */
+    private String appId;
+
     @Override
     @JsonIgnore
     public String getTableName() {

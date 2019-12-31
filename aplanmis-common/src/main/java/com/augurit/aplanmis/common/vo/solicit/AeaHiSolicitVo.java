@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -62,27 +63,27 @@ public class AeaHiSolicitVo {
     @ApiModelProperty(value = "是否纳入计时")
     private String isCalcTimerule;
 
-    @ApiModelProperty(value = "")
-    private String solicitTimeruleId; // (意见征求计算策略表ID)
+    @ApiModelProperty(value = "意见征求计算策略表ID")
+    private String solicitTimeruleId;
 
-    @ApiModelProperty(value = "")
-    private String conclusionFlag; // (办结结论标志位，0表示不通过，1表示通过)
+    @ApiModelProperty(value = "办结结论标志位，0表示不通过，1表示通过")
+    private String conclusionFlag;
 
-    @ApiModelProperty(value = "")
-    private String conclusionDesc; // (办结结论描述)
+    @ApiModelProperty(value = "办结结论描述")
+    private String conclusionDesc;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "填写结论时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private java.util.Date conclusionTime; // (填写结论时间)
+    private java.util.Date conclusionTime;
 
-    @ApiModelProperty(value = "")
-    private String conclusionUserId; // (填写结论用户ID)
+    @ApiModelProperty(value = "填写结论用户ID")
+    private String conclusionUserId;
 
-    @ApiModelProperty(value = "")
-    private String conclusionUserName; // (填写结论用户姓名)
+    @ApiModelProperty(value = "填写结论用户姓名")
+    private String conclusionUserName;
 
-    @ApiModelProperty(value = "")
-    private String initiatorOrgId; // (意见征求发起组织ID)
+    @ApiModelProperty(value = "意见征求发起组织ID")
+    private String initiatorOrgId;
 
     @ApiModelProperty(value = "意见征求发起组织名称")
     private String initiatorOrgName;
@@ -99,18 +100,24 @@ public class AeaHiSolicitVo {
     @ApiModelProperty(value = "征求意见状态：0表示未开始，1表示征求中，2表示已完成，3表示已终止")
     private String solicitState;
 
+    @ApiModelProperty(value = "联系人姓名")
+    private String solicitLinkmanName;
+
+    @ApiModelProperty(value = "联系人手机号码")
+    private String solicitLinkmanPhone;
+
     @ApiModelProperty(value = "创建人")
     private String creater;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @ApiModelProperty(value = "受理时间")
     @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    private java.util.Date acceptTime;
+    private Date acceptTime;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @ApiModelProperty(value = "受理时间")
+    @ApiModelProperty(value = "意见征求创建时间")
     @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    private java.util.Date createTime;
+    private Date createTime;
 
     //aea_hi_solicit_detail
     @ApiModelProperty(value = "主键")
@@ -139,11 +146,11 @@ public class AeaHiSolicitVo {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @ApiModelProperty(value = "意见征求开始时间")
-    private java.util.Date detailStartTime;
+    private Date detailStartTime;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @ApiModelProperty(value = "意见征求结束时间")
-    private java.util.Date detailEndTime;
+    private Date detailEndTime;
 
     @ApiModelProperty(value = "征求意见状态：0表示未开始，1表示征求中，2表示已完成，3表示已终止")
     private String detailState;
@@ -164,11 +171,11 @@ public class AeaHiSolicitVo {
     @ApiModelProperty(value = "签收时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    private java.util.Date signTime;
+    private Date signTime;
 
     @ApiModelProperty(value = "填写意见时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private java.util.Date fillTime;
+    private Date fillTime;
 
     @ApiModelProperty(value = "任务动作，0表示正常办理，1表示转交给同一委办局的其他人员，2表示添加同一委办局的其他人员进来")
     private String taskAction;
@@ -194,6 +201,10 @@ public class AeaHiSolicitVo {
     //申报实例相关
     @ApiModelProperty(value = "")
     private String applyinstCode;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @ApiModelProperty(value = "申报时间")
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date applyTime;
 
     @ApiModelProperty(value = "")
     private String isSeriesApprove;

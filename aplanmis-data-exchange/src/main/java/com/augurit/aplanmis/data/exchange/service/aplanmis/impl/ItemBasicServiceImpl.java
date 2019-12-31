@@ -125,4 +125,9 @@ public class ItemBasicServiceImpl implements ItemBasicService {
     public List<SpglDfxmsplcjdsxxxb> findItemByGcdm(String gcdm) {
         return itemBasicMapper.findItemByGcdm(gcdm);
     }
+
+    @Override
+    public String getItemTimeLimitAtStage(String itemId, String appId) {
+        return itemBasicMapper.getItemTimeLimitAtStage(itemId, appId);
+    }
 }
