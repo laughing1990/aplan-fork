@@ -897,4 +897,16 @@ public class AplanmisPageIndexController {
         return modelAndView;
     }
 
+    /**
+     * 菜单-部门辅导列表
+     *
+     * @return departGuideIndex.html
+     */
+    @GetMapping("/departGuideIndex.html")
+    @ApiOperation("菜单-联合评审列表")
+    public ModelAndView departGuideReviewIndex() {
+        ModelAndView modelAndView = new ModelAndView("view/departGuideIndex.html");
+        return modelAndView;
+    }
+
 }

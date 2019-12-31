@@ -194,9 +194,9 @@ var vm = new Vue({
 				//判断是否发起人，只有发起人才能结束征询或重新发起
 				if (!row.countLimit || row.countLimit > 0) {//判断重新发起限制次数
 					if (row.promoter) {
-						return '<span class="op-btn" @click="viewDetail(scope.row)">牵头部门重新发起</span>';
+						return '<span class="op-btn" @click="viewDetail(scope.row)">重新发起</span>';
 					} else {
-						return '<span class="op-btn"  @click="viewDetail(scope.row)">被征集人查看</span>';
+						return '<span class="op-btn"  @click="viewDetail(scope.row)">查看</span>';
 					}
 				}
 			} else if (row.solicitState == '1') {//进行中
@@ -204,11 +204,11 @@ var vm = new Vue({
 					if (row.promoter) {
 						return '<span class="op-btn"  @click="viewDetail(scope.row)">结束' + _this.TransformToChinese(row.solicitIndex) + '次征询</span>';
 					} else {
-						return '<span class="op-btn"  @click="viewDetail(scope.row)">被征集人查看</span>';
+						return '<span class="op-btn"  @click="viewDetail(scope.row)">查看</span>';
 					}
 				} else {
 					if (row.promoter) {
-						return '<span class="op-btn" @click="viewDetail(scope.row)">发起人查看</span>';
+						return '<span class="op-btn" @click="viewDetail(scope.row)">查看</span>';
 					} else {
 						if (row.solicitIndex === 1) {
 							return '<span class="op-btn" @click="viewDetail(scope.row)">回复一次征询</span>';
