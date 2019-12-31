@@ -22,7 +22,11 @@
         SPBMBM  spbmbm,
         SPBMMC  spbmmc,
         SFLCBSX  sflcbsx,
-        SJYXBS  sjyxbs
+        SJYXBS  sjyxbs,
+        ITEM_ID itemId,
+        ITEM_BASIC_ID itemBasicId,
+        STAGE_ID stageId,
+        APP_ID appId
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
