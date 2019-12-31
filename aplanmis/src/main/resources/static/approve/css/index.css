@@ -2656,8 +2656,12 @@ input[type="number"] {
     left: 4px;
 }
 .yczx-top4 .l-icon{
-    font-size: 26px;
-    color: #cdced0;
+    /*font-size: 26px;*/
+    /*color: #cdced0;*/
+    width: 20px;
+    height:18px;
+    margin-top: 4px;
+    background-image: url("../imgs/icon_1.png");
 }
 .yczx-top4-line{
     width: 1px;
@@ -2680,6 +2684,12 @@ input[type="number"] {
     top: 1px;
     font-size: 20px;
     color: #169AFF;
+}
+.conclusion-text{
+    background: #F7F7FA;
+    line-height: 24px;
+    padding: 10px;
+    padding-right: 26px;
 }
 /*一次征询 end*/
 

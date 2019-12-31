@@ -718,6 +718,7 @@ var vm = new Vue({
       oneSolicitHandleCount: 0,
       oneSolicitNotHandleCount: 0,
       oneSolicitOrgData: [],
+      chineseIndexArr: __STATIC.chineseIndexArr,
       // 一次征询 end
     }
   },
@@ -1192,7 +1193,7 @@ var vm = new Vue({
         vm.parentPageLoading = false;
         if (res.success) {
           vm.$message.success('提交成功');
-          // delayRefreshWindow();
+          delayRefreshWindow();
         } else {
           vm.$message.error(res.message || '提交失败');
         }

@@ -949,7 +949,8 @@
                 {{newestOneSolicit.solicit.solicitContent}}
               </div>
               <div class="yczx-top4 c-f">
-                <div class="l-icon ag ag-user-circle"></div>
+<!--                <div class="l-icon ag ag-user-circle"></div>-->
+                <div class="l-icon"></div>
                 <div v-for="u in oneSolicitOrgData" class="org-u" :class="{handled:u.isHandled}">
                   <i class="ag ag-check-circle-fill" v-if="u.isHandled"></i>
                   {{u.detailOrgName}}
@@ -962,31 +963,35 @@
               </div>
             </div>
             <!--一次征询结果-->
-            <template v-if="newestOneSolicit.solicit.solicitCanBeFinish">
+            <template v-if="newestOneSolicit.solicit.solicitState==2||newestOneSolicit.solicit.solicitState==3">
               <div class="yczx-block-title">
                 <i class="ag ag-community"></i>
-                一次征询结果
+                征询结果
               </div>
               <div class="yczx-inner" style="padding-bottom: 12px;">
                 <el-form size="medium" style="margin-top:10px;"
-                         :model="solicitBmForm" label-width="100px">
+                         :model="newestOneSolicit.solicit" label-width="100px">
                   <el-row>
                     <el-col :span="12">
-                      <el-form-item label="征询结果" require prop="userConclusion">
-                        <span>不通过</span>
+                      <el-form-item label="征询结果：">
+                        <span class="status-span" :class="[getStatusClass2(newestOneSolicit.solicit.conclusionFlag)]">
+                          {{newestOneSolicit.solicit.conclusionFlag|changeBmOneOpinType}}
+                        </span>
                       </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                      <el-form-item label="联系人电话" require prop="solicitLinkmanPhone">
-                        {{XXXXX}}
+                      <el-form-item label="联系人电话：">
+                        {{newestOneSolicit.solicit.solicitLinkmanPhone}}
                       </el-form-item>
                     </el-col>
                   </el-row>
-                  <el-form-item label="意见汇总" require prop="userOpinion">
-                    <div>意见汇总XXX</div>
+                  <el-form-item label="意见汇总：">
+                    <div class="conclusion-text">
+                      {{newestOneSolicit.solicit.conclusionDesc||'暂无意见'}}
+                    </div>
                   </el-form-item>
                   <el-form-item label="附件列表">
-                    <el-table :data="solicitUploadFileList" border class="solict-pt">
+                    <el-table :data="newestOneSolicit.solicit.fileAndDirs" border class="solict-pt">
                       <el-table-column label='序号' type="index" width="50"></el-table-column>
                       <el-table-column label="附件名称" prop="attName">
                         <template slot-scope="scope">
@@ -1002,9 +1007,6 @@
                             <div class="spe-ope-line"></div>
                             <div class="spe-file-btn" @click="downOneFile(scope.row)">下载</div>
                             <div class="spe-ope-line"></div>
-                            <div class="spe-file-btn delete" @click="delSpeFile(scope.row, 'refreshSolicitFileList')">
-                              删除
-                            </div>
                           </div>
                         </template>
                       </el-table-column>
@@ -1014,10 +1016,10 @@
               </div>
             </template>
             <!--部门人员填写意见-->
-            <template v-if="newestOneSolicit.solicitDetailUser&&newestOneSolicit.solicitDetailUser.detailUserId&&newestOneSolicit.solicitDetailUser.detailUserId.length">
+            <template v-else-if="newestOneSolicit.solicitDetailUser&&newestOneSolicit.solicitDetailUser.detailUserId&&newestOneSolicit.solicitDetailUser.detailUserId.length">
               <div class="yczx-block-title">
                 <i class="ag ag-community"></i>
-                回复一次征询
+                回复{{chineseIndexArr[oneSolicitList.length]}}次征询
               </div>
               <div class="yczx-inner" style="padding-bottom: 12px;">
                 <el-form size="medium" style="margin-top:10px;"
@@ -1083,10 +1085,10 @@
               </div>
             </template>
             <!-- 发起人结束一次征询-->
-            <template v-if="newestOneSolicit.solicit.solicitCanBeFinish">
+            <template v-else-if="newestOneSolicit.solicit.solicitCanBeFinish">
               <div class="yczx-block-title">
                 <i class="ag ag-community"></i>
-                一次征询汇总
+                征询汇总
               </div>
               <div class="yczx-inner" style="padding-bottom: 12px;">
                 <el-form size="medium" style="margin-top:10px;"
@@ -1144,7 +1146,7 @@
                       </el-table-column>
                     </el-table>
                     <div style="margin-top:10px">
-                      <el-button type="primary" size="medium" @click="solicitSaveOpinion(newestOneSolicit, 'YCZX')">提 交</el-button>
+                      <el-button type="primary" size="medium" @click="solicitSaveOpinion(newestOneSolicit, 'YCZX')">结 束</el-button>
                     </div>
                   </el-form-item>
                 </el-form>
@@ -1184,16 +1186,16 @@
                 </el-table-column>
               </el-table>
             </div>
-            <!-- 历史意见 -->
+            <!-- 历史记录 -->
             <template v-if="oneSolicitList.length">
               <div class="yczx-block-title">
                 <i class="ag ag-community"></i>
-                历史意见
+                历史记录
               </div>
               <div class="yczx-inner">
-                <div v-for="item in oneSolicitList">
+                <div v-for="(item, index) in oneSolicitList">
                   <table class="spe-info-table">
-                    <div class="table-section-title">一次征询</div>
+                    <div class="table-section-title">第{{getChineseIndex(index,oneSolicitList.length)}}次征询</div>
                     <tr>
                       <td class="td-bg-grey">征询主题</td>
                       <td colspan="5">{{item.solicit.solicitTopic}}</td>
