@@ -382,7 +382,7 @@
 						<span v-if="scope.row.promoter" class="op-btn" @click="viewDetail(scope.row)">查看</span>
 						<template v-else>
 							<span v-if="scope.row.solicitIndex === 1" class="op-btn" @click="viewDetail(scope.row)">回复一次征询</span>
-							<span v-else class="op-btn" @click="viewDetail(scope.row)">{{TransformToChinese(row.solicitIndex)+'次征询'}}</span>
+							<span v-else class="op-btn" @click="viewDetail(scope.row)">{{TransformToChinese(scope.row.solicitIndex)+'次征询'}}</span>
 						</template>
 					</template>
 				</span>
