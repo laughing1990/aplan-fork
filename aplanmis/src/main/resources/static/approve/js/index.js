@@ -624,7 +624,6 @@ var vm = new Vue({
         solicitType: 'i',
         solicitDueDays: 1,
         solicitTimeruleId: '0',
-        solicitTopic: '',
         isCalcTimerule: '1',
         solicitId: '',
         solicitLinkmanName: '',
@@ -1193,7 +1192,7 @@ var vm = new Vue({
         vm.parentPageLoading = false;
         if (res.success) {
           vm.$message.success('提交成功');
-          delayRefreshWindow();
+          // delayRefreshWindow();
         } else {
           vm.$message.error(res.message || '提交失败');
         }
@@ -3512,18 +3511,18 @@ var vm = new Vue({
           vm.hasSpecial = res.content.hasSpecial;
           vm.hasSupply = res.content.hasSupply;
           vm.hasAppCancel = res.content.ishasApplyinstCancel;
-          vm.hasSolicit = res.content.hasSolicit;
           vm.isShowOneForm = res.content.isShowOneForm;
           vm.stageId = res.content.stageId;
           vm.projInfoId = res.content.projId;
           vm.itemVersionId = res.content.itemVerId;
           vm.itemId = res.content.itemId;
-          vm.hasUnionReview = res.content.hasUnionReview;
-          if (isDevelop) {
-            vm.hasUnionReview = 1;
-            vm.hasOneSolicit = 1;
-          }
-          // vm.hasSolicit = 1;
+          vm.hasSolicit = res.content.hasYJZQ;
+          vm.hasOneSolicit = res.content.hasYCZX;
+          vm.hasUnionReview = res.content.hasLHPS;
+          // if (isDevelop) {
+          //   vm.hasOneSolicit = 1;
+          //   vm.hasUnionReview = 1;
+          // }
           vm.initFormElementPriv();
         } else {
           vm.$message.error(res.message);
