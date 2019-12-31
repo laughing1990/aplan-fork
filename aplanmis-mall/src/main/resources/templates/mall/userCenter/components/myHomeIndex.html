@@ -384,12 +384,19 @@
                 快捷入口<span class="title-line"></span>
             </div>
             <ul class="data-list clearfix">
-                <li class="data-list-item fl"  @click="toDeclare">
+               <!-- <li class="data-list-item fl"  @click="toDeclare">
                     <a target="_blank">
                         <img src="../../../../static/mall/images/userCenter/data-icon-1.png"
                             th:src="@{/mall/images/userCenter/data-icon-1.png}" alt="">
                         <p>我的项目</p>
-<!--                        <p class="checkDetail" @click="toDeclare">查看详情</p>-->
+                    </a>
+                </li>-->
+                <li class="data-list-item fl"  @click="goToStageApply">
+                    <a target="_blank">
+                        <img src="../../../../static/mall/images/userCenter/data-icon-1.png"
+                             th:src="@{/mall/images/userCenter/data-icon-1.png}" alt="">
+                        <p>我要申报</p>
+                        <!--                        <p class="checkDetail" @click="toDeclare">查看详情</p>-->
                     </a>
                 </li>
                 <li class="data-list-item fl" @click="toMyMaterials">
