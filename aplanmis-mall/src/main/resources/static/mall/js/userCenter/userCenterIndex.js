@@ -277,15 +277,22 @@ var userCenter = (function () {
                 // 如果选中的是 我的云盘则进行页面跳转
                 if(mod.value == "MyCloundSpaces"){
                     window.location.href = ctx + '/rest/main/toIndexPage?#/myCloundSpaces';
-                    return ;
+                    return false;
                 }
                 localStorage.setItem('selectNav',ts.selectNav);
                 if(mod.value == "/userCenterIndex"){
-                    localStorage.removeItem('selectNav');
-                    ts.selectNav = "我的首页";
-                    ts.userCenterItemSelect = "MyHomeIndex";
-                    ts.moduleLoad('myHomeIndex.html', '#MyHomeIndex',true);
-                    return false;
+                    if(sessionStorage.getItem('myProjListActive') == 1){
+                        ts.selectNav = "我的项目";
+                        ts.userCenterItemSelect = "MyProjList";
+                        ts.moduleLoad('myProjList.html', '#MyProjList',true);
+                        return false;
+                    }else{
+                        localStorage.removeItem('selectNav');
+                        ts.selectNav = "我的首页";
+                        ts.userCenterItemSelect = "MyHomeIndex";
+                        ts.moduleLoad('myHomeIndex.html', '#MyHomeIndex',true);
+                        return false;
+                    }
                 }
                 ts.moduleLoad(mod.value + '.html', '#' + mod.value);
             },

@@ -61,7 +61,7 @@ var listmatter = (function(window){
                         vm.listmatterData = content;
                         vm.parallelItemList = content.parallelItemList; //  并联事项
                         vm.coreItemList = content.coreItemList; // 并行推进事项
-
+                      //  vm.getMateriallist();
                     } else {
                         vm.$message.error(res.message);
                     }
@@ -73,20 +73,30 @@ var listmatter = (function(window){
             // 获取材料一单清
             getMateriallist:function(){
                 var vm = this;
-                this.materialLoading = true
+                this.materialLoading = true;
+                var coreItemVerIds = [] , coreParentItemVerIds = [] ,paraParentllelItemVerIds = [] , parallelItemVerIds = [] ,stageStateIds = [] ,itemStateIds = [] ;
+                vm.coreItemList.forEach(function (item,index) {
+                    coreItemVerIds.push(item.itemVerId);
+                    coreParentItemVerIds.push(item.baseItemVerId);
+                });
+                vm.parallelItemList.forEach(function (item,index) {
+                    parallelItemVerIds.push(item.itemVerId);
+                    paraParentllelItemVerIds.push(item.baseItemVerId);
+                });
                 request('', {
                     url: ctx + 'rest/userCenter/apply/mat/list',
                     type: 'post',
                     data:{
                         "coreItemVerIds": [], // 并行事项版本ID数组
                         "coreParentItemVerIds": [], // 并行标准事项版本ID数组
-                        "itemStateIds": [], // 事项情形ID数组
                         "paraParentllelItemVerIds": [], // 并联标准事项版本ID数组
                         "parallelItemVerIds": [], // 并联事项版本ID数组
                         "stageId":vm.stageId, // 阶段id
+                        "itemStateIds": [], // 事项情形ID数组
                         "stageStateIds": [], //阶段情形ID数组
                     }
                 }, function (res) {
+                    vm.materialLoading = false;
                     if (res.success) {
 
                     } else {

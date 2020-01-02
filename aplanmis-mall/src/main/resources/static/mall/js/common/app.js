@@ -13,7 +13,7 @@
             winH:1800,
             indexUrl:'./main/mainIndex.html',
             activeName:null,
-            topTabData: [{
+           /* topTabData: [{
                 label: '首页',
                 id: '1',
                 activeName:0,
@@ -49,6 +49,56 @@
                     url: './userCenter/userCenterIndex.html',
                     thUrl:'rest/user/toUserCenterindexPage',
                     hash:'/userCenterIndex',
+                },
+            ],*/
+            topTabData: [
+                {
+                label: '申报指引',
+                id: '1',
+                activeName:0,
+                url: './main/mainIndex.html',
+                thUrl:'rest/main/toMainIndexPage',
+                hash:'/',
+                },
+                {
+                label: '我要申报',
+                id: '2',
+                activeName:1,
+                url: './apply/index.html',
+                thUrl:'rest/userCenter/apply/toParaApplyPage',
+                hash:'/declare',
+                },
+                /*{
+                    label: '我的项目',
+                    id: '3',
+                    activeName:2,
+                    url: './apply/index.html',
+                    thUrl:'rest/user/toMyProjListPage',
+                    hash:'/MyProjList',
+                },*/
+                {
+                    label: '我的项目',
+                    id: '3',
+                    activeName:2,
+                    url: './userCenter/userCenterIndex.html',
+                    thUrl:'rest/user/toUserCenterindexPage',
+                    hash:'/userCenterIndex',
+                },
+                {
+                    label: '我的空间',
+                    id: '4',
+                    activeName:3,
+                    url: './userCenter/userCenterIndex.html',
+                    thUrl:'rest/user/toUserCenterindexPage',
+                    hash:'/userCenterIndex',
+                },
+                {
+                    label: '服务协同',
+                    id: '5',
+                    activeName:4,
+                    url: './regulation/regulationIndex.html',
+                    thUrl:'rest/main/toRegulationIndexPage',
+                    hash:'/regulationIndex',
                 },
             ],
             // 要想切分复杂的页面为两个，可以参照下面routerInitData配置
@@ -108,25 +158,24 @@
         },
         methods: {
           routerChange:function(hash,url,thUrl,index){
-              if(index === 2){
-                  //  w.open(ctx+thUrl);
-                  w.open('http://zj.fsxzfw.gov.cn/gdfs-zjcs-pub/home')
-                  return false;
-              }else{
+              if(index == 2){
+                  sessionStorage.setItem('myProjListActive',1);
+              }else {
+                  sessionStorage.setItem('myProjListActive',0);
                   this.activeName = index;
-                  if(index === 1){
+                  if (index === 1) {
                       var stageData = {
-                          origin:false,
+                          origin: false,
                       }
                       var orgData = {
-                          origin2:false,
+                          origin2: false,
                       }
-                      sessionStorage.setItem('stageData',JSON.stringify(stageData));
-                      sessionStorage.setItem('orgData',JSON.stringify(orgData));
+                      sessionStorage.setItem('stageData', JSON.stringify(stageData));
+                      sessionStorage.setItem('orgData', JSON.stringify(orgData));
                   }
-                  w.location.hash = hash;
-                  w.location.search = '';
               }
+              w.location.hash = hash;
+              w.location.search = '';
           },
             init: function () {
                 // 登陆用户数据
