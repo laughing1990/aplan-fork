@@ -20,7 +20,7 @@ public interface RestParallerApplyService {
      * @param stageId 阶段ID
      * @return
      */
-    ItemListVo listItemAndStateByStageId(String stageId, String projInfoId, String regionalism, String projectAddress) throws Exception;
+    ItemListVo listItemAndStateByStageId(String stageId, String projInfoId, String regionalism, String projectAddress,String isSelectState,String isFilterStateItem) throws Exception;
 
     /**
      * 根据rootOrgId查询因子列表

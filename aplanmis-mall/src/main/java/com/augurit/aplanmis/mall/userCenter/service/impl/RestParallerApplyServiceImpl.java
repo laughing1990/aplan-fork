@@ -55,64 +55,66 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
     private AeaHiItemInoutService aeaHiItemInoutService;
 
     @Override
-    public ItemListVo listItemAndStateByStageId(String stageId, String projInfoId, String regionalism, String projectAddress) throws Exception {
+    public ItemListVo listItemAndStateByStageId(String stageId, String projInfoId, String regionalism, String projectAddress,String isSelectState,String isFilterStateItem) throws Exception {
         ItemListVo vo = new ItemListVo();
         AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageId);
 
         //情形
         List<AeaParState> stateList = null;
         //并联
-        List<ParallelApproveItemVo> paraItemList = this.getRequiredItems(stageId, projInfoId, regionalism, projectAddress);
+        List<ParallelApproveItemVo> paraItemList = this.getRequiredItems(stageId, projInfoId, regionalism, projectAddress,isFilterStateItem);
         //并行
-        List<ParallelApproveItemVo> coreItemList = this.getOptionalItems(stageId, projInfoId, regionalism, projectAddress);
-        for (ParallelApproveItemVo item:coreItemList){
-            if ("1".equals(item.getIsCatalog())) {//标准事项
-                List<AeaItemBasic> carryOutItems = item.getCarryOutItems();//实施事项列表
-                AeaItemBasic currentCarryOutItem = item.getCurrentCarryOutItem();//默认实施事项
-                if (carryOutItems.size() > 0) {
-                    for (AeaItemBasic basic : carryOutItems) {
-                        List<AeaItemState> coreStateList = aeaItemStateService.listAeaItemStateByParentId(basic.getItemVerId(), "", "ROOT", SecurityContext.getCurrentOrgId());
-                        basic.setCoreStateList(coreStateList.size() > 0 ? coreStateList : new ArrayList<>());
-                        if (basic.getItemVerId().equals(currentCarryOutItem.getItemVerId())) {
-                            currentCarryOutItem.setCoreStateList(coreStateList);
-                        }
-                    }
-                }
-            } else {
-                item.setCoreStateList(aeaItemStateService.listAeaItemStateByParentId(item.getItemVerId(), "", "ROOT", SecurityContext.getCurrentOrgId()));
-            }
-            if (item.getCarryOutItems()==null||item.getCarryOutItems().size()==0){
-                item.setCarryOutItems(new ArrayList<>());
-            }
-            if (item.getCurrentCarryOutItem()==null) item.setCurrentCarryOutItem(new AeaItemBasic());
-        }
-        //getIsNeedState 为1时为分情形
-        if ("1".equals(aeaParStage.getIsNeedState())){
-            stateList= aeaParStateMapper.listParStateByParentStateId(stageId, "ROOT", SecurityContext.getCurrentOrgId());
-            //stateList = aeaParStateService.listRootAeaParStateByStageId(stageId, SecurityContext.getCurrentOrgId());
-        }
-        //hand_way为0时，需展示并联事项情形
-        if ("0".equals(aeaParStage.getHandWay())){
-            for (ParallelApproveItemVo item:paraItemList){
+        List<ParallelApproveItemVo> coreItemList = this.getOptionalItems(stageId, projInfoId, regionalism, projectAddress,isFilterStateItem);
+        if("1".equals(isSelectState)){
+            for (ParallelApproveItemVo item:coreItemList){
                 if ("1".equals(item.getIsCatalog())) {//标准事项
                     List<AeaItemBasic> carryOutItems = item.getCarryOutItems();//实施事项列表
                     AeaItemBasic currentCarryOutItem = item.getCurrentCarryOutItem();//默认实施事项
                     if (carryOutItems.size() > 0) {
                         for (AeaItemBasic basic : carryOutItems) {
-                            List<AeaItemState> paraStateList = aeaItemStateService.listAeaItemStateByParentId(basic.getItemVerId(), "", "ROOT", SecurityContext.getCurrentOrgId());
-                            basic.setCoreStateList(paraStateList.size() > 0 ? paraStateList : new ArrayList<>());
+                            List<AeaItemState> coreStateList = aeaItemStateService.listAeaItemStateByParentId(basic.getItemVerId(), "", "ROOT", SecurityContext.getCurrentOrgId());
+                            basic.setCoreStateList(coreStateList.size() > 0 ? coreStateList : new ArrayList<>());
                             if (basic.getItemVerId().equals(currentCarryOutItem.getItemVerId())) {
-                                currentCarryOutItem.setParaStateList(paraStateList);
+                                currentCarryOutItem.setCoreStateList(coreStateList);
                             }
                         }
                     }
                 } else {
-                    item.setParaStateList(aeaItemStateService.listAeaItemStateByParentId(item.getItemVerId(), "", "ROOT", SecurityContext.getCurrentOrgId()));
+                    item.setCoreStateList(aeaItemStateService.listAeaItemStateByParentId(item.getItemVerId(), "", "ROOT", SecurityContext.getCurrentOrgId()));
                 }
                 if (item.getCarryOutItems()==null||item.getCarryOutItems().size()==0){
                     item.setCarryOutItems(new ArrayList<>());
                 }
                 if (item.getCurrentCarryOutItem()==null) item.setCurrentCarryOutItem(new AeaItemBasic());
+            }
+            //getIsNeedState 为1时为分情形
+            if ("1".equals(aeaParStage.getIsNeedState())){
+                stateList= aeaParStateMapper.listParStateByParentStateId(stageId, "ROOT", SecurityContext.getCurrentOrgId());
+                //stateList = aeaParStateService.listRootAeaParStateByStageId(stageId, SecurityContext.getCurrentOrgId());
+            }
+            //hand_way为0时，需展示并联事项情形
+            if ("0".equals(aeaParStage.getHandWay())){
+                for (ParallelApproveItemVo item:paraItemList){
+                    if ("1".equals(item.getIsCatalog())) {//标准事项
+                        List<AeaItemBasic> carryOutItems = item.getCarryOutItems();//实施事项列表
+                        AeaItemBasic currentCarryOutItem = item.getCurrentCarryOutItem();//默认实施事项
+                        if (carryOutItems.size() > 0) {
+                            for (AeaItemBasic basic : carryOutItems) {
+                                List<AeaItemState> paraStateList = aeaItemStateService.listAeaItemStateByParentId(basic.getItemVerId(), "", "ROOT", SecurityContext.getCurrentOrgId());
+                                basic.setCoreStateList(paraStateList.size() > 0 ? paraStateList : new ArrayList<>());
+                                if (basic.getItemVerId().equals(currentCarryOutItem.getItemVerId())) {
+                                    currentCarryOutItem.setParaStateList(paraStateList);
+                                }
+                            }
+                        }
+                    } else {
+                        item.setParaStateList(aeaItemStateService.listAeaItemStateByParentId(item.getItemVerId(), "", "ROOT", SecurityContext.getCurrentOrgId()));
+                    }
+                    if (item.getCarryOutItems()==null||item.getCarryOutItems().size()==0){
+                        item.setCarryOutItems(new ArrayList<>());
+                    }
+                    if (item.getCurrentCarryOutItem()==null) item.setCurrentCarryOutItem(new AeaItemBasic());
+                }
             }
         }
 
@@ -221,11 +223,11 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
      * @param stageId    阶段id
      * @param projInfoId 项目id
      */
-    public List<ParallelApproveItemVo> getRequiredItems(String stageId, String projInfoId, String regionalism, String projectAddress) throws Exception {
+    public List<ParallelApproveItemVo> getRequiredItems(String stageId, String projInfoId, String regionalism, String projectAddress,String isFilterStateItem) throws Exception {
         List<AeaItemBasic> coreItems = aeaItemBasicService.getAeaItemBasicListByStageId(stageId, "0", projInfoId,SecurityContext.getCurrentOrgId());
         if (coreItems.size() == 0) return new ArrayList<>();
 
-        return postHandle(coreItems, stageId, "0", regionalism, projectAddress);
+        return postHandle(coreItems, stageId, "0", regionalism, projectAddress,isFilterStateItem);
     }
 
     /**
@@ -234,10 +236,10 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
      * @param stageId    阶段id
      * @param projInfoId 项目id
      */
-    public List<ParallelApproveItemVo> getOptionalItems(String stageId, String projInfoId, String regionalism, String projectAddress) throws Exception {
+    public List<ParallelApproveItemVo> getOptionalItems(String stageId, String projInfoId, String regionalism, String projectAddress,String isFilterStateItem) throws Exception {
         List<AeaItemBasic> optionItems = aeaItemBasicService.getAeaItemBasicListByStageId(stageId, "1", projInfoId,SecurityContext.getCurrentOrgId());
         if (optionItems.size() == 0) return new ArrayList<>();
-        return postHandle(optionItems, stageId, "1", regionalism, projectAddress);
+        return postHandle(optionItems, stageId, "1", regionalism, projectAddress,isFilterStateItem);
     }
 
     /**
@@ -249,7 +251,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
      * @return 返回事项vo
      * @throws Exception 查询事项异常
      */
-    private List<ParallelApproveItemVo> postHandle(List<AeaItemBasic> aeaItemBasics, String stageId, String isOptionItem, String regionalism, String projectAddress) throws Exception {
+    private List<ParallelApproveItemVo> postHandle(List<AeaItemBasic> aeaItemBasics, String stageId, String isOptionItem, String regionalism, String projectAddress,String isFilterStateItem) throws Exception {
         AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageId);
 
         // 设置事项的审批组织信息
@@ -275,7 +277,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
 
         List<AeaItemBasic> resultItems = new ArrayList<>(aeaItemBasics.size());
         // 分情形时要过滤情形事项
-        if ("1".equals(aeaParStage.getIsNeedState())) {
+        if ("1".equals(aeaParStage.getIsNeedState()) && "1".equals(isFilterStateItem)) {
             // 情形事项
             Set<String> stateItemVerIds = aeaItemBasicService.getAeaItemBasicListByStageIdAndStateId(stageId, null, isOptionItem,SecurityContext.getCurrentOrgId())
                     .stream().map(AeaItemBasic::getItemVerId).collect(Collectors.toSet());

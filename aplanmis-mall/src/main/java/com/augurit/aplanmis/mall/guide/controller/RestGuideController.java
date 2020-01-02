@@ -286,7 +286,7 @@ public class RestGuideController {
         try {
             logger.error("-----listItemAndStateByStageId----start--------");
             long l=System.currentTimeMillis();
-            ItemListVo vo = restGuideService.listItemAndStateByStageId(stageId,topOrgId);
+            ItemListVo vo = restGuideService.listItemAndStateByStageId(stageId,topOrgId,"1","0");
             logger.error("-----listItemAndStateByStageId----end--------耗时："+(System.currentTimeMillis()-l));
             return new ContentResultForm<>(true,vo);
         } catch (Exception e) {

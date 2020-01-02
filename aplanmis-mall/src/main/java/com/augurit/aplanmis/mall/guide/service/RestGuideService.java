@@ -59,5 +59,14 @@ public interface RestGuideService {
      */
     RestStageAndItemVo searchStageAndItemByKeywordAndThemeId(String themeId,String keyword,String rootOrgId)throws Exception;
 
-    ItemListVo listItemAndStateByStageId(String stageId,String rootOrgId) throws Exception;
+    /**
+     * 根据阶段查询事项接口
+     * @param stageId
+     * @param rootOrgId
+     * @param isSelectState
+     * @param isFilterStateItem
+     * @return
+     * @throws Exception
+     */
+    ItemListVo listItemAndStateByStageId(String stageId,String rootOrgId,String isSelectState,String isFilterStateItem) throws Exception;
 }
