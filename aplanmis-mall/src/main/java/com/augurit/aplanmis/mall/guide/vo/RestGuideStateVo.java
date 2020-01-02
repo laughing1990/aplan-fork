@@ -42,12 +42,9 @@ public class RestGuideStateVo {
         private List<RestStateMatInnerVo> mats;
 
         public static RestStateInnerVo build(AeaItemState aeaItemState){
-            int  indexNum = 1;
-            indexNum++;
             RestStateInnerVo vo = new RestStateInnerVo();
             vo.setStateName(aeaItemState.getStateName());
             vo.setStateId(aeaItemState.getItemStateId());
-            vo.setIndex("情形"+NumToChinese.getChiness(indexNum));
             return vo;
         }
     }
