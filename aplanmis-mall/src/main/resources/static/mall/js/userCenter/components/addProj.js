@@ -18,6 +18,17 @@ var checkNotAllNumber = function (rule, value, callback) {
         return callback(new Error('不能为纯数字'));
     }
 };
+// / 校验项目代码跟工程编码（长度小于等于32，且只能由数字，字母，横杆组成）
+var checkCodeForProj = function (rule, value, callback) {
+  // var reg = /[^\w\-]/ig;
+  var reg =  /^[\A-Za-z0-9-]{0,32}$/
+  console.log(!reg.test(value));
+  if (!reg.test(value)) {  
+    return callback(new Error('长度小于等于32，且只能由数字，字母，横杆组成'));
+  } else {
+    callback();
+  }
+};
 var module1 = new Vue({
     el: "#addProject",
     data: function () {
@@ -73,9 +84,11 @@ var module1 = new Vue({
                 ],
                 localCode: [
                     {required: true, message: '请输入项目代码', trigger: 'blur'},
+                    {required: true, validator: checkCodeForProj, trigger: 'blur'}
                 ],
                 gcbm: [
                     {required: true, message: '请输入工程代码', trigger: 'blur'},
+                    {required: true, validator: checkCodeForProj, trigger: 'blur'}
                 ],
                 regionalism: [
                     {required: true, message: '请选择行政区划', trigger: 'change'},
@@ -373,7 +386,9 @@ var module1 = new Vue({
           }
           var dateTime = year + month + day;
           var now = date.getTime();
-          this.projInfoForm.localCode =  "ZBM-R-" + dateTime + "-" + String(now).slice(-8);
+          var _code = "ZBM-R-" + dateTime + "-" + String(now).slice(-8);
+          this.projInfoForm.localCode =  _code;
+          this.projInfoForm.gcbm = _code;
         },
     },
     mounted: function () {
