@@ -697,6 +697,10 @@ var vm = new Vue({
         hintText1: '',
         hintText2: '请选择参与联合评审的部门，再点击“发起联合评审”。',
       },
+      newestUnionReview: {
+        solicit: {},
+        solicitDetails: [],
+      },
       //联合评审 end
       // 一次征询 start
       hasOneSolicit: 0,
@@ -888,10 +892,21 @@ var vm = new Vue({
     // 加载联合评审历史数据
     loadUnionReviewData: function(){
       var vm = this;
-      vm.unionReviewList = [{}];
-      // this.requestSolicit('LHPS', function (data) {
-      //   vm.solicitList = data || [];
-      // });
+      this.requestSolicit('LHPS', function (data) {
+        // 三级数据组装成两级
+        data.forEach(function(u){
+          var tmp = [];
+          u.solicitDetails.forEach(function(uu){
+            uu.detailUsers = uu.detailUsers || [];
+            uu.detailUsers.forEach(function(uuu){
+              tmp.push($.extend({}, uu, uuu));
+            });
+          });
+          u.solicitDetails = tmp;
+        });
+        vm.newestUnionReview = data[0];
+        // vm.oneSolicitList = data.slice(1);
+      });
     },
     // 联合评审  end
     // 意见征询 start-----------------------
@@ -905,7 +920,7 @@ var vm = new Vue({
         procinstId: vm.processInstanceId,
         hiTaskinstId: vm.taskId,
         solicitTopic: vm.solicitForm.solicitTopic,
-        isSendSms: vm.solicitForm.isSendSms,
+        // isSendSms: vm.solicitForm.isSendSms,
         solicitContent: vm.solicitForm.solicitContent,
         solicitType: vm.solicitForm.solicitType,
         isCalcTimerule: vm.solicitForm.isCalcTimerule,
@@ -1107,11 +1122,13 @@ var vm = new Vue({
         data: params,
       }, function (res) {
         if (res.success) {
-          if (node.level == 0) {
+          // if (node.level == 0) {
             res.content.forEach(function (u) {
-              u.disabled = true;
+              if (u.isLeaf=='0'){
+                u.disabled = true;
+              }
             });
-          }
+          // }
           resolve(res.content);
           if (node.level == 0) {
             vm.$nextTick(function () {
