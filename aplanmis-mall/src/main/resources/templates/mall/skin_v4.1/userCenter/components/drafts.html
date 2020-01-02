@@ -1,0 +1,70 @@
+<link rel="stylesheet" href="../../../static/mall/css/userCenter/declarehave.css"
+      th:href="@{/mall/css/userCenter/declarehave.css}">
+<div class="wt-tab" id="draftApplyListVue" v-cloak v-loading.fullscreen.lock="mloading" style="position: relative;">
+
+    <div>
+        <p class="p-header">草稿箱</p>
+        <div class="wt-tab-content">
+            <div class="wt-tab-item" >
+                <div class="search-input">
+                    <span class="search-title">项目/工程查询</span>
+                    <input type="text" placeholder="请输入工程代码 / 项目代码 / 项目名称"  v-model="keyword">
+                    <button class="search-btn" @click="pageNumDH = 1;getDraftApplyList();"> <i class="el-icon-search" style="font-size: 16px;"></i>查询</button>
+                </div>
+                <el-table :data="draftApplyListData"
+                          style="width: 100%"
+                          class="draft-apply-table">
+                  <el-table-column label="类型" width="80">
+                    <template slot-scope="scope">
+                      <span>{{scope.row.isSeriesApprove=='0'?'并联':'单项'}}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="申报流水号" prop="applyinstCode" width="200"></el-table-column>
+                  <el-table-column label="项目/工程代码" prop="gcbm"></el-table-column>
+                  <el-table-column label="项目名称" prop="projName">
+                      <template slot-scope="scope">
+                          <el-tooltip placement="top" effect="light">
+                              <div slot="content">项目代码：{{scope.row.localCode}}<br/> <br/>工程代码：{{scope.row.gcbm}}<br /> <br/>项目/工程名称：{{scope.row.projName}}</div>
+                              <div>
+                                  <span class="ellipsis pro-name">{{scope.row.projName}}</span>
+                              </div>
+                          </el-tooltip>
+                      </template>
+                  </el-table-column>
+                  <el-table-column label="操作" width="140" align="center">
+                    <template slot-scope="scope">
+                      <span class="option-btn">
+                          <!--<a href="#">继续申报</a>-->
+                        <a v-if="scope.row.isSeriesApprove=='0'" :href="ctx + 'rest/main/toIndexPage?projInfoId='+scope.row.projInfoId+'&applyinstId='+scope.row.applyinstId+'#declare'">继续申报</a>
+                        <a v-else :href="ctx+'rest/main/toIndexPage?itemVerId='+scope.row.itemVerId+'&applyinstId='+scope.row.applyinstId+'&projInfoId='+scope.row.projInfoId+'&flag=singleD#declare'">继续申报</a>
+                      </span>
+                      <span class="option-btn">
+                        <a href="javascript:;" @click="delDraftApply(scope.row.applyinstId)">删除</a>
+                      </span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+                <el-pagination background align="right" @size-change="handleSizeChangeDe" style="margin-top:20px;"
+                               @current-change="handleCurrentChangeDe" :page-sizes="[10, 20, 30, 50]" :page-size="pageSizeDH"
+                               :current-page="pageNumDH" layout="total,sizes, prev, pager, next, jumper" :total="totalDH"
+                               v-show="totalDH>10">
+                </el-pagination>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="../../../static/mall/js/userCenter/components/drafts.js"
+        th:src="@{/mall/js/userCenter/components/drafts.js}" type="text/javascript"></script>
+
+<style>
+    .draft-apply-table th {
+        width: 930px;
+        height: 60px;
+        background: rgba(249,251,253,1);
+        font-size: 14px;
+        font-weight: 400;
+        color: rgba(127,133,144,1);
+    }
+</style>
