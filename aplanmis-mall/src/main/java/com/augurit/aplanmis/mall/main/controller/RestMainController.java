@@ -77,6 +77,12 @@ public class RestMainController {
         return new ModelAndView("mall/"+skin+"main/mainIndex");
     }
 
+    @GetMapping("/toDeclarGuidePage")
+    @ApiOperation(value = "跳转申报指引")
+    public ModelAndView toDeclarGuidePage() {
+        return new ModelAndView("mall/"+skin+"declarGuide/index");
+    }
+
     @GetMapping("/theme/list")
     @ApiOperation(value = "首页-->按主题申报-->获取主题列表接口")
     public ContentResultForm<List<ThemeTypeVo>> getThemeList() {

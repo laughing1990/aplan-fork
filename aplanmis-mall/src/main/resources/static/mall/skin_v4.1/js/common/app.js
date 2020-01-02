@@ -52,14 +52,22 @@
                 },
             ],*/
             topTabData: [
+                // {
+                // label: '申报指引',
+                // id: '1',
+                // activeName:0,
+                // url: './main/mainIndex.html',
+                // thUrl:'rest/main/toMainIndexPage',
+                // hash:'/',
+                // },
                 {
-                label: '申报指引',
-                id: '1',
-                activeName:0,
-                url: './main/mainIndex.html',
-                thUrl:'rest/main/toMainIndexPage',
-                hash:'/',
-                },
+                  label: '申报指引',
+                  id: '1',
+                  activeName:0,
+                  url: './main/mainIndex.html',
+                  thUrl:'rest/main/toDeclarGuidePage',
+                  hash:'/',
+                  },
                 {
                 label: '我要申报',
                 id: '2',
