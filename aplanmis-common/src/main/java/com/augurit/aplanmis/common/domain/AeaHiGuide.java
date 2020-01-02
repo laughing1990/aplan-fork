@@ -23,6 +23,9 @@ public class AeaHiGuide {
     @ApiModelProperty(value = "申请辅导用户类型：p表示个人，u表示企业")
     private String guideType;
 
+    @ApiModelProperty(value = "项目id")
+    private String projInfoId;
+
     @ApiModelProperty(value = "发起辅导单位ID")
     private String applyUnitInfoId;
 
@@ -67,4 +70,20 @@ public class AeaHiGuide {
 
     @ApiModelProperty(value = "是否智能引导，1是0否")
     private String isItGuide;
+
+    // 扩展字段
+
+    // 项目类型
+    private String themeName;
+    // 项目代码/工程编码
+    private String gcbm;
+    // 项目名称
+    private String projName;
+    // 申报来源
+    private String applySource;
+    // 阶段名称
+    private String stageName;
+    // 部门辅导状态
+    private String applyStateName;
+
 }

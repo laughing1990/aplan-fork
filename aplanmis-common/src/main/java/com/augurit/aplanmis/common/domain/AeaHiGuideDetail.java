@@ -23,6 +23,9 @@ public class AeaHiGuideDetail {
     @ApiModelProperty(value = "部门辅导明细类型，包括：s表示智能引导，o表示业主，l表示牵头部门，i表示事项部门，r表示最终结果")
     private String detailType;
 
+    @ApiModelProperty(value = "辅导变更操作，c表示change，a表示add，d表示delete")
+    private String guideChangeAction;
+
     @ApiModelProperty(value = "主题ID")
     private String themeId;
 

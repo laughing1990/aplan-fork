@@ -7,6 +7,7 @@
         <id column="GUIDE_ID" jdbcType="VARCHAR" property="guideId"/>
         <result column="APPLYINST_ID" jdbcType="VARCHAR" property="applyinstId"/>
         <result column="GUIDE_TYPE" jdbcType="CHAR" property="guideType"/>
+        <result column="PROJ_INFO_ID" jdbcType="VARCHAR" property="projInfoId"/>
         <result column="APPLY_UNIT_INFO_ID" jdbcType="VARCHAR" property="applyUnitInfoId"/>
         <result column="APPLY_LINKMAN_INFO_ID" jdbcType="VARCHAR" property="applyLinkmanInfoId"/>
         <result column="APPLY_STATE" jdbcType="CHAR" property="applyState"/>
@@ -26,30 +27,32 @@
 
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
-        GUIDE_ID,
-        APPLYINST_ID,
-        GUIDE_TYPE,
-        APPLY_UNIT_INFO_ID,
-        APPLY_LINKMAN_INFO_ID,
-        APPLY_STATE,
-        GUIDE_START_TIME,
-        GUIDE_END_TIME,
-        DUE_TIME_LIMIT,
-        REAL_TIME_LIMIT,
-        LEADER_ORG_ID,
-        LEADER_USER_ID,
-        LEADER_ORG_OPINION,
-        CREATER,
-        CREATE_TIME,
-        MODIFIER,
-        MODIFY_TIME,
-        IS_IT_GUIDE
+        ahg.GUIDE_ID guideId,
+        ahg.APPLYINST_ID applyinstId,
+        ahg.GUIDE_TYPE guideType,
+        ahg.PROJ_INFO_ID projInfoId,
+        ahg.APPLY_UNIT_INFO_ID applyUnitInfoId,
+        ahg.APPLY_LINKMAN_INFO_ID applyLinkmanInfoId,
+        ahg.APPLY_STATE applyState,
+        ahg.GUIDE_START_TIME guideStartTime,
+        ahg.GUIDE_END_TIME guideEndTime,
+        ahg.DUE_TIME_LIMIT dueTimeLimit,
+        ahg.REAL_TIME_LIMIT realTimeLimit,
+        ahg.LEADER_ORG_ID leaderOrgId,
+        ahg.LEADER_USER_ID leaderUserId,
+        ahg.LEADER_ORG_OPINION leaderOrgOpinion,
+        ahg.CREATER creater,
+        ahg.CREATE_TIME createTime,
+        ahg.MODIFIER modifier,
+        ahg.MODIFY_TIME modifyTime,
+        ahg.IS_IT_GUIDE isItGuide
     </sql>
 
-    <select id="getAeaHiGuideByGuideId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <select id="getAeaHiGuideByGuideId" parameterType="java.lang.String"
+            resultType="com.augurit.aplanmis.common.domain.AeaHiGuide">
         select
         <include refid="Base_Column_List"/>
-        from aea_hi_guide
+        from aea_hi_guide ahg
         where GUIDE_ID = #{guideId,jdbcType=VARCHAR}
     </select>
 
@@ -67,14 +70,14 @@
     </delete>
 
     <insert id="insertAeaHiGuide" parameterType="com.augurit.aplanmis.common.domain.AeaHiGuide">
-    insert into aea_hi_guide (GUIDE_ID, APPLYINST_ID, GUIDE_TYPE,
+    insert into aea_hi_guide (GUIDE_ID, APPLYINST_ID, GUIDE_TYPE, PROJ_INFO_ID,
       APPLY_UNIT_INFO_ID, APPLY_LINKMAN_INFO_ID, APPLY_STATE, 
       GUIDE_START_TIME, GUIDE_END_TIME, DUE_TIME_LIMIT, 
       REAL_TIME_LIMIT, LEADER_ORG_ID, LEADER_USER_ID, 
       LEADER_ORG_OPINION, CREATER, CREATE_TIME, 
       MODIFIER, MODIFY_TIME, IS_IT_GUIDE
       )
-    values (#{guideId,jdbcType=VARCHAR}, #{applyinstId,jdbcType=VARCHAR}, #{guideType,jdbcType=CHAR}, 
+    values (#{guideId,jdbcType=VARCHAR}, #{applyinstId,jdbcType=VARCHAR}, #{guideType,jdbcType=CHAR}, #{projInfoId,jdbcType=VARCHAR},
       #{applyUnitInfoId,jdbcType=VARCHAR}, #{applyLinkmanInfoId,jdbcType=VARCHAR}, #{applyState,jdbcType=CHAR}, 
       #{guideStartTime,jdbcType=TIMESTAMP}, #{guideEndTime,jdbcType=TIMESTAMP}, #{dueTimeLimit,jdbcType=FLOAT}, 
       #{realTimeLimit,jdbcType=FLOAT}, #{leaderOrgId,jdbcType=VARCHAR}, #{leaderUserId,jdbcType=VARCHAR}, 
@@ -91,6 +94,9 @@
             </if>
             <if test="guideType != null">
                 GUIDE_TYPE = #{guideType,jdbcType=CHAR},
+            </if>
+            <if test="projInfoId != null">
+                PROJ_INFO_ID = #{projInfoId,jdbcType=VARCHAR},
             </if>
             <if test="applyUnitInfoId != null">
                 APPLY_UNIT_INFO_ID = #{applyUnitInfoId,jdbcType=VARCHAR},
@@ -143,13 +149,14 @@
 
     <insert id="batchInsertAeaHiGuide" parameterType="map">
         insert into aea_hi_guide
-        (GUIDE_ID, APPLYINST_ID, GUIDE_TYPE, APPLY_UNIT_INFO_ID, APPLY_LINKMAN_INFO_ID, APPLY_STATE,
+        (GUIDE_ID, APPLYINST_ID, GUIDE_TYPE, PROJ_INFO_ID, APPLY_UNIT_INFO_ID, APPLY_LINKMAN_INFO_ID, APPLY_STATE,
         GUIDE_START_TIME, GUIDE_END_TIME, DUE_TIME_LIMIT, REAL_TIME_LIMIT, LEADER_ORG_ID,
         LEADER_USER_ID, LEADER_ORG_OPINION, CREATER, CREATE_TIME, MODIFIER, MODIFY_TIME,
         IS_IT_GUIDE)
         values
         <foreach collection="list" item="item" separator=",">
             (#{item.guideId,jdbcType=VARCHAR}, #{item.applyinstId,jdbcType=VARCHAR}, #{item.guideType,jdbcType=CHAR},
+            #{item.projInfoId,jdbcType=VARCHAR},
             #{item.applyUnitInfoId,jdbcType=VARCHAR}, #{item.applyLinkmanInfoId,jdbcType=VARCHAR},
             #{item.applyState,jdbcType=CHAR}, #{item.guideStartTime,jdbcType=TIMESTAMP},
             #{item.guideEndTime,jdbcType=TIMESTAMP},
@@ -160,5 +167,19 @@
             #{item.modifyTime,jdbcType=TIMESTAMP}, #{item.isItGuide,jdbcType=CHAR})
         </foreach>
     </insert>
+
+    <select id="listAeaHiGuide" parameterType="com.augurit.aplanmis.common.domain.AeaHiGuide"
+            resultType="com.augurit.aplanmis.common.domain.AeaHiGuide">
+        select
+        <include refid="Base_Column_List"/>
+        , aps.stage_name stageName
+        , apt.theme_name themeName
+        , api.proj_name projName
+        , api.gcbm gcbm
+        from aea_hi_guide ahg
+        join aea_par_stage aps on ahg.stage_id=aps.stage_id
+        join aea_par_theme apt on apt.theme_id=ahg.theme_id
+        join aea_proj_info api on api.proj_info_id=ahg.proj_info_id
+    </select>
 
 </mapper>

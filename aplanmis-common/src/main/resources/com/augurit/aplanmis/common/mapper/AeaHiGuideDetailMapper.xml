@@ -3,7 +3,6 @@
 <mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiGuideDetailMapper">
 
     <resultMap id="BaseResultMap" type="com.augurit.aplanmis.common.domain.AeaHiGuideDetail">
-        <!--@mbg.generated-->
         <id column="GUIDE_DETAIL_ID" jdbcType="VARCHAR" property="guideDetailId"/>
         <result column="GUIDE_ID" jdbcType="VARCHAR" property="guideId"/>
         <result column="DETAIL_TYPE" jdbcType="CHAR" property="detailType"/>
@@ -16,6 +15,7 @@
         <result column="GUIDE_USER_ID" jdbcType="VARCHAR" property="guideUserId"/>
         <result column="GUIDE_OPINION" jdbcType="VARCHAR" property="guideOpinion"/>
         <result column="DETAIL_STATE" jdbcType="VARCHAR" property="detailState"/>
+        <result column="GUIDE_CHANGE_ACTION" jdbcType="VARCHAR" property="guideChangeAction"/>
         <result column="DETAIL_START_TIME" jdbcType="TIMESTAMP" property="detailStartTime"/>
         <result column="DETAIL_END_TIME" jdbcType="TIMESTAMP" property="detailEndTime"/>
         <result column="CREATER" jdbcType="VARCHAR" property="creater"/>
@@ -25,32 +25,32 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        <!--@mbg.generated-->
-        GUIDE_DETAIL_ID,
-        GUIDE_ID,
-        DETAIL_TYPE,
-        THEME_ID,
-        THEME_VER_ID,
-        STAGE_ID,
-        ITEM_ID,
-        ITEM_VER_ID,
-        GUIDE_ORG_ID,
-        GUIDE_USER_ID,
-        GUIDE_OPINION,
-        DETAIL_STATE,
-        DETAIL_START_TIME,
-        DETAIL_END_TIME,
-        CREATER,
-        CREATE_TIME,
-        MODIFIER,
-        MODIFY_TIME
+        ahgd.GUIDE_DETAIL_ID,
+        ahgd.GUIDE_ID,
+        ahgd.DETAIL_TYPE,
+        ahgd.THEME_ID,
+        ahgd.THEME_VER_ID,
+        ahgd.STAGE_ID,
+        ahgd.ITEM_ID,
+        ahgd.ITEM_VER_ID,
+        ahgd.GUIDE_ORG_ID,
+        ahgd.GUIDE_USER_ID,
+        ahgd.GUIDE_OPINION,
+        ahgd.DETAIL_STATE,
+        ahgd.GUIDE_CHANGE_ACTION,
+        ahgd.DETAIL_START_TIME,
+        ahgd.DETAIL_END_TIME,
+        ahgd.CREATER,
+        ahgd.CREATE_TIME,
+        ahgd.MODIFIER,
+        ahgd.MODIFY_TIME
     </sql>
 
     <select id="getAeaHiGuideDetailByGuideDetailId" parameterType="java.lang.String" resultMap="BaseResultMap">
         <!--@mbg.generated-->
         select
         <include refid="Base_Column_List"/>
-        from aea_hi_guide_detail
+        from aea_hi_guide_detail ahgd
         where GUIDE_DETAIL_ID = #{guideDetailId,jdbcType=VARCHAR}
     </select>
 
@@ -71,14 +71,14 @@
     insert into aea_hi_guide_detail (GUIDE_DETAIL_ID, GUIDE_ID, DETAIL_TYPE,
       THEME_ID, THEME_VER_ID, STAGE_ID, 
       ITEM_ID, ITEM_VER_ID, GUIDE_ORG_ID, 
-      GUIDE_USER_ID, GUIDE_OPINION, DETAIL_STATE, 
+      GUIDE_USER_ID, GUIDE_OPINION, DETAIL_STATE, GUIDE_CHANGE_ACTION,
       DETAIL_START_TIME, DETAIL_END_TIME, CREATER, 
       CREATE_TIME, MODIFIER, MODIFY_TIME
       )
     values (#{guideDetailId,jdbcType=VARCHAR}, #{guideId,jdbcType=VARCHAR}, #{detailType,jdbcType=CHAR}, 
       #{themeId,jdbcType=VARCHAR}, #{themeVerId,jdbcType=VARCHAR}, #{stageId,jdbcType=VARCHAR}, 
       #{itemId,jdbcType=VARCHAR}, #{itemVerId,jdbcType=VARCHAR}, #{guideOrgId,jdbcType=VARCHAR}, 
-      #{guideUserId,jdbcType=VARCHAR}, #{guideOpinion,jdbcType=VARCHAR}, #{detailState,jdbcType=VARCHAR}, 
+      #{guideUserId,jdbcType=VARCHAR}, #{guideOpinion,jdbcType=VARCHAR}, #{detailState,jdbcType=VARCHAR}, #{guideChangeAction,jdbcType=VARCHAR},
       #{detailStartTime,jdbcType=TIMESTAMP}, #{detailEndTime,jdbcType=TIMESTAMP}, #{creater,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}
       )
@@ -120,6 +120,9 @@
             <if test="detailState != null">
                 DETAIL_STATE = #{detailState,jdbcType=VARCHAR},
             </if>
+            <if test="guideChangeAction != null">
+                GUIDE_CHANGE_ACTION = #{guideChangeAction,jdbcType=VARCHAR},
+            </if>
             <if test="detailStartTime != null">
                 DETAIL_START_TIME = #{detailStartTime,jdbcType=TIMESTAMP},
             </if>
@@ -145,7 +148,7 @@
     <insert id="batchInsertAeaHiGuideDetail" parameterType="map">
         insert into aea_hi_guide_detail
         (GUIDE_DETAIL_ID, GUIDE_ID, DETAIL_TYPE, THEME_ID, THEME_VER_ID, STAGE_ID, ITEM_ID,
-        ITEM_VER_ID, GUIDE_ORG_ID, GUIDE_USER_ID, GUIDE_OPINION, DETAIL_STATE, DETAIL_START_TIME,
+        ITEM_VER_ID, GUIDE_ORG_ID, GUIDE_USER_ID, GUIDE_OPINION, DETAIL_STATE, GUIDE_CHANGE_ACTION, DETAIL_START_TIME,
         DETAIL_END_TIME, CREATER, CREATE_TIME, MODIFIER, MODIFY_TIME)
         values
         <foreach collection="list" item="item" separator=",">
@@ -153,7 +156,7 @@
             #{item.themeId,jdbcType=VARCHAR}, #{item.themeVerId,jdbcType=VARCHAR}, #{item.stageId,jdbcType=VARCHAR},
             #{item.itemId,jdbcType=VARCHAR}, #{item.itemVerId,jdbcType=VARCHAR}, #{item.guideOrgId,jdbcType=VARCHAR},
             #{item.guideUserId,jdbcType=VARCHAR}, #{item.guideOpinion,jdbcType=VARCHAR},
-            #{item.detailState,jdbcType=VARCHAR},
+            #{item.detailState,jdbcType=VARCHAR}, #{item.guideChangeAction,jdbcType=VARCHAR},
             #{item.detailStartTime,jdbcType=TIMESTAMP}, #{item.detailEndTime,jdbcType=TIMESTAMP},
             #{item.creater,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.modifier,jdbcType=VARCHAR},
             #{item.modifyTime,jdbcType=TIMESTAMP})
