@@ -7,7 +7,9 @@ import com.augurit.agcloud.bpm.common.engine.BpmProcessService;
 import com.augurit.agcloud.bpm.common.mapper.*;
 import com.augurit.agcloud.bpm.common.service.ActStoTimeruleService;
 import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
+import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
 import com.augurit.agcloud.bsc.mapper.BscAttDetailMapper;
+import com.augurit.agcloud.bsc.sc.dic.code.service.BscDicCodeService;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.security.user.OpuOmUser;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
@@ -30,10 +32,11 @@ import com.augurit.aplanmis.front.constant.SolicitConstant;
 import com.augurit.aplanmis.front.queryView.service.ConditionalQueryService;
 import com.augurit.aplanmis.front.solicit.service.RestAeaHiSolicitService;
 import com.augurit.aplanmis.front.solicit.service.SolicitCodeService;
-import com.augurit.aplanmis.front.solicit.vo.AeaHiSolicitInfo;
+import com.augurit.aplanmis.front.solicit.vo.*;
 import com.github.pagehelper.Page;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -115,6 +118,9 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
 
     @Autowired
     private OpuOmUserInfoMapper opuOmUserInfoMapper;
+
+    @Autowired
+    private BscDicCodeService bscDicCodeService;
 
     @Override
     public List<OpuOmOrg> listOrg(String isRoot, String parentOrgId) throws Exception {
@@ -280,30 +286,35 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
         solicit.setApplyinstId(applyinstId);
         solicit.setBusType(busType);
         List<AeaHiSolicit> solicits = aeaHiSolicitMapper.listAeaHiSolicit(solicit);
-
-        if (solicits != null && solicits.size() > 0) {
+        //转为值对象后再组装数据
+        List<SolicitVo> solicitVos = converToSolicitVo(solicits);
+        if (solicitVos != null && solicitVos.size() > 0) {
             //当前登录人信息
+            String currentOrgId = SecurityContext.getCurrentOrgId();
             String currUserName = SecurityContext.getCurrentUser().getUserName();
             String currUserId = SecurityContext.getCurrentUserId();
-            AeaHiSolicitDetailUser currDetailUser = null;
+            SolicitDetailUserVo currDetailUser = null;
 
             List<String> solicitIds = new ArrayList<>();
-            for (AeaHiSolicit hiSolicit : solicits) {
+            for (SolicitVo hiSolicit : solicitVos) {
                 hiSolicit.setSolicitTypeName(SolicitBusTypeEnum.valueOf(hiSolicit.getBusType()).getName());
                 solicitIds.add(hiSolicit.getSolicitId());
             }
             //先一次查出所有征求的详情信息和涉及的审批人员信息
             List<AeaHiSolicitDetail> solicitDetails = aeaHiSolicitDetailMapper.listAeaHiSolicitDetailBySolicitIds(solicitIds);
             List<AeaHiSolicitDetailUser> solicitDetailUsers = aeaHiSolicitDetailUserMapper.listAeaHiSolicitDetailUserBySolicitIds(solicitIds);
+            //转为值对象后再组装数据
+            List<SolicitDetailVo> solicitDetailVos = converToSolicitDetailVo(solicitDetails);
+            List<SolicitDetailUserVo> solicitDetailUserVos = converToSolicitDetailUserVo(solicitDetailUsers);
 
-            Map<String, List<AeaHiSolicitDetail>> detailMap = new HashMap<>();
-            Map<String, List<AeaHiSolicitDetailUser>> detailUserMap = new HashMap<>();
-            Map<String, AeaHiSolicitDetailUser> currentAnswerUserMap = new HashMap<>();
+            Map<String, List<SolicitDetailVo>> detailMap = new HashMap<>();
+            Map<String, List<SolicitDetailUserVo>> detailUserMap = new HashMap<>();
+            Map<String, SolicitDetailUserVo> currentAnswerUserMap = new HashMap<>();
 
-            String[] detailUserIds = new String[solicitDetailUsers.size()];
-            if (solicitDetailUsers != null && solicitDetailUsers.size() > 0) {
+            String[] detailUserIds = new String[solicitDetailUserVos.size()];
+            if (solicitDetailUserVos != null && solicitDetailUserVos.size() > 0) {
                 int i = 0;
-                for (AeaHiSolicitDetailUser solicitDetailUser : solicitDetailUsers) {
+                for (SolicitDetailUserVo solicitDetailUser : solicitDetailUserVos) {
                     detailUserIds[i] = solicitDetailUser.getDetailUserId();
                     i++;
 
@@ -316,8 +327,8 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                             currDetailUser.setLinkmanName(currUserName);
                             currDetailUser.setLinkmanPhone(opuOmUserInfo.getUserMobile());
                         }
-                        for(int j=0,len=solicitDetails.size(); j<len; j++){
-                            AeaHiSolicitDetail aeaHiSolicitDetail = solicitDetails.get(j);
+                        for(int j=0,len=solicitDetailVos.size(); j<len; j++){
+                            SolicitDetailVo aeaHiSolicitDetail = solicitDetailVos.get(j);
                             if(aeaHiSolicitDetail.getSolicitDetailId().equals(currDetailUser.getSolicitDetailId())){
                                 currentAnswerUserMap.put(aeaHiSolicitDetail.getSolicitId(),currDetailUser);
                                 break;
@@ -325,7 +336,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                         }
                     }
                     //将一条详情对应的用户放到一个map中
-                    List<AeaHiSolicitDetailUser> users = detailUserMap.get(solicitDetailUser.getSolicitDetailId());
+                    List<SolicitDetailUserVo> users = detailUserMap.get(solicitDetailUser.getSolicitDetailId());
                     if (users != null) {
                         users.add(solicitDetailUser);
                     } else {
@@ -338,7 +349,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
             //查询当前这个详情下所有用户上传的附件
             List<BscAttFileAndDir> attFileList = new ArrayList<>();
             if (detailUserIds.length > 0)
-                attFileList = bscAttDetailMapper.searchFileAndDirsSimple(null, SecurityContext.getCurrentOrgId(), "AEA_HI_SOLICIT_DETAIL_USER", "DETAIL_USER_ID", detailUserIds);
+                attFileList = bscAttDetailMapper.searchFileAndDirsSimple(null, currentOrgId, "AEA_HI_SOLICIT_DETAIL_USER", "DETAIL_USER_ID", detailUserIds);
             //遍历再挂到各个用户下
             Map<String, List<BscAttFileAndDir>> fileAndDirMap = new HashMap<>();
             if (attFileList != null && attFileList.size() > 0) {
@@ -354,8 +365,8 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                     }
                 }
 
-                if (solicitDetailUsers != null && solicitDetailUsers.size() > 0) {
-                    for (AeaHiSolicitDetailUser solicitDetailUser : solicitDetailUsers) {
+                if (solicitDetailUserVos != null && solicitDetailUserVos.size() > 0) {
+                    for (SolicitDetailUserVo solicitDetailUser : solicitDetailUserVos) {
                         List<BscAttFileAndDir> files = fileAndDirMap.get(solicitDetailUser.getDetailUserId());
                         if (files != null)
                             solicitDetailUser.setFileAndDirs(files);
@@ -363,11 +374,11 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                 }
             }
             //遍历所有详情详细，并根据征求的主表id挂到各个征求下
-            if (solicitDetails != null && solicitDetails.size() > 0) {
-                for (AeaHiSolicitDetail solicitDetail : solicitDetails) {
-                    List<AeaHiSolicitDetailUser> users = detailUserMap.get(solicitDetail.getSolicitDetailId());
+            if (solicitDetailVos != null && solicitDetailVos.size() > 0) {
+                for (SolicitDetailVo solicitDetail : solicitDetailVos) {
+                    List<SolicitDetailUserVo> users = detailUserMap.get(solicitDetail.getSolicitDetailId());
                     solicitDetail.setDetailUsers(users);
-                    List<AeaHiSolicitDetail> details = detailMap.get(solicitDetail.getSolicitId());
+                    List<SolicitDetailVo> details = detailMap.get(solicitDetail.getSolicitId());
                     if (details != null) {
                         details.add(solicitDetail);
                     } else {
@@ -380,10 +391,10 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
 
             //查询征求主表信息关联的附件
             Map<String, List<BscAttFileAndDir>> solicitFileAndDirMap = Maps.newHashMap();
+            String[] solicitIdArr = new String[solicitIds.size()];
             if(solicitIds.size() > 0) {
-                String[] solicitIdArr = new String[solicitIds.size()];
                 solicitIds.toArray(solicitIdArr);
-                List<BscAttFileAndDir> solicitAttFileList = bscAttDetailMapper.searchFileAndDirsSimple(null, SecurityContext.getCurrentOrgId(),
+                List<BscAttFileAndDir> solicitAttFileList = bscAttDetailMapper.searchFileAndDirsSimple(null, currentOrgId,
                         "AEA_HI_SOLICIT", "SOLICIT_ID", solicitIdArr);
                 for (BscAttFileAndDir fileAndDir : solicitAttFileList) {
                     List<BscAttFileAndDir> files = solicitFileAndDirMap.get(fileAndDir.getBscAttLink().getRecordId());
@@ -397,12 +408,14 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                 }
             }
 
+
+
             //遍历征求主表信息，组装数据
-            for (AeaHiSolicit hiSolicit : solicits) {
+            for (SolicitVo hiSolicit : solicitVos) {
                 //组装附件信息
                 hiSolicit.setFileAndDirs(solicitFileAndDirMap.get(hiSolicit.getSolicitId()));
 
-                List<AeaHiSolicitDetail> details = detailMap.get(hiSolicit.getSolicitId());
+                List<SolicitDetailVo> details = detailMap.get(hiSolicit.getSolicitId());
                 //时限单位转换
                 if (hiSolicit.getSolicitDaysUnit() != null) {
                     hiSolicit.setSolicitDaysUnitCn(TimeruleUnit.valueOf(hiSolicit.getSolicitDaysUnit()).getName());
@@ -425,7 +438,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                 }
 
                 //判断当前发起的征求信息是否可以被结束，填写汇总意见
-                if (currUserId.equals(hiSolicit.getInitiatorUserId())) {
+                if (currUserId.equals(hiSolicit.getInitiatorUserId()) && (hiSolicit.getSolicitEndTime() == null || SolicitConstant.SOLICIT_STATE_DO.equals(hiSolicit.getSolicitState()))) {
                     //判断当前意见征求是否各个部门已经给出了审批意见结果
                     boolean hasDone = true;
                     for (int i = 0, len = details.size(); i < len; i++) {
@@ -444,6 +457,74 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                         }
                     }
                 }
+
+                //针对联合评审类型，做附件的查询和附件类型关联，注意联合评审一次申报只有一次
+                if(SolicitBusTypeEnum.LHPS.getValue().equals(busType)){
+                    List<BscDicCodeItem> list = bscDicCodeService.getActiveItemsByTypeCode("SOLICIT_LHPS_FILE_TYPE", currentOrgId);
+                    //联合评审主表的附件
+                    List<BscAttFileAndDir> fileList1 = bscAttDetailMapper.searchFileAndDirsSimple(null, currentOrgId,
+                            "AEA_HI_SOLICIT", null, solicitIdArr);
+                    List<SolicitLhpsFile> lhpsFileList1 = Lists.newArrayList();
+                    for(int i=0,len=list.size(); i<len; i++){
+                        BscDicCodeItem bscDicCodeItem = list.get(i);
+                        List<BscAttFileAndDir> temp = Lists.newArrayList();
+                        for(int j=0,lenj=fileList1.size(); j<lenj; j++){
+                            if(bscDicCodeItem.getItemCode().equals(fileList1.get(j).getBscAttLink().getPkName())){
+                                temp.add(fileList1.get(j));
+                            }
+                        }
+                        SolicitLhpsFile file = new SolicitLhpsFile();
+                        file.setFileTypeCode(bscDicCodeItem.getItemCode());
+                        file.setFileTypeName(bscDicCodeItem.getItemName());
+                        file.setFileAndDirs(temp);
+                        lhpsFileList1.add(file);
+                    }
+                    hiSolicit.setLhpsFiles(lhpsFileList1);
+                    //联合评审被征求人的附件
+                    List<BscAttFileAndDir> fileList2 = bscAttDetailMapper.searchFileAndDirsSimple(null, currentOrgId,
+                            "AEA_HI_SOLICIT_DETAIL_USER", null, detailUserIds);
+                    List<SolicitLhpsFile> lhpsFileList2 = Lists.newArrayList();
+                    List<SolicitLhpsFile> lhpsFileList3 = Lists.newArrayList();
+
+                    SolicitDetailUserVo solicitDetailUserVo = currentAnswerUserMap.get(hiSolicit.getSolicitId());
+                    if(solicitDetailUserVo != null){
+                        solicitDetailUserVo.setLhpsFiles(lhpsFileList2);
+                    }
+                    for(int i=0,len=list.size(); i<len; i++){
+                        BscDicCodeItem bscDicCodeItem = list.get(i);
+                        List<BscAttFileAndDir> temp1 = Lists.newArrayList();
+                        List<BscAttFileAndDir> temp2 = Lists.newArrayList();
+                        for(int j=0,lenj=fileList2.size(); j<lenj; j++){
+                            if(bscDicCodeItem.getItemCode().equals(fileList2.get(j).getBscAttLink().getPkName())){
+                                temp1.add(fileList2.get(j));
+                                if(solicitDetailUserVo != null && solicitDetailUserVo.getDetailUserId().equals(fileList2.get(j).getBscAttLink().getRecordId())){
+                                    temp2.add(fileList2.get(j));
+                                }
+                            }
+                        }
+                        SolicitLhpsFile file1 = new SolicitLhpsFile();
+                        SolicitLhpsFile file2 = new SolicitLhpsFile();
+                        file1.setFileTypeCode(bscDicCodeItem.getItemCode());
+                        file1.setFileTypeName(bscDicCodeItem.getItemName());
+                        BeanUtils.copyProperties(file1,file2);
+                        file1.setFileAndDirs(temp1);
+                        file2.setFileAndDirs(temp2);
+                        lhpsFileList2.add(file1);
+                        lhpsFileList3.add(file2);
+                    }
+                    //再将回复的和汇总的文件合并导一起
+                    for(int i=0,len=lhpsFileList1.size(); i<len; i++){
+                        SolicitLhpsFile solicitLhpsFile1 = lhpsFileList1.get(i);
+                        for(int j=0,lenj=lhpsFileList2.size(); j<lenj; j++){
+                            SolicitLhpsFile solicitLhpsFile2 = lhpsFileList2.get(j);
+                            if(solicitLhpsFile1.getFileTypeCode().equals(solicitLhpsFile2.getFileTypeCode())){
+                                solicitLhpsFile1.getFileAndDirs().addAll(solicitLhpsFile2.getFileAndDirs());
+                            }
+                        }
+                    }
+                    hiSolicit.setAllLhpsFiles(lhpsFileList1);
+                }
+
                 //组装返回内容
                 AeaHiSolicitInfo solicitInfo = new AeaHiSolicitInfo();
                 //征求主表实体信息
@@ -457,6 +538,34 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
         }
 
         return solicitInfoList;
+    }
+
+    private List<SolicitVo> converToSolicitVo(List<AeaHiSolicit> solicits){
+        List<SolicitVo> result = Lists.newArrayList();
+        for(int i=0,len=solicits.size(); i<len; i++){
+            SolicitVo temp = new SolicitVo();
+            BeanUtils.copyProperties(solicits.get(i),temp);
+            result.add(temp);
+        }
+        return result;
+    }
+    private List<SolicitDetailVo> converToSolicitDetailVo(List<AeaHiSolicitDetail> solicitDetail){
+        List<SolicitDetailVo> result = Lists.newArrayList();
+        for(int i=0,len=solicitDetail.size(); i<len; i++){
+            SolicitDetailVo temp = new SolicitDetailVo();
+            BeanUtils.copyProperties(solicitDetail.get(i),temp);
+            result.add(temp);
+        }
+        return result;
+    }
+    private List<SolicitDetailUserVo> converToSolicitDetailUserVo(List<AeaHiSolicitDetailUser> solicitDetailUsers){
+        List<SolicitDetailUserVo> result = Lists.newArrayList();
+        for(int i=0,len=solicitDetailUsers.size(); i<len; i++){
+            SolicitDetailUserVo temp = new SolicitDetailUserVo();
+            BeanUtils.copyProperties(solicitDetailUsers.get(i),temp);
+            result.add(temp);
+        }
+        return result;
     }
 
     /**

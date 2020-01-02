@@ -4,10 +4,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.List;
 
 /**
- * 征求意见详情表-模型
+ * 征求意见详情表-模型，注意：如果增删改字段要同步修改SolicitDetailVo值对象类
  */
 public class AeaHiSolicitDetail implements Serializable {
 // ----------------------------------------------------- Properties
@@ -38,7 +37,6 @@ public class AeaHiSolicitDetail implements Serializable {
     private java.util.Date modifyTime; // (更新时间)
 
     private String itemName;//非表字段，事项名称
-    private List<AeaHiSolicitDetailUser> detailUsers;//征求用户集合
     // ----------------------------------------------------- Constructors
 // ----------------------------------------------------- Methods
     public String getSolicitDetailId() {
@@ -183,14 +181,6 @@ public class AeaHiSolicitDetail implements Serializable {
 
     public void setItemName(String itemName) {
         this.itemName = itemName;
-    }
-
-    public List<AeaHiSolicitDetailUser> getDetailUsers() {
-        return detailUsers;
-    }
-
-    public void setDetailUsers(List<AeaHiSolicitDetailUser> detailUsers) {
-        this.detailUsers = detailUsers;
     }
 
     //public String getTableName()  {

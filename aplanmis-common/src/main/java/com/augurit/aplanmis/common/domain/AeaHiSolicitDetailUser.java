@@ -1,14 +1,12 @@
 package com.augurit.aplanmis.common.domain;
 
-import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
- * 征求意见详情用户任务表-模型
+ * 征求意见详情用户任务表-模型,注意：如果增删改字段要同步修改SolicitDetailUserVo值对象类
  */
 @Data
 public class AeaHiSolicitDetailUser implements Serializable {
@@ -36,8 +34,6 @@ public class AeaHiSolicitDetailUser implements Serializable {
     private String linkmanName; // (联系人)
     private String linkmanPhone; // (联系人联系方式)
 
-
-    private List<BscAttFileAndDir> fileAndDirs;//附件集合
     private String userName; //扩展字段 (用户名)
 
     //public String getTableName()  {
