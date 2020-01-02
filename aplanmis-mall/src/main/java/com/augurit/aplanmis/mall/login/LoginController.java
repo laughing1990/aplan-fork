@@ -17,6 +17,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +40,8 @@ public class LoginController {
 
     @Autowired
     private CommonLoginService commonLoginService;
+    @Value("${aplanmis.mall.skin:skin_v4.0}/")
+    private String skin;
 
     Gson gson = new Gson();
 
@@ -79,7 +82,7 @@ public class LoginController {
     @GetMapping("/loginIndex")
     @ApiOperation(value = "登录页面")
     public ModelAndView toIndexPage(){
-        return new ModelAndView("mall/login/login");
+        return new ModelAndView("mall/"+skin+"login/login");
     }
 
     @GetMapping("/logout")

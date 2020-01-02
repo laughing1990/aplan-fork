@@ -23,6 +23,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -46,30 +47,31 @@ public class RestMatSupplyController {
     private RestMatSupplyService restMatSupplyService;
     @Autowired
     private RestFileService restFileService;
-
+    @Value("${aplanmis.mall.skin:skin_v4.0/}/")
+    private String skin;
 
     @GetMapping("tomatSupplementListPage")
     @ApiOperation(value = "跳转材料补正页面")
     public ModelAndView tomatSupplementListPage(){
-        return new ModelAndView("mall/userCenter/components/matSupplementList");
+        return new ModelAndView("mall/"+skin+"userCenter/components/matSupplementList");
     }
 
     @GetMapping("toMatSupplementPage")
     @ApiOperation(value = "跳转补齐补正页面")
     public ModelAndView toMatSupplementPage(){
-        return new ModelAndView("mall/userCenter/components/matSupplement");
+        return new ModelAndView("mall/"+skin+"userCenter/components/matSupplement");
     }
 
     @GetMapping("toMatSupplementDetail")
     @ApiOperation(value = "跳转补齐补正补正详情")
     public ModelAndView toMatSupplementDetail(){
-        return new ModelAndView("mall/userCenter/components/matSupplementDetail");
+        return new ModelAndView("mall/"+skin+"userCenter/components/matSupplementDetail");
     }
 
     @GetMapping("toMatCompletionDetail")
     @ApiOperation(value = "跳转补齐补正补全详情")
     public ModelAndView toMatCompletionDetail(){
-        return new ModelAndView("mall/userCenter/components/matCompletionDetail");
+        return new ModelAndView("mall/"+skin+"userCenter/components/matCompletionDetail");
     }
 
     @GetMapping("matSupply/list")

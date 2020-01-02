@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,18 +43,19 @@ public class RestScheduleController {
     RestApproveService restApproveService;
     @Autowired
     ApproveDataService approveDataService;
-
+    @Value("${aplanmis.mall.skin:skin_v4.0/}/")
+    private String skin;
     @GetMapping("toscheduleInquirePage")
     @ApiOperation(value = "跳转项目进度页面")
     public ModelAndView toSchedulePage(){
-        return new ModelAndView("mall/userCenter/components/scheduleInquire");
+        return new ModelAndView("mall/"+skin+"userCenter/components/scheduleInquire");
     }
 
     @GetMapping("tolifeCyclePage")
     @ApiOperation(value = "跳转生命周期图页面")
     public ModelAndView toLifeCyclePage(String applyInstId, ModelMap modelMap){
         modelMap.put("applyInstId",applyInstId);
-        return new ModelAndView("mall/userCenter/components/lifeCycle");
+        return new ModelAndView("mall/"+skin+"userCenter/components/lifeCycle");
     }
 
     @GetMapping("itemSchedule/list")

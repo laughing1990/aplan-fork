@@ -19,6 +19,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -42,6 +43,8 @@ public class DiagramController {
     private ProjectCodeService projectCodeService;
     @Autowired
     private AeaApplyinstProjMapper aeaApplyinstProjMapper;
+    @Value("${aplanmis.mall.skin:skin_v4.0/}")
+    private String skin;
 
 
     @GetMapping("/diagram/status/projInfo1")
@@ -148,7 +151,7 @@ public class DiagramController {
     @GetMapping("/diagram/status/projInfo")
     @ApiOperation("页面-全景图")
     public ModelAndView stageApplyIndex() {
-        return new ModelAndView("mall/flowChart/rappidProjView");
+        return new ModelAndView("mall/"+skin+"flowChart/rappidProjView");
     }
 
     @GetMapping("/diagram/status/json")

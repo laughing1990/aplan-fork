@@ -25,6 +25,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -49,7 +50,8 @@ public class RestMatCompletController {
     private RestFileService restFileService;
     @Autowired
     private RestMatCompletService restMatCompletService;
-
+    @Value("${aplanmis.mall.skin:skin_v4.0/}")
+    private String skin;
     @GetMapping("matCompletDetail/{applyinstId}/{projInfoId}/{isSeriesApprove}")
     @ApiOperation(value = "材料补全详情信息接口")
     @ApiImplicitParams({@ApiImplicitParam(value = "申请实例Id",name = "applyinstId",required = true,dataType = "string"),
@@ -67,7 +69,7 @@ public class RestMatCompletController {
     @GetMapping("tomatCompletionListPage")
     @ApiOperation(value = "跳转材料补全页面")
     public ModelAndView toMatCompletPage(){
-        return new ModelAndView("mall/userCenter/components/matCompletionList");
+        return new ModelAndView("mall/"+skin+"userCenter/components/matCompletionList");
     }
 
     @GetMapping("matComplet/list")

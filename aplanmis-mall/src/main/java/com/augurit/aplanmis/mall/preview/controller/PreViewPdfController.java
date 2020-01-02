@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,7 +43,8 @@ public class PreViewPdfController {
     private RestFileService restFileService;
     @Autowired
     private CommonCheckService commonCheckService;
-
+    @Value("${aplanmis.mall.skin:skin_v4.0}/")
+    private String skin;
 
     @GetMapping("/view")
     @ApiOperation("在线预览pdf文件")

@@ -37,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -80,35 +81,38 @@ public class RestApplyProjController {
     private AeaParThemeService aeaParThemeService;
     @Autowired
     private CommonCheckService commonCheckService;
+    @Value("${aplanmis.mall.skin:skin_v4.0/}")
+    private String skin;
+
 
     @GetMapping("todeclarePage")
     @ApiOperation(value = "跳转我要申报页面")
     public ModelAndView toProjListPage(){
-        return new ModelAndView("mall/userCenter/components/declare");
+        return new ModelAndView("mall/"+skin+"userCenter/components/declare");
     }
 
     @GetMapping("todeclareHavePage")
     @ApiOperation(value = "跳转已申报项目页面")
     public ModelAndView toHadApplyItemPage(){
-        return new ModelAndView("mall/userCenter/components/declareHave");
+        return new ModelAndView("mall/"+skin+"userCenter/components/declareHave");
     }
 
     @GetMapping("towithdrawApplyListPage")
     @ApiOperation(value = "跳转撤件列表页面")
     public ModelAndView toWithdrawApplyListPage(){
-        return new ModelAndView("mall/userCenter/components/withdrawApplyList");
+        return new ModelAndView("mall/"+skin+"userCenter/components/withdrawApplyList");
     }
 
     @GetMapping("toAddProjPage")
     @ApiOperation(value = "跳转新增项目页面")
     public ModelAndView toAddProjPage() {
-        return new ModelAndView("mall/userCenter/components/addProj");
+        return new ModelAndView("mall/"+skin+"userCenter/components/addProj");
     }
 
     @GetMapping("toApplyDetailPage")
     @ApiOperation(value = "跳转已申报项目详情页")
     public ModelAndView toApplyDetailPage(){
-        return new ModelAndView("mall/userCenter/components/lifeCycle");
+        return new ModelAndView("mall/"+skin+"userCenter/components/lifeCycle");
     }
 
     @GetMapping("toUploadMatListPage")
@@ -116,7 +120,7 @@ public class RestApplyProjController {
     @ApiImplicitParams({@ApiImplicitParam(value = "申请实例ID",name = "applyinstId",required = true,dataType = "string"),
             @ApiImplicitParam(value = "任务ID",name = "taskId",required = true,dataType = "string")})
     public ModelAndView toUploadMatListPage(ModelMap modelMap, String applyinstId, String taskId){
-        return new ModelAndView("mall/userCenter/components/uploadMatList");
+        return new ModelAndView("mall/"+skin+"userCenter/components/uploadMatList");
     }
 
 
@@ -411,7 +415,7 @@ public class RestApplyProjController {
         modelMap.put("currentMyProjectPage", "splitProjJsp");
         modelMap.put("projInfo", StringUtils.isNotBlank(projInfoId) ? aeaProjInfoMapper.getOnlyAeaProjInfoById(projInfoId) : new AeaProjInfo());
         modelMap.put("currentProjInfoId", projInfoId);
-        return new ModelAndView("mall/userCenter/components/splitProject");
+        return new ModelAndView("mall/"+skin+"userCenter/components/splitProject");
     }
 
     //查找子项目是否存在，不存在时添加新的子项目，存在时根据子项目添加新的子项目

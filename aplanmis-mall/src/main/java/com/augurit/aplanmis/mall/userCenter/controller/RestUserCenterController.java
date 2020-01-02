@@ -25,6 +25,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -53,33 +54,35 @@ public class RestUserCenterController {
     private RestUserCenterService restUserCenterService;
     @Autowired
     private AeaLinkmanInfoMapper aeaLinkmanInfoMapper;
+    @Value("${aplanmis.mall.skin:skin_v4.0/}/")
+    private String skin;
 
     @GetMapping("/toMyCloundSpacesPage")
     @ApiOperation(value = "我的云盘")
     public ModelAndView toMyCloundSpacesPage(){
-        return new ModelAndView("mall/userCenter/components/my-cloundSpaces");
+        return new ModelAndView("mall/"+skin+"userCenter/components/my-cloundSpaces");
     }
     @GetMapping("toParallelDeclarePage")
     @ApiOperation(value = "跳转并联审批页面")
     public ModelAndView toParallelDeclarePage () throws Exception {
-        return new ModelAndView("mall/apply/index");
+        return new ModelAndView("mall/"+skin+"apply/index");
     }
     @GetMapping("/toMyCertificateLibraryPage")
     @ApiOperation(value = "我的证照")
     public ModelAndView toMyCertificateLibraryPage(){
-        return new ModelAndView("mall/userCenter/components/my-certificate-library");
+        return new ModelAndView("mall/"+skin+"userCenter/components/my-certificate-library");
     }
 
     @GetMapping("/toMyHomeIndexPage")
     @ApiOperation(value = "法人空间我的首页")
     public ModelAndView toMyHomeIndexPage(){
-        return new ModelAndView("mall/userCenter/components/myHomeIndex");
+        return new ModelAndView("mall/"+skin+"userCenter/components/myHomeIndex");
     }
 
     @GetMapping("/toMyMaterialsPage")
     @ApiOperation(value = "我的材料页面")
     public ModelAndView toMyMaterialsPage(){
-        return new ModelAndView("mall/userCenter/components/my-materials");
+        return new ModelAndView("mall/"+skin+"userCenter/components/my-materials");
     }
 
     @GetMapping("/toUserCenterindexPage")
@@ -87,43 +90,43 @@ public class RestUserCenterController {
     @ApiImplicitParam(value = "事项版本ID",name = "itemVerId",required = false,dataType = "string")
     public ModelAndView toUserCenterindexPage(String itemVerId, ModelMap modelMap){
         modelMap.put("itemVerId",itemVerId);
-        return new ModelAndView("mall/userCenter/userCenterIndex");
+        return new ModelAndView("mall/"+skin+"userCenter/userCenterIndex");
     }
 
     @GetMapping("toUserInfoPage")
     @ApiOperation(value = "跳转企业中心信息页面")
     public ModelAndView userInfo () throws Exception {
-        return new ModelAndView("mall/userCenter/components/userCenterPage");
+        return new ModelAndView("mall/"+skin+"userCenter/components/userCenterPage");
     }
 
     @GetMapping("toCreditDetailPage")
     @ApiOperation(value = "跳转企业信用页面")
     public ModelAndView toCreditDetailPage() throws Exception {
-        return new ModelAndView("mall/userCenter/components/creditDetail");
+        return new ModelAndView("mall/"+skin+"userCenter/components/creditDetail");
     }
 
     @GetMapping("/toMyProjListPage")
     @ApiOperation(value = "跳转我的项目列表页")
     public ModelAndView toMyProjListPage(){
-        return new ModelAndView("mall/userCenter/components/myProjList");
+        return new ModelAndView("mall/"+skin+"userCenter/components/myProjList");
     }
 
     @GetMapping("/toAddFgProj")
     @ApiOperation(value = "跳转新增发改项目页")
     public ModelAndView toAddFgProj(){
-        return new ModelAndView("mall/userCenter/components/addFgProj");
+        return new ModelAndView("mall/"+skin+"userCenter/components/addFgProj");
     }
 
     @GetMapping("/toAddLocalProj")
     @ApiOperation(value = "跳转新增本地项目页")
     public ModelAndView toAddLocalProj(){
-        return new ModelAndView("mall/userCenter/components/addLocalProj");
+        return new ModelAndView("mall/"+skin+"userCenter/components/addLocalProj");
     }
 
     @GetMapping("/toAgencyProjListPage")
     @ApiOperation(value = "跳转项目代办列表页")
     public ModelAndView toAgencyProjListPage(){
-        return new ModelAndView("mall/userCenter/components/agencyProjList");
+        return new ModelAndView("mall/"+skin+"userCenter/components/agencyProjList");
     }
 
     @PostMapping("unitInfo/save")

@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -61,7 +62,8 @@ public class RestApplyCommonController {
     private RestFileService restFileService;
     @Autowired
     private AeaHiApplyinstService aeaHiApplyinstService;
-
+    @Value("${aplanmis.mall.skin:skin_v4.0}/")
+    private String skin;
 
 
     @GetMapping("projInfo/{projInfoId}")

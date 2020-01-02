@@ -65,7 +65,8 @@ public class RestGuideController {
 
     @Value("${dg.sso.access.platform.org.top-org-id:0368948a-1cdf-4bf8-a828-71d796ba89f6}")
     protected String topOrgId;
-
+    @Value("${aplanmis.mall.skin:skin_v4.0/}/")
+    private String skin;
 
     @GetMapping("/toGuideIndexPage")
     @ApiOperation(value = "首页-->跳转办事指南页面接口")
@@ -80,17 +81,17 @@ public class RestGuideController {
         modelMap.put("auxiliaryStageId",auxiliaryStageId);
         modelMap.put("chooseOrgId",chooseOrgId);
         modelMap.put("projInfoId",projInfoId);
-        return new ModelAndView("mall/guide/guideIndex");
+        return new ModelAndView("mall/"+skin+"guide/guideIndex");
     }
 
     @GetMapping("/tolistmatterPage")
     public ModelAndView tolistmatterPage(){
-        return new ModelAndView("mall/listmatter/listmatter");
+        return new ModelAndView("mall/"+skin+"listmatter/listmatter");
     }
 
     @GetMapping("/toSinglePage")
     public ModelAndView toSinglePage(){
-        return new ModelAndView("mall/guide/components/singlePage");
+        return new ModelAndView("mall/"+skin+"guide/components/singlePage");
     }
 
     @GetMapping("/item/list")

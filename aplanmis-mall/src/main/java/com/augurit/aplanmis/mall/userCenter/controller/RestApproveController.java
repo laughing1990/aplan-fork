@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,11 +30,12 @@ public class RestApproveController {
 
     @Autowired
     RestApproveService restApproveService;
-
+    @Value("${aplanmis.mall.skin:skin_v4.0}/")
+    private String skin;
     @GetMapping("toapprovePage")
     @ApiOperation(value = "跳转审批情况页面")
     public ModelAndView toApprovePage(){
-        return new ModelAndView("mall/userCenter/components/approve");
+        return new ModelAndView("mall/"+skin+"userCenter/components/approve");
     }
 
     @GetMapping("approve/list")

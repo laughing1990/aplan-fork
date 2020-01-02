@@ -32,6 +32,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -69,12 +70,13 @@ public class RestSeriesApplyController {
     RestSeriesApplyService restSeriesApplyService;
     @Autowired
     AeaHiApplyinstService aeaHiApplyinstService;
-
+    @Value("${aplanmis.mall.skin:skin_v4.0/}/")
+    private String skin;
 
     @GetMapping("/toSingleApplyPage")
     @ApiOperation(value = "单项申报-->跳转单项申报页面接口")
     public ModelAndView toSingleApplyPage(){
-        return new ModelAndView("mall/userCenter/components/singleDeclar");
+        return new ModelAndView("mall/"+skin+"userCenter/components/singleDeclar");
     }
 
     @GetMapping("getItemBaseInfo/{itemVerId}")
