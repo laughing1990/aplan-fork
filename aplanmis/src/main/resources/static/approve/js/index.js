@@ -3318,7 +3318,7 @@ var vm = new Vue({
         columnType: "button",
         isReadonly: '0',
         isHidden: '0',
-        elementRender: '<button class="btn btn-primary btn-outline-info" onclick="clickStartSolicit()">意见征询</button>'
+        elementRender: '<button class="btn btn-outline-info" onclick="clickStartSolicit()">意见征询</button>'
       }, {
         elementName: "全景图",
         elementCode: "wfBusSave",
@@ -3340,7 +3340,7 @@ var vm = new Vue({
         columnType: "button",
         isReadonly: '0',
         isHidden: '0',
-        elementRender: '<button class="btn btn-primary btn-outline-info" onclick="clickOneSolicit()">发起一次征询</button>'
+        elementRender: '<button class="btn btn-outline-info" onclick="clickOneSolicit()">发起一次征询</button>'
       }];
       var unionReviewBtn = [{
         elementName: "联合评审",
@@ -3348,7 +3348,7 @@ var vm = new Vue({
         columnType: "button",
         isReadonly: '0',
         isHidden: '0',
-        elementRender: '<button class="btn btn-primary btn-outline-info" onclick="clickUnionReview()">发起联合评审</button>'
+        elementRender: '<button class="btn btn-outline-info" onclick="clickUnionReview()">发起联合评审</button>'
       }];
       var approverBtn = [{
         elementName: "材料补正",

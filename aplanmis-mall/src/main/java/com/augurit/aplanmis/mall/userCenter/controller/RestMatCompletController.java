@@ -50,7 +50,7 @@ public class RestMatCompletController {
     private RestFileService restFileService;
     @Autowired
     private RestMatCompletService restMatCompletService;
-    @Value("${aplanmis.mall.skin:skin_v4.0/}")
+    @Value("${aplanmis.mall.skin:skin_v4.1/}")
     private String skin;
     @GetMapping("matCompletDetail/{applyinstId}/{projInfoId}/{isSeriesApprove}")
     @ApiOperation(value = "材料补全详情信息接口")

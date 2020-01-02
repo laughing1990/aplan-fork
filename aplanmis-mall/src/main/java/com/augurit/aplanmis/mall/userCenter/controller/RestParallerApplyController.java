@@ -75,7 +75,7 @@ public class RestParallerApplyController {
     AeaHiApplyinstService aeaHiApplyinstService;
     @Autowired
     private RestMainService restMainService;
-    @Value("${aplanmis.mall.skin:skin_v4.0/}/")
+    @Value("${aplanmis.mall.skin:skin_v4.1/}/")
     private String skin;
     @GetMapping("/toParaApplyPage")
     @ApiOperation(value = "阶段申报-->跳转阶段申报页面接口")

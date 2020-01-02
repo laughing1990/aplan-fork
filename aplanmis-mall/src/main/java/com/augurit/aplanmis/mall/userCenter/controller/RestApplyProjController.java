@@ -81,7 +81,7 @@ public class RestApplyProjController {
     private AeaParThemeService aeaParThemeService;
     @Autowired
     private CommonCheckService commonCheckService;
-    @Value("${aplanmis.mall.skin:skin_v4.0/}")
+    @Value("${aplanmis.mall.skin:skin_v4.1/}")
     private String skin;
 
 

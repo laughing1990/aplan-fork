@@ -43,7 +43,7 @@ public class RestScheduleController {
     RestApproveService restApproveService;
     @Autowired
     ApproveDataService approveDataService;
-    @Value("${aplanmis.mall.skin:skin_v4.0/}/")
+    @Value("${aplanmis.mall.skin:skin_v4.1/}/")
     private String skin;
     @GetMapping("toscheduleInquirePage")
     @ApiOperation(value = "跳转项目进度页面")
