@@ -54,7 +54,7 @@ public class RestUserCenterController {
     private RestUserCenterService restUserCenterService;
     @Autowired
     private AeaLinkmanInfoMapper aeaLinkmanInfoMapper;
-    @Value("${aplanmis.mall.skin:skin_v4.0/}/")
+    @Value("${aplanmis.mall.skin:skin_v4.1/}/")
     private String skin;
 
     @GetMapping("/toMyCloundSpacesPage")

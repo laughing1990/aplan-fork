@@ -18,6 +18,7 @@ import com.augurit.aplanmis.common.service.state.AeaItemStateService;
 import com.augurit.aplanmis.common.service.theme.AeaParThemeService;
 import com.augurit.aplanmis.mall.guide.service.RestGuideService;
 import com.augurit.aplanmis.mall.guide.vo.RestGuideMatVo;
+import com.augurit.aplanmis.mall.guide.vo.RestGuideStateVo;
 import com.augurit.aplanmis.mall.guide.vo.RestGuideVo;
 import com.augurit.aplanmis.mall.guide.vo.RestSingleGuideVo;
 import com.augurit.aplanmis.mall.main.vo.ItemListVo;
@@ -65,7 +66,7 @@ public class RestGuideController {
 
     @Value("${dg.sso.access.platform.org.top-org-id:0368948a-1cdf-4bf8-a828-71d796ba89f6}")
     protected String topOrgId;
-    @Value("${aplanmis.mall.skin:skin_v4.0/}/")
+    @Value("${aplanmis.mall.skin:skin_v4.1/}/")
     private String skin;
 
     @GetMapping("/toGuideIndexPage")
@@ -314,4 +315,21 @@ public class RestGuideController {
             return new ContentResultForm(false,"","办事指南 --> 根据阶段ID、阶段情形ID集合、事项情形ID集合、事项版本ID集合获取必选、可选材料列表异常");
         }
     }
+
+    @GetMapping("/guide/detailed/{itemVerId}")
+    @ApiOperation(value = "办事指南 --> 获取事项对应的办事指南数据")
+    @ApiImplicitParam(value = "事项版本ID",name = "itemVerId",required = true,dataType = "string" )
+    public ContentResultForm<RestGuideStateVo> getRestGuideStateVo(@PathVariable("itemVerId") String itemVerId){
+        try {
+            return new ContentResultForm<RestGuideStateVo>(true,restGuideService.getRestGuideStateVo(itemVerId,topOrgId));
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ContentResultForm(false,"","获取事项对应的办事指南数据异常");
+        }
+    }
+
+
+
+
+
 }

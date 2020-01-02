@@ -37,6 +37,7 @@ import com.augurit.aplanmis.mall.main.vo.ItemListVo;
 import com.augurit.aplanmis.mall.main.vo.ParallelApproveItemVo;
 import com.augurit.aplanmis.mall.main.vo.ThemeTypeVo;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
@@ -553,6 +554,31 @@ public class RestGuideServiceImpl implements RestGuideService {
         vo.setParallelItemList(paraItemList==null?new ArrayList<>():paraItemList);
         vo.setCoreItemList(coreItemList==null?new ArrayList<>():coreItemList);
         vo.setStateList(stateList==null?new ArrayList<>():stateList);
+        return vo;
+    }
+
+    @Override
+    public RestGuideStateVo getRestGuideStateVo(String itemVerId, String topOrgId) throws Exception {
+
+        RestGuideStateVo vo = new RestGuideStateVo();
+        //办事指南基本信息
+        AeaItemGuide aeaItemGuide = aeaItemGuideService.getAeaItemGuideListByItemVerId(itemVerId,topOrgId);
+        BeanUtils.copyProperties(aeaItemGuide,vo);
+        //情形
+        List<AeaItemState> states = aeaItemStateService.listTreeAeaItemStateByItemVerId(itemVerId, null);
+        List<RestGuideStateVo.RestStateInnerVo> stateInnerVos = states.stream().map(RestGuideStateVo.RestStateInnerVo::build).collect(Collectors.toList());
+        for (RestGuideStateVo.RestStateInnerVo stateInnerVo : stateInnerVos) {
+            List<AeaItemMat> mats = aeaItemMatService.getMatListByItemStateIds(new String[]{stateInnerVo.getStateId()});
+            List<RestGuideStateVo.RestStateMatInnerVo> stateMatInnerVos
+                    = mats.stream().map(RestGuideStateVo.RestStateMatInnerVo::build).collect(Collectors.toList());
+            stateInnerVo.setMats(stateMatInnerVos);
+        }
+        //材料
+        vo.setMats(aeaItemMatService.getMatListByItemVerIds(new String[]{itemVerId}, "1", "1").stream().map(RestGuideStateVo.RestStateMatInnerVo::build).collect(Collectors.toList()));
+        //拓展信息
+        AeaItemGuideExtend  aeaItemGuideExtend = aeaItemGuideExtendService.getAeaItemGuideExtendByItemVerId(itemVerId);
+        vo.setResultName(aeaItemGuideExtend.getResultName());
+
         return vo;
     }
 

@@ -43,7 +43,7 @@ public class DiagramController {
     private ProjectCodeService projectCodeService;
     @Autowired
     private AeaApplyinstProjMapper aeaApplyinstProjMapper;
-    @Value("${aplanmis.mall.skin:skin_v4.0/}")
+    @Value("${aplanmis.mall.skin:skin_v4.1/}")
     private String skin;
 
 
