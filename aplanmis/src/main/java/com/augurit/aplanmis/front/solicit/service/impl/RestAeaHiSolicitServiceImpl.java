@@ -132,7 +132,6 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
         if ("0".equals(isRoot)) {
             OpuOmOrg opuOmOrg = new OpuOmOrg();
             opuOmOrg.setParentOrgId(parentOrgId);
-            opuOmOrg.setOrgProperty("d");
             opuOmOrg.setOrgDeleted("0");
             list = opuOmOrgService.listOpuOmOrg(opuOmOrg);
         }
