@@ -27,6 +27,7 @@ import com.augurit.aplanmis.common.service.search.ApproveDataService;
 import com.augurit.aplanmis.common.service.stage.AeaParStageService;
 import com.augurit.aplanmis.common.service.theme.AeaParThemeService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
+import com.augurit.aplanmis.common.utils.DesensitizedUtil;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.common.vo.MatCorrectConfirmVo;
@@ -305,7 +306,12 @@ public class RestApproveServiceImpl implements RestApproveService {
         }
         //办件结果取件方式
         AeaHiSmsInfo aeaHiSmsInfo = aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(applyinstId);
-        applyDetailVo.setAeaHiSmsInfo(aeaHiSmsInfo==null?new AeaHiSmsInfo():aeaHiSmsInfo);
+        if (aeaHiSmsInfo==null) aeaHiSmsInfo = new AeaHiSmsInfo();
+        if (isCheckAuthority){
+            aeaHiSmsInfo.setAddresseePhone(DesensitizedUtil.desensitizedPhoneNumber(aeaHiSmsInfo.getAddresseePhone()));
+            aeaHiSmsInfo.setAddresseeIdcard(DesensitizedUtil.desensitizedIdNumber(aeaHiSmsInfo.getAddresseeIdcard()));
+        }
+        applyDetailVo.setAeaHiSmsInfo(aeaHiSmsInfo);
 
         //申报主体
 
