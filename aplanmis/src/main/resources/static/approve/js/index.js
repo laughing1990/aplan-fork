@@ -628,6 +628,7 @@ var vm = new Vue({
         solicitId: '',
         solicitLinkmanName: '',
         solicitLinkmanPhone: '',
+        isSendSms: '0',
       },
       solicitFormRules: {
         solicitTopic: [{required: true, message: ' ', trigger: 'blur'}],
@@ -904,6 +905,7 @@ var vm = new Vue({
         procinstId: vm.processInstanceId,
         hiTaskinstId: vm.taskId,
         solicitTopic: vm.solicitForm.solicitTopic,
+        isSendSms: vm.solicitForm.isSendSms,
         solicitContent: vm.solicitForm.solicitContent,
         solicitType: vm.solicitForm.solicitType,
         isCalcTimerule: vm.solicitForm.isCalcTimerule,
@@ -1010,11 +1012,12 @@ var vm = new Vue({
     },
     // 关闭征询弹窗
     closeSoDialog: function () {
+      this.$refs.solicitForm.clearValidate();
       this.solicitForm.solicitId = '';
       this.solicitForm.solicitType = 'i';
       this.solicitForm.isCalcTimerule = '1';
+      this.solicitForm.isSendSms = '0';
       this.oneSolicitFileList = [];
-      this.$refs.solicitForm.clearValidate();
     },
     // 打开征询弹窗
     openSoDialog: function () {
@@ -3144,7 +3147,7 @@ var vm = new Vue({
       var lTabsData = [
         {label: '申请表', labelId: "1", src: './applyForm.html'},
         {label: '一张表单', labelId: "oneFrom", src: 'urlStageOneForm.html',},
-        {label: '材料附件', labelId: "2", src: './materialAnnex.html'},
+        {label: '一套材料', labelId: "2", src: './materialAnnex.html'},
         {label: '审批过程', labelId: "3", src: './opinionForm.html'},
         {label: '材料补正', labelId: "4", src: './opinionForm.html'},
         {label: '意见征询', labelId: "yjzq", src: './opinionForm.html'},
@@ -4336,7 +4339,7 @@ var vm = new Vue({
         sendObjectStr: JSON.stringify(tmpSendParam),
         //iteminstState: null,
         //iteminstId: vm.busRecordId,
-        isSendSMS: vm.sendForm.isSendnuSMS,
+        isSendSMS: vm.sendForm.isSendSms,
         isSendToNextHandle: vm.sendForm.isSendToNextHandle,
         phoneNo: vm.sendForm.phoneNo,
         contentDesc: vm.sendForm.contentDesc,

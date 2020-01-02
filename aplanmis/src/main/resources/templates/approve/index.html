@@ -3000,6 +3000,24 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row style="margin-bottom:5px;">
+          <el-col :span="12">
+            <el-form-item label="短信通知">
+              <el-radio-group v-model="solicitForm.isSendSms">
+                <el-radio label="1">是</el-radio>
+                <el-radio label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" v-show="dialogConfig.showType">
+            <el-form-item :label="dialogConfig.formLabel+'类型'">
+              <el-radio-group v-model="solicitForm.solicitType" @change="changeOsTab">
+                <el-radio label="i">按事项征询</el-radio>
+                <el-radio label="d">按部门征询</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="是否纳入计时">
@@ -3017,16 +3035,6 @@
                              :value="item.timeruleId"></el-option>
                 </el-select>
               </el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row style="margin-bottom:5px;" v-show="dialogConfig.showType">
-          <el-col :span="12">
-            <el-form-item :label="dialogConfig.formLabel+'类型'">
-              <el-radio-group v-model="solicitForm.solicitType" @change="changeOsTab">
-                <el-radio label="i">按事项征询</el-radio>
-                <el-radio label="d">按部门征询</el-radio>
-              </el-radio-group>
             </el-form-item>
           </el-col>
         </el-row>
