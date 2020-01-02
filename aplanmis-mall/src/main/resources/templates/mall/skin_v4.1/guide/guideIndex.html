@@ -12,7 +12,7 @@
 <body>
 <div id="guideIndex" v-cloak>
     <div v-show="!fullscreenLoading">
-        <section>
+        <section style="display: none;">
             <div class="guid-banner">
                 <div class="guide-banner-opactity">
                     <div class="guide-banner-content">
@@ -33,9 +33,13 @@
                 <div class="floor margin-top-40" v-show="!isSinglePage">
                     <div class="wt-tab" id="floorTab">
                         <ul class="wt-tab-nav" id="mallThemeTypeList">
-                            <li data-id="#themeApproval" :class="{'active':approvalwayTypeFlag}" @click="approvalwayTypeFlag = true">
-                                项目类型
-                            </li>
+                            <div class="wt-search">
+                                <div class="search-input index-input">
+                                    <div>
+                                        <input type="text" v-model.trim="itemListKeyword" @keyup.13="searchItemList();"placeholder="  查询项目类型/事项/结果物  "><el-button class="search-btn" @click="searchItemList();">查询</el-button>
+                                    </div>
+                                </div>
+                            </div>
                         </ul>
                         <div class="guide-tip">
                             <img src="../../static/mall/images/guide/u736.png" th:src="@{/mall/images/guide/u736.png}" />

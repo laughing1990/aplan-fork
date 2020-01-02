@@ -2,8 +2,9 @@
   color: #428FEB;
 }
 .regular-wrap {
-  width: 100%;
+  width: 1200px;
   min-width: 1200px;
+  margin: 10px auto 0;
 }
 .regular-wrap .nav-wrap {
   position: relative;

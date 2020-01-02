@@ -44,16 +44,16 @@
     font-size: 40px;
     color: #FFFFFF;
 }
-.guide-banner-content .search-input input{
-    width: 480px;
+.wt-tab-nav .search-input input{
+    width: 700px;
     height: 40px;
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
 }
-.guide-banner-content  .search-btn{
+.wt-tab-nav .search-btn{
     width: 96px;
     height: 40px;
-    background-color: rgba(255, 56, 56, 1);
+    background-color: #4293F4;
     border-top-left-radius: initial;
     border-bottom-left-radius: inherit;
     padding-top: 9px;
@@ -72,12 +72,12 @@
     color: #333333;
 }
 .floor .wt-tab-nav{
-    width: 162px;
     display: inline-block;
 }
 .floor .guide-tip{
     display: inline-block;
     cursor: pointer;
+    margin-left: 25px;
 }
 .floor .guide-tip img{
     width: 20px;
