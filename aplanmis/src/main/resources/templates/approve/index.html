@@ -1268,7 +1268,198 @@
         </div>
         <!-- 联合评审tab -->
         <div v-else-if="u.labelId=='lhps'" style="height:100%;overflow:auto;">
-          联合评审历史记录，开发中...
+          <div style="padding:28px 48px 20px 42px;">
+            <!-- 联合评审意见 -->
+            <template v-else-if="newestUnionReview.solicitDetailUser&&newestUnionReview.solicitDetailUser.detailUserId&&newestUnionReview.solicitDetailUser.detailUserId.length">
+              <div class="yczx-inner" style="padding-bottom: 12px;">
+                <el-form size="medium" style="margin-top:10px;"
+                         :model="solicitBmForm" :rules="solicitBmFormRules" label-width="100px">
+                  <el-form-item label="联合评审意见" require>
+                    <el-radio v-model="solicitBmForm.userConclusion" label="1">通过</el-radio>
+                    <el-radio v-model="solicitBmForm.userConclusion" label="0">不通过</el-radio>
+                    <el-radio v-model="solicitBmForm.userConclusion" label="2">不涉及</el-radio>
+                  </el-form-item>
+                  <el-form-item label="意见描述" require prop="userOpinion">
+                    <el-input type="textarea" v-model="solicitBmForm.userOpinion" :rows="3"
+                              placeholder="请输入意见描述"></el-input>
+                  </el-form-item>
+                  <el-form-item label="附件列表">
+                    <el-table :data="solicitUploadFileList" border class="solict-pt">
+                      <el-table-column label='序号' type="index" width="50"></el-table-column>
+                      <el-table-column type="expand" width="20">
+                        <template slot-scope="scope">
+                          <div v-if="scope.row.fileAndDirs&&scope.row.fileAndDirs.length">
+                            <div class="spe-table-file-u" v-for="file in scope.row.fileAndDirs">
+                              <i class="ag" v-html="getIconText(file.fileType)"
+                                 :style="{color:getIconColor(file.fileType)}"></i>
+                              {{file.fileName}}
+                              <i class="ag ag-ope-btn ag-search" title="预览" @click="filePreview(file)"></i>
+                              <i class="ag ag-ope-btn ag-download" title="下载" @click="downOneFile(file)"></i>
+                              <i class="ag ag-ope-btn ag-trash " title="删除" @click="delOneFile(file,scope.row)"></i>
+                            </div>
+                          </div>
+                          <div v-else>暂无附件</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="材料名称" prop="attName">
+                        <template slot-scope="scope">
+                          <i class="ag" v-html="getIconText(scope.row.attFormat)"
+                             :style="{color:getIconColor(scope.row.attFormat)}"></i>
+                          {{scope.row.attName}}
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="操作" width="180">
+                        <template slot-scope="scope">
+                          <el-button type="primary" round size="medium">上传</el-button>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                    <div style="margin-top:10px">
+                      <el-button type="primary" size="medium" @click="solicitSaveOpinion(newestUnionReview, 'LHPS')">提交联合评审</el-button>
+                    </div>
+                  </el-form-item>
+                </el-form>
+              </div>
+            </template>
+            <!-- 意见汇总 -->
+            <template v-if="!showSolicitBtn">
+              <div class="yczx-block-title">
+                <i class="ag ag-community"></i>
+                意见汇总
+              </div>
+              <div class="yczx-inner" style="padding-bottom: 12px;">
+                <el-form size="medium" style="margin-top:10px;"
+                         :model="solicitBmForm" :rules="solicitBmFormRules" label-width="100px">
+                  <el-form-item label="征询意见" require>
+                    <el-radio v-model="solicitBmForm.userConclusion" label="1">通过</el-radio>
+                    <el-radio v-model="solicitBmForm.userConclusion" label="0">不通过</el-radio>
+                  </el-form-item>
+                  <el-form-item label="意见描述" require prop="userOpinion">
+                    <el-input type="textarea" v-model="solicitBmForm.userOpinion" :rows="3"
+                              placeholder="请输入意见描述"></el-input>
+                  </el-form-item>
+                  <el-form-item label="附件列表">
+                    <div class="file-opt-btn" style="margin-top:0px">
+                      <el-upload ref="uploadCert4" class="upload-s-file"
+                                 :action="ctx+'rest/certificate/certinst/att/upload'"
+                                 :show-file-list="false" :http-request="function(file){oneSolicitUploadFile(file, newestOneSolicit.solicit.solicitId)}"
+                                 :file-list="fileList">
+                        <el-button slot="trigger" size="small" type="primary">上传</el-button>
+                      </el-upload>
+                    </div>
+                    <el-table border stripe :data="oneSolicitFileList">
+                      <el-table-column label='序号' type="index" width="50"></el-table-column>
+                      <el-table-column label="文件名称" prop="attName">
+                        <template slot-scope="scope">
+                          <i class="ag" v-html="getIconText(scope.row.attFormat)"
+                             :style="{color:getIconColor(scope.row.attFormat)}"></i>
+                          {{scope.row.attName}}
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="操作" width="140">
+                        <template slot-scope="scope">
+                          <div class="spe-file-btns c-f">
+                            <div class="spe-file-btn" @click="filePreview(scope.row,'solicitOpinionLoading')">预览</div>
+                            <div class="spe-ope-line"></div>
+                            <div class="spe-file-btn" @click="downOneFile(scope.row)">下载</div>
+                            <div class="spe-ope-line"></div>
+                            <div class="spe-file-btn delete" @click="delSpeFile(scope.row, 'refreshOneSolicitFileList')">删除</div>
+                          </div>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                    <div style="margin-top:10px">
+                      <el-button type="primary" size="medium" @click="ensureEndSolicit(newestOneSolicit, 'YCZX')">结束联合评审</el-button>
+                    </div>
+                  </el-form-item>
+                </el-form>
+              </div>
+            </template>
+            <!-- 意见结果 -->
+            <template v-if="!showSolicitBtn">
+              <div class="yczx-block-title">
+                <i class="ag ag-community"></i>
+                联合评审结果
+              </div>
+              <div class="yczx-inner" style="padding-bottom: 12px;">
+                <el-form size="medium" style="margin-top:10px;"
+                         :model="newestOneSolicit.solicit" label-width="100px">
+                  <el-row>
+                    <el-col :span="24">
+                      <el-form-item label="意见汇总：">
+                        <span class="status-span" :class="[getStatusClass2(newestOneSolicit.solicit.conclusionFlag)]">
+                          {{newestOneSolicit.solicit.conclusionFlag|changeBmOneOpinType}}
+                        </span>
+                      </el-form-item>
+                    </el-col>
+                  </el-row>
+                  <el-form-item label="意见描述：">
+                    <div class="conclusion-text">
+                      {{newestOneSolicit.solicit.conclusionDesc||'暂无意见'}}
+                    </div>
+                  </el-form-item>
+                </el-form>
+              </div>
+            </template>
+            <!-- 各个部门意见 -->
+            <template>
+              <div class="yczx-block-title">
+                <i class="ag ag-community"></i>
+                各部门意见
+              </div>
+              <div class="yczx-inner" style="padding-top: 24px;">
+                <el-table :data="unionReviewList" border style="margin-top:12px;">
+                  <el-table-column label="序号" type="index" width="50"></el-table-column>
+                  <el-table-column label="部门名称" property="detailOrgName"></el-table-column>
+                  <el-table-column label="办理人" property="userName" width="100"></el-table-column>
+                  <el-table-column label="联合评审意见" property="userConclusion" width="100">
+                    <template slot-scope="scope">
+                    <span class="status-span" :class="[getStatusClass2(scope.row.userConclusion)]">
+                        {{scope.row.userConclusion|changeBmOpinType}}
+                      </span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="意见描述" property="userOpinion"></el-table-column>
+                </el-table>
+              </div>
+            </template>
+            <!-- 材料附件 -->
+            <template>
+              <div class="yczx-block-title">
+                <i class="ag ag-community"></i>
+                材料附件
+              </div>
+              <div class="yczx-inner" style="padding-top: 24px;">
+                <el-table :data="unionReviewList" border style="margin-top:12px;">
+                  <el-table-column label="序号" type="index" width="50"></el-table-column>
+                  <el-table-column type="expand" width="20">
+                    <template slot-scope="scope">
+                      <div v-if="scope.row.fileAndDirs&&scope.row.fileAndDirs.length">
+                        <div class="spe-table-file-u" v-for="file in scope.row.fileAndDirs">
+                          <i class="ag" v-html="getIconText(file.fileType)"
+                             :style="{color:getIconColor(file.fileType)}"></i>
+                          {{file.fileName}}
+                          <i class="ag ag-ope-btn ag-search" title="预览" @click="filePreview(file)"></i>
+                          <i class="ag ag-ope-btn ag-download" title="下载" @click="downOneFile(file)"></i>
+                        </div>
+                      </div>
+                      <div v-else>暂无附件</div>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="文件类型" property="detailOrgName"></el-table-column>
+                  <el-table-column label="操作" width="120">
+                    <template slot-scope="scope">
+                      <div class="spe-file-btns c-f">
+                        <div class="spe-file-btn" @click="filePreview(scope.row,'parentPageLoading')">预览</div>
+                        <div class="spe-ope-line"></div>
+                        <div class="spe-file-btn" @click="downOneFile(scope.row)">下载</div>
+                      </div>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </template>
+          </div>
         </div>
         <iframe v-else :src="u.src" class="ltab-iframe"></iframe>
       </el-tab-pane>
@@ -3145,8 +3336,8 @@
       </div>
     </div>
     <div slot="footer" class="dialog-footer">
-      <el-button size="small" @click="solicitOpinionVisible = false">取 消</el-button>
-      <el-button size="small" type="primary" @click="ensureConfigDialog">{{dialogConfig.ensureText}}</el-button>
+      <el-button size="medium" @click="solicitOpinionVisible = false">取 消</el-button>
+      <el-button size="medium" type="primary" @click="ensureConfigDialog">{{dialogConfig.ensureText}}</el-button>
     </div>
   </el-dialog>
   <!-- 意见征询 end -->
