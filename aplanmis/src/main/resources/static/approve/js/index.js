@@ -2563,7 +2563,7 @@ var vm = new Vue({
               applyinstId: vm.masterEntityKey,
               // stageId: vm.stageId,
               projInfoId: vm.projInfoId,
-              itemId: vm.itemId,
+              itemId: vm.itemVersionId,
               // applyinstId: 'fcf9d937-f670-4871-a430-34b01cafde9b',
               // stageId: 'f39985ed-9119-444f-b744-4167762a3872',
               // projInfoId: '347db5f9-f55f-44eb-9d1a-983ca263e8c4',
