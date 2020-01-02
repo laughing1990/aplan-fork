@@ -186,7 +186,7 @@ var vm = new Vue({
       },//发送表单参数
       sendFormRule: {},//发送表单校验规则
       onlySuggestForm: {}, // 只有办理意见的弹窗form
-      
+
       // *********** 意见弹框参数 start *********************
       opinionForm: {},//办理意见表单参数
       opinionFormRule: {
@@ -235,18 +235,18 @@ var vm = new Vue({
       rightVerticalTabActive: 1, // 1为办理意见  2为材料附件
       rightIconTab: true, // true 为展开宽度25%  false为 展开宽度50%
       saveAndSendTitle: '发送对话框',
-      
+
       receiptPrintDialog: false,//回执弹框
       receiptPrintLoading: false,
       receiveList: [],//回执列表
-      
+
       enumActionCode: '',//OpsActionConstants 对应的枚举字段
       enumApplyStatus: '',//ApplyState 对应的枚举值 ---需要改变的申请状态
       enumItemStatus: '',//ItemStatus 对应的枚举值 ---事项状态
-      
+
       sendUrlPath: '',//发送地址
       requestMappingType: 'put',//访问方式
-      
+
       //------------------证照--------------------------------------------
       certinstModalShow: false,//证照实例列表弹窗控制
       selectCertinstList: [],//选择的证照实例行数
@@ -290,7 +290,7 @@ var vm = new Vue({
       selMatRowData: {}, // 所选择的材料信息
       fileWinData: [], // 上传窗口上传参数列表
       loadingFileWin: false, // 窗口文件上传loading
-      
+
       // 材料补正按钮相关
       // 是否展示材料补正的dialog
       isShowMaterialSupplementDialog: false,
@@ -324,12 +324,12 @@ var vm = new Vue({
       tobaMakeupMaterialList: [],
       unitAndProjInfo: {},
       //----------- 需要保存的数据 end
-      
+
       expanded: true,// 右边aside是否展开
       sendDialogVisible: false,// 发送对话框是否显示
       processDialogVisible: false,// 流程图弹窗是否显示
       lTabsData: [], // 左边iframes
-      
+
       // 右边四个标签
       asideTabs: [
         "审批过程",
@@ -658,7 +658,7 @@ var vm = new Vue({
       uploadRecordId: '',
       curWidth: (document.documentElement.clientWidth || document.body.clientWidth),//当前屏幕宽度
       curHeight: (document.documentElement.clientHeight || document.body.clientHeight),//当前屏幕高度
-      allItemsData:[],
+      allItemsData: [],
       dialogConfig: {
         showType: true,
         dialogType: 'YJZQ',
@@ -838,7 +838,7 @@ var vm = new Vue({
       })
     },
     // 点击发起一次征询按钮
-    clickOneSolicit: function(){
+    clickOneSolicit: function () {
       var vm = this;
       this.dialogConfig = this.dialogConfigOneSolict;
       this.solicitForm.solicitType = 'd';
@@ -846,16 +846,16 @@ var vm = new Vue({
       this.openSoDialog();
     },
     // 加载一次征询历史数据
-    loadOneSolicitData: function(){
+    loadOneSolicitData: function () {
       var vm = this;
       this.requestSolicit('YCZX', function (data) {
         // 显示头部信息
         vm.oneSolicitHandleCount = 0;
         vm.oneSolicitNotHandleCount = 0;
         var tmp = [];
-        data[0].solicitDetails.forEach(function(u){
-          var tmpO = { detailOrgName: u.detailOrgName, };
-          if (u.detailState==0||u.detailState==1){
+        data[0].solicitDetails.forEach(function (u) {
+          var tmpO = {detailOrgName: u.detailOrgName,};
+          if (u.detailState == 0 || u.detailState == 1) {
             vm.oneSolicitNotHandleCount++;
             tmpO.isHandled = false;
           } else {
@@ -866,11 +866,11 @@ var vm = new Vue({
         });
         vm.oneSolicitOrgData = tmp;
         // 三级数据组装成两级
-        data.forEach(function(u){
+        data.forEach(function (u) {
           var tmp = [];
-          u.solicitDetails.forEach(function(uu){
+          u.solicitDetails.forEach(function (uu) {
             uu.detailUsers = uu.detailUsers || [];
-            uu.detailUsers.forEach(function(uuu){
+            uu.detailUsers.forEach(function (uuu) {
               tmp.push($.extend({}, uu, uuu));
             });
           });
@@ -883,22 +883,22 @@ var vm = new Vue({
     //一次征询 end
     // 联合评审  start
     // 点击联合评审按钮
-    clickUnionReview: function(){
+    clickUnionReview: function () {
       var vm = this;
       this.dialogConfig = this.dialogConfigUnion;
       this.solicitForm.solicitType = 'd'
       this.openSoDialog();
     },
     // 加载联合评审历史数据
-    loadUnionReviewData: function(){
+    loadUnionReviewData: function () {
       var vm = this;
       this.requestSolicit('LHPS', function (data) {
         // 三级数据组装成两级
-        data.forEach(function(u){
+        data.forEach(function (u) {
           var tmp = [];
-          u.solicitDetails.forEach(function(uu){
+          u.solicitDetails.forEach(function (uu) {
             uu.detailUsers = uu.detailUsers || [];
-            uu.detailUsers.forEach(function(uuu){
+            uu.detailUsers.forEach(function (uuu) {
               tmp.push($.extend({}, uu, uuu));
             });
           });
@@ -928,10 +928,10 @@ var vm = new Vue({
         solicitId: vm.solicitForm.solicitId,
         busType: vm.dialogConfig.dialogType,
       };
-      if (vm.solicitForm.isCalcTimerule==1){
+      if (vm.solicitForm.isCalcTimerule == 1) {
         params.solicitDueDays = vm.solicitForm.solicitDueDays;
       }
-      if (vm.dialogConfig.dialogType=='YCZX') {
+      if (vm.dialogConfig.dialogType == 'YCZX') {
         params.solicitLinkmanName = vm.solicitForm.solicitLinkmanName;
         params.solicitLinkmanPhone = vm.solicitForm.solicitLinkmanPhone;
       }
@@ -980,14 +980,14 @@ var vm = new Vue({
           }, function (res) {
             vm.solicitOpinionLoading = false;
             if (res.success) {
-              vm.$message.success(vm.dialogConfig.dialogTitle+'发起成功');
+              vm.$message.success(vm.dialogConfig.dialogTitle + '发起成功');
               delayRefreshWindow();
             } else {
-              vm.$message.error(res.message || vm.dialogConfig.dialogTitle+'发起失败');
+              vm.$message.error(res.message || vm.dialogConfig.dialogTitle + '发起失败');
             }
           }, function () {
             vm.solicitOpinionLoading = false;
-            vm.$message.error(vm.dialogConfig.dialogTitle+'发起失败');
+            vm.$message.error(vm.dialogConfig.dialogTitle + '发起失败');
           })
         } else {
           vm.$message.error('还有必填项未填写');
@@ -998,7 +998,7 @@ var vm = new Vue({
     clickStartSolicit: function () {
       var vm = this;
       this.dialogConfig = this.dialogConfigSolicit;
-      if (vm.allItemsData.length){
+      if (vm.allItemsData.length) {
         vm.openSoDialog();
         return null;
       }
@@ -1006,16 +1006,16 @@ var vm = new Vue({
       request('', {
         url: ctx + 'rest/solicit/apply/items',
         type: 'get',
-        data: { applyinstId: vm.masterEntityKey },
-      }, function(res) {
+        data: {applyinstId: vm.masterEntityKey},
+      }, function (res) {
         vm.parentPageLoading = false;
-        if (res.success){
+        if (res.success) {
           vm.allItemsData = res.content;
           vm.openSoDialog();
         } else {
-          vm.$message.error(res.message||'加载事项列表失败');
+          vm.$message.error(res.message || '加载事项列表失败');
         }
-      }, function(){
+      }, function () {
         vm.parentPageLoading = false;
         vm.$message.error('加载事项列表失败');
       });
@@ -1123,11 +1123,11 @@ var vm = new Vue({
       }, function (res) {
         if (res.success) {
           // if (node.level == 0) {
-            res.content.forEach(function (u) {
-              if (u.isLeaf=='0'){
-                u.disabled = true;
-              }
-            });
+          res.content.forEach(function (u) {
+            if (u.isLeaf == '0') {
+              u.disabled = true;
+            }
+          });
           // }
           resolve(res.content);
           if (node.level == 0) {
@@ -1164,7 +1164,7 @@ var vm = new Vue({
         conclusionDesc: vm.solicitBmForm.userOpinion,
         solicitId: item.solicit.solicitId,
       };
-      if (typeCode == 'YCZX'){
+      if (typeCode == 'YCZX') {
         if (!(vm.solicitBmForm.solicitLinkmanName && vm.solicitBmForm.solicitLinkmanName.length)) {
           return vm.$message.error('请填写联系人');
         }
@@ -1205,7 +1205,7 @@ var vm = new Vue({
         detailUserId: item.solicitDetailUser.detailUserId,
         solicitDetailId: item.solicitDetailUser.solicitDetailId,
       };
-      if (code == 'YCZX'){
+      if (code == 'YCZX') {
         if (!(vm.solicitBmForm.solicitLinkmanName && vm.solicitBmForm.solicitLinkmanName.length)) {
           return vm.$message.error('请填写联系人');
         }
@@ -1312,11 +1312,11 @@ var vm = new Vue({
             }
           }
         } else {
-          vm.$message.error(res.message || '获取'+typeCode+'历史数据失败');
+          vm.$message.error(res.message || '获取' + typeCode + '历史数据失败');
         }
       }, function () {
         vm.parentPageLoading = false;
-        vm.$message.error('获取'+typeCode+'历史数据失败');
+        vm.$message.error('获取' + typeCode + '历史数据失败');
       })
     },
     // 意见征询 end
@@ -1682,7 +1682,7 @@ var vm = new Vue({
           handler(res);
         },
       });
-      
+
       function handler(res) {
         var text = res.responseText;
         text = text.replace(/'/g, '"');
@@ -1797,7 +1797,7 @@ var vm = new Vue({
             }
             //默认选择工作日
             vm.sendForm.timeruleId = vm.rqRulesList[0].timeruleId;
-            
+
             vm.rqTimeForm.timeruleId = vm.rqRulesList[0].timeruleId;
             vm.rqTimeForm.toleranceTime = 1;
           }
@@ -2061,7 +2061,7 @@ var vm = new Vue({
         ensureDelete();
       }).catch(function () {
       });
-      
+
       function ensureDelete() {
         vm.idLibLoading = true;
         var matinstId = '';
@@ -2090,7 +2090,7 @@ var vm = new Vue({
           vm.$message.error('解除失败');
         });
       }
-      
+
       if (window) return null;
       var param = {
         "authCode": row.auth_code,
@@ -2107,13 +2107,7 @@ var vm = new Vue({
         "termStart": row.begin_date,
       };
       param.applyinstId = vm.masterEntityKey;
-      // if (vm.currentMatRow.certMatinstId) {
-      //   param.matinstId = vm.currentMatRow.certMatinstId;
-      // }
       param.certinstId = vm.currentMatRow.certinstId;
-      // if (vm.currentMatRow.certinstId){
-      //   param.certinstId = vm.currentMatRow.certinstId;
-      // }
       vm.idLibLoading = true;
       request('', {
         url: ctx + 'rest/approve/CertTypeMatinst/update',
@@ -2153,13 +2147,7 @@ var vm = new Vue({
         "termStart": row.begin_date,
       };
       param.applyinstId = vm.masterEntityKey;
-      // if (vm.currentMatRow.certMatinstId) {
-      //   param.matinstId = vm.currentMatRow.certMatinstId;
-      // }
       param.certinstId = vm.currentMatRow.certinstId;
-      // if (vm.currentMatRow.certinstId){
-      //   param.certinstId = vm.currentMatRow.certinstId;
-      // }
       vm.idLibLoading = true;
       request('', {
         url: ctx + 'rest/approve/CertTypeMatinst/update',
@@ -2184,15 +2172,9 @@ var vm = new Vue({
     // 获取材料补正详情数据
     loadSupplyDetail: function () {
       var vm = this;
-      // bzMockData.forEach(function(u){
-      //   u.bzMatList = vm.packageBzData(u.matCorrectDtos, true);
-      // });
-      // vm.bzApproveData = bzMockData.concat([]);
-      // if(window) return null;
       vm.parentPageLoading = true;
       request('', {
         url: ctx + 'rest/correct/detail/list?iteminstId=' + vm.iteminstId + '&applyinstId=' + vm.masterEntityKey,
-        // url: ctx + 'rest/correct/detail/list?iteminstId=988347fc-fde9-4067-8558-f45f1e3d9955',
         type: 'get',
       }, function (res) {
         vm.parentPageLoading = false;
@@ -2440,7 +2422,7 @@ var vm = new Vue({
         ensureDelete();
       }).catch(function () {
       });
-      
+
       function ensureDelete() {
         var param = {};
         var reqUrl = ctx + 'rest/approve/att/file/dir/delete';
@@ -2739,8 +2721,6 @@ var vm = new Vue({
             data: {
               bizType: reqData.bizType,
               bizId: reqData.bizId,
-              // bizType: 'u',
-              // bizId: 'fb57eb95-b5ab-40ff-b0ea-8291e63c3750', // 给定一个id
               creditType: u.itemCode,
             },
           }, function (res) {
@@ -2754,8 +2734,6 @@ var vm = new Vue({
               if (++count == len) {
                 vm.parentPageLoading = false;
                 vm.creditDiaVisible = true;
-                // 全部请求成功，展示数据
-                // console.log(vm.creditTypeList)
               }
             } else {
               isFail = true;
@@ -2852,7 +2830,7 @@ var vm = new Vue({
         typeof callback == 'function' && callback();
       }, function () {
       });
-      
+
     },
     //检查字符串为空
     checkNull: function (str) {
@@ -2881,7 +2859,7 @@ var vm = new Vue({
       this.isZJItem = (this.getUrlParam('itemNature') == '8');
       this.urlBusType = this.busTypeMap[this.getUrlParam('busType')];
       this.getIteminstIdByTaskId(callback);
-      
+
       function callback() {
         vm.busRecordId = this.getUrlParam('busRecordId');
         if (vm.busRecordId != 'undefined' && vm.busRecordId != 'null' && vm.busRecordId != null && vm.busRecordId != '') {
@@ -3095,10 +3073,10 @@ var vm = new Vue({
             }
             // buttons
             if (
-                result.panel && result.panel.length > 0
-                && result.panel.filter(function (u) {
-                  return u.elementCode === 'wf_button_toolbar'
-                }).length
+              result.panel && result.panel.length > 0
+              && result.panel.filter(function (u) {
+                return u.elementCode === 'wf_button_toolbar'
+              }).length
             ) {
               //这里可以做交集，确保起草时有暂存按钮，审批时 有流程跟踪按钮
               vm.buttonData = result.panel.filter(function (u) {
@@ -3110,10 +3088,10 @@ var vm = new Vue({
             vm.initButtons();
             // 设置是否展示所有附件面板
             if (
-                result.panel && result.panel.length > 0
-                && result.panel.filter(function (u) {
-                  return u.elementCode === 'wf_mati_toolbar'
-                }).length
+              result.panel && result.panel.length > 0
+              && result.panel.filter(function (u) {
+                return u.elementCode === 'wf_mati_toolbar'
+              }).length
             ) {
               var targetData = result.panel.filter(function (u) {
                 return u.elementCode === 'wf_mati_toolbar'
@@ -3177,9 +3155,9 @@ var vm = new Vue({
       //去掉基本信息、批文批复、隐藏的form
       vm.formData.forEach(function (u) {
         if (
-            u.formCode != 'form-code-00000210' &&
-            u.formCode != 'form-code-000001027' &&
-            u.isHidden != '1'
+          u.formCode != 'form-code-00000210' &&
+          u.formCode != 'form-code-000001027' &&
+          u.isHidden != '1'
         ) {
           var flag = (u.formLoadUrl.indexOf("http://") == 0 || u.formLoadUrl.indexOf("https://") == 0 || u.formLoadUrl.indexOf("file:///") == 0);
           lTabsData.push({
@@ -3273,7 +3251,7 @@ var vm = new Vue({
             vm.$message.error('获取一张表单信息失败');
           });
         }
-        
+
         function getHtml(data, index) {
           request('', {
             url: ctx + data.formUrl,
@@ -3315,7 +3293,7 @@ var vm = new Vue({
         // 根据浏览器url上的busType选中el-tab
         vm.pageLeftActiveId = vm.urlBusType || '1';
       }
-      
+
       // 加载对应标签数据
       function loadTab(labelId, key, cb) {
         var index = -1;
@@ -3410,11 +3388,11 @@ var vm = new Vue({
         // 加上窗口按钮
         defaultBtn = notApproverBtn.concat(defaultBtn);
       }
-      if (vm.hasOneSolicit==0){
+      if (vm.hasOneSolicit == 0) {
         // 没有发起过一次征询的加上一次征询按钮
         defaultBtn = oneSolicitBtn.concat(defaultBtn);
       }
-      if (vm.hasUnionReview==0){
+      if (vm.hasUnionReview == 0) {
         // 没有发起过联合评审的加上联合评审按钮
         defaultBtn = unionReviewBtn.concat(defaultBtn);
       }
@@ -3665,22 +3643,22 @@ var vm = new Vue({
         }
       })
       request('bpmFrontUrl', {
-            url: ctx + 'rest/front/task/getNextTaskAssigneeRange',
-            type: 'get',
-            ContentType: 'application/json',
-            data: {taskId: vm.taskId, destActId: vm.sendTaskInfo.destActId}
-          }, function (result) {
-            if (result.success) {
-              vm.assigneeRangeKey = result.content.assigneeRange;
-              if (vm.checkNull(vm.assigneeRangeKey)) return;
-              zTreeSetting.async.url = ctx + "rest/front/task/getAssigneeRangeZTree?assigneeRangeKey=" + vm.assigneeRangeKey + "&procInstId=" + vm.processInstanceId + "&destActId=" + tempDestActId;
-              vm.zTreeObj = jQuery.fn.zTree.init(jQuery("#assigneeOrgTree"), zTreeSetting);
-            } else {
-              vm.$message.error(result.message);
-            }
-          }, function () {
-            vm.$message.error("获取不到下个环节办理人范围！");
+          url: ctx + 'rest/front/task/getNextTaskAssigneeRange',
+          type: 'get',
+          ContentType: 'application/json',
+          data: {taskId: vm.taskId, destActId: vm.sendTaskInfo.destActId}
+        }, function (result) {
+          if (result.success) {
+            vm.assigneeRangeKey = result.content.assigneeRange;
+            if (vm.checkNull(vm.assigneeRangeKey)) return;
+            zTreeSetting.async.url = ctx + "rest/front/task/getAssigneeRangeZTree?assigneeRangeKey=" + vm.assigneeRangeKey + "&procInstId=" + vm.processInstanceId + "&destActId=" + tempDestActId;
+            vm.zTreeObj = jQuery.fn.zTree.init(jQuery("#assigneeOrgTree"), zTreeSetting);
+          } else {
+            vm.$message.error(result.message);
           }
+        }, function () {
+          vm.$message.error("获取不到下个环节办理人范围！");
+        }
       );
     },
     mutiGetAssigneeTree: function (row, index) {
@@ -3703,22 +3681,22 @@ var vm = new Vue({
         }
       })
       request('bpmFrontUrl', {
-            url: ctx + 'rest/front/task/getNextTaskAssigneeRange',
-            type: 'get',
-            ContentType: 'application/json',
-            data: {taskId: vm.taskId, destActId: row.destActId}
-          }, function (result) {
-            if (result.success) {
-              vm.assigneeRangeKey = result.content.assigneeRange;
-              if (vm.checkNull(vm.assigneeRangeKey)) return;
-              zTreeSetting.async.url = ctx + "rest/front/task/getAssigneeRangeZTree?assigneeRangeKey=" + vm.assigneeRangeKey + "&procInstId=" + vm.processInstanceId + "&destActId=" + tempDestActId;
-              vm.zTreeObj = jQuery.fn.zTree.init(jQuery("#assigneeOrgTree"), zTreeSetting);
-            } else {
-              vm.$message.error(result.message);
-            }
-          }, function () {
-            vm.$message.error("获取不到下个环节办理人范围！");
+          url: ctx + 'rest/front/task/getNextTaskAssigneeRange',
+          type: 'get',
+          ContentType: 'application/json',
+          data: {taskId: vm.taskId, destActId: row.destActId}
+        }, function (result) {
+          if (result.success) {
+            vm.assigneeRangeKey = result.content.assigneeRange;
+            if (vm.checkNull(vm.assigneeRangeKey)) return;
+            zTreeSetting.async.url = ctx + "rest/front/task/getAssigneeRangeZTree?assigneeRangeKey=" + vm.assigneeRangeKey + "&procInstId=" + vm.processInstanceId + "&destActId=" + tempDestActId;
+            vm.zTreeObj = jQuery.fn.zTree.init(jQuery("#assigneeOrgTree"), zTreeSetting);
+          } else {
+            vm.$message.error(result.message);
           }
+        }, function () {
+          vm.$message.error("获取不到下个环节办理人范围！");
+        }
       );
     },
     //确认选择
@@ -3874,7 +3852,7 @@ var vm = new Vue({
         ensureDelete();
       }).catch(function () {
       });
-      
+
       function ensureDelete() {
         var param = {};
         var reqUrl = ctx;
@@ -3902,7 +3880,7 @@ var vm = new Vue({
             } else {
               _that.getAttachment();
             }
-            
+
           } else {
             _that.$message({
               message: res.message ? res.message : '删除失败',
@@ -4019,7 +3997,7 @@ var vm = new Vue({
         }
       });
     },
-    
+
     deleteOpinion: function (id) {
       if (vm.checkNull(id)) {
         vm.$message.error('删除的意见参数不能为空！');
@@ -4064,8 +4042,8 @@ var vm = new Vue({
 //4.0 ************************************************* 意见框方法 *************---end
 
 //==========================================================工程建设 相关审批按钮 start ========
-    
-    
+
+
     //办理按钮功能，弹窗发送选择框----窗口办理/事项办理--只推动流程流转---使用原来的
     wfBusSend: function () {
       var vm = this;
@@ -4175,7 +4153,7 @@ var vm = new Vue({
         }
       }
     },
-    
+
     //添加当前节点审批意见
     saveTaskComment: function (message, isShowTip) {
       var d = {};
@@ -4234,7 +4212,7 @@ var vm = new Vue({
           }
         } catch (e) {
         }
-        
+
         if (vm.sendTaskInfos.length > 1) {
           var _nextTask = vm.dealNull(vm.nextTask);
           var _nextTaskAssignee = vm.nextTaskAssignee;
@@ -4266,7 +4244,7 @@ var vm = new Vue({
           }
         } catch (e) {
         }
-        
+
       }
     },
     //弹窗发送对话框，并初始化信息
@@ -4289,10 +4267,10 @@ var vm = new Vue({
           checked = '" checked="checked';
         }
         nextTaskInfo += '<label class="m-radio m-radio--solid m-radio--brand">' +
-            '<input type="radio" onclick="vm.selectNextNode(\'' + temp.destActId + '\')" name="nextTask" value="' + temp.destActId + checked + '">' +
-            '<span></span>' +
-            '<div style="display: inline;font-size: 16px;height: 21px;line-height: 20px;">' + temp.destActName + '</div>' +
-            '</label>';
+          '<input type="radio" onclick="vm.selectNextNode(\'' + temp.destActId + '\')" name="nextTask" value="' + temp.destActId + checked + '">' +
+          '<span></span>' +
+          '<div style="display: inline;font-size: 16px;height: 21px;line-height: 20px;">' + temp.destActName + '</div>' +
+          '</label>';
       }
       vm.delaySetHtmlToElement("nextTaskList", nextTaskInfo);
       vm.nextTaskListData = tmpList;
@@ -4303,7 +4281,7 @@ var vm = new Vue({
       if (vm.opinionTableData.length == 0) {
         vm.getOpinionList();
       }
-      
+
     },
     //初始化下一环节审批人和提示信息
     initNextAssigneeAndTip: function (nextTaskAssignee, needSelectAssignee, tipMessage) {
@@ -4399,7 +4377,7 @@ var vm = new Vue({
             //直接发送的，不提示下一环节具体处理人。
             message = "<span style='color:#22D479;font-size:18px' >流程发送成功！</span>";
             message += "<span style='font-size:18px'>任务处理完毕，正等待其他用户处理！</span>";
-            
+
           } else {
             //这里要在提交后的回调中调用到下一环节的提示信息，这两个变量会在操作过程中被改变，包括环节名称和处理人名称。
             var _nextTask = vm.nextTask;
@@ -4417,9 +4395,9 @@ var vm = new Vue({
               message += "，下一环节审批人为：<span style='color:#22D479;font-size:18px' >&nbsp;" + _nextTaskAssignee + "&nbsp;。</span>";
             }
           }
-          
+
           //vm.showSuccessTip(message);
-          
+
           //获取下一个任务实例id---
           var nextTaskId = result.content;
           if (nextTaskId) {
@@ -4477,11 +4455,11 @@ var vm = new Vue({
           vm.selectedAssignee = [];
         }
         var str = '<a id="selected_assignee_' + id + '" data-id="' + id + '" href="#" class="m-list-search__result-item" style="display: block;border-bottom: 1px solid #ebedf2;" title="双击可移除">' +
-            '<span class="m-list-search__result-item-icon">' +
-            '<i class="fa fa-user-md" style="font-size: 18px;padding: 0px 5px;"></i>' +
-            '</span>' +
-            '<span class="m-list-search__result-item-text">' + text + '</span>' +
-            '</a>';
+          '<span class="m-list-search__result-item-icon">' +
+          '<i class="fa fa-user-md" style="font-size: 18px;padding: 0px 5px;"></i>' +
+          '</span>' +
+          '<span class="m-list-search__result-item-text">' + text + '</span>' +
+          '</a>';
         $("#selectedAssignees").append(str);
         $("#selectedAssignees").find("a").dblclick(vm.removeAssignee);
         vm.selectedAssignee.push({id: id, text: text});
@@ -4557,7 +4535,7 @@ var vm = new Vue({
         console.log("操作失败！");
       });
     },
-    
+
     //网上预审的接口
     updateApplyState: function () {
       if (vm.preApproveOperation == '填写办理意见') {
@@ -4598,7 +4576,7 @@ var vm = new Vue({
         }
         window.close();
       }, 2500);
-      
+
       /* this.$alert(message, '提示信息', {
                confirmButtonText: '确定',
                dangerouslyUseHTMLString: true,
@@ -4670,7 +4648,7 @@ var vm = new Vue({
         _that.loading = false;
         console.log("获取制证信息失败！");
       });
-      
+
     },
     editCertinst: function (row) {
       var _that = this;
@@ -4713,8 +4691,8 @@ var vm = new Vue({
         _that.loading = false;
         console.log("获取制证信息失败！");
       });
-      
-      
+
+
     },
     //保存或修改证照实例
     saveOrUpdateCertinst: function () {
@@ -4737,17 +4715,17 @@ var vm = new Vue({
             _that.loading = false;
             console.log("保存或修改证照实例失败！");
           });
-          
+
         } else {
           _that.$message({
             message: '数据校验失败',
             type: 'error'
           });
-          
+
         }
       });
-      
-      
+
+
     },
     deleteCertinst: function (id) {
       confirmMsg('提示', '确定要删除选中的批文吗？', function () {
@@ -4809,7 +4787,7 @@ var vm = new Vue({
     selectFileChange: function (val) {
       this.fileSelectionList = val;
     },
-    
+
     // 下载电子件
     downloadFile: function () {
       var _that = this;
@@ -4827,7 +4805,7 @@ var vm = new Vue({
       detailIds = detailIds.join(',')
       window.location.href = ctx + 'rest/mats/att/download?detailIds=' + detailIds
     },
-    
+
     // 上传电子件
     uploadFileCom: function (file) {
       var _that = this;
@@ -4854,7 +4832,7 @@ var vm = new Vue({
           message: '上传成功',
           type: 'success'
         });
-        
+
       }).catch(function (error) {
         _that.loadingFileWin = false;
         if (error.response) {
@@ -4873,7 +4851,7 @@ var vm = new Vue({
             type: 'error'
           });
         }
-        
+
       });
     },
     // 获取已上传文件列表
@@ -4910,11 +4888,11 @@ var vm = new Vue({
         _that.fileSelectionList.map(function (item) {
           ids.push(item.fileId);
         });
-        
+
         _that.deleteFileAttach(ids.join(","));
-        
+
       }
-      
+
     },
     //删除单个附件
     deleteOneAttach: function (id) {
@@ -5026,8 +5004,8 @@ var vm = new Vue({
               u.rowspan += 1;
             }
             if (
-                (index == vm.bzCorrectData.length - 1) ||
-                (vm.bzCorrectData[index + 1].matId != row.matId)
+              (index == vm.bzCorrectData.length - 1) ||
+              (vm.bzCorrectData[index + 1].matId != row.matId)
             ) {
               _index = index;
             }
@@ -5143,7 +5121,7 @@ var vm = new Vue({
           });
         }
       });
-      
+
       function handler(arr) {
         var matIds = [];
         var result = [];
@@ -5197,7 +5175,7 @@ var vm = new Vue({
       this.bzCorrectData = [];
     },
     // 材料补正 新 end
-    
+
     // 材料补正按钮相关
     // 材料补正dialog,获取数据
     fetchLackMatsByApplyinstIdAndIteminstId: function () {
@@ -5297,7 +5275,7 @@ var vm = new Vue({
       }
       this.$set(ts.tobaMakeupMaterialList[index], attr, false)
       var _canRemove = false,
-          removeMatIndex = -1;
+        removeMatIndex = -1;
       if (!item.isNeedOrign && !item.isNeedCopy && !item.isNeedElectron) {
         _canRemove = true;
       }
@@ -5309,7 +5287,7 @@ var vm = new Vue({
       }
       // console.log(this.tobaMakeupMaterialList)
     },
-    
+
     // 待选择中的材料列表页面，确定并返回待补正材料面板
     selectMaterialToMakeupList: function () {
       var _selectedMaterialList = [];
@@ -5335,19 +5313,19 @@ var vm = new Vue({
         } else {
           var mat = _selectedMaterialList[i];
           if (mat.isNeedElectron) {
-            
+
             this.tobaMakeupMaterialList[_idx]['isNeedElectron'] = mat.isNeedElectron;
             this.tobaMakeupMaterialList[_idx]['isNeedAtt'] = mat.isNeedAtt;
             this.tobaMakeupMaterialList[_idx]['attIsCollected'] = mat.attIsCollected;
             this.tobaMakeupMaterialList[_idx]['attMatinstId'] = mat.attMatinstId;
-            
+
           } else if (mat.isNeedOrign) {
             this.tobaMakeupMaterialList[_idx]['isNeedOrign'] = mat.isNeedOrign;
             this.tobaMakeupMaterialList[_idx]['paperCount'] = mat.paperCount;
             this.tobaMakeupMaterialList[_idx]['paperIsCollected'] = mat.paperIsCollected;
             this.tobaMakeupMaterialList[_idx]['paperMatinstId'] = mat.paperMatinstId;
             this.tobaMakeupMaterialList[_idx]['realPaperCount'] = mat.realPaperCount;
-            
+
           } else if (mat.isNeedCopy) {
             this.tobaMakeupMaterialList[_idx]['isNeedCopy'] = mat.isNeedCopy;
             this.tobaMakeupMaterialList[_idx]['copyCount'] = mat.copyCount;
@@ -5356,9 +5334,9 @@ var vm = new Vue({
             this.tobaMakeupMaterialList[_idx]['realCopyCount'] = mat.realCopyCount;
           }
         }
-        
+
       }
-      
+
       if (_selectedMaterialList.length < 1 && _aleradyIds.length > 0) {
         for (var j in _aleradyIds) {
           for (var k in this.tobeSelectMatIds) {
@@ -5366,17 +5344,17 @@ var vm = new Vue({
               var obj = this.tobaMakeupMaterialList[j];
               var obj2 = this.tobeSelectMaterialList[k];
               if (obj['attMatinstId'] != null && obj2['attMatinstId'] != null) {
-                
+
                 obj['isNeedElectron'] = obj2['isNeedElectron'];
-                
+
               } else if (obj['paperMatinstId'] != null && obj2['paperMatinstId'] != null) {
-                
+
                 obj['isNeedOrign'] = obj2['isNeedOrign'];
-                
+
               } else if (obj['copyMatinstId'] != null && obj2['copyMatinstId'] != null) {
-                
+
                 obj['isNeedCopy'] = obj2['isNeedCopy'];
-                
+
               }
             }
           }
@@ -5397,8 +5375,8 @@ var vm = new Vue({
         this.tobaMakeupMaterialList.splice(_delIndex, 1)
       }
     },
-    
-    
+
+
     // 保存材料补正的数据
     saveMaterialCorrection: function () {
       var ts = this, saveData = {};
@@ -5422,7 +5400,7 @@ var vm = new Vue({
             } else {
               _curMat.isNeedAtt = '0';
             }
-            
+
             // 将待选中带过来的不需要的copyCount和paperCount清零
             if (!_curMat.isNeedCopy) {
               _curMat.copyCount = 0;
@@ -5430,7 +5408,7 @@ var vm = new Vue({
             if (!_curMat.isNeedOrign) {
               _curMat.paperCount = 0;
             }
-            
+
           }
           console.log(_noPip)
           if (JSON.stringify(_noPip) !== "{}") {
@@ -5438,7 +5416,7 @@ var vm = new Vue({
             return false;
           }
           // return true;
-          
+
           saveData = {
             applyinstId: ts.masterEntityKey,
             iteminstId: ts.iteminstId,
@@ -5619,7 +5597,7 @@ var vm = new Vue({
       if (!item.isNeedOrign && !item.isNeedCopy && !item.isNeedElectron) {
         _that.matCorrectDtos.splice(index, 1);
       }
-      
+
     },
     // 保存材料补全的数据
     saveMaterialCorrectionMend: function () {
@@ -5690,7 +5668,7 @@ var vm = new Vue({
       if (arr && arr.length > 0) {
         var flag = true;
         for (var i = 0; i < arr.length; i++) {
-          
+
           if (arr[i].matId == dataMat.matId) {
             if (attrFlag == 'isNeedOrignSel') {
               _that.matCorrectDtos[i].isNeedOrign = true;
@@ -5777,7 +5755,7 @@ var vm = new Vue({
       vm.getOpinionList();
       vm.onlySuggestDialog = true;
     },
-    
+
     resetForm: function (formName) {
       this.$refs[formName].resetFields();
     },
@@ -6015,7 +5993,7 @@ var vm = new Vue({
       }
       var count = 0;
       doRequest();
-      
+
       function doRequest() {
         request('', {
           url: ctx + 'previewPdf/pdfIsCoverted?detailId=' + obj.detailId,
@@ -6181,14 +6159,14 @@ var vm = new Vue({
         vm.fileLoading = false;
       })
     })
-    
+
     // tmp for test
     // window.setTimeout(function(){
     //   vm.openPrintLicenceDialog();
     //   var _iframe = $('#preLicenceIframeId')[0].contentWindow;
     //   console.log(_iframe)
     // }, 2000);
-    
+
   },
 });
 
@@ -6246,7 +6224,7 @@ function http(params) {
 //---------------------- 制证 ----------------------------------------
 function makeCertification() {
   vm.makeCertification();
-  
+
 }
 
 function testBtn() {
@@ -6262,7 +6240,7 @@ function testBtn() {
     });
     _nextTaskAssignee = _tmpArr.join('、');
   }
-  
+
   var message1 = "流程已发送至 <span style='color:#22D479;font-size:18px' >&nbsp;" + _nextTask + "</span>&nbsp;环节";
   message1 += "，下一环节审批人为：<span style='color:#22D479;font-size:18px' >&nbsp;" + _nextTaskAssignee + "&nbsp;。</span>";
   this.$message({
@@ -6272,7 +6250,7 @@ function testBtn() {
     type: 'success',
     center: true
   });
-  
+
 }
 
 //--------------更改事项状态和流程------------------------------------------
@@ -6316,7 +6294,7 @@ function denyForItem() {
 //事项-受理
 function acceptForItem() {
   //vm.enumItemStatus = 'ACCEPT_DEAL';//3
-  
+
   //20190813 改为部门受理状态
   vm.enumItemStatus = 'DEPARTMENT_DEAL_START';//3
   vm.requestMappingType = 'put';
@@ -6439,7 +6417,7 @@ function handleForItem() {
   vm.sendUrlPath = ctx + 'rest/front/task/wfSend';
   vm.requestMappingType = 'post';
   vm.wfBusSend();
-  
+
   /*vm.enumItemStatus = 'DEPARTMENT_DEAL_START';//3
   vm.requestMappingType = 'put';
   urlForItem();*/
@@ -6481,7 +6459,7 @@ function startSpecialProcessForItem() {
   }, function (res) {
     vm.parentPageLoading = false;
     if (res.success) {
-      
+
       /*if(res.content.special.specialState == '9'){
               alertMsg('', "特殊程序已开始，不能再进入！", '关闭', 'error', true);
               return;
@@ -6495,7 +6473,7 @@ function startSpecialProcessForItem() {
       // 旧需求为打开新页面
       // var _url = ctx + 'rest/specialProcedure/index?iteminstId=' + vm.iteminstId + '&applyinstId=' + vm.masterEntityKey + '&isApprover=' + vm.isApprover + "&taskId=" + vm.taskId + "&processInstanceId=" + vm.processInstanceId;
       // window.open(_url, '_self');
-      
+
     } else {
       vm.$message.error(res.message)
     }
@@ -6580,7 +6558,7 @@ function getPrintList() {
     vm.$message('无回执信息')
     vm.parentPageLoading = false;
   }
-  
+
 }
 
 function delayCloseWindow(time) {
@@ -6612,11 +6590,11 @@ function clickStartSolicit() {
   vm.clickStartSolicit();
 }
 
-function clickUnionReview(){
+function clickUnionReview() {
   vm.clickUnionReview();
 }
 
-function clickOneSolicit(){
+function clickOneSolicit() {
   vm.clickOneSolicit();
 }
 
