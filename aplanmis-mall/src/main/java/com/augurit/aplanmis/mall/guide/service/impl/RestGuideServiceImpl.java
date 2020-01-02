@@ -568,11 +568,13 @@ public class RestGuideServiceImpl implements RestGuideService {
         List<AeaItemState> states = aeaItemStateService.listTreeAeaItemStateByItemVerId(itemVerId, null);
         List<RestGuideStateVo.RestStateInnerVo> stateInnerVos = states.stream().map(RestGuideStateVo.RestStateInnerVo::build).collect(Collectors.toList());
         for (RestGuideStateVo.RestStateInnerVo stateInnerVo : stateInnerVos) {
+            //set情形下的材料
             List<AeaItemMat> mats = aeaItemMatService.getMatListByItemStateIds(new String[]{stateInnerVo.getStateId()});
             List<RestGuideStateVo.RestStateMatInnerVo> stateMatInnerVos
                     = mats.stream().map(RestGuideStateVo.RestStateMatInnerVo::build).collect(Collectors.toList());
             stateInnerVo.setMats(stateMatInnerVos);
         }
+        vo.setStates(stateInnerVos);
         //材料
         vo.setMats(aeaItemMatService.getMatListByItemVerIds(new String[]{itemVerId}, "1", "1").stream().map(RestGuideStateVo.RestStateMatInnerVo::build).collect(Collectors.toList()));
         //拓展信息
