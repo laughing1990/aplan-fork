@@ -44,5 +44,5 @@ public class AeaMindConst {
     //节点的extra属性(键值对)的key，用于"表单节点"，区分表单属性
     public static final String MIND_NODE_EXTRA_KEY_FORM_PROPERTY="formProperty";
     //节点的extra属性(键值对)的key，用于"材料 是否通用材料"
-    public static final String MIND_NODE_EXTRA_KEY_MAT_IS_COMMON="ISCommon";
+    public static final String MIND_NODE_EXTRA_KEY_MAT_IS_COMMON="IsCommon";
 }
