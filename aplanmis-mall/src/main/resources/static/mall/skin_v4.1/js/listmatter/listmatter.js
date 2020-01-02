@@ -129,7 +129,7 @@ var listmatter = (function(window){
                 });
             },
             gotoGuideIndex:function () {
-                window.location.hash='/guideIndex';
+                window.location.hash='/';
                 window.location.search='';
             },
             // 获取url参数

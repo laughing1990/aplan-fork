@@ -1,11 +1,8 @@
 [v-cloak] {
     display: none;
 }
-.el-loading-spinner .circular {
-    height: 80px;
-    width: 80px;
-    webkit-animation: loading-rotate 1s linear infinite;
-    animation: loading-rotate 1s linear infinite;
+.el-loading-spinner{
+    height: 100px;
 }
 #guideIndex {
     padding-bottom: 50px;
