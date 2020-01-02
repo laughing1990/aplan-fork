@@ -40,11 +40,13 @@ public class RestGuideStateVo {
         @ApiModelProperty("情形索引")
         private String index;
         private List<RestStateMatInnerVo> mats;
-        static int  indexNum = 1;
+
         public static RestStateInnerVo build(AeaItemState aeaItemState){
-            ++indexNum;
+            int  indexNum = 1;
+            indexNum++;
             RestStateInnerVo vo = new RestStateInnerVo();
             vo.setStateName(aeaItemState.getStateName());
+            vo.setStateId(aeaItemState.getItemStateId());
             vo.setIndex("情形"+NumToChinese.getChiness(indexNum));
             return vo;
         }
