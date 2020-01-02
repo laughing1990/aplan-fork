@@ -29,6 +29,8 @@ public class AeaGuideApplyVo {
     private String projInfoId;
     @ApiModelProperty("事项列表")
     private List<AeaGuideItemVo> itemList;
+    @ApiModelProperty("智能引导事项列表")
+    private List<AeaGuideItItemVo> itItemList;
     @ApiModelProperty("是否智能引导 1是 0否")
     private String isItGuide;
 

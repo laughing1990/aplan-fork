@@ -74,9 +74,10 @@ public class RestAeaHiGuideService {
             aeaHiGuideDetail.setDetailType(detailType);//s表示智能引导，o表示业主，l表示牵头部门，i表示事项部门，r表示最终结果
             String guideChangeAction="a";
             if("o".equals(detailType) && "1".equals(aeaGuideApplyVo.getIsItGuide())){
-                if("1".equals(aeaGuideItemVo.getIsITSel()) && "0".equals(aeaGuideItemVo.getApplySelOpinion())){
-                    guideChangeAction="d";
-                }
+                //TODO
+//                if("1".equals(aeaGuideItemVo.getIsITSel()) && "0".equals(aeaGuideItemVo.getApplySelOpinion())){
+//                    guideChangeAction="d";
+//                }
             }
             aeaHiGuideDetail.setGuideChangeAction(guideChangeAction);//c表示change，a表示add，d表示delete, s表示不变
             aeaHiGuideDetail.setCreater(SecurityContext.getCurrentUserName());

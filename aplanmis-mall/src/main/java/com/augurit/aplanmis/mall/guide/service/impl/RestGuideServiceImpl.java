@@ -566,7 +566,21 @@ public class RestGuideServiceImpl implements RestGuideService {
         BeanUtils.copyProperties(aeaItemGuide,vo);
         //情形
         List<AeaItemState> states = aeaItemStateService.listTreeAeaItemStateByItemVerId(itemVerId, null);
-        List<RestGuideStateVo.RestStateInnerVo> stateInnerVos = states.stream().map(RestGuideStateVo.RestStateInnerVo::build).collect(Collectors.toList());
+        List<AeaItemState> rootAndChildStates = new ArrayList<>();
+        states.stream().forEach(sate->{
+            if (sate.getAnswerStates()!=null && sate.getAnswerStates().size()>0){
+                sate.getAnswerStates().stream().forEach(aeaItemState -> {
+                    aeaItemState.setStateName(sate.getStateName()+"("+aeaItemState.getStateName()+")");
+                    rootAndChildStates.add(aeaItemState);
+                });
+            }
+        });
+
+        List<RestGuideStateVo.RestStateInnerVo> stateInnerVos = rootAndChildStates.stream().map(RestGuideStateVo.RestStateInnerVo::build).collect(Collectors.toList());
+        for (int i = 0; i < stateInnerVos.size(); i++) {
+            stateInnerVos.get(i).setIndex("情形"+NumToChinese.getChiness(i+1));
+        }
+
         for (RestGuideStateVo.RestStateInnerVo stateInnerVo : stateInnerVos) {
             //set情形下的材料
             List<AeaItemMat> mats = aeaItemMatService.getMatListByItemStateIds(new String[]{stateInnerVo.getStateId()});

@@ -701,6 +701,7 @@ var vm = new Vue({
         solicit: {},
         solicitDetails: [],
       },
+      unionCanFinish: false,
       //联合评审 end
       // 一次征询 start
       hasOneSolicit: 0,
@@ -788,6 +789,103 @@ var vm = new Vue({
     },
   },
   methods: {
+    // 联合评审 start
+    delUnionFile: function (row,  item) {
+      var vm = this;
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '删除文件', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).then(function (obj) {
+        ensureDelete();
+      }).catch(function () {
+      });
+
+      function ensureDelete() {
+        var param = {};
+        var reqUrl = ctx + 'rest/approve/att/file/dir/delete';
+        param.detailIds = row.detailId;
+        vm.parentPageLoading = true;
+        request('', {
+          url: reqUrl,
+          type: 'post',
+          data: param,
+        }, function (res) {
+          if (res.success) {
+            vm.parentPageLoading = false;
+            vm.$message.success('文件已删除');
+            vm.unionRefreshFile(item);
+          } else {
+            vm.$messsage.error(res.message || '删除文件失败');
+          }
+        }, function (msg) {
+          vm.parentPageLoading = false;
+          vm.$messsage.error('删除文件失败');
+        });
+      }
+    },
+    unionReUploadFile: function(file, row){
+      var vm = this;
+      var formData = new FormData();
+      formData.append('files', file.file);
+      if (vm.unionCanFinish) {
+        formData.append('tableName', 'AEA_HI_SOLICIT');
+        formData.append('pkName', row.fileTypeCode);
+        formData.append('recordId', vm.newestUnionReview.solicit.solicitId);
+      } else {
+        formData.append('tableName', 'AEA_HI_SOLICIT_DETAIL_USER');
+        formData.append('pkName', row.fileTypeCode);
+        formData.append('recordId', vm.newestUnionReview.solicitDetailUser.detailUserId);
+      }
+      vm.parentPageLoading = true;
+      axios.post(ctx + 'rest/approve/att/file/upload', formData).then(function (res) {
+        if (res.data && res.data.success) {
+          vm.$message.success('文件上传成功');
+          vm.unionRefreshFile(row);
+        } else {
+          vm.$message.error(res.message || '文件上传失败');
+        }
+      }).catch(function (e) {
+        vm.$message.error('文件上传失败');
+      }).finally(function () {
+        vm.parentPageLoading = false;
+      })
+    },
+    // 刷选列表
+    unionRefreshFile: function(row){
+      var vm = this;
+      vm.parentPageLoading = true;
+      var params = {};
+      if (vm.unionCanFinish) {
+        params = {
+          tableName: 'AEA_HI_SOLICIT',
+          pkName: row.fileTypeCode,
+          recordIds: vm.newestUnionReview.solicit.solicitId,
+        };
+      } else {
+        params = {
+          tableName: 'AEA_HI_SOLICIT_DETAIL_USER',
+          pkName: row.fileTypeCode,
+          recordIds: vm.newestUnionReview.solicitDetailUser.detailUserId,
+        };
+      }
+      request('', {
+        url: ctx + 'rest/approve/att/dirs/file/list',
+        type: 'get',
+        data: params,
+      }, function (res) {
+        vm.parentPageLoading = false;
+        if (res.success) {
+          row.fileAndDirs = res.content.files || [];
+        } else {
+          vm.$message.error(res.message || '获取文件列表失败')
+        }
+      }, function () {
+        vm.parentPageLoading = false;
+        vm.$message.error('获取文件列表失败')
+      });
+    },
+    // 联合评审 end
     // 一次征询 start
     // 一次征询刷新附件列表
     refreshOneSolicitFileList: function (id) {
@@ -905,6 +1003,7 @@ var vm = new Vue({
           u.solicitDetails = tmp;
         });
         vm.newestUnionReview = data[0];
+        vm.unionCanFinish = (vm.newestUnionReview.solicit.solicitCanBeFinish == 1);
         // vm.oneSolicitList = data.slice(1);
       });
     },
@@ -1262,7 +1361,6 @@ var vm = new Vue({
     solicitUploadFile: function (file, item) {
       var vm = this;
       var formData = new FormData();
-      // vm.uploadRecordId = item.solicitDetailUser.detailUserId;
       vm.uploadRecordId = item;
       formData.append('files', file.file);
       formData.append('tableName', 'AEA_HI_SOLICIT_DETAIL_USER');
@@ -2412,7 +2510,7 @@ var vm = new Vue({
         vm.$message.error('获取特殊程序附件列表失败')
       });
     },
-    delSpeFile: function (row, func) {
+    delSpeFile: function (row, func, pData) {
       var vm = this;
       this.$confirm('此操作将永久删除该文件, 是否继续?', '删除文件', {
         confirmButtonText: '确定',
