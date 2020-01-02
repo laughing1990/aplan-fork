@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiGuideDetailMapper">
+
+    <resultMap id="BaseResultMap" type="com.augurit.aplanmis.common.domain.AeaHiGuideDetail">
+        <!--@mbg.generated-->
+        <id column="GUIDE_DETAIL_ID" jdbcType="VARCHAR" property="guideDetailId"/>
+        <result column="GUIDE_ID" jdbcType="VARCHAR" property="guideId"/>
+        <result column="DETAIL_TYPE" jdbcType="CHAR" property="detailType"/>
+        <result column="THEME_ID" jdbcType="VARCHAR" property="themeId"/>
+        <result column="THEME_VER_ID" jdbcType="VARCHAR" property="themeVerId"/>
+        <result column="STAGE_ID" jdbcType="VARCHAR" property="stageId"/>
+        <result column="ITEM_ID" jdbcType="VARCHAR" property="itemId"/>
+        <result column="ITEM_VER_ID" jdbcType="VARCHAR" property="itemVerId"/>
+        <result column="GUIDE_ORG_ID" jdbcType="VARCHAR" property="guideOrgId"/>
+        <result column="GUIDE_USER_ID" jdbcType="VARCHAR" property="guideUserId"/>
+        <result column="GUIDE_OPINION" jdbcType="VARCHAR" property="guideOpinion"/>
+        <result column="DETAIL_STATE" jdbcType="VARCHAR" property="detailState"/>
+        <result column="DETAIL_START_TIME" jdbcType="TIMESTAMP" property="detailStartTime"/>
+        <result column="DETAIL_END_TIME" jdbcType="TIMESTAMP" property="detailEndTime"/>
+        <result column="CREATER" jdbcType="VARCHAR" property="creater"/>
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="MODIFIER" jdbcType="VARCHAR" property="modifier"/>
+        <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        GUIDE_DETAIL_ID,
+        GUIDE_ID,
+        DETAIL_TYPE,
+        THEME_ID,
+        THEME_VER_ID,
+        STAGE_ID,
+        ITEM_ID,
+        ITEM_VER_ID,
+        GUIDE_ORG_ID,
+        GUIDE_USER_ID,
+        GUIDE_OPINION,
+        DETAIL_STATE,
+        DETAIL_START_TIME,
+        DETAIL_END_TIME,
+        CREATER,
+        CREATE_TIME,
+        MODIFIER,
+        MODIFY_TIME
+    </sql>
+
+    <select id="getAeaHiGuideDetailByGuideDetailId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        <!--@mbg.generated-->
+        select
+        <include refid="Base_Column_List"/>
+        from aea_hi_guide_detail
+        where GUIDE_DETAIL_ID = #{guideDetailId,jdbcType=VARCHAR}
+    </select>
+
+    <delete id="deleteByGuideDetailId" parameterType="java.lang.String">
+    delete from aea_hi_guide_detail
+    where GUIDE_DETAIL_ID = #{guideDetailId,jdbcType=VARCHAR}
+  </delete>
+
+    <delete id="batchDeleteAeaHiGuideDetail">
+        delete from aea_hi_guide_detail
+        where GUIDE_DETAIL_ID in
+        <foreach collection="guideDetailIds" close=")" open="(" separator="," item="id">
+            #{id,jdbcType=VARCHAR}
+        </foreach>
+    </delete>
+
+    <insert id="insertAeaHiGuideDetail" parameterType="com.augurit.aplanmis.common.domain.AeaHiGuideDetail">
+    insert into aea_hi_guide_detail (GUIDE_DETAIL_ID, GUIDE_ID, DETAIL_TYPE,
+      THEME_ID, THEME_VER_ID, STAGE_ID, 
+      ITEM_ID, ITEM_VER_ID, GUIDE_ORG_ID, 
+      GUIDE_USER_ID, GUIDE_OPINION, DETAIL_STATE, 
+      DETAIL_START_TIME, DETAIL_END_TIME, CREATER, 
+      CREATE_TIME, MODIFIER, MODIFY_TIME
+      )
+    values (#{guideDetailId,jdbcType=VARCHAR}, #{guideId,jdbcType=VARCHAR}, #{detailType,jdbcType=CHAR}, 
+      #{themeId,jdbcType=VARCHAR}, #{themeVerId,jdbcType=VARCHAR}, #{stageId,jdbcType=VARCHAR}, 
+      #{itemId,jdbcType=VARCHAR}, #{itemVerId,jdbcType=VARCHAR}, #{guideOrgId,jdbcType=VARCHAR}, 
+      #{guideUserId,jdbcType=VARCHAR}, #{guideOpinion,jdbcType=VARCHAR}, #{detailState,jdbcType=VARCHAR}, 
+      #{detailStartTime,jdbcType=TIMESTAMP}, #{detailEndTime,jdbcType=TIMESTAMP}, #{creater,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+
+    <update id="updateAeaHiGuideDetail" parameterType="com.augurit.aplanmis.common.domain.AeaHiGuideDetail">
+        update aea_hi_guide_detail
+        <set>
+            <if test="guideId != null">
+                GUIDE_ID = #{guideId,jdbcType=VARCHAR},
+            </if>
+            <if test="detailType != null">
+                DETAIL_TYPE = #{detailType,jdbcType=CHAR},
+            </if>
+            <if test="themeId != null">
+                THEME_ID = #{themeId,jdbcType=VARCHAR},
+            </if>
+            <if test="themeVerId != null">
+                THEME_VER_ID = #{themeVerId,jdbcType=VARCHAR},
+            </if>
+            <if test="stageId != null">
+                STAGE_ID = #{stageId,jdbcType=VARCHAR},
+            </if>
+            <if test="itemId != null">
+                ITEM_ID = #{itemId,jdbcType=VARCHAR},
+            </if>
+            <if test="itemVerId != null">
+                ITEM_VER_ID = #{itemVerId,jdbcType=VARCHAR},
+            </if>
+            <if test="guideOrgId != null">
+                GUIDE_ORG_ID = #{guideOrgId,jdbcType=VARCHAR},
+            </if>
+            <if test="guideUserId != null">
+                GUIDE_USER_ID = #{guideUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="guideOpinion != null">
+                GUIDE_OPINION = #{guideOpinion,jdbcType=VARCHAR},
+            </if>
+            <if test="detailState != null">
+                DETAIL_STATE = #{detailState,jdbcType=VARCHAR},
+            </if>
+            <if test="detailStartTime != null">
+                DETAIL_START_TIME = #{detailStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="detailEndTime != null">
+                DETAIL_END_TIME = #{detailEndTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where GUIDE_DETAIL_ID = #{guideDetailId,jdbcType=VARCHAR}
+    </update>
+
+    <insert id="batchInsertAeaHiGuideDetail" parameterType="map">
+        insert into aea_hi_guide_detail
+        (GUIDE_DETAIL_ID, GUIDE_ID, DETAIL_TYPE, THEME_ID, THEME_VER_ID, STAGE_ID, ITEM_ID,
+        ITEM_VER_ID, GUIDE_ORG_ID, GUIDE_USER_ID, GUIDE_OPINION, DETAIL_STATE, DETAIL_START_TIME,
+        DETAIL_END_TIME, CREATER, CREATE_TIME, MODIFIER, MODIFY_TIME)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.guideDetailId,jdbcType=VARCHAR}, #{item.guideId,jdbcType=VARCHAR}, #{item.detailType,jdbcType=CHAR},
+            #{item.themeId,jdbcType=VARCHAR}, #{item.themeVerId,jdbcType=VARCHAR}, #{item.stageId,jdbcType=VARCHAR},
+            #{item.itemId,jdbcType=VARCHAR}, #{item.itemVerId,jdbcType=VARCHAR}, #{item.guideOrgId,jdbcType=VARCHAR},
+            #{item.guideUserId,jdbcType=VARCHAR}, #{item.guideOpinion,jdbcType=VARCHAR},
+            #{item.detailState,jdbcType=VARCHAR},
+            #{item.detailStartTime,jdbcType=TIMESTAMP}, #{item.detailEndTime,jdbcType=TIMESTAMP},
+            #{item.creater,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.modifier,jdbcType=VARCHAR},
+            #{item.modifyTime,jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
+
+</mapper>

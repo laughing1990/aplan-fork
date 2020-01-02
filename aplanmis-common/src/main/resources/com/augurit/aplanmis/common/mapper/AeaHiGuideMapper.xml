@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiGuideMapper">
+
+    <resultMap id="BaseResultMap" type="com.augurit.aplanmis.common.domain.AeaHiGuide">
+        <!--@mbg.generated-->
+        <id column="GUIDE_ID" jdbcType="VARCHAR" property="guideId"/>
+        <result column="APPLYINST_ID" jdbcType="VARCHAR" property="applyinstId"/>
+        <result column="GUIDE_TYPE" jdbcType="CHAR" property="guideType"/>
+        <result column="APPLY_UNIT_INFO_ID" jdbcType="VARCHAR" property="applyUnitInfoId"/>
+        <result column="APPLY_LINKMAN_INFO_ID" jdbcType="VARCHAR" property="applyLinkmanInfoId"/>
+        <result column="APPLY_STATE" jdbcType="CHAR" property="applyState"/>
+        <result column="GUIDE_START_TIME" jdbcType="TIMESTAMP" property="guideStartTime"/>
+        <result column="GUIDE_END_TIME" jdbcType="TIMESTAMP" property="guideEndTime"/>
+        <result column="DUE_TIME_LIMIT" jdbcType="FLOAT" property="dueTimeLimit"/>
+        <result column="REAL_TIME_LIMIT" jdbcType="FLOAT" property="realTimeLimit"/>
+        <result column="LEADER_ORG_ID" jdbcType="VARCHAR" property="leaderOrgId"/>
+        <result column="LEADER_USER_ID" jdbcType="VARCHAR" property="leaderUserId"/>
+        <result column="LEADER_ORG_OPINION" jdbcType="VARCHAR" property="leaderOrgOpinion"/>
+        <result column="CREATER" jdbcType="VARCHAR" property="creater"/>
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="MODIFIER" jdbcType="VARCHAR" property="modifier"/>
+        <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="IS_IT_GUIDE" jdbcType="CHAR" property="isItGuide"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        GUIDE_ID,
+        APPLYINST_ID,
+        GUIDE_TYPE,
+        APPLY_UNIT_INFO_ID,
+        APPLY_LINKMAN_INFO_ID,
+        APPLY_STATE,
+        GUIDE_START_TIME,
+        GUIDE_END_TIME,
+        DUE_TIME_LIMIT,
+        REAL_TIME_LIMIT,
+        LEADER_ORG_ID,
+        LEADER_USER_ID,
+        LEADER_ORG_OPINION,
+        CREATER,
+        CREATE_TIME,
+        MODIFIER,
+        MODIFY_TIME,
+        IS_IT_GUIDE
+    </sql>
+
+    <select id="getAeaHiGuideByGuideId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from aea_hi_guide
+        where GUIDE_ID = #{guideId,jdbcType=VARCHAR}
+    </select>
+
+    <delete id="deleteAeaHiGuideByGuideId" parameterType="java.lang.String">
+    delete from aea_hi_guide
+    where GUIDE_ID = #{guideId,jdbcType=VARCHAR}
+  </delete>
+
+    <delete id="batchDeleteAeaHiGuide">
+        delete from aea_hi_guide
+        where GUIDE_ID in
+        <foreach collection="guideIds" item="id" separator="," open="(" close=")">
+            #{id,jdbcType=VARCHAR}
+        </foreach>
+    </delete>
+
+    <insert id="insertAeaHiGuide" parameterType="com.augurit.aplanmis.common.domain.AeaHiGuide">
+    insert into aea_hi_guide (GUIDE_ID, APPLYINST_ID, GUIDE_TYPE,
+      APPLY_UNIT_INFO_ID, APPLY_LINKMAN_INFO_ID, APPLY_STATE, 
+      GUIDE_START_TIME, GUIDE_END_TIME, DUE_TIME_LIMIT, 
+      REAL_TIME_LIMIT, LEADER_ORG_ID, LEADER_USER_ID, 
+      LEADER_ORG_OPINION, CREATER, CREATE_TIME, 
+      MODIFIER, MODIFY_TIME, IS_IT_GUIDE
+      )
+    values (#{guideId,jdbcType=VARCHAR}, #{applyinstId,jdbcType=VARCHAR}, #{guideType,jdbcType=CHAR}, 
+      #{applyUnitInfoId,jdbcType=VARCHAR}, #{applyLinkmanInfoId,jdbcType=VARCHAR}, #{applyState,jdbcType=CHAR}, 
+      #{guideStartTime,jdbcType=TIMESTAMP}, #{guideEndTime,jdbcType=TIMESTAMP}, #{dueTimeLimit,jdbcType=FLOAT}, 
+      #{realTimeLimit,jdbcType=FLOAT}, #{leaderOrgId,jdbcType=VARCHAR}, #{leaderUserId,jdbcType=VARCHAR}, 
+      #{leaderOrgOpinion,jdbcType=VARCHAR}, #{creater,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{isItGuide,jdbcType=CHAR}
+      )
+  </insert>
+
+    <update id="updateAeaHiGuide" parameterType="com.augurit.aplanmis.common.domain.AeaHiGuide">
+        update aea_hi_guide
+        <set>
+            <if test="applyinstId != null">
+                APPLYINST_ID = #{applyinstId,jdbcType=VARCHAR},
+            </if>
+            <if test="guideType != null">
+                GUIDE_TYPE = #{guideType,jdbcType=CHAR},
+            </if>
+            <if test="applyUnitInfoId != null">
+                APPLY_UNIT_INFO_ID = #{applyUnitInfoId,jdbcType=VARCHAR},
+            </if>
+            <if test="applyLinkmanInfoId != null">
+                APPLY_LINKMAN_INFO_ID = #{applyLinkmanInfoId,jdbcType=VARCHAR},
+            </if>
+            <if test="applyState != null">
+                APPLY_STATE = #{applyState,jdbcType=CHAR},
+            </if>
+            <if test="guideStartTime != null">
+                GUIDE_START_TIME = #{guideStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="guideEndTime != null">
+                GUIDE_END_TIME = #{guideEndTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="dueTimeLimit != null">
+                DUE_TIME_LIMIT = #{dueTimeLimit,jdbcType=FLOAT},
+            </if>
+            <if test="realTimeLimit != null">
+                REAL_TIME_LIMIT = #{realTimeLimit,jdbcType=FLOAT},
+            </if>
+            <if test="leaderOrgId != null">
+                LEADER_ORG_ID = #{leaderOrgId,jdbcType=VARCHAR},
+            </if>
+            <if test="leaderUserId != null">
+                LEADER_USER_ID = #{leaderUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="leaderOrgOpinion != null">
+                LEADER_ORG_OPINION = #{leaderOrgOpinion,jdbcType=VARCHAR},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isItGuide != null">
+                IS_IT_GUIDE = #{isItGuide,jdbcType=CHAR},
+            </if>
+        </set>
+        where GUIDE_ID = #{guideId,jdbcType=VARCHAR}
+    </update>
+
+    <insert id="batchInsertAeaHiGuide" parameterType="map">
+        insert into aea_hi_guide
+        (GUIDE_ID, APPLYINST_ID, GUIDE_TYPE, APPLY_UNIT_INFO_ID, APPLY_LINKMAN_INFO_ID, APPLY_STATE,
+        GUIDE_START_TIME, GUIDE_END_TIME, DUE_TIME_LIMIT, REAL_TIME_LIMIT, LEADER_ORG_ID,
+        LEADER_USER_ID, LEADER_ORG_OPINION, CREATER, CREATE_TIME, MODIFIER, MODIFY_TIME,
+        IS_IT_GUIDE)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.guideId,jdbcType=VARCHAR}, #{item.applyinstId,jdbcType=VARCHAR}, #{item.guideType,jdbcType=CHAR},
+            #{item.applyUnitInfoId,jdbcType=VARCHAR}, #{item.applyLinkmanInfoId,jdbcType=VARCHAR},
+            #{item.applyState,jdbcType=CHAR}, #{item.guideStartTime,jdbcType=TIMESTAMP},
+            #{item.guideEndTime,jdbcType=TIMESTAMP},
+            #{item.dueTimeLimit,jdbcType=FLOAT}, #{item.realTimeLimit,jdbcType=FLOAT},
+            #{item.leaderOrgId,jdbcType=VARCHAR},
+            #{item.leaderUserId,jdbcType=VARCHAR}, #{item.leaderOrgOpinion,jdbcType=VARCHAR},
+            #{item.creater,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.modifier,jdbcType=VARCHAR},
+            #{item.modifyTime,jdbcType=TIMESTAMP}, #{item.isItGuide,jdbcType=CHAR})
+        </foreach>
+    </insert>
+
+</mapper>
