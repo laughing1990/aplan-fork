@@ -1,0 +1,1787 @@
+<link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+<link rel="stylesheet" href="../../../../static/mall/css/userCenter/parallelDeclare.css"
+      th:href="@{/mall/skin_v4.1/css/userCenter/parallelDeclare.css}">
+<div class="wt-tab declare-content" id="parallelDeclare" v-cloak v-loading.fullscreen.lock="loading">
+  <!-- 步骤 -->
+  <ul class="pd-tab-nav tab_5 clearfix">
+    <li class="tab-li" :class="[declareStep == item.num? 'active': '']" v-for="(item,index) in declareStepList" :key="item.num">
+      <!--<span  v-if="index==3&&statusLineListAllow">-->
+        <!--<el-tooltip effect="light" placement="top">-->
+          <!--<div slot="content"><i class="el-icon-warning-outline"></i>该步骤无需办理</div>-->
+          <!--<span class="mstage-count not-allow-sel">!</span>-->
+        <!--</el-tooltip>-->
+      <!--</span>-->
+      <span v-if="index==2&&oneFormDataAllow">
+        <el-tooltip effect="light" placement="top">
+          <div slot="content"><i class="el-icon-warning-outline"></i>该步骤无需办理</div>
+          <span class="mstage-count not-allow-sel">!</span>
+        </el-tooltip>
+      </span>
+      <!--<span v-else-if="index==1&&intelligenceAllow">-->
+        <!--<el-tooltip effect="light" placement="top">-->
+          <!--<div slot="content"><i class="el-icon-warning-outline"></i>该步骤无需办理</div>-->
+          <!--<span class="mstage-count not-allow-sel">!</span>-->
+        <!--</el-tooltip>-->
+      <!--</span>-->
+      <span class="mstage-count el-icon-check" v-else-if="item.num<declareStep"></span>
+      <span class="mstage-count" v-else>{{index+1}}</span>
+      <p class="mstage-name">{{item.name}}</p>
+    </li>
+  </ul>
+  <div class="mt60 proj-module pd-info-pandel proj-base-info" v-show="declareStep == 1">
+    <p class="parallel-appr-title mb20">投资项目申报前，请登陆<b><a
+            href="http://www.gdtz.gov.cn/tybm/apply3!search.action"
+            target="_blank">“投资项目在线审批监管平台”</a></b>进行项目登记赋码</p>
+      <el-form>
+        <el-form-item label="项目/工程查询">
+          <el-select :disabled="draftsProj" style="width:65%" v-model="searchKeyword" filterable remote autofocus reserve-keyword ref="searchProjInfo"
+                     no-data-text="暂无匹配的项目/工程，可新增项目" placeholder="请输入项目（工程）的编码 / 名称" :remote-method="searchProjInfoByKeyword">
+              <el-option v-for="item in projInfoList" :key="item.projInfoId" @click.native="projNameSel(item)"
+                         :label="item.projName+' （'+item.localCode+'）'" :value="item.projInfoId">
+              </el-option>
+          </el-select>
+          <el-button style="padding: 11px 20px; margin-left: 5px;" :disabled="draftsProj" type="primary" icon="icon ag ag-search" @click="linkQuery()">联网查询</el-button>
+        </el-form-item>
+      </el-form>
+  </div>
+
+  <!-- 补全信息 -->
+  <div class="mt20 proj-module pd-info-pandel proj-base-info" v-show="declareStep == 1">
+    <div v-show="showFillForm">
+      <h4 class="mt60 mt20" @click="baseInfoShow = !baseInfoShow">项目/工程信息 <i class="fr" :class="baseInfoShow?'el-icon-arrow-down':'el-icon-arrow-right'"></i></h4>
+      <el-collapse-transition>
+        <el-form :inline="true" :model="projInfoDetail" v-show="baseInfoShow" :rules="rules" ref="projInfoForm">
+      
+          <el-form-item class="wt588" prop="localCode">
+            <template slot="label">
+              <el-tooltip class="item" effect="dark"
+                          content="填写全国统一项目代码(参考“投资项目基本信息共享规范”中的“投资项目统一代码规范”)。如果项目没有全国统一代码，填写地方项目编码。"
+                          placement="right-start">
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+              项目代码
+            </template>
+            <el-input class="w-410" disabled v-model="projInfoDetail.localCode" ref="localCode" placeholder="请填写项目代码"></el-input>
+          </el-form-item>
+          <el-form-item class="wt588" prop="gcbm">
+            <template slot="label">
+              <el-tooltip class="item" effect="dark" content="项目拆分为多个单项工程申报时，单项工程的唯一编码，如果项目不拆分，应与项目代码相同。"
+                          placement="right-start">
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+              工程代码
+            </template>
+            <el-input class="w-410" disabled v-model="projInfoDetail.gcbm" placeholder="请填写工程代码"></el-input>
+          </el-form-item>
+          <el-form-item label="项目/工程名称" prop="projName">
+            <el-input class="w-1010" disabled v-model="projInfoDetail.projName" ref="projName"
+                      placeholder="请填写项目/工程名称"></el-input>
+          </el-form-item>
+          <el-form-item class="wt588" label="项目类型" prop="themeId">
+            <el-select :disabled="draftsProj" clearable filterable class="w-410" v-model="projInfoDetail.themeId">
+              <el-option v-for="item in themeList" :key="item.themeId" :label="item.themeName"
+                         :value="item.themeId">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="立项类型" class="wt588" prop="projType">
+            <el-select class="w-410" v-model="projInfoDetail.projType" :disabled="isAble">
+              <el-option v-for="item in projTypeList" :key="item.id" :label="item.itemName"
+                         :value="item.itemCode">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item class="wt588" prop="regionalism">
+            <template slot="label">
+              <el-tooltip class="item" effect="dark" content="市级审批的项目/工程请选择市级行政区划，区县审批的请选择对应的区县行政区划。"
+                          placement="right-start">
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+              审批行政区划
+            </template>
+            <el-select filterable  clearable class="w-410" v-model="projInfoDetail.regionalism" ref="regionalism">
+              <el-option v-for="item in districtList" :key="item.id" :label="item.regionName"
+                         :value="item.regionId">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item class="wt588" prop="projectAddress">
+            <template slot="label">
+              <el-tooltip class="item" effect="dark" content="选择项目/工程所在地行政区划。如果是跨区，则选择多个行政区划。" placement="right-start">
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+              建设地点
+            </template>
+            <el-select multiple  clearable filterable  class="w-410" v-model="projInfoDetail.projectAddress" placeholder="请选择建设地点">
+              <el-option v-for="item in districtList" :key="item.regionId" :label="item.regionName"
+                         :value="item.regionId">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="资金来源" class="wt588" prop="financialSource">
+            <el-select class="w-410" v-model="projInfoDetail.financialSource">
+              <el-option v-for="item in zjlyList" :key="item.id" :label="item.itemName"
+                         :value="item.itemCode">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item class="wt588" label="是否外资">
+            <el-radio-group v-model="projInfoDetail.isForeign">
+              <el-radio label="0" value="0" key="0">否</el-radio>
+              <el-radio label="1" value="1" key="1">是</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="投资类型" class="wt588" prop="investType">
+            <el-select class="w-410" v-model="projInfoDetail.investType">
+              <el-option v-for="item in tzlxList" :key="item.id" :label="item.itemName"
+                         :value="item.itemCode">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="土地来源" class="wt588" prop="landSource">
+            <el-select class="w-410" v-model="projInfoDetail.landSource">
+              <el-option v-for="item in tdlyList" :key="item.id" :label="item.itemName"
+                         :value="item.itemCode">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item class="wt588">
+            <template slot="label">
+              <el-tooltip class="item" effect="dark" content="建设范围未实施区域评估选“否”，建设范围已实施区域评估选“是”。" placement="right-start">
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+              是否完成区域评估
+            </template>
+            <el-radio-group v-model="projInfoDetail.isAreaEstimate">
+              <el-radio label="0" value="0" key="0">否</el-radio>
+              <el-radio label="1" value="1" key="1">是</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item class="wt588" prop="isDesignSolution">
+            <template slot="label">
+              <el-tooltip class="item" effect="dark" content="建设用地不带设计方案选“否”，建设用地带设计方案选“是”。" placement="right-start">
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+              土地是否带设计方案
+            </template>
+            <el-radio-group v-model="projInfoDetail.isDesignSolution">
+              <el-radio label="0" value="0" key="0">否</el-radio>
+              <el-radio label="1" value="1" key="1">是</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item class="wt588" label="建设性质" prop="projNature">
+            <el-select class="w-410" v-model="projInfoDetail.projNature">
+              <el-option v-for="item in jsxzList" :key="item.id" :label="item.itemName"
+                         :value="item.itemCode">
+              </el-option>
+            </el-select>
+          </el-form-item>
+      
+          <el-form-item label="工程分类" class="wt588">
+            <el-select  clearable filterable class="w-410" v-model="projInfoDetail.projCategory">
+              <el-option v-for="item in gcflList" :key="item.id" :label="item.itemName"
+                         :value="item.itemCode">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item class="wt588" label="拟开工时间" prop="nstartTime">
+            <el-date-picker class="w-410" type="date" placeholder="拟开工时间" value-format="yyyy-MM-dd"
+                            v-model="projInfoDetail.nstartTime">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item class="wt588" label="拟建成时间" prop="endTime">
+            <el-date-picker class="w-410" type="date" placeholder="拟建成时间" value-format="yyyy-MM-dd"
+                            v-model="projInfoDetail.endTime">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item class="wt588" label="总投资（万元）" prop="investSum">
+            <el-input class="w-410" v-model="projInfoDetail.investSum" placeholder="请填写总投资金额"></el-input>
+          </el-form-item>
+          <el-form-item class="wt588" label="总建筑面积（m&sup2;）" prop="foreignBuildingArea">
+            <el-input class="w-410" v-model="projInfoDetail.foreignBuildingArea" placeholder="请填写建筑面积"></el-input>
+          </el-form-item>
+          <el-form-item class="wt588" label="用地面积（m&sup2;）" prop="xmYdmj">
+            <el-input class="w-410" v-model="projInfoDetail.xmYdmj" placeholder="请填写用地面积"></el-input>
+          </el-form-item>
+          <el-form-item class="wt588" label="重点项目">
+            <el-select class="w-410" v-model="projInfoDetail.projLevel">
+              <el-option v-for="item in projLevelList" :key="item.id" :label="item.itemName"
+                         :value="item.itemCode">
+              </el-option>
+            </el-select>
+          </el-form-item>
+      
+          <el-form-item class="wt588" prop="theIndustry">
+            <template slot="label">
+              <el-tooltip class="item" effect="dark" content="国标行业以国家统计局发布的《国民经济行业分类》（GB/T 4754-2017）编码为基准。"
+                          placement="right-start">
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+              国标行业
+            </template>
+            <el-input class="w-410" v-model="gbhyShowMsg" readonly placeholder="请选择国标行业" @click.native="isShowGbhy = true"></el-input>
+            <div style="position: relative;" v-show="isShowGbhy">
+              <div class="gbhyTreeBox">
+                <div class="closeTree">
+                  <i class="el-icon-close" @click="isShowGbhy=false"></i>
+                </div>
+                <div class="gbhyTree">
+                  <el-tree
+                      :data="gbhySelectData"
+                      :props="gbhyProp"
+                      node-key="itemCode"
+                      show-checkbox
+                      ref="gbhy"
+                      @check-change="handleCheckChange">
+                  </el-tree>
+                </div>
+              </div>
+            </div>
+            <input v-model="projInfoDetail.theIndustry" type="hidden">
+          </el-form-item>
+          <el-form-item class="wt588" label="国标行业代码发布年代" prop="gbCodeYear">
+            <el-input disabled class="w-410" v-model="projInfoDetail.gbCodeYear" placeholder="请填写国标行业代码发布年代"></el-input>
+          </el-form-item>
+          <el-form-item class="wt100" prop="scaleContent">
+            <template slot="label">
+              <el-tooltip class="item" effect="dark" content="国标行业以国家统计局发布的《国民经济行业分类》（GB/T 4754-2017）编码为基准。"
+                          placement="right-start">
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+              建设规模及内容
+            </template>
+            <el-input class="w-1010" v-model="projInfoDetail.scaleContent" type="textarea"
+                      placeholder="请填写建设内容"></el-input>
+          </el-form-item>
+          <el-form-item label="项目地址">
+            <el-input class="w-1010"  v-model="projInfoDetail.projAddr" placeholder="请填写项目地址"></el-input>
+          </el-form-item>
+          <el-row class="proj-addr-scope">
+            <el-col :span="24">
+              <el-form-item label="四至范围 东至">
+                <el-input v-model="projInfoDetail.eastScope" placeholder="请填写东至地址"></el-input>
+              </el-form-item>
+              <el-form-item label="西至">
+                <el-input v-model="projInfoDetail.southScope" placeholder="请填写西至地址"></el-input>
+              </el-form-item>
+              <el-form-item label="南至">
+                <el-input v-model="projInfoDetail.westScope" placeholder="请填写南至地址"></el-input>
+              </el-form-item>
+              <el-form-item label="北至">
+                <el-input v-model="projInfoDetail.northScope" placeholder="请填写北至地址"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+      </el-collapse-transition>
+      <h4 class="mt60 mt20" @click="applyObjectInfoShow = !applyObjectInfoShow">申报主体信息 <span style="font-size: 14px;">（可在企业中心修改申报主体信息）</span><i
+          class="fr" :class="applyObjectInfoShow?'el-icon-arrow-down':'el-icon-arrow-right'"></i></h4>
+      <el-collapse-transition>
+        <el-form :inline="true" :model="applyObjectInfo" v-show="applyObjectInfoShow">
+          <div class="credit-box" v-show="loseCreditCount>0">
+            <i class="credit-box-icon" :class="isBlack?'el-icon-error':'el-icon-warning'"></i>
+            当前{{applyObjectInfo.role==0?'申请人':'企业'}}{{isBlack?'已被纳入信用黑名单':'有失信记录'}}，可点击右侧查看详细历史记录。
+            <span class="see-credit-btn fr" @click="creditDiaVisible=true">查看信用记录</span>
+          </div>
+          <el-form-item class="wt100" label="申报主体" v-if="showObjectRole">
+            <el-radio-group v-model="applyObjectInfo.role" @change="getPersonOrUnitBlackByBizId">
+              <el-radio label="0" name="role">个人</el-radio>
+              <el-radio label="2" name="role">企业</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <template v-if="applyObjectInfo.role==0">
+            <el-form-item class="wt588" label="申请人">
+              <el-input disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanName" class="w-410" placeholder="申请人"></el-input>
+            </el-form-item>
+            <el-form-item class="wt588" label="身份证">
+              <el-input disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanCertNo" class="w-410" placeholder="身份证"></el-input>
+            </el-form-item>
+            <el-form-item label="联系电话" class="wt588">
+              <el-input disabled class="w-410" v-model="applyObjectInfo.aeaLinkmanInfo.linkmanMobilePhone" placeholder="联系电话"></el-input>
+            </el-form-item>
+            <el-form-item label="联系邮箱" class="wt588">
+              <el-input disabled class="w-410" v-model="applyObjectInfo.aeaLinkmanInfo.linkmanMail" placeholder="联系邮箱"></el-input>
+            </el-form-item>
+          </template>
+          <template v-if="applyObjectInfo.role==2">
+            <div class="clearfix" v-if="showObjectRole">
+              <p class="apply-info-title"><span class="unit-index">1</span>单位信息</p>
+              <el-form-item class="wt588" label="企业名称" required>
+                <el-select class="w-410" v-model="applyObjectInfo.aeaUnitInfo.applicant"
+                           filterable placeholder="请选企业单位">
+                  <el-option
+                      v-for="item in aeaUnitList"
+                      :key="item.unitInfoId"
+                      @click.native="querySelentUnit(item)"
+                      :label="item.applicant"
+                      :value="item.applicant">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item class="wt588" label="统一社会信用代码" required>
+                <el-input disabled class="w-410" v-model="applyObjectInfo.aeaUnitInfo.unifiedSocialCreditCode" placeholder="统一社会信用代码">
+                </el-input>
+              </el-form-item>
+              <el-form-item class="wt588" label="法定代表人" requireds>
+                <el-input disabled class="w-410" v-model="applyObjectInfo.aeaUnitInfo.idrepresentative" placeholder="企业法定代表人"></el-input>
+              </el-form-item>
+              <el-form-item class="wt588" label="法定代表人证件号">
+                <el-input disabled class="w-410" v-model="applyObjectInfo.aeaUnitInfo.idno" placeholder="法定代表人证件号"></el-input>
+              </el-form-item>
+              <el-form-item class="wt588 linkman-name" label="联系人姓名" prop="linkmanName" required>
+                <el-select v-model="applyObjectInfo.aeaLinkmanInfo.linkmanName" remote
+                           @click.native="getLinkManListByUnitId(applyObjectInfo,applyObjectInfo.aeaUnitInfo.unitInfoId,'applyObjectInfo')"
+                           required placeholder="--请选择--">
+                  <el-option class="select-option-ul"
+                             v-for="(item2, index2) in applyObjectInfo.linkmanInfoList"
+                             :key="index2"
+                             :label="item2.linkmanName"
+                             @click.native="queryUnitLinkMan(item2,applyObjectInfo.aeaUnitInfo)"
+                             :value="item2.linkmanName">
+                    <span class="fl">{{ item2.linkmanName }}</span>
+                    <span class="fr el-icon-delete" @click.stop="delLinkman(item2,applyObjectInfo.aeaLinkmanInfo,index)"></span>
+                  </el-option>
+                </el-select>
+                <el-button type="primary" class="add-link-man" icon="el-icon-circle-plus-outline"
+                           @click="addLinkman('',applyObjectInfo.aeaLinkmanInfo);" title="新增"></el-button>
+                <el-button icon="el-icon-edit-outline" type="primary" class="item-right-btn"
+                           @click="addLinkman(applyObjectInfo.aeaLinkmanInfo,applyObjectInfo.aeaLinkmanInfo);" title="编辑"></el-button>
+              </el-form-item>
+              <el-form-item class="wt588" label="联系方式" prop="linkmanMobilePhone" required>
+                <el-input class="w-410" disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanMobilePhone" placeholder="联系人联系方式"></el-input>
+              </el-form-item>
+              <el-form-item class="wt588" label="联系人身份证" prop="linkmanCertNo" required>
+                <el-input class="w-410" disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanCertNo" placeholder="联系人身份证"></el-input>
+              </el-form-item>
+              <el-form-item class="wt588" label="联系人邮箱" prop="linkmanMail">
+                <el-input class="w-410" disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanMail" placeholder="联系人邮箱"></el-input>
+              </el-form-item>
+              <template v-if="showUnitMore">
+                <el-form-item class="wt588" label="工商登记号">
+                  <el-input disabled class="w-410" v-model="applyObjectInfo.aeaUnitInfo.induCommRegNum"
+                            placeholder="工商登记号">
+                  </el-input>
+                </el-form-item>
+                <el-form-item class="wt588" label="组织机构代码">
+                  <el-input disabled class="w-410" v-model="applyObjectInfo.aeaUnitInfo.organizationalCode"
+                            placeholder="组织机构代码">
+                  </el-input>
+                </el-form-item>
+                <!--<el-form-item  class="wt588" label="行政区（园区）" prop="applicantDistrict">-->
+                <!--<el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.applicantDistrict"-->
+                <!--placeholder="行政区（园区）"></el-input>-->
+                <!--</el-form-item>-->
+                <el-form-item  class="wt588" label="经营范围" prop="managementScope">
+                  <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.managementScope"
+                            placeholder="经营范围"></el-input>
+                </el-form-item>
+                <el-form-item  class="wt588" label="注册资本（万元）" prop="registerCapital">
+                  <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.registerCapital"
+                            placeholder="注册资本"></el-input>
+                </el-form-item>
+                <el-form-item  class="wt588" label="注册登记机关" prop="registerAuthority">
+                  <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.registerAuthority"
+                            placeholder="注册登记机关"></el-input>
+                </el-form-item>
+                <el-form-item  class="wt588" label="邮政编码" prop="postalCode">
+                  <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.postalCode"
+                            placeholder="邮政编码"></el-input>
+                </el-form-item>
+                <el-form-item  class="wt588" label="纳税人识别号" prop="taxpayerNum">
+                  <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.taxpayerNum"
+                            placeholder="纳税人识别号"></el-input>
+                </el-form-item>
+                <el-form-item  class="wt588" label="信用标记码" prop="creditFlagNum">
+                  <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.creditFlagNum"
+                            placeholder="信用标记码"></el-input>
+                </el-form-item>
+                <el-form-item class="wt100 linkman-set" label="人员设置">
+                  <el-row class="linkman-set-item" v-for="(type,index) in applyObjectInfo.aeaUnitInfo.linkmanTypes" :key="index">
+                    <el-col :span="2">
+                      <el-button v-if="index==0"
+                                 icon="el-icon-circle-plus-outline"
+                                 type="primary"
+                                 class="item-left-btn"
+                                 @click="addLinkmanTypes(applyObjectInfo.aeaUnitInfo.linkmanTypes)"
+                                 title="新增"></el-button>
+                      <el-button v-else
+                                 icon="el-icon-remove-outline"
+                                 type="primary"
+                                 @click="delLinkmanTypes(applyObjectInfo.aeaUnitInfo.linkmanTypes,index)"
+                                 class="item-left-btn" title="删除"></el-button>
+                
+                    </el-col>
+                    <el-col :span="10">
+                      <el-select
+                          v-model="applyObjectInfo.aeaUnitInfo.linkmanTypes[index].linkmanType"
+                          filterable
+                          placeholder="请选中人员类型">
+                        <el-option
+                            v-for="item in projUnitLinkmanType"
+                            :key="item.itemId"
+                            :label="item.itemName"
+                            :value="item.itemCode">
+                        </el-option>
+                      </el-select>
+                    </el-col>
+                    <el-col :span="10">
+                      <el-select
+                          v-model="applyObjectInfo.aeaUnitInfo.linkmanTypes[index].linkmanInfoId"
+                          filterable
+                          placeholder="请选择联系人">
+                        <el-option
+                            v-for="item in applyObjectInfo.linkmanInfoList"
+                            :key="item.linkmanInfoId"
+                            @click.native="selLinkmanTypes(type,item)"
+                            :label="item.linkmanName"
+                            :value="item.linkmanInfoId">
+                        </el-option>
+                      </el-select>
+                    </el-col>
+              
+                  </el-row>
+                </el-form-item>
+              </template>
+              <p class="more-base-info mb20" @click="showUnitMore=!showUnitMore">{{showUnitMore?'隐藏更多':'显示更多'}}</p>
+            </div>
+            <div class="clearfix" v-else>
+              <p class="apply-info-title"><span class="unit-index">1</span>单位信息</p>
+          
+              <el-form-item class="wt588" label="企业名称" required>
+                <el-input disabled class="w-410" v-model="applyObjectInfo.aeaUnitInfo.applicant" placeholder="企业名称"></el-input>
+              </el-form-item>
+              <el-form-item class="wt588" label="统一社会信用代码" required>
+                <el-input disabled class="w-410" v-model="applyObjectInfo.aeaUnitInfo.unifiedSocialCreditCode" placeholder="统一社会信用代码">
+                </el-input>
+              </el-form-item>
+          
+              <el-form-item class="wt588" label="法定代表人" required>
+                <el-input disabled class="w-410" v-model="applyObjectInfo.aeaUnitInfo.idrepresentative" placeholder="企业法定代表人"></el-input>
+              </el-form-item>
+              <el-form-item class="wt588" label="法定代表人证件号">
+                <el-input disabled class="w-410" v-model="applyObjectInfo.aeaUnitInfo.idno" placeholder="法定代表人证件号"></el-input>
+              </el-form-item>
+              <el-form-item class="wt588 linkman-name" label="联系人姓名" required>
+                <el-select v-model="applyObjectInfo.aeaUnitInfo.linkmanName" remote
+                           @click.native="getLinkManListByUnitId(applyObjectInfo,applyObjectInfo.aeaUnitInfo.unitInfoId,'applyObjectInfo')"
+                           required placeholder="--请选择--">
+                  <el-option class="select-option-ul"
+                             v-for="(item2, index2) in applyObjectInfo.linkmanInfoList"
+                             :key="index2"
+                             :label="item2.linkmanName"
+                             @click.native="queryUnitLinkMan(item2,applyObjectInfo.aeaUnitInfo)"
+                             :value="item2.linkmanName">
+                    <span class="fl">{{ item2.linkmanName }}</span>
+                    <span class="fr el-icon-delete" @click.stop="delLinkman(item2,applyObjectInfo.aeaUnitInfo,index)"></span>
+                  </el-option>
+                </el-select>
+                <el-button type="primary" class="add-link-man" icon="el-icon-circle-plus-outline"
+                           @click="addLinkman('',applyObjectInfo.aeaUnitInfo)" title="新增"></el-button>
+                <el-button icon="el-icon-edit-outline" type="primary" class="item-right-btn"
+                           @click="addLinkman(applyObjectInfo.aeaUnitInfo,applyObjectInfo.aeaUnitInfo)" title="编辑"></el-button>
+          
+              </el-form-item>
+              <el-form-item class="wt588" label="联系方式" required>
+                <el-input class="w-410" disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanMobilePhone" placeholder="联系人联系方式"></el-input>
+              </el-form-item>
+              <el-form-item class="wt588" label="联系人身份证" required>
+                <el-input class="w-410" disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanCertNo" placeholder="请输入联系人身份证"></el-input>
+              </el-form-item>
+              <el-form-item class="wt588" label="联系人邮箱">
+                <el-input class="w-410" disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanMail" placeholder="联系人邮箱"></el-input>
+              </el-form-item>
+              <template v-if="showUnitMore">
+                <el-form-item class="wt588" label="工商登记号">
+                  <el-input disabled class="w-410" v-model="applyObjectInfo.aeaUnitInfo.induCommRegNum"
+                            placeholder="工商登记号">
+                  </el-input>
+                </el-form-item>
+                <el-form-item class="wt588" label="组织机构代码">
+                  <el-input disabled class="w-410" v-model="applyObjectInfo.aeaUnitInfo.organizationalCode"
+                            placeholder="组织机构代码">
+                  </el-input>
+                </el-form-item>
+                <el-form-item  class="wt588" label="行政区（园区）" prop="applicantDistrict">
+                  <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.applicantDistrict"
+                            placeholder="行政区（园区）"></el-input>
+                </el-form-item>
+                <el-form-item  class="wt588" label="经营范围" prop="managementScope">
+                  <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.managementScope"
+                            placeholder="经营范围"></el-input>
+                </el-form-item>
+                <el-form-item  class="wt588" label="注册资本（万元）" prop="registerCapital">
+                  <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.registerCapital"
+                            placeholder="注册资本"></el-input>
+                </el-form-item>
+                <el-form-item  class="wt588" label="注册登记机关" prop="registerAuthority">
+                  <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.registerAuthority"
+                            placeholder="注册登记机关"></el-input>
+                </el-form-item>
+                <el-form-item  class="wt588" label="邮政编码" prop="postalCode">
+                  <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.postalCode"
+                            placeholder="邮政编码"></el-input>
+                </el-form-item>
+                <el-form-item  class="wt588" label="纳税人识别号" prop="taxpayerNum">
+                  <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.taxpayerNum"
+                            placeholder="纳税人识别号"></el-input>
+                </el-form-item>
+                <el-form-item  class="wt588" label="信用标记码" prop="creditFlagNum">
+                  <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.creditFlagNum"
+                            placeholder="信用标记码"></el-input>
+                </el-form-item>
+                <el-form-item class="wt100 linkman-set" label="人员设置">
+                  <el-row class="linkman-set-item" v-for="(type,index) in applyObjectInfo.aeaUnitInfo.linkmanTypes" :key="index">
+                    <el-col :span="2">
+                      <el-button v-if="index==0"
+                                 icon="el-icon-circle-plus-outline"
+                                 type="primary"
+                                 class="item-left-btn"
+                                 @click="addLinkmanTypes(applyObjectInfo.aeaUnitInfo.linkmanTypes)"
+                                 title="新增"></el-button>
+                      <el-button v-else
+                                 icon="el-icon-remove-outline"
+                                 type="primary"
+                                 @click="delLinkmanTypes(applyObjectInfo.aeaUnitInfo.linkmanTypes,index)"
+                                 class="item-left-btn" title="删除"></el-button>
+                
+                    </el-col>
+                    <el-col :span="10">
+                      <el-select
+                          v-model="applyObjectInfo.aeaUnitInfo.linkmanTypes[index].linkmanType"
+                          filterable
+                          placeholder="请选中人员类型">
+                        <el-option
+                            v-for="item in projUnitLinkmanType"
+                            :key="item.itemId"
+                            :label="item.itemName"
+                            :value="item.itemCode">
+                        </el-option>
+                      </el-select>
+                    </el-col>
+                    <el-col :span="10">
+                      <el-select
+                          v-model="applyObjectInfo.aeaUnitInfo.linkmanTypes[index].linkmanInfoId"
+                          filterable
+                          placeholder="请选择联系人">
+                        <el-option
+                            v-for="item in applyObjectInfo.linkmanInfoList"
+                            :key="item.linkmanInfoId"
+                            @click.native="selLinkmanTypes(type,item)"
+                            :label="item.linkmanName"
+                            :value="item.linkmanInfoId">
+                        </el-option>
+                      </el-select>
+                    </el-col>
+              
+                  </el-row>
+                </el-form-item>
+              </template>
+              <p class="more-base-info mb20" @click="showUnitMore=!showUnitMore">{{showUnitMore?'隐藏更多':'显示更多'}}</p>
+            </div>
+            <el-form class="clearfix"
+                     :inline="true"
+                     v-if="jiansheFrom.length>0"
+                     v-for="(jiansheFromItem,index) in jiansheFrom"
+                     :ref="'jianshe_'+index"
+                     :key="index"
+                     :rules="rulesCompanyForm"
+                     :model="jiansheFromItem">
+              <p class="apply-info-title"><span class="unit-index">{{index+2}}</span>单位信息 <span class="fr el-icon-delete" @click="delLinkmanTypes(jiansheFrom,index)"></span></p>
+              <!-- 信用记录-->
+              <div class="credit-box" v-show="jiansheFromItem.loseCreditCount>0">
+                <i class="credit-box-icon" :class="jiansheFromItem.isBlack?'el-icon-error':'el-icon-warning'"></i>
+                当前企业{{jiansheFromItem.isBlack?'已被纳入信用黑名单':'有失信记录'}}，可点击右侧查看详细历史记录。
+                <span class="see-credit-btn fr" @click="creditDiaVisibleShow(jiansheFromItem)">查看信用记录</span>
+              </div>
+              <input type="hidden" name="applyinstId" :value="jiansheFromItem.applyinstId">
+              <input type="hidden" name="unitInfoId" :value="jiansheFromItem.unitInfoId">
+              <input type="hidden" name="linkmanInfoId" :value="jiansheFromItem.linkmanInfoId">
+              <el-form-item class="wt588" label="单位类型" prop="unitType">
+                <el-select class="w-410" v-model="jiansheFromItem.unitType" placeholder="请选择">
+                  <el-option v-for="(item,indexOp) in xmdwlxList"
+                             :key="indexOp"
+                             :label="item.itemName"
+                             :value="item.itemCode"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item class="wt588" label="统一社会信用代码" prop="unifiedSocialCreditCode">
+                <el-input class="w-410" v-model="jiansheFromItem.unifiedSocialCreditCode" placeholder="请输入统一社会信用代码"></el-input>
+              </el-form-item>
+              <el-form-item class="wt588" label="单位名称" prop="applicant">
+                <el-autocomplete class="w-410" :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName"
+                                 @select="function(value) {selUnitInfo(value,index)}"
+                                 v-model="jiansheFromItem.applicant" placeholder="请输入单位名称">
+                </el-autocomplete>
+              </el-form-item>
+              <el-form-item class="wt588" label="单位地址" prop="applicantDetailSite">
+                <el-input class="w-410" v-model="jiansheFromItem.applicantDetailSite" placeholder="请输入单位地址"></el-input>
+              </el-form-item>
+              <el-form-item class="wt588" label="法定代表人" prop="idrepresentative">
+                <el-input class="w-410" v-model="jiansheFromItem.idrepresentative" placeholder="请输入法定代表人"></el-input>
+              </el-form-item>
+              <el-form-item class="wt588" label="法定代表人证件号">
+                <el-input class="w-410" v-model="jiansheFromItem.idno" placeholder="请输入法定代表人证件号">
+                </el-input>
+              </el-form-item>
+              <el-form-item label="联系人姓名" prop="linkmanName" class="wt588 linkman-name">
+                <el-select v-model="jiansheFromItem.linkmanName" remote
+                           @click.native="getLinkManListByUnitId(jiansheFromItem,jiansheFromItem.unitInfoId)"
+                           required placeholder="--请选择--">
+                  <el-option class="select-option-ul"
+                             v-for="(item2, index2) in jiansheFromItem.aeaLinkmanInfoList"
+                             :key="index2"
+                             :label="item2.linkmanName"
+                             @click.native="selLinkman(jiansheFromItem,item2,index)"
+                             :value="item2.linkmanName">
+                    <span class="fl">{{ item2.linkmanName }}</span>
+                    <span class="fr el-icon-delete" @click.stop="delLinkman(item2,jiansheFromItem,index)"></span>
+                  </el-option>
+                </el-select>
+                <el-button type="primary" class="add-link-man" icon="el-icon-circle-plus-outline"
+                           @click="addLinkman('',jiansheFromItem);" title="新增"></el-button>
+                <el-button icon="el-icon-edit-outline" type="primary" class="item-right-btn"
+                           @click="addLinkman(jiansheFromItem,jiansheFromItem);" title="编辑"></el-button>
+              </el-form-item>
+              <el-form-item class="wt588" label="联系人证件号" prop="linkmanCertNo">
+                <el-input class="w-410" v-model="jiansheFromItem.linkmanCertNo" disabled placeholder="请输入联系人证件号">
+                </el-input>
+              </el-form-item>
+              <el-form-item class="wt588" label="联系人手机" prop="linkmanMobilePhone">
+                <el-input class="w-410" v-model="jiansheFromItem.linkmanMobilePhone" disabled placeholder="请输入联系人手机号"></el-input>
+              </el-form-item>
+              <el-form-item class="wt588" label="联系人邮箱">
+                <el-input class="w-410" :id="'linkmanMail_'+index" v-model="jiansheFromItem.linkmanMail" disabled
+                          placeholder="请输入联系人邮箱"></el-input>
+              </el-form-item>
+              <template v-if="showUnitListMore.indexOf(index)>-1">
+                <el-form-item class="wt588" label="工商登记号" prop="induCommRegNum">
+                  <el-input class="w-410" v-model="jiansheFromItem.induCommRegNum" placeholder="请输入工商登记号"></el-input>
+                </el-form-item>
+                <el-form-item class="wt588"label="组织机构代码" prop="organizationalCode">
+                  <el-input v-model="jiansheFromItem.organizationalCode" placeholder="请输入组织机构代码"></el-input>
+                </el-form-item>
+                <el-form-item class="wt588" label="纳税人识别号" prop="taxpayerNum">
+                  <el-input class="w-410" v-model="jiansheFromItem.taxpayerNum" placeholder="请输入纳税人识别号"></el-input>
+                </el-form-item>
+                <el-form-item class="wt588" label="信用标记码" prop="creditFlagNum">
+                  <el-input class="w-410" v-model="jiansheFromItem.creditFlagNum" placeholder="请输入信用标记码"></el-input>
+                </el-form-item>
+                <el-form-item class="wt588" label="注册资本（万元）" prop="registerCapital">
+                  <el-input class="w-410" v-model="jiansheFromItem.registerCapital" placeholder="请输入注册资本"></el-input>
+                </el-form-item>
+                <el-form-item class="wt588" label="注册登记机关" prop="registerAuthority">
+                  <el-input class="w-410" v-model="jiansheFromItem.registerAuthority" placeholder="请输入注册登记机关"></el-input>
+                </el-form-item>
+                <el-form-item class="wt588" label="经营范围" prop="managementScope">
+                  <el-input class="w-410" v-model="jiansheFromItem.managementScope" placeholder="请输入经营范围"></el-input>
+                </el-form-item>
+            
+                <el-form-item label="邮政编码" prop="postalCode">
+                  <el-input class="w-410" v-model="jiansheFromItem.postalCode" placeholder="请输入邮政编码"></el-input>
+                </el-form-item>
+                <!--<el-form-item class="wt588" label="行政区（园区）" prop="applicantDistrict">-->
+                <!--<el-input class="w-410" v-model="jiansheFromItem.applicantDistrict" placeholder="请输入行政区（园区）"></el-input>-->
+                <!--</el-form-item>-->
+                <el-form-item class="wt100 linkman-set" label="人员设置">
+                  <el-row class="linkman-set-item" v-for="(janseType,index) in jiansheFromItem.linkmanTypes" :key="'jianse_'+index">
+                    <el-col :span="2">
+                      <el-button v-if="index==0"
+                                 icon="el-icon-circle-plus-outline"
+                                 type="primary"
+                                 class="item-left-btn"
+                                 @click="addLinkmanTypes(jiansheFromItem.linkmanTypes)"
+                                 title="新增"></el-button>
+                      <el-button v-else
+                                 icon="el-icon-remove-outline"
+                                 type="primary"
+                                 @click="delLinkmanTypes(jiansheFromItem.linkmanTypes,index)"
+                                 class="item-left-btn" title="删除"></el-button>
+                
+                    </el-col>
+                    <el-col :span="10">
+                      <el-select
+                          v-model="jiansheFromItem.linkmanTypes[index].linkmanType"
+                          filterable
+                          placeholder="请选中人员类型">
+                        <el-option
+                            v-for="janseItem in projUnitLinkmanType"
+                            :key="janseItem.itemId"
+                            :label="janseItem.itemName"
+                            :value="janseItem.itemCode">
+                        </el-option>
+                      </el-select>
+                    </el-col>
+                    <el-col :span="10">
+                      <el-select
+                          v-model="jiansheFromItem.linkmanTypes[index].linkmanInfoId"
+                          filterable
+                          placeholder="请选择联系人">
+                        <el-option
+                            v-for="janseItem in jiansheFromItem.aeaLinkmanInfoList"
+                            :key="janseItem.linkmanInfoId"
+                            @click.native="selLinkmanTypes(janseType,janseItem)"
+                            :label="janseItem.linkmanName"
+                            :value="janseItem.linkmanInfoId">
+                        </el-option>
+                      </el-select>
+                    </el-col>
+              
+                  </el-row>
+                </el-form-item>
+              </template>
+              <p class="more-base-info" @click="setShowUnitMore(index)">
+                {{(showUnitListMore.indexOf(index)>-1)?'隐藏更多':'显示更多'}}
+                <i :class="(showUnitListMore.indexOf(index)>-1)?'el-icon-arrow-up':'el-icon-arrow-down'"></i>
+              </p>
+            </el-form>
+            <el-col :span="24" class="add-new-unit">
+              <p @click="addUnitInfoForm"><span>+</span>新增单位</p>
+            </el-col>
+          </template>
+        </el-form>
+      </el-collapse-transition>
+      <h4 class="mt60 mt20" @click="getResultFormShow = !getResultFormShow">办证取件方式<i class="fr" :class="getResultFormShow?'el-icon-arrow-down':'el-icon-arrow-right'"></i></h4>
+      <el-collapse-transition>
+        <el-form :inline="true"
+                 ref="resultForm"
+                 v-show="getResultFormShow"
+                 :rules="(getResultForm.receiveMode==1)?rulesResultForm:rulesResultForm1"
+                 :model="getResultForm">
+          <input type="hidden" value="getResultForm.id">
+          <el-form-item class="wt100" label="领取模式" prop="receiveMode">
+            <el-radio-group v-model="getResultForm.receiveMode" @change="changeReceiveMode">
+              <el-radio label="0">邮政快递</el-radio>
+              <el-radio label="1">窗口取证</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item class="wt588" label="收件人名字" prop="addresseeName">
+            <el-autocomplete
+                class="inline-input w-410"
+                v-model="getResultForm.addresseeName"
+                :fetch-suggestions="querySuggesResultMan"
+                placeholder="请输入内容"
+                @select="queryGetResultMan"
+            ></el-autocomplete>
+          </el-form-item>
+          <el-form-item class="wt588" label="收件人联系方式" prop="addresseePhone">
+            <el-input class="w-410" v-model="getResultForm.addresseePhone" placeholder="请输入收件人联系方式"></el-input>
+          </el-form-item>
+          <el-form-item class="wt100" label="收件人身份证" prop="addresseeIdcard">
+            <el-input class="w-1010" v-model="getResultForm.addresseeIdcard" placeholder="请输入收件人身份证"></el-input>
+          </el-form-item>
+          <el-form-item class="wt100 addressee-sel" label="收件人所在区域" required v-if="getResultForm.receiveMode==0">
+            <el-select filterable allow-create  v-model="getResultForm.addresseeProvince"
+                       prop="addresseeProvince"
+                       placeholder="--请选择省--">
+              <el-option v-for="(item,index) in provinceList"
+                         :key="item.code"
+                         :label="item.name"
+                         @click.native.stop="queryCityData(index)"
+                         :value="item.code">
+              </el-option>
+            </el-select>
+            <el-select  filterable allow-create   v-model="getResultForm.addresseeCity"
+                        prop="addresseeCity"
+                        placeholder="--请选择市--">
+              <el-option v-for="(item,index) in cityList"
+                         :key="item.code"
+                         :label="item.name"
+                         @click.native.stop="queryAreaData(index)"
+                         :value="item.code">
+              </el-option>
+            </el-select>
+            <el-select filterable allow-create   v-model="getResultForm.addresseeCounty"
+                       prop="addresseeCounty"
+                       @change="$set(getResultForm, getResultForm.addresseeCounty, $event)"
+                       placeholder="--请选择区--">
+              <el-option v-for="(item,index) in countyList"
+                         :key="item.code"
+                         :label="item.name"
+                         :value="item.code">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item class="wt100" label="收件人详细地址" prop="addresseeAddr" v-if="getResultForm.receiveMode==0">
+            <el-input class="w-1010" type="textarea" v-model="getResultForm.addresseeAddr" placeholder="请输入收件人详细地址"></el-input>
+          </el-form-item>
+        </el-form>
+      </el-collapse-transition>
+      <div class="footer-stage-btn">
+        <el-button class="mt20" type="primary" @click="saveProOrSmsinfo('0')">暂存</el-button>
+        <el-button class="mt20" @click="saveProOrSmsinfo('1')">下一步</el-button>
+      </div>
+    </div>
+  </div>
+  <!--&lt;!&ndash;  智能引导&ndash;&gt;-->
+  <!--<div class="mt20 proj-module pd-info-pandel" v-show="declareStep == 2">-->
+    <!--<h4 class="mt60 mt20">主题引导</h4>-->
+    <!--&lt;!&ndash;办理情形 start&ndash;&gt;-->
+    <!--<div class="col-status-z" v-show="guideList.length>0">-->
+      <!--<div class="sel-status" v-if="guideList.length>0">-->
+        <!--<div id="guidediv">-->
+          <!--<el-form :model="guideSelVal">-->
+            <!--<el-form-item class="sel-status-item" :required="item.mustAnswer==1"-->
+                          <!--v-for="(item,index) in guideList" :key="index" :label="item.factorName">-->
+              <!--<p class="status-label">-->
+                <!--<el-tooltip class="item" effect="light" :content="item.factorName?item.factorName:'无'"-->
+                            <!--placement="right">-->
+                  <!--<i class="el-icon-question"></i>-->
+                <!--</el-tooltip>-->
+              <!--</p>-->
+              <!--<template v-if="item.answerType=='s'||item.answerType=='y'">-->
+                <!--<el-radio-group v-model="item.selectAnswerId">-->
+                  <!--<el-radio v-for="(itemAns,ind) in item.answerFactors"-->
+                            <!--@change="getSubGuide(itemAns,index,true)"-->
+                            <!--:key="ind"-->
+                  <!--:value="itemAns.factorId" :label="itemAns.factorId" :checked="itemAns.factorId" name="answer">{{itemAns.factorName}}-->
+                  <!--</el-radio>-->
+                <!--</el-radio-group><div name="append"></div>-->
+              <!--</template>-->
+              <!--<template v-else>-->
+                <!--<el-checkbox-group v-model="guideCheckboxAnswer">-->
+                  <!--<el-checkbox v-for="(itemAns,indAns) in item.answerFactors" :value="itemAns.factorId"-->
+                               <!--:key="indAns"-->
+                               <!--@change="function(value){getSubGuide(itemAns,index,value)}"-->
+                               <!--:label="itemAns.factorId" name="answer">{{itemAns.factorName}}</el-checkbox>-->
+                <!--</el-checkbox-group>-->
+              <!--</template>-->
+            <!--</el-form-item>-->
+          <!--</el-form>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+
+
+
+    <!--<div class="footer-stage-btn">-->
+      <!--<el-button class="mt60" @click="prevPage(1)">上一步</el-button>-->
+      <!--<el-button class="mt60" type="primary" @click="saveGuideAndNext">保存并下一步</el-button>-->
+      <!--<el-button class="mt60" @click="prevPage(3)">跳过</el-button>-->
+    <!--</div>-->
+  <!--</div>-->
+  <!--&lt;!&ndash;  智能引导 end&ndash;&gt;-->
+  <!--&lt;!&ndash; 选择主题 &ndash;&gt;-->
+  <!--<div class="mt40 proj-module pd-info-pandel" v-show="declareStep == 3" :style="{position:'relative'}">-->
+    <!--&lt;!&ndash;themeTypeList&ndash;&gt;-->
+    <!--<div class="theme-type-list">-->
+      <!--<el-tabs v-model="stageTypeTabSelect">-->
+        <!--<el-tab-pane label="并联审批" name="paralle">-->
+          <!--<div :style="{'max-height':(curHeight-360)+'px',overflow: 'auto'}">-->
+            <!--<p class="parallel-appr-title mb20">-->
+              <!--<span v-if="selThemeInfo&&themeId">该项目已确定为 <b>“ {{themeName}} ” </b>主题，确认无误可继续下一步</span>-->
+              <!--<span v-else>请先绑定项目主题，申报完成将不可变更</span>-->
+            <!--</p>-->
+            <!--<div class="pro-type-item active pro-type-sel" v-if="selThemeInfo&&themeId">-->
+              <!--<img :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">-->
+              <!--<div class="theme-name">{{selThemeInfo.themeName}}</div>-->
+              <!--<i class="el-icon-check"></i>-->
+            <!--</div>-->
+            <!--<div class="pro-type-item pro-type-null" v-else @click="selThemeDialogShow=true">-->
+              <!--<span><i class="el-icon-circle-plus-outline"></i>请选择并联审批主题类型</span>-->
+            <!--</div>-->
+            <!--<el-button class="change-theme-btn" circle icon="el-icon-refresh"-->
+                       <!--v-show="selThemeInfo&&themeId" @click="selThemeDialogShow=true"></el-button>-->
+          <!--</div>-->
+        <!--</el-tab-pane>-->
+        <!--<el-tab-pane label="预先服务协同" name="auxiLine" v-if="themeTypeList.auxiLine&&themeTypeList.auxiLine.length>0">-->
+          <!--<p class="parallel-appr-title mb20">-->
+            <!--<span v-if="selThemeInfo&&themeId">该项目已确定为 <b>“ {{themeName}} ” </b>主题，确认无误可继续下一步</span>-->
+            <!--<span v-else>请先绑定项目主题，申报完成将不可变更</span>-->
+          <!--</p>-->
+          <!--<div class="pro-type-item"-->
+               <!--@click="chooseTheme(itemList)"-->
+               <!--:class="themeActive==itemList.themeId?'active':''"-->
+               <!--:key="ind"-->
+               <!--v-for="(itemList,ind) in themeTypeList.auxiLine[0].themeList">-->
+            <!--<img v-if="themeActive==itemList.themeId" :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">-->
+            <!--<img v-else :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">-->
+            <!--<div class="theme-name">{{itemList.themeName}}</div>-->
+            <!--<i class="el-icon-check"></i>-->
+          <!--</div>-->
+            <!--&lt;!&ndash;<p class="show-more-theme" v-if="item.themeList.length>10" @click="themeListShowHide(item)">{{showThemeLenText?'展开更多':'收起更多'}} <i :class="showThemeLenText?'el-icon-arrow-down':'el-icon-arrow-up'"></i></p>&ndash;&gt;-->
+        <!--</el-tab-pane>-->
+      <!--</el-tabs>-->
+    <!--</div>-->
+    <!--&lt;!&ndash;<div class="pro-type-item active pro-type-sel" v-if="selThemeInfo&&themeId">&ndash;&gt;-->
+      <!--&lt;!&ndash;<img :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">&ndash;&gt;-->
+      <!--&lt;!&ndash;<div class="theme-name">{{selThemeInfo.themeName}}</div>&ndash;&gt;-->
+      <!--&lt;!&ndash;<i class="el-icon-check"></i>&ndash;&gt;-->
+    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+    <!--&lt;!&ndash;<div class="pro-type-item pro-type-null" v-else @click="selThemeDialogShow=true">&ndash;&gt;-->
+      <!--&lt;!&ndash;<span><i class="el-icon-circle-plus-outline"></i>请选择并联审批主题类型</span>&ndash;&gt;-->
+    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+    <!--&lt;!&ndash;<el-button class="change-theme-btn" circle icon="el-icon-refresh"&ndash;&gt;-->
+               <!--&lt;!&ndash;v-show="selThemeInfo&&themeId" @click="selThemeDialogShow=true"></el-button>&ndash;&gt;-->
+    <!--<div class="footer-stage-btn">-->
+      <!--<el-button class="mt60" @click="prevPage(2)">上一步</el-button>-->
+      <!--<el-button class="mt60" type="primary" @click="saveThemeAndNext">保存并下一步</el-button>-->
+    <!--</div>-->
+  <!--</div>-->
+  <!--&lt;!&ndash;  选择服务&ndash;&gt;-->
+  <!--<div class="mt20 proj-module pd-info-pandel" v-show="declareStep == 4">-->
+    <!--<h4 class="mt60 mt20">请选择服务</h4>-->
+    <!--<p class="ye-notice" style="line-height: 24px;"><i class="el-icon-warning-outline"></i>请根据以下指标进行选择。</br>-->
+      <!--阶段并联申报主要包括：立项用地许可阶段，工程建设许可阶段，施工许可阶段，竣工验收阶段。</br>-->
+      <!--预先服务协同主要包括：多评合一，施工图联合审查，联合验收，规划设计方案联合审查。</p>-->
+    <!--<ul class="pandel-tab-nav" v-if="showStageType">-->
+      <!--<li v-for="(item,index) in statusLineList"-->
+          <!--:key="index"-->
+          <!--:class="statusLineListActive==index?'active':''"-->
+          <!--@click="selStatusLine(item,index)">-->
+        <!--<div class="status-line-img">-->
+          <!--<img :src="ctx+item.imgUrl" alt="item.title">-->
+        <!--</div>-->
+        <!--<el-radio v-model="statusLineListActive" :label="index">{{item.title}}</el-radio>-->
+      <!--</li>-->
+    <!--</ul>-->
+    <!--<div class="footer-stage-btn">-->
+      <!--<el-button class="mt60" @click="prevPage(3)">上一步</el-button>-->
+      <!--<el-button class="mt60" type="primary" @click="selStatus(stageList[0],0)">保存并下一步</el-button>-->
+    <!--</div>-->
+  <!--</div>-->
+  <!--&lt;!&ndash;  选择服务 end&ndash;&gt;-->
+  <!-- 事项一单清 -->
+  <div class="mt20 proj-module pd-info-pandel" v-show="declareStep == 5">
+    <h4 class="mt60 mt20" v-if="stageList.length>0" @click="showStageList = !showStageList">请选择阶段<i class="fr" :class="showStageList?'el-icon-arrow-down':'el-icon-arrow-right'"></i></h4>
+    <div class="stage-row clearfix" v-if="stageList.length>0&&showStageList">
+      <div class="icon-box"
+           :class="statusActiveIndex==index?'active':item.isDoing==0?'gary-bg-row':''"
+           @click="selStatus(item,index,'isClick')"
+           :key="index"
+           v-for="(item,index) in stageList">
+        <img :src="ctx+item.bigImgPath" alt="">
+        <p class="ellipsisLn" :class="item.isDoing==0?'not-done':''" :title="item.stageName">{{item.stageName}}</p>
+        <span class="is-done" v-if="item.isDoing==1"><i class="el-icon-success"></i>{{item.applyinstStatus}}</span>
+        <span class="not-done" v-if="item.isDoing==0">未办理</span>
+      </div>
+    </div>
+    <!-- 情形 -->
+    <h4 class="mt60 mt20" v-if="stateList.length>0" @click="showStateList = !showStateList">请选择情形<i class="fr" :class="showStateList?'el-icon-arrow-down':'el-icon-arrow-right'"></i></h4>
+    <div class="situation-box" v-if="stateList.length>0&&showStateList">
+      <el-form :model="stateSelVal">
+        <el-form-item class="sel-status-item"
+                      :required="item.mustAnswer==1"
+                      v-for="(item,index) in stateList"
+                      :key="index"
+                      :label="item.stateName">
+          <p class="status-label">
+            <el-tooltip class="item" effect="light" :content="item.stateMemo?item.stateMemo:'无'" placement="right">
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </p>
+          <template v-if="item.answerType=='s'||item.answerType=='y'">
+            <el-radio-group v-model="item.selectAnswerId">
+              <el-radio v-for="(itemAns,ind) in item.answerStates"
+                        :key="ind"
+                        @change="getStatusStateBystatus(item,itemAns,index)"
+                        :value="itemAns.parStateId"
+                        :label="itemAns.parStateId" name="answer">{{itemAns.stateName}}</el-radio>
+            </el-radio-group>
+          </template>
+          <template v-else>
+            <el-checkbox-group v-model="item.selectAnswerId"
+                               :required="item.mustAnswer==1">
+              <el-checkbox v-for="(itemAns,indAns) in item.answerStates"
+                           :key="indAns"
+                           :value="itemAns.parStateId"
+                           @change="function(value) {getStatusStateBystatus(item,itemAns,index,value)}"
+                           :label="itemAns.parStateId" name="answer">{{itemAns.stateName}}</el-checkbox>
+            </el-checkbox-group>
+          </template>
+        </el-form-item>
+      </el-form>
+    </div>
+
+    <!-- 并联审批事项列表 -->
+    <h4 class="mt60 mt20" v-if="parallelItems&&parallelItems.length>0" @click="showParallelItems = !showParallelItems">
+      并联审批事项
+      <i class="fr" :class="showParallelItems?'el-icon-arrow-down':'el-icon-arrow-right'"></i>
+      <p v-if="parallelItems&&parallelItems.length>0" class="fr explain-box">
+        <span>
+          <span>标准</span>标准事项
+        </span>
+        <span>
+          <span class="is-shishi">实施</span>实施事项
+        </span>
+      </p>
+    </h4>
+    <el-table ref="parallelItemsTable"
+              :data="parallelItems"
+              border
+              :expand-row-keys="selParallelItemsKey"
+              @select="parallelItemsSelItem"
+              @select-all="parallelItemsSelAll"
+              v-show="parallelItems&&parallelItems.length>0&&showParallelItems"
+              :show-overflow-tooltip="true"
+              class="matter-list mb20"
+              row-key="itemId"
+              tooltip-effect="dark"
+              @expand-change="parallItemExpandChange"
+              :default-sort = "{prop: 'sortNo', order: 'ascending'}"
+              style="width: 100%">
+      <el-table-column type="selection"
+                       :selectable='checkboxInit'
+                       align="center"
+                       width="55">
+      </el-table-column>
+      <el-table-column type="expand" v-if="parallelItemsQuestionFlag" width="1px">
+        <template slot-scope="scope">
+          <el-form :model="stateSelVal" class="expand-coreItem" v-if="scope.row.paraStateList&&scope.row.paraStateList.length>0">
+            <el-form-item class="sel-status-item"
+                          :required="item.mustAnswer==1"
+                          v-for="(item,index) in scope.row.paraStateList"
+                          :key="index"
+                          :label="item.stateName">
+              <p class="status-label">
+                <el-tooltip class="item" effect="light" :content="item.stateMemo?item.stateMemo:'无'" placement="right">
+                  <i class="el-icon-question"></i>
+                </el-tooltip>
+              </p>
+              <template v-if="item.answerType=='s'||item.answerType=='y'">
+                <el-radio-group v-model="item.selectAnswerId">
+                  <el-radio v-for="(itemAns,ind) in item.answerStates"
+                            :key="ind"
+                            @change="getCoreStateBystatus(scope.row.paraStateList,item,itemAns,index)"
+                            :value="itemAns.itemStateId"
+                            :label="itemAns.itemStateId" name="answer">{{itemAns.stateName}}</el-radio>
+                </el-radio-group>
+              </template>
+              <template v-else>
+                <el-checkbox-group v-model="item.selectAnswerId"
+                                   :required="item.mustAnswer==1">
+                  <el-checkbox v-for="(itemAns,indAns) in item.answerStates"
+                               :key="indAns"
+                               :value="itemAns.itemStateId"
+                               @change="function(value){getCoreStateBystatus(scope.row.paraStateList,item,itemAns,index,value)}"
+                               :label="itemAns.itemStateId" name="answer">{{itemAns.stateName}}</el-checkbox>
+                </el-checkbox-group>
+              </template>
+            </el-form-item>
+          </el-form>
+<!--          <span v-else> 暂无关联情形</span>-->
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="sortNo" sortable label="事项名称" min-width="400" >
+        <template slot-scope="scope">
+          <span class="is-catalog" :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标准':'实施'}}</span>
+          {{scope.row.itemName}}
+          <!-- <span v-show="scope.row.isDone=='FINISHED'" class="isTag isDone"><i
+            class="ag ag-check-circle-fill"></i>已通过</span>
+          <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isTag isDone"><i
+            class="ag ag-edit-circle-fill"></i>已通过</span>
+          <span v-show="scope.row.isDone=='HANDLING'" class="isTag isDoing"><i
+            class="ag ag-edit-circle-fill"></i>办理中</span>
+          <span v-show="scope.row.isRecommend==1&& scope.row.isDone=='UN_FINISHED'" class="isTag isRecommend">推荐</span> -->
+          <span v-show="scope.row.isDone=='FINISHED'" class="isNewTag isDone">已通过</span>
+          <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isNewTag isDone">已通过</span>
+          <span v-show="scope.row.isDone=='HANDLING'" class="isNewTag isDoing">办理中</span>
+          <span v-show="scope.row.isRecommend==1&& scope.row.isDone=='UN_FINISHED'" class="isNewTag isRecommend">推荐办理</span>
+          <p class="not-region-data" v-if="scope.row.notRegionData">* 该事项与项目区划不匹配，暂无办理权限</p>
+          <p class="org-name" v-else-if="scope.row.orgName">{{ scope.row.orgName }}</p>
+        </template>
+      </el-table-column>
+      <el-table-column label="行政区划" width="200" >
+        <template slot-scope="scope">
+          <div v-if="scope.row.isCatalog==1">
+            <template v-if="scope.row.carryOutItems&&scope.row.carryOutItems.length>0">
+              <el-select :disabled="scope.row.disabled" v-model="scope.row.itemVerId"
+                        placeholder="请选择活动区域">
+                <el-option v-for="(item,indexOp) in scope.row.carryOutItems"
+                          :key="indexOp"
+                          :label="item.regionName"
+                          @click.native="getItemOrgId(scope.row,scope.$index,item)" :value="item.itemVerId"></el-option>
+              </el-select>
+            </template>
+            <template v-else>
+              <el-select disabled="disabled" value="" placeholder="请选择活动区域">
+                <el-option value="请选择活动区域"></el-option>
+              </el-select>
+            </template>
+          </div>
+          <div v-else>
+            <span>{{scope.row.regionName}}</span>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="办事指南" width="85" align="center">
+        <template slot-scope="scope">
+          <!--<a v-if="!(scope.row.carryOutItems&&scope.row.carryOutItems.length>0)" href="javascript:;" class="guid-icon handel-icon disabled"></a>-->
+
+          <a v-if="scope.row.notRegionData" href="javascript:;" class="guid-icon handel-icon disabled"></a>
+          <a v-else href="javascript:;" class="guid-icon handel-icon" @click="goToBszn(scope.row)"></a>
+        </template>
+      </el-table-column>
+      <el-table-column label="单项申报" width="85" align="center">
+        <template slot-scope="scope">
+          <a v-if="scope.row.notRegionData" href="javascript:;" class="sign-icon handel-icon disabled"></a>
+          <!--行政区划下拉选项没值时，禁止操作办事指南，单项申报-->
+          <!--<a v-else-if="!(scope.row.carryOutItems&&scope.row.carryOutItems.length>0)" href="javascript:;" class="sign-icon handel-icon disabled"></a>-->
+          <a v-else href="javascript:;" class="sign-icon handel-icon" @click="goToSingleDeclare(scope.row.itemVerId)"></a>
+        </template>
+      </el-table-column>
+    </el-table>
+    <h4 class="mt60 mt20" v-if="coreItems&&coreItems.length>0" @click="showCoreItems = !showCoreItems">
+      并行推进事项 <span style="font-size: 14px;">（温馨提示：如若办理，需勾选对应的事项）</span>
+      <i class="fr" :class="showCoreItems?'el-icon-arrow-down':'el-icon-arrow-right'"></i>
+      <p v-if="!(parallelItems&&parallelItems.length>0)" class="fr explain-box">
+        <span>
+          <span>标准</span>标准事项
+        </span>
+        <span>
+          <span class="is-shishi">实施</span>实施事项
+        </span>
+      </p>
+    </h4>
+    <el-table ref="coreItemsTable"
+              :data="coreItems"
+              border
+              v-show="coreItems&&coreItems.length>0&&showCoreItems"
+              class="matter-list mb20"
+              :show-overflow-tooltip="true"
+              tooltip-effect="dark"
+              :default-sort = "{prop: 'sortNo', order: 'ascending'}"
+              :expand-row-keys="selCoreItemsKey"
+              row-key="itemId"
+              @select="coreItemsSelItem"
+              @expand-change="itemExpandChange"
+              @select-all="coreItemsSelAll"
+              style="width: 100%">
+      <el-table-column type="selection"
+                       :selectable='checkboxInit'
+                       align="center"
+                       width="55">
+      </el-table-column>
+      <el-table-column type="expand" width="1px">
+        <template slot-scope="scope">
+          <el-form :model="stateSelVal" class="expand-coreItem" v-if="scope.row.coreStateList&&scope.row.coreStateList.length>0">
+            <el-form-item class="sel-status-item"
+                          :required="item.mustAnswer==1"
+                          v-for="(item,index) in scope.row.coreStateList"
+                          :key="index"
+                          :label="item.stateName">
+              <p class="status-label">
+                <el-tooltip class="item" effect="light" :content="item.stateMemo?item.stateMemo:'无'" placement="right">
+                  <i class="el-icon-question"></i>
+                </el-tooltip>
+              </p>
+              <template v-if="item.answerType=='s'||item.answerType=='y'">
+                <el-radio-group v-model="item.selectAnswerId">
+                  <el-radio v-for="(itemAns,ind) in item.answerStates"
+                            :key="ind"
+                            @change="getCoreStateBystatus(scope.row.coreStateList,item,itemAns,index)"
+                            :value="itemAns.itemStateId"
+                            :label="itemAns.itemStateId" name="answer">{{itemAns.stateName}}</el-radio>
+                </el-radio-group>
+              </template>
+              <template v-else>
+                <el-checkbox-group v-model="item.selectAnswerId"
+                                   :required="item.mustAnswer==1">
+                  <el-checkbox v-for="(itemAns,indAns) in item.answerStates"
+                               :key="indAns"
+                               :value="itemAns.itemStateId"
+                               @change="function(value){getCoreStateBystatus(scope.row.coreStateList,item,itemAns,index,value)}"
+                               :label="itemAns.itemStateId" name="answer">{{itemAns.stateName}}</el-checkbox>
+                </el-checkbox-group>
+              </template>
+            </el-form-item>
+          </el-form>
+<!--          <span v-else> 暂无关联情形</span>-->
+        </template>
+      </el-table-column>
+      <el-table-column label="事项名称" prop="sortNo" sortable  min-width="400" >
+        <template slot-scope="scope">
+          <span class="is-catalog" :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标准':'实施'}}</span>
+          {{scope.row.itemName}}
+          <!-- <span v-show="scope.row.isDone=='FINISHED'" class="isTag isDone"><i
+            class="ag ag-check-circle-fill"></i>已通过</span>
+          <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isTag isDone"><i
+            class="ag ag-edit-circle-fill"></i>已通过</span>
+          <span v-show="scope.row.isDone=='HANDLING'" class="isTag isDoing"><i
+            class="ag ag-edit-circle-fill"></i>办理中</span>
+          <span v-show="scope.row.isRecommend==1&& scope.row.isDone=='UN_FINISHED'" class="isTag isRecommend">推荐</span> -->
+          <span v-show="scope.row.isDone=='FINISHED'" class="isNewTag isDone">已通过</span>
+          <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isNewTag isDone">已通过</span>
+          <span v-show="scope.row.isDone=='HANDLING'" class="isNewTag isDoing">办理中</span>
+          <span v-show="scope.row.isRecommend==1&& scope.row.isDone=='UN_FINISHED'" class="isNewTag isRecommend">推荐办理</span>
+          <!--<p class="not-region-data" v-if="!scope.row.orgName">* 该事项与项目区划不匹配，暂无办理权限</p>-->
+          <p class="not-region-data" v-if="scope.row.notRegionData">* 该事项与项目区划不匹配，暂无办理权限</p>
+          <p class="org-name" v-else-if="scope.row.orgName">{{scope.row.orgName}}</p>
+        </template>
+      </el-table-column>
+      <el-table-column label="行政区划" width="200" >
+        <template slot-scope="scope">
+          <div v-if="scope.row.isCatalog==1">
+            <el-select :disabled="scope.row.disabled" v-model="scope.row.itemVerId"
+                       placeholder="请选择活动区域">
+              <el-option v-for="(item,indexOp) in scope.row.carryOutItems"
+                         :key="indexOp"
+                         :label="item.regionName"
+                         @click.native="getItemOrgId(scope.row,scope.$index,item)" :value="item.itemVerId"></el-option>
+            </el-select>
+          </div>
+          <div v-else>
+            <span>{{scope.row.regionName}}</span>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="办事指南" width="85" align="center">
+        <template slot-scope="scope">
+          <a v-if="scope.row.notRegionData" href="javascript:;" class="guid-icon handel-icon disabled"></a>
+          <a href="javascript:;" class="guid-icon handel-icon" @click="goToBszn(scope.row)"></a>
+        </template>
+      </el-table-column>
+      <el-table-column label="单项申报" width="85" align="center">
+        <template slot-scope="scope">
+          <a v-if="scope.row.notRegionData" href="javascript:;" class="sign-icon handel-icon disabled"></a>
+          <a v-else href="javascript:;" class="sign-icon handel-icon" @click="goToSingleDeclare(scope.row.itemVerId)"></a>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <div class="footer-stage-btn">
+      <el-button class="mt60" @click="prevPage(1)">上一步</el-button>
+      <el-button class="mt60" type="primary" @click="saveAndGetOneForm('0')">暂存</el-button>
+      <el-button class="mt60" @click="saveAndGetOneForm('1')">下一步</el-button>
+    </div>
+  </div>
+  <!-- 事项一单清 end-->
+  <!--  一张表单-->
+  <div class="mt20 proj-module pd-info-pandel" v-show="declareStep == 6">
+    <h4 class="mt60">一张表单 </h4>
+    <span class="icon-fold" v-if="formUrlList.length>0" :class="leftTabClosed?'el-icon-s-unfold':'el-icon-s-fold'" @click="leftTabClosed=!leftTabClosed"></span>
+    <el-tabs  v-if="formUrlList.length>0" class="one-form-tab" :class="leftTabClosed?'closed':''" tab-position="left" :style="{height:(curHeight-220)+'px'}">
+      <el-tab-pane v-for="(item,index) in formUrlList" :key="index">
+        <span slot="label" :title="item.formName">{{item.formName}}</span>
+        <iframe :style="{height:(curHeight-220)+'px',overflow: 'auto',width:'100%'}"
+                v-if="item.smartForm==false"
+                :src="ctx+item.formUrl" frameborder="0"></iframe>
+        <div v-else :style="{height:(curHeight-220)+'px',overflow: 'auto',width:'100%','padding':'10px'}">
+          <el-button type="primary">
+            <a target="_blank"
+               :href="ctx+'rest/oneform/common/renderPage?applyinstId='+parallelApplyinstId+'&stageId='+stageId+'&'+formItemsIdStr+'&showBasicButton=false&includePlatformResource=true'">
+              打印表单
+            </a>
+          </el-button>
+          <div :id="'formHtml_'+index"></div>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
+    <div class="footer-stage-btn">
+      <el-button class="mt60" @click="prevPage(5)">上一步</el-button>
+      <el-button class="mt60" type="primary" @click="oneFormConfirm('0')">暂存</el-button>
+      <el-button class="mt60" @click="oneFormConfirm('1')">下一步</el-button>
+    </div>
+  </div>
+  <!--  一张表单 end-->
+  <!-- 选项材料一单清 -->
+  <div class="mt20 proj-module pd-info-pandel" v-show="declareStep == 7">
+    <h4 class="mt60 mt20">事项材料一单清 </h4>
+    <div class="fileDiv"
+         v-loading="loadingFile"
+         element-loading-text="文件上传中"
+         element-loading-spinner="el-icon-loading"
+         element-loading-background="rgba(0, 0, 0, 0.3)"
+         :class="AllFileList.length>0?'is-sel-file':''">
+      <el-upload
+              ref="uploadFile"
+              class="upload-flie"
+              :auto-upload="false"
+              drag
+              :show-file-list="false"
+              :file-list="fileList"
+              :action="ctx+'rest/apply/common/att/upload/auto'"
+              multiple
+              :http-request="myUploadFile"
+              :on-change="fileChange">
+        <i slot="trigger" v-show="AllFileList.length>0" class="el-icon-plus"></i>
+        <el-button class="submit-file" v-show="AllFileList.length>0" size="small" type="primary" @click="submitUpload">一键自动分拣</el-button>
+        <div class="el-upload__text" v-show="AllFileList.length==0">或将文件直接拖入这里，支持上传后自动分拣</div>
+        <el-button v-show="AllFileList.length==0" slot="trigger" size="small" type="primary">选择文件</el-button>
+      </el-upload>
+      <div class="flie-list-che file-list-ul" v-show="AllFileList.length>0">
+        <el-checkbox-group v-model="checkedSelFlie"
+                           class="check-item"
+                           @change="handleCheckedCitiesChange">
+          <el-checkbox v-for="(item,index) in AllFileList" :label="item.name" :key="item.uid">
+            <span><i class="el-icon-document"></i>{{item.name}}</span>
+          </el-checkbox>
+        </el-checkbox-group>
+        <el-checkbox class="check-all fr"
+                     v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+      </div>
+    </div>
+    <el-table :data="showMatsTableData"
+              style="width: 100%"
+              row-key="matId"
+              :expand-row-keys="showFileListKey"
+              :default-sort = "{prop: 'sortNo', order: 'ascending'}"
+              class="mat-list mt20 mb20">
+      <el-table-column type="expand" width="20" align="right">
+        <template slot-scope="scope">
+          <div class="mat-children" v-if="scope.row.certChild&&scope.row.certChild.length>0">
+            <div v-for="(item,index) in scope.row.certChild" class="file-list-tab">
+              <span class="file-name">
+                <span class="cert-icon icon ag ag-id-card"></span>
+                {{item.certName}}
+              </span>
+              <span class="file-icon-btn">
+                <span title="查看" class="ag ag-preview" @click="cretPreview(item.authCode)"></span>
+                <span title="解除关联" class="el-icon-delete" @click="unbindCert(item.matinstId,scope.row.certChild,index)"></span>
+              </span>
+            </div>
+          </div>
+          <div v-if="scope.row.childs&&scope.row.childs.length>0">
+            <div v-for="(item,index) in scope.row.childs" class="file-list-tab" :key="index">
+              <span class="file-name"><span class="icon ag" :class="'ag-filetype-'+getFileType(item.fileName)"></span>{{item.fileName}}</span>
+              <div class="file-icon-btn">
+                <a :href="ctx+'rest/file/applydetail/mat/download/'+item.fileId"><span title="下载" class="el-icon-download"></span></a>
+                <span title="删除" class="el-icon-delete" @click="delSelectFileCom(scope.row,item,index)"></span>
+                <span title="预览" class="el-icon-search" @click="filePreview(item)"></span>
+              </div>
+            </div>
+          </div>
+          <div v-if="(scope.row.certChild&&scope.row.certChild.length==0)&&(scope.row.matChild&&scope.row.matChild.length==0)">
+            <span>无已上传关联材料</span>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column width="55" align="center" type="index" label="序号"></el-table-column>
+      <el-table-column label="材料名称" prop="sortNo" sortable>
+        <template slot-scope="scope">
+          <span v-show="scope.row.zcqy==0&&scope.row.attIsRequire==1" class="required-color">* </span>
+          {{scope.row.matName}}
+          <i class="cert-icon ag ag-id-card" v-if="scope.row.matProp=='c'"></i>
+          <span v-show="scope.row.zcqy==1" class="isTag isDone">容缺</span>
+          <!--<span v-show="scope.row.isCommon==1" class="isTag isRecommend">共</span>-->
+          <span v-show="scope.row.zcqy==0&&scope.row.attIsRequire==1" class="isTag isRequired">必</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="200">
+        <template slot-scope="scope">
+          <span class="op-btn" @click="showUploadWindow(scope.row,scope.$index)">
+            <i class="el-icon-upload2"></i>附件上传
+          </span>
+          <span class="op-btn" v-if="scope.row.matProp=='c'" @click="showUploadWindow(scope.row,scope.$index,'certList')">证照库</span>
+          <span class="op-btn" v-if="scope.row.matProp=='f'" @click="showOneFormDialog1(scope.row)">填写</span>
+        </template>
+      </el-table-column>
+    </el-table>
+    <div class="collpase-pandel" v-if="allMatsTableData.length>9" @click="toggleShowMatsMore">{{isShowAll? '收起': '展开'}}
+      <i :class="[isShowAll ? 'el-icon-arrow-up':'el-icon-arrow-down']"></i>
+    </div>
+    <div class="footer-stage-btn">
+      <el-button class="mt60" @click="prevPage(6);setmatinstIdVo()">上一步</el-button>
+      <el-button class="mt60" type="primary" @click="matListTemporary">暂存</el-button>
+      <el-button class="mt60" type="primary" @click="startParalleApprove">提交申请</el-button>
+    </div>
+  </div>
+  <!-- 完成申报 -->
+  <div class="mt20 proj-module pd-info-pandel" v-if="declareStep == 8">
+    <p class="ye-notice" style="margin-top: 50px;font-size: 16px;"><i class="el-icon-warning-outline"></i>{{applySuccessProjInfo.printstr}}</p>
+    <h4 class="mt20" @click="applySuccessProjInfo1 = !applySuccessProjInfo1">项目/工程信息 <i class="fr" :class="applySuccessProjInfo1?'el-icon-arrow-down':'el-icon-arrow-right'"></i></h4>
+    <el-collapse-transition>
+      <table class="el-table success-apply-back el-table--border" v-show="applySuccessProjInfo1">
+        <tr>
+          <th><div class="cell">项目/工程名称</div></th>
+          <td><div class="cell">{{applySuccessProjInfo.projName}}</div></td>
+          <th><div class="cell">项目类型</div></th>
+          <td><div class="cell">{{applySuccessProjInfo.projType}}</div></td>
+        </tr>
+        <tr>
+          <th><div class="cell">项目代码</div></th>
+          <td><div class="cell">{{applySuccessProjInfo.localCode}}</div></td>
+          <th><div class="cell">工程代码</div></th>
+          <td><div class="cell">{{applySuccessProjInfo.gcbm}}</div></td>
+        </tr>
+        <tr>
+          <th><div class="cell">主题-阶段名称</div></th>
+          <td colspan="3"><div class="cell">{{themeName+'-'+stageName}}</div></td>
+        </tr>
+        <tr v-if="applySuccessProjInfo.parallelItemNames&&applySuccessProjInfo.parallelItemNames.length>0">
+          <th><div class="cell">申报流水号</div></th>
+          <td colspan="3"><div class="cell">{{applySuccessProjInfo.applyinstCode}}</div></td>
+        </tr>
+      </table>
+    </el-collapse-transition>
+    <h4 class="mt40" @click="applySuccessProjInfo3 = !applySuccessProjInfo3" v-if="applySuccessProjInfo.paraItemVoList&&applySuccessProjInfo.paraItemVoList.length>0">并联审批事项<i class="fr" :class="applySuccessProjInfo3?'el-icon-arrow-down':'el-icon-arrow-right'"></i> </h4>
+    <el-collapse-transition>
+      <el-table border
+                v-show="applySuccessProjInfo3"
+                v-if="applySuccessProjInfo.paraItemVoList&&applySuccessProjInfo.paraItemVoList.length>0"
+                :data="applySuccessProjInfo.paraItemVoList"
+                style="width: 100%">
+        <el-table-column
+                width="220"
+                prop="iteminstCode"
+                label="办件编号">
+        </el-table-column>
+          <el-table-column
+                  width="220"
+                  prop="approveOrgName"
+                  label="实施主体">
+          </el-table-column>
+        <el-table-column
+                min-width="280"
+                prop="itemName"
+                label="事项名称">
+        </el-table-column>
+        <el-table-column
+                width="160"
+                prop="iteminstState"
+                label="审批状态">
+          <template slot-scope="scope">
+            <span class="status-css" :class="scope.row.statusCss"><img :src="ctx+scope.row.statusImg" alt="">{{scope.row.statusText}}</span>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-collapse-transition>
+    <h4 class="mt40" @click="applySuccessProjInfo4 = !applySuccessProjInfo4" v-if="applySuccessProjInfo.coreItemList&&applySuccessProjInfo.coreItemList.length>0">并行推进事项<i class="fr" :class="applySuccessProjInfo4?'el-icon-arrow-down':'el-icon-arrow-right'"></i> </h4>
+    <el-collapse-transition>
+      <el-table border
+                v-show="applySuccessProjInfo4"
+                v-if="applySuccessProjInfo.coreItemList&&applySuccessProjInfo.coreItemList.length>0"
+                :data="applySuccessProjInfo.coreItemList"
+                style="width: 100%">
+        <el-table-column
+                prop="applyinstCode"
+                label="申报流水号"
+                width="140">
+        </el-table-column>
+          <el-table-column
+                  width="200"
+                  prop="iteminstCode"
+                  label="办件编号">
+          </el-table-column>
+        <el-table-column
+                width="200"
+                prop="approveOrgName"
+                label="实施主体">
+        </el-table-column>
+        <el-table-column
+                min-width="200"
+                prop="itemName"
+                label="事项名称">
+        </el-table-column>
+        <el-table-column
+                width="160"
+                prop="iteminstState"
+                label="审批状态">
+          <template slot-scope="scope">
+            <span class="status-css" :class="scope.row.statusCss"><img :src="ctx+scope.row.statusImg" alt="">{{scope.row.statusText}}</span>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-collapse-transition>
+    <div class="footer-stage-btn">
+      <a :href="ctx+'rest/main/toIndexPage#declare'"><el-button class="mt60" type="primary" style="width: 120px;">确认</el-button></a>
+    </div>
+  </div>
+  <!--文件上传下载弹窗 start-->
+  <el-dialog
+    class="upload-flie-dialog"
+    title="材料上传"
+    :visible.sync="showUploadWindowFlag"
+    @closed="uploadTableData=[]"
+    v-loading="loadingFileWin"
+    top="50px"
+    width="1200px">
+    <p class="parallel-appr-title al"><i class="ag ag-warn-circle"></i> 材料附件单次上传最大为100M，总云盘不超过10G。</p>
+    <h4 class="mt20 dia-mat-name">{{selMatRowDataInd+1 }}.{{ selMatRowData.matName}}</h4>
+    <div class="upload-file-content clearfix"
+         element-loading-text="文件上传中"
+         element-loading-background="rgba(0, 0, 0, 0.3)"
+         element-loading-spinner="el-icon-loading">
+      <div class="file-content-left fl" v-loading="mySpaceLoading">
+        <el-tabs v-model="fileSpaceActive" type="card" @tab-click="fileSpaceTabClick">
+          <el-tab-pane label="我的材料" name="myMats">
+            <div class="search-mat">
+              <el-input v-model="myMatsKeyword" placeholder="搜索你要找的材料" @keyup.enter.native="getMyMatsList"></el-input>
+              <el-button type="primary" icon="icon ag ag-search" @click="getMyMatsList()"> 搜索</el-button>
+            </div>
+            <el-table :data="myMatsList" class="mt20 my-mat-table"
+                      row-key="rowKey"
+                      ref="myMatsList"
+                      default-expand-all
+                      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+                      :style="{height:(curHeight-555)+'px',overflow: 'auto'}">
+              <el-table-column prop="matinstName" label="材料名称">
+                <template slot-scope="scope">
+                  <span v-if="scope.row.matinstName" class="ellipsis dir-file-name" :title="scope.row.matinstName">
+                    <i class="ag ag-folder-open-fill"></i>{{scope.row.matinstName}}
+                  </span>
+                  <span v-else class="ellipsis dir-file-name">
+                    <i class="ag ag-fileType-doc" :class="'ag-filetype-'+getFileType(scope.row.fileName)"></i>{{scope.row.fileName}}
+                  </span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="fileName" label="日期" width="140">
+                <template slot-scope="scope">
+                  <span v-if="scope.row.matinstName">{{$options.filters.formatDate(scope.row.createTime)}}</span>
+                  <span v-else>{{$options.filters.formatDate(scope.row.updateTime)}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="选择" align="center" width="55">
+                <template slot-scope="scope">
+                  <el-checkbox v-model="scope.row.checked" :checked="scope.row.checked" @change="function(val){changeMyMatSel(val,scope.row,'mats')}"></el-checkbox>
+                </template>
+              </el-table-column>
+            </el-table>
+            <el-pagination
+              @size-change="myMatSizeChange"
+              @current-change="myMatCurrentChange"
+              :pager-count="5"
+              :current-page="myMatsPageNum"
+              :page-sizes="[5,10, 20, 50, 100]"
+              :page-size="myMatsPageSize"
+              :total="myMatsTotal"
+              layout="sizes, prev, pager, next, jumper">
+            </el-pagination>
+          </el-tab-pane>
+          <el-tab-pane label="我的云盘" name="myDir">
+            <div class="search-mat">
+              <el-input v-model="myDirKeyword" placeholder="搜索你要找的材料" @keyup.enter.native="getMyDirsListByKeyword"></el-input>
+              <el-button type="primary" icon="icon ag ag-search" @click="getMyDirsListByKeyword()"> 搜索</el-button>
+            </div>
+            <el-table :data="myDirsList"
+                      row-key="id"
+                      lazy
+                      :load="getMyDirsList"
+                      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+                      class="mt20 my-dir-table" :style="{height:(curHeight-515)+'px',overflow: 'auto'}">
+              <el-table-column label="材料名称">
+                <template slot-scope="scope">
+                  <span v-if="scope.row.hasCheck==true" class="ellipsis dir-file-name" :title="scope.row.attName">
+                    <i class="ag ag-fileType-doc" :class="'ag-filetype-'+getFileType(scope.row.attName)"></i>{{scope.row.attName}}
+                  </span>
+                  <span v-else class="ellipsis dir-file-name">
+                    <i class="ag ag-folder-open-fill"></i>{{scope.row.dirName}}
+                  </span>
+                </template>
+              </el-table-column>
+              <el-table-column label="日期" width="140">
+                <template slot-scope="scope">
+                  <span>{{$options.filters.formatDate(scope.row.createTime)}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="选择" align="center" width="55">
+                <template slot-scope="scope">
+                  <el-checkbox v-if="scope.row.hasCheck==true" v-model="scope.row.checked" :checked="scope.row.checked" @change="function(val){changeMyMatSel(val,scope.row,'dir')}"></el-checkbox>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+      <div class="file-content-right fr" v-loading="selMatLoading">
+        <el-tabs v-model="fileSelActive" type="card">
+          <el-tab-pane :label="'已上传的文件（'+uploadFilesCount+'）'" name="myUploadMat">
+            <el-table class="upload-file-list" :data="uploadTableData" :style="{height:(curHeight-500)+'px',overflow: 'auto'}">
+              <el-table-column type="index" label="序号" width="50" align="center"></el-table-column>
+              <el-table-column prop="fileName" label="文件名称"></el-table-column>
+              <!--<el-table-column prop="" label="材料来源" width="80"></el-table-column>-->
+              <el-table-column label="操作" align="center" width="100">
+                <template slot-scope="scope">
+                  <a :href="ctx+'rest/file/applydetail/mat/download/'+scope.row.fileId"><span title="下载" class="file-btn el-icon-download"></span></a>
+                  <span title="预览" class="file-btn el-icon-search" @click="filePreview(scope.row)"></span>
+                  <span title="删除" class="file-btn el-icon-delete" @click="delSelectFileCom(selMatRowData,scope.row,scope.$index)"></span>
+                </template>
+              </el-table-column>
+            </el-table>
+            <div class="file-opt-btn">
+              <el-upload
+                ref="uploadFileWin"
+                class="upload-s-file"
+                multiple
+                :action="ctx+'rest/mats/att/upload'"
+                :show-file-list="false"
+                :http-request="debounceHandler"
+                :file-list="fileList">
+                <el-button slot="trigger" type="primary">本地上传</el-button>
+              </el-upload>
+            </div>
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+    </div>
+    <div slot="footer" class="dialog-footer clearfix">
+      <div class="fl">
+        <el-button type="primary" :disabled="selMatRowDataInd<=0" plain @click="changeRowDataSel('prev')">上一个</el-button>
+        <el-button type="primary" :disabled="selMatRowDataInd>=(allMatsTableData.length-1)" plain @click="changeRowDataSel('next')">下一个</el-button>
+      </div>
+      <div class="fr">
+        <el-button @click="showUploadWindowFlag = false">关 闭</el-button>
+      </div>
+    </div>
+  </el-dialog>
+  <!--文件上传下载弹窗 end-->
+  <!--  进度条  start-->
+  <el-dialog
+          class="show-loading-prog"
+          fullscreen
+          :show-close="false"
+          :close-on-press-escape="false"
+          :close-on-click-modal="false"
+          :visible.sync="progressDialogVisible">
+    <el-progress type="circle" :width="110" :stroke-width="10" :status="progressStus" :percentage="uploadPercentage"></el-progress>
+  </el-dialog>
+  <!--  查看信用记录-->
+  <el-dialog title="信用记录" class="special-dialog credit-dialog" top="80px"
+             v-loading="creditDiaLoading" width="950px"
+             :visible.sync="creditDiaVisible">
+    <div class="credit-dia-wrap" :style="{maxHeight: (curHeight-250)+'px',overflow: 'auto'}">
+      <div class="credit-dia-box">
+        <div class="cd-hint-box"><i class="cd-hint-icon" :class="isBlack?'el-icon-error':'el-icon-warning'"></i>{{isBlack?('该'+(applyObjectInfo.role==0?'申请人':'企业')+'已被纳入信用黑名单，无法申报项目！'):('该'+(applyObjectInfo.role==0?'申请人':'企业')+'有'+loseCreditCount+'条失信记录')}}</div>
+        <div class="cd-type-u" :class="{'is-black':item.itemCode=='bad'}"
+             :key="index"
+             v-for="(item,index) in creditTypeList" v-show="item.summaries&&item.summaries.length">
+          <div class="cd-type-title">{{item.itemName}}</div>
+          <div class="pre-list-box">
+            <div class="pre-list-u" :class="{open: item2.isOpen}"
+                 :key="index2"
+                 v-for="(item2,index2) in item.summaries">
+              <div class="pre-u-title" @click="item2.isOpen = !item2.isOpen;">
+                <i v-if="item2.detailDtos.length>0" :class="[item2.isOpen?'el-icon-caret-bottom':'el-icon-caret-right']"></i>
+                  {{item2.cnTableName}}（{{item2.cnDeptName}}）（{{item2.detailDtos?item2.detailDtos.length:0}}条记录，最后更新时间{{$options.filters.formatDate(item2.lastUpdateTime)}}）
+              </div>
+              <div class="p-u-wrap" v-show="item2.isOpen">
+                <div class="pre-u-detail clearfix" v-for="(uuu,uindex) in item2.detailDtos" :key="uindex">
+                  <div class="fl p-detail-label">{{uuu.cnColumnName}}：</div>
+                  <div class="fl p-detail-value">{{uuu.columnValue}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="creditDiaVisible = false">确 认</el-button>
+    </div>
+  </el-dialog>
+  <!--新增编辑联系人 start-->
+  <el-dialog :title="addEditManModalTitle" :visible.sync="addEditManModalShow" width="750px"
+             class="dg-modal-add-linkmain-info" @close="resetForm('addEditManform')">
+    <el-form :model="addEditManform" ref="addEditManform" label-width="180px" :rules="addLinkManRules">
+      <el-form-item label="所在单位：" required>
+        <el-select v-model="addEditManform.unitName" placeholder="请选择单位">
+          <el-option v-for="item in jiansheFrom" :key="item.unitInfoId" :label="item.applicant"
+                     :value="item.unitInfoId"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="联系人姓名：" prop="linkmanName">
+        <el-input v-model="addEditManform.linkmanName" placeholder="请输入联系人姓名"></el-input>
+      </el-form-item>
+      <el-form-item label="证件号：" prop="linkmanCertNo">
+        <el-input v-model="addEditManform.linkmanCertNo" placeholder="请输入联系人证件号"></el-input>
+      </el-form-item>
+      <el-form-item label="手机号码：" prop="linkmanMobilePhone">
+        <el-input v-model="addEditManform.linkmanMobilePhone" placeholder="请输入联系人手机号码"></el-input>
+      </el-form-item>
+      <el-form-item label="办公电话：">
+        <el-input v-model="addEditManform.linkmanOfficePhon"></el-input>
+      </el-form-item>
+      <el-form-item label="传真：">
+        <el-input v-model="addEditManform.linkmanFax"></el-input>
+      </el-form-item>
+      <el-form-item label="电子邮件：">
+        <el-input v-model="addEditManform.linkmanMail"></el-input>
+      </el-form-item>
+      <el-form-item label="联系人住址：">
+        <el-input v-model="addEditManform.linkmanAddr"></el-input>
+      </el-form-item>
+      <el-form-item label="备注：">
+        <el-input v-model="addEditManform.linkmanMemo"></el-input>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="addEditManModalShow = false">取 消</el-button>
+      <el-button type="primary" @click="saveAeaLinkmanInfo('u')">确 定</el-button>
+    </div>
+  </el-dialog>
+  <!--新增编辑联系人 end-->
+  <!--证照库弹窗 start-->
+  <el-dialog class="upload-flie-dialog" title="证照列表" :visible.sync="showCertWindowFlag"
+             @closed="certMatTableData=[]" width="900px">
+    <div class="upload-file-content">
+      <div class="file-opt-btn">
+        <el-form :inline="true" :model="searchInline">
+          <el-form-item label="申报主体">
+            <el-select v-model="searchInline.type" placeholder="选择申报主体">
+              <el-option v-for="(item,index) in allApplySubjectInfo" :key="index" @click.native="applySubjectChange(item)" :label="item.applySubjectName" :value="item.applySubjectName"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="" v-if="searchInline.showNumberType">
+            <el-radio-group v-model="searchInline.identityNumberType" @change="identityNumberTypeChange">
+              <el-radio label="0">企业证照</el-radio>
+              <el-radio label="1">法人证照</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-form>
+      </div>
+      <el-table :data="certMatTableData" ref="certMatTableData" border>
+        <el-table-column prop="name" label="证照名称"></el-table-column>
+        <el-table-column prop="license_type" label="证照类型"  width="100">
+          <template slot-scope="scope">
+            {{$options.filters.formatLicenseType(scope.row.license_type)}}
+          </template>
+        </el-table-column>
+        <el-table-column prop="expiry_date" label="有效截止日期"  width="180"></el-table-column>
+        <el-table-column prop="trust_level" label="可信等级"  width="80"></el-table-column>
+        <el-table-column label="证照状态"  width="140">
+          <template slot-scope="scope">
+            {{$options.filters.formatLicenseStatus(scope.row.license_status)}}
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="120">
+          <template slot-scope="scope">
+            <span class="op-btn" @click="cretPreview(scope.row.auth_code)">查看</span>
+            <span class="op-btn" v-if="scope.row.bind==false" @click="setCretLinked(scope.row)">关联</span>
+            <span class="op-btn" v-else style="cursor: not-allowed">已关联</span>
+            <!--<span class="op-btn" v-else @click="unbindCert(scope.row.matinstId,selMatRowData.certChild,index)">解除关联</span>-->
+
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+  </el-dialog>
+  <!--证照库弹窗 end-->
+  <!--  材料一张表单  start-->
+  <el-dialog @closed="uploadPercentage=0;progressDialogVisible=false" class="show-one-form" :title="matformNameTitle"
+             width="750px" :visible.sync="matFormDialogVisible">
+    <div>
+      <div id="matFormContent"></div>
+    </div>
+  </el-dialog>
+  <!--  材料一张表单  end-->
+  <!--选择主题 start-->
+  <el-dialog title="选择主题" :visible.sync="selThemeDialogShow" width="900px">
+    <el-tabs v-model="itemTabSelect">
+      <el-tab-pane v-for="(item,index) in themeTypeList.mainLine"
+                   :label="item.themeTypeName"
+                   :name="'tab_'+item.themeTypeCode"
+                   :key="index">
+        <div :style="{'max-height':(curHeight-360)+'px',overflow: 'auto'}">
+          <!--<p class="parallel-appr-title mb20">该项目已确定为 <b>“ {{themeName}} ” </b>主题，确认无误可继续下一步</p>-->
+          <div class="pro-type-item"
+               @click="chooseTheme(itemList)"
+               :class="themeActive==itemList.themeId?'active':''"
+               :key="ind"
+               v-for="(itemList,ind) in item.themeList">
+            <img v-if="themeActive==itemList.themeId" :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">
+            <img v-else :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">
+            <div class="theme-name">{{itemList.themeName}}</div>
+            <i class="el-icon-check"></i>
+          </div>
+          <!--<p class="show-more-theme" v-if="item.themeList.length>10" @click="themeListShowHide(item)">{{showThemeLenText?'展开更多':'收起更多'}} <i :class="showThemeLenText?'el-icon-arrow-down':'el-icon-arrow-up'"></i></p>-->
+
+        </div>
+      </el-tab-pane>
+    </el-tabs>
+  </el-dialog>
+  <!--选择主题 end-->
+</div>
+<script>
+</script>
+<script src="../../../static/mall/js/userCenter/components/parallelDeclare.js"
+        th:src="@{/mall/skin_v4.1/js/userCenter/components/parallelDeclare.js}" type="text/javascript"></script>

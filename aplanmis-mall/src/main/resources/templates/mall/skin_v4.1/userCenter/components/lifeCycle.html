@@ -1,0 +1,417 @@
+<link rel="stylesheet" href="../../../static/mall/css/userCenter/lifeCycle.css"
+      th:href="@{/mall/skin_v4.1/css/userCenter/lifeCycle.css}">
+<div id="lifeCycle" v-cloak v-loading.fullscreen.lock="mloading">
+    <div class="return-list">
+        <el-button @click="backFn">返回</el-button>
+    </div>
+    <div id="lifeCycle2" class="box">
+        <!--<div class="back" @click="backFn">
+            <i class="el-icon-arrow-left"></i>
+        </div>-->
+        <div class="box-tit">{{lifeCycleInfoVo.projName}}（生命周期图）
+            <a href="javascript:;" class="box-tit-des">{{lifeCycleInfoVo.themeName}}</a>
+        </div>
+        <div class="status-box">
+            <ul class="detail-info">
+                <li :class="{'active':aeaParStages[0].stageId == currentStageId,'not-dealt':aeaParStages[0].stateType == 2}" @click="expandItemInst(0)">
+                    <div class="state-img-box">
+                        <img th:src="@{/mall/images/lifeCycle/stage_1.png}" class="state-img">
+                    </div>
+                    <h6>{{aeaParStages[0].stageName}}</h6>
+                    <div class="status-center">
+                        <p>
+                            <b>事项</b>
+                            <span>{{aeaParStages[0].stageItemNum}}</span>
+                        </p>
+                        <p>
+                            <b>办结率</b>
+                            <span>{{aeaParStages[0].endProp}}</span>
+                        </p>
+                    </div>
+                    <div class="status-bottom">
+                        <p>
+                            <span>历时（工作日）</span>
+                            <span>{{aeaParStages[0].stageRunTime?aeaParStages[0].stageRunTime:'-'}}</span>
+                        </p>
+                    </div>
+                    <div class="status-btn-box">
+                        <button class="deal-btn" @click="imedeaDeal">立即办理</button>
+                    </div>
+                    <img v-show="aeaParStages[0].stateType == 0"  th:src="@{/mall/images/lifeCycle/banjie.png}" class="state-icon">
+                    <img v-show="aeaParStages[0].stateType == 1"  th:src="@{/mall/images/lifeCycle/shouli.png}" class="state-icon">
+                    <img v-show="aeaParStages[0].stateType == 2"  th:src="@{/mall/images/lifeCycle/weibanli.png}" class="state-icon">
+                </li>
+                <div class="status-arrow" v-if="aeaParStages[1]">
+                    <img th:src="@{/mall/images/lifeCycle/jiantouActive.png}"  v-if="arrowActive[0]">
+                    <img th:src="@{/mall/images/lifeCycle/jiantou.png}" v-else>
+                </div>
+                <li v-if="aeaParStages[1]" :class="{'active':aeaParStages[1].stageId == currentStageId,'not-dealt':aeaParStages[1].stateType == 2}"  @click="expandItemInst(1)">
+                    <div class="state-img-box">
+                        <img  th:src="@{/mall/images/lifeCycle/stage_2.png}" class="state-img">
+                    </div>
+                    <h6>{{aeaParStages[1].stageName}}</h6>
+                    <div class="status-center">
+                        <p>
+                            <b>事项</b>
+                            <span>{{aeaParStages[1].stageItemNum}}</span>
+                        </p>
+                        <p>
+                            <b>办结率</b>
+                            <span>{{aeaParStages[1].endProp}}</span>
+                        </p>
+                    </div>
+                    <div class="status-bottom">
+                        <p>
+                            <span>历时（工作日）</span>
+                            <span>{{aeaParStages[1].stageRunTime?aeaParStages[1].stageRunTime:'-'}}</span>
+                        </p>
+                    </div>
+                    <div class="status-btn-box">
+                        <button class="deal-btn" @click="imedeaDeal">立即办理</button>
+                    </div>
+                    <img v-show="aeaParStages[1].stateType == 0"  th:src="@{/mall/images/lifeCycle/banjie.png}" class="state-icon">
+                    <img v-show="aeaParStages[1].stateType == 1"  th:src="@{/mall/images/lifeCycle/shouli.png}" class="state-icon">
+                    <img v-show="aeaParStages[1].stateType == 2"  th:src="@{/mall/images/lifeCycle/weibanli.png}" class="state-icon">
+                </li>
+                <div class="status-arrow" v-if="aeaParStages[2]">
+                    <img th:src="@{/mall/images/lifeCycle/jiantouActive.png}"  v-if="arrowActive[1]">
+                    <img th:src="@{/mall/images/lifeCycle/jiantou.png}" v-else>
+                </div>
+                <li v-if="aeaParStages[2]" :class="{'active':aeaParStages[2].stageId == currentStageId,'not-dealt':aeaParStages[2].stateType == 2}"  @click="expandItemInst(2)">
+                    <div class="state-img-box">
+                        <img  th:src="@{/mall/images/lifeCycle/stage_3.png}" class="state-img">
+                    </div>
+                    <h6>{{aeaParStages[2].stageName}}</h6>
+                    <div class="status-center">
+                        <p>
+                            <b>事项</b>
+                            <span>{{aeaParStages[2].stageItemNum}}</span>
+                        </p>
+                        <p>
+                            <b>办结率</b>
+                            <span>{{aeaParStages[2].endProp}}</span>
+                        </p>
+                    </div>
+                    <div class="status-bottom">
+                        <p>
+                            <span>历时（工作日）</span>
+                            <span>{{aeaParStages[2].stageRunTime?aeaParStages[2].stageRunTime:'-'}}</span>
+                        </p>
+                    </div>
+                    <div class="status-btn-box">
+                        <button class="deal-btn" @click="imedeaDeal">立即办理</button>
+                    </div>
+                    <img v-show="aeaParStages[2].stateType == 0"  th:src="@{/mall/images/lifeCycle/banjie.png}" class="state-icon">
+                    <img v-show="aeaParStages[2].stateType == 1"  th:src="@{/mall/images/lifeCycle/shouli.png}" class="state-icon">
+                    <img v-show="aeaParStages[2].stateType == 2"  th:src="@{/mall/images/lifeCycle/weibanli.png}" class="state-icon">
+                </li>
+                <div class="status-arrow" v-if="aeaParStages[3]">
+                    <img th:src="@{/mall/images/lifeCycle/jiantouActive.png}"  v-if="arrowActive[2]">
+                    <img th:src="@{/mall/images/lifeCycle/jiantou.png}" v-else>
+                </div>
+                <li v-if="aeaParStages[3]" :class="{'active':aeaParStages[3].stageId == currentStageId,'not-dealt':aeaParStages[3].stateType == 2}"  @click="expandItemInst(3)">
+                    <div class="state-img-box">
+                        <img th:src="@{/mall/images/lifeCycle/stage_4.png}" class="state-img">
+                    </div>
+                    <h6>{{aeaParStages[3].stageName}}</h6>
+                    <div  class="status-center">
+                        <p>
+                            <b>事项</b>
+                            <span>{{aeaParStages[3].stageItemNum}}</span>
+                        </p>
+                        <p>
+                            <b>办结率</b>
+                            <span>{{aeaParStages[3].endProp}}</span>
+                        </p>
+                    </div>
+                    <div  class="status-bottom">
+                        <p>
+                            <span>历时（工作日）</span>
+                            <span>{{aeaParStages[3].stageRunTime?aeaParStages[3].stageRunTime:'-'}}</span>
+                        </p>
+                    </div>
+                    <div class="status-btn-box">
+                        <button class="deal-btn" @click="imedeaDeal">立即办理</button>
+                    </div>
+                    <img v-show="aeaParStages[3].stateType == 0"  th:src="@{/mall/images/lifeCycle/banjie.png}" class="state-icon">
+                    <img v-show="aeaParStages[3].stateType == 1"  th:src="@{/mall/images/lifeCycle/shouli.png}" class="state-icon">
+                    <img v-show="aeaParStages[3].stateType == 2"  th:src="@{/mall/images/lifeCycle/weibanli.png}" class="state-icon">
+                </li>
+            </ul>
+        </div>
+        <div class="table-wrapper">
+            <div class="table-title">
+                <p>
+                    <span class="sin"><i></i></span>
+                    <span class="sin-des">已办理</span>
+                </p>
+                <p>
+                    <span class="sin"><i></i></span>
+                    <span class="sin-des">办理中</span>
+                </p>
+                <p>
+                    <span class="sin"><i></i></span>
+                    <span class="sin-des">未办理</span>
+                </p>
+            </div>
+            <div class="table-content">
+                <div class="table-content-top clearfix">
+                    <div class="fl table-content-title">
+                            <div class="title-box">
+                                <span>并联事项</span>
+                            </div>                            
+                    </div>
+                    <div class="fl table-content-body">
+                        <ul class="clearfix">
+                            <template v-if="parallelItemList.length>0">
+                                <li :class="{'not-dealt':item.itemStateType == 2}" v-for="item in parallelItemList">
+                                    <div class="table-content-item">
+                                        <button class="deal-btn" @click="singleImedeaDeal(item.itemVerId)"
+                                                v-show="item.itemStateType == 2">立即办理
+                                        </button>
+                                        <p class="orgName">{{item.orgName}}</p>
+                                        <p class="itemName" :class="getBgColor(item.itemStateType,item.itemName)">{{item.itemName}}</p>
+                                    </div>
+                                    <img v-show="(item.itemStateType == 0 && item.iteminstState == 11)" th:src="@{/mall/images/lifeCycle/tongguo.png}" class="state-table-img">
+                                    <img v-show="(item.itemStateType == 0 && item.iteminstState == 12)" th:src="@{/mall/images/lifeCycle/rongquetongguo.png}" class="state-table-img">
+                                    <img v-show="(item.itemStateType == 0 && item.iteminstState == 13)||(item.itemStateType == 0 && item.iteminstState == 14)||(item.itemStateType == 0 && item.iteminstState == 15)" th:src="@{/mall/images/lifeCycle/butongguo.png}" class="state-table-img">
+                                    <div class="table-cell-hover" v-show="item.itemStateType != 2">
+                                        <p><i class="circle" :class="circleBgFn(item.iteminstState)"></i><span>{{item.itemName}}</span></p>
+                                        <p>实施主体：{{item.orgName}}</p>
+                                        <p>时限（工作日）：{{item.dueNum?item.dueNum+'个工作日':'-'}}</p>
+                                        <p>事项开始时间：{{item.iteminstStartTime | dateFormat}}</p>
+                                        <p>事项结束时间：{{item.iteminstEndTime | dateFormat}}</p>
+                                        <p>审批状态：
+                                            <a class="state-btn" :class="colorFn(item.iteminstState)"  href="javascript:;">
+                                                <i class="icon-bg" :class="iconBgFn(item.iteminstState)"></i>
+                                                <span>{{item.iteminstState | iteminstStateFormat}}</span>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </li>
+                            </template>
+                            <template v-else>
+                                <p class="lifeCyclenoData"></p>
+                            </template>
+                        </ul>
+                    </div>
+                </div>
+                <div class="table-content-bottom">
+                    <div class="table-content-title">
+                            <div class="title-box">
+                                <span>并行事项</span>
+                            </div>
+                    </div>
+                    <div class="table-content-body">
+                        <ul class="clearfix">
+                            <template v-if="coreItemList.length>0">
+                                <li :class="{'not-dealt':item.itemStateType == 2}" v-for="item in coreItemList">
+                                    <div class="table-content-item">
+                                        <button class="deal-btn" @click="singleImedeaDeal(item.itemVerId)"
+                                                v-show="item.itemStateType == 2">立即办理
+                                        </button>
+                                        <p class="orgName">{{item.orgName}}</p>
+                                        <p class="itemName" :class="getBgColor(item.itemStateType,item.itemName)">{{item.itemName}}</p>
+                                    </div>
+                                    <img v-show="item.itemStateType == 0" th:src="@{/mall/images/lifeCycle/tongguo.png}" class="state-table-img">
+                                    <img v-show="item.itemStateType == 0" th:src="@{/mall/images/lifeCycle/rongquetongguo.png}" class="state-table-img">
+                                    <img v-show="item.itemStateType == 0" th:src="@{/mall/images/lifeCycle/butongguo.png}" class="state-table-img">
+                                    <div class="table-cell-hover" v-show="item.itemStateType != 2">
+                                        <p><i class="circle" :class="circleBgFn(item.iteminstState)"></i><span>{{item.itemName}}</span></p>
+                                        <p>实施主体：{{item.orgName}}</p>
+                                        <p>时限（工作日）：{{item.dueNum?item.dueNum+'个工作日':'-'}}</p>
+                                        <p>事项开始时间：{{item.iteminstStartTime | dateFormat}}</p>
+                                        <p>事项结束时间：{{item.iteminstEndTime | dateFormat}}</p>
+                                        <p>审批状态：
+                                            <a class="state-btn" :class="colorFn(item.iteminstState)"  href="javascript:;">
+                                                <i class="icon-bg" :class="iconBgFn(item.iteminstState)"></i>
+                                                <span>{{item.iteminstState | iteminstStateFormat}}</span>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </li>
+                            </template>
+                            <template v-else>
+                                <p class="lifeCyclenoData"></p>
+                            </template>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    // timeFormat
+    function formatDate(date, fmt) {
+        if (/(y+)/.test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
+        }
+        var o = {
+            'M+': date.getMonth() + 1,
+            'd+': date.getDate(),
+            'h+': date.getHours(),
+            'm+': date.getMinutes(),
+            's+': date.getSeconds()
+        }
+        for (var k in o) {
+            if (new RegExp('('+k+')').test(fmt)) {
+                var str = o[k] + ''
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? str : padLeftZero(str))
+            }
+        }
+        return fmt
+    }
+
+    function padLeftZero(str) {
+        return ('00' + str).substr(str.length)
+    }
+    var module1 = new Vue({
+        el: '#lifeCycle',
+        data: function () {
+            return {
+                // 页面loading
+                mloading: false,
+                binglian: false,
+                lifeCycleInfoVo: {},
+                aeaParStages:[{stageId:''},{stageId:''},{stageId:''},{stageId:''}],
+                coreItemList:[],
+                parallelItemList:[],
+                projInfoId: '',
+                currentStageId:'',
+                arrowActive:[false,false,false,false],
+            }
+        },
+        methods: {
+            getSchedule: function () {
+                var _this = this;
+                _this.mloading = true;
+                request('', {
+                     url: ctx + 'rest/user/item/schedule/diagram/'+_this.projInfoId,
+                   // url: ctx + 'rest/user/item/schedule/diagram/085439a3-6672-4bad-b683-5cd0d8705018',
+                    type: 'get'
+                }, function (res) {
+                    _this.mloading = false;
+                    if (res.success) {
+                        var currentIndex = 0;
+                        _this.lifeCycleInfoVo = res.content;
+                        _this.aeaParStages = _this.lifeCycleInfoVo.aeaParStages;
+                        _this.currentStageId = _this.lifeCycleInfoVo.currentStageId || _this.lifeCycleInfoVo.aeaParStages[0].stageId; // 如果currentStageId为null ，默认第一个
+                        _this.aeaParStages.forEach(function (value,index) {
+                            if(value.stageId == _this.currentStageId){
+                                _this.expandItemInst(index);
+                                currentIndex = index;
+                            }
+                        })
+                        for (var i = 0; i < currentIndex; i++) {
+                            _this.arrowActive[i] = true;
+                        }
+
+                        if (res.content.isSeriesApprove == 0) {
+                            _this.binglian = true;
+                        } else {
+                            _this.binglian = false;
+                        }
+                    } else {
+                        _this.$message.error(res.message);
+                    }
+
+                }, function () {
+                    _this.mloading = false;
+                    _this.$message.error('获取数据失败，请重试');
+                });
+            },
+
+            // 展开事项列表
+            expandItemInst:function (index){
+                var aeaParStages = this.aeaParStages;
+                this.currentStageId =  aeaParStages[index].stageId
+                //取到对应的事项
+                var coreItemList = aeaParStages[index].coreItemList
+                var parallelItemList = aeaParStages[index].parallelItemList
+                this.coreItemList = coreItemList  //并行事项列表
+                this.parallelItemList = parallelItemList //并联事项列表
+            },
+
+            // 并联申报-立刻办理
+            imedeaDeal:function(){
+                var projInfoId = this.projInfoId;
+                window.location.href = ctx + "rest/main/toIndexPage?projInfoId="+ projInfoId +"#declare"
+            },
+            // 单项申报-立刻办理
+            singleImedeaDeal: function (itemVerId) {
+                window.location.href = ctx + 'rest/main/toIndexPage?itemVerId=' + itemVerId + '&projInfoId=' + this.projInfoId + '&flag=singleD#declare';
+            },
+            getBgColor:function (itemStateType,itemName) {
+                var classList = ""
+                if(itemStateType == 0){
+                    classList =  "bg1"
+                }else if(itemStateType == 1){
+                    classList =  "bg2"
+                }else{
+                    classList = "bg3"
+                }
+
+                if(itemName && itemName.length > 13){
+                    classList = classList + " " + "ellipsisLN2"
+                }
+                return classList
+            },
+            iconBgFn:function (state) {
+                if(!state) return
+                if(state){
+                    var stateList = ['icon-bg1', 'icon-bg2', 'icon-bg3', 'icon-bg4', 'icon-bg5', 'icon-bg6', 'icon-bg7', 'icon-bg8', 'icon-bg9', 'icon-bg10', 'icon-bg11', 'icon-bg12','icon-bg13','icon-bg14','icon-bg15'];
+                    var _state = parseInt(state);
+                    if (_state > stateList.length) return;
+                    console.log(stateList[state-1])
+                    return stateList[state-1];
+                }
+            },
+            colorFn:function (state) {
+                if(!state) return
+                if(state){
+                    var stateList = ['color1', 'color2', 'color3', 'color4', 'color5', 'color6', 'color7', 'color8', 'color9', 'color10', 'color11', 'color12','color13','color14','color15'];
+                    var _state = parseInt(state);
+                    if (_state > stateList.length) return;
+                    console.log(stateList[state-1])
+                    return stateList[state-1];
+                }
+            },
+            circleBgFn:function (state) {
+                if(!state) return
+                if(state){
+                    var stateList = ['circleBg1', 'circleBg2', 'circleBg3', 'circleBg4', 'circleBg5', 'circleBg6', 'circleBg7', 'circleBg8', 'circleBg9', 'circleBg10', 'circleBg11', 'circleBg12','circleBg13','circleBg14','circleBg15'];
+                    var _state = parseInt(state);
+                    if (_state > stateList.length) return;
+                    console.log(stateList[state-1])
+                    return stateList[state-1];
+                }
+            },
+            // 返回列表
+            backFn:function () {
+                 userCenter.vm.moduleLoad( 'scheduleInquire.html', '#scheduleInquire')
+            }
+        },
+        mounted: function () {
+            this.projInfoId = sessionStorage.getItem('projInfoId');
+            this.getSchedule();
+        },
+        filters: {
+            dateFormat: function (date) {
+                if (!date) return '-';
+                var time = new Date(date)
+                return formatDate(time, 'yyyy-MM-dd');
+            },
+            iteminstStateFormat: function (state) {
+                console.log(state)
+                if(!state) return '-'
+                if(state){
+                    var stateList = ['已接件', '已撤件', '已受理', '不受理', '不予受理', '补正（开始）', '补正（结束）', '部门开始办理', '特别程序（开始）', '特别程序（结束）', '办结（通过）', '办结（容缺通过）','办结（不通过）','撤回','撤销'];
+                    var _state = parseInt(state);
+                    if (_state > stateList.length) return '-';
+                    return stateList[state-1];
+                }
+            }
+        },
+    })
+</script>

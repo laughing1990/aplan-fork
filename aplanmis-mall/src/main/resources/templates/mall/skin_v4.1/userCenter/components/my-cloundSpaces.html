@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>我的云盘</title>
+    <style>
+        #myCloundSpaces .wt-content{
+            display: none;
+        }
+    </style>
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+    <link rel="stylesheet" href="../../../../static/mall/css/userCenter/my-cloundSpaces.css" th:href="@{/mall/skin_v4.1/css/userCenter/my-cloundSpaces.css}">
+
+</head>
+<body >
+<div id="myCloundSpaces" class="clearfix" >
+
+    <div class="wt-content clearfix"  v-loading="mloading">
+        <div class="bread-nav">
+            <i class="icon-map"></i>
+            <span class="nav-tip">当前位置：</span>
+            <a :href= "ctx+'rest/main/toIndexPage'">首页</a>
+            <span class="local-span">/</span>
+            <a :href="ctx+'rest/main/toIndexPage?#MyHomeIndex'">法人空间</a>
+            <span class="local-span">/</span>
+            <a :href="ctx+'rest/main/toIndexPage#/myCloundSpaces'">我的云盘</a>
+        </div>
+
+        <div class="my-clound-spaces-left">
+            <div id="leftMyInfo" class="user-company">
+                <p class="company-name">
+                    <img src="../../../../static/mall/images/userCenter/clound.png" th:src="@{/mall/images/userCenter/clound.png}" alt="并联申报图标" align="absmiddle">
+                    &nbsp;我的云盘
+                </p>
+                <div class="father-process">
+                    <div class="child-process"></div>
+                    <!--<p class="my-clound-space-size">4.8G / 10G</p>-->
+                </div>
+
+            </div>
+            <div class="add" @click="addDirDialogFlag = true;clearFormData();">
+                <a href="javascript:;">
+                    <img src="../../../../static/mall/images/userCenter/add.png" th:src="@{/mall/images/userCenter/add.png}" alt="添.加" align="absmiddle">
+                    <span style="color: #457EFF;font-size: 14px;">新建文件夹</span>
+                </a>
+            </div>
+            <div class="userCenterMenList">
+                <ul class="user-pro-list">
+                    <li class="user-pro-item pro-appraval "   v-for="(item ,index) in DirTreeData">
+                        <div class="user-pro-item-parent" :class="[item.dirId == dirId ? 'active': '']" @click.stop="getFileList(item);keyword='';" @contextmenu.prevent.stop="rigthClickTree($event,item,1)">
+<!--                            <i :class="[item.open ? '':'close']" class="el-icon-arrow-down" style="margin-right: 5px;"></i>-->
+                            <img @click="handleOpenMenu(item,item.childDirs,index)" v-if="item.open" src="../../../../static/mall/images/userCenter/folder-open-fill.png" th:src="@{/mall/images/userCenter/folder-open-fill.png}" style="margin-right: 8px;" alt="文件夹" align="absmiddle">
+                            <img @click="handleOpenMenu(item,item.childDirs,index)" v-else src="../../../../static/mall/images/userCenter/folder-close-fill.png" th:src="@{/mall/images/userCenter/folder-close-fill.png}" style="margin-right: 8px;" alt="文件夹" align="absmiddle">
+                            <span :class="hangleIcon(index)">{{item.dirName}}</span>
+                        </div>
+                        <el-collapse-transition>
+                            <ul v-show="item.open">
+                                <template v-if="item.childDirs.length > 0">
+                                    <li  :class="[itemSub.dirId == dirId ? 'active': '']"  v-for="(itemSub,indexSub) in item.childDirs" @click="getFileList(itemSub);keyword=''" style="padding:10px 40px;" @contextmenu.prevent.stop="rigthClickTree($event,itemSub,2)">
+                                        <img src="../../../../static/mall/images/userCenter/folder-close-fill-hey.png" style="margin-right: 8px;" th:src="@{/mall/images/userCenter/folder-close-fill-hey.png}" alt="文件夹">{{itemSub.dirName}}
+                                    </li>
+                                </template>
+                                <template v-else>
+                                    <li style="padding:10px 40px;color: #7F8590;">暂无下级文件夹</li>
+                                </template>
+                            </ul>
+                        </el-collapse-transition>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="my-clound-spaces-right">
+            <section>
+                <div class="tips">
+                    <i class="el-icon-warning-outline" style="font-size: 28px; color: rgb(255, 184, 34); vertical-align: middle;"></i>
+                    <span style="color: rgb(255, 75, 71);">温馨提示* </span>：1.首次使用请先新增文件夹再上传文件。2.文件单次上传最大为100M，总云盘不超过10G。
+                </div>
+            </section>
+            <section class="clearfix">
+                <div class="operation-box">
+                    <el-button type="primary" :disabled="DirTreeData.length == 0"><i class="ag ag-upload"></i> 上传</el-button>
+                    <el-button class="download-btn" :disabled="DirTreeData.length == 0 || FilesMultipleSelection.length == 0" @click="doDownload(1)"><i class="ag ag-download"></i> 下载</el-button>
+                    <el-button class="download-btn" :disabled="DirTreeData.length == 0  || FilesMultipleSelection.length == 0" @click="moveFiles(1)">  <img v-if="DirTreeData.length == 0  || FilesMultipleSelection.length == 0" src="../../../../static/mall/images/userCenter/move-hey.png" style="margin-right: 8px;" th:src="@{/mall/images/userCenter/move-hey.png}" alt="" /> <img v-else src="../../../../static/mall/images/userCenter/move.png" style="margin-right: 8px;" th:src="@{/mall/images/userCenter/move.png}" alt="文件夹" />移动</el-button>
+                    <el-button type="danger" :disabled="DirTreeData.length == 0  || FilesMultipleSelection.length == 0"  class="trash-btn" @click="delelteCloundFile(1)"><i class="ag ag-trash"></i> 删除</el-button>
+                    <input v-show="DirTreeData.length > 0" type="file" class="upload-file" id="fileMutiply" multiple @change="chooseFile($event)">
+                </div>
+                <div class="search-box">
+                    <el-input
+                            placeholder="搜索你要找的材料"
+                            v-model="keyword">
+                        <i slot="suffix" class="el-input__icon el-icon-search" @click="searchFile()"></i>
+                    </el-input>
+                </div>
+            </section>
+            <section class="folder-box clearfix">
+                <div class="folder-num fl">
+                    {{dirName}} | 共有文件{{total}}个
+                </div>
+                <div class="folder-show-way fr">
+                    <el-radio-group v-model="mode" size="medium">
+                        <el-radio-button label="列表"></el-radio-button>
+                        <el-radio-button label="视图"></el-radio-button>
+                    </el-radio-group>
+                </div>
+            </section>
+            <section class="my-materials-table-box" v-loading="mloading">
+                <!--列表模式 str-->
+                <div class="my-declareing-table" v-show="mode == '列表'">
+                    <el-table :data="fileListData" ref="fileListTable"   stripe  style="width:100%" class="matFileListTable" v-loading="tableLoading" @selection-change="handleSelectionChange">
+                        <el-table-column
+                                type="selection"
+                                width="30">
+                        </el-table-column>
+                        <el-table-column
+                                fixed
+                                prop="attName"
+                                :label="chooseFileNum"
+                        >
+                            <template slot-scope="scope">
+                                <div class="clearfix" @dblclick="previewFile(scope.row)">
+                                    <div class="fileName fl"><i class="ag" :class="getFileTypeIcon(scope.row.attFormat)"></i>
+                                        {{scope.row.attName}}
+                                    </div>
+                                    <div class="download fr"    @contextmenu.prevent.stop="rigthClickTable($event,scope.row)">
+                                        <i class="el-icon-more" @click.prevent="rigthClickTable($event,scope.row)" ></i>
+                                    </div>
+                                </div>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="createTime"
+                                sortable
+                                label="日期"
+                                width="120">
+                            <template slot-scope="scope">
+                                <div class="fontSize">{{scope.row.createTime|formatDate}}</div>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="attSize"
+                                label="大小"
+                                align="center"
+                                width="100">
+                            <template slot-scope="scope">
+                                <div v-if="scope.row.attSize" class="fontSize">{{scope.row.attSize|getFileSize}}</div>
+                                <div v-else class="fontSize">未知</div>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+                <!--列表模式 end-->
+
+                <!--视图模式 str-->
+                <div class="view-model"  v-show="mode == '视图'">
+                    <p class="choose-num"><el-checkbox v-model="isViewModelCheckedAll" @change="viewModelCheckedChange">已选择{{FilesMultipleSelection.length}}个文件</el-checkbox></p>
+                    <ul class="matFileListTable clearfix" >
+                        <template v-if="fileListData.length > 0">
+                            <li class="fl" v-for="(item , index) in fileListData" @click="viewModelChoose(item)" :class="[item.selectFlag? 'active': '']">
+                                <p class="file-icon"><i class="ag" :class="getFileTypeIcon(item.attFormat)"></i></p>
+                                <p class="file-name">{{item.attName}}</p>
+                                <i class="el-icon-view" @click="previewFile(item)"></i>
+                            </li>
+                        </template>
+                     <!--   <li class="active fl">
+                            <p class="file-icon"><i class="ag" :class="getFileTypeIcon('png')"></i></p>
+                            <p class="file-name">XXXXX相关文件</p>
+                        </li>-->
+                        <template v-else>
+                            <div class="noFileData">
+                                <img src="../../../../static/mall/images/userCenter/noFileData.png" th:src="@{/mall/images/userCenter/noFileData.png}" alt="没数据" align="absmiddle">
+                            </div>
+                        </template>
+                    </ul>
+                </div>
+                <!--视图模式 end-->
+
+                <el-pagination class="mt20" background align="right" @size-change="handleSizeChange"
+                               @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 50]" :page-size="pageSize"
+                               :current-page="pageNum" layout="total,sizes, prev, pager, next, jumper" :total="total"
+                               v-show="total>10">
+                </el-pagination>
+
+            </section>
+        </div>
+        <!--新建文件夹弹窗 str-->
+        <el-dialog title="新建文件夹" :visible.sync="addDirDialogFlag" width="800px" top="25vh" class="addDirDialog">
+            <div class="addDirForm-box">
+                <el-form label-position="right" label-width="230px" :model="addDirFormData" ref="addDirForm" :rules="addDirFormRules">
+                    <el-form-item label="上级目录：">
+                        <el-select v-model="addDirFormData.chooseSuperDir" clearable placeholder="请选择上级目录" style="width: 357px">
+                            <el-option
+                                    v-for="(item,index) in superDir"
+                                    :key="index"
+                                    :label="item.dirName"
+                                    :value="item.dirId">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="目录名称：" prop="dirName" required>
+                        <el-input v-model="addDirFormData.dirName" placeholder="请填写目录名称" style="width: 357px"></el-input>
+                    </el-form-item>
+                    <el-form-item label="文件编码:" prop="dirCode" required>
+                        <el-input v-model="addDirFormData.dirCode" placeholder="请填写文件夹编码" style="width: 357px" @keyup.enter.native="sureAddDir()"></el-input>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="addDirDialogFlag = false">取 消</el-button>
+                <el-button @click="sureAddDir()" type="primary">确 定</el-button>
+              </span>
+        </el-dialog>
+        <!--新建文件夹弹窗 end-->
+
+        <!--选择要移动到文件夹弹窗 str-->
+        <el-dialog title="移动到" :visible.sync="moveFilesDialogFlag" width="600px" top="25vh" class="addFilesDialog">
+            <div class="addFileForm-box tree-left">
+                <div class="userCenterMenList">
+                    <el-scrollbar style="height: 100%;">
+                        <ul class="user-pro-list">
+                            <li class="user-pro-item pro-appraval " v-for="(item ,index) in DirTreeDataCopy">
+                                <div :class="[item.dirId == targetDirId ? 'active': '']"   style="cursor: pointer;margin: 0px auto;padding-left: 15px;padding: 10px;" @click="chooseMoveDir(item)">
+                                    <!-- <i :class="[item.open ? '':'close']" class="el-icon-arrow-down" style="margin-right: 5px;"></i>-->
+                                    <div @click="handleOpenMenu(item,item.childDirs,index);" class="add-icon-bg" :class="[item.open ? '':'close']"></div>
+                                    <img @click="handleOpenMenu(item,item.childDirs,index);" v-if="item.open" src="../../../../static/mall/images/userCenter/folder-open-fill.png" th:src="@{/mall/images/userCenter/folder-open-fill.png}" style="margin-right: 8px;" alt="文件夹" align="absmiddle">
+                                    <img @click="handleOpenMenu(item,item.childDirs,index);" v-else src="../../../../static/mall/images/userCenter/folder-close-fill.png" th:src="@{/mall/images/userCenter/folder-close-fill.png}" style="margin-right: 8px;" alt="文件夹" align="absmiddle">
+                                    <span :class="hangleIcon(index)">{{item.dirName}}</span>
+                                </div>
+                                <el-collapse-transition>
+                                    <ul v-show="item.open">
+                                        <template v-if="item.childDirs.length > 0">
+                                            <li  :class="[itemSub.dirId == targetDirId ? 'active': '']"  v-for="(itemSub,indexSub) in item.childDirs" @click="chooseMoveDir(itemSub)" style="padding:10px 55px;">
+                                                <img src="../../../../static/mall/images/userCenter/folder-close-fill-hey.png" style="margin-right: 8px;" th:src="@{/mall/images/userCenter/folder-close-fill-hey.png}" alt="文件夹">{{itemSub.dirName}}
+                                            </li>
+                                        </template>
+                                        <template v-else>
+                                            <li style="padding:10px 40px;color: #7F8590;">暂无下级文件夹</li>
+                                        </template>
+                                    </ul>
+                                </el-collapse-transition>
+                            </li>
+                        </ul>
+                    </el-scrollbar>
+                </div>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="moveFilesDialogFlag = false">取 消</el-button>
+                <el-button @click="sureMoveFile" type="primary">确 定</el-button>
+              </span>
+        </el-dialog>
+        <!--选择要移动到文件夹弹窗 end-->
+
+        <!--文件夹重命名弹窗 str-->
+        <el-dialog title="重命名" :visible.sync="reNameDialogFlag" width="600px" top="25vh"  class="reNameFilesDialog">
+            <div class="reNameDirForm-box">
+                <el-form label-position="right" label-width="100px" :model="reNameDirFormData" style="margin-top: 17px;">
+                    <el-form-item label="新名称:">
+                        <el-input v-model="reNameDirFormData.dirName" placeholder="请输入新的名称" style="width: 394px" @keyup.enter.native="reNameDialogFlag = false;sureReName()"></el-input>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="reNameDialogFlag = false">取 消</el-button>
+                <el-button @click=" reNameDialogFlag = false;sureReName()" type="primary">确 定</el-button>
+              </span>
+        </el-dialog>
+        <!--文件夹重命名弹窗 end-->
+
+        <!-- 上传文件进度提示 str--->
+        <div role="alert" class="el-notification " style="bottom: 16px; z-index: 2000;" id="el-notification">
+            <div class="el-notification__group matFileListTable">
+                <h2 class="el-notification__title">正在上传</h2>
+                <div class="el-notification__content">
+                    <div class="upload-file-item" v-for="(item,index) in uploadFile">
+                        <div class="upload-file-proccess" :id="'proccess'+index"></div>
+                        <div class="upload-file-des clearfix">
+                            <span class="fileName fl">
+                                <i class="ag" :class="getFileTypeIcon(item.attFormat)"></i>
+                              {{item.name}}
+                            </span>
+                            <p class="fileSize fr">
+                                <span><i :id="'uploadedSize'+index"></i> / {{item.filesSize}}</span>
+                                <span class="el-icon-success" v-show="item.uploadSun" style="color: #00C161;margin-right: 9px;"></span>
+                                <!-- <span class="el-icon-circle-close" v-else style="margin-right: 20px;"></span>-->
+                                 <span class="el-icon-info" style="color:rgb(255, 75, 71);margin-right: 9px;" v-show="item.error" title="上传失败"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="notificationCloseBtn el-icon-close" id="close"></div>
+            </div>
+        </div>
+        <!-- 上传文件进度提示 end--->
+    </div>
+    <div class="loading" v-loading="mloading" style="margin-top: 300px;"></div>
+    <!--左侧树右键展开 str-->
+    <div class="right-click-opt" id="right-click-opt-tree" @mouseleave="hideClickOpt" style="display: none;">
+        <p @click="addDirDialogFlag = true;clearFormData();" v-show="level == 1">新增</p>
+        <p @click="deleteDir()">删除</p>
+        <p @click="reNameDialogFlag = true;isReNameFile = 0">重命名</p>
+    </div>
+    <!--左侧树右键展开 end-->
+
+    <!--右侧table右键展开 str-->
+    <div class="right-click-opt" id="right-click-opt-table"  @mouseleave="hideClickOpt" style="display: none;">
+        <p @click="doDownload(0,TableClickRow.detailId)">下载</p>
+        <p @click="reNameDialogFlag = true;isReNameFile = 1;detailId = TableClickRow.detailId">重命名</p>
+        <p @click="moveFiles(0,TableClickRow)">移动</p>
+        <p @click="delelteCloundFile(1,TableClickRow)">删除</p>
+    </div>
+    <!--右侧table右键展开 end-->
+
+</div>
+<script src="../../../../static/mall/js/userCenter/components/my-cloundSpaces.js" th:src="@{/mall/skin_v4.1/js/userCenter/components/my-cloundSpaces.js}" type="text/javascript"></script>
+    <script>
+
+        $("#close").click(function(){
+            $("#el-notification").removeClass("right");
+        })
+    </script>
+</body>
+</html>

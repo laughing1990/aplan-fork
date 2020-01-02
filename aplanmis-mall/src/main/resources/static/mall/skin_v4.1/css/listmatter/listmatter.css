@@ -1,0 +1,162 @@
+.listmatter{
+    width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    padding-bottom: 77px;
+}
+.local-main{
+    margin-top: 15px;
+}
+.local-main .local-a{
+    font-family: '苹方 中等', '苹方';
+    font-weight: 400;
+    font-style: normal;
+    font-size: 12px;
+    color: #7F7F7F
+}
+/*定义table 头部 str*/
+.parallel-table .el-table th{
+    padding: 6px 0px;
+    background-color: rgba(249, 251, 253, 1);
+}
+.parallel-table .el-table th>.cell{
+    font-family: '苹方 常规', '苹方 中等', '苹方';
+    font-weight: 400;
+    font-style: normal;
+    color: #333333;
+    font-size: 14px;
+}
+
+.Material-table  .el-table th{
+    padding: 17px 0px;
+    background-color: rgba(242, 242, 242, 1);
+}
+.Material-table .el-table th>.cell{
+    font-family: '苹方 常规', '苹方 中等', '苹方';
+    font-weight: 400;
+    font-style: normal;
+    color: #333333;
+    font-size: 14px;
+}
+/*定义table 头部 end*/
+.matter-title-wrapper{
+    width: 1200px;
+    height: 112px;
+    background-image: url('../../images/listmatter/u358.svg');
+    background-repeat: no-repeat;
+    overflow: hidden;
+    margin-top: 30px;
+    
+}
+.matter-title-wrapper .matter-title{
+    font-family: '苹方 中等', '苹方';
+    font-weight: 400;
+    font-style: normal;
+    font-size: 28px;
+    color: #333333;
+
+}
+.matter-title-wrapper .matter-title-intro span{
+    font-family: '苹方 中等', '苹方';
+    font-weight: 400;
+    font-style: normal;
+    font-size: 16px;
+    color: #333333;
+}
+.matter-title-wrapper .matter-title-right-btn{
+    display: block;
+    width: 156px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    color: #ffffff;
+    background-color: rgba(235, 75, 75, 1);
+}
+
+.expandPDF{
+    font-family: '苹方 常规', '苹方 中等', '苹方';
+    font-weight: 400;
+    font-style: normal;
+    font-size: 16px;
+    color: #4293F4;
+    margin-right: 20px;
+    vertical-align: bottom;
+}
+.formArea{
+    width: 1200px;
+    height: 720px;
+    background-color: rgba(248, 248, 248, 1);
+}
+
+.declare-btn{
+    margin: 65px auto;
+    display: block;
+    width: 100px;
+    height: 40px;
+    line-height: 40px;
+    background: inherit;
+    background-color: rgba(66, 147, 244, 1);
+    border: none;
+    text-align: center;
+    color: #ffffff;
+    font-size: 16px;
+}
+
+.parallel-table .parallel-title {
+    font-family: '苹方 粗体', '苹方 中等', '苹方';
+    font-weight: 700;
+    font-style: normal;
+    font-size: 16px;
+    color: #333333;
+    padding-bottom: 15px;
+
+}
+.parallel-table .parallel-title-intro{
+    padding-bottom: 15px;
+}
+
+.parallel-table .parallel-title-intro span{
+    font-family: '苹方 中等', '苹方';
+    font-weight: 400;
+    font-style: normal;
+    font-size: 14px;
+    color: #7A7A7A;
+}
+.parallel-table .situation-title{
+    display: flex;
+    font-family: '苹方 常规', '苹方 中等', '苹方';
+    font-weight: 400;
+    font-style: normal;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.847058823529412);
+    line-height: 22px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(236, 239, 245, 1);
+}
+.parallel-table .situation-title .situation{
+    display: inline-block;
+ width: 32px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    background: #F28300;
+    font-size: 12px;
+    color: #ffffff;
+}
+.situation-title-intro{
+    margin-top: 10px;
+}
+.el-radio__inner{
+    width: 18px;
+    height: 18px;
+}
+.material-sing{
+    display: inline-block;
+    font-family: '苹方 常规', '苹方 中等', '苹方';
+    font-weight: 400;
+    font-style: normal;
+    font-size: 12px;
+    color: #4293F4;
+    border: 1px solid #4293F4;
+    padding:0px 1px;
+}

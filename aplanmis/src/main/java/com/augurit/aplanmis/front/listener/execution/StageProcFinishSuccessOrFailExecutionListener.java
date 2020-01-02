@@ -101,10 +101,10 @@ public class StageProcFinishSuccessOrFailExecutionListener implements ExecutionL
                     if (StringUtils.isNotBlank(parentTaskId)) {
                         Task task = taskService.createTaskQuery().taskId(parentTaskId).singleResult();
                         if (task != null) {
-                            taskService.complete(parentTaskId, new String[]{"banjie"}, (Map) null);
+                            taskService.complete(parentTaskId, new String[]{"jieshu"}, (Map) null);
 
                             //触发流程发送事件，用于窗口办结发送短信
-                            BpmnModel bpmnModel = repositoryService.getBpmnModel(task.getProcessDefinitionId());
+                            /*BpmnModel bpmnModel = repositoryService.getBpmnModel(task.getProcessDefinitionId());
                             Process process = (Process)bpmnModel.getProcesses().get(0);
                             FlowElement flowElement = process.getFlowElement("banjie");
                             if(flowElement!=null && flowElement instanceof UserTask){
@@ -129,7 +129,7 @@ public class StageProcFinishSuccessOrFailExecutionListener implements ExecutionL
                                     sendObject.setSendConfigs(list);
                                     publisher.publishEvent(new BpmNodeSendAplanmisEvent(this, sendObject));
                                 }
-                            }
+                            }*/
 //                            aeaHiParStageinstService.updateBusinessStateByApplyinstId(aeaHiApplyinst.getApplyinstId(),);
 //                            aeaHiParStageinstService.updateBusinessStateByApplyinstId(aeaHiApplyinst.getApplyinstId(),);
                         }

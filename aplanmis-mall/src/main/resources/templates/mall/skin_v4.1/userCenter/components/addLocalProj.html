@@ -1,0 +1,227 @@
+<link rel="stylesheet" href="../../../static/mall/css/userCenter/addLocalProj.css"
+  th:href="@{/mall/skin_v4.1/css/userCenter/addLocalProj.css}">
+
+<div class="wt-tab" id="addLocalProject" v-cloak v-loading.fullscreen.lock="mloading">
+  <!-- 头部提示及项目基本信息获取-start -->
+  <div class="tip-search-box">
+    <div class="tip-box">
+      <i class="el-icon-warning-outline color-4293f4"></i>
+      <p>
+        临时赋码适用对象为：1.申请人为港澳台人士及境外人士； 2.总投资200万元以下的装修工程、修缮工程，包含既有住宅加装电梯项目、挖掘挖掘道路审批
+        等单事项申报无后续办理的项目、非重大政府投资二次消防装修项目；3.个人宅基地自建房项目。
+        其余项目请前往“ <a href="http://www.gdtz.gov.cn/tybm/index!index6.action" class="color-4293f4"
+          target="_blank">广东省投资项目在线审批监管平台</a>
+        ”进行赋码，否则影响后续业务办理。
+      </p>
+    </div>
+  </div>
+  <!-- 头部提示及项目基本信息获取-end -->
+
+  <!-- 项目基本信息信息 -->
+  <div class="mt20 proj-module pd-info-pandel local-pro-wrap">
+    <el-form :inline="true" :model="projInfoForm" :rules="rules" class="" label-width="160px" ref="projInfoForm">
+      <p class="p-header">新增本地项目</p>
+
+      <!-- 单位信息 -start-->
+      <h4 class="info-title">单位信息</h4>
+      <el-form-item label="申请单位名称" class="wt100" style="margin-top: 26px;">
+        <el-input class="w-775 btn-input" :disabled="true" placeholder="请填写申请单位名称" v-model="unitInfoData.aeaUnitInfo.applicant">
+        </el-input>
+      </el-form-item>
+      <el-form-item class="wt448" label="申请单位地址">
+        <el-input class="w-320" :disabled="true" placeholder="申请单位地址" v-model="unitInfoData.aeaUnitInfo.applicantDetailSite"></el-input>
+      </el-form-item>
+      <el-form-item class="wt448" label="统一信用代码">
+        <el-input class="w-320" :disabled="true" placeholder="统一信用代码" v-model="unitInfoData.aeaUnitInfo.unifiedSocialCreditCode"></el-input>
+      </el-form-item>
+      <el-form-item class="wt448" label="联系人姓名">
+        <el-select class="w-320" v-model="projInfoForm.linkmanInfoId" @change="linkmanItemSelected">
+          <el-option v-for="item in unitInfoData.linkmanInfoList" :key="item.linkmanInfoId" 
+            :label="item.linkmanName" :value="item.linkmanInfoId" @click="linkmanItemSelected(item)">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item class="wt448" label="联系人证件号">
+        <el-input class="w-320" :disabled="true" placeholder="联系人证件号" v-model="unitSelectedLinkman.linkmanCertNo"></el-input>
+      </el-form-item>
+      <el-form-item class="wt448" label="联系人手机电话">
+        <el-input class="w-320" :disabled="true" placeholder="联系人手机电话"  v-model="unitSelectedLinkman.linkmanMobilePhone"></el-input>
+      </el-form-item>
+      <!-- 单位信息 -start-->
+
+
+      <!-- 项目信息 start -->
+      <h4 class="info-title">项目信息</h4>
+      <el-form-item label="项目名称" class="wt100" prop="projName" style="margin-top: 26px;">
+        <el-input class="w-775 btn-input" placeholder="请填写项目名称" v-model="projInfoForm.projName">
+        </el-input>
+      </el-form-item>
+      <el-form-item class="wt448" prop="regionalism">
+        <template slot="label">
+          <el-tooltip class="item" effect="dark" content="市级审批的项目/工程请选择市级行政区划，区县审批的请选择对应的区县行政区划。"
+            placement="right-start">
+            <i class="el-icon-question"></i>
+          </el-tooltip>
+          项目所在区域
+        </template>
+        <el-select filterable clearable class="w-320" v-model="projInfoForm.regionalism">
+          <el-option v-for="item in districtList" :key="item.id" :label="item.regionName" :value="item.regionId">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="国标行业" class="wt448" prop="theIndustry">
+        <template slot="label">
+          <el-tooltip class="item" effect="dark" content="国标行业以国家统计局发布的《国民经济行业分类》（GB/T 4754-2017）编码为基准。"
+            placement="right-start">
+            <i class="el-icon-question"></i>
+          </el-tooltip>
+          国标行业
+        </template>
+        <el-input class="w-320" v-model="gbhyShowMsg" readonly placeholder="请选择国标行业" @click.native="isShowGbhy = true">
+        </el-input>
+        <div style="position: relative;" v-show="isShowGbhy">
+          <div class="gbhyTreeBox">
+            <div class="closeTree">
+              <i class="el-icon-close" @click="isShowGbhy=false"></i>
+            </div>
+            <div class="gbhyTree">
+              <el-tree :data="gbhySelectData" :props="gbhyProp" node-key="itemCode" show-checkbox ref="gbhy"
+                @check-change="handleCheckChange">
+              </el-tree>
+            </div>
+          </div>
+        </div>
+        <input v-model="projInfoForm.theIndustry" type="hidden">
+      </el-form-item>
+      <el-form-item class="wt448 gbCodeYear" label="项目所属年份" prop="gbCodeYear">
+        <el-input class="w-320" v-model="projInfoForm.gbCodeYear" placeholder="请填写项目所属年份"></el-input>
+      </el-form-item>
+      <el-form-item label="申请人类型码" class="wt448" prop="investType">
+        <el-select class="w-320" v-model="projInfoForm.investType">
+          <el-option v-for="item in proJAllOptions.XM_TZLX" :key="item.id" :label="item.itemName"
+            :value="item.itemCode">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item class="wt448" label="项目类型">
+        <el-select filterable clearable class="w-320" v-model="projInfoForm.themeId">
+          <el-option v-for="item in themeList" :key="item.themeId" :label="item.themeName" :value="item.themeId">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item class="wt448" label="建设性质" prop="projNature">
+        <el-select class="w-320" v-model="projInfoForm.projNature">
+          <el-option v-for="item in proJAllOptions.XM_NATURE" :key="item.id" :label="item.itemName"
+            :value="item.itemCode">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item class="wt448" label="用地面积（m&sup2;）" prop="xmYdmj">
+        <el-input class="w-320" v-model="projInfoForm.xmYdmj" placeholder="请填写用地面积"></el-input>
+      </el-form-item>
+      <el-form-item class="wt448" label="总建筑面积（m&sup2;）" prop="foreignBuildingArea">
+        <el-input class="w-320" v-model="projInfoForm.foreignBuildingArea" placeholder="请填写建筑面积"></el-input>
+      </el-form-item>
+      <el-form-item class="wt448" label="总投资（万元）" prop="investSum">
+        <el-input class="w-320" v-model="projInfoForm.investSum" placeholder="请填写总投资金额"></el-input>
+      </el-form-item>
+      <!-- <el-form-item class="wt448" label="项目X、Y坐标">
+        <el-input class="w-100" placeholder="X坐标"></el-input>
+        <el-input class="ml20 w-100" placeholder="Y坐标"></el-input>
+        <a href="javacript:;" class="ml20 color-4293f4">获取</a>
+      </el-form-item> -->
+      <el-form-item class="wt448" label="拟开工时间" prop="nstartTime">
+        <el-date-picker type="date" placeholder="项目开工时间" value-format="yyyy-MM-dd" class="w-320"
+          v-model="projInfoForm.nstartTime">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item class="wt448" label="项目建成时间" prop="endTime">
+        <el-date-picker type="date" placeholder="项目建成时间" value-format="yyyy-MM-dd" class="w-320"
+          v-model="projInfoForm.endTime">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item class="wt448" prop="projectAddress">
+        <template slot="label">
+          <el-tooltip class="item" effect="dark" content="选择项目/工程所在地行政区划。如果是跨区，则选择多个行政区划。" placement="right-start">
+            <i class="el-icon-question"></i>
+          </el-tooltip>
+          建设地点
+        </template>
+        <el-select multiple filterable clearable default-first-option class="w-320"
+          v-model="projInfoForm.projectAddress" placeholder="请选择建设地点">
+          <el-option v-for="item in districtList" :key="item.regionId" :label="item.regionName" :value="item.regionId">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="土地来源" class="wt448" prop="landSource">
+        <el-select class="w-320" v-model="projInfoForm.landSource">
+          <el-option v-for="item in proJAllOptions.XM_TDLY" :key="item.id" :label="item.itemName"
+            :value="item.itemCode">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item class="wt448" prop="isAreaEstimate">
+        <template slot="label">
+          <el-tooltip class="item" effect="dark" content="建设范围未实施区域评估选“否”，建设范围已实施区域评估选“是”。" placement="right-start">
+            <i class="el-icon-question"></i>
+          </el-tooltip>
+          是否完成区域评估
+        </template>
+        <el-radio-group v-model="projInfoForm.isAreaEstimate" class="w-320">
+          <el-radio label="0" value="0" key="0">否</el-radio>
+          <el-radio label="1" value="1" key="1">是</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item class="wt448 isDesignSolution twoLine" prop="isDesignSolution">
+        <template slot="label">
+          <el-tooltip class="item" effect="dark" content="建设用地不带设计方案选“否”，建设用地带设计方案选“是”。" placement="right-start">
+            <i class="el-icon-question"></i>
+          </el-tooltip>
+          土地是否带设计方案
+        </template>
+        <el-radio-group v-model="projInfoForm.isDesignSolution" class="w-310">
+          <el-radio label="0" value="0" key="0">否</el-radio>
+          <el-radio label="1" value="1" key="1">是</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="工程分类" class="wt448">
+        <el-select filterable clearable class="w-320" v-model="projInfoForm.projCategory">
+          <el-option v-for="item in proJAllOptions.XM_GCFL" :key="item.id" :label="item.itemName"
+            :value="item.itemCode">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="建设地点详情">
+        <el-input class="w-775" v-model="projInfoForm.areaDetailCode" placeholder="请输入建设地点详情"></el-input>
+      </el-form-item>
+      <el-form-item label="建设地点详细地址">
+        <el-input class="w-775" v-model="projInfoForm.projAddr" placeholder="请输入建设地点详细地址"></el-input>
+      </el-form-item>
+
+      <el-form-item class="wt100" prop="foreignRemark">
+        <template slot="label">
+          <el-tooltip class="item" effect="dark" content="国标行业以国家统计局发布的《国民经济行业分类》（GB/T 4754-2017）编码为基准。"
+            placement="right-start">
+            <i class="el-icon-question"></i>
+          </el-tooltip>
+          建设规模及内容
+        </template>
+        <el-input class="w-775" v-model="projInfoForm.foreignRemark" type="textarea" placeholder="建设规模及内容"></el-input>
+      </el-form-item>
+      <!-- 项目信息 end -->
+
+    </el-form>
+
+    <div class="tip-bottom-box">
+      <p>本地编码规则(例子)：FS-2019-440600-00-01-000001</p>
+      <p>说明：FS:代表佛山特有标记； 2019:项目登记年份； 440600:项目所在区划； 00:项目性质：新建(00)、改建(01)、扩建(02)、其他(09)； 01:项目类别； 000001:项目序号</p>
+    </div>
+    <div class="handel mt60" style="text-align: center">
+      <el-button class="mr25" @click="returnList">返 回</el-button>
+      <el-button class="mr25" type="primary" style="width: 120px;" @click="saveProjDataApi">本地项目入库</el-button>
+    </div>
+  </div>
+</div>
+
+<script src="../../../static/mall/js/userCenter/components/addLocalProj.js"
+  th:src="@{/mall/skin_v4.1/js/userCenter/components/addLocalProj.js}" type="text/javascript"></script>

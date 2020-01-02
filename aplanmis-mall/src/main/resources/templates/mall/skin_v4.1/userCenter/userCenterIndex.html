@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>法人空间</title>
+    <!--    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}">-->
+
+    <!--    <link rel="stylesheet" href="../../../static/mall/css/common/reset_wt.css" th:href="@{/mall/css/common/reset_wt.css}">-->
+    <!--    <link rel="stylesheet" href="../../../static/mall/css/common/base_wt.css" th:href="@{/mall/css/common/base_wt.css}">-->
+    <link rel="stylesheet" href="../../../static/mall/css/userCenter/my-project.css" th:href="@{/mall/skin_v4.1/css/userCenter/my-project.css}">
+    <script>
+        var ctx = "[[@{/}]]";
+    </script>
+</head>
+<body>
+<div id="userCenter" v-cloak>
+
+    <div class="wt-content" >
+        <div class="bread-nav">
+            <i class="icon-map"></i>
+            <span class="nav-tip">当前位置：</span>
+            <a :href= "ctx+'rest/main/toIndexPage'">首页</a>
+            <span class="local-span">&gt;</span>
+            <a :href="ctx+'rest/main/toIndexPage?#MyHomeIndex'">法人空间</a>
+            <span class="local-span" v-if="showSelectNav">&gt;</span>
+            <a v-if="showSelectNav" :href="ctx+'rest/main/toIndexPage#'+ userCenterItemSelect">{{selectNav}}</a>
+            <span v-if="selectNav2" class="local-span">&gt;</span>
+            <a href="javascript:;" v-if="selectNav2">{{selectNav2}}</a>
+        </div>
+        <section>
+            <div class="my-pro-content clearfix">
+                <div class="my-pro-left1" v-show="myProLeftShow" :style="{height:clientRightH}" >
+                    <div class="user-company" id="leftMyInfo" v-if="false">
+                        <p class="company-name">
+                            <img th:src="@{/mall/images/userCenter/room-icon.png}" align="middle">
+                            &nbsp;法人空间
+                        </p>
+                    </div>
+                    <div class="userCenterMenList">
+                        <ul class="user-pro-list">
+                            <li class="user-pro-item pro-appraval " v-for="(item ,index) in userCenterMenuList">
+                                 <div  :class="[item.value == userCenterItemSelect ? 'active': '']" style="cursor: pointer;" @click="handleOpenMenu(item,item.childList,index)"><span class="pro-title pro-icon">{{item.name}}</span><i v-show="item.childList && item.childList.length>0" :class="[item.open ? '':'close']" class="el-icon-arrow-down" style="margin-left: 80px;"></i></div>
+                                <el-collapse-transition>
+                                    <ul v-show="item.open">
+                                        <li  :class="[itemSub.value == userCenterItemSelect ? 'active': '']"  v-for="(itemSub,indexSub) in item.childList" @click="userCenterMenuSelect(itemSub)">
+                                            <a href="javascript:void(0);">{{itemSub.name}}
+                                                <!--<span class="warning" v-if="itemSub.name== '办件列表'&& approvalNum">{{approvalNum}}</span>-->
+                                                <span class="warning" v-if="itemSub.name== '补齐补正' && matCompletionNum ">{{matCompletionNum}}</span>
+                                                <!--<span class="warning" v-if="itemSub.name== '材料补正'&& supplyNum  ">{{supplyNum}}</span>-->
+                                                <span class="warning" v-if="itemSub.name== '申报列表' && applyNum" >{{applyNum}}</span>
+                                                <span class="warning" v-if="itemSub.name== '撤件列表' && withdrawNum" >{{withdrawNum}}</span>
+                                                <span class="warning" v-if="itemSub.name== '草稿箱'&& draftNum ">{{draftNum}}</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </el-collapse-transition>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <transition name="el-fade-in-linear">
+                    <div class="my-pro-right floor"
+                         :class="myProLeftShow?'':'my-pro-right-full'"
+                         id="my-pro-right_m"
+                         :style="{'min-height': (curHeight-258)+'px'}"
+                         style="padding-bottom: 30px;">
+
+                    </div>
+                </transition>
+            </div>
+        </section>
+
+    </div>
+</div>
+<!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>-->
+<!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>-->
+<!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>-->
+<!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>-->
+<script src="../../../static/mall/js/userCenter/userCenterIndex.js" th:src="@{/mall/skin_v4.1/js/userCenter/userCenterIndex.js}" type="text/javascript"></script>
+</body>
+</html>

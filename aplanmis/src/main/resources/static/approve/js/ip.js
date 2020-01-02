@@ -31,9 +31,6 @@ var __STATIC = {
       var hasPaper = typeof u.paperCount == "number" && u.paperCount > 0;
       var hasCopy = typeof u.copyCount == "number" && u.copyCount > 0;
       var hasAtt = typeof u.isNeedAtt == 'string' && u.isNeedAtt != 0;
-      // hasPaper = true;
-      // hasCopy = true;
-      // hasAtt = true;
       if (hasPaper) {
         count++;
       }

@@ -50,29 +50,31 @@ public class RestMainController {
     ApproveDataService approveDataService;
     @Value("${dg.sso.access.platform.org.top-org-id:0368948a-1cdf-4bf8-a828-71d796ba89f6}")
     protected String topOrgId;
+    @Value("${aplanmis.mall.skin:skin_v4.1/}/")
+    private String skin;
 
     @GetMapping("/toIndexPage")
     @ApiOperation(value = "首页-->跳转index页面接口")
     public ModelAndView toIndexPage() {
-        return new ModelAndView("mall/index");
+        return new ModelAndView("mall/"+skin+"index");
     }
 
     @GetMapping("/toRegulationIndexPage")
     @ApiOperation(value = "首页-->跳转RegulationIndex页面接口")
     public ModelAndView toRegulationIndexPage() {
-        return new ModelAndView("mall/regulation/regulationIndex");
+        return new ModelAndView("mall/"+skin+"regulation/regulationIndex");
     }
 
     @GetMapping("/tovideoTeachingPage")
     @ApiOperation(value = "首页-->跳转tovideoTeachingPage页面接口")
     public ModelAndView tovideoTeachingPage() {
-        return new ModelAndView("mall/main/components/videoTeaching");
+        return new ModelAndView("mall/"+skin+"main/components/videoTeaching");
     }
 
     @GetMapping("/toMainIndexPage")
     @ApiOperation(value = "首页-->跳转mainIndex页面接口")
     public ModelAndView toMainIndexPage() {
-        return new ModelAndView("mall/main/mainIndex");
+        return new ModelAndView("mall/"+skin+"main/mainIndex");
     }
 
     @GetMapping("/theme/list")

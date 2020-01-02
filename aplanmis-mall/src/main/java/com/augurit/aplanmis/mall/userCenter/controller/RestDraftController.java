@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,11 +36,12 @@ public class RestDraftController {
     RestApproveService restApproveService;
     @Autowired
     private RestApplyCommonService restApplyCommonService;
-
+    @Value("${aplanmis.mall.skin:skin_v4.0}/")
+    private String skin;
     @GetMapping("todraftsPage")
     @ApiOperation(value = "跳转草稿箱页面")
     public ModelAndView toDraftPage(){
-        return new ModelAndView("mall/userCenter/components/drafts");
+        return new ModelAndView("mall/"+skin+"userCenter/components/drafts");
     }
 
     @GetMapping("draftApply/list")

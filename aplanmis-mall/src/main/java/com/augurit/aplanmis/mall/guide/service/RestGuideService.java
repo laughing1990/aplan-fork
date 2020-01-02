@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.mall.guide.service;
 
 
+import com.augurit.aplanmis.mall.guide.vo.RestGuideStateVo;
 import com.augurit.aplanmis.mall.guide.vo.RestGuideVo;
 import com.augurit.aplanmis.mall.guide.vo.RestSingleGuideVo;
 import com.augurit.aplanmis.mall.guide.vo.RestStageAndItemVo;
@@ -59,5 +60,23 @@ public interface RestGuideService {
      */
     RestStageAndItemVo searchStageAndItemByKeywordAndThemeId(String themeId,String keyword,String rootOrgId)throws Exception;
 
-    ItemListVo listItemAndStateByStageId(String stageId,String rootOrgId) throws Exception;
+    /**
+     * 根据阶段查询事项接口
+     * @param stageId
+     * @param rootOrgId
+     * @param isSelectState
+     * @param isFilterStateItem
+     * @return
+     * @throws Exception
+     */
+    ItemListVo listItemAndStateByStageId(String stageId,String rootOrgId,String isSelectState,String isFilterStateItem) throws Exception;
+
+    /**
+     * 单项办事指南
+     * @param itemVerId
+     * @param topOrgId
+     * @return
+     * @throws Exception
+     */
+    RestGuideStateVo getRestGuideStateVo(String itemVerId, String topOrgId)throws Exception;
 }
