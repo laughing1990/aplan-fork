@@ -1267,10 +1267,14 @@
           </div>
         </div>
         <!-- 联合评审tab -->
-        <div v-else-if="u.labelId=='lhps'" style="height:100%;overflow:auto;">
-          <div style="padding:28px 48px 20px 42px;">
+        <div v-else-if="u.labelId=='lhps'" class="solicit-table" style="height:100%;overflow:auto;">
+          <div style="padding:18px 48px 20px 42px;">
             <!-- 联合评审意见 -->
-            <template v-else-if="newestUnionReview.solicitDetailUser&&newestUnionReview.solicitDetailUser.detailUserId&&newestUnionReview.solicitDetailUser.detailUserId.length">
+            <template v-if="newestUnionReview.solicitDetailUser&&newestUnionReview.solicitDetailUser.detailUserId&&newestUnionReview.solicitDetailUser.detailUserId.length">
+              <div class="yczx-block-title">
+                <i class="ag ag-community"></i>
+                联合评审意见
+              </div>
               <div class="yczx-inner" style="padding-bottom: 12px;">
                 <el-form size="medium" style="margin-top:10px;"
                          :model="solicitBmForm" :rules="solicitBmFormRules" label-width="100px">
@@ -1322,7 +1326,7 @@
               </div>
             </template>
             <!-- 意见汇总 -->
-            <template v-if="!showSolicitBtn">
+            <template v-if="showSolicitBtn">
               <div class="yczx-block-title">
                 <i class="ag ag-community"></i>
                 意见汇总
@@ -1330,7 +1334,7 @@
               <div class="yczx-inner" style="padding-bottom: 12px;">
                 <el-form size="medium" style="margin-top:10px;"
                          :model="solicitBmForm" :rules="solicitBmFormRules" label-width="100px">
-                  <el-form-item label="征询意见" require>
+                  <el-form-item label="意见汇总" require>
                     <el-radio v-model="solicitBmForm.userConclusion" label="1">通过</el-radio>
                     <el-radio v-model="solicitBmForm.userConclusion" label="0">不通过</el-radio>
                   </el-form-item>
@@ -1339,14 +1343,6 @@
                               placeholder="请输入意见描述"></el-input>
                   </el-form-item>
                   <el-form-item label="附件列表">
-                    <div class="file-opt-btn" style="margin-top:0px">
-                      <el-upload ref="uploadCert4" class="upload-s-file"
-                                 :action="ctx+'rest/certificate/certinst/att/upload'"
-                                 :show-file-list="false" :http-request="function(file){oneSolicitUploadFile(file, newestOneSolicit.solicit.solicitId)}"
-                                 :file-list="fileList">
-                        <el-button slot="trigger" size="small" type="primary">上传</el-button>
-                      </el-upload>
-                    </div>
                     <el-table border stripe :data="oneSolicitFileList">
                       <el-table-column label='序号' type="index" width="50"></el-table-column>
                       <el-table-column label="文件名称" prop="attName">
@@ -1369,14 +1365,14 @@
                       </el-table-column>
                     </el-table>
                     <div style="margin-top:10px">
-                      <el-button type="primary" size="medium" @click="ensureEndSolicit(newestOneSolicit, 'YCZX')">结束联合评审</el-button>
+                      <el-button type="primary" size="medium" @click="ensureEndSolicit(newestUnionReview, 'LHPS')">结束联合评审</el-button>
                     </div>
                   </el-form-item>
                 </el-form>
               </div>
             </template>
             <!-- 意见结果 -->
-            <template v-if="!showSolicitBtn">
+            <template v-if="showSolicitBtn">
               <div class="yczx-block-title">
                 <i class="ag ag-community"></i>
                 联合评审结果
@@ -1401,20 +1397,20 @@
                 </el-form>
               </div>
             </template>
-            <!-- 各个部门意见 -->
+            <!-- 各部门意见 -->
             <template>
               <div class="yczx-block-title">
                 <i class="ag ag-community"></i>
                 各部门意见
               </div>
-              <div class="yczx-inner" style="padding-top: 24px;">
-                <el-table :data="unionReviewList" border style="margin-top:12px;">
+              <div class="yczx-inner" style="padding-top:20px;">
+                <el-table :data="newestUnionReview.solicitDetails" border>
                   <el-table-column label="序号" type="index" width="50"></el-table-column>
                   <el-table-column label="部门名称" property="detailOrgName"></el-table-column>
                   <el-table-column label="办理人" property="userName" width="100"></el-table-column>
-                  <el-table-column label="联合评审意见" property="userConclusion" width="100">
+                  <el-table-column label="联合评审意见" property="userConclusion" width="120">
                     <template slot-scope="scope">
-                    <span class="status-span" :class="[getStatusClass2(scope.row.userConclusion)]">
+                    <span class="status-span" :class="[getStatusClass(scope.row.userConclusion)]">
                         {{scope.row.userConclusion|changeBmOpinType}}
                       </span>
                     </template>
@@ -1429,8 +1425,8 @@
                 <i class="ag ag-community"></i>
                 材料附件
               </div>
-              <div class="yczx-inner" style="padding-top: 24px;">
-                <el-table :data="unionReviewList" border style="margin-top:12px;">
+              <div class="yczx-inner" style="padding-top: 20px;">
+                <el-table :data="unionReviewList" border>
                   <el-table-column label="序号" type="index" width="50"></el-table-column>
                   <el-table-column type="expand" width="20">
                     <template slot-scope="scope">

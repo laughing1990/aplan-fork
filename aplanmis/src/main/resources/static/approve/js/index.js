@@ -2053,9 +2053,9 @@ var vm = new Vue({
     // 证照列表 解除关联
     idIisassociation: function (row) {
       var vm = this;
-      this.$confirm('姝ゆ搷浣滃皢瑙ｉ櫎鍏宠仈璇ヨ瘉鐓§, 鏄¯鍚︾户缁­?', '瑙ｉ櫎鍏宠仈', {
-        confirmButtonText: '纭®瀹',
-        cancelButtonText: '鍙栨秷',
+      this.$confirm('此操作将解除该证照关联, 是否继续?', '解除关联', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
         type: 'warning',
       }).then(function (obj) {
         ensureDelete();
@@ -2079,15 +2079,15 @@ var vm = new Vue({
         }, function (res) {
           vm.idLibLoading = false;
           if (res.success) {
-            vm.$message.success('宸茶В闄ゅ叧鑱');
+            vm.$message.success('解除成功');
             row.isRelated = false;
             typeof vm.refreshMatIframe == 'function' && vm.refreshMatIframe();
           } else {
-            vm.$message.error(res.message || '瑙ｉ櫎鍏宠仈澶辫触')
+            vm.$message.error(res.message || '解除失败')
           }
         }, function () {
           vm.idLibLoading = false;
-          vm.$message.error('瑙ｉ櫎鍏宠仈澶辫触');
+          vm.$message.error('解除失败');
         });
       }
       
@@ -3335,13 +3335,6 @@ var vm = new Vue({
     initButtons: function () {
       var vm = this;
       var defaultBtn = [{
-        elementName: "联合评审",
-        elementCode: "wfBusSave",
-        columnType: "button",
-        isReadonly: '0',
-        isHidden: '0',
-        elementRender: '<button class="btn btn-primary btn-outline-info" onclick="clickUnionReview()">发起联合评审</button>'
-      }, {
         elementName: "意见征询",
         elementCode: "wfBusSave",
         columnType: "button",
@@ -3370,6 +3363,14 @@ var vm = new Vue({
         isReadonly: '0',
         isHidden: '0',
         elementRender: '<button class="btn btn-primary btn-outline-info" onclick="clickOneSolicit()">发起一次征询</button>'
+      }];
+      var unionReviewBtn = [{
+        elementName: "联合评审",
+        elementCode: "wfBusSave",
+        columnType: "button",
+        isReadonly: '0',
+        isHidden: '0',
+        elementRender: '<button class="btn btn-primary btn-outline-info" onclick="clickUnionReview()">发起联合评审</button>'
       }];
       var approverBtn = [{
         elementName: "材料补正",
@@ -3403,13 +3404,19 @@ var vm = new Vue({
         elementRender: '<button class="btn btn-outline-info" onclick="getPrintList()">打印回执</button>'
       }];
       if (vm.isApprover == 1) {
+        // 加上审批人员按钮
         defaultBtn = approverBtn.concat(defaultBtn);
       } else {
+        // 加上窗口按钮
         defaultBtn = notApproverBtn.concat(defaultBtn);
       }
       if (vm.hasOneSolicit==0){
         // 没有发起过一次征询的加上一次征询按钮
         defaultBtn = oneSolicitBtn.concat(defaultBtn);
+      }
+      if (vm.hasUnionReview==0){
+        // 没有发起过联合评审的加上联合评审按钮
+        defaultBtn = unionReviewBtn.concat(defaultBtn);
       }
       if (vm.isDraftPage == 'true') {
         defaultBtn = draftBtn.concat(defaultBtn);
