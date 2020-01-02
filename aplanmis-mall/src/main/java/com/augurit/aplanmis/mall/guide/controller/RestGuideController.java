@@ -316,7 +316,7 @@ public class RestGuideController {
         }
     }
 
-    @GetMapping("/guide/detailed/{itemVerId}")
+    @GetMapping("/detailed/{itemVerId}")
     @ApiOperation(value = "办事指南 --> 获取事项对应的办事指南数据")
     @ApiImplicitParam(value = "事项版本ID",name = "itemVerId",required = true,dataType = "string" )
     public ContentResultForm<RestGuideStateVo> getRestGuideStateVo(@PathVariable("itemVerId") String itemVerId){
