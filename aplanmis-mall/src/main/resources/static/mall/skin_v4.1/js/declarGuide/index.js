@@ -34,6 +34,6 @@ var app = new Vue({
   },
   mounted: function () {
     // 默认页面第一次获取佛山的
-    // this.switchTab(this.allTabList[1]);
+    this.switchTab(this.allTabList[1]);
   },
 })

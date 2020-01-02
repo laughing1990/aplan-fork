@@ -1,0 +1,67 @@
+//链接与激活状态颜色 
+@linkActiveColor: #428FEB;
+
+.color-link{
+  color: @linkActiveColor;
+}
+
+.regular-wrap {
+  width: 100%;
+  min-width: 1200px;
+
+  // 头部提示
+  .nav-wrap {
+    position: relative;
+    width: 150px;
+    display: inline-block;
+    vertical-align: top;
+    min-height: 400px;
+    border-right: 1px solid #f1f1f1;
+    padding-top: 4px;
+    // height: 200px;
+    // background: url("../../images/regulation/banner_bg.png") no-repeat center;
+    // background-size: 100% 100%;
+
+    .tab-item {
+      display: inline-block;
+      vertical-align: top;
+      width: 100%;
+      height: 50px;
+      line-height: 50px;
+      background: #fff;
+      font-size: 16px;
+      color: #666;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .tab-item.active {
+      border-left: 4px solid #428FEB;
+      color: #428FEB;
+      background: #ebf4fb;
+    }
+  }
+
+  // 列表
+  .cur-list-wrap {
+    display: inline-block;
+    vertical-align: top;
+    width: 1000px;
+    padding-left: 40px;
+    padding-bottom: 60px;
+
+    .title{
+      h2{
+        font-weight: normal;
+        font-size: 20px;
+      }
+      width: 100%;
+      height: 50px;
+      line-height: 50px;
+      border-bottom: 4px solid #000;
+    }
+  }
+}
+.mt20{
+  margin-top: 20px;
+}

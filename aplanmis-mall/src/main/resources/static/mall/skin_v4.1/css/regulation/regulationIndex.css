@@ -5,65 +5,49 @@
   width: 100%;
   min-width: 1200px;
 }
-.regular-wrap .title-wrap {
+.regular-wrap .nav-wrap {
   position: relative;
-  width: 100%;
-  height: 200px;
-  background: url("../../images/regulation/banner_bg.png") no-repeat center;
-  background-size: 100% 100%;
-}
-.regular-wrap .title-wrap .mask {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(53, 61, 81, 0.8);
-}
-.regular-wrap .title-wrap .content {
-  width: 1200px;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.regular-wrap .title-wrap .content .title {
-  display: inline-block;
-  width: 320px;
-  height: 52px;
-  line-height: 52px;
-  font-size: 40px;
-  font-weight: normal;
-  color: #fff;
-  margin: 58px 0 30px 0;
-}
-.regular-wrap .title-wrap .content .tab-wrap {
-  width: 100%;
-  height: 60px;
-  line-height: 60px;
-}
-.regular-wrap .title-wrap .content .tab-wrap .tab-item {
+  width: 150px;
   display: inline-block;
   vertical-align: top;
-  width: 280px;
-  height: 100%;
+  min-height: 400px;
+  border-right: 1px solid #f1f1f1;
+  padding-top: 4px;
+}
+.regular-wrap .nav-wrap .tab-item {
+  display: inline-block;
+  vertical-align: top;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
   background: #fff;
-  border-radius: 4px;
-  border-bottom-right-radius: 0px;
-  border-bottom-left-radius: 0px;
-  font-size: 18px;
-  color: #fff;
+  font-size: 16px;
+  color: #666;
   text-align: center;
-  margin-right: 10px;
-  background: rgba(255, 255, 255, 0.2);
   cursor: pointer;
 }
-.regular-wrap .title-wrap .content .tab-wrap .tab-item.active {
-  background: #fff;
+.regular-wrap .nav-wrap .tab-item.active {
+  border-left: 4px solid #428FEB;
   color: #428FEB;
+  background: #ebf4fb;
 }
-.regular-wrap .list-wrap {
-  width: 1200px;
-  margin: 0 auto;
-  margin-top: 40px;
+.regular-wrap .cur-list-wrap {
+  display: inline-block;
+  vertical-align: top;
+  width: 1000px;
+  padding-left: 40px;
   padding-bottom: 60px;
+}
+.regular-wrap .cur-list-wrap .title {
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  border-bottom: 4px solid #000;
+}
+.regular-wrap .cur-list-wrap .title h2 {
+  font-weight: normal;
+  font-size: 20px;
+}
+.mt20 {
+  margin-top: 20px;
 }
