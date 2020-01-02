@@ -50,4 +50,9 @@ public class AeaSolicitOrg implements Serializable{
 
     @ApiModelProperty("扩展字段：关键字查询")
     private String keyword;
+
+    @ApiModelProperty("是否按业务类型征求，0表示按阶段征求部门意见（当前部门为阶段牵头部门），1表示按业务类型征求部门意见")
+    private String isBusSolicit;
+    @ApiModelProperty("阶段ID")
+    private String stageId;
 }

@@ -13,7 +13,9 @@
         CREATE_TIME  createTime,
         MODIFIER  modifier,
         MODIFY_TIME  modifyTime,
-        ROOT_ORG_ID  rootOrgId
+        ROOT_ORG_ID  rootOrgId,
+        IS_BUS_SOLICIT isBusSolicit,
+        STAGE_ID stageId
     </sql>
 
     <sql id="alias_allColumns">
@@ -25,7 +27,9 @@
         ${alias}.CREATE_TIME  createTime,
         ${alias}.MODIFIER  modifier,
         ${alias}.MODIFY_TIME  modifyTime,
-        ${alias}.ROOT_ORG_ID  rootOrgId
+        ${alias}.ROOT_ORG_ID  rootOrgId,
+        ${alias}.IS_BUS_SOLICIT isBusSolicit,
+        ${alias}.STAGE_ID stageId
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
@@ -81,6 +85,12 @@
             <if test="rootOrgId != null" >
             and    ROOT_ORG_ID = #{rootOrgId}
             </if>
+            <if test="isBusSolicit != null" >
+                and    IS_BUS_SOLICIT = #{isBusSolicit}
+            </if>
+            <if test="stageId != null" >
+                and    STAGE_ID = #{stageId}
+            </if>
         </where>
     </select>
     
@@ -121,6 +131,12 @@
             <if test="rootOrgId != null" >
             and    soliOrg.ROOT_ORG_ID = #{rootOrgId}
             </if>
+            <if test="isBusSolicit != null" >
+                and    soliOrg.IS_BUS_SOLICIT = #{isBusSolicit}
+            </if>
+            <if test="stageId != null" >
+                and    soliOrg.STAGE_ID = #{stageId}
+            </if>
             <if test="keyword!=null and keyword!='' ">
             and (
                 org.ORG_NAME like concat('%', concat( #{keyword}, '%')) or
@@ -142,7 +158,9 @@
             CREATE_TIME,
             MODIFIER,
             MODIFY_TIME,
-            ROOT_ORG_ID
+            ROOT_ORG_ID,
+            IS_BUS_SOLICIT,
+            STAGE_ID
         )
         values
         (
@@ -154,7 +172,9 @@
             #{createTime},
             #{modifier},
             #{modifyTime},
-            #{rootOrgId}
+            #{rootOrgId},
+            #{isBusSolicit},
+            #{stageId}
         )
     </insert>
 
@@ -189,6 +209,15 @@
             <if test="rootOrgId != null" >
             ROOT_ORG_ID = #{rootOrgId},
             </if>
+            <if test="rootOrgId != null" >
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+            <if test="isBusSolicit != null" >
+                IS_BUS_SOLICIT = #{isBusSolicit},
+            </if>
+            <if test="stageId != null" >
+                STAGE_ID = #{stageId},
+            </if>
         </set>
         where SOLICIT_ORG_ID = #{solicitOrgId}
     </update>
@@ -220,6 +249,8 @@
         <result property="modifier" column="MODIFIER"/>
         <result property="modifyTime" column="MODIFY_TIME"/>
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
+        <result property="isBusSolicit" column="IS_BUS_SOLICIT"/>
+        <result property="stageId" column="STAGE_ID"/>
     </resultMap>
 
 </mapper>

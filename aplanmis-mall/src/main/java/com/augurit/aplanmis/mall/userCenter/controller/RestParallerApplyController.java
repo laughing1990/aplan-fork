@@ -8,7 +8,6 @@ import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaParFactor;
-import com.augurit.aplanmis.common.enumer.ThemeTypeEnum;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiSmsInfoService;
@@ -21,8 +20,10 @@ import com.augurit.aplanmis.common.service.state.AeaParStateService;
 import com.augurit.aplanmis.mall.main.service.RestMainService;
 import com.augurit.aplanmis.mall.main.vo.ItemListVo;
 import com.augurit.aplanmis.mall.main.vo.ThemeTypeVo;
+import com.augurit.aplanmis.mall.userCenter.service.RestAeaHiGuideService;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyService;
 import com.augurit.aplanmis.mall.userCenter.service.RestParallerApplyService;
+import com.augurit.aplanmis.mall.userCenter.vo.AeaGuideApplyVo;
 import com.augurit.aplanmis.mall.userCenter.vo.MatListParamVo;
 import com.augurit.aplanmis.mall.userCenter.vo.ParallelApplyResultVo;
 import com.augurit.aplanmis.mall.userCenter.vo.StageApplyDataPageVo;
@@ -75,6 +76,9 @@ public class RestParallerApplyController {
     AeaHiApplyinstService aeaHiApplyinstService;
     @Autowired
     private RestMainService restMainService;
+    @Autowired
+    private RestAeaHiGuideService restAeaHiGuideService;
+
     @Value("${aplanmis.mall.skin:skin_v4.1/}/")
     private String skin;
     @GetMapping("/toParaApplyPage")
@@ -221,6 +225,20 @@ public class RestParallerApplyController {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ContentResultForm(false, "获取主题列表接口异常");
+        }
+    }
+
+    @PostMapping("net/guide/apply/start")
+    @ApiOperation("阶段申报--> 部门辅导申请")
+    public ContentResultForm<String> startGuideApply(AeaGuideApplyVo aeaGuideApplyVo){
+        try {
+            AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(aeaGuideApplyVo.getApplySource(), aeaGuideApplyVo.getApplySubject(), aeaGuideApplyVo.getLinkmanInfoId(), AeaHiApplyinstConstants.STAGEINST_APPLY, null,ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"1",null);
+            aeaGuideApplyVo.setApplyinstId(aeaHiApplyinst.getApplyinstId());
+            restAeaHiGuideService.initAeaHiGuide(aeaGuideApplyVo);
+            return new ContentResultForm<>(true, aeaHiApplyinst.getApplyinstId(), "部门辅导申请成功!");
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ContentResultForm(false,"",e.getMessage());
         }
     }
 
