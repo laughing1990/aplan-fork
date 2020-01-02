@@ -2710,10 +2710,13 @@ input[type="number"] {
   line-height: 24px;
   padding: 10px;
   padding-right: 26px;
+  min-height: 80px;
 }
 
 /*一次征询 end*/
-
+.el-table-padding .el-table__expanded-cell[class*=cell]{
+  padding: 10px 60px;
+}
 
 
 
