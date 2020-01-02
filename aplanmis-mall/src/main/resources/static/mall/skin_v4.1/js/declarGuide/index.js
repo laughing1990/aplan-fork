@@ -8,15 +8,15 @@ var app = new Vue({
     // 所有申报指引类型
     allTabList: [{
       name: '办事指南',
-      thUrl: 'fs',
+      thUrl:'rest/guide/toGuideIndexPage',
       tabIndex: 0
     }, {
       name: '政策法规',
-      thUrl: 'toRegulationIndexPage',
+      thUrl: 'rest/main/toRegulationIndexPage',
       tabIndex: 1
     }, {
       name: '操作指引',
-      thUrl: 'gj',
+      thUrl: 'rest/main/gj',
       tabIndex: 2
     }],
     
@@ -25,7 +25,7 @@ var app = new Vue({
     // 切换不同类型申报指引
     switchTab: function (tab) {
       this.activeTab = tab.tabIndex || 0;
-      $.get(ctx + 'rest/main/' + tab.thUrl, function (result) {
+      $.get(ctx + tab.thUrl, function (result) {
         $('#declarGuideContent').html(result);
       });
     },
@@ -34,6 +34,6 @@ var app = new Vue({
   },
   mounted: function () {
     // 默认页面第一次获取佛山的
-    this.switchTab(this.allTabList[1]);
+    this.switchTab(this.allTabList[0]);
   },
 })

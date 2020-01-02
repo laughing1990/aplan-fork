@@ -138,7 +138,7 @@
                 {
                     label: '办事指南事项一清单',
                     id: 'listmatter',
-                    activeName:1,
+                    activeName:0,
                     url: './listmatter/listmatter.html',
                     thUrl:'rest/guide/tolistmatterPage',
                     hash:'/listmatter',
