@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>全景图</title>
+  <link rel="stylesheet" type="text/css" href="../../static/rappid/build/rappid.min.css"
+        th:href="@{/rappid/build/rappid.min.css}"/>
+  <link rel="stylesheet" type="text/css" href="../../static/rappid/apps/BPMNEditor/css/bpmn.css"
+        th:href="@{/rappid/apps/BPMNEditor/css/bpmn.css}"/>
+  <link rel="stylesheet" type="text/css" href="../../static/global/element-2.9.2/index.css"
+        th:href="@{/global/element-2.9.2/index.css}"/>
+  <link rel="stylesheet" href="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.min.css"/>
+  <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css"
+        th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
+  <!--<link rel="stylesheet"
+        th:href="@{/ui-static/agcloud/framework/ui-themes/ocean-blue/css/agcloud_metronic.css}">
+  &lt;!&ndash; test &ndash;&gt;
+  <link rel="stylesheet" href="../../static/flowChart/common/css/bootstrap.css"
+        th:href="@{/flowChart/common/css/bootstrap.css}">
+  <link rel="stylesheet" href="../../static/flowChart/common/css/theme.css"
+        th:href="@{/flowChart/common/css/theme.css}">
+  -->
+  <link rel="stylesheet"
+        href="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css"
+        th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+
+  <!--<link rel="stylesheet" href="../../static/flowChart/common/css/base.css" th:href="@{/flowChart/common/css/base.css}">-->
+  <link rel="stylesheet" href="../../static/flowChart/css/rappidProjView.css"
+        th:href="@{/flowChart/css/rappidProjView.css}">
+  <link rel="stylesheet" href="../../static/flowChart/css/page.css" th:href="@{/flowChart/css/page.css}"/>
+  
+  <script>
+    var ctx = "[[@{/}]]";
+    // var ctx = "http://192.168.30.118:8083/aplanmis-front/"
+    // var ctx = 'http://39.107.139.174:8083/aplanmis-front/'
+  </script>
+  <script src="../../static/approve/js/ip.js" th:src="@{/approve/js/ip.js}"></script>
+</head>
+
+<body>
+<div id="app" style="height:0px" v-cloak>
+  <!-- 头部 -->
+  <div class="proHead">
+    <img :src="ctx + '/rappid/apps/BPMNEditor/images/arrowDown.png'" style="cursor:pointer;margin-left: 27px;"
+         id="proHead-icon">
+    <div style="position: relative;width: 18px; height: 40px;">
+      <div id="elTreeApp">
+        <div
+            style="background-color: #169AFF; width: 20px; height: 20px; transform: rotate(45deg); left: 20px; margin-top: -10px; position: absolute;">
+        </div>
+        <div class="tree-title clearfix">
+          <span class="fl" style="marginTop: -12px;">项目工程树</span>
+          <el-button class="fr" style="marginLeft: 9px;" type="primary" plain @click="allHide">全部收起</el-button>
+          <el-button class="fr" type="primary" plain @click="allShow">全部展开</el-button>
+        </div>
+        <el-tree
+            ref="tree"
+            :data="data"
+            :props="defaultProps"
+            default-expand-all
+            show-checkbox
+            highlight-current
+            @check-change="handleNodeClick"
+            :expand-on-click-node="false"
+            :check-on-click-node="true"
+            :check-strictly="true"
+            node-key="id"
+            :default-checked-keys="defaultCheckKeys">
+            <span class="custom-tree-node" slot-scope="scope">
+              <span class="tree-icon-name"
+                    style="width: 520px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;"
+                    v-bind:title="scope.data.name">
+                <i
+                    :class="scope.data.icon?scope.data.icon:scope.data.children?'el-icon-folder-opened':'el-icon-tickets'"></i>{{ scope.data.name}}
+              </span>
+            </span>
+        </el-tree>
+      </div>
+    </div>
+    <label class="proHeadContent"></label>
+    <!--      <el-radio-group v-model="topTab" class="topTab">-->
+    <!--        <el-radio-button label="0">审批详情</el-radio-button>-->
+    <!--        <el-radio-button label="1">所有附件</el-radio-button>-->
+    <!--      </el-radio-group>-->
+    <label v-show="topTab==0" class="proHeadPicTip">图例</label>
+  </div>
+  <img id="toolImg" title="工具栏" style="top:5px;height:5px;" :src="ctx + '/rappid/apps/BPMNEditor/images/fold.png'">
+  <!-- 工具栏 -->
+  <!--<div class="toolPanel">
+    <div class="toolMain">
+    </div>
+    <div class="zoomIn">
+      <label style="width: 50px;text-align: center;margin-top: 39px;color: #575962;">放大</label>
+    </div>
+    <div class="zoomOut">
+      <label style="width: 50px;text-align: center;margin-top: 39px;color: #575962;">缩小</label>
+    </div>
+    <div class="toolFold">
+    </div>
+    <div class="toolfold"></div>
+  </div>-->
+  <!-- 图例下拉框 -->
+  <div class="itemColorRark">
+    <div class="itemArrow"></div>
+    <div style="padding-left:11px;" class="stage_png">
+      <label style="color:#88898D;margin-top: 5px;width:100%;">阶段</label>
+      <div>
+          <span style="background-color: #00C161"
+                :src="ctx + '/rappid/apps/BPMNEditor/images/finesh.png'"></span>&nbsp;已办结
+      </div>
+      <div>
+          <span style="background-color: #169AFF"
+                src="ctx + '/rappid/apps/BPMNEditor/images/working.png'"></span>&nbsp;进行中
+      </div>
+      <div>
+          <span style="background-color: #CED7DC"
+                src="ctx + '/rappid/apps/BPMNEditor/images/unfinesh.png'"></span>&nbsp;未申报
+      </div>
+    </div>
+    <div style="padding-left:11px">
+      <label style="color:#88898D;width: 100%;">事项</label>
+      <div><span class="itemColor" style="border: 2px solid #00C161"></span><label>办结通过</label></div>
+      <div><span class="itemColor" style="border: 2px solid #FF4B47"></span><label>不通过/不予受理</label></div>
+      <div><span class="itemColor"
+                 style="border: 2px solid #CED7DC;background-color: #F3F4F8;"></span><label>无需办理/取消</label></div>
+      <div><span class="itemColor" style="border: 2px solid #169AFF"></span><label>办理中</label></div>
+      <div><span class="itemColor" style="border: 2px solid #CED7DC"></span><label>待&nbsp;&nbsp;办</label></div>
+    </div>
+  </div>
+  <!-- 弹框 -->
+  <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
+    <span>这是一段信息</span>
+    <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+  </el-dialog>
+  <!-- 加载中动画弹窗 -->
+  <div class="my-loading-box" v-show="pageLoading">
+    <div class="img-box">
+      <svg viewBox="25 25 50 50" class="circular">
+        <circle cx="50" cy="50" r="20" fill="none" class="path"></circle>
+      </svg>
+      <div style="color:#409eff">加载中...</div>
+    </div>
+  </div>
+  <!--  预览pdf弹窗-->
+  <el-dialog title="预览" :visible.sync="prePdfVisible" class="special-dialog" top="10vh"
+             @close="closePdfDialog">
+    <div class="special-iframe-box">
+      <iframe :src="pdfSrc" class='ltab-iframe'></iframe>
+    </div>
+  </el-dialog>
+  <!-- 事项详情弹窗 start -->
+  <el-dialog width="900px" top="10vh" :visible.sync="itemDetailVisible"
+             @close="closeItemDetDialog" title="事项审批详情" :close-on-click-modal="false">
+    <div class="det-dia-box">
+      <div class="det-dia-main">
+        <div class="det-dia-tabs c-f">
+          <div v-for="item in detailDiaTabs" class="unit-tab"
+               @click="detailTabsActiveCode=item.code"
+               :class="{active:detailTabsActiveCode==item.code}">
+            {{item.label}}
+          </div>
+          <div class="det-tabs-fline"></div>
+        </div>
+        <!-- 概要信息 -->
+        <div class="det-content-u" v-show="detailTabsActiveCode=='base'">
+          <table class="app-table-u base-info">
+            <tr>
+              <td class="bg-grey">事项名称</td>
+              <td>{{aeaHiIteminst.iteminstName}}</td>
+            </tr>
+            <tr>
+              <td class="bg-grey">实施主体</td>
+              <td>{{aeaHiIteminst.approveOrgName}}</td>
+            </tr>
+            <tr>
+              <td class="bg-grey">承诺工作日</td>
+              <td>{{aeaHiIteminst.dueNum}}天</td>
+            </tr>
+            <tr>
+              <td class="bg-grey">审批状态</td>
+              <td>
+                <div class="row-item-status"
+                     :class="[stateStyleInfo[aeaHiIteminst.iteminstState].colorClass]">
+                  <i class="ag" :class="[stateStyleInfo[aeaHiIteminst.iteminstState].iconClass]"></i>
+                  {{stateStyleInfo[aeaHiIteminst.iteminstState].label}}
+                </div>
+              </td>
+            </tr>
+            <tr v-if="['4','5'].indexOf(aeaHiIteminst.iteminstState)!=-1">
+              <td class="bg-grey">不受理原因</td>
+              <td>{{aeaHiIteminst.reason}}</td>
+            </tr>
+            <tr v-if="['1','2'].indexOf(aeaHiIteminst.iteminstState)==-1">
+              <td class="bg-grey">受理时间</td>
+              <td>{{formatDate(aeaHiIteminst.acceptTime)}}</td>
+            </tr>
+            <tr v-if="['11','12','13'].indexOf(aeaHiIteminst.iteminstState)!=-1">
+              <td class="bg-grey">办结时间</td>
+              <td>{{formatDate(aeaHiIteminst.endTime)}}</td>
+            </tr>
+            <tr v-if="['11','12','13'].indexOf(aeaHiIteminst.iteminstState)!=-1">
+              <td class="bg-grey">实际工作日</td>
+              <td>{{aeaHiIteminst.realTime}}</td>
+            </tr>
+          </table>
+        </div>
+        <!-- 审批过程 -->
+<!--        <div class="det-content-u" v-show="detailTabsActiveCode=='process'">-->
+<!--          <el-table style="width:100%" border :data="commentList">-->
+<!--            <el-table-column label="环节" property="nodeName" width="80"></el-table-column>-->
+<!--            <el-table-column label="人员" property="taskAssignee" width="80"></el-table-column>-->
+<!--            <el-table-column label="办理意见" property="commentMessage"></el-table-column>-->
+<!--            <el-table-column label="办理结果" property="approveResult" width="120">-->
+<!--              <template slot-scope="resScope">-->
+<!--                {{formatResultStatus(resScope.row.approveResult)}}-->
+<!--              </template>-->
+<!--            </el-table-column>-->
+<!--            <el-table-column label="办理时间" property="endDate" width="140">-->
+<!--              <template slot-scope="timeScope">-->
+<!--                {{formatDate(timeScope.row.sigeInDate)}}-->
+<!--              </template>-->
+<!--            </el-table-column>-->
+<!--            <el-table-column label="状态" property="taskState" width="100">-->
+<!--              <template slot-scope="statusScope" v-if="typeof statusScope.row.taskState == 'number'">-->
+<!--                    <span class="status-span" :class="[getStatusClass(statusScope.row.taskState)]">-->
+<!--                      {{formatTaskState(statusScope.row.taskState)}}-->
+<!--                    </span>-->
+<!--              </template>-->
+<!--            </el-table-column>-->
+<!--          </el-table>-->
+<!--        </div>-->
+        <!-- 材料补正 -->
+        <div class="det-content-u" v-show="detailTabsActiveCode=='supply'">
+          <div class="spe-app-u" v-if="supplyList&&supplyList.length"
+               v-for="(item,index) in supplyList">
+            <div class="top-time-text-box c-f" :class="{'is-blue': item.correctState==6}">
+              <div class="ttt-f"></div>
+              <div class="ttt-s">
+                第{{getChineseIndex(index,supplyList.length)}}次发起（{{item.correctState==6?'待确认':'已完成'}}）
+              </div>
+              <div class="ttt-t"></div>
+            </div>
+            <table class="app-table-u">
+              <tr>
+                <td class="bg-grey" colspan="6">基本信息</td>
+              </tr>
+              <tr>
+                <td class="bg-grey">申请流水号</td>
+                <td>{{item.applyinstCode}}</td>
+                <td class="bg-grey">项目/工程编号</td>
+                <td>{{item.applyinstCode}}</td>
+                <td class="bg-grey">项目/工程名称</td>
+                <td>{{item.projInfoName}}</td>
+              </tr>
+              <tr>
+                <td class="bg-grey">业主单位</td>
+                <td>{{item.owner}}</td>
+                <td class="bg-grey">联系人</td>
+                <td>{{item.linkman}}</td>
+                <td class="bg-grey">联系电话</td>
+                <td>{{item.linkmanPhone}}</td>
+              </tr>
+              <tr>
+                <td class="bg-grey">事项名称</td>
+                <td colspan="3">{{item.iteminstName}}</td>
+                <td class="bg-grey">实施主体</td>
+                <td>{{item.approveOrgName}}</td>
+              </tr>
+              <tr>
+                <td class="bg-grey">补正发起日期</td>
+                <td>{{formatDateStr(item.createTime, 'yyyy-MM-dd')}}</td>
+                <td class="bg-grey">补正截止日期</td>
+                <td>{{formatDateStr(item.correctDueTime, 'yyyy-MM-dd')}}</td>
+                <td class="bg-grey">办结时限</td>
+                <td>{{item.correctDueDays}}（工作日）</td>
+              </tr>
+            </table>
+            <table class="app-table-u">
+              <tr>
+                <td class="bg-grey" colspan="7">补正材料列表</td>
+              </tr>
+              <tr>
+                <td class="bg-grey w1">序号</td>
+                <td class="bg-grey w2">材料名称</td>
+                <td class="bg-grey w3">类型</td>
+                <td class="bg-grey w4">补正份数</td>
+                <td class="bg-grey w5">已收份数</td>
+                <td class="bg-grey w6">补正意见</td>
+                <td class="bg-grey w7">操作</td>
+              </tr>
+              <tr v-for="(uu, index2) in item.bzMatList">
+                <template v-if="uu.colspan&&uu.rowspan">
+                  <td :colspan="uu.colspan" :rowspan="uu.rowspan" align="center">{{uu.uIndex+1}}</td>
+                  <td :colspan="uu.colspan" :rowspan="uu.rowspan">{{uu.matinstName}}</td>
+                </template>
+                <td>{{uu.rowType==1?'原件':uu.rowType==2?'复印件':'电子件'}}</td>
+                <td>{{uu.rowType==1?uu.paperCount:(uu.rowType==2?uu.copyCount:'-')}}</td>
+                <td>{{uu.rowType==1?uu.realPaperCount:(uu.rowType==2?uu.realCopyCount:uu.attCount)}}</td>
+                <td>
+                  {{uu.rowType==1?uu.paperDueIninstOpinion:(uu.rowType==2?uu.copyDueIninstOpinion:uu.attDueIninstOpinion)}}
+                </td>
+                <td>
+                  <template v-if="uu.rowType==3&&uu.attFiles&&uu.attFiles.length">
+                    <el-popover
+                        placement="left"
+                        width="600"
+                        trigger="hover">
+                      <el-table :data="uu.attFiles" border stripe style="width:100%">
+                        <el-table-column width="50" label="序号" type="index"></el-table-column>
+                        <el-table-column prop="fileName" label="文件名称">
+                          <template slot-scope="scope">
+                            <i class="ag" v-html="getIconText(scope.row.fileType)"
+                               :style="{color:getIconColor(scope.row.fileType)}"></i>
+                            {{scope.row.fileName}}
+                          </template>
+                        </el-table-column>
+                        <el-table-column width="100" property="address" label="操作">
+                          <template slot-scope="scope">
+                            <el-button type="text" @click="filePreview(scope.row)">预览</el-button>
+                            <el-button type="text" @click="downOneFile(scope.row)">下载</el-button>
+                          </template>
+                        </el-table-column>
+                      </el-table>
+                      <el-button slot="reference" type="text" style="padding:0">查看</el-button>
+                    </el-popover>
+                  </template>
+                </td>
+              </tr>
+              <tr>
+                <td class="bg-grey w1">备注</td>
+                <td colspan="6">{{item.correctMemo}}</td>
+              </tr>
+            </table>
+            <table class="app-table-u">
+              <tr>
+                <td class="bg-grey" colspan="6">经办信息</td>
+              </tr>
+              <tr>
+                <td class="bg-grey" colspan="1">窗口负责人</td>
+                <td colspan="5">{{item.windowUserName}}</td>
+              </tr>
+              <tr>
+                <td class="bg-grey">经办人</td>
+                <td>{{item.opsUserName}}</td>
+                <td class="bg-grey">经办日期</td>
+                <td>{{formatDateStr(item.opsTime, 'yyyy-MM-dd')}}</td>
+                <td class="bg-grey">补正结束人</td>
+                <td>{{item.opsUserName}}</td>
+              </tr>
+              <tr>
+                <td class="bg-grey">补正结束日期</td>
+                <td>{{formatDateStr(item.correctEndTime, 'yyyy-MM-dd')}}</td>
+                <td class="bg-grey">打印人</td>
+                <td>{{item.printUserName}}</td>
+                <td class="bg-grey">打印日期</td>
+                <td>{{formatDateStr(item.printTime, 'yyyy-MM-dd')}}</td>
+              </tr>
+              <tr>
+                <td class="bg-grey" colspan="1">补正意见</td>
+                <td colspan="5">{{item.correctDesc}}</td>
+              </tr>
+            </table>
+          </div>
+          <div v-if="!supplyList||!supplyList.length" style="padding: 5px 0 0 10px;">暂无数据</div>
+        </div>
+        <!-- 特殊程序 -->
+        <div class="det-content-u" v-show="detailTabsActiveCode=='special'">
+          <div class="spe-app-u" v-for="(u, index) in specialList" v-if="specialList&&specialList.length">
+            <div class="top-time-text-box">第{{getChineseIndex(index)}}次发起</div>
+            <div class="top-time-text-box c-f">
+              <div class="ttt-f"></div>
+              <div class="ttt-s">
+                第{{getChineseIndex(index,specialList.length)}}次发起
+              </div>
+              <div class="ttt-t"></div>
+            </div>
+            <table class="app-table-u">
+              <tr>
+                <td class="bg-grey" colspan="6">特殊程序发起</td>
+              </tr>
+              <tr>
+                <td class="bg-grey">种类</td>
+                <td>{{specialTypeToText(u.specialType)}}</td>
+                <td class="bg-grey">发起单位</td>
+                <td>{{u.chargeOrgName}}</td>
+                <td class="bg-grey">发起人</td>
+                <td>{{u.creater}}</td>
+              </tr>
+              <tr>
+                <td class="bg-grey">申请时限</td>
+                <td>{{u.specialDueDays}}工作日</td>
+                <td class="bg-grey">开始时间</td>
+                <td>{{u.createTime}}</td>
+                <td class="bg-grey">结束时间</td>
+                <td>{{u.specialDueTime}}</td>
+              </tr>
+              <tr>
+                <td class="bg-grey">申请内容</td>
+                <td colspan="5">{{u.specialReason}}</td>
+              </tr>
+              <tr>
+                <td class="bg-grey">申请理由或法律依据</td>
+                <td colspan="5">{{u.specialMemo}}</td>
+              </tr>
+              <tr>
+                <td class="bg-grey">相关附件</td>
+                <td colspan="5">
+                  <template v-if="u.specialStartMatList&&u.specialStartMatList.length">
+                    <div class="spe-table-file-u" v-for="file in u.specialStartMatList">
+                      <i class="ag" v-html="getIconText(file.attFormat)"
+                         :style="{color:getIconColor(file.attFormat)}"></i>
+                      {{file.attName}}
+                      <i class="ag ag-ope-btn ag-search" title="预览" @click="filePreview(file)"></i>
+                      <i class="ag ag-ope-btn ag-download" title="下载" @click="downOneFile(file)"></i>
+                    </div>
+                  </template>
+                  <div v-else class="non-file-text">无</div>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="6" style="border:none;padding:5px;"></td>
+              </tr>
+              <tr>
+                <td class="bg-grey" colspan="6">特殊程序结束</td>
+              </tr>
+              <tr>
+                <td class="bg-grey">特殊程序结果</td>
+                <td colspan="5">{{u.specialResult}}</td>
+              </tr>
+              <tr>
+                <td class="bg-grey">经办人</td>
+                <td>{{u.creater}}</td>
+                <td class="bg-grey">经办时间</td>
+                <td>{{u.opsTime}}</td>
+                <td class="bg-grey">收费金额</td>
+                <td>{{u.money}}元</td>
+              </tr>
+              <tr>
+                <td class="bg-grey">相关附件</td>
+                <td colspan="5">
+                  <template v-if="u.specialEndMatList&&u.specialEndMatList.length">
+                    <div class="spe-table-file-u" v-for="file in u.specialEndMatList">
+                      <i class="ag" v-html="getIconText(file.attFormat)"
+                         :style="{color:getIconColor(file.attFormat)}"></i>
+                      {{file.attName}}
+                      <i class="ag ag-ope-btn ag-search" title="预览" @click="filePreview(file)"></i>
+                      <i class="ag ag-ope-btn ag-download" title="下载" @click="downOneFile(file)"></i>
+                    </div>
+                  </template>
+                  <div v-else class="non-file-text">无</div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div v-if="!specialList||!specialList.length" style="padding: 5px 0 0 10px;">暂无数据</div>
+        </div>
+        <!-- 批文批复 -->
+        <div class="det-content-u" v-show="detailTabsActiveCode=='doc'">
+          <el-table style="width:100%" border :data="officialDocumentList">
+            <el-table-column label="序号" type="index" width="50"></el-table-column>
+            <el-table-column label="证照名称" property="matinstName"></el-table-column>
+            <el-table-column label="创建人" property="creator" width="120"></el-table-column>
+            <el-table-column label="创建日期" property="createDate" width="120"></el-table-column>
+          </el-table>
+        </div>
+      </div>
+      <div class="dia-f-btns c-f">
+        <div class="btn-u r" @click="itemDetailVisible=false">关 闭</div>
+      </div>
+    </div>
+  </el-dialog>
+  <!-- 事项详情弹窗 end -->
+  <!-- 批文批复文件面板 start -->
+  <div v-if="isDevelop" v-show="topTab==1" class="doc-panel">
+    <div class="doc-panel-left">
+      <div class="doc-type-box">
+        <div class="doc-type-title">所有附件</div>
+        <div class="doc-type-list">
+          <div class="doc-type-u" v-for="(item, index) in docTypeList"
+               :class="{active: index==nowDocType}">
+            <span @click="nowDocType=index">{{item}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="doc-panel-main">
+      <div class="doc-main-top c-f">
+        <div class="l c-f">
+          <div class="l" style="line-height:32px;margin-right:8px;">搜索关键字</div>
+          <div class="l" style="width:450px;">
+            <el-input v-model="docSearchText" placeholder="请输入项目/工程编码、名称等关键词" size="small" clearable>
+              <el-button @click="refreshFiles" slot="append" type="primary"><i class="ag ag-search"></i>查询</el-button>
+            </el-input>
+          </div>
+        </div>
+        <div class="r">
+          <el-radio-group v-model="fileViewType" size="small">
+            <el-radio-button label="0">图标视图</el-radio-button>
+            <el-radio-button label="1">列表视图</el-radio-button>
+          </el-radio-group>
+        </div>
+      </div>
+      <div class="file-ope-btns c-f">
+        <div class="file-ope-btn">
+          <el-button size="small" type="primary" icon="el-icon-download">下 载</el-button>
+        </div>
+        <div class="file-ope-btn">
+          <el-button size="small" @click="refreshFiles" icon="el-icon-refresh">刷 新</el-button>
+        </div>
+      </div>
+      <div class="table-show-info c-f">
+        <div class="l">
+          <el-checkbox v-model="allFileChecked" @change="fileAllCheckedChange">全选</el-checkbox>
+        </div>
+        <div class="l" style="margin-left:20px;">
+          共有文件 <span>{{docFileList.length}}</span> 个
+        </div>
+        <div class="l" style="margin:0 10px;">|</div>
+        <div class="l">
+          已经选择 <span>{{selectedFileIds.length}}</span> 个
+        </div>
+      </div>
+      <div class="file-view-wrap">
+        <!--列表视图-->
+        <div v-show="fileViewType==1" class="file-table-box">
+          <el-table :data="docFileList" style="width:100%;" height="100%"
+                    @selection-change="fileSelectChange"
+                    ref="fileTable"
+                    border stripe>
+            <el-table-column type="selection" width="35"></el-table-column>
+            <el-table-column label="文件名称" prop="fileName"></el-table-column>
+            <el-table-column label="日期" width="140">
+              <template>2019-10-10 16:11</template>
+            </el-table-column>
+            <el-table-column label="大小" width="100">
+              <template>14.44M</template>
+            </el-table-column>
+            <el-table-column label="操作" width="130">
+              <template>
+                <span class="fileT-ope-btn">查看</span>
+                <span class="fileT-ope-btn">下载</span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <!--图标视图-->
+        <div v-show="fileViewType==0" class="file-list-pic c-f">
+          <div class="file-pic-u" v-for="item in docFileList"
+               :class="{checked:selectedFileIds.indexOf(item.id)!=-1}" @click="handleToggleCheckFile(item)">
+            <div class="file-icon-box">
+              <i class="ag" style="color:rgb(139, 199, 85);">&#xe657</i>
+            </div>
+            <div class="file-name-u" :title="item.fileName">
+              <div class="inner-text">{{item.fileName}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 批文批复文件面板 end -->
+</div>
+
+<!--事项办理提示框-->
+<div id="stageAndItemTableCell">
+  <div class="tips-table-cell" v-show="itemTipShow" style="display: none" v-bind:style="{ 'top': stageTipCss.itemTop, 'left': stageTipCss.itemLeft }">
+    <div class="table-cell-hover" id="itemTableInfo" style="height: 320px; !important;">
+      <span class="detailArrowDown" v-show="stageTipCss.itemArrowUpShow" style="top:335px;"></span>
+      <!-- <div class="cell-head">
+         <span style="display: inline-block;">采集林业部门管理的国家一级和二级保护野生植物审批</span>
+       </div>-->
+      <div style="padding: 0 20px 0 15px; color:#fff;margin-top: 10px;">
+        <div class="itemTd" >
+          <label>实施编码：</label><span>{{itemInfo.itemCode}}</span>
+        </div>
+        <div class="itemTd" v-bind:title="itemInfo.itemName" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+          <label>实施事项：</label><span >{{itemInfo.itemName}}</span>
+        </div>
+        <div class="itemTd" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;width:95%">
+          <label>实施主体：</label><span>{{itemInfo.orgName}}</span>
+        </div>
+        <div class="itemTd">
+          <label>法定办结时限：</label><span>{{itemInfo.anticipateDay?itemInfo.anticipateDay:'-'}}</span>&nbsp;（工作日）
+        </div>
+        <div class="itemTd">
+          <label>承诺办结时限：</label><span>{{itemInfo.dueNum}}</span>&nbsp;（工作日）
+        </div>
+        <div class="itemTd">
+          <label>开始时间：</label><span>{{itemInfo.iteminstStartTime? new Date(itemInfo.iteminstStartTime).format('yyyy-MM-dd'):'-'}}</span>
+        </div>
+        <div class="itemTd">
+          <label>结束时间：</label><span>{{itemInfo.iteminstEndTime?new Date(itemInfo.iteminstEndTime).format('yyyy-MM-dd'):'-'}}</span>
+        </div>
+        <div class="itemTd">
+          <label>审批状态：</label>
+          <span href="javascript:;">
+                <i class="icon-bg icon-bg1"></i>
+                <span id="itemStatusName">{{itemInfo.statusName}}</span>
+              </span>
+        </div>
+        <div class="itemTd" style="margin-left: -15px; width: 370px; border-top: 1px solid #555C60;">
+          <a href="javascript:openItemDtailmodel($('#itemTableInfo').data('itemInfo'));" class="state-btn color1"
+             style="color: #169AFF;display: flex; justify-content: center;">
+            <span style="border: 1px solid rgb(22, 154, 255); border-radius: 15px; height: 28px; width: 106px; text-align: center; margin-top:6px; display: flex; align-items: center; justify-content: center;">查看详情</span>
+          </a>
+        </div>
+      </div>
+
+      <span class="detailArrowUp" v-show="stageTipCss.itemArrowUpShow==false"></span>
+    </div>
+  </div>
+
+  <!--阶段办理信息提示窗-->
+  <div class="tips-Stage-cell" id="stageTableCell" v-show="stageTipShow" style="display: none"  v-bind:style="{ 'top': stageTipCss.top, 'left': stageTipCss.left }">
+    <div class="table-cell-hover" id="stageTableInfo" style="height:285px;">
+      <span class="detailArrowDown" v-show="stageTipCss.arrowUpShow" style="top:300px;"></span>
+      <!-- <div class="cell-head">
+         <span style="display: inline-block;">采集林业部门管理的国家一级和二级保护野生植物审批</span>
+       </div>-->
+      <div style="padding: 0 20px 0 15px; color:#fff;margin-top: 10px;">
+        <div class="itemTd" v-bind:title="stage.stageName" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;width:99%;">
+          <label>阶段名称：</label>
+          <span >{{stage.stageName}}</span>
+        </div>
+        <div class="itemTd" style="width: 95%;">
+          <label>法定办结时限：</label><span>{{itemInfo.anticipateDay?itemInfo.anticipateDay:'-'}}</span>（工作日）
+        </div>
+        <div class="itemTd" style="width: 95%;">
+          <label>承诺办结时限：</label><span>{{stage.dueNum?stage.dueNum:'-'}}</span>（工作日）
+        </div>
+        <div class="itemTd">
+          <label>办结数量：</label><span>-</span>&nbsp;
+        </div>
+        <div class="itemTd">
+          <label>办结率：</label><span>-</span>
+        </div>
+        <div class="itemTd">
+          <label>开始时间：</label><span>{{stageInfo.stageStartTime?stageInfo.stageStartTime:'-'}}</span>
+        </div>
+        <div class="itemTd">
+          <label>结束时间：</label><span>{{stageInfo.stageEndTime?stageInfo.stageEndTime:'-'}}</span>
+        </div>
+        <div class="itemTd">
+          <label>审批状态：</label>
+          <span href="javascript:;">
+                <i class="icon-bg icon-bg1"></i>
+                <span v-bind:style="{color:stageInfo.statusValue=='FINISHED'?'#00C161':'#169AFF'}">{{stageInfo.statusValue=='FINISHED'?'已办结':'进行中'}}</span>
+              </span>
+        </div>
+      </div>
+
+      <span class="detailArrowUp" v-show="stageTipCss.arrowUpShow==false"></span>
+    </div>
+  </div>
+</div>
+
+
+<!-- svg渲染区域 -->
+<div id="paper-container"></div>
+
+<!-- 放大缩小 -->
+<div class="toolBox">
+  <div class="beBig">
+    <i class="ag ag-add"></i>
+  </div>
+  <div class="beSmall">
+    <i class="ag ag-reduce"></i>
+  </div>
+</div>
+
+<!-- 进度弹窗 -->
+<!--<div id="uploadProgress" class="modal fade" tabindex="-1" role="dialog" style="BACKGROUND: RGBA(0,0,0,.4);"
+     aria-labelledby="dialog_item_dept" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered  modal-lg" role="document" style="max-width: 600px;">
+    <div class="modal-content">
+      <div class="modal-body" style="text-align: center;padding: 10px;">
+        &lt;!&ndash; <img :src="ctx + '/ui-static/agcloud/bsc/yunpan/icons/16/loading.gif'" /> &ndash;&gt;
+        <div class="progress-loading"></div>
+        <div id="uploadProgressMsg" style="padding-top: 5px;">正在加载中，请稍后...</div>
+      </div>
+    </div>
+  </div>
+</div>-->
+<script type="text/javascript">
+  var themeVerId = "",
+      currentBusiId = themeVerId,
+      curIsEditable = '',
+      dueUnit = '',
+      drawGrid = false,
+      projName = '',
+      projInfoId = '',
+      themeVerDiagram = '',
+      projTree = '',
+      statusList = "",
+      errorMsg = '';
+</script>
+
+<script src="../../static/rappid/apps/BPMNEditor/src/gd.js" th:src="@{/rappid/apps/BPMNEditor/src/gd.js}"></script>
+<script src="../../static/rappid/node_modules/jquery/dist/jquery.js"
+        th:src="@{/rappid/node_modules/jquery/dist/jquery.js}"></script>
+<script src="../../static/rappid/node_modules/lodash/index.js" th:src="@{/rappid/node_modules/lodash/index.js}">
+</script>
+<script src="../../static/rappid/node_modules/backbone/backbone.js"
+        th:src="@{/rappid/node_modules/backbone/backbone.js}"></script>
+<script src="../../static/rappid/build/rappid.min.js" th:src="@{/rappid/build/rappid.min.js}"></script>
+<script src="../../static/rappid/apps/BPMNEditor/src/inspector.js"
+        th:src="@{/rappid/apps/BPMNEditor/src/inspector.js}"></script>
+<script src="../../static/rappid/apps/BPMNEditor/src/toolbar_view.js"
+        th:src="@{/rappid/apps/BPMNEditor/src/toolbar_view.js}"></script>
+<script src="../../static/rappid/apps/BPMNEditor/src/bpmn.js" th:src="@{/rappid/apps/BPMNEditor/src/bpmn.js}">
+</script>
+<script src="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+        th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="../../static/global/element-2.9.2/index.js" th:src="@{/global/element-2.9.2/index.js}"></script>
+
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
+        th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+<!--<script th:src="@{/ui-static/agcloud/framework/js-libs/agcloud-common/agcloud.js}" type="text/javascript"></script>
+<script th:src="@{/ui-static/agcloud/framework/theme-libs/metronic-v5/default/assets/vendors/base/vendors.bundle.js}"
+        type="text/javascript"></script>
+<script
+    th:src="@{/ui-static/agcloud/framework/theme-libs/metronic-v5/default/assets/demo/default/base/scripts.bundle.js}"
+    type="text/javascript"></script>
+
+<script src="../../static/flowChart/common/js/bootstrap.js" th:src="@{/flowChart/common/js/bootstrap.js}"></script>-->
+<script src="../../static/flowChart/js/mixins.js" th:src="@{/flowChart/js/mixins.js}"></script>
+<script src="../../static/flowChart/js/rappidProjView.js" th:src="@{/flowChart/js/rappidProjView.js}"></script>
+<script type="text/javascript">
+  var alwaysHide = true;
+  var fold = ctx + '/rappid/apps/BPMNEditor/images/fold.png';
+  var unfold = ctx + '/rappid/apps/BPMNEditor/images/unfold.png'
+  
+  $('#toolImg').on('click', function () {
+    $('#toolbar-container').trigger();
+  })
+  var aUp = ctx + '/rappid/apps/BPMNEditor/images/arrowUp.png';
+  var aDown = ctx + '/rappid/apps/BPMNEditor/images/arrowDown.png'
+</script>
+</body>
+
+</html>

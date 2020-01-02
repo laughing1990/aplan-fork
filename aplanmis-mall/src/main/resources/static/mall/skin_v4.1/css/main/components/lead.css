@@ -1,0 +1,38 @@
+.color-link {
+    color: #428FEB;
+}
+.regular-wrap {
+    width: 100%;
+    min-width: 1200px;
+}
+.regular-wrap .title-wrap {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    background: url("../../../images/index/u172.png") no-repeat center;
+    background-size: 100% 100%;
+}
+.regular-wrap .title-wrap .mask {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(53, 61, 81, 0.9);
+}
+.regular-wrap .title-wrap .content {
+    width: 1200px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.regular-wrap .title-wrap .content .title {
+    display: inline-block;
+    width: 320px;
+    height: 52px;
+    line-height: 52px;
+    font-size: 40px;
+    font-weight: normal;
+    color: #fff;
+    margin: 58px 0 30px 0;
+}
