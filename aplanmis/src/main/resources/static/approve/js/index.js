@@ -946,6 +946,9 @@ var vm = new Vue({
       this.dialogConfig = this.dialogConfigOneSolict;
       this.solicitForm.solicitType = 'd';
       this.solicitForm.isCalcTimerule = '0';
+      if (this.hasOneSolicit!=1) {
+        this.solicitForm.isCalcTimerule = '1';
+      }
       vm.parentPageLoading = true;
       request('', {
         url: ctx + 'rest/solicit/current/user',
@@ -1055,6 +1058,10 @@ var vm = new Vue({
       if (vm.dialogConfig.dialogType == 'YCZX') {
         params.solicitLinkmanName = vm.solicitForm.solicitLinkmanName;
         params.solicitLinkmanPhone = vm.solicitForm.solicitLinkmanPhone;
+        if (vm.hasOneSolicit!=1&&vm.solicitForm.isCalcTimerule=='0') {
+          vm.$message.error('第一次发起一次征询请设置时限');
+          vm.solicitForm.isCalcTimerule == '1';
+        }
       }
       if (this.solicitForm.solicitType == 'i') {
         // 按事项征询
@@ -1161,6 +1168,7 @@ var vm = new Vue({
       this.allItemsData.forEach(function (u) {
         vm.$set(u, 'opinion', '');
       });
+      vm.oneSolicitFileList = [];
       this.solicitOpinionVisible = true;
     },
     // 得到容缺时限规则数据
