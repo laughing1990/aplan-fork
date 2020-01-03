@@ -4815,7 +4815,55 @@ _p[45] = {
                         source.setLayoutOffset(null);
                     });
                     this._minder.layout(-1);
-                    this._minder.execCommand("movetoparent", this._dragSources, this._dropSucceedTarget);
+                    var ref_minder=this._minder;
+                    var ref_minder=this._minder;
+                    var ref_dragSources=this._dragSources;
+                    var ref_dropSucceedTarget=this._dropSucceedTarget;
+                    var targetNodeData=ref_dropSucceedTarget.data;
+                    this._dragSources.forEach(function(source) {
+                        var sourceNodeData=source.data;
+                        var canMoveto=true;
+                        if(sourceNodeData.nodeTypeCode==AeaMindConst_MIND_NODE_TYPE_CODE_SITUATION){
+                            if(targetNodeData.nodeTypeCode==AeaMindConst_MIND_NODE_TYPE_CODE_MAT
+                                ||targetNodeData.nodeTypeCode==AeaMindConst_MIND_NODE_TYPE_CODE_CERT
+                            ){
+                                canMoveto=false;
+                            }
+                        }
+                        else if(sourceNodeData.nodeTypeCode==AeaMindConst_MIND_NODE_TYPE_CODE_MAT){
+                            canMoveto=false;
+                            //是否通用
+                            var isCommon='0';
+                            if(isCommon=='1'){
+                                if(targetNodeData.nodeTypeCode==AeaMindConst_MIND_NODE_TYPE_CODE_STAGE
+                                    ||targetNodeData.nodeTypeCode==AeaMindConst_MIND_NODE_TYPE_CODE_ITEM
+                                ){
+                                    canMoveto=true;
+                                }
+                            }
+                            else if(isCommon=='0'){
+                                if(targetNodeData.nodeTypeCode==AeaMindConst_MIND_NODE_TYPE_CODE_SITUATION
+                                ){
+                                    canMoveto=true;
+                                }
+                            }
+                        }
+                        else if(sourceNodeData.nodeTypeCode==AeaMindConst_MIND_NODE_TYPE_CODE_CERT){
+                            canMoveto=false;
+                            if(targetNodeData.nodeTypeCode==AeaMindConst_MIND_NODE_TYPE_CODE_SITUATION
+                            ){
+                                canMoveto=true;
+                            }
+                        }
+
+                        if(canMoveto){
+                            ref_minder.execCommand("movetoparent", ref_dragSources, ref_dropSucceedTarget);
+                        }
+                        else{
+                            minder.select(ref_dragSources, true);
+                        }
+                    });
+                    // this._minder.execCommand("movetoparent", this._dragSources, this._dropSucceedTarget);
                 } else if (this._orderSucceedHint) {
                     var hint = this._orderSucceedHint;
                     var index = hint.node.getIndex();
