@@ -198,10 +198,10 @@
                 and ahg.apply_state=#{applyState}
             </if>
             <if test="guideStartTime != null and guideStartTime != ''">
-                and ahg.GUIDE_START_TIME >= #{guideStartTime}
+                and ahg.GUIDE_START_TIME &gt;= #{guideStartTime}
             </if>
             <if test="guideEndTime != null and guideEndTime != ''">
-                and ahg.GUIDE_END_TIME<= #{guideEndTime}
+                and ahg.GUIDE_END_TIME &lt;= #{guideEndTime}
             </if>
         </where>
     </select>
