@@ -190,6 +190,22 @@ public class RestParallerApplyController {
         }
     }
 
+    @GetMapping("childState/list/{stateId}/{stageId}")
+    @ApiOperation(value = "阶段申报 --> 根据情形ID和阶段ID获取(阶段)子情形列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "情形ID",name = "stateId",required = true,dataType = "string"),
+            @ApiImplicitParam(value = "阶段ID",name = "stageId",required = true,dataType = "string")
+
+    })
+    public ContentResultForm<AeaParState> listChildStateByStateId(@PathVariable("stateId") String stateId, @PathVariable("stageId") String stageId) {
+        try {
+            return new ContentResultForm(true,aeaParStateService.listAeaParStateByParentStateId(stageId,stateId,SecurityContext.getCurrentOrgId()));
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ContentResultForm(false,"","根据情形ID和阶段ID获取绑定事项及(阶段)子情形列表异常");
+        }
+    }
+
     @GetMapping("factor/list")
     @ApiOperation(value = "阶段申报 --> 获取根因子列表")
     public ContentResultForm<List<AeaParFactor>> listFactorByRootOrgId(){
