@@ -147,7 +147,7 @@
 													<a href="javascript:editThemeById('${entity.themeId}');" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="编辑">
 														<i class="la la-edit"></i>
 													</a>&nbsp;
-													<a href="javascript:goThemeSetings('${entity.themeId}');" class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="设置主题版本">
+													<a href="javascript:goThemeSetings('${entity.themeId}');" class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="主题详情">
 														<i class="la la-gear"></i>
 													</a>&nbsp;
 													<a href="javascript:deleteThemeById('${entity.themeId}');" class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="删除">
