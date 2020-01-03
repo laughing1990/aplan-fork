@@ -1262,6 +1262,7 @@ var vm = new Vue({
         conclusionFlag: vm.solicitBmForm.userConclusion,
         conclusionDesc: vm.solicitBmForm.userOpinion,
         solicitId: item.solicit.solicitId,
+        procinstId: item.solicit.procinstId,
       };
       if (typeCode == 'YCZX') {
         if (!(vm.solicitBmForm.solicitLinkmanName && vm.solicitBmForm.solicitLinkmanName.length)) {
