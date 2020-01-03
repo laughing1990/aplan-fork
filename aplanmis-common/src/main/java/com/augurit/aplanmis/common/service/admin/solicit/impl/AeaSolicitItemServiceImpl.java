@@ -1,5 +1,8 @@
 package com.augurit.aplanmis.common.service.admin.solicit.impl;
 
+import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
+import com.augurit.agcloud.bsc.mapper.BscDicCodeMapper;
+import com.augurit.agcloud.bsc.sc.dic.code.service.BscDicCodeService;
 import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
@@ -33,6 +36,9 @@ public class AeaSolicitItemServiceImpl implements AeaSolicitItemService {
 
     @Autowired
     private AeaSolicitItemMapper aeaSolicitItemMapper;
+
+    @Autowired
+    private BscDicCodeMapper bscDicCodeMapper;
 
     @Override
     public void saveAeaSolicitItem(AeaSolicitItem AeaSolicitItem) {
@@ -129,73 +135,35 @@ public class AeaSolicitItemServiceImpl implements AeaSolicitItemService {
     }
 
     @Override
-    public void batchSaveSolicitItem(String[] itemIds){
+    public void batchSaveSolicitItem(String busType, String solicitType, String[] itemIds){
 
         String userId = SecurityContext.getCurrentUserId();
         String rootOrgId = SecurityContext.getCurrentOrgId();
         if(itemIds!=null&&itemIds.length>0) {
-            // 查找需要删除的
-            List<String> needDelIdList = new ArrayList<String>();
-            List<AeaSolicitItem> needDelList = new ArrayList<AeaSolicitItem>();
-            AeaSolicitItem sSolicitOrg = new AeaSolicitItem();
-            sSolicitOrg.setRootOrgId(rootOrgId);
-            List<AeaSolicitItem> itemList = aeaSolicitItemMapper.listAeaSolicitItem(sSolicitOrg);
-            if(itemList!=null&&itemList.size()>0){
-                for(AeaSolicitItem item : itemList){
-                    int count=0;
-                    for (String itemId : itemIds) {
-                        if((item.getItemId()+"*"+item.getItemVerId()).equals(itemId)){
-                            break;
-                        }else{
-                            count++;
-                        }
+            AeaSolicitItem sSolicitItem = new AeaSolicitItem();
+            sSolicitItem.setRootOrgId(rootOrgId);
+            for (String itemId:itemIds) {
+                String[] array = itemId.split("\\*");
+                sSolicitItem.setItemId(array[0]);
+                sSolicitItem.setItemVerId(array[1]);
+                sSolicitItem.setBusType(busType);
+                List<AeaSolicitItem> itemList = aeaSolicitItemMapper.listAeaSolicitItem(sSolicitItem);
+                if(itemList!=null&&itemList.size()>0){
+                    for(AeaSolicitItem item:itemList){
+                        item.setSolicitType(solicitType);
+                        item.setModifier(userId);
+                        item.setModifyTime(new Date());
+                        aeaSolicitItemMapper.updateAeaSolicitItem(item);
                     }
-                    if(count==itemIds.length){
-                        needDelList.add(item);
-                        needDelIdList.add(item.getSolicitItemId());
-                    }
-                }
-            }
-            // 先删除
-            if(needDelList!=null&&needDelList.size()>0){
-
-                itemList.removeAll(needDelList);
-                String[] needDelIdArr = new String[needDelIdList.size()];
-                needDelIdList.toArray(needDelIdArr);
-                aeaSolicitItemMapper.batchDelSolicitItemByIds(needDelIdArr);
-            }
-
-            // 保存
-            for (int i=0; i<itemIds.length;i++) {
-                AeaSolicitItem updateVo = null;
-                if (itemList != null && itemList.size() > 0) {
-                    for (AeaSolicitItem item : itemList) {
-                        if((item.getItemId()+"*"+item.getItemVerId()).equals(itemIds[i])){
-                            updateVo = item;
-                            break;
-                        }
-                    }
-                }
-                if(updateVo==null){
-                    AeaSolicitItem solicitOrg = new AeaSolicitItem();
-                    solicitOrg.setSolicitItemId(UUID.randomUUID().toString());
-                    String[] array = itemIds[i].split("\\*");
-                    solicitOrg.setItemId(array[0]);
-                    solicitOrg.setItemVerId(array[1]);
-                    solicitOrg.setBusType("YJZQ");
-                    solicitOrg.setSolicitType("0");
-                    solicitOrg.setCreater(userId);
-                    solicitOrg.setCreateTime(new Date());
-                    solicitOrg.setRootOrgId(rootOrgId);
-                    aeaSolicitItemMapper.insertAeaSolicitItem(solicitOrg);
                 }else{
-                    updateVo.setModifier(userId);
-                    updateVo.setModifyTime(new Date());
-                    aeaSolicitItemMapper.updateAeaSolicitItem(updateVo);
+                    sSolicitItem.setSolicitItemId(UUID.randomUUID().toString());
+                    sSolicitItem.setSolicitType(solicitType);
+                    sSolicitItem.setCreater(userId);
+                    sSolicitItem.setCreateTime(new Date());
+                    sSolicitItem.setRootOrgId(rootOrgId);
+                    aeaSolicitItemMapper.insertAeaSolicitItem(sSolicitItem);
                 }
             }
-        }else{
-            batchDelSolicitItemByRootOrgId(rootOrgId);
         }
     }
 
@@ -226,29 +194,35 @@ public class AeaSolicitItemServiceImpl implements AeaSolicitItemService {
         sSolicitItem.setRootOrgId(rootOrgId);
         List<AeaSolicitItem> list = aeaSolicitItemMapper.listAeaSolicitItemRelInfo(sSolicitItem);
         if(list!=null&&list.size()>0){
+            List<BscDicCodeItem> codeItemList = bscDicCodeMapper.getActiveItemsByTypeCode("SOLICIT_BUS_TYPE", rootOrgId);
             for(AeaSolicitItem item : list){
-                allNodes.add(convertSolicitItemNode(item));
+                allNodes.add(convertSolicitItemNode(item, codeItemList));
             }
         }
         return allNodes;
     }
 
-    private ZtreeNode convertSolicitItemNode(AeaSolicitItem item){
+    private ZtreeNode convertSolicitItemNode(AeaSolicitItem item, List<BscDicCodeItem> codeItemList){
 
         ZtreeNode node = new ZtreeNode();
         node.setId(item.getSolicitItemId());
         if (StringUtils.isNotBlank(item.getIsCatalog())) {
             // 标准事项
             if (item.getIsCatalog().equals(Status.ON)) {
-//                item.setItemName("【标准事项】" + item.getItemName());
                 if (StringUtils.isNotBlank(item.getGuideOrgName())) {
                     item.setItemName(item.getItemName() + "【" + item.getGuideOrgName() + "】");
                 }
             // 实施事项
             } else {
-//                item.setItemName("【实施事项】" + item.getItemName());
                 if (StringUtils.isNotBlank(item.getOrgName())) {
                     item.setItemName(item.getItemName() + "【" + item.getOrgName() + "】");
+                }
+            }
+        }
+        if(codeItemList!=null&&codeItemList.size()>0){
+            for(BscDicCodeItem codeItem:codeItemList){
+                if(codeItem.getItemCode().equals(item.getBusType())){
+                    item.setItemName(item.getItemName() + "【" + codeItem.getItemName() + "】");
                 }
             }
         }

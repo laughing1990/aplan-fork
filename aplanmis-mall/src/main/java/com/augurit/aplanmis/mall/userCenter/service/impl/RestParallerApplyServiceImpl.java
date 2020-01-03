@@ -277,17 +277,27 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
 
         List<AeaItemBasic> resultItems = new ArrayList<>(aeaItemBasics.size());
         // 分情形时要过滤情形事项
+        // 情形事项
+        Set<String> stateItemVerIds = aeaItemBasicService.getAeaItemBasicListByStageIdAndStateId(stageId, null, isOptionItem,SecurityContext.getCurrentOrgId())
+                .stream().map(AeaItemBasic::getItemVerId).collect(Collectors.toSet());
         if ("1".equals(aeaParStage.getIsNeedState()) && "1".equals(isFilterStateItem)) {
-            // 情形事项
-            Set<String> stateItemVerIds = aeaItemBasicService.getAeaItemBasicListByStageIdAndStateId(stageId, null, isOptionItem,SecurityContext.getCurrentOrgId())
-                    .stream().map(AeaItemBasic::getItemVerId).collect(Collectors.toSet());
             // 过滤情形事项
             aeaItemBasics.forEach(item -> {
                 if (!stateItemVerIds.contains(item.getItemVerId())) {
+                    item.setIsStateItem("0");
                     resultItems.add(item);
+                }else{
+                    item.setIsStateItem("1");
                 }
             });
         } else {
+            aeaItemBasics.forEach(item -> {
+                if (!stateItemVerIds.contains(item.getItemVerId())) {
+                    item.setIsStateItem("0");
+                }else{
+                    item.setIsStateItem("1");
+                }
+            });
             resultItems.addAll(aeaItemBasics);
         }
         return  resultItems.stream().filter(CommonTools.distinctByKey(AeaItemBasic::getItemVerId)).map(ParallelApproveItemVo::build).peek(vo -> {

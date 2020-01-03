@@ -66,7 +66,7 @@ public class RestGuideController {
 
     @Value("${dg.sso.access.platform.org.top-org-id:0368948a-1cdf-4bf8-a828-71d796ba89f6}")
     protected String topOrgId;
-    @Value("${aplanmis.mall.skin:skin_v4.1/}/")
+    @Value("${aplanmis.mall.skin:skin_v4.1/}")
     private String skin;
 
     @GetMapping("/toGuideIndexPage")

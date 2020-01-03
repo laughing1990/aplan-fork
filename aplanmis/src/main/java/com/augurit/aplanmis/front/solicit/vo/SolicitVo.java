@@ -1,11 +1,14 @@
 package com.augurit.aplanmis.front.solicit.vo;
 
+import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
 import com.augurit.aplanmis.common.domain.AeaHiSolicit;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.List;
 
 /**
  * @author:chendx
@@ -131,6 +134,16 @@ public class SolicitVo {
 
     @ApiModelProperty(value = "联系人手机号码", required = false, dataType="string")
     private String solicitLinkmanPhone;
+
+    private String solicitTypeName; // 非表字段 (征求意见类型：i表示按事项征求，d表示按部门征求)
+    private String solicitDaysUnitCn; // 非表字段 (意见征求时限单位中文，自然日，工作日)
+    private String solicitCanBeFinish; // 非表字段 (意见征求是否可以被结束，发起人填写汇总意见，1是0否)
+
+    private List<BscAttFileAndDir> fileAndDirs;//附件集合
+
+    private List<SolicitLhpsFile> lhpsFiles;//联合评审的附件，带类型
+
+    private List<SolicitLhpsFile> allLhpsFiles;//联合评审的附件，带类型
 
     public AeaHiSolicit convertToAeaHiSolicit(){
         AeaHiSolicit aeaHiSolicit = new AeaHiSolicit();

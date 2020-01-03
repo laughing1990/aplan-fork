@@ -23,9 +23,9 @@ public class RestGuideStateVo {
     @ApiModelProperty("是否收费")
     private String isFee;
     @ApiModelProperty("收费文本")
-    private String chargeTypeText;
+    private String isFeeText;
     @ApiModelProperty("办理时限")
-   private String promissDay;
+   private Double promiseDay;
     @ApiModelProperty("办理结果")
     private String resultName;
     private List<RestStateMatInnerVo> mats;
@@ -40,12 +40,11 @@ public class RestGuideStateVo {
         @ApiModelProperty("情形索引")
         private String index;
         private List<RestStateMatInnerVo> mats;
-        static int  indexNum = 1;
+
         public static RestStateInnerVo build(AeaItemState aeaItemState){
-            ++indexNum;
             RestStateInnerVo vo = new RestStateInnerVo();
             vo.setStateName(aeaItemState.getStateName());
-            vo.setIndex("情形"+NumToChinese.getChiness(indexNum));
+            vo.setStateId(aeaItemState.getItemStateId());
             return vo;
         }
     }

@@ -160,12 +160,16 @@ public class AeaSolicitItemController {
     }
 
     @RequestMapping("/batchSaveSolicitItem.do")
-    public ResultForm batchSaveSolicitItem(String[] itemIds) throws Exception{
+    public ResultForm batchSaveSolicitItem(String busType, String solicitType, String[] itemIds) throws Exception{
 
+        if(StringUtils.isBlank(busType)){
+            throw new InvalidParameterException("参数busType为空!");
+        }
+        if(StringUtils.isBlank(solicitType)){
+            throw new InvalidParameterException("参数solicitType为空!");
+        }
         if (itemIds != null && itemIds.length > 0) {
-            aeaSolicitItemService.batchSaveSolicitItem(itemIds);
-        } else {
-            aeaSolicitItemService.batchDelSolicitItemByRootOrgId(SecurityContext.getCurrentOrgId());
+            aeaSolicitItemService.batchSaveSolicitItem(busType, solicitType, itemIds);
         }
         return new ResultForm(true);
     }

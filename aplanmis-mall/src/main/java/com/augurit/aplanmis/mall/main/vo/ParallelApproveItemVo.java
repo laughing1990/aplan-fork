@@ -60,7 +60,8 @@ public class ParallelApproveItemVo {
     private String isDoneItem;
     @ApiModelProperty(name = "resultMats", value = "结果物", dataType = "list")
     private List<AeaItemInout> resultMats;
-
+    @ApiModelProperty(name = "isStateItem", value = "是否情形事项  1 是 0 否'", dataType = "string")
+    private String isStateItem;
 
     public static ParallelApproveItemVo build(AeaItemBasic aeaItemBasic) {
         Assert.notNull(aeaItemBasic, "事项基本信息不能为空");

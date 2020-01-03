@@ -1,11 +1,14 @@
 package com.augurit.aplanmis.front.solicit.vo;
 
+import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
 import com.augurit.aplanmis.common.domain.AeaHiSolicitDetailUser;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.List;
 
 /**
  * @author:chendx
@@ -67,6 +70,12 @@ public class SolicitDetailUserVo {
 
     @ApiModelProperty(value = "联系人手机号码", required = false, dataType="string")
     private String linkmanPhone;
+
+    private String userName; //扩展字段 (用户名)
+
+    private List<BscAttFileAndDir> fileAndDirs;//附件集合
+
+    private List<SolicitLhpsFile> lhpsFiles;//联合评审的附件，带类型
 
     public AeaHiSolicitDetailUser convertToAeaHiDetailUser(){
         AeaHiSolicitDetailUser user = new AeaHiSolicitDetailUser();

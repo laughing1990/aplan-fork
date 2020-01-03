@@ -7,6 +7,8 @@
     <sql id="allColumns" >
         SOLICIT_ORG_ID  solicitOrgId,
         ORG_ID  orgId,
+        IS_BUS_SOLICIT isBusSolicit,
+        STAGE_ID stageId,
         BUS_TYPE  busType,
         SOLICIT_TYPE  solicitType,
         CREATER  creater,
@@ -19,6 +21,8 @@
     <sql id="alias_allColumns">
         ${alias}.SOLICIT_ORG_ID  solicitOrgId,
         ${alias}.ORG_ID  orgId,
+        ${alias}.IS_BUS_SOLICIT isBusSolicit,
+        ${alias}.STAGE_ID stageId,
         ${alias}.BUS_TYPE  busType,
         ${alias}.SOLICIT_TYPE  solicitType,
         ${alias}.CREATER  creater,
@@ -60,6 +64,12 @@
             <if test="orgId != null" >
             and    ORG_ID = #{orgId}
             </if>
+            <if test="isBusSolicit != null" >
+            and    IS_BUS_SOLICIT = #{isBusSolicit}
+            </if>
+            <if test="stageId != null" >
+            and    STAGE_ID = #{stageId}
+            </if>
             <if test="busType != null" >
             and    BUS_TYPE = #{busType}
             </if>
@@ -100,6 +110,12 @@
             <if test="orgId != null" >
             and    soliOrg.ORG_ID = #{orgId}
             </if>
+            <if test="isBusSolicit != null" >
+            and    soliOrg.IS_BUS_SOLICIT = #{isBusSolicit}
+            </if>
+            <if test="stageId != null" >
+            and    soliOrg.STAGE_ID = #{stageId}
+            </if>
             <if test="busType != null" >
             and    soliOrg.BUS_TYPE = #{busType}
             </if>
@@ -136,6 +152,8 @@
         (
             SOLICIT_ORG_ID,
             ORG_ID,
+            IS_BUS_SOLICIT,
+            STAGE_ID,
             BUS_TYPE,
             SOLICIT_TYPE,
             CREATER,
@@ -148,6 +166,8 @@
         (
             #{solicitOrgId},
             #{orgId},
+            #{isBusSolicit},
+            #{stageId},
             #{busType},
             #{solicitType},
             #{creater},
@@ -167,6 +187,12 @@
             </if>
             <if test="orgId != null" >
             ORG_ID = #{orgId},
+            </if>
+            <if test="isBusSolicit != null" >
+            IS_BUS_SOLICIT = #{isBusSolicit},
+            </if>
+            <if test="stageId != null" >
+            STAGE_ID = #{stageId},
             </if>
             <if test="busType != null" >
             BUS_TYPE = #{busType},
@@ -213,6 +239,8 @@
     <resultMap type="AeaSolicitOrg" id="AeaSolicitOrgMap">
         <id property="solicitOrgId" column="SOLICIT_ORG_ID"/>
         <result property="orgId" column="ORG_ID"/>
+        <result property="isBusSolicit" column="IS_BUS_SOLICIT"/>
+        <result property="stageId" column="STAGE_ID"/>
         <result property="busType" column="BUS_TYPE"/>
         <result property="solicitType" column="SOLICIT_TYPE"/>
         <result property="creater" column="CREATER"/>

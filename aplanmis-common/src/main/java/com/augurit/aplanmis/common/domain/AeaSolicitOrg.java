@@ -17,7 +17,13 @@ public class AeaSolicitOrg implements Serializable{
     private String solicitOrgId; 
 
     @ApiModelProperty("征求部门ID")
-    private String orgId; 
+    private String orgId;
+
+    @ApiModelProperty("是否按业务类型征求，0表示按阶段征求部门意见（当前部门为阶段牵头部门），1表示按业务类型征求部门意见")
+    private String isBusSolicit;
+
+    @ApiModelProperty("阶段ID【当IS_BUS_SOLICIT=0】")
+    private String stageId;
 
     @ApiModelProperty("征求业务类型，来自于数据字典")
     private String busType;
