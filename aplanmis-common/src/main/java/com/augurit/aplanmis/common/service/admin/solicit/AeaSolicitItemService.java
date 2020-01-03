@@ -94,9 +94,11 @@ public interface AeaSolicitItemService {
      /**
       * 批量保存
       *
-      * @param orgIds
+      * @param busType
+      * @param solicitType
+      * @param itemIds
       */
-     void batchSaveSolicitItem(String[] orgIds);
+     void batchSaveSolicitItem(String busType, String solicitType, String[] itemIds);
 
      /**
       * 删除

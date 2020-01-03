@@ -65,7 +65,9 @@ public class RestAeaHiGuideService {
 
     public void initAeaHiGuideDetail(AeaGuideApplyVo aeaGuideApplyVo,String guideId,String detailType){
 
-        List<AeaGuideItemVo> itemList=aeaGuideApplyVo.getItemList();
+        List<AeaGuideItemVo> itemList=aeaGuideApplyVo.getItemList();//申请人选择
+        List<AeaGuideItemVo> itItemList=aeaGuideApplyVo.getItItemList();//智能引导选择
+
         if(itemList.size()==0) return;
         for (AeaGuideItemVo aeaGuideItemVo:itemList){
             AeaHiGuideDetail aeaHiGuideDetail=new AeaHiGuideDetail();

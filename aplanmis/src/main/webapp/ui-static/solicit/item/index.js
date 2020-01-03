@@ -1,5 +1,6 @@
 var commonQueryParams = [],
     aedit_solicit_item_validator,
+    import_solicit_item_validator,
     solicit_item_tb,
     solicit_item_user_tb;
 
@@ -17,6 +18,9 @@ $(function () {
 
     // 初始化校验
     initValidateSolicitItem();
+
+    // 初始化导入
+    initValidateImportSolicitItem();
 
     // 征求组织列表
     $('#solicit_item_list_tb').bootstrapTable('resetView', {
@@ -149,6 +153,93 @@ function initValidateSolicitItem(){
                     swal('错误信息', XMLHttpRequest.responseText, 'error');
                 }
             });
+        }
+    });
+}
+
+function initValidateImportSolicitItem(){
+
+    // 设置初始化校验
+    import_solicit_item_validator = $("#import_solicit_item_form").validate({
+
+        // 定义校验规则
+        rules: {
+            busType: {
+                required: true
+            },
+            solicitType:{
+                required: true
+            },
+        },
+        messages: {
+            busType: {
+                required: '<font color="red">此项必填！</font>'
+            },
+            solicitType:{
+                required: '<font color="red">此项必填！</font>'
+            },
+        },
+        // 提交表单
+        submitHandler: function (form) {
+
+            var treeObj = $.fn.zTree.getZTreeObj("selectSolicitItemTree");
+            var nodes = treeObj.getCheckedNodes(true);
+            if(nodes!=null&&nodes.length>0){
+
+                var itemIds = [];
+                for(var i=0;i<nodes.length;i++){
+                   itemIds.push(nodes[i].itemId + '*' +nodes[i].itemVerId);
+                }
+                var d = {};
+                var t = $('#import_solicit_item_form').serializeArray();
+                $.each(t, function () {
+                    d[this.name] = this.value;
+                });
+                d['itemIds'] = itemIds.toString();
+
+                $("#uploadProgress").modal("show");
+                $('#uploadProgressMsg').html("数据保存中,请勿点击,耐心等候...");
+
+                $.ajax({
+                    url: ctx + '/aea/solicit/item/batchSaveSolicitItem.do',
+                    type: 'POST',
+                    data: d,
+                    async: false,
+                    success: function (result) {
+                        if (result.success) {
+
+                            setTimeout(function () {
+                                $("#uploadProgress").modal('hide');
+                                swal({
+                                    text: '导入事项成功！',
+                                    type: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                                closeSelectSolicitItemZtree();
+                                // 刷新列表
+                                searchSolicitItemList();
+                            }, 500);
+
+                        }else{
+
+                            setTimeout(function () {
+                                $("#uploadProgress").modal('hide');
+                                swal('错误信息', result.message, 'error');
+                            }, 500);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                        setTimeout(function () {
+                            $("#uploadProgress").modal('hide');
+                            swal('错误信息', XMLHttpRequest.responseText, 'error');
+                        }, 500);
+                    }
+                });
+            }else{
+                swal('错误信息', '请选择事项!', 'error');
+            }
         }
     });
 }
