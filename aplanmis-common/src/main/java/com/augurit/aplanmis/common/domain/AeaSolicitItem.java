@@ -118,4 +118,6 @@ public class AeaSolicitItem implements Serializable{
      */
     private String keyword;
 
+    private String userId;
+
 }

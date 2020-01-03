@@ -265,4 +265,20 @@
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
     </resultMap>
 
+    <select id="listAeaSolicitItemWithUserIdByItemVerIds"
+            resultType="com.augurit.aplanmis.common.domain.AeaSolicitItem">
+        select
+        <include refid="alias_allColumns">
+            <property name="alias" value="soliItem"/>
+        </include>
+        ,
+        asiu.USER_ID userId
+        from AEA_SOLICIT_ITEM asi
+        join aea_solicit_item_user asiu on asiu.SOLICIT_ITEM_ID=asi.SOLICIT_ITEM_ID
+        where asi.ITEM_VER_ID in
+        <foreach collection="itemVerIds" open="(" separator="," item="itemVerId" close=")">
+            #{itemVerId}
+        </foreach>
+    </select>
+
 </mapper>

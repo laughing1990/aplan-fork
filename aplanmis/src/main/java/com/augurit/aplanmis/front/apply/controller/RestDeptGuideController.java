@@ -1,10 +1,13 @@
 package com.augurit.aplanmis.front.apply.controller;
 
+import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
+import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.aplanmis.common.domain.AeaHiGuide;
 import com.augurit.aplanmis.common.service.apply.AeaHiGuideService;
 import com.augurit.aplanmis.common.vo.guide.GuideDetailVo;
 import com.augurit.aplanmis.front.apply.vo.guide.GuideQueryVo;
+import com.augurit.aplanmis.front.apply.vo.guide.GuideVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -13,6 +16,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,7 +35,7 @@ public class RestDeptGuideController {
     public ContentResultForm<PageInfo<AeaHiGuide>> list(GuideQueryVo guideQueryVo, Page page) {
         try {
             AeaHiGuide param = guideQueryVo.toAeaHiGuide();
-//            param.setLeaderUserId(SecurityContext.getCurrentUserId());
+            param.setCurrentUserId(SecurityContext.getCurrentUserId());
             PageInfo<AeaHiGuide> aeaHiGuidePageInfo = aeaHiGuideService.list(param, page);
             return new ContentResultForm<>(true, aeaHiGuidePageInfo, "success.");
         } catch (Exception e) {
@@ -48,6 +53,30 @@ public class RestDeptGuideController {
         } catch (Exception e) {
             e.printStackTrace();
             return new ContentResultForm<>(false, null, e.getMessage());
+        }
+    }
+
+    @PostMapping("/guide")
+    @ApiOperation("辅导")
+    public ResultForm guide(@RequestBody GuideVo guideVo) {
+        try {
+            aeaHiGuideService.guide(guideVo.toAeaHiGuideDetails(SecurityContext.getCurrentUserId()));
+            return new ResultForm(true, "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultForm(false, e.getMessage());
+        }
+    }
+
+    @PostMapping("/solicit")
+    @ApiOperation("部门征求")
+    public ResultForm solicitDept(@RequestBody GuideVo guideSolicitVo) {
+        try {
+            aeaHiGuideService.solicitDept(guideSolicitVo.toAeaHiGuideDetails(null));
+            return new ResultForm(true, "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultForm(false, e.getMessage());
         }
     }
 }

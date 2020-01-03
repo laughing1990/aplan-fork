@@ -21,7 +21,11 @@ public interface AeaHiGuideDetailMapper {
 
     void updateAeaHiGuideDetail(AeaHiGuideDetail record);
 
+    AeaHiGuideDetail getAeaHiGuideDetail(AeaHiGuideDetail record);
+
     void batchInsertAeaHiGuideDetail(@Param("list") List<AeaHiGuideDetail> aeaHiGuideDetails);
 
     List<AeaHiGuideDetail> listAeaHiGuideDetailByGuideIdOrderByCreateTimeAsc(String guideId);
+
+    List<AeaHiGuideDetail> listAeaHiGuideDetailIfThemeChangedBefore(String guideId);
 }

@@ -3,6 +3,7 @@ package com.augurit.aplanmis.front.apply.vo.stash;
 import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.constants.ApplySource;
 import com.augurit.aplanmis.common.utils.BusinessUtil;
 import com.augurit.aplanmis.front.apply.vo.ParallelItemStateVo;
 import com.augurit.aplanmis.front.apply.vo.PropulsionItemApplyinstVo;
@@ -117,7 +118,8 @@ public class StashVo {
 
         public StageApplyDataVo toStageApplyDataVo() {
             StageApplyDataVo stageApplyDataVo = new StageApplyDataVo();
-            stageApplyDataVo.setApplySource(this.applySubject);
+            stageApplyDataVo.setApplySource(ApplySource.WIN.getValue());
+            stageApplyDataVo.setApplySubject(this.applySubject);
             stageApplyDataVo.setLinkmanInfoId(this.linkmanInfoId);
             stageApplyDataVo.setBranchOrgMap(this.branchOrgMap);
             stageApplyDataVo.setStageId(this.stageId);

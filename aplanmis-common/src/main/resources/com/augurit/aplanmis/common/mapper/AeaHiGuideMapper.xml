@@ -187,6 +187,11 @@
         join aea_par_theme apt on apt.theme_id=aptv.theme_id
         join aea_proj_info api on api.proj_info_id=ahg.proj_info_id
         <where>
+            (exists (
+            select 1 from aea_hi_guide_detail ahgd
+            where ahgd.guide_id=ahg.guide_id
+            and ahgd.guide_user_id=#{currentUserId}
+            ) or ahg.LEADER_USER_ID=#{currentUserId} )
             <if test="keyword != null and keyword != ''">
                 and (
                 apt.theme_name like concat(#{keyword}, '%')

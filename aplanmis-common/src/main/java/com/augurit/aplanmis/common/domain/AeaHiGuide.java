@@ -97,5 +97,7 @@ public class AeaHiGuide {
     private String applyStateName;
     // 搜索关键字
     private String keyword;
+    // 当前用户id，用于列表数据权限控制
+    private String currentUserId;
 
 }

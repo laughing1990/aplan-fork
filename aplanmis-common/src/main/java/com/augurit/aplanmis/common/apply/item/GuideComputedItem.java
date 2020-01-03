@@ -36,26 +36,28 @@ public class GuideComputedItem extends ComputedItem {
     private String approveDeptOpinion;
 
     void fillInfo(AeaHiGuideDetail aeaHiGuideDetail) {
-        GuideDetailType guideDetailType = GuideDetailType.fromValue(aeaHiGuideDetail.getDetailType());
-        switch (guideDetailType) {
-            case INTELLIGENCE:
-                intelliGuideChoose = true;
-                break;
-            case OWNER:
-                applicantChoose = true;
-                break;
-            case LEADER_DEPT:
-                if (GuideChangeAction.ADD.getValue().equals(aeaHiGuideDetail.getGuideChangeAction())) {
-                    leaderDeptChoose = true;
-                }
-                leanderDeptOpinion = aeaHiGuideDetail.getGuideOpinion();
-                break;
-            case ITEM_DEPT:
-                if (GuideChangeAction.ADD.getValue().equals(aeaHiGuideDetail.getGuideChangeAction())) {
-                    approveDeptChoose = true;
-                }
-                approveDeptOpinion = aeaHiGuideDetail.getGuideOpinion();
-                break;
+        if (!"0".equals(aeaHiGuideDetail.getDetailState())) {
+            GuideDetailType guideDetailType = GuideDetailType.fromValue(aeaHiGuideDetail.getDetailType());
+            switch (guideDetailType) {
+                case INTELLIGENCE:
+                    intelliGuideChoose = true;
+                    break;
+                case OWNER:
+                    applicantChoose = true;
+                    break;
+                case LEADER_DEPT:
+                    if (GuideChangeAction.ADD.getValue().equals(aeaHiGuideDetail.getGuideChangeAction())) {
+                        leaderDeptChoose = true;
+                    }
+                    leanderDeptOpinion = aeaHiGuideDetail.getGuideOpinion();
+                    break;
+                case ITEM_DEPT:
+                    if (GuideChangeAction.ADD.getValue().equals(aeaHiGuideDetail.getGuideChangeAction())) {
+                        approveDeptChoose = true;
+                    }
+                    approveDeptOpinion = aeaHiGuideDetail.getGuideOpinion();
+                    break;
+            }
         }
 
         // 标准事项需要重新匹配实施事项

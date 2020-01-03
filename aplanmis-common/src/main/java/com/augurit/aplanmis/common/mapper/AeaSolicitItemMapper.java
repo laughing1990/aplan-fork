@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
-* 按事项征求配置表-Mapper数据与持久化接口类
-*/
+ * 按事项征求配置表-Mapper数据与持久化接口类
+ */
 @Mapper
 @Repository
 public interface AeaSolicitItemMapper {
@@ -80,4 +80,6 @@ public interface AeaSolicitItemMapper {
       * @param rootOrgId
       */
      void batchDelSolicitItemByRootOrgId(@Param("rootOrgId") String rootOrgId);
+
+     List<AeaSolicitItem> listAeaSolicitItemWithUserIdByItemVerIds(@Param("itemVerIds") List<String> itemVerIds);
 }

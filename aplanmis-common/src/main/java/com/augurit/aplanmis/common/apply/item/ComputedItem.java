@@ -99,6 +99,8 @@ public class ComputedItem {
     public static class CarryOutItem {
         private String itemVerId;
 
+        private String itemId;
+
         @ApiModelProperty(value = "实施主体", dataType = "string")
         private String orgName;
 
@@ -117,6 +119,7 @@ public class ComputedItem {
         static CarryOutItem buildCarryOutItem(AeaItemBasic origin) {
             CarryOutItem carryOutItem = new CarryOutItem();
             carryOutItem.setItemVerId(origin.getItemVerId());
+            carryOutItem.setItemId(origin.getItemId());
             carryOutItem.setOrgName(origin.getOrgName());
             carryOutItem.setOrgId(origin.getOrgId());
             carryOutItem.setRegionId(origin.getRegionId());

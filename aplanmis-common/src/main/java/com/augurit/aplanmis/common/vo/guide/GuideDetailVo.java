@@ -15,6 +15,16 @@ import java.util.List;
 @ApiModel(value = "部门辅导详情vo")
 public class GuideDetailVo {
 
+    @ApiModelProperty(value = "项目类型是否有更改")
+    private boolean themeChanged;
+
+    private String newThemeId;
+
+    private String newStageId;
+
+    @ApiModelProperty(value = "是否牵头部门")
+    private boolean leaderDept;
+
     @ApiModelProperty(value = "部门辅导主记录")
     private AeaHiGuide aeaHiGuide;
 

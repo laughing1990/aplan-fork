@@ -55,6 +55,60 @@
         where GUIDE_DETAIL_ID = #{guideDetailId,jdbcType=VARCHAR}
     </select>
 
+    <select id="getAeaHiGuideDetail" parameterType="com.augurit.aplanmis.common.domain.AeaHiGuideDetail"
+            resultType="com.augurit.aplanmis.common.domain.AeaHiGuideDetail">
+        select
+        <include refid="Base_Column_List"/>
+        from aea_hi_guide_detail ahgd
+        <where>
+            <if test="guideId != null">
+                and GUIDE_ID = #{guideId,jdbcType=VARCHAR},
+            </if>
+            <if test="detailType != null">
+                and DETAIL_TYPE = #{detailType,jdbcType=CHAR},
+            </if>
+            <if test="themeId != null">
+                and THEME_ID = #{themeId,jdbcType=VARCHAR},
+            </if>
+            <if test="themeVerId != null">
+                and THEME_VER_ID = #{themeVerId,jdbcType=VARCHAR},
+            </if>
+            <if test="stageId != null">
+                and STAGE_ID = #{stageId,jdbcType=VARCHAR},
+            </if>
+            <if test="itemId != null">
+                and ITEM_ID = #{itemId,jdbcType=VARCHAR},
+            </if>
+            <if test="itemVerId != null">
+                and ITEM_VER_ID = #{itemVerId,jdbcType=VARCHAR},
+            </if>
+            <if test="catalogItemVerId != null">
+                and CATALOG_ITEM_VER_ID = #{catalogItemVerId,jdbcType=VARCHAR},
+            </if>
+            <if test="guideOrgId != null">
+                and GUIDE_ORG_ID = #{guideOrgId,jdbcType=VARCHAR},
+            </if>
+            <if test="guideUserId != null">
+                and GUIDE_USER_ID = #{guideUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="guideOpinion != null">
+                and GUIDE_OPINION = #{guideOpinion,jdbcType=VARCHAR},
+            </if>
+            <if test="detailState != null">
+                and DETAIL_STATE = #{detailState,jdbcType=VARCHAR},
+            </if>
+            <if test="guideChangeAction != null">
+                and GUIDE_CHANGE_ACTION = #{guideChangeAction,jdbcType=VARCHAR},
+            </if>
+            <if test="creater != null">
+                and CREATER = #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="modifier != null">
+                and MODIFIER = #{modifier,jdbcType=VARCHAR},
+            </if>
+        </where>
+    </select>
+
     <delete id="deleteByGuideDetailId" parameterType="java.lang.String">
     delete from aea_hi_guide_detail
     where GUIDE_DETAIL_ID = #{guideDetailId,jdbcType=VARCHAR}
@@ -173,6 +227,17 @@
         from aea_hi_guide_detail ahgd
         where GUIDE_ID = #{guideId ,jdbcType=VARCHAR}
         order by ahgd.create_time asc
+    </select>
+
+    <select id="listAeaHiGuideDetailIfThemeChangedBefore"
+            resultType="com.augurit.aplanmis.common.domain.AeaHiGuideDetail">
+        select
+        <include refid="Base_Column_List"/>
+        from aea_hi_guide_detail ahgd
+        join aea_hi_guide ahg on ahgd.guide_id=ahg.guide_id
+        where ahg.GUIDE_ID = #{guideId ,jdbcType=VARCHAR}
+        and ahgd.DETAIL_TYPE='l'
+        and ahgd.stage_id != ahg.stage_id
     </select>
 
 </mapper>
