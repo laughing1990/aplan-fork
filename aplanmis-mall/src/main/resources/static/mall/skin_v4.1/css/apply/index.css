@@ -655,7 +655,7 @@
 }
 .footer-stage-btn {
   text-align: center;
-  margin: 20px 0;
+  margin: 50px 0;
 }
 .ye-notice {
   border: 1px solid #FFB822;
@@ -861,7 +861,6 @@
   width: 212px;
 }
 .not-region-data {
-  padding-left: 20px;
   color: #FF4B47;
 }
 .matter-list .el-table__expanded-cell[class*=cell] {
@@ -1446,4 +1445,10 @@
 .success-apply-info p {
   line-height: 35px;
   padding-left: 50px;
+}
+.col-status-z {
+  margin-top: 20px;
+  border: 1px solid #EEEEEE;
+  padding: 20px 30px;
+  background: #FAFBFC;
 }
