@@ -1217,7 +1217,7 @@
               <el-option v-for="(item,indexOp) in scope.row.carryOutItems"
                          :key="indexOp"
                          :label="item.regionName"
-                         @click.native="getItemOrgId(scope.row,scope.$index,item)" :value="item.itemVerId"></el-option>
+                         @click.native="getItemOrgId(scope.row,scope.$index,item,'core')" :value="item.itemVerId"></el-option>
             </el-select>
           </div>
           <div v-else>
