@@ -9,7 +9,7 @@
     position: relative;
     width: 100%;
     height: 200px;
-    background: url("../../../images/index/u172.png") no-repeat center;
+    background: url("../../images/index/u172.png") no-repeat center;
     background-size: 100% 100%;
 }
 .regular-wrap .title-wrap .mask {

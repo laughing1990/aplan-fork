@@ -4,15 +4,11 @@
     <meta charset="UTF-8">
     <title>办事指南</title>
     <link rel="stylesheet" href="../../static/mall/css/guide/guideIndex.css" th:href="@{/mall/skin_v4.1/css/guide/guideIndex.css}">
-    <link rel="stylesheet" href="../../static/mall/css/guide/viewer.min.css" th:href="@{/mall/skin_v4.1/css/guide/viewer.min.css}">
-    <script>
-        var ctx = "[[@{/}]]";
-    </script>
+<!--    <link rel="stylesheet" href="../../static/mall/css/guide/viewer.min.css" th:href="@{/mall/skin_v4.1/css/guide/viewer.min.css}">-->
 </head>
 <body>
-<div id="guideIndex" v-cloak>
-    <div v-loading="fullscreenLoading" v-if="fullscreenLoading" style="width: 100%; height: 200px;position: absolute;top:180px;z-index: 9999999;"></div>
-    <div v-else>
+<div id="guideIndex" v-cloak v-loading.fullscreen.lock="fullscreenLoading">
+    <div v-if="!fullscreenLoading">
         <section style="display: none;">
             <div class="guid-banner">
                 <div class="guide-banner-opactity">
