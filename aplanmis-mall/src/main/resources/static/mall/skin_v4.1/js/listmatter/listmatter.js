@@ -92,6 +92,7 @@ var listmatter = (function(window){
                     "itemStateIds":itemStateIds, // 事项情形ID数组
                     "stageStateIds":stageStateIds, //阶段情形ID数组
                 }
+                console.log(params)
                 $.ajax({
                     url: ctx + 'rest/userCenter/apply/mat/list',
                     type: 'post',

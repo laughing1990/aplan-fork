@@ -1739,12 +1739,20 @@
     color: #999999;
 }
 /* 没数据 end */
-
+.el-scrollbar__wrap {
+    overflow-x: hidden;
+}
 /*单项办事指南 str*/
 .single-title{
     text-align: center;
     font-size: 24px;
     font-weight: bold;
     color: #333333;
+}
+.single-body .item{
+    margin-top: 30px;
+}
+.single-body .el-dialog__body{
+    color: #515151;
 }
 /*单项办事指南 end*/

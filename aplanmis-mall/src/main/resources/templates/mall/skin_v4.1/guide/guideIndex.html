@@ -44,7 +44,7 @@
                             </div>
                         </ul>
                         <div class="guide-tip">
-                            <img src="../../static/mall/images/guide/u736.png" th:src="@{/mall/images/guide/u736.png}" />
+                            <img src="../../static/mall/images/guide/u736.png" th:src="@{/mall/skin_v4.1/images/guide/u736.png}" />
                             <span>智能引导</span>
                         </div>
 
@@ -119,7 +119,7 @@
                                                     <p class="title">{{item.title}}</p>
                                                     <div class="item-strip" :class="{selected:itemSub.isSelected=='1'}" v-for="(itemSub,indexSub) in item.items">
                                                         {{itemSub.itemName}}
-                                                        <div class="item-strip-bg" >查看事项指南</div>
+                                                        <div class="item-strip-bg"  @click="getSinleData(itemSub.itemVerId,itemSub.itemName)">查看事项指南</div>
                                                     </div>
                                                     <!-- <div class="item-strip selected">项目建议书/可行性研究报告批复</div>
                                                      <div class="item-strip">建设项目用地预审</div>
@@ -162,7 +162,7 @@
                                                     <p class="title">{{item.title}}</p>
                                                     <div class="item-strip" :class="{selected:itemSub.isSelected=='1'}" v-for="(itemSub,indexSub) in item.items">
                                                         {{itemSub.itemName}}
-                                                        <div class="item-strip-bg">查看事项指南</div>
+                                                        <div class="item-strip-bg" @click="getSinleData(itemSub.itemVerId,itemSub.itemName)">查看事项指南</div>
                                                     </div>
                                                     <!--  <div class="item-strip">项目建议书/可行性研究报告批复</div>
                                                       <div class="item-strip">建设项目用地预审</div>
@@ -218,48 +218,72 @@
 
         </section>
     </div>
-    <el-dialog title="单事项办事指南" :visible.sync="singleDialog" width="1000px">
-        <p class="single-title">建设项目选址意见书核准</p>
-        <div class="single-body">
-            <div>
+    <el-dialog title="单事项办事指南" :visible.sync="singleDialog" width="1000px;" v-loading="singleLoading">
+        <p class="single-title"> {{itemName ||'建设项目选址意见书核准'}}</p>
+        <div class="single-body" style="height: 600px;padding-left: 10px;">
+            <el-scrollbar style="height: 100%;">
+            <div class="item">
                 <p class="p-header-phase1"> 受理范围</p>
-                <P>该事项适用于申请划拨用地建设项目规划选址许可审批</P>
+                <P> {{singleData.acceptCondition||'暂无'}}</P>
             </div>
-            <div>
+            <div class="item">
                 <p class="p-header-phase1"> 实施部门</p>
-                <P>佛山市及各区、南海各镇（街）、高新区自然资源部门</P>
+                <P>{{singleData.deptName || '暂无'}}</P>
             </div>
-            <div>
+            <div class="item">
                 <p class="p-header-phase1"> 受理权限</p>
-                <P>省级：属于国家和省批准、核准项目投资的规划选址由省审批。
-
-                    市级：属于国家和省批准、核准项目投资的规划选址，由市城乡规划主管部门初审；属市级跨区及市属重点项目，由市自然资源部门审批。
-
-                    区级：属各区范围内的项目由市自然资源部门委托各区审批。</P>
+                <P>{{singleData.acceptAccess||'暂无'}}</P>
             </div>
-            <div>
+            <div class="item">
                 <p class="p-header-phase1"> 提交材料</p>
-                <span>情形一：属于国家和省批准、核准投资的项目规划选址许可的初审</span>
-                <el-table
-                        :data="tableData"
-                        style="width: 100%">
-                    <el-table-column
-                            prop="date"
-                            label="日期"
-                            width="180">
-                    </el-table-column>
-                    <el-table-column
-                            prop="name"
-                            label="姓名"
-                            width="180">
-                    </el-table-column>
-                    <el-table-column
-                            prop="address"
-                            label="地址">
-                    </el-table-column>
-                </el-table>
-            </div>
+                <template v-if="singleData.states && singleData.states.length > 0">
+                    <div v-for="item in singleData.states">
+                        <p style="margin: 15px 0px;"><span>{{item.index}}</span><span>：</span><span>{{item.stateName}}</span></p>
+                        <el-table
+                                :data="tableData"
+                                border
+                                style="width: 100%">
+                            <el-table-column
+                                    type="index"
+                                    label="序号"
+                                    width="80">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="date"
+                                    label="材料名称"
+                            >
+                            </el-table-column>
+                            <el-table-column
+                                    prop="name"
+                                    label="全程网办接件标准"
+                            >
+                            </el-table-column>
+                            <el-table-column
+                                    prop="address"
+                                    label="备注"
+                                    width="150">
+                            </el-table-column>
+                        </el-table>
+                    </div>
+                </template>
+                <template v-else>
+                    <div>暂无</div>
+                </template>
 
+            </div>
+            <div class="item">
+                <p class="p-header-phase1"> 办理结果</p>
+                <P>{{singleData.resultName||'暂无'}}</P>
+            </div>
+            <div class="item">
+                <p class="p-header-phase1"> 办理时限</p>
+                <P>{{singleData.promissDay||'暂无'}}</P>
+            </div>
+            <div class="item">
+                <p class="p-header-phase1"> 是否收费</p>
+                <P>{{singleData.chargeTypeText||'暂无'}}</P>
+            </div>
+            </el-scrollbar>
         </div>
     </el-dialog>
 </div>

@@ -68,7 +68,10 @@ var guideIndex = (function () {
             itemListKeyword:'',
             stagesData:{}, // 某主题下的阶段和事项
             fullscreenLoading: false,
-            singleDialog: true,
+            singleDialog: false,
+            singleLoading:false,
+            itemName:'',//单项办事指南标题
+            singleData:[] // 单项办事指南数据
         },
         mounted: function () {
             var vm = this;
@@ -243,6 +246,29 @@ var guideIndex = (function () {
                 },function () {
                     vm.$message.error('查询接口请求失败');
                     vm.themeLoading = false;
+                });
+            },
+            // 获取单项办事指南数据
+            getSinleData:function(itemVerId,itemName){
+                var vm = this;
+                this.singleDialog = true;
+                this.singleLoading = true;
+                this.itemName = itemName;
+                request('', {
+                    url: ctx + 'rest/guide/detailed/'+ itemVerId,
+                    type: 'get',
+                }, function (res) {
+                    vm.singleLoading = false;
+                    if (res.success) {
+                        var content = res.content;
+                        vm.singleData = content;
+                    } else {
+                        vm.singleLoading = true;
+                        vm.$message.error(res.message);
+                    }
+
+                },function () {
+                    vm.$message.error('接口请求失败');
                 });
             },
             // 获取文件后缀
