@@ -335,7 +335,13 @@ function editThemeById(themeId){
 // 进入主题设置
 function goThemeSetings(themeId){
 
-    location.href = ctx + '/aea/par/theme/themeVerIndex.do?themeId='+themeId;
+    parent.vm.removeTab('主题详情');
+    var _jumpData = {
+        'menuName': '主题详情',
+        'menuInnerUrl': ctx + '/aea/par/theme/themeVerIndex.do?themeId='+themeId,
+        'id':  '主题详情'
+    };
+    parent.vm.addTab('', _jumpData, parent.vm.activeTabIframe, '');
 }
 
 // 删除主题

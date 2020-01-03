@@ -111,7 +111,9 @@
                                         </div>
                                     </div>
                                     <div style="margin: 10px 0px;border-bottom: 1px solid #e8e8e8;"></div>
-                                    <div id="selectUserItemTree" class="ztree" style="height: 380px; overflow: auto;"></div>
+                                    <div id="selectUserItemTreeDiv" style="height: 380px;overflow: auto;">
+                                        <div id="selectUserItemTree" class="ztree"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -290,7 +292,7 @@
     // 初始化加载函数
     $(function(){
 
-        $('#selectUserItemTree').niceScroll({
+        $('#selectUserItemTreeDiv').niceScroll({
 
             cursorcolor: "#e2e5ec",//#CC0071 光标颜色
             cursoropacitymin: 0, // 当滚动条是隐藏状态时改变透明度, 值范围 1 到 0

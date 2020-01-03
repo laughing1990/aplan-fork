@@ -335,7 +335,7 @@ function searchSelectThemeStageNode(){
 function clearSearchSelectThemeStageNode(){
 
     // 清空查询内容
-    $('#selectThemeStageKeyWord').val('');
+    $('#selectThemeStageKeyword').val('');
     showSelectThemeStageAllNode(selectThemeStageTree.getNodes());
     setTimeout(function() {
         expandSelectThemeStageAllNode();
@@ -629,10 +629,16 @@ function editSolicitOrgById(id){
     }
 }
 
-function setSolicitOrgUser(){
+function setSolicitOrgUser(id){
 
     if(!isEmpty(id)){
-
+        parent.vm.removeTab('牵头部门人员');
+        var _jumpData = {
+            'menuName': '牵头部门人员',
+            'menuInnerUrl':ctx + '/aea/solicit/org/stageOrgUser.do?solicitOrgId='+id,
+            'id':  '牵头部门人员'
+        };
+        parent.vm.addTab('', _jumpData, parent.vm.activeTabIframe, '');
     }else{
         swal('提示信息', "请选择需要编辑的数据！", 'info');
     }

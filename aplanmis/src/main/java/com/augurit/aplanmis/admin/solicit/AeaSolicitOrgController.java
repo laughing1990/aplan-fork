@@ -12,6 +12,7 @@ import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaSolicitOrg;
+import com.augurit.aplanmis.common.domain.AeaSolicitOrgUser;
 import com.augurit.aplanmis.common.service.admin.solicit.AeaSolicitOrgService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
@@ -203,5 +204,15 @@ public class AeaSolicitOrgController {
     public ModelAndView stageOrg(AeaSolicitOrg aeaSolicitOrg, ModelMap modelMap){
 
         return new ModelAndView("ui-jsp/solicit/stage_org/index");
+    }
+
+    @RequestMapping("/stageOrgUser.do")
+    public ModelAndView stageOrgUser(String solicitOrgId, ModelMap modelMap){
+
+        if(StringUtils.isBlank(solicitOrgId)){
+           throw new InvalidParameterException("参数solicitOrgId为空!");
+        }
+        modelMap.put("solicitOrgId", solicitOrgId);
+        return new ModelAndView("ui-jsp/solicit/stage_org/org_user");
     }
 }

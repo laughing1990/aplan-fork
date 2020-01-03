@@ -17,6 +17,8 @@ import com.augurit.aplanmis.common.utils.CommonTools;
 import com.augurit.aplanmis.mall.main.vo.ItemListVo;
 import com.augurit.aplanmis.mall.main.vo.ParallelApproveItemVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestParallerApplyService;
+import com.augurit.aplanmis.mall.userCenter.vo.AeaGuideItemVo;
+import com.augurit.aplanmis.mall.userCenter.vo.StageStateParamVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -339,6 +341,38 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
             }
         })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AeaGuideItemVo>  listItemByStageIdAndStateList(StageStateParamVo stageStateParamVo,String isOptionItem) throws Exception {
+        String stageId=stageStateParamVo.getStageId();
+        String regionalism=stageStateParamVo.getRegionalism();
+        String projectAddress=stageStateParamVo.getProjectAddress();
+        List<String> stateIds=stageStateParamVo.getStateIds();
+        List<AeaItemBasic> itemList =aeaItemBasicService.getAeaItemBasicListByStageId(stageId,"0",null,SecurityContext.getCurrentOrgId());
+        Set<String> stateItemVerIds = aeaItemBasicService.getAeaItemBasicListByStageIdAndStateId(stageId, null, "0",SecurityContext.getCurrentOrgId())
+                .stream().map(AeaItemBasic::getItemVerId).collect(Collectors.toSet());
+        if(itemList.size()>0) itemList.stream().filter(v->stateItemVerIds.contains(v.getItemVerId())).collect(Collectors.toList());
+        List<AeaItemBasic> coreStateItemList = aeaItemBasicService.getAeaItemBasicListByStageIdAndStateIds(stageId, stateIds, "0", SecurityContext.getCurrentOrgId());
+        itemList.addAll(coreStateItemList);
+
+        return itemList.size()>0?itemList.stream().map(AeaGuideItemVo::format).peek(vo->{
+            String flag=vo.getIsCatalog();
+            if("1".equals(flag)) {//标准事项
+                List<String> arrRegionIdList = new ArrayList<>();
+                if ("0".equals(vo.getItemExchangeWay()) && StringUtils.isNotBlank(projectAddress)) {//itemExchangeWay 实施事项换算方式 0 按照审批行政区划和属地行政区划换算 1 仅按照审批行政区划换算
+                    String[] arrRegionIds = projectAddress.split(",");
+                    for (String id : arrRegionIds) {
+                        arrRegionIdList.add(id);
+                    }
+                }
+                vo.setBaseItemVerId(vo.getItemVerId());
+                List<AeaItemBasic> sssxList = aeaItemBasicService.getSssxByItemIdAndRegionalism(vo.getItemId(), regionalism, arrRegionIdList.size() == 0 ? null : CommonTools.ListToArr(arrRegionIdList), SecurityContext.getCurrentOrgId());
+                if(sssxList.size()>0){
+                    vo.setItemVerId(sssxList.get(0).getItemVerId());
+                }
+            }
+        }).collect(Collectors.toList()):new ArrayList<>();
     }
 
 

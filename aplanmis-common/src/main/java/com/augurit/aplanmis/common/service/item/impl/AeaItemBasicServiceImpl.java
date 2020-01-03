@@ -118,6 +118,14 @@ public class AeaItemBasicServiceImpl implements AeaItemBasicService {
     }
 
     @Override
+    public List<AeaItemBasic> getAeaItemBasicListByStageIdAndStateIds(String stageId, List<String> stateIds, String isOptionItem,String rootOrgId) throws Exception{
+        if (StringUtils.isBlank(stageId)) {
+            throw new InvalidParameterException("参数stageId为空！");
+        }
+        return aeaItemBasicMapper.getAeaItemBasicListByStageIdAndStateIds(stageId,stateIds,isOptionItem,rootOrgId);
+    }
+
+    @Override
     public void saveAeaItemBasic(AeaItemBasic aeaItemBasic) throws Exception {
         if (StringUtils.isBlank(aeaItemBasic.getItemBasicId())) {//新增
             aeaItemBasic.setItemBasicId(UUID.randomUUID().toString());

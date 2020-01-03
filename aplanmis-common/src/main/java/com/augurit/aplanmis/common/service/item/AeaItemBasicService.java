@@ -193,4 +193,16 @@ public interface AeaItemBasicService {
      * @return
      */
     List<AeaItemBasic> getAeaItemBasicListByKeyword(String keyword,String isCatalog)throws Exception;
+
+    /**
+     * 2.根据阶段ID和情形ID查询事项定义列表
+     *
+     * @param stageId      必须参数  阶段ID
+     * @param stateIds      非必须参数  情形ID  为null时，查询的是所有情形下的事项
+     * @param isOptionItem 可选参数 是否可选事项 0表示并联审批事项 1表示并行推进事项 2前置检查事项
+     * @param rootOrgId   必选参数  顶级机构ID 多租户
+     * @return
+     * @throws Exception
+     */
+    List<AeaItemBasic> getAeaItemBasicListByStageIdAndStateIds(String stageId, List<String> stateIds, String isOptionItem,String rootOrgId) throws Exception;
 }
