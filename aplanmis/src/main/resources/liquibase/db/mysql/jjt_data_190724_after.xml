@@ -360,4 +360,10 @@
         </sql>
     </changeSet>
 
+    <changeSet id="201901021416" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update `aea_solicit_org` set is_bus_solicit = '1';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
