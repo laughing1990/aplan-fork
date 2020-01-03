@@ -44,13 +44,7 @@ import com.augurit.aplanmis.common.constants.ItemStatus;
 import com.augurit.aplanmis.common.constants.IteminstType;
 import com.augurit.aplanmis.common.constants.TimeruleInstState;
 import com.augurit.aplanmis.common.constants.TimeruleUnit;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaHiIteminst;
-import com.augurit.aplanmis.common.domain.AeaItemBasic;
-import com.augurit.aplanmis.common.domain.AeaParStage;
-import com.augurit.aplanmis.common.domain.AeaParTheme;
-import com.augurit.aplanmis.common.domain.AeaParThemeVer;
-import com.augurit.aplanmis.common.domain.AeaServiceWindowUser;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.event.AplanmisEventPublisher;
 import com.augurit.aplanmis.common.event.vo.ApplyEventVo;
 import com.augurit.aplanmis.common.event.vo.IteminstEventVo;
@@ -62,6 +56,7 @@ import com.augurit.aplanmis.common.mapper.AeaParThemeMapper;
 import com.augurit.aplanmis.common.mapper.AeaParThemeVerMapper;
 import com.augurit.aplanmis.common.mapper.AeaServiceWindowUserMapper;
 import com.augurit.aplanmis.common.mapper.ConditionalQueryMapper;
+import com.augurit.aplanmis.common.service.window.AeaProjApplyAgentService;
 import com.augurit.aplanmis.common.shortMessage.AplanmisSmsConfigProperties;
 import com.augurit.aplanmis.common.utils.ExcelUtils;
 import com.augurit.aplanmis.common.vo.conditional.ApplyInfo;
@@ -169,6 +164,9 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
 
     @Autowired
     private ActStoTimeruleService actStoTimeruleService;
+
+    @Autowired
+    private AeaProjApplyAgentService aeaProjApplyAgentService;
 
     @Override
     public ConditionalQueryDic applyConditionalQueryDic() {
@@ -751,6 +749,37 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
         loadRemindInfo(taskList);
 
         return new PageInfo<>(taskList);
+    }
+
+    @Override
+    public PageInfo listAgencyDoTasks(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception {
+        AeaProjApplyAgent search = new AeaProjApplyAgent();
+        if(conditionalQueryRequest != null){
+            search.setKeyword(conditionalQueryRequest.getKeyword());
+            search.setRootOrgId(SecurityContext.getCurrentOrgId());
+            String viewDataCtrl = conditionalQueryRequest.getViewDataCtrl();
+            String currentUserId = SecurityContext.getCurrentUserId();
+            if("1".equals(viewDataCtrl)){
+                List<AeaServiceWindowUser> serviceWindowUser = aeaServiceWindowUserMapper.getAeaServiceWindowUserByUserId(currentUserId);
+                if(serviceWindowUser == null || serviceWindowUser.size() == 0){
+                    throw new RuntimeException("当前登录用户不属于代办中心人员");
+                }
+                if(serviceWindowUser.size() > 1){
+                    List<String> windowIds = new ArrayList<>();
+                    for (AeaServiceWindowUser wu:serviceWindowUser){
+                        windowIds.add(wu.getWindowId());
+                    }
+                    search.setWindowIds(windowIds.toArray(new String[windowIds.size()]));
+                }else{
+                    search.setWindowId(serviceWindowUser.get(0).getWindowId());
+                }
+            }
+            if("0".equals(viewDataCtrl)){
+                search.setAgentUserId(currentUserId);
+            }
+        }
+        PageInfo<AeaProjApplyAgent> pageInfo = aeaProjApplyAgentService.listAeaProjApplyAgentByConditional(search, page);
+        return pageInfo;
     }
 
 

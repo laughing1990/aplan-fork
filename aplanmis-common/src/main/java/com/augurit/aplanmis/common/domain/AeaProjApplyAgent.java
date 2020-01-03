@@ -35,6 +35,15 @@ public class AeaProjApplyAgent implements Serializable{
     @ApiModelProperty(name = "windowId", value = "窗口ID")
     private String windowId;
 
+    @ApiModelProperty(name = "agentUserId", value = "代办中心的代办人ID")
+    private java.lang.String agentUserId;
+
+    @ApiModelProperty(name = "agentUserName", value = "代办人的姓名")
+    private java.lang.String agentUserName;
+
+    @ApiModelProperty(name = "agentUserMobile", value = "代办人的手机号")
+    private java.lang.String agentUserMobile;
+
     @ApiModelProperty(name = "startTime", value = "开始时间")
     @DateTimeFormat(pattern="yyyy-MM-dd")
     private java.util.Date startTime;
@@ -59,5 +68,21 @@ public class AeaProjApplyAgent implements Serializable{
 
     @ApiModelProperty(name = "rootOrgId", value = "根组织ID")
     private String rootOrgId;
+
+    //非表字段
+    @ApiModelProperty(name = "localCode", value = "项目/工程代码")
+    private String localCode;
+
+    @ApiModelProperty(name = "projName", value = "项目/工程名称")
+    private String projName;
+
+    @ApiModelProperty(name = "themeName", value = "项目类型")
+    private String themeName;
+
+    @ApiModelProperty(name = "keyword", value = "查询关键字")
+    private String keyword;
+
+    @ApiModelProperty(name = "windowIds", value = "窗口ID数组，查询使用", hidden = true)
+    private String[] windowIds;
 
 }

@@ -14,4 +14,7 @@ public interface AeaProjApplyAgentMapper {
     public void deleteAeaProjApplyAgent(@Param("id") String id) throws Exception;
     public List <AeaProjApplyAgent> listAeaProjApplyAgent(AeaProjApplyAgent aeaProjApplyAgent) throws Exception;
     public AeaProjApplyAgent getAeaProjApplyAgentById(@Param("id") String id) throws Exception;
+
+    public List <AeaProjApplyAgent> listAeaProjApplyAgentByConditional(AeaProjApplyAgent aeaProjApplyAgent);
+
 }

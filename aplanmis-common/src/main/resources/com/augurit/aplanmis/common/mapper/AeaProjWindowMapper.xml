@@ -13,6 +13,34 @@
     ROOT_ORG_ID  rootOrgId
     </sql>
 
+    <sql id="window_allColumns">
+        ${alias}.WINDOW_ID windowId,
+        ${alias}.WINDOW_NAME windowName,
+        ${alias}.REGION_ID  regionId,
+        ${alias}.ORG_ID orgId,
+        ${alias}.LINK_PHONE linkPhone,
+        ${alias}.WORK_TIME workTime,
+        ${alias}.WINDOW_ADDRESS windowAddress,
+        ${alias}.TRAFFIC_GUIDE trafficGuide,
+        ${alias}.WINDOW_MEMO windowMemo,
+        ${alias}.MAP_URL  mapUrl,
+        ${alias}.MAP_ATT mapAtt,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.SORT_NO as sortNo,
+        ${alias}.IS_ACTIVE as isActive,
+        ${alias}.WINDOW_TYPE as windowType,
+        ${alias}.IS_PUBLIC as isPublic,
+        ${alias}.IS_ALL_ITEM as isAllItem,
+        ${alias}.IS_ALL_STAGE as isAllStage,
+        ${alias}.ROOT_ORG_ID  rootOrgId,
+        ${alias}.REGION_RANGE regionRange,
+        ${alias}.STAGE_ITEM_FILTER stageItemFilter,
+        ${alias}.ECHARTS_COLOR echartsColor
+    </sql>
+
 <!--2 根据主键ID查询单个实体 -->
 <select id="getAeaProjWindowById" resultType="AeaProjWindow" >
     select
@@ -20,6 +48,19 @@
     from    AEA_PROJ_WINDOW
     where    PROJ_WINDOW_ID = #{id}
 </select>
+
+    <select id="listAeaServiceWindowByProjInfoId" resultType="com.augurit.aplanmis.common.domain.AeaServiceWindow" >
+        select
+        <include refid="window_allColumns">
+            <property name="alias" value="win"/>
+        </include>
+        from  aea_service_window win
+        where  win.WINDOW_ID in(
+            select WINDOW_ID
+            from  AEA_PROJ_WINDOW
+            where PROJ_INFO_ID = #{projInfoId}
+        )
+    </select>
 
 <!--3 根据条件查询实体list -->
     <select id="listAeaProjWindow" resultType="AeaProjWindow" >

@@ -909,4 +909,15 @@ public class AplanmisPageIndexController {
         return modelAndView;
     }
 
+    /**
+     * 项目代办
+     * @return
+     */
+    @GetMapping("/queryAgencyDoTasksIndex.html")
+    @ApiOperation("菜单-项目代办")
+    public ModelAndView queryAgencyDoTasksIndex() {
+        ModelAndView modelAndView = new ModelAndView("view/queryAgencyDoTasksIndex");
+        return modelAndView;
+    }
+
 }

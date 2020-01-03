@@ -454,5 +454,15 @@ public interface ConditionalQueryService {
      * @throws Exception
      */
     PageInfo listWaitCancelApplyInfoByBm(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception;
+
+    /**
+     * 分页查询项目代办列表
+     * @param conditionalQueryRequest
+     * @param page
+     * @return
+     * @throws Exception
+     */
+    PageInfo listAgencyDoTasks(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception;
+
 }
 

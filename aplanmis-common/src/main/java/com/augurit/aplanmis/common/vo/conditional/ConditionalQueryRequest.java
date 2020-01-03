@@ -166,4 +166,7 @@ public class ConditionalQueryRequest implements Serializable {
 
     @ApiModelProperty(value = "过滤办结", hidden = true)
     private boolean filterConcluding;
+
+    @ApiModelProperty(value = "项目代办视图权限控制。0表示查询所有，1表示查询当前代办中心，2表示查询当前登录人员", hidden = true)
+    private String viewDataCtrl;
 }

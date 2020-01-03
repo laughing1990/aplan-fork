@@ -1498,4 +1498,17 @@
             drop TABLE act_sto_forminst_log;
         </sql>
     </changeSet>
+
+    <changeSet id="20200103190125" author="zhangwn" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_proj_apply_agent`
+            ADD COLUMN `AGENT_USER_ID` varchar(50) NULL COMMENT '代办中心的代办人ID' AFTER `WINDOW_ID`;
+
+            ALTER TABLE `aea_proj_apply_agent`
+            ADD COLUMN `AGENT_USER_NAME` varchar(50) NULL COMMENT '代办人的姓名' AFTER `AGENT_USER_ID`;
+
+            ALTER TABLE `aea_proj_apply_agent`
+            ADD COLUMN `AGENT_USER_MOBILE` varchar(11) NULL COMMENT '代办人的手机号' AFTER `AGENT_USER_NAME`;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

@@ -14,4 +14,5 @@ public interface AeaProjApplyAgentService {
     public AeaProjApplyAgent getAeaProjApplyAgentById(String id) throws Exception;
     public List<AeaProjApplyAgent> listAeaProjApplyAgent(AeaProjApplyAgent aeaProjApplyAgent) throws Exception;
 
+    public PageInfo<AeaProjApplyAgent> listAeaProjApplyAgentByConditional(AeaProjApplyAgent aeaProjApplyAgent, Page page) throws Exception;
 }

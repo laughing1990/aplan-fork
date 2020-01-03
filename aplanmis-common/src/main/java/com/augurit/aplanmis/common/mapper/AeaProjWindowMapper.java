@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.common.mapper;
 import com.augurit.aplanmis.common.domain.AeaProjWindow;
+import com.augurit.aplanmis.common.domain.AeaServiceWindow;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
@@ -15,4 +16,6 @@ public interface AeaProjWindowMapper {
     public void deleteAeaProjWindow(@Param("id") String id) throws Exception;
     public List <AeaProjWindow> listAeaProjWindow(AeaProjWindow aeaProjWindow) throws Exception;
     public AeaProjWindow getAeaProjWindowById(@Param("id") String id) throws Exception;
+
+    public List <AeaServiceWindow> listAeaServiceWindowByProjInfoId(@Param("projInfoId") String projInfoId);
 }

@@ -13,6 +13,9 @@
     AGENT_STAGE_STATE  agentStageState,
     AGENT_APPLY_STATE  agentApplyState,
     WINDOW_ID  windowId,
+    AGENT_USER_ID  agentUserId,
+    AGENT_USER_NAME  agentUserName,
+    AGENT_USER_MOBILE  agentUserMobile,
     START_TIME  startTime,
     END_TIME  endTime,
     CREATER  creater,
@@ -20,6 +23,27 @@
     MODIFIER  modifier,
     MODIFY_TIME  modifyTime,
     ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <sql id="alias_allColumns" >
+        ${alias}.APPLY_AGENT_ID  applyAgentId,
+        ${alias}.AGENT_CODE  agentCode,
+        ${alias}.PROJ_INFO_ID  projInfoId,
+        ${alias}.UNIT_INFO_ID  unitInfoId,
+        ${alias}.APPLY_USER_ID  applyUserId,
+        ${alias}.AGENT_STAGE_STATE  agentStageState,
+        ${alias}.AGENT_APPLY_STATE  agentApplyState,
+        ${alias}.WINDOW_ID  windowId,
+        ${alias}.AGENT_USER_ID  agentUserId,
+        ${alias}.AGENT_USER_NAME  agentUserName,
+        ${alias}.AGENT_USER_MOBILE  agentUserMobile,
+        ${alias}.START_TIME  startTime,
+        ${alias}.END_TIME  endTime,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.ROOT_ORG_ID  rootOrgId
     </sql>
 
 <!--2 根据主键ID查询单个实体 -->
@@ -35,117 +59,213 @@
         select
         <include refid="allColumns"/>
         from    AEA_PROJ_APPLY_AGENT
-    <where>
-        <if test="applyAgentId != null" >
-        AND    APPLY_AGENT_ID = #{applyAgentId}
-        </if>
-        <if test="agentCode != null" >
-        AND    AGENT_CODE = #{agentCode}
-        </if>
-        <if test="projInfoId != null" >
-        AND    PROJ_INFO_ID = #{projInfoId}
-        </if>
-        <if test="unitInfoId != null" >
-        AND    UNIT_INFO_ID = #{unitInfoId}
-        </if>
-        <if test="applyUserId != null" >
-        AND    APPLY_USER_ID = #{applyUserId}
-        </if>
-        <if test="agentStageState != null" >
-        AND    AGENT_STAGE_STATE = #{agentStageState}
-        </if>
-        <if test="agentApplyState != null" >
-        AND    AGENT_APPLY_STATE = #{agentApplyState}
-        </if>
-        <if test="windowId != null" >
-        AND    WINDOW_ID = #{windowId}
-        </if>
-        <if test="startTime != null" >
-        AND    START_TIME = #{startTime}
-        </if>
-        <if test="endTime != null" >
-        AND    END_TIME = #{endTime}
-        </if>
-        <if test="creater != null" >
-        AND    CREATER = #{creater}
-        </if>
-        <if test="createTime != null" >
-        AND    CREATE_TIME = #{createTime}
-        </if>
-        <if test="modifier != null" >
-        AND    MODIFIER = #{modifier}
-        </if>
-        <if test="modifyTime != null" >
-        AND    MODIFY_TIME = #{modifyTime}
-        </if>
-        <if test="rootOrgId != null" >
-        AND    ROOT_ORG_ID = #{rootOrgId}
-        </if>
-    </where>
+        <where>
+            <if test="applyAgentId != null" >
+                AND    APPLY_AGENT_ID = #{applyAgentId}
+            </if>
+            <if test="agentCode != null" >
+                AND    AGENT_CODE = #{agentCode}
+            </if>
+            <if test="projInfoId != null" >
+                AND    PROJ_INFO_ID = #{projInfoId}
+            </if>
+            <if test="unitInfoId != null" >
+                AND    UNIT_INFO_ID = #{unitInfoId}
+            </if>
+            <if test="applyUserId != null" >
+                AND    APPLY_USER_ID = #{applyUserId}
+            </if>
+            <if test="agentStageState != null" >
+                AND    AGENT_STAGE_STATE = #{agentStageState}
+            </if>
+            <if test="agentApplyState != null" >
+                AND    AGENT_APPLY_STATE = #{agentApplyState}
+            </if>
+            <if test="windowId != null" >
+                AND    WINDOW_ID = #{windowId}
+            </if>
+            <if test="agentUserId != null" >
+                AND    AGENT_USER_ID = #{agentUserId}
+            </if>
+            <if test="agentUserName != null" >
+                AND    AGENT_USER_NAME = #{agentUserName}
+            </if>
+            <if test="agentUserMobile != null" >
+                AND    AGENT_USER_MOBILE = #{agentUserMobile}
+            </if>
+            <if test="startTime != null" >
+                AND    START_TIME = #{startTime}
+            </if>
+            <if test="endTime != null" >
+                AND    END_TIME = #{endTime}
+            </if>
+            <if test="creater != null" >
+                AND    CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+                AND    CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null" >
+                AND    MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null" >
+                AND    MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null" >
+                AND    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
     </select>
 <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <select id="listAeaProjApplyAgentByConditional" resultType="AeaProjApplyAgent" >
+        select
+        <include refid="alias_allColumns">
+            <property name="alias" value="agent"/>
+        </include>,
+        t.LOCAL_CODE as localCode,
+        t.PROJ_NAME as projName,
+        t.THEME_NAME as themeName
+        from    AEA_PROJ_APPLY_AGENT agent
+        left join (
+          select proj.PROJ_INFO_ID,proj.LOCAL_CODE,proj.PROJ_NAME,theme.THEME_NAME
+          from aea_proj_info proj
+          left join aea_par_theme theme on proj.THEME_ID = theme.THEME_ID
+        ) t on agent.PROJ_INFO_ID = t.PROJ_INFO_ID
+        <where>
+            <if test="applyAgentId != null" >
+                AND    APPLY_AGENT_ID = #{applyAgentId}
+            </if>
+            <if test="agentCode != null" >
+                AND    AGENT_CODE = #{agentCode}
+            </if>
+            <if test="projInfoId != null" >
+                AND    PROJ_INFO_ID = #{projInfoId}
+            </if>
+            <if test="unitInfoId != null" >
+                AND    UNIT_INFO_ID = #{unitInfoId}
+            </if>
+            <if test="applyUserId != null" >
+                AND    APPLY_USER_ID = #{applyUserId}
+            </if>
+            <if test="agentStageState != null" >
+                AND    AGENT_STAGE_STATE = #{agentStageState}
+            </if>
+            <if test="agentApplyState != null" >
+                AND    AGENT_APPLY_STATE = #{agentApplyState}
+            </if>
+            <if test="windowId != null and windowId != ''" >
+                AND    WINDOW_ID = #{windowId}
+            </if>
+            <if test="windowIds != null and windowIds.length > 0" >
+                AND    WINDOW_ID in
+                <foreach collection="windowIds" index="index" item="windowId" separator="," close=")" open="(">
+                    #{windowId}
+                </foreach>
+            </if>
+            <if test="agentUserId != null" >
+                AND    AGENT_USER_ID = #{agentUserId}
+            </if>
+            <if test="agentUserName != null" >
+                AND    AGENT_USER_NAME = #{agentUserName}
+            </if>
+            <if test="agentUserMobile != null" >
+                AND    AGENT_USER_MOBILE = #{agentUserMobile}
+            </if>
+            <if test="startTime != null" >
+                AND    START_TIME = #{startTime}
+            </if>
+            <if test="endTime != null" >
+                AND    END_TIME = #{endTime}
+            </if>
+            <if test="creater != null" >
+                AND    CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+                AND    CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null" >
+                AND    MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null" >
+                AND    MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null and rootOrgId != ''" >
+                AND    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
 
 <!--5 新增实体对象 -->
 <insert id="insertAeaProjApplyAgent" parameterType="AeaProjApplyAgent" >
     insert into AEA_PROJ_APPLY_AGENT (
-APPLY_AGENT_ID  ,AGENT_CODE  ,PROJ_INFO_ID  ,UNIT_INFO_ID  ,APPLY_USER_ID  ,AGENT_STAGE_STATE  ,AGENT_APPLY_STATE  ,WINDOW_ID  ,START_TIME  ,END_TIME  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID  
+APPLY_AGENT_ID  ,AGENT_CODE  ,PROJ_INFO_ID  ,UNIT_INFO_ID  ,APPLY_USER_ID  ,AGENT_STAGE_STATE  ,AGENT_APPLY_STATE  ,WINDOW_ID  ,AGENT_USER_ID  ,AGENT_USER_NAME  ,AGENT_USER_MOBILE  ,START_TIME  ,END_TIME  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
     )  values  (
-#{applyAgentId},#{agentCode},#{projInfoId},#{unitInfoId},#{applyUserId},#{agentStageState},#{agentApplyState},#{windowId},#{startTime},#{endTime},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+#{applyAgentId},#{agentCode},#{projInfoId},#{unitInfoId},#{applyUserId},#{agentStageState},#{agentApplyState},#{windowId},#{agentUserId},#{agentUserName},#{agentUserMobile},#{startTime},#{endTime},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
     )
 </insert>
-<!--6 修改实体对象 -->
-<update id="updateAeaProjApplyAgent" parameterType="AeaProjApplyAgent" >
-    update AEA_PROJ_APPLY_AGENT
-    <set >
-        <if test="applyAgentId != null" >
-        APPLY_AGENT_ID = #{applyAgentId},
-        </if>
-        <if test="agentCode != null" >
-        AGENT_CODE = #{agentCode},
-        </if>
-        <if test="projInfoId != null" >
-        PROJ_INFO_ID = #{projInfoId},
-        </if>
-        <if test="unitInfoId != null" >
-        UNIT_INFO_ID = #{unitInfoId},
-        </if>
-        <if test="applyUserId != null" >
-        APPLY_USER_ID = #{applyUserId},
-        </if>
-        <if test="agentStageState != null" >
-        AGENT_STAGE_STATE = #{agentStageState},
-        </if>
-        <if test="agentApplyState != null" >
-        AGENT_APPLY_STATE = #{agentApplyState},
-        </if>
-        <if test="windowId != null" >
-        WINDOW_ID = #{windowId},
-        </if>
-        <if test="startTime != null" >
-        START_TIME = #{startTime},
-        </if>
-        <if test="endTime != null" >
-        END_TIME = #{endTime},
-        </if>
-        <if test="creater != null" >
-        CREATER = #{creater},
-        </if>
-        <if test="createTime != null" >
-        CREATE_TIME = #{createTime},
-        </if>
-        <if test="modifier != null" >
-        MODIFIER = #{modifier},
-        </if>
-        <if test="modifyTime != null" >
-        MODIFY_TIME = #{modifyTime},
-        </if>
-        <if test="rootOrgId != null" >
-        ROOT_ORG_ID = #{rootOrgId},
-        </if>
-    </set>
-    where APPLY_AGENT_ID = #{applyAgentId}
-</update>
-<!--7 删除实体对象,根据主键ID -->
+    <!--6 修改实体对象 -->
+    <update id="updateAeaProjApplyAgent" parameterType="AeaProjApplyAgent" >
+        update AEA_PROJ_APPLY_AGENT
+        <set >
+            <if test="applyAgentId != null" >
+                APPLY_AGENT_ID = #{applyAgentId},
+            </if>
+            <if test="agentCode != null" >
+                AGENT_CODE = #{agentCode},
+            </if>
+            <if test="projInfoId != null" >
+                PROJ_INFO_ID = #{projInfoId},
+            </if>
+            <if test="unitInfoId != null" >
+                UNIT_INFO_ID = #{unitInfoId},
+            </if>
+            <if test="applyUserId != null" >
+                APPLY_USER_ID = #{applyUserId},
+            </if>
+            <if test="agentStageState != null" >
+                AGENT_STAGE_STATE = #{agentStageState},
+            </if>
+            <if test="agentApplyState != null" >
+                AGENT_APPLY_STATE = #{agentApplyState},
+            </if>
+            <if test="windowId != null" >
+                WINDOW_ID = #{windowId},
+            </if>
+            <if test="agentUserId != null" >
+                AGENT_USER_ID = #{agentUserId},
+            </if>
+            <if test="agentUserName != null" >
+                AGENT_USER_NAME = #{agentUserName},
+            </if>
+            <if test="agentUserMobile != null" >
+                AGENT_USER_MOBILE = #{agentUserMobile},
+            </if>
+            <if test="startTime != null" >
+                START_TIME = #{startTime},
+            </if>
+            <if test="endTime != null" >
+                END_TIME = #{endTime},
+            </if>
+            <if test="creater != null" >
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null" >
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null" >
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="rootOrgId != null" >
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where APPLY_AGENT_ID = #{applyAgentId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
     <delete id="deleteAeaProjApplyAgent">
         delete from   AEA_PROJ_APPLY_AGENT
         where
@@ -162,6 +282,9 @@ APPLY_AGENT_ID  ,AGENT_CODE  ,PROJ_INFO_ID  ,UNIT_INFO_ID  ,APPLY_USER_ID  ,AGEN
         <result property="agentStageState" column="AGENT_STAGE_STATE"/>
         <result property="agentApplyState" column="AGENT_APPLY_STATE"/>
         <result property="windowId" column="WINDOW_ID"/>
+        <result property="agentUserId" column="AGENT_USER_ID"/>
+        <result property="agentUserName" column="AGENT_USER_NAME"/>
+        <result property="agentUserMobile" column="AGENT_USER_MOBILE"/>
         <result property="startTime" column="START_TIME"/>
         <result property="endTime" column="END_TIME"/>
         <result property="creater" column="CREATER"/>

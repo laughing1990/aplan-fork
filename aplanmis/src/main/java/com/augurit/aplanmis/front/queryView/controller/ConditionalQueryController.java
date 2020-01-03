@@ -768,4 +768,16 @@ public class ConditionalQueryController {
             return new ContentResultForm<>(false, null, e.getMessage());
         }
     }
+
+    @GetMapping("/listAgencyDoTasks")
+    @ApiOperation(value = "根据查询条件获取项目代办列表")
+    public ResultForm listAgencyDoTasks(ConditionalQueryRequest conditionalQueryRequest, Page page) {
+        try {
+            PageInfo agencyDoTasks = conditionalQueryService.listAgencyDoTasks(conditionalQueryRequest, page);
+            return new ContentResultForm<>(true, agencyDoTasks);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return new ContentResultForm<>(false, null, e.getMessage());
+        }
+    }
 }

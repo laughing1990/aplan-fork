@@ -53,5 +53,12 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
         logger.debug("成功执行查询list！！");
         return list;
     }
+
+    public PageInfo<AeaProjApplyAgent> listAeaProjApplyAgentByConditional(AeaProjApplyAgent aeaProjApplyAgent, Page page) throws Exception{
+        PageHelper.startPage(page);
+        List<AeaProjApplyAgent> list = aeaProjApplyAgentMapper.listAeaProjApplyAgentByConditional(aeaProjApplyAgent);
+        logger.debug("成功执行查询list！！");
+        return new PageInfo<>(list);
+    }
 }
 
