@@ -702,6 +702,7 @@ var vm = new Vue({
         solicitDetails: [],
       },
       unionCanFinish: false,
+      isPassLHPS: '',
       //联合评审 end
       // 一次征询 start
       hasOneSolicit: 0,
@@ -790,6 +791,9 @@ var vm = new Vue({
   },
   methods: {
     // 联合评审 start
+    ensureUnionReview: function(val){
+      // todo
+    },
     delUnionFile: function (row,  item) {
       var vm = this;
       this.$confirm('此操作将永久删除该文件, 是否继续?', '删除文件', {
@@ -3411,16 +3415,14 @@ var vm = new Vue({
     // 初始化左边按钮组
     initButtons: function () {
       var vm = this;
-      var defaultBtn = [
-        {
-          elementName: "意见征求",
-          elementCode: "wfBusSave",
-          columnType: "button",
-          isReadonly: '0',
-          isHidden: '0',
-          elementRender: '<button class="btn btn-outline-info" onclick="clickStartSolicit()">意见征求</button>'
-        },
-        {
+      var defaultBtn = [{
+        elementName: "意见征求",
+        elementCode: "wfBusSave",
+        columnType: "button",
+        isReadonly: '0',
+        isHidden: '0',
+        elementRender: '<button class="btn btn-outline-info" onclick="clickStartSolicit()">意见征求</button>'
+      }, {
         elementName: "全景图",
         elementCode: "wfBusSave",
         columnType: "button",
@@ -3496,6 +3498,28 @@ var vm = new Vue({
       if (vm.hasUnionReview == 0) {
         // 没有发起过联合评审的加上联合评审按钮
         // defaultBtn = unionReviewBtn.concat(defaultBtn);
+      }
+      // 联合评审
+      if (vm.isPassLHPS) {
+        var tmpBtn = [{
+          elementName: "联合评审通过",
+          elementCode: "wfBusSave",
+          columnType: "button",
+          isReadonly: '0',
+          isHidden: '0',
+          elementRender: '<button class="btn btn-outline-info" onclick="ensureUnionReview(1)">联合评审通过</button>'
+        }];
+        if (vm.isPassLhps == '0') {
+          tmpBtn = [{
+            elementName: "联合评审不通过",
+            elementCode: "wfBusSave",
+            columnType: "button",
+            isReadonly: '0',
+            isHidden: '0',
+            elementRender: '<button class="btn btn-outline-info" onclick="ensureUnionReview(0)">联合评审不通过</button>'
+          }];
+        }
+        defaultBtn = tmpBtn.concat(defaultBtn);
       }
       if (vm.isDraftPage == 'true') {
         defaultBtn = draftBtn.concat(defaultBtn);
@@ -3644,6 +3668,7 @@ var vm = new Vue({
           vm.hasSolicit = res.content.hasYJZQ;
           vm.hasOneSolicit = res.content.hasYCZX;
           vm.hasUnionReview = res.content.hasLHPS;
+          vm.isPassLHPS = res.content.isPassLHPS;
           // if (isDevelop) {
           //   vm.hasOneSolicit = 1;
           //   vm.hasUnionReview = 1;
@@ -6697,6 +6722,10 @@ function clickUnionReview() {
 
 function clickOneSolicit() {
   vm.clickOneSolicit();
+}
+
+function ensureUnionReview(val){
+  vm.ensureUnionReview(val);
 }
 
 /**
