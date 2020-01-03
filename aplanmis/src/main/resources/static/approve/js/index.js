@@ -1428,6 +1428,10 @@ var vm = new Vue({
             vm.solicitBmForm.solicitLinkmanName = res.content[0].solicitDetailUser.linkmanName;
             vm.solicitBmForm.solicitLinkmanPhone = res.content[0].solicitDetailUser.linkmanPhone;
           }
+          if (res.content[0].solicit.solicitCanBeFinish==1) {
+            vm.solicitBmForm.solicitLinkmanName = res.content[0].solicit.solicitLinkmanName;
+            vm.solicitBmForm.solicitLinkmanPhone = res.content[0].solicit.solicitLinkmanPhone;
+          }
           if (typeof cb == 'function') {
             if (res.content && res.content.length) {
               cb(res.content.reverse());
