@@ -35,10 +35,10 @@ public class AeaSolicitItemServiceImpl implements AeaSolicitItemService {
     private static Logger logger = LoggerFactory.getLogger(AeaSolicitItemServiceImpl.class);
 
     @Autowired
-    private AeaSolicitItemMapper aeaSolicitItemMapper;
+    private BscDicCodeMapper bscDicCodeMapper;
 
     @Autowired
-    private BscDicCodeMapper bscDicCodeMapper;
+    private AeaSolicitItemMapper aeaSolicitItemMapper;
 
     @Override
     public void saveAeaSolicitItem(AeaSolicitItem AeaSolicitItem) {

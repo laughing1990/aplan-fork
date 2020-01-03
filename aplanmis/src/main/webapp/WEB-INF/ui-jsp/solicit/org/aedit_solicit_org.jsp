@@ -16,6 +16,7 @@
 
                     <input type="hidden" name="solicitOrgId" value=""/>
                     <input type="hidden" name="orgId" value=""/>
+                    <input type="hidden" name="isBusSolicit" value=""/>
 
                     <div class="form-group m-form__group row">
                         <label class="col-lg-2 col-form-label" style="text-align: right;">征求部门名称:</label>

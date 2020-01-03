@@ -1,6 +1,6 @@
 var commonQueryParams = [],
-    aedit_solicit_item_validator,
-    import_solicit_item_validator,
+    aedit_solicit_item_validator = null,
+    import_solicit_item_validator = null,
     solicit_item_tb,
     solicit_item_user_tb;
 
@@ -428,6 +428,10 @@ function importSolicitItem(){
 
     $("#uploadProgress").modal("show");
     $('#uploadProgressMsg').html("加载数据中,请勿点击,耐心等候...");
+    $('#import_solicit_item_form')[0].reset();
+    if(import_solicit_item_validator!=null){
+        import_solicit_item_validator.resetForm();
+    }
     initSolicitItemCheck();
     setTimeout(function () {
         $("#uploadProgress").modal('hide');

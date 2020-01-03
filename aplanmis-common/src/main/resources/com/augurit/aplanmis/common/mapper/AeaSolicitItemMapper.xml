@@ -166,7 +166,7 @@
             )
             </if>
         </where>
-        order by soliItem.CREATE_TIME desc
+        order by item.ITEM_ID desc, soliItem.CREATE_TIME desc
     </select>
 
     <!--5 新增实体对象 -->

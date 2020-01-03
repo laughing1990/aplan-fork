@@ -75,74 +75,115 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body" style="padding: 5px 0px;">
-                <div style="width: 100%;height: 100%; padding: 5px;">
-                    <div class="row" style="width: 100%;height: 100%;margin: 0px;">
-                        <div class="col-xl-6" style="padding: 0px 2px 0px 8px;">
-                            <div class="m-portlet" style="margin-bottom: 0px;width: 100%;height: 100%;">
-                                <div class="m-portlet__head">
-                                    <div class="m-portlet__head-caption">
-                                        <div class="m-portlet__head-title">
-                                           <span class="m-portlet__head-icon m--hide">
-                                               <i class="la la-gear"></i>
-                                           </span>
-                                            <h3 class="m-portlet__head-text">
-                                                组织架构
-                                            </h3>
+            <form id="import_solicit_org_form" method="post">
+                <div class="modal-body" style="padding: 5px 0px;">
+                    <div style="width: 100%;height: 100%; padding: 5px;">
+                        <div class="row" style="width: 100%;height: 100%;margin: 0px;">
+                            <div class="col-xl-7" style="padding: 0px 2px 0px 8px;">
+                                <div class="m-portlet" style="margin-bottom: 0px;width: 100%;height: 100%;">
+                                    <div class="m-portlet__head">
+                                        <div class="m-portlet__head-caption">
+                                            <div class="m-portlet__head-title">
+                                               <span class="m-portlet__head-icon m--hide">
+                                                   <i class="la la-gear"></i>
+                                               </span>
+                                                <h3 class="m-portlet__head-text">
+                                                    组织架构
+                                                </h3>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="m-portlet__body" style="padding: 10px 0px;">
-                                    <div class="row" style="margin: 0px;">
-                                        <div class="col-xl-5">
-                                            <input id="selectSolicitOrgKeyWord" type="text"
-                                                   class="form-control m-input m-input--solid empty" placeholder="请输入关键字..."
-                                                   style="background-color: #f0f0f075;border-color: #c4c5d6;">
+                                    <div class="m-portlet__body" style="padding: 5px 0px;">
+                                        <div class="row" style="margin: 0px;">
+                                            <div class="col-xl-5">
+                                                <input id="selectSolicitOrgKeyWord" type="text"
+                                                       class="form-control m-input m-input--solid empty" placeholder="请输入关键字..."
+                                                       style="background-color: #f0f0f075;border-color: #c4c5d6;">
+                                            </div>
+                                            <div class="col-xl-7">
+                                                <button type="button" class="btn btn-info"
+                                                        onclick="searchSelectSolicitOrgOrgNode();">查询</button>
+                                                <button type="button" class="btn btn-secondary"
+                                                        onclick="clearSearchSelectSolicitOrgOrgNode();">清空</button>
+                                                <button type="button" class="btn btn-secondary"
+                                                        onclick="expandSelectSolicitOrgAllNode();">展开</button>
+                                                <button type="button" class="btn btn-secondary"
+                                                        onclick="collapseSelectSolicitOrgAllNode();">折叠</button>
+                                            </div>
                                         </div>
-                                        <div class="col-xl-7">
-                                            <button type="button" class="btn btn-info"
-                                                    onclick="searchSelectSolicitOrgOrgNode();">查询</button>
-                                            <button type="button" class="btn btn-secondary"
-                                                    onclick="clearSearchSelectSolicitOrgOrgNode();">清空</button>
-                                            <button type="button" class="btn btn-secondary"
-                                                    onclick="expandSelectSolicitOrgAllNode();">展开</button>
-                                            <button type="button" class="btn btn-secondary"
-                                                    onclick="collapseSelectSolicitOrgAllNode();">折叠</button>
+                                        <div style="margin: 10px 0px;border-bottom: 1px solid #e8e8e8;"></div>
+                                        <div id="selectSolicitOrgDiv" style="height: 380px;overflow: auto;">
+                                            <div id="selectSolicitOrgTree" class="ztree"></div>
                                         </div>
                                     </div>
-                                    <div style="margin: 10px 0px;border-bottom: 1px solid #e8e8e8;"></div>
-                                    <div id="selectSolicitOrgTree" class="ztree" style="height: 380px; overflow: auto;"></div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-xl-6" style="padding: 0px 8px 0px 2px;">
-                            <div class="m-portlet" style="margin-bottom: 0px;width: 100%;height: 100%;">
-                                <div class="m-portlet__head">
-                                    <div class="m-portlet__head-caption">
-                                        <div class="m-portlet__head-title">
-                                           <span class="m-portlet__head-icon m--hide">
-                                               <i class="la la-gear"></i>
-                                           </span>
-                                            <h3 class="m-portlet__head-text">
-                                                已选部门
-                                            </h3>
+                            <div class="col-xl-5" style="padding: 0px 8px 0px 2px;">
+                                <div class="m-portlet" style="margin-bottom: 0px;width: 100%;height: 100%;">
+                                    <div class="m-portlet__head">
+                                        <div class="m-portlet__head-caption">
+                                            <div class="m-portlet__head-title">
+                                                   <span class="m-portlet__head-icon m--hide">
+                                                       <i class="la la-gear"></i>
+                                                   </span>
+                                                <h3 class="m-portlet__head-text">
+                                                    <font color="red">*&nbsp;</font>征求业务类型:
+                                                </h3>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="m-portlet__body" style="padding: 10px 0px;">
-                                    <div id="selectSolicitOrgCheckDiv" class="selectSolicitOrgSortDiv" style="height: 435px;overflow: auto;">
-                                        <ul id="selectSolicitOrgCheckUl" class="block_ul_td"></ul>
+                                    <div class="m-portlet__body" style="padding: 10px 0px;">
+                                        <c:forEach items="${solicitBusTypes}" var="solicitBusType">
+                                            <div class="form-group m-form__group row" style="margin-bottom: 10px;">
+                                                <div class="col-12">
+                                                    <label class="m-radio">
+                                                        <input type="radio" name="busType" value="${solicitBusType.itemCode}">${solicitBusType.itemName}<span></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </c:forEach>
+                                    </div>
+
+                                    <div style="margin: 0px;border-bottom: 1px solid #e8e8e8;"></div>
+
+                                    <div class="m-portlet__head">
+                                        <div class="m-portlet__head-caption">
+                                            <div class="m-portlet__head-title">
+                                                   <span class="m-portlet__head-icon m--hide">
+                                                       <i class="la la-gear"></i>
+                                                   </span>
+                                                <h3 class="m-portlet__head-text">
+                                                    <font color="red">*&nbsp;</font>征求业务模式:
+                                                </h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="m-portlet__body" style="padding: 10px 0px;">
+                                        <div class="form-group m-form__group row" style="margin-bottom: 10px;">
+                                            <div class="col-12">
+                                                <label class="m-radio">
+                                                    <input type="radio" name="solicitType" value="0">多人征求模式<span></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group m-form__group row" style="margin-bottom: 10px;">
+                                            <div class="col-12">
+                                                <label class="m-radio">
+                                                    <input type="radio" name="solicitType" value="1">单人征求模式<span></span>
+                                                </label>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer" style="padding: 10px;height: 60px;">
-                <button id="selectSolicitOrgCheckBtn" type="button" class="btn btn-info">保存</button>&nbsp;&nbsp;
-                <button type="button" class="btn btn-secondary" onclick="closeSelectSolicitOrgZtree();">关闭</button>
-            </div>
+                <div class="modal-footer" style="padding: 10px;height: 60px;">
+                    <button id="selectSolicitOrgCheckBtn" type="submit" class="btn btn-info">保存</button>&nbsp;&nbsp;
+                    <button type="button" class="btn btn-secondary" onclick="closeSelectSolicitOrgZtree();">关闭</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -198,30 +239,30 @@
         var treeObj = $.fn.zTree.getZTreeObj(treeId);
         if(treeNode.checked){
             treeObj.selectNode(treeNode);
-            var liHtml = '<li name="selectSolicitOrgCheckLi" category-id="'+treeNode.id+'">' +
-                            '<span class="drag-handle_td" onclick="removeSolicitOrgCheck(\''+treeNode.id+'\');">×</span>' +
-                            '<span class="org_name_td">'+treeNode.name+'</span>' +
-                        '</li>';
-            var i=0;
-            $('li[name="selectSolicitOrgCheckLi"]').each(function(){
-                var categoryId = $(this).attr('category-id');
-                if(categoryId==treeNode.id){
-                    i++;
-                    return false;
-                }
-            });
-            if(i==0){
-                $('#selectSolicitOrgCheckUl').append(liHtml);
-            }
+            // var liHtml = '<li name="selectSolicitOrgCheckLi" category-id="'+treeNode.id+'">' +
+            //                 '<span class="drag-handle_td" onclick="removeSolicitOrgCheck(\''+treeNode.id+'\');">×</span>' +
+            //                 '<span class="org_name_td">'+treeNode.name+'</span>' +
+            //             '</li>';
+            // var i=0;
+            // $('li[name="selectSolicitOrgCheckLi"]').each(function(){
+            //     var categoryId = $(this).attr('category-id');
+            //     if(categoryId==treeNode.id){
+            //         i++;
+            //         return false;
+            //     }
+            // });
+            // if(i==0){
+            //     $('#selectSolicitOrgCheckUl').append(liHtml);
+            // }
         }else{
             treeObj.cancelSelectedNode(treeNode);
-            $('li[name="selectSolicitOrgCheckLi"]').each(function(){
-                var categoryId = $(this).attr('category-id');
-                if(categoryId==treeNode.id){
-                    $(this).remove();
-                    return false;
-                }
-            });
+            // $('li[name="selectSolicitOrgCheckLi"]').each(function(){
+            //     var categoryId = $(this).attr('category-id');
+            //     if(categoryId==treeNode.id){
+            //         $(this).remove();
+            //         return false;
+            //     }
+            // });
         }
     }
 
@@ -230,30 +271,30 @@
         var treeObj = $.fn.zTree.getZTreeObj(treeId);
         if (treeNode.checked) {
             treeObj.checkNode(treeNode, false, false, true);
-            $('li[name="selectSolicitOrgCheckLi"]').each(function () {
-                var categoryId = $(this).attr('category-id');
-                if (categoryId == treeNode.id) {
-                    $(this).remove();
-                    return false;
-                }
-            });
+            // $('li[name="selectSolicitOrgCheckLi"]').each(function () {
+            //     var categoryId = $(this).attr('category-id');
+            //     if (categoryId == treeNode.id) {
+            //         $(this).remove();
+            //         return false;
+            //     }
+            // });
         } else {
             treeObj.checkNode(treeNode, true, false, true);
-            var liHtml = '<li name="selectSolicitOrgCheckLi" category-id="' + treeNode.id + '">' +
-                            '<span class="drag-handle_td" onclick="removeSolicitOrgCheck(\'' + treeNode.id + '\');">×</span>' +
-                            '<span class="org_name_td">' + treeNode.name + '</span>' +
-                         '</li>';
-            var i = 0;
-            $('li[name="selectSolicitOrgCheckLi"]').each(function () {
-                var categoryId = $(this).attr('category-id');
-                if (categoryId == treeNode.id) {
-                    i++;
-                    return false;
-                }
-            });
-            if (i == 0) {
-                $('#selectSolicitOrgCheckUl').append(liHtml);
-            }
+            // var liHtml = '<li name="selectSolicitOrgCheckLi" category-id="' + treeNode.id + '">' +
+            //                 '<span class="drag-handle_td" onclick="removeSolicitOrgCheck(\'' + treeNode.id + '\');">×</span>' +
+            //                 '<span class="org_name_td">' + treeNode.name + '</span>' +
+            //              '</li>';
+            // var i = 0;
+            // $('li[name="selectSolicitOrgCheckLi"]').each(function () {
+            //     var categoryId = $(this).attr('category-id');
+            //     if (categoryId == treeNode.id) {
+            //         i++;
+            //         return false;
+            //     }
+            // });
+            // if (i == 0) {
+            //     $('#selectSolicitOrgCheckUl').append(liHtml);
+            // }
         }
     }
 
@@ -278,7 +319,7 @@
     // 初始化加载函数
     $(function(){
 
-        $('#selectSolicitOrgTree').niceScroll({
+        $('#selectSolicitOrgDiv').niceScroll({
 
             cursorcolor: "#e2e5ec",//#CC0071 光标颜色
             cursoropacitymin: 0, // 当滚动条是隐藏状态时改变透明度, 值范围 1 到 0
@@ -289,6 +330,18 @@
             cursorborderradius: "2px",//以像素为光标边界半径
             autohidemode: true  //是否隐藏滚动条
         });
+
+        // $('#selectSolicitOrgTree').niceScroll({
+        //
+        //     cursorcolor: "#e2e5ec",//#CC0071 光标颜色
+        //     cursoropacitymin: 0, // 当滚动条是隐藏状态时改变透明度, 值范围 1 到 0
+        //     cursoropacitymax: 1, // 当滚动条是显示状态时改变透明度, 值范围 1 到 0
+        //     touchbehavior: false, //使光标拖动滚动像在台式电脑触摸设备
+        //     cursorwidth: "4px", //像素光标的宽度
+        //     cursorborder: "0", //   游标边框css定义
+        //     cursorborderradius: "2px",//以像素为光标边界半径
+        //     autohidemode: true  //是否隐藏滚动条
+        // });
 
         $('#selectSolicitOrgCheckDiv').niceScroll({
 
@@ -322,53 +375,53 @@
         //     }
         // });
 
-        $('#selectSolicitOrgCheckBtn').click(function() {
-
-            var orgIds = [];
-            var liObjs = document.getElementsByName('selectSolicitOrgCheckLi');
-            for (var i = 0; i < liObjs.length; i++) {
-                var categoryId = $(liObjs[i]).attr('category-id');
-                orgIds.push(categoryId);
-            }
-            swal({
-                title: '此操作影响：',
-                text: '此操作将重新设置征求部门数据,您确定要执行吗?',
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-            }).then(function (result) {
-                if (result.value) {
-                    $.ajax({
-                        url: ctx+'/aea/solicit/org/batchSaveSolicitOrg.do',
-                        type: 'POST',
-                        data: {
-                            'orgIds': orgIds.toString()
-                        },
-                        async: false,
-                        success: function (result) {
-                            if (result.success) {
-                                swal({
-                                    text: '保存成功！',
-                                    type: 'success',
-                                    timer: 1500,
-                                    showConfirmButton: false
-                                });
-                                closeSelectSolicitOrgZtree();
-                                // 刷新列表
-                                searchSolicitOrgList();
-                            }else{
-                                swal('错误信息', result.message, 'error');
-                            }
-                        },
-                        error: function (XMLHttpRequest, textStatus, errorThrown) {
-
-                            swal('错误信息', XMLHttpRequest.responseText, 'error');
-                        }
-                    });
-                }
-            });
-        });
+        // $('#selectSolicitOrgCheckBtn').click(function() {
+        //
+        //     var orgIds = [];
+        //     var liObjs = document.getElementsByName('selectSolicitOrgCheckLi');
+        //     for (var i = 0; i < liObjs.length; i++) {
+        //         var categoryId = $(liObjs[i]).attr('category-id');
+        //         orgIds.push(categoryId);
+        //     }
+        //     swal({
+        //         title: '此操作影响：',
+        //         text: '此操作将重新设置征求部门数据,您确定要执行吗?',
+        //         type: 'warning',
+        //         showCancelButton: true,
+        //         confirmButtonText: '确定',
+        //         cancelButtonText: '取消',
+        //     }).then(function (result) {
+        //         if (result.value) {
+        //             $.ajax({
+        //                 url: ctx+'/aea/solicit/org/batchSaveSolicitOrg.do',
+        //                 type: 'POST',
+        //                 data: {
+        //                     'orgIds': orgIds.toString()
+        //                 },
+        //                 async: false,
+        //                 success: function (result) {
+        //                     if (result.success) {
+        //                         swal({
+        //                             text: '保存成功！',
+        //                             type: 'success',
+        //                             timer: 1500,
+        //                             showConfirmButton: false
+        //                         });
+        //                         closeSelectSolicitOrgZtree();
+        //                         // 刷新列表
+        //                         searchSolicitOrgList();
+        //                     }else{
+        //                         swal('错误信息', result.message, 'error');
+        //                     }
+        //                 },
+        //                 error: function (XMLHttpRequest, textStatus, errorThrown) {
+        //
+        //                     swal('错误信息', XMLHttpRequest.responseText, 'error');
+        //                 }
+        //             });
+        //         }
+        //     });
+        // });
     });
 
     function initSolicitOrgCheck() {
@@ -564,7 +617,7 @@
         selectSolicitOrgTree.cancelSelectedNode();
 
         // 加载已经选择的数据
-        loadCheckSelectSolicitOrgData();
+        // loadCheckSelectSolicitOrgData();
     }
 
     //判断字符是否为空的方法

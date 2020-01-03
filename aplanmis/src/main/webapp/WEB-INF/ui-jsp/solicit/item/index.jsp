@@ -147,8 +147,8 @@
                                                 <div class="col-md-6" style="padding: 0px;">
                                                     <form id="search_solicit_item_user_form" method="post">
                                                         <div class="row" style="margin: 0px;">
-                                                            <div class="col-3"></div>
-                                                            <div class="col-5" style="text-align: right;">
+                                                            <div class="col-2"></div>
+                                                            <div class="col-6" style="text-align: right;">
                                                                 <div class="m-input-icon m-input-icon--left">
                                                                     <input type="text" class="form-control m-input"
                                                                            placeholder="请输入关键字..." name="keyword" value=""/>

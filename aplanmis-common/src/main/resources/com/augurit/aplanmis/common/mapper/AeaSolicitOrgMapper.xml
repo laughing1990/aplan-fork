@@ -144,6 +144,7 @@
             )
             </if>
         </where>
+        order by org.ORG_SORT_NO, soliOrg.CREATE_TIME desc
     </select>
 
     <!--5 新增实体对象 -->

@@ -1,5 +1,6 @@
 var commonQueryParams = [],
-    aedit_solicit_org_validator,
+    aedit_solicit_org_validator = null,
+    import_solicit_org_validator = null,
     solicit_org_tb,
     solicit_org_user_tb;
 
@@ -17,6 +18,9 @@ $(function () {
 
     // 初始化校验
     initValidateSolicitOrg();
+
+    // 初始化导入
+    initValidateImportSolicitOrg();
 
     // 征求组织列表
     $('#solicit_org_list_tb').bootstrapTable('resetView', {
@@ -58,6 +62,7 @@ $(function () {
                         .bind("change cut input propertychange",searchSelectSolicitOrg2Node);
 
     selectSolicitOrg2Key.bind('keydown', function (e){
+
         if(e.which == 13){
             searchSelectSolicitOrg2Node();
         }
@@ -153,9 +158,96 @@ function initValidateSolicitOrg(){
     });
 }
 
+function initValidateImportSolicitOrg(){
+
+    // 设置初始化校验
+    import_solicit_org_validator = $("#import_solicit_org_form").validate({
+
+        // 定义校验规则
+        rules: {
+            busType: {
+                required: true
+            },
+            solicitType:{
+                required: true
+            },
+        },
+        messages: {
+            busType: {
+                required: '<font color="red">此项必填！</font>'
+            },
+            solicitType:{
+                required: '<font color="red">此项必填！</font>'
+            },
+        },
+        // 提交表单
+        submitHandler: function (form) {
+
+            var treeObj = $.fn.zTree.getZTreeObj("selectSolicitOrgTree");
+            var nodes = treeObj.getCheckedNodes(true);
+            if(nodes!=null&&nodes.length>0){
+                var orgIds = [];
+                for(var i=0;i<nodes.length;i++){
+                    orgIds.push(nodes[i].id);
+                }
+                var d = {};
+                var t = $('#import_solicit_org_form').serializeArray();
+                $.each(t, function () {
+                    d[this.name] = this.value;
+                });
+                d['orgIds'] = orgIds.toString();
+                d['isBusSolicit'] = isBusSolicit;
+
+                $("#uploadProgress").modal("show");
+                $('#uploadProgressMsg').html("数据保存中,请勿点击,耐心等候...");
+
+                $.ajax({
+                    url: ctx+'/aea/solicit/org/batchSaveSolicitOrg.do',
+                    type: 'POST',
+                    data: d,
+                    async: false,
+                    success: function (result) {
+                        if (result.success) {
+
+                            setTimeout(function () {
+                                $("#uploadProgress").modal('hide');
+                                swal({
+                                    text: '保存成功！',
+                                    type: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                                closeSelectSolicitOrgZtree();
+                                // 刷新列表
+                                searchSolicitOrgList();
+                            }, 500);
+
+                        }else{
+
+                            setTimeout(function () {
+                                $("#uploadProgress").modal('hide');
+                                swal('错误信息', result.message, 'error');
+                            }, 500);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                        setTimeout(function () {
+                            $("#uploadProgress").modal('hide');
+                            swal('错误信息', XMLHttpRequest.responseText, 'error');
+                        }, 500);
+                    }
+                });
+            }else{
+                swal('错误信息', '请选择征求部门!', 'error');
+            }
+        }
+    });
+}
+
 function initSolicitOrgTb() {
 
-    var url = ctx+'/aea/solicit/org/listAeaSolicitOrgRelOrgInfoByPage.do';
+    var url = ctx+'/aea/solicit/org/listAeaSolicitOrgRelOrgInfoByPage.do?isBusSolicit=1';
     solicit_org_tb = $('#solicit_org_list_tb').bootstrapTable({
         url: url,
         columns: getSolicitOrgColumns(),
@@ -308,6 +400,10 @@ function importSolicitOrg(){
 
     $("#uploadProgress").modal("show");
     $('#uploadProgressMsg').html("加载数据中,请勿点击,耐心等候...");
+    $('#import_solicit_org_form')[0].reset();
+    if(import_solicit_org_validator!=null){
+        import_solicit_org_validator.resetForm();
+    }
     initSolicitOrgCheck();
     setTimeout(function () {
         $("#uploadProgress").modal('hide');

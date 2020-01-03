@@ -2,6 +2,7 @@ package com.augurit.aplanmis.admin.solicit;
 
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
 import com.augurit.agcloud.bsc.sc.dic.code.service.BscDicCodeService;
+import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.EasyuiPageInfo;
@@ -161,16 +162,35 @@ public class AeaSolicitOrgController {
     }
 
     @RequestMapping("/batchSaveSolicitOrg.do")
-    public ResultForm batchSaveSolicitOrg(String[] orgIds) throws Exception{
+    public ResultForm batchSaveSolicitOrg(String isBusSolicit, String stageId, String busType, String solicitType, String[] orgIds) throws Exception{
 
+        if(StringUtils.isBlank(isBusSolicit)){
+            throw new InvalidParameterException("参数isBusSolicit为空!");
+        }
+        if(isBusSolicit.equals(Status.OFF)){
+            if(StringUtils.isBlank(stageId)){
+                throw new InvalidParameterException("参数stageId为空!");
+            }
+        }else{
+            if(StringUtils.isBlank(busType)){
+                throw new InvalidParameterException("参数busType为空!");
+            }
+        }
+        if(StringUtils.isBlank(solicitType)){
+            throw new InvalidParameterException("参数solicitType为空!");
+        }
         if (orgIds != null && orgIds.length > 0) {
-            aeaSolicitOrgService.batchSaveSolicitOrg(orgIds);
-        } else {
-            aeaSolicitOrgService.batchDelSolicitOrgByRootOrgId(SecurityContext.getCurrentOrgId());
+            aeaSolicitOrgService.batchSaveSolicitOrg(isBusSolicit, stageId, busType, solicitType, orgIds);
         }
         return new ResultForm(true);
     }
 
+    /**
+     * 获取征求部门数据
+     *
+     * @return
+     * @throws Exception
+     */
     @RequestMapping("/gtreeSolicitOrg.do")
     public List<ZtreeNode> gtreeSolicitOrg() throws Exception{
 
