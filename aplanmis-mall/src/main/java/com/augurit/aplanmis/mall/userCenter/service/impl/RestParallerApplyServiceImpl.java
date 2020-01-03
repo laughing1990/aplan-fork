@@ -146,8 +146,16 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
         aeaParFactors.stream().forEach(aeaParFactor -> {
             AeaParFactor factor = new AeaParFactor();
             factor.setParentFactorId(aeaParFactor.getFactorId());
-            aeaParFactor.setIsActive("1");
-            aeaParFactor.setAnswerFactors(aeaParFactorMapper.listAeaParFactor(factor));
+            factor.setIsActive("1");
+            List<AeaParFactor> answerfactors  = aeaParFactorMapper.listAeaParFactor(factor);
+            answerfactors.stream().forEach(answerfactor->{
+                AeaParFactorTheme aeaParFactorTheme = new AeaParFactorTheme();
+                aeaParFactorTheme.setFactorId(answerfactor.getFactorId());
+                List<AeaParFactorTheme> aeaParFactorThemes = aeaParFactorThemeMapper.listAeaParFactorTheme(aeaParFactorTheme);
+                if (aeaParFactorThemes.size()>0) answerfactor.setThemeId(aeaParFactorThemes.get(0).getThemeId());
+            });
+
+            aeaParFactor.setAnswerFactors(answerfactors);
         });
         return aeaParFactors;
     }
@@ -162,7 +170,14 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
             AeaParFactor parFactor = new AeaParFactor();
             parFactor.setParentFactorId(aeaParFactor.getFactorId());
             parFactor.setIsActive("1");
-            aeaParFactor.setAnswerFactors(aeaParFactorMapper.listAeaParFactor(parFactor));
+            List<AeaParFactor> answerfactors  = aeaParFactorMapper.listAeaParFactor(factor);
+            answerfactors.stream().forEach(answerfactor->{
+                AeaParFactorTheme aeaParFactorTheme = new AeaParFactorTheme();
+                aeaParFactorTheme.setFactorId(answerfactor.getFactorId());
+                List<AeaParFactorTheme> aeaParFactorThemes = aeaParFactorThemeMapper.listAeaParFactorTheme(aeaParFactorTheme);
+                if (aeaParFactorThemes.size()>0) answerfactor.setThemeId(aeaParFactorThemes.get(0).getThemeId());
+            });
+            aeaParFactor.setAnswerFactors(answerfactors);
         });
         return aeaParFactors;
     }
