@@ -54,6 +54,9 @@ public class AeaSolicitOrg implements Serializable{
     @ApiModelProperty("扩展字段：组织编号")
     private String orgCode;
 
+    @ApiModelProperty("组织属性。u表示单位，d表示部门，g表示工作组")
+    private String orgProperty;
+
     @ApiModelProperty("扩展字段：关键字查询")
     private String keyword;
 }

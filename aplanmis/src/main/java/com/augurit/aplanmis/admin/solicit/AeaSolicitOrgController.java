@@ -196,4 +196,12 @@ public class AeaSolicitOrgController {
 
         return aeaSolicitOrgService.gtreeSolicitOrg(SecurityContext.getCurrentOrgId());
     }
+
+    // ===================== 阶段牵头部门 ==================== //
+
+    @RequestMapping("/stageOrg.do")
+    public ModelAndView stageOrg(AeaSolicitOrg aeaSolicitOrg, ModelMap modelMap){
+
+        return new ModelAndView("ui-jsp/solicit/stage_org/index");
+    }
 }
