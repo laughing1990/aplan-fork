@@ -95,5 +95,7 @@ public class AeaHiGuide {
     private String stageName;
     // 部门辅导状态
     private String applyStateName;
+    // 搜索关键字
+    private String keyword;
 
 }
