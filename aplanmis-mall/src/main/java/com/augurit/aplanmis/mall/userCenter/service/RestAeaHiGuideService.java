@@ -40,6 +40,7 @@ public class RestAeaHiGuideService {
         aeaHiGuide.setApplyState(GuideApplyState.LEADER_SIGNING.getValue());
         aeaHiGuide.setGuideStartTime(new Date());
         aeaHiGuide.setDueTimeLimit(4.0);
+        aeaHiGuide.setStageId(aeaGuideApplyVo.getStageId());
         aeaHiGuide.setIsItGuide(aeaGuideApplyVo.getIsItGuide());
         aeaHiGuide.setCreater(SecurityContext.getCurrentUserName());
         aeaHiGuide.setCreateTime(new Date());
@@ -90,7 +91,7 @@ public class RestAeaHiGuideService {
             aeaHiGuideDetail.setItemVerId(aeaGuideItemVo.getItemVerId());
             aeaHiGuideDetail.setGuideOpinion(aeaGuideItemVo.getApplySelOpinion());
             aeaHiGuideDetail.setCreateTime(new Date());
-
+            aeaHiGuideDetailService.insertAeaHiGuideDetail(aeaHiGuideDetail);
 
         }
     }
