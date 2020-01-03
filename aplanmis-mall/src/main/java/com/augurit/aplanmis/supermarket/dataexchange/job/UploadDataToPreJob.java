@@ -16,7 +16,7 @@ import javax.annotation.PostConstruct;
 @Slf4j
 public class UploadDataToPreJob {//extends JobTimer
     @Autowired
-    private UploadDataConfig databaseConfig;
+    private UploadDataConfig uploadDataConfig;
     @Autowired
     private BscJobTimerMapper bscJobTimerMapper;
 
@@ -28,8 +28,8 @@ public class UploadDataToPreJob {//extends JobTimer
     //初始化timer
     @PostConstruct
     void init() throws Exception {
-        boolean open = databaseConfig.isOpen();
-        timeCron = databaseConfig.getTimeCorn();
+        boolean open = uploadDataConfig.isOpen();
+        timeCron = uploadDataConfig.getTimeCorn();
         if (open) {
             BscJobTimer timer = bscJobTimerMapper.getBscJobTimerById("af41f631-04e9-4f24-9b65-4aa21536262b");
             if (null == timer) {
@@ -47,9 +47,16 @@ public class UploadDataToPreJob {//extends JobTimer
     }
 
     /**
-     * 市同步数据到前置库
+     * 同步数据到前置库---目前只同步单位及联系人信息，服务类型
      */
     public void uploadDataToPreDatabase() {
+        boolean first = uploadDataConfig.isFirst();
+        if (first) {
+
+        } else {
+
+        }
+        //
         //第一次
 //        boolean firstUpload = databaseConfig.isFirstUpload();
         /*if(firstUpload){//第一次同步
@@ -59,7 +66,7 @@ public class UploadDataToPreJob {//extends JobTimer
 
 
     public String testConfig() {
-        return databaseConfig.toString();
+        return uploadDataConfig.toString();
     }
 
     private BscJobTimer createBscJobTimer() {
