@@ -6,8 +6,10 @@ import com.augurit.aplanmis.common.domain.AeaItemMat;
 import com.augurit.aplanmis.common.domain.AeaParFactor;
 import com.augurit.aplanmis.common.domain.AeaParStage;
 import com.augurit.aplanmis.mall.main.vo.ItemListVo;
+import com.augurit.aplanmis.mall.userCenter.vo.AeaGuideItemVo;
 import com.augurit.aplanmis.mall.userCenter.vo.StageApplyDataPageVo;
 import com.augurit.aplanmis.mall.userCenter.vo.StageApplyDataVo;
+import com.augurit.aplanmis.mall.userCenter.vo.StageStateParamVo;
 import io.jsonwebtoken.lang.Assert;
 
 import java.util.List;
@@ -49,4 +51,5 @@ public interface RestParallerApplyService {
 
     List<AeaItemMat> listMatByStateIdAndStageIdAndItemVerId(String stageId, String[] stateIds, String[] itemVerIds)throws Exception;
 
+    List<AeaGuideItemVo> listItemByStageIdAndStateList(StageStateParamVo stageStateParamVo,String isOptionItem) throws Exception;
 }

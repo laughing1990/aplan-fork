@@ -23,10 +23,7 @@ import com.augurit.aplanmis.mall.main.vo.ThemeTypeVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestAeaHiGuideService;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyService;
 import com.augurit.aplanmis.mall.userCenter.service.RestParallerApplyService;
-import com.augurit.aplanmis.mall.userCenter.vo.AeaGuideApplyVo;
-import com.augurit.aplanmis.mall.userCenter.vo.MatListParamVo;
-import com.augurit.aplanmis.mall.userCenter.vo.ParallelApplyResultVo;
-import com.augurit.aplanmis.mall.userCenter.vo.StageApplyDataPageVo;
+import com.augurit.aplanmis.mall.userCenter.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -243,6 +240,22 @@ public class RestParallerApplyController {
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             return new ContentResultForm(false,"",e.getMessage());
+        }
+    }
+
+    @GetMapping("itGuide/item/list/")
+    @ApiOperation(value = "阶段申报 --> 智能引导获取事项一单清列表数据")
+    public ContentResultForm listItemAndStateByStageId(@Valid @RequestBody StageStateParamVo stageStateParamVo) {
+        try {
+            Map<String,List<AeaGuideItemVo>> map=new HashMap<>(2);
+            List<AeaGuideItemVo> coreItemList = restParallerApplyService.listItemByStageIdAndStateList(stageStateParamVo,"1");//并行
+            List<AeaGuideItemVo> parallelItemList = restParallerApplyService.listItemByStageIdAndStateList(stageStateParamVo,"0");//并联
+            map.put("coreItemList",coreItemList);
+            map.put("parallelItemList",parallelItemList);
+            return new ContentResultForm(true,map);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ContentResultForm(false,"","智能引导获取事项一单清列表数据异常");
         }
     }
 
