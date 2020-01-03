@@ -158,6 +158,21 @@ public class AeaServiceWindowAdminController {
         return new ResultForm(false, "查询窗口异常");
     }
 
+    @RequestMapping("/listAgencyWin.do")
+    @ApiOperation("查询代办中心")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "aeaServiceWindow", value = "代办中心对象", required = true, dataType = "AeaServiceWindow"),
+    })
+    public ResultForm listAgencyWin(AeaServiceWindow aeaServiceWindow) {
+        try {
+            List<AeaServiceWindow> list = windowService.listAeaServiceWindow(aeaServiceWindow);
+            return new ContentResultForm<>(true, list);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResultForm(false, "查询代办中心异常");
+    }
+
     @RequestMapping("/saveAeaServiceWindow.do")
     @ApiOperation("保存服务窗口")
     @ApiImplicitParams({
@@ -514,6 +529,50 @@ public class AeaServiceWindowAdminController {
         }
         windowService.saveAeaServiceWindowUsers(windowId, userIds);
         return new ResultForm(true);
+    }
+
+    @RequestMapping("/saveAgencyUser.do")
+    @ApiOperation("保存代办中心人员")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "windowId", value = "窗口ID", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "userIds", value = "人员ID", required = true, dataType = "String[]"),
+    })
+    public ResultForm saveAgencyUser(String windowId, String[] userIds) throws Exception {
+        ResultForm resultForm = new ResultForm(false);
+        if (StringUtils.isBlank(windowId)) {
+            return new ResultForm(false, "参数windowId为空!");
+        }
+        try {
+            windowService.saveAgencyUsers(windowId, userIds);
+            resultForm.setMessage("保存成功。");
+            resultForm.setSuccess(true);
+        }catch (Exception e){
+            resultForm.setMessage("保存失败。"+e.getMessage());
+            return resultForm;
+        }
+        return resultForm;
+    }
+
+    @RequestMapping("/deleteAgencyUser.do")
+    @ApiOperation("删除代办中心人员")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "windowId", value = "窗口ID", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "userIds", value = "人员ID", required = true, dataType = "String[]"),
+    })
+    public ResultForm deleteAgencyUser(String windowId, String[] userIds) throws Exception {
+        ResultForm resultForm = new ResultForm(false);
+        if (StringUtils.isBlank(windowId)) {
+            return new ResultForm(false, "参数windowId为空!");
+        }
+        try {
+            windowService.deleteAgencyUser(windowId, userIds);
+            resultForm.setMessage("删除成功。");
+            resultForm.setSuccess(true);
+        }catch (Exception e){
+            resultForm.setMessage("删除失败。"+e.getMessage());
+            return resultForm;
+        }
+        return resultForm;
     }
 
     private String getCurrentOrgId() {

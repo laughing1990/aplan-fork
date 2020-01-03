@@ -1485,4 +1485,12 @@
             ADD COLUMN `SIGN_STATE` char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 0 COMMENT '签收状态：1 已签收，0 未签收' AFTER `PROC_INST_ID`;
         </sql>
     </changeSet>
+
+    <changeSet id="20200103151125" author="zhangwn" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aplanmis_foshan`.`aea_service_window`
+            MODIFY COLUMN `WINDOW_TYPE` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL
+            COMMENT '窗口类型，来自于数据字典，0表示综合窗口，1表示收费发证窗口，d表示代办中心' AFTER `IS_ACTIVE`;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

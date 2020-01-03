@@ -59,6 +59,14 @@
         where WINDOW_USER_ID = #{id}
     </select>
 
+    <select id="getAeaServiceWindowUserByWindowIdAndUserId" resultType="AeaServiceWindowUser">
+        select
+        <include refid="allColumns"/>
+        from AEA_SERVICE_WINDOW_USER
+        where WINDOW_ID = #{windowId}
+        and USER_ID = #{userId}
+    </select>
+
     <!--3 根据条件查询实体list -->
     <select id="listAeaServiceWindowUser" resultType="AeaServiceWindowUser">
         select

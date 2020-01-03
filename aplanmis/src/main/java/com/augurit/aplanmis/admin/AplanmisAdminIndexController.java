@@ -140,6 +140,15 @@ public class AplanmisAdminIndexController {
     }
 
     /**
+     * 代办中心
+     * @return
+     */
+    @GetMapping("/agency.html")
+    public ModelAndView agencyIndex(){
+        return new ModelAndView("window/agency");
+    }
+
+    /**
      * 服务窗口（过时）
      *
      * @return

@@ -106,7 +106,7 @@ public class AeaServiceWindow implements Serializable {
     private String isActive;
 
     /**
-     * 窗口类型，来自于数据字典，0表示综合窗口，1表示收费发证窗口
+     * 窗口类型，来自于数据字典，0表示综合窗口，1表示收费发证窗口，d表示代办中心
      */
     private String windowType;
 

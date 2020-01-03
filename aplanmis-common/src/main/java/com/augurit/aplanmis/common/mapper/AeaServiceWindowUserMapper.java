@@ -65,4 +65,6 @@ public interface AeaServiceWindowUserMapper {
      * @return
      */
     List<AeaServiceWindowUser> queryAeaServiceWindowUser(@Param("userId")String userId);
+
+    AeaServiceWindowUser getAeaServiceWindowUserByWindowIdAndUserId(@Param("windowId") String windowId, @Param("userId") String userId);
 }
