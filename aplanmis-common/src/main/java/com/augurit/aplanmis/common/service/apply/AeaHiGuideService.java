@@ -1,13 +1,13 @@
 package com.augurit.aplanmis.common.service.apply;
 
 import com.augurit.aplanmis.common.domain.AeaHiGuide;
+import com.augurit.aplanmis.common.vo.guide.GuideDetailVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
 
 public interface AeaHiGuideService {
-
 
     void deleteAeaHiGuideByGuideId(String guideId);
 
@@ -20,4 +20,10 @@ public interface AeaHiGuideService {
     void batchInsertAeaHiGuide(List<AeaHiGuide> list);
 
     PageInfo<AeaHiGuide> list(AeaHiGuide aeaHiGuide, Page page);
+
+    /**
+     * 获取部门辅导详情信息
+     * @param guideId 部门辅导id
+     */
+    GuideDetailVo detail(String guideId) throws Exception;
 }

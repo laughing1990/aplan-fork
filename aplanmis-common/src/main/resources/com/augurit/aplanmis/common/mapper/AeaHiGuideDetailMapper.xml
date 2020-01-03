@@ -11,6 +11,7 @@
         <result column="STAGE_ID" jdbcType="VARCHAR" property="stageId"/>
         <result column="ITEM_ID" jdbcType="VARCHAR" property="itemId"/>
         <result column="ITEM_VER_ID" jdbcType="VARCHAR" property="itemVerId"/>
+        <result column="CATALOG_ITEM_VER_ID" jdbcType="VARCHAR" property="catalogItemVerId"/>
         <result column="GUIDE_ORG_ID" jdbcType="VARCHAR" property="guideOrgId"/>
         <result column="GUIDE_USER_ID" jdbcType="VARCHAR" property="guideUserId"/>
         <result column="GUIDE_OPINION" jdbcType="VARCHAR" property="guideOpinion"/>
@@ -25,29 +26,29 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        ahgd.GUIDE_DETAIL_ID,
-        ahgd.GUIDE_ID,
-        ahgd.DETAIL_TYPE,
-        ahgd.THEME_ID,
-        ahgd.THEME_VER_ID,
-        ahgd.STAGE_ID,
-        ahgd.ITEM_ID,
-        ahgd.ITEM_VER_ID,
-        ahgd.GUIDE_ORG_ID,
-        ahgd.GUIDE_USER_ID,
-        ahgd.GUIDE_OPINION,
-        ahgd.DETAIL_STATE,
-        ahgd.GUIDE_CHANGE_ACTION,
-        ahgd.DETAIL_START_TIME,
-        ahgd.DETAIL_END_TIME,
-        ahgd.CREATER,
-        ahgd.CREATE_TIME,
-        ahgd.MODIFIER,
-        ahgd.MODIFY_TIME
+        ahgd.GUIDE_DETAIL_ID guideDetailId,
+        ahgd.GUIDE_ID guideId,
+        ahgd.DETAIL_TYPE detailType,
+        ahgd.THEME_ID themeId,
+        ahgd.THEME_VER_ID themeVerId,
+        ahgd.STAGE_ID stageId,
+        ahgd.ITEM_ID itemId,
+        ahgd.ITEM_VER_ID itemVerId,
+        ahgd.CATALOG_ITEM_VER_ID catalogItemVerId,
+        ahgd.GUIDE_ORG_ID guideOrgId,
+        ahgd.GUIDE_USER_ID guideUserId,
+        ahgd.GUIDE_OPINION guideOpinion,
+        ahgd.DETAIL_STATE detailState,
+        ahgd.GUIDE_CHANGE_ACTION guideChangeAction,
+        ahgd.DETAIL_START_TIME detailStartTime,
+        ahgd.DETAIL_END_TIME detailEndTime,
+        ahgd.CREATER creater,
+        ahgd.CREATE_TIME createTime,
+        ahgd.MODIFIER modifier,
+        ahgd.MODIFY_TIME modifyTime
     </sql>
 
-    <select id="getAeaHiGuideDetailByGuideDetailId" parameterType="java.lang.String" resultMap="BaseResultMap">
-        <!--@mbg.generated-->
+    <select id="getAeaHiGuideDetailByGuideDetailId" parameterType="java.lang.String" resultType="com.augurit.aplanmis.common.domain.AeaHiGuideDetail">
         select
         <include refid="Base_Column_List"/>
         from aea_hi_guide_detail ahgd
@@ -70,14 +71,14 @@
     <insert id="insertAeaHiGuideDetail" parameterType="com.augurit.aplanmis.common.domain.AeaHiGuideDetail">
     insert into aea_hi_guide_detail (GUIDE_DETAIL_ID, GUIDE_ID, DETAIL_TYPE,
       THEME_ID, THEME_VER_ID, STAGE_ID, 
-      ITEM_ID, ITEM_VER_ID, GUIDE_ORG_ID, 
+      ITEM_ID, ITEM_VER_ID ,CATALOG_ITEM_VER_ID, GUIDE_ORG_ID,
       GUIDE_USER_ID, GUIDE_OPINION, DETAIL_STATE, GUIDE_CHANGE_ACTION,
       DETAIL_START_TIME, DETAIL_END_TIME, CREATER, 
       CREATE_TIME, MODIFIER, MODIFY_TIME
       )
     values (#{guideDetailId,jdbcType=VARCHAR}, #{guideId,jdbcType=VARCHAR}, #{detailType,jdbcType=CHAR}, 
       #{themeId,jdbcType=VARCHAR}, #{themeVerId,jdbcType=VARCHAR}, #{stageId,jdbcType=VARCHAR}, 
-      #{itemId,jdbcType=VARCHAR}, #{itemVerId,jdbcType=VARCHAR}, #{guideOrgId,jdbcType=VARCHAR}, 
+      #{itemId,jdbcType=VARCHAR}, #{itemVerId,jdbcType=VARCHAR}, #{catalogItemVerId,jdbcType=VARCHAR}, #{guideOrgId,jdbcType=VARCHAR},
       #{guideUserId,jdbcType=VARCHAR}, #{guideOpinion,jdbcType=VARCHAR}, #{detailState,jdbcType=VARCHAR}, #{guideChangeAction,jdbcType=VARCHAR},
       #{detailStartTime,jdbcType=TIMESTAMP}, #{detailEndTime,jdbcType=TIMESTAMP}, #{creater,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}
@@ -107,6 +108,9 @@
             </if>
             <if test="itemVerId != null">
                 ITEM_VER_ID = #{itemVerId,jdbcType=VARCHAR},
+            </if>
+            <if test="catalogItemVerId != null">
+                CATALOG_ITEM_VER_ID = #{catalogItemVerId,jdbcType=VARCHAR},
             </if>
             <if test="guideOrgId != null">
                 GUIDE_ORG_ID = #{guideOrgId,jdbcType=VARCHAR},
@@ -148,13 +152,13 @@
     <insert id="batchInsertAeaHiGuideDetail" parameterType="map">
         insert into aea_hi_guide_detail
         (GUIDE_DETAIL_ID, GUIDE_ID, DETAIL_TYPE, THEME_ID, THEME_VER_ID, STAGE_ID, ITEM_ID,
-        ITEM_VER_ID, GUIDE_ORG_ID, GUIDE_USER_ID, GUIDE_OPINION, DETAIL_STATE, GUIDE_CHANGE_ACTION, DETAIL_START_TIME,
+        ITEM_VER_ID, CATALOG_ITEM_VER_ID, GUIDE_ORG_ID, GUIDE_USER_ID, GUIDE_OPINION, DETAIL_STATE, GUIDE_CHANGE_ACTION, DETAIL_START_TIME,
         DETAIL_END_TIME, CREATER, CREATE_TIME, MODIFIER, MODIFY_TIME)
         values
         <foreach collection="list" item="item" separator=",">
             (#{item.guideDetailId,jdbcType=VARCHAR}, #{item.guideId,jdbcType=VARCHAR}, #{item.detailType,jdbcType=CHAR},
             #{item.themeId,jdbcType=VARCHAR}, #{item.themeVerId,jdbcType=VARCHAR}, #{item.stageId,jdbcType=VARCHAR},
-            #{item.itemId,jdbcType=VARCHAR}, #{item.itemVerId,jdbcType=VARCHAR}, #{item.guideOrgId,jdbcType=VARCHAR},
+            #{item.itemId,jdbcType=VARCHAR}, #{item.itemVerId,jdbcType=VARCHAR}, #{item.catalogItemVerId,jdbcType=VARCHAR}, #{item.guideOrgId,jdbcType=VARCHAR},
             #{item.guideUserId,jdbcType=VARCHAR}, #{item.guideOpinion,jdbcType=VARCHAR},
             #{item.detailState,jdbcType=VARCHAR}, #{item.guideChangeAction,jdbcType=VARCHAR},
             #{item.detailStartTime,jdbcType=TIMESTAMP}, #{item.detailEndTime,jdbcType=TIMESTAMP},
@@ -162,5 +166,13 @@
             #{item.modifyTime,jdbcType=TIMESTAMP})
         </foreach>
     </insert>
+
+    <select id="listAeaHiGuideDetailByGuideIdOrderByCreateTimeAsc" resultType="com.augurit.aplanmis.common.domain.AeaHiGuideDetail">
+        select
+        <include refid="Base_Column_List"/>
+        from aea_hi_guide_detail ahgd
+        where GUIDE_ID = #{guideId ,jdbcType=VARCHAR}
+        order by ahgd.create_time asc
+    </select>
 
 </mapper>

@@ -1,7 +1,7 @@
 package com.augurit.aplanmis.front.apply.controller;
 
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
-import com.augurit.aplanmis.common.handler.ItemPrivilegeComputationHandler;
+import com.augurit.aplanmis.common.apply.item.WindowComputedItem;
 import com.augurit.aplanmis.front.apply.service.RestAppyInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -35,14 +35,14 @@ public class RestApplyInfoController {
             @ApiImplicitParam(name = "stageId", value = "阶段id", required = true, dataType = "string", paramType = "query", readOnly = true)
             , @ApiImplicitParam(name = "projInfoId", value = "项目id", dataType = "string", paramType = "query", readOnly = true)
     })
-    public ContentResultForm<Map<String, List<ItemPrivilegeComputationHandler.ComputedItem>>> getNonCoreItemListByStageId(@RequestParam String stageId, @RequestParam(required = false) String projInfoId) {
+    public ContentResultForm<Map<String, List<WindowComputedItem>>> getNonCoreItemListByStageId(@RequestParam String stageId, @RequestParam(required = false) String projInfoId) {
         if (log.isDebugEnabled()) {
             log.debug("查询并联审批事项和并行推进事项, stageId: {}", stageId);
         }
         try {
-            Map<String, List<ItemPrivilegeComputationHandler.ComputedItem>> items = new HashMap<>();
+            Map<String, List<WindowComputedItem>> items = new HashMap<>();
 
-            Map<String, List<ItemPrivilegeComputationHandler.ComputedItem>> allItems = restApplyService.getItems(stageId, projInfoId);
+            Map<String, List<WindowComputedItem>> allItems = restApplyService.getItems(stageId, projInfoId);
             items.put(PARALLEL_ITEMS, allItems.get("0"));// 并联
             items.put(CORE_ITEMS, allItems.get("1"));// 并行
             return new ContentResultForm<>(true, items, "Query success");

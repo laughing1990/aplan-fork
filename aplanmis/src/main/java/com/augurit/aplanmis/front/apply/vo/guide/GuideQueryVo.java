@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@ApiModel("部门辅导列表查询vo")
+@ApiModel(value = "部门辅导列表查询vo")
 public class GuideQueryVo {
 
     // todo

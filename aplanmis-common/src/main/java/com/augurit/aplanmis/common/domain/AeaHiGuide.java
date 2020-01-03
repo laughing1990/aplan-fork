@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -26,6 +27,9 @@ public class AeaHiGuide {
     @ApiModelProperty(value = "项目id")
     private String projInfoId;
 
+    @ApiModelProperty(value = "阶段id")
+    private String stageId;
+
     @ApiModelProperty(value = "发起辅导单位ID")
     private String applyUnitInfoId;
 
@@ -36,9 +40,11 @@ public class AeaHiGuide {
     private String applyState;
 
     @ApiModelProperty(value = "部门辅导发起时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date guideStartTime;
 
     @ApiModelProperty(value = "部门辅导结束时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date guideEndTime;
 
     @ApiModelProperty(value = "部门辅导时限定义（单位工作日小时）")
@@ -60,12 +66,14 @@ public class AeaHiGuide {
     private String creater;
 
     @ApiModelProperty(value = "创建时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     @ApiModelProperty(value = "修改人")
     private String modifier;
 
     @ApiModelProperty(value = "修改时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date modifyTime;
 
     @ApiModelProperty(value = "是否智能引导，1是0否")
@@ -73,6 +81,8 @@ public class AeaHiGuide {
 
     // 扩展字段
 
+    // 项目类型id
+    private String themeId;
     // 项目类型
     private String themeName;
     // 项目代码/工程编码
