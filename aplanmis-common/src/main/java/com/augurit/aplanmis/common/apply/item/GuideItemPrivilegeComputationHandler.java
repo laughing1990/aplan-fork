@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 窗口事项权限换算handler
+ * 部门辅导事项换算handler
  */
 public final class GuideItemPrivilegeComputationHandler extends ItemPrivilegeComputationHandler<GuideComputedItem> {
 

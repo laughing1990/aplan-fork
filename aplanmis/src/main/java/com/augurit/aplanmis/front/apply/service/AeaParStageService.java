@@ -6,18 +6,7 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.ApplyType;
-import com.augurit.aplanmis.common.domain.AeaApplyinstForminst;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaHiItemInoutinst;
-import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
-import com.augurit.aplanmis.common.domain.AeaHiItemStateinst;
-import com.augurit.aplanmis.common.domain.AeaHiIteminst;
-import com.augurit.aplanmis.common.domain.AeaHiParStageinst;
-import com.augurit.aplanmis.common.domain.AeaHiParStateinst;
-import com.augurit.aplanmis.common.domain.AeaHiSmsInfo;
-import com.augurit.aplanmis.common.domain.AeaItemBasic;
-import com.augurit.aplanmis.common.domain.AeaItemMat;
-import com.augurit.aplanmis.common.domain.AeaParStage;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemStateinstMapper;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
@@ -250,6 +239,11 @@ public class AeaParStageService extends RestApplyService {
         Map<String, Boolean> approveOrgMap = new HashMap<>();
         Map<String, Boolean> isBranchHandle = new HashMap<>();
         Map<String, Boolean> iteminstMap = new HashMap<>();//初始化选中情形绑定的事项
+
+        ProjectCheckForm projectCheck = new ProjectCheckForm();//竣工验收辅助对象
+        Map<String, Boolean> itemStateMap = new HashMap<>();//初始化选中事项的验收状态，仅用于竣工验收
+        projectCheck.setItemStates(itemStateMap);
+
         aeaHiIteminsts.forEach(aeaHiIteminst -> {
             AeaItemBasic aeaItemBasic;
             try {
@@ -270,10 +264,13 @@ public class AeaParStageService extends RestApplyService {
                 isBranchHandle.put(aeaItemBasic.getItemCategoryMark(), false);
                 iteminstMap.put(aeaItemBasic.getItemCategoryMark(), false);
             }
+
+            itemStateMap.put(aeaItemBasic.getItemCategoryMark(),false);//设置竣工验收涉及到的审批事项
         });
         aeaHiApplyinst.setIsBranchHandle(isBranchHandle);
         aeaHiApplyinst.setApprovalOrgCode(approveOrgMap);
         aeaHiApplyinst.setIteminsts(iteminstMap);
+        aeaHiApplyinst.setProjCheck(projectCheck);
 
         // 用于流程启动情形
         aeaHiApplyinst.setStateinsts(applyCommonService.filterProcessStartConditions(stageApplyDataVo.getStateIds(), ApplyType.UNIT));

@@ -100,7 +100,8 @@
                 <property name="alias" value="soliOrg"/>
             </include>,
             org.ORG_NAME orgName,
-            org.ORG_CODE orgCode
+            org.ORG_CODE orgCode,
+            org.ORG_PROPERTY orgProperty
         from AEA_SOLICIT_ORG soliOrg
         left join OPU_OM_ORG org on ( org.ORG_ID = soliOrg.ORG_ID and org.ORG_DELETED = '0' )
         <where>

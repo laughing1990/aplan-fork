@@ -39,6 +39,7 @@ import org.springframework.web.multipart.support.StandardMultipartHttpServletReq
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -404,5 +405,55 @@ public class AeaServiceWindowAdminServiceImpl implements AeaServiceWindowAdminSe
         String orgId = SecurityContext.getCurrentOrgId();
         List<BscAttForm> bscAttForms = bscAttMapper.listAttLinkAndDetailByTablePKRecordId("AEA_SERVICE_WINDOW", "WINDOW_ID", windowId, orgId);
         return bscAttForms;
+    }
+
+    @Override
+    public void saveAgencyUsers(String windowId, String[] userIds) {
+        AeaServiceWindow window = aeaServiceWindowMapper.getAeaServiceWindowById(windowId);
+        if(window == null || !window.getRootOrgId().equalsIgnoreCase(SecurityContext.getCurrentOrgId())){
+            throw new RuntimeException("找不到该窗口");
+        }
+        if (userIds != null && userIds.length > 0) {
+            List<AeaServiceWindowUser> windowUsers = aeaServiceWindowUserMapper.listWindowUserByWindowId(windowId, null);
+            List<String> userIdList = new ArrayList<>();
+            if(windowUsers != null && windowUsers.size() > 0){
+                for(AeaServiceWindowUser wu: windowUsers){
+                    userIdList.add(wu.getUserId());
+                }
+            }
+            if(userIdList.size() > 0){
+                List<String> ids = Arrays.asList(userIds);
+                for(String userId:userIdList){
+                    if(!ids.contains(userId)){
+                        aeaServiceWindowUserMapper.deleteAeaServiceWindowUserByWindowIdAndUserId(windowId,userId);
+                    }
+                }
+            }
+            for (String userId : userIds) {
+                if(userIdList.contains(userId)){
+                    continue;
+                }
+                AeaServiceWindowUser windUser = new AeaServiceWindowUser();
+                windUser.setWindowUserId(UuidUtil.generateUuid());
+                windUser.setUserId(userId);
+                windUser.setWindowId(windowId);
+                windUser.setIsActive(Status.ON);
+                windUser.setCreater(SecurityContext.getCurrentUserId());
+                windUser.setCreateTime(new Date());
+                windUser.setRootOrgId(SecurityContext.getCurrentOrgId());
+                aeaServiceWindowUserMapper.insertAeaServiceWindowUser(windUser);
+            }
+        }
+    }
+
+    @Override
+    public void deleteAgencyUser(String windowId, String[] userIds) {
+        AeaServiceWindow window = aeaServiceWindowMapper.getAeaServiceWindowById(windowId);
+        if(window == null || !window.getRootOrgId().equalsIgnoreCase(SecurityContext.getCurrentOrgId())){
+            throw new RuntimeException("找不到该窗口");
+        }
+        if (userIds != null && userIds.length > 0) {
+            aeaServiceWindowUserMapper.batchDeleteWindowUserByWindowIdAndUserId(windowId,userIds);
+        }
     }
 }

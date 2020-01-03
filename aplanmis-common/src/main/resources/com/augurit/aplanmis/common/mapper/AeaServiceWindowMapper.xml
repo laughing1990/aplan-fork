@@ -392,6 +392,9 @@
             <if test="windowType != null" >
                 and asw.WINDOW_TYPE = #{windowType}
             </if>
+            <if test="windowType == null" >
+                and asw.WINDOW_TYPE in ('0','1')
+            </if>
             <if test="isPublic != null" >
                 and asw.IS_PUBLIC = #{isPublic}
             </if>
@@ -475,6 +478,9 @@
             <if test="windowType != null" >
                 and asw.WINDOW_TYPE = #{windowType}
             </if>
+            <if test="windowType == null" >
+                and asw.WINDOW_TYPE in ('0','1')
+            </if>
             <if test="isPublic != null" >
                 and asw.IS_PUBLIC = #{isPublic}
             </if>
@@ -557,6 +563,9 @@
             </if>
             <if test="windowType != null" >
                 and asw.WINDOW_TYPE = #{windowType}
+            </if>
+            <if test="windowType == null" >
+                and asw.WINDOW_TYPE in ('0','1')
             </if>
             <if test="isPublic != null" >
                 and asw.IS_PUBLIC = #{isPublic}

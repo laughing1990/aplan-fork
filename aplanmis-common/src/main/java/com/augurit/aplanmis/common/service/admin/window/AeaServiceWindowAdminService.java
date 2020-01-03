@@ -193,4 +193,18 @@ public interface AeaServiceWindowAdminService {
     ElementUiRsTreeNode listRegionTreeByOrgId(String orgId);
 
     List<BscAttForm> findWindowMapAtt(String windowId);
+
+    /**
+     * 新增代办中心人员的关联信息
+     * @param windowId 窗口id
+     * @param userIds  用户id集
+     */
+    void saveAgencyUsers(String windowId, String[] userIds);
+
+    /**
+     * 删除代办中心人员的关联信息
+     * @param windowId 窗口id
+     * @param userIds  用户id集
+     */
+    void deleteAgencyUser(String windowId, String[] userIds);
 }

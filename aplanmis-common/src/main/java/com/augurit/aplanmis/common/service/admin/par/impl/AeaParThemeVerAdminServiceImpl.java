@@ -2008,12 +2008,13 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
         List<ZtreeNode> allNodes = new ArrayList<ZtreeNode>();
         ZtreeNode rootNode = new ZtreeNode();
         rootNode.setId("root");
-        rootNode.setName("工程建设主题阶段库");
+        rootNode.setName("主题阶段库");
         rootNode.setType("root");
         rootNode.setOpen(true);
         rootNode.setIsParent(true);
         rootNode.setNocheck(true);
         allNodes.add(rootNode);
+
         AeaParTheme theme = new AeaParTheme();
         theme.setRootOrgId(rootOrgId);
         List<AeaParTheme> themeList = aeaParThemeMapper.listAeaParTheme(theme);
