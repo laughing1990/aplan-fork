@@ -8,6 +8,8 @@ import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaParFactor;
+import com.augurit.aplanmis.common.domain.AeaParState;
+import com.augurit.aplanmis.common.mapper.AeaParStateMapper;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiSmsInfoService;
@@ -75,6 +77,8 @@ public class RestParallerApplyController {
     private RestMainService restMainService;
     @Autowired
     private RestAeaHiGuideService restAeaHiGuideService;
+    @Autowired
+    private AeaParStateMapper aeaParStateMapper;
 
     @Value("${aplanmis.mall.skin:skin_v4.1/}/")
     private String skin;
@@ -102,6 +106,20 @@ public class RestParallerApplyController {
             return new ContentResultForm(false,"","根据阶段id获取事项一单清列表数据异常");
         }
     }
+
+    @GetMapping("state/list/{stageId}")
+    @ApiOperation(value = "阶段申报 --> 根据阶段ID获取情形")
+    @ApiImplicitParams({@ApiImplicitParam(value = "阶段ID",name = "stageId",required = true,dataType = "string")})
+    public ContentResultForm<AeaParState> listtateByStageId(@PathVariable("stageId") String stageId) {
+        try {
+            List<AeaParState> stateList= aeaParStateMapper.listParStateByParentStateId(stageId, "ROOT", SecurityContext.getCurrentOrgId());
+            return new ContentResultForm(true,stateList);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ContentResultForm(false,"","根据阶段id获取事项一单清列表数据异常");
+        }
+    }
+
 
     @PostMapping("mat/list")
     @ApiOperation(value = "阶段申报 --> 根据阶段ID、阶段情形ID集合、事项情形ID集合、事项版本ID集合获取材料一单清列表数据")
