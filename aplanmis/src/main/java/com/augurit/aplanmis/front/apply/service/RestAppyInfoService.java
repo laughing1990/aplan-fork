@@ -1,10 +1,12 @@
 package com.augurit.aplanmis.front.apply.service;
 
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.aplanmis.common.apply.item.ComputedItem;
+import com.augurit.aplanmis.common.apply.item.WindowComputedItem;
+import com.augurit.aplanmis.common.apply.item.WindowItemPrivilegeComputationHandler;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaParStage;
 import com.augurit.aplanmis.common.domain.AeaServiceWindow;
-import com.augurit.aplanmis.common.handler.ItemPrivilegeComputationHandler;
 import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowService;
@@ -30,7 +32,7 @@ public class RestAppyInfoService {
     @Autowired
     private AeaServiceWindowService aeaServiceWindowService;
 
-    public Map<String, List<ItemPrivilegeComputationHandler.ComputedItem>> getItems(String stageId, String projInfoId) throws Exception {
+    public Map<String, List<WindowComputedItem>> getItems(String stageId, String projInfoId) throws Exception {
         List<AeaItemBasic> allItems = aeaItemBasicService.getAeaItemBasicListByStageId(stageId, null, projInfoId, SecurityContext.getCurrentOrgId());
         if (allItems.size() == 0) return new HashMap<>();
         if (log.isDebugEnabled()) {
@@ -39,14 +41,14 @@ public class RestAppyInfoService {
 
         AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageId);
         AeaServiceWindow currentUserWindow = aeaServiceWindowService.getCurrentUserWindow();
-        List<ItemPrivilegeComputationHandler.ComputedItem> allComputedItems = new ItemPrivilegeComputationHandler(currentUserWindow, projInfoId, SecurityContext.getCurrentOrgId(), aeaParStage, allItems, true)
+        List<WindowComputedItem> allComputedItems = new WindowItemPrivilegeComputationHandler(currentUserWindow, projInfoId, SecurityContext.getCurrentOrgId(), aeaParStage, allItems, true)
                 .compute();
-        Map<String, List<ItemPrivilegeComputationHandler.ComputedItem>> result = allComputedItems.stream().collect(Collectors.groupingBy(ItemPrivilegeComputationHandler.ComputedItem::getIsOptionItem));
+        Map<String, List<WindowComputedItem>> result = allComputedItems.stream().collect(Collectors.groupingBy(ComputedItem::getIsOptionItem));
 
         if (result.get("1") != null) {
             result.get("1").forEach(item -> {
                 if (item.getCurrentCarryOutItem() != null) {
-                    ItemPrivilegeComputationHandler.CarryOutItem currentCarryOutItem = item.getCurrentCarryOutItem();
+                    ComputedItem.CarryOutItem currentCarryOutItem = item.getCurrentCarryOutItem();
                     currentCarryOutItem.setPreItemCheckPassed(aeaItemBasicService.checkPreItemsPassed(currentCarryOutItem.getItemVerId(), projInfoId).isPassed());
                 }
             });

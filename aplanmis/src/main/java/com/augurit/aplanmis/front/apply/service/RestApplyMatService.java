@@ -9,6 +9,9 @@ import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.apply.item.ComputedItem;
+import com.augurit.aplanmis.common.apply.item.WindowComputedItem;
+import com.augurit.aplanmis.common.apply.item.WindowItemPrivilegeComputationHandler;
 import com.augurit.aplanmis.common.constants.MatHolder;
 import com.augurit.aplanmis.common.constants.MatinstSource;
 import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
@@ -20,7 +23,6 @@ import com.augurit.aplanmis.common.domain.AeaParStageItem;
 import com.augurit.aplanmis.common.domain.AeaParState;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.domain.AeaServiceWindow;
-import com.augurit.aplanmis.common.handler.ItemPrivilegeComputationHandler;
 import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemMatinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemMatMapper;
@@ -156,14 +158,14 @@ public class RestApplyMatService {
                 for (AeaParState anstate : answerStates) {
                     answerStateVo = new ParallelApplyHandleVo.AnswerStateVo();
                     //查询该答案下的事项
-                    List<ItemPrivilegeComputationHandler.ComputedItem> stateParallelItems = new ArrayList<>();
-                    List<ItemPrivilegeComputationHandler.ComputedItem> stateOptionItems = new ArrayList<>();
+                    List<WindowComputedItem> stateParallelItems = new ArrayList<>();
+                    List<WindowComputedItem> stateOptionItems = new ArrayList<>();
                     List<AeaItemBasic> aeaItemBasics = aeaItemBasicService.listAeaParStateItemByStateId(anstate.getParStateId());
 
-                    List<ItemPrivilegeComputationHandler.ComputedItem> computedItems = new ItemPrivilegeComputationHandler(currentUserWindow, projInfoId, SecurityContext.getCurrentOrgId(), aeaParStage, aeaItemBasics, false)
+                    List<WindowComputedItem> computedItems = new WindowItemPrivilegeComputationHandler(currentUserWindow, projInfoId, SecurityContext.getCurrentOrgId(), aeaParStage, aeaItemBasics, false)
                             .compute();
 
-                    for (ItemPrivilegeComputationHandler.ComputedItem computedItem : computedItems) {
+                    for (WindowComputedItem computedItem : computedItems) {
                         computedItem.setParStateId(anstate.getParStateId());
                         //当前事项是否已办
                         if (StringUtils.isNotBlank(projInfoId)) {
@@ -186,7 +188,7 @@ public class RestApplyMatService {
                     // 前置事项检查
                     stateOptionItems.forEach(optionItem -> {
                         if (optionItem.getCurrentCarryOutItem() != null) {
-                            ItemPrivilegeComputationHandler.CarryOutItem currentCarryOutItem = optionItem.getCurrentCarryOutItem();
+                            ComputedItem.CarryOutItem currentCarryOutItem = optionItem.getCurrentCarryOutItem();
                             currentCarryOutItem.setPreItemCheckPassed(aeaItemBasicService.checkPreItemsPassed(currentCarryOutItem.getItemVerId(), projInfoId).isPassed());
                         }
                     });
@@ -239,7 +241,7 @@ public class RestApplyMatService {
      * @param itemVo  事项vo
      * @return true: 是, false: 否
      */
-    private boolean isParallelItem(String stageId, ItemPrivilegeComputationHandler.ComputedItem itemVo) {
+    private boolean isParallelItem(String stageId, ComputedItem itemVo) {
         AeaParStageItem params = new AeaParStageItem();
         params.setStageId(stageId);
         params.setItemVerId(itemVo.getItemVerId());

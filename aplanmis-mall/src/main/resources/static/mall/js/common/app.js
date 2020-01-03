@@ -65,8 +65,8 @@
                 id: '2',
                 activeName:1,
                 url: './apply/index.html',
-                thUrl:'rest/userCenter/apply/toParaApplyPage',
-                hash:'/declare',
+                thUrl:'rest/user/toParallelDeclarePage',
+                hash:'/myParallelPage',
                 },
                 /*{
                     label: '我的项目',
