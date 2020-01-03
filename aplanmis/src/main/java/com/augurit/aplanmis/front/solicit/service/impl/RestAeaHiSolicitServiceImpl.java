@@ -449,11 +449,13 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                     }
                     if (hasDone) {
                         hiSolicit.setSolicitCanBeFinish("1");
-                        //查询用户详细信息，姓名，联系方式等
-                        OpuOmUserInfo opuOmUserInfo = opuOmUserInfoMapper.getOpuOmUserInfoByUserId(currUserId);
-                        if(opuOmUserInfo != null){
-                            hiSolicit.setSolicitLinkmanName(currUserName);
-                            hiSolicit.setSolicitLinkmanPhone(opuOmUserInfo.getUserMobile());
+                        if(StringUtils.isBlank(hiSolicit.getSolicitLinkmanPhone())) {
+                            //查询用户详细信息，姓名，联系方式等
+                            OpuOmUserInfo opuOmUserInfo = opuOmUserInfoMapper.getOpuOmUserInfoByUserId(currUserId);
+                            if (opuOmUserInfo != null) {
+                                hiSolicit.setSolicitLinkmanName(currUserName);
+                                hiSolicit.setSolicitLinkmanPhone(opuOmUserInfo.getUserMobile());
+                            }
                         }
                     }
                 }
