@@ -33,6 +33,7 @@ import com.augurit.aplanmis.front.approve.vo.AeaHiItemInfoVo;
 import com.augurit.aplanmis.front.approve.vo.ApplyFormVo;
 import com.augurit.aplanmis.front.approve.vo.BpmApproveStateVo;
 import com.augurit.aplanmis.front.approve.vo.MatinstVo;
+import com.augurit.aplanmis.front.constant.SolicitConstant;
 import org.apache.commons.lang.StringUtils;
 import org.flowable.engine.HistoryService;
 import org.flowable.task.api.history.HistoricTaskInstance;
@@ -154,6 +155,11 @@ public class ApproveService {
                     bpmApproveStateVo.setHasYCZX("1");
                 }else if(SolicitBusTypeEnum.LHPS.getValue().equals(solicit1.getBusType())){
                     bpmApproveStateVo.setHasLHPS("1");
+                    if(SolicitConstant.SOLICIT_CONCLUSION_FLAG_TG.equals(solicit1.getConclusionFlag())){
+                        bpmApproveStateVo.setIsPassLHPS("1");
+                    }else  if(SolicitConstant.SOLICIT_CONCLUSION_FLAG_BTG.equals(solicit1.getConclusionFlag())){
+                        bpmApproveStateVo.setIsPassLHPS("0");
+                    }
                 }
             }
         }

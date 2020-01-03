@@ -168,12 +168,18 @@ public class RestAeaHiSolicitController {
         return new ResultForm(true, "success");
     }
 
-    @ApiOperation("")
+    @ApiOperation("获取申报实例下的所有事项实例信息")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "applyinstId", value = "被征集人主键")
+            @ApiImplicitParam(name = "applyinstId", value = "获取申报实例下的所有事项实例信息")
     })
     @GetMapping("/apply/items")
     public ResultForm getApplyItems(String applyinstId) throws Exception{
         return new ContentResultForm<>(true,restAeaHiSolicitService.getApplyItems(applyinstId));
+    }
+
+    @ApiOperation("获取当前登录人信息")
+    @GetMapping("/current/user")
+    public ResultForm getCurrentUser() throws Exception{
+        return new ContentResultForm<>(true,restAeaHiSolicitService.getCurrentUser());
     }
 }

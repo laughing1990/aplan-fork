@@ -941,7 +941,23 @@ var vm = new Vue({
       this.dialogConfig = this.dialogConfigOneSolict;
       this.solicitForm.solicitType = 'd';
       this.solicitForm.isCalcTimerule = '0';
-      this.openSoDialog();
+      vm.parentPageLoading = true;
+      request('', {
+        url: ctx + 'rest/solicit/current/user',
+        type: 'get'
+      }, function (res) {
+        vm.parentPageLoading = false;
+        if (res.success) {
+          vm.$set(vm.solicitForm,'solicitLinkmanName',res.content.userName);
+          vm.$set(vm.solicitForm,'solicitLinkmanPhone',res.content.userMobile);
+          vm.openSoDialog();
+        } else {
+          vm.$message.error('查询当前用户信息失败');
+        }
+      }, function () {
+        vm.parentPageLoading = false;
+        vm.$message.error('查询当前用户信息失败');
+      });
     },
     // 加载一次征询历史数据
     loadOneSolicitData: function () {

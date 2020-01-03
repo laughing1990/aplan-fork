@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.front.solicit.service;
 
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
+import com.augurit.agcloud.opus.common.domain.OpuOmUser;
 import com.augurit.aplanmis.common.domain.AeaHiIteminst;
 import com.augurit.aplanmis.common.domain.AeaHiSolicit;
 import com.augurit.aplanmis.common.domain.AeaHiSolicitDetailUser;
@@ -64,4 +65,6 @@ public interface RestAeaHiSolicitService {
     public List<AeaHiIteminst> getApplyItems(String applyinstId) throws Exception;
 
     public String uploadAttFile(String solicitId, String tableName,String pkName, HttpServletRequest request) throws Exception;
+
+    public OpuOmUser getCurrentUser() throws Exception;
 }

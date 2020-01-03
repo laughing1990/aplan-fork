@@ -642,8 +642,13 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
 
         aeaHiSolicitMapper.updateAeaHiSolicit(aeaHiSolicit);
         //处理流程激活操作，先默认是通过则激活流程
-        if (StringUtils.isNotBlank(aeaHiSolicit.getProcinstId()) && SolicitConstant.SOLICIT_CONCLUSION_FLAG_TG.equals(aeaHiSolicit.getConclusionFlag()) &&
-                bpmProcessService.isProcessSuspended(aeaHiSolicit.getProcinstId())) {
+        String procinstId = aeaHiSolicit.getProcinstId();
+        if(StringUtils.isBlank(procinstId)){
+            AeaHiSolicit temp = aeaHiSolicitMapper.getAeaHiSolicitById(aeaHiSolicit.getSolicitId());
+            procinstId = temp.getProcinstId();
+        }
+        if (SolicitConstant.SOLICIT_CONCLUSION_FLAG_TG.equals(aeaHiSolicit.getConclusionFlag()) &&
+                bpmProcessService.isProcessSuspended(procinstId)) {
             bpmProcessService.activateProcessInstanceById(aeaHiSolicit.getProcinstId());
         }
     }
@@ -786,7 +791,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                 String[] states = {"2", "3"};
                 for (AeaHiSolicitDetail detailUser : solicitDetail) {
                     String detailState = detailUser.getDetailState();
-                    if (Arrays.binarySearch(states, detailState) > 0) {
+                    if (Arrays.binarySearch(states, detailState) != -1) {
                         finishNum++;
                     }
                 }
@@ -804,7 +809,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
 
                 //设置剩余时限文本
                 if (StringUtils.isBlank(info.getTimeruleUnit())) {
-                    return;
+                    continue;
                 }
                 Double time = info.getRemainingTime();
                 if (TimeruleInstState.OVERDUE.getValue().equals(info.getInstState())) {
@@ -1030,5 +1035,17 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
             fileUtilsService.uploadAttachments(tableName, pkName, solicitId, files);
         }
         return solicitId;
+    }
+
+    @Override
+    public com.augurit.agcloud.opus.common.domain.OpuOmUser getCurrentUser() throws Exception {
+        com.augurit.agcloud.opus.common.domain.OpuOmUser user = new com.augurit.agcloud.opus.common.domain.OpuOmUser();
+        OpuOmUser currentUser = SecurityContext.getCurrentUser();
+        OpuOmUserInfo opuOmUserInfo = opuOmUserInfoMapper.getOpuOmUserInfoByUserId(currentUser.getUserId());
+        user.setUserName(currentUser.getUserName());
+        if(opuOmUserInfo != null) {
+            user.setUserMobile(opuOmUserInfo.getUserMobile());
+        }
+        return user;
     }
 }

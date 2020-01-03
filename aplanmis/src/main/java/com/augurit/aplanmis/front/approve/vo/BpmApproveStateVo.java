@@ -47,6 +47,8 @@ public class BpmApproveStateVo {
     private String hasYJZQ = "0";
     @ApiModelProperty(value = "是否有联合评审：1是 0否", required = true, dataType = "string")
     private String hasLHPS = "0";
+    @ApiModelProperty(value = "是否联合评审通过，是的话显示通过按钮，否则显示不通过按钮：1是 0否", required = true, dataType = "string")
+    private String isPassLHPS;
     @ApiModelProperty(value = "是否有一次征询：1是 0否", required = true, dataType = "string")
     private String hasYCZX = "0";
 
