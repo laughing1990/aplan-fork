@@ -65,7 +65,7 @@ var vm = new Vue({
 			ts.loading = true;
 
 			request('', {
-				url: ctx + '/rest/solicit/list/solicit',
+				url: ctx + 'dept/guide/list',
 				type: 'get',
 				data: ts.searchFrom
 			}, function (res) {
@@ -83,11 +83,35 @@ var vm = new Vue({
 		},
 		//办理
 		viewDetail: function (row) {
-			var url = ctx + 'apanmis/page/stageApproveIndex?taskId=' + row.taskId + '&viewId=' + row.viewId + '&itemNature=' + row.itemNature + '&busType=lhps&isNotCompareAssignee=true';
-			if (row.busRecordId) {
-				url = url + '&busRecordId=' + row.busRecordId;
+			// var url = ctx + 'apanmis/page/stageApplyIndex?guideId='+row.guideId;
+			var menuName= '';
+			var menuInnerUrl =  '';
+			var id = 'menu_'+new Date().getTime();
+			if (row.applyType == '并联') {
+				menuName = row.projName;
+				var themeCategory;
+				if (!!row.themeCategory) {
+					themeCategory = row.themeCategory.toUpperCase();
+				} else {
+					themeCategory = 'OTHERS';
+				}
+				menuInnerUrl = ctx + '/apanmis/page/stageApplyIndex?applyinstId=' + row.applyinstId + '&themeCategory=' + themeCategory;
+			} else if(row.applyType == '单项'){
+				menuName = row.itemName;
+				menuInnerUrl = ctx + '/apanmis/page/singleApplyIndex/'+row.itemVerId+'?applyinstId='+row.applyinstId;
 			}
-			window.open(url, '_blank');
+			var data = {
+				'menuName':menuName,
+				'menuInnerUrl':menuInnerUrl,
+				'id':id,
+				'applyinstId':row.applyinstId,
+			};
+			try{
+				parent.vm.addTab('',data,'','');
+			}catch (e) {
+				window.open(menuInnerUrl,'_blank');
+			}
+			return null;
 		},
 
 		//判断是否已签收
