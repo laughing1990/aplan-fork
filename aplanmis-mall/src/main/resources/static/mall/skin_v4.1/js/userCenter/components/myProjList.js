@@ -58,6 +58,10 @@ var pager = new Vue({
         ts.$message.error('获取我的项目列表失败')
       });
     },
+    // 项目操作-打开全景图
+    todiaGramPage :function (item) {
+      window.open(ctx + 'rest/project/diagram/status/projInfo?projInfoId='+ item.projInfoId);
+    },
     // 打开新增发改项目的面板
     loadAddProjPandel: function(){
       this.isShowAddProjPandel = true;
