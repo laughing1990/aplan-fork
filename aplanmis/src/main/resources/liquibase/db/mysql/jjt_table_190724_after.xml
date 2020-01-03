@@ -1152,4 +1152,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="201901031730" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_basic`
+            MODIFY COLUMN `ITEM_CODE`  varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '事项编号' AFTER `ITEM_VER_ID`;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
