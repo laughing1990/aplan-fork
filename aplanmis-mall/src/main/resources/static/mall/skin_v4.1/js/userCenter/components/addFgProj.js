@@ -8,6 +8,16 @@ var checkNumber = function (rule, value, callback) {
     return callback(new Error('请输入数字'));
   }
 };
+// 校验不能纯数字(非必填)
+var checkNotAllNumber = function (rule, value, callback) {
+  var reg = /[^\d^\.]+/g
+  // console.log(reg.test(value));
+  if (!value || reg.test(value)) {
+    callback();
+  } else {
+    return callback(new Error('不能为纯数字'));
+  }
+};
 var module1 = new Vue({
   el: "#addFgProject",
   data: function () {
@@ -132,27 +142,50 @@ var module1 = new Vue({
           required: true,
           message: '请输入总投资',
           trigger: 'blur'
-        }, ],
+        }, {
+          required: true,
+          validator: checkNumber,
+          trigger: 'blur'
+        }],
         foreignBuildingArea: [{
           required: true,
           message: '请输入总建筑面积',
           trigger: 'blur'
-        }, ],
+        }, {
+          required: true,
+          validator: checkNumber,
+          trigger: 'blur'
+        }],
         xmYdmj: [{
           required: true,
           message: '请输入用地面积',
           trigger: 'blur'
-        }, ],
+        }, {
+          required: true,
+          validator: checkNumber,
+          trigger: 'blur'
+        }],
         gbCodeYear: [{
           required: true,
           message: '请输入国标行业代码发布年代',
           trigger: 'blur'
-        }, ],
+        }, {
+          required: true,
+          validator: checkNumber,
+          trigger: 'blur'
+        }],
         foreignRemark: [{
           required: true,
           message: '请输入建设规模及内容',
           trigger: 'blur'
-        }, ]
+        }, ],
+        projAddr: [{
+          validator: checkNotAllNumber,
+          trigger: 'blur'
+        }],
+        compareTime: [
+          {required: true, message: '开工时间必须小于建成时间', trigger: ['change', 'blur']},
+        ],
       },
       themeList: [], // 主题列表
       orgList: [], // 组织列表
@@ -189,6 +222,25 @@ var module1 = new Vue({
     this.getRegionListData();
     this.getGbhy();
     this.querySelecTheme();
+  },
+  watch: {
+    'projInfoForm.nstartTime': function(val){
+      if(!val) return;
+      this.$refs.projInfoForm.validateField('endTime');
+      var ts = this;
+      setTimeout(function(){
+        ts.$refs.projInfoForm.validateField('endTime');
+      },300)
+      
+    },
+    'projInfoForm.endTime': function(val){
+      if(!val) return;
+      this.$refs.projInfoForm.validateField('nstartTime');
+      var ts = this;
+      setTimeout(function(){
+        ts.$refs.projInfoForm.validateField('nstartTime');
+      },300)
+    },
   },
   methods: {
     closeGbhyTree: function () {
@@ -451,7 +503,7 @@ var module1 = new Vue({
     },
 
     // 打开新增本地项目pandel
-    openAddLocalProjPandel: function(){
+    openAddLocalProjPandel: function () {
       pager.loadAddLocalProjPandel();
     },
   },
