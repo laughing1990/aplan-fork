@@ -94,6 +94,5 @@ public final class GuideItemPrivilegeComputationHandler extends ItemPrivilegeCom
                 }
             }
         });
-        System.out.println("hello");
     }
 }
