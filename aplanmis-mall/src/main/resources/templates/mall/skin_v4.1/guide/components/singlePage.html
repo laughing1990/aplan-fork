@@ -722,8 +722,9 @@
                     </div>
                 </div>
             </div>
-
         </div>
+
+
         <!--
             旧的流程图查看方法 lower
         <el-dialog title="流程图" :visible.sync="wslct" width="760px" :fullscreen="false">
@@ -732,26 +733,7 @@
             </div>
             <p v-else>【暂无流程图】</p>
         </el-dialog>-->
-        <div title="流程图" v-show="wslct">
-            <ul id="wsb1" v-if="detailData.aeaItemGuide && detailData.aeaItemGuide.wsbllct!=undefined && detailData.aeaItemGuide.wsbllct!=null && detailData.aeaItemGuide.wsbllct!=''">
-                <li>
-                    <img :data-original="dataOriginal(detailData.aeaItemGuide.wsbllct)" :href="dataOriginal(detailData.aeaItemGuide.wsbllct)" style="display: none" alt="流程图">
-                </li>
-            </ul>
-            <p v-else>【暂无流程图】</p>
-        </div>
-        <!--<el-dialog title="流程图" :visible.sync="cklct" width="760px">
-          <img style="height: 100%;width:100%;" :src="ctx+'/rest/file/applydetail/mat/download/'+detailData.aeaItemGuide.ckbllct" alt="流程图片"   v-if="detailData.aeaItemGuide && detailData.aeaItemGuide.ckbllct!=undefined && detailData.aeaItemGuide.ckbllct!=null"/>
-          <p v-else>【暂无流程图】</p>
-        </el-dialog>-->
-        <div title="流程图" v-show="cklct">
-            <ul id="wsb2" v-if="detailData.aeaItemGuide && detailData.aeaItemGuide.ckbllct!=undefined && detailData.aeaItemGuide.ckbllct!=null && detailData.aeaItemGuide.ckbllct!=''">
-                <li>
-                    <img :data-original="dataOriginal(detailData.aeaItemGuide.ckbllct)" :href="dataOriginal(detailData.aeaItemGuide.ckbllct)" style="display: none" alt="流程图">
-                </li>
-            </ul>
-            <p v-else>【暂无流程图】</p>
-        </div>
+
 
         <el-dialog title="查看样本" :visible.sync="matDialog" width="760px">
             <ul v-if="mats!== undefined && mats.length >0" class="matBox">
@@ -763,6 +745,8 @@
             <p v-else style="margin:10px 0;">无模板</p>
             <el-button type="primary" @click="matDialog=false">关闭</el-button>
         </el-dialog>
+
+
     </section>
 </div>
 <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>

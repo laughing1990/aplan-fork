@@ -2,97 +2,9 @@ var guideIndex = (function () {
     var ele,
         eleLen;
     var window = this;
-
     var viewer;// viewer 对象
-    getGuideDetail = function (e, stageId) {
-        if (e) {
-            // $(e.target).parent().addClass('activeLi').siblings().removeClass('activeLi');
-            $(e).addClass('activeLi').siblings().removeClass('activeLi');
-        } else {
-            var mainLine = $('#stageImg .show');
-            mainLine.removeClass('activeLi');
-            for (var i = 0; i < mainLine.length; i++) {
-                if (mainLine.eq(i).attr('id') == stageId) {
-                    mainLine.eq(i).addClass('activeLi');
-                }
-            }
-            // $('#stageImg .show').eq(0).addClass('activeLi')
-        }
-        var _this = vm;
-        _this.tableToggle('', 0);
-        request('', {
-            url: ctx + 'rest/guide/guide/detailed/' + stageId,
-            type: 'get',
-        }, function (res) {
-            _this.orgLoading = false;
-            if (res.success) {
-                _this.guideDetailed = res.content;
-                if(_this.guideDetailed.guideAtt){
-                    _this.previewFile(_this.guideDetailed.guideAtt,true);
-                }
-            } else {
-                _this.orgLoading = false;
-                _this.$message.error(res.message);
-            }
-        }, function () {
-            _this.$message.error('获取办事指南数据接口失败，请重试！');
-        });
-    }
-    getGuideDetail2 = function (e, stageId) {
-        if (e) {
-            // $(e.target).parent().addClass('activeLi').siblings().removeClass('activeLi');
-            $(e).addClass('activeLi').siblings().removeClass('activeLi');
-        } else {
-            var auxiliary = $('#stageAuxiliaryImg .show');
-            auxiliary.removeClass('activeLi');
-            for (var i = 0; i < auxiliary.length; i++) {
-                if (auxiliary.eq(i).attr('id') == stageId) {
-                    auxiliary.eq(i).addClass('activeLi');
-                }
-            }
-            // $('#stageAuxiliaryImg .show').eq(0).addClass('activeLi')
-        }
-        var _this = vm;
-        _this.tableToggle2('', 0);
-        request('', {
-            url: ctx + 'rest/guide/guide/detailed/' + stageId,
-            type: 'get',
-        }, function (res) {
-            _this.orgLoading = false;
-            if (res.success) {
-                _this.guideDetailed2 = res.content;
-            } else {
-                _this.orgLoading = false;
-                _this.$message.error(res.message);
-            }
-        }, function () {
-            _this.$message.error('获取办事指南数据接口失败，请重试！');
-        });
-    }
-    matChange = function (target) {
-        var obj = {
-            itemStateId: $(target).attr("id"),
-            parentStateId: $(target).attr("parentId")
-        }
-        vm.findByParentItemStateId(obj.itemStateId, obj.parentStateId);
 
-        for (var i = 0; i < vm.mustAnswer.length; i++) {
-            if (obj.parentStateId == vm.mustAnswer[i]) {
-                vm.mustAnswer.splice(i, 1);
-            }
-        }
-        if (vm.matId.length == 0) {
-            vm.matId.push(obj);
-            return;
-        }
-        for (var i = 0; i < vm.matId.length; i++) {
-            if (obj.parentStateId == vm.matId[i].parentStateId) {
-                vm.matId[i].itemStateId = obj.itemStateId;
-                return;
-            }
-        }
-        vm.matId.push(obj);
-    }
+
     var vm = new Vue({
         el: '#guideIndex',
         data: {
@@ -141,35 +53,12 @@ var guideIndex = (function () {
             statecheckList: [],
             matId: [],//情形答案id集合
             firstMat: [],//页面首次加载的材料列表
-            matDialog: false,
             mats: [],
             __QITA__: [],
             childState: [],
             mustAnswer: [],//必选答案的集合
             sessionStorage: {},
             sessionStorage2: {},
-            navList: [
-                "基本信息",
-                "范围与条件",
-                "办理流程",
-                "办事情形",
-                "所需材料",
-                "咨询监督",
-                "窗口办理",
-                "许可收费",
-                '中介服务',
-                "设定依据",
-                '权利与义务',
-                '法律救济'
-            ],
-            infoData: ["基本信息",
-                "审批依据",
-                "办理程序",
-                "流程图",
-                "并联审批事项",
-                "可并行推进事项",
-                "并联审批申请材料",
-                "可并行推进事项材料"],
             itemProjInfoId: '', // 单项申报项目id
             stateListFlag: false,
             filePreviewCount: 0,
@@ -179,6 +68,7 @@ var guideIndex = (function () {
             itemListKeyword:'',
             stagesData:{}, // 某主题下的阶段和事项
             fullscreenLoading: false,
+            singleDialog: true,
         },
         mounted: function () {
             var vm = this;
@@ -505,94 +395,7 @@ var guideIndex = (function () {
                 var secOrgId = this.secOrgId;
                 this.getOrgList(secOrgId);
             },
-            //根据父情形查找子情形
-            findByParentItemStateId: function (itemStateId, parentId) {
-                var vm = this;
-                request('', {
-                    url: ctx + 'rest/guide/itemState/findByParentItemStateId/' + itemStateId,
-                    type: 'get',
-                }, function (res) {
-                    if (res.success) {
-                        if (res.content.length > 0) {
-                            var childState = $(".childState");
-                            for (var i = 0; i < res.content.length; i++) {
-                                var childT = '';
-                                if (res.content[i].mustAnswer == '1' && vm.mustAnswer.indexOf(res.content[i].itemStateId) != -1) {
-                                    vm.mustAnswer.push(res.content[i].itemStateId);
-                                }
-                                if (res.content[i].answerType == 's' || res.content[i].answerType == 'y') {
-                                    if (res.content[i].mustAnswer == '1') {
-                                        childT += "<span data-id=" + parentId + " class='child'><p><h3 style='margin: 10px 0'>" + res.content[i].stateName + "</h3><i class='red-waring'>*</i></p>"
-                                    } else {
-                                        childT += "<span data-id=" + parentId + " class='child'><p><h3 style='margin: 10px 0'>" + res.content[i].stateName + "</h3></p>"
-                                    }
 
-                                    var childC = '';
-                                    for (var j = 0; j < res.content[i].answerStates.length; j++) {
-                                        childC += "<label class='radiobox'>" +
-                                            "<input id=" + res.content[i].answerStates[j].itemStateId + " name=" + 'radio' + i + parentId + " data-value=" + res.content[i].answerStates[j] + " type='radio' parentId=" + res.content[i].answerStates[j].parentStateId + " onchange=matChange(this) >" + res.content[i].answerStates[j].stateName + "<span></span></label>"
-                                    }
-                                    childT = childT + childC + '</span>'
-                                } else {
-                                    if (res.content[i].mustAnswer == '1') {
-                                        childT += "<span data-id=" + parentId + " class='child'><p><h3 style='margin: 10px 0'>" + res.content[i].stateName + "</h3><i class='red-waring'>*</i></p>"
-                                    } else {
-                                        childT += "<span data-id=" + parentId + " class='child'><p><h3 style='margin: 10px 0'>" + res.content[i].stateName + "</h3></p>"
-                                    }
-                                    var childC = '';
-                                    for (var j = 0; j < res.content[i].answerStates.length; j++) {
-                                        childC += "<label class='radiobox'>" +
-                                            "<input id=" + res.content[i].answerStates[j].itemStateId + " name='radio'" + i + parentId + " data-value=" + res.content[i].answerStates[j] + " type='checkbox' parentId=" + res.content[i].answerStates[j].parentStateId + " onchange=matChange(this)>" + res.content[i].answerStates[j].stateName + "<span></span></label>"
-                                    }
-                                    childT = childT + childC + '</span>'
-                                }
-                                childState.append(childT);
-                            }
-                        } else {
-                            var newChild = $('.child');
-                            for (var i = 0; i < newChild.length; i++) {
-                                if (parentId == newChild.attr('data-id')) {
-                                    newChild.remove();
-                                }
-                            }
-                        }
-                    } else {
-                        vm.$message.error(res.message);
-                    }
-                }, function () {
-                    vm.$message.error('根据父情形查找子情形接口失败，请重试！');
-                });
-            },
-            //根据情形获取材料
-            getMatState: function () {
-                var vm = this;
-                var id = [];
-                if (this.mustAnswer.length > 0) {
-                    this.$message({
-                        message: '请选择必选项之后再查看材料',
-                        type: 'error'
-                    });
-                    return;
-                }
-                $.each(this.matId, function (index, val) {
-                    id.push(val.itemStateId);
-                });
-                request('', {
-                    url: ctx + 'rest/guide/matState/list',
-                    type: 'get',
-                    data: {
-                        itemStateIds: id.toString()
-                    }
-                }, function (res) {
-                    if (res.success) {
-                        vm.detailData.matList = vm.firstMat.concat(res.content)
-                    } else {
-                        vm.$message.error(res.message);
-                    }
-                }, function () {
-                    vm.$message.error('根据情形获取材料接口失败，请重试！');
-                });
-            },
 
 
             tableToggle: function (e, index) {

@@ -61,7 +61,7 @@ var listmatter = (function(window){
                         vm.listmatterData = content;
                         vm.parallelItemList = content.parallelItemList; //  并联事项
                         vm.coreItemList = content.coreItemList; // 并行推进事项
-                      //  vm.getMateriallist();
+                        vm.getMateriallist();
                     } else {
                         vm.$message.error(res.message);
                     }
@@ -83,30 +83,33 @@ var listmatter = (function(window){
                     parallelItemVerIds.push(item.itemVerId);
                     paraParentllelItemVerIds.push(item.baseItemVerId);
                 });
-                request('', {
+                var params = {
+                    "coreItemVerIds":coreItemVerIds, // 并行事项版本ID数组
+                    "coreParentItemVerIds":coreParentItemVerIds, // 并行标准事项版本ID数组
+                    "paraParentllelItemVerIds":paraParentllelItemVerIds, // 并联标准事项版本ID数组
+                    "parallelItemVerIds":parallelItemVerIds, // 并联事项版本ID数组
+                    "stageId":vm.stageId, // 阶段id
+                    "itemStateIds":itemStateIds, // 事项情形ID数组
+                    "stageStateIds":stageStateIds, //阶段情形ID数组
+                }
+                $.ajax({
                     url: ctx + 'rest/userCenter/apply/mat/list',
                     type: 'post',
-                    data:{
-                        "coreItemVerIds": [], // 并行事项版本ID数组
-                        "coreParentItemVerIds": [], // 并行标准事项版本ID数组
-                        "paraParentllelItemVerIds": [], // 并联标准事项版本ID数组
-                        "parallelItemVerIds": [], // 并联事项版本ID数组
-                        "stageId":vm.stageId, // 阶段id
-                        "itemStateIds": [], // 事项情形ID数组
-                        "stageStateIds": [], //阶段情形ID数组
-                    }
-                }, function (res) {
-                    vm.materialLoading = false;
-                    if (res.success) {
+                    data:JSON.stringify(params),
+                    contentType: 'application/json;charset=utf-8',
+                    success:function(res){
+                        vm.materialLoading = false;
+                        if (res.success) {
 
-                    } else {
-                        vm.$message.error(res.message);
+                        } else {
+                            vm.$message.error(res.message);
+                        }
+                    },
+                    error:function () {
+                        vm.materialLoading = false;
+                        vm.$message.error('获取材料一清单数据接口失败，请稍后重试！');
                     }
-
-                }, function () {
-                    vm.materialLoading = false;
-                    vm.$message.error('获取材料一清单数据接口失败，请稍后重试！');
-                });
+                })
             },
             //根据事项版本号获取根情形列表
             currentItemVerIdChangehandle:function(itemVerId){
