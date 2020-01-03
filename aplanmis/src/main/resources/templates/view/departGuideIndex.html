@@ -83,40 +83,40 @@
 				                                                                                       :class="showMoreSearchItem?'ag-up-arrow':'ag-down-arrow'"></i></span>
 			</el-col>
 			<template v-if="showMoreSearchItem">
-				<el-col :span="8">
-					<el-form-item label="申报来源">
-						<el-select v-model="searchFrom.applySource" placeholder="请选择" clearable @change="tableDataSearch">
-							<el-option
-									v-for="item in applySourceList"
-									:key="item.itemId"
-									:label="item.itemName"
-									:value="item.itemCode">
-							</el-option>
-						</el-select>
-					</el-form-item>
-				</el-col>
-				<el-col :span="8">
-					<el-form-item label="审批类型">
-						<el-radio-group v-model="searchFrom.applyType" @change="clearThemeList">
-							<el-radio label="">全部</el-radio>
-							<el-radio label="0">并联</el-radio>
-							<el-radio label="1">单项</el-radio>
-						</el-radio-group>
-					</el-form-item>
-				</el-col>
-				<el-col :span="8">
-					<el-form-item label="所属主题">
-						<el-select v-model="searchFrom.theme" placeholder="请选择" clearable :disabled="searchFrom.applyType=='1'"
-						           @change="tableDataSearch">
-							<el-option
-									v-for="item in themeList"
-									:key="item.themeId"
-									:label="item.themeName"
-									:value="item.themeId">
-							</el-option>
-						</el-select>
-					</el-form-item>
-				</el-col>
+<!--				<el-col :span="8">-->
+<!--					<el-form-item label="申报来源">-->
+<!--						<el-select v-model="searchFrom.applySource" placeholder="请选择" clearable @change="tableDataSearch">-->
+<!--							<el-option-->
+<!--									v-for="item in applySourceList"-->
+<!--									:key="item.itemId"-->
+<!--									:label="item.itemName"-->
+<!--									:value="item.itemCode">-->
+<!--							</el-option>-->
+<!--						</el-select>-->
+<!--					</el-form-item>-->
+<!--				</el-col>-->
+<!--				<el-col :span="8">-->
+<!--					<el-form-item label="审批类型">-->
+<!--						<el-radio-group v-model="searchFrom.applyType" @change="clearThemeList">-->
+<!--							<el-radio label="">全部</el-radio>-->
+<!--							<el-radio label="0">并联</el-radio>-->
+<!--							<el-radio label="1">单项</el-radio>-->
+<!--						</el-radio-group>-->
+<!--					</el-form-item>-->
+<!--				</el-col>-->
+<!--				<el-col :span="8">-->
+<!--					<el-form-item label="所属主题">-->
+<!--						<el-select v-model="searchFrom.theme" placeholder="请选择" clearable :disabled="searchFrom.applyType=='1'"-->
+<!--						           @change="tableDataSearch">-->
+<!--							<el-option-->
+<!--									v-for="item in themeList"-->
+<!--									:key="item.themeId"-->
+<!--									:label="item.themeName"-->
+<!--									:value="item.themeId">-->
+<!--							</el-option>-->
+<!--						</el-select>-->
+<!--					</el-form-item>-->
+<!--				</el-col>-->
 				<el-col :span="8">
 					<el-form-item label="审批时限">
 						<el-radio-group v-model="searchFrom.instState" @change="tableDataSearch">
@@ -124,10 +124,13 @@
 							<el-radio label="2">预警</el-radio>
 							<el-radio label="3">逾期</el-radio>
 						</el-radio-group>
+						<el-select v-model="searchFrom.applyState" @change="tableDataSearch">
+							<el-option v-for="u in stateList" :label="u.label" :value="u.value"></el-option>
+						</el-select>
 					</el-form-item>
 				</el-col>
 				<el-col :span="8">
-					<el-form-item label="受理时间">
+					<el-form-item label="辅导时间">
 						<el-col :span="10">
 							<el-form-item prop="searchFrom.acceptStartTime">
 								<el-date-picker type="date"
@@ -216,7 +219,7 @@
 		<el-table-column
 				prop="applySource"
 				label="来源"
-				min-width="50"
+				min-width="60"
 				show-overflow-tooltip
 				:formatter="formatTableCell">
 
@@ -236,7 +239,7 @@
 				:formatter="formatTableCell">
 		</el-table-column>-->
 		<el-table-column
-				prop="localCode"
+				prop="gcbm"
 				min-width="200"
 				label="项目/工程代码"
 				show-overflow-tooltip
@@ -278,9 +281,11 @@
 				sortable="custom"
 				min-width="160"
 				prop="createTime"
-				label="申请时间"
-				show-overflow-tooltip
-				:formatter="formatTableCell">
+				label="开始时间"
+				show-overflow-tooltip>
+			<template slot-scope="scope">
+				{{formatDate(scope.row.guideStartTime)}}
+			</template>
 		</el-table-column>
 		<!--<el-table-column
 				prop="taskName"
@@ -299,7 +304,7 @@
 					<span class="bg-status">不计时</span>
 				</div>
 				<div v-else>
-					<span class="bg-status green-deadline" v-if="!scope.row.instState">{{'剩余'+scope.row.dueNumText}}</span>
+					<span class="bg-status green-deadline" v-if="!scope.row.instState">{{'剩余'+scope.row.dueTimeLimit+'天'}}</span>
 					<span class="bg-status green-deadline" v-else-if="scope.row.instState=='1'">{{scope.row.remainingOrOverTimeText}}</span>
 					<span class="bg-status yellow-deadline" v-else-if="scope.row.instState=='2'">{{scope.row.remainingOrOverTimeText}}</span>
 					<span class="bg-status red-deadline"
@@ -332,11 +337,10 @@
 
 		</el-table-column>
 		<el-table-column
-				prop="solicitState"
+				prop="applyStateName"
 				min-width="120"
 				label="状态"
-				show-overflow-tooltip
-				:formatter="formatState">
+				show-overflow-tooltip>
 		</el-table-column>
 
 		<!--<el-table-column
@@ -349,14 +353,17 @@
 		</el-table-column>-->
 
 		<el-table-column
-				min-width="120"
+				min-width="100"
 				label="操作">
 			<template slot-scope="scope">
-				<span v-if="scope.row.solicitState && scope.row.solicitState == 2" class="op-btn" @click="viewDetail(scope.row)">部门辅导完成</span>
-				<span v-else-if="scope.row.solicitState && scope.row.solicitState == 3" class="op-btn" @click="viewDetail(scope.row)">部门辅导中止</span>
-				<span v-else-if="scope.row.finishProgressNum == scope.row.allProgressNum && scope.row.promoter" class="op-btn" @click="viewDetail(scope.row)">结束部门辅导</span>
-				<span v-else-if="scope.row.solicitState && scope.row.solicitState == 2" class="op-btn" @click="viewDetail(scope.row)">牵头部门辅导</span>
-				<span v-else-if="scope.row.solicitState && scope.row.solicitState == 2" class="op-btn" @click="viewDetail(scope.row)">部门辅导</span>
+				<span class="op-btn" @click="viewDetail(scope.row)">
+					辅导
+				</span>
+<!--				<span v-if="scope.row.solicitState && scope.row.solicitState == 2" class="op-btn" @click="viewDetail(scope.row)">部门辅导完成</span>-->
+<!--				<span v-else-if="scope.row.solicitState && scope.row.solicitState == 3" class="op-btn" @click="viewDetail(scope.row)">部门辅导中止</span>-->
+<!--				<span v-else-if="scope.row.finishProgressNum == scope.row.allProgressNum && scope.row.promoter" class="op-btn" @click="viewDetail(scope.row)">结束部门辅导</span>-->
+<!--				<span v-else-if="scope.row.solicitState && scope.row.solicitState == 2" class="op-btn" @click="viewDetail(scope.row)">牵头部门辅导</span>-->
+<!--				<span v-else-if="scope.row.solicitState && scope.row.solicitState == 2" class="op-btn" @click="viewDetail(scope.row)">部门辅导</span>-->
 			</template>
 		</el-table-column>
 	</el-table>

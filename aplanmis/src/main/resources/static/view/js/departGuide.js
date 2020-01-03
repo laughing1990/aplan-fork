@@ -10,21 +10,19 @@ var vm = new Vue({
 					pages: 1,
 					perpage: 10
 				},
-				sort: {
-					field: 'acceptTime',
-					sort: 'desc'
-				},
-				theme: '',
-				acceptStartTime: '',
-				acceptEndTime: '',
-				applySource: '',
-				applyType: '',
-				instState: '',
-				arriveStartTime: '',
-				arriveEndTime: '',
+				// sort: {
+				// 	field: 'acceptTime',
+				// 	sort: 'desc'
+				// },
+				// theme: '',
+				// acceptStartTime: '',
+				// acceptEndTime: '',
+				// applySource: '',
+				// applyType: '',
+				// instState: '',
+				guideStartTime: '',
+				guideEndTime: '',
 				keyword: '',
-				// busType: 'BMFD'
-				busType: 'YJZQ',//测试用
 			},
 
 			isShowMsgDetail: false,
@@ -32,8 +30,14 @@ var vm = new Vue({
 				remindContent: '',
 				sendUserName: '',
 				sendDate: ''
-			}
-
+			},
+			stateList: [
+				{value: '1', label: '牵头部门待签收'},
+				{value: '2', label: '牵头部门处理中'},
+				{value: '3', label: '所有部门征求处理中'},
+				{value: '4', label: '申请人待确认'},
+				{value: '5', label: '结束'},
+			],
 		}
 	},
 	methods: {
@@ -81,25 +85,21 @@ var vm = new Vue({
 				return ts.apiMessage('网络错误！', 'error')
 			});
 		},
-		//办理
+		// 部门辅导跳往并联申报页面
 		viewDetail: function (row) {
 			// var url = ctx + 'apanmis/page/stageApplyIndex?guideId='+row.guideId;
 			var menuName= '';
 			var menuInnerUrl =  '';
 			var id = 'menu_'+new Date().getTime();
-			if (row.applyType == '并联') {
-				menuName = row.projName;
-				var themeCategory;
-				if (!!row.themeCategory) {
-					themeCategory = row.themeCategory.toUpperCase();
-				} else {
-					themeCategory = 'OTHERS';
-				}
-				menuInnerUrl = ctx + '/apanmis/page/stageApplyIndex?applyinstId=' + row.applyinstId + '&themeCategory=' + themeCategory;
-			} else if(row.applyType == '单项'){
-				menuName = row.itemName;
-				menuInnerUrl = ctx + '/apanmis/page/singleApplyIndex/'+row.itemVerId+'?applyinstId='+row.applyinstId;
+			menuName = row.projName;
+			var themeCategory;
+			if (!!row.themeCategory) {
+				themeCategory = row.themeCategory.toUpperCase();
+			} else {
+				themeCategory = 'OTHERS';
 			}
+			menuInnerUrl = ctx + '/apanmis/page/stageApplyIndex?applyinstId=' + row.applyinstId
+				+ '&themeCategory=' + themeCategory + '&guideId=' + row.guideId;
 			var data = {
 				'menuName':menuName,
 				'menuInnerUrl':menuInnerUrl,
@@ -215,6 +215,9 @@ var vm = new Vue({
 			} else {
 				return '<span class="op-btn"  @click="viewDetail(scope.row)">联合评审</span>';
 			}
+		},
+		formatDate: function(val){
+			return __STATIC.formatDate(val);
 		},
 
 	},
