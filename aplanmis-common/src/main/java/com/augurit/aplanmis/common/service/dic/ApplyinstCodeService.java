@@ -25,7 +25,7 @@ public class ApplyinstCodeService {
      *
      * @return applyinstCode;
      */
-    public String getApplyinstCodeCurrentDay() throws Exception {
+    public synchronized String getApplyinstCodeCurrentDay() throws Exception {
         String codeId = this.getCurrentDay("yyyyMMdd");
         BscRuleCode ruleCode = bscRuleCodeMapper.getBscRuleCodeById(codeId);
 

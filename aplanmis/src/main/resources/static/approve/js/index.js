@@ -1292,8 +1292,8 @@ var vm = new Vue({
         if (!(vm.solicitBmForm.solicitLinkmanPhone && vm.solicitBmForm.solicitLinkmanPhone.length)) {
           return vm.$message.error('请填写联系人电话');
         }
-        params.solicitLinkmanName = vm.solicitBmForm.solicitLinkmanName;
-        params.solicitLinkmanPhone = vm.solicitBmForm.solicitLinkmanPhone;
+        params.linkmanName = vm.solicitBmForm.solicitLinkmanName;
+        params.linkmanPhone = vm.solicitBmForm.solicitLinkmanPhone;
       }
       vm.parentPageLoading = true;
       request('', {
@@ -1424,6 +1424,10 @@ var vm = new Vue({
       }, function (res) {
         vm.parentPageLoading = false;
         if (res.success) {
+          if (res.content[0].solicitDetailUser) {
+            vm.solicitBmForm.solicitLinkmanName = res.content[0].solicitDetailUser.linkmanName;
+            vm.solicitBmForm.solicitLinkmanPhone = res.content[0].solicitDetailUser.linkmanPhone;
+          }
           if (typeof cb == 'function') {
             if (res.content && res.content.length) {
               cb(res.content.reverse());
