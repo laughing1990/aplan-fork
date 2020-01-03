@@ -727,6 +727,7 @@ var vm = new Vue({
       oneSolicitOrgData: [],
       chineseIndexArr: __STATIC.chineseIndexArr,
       // 一次征询 end
+      processDialogFull: false,
     }
   },
   filters: {
