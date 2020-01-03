@@ -232,10 +232,14 @@ public class RestParallerApplyController {
     @ApiOperation("阶段申报--> 部门辅导申请")
     public ContentResultForm<String> startGuideApply(@Valid @RequestBody AeaGuideApplyVo aeaGuideApplyVo){
         try {
-            AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(aeaGuideApplyVo.getApplySource(), aeaGuideApplyVo.getApplySubject(), aeaGuideApplyVo.getLinkmanInfoId(), AeaHiApplyinstConstants.STAGEINST_APPLY, null,ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"1",null);
-            aeaGuideApplyVo.setApplyinstId(aeaHiApplyinst.getApplyinstId());
+            String applyinstId=aeaGuideApplyVo.getApplyinstId();
+            if(StringUtils.isBlank(aeaGuideApplyVo.getApplyinstId())){
+                AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(aeaGuideApplyVo.getApplySource(), aeaGuideApplyVo.getApplySubject(), aeaGuideApplyVo.getLinkmanInfoId(), AeaHiApplyinstConstants.STAGEINST_APPLY, null,ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"1",null);
+                applyinstId=aeaHiApplyinst.getApplyinstId();
+            }
+            aeaGuideApplyVo.setApplyinstId(applyinstId);
             restAeaHiGuideService.initAeaHiGuide(aeaGuideApplyVo);
-            return new ContentResultForm<>(true, aeaHiApplyinst.getApplyinstId(), "部门辅导申请成功!");
+            return new ContentResultForm<>(true, applyinstId, "部门辅导申请成功!");
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             return new ContentResultForm(false,"",e.getMessage());
