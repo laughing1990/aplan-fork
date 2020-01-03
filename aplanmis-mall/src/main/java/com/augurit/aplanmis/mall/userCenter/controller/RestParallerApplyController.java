@@ -230,7 +230,7 @@ public class RestParallerApplyController {
 
     @PostMapping("net/guide/apply/start")
     @ApiOperation("阶段申报--> 部门辅导申请")
-    public ContentResultForm<String> startGuideApply(AeaGuideApplyVo aeaGuideApplyVo){
+    public ContentResultForm<String> startGuideApply(@Valid @RequestBody AeaGuideApplyVo aeaGuideApplyVo){
         try {
             AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(aeaGuideApplyVo.getApplySource(), aeaGuideApplyVo.getApplySubject(), aeaGuideApplyVo.getLinkmanInfoId(), AeaHiApplyinstConstants.STAGEINST_APPLY, null,ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"1",null);
             aeaGuideApplyVo.setApplyinstId(aeaHiApplyinst.getApplyinstId());
