@@ -70,7 +70,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document" style="max-width: 1000px;">
         <div class="modal-content">
             <div class="modal-header" style="padding: 15px;height: 45px;">
-                <h5 class="modal-title" id="select_solicit_org_user_ztree_modal_title">选择征求人员</h5>
+                <h5 class="modal-title" id="select_solicit_org_user_ztree_modal_title">选择牵头人员</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -330,9 +330,7 @@
 
         $('#selectedCheckSolicitOrgUserBtn').click(function() {
 
-            var solicitOrgId = null;
-            if (curSelectSolicitOrg2TreeNode != null) {
-                solicitOrgId = curSelectSolicitOrg2TreeNode.id;
+            if(!isEmpty(solicitOrgId)){
                 var sortNos = [];
                 var userIds = [];
                 var liObjs = document.getElementsByName('selectSolicitOrgUserLi');
@@ -343,7 +341,7 @@
                 }
                 swal({
                     title: '此操作影响：',
-                    text: '此操作将重新设置当前选择的部门征求人员数据,您确定要执行吗?',
+                    text: '此操作将重新设置当前选择的部门牵头人员数据,您确定要执行吗?',
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonText: '确定',
@@ -382,7 +380,7 @@
                     }
                 });
             } else {
-                swal('错误信息', '请选择征求部门节点！', 'error');
+                swal('错误信息', '传递牵头部门id数据为空！', 'error');
             }
         });
     });
@@ -591,9 +589,7 @@
 
     function loadSolicitOrgUserSelectedData(){
 
-        var solicitOrgId = null;
-        if (curSelectSolicitOrg2TreeNode != null) {
-            solicitOrgId = curSelectSolicitOrg2TreeNode.id;
+        if(!isEmpty(solicitOrgId)){
             $.ajax({
                 url: ctx + '/aea/solicit/org/user/listAeaSolicitOrgUserRelInfo.do',
                 type: 'post',
