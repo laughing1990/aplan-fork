@@ -65,13 +65,13 @@
         <include refid="allColumns"/>
         from AEA_LINKMAN_INFO linkman
         where LINKMAN_INFO_ID IN (
-            SELECT LINKMAN_INFO_ID
-            FROM aea_proj_linkman
-            WHERE PROJ_INFO_ID = #{projInfoId}
-                AND APPLYINST_ID = #{applyinstId}
-                AND TYPE = 'link'
+        SELECT LINKMAN_INFO_ID
+        FROM aea_proj_linkman
+        WHERE PROJ_INFO_ID = #{projInfoId}
+        AND APPLYINST_ID = #{applyinstId}
+        AND TYPE = 'link'
         )
-            AND IS_DELETED = '0'
+        AND IS_DELETED = '0'
     </select>
 
     <select id="getApplyProjLinkman" resultType="AeaLinkmanInfo">
@@ -79,13 +79,13 @@
         <include refid="allColumns"/>
         from AEA_LINKMAN_INFO linkman
         where LINKMAN_INFO_ID IN (
-            SELECT LINKMAN_INFO_ID
-            FROM aea_proj_linkman
-            WHERE PROJ_INFO_ID = #{projInfoId}
-                AND APPLYINST_ID = #{applyinstId}
-                AND TYPE = 'apply'
+        SELECT LINKMAN_INFO_ID
+        FROM aea_proj_linkman
+        WHERE PROJ_INFO_ID = #{projInfoId}
+        AND APPLYINST_ID = #{applyinstId}
+        AND TYPE = 'apply'
         )
-            AND IS_DELETED = '0'
+        AND IS_DELETED = '0'
     </select>
 
     <select id="getApplyLinkman" resultType="AeaLinkmanInfo">
@@ -93,8 +93,8 @@
         <include refid="allColumns"/>
         from AEA_LINKMAN_INFO linkman
         where LINKMAN_INFO_ID IN (
-            SELECT LINKMAN_INFO_ID
-            FROM aea_hi_applyinst
+        SELECT LINKMAN_INFO_ID
+        FROM aea_hi_applyinst
         where APPLYINST_ID = #{applyinstId}
         )
         AND IS_DELETED = '0'
@@ -112,16 +112,16 @@
         SELECT
         <include refid="allColumns"/>
         FROM
-            aea_linkman_info linkman
+        aea_linkman_info linkman
         WHERE
-	LINKMAN_CERT_NO IN (
-		SELECT
-			IDCARD
-		FROM
-			aea_unit_info
-		WHERE
-			UNIT_INFO_ID = #{unitInfoId}
-	)
+        LINKMAN_CERT_NO IN (
+        SELECT
+        IDCARD
+        FROM
+        aea_unit_info
+        WHERE
+        UNIT_INFO_ID = #{unitInfoId}
+        )
     </select>
 
     <select id="findAllUnitLinkman" resultType="AeaLinkmanInfo">
@@ -129,9 +129,9 @@
         <include refid="allColumns"/>
         from AEA_LINKMAN_INFO linkman
         where LINKMAN_INFO_ID IN (
-            SELECT LINKMAN_INFO_ID
-            FROM AEA_UNIT_LINKMAN
-            WHERE UNIT_INFO_ID = #{unitInfoId}
+        SELECT LINKMAN_INFO_ID
+        FROM AEA_UNIT_LINKMAN
+        WHERE UNIT_INFO_ID = #{unitInfoId}
         )
         AND IS_DELETED = '0'
     </select>
@@ -151,7 +151,8 @@
         from AEA_LINKMAN_INFO linkman
         where linkman.IS_DELETED = '0'
         <if test="keyword!=null and keyword!=''">
-            AND (linkman.LINKMAN_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') or linkman.LINKMAN_CERT_NO LIKE CONCAT(CONCAT('%',#{keyword}),'%'))
+            AND (linkman.LINKMAN_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') or linkman.LINKMAN_CERT_NO LIKE
+            CONCAT(CONCAT('%',#{keyword}),'%'))
         </if>
         <if test="rootOrgId != null and rootOrgId !=''">
             AND linkman.ROOT_ORG_ID = #{rootOrgId}
@@ -240,9 +241,10 @@
         </where>
     </select>
     <select id="getProjLinkmanByApplyinstId" resultType="com.augurit.aplanmis.common.domain.AeaLinkmanInfo">
-        select <include refid="allColumns"/>
+        select
+        <include refid="allColumns"/>
         from AEA_LINKMAN_INFO linkman where LINKMAN_INFO_ID IN (
-            SELECT LINKMAN_INFO_ID FROM AEA_PROJ_LINKMAN WHERE APPLYINST_ID = #{applyinstId} AND TYPE = 'link'
+        SELECT LINKMAN_INFO_ID FROM AEA_PROJ_LINKMAN WHERE APPLYINST_ID = #{applyinstId} AND TYPE = 'link'
         ) AND IS_DELETED = '0'
     </select>
     <!--4 根据条件查询实体list,返回分页对象 -->
@@ -351,8 +353,11 @@
     <!--查询企业联系人或委托人-->
     <select id="getAeaLinkmanInfoByUnitInfoIdAndIsBindAccount" resultType="AeaLinkmanInfo">
         select
-        <include refid="alias_allColumns"><property name="alias" value="linkman"/></include>,
-         aul.IS_BIND_ACCOUNT isBindAccount,aul.UNIT_INFO_ID unitInfoId
+        <include refid="alias_allColumns">
+            <property name="alias" value="linkman"/>
+        </include>
+        ,
+        aul.IS_BIND_ACCOUNT isBindAccount,aul.UNIT_INFO_ID unitInfoId
         from AEA_LINKMAN_INFO linkman
         left join AEA_UNIT_LINKMAN aul on linkman.linkman_info_id = aul.LINKMAN_INFO_ID
         where aul.UNIT_INFO_ID = #{unitInfoId}
@@ -510,7 +515,10 @@
     <!--根据单位id和服务id查询从业人员-->
     <select id="getLinkmanList" resultType="AeaLinkmanInfo">
         select
-        <include refid="alias_allColumns"><property name="alias" value="ali"></property></include>,
+        <include refid="alias_allColumns">
+            <property name="alias" value="ali"></property>
+        </include>
+        ,
         aisl.SERVICE_LINKMAN_ID serviceLinkmanId
         FROM aea_im_service_linkman aisl,aea_linkman_info ali
         WHERE ali.LINKMAN_INFO_ID = aisl.LINKMAN_INFO_ID
@@ -529,7 +537,10 @@
     <!--2 根据主键ID查询单个实体；表字段及结构改变 请使用getListLinkmanUnitById  或getOneById -->
     <select id="getAeaLinkmanInfoAndUnitInfoByLinkmanInfoId" resultType="AeaLinkmanInfo">
         select
-        <include refid="alias_allColumns"><property name="alias" value="ali"></property></include>,
+        <include refid="alias_allColumns">
+            <property name="alias" value="ali"></property>
+        </include>
+        ,
         ,unit.APPLICANT applicant,unit.IDCARD idcard,aul.IS_BIND_ACCOUNT isBindAccount
         from AEA_LINKMAN_INFO ali
         left join AEA_UNIT_LINKMAN aul on ali.linkman_info_id = aul.LINKMAN_INFO_ID
@@ -557,7 +568,10 @@
     <!--根据公司id查询委托人信息-->
     <select id="getAeaLinkmanInfoByUnitInfoId" resultType="AeaLinkmanInfo">
         select DISTINCT
-        <include refid="alias_allColumns"><property name="alias" value="linkman"></property></include>,
+        <include refid="alias_allColumns">
+            <property name="alias" value="linkman"></property>
+        </include>
+        ,
         aul.IS_BIND_ACCOUNT as isBindAccount,
         aul.UNIT_INFO_ID
         from AEA_LINKMAN_INFO linkman
@@ -658,7 +672,8 @@
             <property name="alias" value="linfo"></property>
         </include>
         ,(select ais.service_name from aea_im_service ais where ais.service_id = lm.service_id) serviceName,
-        lm.practise_date practiseDate,lm.service_linkman_id serviceLinkmanId from aea_linkman_info linfo ,aea_im_service_linkman lm where
+        lm.practise_date practiseDate,lm.service_linkman_id serviceLinkmanId from aea_linkman_info linfo
+        ,aea_im_service_linkman lm where
         lm.service_id=#{serviceId} and lm.unit_info_id=#{unitInfoId}
         and lm.linkman_info_id = linfo.LINKMAN_INFO_ID
         and lm.audit_flag = '1' and lm.is_delete = '0' and linfo.is_deleted = '0'
@@ -685,5 +700,13 @@
         from aea_linkman_info ali
         left join aea_unit_linkman aul on aul.LINKMAN_INFO_ID=ali.LINKMAN_INFO_ID
         where aul.IS_BIND_ACCOUNT='1' and aul.UNIT_INFO_ID=#{unitInfoId}
+    </select>
+    <!--根据证件号查找联系人信息-->
+    <select id="getAeaLinkmanByCertNo" resultType="com.augurit.aplanmis.common.domain.AeaLinkmanInfo">
+        select
+        <include refid="alias_allColumns">
+            <property name="alias" value="ali"/>
+        </include>
+        from AEA_LINKMAN_INFO ali where ali.LINKMAN_CERT_NO=#{linkmanCertNo} and ali.IS_DELETED='0'
     </select>
 </mapper>

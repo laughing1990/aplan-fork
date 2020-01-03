@@ -13,10 +13,6 @@
   <link rel="stylesheet" href="../../../static/zjcs/login/css/ownerEnter.css" th:href="@{/zjcs/login/css/ownerEnter.css}">
   <script>
     var ctx = '[[@{/}]]';
-    // var ctx = 'http://192.168.32.59:8084/aplanmis-mall/';
-    // var ctx = 'http://192.168.32.46:8084/aplanmis-mall/';
-
-
   </script>
 </head>
 
@@ -30,7 +26,8 @@
       <span class="inlineblock-midd crumbs-icon"></span>
       <span class="crumbs-tip">当前位置：</span>
       <el-breadcrumb separator-class="el-icon-arrow-right" class="inlineblock-midd">
-        <el-breadcrumb-item><a href="../index.html" th:href="@{index.html}" @click="backToIndex">首页</a></el-breadcrumb-item>
+        <el-breadcrumb-item><a href="../index.html" th:href="@{index.html}" @click="backToIndex">首页</a>
+        </el-breadcrumb-item>
         <el-breadcrumb-item>
           <a href="javascript:void(0);"><span @click="backToGuide">超市指南</span></a>
         </el-breadcrumb-item>
@@ -72,14 +69,14 @@
                   </el-input>
                 </el-form-item>
                 <!-- <el-form-item class="input-inline" label="机构类型">
-                   <el-select v-model="formData.projApplyType" filterable placeholder="请选择机构类型" @click.native="getProjThemeIdList">
-                    <el-option v-for="item in typeList" :key="item.themeId" :label="item.themeName" :value="item.themeName">
-                    </el-option>
-                  </el-select>
-                </el-form-item> -->
+                 <el-select v-model="formData.projApplyType" filterable placeholder="请选择机构类型" @click.native="getProjThemeIdList">
+                  <el-option v-for="item in typeList" :key="item.themeId" :label="item.themeName" :value="item.themeName">
+                  </el-option>
+                </el-select>
+              </el-form-item> -->
                 <!--  <el-form-item class="input-inline" prop="projectAddress" label="用户账号">
-                  <el-input name="projName" v-model="formData.projName" placeholder="请输入用户账号">
-                </el-form-item> -->
+                <el-input name="projName" v-model="formData.projName" placeholder="请输入用户账号">
+              </el-form-item> -->
                 <el-form-item class="input-inline" label="注册地行政区划" prop="applicantDistrict">
                   <el-cascader placeholder="请选择注册地行政区划" v-model="formData.applicantDistrict" :options="options" separator=">" :Props='props'></el-cascader>
                 </el-form-item>
@@ -96,45 +93,47 @@
                 </el-input>
               </el-form-item>
               <el-form-item class="proj-code-info" label="注册地址" prop="applicantDetailSite">
-                <el-input name="applicantDetailSite" v-model="formData.applicantDetailSite" placeholder="请输入注册地址">
+                <el-input name="applicantDetailSite" v-model="formData.applicantDetailSite" placeholder="请输入注册地址" />
               </el-form-item>
               <div class="clearfix">
                 <!--   <el-form-item class="input-inline mb5" prop="regionalism" label="经营有效期起">
-                  <el-date-picker v-model="formData.contractSignTime" type="date" placeholder="请选择经营有效期起">
-                </el-form-item>
-                <el-form-item class="input-inline mb5" prop="projectAddress" label="经营有效期止">
-                  <el-date-picker v-model="formData.contractSignTime" type="date" placeholder="请选择经营有效期止">
-                </el-form-item> -->
+                <el-date-picker v-model="formData.contractSignTime" type="date" placeholder="请选择经营有效期起">
+              </el-form-item>
+              <el-form-item class="input-inline mb5" prop="projectAddress" label="经营有效期止">
+                <el-date-picker v-model="formData.contractSignTime" type="date" placeholder="请选择经营有效期止">
+              </el-form-item> -->
               </div>
               <el-form-item>
                 <span class="tip">备注：若证书长期有效，则“经营有效期始”按执照的成立日期填，无需填写“经营有效期止”。</span>
               </el-form-item>
               <el-form-item class="proj-code-info mb5" label="经营或业务范围" prop="managementScope">
                 <el-input name="managementScope" type="textarea" :rows="5" v-model="formData.managementScope" placeholder="请输入经营或业务范围">
+                </el-input>
               </el-form-item>
               <el-form-item>
                 <span class="tip">备注：若上面机构类型选择了“企业法人”或“企业分支”时，则须填写“经营或业务范围”。</span>
               </el-form-item>
               <div class="clearfix">
                 <!--  <el-form-item class="input-inline mb5" label="注册资本币种">
-                  <el-select v-model="formData.projApplyType" filterable placeholder="请选择注册资本币种" @click.native="getProjThemeIdList">
-                    <el-option v-for="item in moneyList" :key="item.themeId" :label="item.themeName" :value="item.themeName">
-                    </el-option>
-                  </el-select>
-                </el-form-item> -->
+                <el-select v-model="formData.projApplyType" filterable placeholder="请选择注册资本币种" @click.native="getProjThemeIdList">
+                  <el-option v-for="item in moneyList" :key="item.themeId" :label="item.themeName" :value="item.themeName">
+                  </el-option>
+                </el-select>
+              </el-form-item> -->
                 <el-form-item class="input-inline mb5" label="注册资本（万元）" prop="registeredCapital">
                   <el-input name="registeredCapital" v-model="formData.registeredCapital" placeholder="请输入注册资本">
+                  </el-input>
                 </el-form-item>
                 <el-form-item class="proj-code-info" style="margin-top:40px;">
                   <span class="tip">备注：若上面机构类型选择了“企业法人”或“企业分支”时，则须填写“注册资本币种”和“注册资本(万元)”。</span>
                 </el-form-item>
                 <!-- <el-form-item label="办公地行政区划" class="input-inline" prop="projName">
-                  <el-cascader placeholder="请选择办公地行政区划" v-model="value" :options="options" separator=">" style="width:100%"></el-cascader>
-                </el-form-item>
-                <el-form-item label="办公地址" class="input-inline" prop="projName">
-                  <el-input name="projName" v-model="formData.projName" placeholder="请输入办公地址">
-                  </el-input>
-                </el-form-item> -->
+                <el-cascader placeholder="请选择办公地行政区划" v-model="value" :options="options" separator=">" style="width:100%"></el-cascader>
+              </el-form-item>
+              <el-form-item label="办公地址" class="input-inline" prop="projName">
+                <el-input name="projName" v-model="formData.projName" placeholder="请输入办公地址">
+                </el-input>
+              </el-form-item> -->
               </div>
             </el-form>
           </el-collapse-item>
@@ -160,6 +159,12 @@
               <el-table-column type="index" width="50" align="center">
               </el-table-column>
               <el-table-column prop="name" label="附件名称">
+                <template slot-scope="scope">
+                  <span style="color:red">*</span>{{scope.row.name}}
+                </template>
+                <template slot-scope="scope">
+                  <span style="color:red">*</span>{{scope.row.name}}
+                </template>
               </el-table-column>
               <el-table-column prop="bb" label="是否必须上传" align="center" width="120">
               </el-table-column>
@@ -181,6 +186,22 @@
                 <el-form-item class="input-inline" label="联系人" prop="linkmanName">
                   <el-input name="linkmanName" v-model="formData2.linkmanName" placeholder="请输入联系人"></el-input>
                 </el-form-item>
+                <el-form-item class="input-inline" label="联系人类型" prop="linkmanType">
+                  <el-select v-model="formData2.linkmanType">
+                    <el-option key="个人" label="个人" value="c"></el-option>
+                    <el-option key="单位" label="单位" value="u"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item class="input-inline" label="证件类型" prop="">
+                  <el-select v-model="formData2.idCard">
+                    <el-option key="身份证" label="身份证" value="1">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="联系人证件号" class="input-inline" prop="linkmanCertNo">
+                  <el-input name="linkmanCertNo" v-model="formData2.linkmanCertNo" placeholder="请输入采购委托人证件号" @blur="checknum">
+                  </el-input>
+                </el-form-item>
                 <el-form-item class="input-inline" label="电子邮箱" prop="linkmanMail">
                   <el-input name="linkmanMail" v-model="formData2.linkmanMail" placeholder="请输入电子邮箱"></el-input>
                 </el-form-item>
@@ -188,15 +209,15 @@
                   <el-input name="linkmanMobilePhone" v-model="formData2.linkmanMobilePhone" placeholder="请输入移动电话">
                 </el-form-item>
                 </el-input>
-                <el-form-item class="input-inline" label="固定电话" prop="projType">
-                  <el-input name="linkmanOfficePhon" v-model="formData2.linkmanOfficePhon" placeholder="请输入固定电话" style="width:78%;"></el-input>
+                <el-form-item class="input-inline" label="办公电话" prop="linkmanOfficePhon">
+                  <el-input name="linkmanOfficePhon" v-model="formData2.linkmanOfficePhon" placeholder="请输入固定电话"></el-input>
                 </el-form-item>
-                <el-form-item class="input-inline" label="传真" prop="projType">
+                <el-form-item class="input-inline" label="传真" prop="linkmanFax">
                   <el-input name="linkmanFax" v-model="formData2.linkmanFax" placeholder="请输入传真"></el-input>
                 </el-form-item>
                 <!--  <el-form-item class="input-inline" label="网址">
-                  <el-input name="projName" v-model="formData2.projName" placeholder="请输入网址"></el-input>
-                </el-form-item> -->
+                <el-input name="projName" v-model="formData2.projName" placeholder="请输入网址"></el-input>
+              </el-form-item> -->
               </div>
             </el-form>
           </el-collapse-item>
@@ -210,7 +231,7 @@
         <div class="tips">
           <p>温馨提示</p>
           <ul>
-            <li>1. 如果系统为您查询到您有资格电子证书，您可点击【我的资格电子证照】选择您可使用的资格证书电子证照，系统将会自动填充资格信息项，您可根据实际情况修改或添加自动填充的信息； </li>
+            <li>1. 如果系统为您查询到您有资格电子证书，您可点击【我的资格电子证照】选择您可使用的资格证书电子证照，系统将会自动填充资格信息项，您可根据实际情况修改或添加自动填充的信息；</li>
             <li>2. 您也可以先选择服务类型，系统将会自动为您查询您是否有该服务的资格共享信息，若有，您可通过选择共享信息来填充资格信息的数据项。</li>
             <li>3. 若同个资格同时有电子证照和共享信息且信息相同，请选择一种方式进行填充信息，不要重复录入。</li>
             <li>4. 您也可以自动填写资格信息，若有多个服务类型，可在下方点击【添加资格信息】进行录入。</li>
@@ -224,45 +245,63 @@
             </template>
             <el-form label-width="176px" ref="formwtr" :rules="ruleswtr" :model="formDatawtr">
               <!--  <el-form-item label="所属科室" class="proj-code-info" prop="projName">
-                <el-input name="projName" v-model="formDatawtr.projName" placeholder="请输入所属科室">
-              </el-form-item> -->
+              <el-input name="projName" v-model="formDatawtr.projName" placeholder="请输入所属科室">
+            </el-form-item> -->
               <div class="clearfix">
                 <el-form-item class="input-inline" label="采购委托人姓名">
-                  <el-input name="linkmanName" v-model="formDatawtr.linkmanName" placeholder="请输入采购人姓名">
+                  <el-input name="linkmanName" v-model="formDatawtr.linkmanName" placeholder="请输入采购人姓名"></el-input>
                 </el-form-item>
                 <el-form-item class="input-inline" label="移动电话">
-                  <el-input name="linkmanMobilePhone" v-model="formDatawtr.linkmanMobilePhone" placeholder="请输入移动电话">
+                  <el-input name="linkmanMobilePhone" v-model="formDatawtr.linkmanMobilePhone" placeholder="请输入移动电话"></el-input>
                 </el-form-item>
-              </div>
-              <el-form-item label="采购委托人证件号" class="proj-code-info" prop="linkmanCertNo">
-                <el-select v-model="idCard" style="width:15%;">
-                  <el-option key="身份证" label="身份证" value="1">
-                  </el-option>
-                </el-select>
-                <el-input name="linkmanCertNo" v-model="formDatawtr.linkmanCertNo" placeholder="请输入采购委托人证件号" style="width:50%;" @blur="checknum">
-                </el-input>
-              </el-form-item>
-              <!-- <el-form-item class="proj-code-info" label="采购委托人账号">
-                <el-input name="projName" v-model="formDatawtr.projName" placeholder="请输入采购委托人账号">
-              </el-form-item> -->
-              <div class="clearfix">
-                <!--  <el-form-item class="input-inline" label="职务">
-                  <el-input name="projName" v-model="formDatawtr.projName" placeholder="请输入职务">
-                </el-form-item> -->
+                <el-form-item class="input-inline" label="联系人类型" prop="linkmanType">
+                  <el-select v-model="formDatawtr.linkmanType">
+                    <el-option key="个人" label="个人" value="c"></el-option>
+                    <el-option key="单位" label="单位" value="u"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item class="input-inline" label="证件类型" prop="">
+                  <el-select v-model="formDatawtr.idCard">
+                    <el-option key="身份证" label="身份证" value="1">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="联系人证件号" class="input-inline" prop="linkmanCertNo">
+                  <el-input name="linkmanCertNo" v-model="formDatawtr.linkmanCertNo" placeholder="请输入采购委托人证件号" @blur="checknum">
+                  </el-input>
+                </el-form-item>
                 <el-form-item class="input-inline" label="邮箱">
                   <el-input name="linkmanMail" v-model="formDatawtr.linkmanMail" placeholder="请输入邮箱">
+                  </el-input>
                 </el-form-item>
-                <!-- <el-form-item class="input-inline" prop="regionalism" label="自个有效期起">
-                  <el-date-picker v-model="formDatawtr.contractSignTime" type="date" placeholder="请选择自个有效期起">
-                </el-form-item>
-                <el-form-item class="input-inline" prop="projectAddress" label="资格有效期止">
-                  <el-date-picker v-model="formDatawtr.contractSignTime" type="date" placeholder="请选择资格有效期止">
-                </el-form-item> -->
               </div>
+              <!--<el-form-item label="采购委托人证件号" class="proj-code-info" prop="linkmanCertNo">
+              <el-select v-model="idCard" style="width:15%;">
+                <el-option key="身份证" label="身份证" value="1">
+                </el-option>
+              </el-select>
+              <el-input name="linkmanCertNo" v-model="formDatawtr.linkmanCertNo" placeholder="请输入采购委托人证件号" style="width:50%;" @blur="checknum">
+              </el-input>
+            </el-form-item>-->
+              <!-- <el-form-item class="proj-code-info" label="采购委托人账号">
+              <el-input name="projName" v-model="formDatawtr.projName" placeholder="请输入采购委托人账号">
+            </el-form-item> -->
+              <!--<div class="clearfix">
+                <el-form-item class="input-inline" label="职务">
+                  <el-input name="projName" v-model="formDatawtr.projName" placeholder="请输入职务"></el-input>
+              </el-form-item>
+
+               <el-form-item class="input-inline" prop="regionalism" label="自个有效期起">
+                 <el-date-picker v-model="formDatawtr.contractSignTime" type="date" placeholder="请选择自个有效期起"></el-date-picker>
+              </el-form-item>
+              <el-form-item class="input-inline" prop="projectAddress" label="资格有效期止">
+                <el-date-picker v-model="formDatawtr.contractSignTime" type="date" placeholder="请选择资格有效期止"></el-date-picker>
+              </el-form-item>
+            </div>-->
               <!--  <el-form-item label="备注" class="proj-code-info" prop="projName">
-                <el-input name="projName" type="textarea" :rows="5" v-model="formDatawtr.projName" placeholder="请输入备注">
-                </el-input>
-              </el-form-item> -->
+              <el-input name="projName" type="textarea" :rows="5" v-model="formDatawtr.projName" placeholder="请输入备注">
+              </el-input>
+            </el-form-item> -->
             </el-form>
           </el-collapse-item>
           <el-collapse-item class="clearfix" name="2" id="matfile">
@@ -287,6 +326,9 @@
               <el-table-column type="index" width="50" align="center">
               </el-table-column>
               <el-table-column prop="name" label="附件名称">
+                <template slot-scope="scope">
+                  <span style="color:red">*</span>{{scope.row.name}}
+                </template>
               </el-table-column>
               <el-table-column prop="bb" label="是否必须上传" align="center" width="120">
               </el-table-column>
@@ -299,8 +341,8 @@
               </el-table-column>
             </el-table>
             <!-- <div class="plus-btn">
-              <el-button class="save-jinbanUnit-info plus specialbtn" @click=""><i class="el-icon-plus"></i>添加委托人信息</el-button>
-            </div> -->
+            <el-button class="save-jinbanUnit-info plus specialbtn" @click=""><i class="el-icon-plus"></i>添加委托人信息</el-button>
+          </div> -->
           </el-collapse-item>
         </el-collapse>
         <div class="right-bottom-btn">
@@ -313,9 +355,9 @@
         <div class="tips">
           <p>温馨提示</p>
           <ul>
-            <li>1、你的注册申报已成功提交处理，中介机构入驻办件号为【190115001100】业务等待形式检查，请记住您的入驻办件号以便查询业务进度。 </li>
+            <li>1、你的注册申报已成功提交处理，中介机构入驻办件号为【190115001100】业务等待形式检查，请记住您的入驻办件号以便查询业务进度。</li>
             <li>2、办件通过形式检查后，您将会受到授权人员激活账号的短信，请于收到短信的48小时内，点击短信内的激活链接进行账号激活。</li>
-            <li>3、点击激活链接前，请注意检查连接格式是否正确，若链接格式为http:zjcs.gdggzy.org.cn/则为正确，若为其他格式，请慎重点击。 </li>
+            <li>3、点击激活链接前，请注意检查连接格式是否正确，若链接格式为http:zjcs.gdggzy.org.cn/则为正确，若为其他格式，请慎重点击。</li>
           </ul>
         </div>
         <i class="el-icon-success" style="font-size:87px;margin-left:46%;color: rgb(56,178,10);margin-top: 50px;margin-bottom:20px;"></i>
@@ -324,8 +366,10 @@
           <span>您的登陆账号为：{{loginName}}</span>
           <span>您的登陆密码为：{{password}}</span>
         </div>
-        <p style="font-size:16px;margin-top: 20px;text-align: center;">进入服务指南-项目业主入驻指南-<a href="javascript:void(0);">进度查询</a> 页面查询业务进度</p>
-        <el-button type="primary" style="margin-top: 28px;width: 93px;height: 43px;font-size: 18px;margin-left: 46%;">确定</el-button>
+        <p style="font-size:16px;margin-top: 20px;text-align: center;">
+          进入服务指南-项目业主入驻指南-<a href="javascript:void(0);">进度查询</a> 页面查询业务进度</p>
+        <el-button type="primary" style="margin-top: 28px;width: 93px;height: 43px;font-size: 18px;margin-left: 46%;">确定
+        </el-button>
       </div>
     </div>
     <!--文件上传下载弹窗 start-->
@@ -338,7 +382,7 @@
         </div>
         <el-table :data="uploadTableData" ref="uploadTableData" row-key="fileId" border>
           <!-- <el-table-column type="selection" align="center" width="55">
-          </el-table-column> -->
+        </el-table-column> -->
           <el-table-column prop="name" label="文件名"></el-table-column>
           <el-table-column label="操作" align="center" width="310">
             <template slot-scope="scope">
@@ -351,34 +395,34 @@
     </el-dialog>
     <!--材料库选择弹窗 start-->
     <!--   <el-dialog class="mat-dialog" title="材料库选择" :visible.sync="matDialog" width="1000px" height="674px">
-      <div class="grade-content">
-        <div class="tips tips2 tips3">
-          <p>温馨提示：选择对应的材料时，请点击【选择】即可完成选择。</p>
-        </div>
-        <div class="file-opt-btn search-proj">
-          <span>附件名称：</span>
-          <el-input :inline="true" placeholder="输入关键字" v-model="searchFileListfilter" style="width:36%;margin-right:15px;">
-          </el-input>
-          <span>附件类型：</span>
-          <el-select v-model="matType" style="margin-right:15px;">
-            <el-option v-for="item in matTypeList" :key="item.themeId" :label="item.themeName" :value="item.themeName">
-            </el-option>
-          </el-select>
-          <el-button type="primary">查询</el-button>
-          <el-button @click="">重置</el-button>
-        </div>
-        <el-table :data="shareFileList" border ref="shareFileList" class="matfile table">
-          <el-table-column label="选择" align="center" width="100">
-            <template slot-scope="scope">
-              <el-button type="primary" size="" @click="" round>选择</el-button>
-            </template>
-          </el-table-column>
-          <el-table-column prop="attName1" label="材料来源"></el-table-column>
-          <el-table-column prop="attName2" label="附件名称"></el-table-column>
-          <el-table-column prop="attName3" label="最后更新时间"></el-table-column>
-        </el-table>
+    <div class="grade-content">
+      <div class="tips tips2 tips3">
+        <p>温馨提示：选择对应的材料时，请点击【选择】即可完成选择。</p>
       </div>
-    </el-dialog> -->
+      <div class="file-opt-btn search-proj">
+        <span>附件名称：</span>
+        <el-input :inline="true" placeholder="输入关键字" v-model="searchFileListfilter" style="width:36%;margin-right:15px;">
+        </el-input>
+        <span>附件类型：</span>
+        <el-select v-model="matType" style="margin-right:15px;">
+          <el-option v-for="item in matTypeList" :key="item.themeId" :label="item.themeName" :value="item.themeName">
+          </el-option>
+        </el-select>
+        <el-button type="primary">查询</el-button>
+        <el-button @click="">重置</el-button>
+      </div>
+      <el-table :data="shareFileList" border ref="shareFileList" class="matfile table">
+        <el-table-column label="选择" align="center" width="100">
+          <template slot-scope="scope">
+            <el-button type="primary" size="" @click="" round>选择</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column prop="attName1" label="材料来源"></el-table-column>
+        <el-table-column prop="attName2" label="附件名称"></el-table-column>
+        <el-table-column prop="attName3" label="最后更新时间"></el-table-column>
+      </el-table>
+    </div>
+  </el-dialog> -->
     <div class="footer">
       <iframe src="../common/footer.html" th:src="@{/supermarket/main/footer.html}" frameborder="0" width="100%" height="100%"></iframe>
     </div>

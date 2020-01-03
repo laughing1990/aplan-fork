@@ -13,6 +13,7 @@ import java.io.*;
 import java.util.List;
 import java.util.Map;
 
+@Deprecated
 public class FileUtils extends FileUtilsBase {
 
     private static Logger logger = LoggerFactory.getLogger(FileUtils.class);
@@ -29,7 +30,7 @@ public class FileUtils extends FileUtilsBase {
 
             return uploadFile(tableName, pkName, recordId, files);
         } catch (Exception e) {
-            logger.error(e.getMessage(),e);
+            logger.error(e.getMessage(), e);
             return false;
         }
     }
@@ -43,7 +44,7 @@ public class FileUtils extends FileUtilsBase {
                 upload(tableName, pkName, recordId, file);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(),e);
+            logger.error(e.getMessage(), e);
             return false;
         }
         return true;
@@ -62,7 +63,7 @@ public class FileUtils extends FileUtilsBase {
                 upload(tableName, pkName, recordId, file);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(),e);
+            logger.error(e.getMessage(), e);
             return false;
         }
         return true;
@@ -75,17 +76,17 @@ public class FileUtils extends FileUtilsBase {
                 delete(detailId);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(),e);
+            logger.error(e.getMessage(), e);
             return false;
         }
         return true;
     }
 
     // 通过key值获取文件中的value
-    public static Object getValue(String filePathStr,String fileName, String key) {
+    public static Object getValue(String filePathStr, String fileName, String key) {
 
         JSONObject eJSON = null;
-        eJSON = read2JSON(filePathStr,fileName);
+        eJSON = read2JSON(filePathStr, fileName);
         if (null != eJSON && eJSON.containsKey(key)) {
             @SuppressWarnings("unchecked")
             Map<String, Object> values = JSON.parseObject(eJSON.toString(), Map.class);
@@ -96,7 +97,7 @@ public class FileUtils extends FileUtilsBase {
     }
 
     // 读文件到json
-    public static JSONObject read2JSON(String filePathStr,String fileName) {
+    public static JSONObject read2JSON(String filePathStr, String fileName) {
 
         File file = new File(filePathStr + File.separator + fileName + ".xml");
         if (!file.exists()) {
@@ -117,6 +118,7 @@ public class FileUtils extends FileUtilsBase {
 
         return (JSONObject) JSON.parse(laststr);
     }
+
     // 读文件到json
     public static JSONObject read2File(File file) {
 
@@ -138,7 +140,7 @@ public class FileUtils extends FileUtilsBase {
     }
 
     // json写入文件
-    public synchronized static void write2File(String filePathStr,Object json, String fileName) {
+    public synchronized static void write2File(String filePathStr, Object json, String fileName) {
 
         BufferedWriter writer = null;
         File filePath = new File(filePathStr);
@@ -158,17 +160,17 @@ public class FileUtils extends FileUtilsBase {
                 e.printStackTrace();
             }
         } else {
-            eJSON = read2JSON(filePathStr,fileName);
+            eJSON = read2JSON(filePathStr, fileName);
         }
 
         try {
             writer = new BufferedWriter(new FileWriter(file));
 
-            if (eJSON==null) {
+            if (eJSON == null) {
                 writer.write(json.toString());
             } else {
                 Object[] array = ((JSONObject) json).keySet().toArray();
-                for(int i=0;i<array.length;i++){
+                for (int i = 0; i < array.length; i++) {
                     eJSON.put(array[i].toString(), ((JSONObject) json).get(array[i].toString()));
                 }
 
