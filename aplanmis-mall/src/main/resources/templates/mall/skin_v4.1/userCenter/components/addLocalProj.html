@@ -5,11 +5,11 @@
   <!-- 头部提示及项目基本信息获取-start -->
   <div class="tip-search-box">
     <div class="tip-box">
-      <i class="el-icon-warning-outline color-4293f4"></i>
+      <i class="el-icon-warning color-F24040"></i>
       <p>
         临时赋码适用对象为：1.申请人为港澳台人士及境外人士； 2.总投资200万元以下的装修工程、修缮工程，包含既有住宅加装电梯项目、挖掘挖掘道路审批
         等单事项申报无后续办理的项目、非重大政府投资二次消防装修项目；3.个人宅基地自建房项目。
-        其余项目请前往“ <a href="http://www.gdtz.gov.cn/tybm/index!index6.action" class="color-4293f4"
+        其余项目请前往“ <a href="http://www.gdtz.gov.cn/tybm/index!index6.action" class="color-F24040"
           target="_blank">广东省投资项目在线审批监管平台</a>
         ”进行赋码，否则影响后续业务办理。
       </p>
@@ -130,12 +130,12 @@
         <el-input class="ml20 w-100" placeholder="Y坐标"></el-input>
         <a href="javacript:;" class="ml20 color-4293f4">获取</a>
       </el-form-item> -->
-      <el-form-item class="wt448" label="拟开工时间" prop="nstartTime">
+      <el-form-item class="wt448" label="拟开工时间" :prop="projInfoForm.endTime && projInfoForm.nstartTime>projInfoForm.endTime ? 'compareTime':'nstartTime'">
         <el-date-picker type="date" placeholder="项目开工时间" value-format="yyyy-MM-dd" class="w-320"
           v-model="projInfoForm.nstartTime">
         </el-date-picker>
       </el-form-item>
-      <el-form-item class="wt448" label="项目建成时间" prop="endTime">
+      <el-form-item class="wt448" label="项目建成时间" :prop="projInfoForm.nstartTime && projInfoForm.nstartTime>projInfoForm.endTime ? 'compareTime':'endTime'">
         <el-date-picker type="date" placeholder="项目建成时间" value-format="yyyy-MM-dd" class="w-320"
           v-model="projInfoForm.endTime">
         </el-date-picker>
@@ -194,7 +194,7 @@
       <el-form-item label="建设地点详情">
         <el-input class="w-775" v-model="projInfoForm.areaDetailCode" placeholder="请输入建设地点详情"></el-input>
       </el-form-item>
-      <el-form-item label="建设地点详细地址">
+      <el-form-item label="建设地点详细地址" prop="projAddr">
         <el-input class="w-775" v-model="projInfoForm.projAddr" placeholder="请输入建设地点详细地址"></el-input>
       </el-form-item>
 
@@ -218,7 +218,7 @@
     </div>
     <div class="handel mt60" style="text-align: center">
       <el-button class="mr25" @click="returnList">返 回</el-button>
-      <el-button class="mr25" type="primary" style="width: 120px;" @click="saveProjDataApi">本地项目入库</el-button>
+      <el-button class="mr25" type="primary" style="width: 120px;" @click="saveProjDataApi">保 存</el-button>
     </div>
   </div>
 </div>
