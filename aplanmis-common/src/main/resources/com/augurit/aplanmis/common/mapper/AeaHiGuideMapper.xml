@@ -186,6 +186,24 @@
         join aea_par_theme_ver aptv on aptv.theme_ver_id=aps.theme_ver_id
         join aea_par_theme apt on apt.theme_id=aptv.theme_id
         join aea_proj_info api on api.proj_info_id=ahg.proj_info_id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                and (
+                apt.theme_name like concat(#{keyword}, '%')
+                or api.proj_name like concat(#{keyword}, '%')
+                or api.gcbm like concat(#{keyword}, '%')
+                )
+            </if>
+            <if test="applyState != null and applyState != ''">
+                and ahg.apply_state=#{applyState}
+            </if>
+            <if test="guideStartTime != null and guideStartTime != ''">
+                and ahg.GUIDE_START_TIME >= #{guideStartTime}
+            </if>
+            <if test="guideEndTime != null and guideEndTime != ''">
+                and ahg.GUIDE_END_TIME<= #{guideEndTime}
+            </if>
+        </where>
     </select>
 
 </mapper>
