@@ -4,7 +4,7 @@
 <div class="my-proj-wrap" id="myProjListId" v-cloak v-loading.fullscreen.lock="loading">
   <div v-if="!isShowAddProjPandel">
     <p class="p-header">我的项目</p>
-    <div class="search-input">
+    <div class="search-input" v-if="false">
       <span class="search-title">项目/工程查询</span>
       <input class="search-pro-num" type="text" value="" placeholder="请输入项目代码或名称" @keyup.enter.native="searchList"
         v-model="checkData.keyword">
@@ -26,6 +26,11 @@
               </div>
             </div>
             <div class="proj-tag" :class="[item.projFlag == 'p'? 'tag-fg':'tag-bd']"></div>
+            <!-- 操作按钮 -->
+            <div class="proj-handel">
+              <div class="btn btn-left">关系图</div>
+              <div class="btn btn-right" @click="todiaGramPage(item)">全景图</div>
+            </div>
           </el-card>
         </div>
         <!-- 新增 -->
@@ -36,7 +41,7 @@
       <!-- 加载更多 -->
       <div class="proj-load-more">
         <p class="pointer" v-if="total > list.length" @click="listLoadMore">
-          <i class="el-icon-bottom" :class="[loading? 'el-icon-loading':'']"></i> 加载更多
+          <i class="" :class="[loading? 'el-icon-loading':'el-icon-bottom']"></i> 加载更多
         </p>
         <p class="color-999" v-else>没有更多数据</p>
       </div>

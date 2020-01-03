@@ -1,5 +1,8 @@
 package com.augurit.aplanmis.common.service.admin.solicit.impl;
 
+import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
+import com.augurit.agcloud.bsc.mapper.BscDicCodeMapper;
+import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
@@ -29,6 +32,9 @@ import java.util.UUID;
 public class AeaSolicitOrgServiceImpl implements AeaSolicitOrgService {
 
     private static Logger logger = LoggerFactory.getLogger(AeaSolicitOrgServiceImpl.class);
+
+    @Autowired
+    private BscDicCodeMapper bscDicCodeMapper;
 
     @Autowired
     private AeaSolicitOrgMapper aeaSolicitOrgMapper;
@@ -128,71 +134,40 @@ public class AeaSolicitOrgServiceImpl implements AeaSolicitOrgService {
     }
 
     @Override
-    public void batchSaveSolicitOrg(String[] orgIds){
+    public void batchSaveSolicitOrg(String isBusSolicit, String stageId, String busType, String solicitType, String[] orgIds){
 
         String userId = SecurityContext.getCurrentUserId();
         String rootOrgId = SecurityContext.getCurrentOrgId();
         if(orgIds!=null&&orgIds.length>0) {
-            // 查找需要删除的
-            List<String> needDelIdList = new ArrayList<String>();
-            List<AeaSolicitOrg> needDelList = new ArrayList<AeaSolicitOrg>();
             AeaSolicitOrg sSolicitOrg = new AeaSolicitOrg();
             sSolicitOrg.setRootOrgId(rootOrgId);
-            List<AeaSolicitOrg> orgList = aeaSolicitOrgMapper.listAeaSolicitOrg(sSolicitOrg);
-            if(orgList!=null&&orgList.size()>0){
-                for(AeaSolicitOrg item : orgList){
-                    int count=0;
-                    for (String orgId : orgIds) {
-                        if(item.getOrgId().equals(orgId)){
-                            break;
-                        }else{
-                            count++;
-                        }
-                    }
-                    if(count==orgIds.length){
-                        needDelList.add(item);
-                        needDelIdList.add(item.getSolicitOrgId());
-                    }
-                }
-            }
-            // 先删除
-            if(needDelList!=null&&needDelList.size()>0){
-
-                orgList.removeAll(needDelList);
-                String[] needDelIdArr = new String[needDelIdList.size()];
-                needDelIdList.toArray(needDelIdArr);
-                aeaSolicitOrgMapper.batchDelSolicitOrgByIds(needDelIdArr);
-            }
-
-            // 保存
-            for (int i=0; i<orgIds.length;i++) {
-                AeaSolicitOrg updateVo = null;
-                if (orgList != null && orgList.size() > 0) {
-                    for (AeaSolicitOrg item : orgList) {
-                        if(item.getOrgId().equals(orgIds[i])){
-                            updateVo = item;
-                            break;
-                        }
-                    }
-                }
-                if(updateVo==null){
-                    AeaSolicitOrg solicitOrg = new AeaSolicitOrg();
-                    solicitOrg.setSolicitOrgId(UUID.randomUUID().toString());
-                    solicitOrg.setOrgId(orgIds[i]);
-                    solicitOrg.setBusType("YJZQ");
-                    solicitOrg.setSolicitType("0");
-                    solicitOrg.setCreater(userId);
-                    solicitOrg.setCreateTime(new Date());
-                    solicitOrg.setRootOrgId(rootOrgId);
-                    aeaSolicitOrgMapper.insertAeaSolicitOrg(solicitOrg);
+            for (String orgId:orgIds) {
+                sSolicitOrg.setOrgId(orgId);
+                sSolicitOrg.setIsBusSolicit(isBusSolicit);
+                // 业务征求方式
+                if(isBusSolicit.equals(Status.ON)){
+                    sSolicitOrg.setBusType(busType);
+                // 阶段牵头部门征求方式
                 }else{
-                    updateVo.setModifier(userId);
-                    updateVo.setModifyTime(new Date());
-                    aeaSolicitOrgMapper.updateAeaSolicitOrg(updateVo);
+                    sSolicitOrg.setStageId(stageId);
+                }
+                List<AeaSolicitOrg> orgList = aeaSolicitOrgMapper.listAeaSolicitOrg(sSolicitOrg);
+                if(orgList!=null&&orgList.size()>0){
+                    for(AeaSolicitOrg org:orgList){
+                        org.setSolicitType(solicitType);
+                        org.setModifier(userId);
+                        org.setModifyTime(new Date());
+                        aeaSolicitOrgMapper.updateAeaSolicitOrg(org);
+                    }
+                }else{
+                    sSolicitOrg.setSolicitOrgId(UUID.randomUUID().toString());
+                    sSolicitOrg.setSolicitType(solicitType);
+                    sSolicitOrg.setCreater(userId);
+                    sSolicitOrg.setCreateTime(new Date());
+                    sSolicitOrg.setRootOrgId(rootOrgId);
+                    aeaSolicitOrgMapper.insertAeaSolicitOrg(sSolicitOrg);
                 }
             }
-        }else{
-            batchDelSolicitOrgByRootOrgId(rootOrgId);
         }
     }
 
@@ -219,21 +194,31 @@ public class AeaSolicitOrgServiceImpl implements AeaSolicitOrgService {
         rootNode.setIsParent(true);
         rootNode.setNocheck(true);
         allNodes.add(rootNode);
+
         AeaSolicitOrg sSolicitOrg = new AeaSolicitOrg();
         sSolicitOrg.setRootOrgId(rootOrgId);
+        sSolicitOrg.setIsBusSolicit(Status.ON);
         List<AeaSolicitOrg> list = aeaSolicitOrgMapper.listAeaSolicitOrgRelOrgInfo(sSolicitOrg);
         if(list!=null&&list.size()>0){
+            List<BscDicCodeItem> codeItemList = bscDicCodeMapper.getActiveItemsByTypeCode("SOLICIT_BUS_TYPE", rootOrgId);
             for(AeaSolicitOrg org : list){
-                allNodes.add(convertSolicitOrgNode(org));
+                allNodes.add(convertSolicitOrgNode(org, codeItemList));
             }
         }
         return allNodes;
     }
 
-    private ZtreeNode convertSolicitOrgNode(AeaSolicitOrg org){
+    private ZtreeNode convertSolicitOrgNode(AeaSolicitOrg org, List<BscDicCodeItem> codeItemList){
 
         ZtreeNode node = new ZtreeNode();
         node.setId(org.getSolicitOrgId());
+        if(codeItemList!=null&&codeItemList.size()>0){
+            for(BscDicCodeItem codeItem:codeItemList){
+                if(codeItem.getItemCode().equals(org.getBusType())){
+                    org.setOrgName(org.getOrgName() + "【" + codeItem.getItemName() + "】");
+                }
+            }
+        }
         node.setName(org.getOrgName());
         node.setpId("root");
         node.setType("org");

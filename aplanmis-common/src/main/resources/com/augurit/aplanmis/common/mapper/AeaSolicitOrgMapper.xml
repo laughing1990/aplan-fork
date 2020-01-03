@@ -7,29 +7,29 @@
     <sql id="allColumns" >
         SOLICIT_ORG_ID  solicitOrgId,
         ORG_ID  orgId,
+        IS_BUS_SOLICIT isBusSolicit,
+        STAGE_ID stageId,
         BUS_TYPE  busType,
         SOLICIT_TYPE  solicitType,
         CREATER  creater,
         CREATE_TIME  createTime,
         MODIFIER  modifier,
         MODIFY_TIME  modifyTime,
-        ROOT_ORG_ID  rootOrgId,
-        IS_BUS_SOLICIT isBusSolicit,
-        STAGE_ID stageId
+        ROOT_ORG_ID  rootOrgId
     </sql>
 
     <sql id="alias_allColumns">
         ${alias}.SOLICIT_ORG_ID  solicitOrgId,
         ${alias}.ORG_ID  orgId,
+        ${alias}.IS_BUS_SOLICIT isBusSolicit,
+        ${alias}.STAGE_ID stageId,
         ${alias}.BUS_TYPE  busType,
         ${alias}.SOLICIT_TYPE  solicitType,
         ${alias}.CREATER  creater,
         ${alias}.CREATE_TIME  createTime,
         ${alias}.MODIFIER  modifier,
         ${alias}.MODIFY_TIME  modifyTime,
-        ${alias}.ROOT_ORG_ID  rootOrgId,
-        ${alias}.IS_BUS_SOLICIT isBusSolicit,
-        ${alias}.STAGE_ID stageId
+        ${alias}.ROOT_ORG_ID  rootOrgId
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
@@ -64,6 +64,12 @@
             <if test="orgId != null" >
             and    ORG_ID = #{orgId}
             </if>
+            <if test="isBusSolicit != null" >
+            and    IS_BUS_SOLICIT = #{isBusSolicit}
+            </if>
+            <if test="stageId != null" >
+            and    STAGE_ID = #{stageId}
+            </if>
             <if test="busType != null" >
             and    BUS_TYPE = #{busType}
             </if>
@@ -85,12 +91,6 @@
             <if test="rootOrgId != null" >
             and    ROOT_ORG_ID = #{rootOrgId}
             </if>
-            <if test="isBusSolicit != null" >
-                and    IS_BUS_SOLICIT = #{isBusSolicit}
-            </if>
-            <if test="stageId != null" >
-                and    STAGE_ID = #{stageId}
-            </if>
         </where>
     </select>
     
@@ -109,6 +109,12 @@
             </if>
             <if test="orgId != null" >
             and    soliOrg.ORG_ID = #{orgId}
+            </if>
+            <if test="isBusSolicit != null" >
+            and    soliOrg.IS_BUS_SOLICIT = #{isBusSolicit}
+            </if>
+            <if test="stageId != null" >
+            and    soliOrg.STAGE_ID = #{stageId}
             </if>
             <if test="busType != null" >
             and    soliOrg.BUS_TYPE = #{busType}
@@ -131,12 +137,6 @@
             <if test="rootOrgId != null" >
             and    soliOrg.ROOT_ORG_ID = #{rootOrgId}
             </if>
-            <if test="isBusSolicit != null" >
-                and    soliOrg.IS_BUS_SOLICIT = #{isBusSolicit}
-            </if>
-            <if test="stageId != null" >
-                and    soliOrg.STAGE_ID = #{stageId}
-            </if>
             <if test="keyword!=null and keyword!='' ">
             and (
                 org.ORG_NAME like concat('%', concat( #{keyword}, '%')) or
@@ -144,6 +144,7 @@
             )
             </if>
         </where>
+        order by org.ORG_SORT_NO, soliOrg.CREATE_TIME desc
     </select>
 
     <!--5 新增实体对象 -->
@@ -152,29 +153,29 @@
         (
             SOLICIT_ORG_ID,
             ORG_ID,
+            IS_BUS_SOLICIT,
+            STAGE_ID,
             BUS_TYPE,
             SOLICIT_TYPE,
             CREATER,
             CREATE_TIME,
             MODIFIER,
             MODIFY_TIME,
-            ROOT_ORG_ID,
-            IS_BUS_SOLICIT,
-            STAGE_ID
+            ROOT_ORG_ID
         )
         values
         (
             #{solicitOrgId},
             #{orgId},
+            #{isBusSolicit},
+            #{stageId},
             #{busType},
             #{solicitType},
             #{creater},
             #{createTime},
             #{modifier},
             #{modifyTime},
-            #{rootOrgId},
-            #{isBusSolicit},
-            #{stageId}
+            #{rootOrgId}
         )
     </insert>
 
@@ -187,6 +188,12 @@
             </if>
             <if test="orgId != null" >
             ORG_ID = #{orgId},
+            </if>
+            <if test="isBusSolicit != null" >
+            IS_BUS_SOLICIT = #{isBusSolicit},
+            </if>
+            <if test="stageId != null" >
+            STAGE_ID = #{stageId},
             </if>
             <if test="busType != null" >
             BUS_TYPE = #{busType},
@@ -208,15 +215,6 @@
             </if>
             <if test="rootOrgId != null" >
             ROOT_ORG_ID = #{rootOrgId},
-            </if>
-            <if test="rootOrgId != null" >
-                ROOT_ORG_ID = #{rootOrgId},
-            </if>
-            <if test="isBusSolicit != null" >
-                IS_BUS_SOLICIT = #{isBusSolicit},
-            </if>
-            <if test="stageId != null" >
-                STAGE_ID = #{stageId},
             </if>
         </set>
         where SOLICIT_ORG_ID = #{solicitOrgId}
@@ -242,6 +240,8 @@
     <resultMap type="AeaSolicitOrg" id="AeaSolicitOrgMap">
         <id property="solicitOrgId" column="SOLICIT_ORG_ID"/>
         <result property="orgId" column="ORG_ID"/>
+        <result property="isBusSolicit" column="IS_BUS_SOLICIT"/>
+        <result property="stageId" column="STAGE_ID"/>
         <result property="busType" column="BUS_TYPE"/>
         <result property="solicitType" column="SOLICIT_TYPE"/>
         <result property="creater" column="CREATER"/>
@@ -249,8 +249,6 @@
         <result property="modifier" column="MODIFIER"/>
         <result property="modifyTime" column="MODIFY_TIME"/>
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
-        <result property="isBusSolicit" column="IS_BUS_SOLICIT"/>
-        <result property="stageId" column="STAGE_ID"/>
     </resultMap>
 
 </mapper>

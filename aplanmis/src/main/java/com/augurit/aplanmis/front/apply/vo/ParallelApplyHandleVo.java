@@ -1,6 +1,6 @@
 package com.augurit.aplanmis.front.apply.vo;
 
-import com.augurit.aplanmis.common.handler.ItemPrivilegeComputationHandler;
+import com.augurit.aplanmis.common.apply.item.WindowComputedItem;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -110,9 +110,9 @@ public class ParallelApplyHandleVo {
         private String isProcStartCond;
         // 绑定的情形事项
         @ApiModelProperty(value = "绑定的并联审批事项")
-        private List<ItemPrivilegeComputationHandler.ComputedItem> stateParallelItems;
+        private List<WindowComputedItem> stateParallelItems;
         @ApiModelProperty(value = "绑定的并行推进事项")
-        private List<ItemPrivilegeComputationHandler.ComputedItem> stateOptionItems;
+        private List<WindowComputedItem> stateOptionItems;
         // 材料
         @ApiModelProperty(value = "材料")
         private List<MatVo> stateMats;

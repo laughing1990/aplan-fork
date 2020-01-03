@@ -17,6 +17,9 @@
     <link href="${pageContext.request.contextPath}/ui-static/agcloud/bsc/yunpan/css/orgTheme.css" type="text/css" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath}/ui-static/item/list/css/item_index2.css" type="text/css" rel="stylesheet"/>
     <script src="${pageContext.request.contextPath}/ui-static/dg_aplanmis/framework/js/jquery.nicescroll.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var isBusSolicit = '1';
+    </script>
 </head>
 <body>
 <div id="mainContentPanel" class="row" style="width: 100%;height: 99%;padding: 15px 10px 5px 10px;margin: 0px;">
@@ -147,8 +150,8 @@
                                                 <div class="col-md-6" style="padding: 0px;">
                                                     <form id="search_solicit_org_user_form" method="post">
                                                         <div class="row" style="margin: 0px;">
-                                                            <div class="col-3"></div>
-                                                            <div class="col-5" style="text-align: right;">
+                                                            <div class="col-2"></div>
+                                                            <div class="col-6" style="text-align: right;">
                                                                 <div class="m-input-icon m-input-icon--left">
                                                                     <input type="text" class="form-control m-input"
                                                                            placeholder="请输入关键字..." name="keyword" value=""/>

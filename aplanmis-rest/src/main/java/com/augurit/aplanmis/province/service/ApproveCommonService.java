@@ -56,19 +56,22 @@ public class ApproveCommonService {
      */
     public AeaHiApplyinst getApplyinstByProjCodeAndIteminstId(String proj_code, String item_instance_code) throws Exception {
         if (StringUtils.isNotBlank(item_instance_code)) {
-            AeaHiIteminst iteminst = aeaHiIteminstMapper.getAeaHiIteminstById(item_instance_code);
-            if (null == iteminst) return null;
-            String isSeriesApprove = iteminst.getIsSeriesApprove();
-            if ("0".equals(isSeriesApprove)) {
-                //并联
-                String stageinstId = iteminst.getStageinstId();
-                AeaHiParStageinst stageinst = aeaHiParStageinstMapper.getAeaHiParStageinstById(stageinstId);
-                if (null == stageinst) return null;
-                AeaHiApplyinst aeaHiApplyinstById = aeaHiApplyinstMapper.getAeaHiApplyinstById(stageinst.getApplyinstId());
-                return aeaHiApplyinstById;
-            } else {
-                String seriesinstId = iteminst.getSeriesinstId();
-            }
+            String applyinstId = getApplyinstIdByIteminstId(item_instance_code);
+            AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstMapper.getAeaHiApplyinstById(applyinstId);
+            return aeaHiApplyinst;
+//            AeaHiIteminst iteminst = aeaHiIteminstMapper.getAeaHiIteminstById(item_instance_code);
+//            if (null == iteminst) return null;
+//            String isSeriesApprove = iteminst.getIsSeriesApprove();
+//            if ("0".equals(isSeriesApprove)) {
+//                //并联
+//                String stageinstId = iteminst.getStageinstId();
+//                AeaHiParStageinst stageinst = aeaHiParStageinstMapper.getAeaHiParStageinstById(stageinstId);
+//                if (null == stageinst) return null;
+//                AeaHiApplyinst aeaHiApplyinstById = aeaHiApplyinstMapper.getAeaHiApplyinstById(stageinst.getApplyinstId());
+//                return aeaHiApplyinstById;
+//            } else {
+//                String seriesinstId = iteminst.getSeriesinstId();
+//            }
         }
         /*List<AeaHiApplyinst> list = aeaHiApplyinstMapper.getApplyinstByProjCodeAndIteminstId(proj_code, item_instance_code);
         if (list.size() > 0) {

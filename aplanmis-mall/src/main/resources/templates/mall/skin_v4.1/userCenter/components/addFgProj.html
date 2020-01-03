@@ -5,12 +5,12 @@
   <!-- 头部提示及项目基本信息获取-start -->
   <div class="tip-search-box">
     <div class="tip-box">
-      <i class="el-icon-warning-outline color-4293f4"></i>
+      <i class="el-icon-warning color-F24040"></i>
       <p>
-        工程建设项目申报前，请您登陆“ <a href="http://www.gdtz.gov.cn/tybm/index!index6.action" class="color-4293f4"
+        工程建设项目申报前，请您登陆“ <a href="http://www.gdtz.gov.cn/tybm/index!index6.action" class="color-F24040"
           target="_blank">广东省投资项目在线审批监管平台</a>
         ”进行项目登记，如已登记成功，请在下面输入项目代码获取项目信息。如无法登记项目，请您
-        <a href="javascript:;" class="color-4293f4" @click="openAddLocalProjPandel">新增本地项目</a>
+        <a href="javascript:;" class="color-F24040" @click="openAddLocalProjPandel">新增本地项目</a>
       </p>
     </div>
     <div class="search-input search-box">
@@ -109,7 +109,7 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="土地来源" class="wt448" prop="landSource">
+      <el-form-item label="土地来源" class="wt100" prop="landSource">
         <el-select class="w-320" v-model="projInfoForm.landSource">
           <el-option v-for="item in proJAllOptions.XM_TDLY" :key="item.id" :label="item.itemName"
             :value="item.itemCode">
@@ -155,12 +155,12 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item class="wt448" label="项目开工时间" prop="nstartTime">
+      <el-form-item class="wt448" label="项目开工时间" :prop="projInfoForm.endTime && projInfoForm.nstartTime>projInfoForm.endTime ? 'compareTime':'nstartTime'">
         <el-date-picker type="date" placeholder="项目开工时间" value-format="yyyy-MM-dd" class="w-320"
           v-model="projInfoForm.nstartTime">
         </el-date-picker>
       </el-form-item>
-      <el-form-item class="wt448" label="项目建成时间" prop="endTime">
+      <el-form-item class="wt448" label="项目建成时间" :prop="projInfoForm.nstartTime && projInfoForm.nstartTime>projInfoForm.endTime ? 'compareTime':'endTime'">
         <el-date-picker type="date" placeholder="项目建成时间" value-format="yyyy-MM-dd" class="w-320"
           v-model="projInfoForm.endTime">
         </el-date-picker>
@@ -220,7 +220,7 @@
         <el-input class="w-775" v-model="projInfoForm.foreignRemark" type="textarea" placeholder="请填写建设内容"></el-input>
       </el-form-item>
 
-      <el-form-item label="项目地址">
+      <el-form-item label="项目地址" prop="projAddr">
         <el-input class="w-775" v-model="projInfoForm.projAddr" placeholder="请填写项目地址"></el-input>
       </el-form-item>
 
@@ -246,7 +246,7 @@
     <div class="handel mt60" style="text-align: center">
       <el-button class="mr25" @click="returnList">返 回</el-button>
       <!-- <el-button class="mr25" type="primary" @click="saveProjData" style="width: 120px;">保 存</el-button> -->
-      <el-button class="mr25" type="primary" @click="saveProjDataApi" style="width: 120px;">项目入库</el-button>
+      <el-button class="mr25" type="primary" @click="saveProjDataApi" style="width: 120px;">保 存</el-button>
     </div>
   </div>
 </div>

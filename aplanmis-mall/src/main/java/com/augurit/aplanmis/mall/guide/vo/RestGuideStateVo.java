@@ -23,9 +23,9 @@ public class RestGuideStateVo {
     @ApiModelProperty("是否收费")
     private String isFee;
     @ApiModelProperty("收费文本")
-    private String chargeTypeText;
+    private String isFeeText;
     @ApiModelProperty("办理时限")
-   private String promissDay;
+   private Double promiseDay;
     @ApiModelProperty("办理结果")
     private String resultName;
     private List<RestStateMatInnerVo> mats;

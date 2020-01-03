@@ -152,7 +152,7 @@ var myHomeIndex = (function () {
             goToStageApply: function () {
                 userCenter.vm.selectNav = "我的项目";
                 localStorage.setItem('selectNav', userCenter.vm.selectNav);
-                location.href = ctx + "rest/main/toIndexPage?projInfoId=null#declare";
+                location.href = ctx + "#/myParallelPage";
             },
 
             // 点击我的项目库

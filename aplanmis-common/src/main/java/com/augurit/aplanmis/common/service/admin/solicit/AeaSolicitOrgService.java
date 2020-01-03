@@ -94,9 +94,13 @@ public interface AeaSolicitOrgService {
      /**
       * 批量保存
       *
+      * @param isBusSolicit
+      * @param stageId
+      * @param busType
+      * @param solicitType
       * @param orgIds
       */
-     void batchSaveSolicitOrg(String[] orgIds);
+     void batchSaveSolicitOrg(String isBusSolicit, String stageId, String busType, String solicitType, String[] orgIds);
 
      /**
       * 删除
@@ -105,5 +109,11 @@ public interface AeaSolicitOrgService {
       */
      void batchDelSolicitOrgByRootOrgId(String rootOrgId);
 
+     /**
+      * 获取
+      *
+      * @param rootOrgId
+      * @return
+      */
      List<ZtreeNode> gtreeSolicitOrg(String rootOrgId);
 }

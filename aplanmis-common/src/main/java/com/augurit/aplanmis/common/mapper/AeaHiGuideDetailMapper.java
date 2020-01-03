@@ -22,4 +22,6 @@ public interface AeaHiGuideDetailMapper {
     void updateAeaHiGuideDetail(AeaHiGuideDetail record);
 
     void batchInsertAeaHiGuideDetail(@Param("list") List<AeaHiGuideDetail> aeaHiGuideDetails);
+
+    List<AeaHiGuideDetail> listAeaHiGuideDetailByGuideIdOrderByCreateTimeAsc(String guideId);
 }
