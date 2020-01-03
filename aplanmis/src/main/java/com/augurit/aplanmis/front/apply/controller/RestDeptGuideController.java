@@ -30,6 +30,7 @@ public class RestDeptGuideController {
     public ContentResultForm<PageInfo<AeaHiGuide>> list(GuideQueryVo guideQueryVo, Page page) {
         try {
             AeaHiGuide param = guideQueryVo.toAeaHiGuide();
+//            param.setLeaderUserId(SecurityContext.getCurrentUserId());
             PageInfo<AeaHiGuide> aeaHiGuidePageInfo = aeaHiGuideService.list(param, page);
             return new ContentResultForm<>(true, aeaHiGuidePageInfo, "success.");
         } catch (Exception e) {

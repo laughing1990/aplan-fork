@@ -3410,14 +3410,16 @@ var vm = new Vue({
     // 初始化左边按钮组
     initButtons: function () {
       var vm = this;
-      var defaultBtn = [{
-        elementName: "意见征询",
-        elementCode: "wfBusSave",
-        columnType: "button",
-        isReadonly: '0',
-        isHidden: '0',
-        elementRender: '<button class="btn btn-outline-info" onclick="clickStartSolicit()">意见征询</button>'
-      }, {
+      var defaultBtn = [
+        {
+          elementName: "意见征求",
+          elementCode: "wfBusSave",
+          columnType: "button",
+          isReadonly: '0',
+          isHidden: '0',
+          elementRender: '<button class="btn btn-outline-info" onclick="clickStartSolicit()">意见征求</button>'
+        },
+        {
         elementName: "全景图",
         elementCode: "wfBusSave",
         columnType: "button",
@@ -3488,11 +3490,11 @@ var vm = new Vue({
       }
       if (vm.hasOneSolicit == 0) {
         // 没有发起过一次征询的加上一次征询按钮
-        defaultBtn = oneSolicitBtn.concat(defaultBtn);
+        // defaultBtn = oneSolicitBtn.concat(defaultBtn);
       }
       if (vm.hasUnionReview == 0) {
         // 没有发起过联合评审的加上联合评审按钮
-        defaultBtn = unionReviewBtn.concat(defaultBtn);
+        // defaultBtn = unionReviewBtn.concat(defaultBtn);
       }
       if (vm.isDraftPage == 'true') {
         defaultBtn = draftBtn.concat(defaultBtn);
