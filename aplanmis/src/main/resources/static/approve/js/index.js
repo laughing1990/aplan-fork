@@ -996,6 +996,7 @@ var vm = new Vue({
           u.solicitDetails = tmp;
         });
         vm.newestOneSolicit = data[0];
+        vm.oneSolicitFileList = vm.newestOneSolicit.solicit.fileAndDirs;
         vm.oneSolicitList = data.slice(1);
       });
     },
