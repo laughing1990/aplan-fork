@@ -405,10 +405,11 @@
         <include refid="aliasColumns">
             <property name="alias" value="ahi"/>
         </include>
-        ,ooo.org_name orgName
+        ,ooo.org_name orgName,aib.ITEM_CATEGORY_MARK itemCategoryMark
         FROM aea_hi_par_stageinst ahps
         right JOIN aea_hi_iteminst ahi ON ahps.STAGEINST_ID=ahi.STAGEINST_ID
         LEFT JOIN opu_om_org ooo on ahi.approve_org_id=ooo.org_id
+        LEFT JOIN aea_item_basic aib on aib.item_id = ahi.item_id
         where ahps.STAGEINST_ID=#{stageinstId}
     </select>
 

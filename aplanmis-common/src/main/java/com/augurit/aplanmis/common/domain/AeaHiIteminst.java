@@ -118,5 +118,6 @@ public class AeaHiIteminst implements Serializable {
     }
 
     private String applySource; //申报来源
+    private String itemCategoryMark;//事项分类唯一标记（仅供工作流使用)
 
 }
