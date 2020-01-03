@@ -84,14 +84,15 @@ var listmatter = (function(window){
                     paraParentllelItemVerIds.push(item.baseItemVerId);
                 });
                 var params = {
-                    "coreItemVerIds":coreItemVerIds, // 并行事项版本ID数组
+                    "coreItemVerIds":coreItemVerIds, // 并行事项版本ID数组(对应下面是标准事项下实施事项的事项版本id)
                     "coreParentItemVerIds":coreParentItemVerIds, // 并行标准事项版本ID数组
-                    "paraParentllelItemVerIds":paraParentllelItemVerIds, // 并联标准事项版本ID数组
+                    "paraParentllelItemVerIds":paraParentllelItemVerIds, // 并联标准事项版本ID数组(对应下面是标准事项下实施事项的事项版本id)
                     "parallelItemVerIds":parallelItemVerIds, // 并联事项版本ID数组
                     "stageId":vm.stageId, // 阶段id
                     "itemStateIds":itemStateIds, // 事项情形ID数组
                     "stageStateIds":stageStateIds, //阶段情形ID数组
                 }
+                console.log(params)
                 $.ajax({
                     url: ctx + 'rest/userCenter/apply/mat/list',
                     type: 'post',

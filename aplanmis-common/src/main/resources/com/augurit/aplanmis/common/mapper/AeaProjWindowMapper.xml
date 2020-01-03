@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by zhangwn    2020-01-03 15:34:34 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaProjWindowMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    PROJ_WINDOW_ID  projWindowId,
+    PROJ_INFO_ID  projInfoId,
+    WINDOW_ID  windowId,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    ROOT_ORG_ID  rootOrgId
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaProjWindowById" resultType="AeaProjWindow" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_PROJ_WINDOW
+    where    PROJ_WINDOW_ID = #{id}
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaProjWindow" resultType="AeaProjWindow" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_PROJ_WINDOW
+    <where>
+        <if test="projWindowId != null" >
+        AND    PROJ_WINDOW_ID = #{projWindowId}
+        </if>
+        <if test="projInfoId != null" >
+        AND    PROJ_INFO_ID = #{projInfoId}
+        </if>
+        <if test="windowId != null" >
+        AND    WINDOW_ID = #{windowId}
+        </if>
+        <if test="creater != null" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+        <if test="rootOrgId != null" >
+        AND    ROOT_ORG_ID = #{rootOrgId}
+        </if>
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaProjWindow" parameterType="AeaProjWindow" >
+    insert into AEA_PROJ_WINDOW (
+PROJ_WINDOW_ID  ,PROJ_INFO_ID  ,WINDOW_ID  ,CREATER  ,CREATE_TIME  ,ROOT_ORG_ID  
+    )  values  (
+#{projWindowId},#{projInfoId},#{windowId},#{creater},#{createTime},  #{rootOrgId}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaProjWindow" parameterType="AeaProjWindow" >
+    update AEA_PROJ_WINDOW
+    <set >
+        <if test="projWindowId != null" >
+        PROJ_WINDOW_ID = #{projWindowId},
+        </if>
+        <if test="projInfoId != null" >
+        PROJ_INFO_ID = #{projInfoId},
+        </if>
+        <if test="windowId != null" >
+        WINDOW_ID = #{windowId},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="rootOrgId != null" >
+        ROOT_ORG_ID = #{rootOrgId},
+        </if>
+    </set>
+    where PROJ_WINDOW_ID = #{projWindowId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaProjWindow">
+        delete from   AEA_PROJ_WINDOW
+        where
+    PROJ_WINDOW_ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaProjWindow" id="AeaProjWindowMap">
+        <id property="projWindowId" column="PROJ_WINDOW_ID"/>
+        <result property="projInfoId" column="PROJ_INFO_ID"/>
+        <result property="windowId" column="WINDOW_ID"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+</mapper>

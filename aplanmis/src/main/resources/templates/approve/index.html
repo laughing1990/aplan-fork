@@ -1693,7 +1693,9 @@
     </div>
   </aside>
   <!-- 查看流程图弹窗 start -->
-  <el-dialog title="流程跟踪" width="80%" top="5vh" :visible.sync="processDialogVisible" v-loading="processDialogLoading">
+  <el-dialog class="process-dialog" :class="{'full':processDialogFull}" title="流程跟踪" width="80%" top="5vh"
+             :visible.sync="processDialogVisible" v-loading="processDialogLoading">
+    <span class="el-icon-full-screen" @click="processDialogFull=!processDialogFull"></span>
     <div class="row" id="parentPro"></div>
     <el-scrollbar>
       <div id="bpmnModel"></div>

@@ -225,6 +225,14 @@ public class AeaSolicitOrgServiceImpl implements AeaSolicitOrgService {
         node.setOpen(true);
         node.setIsParent(false);
         node.setNocheck(false);
+        String orgProperty = org.getOrgProperty();
+        if ("u".equals(orgProperty)) {
+            node.setIconSkin("unit");
+        } else if ("d".equals(orgProperty)) {
+            node.setIconSkin("department");
+        } else if ("g".equals(orgProperty)) {
+            node.setIconSkin("group");
+        }
         return node;
     }
 }

@@ -120,4 +120,7 @@ public class AeaHiApplyinst implements Serializable, FlowObject {
     public String getMasterRecordId() {
         return this.getApplyinstId();
     }
+
+    //竣工验收辅助对象，用于竣工验收流程使用
+    private ProjectCheckForm projCheck;
 }

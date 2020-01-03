@@ -2717,7 +2717,22 @@ input[type="number"] {
 .el-table-padding .el-table__expanded-cell[class*=cell]{
   padding: 10px 60px;
 }
-
+.process-dialog .el-icon-full-screen{
+  font-size: 18px;
+  position: absolute;
+  top: 13px;
+  right: 50px;
+  color: #fff;
+  cursor: pointer;
+}
+.process-dialog .el-dialog{
+  margin-bottom:0!important;
+}
+.process-dialog.full .el-dialog{
+  width: 100%!important;
+  height: 100%!important;
+  margin-top:0!important;
+}
 
 
 

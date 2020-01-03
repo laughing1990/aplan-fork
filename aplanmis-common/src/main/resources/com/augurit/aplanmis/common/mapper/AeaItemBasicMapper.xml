@@ -1273,6 +1273,37 @@
         order by apsi.sort_no desc
     </select>
 
+    <select id="getAeaItemBasicListByStageIdAndStateIds" resultType="AeaItemBasic">
+        SELECT
+        <include refid="aib_allColumns"/>,ooo.ORG_NAME orgName, bdr.region_name regionName
+        FROM
+        aea_par_stage aps
+        LEFT JOIN aea_par_stage_item apsi ON aps.STAGE_ID = apsi.STAGE_ID
+        LEFT JOIN aea_par_state_item st ON st.STAGE_ITEM_ID = apsi.STAGE_ITEM_ID
+        LEFT JOIN aea_par_state state ON state.PAR_STATE_ID = st.PAR_STATE_ID
+        LEFT JOIN aea_item_ver aiv ON aiv.ITEM_VER_ID = apsi.ITEM_VER_ID AND aiv.ITEM_ID = apsi.ITEM_ID
+        LEFT JOIN aea_item_basic aib on aiv.item_id=aib.item_id and aiv.item_ver_id=aib.item_ver_id
+        LEFT JOIN opu_om_org ooo ON ooo.ORG_ID = aib.ORG_ID
+        left join bsc_dic_region bdr on bdr.region_id=aib.region_id
+        WHERE
+        aps.STAGE_ID = #{stageId}
+        AND aps.IS_DELETED != 1
+        AND aiv.IS_DELETED != 1
+        AND state.IS_DELETED != 1
+        and aib.SXMLZT in('0','1')
+        <if test="stateIds !=null and stateIds!=''">
+            AND state.PAR_STATE_ID in
+            <foreach collection="stateIds" item="stateId" open="(" close=")" separator=",">
+                #{stateId}
+            </foreach>
+        </if>
+        <if test="isOptionItem !=null and isOptionItem!=''">
+            AND apsi.IS_OPTION_ITEM = #{isOptionItem}
+        </if>
+        and aiv.ROOT_ORG_ID=#{rootOrgId} and aib.ROOT_ORG_ID=#{rootOrgId} and state.ROOT_ORG_ID=#{rootOrgId}
+        order by apsi.sort_no desc
+    </select>
+
     <select id="listAeaItemBasicListByStageIds" resultType="AeaItemBasic">
         SELECT
         <include refid="aib_allColumns"/>

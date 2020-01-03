@@ -101,7 +101,7 @@ public class StageProcFinishSuccessOrFailExecutionListener implements ExecutionL
                     if (StringUtils.isNotBlank(parentTaskId)) {
                         Task task = taskService.createTaskQuery().taskId(parentTaskId).singleResult();
                         if (task != null) {
-                            taskService.complete(parentTaskId, new String[]{"jieshu"}, (Map) null);
+                            taskService.complete(parentTaskId, new String[]{"banjie"}, (Map) null);
 
                             //触发流程发送事件，用于窗口办结发送短信
                             /*BpmnModel bpmnModel = repositoryService.getBpmnModel(task.getProcessDefinitionId());
