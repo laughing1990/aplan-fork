@@ -4,7 +4,7 @@
 <div class="my-proj-wrap" id="myProjListId" v-cloak v-loading.fullscreen.lock="loading">
   <div v-if="!isShowAddProjPandel">
     <p class="p-header">我的项目</p>
-    <div class="search-input">
+    <div class="search-input" v-if="false">
       <span class="search-title">项目/工程查询</span>
       <input class="search-pro-num" type="text" value="" placeholder="请输入项目代码或名称" @keyup.enter.native="searchList"
         v-model="checkData.keyword">

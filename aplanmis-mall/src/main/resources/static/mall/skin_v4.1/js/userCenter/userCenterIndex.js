@@ -42,11 +42,12 @@ var userCenter = (function () {
                       name: '我的项目',
                       value: 'MyProjList',
                       select: false,
-                    },{
-                      name: '项目代办',
-                      value: 'AgencyProjList',
-                      select: false,
                     },
+                    // {
+                    //   name: '项目代办',
+                    //   value: 'AgencyProjList',
+                    //   select: false,
+                    // },
                     // {
                     //   name: '我的项目',
                     //   value: 'declare',
@@ -57,11 +58,12 @@ var userCenter = (function () {
                     //   value: 'AddProj',
                     //   select: false,
                     // },
-                     {
-                      name: '项目进度',
-                      value: 'scheduleInquire',
-                      select: false,
-                    }]
+                    //  {
+                    //   name: '项目进度',
+                    //   value: 'scheduleInquire',
+                    //   select: false,
+                    // }
+                  ]
                   },
                 //     {
                 //     name: '服务协同',
