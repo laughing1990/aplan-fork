@@ -1,14 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 
-<style>
-    .ztree li span.button.chk {
-        width: 13px;
-        height: 13px;
-        margin: 3px 3px 0 3px;
-        cursor: auto;
-    }
-</style>
-
 <div id="aedit_stdmat_ztree_modal" class="modal fade" tabindex="-1" role="dialog"
      aria-labelledby="aedit_stdmat_ztree_modal_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document" style="max-width: 850px;">
