@@ -4833,8 +4833,8 @@ _p[45] = {
                         else if(sourceNodeData.nodeTypeCode==AeaMindConst_MIND_NODE_TYPE_CODE_MAT){
                             canMoveto=false;
                             //是否通用
-                            var isCommon='0';
-                            isCommon=sourceNodeData.isCommon;
+                            var isCommon='';
+                            isCommon=sourceNodeData.extra.isCommon;
                             if(isCommon=='1'){
                                 if(targetNodeData.nodeTypeCode==AeaMindConst_MIND_NODE_TYPE_CODE_STAGE
                                     ||targetNodeData.nodeTypeCode==AeaMindConst_MIND_NODE_TYPE_CODE_ITEM
