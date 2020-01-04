@@ -6,6 +6,7 @@ import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.aplanmis.common.domain.AeaHiGuide;
 import com.augurit.aplanmis.common.service.apply.AeaHiGuideService;
 import com.augurit.aplanmis.common.vo.guide.GuideDetailVo;
+import com.augurit.aplanmis.front.apply.vo.guide.GuideFinishVo;
 import com.augurit.aplanmis.front.apply.vo.guide.GuideQueryVo;
 import com.augurit.aplanmis.front.apply.vo.guide.GuideVo;
 import com.github.pagehelper.Page;
@@ -73,6 +74,18 @@ public class RestDeptGuideController {
     public ResultForm solicitDept(@RequestBody GuideVo guideSolicitVo) {
         try {
             aeaHiGuideService.solicitDept(guideSolicitVo.toAeaHiGuideDetails(null));
+            return new ResultForm(true, "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultForm(false, e.getMessage());
+        }
+    }
+
+    @PostMapping("/finish")
+    @ApiOperation("部门征求")
+    public ResultForm finish(@RequestBody GuideFinishVo guideFinishVo) {
+        try {
+            aeaHiGuideService.finish(guideFinishVo.toAeaHiGuide(SecurityContext.getCurrentUserId()));
             return new ResultForm(true, "success");
         } catch (Exception e) {
             e.printStackTrace();

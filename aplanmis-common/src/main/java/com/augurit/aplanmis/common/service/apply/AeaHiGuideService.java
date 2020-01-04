@@ -45,4 +45,6 @@ public interface AeaHiGuideService {
     void solicitDept(List<AeaHiGuideDetail> aeaHiGuideDetails);
 
     List<AeaHiGuide> listAeaHiGuideListUnitIdOrLinkmanInfoId(AeaHiGuide query);
+
+    void finish(AeaHiGuide toAeaHiGuide);
 }

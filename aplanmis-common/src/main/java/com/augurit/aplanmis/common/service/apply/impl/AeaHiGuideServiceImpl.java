@@ -191,7 +191,8 @@ public class AeaHiGuideServiceImpl implements AeaHiGuideService {
 
             guide(aeaHiGuideDetails);
 
-            AeaHiGuide aeaHiGuide = aeaHiGuideMapper.getAeaHiGuideByGuideId(aeaHiGuideDetails.get(0).getGuideId());
+            AeaHiGuide aeaHiGuide = new AeaHiGuide();
+            aeaHiGuide.setGuideId(aeaHiGuideDetails.get(0).getGuideId());
             aeaHiGuide.setApplyState(GuideApplyState.DEPT_HANDLING.getValue());
             aeaHiGuide.setModifier(SecurityContext.getCurrentUserId());
             aeaHiGuide.setModifyTime(new Date());
@@ -202,5 +203,18 @@ public class AeaHiGuideServiceImpl implements AeaHiGuideService {
     @Override
     public List<AeaHiGuide> listAeaHiGuideListUnitIdOrLinkmanInfoId(AeaHiGuide query){
         return  aeaHiGuideMapper.listAeaHiGuideListUnitIdOrLinkmanInfoId(query);
+    }
+
+    @Override
+    public void finish(AeaHiGuide aeaHiGuide) {
+        Assert.notNull(aeaHiGuide, "部门辅导记录不能为空");
+        Assert.hasText(aeaHiGuide.getGuideId(), "guideId不能为空");
+        Assert.hasText(aeaHiGuide.getLeaderOrgOpinion(), "牵头部门汇总意见不能为空");
+        Assert.notNull(aeaHiGuide.getGuideEndTime(), "部门辅导结束时间不能为空");
+
+        AeaHiGuide aeaHiGuideFromDb = aeaHiGuideMapper.getAeaHiGuideByGuideId(aeaHiGuide.getGuideId());
+        aeaHiGuide.setRealTimeLimit((double) ((aeaHiGuide.getGuideEndTime().getTime() - aeaHiGuideFromDb.getGuideStartTime().getTime()) / (1000 * 3600)));
+
+        aeaHiGuideMapper.updateAeaHiGuide(aeaHiGuide);
     }
 }
