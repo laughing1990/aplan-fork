@@ -1,13 +1,14 @@
 package com.augurit.aplanmis.front.apply.vo.guide;
 
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaHiGuide;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 @Getter
 @Setter
@@ -21,19 +22,22 @@ public class GuideQueryVo {
     private String applyState;
 
     @ApiModelProperty(value = "部门辅导发起时间")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date guideStartTime;
+    private String guideStartTime;
 
     @ApiModelProperty(value = "部门辅导结束时间")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date guideEndTime;
+    private String guideEndTime;
 
-    public AeaHiGuide toAeaHiGuide() {
+    public AeaHiGuide toAeaHiGuide() throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         AeaHiGuide aeaHiGuide = new AeaHiGuide();
         aeaHiGuide.setKeyword(this.keyword);
         aeaHiGuide.setApplyState(this.applyState);
-        aeaHiGuide.setGuideStartTime(guideStartTime);
-        aeaHiGuide.setGuideEndTime(guideEndTime);
+        if (StringUtils.isNotBlank(guideEndTime)) {
+            aeaHiGuide.setGuideEndTime(sdf.parse(guideEndTime));
+        }
+        if (StringUtils.isNotBlank(guideStartTime)) {
+            aeaHiGuide.setGuideStartTime(sdf.parse(guideStartTime));
+        }
         return aeaHiGuide;
     }
 }

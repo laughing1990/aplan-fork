@@ -269,7 +269,7 @@
             resultType="com.augurit.aplanmis.common.domain.AeaSolicitItem">
         select
         <include refid="alias_allColumns">
-            <property name="alias" value="soliItem"/>
+            <property name="alias" value="asi"/>
         </include>
         ,
         asiu.USER_ID userId

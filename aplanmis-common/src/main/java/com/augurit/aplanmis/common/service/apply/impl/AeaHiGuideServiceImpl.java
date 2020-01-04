@@ -117,8 +117,8 @@ public class AeaHiGuideServiceImpl implements AeaHiGuideService {
         }
         guideDetailVo.setLeaderDept(SecurityContext.getCurrentUserId().equals(aeaHiGuide.getLeaderUserId()));
         guideDetailVo.setAeaHiGuide(aeaHiGuide);
-        guideDetailVo.setParallelItems(result.get("1"));
-        guideDetailVo.setOptionItems(result.get("0"));
+        guideDetailVo.setParallelItems(result.get("0"));
+        guideDetailVo.setOptionItems(result.get("1"));
         return guideDetailVo;
     }
 
@@ -190,6 +190,12 @@ public class AeaHiGuideServiceImpl implements AeaHiGuideService {
             });
 
             guide(aeaHiGuideDetails);
+
+            AeaHiGuide aeaHiGuide = aeaHiGuideMapper.getAeaHiGuideByGuideId(aeaHiGuideDetails.get(0).getGuideId());
+            aeaHiGuide.setApplyState(GuideApplyState.DEPT_HANDLING.getValue());
+            aeaHiGuide.setModifier(SecurityContext.getCurrentUserId());
+            aeaHiGuide.setModifyTime(new Date());
+            aeaHiGuideMapper.updateAeaHiGuide(aeaHiGuide);
         }
     }
 

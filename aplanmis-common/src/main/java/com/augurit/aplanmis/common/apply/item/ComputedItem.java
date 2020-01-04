@@ -63,7 +63,7 @@ public class ComputedItem {
     @ApiModelProperty(value = "当前实施事项")
     protected CarryOutItem currentCarryOutItem;
 
-    @ApiModelProperty(value = "是否必选事项", notes = "1: 是, 0: 否")
+    @ApiModelProperty(value = "是否可选事项", notes = "1: 是 并行事项, 0: 否 并联事项")
     protected String isOptionItem;
 
     @ApiModelProperty(value = "是否必办事项", notes = "1: 是, 0: 否")

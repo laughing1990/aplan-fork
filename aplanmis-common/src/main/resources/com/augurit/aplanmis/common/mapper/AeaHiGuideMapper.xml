@@ -181,6 +181,16 @@
         , apt.theme_name themeName
         , api.proj_name projName
         , api.gcbm gcbm
+        , case aps.is_node
+        when '1' then 'MAINLINE'
+        else case aps.DYGJBZFXFW
+        when '51' then 'AUXILINE_51'
+        when '52' then 'AUXILINE_52'
+        when '53' then 'AUXILINE_53'
+        when '54C' then 'AUXILINE_54C'
+        when '54Y' then 'AUXILINE_54Y'
+        else 'OTHERS' end
+        end as themeCategory
         from aea_hi_guide ahg
         join aea_par_stage aps on ahg.stage_id=aps.stage_id
         join aea_par_theme_ver aptv on aptv.theme_ver_id=aps.theme_ver_id
@@ -202,10 +212,10 @@
             <if test="applyState != null and applyState != ''">
                 and ahg.apply_state=#{applyState}
             </if>
-            <if test="guideStartTime != null and guideStartTime != ''">
+            <if test="guideStartTime != null">
                 and ahg.GUIDE_START_TIME &gt;= #{guideStartTime}
             </if>
-            <if test="guideEndTime != null and guideEndTime != ''">
+            <if test="guideEndTime != null">
                 and ahg.GUIDE_END_TIME &lt;= #{guideEndTime}
             </if>
         </where>

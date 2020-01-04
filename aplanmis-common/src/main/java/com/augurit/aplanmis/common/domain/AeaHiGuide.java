@@ -85,6 +85,8 @@ public class AeaHiGuide {
     private String themeId;
     // 项目类型
     private String themeName;
+    // 主辅线类别
+    private String themeCategory;
     // 项目代码/工程编码
     private String gcbm;
     // 项目名称
