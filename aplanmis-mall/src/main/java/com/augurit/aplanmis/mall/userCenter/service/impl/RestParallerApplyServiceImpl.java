@@ -143,7 +143,21 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
             aeaParFactor.setIsActive("1");
             aeaParFactors.addAll(aeaParFactorMapper.listAeaParFactor(aeaParFactor));
         });
-        return getAeaParFactors(aeaParFactors);
+        aeaParFactors.stream().forEach(aeaParFactor -> {
+            AeaParFactor factor = new AeaParFactor();
+            factor.setParentFactorId(aeaParFactor.getFactorId());
+            factor.setIsActive("1");
+            List<AeaParFactor> answerfactors  = aeaParFactorMapper.listAeaParFactor(factor);
+            answerfactors.stream().forEach(answerfactor->{
+                AeaParFactorTheme aeaParFactorTheme = new AeaParFactorTheme();
+                aeaParFactorTheme.setFactorId(answerfactor.getFactorId());
+                List<AeaParFactorTheme> aeaParFactorThemes = aeaParFactorThemeMapper.listAeaParFactorTheme(aeaParFactorTheme);
+                if (aeaParFactorThemes.size()>0) answerfactor.setThemeId(aeaParFactorThemes.get(0).getThemeId());
+            });
+
+            aeaParFactor.setAnswerFactors(answerfactors);
+        });
+        return aeaParFactors;
     }
 
     @Override
@@ -152,20 +166,17 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
         factor.setParentFactorId(parentFactorId);
         factor.setIsActive("1");
         List<AeaParFactor>  aeaParFactors = aeaParFactorMapper.listAeaParFactor(factor);
-        return getAeaParFactors(aeaParFactors);
-    }
-
-    private List<AeaParFactor> getAeaParFactors(List<AeaParFactor> aeaParFactors) {
         aeaParFactors.stream().forEach(aeaParFactor -> {
             AeaParFactor parFactor = new AeaParFactor();
             parFactor.setParentFactorId(aeaParFactor.getFactorId());
             parFactor.setIsActive("1");
-            List<AeaParFactor> answerfactors = aeaParFactorMapper.listAeaParFactor(parFactor);
-            answerfactors.stream().forEach(answerfactor -> {
+            List<AeaParFactor> answerfactors  = aeaParFactorMapper.listAeaParFactor(factor);
+            answerfactors.stream().forEach(answerfactor->{
                 AeaParFactorTheme aeaParFactorTheme = new AeaParFactorTheme();
                 aeaParFactorTheme.setFactorId(answerfactor.getFactorId());
+                answerfactor.setParentFactorId(aeaParFactor.getFactorId());
                 List<AeaParFactorTheme> aeaParFactorThemes = aeaParFactorThemeMapper.listAeaParFactorTheme(aeaParFactorTheme);
-                if (aeaParFactorThemes.size() > 0) answerfactor.setThemeId(aeaParFactorThemes.get(0).getThemeId());
+                if (aeaParFactorThemes.size()>0) answerfactor.setThemeId(aeaParFactorThemes.get(0).getThemeId());
             });
             aeaParFactor.setAnswerFactors(answerfactors);
         });
