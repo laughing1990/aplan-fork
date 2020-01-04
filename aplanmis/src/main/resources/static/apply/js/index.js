@@ -661,25 +661,33 @@ var vm = new Vue({
     _that.getDistrictList();  // 获取行政区划
     _that.getGbhy();
     _that.getProjTypeNature('PROJ_UNIT_LINKMAN_TYPE,XM_DWLX,XM_PROJECT_STEP,XM_PROJECT_LEVEL,XM_TZLX,XM_ZJLY,XM_GBHY,XM_TDLY,XM_GCFL,XM_NATURE');
-    if (parent.vm && parent.vm.activeTabSelData) {
-      if (parent.vm.activeTabSelData.projInfoId) {
-        _that.projInfoId = parent.vm.activeTabSelData.projInfoId;
-        _that.linkQuery();
-      }
-      if (parent.vm.activeTabSelData.applyinstId) {
-        _that.isDraftsProj = true;
-        _that.parallelApplyinstId = parent.vm.activeTabSelData.applyinstId;
-        _that.isTempSavePage = true;
-        _that.lookProjDetail()
-      }
-    }
     _that.themeCategory = __STATIC.getUrlParam('themeCategory') ? __STATIC.getUrlParam('themeCategory') : 'MAINLINE';
     if (_that.themeCategory && _that.themeCategory != '') {
       _that.getThemeInfoByThemeCategory();
     } else {
       _that.getThemeInfo('0');
       _that.getThemeInfo('1');
-
+    }
+    // 来自部门辅导
+    var _guideId = __STATIC.getUrlParam('guideId');
+    if (_guideId && _guideId.length==36) {
+      this.requestGuideData(_guideId);
+      return null;
+    }
+    //
+    if (parent.vm && parent.vm.activeTabSelData) {
+      if (parent.vm.activeTabSelData.projInfoId) {
+        // 来自首页 根据项目id加载数据
+        _that.projInfoId = parent.vm.activeTabSelData.projInfoId;
+        _that.linkQuery();
+      }
+      if (parent.vm.activeTabSelData.applyinstId) {
+        // 来自草稿箱 根据申报实例加载数据
+        _that.isDraftsProj = true;
+        _that.parallelApplyinstId = parent.vm.activeTabSelData.applyinstId;
+        _that.isTempSavePage = true;
+        _that.lookProjDetail()
+      }
     }
   },
   mounted: function () {
@@ -704,6 +712,28 @@ var vm = new Vue({
     }
   },
   methods: {
+    // 部门辅导 start-----------------------
+    // 根据辅导id加载辅导数据
+    requestGuideData: function(guideId){
+      var vm = this;
+      this.loading = true;
+      request('', {
+        url: ctx + 'dept/guide/detail',
+        type: 'get',
+        data: { guideId: guideId },
+      }, function(res) {
+        vm.loading = false;
+        if (res.success) {
+          //
+        } else {
+          vm.$message.error(res.message || '加载部门辅导数据失败');
+        }
+      }, function(){
+        vm.loading = false;
+        vm.$message.error('加载部门辅导数据失败');
+      });
+    },
+    // 部门辅导 end-------------------------
     // 意见征求 start-----------------------
     // 发起征求
     startSolicit: function () {
