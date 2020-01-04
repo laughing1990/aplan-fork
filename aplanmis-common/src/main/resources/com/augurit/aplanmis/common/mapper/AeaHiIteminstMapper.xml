@@ -542,19 +542,24 @@
             <if test="userInfoId ==null || userInfoId==''">
                 ali.LINKMAN_INFO_ID is null
             </if>
+            <if test="applyinstState!=null and applyinstState!=''">
+                and  aha.APPLYINST_STATE=#{applyinstState}
+            </if>
             AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND ali.IS_DELETED !=1 AND apl.TYPE='apply' AND
             aha.IS_SERIES_APPROVE='1'
-            <choose>
-                <when test="state == '0'.toString()">
-                    AND aha.APPLYINST_STATE in ('6')
-                </when>
-                <when test="state == '1'.toString()">
-                    AND aha.APPLYINST_STATE in ('0','1','2','3','4','5') AND aha.APPLYINST_STATE IS NOT NULL
-                </when>
-                <otherwise>
-                    AND aha.APPLYINST_STATE IS NULL
-                </otherwise>
-            </choose>
+            <if test="state!=null and state!=''">
+                <choose>
+                    <when test="state == '0'.toString()">
+                        AND aha.APPLYINST_STATE in ('6')
+                    </when>
+                    <when test="state == '1'.toString()">
+                        AND aha.APPLYINST_STATE in ('0','1','2','3','4','5') AND aha.APPLYINST_STATE IS NOT NULL
+                    </when>
+                    <otherwise>
+                        AND aha.APPLYINST_STATE IS NULL
+                    </otherwise>
+                </choose>
+            </if>
             <if test="keyword != null and keyword != ''">
                 AND (
                 api.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
@@ -591,24 +596,30 @@
         LEFT JOIN aea_par_theme apt on apt.THEME_ID=aptv.THEME_ID
         <where>
             <if test="userInfoId !=null and userInfoId!=''">
-                ali.LINKMAN_INFO_ID=#{userInfoId}
+               ali.LINKMAN_INFO_ID=#{userInfoId}
             </if>
             <if test="userInfoId ==null || userInfoId==''">
                 ali.LINKMAN_INFO_ID is null
             </if>
+            <if test="applyinstState!=null and applyinstState!=''">
+              and  aha.APPLYINST_STATE=#{applyinstState}
+            </if>
             AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND ali.IS_DELETED !=1 AND
             apl.TYPE='apply' AND aha.IS_SERIES_APPROVE='0'
-            <choose>
-                <when test="state == '0'.toString()">
-                    AND aha.APPLYINST_STATE in ('6')
-                </when>
-                <when test="state == '1'.toString()">
-                    AND aha.APPLYINST_STATE in ('0','1','2','3','5','4') AND aha.APPLYINST_STATE IS NOT NULL
-                </when>
-                <otherwise>
-                    AND aha.APPLYINST_STATE IS NULL
-                </otherwise>
-            </choose>
+            <if test="state!=null and state!=''">
+                <choose>
+                    <when test="state == '0'.toString()">
+                        AND aha.APPLYINST_STATE in ('6')
+                    </when>
+                    <when test="state == '1'.toString()">
+                        AND aha.APPLYINST_STATE in ('0','1','2','3','5','4') AND aha.APPLYINST_STATE IS NOT NULL
+                    </when>
+                    <otherwise>
+                        AND aha.APPLYINST_STATE IS NULL
+                    </otherwise>
+                </choose>
+            </if>
+
             <if test="keyword != null and keyword != ''">
                 AND (
                 api.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
@@ -650,19 +661,24 @@
             <if test="unitInfoId ==null || unitInfoId==''">
                 aui.UNIT_INFO_ID is null
             </if>
+            <if test="applyinstState!=null and applyinstState!=''">
+                and  aha.APPLYINST_STATE=#{applyinstState}
+            </if>
             AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND aui.IS_DELETED !=1 AND aup.IS_DELETED !=1 AND aha.IS_SERIES_APPROVE='1'
             and aha.IS_TEMPORARY_SUBMIT='0'
-            <choose>
-                <when test="state == '0'.toString()">
-                    AND aha.APPLYINST_STATE in ('6')
-                </when>
-                <when test="state == '1'.toString()">
-                    AND aha.APPLYINST_STATE in ('0','1','2','3','5','4') AND aha.APPLYINST_STATE IS NOT NULL
-                </when>
-                <otherwise>
-                    AND aha.APPLYINST_STATE IS NULL
-                </otherwise>
-            </choose>
+            <if test="state!=null and state!=''">
+                <choose>
+                    <when test="state == '0'.toString()">
+                        AND aha.APPLYINST_STATE in ('6')
+                    </when>
+                    <when test="state == '1'.toString()">
+                        AND aha.APPLYINST_STATE in ('0','1','2','3','5','4') AND aha.APPLYINST_STATE IS NOT NULL
+                    </when>
+                    <otherwise>
+                        AND aha.APPLYINST_STATE IS NULL
+                    </otherwise>
+                </choose>
+            </if>
             <if test="keyword != null and keyword != ''">
                 AND (
                 api.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
@@ -705,19 +721,24 @@
             <if test="unitInfoId ==null || unitInfoId==''">
                 aui.UNIT_INFO_ID is null
             </if>
+            <if test="applyinstState!=null and applyinstState!=''">
+                and  aha.APPLYINST_STATE=#{applyinstState}
+            </if>
             AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND aui.IS_DELETED !=1 AND aup.IS_DELETED !=1 AND
             aha.IS_SERIES_APPROVE='0' and aha.IS_TEMPORARY_SUBMIT='0'
-            <choose>
-                <when test="state == '0'.toString()">
-                    AND aha.APPLYINST_STATE in ('6')
-                </when>
-                <when test="state == '1'.toString()">
-                    AND aha.APPLYINST_STATE in ('0','1','2','3','5','4') AND aha.APPLYINST_STATE IS NOT NULL
-                </when>
-                <otherwise>
-                    AND aha.APPLYINST_STATE IS NULL
-                </otherwise>
-            </choose>
+            <if test="state!=null and state!=''">
+                <choose>
+                    <when test="state == '0'.toString()">
+                        AND aha.APPLYINST_STATE in ('6')
+                    </when>
+                    <when test="state == '1'.toString()">
+                        AND aha.APPLYINST_STATE in ('0','1','2','3','5','4') AND aha.APPLYINST_STATE IS NOT NULL
+                    </when>
+                    <otherwise>
+                        AND aha.APPLYINST_STATE IS NULL
+                    </otherwise>
+                </choose>
+            </if>
             <if test="keyword != null and keyword != ''">
                 AND (
                 api.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') or

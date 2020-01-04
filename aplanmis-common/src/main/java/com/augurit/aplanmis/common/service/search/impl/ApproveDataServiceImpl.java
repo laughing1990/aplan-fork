@@ -101,9 +101,9 @@ public class ApproveDataServiceImpl implements ApproveDataService {
     }
 
     @Override
-    public PageInfo<ApproveProjInfoDto> searchApproveProjInfoListByUnitOrLinkman(String unitInfoId, String userInfoId, String state, String keyword, int pageNum, int pageSize) throws Exception {
+    public PageInfo<ApproveProjInfoDto> searchApproveProjInfoListByUnitOrLinkman(String unitInfoId, String userInfoId, String state,String applyinstState, String keyword, int pageNum, int pageSize) throws Exception {
         PageHelper.startPage(pageNum,pageSize);
-        List<ApproveProjInfoDto> list = aeaHiIteminstMapper.getApproveProjInfoListByUnitOrLinkman(unitInfoId, userInfoId, state, keyword);
+        List<ApproveProjInfoDto> list = aeaHiIteminstMapper.getApproveProjInfoListByUnitOrLinkman(unitInfoId, userInfoId, state,applyinstState, keyword);
         //this.convertStateCodeToName(SecurityContext.getCurrentOrgId(), list);
         convertCommentByState(list);
         if ("0".equals(state)) {//已办结

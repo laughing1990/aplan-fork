@@ -112,8 +112,8 @@ public class RestApproveServiceImpl implements RestApproveService {
     @Value("${mall.check.authority:false}")
     private boolean isCheckAuthority;
     @Override
-    public PageInfo<ApproveProjInfoDto> searchApproveProjInfoListByUnitOrLinkman(String unitInfoId, String userInfoId, String state, String keyword, int pageNum, int pageSize) throws Exception {
-        return approveDataService.searchApproveProjInfoListByUnitOrLinkman(unitInfoId,userInfoId,state,keyword,pageNum,pageSize);
+    public PageInfo<ApproveProjInfoDto> searchApproveProjInfoListByUnitOrLinkman(String unitInfoId, String userInfoId, String state,String applyinstState, String keyword, int pageNum, int pageSize) throws Exception {
+        return approveDataService.searchApproveProjInfoListByUnitOrLinkman(unitInfoId,userInfoId,state,applyinstState,keyword,pageNum,pageSize);
     }
 
     @Override

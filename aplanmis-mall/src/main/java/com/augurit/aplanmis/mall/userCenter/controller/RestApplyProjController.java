@@ -337,18 +337,19 @@ public class RestApplyProjController {
     @GetMapping("hadApplyItem/list")
     @ApiOperation(value = "已申报项目 --> 已申报项目列表查询接口")
     @ApiImplicitParams({@ApiImplicitParam(value = "项目状态(0:办结1:办理中2:草稿)",name = "state",required = false,dataType = "string"),
+            @ApiImplicitParam(value = "申报状态",name = "applyinstState",required = false,dataType = "string"),
             @ApiImplicitParam(value = "关键词",name = "keyword",required = false,dataType = "string"),
             @ApiImplicitParam(value = "页面数量",name = "pageNum",required = true,dataType = "string"),
             @ApiImplicitParam(value = "页面页数",name = "pageSize",required = true,dataType = "string")})
-    public ResultForm getHadApplyItemlist(String state, String keyword, int pageNum, int pageSize,HttpServletRequest request){
+    public ResultForm getHadApplyItemlist(String applyinstState,String state, String keyword, int pageNum, int pageSize,HttpServletRequest request){
         try {
             LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
             if("1".equals(loginInfo.getIsPersonAccount())){//个人
-                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId(),state,keyword,pageNum,pageSize));
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId(),state,applyinstState,keyword,pageNum,pageSize));
             }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
-                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),state,keyword,pageNum,pageSize));
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),state,applyinstState,keyword,pageNum,pageSize));
             }else{//企业
-                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"",state,keyword,pageNum,pageSize));
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"",state,applyinstState,keyword,pageNum,pageSize));
             }
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
@@ -356,8 +357,32 @@ public class RestApplyProjController {
         }
     }
 
+
+    @GetMapping("apply/list")
+    @ApiOperation(value = "申报 --> 申报列表查询接口")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "申报状态",name = "applyinstState",required = false,dataType = "string"),
+            @ApiImplicitParam(value = "关键词",name = "keyword",required = false,dataType = "string"),
+            @ApiImplicitParam(value = "页面数量",name = "pageNum",required = true,dataType = "string"),
+            @ApiImplicitParam(value = "页面页数",name = "pageSize",required = true,dataType = "string")})
+    public ResultForm getApplylist(String applyinstState,String keyword, int pageNum, int pageSize,HttpServletRequest request){
+        try {
+            LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
+            if("1".equals(loginInfo.getIsPersonAccount())){//个人
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId(),null,applyinstState,keyword,pageNum,pageSize));
+            }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),null,applyinstState,keyword,pageNum,pageSize));
+            }else{//企业
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"",null,applyinstState,keyword,pageNum,pageSize));
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ResultForm(false,"申报列表查询接口异常");
+        }
+    }
+
     @GetMapping("withdrawApply/list")
-    @ApiOperation(value = "已申报项目 --> 已申报项目列表查询接口")
+    @ApiOperation(value = "撤回申报 --> 撤回申报列表查询接口")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "关键词",name = "keyword",required = false,dataType = "string"),
             @ApiImplicitParam(value = "页面数量",name = "pageNum",required = true,dataType = "string"),
@@ -374,7 +399,7 @@ public class RestApplyProjController {
             }
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
-            return new ResultForm(false,"查询已申报项目列表查询接口异常");
+            return new ResultForm(false,"撤回申报列表接口异常");
         }
     }
 
