@@ -445,28 +445,12 @@ var parallelDeclare = new Vue({
       var unitFlag = false; // 单位信息未完善
       var aeaUnitInfo = this.applyObjectInfo.aeaUnitInfo;
       var aeaLinkmanInfo = this.applyObjectInfo.aeaLinkmanInfo;
-      var _linkmanTypes = [];
       _that.stageList = [];
       _that.stateList = [];
       _that.parallelItems = [];
       _that.coreItems = [];
       _that.guideList=[];
       _that.stageListBefore = [];
-      if (_that.applyObjectInfo.aeaUnitInfo && _that.applyObjectInfo.aeaUnitInfo.linkmanTypes && _that.applyObjectInfo.aeaUnitInfo.linkmanTypes.length > 0) {
-        _that.applyObjectInfo.aeaUnitInfo.linkmanTypes.map(function (itemType) {
-          if (itemType.linkmanInfoId) {
-            var typeObj = {
-              linkmanType: itemType.linkmanType,
-              linkmanInfoId: itemType.linkmanInfoId,
-              linkmanName: itemType.linkmanName,
-              unitInfoId: _that.unitInfoId,
-              projInfoId: _that.projInfoId,
-            }
-            _linkmanTypes.push(typeObj);
-          }
-
-        })
-      }
       if (_that.applyObjectInfo.role == 0) {
         _that.userInfoId = _that.applyObjectInfo.aeaLinkmanInfo.linkmanInfoId;
         _that.userLinkmanCertNo = _that.applyObjectInfo.aeaLinkmanInfo.linkmanCertNo;
@@ -517,17 +501,24 @@ var parallelDeclare = new Vue({
           });
         }
       }
+
       _that.$refs['projInfoForm'].validate(function (valid1) {
         if (valid1) {
-          if (jiansheUnitFlag) {
-            _that.isIntelligenceShow=true;
-          } else {
+          if(_that.gbhyShowMsg!=''){
+            if (jiansheUnitFlag) {
+              _that.isIntelligenceShow=true;
+            } else {
+              _that.$message({
+                message: '请完善申办主体单位信息',
+                type: 'error'
+              });
+            }
+          }else {
             _that.$message({
-              message: '请完善申办主体单位信息',
+              message: '请选择国标行业',
               type: 'error'
             });
           }
-
         } else {
           _that.$message({
             message: '请完善项目/工程信息',
@@ -565,7 +556,7 @@ var parallelDeclare = new Vue({
         })
       });
     },
-    // 根据阶段啊id获取情形列表
+    // 根据情形id获取子情形列表
     getChildsStateList: function(cStateList,pData, answerData, index, checkFlag,guideflag){
       var _that = this, questionStateId = '',_parentId = '',selStateIds = [], getUrl='';
       var stateListLen = cStateList?cStateList.length:0;
@@ -573,6 +564,11 @@ var parallelDeclare = new Vue({
         questionStateId = pData.factorId;
         _parentId = answerData.factorId ? answerData.factorId : 'ROOT';
         getUrl = 'rest/userCenter/apply/factor/child/list/' + _parentId
+        if(answerData.themeId&&answerData.themeId!=''){
+          _that.projInfoDetail.themeId = answerData.themeId;
+          _that.themeId = answerData.themeId;
+          _that.saveThemeAndNext('guide');
+        }
       }else {
         questionStateId = pData.parStateId;
         _parentId = answerData.parStateId ? answerData.parStateId : 'ROOT';
@@ -620,12 +616,12 @@ var parallelDeclare = new Vue({
               if(obj){
                 if(guideflag=='guide'){
                   _parentStateId = obj.parentFactorId;
-                  parentQuestionStateId = obj.parentFactorId;
+                  parentQuestionStateId = obj.parentQuestionFactorId;
                 }else {
                   _parentStateId = obj.parentStateId;
                   parentQuestionStateId = obj.parentQuestionStateId;
                 }
-                if ((parentQuestionStateId == questionStateId) || (obj && _parentStateId != null && (selStateIds.indexOf(_parentStateId) == -1))) {
+                if ((parentQuestionStateId == questionStateId) || (_parentStateId && _parentStateId != '' && (selStateIds.indexOf(_parentStateId) == -1))) {
                   cStateList.splice(i, 1);
                   if (typeof (obj.selectAnswerId) == 'object' && obj.selectAnswerId.length > 0) {
                     obj.selectAnswerId.map(function (itemSel) {
@@ -708,95 +704,6 @@ var parallelDeclare = new Vue({
         });
       }
 
-    },
-    //获取智能指引子列表
-    getSubGuide: function (pData, item, index, value) {
-      var _that = this;
-      _that.stateList = [];
-      if(item.themeId&&item.themeId!=''){
-        _that.projInfoDetail.themeId = item.themeId;
-        _that.themeId = item.themeId;
-        _that.saveThemeAndNext('guide');
-      }
-      request('', {
-        url: ctx + 'rest/userCenter/apply/factor/child/list/' + item.factorId,
-        type: 'get',
-      }, function (res) {
-        if (res.success) {
-          var parentId = item.parentFactorId;
-          if (!value) {
-            _that.removeCheckbox(item);
-          }
-          for (var i = 0; i < _that.guideList.length; i++) {
-            for (var j = 0; j < _that.guideList[i].answerFactors.length; j++) {
-              if (_that.guideList[i].answerFactors[j].parentFactorId == parentId) {
-                _that.getSubqueAndAns(_that.guideList[i].answerFactors[j]);
-              }
-            }
-          }
-          if (value) {
-            res.content.map(function (item, ind) {
-              if (typeof item.selectAnswerId == 'undefined' || item.selectAnswerId == undefined) {
-                Vue.set(item, 'selectAnswerId', '');
-              }
-              if (item.answerType != 's' && item.answerType != 'y') {
-                Vue.set(item, 'selValue', []);
-                item.selectAnswerId = item.selValue;
-              }
-              item.answerFactors = _that.sortByKey(item.answerFactors, 'sortNo');
-              _that.guideList.splice((index + 1 + ind), 0, item);
-            });
-          }
-        }else {
-          _that.$message({
-            message: res.message?res.message:'获取智能引导失败！',
-            type: 'error'
-          })
-        }
-      },function(res){
-        _that.$message({
-          message: res.message?res.message:'获取智能引导失败！',
-          type: 'error'
-        })
-      });
-    },
-    /***迭代循环子问题及答案***/
-    getSubqueAndAns: function (obj) {
-      var _that = this;
-      var guide = _that.guideList;
-      for (var i = 0; i < guide.length; i++) {
-        if (obj.factorId == guide[i].parentFactorId) {
-          for (var j = 0; j < guide[i].answerFactors.length; j++) {
-            _that.getSubqueAndAns(_that.guideList[i].answerFactors[j]);
-          }
-          /***切换问题时移除复选框选中数据***/
-          for (var j = 0; j < guide[i].answerFactors.length; j++) {
-            _that.guideCheckboxAnswer.map(function (item, ind) {
-              if (item == _that.guideList[i].answerFactors[j].factorId) {
-                _that.guideCheckboxAnswer.splice(ind, 1);
-              }
-            });
-          }
-          guide.splice(i, 1);
-          i--;
-        }
-      }
-    },
-    /***删除取消复选框的数据***/
-    removeCheckbox: function (obj) {
-      var _that = this, guideCheckboxAnswer = _that.guideCheckboxAnswer;
-      for (var i = 0; i < _that.guideList.length; i++) {
-        if (obj.factorId == _that.guideList[i].parentFactorId) {
-          for (var j = 0; j < _that.guideList[i].answerFactors.length; j++) {
-            _that.removeCheckbox(_that.guideList[i].answerFactors[j]);
-            guideCheckboxAnswer.map(function (item, ind) {
-              if (item == _that.guideList[i].answerFactors[j].factorId) {
-                guideCheckboxAnswer.splice(ind, 1);
-              }
-            });
-          }
-        }
-      }
     },
     // 部门辅导申请
     guideApplyStart: function(){
@@ -1775,83 +1682,23 @@ var parallelDeclare = new Vue({
 
     // 保存保存领件人、项目信息 补全信息保存并下一步
     saveProOrSmsinfo: function (saveFlag) {
-      // var msg = '', perUnitMsg = '';
       var _that = this;
-      // var unitFlag = false; // 单位信息未完善
-      // var aeaUnitInfo = this.applyObjectInfo.aeaUnitInfo;
-      // var aeaLinkmanInfo = this.applyObjectInfo.aeaLinkmanInfo;
-      // var _linkmanTypes = [];
-      // _that.stageList = [];
-      // _that.stateList = [];
-      // _that.parallelItems = [];
-      // _that.coreItems = [];
-      // if (_that.applyObjectInfo.aeaUnitInfo && _that.applyObjectInfo.aeaUnitInfo.linkmanTypes && _that.applyObjectInfo.aeaUnitInfo.linkmanTypes.length > 0) {
-      //   _that.applyObjectInfo.aeaUnitInfo.linkmanTypes.map(function (itemType) {
-      //     if (itemType.linkmanInfoId) {
-      //       var typeObj = {
-      //         linkmanType: itemType.linkmanType,
-      //         linkmanInfoId: itemType.linkmanInfoId,
-      //         linkmanName: itemType.linkmanName,
-      //         unitInfoId: _that.unitInfoId,
-      //         projInfoId: _that.projInfoId,
-      //       }
-      //       _linkmanTypes.push(typeObj);
-      //     }
-      //
-      //   })
-      // }
-      // if (_that.applyObjectInfo.role == 0) {
-      //   // _that.unitInfoId = '';
-      //   // _that.unifiedSocialCreditCode = '';
-      //   _that.userInfoId = _that.applyObjectInfo.aeaLinkmanInfo.linkmanInfoId;
-      //   _that.userLinkmanCertNo = _that.applyObjectInfo.aeaLinkmanInfo.linkmanCertNo;
-      //   unitFlag = true;
-      // } else {
-      //   _that.unitInfoId = _that.applyObjectInfo.aeaUnitInfo.unitInfoId;
-      //   _that.unifiedSocialCreditCode = _that.applyObjectInfo.aeaUnitInfo.unifiedSocialCreditCode;
-      //   if (aeaUnitInfo.applicant || aeaUnitInfo.unifiedSocialCreditCode || aeaUnitInfo.idrepresentative || aeaLinkmanInfo.linkmanName || aeaLinkmanInfo.linkmanMobilePhone || aeaLinkmanInfo.linkmanCertNo) {
-      //     unitFlag = true;
-      //   }else {
-      //     unitFlag = false;
-      //   }
-      // }
-      // if (this.applyObjectInfo.role == 0) {
-      //   if (!this.userInfoId) {
-      //     msg = '请前往企业中心完善申报主体申请人信息！';
-      //   }
-      // } else {
-      //   if (!this.unitInfoId || !unitFlag) {
-      //     msg = '请前往企业中心完善申报主体企业信息！';
-      //   }
-      // }
-      // if (this.isBlack == true) {
-      //   msg = '申报主体已被纳入信用黑名单，无法申报项目！'
-      // }
-      // if (msg) {
-      //   alertMsg('', msg, '关闭', 'error', true);
-      //   return false;
-      // }
-      // // 判断单位必填是否已填
-      // var jiansheUnitFormEleLen = _that.jiansheFrom.length;
-      // var jiansheUnitFlag = true;
-      // if(_that.applyObjectInfo.role==2){
-      //   for (var i = 0; i < jiansheUnitFormEleLen; i++) {
-      //     var formRef = 'jianshe_' + i;
-      //     var validFun;
-      //     if ((typeof (_that.$refs[formRef].validate)) == 'function') {
-      //       validFun = _that.$refs[formRef].validate
-      //     } else {
-      //       validFun = _that.$refs[formRef][0].validate
-      //     }
-      //     validFun(function (valid) {
-      //       if (!valid) {
-      //         jiansheUnitFlag = false;
-      //         perUnitMsg = "请完善申办主体建设单位信息"
-      //         return false;
-      //       }
-      //     });
-      //   }
-      // }
+      var _linkmanTypes = [];
+      if (_that.applyObjectInfo.aeaUnitInfo && _that.applyObjectInfo.aeaUnitInfo.linkmanTypes && _that.applyObjectInfo.aeaUnitInfo.linkmanTypes.length > 0) {
+        _that.applyObjectInfo.aeaUnitInfo.linkmanTypes.map(function (itemType) {
+          if (itemType.linkmanInfoId) {
+            var typeObj = {
+              linkmanType: itemType.linkmanType,
+              linkmanInfoId: itemType.linkmanInfoId,
+              linkmanName: itemType.linkmanName,
+              unitInfoId: _that.unitInfoId,
+              projInfoId: _that.projInfoId,
+            }
+            _linkmanTypes.push(typeObj);
+          }
+
+        })
+      }
       _that.projInfoDetail.projName = _that.projInfoDetail.projName?_that.projInfoDetail.projName.trim():'';
       _that.projInfoDetail.localCode = _that.projInfoDetail.localCode?_that.projInfoDetail.localCode.trim():'';
       _that.projInfoDetail.regionalism = _that.projInfoDetail.regionalism?_that.projInfoDetail.regionalism.trim():'';
@@ -1863,86 +1710,69 @@ var parallelDeclare = new Vue({
       }else {
         saveUrl= ctx + 'rest/apply/common/completioninfo/saveOrUpdate/temporary'
       }
-      // _that.$refs['projInfoForm'].validate(function (valid1) {
-      //   if (valid1) {
-      //     if (jiansheUnitFlag) {
-            _that.loading = true;
-            _that.projInfoDetail.projectAddress = _that.projInfoDetail.projectAddress?_that.projInfoDetail.projectAddress.join(','):'';
-            var params = _that.projInfoDetail;
-            Vue.set(params, 'linkmanTypeVos', _linkmanTypes);
-            if (_that.applyObjectInfo.role == 2) {
-              params.applySubject = 1;
-            } else {
-              params.applySubject = 0;
-            }
-            params.linkmanInfoId = _that.userInfoId;
-            params.isSeriesApprove = '0';
-            params.applyinstId = _that.parallelApplyinstId;
-            _that.projInfoFirstSave = params;
-            request('', {
-              url: saveUrl,
-              type: 'post',
-              ContentType: 'application/json',
-              data: JSON.stringify(params)
-            }, function (data) {
-              if (data.success) {
-                _that.smsInfoId = data.content.smsId;
-                _that.regionalism = data.content.regionalism;//更新区划ID
-                _that.projInfoDetail.projectAddress = _that.projInfoDetail.projectAddress?_that.projInfoDetail.projectAddress.split(','):'';
-                _that.loading = false;
-                _that.themeId = _that.projInfoDetail.themeId;
-                _that.themeVerId = _that.projInfoDetail.themeVerId;
-                _that.unitProjIds = data.content.unitProjIds?data.content.unitProjIds:[];
-                if(data.content.unitReturnJson&&data.content.unitReturnJson.length>0){
-                  var arr = data.content.unitReturnJson;
-                  arr.forEach(function(item,index){
-                    if(_that.jiansheFrom.length > 0) {
-                      for(var i= 0;i<_that.jiansheFrom.length;i++){
-                        if(_that.jiansheFrom[i].unifiedSocialCreditCode == item.unifiedSocialCreditCode){
-                          _that.jiansheFrom[i].unitInfoId =  item.unitInfoId;
-                        }
-                      }
-                    }
-                  })
+      _that.loading = true;
+      _that.projInfoDetail.projectAddress = _that.projInfoDetail.projectAddress?_that.projInfoDetail.projectAddress.join(','):'';
+      var params = _that.projInfoDetail;
+      Vue.set(params, 'linkmanTypeVos', _linkmanTypes);
+      if (_that.applyObjectInfo.role == 2) {
+        params.applySubject = 1;
+      } else {
+        params.applySubject = 0;
+      }
+      params.linkmanInfoId = _that.userInfoId;
+      params.isSeriesApprove = '0';
+      params.applyinstId = _that.parallelApplyinstId;
+      _that.projInfoFirstSave = params;
+      request('', {
+        url: saveUrl,
+        type: 'post',
+        ContentType: 'application/json',
+        data: JSON.stringify(params)
+      }, function (data) {
+        if (data.success) {
+          _that.declareStep = 3;
+          _that.smsInfoId = data.content.smsId;
+          _that.regionalism = data.content.regionalism;//更新区划ID
+          _that.projInfoDetail.projectAddress = _that.projInfoDetail.projectAddress?_that.projInfoDetail.projectAddress.split(','):'';
+          _that.loading = false;
+          _that.themeId = _that.projInfoDetail.themeId;
+          _that.themeVerId = _that.projInfoDetail.themeVerId;
+          _that.unitProjIds = data.content.unitProjIds?data.content.unitProjIds:[];
+          if(data.content.unitReturnJson&&data.content.unitReturnJson.length>0){
+            var arr = data.content.unitReturnJson;
+            arr.forEach(function(item,index){
+              if(_that.jiansheFrom.length > 0) {
+                for(var i= 0;i<_that.jiansheFrom.length;i++){
+                  if(_that.jiansheFrom[i].unifiedSocialCreditCode == item.unifiedSocialCreditCode){
+                    _that.jiansheFrom[i].unitInfoId =  item.unitInfoId;
+                  }
                 }
-                if(saveFlag=='0'){
-                  _that.parallelApplyinstId = data.content.applyinstId;
-                  _that.$message({
-                    message: '暂存成功',
-                    type: 'success'
-                  });
-                }else {
-                  _that.getThemeList();
-                  _that.saveThemeAndNext();
-                }
-              } else {
-                _that.loading = false;
-                _that.projInfoDetail.projectAddress = [];
-                _that.$message({
-                  message: data.message ? data.message : '保存失败',
-                  type: 'error'
-                });
               }
-            }, function (msg) {
-              _that.loading = false;
-              _that.projInfoDetail.projectAddress = [];
-              alertMsg('', '保存失败', '关闭', 'error', true);
+            })
+          }
+          if(saveFlag=='0'){
+            _that.parallelApplyinstId = data.content.applyinstId;
+            _that.$message({
+              message: '暂存成功',
+              type: 'success'
             });
-      //     } else {
-      //       _that.$message({
-      //         message: '请完善申办主体单位信息',
-      //         type: 'error'
-      //       });
-      //     }
-      //
-      //   } else {
-      //     _that.$message({
-      //       message: '请完善项目/工程信息',
-      //       type: 'error'
-      //     });
-      //   }
-      // })
-
+          }else {
+            _that.getThemeList();
+            _that.saveThemeAndNext();
+          }
+        } else {
+          _that.loading = false;
+          _that.projInfoDetail.projectAddress = [];
+          _that.$message({
+            message: data.message ? data.message : '保存失败',
+            type: 'error'
+          });
+        }
+      }, function (msg) {
+        _that.loading = false;
+        _that.projInfoDetail.projectAddress = [];
+        alertMsg('', '保存失败', '关闭', 'error', true);
+      });
     },
     // 获取主题列表
     getThemeList: function () {
