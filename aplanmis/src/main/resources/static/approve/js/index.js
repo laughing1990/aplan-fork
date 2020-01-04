@@ -3453,13 +3453,6 @@ var vm = new Vue({
     initButtons: function () {
       var vm = this;
       var defaultBtn = [{
-        elementName: "意见征求",
-        elementCode: "wfBusSave",
-        columnType: "button",
-        isReadonly: '0',
-        isHidden: '0',
-        elementRender: '<button class="btn btn-outline-info" onclick="clickStartSolicit()">意见征求</button>'
-      }, {
         elementName: "全景图",
         elementCode: "wfBusSave",
         columnType: "button",
@@ -3473,6 +3466,14 @@ var vm = new Vue({
         isReadonly: '0',
         isHidden: '0',
         elementRender: '<button class="btn btn-outline-info" onclick="showDiagramDialog()">查看流程图</button>'
+      }];
+      var solicitBtn = [{
+        elementName: "意见征求",
+        elementCode: "wfBusSave",
+        columnType: "button",
+        isReadonly: '0',
+        isHidden: '0',
+        elementRender: '<button class="btn btn-outline-info" onclick="clickStartSolicit()">意见征求</button>'
       }];
       var oneSolicitBtn = [{
         elementName: "一次征询",
@@ -3521,6 +3522,10 @@ var vm = new Vue({
         isHidden: '0',
         elementRender: '<button class="btn btn-outline-info" onclick="getPrintList()">打印回执</button>'
       }];
+      // 是否加上意见征求按钮
+      if (vm.urlBusType!='lhps'&&vm.urlBusType!='yjzq'){
+        defaultBtn = solicitBtn.concat(defaultBtn);
+      }
       if (vm.isApprover == 1) {
         // 加上审批人员按钮
         defaultBtn = approverBtn.concat(defaultBtn);
