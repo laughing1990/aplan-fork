@@ -163,7 +163,8 @@
             mat.MAT_CODE aeaMatCertCode,
             mat.MAT_PROP matProp,
             mat.CERT_ID certId,
-            mat.STO_FORM_ID formId
+            mat.STO_FORM_ID formId,
+            mat.IS_COMMON isCommon
         from AEA_ITEM_INOUT inout1, AEA_ITEM_MAT mat
         <where>
                 and  inout1.MAT_ID = mat.MAT_ID
