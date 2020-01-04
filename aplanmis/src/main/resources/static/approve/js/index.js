@@ -668,6 +668,7 @@ var vm = new Vue({
         hintText1: '',
         hintText2: '',
       },
+      dialogConfigSeachText: '',
       dialogConfigSolicit: {
         showType: true,
         dialogType: 'YJZQ',
@@ -728,6 +729,7 @@ var vm = new Vue({
       chineseIndexArr: __STATIC.chineseIndexArr,
       // 一次征询 end
       processDialogFull: false,
+      configOrgList: [],
     }
   },
   filters: {
@@ -1160,11 +1162,14 @@ var vm = new Vue({
       this.solicitForm.solicitType = 'i';
       this.solicitForm.isCalcTimerule = '1';
       this.solicitForm.isSendSms = '0';
+      this.dialogConfigSeachText = '';
+      this.soCheckedOrgList = [];
       this.oneSolicitFileList = [];
     },
     // 打开征询弹窗
     openSoDialog: function () {
       this.getTimeRuleList();
+      this.loadOrgList();
       this.allItemsData.forEach(function (u) {
         vm.$set(u, 'opinion', '');
       });
@@ -1205,6 +1210,64 @@ var vm = new Vue({
     changeOsTab: function (i) {
       this.soActiveTabIndex = i;
     },
+    // 加载配置好的部门列表数据
+    loadOrgList: function(){
+      var vm = this;
+      this.solicitOpinionLoading = true;
+      request('', {
+        url: ctx + 'rest/solicit/list/org',
+        type: 'get',
+        data: {
+          busType: vm.dialogConfig.dialogType,
+          keyword: vm.dialogConfigSeachText,
+        },
+      }, function(res){
+        vm.solicitOpinionLoading = false;
+        if (res.success) {
+          var _list = res.content || [];
+          _list.forEach(function(u){
+            u._checked = false;
+            vm.soCheckedOrgList.forEach(function(uu){
+              if (uu.orgId == u.orgId) {
+                u._checked = true;
+              }
+            });
+          });
+          vm.configOrgList = _list;
+        } else {
+          vm.$message.error(res.message || "加载部门列表失败");
+        }
+      }, function(){
+        vm.solicitOpinionLoading = false;
+        vm.$message.error("加载部门列表失败");
+      });
+    },
+    // 勾选部门
+    configOrgChange: function(row, val){
+      if (val) {
+        // 增加
+        var index = -1;
+        this.soCheckedOrgList.forEach(function(u, i) {
+          if (row.orgId == u.orgId) {
+            index = i;
+          };
+        });
+        if (index == -1){
+          this.soCheckedOrgList.push(row);
+        }
+      } else {
+        // 删除
+        var index = -1;
+        this.soCheckedOrgList.forEach(function(u, i) {
+          if (row.orgId == u.orgId) {
+            index = i;
+          };
+        });
+        if (index != -1){
+          this.soCheckedOrgList.splice(index, 1);
+        }
+      }
+    },
     // 加载树节点
     loadSoNode: function (node, resolve) {
       var id = null;
@@ -1231,8 +1294,14 @@ var vm = new Vue({
       }
     },
     // 取消勾选部门
-    removeSoOrg: function (node) {
-      this.$refs.soTree.setChecked(node.orgId, false, false);
+    removeSoOrg: function (row,i) {
+      // this.$refs.soTree.setChecked(node.orgId, false, false);
+      this.configOrgList.forEach(function(u){
+        if (row.orgId == u.orgId){
+          u._checked = false;
+        }
+      });
+      this.soCheckedOrgList.splice(i,1);
     },
     // 加载部门数据
     loadOrgData: function (id, resolve, node) {
@@ -3523,7 +3592,7 @@ var vm = new Vue({
         elementRender: '<button class="btn btn-outline-info" onclick="getPrintList()">打印回执</button>'
       }];
       // 是否加上意见征求按钮
-      if (vm.urlBusType!='lhps'&&vm.urlBusType!='yjzq'){
+      if (vm.urlBusType!='lhps'&&vm.urlBusType!='yczx'){
         defaultBtn = solicitBtn.concat(defaultBtn);
       }
       if (vm.isApprover == 1) {
