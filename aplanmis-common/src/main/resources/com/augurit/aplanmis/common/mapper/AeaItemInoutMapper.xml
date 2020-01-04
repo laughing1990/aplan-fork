@@ -1170,10 +1170,10 @@
             and inOut1.IS_DELETED = '0'
             and inOut1.FILE_TYPE = 'mat'
             and inOut1.IS_INPUT = #{isInput}
-            <if test="isStateIn != null and isStateIn!= '' ">
+            <if test="isStateIn != null and isStateIn != '' ">
             and inOut1.IS_STATE_IN = #{isStateIn}
             </if>
-            <if test="itemVerId != null and itemVerId!='' ">
+            <if test="itemVerId != null and itemVerId !='' ">
             and inOut1.ITEM_VER_ID = #{itemVerId}
             </if>
             <if test="itemVerIds != null and itemVerIds.size()>0">
@@ -1182,10 +1182,10 @@
                     #{itemVerId}
                 </foreach>
             </if>
-            <if test="stateVerId != null and stateVerId!='' ">
+            <if test="stateVerId != null and stateVerId !='' ">
             and inOut1.STATE_VER_ID = #{stateVerId}
             </if>
-            <if test="itemStateId != null and itemStateId!='' ">
+            <if test="itemStateId != null and itemStateId !='' ">
             and inOut1.ITEM_STATE_ID = #{itemStateId}
             </if>
             <if test="keyword != null and keyword != ''">
