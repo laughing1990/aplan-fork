@@ -769,7 +769,7 @@
                 <template v-if="item.answerType=='s'||item.answerType=='y'">
                   <el-radio-group v-model="item.selectAnswerId">
                     <el-radio v-for="(itemAns,ind) in item.answerFactors"
-                              @change="getChildsStateList(guideList,item,itemAns,index,true,'guide')"
+                              @change="getChildsStateList(guideList,item,itemAns,index,'true1','guide')"
                               :key="ind"
                               :value="itemAns.factorId" :label="itemAns.factorId" :checked="itemAns.factorId" name="answer">{{itemAns.factorName}}
                     </el-radio>
@@ -815,7 +815,7 @@
                   <el-radio-group v-model="item.selectAnswerId">
                     <el-radio v-for="(itemAns,ind) in item.answerStates"
                               :key="ind"
-                              @change="getChildsStateList(stateList,item,itemAns,index,true)"
+                              @change="getChildsStateList(stateList,item,itemAns,index,'true1')"
                               :value="itemAns.parStateId"
                               :label="itemAns.parStateId" name="answer">{{itemAns.stateName}}</el-radio>
                   </el-radio-group>
@@ -2077,9 +2077,6 @@
     <!--是否需要智能引导 start-->
     <el-dialog
       class="is-guidance"
-      :show-close="false"
-      :close-on-press-escape="false"
-      :close-on-click-modal="false"
       :visible.sync="isIntelligenceShow"
       width="480px">
       <p class="title"><i class="ag ag-warn-circle-fill"></i> 提示</p>
