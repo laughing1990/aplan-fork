@@ -151,7 +151,7 @@ public class DiagramController {
     @GetMapping("/diagram/status/projInfo")
     @ApiOperation("页面-全景图")
     public ModelAndView stageApplyIndex() {
-        return new ModelAndView("mall/"+skin+"flowChart/rappidProjView");
+        return new ModelAndView("mall/flowChart/rappidProjView");
     }
 
     @GetMapping("/diagram/status/json")
