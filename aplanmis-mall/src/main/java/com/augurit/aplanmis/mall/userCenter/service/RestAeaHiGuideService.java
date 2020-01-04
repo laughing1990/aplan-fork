@@ -30,7 +30,7 @@ public class RestAeaHiGuideService {
     @Autowired
     private AeaHiGuideDetailService aeaHiGuideDetailService;
 
-    public void initAeaHiGuide(AeaGuideApplyVo aeaGuideApplyVo) {
+    public void initAeaHiGuide(AeaGuideApplyVo aeaGuideApplyVo) throws Exception {
         AeaHiGuide aeaHiGuide=new AeaHiGuide();
         aeaHiGuide.setGuideId(UUID.randomUUID().toString());
         aeaHiGuide.setApplyinstId(aeaGuideApplyVo.getApplyinstId());
@@ -49,6 +49,7 @@ public class RestAeaHiGuideService {
         aeaSolicitOrg.setStageId(aeaGuideApplyVo.getStageId());
         aeaSolicitOrg.setIsBusSolicit("0");
         List<AeaSolicitOrg> solicitOrgs = aeaSolicitOrgService.listAeaSolicitOrg(aeaSolicitOrg);
+        if(solicitOrgs.size()==0) throw new Exception("找不到牵头部门");
         aeaHiGuide.setLeaderOrgId(solicitOrgs.size()>0?solicitOrgs.get(0).getOrgId():null);
         if(solicitOrgs.size()>0){
             AeaSolicitOrgUser aeaSolicitOrgUser=new AeaSolicitOrgUser();

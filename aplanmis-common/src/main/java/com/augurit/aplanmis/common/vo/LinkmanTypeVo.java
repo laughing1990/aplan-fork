@@ -19,6 +19,8 @@ public class LinkmanTypeVo {
     private String unitInfoId;
     @ApiModelProperty(value = "项目ID")
     private String projInfoId;
+    @ApiModelProperty("手机号码")
+    private java.lang.String linkmanMobilePhone; // (手机号码)
 
     public static LinkmanTypeVo build(AeaLinkmanInfo aeaLinkmanInfo){
         LinkmanTypeVo vo=new LinkmanTypeVo();

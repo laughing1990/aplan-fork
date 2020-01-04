@@ -435,7 +435,7 @@ public class AeaCertMallService {
         return null;
     }
 
-    public List<AeaHiCertinst> getCertintListByCertHolder(String certHolder, String keyword, int pageNum, int pageSize,LoginInfoVo loginInfo) {
+    public List<AeaHiCertinst> getCertintListByCertHolder(String certHolder, String keyword, int pageNum, int pageSize,LoginInfoVo loginInfo) throws Exception {
         String linkmanInfoId=null;
         String unitInfoId=null;
         String[] projInfoIds=null;
