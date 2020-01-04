@@ -26,6 +26,7 @@ public class AeaParFactor implements Serializable {
     private String answerType; // (问题的答案类型，y表示是否选择，s表示单选答案，m表示多选答案)
     private String mustAnswer; // (是否必须回答，0表示可选回答，1表示必须回答【IS_QUESTION=1】)
     private String parentFactorId; // (父ID)
+    private String parentQuestionFactorId;// (父问题ID)
     private String factorSeq; // (序列)
     @Size(max = 38)
     private Long sortNo; // (排列顺序号)

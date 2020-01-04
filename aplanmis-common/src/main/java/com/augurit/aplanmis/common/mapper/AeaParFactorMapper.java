@@ -33,4 +33,6 @@ public interface AeaParFactorMapper {
     void batchDelSelfAndAllChildFactorById(@Param("id")String id, @Param("rootOrgId") String rootOrgId);
 
     List<AeaParFactor> listSelfAndAllChildAeaParFactor(@Param("id") String id, @Param("rootOrgId") String rootOrgId);
+
+    AeaParFactor getAeaParFactorByFactorId(@Param("id") String id);
 }

@@ -357,6 +357,19 @@
          and apf.ROOT_ORG_ID = #{rootOrgId}
     </select>
 
+    <!-- 根据条件查询实体 -->
+    <select id="getAeaParFactorByFactorId" resultType="AeaParFactor">
+        select
+        <include refid="allColumns"/>
+        from AEA_PAR_FACTOR
+        <where>
+            <if test="id != null and id != '' ">
+                and FACTOR_ID = #{id}
+            </if>
+            and IS_DELETED = '0'
+        </where>
+    </select>
+
     <!-- 返回所有字段的对象map,用于级联 -->
     <resultMap type="AeaParFactor" id="AeaParFactorMap">
         <id property="factorId" column="FACTOR_ID"/>

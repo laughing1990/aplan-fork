@@ -165,8 +165,11 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
     @Override
     public List<AeaParFactor> listChildFactorByParentFactorId(String parentFactorId) throws Exception {
         AeaParFactor factor = new AeaParFactor();
+
+        AeaParFactor param = aeaParFactorMapper.getAeaParFactorByFactorId(parentFactorId);
         factor.setParentFactorId(parentFactorId);
         factor.setIsActive("1");
+
         List<AeaParFactor>  aeaParFactors = aeaParFactorMapper.listAeaParFactor(factor);
         aeaParFactors.stream().forEach(aeaParFactor -> {
             AeaParFactor parFactor = new AeaParFactor();
@@ -176,7 +179,8 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
             answerfactors.stream().forEach(answerfactor->{
                 AeaParFactorTheme aeaParFactorTheme = new AeaParFactorTheme();
                 aeaParFactorTheme.setFactorId(answerfactor.getFactorId());
-                answerfactor.setParentFactorId(parentFactorId);
+                answerfactor.setParentFactorId(aeaParFactor.getFactorId());
+                if (param!=null) answerfactor.setParentQuestionFactorId(param.getParentFactorId());
                 List<AeaParFactorTheme> aeaParFactorThemes = aeaParFactorThemeMapper.listAeaParFactorTheme(aeaParFactorTheme);
                 if (aeaParFactorThemes.size()>0) answerfactor.setThemeId(aeaParFactorThemes.get(0).getThemeId());
             });
