@@ -2,8 +2,15 @@ package com.augurit.aplanmis.front.subject.project.service;
 
 import com.augurit.agcloud.bsc.domain.BscDicRegion;
 import com.augurit.agcloud.bsc.mapper.BscDicRegionMapper;
+import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
-import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
+import com.augurit.aplanmis.common.domain.AeaParTheme;
+import com.augurit.aplanmis.common.domain.AeaProjApplySplit;
+import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.common.domain.AeaProjLinkman;
+import com.augurit.aplanmis.common.domain.AeaUnitInfo;
+import com.augurit.aplanmis.common.domain.AeaUnitProjLinkman;
 import com.augurit.aplanmis.common.mapper.AeaLinkmanInfoMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjLinkmanMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitProjLinkmanMapper;
@@ -11,10 +18,13 @@ import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.theme.AeaParThemeService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
+import com.augurit.aplanmis.common.service.window.AeaProjApplySplitService;
 import com.augurit.aplanmis.front.subject.project.vo.ChildProjectAddVo;
 import com.augurit.aplanmis.front.subject.project.vo.ProjectApplySubjectApplicantVo;
 import com.augurit.aplanmis.front.subject.project.vo.ProjectApplySubjectEnterpriseVo;
 import com.augurit.aplanmis.front.subject.project.vo.ProjectDetailVo;
+import com.augurit.aplanmis.front.subject.project.vo.SplitedProjVo;
+import com.augurit.aplanmis.front.subject.unit.vo.UnitVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,6 +57,8 @@ public class RestProjectService {
     private BscDicRegionMapper bscDicRegionMapper;
     @Autowired
     private AeaUnitProjLinkmanMapper aeaUnitProjLinkmanMapper;
+    @Autowired
+    private AeaProjApplySplitService aeaProjApplySplitService;
 
     /**
      * 查询项目的详细信息
@@ -161,5 +173,23 @@ public class RestProjectService {
         aeaProjInfo.setForeignRemark(childProjectAddVo.getForeignRemark());
         aeaProjInfo.setStageFlag(childProjectAddVo.getStageFlag());
         return aeaProjInfoService.addChildProjInfo(aeaProjInfo, childProjectAddVo.getIsSecond());
+    }
+
+    public SplitedProjVo splitedProjInfo(String projInfoId) {
+        SplitedProjVo splitedProjVo = new SplitedProjVo();
+        List<AeaProjApplySplit> aeaProjApplySplits = aeaProjApplySplitService.listSplitedProjInfo(projInfoId);
+        if (CollectionUtils.isNotEmpty(aeaProjApplySplits)) {
+            AeaProjApplySplit aeaProjApplySplit = aeaProjApplySplits.get(0);
+            AeaProjInfo aeaProjInfo = aeaProjInfoService.getAeaProjInfoByProjInfoId(aeaProjApplySplit.getProjInfoId());
+            AeaUnitInfo aeaUnitInfo = aeaUnitInfoService.getAeaUnitInfoByUnitInfoId(aeaProjApplySplit.getUnitInfoId());
+
+            splitedProjVo.setAeaProjApplySplit(aeaProjApplySplit);
+            splitedProjVo.setBuildAreaSum(aeaProjInfo.getBuildAreaSum());
+            splitedProjVo.setInvestSum(aeaProjInfo.getInvestSum());
+            splitedProjVo.setScaleContent(aeaProjInfo.getScaleContent());
+            splitedProjVo.setXmYdmj(aeaProjInfo.getXmYdmj());
+            splitedProjVo.setUnitVo(UnitVo.from(aeaUnitInfo, null));
+        }
+        return splitedProjVo;
     }
 }

@@ -1,9 +1,10 @@
 package com.augurit.aplanmis.common.domain;
-import java.io.Serializable;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serializable;
 /**
 * 项目拆分申请表-模型
 */
@@ -74,5 +75,15 @@ public class AeaProjApplySplit implements Serializable{
 
     @ApiModelProperty(name = "rootOrgId", value = "根组织ID")
     private String rootOrgId;
+
+    // 扩展字段
+    @ApiModelProperty(value = "阶段名称")
+    private String stageName;
+
+    @ApiModelProperty(value = "前阶段工程编码")
+    private String frontStageGcbm;
+
+    @ApiModelProperty(value = "工程名称")
+    private String projName;
 
 }

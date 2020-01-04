@@ -27,7 +27,30 @@
     ROOT_ORG_ID  rootOrgId
     </sql>
 
-<!--2 根据主键ID查询单个实体 -->
+    <sql id="allColumnsAlias">
+        ${alias}.APPLY_SPLIT_ID  applySplitId,
+        ${alias}.PROJ_INFO_ID  projInfoId,
+        ${alias}.UNIT_INFO_ID  unitInfoId,
+        ${alias}.APPLY_USER_ID  applyUserId,
+        ${alias}.APPLY_ACCOUNT_UID  applyAccountUid,
+        ${alias}.STAGE_NO  stageNo,
+        ${alias}.STAGE_ID  stageId,
+        ${alias}.FRONT_STAGE_PROJ_INFO_ID  frontStageProjInfoId,
+        ${alias}.LEADER_ORG_ID  leaderOrgId,
+        ${alias}.LEADER_USER_ID  leaderUserId,
+        ${alias}.APPLY_STATE  applyState,
+        ${alias}.START_TIME  startTime,
+        ${alias}.END_TIME  endTime,
+        ${alias}.SPLIT_MEMO  splitMemo,
+        ${alias}.IS_DELETED  isDeleted,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
 <select id="getAeaProjApplySplitById" resultType="AeaProjApplySplit" >
     select
     <include refid="allColumns"/>
@@ -214,4 +237,18 @@ APPLY_SPLIT_ID  ,PROJ_INFO_ID  ,UNIT_INFO_ID  ,APPLY_USER_ID  ,APPLY_ACCOUNT_UID
         <result property="modifyTime" column="MODIFY_TIME"/>
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
     </resultMap>
+
+    <select id="listSplitedProjInfo" resultType="com.augurit.aplanmis.common.domain.AeaProjApplySplit">
+        select
+        <include refid="allColumnsAlias">
+            <property name="alias" value="apas"/>
+        </include>
+        , aps.stage_name stageName, api.proj_name projName, front.gcbm frontStageGcbm
+        from AEA_PROJ_APPLY_SPLIT apas
+        join aea_proj_info api on apas.proj_info_id=api.PROJ_INFO_ID
+        join aea_proj_info front on front.PROJ_INFO_ID=apas.FRONT_STAGE_PROJ_INFO_ID
+        join aea_par_stage aps on aps.STAGE_ID=apas.stage_id
+        where app.PARENT_PROJ_ID=#{projInfoId}
+        AND apas.IS_DELETED='0'
+    </select>
 </mapper>

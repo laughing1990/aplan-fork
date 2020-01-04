@@ -1,7 +1,9 @@
 package com.augurit.aplanmis.common.mapper;
+
 import com.augurit.aplanmis.common.domain.AeaProjApplySplit;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 /**
@@ -10,9 +12,16 @@ import java.util.List;
 @Mapper
 public interface AeaProjApplySplitMapper {
 
-    public void insertAeaProjApplySplit(AeaProjApplySplit aeaProjApplySplit) throws Exception;
-    public void updateAeaProjApplySplit(AeaProjApplySplit aeaProjApplySplit) throws Exception;
-    public void deleteAeaProjApplySplit(@Param("id") String id) throws Exception;
-    public List <AeaProjApplySplit> listAeaProjApplySplit(AeaProjApplySplit aeaProjApplySplit) throws Exception;
-    public AeaProjApplySplit getAeaProjApplySplitById(@Param("id") String id) throws Exception;
+    void insertAeaProjApplySplit(AeaProjApplySplit aeaProjApplySplit) throws Exception;
+
+    void updateAeaProjApplySplit(AeaProjApplySplit aeaProjApplySplit) throws Exception;
+
+    void deleteAeaProjApplySplit(@Param("id") String id) throws Exception;
+
+    List<AeaProjApplySplit> listAeaProjApplySplit(AeaProjApplySplit aeaProjApplySplit) throws Exception;
+
+    AeaProjApplySplit getAeaProjApplySplitById(@Param("id") String id) throws Exception;
+
+
+    List<AeaProjApplySplit> listSplitedProjInfo(String projInfoId);
 }

@@ -12,12 +12,14 @@ import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
 import com.augurit.aplanmis.common.service.diagram.dto.DiagramStatusDto;
 import com.augurit.aplanmis.common.service.diagram.service.DiagramService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
+import com.augurit.aplanmis.common.service.window.AeaProjApplySplitService;
 import com.augurit.aplanmis.common.utils.CommonTools;
 import com.augurit.aplanmis.front.subject.project.service.RestProjectService;
 import com.augurit.aplanmis.front.subject.project.vo.ChildProjectAddVo;
 import com.augurit.aplanmis.front.subject.project.vo.ChildProjectVo;
 import com.augurit.aplanmis.front.subject.project.vo.ProjectDetailVo;
 import com.augurit.aplanmis.front.subject.project.vo.ProjectKeywordVo;
+import com.augurit.aplanmis.front.subject.project.vo.SplitedProjVo;
 import com.augurit.aplanmis.thirdPlatform.service.ProjectCodeService;
 import io.jsonwebtoken.lang.Assert;
 import io.swagger.annotations.Api;
@@ -58,6 +60,8 @@ public class RestProjectController {
     private ProjectCodeService projectCodeService;
     @Autowired
     private AeaApplyinstProjMapper aeaApplyinstProjMapper;
+    @Autowired
+    private AeaProjApplySplitService aeaProjApplySplitService;
 
     @ApiOperation(value = "根据项目名称或者编码模糊查询项目")
     @ApiImplicitParams({
@@ -87,7 +91,7 @@ public class RestProjectController {
             @ApiImplicitParam(name = "projInfoId", value = "项目编号", required = true, dataType = "String"),
     })
 
-    /**
+    /*
      * 通过项目id 精确定位项目信息
      */
     @GetMapping("/one/{projInfoId}")
@@ -160,12 +164,12 @@ public class RestProjectController {
     @GetMapping("/diagram/status/projInfo1")
     @ApiOperation("根据项目id查看审批全景图， 两种方式可查看：/diagram/status/projInfo?projInfoId=xxx 或者 /diagram/status/projInfo?applyinstId=xxx")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "projInfoId", value = "项目id", required = false, dataType = "String"),
-            @ApiImplicitParam(name = "applyinstId", value = "申请实例id", required = false, dataType = "String"),
+            @ApiImplicitParam(name = "projInfoId", value = "项目id", dataType = "String"),
+            @ApiImplicitParam(name = "applyinstId", value = "申请实例id", dataType = "String"),
     })
-    public ModelAndView projectDiagramByProjInfoId(String projInfoId, String applyinstId) throws Exception {
+    public ModelAndView projectDiagramByProjInfoId(String projInfoId, String applyinstId) {
         ModelAndView modelAndView = new ModelAndView("ui-jsp/theme/rappid_proj_view");
-        String errorMsg = "";
+        String errorMsg;
         try {
             AeaProjInfo aeaProjInfo = null;
             if (StringUtils.isNotBlank(applyinstId)) {
@@ -235,10 +239,10 @@ public class RestProjectController {
     @ApiOperation("根据项目id查看审批全景图， 两种方式可查看：/diagram/status/projInfo?projInfoId=xxx 或者 /diagram/status/projInfo?applyinstId=xxx")
     @CrossOrigin
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "projInfoId", value = "项目id", required = false, dataType = "String"),
-            @ApiImplicitParam(name = "applyinstId", value = "申请实例id", required = false, dataType = "String"),
+            @ApiImplicitParam(name = "projInfoId", value = "项目id", dataType = "String"),
+            @ApiImplicitParam(name = "applyinstId", value = "申请实例id", dataType = "String"),
     })
-    public ResultForm projectDiagramByProjInfoIdInter(String projInfoId, String applyinstId) throws Exception {
+    public ResultForm projectDiagramByProjInfoIdInter(String projInfoId, String applyinstId) {
         ModelAndView view = projectDiagramByProjInfoId(projInfoId, applyinstId);
         ContentResultForm form = new ContentResultForm(true);
         try {
@@ -293,5 +297,41 @@ public class RestProjectController {
         aeaProjInfo.setGcbm(code);
         aeaProjInfoService.insertAeaProjInfo(aeaProjInfo);
         return new ContentResultForm<>(true, aeaProjInfo, "Add project success");
+    }
+
+    @ApiOperation(value = "拆分的子工程信息")
+    @GetMapping("/splited/proj")
+    public ContentResultForm<SplitedProjVo> splitedProjInfo(String projInfoId) {
+        try {
+            SplitedProjVo splitedProjVo = restProjectService.splitedProjInfo(projInfoId);
+            return new ContentResultForm<>(true, splitedProjVo, "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ContentResultForm<>(false, null, e.getMessage());
+        }
+    }
+
+    @ApiOperation(value = "拆分的子工程通过")
+    @PostMapping("/splited/proj/passed")
+    public ResultForm splitedProjPassed(String applySplitId) {
+        try {
+            aeaProjApplySplitService.passed(applySplitId);
+            return new ResultForm(true, "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultForm(false, e.getMessage());
+        }
+    }
+
+    @ApiOperation(value = "拆分的子工程不通过")
+    @PostMapping("/splited/proj/rejected")
+    public ResultForm splitedProjRejected(String applySplitId, String reason) {
+        try {
+            aeaProjApplySplitService.rejected(applySplitId, reason);
+            return new ResultForm(true, "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultForm(false, e.getMessage());
+        }
     }
 }
