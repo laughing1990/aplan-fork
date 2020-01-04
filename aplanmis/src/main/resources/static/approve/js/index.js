@@ -628,7 +628,8 @@ var vm = new Vue({
         solicitId: '',
         solicitLinkmanName: '',
         solicitLinkmanPhone: '',
-        isSendSms: '0',
+        isSendSms: '1',
+        smsContent: '',
       },
       solicitFormRules: {
         solicitTopic: [{required: true, message: '*', trigger: 'blur'}],
@@ -651,6 +652,8 @@ var vm = new Vue({
         userOpinion: '',
         solicitLinkmanName: '',
         solicitLinkmanPhone: '',
+        isSendSms: '1',
+        smsContent: '',
       },
       solicitBmFormRules: {
         // userOpinion: [{required: true, message: '请填写意见', trigger: 'blur'}],
@@ -1047,6 +1050,7 @@ var vm = new Vue({
         hiTaskinstId: vm.taskId,
         solicitTopic: vm.solicitForm.solicitTopic,
         isSendSms: vm.solicitForm.isSendSms,
+        smsContent: vm.solicitForm.smsContent,
         solicitContent: vm.solicitForm.solicitContent,
         solicitType: vm.solicitForm.solicitType,
         isCalcTimerule: vm.solicitForm.isCalcTimerule,
@@ -1161,7 +1165,8 @@ var vm = new Vue({
       this.solicitForm.solicitId = '';
       this.solicitForm.solicitType = 'i';
       this.solicitForm.isCalcTimerule = '1';
-      this.solicitForm.isSendSms = '0';
+      this.solicitForm.isSendSms = '1';
+      this.solicitForm.smsContent = '';
       this.dialogConfigSeachText = '';
       this.soCheckedOrgList = [];
       this.oneSolicitFileList = [];
@@ -1360,6 +1365,8 @@ var vm = new Vue({
       var params = {
         conclusionFlag: vm.solicitBmForm.userConclusion,
         conclusionDesc: vm.solicitBmForm.userOpinion,
+        isSendSms: vm.solicitBmForm.isSendSms,
+        smsContent: vm.solicitBmForm.smsContent,
         solicitId: item.solicit.solicitId,
         procinstId: item.solicit.procinstId,
       };
@@ -1370,8 +1377,8 @@ var vm = new Vue({
         if (!(vm.solicitBmForm.solicitLinkmanPhone && vm.solicitBmForm.solicitLinkmanPhone.length)) {
           return vm.$message.error('请填写联系人电话');
         }
-        params.linkmanName = vm.solicitBmForm.solicitLinkmanName;
-        params.linkmanPhone = vm.solicitBmForm.solicitLinkmanPhone;
+        params.solicitLinkmanName = vm.solicitBmForm.solicitLinkmanName;
+        params.solicitLinkmanPhone = vm.solicitBmForm.solicitLinkmanPhone;
       }
       vm.parentPageLoading = true;
       request('', {
@@ -1401,6 +1408,8 @@ var vm = new Vue({
       var params = {
         userConclusion: vm.solicitBmForm.userConclusion,
         userOpinion: vm.solicitBmForm.userOpinion,
+        isSendSms: vm.solicitBmForm.isSendSms,
+        smsContent: vm.solicitBmForm.smsContent,
         detailUserId: item.solicitDetailUser.detailUserId,
         solicitDetailId: item.solicitDetailUser.solicitDetailId,
       };
@@ -1411,8 +1420,8 @@ var vm = new Vue({
         if (!(vm.solicitBmForm.solicitLinkmanPhone && vm.solicitBmForm.solicitLinkmanPhone.length)) {
           return vm.$message.error('请填写联系人电话');
         }
-        params.solicitLinkmanName = vm.solicitBmForm.solicitLinkmanName;
-        params.solicitLinkmanPhone = vm.solicitBmForm.solicitLinkmanPhone;
+        params.linkmanName = vm.solicitBmForm.solicitLinkmanName;
+        params.linkmanPhone = vm.solicitBmForm.solicitLinkmanPhone;
       }
       vm.parentPageLoading = true;
       request('', {

@@ -810,6 +810,15 @@
                       <el-radio v-model="solicitBmForm.userConclusion" label="1">同意</el-radio>
                       <el-radio v-model="solicitBmForm.userConclusion" label="0">不同意</el-radio>
                     </el-form-item>
+                    <el-form-item label="短信通知">
+                      <el-radio-group v-model="solicitBmForm.isSendSms">
+                        <el-radio label="1">是</el-radio>
+                        <el-radio label="0">否</el-radio>
+                      </el-radio-group>
+                    </el-form-item>
+                    <el-form-item label="短信内容" v-show="solicitBmForm.isSendSms==1">
+                      <el-input v-model="solicitBmForm.smsContent" type="textarea" :rows="3" placeholder="请输入短信内容"></el-input>
+                    </el-form-item>
                     <el-form-item label="意见汇总" require prop="userOpinion">
                       <el-input type="textarea" v-model="solicitBmForm.userOpinion" :rows="3"
                                 placeholder="请输入意见描述"></el-input>
@@ -834,6 +843,15 @@
                     <el-form-item label="意见描述" require prop="userOpinion">
                       <el-input type="textarea" v-model="solicitBmForm.userOpinion" :rows="3"
                                 placeholder="请输入意见描述"></el-input>
+                    </el-form-item>
+                    <el-form-item label="短信通知">
+                      <el-radio-group v-model="solicitBmForm.isSendSms">
+                        <el-radio label="1">是</el-radio>
+                        <el-radio label="0">否</el-radio>
+                      </el-radio-group>
+                    </el-form-item>
+                    <el-form-item label="短信内容" v-show="solicitBmForm.isSendSms==1">
+                      <el-input v-model="solicitBmForm.smsContent" type="textarea" :rows="3" placeholder="请输入短信内容"></el-input>
                     </el-form-item>
                     <el-form-item label="附件列表">
                       <div class="file-opt-btn" style="margin-top:0px">
@@ -1050,6 +1068,15 @@
                       </el-form-item>
                     </el-col>
                   </el-row>
+                  <el-form-item label="短信通知">
+                    <el-radio-group v-model="solicitBmForm.isSendSms">
+                      <el-radio label="1">是</el-radio>
+                      <el-radio label="0">否</el-radio>
+                    </el-radio-group>
+                  </el-form-item>
+                  <el-form-item label="短信内容" v-show="solicitBmForm.isSendSms==1">
+                    <el-input v-model="solicitBmForm.smsContent" type="textarea" :rows="3" placeholder="请输入短信内容"></el-input>
+                  </el-form-item>
                   <el-form-item label="附件列表">
                     <div class="file-opt-btn" style="margin-top:0px">
                       <el-upload ref="uploadCert4" class="upload-s-file"
@@ -1122,6 +1149,15 @@
                       </el-form-item>
                     </el-col>
                   </el-row>
+                  <el-form-item label="短信通知">
+                    <el-radio-group v-model="solicitBmForm.isSendSms">
+                      <el-radio label="1">是</el-radio>
+                      <el-radio label="0">否</el-radio>
+                    </el-radio-group>
+                  </el-form-item>
+                  <el-form-item label="短信内容" v-show="solicitBmForm.isSendSms==1">
+                    <el-input v-model="solicitBmForm.smsContent" type="textarea" :rows="3" placeholder="请输入短信内容"></el-input>
+                  </el-form-item>
                   <el-form-item label="附件列表">
                     <div class="file-opt-btn" style="margin-top:0px">
                       <el-upload ref="uploadCert4" class="upload-s-file"
@@ -1299,6 +1335,15 @@
                     <el-input type="textarea" v-model="solicitBmForm.userOpinion" :rows="3"
                               placeholder="请输入意见描述"></el-input>
                   </el-form-item>
+                  <el-form-item label="短信通知">
+                    <el-radio-group v-model="solicitBmForm.isSendSms">
+                      <el-radio label="1">是</el-radio>
+                      <el-radio label="0">否</el-radio>
+                    </el-radio-group>
+                  </el-form-item>
+                  <el-form-item label="短信内容" v-show="solicitBmForm.isSendSms==1">
+                    <el-input v-model="solicitBmForm.smsContent" type="textarea" :rows="3" placeholder="请输入短信内容"></el-input>
+                  </el-form-item>
                   <el-form-item label="附件列表">
                     <el-table :data="newestUnionReview.solicit.lhpsFiles" border class="solict-pt el-table-padding">
                       <el-table-column label='序号' type="index" width="50"></el-table-column>
@@ -1354,6 +1399,15 @@
                   <el-form-item label="意见描述" require prop="userOpinion">
                     <el-input type="textarea" v-model="solicitBmForm.userOpinion" :rows="3"
                               placeholder="请输入意见描述"></el-input>
+                  </el-form-item>
+                  <el-form-item label="短信通知">
+                    <el-radio-group v-model="solicitBmForm.isSendSms">
+                      <el-radio label="1">是</el-radio>
+                      <el-radio label="0">否</el-radio>
+                    </el-radio-group>
+                  </el-form-item>
+                  <el-form-item label="短信内容" v-show="solicitBmForm.isSendSms==1">
+                    <el-input v-model="solicitBmForm.smsContent" type="textarea" :rows="3" placeholder="请输入短信内容"></el-input>
                   </el-form-item>
                   <el-form-item label="附件列表">
                     <el-table :data="newestUnionReview.solicit.lhpsFiles" border class="solict-pt el-table-padding">
@@ -3202,24 +3256,6 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row style="margin-bottom:5px;">
-          <el-col :span="12">
-            <el-form-item label="短信通知">
-              <el-radio-group v-model="solicitForm.isSendSms">
-                <el-radio label="1">是</el-radio>
-                <el-radio label="0">否</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12" v-show="dialogConfig.showType">
-            <el-form-item :label="dialogConfig.formLabel+'类型'">
-              <el-radio-group v-model="solicitForm.solicitType" @change="changeOsTab">
-                <el-radio label="i">按事项征询</el-radio>
-                <el-radio label="d">按部门征询</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-        </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="是否纳入计时">
@@ -3283,6 +3319,31 @@
                     </template>
                   </el-table-column>
                 </el-table>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row style="margin-bottom:5px;">
+            <el-col :span="12">
+              <el-form-item label="短信通知">
+                <el-radio-group v-model="solicitForm.isSendSms">
+                  <el-radio label="1">是</el-radio>
+                  <el-radio label="0">否</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12" v-show="dialogConfig.showType">
+              <el-form-item :label="dialogConfig.formLabel+'类型'">
+                <el-radio-group v-model="solicitForm.solicitType" @change="changeOsTab">
+                  <el-radio label="i">按事项征询</el-radio>
+                  <el-radio label="d">按部门征询</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row style="margin-bottom:5px;" v-show="solicitForm.isSendSms==1">
+            <el-col :span="24">
+              <el-form-item label="短信内容">
+                <el-input v-model="solicitForm.smsContent" type="textarea" :rows="3" placeholder="请输入短信内容"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
