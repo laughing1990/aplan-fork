@@ -10,6 +10,7 @@ import com.augurit.aplanmis.common.service.window.AeaProjApplyAgentService;
 import com.augurit.aplanmis.common.service.window.AeaProjWindowService;
 import com.augurit.aplanmis.common.utils.CommonTools;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
+import com.augurit.aplanmis.mall.userCenter.vo.AeaProjApplyAgentDetailVo;
 import com.augurit.aplanmis.mall.userCenter.vo.AgentProjInfoParamVo;
 import com.augurit.aplanmis.mall.userCenter.vo.ProjAgentParamVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,5 +57,10 @@ public class RestAeaProjAgentService {
         aeaProjApplyAgent.setCreateTime(new Date());
         aeaProjApplyAgent.setRootOrgId(SecurityContext.getCurrentOrgId());
         return aeaProjApplyAgent;
+    }
+
+    public AeaProjApplyAgentDetailVo getProjInfoAndProjApplyAgent(String projInfoId) {
+        AeaProjApplyAgentDetailVo vo=new AeaProjApplyAgentDetailVo();
+        return vo;
     }
 }

@@ -89,6 +89,10 @@ public class AeaProjInofServiceImpl extends AbstractFormDataOptManager implement
 
     @Autowired
     private AeaParThemeService aeaParThemeService;
+    @Autowired
+    private AeaProjWindowService aeaProjWindowService;
+    @Autowired
+    private AeaProjApplyAgentService aeaProjApplyAgentService;
 
     @Override
     public void insertAeaProjInfo(AeaProjInfo aeaProjInfo) {
@@ -268,44 +272,37 @@ public class AeaProjInofServiceImpl extends AbstractFormDataOptManager implement
     }
 
     @Override
-    public List<AeaProjInfo> findRootAeaProjInfoByLinkmanInfoId(String linkmanInfoId,String keyword) {
+    public List<AeaProjInfo> findRootAeaProjInfoByLinkmanInfoId(String linkmanInfoId,String keyword) throws Exception {
         LOGGER.debug("根据项目联系人查询项目信息");
         List<AeaProjInfo> list = aeaProjInfoMapper.findRootAeaProjInfoByLinkmanInfoId(linkmanInfoId,keyword);
         return setThemeNameAndAgentFlag(list);
     }
 
     @Override
-    public List<AeaProjInfo> findRootAeaProjInfoByUnitInfoId(String unitInfoId,String keyword) {
+    public List<AeaProjInfo> findRootAeaProjInfoByUnitInfoId(String unitInfoId,String keyword) throws Exception {
         List<AeaProjInfo> aeaProjInfos = aeaProjInfoMapper.findRootAeaProjInfoByUnitInfoId(unitInfoId,keyword);
         return setThemeNameAndAgentFlag(aeaProjInfos);
     }
 
     @Override
-    public List<AeaProjInfo> findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(String linkmanInfoId, String unitInfoId,String keyword) {
+    public List<AeaProjInfo> findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(String linkmanInfoId, String unitInfoId,String keyword) throws Exception {
         List<AeaProjInfo> list = aeaProjInfoMapper.findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(linkmanInfoId, unitInfoId,keyword);
         return setThemeNameAndAgentFlag(list);
     }
-    @Autowired
-    private AeaProjWindowService aeaProjWindowService;
-    @Autowired
-    private AeaProjApplyAgentService aeaProjApplyAgentService;
 
-    private List<AeaProjInfo> setThemeNameAndAgentFlag(List<AeaProjInfo> list) {
-        try {
-            for (AeaProjInfo aeaProjInfo : list) {
-                AeaParTheme aeaParTheme = aeaParThemeService.getAeaParThemeByThemeId(aeaProjInfo.getThemeId());
-                if (aeaParTheme != null) aeaProjInfo.setThemeName(aeaParTheme.getThemeName());
-                List<AeaServiceWindow> windows = aeaProjWindowService.listAeaServiceWindowByProjInfoId(aeaProjInfo.getProjInfoId());
-                if(windows.size()>0){
-                    aeaProjInfo.setIsAgentProj("1");
-                    List<AeaProjApplyAgent> agentApplys=aeaProjApplyAgentService.listAeaProjApplyAgentByProjInfoId(aeaProjInfo.getProjInfoId());
-                    aeaProjInfo.setProjAgentState(agentApplys.size()>0?agentApplys.get(0).getAgentApplyState(): AgencyState.WAIT_SIGNING.getValue());
-                }else{
-                    aeaProjInfo.setIsAgentProj("0");
-                }
+
+    private List<AeaProjInfo> setThemeNameAndAgentFlag(List<AeaProjInfo> list) throws Exception {
+        for (AeaProjInfo aeaProjInfo : list) {
+            AeaParTheme aeaParTheme = aeaParThemeService.getAeaParThemeByThemeId(aeaProjInfo.getThemeId());
+            if (aeaParTheme != null) aeaProjInfo.setThemeName(aeaParTheme.getThemeName());
+            List<AeaServiceWindow> windows = aeaProjWindowService.listAeaServiceWindowByProjInfoId(aeaProjInfo.getProjInfoId());
+            if(windows.size()>0){
+                aeaProjInfo.setIsAgentProj("1");
+                List<AeaProjApplyAgent> agentApplys=aeaProjApplyAgentService.listAeaProjApplyAgentByProjInfoId(aeaProjInfo.getProjInfoId());
+                aeaProjInfo.setProjAgentState(agentApplys.size()>0?agentApplys.get(0).getAgentApplyState(): AgencyState.WAIT_SIGNING.getValue());
+            }else{
+                aeaProjInfo.setIsAgentProj("0");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return list;
     }
