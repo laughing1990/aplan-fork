@@ -3331,7 +3331,7 @@
             <div class="so-transfer-title">组织结构</div>
             <div class="so-ope-content" :style="{height:curHeight-540+'px',overflow: 'auto',}">
               <div style="margin-bottom: 8px;">
-                <el-input @keyup.native.enter="loadOrgList" placeholder="输入查询内容" v-model="dialogConfigSeachText">
+                <el-input @keyup.native.enter="loadOrgList" placeholder="名称/编码查询" v-model="dialogConfigSeachText">
                   <el-button @click="loadOrgList" slot="append" icon="el-icon-search"></el-button>
                 </el-input>
               </div>
