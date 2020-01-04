@@ -276,6 +276,18 @@
         AND  aswu.USER_ID = #{userId}
     </select>
 
+    <select id="getAeaServiceWindowUserByUserIdAndRootOrgId" resultType="AeaServiceWindowUser">
+        select
+        <include refid="alias_allColumns">
+            <property name="alias" value="aswu"/>
+        </include>,win.WINDOW_NAME windowName
+        from AEA_SERVICE_WINDOW_USER aswu,aea_service_window win
+        where  win.WINDOW_ID = aswu.WINDOW_ID
+        AND  aswu.USER_ID = #{userId}
+        AND  win.WINDOW_TYPE = 'd'
+        AND  win.ROOT_ORG_ID = #{rootOrgId}
+    </select>
+
     <select id="findWindowUserByRegionIdAndAllItemUser" resultType="OpuOmUser">
         SELECT <include refid="omuser_columns"/>
         FROM OPU_OM_USER omuser

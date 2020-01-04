@@ -169,4 +169,12 @@ public class ConditionalQueryRequest implements Serializable {
 
     @ApiModelProperty(value = "项目代办视图权限控制。0表示查询所有，1表示查询当前代办中心，2表示查询当前登录人员", hidden = true)
     private String viewDataCtrl;
+
+    @ApiModelProperty(value = "申请时间开始")
+    private String minStartTime;
+    @ApiModelProperty(value = "申请时间结束")
+    private String maxStartTime;
+    @ApiModelProperty(value = "代办申请状态")
+    private String agentApplyState;
+
 }

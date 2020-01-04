@@ -913,10 +913,33 @@ public class AplanmisPageIndexController {
      * 项目代办
      * @return
      */
-    @GetMapping("/queryAgencyDoTasksIndex.html")
-    @ApiOperation("菜单-项目代办")
-    public ModelAndView queryAgencyDoTasksIndex() {
+    @GetMapping("/queryAllAgencyDoTasksIndex.html")
+    @ApiOperation("菜单-项目代办-所有")
+    public ModelAndView queryAllAgencyDoTasksIndex() {
         ModelAndView modelAndView = new ModelAndView("view/queryAgencyDoTasksIndex");
+        modelAndView.addObject("viewDataCtrl", "0");
+        return modelAndView;
+    }
+    /**
+     * 项目代办
+     * @return
+     */
+    @GetMapping("/queryWindowAgencyDoTasksIndex.html")
+    @ApiOperation("菜单-项目代办-代办中心")
+    public ModelAndView queryWindowAgencyDoTasksIndex() {
+        ModelAndView modelAndView = new ModelAndView("view/queryAgencyDoTasksIndex");
+        modelAndView.addObject("viewDataCtrl", "1");
+        return modelAndView;
+    }
+    /**
+     * 项目代办
+     * @return
+     */
+    @GetMapping("/queryUserAgencyDoTasksIndex.html")
+    @ApiOperation("菜单-项目代办-代办人员")
+    public ModelAndView queryUserAgencyDoTasksIndex() {
+        ModelAndView modelAndView = new ModelAndView("view/queryAgencyDoTasksIndex");
+        modelAndView.addObject("viewDataCtrl", "2");
         return modelAndView;
     }
 

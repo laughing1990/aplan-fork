@@ -8,6 +8,7 @@ import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
+import com.augurit.aplanmis.common.constants.AgencyState;
 import com.augurit.aplanmis.common.domain.AeaParStage;
 import com.augurit.aplanmis.common.domain.AeaServiceWindow;
 import com.augurit.aplanmis.common.service.area.RegionService;
@@ -24,6 +25,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -769,7 +771,7 @@ public class ConditionalQueryController {
         }
     }
 
-    @GetMapping("/listAgencyDoTasks")
+    @PostMapping("/listAgencyDoTasks")
     @ApiOperation(value = "根据查询条件获取项目代办列表")
     public ResultForm listAgencyDoTasks(ConditionalQueryRequest conditionalQueryRequest, Page page) {
         try {
@@ -779,5 +781,11 @@ public class ConditionalQueryController {
             log.error(e.getMessage(), e);
             return new ContentResultForm<>(false, null, e.getMessage());
         }
+    }
+
+    @GetMapping("/agencyState/list")
+    @ApiOperation(value = "查询代办状态")
+    public ResultForm getAgencyState() {
+        return new ContentResultForm<>(true, AgencyState.getAgencyStateMap());
     }
 }

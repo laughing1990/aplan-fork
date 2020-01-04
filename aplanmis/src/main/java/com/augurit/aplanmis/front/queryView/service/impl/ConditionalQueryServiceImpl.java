@@ -755,12 +755,18 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
     public PageInfo listAgencyDoTasks(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception {
         AeaProjApplyAgent search = new AeaProjApplyAgent();
         if(conditionalQueryRequest != null){
-            search.setKeyword(conditionalQueryRequest.getKeyword());
-            search.setRootOrgId(SecurityContext.getCurrentOrgId());
-            String viewDataCtrl = conditionalQueryRequest.getViewDataCtrl();
+            String currentOrgId = SecurityContext.getCurrentOrgId();
             String currentUserId = SecurityContext.getCurrentUserId();
+            search.setKeyword(conditionalQueryRequest.getKeyword());
+            search.setRootOrgId(currentOrgId);
+            search.setThemeId(conditionalQueryRequest.getTheme());
+            search.setAgentApplyState(conditionalQueryRequest.getAgentApplyState());
+            search.setMinStartTime(conditionalQueryRequest.getMinStartTime());
+            search.setMaxStartTime(conditionalQueryRequest.getMaxStartTime());
+            String viewDataCtrl = conditionalQueryRequest.getViewDataCtrl();
+
             if("1".equals(viewDataCtrl)){
-                List<AeaServiceWindowUser> serviceWindowUser = aeaServiceWindowUserMapper.getAeaServiceWindowUserByUserId(currentUserId);
+                List<AeaServiceWindowUser> serviceWindowUser = aeaServiceWindowUserMapper.getAeaServiceWindowUserByUserIdAndRootOrgId(currentUserId,currentOrgId);
                 if(serviceWindowUser == null || serviceWindowUser.size() == 0){
                     throw new RuntimeException("当前登录用户不属于代办中心人员");
                 }
