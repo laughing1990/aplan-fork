@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.common.service.window.impl;
 
 import com.augurit.aplanmis.common.domain.AeaProjWindow;
+import com.augurit.aplanmis.common.domain.AeaServiceWindow;
 import com.augurit.aplanmis.common.mapper.AeaProjWindowMapper;
 import com.augurit.aplanmis.common.service.window.AeaProjWindowService;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
@@ -52,6 +53,11 @@ public class AeaProjWindowServiceImpl implements AeaProjWindowService {
         List<AeaProjWindow> list = aeaProjWindowMapper.listAeaProjWindow(aeaProjWindow);
         logger.debug("成功执行查询list！！");
         return list;
+    }
+
+    @Override
+    public List <AeaServiceWindow> listAeaServiceWindowByProjInfoId(String projInfoId){
+        return aeaProjWindowMapper.listAeaServiceWindowByProjInfoId(projInfoId);
     }
 }
 

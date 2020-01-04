@@ -108,5 +108,13 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
         }
         return vo;
     }
+
+
+    @Override
+    public List<AeaProjApplyAgent> listAeaProjApplyAgentByProjInfoId(String projInfoId) throws Exception {
+        AeaProjApplyAgent aeaProjApplyAgent=new AeaProjApplyAgent();
+        aeaProjApplyAgent.setProjInfoId(projInfoId);
+        return aeaProjApplyAgentMapper.listAeaProjApplyAgent(aeaProjApplyAgent);
+    }
 }
 

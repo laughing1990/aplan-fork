@@ -1,8 +1,10 @@
 package com.augurit.aplanmis.mall.userCenter.vo;
 
+import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 
 @Data
 @ApiModel("代办申请表单参数")
@@ -14,6 +16,13 @@ public class AgentProjInfoParamVo {
     private String agentStageState;
 
     @ApiModelProperty(value = "代办项目信息")
-    private AgentProjInfoParamVo agentProjInfoParamVo;
+    private ProjAgentParamVo projAgentParamVo;
+
+
+    public static AeaProjInfo format(ProjAgentParamVo projAgentParamVo){
+        AeaProjInfo aeaProjInfo=new AeaProjInfo();
+        BeanUtils.copyProperties(projAgentParamVo,aeaProjInfo);
+        return aeaProjInfo;
+    }
 
 }

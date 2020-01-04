@@ -13,6 +13,7 @@ import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.constants.AgencyState;
 import com.augurit.aplanmis.common.constants.CommonConstant;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.exception.ProjectCodeDuplicateException;
@@ -24,6 +25,8 @@ import com.augurit.aplanmis.common.service.dic.GcbmBscRuleCodeStrategy;
 import com.augurit.aplanmis.common.service.dic.GdGcbmBscRuleCodeStrategy;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.theme.AeaParThemeService;
+import com.augurit.aplanmis.common.service.window.AeaProjApplyAgentService;
+import com.augurit.aplanmis.common.service.window.AeaProjWindowService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -268,26 +271,38 @@ public class AeaProjInofServiceImpl extends AbstractFormDataOptManager implement
     public List<AeaProjInfo> findRootAeaProjInfoByLinkmanInfoId(String linkmanInfoId,String keyword) {
         LOGGER.debug("根据项目联系人查询项目信息");
         List<AeaProjInfo> list = aeaProjInfoMapper.findRootAeaProjInfoByLinkmanInfoId(linkmanInfoId,keyword);
-        return setThemeName(list);
+        return setThemeNameAndAgentFlag(list);
     }
 
     @Override
     public List<AeaProjInfo> findRootAeaProjInfoByUnitInfoId(String unitInfoId,String keyword) {
         List<AeaProjInfo> aeaProjInfos = aeaProjInfoMapper.findRootAeaProjInfoByUnitInfoId(unitInfoId,keyword);
-        return setThemeName(aeaProjInfos);
+        return setThemeNameAndAgentFlag(aeaProjInfos);
     }
 
     @Override
     public List<AeaProjInfo> findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(String linkmanInfoId, String unitInfoId,String keyword) {
         List<AeaProjInfo> list = aeaProjInfoMapper.findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(linkmanInfoId, unitInfoId,keyword);
-        return setThemeName(list);
+        return setThemeNameAndAgentFlag(list);
     }
+    @Autowired
+    private AeaProjWindowService aeaProjWindowService;
+    @Autowired
+    private AeaProjApplyAgentService aeaProjApplyAgentService;
 
-    private List<AeaProjInfo> setThemeName(List<AeaProjInfo> list) {
+    private List<AeaProjInfo> setThemeNameAndAgentFlag(List<AeaProjInfo> list) {
         try {
             for (AeaProjInfo aeaProjInfo : list) {
                 AeaParTheme aeaParTheme = aeaParThemeService.getAeaParThemeByThemeId(aeaProjInfo.getThemeId());
                 if (aeaParTheme != null) aeaProjInfo.setThemeName(aeaParTheme.getThemeName());
+                List<AeaServiceWindow> windows = aeaProjWindowService.listAeaServiceWindowByProjInfoId(aeaProjInfo.getProjInfoId());
+                if(windows.size()>0){
+                    aeaProjInfo.setIsAgentProj("1");
+                    List<AeaProjApplyAgent> agentApplys=aeaProjApplyAgentService.listAeaProjApplyAgentByProjInfoId(aeaProjInfo.getProjInfoId());
+                    aeaProjInfo.setProjAgentState(agentApplys.size()>0?agentApplys.get(0).getAgentApplyState(): AgencyState.WAIT_SIGNING.getValue());
+                }else{
+                    aeaProjInfo.setIsAgentProj("0");
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

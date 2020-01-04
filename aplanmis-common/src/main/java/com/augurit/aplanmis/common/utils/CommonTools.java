@@ -6,6 +6,7 @@ import com.googlecode.aviator.Expression;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -207,5 +208,10 @@ public class CommonTools {
             }
         }
         return list.size() > 0 ? ListToArr(list) : new String[0];
+    }
+
+    public static String createDateNo() {
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyyMMddHHmmss");
+        return simpleDateFormat.format(new Date());
     }
 }

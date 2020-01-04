@@ -321,4 +321,9 @@ public class AeaProjInfo implements Serializable {
     private String formId;
     @ApiModelProperty("是否需要生成本地编码，1:是")
     private String isNeedGeneCode;
+
+    @ApiModelProperty("是否需要生成本地编码，1:是")
+    private String isAgentProj;
+    @ApiModelProperty("代办状态")
+    private String projAgentState;
 }
