@@ -30,7 +30,7 @@ public class RestApproveController {
 
     @Autowired
     RestApproveService restApproveService;
-    @Value("${aplanmis.mall.skin:skin_v4.0}/")
+    @Value("${aplanmis.mall.skin:skin_v4.1}/")
     private String skin;
     @GetMapping("toapprovePage")
     @ApiOperation(value = "跳转审批情况页面")

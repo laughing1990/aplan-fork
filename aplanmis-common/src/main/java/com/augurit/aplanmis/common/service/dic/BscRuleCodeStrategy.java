@@ -107,7 +107,7 @@ public abstract class BscRuleCodeStrategy {
         return bscRuleCode;
     }
 
-    private BscRuleCode getBscRuleCode(String codeIc, String orgId, String codeMemo) {
+    public BscRuleCode getBscRuleCode(String codeIc, String orgId, String codeMemo) {
         BscRuleCode bscRuleCode = new BscRuleCode();
         bscRuleCode.setCodeIc(codeIc);
         bscRuleCode.setCodeMemo(codeMemo);
