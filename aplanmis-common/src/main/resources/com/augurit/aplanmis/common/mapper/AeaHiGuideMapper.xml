@@ -211,4 +211,40 @@
         </where>
     </select>
 
+    <select id="listAeaHiGuideListUnitIdOrLinkmanInfoId" parameterType="com.augurit.aplanmis.common.domain.AeaHiGuide"
+            resultType="com.augurit.aplanmis.common.domain.AeaHiGuide">
+        select
+        <include refid="Base_Column_List"/>
+        , aps.stage_name stageName
+        , apt.theme_id themeId
+        , apt.theme_name themeName
+        , api.proj_name projName
+        , api.gcbm gcbm
+        from aea_hi_guide ahg
+        join aea_par_stage aps on ahg.stage_id=aps.stage_id
+        join aea_par_theme_ver aptv on aptv.theme_ver_id=aps.theme_ver_id
+        join aea_par_theme apt on apt.theme_id=aptv.theme_id
+        join aea_proj_info api on api.proj_info_id=ahg.proj_info_id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                and (
+                apt.theme_name like concat(#{keyword}, '%')
+                or api.proj_name like concat(#{keyword}, '%')
+                or api.gcbm like concat(#{keyword}, '%')
+                )
+            </if>
+            <if test="applyState != null and applyState != ''">
+                and ahg.apply_state=#{applyState}
+            </if>
+            <if test="applyUnitInfoId != null and applyUnitInfoId != '' and applyLinkmanInfoId != null and applyLinkmanInfoId != ''">
+                and （ahg.APPLY_UNIT_INFO_ID = #{applyUnitInfoId} or ahg.APPLY_LINKMAN_INFO_ID = #{applyLinkmanInfoId}  )
+            </if>
+            <if test="applyUnitInfoId != null and applyUnitInfoId != '' and (applyLinkmanInfoId == null or applyLinkmanInfoId == '')">
+                and ahg.APPLY_UNIT_INFO_ID = #{applyUnitInfoId}
+            </if>
+            <if test="(applyUnitInfoId == null or applyUnitInfoId == '') and applyLinkmanInfoId != null and applyLinkmanInfoId != ''">
+                and ahg.APPLY_LINKMAN_INFO_ID = #{applyLinkmanInfoId}
+            </if>
+        </where>
+    </select>
 </mapper>

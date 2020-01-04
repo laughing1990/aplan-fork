@@ -2,13 +2,11 @@ package com.augurit.aplanmis.mall.userCenter.controller;
 
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
+import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.AeaHiApplyinstConstants;
 import com.augurit.aplanmis.common.constants.ApplyState;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaItemBasic;
-import com.augurit.aplanmis.common.domain.AeaParFactor;
-import com.augurit.aplanmis.common.domain.AeaParState;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaParStateMapper;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
@@ -19,6 +17,8 @@ import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.state.AeaItemStateService;
 import com.augurit.aplanmis.common.service.state.AeaParStateService;
+import com.augurit.aplanmis.common.utils.SessionUtil;
+import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.main.service.RestMainService;
 import com.augurit.aplanmis.mall.main.vo.ItemListVo;
 import com.augurit.aplanmis.mall.main.vo.ThemeTypeVo;
@@ -26,6 +26,7 @@ import com.augurit.aplanmis.mall.userCenter.service.RestAeaHiGuideService;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyService;
 import com.augurit.aplanmis.mall.userCenter.service.RestParallerApplyService;
 import com.augurit.aplanmis.mall.userCenter.vo.*;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -37,6 +38,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -271,6 +273,29 @@ public class RestParallerApplyController {
             aeaGuideApplyVo.setApplyinstId(applyinstId);
             restAeaHiGuideService.initAeaHiGuide(aeaGuideApplyVo);
             return new ContentResultForm<>(true, applyinstId, "部门辅导申请成功!");
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ContentResultForm(false,"",e.getMessage());
+        }
+    }
+
+    @PostMapping("guide/apply/list")
+    @ApiOperation("部门辅导--> 部门辅导列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "关键字",name = "keyword",required = false,dataType = "string"),
+            @ApiImplicitParam(value = "辅导状态",name = "applyState",required = false,dataType = "string"),
+            @ApiImplicitParam(value = "页面数量",name = "pageNum",required = true,dataType = "string"),
+            @ApiImplicitParam(value = "页面页数",name = "pageSize",required = true,dataType = "string")})
+    public ResultForm guideApplyList(String keyword, String applyState, int pageNum, int pageSize, HttpServletRequest request){
+        try {
+            LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
+            if("1".equals(loginInfo.getIsPersonAccount())){//个人
+                return new ContentResultForm<>(true,new PageInfo<AeaHiGuide>(restParallerApplyService.searchGuideApplyListByUnitIdAndUserId(keyword,applyState,"",loginInfo.getUserId(),pageNum,pageSize)));
+            }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
+                return new ContentResultForm<>(true,new PageInfo<AeaHiGuide>(restParallerApplyService.searchGuideApplyListByUnitIdAndUserId(keyword,applyState,loginInfo.getUnitId(),loginInfo.getUserId(),pageNum,pageSize)));
+            }else{//企业
+                return new ContentResultForm<>(true,new PageInfo<AeaHiGuide>(restParallerApplyService.searchGuideApplyListByUnitIdAndUserId(keyword,applyState,loginInfo.getUnitId(),"",pageNum,pageSize)));
+            }
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             return new ContentResultForm(false,"",e.getMessage());

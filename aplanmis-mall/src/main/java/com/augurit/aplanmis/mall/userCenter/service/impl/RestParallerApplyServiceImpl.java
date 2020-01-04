@@ -6,6 +6,7 @@ import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.service.apply.AeaHiGuideService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.item.AeaItemPrivService;
@@ -19,6 +20,7 @@ import com.augurit.aplanmis.mall.main.vo.ParallelApproveItemVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestParallerApplyService;
 import com.augurit.aplanmis.mall.userCenter.vo.AeaGuideItemVo;
 import com.augurit.aplanmis.mall.userCenter.vo.StageStateParamVo;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -389,6 +391,20 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
                 }
             }
         }).collect(Collectors.toList()):new ArrayList<>();
+    }
+
+@Autowired
+private AeaHiGuideService aeaHiGuideService;
+
+    @Override
+    public List<AeaHiGuide> searchGuideApplyListByUnitIdAndUserId(String keyword, String applyState, String unitInfoId, String linkmanInfoId, int pageNum, int pageSize){
+        PageHelper.startPage(pageNum,pageSize);
+        AeaHiGuide query=new AeaHiGuide();
+        query.setKeyword(keyword);
+        query.setApplyState(applyState);
+        query.setApplyUnitInfoId(unitInfoId);
+        query.setApplyLinkmanInfoId(linkmanInfoId);
+        return aeaHiGuideService.listAeaHiGuideListUnitIdOrLinkmanInfoId(query);
     }
 
 

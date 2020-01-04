@@ -192,4 +192,9 @@ public class AeaHiGuideServiceImpl implements AeaHiGuideService {
             guide(aeaHiGuideDetails);
         }
     }
+
+    @Override
+    public List<AeaHiGuide> listAeaHiGuideListUnitIdOrLinkmanInfoId(AeaHiGuide query){
+        return  aeaHiGuideMapper.listAeaHiGuideListUnitIdOrLinkmanInfoId(query);
+    }
 }

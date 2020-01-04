@@ -1,10 +1,7 @@
 package com.augurit.aplanmis.mall.userCenter.service;
 
 import com.augurit.aplanmis.common.constants.ApplyState;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaItemMat;
-import com.augurit.aplanmis.common.domain.AeaParFactor;
-import com.augurit.aplanmis.common.domain.AeaParStage;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.mall.main.vo.ItemListVo;
 import com.augurit.aplanmis.mall.userCenter.vo.AeaGuideItemVo;
 import com.augurit.aplanmis.mall.userCenter.vo.StageApplyDataPageVo;
@@ -52,4 +49,6 @@ public interface RestParallerApplyService {
     List<AeaItemMat> listMatByStateIdAndStageIdAndItemVerId(String stageId, String[] stateIds, String[] itemVerIds)throws Exception;
 
     List<AeaGuideItemVo> listItemByStageIdAndStateList(StageStateParamVo stageStateParamVo,String isOptionItem) throws Exception;
+
+    List<AeaHiGuide> searchGuideApplyListByUnitIdAndUserId(String keyword, String applyState, String s, String userId, int pageNum, int pageSize);
 }

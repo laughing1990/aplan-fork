@@ -24,4 +24,6 @@ public interface AeaHiGuideMapper {
     void batchInsertAeaHiGuide(@Param("list") List<AeaHiGuide> list);
 
     List<AeaHiGuide> listAeaHiGuide(AeaHiGuide aeaHiGuide);
+
+    List<AeaHiGuide> listAeaHiGuideListUnitIdOrLinkmanInfoId(AeaHiGuide query);
 }
