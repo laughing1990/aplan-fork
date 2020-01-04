@@ -3537,27 +3537,27 @@ var vm = new Vue({
         // defaultBtn = unionReviewBtn.concat(defaultBtn);
       }
       // 联合评审
-      if (vm.isPassLHPS) {
-        var tmpBtn = [{
-          elementName: "联合评审通过",
-          elementCode: "wfBusSave",
-          columnType: "button",
-          isReadonly: '0',
-          isHidden: '0',
-          elementRender: '<button class="btn btn-outline-info" onclick="ensureUnionReview(1)">联合评审通过</button>'
-        }];
-        if (vm.isPassLhps == '0') {
-          tmpBtn = [{
-            elementName: "联合评审不通过",
-            elementCode: "wfBusSave",
-            columnType: "button",
-            isReadonly: '0',
-            isHidden: '0',
-            elementRender: '<button class="btn btn-outline-info" onclick="ensureUnionReview(0)">联合评审不通过</button>'
-          }];
-        }
-        defaultBtn = tmpBtn.concat(defaultBtn);
-      }
+      // if (vm.isPassLHPS) {
+      //   var tmpBtn = [{
+      //     elementName: "联合评审通过",
+      //     elementCode: "wfBusSave",
+      //     columnType: "button",
+      //     isReadonly: '0',
+      //     isHidden: '0',
+      //     elementRender: '<button class="btn btn-outline-info" onclick="ensureUnionReview(1)">联合评审通过</button>'
+      //   }];
+      //   if (vm.isPassLhps == '0') {
+      //     tmpBtn = [{
+      //       elementName: "联合评审不通过",
+      //       elementCode: "wfBusSave",
+      //       columnType: "button",
+      //       isReadonly: '0',
+      //       isHidden: '0',
+      //       elementRender: '<button class="btn btn-outline-info" onclick="ensureUnionReview(0)">联合评审不通过</button>'
+      //     }];
+      //   }
+      //   defaultBtn = tmpBtn.concat(defaultBtn);
+      // }
       if (vm.isDraftPage == 'true') {
         defaultBtn = draftBtn.concat(defaultBtn);
       }
