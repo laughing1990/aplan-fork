@@ -279,7 +279,7 @@ public class RestParallerApplyController {
         }
     }
 
-    @PostMapping("guide/apply/list")
+    @PostMapping("guide/list")
     @ApiOperation("部门辅导--> 部门辅导列表")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "关键字",name = "keyword",required = false,dataType = "string"),
