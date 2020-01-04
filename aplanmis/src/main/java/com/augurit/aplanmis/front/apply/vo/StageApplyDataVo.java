@@ -34,7 +34,7 @@ public class StageApplyDataVo extends ApplyDataVo {
     @ApiModelProperty(value = "主题版本ID")
     private String themeVerId;
 
-    @ApiModelProperty(value = "并联申报事项版本ID", required = true, dataType = "java.util.List")
+    @ApiModelProperty(value = "并联申报事项版本ID", required = true)
     private List<String> itemVerIds;
 
     @ApiModelProperty(value = "简单合并申报，选择的并联事项情形", dataType = "string")
@@ -43,7 +43,7 @@ public class StageApplyDataVo extends ApplyDataVo {
     @ApiModelProperty(value = "并行推进事项版本ID", required = true)
     private List<String> propulsionItemVerIds;
 
-    @ApiModelProperty(value = "并行推进事项分局承办，格式为：[{\"itemVerId\":\"111\",\"branchOrg\":\"222\"}]", required = true, example = "[{itemVerId=2, branchOrg=1}, {itemVerId=11, branchOrg=22}]")
+    @ApiModelProperty(value = "并行推进事项分局承办，格式为：[{\"itemVerId\":\"111\",\"branchOrg\":\"222\"}]", required = true)
     private String propulsionBranchOrgMap;
 
     @ApiModelProperty(value = "并行事项情形Map集合，key为itemVerId,格式为[{itemVerId:[stateId1,stateId2]}]", required = true)

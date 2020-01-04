@@ -23,6 +23,7 @@ import com.augurit.aplanmis.front.apply.vo.StageApplyDataVo;
 import com.augurit.aplanmis.front.apply.vo.receipt.SmsInfoVo;
 import com.augurit.aplanmis.front.apply.vo.stash.ParallelStashResultVo;
 import com.augurit.aplanmis.front.apply.vo.stash.StashVo;
+import com.augurit.aplanmis.front.apply.vo.stash.UnStashVo;
 import io.jsonwebtoken.lang.Assert;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -123,7 +124,7 @@ public class RestApplyController {
 
     @PostMapping("/parallel/inst")
     @ApiOperation(value = "并联申报 --> 生成实例，打印回执", httpMethod = "POST")
-    public ContentResultForm<ApplyinstIdVo> instantiateStageProcess(@Valid @RequestBody StageApplyDataVo stageApplyDataVo) throws Exception {
+    public ContentResultForm<ApplyinstIdVo> instantiateStageProcess(@RequestBody StageApplyDataVo stageApplyDataVo) throws Exception {
         ApplyinstIdVo applyinstIdVo = aeaParStageService.printReceipts(stageApplyDataVo);
         return new ContentResultForm<>(true, applyinstIdVo, "Parallel instantiate process success.");
     }
@@ -193,7 +194,7 @@ public class RestApplyController {
     @GetMapping("/unstash")
     @ApiOperation(value = "回显")
     @ApiImplicitParam(name = "applyinstId", value = "申报实例id")
-    public ResultForm unstash(String applyinstId) {
+    public ContentResultForm<? extends UnStashVo> unstash(String applyinstId) {
         Assert.hasText(applyinstId, "applyinstId is null.");
         try {
             AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
@@ -205,7 +206,7 @@ public class RestApplyController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResultForm(false, e.getMessage());
+            return new ContentResultForm<>(false, null, e.getMessage());
         }
     }
 }

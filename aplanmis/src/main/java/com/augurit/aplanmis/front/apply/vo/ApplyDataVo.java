@@ -1,7 +1,6 @@
 package com.augurit.aplanmis.front.apply.vo;
 
 import com.augurit.aplanmis.common.constants.ApplyType;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +9,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@ApiModel("申报通用vo")
 public class ApplyDataVo {
 
     @ApiModelProperty(value = "申报来源，网上申报：net、窗口申报：win", required = true, allowableValues = "net, win")
@@ -58,7 +56,7 @@ public class ApplyDataVo {
     @ApiModelProperty(value = "是否绿色通道", notes = "1: 是, 0: 否")
     protected String isGreenWay;
 
-    @ApiModelProperty(value = "申报类型")
+    @ApiModelProperty(value = "申报类型", hidden = true)
     protected ApplyType applyType;
 
 }

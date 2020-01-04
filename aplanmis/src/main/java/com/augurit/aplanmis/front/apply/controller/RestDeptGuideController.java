@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/dept/guide")
 @Slf4j
-@Api(value = "部门辅导")
+@Api(value = "部门辅导", tags = "部门辅导")
 public class RestDeptGuideController {
 
     @Autowired
