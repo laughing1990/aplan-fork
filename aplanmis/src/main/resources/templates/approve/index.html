@@ -3260,7 +3260,7 @@
                            :show-file-list="false" :http-request="oneSolicitUploadFile" :file-list="fileList">
                   <el-button slot="trigger" size="small" type="primary">上传附件</el-button>
                 </el-upload>
-                <el-table border stripe :data="oneSolicitFileList">
+                <el-table border stripe :data="oneSolicitFileList" class="solict-pt">
                   <el-table-column label='序号' type="index" width="50"></el-table-column>
                   <el-table-column label="附件名称" prop="attName">
                     <template slot-scope="scope">
@@ -3330,18 +3330,28 @@
           <div class="so-transfer-u">
             <div class="so-transfer-title">组织结构</div>
             <div class="so-ope-content" :style="{height:curHeight-540+'px',overflow: 'auto',}">
-              <el-tree class="so-tree" ref="soTree"
-                       :data="soTreeData" @check-change="soTreeCheckChange"
-                       node-key="orgId" :check-strictly="true" :props="soTreeProps"
-                       :load="loadSoNode" lazy show-checkbox>
-              </el-tree>
+              <div style="margin-bottom: 8px;">
+                <el-input @keyup.native.enter="loadOrgList" placeholder="输入查询内容" v-model="dialogConfigSeachText">
+                  <el-button @click="loadOrgList" slot="append" icon="el-icon-search"></el-button>
+                </el-input>
+              </div>
+              <div v-for="u in configOrgList" class="config-org-u">
+                <el-checkbox @change="function(val){configOrgChange(u, val)}" v-model="u._checked">
+                  {{u.orgName}}
+                </el-checkbox>
+              </div>
+<!--              <el-tree class="so-tree" ref="soTree"-->
+<!--                       :data="soTreeData" @check-change="soTreeCheckChange"-->
+<!--                       node-key="orgId" :check-strictly="true" :props="soTreeProps"-->
+<!--                       :load="loadSoNode" lazy show-checkbox>-->
+<!--              </el-tree>-->
             </div>
           </div>
           <div class="so-transfer-u">
             <div class="so-transfer-title">已选部门列表</div>
             <div class="so-ope-content" :style="{height:curHeight-540+'px',overflow: 'auto',}">
-              <div class="so-checked-org" v-for="u in soCheckedOrgList">
-                {{u.orgName}}<i class="el-icon-close" @click="removeSoOrg(u)"></i>
+              <div class="so-checked-org" v-for="(u, i) in soCheckedOrgList">
+                {{u.orgName}}<i class="el-icon-close" @click="removeSoOrg(u,i)"></i>
               </div>
             </div>
           </div>
