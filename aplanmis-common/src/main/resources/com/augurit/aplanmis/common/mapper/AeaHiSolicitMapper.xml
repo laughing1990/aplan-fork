@@ -40,7 +40,8 @@
     ${alias}.MODIFY_TIME  modifyTime,
     ${alias}.ROOT_ORG_ID  rootOrgId,
     ${alias}.SOLICIT_LINKMAN_NAME  solicitLinkmanName,
-    ${alias}.SOLICIT_LINKMAN_PHONE  solicitLinkmanPhone
+    ${alias}.SOLICIT_LINKMAN_PHONE  solicitLinkmanPhone,
+    ${alias}.IS_SEND_SMS  isSendSms
     </sql>
 
     <sql id="queryByTime">
@@ -89,7 +90,8 @@
         ${alias}.CONCLUSION_USER_NAME,
         ${alias}.CREATE_TIME,
         ${alias}.SOLICIT_LINKMAN_NAME,
-        ${alias}.SOLICIT_LINKMAN_PHONE
+        ${alias}.SOLICIT_LINKMAN_PHONE,
+        ${alias}.IS_SEND_SMS isSendSms
     </sql>
     <sql id="querySolicitStateCol">
         <choose>
@@ -238,6 +240,9 @@
             <if test="solicitLinkmanPhone != null ">
                 AND ahs.SOLICIT_LINKMAN_PHONE = #{solicitLinkmanPhone}
             </if>
+            <if test="isSendSms != null ">
+                AND ahs.IS_SEND_SMS = #{isSendSms}
+            </if>
         </where>
         ORDER BY SOLICIT_START_TIME
     </select>
@@ -249,12 +254,12 @@
     SOLICIT_ID  ,BUS_TYPE  ,SOLICIT_TYPE  ,SOLICIT_ORG_ID  ,SOLICIT_ITEM_ID  ,APPLYINST_ID  ,PROCINST_ID  ,HI_TASKINST_ID  ,SOLICIT_CODE  ,SOLICIT_TOPIC  ,SOLICIT_CONTENT  ,
     SOLICIT_DUE_DAYS  ,SOLICIT_REAL_DAYS  ,SOLICIT_DAYS_UNIT  ,SOLICIT_START_TIME  ,SOLICIT_END_TIME  ,IS_CALC_TIMERULE  ,SOLICIT_TIMERULE_ID  ,CONCLUSION_FLAG  ,
     CONCLUSION_DESC  ,CONCLUSION_TIME  ,CONCLUSION_USER_ID  ,CONCLUSION_USER_NAME  ,INITIATOR_ORG_ID  ,INITIATOR_ORG_NAME  ,INITIATOR_USER_ID  ,INITIATOR_USER_NAME  ,
-    COUNT_LIMIT  ,SOLICIT_STATE  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID,SOLICIT_LINKMAN_NAME,SOLICIT_LINKMAN_PHONE
+    COUNT_LIMIT  ,SOLICIT_STATE  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID,SOLICIT_LINKMAN_NAME,SOLICIT_LINKMAN_PHONE,IS_SEND_SMS
         )  values  (
     #{solicitId},#{busType},#{solicitType},#{solicitOrgId},#{solicitItemId},#{applyinstId},#{procinstId},#{hiTaskinstId},#{solicitCode},#{solicitTopic},#{solicitContent},
     #{solicitDueDays},#{solicitRealDays},#{solicitDaysUnit},#{solicitStartTime},#{solicitEndTime},#{isCalcTimerule},#{solicitTimeruleId},#{conclusionFlag},#{conclusionDesc},
     #{conclusionTime},#{conclusionUserId},#{conclusionUserName},#{initiatorOrgId},#{initiatorOrgName},#{initiatorUserId},#{initiatorUserName},#{countLimit},#{solicitState},
-    #{creater},#{createTime},#{modifier},#{modifyTime},#{rootOrgId},#{solicitLinkmanName},#{solicitLinkmanPhone}
+    #{creater},#{createTime},#{modifier},#{modifyTime},#{rootOrgId},#{solicitLinkmanName},#{solicitLinkmanPhone},#{isSendSms}
         )
     </insert>
     <!--6 修改实体对象 -->
@@ -365,6 +370,9 @@
             </if>
             <if test="solicitLinkmanPhone != null  ">
                 SOLICIT_LINKMAN_PHONE = #{solicitLinkmanPhone},
+            </if>
+            <if test="isSendSms != null  ">
+                IS_SEND_SMS = #{isSendSms},
             </if>
         </set>
         where SOLICIT_ID = #{solicitId}
@@ -645,5 +653,6 @@
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
         <result property="solicitLinkmanName" column="SOLICIT_LINKMAN_NAME"/>
         <result property="solicitLinkmanPhone" column="SOLICIT_LINKMAN_PHONE"/>
+        <result property="isSendSms" column="IS_SEND_SMS"/>
     </resultMap>
 </mapper>

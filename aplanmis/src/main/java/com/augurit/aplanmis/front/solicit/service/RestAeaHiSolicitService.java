@@ -30,6 +30,14 @@ public interface RestAeaHiSolicitService {
     public List<OpuOmOrg> listOrg(String isRoot, String parentOrgId) throws Exception;
 
     /**
+     * 列表的方式查询意见征求配置的部门，支持模糊查询
+     * @param keyword
+     * @return
+     * @throws Exception
+     */
+    public List<OpuOmOrg> listOrgByKeyword(String busType,String keyword) throws Exception;
+
+    /**
      * 意见征求列表
      *
      * @param condVo 查询条件

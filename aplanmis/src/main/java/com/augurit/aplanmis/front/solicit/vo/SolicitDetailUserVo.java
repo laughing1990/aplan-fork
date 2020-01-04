@@ -71,6 +71,10 @@ public class SolicitDetailUserVo {
     @ApiModelProperty(value = "联系人手机号码", required = false, dataType="string")
     private String linkmanPhone;
 
+    @ApiModelProperty(value = "是否发送短信通知，0否，1是", required = false, dataType="string")
+    private String isSendSms;
+
+
     private String userName; //扩展字段 (用户名)
 
     private List<BscAttFileAndDir> fileAndDirs;//附件集合

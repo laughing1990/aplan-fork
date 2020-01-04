@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.augurit.agcloud.bpm.common.domain.*;
 import com.augurit.agcloud.bpm.common.engine.BpmProcessService;
+import com.augurit.agcloud.bpm.common.engine.BpmTaskService;
 import com.augurit.agcloud.bpm.common.mapper.*;
 import com.augurit.agcloud.bpm.common.service.ActStoTimeruleService;
 import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
@@ -36,6 +37,7 @@ import com.augurit.aplanmis.front.solicit.vo.*;
 import com.github.pagehelper.Page;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.flowable.engine.TaskService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -77,6 +79,8 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
     @Autowired
     private AeaSolicitItemUserMapper aeaSolicitItemUserMapper;
     @Autowired
+    private AeaSolicitOrgMapper aeaSolicitOrgMapper;
+    @Autowired
     private AeaSolicitOrgUserMapper aeaSolicitOrgUserMapper;
     @Autowired
     private BscAttDetailMapper bscAttDetailMapper;
@@ -114,6 +118,12 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
     private BpmProcessService bpmProcessService;
 
     @Autowired
+    private BpmTaskService bpmTaskService;
+
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
     private FileUtilsService fileUtilsService;
 
     @Autowired
@@ -148,6 +158,24 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
         }
 
         return list;
+    }
+
+    @Override
+    public List<OpuOmOrg> listOrgByKeyword(String busType,String keyword) throws Exception {
+        AeaSolicitOrg query = new AeaSolicitOrg();
+        query.setRootOrgId(SecurityContext.getCurrentOrgId());
+        query.setIsBusSolicit("1");
+        query.setBusType(busType);
+        query.setKeyword(keyword);
+        List<AeaSolicitOrg> aeaSolicitOrgs = aeaSolicitOrgMapper.listAeaSolicitOrgRelOrgInfo(query);
+        List<OpuOmOrg> result = new ArrayList<>(aeaSolicitOrgs.size());
+        for(int i=0,len=aeaSolicitOrgs.size(); i<len; i++){
+            AeaSolicitOrg aeaSolicitOrg = aeaSolicitOrgs.get(i);
+            OpuOmOrg temp = new OpuOmOrg();
+            BeanUtils.copyProperties(aeaSolicitOrg,temp);
+            result.add(temp);
+        }
+        return result;
     }
 
     /**
@@ -644,14 +672,25 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
 
         aeaHiSolicitMapper.updateAeaHiSolicit(aeaHiSolicit);
         //处理流程激活操作，先默认是通过则激活流程
-        String procinstId = aeaHiSolicit.getProcinstId();
-        if(StringUtils.isBlank(procinstId)){
-            AeaHiSolicit temp = aeaHiSolicitMapper.getAeaHiSolicitById(aeaHiSolicit.getSolicitId());
-            procinstId = temp.getProcinstId();
-        }
-        if (SolicitConstant.SOLICIT_CONCLUSION_FLAG_TG.equals(aeaHiSolicit.getConclusionFlag()) &&
-                bpmProcessService.isProcessSuspended(procinstId)) {
-            bpmProcessService.activateProcessInstanceById(aeaHiSolicit.getProcinstId());
+        AeaHiSolicit temp = aeaHiSolicitMapper.getAeaHiSolicitById(aeaHiSolicit.getSolicitId());
+        if(temp != null) {
+            String procinstId = temp.getProcinstId();
+            if (SolicitConstant.SOLICIT_CONCLUSION_FLAG_TG.equals(aeaHiSolicit.getConclusionFlag()) &&
+                    bpmProcessService.isProcessSuspended(procinstId)) {
+                bpmProcessService.activateProcessInstanceById(aeaHiSolicit.getProcinstId());
+            }
+            //直接根据汇总结论，目前兼容联合评审和一次征询
+            if (!SolicitBusTypeEnum.YJZQ.getValue().equals(aeaHiSolicit.getBusType())
+                    && SolicitConstant.SOLICIT_CONCLUSION_FLAG_TG.equals(aeaHiSolicit.getConclusionFlag())) {
+                String hiTaskinstId = temp.getHiTaskinstId();
+                List<BpmDestTaskConfig> bpmDestTaskConfig = bpmTaskService.getBpmDestTaskConfigByCurrTaskId(hiTaskinstId);
+                for(int i=0,len=bpmDestTaskConfig.size(); i<len; i++){
+                    String destActId = bpmDestTaskConfig.get(i).getDestActId();
+                    if(StringUtils.isNotBlank(destActId) && (!destActId.startsWith("endEvent") || !destActId.equals("jieshu"))){
+                        taskService.complete(hiTaskinstId, new String[]{destActId}, (Map)null);
+                    }
+                }
+            }
         }
     }
 

@@ -40,13 +40,13 @@ public class RestAeaHiSolicitController {
     private RestAeaHiSolicitService restAeaHiSolicitService;
 
 
-    @GetMapping("/list/org")
+    @GetMapping("/list/orgTree")
     @ApiOperation(value = "意见征求 --> 获取部门征求部门信息列表", notes = "获取部门征求部门信息列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "isRoot", value = "是否为根组织，1表示是，0表示否")
             , @ApiImplicitParam(name = "parentOrgId", value = "父组织ID，当isRoot=0时，非空")
     })
-    public ResultForm listOrg(String isRoot, String parentOrgId) {
+    public ResultForm listOrgTree(String isRoot, String parentOrgId) {
         if (StringUtils.isBlank(isRoot))
             return new ResultForm(false, "参数isRoot不能为空！");
         if (StringUtils.isNotBlank(isRoot) && "0".equals(isRoot)
@@ -61,6 +61,25 @@ public class RestAeaHiSolicitController {
             return new ResultForm(false, "错误信息：" + e.getLocalizedMessage());
         }
 
+        return new ContentResultForm<List<OpuOmOrg>>(true, list);
+    }
+
+    @GetMapping("/list/org")
+    @ApiOperation(value = "意见征求 --> 获取部门征求部门信息列表，支持模糊查询", notes = "获取部门征求部门信息列表，支持模糊查询")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "busType", value = "征求业务类型")
+            , @ApiImplicitParam(name = "keyword", value = "模糊查询关键字")
+    })
+    public ResultForm listOrg(String busType,String keyword) {
+        if (StringUtils.isBlank(busType))
+            return new ResultForm(false, "参数busType不能为空！");
+        List<OpuOmOrg> list = null;
+        try {
+            list = restAeaHiSolicitService.listOrgByKeyword(busType, keyword);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultForm(false, "错误信息：" + e.getLocalizedMessage());
+        }
         return new ContentResultForm<List<OpuOmOrg>>(true, list);
     }
 
@@ -91,10 +110,11 @@ public class RestAeaHiSolicitController {
             return new ResultForm(false, "发起失败！");
         }
     }
-    @ApiOperation(value = "意见征求 --> 发起同时上传附件接口", notes = "获取意见征求列表")
+    @ApiOperation(value = "意见征求 --> 发起同时上传附件接口", notes = "发起同时上传附件接口")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "busType", value = "查询类型，0 意见征求，1 一次征求，2 联合评审 ...")
-            , @ApiImplicitParam(name = "page", value = "分页参数")
+            @ApiImplicitParam(name = "solicitId", value = "发起意见征询的主表id，第一次可以不传，后台生成")
+            , @ApiImplicitParam(name = "tableName", value = "附件上传参数字段，表名称")
+            , @ApiImplicitParam(name = "pkName", value = "附件上传参数字段，表主键名称")
     })
     @RequestMapping("/uploadAttFile")
     public ResultForm uploadAttFile(String solicitId, String tableName,String pkName, HttpServletRequest request) {

@@ -20,7 +20,8 @@
     MODIFIER  modifier,
     MODIFY_TIME  modifyTime,
     LINKMAN_NAME linkmanName,
-    LINKMAN_PHONE linkmanPhone
+    LINKMAN_PHONE linkmanPhone,
+    IS_SEND_SMS isSendSms
     </sql>
 
     <sql id="allAlisColumns" >
@@ -39,7 +40,8 @@
         ahsdu.MODIFIER  modifier,
         ahsdu.MODIFY_TIME  modifyTime,
         ahsdu.LINKMAN_NAME linkmanName,
-        ahsdu.LINKMAN_PHONE linkmanPhone
+        ahsdu.LINKMAN_PHONE linkmanPhone,
+        ahsdu.IS_SEND_SMS isSendSms
     </sql>
 
 <!--2 根据主键ID查询单个实体 -->
@@ -120,6 +122,9 @@
         <if test="modifyTime != null" >
         AND    MODIFY_TIME = #{modifyTime}
         </if>
+        <if test="isSendSms != null" >
+        AND    IS_SEND_SMS = #{isSendSms}
+        </if>
       AND  IS_DELETED = '0'
     </where>
     </select>
@@ -129,23 +134,23 @@
 <insert id="insertAeaHiSolicitDetailUser" parameterType="AeaHiSolicitDetailUser" >
     insert into AEA_HI_SOLICIT_DETAIL_USER (
 DETAIL_USER_ID  ,SOLICIT_DETAIL_ID  ,USER_ID  ,USER_CONCLUSION  ,USER_OPINION  ,SIGN_TIME  ,FILL_TIME  ,TASK_ACTION  ,PARENT_ID  ,IS_DELETED  ,
-CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME, LINKMAN_NAME, LINKMAN_PHONE
+CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME, LINKMAN_NAME, LINKMAN_PHONE, IS_SEND_SMS
     )  values  (
 #{detailUserId},#{solicitDetailId},#{userId},#{userConclusion},#{userOpinion},#{signTime},#{fillTime},#{taskAction},#{parentId},#{isDeleted},
-#{creater},#{createTime},#{modifier},  #{modifyTime},  #{linkmanName},  #{linkmanPhone}
+#{creater},#{createTime},#{modifier},  #{modifyTime},  #{linkmanName},  #{linkmanPhone},  #{isSendSms}
     )
 </insert>
     <!--5 新增实体对象 -->
     <insert id="batchInsertAeaHiSolicitDetailUser" parameterType="AeaHiSolicitDetailUser" >
         insert into AEA_HI_SOLICIT_DETAIL_USER (
         DETAIL_USER_ID  ,SOLICIT_DETAIL_ID  ,USER_ID  ,USER_CONCLUSION  ,USER_OPINION  ,SIGN_TIME  ,FILL_TIME  ,TASK_ACTION  ,PARENT_ID  ,IS_DELETED  ,
-        CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME, LINKMAN_NAME, LINKMAN_PHONE
+        CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME, LINKMAN_NAME, LINKMAN_PHONE, IS_SEND_SMS
         )  values
         <foreach collection="list" item="item" separator=",">
             (
             #{item.detailUserId},#{item.solicitDetailId},#{item.userId},#{item.userConclusion},#{item.userOpinion},
             #{item.signTime},#{item.fillTime},#{item.taskAction},#{item.parentId},#{item.isDeleted},#{item.creater},
-            #{item.createTime},#{item.modifier},#{item.modifyTime},  #{item.linkmanName},  #{item.linkmanPhone}
+            #{item.createTime},#{item.modifier},#{item.modifyTime},#{item.linkmanName},#{item.linkmanPhone},#{item.isSendSms}
             )
         </foreach>
 
@@ -199,6 +204,9 @@ CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME, LINKMAN_NAME, LINKMAN_PHONE
         <if test="linkmanPhone != null" >
             LINKMAN_PHONE = #{linkmanPhone},
         </if>
+        <if test="isSendSms != null" >
+            IS_SEND_SMS = #{isSendSms},
+        </if>
     </set>
     where DETAIL_USER_ID = #{detailUserId}
 </update>
@@ -229,6 +237,7 @@ CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME, LINKMAN_NAME, LINKMAN_PHONE
         <result property="modifyTime" column="MODIFY_TIME"/>
         <result property="linkmanName" column="LINKMAN_NAME"/>
         <result property="linkmanPhone" column="LINKMAN_PHONE"/>
+        <result property="isSendSms" column="IS_SEND_SMS"/>
     </resultMap>
 
     <select id="listAeaHiSolicitDetailUserBySolicitIds" resultType="AeaHiSolicitDetailUser">
