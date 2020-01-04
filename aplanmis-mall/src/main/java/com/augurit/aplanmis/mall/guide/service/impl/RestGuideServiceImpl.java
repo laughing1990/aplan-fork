@@ -700,21 +700,26 @@ public class RestGuideServiceImpl implements RestGuideService {
         //1.设置所有符合条件的事项及标记符合条件的阶段的index
         RestStageAndItemVo vo = this.getStageAndItemByThemeId(themeId,rootOrgId);
         Set<Integer> indexs = new HashSet<>();
-        vo.getParallelItems().stream().forEach(parallelItem->{
-            parallelItem.getItems().stream().forEach(item->{
-                if (item.getItemName().contains(keyword)){
-                    item.setIsSelected("1");
-                    indexs.add(parallelItem.getIndex());
-                }
-                item.getResultMats().stream().forEach(resultMat->{
-                    if (resultMat.getAeaMatCertName().contains(keyword)){
-                        item.setIsSelected("1");
-                        indexs.add(parallelItem.getIndex());
-                    }
-                });
-            });
 
-        });
+        if (vo.getParallelItems()!=null){
+            vo.getParallelItems().stream().forEach(parallelItem->{
+                if (parallelItem.getItems()!=null){
+                    parallelItem.getItems().stream().forEach(item->{
+                        if (item.getItemName().contains(keyword)){
+                            item.setIsSelected("1");
+                            indexs.add(parallelItem.getIndex());
+                        }
+                        item.getResultMats().stream().forEach(resultMat->{
+                            if (resultMat.getAeaMatCertName().contains(keyword)){
+                                item.setIsSelected("1");
+                                indexs.add(parallelItem.getIndex());
+                            }
+                        });
+                    });
+                }
+            });
+        }
+
         //2.循环步骤一符合条件的阶段index将阶段标记
         for (int i = 0; i < vo.getStages().size(); i++) {
             for (Integer j:indexs){
