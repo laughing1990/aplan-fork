@@ -1437,9 +1437,11 @@ var vm = new Vue({
             vm.solicitBmForm.solicitLinkmanName = res.content[0].solicitDetailUser.linkmanName;
             vm.solicitBmForm.solicitLinkmanPhone = res.content[0].solicitDetailUser.linkmanPhone;
           }
-          if (res.content[0].solicit.solicitCanBeFinish==1) {
-            vm.solicitBmForm.solicitLinkmanName = res.content[0].solicit.solicitLinkmanName;
-            vm.solicitBmForm.solicitLinkmanPhone = res.content[0].solicit.solicitLinkmanPhone;
+          var _index = typeCode=='YCZX'?res.content.length-1:0;
+          var _solicit = res.content[_index].solicit;
+          if (_solicit.solicitCanBeFinish==1) {
+            vm.solicitBmForm.solicitLinkmanName = _solicit.solicitLinkmanName;
+            vm.solicitBmForm.solicitLinkmanPhone = _solicit.solicitLinkmanPhone;
           }
           if (typeof cb == 'function') {
             if (res.content && res.content.length) {
