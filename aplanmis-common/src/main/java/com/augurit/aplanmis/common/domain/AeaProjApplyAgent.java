@@ -101,4 +101,12 @@ public class AeaProjApplyAgent implements Serializable{
     @ApiModelProperty(name = "themeId", value = "主题ID")
     private String themeId;
 
+    @ApiModelProperty(name = "currentUserId", value = "当前登录用户ID")
+    private java.lang.String currentUserId;
+
+    @ApiModelProperty(name = "currentUserName", value = "当前登录用户名称")
+    private java.lang.String currentUserName;
+
+    @ApiModelProperty(name = "currentUserMobile", value = "当前登录用户手机号")
+    private java.lang.String currentUserMobile;
 }

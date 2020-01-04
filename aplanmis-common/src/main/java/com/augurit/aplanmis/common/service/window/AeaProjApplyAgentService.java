@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.common.service.window;
 import com.augurit.aplanmis.common.domain.AeaProjApplyAgent;
+import com.augurit.aplanmis.common.vo.agency.AgencyDetailVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import java.util.List;
@@ -15,4 +16,6 @@ public interface AeaProjApplyAgentService {
     public List<AeaProjApplyAgent> listAeaProjApplyAgent(AeaProjApplyAgent aeaProjApplyAgent) throws Exception;
 
     public PageInfo<AeaProjApplyAgent> listAeaProjApplyAgentByConditional(AeaProjApplyAgent aeaProjApplyAgent, Page page) throws Exception;
+
+    public AgencyDetailVo getAgencyDetail(String applyAgentId)throws Exception;
 }
