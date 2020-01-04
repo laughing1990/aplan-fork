@@ -438,15 +438,243 @@ var parallelDeclare = new Vue({
     }
   },
   methods: {
+    // 下一步是否需要智能引导
+    isNeedIntelligence: function(){
+      var msg = '', perUnitMsg = '';
+      var _that = this;
+      var unitFlag = false; // 单位信息未完善
+      var aeaUnitInfo = this.applyObjectInfo.aeaUnitInfo;
+      var aeaLinkmanInfo = this.applyObjectInfo.aeaLinkmanInfo;
+      var _linkmanTypes = [];
+      _that.stageList = [];
+      _that.stateList = [];
+      _that.parallelItems = [];
+      _that.coreItems = [];
+      _that.guideList=[];
+      _that.stageListBefore = [];
+      if (_that.applyObjectInfo.aeaUnitInfo && _that.applyObjectInfo.aeaUnitInfo.linkmanTypes && _that.applyObjectInfo.aeaUnitInfo.linkmanTypes.length > 0) {
+        _that.applyObjectInfo.aeaUnitInfo.linkmanTypes.map(function (itemType) {
+          if (itemType.linkmanInfoId) {
+            var typeObj = {
+              linkmanType: itemType.linkmanType,
+              linkmanInfoId: itemType.linkmanInfoId,
+              linkmanName: itemType.linkmanName,
+              unitInfoId: _that.unitInfoId,
+              projInfoId: _that.projInfoId,
+            }
+            _linkmanTypes.push(typeObj);
+          }
+
+        })
+      }
+      if (_that.applyObjectInfo.role == 0) {
+        _that.userInfoId = _that.applyObjectInfo.aeaLinkmanInfo.linkmanInfoId;
+        _that.userLinkmanCertNo = _that.applyObjectInfo.aeaLinkmanInfo.linkmanCertNo;
+        unitFlag = true;
+      } else {
+        _that.unitInfoId = _that.applyObjectInfo.aeaUnitInfo.unitInfoId;
+        _that.unifiedSocialCreditCode = _that.applyObjectInfo.aeaUnitInfo.unifiedSocialCreditCode;
+        if (aeaUnitInfo.applicant || aeaUnitInfo.unifiedSocialCreditCode || aeaUnitInfo.idrepresentative || aeaLinkmanInfo.linkmanName || aeaLinkmanInfo.linkmanMobilePhone || aeaLinkmanInfo.linkmanCertNo) {
+          unitFlag = true;
+        }else {
+          unitFlag = false;
+        }
+      }
+      if (this.applyObjectInfo.role == 0) {
+        if (!this.userInfoId) {
+          msg = '请前往企业中心完善申报主体申请人信息！';
+        }
+      } else {
+        if (!this.unitInfoId || !unitFlag) {
+          msg = '请前往企业中心完善申报主体企业信息！';
+        }
+      }
+      if (this.isBlack == true) {
+        msg = '申报主体已被纳入信用黑名单，无法申报项目！'
+      }
+      if (msg) {
+        alertMsg('', msg, '关闭', 'error', true);
+        return false;
+      }
+      // 判断单位必填是否已填
+      var jiansheUnitFormEleLen = _that.jiansheFrom.length;
+      var jiansheUnitFlag = true;
+      if(_that.applyObjectInfo.role==2){
+        for (var i = 0; i < jiansheUnitFormEleLen; i++) {
+          var formRef = 'jianshe_' + i;
+          var validFun;
+          if ((typeof (_that.$refs[formRef].validate)) == 'function') {
+            validFun = _that.$refs[formRef].validate
+          } else {
+            validFun = _that.$refs[formRef][0].validate
+          }
+          validFun(function (valid) {
+            if (!valid) {
+              jiansheUnitFlag = false;
+              perUnitMsg = "请完善申办主体建设单位信息"
+              return false;
+            }
+          });
+        }
+      }
+      _that.$refs['projInfoForm'].validate(function (valid1) {
+        if (valid1) {
+          if (jiansheUnitFlag) {
+            _that.isIntelligenceShow=true;
+          } else {
+            _that.$message({
+              message: '请完善申办主体单位信息',
+              type: 'error'
+            });
+          }
+
+        } else {
+          _that.$message({
+            message: '请完善项目/工程信息',
+            type: 'error'
+          });
+        }
+      })
+    },
+    // 根据阶段啊id获取情形列表
+    getStateList: function(val){
+      var _that = this;
+      _that.stageId = val;
+      request('', {
+        url: ctx + 'rest/userCenter/apply/state/list/'+val,
+        type: 'get',
+      }, function (res) {
+        if (res.success) {
+          _that.stateList = res.content;
+          _that.stateList.map(function (item, ind) { // 情形下插入对应的情形
+            if (item.answerType != 's' && item.answerType != 'y') {
+              Vue.set(item, 'selValue', []);
+              item.selectAnswerId = item.selValue;
+            }
+          });
+        }else {
+          _that.$message({
+            message: res.message?res.message:'获取智能引导失败！',
+            type: 'error'
+          })
+        }
+      },function(res){
+        _that.$message({
+          message: res.message?res.message:'获取智能引导失败！',
+          type: 'error'
+        })
+      });
+    },
+    // 根据阶段啊id获取情形列表
+    getChildsStateList: function(cStateList,pData, answerData, index, checkFlag,guideflag){
+      var _that = this, questionStateId = '',_parentId = '',selStateIds = [], getUrl='';
+      var stateListLen = cStateList?cStateList.length:0;
+      if(guideflag=='guide'){
+        questionStateId = pData.factorId;
+        _parentId = answerData.factorId ? answerData.factorId : 'ROOT';
+        getUrl = 'rest/userCenter/apply/factor/child/list/' + _parentId
+      }else {
+        questionStateId = pData.parStateId;
+        _parentId = answerData.parStateId ? answerData.parStateId : 'ROOT';
+        getUrl = 'rest/userCenter/apply/childState/list/' + _parentId + '/' + _that.stageId
+      }
+      selStateIds = _that.getCoreItemsStatusListId(cStateList);
+      if (checkFlag == false) {
+        for (var i = 0; i < stateListLen; i++) { // 清空情形下所对应情形
+          var obj = cStateList[i];
+          var _parentStateId = '';
+          if(obj){
+            if(guideflag=='guide'){
+              _parentStateId = obj.parentFactorId;
+            }else {
+              _parentStateId = obj.parentStateId;
+            }
+            if ((_parentStateId == _parentId) || (obj && obj.parentStateId != null && (selStateIds.indexOf(_parentStateId) == -1))) {
+              cStateList.splice(i, 1);
+              if (typeof (obj.selectAnswerId) == 'object' && obj.selectAnswerId.length > 0) {
+                obj.selectAnswerId.map(function (itemSel) {
+                  selStateIds = selStateIds.filter(function (item, index) {
+                    return item !== itemSel;
+                  })
+                });
+              } else if (obj.selectAnswerId !== '') {
+                selStateIds = selStateIds.filter(function (item, index) {
+                  return item !== obj.selectAnswerId;
+                })
+              }
+              i--
+            }
+          }
+        }
+        return false
+      }
+      request('', {
+        url: ctx + getUrl,
+        type: 'get'
+      }, function (data) {
+        if (data.success) {
+          if (checkFlag !== true) {
+            for (var i = 0; i < stateListLen; i++) { // 清空情形下所对应情形
+              var obj = cStateList[i];
+              var parentQuestionStateId='',_parentStateId='';
+              if(obj){
+                if(guideflag=='guide'){
+                  _parentStateId = obj.parentFactorId;
+                  parentQuestionStateId = obj.parentFactorId;
+                }else {
+                  _parentStateId = obj.parentStateId;
+                  parentQuestionStateId = obj.parentQuestionStateId;
+                }
+                if ((parentQuestionStateId == questionStateId) || (obj && _parentStateId != null && (selStateIds.indexOf(_parentStateId) == -1))) {
+                  cStateList.splice(i, 1);
+                  if (typeof (obj.selectAnswerId) == 'object' && obj.selectAnswerId.length > 0) {
+                    obj.selectAnswerId.map(function (itemSel) {
+                      selStateIds = selStateIds.filter(function (item, index) {
+                        return item !== itemSel;
+                      })
+                    });
+                  } else if (obj.selectAnswerId !== '') {
+                    selStateIds = selStateIds.filter(function (item, index) {
+                      return item !== obj.selectAnswerId;
+                    })
+                  }
+                  i--
+                }
+
+              }
+            }
+          }
+          data.content.map(function (item, ind) { // 情形下插入对应的情形
+            if (item.answerType != 's' && item.answerType != 'y') {
+              Vue.set(item, 'selValue', []);
+              item.selectAnswerId = item.selValue;
+            }
+            cStateList.splice((index + 1 + ind), 0, item);
+          });
+        } else {
+          _that.$message({
+            message: '获取情形失败',
+            type: 'error'
+          });
+        }
+      }, function (msg) {
+        _that.$message({
+          message: '获取情形失败',
+          type: 'error'
+        });
+      });
+    },
+    // 切换项目类型
+    changeThemeId: function (val) {
+      this.themeId = val;
+    },
     //获取智能指引列表
     getGuideList: function () {
       var _that = this;
       _that.declareStep = 2;
-      _that.guideList=[];
-      _that.stageListBefore = [];
-      _that.stateList = [];
+      console.log(_that.stageId);
       if(_that.projInfoDetail.themeId&&_that.projInfoDetail.themeId!=''){
-        _that.saveThemeAndNext();
+        _that.saveThemeAndNext('guide');
       }else {
         request('', {
           url: ctx + 'rest/userCenter/apply/factor/list',
@@ -466,7 +694,17 @@ var parallelDeclare = new Vue({
                 item.answerFactors = _that.sortByKey(item.answerFactors, 'sortNo');
               });
             }
+          }else {
+            _that.$message({
+              message: res.message?res.message:'获取智能引导失败！',
+              type: 'error'
+            })
           }
+        },function(res){
+          _that.$message({
+            message: res.message?res.message:'获取智能引导失败！',
+            type: 'error'
+          })
         });
       }
 
@@ -474,6 +712,12 @@ var parallelDeclare = new Vue({
     //获取智能指引子列表
     getSubGuide: function (pData, item, index, value) {
       var _that = this;
+      _that.stateList = [];
+      if(item.themeId&&item.themeId!=''){
+        _that.projInfoDetail.themeId = item.themeId;
+        _that.themeId = item.themeId;
+        _that.saveThemeAndNext('guide');
+      }
       request('', {
         url: ctx + 'rest/userCenter/apply/factor/child/list/' + item.factorId,
         type: 'get',
@@ -503,7 +747,17 @@ var parallelDeclare = new Vue({
               _that.guideList.splice((index + 1 + ind), 0, item);
             });
           }
+        }else {
+          _that.$message({
+            message: res.message?res.message:'获取智能引导失败！',
+            type: 'error'
+          })
         }
+      },function(res){
+        _that.$message({
+          message: res.message?res.message:'获取智能引导失败！',
+          type: 'error'
+        })
       });
     },
     /***迭代循环子问题及答案***/
@@ -546,7 +800,6 @@ var parallelDeclare = new Vue({
     },
     // 部门辅导申请
     guideApplyStart: function(){
-      debugger;
       var _that = this,_itItemList=[],_itemList=[];
       _that.loading = true;
       var _applySubject = '';
@@ -1522,83 +1775,83 @@ var parallelDeclare = new Vue({
 
     // 保存保存领件人、项目信息 补全信息保存并下一步
     saveProOrSmsinfo: function (saveFlag) {
-      var msg = '', perUnitMsg = '';
+      // var msg = '', perUnitMsg = '';
       var _that = this;
-      var unitFlag = false; // 单位信息未完善
-      var aeaUnitInfo = this.applyObjectInfo.aeaUnitInfo;
-      var aeaLinkmanInfo = this.applyObjectInfo.aeaLinkmanInfo;
-      var _linkmanTypes = [];
-      _that.stageList = [];
-      _that.stateList = [];
-      _that.parallelItems = [];
-      _that.coreItems = [];
-      if (_that.applyObjectInfo.aeaUnitInfo && _that.applyObjectInfo.aeaUnitInfo.linkmanTypes && _that.applyObjectInfo.aeaUnitInfo.linkmanTypes.length > 0) {
-        _that.applyObjectInfo.aeaUnitInfo.linkmanTypes.map(function (itemType) {
-          if (itemType.linkmanInfoId) {
-            var typeObj = {
-              linkmanType: itemType.linkmanType,
-              linkmanInfoId: itemType.linkmanInfoId,
-              linkmanName: itemType.linkmanName,
-              unitInfoId: _that.unitInfoId,
-              projInfoId: _that.projInfoId,
-            }
-            _linkmanTypes.push(typeObj);
-          }
-
-        })
-      }
-      if (_that.applyObjectInfo.role == 0) {
-        // _that.unitInfoId = '';
-        // _that.unifiedSocialCreditCode = '';
-        _that.userInfoId = _that.applyObjectInfo.aeaLinkmanInfo.linkmanInfoId;
-        _that.userLinkmanCertNo = _that.applyObjectInfo.aeaLinkmanInfo.linkmanCertNo;
-        unitFlag = true;
-      } else {
-        _that.unitInfoId = _that.applyObjectInfo.aeaUnitInfo.unitInfoId;
-        _that.unifiedSocialCreditCode = _that.applyObjectInfo.aeaUnitInfo.unifiedSocialCreditCode;
-        if (aeaUnitInfo.applicant || aeaUnitInfo.unifiedSocialCreditCode || aeaUnitInfo.idrepresentative || aeaLinkmanInfo.linkmanName || aeaLinkmanInfo.linkmanMobilePhone || aeaLinkmanInfo.linkmanCertNo) {
-          unitFlag = true;
-        }else {
-          unitFlag = false;
-        }
-      }
-      if (this.applyObjectInfo.role == 0) {
-        if (!this.userInfoId) {
-          msg = '请前往企业中心完善申报主体申请人信息！';
-        }
-      } else {
-        if (!this.unitInfoId || !unitFlag) {
-          msg = '请前往企业中心完善申报主体企业信息！';
-        }
-      }
-      if (this.isBlack == true) {
-        msg = '申报主体已被纳入信用黑名单，无法申报项目！'
-      }
-      if (msg) {
-        alertMsg('', msg, '关闭', 'error', true);
-        return false;
-      }
-      // 判断单位必填是否已填
-      var jiansheUnitFormEleLen = _that.jiansheFrom.length;
-      var jiansheUnitFlag = true;
-      if(_that.applyObjectInfo.role==2){
-        for (var i = 0; i < jiansheUnitFormEleLen; i++) {
-          var formRef = 'jianshe_' + i;
-          var validFun;
-          if ((typeof (_that.$refs[formRef].validate)) == 'function') {
-            validFun = _that.$refs[formRef].validate
-          } else {
-            validFun = _that.$refs[formRef][0].validate
-          }
-          validFun(function (valid) {
-            if (!valid) {
-              jiansheUnitFlag = false;
-              perUnitMsg = "请完善申办主体建设单位信息"
-              return false;
-            }
-          });
-        }
-      }
+      // var unitFlag = false; // 单位信息未完善
+      // var aeaUnitInfo = this.applyObjectInfo.aeaUnitInfo;
+      // var aeaLinkmanInfo = this.applyObjectInfo.aeaLinkmanInfo;
+      // var _linkmanTypes = [];
+      // _that.stageList = [];
+      // _that.stateList = [];
+      // _that.parallelItems = [];
+      // _that.coreItems = [];
+      // if (_that.applyObjectInfo.aeaUnitInfo && _that.applyObjectInfo.aeaUnitInfo.linkmanTypes && _that.applyObjectInfo.aeaUnitInfo.linkmanTypes.length > 0) {
+      //   _that.applyObjectInfo.aeaUnitInfo.linkmanTypes.map(function (itemType) {
+      //     if (itemType.linkmanInfoId) {
+      //       var typeObj = {
+      //         linkmanType: itemType.linkmanType,
+      //         linkmanInfoId: itemType.linkmanInfoId,
+      //         linkmanName: itemType.linkmanName,
+      //         unitInfoId: _that.unitInfoId,
+      //         projInfoId: _that.projInfoId,
+      //       }
+      //       _linkmanTypes.push(typeObj);
+      //     }
+      //
+      //   })
+      // }
+      // if (_that.applyObjectInfo.role == 0) {
+      //   // _that.unitInfoId = '';
+      //   // _that.unifiedSocialCreditCode = '';
+      //   _that.userInfoId = _that.applyObjectInfo.aeaLinkmanInfo.linkmanInfoId;
+      //   _that.userLinkmanCertNo = _that.applyObjectInfo.aeaLinkmanInfo.linkmanCertNo;
+      //   unitFlag = true;
+      // } else {
+      //   _that.unitInfoId = _that.applyObjectInfo.aeaUnitInfo.unitInfoId;
+      //   _that.unifiedSocialCreditCode = _that.applyObjectInfo.aeaUnitInfo.unifiedSocialCreditCode;
+      //   if (aeaUnitInfo.applicant || aeaUnitInfo.unifiedSocialCreditCode || aeaUnitInfo.idrepresentative || aeaLinkmanInfo.linkmanName || aeaLinkmanInfo.linkmanMobilePhone || aeaLinkmanInfo.linkmanCertNo) {
+      //     unitFlag = true;
+      //   }else {
+      //     unitFlag = false;
+      //   }
+      // }
+      // if (this.applyObjectInfo.role == 0) {
+      //   if (!this.userInfoId) {
+      //     msg = '请前往企业中心完善申报主体申请人信息！';
+      //   }
+      // } else {
+      //   if (!this.unitInfoId || !unitFlag) {
+      //     msg = '请前往企业中心完善申报主体企业信息！';
+      //   }
+      // }
+      // if (this.isBlack == true) {
+      //   msg = '申报主体已被纳入信用黑名单，无法申报项目！'
+      // }
+      // if (msg) {
+      //   alertMsg('', msg, '关闭', 'error', true);
+      //   return false;
+      // }
+      // // 判断单位必填是否已填
+      // var jiansheUnitFormEleLen = _that.jiansheFrom.length;
+      // var jiansheUnitFlag = true;
+      // if(_that.applyObjectInfo.role==2){
+      //   for (var i = 0; i < jiansheUnitFormEleLen; i++) {
+      //     var formRef = 'jianshe_' + i;
+      //     var validFun;
+      //     if ((typeof (_that.$refs[formRef].validate)) == 'function') {
+      //       validFun = _that.$refs[formRef].validate
+      //     } else {
+      //       validFun = _that.$refs[formRef][0].validate
+      //     }
+      //     validFun(function (valid) {
+      //       if (!valid) {
+      //         jiansheUnitFlag = false;
+      //         perUnitMsg = "请完善申办主体建设单位信息"
+      //         return false;
+      //       }
+      //     });
+      //   }
+      // }
       _that.projInfoDetail.projName = _that.projInfoDetail.projName?_that.projInfoDetail.projName.trim():'';
       _that.projInfoDetail.localCode = _that.projInfoDetail.localCode?_that.projInfoDetail.localCode.trim():'';
       _that.projInfoDetail.regionalism = _that.projInfoDetail.regionalism?_that.projInfoDetail.regionalism.trim():'';
@@ -1610,9 +1863,9 @@ var parallelDeclare = new Vue({
       }else {
         saveUrl= ctx + 'rest/apply/common/completioninfo/saveOrUpdate/temporary'
       }
-      _that.$refs['projInfoForm'].validate(function (valid1) {
-        if (valid1) {
-          if (jiansheUnitFlag) {
+      // _that.$refs['projInfoForm'].validate(function (valid1) {
+      //   if (valid1) {
+      //     if (jiansheUnitFlag) {
             _that.loading = true;
             _that.projInfoDetail.projectAddress = _that.projInfoDetail.projectAddress?_that.projInfoDetail.projectAddress.join(','):'';
             var params = _that.projInfoDetail;
@@ -1675,20 +1928,20 @@ var parallelDeclare = new Vue({
               _that.projInfoDetail.projectAddress = [];
               alertMsg('', '保存失败', '关闭', 'error', true);
             });
-          } else {
-            _that.$message({
-              message: '请完善申办主体单位信息',
-              type: 'error'
-            });
-          }
-
-        } else {
-          _that.$message({
-            message: '请完善项目/工程信息',
-            type: 'error'
-          });
-        }
-      })
+      //     } else {
+      //       _that.$message({
+      //         message: '请完善申办主体单位信息',
+      //         type: 'error'
+      //       });
+      //     }
+      //
+      //   } else {
+      //     _that.$message({
+      //       message: '请完善项目/工程信息',
+      //       type: 'error'
+      //     });
+      //   }
+      // })
 
     },
     // 获取主题列表
@@ -1744,7 +1997,7 @@ var parallelDeclare = new Vue({
       this.saveThemeAndNext();
     },
     // 选择主题保存并下一步根据主题获取阶段
-    saveThemeAndNext: function () {
+    saveThemeAndNext: function (flag) {
       var _that = this;
       _that.loading = true;
       _that.selCoreItemsKey = [];
@@ -1769,14 +2022,26 @@ var parallelDeclare = new Vue({
           _that.loading = false;
           _that.stageList = data.content;
           _that.stageListBefore = data.content;
-          if(_that.stageinstId == ''||_that.stageId == ''){
-            _that.selStatus(_that.stageList[0], 0);
-          }else {
-            _that.stageList.map(function(stageItem,index){
-              if(stageItem.stageId==_that.stageId){
-                _that.selStatus(stageItem, index, 'isHistory');
+          if(data.content&&data.content.length>0){
+            if(flag=='guide'){
+              if((!_that.stageId)||_that.stageId == ''){
+                if(_that.stageList.length>0){
+                  _that.getStateList(_that.stageList[0].stageId);
+                }
+              }else {
+                _that.getStateList(_that.stageId);
               }
-            });
+            }else {
+              if(_that.stageinstId == ''||_that.stageId == ''){
+                _that.selStatus(_that.stageList[0], 0);
+              }else {
+                _that.stageList.map(function(stageItem,index){
+                  if(stageItem.stageId==_that.stageId){
+                    _that.selStatus(stageItem, index, 'isHistory');
+                  }
+                });
+              }
+            }
           }
         } else {
           _that.loading = false;
@@ -1904,7 +2169,6 @@ var parallelDeclare = new Vue({
     },
     // 根据阶段获取情形事项
     getStatusStateMats: function (stageId,draftsProjFlag) {
-      console.log(stageId);
       var _that = this;
       _that.loading = true;
       _that.selCoreItemsKey = [];
@@ -1921,30 +2185,30 @@ var parallelDeclare = new Vue({
       }, function (res) {
         if (res.success) {
           _that.loading = false;
-          _that.stateList = res.content.stateList;
-          _that.stateList.map(function (item, ind) { // 情形下插入对应的情形
-            if (item.answerType != 's' && item.answerType != 'y') {
-              Vue.set(item, 'selValue', []);
-              item.selectAnswerId = item.selValue;
-            }
-            if(_that.draftsProj==true&&draftsProjFlag=='isHistory'&&_that.stateListHistory.length>0){
-              _that.stateListHistory.map(function(itemHistory){
-                if(itemHistory.questionId==item.parStateId){
-                  var itemAns = {
-                    parStateId: itemHistory.answerId,
-                    parentStateId: itemHistory.questionId
-                  }
-                  if (item.answerType != 's' && item.answerType != 'y') {
-                    item.selectAnswerId.push(itemHistory.answerId);
-                    _that.getStatusStateBystatus(item,itemAns,ind,true);
-                  }else {
-                    item.selectAnswerId = itemHistory.answerId;
-                    _that.getStatusStateBystatus(item,itemAns,ind);
-                  }
-                }
-              })
-            }
-          });
+          // _that.stateList = res.content.stateList;
+          // _that.stateList.map(function (item, ind) { // 情形下插入对应的情形
+          //   if (item.answerType != 's' && item.answerType != 'y') {
+          //     Vue.set(item, 'selValue', []);
+          //     item.selectAnswerId = item.selValue;
+          //   }
+          //   if(_that.draftsProj==true&&draftsProjFlag=='isHistory'&&_that.stateListHistory.length>0){
+          //     _that.stateListHistory.map(function(itemHistory){
+          //       if(itemHistory.questionId==item.parStateId){
+          //         var itemAns = {
+          //           parStateId: itemHistory.answerId,
+          //           parentStateId: itemHistory.questionId
+          //         }
+          //         if (item.answerType != 's' && item.answerType != 'y') {
+          //           item.selectAnswerId.push(itemHistory.answerId);
+          //           _that.getStatusStateBystatus(item,itemAns,ind,true);
+          //         }else {
+          //           item.selectAnswerId = itemHistory.answerId;
+          //           _that.getStatusStateBystatus(item,itemAns,ind);
+          //         }
+          //       }
+          //     })
+          //   }
+          // });
           _that.parallelItems = res.content.parallelItemList;
           _that.coreItems = res.content.coreItemList;
           _that.coreItems.map(function (item) {

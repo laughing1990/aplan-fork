@@ -83,7 +83,7 @@
                         placeholder="请填写项目/工程名称"></el-input>
             </el-form-item>
             <el-form-item class="wt588" label="项目类型">
-              <el-select :disabled="draftsProj" clearable filterable class="w-410" v-model="projInfoDetail.themeId">
+              <el-select :disabled="draftsProj" clearable filterable class="w-410" v-model="projInfoDetail.themeId" @change="changeThemeId">
                 <el-option v-for="item in themeList" :key="item.themeId" :label="item.themeName"
                            :value="item.themeId">
                 </el-option>
@@ -746,7 +746,7 @@
           </el-form>
         </el-collapse-transition>
         <div class="footer-stage-btn">
-          <el-button class="mt20" type="primary" @click="isIntelligenceShow=true;">下一步</el-button>
+          <el-button class="mt20" type="primary" @click="isNeedIntelligence()">下一步</el-button>
         </div>
       </div>
     </div>
@@ -769,7 +769,7 @@
                 <template v-if="item.answerType=='s'||item.answerType=='y'">
                   <el-radio-group v-model="item.selectAnswerId">
                     <el-radio v-for="(itemAns,ind) in item.answerFactors"
-                              @change="getSubGuide(item,itemAns,index,true)"
+                              @change="getChildsStateList(guideList,item,itemAns,index,true,'guide')"
                               :key="ind"
                               :value="itemAns.factorId" :label="itemAns.factorId" :checked="itemAns.factorId" name="answer">{{itemAns.factorName}}
                     </el-radio>
@@ -779,21 +779,21 @@
                   <el-checkbox-group v-model="item.selectAnswerId">
                     <el-checkbox v-for="(itemAns,indAns) in item.answerFactors" :value="itemAns.factorId"
                                  :key="indAns"
-                                 @change="function(value){getSubGuide(item,itemAns,index,value)}"
+                                 @change="function(value){getChildsStateList(guideList,item,itemAns,index,value,'guide')}"
                                  :label="itemAns.factorId" name="answer">{{itemAns.factorName}}</el-checkbox>
                   </el-checkbox-group>
                 </template>
               </el-form-item>
             </el-form>
             <el-form :model="stageSelVal" v-if="projInfoDetail.themeId&&projInfoDetail.themeId!=''">
-              <el-form-item required label="选择你要申报的阶段">
+              <el-form-item required label="选择你要申报的阶段" v-if="stageListBefore&&stageListBefore.length">
                 <p class="status-label">
                   <el-tooltip class="item" effect="light" content="请选择项目申报阶段"
                               placement="right">
                     <i class="el-icon-question"></i>
                   </el-tooltip>
                 </p>
-                <el-radio-group v-model="stageId" @change="getStatusStateMats">
+                <el-radio-group v-model="stageId" @change="getStateList">
                   <el-radio v-for="(item,ind) in stageListBefore"
                             :key="ind"
                             :value="item.stageId" :label="item.stageId">{{item.stageName}}
@@ -815,7 +815,7 @@
                   <el-radio-group v-model="item.selectAnswerId">
                     <el-radio v-for="(itemAns,ind) in item.answerStates"
                               :key="ind"
-                              @change="getStatusStateBystatus(item,itemAns,index)"
+                              @change="getChildsStateList(stateList,item,itemAns,index,true)"
                               :value="itemAns.parStateId"
                               :label="itemAns.parStateId" name="answer">{{itemAns.stateName}}</el-radio>
                   </el-radio-group>
@@ -826,7 +826,7 @@
                     <el-checkbox v-for="(itemAns,indAns) in item.answerStates"
                                  :key="indAns"
                                  :value="itemAns.parStateId"
-                                 @change="function(value) {getStatusStateBystatus(item,itemAns,index,value)}"
+                                 @change="function(value) {getChildsStateList(stateList,item,itemAns,index,value)}"
                                  :label="itemAns.parStateId" name="answer">{{itemAns.stateName}}</el-checkbox>
                   </el-checkbox-group>
                 </template>
