@@ -1044,7 +1044,7 @@ var vm = new Vue({
         procinstId: vm.processInstanceId,
         hiTaskinstId: vm.taskId,
         solicitTopic: vm.solicitForm.solicitTopic,
-        // isSendSms: vm.solicitForm.isSendSms,
+        isSendSms: vm.solicitForm.isSendSms,
         solicitContent: vm.solicitForm.solicitContent,
         solicitType: vm.solicitForm.solicitType,
         isCalcTimerule: vm.solicitForm.isCalcTimerule,
