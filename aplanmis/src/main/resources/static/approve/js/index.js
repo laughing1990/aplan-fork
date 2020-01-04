@@ -1433,16 +1433,17 @@ var vm = new Vue({
       }, function (res) {
         vm.parentPageLoading = false;
         if (res.success) {
-          if (res.content[0].solicitDetailUser) {
-            vm.solicitBmForm.solicitLinkmanName = res.content[0].solicitDetailUser.linkmanName;
-            vm.solicitBmForm.solicitLinkmanPhone = res.content[0].solicitDetailUser.linkmanPhone;
-          }
           var _index = typeCode=='YCZX'?res.content.length-1:0;
+          if (res.content[_index].solicitDetailUser) {
+            vm.solicitBmForm.solicitLinkmanName = res.content[_index].solicitDetailUser.linkmanName;
+            vm.solicitBmForm.solicitLinkmanPhone = res.content[_index].solicitDetailUser.linkmanPhone;
+          }
           var _solicit = res.content[_index].solicit;
           if (_solicit.solicitCanBeFinish==1) {
             vm.solicitBmForm.solicitLinkmanName = _solicit.solicitLinkmanName;
             vm.solicitBmForm.solicitLinkmanPhone = _solicit.solicitLinkmanPhone;
           }
+
           if (typeof cb == 'function') {
             if (res.content && res.content.length) {
               cb(res.content.reverse());
