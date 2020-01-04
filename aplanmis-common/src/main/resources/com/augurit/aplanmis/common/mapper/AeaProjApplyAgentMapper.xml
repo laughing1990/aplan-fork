@@ -124,74 +124,102 @@
             <property name="alias" value="agent"/>
         </include>,
         t.LOCAL_CODE as localCode,
+        t.GCBM as gcbm,
         t.PROJ_NAME as projName,
         t.THEME_NAME as themeName
         from    AEA_PROJ_APPLY_AGENT agent
         left join (
-          select proj.PROJ_INFO_ID,proj.LOCAL_CODE,proj.PROJ_NAME,theme.THEME_NAME
+          select proj.PROJ_INFO_ID,proj.LOCAL_CODE,proj.GCBM,proj.PROJ_NAME,theme.THEME_NAME,theme.THEME_ID
           from aea_proj_info proj
           left join aea_par_theme theme on proj.THEME_ID = theme.THEME_ID
         ) t on agent.PROJ_INFO_ID = t.PROJ_INFO_ID
         <where>
+            <if test="_databaseId == 'oracle'">
+                <if test="minStartTime != null and minStartTime != '' ">
+                    <![CDATA[ AND to_char(agent.START_TIME , 'yyyy-mm-dd')>=  #{minStartTime}   ]]>
+                </if>
+                <if test="maxStartTime != null and maxStartTime != '' ">
+                    <![CDATA[ AND to_char(agent.START_TIME , 'yyyy-mm-dd')<=  #{maxStartTime}   ]]>
+                </if>
+            </if>
+            <if test="_databaseId == 'mysql'">
+                <if test="minStartTime != null and minStartTime != '' ">
+                    <![CDATA[ AND DATE_FORMAT(agent.START_TIME , '%Y-%m-%d')>=  #{minStartTime}   ]]>
+                </if>
+                <if test="maxStartTime != null and maxStartTime != '' ">
+                    <![CDATA[ AND DATE_FORMAT(agent.START_TIME , '%Y-%m-%d')<=  #{maxStartTime}   ]]>
+                </if>
+            </if>
+            <if test="themeId != null and themeId != ''" >
+                AND    t.THEME_ID = #{themeId}
+            </if>
             <if test="applyAgentId != null" >
-                AND    APPLY_AGENT_ID = #{applyAgentId}
+                AND    agent.APPLY_AGENT_ID = #{applyAgentId}
             </if>
             <if test="agentCode != null" >
-                AND    AGENT_CODE = #{agentCode}
+                AND    agent.AGENT_CODE = #{agentCode}
             </if>
             <if test="projInfoId != null" >
-                AND    PROJ_INFO_ID = #{projInfoId}
+                AND    agent.PROJ_INFO_ID = #{projInfoId}
             </if>
             <if test="unitInfoId != null" >
-                AND    UNIT_INFO_ID = #{unitInfoId}
+                AND    agent.UNIT_INFO_ID = #{unitInfoId}
             </if>
             <if test="applyUserId != null" >
-                AND    APPLY_USER_ID = #{applyUserId}
+                AND    agent.APPLY_USER_ID = #{applyUserId}
             </if>
             <if test="agentStageState != null" >
-                AND    AGENT_STAGE_STATE = #{agentStageState}
+                AND    agent.AGENT_STAGE_STATE = #{agentStageState}
             </if>
-            <if test="agentApplyState != null" >
-                AND    AGENT_APPLY_STATE = #{agentApplyState}
+            <if test="agentApplyState != null and agentApplyState != ''" >
+                AND    agent.AGENT_APPLY_STATE = #{agentApplyState}
             </if>
             <if test="windowId != null and windowId != ''" >
-                AND    WINDOW_ID = #{windowId}
+                AND    agent.WINDOW_ID = #{windowId}
             </if>
             <if test="windowIds != null and windowIds.length > 0" >
-                AND    WINDOW_ID in
+                AND    agent.WINDOW_ID in
                 <foreach collection="windowIds" index="index" item="windowId" separator="," close=")" open="(">
                     #{windowId}
                 </foreach>
             </if>
             <if test="agentUserId != null" >
-                AND    AGENT_USER_ID = #{agentUserId}
+                AND    agent.AGENT_USER_ID = #{agentUserId}
             </if>
             <if test="agentUserName != null" >
-                AND    AGENT_USER_NAME = #{agentUserName}
+                AND    agent.AGENT_USER_NAME = #{agentUserName}
             </if>
             <if test="agentUserMobile != null" >
-                AND    AGENT_USER_MOBILE = #{agentUserMobile}
+                AND    agent.AGENT_USER_MOBILE = #{agentUserMobile}
             </if>
             <if test="startTime != null" >
-                AND    START_TIME = #{startTime}
+                AND    agent.START_TIME = #{startTime}
             </if>
             <if test="endTime != null" >
-                AND    END_TIME = #{endTime}
+                AND    agent.END_TIME = #{endTime}
             </if>
             <if test="creater != null" >
-                AND    CREATER = #{creater}
+                AND    agent.CREATER = #{creater}
             </if>
             <if test="createTime != null" >
-                AND    CREATE_TIME = #{createTime}
+                AND    agent.CREATE_TIME = #{createTime}
             </if>
             <if test="modifier != null" >
-                AND    MODIFIER = #{modifier}
+                AND    agent.MODIFIER = #{modifier}
             </if>
             <if test="modifyTime != null" >
-                AND    MODIFY_TIME = #{modifyTime}
+                AND    agent.MODIFY_TIME = #{modifyTime}
             </if>
             <if test="rootOrgId != null and rootOrgId != ''" >
-                AND    ROOT_ORG_ID = #{rootOrgId}
+                AND    agent.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="keyword != null and keyword != '' ">
+                AND (
+                t.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR t.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR t.GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR agent.AGENT_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                )
             </if>
         </where>
     </select>

@@ -54,6 +54,14 @@ public interface AeaServiceWindowUserMapper {
      */
     List<AeaServiceWindowUser> getAeaServiceWindowUserByUserId(@Param("userId") String userId);
 
+    /**
+     * 根据用户ID查询代办中心
+     * @param userId
+     * @param rootOrgId
+     * @return
+     */
+    List<AeaServiceWindowUser> getAeaServiceWindowUserByUserIdAndRootOrgId(@Param("userId") String userId,@Param("rootOrgId") String rootOrgId);
+
     List<OpuOmUser> findWindowUserByRegionIdAndAllItemUser(@Param("regionId")String regionId,@Param("rootOrgId") String rootOrgId);
 
     List<OpuOmUser> findWindowUserByRegionId(@Param("regionId") String regionId, @Param("rootOrgId") String rootOrgId);
