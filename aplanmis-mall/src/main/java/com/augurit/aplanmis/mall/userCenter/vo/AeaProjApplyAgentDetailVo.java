@@ -14,6 +14,8 @@ public class AeaProjApplyAgentDetailVo {
     private AeaProjInfo projInfo;
     @ApiModelProperty("单位信息")
     private UserInfoVo userInfoVo;
+    @ApiModelProperty("单位其他信息")
+    private AeaUnitProjLinkmanVo aeaUnitProjLinkmanVo;
     @ApiModelProperty("委托代办阶段")
     private String agentStageState;
     @ApiModelProperty("代办状态")
