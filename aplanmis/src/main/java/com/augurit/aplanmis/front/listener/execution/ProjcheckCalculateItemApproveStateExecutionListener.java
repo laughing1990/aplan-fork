@@ -70,7 +70,7 @@ public class ProjcheckCalculateItemApproveStateExecutionListener implements Exec
 //                        aeaHiApplyinst.getProjCheck().setAllMatchState(true);
                     }
 
-                    System.out.println("@##########################aeaHiApplyinst="+aeaHiApplyinst);
+//                    System.out.println("@##########################aeaHiApplyinst="+aeaHiApplyinst);
                     runtimeService.setVariable(procInstId, "form",aeaHiApplyinst);//把计算结果封装到流程里
                 }
             }

@@ -1499,6 +1499,13 @@
         </sql>
     </changeSet>
 
+    <changeSet id="20200103172690001" author="sam" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_iteminst`
+            MODIFY COLUMN `ITEMINST_CODE`  varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '事项实例（办件）编号' AFTER `ITEM_ID`;
+        </sql>
+    </changeSet>
+
     <changeSet id="20200103190125" author="zhangwn" failOnError="false">
         <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
             ALTER TABLE `aea_proj_apply_agent`

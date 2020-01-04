@@ -680,6 +680,7 @@ public class AeaItemStateAdminService {
         mindBaseNode.setOpen(MindConst.MIND_NODE_EXPAND_TRUE);
         Map<String, String> map = new HashMap<>();
         map.put("inoutId", inout.getInoutId());
+        map.put(AeaMindConst.MIND_NODE_EXTRA_KEY_MAT_IS_COMMON, inout.getIsCommon());
         if(MindType.M.getValue().equals(inout.getMatProp())){
 
             mindBaseNode.setPriority(AeaMindConst.MIND_NODE_PRIORITY_MAPPING_MAT);

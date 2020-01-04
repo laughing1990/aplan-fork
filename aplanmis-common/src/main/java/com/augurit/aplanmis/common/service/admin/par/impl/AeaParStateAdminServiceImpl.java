@@ -427,6 +427,8 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
                 mindMatCertNode.setName(aeaParIn.getAeaMatCertName());
                 mindMatCertNode.setOpen(MindConst.MIND_NODE_EXPAND_TRUE);
                 Map<String, String> map = new HashMap<>();
+                String isCommon = aeaParIn.getIsCommon();
+                map.put(AeaMindConst.MIND_NODE_EXTRA_KEY_MAT_IS_COMMON,isCommon);
                 map.put("inId", aeaParIn.getInId());
                 if(MindType.M.getValue().equals(aeaParIn.getFileType())){
 
@@ -726,6 +728,7 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
         mindMatCertNode.setOpen(MindConst.MIND_NODE_EXPAND_TRUE);
         Map<String, String> map = new HashMap<>();
         map.put("inId", aeaParIn.getInId());
+        map.put(AeaMindConst.MIND_NODE_EXTRA_KEY_MAT_IS_COMMON, aeaParIn.getIsCommon());
         if(MindType.M.getValue().equals(aeaParIn.getFileType())){
 
             if (Status.ON.equals(aeaParIn.getIsGlobalShare())) {
