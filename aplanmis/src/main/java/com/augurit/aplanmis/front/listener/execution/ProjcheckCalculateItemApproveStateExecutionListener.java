@@ -1,17 +1,23 @@
 package com.augurit.aplanmis.front.listener.execution;
 
+import com.augurit.agcloud.bpm.common.domain.ActStoAppinst;
+import com.augurit.agcloud.bpm.common.engine.BpmProcessService;
+import com.augurit.agcloud.bpm.common.mapper.ActStoAppinstMapper;
 import com.augurit.agcloud.bpm.common.utils.SpringContextHolder;
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.constants.ItemStatus;
 import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import com.augurit.aplanmis.common.domain.AeaHiIteminst;
 import com.augurit.aplanmis.common.domain.AeaHiParStageinst;
 import com.augurit.aplanmis.common.mapper.AeaHiIteminstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiParStageinstMapper;
+import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.delegate.DelegateExecution;
 import org.flowable.engine.delegate.ExecutionListener;
 import org.flowable.engine.impl.util.CommandContextUtil;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -19,6 +25,7 @@ import java.util.Map;
 /**
  * 竣工验收阶段事项审查结果计算监听器
  */
+@Transactional
 public class ProjcheckCalculateItemApproveStateExecutionListener implements ExecutionListener {
 
     @Override
@@ -64,14 +71,12 @@ public class ProjcheckCalculateItemApproveStateExecutionListener implements Exec
 
                     if(count==hiIteminstList.size()){
                         aeaHiApplyinst.getProjCheck().setAllItemState(true);
-//                        aeaHiApplyinst.getProjCheck().setAllMatchState(true);
+                        runtimeService.setVariable(procInstId, "form",aeaHiApplyinst);//把计算结果封装到流程里
                     }else{
                         aeaHiApplyinst.getProjCheck().setAllItemState(false);
-//                        aeaHiApplyinst.getProjCheck().setAllMatchState(true);
-                    }
 
-//                    System.out.println("@##########################aeaHiApplyinst="+aeaHiApplyinst);
-                    runtimeService.setVariable(procInstId, "form",aeaHiApplyinst);//把计算结果封装到流程里
+                        runtimeService.setVariable(procInstId, "form",aeaHiApplyinst);//把计算结果封装到流程里
+                    }
                 }
             }
         } catch (Exception e) {
