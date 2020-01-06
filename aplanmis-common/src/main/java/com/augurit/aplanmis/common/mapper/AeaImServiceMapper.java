@@ -39,6 +39,10 @@ public interface AeaImServiceMapper {
 
     List<AeaImService> listAeaImServiceNoPageByProjPurchaseId(@Param("projPurchaseId") String projPurchaseId);
 
-    List<AeaImService> getAeaImServiceAllList() throws Exception;;
+    List<AeaImService> getAeaImServiceAllList() throws Exception;
+
+    int batchDeleteAeaImService(@Param("ids") List<String> ids) throws Exception;
+
+    int batchInsertAeaImService(@Param("list") List<AeaImService> aeaImServices) throws Exception;
 }
 

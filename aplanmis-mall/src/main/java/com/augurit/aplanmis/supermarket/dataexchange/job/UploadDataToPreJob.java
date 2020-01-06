@@ -2,9 +2,12 @@ package com.augurit.aplanmis.supermarket.dataexchange.job;
 
 import com.augurit.agcloud.bsc.domain.BscJobTimer;
 import com.augurit.agcloud.bsc.mapper.BscJobTimerMapper;
+import com.augurit.agcloud.bsc.sc.job.timer.JobTimer;
 import com.augurit.aplanmis.supermarket.dataexchange.config.UploadDataConfig;
+import com.augurit.aplanmis.supermarket.dataexchange.dataExchangeJobService.DataExchangeJobService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
@@ -12,18 +15,18 @@ import javax.annotation.PostConstruct;
 /**
  * 市同步信息到前置库定时任务
  */
-//@Component
+@Component
 @Slf4j
-public class UploadDataToPreJob {//extends JobTimer
+public class UploadDataToPreJob extends JobTimer {
+
     @Autowired
     private UploadDataConfig uploadDataConfig;
     @Autowired
     private BscJobTimerMapper bscJobTimerMapper;
-
+    @Autowired
+    private DataExchangeJobService dataExchangeJobService;
 
     private String timeCron;
-    //在省厅配置的市级机构ID
-    private String cityOrgId;
 
     //初始化timer
     @PostConstruct
@@ -50,18 +53,12 @@ public class UploadDataToPreJob {//extends JobTimer
      * 同步数据到前置库---目前只同步单位及联系人信息，服务类型
      */
     public void uploadDataToPreDatabase() {
-        boolean first = uploadDataConfig.isFirst();
-        if (first) {
-
-        } else {
-
+        try {
+            dataExchangeJobService.uploadDataToPreDatabase();
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info("upload data fail");
         }
-        //
-        //第一次
-//        boolean firstUpload = databaseConfig.isFirstUpload();
-        /*if(firstUpload){//第一次同步
-            //第一次需要同步 中介单位，联系人，关联表
-        }*/
     }
 
 
@@ -72,20 +69,20 @@ public class UploadDataToPreJob {//extends JobTimer
     private BscJobTimer createBscJobTimer() {
         BscJobTimer timer = new BscJobTimer();
         timer.setTimerId("af41f631-04e9-4f24-9b65-4aa21536262b");
-        timer.setTimerName("市上传中介超市数据到前置库");
-        timer.setTimerDesc("市上传中介超市数据到前置库，每天凌晨1点开始统计");
+        timer.setTimerName("省厅中介超市上传数据到前置库");
+        timer.setTimerDesc("省厅中介超市上传数据到前置库，每天凌晨1点开始统计");
         timer.setTimerBeanId("uploadDataToPreJob");
         timer.setTimerClass("UploadDataToPreJob");
         timer.setTimerMethod("uploadDataToPreDatabase");
         if (StringUtils.isEmpty(timeCron)) {
-            timer.setTimerCron("0 0 1 * * ?");
+            timer.setTimerCron("0 */5 * * * ?");
         } else {
             timer.setTimerCron(timeCron);
         }
         timer.setRumLock("1");
         timer.setRunEndStatus("0");
         timer.setRunException("");
-        timer.setBussFlag("aplanmis-mall:supermarket");
+        timer.setBussFlag("aplanmis-mall");
         timer.setIsActive("1");
         return timer;
     }
@@ -93,13 +90,13 @@ public class UploadDataToPreJob {//extends JobTimer
     private BscJobTimer updateBscJobTimer(String isActive) {
         BscJobTimer timer = new BscJobTimer();
         timer.setTimerId("af41f631-04e9-4f24-9b65-4aa21536262b");
-        timer.setTimerName("市上传中介超市数据到前置库");
-        timer.setTimerDesc("市上传中介超市数据到前置库，每天凌晨1点开始统计");
-        timer.setTimerBeanId("uploadDataToPreJob");
+        timer.setTimerName("省厅中介超市上传数据到前置库");
+        timer.setTimerDesc("省厅中介超市上传数据到前置库，每天凌晨1点开始统计");
         timer.setTimerClass("UploadDataToPreJob");
+        timer.setTimerBeanId("uploadDataToPreJob");
         timer.setTimerMethod("uploadDataToPreDatabase");
         if (StringUtils.isEmpty(timeCron)) {
-            timer.setTimerCron("0 0 1 * * ?");
+            timer.setTimerCron("0 */5 * * * ?");
         } else {
             timer.setTimerCron(timeCron);
         }

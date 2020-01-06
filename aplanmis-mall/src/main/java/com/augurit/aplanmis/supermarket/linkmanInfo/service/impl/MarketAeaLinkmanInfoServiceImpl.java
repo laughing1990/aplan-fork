@@ -24,15 +24,15 @@ import java.util.List;
 import java.util.UUID;
 
 /**
-* 联系人表-Service服务接口实现类
-<ul>
-    <li>项目名：奥格erp3.0--第一期建设项目</li>
-    <li>版本信息：v1.0</li>
-    <li>版权所有(C)2016广州奥格智能科技有限公司-版权所有</li>
-    <li>创建人:thinkpad</li>
-    <li>创建时间：2019-06-12 20:19:45</li>
-</ul>
-*/
+ * 联系人表-Service服务接口实现类
+ * <ul>
+ * <li>项目名：奥格erp3.0--第一期建设项目</li>
+ * <li>版本信息：v1.0</li>
+ * <li>版权所有(C)2016广州奥格智能科技有限公司-版权所有</li>
+ * <li>创建人:thinkpad</li>
+ * <li>创建时间：2019-06-12 20:19:45</li>
+ * </ul>
+ */
 @Service
 @Transactional
 public class MarketAeaLinkmanInfoServiceImpl implements AeaLinkmanInfoService {
@@ -48,17 +48,13 @@ public class MarketAeaLinkmanInfoServiceImpl implements AeaLinkmanInfoService {
     @Autowired
     private AeaBusCertinstMapper aeaBusCertinstMapper;
     @Autowired
-    private AeaHiCertinstMapper aeaHiCertinstMapper;
-    @Autowired
-    private AeaImServiceMapper aeaImServiceMapper;
-    @Autowired
     private AeaImUnitServiceMapper aeaImUnitServiceMapper;
     @Autowired
     private AeaImUnitServiceLinkmanMapper aeaImUnitServiceLinkmanMapper;
 
-    public AeaLinkmanInfo insertLinkmanInfo(AeaLinkmanInfo aeaLinkmanInfo) throws Exception{
+    public AeaLinkmanInfo insertLinkmanInfo(AeaLinkmanInfo aeaLinkmanInfo) throws Exception {
 
-        try{
+        try {
             aeaLinkmanInfo.setLinkmanInfoId(UUID.randomUUID().toString());
             aeaLinkmanInfo.setCreater("admin");
             aeaLinkmanInfo.setCreateTime(new Date());
@@ -74,32 +70,32 @@ public class MarketAeaLinkmanInfoServiceImpl implements AeaLinkmanInfoService {
             aeaUnitLinkman.setCreateTime(new Date());
             aeaUnitLinkmanMapper.insertAeaUnitLinkman(aeaUnitLinkman);
             return aeaLinkmanInfo;
-        }catch(Exception e){
+        } catch (Exception e) {
             aeaLinkmanInfo = null;
             return aeaLinkmanInfo;
         }
 
 
-
     }
-    public AeaLinkmanInfo updateLinkmanInfo(AeaLinkmanInfo aeaLinkmanInfo) throws Exception{
 
-        try{
+    public AeaLinkmanInfo updateLinkmanInfo(AeaLinkmanInfo aeaLinkmanInfo) throws Exception {
+
+        try {
             aeaLinkmanInfo.setCreateTime(new Date());
-            if(aeaLinkmanInfo.getLoginPwd()!=""||aeaLinkmanInfo.getLoginPwd()!=null){
-                String pwd =  Md5Utils.encrypt32(aeaLinkmanInfo.getLoginPwd());
+            if (aeaLinkmanInfo.getLoginPwd() != "" || aeaLinkmanInfo.getLoginPwd() != null) {
+                String pwd = Md5Utils.encrypt32(aeaLinkmanInfo.getLoginPwd());
                 aeaLinkmanInfo.setLoginPwd(pwd);
             }
             aeaLinkmanInfoMapper.updateAeaLinkmanInfo(aeaLinkmanInfo);
             return aeaLinkmanInfo;
-        }catch(Exception e){
+        } catch (Exception e) {
             aeaLinkmanInfo = null;
             return aeaLinkmanInfo;
         }
     }
 
 
-    public boolean saveAeaLinkmanInfo(AeaLinkmanInfo aeaLinkmanInfo) throws Exception{
+    public boolean saveAeaLinkmanInfo(AeaLinkmanInfo aeaLinkmanInfo) throws Exception {
         try {
 
 
@@ -117,8 +113,8 @@ public class MarketAeaLinkmanInfoServiceImpl implements AeaLinkmanInfoService {
             aeaImServiceLinkmanMapper.insertAeaImServiceLinkman(aeaImServiceLinkman);
 
             List<String> list = aeaLinkmanInfo.getCertinstId();
-            if(list.size()>0){
-                for(int i=0;i<list.size();i++){
+            if (list.size() > 0) {
+                for (int i = 0; i < list.size(); i++) {
                     AeaBusCertinst aeaBusCertinstByService = new AeaBusCertinst();
                     aeaBusCertinstByService.setBusCertinstId(UUID.randomUUID().toString());
                     aeaBusCertinstByService.setBusTableName("aea_im_service_linkman");
@@ -134,13 +130,14 @@ public class MarketAeaLinkmanInfoServiceImpl implements AeaLinkmanInfoService {
             }
 
             return true;
-        }catch(Exception e){
+        } catch (Exception e) {
             return false;
         }
 
 
     }
-    public void updateAeaLinkmanInfo(AeaLinkmanInfo aeaLinkmanInfo) throws Exception{
+
+    public void updateAeaLinkmanInfo(AeaLinkmanInfo aeaLinkmanInfo) throws Exception {
         try {
 
             AeaImServiceLinkman aeaImServiceLinkman = new AeaImServiceLinkman();
@@ -154,8 +151,8 @@ public class MarketAeaLinkmanInfoServiceImpl implements AeaLinkmanInfoService {
 
             List<String> list = aeaLinkmanInfo.getCertinstId();
             aeaBusCertinstMapper.deleteAeaBusCertinstByTableNameAndRecordId("aea_im_service_linkman", aeaLinkmanInfo.getServiceLinkmanId());
-            if(list.size()>0){
-                for(int i=0;i<list.size();i++){
+            if (list.size() > 0) {
+                for (int i = 0; i < list.size(); i++) {
                     AeaBusCertinst aeaBusCertinstByService = new AeaBusCertinst();
                     aeaBusCertinstByService.setBusCertinstId(UUID.randomUUID().toString());
                     aeaBusCertinstByService.setBusTableName("aea_im_service_linkman");
@@ -170,50 +167,55 @@ public class MarketAeaLinkmanInfoServiceImpl implements AeaLinkmanInfoService {
                 }
             }
 
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public void deleteAeaLinkmanInfoById(String serviceLinkmanId,String unitServiceId,String unitServiceLinkmanId) throws Exception{
 
-        try{
+    public void deleteAeaLinkmanInfoById(String serviceLinkmanId, String unitServiceId, String unitServiceLinkmanId) throws Exception {
+
+        try {
             aeaImServiceLinkmanMapper.deleteAeaImServiceLinkman(serviceLinkmanId);
             aeaImUnitServiceMapper.deleteAeaImUnitService(unitServiceId);
             aeaImUnitServiceLinkmanMapper.deleteAeaImUnitServiceLinkmanByUnitServiceId(unitServiceLinkmanId);
-        }catch(Exception e){
+        } catch (Exception e) {
 
         }
 
     }
-    public PageInfo<AeaLinkmanInfo> listAeaLinkmanInfo(AeaLinkmanInfo aeaLinkmanInfo, Page page) throws Exception{
+
+    public PageInfo<AeaLinkmanInfo> listAeaLinkmanInfo(AeaLinkmanInfo aeaLinkmanInfo, Page page) throws Exception {
         PageHelper.startPage(page);
         List<AeaLinkmanInfo> list = aeaLinkmanInfoMapper.listAeaLinkmanInfo(aeaLinkmanInfo);
         logger.debug("成功执行分页查询！！");
         return new PageInfo<AeaLinkmanInfo>(list);
     }
-    public List<AeaLinkmanInfo> getAeaLinkmanInfoById(String id) throws Exception{
-        if(id == null)
-        throw new InvalidParameterException(id);
+
+    public List<AeaLinkmanInfo> getAeaLinkmanInfoById(String id) throws Exception {
+        if (id == null)
+            throw new InvalidParameterException(id);
         logger.debug("根据ID获取Form对象，ID为：{}", id);
         return aeaLinkmanInfoMapper.getAeaLinkmanInfoAndUnitInfoByLinkmanInfoId(id);
     }
-    public List<AeaLinkmanInfo> getAeaLinkmanInfoByUnitInfoId(String unitInfoId, Integer isAll) throws Exception{
-        if(unitInfoId == null)
+
+    public List<AeaLinkmanInfo> getAeaLinkmanInfoByUnitInfoId(String unitInfoId, Integer isAll) throws Exception {
+        if (unitInfoId == null)
             throw new InvalidParameterException(unitInfoId);
         logger.debug("根据ID获取Form对象，ID为：{}", unitInfoId);
-        return aeaLinkmanInfoMapper.getAeaLinkmanInfoByUnitInfoId(unitInfoId,isAll);
+        return aeaLinkmanInfoMapper.getAeaLinkmanInfoByUnitInfoId(unitInfoId, isAll);
     }
-    public List<AeaLinkmanInfo> listAeaLinkmanInfo(AeaLinkmanInfo aeaLinkmanInfo) throws Exception{
+
+    public List<AeaLinkmanInfo> listAeaLinkmanInfo(AeaLinkmanInfo aeaLinkmanInfo) throws Exception {
         List<AeaLinkmanInfo> list = aeaLinkmanInfoMapper.listAeaLinkmanInfo(aeaLinkmanInfo);
         logger.debug("成功执行查询list！！");
         return list;
     }
 
-    public AeaLinkmanInfo getOneById(String id){
+    public AeaLinkmanInfo getOneById(String id) {
         return aeaLinkmanInfoMapper.getAeaLinkmanInfoById(id);
     }
 
-    public int updateAeaUnitLinkman(AeaUnitLinkman aeaUnitLinkman){
+    public int updateAeaUnitLinkman(AeaUnitLinkman aeaUnitLinkman) {
         return aeaLinkmanInfoMapper.updateAeaUnitLinkman(aeaUnitLinkman);
     }
 
@@ -222,5 +224,19 @@ public class MarketAeaLinkmanInfoServiceImpl implements AeaLinkmanInfoService {
         aeaLinkmanInfoMapper.deleteUnitLinkmanInfo(aeaUnitLinkman);
     }
 
+    @Override
+    public int batchDeleteAeaLinkmanInfo(List<String> ids) throws Exception {
+        return aeaLinkmanInfoMapper.batchDeleteAeaLinkmanInfo(ids);
+    }
+
+    @Override
+    public int batchInsertAeaLinkmanInfo(List<AeaLinkmanInfo> linkmanInfos) throws Exception {
+        return aeaLinkmanInfoMapper.batchInsertAeaLinkmanInfo(linkmanInfos);
+    }
+
+    @Override
+    public int batchInsertAeaUnintLinkman(List<AeaUnitLinkman> unitLinkmen) throws Exception {
+        return aeaLinkmanInfoMapper.batchInsertAeaUnintLinkman(unitLinkmen);
+    }
 }
 

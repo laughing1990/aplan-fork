@@ -43,7 +43,8 @@
         IS_OWNER_UNIT  isOwnerUnit,
         ROOT_ORG_ID rootOrgId,
         IS_GD isGd,
-        AUDIT_FLAG auditFlag
+        AUDIT_FLAG auditFlag,
+        IS_EXTERNAL isExternal
     </sql>
 
     <sql id="alias_allColumns">
@@ -83,7 +84,8 @@
         ${alias}.IS_IM_UNIT  isImUnit,
         ${alias}.IMG_URL  imgUrl,
         ${alias}.IS_OWNER_UNIT  isOwnerUnit,
-        ${alias}.ROOT_ORG_ID  rootOrgId
+        ${alias}.ROOT_ORG_ID  rootOrgId,
+        ${alias}.IS_EXTERNAL isExternal
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
@@ -309,6 +311,9 @@
             <if test="rootOrgId != null">
                 AND ROOT_ORG_ID = #{rootOrgId}
             </if>
+            <if test="isExternal != null">
+                AND IS_EXTERNAL = #{isExternal}
+            </if>
             AND IS_DELETED = '0'
         </where>
     </select>
@@ -320,12 +325,12 @@
                                    APPLICANT_DETAIL_SITE, IDREPRESENTATIVE, IDMOBILE, IDNO, IS_DELETED, CREATER,
                                    CREATE_TIME, MODIFIER, MODIFY_TIME, IS_PRIMARY_UNIT, PARENT_ID, UNIT_INFO_SEQ,
                                    LOGIN_NAME, UNIT_TYPE, LOGIN_PWD, MANAGEMENT_SCOPE, REGISTERED_CAPITAL,
-                                   REGISTER_AUTHORITY, UNIT_NATURE, POSTAL_CODE, IS_IM_UNIT, IMG_URL, IS_OWNER_UNIT,ROOT_ORG_ID,IS_GD,AUDIT_FLAG)
+                                   REGISTER_AUTHORITY, UNIT_NATURE, POSTAL_CODE, IS_IM_UNIT, IMG_URL, IS_OWNER_UNIT,ROOT_ORG_ID,IS_GD,AUDIT_FLAG,IS_EXTERNAL)
         values (#{unitInfoId}, #{applicant}, #{idtype}, #{idcard}, #{induCommRegNum} , #{organizationalCode} , #{unifiedSocialCreditCode} ,#{taxpayerNum},#{creditFlagNum}, #{contact}, #{mobile}, #{email},
                 #{applicantDistrict}, #{applicantDetailSite}, #{idrepresentative}, #{idmobile}, #{idno}, #{isDeleted},
                 #{creater}, #{createTime}, #{modifier}, #{modifyTime}, #{isPrimaryUnit}, #{parentId}, #{unitInfoSeq},
                 #{loginName}, #{unitType}, #{loginPwd}, #{managementScope}, #{registeredCapital}, #{registerAuthority},
-                #{unitNature}, #{postalCode}, #{isImUnit}, #{imgUrl}, #{isOwnerUnit},#{rootOrgId},#{isGd},#{auditFlag})
+                #{unitNature}, #{postalCode}, #{isImUnit}, #{imgUrl}, #{isOwnerUnit},#{rootOrgId},#{isGd},#{auditFlag},#{isExternal})
     </insert>
     <!--6 修改实体对象 -->
     <update id="updateAeaUnitInfo" parameterType="AeaUnitInfo">
@@ -448,6 +453,9 @@
             <if test="auditFlag != null">
                 AUDIT_FLAG = #{auditFlag}
             </if>
+            <if test="isExternal != null">
+                IS_EXTERNAL = #{isExternal}
+            </if>
         </set>
         where UNIT_INFO_ID = #{unitInfoId}
     </update>
@@ -471,6 +479,24 @@
             #{id}
         </foreach>
     </update>
+
+    <!-- 批量删除-->
+    <update id="batchDeleteAeaUnitInfo">
+        update AEA_UNIT_INFO
+        set
+            IS_DELETED = '1'
+        <where>
+            IS_EXTERNAL = '1'
+            and IS_DELETED = '0'
+            <if test="ids !=null and ids.size()>0">
+                and UNIT_INFO_ID in
+                <foreach collection="ids" index="index" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </update>
+
     <!--8 删除实体对象列表,根据主键ID列表 -->
     <!--9 返回所有字段的对象map,用于级联 -->
     <resultMap type="AeaUnitInfo" id="AeaUnitInfoMap">
@@ -511,7 +537,7 @@
         <result property="imgUrl" column="IMG_URL"/>
         <result property="isOwnerUnit" column="IS_OWNER_UNIT"/>
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
-
+        <result property="isExternal" column="IS_EXTERNAL"/>
     </resultMap>
 
     <select id="listAeaUnitInfoByLinkIdHasBind" resultType="AeaUnitInfo">

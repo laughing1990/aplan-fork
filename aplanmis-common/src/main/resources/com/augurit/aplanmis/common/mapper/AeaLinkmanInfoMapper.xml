@@ -25,7 +25,8 @@
     linkman.LOGIN_NAME  loginName,
     linkman.LOGIN_PWD  loginPwd,
     linkman.IMG_URL  imgUrl,
-    linkman.ROOT_ORG_ID rootOrgId
+    linkman.ROOT_ORG_ID rootOrgId,
+    linkman.IS_EXTERNAL isExternal
     </sql>
     <sql id="alias_allColumns">
         ${alias}.LINKMAN_INFO_ID  linkmanInfoId,
@@ -48,7 +49,8 @@
     ${alias}.LOGIN_NAME  loginName,
     ${alias}.LOGIN_PWD  loginPwd,
     ${alias}.IMG_URL  imgUrl,
-    ${alias}.ROOT_ORG_ID rootOrgId
+    ${alias}.ROOT_ORG_ID rootOrgId,
+    ${alias}.IS_EXTERNAL isExternal
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
@@ -237,6 +239,9 @@
             <if test="rootOrgId != null">
                 AND ROOT_ORG_ID = #{rootOrgId}
             </if>
+            <if test="isExternal != null">
+                AND IS_EXTERNAL = #{isExternal}
+            </if>
             AND IS_DELETED = '0'
         </where>
     </select>
@@ -254,11 +259,11 @@
         insert into AEA_LINKMAN_INFO (LINKMAN_INFO_ID, LINKMAN_TYPE, LINKMAN_CATE, LINKMAN_NAME, LINKMAN_ADDR,
                                       LINKMAN_OFFICE_PHON, LINKMAN_MOBILE_PHONE, LINKMAN_FAX, LINKMAN_MAIL,
                                       LINKMAN_CERT_NO, IS_ACTIVE, IS_DELETED, LINKMAN_MEMO, CREATER, CREATE_TIME,
-                                      MODIFIER, MODIFY_TIME, LOGIN_NAME, LOGIN_PWD, IMG_URL,ROOT_ORG_ID)
+                                      MODIFIER, MODIFY_TIME, LOGIN_NAME, LOGIN_PWD, IMG_URL,ROOT_ORG_ID,IS_EXTERNAL)
         values (#{linkmanInfoId}, #{linkmanType}, #{linkmanCate}, #{linkmanName}, #{linkmanAddr}, #{linkmanOfficePhon},
                 #{linkmanMobilePhone}, #{linkmanFax}, #{linkmanMail}, #{linkmanCertNo}, #{isActive}, #{isDeleted},
                 #{linkmanMemo}, #{creater}, #{createTime}, #{modifier}, #{modifyTime}, #{loginName}, #{loginPwd},
-                #{imgUrl},#{rootOrgId})
+                #{imgUrl},#{rootOrgId},#{isExternal})
     </insert>
     <!--6 修改实体对象 -->
     <update id="updateAeaLinkmanInfo" parameterType="AeaLinkmanInfo">
@@ -327,6 +332,9 @@
             <if test="rootOrgId != null">
                 ROOT_ORG_ID = #{rootOrgId},
             </if>
+            <if test="isExternal != null">
+                IS_EXTERNAL = #{isExternal}
+            </if>
         </set>
         where LINKMAN_INFO_ID = #{linkmanInfoId}
     </update>
@@ -337,6 +345,61 @@
             IS_DELETED = '1'
         </set>
         where LINKMAN_INFO_ID = #{id}
+    </update>
+
+    <update id="batchDeleteAeaLinkmanInfo">
+        update AEA_LINKMAN_INFO
+        set
+        IS_DELETED = '1'
+        <where>
+            IS_EXTERNAL = '1'
+            and IS_DELETED = '0'
+            <if test="ids !=null and ids.size()>0">
+                and LINKMAN_INFO_ID in
+                <foreach collection="ids" index="index" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </update>
+
+    <update id="batchInsertAeaLinkmanInfo" parameterType="java.util.List">
+        insert into AEA_LINKMAN_INFO (LINKMAN_INFO_ID, LINKMAN_TYPE, LINKMAN_CATE, LINKMAN_NAME, LINKMAN_ADDR,
+        LINKMAN_OFFICE_PHON, LINKMAN_MOBILE_PHONE, LINKMAN_FAX, LINKMAN_MAIL,
+        LINKMAN_CERT_NO, IS_ACTIVE, IS_DELETED, LINKMAN_MEMO, CREATER, CREATE_TIME,
+        MODIFIER, MODIFY_TIME, LOGIN_NAME, LOGIN_PWD, IMG_URL,ROOT_ORG_ID,IS_EXTERNAL)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.linkmanInfoId}, #{item.linkmanType}, #{item.linkmanCate}, #{item.linkmanName}, #{item.linkmanAddr},
+            #{item.linkmanOfficePhon},
+            #{item.linkmanMobilePhone}, #{item.linkmanFax}, #{item.linkmanMail}, #{item.linkmanCertNo},
+            #{item.isActive}, #{item.isDeleted},
+            #{item.linkmanMemo}, #{item.creater}, #{item.createTime}, #{item.modifier}, #{item.modifyTime},
+            #{item.loginName}, #{item.loginPwd},
+            #{item.imgUrl},#{item.rootOrgId},#{item.isExternal})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        LINKMAN_INFO_ID =VALUES(LINKMAN_INFO_ID) , LINKMAN_TYPE =VALUES(LINKMAN_TYPE) , LINKMAN_CATE
+        =VALUES(LINKMAN_CATE) , LINKMAN_NAME =VALUES(LINKMAN_NAME) , LINKMAN_ADDR =VALUES(LINKMAN_ADDR) ,
+        LINKMAN_OFFICE_PHON =VALUES(LINKMAN_OFFICE_PHON) , LINKMAN_MOBILE_PHONE =VALUES(LINKMAN_MOBILE_PHONE) ,
+        LINKMAN_FAX =VALUES(LINKMAN_FAX) , LINKMAN_MAIL =VALUES(LINKMAN_MAIL) ,
+        LINKMAN_CERT_NO =VALUES(LINKMAN_CERT_NO) , IS_ACTIVE =VALUES(IS_ACTIVE) , IS_DELETED =VALUES(IS_DELETED) ,
+        LINKMAN_MEMO =VALUES(LINKMAN_MEMO) , CREATER =VALUES(CREATER) , CREATE_TIME =VALUES(CREATE_TIME) ,
+        MODIFIER =VALUES(MODIFIER) , MODIFY_TIME =VALUES(MODIFY_TIME) , LOGIN_NAME =VALUES(LOGIN_NAME) , LOGIN_PWD
+        =VALUES(LOGIN_PWD) , IMG_URL =VALUES(IMG_URL) ,ROOT_ORG_ID =VALUES(ROOT_ORG_ID),IS_EXTERNAL =VALUES(IS_EXTERNAL)
+    </update>
+
+    <update id="batchInsertAeaUnintLinkman" parameterType="java.util.List">
+        insert into AEA_UNIT_LINKMAN(
+        UNIT_LINKMAN_ID,UNIT_INFO_ID,LINKMAN_INFO_ID,CREATER,CREATE_TIME,IS_BIND_ACCOUNT,IS_ADMINISTRATORS
+        ) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.unitLinkmanId},#{item.unitInfoId},#{item.linkmanInfoId},#{item.creater},#{item.createTime},#{item.isBindAccount},#{item.isAdministrators}
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        UNIT_LINKMAN_ID =VALUES(UNIT_LINKMAN_ID) ,UNIT_INFO_ID =VALUES(UNIT_INFO_ID) ,LINKMAN_INFO_ID =VALUES(LINKMAN_INFO_ID) ,CREATER =VALUES(CREATER) ,CREATE_TIME =VALUES(CREATE_TIME) ,IS_BIND_ACCOUNT =VALUES(IS_BIND_ACCOUNT) ,IS_ADMINISTRATORS =VALUES(IS_ADMINISTRATORS)
     </update>
 
     <!-- 批量删除-->
@@ -432,6 +495,9 @@
             <if test="rootOrgId != null and rootOrgId!=''">
                 AND aul.ROOT_ORG_ID = #{rootOrgId}
             </if>
+            <if test="isExternal != null and isExternal!=''">
+                AND linkman.IS_EXTERNAL = #{isExternal}
+            </if>
             AND (IS_DELETED = '0' or IS_DELETED is null)
         </where>
     </select>
@@ -459,7 +525,7 @@
         <result property="loginPwd" column="LOGIN_PWD"/>
         <result property="imgUrl" column="IMG_URL"/>
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
-
+        <result property="isExternal" column="IS_EXTERNAL"/>
     </resultMap>
 
     <!--查询单位人员资格证书 0b1c323b-7247-4762-a72d-774fc4e07e8f -->
