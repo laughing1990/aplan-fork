@@ -243,4 +243,6 @@ public interface AeaProjInfoService {
      * @throws Exception e
      */
     AeaProjInfo getTransProjInfoDetail(String projInfoId) throws Exception;
+
+    List<AeaProjInfo> getAeaProjInfosByStageIdAndLocalCode(String stageId, String localCode);
 }

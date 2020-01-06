@@ -931,6 +931,11 @@ public class AeaProjInofServiceImpl extends AbstractFormDataOptManager implement
         return aeaProjInfo;
     }
 
+    @Override
+    public List<AeaProjInfo> getAeaProjInfosByStageIdAndLocalCode(String stageId, String localCode){
+        return aeaProjInfoMapper.getAeaProjInfosByStageIdAndLocalCode(stageId,localCode);
+    }
+
 
     private void buildChildProjects(Map<String, String> child2Parent, Set<String> projInfoIds, List<String> pIds) {
         List<AeaParentProj> childProjs;

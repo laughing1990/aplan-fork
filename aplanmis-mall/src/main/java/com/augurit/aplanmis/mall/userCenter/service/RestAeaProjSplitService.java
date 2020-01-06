@@ -11,10 +11,12 @@ import com.augurit.aplanmis.common.service.admin.solicit.AeaSolicitOrgUserServic
 import com.augurit.aplanmis.common.service.dic.GcbmBscRuleCodeStrategy;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.window.AeaProjApplySplitService;
+import com.augurit.aplanmis.mall.main.service.RestMainService;
 import com.augurit.aplanmis.mall.userCenter.vo.SplitProjInfoParamVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -33,6 +35,8 @@ public class RestAeaProjSplitService {
     private AeaProjInfoService aeaProjInfoService;
     @Autowired
     private AeaParentProjMapper aeaParentProjMapper;
+    @Autowired
+    private RestMainService restMainService;
 
     public AeaProjApplySplit saveProjInfoAndInitProjApplySplit(SplitProjInfoParamVo splitProjInfoParamVo) throws Exception {
         String parentProjInfoId=splitProjInfoParamVo.getParentProjInfoId();
@@ -95,11 +99,21 @@ public class RestAeaProjSplitService {
         return aeaProjApplySplit;
     }
 
-    @Autowired
-    private AeaParStageService aeaParStageService;
-
-    public AeaProjInfo getFrontStageProjInfo(String stageNo, String themeVerId, String localCode) {
-        //aeaParStageService.stageApply()
+    public AeaProjInfo getFrontStageProjInfo(String stageNo, String themeId, String localCode,HttpServletRequest request) throws Exception {
+        List<AeaParStage> stageList = restMainService.getStageByThemeId(themeId, null, SecurityContext.getCurrentOrgId(), null, null, request, "0");
+        String stageId="";
+        for (AeaParStage aeaParStage:stageList){
+            String gjbz=aeaParStage.getDygjbzfxfw();
+            if("1".equals(stageNo) && gjbz.contains("1")){//第二阶段，前阶段为第一阶段
+                stageId=aeaParStage.getStageId();
+            }else if("2".equals(stageNo) && gjbz.contains("2")){//第三阶段，前阶段为第二阶段
+                stageId=aeaParStage.getStageId();
+            }
+        }
+        List<AeaProjInfo> aeaProjInfoList=aeaProjInfoService.getAeaProjInfosByStageIdAndLocalCode(stageId,localCode);
+        if(aeaProjInfoList.size()>0){
+            return aeaProjInfoList.get(0);
+        }
         return  null;
     }
 }

@@ -3162,6 +3162,7 @@ var vm = new Vue({
                 _that.parallelItemsSelAll(_that.parallelItems, 'autoGetSel');
                 _that.toggleSelection(_that.parallelItems, 'parallelItemsTable');
               }
+              _that.getAllForms();
             }
             _that.setItemShowLen(); // 事项展示长度
           });
@@ -5459,6 +5460,7 @@ var vm = new Vue({
           return item != row.itemBasicId;
         });
       }
+      _that.getAllForms();
     },
     // 并行并联事项 根据情形获取子情形 材料
     getStatusMatItemsByStatus: function (row, flag) { // flag='coreItem'并行事项
@@ -5700,6 +5702,7 @@ var vm = new Vue({
           }
         }
       });
+      _that.getAllForms();
     },
     // 并联事项单选事件
     parallelItemsSelItem: function (selArr, row, selflag) { // selflag 调用方式 autoGetSel手动触发
@@ -5853,6 +5856,7 @@ var vm = new Vue({
       // if(_that.stageQuestionFlag == false) {
       //   _that.getOfficeMats(_that.itemVerIdsString);
       // }
+      _that.getAllForms();
     },
     // 并联事项不包含情形时勾选并联事项获取的材料
     getOfficeMats: function (_itemVerIdS) { // rest/mats/getOfficeMats
@@ -6079,6 +6083,7 @@ var vm = new Vue({
       // if(_that.stageQuestionFlag == false) {
       //   _that.getOfficeMats(_that.itemVerIdsString);
       // }
+      _that.getAllForms();
     },
     // 获取并行情形列表id
     getCoreItemsStatusListId: function (cStateList) {
@@ -6587,7 +6592,18 @@ var vm = new Vue({
     // 一张表单得到所有的表单信息
     getAllForms: function (stageId) {
       var vm = this;
-
+      var itemVerId = [];
+      // try{
+        var list1 = this.$refs.parallelItemsTable.selection || [];
+        var list2 = this.$refs.coreItemsTable.selection || [];
+        var tmpArr = list1.concat(list2);
+        tmpArr.forEach(function(u) {
+          if (u.implementItemVerId&&u.implementItemVerId.length) {
+            itemVerId.push(u.implementItemVerId);
+          }
+        });
+      // } catch (e) {}
+      console.log(itemVerId);
       request('', {
         url: ctx + 'rest/oneform/common/getListForm4StageOneForm',
         type: 'get',
@@ -6597,7 +6613,7 @@ var vm = new Vue({
           projInfoId: vm.projInfoId,
           showBasicButton: true,
           includePlatformResource: false,
-          itemVerId: [],
+          itemVerId: itemVerId,
         },
       }, function (res) {
         if (res.success) {

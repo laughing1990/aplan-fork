@@ -96,7 +96,7 @@ public class RestMainServiceImpl implements RestMainService {
     }
 
     @Override
-    public List<AeaParStage> getStageByThemeId(String themeId, String projInfoId, String rootOrgId,String unitInfoId,String dygjbzfxfw, HttpServletRequest request) throws Exception {
+    public List<AeaParStage> getStageByThemeId(String themeId, String projInfoId, String rootOrgId,String unitInfoId,String dygjbzfxfw, HttpServletRequest request,String isMarkState) throws Exception {
 
         List<AeaParStage> results = new ArrayList<>();
         AeaParTheme theme = aeaParThemeService.getAeaParThemeByThemeId(themeId);
@@ -110,6 +110,7 @@ public class RestMainServiceImpl implements RestMainService {
         List<String> themeVerIds = publishedThemes.stream().filter(parTheme -> themeId.equals(parTheme.getThemeId())).map(AeaParTheme::getThemeVerId).collect(Collectors.toList());
         if (themeVerIds.size() == 0) return results;
         List<AeaParStage> list = aeaParStageService.listAeaParStageByThemeIdOrThemeVerId(StringUtils.EMPTY, themeVerIds.get(0), rootOrgId);
+        if("0".equals(isMarkState)) return list;
         for (AeaParStage aeaParStage : list) {
             if(StringUtils.isNotBlank(dygjbzfxfw) && !dygjbzfxfw.equals(aeaParStage.getDygjbzfxfw())){
                 continue;
