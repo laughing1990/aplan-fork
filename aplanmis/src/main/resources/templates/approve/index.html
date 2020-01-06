@@ -3276,7 +3276,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <template v-if="dialogConfig.showFileBox">
+        <template>
           <el-row style="margin-bottom:5px;">
             <el-col :span="12">
               <el-form-item label="联系人" prop="solicitLinkmanName" required>
@@ -3289,7 +3289,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row style="margin-bottom:5px;">
+          <el-row style="margin-bottom:5px;" v-if="dialogConfig.showFileBox">
             <el-col :span="24">
               <el-form-item label="附件">
                 <el-upload ref="uploadCert3" class="upload-s-file" :action="ctx+'rest/certificate/certinst/att/upload'"
@@ -3331,8 +3331,8 @@
                 </el-radio-group>
               </el-form-item>
             </el-col>
-            <el-col :span="12" v-show="dialogConfig.showType">
-              <el-form-item :label="dialogConfig.formLabel+'类型'">
+            <el-col :span="12">
+              <el-form-item v-show="dialogConfig.showType" :label="dialogConfig.formLabel+'类型'">
                 <el-radio-group v-model="solicitForm.solicitType" @change="changeOsTab">
                   <el-radio label="i">按事项征询</el-radio>
                   <el-radio label="d">按部门征询</el-radio>

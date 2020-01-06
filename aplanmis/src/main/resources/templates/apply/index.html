@@ -35,7 +35,9 @@
 <body class="gray-body">
 <div id="approve" v-cloak v-loading.fullscreen.lock="loading" :class="{'is-audit': showAuditProj}">
   <template data-title="部门辅导有拆分子工程的需要工程审核" v-if="showAuditProj" class="proj-review">
-    <p class="au-hint-text"><i class="ag ag-warn-circle"></i>提示：所选下一环节为单人审批模式，请选择一个办理人。然后请点击“发送”按钮发送到所选环节。</p>
+    <p class="au-hint-text"><i class="ag ag-warn-circle"></i>
+      当前网厅申报处于部门辅导模式，请先进行工程审核，然后点击“下一步”进行事项的相关确认。
+    </p>
     <el-form v-model="auProJForm" label-width="150px" class="au-form" size="medium">
       <el-collapse v-model="activeNames">
         <el-collapse-item name="1">
@@ -71,31 +73,24 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="所处阶段">
-                <el-input v-model="auProJForm.localCode" readonly></el-input>
+                <el-input v-model="auProJForm.stageNo" readonly></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="前阶段关联工程代码">
-                <el-input v-model="auProJForm.investSum" readonly></el-input>
+                <el-input v-model="auProJForm.frontStageGcbm" readonly></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="12">
               <el-form-item label="单项工程名称">
-                <el-input v-model="auProJForm.localCode" readonly></el-input>
+                <el-input v-model="auProJForm.splitProjName" readonly></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="12">
-              <el-form-item label="工程范围">
-                <el-input v-model="auProJForm.investSum" readonly></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
             <el-col :span="12">
               <el-form-item label="单项工程投资金额">
-                <el-input v-model="auProJForm.localCode" readonly>
+                <el-input v-model="auProJForm.splitInvestSum" readonly>
                   <template slot="append">万元</template>
                 </el-input>
               </el-form-item>
@@ -104,21 +99,21 @@
           <el-row>
             <el-col :span="24">
               <el-form-item label="单项工程建设规模">
-                <el-input v-model="auProJForm.projName" readonly type="textarea" :rows="3"></el-input>
+                <el-input v-model="auProJForm.scaleContent" readonly type="textarea" :rows="3"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="12">
               <el-form-item label="用地面积">
-                <el-input v-model="auProJForm.localCode" readonly>
+                <el-input v-model="auProJForm.xmYdmj" readonly>
                   <template slot="append">㎡</template>
                 </el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="建筑面积">
-                <el-input v-model="auProJForm.investSum" readonly>
+                <el-input v-model="auProJForm.buildAreaSum" readonly>
                   <template slot="append">㎡</template>
                 </el-input>
               </el-form-item>
@@ -129,42 +124,67 @@
           <template slot="title">
             <i class="header-icon icon ag ag-project-info"></i>申报单位信息
           </template>
-          <el-row>
-            <el-col :span="12">
-              <el-form-item label="申报单位类型">
-                <el-input v-model="auProJForm.localCode" readonly></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="项目单位名称">
-                <el-input v-model="auProJForm.investSum" readonly></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="12">
-              <el-form-item label="证件类型">
-                <el-input v-model="auProJForm.localCode" readonly></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="证件号码">
-                <el-input v-model="auProJForm.investSum" readonly></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="12">
-              <el-form-item label="法人姓名">
-                <el-input v-model="auProJForm.localCode" readonly></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="联系电话">
-                <el-input v-model="auProJForm.investSum" readonly></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
+          <template v-if="auProJForm.applySubjectType=='1'"
+                    v-for="(u, i) in auProJForm.applyUnit">
+            <p class="apply-info-title" style="padding-left:12px;">建设单位</p>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="申报单位类型">
+                  <el-input v-model="u.unitTypeName" readonly></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="项目单位名称">
+                  <el-input v-model="u.applicant" readonly></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="法人姓名">
+                  <el-input v-model="u.idrepresentative" readonly></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="证件号码">
+                  <el-input v-model="u.idno" readonly></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="联系电话">
+                  <el-input v-model="u.linkmanMobilePhone" readonly></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </template>
+          <template v-if="auProJForm.applySubjectType=='0'">
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="申请人">
+                  <el-input v-model="auProJForm.applyLinkmanName" readonly></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="申请人身份证号">
+                  <el-input v-model="auProJForm.applyLinkmanIdCard" readonly></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="申请人电话">
+                  <el-input v-model="auProJForm.applyLinkmanTel" readonly></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="申请人邮箱">
+                  <el-input v-model="auProJForm.applyLinkmanEmail" readonly></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </template>
         </el-collapse-item>
         <el-collapse-item name="4">
           <template slot="title">
@@ -173,24 +193,24 @@
           <el-row>
             <el-col :span="24">
               <el-form-item label="工程审核意见">
-                <el-radio v-model="auProJForm.localCode" label="1">通过</el-radio>
-                <el-radio v-model="auProJForm.localCode" label="0">不通过</el-radio>
+                <el-radio v-model="auProJForm.passed" label="true">通过</el-radio>
+                <el-radio v-model="auProJForm.passed" label="false">不通过</el-radio>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="24">
               <el-form-item label="意见描述">
-                <el-input v-model="auProJForm.localCode" type="textarea" :rows="3"></el-input>
+                <el-input v-model="auProJForm.reason" type="textarea" :rows="3"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="24">
               <el-form-item label="">
-                <el-checkbox v-model="auProJForm.localCode">短信通知申请人</el-checkbox>
+                <el-checkbox v-model="auProJForm.needSms">短信通知申请人</el-checkbox>
                 <div style="margin-top:5px;">
-                  <el-button type="primary">确定并下一步</el-button>
+                  <el-button type="primary" @click="ensureAuditProj">确定并下一步</el-button>
                 </div>
               </el-form-item>
             </el-col>
@@ -200,11 +220,11 @@
     </el-form>
   </template>
   <template v-else>
-    <div class="title-nav">
+    <div class="title-nav" v-if="!isGuidePage">
       <span>投资项目申报前，请登陆 <a href="http://www.gdtz.gov.cn/tybm/apply3!search.action"
                            target="_blank">“投资项目在线审批监管平台”</a> 进行项目登记赋码</span>
     </div>
-    <el-form class="search-proj-info" label-width="115px">
+    <el-form class="search-proj-info" label-width="115px" v-if="!isGuidePage">
       <el-form-item label="项目/工程查询" id="projCodeInfo">
         <el-select v-model="searchKeyword" :disabled="isDraftsProj" filterable remote autofocus reserve-keyword
                    ref="searchProjInfo"
@@ -1372,7 +1392,7 @@
           </el-collapse-item>
           <!--事项一单清 end-->
           <!--一张表单 start-->
-          <el-collapse-item name="4" v-if="oneFormData.length>0&&selTheme&&selTheme.themeId" id="oneForm"
+          <el-collapse-item name="4" v-if="oneFormData.length>0&&selTheme&&selTheme.themeId&&!isGuidePage" id="oneForm"
                             class="clearfix one-form-collapse">
             <template slot="title">
               <i class="header-icon el-icon-edit-outline"></i>一张表单
@@ -1408,7 +1428,7 @@
           </el-collapse-item>
           <!--一张表单 end-->
           <!--材料一单清 start-->
-          <el-collapse-item name="5" id="matsList" v-show="selTheme&&selTheme.themeId">
+          <el-collapse-item name="5" id="matsList" v-show="selTheme&&selTheme.themeId&&!isGuidePage">
             <template slot="title">
               <i class="header-icon el-icon-info"></i>材料一单清
             </template>
@@ -1594,7 +1614,7 @@
           </el-collapse-item>
           <!--材料一单清 end-->
           <!--办证结果取件方式 start-->
-          <el-collapse-item name="6" id="getResult" v-show="selTheme&&selTheme.themeId">
+          <el-collapse-item name="6" id="getResult" v-show="selTheme&&selTheme.themeId&&!isGuidePage">
             <template slot="title">
               <i class="header-icon el-icon-info"></i>办证取件方式
             </template>
@@ -1653,7 +1673,7 @@
           </el-collapse-item>
           <!--办证结果取件方式 end-->
           <!--是否设置为绿色通道 start-->
-          <el-collapse-item name="7" id="isGreenWay" v-show="selTheme&&selTheme.themeId">
+          <el-collapse-item name="7" id="isGreenWay" v-show="selTheme&&selTheme.themeId&&!isGuidePage">
             <template slot="title">
               <i class="header-icon el-icon-info"></i>其他设置
             </template>

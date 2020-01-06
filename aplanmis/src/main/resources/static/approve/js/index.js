@@ -674,6 +674,7 @@ var vm = new Vue({
       dialogConfigSeachText: '',
       dialogConfigSolicit: {
         showType: true,
+        showFileBox: false,
         dialogType: 'YJZQ',
         dialogTitle: '意见征询',
         formLabel: '意见征询',
@@ -694,6 +695,7 @@ var vm = new Vue({
       unionReviewList: [],
       dialogConfigUnion: {
         showType: false,
+        showFileBox: false,
         dialogType: 'LHPS',
         dialogTitle: '发起联合评审',
         formLabel: '联合评审',

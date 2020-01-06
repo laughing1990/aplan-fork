@@ -659,7 +659,29 @@ var vm = new Vue({
         projName: '',
         localCode: '',
         investSum: '',
+
+        applySplitId: '',
+        applySubjectType: '',
+        stageNo: '',
+        frontStageGcbm: '',
+        splitProjName: '',
+        splitInvestSum: '',
+        scaleContent: '',
+        xmYdmj: '',
+        buildAreaSum: '',
+
+        applyUnit: [],
+
+        applyLinkmanName: '',
+        applyLinkmanIdCard: '',
+        applyLinkmanTel: '',
+        applyLinkmanEmail: '',
+
+        passed: 'true',
+        reason: '',
+        needSms: true,
       },
+      isGuidePage: false,
       // 部门辅导 end--------------------------
     }
   },
@@ -680,6 +702,7 @@ var vm = new Vue({
     // 来自部门辅导
     var _guideId = __STATIC.getUrlParam('guideId');
     if (_guideId && _guideId.length && _guideId!='undefind' && _guideId!='null') {
+      this.isGuidePage = true;
       this.requestGuideData(_guideId);
       return null;
     }
@@ -723,7 +746,40 @@ var vm = new Vue({
   methods: {
     // 部门辅导 start-----------------------
     // 显示辅导数据
-    showGuideDetail: function(){},
+    showGuideDetail: function(){
+      this.lookProjDetail();
+    },
+    // 审核工程
+    ensureAuditProj: function(){
+      var vm = this;
+      if (!(vm.auProJForm.reason&&vm.auProJForm.reason.length)){
+        vm.$message.error('请填写意见描述');
+        return null;
+      }
+      vm.loading = true;
+      request('', {
+        url: ctx + 'rest/project/splited/proj/approve',
+        type: 'post',
+        ContentType: 'application/json',
+        data: JSON.stringify({
+          applySplitId: vm.auProJForm.applySplitId,
+          needSms: vm.auProJForm.needSms,
+          passed: vm.auProJForm.passed,
+          reason: vm.auProJForm.reason,
+        }),
+      }, function(res){
+        vm.loading = false;
+        if (res.success) {
+          vm.$message.success('操作成功');
+          __STATIC.delayRefreshWindow();
+        } else {
+          vm.$message.error(res.message||'审核失败');
+        }
+      }, function(){
+        vm.loading = false;
+        vm.$message.error('审核失败');
+      })
+    },
     // 根据辅导id加载辅导数据
     requestGuideData: function(guideId){
       var vm = this;
@@ -735,7 +791,7 @@ var vm = new Vue({
       }, function(res) {
         vm.loading = false;
         if (res.success) {
-          //
+          vm.parallelApplyinstId = res.content.aeaHiGuide.applyinstId;
           vm.requestAuSplitProjInfo(res.content.aeaHiGuide.projInfoId);
         } else {
           vm.$message.error(res.message || '加载部门辅导数据失败');
@@ -756,6 +812,20 @@ var vm = new Vue({
         vm.loading = false;
         if (res.success) {
           vm.showAuditProj = true;
+          // 项目信息
+          vm.auProJForm.projName = res.content.projName;
+          vm.auProJForm.localCode = res.content.localCode;
+          vm.auProJForm.investSum = res.content.investSum;
+          vm.auProJForm.applySubjectType = res.content.applySubjectType;
+          // 申报主体单位信息
+          if (vm.auProJForm.applySubjectType=='1') {
+            vm.auProJForm.applyUnit = res.content.buildUnits;
+          } else if(vm.auProJForm.applySubjectType=='0'){
+            vm.auProJForm.applyLinkmanName = res.content.personalApplicant.applyLinkmanName;
+            vm.auProJForm.applyLinkmanIdCard = res.content.personalApplicant.applyLinkmanIdCard;
+            vm.auProJForm.applyLinkmanTel = res.content.personalApplicant.applyLinkmanTel;
+            vm.auProJForm.applyLinkmanEmail = res.content.personalApplicant.applyLinkmanEmail;
+          }
         } else {
           vm.$message.error(res.message || '加载部门辅导数据失败');
         }
@@ -778,9 +848,20 @@ var vm = new Vue({
           if (res.content&&res.content.length){
             var tmpArr = [];
             res.content.forEach(function(u){
-              u.aeaProjApplySplit.applyState!=3&&u.aeaProjApplySplit.applyState!=4&&tmpArr.push(u);
+              if (u.aeaProjApplySplit.applyState!=3&&u.aeaProjApplySplit.applyState!=4){
+                tmpArr.push(u);
+              }
             });
             if (tmpArr.length) {
+              // 单个工程信息
+              vm.auProJForm.applySplitId = tmpArr[0].aeaProjApplySplit.applySplitId;
+              vm.auProJForm.stageNo = tmpArr[0].aeaProjApplySplit.stageNo;
+              vm.auProJForm.frontStageGcbm = tmpArr[0].aeaProjApplySplit.frontStageGcbm;
+              vm.auProJForm.splitProjName = tmpArr[0].aeaProjApplySplit.projName;
+              vm.auProJForm.splitInvestSum = tmpArr[0].aeaProjApplySplit.investSum;
+              vm.auProJForm.scaleContent = tmpArr[0].scaleContent;
+              vm.auProJForm.xmYdmj = tmpArr[0].xmYdmj;
+              vm.auProJForm.buildAreaSum = tmpArr[0].buildAreaSum;
               vm.requestAuProjInfo(id);
             } else {
               vm.showGuideDetail();
