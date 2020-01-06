@@ -421,6 +421,7 @@ function addGlobalMat() {
     $("#aedit_mat_form input[name='stoFormId']").val("");
     $("#aedit_mat_form input[name='stdmatId']").val("");
     $("#aedit_mat_form input[name='matProp'][value='m']").prop("checked", true);
+    $("#aedit_mat_form input[name='isSign'][value='0']").prop("checked", true);
     handleSelectMatProNew('#aedit_mat_form', 'm');
 
     // 编号赋值

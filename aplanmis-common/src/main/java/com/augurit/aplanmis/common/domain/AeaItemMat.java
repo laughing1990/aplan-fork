@@ -157,6 +157,9 @@ public class AeaItemMat extends MindBaseNode {
     @ApiModelProperty("标准材料名称")
     private String stdmatName;
 
+    @ApiModelProperty("是否需要签章 1是 0否")
+    private String isSign;
+
     /**
      * 扩展字段: 电子材料
      */
@@ -276,6 +279,7 @@ public class AeaItemMat extends MindBaseNode {
         newOne.setMatProp(this.getMatProp());
         newOne.setCertId(this.getCertId());
         newOne.setStoFormId(this.getStoFormId());
+        newOne.setIsSign(this.getIsSign());
         return newOne;
     }
 }

@@ -186,7 +186,19 @@
                             </label>
                         </div>
                     </div>
-                    <div class="col-6"></div>
+                    <label class="col-2 col-form-label" style="text-align: right;padding-top: 8px;">
+                        是否需要签章:
+                    </label>
+                    <div class="col-4">
+                        <div class="m-radio-inline">
+                            <label class="m-radio">
+                                <input type="radio" name="isSign" value="1">是&nbsp;&nbsp;&nbsp;&nbsp;<span></span>
+                            </label>
+                            <label class="m-radio">
+                                <input type="radio" name="isSign" value="0" checked>否<span></span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group m-form__group row">
