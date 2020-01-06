@@ -1,0 +1,47 @@
+#agencyAgreementDetail h4.info-title {
+  font-size: 17px;
+  font-weight: bold;
+  padding-left: 10px;
+  margin-top: 40px;
+  position: relative;
+  color: #666;
+  line-height: 31px;
+  font-weight: normal;
+}
+#agencyAgreementDetail h4.info-title:after {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  width: 4px;
+  height: 20px;
+  background: #3e97df;
+  left: 0;
+  top: 5px;
+}
+#agencyAgreementDetail table {
+  width: 100%;
+  font-size: 14px;
+  border: 1px solid #ECEFF5;
+  border-left: 0;
+  border-bottom: 0;
+  color: #515151;
+}
+#agencyAgreementDetail table tbody th,
+#agencyAgreementDetail table tbody td {
+  border-bottom: 1px solid #ECEFF5;
+}
+#agencyAgreementDetail table tbody th {
+  font-weight: 400;
+  width: 160px;
+  text-align: left;
+  background: #F9FBFD;
+  height: 46px;
+  border-left: 1px solid #ECEFF5;
+  border-right: 1px solid #ECEFF5;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+#agencyAgreementDetail table tbody td {
+  padding: 10px;
+  line-height: 24px;
+}

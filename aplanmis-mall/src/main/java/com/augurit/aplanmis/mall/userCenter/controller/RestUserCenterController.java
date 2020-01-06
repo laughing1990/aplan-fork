@@ -129,6 +129,12 @@ public class RestUserCenterController {
         return new ModelAndView("mall/"+skin+"userCenter/components/signAgencyAgreement");
     }
 
+    @GetMapping("/toAgencyAgreementDetailPage")
+    @ApiOperation(value = "跳转查看项目签订代办协议页")
+    public ModelAndView toAgencyAgreementDetailPage(){
+        return new ModelAndView("mall/"+skin+"userCenter/components/agencyAgreementDetail");
+    }
+
     @PostMapping("unitInfo/save")
     @ApiOperation("保存单位信息")
     public ResultForm save(AeaUnitInfo aeaUnitInfo, HttpServletRequest request){

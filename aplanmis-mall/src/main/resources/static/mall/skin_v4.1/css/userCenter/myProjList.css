@@ -32,6 +32,7 @@
 }
 .my-proj-wrap .card-proj-wrap .proj-wrap .proj-item .box-card .right-content {
   padding-left: 60px;
+  padding-top: 10px;
 }
 .my-proj-wrap .card-proj-wrap .proj-wrap .proj-item .box-card .right-content .proj-name {
   font-size: 16px;
@@ -80,6 +81,16 @@
 }
 .my-proj-wrap .card-proj-wrap .proj-wrap .proj-item .box-card .proj-handel .btn-left {
   border-right: 1px solid #f4f3f3;
+}
+.my-proj-wrap .card-proj-wrap .proj-wrap .proj-item .box-card .proj-agency-tag {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 60px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  font-size: 14px;
 }
 .my-proj-wrap .card-proj-wrap .proj-wrap .proj-add {
   text-align: center;
