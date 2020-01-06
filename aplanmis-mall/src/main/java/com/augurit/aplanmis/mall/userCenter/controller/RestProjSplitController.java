@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
@@ -37,9 +38,9 @@ public class RestProjSplitController {
 
     @PostMapping("getFrontStageProjInfo")
     @ApiOperation(value = "拆分工程申请 --> 查询上一阶段的工程信息")
-    public ContentResultForm getFrontStageProjInfo(String stageNo,String themeVerId,String localCode) {
+    public ContentResultForm getFrontStageProjInfo(String stageNo, String themeId, String localCode, HttpServletRequest request) {
         try {
-            AeaProjInfo aeaProjInfo=restAeaProjSplitService.getFrontStageProjInfo(stageNo,themeVerId,localCode);
+            AeaProjInfo aeaProjInfo=restAeaProjSplitService.getFrontStageProjInfo(stageNo,themeId,localCode,request);
             return new ContentResultForm(true,aeaProjInfo);
         } catch (Exception e) {
             logger.error(e.getMessage(),e);

@@ -207,4 +207,5 @@ public interface AeaProjInfoMapper {
      */
     List<String> listBelongRegionAndChildRegionsByUserId(@Param("userId") String userId);
 
+    List<AeaProjInfo> getAeaProjInfosByStageIdAndLocalCode(@Param("stageId")String stageId, @Param("localCode")String localCode);
 }
