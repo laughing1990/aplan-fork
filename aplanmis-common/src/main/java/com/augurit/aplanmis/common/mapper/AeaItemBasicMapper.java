@@ -67,7 +67,7 @@ public interface AeaItemBasicMapper {
                                                               @Param("stateId") String stateId,
                                                               @Param("isOptionItem") String isOptionItem, @Param("rootOrgId") String rootOrgId);
 
-    List<AeaItemBasic> getAeaItemBasicListByStageIdAndStateIds(@Param("stageId")String stageId, @Param("stateIds")List<String> stateIds,  @Param("isOptionItem")String isOptionItem,@Param("rootOrgId")String rootOrgId) throws Exception;
+    List<AeaItemBasic> getAeaItemBasicListByStageIdAndStateIds(@Param("stageId")String stageId, @Param("stateIds")String[] stateIds,  @Param("isOptionItem")String isOptionItem,@Param("rootOrgId")String rootOrgId) throws Exception;
 
     List<AeaItemBasic> listAeaItemBasicListByStageIds(@Param("stageIds") List<String> stageIds, @Param("rootOrgId") String rootOrgId);
 

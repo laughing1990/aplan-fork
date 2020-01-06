@@ -22,6 +22,8 @@ public class SplitProjInfoParamVo {
     private String stageId;
     @ApiModelProperty(value = "前阶段项目ID")
     private String frontStageProjInfoId;
+    @ApiModelProperty(value = "前阶段关联工程代码")
+    private String frontStageGcbm;
     @ApiModelProperty(value = "单项工程名称")
     private String projName;
     @ApiModelProperty(value = "工程范围")

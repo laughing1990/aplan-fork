@@ -2,7 +2,8 @@ package com.augurit.aplanmis.mall.userCenter.controller;
 
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.aplanmis.common.domain.AeaProjApplySplit;
-import com.augurit.aplanmis.mall.userCenter.service.RestAeaProjAgentService;
+import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.mall.userCenter.service.RestAeaProjSplitService;
 import com.augurit.aplanmis.mall.userCenter.vo.SplitProjInfoParamVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -20,13 +21,13 @@ public class RestProjSplitController {
     Logger logger= LoggerFactory.getLogger(RestProjSplitController.class);
 
     @Autowired
-    RestAeaProjAgentService restAeaProjAgentService;
+    RestAeaProjSplitService restAeaProjSplitService;
 
     @PostMapping("start")
     @ApiOperation(value = "拆分工程申请 --> 拆分工程申请接口")
     public ContentResultForm saveProjInfoAndInitProjApplySplit(@Valid @RequestBody SplitProjInfoParamVo splitProjInfoParamVo) {
         try {
-            AeaProjApplySplit aeaProjApplySplit=restAeaProjAgentService.saveProjInfoAndInitProjApplySplit(splitProjInfoParamVo);
+            AeaProjApplySplit aeaProjApplySplit=restAeaProjSplitService.saveProjInfoAndInitProjApplySplit(splitProjInfoParamVo);
             return new ContentResultForm(true,aeaProjApplySplit);
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
@@ -34,4 +35,15 @@ public class RestProjSplitController {
         }
     }
 
+    @PostMapping("getFrontStageProjInfo")
+    @ApiOperation(value = "拆分工程申请 --> 查询上一阶段的工程信息")
+    public ContentResultForm getFrontStageProjInfo(String stageNo,String themeVerId,String localCode) {
+        try {
+            AeaProjInfo aeaProjInfo=restAeaProjSplitService.getFrontStageProjInfo(stageNo,themeVerId,localCode);
+            return new ContentResultForm(true,aeaProjInfo);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ContentResultForm(false,"","查询上一阶段的工程信息接口异常");
+        }
+    }
 }
