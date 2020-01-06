@@ -45,7 +45,8 @@
         MAT_PROP matProp,
         CERT_ID certId,
         STO_FORM_ID stoFormId,
-        STDMAT_ID stdmatId
+        STDMAT_ID stdmatId,
+        IS_SIGN isSign
     </sql>
 
     <sql id="allColumns_aim">
@@ -88,7 +89,8 @@
         aim.MAT_PROP matProp,
         aim.CERT_ID certId,
         aim.STO_FORM_ID stoFormId,
-        aim.STDMAT_ID stdmatId
+        aim.STDMAT_ID stdmatId,
+        aim.IS_SIGN isSign
     </sql>
 
     <sql id="mat_allColumns">
@@ -131,7 +133,8 @@
         mat.MAT_PROP matProp,
         mat.CERT_ID certId,
         mat.STO_FORM_ID stoFormId,
-        mat.STDMAT_ID stdmatId
+        mat.STDMAT_ID stdmatId,
+        mat.IS_SIGN isSign
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
@@ -811,13 +814,15 @@
         MAT_BASIS, PAPER_IS_REQUIRE, SORT_NO, MAT_MEMO, IS_ACTIVE, IS_DELETED, CREATER,
         CREATE_TIME, MODIFIER, MODIFY_TIME, ATT_DIR_ID, MAT_HOLDER, IS_OFFICIAL_DOC,
         ATT_IS_REQUIRE, IS_COMMON, REVIEW_KEY_POINTS, REVIEW_SAMPLE_DOC, REVIEW_BASIS,
-        MAT_FROM_DEPT, DUE_PAPER_TYPE, DUE_COPY_TYPE, PAPER_MAT_TYPE, ZCQY,ROOT_ORG_ID,MAT_PROP,CERT_ID,STO_FORM_ID,STDMAT_ID)
+        MAT_FROM_DEPT, DUE_PAPER_TYPE, DUE_COPY_TYPE, PAPER_MAT_TYPE, ZCQY,ROOT_ORG_ID,MAT_PROP,CERT_ID,STO_FORM_ID,STDMAT_ID,IS_SIGN
+        )
         values (#{matId}, #{matCode}, #{matName}, #{isGlobalShare}, #{matTypeId}, #{receiveMode}, #{duePaperCount},
         #{dueCopyCount}, #{matFrom}, #{sampleDoc}, #{templateDoc}, #{matRequire}, #{matBasis},
         #{paperIsRequire}, #{sortNo}, #{matMemo}, #{isActive}, #{isDeleted}, #{creater}, #{createTime},
         #{modifier}, #{modifyTime}, #{attDirId}, #{matHolder}, #{isOfficialDoc}, #{attIsRequire}, #{isCommon},
         #{reviewKeyPoints}, #{reviewSampleDoc}, #{reviewBasis}, #{matFromDept}, #{duePaperType}, #{dueCopyType},
-        #{paperMatType}, #{zcqy},#{rootOrgId}, #{matProp}, #{certId}, #{stoFormId}, #{stdmatId})
+        #{paperMatType}, #{zcqy},#{rootOrgId}, #{matProp}, #{certId}, #{stoFormId}, #{stdmatId}, #{isSign}
+        )
     </insert>
 
     <!--6 修改实体对象 -->
@@ -943,6 +948,9 @@
             </if>
             <if test="stdmatId != null">
                 STDMAT_ID = #{stdmatId},
+            </if>
+            <if test="isSign != null ">
+                IS_SIGN = #{isSign},
             </if>
         </set>
         where MAT_ID = #{matId}
@@ -1071,6 +1079,9 @@
             <if test="stdmatId != null">
                 STDMAT_ID = #{stdmatId},
             </if>
+            <if test="isSign != null ">
+                IS_SIGN = #{isSign},
+            </if>
         </set>
         where MAT_ID = #{matId}
     </update>
@@ -1126,6 +1137,7 @@
         <result property="certId" column="CERT_ID"/>
         <result property="stoFormId" column="STO_FORM_ID"/>
         <result property="stdmatId" column="STDMAT_ID"/>
+        <result property="isSign" column="IS_SIGN"/>
     </resultMap>
 
     <select id="listAeaItemMatRelTypeAndStd" resultType="AeaItemMat">
