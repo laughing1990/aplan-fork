@@ -111,7 +111,7 @@ public class AeaProjInfoServiceTest extends BaseTest {
 
     @Test
     @DisplayName("通过单位id获取项目信息")
-    public void findAeaProjInfoByUnitInfoId() {
+    public void findAeaProjInfoByUnitInfoId() throws Exception {
         List<AeaProjInfo> list = projInfoService.findRootAeaProjInfoByUnitInfoId("084fe528-da62-48c4-8ef7-aeba45d636cf", null);
         Assert.notEmpty(list, "未查询到项目");
         String proj = JSON.toJSONString(list);
