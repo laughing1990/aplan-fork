@@ -64,9 +64,10 @@ public class AeaProjApplySplitServiceImpl implements AeaProjApplySplitService {
     }
 
     @Override
-    public void passed(String applySplitId) throws Exception {
+    public void passed(String applySplitId, String reason) throws Exception {
         AeaProjApplySplit aeaProjApplySplit = aeaProjApplySplitMapper.getAeaProjApplySplitById(applySplitId);
         aeaProjApplySplit.setApplyState(SplitApplyState.PASSED.getValue());
+        aeaProjApplySplit.setSplitMemo(reason);
         aeaProjApplySplit.setModifier(SecurityContext.getCurrentUserId());
         aeaProjApplySplit.setModifyTime(new Date());
         aeaProjApplySplitMapper.updateAeaProjApplySplit(aeaProjApplySplit);

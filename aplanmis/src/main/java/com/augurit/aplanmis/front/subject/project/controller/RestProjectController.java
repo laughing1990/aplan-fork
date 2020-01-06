@@ -19,6 +19,7 @@ import com.augurit.aplanmis.front.subject.project.vo.ChildProjectAddVo;
 import com.augurit.aplanmis.front.subject.project.vo.ChildProjectVo;
 import com.augurit.aplanmis.front.subject.project.vo.ProjectDetailVo;
 import com.augurit.aplanmis.front.subject.project.vo.ProjectKeywordVo;
+import com.augurit.aplanmis.front.subject.project.vo.SplitedProjApproveVo;
 import com.augurit.aplanmis.front.subject.project.vo.SplitedProjVo;
 import com.augurit.aplanmis.thirdPlatform.service.ProjectCodeService;
 import io.jsonwebtoken.lang.Assert;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -311,23 +313,15 @@ public class RestProjectController {
         }
     }
 
-    @ApiOperation(value = "拆分的子工程通过")
-    @PostMapping("/splited/proj/passed")
-    public ResultForm splitedProjPassed(String applySplitId) {
+    @ApiOperation(value = "拆分的子工程审核")
+    @PostMapping("/splited/proj/approve")
+    public ResultForm approveSplitedProj(@RequestBody SplitedProjApproveVo splitedProjApproveVo) {
         try {
-            aeaProjApplySplitService.passed(applySplitId);
-            return new ResultForm(true, "success");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResultForm(false, e.getMessage());
-        }
-    }
-
-    @ApiOperation(value = "拆分的子工程不通过")
-    @PostMapping("/splited/proj/rejected")
-    public ResultForm splitedProjRejected(String applySplitId, String reason) {
-        try {
-            aeaProjApplySplitService.rejected(applySplitId, reason);
+            if (splitedProjApproveVo.isPassed()) {
+                aeaProjApplySplitService.passed(splitedProjApproveVo.getApplySplitId(), splitedProjApproveVo.getReason());
+            } else {
+                aeaProjApplySplitService.rejected(splitedProjApproveVo.getApplySplitId(), splitedProjApproveVo.getReason());
+            }
             return new ResultForm(true, "success");
         } catch (Exception e) {
             e.printStackTrace();
