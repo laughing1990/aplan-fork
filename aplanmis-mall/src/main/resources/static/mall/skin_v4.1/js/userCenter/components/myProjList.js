@@ -92,8 +92,43 @@ var pager = new Vue({
         $('#addProjPandel').html(result);
       });
     },
+    // 打开查看签订代办协议的面板
+    toSignAgencyAgreementDetail: function(item){
+      this.isShowAddProjPandel = true;
+      this.curHandelProj = item;
+      $.get(ctx + 'rest/user/toAgencyAgreementDetailPage', function (result) {
+        $('#addProjPandel').html(result);
+      });
+    },
+
+    // 代办项目-各个状态下的样式
+    agencyStatusTagClassFn: function(item){
+      var state = item.projAgentState;
+      if(state == 1){
+        return {
+          color: '#f24040',
+          background: '#FEF0F0'
+        }
+      }else if(state >= 4){
+        return {
+          color: '#00a854',
+          background: '#EBF8F2'
+        }
+      }else{
+        return {
+          color: '#f4a242',
+          background: '#FEF8F0'
+        }
+      }
+    },
   },
   created: function () {
     this.fetchMyProjList();
+  },
+  filters: {
+    projAgentStateFormat: function(val){
+      var tagCn = ['待签订', '签订中','待签章','已签订','已终止'];
+      return tagCn[val - 1]
+    },
   },
 })

@@ -1865,4 +1865,17 @@
         and region.REGION_SEQ like CONCAT (CONCAT('%.', org.REGION_ID), '.%') and region.REGION_ID is not null
     </select>
 
+    <select id="getAeaProjInfosByStageIdAndLocalCode" resultType="AeaProjInfo">
+        SELECT DISTINCT
+        <include refid="allColumnsAlias">
+            <property name="alias" value="aha"></property>
+        </include>
+        from aea_hi_applyinst aha
+        LEFT JOIN aea_applyinst_proj aap on aha.APPLYINST_ID=aap.APPLYINST_ID
+        LEFT JOIN aea_proj_info api on aap.PROJ_INFO_ID=api.PROJ_INFO_ID
+        LEFT JOIN aea_hi_par_stageinst ahps on aha.APPLYINST_ID=ahps.APPLYINST_ID
+        where api.LOCAL_CODE=#{localCode} and ahps.STAGE_ID=#{stageId} and aha.APPLYINST_ID is not null
+        ORDER BY aha.CREATE_TIME DESC
+    </select>
+
 </mapper>

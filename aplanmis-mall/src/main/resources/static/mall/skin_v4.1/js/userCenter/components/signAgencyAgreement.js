@@ -424,15 +424,33 @@ var module1 = new Vue({
       ts.$refs['projInfoForm'].validate(function (valid) {
         if (valid) {
           // ts.mloading = true;
-          var _saveData = JSON.parse(JSON.stringify(ts.projInfoForm));
-          if (!!ts.projInfoForm.projectAddress) {
-            _saveData.projectAddress = ts.projInfoForm.projectAddress.join(',');
-          }
+          var _saveData = {
+            aeaUnitProjLinkmanVo: '',
+            agentStageState: '',
+            projAgentParamVo: '',
+          };
+          _saveData.aeaUnitProjLinkmanVo = JSON.stringify(ts.projInfoForm);
+          _saveData.projAgentParamVo = JSON.parse(JSON.stringify(ts.projInfoForm))
           if(!!ts.projInfoForm.agentStageState){
             _saveData.agentStageState = ts.projInfoForm.agentStageState.join(',');
           }
-          // console.log(_saveData)
-          // return
+          if (!!ts.projInfoForm.projectAddress) {
+            _saveData.projAgentParamVo.projectAddress = ts.projInfoForm.projectAddress.join(',');
+          }
+          _saveData.projAgentParamVo = JSON.stringify( _saveData.projAgentParamVo);
+
+          console.log(_saveData)
+          $.ajax({
+            url: ctx + 'rest/apply/agent/start',
+            type: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify(_saveData),
+            success: function(res){
+
+            },
+            error: function(err){},
+          })
+          return
           request('', {
             url: ctx + 'rest/apply/agent/start',
             type: 'post',
