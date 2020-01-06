@@ -15,25 +15,25 @@
       </tr>
       <tr>
         <th>单位性质</th>
-        <td colspan="2">{{projInfoForm.applicant || '-'}}</td>
+        <td colspan="2">{{projInfoForm.unitNature | unitNatureFormat}}</td>
         <th>电子邮箱</th>
-        <td colspan="2">{{projInfoForm.applicantDetailSite || '-'}}</td>
+        <td colspan="2">{{projInfoForm.email || '-'}}</td>
       </tr>
       <tr>
         <th>项目负责人</th>
-        <td>{{projInfoForm.applicant || '-'}}</td>
+        <td>{{projInfoForm.leaderName || '-'}}</td>
         <th>职务</th>
-        <td>{{projInfoForm.applicantDetailSite || '-'}}</td>
+        <td>{{projInfoForm.leaderDuty || '-'}}</td>
         <th>联系方式</th>
-        <td>{{projInfoForm.applicantDetailSite || '-'}}</td>
+        <td>{{projInfoForm.leaderMobilePhone || '-'}}</td>
       </tr>
       <tr>
         <th>项目经办人</th>
-        <td>{{projInfoForm.applicant || '-'}}</td>
+        <td>{{projInfoForm.operatorName || '-'}}</td>
         <th>职务</th>
-        <td>{{projInfoForm.applicantDetailSite || '-'}}</td>
+        <td>{{projInfoForm.operatorDuty || '-'}}</td>
         <th>联系方式</th>
-        <td>{{projInfoForm.applicantDetailSite || '-'}}</td>
+        <td>{{projInfoForm.operatorMobilePhone || '-'}}</td>
       </tr>
     </tbody>
   </table>
@@ -45,35 +45,36 @@
     <tbody>
       <tr>
         <th>项目名称</th>
-        <td>{{projInfoForm.applicant || '-'}}</td>
+        <td>{{projInfoForm.projName || '-'}}</td>
         <th>项目代码</th>
-        <td>{{projInfoForm.applicantDetailSite || '-'}}</td>
+        <td>{{projInfoForm.localCode || '-'}}</td>
       </tr>
       <tr>
         <th>项目地址</th>
-        <td>{{projInfoForm.applicant || '-'}}</td>
+        <td>{{projInfoForm.projAddr || '-'}}</td>
         <th>项目重点级别</th>
-        <td>{{projInfoForm.applicantDetailSite || '-'}}</td>
+        <td>{{projInfoForm.projLevel || '-'}}</td>
       </tr>
       <tr>
         <th>投资总额（万元）</th>
-        <td>{{projInfoForm.applicant || '-'}}</td>
+        <td>{{projInfoForm.investSum || '-'}}</td>
         <th>资金来源</th>
-        <td>{{projInfoForm.applicantDetailSite || '-'}}</td>
+        <!-- <td>{{projInfoForm.financialSource | dicFormat('XM_ZJLY') || '-'}}</td> -->
+        <td>{{projInfoForm.financialSourceCn || '-'}}</td>
       </tr>
       <tr>
         <th>总建筑面积（m&sup2;）</th>
-        <td>{{projInfoForm.applicant || '-'}}</td>
+        <td>{{projInfoForm.foreignBuildingArea || '-'}}</td>
         <th>土地性质</th>
-        <td>{{projInfoForm.applicantDetailSite || '-'}}</td>
+        <td>{{projInfoForm.landSourceCn || '-'}}</td>
       </tr>
       <tr>
         <th>项目简介</th>
-        <td colspan="3">{{projInfoForm.applicant || '-'}}</td>
+        <td colspan="3">{{projInfoForm.scaleContent || '-'}}</td>
       </tr>
       <tr>
         <th>项目当前进度</th>
-        <td colspan="3">{{projInfoForm.applicant || '-'}}</td>
+        <td colspan="3">{{projInfoForm.currentProgress || '-'}}</td>
       </tr>
     </tbody>
   </table>
@@ -85,7 +86,7 @@
     <tbody>
       <tr>
         <th>具体委托事项</th>
-        <td colspan="3">{{projInfoForm.applicant || '-'}}</td>
+        <td colspan="3">{{projInfoForm.agentStageState || '-'}}</td>
       </tr>
     </tbody>
   </table>
