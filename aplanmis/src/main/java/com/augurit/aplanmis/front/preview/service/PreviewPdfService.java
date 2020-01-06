@@ -8,6 +8,7 @@ import com.augurit.agcloud.bsc.upload.MongoDbAchieve;
 import com.augurit.agcloud.bsc.upload.UploadType;
 import com.augurit.agcloud.bsc.upload.factory.UploaderFactory;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
+import com.augurit.aplanmis.common.service.file.impl.FileUtilsServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -70,7 +71,7 @@ public class PreviewPdfService {
                 attName = form.getAttName();
                 inputStream = uploadFileStrategy.download(detailId);
             }
-            result = writeContent(response, inputStream, attName);
+            result = FileUtilsServiceImpl.writeContent(response, inputStream, attName);
         }
         return result;
     }
@@ -90,23 +91,6 @@ public class PreviewPdfService {
             resultForm.setSuccess(list.size()>0);
         }
         return resultForm;
-    }
-
-    private boolean writeContent(HttpServletResponse response, InputStream inputStream, String attName) throws IOException {
-        byte[] bytes = AttUtils.inputStreamToBytesAndClose(inputStream);
-        if(bytes != null){
-            response.reset();
-//            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-//            String charset = request.getCharacterEncoding();
-//            attName = new String(attName.getBytes(charset), "UTF-8");
-            response.setContentType("application/octet-stream;charset=UTF-8");
-            response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(attName, "UTF-8"));
-            ServletOutputStream out = null;
-            out = response.getOutputStream();
-            out.write(bytes, 0, bytes.length);
-            out.close();
-        }
-        return true;
     }
 
 }

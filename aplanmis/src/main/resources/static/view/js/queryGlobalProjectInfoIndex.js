@@ -58,7 +58,7 @@ var vm = new Vue({
                     trigger: 'blur'
                 }]
             },
-
+            showUploadFlag:false,
             //列表选中
             projSelectList:[]
         }
@@ -199,6 +199,50 @@ var vm = new Vue({
                     ts.apiMessage('删除失败！', 'error');
                 });
             });
+        },
+        //打开导入窗口
+        openImportWin:function(){
+            this.showUploadFlag = true;
+        },
+        //导入代办项目
+        onBeforeUpload:function(file){
+            var ts = this;
+            const isOffice = file.type.indexOf('application/vnd') > -1;
+            const isLt10M = file.size / 1024 / 1024 < 10;
+            if(!isOffice){
+                ts.apiMessage('请导入EXCEL文件！','warning');
+                return false;
+            }
+            if(!isLt10M){
+                ts.apiMessage('上传文件大小不能超过10MB！','warning');
+                return false;
+            }
+            var fileData = new FormData();
+            fileData.append('file',file);
+            axios.post(ctx + '/aea/proj/info/importAgentPorjFile', fileData).then(function (res) {
+                var result = res.data;
+                ts.showUploadFlag = false;
+                if(result.success){
+                    ts.apiMessage('导入成功！','success');
+                    if("failImportData" == result.content){
+                        ts.getFailImportData();
+                    }
+                }else{
+                    ts.apiMessage(result.message,'error');
+                }
+            }).catch(function (error) {
+                ts.showUploadFlag = false;
+                console.log(error);
+            });
+            return false;
+        },
+        getFailImportData:function () {
+            window.location.href = ctx + '/aea/proj/info/getFailImportData';
+            // window.open(ctx + '/aea/proj/info/getFailImportData')
+        },
+        //下载模板
+        downloadImportTemplate:function () {
+            window.location.href = ctx + '/aea/proj/info/downloadImportTemplate';
         },
     },
     created: function () {

@@ -2,6 +2,7 @@ package com.augurit.aplanmis.front.subject.project.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.augurit.agcloud.bsc.constant.FileType;
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
 import com.augurit.agcloud.bsc.domain.BscDicCodeType;
 import com.augurit.agcloud.bsc.sc.dic.code.service.BscDicCodeService;
@@ -19,6 +20,8 @@ import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.domain.AeaUnitInfo;
 import com.augurit.aplanmis.common.mapper.AeaParThemeMapper;
 import com.augurit.aplanmis.common.service.area.RegionService;
+import com.augurit.aplanmis.common.service.file.impl.FileUtilsServiceImpl;
+import com.augurit.aplanmis.common.template.ImportAgentProjTemplate;
 import com.augurit.aplanmis.common.vo.conditional.ConditionalQueryAeaProjInfo;
 import com.augurit.aplanmis.front.subject.project.service.GlobalProjService;
 import com.augurit.aplanmis.front.subject.unit.service.GlobalApplicantService;
@@ -32,16 +35,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.InputStream;
+import java.net.URLEncoder;
+import java.util.*;
 
 //import com.augurit.aplanmis.common.diyannotation.FiledNameIs;
 
@@ -56,6 +60,8 @@ import java.util.Map;
 public class GlobalProjController {
 
     private static Logger logger = LoggerFactory.getLogger(GlobalProjController.class);
+
+    private static String FAILED_IMPORT_DATA_KEY = "failImportData";
 
     @Autowired
     private GlobalProjService globalProjService;
@@ -455,6 +461,75 @@ public class GlobalProjController {
         }catch (Exception e){
             log.error(e.getMessage(),e);
             return new ResultForm(false, e.getMessage());
+        }
+    }
+
+    @PostMapping("/importAgentPorjFile")
+    public ResultForm importAgentPorjFile(HttpServletRequest request, @RequestParam("file") MultipartFile file) throws Exception {
+        ContentResultForm<Object> resultForm = new ContentResultForm<>(false,null,"导入失败！文件为空！");
+        if (!file.isEmpty()) {
+
+            String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1);
+            if (!"xls".equals(suffix) && !"XLS".equals(suffix) && !"xlsx".equals(suffix) && !"XLSX".equals(suffix)) {
+                resultForm.setMessage("导入失败！只支持Excel格式！");
+                return resultForm;
+            }
+            ImportAgentProjTemplate inT = new ImportAgentProjTemplate(file.getInputStream(),suffix,false);
+            if (!inT.checkFormat().isSuccess()) {
+                resultForm.setMessage("导入失败！模板格式不正确！");
+                return resultForm;
+            }
+            //关闭流
+            inT.close();
+            List<AeaProjInfo> projInfos = inT.readData();
+            for(AeaProjInfo proj:projInfos){
+                //TODO 在SERVICE层处理导入的代办项目
+            }
+            // TODO 导入失败的数据暂存在session中
+            if(projInfos.size() > 0){
+//                request.getSession().setAttribute(FAILED_IMPORT_DATA_KEY,projInfos);
+                //返回failImportData方便前端调用接口获取失败信息
+//                resultForm.setContent(FAILED_IMPORT_DATA_KEY);
+            }
+            resultForm.setSuccess(true);
+            resultForm.setMessage("导入成功！");
+            return resultForm;
+        }
+        return resultForm;
+    }
+
+    @GetMapping("/getFailImportData")
+    public void importAgentPorjFile(HttpServletRequest request, HttpServletResponse response){
+        try {
+            HttpSession session = request.getSession();
+            //从session中获取导入失败的数据
+            List<AeaProjInfo>  failImportData = (List<AeaProjInfo>)session.getAttribute(FAILED_IMPORT_DATA_KEY);
+            session.removeAttribute(FAILED_IMPORT_DATA_KEY);
+            if(failImportData != null){
+                ImportAgentProjTemplate outT = new ImportAgentProjTemplate(null, FileType.xls,true);
+                String outFileName = "导入失败数据" + new Date().getTime() + "." + FileType.xls;
+                response.setContentType("application/binary;charset=UTF-8");
+                response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode(outFileName, "UTF-8"));
+                ServletOutputStream outputStream = response.getOutputStream();
+                outT.writeData(failImportData);
+                outT.writeOutputStream(outputStream);
+                outputStream.close();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @GetMapping("/downloadImportTemplate")
+    public void downloadImportTemplate(HttpServletResponse response) {
+        try {
+            InputStream inputStream = GlobalProjController.class.getResourceAsStream("/static/view/template/代办项目导入模板.xls");
+            if(inputStream != null){
+                String fileName = "代办项目导入模板" + new Date().getTime() + "." + FileType.xls;
+                FileUtilsServiceImpl.writeContent(response,inputStream,fileName);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 }

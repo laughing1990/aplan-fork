@@ -329,4 +329,9 @@ public class AeaProjInfo implements Serializable {
     @ApiModelProperty("代办申请ID")
     private String applyAgentId;
 
+    @ApiModelProperty("代办中心名称")
+    private String agentName;
+    @ApiModelProperty("导入失败原因")
+    private String failMsg;
+
 }

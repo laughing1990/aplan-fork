@@ -6,6 +6,7 @@ import com.augurit.agcloud.bsc.domain.BscAttForm;
 import com.augurit.agcloud.bsc.domain.BscAttStoreDb;
 import com.augurit.agcloud.bsc.mapper.BscAttDetailMapper;
 import com.augurit.agcloud.bsc.sc.att.service.IBscAttService;
+import com.augurit.agcloud.bsc.sc.att.utils.AttUtils;
 import com.augurit.agcloud.bsc.upload.MongoDbAchieve;
 import com.augurit.agcloud.bsc.upload.UploadType;
 import com.augurit.agcloud.bsc.upload.factory.UploaderFactory;
@@ -19,11 +20,10 @@ import org.springframework.web.multipart.support.StandardMultipartHttpServletReq
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -324,6 +324,19 @@ public class FileUtilsServiceImpl extends FileAbstractService {
                 toClient.close();
             }
         }
+    }
+
+    public static boolean writeContent(HttpServletResponse response, InputStream inputStream, String attName) throws IOException {
+        byte[] bytes = AttUtils.inputStreamToBytesAndClose(inputStream);
+        if(bytes != null){
+            response.reset();
+            response.setContentType("application/octet-stream;charset=UTF-8");
+            response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(attName, "UTF-8"));
+            ServletOutputStream out = response.getOutputStream();
+            out.write(bytes, 0, bytes.length);
+            out.close();
+        }
+        return true;
     }
 
 }
