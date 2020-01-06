@@ -424,27 +424,26 @@ var module1 = new Vue({
       ts.$refs['projInfoForm'].validate(function (valid) {
         if (valid) {
           // ts.mloading = true;
+          // var _saveData = {
+          //   projAgentParamVo: ts.projInfoForm,
+          //   aeaUnitProjLinkmanVo:ts.projInfoForm,
+          //   agentStageState:ts.projInfoForm.agentStageState.join(',')
+          // };
           var _saveData = {
-            projAgentParamVo: ts.projInfoForm,
-            aeaUnitProjLinkmanVo:ts.projInfoForm,
-            agentStageState:ts.projInfoForm.agentStageState.join(',')
-          };
-          var _saveData = {
-            projAgentParamVo: {
-              "isBindAccount": '1',
-              "linkmanAddr": ts.projInfoForm.linkmanAddr?ts.projInfoForm.linkmanAddr:'',
-              "linkmanCertNo": ts.projInfoForm.linkmanCertNo?ts.projInfoForm.linkmanCertNo:'',
-              "linkmanFax": ts.projInfoForm.linkmanFax?ts.projInfoForm.linkmanFax:'',
-              "linkmanInfoId": ts.projInfoForm.currentProgress,
-              "linkmanMail": ts.projInfoForm.currentProgress,
-              "linkmanMemo": ts.projInfoForm.currentProgress,
-              "linkmanMobilePhone": ts.projInfoForm.currentProgress,
-              "linkmanName": ts.projInfoForm.currentProgress,
-              "linkmanOfficePhon": ts.projInfoForm.currentProgress,
-              "loginName": ts.projInfoForm.currentProgress,
-              "unitInfoId": ts.projInfoForm.unitInfoId
+              aeaUnitProjLinkmanVo: {
+              "unitInfoId": ts.projInfoForm.unitInfoId?ts.projInfoForm.unitInfoId:'',
+              "applicant": ts.projInfoForm.applicant?ts.projInfoForm.applicant:'',
+              "unitNature": ts.projInfoForm.unitNature?ts.projInfoForm.unitNature:'',
+              "applicantDetailSite": ts.projInfoForm.applicantDetailSite,
+              "email": ts.projInfoForm.email,
+              "leaderName": ts.projInfoForm.leaderName,
+              "leaderMobilePhone": ts.projInfoForm.leaderMobilePhone,
+              "leaderDuty": ts.projInfoForm.leaderDuty,
+              "operatorName": ts.projInfoForm.operatorName,
+              "operatorMobilePhone": ts.projInfoForm.operatorMobilePhone,
+              "operatorDuty": ts.projInfoForm.operatorDuty
             },
-            aeaUnitProjLinkmanVo: {
+            projAgentParamVo: {
               "currentProgress": ts.projInfoForm.currentProgress,
               "financialSource": ts.projInfoForm.financialSource,
               "investSum": ts.projInfoForm.investSum,
@@ -519,7 +518,7 @@ var module1 = new Vue({
     // 处理当先代办项目信息的数据回显
     handelProjInfoData: function(data){
       var aeaUnitProjLinkmanVo = data.aeaUnitProjLinkmanVo,
-      projInfo = data.projInfo;
+      projInfo = data.projAgentParamVo;
       this.projInfoForm = $.extend({},projInfo,aeaUnitProjLinkmanVo);
       // for(var k in this.projInfoForm){
       //   if(formData[k]){

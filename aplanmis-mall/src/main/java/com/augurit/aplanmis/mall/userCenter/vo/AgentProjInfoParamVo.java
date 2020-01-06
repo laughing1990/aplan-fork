@@ -11,8 +11,6 @@ import org.springframework.beans.BeanUtils;
 @ApiModel("代办申请表单参数")
 public class AgentProjInfoParamVo {
 
-    //@ApiModelProperty(value = "单位ID")
-    //private String unitInfoId;
     @ApiModelProperty(value = "当前企业用户的人员设置")
     private AeaUnitProjLinkmanVo aeaUnitProjLinkmanVo;
 

@@ -179,7 +179,7 @@ public class RestAeaProjAgentService {
             list.add(agentAgreementVo);
             vo.setAgentAgreement(list);
         }
-        vo.setProjInfo(projInfo);
+        vo.setProjAgentParamVo(AeaProjApplyAgentDetailVo.formatAeaProjApplyAgentDetailVo(projInfo));
        // vo.setUserInfoVo(userInfoVo);
         vo.setAeaUnitProjLinkmanVo(aeaUnitProjLinkmanVo);
         return vo;

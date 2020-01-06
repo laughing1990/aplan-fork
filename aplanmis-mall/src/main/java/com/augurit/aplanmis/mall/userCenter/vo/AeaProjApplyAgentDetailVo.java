@@ -4,6 +4,7 @@ import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 
 import java.util.List;
 
@@ -11,10 +12,8 @@ import java.util.List;
 @ApiModel("代办详情信息VO")
 public class AeaProjApplyAgentDetailVo {
     @ApiModelProperty("项目/工程信息")
-    private AeaProjInfo projInfo;
+    private ProjAgentParamVo projAgentParamVo;
     @ApiModelProperty("单位信息")
-    private UserInfoVo userInfoVo;
-    @ApiModelProperty("单位其他信息")
     private AeaUnitProjLinkmanVo aeaUnitProjLinkmanVo;
     @ApiModelProperty("委托代办阶段")
     private String agentStageState;
@@ -22,4 +21,10 @@ public class AeaProjApplyAgentDetailVo {
     private String agentApplyState;
     @ApiModelProperty("代办协议")
     private List<AgentAgreementVo> agentAgreement;
+
+    public static ProjAgentParamVo formatAeaProjApplyAgentDetailVo(AeaProjInfo aeaProjInfo){
+        ProjAgentParamVo projAgentParamVo=new ProjAgentParamVo();
+        BeanUtils.copyProperties(aeaProjInfo,projAgentParamVo);
+        return projAgentParamVo;
+    }
 }
