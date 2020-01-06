@@ -368,7 +368,8 @@ function testRunThemeVer(themeId, themeVerId, verStatus, verNum){
                             'themeId': themeId,
                             'themeVerId': themeVerId,
                             'verNum': verNum,
-                            'type': '2'
+                            'type': '2',
+                            'oldVerStatus': verStatus
                         },
                         // async: false,
                         success: function (result) {
@@ -436,7 +437,8 @@ function publishThemeVer(themeId, themeVerId, verStatus, verNum) {
                             'themeId': themeId,
                             'themeVerId': themeVerId,
                             'verNum': verNum,
-                            'type': '1'
+                            'type': '1',
+                            'oldVerStatus': verStatus
                         },
                         // async: false,
                         success: function (result) {
