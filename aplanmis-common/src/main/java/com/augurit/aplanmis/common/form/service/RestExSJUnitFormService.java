@@ -94,7 +94,7 @@ public class RestExSJUnitFormService extends AbstractFormDataOptManager {
                 AeaHiCertinst aeaHiCertinst = new AeaHiCertinst();
                 aeaHiCertinst.setCertinstId(exProjBuildUnitInfo.getCertinstId());
                 aeaHiCertinst.setCertinstCode(exProjBuildUnitInfo.getCertinstCode());
-                if(aeaHiCertinst.getCertinstId()!=null&&aeaHiCertinst.getCertinstId()!=""){
+                if(aeaHiCertinst.getCertinstId()!=null&&aeaHiCertinst.getCertinstId().equals("")){
                     aeaHiCertinstMapper.updateAeaHiCertinst(aeaHiCertinst);
                 }else {
                     if(exProjBuildUnitInfo.getCertinstCode()!=null){
