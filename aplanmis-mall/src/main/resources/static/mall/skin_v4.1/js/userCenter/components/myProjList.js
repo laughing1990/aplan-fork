@@ -17,7 +17,10 @@ var pager = new Vue({
 
     // 是否展示新增项目面板
     isShowAddProjPandel: false,
-
+    // 当前操作的项目
+    curHandelProj: {},
+    // 是否可加载更多
+    hasLoadMoreFlag: true,
   },
   methods: {
     // 页面列表数据查询
@@ -47,7 +50,12 @@ var pager = new Vue({
           } else {
             ts.list = ts.list.concat(res.content.list);
           }
-
+          // 计算是否可加载更多，默认第一次可加载更多
+          if(ts.total > ts.list.length || ts.checkData.pageNum == 1){
+            ts.hasLoadMoreFlag = true;
+          }else{
+            ts.hasLoadMoreFlag = false;
+          }
           console.log(ts.list.length)
           console.log(ts.total)
         } else {
@@ -73,6 +81,14 @@ var pager = new Vue({
     loadAddLocalProjPandel: function(){
       this.isShowAddProjPandel = true;
       $.get(ctx + 'rest/user/toAddLocalProj', function (result) {
+        $('#addProjPandel').html(result);
+      });
+    },
+    // 打开签订代办协议的面板
+    toSignAgencyAgreementPage: function(item){
+      this.isShowAddProjPandel = true;
+      this.curHandelProj = item;
+      $.get(ctx + 'rest/user/toSignAgencyAgreementPage', function (result) {
         $('#addProjPandel').html(result);
       });
     },
