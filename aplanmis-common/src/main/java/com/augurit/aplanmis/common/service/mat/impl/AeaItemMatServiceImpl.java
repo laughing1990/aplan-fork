@@ -1,7 +1,9 @@
 package com.augurit.aplanmis.common.service.mat.impl;
 
 import com.augurit.agcloud.bsc.domain.BscAttForm;
+import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
 import com.augurit.agcloud.bsc.mapper.BscAttMapper;
+import com.augurit.agcloud.bsc.mapper.BscDicCodeMapper;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.*;
@@ -16,6 +18,7 @@ import com.augurit.aplanmis.common.service.stage.AeaParStageService;
 import com.augurit.aplanmis.common.utils.CommonTools;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,7 +69,10 @@ public class AeaItemMatServiceImpl implements AeaItemMatService {
     private AeaParStageItemMapper aeaParStageItemMapper;
     @Autowired
     private BscAttMapper bscAttMapper;
-
+    @Autowired
+    BscDicCodeMapper bscDicCodeMapper;
+    @Value("${dg.sso.access.platform.org.top-org-id}")
+    protected String topOrgId;
     //根据事项ID获取（输入或输出）材料列表
     @Override
     public List<AeaItemMat> getMatListByItemVerIds(String[] itemVerIds, String isInput, String isNeedStateMat) throws Exception {
@@ -353,6 +359,14 @@ public class AeaItemMatServiceImpl implements AeaItemMatService {
                     })
                     //.sorted(Comparator.comparing(AeaItemMat::getSortNo))
                     .collect(Collectors.toList());
+        }
+        if(list.size()>0){
+            list.stream().forEach(mat->{
+                if(org.apache.commons.lang.StringUtils.isNotBlank(mat.getMatFrom())){
+                    BscDicCodeItem item = bscDicCodeMapper.getItemByTypeCodeAndItemCodeAndOrgId("MAT_FROM", mat.getMatFrom(),topOrgId);
+                    mat.setMatFrom(item==null?"":item.getItemName());
+                }
+            });
         }
         return list;
     }
