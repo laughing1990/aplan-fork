@@ -46,9 +46,9 @@ public class SplitProjInfoParamVo {
         //继承父项目信息
         aeaProjInfo.setLocalCode(projInfo.getLocalCode());
         aeaProjInfo.setThemeId(projInfo.getThemeId());
+        aeaProjInfo.setThemeVerId(projInfo.getThemeVerId());
         aeaProjInfo.setRegionalism(projInfo.getRegionalism());
         aeaProjInfo.setDistrict(projInfo.getDistrict());
-        aeaProjInfo.setProjFlag("c");
         aeaProjInfo.setIsDeleted(Status.OFF);
         aeaProjInfo.setRootOrgId(SecurityContext.getCurrentOrgId());
         aeaProjInfo.setCreateTime(new Date());
@@ -65,6 +65,7 @@ public class SplitProjInfoParamVo {
 
         //工程信息
         aeaProjInfo.setProjInfoId(UUID.randomUUID().toString());
+        aeaProjInfo.setProjFlag("c");
         aeaProjInfo.setProjName(splitProjInfoParamVo.getProjName());
         aeaProjInfo.setForeignManagement(splitProjInfoParamVo.getForeignManagement());
         aeaProjInfo.setInvestSum(splitProjInfoParamVo.getInvestSum());
