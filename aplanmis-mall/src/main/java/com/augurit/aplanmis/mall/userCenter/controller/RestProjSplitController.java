@@ -6,6 +6,8 @@ import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.mall.userCenter.service.RestAeaProjSplitService;
 import com.augurit.aplanmis.mall.userCenter.vo.SplitProjInfoParamVo;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +40,11 @@ public class RestProjSplitController {
 
     @PostMapping("getFrontStageProjInfo")
     @ApiOperation(value = "拆分工程申请 --> 查询上一阶段的工程信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "阶段编号 1 工程建设许可阶段 2 施工许可阶段", name = "stageNo", required = true, dataType = "string"),
+            @ApiImplicitParam(value = "主题ID(项目类型ID)", name = "themeId", required = true, dataType = "string"),
+            @ApiImplicitParam(value = "项目代码", name = "localCode", required = true, dataType = "string")
+    })
     public ContentResultForm getFrontStageProjInfo(String stageNo, String themeId, String localCode, HttpServletRequest request) {
         try {
             AeaProjInfo aeaProjInfo=restAeaProjSplitService.getFrontStageProjInfo(stageNo,themeId,localCode,request);
