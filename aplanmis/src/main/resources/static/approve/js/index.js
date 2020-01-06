@@ -1353,7 +1353,7 @@ var vm = new Vue({
     },
     getStatusClass2: function (status) {
       var val = +status;
-      var arr = ['red', 'done', 'red'];
+      var arr = ['', 'done', 'red'];
       return arr[val] || '';
     },
     // 发起人员结束意见征询
