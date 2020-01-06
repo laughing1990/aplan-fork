@@ -1159,4 +1159,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="202001061115" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_mat`
+            ADD COLUMN `OUTER_FORM_ID`  varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '外部表单id' AFTER `STDMAT_ID`;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
