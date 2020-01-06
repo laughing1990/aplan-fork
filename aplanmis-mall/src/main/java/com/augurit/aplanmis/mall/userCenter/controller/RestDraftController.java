@@ -43,7 +43,11 @@ public class RestDraftController {
     public ModelAndView toDraftPage(){
         return new ModelAndView("mall/"+skin+"userCenter/components/drafts");
     }
-
+    @GetMapping("toguideListPage")
+    @ApiOperation(value = "跳转部门辅导页面")
+    public ModelAndView toguideListPage(){
+        return new ModelAndView("mall/"+skin+"userCenter/components/guideList");
+    }
     @GetMapping("draftApply/list")
     @ApiOperation(value = "草稿箱 --> 暂存件列表查询接口")
     @ApiImplicitParams({
