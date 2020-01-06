@@ -24,8 +24,8 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("rest/apply/agent")
 @Api(value = "代办申请接口",tags = "代办申请 --> 代办申请接口")
-public class RestAeaProjAgentController {
-    Logger logger= LoggerFactory.getLogger(RestAeaProjAgentController.class);
+public class RestProjAgentController {
+    Logger logger= LoggerFactory.getLogger(RestProjAgentController.class);
 
     @Autowired
     RestAeaProjAgentService restAeaProjAgentService;
