@@ -4,6 +4,7 @@ import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.dto.ApproveProjInfoDto;
 import com.augurit.aplanmis.common.dto.SupplementInfoDto;
+import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.common.vo.MatCorrectConfirmVo;
 import com.augurit.aplanmis.mall.userCenter.vo.ApplyDetailVo;
 import com.augurit.aplanmis.mall.userCenter.vo.LifeCycleDiagramVo;
@@ -124,4 +125,6 @@ public interface RestApproveService {
      * @throws Exception
      */
     LifeCycleDiagramVo getLiftCycleDiagramInfo(String projInfoId, String unitInfoId, String userInfoId)throws Exception;
+
+    void submitReviewStart(String applyinstId, String reviewComment, LoginInfoVo loginInfo);
 }

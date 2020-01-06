@@ -9,6 +9,7 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.sc.scc.runtime.kernal.support.om.OpusOmZtreeNode;
 import com.augurit.agcloud.opus.common.service.om.OpuOmOrgService;
+import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.constants.DicConstants;
 import com.augurit.aplanmis.common.domain.AeaParTheme;
 import com.augurit.aplanmis.common.domain.AeaParThemeVer;
@@ -400,6 +401,45 @@ public class RestApplyProjController {
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             return new ResultForm(false,"申报列表查询接口异常");
+        }
+    }
+
+
+    @GetMapping("apply/review/list")
+    @ApiOperation(value = "申报 --> 复验申请列表查询接口")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "关键词",name = "keyword",required = false,dataType = "string"),
+            @ApiImplicitParam(value = "页面数量",name = "pageNum",required = true,dataType = "string"),
+            @ApiImplicitParam(value = "页面页数",name = "pageSize",required = true,dataType = "string")})
+    public ResultForm getReviewlist(String keyword, int pageNum, int pageSize,HttpServletRequest request){
+        try {
+            LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
+            if("1".equals(loginInfo.getIsPersonAccount())){//个人
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId(),null, ApplyState.WAIT_REVIEW.getValue(),keyword,pageNum,pageSize));
+            }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),null, ApplyState.WAIT_REVIEW.getValue(),keyword,pageNum,pageSize));
+            }else{//企业
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"",null, ApplyState.WAIT_REVIEW.getValue(),keyword,pageNum,pageSize));
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ResultForm(false,"复验申请列表查询接口异常");
+        }
+    }
+
+    @GetMapping("apply/review/start")
+    @ApiOperation(value = "申报 --> 复验申请提交接口")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "申请实例ID",name = "applyinstId",required = false,dataType = "string"),
+            @ApiImplicitParam(value = "复验意见",name = "reviewComment",required = true,dataType = "string")})
+    public ResultForm getReviewlist(String applyinstId, String reviewComment, HttpServletRequest request){
+        try {
+            LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
+            restApproveService.submitReviewStart(applyinstId,reviewComment,loginInfo);
+            return new ResultForm(true);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ResultForm(false,"复验申请提交接口异常");
         }
     }
 

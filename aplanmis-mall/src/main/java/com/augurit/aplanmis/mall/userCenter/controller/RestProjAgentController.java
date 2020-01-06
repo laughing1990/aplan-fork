@@ -32,7 +32,7 @@ public class RestProjAgentController {
 
     @PostMapping("start")
     @ApiOperation(value = "代办申请 --> 代办申请接口")
-    public ContentResultForm saveProjInfoAndInitProjApplyAgent(@Valid @RequestBody AgentProjInfoParamVo agentProjInfoParamVo, HttpServletRequest request) {
+    public ContentResultForm saveProjInfoAndInitProjApplyAgent(@RequestBody AgentProjInfoParamVo agentProjInfoParamVo, HttpServletRequest request) {
         try {
             LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
             AeaProjApplyAgent aeaProjApplyAgent=restAeaProjAgentService.saveProjInfoAndInitProjApplyAgent(agentProjInfoParamVo,loginInfo);
