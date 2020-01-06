@@ -4,14 +4,25 @@
 <div class="wt-tab" id="declareHaveVue" v-cloak v-loading.fullscreen.lock="mloading" style="position: relative;">
 
   <div v-if="!isProjDetail">
-    <p class="p-header">申报列表</p>
-    <ul class="wt-tab-nav-two">
+    <p class="p-header">我的申报</p>
+    <!--<ul class="wt-tab-nav-two">
       <li :class="{'active':proType == 1}" data-id="#processProject" @click="loadProjByUnit(1);">办理中</li>
       <p class="bottom-line"></p>
       <li :class="{'active':proType == 0}" data-id="#endProject" @click="loadProjByUnit(0);">已办结</li>
-    </ul>
+    </ul>-->
     <div class="wt-tab-content">
       <div class="wt-tab-item" v-show="proType == 1" id="processProject">
+        <!--<div class="status">
+          状态：
+          <el-select v-model="value" clearable placeholder="请选择">
+            <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+            </el-option>
+          </el-select>-->
+        </div>
         <div class="search-input">
           <span class="search-title">项目/工程查询</span>
           <input type="text" placeholder="请输入工程代码 / 项目代码 / 项目名称"  v-model="keyword">

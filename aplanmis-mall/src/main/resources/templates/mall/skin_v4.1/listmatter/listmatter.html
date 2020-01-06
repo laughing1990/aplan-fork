@@ -143,6 +143,7 @@
                         <el-table
                                 :data="coreItemList"
                                 border
+                                ref="coreItemListTable"
                                 style="width: 100%">
                             <el-table-column
                                     type="selection"
@@ -223,8 +224,9 @@
                 </el-collapse-transition>
             </section>
 
+            <!-- 一张表单 section-->
             <section>
-                <div class="wt-collapse-box">
+                <div class="wt-collapse-box" @click="show2 = !show2">
                     <div class="wt-collapse clearfix">
                         <div class="fl"><span class="wt-collapse-title">一张表单</span></div>
                         <div class="fr">
@@ -233,13 +235,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="formArea">
+                <el-collapse-transition>
+                <div class="formArea" v-show="show2">
 
                 </div>
+                </el-collapse-transition>
             </section>
 
+            <!-- 一套材料 section-->
             <section v-loading="materialLoading">
-                <div class="wt-collapse-box">
+                <div class="wt-collapse-box" @click="show3 = !show3">
                     <div class="wt-collapse clearfix">
                         <div class="fl"><span class="wt-collapse-title">一套材料</span> </div>
                         <div class="fr">
@@ -247,11 +252,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="parallel">
-                    <div class="p-header-phase1">必选材料（4）</div>
+                <el-collapse-transition>
+                <div class="parallel" v-show="show3">
+                    <div class="p-header-phase1">必选材料（{{requireMat.length}}）</div>
                     <div class="Material-table" style="margin-bottom: 40px">
                         <el-table
-                                :data="tableData"
+                                :data="requireMat"
                                 style="width: 100%">
                             <el-table-column
                                     type="index"
@@ -260,38 +266,49 @@
                                     width="80">
                             </el-table-column>
                             <el-table-column
-                                    prop="date"
+                                    prop="matName"
                                     label="材料名称"
                                    >
                                 <template slot-scope="scope">
                                     <div>
-                                        <span>个人身份证明</span>
-                                        <span class="material-sing">电子证照</span>
+                                        <span>{{scope.row.matName}}</span>
+                                      <!--  <span class="material-sing">电子证照</span>-->
                                     </div>
                                 </template>
                             </el-table-column>
                             <el-table-column
-                                    prop="name"
+                                    prop="matMemo"
                                     align="center"
                                     label="全程网办接件标准"
                                     width="180">
                                 <template slot-scope="scope">
-                                    <el-tooltip content="Top center" placement="top" effect="light">
+                                    <el-tooltip placement="top" effect="light">
+                                        <div slot="content">{{scope.row.matMemo||'暂无'}}</div>
                                         <img width="18" height="18" th:src="@{/mall/skin_v4.1/images/listmatter/u450.png}" />
                                     </el-tooltip>
                                 </template>
                             </el-table-column>
                             <el-table-column
-                                    prop="address"
+                                    prop="matFrom"
                                     label="材料来源">
                             </el-table-column>
                             <el-table-column
-                                    prop="address"
-                                    label="材料共享类别">
+                                    prop=" matProp"
+                                    label="材料类别">
+                                <template slot-scope="scope">
+                                    <span v-if="scope.row.matProp=='m'">普通材料</span>
+                                    <span v-else-if="scope.row.matProp=='c'">证照材料</span>
+                                    <span v-else-if="scope.row.matProp=='f'">在线表单</span>
+                                    <span v-else>-</span>
+                                </template>
                             </el-table-column>
                             <el-table-column
-                                    prop="address"
-                                    label="是否签章">
+                                    prop=""
+                                    label="是否签章"
+                                    width="80px">
+                                <template slot-scope="scope">
+                                   <span>是</span>
+                                </template>
                             </el-table-column>
                             <el-table-column
                                     align="center"
@@ -308,29 +325,79 @@
                             </el-table-column>
                         </el-table>
                     </div>
-                    <div class="p-header-phase1">可选材料（4）</div>
+                    <div class="p-header-phase1">可选材料（{{noRequireMat.length}}）</div>
                     <div class="Material-table">
                         <el-table
-                                :data="tableData"
-
+                                :data="noRequireMat"
                                 style="width: 100%">
                             <el-table-column
-                                    prop="date"
-                                    label="日期"
-                                    width="180">
+                                    type="index"
+                                    label="序号"
+                                    align="center"
+                                    width="80">
                             </el-table-column>
                             <el-table-column
-                                    prop="name"
-                                    label="姓名"
-                                    width="180">
+                                    prop="matName"
+                                    label="材料名称"
+                            >
+                                <template slot-scope="scope">
+                                    <div>
+                                        <span>{{scope.row.matName}}</span>
+                                        <!--  <span class="material-sing">电子证照</span>-->
+                                    </div>
+                                </template>
                             </el-table-column>
                             <el-table-column
+                                    prop="matMemo"
+                                    align="center"
+                                    label="全程网办接件标准"
+                                    width="180">
+                                <template slot-scope="scope">
+                                    <el-tooltip placement="top" effect="light">
+                                        <div slot="content">{{scope.row.matMemo||'暂无'}}</div>
+                                        <img width="18" height="18" th:src="@{/mall/skin_v4.1/images/listmatter/u450.png}" />
+                                    </el-tooltip>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    prop="matFrom"
+                                    label="材料来源">
+                            </el-table-column>
+                            <el-table-column
+                                    prop=" matProp"
+                                    label="材料类别">
+                                <template slot-scope="scope">
+                                    <span v-if="scope.row.matProp=='m'">普通材料</span>
+                                    <span v-else-if="scope.row.matProp=='c'">证照材料</span>
+                                    <span v-else-if="scope.row.matProp=='f'">在线表单</span>
+                                    <span v-else>-</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    prop=""
+                                    label="是否签章"
+                                    width="80px">
+                                <template slot-scope="scope">
+                                    <span>是</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    align="center"
                                     prop="address"
-                                    label="地址">
+                                    label="资料下载">
+                                <template slot-scope="scope">
+                                    <div>
+                                        <el-button type="text" class="text-table">空表下载</el-button>
+                                    </div>
+                                    <div>
+                                        <el-button type="text" class="text-table">样表下载</el-button>
+                                    </div>
+                                </template>
                             </el-table-column>
                         </el-table>
                     </div>
                 </div>
+                </el-collapse-transition>
             </section>
 
             <!--<div class="declare-btn-box">

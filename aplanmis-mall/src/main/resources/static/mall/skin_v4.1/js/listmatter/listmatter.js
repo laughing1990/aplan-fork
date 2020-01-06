@@ -4,6 +4,8 @@ var listmatter = (function(window){
         data:{
             ctx:ctx,
             show1:true,
+            show2:true,
+            show3:true,
             contentLoading:false,
             materialLoading:false,
             tableData: [{
@@ -39,8 +41,12 @@ var listmatter = (function(window){
             stageId:null,// 当前阶段id
             listmatterData:{},
             coreItemList:[],
+            coreItemCheckData:[], // 筛选出isDoneItem为“1”的数据
             parallelItemList:[],
+            parallelItemCheckData:[],// 筛选出isDoneItem为“1”的数据
             itemStateList:[], // 事项情形列表
+            requireMat:[],// 必选材料
+            noRequireMat:[], //可选材料
         },
         created:function(){
             this.GetRequest();
@@ -60,7 +66,33 @@ var listmatter = (function(window){
                         var content = res.content;
                         vm.listmatterData = content;
                         vm.parallelItemList = content.parallelItemList; //  并联事项
+                        //筛选出isDoneItem为“1”的数据，该数据勾选状态需要设置为勾选且禁用
+                        if(vm.parallelItemList.length > 0){
+                             vm.parallelItemCheckData = vm.parallelItemList.filter(function (item) {
+                                return item.isDoneItem == '1'
+                            });
+                            vm.$nextTick(function(){
+                                if(vm.parallelItemCheckData.length > 0){
+                                    vm.parallelItemCheckData.forEach(function (item) {
+                                        vm.$refs.parallelItematable.toggleRowSelection(item,true);
+                                    })
+                                }
+                            })
+                        }
                         vm.coreItemList = content.coreItemList; // 并行推进事项
+                        //筛选出isDoneItem为“1”的数据，该数据勾选状态需要设置为勾选且禁用
+                        if(vm.coreItemList.length >0 ){
+                             vm.coreItemCheckData = vm.coreItemList.filter(function (item) {
+                               return item.isDoneItem == '1';
+                            });
+                            vm.$nextTick(function () {
+                                if(vm.coreItemCheckData.length > 0){
+                                    vm.coreItemCheckData.forEach(function (item) {
+                                        vm.$refs.coreItemListTable.toggleRowSelection(item.true);
+                                    })
+                                }
+                            })
+                        }
                         vm.getMateriallist();
                     } else {
                         vm.$message.error(res.message);
@@ -75,33 +107,40 @@ var listmatter = (function(window){
                 var vm = this;
                 this.materialLoading = true;
                 var coreItemVerIds = [] , coreParentItemVerIds = [] ,paraParentllelItemVerIds = [] , parallelItemVerIds = [] ,stageStateIds = [] ,itemStateIds = [] ;
-                vm.coreItemList.forEach(function (item,index) {
-                    coreItemVerIds.push(item.itemVerId);
-                    coreParentItemVerIds.push(item.baseItemVerId);
-                });
-                vm.parallelItemList.forEach(function (item,index) {
-                    parallelItemVerIds.push(item.itemVerId);
-                    paraParentllelItemVerIds.push(item.baseItemVerId);
-                });
+
+                if(vm.parallelItemCheckData.length > 0){
+                    vm.parallelItemCheckData.forEach(function (item) {
+                        parallelItemVerIds.push(item.currentCarryOutItem.itemVerId);
+                        paraParentllelItemVerIds.push(item.itemVerId);
+                    })
+                }
+                if(vm.coreItemCheckData.length > 0){
+                    vm.coreItemCheckData.forEach(function (item) {
+                        coreItemVerIds.push(item.currentCarryOutItem.itemVerId);
+                        coreParentItemVerIds.push(item.itemVerId);
+                    })
+                }
                 var params = {
-                    "coreItemVerIds":coreItemVerIds, // 并行事项版本ID数组(对应下面是标准事项下实施事项的事项版本id)
+                    "paraParentllelItemVerIds":paraParentllelItemVerIds, // 并联标准事项版本ID数组
+                    "parallelItemVerIds":parallelItemVerIds, // 并联事项版本ID数组(对应下面是标准事项下实施事项的事项版本id)
                     "coreParentItemVerIds":coreParentItemVerIds, // 并行标准事项版本ID数组
-                    "paraParentllelItemVerIds":paraParentllelItemVerIds, // 并联标准事项版本ID数组(对应下面是标准事项下实施事项的事项版本id)
-                    "parallelItemVerIds":parallelItemVerIds, // 并联事项版本ID数组
+                    "coreItemVerIds":coreItemVerIds, // 并行事项版本ID数组(对应下面是标准事项下实施事项的事项版本id)
                     "stageId":vm.stageId, // 阶段id
                     "itemStateIds":itemStateIds, // 事项情形ID数组
                     "stageStateIds":stageStateIds, //阶段情形ID数组
                 }
                 console.log(params)
                 $.ajax({
-                    url: ctx + 'rest/userCenter/apply/mat/list',
+                    url: ctx + 'rest/guide/mat/list',
                     type: 'post',
                     data:JSON.stringify(params),
                     contentType: 'application/json;charset=utf-8',
                     success:function(res){
                         vm.materialLoading = false;
                         if (res.success) {
-
+                            var content = res.content;
+                            vm.requireMat = content.requireMat;
+                            vm.noRequireMat = content.noRequireMat;
                         } else {
                             vm.$message.error(res.message);
                         }
@@ -135,11 +174,11 @@ var listmatter = (function(window){
             // 控制事项一单清是否可以勾选
             selectable:function(row,index) {
                 var vm = this;
-                // if(row.isDoneItem=='1'){
-                //    return  false
-                // }else {
-                //     return true
-                // }
+                if(row.isDoneItem=='1'){
+                   return  false
+                }else {
+                    return true
+                }
             },
             gotoGuideIndex:function () {
                 window.location.hash='/';

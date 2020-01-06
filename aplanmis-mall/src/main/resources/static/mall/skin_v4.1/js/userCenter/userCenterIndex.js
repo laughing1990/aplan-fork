@@ -107,11 +107,11 @@ var userCenter = (function () {
                     icon:'icon-5',
                     childList: [
                         {
-                            name: '申报列表',
+                            name: '我的申报',
                             value: 'declareHave',
                             select: false,
                         },
-                        {
+                    /*    {
                             name: '撤件列表',
                             value: 'withdrawApplyList',
                             select: false,
@@ -120,7 +120,7 @@ var userCenter = (function () {
                             name: '草稿箱',
                             value: 'drafts',
                             select: false,
-                        },
+                        },*/
                       {
                         name: '部门辅导',
                         value: 'guideList',
