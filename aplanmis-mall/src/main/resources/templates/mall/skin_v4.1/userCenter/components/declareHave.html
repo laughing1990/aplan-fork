@@ -127,78 +127,10 @@
           v-show="totalDH>10">
         </el-pagination>
       </div>
-      <div class="wt-tab-item" v-show="proType == 0" id="endProject">
-        <div class="search-input">
-          <span class="search-title">项目/工程查询</span>
-          <input type="text" placeholder="请输入工程代码 / 项目代码 / 项目名称" id="keyword" v-model="keyword">
-          <button class="search-btn" @click="pageNumDH = 1; getHadApplyItemList();">查询</button>
-        </div>
-        <table class="wt-table">
-          <thead>
-            <tr>
-              <th>办结日期</th>
-              <th class="al">项目代码 | 项目名称</th>
-              <th class="al">阶段/事项名称</th>
-              <!-- <th>办结时长</th> -->
-              <th>
-                <div style="width: 150px;">操作</div>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <template v-if="hadApplyItemData.length>0">
-              <tr v-for="item in hadApplyItemData">
-                <td width="40%">{{item.endTime |timeFormat}}</td>
-                <td class="al" width="20%">
-                  {{item.localCode}}
-                  <span class="ellipsis pro-name" :title="item.projName">{{item.projName}}</span>
-                </td>
-                <td class="al" width="20%">
-                  <!--<span class="ellipsis pro-name"-->
-                    <!--:title="item.stageIteminstName">{{item.stageIteminstName}}</span>-->
 
-                  <el-tooltip placement="top" effect="light" v-if="item.isSeriesApprove == 1">
-                    <div slot="content">项目类型：{{item.themeName}}<br/> <br/>
-                      办理事项：【<span :style="'color:' + iteminstStateColorFormat(item.iteminst[0].iteminstState)">{{item.iteminst[0].iteminstState|iteminstStateFormat}}</span>】{{item.stageIteminstName}}</div>
-                    <div>
-                      <span class=" pro-name" >{{item.stageIteminstName}}</span>
-                    </div>
-                  </el-tooltip>
-                  <el-tooltip placement="top" effect="light" v-else>
-                    <div slot="content">项目类型：{{item.themeName}} <br/> <br/>
-                      所处阶段：{{item.stageIteminstName}}<br/> <br/>
-                      办理事项:
-                      <template v-for="dto in item.iteminst">
-                        <div style="line-height: 20px;">【<span :style="'color:' + iteminstStateColorFormat(dto.iteminstState)">{{dto.iteminstState|iteminstStateFormat }}</span>】{{ dto.iteminstName }}</div>
-                      </template>
-                    </div>
-                    <div>
-                      <span class="stageIteminstName-bg" >{{item.stageIteminstName}}</span>
-                    </div>
-                  </el-tooltip>
-
-                </td>
-                <td width="20%" style="cursor: pointer">
-                  <span class="option-btn" style="display: inline-block" @click="lookProjDetail(item)">查看</span>
-                  <span class="option-btn" style="display: inline-block"  @click="showReceive(item)">打印回执</span>
-                </td>
-              </tr>
-            </template>
-            <template v-else>
-              <tr v-if="noDataTip">
-                <td colspan="4" style="text-align: center;border-bottom:none;color: #909399;">{{noDataTip}}</td>
-              </tr>
-            </template>
-          </tbody>
-        </table>
-        <el-pagination background align="right" @size-change="handleSizeChangeDe"
-          @current-change="handleCurrentChangeDe" :page-sizes="[10, 20, 30, 50]" :page-size="pageSizeDH"
-          :current-page="pageNumDH" layout="total,sizes, prev, pager, next, jumper" :total="totalDH"
-          v-show="totalDH>10">
-        </el-pagination>
-      </div>
     </div>
   </div>
+
   <div id="projectDetail" class="dl-project-detail" v-else v-loading="mloading2">
     <div class="return-list">
       <el-button @click="isProjDetail = false;">返回</el-button>
