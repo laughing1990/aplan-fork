@@ -652,6 +652,15 @@ var vm = new Vue({
       soCheckedOrgList: [],
       showSolicitBtn: isDevelop,
       // 意见征求 end--------------------------
+      // 部门辅导 start------------------------
+      showAuditProj: false, // 需要进行工程审核
+      guideDetail: {}, // 部门辅导数据详情
+      auProJForm: {
+        projName: '',
+        localCode: '',
+        investSum: '',
+      },
+      // 部门辅导 end--------------------------
     }
   },
   created: function () {
@@ -670,7 +679,7 @@ var vm = new Vue({
     }
     // 来自部门辅导
     var _guideId = __STATIC.getUrlParam('guideId');
-    if (_guideId && _guideId.length==36) {
+    if (_guideId && _guideId.length && _guideId!='undefind' && _guideId!='null') {
       this.requestGuideData(_guideId);
       return null;
     }
@@ -713,6 +722,8 @@ var vm = new Vue({
   },
   methods: {
     // 部门辅导 start-----------------------
+    // 显示辅导数据
+    showGuideDetail: function(){},
     // 根据辅导id加载辅导数据
     requestGuideData: function(guideId){
       var vm = this;
@@ -725,12 +736,64 @@ var vm = new Vue({
         vm.loading = false;
         if (res.success) {
           //
+          vm.requestAuSplitProjInfo(res.content.aeaHiGuide.projInfoId);
         } else {
           vm.$message.error(res.message || '加载部门辅导数据失败');
         }
       }, function(){
         vm.loading = false;
         vm.$message.error('加载部门辅导数据失败');
+      });
+    },
+    // 获取工程信息
+    requestAuProjInfo: function(id){
+      var vm = this;
+      this.loading = true;
+      request('', {
+        url: ctx + 'rest/project/one/'+id,
+        type: 'get',
+      }, function(res) {
+        vm.loading = false;
+        if (res.success) {
+          vm.showAuditProj = true;
+        } else {
+          vm.$message.error(res.message || '加载部门辅导数据失败');
+        }
+      }, function(){
+        vm.loading = false;
+        vm.$message.error('加载部门辅导数据失败');
+      });
+    },
+    // 获取子工程信息
+    requestAuSplitProjInfo: function(id){
+      var vm = this;
+      this.loading = true;
+      request('', {
+        url: ctx + 'rest/project/splited/proj',
+        type: 'get',
+        data: { projInfoId: id },
+      }, function(res) {
+        vm.loading = false;
+        if (res.success) {
+          if (res.content&&res.content.length){
+            var tmpArr = [];
+            res.content.forEach(function(u){
+              u.aeaProjApplySplit.applyState!=3&&u.aeaProjApplySplit.applyState!=4&&tmpArr.push(u);
+            });
+            if (tmpArr.length) {
+              vm.requestAuProjInfo(id);
+            } else {
+              vm.showGuideDetail();
+            }
+          } else {
+            vm.showGuideDetail();
+          }
+        } else {
+          vm.$message.error(res.message || '加载子工程数据失败');
+        }
+      }, function(){
+        vm.loading = false;
+        vm.$message.error('加载子工程数据失败');
       });
     },
     // 部门辅导 end-------------------------
