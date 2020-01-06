@@ -26,9 +26,35 @@
     -webkit-background-size: 100% 100%;
     background-size: 100% 100%;
 }
+.demo-input-suffix{
+    width: 640px;
+    height: 48px;
+    margin: auto;
+    margin-top: 110px;
+}
+input::-webkit-input-placeholder {
+    color: #AAAAAA!important;
+}
+input::-moz-input-placeholder {
+    color: #AAAAAA!important;
+}
+input::-ms-input-placeholder {
+    color: #AAAAAA!important;
+}
+.demo-input-suffix .el-input__inner{
+    height: 48px;
+    line-height: 48px;
+}
+.demo-input-suffix .el-input__icon{
+    line-height: 48px;
+    font-size: 24px;
+    margin-right: 13px;
+    color: #ada6a6;
+    cursor: pointer;
+}
 .nav-ul{
     width: 1117px;
-  margin:240px auto 0px;
+    margin:95px auto 0px;
 }
 .nav-li{
     width: 220px;

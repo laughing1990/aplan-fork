@@ -2,10 +2,10 @@
     var entryPage = new Vue({
         el:"#entryPage",
         data:{
+            itemListKeyword:'',
         },
         created:function() {
-            this.init();
-            //do something after creating vue instance
+
         },
         methods:{
             toDeclarGuidePage:function () {
@@ -30,6 +30,15 @@
                 window.location.hash='/regulationIndex';
                 window.location.search='';
             },
+            // 点击查询
+            toGuideSearch:function(){
+                if(!this.itemListKeyword){
+                    this.$message.error('请输入关键词！')
+                    return false;
+                }
+                sessionStorage.setItem('itemListKeyword',this.itemListKeyword);
+                this.toDeclarGuidePage();
+            }
         }
     })
 })();

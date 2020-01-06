@@ -2,11 +2,6 @@
 <head>
     <meta charset="UTF-8">
     <title>佛山市工程建设项目网上主题式服务</title>
-    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
-          th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
-
-    <link rel="stylesheet" href="../../static/mall/css/common/reset_wt.css" th:href="@{/mall/skin_v4.1/css/common/reset_wt.css}">
-    <link rel="stylesheet" href="../../static/mall/css/common/base_wt.css" th:href="@{/mall/skin_v4.1/css/common/base_wt.css}">
     <link rel="stylesheet" href="../../static/mall/skin_v4.1/css/entryPage/entryPage.css" th:href="@{/mall/skin_v4.1/css/entryPage/entryPage.css}">
 </head>
 <body>
@@ -20,34 +15,18 @@
                 </div>
 
                 <div class="go-login">
-                    <span v-if="curentLoginInfo">
-						<a href="javascript:;" class="wt-header-enterprise">
-							<span v-if="curentLoginInfo.isPersonAccount == 1">{{curentLoginInfo.personName}}</span>
-							<span v-else>
-								<el-dropdown v-if="curentLoginInfo.userId || curentLoginInfo.unitId"
-                                             :popper-append-to-body="true">
-									<span class="el-dropdown-link">
-										<span><span class="unitName ellipsis">{{curentLoginInfo.unitName}}</span><i
-                                                v-show="curentLoginInfo.unitInfoList"
-                                                class="el-icon-caret-bottom el-icon--right"></i></span>
-									</span>
-									<el-dropdown-menu slot="dropdown" v-show="curentLoginInfo.unitInfoList">
-										<el-dropdown-item v-for="(item,index) in curentLoginInfo.unitInfoList"
-                                                          :key="index" @click.native="switchUnit(item)">{{item.applicant}}
-										</el-dropdown-item>
-									</el-dropdown-menu>
-								</el-dropdown>
-							</span>
-							. 欢迎您！
-						</a>|
-						<a href="javascript:;" class="wt-header-enterprise" @click="logout" title="退出">退出</a>
-					</span>
-                    <a v-else href="/aplanmis-mall/rest/mall/loginIndex" class="wt-header-enterprise" title="登录">登录</a>
+                    <a  href="/aplanmis-mall/rest/mall/loginIndex" class="wt-header-enterprise" title="登录">登录</a>
                 </div>
             </div>
             <div class="wt-header-tab wt-tab"> </div>
         </header>
-
+        <div class="demo-input-suffix">
+            <el-input @keyup.enter.native="toGuideSearch"
+                    placeholder=" 查询项目类型/事项/结果物"
+                    v-model.trim="itemListKeyword">
+                <i slot="suffix" class="el-input__icon el-icon-search" @click="toGuideSearch"></i>
+            </el-input>
+        </div>
         <ul class="nav-ul">
             <li class="nav-li" @click="toDeclarGuidePage">
                 <div class="nav-li-content">
@@ -86,10 +65,6 @@
             </li>
         </ul>
     </div>
-    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
-            th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
-    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
-            th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
     <script th:src="@{/mall/skin_v4.1/js/entryPage/entryPage.js}" type="text/javascript"></script>
 </body>
 </html>
