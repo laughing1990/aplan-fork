@@ -90,9 +90,9 @@
             <div class="m-portlet__body" style="padding: 10px 0px;height: 99%;">
                 <div class="row" style="margin: 0px;">
                     <div class="col-xl-2 m--align-left m--padding-left-20">
-                        <%--<a href="#" class="btn btn-secondary m-btn m-btn--icon" onclick="backToTheme();">--%>
-                            <%--<span><i class="la la-angle-left"></i><span>返回</span></span>--%>
-                        <%--</a>--%>
+                        <a href="#" class="btn btn-secondary m-btn m-btn--icon" onclick="backToTheme();" style="display: ${isShowBack?'':'none'}">
+                            <span><i class="la la-angle-left"></i><span>返回</span></span>
+                        </a>
                     </div>
                     <div class="col-xl-8 m--align-center m--align-center">
                         <span style="font-size: 18px;font-weight: bold;">${theme.themeName}主题</span>

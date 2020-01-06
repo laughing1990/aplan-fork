@@ -109,11 +109,15 @@ public class AeaParThemeAdminController {
      * @return
      */
     @RequestMapping("/themeVerIndex.do")
-    public ModelAndView editIndex(ModelMap modelMap, String themeId) {
+    public ModelAndView editIndex(Boolean isShowBack, String themeId, ModelMap modelMap) {
 
         if (StringUtils.isBlank(themeId)) {
             throw new InvalidParameterException("参数themeId为空!");
         }
+        if(isShowBack==null){
+            isShowBack = true;
+        }
+        modelMap.put("isShowBack", isShowBack);
         AeaParTheme theme = themeService.getAeaParThemeById(themeId);
         modelMap.put("theme", theme);
         // 数据字典

@@ -123,10 +123,10 @@ public class RestUserCenterController {
         return new ModelAndView("mall/"+skin+"userCenter/components/addLocalProj");
     }
 
-    @GetMapping("/toAgencyProjListPage")
-    @ApiOperation(value = "跳转项目代办列表页")
-    public ModelAndView toAgencyProjListPage(){
-        return new ModelAndView("mall/"+skin+"userCenter/components/agencyProjList");
+    @GetMapping("/toSignAgencyAgreementPage")
+    @ApiOperation(value = "跳转项目签订代办协议页")
+    public ModelAndView toSignAgencyAgreementPage(){
+        return new ModelAndView("mall/"+skin+"userCenter/components/signAgencyAgreement");
     }
 
     @PostMapping("unitInfo/save")

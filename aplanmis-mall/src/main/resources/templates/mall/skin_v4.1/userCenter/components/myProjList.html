@@ -28,7 +28,9 @@
             <div class="proj-tag" :class="[item.projFlag == 'p'? 'tag-fg':'tag-bd']"></div>
             <!-- 操作按钮 -->
             <div class="proj-handel">
-              <div class="btn btn-left">关系图</div>
+              <div class="btn btn-left">
+                <a href="javascript:;" @click="toSignAgencyAgreementPage(item)">签订代办协议</a>
+              </div>
               <div class="btn btn-right" @click="todiaGramPage(item)">全景图</div>
             </div>
           </el-card>
@@ -40,7 +42,7 @@
       </div>
       <!-- 加载更多 -->
       <div class="proj-load-more">
-        <p class="pointer" v-if="total > list.length" @click="listLoadMore">
+        <p class="pointer" v-if="hasLoadMoreFlag" @click="listLoadMore">
           <i class="" :class="[loading? 'el-icon-loading':'el-icon-bottom']"></i> 加载更多
         </p>
         <p class="color-999" v-else>没有更多数据</p>

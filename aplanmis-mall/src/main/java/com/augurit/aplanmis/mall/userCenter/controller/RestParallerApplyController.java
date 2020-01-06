@@ -302,7 +302,7 @@ public class RestParallerApplyController {
         }
     }
 
-    @GetMapping("itGuide/item/list")
+    @PostMapping("itGuide/item/list")
     @ApiOperation(value = "阶段申报 --> 智能引导获取事项一单清列表数据")
     public ContentResultForm listItemAndStateByStageId(@Valid @RequestBody StageStateParamVo stageStateParamVo) {
         try {

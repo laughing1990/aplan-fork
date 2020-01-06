@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -175,21 +176,25 @@ public class RestProjectService {
         return aeaProjInfoService.addChildProjInfo(aeaProjInfo, childProjectAddVo.getIsSecond());
     }
 
-    public SplitedProjVo splitedProjInfo(String projInfoId) {
-        SplitedProjVo splitedProjVo = new SplitedProjVo();
+    public List<SplitedProjVo> splitedProjInfo(String projInfoId) {
+        List<SplitedProjVo> splitedProjVos = new ArrayList<>();
         List<AeaProjApplySplit> aeaProjApplySplits = aeaProjApplySplitService.listSplitedProjInfo(projInfoId);
         if (CollectionUtils.isNotEmpty(aeaProjApplySplits)) {
-            AeaProjApplySplit aeaProjApplySplit = aeaProjApplySplits.get(0);
-            AeaProjInfo aeaProjInfo = aeaProjInfoService.getAeaProjInfoByProjInfoId(aeaProjApplySplit.getProjInfoId());
-            AeaUnitInfo aeaUnitInfo = aeaUnitInfoService.getAeaUnitInfoByUnitInfoId(aeaProjApplySplit.getUnitInfoId());
+            for (AeaProjApplySplit aeaProjApplySplit : aeaProjApplySplits) {
+                SplitedProjVo splitedProjVo = new SplitedProjVo();
+                AeaProjInfo aeaProjInfo = aeaProjInfoService.getAeaProjInfoByProjInfoId(aeaProjApplySplit.getProjInfoId());
+                AeaUnitInfo aeaUnitInfo = aeaUnitInfoService.getAeaUnitInfoByUnitInfoId(aeaProjApplySplit.getUnitInfoId());
 
-            splitedProjVo.setAeaProjApplySplit(aeaProjApplySplit);
-            splitedProjVo.setBuildAreaSum(aeaProjInfo.getBuildAreaSum());
-            splitedProjVo.setInvestSum(aeaProjInfo.getInvestSum());
-            splitedProjVo.setScaleContent(aeaProjInfo.getScaleContent());
-            splitedProjVo.setXmYdmj(aeaProjInfo.getXmYdmj());
-            splitedProjVo.setUnitVo(UnitVo.from(aeaUnitInfo, null));
+                splitedProjVo.setAeaProjApplySplit(aeaProjApplySplit);
+                splitedProjVo.setBuildAreaSum(aeaProjInfo.getBuildAreaSum());
+                splitedProjVo.setInvestSum(aeaProjInfo.getInvestSum());
+                splitedProjVo.setScaleContent(aeaProjInfo.getScaleContent());
+                splitedProjVo.setXmYdmj(aeaProjInfo.getXmYdmj());
+                splitedProjVo.setUnitVo(UnitVo.from(aeaUnitInfo, null));
+
+                splitedProjVos.add(splitedProjVo);
+            }
         }
-        return splitedProjVo;
+        return splitedProjVos;
     }
 }

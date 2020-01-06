@@ -132,7 +132,7 @@ public class RestApproveServiceImpl implements RestApproveService {
 
     @Override
     public PageInfo<ApproveProjInfoDto> searchApproveProjInfoListByUnitOrLinkman(String unitInfoId, String userInfoId, String state, String keyword, int pageNum, int pageSize) throws Exception {
-        return approveDataService.searchApproveProjInfoListByUnitOrLinkman(unitInfoId, userInfoId, state, keyword, pageNum, pageSize);
+        return approveDataService.searchApproveProjInfoListByUnitOrLinkman(unitInfoId, userInfoId, state, keyword, null,pageNum, pageSize);
     }
 
     @Override

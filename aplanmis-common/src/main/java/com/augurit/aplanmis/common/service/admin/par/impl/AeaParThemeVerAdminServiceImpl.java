@@ -2029,6 +2029,13 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
                             ZtreeNode stageNode = new ZtreeNode();
                             stageNode.setId(stage.getStageId());
                             stageNode.setName(stage.getStageName());
+                            if(StringUtils.isNotBlank(stage.getIsNode())){
+                                if(stage.getIsNode().equals("1")){
+                                    stageNode.setName("【主线】"+stage.getStageName());
+                                }else if(stage.getIsNode().equals("2")){
+                                    stageNode.setName("【辅线】"+stage.getStageName());
+                                }
+                            }
                             stageNode.setpId(themeItem.getThemeId());
                             stageNode.setType("stage");
                             stageNode.setOpen(true);

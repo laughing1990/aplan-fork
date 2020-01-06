@@ -678,40 +678,40 @@
 
     <select id="listTestOrPublishThemeVerRelStage" resultType="AeaParStage">
         select
-        theme.THEME_ID as themeId,
-        theme.THEME_NAME as themeName,
-        theme.THEME_CODE as themeCode,
-        theme.THEME_VER_ID as themeVerId,
-        stage.STAGE_ID as stageId,
-        stage.STAGE_NAME as stageName,
-        stage.STAGE_CODE as stageCode,
-        stage.IS_NODE as isNode
+            theme.THEME_ID as themeId,
+            theme.THEME_NAME as themeName,
+            theme.THEME_CODE as themeCode,
+            theme.THEME_VER_ID as themeVerId,
+            stage.STAGE_ID as stageId,
+            stage.STAGE_NAME as stageName,
+            stage.STAGE_CODE as stageCode,
+            stage.IS_NODE as isNode
         from aea_par_stage stage,
         (
-        select
-        theme.THEME_ID,
-        theme.THEME_NAME,
-        theme.THEME_CODE,
-        theme.THEME_TYPE,
-        theme.SORT_NO,
-        theme.CREATE_TIME,
-        themeVer.THEME_VER_ID
-        from aea_par_theme theme, aea_par_theme_ver themeVer
-        <where>
-            and themeVer.THEME_ID = theme.THEME_ID
-            and theme.IS_DELETED = '0'
-            and theme.ROOT_ORG_ID = #{rootOrgId}
-            and themeVer.IS_DELETED = '0'
-            and themeVer.ROOT_ORG_ID = #{rootOrgId}
-            and themeVer.IS_PUBLISH in ('1', '2')
-        </where>
+            select
+                theme.THEME_ID,
+                theme.THEME_NAME,
+                theme.THEME_CODE,
+                theme.THEME_TYPE,
+                theme.SORT_NO,
+                theme.CREATE_TIME,
+                themeVer.THEME_VER_ID
+            from aea_par_theme theme, aea_par_theme_ver themeVer
+            <where>
+                and themeVer.THEME_ID = theme.THEME_ID
+                and theme.IS_DELETED = '0'
+                and theme.ROOT_ORG_ID = #{rootOrgId}
+                and themeVer.IS_DELETED = '0'
+                and themeVer.ROOT_ORG_ID = #{rootOrgId}
+                and themeVer.IS_PUBLISH in ('1', '2')
+            </where>
         ) theme
         <where>
             and stage.THEME_VER_ID = theme.THEME_VER_ID
             and stage.ROOT_ORG_ID = #{rootOrgId}
             and stage.IS_DELETED = '0'
         </where>
-        order by theme.THEME_TYPE asc, theme.SORT_NO asc, theme.CREATE_TIME asc
+        order by theme.THEME_TYPE asc, theme.SORT_NO asc, theme.CREATE_TIME asc, stage.IS_NODE ASC, stage.SORT_NO ASC
     </select>
 
     <select id="getStageIdByDYBZSPJDXH" resultType="string">
