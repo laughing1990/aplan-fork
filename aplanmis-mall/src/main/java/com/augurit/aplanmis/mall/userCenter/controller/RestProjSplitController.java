@@ -38,7 +38,7 @@ public class RestProjSplitController {
         }
     }
 
-    @PostMapping("getFrontStageProjInfo")
+    @GetMapping("getFrontStageProjInfo")
     @ApiOperation(value = "拆分工程申请 --> 查询上一阶段的工程信息")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "阶段编号 1 工程建设许可阶段 2 施工许可阶段", name = "stageNo", required = true, dataType = "string"),
