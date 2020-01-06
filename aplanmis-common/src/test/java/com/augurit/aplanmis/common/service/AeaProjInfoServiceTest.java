@@ -76,7 +76,7 @@ public class AeaProjInfoServiceTest extends BaseTest {
 
     @Test
     @DisplayName("根据联系人查询项目")
-    public void testFindAeaProjInfoByLinkmanInfoId() {
+    public void testFindAeaProjInfoByLinkmanInfoId() throws Exception {
         List<AeaProjInfo> list = projInfoService.findRootAeaProjInfoByLinkmanInfoId("72c39dfc-ecf7-467b-b8af-dbdd2814e6df", null);
         Assert.notEmpty(list, "未查询到项目");
         String proj = JSON.toJSONString(list);
@@ -111,7 +111,7 @@ public class AeaProjInfoServiceTest extends BaseTest {
 
     @Test
     @DisplayName("通过单位id获取项目信息")
-    public void findAeaProjInfoByUnitInfoId() {
+    public void findAeaProjInfoByUnitInfoId() throws Exception {
         List<AeaProjInfo> list = projInfoService.findRootAeaProjInfoByUnitInfoId("084fe528-da62-48c4-8ef7-aeba45d636cf", null);
         Assert.notEmpty(list, "未查询到项目");
         String proj = JSON.toJSONString(list);

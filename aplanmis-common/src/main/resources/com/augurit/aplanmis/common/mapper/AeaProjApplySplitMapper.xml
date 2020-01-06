@@ -248,7 +248,7 @@ APPLY_SPLIT_ID  ,PROJ_INFO_ID  ,UNIT_INFO_ID  ,APPLY_USER_ID  ,APPLY_ACCOUNT_UID
         join aea_proj_info api on apas.proj_info_id=api.PROJ_INFO_ID
         join aea_proj_info front on front.PROJ_INFO_ID=apas.FRONT_STAGE_PROJ_INFO_ID
         join aea_par_stage aps on aps.STAGE_ID=apas.stage_id
-        where app.PARENT_PROJ_ID=#{projInfoId}
+        where apas.FRONT_STAGE_PROJ_INFO_ID=#{projInfoId}
         AND apas.IS_DELETED='0'
     </select>
 </mapper>
