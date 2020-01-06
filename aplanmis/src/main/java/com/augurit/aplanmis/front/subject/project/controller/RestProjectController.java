@@ -301,10 +301,10 @@ public class RestProjectController {
 
     @ApiOperation(value = "拆分的子工程信息")
     @GetMapping("/splited/proj")
-    public ContentResultForm<SplitedProjVo> splitedProjInfo(String projInfoId) {
+    public ContentResultForm<List<SplitedProjVo>> splitedProjInfo(String projInfoId) {
         try {
-            SplitedProjVo splitedProjVo = restProjectService.splitedProjInfo(projInfoId);
-            return new ContentResultForm<>(true, splitedProjVo, "success");
+            List<SplitedProjVo> splitedProjVos = restProjectService.splitedProjInfo(projInfoId);
+            return new ContentResultForm<>(true, splitedProjVos, "success");
         } catch (Exception e) {
             e.printStackTrace();
             return new ContentResultForm<>(false, null, e.getMessage());
