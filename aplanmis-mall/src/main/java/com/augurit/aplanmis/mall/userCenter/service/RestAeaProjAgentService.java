@@ -10,6 +10,7 @@ import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaUnitProjLinkmanMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitProjMapper;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
+import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.service.window.AeaProjApplyAgentService;
 import com.augurit.aplanmis.common.service.window.AeaProjWindowService;
 import com.augurit.aplanmis.common.utils.CommonTools;
@@ -36,8 +37,6 @@ public class RestAeaProjAgentService {
     @Autowired
     private AeaProjWindowService aeaProjWindowService;
     @Autowired
-    private RestApplyService restApplyService;
-    @Autowired
     private BscAttMapper bscAttMapper;
     @Autowired
     private AeaUnitProjLinkmanMapper aeaUnitProjLinkmanMapper;
@@ -45,9 +44,11 @@ public class RestAeaProjAgentService {
     private AeaLinkmanInfoService aeaLinkmanInfoService;
     @Autowired
     private AeaUnitProjMapper aeaUnitProjMapper;
+    @Autowired
+    private AeaUnitInfoService aeaUnitInfoService;
 
     public AeaProjApplyAgent saveProjInfoAndInitProjApplyAgent(AgentProjInfoParamVo agentProjInfoParamVo, LoginInfoVo loginInfo) throws Exception {
-        String unitInfoId=agentProjInfoParamVo.getUnitInfoId();
+        String unitInfoId=agentProjInfoParamVo.getAeaUnitProjLinkmanVo().getUnitInfoId();
         String agentStageState=agentProjInfoParamVo.getAgentStageState();
         ProjAgentParamVo projAgentParamVo = agentProjInfoParamVo.getProjAgentParamVo();
         AeaUnitProjLinkmanVo aeaUnitProjLinkmanVo = agentProjInfoParamVo.getAeaUnitProjLinkmanVo();
@@ -129,9 +130,17 @@ public class RestAeaProjAgentService {
 
     public AeaProjApplyAgentDetailVo getProjInfoAndProjApplyAgent(String projInfoId, String applyAgentId, HttpServletRequest request) throws Exception {
         LoginInfoVo loginVo = SessionUtil.getLoginInfo(request);
-        UserInfoVo userInfoVo = restApplyService.getApplyObject(request, projInfoId);
+       // UserInfoVo userInfoVo = restApplyService.getApplyObject(request, projInfoId);
         AeaProjApplyAgentDetailVo vo=new AeaProjApplyAgentDetailVo();
         AeaUnitProjLinkmanVo aeaUnitProjLinkmanVo=new AeaUnitProjLinkmanVo();
+        if(StringUtils.isNotBlank(loginVo.getUnitId())){
+            AeaUnitInfo unitInfo = aeaUnitInfoService.getAeaUnitInfoByUnitInfoId(loginVo.getUnitId());
+            aeaUnitProjLinkmanVo.setApplicant(unitInfo!=null?unitInfo.getApplicant():null);
+            aeaUnitProjLinkmanVo.setEmail(unitInfo!=null?unitInfo.getEmail():null);
+            aeaUnitProjLinkmanVo.setUnitInfoId(unitInfo!=null?unitInfo.getUnitInfoId():null);
+            aeaUnitProjLinkmanVo.setApplicantDetailSite(unitInfo!=null?unitInfo.getApplicantDetailSite():null);
+            aeaUnitProjLinkmanVo.setUnitNature(unitInfo!=null?unitInfo.getUnitNature():null);
+        }
         List<AeaUnitProj> unitProjs = aeaUnitProjMapper.findUnitProjByProjIdAndUnitIdAndunitType(projInfoId, loginVo.getUnitId(), "7");
         if(unitProjs.size()>0){
             List<AeaUnitProjLinkman> aeaUnitProjLinkmans = aeaUnitProjLinkmanMapper.queryByUnitProjIdAndlinkType(unitProjs.get(0).getUnitProjId(),null,null);
@@ -168,7 +177,7 @@ public class RestAeaProjAgentService {
             vo.setAgentAgreement(list);
         }
         vo.setProjInfo(projInfo);
-        vo.setUserInfoVo(userInfoVo);
+       // vo.setUserInfoVo(userInfoVo);
         vo.setAeaUnitProjLinkmanVo(aeaUnitProjLinkmanVo);
         return vo;
     }
