@@ -156,6 +156,9 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
     @Autowired
     private AeaParFrontPartformMapper frontPartformMapper;
 
+    @Autowired
+    private AeaSolicitOrgMapper solicitOrgMapper;
+
     @Override
     public void saveAeaParThemeVer(AeaParThemeVer aeaParThemeVer) throws Exception {
 
@@ -344,12 +347,42 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
             allInMap.putAll(stageNoStateInMap);
         }
         copyPreThemeVerStageStateItemIn(oldStageId, stageItemMap, allInMap);
+
         // 9、阶段办事指南
         copyPreThemeVerStageGuide(oldStageId, newStageId, rootOrgId);
+
         // 10、阶段一张表单复制
         copyPreThemeVerStageOneForm(oldStageId, newStageId);
+
         // 11、阶段前置检测复制
         copyPreThemeVerStageFrontCheck(oldStageId, newStageId, rootOrgId);
+
+        // 12、处理阶段牵头部门数据
+        copySolicitOrg(oldStageId, newStageId, rootOrgId);
+    }
+
+    /**
+     * 处理阶段牵头部门数据
+     *
+     * @param oldStageId
+     * @param newStageId
+     * @param rootOrgId
+     */
+    private void copySolicitOrg(String oldStageId, String newStageId, String rootOrgId){
+
+        // 获取所有配置牵头阶段
+        AeaSolicitOrg solicitOrg = new AeaSolicitOrg();
+        solicitOrg.setRootOrgId(rootOrgId);
+        solicitOrg.setIsBusSolicit(Status.OFF);
+        List<AeaSolicitOrg> list = solicitOrgMapper.listAeaSolicitOrg(solicitOrg);
+        if(list!=null&&list.size()>0){
+            for(AeaSolicitOrg org:list){
+                if(StringUtils.isNotBlank(org.getStageId())&&oldStageId.equals(org.getStageId())){
+                    org.setLatestStageId(newStageId);
+                    solicitOrgMapper.updateAeaSolicitOrg(org);
+                }
+            }
+        }
     }
 
     /**
@@ -1044,7 +1077,7 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
     }
 
     @Override
-    public void testRunOrPublished(String themeId, String themeVerId, Double verNum, String type) {
+    public void testRunOrPublished(String themeId, String themeVerId, Double verNum, String type, String oldVerStatus) {
 
         if (StringUtils.isBlank(themeId)) {
             throw new IllegalArgumentException("主题themeId为空！");
@@ -1060,29 +1093,41 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
             throw new IllegalArgumentException("当前操作不明确,可以是试运行或者发布！");
         }
 
+        String userId = SecurityContext.getCurrentUserId();
+        String rootOrgId = SecurityContext.getCurrentOrgId();
         PublishStatus verStatus = PublishStatus.TEST_RUN;
         if (type.equals("1")) {
             verStatus = PublishStatus.PUBLISHED;
         }
 
         // 当前版本下
-        String rootOrgId = SecurityContext.getCurrentOrgId();
         AeaParThemeVer themeVer = getAeaParThemeVerById(themeVerId);
         Assert.notNull(themeVer, "无法找到对应的主题版本, themeVerId: " + themeVerId);
         themeVer.setIsPublish(verStatus.getValue());
         themeVer.setVerNum(verNum);
-        updateAeaParThemeVer(themeVer);
+        themeVer.setModifier(userId);
+        themeVer.setModifyTime(new Date());
+        aeaParThemeVerMapper.updateOne(themeVer);
 
         // 主题版本序号
         AeaParThemeSeq seq = aeaParThemeSeqMapper.getAeaParThemeSeqByThemeId(themeId, rootOrgId);
         Assert.notNull(seq, "无法找到对应的主题版本序号, themeId: " + themeId);
         seq.setMaxNum(verNum);
-        seq.setModifier(SecurityContext.getCurrentUserId());
+        seq.setModifier(userId);
         seq.setModifyTime(new Date());
         aeaParThemeSeqMapper.updateOne(seq);
 
-        // 当点击试运行或已发布时，其他试运行或已发布版本就要变成已过时
-        deprecateAllTestRunAndPublishedVersion(themeId, themeVerId, rootOrgId);
+        // 未发布到有效版本需要更新对应的关联数据
+        if(oldVerStatus.equals(PublishStatus.UNPUBLISHED.getValue())){
+            if(verNum>1.0){
+
+                // 当点击试运行或已发布时，其他试运行或已发布版本就要变成已过时
+                deprecateAllTestRunAndPublishedVersion(themeId, themeVerId, rootOrgId);
+
+                // 更新牵头部门数据
+                solicitOrgMapper.batchUpdateStageIdByThemeVerId(themeVerId, rootOrgId);
+            }
+        }
     }
 
     public void deprecateAllTestRunAndPublishedVersion(String themeId, String themeVerId, String rootOrgId) {

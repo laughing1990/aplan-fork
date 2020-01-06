@@ -77,7 +77,7 @@ public interface AeaParThemeVerMapper extends BaseMapper<AeaParThemeVer> {
 
     void setThemeVerDiagramNull(@Param("themeVerId") String themeVerId);
 
-    AeaParThemeVer getTestRunOrPublishedVer(@Param("themeId") String themeId, @Param("rootOrgId") String rootOrgId);
+    List<AeaParThemeVer> listTestRunOrPublishedVer(@Param("themeId") String themeId, @Param("rootOrgId") String rootOrgId);
 
     List<AeaParThemeVer> getNotExpireThemeverByItemId(@Param("itemId") String itemId, @Param("rootOrgId")String rootOrgId);
 

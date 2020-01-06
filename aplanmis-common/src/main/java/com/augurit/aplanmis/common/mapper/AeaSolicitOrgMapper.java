@@ -80,4 +80,12 @@ public interface AeaSolicitOrgMapper {
       * @param rootOrgId
       */
      void batchDelSolicitOrgByRootOrgId(@Param("rootOrgId") String rootOrgId);
+
+     /**
+      * 批量更新stageId, 当主题版本发布新版本时
+      *
+      * @param themeVerId
+      * @param rootOrgId
+      */
+     void batchUpdateStageIdByThemeVerId(@Param("themeVerId") String themeVerId, @Param("rootOrgId") String rootOrgId);
 }

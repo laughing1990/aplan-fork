@@ -1166,4 +1166,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="202001061136" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_solicit_org`
+            ADD COLUMN `LATEST_STAGE_ID`  varchar(50) NULL COMMENT '最新主题版本阶段ID【当IS_BUS_SOLICIT=0】' AFTER `ROOT_ORG_ID`;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

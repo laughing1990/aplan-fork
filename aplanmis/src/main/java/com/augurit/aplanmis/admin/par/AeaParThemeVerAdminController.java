@@ -105,7 +105,7 @@ public class AeaParThemeVerAdminController {
     }
 
     @RequestMapping("/testRunOrPublished.do")
-    public ResultForm testRunOrPublished(String themeId, String themeVerId, Double verNum, String type) {
+    public ResultForm testRunOrPublished(String themeId, String themeVerId, Double verNum, String type, String oldVerStatus) {
 
         if(StringUtils.isBlank(themeId)){
             throw new IllegalArgumentException("主题themeId为空！");
@@ -120,7 +120,7 @@ public class AeaParThemeVerAdminController {
         if(!(type.equals("2")||type.equals("1"))){
             throw new IllegalArgumentException("当前操作不明确,可以是试运行或者发布！");
         }
-        aeaParThemeVerAdminService.testRunOrPublished(themeId, themeVerId, verNum, type);
+        aeaParThemeVerAdminService.testRunOrPublished(themeId, themeVerId, verNum, type, oldVerStatus);
         return new ResultForm(true, "操作成功！");
     }
 

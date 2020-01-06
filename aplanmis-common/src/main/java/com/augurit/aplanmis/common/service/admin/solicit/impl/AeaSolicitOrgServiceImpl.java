@@ -161,10 +161,11 @@ public class AeaSolicitOrgServiceImpl implements AeaSolicitOrgService {
                     }
                 }else{
                     sSolicitOrg.setSolicitOrgId(UUID.randomUUID().toString());
+                    sSolicitOrg.setLatestStageId(stageId);
                     sSolicitOrg.setSolicitType(solicitType);
                     sSolicitOrg.setCreater(userId);
-                    sSolicitOrg.setCreateTime(new Date());
                     sSolicitOrg.setRootOrgId(rootOrgId);
+                    sSolicitOrg.setCreateTime(new Date());
                     aeaSolicitOrgMapper.insertAeaSolicitOrg(sSolicitOrg);
                 }
             }
