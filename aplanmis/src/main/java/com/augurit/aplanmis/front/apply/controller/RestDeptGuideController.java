@@ -82,7 +82,7 @@ public class RestDeptGuideController {
     }
 
     @PostMapping("/finish")
-    @ApiOperation("部门征求")
+    @ApiOperation("辅导完成")
     public ResultForm finish(@RequestBody GuideFinishVo guideFinishVo) {
         try {
             aeaHiGuideService.finish(guideFinishVo.toAeaHiGuide(SecurityContext.getCurrentUserId()));
