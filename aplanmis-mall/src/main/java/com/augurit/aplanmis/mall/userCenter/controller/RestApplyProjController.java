@@ -26,6 +26,7 @@ import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestApproveService;
 import com.augurit.aplanmis.mall.userCenter.service.RestUserCenterService;
 import com.augurit.aplanmis.mall.userCenter.vo.AeaProjInfoResultVo;
+import com.augurit.aplanmis.mall.userCenter.vo.AeaRootProjInfoVo;
 import com.augurit.aplanmis.mall.userCenter.vo.ApplyDetailVo;
 import com.augurit.aplanmis.thirdPlatform.service.ProjectCodeService;
 import com.github.pagehelper.PageHelper;
@@ -183,8 +184,13 @@ public class RestApplyProjController {
             }else{//企业
                 list=aeaProjInfoService.findRootAeaProjInfoByUnitInfoId(loginInfo.getUnitId(),keyword);
             }
+
             PageInfo origPageInfo = new PageInfo<>(list);
-            return new ContentResultForm<>(true,origPageInfo);
+            if(list.size()==0) return new ContentResultForm<>(true,origPageInfo);
+            List<AeaRootProjInfoVo> voList = list.stream().map(AeaRootProjInfoVo::format).collect(Collectors.toList());
+            PageInfo<AeaRootProjInfoVo> pageInfo = new PageInfo<>(voList);
+            BeanUtils.copyProperties(origPageInfo,pageInfo,"list");
+            return new ContentResultForm<>(true,pageInfo);
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             return new ResultForm(false,"查询用户根项目列表异常");
