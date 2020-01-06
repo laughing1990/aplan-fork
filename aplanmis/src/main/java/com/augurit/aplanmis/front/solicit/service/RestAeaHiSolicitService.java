@@ -50,7 +50,9 @@ public interface RestAeaHiSolicitService {
 
     public void createSolicitOpinion(AeaHiSolicitDetailUser aeaHiSolicitDetailUser) throws Exception;
 
-    public void createSolicitCollectOpinion(AeaHiSolicit aeaHiSolicit) throws Exception;
+    public AeaHiSolicit createSolicitCollectOpinion(AeaHiSolicit aeaHiSolicit) throws Exception;
+
+    public void completeTaskAfterfinishSolicit(AeaHiSolicit aeaHiSolicit) throws Exception;
 
     /**
      * 根据申报编号获取所有的征求信息

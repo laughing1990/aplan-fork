@@ -74,6 +74,9 @@ public class SolicitDetailUserVo {
     @ApiModelProperty(value = "是否发送短信通知，0否，1是", required = false, dataType="string")
     private String isSendSms;
 
+    @ApiModelProperty(value = "发送短信内容", required = false, dataType="string")
+    private String smsContent;
+
 
     private String userName; //扩展字段 (用户名)
 

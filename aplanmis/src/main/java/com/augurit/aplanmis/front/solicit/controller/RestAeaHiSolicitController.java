@@ -145,7 +145,7 @@ public class RestAeaHiSolicitController {
     public ResultForm solicitCollectOpinion(@Valid @RequestBody SolicitVo soliciVo) throws Exception {
         try {
             AeaHiSolicit aeaHiSolicit = soliciVo.convertToAeaHiSolicit();
-            restAeaHiSolicitService.createSolicitCollectOpinion(aeaHiSolicit);
+            AeaHiSolicit solicit = restAeaHiSolicitService.createSolicitCollectOpinion(aeaHiSolicit);
             return new ResultForm(true);
         } catch (Exception e) {
             e.printStackTrace();

@@ -1525,4 +1525,29 @@
             MODIFY COLUMN `APPLYINST_STATE`  varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '申报状态：0已接件未审核（适用于网厅）、1 已接件并审核、2窗口受理、3待补全、4补全待确认、5不予受理、6已办结、7待选取中介机构、8待确认中介机构、9待上传合同、10待确认合同、11待上传服务结果、12撤件待受理、13撤件已受理、14撤件办结、15待复验' AFTER `APPLYINST_MEMO`;
         </sql>
     </changeSet>
+
+    <changeSet id="2020010620320001" author="sam" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_solicit`
+            ADD COLUMN `SOLICIT_LINKMAN_NAME`  varchar(50) NULL AFTER `ROOT_ORG_ID`,
+            ADD COLUMN `SOLICIT_LINKMAN_PHONE`  varchar(20) NULL AFTER `SOLICIT_LINKMAN_NAME`;
+
+            ALTER TABLE `aea_hi_solicit_detail_user`
+            ADD COLUMN `LINKMAN_NAME`  varchar(50) NULL AFTER `MODIFY_TIME`,
+            ADD COLUMN `LINKMAN_PHONE`  varchar(20) NULL AFTER `LINKMAN_NAME`;
+
+            ALTER TABLE `aea_hi_solicit_detail_user`
+            ADD COLUMN `IS_SEND_SMS`  char(1) NULL COMMENT '是否发送短信通知，1是0否' AFTER `LINKMAN_PHONE`;
+
+            ALTER TABLE `aea_hi_solicit`
+            ADD COLUMN `IS_SEND_SMS`  char(1) NULL COMMENT '是否发送短信通知，1是0否' AFTER `SOLICIT_LINKMAN_PHONE`;
+
+            ALTER TABLE `aea_hi_solicit`
+            ADD COLUMN `SMS_CONTENT`  varchar(1000) NULL COMMENT '发送的短信内容' AFTER `IS_SEND_SMS`;
+
+            ALTER TABLE `aea_hi_solicit_detail_user`
+            ADD COLUMN `SMS_CONTENT`  varchar(1000) NULL COMMENT '发送的短信内容' AFTER `IS_SEND_SMS`;
+
+        </sql>
+    </changeSet>
 </databaseChangeLog>

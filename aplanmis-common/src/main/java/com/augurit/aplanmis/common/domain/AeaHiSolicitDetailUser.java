@@ -34,6 +34,7 @@ public class AeaHiSolicitDetailUser implements Serializable {
     private String linkmanName; // (联系人)
     private String linkmanPhone; // (联系人联系方式)
     private String isSendSms; // (是否发送短信通知，0否，1是)
+    private String smsContent; // (发送短信内容)
 
     private String userName; //扩展字段 (用户名)
 

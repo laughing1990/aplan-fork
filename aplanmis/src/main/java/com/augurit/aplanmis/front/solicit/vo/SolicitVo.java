@@ -138,6 +138,9 @@ public class SolicitVo {
     @ApiModelProperty(value = "是否发送短信通知，0否，1是", required = false, dataType="string")
     private String isSendSms;
 
+    @ApiModelProperty(value = "发送短信内容", required = false, dataType="string")
+    private String smsContent;
+
 
     private String solicitTypeName; // 非表字段 (征求意见类型：i表示按事项征求，d表示按部门征求)
     private String solicitDaysUnitCn; // 非表字段 (意见征求时限单位中文，自然日，工作日)

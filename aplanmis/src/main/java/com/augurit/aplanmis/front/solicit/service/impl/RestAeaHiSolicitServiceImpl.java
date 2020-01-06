@@ -624,6 +624,11 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
         return detailUser;
     }
 
+    /**
+     * 意见征求被征求人回复接口
+     * @param aeaHiSolicitDetailUser
+     * @throws Exception
+     */
     @Override
     public void createSolicitOpinion(AeaHiSolicitDetailUser aeaHiSolicitDetailUser) throws Exception {
         String solicitDetailId = aeaHiSolicitDetailUser.getSolicitDetailId();
@@ -658,8 +663,14 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
         }
     }
 
+    /**
+     * 意见征求发起人意见汇总接口，可能会涉及流程流转
+     * @param aeaHiSolicit
+     * @return
+     * @throws Exception
+     */
     @Override
-    public void createSolicitCollectOpinion(AeaHiSolicit aeaHiSolicit) throws Exception {
+    public AeaHiSolicit createSolicitCollectOpinion(AeaHiSolicit aeaHiSolicit) throws Exception {
         Date date = new Date();
         OpuOmUser currentUser = SecurityContext.getCurrentUser();
         aeaHiSolicit.setModifyTime(date);
@@ -675,20 +686,66 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
         AeaHiSolicit temp = aeaHiSolicitMapper.getAeaHiSolicitById(aeaHiSolicit.getSolicitId());
         if(temp != null) {
             String procinstId = temp.getProcinstId();
-            if (SolicitConstant.SOLICIT_CONCLUSION_FLAG_TG.equals(aeaHiSolicit.getConclusionFlag()) &&
-                    bpmProcessService.isProcessSuspended(procinstId)) {
-                bpmProcessService.activateProcessInstanceById(aeaHiSolicit.getProcinstId());
+            boolean isComplete = true;
+            if(bpmProcessService.isProcessSuspended(procinstId)) {
+                isComplete = false;
+                //一次征询，需要汇总结论是通过的才激活流程
+                if (SolicitBusTypeEnum.YCZX.getValue().equals(temp.getBusType()) &&
+                        SolicitConstant.SOLICIT_CONCLUSION_FLAG_TG.equals(temp.getConclusionFlag())) {
+                    bpmProcessService.activateProcessInstanceById(temp.getProcinstId());
+                    isComplete = true;
+                }
+                //联合评审最后结论 通过和不通过都会激活流程
+                if (SolicitBusTypeEnum.LHPS.getValue().equals(temp.getBusType())){
+                    bpmProcessService.activateProcessInstanceById(temp.getProcinstId());
+                    isComplete = true;
+                }
+                //意见征求暂时默认给激活流程
+                if (SolicitBusTypeEnum.YJZQ.getValue().equals(temp.getBusType())){
+                    bpmProcessService.activateProcessInstanceById(temp.getProcinstId());
+                    isComplete = true;
+                }
             }
-            //直接根据汇总结论，目前兼容联合评审和一次征询
-            if (!SolicitBusTypeEnum.YJZQ.getValue().equals(aeaHiSolicit.getBusType())
-                    && SolicitConstant.SOLICIT_CONCLUSION_FLAG_TG.equals(aeaHiSolicit.getConclusionFlag())) {
-                String hiTaskinstId = temp.getHiTaskinstId();
-                List<BpmDestTaskConfig> bpmDestTaskConfig = bpmTaskService.getBpmDestTaskConfigByCurrTaskId(hiTaskinstId);
-                for(int i=0,len=bpmDestTaskConfig.size(); i<len; i++){
-                    String destActId = bpmDestTaskConfig.get(i).getDestActId();
-                    if(StringUtils.isNotBlank(destActId) && (!destActId.startsWith("endEvent") || !destActId.equals("jieshu"))){
-                        taskService.complete(hiTaskinstId, new String[]{destActId}, (Map)null);
-                    }
+            if(isComplete){
+                completeTaskAfterfinishSolicit(temp);
+            }
+        }
+        return temp;
+    }
+
+    /**
+     *  意见征求意见汇总后推动流程流转接口
+     *  依据目前第一版的，一二阶段（一次征询和联合评审）流程图做的，如果有调整需要跟进优化
+     * @param aeaHiSolicit
+     * @throws Exception
+     */
+    @Override
+    public void completeTaskAfterfinishSolicit(AeaHiSolicit aeaHiSolicit) throws Exception {
+        String hiTaskinstId = aeaHiSolicit.getHiTaskinstId();
+        //直接根据汇总结论，决定流程流向
+        if (SolicitBusTypeEnum.YCZX.getValue().equals(aeaHiSolicit.getBusType()) &&
+                SolicitConstant.SOLICIT_CONCLUSION_FLAG_TG.equals(aeaHiSolicit.getConclusionFlag())) {
+            //一次征询需要汇总结论是通过的，才会结束当前节点，并往下流转
+            // 注意：基于目前只有一个流向的情况，如果多于一个流向则需要按照实际需求优化此处代码
+            taskService.complete(hiTaskinstId);
+        }else if(SolicitBusTypeEnum.YJZQ.getValue().equals(aeaHiSolicit.getBusType())){
+            //意见征求默认往下推送，此处后续根据实际需求进行优化
+            taskService.complete(hiTaskinstId);
+        }else if(SolicitBusTypeEnum.LHPS.getValue().equals(aeaHiSolicit.getBusType())){
+            List<BpmDestTaskConfig> bpmDestTaskConfig = bpmTaskService.getBpmDestTaskConfigByCurrTaskId(hiTaskinstId);
+            for(int i=0,len=bpmDestTaskConfig.size(); i<len; i++){
+                String destActId = bpmDestTaskConfig.get(i).getDestActId();
+                //如果联合评审结果时通过，则流向形式审查节点
+                if(SolicitConstant.SOLICIT_CONCLUSION_FLAG_TG.equals(aeaHiSolicit.getConclusionFlag()) &&
+                        StringUtils.isNotBlank(destActId) && (!destActId.startsWith("endEvent") || !destActId.equals("jieshu"))){
+                    taskService.complete(hiTaskinstId, new String[]{destActId}, (Map)null);
+                    return;
+                }
+                //如果不通过，则直接流向结束节点
+                if(SolicitConstant.SOLICIT_CONCLUSION_FLAG_BTG.equals(aeaHiSolicit.getConclusionFlag()) &&
+                        StringUtils.isNotBlank(destActId) && (destActId.startsWith("endEvent") || destActId.equals("jieshu"))){
+                    taskService.complete(hiTaskinstId, new String[]{destActId}, (Map)null);
+                    return;
                 }
             }
         }

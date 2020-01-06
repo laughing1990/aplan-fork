@@ -59,5 +59,6 @@ public class AeaHiSolicit implements Serializable {
     private String solicitLinkmanName; // (联系人姓名)
     private String solicitLinkmanPhone; // (联系人手机号码)
     private String isSendSms; // (是否发送短信通知，0否，1是)
+    private String smsContent; // (发送短信内容)
 
 }
