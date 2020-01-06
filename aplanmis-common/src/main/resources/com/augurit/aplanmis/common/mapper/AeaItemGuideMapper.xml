@@ -59,7 +59,8 @@
         TRANSACT_WEB_URL  transactWebUrl,
         LEVY_KIND  levyKind,
         IS_LEVYWAIVER  isLevywaiver,
-        ROOT_ORG_ID rootOrgId
+        ROOT_ORG_ID rootOrgId,
+        ACCEPT_PRIV acceptPriv
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
@@ -238,6 +239,9 @@
             <if test="rootOrgId != null" >
                AND     ROOT_ORG_ID = #{rootOrgId}
             </if>
+            <if test="acceptPriv != null" >
+                AND     ACCEPT_PRIV = #{acceptPriv}
+            </if>
         </where>
     </select>
     <!--4 根据条件查询实体list,返回分页对象 -->
@@ -245,9 +249,9 @@
     <!--5 新增实体对象 -->
     <insert id="insertAeaItemGuide" parameterType="AeaItemGuide" >
         insert into AEA_ITEM_GUIDE (
-        ID  ,ANTICIPATE_DAY  ,ANTICIPATE_TYPE  ,CATLOG_CODE  ,CKBLLC  ,CKBLLCT  ,DEPT_NAME  ,DEPT_TYPE_TEXT  ,HANDLE_TYPE_TEXT  ,IS_FEE_TEXT  ,LINKWAY  ,PROJECT_TYPE_TEXY  ,PROMISE_DAY  ,PROMISE_TYPE  ,SERVE_TYPE_TEXT  ,TASK_CODE  ,TASK_NAME  ,TASK_TYPE_TEXT  ,TSCKADDRESS  ,TSDZYX  ,TSTEL  ,WSBLLC  ,USER_LEVEL  ,WSBLLCT  ,WSTSWZ  ,XHTSDZ  ,ITEM_VER_ID  ,TASK_TYPE  ,USE_LEVEL_TEXT  ,DEPT_CODE  ,DEPT_TYPE  ,TONGYI_CODE  ,SERVE_TYPE  ,ANTICIPATE_TYPE_TEXT  ,FDBLSXSM  ,PROMISE_TYPE_TEXT  ,CRBJSXSM  ,HANDLE_TYPE  ,PROJECT_TYPE  ,ITEMSOURCE  ,ITEMSOURCE_TEXT  ,FACTDEGREE_EXPLAIN  ,ACCEPT_CONDITION  ,SUPERVISE_WAY  ,IS_FEE  ,CHARGENODE  ,CHARGETYPE  ,CHARGETYPE_TEXT  ,ONLINE_CHECK  ,ONLINE_CHECK_TEXT  ,TRANSACT_WEB_URL  ,LEVY_KIND  ,IS_LEVYWAIVER, ROOT_ORG_ID
+            ID  ,ANTICIPATE_DAY  ,ANTICIPATE_TYPE  ,CATLOG_CODE  ,CKBLLC  ,CKBLLCT  ,DEPT_NAME  ,DEPT_TYPE_TEXT  ,HANDLE_TYPE_TEXT  ,IS_FEE_TEXT  ,LINKWAY  ,PROJECT_TYPE_TEXY  ,PROMISE_DAY  ,PROMISE_TYPE  ,SERVE_TYPE_TEXT  ,TASK_CODE  ,TASK_NAME  ,TASK_TYPE_TEXT  ,TSCKADDRESS  ,TSDZYX  ,TSTEL  ,WSBLLC  ,USER_LEVEL  ,WSBLLCT  ,WSTSWZ  ,XHTSDZ  ,ITEM_VER_ID  ,TASK_TYPE  ,USE_LEVEL_TEXT  ,DEPT_CODE  ,DEPT_TYPE  ,TONGYI_CODE  ,SERVE_TYPE  ,ANTICIPATE_TYPE_TEXT  ,FDBLSXSM  ,PROMISE_TYPE_TEXT  ,CRBJSXSM  ,HANDLE_TYPE  ,PROJECT_TYPE  ,ITEMSOURCE  ,ITEMSOURCE_TEXT  ,FACTDEGREE_EXPLAIN  ,ACCEPT_CONDITION  ,SUPERVISE_WAY  ,IS_FEE  ,CHARGENODE  ,CHARGETYPE  ,CHARGETYPE_TEXT  ,ONLINE_CHECK  ,ONLINE_CHECK_TEXT  ,TRANSACT_WEB_URL  ,LEVY_KIND  ,IS_LEVYWAIVER, ROOT_ORG_ID, ACCEPT_PRIV
         )  values  (
-        #{id},#{anticipateDay},#{anticipateType},#{catlogCode},#{ckbllc},#{ckbllct},#{deptName},#{deptTypeText},#{handleTypeText},#{isFeeText},#{linkway},#{projectTypeTexy},#{promiseDay},#{promiseType},#{serveTypeText},#{taskCode},#{taskName},#{taskTypeText},#{tsckaddress},#{tsdzyx},#{tstel},#{wsbllc},#{userLevel},#{wsbllct},#{wstswz},#{xhtsdz},#{itemVerId},#{taskType},#{useLevelText},#{deptCode},#{deptType},#{tongyiCode},#{serveType},#{anticipateTypeText},#{fdblsxsm},#{promiseTypeText},#{crbjsxsm},#{handleType},#{projectType},#{itemsource},#{itemsourceText},#{factdegreeExplain},#{acceptCondition},#{superviseWay},#{isFee},#{chargenode},#{chargetype},#{chargetypeText},#{onlineCheck},#{onlineCheckText},#{transactWebUrl},#{levyKind},  #{isLevywaiver}, #{rootOrgId}
+            #{id},#{anticipateDay},#{anticipateType},#{catlogCode},#{ckbllc},#{ckbllct},#{deptName},#{deptTypeText},#{handleTypeText},#{isFeeText},#{linkway},#{projectTypeTexy},#{promiseDay},#{promiseType},#{serveTypeText},#{taskCode},#{taskName},#{taskTypeText},#{tsckaddress},#{tsdzyx},#{tstel},#{wsbllc},#{userLevel},#{wsbllct},#{wstswz},#{xhtsdz},#{itemVerId},#{taskType},#{useLevelText},#{deptCode},#{deptType},#{tongyiCode},#{serveType},#{anticipateTypeText},#{fdblsxsm},#{promiseTypeText},#{crbjsxsm},#{handleType},#{projectType},#{itemsource},#{itemsourceText},#{factdegreeExplain},#{acceptCondition},#{superviseWay},#{isFee},#{chargenode},#{chargetype},#{chargetypeText},#{onlineCheck},#{onlineCheckText},#{transactWebUrl},#{levyKind},  #{isLevywaiver}, #{rootOrgId}, #{acceptPriv}
         )
     </insert>
 
@@ -416,6 +420,9 @@
             </if>
             <if test="rootOrgId != null" >
                 ROOT_ORG_ID = #{rootOrgId},
+            </if>
+            <if test="acceptPriv != null" >
+                ACCEPT_PRIV = #{acceptPriv},
             </if>
         </set>
         where ID = #{id}

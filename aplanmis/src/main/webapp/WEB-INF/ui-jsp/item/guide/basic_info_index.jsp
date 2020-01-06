@@ -142,14 +142,18 @@
 
             <tr style="display: table-row;">
                 <th>受理条件</th>
-                <%--<td colspan="3">--%>
-                    <%--<div class="form-control m-input ${curIsEditable?'':'border-none'}" style="height: 100px;" contenteditable="${curIsEditable?'true':'false'}" onkeyup="$('#acceptCondition').val(this.innerHTML)">${empty aeaItemGuide.acceptCondition?(curIsEditable?'':'无'):aeaItemGuide.acceptCondition}</div>--%>
-                    <%--<textarea id="acceptCondition"  name="acceptCondition" rows="5" style="display: none">${empty aeaItemGuide.acceptCondition?(curIsEditable?'':'无'):aeaItemGuide.acceptCondition}</textarea>--%>
-                <%--</td>--%>
-
                 <td colspan="3">
                     <div class="form-group m-form__group row" style="margin-bottom: 0rem;">
                         <textarea id="acceptCondition" name="acceptCondition" class="form-control" rows="5" ${curIsEditable?'':'readonly'}>${aeaItemGuide.acceptCondition}</textarea>
+                    </div>
+                </td>
+            </tr>
+
+            <tr style="display: table-row;">
+                <th>受理权限</th>
+                <td colspan="3">
+                    <div class="form-group m-form__group row" style="margin-bottom: 0rem;">
+                        <textarea id="acceptPriv" name="acceptPriv" class="form-control" rows="5" ${curIsEditable?'':'readonly'}>${aeaItemGuide.acceptPriv}</textarea>
                     </div>
                 </td>
             </tr>

@@ -1173,4 +1173,14 @@
         </sql>
     </changeSet>
 
+    <changeSet id="202001061732" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_mat`
+            ADD COLUMN `IS_SIGN`  char(1) NULL DEFAULT '0' COMMENT '是否需要签章 1是 0否' AFTER `OUTER_FORM_ID`;
+
+            ALTER TABLE `aea_item_guide`
+            ADD COLUMN `ACCEPT_PRIV`  mediumtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '受理权限' AFTER `ROOT_ORG_ID`;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

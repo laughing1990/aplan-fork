@@ -8,6 +8,7 @@ import javax.validation.constraints.Size;
 
 @Data
 public class AeaItemGuide implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     private String id; // (操作指南id)
@@ -65,6 +66,7 @@ public class AeaItemGuide implements Serializable {
     private String isLevywaiver; // (是否涉及收（税）费减免的审批)
     private String isLimitText;
     private String rootOrgId; // 根组织id
+    private String acceptPriv; // 受理权限
 
     // 扩展字段
     private Long ckbllctNum; // 附件数量
