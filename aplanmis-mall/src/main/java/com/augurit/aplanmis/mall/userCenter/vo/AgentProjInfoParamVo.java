@@ -1,13 +1,11 @@
 package com.augurit.aplanmis.mall.userCenter.vo;
 
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.common.vo.LinkmanTypeVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
-import java.util.List;
 
 @Data
 @ApiModel("代办申请表单参数")
