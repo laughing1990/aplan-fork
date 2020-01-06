@@ -84,7 +84,16 @@ var guideIndex = (function () {
         },
         methods: {
             init: function () {
+                this.isHaveItemListKeyword();
                 this.getThemeList();
+            },
+            // 引导页进来带的关键词搜索
+            isHaveItemListKeyword:function(){
+                var itemListKeyword = sessionStorage.getItem('itemListKeyword') || '';
+                if(itemListKeyword){
+                    this.itemListKeyword = itemListKeyword;
+                    sessionStorage.removeItem('itemListKeyword');
+                }
             },
             hideMoreDepart: function () {
                 for (var i = 0; i < eleLen; i++) {
@@ -278,75 +287,7 @@ var guideIndex = (function () {
               var suffix=fileName.substring(index1+1, index2).toLowerCase();//后缀名
               return suffix;
             },
-            // 预览电子件
-            previewFile: function(data,getSrc){ // getSrc TRUE不打开新页面仅获取src
-            var detailId = data.detailId;
-            var _that = this;
-            var regText = /doc|docx|ppt|pptx|xls|xlsx|txt$/;
-            var fileName=data.attName;
-            var fileType = this.getFileType(fileName);
-            var flashAttributes = '';
-            _that.filePreviewCount++
-            if(fileType=='pdf'){
-                var tempwindow=window.open(); // 先打开页面
-                setTimeout(function(){
-                    tempwindow.location=ctx+'/previewPdf/view?detailId='+detailId;
-                },1000)
 
-            }else {
-              if(regText.test(fileType)){
-                // previewPdf/pdfIsCoverted
-                _that.showProcessLoading = true;
-                request('', {
-                  url: ctx + 'previewPdf/pdfIsCoverted?detailId='+detailId,
-                  type: 'get',
-                }, function (result) {
-                  if(result.success){
-                    _that.showProcessLoading = false;
-                    if(getSrc){
-                        _that.getViewIframeSrc = ctx+'previewPdf/view?detailId='+detailId;
-                    }else {
-                        var tempwindow=window.open(); // 先打开页面
-                        setTimeout(function(){
-                            tempwindow.location=ctx+'previewPdf/view?detailId='+detailId;
-                        },1000)
-                    }
-                  }else {
-                    if(_that.filePreviewCount>9){
-                      confirmMsg('提示信息：', '文件预览请求中，是否继续等待？', function () {
-                        _that.filePreviewCount=0;
-                        _that.previewFile(data);
-                      }, function () {
-                        _that.filePreviewCount=0;
-                        _that.showProcessLoading = false;
-                        return false;
-                      }, '确定', '取消', 'warning', true)
-                    }else {
-                      setTimeout(function(){
-                        _that.previewFile(data);
-                      },1000)
-                    }
-                  }
-                }, function (msg) {
-                  _that.showProcessLoading = false;
-                  _that.$message({
-                    message: '文件预览失败',
-                    type: 'error'
-                  });
-                })
-              }else {
-                _that.showProcessLoading = false;
-                if(getSrc){
-                    _that.getViewIframeSrc = ctx + 'rest/file/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
-                }else {
-                    var tempwindow=window.open(); // 先打开页面
-                    setTimeout(function(){
-                        tempwindow.location = ctx + 'rest/file/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
-                    },1000)
-                }
-              }
-            }
-          },
             previewResultGuide:function(detailId){
                     window.open(ctx+'rest/file/att/preview?detailId='+detailId);
             },

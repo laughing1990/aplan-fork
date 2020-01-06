@@ -122,7 +122,7 @@ public class AeaItemBasicServiceImpl implements AeaItemBasicService {
         if (StringUtils.isBlank(stageId)) {
             throw new InvalidParameterException("参数stageId为空！");
         }
-        return aeaItemBasicMapper.getAeaItemBasicListByStageIdAndStateIds(stageId,stateIds,isOptionItem,rootOrgId);
+        return aeaItemBasicMapper.getAeaItemBasicListByStageIdAndStateIds(stageId,stateIds.toArray(new String[stateIds.size()]),isOptionItem,rootOrgId);
     }
 
     @Override

@@ -293,22 +293,21 @@
         from AEA_PAR_THEME_VER themeVer
         where
             themeVer.IS_DELETED = '0'
-            and themeVer.THEME_ID in(${themeIds})
+        and themeVer.THEME_ID in(${themeIds})
         order by themeVer.VER_NUM desc,themeVer.CREATE_TIME desc
     </select>
 
-    <select id="getTestRunOrPublishedVer" resultType="com.augurit.aplanmis.common.domain.AeaParThemeVer">
+    <select id="listTestRunOrPublishedVer" resultType="com.augurit.aplanmis.common.domain.AeaParThemeVer">
         select
-        <include refid="allColumns">
-            <property name="alias" value="themeVer"/>
-        </include>
+            <include refid="allColumns">
+                <property name="alias" value="themeVer"/>
+            </include>
         from AEA_PAR_THEME_VER themeVer
-        where theme_id = #{themeId}
-        and root_org_id=#{rootOrgId}
-        and is_deleted='0'
-        and is_publish in('1', '2')
-        order by ver_num desc
-        limit 1
+        where THEME_ID = #{themeId}
+          and ROOT_ORG_ID = #{rootOrgId}
+          and IS_DELETED = '0'
+          and IS_PUBLISH in('1', '2')
+        order by VER_NUM desc
     </select>
 
     <select id="getNotExpireThemeverByItemId" resultType="com.augurit.aplanmis.common.domain.AeaParThemeVer">
@@ -353,4 +352,5 @@
         group by THEME_ID
         order by VER_NUM desc
     </select>
+
 </mapper>

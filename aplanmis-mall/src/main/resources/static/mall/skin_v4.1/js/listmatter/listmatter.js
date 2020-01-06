@@ -132,6 +132,15 @@ var listmatter = (function(window){
                     vm.$message.error('根据事项版本号获取根情形列表接口失败，请稍后重试！');
                 });
             },
+            // 控制事项一单清是否可以勾选
+            selectable:function(row,index) {
+                var vm = this;
+                // if(row.isDoneItem=='1'){
+                //    return  false
+                // }else {
+                //     return true
+                // }
+            },
             gotoGuideIndex:function () {
                 window.location.hash='/';
                 window.location.search='';

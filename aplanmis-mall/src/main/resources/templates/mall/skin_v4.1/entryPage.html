@@ -1,0 +1,70 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>佛山市工程建设项目网上主题式服务</title>
+    <link rel="stylesheet" href="../../static/mall/skin_v4.1/css/entryPage/entryPage.css" th:href="@{/mall/skin_v4.1/css/entryPage/entryPage.css}">
+</head>
+<body>
+    <div class="entryPage" id="entryPage">
+        <header class="index-bg">
+            <div class="wt-header-nav clearfix">
+                <div class="header-logo">
+                    <img th:src="@{/mall/skin_v4.1/images/entry/logo_title.png}" width="203px" height="43px" alt=""  />
+                    <span class="dividing-line"></span>
+                    <span class="wt-title">佛山市工程建设项目审批管理系统网上办事大厅</span>
+                </div>
+
+                <div class="go-login">
+                    <a  href="/aplanmis-mall/rest/mall/loginIndex" class="wt-header-enterprise" title="登录">登录</a>
+                </div>
+            </div>
+            <div class="wt-header-tab wt-tab"> </div>
+        </header>
+        <div class="demo-input-suffix">
+            <el-input @keyup.enter.native="toGuideSearch"
+                    placeholder=" 查询项目类型/事项/结果物"
+                    v-model.trim="itemListKeyword">
+                <i slot="suffix" class="el-input__icon el-icon-search" @click="toGuideSearch"></i>
+            </el-input>
+        </div>
+        <ul class="nav-ul">
+            <li class="nav-li" @click="toDeclarGuidePage">
+                <div class="nav-li-content">
+                    <img th:src="@{/mall/skin_v4.1/images/entry/u5.svg}" alt=""  />
+                    <p class="nav-li-name">申报指引</p>
+                </div>
+                <div class="border-bg"></div>
+            </li>
+            <li class="nav-li"  @click="toMyParallelPage">
+                <div class="nav-li-content">
+                    <img th:src="@{/mall/skin_v4.1/images/entry/u12.svg}" alt=""  />
+                    <p class="nav-li-name">我要申报</p>
+                </div>
+                <div class="border-bg"></div>
+            </li>
+            <li class="nav-li" @click="toMyPorjList">
+                <div class="nav-li-content">
+                    <img th:src="@{/mall/skin_v4.1/images/entry/u26.svg}" alt=""  />
+                    <p class="nav-li-name">我的项目</p>
+                </div>
+                <div class="border-bg"></div>
+            </li>
+            <li class="nav-li" @click="toUserCenterIndex">
+                <div class="nav-li-content">
+                    <img th:src="@{/mall/skin_v4.1/images/entry/u32.svg}" alt=""  />
+                    <p class="nav-li-name">我的空间</p>
+                </div>
+                <div class="border-bg"></div>
+            </li>
+            <li class="nav-li" @click="toRegulationIndex">
+                <div class="nav-li-content" >
+                    <img th:src="@{/mall/skin_v4.1/images/entry/u38.svg}" alt=""  />
+                    <p class="nav-li-name">服务协同</p>
+                </div>
+                <div class="border-bg"></div>
+            </li>
+        </ul>
+    </div>
+    <script th:src="@{/mall/skin_v4.1/js/entryPage/entryPage.js}" type="text/javascript"></script>
+</body>
+</html>

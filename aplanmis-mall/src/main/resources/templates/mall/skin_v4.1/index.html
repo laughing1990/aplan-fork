@@ -27,13 +27,13 @@
 	<![endif]-->
 	<div id="APP"  v-cloak style="position: relative;" :style="{minHeight:winH +'px'}" >
 
-		<header class="index-bg">
+		<header class="index-bg" v-show="activeName != '-1'">
 			<div class="wt-header-nav clearfix">
 				<div class="header-logo">
 				<!--	<a class="logo" href="#"></a>
 					<span class="logo-title"><a href="/aplanmis-mall/aea/mall/main/mainIndex.do">河北政务服务网</a></span>-->
-					<img th:src="@{/mall/skin_v4.1/images/index/u33.png}" width="203px" height="43px" alt="" v-if="activeName==0" />
-					<img th:src="@{/mall/skin_v4.1/images/index/u185.png}" width="203px" height="43px" alt=""  v-else/>
+<!--					<img th:src="@{/mall/skin_v4.1/images/index/u33.png}" width="203px" height="43px" alt="" v-if="activeName==0" />-->
+					<img th:src="@{/mall/skin_v4.1/images/index/u185.png}" width="203px" height="43px" alt=""  />
 					<span class="dividing-line"></span>
 					<span class="wt-title">佛山市工程建设项目审批管理系统网上办事大厅</span>
 				</div>

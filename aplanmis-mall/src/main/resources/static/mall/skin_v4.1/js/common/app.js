@@ -66,7 +66,7 @@
                   activeName:0,
                   url: './main/mainIndex.html',
                   thUrl:'rest/main/toDeclarGuidePage',
-                  hash:'/',
+                  hash:'/DeclarGuidePage',
                   },
                 {
                 label: '我要申报',
@@ -111,6 +111,14 @@
             ],
             // 要想切分复杂的页面为两个，可以参照下面routerInitData配置
             routerInitData:[
+                {
+                label: '网厅入口',
+                id: 'enterPage',
+                activeName:-1,
+                url: './entryPage.html',
+                thUrl:'rest/main/toEntryPage',
+                hash:'/',
+                },
                 {
                     label: '我的云盘',
                     id: 'myCloundSpaces',
@@ -241,7 +249,8 @@
                 }, function (res) {
                     if (res.success) {
                         localStorage.clear();
-                        window.location.href = window.location.origin +  '/aplanmis-mall/rest/main/toIndexPage';
+                        window.location.href = window.location.origin +  '/aplanmis-mall/rest/main/toIndexPage?#/DeclarGuidePage';
+                        ts.init();
                         ts.$message({
                             message:'退出成功！',
                             type: 'success'

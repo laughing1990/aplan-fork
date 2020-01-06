@@ -39,7 +39,7 @@ public interface AeaParThemeVerAdminService {
 
     AeaParThemeVer copyThemeVerRelData(String themeId, String themeVerId) throws Exception;
 
-    void testRunOrPublished(String themeId, String themeVerId, Double verNum, String type);
+    void testRunOrPublished(String themeId, String themeVerId, Double verNum, String type, String oldVerStatus);
 
     /**
      * 上传主题版本附件

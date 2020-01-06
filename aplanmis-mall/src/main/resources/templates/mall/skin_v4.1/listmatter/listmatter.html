@@ -54,9 +54,11 @@
                         <el-table
                                 :data="parallelItemList"
                                 border
+                                ref="parallelItematable"
                                 style="width: 100%">
                             <el-table-column
                                    type="selection"
+                                   :selectable='selectable'
                                    align="center"
                                     width="50">
                             </el-table-column>
@@ -73,7 +75,12 @@
                                                 <span>审批时限：{{scope.row.currentCarryOutItem.dueNum||5}}个工作日</span>
                                                 <span style="margin-left: 20px;">结果物：
                                                     <span v-if="scope.row.resultMats">
-                                                         <span style="margin-left: 8px;" v-for="item in scope.row.resultMats">{{item}}</span>
+                                                        <el-tooltip class="item" effect="dark" content="" placement="top">
+                                                            <span class="tooltip-span">{{scope.row.resultMats.length}}个</span>
+                                                            <div slot="content">
+                                                                <p v-for="item in scope.row.resultMats" class="result-item">{{item.aeaMatCertName}}</p>
+                                                            </div>
+                                                        </el-tooltip>
                                                     </span>
                                                     <span>暂无</span>
                                                 </span>

@@ -15,7 +15,8 @@
         CREATE_TIME  createTime,
         MODIFIER  modifier,
         MODIFY_TIME  modifyTime,
-        ROOT_ORG_ID  rootOrgId
+        ROOT_ORG_ID  rootOrgId,
+        LATEST_STAGE_ID latestStageId
     </sql>
 
     <sql id="alias_allColumns">
@@ -29,7 +30,8 @@
         ${alias}.CREATE_TIME  createTime,
         ${alias}.MODIFIER  modifier,
         ${alias}.MODIFY_TIME  modifyTime,
-        ${alias}.ROOT_ORG_ID  rootOrgId
+        ${alias}.ROOT_ORG_ID  rootOrgId,
+        ${alias}.LATEST_STAGE_ID latestStageId
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
@@ -91,6 +93,9 @@
             <if test="rootOrgId != null" >
             and    ROOT_ORG_ID = #{rootOrgId}
             </if>
+            <if test="latestStageId != null" >
+            and    LATEST_STAGE_ID  = #{latestStageId}
+            </if>
         </where>
     </select>
     
@@ -138,6 +143,9 @@
             <if test="rootOrgId != null" >
             and    soliOrg.ROOT_ORG_ID = #{rootOrgId}
             </if>
+            <if test="latestStageId != null" >
+            and    LATEST_STAGE_ID  = #{latestStageId}
+            </if>
             <if test="keyword!=null and keyword!='' ">
             and (
                 org.ORG_NAME like concat('%', concat( #{keyword}, '%')) or
@@ -162,7 +170,8 @@
             CREATE_TIME,
             MODIFIER,
             MODIFY_TIME,
-            ROOT_ORG_ID
+            ROOT_ORG_ID,
+            LATEST_STAGE_ID
         )
         values
         (
@@ -176,7 +185,8 @@
             #{createTime},
             #{modifier},
             #{modifyTime},
-            #{rootOrgId}
+            #{rootOrgId},
+            #{latestStageId}
         )
     </insert>
 
@@ -217,6 +227,9 @@
             <if test="rootOrgId != null" >
             ROOT_ORG_ID = #{rootOrgId},
             </if>
+            <if test="latestStageId != null" >
+            LATEST_STAGE_ID  = #{latestStageId},
+            </if>
         </set>
         where SOLICIT_ORG_ID = #{solicitOrgId}
     </update>
@@ -238,6 +251,24 @@
         delete from AEA_SOLICIT_ORG where ROOT_ORG_ID = #{rootOrgId}
     </delete>
 
+    <update id="batchUpdateStageIdByThemeVerId">
+        update AEA_SOLICIT_ORG
+           set STAGE_ID = LATEST_STAGE_ID
+         <where>
+             and ROOT_ORG_ID = #{rootOrgId}
+             and LATEST_STAGE_ID is not null
+             and LATEST_STAGE_ID !=''
+             and LATEST_STAGE_ID in (
+                 select
+                     STAGE_ID
+                 from AEA_PAR_STAGE
+                where IS_DELETED = '0'
+                  and THEME_VER_ID = #{themeVerId}
+                  and ROOT_ORG_ID = #{rootOrgId}
+             )
+         </where>
+    </update>
+
     <resultMap type="AeaSolicitOrg" id="AeaSolicitOrgMap">
         <id property="solicitOrgId" column="SOLICIT_ORG_ID"/>
         <result property="orgId" column="ORG_ID"/>
@@ -250,6 +281,7 @@
         <result property="modifier" column="MODIFIER"/>
         <result property="modifyTime" column="MODIFY_TIME"/>
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
+        <result property="latestStageId" column="LATEST_STAGE_ID"/>
     </resultMap>
 
 </mapper>
