@@ -632,13 +632,18 @@ function editSolicitOrgById(id){
 function setSolicitOrgUser(id){
 
     if(!isEmpty(id)){
-        parent.vm.removeTab('牵头部门人员');
-        var _jumpData = {
-            'menuName': '牵头部门人员',
-            'menuInnerUrl':ctx + '/aea/solicit/org/stageOrgUser.do?solicitOrgId='+id,
-            'id':  '牵头部门人员'
-        };
-        parent.vm.addTab('', _jumpData, parent.vm.activeTabIframe, '');
+        var obj = parent.vm;
+        if(obj!=null&&obj!=undefined){
+            parent.vm.removeTab('牵头部门人员');
+            var _jumpData = {
+                'menuName': '牵头部门人员',
+                'menuInnerUrl':ctx + '/aea/solicit/org/stageOrgUser.do?solicitOrgId='+id+'&isShowBack=false',
+                'id':  '牵头部门人员'
+            };
+            parent.vm.addTab('', _jumpData, parent.vm.activeTabIframe, '');
+        }else{
+            location.href = ctx + '/aea/solicit/org/stageOrgUser.do?solicitOrgId='+id+'&isShowBack=true';
+        }
     }else{
         swal('提示信息', "请选择需要编辑的数据！", 'info');
     }

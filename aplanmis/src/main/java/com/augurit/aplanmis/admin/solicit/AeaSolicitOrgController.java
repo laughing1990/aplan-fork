@@ -207,11 +207,15 @@ public class AeaSolicitOrgController {
     }
 
     @RequestMapping("/stageOrgUser.do")
-    public ModelAndView stageOrgUser(String solicitOrgId, ModelMap modelMap){
+    public ModelAndView stageOrgUser(Boolean isShowBack, String solicitOrgId, ModelMap modelMap){
 
         if(StringUtils.isBlank(solicitOrgId)){
            throw new InvalidParameterException("参数solicitOrgId为空!");
         }
+        if(isShowBack==null){
+            isShowBack = true;
+        }
+        modelMap.put("isShowBack", isShowBack);
         modelMap.put("solicitOrgId", solicitOrgId);
         return new ModelAndView("ui-jsp/solicit/stage_org/org_user");
     }

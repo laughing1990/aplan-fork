@@ -41,8 +41,8 @@
                 <div class="m-form m-form--label-align-right m--margin-bottom-5">
                     <div class="row" style="margin: 0px;">
                         <div class="col-md-6" style="text-align: left;">
-                            <%--<button type="button" class="btn btn-info"--%>
-                                    <%--onclick="backSolicitOrg();">返回</button>--%>
+                            <button type="button" class="btn btn-info"
+                                    onclick="backSolicitOrg();" style="display: ${isShowBack?'':'none'}">返回</button>
                             <button type="button" class="btn btn-info"
                                     onclick="importSolicitUser();">导入人员</button>
                             <button type="button" class="btn btn-secondary"

@@ -332,16 +332,35 @@ function editThemeById(themeId){
     }
 }
 
+//判断字符是否为空的方法
+function isEmpty(obj){
+
+    if(typeof obj == "undefined" || obj == null || obj == ""){
+        return true;
+    }else{
+        return false;
+    }
+}
+
 // 进入主题设置
 function goThemeSetings(themeId){
 
-    parent.vm.removeTab('主题详情');
-    var _jumpData = {
-        'menuName': '主题详情',
-        'menuInnerUrl': ctx + '/aea/par/theme/themeVerIndex.do?themeId='+themeId,
-        'id':  '主题详情'
-    };
-    parent.vm.addTab('', _jumpData, parent.vm.activeTabIframe, '');
+    if(!isEmpty(themeId)){
+        var obj = parent.vm;
+        if(obj!=null&&obj!=undefined){
+            parent.vm.removeTab('主题详情');
+            var _jumpData = {
+                'menuName': '主题详情',
+                'menuInnerUrl': ctx + '/aea/par/theme/themeVerIndex.do?themeId='+themeId+'&isShowBack=false',
+                'id':  '主题详情'
+            };
+            parent.vm.addTab('', _jumpData, parent.vm.activeTabIframe, '');
+        }else{
+            location.href = ctx + '/aea/par/theme/themeVerIndex.do?themeId='+themeId+'&isShowBack=true';
+        }
+    }else{
+        swal('提示信息', "携带主题id数据为空！", 'info');
+    }
 }
 
 // 删除主题
