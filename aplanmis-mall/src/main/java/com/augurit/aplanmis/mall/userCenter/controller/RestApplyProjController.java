@@ -220,6 +220,28 @@ public class RestApplyProjController {
         return null;
     }
 
+    /**
+     * 根据编码获取页面所需的数据字典信息
+     *
+     * @return
+     */
+    @GetMapping("/getDicContentsByDicCode")
+    @ApiOperation("数据字典  --> 根据编码获取数据字典集合")
+    @ApiImplicitParams({@ApiImplicitParam(value = "查询的数据字典Code,多个时逗号拼接",name = "dicStr",required = true,dataType = "string")})
+    public ResultForm getAllDicContent(String dicStr) throws Exception {
+        OpuOmOrg topOrg = opuOmOrgService.getTopOrgByCurOrgId(SecurityContext.getCurrentOrgId());
+        if (topOrg != null) {
+            Map result = new HashMap();
+            if(StringUtils.isNotBlank(dicStr)){
+                String[] arr=dicStr.split(",");
+                for (int i=0;i<arr.length;i++){
+                    result.put(arr[i], bscDicCodeService.getActiveItemsByTypeCode(arr[i], topOrg.getOrgId()));
+                }
+            }
+            return new ContentResultForm<>(true, result);
+        }
+        return null;
+    }
 
     /**
      * 获取页面所需的数据字典信息
