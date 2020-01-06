@@ -121,4 +121,10 @@ public interface AeaLinkmanInfoMapper {
      * @return List<AeaLinkmanInfo>
      */
     List<AeaLinkmanInfo> getAeaLinkmanByCertNo(@Param("linkmanCertNo") String linkmanCertNo) throws Exception;
+
+    int batchDeleteAeaLinkmanInfo(@Param("ids") List<String> ids) throws Exception;
+
+    int batchInsertAeaLinkmanInfo(@Param("list") List<AeaLinkmanInfo> linkmanInfos) throws Exception;
+
+    int batchInsertAeaUnintLinkman(@Param("list") List<AeaUnitLinkman> unitLinkmen) throws Exception;
 }

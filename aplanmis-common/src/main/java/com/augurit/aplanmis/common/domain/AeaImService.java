@@ -33,6 +33,7 @@ public class AeaImService implements Serializable {
     private String imgUrl;
     private String purchaseImgUrl;
     private String rootOrgId;//根组织ID
+    private String isExternal;//是否外部数据
 
     //非表字段
     private String keyword;

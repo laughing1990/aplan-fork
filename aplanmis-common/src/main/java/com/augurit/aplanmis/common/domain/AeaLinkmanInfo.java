@@ -80,6 +80,7 @@ public class AeaLinkmanInfo implements Serializable {
     private String serviceName;
     private String auditFlag;
     private String unitServiceIds;//中介发布服务ID
+    private String isExternal;//是否外部数据
 
     public void create() {
         this.setLinkmanInfoId(UUID.randomUUID().toString());
