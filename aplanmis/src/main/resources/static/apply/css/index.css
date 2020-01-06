@@ -2439,6 +2439,32 @@ textarea {
 }
 
 /*意见征求 end*/
+/*部门辅导 start*/
+.au-hint-text {
+  position: relative;
+  line-height: 20px;
+  padding: 12px;
+  padding-left: 40px;
+  border: 1px solid #FFB822;
+  background: #FFFCEE;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.au-hint-text .ag-warn-circle {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  color: #FFB822;
+  font-size: 20px;
+}
+#approve.is-audit {
+  padding: 24px 48px;
+}
+.au-form .el-collapse-item__wrap{
+  padding: 20px 20px 0px 5px;
+}
+/*部门辅导end*/
 
 
 

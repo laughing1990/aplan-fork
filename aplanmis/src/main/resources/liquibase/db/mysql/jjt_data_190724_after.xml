@@ -374,4 +374,10 @@
         </sql>
     </changeSet>
 
+    <changeSet id="202001061137" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE aea_solicit_org SET LATEST_STAGE_ID = STAGE_ID where IS_BUS_SOLICIT = '0';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

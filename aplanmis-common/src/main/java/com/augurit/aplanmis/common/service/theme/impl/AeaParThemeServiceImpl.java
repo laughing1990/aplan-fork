@@ -100,7 +100,10 @@ public class AeaParThemeServiceImpl implements AeaParThemeService {
     public AeaParThemeVer getAeaParThemeVerByThemeIdAndVerNum(String themeId, Double verNum,String rootOrgId) throws Exception {
 
         if (StringUtils.isEmpty(verNum)) {
-            return aeaParThemeVerMapper.getTestRunOrPublishedVer(themeId, rootOrgId);
+            List<AeaParThemeVer> list = aeaParThemeVerMapper.listTestRunOrPublishedVer(themeId, rootOrgId);
+            if(list!=null&&list.size()>0){
+                return list.get(0);
+            }
         }
         return aeaParThemeVerMapper.getAeaParThemeVerByThemeIdAndVerNum(themeId, verNum, rootOrgId);
     }

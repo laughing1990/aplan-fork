@@ -48,6 +48,9 @@ public class AeaSolicitOrg implements Serializable{
     @ApiModelProperty("根组织ID")
     private String rootOrgId;
 
+    @ApiModelProperty("最新阶段ID【当IS_BUS_SOLICIT=0】")
+    private String latestStageId;
+
     @ApiModelProperty("扩展字段：组织名称")
     private String orgName;
 

@@ -115,14 +115,17 @@ var userCenter = (function () {
                             name: '撤件列表',
                             value: 'withdrawApplyList',
                             select: false,
-                        }
-                        ,
+                        },
                         {
                             name: '草稿箱',
                             value: 'drafts',
                             select: false,
-                        }
-                        ,
+                        },
+                      {
+                        name: '部门辅导',
+                        value: 'guideList',
+                        select: false,
+                      },
                         {
                             name: '补齐补正',
                             value: 'MatSupplement',

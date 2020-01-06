@@ -1440,6 +1440,7 @@ var parallelDeclare = new Vue({
           if (!_that.projInfoDetail.gbCodeYear) _that.projInfoDetail.gbCodeYear = '2017';
           if (!!_that.projInfoDetail.projectAddress) _that.projInfoDetail.projectAddress = _that.projInfoDetail.projectAddress.split(',');
           if (!!_that.projInfoDetail.theIndustry) _that.$refs.gbhy.setCheckedKeys(_that.projInfoDetail.theIndustry.split(','));
+          if (!!_that.projInfoDetail.theIndustry) _that.gbhyShowMsg = _that.projInfoDetail.theIndustry;
           if (data.content.rootOrgId != null && "" != data.content.rootOrgId) {
             _that.querySelentDistrict(data.content.rootOrgId);
           }
