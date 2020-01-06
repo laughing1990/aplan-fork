@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("rest/apply/agent")
+@RequestMapping("rest/user/apply/agent")
 @Api(value = "代办申请接口",tags = "代办申请 --> 代办申请接口")
 public class RestProjAgentController {
     Logger logger= LoggerFactory.getLogger(RestProjAgentController.class);

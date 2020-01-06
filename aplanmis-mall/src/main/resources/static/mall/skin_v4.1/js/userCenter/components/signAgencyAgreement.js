@@ -425,54 +425,57 @@ var module1 = new Vue({
         if (valid) {
           // ts.mloading = true;
           var _saveData = {
-            aeaUnitProjLinkmanVo: '',
-            agentStageState: '',
-            projAgentParamVo: '',
+            projAgentParamVo: ts.projInfoForm,
+            aeaUnitProjLinkmanVo:ts.projInfoForm,
+            agentStageState:ts.projInfoForm.agentStageState.join(',')
           };
-          _saveData.aeaUnitProjLinkmanVo = JSON.stringify(ts.projInfoForm);
-          _saveData.projAgentParamVo = JSON.parse(JSON.stringify(ts.projInfoForm))
-          if(!!ts.projInfoForm.agentStageState){
-            _saveData.agentStageState = ts.projInfoForm.agentStageState.join(',');
-          }
-          if (!!ts.projInfoForm.projectAddress) {
-            _saveData.projAgentParamVo.projectAddress = ts.projInfoForm.projectAddress.join(',');
-          }
-          _saveData.projAgentParamVo = JSON.stringify( _saveData.projAgentParamVo);
-
-          console.log(_saveData)
-          $.ajax({
-            url: ctx + 'rest/apply/agent/start',
-            type: 'post',
-            contentType: 'application/json',
-            data: JSON.stringify(_saveData),
-            success: function(res){
-
+          var _saveData = {
+            projAgentParamVo: {
+              "isBindAccount": '1',
+              "linkmanAddr": ts.projInfoForm.linkmanAddr?ts.projInfoForm.linkmanAddr:'',
+              "linkmanCertNo": ts.projInfoForm.linkmanCertNo?ts.projInfoForm.linkmanCertNo:'',
+              "linkmanFax": ts.projInfoForm.linkmanFax?ts.projInfoForm.linkmanFax:'',
+              "linkmanInfoId": ts.projInfoForm.currentProgress,
+              "linkmanMail": ts.projInfoForm.currentProgress,
+              "linkmanMemo": ts.projInfoForm.currentProgress,
+              "linkmanMobilePhone": ts.projInfoForm.currentProgress,
+              "linkmanName": ts.projInfoForm.currentProgress,
+              "linkmanOfficePhon": ts.projInfoForm.currentProgress,
+              "loginName": ts.projInfoForm.currentProgress,
+              "unitInfoId": ts.projInfoForm.unitInfoId
             },
-            error: function(err){},
-          })
-          return
+            aeaUnitProjLinkmanVo: {
+              "currentProgress": ts.projInfoForm.currentProgress,
+              "financialSource": ts.projInfoForm.financialSource,
+              "investSum": ts.projInfoForm.investSum,
+              "landSource": ts.projInfoForm.landSource,
+              "localCode": ts.projInfoForm.localCode,
+              "projAddr": ts.projInfoForm.projAddr,
+              "projInfoId": ts.projInfoForm.projInfoId,
+              "projLevel": ts.projInfoForm.projLevel,
+              "projName": ts.projInfoForm.projName,
+              "projectAddress": ts.projInfoForm.projectAddress,
+              "regionalism": ts.projInfoForm.projectAddress.regionalism,
+              "scaleContent": ts.projInfoForm.scaleContent
+            },
+            agentStageState:ts.projInfoForm.agentStageState.join(',')
+          };
+          debugger
+          console.log(_saveData)
           request('', {
-            url: ctx + 'rest/apply/agent/start',
+            url: ctx + 'rest/user/apply/agent/start',
             type: 'post',
             ContentType: 'application/json',
-            data: JSON.stringify(_saveData),
+            data: JSON.stringify(_saveData)
           }, function (res) {
-            ts.mloading = false;
+            //ts.mloading = false;
             if (res.success) {
               ts.apiMessage('保存成功！', 'success');
-              // 保存成功后，返回我的项目列表
-              // setTimeout(function () {
-              //   ts.returnList();
-              // }, 1000)
             } else {
-              // ts.projInfoForm.projectAddress = ts.projInfoForm.projectAddress.split(',');
-              // ts.projInfoForm.agentStageState = ts.projInfoForm.agentStageState.split(',');
               return ts.apiMessage("保存失败！", 'error')
             }
           }, function () {
-            ts.mloading = false;
-            // ts.projInfoForm.projectAddress = ts.projInfoForm.projectAddress.split(',');
-            // ts.projInfoForm.agentStageState = ts.projInfoForm.agentStageState.split(',');
+            //ts.mloading = false;
             return ts.apiMessage('网络错误！', 'error')
           });
         } else {
@@ -493,7 +496,7 @@ var module1 = new Vue({
     // 获取当前代办项目的信息
     fetchProjInfo: function(){
       var ts = this,
-        _url = ctx + 'rest/apply/agent/detail';
+        _url = ctx + 'rest/user/apply/agent/detail';
       ts.mloading = true;
       request('', {
         url: _url,
@@ -517,14 +520,14 @@ var module1 = new Vue({
     handelProjInfoData: function(data){
       var aeaUnitProjLinkmanVo = data.aeaUnitProjLinkmanVo,
       projInfo = data.projInfo;
-      var formData = $.extend({},projInfo,aeaUnitProjLinkmanVo);
-      for(var k in this.projInfoForm){
-        if(formData[k]){
-          this.projInfoForm[k] = formData[k];
-        }
-      }
-      this.projInfoForm.projectAddress = this.projInfoForm.projectAddress.split(',');
-      console.log(formData)
+      this.projInfoForm = $.extend({},projInfo,aeaUnitProjLinkmanVo);
+      // for(var k in this.projInfoForm){
+      //   if(formData[k]){
+      //     this.projInfoForm[k] = formData[k];
+      //   }
+      // }
+      Vue.set(this.projInfoForm,'agentStageState',[])
+      // console.log(formData)
     },
   },
   mounted: function () {
