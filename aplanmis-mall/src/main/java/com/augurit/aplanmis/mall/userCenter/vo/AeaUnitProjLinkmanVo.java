@@ -7,6 +7,17 @@ import lombok.Data;
 @Data
 @ApiModel("人员信息")
 public class AeaUnitProjLinkmanVo {
+    @ApiModelProperty(value = "单位ID")
+    private String unitInfoId;
+    @ApiModelProperty(value = "单位名称")
+    private String applicant;
+    @ApiModelProperty(value = "单位性质")
+    private String unitNature;
+    @ApiModelProperty(value = "具体地址")
+    private String applicantDetailSite;
+    @ApiModelProperty(value = "电子邮箱")
+    private String email;
+
     @ApiModelProperty(value = "负责人姓名")
     private String leaderName;
     @ApiModelProperty(value = "负责人手机")
