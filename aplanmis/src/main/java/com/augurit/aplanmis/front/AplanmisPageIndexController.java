@@ -668,4 +668,10 @@ public class AplanmisPageIndexController {
         return new ModelAndView("view/departGuideIndex");
     }
 
+    @GetMapping("/dept/guide/detail")
+    @ApiOperation("菜单-并联申报页")
+    public ModelAndView guideDetail() {
+        return new ModelAndView("apply/index");
+    }
+
 }
