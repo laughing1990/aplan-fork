@@ -2,6 +2,7 @@ package com.augurit.aplanmis.common.service.window.impl;
 
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.security.user.OpuOmUser;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmUserInfo;
 import com.augurit.agcloud.opus.common.mapper.OpuOmUserInfoMapper;
 import com.augurit.aplanmis.common.domain.AeaProjApplyAgent;
@@ -115,6 +116,23 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
         AeaProjApplyAgent aeaProjApplyAgent=new AeaProjApplyAgent();
         aeaProjApplyAgent.setProjInfoId(projInfoId);
         return aeaProjApplyAgentMapper.listAeaProjApplyAgent(aeaProjApplyAgent);
+    }
+
+    @Override
+    public AeaProjApplyAgent getAgencyAgreementDetail(String applyAgentId) throws Exception {
+        AeaProjApplyAgent aeaProjApplyAgent = aeaProjApplyAgentMapper.getAgencyAgreementDetail(applyAgentId);
+        if(aeaProjApplyAgent != null){
+            String[] name = {"","立项用地规划许可阶段","工程建设许可阶段","施工许可阶段","竣工验收阶段"};
+            String stageState = aeaProjApplyAgent.getAgentStageState();
+            String[] split = stageState.split(",");
+            StringBuilder sb = new StringBuilder();
+            for(String stage:split){
+                sb.append("，").append(name[Integer.valueOf(stage)]);
+            }
+            String stageName = sb.toString().substring(1);
+            aeaProjApplyAgent.setAgentStageName(stageName);
+        }
+        return aeaProjApplyAgent;
     }
 }
 

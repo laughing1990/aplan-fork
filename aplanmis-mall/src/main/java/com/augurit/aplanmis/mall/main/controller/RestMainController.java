@@ -83,6 +83,12 @@ public class RestMainController {
         return new ModelAndView("mall/"+skin+"main/mainIndex");
     }
 
+    @GetMapping("/toLeadPage")
+    @ApiOperation(value = "首页-->跳转智能引导页面接口")
+    public ModelAndView toLeadPage() {
+        return new ModelAndView("mall/"+skin+"lead/lead");
+    }
+
     @GetMapping("/toDeclarGuidePage")
     @ApiOperation(value = "跳转申报指引")
     public ModelAndView toDeclarGuidePage() {

@@ -112,6 +112,14 @@
                 hash:'/',
                 },
                 {
+                    label: '智能引导',
+                    id: 'lead',
+                    activeName:0,
+                    url: './lead/lead.html',
+                    thUrl:'rest/main/toLeadPage',
+                    hash:'/toLeadPage',
+                },
+                {
                     label: '我的云盘',
                     id: 'myCloundSpaces',
                     activeName:4,

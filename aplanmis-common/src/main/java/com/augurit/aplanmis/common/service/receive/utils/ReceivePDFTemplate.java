@@ -2,6 +2,7 @@ package com.augurit.aplanmis.common.service.receive.utils;
 
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
+import com.augurit.aplanmis.common.domain.AeaProjApplyAgent;
 import com.augurit.aplanmis.common.service.receive.vo.ConstructPermitVo;
 import com.augurit.aplanmis.common.service.receive.vo.MatCorrectVo;
 import com.augurit.aplanmis.common.service.receive.vo.MatReceiveVo;
@@ -9,6 +10,7 @@ import com.augurit.aplanmis.common.service.receive.vo.ReceiveBaseVo;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import com.itextpdf.text.pdf.draw.DottedLineSeparator;
+import lombok.Data;
 import org.springframework.core.io.ClassPathResource;
 
 import javax.servlet.ServletOutputStream;
@@ -17,15 +19,169 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
 
 /**
  * pdf模板生成工具类
  */
 public class ReceivePDFTemplate {
+
+    public static Map<String,Font> fontMap = new HashMap<>();
+
+    public static void initFontMap(){
+        if(fontMap.isEmpty()){
+            // 定义字体
+            FontFactoryImp ffi = new FontFactoryImp();
+            // 注册全部默认字体目录，windows会自动找fonts文件夹的，返回值为注册到了多少字体
+            ffi.registerDirectories();
+            //黑体三号加粗
+            Font font1 = ffi.getFont("黑体", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 16, Font.BOLD, null);
+            //宋体二号加粗
+            Font font2 = ffi.getFont("宋体", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 22, Font.BOLD, null);
+            //仿宋4号
+            Font font3 = ffi.getFont("仿宋", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 14, Font.UNDEFINED, null);
+            //仿宋5号
+            Font font4 = ffi.getFont("仿宋", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 10.5f, Font.UNDEFINED, null);
+            //特殊符号☑、□字体
+            Font font5 = ffi.getFont("Segoe UI Symbol", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 14, Font.UNDEFINED, null);
+            //仿宋三号
+            Font font6 = ffi.getFont("仿宋", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 16, Font.UNDEFINED, null);
+            fontMap.put("font1",font1);
+            fontMap.put("font2",font2);
+            fontMap.put("font3",font3);
+            fontMap.put("font4",font4);
+            fontMap.put("font5",font5);
+            fontMap.put("font6",font6);
+        }
+    }
+
+    /**
+     * 佛山代办协议模板生成
+     * @return  返回生成模板文件保存的路径，调用的对象记得删除文件
+     * @throws Exception
+     */
+    public static String createAgencyAgreement(AeaProjApplyAgent aeaProjApplyAgent) throws Exception {
+        // 创建一个文档（默认大小A4，边距36, 36, 36, 36）
+        Document document = new Document();
+        // 设置文档大小
+        document.setPageSize(PageSize.A4);
+        // 设置边距，单位都是像素，换算大约1厘米=28.33像素
+        document.setMargins(80, 80, 10, 10);
+        // 设置pdf生成的路径
+//        StringBuffer str = ReceivePDFTemplate.pdfFilePath();
+        StringBuffer str = new StringBuffer("F:\\develop\\foshan20191120\\4、关于印发佛山市行政许可和公共服务事项流程标准应用规范的通知（ 佛政务〔2017〕81号）\\回执模板\\");
+
+        str.append("佛山市重点工程建设项目代办委托协议");
+        str.append((int) ((Math.random() * 9 + 1) * 1000));
+        str.append(".pdf");
+        FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
+        // 创建writer，通过writer将文档写入磁盘
+        PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
+
+        //设置字体格式
+        initFontMap();
+        Font font1 = fontMap.get("font1");
+        Font font2 = fontMap.get("font2");
+        Font font4 = fontMap.get("font4");
+        Font font6 = fontMap.get("font6");
+        /*******************************************************模板填写的参数*******************************************************/
+        String receiveName = "佛山市重点工程建设项目代办委托协议";
+        String instrumentNo = aeaProjApplyAgent.getAgreementCode();
+        String firstParty  = aeaProjApplyAgent.getUnitName();
+        String secondParty  = aeaProjApplyAgent.getWindowName();
+        String projName = aeaProjApplyAgent.getProjName();
+        String stageName = aeaProjApplyAgent.getAgentStageName();
+        String firstName  = aeaProjApplyAgent.getApplyUserName();
+        String firstPhone = aeaProjApplyAgent.getApplyUserPhone();
+        String secondName  =  aeaProjApplyAgent.getAgentUserName();
+        String secondPhone = aeaProjApplyAgent.getAgentUserMobile();
+        Date signatureDate = aeaProjApplyAgent.getAgreementSignTime();
+        /*******************************************************模板填写的参数*******************************************************/
+
+        // 打开文档，只有打开后才能往里面加东西
+        document.open();
+        ReceivePDFUtils.paragrahCenter(document,receiveName,font2);
+        ReceivePDFUtils.paragrahCenter(document,"协议编号："+ instrumentNo,font4);
+        ReceivePDFUtils.oneLine(document,font6);
+        ReceivePDFUtils.oneLine(document,font6);
+
+        Paragraph paragraph = new Paragraph("委托单位：", font6);
+        //设置段落行间距
+        paragraph.setLeading(25f);
+        paragraph.add(ReceivePDFUtils.getUnderLineChunk(firstParty,font6));
+        paragraph.add("（以下简称甲方）");
+        document.add(paragraph);
+
+        Paragraph paragraph2 = new Paragraph("受托单位：", font6);
+        paragraph2.setLeading(25f);
+        paragraph2.add(ReceivePDFUtils.getUnderLineChunk(secondParty,font6));
+        paragraph2.add("（以下简称乙方）");
+        document.add(paragraph2);
+
+        String content1 = "甲乙双方根据《佛山市工程建设项目审批制度改革实施方案》（佛府办函〔2019〕6号）和《佛山市重点工程建设项目审批代办服务实施办法》的文件精神，签订本重点工程建设项目联合审批代办委托协议。";
+        ReceivePDFUtils.twoSpacing(content1,document,font6,25f);
+
+        ReceivePDFUtils.twoSpacing("一、代办内容",document,font1,25f);
+        ReceivePDFUtils.twoSpacing("甲方将下列重点工程建设项目所涉及的审批服务事项委托乙方代办：",document,font6,25f);
+        ReceivePDFUtils.twoSpacingConcatUnderLineChunk("（一）委托代办项目名称：",projName,document,font6,25f);
+        ReceivePDFUtils.twoSpacingConcatUnderLineChunk("（二）委托代办具体事项：",stageName,document,font6,25f);
+        List<ReceivePDFUtils.ParagraphCentent> centents = new ArrayList<>();
+        centents.add(new ReceivePDFUtils.ParagraphCentent(false,"（三）甲方确定"));
+        centents.add(new ReceivePDFUtils.ParagraphCentent(true,firstName));
+        centents.add(new ReceivePDFUtils.ParagraphCentent(false,"联系电话"));
+        centents.add(new ReceivePDFUtils.ParagraphCentent(true,firstPhone));
+        centents.add(new ReceivePDFUtils.ParagraphCentent(false,"为联系人，具体负责与乙方代办员的日常沟通联系。联系人一经确定不得随意变更,如有变更需及时通知乙方。"));
+        ReceivePDFUtils.twoSpacingConcatUnderLineChunk(centents,document,font6,25f);
+        centents.clear();
+        centents.add(new ReceivePDFUtils.ParagraphCentent(false,"（四）乙方根据项目具体情况，指派"));
+        centents.add(new ReceivePDFUtils.ParagraphCentent(true,secondName));
+        centents.add(new ReceivePDFUtils.ParagraphCentent(false,"联系电话"));
+        centents.add(new ReceivePDFUtils.ParagraphCentent(true,secondPhone));
+        centents.add(new ReceivePDFUtils.ParagraphCentent(false,"为甲方提供代办服务，代办员一经确定不得随意变更,如有变更需及时通知甲方。"));
+        ReceivePDFUtils.twoSpacingConcatUnderLineChunk(centents,document,font6,25f);
+
+        ReceivePDFUtils.twoSpacing("二、甲方职责",document,font1,25f);
+        ReceivePDFUtils.twoSpacing("（一）负责及时、真实、充分地提供项目申报相关材料, 与代办员共同做好项目申报材料整理工作。",document,font6,25f);
+        ReceivePDFUtils.twoSpacing("（二）根据审批职能部门提出的要求，及时对申报材料进行修改或补充。",document,font6,25f);
+        ReceivePDFUtils.twoSpacing("（三）审批环节必须由五方责任主体到场的，甲方应及时派人到场。",document,font6,25f);
+        ReceivePDFUtils.twoSpacing("（四）负责按规定及时交纳各类规费。",document,font6,25f);
+        ReceivePDFUtils.twoSpacing("（五）协助乙方对代办员的管理，向乙方及时、客观反映代办员的工作表现，并对代办工作提出意见和建议。",document,font6,25f);
+
+        ReceivePDFUtils.twoSpacing("三、乙方职责",document,font1,25f);
+        ReceivePDFUtils.twoSpacing("（一）按照“合法高效”“自愿委托”“无偿代办”“全程服务”“协同联动”等原则，为重点工程建设项目联合审批工作提供全程代办服务。",document,font6,25f);
+        ReceivePDFUtils.twoSpacing("（二）负责为工程建设项目联合审批提供咨询辅导，指导甲方熟悉办事流程及办事指南，详细说明各项材料的具体要求以及材料的获取途径等。",document,font6,25f);
+        ReceivePDFUtils.twoSpacing("（三）协助甲方分阶段准备申报材料，然后由代办员通过审批服务平台填写一张表单，上传一套材料，通过系统分派至相关审批部门办理。",document,font6,25f);
+        ReceivePDFUtils.twoSpacing("（四）负责跟踪监督各部门审批进度，跟进了解审批中的问题并及时向甲方反馈，同时制定相关解决办法，落实协调工作等。",document,font6,25f);
+        ReceivePDFUtils.twoSpacing("（五）按要求做好代办项目相关资料的整理、保管和移交工作。",document,font6,25f);
+        ReceivePDFUtils.twoSpacing("（六）对甲方提交的有关材料中所涉商业秘密、技术秘密和个人隐私负有保密责任。",document,font6,25f);
+
+        ReceivePDFUtils.twoSpacing("四、协议终止",document,font1,25f);
+        ReceivePDFUtils.twoSpacing("（一）委托代办事项完成，办理相关手续后，本协议自行终止。",document,font6,25f);
+        ReceivePDFUtils.twoSpacing("（二）甲方有权根据项目代办实际情况，提出终止本委托协议，双方填妥《佛山市重点工程建设项目代办委托终止单》后，本委托协议终止。",document,font6,25f);
+        ReceivePDFUtils.twoSpacing("（三）因项目本身不具备办结条件，或者甲方在项目申报过程中有弄虚作假行为的，乙方有权提出终止本委托协议，双方填妥《佛山市重点工程建设项目代办委托终止单》后，本委托协议终止。",document,font6,25f);
+
+        ReceivePDFUtils.twoSpacing("五、其他约定",document,font1,25f);
+        ReceivePDFUtils.twoSpacing("（一）本协议所涉及的代办服务，除按法律、法规明确规定必须由甲方交纳的费用外，一律实行免费代办服务，甲方无须为此支付代办费用。",document,font6,25f);
+        ReceivePDFUtils.twoSpacing("（二）乙方将认真履行代办职能，并充分发挥协调作用，力争及时、有效完成代办任务，但乙方不保证所代办项目能完全按照甲方所希望的时间或结果办结。",document,font6,25f);
+        ReceivePDFUtils.twoSpacing("（三）本协议所指的代办服务，适用《中华人民共和国民法通则》关于“代理”的规定。",document,font6,25f);
+        ReceivePDFUtils.twoSpacing("（四）本协议经甲乙双方或其代表人签字（或盖章）后生效。",document,font6,25f);
+        ReceivePDFUtils.twoSpacing("（五）本协议一式两份，甲、乙双方各执一份。",document,font6,25f);
+        ReceivePDFUtils.oneLine(document,font6);
+        ReceivePDFUtils.oneLine(document,font6);
+
+        ReceivePDFUtils.twoSpacing("甲方（盖章）：　              乙方（盖章）：",document,font6,25f);
+        ReceivePDFUtils.twoSpacing("代表人（签字）：",document,font6,25f);
+        ReceivePDFUtils.moreLine(document,font6);
+        ReceivePDFUtils.twoSpacing("　                签订时间：" + new SimpleDateFormat(" yyyy 年 MM 月 dd 日").format(signatureDate),document,font6,25f);
+
+        // 关闭文档，才能输出
+        document.close();
+        writer.flush();
+        writer.close();
+        System.out.println(str.toString());
+        return str.toString();
+    }
 
 
     //市民服务中心申报材料清单模板
@@ -836,8 +992,12 @@ public class ReceivePDFTemplate {
         return str;
     }
 
-    public static void main(String[] args) {
-        String property = System.getProperty("java.io.tmpdir");
-        System.out.println(pdfFilePath());
+    public static void main(String[] args) throws Exception{
+//        String property = System.getProperty("java.io.tmpdir");
+//        System.out.println(pdfFilePath());
+//        createAgencyAgreement(null);
+        String str = "2,3";
+        String[] split = str.split(",");
+        System.out.println(split.length);
     }
 }

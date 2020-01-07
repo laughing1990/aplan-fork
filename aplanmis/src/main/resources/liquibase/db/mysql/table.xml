@@ -1561,4 +1561,14 @@
             ADD COLUMN `IS_EXTERNAL` char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '是否外部数据：1 是，0 否' AFTER `ROOT_ORG_ID`;
         </sql>
     </changeSet>
+
+    <changeSet id="20200107150625" author="zhangwn" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_proj_apply_agent`
+            ADD COLUMN `AGREEMENT_CODE` varchar(50) NULL COMMENT '协议编号' AFTER `AGENT_USER_MOBILE`;
+
+            ALTER TABLE `aea_proj_apply_agent`
+            ADD COLUMN `AGREEMENT_SIGN_TIME` datetime NULL COMMENT '协议签订时间' AFTER `AGREEMENT_CODE`;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
