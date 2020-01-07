@@ -371,15 +371,15 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
         String regionalism=stageStateParamVo.getRegionalism();
         String projectAddress=stageStateParamVo.getProjectAddress();
         List<String> stateIds=stageStateParamVo.getStateIds();
-        List<AeaItemBasic> itemList =aeaItemBasicService.getAeaItemBasicListByStageId(stageId,"0",null,SecurityContext.getCurrentOrgId());
-        Set<String> stateItemVerIds = aeaItemBasicService.getAeaItemBasicListByStageIdAndStateId(stageId, null, "0",SecurityContext.getCurrentOrgId())
+        List<AeaItemBasic> itemList =aeaItemBasicService.getAeaItemBasicListByStageId(stageId,isOptionItem,null,SecurityContext.getCurrentOrgId());
+        Set<String> stateItemVerIds = aeaItemBasicService.getAeaItemBasicListByStageIdAndStateId(stageId, null, isOptionItem,SecurityContext.getCurrentOrgId())
                 .stream().map(AeaItemBasic::getItemVerId).collect(Collectors.toSet());
         if(itemList.size()>0) itemList.stream().filter(v->stateItemVerIds.contains(v.getItemVerId())).collect(Collectors.toList());
         if(stateIds==null||stateIds.size()==0){
-            List<AeaItemBasic> coreStateItemList = aeaItemBasicService.getAeaItemBasicListByStageId(stageId,  "0",null, SecurityContext.getCurrentOrgId());
+            List<AeaItemBasic> coreStateItemList = aeaItemBasicService.getAeaItemBasicListByStageId(stageId,  isOptionItem,null, SecurityContext.getCurrentOrgId());
             itemList.addAll(coreStateItemList);
         }else{
-            List<AeaItemBasic> coreStateItemList = aeaItemBasicService.getAeaItemBasicListByStageIdAndStateIds(stageId, stateIds, "0", SecurityContext.getCurrentOrgId());
+            List<AeaItemBasic> coreStateItemList = aeaItemBasicService.getAeaItemBasicListByStageIdAndStateIds(stageId, stateIds, isOptionItem, SecurityContext.getCurrentOrgId());
             itemList.addAll(coreStateItemList);
         }
 
