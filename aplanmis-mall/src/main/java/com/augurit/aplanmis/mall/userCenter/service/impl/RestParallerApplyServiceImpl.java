@@ -375,8 +375,14 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
         Set<String> stateItemVerIds = aeaItemBasicService.getAeaItemBasicListByStageIdAndStateId(stageId, null, "0",SecurityContext.getCurrentOrgId())
                 .stream().map(AeaItemBasic::getItemVerId).collect(Collectors.toSet());
         if(itemList.size()>0) itemList.stream().filter(v->stateItemVerIds.contains(v.getItemVerId())).collect(Collectors.toList());
-        List<AeaItemBasic> coreStateItemList = aeaItemBasicService.getAeaItemBasicListByStageIdAndStateIds(stageId, stateIds, "0", SecurityContext.getCurrentOrgId());
-        itemList.addAll(coreStateItemList);
+        if(stateIds==null||stateIds.size()==0){
+            List<AeaItemBasic> coreStateItemList = aeaItemBasicService.getAeaItemBasicListByStageId(stageId,  "0",null, SecurityContext.getCurrentOrgId());
+            itemList.addAll(coreStateItemList);
+        }else{
+            List<AeaItemBasic> coreStateItemList = aeaItemBasicService.getAeaItemBasicListByStageIdAndStateIds(stageId, stateIds, "0", SecurityContext.getCurrentOrgId());
+            itemList.addAll(coreStateItemList);
+        }
+
 
         return itemList.size()>0?itemList.stream().map(AeaGuideItemVo::format).peek(vo->{
             String flag=vo.getIsCatalog();
