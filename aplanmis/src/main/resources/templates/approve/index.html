@@ -3276,7 +3276,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <template>
+        <template v-if="dialogConfig.showFileBox">
           <el-row style="margin-bottom:5px;">
             <el-col :span="12">
               <el-form-item label="联系人" prop="solicitLinkmanName" required>
@@ -3289,7 +3289,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row style="margin-bottom:5px;" v-if="dialogConfig.showFileBox">
+          <el-row style="margin-bottom:5px;">
             <el-col :span="24">
               <el-form-item label="附件">
                 <el-upload ref="uploadCert3" class="upload-s-file" :action="ctx+'rest/certificate/certinst/att/upload'"
