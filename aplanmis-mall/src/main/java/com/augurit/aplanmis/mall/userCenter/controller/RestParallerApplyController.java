@@ -100,7 +100,7 @@ public class RestParallerApplyController {
         try {
             logger.error("-----listItemAndStateByStageId----start--------");
             long l=System.currentTimeMillis();
-            ItemListVo vo = restParallerApplyService.listItemAndStateByStageId(stageId, projInfoId, regionalism, projectAddress,"0","0");
+            ItemListVo vo = restParallerApplyService.listItemAndStateByStageId(stageId, projInfoId, regionalism, projectAddress,"0","0",null);
             logger.error("-----listItemAndStateByStageId----end--------耗时："+(System.currentTimeMillis()-l));
             return new ContentResultForm<>(true,vo);
         } catch (Exception e) {
@@ -330,7 +330,7 @@ public class RestParallerApplyController {
         try {
             logger.error("-----listItemAndStateByStageId----start--------");
             long l=System.currentTimeMillis();
-            ItemListVo vo = restParallerApplyService.listItemAndStateByStageId(stageId, projInfoId, regionalism, projectAddress,"0","0");
+            ItemListVo vo = null;//restParallerApplyService.listItemAndStateByStageId(stageId, projInfoId, regionalism, projectAddress,"0","0");
             logger.error("-----listItemAndStateByStageId----end--------耗时："+(System.currentTimeMillis()-l));
             return new ContentResultForm<>(true,vo);
         } catch (Exception e) {
