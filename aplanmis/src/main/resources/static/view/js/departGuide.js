@@ -98,7 +98,7 @@ var vm = new Vue({
 			} else {
 				themeCategory = 'OTHERS';
 			}
-			menuInnerUrl = ctx + '/apanmis/page/stageApplyIndex?applyinstId=' + row.applyinstId
+			menuInnerUrl = ctx + '/apanmis/page/dept/guide/detail?applyinstId=' + row.applyinstId
 				+ '&themeCategory=' + themeCategory + '&guideId=' + row.guideId;
 			var data = {
 				'menuName':menuName,

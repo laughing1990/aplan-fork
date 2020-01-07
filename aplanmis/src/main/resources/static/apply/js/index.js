@@ -661,6 +661,7 @@ var vm = new Vue({
       // 3所有部门征求处理中
       // 4申请人待确认
       // 5结束
+      // 6所有征求部门处理完成
       guideState: '0',
       leaderDept: false,
       guideDateLoaded: false,
@@ -691,6 +692,7 @@ var vm = new Vue({
         needSms: true,
       },
       isGuidePage: false,
+      guideChangedType: false,
       // 部门辅导 end--------------------------
       showOneFormList: false,
     }
@@ -1662,6 +1664,7 @@ var vm = new Vue({
           _that.loading = false;
 
           if (!_that.guideDateLoaded){
+            // 部门辅导页面定位到事项一单清
             _that.guideDateLoaded = true;
             var intervel = window.setInterval(function(){
               $(document).scrollTop($('#applyStage').offset().top);
@@ -2475,6 +2478,9 @@ var vm = new Vue({
         this.selThemeDialogShow = false;
         return null;
       }
+      if (this.isGuidePage) {
+        this.guideChangedType = true;
+      }
       var themeName = data.themeName;
       this.statusLineList = [];
       this.statusList = [];
@@ -2949,7 +2955,7 @@ var vm = new Vue({
             //   });
             // }
             // 回显情形
-            if (item.answerStates && item.answerStates.length > 0 && _that.stateIdsHis.length > 0) {
+            if (item.answerStates && item.answerStates.length > 0 && _that.stateIdsHis.length > 0 && !_that.isGuidePage) {
               item.answerStates.map(function (itemAns) {
                 if (_that.stateIdsHis.indexOf(itemAns.parStateId) > -1) {
                   if (typeof (item.selectAnswerId) == 'object' && item.selectAnswerId.length == 0) {
@@ -3224,8 +3230,29 @@ var vm = new Vue({
         if (data.success) {
           // _that.coreItems = data.content.coreItems;
           // _that.parallelItems = data.content.parallelItems;
-          _that.coreItems = data.content.coreItems ? _that.unique(_that.coreItems.concat(data.content.coreItems), 'stage') : _that.unique(_that.coreItems, 'stage');
-          _that.parallelItems = data.content.parallelItems ? _that.unique(_that.parallelItems.concat(data.content.parallelItems), 'stage') : _that.unique(_that.parallelItems, 'stage');
+          var _coreItems = data.content.coreItems ? _that.unique(_that.coreItems.concat(data.content.coreItems), 'stage') : _that.unique(_that.coreItems, 'stage');
+          var _parallelItems = data.content.parallelItems ? _that.unique(_that.parallelItems.concat(data.content.parallelItems), 'stage') : _that.unique(_that.parallelItems, 'stage');
+          if (_that.isGuidePage) {
+            if (!_that.guideChangedType) {
+              // 未切换项目类型 事项列表就是辅导详情数据
+              _coreItems = _that.guideDetail.optionItems;
+              _parallelItems = _that.guideDetail.parallelItems;
+            } else {
+              // 切换过项目类型
+              _coreItems.forEach(function(u) { setParam(u); });
+              _parallelItems.forEach(function(u) { setParam(u); });
+              function setParam(u) {
+                u.intelliGuideChoose = false;
+                u.applicantChoose = false;
+                u.leaderDeptChoose = false;
+                u.approveDeptChoose = false;
+                u.leanderDeptOpinion = '';
+                u.approveDeptOpinion = '';
+              }
+            }
+          }
+          _that.coreItems = _coreItems;
+          _that.parallelItems = _parallelItems;
           _that.coreItems.map(function (item) {
             if (item) {
               _that.setImplementItem(item);

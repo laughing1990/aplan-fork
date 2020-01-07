@@ -1177,10 +1177,10 @@
                           row-key="itemBasicId" tooltip-effect="dark" @select="parallelItemsSelItem"
                           @select-all="parallelItemsSelAll" :default-sort="{prop: 'sortNo', order: 'ascending'}"
                           style="width: 100%">
-                  <el-table-column type="selection" :selectable='checkboxInit' align="center"
+                  <el-table-column type="selection" :selectable='checkboxInit' align="center" v-if="!isGuidePage"
                                    width="55">
                   </el-table-column>
-                  <el-table-column type="expand" width="5px" v-if="!parallelItemsQuestionFlag">
+                  <el-table-column type="expand" width="5px" v-if="!parallelItemsQuestionFlag&&!isGuidePage">
                     <template slot-scope="scope">
                       <el-form :model="stateSelVal" class="expand-coreItem">
                         <el-form-item class="sel-status-item" :required="item.mustAnswer==1"
@@ -1238,24 +1238,26 @@
                       <p class="not-region-data" v-if="scope.row.notRegionData">* 该事项无匹配的行政区划及实施主体</p>
                     </template>
                   </el-table-column>
-                  <el-table-column label="行政区划" width="200">
-                    <template slot-scope="scope">
-                      <div v-if="scope.row.isImplement==false">
-                        <el-select v-model="scope.row.implementItemVerId"
-                                   placeholder="请选择行政区划">
-                          <el-option v-for="(item,indexOp) in scope.row.carryOutItems"
-                                     :key="indexOp"
-                                     :label="item.regionName"
-                                     @click.native="getItemOrgId(scope.row,scope.$index,item)"
-                                     :value="item.itemVerId"></el-option>
-                        </el-select>
-                      </div>
-                      <div v-else>
-                        <span>{{scope.row.regionName}}</span>
-                      </div>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="orgName" label="实施主体" width="340">
+                  <template data-title="非部门辅导表格列" v-if="!isGuidePage">
+                    <el-table-column label="行政区划" width="200">
+                      <template slot-scope="scope">
+                        <div v-if="scope.row.isImplement==false">
+                          <el-select v-model="scope.row.implementItemVerId"
+                                     placeholder="请选择行政区划">
+                            <el-option v-for="(item,indexOp) in scope.row.carryOutItems"
+                                       :key="indexOp"
+                                       :label="item.regionName"
+                                       @click.native="getItemOrgId(scope.row,scope.$index,item)"
+                                       :value="item.itemVerId"></el-option>
+                          </el-select>
+                        </div>
+                        <div v-else>
+                          <span>{{scope.row.regionName}}</span>
+                        </div>
+                      </template>
+                    </el-table-column>
+                  </template>
+                  <el-table-column prop="orgName" :label="isGuidePage?'审批部门':'实施主体'" width="340">
                     <template slot-scope="scope">
                       <div v-if="scope.row.isImplement==false">
                         <el-select v-model="scope.row.implementItemVerId"
@@ -1271,6 +1273,14 @@
                       </div>
                     </template>
                   </el-table-column>
+                  <template data-title="部门辅导表格列" v-if="isGuidePage">
+                    <el-table-column label="是否必选" prop="isDoneItem" width="100px"></el-table-column>
+                    <el-table-column label="智能引导" prop="intelliGuideChoose" width="100px"></el-table-column>
+                    <el-table-column label="申请人选择" prop="applicantChoose" width="100px"></el-table-column>
+                    <el-table-column label="牵头部门选择" prop="leaderDeptChoose" width="100px"></el-table-column>
+                    <el-table-column label="审批部门" prop="approveDeptChoose" width="100px"></el-table-column>
+                    <el-table-column label="审批部门意见" prop="approveDeptOpinion" width="100px"></el-table-column>
+                  </template>
                 </el-table>
                 <p class="more-base-info" v-if="noptItemShowNum>0&&noptItemShowNum < parallelItems.length"
                    @click="changeItenShowLen('parallel')">
@@ -1293,9 +1303,9 @@
                           :default-sort="{prop: 'sortNo', order: 'ascending'}" :expand-row-keys="showCoreItemsKey"
                           row-key="itemBasicId" @select="coreItemsSelItem" @select-all="coreItemsSelAll"
                           style="width: 100%">
-                  <el-table-column type="selection" :selectable='checkboxInit' align="center" width="55">
+                  <el-table-column type="selection" :selectable='checkboxInit' align="center" width="55" v-if="!isGuidePage">
                   </el-table-column>
-                  <el-table-column type="expand" width="5px" v-if="coreItemQuestionFlag">
+                  <el-table-column type="expand" width="5px" v-if="coreItemQuestionFlag&&!isGuidePage">
                     <template slot-scope="scope">
                       <el-form :model="stateSelVal" class="expand-coreItem">
                         <el-form-item class="sel-status-item" :required="item.mustAnswer==1"
@@ -1728,7 +1738,7 @@
       </div>
       <div class="right-bottom-btn" v-if="isGuidePage">
         <template v-if="leaderDept&&(guideState==2||guideState==1)">
-          <el-button circle type="primary">部门<br/>确认</el-button>
+          <el-button circle type="primary">发起部<br/>门确认</el-button>
           <el-button circle>直接<br/>通过</el-button>
         </template>
 
