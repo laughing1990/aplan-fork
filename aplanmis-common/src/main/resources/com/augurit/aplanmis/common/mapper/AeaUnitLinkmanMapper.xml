@@ -122,6 +122,30 @@
             </if>
         </where>
     </update>
+    <!--绑定联系人到当前单位-->
+    <update id="bindLinkmanToUnit">
+        update aea_unit_linkman aul
+        <set>
+            <if test="isBindAccount != null and isBindAccount!=''">
+                aul.IS_BIND_ACCOUNT = #{isBindAccount},
+            </if>
+            <if test="isAdministrators != null and isAdministrators!=''">
+                aul.IS_ADMINISTRATORS = #{isAdministrators},
+            </if>
+
+        </set>
+        where aul.UNIT_LINKMAN_ID in
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="unitLinkmanIds" item="id" open="(" separator="union all" close=")">
+                #{id}
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <foreach collection="unitLinkmanIds" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+    </update>
 
     <!--7 删除实体对象,根据主键ID -->
     <delete id="deleteAeaUnitLinkman">

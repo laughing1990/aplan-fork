@@ -133,7 +133,11 @@ public class RestExSJUnitFormController {
 
     @GetMapping("/index.html")
     @ApiOperation("施工和监理单位信息")
-    public ModelAndView exSJUnit(){return new ModelAndView("form/exSJUnit");}
+    public ModelAndView exSJUnit(String refEntityId){
+        ModelAndView modelAndView = new ModelAndView("form/exSJUnit");
+        modelAndView.addObject("refEntityId",refEntityId);
+        return  modelAndView;
+    }
 
     @PostMapping("/save/unitInfo")
     @ApiOperation("保存单位信息并回显")

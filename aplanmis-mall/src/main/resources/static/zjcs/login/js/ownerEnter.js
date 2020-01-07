@@ -12,8 +12,8 @@ var vm = new Vue({
       dialogTitie: '',
       pageLoading: false,
       formData: {},
-      formData2: {},
-      formDatawtr: {},
+      formData2: {linkmanType: 'u', idCard: '1'},
+      formDatawtr: {linkmanType: 'u', idCard: '1'},
       activeNames: ['1', '2', '3'],
       activeNames2: ['1', '2', '3'],
       activeNames3: ['1'],
@@ -374,7 +374,7 @@ var vm = new Vue({
             });
             return;
           } else {
-            if (!_this.num) {
+            if (!_that.num) {
               _this.$message({
                 message: '证件号重复，请重新输入',
                 type: 'error'
@@ -401,6 +401,9 @@ var vm = new Vue({
                   linkmanMobilePhone: _that.formData2.linkmanMobilePhone || '', //移动电话
                   linkmanOfficePhon: _that.formData2.linkmanOfficePhon || '', //固定电话
                   linkmanFax: _that.formData2.linkmanFax || '', //传真
+                  linkmanCertNo: _that.formData2.linkmanCertNo || '', //证件号
+                  linkmanType: _that.formData2.linkmanType || '', //类型
+
                 },
                 authorManInfo: {
                   linkmanName: _that.formDatawtr.linkmanName || '', //姓名

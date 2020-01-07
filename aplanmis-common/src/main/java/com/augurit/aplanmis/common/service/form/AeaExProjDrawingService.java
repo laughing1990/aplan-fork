@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.common.service.form;
 import com.augurit.aplanmis.common.domain.AeaExProjDrawing;
+import com.augurit.aplanmis.common.form.vo.LinkmanAddVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import java.util.List;
@@ -14,5 +15,6 @@ public interface AeaExProjDrawingService {
     public PageInfo<AeaExProjDrawing> listAeaExProjDrawing(AeaExProjDrawing aeaExProjDrawing,Page page) throws Exception;
     public AeaExProjDrawing getAeaExProjDrawingById(String id) throws Exception;
     public List<AeaExProjDrawing> listAeaExProjDrawing(AeaExProjDrawing aeaExProjDrawing) throws Exception;
+    String save(LinkmanAddVo linkmanAddVo);
 
 }

@@ -3449,7 +3449,7 @@ var vm = new Vue({
             data: {
               applyinstId: vm.masterEntityKey,
               projInfoId: vm.projInfoId,
-              itemId: vm.itemId,
+              itemId: vm.itemVersionId,
               showBasicButton: false,
               includePlatformResource: false,
             },

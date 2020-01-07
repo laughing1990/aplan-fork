@@ -8,6 +8,27 @@ var checkNumber = function (rule, value, callback) {
         return callback(new Error('请输入数字'));
     }
 };
+// / 校验不能纯数字(非必填)
+var checkNotAllNumber = function (rule, value, callback) {
+    var reg = /[^\d^\.]+/g
+    // console.log(reg.test(value));
+    if (!value || reg.test(value)) {
+        callback();
+    } else {
+        return callback(new Error('不能为纯数字'));
+    }
+};
+// / 校验项目代码跟工程编码（长度小于等于32，且只能由数字，字母，横杆组成）
+var checkCodeForProj = function (rule, value, callback) {
+  // var reg = /[^\w\-]/ig;
+  var reg =  /^[\A-Za-z0-9-]{0,32}$/
+  console.log(!reg.test(value));
+  if (!reg.test(value)) {  
+    return callback(new Error('长度小于等于32，且只能由数字，字母，横杆组成'));
+  } else {
+    callback();
+  }
+};
 var module1 = new Vue({
     el: "#addProject",
     data: function () {
@@ -63,9 +84,11 @@ var module1 = new Vue({
                 ],
                 localCode: [
                     {required: true, message: '请输入项目代码', trigger: 'blur'},
+                    {required: true, validator: checkCodeForProj, trigger: 'blur'}
                 ],
                 gcbm: [
                     {required: true, message: '请输入工程代码', trigger: 'blur'},
+                    {required: true, validator: checkCodeForProj, trigger: 'blur'}
                 ],
                 regionalism: [
                     {required: true, message: '请选择行政区划', trigger: 'change'},
@@ -95,26 +118,36 @@ var module1 = new Vue({
                     {required: true, message: '请选择工程分类', trigger: 'change'},
                 ],
                 nstartTime: [
-                    {required: true, message: '请选择拟开工时间', trigger: 'blur'},
+                    {required: true, message: '请选择拟开工时间', trigger: ['change', 'blur']},
                 ],
                 endTime: [
-                    {required: true, message: '请选择拟建成时间', trigger: 'change'},
+                    {required: true, message: '请选择拟建成时间', trigger: ['change', 'blur']},
                 ],
                 investSum: [
                     {required: true, message: '请输入总投资', trigger: 'blur'},
+                    {required: true, validator: checkNumber, trigger: 'blur'}
                 ],
                 foreignBuildingArea: [
-                    {required: true, message: '请输入总建筑面积', trigger: 'blur'},
+                    {required: true, message: '请输入建筑面积', trigger: 'blur'},
+                    {required: true, validator: checkNumber, trigger: 'blur'}
                 ],
                 xmYdmj: [
                     {required: true, message: '请输入用地面积', trigger: 'blur'},
+                    {required: true, validator: checkNumber, trigger: 'blur'}
                 ],
                 gbCodeYear: [
                     {required: true, message: '请输入国标行业代码发布年代', trigger: 'blur'},
+                    {required: true, validator: checkNumber, trigger: 'blur'}
                 ],
                 foreignRemark: [
                     {required: true, message: '请输入建设规模及内容', trigger: 'blur'},
-                ]
+                ],
+                compareTime: [
+                  {required: true, message: '开工时间必须小于建成时间', trigger: ['change', 'blur']},
+                ],
+                projAddr: [
+                  {validator: checkNotAllNumber, trigger: 'blur'}
+                ],
             },
             themeList: [], // 主题列表
             orgList: [], // 组织列表
@@ -143,6 +176,25 @@ var module1 = new Vue({
             gbhyShowMsg: '', // 国标行业选中数据的展示
             isShowGbhy: false, // 是否显示国标行业tree模块
         }
+    },
+    watch: {
+      'projInfoForm.nstartTime': function(val){
+        if(!val) return;
+        this.$refs.projInfoForm.validateField('endTime');
+        var ts = this;
+        setTimeout(function(){
+          ts.$refs.projInfoForm.validateField('endTime');
+        },500)
+        
+      },
+      'projInfoForm.endTime': function(val){
+        if(!val) return;
+        this.$refs.projInfoForm.validateField('nstartTime');
+        var ts = this;
+        setTimeout(function(){
+          ts.$refs.projInfoForm.validateField('nstartTime');
+        },500)
+      },
     },
     created: function () {
         this.getRegionListData();
@@ -318,6 +370,25 @@ var module1 = new Vue({
                 ts.projInfoForm.projectAddress = ts.projInfoForm.projectAddress.split(',');
                 return ts.apiMessage('网络错误！', 'error')
             });
+        },
+
+        // 项目代码-生成编码fn:自动生成项目代码
+        generateLocalCodeFn: function () {
+          var date = new Date();
+          var year = date.getFullYear();
+          var month = (date.getMonth() + 1).toString();
+          var day = (date.getDate()).toString();
+          if (month.length == 1) {
+            month = "0" + month;
+          }
+          if (day.length == 1) {
+            day = "0" + day;
+          }
+          var dateTime = year + month + day;
+          var now = date.getTime();
+          var _code = "ZBM-R-" + dateTime + "-" + String(now).slice(-8);
+          this.projInfoForm.localCode =  _code;
+          this.projInfoForm.gcbm = _code;
         },
     },
     mounted: function () {

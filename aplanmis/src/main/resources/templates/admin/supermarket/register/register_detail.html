@@ -114,14 +114,14 @@
 					</div>
 
 					<el-form-item label="附件">
-						<el-row>
+						<el-row v-if="form.unitFileList">
 							<el-col :span="12" v-for="bscAttDetail in form.unitFileList">
 								<a href="javascript:;" class="a-color4879E4" @click="filePreview(bscAttDetail)" style="cursor:pointer;">{{bscAttDetail.fileName}}</a>
 							</el-col>
-						</el-row>							
+						</el-row>
 					</el-form-item>
 
-					<el-form-item label="联系人信息">
+					<el-form-item label="联系人信息" v-if="form.contactManList">
 						<el-table :data="form.contactManList" border style="width: 100%">
 							<el-table-column prop="linkmanName" label="联系人姓名" width="180">
 							</el-table-column>
@@ -186,58 +186,58 @@
 					</el-form-item>
 				</el-collapse-item>-->
 
-				<el-form-item label="证书信息">
-					<el-table :data="form.registerServiceAndQualVo.aeaHiCertinstBVo" border style="width: 100%">
-						<el-table-column prop="" type="index" label="序号" width="50">
+					<el-form-item label="证书信息" v-if="form.registerServiceAndQualVo && form.registerServiceAndQualVo.aeaHiCertinstBVo">
+						<el-table :data="form.registerServiceAndQualVo.aeaHiCertinstBVo" border style="width: 100%">
+							<el-table-column prop="" type="index" label="序号" width="50">
+							</el-table-column>
+							<el-table-column prop="certinstCode" label="证书编码">
+							</el-table-column>
+							<el-table-column prop="certinstName" label="证书名称">
+							</el-table-column>
+							<el-table-column prop="qualName" label="所属资质">
+							</el-table-column>
+							<el-table-column prop="qualLevelName" label="等级">
 						</el-table-column>
-						<el-table-column prop="certinstCode" label="证书编码">
-						</el-table-column>
-						<el-table-column prop="certinstName" label="证书名称">
-						</el-table-column>
-						<el-table-column prop="qualName" label="所属资质">
-						</el-table-column>
-						<el-table-column prop="qualLevelName" label="等级">
-						</el-table-column>
-						<el-table-column label="证书列表">
-							<template scope="scope">
-								<p v-for="item in scope.row.certinstDetail">
-									<a href="javascript:;" class="a-color4879E4" @click="filePreview(item)" style="cursor:pointer;">{{item.fileName}}</a>
-								</p>
-							</template>
-						</el-table-column>
-					</el-table>
-				</el-form-item>
-
-				<el-collapse-item class="clearfix" name="3" id="">
-					<template slot="title">
-						<i class="header-icon icon ag ag-project-info"></i>授权人员信息
-					</template>
-
-					<el-table :data="form.authorManList" border style="width: 100%">
-						<el-table-column prop="linkmanName" label="业务授权人">
-						</el-table-column>
-						<el-table-column prop="linkmanMobilePhone" label="联系方式">
-						</el-table-column>
-						<el-table-column prop="linkmanCertNo" label="证件号">
-						</el-table-column>
-						<el-table-column prop="serviceNames" label="服务类型">
-						</el-table-column>
-						<!-- <el-table-column prop="" label="是否实名">
-						</el-table-column> -->
-					</el-table>
-				</el-collapse-item>
-
-				<el-collapse-item class="clearfix" name="4" id="">
-					<template slot="title">
-						<i class="header-icon icon ag ag-project-info"></i>执业/职业人员信息
-					</template>
-
-					<el-form-item label="姓名">
-						<el-input v-model="form.practiceManInfo.linkmanName"></el-input>
+							<el-table-column label="证书列表">
+								<template scope="scope">
+									<p v-for="item in scope.row.certinstDetail">
+										<a href="javascript:;" class="a-color4879E4" @click="filePreview(item)" style="cursor:pointer;">{{item.fileName}}</a>
+									</p>
+								</template>
+							</el-table-column>
+						</el-table>
 					</el-form-item>
-					<!-- <el-form-item label="性别">
-						<el-input v-model="form.practiceManInfo."></el-input>
-					</el-form-item> -->
+
+					<el-collapse-item class="clearfix" name="3" v-if="form.authorManList">
+						<template slot="title">
+							<i class="header-icon icon ag ag-project-info"></i>授权人员信息
+						</template>
+
+						<el-table :data="form.authorManList" border style="width: 100%">
+							<el-table-column prop="linkmanName" label="业务授权人">
+							</el-table-column>
+							<el-table-column prop="linkmanMobilePhone" label="联系方式">
+							</el-table-column>
+							<el-table-column prop="linkmanCertNo" label="证件号">
+							</el-table-column>
+							<el-table-column prop="serviceNames" label="服务类型">
+							</el-table-column>
+							<!-- <el-table-column prop="" label="是否实名">
+							</el-table-column> -->
+						</el-table>
+					</el-collapse-item>
+
+					<el-collapse-item class="clearfix" name="4">
+						<template slot="title">
+							<i class="header-icon icon ag ag-project-info"></i>执业/职业人员信息
+						</template>
+
+						<el-form-item label="姓名">
+							<el-input v-model="form.practiceManInfo.linkmanName"></el-input>
+						</el-form-item>
+						<!-- <el-form-item label="性别">
+							<el-input v-model="form.practiceManInfo."></el-input>
+						</el-form-item> -->
 					<el-form-item label="证件号">
 						<el-input v-model="form.practiceManInfo.linkmanCertNo"></el-input>
 					</el-form-item>

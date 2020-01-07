@@ -331,4 +331,15 @@
             ADD COLUMN `APPLYINST_ID` varchar(50) NULL COMMENT '该采购需求的申报实例ID' AFTER `ROOT_ORG_ID`;
         </sql>
     </changeSet>
+
+    <changeSet id="202001041849" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_linkman_info`
+            ADD COLUMN `IS_EXTERNAL` char(1) NULL COMMENT '是否外部数据：1 是，0 否' AFTER `ROOT_ORG_ID`;
+            ALTER TABLE `aea_unit_info`
+            ADD COLUMN `IS_EXTERNAL` char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '是否外部数据：1 是，0 否' AFTER `AUDIT_FLAG`;
+            ALTER TABLE `aea_im_service`
+            ADD COLUMN `IS_EXTERNAL` char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '是否外部数据：1 是，0 否' AFTER `ROOT_ORG_ID`;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

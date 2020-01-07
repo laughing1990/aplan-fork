@@ -63,4 +63,13 @@ public interface AeaUnitLinkmanMapper {
      * @param linkmanInfoId
      */
     int deleteAeaUnitLinkmanByUnitIdAndLinkmanId(@Param("unitInfoId") String unitInfoId, @Param("linkmanInfoId") String linkmanInfoId) throws Exception;
+
+    /**
+     * 绑定联系人到当前单位
+     *
+     * @param unitLinkmanIds   主键
+     * @param isBindAccount    是否绑定 1 是 0 否
+     * @param isAdministrators 是否管理员 1 是 0否
+     */
+    void bindLinkmanToUnit(@Param("unitLinkmanId") String[] unitLinkmanIds, @Param("isBindAccount") String isBindAccount, @Param("isAdministrators") String isAdministrators) throws Exception;
 }

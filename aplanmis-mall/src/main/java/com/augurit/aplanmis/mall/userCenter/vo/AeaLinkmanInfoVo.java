@@ -43,11 +43,11 @@ public class AeaLinkmanInfoVo {
 
 
     public static AeaLinkmanInfoVo build(AeaLinkmanInfo aeaLinkmanInfo) {
-        AeaLinkmanInfoVo aeaLinkmanIanfoVo = new AeaLinkmanInfoVo();
-        BeanUtils.copyProperties(aeaLinkmanInfo, aeaLinkmanIanfoVo);
+        AeaLinkmanInfoVo aeaLinkmanInfoVo = new AeaLinkmanInfoVo();
+        BeanUtils.copyProperties(aeaLinkmanInfo, aeaLinkmanInfoVo);
         if (isCheckAuthority){
-            aeaLinkmanIanfoVo.setLinkmanMobilePhone(DesensitizedUtil.desensitizedPhoneNumber(aeaLinkmanIanfoVo.getLinkmanMobilePhone()));
+
         }
-        return aeaLinkmanIanfoVo;
+        return aeaLinkmanInfoVo;
     }
 }

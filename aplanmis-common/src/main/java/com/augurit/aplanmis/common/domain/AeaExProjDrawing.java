@@ -43,6 +43,8 @@ private static final long serialVersionUID = 1L;
 
     //扩展字段
     private String formId;
+    private String refEntityId;  //申请实例ID
+
 
     public String getReviewNum() {
         return reviewNum;
@@ -54,6 +56,16 @@ private static final long serialVersionUID = 1L;
 
     // ----------------------------------------------------- Constructors
 // ----------------------------------------------------- Methods
+
+
+    public String getRefEntityId() {
+        return refEntityId;
+    }
+
+    public void setRefEntityId(String refEntityId) {
+        this.refEntityId = refEntityId;
+    }
+
     public java.lang.String getDrawingId(){
         return drawingId;
     }
