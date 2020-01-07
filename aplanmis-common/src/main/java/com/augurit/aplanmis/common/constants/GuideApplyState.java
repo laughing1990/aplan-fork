@@ -13,6 +13,7 @@ public enum GuideApplyState {
     DEPT_HANDLING("所有部门征求处理中", "3"),
     APPLICANT_CONFIRMING("申请人待确认", "4"),
     FINISHED("结束", "5"),
+    DEPT_FINISHED("所有征求部门处理完成", "6"),
     UNKNOWN("未知", "-1");
 
     private String name;

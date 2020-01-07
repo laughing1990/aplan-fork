@@ -28,4 +28,7 @@ public interface AeaHiGuideDetailMapper {
     List<AeaHiGuideDetail> listAeaHiGuideDetailByGuideIdOrderByCreateTimeAsc(String guideId);
 
     List<AeaHiGuideDetail> listAeaHiGuideDetailIfThemeChangedBefore(String guideId);
+
+    List<AeaHiGuideDetail> listAeaHiGuideDetail(AeaHiGuideDetail aeaHiGuideDetail);
+
 }

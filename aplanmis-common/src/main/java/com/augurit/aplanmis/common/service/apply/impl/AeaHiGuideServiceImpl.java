@@ -10,6 +10,7 @@ import com.augurit.aplanmis.common.apply.item.GuideComputedItem;
 import com.augurit.aplanmis.common.apply.item.GuideItemPrivilegeComputationHandler;
 import com.augurit.aplanmis.common.constants.ApplySource;
 import com.augurit.aplanmis.common.constants.GuideApplyState;
+import com.augurit.aplanmis.common.constants.GuideDetailType;
 import com.augurit.aplanmis.common.domain.AeaHiGuide;
 import com.augurit.aplanmis.common.domain.AeaHiGuideDetail;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
@@ -169,7 +170,35 @@ public class AeaHiGuideServiceImpl implements AeaHiGuideService {
                     aeaHiGuideDetailMapper.insertAeaHiGuideDetail(detail);
                 }
             });
+            AeaHiGuideDetail aeaHiGuideDetail = aeaHiGuideDetails.get(0);
+            if (GuideDetailType.ITEM_DEPT.getValue().equals(aeaHiGuideDetail.getDetailType()) && allDeptGuideFinished(aeaHiGuideDetail.getGuideId())) {
+                AeaHiGuide updateAeaHiGuide = new AeaHiGuide();
+                updateAeaHiGuide.setGuideId(aeaHiGuideDetail.getGuideId());
+                updateAeaHiGuide.setModifier(SecurityContext.getCurrentUserId());
+                updateAeaHiGuide.setModifyTime(new Date());
+                updateAeaHiGuide.setApplyState(GuideApplyState.DEPT_FINISHED.getValue());
+                aeaHiGuideMapper.updateAeaHiGuide(updateAeaHiGuide);
+            }
         }
+    }
+
+    /**
+     * 判单所有部门辅导是否结束
+     */
+    private boolean allDeptGuideFinished(String guideId) {
+        AeaHiGuideDetail param = new AeaHiGuideDetail();
+        param.setGuideId(guideId);
+        param.setDetailType(GuideDetailType.ITEM_DEPT.getValue());
+        List<AeaHiGuideDetail> deptDetails = aeaHiGuideDetailMapper.listAeaHiGuideDetail(param);
+        if (CollectionUtils.isEmpty(deptDetails)) {
+            return false;
+        }
+        for (AeaHiGuideDetail detail : deptDetails) {
+            if (!GuideApplyState.DEPT_FINISHED.getValue().equals(detail.getDetailState())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
