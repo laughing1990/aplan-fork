@@ -147,3 +147,17 @@
 .linkman-line .switch-btn i {
   margin-top: 2px;
 }
+
+.pro-search-btn {
+  width: 100px;
+  height: 40px;
+  color: #fff;
+  text-align: center;
+  line-height: 40px;
+  font-size: 14px;
+  border-radius: 2px;
+  background: #4293f4;
+  outline: none;
+  border: none;
+  cursor: pointer;
+}

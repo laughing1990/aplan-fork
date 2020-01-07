@@ -141,6 +141,10 @@ var vm = new Vue({
       {label:'已补全',value:'4'},
       {label:'不予受理',value:'5'},
       {label:'已办结',value:'6'},
+      {label:'撤件待受理',value:'12'},
+      {label:'撤件已受理',value:'13'},
+      {label:'撤件办结',value:'14'},
+      {label:'待复验',value:'15'},
     ],
     applyinstState:'',
 

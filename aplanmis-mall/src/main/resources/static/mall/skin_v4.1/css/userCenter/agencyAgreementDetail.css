@@ -18,7 +18,7 @@
   left: 0;
   top: 5px;
 }
-#agencyAgreementDetail table {
+#agencyAgreementDetail table.line-table {
   width: 100%;
   font-size: 14px;
   border: 1px solid #ECEFF5;
@@ -26,11 +26,11 @@
   border-bottom: 0;
   color: #515151;
 }
-#agencyAgreementDetail table tbody th,
-#agencyAgreementDetail table tbody td {
+#agencyAgreementDetail table.line-table tbody th,
+#agencyAgreementDetail table.line-table tbody td {
   border-bottom: 1px solid #ECEFF5;
 }
-#agencyAgreementDetail table tbody th {
+#agencyAgreementDetail table.line-table tbody th {
   font-weight: 400;
   width: 160px;
   text-align: left;
@@ -38,10 +38,16 @@
   height: 46px;
   border-left: 1px solid #ECEFF5;
   border-right: 1px solid #ECEFF5;
-  padding-left: 4px;
-  padding-right: 4px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
-#agencyAgreementDetail table tbody td {
+#agencyAgreementDetail table.line-table tbody td {
   padding: 10px;
   line-height: 24px;
+}
+.align-center {
+  text-align: center;
+}
+.mt50 {
+  margin-top: 50px;
 }
