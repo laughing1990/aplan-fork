@@ -23,6 +23,9 @@ public class GuideComputedItem extends ComputedItem {
     @ApiModelProperty(value = "申请人选择")
     private boolean applicantChoose;
 
+    @ApiModelProperty(value = "申请人意见")
+    private String applicantOpinion;
+
     @ApiModelProperty(value = "牵头部门选择")
     private boolean leaderDeptChoose;
 
@@ -44,6 +47,7 @@ public class GuideComputedItem extends ComputedItem {
                     break;
                 case OWNER:
                     applicantChoose = true;
+                    applicantOpinion = aeaHiGuideDetail.getGuideOpinion();
                     break;
                 case LEADER_DEPT:
                     if (GuideChangeAction.ADD.getValue().equals(aeaHiGuideDetail.getGuideChangeAction())) {
