@@ -126,9 +126,10 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
     public String saveProjectInfo(HttpServletRequest request, AeaProjInfo aeaProjInfo) throws Exception {
         String isNeedGeneCode = aeaProjInfo.getIsNeedGeneCode();
         if (StringUtils.isNotBlank(isNeedGeneCode)&&"1".equals(isNeedGeneCode)){//需要生成编码
-
+            String uuid = UUID.randomUUID().toString().replaceAll("-","");
+            aeaProjInfo.setLocalCode(uuid);
+            aeaProjInfo.setGcbm(uuid);
         }
-
 
         if (StringUtils.isNotBlank(aeaProjInfo.getProjInfoId())) {
             aeaProjInfoService.updateAeaProjInfo(aeaProjInfo);

@@ -655,6 +655,15 @@ var vm = new Vue({
       // 部门辅导 start------------------------
       showAuditProj: false, // 需要进行工程审核
       guideDetail: {}, // 部门辅导数据详情
+      // 0申请人未发起
+      // 1牵头部门待签收
+      // 2牵头部门处理中
+      // 3所有部门征求处理中
+      // 4申请人待确认
+      // 5结束
+      guideState: '0',
+      leaderDept: false,
+      guideDateLoaded: false,
       auProJForm: {
         projName: '',
         localCode: '',
@@ -792,8 +801,11 @@ var vm = new Vue({
       }, function(res) {
         vm.loading = false;
         if (res.success) {
-          vm.parallelApplyinstId = res.content.aeaHiGuide.applyinstId;
-          vm.requestAuSplitProjInfo(res.content.aeaHiGuide.projInfoId);
+          vm.guideDetail = res.content;
+          vm.guideState = vm.guideDetail.aeaHiGuide.applyState;
+          vm.leaderDept = vm.guideDetail.leaderDept;
+          vm.parallelApplyinstId = vm.guideDetail.aeaHiGuide.applyinstId;
+          vm.requestAuSplitProjInfo(vm.guideDetail.aeaHiGuide.projInfoId);
         } else {
           vm.$message.error(res.message || '加载部门辅导数据失败');
         }
@@ -1648,6 +1660,16 @@ var vm = new Vue({
             _that.getStageByThemeIdAndThemeStageId(_that.themeId, _that.projInfoId); // 获取阶段
           }
           _that.loading = false;
+
+          if (!_that.guideDateLoaded){
+            _that.guideDateLoaded = true;
+            var intervel = window.setInterval(function(){
+              $(document).scrollTop($('#applyStage').offset().top);
+            }, 100);
+            setTimeout(function(){
+              window.clearInterval(intervel);
+            }, 3600)
+          }
         } else {
           _that.showMoreProjInfo = false;
           _that.showVerLen = 1;
