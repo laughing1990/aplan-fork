@@ -1,6 +1,8 @@
 package com.augurit.aplanmis.common.service.window;
 
+import com.augurit.agcloud.opus.common.domain.OpuOmUser;
 import com.augurit.aplanmis.common.domain.AeaProjApplyAgent;
+import com.augurit.aplanmis.common.domain.AeaServiceWindowUser;
 import com.augurit.aplanmis.common.vo.agency.AgencyDetailVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
@@ -30,4 +32,8 @@ public interface AeaProjApplyAgentService {
     List<AeaProjApplyAgent> listAeaProjApplyAgentByProjInfoId(String projInfoId) throws Exception;
 
     public AeaProjApplyAgent getAgencyAgreementDetail(String applyAgentId) throws Exception;
+
+    public boolean checkAgreementCodeUnique(String agreementCode);
+
+    public List<AeaServiceWindowUser> getCurrAgencyWinUserList();
 }

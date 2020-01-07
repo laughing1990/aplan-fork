@@ -56,6 +56,7 @@ public class InoutMatEditDto {
     private String certId;
     private String stoFormId;
     private String stdmatId;
+    private String isSign;
 
     public AeaItemMat merge(AeaItemMat aeaItemMat, String userId) {
 
@@ -89,6 +90,7 @@ public class InoutMatEditDto {
         aeaItemMat.setCertId(this.certId);
         aeaItemMat.setStoFormId(this.stoFormId);
         aeaItemMat.setStdmatId(this.stdmatId);
+        aeaItemMat.setIsSign(this.isSign);
         return aeaItemMat;
     }
 }

@@ -50,4 +50,5 @@ public class AeaParIn implements Serializable {
     private String isOfficialDoc;
     private String attIsRequire;
     private String paperIsRequire;
+    private String isSign;
 }

@@ -11,8 +11,8 @@ import java.util.List;
 @Data
 public class AgencyDetailVo implements Serializable {
 
-        @ApiModelProperty(name = "unitInfoList", value = "项目单位信息 ")
-        private List<AeaUnitInfo> unitInfoList;
+        @ApiModelProperty(name = "aeaUnitProjLinkmanVo", value = "项目单位信息 ")
+        private AeaUnitProjLinkmanVo aeaUnitProjLinkmanVo;
 
         @ApiModelProperty(name = "aeaProjInfo", value = "项目信息 ")
         private AeaProjInfo aeaProjInfo;

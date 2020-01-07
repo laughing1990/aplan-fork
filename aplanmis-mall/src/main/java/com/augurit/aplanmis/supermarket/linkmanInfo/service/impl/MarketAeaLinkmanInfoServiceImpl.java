@@ -238,5 +238,11 @@ public class MarketAeaLinkmanInfoServiceImpl implements AeaLinkmanInfoService {
     public int batchInsertAeaUnintLinkman(List<AeaUnitLinkman> unitLinkmen) throws Exception {
         return aeaLinkmanInfoMapper.batchInsertAeaUnintLinkman(unitLinkmen);
     }
+
+    @Override
+    public AeaLinkmanInfo insertOnlyLinkmanInfo(AeaLinkmanInfo aeaLinkmanInfo) throws Exception{
+        aeaLinkmanInfoMapper.insertAeaLinkmanInfo(aeaLinkmanInfo);
+        return aeaLinkmanInfo;
+    }
 }
 

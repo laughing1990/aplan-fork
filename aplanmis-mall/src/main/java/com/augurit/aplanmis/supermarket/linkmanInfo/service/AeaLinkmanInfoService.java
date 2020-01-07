@@ -47,4 +47,6 @@ public interface AeaLinkmanInfoService {
     int batchInsertAeaLinkmanInfo(List<AeaLinkmanInfo> linkmanInfos) throws Exception;
 
     int batchInsertAeaUnintLinkman(List<AeaUnitLinkman> unitLinkmen) throws Exception;
+
+    public AeaLinkmanInfo insertOnlyLinkmanInfo(AeaLinkmanInfo aeaLinkmanInfo) throws Exception;
 }

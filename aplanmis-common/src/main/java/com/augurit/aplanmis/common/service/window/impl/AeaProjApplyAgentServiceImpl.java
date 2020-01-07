@@ -5,14 +5,11 @@ import com.augurit.agcloud.framework.security.user.OpuOmUser;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmUserInfo;
 import com.augurit.agcloud.opus.common.mapper.OpuOmUserInfoMapper;
-import com.augurit.aplanmis.common.domain.AeaProjApplyAgent;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.common.domain.AeaUnitInfo;
-import com.augurit.aplanmis.common.mapper.AeaProjApplyAgentMapper;
-import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
-import com.augurit.aplanmis.common.mapper.AeaUnitInfoMapper;
+import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.window.AeaProjApplyAgentService;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
+import com.augurit.aplanmis.common.vo.agency.AeaUnitProjLinkmanVo;
 import com.augurit.aplanmis.common.vo.agency.AgencyDetailVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
@@ -21,7 +18,13 @@ import org.springframework.stereotype.Service;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
@@ -46,11 +49,32 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
     @Autowired
     private AeaProjInfoMapper aeaProjInfoMapper;
 
+    @Autowired
+    private AeaServiceWindowUserMapper aeaServiceWindowUserMapper;
+
+    @Autowired
+    private AeaUnitProjMapper aeaUnitProjMapper;
+
+    @Autowired
+    private AeaUnitProjLinkmanMapper aeaUnitProjLinkmanMapper;
+
+    @Autowired
+    private AeaLinkmanInfoMapper aeaLinkmanInfoMapper;
+
     public void saveAeaProjApplyAgent(AeaProjApplyAgent aeaProjApplyAgent) throws Exception{
-        aeaProjApplyAgentMapper.insertAeaProjApplyAgent(aeaProjApplyAgent);
+        if(aeaProjApplyAgent != null){
+            aeaProjApplyAgent.setApplyAgentId(UUID.randomUUID().toString());
+            aeaProjApplyAgent.setCreater(SecurityContext.getCurrentUserName());
+            aeaProjApplyAgent.setCreateTime(new Date());
+            aeaProjApplyAgentMapper.insertAeaProjApplyAgent(aeaProjApplyAgent);
+        }
     }
     public void updateAeaProjApplyAgent(AeaProjApplyAgent aeaProjApplyAgent) throws Exception{
-        aeaProjApplyAgentMapper.updateAeaProjApplyAgent(aeaProjApplyAgent);
+        if(aeaProjApplyAgent != null){
+            aeaProjApplyAgent.setModifier(SecurityContext.getCurrentUserName());
+            aeaProjApplyAgent.setModifyTime(new Date());
+            aeaProjApplyAgentMapper.updateAeaProjApplyAgent(aeaProjApplyAgent);
+        }
     }
     public void deleteAeaProjApplyAgentById(String id) throws Exception{
         if(id == null)
@@ -86,7 +110,7 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
     public AgencyDetailVo getAgencyDetail(String applyAgentId) throws Exception{
         Assert.notNull(applyAgentId,"代办申请ID参数不能为空。");
         AgencyDetailVo vo = null;
-        AeaProjApplyAgent aeaProjApplyAgent = aeaProjApplyAgentMapper.getAeaProjApplyAgentById(applyAgentId);
+        AeaProjApplyAgent aeaProjApplyAgent = aeaProjApplyAgentMapper.getAgencyAgreementDetail(applyAgentId);
         if(aeaProjApplyAgent != null){
             vo = new AgencyDetailVo();
             OpuOmUser currentUser = SecurityContext.getCurrentUser();
@@ -101,10 +125,38 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
             aeaProjApplyAgent.setCurrentUserMobile(currentUserMobile);
 
             String projInfoId = aeaProjApplyAgent.getProjInfoId();
+            String unitInfoId = aeaProjApplyAgent.getUnitInfoId();
             AeaProjInfo projInfo = aeaProjInfoMapper.getAeaProjInfoById(projInfoId);
-            List<AeaUnitInfo> unitInfoList = aeaUnitInfoMapper.findUnitProjByProjInfoIdAndIsOwner(projInfoId, "1");
+            AeaUnitInfo unitInfo = aeaUnitInfoMapper.getAeaUnitInfoById(unitInfoId);
+            //项目单位信息
+            AeaUnitProjLinkmanVo aeaUnitProjLinkmanVo = new AeaUnitProjLinkmanVo();
+            aeaUnitProjLinkmanVo.setUnitInfoId(unitInfoId);
+            aeaUnitProjLinkmanVo.setApplicant(unitInfo!=null?unitInfo.getApplicant():null);
+            aeaUnitProjLinkmanVo.setEmail(unitInfo!=null?unitInfo.getEmail():null);
+            aeaUnitProjLinkmanVo.setApplicantDetailSite(unitInfo!=null?unitInfo.getApplicantDetailSite():null);
+            aeaUnitProjLinkmanVo.setUnitNature(unitInfo!=null?unitInfo.getUnitNature():null);
+            List<AeaUnitProj> unitProjs = aeaUnitProjMapper.findUnitProjByProjIdAndUnitIdAndunitType(projInfoId, unitInfoId, "7");
+            if(unitProjs.size()>0){
+                List<AeaUnitProjLinkman> aeaUnitProjLinkmans = aeaUnitProjLinkmanMapper.queryByUnitProjIdAndlinkType(unitProjs.get(0).getUnitProjId(),null,null);
+                if(aeaUnitProjLinkmans.size()>0){
+                    List<AeaUnitProjLinkman> list = aeaUnitProjLinkmans.stream().filter(v -> ("1".equals(v.getLinkmanType()) || "2".equals(v.getLinkmanType()))).collect(Collectors.toList());
+                    if(list.size()>0){
+                        for (AeaUnitProjLinkman linkman:list){
+                            if("0".equals(linkman.getLinkmanType())){
+                                aeaUnitProjLinkmanVo.setOperatorName(linkman.getLinkmanName());
+                                aeaUnitProjLinkmanVo.setOperatorMobilePhone(linkman.getLinkmanMobilePhone());
+                                aeaUnitProjLinkmanVo.setOperatorDuty(linkman.getLinkmanDuty());
+                            }else if("1".equals(linkman.getLinkmanType())){
+                                aeaUnitProjLinkmanVo.setLeaderName(linkman.getLinkmanName());
+                                aeaUnitProjLinkmanVo.setLeaderMobilePhone(linkman.getLinkmanMobilePhone());
+                                aeaUnitProjLinkmanVo.setLeaderDuty(linkman.getLinkmanDuty());
+                            }
+                        }
+                    }
+                }
+            }
             vo.setAeaProjInfo(projInfo);
-            vo.setUnitInfoList(unitInfoList);
+            vo.setAeaUnitProjLinkmanVo(aeaUnitProjLinkmanVo);
             vo.setAeaProjApplyAgent(aeaProjApplyAgent);
         }
         return vo;
@@ -133,6 +185,28 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
             aeaProjApplyAgent.setAgentStageName(stageName);
         }
         return aeaProjApplyAgent;
+    }
+
+    @Override
+    public boolean checkAgreementCodeUnique(String agreementCode) {
+        AeaProjApplyAgent agent = aeaProjApplyAgentMapper.getAeaProjApplyAgentByAgreementCode(agreementCode);
+        return agent == null;
+    }
+
+    @Override
+    public List<AeaServiceWindowUser> getCurrAgencyWinUserList() {
+        List<AeaServiceWindowUser> result = null;
+        //查出当前登录账户所在的代办中心
+        String currentOrgId = SecurityContext.getCurrentOrgId();
+        List<AeaServiceWindowUser> windows = aeaServiceWindowUserMapper.getAeaServiceWindowUserByUserIdAndRootOrgId(SecurityContext.getCurrentUserId(), currentOrgId);
+        if(windows != null){
+            List<String> winIds = new ArrayList<>();
+            for(AeaServiceWindowUser win:windows){
+                winIds.add(win.getWindowId());
+            }
+            result = aeaServiceWindowUserMapper.listAeaServiceWindowUserByWindowIdsAndRootOrgId(winIds.toArray(new String[winIds.size()]),currentOrgId);
+        }
+        return result;
     }
 }
 

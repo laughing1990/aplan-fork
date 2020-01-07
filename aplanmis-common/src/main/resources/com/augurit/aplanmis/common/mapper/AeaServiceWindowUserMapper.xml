@@ -288,6 +288,24 @@
         AND  win.ROOT_ORG_ID = #{rootOrgId}
     </select>
 
+    <select id="listAeaServiceWindowUserByWindowIdsAndRootOrgId" resultType="AeaServiceWindowUser">
+        select
+        <include refid="alias_allColumns">
+            <property name="alias" value="aswu"/>
+        </include>,win.WINDOW_NAME windowName,oou.USER_NAME
+        from AEA_SERVICE_WINDOW_USER aswu
+        left join aea_service_window win on win.WINDOW_ID = aswu.WINDOW_ID
+        left join opu_om_user oou on oou.USER_ID = aswu.USER_ID
+        where
+        win.WINDOW_ID in
+        <foreach collection="windowIds" item="windowId" open="(" separator="," close=")">
+            #{windowId}
+        </foreach>
+        AND  win.WINDOW_TYPE = 'd'
+        AND  win.ROOT_ORG_ID = #{rootOrgId}
+        group by aswu.USER_ID
+    </select>
+
     <select id="findWindowUserByRegionIdAndAllItemUser" resultType="OpuOmUser">
         SELECT <include refid="omuser_columns"/>
         FROM OPU_OM_USER omuser

@@ -23,6 +23,10 @@ function matNameFormatter(value, row, index, field) {
     if(row.attIsRequire=='1'){
         tag += '<span class="circleIcon blueColor">电需</span>';
     }
+
+    if(row.isSign=='1'){
+        tag += '<span class="circleIcon blueColor">签章</span>';
+    }
     return name + tag ;
 }
 
