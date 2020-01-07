@@ -66,6 +66,7 @@ var module1 = new Vue({
         projectAddress: '',
         isAreaEstimate: '0',
         areaDetailCode: '', //建设地点详情
+        regionalism: '',  //行政区划
         currentProgress: '',  //项目当前进度
         agentStageState: [],   //具体委托阶段
 
@@ -202,11 +203,7 @@ var module1 = new Vue({
           {required: true, message: '开工时间必须小于建成时间', trigger: ['change', 'blur']},
         ],
       },
-      themeList: [], // 主题列表
-      orgList: [], // 组织列表
       districtList: [], //行政区划
-      // 当前保存的是子项目还是原来编辑的项目
-      isSaveChildProj: false,
 
       // 项目基本信息的-项目类型跟建设性质的下拉选项
       proJAllOptions: {
@@ -221,110 +218,14 @@ var module1 = new Vue({
         XM_NATURE: [], // 建设性质
         XM_GCFL: [] // 工程分类
       },
-      gbhySelectData: [], // 国标行业下拉选项数据
-      gbhyProp: {
-        children: 'children',
-        label: 'itemName'
-      }, // 树配置信息，节点属性以及显示文案的属性
-      gbhyShowMsg: '', // 国标行业选中数据的展示
-      isShowGbhy: false, // 是否显示国标行业tree模块
-
-      // 获取到的单位信息
-      unitInfoData: {
-        linkmanInfoList: [], //联系人列表
-        aeaUnitInfo: {}, //单位信息
-      },
-      // 所有联系人信息当中选中的一个联系人
-      unitSelectedLinkman: {},
     }
   },
   created: function () {
     this.getRegionListData();
-    this.getGbhy();
-    this.querySelecTheme();
     this.fetchProjInfo();
     this.projInfoForm.projInfoId = pager.curHandelProj.projInfoId;
   },
   methods: {
-    closeGbhyTree: function () {
-      this.isShowGbhy = false;
-    },
-    getGbhy: function () {
-      var _that = this;
-      request('', {
-        url: ctx + 'bsc/dic/code/getItemTreeByTypeId.do',
-        type: 'get',
-        data: {
-          typeId: 'fadff496-cde1-4c72-90b8-766744b18cb9'
-        },
-      }, function (result) {
-        if (result) {
-          var arr = result;
-
-          if (arr.length) {
-            for (var i = 0; i < arr.length; i++) {
-              arr[i].disabled = true;
-            }
-          }
-          _that.gbhySelectData = arr;
-
-          _that.gbhyShowMsg = _that.getNames(_that.gbhySelectData);
-          _that.gbhyShowMsg = _that.gbhyShowMsg.substr(0, _that.gbhyShowMsg.length - 1);
-        }
-      }, function (msg) {})
-    },
-    handleCheckChange: function (data, checked, indeterminate) {
-      console.log('i am here')
-      // console.log(data, checked, indeterminate);
-      var arr = this.$refs.gbhy.getCheckedNodes(true);
-      var str = [];
-      var ids = [];
-      for (var i = 0; i < arr.length; i++) {
-        str.push(arr[i].itemName);
-        ids.push(arr[i].itemCode);
-      }
-      this.gbhyShowMsg = str.join(',');
-      this.projInfoForm.theIndustry = ids.join(',');
-    },
-    //联动操作
-    // projTypeChange: function (value) {
-    //     var _that = this;
-    //     if (value != null && "" != value) {
-    //         _that.querySelecTheme(value);
-    //     }
-    // },
-    querySelecTheme: function () {
-      var ts = this;
-      request('', {
-        url: ctx + 'rest/user/getThemes',
-        type: 'get',
-        //data: {themeType: themeType}
-      }, function (result) {
-        if (result.success) {
-          ts.themeList = result.content;
-        }
-      }, function (msg) {
-        alertMsg('', '网络加载失败！', '关闭', 'error', true);
-      })
-    },
-    //获取部门组织
-    querySelectDept: function (rootOrgId) {
-      var _that = this;
-      request('', {
-        url: ctx + 'rest/user/getOrgs',
-        type: 'get',
-        data: {
-          rootOrgId: rootOrgId
-        }
-      }, function (result) {
-        if (result.success) {
-          _that.orgList = result.content;
-        }
-      }, function (msg) {
-        alertMsg('', '网络加载失败！', '关闭', 'error', true);
-      })
-    },
-
     // 公共方法
     // 处理接口message
     apiMessage: function (msg, type) {
@@ -368,67 +269,12 @@ var module1 = new Vue({
         alertMsg('', '网络加载失败！', '关闭', 'error', true);
       })
     },
-    getNames: function (arr) {
-      var _that = this;
-      var str = '';
-      var nameArr = _that.projInfoForm.theIndustry.split(',');
-      if (arr && arr.length) {
-        arr.forEach(function (t, i) {
-          if (t.children && t.children.length) {
-            str += _that.getNames(t.children)
-          } else {
-            if (nameArr.indexOf(t.itemCode) > -1) {
-              str += t.itemName + ','
-            }
-          }
-        })
-      }
-      return str
-    },
-    // 保存操作isSaveChildProj： false保存的是原来的项目， true保存的是拆出来的项目的数据
-    saveProjData: function () {
-      var ts = this;
-      ts.mloading = true;
-      var _saveData = ts.projInfoForm;
-      if (!!ts.projInfoForm.projectAddress) {
-        _saveData.projectAddress = ts.projInfoForm.projectAddress.join(',');
-      }
-      request('', {
-        url: ctx + 'rest/user/saveProjectInfo',
-        type: 'post',
-        data: _saveData
-      }, function (res) {
-        ts.mloading = false;
-        if (res.success) {
-          ts.apiMessage('保存成功！', 'success');
-          ts.projInfoForm.projInfoId = res.content; //重新赋值id
-          if (!!ts.projInfoForm.projectAddress) {
-            ts.projInfoForm.projectAddress = ts.projInfoForm.projectAddress.split(',');
-          }
-          userCenter.vm.selectNav = "我的项目";
-          localStorage.setItem('selectNav', userCenter.vm.selectNav);
-          location.href = ctx + "rest/main/toIndexPage?#declare";
-        } else {
-          ts.projInfoForm.projectAddress = ts.projInfoForm.projectAddress.split(',');
-          return ts.apiMessage("保存失败！", 'error')
-        }
-      }, function () {
-        ts.mloading = false;
-        ts.projInfoForm.projectAddress = ts.projInfoForm.projectAddress.split(',');
-        return ts.apiMessage('网络错误！', 'error')
-      });
-    },
     // 项目存档-即保存
     saveProjDataApi: function () {
       var ts = this;
       ts.$refs['projInfoForm'].validate(function (valid) {
         if (valid) {
-          // ts.mloading = true;
-          // var _saveData = {
-          //   projAgentParamVo: ts.projInfoForm,
-          //   aeaUnitProjLinkmanVo:ts.projInfoForm,
-          //   agentStageState:ts.projInfoForm.agentStageState.join(',')
-          // };
+          ts.mloading = true;
           var _saveData = {
               aeaUnitProjLinkmanVo: {
               "unitInfoId": ts.projInfoForm.unitInfoId?ts.projInfoForm.unitInfoId:'',
@@ -453,28 +299,29 @@ var module1 = new Vue({
               "projInfoId": ts.projInfoForm.projInfoId,
               "projLevel": ts.projInfoForm.projLevel,
               "projName": ts.projInfoForm.projName,
-              "projectAddress": ts.projInfoForm.projectAddress,
-              "regionalism": ts.projInfoForm.projectAddress.regionalism,
+              "projectAddress": ts.projInfoForm.projectAddress.join(','),
+              "regionalism": ts.projInfoForm.regionalism,
               "scaleContent": ts.projInfoForm.scaleContent
             },
             agentStageState:ts.projInfoForm.agentStageState.join(',')
           };
-          debugger
-          console.log(_saveData)
+          // debugger
+          // console.log(_saveData)
+          // return
           request('', {
             url: ctx + 'rest/user/apply/agent/start',
             type: 'post',
             ContentType: 'application/json',
             data: JSON.stringify(_saveData)
           }, function (res) {
-            //ts.mloading = false;
+            ts.mloading = false;
             if (res.success) {
               ts.apiMessage('保存成功！', 'success');
             } else {
               return ts.apiMessage("保存失败！", 'error')
             }
           }, function () {
-            //ts.mloading = false;
+            ts.mloading = false;
             return ts.apiMessage('网络错误！', 'error')
           });
         } else {
@@ -526,6 +373,7 @@ var module1 = new Vue({
       //   }
       // }
       Vue.set(this.projInfoForm,'agentStageState',[])
+      this.projInfoForm.projectAddress =  this.projInfoForm.projectAddress.split(',');
       // console.log(formData)
     },
   },
