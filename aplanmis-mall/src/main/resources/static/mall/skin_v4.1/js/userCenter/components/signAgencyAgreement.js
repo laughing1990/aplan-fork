@@ -317,6 +317,7 @@ var module1 = new Vue({
             ts.mloading = false;
             if (res.success) {
               ts.apiMessage('保存成功！', 'success');
+              ts.returnList();
             } else {
               return ts.apiMessage("保存失败！", 'error')
             }

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>代办详情</title>
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+    th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
+  <link rel="stylesheet" href="../../static/agency/css/reset.css" th:href="@{/agency/css/reset.css}">
+  <link rel="stylesheet" href="../../static/agency/css/base.css" th:href="@{/agency/css/base.css}">
+  <link rel="stylesheet" href="../../static/agency/css/agencyProjDetail.css"
+    th:href="@{/agency/css/agencyProjDetail.css}">
+  <script>
+    var ctx = "[[@{/}]]";
+    var ctx = "http://192.168.30.22:8083/aplanmis-front/";
+  </script>
+</head>
+
+<body>
+  <div id="app" v-cloak v-loading.fullscreen.lock="mloading">
+    <div class="content">
+      <!-- 项目title -->
+      <div class="proj-name">
+        <span class="text">{{projInfoForm.projName}}</span>
+      </div>
+
+      <!-- 右侧导航 -->
+      <div class="right-handel-pandel">
+        <div class="vertical-tab">
+          <ul>
+            <li class="vertical-label" v-for="(item, index) in verticalTabData"
+              :class="activeTab==index?'active':item.target" data-name="item.target"
+              @click="targetCollapse(item.target,index)">
+              <a :href="'#'+item.target">{{item.label}}</a>
+            </li>
+          </ul>
+        </div>
+        <!-- 右侧操作按钮栏 -->
+        <div class="right-bottom-btn">
+          <el-button circle  type="danger">不予</br>受理</el-button>
+          <el-button circle  type="primary">签订</br>协议</el-button>
+
+        </div>
+      </div>
+      <el-form :inline="true" :model="projInfoForm" :rules="rules" label-width="140px"
+        class="demo-form-inline supplement-form" ref="supplemetForm">
+        <el-collapse v-model="activeNames">
+          <!--  项目单位信息  start  -->
+          <el-collapse-item class="clearfix" name="1" id="projunitInfo">
+            <template slot="title">
+              <i class="header-icon el-icon-document-copy"></i>项目单位信息
+            </template>
+            <el-form-item label="单位名称：" class="wt448">
+              <el-input placeholder="请填写单位名称" v-model="projInfoForm.applicant">
+              </el-input>
+            </el-form-item>
+            <el-form-item label="单位地址：" class="wt448">
+              <el-input placeholder="请填写单位地址" v-model="projInfoForm.applicantDetailSite">
+              </el-input>
+            </el-form-item>
+            <el-form-item label="单位性质：" class="wt448">
+              <el-select v-model="projInfoForm.unitNature">
+                <el-option label="企业" value="1"></el-option>
+                <el-option label="事业单位" value="2"></el-option>
+                <el-option label="社会组织" value="3"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="电子邮箱：" class="wt448">
+              <el-input placeholder="请填写电子邮箱" v-model="projInfoForm.email">
+              </el-input>
+            </el-form-item>
+            <el-row class="proj-addr-scope">
+              <el-col :span="24">
+                <el-form-item class="wt32" label="项目负责人：">
+                  <el-input placeholder="请输入" v-model="projInfoForm.leaderName"></el-input>
+                </el-form-item>
+                <el-form-item class="wt32 ml14" label="职务：">
+                  <el-input placeholder="请输入" v-model="projInfoForm.leaderDuty"></el-input>
+                </el-form-item>
+                <el-form-item class="wt32 mlf24" label="联系方式：">
+                  <el-input placeholder="请输入" v-model="projInfoForm.leaderMobilePhone"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row class="proj-addr-scope">
+              <el-col :span="24">
+                <el-form-item class="wt32" label="项目经办人：">
+                  <el-input placeholder="请输入" v-model="projInfoForm.operatorName"></el-input>
+                </el-form-item>
+                <el-form-item class="wt32 ml14" label="职务：">
+                  <el-input placeholder="请输入" v-model="projInfoForm.operatorDuty"></el-input>
+                </el-form-item>
+                <el-form-item class="wt32 mlf24" label="联系方式：">
+                  <el-input placeholder="请输入" v-model="projInfoForm.operatorMobilePhone"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-collapse-item>
+          <!-- 项目单位信息 end -->
+
+          <!--  项目基本信息  start  -->
+          <el-collapse-item class="clearfix" name="2" id="projbaseInfo">
+            <template slot="title">
+              <i class="header-icon el-icon-document-copy"></i>项目基本信息
+            </template>
+            <el-form-item label="项目名称" class="wt448" prop="projName">
+              <el-input class="btn-input" placeholder="请填写项目名称" v-model="projInfoForm.projName">
+              </el-input>
+            </el-form-item>
+            <el-form-item class="wt448" prop="localCode">
+              <template slot="label">
+                <el-tooltip class="item" effect="dark"
+                  content="填写全国统一项目代码(参考“投资项目基本信息共享规范”中的“投资项目统一代码规范”)。如果项目没有全国统一代码，填写地方项目编码。" placement="right-start">
+                  <i class="el-icon-question"></i>
+                </el-tooltip>
+                项目代码
+              </template>
+              <el-input v-model="projInfoForm.localCode" placeholder="请填写项目代码"></el-input>
+            </el-form-item>
+            <el-form-item class="wt448" label="项目地址：" prop="projAddr">
+              <el-input class="w-775" v-model="projInfoForm.projAddr" placeholder="请输入项目地址"></el-input>
+            </el-form-item>
+            <el-form-item class="wt448" label="项目重点级别：" prop="projLevel">
+              <el-select v-model="projInfoForm.projLevel">
+                <el-option v-for="item in proJAllOptions.XM_PROJECT_LEVEL" :key="item.id" :label="item.itemName"
+                  :value="item.itemCode">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item class="wt448" label="投资总金额（万元）：" prop="investSum">
+              <el-input v-model="projInfoForm.investSum" placeholder="请填写总投资金额"></el-input>
+            </el-form-item>
+            <el-form-item label="资金来源：" class="wt448" prop="financialSource">
+              <el-select v-model="projInfoForm.financialSource">
+                <el-option v-for="item in proJAllOptions.XM_ZJLY" :key="item.id" :label="item.itemName"
+                  :value="item.itemCode">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item class="wt448" label="总建筑面积（m&sup2;）：" prop="foreignBuildingArea">
+              <el-input v-model="projInfoForm.foreignBuildingArea" placeholder="请填写建筑面积"></el-input>
+            </el-form-item>
+            <el-form-item label="土地性质：" class="wt448" prop="landSource">
+              <el-select v-model="projInfoForm.landSource">
+                <el-option v-for="item in proJAllOptions.XM_TDLY" :key="item.id" :label="item.itemName"
+                  :value="item.itemCode">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item class="wt100 mt10" label="项目简介：" prop="scaleContent">
+              <el-input class="w-775" v-model="projInfoForm.scaleContent" type="textarea" placeholder="请输入项目简介">
+              </el-input>
+            </el-form-item>
+            <el-form-item class="wt100" label="项目当前进度：" prop="currentProgress">
+              <el-input class="w-775" v-model="projInfoForm.currentProgress" type="textarea" placeholder="请输入项目当前进度">
+              </el-input>
+            </el-form-item>
+          </el-collapse-item>
+          <!-- 项目基本信息 end -->
+
+          <!-- 代办信息 start -->
+          <el-collapse-item class="clearfix" name="3" id="commissionagentinfo">
+            <template slot="title">
+              <i class="header-icon el-icon-document-copy"></i>代办信息
+            </template>
+            <el-form-item label="协议编号：" class="wt448">
+              <el-input placeholder="请填写协议编号">
+              </el-input>
+            </el-form-item>
+            <el-form-item label="委托单位：" class="wt448">
+              <el-input placeholder="请填写委托单位">
+              </el-input>
+            </el-form-item>
+            <el-form-item label="委托代办项目名称：" class="wt448">
+              <el-input placeholder="请填写委托代办项目名称">
+              </el-input>
+            </el-form-item>
+            <el-form-item label="具体委托事项：" class="wt448">
+              <el-input placeholder="请填写具体委托事项">
+              </el-input>
+            </el-form-item>
+            <el-form-item label="申请人姓名：" class="wt448">
+              <el-input placeholder="请填写申请人姓名">
+              </el-input>
+            </el-form-item>
+            <el-form-item label="申请人联系方式：" class="wt448">
+              <el-input placeholder="请填写申请人联系方式">
+              </el-input>
+            </el-form-item>
+            <el-form-item label="代办人员姓名：" class="wt448">
+              <el-input placeholder="请填写代办人员姓名">
+              </el-input>
+            </el-form-item>
+            <el-form-item label="代办人员联系方式：" class="wt448">
+              <el-input placeholder="代办人员联系方式">
+              </el-input>
+            </el-form-item>
+            <div class="al-right mt10" style="padding-right: 40px;">
+              <el-button type="primary">保 存</el-button>
+            </div>
+          </el-collapse-item>
+          <!-- 代办信息 end -->
+        </el-collapse>
+      </el-form>
+    </div>
+  </div>
+</body>
+<script
+  src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+  th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+  th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+  th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="../../static/preview/pdfjs/build/pdf.js" th:src="@{/preview/pdfjs/build/pdf.js}"></script>
+<script
+  src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
+  th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+<script src="../../static/agency/js/agencyProjDetail.js" th:src="@{/agency/js/agencyProjDetail.js}"></script>
+
+</html>
