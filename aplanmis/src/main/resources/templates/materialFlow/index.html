@@ -1,0 +1,116 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>物流</title>
+  <link rel="stylesheet" href="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}" />
+  <link rel="stylesheet" href="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet" href="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/layout.css" th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
+  <link rel="stylesheet" href="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/blue/css/theme.css" th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
+  <link rel="stylesheet" href="../../static/materialFlow/css/index.css" th:href="@{/materialFlow/css/index.css}">
+  <script>
+    var ctx = '[[@{/}]]';
+      // var ctx = 'http://192.168.30.51:8083/aplanmis-front/';
+      //var ctx = 'http://192.168.30.18:8083/aplanmis-front/';
+      // var ctx = 'http://192.168.20.5:8083/aplanmis-front/';
+
+    </script>
+</head>
+
+<body>
+  <div id="app" v-cloak>
+    <!-- <div class='btns'>
+      <el-input placeholder="请输入关键字..." v-model="keyword" class="input-with-select" style='width:300px;margin-right:5px;'>
+      </el-input>
+      <el-button type="primary" size='medium' @click="showData">查询</el-button>
+      <el-button size='medium' @click="clearSearch">清空</el-button>
+    </div> -->
+    <el-table border class='el-table' :data="tableData" style="width: 100%">
+      <el-table-column type="expand">
+        <template slot-scope="props">
+          <p class='sub-title'>物流详情：</p>
+          <el-form label-position="left" class="demo-table-expand">
+            <el-form-item>
+              <span class="sende">寄件人信息</span>
+            </el-form-item>
+            <el-form-item label="寄件人">
+              <span>{{ props.row.sender_person_name }}</span>
+            </el-form-item>
+            <el-form-item label="联系电话">
+              <span>{{ props.row.sender_phone }}</span>
+            </el-form-item>
+            <el-form-item label="所在省份">
+              <span>{{ props.row.sender_province }}</span>
+            </el-form-item>
+            <el-form-item label="所在城市">
+              <span>{{ props.row.sender_city }}</span>
+            </el-form-item>
+            <el-form-item label="所在区县">
+              <span>{{ props.row.sender_county }}</span>
+            </el-form-item>
+            <el-form-item label="详细地址">
+              <span>{{ props.row.sender_detail_address }}</span>
+            </el-form-item>
+          </el-form>
+          <el-form label-position="left" class="demo-table-expand">
+            <el-form-item>
+              <span class="sende receive">收件人信息</span>
+            </el-form-item>
+            <el-form-item label="收件人">
+              <span>{{ props.row.receiver_person_name }}</span>
+            </el-form-item>
+            <el-form-item label="联系电话">
+              <span>{{ props.row.receiver_phone }}</span>
+            </el-form-item>
+            <el-form-item label="所在省份">
+              <span>{{ props.row.receiver_province }}</span>
+            </el-form-item>
+            <el-form-item label="所在城市">
+              <span>{{ props.row.receiver_city }}</span>
+            </el-form-item>
+            <el-form-item label="所在区县">
+              <span>{{ props.row.receiver_county }}</span>
+            </el-form-item>
+            <el-form-item label="详细地址">
+              <span>{{ props.row.receiver_detail_address }}</span>
+            </el-form-item>
+          </el-form>
+        </template>
+      </el-table-column>
+      <el-table-column type="index" width="55"></el-table-column>
+      <el-table-column prop="mail_num" label="邮件号"></el-table-column>
+      <el-table-column prop="status" label="订单状态">
+        <template slot-scope='scope'>
+          {{scope.row.status | status}}
+        </template>
+      </el-table-column>
+      <el-table-column prop="sender_person_name" label="寄件人"></el-table-column>
+      <el-table-column prop="receiver_person_name" label="收件人"></el-table-column>
+      <el-table-column prop="remarks" label="备注"></el-table-column>
+      <el-table-column label="操作" width='100'>
+        <template slot-scope='scope'>
+          <a href="javescript:void(0);" @click="showTrackInfoFun(scope.row);showTrackInfoDialogFlag=true;">跟踪物流</a>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-dialog title="物流跟踪详情" :visible.sync="showTrackInfoDialogFlag" width="730px">
+      <div style="height: 450px;overflow:auto;">
+        <el-steps direction="vertical" v-show='!noinfo'>
+          <el-step v-for="(step,index) in trackInfoList" :status="trackStatus(step)" :title="stepTitleFun(step)" :description="step.deal_record"></el-step>
+        </el-steps>
+        <p v-show='noinfo'>暂无物流信息！</p>
+      </div>
+    </el-dialog>
+    <!--  <el-pagination background align="right" :pager-count="5" @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 50]" :page-size="pageSize" :current-page="pageNum" layout="total, prev, pager, next,sizes" :total="total">
+        </el-pagination> -->
+  </div>
+  <script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+  <script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+  <script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+  <script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+  <script type="text/javascript" src="../../static/materialFlow/js/index.js" th:src="@{/materialFlow/js/index.js}"></script>
+</body>
+
+</html>

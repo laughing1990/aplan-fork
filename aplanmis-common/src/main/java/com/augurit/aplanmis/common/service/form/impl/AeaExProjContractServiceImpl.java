@@ -7,9 +7,11 @@ import com.augurit.agcloud.bpm.common.domain.vo.FormDataOptResult;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.domain.AeaApplyinstForminst;
 import com.augurit.aplanmis.common.domain.AeaExProjContract;
 import com.augurit.aplanmis.common.mapper.AeaExProjContractMapper;
 import com.augurit.aplanmis.common.service.form.AeaExProjContractService;
+import com.augurit.aplanmis.front.basis.stage.service.RestStageService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,8 @@ public class AeaExProjContractServiceImpl extends AbstractFormDataOptManager imp
 
     @Autowired
     private AeaExProjContractMapper aeaExProjContractMapper;
+    @Autowired
+    private RestStageService restStageService;
 
     public void saveAeaExProjContract(AeaExProjContract aeaExProjContract) throws Exception{
         aeaExProjContract.setCreater(SecurityContext.getCurrentUser().getUserName());
@@ -46,7 +50,16 @@ public class AeaExProjContractServiceImpl extends AbstractFormDataOptManager imp
         aeaExProjContract.setRootOrgId(SecurityContext.getCurrentOrgId());
         aeaExProjContractMapper.insertAeaExProjContract(aeaExProjContract);
         if (StringUtils.isBlank(aeaExProjContract.getFormId())) throw new Exception("缺少formId");
-        this.formSave(aeaExProjContract.getFormId(), aeaExProjContract.getContractId(), EDataOpt.INSERT.getOpareteType(), null);
+        FormDataOptResult formDataOptResult = this.formSave(aeaExProjContract.getFormId(), aeaExProjContract.getContractId(), EDataOpt.INSERT.getOpareteType(), null);
+
+        //关联表单实例和申请实例
+        AeaApplyinstForminst aeaApplyinstForminst = new AeaApplyinstForminst();
+        aeaApplyinstForminst.setApplyinstId(aeaExProjContract.getRefEntityId());
+        aeaApplyinstForminst.setForminstId(formDataOptResult.getActStoForminst().getStoForminstId());
+        aeaApplyinstForminst.setStoFormId(aeaExProjContract.getFormId());
+        aeaApplyinstForminst.setCreateTime(new Date());
+        aeaApplyinstForminst.setCreater(SecurityContext.getCurrentUserId());
+        restStageService.bindForminst(aeaApplyinstForminst);
     }
     public void updateAeaExProjContract(AeaExProjContract aeaExProjContract) throws Exception{
         aeaExProjContract.setModifier(SecurityContext.getCurrentUser().getUserName());

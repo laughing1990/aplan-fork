@@ -115,6 +115,7 @@ public class RestProjectService {
                     if (allUnitLinkman.size() > 0) {
                         AeaLinkmanInfo aeaLinkmanInfo = allUnitLinkman.get(0);
                         ProjectApplySubjectEnterpriseVo from = ProjectApplySubjectEnterpriseVo.from(aeaLinkmanInfo, unit, "0");
+                        from.setUnitType(unit.getUnitProjUnitType());
                         //20191018 查询联系人类型
                         List<AeaUnitProjLinkman> linkmanList = aeaUnitProjLinkmanMapper.queryByUnitProjIdAndlinkType(unit.getUnitProjId(), null, null);
                         from.changeListToVo(linkmanList, from);

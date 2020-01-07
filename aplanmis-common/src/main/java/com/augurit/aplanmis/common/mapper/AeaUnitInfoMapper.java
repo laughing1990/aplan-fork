@@ -53,9 +53,9 @@ public interface AeaUnitInfoMapper {
 
     AeaUnitInfo getParentUnit(@Param("unitInfoId") String unitInfoId);
 
-    AeaUnitInfo getAeaUnitInfoByLoginName(@Param("loginName") String loginName,@Param("rootOrgId") String rootOrgId);
+    AeaUnitInfo getAeaUnitInfoByLoginName(@Param("loginName") String loginName, @Param("rootOrgId") String rootOrgId);
 
-    List<AeaUnitInfo> findAeaUnitInfoByKeyword(@Param("keyword") String keyword,@Param("rootOrgId") String rootOrgId);
+    List<AeaUnitInfo> findAeaUnitInfoByKeyword(@Param("keyword") String keyword, @Param("rootOrgId") String rootOrgId);
 
     List<AeaUnitInfo> listAeaUnitInfoByLinkIdHasBind(String userId);
 
@@ -80,8 +80,9 @@ public interface AeaUnitInfoMapper {
 
     /**
      * 查询建设单位
+     *
      * @param projInfoId 项目ID
-     * @param unitType 单位类型
+     * @param unitType   单位类型
      * @return
      */
     List<AeaUnitInfo> getAeaUintListByProjInfoIdAndUnitYype(@Param("projInfoId") String projInfoId, @Param("unitType") String unitType);
@@ -104,4 +105,9 @@ public interface AeaUnitInfoMapper {
      * @return 单位信息
      */
     AeaUnitInfo getAeaUnitIncludeDeleteById(@Param("unitInfoId") String unitInfoId) throws Exception;
+
+    int batchDeleteAeaUnitInfo(@Param("ids") List<String> ids) throws Exception;
+
+    int batchInsertAeaUnitInfo(@Param("list") List<AeaUnitInfo> unitInfos) throws Exception;
+
 }

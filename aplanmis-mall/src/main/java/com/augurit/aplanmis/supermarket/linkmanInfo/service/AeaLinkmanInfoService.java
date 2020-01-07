@@ -41,4 +41,10 @@ public interface AeaLinkmanInfoService {
     public int updateAeaUnitLinkman(AeaUnitLinkman aeaUnitLinkman);
 
     public void deleteUnitLinkmanInfo(AeaUnitLinkman aeaUnitLinkman);
+
+    int batchDeleteAeaLinkmanInfo(List<String> ids) throws Exception;
+
+    int batchInsertAeaLinkmanInfo(List<AeaLinkmanInfo> linkmanInfos) throws Exception;
+
+    int batchInsertAeaUnintLinkman(List<AeaUnitLinkman> unitLinkmen) throws Exception;
 }

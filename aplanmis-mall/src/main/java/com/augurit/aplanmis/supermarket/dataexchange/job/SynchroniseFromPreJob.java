@@ -2,7 +2,9 @@ package com.augurit.aplanmis.supermarket.dataexchange.job;
 
 import com.augurit.agcloud.bsc.domain.BscJobTimer;
 import com.augurit.agcloud.bsc.mapper.BscJobTimerMapper;
+import com.augurit.agcloud.bsc.sc.job.timer.JobTimer;
 import com.augurit.aplanmis.supermarket.dataexchange.config.SynchroniseDataConfig;
+import com.augurit.aplanmis.supermarket.dataexchange.dataExchangeJobService.DataExchangeJobService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,12 +17,15 @@ import javax.annotation.PostConstruct;
  */
 @Component
 @Slf4j
-public class SynchroniseFromPreJob {
+public class SynchroniseFromPreJob extends JobTimer {
 
     @Autowired
     private BscJobTimerMapper bscJobTimerMapper;
     @Autowired
     private SynchroniseDataConfig synchroniseDataConfig;
+    @Autowired
+    private DataExchangeJobService dataExchangeJobService;
+
     private String timeCron;
 
     //初始化timer
@@ -28,7 +33,6 @@ public class SynchroniseFromPreJob {
     void init() throws Exception {
         boolean open = synchroniseDataConfig.isOpen();
         timeCron = synchroniseDataConfig.getTimeCorn();
-//        cityOrgId = synchroniseDataConfig.getCityOrgId();
         if (open) {
             BscJobTimer timer = bscJobTimerMapper.getBscJobTimerById("f1b15131-e3e2-4a17-ae7a-0449232d18b3");
             if (null == timer) {
@@ -51,28 +55,32 @@ public class SynchroniseFromPreJob {
     public void synchroniseDataFromPreJob() {
         boolean open = synchroniseDataConfig.isOpen();
         if (!open) return;
-
-
+        try {
+            dataExchangeJobService.synchroniseDataFromPreJob();
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info("synchronize data fail");
+        }
     }
 
 
     private BscJobTimer createBscJobTimer() {
         BscJobTimer timer = new BscJobTimer();
         timer.setTimerId("f1b15131-e3e2-4a17-ae7a-0449232d18b3");
-        timer.setTimerName("中介超市省厅从前置库同步地市数据");
+        timer.setTimerName("从前置库同步数据");
         timer.setTimerDesc("省统建中介超市统计定时器，每天凌晨3点开始统计");
-        timer.setTimerBeanId("provinceSynchroniseDataJobDataService");
-        timer.setTimerClass("ProvinceSynchroniseDataJobDataService");
-        timer.setTimerMethod("synchroniseDataJob");
+        timer.setTimerBeanId("synchroniseFromPreJob");
+        timer.setTimerClass("SynchroniseFromPreJob");
+        timer.setTimerMethod("synchroniseDataFromPreJob");
         if (StringUtils.isEmpty(timeCron)) {
-            timer.setTimerCron("0 0 1 * * ?");
+            timer.setTimerCron("0 */8 * * * ?");
         } else {
             timer.setTimerCron(timeCron);
         }
         timer.setRumLock("1");
         timer.setRunEndStatus("0");
         timer.setRunException("");
-        timer.setBussFlag("aplanmis-mall:supermarket");
+        timer.setBussFlag("aplanmis-mall");
         timer.setIsActive("1");
         return timer;
     }
@@ -80,13 +88,13 @@ public class SynchroniseFromPreJob {
     private BscJobTimer updateBscJobTimer(String isActive) {
         BscJobTimer timer = new BscJobTimer();
         timer.setTimerId("f1b15131-e3e2-4a17-ae7a-0449232d18b3");
-        timer.setTimerName("中介超市省厅从前置库同步地市数据");
+        timer.setTimerName("从前置库同步数据");
         timer.setTimerDesc("省统建中介超市统计定时器，每天凌晨3点开始统计");
-        timer.setTimerBeanId("provinceSynchroniseDataJobDataService");
-        timer.setTimerClass("ProvinceSynchroniseDataJobDataService");
-        timer.setTimerMethod("synchroniseDataJob");
+        timer.setTimerClass("SynchroniseFromPreJob");
+        timer.setTimerBeanId("synchroniseFromPreJob");
+        timer.setTimerMethod("synchroniseDataFromPreJob");
         if (StringUtils.isEmpty(timeCron)) {
-            timer.setTimerCron("0 0 1 * * ?");
+            timer.setTimerCron("0 */8 * * * ?");
         } else {
             timer.setTimerCron(timeCron);
         }

@@ -574,7 +574,7 @@ var vm = new Vue({
             var _this = this;
             _this.currentIteminstId = row.iteminstId;
 
-            _this.getCertListWin(_this.tabActive, _this.editCertFormType);
+
             request('', {
                 // url: ctx + 'rest/certificate/getCertInfoByIteminstId',getOutFileInfoByIteminstId
                 url: ctx + 'rest/certificate/getOutFileInfoByIteminstId',
@@ -586,7 +586,7 @@ var vm = new Vue({
                     _this.tabActive = result.content[0].id;
                     _this.editCertFormType = result.content[0].type;
                     _this.editCertForm = result.content[0].data;
-
+                    _this.getCertListWin(_this.tabActive, _this.editCertFormType);
                 }
 
             }, function (msg) {

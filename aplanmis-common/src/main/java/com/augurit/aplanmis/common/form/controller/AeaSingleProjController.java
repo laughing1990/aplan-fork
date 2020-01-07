@@ -109,9 +109,10 @@ public class AeaSingleProjController {
 
     @ApiOperation(value = "跳转前端单体工程信息页面")
     @RequestMapping("/childProject/index.html")
-    public ModelAndView childProjectIndex() {
+    public ModelAndView childProjectIndex(String refEntityId ) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("form/monomerProject");
+        modelAndView.addObject("refEntityId",refEntityId);
         return modelAndView;
     }
 }

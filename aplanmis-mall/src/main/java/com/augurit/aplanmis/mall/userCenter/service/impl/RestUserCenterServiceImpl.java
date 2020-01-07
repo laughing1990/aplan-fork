@@ -204,13 +204,27 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
     @Override
     public List<AeaUnitInfoVo> getUnitInfoListByLinkmanInfoId(String userId) {
         List<AeaUnitInfo> aeaUnitList=aeaUnitInfoService.getUnitInfoByLinkmanInfoId(userId);
-        return aeaUnitList.stream().map(AeaUnitInfoVo::build).collect(Collectors.toList());
+        List<AeaUnitInfoVo> list =  aeaUnitList.stream().map(AeaUnitInfoVo::build).collect(Collectors.toList());
+        if (isCheckAuthority){
+            list.stream().forEach(aeaUnitInfoVo->{
+                aeaUnitInfoVo.setIdno(DesensitizedUtil.desensitizedIdNumber(aeaUnitInfoVo.getIdno()));
+            });
+        }
+
+        return list;
     }
 
     @Override
     public List<AeaLinkmanInfoVo> findAllUnitLinkman(String unitInfoId) {
         List<AeaLinkmanInfo> linkmanInfoList=aeaLinkmanInfoService.findAllUnitLinkman(unitInfoId);
-        return linkmanInfoList.stream().map(AeaLinkmanInfoVo::build).collect(Collectors.toList());
+        List<AeaLinkmanInfoVo> list = linkmanInfoList.stream().map(AeaLinkmanInfoVo::build).collect(Collectors.toList());
+        if (isCheckAuthority){
+            list.stream().forEach(aeaLinkmanInfoVo->{
+                aeaLinkmanInfoVo.setLinkmanMobilePhone(DesensitizedUtil.desensitizedPhoneNumber(aeaLinkmanInfoVo.getLinkmanMobilePhone()));
+                aeaLinkmanInfoVo.setLinkmanCertNo(DesensitizedUtil.desensitizedIdNumber(aeaLinkmanInfoVo.getLinkmanCertNo()));
+            });
+        }
+        return list;
     }
 
     @Override

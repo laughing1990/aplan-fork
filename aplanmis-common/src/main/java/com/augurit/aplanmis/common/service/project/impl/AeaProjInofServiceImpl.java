@@ -25,6 +25,7 @@ import com.augurit.aplanmis.common.service.dic.GcbmBscRuleCodeStrategy;
 import com.augurit.aplanmis.common.service.dic.GdGcbmBscRuleCodeStrategy;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.theme.AeaParThemeService;
+import com.augurit.aplanmis.front.basis.stage.service.RestStageService;
 import com.augurit.aplanmis.common.service.window.AeaProjApplyAgentService;
 import com.augurit.aplanmis.common.service.window.AeaProjWindowService;
 import com.github.pagehelper.Page;
@@ -93,6 +94,9 @@ public class AeaProjInofServiceImpl extends AbstractFormDataOptManager implement
     private AeaProjWindowService aeaProjWindowService;
     @Autowired
     private AeaProjApplyAgentService aeaProjApplyAgentService;
+
+    @Autowired
+    private RestStageService restStageService;
 
     @Override
     public void insertAeaProjInfo(AeaProjInfo aeaProjInfo) {
@@ -789,7 +793,16 @@ public class AeaProjInofServiceImpl extends AbstractFormDataOptManager implement
                 aeaProjInfo.setProjectCreateDate(dateFormat.format(new Date()));
                 aeaProjInfoMapper.insertAeaProjInfo(aeaProjInfo);
                 if (StringUtils.isBlank(aeaProjInfo.getFormId())) throw new Exception("缺少formId");
-                this.formSave(aeaProjInfo.getFormId(), aeaProjInfo.getProjInfoId(), EDataOpt.INSERT.getOpareteType(), null);
+                FormDataOptResult formDataOptResult = this.formSave(aeaProjInfo.getFormId(), aeaProjInfo.getProjInfoId(), EDataOpt.INSERT.getOpareteType(), null);
+                //关联表单实例和申请实例
+                AeaApplyinstForminst aeaApplyinstForminst = new AeaApplyinstForminst();
+                aeaApplyinstForminst.setApplyinstId(aeaProjInfo.getRefEntityId());
+                aeaApplyinstForminst.setForminstId(formDataOptResult.getActStoForminst().getStoForminstId());
+                aeaApplyinstForminst.setStoFormId(aeaProjInfo.getFormId());
+                aeaApplyinstForminst.setCreateTime(new Date());
+                aeaApplyinstForminst.setCreater(SecurityContext.getCurrentUserId());
+                restStageService.bindForminst(aeaApplyinstForminst);
+
                 //增加父子项目关联
                 AeaParentProj aeaParentProj = new AeaParentProj();
                 aeaParentProj.setNodeProjId(UUID.randomUUID().toString());

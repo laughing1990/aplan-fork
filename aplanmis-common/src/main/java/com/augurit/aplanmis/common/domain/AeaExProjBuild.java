@@ -51,5 +51,6 @@ public class AeaExProjBuild implements Serializable {
 
     //扩展字段
     private String formId;
+    private String refEntityId;  //申请实例ID
 
 }

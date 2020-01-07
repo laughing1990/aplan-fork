@@ -307,21 +307,21 @@ public class RestCertificateController {
     @GetMapping("/cert/list")
     @ApiOperation(value = " 查询证照附件附件列表", notes = "{查询-事项实例-证照实例-附件列表}")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "instid", value = "实例id"),
+            @ApiImplicitParam(name = "instId", value = "实例id"),
             @ApiImplicitParam(name = "type", value = "实例类型【cert输出证照，mat输出材料】")
     })
 
-    public ResultForm certFileListByItemisntId(String instid,String type){
-        if (StringUtils.isBlank(instid)) {
+    public ResultForm certFileListByItemisntId(String instId,String type){
+        if (StringUtils.isBlank(instId)) {
             return new ContentResultForm<>(true, new ArrayList<>(), "empty certinstId");
         }
         try {
 
             List<BscAttFileAndDir> result = new ArrayList<>();
             if("cert".equals(type)){
-                result.addAll(fileUtilsService.getBscAttFileAndDirListByinstId(instid, "CERTINST_ID", "AEA_HI_CERTINST"));
+                result.addAll(fileUtilsService.getBscAttFileAndDirListByinstId(instId, "CERTINST_ID", "AEA_HI_CERTINST"));
             }else{
-                result.addAll(fileUtilsService.getBscAttFileAndDirListByinstId(instid, "MATINST_ID", "AEA_HI_ITEM_MATINST"));
+                result.addAll(fileUtilsService.getBscAttFileAndDirListByinstId(instId, "MATINST_ID", "AEA_HI_ITEM_MATINST"));
             }
             return new ContentResultForm<>(true, result, "Query attachment list success");
         } catch (Exception e) {

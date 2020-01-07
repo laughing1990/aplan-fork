@@ -17,7 +17,8 @@
     SERVICE_SEQ  serviceSeq,
     IMG_URL imgUrl,
     PURCHASE_IMG_URL  purchaseImgUrl,
-    ROOT_ORG_ID rootOrgId
+    ROOT_ORG_ID rootOrgId,
+    IS_EXTERNAL isExternal
     </sql>
 
     <sql id="allColumnsAlias">
@@ -33,7 +34,8 @@
         ${alias}.SERVICE_SEQ  serviceSeq,
         ${alias}.IMG_URL imgUrl,
         ${alias}.PURCHASE_IMG_URL  purchaseImgUrl,
-        ${alias}.ROOT_ORG_ID  rootOrgId
+        ${alias}.ROOT_ORG_ID  rootOrgId,
+        ${alias}.IS_EXTERNAL isExternal
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
@@ -89,6 +91,9 @@
             <if test="rootOrgId != null">
                 AND ROOT_ORG_ID = #{rootOrgId}
             </if>
+            <if test="isExternal != null">
+                AND IS_EXTERNAL = #{isExternal}
+            </if>
             AND IS_DELETE = '0'
         </where>
         ORDER BY CREATE_TIME DESC
@@ -107,9 +112,9 @@
     <!--5 新增实体对象 -->
     <insert id="insertAeaImService" parameterType="AeaImService">
     insert into AEA_IM_SERVICE (
-SERVICE_ID  ,SERVICE_CODE  ,SERVICE_NAME  ,IS_DELETE  ,IS_ACTIVE  ,CREATER  ,CREATE_TIME  ,MEMO  ,PARENT_ID  ,SERVICE_SEQ,IMG_URL,  PURCHASE_IMG_URL,ROOT_ORG_ID
+SERVICE_ID  ,SERVICE_CODE  ,SERVICE_NAME  ,IS_DELETE  ,IS_ACTIVE  ,CREATER  ,CREATE_TIME  ,MEMO  ,PARENT_ID  ,SERVICE_SEQ,IMG_URL,  PURCHASE_IMG_URL,ROOT_ORG_ID,IS_EXTERNAL
     )  values  (
-#{serviceId},#{serviceCode},#{serviceName},#{isDelete},#{isActive},#{creater},#{createTime},#{memo},#{parentId},  #{serviceSeq},#{imgUrl},#{purchaseImgUrl},#{rootOrgId}
+#{serviceId},#{serviceCode},#{serviceName},#{isDelete},#{isActive},#{creater},#{createTime},#{memo},#{parentId},  #{serviceSeq},#{imgUrl},#{purchaseImgUrl},#{rootOrgId},#{isExternal}
     )
 </insert>
     <!--6 修改实体对象 -->
@@ -155,12 +160,29 @@ SERVICE_ID  ,SERVICE_CODE  ,SERVICE_NAME  ,IS_DELETE  ,IS_ACTIVE  ,CREATER  ,CRE
             <if test="rootOrgId != null">
                 ROOT_ORG_ID = #{rootOrgId},
             </if>
+            <if test="isExternal != null">
+                IS_EXTERNAL = #{isExternal}
+            </if>
         </set>
         where SERVICE_ID = #{serviceId}
     </update>
     <!--7 逻辑删除实体对象,根据主键ID -->
     <update id="deleteAeaImService">
         UPDATE AEA_IM_SERVICE  SET IS_DELETE = '1' WHERE SERVICE_ID = #{id}
+    </update>
+
+    <update id="batchDeleteAeaImService">
+        UPDATE AEA_IM_SERVICE SET IS_DELETE = '1'
+        <where>
+            IS_EXTERNAL = '1'
+            and IS_DELETE = '0'
+            <if test="ids !=null and ids.size()>0">
+                and SERVICE_ID in
+                <foreach collection="ids" index="index" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
     </update>
 
     <update id="deleteAeaImServiceQual">
@@ -171,6 +193,23 @@ SERVICE_ID  ,SERVICE_CODE  ,SERVICE_NAME  ,IS_DELETE  ,IS_ACTIVE  ,CREATER  ,CRE
         update AEA_IM_SERVICE set IS_ACTIVE = case IS_ACTIVE when '0' then '1' else '0' end
         where SERVICE_ID = #{id}
     </update>
+
+    <update id="batchInsertAeaImService" parameterType="java.util.List">
+        insert into AEA_IM_SERVICE (
+        SERVICE_ID ,SERVICE_CODE ,SERVICE_NAME ,IS_DELETE ,IS_ACTIVE ,CREATER ,CREATE_TIME ,MEMO ,PARENT_ID
+        ,SERVICE_SEQ,IMG_URL, PURCHASE_IMG_URL,ROOT_ORG_ID,IS_EXTERNAL
+        ) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.serviceId},#{item.serviceCode},#{item.serviceName},#{item.isDelete},#{item.isActive},#{item.creater},#{item.createTime},#{item.memo},#{item.parentId},
+            #{item.serviceSeq},#{item.imgUrl},#{item.purchaseImgUrl},#{item.rootOrgId},#{item.isExternal}
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        SERVICE_ID =VALUES(SERVICE_ID) ,SERVICE_CODE =VALUES(SERVICE_CODE) ,SERVICE_NAME =VALUES(SERVICE_NAME) ,IS_DELETE =VALUES(IS_DELETE) ,IS_ACTIVE =VALUES(IS_ACTIVE) ,CREATER =VALUES(CREATER) ,CREATE_TIME =VALUES(CREATE_TIME) ,MEMO =VALUES(MEMO) ,PARENT_ID
+        =VALUES(PARENT_ID) ,SERVICE_SEQ=VALUES(SERVICE_SEQ) ,IMG_URL=VALUES(IMG_URL) , PURCHASE_IMG_URL=VALUES(PURCHASE_IMG_URL) ,ROOT_ORG_ID=VALUES(ROOT_ORG_ID) ,IS_EXTERNAL =VALUES(IS_EXTERNAL)
+    </update>
+
     <!--8 删除实体对象列表,根据主键ID列表 -->
     <!--9 返回所有字段的对象map,用于级联 -->
     <resultMap type="AeaImService" id="AeaImServiceMap">
@@ -186,6 +225,7 @@ SERVICE_ID  ,SERVICE_CODE  ,SERVICE_NAME  ,IS_DELETE  ,IS_ACTIVE  ,CREATER  ,CRE
         <result property="serviceSeq" column="SERVICE_SEQ"/>
         <result property="imgUrl" column="IMG_URL"/>
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
+        <result property="isExternal" column="IS_EXTERNAL"/>
     </resultMap>
 
 
@@ -242,10 +282,10 @@ SERVICE_ID  ,SERVICE_CODE  ,SERVICE_NAME  ,IS_DELETE  ,IS_ACTIVE  ,CREATER  ,CRE
         and ais.IS_DELETE = '0'
     </select>
 
-    <select id="getAeaImServiceAllList" resultType="AeaImService" >
+    <select id="getAeaImServiceAllList" resultType="AeaImService">
         select
         <include refid="allColumns"/>
-        from  AEA_IM_SERVICE
+        from AEA_IM_SERVICE
     </select>
 
 

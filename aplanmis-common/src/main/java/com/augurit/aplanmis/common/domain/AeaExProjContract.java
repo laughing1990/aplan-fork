@@ -34,17 +34,28 @@ private static final long serialVersionUID = 1L;
         //扩展字段
         private String formId;
 
-    public String getContractNum() {
-        return contractNum;
-    }
+    private String refEntityId;  //申请实例ID
+
+
+    private String contractNum;//'省级合同编号(广东三库一平台返回)',
+// ----------------------------------------------------- Constructors
+// ----------------------------------------------------- Methods
+public String getContractNum() {
+    return contractNum;
+}
 
     public void setContractNum(String contractNum) {
         this.contractNum = contractNum;
     }
 
-    private String contractNum;//'省级合同编号(广东三库一平台返回)',
-// ----------------------------------------------------- Constructors
-// ----------------------------------------------------- Methods
+    public String getRefEntityId() {
+        return refEntityId;
+    }
+
+    public void setRefEntityId(String refEntityId) {
+        this.refEntityId = refEntityId;
+    }
+
     public java.lang.String getContractId(){
         return contractId;
     }

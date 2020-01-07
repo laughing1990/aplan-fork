@@ -53,7 +53,7 @@ public class ApplyDetailVo {
     @ApiModelProperty("是否启动情形 0否 1是")
     private String isNeedState;
     @ApiModelProperty("联系人列表")
-    private List<AeaLinkmanInfo> aeaLinkmanInfoList;
+    private List<AeaLinkmanInfoVo> aeaLinkmanInfoList;
 
     @ApiModelProperty("并行申报详情列表")
     private List<ParallelApplyItemStateDetailVo> parallelApplyItemStateDetailVoList;

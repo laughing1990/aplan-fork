@@ -14,7 +14,8 @@ import org.springframework.stereotype.Component;
 public class SynchroniseDataConfig {
     @ApiModelProperty(value = "是否从前置库同步数据，true 是，false 否")
     private boolean open;
-
+    @ApiModelProperty(value = "是否首次上传，true 是，false 否")
+    private boolean first;
     @ApiModelProperty(value = "当前城市在省厅注册的rootOrgId")
     private String provinceCityCode;
 

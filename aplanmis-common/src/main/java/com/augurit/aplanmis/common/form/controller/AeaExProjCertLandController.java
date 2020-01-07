@@ -40,10 +40,11 @@ public class AeaExProjCertLandController {
 
 
     @RequestMapping("/index.html")
-    public ModelAndView indexAeaExProjCertLand(String projInfoId,String formId) {
+    public ModelAndView indexAeaExProjCertLand(String projInfoId,String formId,String refEntityId) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("projInfoId", projInfoId);
         modelAndView.addObject("formId", formId);
+        modelAndView.addObject("refEntityId",refEntityId);
         modelAndView.setViewName("form/cardBookForm");
         return modelAndView;
     }

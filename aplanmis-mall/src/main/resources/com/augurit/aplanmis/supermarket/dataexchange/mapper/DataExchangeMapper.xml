@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by zhangwn    2019-09-03 10:55:42 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.supermarket.dataexchange.mapper.DataExchangeMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="linkmanColumns">
+    LINKMAN_INFO_ID  linkmanInfoId,
+    LINKMAN_TYPE  linkmanType,
+    LINKMAN_CATE  linkmanCate,
+    LINKMAN_NAME  linkmanName,
+    LINKMAN_ADDR  linkmanAddr,
+    LINKMAN_OFFICE_PHON  linkmanOfficePhon,
+    LINKMAN_MOBILE_PHONE  linkmanMobilePhone,
+    LINKMAN_FAX  linkmanFax,
+    LINKMAN_MAIL  linkmanMail,
+    LINKMAN_CERT_NO  linkmanCertNo,
+    IS_ACTIVE  isActive,
+    IS_DELETED  isDeleted,
+    LINKMAN_MEMO  linkmanMemo,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    LOGIN_NAME  loginName,
+    LOGIN_PWD  loginPwd,
+    IMG_URL  imgUrl,
+    ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <sql id="imServiceColumns">
+    SERVICE_ID  serviceId,
+    SERVICE_CODE  serviceCode,
+    SERVICE_NAME  serviceName,
+    IS_DELETE  isDelete,
+    IS_ACTIVE  isActive,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MEMO  memo,
+    PARENT_ID  parentId,
+    SERVICE_SEQ  serviceSeq,
+    IMG_URL imgUrl,
+    PURCHASE_IMG_URL  purchaseImgUrl,
+    ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <sql id="unitInfoColumns">
+        UNIT_INFO_ID  unitInfoId,
+        APPLICANT  applicant,
+        IDTYPE  idtype,
+        IDCARD  idcard,
+        indu_comm_reg_num induCommRegNum,
+        organizational_code organizationalCode,
+        UNIFIED_SOCIAL_CREDIT_CODE unifiedSocialCreditCode,
+        TAXPAYER_NUM taxpayerNum,
+        CREDIT_FLAG_NUM creditFlagNum,
+        CONTACT  contact,
+        MOBILE  mobile,
+        EMAIL  email,
+        APPLICANT_DISTRICT  applicantDistrict,
+        APPLICANT_DETAIL_SITE  applicantDetailSite,
+        IDREPRESENTATIVE  idrepresentative,
+        IDMOBILE  idmobile,
+        IDNO  idno,
+        IS_DELETED  isDeleted,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        IS_PRIMARY_UNIT  isPrimaryUnit,
+        PARENT_ID  parentId,
+        UNIT_INFO_SEQ  unitInfoSeq,
+        LOGIN_NAME  loginName,
+        UNIT_TYPE  unitType,
+        LOGIN_PWD  loginPwd,
+        MANAGEMENT_SCOPE  managementScope,
+        REGISTERED_CAPITAL  registeredCapital,
+        REGISTER_AUTHORITY  registerAuthority,
+        UNIT_NATURE  unitNature,
+        POSTAL_CODE  postalCode,
+        IS_IM_UNIT  isImUnit,
+        IMG_URL  imgUrl,
+        IS_OWNER_UNIT  isOwnerUnit,
+        ROOT_ORG_ID rootOrgId,
+        IS_GD isGd,
+        AUDIT_FLAG auditFlag
+    </sql>
+
+    <sql id="unitLinkmanColumns">
+    UNIT_LINKMAN_ID  unitLinkmanId,
+    UNIT_INFO_ID  unitInfoId,
+    LINKMAN_INFO_ID  linkmanInfoId,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    IS_BIND_ACCOUNT  isBindAccount,
+    IS_ADMINISTRATORS  isAdministrators
+    </sql>
+
+    <delete id="batchDeleteAeaImService">
+        delete from aea_im_service
+    </delete>
+
+    <delete id="batchDeleteAeaUnitLinkman">
+        delete from aea_unit_linkman
+    </delete>
+
+    <delete id="batchDeleteAeaUnitInfo">
+        delete from aea_unit_info
+    </delete>
+
+    <delete id="batchDaleteAeaLinkmanInfo">
+        delete from aea_linkman_info
+    </delete>
+
+    <insert id="batchInsertAeaUnitInfo" parameterType="java.util.List">
+        insert into AEA_UNIT_INFO (UNIT_INFO_ID, APPLICANT, IDTYPE, IDCARD, indu_comm_reg_num, organizational_code,
+        unified_social_credit_code,TAXPAYER_NUM,CREDIT_FLAG_NUM, CONTACT, MOBILE, EMAIL, APPLICANT_DISTRICT,
+        APPLICANT_DETAIL_SITE, IDREPRESENTATIVE, IDMOBILE, IDNO, IS_DELETED, CREATER,
+        CREATE_TIME, MODIFIER, MODIFY_TIME, IS_PRIMARY_UNIT, PARENT_ID, UNIT_INFO_SEQ,
+        LOGIN_NAME, UNIT_TYPE, LOGIN_PWD, MANAGEMENT_SCOPE, REGISTERED_CAPITAL,
+        REGISTER_AUTHORITY, UNIT_NATURE, POSTAL_CODE, IS_IM_UNIT, IMG_URL, IS_OWNER_UNIT,ROOT_ORG_ID,IS_GD,AUDIT_FLAG)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.unitInfoId}, #{item.applicant}, #{item.idtype}, #{item.idcard}, #{item.induCommRegNum} ,
+            #{item.organizationalCode} , #{item.unifiedSocialCreditCode} ,#{item.taxpayerNum},#{item.creditFlagNum},
+            #{item.contact}, #{item.mobile}, #{item.email},
+            #{item.applicantDistrict}, #{item.applicantDetailSite}, #{item.idrepresentative}, #{item.idmobile},
+            #{item.idno}, #{item.isDeleted},
+            #{item.creater}, #{item.createTime}, #{item.modifier}, #{item.modifyTime}, #{item.isPrimaryUnit},
+            #{item.parentId}, #{item.unitInfoSeq},
+            #{item.loginName}, #{item.unitType}, #{item.loginPwd}, #{item.managementScope}, #{item.registeredCapital},
+            #{item.registerAuthority},
+            #{item.unitNature}, #{item.postalCode}, #{item.isImUnit}, #{item.imgUrl},
+            #{item.isOwnerUnit},#{item.rootOrgId},#{item.isGd},#{item.auditFlag})
+        </foreach>
+    </insert>
+
+    <update id="batchInsertAeaLinkmanInfo" parameterType="java.util.List">
+        insert into AEA_LINKMAN_INFO (LINKMAN_INFO_ID, LINKMAN_TYPE, LINKMAN_CATE, LINKMAN_NAME, LINKMAN_ADDR,
+        LINKMAN_OFFICE_PHON, LINKMAN_MOBILE_PHONE, LINKMAN_FAX, LINKMAN_MAIL,
+        LINKMAN_CERT_NO, IS_ACTIVE, IS_DELETED, LINKMAN_MEMO, CREATER, CREATE_TIME,
+        MODIFIER, MODIFY_TIME, LOGIN_NAME, LOGIN_PWD, IMG_URL,ROOT_ORG_ID)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.linkmanInfoId}, #{item.linkmanType}, #{item.linkmanCate}, #{item.linkmanName}, #{item.linkmanAddr},
+            #{item.linkmanOfficePhon},
+            #{item.linkmanMobilePhone}, #{item.linkmanFax}, #{item.linkmanMail}, #{item.linkmanCertNo},
+            #{item.isActive}, #{item.isDeleted},
+            #{item.linkmanMemo}, #{item.creater}, #{item.createTime}, #{item.modifier}, #{item.modifyTime},
+            #{item.loginName}, #{item.loginPwd},
+            #{item.imgUrl},#{item.rootOrgId})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        LINKMAN_INFO_ID =VALUES(LINKMAN_INFO_ID) , LINKMAN_TYPE =VALUES(LINKMAN_TYPE) , LINKMAN_CATE =VALUES(LINKMAN_CATE) , LINKMAN_NAME =VALUES(LINKMAN_NAME) , LINKMAN_ADDR =VALUES(LINKMAN_ADDR) ,
+        LINKMAN_OFFICE_PHON =VALUES(LINKMAN_OFFICE_PHON) , LINKMAN_MOBILE_PHONE =VALUES(LINKMAN_MOBILE_PHONE) , LINKMAN_FAX =VALUES(LINKMAN_FAX) , LINKMAN_MAIL =VALUES(LINKMAN_MAIL) ,
+        LINKMAN_CERT_NO =VALUES(LINKMAN_CERT_NO) , IS_ACTIVE =VALUES(IS_ACTIVE) , IS_DELETED =VALUES(IS_DELETED) , LINKMAN_MEMO =VALUES(LINKMAN_MEMO) , CREATER =VALUES(CREATER) , CREATE_TIME =VALUES(CREATE_TIME) ,
+        MODIFIER =VALUES(MODIFIER) , MODIFY_TIME =VALUES(MODIFY_TIME) , LOGIN_NAME =VALUES(LOGIN_NAME) , LOGIN_PWD =VALUES(LOGIN_PWD) , IMG_URL =VALUES(IMG_URL) ,ROOT_ORG_ID =VALUES(ROOT_ORG_ID)
+    </update>
+
+    <!--插入单位联系人关联表-->
+    <update id="batchInsertAeaUnitLinkman" parameterType="java.util.List">
+        insert into AEA_UNIT_LINKMAN(
+        UNIT_LINKMAN_ID,UNIT_INFO_ID,LINKMAN_INFO_ID,CREATER,CREATE_TIME,IS_BIND_ACCOUNT,IS_ADMINISTRATORS
+        ) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.unitLinkmanId},#{item.unitInfoId},#{item.linkmanInfoId},#{item.creater},#{item.createTime},#{item.isBindAccount},#{item.isAdministrators}
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        UNIT_LINKMAN_ID =VALUES(UNIT_LINKMAN_ID) ,UNIT_INFO_ID =VALUES(UNIT_INFO_ID) ,LINKMAN_INFO_ID =VALUES(LINKMAN_INFO_ID) ,CREATER =VALUES(CREATER) ,CREATE_TIME =VALUES(CREATE_TIME) ,IS_BIND_ACCOUNT =VALUES(IS_BIND_ACCOUNT) ,IS_ADMINISTRATORS =VALUES(IS_ADMINISTRATORS)
+    </update>
+
+    <!--5 新增实体对象 -->
+    <insert id="batchInsertAeaImService" parameterType="java.util.List">
+        insert into AEA_IM_SERVICE (
+        SERVICE_ID ,SERVICE_CODE ,SERVICE_NAME ,IS_DELETE ,IS_ACTIVE ,CREATER ,CREATE_TIME ,MEMO ,PARENT_ID
+        ,SERVICE_SEQ,IMG_URL, PURCHASE_IMG_URL,ROOT_ORG_ID
+        ) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.serviceId},#{item.serviceCode},#{item.serviceName},#{item.isDelete},#{item.isActive},#{item.creater},#{item.createTime},#{item.memo},#{item.parentId},
+            #{item.serviceSeq},#{item.imgUrl},#{item.purchaseImgUrl},#{item.rootOrgId}
+            )
+        </foreach>
+    </insert>
+
+    <select id="getAllLinkmanInfos" resultType="AeaLinkmanInfo">
+        select
+        <include refid="linkmanColumns"/>,'1' AS isExternal
+        from AEA_LINKMAN_INFO
+    </select>
+
+    <select id="getAllImServices" resultType="AeaImService">
+        select
+        <include refid="imServiceColumns"/>,'1' AS isExternal
+        from AEA_IM_SERVICE
+    </select>
+
+    <select id="getAllImUnitInfos" resultType="AeaUnitInfo">
+        select
+        <include refid="unitInfoColumns"/>,'1' AS isExternal
+        from AEA_UNIT_INFO
+    </select>
+
+    <select id="getAllUnitLinkmanData" resultType="AeaUnitLinkman">
+        select
+        <include refid="unitLinkmanColumns"/>
+        from AEA_UNIT_LINKMAN
+    </select>
+
+</mapper>

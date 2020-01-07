@@ -314,27 +314,27 @@ var vm = new Vue({
                 // ]
             },
             rulesJianliFrom: {
-                organizationalCode: [
-                    { validator: checkJigoudaima, trigger: ['blur'] },
-                    { required: true, message: '请输入组织机构代码!', trigger: ['change'] },
-                ],
-                unifiedSocialCreditCode: [
-                    { validator: checkOrg, trigger: ['blur'] },
-                    { required: true, message: '请输入统一社会信用代码!', trigger: ['change'] },
-                ],
-                applicant: [
-                    { required: true, message: '请输入单位名称!', trigger: ['change'] },
-                ],
-                isGd: [
-                    { required: true, message: '请选择是否省内企业!', trigger: ['change'] },
-                ],
-                linkmanInfoId: [
-                    { required: true, message: '请输入项目总监姓名!', trigger: ['change'] },
-                ],
-                linkmanCertNo: [
-                    { validator: idCard, trigger: ['blur'] },
-                    { required: true, message: '请输入项目总监身份证号码!', trigger: ['change'] },
-                ]
+                // organizationalCode: [
+                //     { validator: checkJigoudaima, trigger: ['blur'] },
+                //     { required: true, message: '请输入组织机构代码!', trigger: ['change'] },
+                // ],
+                // unifiedSocialCreditCode: [
+                //     { validator: checkOrg, trigger: ['blur'] },
+                //     { required: true, message: '请输入统一社会信用代码!', trigger: ['change'] },
+                // ],
+                // applicant: [
+                //     { required: true, message: '请输入单位名称!', trigger: ['change'] },
+                // ],
+                // isGd: [
+                //     { required: true, message: '请选择是否省内企业!', trigger: ['change'] },
+                // ],
+                // linkmanInfoId: [
+                //     { required: true, message: '请输入项目总监姓名!', trigger: ['change'] },
+                // ],
+                // linkmanCertNo: [
+                //     { validator: idCard, trigger: ['blur'] },
+                //     { required: true, message: '请输入项目总监身份证号码!', trigger: ['change'] },
+                // ]
             },
             loadingUnitLinkMan: false,
             unitInfoShowFrom: {
@@ -453,6 +453,7 @@ var vm = new Vue({
             var _that = this;
             _that.unitInfoShowFrom.projInfoId = _that.getUrlParam('projInfoId');
             _that.unitInfoShowFrom.formId = _that.getUrlParam('formId');
+            _that.unitInfoShowFrom.refEntityId = _that.getUrlParam('refEntityId');
             this.applyJianliFrom.unitType = _that.C_PRJ_ENT_TYPE.gongchengjianli;
             this.applyJianliFrom.linkmanType = _that.C_PRJ_PERSON_POST.gongchengjianli;
         },

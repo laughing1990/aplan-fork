@@ -13,6 +13,7 @@ import com.augurit.aplanmis.common.constants.GDUnitType;
 import com.augurit.aplanmis.common.constants.UnitProjLinkmanType;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.front.basis.stage.service.RestStageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,16 +38,29 @@ public class RestExSJUnitFormService extends AbstractFormDataOptManager {
     @Autowired
     private AeaImQualLevelMapper aeaImQualLevelMapper;
 
+    @Autowired
+    private RestStageService restStageService;
+
     public void saveOrUpdateSJUnitInfo(AeaExProjBuild aeaExProjBuild) throws Exception {
         if (aeaExProjBuild != null){
-            if(aeaExProjBuild.getBuildId()==null || aeaExProjBuild.getBuildId() ==""){
+            if(aeaExProjBuild.getBuildId()==null || "".equals(aeaExProjBuild.getBuildId())){
                 aeaExProjBuild.setBuildId(UuidUtil.generateUuid());
                 aeaExProjBuild.setCreateTime(new Date());
                 aeaExProjBuild.setRootOrgId(SecurityContext.getCurrentOrgId());
                 aeaExProjBuildMapper.insertAeaExProjBuild(aeaExProjBuild);
 
                 if (StringUtils.isBlank(aeaExProjBuild.getFormId())) throw new Exception("缺少formId");
-                this.formSave(aeaExProjBuild.getFormId(), aeaExProjBuild.getBuildId(), EDataOpt.INSERT.getOpareteType(), null);
+                FormDataOptResult formDataOptResult = this.formSave(aeaExProjBuild.getFormId(), aeaExProjBuild.getBuildId(), EDataOpt.INSERT.getOpareteType(), null);
+
+                //关联表单实例和申请实例
+                AeaApplyinstForminst aeaApplyinstForminst = new AeaApplyinstForminst();
+                aeaApplyinstForminst.setApplyinstId(aeaExProjBuild.getRefEntityId());
+                aeaApplyinstForminst.setForminstId(formDataOptResult.getActStoForminst().getStoForminstId());
+                aeaApplyinstForminst.setStoFormId(aeaExProjBuild.getFormId());
+                aeaApplyinstForminst.setCreateTime(new Date());
+                aeaApplyinstForminst.setCreater(SecurityContext.getCurrentUserId());
+                restStageService.bindForminst(aeaApplyinstForminst);
+
             }else {
                 aeaExProjBuildMapper.updateAeaExProjBuild(aeaExProjBuild);
             }
@@ -80,7 +94,7 @@ public class RestExSJUnitFormService extends AbstractFormDataOptManager {
                 AeaHiCertinst aeaHiCertinst = new AeaHiCertinst();
                 aeaHiCertinst.setCertinstId(exProjBuildUnitInfo.getCertinstId());
                 aeaHiCertinst.setCertinstCode(exProjBuildUnitInfo.getCertinstCode());
-                if(aeaHiCertinst.getCertinstId()!=null&&aeaHiCertinst.getCertinstId()!=""){
+                if(aeaHiCertinst.getCertinstId()!=null&&aeaHiCertinst.getCertinstId().equals("")){
                     aeaHiCertinstMapper.updateAeaHiCertinst(aeaHiCertinst);
                 }else {
                     if(exProjBuildUnitInfo.getCertinstCode()!=null){

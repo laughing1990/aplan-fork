@@ -19,9 +19,10 @@ public class AeaExProjCertBuildController {
     private AeaExProjCertBuildService aeaExProjCertBuildService;
 
     @RequestMapping("/index.html")
-    public ModelAndView index(){
+    public ModelAndView index(String refEntityId){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("form/certBuild");
+        modelAndView.addObject("refEntityId",refEntityId);
         return modelAndView;
     }
 

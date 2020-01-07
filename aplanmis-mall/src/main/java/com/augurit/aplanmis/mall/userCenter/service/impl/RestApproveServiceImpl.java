@@ -27,12 +27,14 @@ import com.augurit.aplanmis.common.service.search.ApproveDataService;
 import com.augurit.aplanmis.common.service.stage.AeaParStageService;
 import com.augurit.aplanmis.common.service.theme.AeaParThemeService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
+import com.augurit.aplanmis.common.utils.DesensitizedUtil;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.common.vo.MatCorrectConfirmVo;
 import com.augurit.aplanmis.mall.userCenter.constant.LoginUserRoleEnum;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyService;
 import com.augurit.aplanmis.mall.userCenter.service.RestApproveService;
+import com.augurit.aplanmis.mall.userCenter.service.RestUserCenterService;
 import com.augurit.aplanmis.mall.userCenter.vo.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -109,6 +111,8 @@ public class RestApproveServiceImpl implements RestApproveService {
     private AeaHiIteminstMapper aeaHiIteminstMapper;
     @Autowired
     RestCorrectAndSuppleServiceImpl restCorrectAndSuppleServiceImpl;
+    @Autowired
+    private RestUserCenterService restUserCenterService;
     @Value("${mall.check.authority:false}")
     private boolean isCheckAuthority;
     @Override
@@ -307,7 +311,12 @@ public class RestApproveServiceImpl implements RestApproveService {
         }
         //办件结果取件方式
         AeaHiSmsInfo aeaHiSmsInfo = aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(applyinstId);
-        applyDetailVo.setAeaHiSmsInfo(aeaHiSmsInfo==null?new AeaHiSmsInfo():aeaHiSmsInfo);
+        if (aeaHiSmsInfo==null) aeaHiSmsInfo = new AeaHiSmsInfo();
+        if (isCheckAuthority){
+            aeaHiSmsInfo.setAddresseePhone(DesensitizedUtil.desensitizedPhoneNumber(aeaHiSmsInfo.getAddresseePhone()));
+            aeaHiSmsInfo.setAddresseeIdcard(DesensitizedUtil.desensitizedIdNumber(aeaHiSmsInfo.getAddresseeIdcard()));
+        }
+        applyDetailVo.setAeaHiSmsInfo(aeaHiSmsInfo);
 
         //申报主体
 
@@ -330,15 +339,19 @@ public class RestApproveServiceImpl implements RestApproveService {
                 if (unitInfoList.size()>0){
                     aeaUnitInfo = unitInfoList.get(0);
                     String unitInfoId = aeaUnitInfo.getUnitInfoId();
-                    applyDetailVo.setAeaLinkmanInfoList(aeaLinkmanInfoService.findAllUnitLinkman(unitInfoId));
+                    applyDetailVo.setAeaLinkmanInfoList(restUserCenterService.findAllUnitLinkman(unitInfoId));
                 }else {
-                    List<AeaLinkmanInfo> aeaLinkmanInfoList = new ArrayList<>();
+                    List<AeaLinkmanInfoVo> aeaLinkmanInfoList = new ArrayList<>();
                     aeaUnitInfo = new AeaUnitInfo();
                     applyDetailVo.setAeaLinkmanInfoList(aeaLinkmanInfoList);
                 }
                 applyDetailVo.setAeaUnitInfo(aeaUnitInfo);
             }
             AeaLinkmanInfo aeaLinkmanInfo = aeaLinkmanInfoService.getAeaLinkmanInfoByLinkmanInfoId(applyinst.getLinkmanInfoId());
+            if (isCheckAuthority){
+                aeaLinkmanInfo.setLinkmanMobilePhone(DesensitizedUtil.desensitizedPhoneNumber(aeaLinkmanInfo.getLinkmanMobilePhone()));
+                aeaLinkmanInfo.setLinkmanCertNo(DesensitizedUtil.desensitizedIdNumber(aeaLinkmanInfo.getLinkmanCertNo()));
+            }
             applyDetailVo.setAeaLinkmanInfo(aeaLinkmanInfo==null?new AeaLinkmanInfo():aeaLinkmanInfo);
             applyDetailVo.setApplyinstCode(applyinst.getApplyinstCode());
         }else{
