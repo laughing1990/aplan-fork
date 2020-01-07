@@ -1,6 +1,6 @@
 <div class="wt-tab" id="guideListVue" v-cloak v-loading.fullscreen.lock="mloading" style="position: relative;">
   <div>
-    <p class="p-header">部门辅导</p>
+    <p class="p-header">部门确认</p>
     <div class="wt-tab-content">
       <div class="wt-tab-item" >
         <div class="search-input">
@@ -19,13 +19,21 @@
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column label="项目/工程代码" prop="gcbm" width="220px"></el-table-column>
-          <el-table-column label="申报主题" prop="themeName" min-width="280px"></el-table-column>
-          <el-table-column label="申报阶段" prop="stageName" width="160px"></el-table-column>
+          <el-table-column label="当前阶段" prop="stageName" width="160px"></el-table-column>
+          <el-table-column label="创建时间" width="220px">
+            <template slot-scope="scope">
+              <span>{{$options.filters.formatDate(scope.row.guideStartTime)}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="状态" min-width="280px">
+            <template slot-scope="scope">
+              <span class="guide-state" :class="(scope.row.applyState=='1')?'guiding':'guided'">{{(scope.row.applyState=='1')?'待部门确认':'待申请人确认'}}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="操作" width="100" align="center">
             <template slot-scope="scope">
               <span class="option-btn">
-                <a :href="ctx + 'rest/main/toIndexPage?projInfoId='+scope.row.projInfoId+'&applyinstId='+scope.row.applyinstId+'#declare'">继续申报</a>
+                <a :href="ctx + 'rest/main/toIndexPage?projInfoId='+scope.row.projInfoId+'&applyinstId='+scope.row.applyinstId+'#declare'">进入查看</a>
               </span>
             </template>
           </el-table-column>
@@ -51,5 +59,16 @@
     font-size: 14px;
     font-weight: 400;
     color: rgba(127,133,144,1);
+  }
+  .guide-state {
+    position: relative;
+  }
+  .guide-state:before {
+    content: '';
+    position: absolute;
+    background: #4293F4;
+  }
+  .guide-state.guiding:before {
+    background: #F59A23;
   }
 </style>
