@@ -59,7 +59,8 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
     private AeaHiItemInoutService aeaHiItemInoutService;
 
     @Override
-    public ItemListVo listItemAndStateByStageId(String stageId, String projInfoId, String regionalism, String projectAddress,String isSelectState,String isFilterStateItem) throws Exception {
+    public ItemListVo listItemAndStateByStageId(String stageId, String projInfoId, String regionalism, String projectAddress,String isSelectItemState,String isFilterStateItem,String rootOrgId) throws Exception {
+        if(StringUtils.isBlank(rootOrgId)) rootOrgId=SecurityContext.getCurrentOrgId();
         ItemListVo vo = new ItemListVo();
         AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageId);
 
@@ -69,14 +70,14 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
         List<ParallelApproveItemVo> paraItemList = this.getRequiredItems(stageId, projInfoId, regionalism, projectAddress,isFilterStateItem);
         //并行
         List<ParallelApproveItemVo> coreItemList = this.getOptionalItems(stageId, projInfoId, regionalism, projectAddress,isFilterStateItem);
-        if("1".equals(isSelectState)){
+        if("1".equals(isSelectItemState)){
             for (ParallelApproveItemVo item:coreItemList){
                 if ("1".equals(item.getIsCatalog())) {//标准事项
                     List<AeaItemBasic> carryOutItems = item.getCarryOutItems();//实施事项列表
                     AeaItemBasic currentCarryOutItem = item.getCurrentCarryOutItem();//默认实施事项
                     if (carryOutItems.size() > 0) {
                         for (AeaItemBasic basic : carryOutItems) {
-                            List<AeaItemState> coreStateList = aeaItemStateService.listAeaItemStateByParentId(basic.getItemVerId(), "", "ROOT", SecurityContext.getCurrentOrgId());
+                            List<AeaItemState> coreStateList = aeaItemStateService.listAeaItemStateByParentId(basic.getItemVerId(), "", "ROOT", rootOrgId);
                             basic.setCoreStateList(coreStateList.size() > 0 ? coreStateList : new ArrayList<>());
                             if (basic.getItemVerId().equals(currentCarryOutItem.getItemVerId())) {
                                 currentCarryOutItem.setCoreStateList(coreStateList);
@@ -84,7 +85,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
                         }
                     }
                 } else {
-                    item.setCoreStateList(aeaItemStateService.listAeaItemStateByParentId(item.getItemVerId(), "", "ROOT", SecurityContext.getCurrentOrgId()));
+                    item.setCoreStateList(aeaItemStateService.listAeaItemStateByParentId(item.getItemVerId(), "", "ROOT", rootOrgId));
                 }
                 if (item.getCarryOutItems()==null||item.getCarryOutItems().size()==0){
                     item.setCarryOutItems(new ArrayList<>());
@@ -93,7 +94,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
             }
             //getIsNeedState 为1时为分情形
             if ("1".equals(aeaParStage.getIsNeedState())){
-                stateList= aeaParStateMapper.listParStateByParentStateId(stageId, "ROOT", SecurityContext.getCurrentOrgId());
+                stateList= aeaParStateMapper.listParStateByParentStateId(stageId, "ROOT", rootOrgId);
                 //stateList = aeaParStateService.listRootAeaParStateByStageId(stageId, SecurityContext.getCurrentOrgId());
             }
             //hand_way为0时，需展示并联事项情形
@@ -104,7 +105,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
                         AeaItemBasic currentCarryOutItem = item.getCurrentCarryOutItem();//默认实施事项
                         if (carryOutItems.size() > 0) {
                             for (AeaItemBasic basic : carryOutItems) {
-                                List<AeaItemState> paraStateList = aeaItemStateService.listAeaItemStateByParentId(basic.getItemVerId(), "", "ROOT", SecurityContext.getCurrentOrgId());
+                                List<AeaItemState> paraStateList = aeaItemStateService.listAeaItemStateByParentId(basic.getItemVerId(), "", "ROOT", rootOrgId);
                                 basic.setCoreStateList(paraStateList.size() > 0 ? paraStateList : new ArrayList<>());
                                 if (basic.getItemVerId().equals(currentCarryOutItem.getItemVerId())) {
                                     currentCarryOutItem.setParaStateList(paraStateList);
@@ -112,7 +113,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
                             }
                         }
                     } else {
-                        item.setParaStateList(aeaItemStateService.listAeaItemStateByParentId(item.getItemVerId(), "", "ROOT", SecurityContext.getCurrentOrgId()));
+                        item.setParaStateList(aeaItemStateService.listAeaItemStateByParentId(item.getItemVerId(), "", "ROOT", rootOrgId));
                     }
                     if (item.getCarryOutItems()==null||item.getCarryOutItems().size()==0){
                         item.setCarryOutItems(new ArrayList<>());

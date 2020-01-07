@@ -3252,7 +3252,7 @@ var vm = new Vue({
                 _that.parallelItemsSelAll(_that.parallelItems, 'autoGetSel');
                 _that.toggleSelection(_that.parallelItems, 'parallelItemsTable');
               }
-              _that.getAllForms();
+              _that.getAllForms(_that.stageId);
             }
             _that.setItemShowLen(); // 事项展示长度
           });
@@ -5551,7 +5551,7 @@ var vm = new Vue({
           return item != row.itemBasicId;
         });
       }
-      _that.getAllForms();
+      _that.getAllForms(_that.stageId);
     },
     // 并行并联事项 根据情形获取子情形 材料
     getStatusMatItemsByStatus: function (row, flag) { // flag='coreItem'并行事项
@@ -5793,7 +5793,7 @@ var vm = new Vue({
           }
         }
       });
-      _that.getAllForms();
+      _that.getAllForms(_that.stageId);
     },
     // 并联事项单选事件
     parallelItemsSelItem: function (selArr, row, selflag) { // selflag 调用方式 autoGetSel手动触发
@@ -5947,7 +5947,7 @@ var vm = new Vue({
       // if(_that.stageQuestionFlag == false) {
       //   _that.getOfficeMats(_that.itemVerIdsString);
       // }
-      _that.getAllForms();
+      _that.getAllForms(_that.stageId);
     },
     // 并联事项不包含情形时勾选并联事项获取的材料
     getOfficeMats: function (_itemVerIdS) { // rest/mats/getOfficeMats
@@ -6174,7 +6174,7 @@ var vm = new Vue({
       // if(_that.stageQuestionFlag == false) {
       //   _that.getOfficeMats(_that.itemVerIdsString);
       // }
-      _that.getAllForms();
+      _that.getAllForms(_that.stageId);
     },
     // 获取并行情形列表id
     getCoreItemsStatusListId: function (cStateList) {
