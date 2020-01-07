@@ -80,7 +80,7 @@ public class RestMainServiceImpl implements RestMainService {
         for (BscDicCodeItem themeType:themeTypes){
             ThemeTypeVo vo=new ThemeTypeVo();
             List<AeaParTheme> newList=new ArrayList<>();
-            List<AeaParTheme> themeList = aeaParThemeMapper.getAeaParThemeListByThemeType(themeType.getItemCode(), rootOrgId);
+            List<AeaParTheme> themeList = aeaParThemeMapper.getTestRunOrPublishedVerAeaParTheme(themeType.getItemCode(), rootOrgId);
             for (AeaParTheme theme:themeList){
                 if (theme.getThemeType().equals(themeType.getItemCode()) && "1".equals(theme.getIsOnlineSb())) {
                     theme.setThemeMemo(StringUtils.isNotBlank(theme.getThemeMemo())?theme.getThemeMemo().replaceAll("\r\n","<br>"):"");
