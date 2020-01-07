@@ -943,4 +943,10 @@ public class AplanmisPageIndexController {
         return modelAndView;
     }
 
+    @GetMapping("/dept/guide.html")
+    @ApiOperation("菜单-部门辅导")
+    public ModelAndView deptGuide() {
+        return new ModelAndView("view/departGuideIndex");
+    }
+
 }
