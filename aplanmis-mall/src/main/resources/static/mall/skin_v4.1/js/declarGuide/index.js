@@ -16,7 +16,7 @@ var app = new Vue({
       tabIndex: 1
     }, {
       name: '操作指引',
-      thUrl: 'rest/main/gj',
+      thUrl: 'rest/main/toOperationalGuidelinesPage',
       tabIndex: 2
     }],
     
