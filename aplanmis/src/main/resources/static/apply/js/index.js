@@ -683,6 +683,7 @@ var vm = new Vue({
       },
       isGuidePage: false,
       // 部门辅导 end--------------------------
+      showOneFormList: false,
     }
   },
   created: function () {
@@ -4774,6 +4775,7 @@ var vm = new Vue({
       });
       if (!(selItemVerFlag && selCoreItemsFlag)) {
         alertMsg('', flagMeg, '关闭', 'error', true);
+        _that.oneFormDialogVisible = false;
         return false;
       }
       if (propulsionBranchOrgMap.length > 0) {

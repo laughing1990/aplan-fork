@@ -2185,19 +2185,28 @@ textarea {
   float: left;
   width: 240px;
   height: 60px;
-  border: 1px solid #FFB822;
+  border: 1px solid #DCDFE6;
   border-radius: 4px;
   color: #575962;
   font-size: 14px;
   margin: 0 24px 24px 0;
   position: relative;
-  padding: 12px 8px 0 30px;
+  padding: 12px 8px 0 57px;
   cursor: pointer;
+}
+
+.form-ubr-icon{
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  width: 24px;
+  height: 20px;
+  background: url(../imgs/f_state1.png);
 }
 
 .one-form-title {
   margin-bottom: 3px;
-  width: 198px;
+  width: 172px;
   height: 14px;
   line-height: 14px;
   overflow: hidden;
@@ -2208,7 +2217,7 @@ textarea {
 
 .goto-fill-form {
   cursor: pointer;
-  color: #FFB822;
+  color: #169AFF;
 }
 
 .goto-fill-form:hover {
@@ -2216,21 +2225,51 @@ textarea {
 }
 
 .of-state-icon {
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  font-size: 16px;
-  top: 5px;
-  left: 8px;
-  color: #FFB822;
+  font-size: 24px;
+  color: #fff;
 }
 
-.is-fill.one-form-unit {
+.form-ul-icon{
+  position: absolute;
+  width: 38px;
+  height: 38px;
+  border-radius: 6px;
+  top: 10px;
+  left: 10px;
+  text-align: center;
+  line-height: 38px;
+  background: #DCDFE6;
+}
+
+.one-form-unit:hover .form-ul-icon{
+  background: #169AFF;
+}
+
+.one-form-unit:hover{
+  border:1px solid #169AFF;
+}
+
+.one-form-unit:hover .form-ubr-icon{
+  background: url(../imgs/f_state3.png);
+}
+
+.is-fill.one-form-unit,
+.is-fill.one-form-unit:hover{
   border: 1px solid #00C161;
 }
 
+.is-fill.one-form-unit:hover .form-ul-icon,
+.is-fill.one-form-unit .form-ul-icon{
+  background: #00C161;
+}
+
+.is-fill.one-form-unit .form-ubr-icon,
+.is-fill.one-form-unit:hover .form-ubr-icon{
+  background: url(../imgs/f_state2.png);
+}
+
 .is-fill .of-state-icon {
-  color: #00C161;
+  color: #fff;
 }
 
 .of-fill-time {
@@ -2245,6 +2284,7 @@ textarea {
   line-height: 20px;
   position: relative;
   margin-bottom: 18px;
+  cursor: pointer;
 }
 
 .of-u-b-text {
@@ -2471,7 +2511,19 @@ textarea {
   cursor: default;
 }
 /*部门辅导end*/
-
+.toggle-form-icon{
+  width: 36px;
+  height: 36px;
+  border-radius: 100%;
+  border: 1px solid #169AFF;
+  line-height: 34px;
+  text-align: center;
+  position: absolute;
+  right: 0;
+  top: 28px;
+  color: #169AFF;
+  cursor: pointer;
+}
 
 
 
