@@ -3082,13 +3082,13 @@ var vm = new Vue({
           });
         } else {
           _that.$message({
-            message: '获取情形材料失败',
+            message: data.message?data.message:'获取阶段下情形事项材料失败',
             type: 'error'
           });
         }
       }, function (msg) {
         _that.$message({
-          message: '获取情形材料失败',
+          message: msg.message?msg.message:'获取阶段下情形事项材料失败',
           type: 'error'
         });
       });
@@ -6470,13 +6470,13 @@ var vm = new Vue({
           _that.ifMatsSelAll();
         } else {
           _that.$message({
-            message: data.message ? data.message : '获取情形材料失败',
+            message: data.message ? data.message : '获取事项下情形材料失败',
             type: 'error'
           });
         }
       }, function (msg) {
         _that.$message({
-          message: msg.message ? msg.message : '获取情形材料失败',
+          message: msg.message ? msg.message : '获取事项下情形材料失败',
           type: 'error'
         });
       });

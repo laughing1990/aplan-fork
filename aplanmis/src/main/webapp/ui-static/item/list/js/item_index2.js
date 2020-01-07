@@ -300,7 +300,7 @@ function itemOperatorFormatter(value, row, index) {
 
 	// var addChildBtn='';
 	// if(row.itemNature!='8'){
-		var addChildBtn = '<a href="javascript:addItemBasicChildById(\'' + row.itemId + '\',\'' + row.itemName + '\',\'' + row.isCatalog + '\',\'' + row.itemBasicId + '\',)" ' +
+		var addChildBtn = '<a href="javascript:addItemBasicChildById(\'' + row.itemId + '\',\'' + row.itemName + '\',\'' + row.isCatalog + '\',\'' + row.itemBasicId + '\')" ' +
 								'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill"' +
 								'title="添加子事项"><i class="la la-plus"></i>' +
 			              '</a>';
