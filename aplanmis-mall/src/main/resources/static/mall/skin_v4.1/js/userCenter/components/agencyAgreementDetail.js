@@ -162,13 +162,11 @@ var module = new Vue({
     // 待签章时-提交代办协议
     submitAgentAgreement: function () {
       var ts = this,
-        _url = ctx + 'rest/user/apply/agent/submitAgentAgreement/' + ts.curProj.applyAgentId
-      //   debugger
-      // return
+        _url = ctx + 'rest/user/apply/agent/submitAgentAgreement/' + ts.curProj.applyAgentId;
       ts.dloading = true;
       request('', {
         url: _url,
-        type: 'get',
+        type: 'post',
       }, function (res) {
         ts.dloading = false;
         if (res.success) {
