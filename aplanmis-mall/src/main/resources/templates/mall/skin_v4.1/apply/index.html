@@ -90,7 +90,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="立项类型" class="wt588" prop="projType">
-              <el-select class="w-410" v-model="projInfoDetail.projType" :disabled="isAble">
+              <el-select class="w-410" v-model="projInfoDetail.projType">
                 <el-option v-for="item in projTypeList" :key="item.id" :label="item.itemName"
                            :value="item.itemCode">
                 </el-option>
@@ -866,7 +866,7 @@
       <h4 class="mt40" v-if="stageList.length>0" @click="showStageList = !showStageList">选择阶段<i class="fr" :class="showStageList?'el-icon-arrow-down':'el-icon-arrow-right'"></i></h4>
       <div class="stage-row clearfix" v-if="stageList.length>0&&showStageList">
         <div class="icon-box"
-             :class="statusActiveIndex==index?'active':''"
+             :class="stageId==item.stageId?'active':''"
              @click="selStatus(item,index,'isClick')"
              :key="index"
              v-for="(item,index) in stageList">
@@ -1226,9 +1226,7 @@
                          align="center"
                          width="160">
           <template slot-scope="scope">
-            <template slot-scope="scope">
-              <span>{{scope.row.applySelOpinion?scope.row.applySelOpinion:'暂无'}}</span>
-            </template>
+            <span>{{scope.row.applySelOpinion?scope.row.applySelOpinion:'暂无'}}</span>
           </template>
         </el-table-column>
       </el-table>

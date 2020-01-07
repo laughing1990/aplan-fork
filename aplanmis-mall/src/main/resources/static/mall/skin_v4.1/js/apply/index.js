@@ -249,7 +249,7 @@ var parallelDeclare = new Vue({
           { required: true, message: '请输入项目代码', trigger: 'blur' },
         ],
         gcbm: [
-          { required: true, message: '请输入工程代码', trigger: 'blur' },
+          { required: true, message: '请输入工程代码', trigger: ['blur','change'] },
         ],
         regionalism: [
           { required: true, message: '请选择行政区划', trigger: 'change' },
@@ -432,6 +432,8 @@ var parallelDeclare = new Vue({
         ]
       },
       dybzspjdxh: '',
+      itCoreItemList: [], // 智能引导选中并行事项
+      itParallelItemList: [], // 智能引导选中并联事项
     }
   },
   mounted: function () {
@@ -565,6 +567,12 @@ var parallelDeclare = new Vue({
     getItemListByGuide: function () {
       debugger;
       var _that = this;
+      for (var i = 0; i < _that.stateList.length; i++) {  // 并联情形id集合
+        if (_that.stateList[i].mustAnswer == 1 && (_that.stateList[i].selectAnswerId == null || _that.stateList[i].selectAnswerId == '')) {
+          alertMsg('', '请选择情形', '关闭', 'error', true);
+          return true;
+        }
+      }
       var _selStateIds = _that.getCoreItemsStatusListId(_that.stateList);
       var params = {
         "projectAddress": _that.projInfoDetail.projectAddress.join(','),
@@ -580,6 +588,10 @@ var parallelDeclare = new Vue({
       }, function (res) {
         if (res.success) {
           console.log(res);
+          _that.declareStep = 3;
+          _that.itCoreItemList = res.content.coreItemList;
+          _that.itParallelItemList = res.content.parallelItemList;
+          _that.getStatusStateMats(_that.stageId);
         }else {
           _that.$message({
             message: res.message?res.message:'获取事项一单清失败！',
@@ -2181,30 +2193,6 @@ var parallelDeclare = new Vue({
       }, function (res) {
         if (res.success) {
           _that.loading = false;
-          // _that.stateList = res.content.stateList;
-          // _that.stateList.map(function (item, ind) { // 情形下插入对应的情形
-          //   if (item.answerType != 's' && item.answerType != 'y') {
-          //     Vue.set(item, 'selValue', []);
-          //     item.selectAnswerId = item.selValue;
-          //   }
-          //   if(_that.draftsProj==true&&draftsProjFlag=='isHistory'&&_that.stateListHistory.length>0){
-          //     _that.stateListHistory.map(function(itemHistory){
-          //       if(itemHistory.questionId==item.parStateId){
-          //         var itemAns = {
-          //           parStateId: itemHistory.answerId,
-          //           parentStateId: itemHistory.questionId
-          //         }
-          //         if (item.answerType != 's' && item.answerType != 'y') {
-          //           item.selectAnswerId.push(itemHistory.answerId);
-          //           _that.getStatusStateBystatus(item,itemAns,ind,true);
-          //         }else {
-          //           item.selectAnswerId = itemHistory.answerId;
-          //           _that.getStatusStateBystatus(item,itemAns,ind);
-          //         }
-          //       }
-          //     })
-          //   }
-          // });
           _that.parallelItems = res.content.parallelItemList;
           _that.coreItems = res.content.coreItemList;
           _that.coreItems.map(function (item) {
@@ -2228,6 +2216,13 @@ var parallelDeclare = new Vue({
               if(item.notRegionData){
                 item.selRequired = true;
                 item.isApplySel = false;
+              }
+              if(_that.needIntelligence==true&&_that.itCoreItemList&&_that.itCoreItemList.length>0){
+                _that.itCoreItemList.map(function (itItem) {
+                  if(item.itemId == itItem.itemId){
+                    item.isITSel = true;
+                  }
+                });
               }
             }
           });
@@ -2253,38 +2248,13 @@ var parallelDeclare = new Vue({
                 item.selRequired = true;
                 item.isApplySel = false;
               }
-            }
-          });
-          if(_that.draftsProj==true&&draftsProjFlag=='isHistory') {
-            var draftsItems = [], draftsCoreItems = [];
-            _that.parallelItems.map(function (item) {
-              _that.aeaHiIteminstList.map(function (itemHistory) {
-                if (itemHistory.itemVerId == item.itemVerId) {
-                  draftsItems.push(item);
-                }
-              });
-            });
-            _that.coreItems.map(function (item) {
-              _that.applyCoreItemStateVoList.map(function (itemHistory) {
-                if (itemHistory.itemVerId == item.itemVerId) {
-                  draftsCoreItems.push(item);
-                }
-              });
-            });
-          }
-          _that.$nextTick(function () {
-            if (_that.draftsProj == true && draftsProjFlag == 'isHistory') {
-              if (draftsItems && draftsItems.length > 0) {
-                _that.toggleSelection(draftsItems, 'parallelItemsTable');
-                _that.parallelItemsSelAll(draftsItems, 'autoGetSel');
+              if(_that.needIntelligence==true&&_that.itParallelItemList&&_that.itParallelItemList.length>0){
+                _that.itParallelItemList.map(function (itItem) {
+                  if(item.itemId == itItem.itemId){
+                    item.isITSel = true;
+                  }
+                });
               }
-              if (draftsCoreItems && draftsCoreItems.length > 0) {
-                _that.toggleSelection(draftsCoreItems, 'coreItemsTable');
-                _that.coreItemsSelAll(draftsCoreItems);
-              }
-            } else {
-              _that.toggleSelection(_that.parallelItems, 'parallelItemsTable');
-              _that.parallelItemsSelAll(_that.parallelItems, 'autoGetSel');
             }
           });
         } else {
@@ -3030,7 +3000,7 @@ var parallelDeclare = new Vue({
         selCoreItems = _that.$refs.coreItemsTable.selection; // 所有选择的并行审批事项
       }
       if (_that.parallelItems.length > 0) {
-        selItemVer = _that.$refs.parallelItemsTable.selection; // 所有选择的并行审批事项
+        selItemVer = _that.$refs.parallelItemsTable.selection; // 所有选择的并联审批事项
       }
       // 并联itemVerids集合
       selItemVer.map(function (item) {
