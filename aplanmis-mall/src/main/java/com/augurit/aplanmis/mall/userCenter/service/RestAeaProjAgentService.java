@@ -153,16 +153,15 @@ public class RestAeaProjAgentService {
             if(aeaUnitProjLinkmans.size()>0){
                 List<AeaUnitProjLinkman> list = aeaUnitProjLinkmans.stream().filter(v -> ("1".equals(v.getLinkmanType()) || "0".equals(v.getLinkmanType()))).collect(Collectors.toList());
                 if(list.size()>0){
-                    for (AeaUnitProjLinkman aeaUnitProjLinkman:list){
-                        AeaLinkmanInfo linkman = aeaLinkmanInfoService.getOneById(aeaUnitProjLinkman.getLinkmanInfoId());
-                        if("1".equals(aeaUnitProjLinkman.getLinkmanType())){
-                            aeaUnitProjLinkmanVo.setLeaderName(linkman.getLinkmanName());
-                            aeaUnitProjLinkmanVo.setLeaderMobilePhone(linkman.getLinkmanMobilePhone());
-                            aeaUnitProjLinkmanVo.setLeaderDuty("负责人");
-                        }else if("0".equals(aeaUnitProjLinkman.getLinkmanType())){
+                    for (AeaUnitProjLinkman linkman:list){
+                       if("0".equals(linkman.getLinkmanType())){
                             aeaUnitProjLinkmanVo.setOperatorName(linkman.getLinkmanName());
                             aeaUnitProjLinkmanVo.setOperatorMobilePhone(linkman.getLinkmanMobilePhone());
-                            aeaUnitProjLinkmanVo.setOperatorDuty("经办人");
+                            aeaUnitProjLinkmanVo.setOperatorDuty(linkman.getLinkmanDuty());
+                        } else if("1".equals(linkman.getLinkmanType())){
+                            aeaUnitProjLinkmanVo.setLeaderName(linkman.getLinkmanName());
+                            aeaUnitProjLinkmanVo.setLeaderMobilePhone(linkman.getLinkmanMobilePhone());
+                            aeaUnitProjLinkmanVo.setLeaderDuty(linkman.getLinkmanDuty());
                         }
                     }
                 }

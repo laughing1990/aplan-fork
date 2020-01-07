@@ -5,6 +5,7 @@ import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaProjApplyAgent;
+import com.augurit.aplanmis.common.domain.AeaServiceWindowUser;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.receive.utils.ReceivePDFTemplate;
 import com.augurit.aplanmis.common.service.window.AeaProjApplyAgentService;
@@ -38,6 +39,21 @@ private static Logger logger = LoggerFactory.getLogger(AeaProjApplyAgentControll
     @Autowired
     private FileUtilsService fileUtilsService;
 
+    /**
+     * 保存或编辑项目代办申请
+     * @param aeaProjApplyAgent 项目代办申请
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/saveAeaProjApplyAgent")
+    public ResultForm saveAeaProjApplyAgent(AeaProjApplyAgent aeaProjApplyAgent) throws Exception {
+        if(StringUtils.isNotBlank(aeaProjApplyAgent.getApplyAgentId())){
+            aeaProjApplyAgentService.updateAeaProjApplyAgent(aeaProjApplyAgent);
+        }else {
+            aeaProjApplyAgentService.saveAeaProjApplyAgent(aeaProjApplyAgent);
+        }
+        return  new ContentResultForm(true,aeaProjApplyAgent);
+    }
 
     @GetMapping("/getAgencyDetail")
     @ApiOperation(value = "项目代办 --> 代办详情", notes = "项目代办 --> 代办详情", httpMethod = "GET")
@@ -60,6 +76,22 @@ private static Logger logger = LoggerFactory.getLogger(AeaProjApplyAgentControll
         }catch (Exception e){
             logger.error(e.getMessage(), e);
             return new ContentResultForm<>(false, null, e.getMessage());
+        }
+    }
+
+    @GetMapping("/checkAgreementCodeUnique")
+    @ApiOperation(value = "检查协议编号是否唯一，true表示可用，false表示已被使用", notes = "检查协议编号是否唯一，true表示可用，false表示已被使用", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "agreementCode",value = "协议编号",required = true,dataType = "String")
+    })
+    public ResultForm checkAgreementCodeUnique(String agreementCode){
+        logger.debug("检查协议编号是否唯一，查询关键字为{}", agreementCode);
+        try {
+            boolean unique = aeaProjApplyAgentService.checkAgreementCodeUnique(agreementCode);
+            return new ResultForm(unique,"查询成功。");
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+            return new ResultForm(false, e.getMessage());
         }
     }
 
@@ -93,5 +125,19 @@ private static Logger logger = LoggerFactory.getLogger(AeaProjApplyAgentControll
             logger.error(e.getMessage(), e);
         }
     }
+
+    @GetMapping("/getCurrAgencyWinUserList")
+    @ApiOperation(value = "获取当前登录用户所在代办中心的代办人员", notes = "获取当前登录用户所在代办中心的代办人员", httpMethod = "GET")
+    public ResultForm getCurrAgencyWinUserList(){
+        logger.debug("获取当前登录用户所在代办中心的代办人员");
+        try {
+            List<AeaServiceWindowUser> userList = aeaProjApplyAgentService.getCurrAgencyWinUserList();
+            return new ContentResultForm<>(true,userList,"查询成功。");
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+            return new ResultForm(false, e.getMessage());
+        }
+    }
+
 
 }

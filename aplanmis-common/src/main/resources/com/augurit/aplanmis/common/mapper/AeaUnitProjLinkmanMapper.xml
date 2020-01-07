@@ -282,7 +282,8 @@
         <include refid="allColumns">
             <property name="alias" value="aupl"/>
         </include>
-        ,ali.LINKMAN_NAME linkmanName
+        ,ali.LINKMAN_NAME linkmanName,
+        ali.LINKMAN_MOBILE_PHONE linkmanMobilePhone
         from AEA_UNIT_PROJ_LINKMAN aupl
         left join AEA_LINKMAN_INFO ali on aupl.LINKMAN_INFO_ID=ali.LINKMAN_INFO_ID
         <where>

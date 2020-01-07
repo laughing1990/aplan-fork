@@ -42,6 +42,7 @@ public class AeaUnitProjLinkman {
     //拓展字段
     private String linkmanName;//联系人名字
     private String linkmanCertNo;//联系人证件号
+    private String linkmanMobilePhone;//联系人手机号
     public AeaUnitProjLinkman() {
 
     }

@@ -25,4 +25,6 @@ public interface AeaProjApplyAgentMapper {
 
     public AeaProjApplyAgent getAgencyAgreementDetail(@Param("applyAgentId") String applyAgentId);
 
+    public AeaProjApplyAgent getAeaProjApplyAgentByAgreementCode(@Param("agreementCode") String agreementCode);
+
 }

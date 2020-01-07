@@ -75,4 +75,12 @@ public interface AeaServiceWindowUserMapper {
     List<AeaServiceWindowUser> queryAeaServiceWindowUser(@Param("userId")String userId);
 
     AeaServiceWindowUser getAeaServiceWindowUserByWindowIdAndUserId(@Param("windowId") String windowId, @Param("userId") String userId);
+
+    /**
+     * 查询代办中心的代办人员
+     * @param windowIds
+     * @param rootOrgId
+     * @return
+     */
+    List<AeaServiceWindowUser> listAeaServiceWindowUserByWindowIdsAndRootOrgId(@Param("windowIds") String[] windowIds,@Param("rootOrgId") String rootOrgId);
 }
