@@ -149,13 +149,18 @@ var guideIndex = (function () {
             getThemeList: function () {
                 var vm = this;
                 vm.themeLoading = true;
-                vm.fullscreenLoading = true;
+                var loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(255, 255, 255, 0.8)',
+                });
                 request('', {
                     url: ctx + 'rest/main/theme/list',
                     type: 'get'
                 }, function (res) {
-                    vm.themeLoading = false;
-                    vm.fullscreenLoading = false;
+                  vm.themeLoading = false;
+                    loading.close();
                     if (res.success) {
                         var content = res.content;
                         vm.themeListData = content;
@@ -184,8 +189,8 @@ var guideIndex = (function () {
                             }
                         },200);
                     } else {
-                        vm.themeLoading = false;
-                        vm.fullscreenLoading =false;
+                       vm.themeLoading = false;
+                        loading.close();
                         vm.$message.error(res.message);
                     }
                     if (!vm.sessionStorage.origin && vm.themeListData.length > 0) {
@@ -267,16 +272,21 @@ var guideIndex = (function () {
                     url: ctx + 'rest/guide/detailed/'+ itemVerId,
                     type: 'get',
                 }, function (res) {
-                    vm.singleLoading = false;
                     if (res.success) {
+                        vm.singleLoading = false;
                         var content = res.content;
                         vm.singleData = content;
                     } else {
-                        vm.singleLoading = true;
+                        setTimeout(function () {
+                            vm.singleLoading = false;
+                            vm.singleDialog = false;
+                        },2000)
                         vm.$message.error(res.message);
                     }
 
                 },function () {
+                    vm.singleLoading = false;
+                    vm.singleDialog = false;
                     vm.$message.error('接口请求失败');
                 });
             },

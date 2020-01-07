@@ -1,5 +1,5 @@
 var app = new Vue({
-  el: "#declareGuidePage",
+  el: "#declareGuidePage55",
   data: {
     loading: false,
     ctx: ctx,
