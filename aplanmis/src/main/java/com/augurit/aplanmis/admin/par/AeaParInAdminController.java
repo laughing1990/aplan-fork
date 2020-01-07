@@ -1,6 +1,5 @@
 package com.augurit.aplanmis.admin.par;
 
-import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.EasyuiPageInfo;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
@@ -9,7 +8,6 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaItemMat;
 import com.augurit.aplanmis.common.domain.AeaParIn;
 import com.augurit.aplanmis.common.domain.AeaParState;
-import com.augurit.aplanmis.common.domain.AeaParStateForm;
 import com.augurit.aplanmis.common.service.admin.par.AeaParInAdminService;
 import com.augurit.aplanmis.common.service.admin.par.AeaParStateAdminService;
 import com.augurit.aplanmis.common.service.admin.par.AeaParStateFormAdminService;
@@ -111,7 +109,7 @@ public class AeaParInAdminController {
             aeaParInAdminService.deleteAeaParInById(id);
             return new ResultForm(true);
         }
-        return new ResultForm(false,"传递参数id为空!");
+        return new ResultForm(false, "传递参数id为空!");
     }
 
     /**
@@ -123,12 +121,12 @@ public class AeaParInAdminController {
     @RequestMapping("/batchDeleteAeaParInByIds.do")
     public ResultForm batchDeleteAeaParInByIds(String[] ids) {
 
-        if (ids!=null&&ids.length>0) {
-            logger.debug("删除阶段输入定义表Form对象，对象id为：{}", ids);
+        if (ids != null && ids.length > 0) {
+            logger.debug("删除阶段输入定义表Form对象，对象id为：{}", (Object[]) ids);
             aeaParInAdminService.batchDeleteAeaParInByIds(ids);
             return new ResultForm(true);
         }
-        return new ResultForm(false,"传递参数ids为空!");
+        return new ResultForm(false, "传递参数ids为空!");
     }
 
     /**
@@ -141,12 +139,12 @@ public class AeaParInAdminController {
     @RequestMapping("/batchDelMatCertFormByInIdsAndTypes.do")
     public ResultForm batchDelMatCertFormByInIdsAndTypes(String[] ids, String[] fileTypes) {
 
-        if (ids!=null&&ids.length>0&&fileTypes!=null&&fileTypes.length>0) {
-            logger.debug("删除阶段输入定义表Form对象，对象id为：{}", ids);
+        if (ids != null && ids.length > 0 && fileTypes != null && fileTypes.length > 0) {
+            logger.debug("删除阶段输入定义表Form对象，对象id为：{}", (Object[]) ids);
             aeaParInAdminService.batchDelMatCertFormByInIdsAndTypes(ids, fileTypes);
             return new ResultForm(true);
         }
-        return new ResultForm(false,"传递参数ids为空!");
+        return new ResultForm(false, "传递参数ids为空!");
     }
 
     // 单个保存阶段无情形材料
@@ -323,10 +321,10 @@ public class AeaParInAdminController {
     public List<String> listNoStateCertByStageId(AeaParIn in) {
 
         List<String> list = new ArrayList<>();
-        List<AeaParIn> ins =  aeaParInAdminService.listAeaParIn(in);
-        if(ins!=null&& ins.size()>0){
-            for(AeaParIn vo:ins){
-                if(StringUtils.isNotBlank(vo.getCertId())){
+        List<AeaParIn> ins = aeaParInAdminService.listAeaParIn(in);
+        if (ins != null && ins.size() > 0) {
+            for (AeaParIn vo : ins) {
+                if (StringUtils.isNotBlank(vo.getCertId())) {
                     list.add(vo.getCertId());
                 }
             }
@@ -415,20 +413,20 @@ public class AeaParInAdminController {
     @RequestMapping("/updateStageInSortNos.do")
     public ResultForm updateStageInSortNos(String[] inIds, String[] fileTypes, Long[] sortNos) {
 
-        if(inIds!=null&&inIds.length>0
+        if (inIds != null && inIds.length > 0
 //            &&fileTypes!=null&&fileTypes.length>0
-            &&sortNos!=null&&sortNos.length>0){
-            for(int i=0; i<inIds.length; i++){
+                && sortNos != null && sortNos.length > 0) {
+            for (int i = 0; i < inIds.length; i++) {
 //                if(fileTypes[i].equals("form")){
 //                    AeaParStateForm stateForm = new AeaParStateForm();
 //                    stateForm.setStateFormId(inIds[i]);
 //                    stateForm.setSortNo(sortNos[i]);
 //                    aeaParStateFormAdminService.updateAeaParStateForm(stateForm);
 //                }else{
-                    AeaParIn in = new AeaParIn();
-                    in.setInId(inIds[i]);
-                    in.setSortNo(sortNos[i]);
-                    aeaParInAdminService.updateAeaParIn(in);
+                AeaParIn in = new AeaParIn();
+                in.setInId(inIds[i]);
+                in.setSortNo(sortNos[i]);
+                aeaParInAdminService.updateAeaParIn(in);
 //                }
             }
             return new ResultForm(true);

@@ -161,7 +161,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
     }
 
     @Override
-    public List<OpuOmOrg> listOrgByKeyword(String busType,String keyword) throws Exception {
+    public List<OpuOmOrg> listOrgByKeyword(String busType, String keyword) throws Exception {
         AeaSolicitOrg query = new AeaSolicitOrg();
         query.setRootOrgId(SecurityContext.getCurrentOrgId());
         query.setIsBusSolicit("1");
@@ -169,10 +169,10 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
         query.setKeyword(keyword);
         List<AeaSolicitOrg> aeaSolicitOrgs = aeaSolicitOrgMapper.listAeaSolicitOrgRelOrgInfo(query);
         List<OpuOmOrg> result = new ArrayList<>(aeaSolicitOrgs.size());
-        for(int i=0,len=aeaSolicitOrgs.size(); i<len; i++){
+        for (int i = 0, len = aeaSolicitOrgs.size(); i < len; i++) {
             AeaSolicitOrg aeaSolicitOrg = aeaSolicitOrgs.get(i);
             OpuOmOrg temp = new OpuOmOrg();
-            BeanUtils.copyProperties(aeaSolicitOrg,temp);
+            BeanUtils.copyProperties(aeaSolicitOrg, temp);
             result.add(temp);
         }
         return result;
@@ -351,14 +351,14 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                         currDetailUser = solicitDetailUser;
                         //查询用户详细信息，姓名，联系方式等
                         OpuOmUserInfo opuOmUserInfo = opuOmUserInfoMapper.getOpuOmUserInfoByUserId(currUserId);
-                        if(opuOmUserInfo != null){
+                        if (opuOmUserInfo != null) {
                             currDetailUser.setLinkmanName(currUserName);
                             currDetailUser.setLinkmanPhone(opuOmUserInfo.getUserMobile());
                         }
-                        for(int j=0,len=solicitDetailVos.size(); j<len; j++){
+                        for (int j = 0, len = solicitDetailVos.size(); j < len; j++) {
                             SolicitDetailVo aeaHiSolicitDetail = solicitDetailVos.get(j);
-                            if(aeaHiSolicitDetail.getSolicitDetailId().equals(currDetailUser.getSolicitDetailId())){
-                                currentAnswerUserMap.put(aeaHiSolicitDetail.getSolicitId(),currDetailUser);
+                            if (aeaHiSolicitDetail.getSolicitDetailId().equals(currDetailUser.getSolicitDetailId())) {
+                                currentAnswerUserMap.put(aeaHiSolicitDetail.getSolicitId(), currDetailUser);
                                 break;
                             }
                         }
@@ -420,7 +420,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
             //查询征求主表信息关联的附件
             Map<String, List<BscAttFileAndDir>> solicitFileAndDirMap = Maps.newHashMap();
             String[] solicitIdArr = new String[solicitIds.size()];
-            if(solicitIds.size() > 0) {
+            if (solicitIds.size() > 0) {
                 solicitIds.toArray(solicitIdArr);
                 List<BscAttFileAndDir> solicitAttFileList = bscAttDetailMapper.searchFileAndDirsSimple(null, currentOrgId,
                         "AEA_HI_SOLICIT", "SOLICIT_ID", solicitIdArr);
@@ -435,7 +435,6 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                     }
                 }
             }
-
 
 
             //遍历征求主表信息，组装数据
@@ -477,7 +476,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                     }
                     if (hasDone) {
                         hiSolicit.setSolicitCanBeFinish("1");
-                        if(StringUtils.isBlank(hiSolicit.getSolicitLinkmanPhone())) {
+                        if (StringUtils.isBlank(hiSolicit.getSolicitLinkmanPhone())) {
                             //查询用户详细信息，姓名，联系方式等
                             OpuOmUserInfo opuOmUserInfo = opuOmUserInfoMapper.getOpuOmUserInfoByUserId(currUserId);
                             if (opuOmUserInfo != null) {
@@ -489,17 +488,17 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                 }
 
                 //针对联合评审类型，做附件的查询和附件类型关联，注意联合评审一次申报只有一次
-                if(SolicitBusTypeEnum.LHPS.getValue().equals(busType)){
+                if (SolicitBusTypeEnum.LHPS.getValue().equals(busType)) {
                     List<BscDicCodeItem> list = bscDicCodeService.getActiveItemsByTypeCode("SOLICIT_LHPS_FILE_TYPE", currentOrgId);
                     //联合评审主表的附件
                     List<BscAttFileAndDir> fileList1 = bscAttDetailMapper.searchFileAndDirsSimple(null, currentOrgId,
                             "AEA_HI_SOLICIT", null, solicitIdArr);
                     List<SolicitLhpsFile> lhpsFileList1 = Lists.newArrayList();
-                    for(int i=0,len=list.size(); i<len; i++){
+                    for (int i = 0, len = list.size(); i < len; i++) {
                         BscDicCodeItem bscDicCodeItem = list.get(i);
                         List<BscAttFileAndDir> temp = Lists.newArrayList();
-                        for(int j=0,lenj=fileList1.size(); j<lenj; j++){
-                            if(bscDicCodeItem.getItemCode().equals(fileList1.get(j).getBscAttLink().getPkName())){
+                        for (int j = 0, lenj = fileList1.size(); j < lenj; j++) {
+                            if (bscDicCodeItem.getItemCode().equals(fileList1.get(j).getBscAttLink().getPkName())) {
                                 temp.add(fileList1.get(j));
                             }
                         }
@@ -517,17 +516,17 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                     List<SolicitLhpsFile> lhpsFileList3 = Lists.newArrayList();
 
                     SolicitDetailUserVo solicitDetailUserVo = currentAnswerUserMap.get(hiSolicit.getSolicitId());
-                    if(solicitDetailUserVo != null){
+                    if (solicitDetailUserVo != null) {
                         solicitDetailUserVo.setLhpsFiles(lhpsFileList2);
                     }
-                    for(int i=0,len=list.size(); i<len; i++){
+                    for (int i = 0, len = list.size(); i < len; i++) {
                         BscDicCodeItem bscDicCodeItem = list.get(i);
                         List<BscAttFileAndDir> temp1 = Lists.newArrayList();
                         List<BscAttFileAndDir> temp2 = Lists.newArrayList();
-                        for(int j=0,lenj=fileList2.size(); j<lenj; j++){
-                            if(bscDicCodeItem.getItemCode().equals(fileList2.get(j).getBscAttLink().getPkName())){
+                        for (int j = 0, lenj = fileList2.size(); j < lenj; j++) {
+                            if (bscDicCodeItem.getItemCode().equals(fileList2.get(j).getBscAttLink().getPkName())) {
                                 temp1.add(fileList2.get(j));
-                                if(solicitDetailUserVo != null && solicitDetailUserVo.getDetailUserId().equals(fileList2.get(j).getBscAttLink().getRecordId())){
+                                if (solicitDetailUserVo != null && solicitDetailUserVo.getDetailUserId().equals(fileList2.get(j).getBscAttLink().getRecordId())) {
                                     temp2.add(fileList2.get(j));
                                 }
                             }
@@ -536,18 +535,18 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                         SolicitLhpsFile file2 = new SolicitLhpsFile();
                         file1.setFileTypeCode(bscDicCodeItem.getItemCode());
                         file1.setFileTypeName(bscDicCodeItem.getItemName());
-                        BeanUtils.copyProperties(file1,file2);
+                        BeanUtils.copyProperties(file1, file2);
                         file1.setFileAndDirs(temp1);
                         file2.setFileAndDirs(temp2);
                         lhpsFileList2.add(file1);
                         lhpsFileList3.add(file2);
                     }
                     //再将回复的和汇总的文件合并导一起
-                    for(int i=0,len=lhpsFileList1.size(); i<len; i++){
+                    for (int i = 0, len = lhpsFileList1.size(); i < len; i++) {
                         SolicitLhpsFile solicitLhpsFile1 = lhpsFileList1.get(i);
-                        for(int j=0,lenj=lhpsFileList2.size(); j<lenj; j++){
+                        for (int j = 0, lenj = lhpsFileList2.size(); j < lenj; j++) {
                             SolicitLhpsFile solicitLhpsFile2 = lhpsFileList2.get(j);
-                            if(solicitLhpsFile1.getFileTypeCode().equals(solicitLhpsFile2.getFileTypeCode())){
+                            if (solicitLhpsFile1.getFileTypeCode().equals(solicitLhpsFile2.getFileTypeCode())) {
                                 solicitLhpsFile1.getFileAndDirs().addAll(solicitLhpsFile2.getFileAndDirs());
                             }
                         }
@@ -570,29 +569,31 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
         return solicitInfoList;
     }
 
-    private List<SolicitVo> converToSolicitVo(List<AeaHiSolicit> solicits){
+    private List<SolicitVo> converToSolicitVo(List<AeaHiSolicit> solicits) {
         List<SolicitVo> result = Lists.newArrayList();
-        for(int i=0,len=solicits.size(); i<len; i++){
+        for (int i = 0, len = solicits.size(); i < len; i++) {
             SolicitVo temp = new SolicitVo();
-            BeanUtils.copyProperties(solicits.get(i),temp);
+            BeanUtils.copyProperties(solicits.get(i), temp);
             result.add(temp);
         }
         return result;
     }
-    private List<SolicitDetailVo> converToSolicitDetailVo(List<AeaHiSolicitDetail> solicitDetail){
+
+    private List<SolicitDetailVo> converToSolicitDetailVo(List<AeaHiSolicitDetail> solicitDetail) {
         List<SolicitDetailVo> result = Lists.newArrayList();
-        for(int i=0,len=solicitDetail.size(); i<len; i++){
+        for (int i = 0, len = solicitDetail.size(); i < len; i++) {
             SolicitDetailVo temp = new SolicitDetailVo();
-            BeanUtils.copyProperties(solicitDetail.get(i),temp);
+            BeanUtils.copyProperties(solicitDetail.get(i), temp);
             result.add(temp);
         }
         return result;
     }
-    private List<SolicitDetailUserVo> converToSolicitDetailUserVo(List<AeaHiSolicitDetailUser> solicitDetailUsers){
+
+    private List<SolicitDetailUserVo> converToSolicitDetailUserVo(List<AeaHiSolicitDetailUser> solicitDetailUsers) {
         List<SolicitDetailUserVo> result = Lists.newArrayList();
-        for(int i=0,len=solicitDetailUsers.size(); i<len; i++){
+        for (int i = 0, len = solicitDetailUsers.size(); i < len; i++) {
             SolicitDetailUserVo temp = new SolicitDetailUserVo();
-            BeanUtils.copyProperties(solicitDetailUsers.get(i),temp);
+            BeanUtils.copyProperties(solicitDetailUsers.get(i), temp);
             result.add(temp);
         }
         return result;
@@ -626,6 +627,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
 
     /**
      * 意见征求被征求人回复接口
+     *
      * @param aeaHiSolicitDetailUser
      * @throws Exception
      */
@@ -665,6 +667,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
 
     /**
      * 意见征求发起人意见汇总接口，可能会涉及流程流转
+     *
      * @param aeaHiSolicit
      * @return
      * @throws Exception
@@ -684,10 +687,10 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
         aeaHiSolicitMapper.updateAeaHiSolicit(aeaHiSolicit);
         //处理流程激活操作，先默认是通过则激活流程
         AeaHiSolicit temp = aeaHiSolicitMapper.getAeaHiSolicitById(aeaHiSolicit.getSolicitId());
-        if(temp != null) {
+        if (temp != null) {
             String procinstId = temp.getProcinstId();
             boolean isComplete = true;
-            if(bpmProcessService.isProcessSuspended(procinstId)) {
+            if (bpmProcessService.isProcessSuspended(procinstId)) {
                 isComplete = false;
                 //一次征询，需要汇总结论是通过的才激活流程
                 if (SolicitBusTypeEnum.YCZX.getValue().equals(temp.getBusType()) &&
@@ -696,17 +699,17 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                     isComplete = true;
                 }
                 //联合评审最后结论 通过和不通过都会激活流程
-                if (SolicitBusTypeEnum.LHPS.getValue().equals(temp.getBusType())){
+                if (SolicitBusTypeEnum.LHPS.getValue().equals(temp.getBusType())) {
                     bpmProcessService.activateProcessInstanceById(temp.getProcinstId());
                     isComplete = true;
                 }
                 //意见征求暂时默认给激活流程
-                if (SolicitBusTypeEnum.YJZQ.getValue().equals(temp.getBusType())){
+                if (SolicitBusTypeEnum.YJZQ.getValue().equals(temp.getBusType())) {
                     bpmProcessService.activateProcessInstanceById(temp.getProcinstId());
                     isComplete = true;
                 }
             }
-            if(isComplete){
+            if (isComplete) {
                 completeTaskAfterfinishSolicit(temp);
             }
         }
@@ -714,8 +717,9 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
     }
 
     /**
-     *  意见征求意见汇总后推动流程流转接口
-     *  依据目前第一版的，一二阶段（一次征询和联合评审）流程图做的，如果有调整需要跟进优化
+     * 意见征求意见汇总后推动流程流转接口
+     * 依据目前第一版的，一二阶段（一次征询和联合评审）流程图做的，如果有调整需要跟进优化
+     *
      * @param aeaHiSolicit
      * @throws Exception
      */
@@ -728,23 +732,23 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
             //一次征询需要汇总结论是通过的，才会结束当前节点，并往下流转
             // 注意：基于目前只有一个流向的情况，如果多于一个流向则需要按照实际需求优化此处代码
             taskService.complete(hiTaskinstId);
-        }else if(SolicitBusTypeEnum.YJZQ.getValue().equals(aeaHiSolicit.getBusType())){
+        } else if (SolicitBusTypeEnum.YJZQ.getValue().equals(aeaHiSolicit.getBusType())) {
             //意见征求默认往下推送，此处后续根据实际需求进行优化
             taskService.complete(hiTaskinstId);
-        }else if(SolicitBusTypeEnum.LHPS.getValue().equals(aeaHiSolicit.getBusType())){
+        } else if (SolicitBusTypeEnum.LHPS.getValue().equals(aeaHiSolicit.getBusType())) {
             List<BpmDestTaskConfig> bpmDestTaskConfig = bpmTaskService.getBpmDestTaskConfigByCurrTaskId(hiTaskinstId);
-            for(int i=0,len=bpmDestTaskConfig.size(); i<len; i++){
+            for (int i = 0, len = bpmDestTaskConfig.size(); i < len; i++) {
                 String destActId = bpmDestTaskConfig.get(i).getDestActId();
                 //如果联合评审结果时通过，则流向形式审查节点
-                if(SolicitConstant.SOLICIT_CONCLUSION_FLAG_TG.equals(aeaHiSolicit.getConclusionFlag()) &&
-                        StringUtils.isNotBlank(destActId) && (!destActId.startsWith("endEvent") || !destActId.equals("jieshu"))){
-                    taskService.complete(hiTaskinstId, new String[]{destActId}, (Map)null);
+                if (SolicitConstant.SOLICIT_CONCLUSION_FLAG_TG.equals(aeaHiSolicit.getConclusionFlag()) &&
+                        StringUtils.isNotBlank(destActId) && (!destActId.startsWith("endEvent") || !destActId.equals("jieshu"))) {
+                    taskService.complete(hiTaskinstId, new String[]{destActId}, (Map) null);
                     return;
                 }
                 //如果不通过，则直接流向结束节点
-                if(SolicitConstant.SOLICIT_CONCLUSION_FLAG_BTG.equals(aeaHiSolicit.getConclusionFlag()) &&
-                        StringUtils.isNotBlank(destActId) && (destActId.startsWith("endEvent") || destActId.equals("jieshu"))){
-                    taskService.complete(hiTaskinstId, new String[]{destActId}, (Map)null);
+                if (SolicitConstant.SOLICIT_CONCLUSION_FLAG_BTG.equals(aeaHiSolicit.getConclusionFlag()) &&
+                        StringUtils.isNotBlank(destActId) && (destActId.startsWith("endEvent") || destActId.equals("jieshu"))) {
+                    taskService.complete(hiTaskinstId, new String[]{destActId}, (Map) null);
                     return;
                 }
             }
@@ -781,17 +785,10 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
 
         condVo.setRootOrgId(SecurityContext.getCurrentOrgId());
         condVo.setUserId(SecurityContext.getCurrentUserId());
-        //测试部门辅导，查找所有
-        /*if (true) {
-            //部门辅导查询所有
-            condVo.setSolicitState(new String[]{"2", "1", "3"});
-        } else*/
+
         if (SolicitBusTypeEnum.LHPS.getValue().equals(condVo.getBusType())) {
             //联合评审只查询未完成状态
             condVo.setSolicitState(new String[]{"1"});
-        } else if (SolicitBusTypeEnum.BMFD.getValue().equals(condVo.getBusType())) {
-            //部门辅导查询所有
-            condVo.setSolicitState(new String[]{"2", "1", "3"});
         } else {
             condVo.setSolicitState(new String[]{"0", "1"});
         }
@@ -1141,7 +1138,7 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
         OpuOmUser currentUser = SecurityContext.getCurrentUser();
         OpuOmUserInfo opuOmUserInfo = opuOmUserInfoMapper.getOpuOmUserInfoByUserId(currentUser.getUserId());
         user.setUserName(currentUser.getUserName());
-        if(opuOmUserInfo != null) {
+        if (opuOmUserInfo != null) {
             user.setUserMobile(opuOmUserInfo.getUserMobile());
         }
         return user;
