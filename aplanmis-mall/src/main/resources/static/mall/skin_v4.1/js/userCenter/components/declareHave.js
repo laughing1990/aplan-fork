@@ -1,4 +1,3 @@
-//  var ctx = "http://192.168.15.101:8084/aplanmis-mall/"
  //定义一个手机号码校验
  var validPhone=function(rule, value,callback){
    var phoneRex = /^1[34578]\d{9}$/;
@@ -111,11 +110,6 @@ var vm = new Vue({
         trigger: 'blur',
         validator: validPhone
       }
-      // {
-      //   required: true,
-      //   message: '请输入联系电话',
-      //   trigger: 'blur'
-      // }
       ],
       applyUserIdnumber: [{
         required: true,
@@ -138,6 +132,17 @@ var vm = new Vue({
     withDrwalFileUploadAction: ctx + 'rest/apply/cancel/uploadAttFile',
     // 已上传的文件列表
     withDrawalAlreadyFileList:[],
+    // 申报状态
+    applyinstStatus:[
+       {label:'已接件未审核',value:'0'},
+      {label:'已接件并审核',value:'1'},
+      {label:'已受理',value:'2'},
+      {label:'待补全',value:'3'},
+      {label:'已补全',value:'4'},
+      {label:'不予受理',value:'5'},
+      {label:'已办结',value:'6'},
+    ],
+    applyinstState:'',
 
   },
   watch: {
@@ -168,13 +173,11 @@ var vm = new Vue({
       vm.mloading = true;
       vm.noDataTip = ""
       request('', {
-        url: ctx + 'rest/user/hadApplyItem/list',
+        url: ctx + 'rest/user/apply/list',
         type: 'get',
         data: {
-          state: vm.proType,
-          localCode: vm.localCode,
-          projName: vm.projName,
-          keyword: vm.keyword,
+          applyinstState: vm.applyinstState,  // 申报状态
+          keyword: vm.keyword, // 关键词
           pageNum: vm.pageNumDH,
           pageSize: vm.pageSizeDH,
         }
@@ -202,6 +205,14 @@ var vm = new Vue({
       });
     },
 
+    // 重置查询条件
+    resetSearchHandleFn:function(){
+        this.pageNumDH = 1;
+        this.keyword = '';
+        this.applyinstState = '';
+        this.getHadApplyItemList();
+    },
+
     //  切换项目类型tab-办理中：已办理
     loadProjByUnit: function (num) {
       this.proType = num;
@@ -226,9 +237,8 @@ var vm = new Vue({
     // 查看项目详情
     lookProjDetail: function (row) {
       var ts = this;
-      this.isProjDetail = true;
+      ts.isProjDetail = true;
       this.curHandelProjRow = row;
-          // _url = ctx + 'rest/user/applydetail/' + row.applyinstId + '/' + row.localCode + '/' + row.isSeriesApprove;
           _url = ctx + 'rest/user/applydetail/' + row.applyinstId + '/' + row.projInfoId + '/' + row.isSeriesApprove;
       //  _url = ctx + 'rest/user/applydetail/83855950-48c3-467a-9e86-d05fdd93cda0/2016-130224-44-03-000063/1';
       ts.mloading2 = true;
