@@ -78,4 +78,8 @@ public class AeaHiGuideDetail {
     @ApiModelProperty(value = "修改时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date modifyTime;
+
+    // 扩展字段
+
+    private String themeName;
 }
