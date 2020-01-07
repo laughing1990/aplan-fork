@@ -232,9 +232,10 @@
     <select id="listAeaHiGuideDetailIfThemeChangedBefore"
             resultType="com.augurit.aplanmis.common.domain.AeaHiGuideDetail">
         select
-        <include refid="Base_Column_List"/>
+        <include refid="Base_Column_List"/>, apt.theme_name themeName
         from aea_hi_guide_detail ahgd
         join aea_hi_guide ahg on ahgd.guide_id=ahg.guide_id
+        join aea_par_theme apt on apt.theme_id=ahgd.THEME_ID
         where ahg.GUIDE_ID = #{guideId ,jdbcType=VARCHAR}
         and ahgd.DETAIL_TYPE='l'
         and ahgd.stage_id != ahg.stage_id

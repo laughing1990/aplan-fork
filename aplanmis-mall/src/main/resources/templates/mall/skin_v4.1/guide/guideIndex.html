@@ -40,7 +40,7 @@
                                 </div>
                             </div>
                         </ul>
-                        <div class="guide-tip">
+                        <div class="guide-tip" @click="toLeadPagehandleFn">
                             <img src="../../static/mall/images/guide/u736.png" th:src="@{/mall/skin_v4.1/images/guide/u736.png}" />
                             <span>智能引导</span>
                         </div>
@@ -81,8 +81,8 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="guide-content-right" v-loading='memoLoading'>
-                                    <div class="wt-phase1" id="guideMainLine">
+                                <div class="guide-content-right" v-loading="memoLoading" style="min-height: 200px">
+                                    <div class="wt-phase1" id="guideMainLine" >
                                         <div class="wt-tab-item" id="mainLine">
                                             <p class="p-header-phase1">
                                                 阶段选择</p>

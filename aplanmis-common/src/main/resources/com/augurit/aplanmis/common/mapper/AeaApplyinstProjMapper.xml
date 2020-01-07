@@ -60,7 +60,11 @@
             ap.CREATE_TIME  createTime,
             proj.LOCAL_CODE localCode,
             proj.PROJ_NAME projName,
-            proj.GCBM gcbm
+            proj.GCBM gcbm,
+            proj.CENTRAL_CODE centralCode,
+            proj.BUILD_AREA_SUM buildAreaSum,
+            proj.PROJ_ADDR projAddr,
+            proj.ABOVE_FLOOR aboveFloor
         from AEA_APPLYINST_PROJ ap,AEA_PROJ_INFO proj
         where ap.PROJ_INFO_ID = proj.PROJ_INFO_ID and ap.APPLYINST_ID = #{applyinstId}
     </select>

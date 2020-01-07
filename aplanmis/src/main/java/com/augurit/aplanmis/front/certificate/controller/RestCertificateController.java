@@ -21,7 +21,11 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -32,16 +36,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author chenjw
- * @version v1.0.0
- * @description
- * @date Created in 2019/8/3/003 15:47
- */
 @RestController
 @Slf4j
 @RequestMapping("/rest/certificate")
-@Api(tags = "发证/出证、制证、取件统一入口")
+@Api(tags = "制证、出证/发证、取件统一入口")
 public class RestCertificateController {
 
     @Autowired

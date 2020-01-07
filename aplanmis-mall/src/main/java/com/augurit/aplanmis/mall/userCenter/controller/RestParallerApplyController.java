@@ -100,7 +100,7 @@ public class RestParallerApplyController {
         try {
             logger.error("-----listItemAndStateByStageId----start--------");
             long l=System.currentTimeMillis();
-            ItemListVo vo = restParallerApplyService.listItemAndStateByStageId(stageId, projInfoId, regionalism, projectAddress,"0","0");
+            ItemListVo vo = restParallerApplyService.listItemAndStateByStageId(stageId, projInfoId, regionalism, projectAddress,"0","0",null);
             logger.error("-----listItemAndStateByStageId----end--------耗时："+(System.currentTimeMillis()-l));
             return new ContentResultForm<>(true,vo);
         } catch (Exception e) {
@@ -317,6 +317,28 @@ public class RestParallerApplyController {
             return new ContentResultForm(false,"","智能引导获取事项一单清列表数据异常");
         }
     }
+
+
+    @GetMapping("guideItems/list")
+    @ApiOperation(value = "阶段申报 --> 事项-部门确认/申请人确认接口")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "部门辅导ID",name = "guideId",required = true,dataType = "string"),
+            @ApiImplicitParam(value = "申请实例ID",name = "applyinstId",required = true,dataType = "string"),
+            @ApiImplicitParam(value = "项目ID",name = "projInfoId",required = true,dataType = "string"),
+            @ApiImplicitParam(value = "是否展示事项情形 1 是，0 否", name = "isSelectItemState", required = true, dataType = "string")})
+    public ContentResultForm<ApplyIteminstConfirmVo> listGuideItemsByApplyinstId(String guideId,String applyinstId,String projInfoId,String isSelectItemState) {
+        try {
+            logger.error("-----listGuideItemsByApplyinstId----start--------");
+            long l=System.currentTimeMillis();
+            ApplyIteminstConfirmVo vo = restParallerApplyService.listGuideItemsByApplyinstId(guideId,applyinstId,projInfoId,isSelectItemState);
+            logger.error("-----listGuideItemsByApplyinstId----end--------耗时："+(System.currentTimeMillis()-l));
+            return new ContentResultForm<ApplyIteminstConfirmVo>(true,vo);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ContentResultForm(false,"","事项-部门确认/申请人确认接口异常");
+        }
+    }
+
 
 
 }

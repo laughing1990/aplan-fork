@@ -168,8 +168,8 @@ public class AeaParStageService {
         //循环推动流程流向部门审批节点，包括了并联审批和并行推进事项
         for (Task task : tasks) {
             //推动流程流转，流转至预审
-            //1、设置到流程中，动态填充预审节点的办理人
-            aeaBpmProcessService.fillNextTaskAssignee(task,taskAssignees);
+            //1、设置到流程中，动态填充预审节点的办理人(佛山下主流程变化了，没有预审环节，所以注释掉)
+            //aeaBpmProcessService.fillNextTaskAssignee(task,taskAssignees);
             //2、完成当前节点，推动流程往下流转
             taskService.complete(task.getId());
         }
@@ -364,6 +364,11 @@ public class AeaParStageService {
             Map<String, Boolean> approveOrgMap = new HashMap<>();
             Map<String, Boolean> isBranchHandle = new HashMap<>();
             Map<String, Boolean> iteminstMap = new HashMap();//初始化选中情形绑定的事项
+
+            ProjectCheckForm projectCheck = new ProjectCheckForm();//竣工验收辅助对象
+            Map<String, Boolean> itemStateMap = new HashMap<>();//初始化选中事项的验收状态，仅用于竣工验收
+            projectCheck.setItemStates(itemStateMap);
+
             aeaHiIteminsts.forEach(aeaHiIteminst -> {
                 AeaItemBasic aeaItemBasic;
                 try {
@@ -387,6 +392,8 @@ public class AeaParStageService {
                     isBranchHandle.put(aeaItemBasic.getItemCategoryMark(), false);
                     iteminstMap.put(aeaItemBasic.getItemCategoryMark(), false);
                 }
+
+                itemStateMap.put(aeaItemBasic.getItemCategoryMark(),false);//设置竣工验收涉及到的审批事项
             });
             aeaHiApplyinst.setIsBranchHandle(isBranchHandle);
             aeaHiApplyinst.setApprovalOrgCode(approveOrgMap);

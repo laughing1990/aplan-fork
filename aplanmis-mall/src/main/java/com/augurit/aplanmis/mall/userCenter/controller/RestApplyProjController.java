@@ -28,6 +28,7 @@ import com.augurit.aplanmis.mall.userCenter.service.RestUserCenterService;
 import com.augurit.aplanmis.mall.userCenter.vo.AeaProjInfoResultVo;
 import com.augurit.aplanmis.mall.userCenter.vo.AeaRootProjInfoVo;
 import com.augurit.aplanmis.mall.userCenter.vo.ApplyDetailVo;
+import com.augurit.aplanmis.mall.userCenter.vo.ProjStatusTreeVo;
 import com.augurit.aplanmis.thirdPlatform.service.ProjectCodeService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -35,12 +36,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.ibatis.session.ResultContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -603,4 +606,19 @@ public class RestApplyProjController {
             return new ResultForm(false, e.getMessage());
         }
     }
+
+    @GetMapping("status/proj/tree/{projInfoId}")
+    @ApiOperation(value = "我的项目->根据项目ID查询子工程及申办状态")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "项目Id", name = "projInfoId", required = false, dataType = "string")})
+    public ContentResultForm<ProjStatusTreeVo> getProjStatusTreeVo(@PathVariable("projInfoId") String projInfoId, HttpServletRequest request) {
+        try {
+            //返回子项目列表
+            return new ContentResultForm(true,"");
+        } catch (Exception e) {
+            return new ContentResultForm(false, "","查询根据项目ID查询子工程及申办状态异常");
+        }
+    }
+
+
 }

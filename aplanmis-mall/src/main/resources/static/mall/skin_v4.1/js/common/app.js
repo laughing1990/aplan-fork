@@ -52,14 +52,6 @@
                 },
             ],*/
             topTabData: [
-                // {
-                // label: '申报指引',
-                // id: '1',
-                // activeName:0,
-                // url: './main/mainIndex.html',
-                // thUrl:'rest/main/toMainIndexPage',
-                // hash:'/',
-                // },
                 {
                   label: '申报指引',
                   id: '1',
@@ -120,20 +112,20 @@
                 hash:'/',
                 },
                 {
+                    label: '智能引导',
+                    id: 'lead',
+                    activeName:0,
+                    url: './lead/lead.html',
+                    thUrl:'rest/main/toLeadPage',
+                    hash:'/toLeadPage',
+                },
+                {
                     label: '我的云盘',
                     id: 'myCloundSpaces',
                     activeName:4,
                     url: './userCenter/components/my-cloundSpaces.html',
                     thUrl:'rest/user/toMyCloundSpacesPage',
                     hash:'/myCloundSpaces',
-                },
-                {
-                    label: '视频教学',
-                    id: 'videoTeaching',
-                    activeName:0,
-                    url: './main/components/videoTeaching.html',
-                    thUrl:'rest/main/tovideoTeachingPage',
-                    hash:'/videoTeaching',
                 },
                 {
                     label: '我的单项办事指南',

@@ -3,7 +3,6 @@ package com.augurit.aplanmis.front;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
-import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.opus.common.domain.OpuOmUserInfo;
 import com.augurit.agcloud.opus.common.mapper.OpuOmUserInfoMapper;
 import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -46,22 +44,12 @@ public class AplanmisPageIndexController {
     @Autowired
     private OpuOmUserInfoMapper opuOmUserInfoMapper;
 
-    /**
-     * 并联申报首页
-     *
-     * @return
-     */
     @GetMapping("/stageApplyIndex")
     @ApiOperation("菜单-并联申报页")
     public ModelAndView stageApplyIndex() {
         return new ModelAndView("apply/index");
     }
 
-    /**
-     * 单项申报首页
-     *
-     * @return
-     */
     @GetMapping("/singleApplyIndex/{itemVerId}")
     @ApiOperation("菜单-单项申报页")
     public ModelAndView singleApplyIndex(@PathVariable String itemVerId) {
@@ -70,52 +58,24 @@ public class AplanmisPageIndexController {
         return modelAndView;
     }
 
-    /*@GetMapping("/singleApplyIndex1/{itemVerId}")
-    @ApiOperation("菜单-单项申报页")
-    public ModelAndView singleApplyIndex1(@PathVariable String itemVerId) {
-        ModelAndView modelAndView = new ModelAndView("apply/singleIndex");
-        modelAndView.addObject("itemVerId", itemVerId);
-        return modelAndView;
-    }*/
-
-    /**
-     * 并联申报首页
-     *
-     * @return
-     */
     @GetMapping("/stageApproveIndex")
     @ApiOperation("菜单-并联申报页")
     public ModelAndView stageApproveIndex() {
         return new ModelAndView("approve/index");
     }
 
-    /**
-     * 申请表
-     *
-     * @return
-     */
     @GetMapping("/applyForm.html")
     @ApiOperation("iframe申请表")
     public ModelAndView applyForm() {
         return new ModelAndView("approve/applyForm");
     }
 
-    /**
-     * 材料附件
-     *
-     * @return
-     */
     @GetMapping("/materialAnnex.html")
     @ApiOperation("iframe材料附件")
     public ModelAndView materialAnnex() {
         return new ModelAndView("approve/materialAnnex");
     }
 
-    /**
-     * 审批意见
-     *
-     * @return
-     */
     @GetMapping("/approvalOpinions.html")
     @ApiOperation("iframe审批意见")
     public ModelAndView approvalOpinions() {
@@ -125,11 +85,6 @@ public class AplanmisPageIndexController {
         return modelAndView;
     }
 
-    /**
-     * 意见汇总表
-     *
-     * @return
-     */
     @GetMapping("/opinionForm.html")
     @ApiOperation("iframe意见汇总表")
     public ModelAndView opinionForm() {
@@ -142,59 +97,48 @@ public class AplanmisPageIndexController {
      * itemId 指定事项的id
      */
     @GetMapping("/urlStageOneForm.html")
-    public ResultForm urlStageOneForm(String masterEntityKey, boolean enableParamItem, String itemId, String projInfoId, HttpServletRequest request, HttpServletResponse response) {
-//        String realUrl = request.getContextPath() + "/rest/oneform/common/renderHtmlFormContainer?";
+    public ContentResultForm<?> urlStageOneForm(String masterEntityKey, boolean enableParamItem, String itemId, String projInfoId, HttpServletRequest request) {
         String realUrl = request.getContextPath() + "/rest/oneform/common/getListForm4StageOneForm?";
-        String params = "";
+        StringBuilder params = new StringBuilder();
         try {
             AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(masterEntityKey);
             if (aeaHiApplyinst != null) {
-                params += "applyinstId=" + aeaHiApplyinst.getApplyinstId();
+                params.append("applyinstId=").append(aeaHiApplyinst.getApplyinstId());
                 AeaHiParStageinst aeaHiParStageinst = aeaHiParStageinstService.getAeaHiParStageinstByApplyinstId(aeaHiApplyinst.getApplyinstId());
                 if (aeaHiParStageinst != null) {
-                    params += "&stageId=" + aeaHiParStageinst.getStageId();
+                    params.append("&stageId=").append(aeaHiParStageinst.getStageId());
                 }
 
                 if (enableParamItem) {
-                    params += "&itemids=" + itemId;
+                    params.append("&itemids=").append(itemId);
                 } else {
-                    List<AeaHiIteminst> aeaHiIteminstList = null;
+                    List<AeaHiIteminst> aeaHiIteminstList;
                     aeaHiIteminstList = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(aeaHiApplyinst.getApplyinstId());
                     for (AeaHiIteminst aeaHiIteminst : aeaHiIteminstList) {
-                        params += "&itemids=" + aeaHiIteminst.getItemId();
+                        params.append("&itemids=").append(aeaHiIteminst.getItemId());
                     }
                 }
             }
             if (StringUtils.isNotBlank(projInfoId)) {
-                params += "&projInfoId=" + projInfoId;
+                params.append("&projInfoId=").append(projInfoId);
             }
-            params += "&showBasicButton=false";
-            params += "&includePlatformResource=false";
+            params.append("&showBasicButton=false");
+            params.append("&includePlatformResource=false");
             realUrl += params;
-            return new ContentResultForm(true, realUrl);
+            return new ContentResultForm<>(true, realUrl, "success");
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResultForm(false, "一张表单参数转换失败！");
+            return new ContentResultForm<>(false, null, "一张表单参数转换失败！");
         }
     }
 
 
-    /**
-     * 特殊程序发起窗口
-     *
-     * @return
-     */
     @GetMapping("/specialProcedures.html")
     @ApiOperation("特殊程序发起窗口")
     public ModelAndView specialProcedures() {
         return new ModelAndView("approve/specialProcedures");
     }
 
-    /**
-     * 所有办件查询（查看所有）
-     *
-     * @return
-     */
     @GetMapping("/queryPartsIndex.html")
     @ApiOperation("菜单-所有办件")
     public ModelAndView queryPartsIndex() {
@@ -206,11 +150,6 @@ public class AplanmisPageIndexController {
         return modelAndView;
     }
 
-    /**
-     * 承诺制办件查询（查看所有）
-     *
-     * @return
-     */
     @GetMapping("/queryCommitPartsIndex.html")
     @ApiOperation("菜单-承诺制办件")
     public ModelAndView queryCommitPartsIndex() {
@@ -222,11 +161,6 @@ public class AplanmisPageIndexController {
         return modelAndView;
     }
 
-    /**
-     * 所有办件查询（查看自己办过的件）
-     *
-     * @return
-     */
     @GetMapping("/queryHandlerPartsIndex.html")
     @ApiOperation("菜单-经办办件")
     public ModelAndView queryHandlerPartsIndex() {
@@ -238,11 +172,6 @@ public class AplanmisPageIndexController {
         return modelAndView;
     }
 
-    /**
-     * 所有办件查询（查看当前委办局办过的件）
-     *
-     * @return
-     */
     @GetMapping("/queryEntrustPartsIndex.html")
     @ApiOperation("菜单-单位办件")
     public ModelAndView queryEntrustPartsIndex() {
@@ -254,11 +183,6 @@ public class AplanmisPageIndexController {
         return modelAndView;
     }
 
-    /**
-     * 申报查询（查看所在综合窗口的数据）
-     *
-     * @return
-     */
     @GetMapping("/queryWindowApplyIndex.html")
     @ApiOperation("菜单-综窗申报")
     public ModelAndView queryWindowApplyIndex() {
@@ -269,11 +193,6 @@ public class AplanmisPageIndexController {
         return modelAndView;
     }
 
-    /**
-     * 申报查询（查看当前用户经办的记录）
-     *
-     * @return
-     */
     @GetMapping("/queryHandlerApplyIndex.html")
     @ApiOperation("菜单-经办申报")
     public ModelAndView queryHandlerApplyIndex() {
@@ -284,11 +203,6 @@ public class AplanmisPageIndexController {
         return modelAndView;
     }
 
-    /**
-     * 申报查询（查看所有）
-     *
-     * @return
-     */
     @GetMapping("/queryApplyIndex.html")
     @ApiOperation("菜单-所有申报")
     public ModelAndView applyInfoIndex() {
@@ -299,23 +213,12 @@ public class AplanmisPageIndexController {
         return modelAndView;
     }
 
-    /**
-     * 待办任务
-     *
-     * @return
-     */
     @GetMapping("/queryWaitDoTasksIndex.html")
     @ApiOperation("菜单-待办任务")
     public ModelAndView queryWaitDoTasksIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/queryWaitDoTasksIndex");
-        return modelAndView;
+        return new ModelAndView("view/queryWaitDoTasksIndex");
     }
 
-    /**
-     * 窗口撤件待办件
-     *
-     * @return
-     */
     @GetMapping("/queryWaitCancelTasksByCkIndex.html")
     @ApiOperation("菜单-撤件待办件")
     public ModelAndView queryWaitCancelTasksIndexByCk() {
@@ -324,11 +227,6 @@ public class AplanmisPageIndexController {
         return modelAndView;
     }
 
-    /**
-     * 窗口撤件经办件
-     *
-     * @return
-     */
     @GetMapping("/queryDoneCancelTasksByCkIndex.html")
     @ApiOperation("菜单-撤件经办件")
     public ModelAndView queryDoneCancelTasksIndexByCk() {
@@ -337,11 +235,6 @@ public class AplanmisPageIndexController {
         return modelAndView;
     }
 
-    /**
-     * 部门撤件经办件
-     *
-     * @return
-     */
     @GetMapping("/queryDoneCancelTasksByBmIndex.html")
     @ApiOperation("菜单-撤件经办件")
     public ModelAndView queryDoneCancelTasksIndexByBm() {
@@ -350,11 +243,6 @@ public class AplanmisPageIndexController {
         return modelAndView;
     }
 
-    /**
-     * 部门撤件待办件
-     *
-     * @return
-     */
     @GetMapping("/queryWaitCancelTasksByBmIndex.html")
     @ApiOperation("菜单-撤件待办件")
     public ModelAndView queryWaitCancelTasksByBmIndex() {
@@ -363,171 +251,86 @@ public class AplanmisPageIndexController {
         return modelAndView;
     }
 
-    /**
-     * 已办任务
-     *
-     * @return
-     */
     @GetMapping("/queryDoneTasksIndex.html")
     @ApiOperation("菜单-已办任务")
     public ModelAndView queryDoneTasksIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/queryDoneTasksIndex");
-        return modelAndView;
+        return new ModelAndView("view/queryDoneTasksIndex");
     }
 
-    /**
-     * 办结任务
-     *
-     * @return
-     */
     @GetMapping("/queryConcludedTasksIndex.html")
     @ApiOperation("菜单-办结任务")
     public ModelAndView queryFinishTasksIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/queryConcludedTasksIndex");
-        return modelAndView;
+        return new ModelAndView("view/queryConcludedTasksIndex");
     }
 
-    /**
-     * 网上待预审
-     *
-     * @return
-     */
     @GetMapping("/queryPreliminaryTasksIndex.html")
     @ApiOperation("菜单-网上待预审")
     public ModelAndView queryPreliminaryTasksIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/queryPreliminaryTasksIndex");
-        return modelAndView;
+        return new ModelAndView("view/queryPreliminaryTasksIndex");
     }
 
-    /**
-     * 不予受理申报
-     *
-     * @return
-     */
     @GetMapping("/queryDismissedApplyIndex.html")
     @ApiOperation("菜单-不予受理申报")
     public ModelAndView queryDismissedApplyIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/queryDismissedApplyIndex");
-        return modelAndView;
+        return new ModelAndView("view/queryDismissedApplyIndex");
     }
 
-    /**
-     * 待补正办件
-     *
-     * @return
-     */
     @GetMapping("/queryNeedCorrectTasksIndex.html")
     @ApiOperation("菜单-待补正办件")
     public ModelAndView queryNeedCorrectTasksIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/queryNeedCorrectTasksIndex");
-        return modelAndView;
+        return new ModelAndView("view/queryNeedCorrectTasksIndex");
     }
 
 
-    /**
-     * 待补全申报
-     *
-     * @return
-     */
     @GetMapping("/queryNeedCompletedApplyIndex.html")
     @ApiOperation("菜单-待补全申报")
     public ModelAndView queryNeedCorrectApplyIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/queryNeedCompletedApplyIndex");
-        return modelAndView;
+        return new ModelAndView("view/queryNeedCompletedApplyIndex");
     }
 
-    /**
-     * 补全待确认申报
-     *
-     * @return
-     */
     @GetMapping("/queryNeedConfirmCompletedApplyIndex.html")
     @ApiOperation("菜单-补全待确认申报")
     public ModelAndView queryNeedConfirmCompletedApplyIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/queryNeedConfirmCompletedApplyIndex");
-        return modelAndView;
+        return new ModelAndView("view/queryNeedConfirmCompletedApplyIndex");
     }
 
-    /**
-     * 取件登记
-     *
-     * @return
-     */
     @GetMapping("/queryPickupCheck.html")
     @ApiOperation("菜单-取件登记")
     public ModelAndView queryPickupCheckIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/queryPickupCheck");
-        return modelAndView;
+        return new ModelAndView("view/queryPickupCheck");
     }
 
-    /**
-     * 取件登记-窗口取件
-     * 唐山需求
-     *
-     * @return
-     */
     @GetMapping("/queryPickupCheckWin.html")
-    @ApiOperation("菜单-取件登记")
+    @ApiOperation("菜单-窗口取件")
     public ModelAndView queryPickupCheckWinIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/queryPickupCheckWin");
-        return modelAndView;
+        return new ModelAndView("view/queryPickupCheckWin");
     }
 
-    /**
-     * 取件登记-快递取件
-     * 唐山需求
-     *
-     * @return
-     */
     @GetMapping("/queryPickupCheckExpress.html")
-    @ApiOperation("菜单-取件登记")
+    @ApiOperation("菜单-邮寄取件")
     public ModelAndView queryPickupCheckExpressIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/queryPickupCheckExpress");
-        return modelAndView;
+        return new ModelAndView("view/queryPickupCheckExpress");
     }
 
-    /**
-     * 取件登记-已取件
-     *
-     * @return
-     */
     @GetMapping("/queryPickupCheckFinish.html")
     @ApiOperation("菜单-取件登记-已取件")
     public ModelAndView queryPickupCheckFinishIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/queryPickupCheckFinish");
-        return modelAndView;
+        return new ModelAndView("view/queryPickupCheckFinish");
     }
 
-    /**
-     * 网上已预审
-     *
-     * @return
-     */
     @GetMapping("/queryDoneliminaryTasksIndex.html")
     @ApiOperation("菜单-网上已预审")
     public ModelAndView queryDoneliminaryTasksIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/queryDoneliminaryTasksIndex");
-        return modelAndView;
+        return new ModelAndView("view/queryDoneliminaryTasksIndex");
     }
 
-    /**
-     * 特殊程序件
-     *
-     * @return
-     */
     @GetMapping("/querySpecialProcedureTasksIndex.html")
     @ApiOperation("菜单-特殊程序件")
     public ModelAndView querySpecialProcedureTasksIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/querySpecialProcedureTasksIndex");
-        return modelAndView;
+        return new ModelAndView("view/querySpecialProcedureTasksIndex");
     }
 
 
-    /**
-     * 全局项目库
-     *
-     * @return
-     */
     @GetMapping("/queryGlobalProjectInfoIndex.html")
     @ApiOperation("菜单-全局项目库")
     public ModelAndView queryGlobalProjectInfoIndex() {
@@ -541,90 +344,74 @@ public class AplanmisPageIndexController {
     @GetMapping("/queryItemDisgreeIndex.html")
     @ApiOperation("菜单-办结（不通过）-部门")
     public ModelAndView itemDisgreeIndex() {
-
-        ModelAndView modelAndView = new ModelAndView("view/queryItemDisgreeIndex");
-        return modelAndView;
+        return new ModelAndView("view/queryItemDisgreeIndex");
     }
 
     @GetMapping("/queryItemOutScopeIndex.html")
     @ApiOperation("菜单-不予受理(部门)")
     public ModelAndView itemOutScopeIndex() {
-
-        ModelAndView modelAndView = new ModelAndView("view/queryItemOutScopeIndex");
-        return modelAndView;
+        return new ModelAndView("view/queryItemOutScopeIndex");
     }
 
     @GetMapping("/queryItemAgreeToleranceIndex.html")
     @ApiOperation("菜单-容缺通过件")
     public ModelAndView itemAgreeToleranceIndex() {
-
-        ModelAndView modelAndView = new ModelAndView("view/queryItemAgreeToleranceIndex");
-        return modelAndView;
+        return new ModelAndView("view/queryItemAgreeToleranceIndex");
     }
 
     @GetMapping("/queryItemToleranceAcceptIndex.html")
     @ApiOperation("菜单-容缺受理件")
     public ModelAndView itemToleranceAcceptIndex() {
-
-        ModelAndView modelAndView = new ModelAndView("view/queryItemToleranceAcceptIndex");
-        return modelAndView;
+        return new ModelAndView("view/queryItemToleranceAcceptIndex");
     }
 
     @GetMapping("/queryUnCompleteFlowIndex.html")
     @ApiOperation("菜单-未完成流程")
     public ModelAndView queryUnCompleteFlowIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/queryUnCompleteFlowIndex");
-        return modelAndView;
+        return new ModelAndView("view/queryUnCompleteFlowIndex");
     }
 
     @GetMapping("/queryGlobalUnitInfoIndex.html")
     @ApiOperation("全局库-全局单位库")
     public ModelAndView queryGlobalUnitInfoIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/queryGlobalUnitInfoIndex");
-        return modelAndView;
+        return new ModelAndView("view/queryGlobalUnitInfoIndex");
     }
 
     @GetMapping("/queryUnConfirmItemCorrectTasksIndex.html")
     @ApiOperation("菜单-补正待确认件")
     public ModelAndView queryUnConfirmItemCorrectTasksIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/queryUnConfirmItemCorrectTasksIndex");
-        return modelAndView;
+        return new ModelAndView("view/queryUnConfirmItemCorrectTasksIndex");
     }
 
     @GetMapping("/queryGlobalLinkmanInfoIndex.html")
     @ApiOperation("全局库-全局人员库")
     public ModelAndView queryGlobalLinkmanInfoIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/queryGlobalLinkmanInfoIndex");
-        return modelAndView;
+        return new ModelAndView("view/queryGlobalLinkmanInfoIndex");
     }
 
 
     @GetMapping("/querySeriesApplyIndex.html")
     @ApiOperation("菜单-单项申报")
     public ModelAndView querySeriesApplyIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/querySeriesApplyIndex");
-        return modelAndView;
+        return new ModelAndView("view/querySeriesApplyIndex");
     }
 
     @GetMapping("/queryAgentApplyIndex.html")
     @ApiOperation("菜单-中介事项列表视图")
     public ModelAndView queryAgentApplyIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/queryAgentApplyIndex");
-        return modelAndView;
+        return new ModelAndView("view/queryAgentApplyIndex");
     }
 
     @GetMapping("/queryMyDraftsIndex.html")
     @ApiOperation("菜单-我的草稿箱")
     public ModelAndView queryMyDraftsIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/queryMyDraftsIndex");
-        return modelAndView;
+        return new ModelAndView("view/queryMyDraftsIndex");
     }
 
     @GetMapping("/queryWindowDraftsIndex.html")
     @ApiOperation("菜单-窗口草稿箱")
     public ModelAndView queryWindowDraftsIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/queryWindowDraftsIndex");
-        return modelAndView;
+        return new ModelAndView("view/queryWindowDraftsIndex");
     }
 
     @GetMapping("/queryWindowWarnApplyIndex.html")
@@ -670,24 +457,13 @@ public class AplanmisPageIndexController {
         return modelAndView;
     }
 
-    /**
-     * 窗口经办办件
-     *
-     * @return
-     */
     @GetMapping("/queryWindowPartsIndex.html")
     @ApiOperation("菜单-窗口经办办件")
     public ModelAndView queryWindowPartsIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/queryWindowPartsIndex");
-        return modelAndView;
+        return new ModelAndView("view/queryWindowPartsIndex");
     }
 
 
-    /**
-     * 行政区划项目
-     *
-     * @return
-     */
     @GetMapping("/queryRegionProjectInfoIndex.html")
     @ApiOperation("菜单-行政区划项目")
     public ModelAndView queryRegionProjectInfoIndex() {
@@ -698,11 +474,6 @@ public class AplanmisPageIndexController {
         return modelAndView;
     }
 
-    /**
-     * 部门经办项目
-     *
-     * @return
-     */
     @GetMapping("/queryOrgProjectInfoIndex.html")
     @ApiOperation("菜单-部门经办项目")
     public ModelAndView queryOrgProjectInfoIndex() {
@@ -713,11 +484,6 @@ public class AplanmisPageIndexController {
         return modelAndView;
     }
 
-    /**
-     * 我经办项目库
-     *
-     * @return
-     */
     @GetMapping("/queryHandlerProjectInfoIndex.html")
     @ApiOperation("菜单-我经办项目")
     public ModelAndView queryHandlerProjectInfoIndex() {
@@ -827,15 +593,9 @@ public class AplanmisPageIndexController {
     @GetMapping("/queryWindowItemOutScopeIndex.html")
     @ApiOperation("菜单-不予受理办件(窗口)")
     public ModelAndView queryWindowItemOutScopeIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/queryWindowItemOutScopeIndex");
-        return modelAndView;
+        return new ModelAndView("view/queryWindowItemOutScopeIndex");
     }
 
-    /**
-     * 阶段已办结的工程项目
-     *
-     * @return
-     */
     @GetMapping("/queryStageConcludedApplyInfo/{stageIndex}/index.html")
     @ApiOperation("菜单-阶段已办结的工程项目")
     public ModelAndView queryStageConcludedApplyInfo(@PathVariable("stageIndex") int stageIndex) {
@@ -848,71 +608,36 @@ public class AplanmisPageIndexController {
     }
 
 
-    /**
-     * 菜单-上传服务结果
-     * 中介超市服务结果上传列表页
-     *
-     * @return
-     */
     @GetMapping("/queryUploadServiceResultIndex.html")
     @ApiOperation("菜单-中介事项上传服务结果")
     public ModelAndView queryuUloadServiceResultIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/queryUploadServiceResultIndex");
-        return modelAndView;
+        return new ModelAndView("view/queryUploadServiceResultIndex");
     }
 
-    /**
-     * 菜单-意见征求列表
-     *
-     * @return
-     */
     @GetMapping("/solicitOpinionIndex.html")
     @ApiOperation("菜单-意见征求")
     public ModelAndView SolicitOpinionIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/solicitOptionIndex.html");
-        return modelAndView;
+        return new ModelAndView("view/solicitOptionIndex.html");
     }
 
-    /**
-     * 菜单-一次征询列表
-     *
-     * @return onceConsultIndex.html
-     */
     @GetMapping("/onceConsultIndex.html")
     @ApiOperation("菜单-一次征询列表")
     public ModelAndView onceConsultIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/onceConsultIndex.html");
-        return modelAndView;
+        return new ModelAndView("view/onceConsultIndex.html");
     }
 
-    /**
-     * 菜单-联合评审列表
-     *
-     * @return jointReviewIndex.html
-     */
     @GetMapping("/jointReviewIndex.html")
     @ApiOperation("菜单-联合评审列表")
     public ModelAndView jointReviewIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/jointReviewIndex.html");
-        return modelAndView;
+        return new ModelAndView("view/jointReviewIndex.html");
     }
 
-    /**
-     * 菜单-部门辅导列表
-     *
-     * @return departGuideIndex.html
-     */
     @GetMapping("/departGuideIndex.html")
     @ApiOperation("菜单-联合评审列表")
     public ModelAndView departGuideReviewIndex() {
-        ModelAndView modelAndView = new ModelAndView("view/departGuideIndex.html");
-        return modelAndView;
+        return new ModelAndView("view/departGuideIndex.html");
     }
 
-    /**
-     * 项目代办
-     * @return
-     */
     @GetMapping("/queryAllAgencyDoTasksIndex.html")
     @ApiOperation("菜单-项目代办-所有")
     public ModelAndView queryAllAgencyDoTasksIndex() {
@@ -920,10 +645,7 @@ public class AplanmisPageIndexController {
         modelAndView.addObject("viewDataCtrl", "0");
         return modelAndView;
     }
-    /**
-     * 项目代办
-     * @return
-     */
+
     @GetMapping("/queryWindowAgencyDoTasksIndex.html")
     @ApiOperation("菜单-项目代办-代办中心")
     public ModelAndView queryWindowAgencyDoTasksIndex() {
@@ -931,10 +653,7 @@ public class AplanmisPageIndexController {
         modelAndView.addObject("viewDataCtrl", "1");
         return modelAndView;
     }
-    /**
-     * 项目代办
-     * @return
-     */
+
     @GetMapping("/queryUserAgencyDoTasksIndex.html")
     @ApiOperation("菜单-项目代办-代办人员")
     public ModelAndView queryUserAgencyDoTasksIndex() {

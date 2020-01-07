@@ -358,7 +358,7 @@ public class ConditionalQueryController {
     }
 
     @GetMapping("/listPickupCheckTasksWin")
-    @ApiOperation(value = "根据查询条件获取窗口待取证列表")//唐山需求
+    @ApiOperation(value = "窗口取件列表")
     public ResultForm listPickupCheckTasksWin(ConditionalQueryRequest conditionalQueryRequest, Page page) {
         try {
             PageInfo doneTasks = conditionalQueryService.listPickupCheckTasksByPageState(conditionalQueryRequest, page, "1");
@@ -370,7 +370,7 @@ public class ConditionalQueryController {
     }
 
     @GetMapping("/listPickupCheckTasksExpress")
-    @ApiOperation(value = "根据查询条件获取待取证列表[邮寄]")
+    @ApiOperation(value = "邮寄取件列表")
     public ResultForm listPickupCheckTasksExpress(ConditionalQueryRequest conditionalQueryRequest, Page page) {
         try {
             PageInfo doneTasks = conditionalQueryService.listPickupCheckTasksByPageState(conditionalQueryRequest, page, "0");
@@ -382,7 +382,7 @@ public class ConditionalQueryController {
     }
 
     @GetMapping("/listPickupCheckTasksFinish")
-    @ApiOperation(value = "根据查询条件获取【出件登记-已取证】列表")
+    @ApiOperation(value = "已取件列表")
     public ResultForm listPickupCheckFinishTasks(ConditionalQueryRequest conditionalQueryRequest, Page page) {
         try {
             PageInfo doneTasks = conditionalQueryService.listPickupCheckTasksByPageFinish(conditionalQueryRequest, page);

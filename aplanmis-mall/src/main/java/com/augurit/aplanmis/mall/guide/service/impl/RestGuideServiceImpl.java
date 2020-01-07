@@ -561,9 +561,13 @@ public class RestGuideServiceImpl implements RestGuideService {
     public RestGuideStateVo getRestGuideStateVo(String itemVerId, String topOrgId) throws Exception {
 
         RestGuideStateVo vo = new RestGuideStateVo();
+        AeaItemBasic aeaItemBasic = aeaItemBasicService.getAeaItemBasicByItemVerId(itemVerId);
+        if (aeaItemBasic==null) throw new IllegalArgumentException("事项不存在");
         //办事指南基本信息
         AeaItemGuide aeaItemGuide = aeaItemGuideService.getAeaItemGuideListByItemVerId(itemVerId,topOrgId);
         BeanUtils.copyProperties(aeaItemGuide,vo);
+        vo.setDeptName(aeaItemBasic.getOrgName());
+
         //情形
         List<AeaItemState> states = aeaItemStateService.listTreeAeaItemStateByItemVerId(itemVerId, null);
         List<AeaItemState> rootAndChildStates = new ArrayList<>();
@@ -583,7 +587,7 @@ public class RestGuideServiceImpl implements RestGuideService {
 
         for (RestGuideStateVo.RestStateInnerVo stateInnerVo : stateInnerVos) {
             //set情形下的材料
-            List<AeaItemMat> mats = aeaItemMatService.getMatListByItemStateIds(new String[]{stateInnerVo.getStateId()});
+            List<AeaItemMat> mats = aeaItemMatService.getMatListByItemStateIds(new String[]{stateInnerVo.getItemStateId()});
             List<RestGuideStateVo.RestStateMatInnerVo> stateMatInnerVos
                     = mats.stream().map(RestGuideStateVo.RestStateMatInnerVo::build).collect(Collectors.toList());
             stateInnerVo.setMats(stateMatInnerVos);
@@ -702,22 +706,11 @@ public class RestGuideServiceImpl implements RestGuideService {
         Set<Integer> indexs = new HashSet<>();
 
         if (vo.getParallelItems()!=null){
-            vo.getParallelItems().stream().forEach(parallelItem->{
-                if (parallelItem.getItems()!=null){
-                    parallelItem.getItems().stream().forEach(item->{
-                        if (item.getItemName().contains(keyword)){
-                            item.setIsSelected("1");
-                            indexs.add(parallelItem.getIndex());
-                        }
-                        item.getResultMats().stream().forEach(resultMat->{
-                            if (resultMat.getAeaMatCertName().contains(keyword)){
-                                item.setIsSelected("1");
-                                indexs.add(parallelItem.getIndex());
-                            }
-                        });
-                    });
-                }
-            });
+            setSelected(keyword, indexs, vo.getParallelItems());
+        }
+
+        if (vo.getSeriItems()!=null){
+            setSelected(keyword, indexs, vo.getSeriItems());
         }
 
         //2.循环步骤一符合条件的阶段index将阶段标记
@@ -735,12 +728,34 @@ public class RestGuideServiceImpl implements RestGuideService {
         }
     }
 
+    private void setSelected(String keyword, Set<Integer> indexs, List<RestItemListVo> seriItems2) {
+        seriItems2.stream().forEach(seriItems -> {
+            if (seriItems.getItems() != null) {
+                seriItems.getItems().stream().forEach(item -> {
+                    if (item.getItemName().contains(keyword)) {
+                        item.setIsSelected("1");
+                        indexs.add(seriItems.getIndex());
+                    }
+                    item.getResultMats().stream().forEach(resultMat -> {
+                        if (resultMat.getAeaMatCertName().contains(keyword)) {
+                            item.setIsSelected("1");
+                            indexs.add(seriItems.getIndex());
+                        }
+                    });
+                });
+            }
+        });
+    }
+
     private RestItemListVo setSssxInfo(AeaItemBasic searchItem, List<AeaItemBasic> parallelItems) {
         RestItemListVo restItemListVo = new RestItemListVo();
         for (AeaItemBasic parallelItem : parallelItems) {
             searchItem.setItemSeq(parallelItem.getItemId());
             List<AeaItemBasic> childItems = aeaItemBasicMapper.listLatestAeaItemBasic(searchItem);
-            if (childItems.size() > 0) parallelItem.setItemVerId(childItems.get(0).getItemVerId());
+            if (childItems.size() > 0) {
+                parallelItem.setItemVerId(childItems.get(0).getItemVerId());
+                parallelItem.setItemName(childItems.get(0).getItemName());
+            }
             List<AeaItemInout> resultMats=aeaHiItemInoutService.getAeaItemInoutMatCertByItemVerId(parallelItem.getItemVerId(),SecurityContext.getCurrentOrgId());
             parallelItem.setResultMats(resultMats);
         }

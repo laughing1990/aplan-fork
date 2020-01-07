@@ -1,11 +1,13 @@
 package com.augurit.aplanmis.common.apply.item;
 
 import com.augurit.agcloud.bpm.common.utils.SpringContextHolder;
+import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.aplanmis.common.domain.AeaHiGuide;
 import com.augurit.aplanmis.common.domain.AeaHiGuideDetail;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaParStage;
+import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.mapper.AeaHiGuideDetailMapper;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import org.slf4j.Logger;
@@ -17,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 部门辅导事项换算handler
@@ -86,12 +89,18 @@ public final class GuideItemPrivilegeComputationHandler extends ItemPrivilegeCom
     // 基于项目属地换算实施事项
     private void projRangeFilter(List<GuideComputedItem> computedItems) {
         List<String> projectAddressRegionIds = SpringContextHolder.getBean(AeaProjInfoService.class).getProjAddressRegion(projInfoId);
+        AeaProjInfo aeaProjInfo = SpringContextHolder.getBean(AeaProjInfoService.class).getAeaProjInfoByProjInfoId(projInfoId);
         computedItems.forEach(item -> {
-            for (ComputedItem.CarryOutItem co : item.getCarryOutItems()) {
-                if (projectAddressRegionIds.contains(co.getRegionId())) {
-                    item.setCurrentCarryOutItem(co);
-                    break;
-                }
+            List<String> regionIds = new ArrayList<>();
+            regionIds.add(aeaProjInfo.getRegionalism());
+            // 根据事项的换算方式过滤实施事项
+            if (Status.OFF.equals(item.getItemExchangeWay())) {
+                regionIds.addAll(projectAddressRegionIds);
+            }
+            List<ComputedItem.CarryOutItem> finalCarryOutItems = item.getCarryOutItems().stream().filter(co -> regionIds.contains(co.getRegionId())).collect(Collectors.toList());
+            item.setCarryOutItems(finalCarryOutItems);
+            if (CollectionUtils.isNotEmpty(finalCarryOutItems)) {
+                item.setCurrentCarryOutItem(finalCarryOutItems.get(0));
             }
         });
     }

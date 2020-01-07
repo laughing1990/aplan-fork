@@ -3,10 +3,7 @@ package com.augurit.aplanmis.mall.userCenter.service;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.mall.main.vo.ItemListVo;
-import com.augurit.aplanmis.mall.userCenter.vo.AeaGuideItemVo;
-import com.augurit.aplanmis.mall.userCenter.vo.StageApplyDataPageVo;
-import com.augurit.aplanmis.mall.userCenter.vo.StageApplyDataVo;
-import com.augurit.aplanmis.mall.userCenter.vo.StageStateParamVo;
+import com.augurit.aplanmis.mall.userCenter.vo.*;
 import io.jsonwebtoken.lang.Assert;
 
 import java.util.List;
@@ -19,7 +16,7 @@ public interface RestParallerApplyService {
      * @param stageId 阶段ID
      * @return
      */
-    ItemListVo listItemAndStateByStageId(String stageId, String projInfoId, String regionalism, String projectAddress,String isSelectState,String isFilterStateItem) throws Exception;
+    ItemListVo listItemAndStateByStageId(String stageId, String projInfoId, String regionalism, String projectAddress,String isSelectItemState,String isFilterStateItem,String rootOrgId) throws Exception;
 
     /**
      * 根据rootOrgId查询因子列表
@@ -51,4 +48,6 @@ public interface RestParallerApplyService {
     List<AeaGuideItemVo> listItemByStageIdAndStateList(StageStateParamVo stageStateParamVo,String isOptionItem) throws Exception;
 
     List<AeaHiGuide> searchGuideApplyListByUnitIdAndUserId(String keyword, String applyState, String s, String userId, int pageNum, int pageSize);
+
+    ApplyIteminstConfirmVo listGuideItemsByApplyinstId(String guideId,String applyinstId,String projInfoId, String isSelectItemState) throws Exception;
 }
