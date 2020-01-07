@@ -1292,7 +1292,7 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
                                     stageNodeData.setSortNo(new Long(sortNo));
                                     stageNodeData.setIsShowItem(Status.ON);
                                     stageNodeData.setIsNode("1");
-                                // 辅线
+                                    // 辅线
                                 }else if(stageCell.getType().contains(BpmnDiagramType.AUXSTAGE.getValue())){
                                     sortNo = stageCell.getType().replaceAll(BpmnDiagramType.AUXSTAGE.getValue(), "");
                                     if(StringUtils.isBlank(sortNo)){
@@ -1469,10 +1469,10 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
 
                     //并联事项
 //                    if(stageItems.size() > 0){
-                        //先从bpmnDiaGram json添加响应的阶段
-                        handleStageJson(stage, cells, i, stageItems, rootOrgId);
-                        //添加事项到json对象
-                        addItemJson(stage.getStageId(), cells, stageItems, stageIdMap, i, "0", rootOrgId,currentStageY, unitMap);
+                    //先从bpmnDiaGram json添加响应的阶段
+                    handleStageJson(stage, cells, i, stageItems, rootOrgId);
+                    //添加事项到json对象
+                    addItemJson(stage.getStageId(), cells, stageItems, stageIdMap, i, "0", rootOrgId,currentStageY, unitMap);
 //                    }
 
                     //并行事项
@@ -1559,7 +1559,7 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
                 if (parallelItems != null && parallelItems.size() > 0) {
                     for (AeaParStageItem item : parallelItems) {
 //                        if (item.getIsCatalog() != null && item.getIsCatalog().equals("1")) {
-                            embeds.add(item.getStageItemId());
+                        embeds.add(item.getStageItemId());
 //                        }
                     }
                 }
@@ -1901,7 +1901,7 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
                 if (relItems != null && relItems.size() > 0) {
                     for (AeaParStageItem item : relItems) {
 //                        if(item.getIsCatalog() != null && item.getIsCatalog().equals("1")){
-                            embeds.add(item.getStageItemId());
+                        embeds.add(item.getStageItemId());
 //                        }
                     }
                 }
@@ -2065,8 +2065,8 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
         List<AeaParTheme> themeList = aeaParThemeMapper.listAeaParTheme(theme);
         if (themeList != null && themeList.size() > 0) {
             List<AeaParStage> stageList = aeaParStageMapper.listTestOrPublishThemeVerRelStage(rootOrgId);
-            for (AeaParTheme themeItem : themeList) {
-                if (stageList != null && stageList.size() > 0) {
+            if (stageList != null && stageList.size() > 0) {
+                for (AeaParTheme themeItem : themeList) {
                     List<AeaParStage> needRemoveStageList = new ArrayList<>();
                     for (AeaParStage stage : stageList) {
                         if (StringUtils.isNotBlank(stage.getThemeId()) && stage.getThemeId().equals(themeItem.getThemeId())) {
@@ -2522,7 +2522,7 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
                 newBeds[embeds.length] = next.getStageId();
                 stageCell.put("embeds", newBeds);
 
-            //  添加辅线对应的事项
+                //  添加辅线对应的事项
                 currentHeightY = currentHeightY+30+5; //多加40标题高度添加辅线和事项间隔
 //                AeaParStage next = iterator2.next();
                 currentHeightY = addItemToJsonAssist(next.getStageId(), cells, stageListMap.get(next), oldAssistItemMap, currentHeightY, unitMap);
@@ -2745,11 +2745,11 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
         while (piterator.hasNext()){
             Map next = (Map) piterator.next();
             if(next.get("type").toString().equals("bpmn.Pool")){
-                    if(next.get("stageIndex").equals(i)){
-                        logger.info("remove parallel stage id:"+next.get("id")+", i:"+i);
-                        piterator.remove();
-                        break;
-                    }
+                if(next.get("stageIndex").equals(i)){
+                    logger.info("remove parallel stage id:"+next.get("id")+", i:"+i);
+                    piterator.remove();
+                    break;
+                }
             }
         }
     }
@@ -3461,7 +3461,7 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
                     Map maxEle = getMaxPositionEleByParent(cells, next.get("id").toString(), "y");
                     int height  = 30;//头部20+10间隔
                     if(maxEle != null){
-                         height = getPosi(maxEle, "y")+getSize(maxEle, "y") - getPosi(next, "y");
+                        height = getPosi(maxEle, "y")+getSize(maxEle, "y") - getPosi(next, "y");
                     }
                     getPosiOrSize(next, "size").put("height", height+activitySpace);
                 }
@@ -3513,7 +3513,7 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
                 maxEle = getMaxPositionEleByParent(cells, (String) next.get("id"), "y");
                 int height = 0;
                 if(maxEle != null){
-                     height = getEleYPlusHeight(maxEle) - getPosi(next, "y")+activitySpace;
+                    height = getEleYPlusHeight(maxEle) - getPosi(next, "y")+activitySpace;
                 }else{
                     if(next.get("type").equals("bpmn.SPool") || next.get("type").equals("bpmn.Pool")){
                         height = 35;
@@ -3599,7 +3599,7 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
                     if(activity != null){
                         modalActi.putAll(activity);
                     }
-                //并行
+                    //并行
                 }else if(isOptionItem.equals("1")){
 
                     Map parallelPool = getParallelPoolByStageId(cells, stage.getStageId());
@@ -3636,7 +3636,7 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
             }
 
             //没添加一个事项，调整一次位置
-           // List<JSONArray> needAjustPosiEles = needAjustPosiEles(cells, getSize(parentPool, "y") + getPosi(parentPool, "y"));
+            // List<JSONArray> needAjustPosiEles = needAjustPosiEles(cells, getSize(parentPool, "y") + getPosi(parentPool, "y"));
 
             if(modalActi.get("id") == null && modalActi.get("type") == null) { //如果主线、辅线、并行下无事项
                 modalActi.putAll(templateActivity);
@@ -3692,7 +3692,7 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
             nItemMap.put("itemId", item.getItemId());
             nItemMap.put("itemVerId", item.getItemId()+"*"+item.getItemVerId());
             nItemMap.put("isOptionItem", isOptionItem);
-             ((Map) modalActi.get("attrs")).put("item", nItemMap);
+            ((Map) modalActi.get("attrs")).put("item", nItemMap);
             setEleToMiddle(modalActi, parentPool);
             modalActi.put("z", (int)parentPool.get("z")+1);
             cells.add(modalActi);
@@ -3842,11 +3842,11 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
             String parentId = null;
             Map  realParent = null;
             if(parentPool.get("type").equals("bpmn.SPool")){
-               realParent = getCellsEleById(parentPool.get("parent").toString(),cells);
-               if (realParent != null){
-                   parentId = realParent.get("id").toString();
-                   whenRemoveEleThenAjustAfterThisEles(cells,parentId, parentPool.get("id").toString(),  getSize(activity,"y")+activitySpace, getPosi(activity, "y"));
-               }
+                realParent = getCellsEleById(parentPool.get("parent").toString(),cells);
+                if (realParent != null){
+                    parentId = realParent.get("id").toString();
+                    whenRemoveEleThenAjustAfterThisEles(cells,parentId, parentPool.get("id").toString(),  getSize(activity,"y")+activitySpace, getPosi(activity, "y"));
+                }
             }else{
                 realParent = parentPool;
             }
