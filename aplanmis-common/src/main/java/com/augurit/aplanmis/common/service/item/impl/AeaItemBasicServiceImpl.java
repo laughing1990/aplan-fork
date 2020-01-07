@@ -24,6 +24,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -57,7 +58,8 @@ public class AeaItemBasicServiceImpl implements AeaItemBasicService {
     private AeaItemStateService aeaItemStateService;
     @Autowired
     private AeaHiItemInoutService aeaHiItemInoutService;
-
+    @Value("${dg.sso.access.platform.org.top-org-id}")
+    protected String topOrgId;
     @Override
     public List<AeaItemBasic> getAeaItemBasicListByStageId(String stageId, String isOptionItem, String projInfoId, String rootOrgId) throws Exception {
 
@@ -99,7 +101,7 @@ public class AeaItemBasicServiceImpl implements AeaItemBasicService {
         if (StringUtils.isBlank(itemVerId)) {
             throw new InvalidParameterException("参数itemVerId为空！");
         }
-        return aeaItemBasicMapper.getAeaItemBasicByItemVerId(itemVerId, SecurityContext.getCurrentOrgId());
+        return aeaItemBasicMapper.getAeaItemBasicByItemVerId(itemVerId, topOrgId);
     }
 
     @Override

@@ -561,9 +561,13 @@ public class RestGuideServiceImpl implements RestGuideService {
     public RestGuideStateVo getRestGuideStateVo(String itemVerId, String topOrgId) throws Exception {
 
         RestGuideStateVo vo = new RestGuideStateVo();
+        AeaItemBasic aeaItemBasic = aeaItemBasicService.getAeaItemBasicByItemVerId(itemVerId);
+        if (aeaItemBasic==null) throw new IllegalArgumentException("事项不存在");
         //办事指南基本信息
         AeaItemGuide aeaItemGuide = aeaItemGuideService.getAeaItemGuideListByItemVerId(itemVerId,topOrgId);
         BeanUtils.copyProperties(aeaItemGuide,vo);
+        vo.setDeptName(aeaItemBasic.getOrgName());
+
         //情形
         List<AeaItemState> states = aeaItemStateService.listTreeAeaItemStateByItemVerId(itemVerId, null);
         List<AeaItemState> rootAndChildStates = new ArrayList<>();
@@ -583,7 +587,7 @@ public class RestGuideServiceImpl implements RestGuideService {
 
         for (RestGuideStateVo.RestStateInnerVo stateInnerVo : stateInnerVos) {
             //set情形下的材料
-            List<AeaItemMat> mats = aeaItemMatService.getMatListByItemStateIds(new String[]{stateInnerVo.getStateId()});
+            List<AeaItemMat> mats = aeaItemMatService.getMatListByItemStateIds(new String[]{stateInnerVo.getItemStateId()});
             List<RestGuideStateVo.RestStateMatInnerVo> stateMatInnerVos
                     = mats.stream().map(RestGuideStateVo.RestStateMatInnerVo::build).collect(Collectors.toList());
             stateInnerVo.setMats(stateMatInnerVos);
@@ -740,7 +744,10 @@ public class RestGuideServiceImpl implements RestGuideService {
         for (AeaItemBasic parallelItem : parallelItems) {
             searchItem.setItemSeq(parallelItem.getItemId());
             List<AeaItemBasic> childItems = aeaItemBasicMapper.listLatestAeaItemBasic(searchItem);
-            if (childItems.size() > 0) parallelItem.setItemVerId(childItems.get(0).getItemVerId());
+            if (childItems.size() > 0) {
+                parallelItem.setItemVerId(childItems.get(0).getItemVerId());
+                parallelItem.setItemName(childItems.get(0).getItemName());
+            }
             List<AeaItemInout> resultMats=aeaHiItemInoutService.getAeaItemInoutMatCertByItemVerId(parallelItem.getItemVerId(),SecurityContext.getCurrentOrgId());
             parallelItem.setResultMats(resultMats);
         }

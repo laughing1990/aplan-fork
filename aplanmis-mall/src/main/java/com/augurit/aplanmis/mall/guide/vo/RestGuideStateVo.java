@@ -17,7 +17,7 @@ public class RestGuideStateVo {
     @ApiModelProperty("实施部门")
     private String deptName;
     @ApiModelProperty("受理权限")
-    private String acceptAccess;
+    private String acceptPriv;
     @ApiModelProperty("情形(包含情形下的材料)列表")
     private List<RestStateInnerVo> states;
     @ApiModelProperty("是否收费")
@@ -37,6 +37,8 @@ public class RestGuideStateVo {
         private String stateName;
         @ApiModelProperty("情形ID")
         private String stateId;
+        @ApiModelProperty("事项情形ID")
+        private String itemStateId;
         @ApiModelProperty("情形索引")
         private String index;
         private List<RestStateMatInnerVo> mats;
@@ -45,6 +47,7 @@ public class RestGuideStateVo {
             RestStateInnerVo vo = new RestStateInnerVo();
             vo.setStateName(aeaItemState.getStateName());
             vo.setStateId(aeaItemState.getItemStateId());
+            vo.setItemStateId(aeaItemState.getItemStateId());
             return vo;
         }
     }
