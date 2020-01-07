@@ -2448,6 +2448,10 @@ var vm = new Vue({
     // 选择并保存主题
     chooseTheme: function (data, index, flag) {
       var themeId = data.themeId;
+      if (this.themeId == themeId){
+        this.selThemeDialogShow = false;
+        return null;
+      }
       var themeName = data.themeName;
       this.statusLineList = [];
       this.statusList = [];
@@ -3091,6 +3095,10 @@ var vm = new Vue({
     },
     // 点击选择申报阶段
     selStatus: function (data, index, stageId, isSelItem, optFlag) {
+      if (optFlag == 'guideFlag' && this.isGuidePage){
+        this.$message('部门辅导不可修改申报所属阶段');
+        return null;
+      }
       this.isSelItem = isSelItem;
       this.statusActiveIndex = index;
       this.itemVerIdsStringAll = [];
@@ -3146,7 +3154,7 @@ var vm = new Vue({
         type: 'get',
         data: param,
       }, function (result) {
-        if (result.success) {
+        if (result.success||_that.isGuidePage) {
           _that.loading = false;
           _that.getStatusStateMats('', '', stageId, '', true);  // 获取材料情形列表
           if (data.useOneForm == 1) {
@@ -6672,6 +6680,7 @@ var vm = new Vue({
     },
     // 一张表单得到所有的表单信息
     getAllForms: function (stageId) {
+      if (this.isGuidePage) return null;
       var vm = this;
       var itemVerId = [];
       // try{
