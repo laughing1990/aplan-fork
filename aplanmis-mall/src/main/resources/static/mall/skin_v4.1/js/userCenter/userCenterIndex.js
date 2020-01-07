@@ -122,7 +122,7 @@ var userCenter = (function () {
                             select: false,
                         },*/
                       {
-                        name: '部门辅导',
+                        name: '部门确认',
                         value: 'guideList',
                         select: false,
                       },

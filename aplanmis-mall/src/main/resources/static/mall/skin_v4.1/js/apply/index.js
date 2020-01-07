@@ -405,6 +405,33 @@ var parallelDeclare = new Vue({
       stageListBefore: [], // 智能引导选择阶段
       stageSelVal: {}, // 选择阶段信息
       guideCheckboxAnswer: [],
+      projSplit: false, // 是否可拆分子工程
+      isSplitDiaShow: false, // 是否展示拆分工程弹窗
+      projSplitForm: {}, // 拆分工程数据
+      rulesSplitForm: {
+        stageNo: [
+          { required: true, message: '请选择所处阶段', trigger: 'change' },
+        ],
+        frontStageGcbm: [
+          { required: true, message: '请输入前阶段关联工程代码', trigger: 'blur' },
+        ],
+        projName: [
+          { required: true, message: '请输入单项工程名称', trigger: 'blur' },
+        ],
+        investSum: [
+          { required: true, message: '请输入单项工程投资额', trigger: 'blur' },
+        ],
+        buildAreaSum: [
+          { required: true, message: '请输入总建筑面积', trigger: 'blur' },
+        ],
+        xmYdmj: [
+          { required: true, message: '请输入用地面积', trigger: 'blur' },
+        ],
+        scaleContent: [
+          { required: true, message: '请输入建设规模及内容', trigger: 'blur' },
+        ]
+      },
+      dybzspjdxh: '',
     }
   },
   mounted: function () {
@@ -438,6 +465,102 @@ var parallelDeclare = new Vue({
     }
   },
   methods: {
+    // 显示拆分工程
+    getSplitShow: function(){
+      this.isSplitDiaShow = true;
+      console.log(this.dybzspjdxh);
+      if(this.dybzspjdxh&&this.dybzspjdxh!=''){
+        if(this.dybzspjdxh.indexOf('2')>-1){
+          this.projSplitForm.stageNo = '1';
+        }
+        if(this.dybzspjdxh.indexOf('3')>-1){
+          this.projSplitForm.stageNo = '2';
+        }
+      }
+      this.getFrontStageProjInfo();
+    },
+    // 查询上一阶段的工程信息
+    getFrontStageProjInfo: function(){
+      var _that = this;
+      var params = {
+        localCode: _that.projInfoDetail.localCode,
+        stageNo: _that.projSplitForm.stageNo,
+        themeId: _that.themeId
+      }
+      request('', {
+        url: ctx + 'rest/user/proj/split/getFrontStageProjInfo',
+        type: 'get',
+        data: params
+      }, function (res) {
+        if (res.success) {
+          console.log(res);
+          _that.projSplitForm.frontStageGcbm = res.content;
+        }else {
+          _that.$message({
+            message: res.message?res.message:'查询失败！',
+            type: 'error'
+          })
+        }
+      },function(res){
+        _that.$message({
+          message: res.message?res.message:'查询失败！',
+          type: 'error'
+        })
+      });
+    },
+    // 拆分工程申请
+    saveSplitStart: function(){
+      var _that = this;
+      var params = {
+        "buildAreaSum": 0,
+        "foreignManagement": "",
+        "frontStageGcbm": "",
+        "frontStageProjInfoId": "",
+        "investSum": 0,
+        "linkmanInfoId": "",
+        "parentProjInfoId": "",
+        "projName": "",
+        "scaleContent": "",
+        "stageId": "",
+        "stageNo": "",
+        "unitInfoId": "",
+        "xmYdmj": 0
+      };
+      _that.projSplitForm.parentProjInfoId = _that.projInfoId;
+      _that.projSplitForm.frontStageProjInfoId = _that.projInfoId;
+      _that.projSplitForm.linkmanInfoId = _that.userInfoId;
+      _that.projSplitForm.stageId = _that.stageId;
+      _that.projSplitForm.unitInfoId = _that.unitInfoId;
+      _that.$refs['projSplitForm'].validate(function (valid) {
+        if (valid) {
+          request('', {
+            url: ctx + 'rest/user/proj/split/start',
+            type: 'post',
+            ContentType: 'application/json',
+            data: JSON.stringify(_that.projSplitForm)
+          }, function (res) {
+            if (res.success) {
+              console.log(res);
+            }else {
+              _that.$message({
+                message: res.message?res.message:'查询失败！',
+                type: 'error'
+              })
+            }
+          },function(res){
+            _that.$message({
+              message: res.message?res.message:'查询失败！',
+              type: 'error'
+            })
+          });
+        }else {
+          _that.$message({
+            message: '请完善单项工程信息！',
+            type: 'error'
+          })
+        }
+      });
+    },
     // 智能引导获取事项一单清
     getItemListByGuide: function () {
       debugger;
@@ -1927,11 +2050,18 @@ var parallelDeclare = new Vue({
         alertMsg('', '该主题下无可申报事项！', '关闭', 'warning', true);
         return false;
       }
+      debugger;
+      if(index>0&&(index<this.stageList.length-1)){
+        this.projSplit = true;
+      }else {
+        this.projSplit = false;
+      }
       this.isSelItem = data.isSelItem;
       this.statusActiveIndex = index;
       this.stageId = data.stageId;
       this.stageinstId = data.stageinstId?data.stageinstId:this.stageinstId;
       this.stageName = data.stageName;
+      this.dybzspjdxh = data.dybzspjdxh;
       this.useOneForm = data.useOneForm;
       this.themeVerId = data.themeVerId;
       if (data && (data.handWay == 0)) {

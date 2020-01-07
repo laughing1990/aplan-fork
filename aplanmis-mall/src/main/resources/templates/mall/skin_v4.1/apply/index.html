@@ -879,6 +879,10 @@
           <span class="not-done" v-if="item.isDoing==0">未办理</span>
         </div>
       </div>
+      <p class="split-title" v-show="projSplit">
+        <span>您可以依据项目/工程的实际情况拆分新的工程，拆分新工程请点击：</span>
+        <a href="javascript:;" @click="getSplitShow()"><img src="../../../../static/mall/skin_v4.1/images/apply/u1608.png" th:src="@{/mall/skin_v4.1/images/apply/u1608.png}" alt="">拆分工程</a>
+      </p>
 
       <!-- 并联审批事项列表 -->
       <h4 class="mt60">
@@ -2093,6 +2097,131 @@
       </span>
     </el-dialog>
     <!--是否需要智能引导 end-->
+    <!--拆分工程 start-->
+    <el-dialog title="拆分工程" :visible.sync="isSplitDiaShow" width="1200px"
+               class="is-split-dia" @close="resetForm('projSplitForm')">
+      <div class="split-form">
+        <el-form :model="projInfoDetail" :inline="true" label-width="180px">
+          <p class="header-title mb20">项目信息</p>
+          <el-form-item label="项目代码：" class="wt100">
+            <el-input style="width: 900px" disabled v-model="projInfoDetail.localCode"></el-input>
+          </el-form-item>
+          <el-form-item label="项目名称：">
+            <el-input disabled v-model="projInfoDetail.projName"></el-input>
+          </el-form-item>
+          <el-form-item label="项目总投资（万元）：">
+            <el-input disabled v-model="projInfoDetail.investSum"></el-input>
+          </el-form-item>
+        </el-form>
+        <el-form :model="projSplitForm" :inline="true" ref="projSplitForm" label-width="180px" :rules="rulesSplitForm">
+          <p class="header-title mt20 mb20">单项工程信息</p>
+          <el-form-item label="所处阶段：" prop="stageNo">
+            <el-select v-model="projSplitForm.stageNo" placeholder="请选择所处阶段">
+              <el-option label="工程建设许可阶段" value="1"></el-option>
+              <el-option label="施工许可阶段" value="2"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="前阶段关联工程代码：" prop="frontStageGcbm">
+            <el-input v-model="projSplitForm.frontStageGcbm" placeholder="请输入前阶段关联工程代码"></el-input>
+          </el-form-item>
+          <el-form-item label="单项工程名称：" prop="projName">
+            <el-input v-model="projSplitForm.projName" placeholder="请输入单项工程名称"></el-input>
+          </el-form-item>
+          <el-form-item label="工程范围：">
+            <el-input v-model="projSplitForm.foreignManagement" placeholder="请输入工程范围"></el-input>
+          </el-form-item>
+          <el-form-item label="单项工程投资额：" prop="investSum">
+            <el-input v-model="projSplitForm.investSum" placeholder="请输入单项工程投资额"></el-input>
+          </el-form-item>
+          <el-form-item label="单项工程建设规模：" prop="scaleContent" class="wt100">
+            <el-input type="textarea" style="width: 900px" v-model="projSplitForm.scaleContent" placeholder="请输入单项工程建设规模及内容"></el-input>
+          </el-form-item>
+          <el-form-item label="用地面积(㎡)：" prop="xmYdmj">
+            <el-input v-model="projSplitForm.xmYdmj" placeholder="请输入用地面积(㎡)"></el-input>
+          </el-form-item>
+          <el-form-item label="建筑面积(㎡)：" prop="buildAreaSum">
+            <el-input v-model="projSplitForm.buildAreaSum" placeholder="请输入建筑面积(㎡)"></el-input>
+          </el-form-item>
+        </el-form>
+        <el-form :model="applyObjectInfo" :inline="true" label-width="180px">
+          <p class="header-title mt20 mb20">申报单位信息</p>
+          <template v-if="applyObjectInfo.role==0">
+            <el-form-item label="申请人">
+              <el-input disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanName" placeholder="申请人"></el-input>
+            </el-form-item>
+            <el-form-item label="身份证">
+              <el-input disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanCertNo" placeholder="身份证"></el-input>
+            </el-form-item>
+            <el-form-item label="联系电话">
+              <el-input v-model="applyObjectInfo.aeaLinkmanInfo.linkmanMobilePhone" placeholder="联系电话"></el-input>
+            </el-form-item>
+            <el-form-item label="联系邮箱">
+              <el-input disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanMail" placeholder="联系邮箱"></el-input>
+            </el-form-item>
+          </template>
+          <template v-if="applyObjectInfo.role==2">
+            <div class="clearfix">
+              <el-form-item label="企业名称" required>
+                <el-select v-model="applyObjectInfo.aeaUnitInfo.applicant"
+                           filterable placeholder="请选企业单位">
+                  <el-option
+                    v-for="item in aeaUnitList"
+                    :key="item.unitInfoId"
+                    @click.native="querySelentUnit(item)"
+                    :label="item.applicant"
+                    :value="item.applicant">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="统一社会信用代码" required>
+                <el-input disabled v-model="applyObjectInfo.aeaUnitInfo.unifiedSocialCreditCode" placeholder="统一社会信用代码">
+                </el-input>
+              </el-form-item>
+              <el-form-item label="法定代表人" requireds>
+                <el-input disabled v-model="applyObjectInfo.aeaUnitInfo.idrepresentative" placeholder="企业法定代表人"></el-input>
+              </el-form-item>
+              <el-form-item label="法定代表人证件号">
+                <el-input disabled v-model="applyObjectInfo.aeaUnitInfo.idno" placeholder="法定代表人证件号"></el-input>
+              </el-form-item>
+              <el-form-item class="linkman-name" label="联系人姓名" prop="linkmanName" required>
+                <el-select v-model="applyObjectInfo.aeaLinkmanInfo.linkmanName" remote
+                           @click.native="getLinkManListByUnitId(applyObjectInfo,applyObjectInfo.aeaUnitInfo.unitInfoId,'applyObjectInfo')"
+                           required placeholder="--请选择--">
+                  <el-option class="select-option-ul"
+                             v-for="(item2, index2) in applyObjectInfo.linkmanInfoList"
+                             :key="index2"
+                             :label="item2.linkmanName"
+                             @click.native="queryUnitLinkMan(item2,applyObjectInfo.aeaUnitInfo)"
+                             :value="item2.linkmanName">
+                    <span class="fl">{{ item2.linkmanName }}</span>
+                    <span class="fr el-icon-delete" @click.stop="delLinkman(item2,applyObjectInfo.aeaLinkmanInfo,index)"></span>
+                  </el-option>
+                </el-select>
+                <el-button type="primary" class="add-link-man" icon="el-icon-circle-plus-outline"
+                           @click="addLinkman('',applyObjectInfo.aeaUnitInfo);" title="新增"></el-button>
+                <el-button icon="el-icon-edit-outline" type="primary" class="item-right-btn"
+                           @click="addLinkman(applyObjectInfo.aeaLinkmanInfo,applyObjectInfo.aeaUnitInfo);" title="编辑"></el-button>
+              </el-form-item>
+              <el-form-item label="联系方式" prop="linkmanMobilePhone" required>
+                <el-input disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanMobilePhone" placeholder="联系人联系方式"></el-input>
+              </el-form-item>
+              <el-form-item label="联系人身份证" prop="linkmanCertNo" required>
+                <el-input disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanCertNo" placeholder="联系人身份证"></el-input>
+              </el-form-item>
+              <el-form-item label="联系人邮箱" prop="linkmanMail">
+                <el-input disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanMail" placeholder="联系人邮箱"></el-input>
+              </el-form-item>
+            </div>
+          </template>
+        </el-form>
+      </div>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="isSplitDiaShow = false">取 消</el-button>
+        <el-button type="primary" @click="saveSplitStart()">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!--拆分工程 end-->
   </div>
 </div>
 
