@@ -65,6 +65,17 @@ public class ParallelApproveItemVo {
     @ApiModelProperty(name = "dueNum", value = "承诺时限'", dataType = "string")
     private Double dueNum;
 
+    @ApiModelProperty(name = "isITSel", value = "是否智能引导选择'", dataType = "string")
+    private String isITSel;
+    @ApiModelProperty(name = "isApplySel", value = "是否申请人选择'", dataType = "string")
+    private String isApplySel;
+    @ApiModelProperty(name = "applySelOpinion", value = "申请人意见'", dataType = "string")
+    private String applySelOpinion;
+    @ApiModelProperty(name = "isOrgSel", value = "是否部门选择'", dataType = "string")
+    private String isOrgSel;
+    @ApiModelProperty(name = "orgSelOpinion", value = "部门意见'", dataType = "string")
+    private String orgSelOpinion;
+
     public static ParallelApproveItemVo build(AeaItemBasic aeaItemBasic) {
         Assert.notNull(aeaItemBasic, "事项基本信息不能为空");
 

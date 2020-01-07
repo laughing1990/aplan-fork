@@ -2464,6 +2464,12 @@ textarea {
 .au-form .el-collapse-item__wrap{
   padding: 20px 20px 0px 5px;
 }
+.is-audit .right-bottom-btn{
+  right: 22px;
+}
+.is-audit .status-img-item{
+  cursor: default;
+}
 /*部门辅导end*/
 
 

@@ -215,9 +215,9 @@
 
         </section>
     </div>
-    <el-dialog title="单事项办事指南" :visible.sync="singleDialog" width="1000px;" v-loading="singleLoading" top="10vh">
+    <el-dialog title="单事项办事指南" :visible.sync="singleDialog" width="1000px;" top="10vh">
         <p class="single-title"> {{itemName ||'建设项目选址意见书核准'}}</p>
-        <div class="single-body" style="height: 600px;padding-left: 10px;">
+        <div class="single-body" style="height: 600px;padding-left: 10px;" v-loading="singleLoading">
             <el-scrollbar style="height: 100%;">
             <div class="item">
                 <p class="p-header-phase1"> 受理范围</p>
@@ -285,7 +285,7 @@
     </el-dialog>
 </div>
 
-<script src="../../static/mall/js/guide/viewer.min.js" th:src="@{/mall/skin_v4.1/js/guide/viewer.min.js}" type="text/javascript"></script>
+<!--<script src="../../static/mall/js/guide/viewer.min.js" th:src="@{/mall/skin_v4.1/js/guide/viewer.min.js}" type="text/javascript"></script>-->
 <script src="../../static/mall/js/guide/guideIndex.js" th:src="@{/mall/skin_v4.1/js/guide/guideIndex.js}" type="text/javascript"></script>
 
 </body>
