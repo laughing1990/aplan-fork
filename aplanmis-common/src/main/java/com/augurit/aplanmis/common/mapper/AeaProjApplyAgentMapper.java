@@ -23,4 +23,6 @@ public interface AeaProjApplyAgentMapper {
 
     public List<AeaProjApplyAgent> listAeaProjApplyAgentByConditional(AeaProjApplyAgent aeaProjApplyAgent);
 
+    public AeaProjApplyAgent getAgencyAgreementDetail(@Param("applyAgentId") String applyAgentId);
+
 }

@@ -4,13 +4,11 @@ package com.augurit.aplanmis.common.service.receive.utils;
 import com.augurit.aplanmis.common.service.receive.constant.ReceiveConstant;
 import com.augurit.aplanmis.common.service.receive.vo.MatCorrectVo;
 import com.augurit.aplanmis.common.service.receive.vo.ReceiveBaseVo;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
+import lombok.Data;
 import org.springframework.beans.BeanUtils;
-
+import java.util.List;
 
 //pdf回执模板工具类
 public class ReceivePDFUtils {
@@ -51,6 +49,39 @@ public class ReceivePDFUtils {
         Paragraph paragraph = new Paragraph(content, font);
         paragraph.setIndentationLeft(30);
         document.add(paragraph);
+    }
+
+    //设置段落首行缩进两格
+    public static void twoSpacing(String content, Document document, Font font,Float leading) throws Exception {
+        Paragraph paragraph = new Paragraph(content, font);
+        paragraph.setLeading(leading);
+        paragraph.setFirstLineIndent(30);
+        document.add(paragraph);
+    }
+    //设置段落首行缩进两格
+    public static void twoSpacingConcatUnderLineChunk(String content,String chunkContent, Document document, Font font,Float leading) throws Exception {
+        Paragraph paragraph = new Paragraph(content, font);
+        paragraph.setLeading(leading);
+        paragraph.setFirstLineIndent(30);
+        paragraph.add(ReceivePDFUtils.getUnderLineChunk(chunkContent,font));
+        document.add(paragraph);
+    }
+
+    //设置段落首行缩进两格
+    public static void twoSpacingConcatUnderLineChunk(List<ParagraphCentent> contents, Document document, Font font, Float leading) throws Exception {
+        if(contents != null && contents.size() > 0){
+            Paragraph paragraph = new Paragraph("", font);
+            paragraph.setLeading(leading);
+            paragraph.setFirstLineIndent(30);
+            for (ParagraphCentent centent:contents){
+                if(centent.isUnderLine){
+                    paragraph.add(ReceivePDFUtils.getUnderLineChunk(centent.centent,font));
+                }else {
+                    paragraph.add(centent.centent);
+                }
+            }
+            document.add(paragraph);
+        }
     }
 
     public static void indentationParagraph(String content, Document document, Font font) throws Exception {
@@ -114,6 +145,31 @@ public class ReceivePDFUtils {
         PdfPCell cell = new PdfPCell(new Paragraph(content, font));
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);//水平居中
         return cell;
+    }
+
+    /**
+     * 获取带下划线的内容块
+     * @param content
+     * @param font
+     * @return
+     */
+    public static Chunk getUnderLineChunk(String content, Font font){
+        Chunk chunk = new Chunk(content,font);
+        chunk.setUnderline(0.5f,-3f);
+        return chunk;
+    }
+
+    /**
+     * 段落内容
+     */
+    @Data
+    static class  ParagraphCentent{
+        private boolean isUnderLine;
+        private String centent;
+        public ParagraphCentent(boolean isUnderLine, String centent) {
+            this.isUnderLine = isUnderLine;
+            this.centent = centent;
+        }
     }
 
 }

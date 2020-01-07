@@ -16,6 +16,8 @@
     AGENT_USER_ID  agentUserId,
     AGENT_USER_NAME  agentUserName,
     AGENT_USER_MOBILE  agentUserMobile,
+    AGREEMENT_CODE  agreementCode,
+    AGREEMENT_SIGN_TIME agreementSignTime,
     START_TIME  startTime,
     END_TIME  endTime,
     CREATER  creater,
@@ -37,6 +39,8 @@
         ${alias}.AGENT_USER_ID  agentUserId,
         ${alias}.AGENT_USER_NAME  agentUserName,
         ${alias}.AGENT_USER_MOBILE  agentUserMobile,
+        ${alias}.AGREEMENT_CODE  agreementCode,
+        ${alias}.AGREEMENT_SIGN_TIME agreementSignTime,
         ${alias}.START_TIME  startTime,
         ${alias}.END_TIME  endTime,
         ${alias}.CREATER  creater,
@@ -53,6 +57,24 @@
     from    AEA_PROJ_APPLY_AGENT
     where    APPLY_AGENT_ID = #{id}
 </select>
+
+    <select id="getAgencyAgreementDetail" resultType="AeaProjApplyAgent" >
+        select
+        <include refid="alias_allColumns">
+            <property name="alias" value="agent"/>
+        </include>,
+        proj.PROJ_NAME as projName,
+        unit.APPLICANT as unitName,
+        win.WINDOW_NAME as windowName,
+        link.LINKMAN_NAME as applyUserName,
+        link.LINKMAN_MOBILE_PHONE as applyUserPhone
+        from AEA_PROJ_APPLY_AGENT agent
+        left join aea_proj_info proj on proj.PROJ_INFO_ID = agent.PROJ_INFO_ID
+        left join aea_unit_info unit on unit.UNIT_INFO_ID = agent.UNIT_INFO_ID
+        left join aea_service_window win on win.WINDOW_ID = agent.WINDOW_ID
+        left join aea_linkman_info link on link.LINKMAN_INFO_ID = agent.APPLY_USER_ID
+        where  agent.APPLY_AGENT_ID = #{applyAgentId}
+    </select>
 
 <!--3 根据条件查询实体list -->
     <select id="listAeaProjApplyAgent" resultType="AeaProjApplyAgent" >
@@ -92,6 +114,12 @@
             </if>
             <if test="agentUserMobile != null" >
                 AND    AGENT_USER_MOBILE = #{agentUserMobile}
+            </if>
+            <if test="agreementCode != null" >
+                AND    AGREEMENT_CODE = #{agreementCode}
+            </if>
+            <if test="agreementSignTime != null" >
+                AND    AGREEMENT_SIGN_TIME = #{agreementSignTime}
             </if>
             <if test="startTime != null" >
                 AND    START_TIME = #{startTime}
@@ -193,6 +221,12 @@
             <if test="agentUserMobile != null" >
                 AND    agent.AGENT_USER_MOBILE = #{agentUserMobile}
             </if>
+            <if test="agreementCode != null" >
+                AND    AGREEMENT_CODE = #{agreementCode}
+            </if>
+            <if test="agreementSignTime != null" >
+                AND    AGREEMENT_SIGN_TIME = #{agreementSignTime}
+            </if>
             <if test="startTime != null" >
                 AND    agent.START_TIME = #{startTime}
             </if>
@@ -228,9 +262,9 @@
 <!--5 新增实体对象 -->
 <insert id="insertAeaProjApplyAgent" parameterType="AeaProjApplyAgent" >
     insert into AEA_PROJ_APPLY_AGENT (
-APPLY_AGENT_ID  ,AGENT_CODE  ,PROJ_INFO_ID  ,UNIT_INFO_ID  ,APPLY_USER_ID  ,AGENT_STAGE_STATE  ,AGENT_APPLY_STATE  ,WINDOW_ID  ,AGENT_USER_ID  ,AGENT_USER_NAME  ,AGENT_USER_MOBILE  ,START_TIME  ,END_TIME  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
+APPLY_AGENT_ID  ,AGENT_CODE  ,PROJ_INFO_ID  ,UNIT_INFO_ID  ,APPLY_USER_ID  ,AGENT_STAGE_STATE  ,AGENT_APPLY_STATE  ,WINDOW_ID  ,AGENT_USER_ID  ,AGENT_USER_NAME  ,AGENT_USER_MOBILE  ,AGREEMENT_CODE  ,AGREEMENT_SIGN_TIME  ,START_TIME  ,END_TIME  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
     )  values  (
-#{applyAgentId},#{agentCode},#{projInfoId},#{unitInfoId},#{applyUserId},#{agentStageState},#{agentApplyState},#{windowId},#{agentUserId},#{agentUserName},#{agentUserMobile},#{startTime},#{endTime},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+#{applyAgentId},#{agentCode},#{projInfoId},#{unitInfoId},#{applyUserId},#{agentStageState},#{agentApplyState},#{windowId},#{agentUserId},#{agentUserName},#{agentUserMobile},#{agreementCode},#{agreementSignTime},#{startTime},#{endTime},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
     )
 </insert>
     <!--6 修改实体对象 -->
@@ -269,6 +303,12 @@ APPLY_AGENT_ID  ,AGENT_CODE  ,PROJ_INFO_ID  ,UNIT_INFO_ID  ,APPLY_USER_ID  ,AGEN
             </if>
             <if test="agentUserMobile != null" >
                 AGENT_USER_MOBILE = #{agentUserMobile},
+            </if>
+            <if test="agreementCode != null" >
+                AGREEMENT_CODE = #{agreementCode},
+            </if>
+            <if test="agreementSignTime != null" >
+                AGREEMENT_SIGN_TIME = #{agreementSignTime},
             </if>
             <if test="startTime != null" >
                 START_TIME = #{startTime},
@@ -314,6 +354,8 @@ APPLY_AGENT_ID  ,AGENT_CODE  ,PROJ_INFO_ID  ,UNIT_INFO_ID  ,APPLY_USER_ID  ,AGEN
         <result property="agentUserId" column="AGENT_USER_ID"/>
         <result property="agentUserName" column="AGENT_USER_NAME"/>
         <result property="agentUserMobile" column="AGENT_USER_MOBILE"/>
+        <result property="agreementCode" column="AGREEMENT_CODE"/>
+        <result property="agreementSignTime" column="AGREEMENT_SIGN_TIME"/>
         <result property="startTime" column="START_TIME"/>
         <result property="endTime" column="END_TIME"/>
         <result property="creater" column="CREATER"/>
