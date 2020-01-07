@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.UUID;
 
 /**
-* 按事项征求配置表-Service服务接口实现类
-*/
+ * 按事项征求配置表-Service服务接口实现类
+ */
 @Service
 @Transactional
 public class AeaSolicitItemServiceImpl implements AeaSolicitItemService {
@@ -182,6 +182,7 @@ public class AeaSolicitItemServiceImpl implements AeaSolicitItemService {
             rootOrgId = SecurityContext.getCurrentOrgId();
         }
         List<ZtreeNode> allNodes = new ArrayList<>();
+        // 添加根节点
         ZtreeNode rootNode = new ZtreeNode();
         rootNode.setId("root");
         rootNode.setName("征求事项");
@@ -190,13 +191,37 @@ public class AeaSolicitItemServiceImpl implements AeaSolicitItemService {
         rootNode.setIsParent(true);
         rootNode.setNocheck(true);
         allNodes.add(rootNode);
-        AeaSolicitItem sSolicitItem = new AeaSolicitItem();
-        sSolicitItem.setRootOrgId(rootOrgId);
-        List<AeaSolicitItem> list = aeaSolicitItemMapper.listAeaSolicitItemRelInfo(sSolicitItem);
-        if(list!=null&&list.size()>0){
-            List<BscDicCodeItem> codeItemList = bscDicCodeMapper.getActiveItemsByTypeCode("SOLICIT_BUS_TYPE", rootOrgId);
-            for(AeaSolicitItem item : list){
-                allNodes.add(convertSolicitItemNode(item, codeItemList));
+        // 征求业务类型
+        List<BscDicCodeItem> codeItemList = bscDicCodeMapper.getActiveItemsByTypeCode("SOLICIT_BUS_TYPE", rootOrgId);
+        if(codeItemList!=null&&codeItemList.size()>0){
+            // 征求事项节点
+            AeaSolicitItem sSolicitItem = new AeaSolicitItem();
+            sSolicitItem.setRootOrgId(rootOrgId);
+            List<AeaSolicitItem> solicitItemList = aeaSolicitItemMapper.listAeaSolicitItemRelInfo(sSolicitItem);
+            if(solicitItemList!=null&&solicitItemList.size()>0){
+                for (BscDicCodeItem codeItem : codeItemList) {
+                    List<AeaSolicitItem> needRemoveList = new ArrayList<>();
+                    for (AeaSolicitItem item : solicitItemList) {
+                        if (StringUtils.isNotBlank(item.getBusType()) && item.getBusType().equals(codeItem.getItemCode())) {
+                            needRemoveList.add(item);
+                            ZtreeNode node = convertSolicitItemNode(item, null);
+                            node.setpId(codeItem.getItemId());
+                            allNodes.add(node);
+                        }
+                    }
+                    if (needRemoveList != null && needRemoveList.size() > 0) {
+                        ZtreeNode itemCodeNode = new ZtreeNode();
+                        itemCodeNode.setId(codeItem.getItemId());
+                        itemCodeNode.setName(codeItem.getItemName());
+                        itemCodeNode.setpId("root");
+                        itemCodeNode.setType("itemCode");
+                        itemCodeNode.setOpen(true);
+                        itemCodeNode.setIsParent(true);
+                        itemCodeNode.setNocheck(true);
+                        allNodes.add(itemCodeNode);
+                    }
+                    solicitItemList.removeAll(needRemoveList);
+                }
             }
         }
         return allNodes;
@@ -212,7 +237,7 @@ public class AeaSolicitItemServiceImpl implements AeaSolicitItemService {
                 if (StringUtils.isNotBlank(item.getGuideOrgName())) {
                     item.setItemName(item.getItemName() + "【" + item.getGuideOrgName() + "】");
                 }
-            // 实施事项
+                // 实施事项
             } else {
                 if (StringUtils.isNotBlank(item.getOrgName())) {
                     item.setItemName(item.getItemName() + "【" + item.getOrgName() + "】");
@@ -235,4 +260,3 @@ public class AeaSolicitItemServiceImpl implements AeaSolicitItemService {
         return node;
     }
 }
-

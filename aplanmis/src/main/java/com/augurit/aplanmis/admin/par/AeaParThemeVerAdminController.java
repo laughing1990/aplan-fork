@@ -53,7 +53,7 @@ public class AeaParThemeVerAdminController {
         }
         aeaParThemeVer.setRootOrgId(SecurityContext.getCurrentOrgId());
         logger.debug("分页查询，过滤条件为{}，查询关键字为{}", aeaParThemeVer);
-        return aeaParThemeVerAdminService.listAeaParThemeVer(aeaParThemeVer);
+        return aeaParThemeVerAdminService.listAeaParThemeVerNoRelThemeInfo(aeaParThemeVer);
     }
 
     /**

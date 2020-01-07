@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>视频教学</title>
-    <link rel="stylesheet" href="../../static/mall/css/main/components/videoTeaching.css" th:href="@{/mall/css/main/components/videoTeaching.css}">
+    <link rel="stylesheet" th:href="@{/mall/skin_v4.1/css/videoTeaching/videoTeaching.css}">
 </head>
 <body>
     <div id="videoTeach" class="regular-wrap">
-        <!-- title -->
-        <section>
+        <!-- title 新Ui废弃，暂时隐藏 -->
+        <section style="display: none;">
             <div class="title-wrap">
                 <div class="mask"></div>
                 <div class="content">
@@ -62,6 +62,6 @@
             </div>
         </section>
     </div>
-    <script src="../../static/mall/js/main/components/videoTeaching.js" th:src="@{/mall/js/main/components/videoTeaching.js}" type="text/javascript"></script>
+    <script th:src="@{/mall/skin_v4.1/js/videoTeaching/videoTeaching.js}" type="text/javascript"></script>
 </body>
 </html>

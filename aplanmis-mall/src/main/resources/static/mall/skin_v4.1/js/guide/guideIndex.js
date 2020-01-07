@@ -33,7 +33,7 @@ var guideIndex = (function () {
             isSinglePage: false,
             guideDetailed: {},
             guideDetailed2: {},
-            memoLoading: false,
+            memoLoading: true,
             singleTable1: false,
             singleTable2: false,
             singleTable3: false,
@@ -320,7 +320,8 @@ var guideIndex = (function () {
                         }
                     }
                 }
-                this.memoLoading = true;
+                vm.memoLoading = true;
+                vm.fullscreenLoading = true;
                 $.ajax({
                     //url: ctx + "rest/guide/stageAndItem/list/" + themeId,
                     url: ctx + "rest/guide/search/stageAndItem/list/"+themeId+"/"+ keyword,
@@ -329,6 +330,7 @@ var guideIndex = (function () {
                     success: function (res) {
                         var result = res.content
                         vm.memoLoading = false;
+                        vm.fullscreenLoading = false;
                         vm.stagesData = result;
                     }
                 })

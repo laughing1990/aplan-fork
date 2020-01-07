@@ -3,7 +3,7 @@ package com.augurit.aplanmis.mall.userCenter.controller;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.aplanmis.common.domain.AeaProjApplyAgent;
-import com.augurit.aplanmis.common.utils.FileUtils;
+import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestAeaProjAgentService;
@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("rest/user/apply/agent")
@@ -29,6 +28,8 @@ public class RestProjAgentController {
 
     @Autowired
     RestAeaProjAgentService restAeaProjAgentService;
+    @Autowired
+    private FileUtilsService fileUtilsService;
 
     @PostMapping("start")
     @ApiOperation(value = "代办申请 --> 代办申请接口")
@@ -59,6 +60,7 @@ public class RestProjAgentController {
         }
     }
 
+
     @PostMapping("upload/{applyAgentId}")
     @ApiOperation(value = "代办申请 --> 代办协议上传接口")
     @ApiImplicitParams({
@@ -66,7 +68,7 @@ public class RestProjAgentController {
     })
     public ContentResultForm uploadFile(@PathVariable String applyAgentId, HttpServletRequest request) {
         try {
-            FileUtils.uploadFile("AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID", applyAgentId, request);
+            fileUtilsService.uploadAttachments("AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID", applyAgentId,null, request);
             return new ContentResultForm(true,"");
         } catch (Exception e) {
             logger.error(e.getMessage(),e);

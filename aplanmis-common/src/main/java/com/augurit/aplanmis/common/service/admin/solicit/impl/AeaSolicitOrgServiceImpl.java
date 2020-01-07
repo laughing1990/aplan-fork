@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.UUID;
 
 /**
-* 按组织征求配置表-Service服务接口实现类
-*/
+ * 按组织征求配置表-Service服务接口实现类
+ */
 @Service
 @Transactional
 public class AeaSolicitOrgServiceImpl implements AeaSolicitOrgService {
@@ -59,24 +59,24 @@ public class AeaSolicitOrgServiceImpl implements AeaSolicitOrgService {
     @Override
     public void deleteAeaSolicitOrgById(String id) {
 
-        if(StringUtils.isBlank(id)){
+        if (StringUtils.isBlank(id)) {
             throw new InvalidParameterException("参数id为空!");
         }
         aeaSolicitOrgMapper.deleteAeaSolicitOrg(id);
     }
 
     @Override
-    public void batchDelSolicitOrgByIds(String[] ids){
+    public void batchDelSolicitOrgByIds(String[] ids) {
 
-        if(ids!=null&&ids.length>0){
+        if (ids != null && ids.length > 0) {
             aeaSolicitOrgMapper.batchDelSolicitOrgByIds(ids);
-        }else{
+        } else {
             throw new InvalidParameterException("参数ids为空!");
         }
     }
 
     @Override
-    public PageInfo<AeaSolicitOrg> listAeaSolicitOrg(AeaSolicitOrg aeaSolicitOrg,Page page) {
+    public PageInfo<AeaSolicitOrg> listAeaSolicitOrg(AeaSolicitOrg aeaSolicitOrg, Page page) {
 
         aeaSolicitOrg.setRootOrgId(SecurityContext.getCurrentOrgId());
         PageHelper.startPage(page);
@@ -88,7 +88,7 @@ public class AeaSolicitOrgServiceImpl implements AeaSolicitOrgService {
     @Override
     public AeaSolicitOrg getAeaSolicitOrgById(String id) {
 
-        if(StringUtils.isBlank(id)){
+        if (StringUtils.isBlank(id)) {
             throw new InvalidParameterException("参数id为空!");
         }
         logger.debug("根据ID获取Form对象，ID为：{}", id);
@@ -96,9 +96,9 @@ public class AeaSolicitOrgServiceImpl implements AeaSolicitOrgService {
     }
 
     @Override
-    public AeaSolicitOrg getSolicitOrgRelOrgInfoById(String id){
+    public AeaSolicitOrg getSolicitOrgRelOrgInfoById(String id) {
 
-        if(StringUtils.isBlank(id)){
+        if (StringUtils.isBlank(id)) {
             throw new InvalidParameterException("参数id为空!");
         }
         logger.debug("根据ID获取Form对象，ID为：{}", id);
@@ -115,7 +115,7 @@ public class AeaSolicitOrgServiceImpl implements AeaSolicitOrgService {
     }
 
     @Override
-    public PageInfo<AeaSolicitOrg> listAeaSolicitOrgRelOrgInfo(AeaSolicitOrg aeaSolicitOrg,Page page) {
+    public PageInfo<AeaSolicitOrg> listAeaSolicitOrgRelOrgInfo(AeaSolicitOrg aeaSolicitOrg, Page page) {
 
         aeaSolicitOrg.setRootOrgId(SecurityContext.getCurrentOrgId());
         PageHelper.startPage(page);
@@ -134,32 +134,32 @@ public class AeaSolicitOrgServiceImpl implements AeaSolicitOrgService {
     }
 
     @Override
-    public void batchSaveSolicitOrg(String isBusSolicit, String stageId, String busType, String solicitType, String[] orgIds){
+    public void batchSaveSolicitOrg(String isBusSolicit, String stageId, String busType, String solicitType, String[] orgIds) {
 
         String userId = SecurityContext.getCurrentUserId();
         String rootOrgId = SecurityContext.getCurrentOrgId();
-        if(orgIds!=null&&orgIds.length>0) {
+        if (orgIds != null && orgIds.length > 0) {
             AeaSolicitOrg sSolicitOrg = new AeaSolicitOrg();
             sSolicitOrg.setRootOrgId(rootOrgId);
-            for (String orgId:orgIds) {
+            for (String orgId : orgIds) {
                 sSolicitOrg.setOrgId(orgId);
                 sSolicitOrg.setIsBusSolicit(isBusSolicit);
                 // 业务征求方式
-                if(isBusSolicit.equals(Status.ON)){
+                if (isBusSolicit.equals(Status.ON)) {
                     sSolicitOrg.setBusType(busType);
-                // 阶段牵头部门征求方式
-                }else{
+                    // 阶段牵头部门征求方式
+                } else {
                     sSolicitOrg.setStageId(stageId);
                 }
                 List<AeaSolicitOrg> orgList = aeaSolicitOrgMapper.listAeaSolicitOrg(sSolicitOrg);
-                if(orgList!=null&&orgList.size()>0){
-                    for(AeaSolicitOrg org:orgList){
+                if (orgList != null && orgList.size() > 0) {
+                    for (AeaSolicitOrg org : orgList) {
                         org.setSolicitType(solicitType);
                         org.setModifier(userId);
                         org.setModifyTime(new Date());
                         aeaSolicitOrgMapper.updateAeaSolicitOrg(org);
                     }
-                }else{
+                } else {
                     sSolicitOrg.setSolicitOrgId(UUID.randomUUID().toString());
                     sSolicitOrg.setLatestStageId(stageId);
                     sSolicitOrg.setSolicitType(solicitType);
@@ -173,20 +173,21 @@ public class AeaSolicitOrgServiceImpl implements AeaSolicitOrgService {
     }
 
     @Override
-    public void batchDelSolicitOrgByRootOrgId(String rootOrgId){
+    public void batchDelSolicitOrgByRootOrgId(String rootOrgId) {
 
-        if(StringUtils.isNotBlank(rootOrgId)){
+        if (StringUtils.isNotBlank(rootOrgId)) {
             aeaSolicitOrgMapper.batchDelSolicitOrgByRootOrgId(rootOrgId);
         }
     }
 
     @Override
-    public List<ZtreeNode> gtreeSolicitOrg(String rootOrgId){
+    public List<ZtreeNode> gtreeSolicitOrg(String rootOrgId) {
 
-        if(StringUtils.isBlank(rootOrgId)){
+        if (StringUtils.isBlank(rootOrgId)) {
             rootOrgId = SecurityContext.getCurrentOrgId();
         }
         List<ZtreeNode> allNodes = new ArrayList<>();
+        // 添加根节点
         ZtreeNode rootNode = new ZtreeNode();
         rootNode.setId("root");
         rootNode.setName("征求部门");
@@ -195,27 +196,49 @@ public class AeaSolicitOrgServiceImpl implements AeaSolicitOrgService {
         rootNode.setIsParent(true);
         rootNode.setNocheck(true);
         allNodes.add(rootNode);
-
-        AeaSolicitOrg sSolicitOrg = new AeaSolicitOrg();
-        sSolicitOrg.setRootOrgId(rootOrgId);
-        sSolicitOrg.setIsBusSolicit(Status.ON);
-        List<AeaSolicitOrg> list = aeaSolicitOrgMapper.listAeaSolicitOrgRelOrgInfo(sSolicitOrg);
-        if(list!=null&&list.size()>0){
-            List<BscDicCodeItem> codeItemList = bscDicCodeMapper.getActiveItemsByTypeCode("SOLICIT_BUS_TYPE", rootOrgId);
-            for(AeaSolicitOrg org : list){
-                allNodes.add(convertSolicitOrgNode(org, codeItemList));
+        // 征求业务类型
+        List<BscDicCodeItem> codeItemList = bscDicCodeMapper.getActiveItemsByTypeCode("SOLICIT_BUS_TYPE", rootOrgId);
+        if (codeItemList != null && codeItemList.size() > 0) {
+            AeaSolicitOrg sSolicitOrg = new AeaSolicitOrg();
+            sSolicitOrg.setRootOrgId(rootOrgId);
+            sSolicitOrg.setIsBusSolicit(Status.ON);
+            List<AeaSolicitOrg> solicitOrgList = aeaSolicitOrgMapper.listAeaSolicitOrgRelOrgInfo(sSolicitOrg);
+            if (solicitOrgList != null && solicitOrgList.size() > 0) {
+                for (BscDicCodeItem codeItem : codeItemList) {
+                    List<AeaSolicitOrg> needRemoveList = new ArrayList<>();
+                    for (AeaSolicitOrg org : solicitOrgList) {
+                        if (StringUtils.isNotBlank(org.getBusType()) && org.getBusType().equals(codeItem.getItemCode())) {
+                            needRemoveList.add(org);
+                            ZtreeNode node = convertSolicitOrgNode(org, null);
+                            node.setpId(codeItem.getItemId());
+                            allNodes.add(node);
+                        }
+                    }
+                    if (needRemoveList != null && needRemoveList.size() > 0) {
+                        ZtreeNode itemCodeNode = new ZtreeNode();
+                        itemCodeNode.setId(codeItem.getItemId());
+                        itemCodeNode.setName(codeItem.getItemName());
+                        itemCodeNode.setpId("root");
+                        itemCodeNode.setType("itemCode");
+                        itemCodeNode.setOpen(true);
+                        itemCodeNode.setIsParent(true);
+                        itemCodeNode.setNocheck(true);
+                        allNodes.add(itemCodeNode);
+                    }
+                    solicitOrgList.removeAll(needRemoveList);
+                }
             }
         }
         return allNodes;
     }
 
-    private ZtreeNode convertSolicitOrgNode(AeaSolicitOrg org, List<BscDicCodeItem> codeItemList){
+    private ZtreeNode convertSolicitOrgNode(AeaSolicitOrg org, List<BscDicCodeItem> codeItemList) {
 
         ZtreeNode node = new ZtreeNode();
         node.setId(org.getSolicitOrgId());
-        if(codeItemList!=null&&codeItemList.size()>0){
-            for(BscDicCodeItem codeItem:codeItemList){
-                if(codeItem.getItemCode().equals(org.getBusType())){
+        if (codeItemList != null && codeItemList.size() > 0) {
+            for (BscDicCodeItem codeItem : codeItemList) {
+                if (codeItem.getItemCode().equals(org.getBusType())) {
                     org.setOrgName(org.getOrgName() + "【" + codeItem.getItemName() + "】");
                 }
             }
@@ -237,4 +260,3 @@ public class AeaSolicitOrgServiceImpl implements AeaSolicitOrgService {
         return node;
     }
 }
-

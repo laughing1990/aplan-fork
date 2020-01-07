@@ -981,27 +981,57 @@
             <template slot="title">
               <i class="header-icon el-icon-edit-outline"></i>一张表单
             </template>
-            <div class="of-u-states">
-              <div class="of-u-icon ag ag-edit"></div>
-              <span>{{itemBasicInfo.itemName}}</span>
-              <div class="of-u-state-box r c-f">
-                <div class="of-u-b-text l">总共</div>
-                <div class="of-u-b-number l">{{formAllNum}}</div>
-                <div class="of-u-b-text l">已填</div>
-                <div class="of-u-b-number green l">{{formFilledNum}}</div>
-                <div class="of-u-b-text l">未填</div>
-                <div class="of-u-b-number yellow l">{{formUnFillNum}}</div>
+            <div style="padding-right:40px;">
+              <div @click="showOneFormList=!showOneFormList" class="toggle-form-icon ag" :class="[showOneFormList?'ag-up':'ag-down']"></div>
+              <div class="of-u-states" @click="openOneFormDialog(oneFormInfo[0])">
+                <div class="of-u-icon ag ag-edit"></div>
+                <span>{{itemBasicInfo.itemName}}</span>
+                <div class="of-u-state-box r c-f">
+                  <div class="of-u-b-text l">总共</div>
+                  <div class="of-u-b-number l">{{formAllNum}}</div>
+                  <div class="of-u-b-text l">已填</div>
+                  <div class="of-u-b-number green l">{{formFilledNum}}</div>
+                  <div class="of-u-b-text l">未填</div>
+                  <div class="of-u-b-number yellow l">{{formUnFillNum}}</div>
+                </div>
               </div>
+              <el-collapse-transition>
+                <div class="c-f" v-show="showOneFormList">
+                  <div class="one-form-unit" v-for="u in oneFormInfo"
+                       @click="openOneFormDialog(u)" :class="{'is-fill': u.isFilled}">
+                    <div class="form-ul-icon">
+                      <i class="of-state-icon ag ag-edit"></i>
+                    </div>
+                    <div class="form-ubr-icon"></div>
+                    <div class="one-form-title" :title="u.formName">{{u.formName}}</div>
+                    <span class="goto-fill-form" v-if="!u.isFilled">去填写</span>
+                    <span class="of-fill-time" v-if="u.isFilled">{{u.createTime|formatDate}}完成</span>
+                  </div>
+                </div>
+              </el-collapse-transition>
             </div>
-            <div class="c-f">
-              <div class="one-form-unit" v-for="u in oneFormInfo"
-                   @click="openOneFormDialog(u)" :class="{'is-fill': u.isFilled}">
-                <i class="of-state-icon ag" :class="!u.isFilled?'ag-edit-circle-fill':'ag-check-circle-fill'"></i>
-                <div class="one-form-title" :title="u.formName">{{u.formName}}</div>
-                <span class="goto-fill-form" v-if="!u.isFilled">去填写</span>
-                <span class="of-fill-time" v-if="u.isFilled">{{u.createTime|formatDate}}</span>
-              </div>
-            </div>
+
+<!--            <div class="of-u-states">-->
+<!--              <div class="of-u-icon ag ag-edit"></div>-->
+<!--              <span>{{itemBasicInfo.itemName}}</span>-->
+<!--              <div class="of-u-state-box r c-f">-->
+<!--                <div class="of-u-b-text l">总共</div>-->
+<!--                <div class="of-u-b-number l">{{formAllNum}}</div>-->
+<!--                <div class="of-u-b-text l">已填</div>-->
+<!--                <div class="of-u-b-number green l">{{formFilledNum}}</div>-->
+<!--                <div class="of-u-b-text l">未填</div>-->
+<!--                <div class="of-u-b-number yellow l">{{formUnFillNum}}</div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="c-f">-->
+<!--              <div class="one-form-unit" v-for="u in oneFormInfo"-->
+<!--                   @click="openOneFormDialog(u)" :class="{'is-fill': u.isFilled}">-->
+<!--                <i class="of-state-icon ag" :class="!u.isFilled?'ag-edit-circle-fill':'ag-check-circle-fill'"></i>-->
+<!--                <div class="one-form-title" :title="u.formName">{{u.formName}}</div>-->
+<!--                <span class="goto-fill-form" v-if="!u.isFilled">去填写</span>-->
+<!--                <span class="of-fill-time" v-if="u.isFilled">{{u.createTime|formatDate}}</span>-->
+<!--              </div>-->
+<!--            </div>-->
           </el-collapse-item>
           <!--一张表单 end-->
           <!--材料一单清 start-->

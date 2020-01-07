@@ -590,6 +590,7 @@ var vm = new Vue({
       oneFormOpened: false,
       needCallOneFormCb: false,
       isGreenWay: false, // 是否设置为绿色通道
+      showOneFormList: false,
     }
   },
   mounted: function () {

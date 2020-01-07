@@ -100,7 +100,7 @@ public class RestParallerApplyController {
         try {
             logger.error("-----listItemAndStateByStageId----start--------");
             long l=System.currentTimeMillis();
-            ItemListVo vo = restParallerApplyService.listItemAndStateByStageId(stageId, projInfoId, regionalism, projectAddress,"0","0");
+            ItemListVo vo = restParallerApplyService.listItemAndStateByStageId(stageId, projInfoId, regionalism, projectAddress,"0","0",null);
             logger.error("-----listItemAndStateByStageId----end--------耗时："+(System.currentTimeMillis()-l));
             return new ContentResultForm<>(true,vo);
         } catch (Exception e) {
@@ -317,6 +317,28 @@ public class RestParallerApplyController {
             return new ContentResultForm(false,"","智能引导获取事项一单清列表数据异常");
         }
     }
+
+
+    @GetMapping("guideItemAndState/list/{stageId}")
+    @ApiOperation(value = "阶段申报 --> 根据阶段ID、项目ID获取事项一单清列表数据")
+    @ApiImplicitParams({@ApiImplicitParam(value = "阶段ID",name = "stageId",required = true,dataType = "string"),
+            @ApiImplicitParam(value = "项目ID",name = "projInfoId",required = false,dataType = "string"),
+            @ApiImplicitParam(value = "区域编码", name = "regionalism", required = false, dataType = "string"),
+            @ApiImplicitParam(value = "是否展示事项情形", name = "isSelectItemState", required = false, dataType = "string"),
+            @ApiImplicitParam(value = "建设地点", name = "projectAddress", required = false, dataType = "string")})
+    public ContentResultForm<ItemListVo> listguideItemAndStateByStageId(@PathVariable("stageId") String stageId, String projInfoId,  String regionalism, String projectAddress,String isSelectItemState) {
+        try {
+            logger.error("-----listItemAndStateByStageId----start--------");
+            long l=System.currentTimeMillis();
+            ItemListVo vo = null;//restParallerApplyService.listItemAndStateByStageId(stageId, projInfoId, regionalism, projectAddress,"0","0");
+            logger.error("-----listItemAndStateByStageId----end--------耗时："+(System.currentTimeMillis()-l));
+            return new ContentResultForm<>(true,vo);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ContentResultForm(false,"","根据阶段id获取事项一单清列表数据异常");
+        }
+    }
+
 
 
 }
