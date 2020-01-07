@@ -677,6 +677,7 @@ function addItemOutMat(){
         $("#aedit_item_inout_mat_form input[name='certId']").val('');
         $("#aedit_item_inout_mat_form input[name='stoFormId']").val('');
         $("#aedit_item_inout_mat_form input[name='stdmatId']").val('');
+        $("#aedit_item_inout_mat_form input[name='isSign'][value='0']").prop("checked", true);
         handleSelectMatProNew('#aedit_item_inout_mat_form', 'm');
 
         // 编号赋值

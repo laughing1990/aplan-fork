@@ -249,24 +249,25 @@
 
     <select id="listInStateStageMat" resultType="AeaParIn">
         select
-        parIn.IN_ID inId,
-        parIn.STAGE_ID stageId,
-        parIn.IS_OWNER isOwner,
-        parIn.IS_STATE_IN isStateIn,
-        parIn.PAR_STATE_ID parStateId,
-        parIn.FILE_TYPE fileType,
-        parIn.MAT_ID matId,
-        parIn.CERT_ID certId,
-        parIn.CREATER creater,
-        parIn.CREATE_TIME createTime,
-        parIn.MODIFIER modifier,
-        parIn.MODIFY_TIME modifyTime,
-        parIn.IS_DELETED isDeleted,
-        mat.MAT_NAME aeaMatCertName,
-        mat.MAT_CODE aeaMatCertCode,
-        mat.MAT_MEMO aeaMatCertMemo,
-        mat.IS_GLOBAL_SHARE isGlobalShare,
-        mat.IS_COMMON isCommon
+            parIn.IN_ID inId,
+            parIn.STAGE_ID stageId,
+            parIn.IS_OWNER isOwner,
+            parIn.IS_STATE_IN isStateIn,
+            parIn.PAR_STATE_ID parStateId,
+            parIn.FILE_TYPE fileType,
+            parIn.MAT_ID matId,
+            parIn.CERT_ID certId,
+            parIn.CREATER creater,
+            parIn.CREATE_TIME createTime,
+            parIn.MODIFIER modifier,
+            parIn.MODIFY_TIME modifyTime,
+            parIn.IS_DELETED isDeleted,
+            mat.MAT_NAME aeaMatCertName,
+            mat.MAT_CODE aeaMatCertCode,
+            mat.MAT_MEMO aeaMatCertMemo,
+            mat.IS_GLOBAL_SHARE isGlobalShare,
+            mat.IS_COMMON isCommon,
+            mat.IS_SIGN isSign
         from AEA_PAR_IN parIn, AEA_ITEM_MAT mat
         <where>
             and parIn.MAT_ID = mat.MAT_ID
@@ -322,24 +323,24 @@
 
     <select id="lisCertAndMatByStageId" resultType="AeaParIn">
         select
-        parIn.IN_ID inId,
-        parIn.STAGE_ID stageId,
-        parIn.IS_OWNER isOwner,
-        parIn.IS_STATE_IN isStateIn,
-        parIn.PAR_STATE_ID parStateId,
-        parIn.FILE_TYPE fileType,
-        parIn.MAT_ID matId,
-        parIn.CERT_ID certId,
-        parIn.CREATER creater,
-        parIn.CREATE_TIME createTime,
-        parIn.MODIFIER modifier,
-        parIn.MODIFY_TIME modifyTime,
-        parIn.IS_DELETED isDeleted,
-        (case when parIn.FILE_TYPE='mat' then mat.IS_COMMON else '0' end) isCommon,
-        (case when parIn.FILE_TYPE='mat' then mat.MAT_NAME else cert.CERT_NAME end) aeaMatCertName,
-        (case when parIn.FILE_TYPE='mat' then mat.MAT_MEMO else cert.CERT_MEMO end) aeaMatCertMemo,
-        (case when parIn.FILE_TYPE='mat' then mat.MAT_CODE else cert.CERT_CODE end) aeaMatCertCode,
-        (case when parIn.FILE_TYPE='mat' then mat.IS_GLOBAL_SHARE else '0' end) isGlobalShare
+            parIn.IN_ID inId,
+            parIn.STAGE_ID stageId,
+            parIn.IS_OWNER isOwner,
+            parIn.IS_STATE_IN isStateIn,
+            parIn.PAR_STATE_ID parStateId,
+            parIn.FILE_TYPE fileType,
+            parIn.MAT_ID matId,
+            parIn.CERT_ID certId,
+            parIn.CREATER creater,
+            parIn.CREATE_TIME createTime,
+            parIn.MODIFIER modifier,
+            parIn.MODIFY_TIME modifyTime,
+            parIn.IS_DELETED isDeleted,
+            (case when parIn.FILE_TYPE='mat' then mat.IS_COMMON else '0' end) isCommon,
+            (case when parIn.FILE_TYPE='mat' then mat.MAT_NAME else cert.CERT_NAME end) aeaMatCertName,
+            (case when parIn.FILE_TYPE='mat' then mat.MAT_MEMO else cert.CERT_MEMO end) aeaMatCertMemo,
+            (case when parIn.FILE_TYPE='mat' then mat.MAT_CODE else cert.CERT_CODE end) aeaMatCertCode,
+            (case when parIn.FILE_TYPE='mat' then mat.IS_GLOBAL_SHARE else '0' end) isGlobalShare
         from AEA_PAR_IN parIn
         left join AEA_ITEM_MAT mat on mat.MAT_ID = parIn.MAT_ID
         left join AEA_CERT cert on cert.CERT_ID = parIn.CERT_ID
@@ -350,12 +351,12 @@
             and parIn.IS_DELETED = '0'
             and (mat.IS_DELETED = '0' or cert.IS_DELETED = '0')
             <if test="keyword!='' and keyword!=null ">
-                and (
+            and (
                 mat.MAT_NAME like concat('%',concat(#{keyword},'%')) or
                 mat.MAT_CODE like concat('%',concat(#{keyword},'%')) or
                 cert.CERT_CODE like concat('%',concat(#{keyword},'%')) or
                 cert.CERT_NAME like concat('%',concat(#{keyword},'%'))
-                )
+            )
             </if>
         </where>
         order by parIn.CREATE_TIME desc
@@ -363,24 +364,24 @@
 
     <select id="listNoStateInCertAndMatByStageId" resultType="AeaParIn">
         select
-        parIn.IN_ID inId,
-        parIn.STAGE_ID stageId,
-        parIn.IS_OWNER isOwner,
-        parIn.IS_STATE_IN isStateIn,
-        parIn.PAR_STATE_ID parStateId,
-        parIn.FILE_TYPE fileType,
-        parIn.MAT_ID matId,
-        parIn.CERT_ID certId,
-        parIn.CREATER creater,
-        parIn.CREATE_TIME createTime,
-        parIn.MODIFIER modifier,
-        parIn.MODIFY_TIME modifyTime,
-        parIn.IS_DELETED isDeleted,
-        (case when parIn.FILE_TYPE='mat' then mat.IS_COMMON else '0' end) isCommon,
-        (case when parIn.FILE_TYPE='mat' then mat.MAT_NAME else cert.CERT_NAME end) aeaMatCertName,
-        (case when parIn.FILE_TYPE='mat' then mat.MAT_MEMO else cert.CERT_MEMO end) aeaMatCertMemo,
-        (case when parIn.FILE_TYPE='mat' then mat.MAT_CODE else cert.CERT_CODE end) aeaMatCertCode,
-        (case when parIn.FILE_TYPE='mat' then mat.IS_GLOBAL_SHARE else '0' end) isGlobalShare
+            parIn.IN_ID inId,
+            parIn.STAGE_ID stageId,
+            parIn.IS_OWNER isOwner,
+            parIn.IS_STATE_IN isStateIn,
+            parIn.PAR_STATE_ID parStateId,
+            parIn.FILE_TYPE fileType,
+            parIn.MAT_ID matId,
+            parIn.CERT_ID certId,
+            parIn.CREATER creater,
+            parIn.CREATE_TIME createTime,
+            parIn.MODIFIER modifier,
+            parIn.MODIFY_TIME modifyTime,
+            parIn.IS_DELETED isDeleted,
+            (case when parIn.FILE_TYPE='mat' then mat.IS_COMMON else '0' end) isCommon,
+            (case when parIn.FILE_TYPE='mat' then mat.MAT_NAME else cert.CERT_NAME end) aeaMatCertName,
+            (case when parIn.FILE_TYPE='mat' then mat.MAT_MEMO else cert.CERT_MEMO end) aeaMatCertMemo,
+            (case when parIn.FILE_TYPE='mat' then mat.MAT_CODE else cert.CERT_CODE end) aeaMatCertCode,
+            (case when parIn.FILE_TYPE='mat' then mat.IS_GLOBAL_SHARE else '0' end) isGlobalShare
         from AEA_PAR_IN parIn
         left join AEA_ITEM_MAT mat on mat.MAT_ID = parIn.MAT_ID
         left join AEA_CERT cert on cert.CERT_ID = parIn.CERT_ID
@@ -392,12 +393,12 @@
             and parIn.IS_DELETED = '0'
             and (mat.IS_DELETED = '0' or cert.IS_DELETED = '0')
             <if test="keyword!='' and keyword!=null ">
-                and (
+            and (
                 mat.MAT_NAME like concat('%',concat(#{keyword},'%')) or
                 mat.MAT_CODE like concat('%',concat(#{keyword},'%')) or
                 cert.CERT_CODE like concat('%',concat(#{keyword},'%')) or
                 cert.CERT_NAME like concat('%',concat(#{keyword},'%'))
-                )
+            )
             </if>
         </where>
         order by parIn.CREATE_TIME desc
@@ -405,24 +406,25 @@
 
     <select id="listNoStateInMatByStageId" resultType="AeaParIn">
         select
-        parIn.IN_ID inId,
-        parIn.STAGE_ID stageId,
-        parIn.IS_OWNER isOwner,
-        parIn.IS_STATE_IN isStateIn,
-        parIn.PAR_STATE_ID parStateId,
-        parIn.FILE_TYPE fileType,
-        parIn.MAT_ID matId,
-        parIn.CERT_ID certId,
-        parIn.CREATER creater,
-        parIn.CREATE_TIME createTime,
-        parIn.MODIFIER modifier,
-        parIn.MODIFY_TIME modifyTime,
-        parIn.IS_DELETED isDeleted,
-        mat.MAT_NAME aeaMatCertName,
-        mat.MAT_CODE aeaMatCertCode,
-        mat.MAT_MEMO aeaMatCertMemo,
-        mat.IS_GLOBAL_SHARE isGlobalShare,
-        mat.IS_COMMON isCommon
+            parIn.IN_ID inId,
+            parIn.STAGE_ID stageId,
+            parIn.IS_OWNER isOwner,
+            parIn.IS_STATE_IN isStateIn,
+            parIn.PAR_STATE_ID parStateId,
+            parIn.FILE_TYPE fileType,
+            parIn.MAT_ID matId,
+            parIn.CERT_ID certId,
+            parIn.CREATER creater,
+            parIn.CREATE_TIME createTime,
+            parIn.MODIFIER modifier,
+            parIn.MODIFY_TIME modifyTime,
+            parIn.IS_DELETED isDeleted,
+            mat.MAT_NAME aeaMatCertName,
+            mat.MAT_CODE aeaMatCertCode,
+            mat.MAT_MEMO aeaMatCertMemo,
+            mat.IS_GLOBAL_SHARE isGlobalShare,
+            mat.IS_COMMON isCommon,
+            mat.IS_SIGN isSign
         from AEA_PAR_IN parIn, AEA_ITEM_MAT mat
         <where>
             and parIn.MAT_ID = mat.MAT_ID
@@ -433,10 +435,10 @@
             and parIn.IS_DELETED = '0'
             and mat.IS_DELETED = '0'
             <if test="keyword!='' and keyword!=null ">
-                and (
+            and (
                 mat.MAT_NAME like concat('%',concat(#{keyword},'%')) or
                 mat.MAT_CODE like concat('%',concat(#{keyword},'%'))
-                )
+            )
             </if>
         </where>
         order by parIn.CREATE_TIME desc
@@ -460,7 +462,8 @@
             mat.MAT_NAME aeaMatCertName,
             mat.MAT_CODE aeaMatCertCode,
             mat.MAT_MEMO aeaMatCertMemo,
-            mat.IS_GLOBAL_SHARE isGlobalShare
+            mat.IS_GLOBAL_SHARE isGlobalShare,
+            mat.IS_SIGN isSign
         from AEA_PAR_IN parIn, AEA_ITEM_MAT mat
         <where>
             and parIn.MAT_ID = mat.MAT_ID
@@ -501,7 +504,8 @@
             mat.MAT_PROP fileType,
             mat.MAT_PROP matProp,
             mat.CERT_ID certId,
-            mat.STO_FORM_ID formId
+            mat.STO_FORM_ID formId,
+            mat.IS_SIGN isSign
         from AEA_PAR_IN parIn, AEA_ITEM_MAT mat
         <where>
             and parIn.MAT_ID = mat.MAT_ID
@@ -585,7 +589,8 @@
             mat.MAT_CODE aeaMatCertCode,
             mat.MAT_MEMO aeaMatCertMemo,
             mat.IS_GLOBAL_SHARE isGlobalShare,
-            mat.IS_COMMON isCommon
+            mat.IS_COMMON isCommon,
+            mat.IS_SIGN isSign
         from AEA_PAR_IN parIn, AEA_ITEM_MAT mat
         <where>
             and parIn.MAT_ID = mat.MAT_ID
@@ -598,13 +603,13 @@
             and mat.IS_COMMON = #{isCommon}
             and parIn.IS_STATE_IN = #{isStateIn}
             <if test="parStateId!=null and parStateId!='' ">
-                and ( parIn.PAR_STATE_ID = #{parStateId} or parIn.PAR_STATE_ID is null )
+            and ( parIn.PAR_STATE_ID = #{parStateId} or parIn.PAR_STATE_ID is null )
             </if>
             <if test="keyword!='' and keyword!=null ">
-                and (
+            and (
                 mat.MAT_NAME like concat('%',concat(#{keyword},'%')) or
                 mat.MAT_CODE like concat('%',concat(#{keyword},'%'))
-                )
+            )
             </if>
         </where>
         order by parIn.CREATE_TIME desc
@@ -635,7 +640,8 @@
             mat.MAT_PROP fileType,
             mat.MAT_PROP matProp,
             mat.CERT_ID certId,
-            mat.STO_FORM_ID formId
+            mat.STO_FORM_ID formId,
+            mat.IS_SIGN isSign
         from AEA_PAR_IN parIn, AEA_ITEM_MAT mat
         <where>
             and parIn.MAT_ID = mat.MAT_ID
@@ -683,7 +689,8 @@
             mat.MAT_CODE aeaMatCertCode,
             mat.MAT_PROP matProp,
             mat.CERT_ID certId,
-            mat.STO_FORM_ID formId
+            mat.STO_FORM_ID formId,
+            mat.IS_SIGN isSign
         from AEA_PAR_IN parIn, AEA_ITEM_MAT mat
         <where>
             and parIn.MAT_ID = mat.MAT_ID
@@ -762,7 +769,8 @@
             mat.MAT_NAME aeaMatCertName,
             mat.MAT_CODE aeaMatCertCode,
             mat.MAT_MEMO aeaMatCertMemo,
-            mat.IS_GLOBAL_SHARE isGlobalShare
+            mat.IS_GLOBAL_SHARE isGlobalShare,
+            mat.IS_SIGN isSign
         from AEA_PAR_IN parIn, AEA_ITEM_MAT mat
         <where>
             and parIn.MAT_ID = mat.MAT_ID
@@ -842,7 +850,8 @@
             mat.MAT_PROP fileType,
             mat.MAT_PROP matProp,
             mat.CERT_ID certId,
-            mat.STO_FORM_ID formId
+            mat.STO_FORM_ID formId,
+            mat.IS_SIGN isSign
         from AEA_PAR_IN parIn, AEA_ITEM_MAT mat
         <where>
             and parIn.MAT_ID = mat.MAT_ID
@@ -933,7 +942,8 @@
             mat.MAT_PROP fileType,
             mat.MAT_PROP matProp,
             mat.CERT_ID certId,
-            mat.STO_FORM_ID formId
+            mat.STO_FORM_ID formId,
+            mat.IS_SIGN isSign
         from AEA_PAR_IN parIn, AEA_ITEM_MAT mat
         <where>
             and parIn.MAT_ID = mat.MAT_ID

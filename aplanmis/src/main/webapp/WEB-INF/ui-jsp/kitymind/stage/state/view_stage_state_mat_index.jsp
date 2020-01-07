@@ -349,6 +349,7 @@
         $("#item_mat_add_form input[name='stoFormId']").val("");
         $("#item_mat_add_form input[name='stdmatId']").val("");
         $("#item_mat_add_form input[name='matProp'][value='m']").prop("checked", true);
+        $("#item_mat_add_form input[name='isSign'][value='0']").prop("checked", true);
         handleSelectMatProNew('#item_mat_add_form','m');
 
         $("#templateDocFile").siblings('.custorm-style').find(".right-text").html("");

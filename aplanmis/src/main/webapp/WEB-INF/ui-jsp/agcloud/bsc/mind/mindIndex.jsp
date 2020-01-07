@@ -90,7 +90,7 @@
 <jsp:include page="include/itemGlobalMatModal.jsp"></jsp:include>
 
 <!--  事项新增/编辑材料 -->
-<jsp:include page="include/itemMatModal.jsp"></jsp:include>
+<%@include file="include/itemMatModal.jsp"%>
 
 <!-- 情形版本modal -->
 <jsp:include page="include/itemStateVerModal.jsp"></jsp:include>
@@ -122,6 +122,7 @@
         </div>
     </div>
 </div>
+
 <script type="text/javascript">
 
     $(document).ready(function(){

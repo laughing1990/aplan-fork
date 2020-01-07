@@ -44,6 +44,7 @@
         ${alias}.SORT_NO  sortNo,
         ${alias}.ROOT_ORG_ID rootOrgId
     </sql>
+
     <sql id="allColumns_aim">
          ${alias}.MAT_CODE  matCode,
          ${alias}.MAT_NAME  matName,
@@ -82,12 +83,13 @@
          ${alias}.ROOT_ORG_ID rootOrgId,
          ${alias}.MAT_PROP matProp,
          ${alias}.CERT_ID certId,
-         ${alias}.STO_FORM_ID stoFormId
+         ${alias}.STO_FORM_ID stoFormId,
+         ${alias}.IS_SIGN isSign
     </sql>
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaItemInoutById" resultType="AeaItemInout">
         select
-        <include refid="allColumns"/>
+            <include refid="allColumns"/>
         from AEA_ITEM_INOUT
         where INOUT_ID = #{id}
         AND IS_DELETED = '0'
@@ -164,7 +166,8 @@
             mat.MAT_PROP matProp,
             mat.CERT_ID certId,
             mat.STO_FORM_ID formId,
-            mat.IS_COMMON isCommon
+            mat.IS_COMMON isCommon,
+            mat.IS_SIGN isSign
         from AEA_ITEM_INOUT inout1, AEA_ITEM_MAT mat
         <where>
                 and  inout1.MAT_ID = mat.MAT_ID
@@ -462,6 +465,7 @@
             mat.MAT_PROP,
             mat.CERT_ID,
             mat.STO_FORM_ID,
+            mat.IS_SIGN isSign,
             iout.INOUT_ID,
             iout.ITEM_VER_ID,
             iout.IS_OWNER,
@@ -526,7 +530,8 @@
             mat.MAT_MEMO aeaMatCertMemo,
             mat.MAT_PROP matProp,
             mat.CERT_ID certId,
-            mat.STO_FORM_ID formId
+            mat.STO_FORM_ID formId,
+            mat.IS_SIGN isSign
         from AEA_ITEM_INOUT iout
         join AEA_ITEM_MAT mat on mat.MAT_ID = iout.MAT_ID
         <where>
@@ -595,7 +600,8 @@
             mat.MAT_CODE aeaMatCertCode,
             mat.MAT_PROP matProp,
             mat.CERT_ID certId,
-            mat.STO_FORM_ID formId
+            mat.STO_FORM_ID formId,
+            mat.IS_SIGN isSign
         from AEA_ITEM_INOUT inOut1, AEA_ITEM_MAT mat
         <where>
             and inOut1.MAT_ID = mat.MAT_ID
@@ -645,7 +651,8 @@
             mat.MAT_CODE aeaMatCertCode,
             mat.MAT_PROP matProp,
             mat.CERT_ID certId,
-            mat.STO_FORM_ID formId
+            mat.STO_FORM_ID formId,
+            mat.IS_SIGN isSign
         from AEA_ITEM_INOUT inOut1, AEA_ITEM_MAT mat
         <where>
             and inOut1.MAT_ID = mat.MAT_ID
@@ -710,6 +717,7 @@
             mat.IS_OFFICIAL_DOC,
             mat.ATT_IS_REQUIRE,
             mat.PAPER_IS_REQUIRE,
+            mat.IS_SIGN,
             iout.INOUT_ID,
             iout.ITEM_VER_ID,
             iout.IS_OWNER,
@@ -815,7 +823,8 @@
             mat.MAT_MEMO aeaMatCertMemo,
             mat.MAT_PROP matProp,
             mat.CERT_ID certId,
-            mat.STO_FORM_ID formId
+            mat.STO_FORM_ID formId,
+            mat.IS_SIGN isSign
         from AEA_ITEM_INOUT iout
         join AEA_ITEM_MAT mat on mat.MAT_ID = iout.MAT_ID
         <where>
@@ -895,7 +904,8 @@
             MAT.ZCQY,
             MAT.MAT_PROP,
             MAT.CERT_ID,
-            MAT.STO_FORM_ID
+            MAT.STO_FORM_ID,
+            MAT.IS_SIGN
         FROM AEA_ITEM_INOUT IOUT
         JOIN AEA_ITEM_MAT MAT ON IOUT.MAT_ID=MAT.MAT_ID
         <where>
@@ -1005,7 +1015,8 @@
             mat.MAT_CODE as aeaMatCertCode,
             mat.MAT_PROP matProp,
             mat.CERT_ID certId,
-            mat.STO_FORM_ID formId
+            mat.STO_FORM_ID formId,
+            mat.IS_SIGN isSign
         from AEA_ITEM_INOUT inOut1, AEA_ITEM_MAT mat
         <where>
             and inOut1.MAT_ID = mat.MAT_ID
@@ -1054,6 +1065,7 @@
             mat.MAT_PROP matProp,
             mat.CERT_ID certId,
             mat.STO_FORM_ID formId,
+            mat.IS_SIGN isSign,
             item.ITEM_ID as itemId,
             item.ITEM_VER_ID as itemVerId,
             item.ITEM_CODE as itemCode,
@@ -1123,6 +1135,7 @@
             mat.MAT_PROP matProp,
             mat.CERT_ID certId,
             mat.STO_FORM_ID formId,
+            mat.IS_SIGN isSign,
             item.ITEM_ID as itemId,
             item.ITEM_VER_ID as itemVerId,
             item.ITEM_CODE as itemCode,
@@ -1203,8 +1216,7 @@
         select
         <include refid="aliasColumns">
             <property name="alias" value="aii"/>
-        </include>
-        ,
+        </include>,
         <include refid="allColumns_aim">
             <property name="alias" value="aim"/>
         </include>
@@ -1268,6 +1280,7 @@
         <result property="matProp" column="MAT_PROP"/>
         <result property="certId" column="CERT_ID"/>
         <result property="formId" column="STO_FORM_ID"/>
+        <result property="isSign" column="IS_SIGN"/>
     </resultMap>
 
     <resultMap id="inoutAndMatResultMap" type="AeaItemInout">
@@ -1324,6 +1337,7 @@
             <result property="matProp" column="MAT_PROP"/>
             <result property="certId" column="CERT_ID"/>
             <result property="stoFormId" column="STO_FORM_ID"/>
+            <result property="isSign" column="IS_SIGN"/>
         </association>
     </resultMap>
 
