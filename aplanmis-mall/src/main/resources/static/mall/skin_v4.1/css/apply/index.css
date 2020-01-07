@@ -12,7 +12,7 @@
   margin-top: 60px;
 }
 .wt100 {
-  width: 100%;
+  width: 100% !important;
 }
 .wt588 {
   width: 587px;
@@ -875,7 +875,7 @@
   padding: 13px 20px 18px;
 }
 .el-dialog__footer .el-button {
-  padding: 9px 20px;
+  padding: 12px 34px;
 }
 .credit-dialog .el-dialog__footer {
   background: #F0F3F6;
@@ -1452,3 +1452,41 @@
   padding: 20px 30px;
   background: #FAFBFC;
 }
+.split-title {
+  font-size: 16px;
+  padding-top: 20px;
+  border-top: 1px solid rgb(236, 239, 245);
+  margin: 30px 0px;
+}
+.split-title a {
+  color: #4293F4;
+}
+.split-title img {
+  width: 24px;
+  vertical-align: top;
+  margin-right: 5px;
+}
+.is-split-dia .el-form--inline .el-form-item {
+  width: 48%;
+}
+.is-split-dia .el-form--inline .el-form-item__content, .is-split-dia .el-select {
+  width: 350px;
+}
+.is-split-dia .linkman-name .el-select {
+  width: 226px;
+}
+.is-split-dia .el-dialog {
+  background: #F0F3F6;
+}
+.is-split-dia .el-dialog__body {
+  padding: 20px;
+}
+.is-split-dia .split-form {
+  background: #fff;
+  padding: 30px 20px;
+}
+.is-split-dia .el-dialog__footer {
+  text-align: right;
+  padding: 0px 20px 20px;
+}
+

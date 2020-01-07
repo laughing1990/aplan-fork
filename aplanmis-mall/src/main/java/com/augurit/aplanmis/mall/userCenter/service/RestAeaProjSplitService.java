@@ -103,13 +103,14 @@ public class RestAeaProjSplitService {
         List<AeaParStage> stageList = restMainService.getStageByThemeId(themeId, null, SecurityContext.getCurrentOrgId(), null, null, request, "0");
         String stageId="";
         for (AeaParStage aeaParStage:stageList){
-            String gjbz=aeaParStage.getDygjbzfxfw();
-            if("1".equals(stageNo) && gjbz.contains("1")){//第二阶段，前阶段为第一阶段
+            String gjbz=aeaParStage.getDybzspjdxh();
+            if(StringUtils.isBlank(gjbz)) continue;
+            if(("1".equals(stageNo) && gjbz.contains("1"))||("2".equals(stageNo) && gjbz.contains("2"))){//第二阶段，前阶段为第一阶段
                 stageId=aeaParStage.getStageId();
-            }else if("2".equals(stageNo) && gjbz.contains("2")){//第三阶段，前阶段为第二阶段
-                stageId=aeaParStage.getStageId();
+                break;
             }
         }
+        if(StringUtils.isBlank(stageId)) return null;
         List<AeaProjInfo> aeaProjInfoList=aeaProjInfoService.getAeaProjInfosByStageIdAndLocalCode(stageId,localCode);
         if(aeaProjInfoList.size()>0){
             return aeaProjInfoList.get(0);

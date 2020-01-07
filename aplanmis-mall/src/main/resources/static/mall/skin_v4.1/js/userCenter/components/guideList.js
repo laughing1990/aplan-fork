@@ -96,4 +96,12 @@ var vm = new Vue({
       this.getDraftApplyList()
     },
   },
+  filters: {
+    formatDate: function (time) {
+      if (!time) return '-';
+      var date = new Date(time);
+      if (!date) return;
+      return formatDate(date, 'yyyy-MM-dd hh:mm');
+    },
+  }
 })

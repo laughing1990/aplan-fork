@@ -12,21 +12,24 @@
     </ul>-->
     <div class="wt-tab-content">
       <div class="wt-tab-item" v-show="proType == 1" id="processProject">
-        <!--<div class="status">
-          状态：
-          <el-select v-model="value" clearable placeholder="请选择">
-            <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-            </el-option>
-          </el-select>-->
-        </div>
-        <div class="search-input">
-          <span class="search-title">项目/工程查询</span>
-          <input type="text" placeholder="请输入工程代码 / 项目代码 / 项目名称"  v-model="keyword">
-          <button class="search-btn" @click="pageNumDH = 1;getHadApplyItemList();"> <i class="el-icon-search" style="font-size: 16px;"></i>查询</button>
+        <div class="wt-search-top clearfix">
+          <div class="status fl">
+            状态：
+            <el-select v-model="applyinstState" clearable placeholder="请选择">
+              <el-option
+                      v-for="item in applyinstStatus"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
+          <div class="search-input fl">
+            <span class="search-title">项目/工程查询</span>
+            <input type="text" placeholder="请输入工程代码 / 项目代码 / 项目名称"  v-model="keyword">
+            <button class="search-btn" @click="pageNumDH = 1;getHadApplyItemList();"> <i class="el-icon-search" style="font-size: 16px;"></i>查询</button>
+            <button class="search-reset" @click="resetSearchHandleFn">重 置</button>
+          </div>
         </div>
 
         <table class="wt-table">
@@ -85,9 +88,12 @@
                   <span class="applyinstState applyinstState4"
                         v-else-if="item.applyinstState=='3'">
                     待补全
-                    <el-tooltip effect="light" placement="top"><div
-                            slot="content">{{item.approveComments||'无'}}</div><span
-                            class="mstage-count not-allow-sel"><i class="el-icon-question"></i></span></el-tooltip>
+                    <el-tooltip effect="light" placement="top">
+                      <div  slot="content">{{item.approveComments||'无'}}
+                      </div>
+                      <span class="mstage-count not-allow-sel"><i class="el-icon-question"></i>
+                      </span>
+                    </el-tooltip>
                   </span>
                   </el-tooltip>
                   </span>

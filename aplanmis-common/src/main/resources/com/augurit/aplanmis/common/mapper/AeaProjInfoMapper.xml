@@ -1868,7 +1868,7 @@
     <select id="getAeaProjInfosByStageIdAndLocalCode" resultType="AeaProjInfo">
         SELECT DISTINCT
         <include refid="allColumnsAlias">
-            <property name="alias" value="aha"></property>
+            <property name="alias" value="api"></property>
         </include>
         from aea_hi_applyinst aha
         LEFT JOIN aea_applyinst_proj aap on aha.APPLYINST_ID=aap.APPLYINST_ID
