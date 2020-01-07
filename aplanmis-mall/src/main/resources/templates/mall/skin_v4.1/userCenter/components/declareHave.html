@@ -123,8 +123,8 @@
                 <td width="20%" style="cursor: pointer">
                   <a class="option-btn" style="display: inline-block;"  @click="lookProjDetail(item)">查看</a>
                   <!-- <a v-if="item.applyinstState=='0'" class="option-btn" style="display: inline-block"  @click="withDraw(item)">撤件</a> -->
-                  <a v-if="item.applyinstState=='0'" class="option-btn" style="display: inline-block"  @click="withDrawFn(item)">撤件</a>
-                  <span v-else="item.applyinstState!='0'" style="display: inline-block;cursor: not-allowed;color: #ccc;paddingLeft: 10px;"  title="只可撤回未正式受理申报">撤件</span>
+                  <a v-if="item.applyinstState=='0'||item.applyinstState=='1'||item.applyinstState=='2'" class="option-btn" style="display: inline-block"  @click="withDrawFn(item)">撤件</a>
+                  <span v-else style="display: inline-block;cursor: not-allowed;color: #ccc;paddingLeft: 10px;"  title="只可撤回未正式受理申报">撤件</span>
                   <a class="option-btn" style="display: inline-block;"  @click="showReceive(item)">打印回执</a>
                 </td>
               </tr>

@@ -181,7 +181,7 @@ var listmatter = (function(window){
                 }
             },
             gotoGuideIndex:function () {
-                window.location.hash='/';
+                window.location.hash='/DeclarGuidePage';
                 window.location.search='';
             },
             // 获取url参数

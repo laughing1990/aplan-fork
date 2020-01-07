@@ -30,6 +30,10 @@ public class AeaApplyinstProj implements Serializable {
     private String localCode;//项目编码
     private String projName;//项目/工程名称
     private String gcbm;//工程编码
+    private String centralCode;//国家统一代码
+    private String buildAreaSum;//建筑面积(m2)
+    private String projAddr;//项目位置
+    private Integer aboveFloor;//地上层数
 
 
     // ----------------------------------------------------- Constructors
@@ -96,6 +100,38 @@ public class AeaApplyinstProj implements Serializable {
 
     public void setGcbm(String gcbm) {
         this.gcbm = gcbm;
+    }
+
+    public String getCentralCode() {
+        return centralCode;
+    }
+
+    public void setCentralCode(String centralCode) {
+        this.centralCode = centralCode;
+    }
+
+    public String getBuildAreaSum() {
+        return buildAreaSum;
+    }
+
+    public void setBuildAreaSum(String buildAreaSum) {
+        this.buildAreaSum = buildAreaSum;
+    }
+
+    public String getProjAddr() {
+        return projAddr;
+    }
+
+    public void setProjAddr(String projAddr) {
+        this.projAddr = projAddr;
+    }
+
+    public Integer getAboveFloor() {
+        return aboveFloor;
+    }
+
+    public void setAboveFloor(Integer aboveFloor) {
+        this.aboveFloor = aboveFloor;
     }
 
     //public String getTableName()  {
