@@ -1727,7 +1727,11 @@
         </el-button>
       </div>
       <div class="right-bottom-btn" v-if="isGuidePage">
-        <el-button circle @click="showCommentDialog('5')">部门<br/>确认</el-button>
+        <template v-if="leaderDept&&(guideState==2||guideState==1)">
+          <el-button circle type="primary">部门<br/>确认</el-button>
+          <el-button circle>直接<br/>通过</el-button>
+        </template>
+
       </div>
       <!--项目树窗口 start-->
       <el-dialog title="查看项目工程结构" :visible.sync="projectTreeInfoModal" class="proj-tree-dialog"
