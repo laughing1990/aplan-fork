@@ -37,6 +37,7 @@ public class AeaUnitProjLinkman {
     private String modifier;
     private Date modifyTime;
     private String isDeleted;
+    private String linkmanDuty;//职务
 
     //拓展字段
     private String linkmanName;//联系人名字

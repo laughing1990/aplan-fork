@@ -22,7 +22,8 @@
         ${alias}.TITLE_CERT_NUM  titleCertNum,
         ${alias}.REGISTER_NUM  registerNum,
         ${alias}.SAFE_LICENCE_NUM  safeLicenceNum,
-        ${alias}.PRJ_SPTY  prjSpty
+        ${alias}.PRJ_SPTY  prjSpty,
+        ${alias}.LINKMAN_DUTY linkmanDuty
     </sql>
 
     <!--1 根据主键ID查询单个实体 -->
@@ -126,7 +127,10 @@
                 SAFE_LICENCE_NUM = #{safeLicenceNum},
             </if>
             <if test="registerNum !=null and registerNum !='' ">
-                REGISTER_NUM = #{registerNum}
+                REGISTER_NUM = #{registerNum},
+            </if>
+            <if test="linkmanDuty !=null and linkmanDuty !='' ">
+                LINKMAN_DUTY = #{linkmanDuty}
             </if>
         </set>
         where PROJ_LINKMAN_ID = #{projLinkmanId}
@@ -167,9 +171,9 @@
     <!--7 新增实体对象 -->
     <insert id="insertAeaUnitProjLinkman" parameterType="AeaUnitProjLinkman">
         insert into AEA_UNIT_PROJ_LINKMAN (
-        PROJ_LINKMAN_ID ,UNIT_PROJ_ID ,LINKMAN_INFO_ID ,LINKMAN_TYPE  ,CREATER ,CREATE_TIME,IS_DELETED,PROFESSION_CERT_TYPE,PROFESSION_SEAL_NUM,TITLE_GRADE,TITLE_CERT_NUM,REGISTER_NUM,SAFE_LICENCE_NUM,PRJ_SPTY
+        PROJ_LINKMAN_ID ,UNIT_PROJ_ID ,LINKMAN_INFO_ID ,LINKMAN_TYPE  ,CREATER ,CREATE_TIME,IS_DELETED,PROFESSION_CERT_TYPE,PROFESSION_SEAL_NUM,TITLE_GRADE,TITLE_CERT_NUM,REGISTER_NUM,SAFE_LICENCE_NUM,PRJ_SPTY,LINKMAN_DUTY
         ) values (
-        #{projLinkmanId},#{unitProjId},#{linkmanInfoId},#{linkmanType},#{creater},#{createTime},'0',#{professionCertType},#{professionSealNum},#{titleGrade},#{titleCertNum},#{registerNum},#{safeLicenceNum},#{prjSpty}
+        #{projLinkmanId},#{unitProjId},#{linkmanInfoId},#{linkmanType},#{creater},#{createTime},'0',#{professionCertType},#{professionSealNum},#{titleGrade},#{titleCertNum},#{registerNum},#{safeLicenceNum},#{prjSpty},#{linkmanDuty}
         )
     </insert>
 
@@ -203,6 +207,9 @@
                     <if test="item.isDeleted != null and item.isDeleted!='' ">
                         IS_DELETED = #{item.isDeleted},
                     </if>
+                    <if test="linkmanDuty !=null and linkmanDuty !='' ">
+                        LINKMAN_DUTY = #{linkmanDuty},
+                    </if>
                 </set>
                 where item.PROJ_LINKMAN_ID = #{projLinkmanId}
             </foreach>
@@ -235,6 +242,9 @@
                     <if test="item.isDeleted != null and item.isDeleted!='' ">
                         IS_DELETED = #{item.isDeleted},
                     </if>
+                    <if test="linkmanDuty !=null and linkmanDuty !='' ">
+                        LINKMAN_DUTY = #{linkmanDuty},
+                    </if>
                 </set>
                 where item.PROJ_LINKMAN_ID = #{projLinkmanId}
             </foreach>
@@ -244,11 +254,11 @@
     <!--9 批量插入-->
     <insert id="batchInsertAeaUnitProjLinkman" parameterType="java.util.List">
         insert into AEA_UNIT_PROJ_LINKMAN (
-        PROJ_LINKMAN_ID ,UNIT_PROJ_ID ,LINKMAN_INFO_ID ,LINKMAN_TYPE ,CREATER ,CREATE_TIME,IS_DELETED
+        PROJ_LINKMAN_ID ,UNIT_PROJ_ID ,LINKMAN_INFO_ID ,LINKMAN_TYPE ,CREATER ,CREATE_TIME,IS_DELETED,LINKMAN_DUTY
         )
         <foreach collection="list" item="item" index="index" separator="UNION ALL">
             select
-            #{item.projLinkmanId},#{item.unitProjId},#{item.linkmanInfoId},#{item.linkmanType},#{item.creater},#{item.createTime},'0'
+            #{item.projLinkmanId},#{item.unitProjId},#{item.linkmanInfoId},#{item.linkmanType},#{item.creater},#{item.createTime},'0',#{linkmanDuty}
             from dual
         </foreach>
     </insert>

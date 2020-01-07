@@ -35,8 +35,7 @@ public class RestAeaProjAgentService {
     private AeaProjApplyAgentService aeaProjApplyAgentService;
     @Autowired
     private AeaProjInfoService aeaProjInfoService;
-    @Autowired
-    private AeaParentProjMapper aeaParentProjMapper;
+
     @Autowired
     private AeaProjWindowService aeaProjWindowService;
     @Autowired
@@ -57,14 +56,14 @@ public class RestAeaProjAgentService {
         AeaUnitProjLinkmanVo aeaUnitProjLinkmanVo = agentProjInfoParamVo.getAeaUnitProjLinkmanVo();
         AeaProjInfo aeaProjInfo=AgentProjInfoParamVo.format(projAgentParamVo);
         aeaProjInfoService.updateAeaProjInfo(aeaProjInfo);
-        saveOrUpdateLinkmanTypes(aeaUnitProjLinkmanVo.getLeaderName(),aeaUnitProjLinkmanVo.getLeaderMobilePhone(),unitInfoId,aeaProjInfo.getProjInfoId(),"1");//todo 暂时用1表示负责人 2表示经办人
-        saveOrUpdateLinkmanTypes(aeaUnitProjLinkmanVo.getOperatorName(),aeaUnitProjLinkmanVo.getOperatorMobilePhone(),unitInfoId,aeaProjInfo.getProjInfoId(),"2");
+        saveOrUpdateLinkmanTypes(aeaUnitProjLinkmanVo.getLeaderName(),aeaUnitProjLinkmanVo.getLeaderMobilePhone(),aeaUnitProjLinkmanVo.getLeaderDuty(),unitInfoId,aeaProjInfo.getProjInfoId(),"1");
+        saveOrUpdateLinkmanTypes(aeaUnitProjLinkmanVo.getOperatorName(),aeaUnitProjLinkmanVo.getOperatorMobilePhone(),aeaUnitProjLinkmanVo.getOperatorDuty(),unitInfoId,aeaProjInfo.getProjInfoId(),"0");
         AeaProjApplyAgent aeaProjApplyAgent=initAeaProjApplyAgent(loginInfo,agentStageState,aeaProjInfo.getProjInfoId());
         aeaProjApplyAgentService.saveAeaProjApplyAgent(aeaProjApplyAgent);
         return aeaProjApplyAgent;
     }
 
-    private void saveOrUpdateLinkmanTypes(String linkmanName,String linkmanMobilePhone,String unitInfoId,String projInfoId,String type) throws Exception {
+    private void saveOrUpdateLinkmanTypes(String linkmanName,String linkmanMobilePhone,String duty,String unitInfoId,String projInfoId,String type) throws Exception {
         AeaLinkmanInfo query=new AeaLinkmanInfo();
         query.setLinkmanName(linkmanName);
         query.setLinkmanMobilePhone(linkmanMobilePhone);
@@ -79,7 +78,10 @@ public class RestAeaProjAgentService {
             aeaLinkmanInfo.setRootOrgId(SecurityContext.getCurrentOrgId());
             aeaLinkmanInfo.setIsActive(Status.ON);
             aeaLinkmanInfo.setIsDeleted(Status.OFF);
-            aeaLinkmanInfoService.insertLinkmanInfo(aeaLinkmanInfo);
+            aeaLinkmanInfo.setLinkmanType("u");
+            aeaLinkmanInfo.setCreater(SecurityContext.getCurrentUserName());
+            aeaLinkmanInfo.setCreateTime(new Date());
+            aeaLinkmanInfoService.insertOnlyLinkmanInfo(aeaLinkmanInfo);
         }
         AeaUnitProj aeaUnitProj=new AeaUnitProj();
         List<AeaUnitProj> unitProjs = aeaUnitProjMapper.findUnitProjByProjIdAndUnitIdAndunitType(projInfoId, unitInfoId, "7");
@@ -108,6 +110,7 @@ public class RestAeaProjAgentService {
             aeaUnitProjLinkman.setCreater(SecurityContext.getCurrentUserName());
             aeaUnitProjLinkman.setCreateTime(new Date());
             aeaUnitProjLinkman.setIsDeleted(Status.OFF);
+            aeaUnitProjLinkman.setLinkmanDuty(duty);
             aeaUnitProjLinkmanMapper.insertAeaUnitProjLinkman(aeaUnitProjLinkman);
         }
     }
@@ -148,7 +151,7 @@ public class RestAeaProjAgentService {
         if(unitProjs.size()>0){
             List<AeaUnitProjLinkman> aeaUnitProjLinkmans = aeaUnitProjLinkmanMapper.queryByUnitProjIdAndlinkType(unitProjs.get(0).getUnitProjId(),null,null);
             if(aeaUnitProjLinkmans.size()>0){
-                List<AeaUnitProjLinkman> list = aeaUnitProjLinkmans.stream().filter(v -> ("1".equals(v.getLinkmanType()) || "2".equals(v.getLinkmanType()))).collect(Collectors.toList());
+                List<AeaUnitProjLinkman> list = aeaUnitProjLinkmans.stream().filter(v -> ("1".equals(v.getLinkmanType()) || "0".equals(v.getLinkmanType()))).collect(Collectors.toList());
                 if(list.size()>0){
                     for (AeaUnitProjLinkman aeaUnitProjLinkman:list){
                         AeaLinkmanInfo linkman = aeaLinkmanInfoService.getOneById(aeaUnitProjLinkman.getLinkmanInfoId());
@@ -156,7 +159,7 @@ public class RestAeaProjAgentService {
                             aeaUnitProjLinkmanVo.setLeaderName(linkman.getLinkmanName());
                             aeaUnitProjLinkmanVo.setLeaderMobilePhone(linkman.getLinkmanMobilePhone());
                             aeaUnitProjLinkmanVo.setLeaderDuty("负责人");
-                        }else if("2".equals(aeaUnitProjLinkman.getLinkmanType())){
+                        }else if("0".equals(aeaUnitProjLinkman.getLinkmanType())){
                             aeaUnitProjLinkmanVo.setOperatorName(linkman.getLinkmanName());
                             aeaUnitProjLinkmanVo.setOperatorMobilePhone(linkman.getLinkmanMobilePhone());
                             aeaUnitProjLinkmanVo.setOperatorDuty("经办人");
