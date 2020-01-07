@@ -1256,30 +1256,70 @@
                         </div>
                       </template>
                     </el-table-column>
+                    <el-table-column prop="orgName" label="实施主体" width="340">
+                      <template slot-scope="scope">
+                        <div v-if="scope.row.isImplement==false">
+                          <el-select v-model="scope.row.implementItemVerId"
+                                     placeholder="请选择实施主体">
+                            <el-option v-for="(item,indexOp) in scope.row.carryOutItems" :label="item.orgName"
+                                       :key="indexOp"
+                                       @click.native="getItemOrgId(scope.row,scope.$index,item)"
+                                       :value="item.itemVerId"></el-option>
+                          </el-select>
+                        </div>
+                        <div v-else>
+                          <span>{{scope.row.orgName}}</span>
+                        </div>
+                      </template>
+                    </el-table-column>
                   </template>
-                  <el-table-column prop="orgName" :label="isGuidePage?'审批部门':'实施主体'" width="340">
-                    <template slot-scope="scope">
-                      <div v-if="scope.row.isImplement==false">
-                        <el-select v-model="scope.row.implementItemVerId"
-                                   placeholder="请选择实施主体">
-                          <el-option v-for="(item,indexOp) in scope.row.carryOutItems" :label="item.orgName"
-                                     :key="indexOp"
-                                     @click.native="getItemOrgId(scope.row,scope.$index,item)"
-                                     :value="item.itemVerId"></el-option>
-                        </el-select>
-                      </div>
-                      <div v-else>
-                        <span>{{scope.row.orgName}}</span>
-                      </div>
-                    </template>
-                  </el-table-column>
                   <template data-title="部门辅导表格列" v-if="isGuidePage">
-                    <el-table-column label="是否必选" prop="isDoneItem" width="100px"></el-table-column>
-                    <el-table-column label="智能引导" prop="intelliGuideChoose" width="100px"></el-table-column>
-                    <el-table-column label="申请人选择" prop="applicantChoose" width="100px"></el-table-column>
-                    <el-table-column label="牵头部门选择" prop="leaderDeptChoose" width="100px"></el-table-column>
-                    <el-table-column label="审批部门" prop="approveDeptChoose" width="100px"></el-table-column>
-                    <el-table-column label="审批部门意见" prop="approveDeptOpinion" width="100px"></el-table-column>
+                    <el-table-column label="是否必选" prop="isDoneItem" width="80px" align="center">
+                      <template slot-scope="scope">
+                        {{scope.row.isDoneItem=='1'?"必选":"非必选"}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="orgName" label="审批部门">
+                      <template slot-scope="scope">
+                        <div v-if="scope.row.isImplement==false">
+                          <el-select v-model="scope.row.implementItemVerId"
+                                     placeholder="请选择实施主体">
+                            <el-option v-for="(item,indexOp) in scope.row.carryOutItems" :label="item.orgName"
+                                       :key="indexOp"
+                                       @click.native="getItemOrgId(scope.row,scope.$index,item)"
+                                       :value="item.itemVerId"></el-option>
+                          </el-select>
+                        </div>
+                        <div v-else>
+                          <span>{{scope.row.orgName}}</span>
+                        </div>
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="智能引导" prop="intelliGuideChoose" width="80px" align="center">
+                      <template slot-scope="scope">
+                        <el-checkbox v-model="scope.row.intelliGuideChoose"></el-checkbox>
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="申请人选择" prop="applicantChoose">
+                      <template slot-scope="scope">
+                        <el-checkbox v-model="scope.row.applicantChoose"></el-checkbox>
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="牵头部门选择" prop="leaderDeptChoose">
+                      <template slot-scope="scope">
+                        <el-checkbox v-model="scope.row.leaderDeptChoose">{{scope.row.leanderDeptOpinion}}</el-checkbox>
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="审批部门" prop="approveDeptChoose" width="80px" align="center">
+                      <template slot-scope="scope">
+                        <el-checkbox v-model="scope.row.approveDeptChoose"></el-checkbox>
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="审批部门意见" prop="approveDeptOpinion" width="160">
+                      <template slot-scope="scope">
+                        <el-input placeholder="请填写意见" v-model="scope.row.approveDeptOpinion"></el-input>
+                      </template>
+                    </el-table-column>
                   </template>
                 </el-table>
                 <p class="more-base-info" v-if="noptItemShowNum>0&&noptItemShowNum < parallelItems.length"

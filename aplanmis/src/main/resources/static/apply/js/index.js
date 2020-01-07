@@ -759,7 +759,7 @@ var vm = new Vue({
     // 部门辅导 start-----------------------
     // 显示辅导数据
     showGuideDetail: function(){
-      this.lookProjDetail();
+      this.linkQuery();
     },
     // 审核工程
     ensureAuditProj: function(){
@@ -803,9 +803,22 @@ var vm = new Vue({
       }, function(res) {
         vm.loading = false;
         if (res.success) {
+          vm.branchOrgHis = res.content.aeaHiGuide.branchOrg || {};
+          vm.parallelItemStateIdsHis = res.content.aeaHiGuide.parallelItemStateIds || [];
+          vm.projInfoIdHis = res.content.aeaHiGuide.projInfoId || '';
+          vm.stageIdHis = res.content.aeaHiGuide.stageId || '';
+          vm.stateIdsHis = res.content.aeaHiGuide.stateIds || [];
+          vm.themeIdHis = res.content.aeaHiGuide.themeId || '';
+          vm.themeVerIdHis = res.content.aeaHiGuide.themeVerId || '';
+          vm.themeVerId = res.content.aeaHiGuide.themeVerId ||  '';
+          vm.forminstVos = res.content.aeaHiGuide.forminstVos || [];
+          vm.isGreenWay = res.content.aeaHiGuide.isGreenWay == '1' ? true : false;
+
           vm.guideDetail = res.content;
           vm.guideState = vm.guideDetail.aeaHiGuide.applyState;
           vm.leaderDept = vm.guideDetail.leaderDept;
+          vm.projInfoId = vm.guideDetail.aeaHiGuide.projInfoId;
+
           vm.parallelApplyinstId = vm.guideDetail.aeaHiGuide.applyinstId;
           vm.requestAuSplitProjInfo(vm.guideDetail.aeaHiGuide.projInfoId);
         } else {
