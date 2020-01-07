@@ -28,4 +28,6 @@ public interface AeaProjApplyAgentService {
     public AgencyDetailVo getAgencyDetail(String applyAgentId) throws Exception;
 
     List<AeaProjApplyAgent> listAeaProjApplyAgentByProjInfoId(String projInfoId) throws Exception;
+
+    public AeaProjApplyAgent getAgencyAgreementDetail(String applyAgentId) throws Exception;
 }

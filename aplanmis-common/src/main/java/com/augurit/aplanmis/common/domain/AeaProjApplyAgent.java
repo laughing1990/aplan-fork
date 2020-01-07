@@ -36,6 +36,14 @@ public class AeaProjApplyAgent implements Serializable{
     @ApiModelProperty(name = "windowId", value = "窗口ID")
     private String windowId;
 
+    @ApiModelProperty(name = "agreementCode", value = "协议编号")
+    private String agreementCode;
+
+    @ApiModelProperty(name = "agreementSignTime", value = "协议签订时间")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", locale = "zh", timezone = "GMT+8")
+    private java.util.Date agreementSignTime;
+
     @ApiModelProperty(name = "agentUserId", value = "代办中心的代办人ID")
     private java.lang.String agentUserId;
 
@@ -109,4 +117,16 @@ public class AeaProjApplyAgent implements Serializable{
 
     @ApiModelProperty(name = "currentUserMobile", value = "当前登录用户手机号")
     private java.lang.String currentUserMobile;
+
+    @ApiModelProperty(name = "unitName", value = "申请单位（甲方）")
+    private String unitName;
+    @ApiModelProperty(name = "windowName", value = "代办中心名称（乙方）")
+    private String windowName;
+    @ApiModelProperty(name = "agentStageName", value = "委托代办阶段名称，多个时逗号拼接")
+    private String agentStageName;
+    @ApiModelProperty(name = "applyUserName", value = "申请人姓名")
+    private String applyUserName;
+    @ApiModelProperty(name = "applyUserPhone", value = "申请人手机号")
+    private String applyUserPhone;
+
 }

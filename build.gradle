@@ -57,6 +57,7 @@ allprojects {
 
         compile('org.springframework.boot:spring-boot-starter')
         compile('org.springframework.boot:spring-boot-starter-web')
+        compile('org.springframework:spring-mock:2.0.8')
         //增加thymeleaf 支持
         compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 
