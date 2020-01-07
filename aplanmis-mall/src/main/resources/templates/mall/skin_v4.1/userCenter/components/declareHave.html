@@ -27,8 +27,8 @@
           <div class="search-input fl">
             <span class="search-title">项目/工程查询</span>
             <input type="text" placeholder="请输入工程代码 / 项目代码 / 项目名称"  v-model="keyword">
-            <button class="search-btn" @click="pageNumDH = 1;getHadApplyItemList();"> <i class="el-icon-search" style="font-size: 16px;"></i>查询</button>
-            <button class="search-reset" @click="resetSearchHandleFn">重 置</button>
+            <button class="pro-search-btn" @click="pageNumDH = 1;getHadApplyItemList();">搜索</button>
+            <button class="pro-search-btn" style="background: #ffffff;color: #0f0f11;border: 1px solid #eee" @click="resetSearchHandleFn">重 置</button>
           </div>
         </div>
 
@@ -109,7 +109,16 @@
                             class="mstage-count not-allow-sel"><i class="el-icon-question"></i></span></el-tooltip>
                   </span>
                   <span class="applyinstState applyinstState7"
-                        v-else="item.applyinstState=='6'">已办结</span>
+                        v-else-if="item.applyinstState=='6'">已办结</span>
+
+                  <span class="applyinstState applyinstState5"
+                        v-else-if="item.applyinstState=='12'">撤件待受理</span>
+                  <span class="applyinstState applyinstState5"
+                        v-else-if="item.applyinstState=='13'">撤件已受理</span>
+                  <span class="applyinstState applyinstState5"
+                        v-else-if="item.applyinstState=='14'">撤件办结</span>
+                  <span class="applyinstState applyinstState6"
+                        v-else-if="item.applyinstState=='15'">待复验</span>
                 </td>
                 <td width="20%" style="cursor: pointer">
                   <a class="option-btn" style="display: inline-block;"  @click="lookProjDetail(item)">查看</a>
