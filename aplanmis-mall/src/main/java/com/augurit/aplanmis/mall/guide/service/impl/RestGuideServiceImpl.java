@@ -706,22 +706,11 @@ public class RestGuideServiceImpl implements RestGuideService {
         Set<Integer> indexs = new HashSet<>();
 
         if (vo.getParallelItems()!=null){
-            vo.getParallelItems().stream().forEach(parallelItem->{
-                if (parallelItem.getItems()!=null){
-                    parallelItem.getItems().stream().forEach(item->{
-                        if (item.getItemName().contains(keyword)){
-                            item.setIsSelected("1");
-                            indexs.add(parallelItem.getIndex());
-                        }
-                        item.getResultMats().stream().forEach(resultMat->{
-                            if (resultMat.getAeaMatCertName().contains(keyword)){
-                                item.setIsSelected("1");
-                                indexs.add(parallelItem.getIndex());
-                            }
-                        });
-                    });
-                }
-            });
+            setSelected(keyword, indexs, vo.getParallelItems());
+        }
+
+        if (vo.getSeriItems()!=null){
+            setSelected(keyword, indexs, vo.getSeriItems());
         }
 
         //2.循环步骤一符合条件的阶段index将阶段标记
@@ -737,6 +726,25 @@ public class RestGuideServiceImpl implements RestGuideService {
             e.printStackTrace();
             throw new Exception(e);
         }
+    }
+
+    private void setSelected(String keyword, Set<Integer> indexs, List<RestItemListVo> seriItems2) {
+        seriItems2.stream().forEach(seriItems -> {
+            if (seriItems.getItems() != null) {
+                seriItems.getItems().stream().forEach(item -> {
+                    if (item.getItemName().contains(keyword)) {
+                        item.setIsSelected("1");
+                        indexs.add(seriItems.getIndex());
+                    }
+                    item.getResultMats().stream().forEach(resultMat -> {
+                        if (resultMat.getAeaMatCertName().contains(keyword)) {
+                            item.setIsSelected("1");
+                            indexs.add(seriItems.getIndex());
+                        }
+                    });
+                });
+            }
+        });
     }
 
     private RestItemListVo setSssxInfo(AeaItemBasic searchItem, List<AeaItemBasic> parallelItems) {
