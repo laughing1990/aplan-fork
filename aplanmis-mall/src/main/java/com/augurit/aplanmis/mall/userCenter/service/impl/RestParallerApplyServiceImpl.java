@@ -11,14 +11,17 @@ import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.item.AeaItemPrivService;
 import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
+import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.state.AeaItemStateService;
 import com.augurit.aplanmis.common.service.state.AeaParStateService;
 import com.augurit.aplanmis.common.service.theme.AeaParThemeService;
 import com.augurit.aplanmis.common.utils.CommonTools;
+import com.augurit.aplanmis.common.vo.guide.GuideDetailVo;
 import com.augurit.aplanmis.mall.main.vo.ItemListVo;
 import com.augurit.aplanmis.mall.main.vo.ParallelApproveItemVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestParallerApplyService;
 import com.augurit.aplanmis.mall.userCenter.vo.AeaGuideItemVo;
+import com.augurit.aplanmis.mall.userCenter.vo.ApplyIteminstConfirmVo;
 import com.augurit.aplanmis.mall.userCenter.vo.StageStateParamVo;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,11 +55,14 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
     private AeaParFactorMapper aeaParFactorMapper;
     @Autowired
     private AeaParFactorThemeMapper aeaParFactorThemeMapper;
-
     @Autowired
     private AeaParThemeService aeaParThemeService;
     @Autowired
     private AeaHiItemInoutService aeaHiItemInoutService;
+    @Autowired
+    private AeaProjInfoService aeaProjInfoService;
+    @Autowired
+    private AeaHiGuideService aeaHiGuideService;
 
     @Override
     public ItemListVo listItemAndStateByStageId(String stageId, String projInfoId, String regionalism, String projectAddress,String isSelectItemState,String isFilterStateItem,String rootOrgId) throws Exception {
@@ -127,6 +133,13 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
         vo.setCoreItemList(coreItemList==null?new ArrayList<>():coreItemList);
         vo.setStateList(stateList==null?new ArrayList<>():stateList);
         return vo;
+    }
+
+
+    @Override
+    public ApplyIteminstConfirmVo listGuideItemsByApplyinstId(String guideId,String applyinstId,String projInfoId, String isSelectItemState) throws Exception {
+        GuideDetailVo detail = aeaHiGuideService.detail(guideId);
+        return ApplyIteminstConfirmVo.formatGuide(detail);
     }
 
     @Override
@@ -404,8 +417,6 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
         }).collect(Collectors.toList()):new ArrayList<>();
     }
 
-@Autowired
-private AeaHiGuideService aeaHiGuideService;
 
     @Override
     public List<AeaHiGuide> searchGuideApplyListByUnitIdAndUserId(String keyword, String applyState, String unitInfoId, String linkmanInfoId, int pageNum, int pageSize){

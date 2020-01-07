@@ -319,23 +319,23 @@ public class RestParallerApplyController {
     }
 
 
-    @GetMapping("guideItemAndState/list/{stageId}")
-    @ApiOperation(value = "阶段申报 --> 根据阶段ID、项目ID获取事项一单清列表数据")
-    @ApiImplicitParams({@ApiImplicitParam(value = "阶段ID",name = "stageId",required = true,dataType = "string"),
-            @ApiImplicitParam(value = "项目ID",name = "projInfoId",required = false,dataType = "string"),
-            @ApiImplicitParam(value = "区域编码", name = "regionalism", required = false, dataType = "string"),
-            @ApiImplicitParam(value = "是否展示事项情形", name = "isSelectItemState", required = false, dataType = "string"),
-            @ApiImplicitParam(value = "建设地点", name = "projectAddress", required = false, dataType = "string")})
-    public ContentResultForm<ItemListVo> listguideItemAndStateByStageId(@PathVariable("stageId") String stageId, String projInfoId,  String regionalism, String projectAddress,String isSelectItemState) {
+    @GetMapping("guideItems/list")
+    @ApiOperation(value = "阶段申报 --> 事项-部门确认/申请人确认接口")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "部门辅导ID",name = "guideId",required = true,dataType = "string"),
+            @ApiImplicitParam(value = "申请实例ID",name = "applyinstId",required = true,dataType = "string"),
+            @ApiImplicitParam(value = "项目ID",name = "projInfoId",required = true,dataType = "string"),
+            @ApiImplicitParam(value = "是否展示事项情形 1 是，0 否", name = "isSelectItemState", required = true, dataType = "string")})
+    public ContentResultForm<ApplyIteminstConfirmVo> listGuideItemsByApplyinstId(String guideId,String applyinstId,String projInfoId,String isSelectItemState) {
         try {
-            logger.error("-----listItemAndStateByStageId----start--------");
+            logger.error("-----listGuideItemsByApplyinstId----start--------");
             long l=System.currentTimeMillis();
-            ItemListVo vo = null;//restParallerApplyService.listItemAndStateByStageId(stageId, projInfoId, regionalism, projectAddress,"0","0");
-            logger.error("-----listItemAndStateByStageId----end--------耗时："+(System.currentTimeMillis()-l));
-            return new ContentResultForm<>(true,vo);
+            ApplyIteminstConfirmVo vo = restParallerApplyService.listGuideItemsByApplyinstId(guideId,applyinstId,projInfoId,isSelectItemState);
+            logger.error("-----listGuideItemsByApplyinstId----end--------耗时："+(System.currentTimeMillis()-l));
+            return new ContentResultForm<ApplyIteminstConfirmVo>(true,vo);
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
-            return new ContentResultForm(false,"","根据阶段id获取事项一单清列表数据异常");
+            return new ContentResultForm(false,"","事项-部门确认/申请人确认接口异常");
         }
     }
 
