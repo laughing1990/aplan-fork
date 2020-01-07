@@ -411,6 +411,13 @@ var guideIndex = (function () {
                     $(e.target).addClass('activeLi').siblings().removeClass('activeLi');
                 }
             },
+
+            // 跳转智能引导页
+            toLeadPagehandleFn:function(){
+                window.location.hash="/toLeadPage";
+                window.location.search='';
+            },
+
             // 跳转单项办事指南
             switchSinglePage: function (row) {
                 var _this = this;

@@ -54,7 +54,7 @@
         </div>
       </div>
       <!-- 加载更多 -->
-      <div class="proj-load-more">
+      <div class="proj-load-more" v-if="total>9">
         <p class="pointer" v-if="hasLoadMoreFlag" @click="listLoadMore">
           <i class="" :class="[loading? 'el-icon-loading':'el-icon-bottom']"></i> 加载更多
         </p>

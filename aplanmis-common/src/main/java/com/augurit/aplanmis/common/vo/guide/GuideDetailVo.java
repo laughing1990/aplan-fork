@@ -20,6 +20,8 @@ public class GuideDetailVo {
 
     private String newThemeId;
 
+    private String newThemeName;
+
     private String newStageId;
 
     @ApiModelProperty(value = "是否牵头部门")

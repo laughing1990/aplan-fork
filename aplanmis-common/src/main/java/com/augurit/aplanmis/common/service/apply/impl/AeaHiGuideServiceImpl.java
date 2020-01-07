@@ -114,6 +114,7 @@ public class AeaHiGuideServiceImpl implements AeaHiGuideService {
             guideDetailVo.setThemeChanged(true);
             guideDetailVo.setNewThemeId(aeaHiGuideDetail.getThemeId());
             guideDetailVo.setNewStageId(aeaHiGuideDetail.getStageId());
+            guideDetailVo.setNewThemeName(aeaHiGuideDetail.getThemeName());
         }
         guideDetailVo.setLeaderDept(SecurityContext.getCurrentUserId().equals(aeaHiGuide.getLeaderUserId()));
         guideDetailVo.setAeaHiGuide(aeaHiGuide);

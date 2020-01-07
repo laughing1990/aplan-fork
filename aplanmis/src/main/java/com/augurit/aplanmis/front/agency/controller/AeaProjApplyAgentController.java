@@ -1,8 +1,12 @@
 package com.augurit.aplanmis.front.agency.controller;
 
+import com.augurit.agcloud.bsc.domain.BscAttForm;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.domain.AeaProjApplyAgent;
+import com.augurit.aplanmis.common.service.file.FileUtilsService;
+import com.augurit.aplanmis.common.service.receive.utils.ReceivePDFTemplate;
 import com.augurit.aplanmis.common.service.window.AeaProjApplyAgentService;
 import com.augurit.aplanmis.common.vo.agency.AgencyDetailVo;
 import io.swagger.annotations.ApiImplicitParam;
@@ -15,6 +19,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.util.List;
+
 /**
 * 项目代办申请表-Controller 页面控制转发类
 */
@@ -26,6 +34,9 @@ private static Logger logger = LoggerFactory.getLogger(AeaProjApplyAgentControll
 
     @Autowired
     private AeaProjApplyAgentService aeaProjApplyAgentService;
+
+    @Autowired
+    private FileUtilsService fileUtilsService;
 
 
     @GetMapping("/getAgencyDetail")
@@ -49,6 +60,37 @@ private static Logger logger = LoggerFactory.getLogger(AeaProjApplyAgentControll
         }catch (Exception e){
             logger.error(e.getMessage(), e);
             return new ContentResultForm<>(false, null, e.getMessage());
+        }
+    }
+
+    @GetMapping("/getAgencyAgreement")
+    @ApiOperation(value = "项目代办 --> 代办委托协议", notes = "项目代办 --> 代办委托协议", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "applyAgentId",value = "代办申请ID",required = true,dataType = "String")
+    })
+    public void getAgencyAgreement(String applyAgentId, HttpServletResponse resp){
+        logger.debug("获取代办委托协议，查询关键字为{}", applyAgentId);
+        try {
+            if(StringUtils.isNotBlank(applyAgentId)){
+                //先根据applyAgentId找detailId，如果有则表示协议已存储进mongodb，根据detailId在mongodb获取协议文件
+                String[] ids = {applyAgentId};
+                List<BscAttForm> forms = fileUtilsService.getAttachmentsByRecordId(ids, "AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID");
+                if(forms != null && forms.size() > 0){
+                    fileUtilsService.readFile(forms.get(0).getDetailId(),null,resp);
+                }else{
+                    //协议没有存储到mongodb，动态生成一份。代办中心（乙方）签章之后要将委托协议存储到mongodb。
+                    AeaProjApplyAgent agreementDetail = aeaProjApplyAgentService.getAgencyAgreementDetail(applyAgentId);
+                    String str = ReceivePDFTemplate.createAgencyAgreement(agreementDetail);
+                    //读取指定路径下的pdf文件
+                    ReceivePDFTemplate.readPdf(str, resp);
+                    File file = new File(str);
+                    if (file.isFile()) {
+                        file.delete();
+                    }
+                }
+            }
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
         }
     }
 
