@@ -40,10 +40,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 //并联申报
@@ -265,13 +262,7 @@ public class RestParallerApplyController {
     @ApiOperation("阶段申报--> 部门辅导申请")
     public ContentResultForm<String> startGuideApply(@Valid @RequestBody AeaGuideApplyVo aeaGuideApplyVo){
         try {
-            String applyinstId=aeaGuideApplyVo.getApplyinstId();
-            if(StringUtils.isBlank(aeaGuideApplyVo.getApplyinstId())){
-                AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(aeaGuideApplyVo.getApplySource(), aeaGuideApplyVo.getApplySubject(), aeaGuideApplyVo.getLinkmanInfoId(), AeaHiApplyinstConstants.STAGEINST_APPLY, null,ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"1",null);
-                applyinstId=aeaHiApplyinst.getApplyinstId();
-            }
-            aeaGuideApplyVo.setApplyinstId(applyinstId);
-            restAeaHiGuideService.initAeaHiGuide(aeaGuideApplyVo);
+            String applyinstId=restParallerApplyService.initGuideApply(aeaGuideApplyVo);
             return new ContentResultForm<>(true, applyinstId, "部门辅导申请成功!");
         } catch (Exception e) {
             logger.error(e.getMessage(),e);

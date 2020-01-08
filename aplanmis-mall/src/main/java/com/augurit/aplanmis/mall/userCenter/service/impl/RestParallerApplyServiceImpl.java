@@ -4,10 +4,15 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
+import com.augurit.aplanmis.common.constants.AeaHiApplyinstConstants;
+import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.apply.AeaHiGuideService;
+import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutService;
+import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiParStateinstService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.item.AeaItemPrivService;
 import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
@@ -19,12 +24,16 @@ import com.augurit.aplanmis.common.utils.CommonTools;
 import com.augurit.aplanmis.common.vo.guide.GuideDetailVo;
 import com.augurit.aplanmis.mall.main.vo.ItemListVo;
 import com.augurit.aplanmis.mall.main.vo.ParallelApproveItemVo;
+import com.augurit.aplanmis.mall.userCenter.service.AeaParStageService;
+import com.augurit.aplanmis.mall.userCenter.service.RestAeaHiGuideService;
 import com.augurit.aplanmis.mall.userCenter.service.RestParallerApplyService;
+import com.augurit.aplanmis.mall.userCenter.vo.AeaGuideApplyVo;
 import com.augurit.aplanmis.mall.userCenter.vo.AeaGuideItemVo;
 import com.augurit.aplanmis.mall.userCenter.vo.ApplyIteminstConfirmVo;
 import com.augurit.aplanmis.mall.userCenter.vo.StageStateParamVo;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -140,6 +149,49 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
     public ApplyIteminstConfirmVo listGuideItemsByApplyinstId(String guideId,String applyinstId,String projInfoId, String isSelectItemState) throws Exception {
         GuideDetailVo detail = aeaHiGuideService.detail(guideId);
         return ApplyIteminstConfirmVo.formatGuide(detail);
+    }
+
+    @Autowired
+    private AeaHiApplyinstService aeaHiApplyinstService;
+    @Autowired
+    private AeaHiParStageinstService aeaHiParStageinstService;
+
+    @Autowired
+    private AeaHiParStateinstService aeaHiParStateinstService;
+    @Autowired
+    private AeaParStageService aeaParStageService;
+    @Autowired
+    private RestAeaHiGuideService restAeaHiGuideService;
+    @Autowired
+    private AeaApplyinstProjMapper aeaApplyinstProjMapper;
+    @Autowired
+    private AeaApplyinstUnitProjMapper aeaApplyinstUnitProjMapper;
+
+    @Override
+    public String initGuideApply(AeaGuideApplyVo aeaGuideApplyVo) throws Exception {
+        String applyinstId=aeaGuideApplyVo.getApplyinstId();
+        String[] stateIds=aeaGuideApplyVo.getStateIds();
+        List<String> unitProjIds=aeaGuideApplyVo.getProjUnitIds();
+        String stageinstId="";
+        if(StringUtils.isBlank(aeaGuideApplyVo.getApplyinstId())){
+            AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(aeaGuideApplyVo.getApplySource(), aeaGuideApplyVo.getApplySubject(), aeaGuideApplyVo.getLinkmanInfoId(), AeaHiApplyinstConstants.STAGEINST_APPLY, null, ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"1",null);
+            applyinstId=aeaHiApplyinst.getApplyinstId();
+            String appinstId = UUID.randomUUID().toString();//预先生成流程模板实例ID
+            //2、实例化并联实例
+            AeaHiParStageinst aeaHiParStageinst = aeaHiParStageinstService.createAeaHiParStageinst(applyinstId, aeaGuideApplyVo.getStageId(), aeaGuideApplyVo.getThemeVerId(), appinstId, null);
+            stageinstId=aeaHiParStageinst.getStageinstId();
+        }
+        //4、情形实例
+        aeaHiParStateinstService.batchInsertAeaHiParStateinst(applyinstId, stageinstId, stateIds, SecurityContext.getCurrentUserName());
+        //7.1、单位本身的申报主体
+        aeaParStageService.insertApplySubject(aeaGuideApplyVo.getApplySubject(), applyinstId, new String[]{aeaGuideApplyVo.getProjInfoId()}, aeaGuideApplyVo.getUnitInfoId(), aeaGuideApplyVo.getLinkmanInfoId());
+        //7.2、新增单位的申报主体
+        if (unitProjIds!=null&&unitProjIds.size()>0){
+            aeaParStageService.insertApplySubject(aeaGuideApplyVo.getApplySubject(), applyinstId,  new String[]{aeaGuideApplyVo.getProjInfoId()}, aeaGuideApplyVo.getLinkmanInfoId(), aeaGuideApplyVo.getLinkmanInfoId(), unitProjIds);
+        }
+        aeaGuideApplyVo.setApplyinstId(applyinstId);
+        restAeaHiGuideService.initAeaHiGuide(aeaGuideApplyVo);
+        return applyinstId;
     }
 
     @Override

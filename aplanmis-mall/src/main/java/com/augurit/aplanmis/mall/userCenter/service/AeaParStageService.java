@@ -600,7 +600,7 @@ public class AeaParStageService {
         return result;
     }
 
-    private void insertApplySubject(String applySubject, String applyinstId, String[] projInfoIds,String unitInfoId,String linkmanInfoId) throws Exception {
+    public void insertApplySubject(String applySubject, String applyinstId, String[] projInfoIds,String unitInfoId,String linkmanInfoId) throws Exception {
         if ("0".equals(applySubject)) { //申报主体为个人
             aeaLinkmanInfoService.insertApplyAndLinkProjLinkman(applyinstId, projInfoIds, linkmanInfoId, linkmanInfoId);
         } else {
@@ -612,7 +612,7 @@ public class AeaParStageService {
         }
     }
 
-    private void insertApplySubject(String applySubject, String applyinstId, String[] projInfoIds, String applyLinkmanId, String linkmanInfoId, List<String> unitPorjIds) {
+    public void insertApplySubject(String applySubject, String applyinstId, String[] projInfoIds, String applyLinkmanId, String linkmanInfoId, List<String> unitPorjIds) {
         if ("0".equals(applySubject)) { //申报主体为个人
             aeaLinkmanInfoService.insertApplyAndLinkProjLinkman(applyinstId, projInfoIds, applyLinkmanId, linkmanInfoId);
         } else {

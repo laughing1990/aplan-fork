@@ -50,4 +50,6 @@ public interface RestParallerApplyService {
     List<AeaHiGuide> searchGuideApplyListByUnitIdAndUserId(String keyword, String applyState, String s, String userId, int pageNum, int pageSize);
 
     ApplyIteminstConfirmVo listGuideItemsByApplyinstId(String guideId,String applyinstId,String projInfoId, String isSelectItemState) throws Exception;
+
+    String initGuideApply(AeaGuideApplyVo aeaGuideApplyVo) throws Exception;
 }
