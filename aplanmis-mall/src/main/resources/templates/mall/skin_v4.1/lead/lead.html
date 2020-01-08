@@ -48,14 +48,16 @@
                                                       :key="ind"
                                                       :value="itemAns.factorId" :label="itemAns.factorId" :checked="itemAns.factorId" name="answer">{{itemAns.factorName}}
                                             </el-radio>
-                                        </el-radio-group><div name="append"></div>
+                                        </el-radio-group>
+                                        <div name="append"></div>
                                     </template>
                                     <template v-else>
                                         <el-checkbox-group v-model="item.selectAnswerId">
                                             <el-checkbox v-for="(itemAns,indAns) in item.answerFactors" :value="itemAns.factorId"
                                                          :key="indAns"
                                                          @change="function(value){getChildsStateList(guideList,item,itemAns,index,value,'guide')}"
-                                                         :label="itemAns.factorId" name="answer">{{itemAns.factorName}}</el-checkbox>
+                                                         :label="itemAns.factorId" name="answer">{{itemAns.factorName}}
+                                            </el-checkbox>
                                         </el-checkbox-group>
                                     </template>
                                 </el-form-item>
@@ -80,7 +82,6 @@
                                         <span>该主题下无可申报阶段</span>
                                     </template>
                                 </el-form-item>
-
                             </el-form>
                             <el-form :model="stateSelVal" v-if="stateList&&stateList.length>0">
                                 <el-form-item :required="item.mustAnswer==1"
