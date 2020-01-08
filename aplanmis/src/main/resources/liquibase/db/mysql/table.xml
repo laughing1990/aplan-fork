@@ -1744,4 +1744,158 @@
             MODIFY COLUMN `BYTES_`  mediumblob NULL AFTER `DEPLOYMENT_ID_`;
         </sql>
     </changeSet>
+
+    <changeSet id="2020010810520001" author="qinjp" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            CREATE TABLE `aea_proj_apply_agent` (
+            `APPLY_AGENT_ID` varchar(50) NOT NULL COMMENT '主键',
+            `AGENT_CODE` varchar(50) DEFAULT NULL COMMENT '代办申请编号',
+            `PROJ_INFO_ID` varchar(50) DEFAULT NULL COMMENT '项目ID',
+            `UNIT_INFO_ID` varchar(50) DEFAULT NULL COMMENT '单位ID',
+            `APPLY_USER_ID` varchar(50) DEFAULT NULL COMMENT '申请人ID',
+            `AGENT_STAGE_STATE` varchar(8) DEFAULT NULL COMMENT '委托代办阶段：1立项用地规划许可阶段 2 工程建设许可阶段 3施工许可阶段 4竣工验收阶段  多选时逗号拼接',
+            `AGENT_APPLY_STATE` char(1) DEFAULT NULL COMMENT '代办申请状态 1待签订 2窗口签订中 3 待申请人签章 4已签订（代办中） 5代办终止 6不予受理',
+            `WINDOW_ID` varchar(100) NOT NULL COMMENT '窗口ID',
+            `AGENT_USER_ID` varchar(50) DEFAULT NULL COMMENT '代办中心的代办人ID',
+            `AGENT_USER_NAME` varchar(50) DEFAULT NULL COMMENT '代办人的姓名',
+            `AGENT_USER_MOBILE` varchar(11) DEFAULT NULL COMMENT '代办人的手机号',
+            `AGREEMENT_CODE` varchar(50) DEFAULT NULL COMMENT '协议编号',
+            `AGREEMENT_SIGN_TIME` datetime DEFAULT NULL COMMENT '协议签订时间',
+            `START_TIME` datetime DEFAULT NULL COMMENT '开始时间',
+            `END_TIME` datetime DEFAULT NULL COMMENT '结束时间',
+            `CREATER` varchar(50) DEFAULT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime DEFAULT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) DEFAULT NULL COMMENT '根组织ID',
+            PRIMARY KEY (`APPLY_AGENT_ID`),
+            KEY `aea_hi_agent_applyinst_PROJ_INFO_ID` (`PROJ_INFO_ID`),
+            KEY `AEA_HI_AGENT_APPLYINST_UNIT_INFO_ID` (`UNIT_INFO_ID`),
+            CONSTRAINT `AEA_HI_AGENT_APPLYINST_UNIT_INFO_ID` FOREIGN KEY (`UNIT_INFO_ID`) REFERENCES `aea_unit_info` (`UNIT_INFO_ID`),
+            CONSTRAINT `aea_hi_agent_applyinst_PROJ_INFO_ID` FOREIGN KEY (`PROJ_INFO_ID`) REFERENCES `aea_proj_info` (`PROJ_INFO_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='项目代办申请表';
+
+            CREATE TABLE `aea_proj_apply_cancel` (
+            `APPLY_CANCEL_ID` varchar(50) NOT NULL COMMENT '主键',
+            `PROJ_INFO_ID` varchar(50) NOT NULL COMMENT '项目ID',
+            `UNIT_INFO_ID` varchar(50) NOT NULL COMMENT '单位ID',
+            `APPLY_USER_ID` varchar(50) NOT NULL COMMENT '申请人ID',
+            `APPLY_ACCOUNT_UID` varchar(50) DEFAULT NULL COMMENT '统一认证登录账号uid',
+            `STAGE_NO` char(1) DEFAULT NULL COMMENT '所处阶段编号 1 工程建设许可阶段  2 施工许可阶段',
+            `STAGE_ID` varchar(50) DEFAULT NULL COMMENT '阶段ID',
+            `FRONT_STAGE_PROJ_INFO_ID` varchar(50) DEFAULT NULL COMMENT '前阶段项目ID',
+            `APPLY_STATE` char(1) DEFAULT NULL COMMENT '申请状态 1未发起  2待审核  3审核通过  4 审核不通过',
+            `START_TIME` datetime DEFAULT NULL COMMENT '开始时间',
+            `END_TIME` datetime DEFAULT NULL COMMENT '结束时间',
+            `CANCEL_MEMO` varchar(1000) DEFAULT NULL COMMENT '备注说明',
+            `IS_DELETED` char(1) NOT NULL COMMENT '是否逻辑删除，0表示未删除，1表示已删除',
+            `CREATER` varchar(255) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '根组织ID',
+            PRIMARY KEY (`APPLY_CANCEL_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='项目注销申请表';
+
+            CREATE TABLE `aea_proj_apply_split` (
+            `APPLY_SPLIT_ID` varchar(50) NOT NULL COMMENT '主键',
+            `PROJ_INFO_ID` varchar(50) NOT NULL COMMENT '项目ID',
+            `UNIT_INFO_ID` varchar(50) NOT NULL COMMENT '单位ID',
+            `APPLY_USER_ID` varchar(50) NOT NULL COMMENT '申请人ID',
+            `APPLY_ACCOUNT_UID` varchar(50) DEFAULT NULL COMMENT '统一认证登录账号uid',
+            `STAGE_NO` char(1) DEFAULT NULL COMMENT '所处阶段编号 1 工程建设许可阶段  2 施工许可阶段',
+            `STAGE_ID` varchar(50) DEFAULT NULL COMMENT '阶段ID',
+            `FRONT_STAGE_PROJ_INFO_ID` varchar(50) DEFAULT NULL COMMENT '前阶段项目ID',
+            `LEADER_ORG_ID` varchar(50) DEFAULT NULL COMMENT '牵头部门组织ID',
+            `LEADER_USER_ID` varchar(50) DEFAULT NULL COMMENT '牵头部门用户ID',
+            `APPLY_STATE` char(1) DEFAULT NULL COMMENT '申请状态 1未发起  2待审核  3审核通过  4 审核不通过',
+            `START_TIME` datetime DEFAULT NULL COMMENT '开始时间',
+            `END_TIME` datetime DEFAULT NULL COMMENT '结束时间',
+            `SPLIT_MEMO` varchar(1000) DEFAULT NULL COMMENT '备注说明',
+            `IS_DELETED` char(1) DEFAULT NULL COMMENT '是否逻辑删除，0表示未删除，1表示已删除',
+            `CREATER` varchar(255) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '根组织ID',
+            PRIMARY KEY (`APPLY_SPLIT_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='项目拆分申请表';
+
+            CREATE TABLE `aea_hi_guide` (
+            `GUIDE_ID` varchar(50) NOT NULL COMMENT '主键',
+            `APPLYINST_ID` varchar(50) NOT NULL COMMENT '申报实例ID',
+            `GUIDE_TYPE` char(1) NOT NULL COMMENT '申请辅导用户类型：p表示个人，u表示企业',
+            `STAGE_ID` varchar(50) NOT NULL COMMENT '阶段id',
+            `PROJ_INFO_ID` varchar(50) NOT NULL DEFAULT '' COMMENT '项目id',
+            `APPLY_UNIT_INFO_ID` varchar(50) DEFAULT NULL COMMENT '发起辅导单位ID',
+            `APPLY_LINKMAN_INFO_ID` varchar(50) NOT NULL COMMENT '发起辅导用户ID',
+            `APPLY_STATE` char(1) NOT NULL COMMENT '部门辅导状态：0表示申请人未发起；1牵头部门待签收；2牵头部门处理中；3所有部门征求处理中；4申请人待确认；5结束; 6所有征求部门处理完成',
+            `GUIDE_START_TIME` datetime NOT NULL COMMENT '部门辅导发起时间',
+            `GUIDE_END_TIME` datetime DEFAULT NULL COMMENT '部门辅导结束时间',
+            `DUE_TIME_LIMIT` float NOT NULL COMMENT '部门辅导时限定义（单位工作日小时）',
+            `REAL_TIME_LIMIT` float DEFAULT NULL COMMENT '实际用时（单位工作日小时）',
+            `LEADER_ORG_ID` varchar(50) NOT NULL COMMENT '牵头部门组织ID',
+            `LEADER_USER_ID` varchar(50) NOT NULL COMMENT '牵头部门用户ID',
+            `LEADER_ORG_OPINION` varchar(1000) DEFAULT NULL COMMENT '牵头部门汇总意见',
+            `CREATER` varchar(255) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(255) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `IS_IT_GUIDE` char(1) DEFAULT NULL COMMENT '是否智能引导，1是0否',
+            PRIMARY KEY (`GUIDE_ID`) USING BTREE,
+            KEY `aea_hi_dept_guidance_applyinst_id` (`APPLYINST_ID`),
+            KEY `aea_hi_dept_guidance_org_id` (`LEADER_ORG_ID`),
+            KEY `aea_hi_dept_guidance_user_id` (`LEADER_USER_ID`),
+            CONSTRAINT `aea_hi_dept_guidance_applyinst_id` FOREIGN KEY (`APPLYINST_ID`) REFERENCES `aea_hi_applyinst` (`APPLYINST_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+            CREATE TABLE `aea_hi_guide_detail` (
+            `GUIDE_DETAIL_ID` varchar(50) NOT NULL COMMENT '主键',
+            `GUIDE_ID` varchar(50) NOT NULL COMMENT '部门辅导信息表ID',
+            `DETAIL_TYPE` char(1) NOT NULL COMMENT '部门辅导明细类型，包括：s表示智能引导，o表示业主，l表示牵头部门，i表示事项部门，r表示最终结果',
+            `GUIDE_CHANGE_ACTION` char(1) NOT NULL COMMENT '辅导变更操作，c表示change，a表示add，d表示delete',
+            `THEME_ID` varchar(50) NOT NULL COMMENT '主题ID',
+            `THEME_VER_ID` varchar(50) NOT NULL COMMENT '主题版本ID',
+            `STAGE_ID` varchar(50) NOT NULL COMMENT '阶段ID',
+            `ITEM_ID` varchar(50) NOT NULL COMMENT '实施事项ID',
+            `ITEM_VER_ID` varchar(50) NOT NULL COMMENT '实施事项版本',
+            `CATALOG_ITEM_VER_ID` varchar(50) DEFAULT '' COMMENT '标准事项版本id',
+            `GUIDE_ORG_ID` varchar(50) DEFAULT NULL COMMENT '辅导部门ID',
+            `GUIDE_USER_ID` varchar(50) DEFAULT NULL COMMENT '辅导用户ID',
+            `GUIDE_OPINION` varchar(2000) DEFAULT NULL COMMENT '辅导意见',
+            `DETAIL_STATE` varchar(255) DEFAULT NULL COMMENT '辅导明细状态：0表示未开始，1表示辅导中，2表示已完成',
+            `DETAIL_START_TIME` datetime DEFAULT NULL COMMENT '辅导开始时间',
+            `DETAIL_END_TIME` datetime DEFAULT NULL COMMENT '辅导结束时间',
+            `CREATER` varchar(255) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(255) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            PRIMARY KEY (`GUIDE_DETAIL_ID`) USING BTREE,
+            KEY `guidance_details_theme_id` (`THEME_ID`),
+            KEY `guidance_details_dept_guidance_id` (`GUIDE_ID`),
+            KEY `guidance_details_theme_ver_id` (`THEME_VER_ID`),
+            KEY `guidance_details_stage_id` (`STAGE_ID`),
+            KEY `guidance_details_item_id` (`ITEM_ID`),
+            KEY `guidance_details_item_ver_id` (`ITEM_VER_ID`),
+            KEY `guidance_details_org_id` (`GUIDE_ORG_ID`),
+            KEY `guidance_details_user_id` (`GUIDE_USER_ID`),
+            CONSTRAINT `guidance_details_item_id` FOREIGN KEY (`ITEM_ID`) REFERENCES `aea_item` (`ITEM_ID`),
+            CONSTRAINT `guidance_details_item_ver_id` FOREIGN KEY (`ITEM_VER_ID`) REFERENCES `aea_item_ver` (`ITEM_VER_ID`),
+            CONSTRAINT `guidance_details_org_id` FOREIGN KEY (`GUIDE_ORG_ID`) REFERENCES `opu_om_org` (`ORG_ID`),
+            CONSTRAINT `guidance_details_stage_id` FOREIGN KEY (`STAGE_ID`) REFERENCES `aea_par_stage` (`STAGE_ID`),
+            CONSTRAINT `guidance_details_theme_id` FOREIGN KEY (`THEME_ID`) REFERENCES `aea_par_theme` (`THEME_ID`),
+            CONSTRAINT `guidance_details_theme_ver_id` FOREIGN KEY (`THEME_VER_ID`) REFERENCES `aea_par_theme_ver` (`THEME_VER_ID`),
+            CONSTRAINT `guidance_details_user_id` FOREIGN KEY (`GUIDE_USER_ID`) REFERENCES `opu_om_user` (`USER_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        </sql>
+    </changeSet>
+
+    <changeSet id="2020010810520002" author="qinjp" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_unit_proj_linkman`
+            ADD COLUMN `LINKMAN_DUTY` varchar(50) NULL COMMENT '职务' AFTER `LINKMAN_TYPE`;
+        </sql>
+    </changeSet>
+
+
 </databaseChangeLog>
