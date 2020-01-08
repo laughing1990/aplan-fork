@@ -111,7 +111,7 @@ function loadThemeVerTable(){
         view_theme_ver_tb.bootstrapTable('destroy');
     }
     view_theme_ver_tb = $('#view_theme_ver_tb').bootstrapTable({
-        url: ctx+'/aea/par/theme/ver/listAeaParThemeVerNoPage.do',
+        url: ctx+'/aea/par/theme/ver/listThemeVerNoRelThemeAndDiagramInfo.do',
         method: 'get',
         queryParams: {
             'themeId': themeId
