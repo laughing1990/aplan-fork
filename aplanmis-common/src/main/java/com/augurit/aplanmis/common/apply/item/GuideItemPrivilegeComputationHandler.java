@@ -91,16 +91,18 @@ public final class GuideItemPrivilegeComputationHandler extends ItemPrivilegeCom
         List<String> projectAddressRegionIds = SpringContextHolder.getBean(AeaProjInfoService.class).getProjAddressRegion(projInfoId);
         AeaProjInfo aeaProjInfo = SpringContextHolder.getBean(AeaProjInfoService.class).getAeaProjInfoByProjInfoId(projInfoId);
         computedItems.forEach(item -> {
-            List<String> regionIds = new ArrayList<>();
-            regionIds.add(aeaProjInfo.getRegionalism());
-            // 根据事项的换算方式过滤实施事项
-            if (Status.OFF.equals(item.getItemExchangeWay())) {
-                regionIds.addAll(projectAddressRegionIds);
-            }
-            List<ComputedItem.CarryOutItem> finalCarryOutItems = item.getCarryOutItems().stream().filter(co -> regionIds.contains(co.getRegionId())).collect(Collectors.toList());
-            item.setCarryOutItems(finalCarryOutItems);
-            if (CollectionUtils.isNotEmpty(finalCarryOutItems)) {
-                item.setCurrentCarryOutItem(finalCarryOutItems.get(0));
+            if (Status.ON.equals(item.isCatalog)) {
+                List<String> regionIds = new ArrayList<>();
+                regionIds.add(aeaProjInfo.getRegionalism());
+                // 根据事项的换算方式过滤实施事项
+                if (Status.OFF.equals(item.getItemExchangeWay())) {
+                    regionIds.addAll(projectAddressRegionIds);
+                }
+                List<ComputedItem.CarryOutItem> finalCarryOutItems = item.getCarryOutItems().stream().filter(co -> regionIds.contains(co.getRegionId())).collect(Collectors.toList());
+                item.setCarryOutItems(finalCarryOutItems);
+                if (CollectionUtils.isNotEmpty(finalCarryOutItems)) {
+                    item.setCurrentCarryOutItem(finalCarryOutItems.get(0));
+                }
             }
         });
     }
