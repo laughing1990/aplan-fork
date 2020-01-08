@@ -27,6 +27,9 @@ public class GuideDetailVo {
     @ApiModelProperty(value = "是否牵头部门")
     private boolean leaderDept;
 
+    @ApiModelProperty(value = "审批部门id", notes = "当 leaderDept=false时使用")
+    private String approveOrgId;
+
     @ApiModelProperty(value = "部门辅导主记录")
     private AeaHiGuide aeaHiGuide;
 

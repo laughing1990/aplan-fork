@@ -5,6 +5,8 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
+import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.aplanmis.common.apply.item.ComputedItem;
 import com.augurit.aplanmis.common.apply.item.GuideComputedItem;
 import com.augurit.aplanmis.common.apply.item.GuideItemPrivilegeComputationHandler;
@@ -56,6 +58,8 @@ public class AeaHiGuideServiceImpl implements AeaHiGuideService {
     private AeaParThemeVerMapper aeaParThemeVerMapper;
     @Autowired
     private AeaSolicitItemMapper aeaSolicitItemMapper;
+    @Autowired
+    private OpuOmOrgMapper opuOmOrgMapper;
 
     @Override
     public void deleteAeaHiGuideByGuideId(String guideId) {
@@ -97,6 +101,7 @@ public class AeaHiGuideServiceImpl implements AeaHiGuideService {
     @Override
     public GuideDetailVo detail(String guideId) throws Exception {
         String rootOrgId = SecurityContext.getCurrentOrgId();
+        String currentUserId = SecurityContext.getCurrentUserId();
         AeaHiGuide aeaHiGuide = aeaHiGuideMapper.getAeaHiGuideByGuideId(guideId);
 
         AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(aeaHiGuide.getStageId());
@@ -117,7 +122,15 @@ public class AeaHiGuideServiceImpl implements AeaHiGuideService {
             guideDetailVo.setNewStageId(aeaHiGuideDetail.getStageId());
             guideDetailVo.setNewThemeName(aeaHiGuideDetail.getThemeName());
         }
-        guideDetailVo.setLeaderDept(SecurityContext.getCurrentUserId().equals(aeaHiGuide.getLeaderUserId()));
+        boolean isDeptOrg = currentUserId.equals(aeaHiGuide.getLeaderUserId());
+        guideDetailVo.setLeaderDept(isDeptOrg);
+        // 如果是审批部门
+        if (!isDeptOrg) {
+            List<OpuOmOrg> opuOmOrgs = opuOmOrgMapper.listOpuOmUserOrgByUserId(currentUserId);
+            if (CollectionUtils.isNotEmpty(opuOmOrgs)) {
+                guideDetailVo.setApproveOrgId(opuOmOrgs.get(0).getOrgId());
+            }
+        }
         guideDetailVo.setAeaHiGuide(aeaHiGuide);
         guideDetailVo.setParallelItems(result.get("0"));
         guideDetailVo.setOptionItems(result.get("1"));
