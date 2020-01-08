@@ -59,6 +59,9 @@ public class TaskInfo extends BaseInfo implements Serializable {
     @ApiModelProperty(value = "是否已出件")
     private String isSmsSend;
 
+    @ApiModelProperty(value = "领取方式", notes = "1：一次领取，0：多次领取")
+    private String receiveType;
+
     @ApiModelProperty(value = "办结时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm", locale = "zh", timezone = "GMT+8")

@@ -573,7 +573,6 @@ var vm = new Vue({
 
 
             request('', {
-                // url: ctx + 'rest/certificate/getCertInfoByIteminstId',
                 url: ctx + 'rest/certificate/getOutFileInfoByIteminstId',
                 type: 'get',
                 data: {'iteminstId': row.iteminstId, 'applyinstId': applyinstId}

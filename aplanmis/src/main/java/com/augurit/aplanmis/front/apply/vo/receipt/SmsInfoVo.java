@@ -1,6 +1,8 @@
 package com.augurit.aplanmis.front.apply.vo.receipt;
 
 import com.augurit.agcloud.bsc.util.UuidUtil;
+import com.augurit.agcloud.framework.constant.Status;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaHiSmsInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -17,6 +19,9 @@ public class SmsInfoVo {
     @ApiModelProperty(value = "领取模式: 0,邮政快递; 1, 窗口取证", required = true, allowableValues = "0, 1")
     @NotEmpty(message = "receiveMode is null")
     private String receiveMode;
+
+    @ApiModelProperty(value = "领取方式", notes = "1：一次领取，0：多次领取")
+    private String receiveType;
 
     @ApiModelProperty(value = "快递类型: 1, 普通快递; 2, 上门取件", allowableValues = "1, 2")
     private String smsType;
@@ -53,6 +58,7 @@ public class SmsInfoVo {
         AeaHiSmsInfo aeaHiSmsInfo = new AeaHiSmsInfo();
         aeaHiSmsInfo.setId(UuidUtil.generateUuid());
         aeaHiSmsInfo.setReceiveMode(this.receiveMode);
+        aeaHiSmsInfo.setReceiveType(StringUtils.isNotBlank(this.receiveType) ? this.receiveType : Status.ON);
         aeaHiSmsInfo.setSmsType(this.smsType);
         aeaHiSmsInfo.setAddresseeName(this.addresseeName);
         aeaHiSmsInfo.setAddresseePhone(this.addresseePhone);
