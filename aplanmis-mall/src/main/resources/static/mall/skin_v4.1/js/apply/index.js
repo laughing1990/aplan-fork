@@ -445,6 +445,11 @@ var parallelDeclare = new Vue({
       itParallelItemList: [], // 智能引导选中并联事项
       isSelectItemState: '', // 部门确认部门辅导是否展示事项情形
       guideId: '', // 部门辅导id
+      itStageId: '', // 智能引导阶段id
+      itThemeId: '', // 智能引导主题id
+      itThemeName: '', // 智能引导主题name
+      itThemeVerId: '', // 智能引导主题版本id
+      leaderThemeName: '', // 部门选择项目类型
     }
   },
   mounted: function () {
@@ -503,6 +508,16 @@ var parallelDeclare = new Vue({
         if (res.success) {
           console.log(res);
           if(res.content){
+            if(res.content.isItSel=='1'){
+              _that.needIntelligence = true;
+            }
+            _that.stageName = res.content.stageName;
+            _that.themeName = res.content.applyThemeName;
+            _that.themeId = res.content.applyThemeId;
+            _that.itThemeName = res.content.itThemeName;
+            _that.leaderThemeName = res.content.leaderThemeName;
+            _that.projInfoDetail.localCode = res.content.gcbm;
+            _that.projInfoDetail.projName = res.content.projName;
             _that.parallelItems = res.content.parallelIteminstList;
             _that.coreItems = res.content.coreIteminstList;
           }
@@ -744,6 +759,7 @@ var parallelDeclare = new Vue({
     getStateList: function(val){
       var _that = this;
       _that.stageId = val;
+      _that.itStageId = val;
       request('', {
         url: ctx + 'rest/userCenter/apply/state/list/'+val,
         type: 'get',
@@ -779,6 +795,9 @@ var parallelDeclare = new Vue({
         getUrl = 'rest/userCenter/apply/factor/child/list/' + _parentId;
         _that.projInfoDetail.themeId = answerData.themeId;
         _that.themeId = answerData.themeId;
+        _that.itThemeId = answerData.itThemeId;
+        _that.itThemeName = answerData.itThemeName;
+        _that.itThemeVerId = answerData.itThemeVerId;
         if(answerData.themeId&&answerData.themeId!=''){
           _that.saveThemeAndNext('guide');
         }else {
@@ -933,15 +952,15 @@ var parallelDeclare = new Vue({
       debugger;
       if(_that.parallelItems.length>0){
         _that.parallelItems.map(function(item){
-          if(item.isApplySel||item.isITSel){
+          if(item.applicantChoose||item.intelliGuideChoose){
             if(!item.notRegionData){
               var _itemListItem = {
-                applySelOpinion: item.applySelOpinion,
+                applySelOpinion: item.applicantOpinion,
                 baseItemVerId: item.baseItemVerId,
                 itemId: item.itemId,
                 itemVerId: item.itemVerId,
-                isApplySel: item.isApplySel?'1':'0',
-                isITSel: item.isITSel?'1':'0',
+                isApplySel: item.applicantChoose?'1':'0',
+                isITSel: item.intelliGuideChoose?'1':'0',
               };
               _itemList.push(_itemListItem);
               if(_that.needIntelligence){
@@ -956,15 +975,15 @@ var parallelDeclare = new Vue({
       }
       if(_that.coreItems.length>0){
         _that.coreItems.map(function(item){
-          if(item.isApplySel||item.isITSel){
+          if(item.applicantChoose||item.intelliGuideChoose){
             if(!item.notRegionData){
               var _itemListItem = {
-                applySelOpinion: item.applySelOpinion,
+                applySelOpinion: item.applicantOpinion,
                 baseItemVerId: item.baseItemVerId,
                 itemId: item.itemId,
                 itemVerId: item.itemVerId,
-                isApplySel: item.isApplySel?'1':'0',
-                isITSel: item.isITSel?'1':'0',
+                isApplySel: item.applicantChoose?'1':'0',
+                isITSel: item.intelliGuideChoose?'1':'0',
               };
               _itemList.push(_itemListItem);
               if(_that.needIntelligence){
@@ -976,6 +995,16 @@ var parallelDeclare = new Vue({
             }
           }
         });
+      }
+      _that.stateIds = [];
+      for (var i = 0; i < _that.stateList.length; i++) {  // 并联情形id集合
+        if (_that.stateList[i].selectAnswerId&&_that.stateList[i].selectAnswerId !== '') {
+          if (typeof _that.stateList[i].selectAnswerId == 'object') {
+            _that.stateIds = _that.stateIds.concat(_that.stateList[i].selectAnswerId);
+          } else {
+            _that.stateIds.push(_that.stateList[i].selectAnswerId);
+          }
+        }
       }
       var param = {
         applySource: 'net',
@@ -989,7 +1018,12 @@ var parallelDeclare = new Vue({
         themeVerId: _that.themeVerId,
         unitInfoId: _that.unitInfoId,
         itItemList: _itItemList,
-        itemList: _itemList
+        itemList: _itemList,
+        itStageId: _that.itStageId,
+        itThemeId: _that.itThemeId?_that.itThemeId:_that.themeId,
+        itThemeVerId: _that.itThemeVerId?_that.itThemeVerId:_that.themeVerId,
+        stateIds: _that.stateIds,
+        unitProjIds: _that.unitProjIds,
       }
       request('', {
         url: ctx + 'rest/userCenter/apply/net/guide/apply/start',
@@ -1043,6 +1077,7 @@ var parallelDeclare = new Vue({
           _that.projInfoDetail = res.content.aeaProjInfo;
           _that.applyObjectInfo.role = res.content.role?res.content.role:'';
           _that.stageId = res.content.stageId?res.content.stageId:'';
+          _that.stageName = res.content.stageName?res.content.stageName:'';
           _that.stageinstId = res.content.stageinstId?res.content.stageinstId:'';
           _that.themeId = res.content.themeId?res.content.themeId:'';
           _that.themeVerId = res.content.themeVerId?res.content.themeVerId:'';
@@ -1929,12 +1964,12 @@ var parallelDeclare = new Vue({
       _that.projInfoDetail.regionalism = _that.projInfoDetail.regionalism?_that.projInfoDetail.regionalism.trim():'';
       _that.getResultForm.id = _that.smsInfoId;
       var saveUrl = '';
-      if(saveFlag=='1'){
+      // if(saveFlag=='1'){
         saveUrl= ctx + 'rest/apply/common/completioninfo/saveOrUpdate';
 
-      }else {
-        saveUrl= ctx + 'rest/apply/common/completioninfo/saveOrUpdate/temporary'
-      }
+      // }else {
+      //   saveUrl= ctx + 'rest/apply/common/completioninfo/saveOrUpdate/temporary'
+      // }
       _that.loading = true;
       _that.projInfoDetail.projectAddress = _that.projInfoDetail.projectAddress?_that.projInfoDetail.projectAddress.join(','):'';
       var params = _that.projInfoDetail;
@@ -1955,7 +1990,6 @@ var parallelDeclare = new Vue({
         data: JSON.stringify(params)
       }, function (data) {
         if (data.success) {
-          _that.declareStep = 3;
           _that.smsInfoId = data.content.smsId;
           _that.regionalism = data.content.regionalism;//更新区划ID
           _that.projInfoDetail.projectAddress = _that.projInfoDetail.projectAddress?_that.projInfoDetail.projectAddress.split(','):'';
@@ -1976,12 +2010,13 @@ var parallelDeclare = new Vue({
             })
           }
           if(saveFlag=='0'){
-            _that.parallelApplyinstId = data.content.applyinstId;
-            _that.$message({
-              message: '暂存成功',
-              type: 'success'
-            });
+            // _that.parallelApplyinstId = data.content.applyinstId;
+            // _that.$message({
+            //   message: '暂存成功',
+            //   type: 'success'
+            // });
           }else {
+            _that.declareStep = 3;
             _that.getThemeList();
             _that.saveThemeAndNext();
           }
@@ -2080,11 +2115,7 @@ var parallelDeclare = new Vue({
           _that.stageListBefore = data.content;
           if(data.content&&data.content.length>0){
             if(flag=='guide'){
-              if((!_that.stageId)||_that.stageId == ''){
-                if(_that.stageList.length>0){
-                  _that.getStateList(_that.stageList[0].stageId);
-                }
-              }else {
+              if(_that.stageId&&_that.stageId !== ''){
                 _that.getStateList(_that.stageId);
               }
             }else {
@@ -2139,7 +2170,11 @@ var parallelDeclare = new Vue({
         this.parallelItemsQuestionFlag = false;
       }
       var _that = this;
-      _that.getStatusStateMats(_that.stageId, draftsProjFlag);  // 获取事项情形列表
+      if(draftsProjFlag!='guide'){
+        _that.getStatusStateMats(_that.stageId, draftsProjFlag);  // 获取事项情形列表
+      }else {
+        _that.getStateList(data.stageId);
+      }
       _that.stageFrontCheckFlag = true;
     },
     // 判断事项checkbox是否可勾选
@@ -2172,14 +2207,14 @@ var parallelDeclare = new Vue({
           _that.coreItems = res.content.coreItemList;
           _that.coreItems.map(function (item) {
             if (item) {
-              if (typeof item.isITSel == 'undefined' || item.isITSel == undefined) {
-                Vue.set(item, 'isITSel', false);
+              if (typeof item.intelliGuideChoose == 'undefined' || item.intelliGuideChoose == undefined) {
+                Vue.set(item, 'intelliGuideChoose', false);
               }
-              if (typeof item.isApplySel == 'undefined' || item.isApplySel == undefined) {
-                Vue.set(item, 'isApplySel', false);
+              if (typeof item.applicantChoose == 'undefined' || item.applicantChoose == undefined) {
+                Vue.set(item, 'applicantChoose', false);
               }
-              if (typeof item.applySelOpinion == 'undefined' || item.applySelOpinion == undefined) {
-                Vue.set(item, 'applySelOpinion', '');
+              if (typeof item.applicantOpinion == 'undefined' || item.applicantOpinion == undefined) {
+                Vue.set(item, 'applicantOpinion', '');
               }
               if (typeof item.selRequired == 'undefined' || item.selRequired == undefined) {
                 Vue.set(item, 'selRequired', false);
@@ -2191,21 +2226,21 @@ var parallelDeclare = new Vue({
                 Vue.set(item, 'guideItemVerId', '');
               }
               if(item.isDoneItem=='1'){
-                item.isApplySel = true;
+                item.applicantChoose = true;
               }
               _that.setImplementItem(item);
               if(item.notRegionData){
                 item.selRequired = true;
-                item.isApplySel = false;
+                item.applicantChoose = false;
               }
-              if(item.isITSel!=item.isApplySel){
+              if(item.intelliGuideChoose!=item.applicantChoose){
                 item.rules=true;
               }
               if(_that.needIntelligence==true&&_that.itCoreItemList&&_that.itCoreItemList.length>0){
                 _that.itCoreItemList.map(function (itItem) {
                   if(item.itemId == itItem.itemId){
                     item.guideItemVerId = itItem.itemVerId;
-                    item.isITSel = true;
+                    item.intelliGuideChoose = true;
                   }
                 });
               }
@@ -2213,14 +2248,14 @@ var parallelDeclare = new Vue({
           });
           _that.parallelItems.map(function (item) {
             if (item) {
-              if (typeof item.isITSel == 'undefined' || item.isITSel == undefined) {
-                Vue.set(item, 'isITSel', false);
+              if (typeof item.intelliGuideChoose == 'undefined' || item.intelliGuideChoose == undefined) {
+                Vue.set(item, 'intelliGuideChoose', false);
               }
-              if (typeof item.isApplySel == 'undefined' || item.isApplySel == undefined) {
-                Vue.set(item, 'isApplySel', true);
+              if (typeof item.applicantChoose == 'undefined' || item.applicantChoose == undefined) {
+                Vue.set(item, 'applicantChoose', true);
               }
-              if (typeof item.applySelOpinion == 'undefined' || item.applySelOpinion == undefined) {
-                Vue.set(item, 'applySelOpinion', '');
+              if (typeof item.applicantOpinion == 'undefined' || item.applicantOpinion == undefined) {
+                Vue.set(item, 'applicantOpinion', '');
               }
               if (typeof item.selRequired == 'undefined' || item.selRequired == undefined) {
                 Vue.set(item, 'selRequired', false);
@@ -2234,19 +2269,19 @@ var parallelDeclare = new Vue({
               if(item.isDoneItem=='1'&&item.isStateItem!=='1'){
                 item.selRequired = true;
               }
-              if(item.isITSel!=item.isApplySel){
+              if(item.intelliGuideChoose!=item.applicantChoose){
                 item.rules=true;
               }
               _that.setImplementItem(item);
               if(item.notRegionData){
                 item.selRequired = true;
-                item.isApplySel = false;
+                item.applicantChoose = false;
               }
               if(_that.needIntelligence==true&&_that.itParallelItemList&&_that.itParallelItemList.length>0){
                 _that.itParallelItemList.map(function (itItem) {
                   if(item.itemId == itItem.itemId){
                     item.guideItemVerId = itItem.itemVerId;
-                    item.isITSel = true;
+                    item.intelliGuideChoose = true;
                   }
                 });
               }
