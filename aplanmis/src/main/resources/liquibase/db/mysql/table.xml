@@ -1737,4 +1737,11 @@
 
         </sql>
     </changeSet>
+
+    <changeSet id="2020010717360001" author="sam" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `act_ge_bytearray`
+            MODIFY COLUMN `BYTES_`  mediumblob NULL AFTER `DEPLOYMENT_ID_`;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

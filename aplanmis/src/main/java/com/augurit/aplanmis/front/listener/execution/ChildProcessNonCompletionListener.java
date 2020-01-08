@@ -1,3 +1,4 @@
+/*
 package com.augurit.aplanmis.front.listener.execution;
 
 import com.augurit.agcloud.bpm.common.domain.ActStoAppinstSubflow;
@@ -28,9 +29,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+*/
 /**
  * 部门子流程不通过“办结”节点直接“不通过”办结
- */
+ *//*
+
 public class ChildProcessNonCompletionListener implements ExecutionListener {
 
     @Override
@@ -121,3 +124,4 @@ public class ChildProcessNonCompletionListener implements ExecutionListener {
         }
     }
 }
+*/
