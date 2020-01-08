@@ -178,6 +178,7 @@ public class RestAeaProjAgentService {
             //List<BscAttForm> atts = bscAttMapper.listAttLinkAndDetailByTablePKRecordId("AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID", applyAgentId, SecurityContext.getCurrentOrgId());
             List<BscAttFileAndDir> atts = restFileService.getAttFilesByPK("AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID", applyAgentId);
             agentAgreementVo.setAtts(atts);
+            agentAgreementVo.setDetailId( atts.size()>0?atts.get(0).getBscAttDetail().getDetailId():null);
             list.add(agentAgreementVo);
             vo.setAgentAgreement(list);
         }

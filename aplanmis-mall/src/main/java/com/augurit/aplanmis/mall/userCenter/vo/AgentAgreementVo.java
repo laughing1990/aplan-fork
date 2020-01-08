@@ -22,4 +22,7 @@ public class AgentAgreementVo {
     @ApiModelProperty("代办协议文件")
     private List<BscAttFileAndDir>  atts;
 
+    @ApiModelProperty("代办协议文件ID,用于下载，预览")
+    private String  detailId;
+
 }
