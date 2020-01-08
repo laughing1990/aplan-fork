@@ -626,6 +626,7 @@ public class AeaParStageService {
                     aeaApplyinstUnitProj.setCreater(SecurityContext.getCurrentUserName());
                     aeaApplyinstUnitProj.setIsDeleted("0");
                     aeaApplyinstUnitProj.setCreateTime(new Date());
+                    aeaApplyinstUnitProj.setApplyinstUnitProjId(UUID.randomUUID().toString());
                     aeaApplyinstUnitProjMapper.insertAeaApplyinstUnitProj(aeaApplyinstUnitProj);
                 }
             });
