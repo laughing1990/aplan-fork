@@ -173,7 +173,7 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
             }
             //已签章的文件
             if("3".equals(agentApplyState)||"4".equals(agentApplyState)){
-                List<BscAttForm> bscAttForms = bscAttService.listAttLinkAndDetailByTablePKRecordId("AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID", applyAgentId, SecurityContext.getCurrentOrgId());
+                List<BscAttForm> bscAttForms = bscAttService.listAttLinkAndDetailByTablePKRecordId("AEA_PROJ_APPLY_AGENT", "AGREEMENT_CODE", aeaProjApplyAgent.getAgreementCode(), SecurityContext.getCurrentOrgId());
                 if(bscAttForms != null && bscAttForms.size() > 0){
                     BscAttForm bscAttForm = bscAttForms.get(0);
                     aeaProjApplyAgent.setAgreementFileName(bscAttForm.getAttName());

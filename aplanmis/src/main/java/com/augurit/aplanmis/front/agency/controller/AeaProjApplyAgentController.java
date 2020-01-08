@@ -112,17 +112,16 @@ private static Logger logger = LoggerFactory.getLogger(AeaProjApplyAgentControll
         try {
             if(StringUtils.isNotBlank(applyAgentId)){
                 //先根据agreementCode找detailId，如果有则表示协议已存储进mongodb，根据detailId在mongodb获取协议文件
-                AeaProjApplyAgent agreement = aeaProjApplyAgentService.getAgencyAgreementDetail(applyAgentId);
-                if(agreement == null){
+                AeaProjApplyAgent agreementDetail = aeaProjApplyAgentService.getAgencyAgreementDetail(applyAgentId);
+                if(agreementDetail == null){
                     throw new Exception("代办申请不存在。");
                 }
-                String[] recordIds = {agreement.getAgreementCode()};
+                String[] recordIds = {agreementDetail.getAgreementCode()};
                 List<BscAttForm> forms = fileUtilsService.getAttachmentsByRecordId(recordIds, "AEA_PROJ_APPLY_AGENT", "AGREEMENT_CODE");
                 if(forms != null && forms.size() > 0){
                     fileUtilsService.readFile(forms.get(0).getDetailId(),null,resp);
                 }else{
                     //协议没有存储到mongodb，动态生成一份。代办中心（乙方）签章之后要将委托协议存储到mongodb。
-                    AeaProjApplyAgent agreementDetail = aeaProjApplyAgentService.getAgencyAgreementDetail(applyAgentId);
                     String str = ReceivePDFTemplate.createAgencyAgreement(agreementDetail);
                     //读取指定路径下的pdf文件
                     File file = new File(str);
