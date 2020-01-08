@@ -71,6 +71,15 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
     }
     public void updateAeaProjApplyAgent(AeaProjApplyAgent aeaProjApplyAgent) throws Exception{
         if(aeaProjApplyAgent != null){
+            String agreementCode = aeaProjApplyAgent.getAgreementCode();
+            if(StringUtils.isBlank(agreementCode)){
+                throw new Exception("协议编号不能为空。");
+            }
+            //校验编号唯一性
+            AeaProjApplyAgent agent = aeaProjApplyAgentMapper.getAeaProjApplyAgentByAgreementCode(agreementCode);
+            if(agent != null && !agent.getApplyAgentId().equals(aeaProjApplyAgent.getApplyAgentId())){
+                throw new Exception("该协议编号已被使用。");
+            }
             aeaProjApplyAgent.setModifier(SecurityContext.getCurrentUserName());
             aeaProjApplyAgent.setModifyTime(new Date());
             aeaProjApplyAgentMapper.updateAeaProjApplyAgent(aeaProjApplyAgent);
@@ -139,7 +148,7 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
             if(unitProjs.size()>0){
                 List<AeaUnitProjLinkman> aeaUnitProjLinkmans = aeaUnitProjLinkmanMapper.queryByUnitProjIdAndlinkType(unitProjs.get(0).getUnitProjId(),null,null);
                 if(aeaUnitProjLinkmans.size()>0){
-                    List<AeaUnitProjLinkman> list = aeaUnitProjLinkmans.stream().filter(v -> ("1".equals(v.getLinkmanType()) || "2".equals(v.getLinkmanType()))).collect(Collectors.toList());
+                    List<AeaUnitProjLinkman> list = aeaUnitProjLinkmans.stream().filter(v -> ("1".equals(v.getLinkmanType()) || "0".equals(v.getLinkmanType()))).collect(Collectors.toList());
                     if(list.size()>0){
                         for (AeaUnitProjLinkman linkman:list){
                             if("0".equals(linkman.getLinkmanType())){
@@ -155,6 +164,7 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
                     }
                 }
             }
+            this.setAgentStageName(aeaProjApplyAgent);
             vo.setAeaProjInfo(projInfo);
             vo.setAeaUnitProjLinkmanVo(aeaUnitProjLinkmanVo);
             vo.setAeaProjApplyAgent(aeaProjApplyAgent);
@@ -173,17 +183,7 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
     @Override
     public AeaProjApplyAgent getAgencyAgreementDetail(String applyAgentId) throws Exception {
         AeaProjApplyAgent aeaProjApplyAgent = aeaProjApplyAgentMapper.getAgencyAgreementDetail(applyAgentId);
-        if(aeaProjApplyAgent != null){
-            String[] name = {"","立项用地规划许可阶段","工程建设许可阶段","施工许可阶段","竣工验收阶段"};
-            String stageState = aeaProjApplyAgent.getAgentStageState();
-            String[] split = stageState.split(",");
-            StringBuilder sb = new StringBuilder();
-            for(String stage:split){
-                sb.append("，").append(name[Integer.valueOf(stage)]);
-            }
-            String stageName = sb.toString().substring(1);
-            aeaProjApplyAgent.setAgentStageName(stageName);
-        }
+        this.setAgentStageName(aeaProjApplyAgent);
         return aeaProjApplyAgent;
     }
 
@@ -207,6 +207,20 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
             result = aeaServiceWindowUserMapper.listAeaServiceWindowUserByWindowIdsAndRootOrgId(winIds.toArray(new String[winIds.size()]),currentOrgId);
         }
         return result;
+    }
+
+    private void setAgentStageName(AeaProjApplyAgent aeaProjApplyAgent){
+        if(aeaProjApplyAgent != null){
+            String[] name = {"","立项用地规划许可阶段","工程建设许可阶段","施工许可阶段","竣工验收阶段"};
+            String stageState = aeaProjApplyAgent.getAgentStageState();
+            String[] split = stageState.split(",");
+            StringBuilder sb = new StringBuilder();
+            for(String stage:split){
+                sb.append("，").append(name[Integer.valueOf(stage)]);
+            }
+            String stageName = sb.toString().substring(1);
+            aeaProjApplyAgent.setAgentStageName(stageName);
+        }
     }
 }
 

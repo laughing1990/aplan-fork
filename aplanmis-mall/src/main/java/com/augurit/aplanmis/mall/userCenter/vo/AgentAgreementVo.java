@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.mall.userCenter.vo;
 
+import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
 import com.augurit.agcloud.bsc.domain.BscAttForm;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -18,7 +19,10 @@ public class AgentAgreementVo {
     @ApiModelProperty("代办人员联系电话")
     private String agentUserMobile;
 
-    @ApiModelProperty("代办协议文件ID")
-    private List<BscAttForm> atts;
+    @ApiModelProperty("代办协议文件")
+    private List<BscAttFileAndDir>  atts;
+
+    @ApiModelProperty("代办协议文件ID,用于下载，预览")
+    private String  detailId;
 
 }

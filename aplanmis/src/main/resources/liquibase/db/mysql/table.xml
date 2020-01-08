@@ -1571,4 +1571,177 @@
             ADD COLUMN `AGREEMENT_SIGN_TIME` datetime NULL COMMENT '协议签订时间' AFTER `AGREEMENT_CODE`;
         </sql>
     </changeSet>
+
+    <changeSet id="2020010809340001" author="chendx" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            CREATE TABLE `aea_hi_solicit` (
+            `SOLICIT_ID` varchar(50) NOT NULL COMMENT '主键',
+            `BUS_TYPE` varchar(255) DEFAULT NULL COMMENT '征求业务类型，来自于数据字典',
+            `SOLICIT_TYPE` char(1) DEFAULT NULL COMMENT '征求意见类型：i表示按事项征求，d表示按部门征求',
+            `SOLICIT_ORG_ID` varchar(50) DEFAULT NULL COMMENT '按组织征求配置ID【当SOLICIT_TYPE=d】',
+            `SOLICIT_ITEM_ID` varchar(50) DEFAULT NULL COMMENT '按事项征求配置ID【当SOLICIT_TYPE=i】',
+            `APPLYINST_ID` varchar(50) NOT NULL COMMENT '发起征求的申报ID',
+            `PROCINST_ID` varchar(50) NOT NULL COMMENT '发起征求的流程实例ID',
+            `HI_TASKINST_ID` varchar(50) NOT NULL COMMENT '发起征求的历史任务实例ID',
+            `SOLICIT_CODE` varchar(50) NOT NULL COMMENT '意见征求流水号',
+            `SOLICIT_TOPIC` varchar(500) NOT NULL COMMENT '意见征求主题',
+            `SOLICIT_CONTENT` varchar(1000) DEFAULT NULL COMMENT '征求意见内容',
+            `SOLICIT_DUE_DAYS` int(5) DEFAULT NULL COMMENT '意见征求承诺时限，例如：5个工作日，那该字段为5',
+            `SOLICIT_REAL_DAYS` int(5) DEFAULT NULL COMMENT '意见征求实际时限，例如：5个工作日，那该字段为5',
+            `SOLICIT_DAYS_UNIT` char(3) DEFAULT NULL COMMENT '意见征求时限单位，ND表示自然日，WD表示工作日',
+            `SOLICIT_START_TIME` datetime NOT NULL COMMENT '意见征求开始时间',
+            `SOLICIT_END_TIME` datetime DEFAULT NULL COMMENT '意见征求结束时间',
+            `IS_CALC_TIMERULE` char(1) NOT NULL COMMENT '是否纳入计时',
+            `SOLICIT_TIMERULE_ID` varchar(255) DEFAULT NULL COMMENT '意见征求计算策略表ID',
+            `CONCLUSION_FLAG` char(1) DEFAULT NULL COMMENT '办结结论标志位，0表示不通过，1表示通过',
+            `CONCLUSION_DESC` varchar(500) DEFAULT NULL COMMENT '办结结论描述',
+            `CONCLUSION_TIME` datetime DEFAULT NULL COMMENT '填写结论时间',
+            `CONCLUSION_USER_ID` varchar(50) DEFAULT NULL COMMENT '填写结论用户ID',
+            `CONCLUSION_USER_NAME` varchar(50) DEFAULT NULL COMMENT '填写结论用户姓名',
+            `INITIATOR_ORG_ID` varchar(50) DEFAULT NULL COMMENT '意见征求发起组织ID',
+            `INITIATOR_ORG_NAME` varchar(255) DEFAULT NULL COMMENT '意见征求发起组织名称',
+            `INITIATOR_USER_ID` varchar(50) DEFAULT NULL COMMENT '意见征求发起用户ID',
+            `INITIATOR_USER_NAME` varchar(255) DEFAULT NULL COMMENT '意见征求发起用户姓名',
+            `COUNT_LIMIT` int(2) DEFAULT NULL COMMENT '办理次数限制，0表示无限制，1或以上表示限制次数',
+            `SOLICIT_STATE` char(1) DEFAULT NULL COMMENT '征求意见状态：0表示未开始，1表示征求中，2表示已完成，3表示已终止',
+            `CREATER` varchar(255) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(255) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '根组织ID',
+            `SOLICIT_LINKMAN_NAME` varchar(50) DEFAULT NULL,
+            `SOLICIT_LINKMAN_PHONE` varchar(20) DEFAULT NULL,
+            `IS_SEND_SMS` char(1) DEFAULT NULL COMMENT '是否发送短信通知，1是0否',
+            `SMS_CONTENT` varchar(1000) DEFAULT NULL COMMENT '发送的短信内容',
+            PRIMARY KEY (`SOLICIT_ID`) USING BTREE,
+            KEY `aea_hi_opinion_consultion_pk_applyinst_id` (`APPLYINST_ID`) USING BTREE,
+            KEY `aea_hi_opinion_consultion_pk_timerule_id` (`SOLICIT_TIMERULE_ID`) USING BTREE,
+            KEY `aea_hi_opinion_consultion_pk_procinst_id` (`PROCINST_ID`) USING BTREE,
+            KEY `aea_hi_opinion_consultion_pk_task_id` (`HI_TASKINST_ID`) USING BTREE,
+            CONSTRAINT `aea_hi_opinion_consultion_pk_applyinst_id` FOREIGN KEY (`APPLYINST_ID`) REFERENCES `aea_hi_applyinst` (`APPLYINST_ID`),
+            CONSTRAINT `aea_hi_opinion_consultion_pk_procinst_id` FOREIGN KEY (`PROCINST_ID`) REFERENCES `act_hi_procinst` (`ID_`),
+            CONSTRAINT `aea_hi_opinion_consultion_pk_task_id` FOREIGN KEY (`HI_TASKINST_ID`) REFERENCES `act_hi_taskinst` (`ID_`),
+            CONSTRAINT `aea_hi_opinion_consultion_pk_timerule_id` FOREIGN KEY (`SOLICIT_TIMERULE_ID`) REFERENCES `act_sto_timerule` (`TIMERULE_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='征求意见主表';
+
+
+            CREATE TABLE `aea_hi_solicit_detail` (
+            `SOLICIT_DETAIL_ID` varchar(255) NOT NULL COMMENT '主键',
+            `SOLICIT_ID` varchar(50) NOT NULL COMMENT '征求意见主表ID',
+            `DETAIL_ORG_ID` varchar(50) NOT NULL COMMENT '征求意见部门ID',
+            `DETAIL_ORG_NAME` varchar(255) NOT NULL COMMENT '征求意见部门名称',
+            `ITEM_ID` varchar(50) DEFAULT NULL COMMENT '事项ID【当SOLICIT_TYPE=i】',
+            `ITEM_VER_ID` varchar(50) DEFAULT NULL COMMENT '事项版本ID【当SOLICIT_TYPE=i】',
+            `DETAIL_DUE_DAYS` int(5) DEFAULT NULL COMMENT '意见征求承诺时限，例如：5个工作日，那该字段为5',
+            `DETAIL_REAL_DAYS` int(5) DEFAULT NULL COMMENT '意见征求实际时限，例如：5个工作日，那该字段为5',
+            `DETAIL_DAYS_UNIT` char(3) DEFAULT NULL COMMENT '意见征求时限单位，ND表示自然日，WD表示工作日',
+            `DETAIL_START_TIME` datetime DEFAULT NULL COMMENT '意见征求开始时间',
+            `DETAIL_END_TIME` datetime DEFAULT NULL COMMENT '意见征求结束时间',
+            `DETAIL_STATE` char(1) NOT NULL COMMENT '征求意见状态：0表示未开始，1表示征求中，2表示已完成，3表示已终止',
+            `IS_DELETED` char(1) NOT NULL COMMENT '是否删除：0表示未删除；1表示已删除',
+            `CREATER` varchar(50) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建日期',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '更新人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '更新时间',
+            PRIMARY KEY (`SOLICIT_DETAIL_ID`) USING BTREE,
+            KEY `aea_hi_opinion_consultion_item_pk_opin_consult_id` (`SOLICIT_ID`) USING BTREE,
+            KEY `aea_hi_opinion_consultion_item_pk_item_ver_id` (`ITEM_VER_ID`) USING BTREE,
+            KEY `aea_hi_opinion_consultion_item_pk_item_id` (`ITEM_ID`) USING BTREE,
+            KEY `aea_hi_opinion_consultion_item_pk_org_id` (`DETAIL_ORG_ID`) USING BTREE,
+            CONSTRAINT `aea_hi_opinion_consultion_item_pk_item_id` FOREIGN KEY (`ITEM_ID`) REFERENCES `aea_item` (`ITEM_ID`),
+            CONSTRAINT `aea_hi_opinion_consultion_item_pk_item_ver_id` FOREIGN KEY (`ITEM_VER_ID`) REFERENCES `aea_item_ver` (`ITEM_VER_ID`),
+            CONSTRAINT `aea_hi_opinion_consultion_item_pk_opin_consult_id` FOREIGN KEY (`SOLICIT_ID`) REFERENCES `aea_hi_solicit` (`SOLICIT_ID`),
+            CONSTRAINT `aea_hi_opinion_consultion_item_pk_org_id` FOREIGN KEY (`DETAIL_ORG_ID`) REFERENCES `opu_om_org` (`ORG_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='征求意见详情表';
+
+            CREATE TABLE `aea_hi_solicit_detail_user` (
+            `DETAIL_USER_ID` varchar(255) NOT NULL COMMENT '主键',
+            `SOLICIT_DETAIL_ID` varchar(50) NOT NULL COMMENT '征求意见详情ID',
+            `USER_ID` varchar(50) NOT NULL COMMENT '用户ID',
+            `USER_CONCLUSION` char(1) DEFAULT NULL COMMENT '办理结论，0表示不通过或不同意，1表示通过或同意，2表示不涉及',
+            `USER_OPINION` varchar(500) DEFAULT NULL COMMENT '填写意见',
+            `SIGN_TIME` datetime DEFAULT NULL COMMENT '签收时间',
+            `FILL_TIME` datetime DEFAULT NULL COMMENT '填写意见时间',
+            `TASK_ACTION` char(1) DEFAULT NULL COMMENT '任务动作，0表示正常办理，1表示转交给同一委办局的其他人员，2表示添加同一委办局的其他人员进来',
+            `PARENT_ID` varchar(50) DEFAULT NULL COMMENT '父ID【当TASK_ACTION=1或2时必填】',
+            `IS_DELETED` char(1) NOT NULL COMMENT '是否删除：0表示未删除；1表示已删除',
+            `CREATER` varchar(50) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建日期',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '更新人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '更新时间',
+            `LINKMAN_NAME` varchar(50) DEFAULT NULL,
+            `LINKMAN_PHONE` varchar(20) DEFAULT NULL,
+            `IS_SEND_SMS` char(1) DEFAULT NULL COMMENT '是否发送短信通知，1是0否',
+            `SMS_CONTENT` varchar(1000) DEFAULT NULL COMMENT '发送的短信内容',
+            PRIMARY KEY (`DETAIL_USER_ID`) USING BTREE,
+            KEY `aea_hi_opinion_consultion_item_pk_opin_consult_id` (`SOLICIT_DETAIL_ID`) USING BTREE,
+            KEY `aea_hi_opinion_consultion_item_pk_task_id` (`USER_ID`) USING BTREE,
+            CONSTRAINT `aea_hi_solicit_detail_user_ibfk_5` FOREIGN KEY (`USER_ID`) REFERENCES `opu_om_user` (`USER_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='征求意见详情用户任务表';
+
+            CREATE TABLE `aea_solicit_item` (
+            `SOLICIT_ITEM_ID` varchar(50) NOT NULL COMMENT '主键',
+            `ITEM_ID` varchar(50) DEFAULT NULL COMMENT '事项ID',
+            `ITEM_VER_ID` varchar(50) DEFAULT NULL COMMENT '事项版本ID',
+            `BUS_TYPE` varchar(50) DEFAULT NULL COMMENT '征求业务类型，来自于数据字典',
+            `SOLICIT_TYPE` char(1) DEFAULT NULL COMMENT '征求意见模式：0表示多人征求模式，1表示单人征求模式',
+            `CREATER` varchar(255) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(255) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '根组织ID',
+            PRIMARY KEY (`SOLICIT_ITEM_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='按事项征求配置表';
+
+            CREATE TABLE `aea_solicit_item_user` (
+            `ITEM_USER_ID` varchar(50) NOT NULL COMMENT '主键',
+            `SOLICIT_ITEM_ID` varchar(50) DEFAULT NULL COMMENT '按组织征求配置ID',
+            `USER_ID` varchar(50) DEFAULT NULL COMMENT '用户ID',
+            `SORT_NO` int(3) DEFAULT NULL COMMENT '排列顺序号',
+            `IS_ACTIVE` char(1) DEFAULT NULL COMMENT '是否启用，0表示禁用，1表示启用',
+            `CREATER` varchar(255) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(255) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            PRIMARY KEY (`ITEM_USER_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='按事项征求的人员名单表';
+
+            CREATE TABLE `aea_solicit_org` (
+            `SOLICIT_ORG_ID` varchar(50) NOT NULL COMMENT '主键',
+            `ORG_ID` varchar(50) NOT NULL COMMENT '征求部门ID',
+            `IS_BUS_SOLICIT` char(1) NOT NULL COMMENT '是否按业务类型征求，0表示按阶段征求部门意见（当前部门为阶段牵头部门），1表示按业务类型征求部门意见',
+            `STAGE_ID` varchar(50) DEFAULT NULL COMMENT '阶段ID【当IS_BUS_SOLICIT=0】',
+            `BUS_TYPE` varchar(50) DEFAULT NULL COMMENT '征求业务类型，来自于数据字典【当IS_BUS_SOLICIT=1】',
+            `SOLICIT_TYPE` char(1) DEFAULT NULL COMMENT '征求意见模式：0表示多人征求模式，1表示单人征求模式',
+            `CREATER` varchar(255) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(255) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '根组织ID',
+            `LATEST_STAGE_ID` varchar(50) DEFAULT NULL COMMENT '最新主题版本阶段ID【当IS_BUS_SOLICIT=0】',
+            PRIMARY KEY (`SOLICIT_ORG_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='按组织征求配置表';
+
+            CREATE TABLE `aea_solicit_org_user` (
+            `ORG_USER_ID` varchar(50) NOT NULL COMMENT '主键',
+            `SOLICIT_ORG_ID` varchar(50) DEFAULT NULL COMMENT '按组织征求配置ID',
+            `USER_ID` varchar(50) DEFAULT NULL COMMENT '用户ID',
+            `SORT_NO` int(3) DEFAULT NULL COMMENT '排列顺序号',
+            `IS_ACTIVE` char(1) DEFAULT NULL COMMENT '是否启用，0表示禁用，1表示启用',
+            `CREATER` varchar(255) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(255) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            PRIMARY KEY (`ORG_USER_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='按组织征求的人员名单表';
+
+        </sql>
+    </changeSet>
+
+    <changeSet id="2020010717360001" author="sam" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `act_ge_bytearray`
+            MODIFY COLUMN `BYTES_`  mediumblob NULL AFTER `DEPLOYMENT_ID_`;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
