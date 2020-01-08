@@ -23,7 +23,7 @@ public class GuideFinishVo {
     public AeaHiGuide toAeaHiGuide(String currentUserId) {
         AeaHiGuide aeaHiGuide = new AeaHiGuide();
         aeaHiGuide.setGuideId(guideId);
-        aeaHiGuide.setApplyState(GuideApplyState.FINISHED.getValue());
+        aeaHiGuide.setApplyState(GuideApplyState.APPLICANT_CONFIRMING.getValue());
         aeaHiGuide.setGuideEndTime(new Date());
         aeaHiGuide.setModifyTime(new Date());
         aeaHiGuide.setModifier(currentUserId);
