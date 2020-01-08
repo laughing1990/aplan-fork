@@ -4,8 +4,8 @@ import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.aplanmis.common.constants.GuideChangeAction;
 import com.augurit.aplanmis.common.constants.GuideDetailType;
 import com.augurit.aplanmis.common.domain.AeaHiGuideDetail;
-import com.augurit.aplanmis.common.domain.AeaItemInout;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
+import com.augurit.aplanmis.common.domain.AeaItemInout;
 import com.augurit.aplanmis.common.domain.AeaItemState;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -49,6 +49,9 @@ public class GuideComputedItem extends ComputedItem {
     @ApiModelProperty(value = "审批部门意见")
     private String approveDeptOpinion;
 
+    @ApiModelProperty(value = "辅导明细状态：0表示未开始，1表示辅导中，2表示已完成")
+    private String detailState;
+
     @ApiModelProperty(value = "事项情形列表")
     List<AeaItemState> itemStateList;
 
@@ -86,6 +89,7 @@ public class GuideComputedItem extends ComputedItem {
                     break;
             }
         }
+        this.detailState = aeaHiGuideDetail.getDetailState();
 
         // 标准事项需要重新匹配实施事项
         if (Status.ON.equals(this.isCatalog)) {
