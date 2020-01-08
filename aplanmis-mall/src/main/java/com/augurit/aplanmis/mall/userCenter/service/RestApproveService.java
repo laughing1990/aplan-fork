@@ -91,6 +91,16 @@ public interface RestApproveService {
     PageInfo<AeaProjInfo> findAeaProjInfoByKeyword(String keyWord, int pageNum, int pageSize)throws Exception;
 
     /**
+     * 搜索项目信息
+     * @param keyWord
+     * @param pageNum
+     * @param pageSize
+     * @return
+     * @throws Exception
+     */
+    PageInfo<AeaProjInfo> findAeaProjInfoByUserPrev(String keyWord,String unitInfoId,String linkmanInfoId, int pageNum, int pageSize)throws Exception;
+
+    /**
      * 根据申请实例id、项目编码获取申报详情信息
      * @param applyinstId
      * @param projInfoId
