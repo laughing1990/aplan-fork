@@ -791,18 +791,22 @@ var vm = new Vue({
     requestFinishBmfd: function (val) {
       var vm = this;
       vm.loading = true;
+      var _val = val;
+      if (typeof val == 'object') {
+        _val = val.value;
+      }
       request('', {
         url: ctx + 'dept/guide/finish',
         type: 'post',
         ContentType: 'application/json',
         data: JSON.stringify({
           guideId: vm.guideId,
-          leaderOrgOpinion: val,
+          leaderOrgOpinion: _val,
         })
       }, function (res) {
         vm.loading = false;
         if (res.success) {
-          __STATIC.delayCloseWindow();
+          __STATIC.delayRefreshWindow();
           vm.$message.success('部门辅导结束，已通知申请人');
         } else {
           vm.message.error(res.message || '部门辅导结束失败');

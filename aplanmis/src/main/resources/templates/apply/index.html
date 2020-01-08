@@ -1349,7 +1349,8 @@
                     <!-- 审批部门结果 -->
                     <el-table-column v-if="guideState>3" label="审批部门" prop="approveDeptChoose" width="140">
                       <template slot-scope="scope">
-                        <el-checkbox v-model="scope.row.approveDeptChoose" disabled>{{scope.row.approveDeptOpinion}}
+                        <el-checkbox v-model="scope.row.approveDeptChoose" disabled>
+                          {{scope.row.approveDeptOpinion||'无意见'}}
                         </el-checkbox>
                       </template>
                     </el-table-column>
@@ -1547,7 +1548,8 @@
                     <!-- 审批部门结果 -->
                     <el-table-column v-if="guideState>3" label="审批部门" prop="approveDeptChoose" width="140">
                       <template slot-scope="scope">
-                        <el-checkbox v-model="scope.row.approveDeptChoose" disabled>{{scope.row.approveDeptOpinion}}
+                        <el-checkbox v-model="scope.row.approveDeptChoose" disabled>
+                          {{scope.row.approveDeptOpinion||'无意见'}}
                         </el-checkbox>
                       </template>
                     </el-table-column>
