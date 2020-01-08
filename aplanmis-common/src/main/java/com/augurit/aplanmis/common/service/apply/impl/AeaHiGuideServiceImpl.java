@@ -112,6 +112,7 @@ public class AeaHiGuideServiceImpl implements AeaHiGuideService {
         AeaParThemeVer aeaParThemeVer = aeaParThemeVerMapper.getAeaParThemeVerById(aeaParStage.getThemeVerId());
         AeaParTheme aeaParTheme = aeaParThemeMapper.getAeaParThemeByThemeVerId(aeaParThemeVer.getThemeVerId());
         aeaHiGuide.setThemeId(aeaParThemeVer.getThemeId());
+        aeaHiGuide.setStageName(aeaParStage.getStageName());
         aeaHiGuide.setThemeName(aeaParTheme.getThemeName());
 
         List<AeaItemBasic> originItems = aeaItemBasicService.getAeaItemBasicListByStageId(aeaHiGuide.getStageId(), null, aeaHiGuide.getProjInfoId(), rootOrgId);
