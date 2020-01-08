@@ -571,9 +571,8 @@ var vm = new Vue({
             var _this = this;
             _this.currentIteminstId = row.iteminstId;
 
-
             request('', {
-                url: ctx + 'rest/certificate/getOutFileInfoByIteminstId',
+                url: ctx + 'rest/certificate/out/materials/view',
                 type: 'get',
                 data: {'iteminstId': row.iteminstId, 'applyinstId': applyinstId}
             }, function (result) {

@@ -109,10 +109,16 @@
           <el-form label-width="200px"
                    ref="receInfo2"
                    :model="sendInfoForm" :rules="sendSmsInfoRules">
-              <el-form-item label="领取方式">
+              <el-form-item label="签收方式">
                   <el-radio-group v-model="sendInfoForm.receiveMode" >
                       <el-radio label="0"  disabled>邮政快递</el-radio>
                       <el-radio label="1" disabled >窗口取证</el-radio>
+                  </el-radio-group>
+              </el-form-item>
+              <el-form-item label="领取方式">
+                  <el-radio-group v-model="sendInfoForm.receiveType">
+                      <el-radio label="1" disabled>一次领取</el-radio>
+                      <el-radio label="0" disabled>分别领取</el-radio>
                   </el-radio-group>
               </el-form-item>
               <el-form-item label="快递方式"  v-if="sendInfoForm.receiveMode == 0">
@@ -143,8 +149,6 @@
                           <el-radio label="0" :disabled="receiveModeShow">否</el-radio>
                           <el-radio label="1" :disabled="receiveModeShow">是</el-radio>
                       </el-radio-group>
-
-
                   </el-form-item>
                   <div class="clearfix" v-if="sendInfoForm.isConsigner == '0'">
                       <el-form-item class="input-inline" label="领件人姓名" prop="addresseeName">

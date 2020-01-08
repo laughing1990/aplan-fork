@@ -8,12 +8,12 @@ import com.augurit.agcloud.bsc.mapper.BscAttMapper;
 import com.augurit.agcloud.bsc.upload.MongoDbAchieve;
 import com.augurit.agcloud.bsc.upload.UploadType;
 import com.augurit.agcloud.bsc.upload.factory.UploaderFactory;
+import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
-import com.augurit.agcloud.opus.common.domain.OpuOmUserInfo;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
-import com.augurit.agcloud.opus.common.mapper.OpuOmUserInfoMapper;
+import com.augurit.aplanmis.common.constants.InOutType;
 import com.augurit.aplanmis.common.constants.ItemStatus;
 import com.augurit.aplanmis.common.domain.AeaApplyinstProj;
 import com.augurit.aplanmis.common.domain.AeaApplyinstUnitProj;
@@ -30,6 +30,7 @@ import com.augurit.aplanmis.common.domain.AeaHiSmsSendItem;
 import com.augurit.aplanmis.common.domain.AeaItemInout;
 import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.common.domain.AeaServiceWindow;
 import com.augurit.aplanmis.common.domain.AeaUnitInfo;
 import com.augurit.aplanmis.common.event.AplanmisEventPublisher;
 import com.augurit.aplanmis.common.event.def.ApplyMailQujianAplanmisEvent;
@@ -52,10 +53,12 @@ import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiSmsInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
+import com.augurit.aplanmis.common.service.window.AeaServiceWindowService;
 import com.augurit.aplanmis.front.certificate.vo.CertListAndUnitVo;
+import com.augurit.aplanmis.front.certificate.vo.CertOutinstVo;
+import com.augurit.aplanmis.front.certificate.vo.CertRegistrationVo;
 import com.augurit.aplanmis.front.certificate.vo.CertinstParamVo;
 import com.augurit.aplanmis.front.certificate.vo.SmsSaveParam;
-import com.augurit.aplanmis.front.certificate.vo.SmsSendBaseVo;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -67,8 +70,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -81,13 +82,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-/**
- * @author chenjw
- * @version v1.0.0
- * @description
- * @date Created in 2019/8/5/005 9:43
- */
 
 @Service
 @Transactional
@@ -131,8 +125,6 @@ public class RestCertificateService {
     @Autowired
     private AeaItemInoutMapper aeaItemInoutMapper;
     @Autowired
-    private OpuOmUserInfoMapper opuOmUserInfoMapper;
-    @Autowired
     private AeaApplyinstUnitProjMapper aeaApplyinstUnitProjMapper;
     @Autowired
     private AeaUnitProjMapper aeaUnitProjMapper;
@@ -147,6 +139,8 @@ public class RestCertificateService {
     private AeaHiItemMatinstMapper aeaHiItemMatinstMapper;
     @Autowired
     private AplanmisEventPublisher aplanmisEventPublisher;
+    @Autowired
+    private AeaServiceWindowService aeaServiceWindowService;
 
 
     public boolean saveSmsRelevance(SmsSaveParam smsSaveParam) throws Exception {
@@ -167,7 +161,7 @@ public class RestCertificateService {
         AeaHiSmsSendApply hadSend = smsSendApplyMapper.getAeaHiSmsSendApplyByApplyinstId(smsSaveParam.getApplyinstId());
 
         //更新或保存smssendapply
-        String sendApplyId = "";
+        String sendApplyId;
         AeaHiSmsSendApply sendApply = new AeaHiSmsSendApply();
         BeanUtils.copyProperties(sendApply, sendBean);
         sendApply.setSendApplyCode(getDateString());//暂时用时间字符串
@@ -261,11 +255,7 @@ public class RestCertificateService {
     /**
      * 判断是否已经全部出完件
      *
-     * @param applyinstId
-     * @param isApprove
-     * @param isOnceSend
      * @param insertCount 要插入smssenditem的数量
-     * @return
      */
     private boolean checkHadAllSmsSend(String applyinstId, String isApprove, String isOnceSend, int insertCount) {
         String rootOrgId = SecurityContext.getCurrentOrgId();
@@ -279,11 +269,7 @@ public class RestCertificateService {
             int needSendCount = smsSendItemMapper.getNeedSendCount(applyinstId, rootOrgId);
             // 已经出证的事项数量
             int count = smsSendItemMapper.countSendItemByApplyinstId(applyinstId);
-            if (count + insertCount < needSendCount) {
-                return false;
-            } else {
-                return true;
-            }
+            return count + insertCount >= needSendCount;
         }
     }
 
@@ -291,8 +277,6 @@ public class RestCertificateService {
     /**
      * 更新iteminst状态
      *
-     * @param iteminstId
-     * @throws Exception
      */
     private void updateIteminstStatu(String iteminstId) throws Exception {
         AeaHiIteminst hiIteminst = new AeaHiIteminst();
@@ -305,7 +289,6 @@ public class RestCertificateService {
     /**
      * 插入记录aea_log_item_state_hist
      *
-     * @param senditems
      */
     private void insertIntoItemStateHist(List<AeaHiSmsSendItem> senditems) {
         List<AeaLogItemStateHist> result = new ArrayList<>();
@@ -330,12 +313,9 @@ public class RestCertificateService {
     /**
      * 得到inoutinstID
      *
-     * @param iteminstId
-     * @return
-     * @throws Exception
      */
     private String getitemInoutinstId(String iteminstId) throws Exception {
-        List<AeaHiItemInoutinst> itemInoutinst = hiItemInoutinstMapper.getAeaHiItemInoutinstOutByIteminstIdWithoutInOut(iteminstId, SecurityContext.getCurrentOrgId());
+        List<AeaHiItemInoutinst> itemInoutinst = hiItemInoutinstMapper.listOutMaterialsByIteminstId(iteminstId, SecurityContext.getCurrentOrgId());
 
         if (itemInoutinst.size() > 0) {//不知道一个事项不会吧有多个输出实例
             return itemInoutinst.stream().map(AeaHiItemInoutinst::getInoutinstId).collect(Collectors.joining(","));
@@ -346,105 +326,57 @@ public class RestCertificateService {
 
     /**
      * 填充smssenditem参数
-     *
-     * @param sendBean
-     * @param isOnceSend
-     * @param iteminstId
-     * @param sendApplyId
-     * @return
-     * @throws Exception
      */
     private AeaHiSmsSendItem assemblingSendItem(AeaHiSmsSendBean sendBean, String isOnceSend, String iteminstId, String sendApplyId) throws Exception {
-        AeaHiSmsSendItem tmp = new AeaHiSmsSendItem();
-        BeanUtils.copyProperties(tmp, sendBean);
-        tmp.setSendItemCode(getDateString());//暂时用datestr
-        tmp.setIteminstId(iteminstId);
-        tmp.setSendItemId(UUID.randomUUID().toString());
-        tmp.setSendApplyId(sendApplyId);
-        tmp.setIsOnceSend(isOnceSend);
-        tmp.setCreater(SecurityContext.getCurrentUserId());
-        tmp.setRootOrgId(SecurityContext.getCurrentOrgId());
-        tmp.setCreateTime(new Date());
-        tmp.setInoutinstId(getitemInoutinstId(iteminstId));
-        return tmp;
+        AeaHiSmsSendItem aeaHiSmsSendItem = new AeaHiSmsSendItem();
+        BeanUtils.copyProperties(aeaHiSmsSendItem, sendBean);
+        aeaHiSmsSendItem.setSendItemCode(getDateString());// 暂时用datestr
+        aeaHiSmsSendItem.setIteminstId(iteminstId);
+        aeaHiSmsSendItem.setSendItemId(UUID.randomUUID().toString());
+        aeaHiSmsSendItem.setSendApplyId(sendApplyId);
+        aeaHiSmsSendItem.setIsOnceSend(isOnceSend);
+        aeaHiSmsSendItem.setCreater(SecurityContext.getCurrentUserId());
+        aeaHiSmsSendItem.setRootOrgId(SecurityContext.getCurrentOrgId());
+        aeaHiSmsSendItem.setCreateTime(new Date());
+        aeaHiSmsSendItem.setInoutinstId(getitemInoutinstId(iteminstId));
+        return aeaHiSmsSendItem;
     }
 
-    public SmsSendBaseVo getCertificationInfo(String applyinstId) throws Exception {
-
-        SmsSendBaseVo baseVo = new SmsSendBaseVo();
+    public CertRegistrationVo getCertificationInfo(String applyinstId) throws Exception {
+        CertRegistrationVo certRegistrationVo = new CertRegistrationVo();
         List<AeaHiIteminst> iteminsts = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
-        //过滤剩下办结通过和容缺通过的
+        // 过滤剩下办结通过和容缺通过的
         List<AeaHiIteminst> needSendIteminsts = iteminsts.stream().filter(
                 inst -> ItemStatus.AGREE_TOLERANCE.getValue().equals(inst.getIteminstState()) ||
                         ItemStatus.AGREE.getValue().equals(inst.getIteminstState())
         ).collect(Collectors.toList());
 
-        //判断该事项有没有inoutinst实例判断是否有件可出
-        for (int i = 0, len = needSendIteminsts.size(); i < len; i++) {
-            AeaHiIteminst iteminst = needSendIteminsts.get(i);
-            List<AeaHiItemInoutinst> ItemInoutinsts = aeaHiItemInoutinstMapper.getAeaHiItemInoutinstOutByIteminstIdWithoutInOut(iteminst.getIteminstId(), SecurityContext.getCurrentOrgId());
-            if (ItemInoutinsts.size() == 0) {
-                iteminst.setHasOutCertinst("0");
-            } else {
-                iteminst.setHasOutCertinst("1");
-            }
+        // 判断该事项是否有件可出
+        for (AeaHiIteminst iteminst : needSendIteminsts) {
+            List<AeaHiItemInoutinst> outinsts = aeaHiItemInoutinstMapper.listOutMaterialsByIteminstId(iteminst.getIteminstId(), SecurityContext.getCurrentOrgId());
+            iteminst.setHasOutCertinst(outinsts.size() > 0 ? Status.ON : Status.OFF);
         }
 
         AeaHiSmsInfo smsInfo = smsInfoService.getAeaHiSmsInfoByApplyinstId(applyinstId);
+        Assert.notNull(smsInfo, "根据申报实例没有找到对应的领件人信息, applyinstId: " + applyinstId);
 
-        //出件人用户名和电话
-        OpuOmUserInfo userinfo = opuOmUserInfoMapper.getOpuOmUserInfoByUserId(SecurityContext.getCurrentUserId());
-        smsInfo.setSenderName(userinfo.getUserName());
-        String phone = StringUtils.isBlank(userinfo.getUserMobile())?"":userinfo.getUserMobile();
-        smsInfo.setSenderPhone(phone);
-        baseVo.setIteminsts(iteminsts);
-        baseVo.setSmsInfo(smsInfo);
+        // 寄件单位和电话
+        AeaServiceWindow currentUserWindow = aeaServiceWindowService.getCurrentUserWindow();
+        smsInfo.setSenderName(currentUserWindow.getWindowName());
+        smsInfo.setSenderPhone(currentUserWindow.getLinkPhone());
 
-        return baseVo;
+        certRegistrationVo.setIteminsts(iteminsts);
+        certRegistrationVo.setSmsInfo(smsInfo);
+        return certRegistrationVo;
 
-    }
-
-    /**
-     * 弃用
-     * @param iteminstId
-     * @param applyinstId
-     * @return
-     * @throws Exception
-     */
-    public List<AeaHiCertinst> getCertInfoByIteminstId(String iteminstId, String applyinstId) throws Exception {
-        List<AeaHiItemInoutinst> certIteminsts = aeaHiItemInoutinstMapper.getAeaHiItemInoutinstOutByIteminstIdWithoutInOut(iteminstId, SecurityContext.getCurrentOrgId());
-        List<String> ids = new ArrayList<>();
-        if (certIteminsts.size() == 0) {
-            throw new Exception("该事项找不到输出证照实例，请检查前面流程的操作以及配置");
-        } else {
-            ids = certIteminsts.stream().map(AeaHiItemInoutinst::getCertinstId).collect(Collectors.toList());
-        }
-        List<AeaHiCertinst> certinsts = hiCertinstMapper.getAeaHiCertinstByIds(ids);
-        for (int i = 0, len = certinsts.size(); i < len; i++) {
-            AeaHiCertinst certinst = certinsts.get(i);
-            AeaApplyinstProj aeaApplyinstProj = new AeaApplyinstProj();
-            aeaApplyinstProj.setApplyinstId(applyinstId);
-            List<AeaApplyinstProj> aeaApplyinstProjs = applyinstProjMapper.listAeaApplyinstProj(aeaApplyinstProj);
-            List<AeaUnitInfo> applyOwnerUnitProj = unitInfoService.findApplyOwnerUnitProj(applyinstId, aeaApplyinstProjs.get(0).getProjInfoId());
-            AeaHiIteminst iteminst = hiIteminstMapper.getAeaHiIteminstById(iteminstId);
-
-            certinst.setApplicant(applyOwnerUnitProj.get(0).getApplicant());
-            certinst.setUnitInfoId(applyOwnerUnitProj.get(0).getUnitInfoId());
-            certinst.setIssueOrgId(iteminst.getApproveOrgId());
-            certinst.setIssueOrgName(iteminst.getApproveOrgName());
-        }
-
-
-        return certinsts;
     }
 
     private String getDateString() {
-        String dateStr = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-        return dateStr;
+        return new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
     }
 
     public String uploadFile(String applyinstId, HttpServletRequest request) throws Exception {
-        String detailId = "";
+        StringBuilder detailId = new StringBuilder();
         StandardMultipartHttpServletRequest req = (StandardMultipartHttpServletRequest) request;
         List<MultipartFile> files = req.getFiles("file");
         if (files.size() > 0) {
@@ -453,16 +385,15 @@ public class RestCertificateService {
         List<BscAttFileAndDir> fileAndDirs = bscAttDetailMapper.searchFileAndDirsSimple(null, null, "AEA_HI_APPLYINST", "APPLYINST_ID", new String[]{applyinstId});
         if (fileAndDirs.size() > 0) {
             for (BscAttFileAndDir att : fileAndDirs) {
-                detailId += att.getFileId() + ",";
+                detailId.append(att.getFileId()).append(",");
             }
-            detailId = detailId.substring(0, detailId.length() - 1);
+            detailId = new StringBuilder(detailId.substring(0, detailId.length() - 1));
         }
-        return detailId;
+        return detailId.toString();
     }
 
     public List<BscAttFileAndDir> getMatAttDetailByApplyinstId(String applyinstId) throws Exception {
-        List<BscAttFileAndDir> fileAndDirs = bscAttDetailMapper.searchFileAndDirsSimple(null, null, "AEA_HI_APPLYINST", "APPLYINST_ID", new String[]{applyinstId});
-        return fileAndDirs;
+        return bscAttDetailMapper.searchFileAndDirsSimple(null, null, "AEA_HI_APPLYINST", "APPLYINST_ID", new String[]{applyinstId});
     }
 
     public void delelteAttFile(String detailIds) throws Exception {
@@ -511,7 +442,7 @@ public class RestCertificateService {
 
     }
 
-    public ModelAndView preview(String detailId, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) throws Exception {
+    public ModelAndView preview(String detailId, RedirectAttributes redirectAttributes) throws Exception {
         ModelAndView modelAndView = new ModelAndView();
         BscAttDetail att = bscAttService.getAttDetailByDetailId(detailId);
         if (att != null) {
@@ -539,46 +470,39 @@ public class RestCertificateService {
             modelAndView.setViewName("ui-jsp/agcloud/bsc/yunpan/showFile");
             String atName = att.getAttName();
             String attFormat = att.getAttFormat();
-            if (false) {
-                modelAndView.addObject("emtpyResult", "1");
-            } else {
-                byte[] content;
-                String base64Content = null;
-                String directoryPath = request.getServletContext().getRealPath("/");
-                File file;
-                try {
-                    if (UploadType.MONGODB.getValue().equals(att.getStoreType())) {
-                        //从MongoDB上下载
-                        MongoDbAchieve mongoDbAchieve = (MongoDbAchieve) uploaderFactory.create(att.getStoreType());
-                        content = mongoDbAchieve.getDownloadBytes(att.getDetailId());
+            byte[] content;
+            String base64Content = null;
+            try {
+                if (UploadType.MONGODB.getValue().equals(att.getStoreType())) {
+                    MongoDbAchieve mongoDbAchieve = (MongoDbAchieve) uploaderFactory.create(att.getStoreType());
+                    content = mongoDbAchieve.getDownloadBytes(att.getDetailId());
 
-                        if (content != null && content.length > 0) {
-//                            base64Content = new BASE64Encoder().encode(content);
-                            Base64.Encoder encoder = Base64.getEncoder();
-                            base64Content = encoder.encodeToString(content);
-                        } else {
-                            modelAndView.addObject("emtpyResult", "1");
-                        }
-                    } else if (UploadType.DATABASE.getValue().equals(att.getStoreType())) {
-                        List<BscAttStoreDb> stores = bscAttService.findAttStoreDbByIds(att.getDetailId());
-                        content = stores.get(0).getAttContent();
-                        if (content != null && content.length > 0) {
-//                            base64Content = new BASE64Encoder().encode(content);
-                            Base64.Encoder encoder = Base64.getEncoder();
-                            base64Content = encoder.encodeToString(content);
-                        } else {
-                            modelAndView.addObject("emtpyResult", "1");
-                        }
+                    if (content != null && content.length > 0) {
+                        Base64.Encoder encoder = Base64.getEncoder();
+                        base64Content = encoder.encodeToString(content);
+                    } else {
+                        modelAndView.addObject("emtpyResult", "1");
                     }
-                    base64Content = base64Content.replaceAll("\r\n|\n", "");
-                    String fullBase64 = "data:image/" + attFormat + ";base64," + base64Content;
-                    modelAndView.addObject("fullBase64", fullBase64);
-                    modelAndView.addObject("fileName", atName);
-                    modelAndView.addObject("fileType", attFormat);
-                    modelAndView.addObject("emtpyResult", "0");
-                } catch (Exception e) {
-                    modelAndView.addObject("emtpyResult", "1");
+                } else if (UploadType.DATABASE.getValue().equals(att.getStoreType())) {
+                    List<BscAttStoreDb> stores = bscAttService.findAttStoreDbByIds(att.getDetailId());
+                    content = stores.get(0).getAttContent();
+                    if (content != null && content.length > 0) {
+                        Base64.Encoder encoder = Base64.getEncoder();
+                        base64Content = encoder.encodeToString(content);
+                    } else {
+                        modelAndView.addObject("emtpyResult", "1");
+                    }
                 }
+                Assert.notNull(base64Content, "内容为空");
+
+                base64Content = base64Content.replaceAll("\r\n|\n", "");
+                String fullBase64 = "data:image/" + attFormat + ";base64," + base64Content;
+                modelAndView.addObject("fullBase64", fullBase64);
+                modelAndView.addObject("fileName", atName);
+                modelAndView.addObject("fileType", attFormat);
+                modelAndView.addObject("emtpyResult", "0");
+            } catch (Exception e) {
+                modelAndView.addObject("emtpyResult", "1");
             }
         } else {
             modelAndView.addObject("emtpyResult", "1");
@@ -586,7 +510,7 @@ public class RestCertificateService {
         return modelAndView;
     }
 
-    public Map<String, Object> getCertBasicInfo() throws Exception {
+    public Map<String, Object> getCertBasicInfo() {
         Map<String, Object> result = new HashMap<>();
         AeaCert cert = new AeaCert();
         cert.setCertHolder("p");
@@ -633,10 +557,8 @@ public class RestCertificateService {
 
 
     //根据事项实例获取证照实例列表
-    public List<AeaHiCertinst> getCertinstListByIteminstId(String iteminstId) throws Exception {
-
-        List<AeaHiCertinst> certList = hiCertinstMapper.getAeaHiCertinstByIteminstId(iteminstId);
-        return certList;
+    public List<AeaHiCertinst> getCertinstListByIteminstId(String iteminstId) {
+        return hiCertinstMapper.getAeaHiCertinstByIteminstId(iteminstId);
     }
 
 
@@ -702,12 +624,7 @@ public class RestCertificateService {
                 //过滤掉已经实例化的证照定义
                 List<AeaCert> collect = list.stream().filter(cert -> Arrays.binarySearch(strings, cert.getCertId()) < 0).collect(Collectors.toList());
                 //如果过滤后==null，表示 定义全部实例化，不能返回null,方便页面处理
-                if (null == collect) {
-                    vo.setCertList(new ArrayList<>());
-                } else {
-                    vo.setCertList(collect);
-                }
-
+                vo.setCertList(collect);
             }
         }
 
@@ -722,7 +639,7 @@ public class RestCertificateService {
         if (null != certinstIds && certinstIds.length > 0) {
             //先删除item_inout_inst
             hiItemInoutinstMapper.deleteAeaHiItemInoutinstByCertinstIds(certinstIds);
-            String certinstId = Arrays.stream(certinstIds).collect(Collectors.joining(","));
+            String certinstId = String.join(",", certinstIds);
             //再删除附件
             List<BscAttFileAndDir> fileAndDirList = fileUtilsService.getBscAttFileAndDirListByinstId(certinstId, "CERTINST_ID", "AEA_HI_CERTINST");
             if (!fileAndDirList.isEmpty()) {
@@ -751,68 +668,48 @@ public class RestCertificateService {
         smsSendItemMapper.updateAeaHiSmsSendItem(sendItem);
     }
 
-    public List<Map<String, Object>>getOutFileInfoByIteminstId(String iteminstId, String applyinstId) throws Exception{
-        List<AeaHiItemInoutinst> outIteminsts = aeaHiItemInoutinstMapper.getAeaHiItemInoutinstOutByIteminstIdWithoutInOut(iteminstId, SecurityContext.getCurrentOrgId());
-        List<String> certIds = new ArrayList<>();
-        List<String> matIds = new ArrayList<>();
-        if (outIteminsts.size() != 0) {
-           for(AeaHiItemInoutinst inoutinst: outIteminsts){
-               if(StringUtils.isNotBlank(inoutinst.getMatinstId())){
-                   matIds.add(inoutinst.getMatinstId());
-               }else if(StringUtils.isNotBlank(inoutinst.getCertinstId())){
-                   certIds.add(inoutinst.getCertinstId());
-               }
-           }
-        }
-        //查询证照的
-        List<AeaHiCertinst> certinsts = new ArrayList<>();
-        if(certIds.size()>0){
+    public List<CertOutinstVo> viewOutMaterials(String iteminstId, String applyinstId) throws Exception {
+        String[] matinstIds = aeaHiItemInoutinstMapper.listOutMaterialsByIteminstId(iteminstId, SecurityContext.getCurrentOrgId())
+                .stream().map(AeaHiItemInoutinst::getMatinstId).toArray(String[]::new);
+        List<AeaHiItemMatinst> aeaHiItemMatinsts = aeaHiItemMatinstMapper.listAeaHiItemMatinstByIds(matinstIds);
 
-            certinsts = hiCertinstMapper.getAeaHiCertinstByIds(certIds);
-            for (int i = 0, len = certinsts.size(); i < len; i++) {
-                AeaHiCertinst certinst = certinsts.get(i);
-                AeaApplyinstProj aeaApplyinstProj = new AeaApplyinstProj();
-                aeaApplyinstProj.setApplyinstId(applyinstId);
-                List<AeaApplyinstProj> aeaApplyinstProjs = applyinstProjMapper.listAeaApplyinstProj(aeaApplyinstProj);
-                List<AeaUnitInfo> applyOwnerUnitProj = unitInfoService.findApplyOwnerUnitProj(applyinstId, aeaApplyinstProjs.get(0).getProjInfoId());
-                AeaHiIteminst iteminst = hiIteminstMapper.getAeaHiIteminstById(iteminstId);
+        List<String> certinstIds = new ArrayList<>();
+        List<CertOutinstVo> certOutinstVos = new ArrayList<>();
+        aeaHiItemMatinsts.forEach(matinst -> {
+            if ("m".equals(matinst.getMatProp())) {
+                CertOutinstVo vo = new CertOutinstVo();
+                vo.setId(matinst.getMatinstId());
+                vo.setName(matinst.getMatinstName());
+                vo.setType(InOutType.MAT.getValue());
+                vo.setData(matinst);
+                certOutinstVos.add(vo);
+            } else if ("c".equals(matinst.getMatProp()) && StringUtils.isNotBlank(matinst.getCertinstId())) {
+                certinstIds.add(matinst.getCertinstId());
+            }
+        });
+        if (certinstIds.size() > 0) {
+            AeaApplyinstProj aeaApplyinstProj = new AeaApplyinstProj();
+            aeaApplyinstProj.setApplyinstId(applyinstId);
+            List<AeaApplyinstProj> aeaApplyinstProjs = applyinstProjMapper.listAeaApplyinstProj(aeaApplyinstProj);
 
+            List<AeaUnitInfo> applyOwnerUnitProj = unitInfoService.findApplyOwnerUnitProj(applyinstId, aeaApplyinstProjs.get(0).getProjInfoId());
+            AeaHiIteminst iteminst = hiIteminstMapper.getAeaHiIteminstById(iteminstId);
+
+            List<AeaHiCertinst> certinsts = hiCertinstMapper.getAeaHiCertinstByIds(certinstIds);
+            certinsts.forEach(certinst -> {
+                CertOutinstVo vo = new CertOutinstVo();
+                vo.setId(certinst.getCertinstId());
+                vo.setName(certinst.getCertinstName());
+                vo.setType(InOutType.CERT.getValue());
                 certinst.setApplicant(applyOwnerUnitProj.get(0).getApplicant());
                 certinst.setUnitInfoId(applyOwnerUnitProj.get(0).getUnitInfoId());
                 certinst.setIssueOrgId(iteminst.getApproveOrgId());
                 certinst.setIssueOrgName(iteminst.getApproveOrgName());
-            }
+                vo.setData(certinst);
+                certOutinstVos.add(vo);
+            });
         }
-        //查询文件材料的
-        List<AeaHiItemMatinst> matinsts = new ArrayList<>();
-        if(matIds.size()>0){
-            String[] matArr = matIds.toArray(new String[matIds.size()]);
-            matinsts = aeaHiItemMatinstMapper.listAeaHiItemMatinstByIds(matArr);
-        }
-
-        //封装结果
-        List<Map<String, Object>> result = new ArrayList<>();
-
-        for(int i =0,len=certinsts.size();i<len;i++){
-            Map<String, Object> m = new HashMap<>();
-            m.put("id",certinsts.get(i).getCertinstId());
-            m.put("name",certinsts.get(i).getCertinstName());
-            m.put("type","cert");
-            m.put("data",certinsts.get(i));
-            result.add(m);
-        }
-
-        for(int i =0,len=matinsts.size();i<len;i++){
-            Map<String, Object> m = new HashMap<>();
-            m.put("id",matinsts.get(i).getMatinstId());
-            m.put("name",matinsts.get(i).getMatinstName());
-            m.put("type","mat");
-            m.put("data",matinsts.get(i));
-            result.add(m);
-        }
-
-        return result;
-
+        return certOutinstVos;
     }
 }
 
