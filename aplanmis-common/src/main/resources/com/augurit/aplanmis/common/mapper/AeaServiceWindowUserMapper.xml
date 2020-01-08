@@ -292,10 +292,11 @@
         select
         <include refid="alias_allColumns">
             <property name="alias" value="aswu"/>
-        </include>,win.WINDOW_NAME windowName,oou.USER_NAME
+        </include>,win.WINDOW_NAME windowName,oou.USER_NAME userName,ooui.USER_MOBILE userMobile
         from AEA_SERVICE_WINDOW_USER aswu
         left join aea_service_window win on win.WINDOW_ID = aswu.WINDOW_ID
         left join opu_om_user oou on oou.USER_ID = aswu.USER_ID
+        left join opu_om_user_info ooui on ooui.USER_ID = aswu.USER_ID
         where
         win.WINDOW_ID in
         <foreach collection="windowIds" item="windowId" open="(" separator="," close=")">
