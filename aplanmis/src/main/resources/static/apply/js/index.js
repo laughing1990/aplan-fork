@@ -655,6 +655,7 @@ var vm = new Vue({
       // 部门辅导 start------------------------
       showAuditProj: false, // 需要进行工程审核
       guideDetail: {}, // 部门辅导数据详情
+      guideId: '',
       // 0申请人未发起
       // 1牵头部门待签收
       // 2牵头部门处理中
@@ -662,7 +663,7 @@ var vm = new Vue({
       // 4申请人待确认
       // 5结束
       // 6所有征求部门处理完成
-      guideState: '0',
+      guideState: 0,
       leaderDept: false,
       guideDateLoaded: false,
       auProJForm: {
@@ -715,6 +716,7 @@ var vm = new Vue({
     var _guideId = __STATIC.getUrlParam('guideId');
     if (_guideId && _guideId.length && _guideId!='undefind' && _guideId!='null') {
       this.isGuidePage = true;
+      this.guideId = _guideId;
       this.requestGuideData(_guideId);
       return null;
     }
@@ -757,6 +759,102 @@ var vm = new Vue({
   },
   methods: {
     // 部门辅导 start-----------------------
+    // 部门辅导牵头部门直接通过
+    leaderDeptPass: function(){
+      var vm = this;
+      this.$prompt('请输入意见', '直接通过', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputValidator: function (val) {
+          return !!val
+        },
+        inputErrorMessage: '请输入意见'
+      }).then(function(value){
+        vm.guideSaveItems('loading', function(){
+          vm.requestFinishBmfd(value);
+        });
+        return true;
+      }).catch(function(){
+        return true;
+      });
+    },
+    // 部门辅导结束
+    requestFinishBmfd: function(val){
+      var vm = this;
+      vm.loading = true;
+      request('', {
+        url: ctx + 'dept/guide/finish',
+        type: 'post',
+        ContentType: 'application/json',
+        data: JSON.stringify({
+          guideId: vm.guideId,
+          leaderOrgOpinion: val,
+        })
+      }, function(res) {
+        vm.loading = false;
+        if (res.success) {
+          __STATIC.delayCloseWindow();
+          vm.$message.success('部门辅导结束，已通知申请人');
+        } else {
+          vm.message.error(res.message||'部门辅导结束失败');
+        }
+      }, function(){
+        vm.loading = false;
+        vm.$message.error('部门辅导结束失败');
+      });
+    },
+    // 保存事项信息
+    guideSaveItems: function(visibleKey, cb){
+      var vm = this;
+      var stateArr = ['l', 'l', 'l', 'i', 'o', 'r', 'r'];
+      var stateArr2 = ['1', '1', '1', '1', '1', '1', '2'];
+      var params = {
+        detailState: stateArr2[vm.guideState],
+        detailType: stateArr[vm.guideState],
+        guideActionVos: [],
+        guideId: vm.guideId,
+        stageId: vm.stageId,
+        themeId: vm.themeId,
+        themeVerId: vm.themeVerId,
+      };
+      var _list = [];
+      this.parallelItems.concat(this.coreItems).forEach(function(u) {
+        if (u.bmChecked) {
+          var itemId = ''; // 实施事项id
+          var itemVerId = ''; // 实施事项版本id
+          if (u.currentCarryOutItem) {
+            itemId = u.currentCarryOutItem.itemId || '';
+            itemVerId = u.currentCarryOutItem.itemVerId || '';
+          }
+          _list.push({
+            catalogItemVerId: u.itemVerId,
+            guideChangeAction: u.itemId,
+            guideOpinion: u.opinion,
+            itemId: itemId,
+            itemVerId: itemVerId,
+            orgId: vm.leaderDept?vm.guideDetail.aeaHiGuide.leaderOrgId:u.orgId,
+          });
+        }
+      });
+      params.guideActionVos = _list;
+      vm[visibleKey] = true;
+      request('', {
+        url: ctx + 'dept/guide/guide',
+        type: 'post',
+        ContentType: 'application/json',
+        data: JSON.stringify(params),
+      }, function (res) {
+        vm[visibleKey] = false;
+        if (res.success) {
+          typeof cb == 'function' && cb();
+        } else {
+          vm.$message.error(res.message || '部门辅导保存事项失败');
+        }
+      }, function (){
+        vm[visibleKey] = false;
+        vm.$message.error('部门辅导保存事项失败');
+      })
+    },
     // 显示辅导数据
     showGuideDetail: function(){
       this.linkQuery();
@@ -815,7 +913,7 @@ var vm = new Vue({
           vm.isGreenWay = res.content.aeaHiGuide.isGreenWay == '1' ? true : false;
 
           vm.guideDetail = res.content;
-          vm.guideState = vm.guideDetail.aeaHiGuide.applyState;
+          vm.guideState = +vm.guideDetail.aeaHiGuide.applyState;
           vm.leaderDept = vm.guideDetail.leaderDept;
           vm.projInfoId = vm.guideDetail.aeaHiGuide.projInfoId;
 
@@ -905,81 +1003,37 @@ var vm = new Vue({
         vm.$message.error('加载子工程数据失败');
       });
     },
-    // 部门辅导 end-------------------------
-    // 意见征求 start-----------------------
-    // 发起征求
+    // 部门辅导牵头部门确认事项发起
     startSolicit: function () {
       var vm = this;
       var list1 = this.$refs.soParallelItems.selection || [];
       var list2 = this.$refs.soCoreItems.selection || [];
       var itemList = [];
-      var params = {
-        applyinstId: "002bf0e6-ba95-48c2-a866-7d230b6a1007",
-        procinstId: "1c0439c4-42fa-4823-b17b-fd9f4ac8a8ec",
-        hiTaskinstId: "00b0407d-55bb-42e7-ab2f-443267a7a859",
-        solicitTopic: vm.solicitForm.solicitTopic,
-        solicitContent: vm.solicitForm.solicitContent,
-        solicitDueDays: vm.solicitForm.solicitDueDays,
-        solicitType: vm.solicitForm.solicitType,
-        isCalcTimerule: 1,
-        solicitTimeruleId: vm.solicitForm.solicitTimeruleId,
-        busType: 'YJZQ',
-      };
-      if (this.solicitForm.solicitType == 'i') {
-        // 校验勾选事项
-        if (!list1.length && !list2.length) {
-          return this.$message.error('请至少勾选一个事项')
+      var params = {};
+      // 校验勾选事项
+      if (!list1.length && !list2.length) {
+        return this.$message.error('请至少勾选一个事项')
+      }
+      var tmp = list1.concat(list2);
+      var hasOrgId = true;
+      tmp.forEach(function (u) {
+        if (!(u.orgId && u.orgId.length)) {
+          hasOrgId = false;
         }
-        var tmp = list1.concat(list2);
-        var hasOrgId = true;
-        tmp.forEach(function (u) {
-          if (!(u.orgId && u.orgId.length)) {
-            hasOrgId = false;
-          }
-          itemList.push({
-            itemId: u.itemId,
-            itemVerId: u.itemVerId,
-            orgId: u.orgId,
-            orgName: u.orgName,
-            opinion: u.opinion,
-          })
-        });
-        if (!hasOrgId) {
-          return vm.$message.error('请选择行政区划或者实施主体');
-        }
-      } else if (this.solicitForm.solicitType == 'd') {
-        // 校验勾选部门
-        if (!vm.soCheckedOrgList.length) {
-          return vm.$message.error('请至少勾选一个部门');
-        }
-        vm.soCheckedOrgList.forEach(function (u) {
-          itemList.push({
-            orgId: u.orgId,
-            orgName: u.orgName,
-          })
-        });
+        itemList.push({
+          itemId: u.itemId,
+          itemVerId: u.itemVerId,
+          orgId: u.orgId,
+          orgName: u.orgName,
+          opinion: u.opinion,
+        })
+      });
+      if (!hasOrgId) {
+        return vm.$message.error('请选择审批部门');
       }
       params.detailInfo = JSON.stringify(itemList);
-      this.$refs.solicitForm.validate(function (f) {
-        if (f) {
-          vm.solicitOpinionLoading = true;
-          request('', {
-            url: ctx + 'rest/solicit/create',
-            type: 'post',
-            ContentType: 'application/json',
-            data: JSON.stringify(params),
-          }, function (res) {
-            vm.solicitOpinionLoading = false;
-            if (res.success) {
-              vm.$message.success('意见征求发起成功');
-            } else {
-              vm.$message.error(res.message || '意见征求发起失败');
-            }
-          }, function () {
-            vm.solicitOpinionLoading = false;
-            vm.$message.error('意见征求发起失败');
-          })
-        }
+      vm.guideSaveItems('solicitOpinionLoading', function(){
+        //
       });
     },
     // 选择orgId
@@ -991,20 +1045,20 @@ var vm = new Vue({
     closeSoDialog: function () {
       this.$refs.solicitForm.clearValidate();
     },
-    // 打开征求弹窗
+    // 牵头部门点击发起部门确认
     openSoDialog: function () {
-      this.getTimeRuleList();
-      var list1 = this.$refs.parallelItemsTable.selection || [];
-      var list2 = this.$refs.coreItemsTable.selection || [];
-      if (!list1.length) {
-        return this.$message('稍等，正在加载事项数据');
-      }
-      list1.forEach(function (u) {
-        vm.$set(u, 'opinion', '');
+      // this.getTimeRuleList();
+      // var list1 = this.$refs.parallelItemsTable.selection || [];
+      // var list2 = this.$refs.coreItemsTable.selection || [];
+      var list1 = [];
+      var list2 = [];
+      this.parallelItems.forEach(function(u){
+        u.bmChecked && list1.push(u);
       });
-      list2.forEach(function (u) {
-        vm.$set(u, 'opinion', '');
+      this.coreItems.forEach(function(u){
+        u.bmChecked && list2.push(u);
       });
+      if (!list1.length) { return this.$message('请至少勾选一个事项'); }
       this.soParallelItems = list1.concat([]);
       this.soCoreItems = list2.concat([]);
       this.solicitOpinionVisible = true;
@@ -1108,6 +1162,7 @@ var vm = new Vue({
       })
     },
     // 意见征求 end---------------------
+    // 部门辅导 end-------------------------
     // 查询主题信息
     getThemeInfoByThemeCategory: function () {
       var _that = this;
@@ -1676,16 +1731,6 @@ var vm = new Vue({
           }
           _that.loading = false;
 
-          if (!_that.guideDateLoaded){
-            // 部门辅导页面定位到事项一单清
-            _that.guideDateLoaded = true;
-            var intervel = window.setInterval(function(){
-              $(document).scrollTop($('#applyStage').offset().top);
-            }, 100);
-            setTimeout(function(){
-              window.clearInterval(intervel);
-            }, 3600)
-          }
         } else {
           _that.showMoreProjInfo = false;
           _that.showVerLen = 1;
@@ -2473,6 +2518,10 @@ var vm = new Vue({
     },
     // 展示选择主题弹窗
     showSelThemeDialog: function () {
+      if (this.isGuidePage && !this.leaderDept) {
+        this.$message('牵头部门才能修改项目类型');
+        return null;
+      }
       var ind = 0;
       if (this.themeDialogIndex > -1) {
         ind = this.themeDialogIndex;
@@ -3233,34 +3282,66 @@ var vm = new Vue({
     // 获取事项列表
     getStageItems: function (stageId) {
       var _that = this;
+      var vm = this;
       _that.showCoreItemsKey = [];
       _that.showParallelItemsKey = [];
+      vm.loading = true;
       request('', {
         url: ctx + 'rest/apply/stage/items',
         type: 'get',
         data: {"stageId": stageId, "projInfoId": _that.projInfoId}
       }, function (data) {
         if (data.success) {
+          vm.loading = false;
           // _that.coreItems = data.content.coreItems;
           // _that.parallelItems = data.content.parallelItems;
           var _coreItems = data.content.coreItems ? _that.unique(_that.coreItems.concat(data.content.coreItems), 'stage') : _that.unique(_that.coreItems, 'stage');
           var _parallelItems = data.content.parallelItems ? _that.unique(_that.parallelItems.concat(data.content.parallelItems), 'stage') : _that.unique(_that.parallelItems, 'stage');
-          if (_that.isGuidePage) {
+          if (_that.isGuidePage) { // 部门辅导
             if (!_that.guideChangedType) {
               // 未切换项目类型 事项列表就是辅导详情数据
               _coreItems = _that.guideDetail.optionItems;
               _parallelItems = _that.guideDetail.parallelItems;
+              _coreItems.forEach(function(u) { setParam1(u); });
+              _parallelItems.forEach(function(u) { setParam1(u); });
+              function setParam1(u) {
+                vm.$set(u, 'opinion', '');
+                vm.$set(u, 'bmChecked', false);
+                if (
+                  (u.orgId&&u.orgId.length) ||
+                  (u.currentCarryOutItem&&u.currentCarryOutItem.orgId&&u.currentCarryOutItem.orgId.length)
+                ) {
+                  vm.$set(u, 'bmDisabled', false);
+                  if(vm.leaderDept) {
+                    if (vm.guideState<3) {
+                      // 牵头部门待处理，默认和用户勾选一致
+                      vm.$set(u, 'bmChecked', u.applicantChoose);
+                    } else if (vm.guideState==6){
+                      // 牵头部门待结束部门辅导，默认和发起时的勾选一致
+                      vm.$set(u, 'bmChecked', u.leaderDeptChoose);
+                    }
+                  } else {
+                    // 审批部门人员意见默认和牵头部门一致
+                    vm.$set(u, 'bmChecked', u.leaderDeptChoose);
+                  }
+                } else {
+                  vm.$set(u, 'bmDisabled', true);
+                }
+              }
             } else {
-              // 切换过项目类型
+              // 切换过项目类型增加设置参数
               _coreItems.forEach(function(u) { setParam(u); });
               _parallelItems.forEach(function(u) { setParam(u); });
               function setParam(u) {
-                u.intelliGuideChoose = false;
-                u.applicantChoose = false;
-                u.leaderDeptChoose = false;
-                u.approveDeptChoose = false;
-                u.leanderDeptOpinion = '';
-                u.approveDeptOpinion = '';
+                vm.$set(u, 'intelliGuideChoose', false);
+                vm.$set(u, 'applicantChoose', false);
+                vm.$set(u, 'leaderDeptChoose', false);
+                vm.$set(u, 'approveDeptChoose', false);
+                vm.$set(u, 'leanderDeptOpinion', '');
+                vm.$set(u, 'approveDeptOpinion', '');
+                vm.$set(u, 'bmDisabled', false);
+                vm.$set(u, 'bmChecked', false);
+                vm.$set(u, 'opinion', '');
               }
             }
           }
@@ -3318,7 +3399,21 @@ var vm = new Vue({
             }
             _that.setItemShowLen(); // 事项展示长度
           });
-
+          if (_that.isGuidePage) {
+            _that.$nextTick(function(){
+              $(document).scrollTop($('#applyStage').offset().top);
+            });
+          }
+          // if (!_that.guideDateLoaded){
+          //   // 部门辅导页面定位到事项一单清
+          //   _that.guideDateLoaded = true;
+          //   var intervel = window.setInterval(function(){
+          //     $(document).scrollTop($('#applyStage').offset().top);
+          //   }, 100);
+          //   setTimeout(function(){
+          //     window.clearInterval(intervel);
+          //   }, 3600)
+          // }
         } else {
           _that.$message({
             message: '获取事项列表失败',
@@ -3326,6 +3421,7 @@ var vm = new Vue({
           });
         }
       }, function (msg) {
+        vm.loading = false;
         alertMsg('', '服务请求失败', '关闭', 'error', true);
       });
     },
