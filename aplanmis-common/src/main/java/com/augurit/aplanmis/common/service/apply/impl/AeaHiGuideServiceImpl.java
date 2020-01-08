@@ -214,7 +214,7 @@ public class AeaHiGuideServiceImpl implements AeaHiGuideService {
             return false;
         }
         for (AeaHiGuideDetail detail : deptDetails) {
-            if (!GuideApplyState.DEPT_FINISHED.getValue().equals(detail.getDetailState())) {
+            if (!"2".equals(detail.getDetailState())) {
                 return false;
             }
         }
