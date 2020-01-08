@@ -1898,4 +1898,16 @@
     </changeSet>
 
 
+    <changeSet id="20200108134914" author="xiong" failOnError="false">
+        <preConditions>
+            <not>
+                <columnExists tableName="aea_hi_sms_info" columnName="RECEIVE_TYPE"/>
+            </not>
+        </preConditions>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_sms_info`
+            ADD COLUMN `RECEIVE_TYPE` varchar(1) NULL DEFAULT 1 COMMENT '领取方式， 1：一次领取，0：多次领取' AFTER `RECEIVE_MODE`;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

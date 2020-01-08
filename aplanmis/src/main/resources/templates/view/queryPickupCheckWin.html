@@ -194,27 +194,25 @@
       </template>
     </el-table-column>
     <el-table-column
-            min-width="130"
-            prop="acceptTime"
-            label="受理时间"
+            min-width="100"
+            prop="receiveType"
+            label="领取方式"
             show-overflow-tooltip
             :formatter = "formatTableCell">
     </el-table-column>
     <el-table-column
-            sortable="custom"
-            prop="concludedTime"
-            min-width="130"
-            label="办结时间"
+            prop="isSmsSend"
+            min-width="100"
+            label="领取状态"
             show-overflow-tooltip
             :formatter = "formatTableCell">
     </el-table-column>
     <el-table-column
-            width="150"
+            width="200"
             label="操作">
       <template slot-scope="scope">
-<!--        <span class="op-btn btn_border_right"  @click="viewDetail(scope.row)" >查看</span>-->
+        <span class="op-btn btn_border_right">到达通知</span>
         <span class="op-btn"  @click="pickupCheck(scope.row)">取件登记</span>
-
       </template>
     </el-table-column>
   </el-table>

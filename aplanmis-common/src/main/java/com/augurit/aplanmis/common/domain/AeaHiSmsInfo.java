@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.common.domain;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -23,6 +24,10 @@ public class AeaHiSmsInfo implements Serializable {
     private String id; // ()
     private String applyinstId; // (申请实例ID)
     private String receiveMode; // (领取模式：1 窗口取证  0 邮政快递)
+
+    @ApiModelProperty(value = "领取方式", notes = "1：一次领取，0：多次领取")
+    private String receiveType;
+
     private String orderId; // (订单号)
     private String expressNum; // (运单号)
     private String addresseeName; // (收件人名字)

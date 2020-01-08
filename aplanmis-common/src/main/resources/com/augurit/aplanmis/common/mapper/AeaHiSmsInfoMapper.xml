@@ -8,6 +8,7 @@
         ID  id,
         APPLYINST_ID  applyinstId,
         RECEIVE_MODE  receiveMode,
+        RECEIVE_TYPE  receiveType,
         ORDER_ID  orderId,
         EXPRESS_NUM  expressNum,
         ADDRESSEE_NAME  addresseeName,
@@ -80,6 +81,9 @@
             <if test="receiveMode != null">
                 AND RECEIVE_MODE = #{receiveMode}
             </if>
+            <if test="receiveType != null">
+                AND RECEIVE_TYPE = #{receiveType}
+            </if>
             <if test="orderId != null">
                 AND ORDER_ID = #{orderId}
             </if>
@@ -146,12 +150,12 @@
 
     <!--5 新增实体对象 -->
     <insert id="insertAeaHiSmsInfo" parameterType="AeaHiSmsInfo">
-        insert into AEA_HI_SMS_INFO (ID, APPLYINST_ID, RECEIVE_MODE, ORDER_ID, EXPRESS_NUM, ADDRESSEE_NAME,
+        insert into AEA_HI_SMS_INFO (ID, APPLYINST_ID, RECEIVE_MODE, RECEIVE_TYPE, ORDER_ID, EXPRESS_NUM, ADDRESSEE_NAME,
                                      ADDRESSEE_PHONE, ADDRESSEE_IDCARD, ADDRESSEE_ADDR, ADDRESSEE_PROVINCE,
                                      ADDRESSEE_CITY, ADDRESSEE_COUNTY, SENDER_NAME, SENDER_PHONE, SENDER_ADDR,
                                      SENDER_PROVINCE, SENDER_CITY, SENDER_COUNTY, SMS_TYPE, CREATER, CREATE_TIME,
                                      ISSUE_TIME,ROOT_ORG_ID)
-        values (#{id}, #{applyinstId}, #{receiveMode}, #{orderId}, #{expressNum}, #{addresseeName}, #{addresseePhone},
+        values (#{id}, #{applyinstId}, #{receiveMode}, #{receiveType},  #{orderId}, #{expressNum}, #{addresseeName}, #{addresseePhone},
                 #{addresseeIdcard}, #{addresseeAddr}, #{addresseeProvince}, #{addresseeCity}, #{addresseeCounty},
                 #{senderName}, #{senderPhone}, #{senderAddr}, #{senderProvince}, #{senderCity}, #{senderCounty},
                 #{smsType}, #{creater}, #{createTime}, #{issueTime},#{rootOrgId})
@@ -168,6 +172,9 @@
             </if>
             <if test="receiveMode != null">
                 RECEIVE_MODE = #{receiveMode},
+            </if>
+            <if test="receiveType != null">
+                RECEIVE_TYPE = #{receiveType},
             </if>
             <if test="orderId != null">
                 ORDER_ID = #{orderId},
@@ -244,6 +251,7 @@
         <id property="id" column="ID"/>
         <result property="applyinstId" column="APPLYINST_ID"/>
         <result property="receiveMode" column="RECEIVE_MODE"/>
+        <result property="receiveType" column="RECEIVE_TYPE"/>
         <result property="orderId" column="ORDER_ID"/>
         <result property="expressNum" column="EXPRESS_NUM"/>
         <result property="addresseeName" column="ADDRESSEE_NAME"/>

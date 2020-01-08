@@ -7,6 +7,7 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaProjApplyAgent;
 import com.augurit.aplanmis.common.domain.AeaServiceWindowUser;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
+import com.augurit.aplanmis.common.service.file.impl.FileUtilsServiceImpl;
 import com.augurit.aplanmis.common.service.receive.utils.ReceivePDFTemplate;
 import com.augurit.aplanmis.common.service.window.AeaProjApplyAgentService;
 import com.augurit.aplanmis.common.vo.agency.AgencyDetailVo;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
 
 /**
@@ -120,14 +122,18 @@ private static Logger logger = LoggerFactory.getLogger(AeaProjApplyAgentControll
                     AeaProjApplyAgent agreementDetail = aeaProjApplyAgentService.getAgencyAgreementDetail(applyAgentId);
                     String str = ReceivePDFTemplate.createAgencyAgreement(agreementDetail);
                     //读取指定路径下的pdf文件
-                    ReceivePDFTemplate.readPdf(str, resp);
                     File file = new File(str);
-                    if (file.isFile()) {
-                        file.delete();
+                    if (file.exists()) {
+                        FileInputStream input = new FileInputStream(file);
+                        FileUtilsServiceImpl.writeContent(resp,input,file.getName());
+                        if (file.isFile()) {
+                            file.delete();
+                        }
                     }
                 }
             }
         }catch (Exception e){
+            e.printStackTrace();
             logger.error(e.getMessage(), e);
         }
     }

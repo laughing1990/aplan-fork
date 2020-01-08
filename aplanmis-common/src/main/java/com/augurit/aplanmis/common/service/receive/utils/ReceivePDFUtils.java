@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.common.service.receive.utils;
 
 
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.service.receive.constant.ReceiveConstant;
 import com.augurit.aplanmis.common.service.receive.vo.MatCorrectVo;
 import com.augurit.aplanmis.common.service.receive.vo.ReceiveBaseVo;
@@ -154,6 +155,9 @@ public class ReceivePDFUtils {
      * @return
      */
     public static Chunk getUnderLineChunk(String content, Font font){
+        if(StringUtils.isBlank(content)){
+            content = "        ";
+        }
         Chunk chunk = new Chunk(content,font);
         chunk.setUnderline(0.5f,-3f);
         return chunk;
