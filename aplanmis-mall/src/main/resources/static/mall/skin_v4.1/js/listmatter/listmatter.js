@@ -8,45 +8,22 @@ var listmatter = (function(window){
             show3:true,
             contentLoading:false,
             materialLoading:false,
-            tableData: [{
-                date: '2016-05-03',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                date: '2016-05-02',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                date: '2016-05-04',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                date: '2016-05-01',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                date: '2016-05-08',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                date: '2016-05-06',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                date: '2016-05-07',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }],
             radio:'1',
             stageId:null,// 当前阶段id
             listmatterData:{},
             coreItemList:[],
             coreItemCheckData:[], // 筛选出isDoneItem为“1”的数据
+            noRequireCoreItemCheckData:[], // 非必选的并行推进事项（用户后来可以自由勾选的）
             parallelItemList:[],
             parallelItemCheckData:[],// 筛选出isDoneItem为“1”的数据
+            noRequireParallelItemCheckData:[], // 非必选的并联事项（用户后来可以自由勾选的）
             itemStateList:[], // 事项情形列表
             requireMat:[],// 必选材料
             noRequireMat:[], //可选材料
+
+            AIleadDialogFlag:false, // 智能引导弹出框
+            stateList: [], // 情形列表
+            stateSelVal: {},
         },
         created:function(){
             this.GetRequest();
@@ -60,10 +37,10 @@ var listmatter = (function(window){
                     url: ctx + 'rest/guide/itemAndState/list/'+ stageId,
                     type: 'get'
                 }, function (res) {
-
                     if (res.success) {
                         vm.contentLoading = false;
                         var content = res.content;
+                        vm.stateList = content.stateList;
                         vm.listmatterData = content;
                         vm.parallelItemList = content.parallelItemList; //  并联事项
                         //筛选出isDoneItem为“1”的数据，该数据勾选状态需要设置为勾选且禁用
@@ -108,18 +85,43 @@ var listmatter = (function(window){
                 this.materialLoading = true;
                 var coreItemVerIds = [] , coreParentItemVerIds = [] ,paraParentllelItemVerIds = [] , parallelItemVerIds = [] ,stageStateIds = [] ,itemStateIds = [] ;
 
+                // 默认勾选的事项，用户不能操作勾选
                 if(vm.parallelItemCheckData.length > 0){
                     vm.parallelItemCheckData.forEach(function (item) {
+                        if(item.currentCarryOutItem.itemVerId){
+                            parallelItemVerIds.push(item.currentCarryOutItem.itemVerId);
+                        }
                         parallelItemVerIds.push(item.currentCarryOutItem.itemVerId);
                         paraParentllelItemVerIds.push(item.itemVerId);
                     })
                 }
                 if(vm.coreItemCheckData.length > 0){
                     vm.coreItemCheckData.forEach(function (item) {
-                        coreItemVerIds.push(item.currentCarryOutItem.itemVerId);
+                        if(item.currentCarryOutItem.itemVerId){
+                            coreItemVerIds.push(item.currentCarryOutItem.itemVerId);
+                        }
                         coreParentItemVerIds.push(item.itemVerId);
                     })
                 }
+
+                // 非必选，用户后来自由勾选
+                if(vm.noRequireParallelItemCheckData.length > 0){
+                    vm.noRequireParallelItemCheckData.forEach(function (item) {
+                        if(item.currentCarryOutItem.itemVerId){
+                            parallelItemVerIds.push(item.currentCarryOutItem.itemVerId);
+                        }
+                        paraParentllelItemVerIds.push(item.itemVerId);
+                    })
+                }
+                if(vm.noRequireCoreItemCheckData.length > 0){
+                    vm.noRequireCoreItemCheckData.forEach(function (item) {
+                        if(item.currentCarryOutItem.itemVerId){
+                            coreItemVerIds.push(item.currentCarryOutItem.itemVerId);
+                        }
+                        coreParentItemVerIds.push(item.itemVerId);
+                    })
+                }
+
                 var params = {
                     "paraParentllelItemVerIds":paraParentllelItemVerIds, // 并联标准事项版本ID数组
                     "parallelItemVerIds":parallelItemVerIds, // 并联事项版本ID数组(对应下面是标准事项下实施事项的事项版本id)
@@ -171,6 +173,27 @@ var listmatter = (function(window){
                     vm.$message.error('根据事项版本号获取根情形列表接口失败，请稍后重试！');
                 });
             },
+            //二、单独勾选表格中某条数据所对应的勾选框
+            selectParallelItem:function(selection,row){
+                var vm = this;
+                vm.noRequireParallelItemCheckData = [];
+                selection.forEach(function (item) {
+                    if(item){
+                        vm.noRequireParallelItemCheckData.push(item);
+                    }
+                })
+                vm.getMateriallist();
+            },
+            selectCoreItem:function(selection,row){
+                var vm = this;
+                vm.noRequireCoreItemCheckData = [];
+                selection.forEach(function (item) {
+                    if(item){
+                        vm.noRequireCoreItemCheckData.push(item);
+                    }
+                })
+                vm.getMateriallist();
+            },
             // 控制事项一单清是否可以勾选
             selectable:function(row,index) {
                 var vm = this;
@@ -185,9 +208,8 @@ var listmatter = (function(window){
                 window.location.search='';
             },
             // 跳转智能引导页
-            toLeadPagehandleFn:function(){
-                window.location.hash="/toLeadPage";
-                window.location.search='';
+            openAILeadDia:function(){
+                this.AIleadDialogFlag = true;
             },
             // 获取url参数
             GetRequest: function () {
