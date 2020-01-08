@@ -443,24 +443,26 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
     }
 
     @Override
-    public List<AeaGuideItemVo>  listItemByStageIdAndStateList(StageStateParamVo stageStateParamVo,String isOptionItem) throws Exception {
+    public List<AeaGuideItemVo>  listItemByStageIdAndStateList(StageStateParamVo stageStateParamVo,String isOptionItem,String rootOrgId) throws Exception {
+        if(StringUtils.isBlank(rootOrgId)) rootOrgId=SecurityContext.getCurrentOrgId();
         String stageId=stageStateParamVo.getStageId();
         String regionalism=stageStateParamVo.getRegionalism();
         String projectAddress=stageStateParamVo.getProjectAddress();
         List<String> stateIds=stageStateParamVo.getStateIds();
-        List<AeaItemBasic> itemList =aeaItemBasicService.getAeaItemBasicListByStageId(stageId,isOptionItem,null,SecurityContext.getCurrentOrgId());
-        Set<String> stateItemVerIds = aeaItemBasicService.getAeaItemBasicListByStageIdAndStateId(stageId, null, isOptionItem,SecurityContext.getCurrentOrgId())
+        List<AeaItemBasic> itemList =aeaItemBasicService.getAeaItemBasicListByStageId(stageId,isOptionItem,null,rootOrgId);
+        Set<String> stateItemVerIds = aeaItemBasicService.getAeaItemBasicListByStageIdAndStateId(stageId, null, isOptionItem,rootOrgId)
                 .stream().map(AeaItemBasic::getItemVerId).collect(Collectors.toSet());
         if(itemList.size()>0) itemList.stream().filter(v->stateItemVerIds.contains(v.getItemVerId())).collect(Collectors.toList());
         if(stateIds==null||stateIds.size()==0){
-            List<AeaItemBasic> coreStateItemList = aeaItemBasicService.getAeaItemBasicListByStageId(stageId,  isOptionItem,null, SecurityContext.getCurrentOrgId());
+            List<AeaItemBasic> coreStateItemList = aeaItemBasicService.getAeaItemBasicListByStageId(stageId,  isOptionItem,null, rootOrgId);
             itemList.addAll(coreStateItemList);
         }else{
-            List<AeaItemBasic> coreStateItemList = aeaItemBasicService.getAeaItemBasicListByStageIdAndStateIds(stageId, stateIds, isOptionItem, SecurityContext.getCurrentOrgId());
+            List<AeaItemBasic> coreStateItemList = aeaItemBasicService.getAeaItemBasicListByStageIdAndStateIds(stageId, stateIds, isOptionItem, rootOrgId);
             itemList.addAll(coreStateItemList);
         }
 
 
+        String finalRootOrgId = rootOrgId;
         return itemList.size()>0?itemList.stream().map(AeaGuideItemVo::format).peek(vo->{
             String flag=vo.getIsCatalog();
             if("1".equals(flag)) {//标准事项
@@ -472,7 +474,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
                     }
                 }
                 vo.setBaseItemVerId(vo.getItemVerId());
-                List<AeaItemBasic> sssxList = aeaItemBasicService.getSssxByItemIdAndRegionalism(vo.getItemId(), regionalism, arrRegionIdList.size() == 0 ? null : CommonTools.ListToArr(arrRegionIdList), SecurityContext.getCurrentOrgId());
+                List<AeaItemBasic> sssxList = aeaItemBasicService.getSssxByItemIdAndRegionalism(vo.getItemId(), regionalism, arrRegionIdList.size() == 0 ? null : CommonTools.ListToArr(arrRegionIdList), finalRootOrgId);
                 if(sssxList.size()>0){
                     vo.setItemVerId(sssxList.get(0).getItemVerId());
                 }
