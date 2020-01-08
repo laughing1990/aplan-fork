@@ -66,10 +66,7 @@ public class RestAeaHiGuideService {
 
 
     public void initAeaHiGuideDetail(AeaGuideApplyVo aeaGuideApplyVo,String guideId,String detailType){
-
-        List<AeaGuideItemVo> itemList=aeaGuideApplyVo.getItemList();//申请人选择
-        List<AeaGuideItemVo> itItemList=aeaGuideApplyVo.getItItemList();//智能引导选择
-
+        List<AeaGuideItemVo> itemList= "s".equals(detailType)?aeaGuideApplyVo.getItItemList():aeaGuideApplyVo.getItemList();
         if(itemList.size()==0) return;
         for (AeaGuideItemVo aeaGuideItemVo:itemList){
             AeaHiGuideDetail aeaHiGuideDetail=new AeaHiGuideDetail();
@@ -78,10 +75,7 @@ public class RestAeaHiGuideService {
             aeaHiGuideDetail.setDetailType(detailType);//s表示智能引导，o表示业主，l表示牵头部门，i表示事项部门，r表示最终结果
             String guideChangeAction="a";
             if("o".equals(detailType) && "1".equals(aeaGuideApplyVo.getIsItGuide())){
-                //TODO
-//                if("1".equals(aeaGuideItemVo.getIsITSel()) && "0".equals(aeaGuideItemVo.getApplySelOpinion())){
-//                    guideChangeAction="d";
-//                }
+
             }
             aeaHiGuideDetail.setGuideChangeAction(guideChangeAction);//c表示change，a表示add，d表示delete, s表示不变
             aeaHiGuideDetail.setCreater(SecurityContext.getCurrentUserName());
