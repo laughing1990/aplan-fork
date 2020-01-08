@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.mall.userCenter.service;
 
+import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
 import com.augurit.agcloud.bsc.domain.BscAttForm;
 import com.augurit.agcloud.bsc.mapper.BscAttMapper;
 import com.augurit.agcloud.framework.constant.Status;
@@ -7,7 +8,6 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.AgencyState;
 import com.augurit.aplanmis.common.domain.*;
-import com.augurit.aplanmis.common.mapper.AeaParentProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitProjLinkmanMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitProjMapper;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
@@ -39,7 +39,7 @@ public class RestAeaProjAgentService {
     @Autowired
     private AeaProjWindowService aeaProjWindowService;
     @Autowired
-    private BscAttMapper bscAttMapper;
+    private RestFileService restFileService;
     @Autowired
     private AeaUnitProjLinkmanMapper aeaUnitProjLinkmanMapper;
     @Autowired
@@ -136,7 +136,6 @@ public class RestAeaProjAgentService {
 
     public AeaProjApplyAgentDetailVo getProjInfoAndProjApplyAgent(String projInfoId, String applyAgentId, HttpServletRequest request) throws Exception {
         LoginInfoVo loginVo = SessionUtil.getLoginInfo(request);
-       // UserInfoVo userInfoVo = restApplyService.getApplyObject(request, projInfoId);
         AeaProjApplyAgentDetailVo vo=new AeaProjApplyAgentDetailVo();
         AeaUnitProjLinkmanVo aeaUnitProjLinkmanVo=new AeaUnitProjLinkmanVo();
         if(StringUtils.isNotBlank(loginVo.getUnitId())){
@@ -176,13 +175,13 @@ public class RestAeaProjAgentService {
             AgentAgreementVo agentAgreementVo=new AgentAgreementVo();
             agentAgreementVo.setAgentUserName(applyAgent.getAgentUserName());
             agentAgreementVo.setAgentUserMobile(applyAgent.getAgentUserMobile());
-            List<BscAttForm> atts = bscAttMapper.listAttLinkAndDetailByTablePKRecordId("AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID", applyAgentId, SecurityContext.getCurrentOrgId());
+            //List<BscAttForm> atts = bscAttMapper.listAttLinkAndDetailByTablePKRecordId("AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID", applyAgentId, SecurityContext.getCurrentOrgId());
+            List<BscAttFileAndDir> atts = restFileService.getAttFilesByPK("AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID", applyAgentId);
             agentAgreementVo.setAtts(atts);
             list.add(agentAgreementVo);
             vo.setAgentAgreement(list);
         }
         vo.setProjAgentParamVo(AeaProjApplyAgentDetailVo.formatAeaProjApplyAgentDetailVo(projInfo));
-       // vo.setUserInfoVo(userInfoVo);
         vo.setAeaUnitProjLinkmanVo(aeaUnitProjLinkmanVo);
         return vo;
     }
