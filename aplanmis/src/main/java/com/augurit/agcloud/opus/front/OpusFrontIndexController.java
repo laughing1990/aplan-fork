@@ -48,7 +48,8 @@ public class OpusFrontIndexController {
         if(opusFontIndexConfig.getTitle()!=null) {
             modelMap.put("title", opusFontIndexConfig.getTitle());
         }
-        return new ModelAndView("agcloud/framework/ui-schemes/default/index",modelMap);
+        return new ModelAndView("agcloud/framework/ui-schemes/third-level-protal/index",modelMap);
+//        return new ModelAndView("agcloud/framework/ui-schemes/default/index",modelMap);
     }
 
     /**
