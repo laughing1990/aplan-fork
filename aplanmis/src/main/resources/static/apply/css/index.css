@@ -2510,6 +2510,38 @@ textarea {
 .is-audit .status-img-item{
   cursor: default;
 }
+.is-audit  .el-table .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner{
+  background-color: #409EFF;
+  border-color: #409EFF;
+}
+.is-audit  .el-table .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner::after{
+  border-color: #fff;
+}
+.guide-finish-box{
+  padding: 20px 0;
+}
+.g-f-title{
+  position: relative;
+  line-height: 20px;
+  padding-left: 14px;
+}
+.g-f-title:before{
+  content: '';
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  width: 6px;
+  height: 16px;
+  border-radius: 3px;
+  background: #169AFF;
+}
+.g-f-opinon{
+  margin-top: 14px;
+  background: #F0F2F5;
+  line-height: 20px;
+  padding: 10px 20px;
+  mine-height: 80px;
+}
 /*部门辅导end*/
 .toggle-form-icon{
   width: 36px;

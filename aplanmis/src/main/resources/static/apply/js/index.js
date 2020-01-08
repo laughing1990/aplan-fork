@@ -694,6 +694,7 @@ var vm = new Vue({
       },
       isGuidePage: false,
       guideChangedType: false,
+      bmCanGuide: false,
       // 部门辅导 end--------------------------
       showOneFormList: false,
     }
@@ -759,10 +760,18 @@ var vm = new Vue({
   },
   methods: {
     // 部门辅导 start-----------------------
-    // 部门辅导牵头部门直接通过
-    leaderDeptPass: function(){
+    // 审批部门确认操作
+    bmGuideEnsure: function(){
       var vm = this;
-      this.$prompt('请输入意见', '直接通过', {
+      this.guideSaveItems('loading', function(){
+        vm.$message.success('部门辅导确认成功');
+        __STATIC.delayRefreshWindow();
+      });
+    },
+    // 部门辅导牵头部门直接通过
+    leaderDeptPass: function(f){
+      var vm = this;
+      this.$prompt('请输入意见', f?'结束辅导':'直接通过', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         inputValidator: function (val) {
@@ -806,8 +815,9 @@ var vm = new Vue({
     // 保存事项信息
     guideSaveItems: function(visibleKey, cb){
       var vm = this;
+      var _pass = true;
       var stateArr = ['l', 'l', 'l', 'i', 'o', 'r', 'r'];
-      var stateArr2 = ['1', '1', '1', '1', '1', '1', '2'];
+      var stateArr2 = ['2', '2', '2', '2', '2', '2', '2'];
       var params = {
         detailState: stateArr2[vm.guideState],
         detailType: stateArr[vm.guideState],
@@ -819,16 +829,39 @@ var vm = new Vue({
       };
       var _list = [];
       this.parallelItems.concat(this.coreItems).forEach(function(u) {
-        if (u.bmChecked) {
-          var itemId = ''; // 实施事项id
-          var itemVerId = ''; // 实施事项版本id
-          if (u.currentCarryOutItem) {
-            itemId = u.currentCarryOutItem.itemId || '';
-            itemVerId = u.currentCarryOutItem.itemVerId || '';
+        var itemId = ''; // 实施事项id
+        var itemVerId = ''; // 实施事项版本id
+        if (u.currentCarryOutItem) {
+          itemId = u.currentCarryOutItem.itemId || '';
+          itemVerId = u.currentCarryOutItem.itemVerId || '';
+        }
+        var _orgId = vm.guideDetail.approveOrgId; // 当前登录人部门id
+        if (vm.leaderDept&&u.bmChecked) {
+          // 牵头部门意见数据
+          _list.push({
+            catalogItemVerId: u.itemVerId,
+            guideChangeAction: 'a',
+            guideOpinion: u.opinion,
+            itemId: itemId,
+            itemVerId: itemVerId,
+            orgId: vm.leaderDept?vm.guideDetail.aeaHiGuide.leaderOrgId:u.orgId,
+          });
+        } else if (
+          !vm.leaderDept &&
+          (_orgId == u.orgId) ||
+          (u.currentCarryOutItem&&u.currentCarryOutItem.orgId==_orgId)
+        ) {
+          // 审批部门意见数据
+          var _guideChangeAction = 'a';
+          if (!u.bmChecked && u.leaderDeptChoose) {
+            _guideChangeAction = 'd'; // 牵头部门勾了，审批部门没勾
+            if (!(u.opinion&&u.opinion.length)) {
+              _pass = false;
+            }
           }
           _list.push({
             catalogItemVerId: u.itemVerId,
-            guideChangeAction: u.itemId,
+            guideChangeAction: _guideChangeAction,
             guideOpinion: u.opinion,
             itemId: itemId,
             itemVerId: itemVerId,
@@ -836,6 +869,12 @@ var vm = new Vue({
           });
         }
       });
+      if (!_pass) {
+        return vm.$message.error('取消勾选事项请填写意见');
+      }
+      if (!_list.length) {
+        return vm.$message.info('未过滤到要保存的意见数据');
+      }
       params.guideActionVos = _list;
       vm[visibleKey] = true;
       request('', {
@@ -848,11 +887,11 @@ var vm = new Vue({
         if (res.success) {
           typeof cb == 'function' && cb();
         } else {
-          vm.$message.error(res.message || '部门辅导保存事项失败');
+          vm.$message.error(res.message || '部门辅导保存数据失败');
         }
       }, function (){
         vm[visibleKey] = false;
-        vm.$message.error('部门辅导保存事项失败');
+        vm.$message.error('部门辅导保存数据失败');
       })
     },
     // 显示辅导数据
@@ -1033,7 +1072,58 @@ var vm = new Vue({
       }
       params.detailInfo = JSON.stringify(itemList);
       vm.guideSaveItems('solicitOpinionLoading', function(){
-        //
+        var stateArr = ['l', 'l', 'l', 'i', 'o', 'r', 'r'];
+        var stateArr2 = ['2', '2', '2', '2', '2', '2', '2'];
+        var params = {
+          detailState: stateArr2[vm.guideState],
+          detailType: stateArr[vm.guideState],
+          guideActionVos: [],
+          guideId: vm.guideId,
+          stageId: vm.stageId,
+          themeId: vm.themeId,
+          themeVerId: vm.themeVerId,
+        };
+        var _list = [];
+        var list1 = vm.$refs.soParallelItems.selection || [];
+        var list2 = vm.$refs.soCoreItems.selection || [];
+        list1.concat(list2).forEach(function(u) {
+          if (u.bmChecked) {
+            var itemId = ''; // 实施事项id
+            var itemVerId = ''; // 实施事项版本id
+            if (u.currentCarryOutItem) {
+              itemId = u.currentCarryOutItem.itemId || '';
+              itemVerId = u.currentCarryOutItem.itemVerId || '';
+            }
+            _list.push({
+              catalogItemVerId: u.itemVerId,
+              guideChangeAction: 'a',
+              guideOpinion: u.opinion,
+              itemId: itemId,
+              itemVerId: itemVerId,
+              orgId: vm.leaderDept?vm.guideDetail.aeaHiGuide.leaderOrgId:u.orgId,
+            });
+          }
+        });
+        params.guideActionVos = _list;
+        vm.solicitOpinionLoading = true;
+        request('', {
+          url: ctx + 'dept/guide/solicit',
+          type: 'post',
+          ContentType: 'application/json',
+          data: JSON.stringify(params),
+        }, function (res) {
+          vm.solicitOpinionLoading = false;
+          if (res.success) {
+            // 发起部门辅导
+            vm.$message.success('发起部门辅导成功');
+            __STATIC.delayRefreshWindow();
+          } else {
+            vm.$message.error(res.message || '发起部门辅导失败');
+          }
+        }, function (){
+          vm.solicitOpinionLoading = false;
+          vm.$message.error('发起部门辅导失败');
+        })
       });
     },
     // 选择orgId
@@ -2801,12 +2891,14 @@ var vm = new Vue({
         }
         return false
       }
+      _that.loading = true;
       request('', {
         url: ctx + 'rest/mats/parallel/states/mats',
         type: 'get',
         data: {"stageId": stageId, "parentId": _parentId, "projInfoId": _that.projInfoId}
       }, function (data) {
         if (data.success) {
+          _that.loading = false;
           if (flag) {
             _that.matIds = [];
             _that.parallelItems = [];
@@ -3178,6 +3270,7 @@ var vm = new Vue({
           });
         }
       }, function (msg) {
+        _that.loading = false;
         _that.$message({
           message: msg.message?msg.message:'获取阶段下情形事项材料失败',
           type: 'error'
@@ -3311,8 +3404,9 @@ var vm = new Vue({
                   (u.orgId&&u.orgId.length) ||
                   (u.currentCarryOutItem&&u.currentCarryOutItem.orgId&&u.currentCarryOutItem.orgId.length)
                 ) {
-                  vm.$set(u, 'bmDisabled', false);
+                  // 要有orgId才能勾选
                   if(vm.leaderDept) {
+                    vm.$set(u, 'bmDisabled', false);
                     if (vm.guideState<3) {
                       // 牵头部门待处理，默认和用户勾选一致
                       vm.$set(u, 'bmChecked', u.applicantChoose);
@@ -3321,8 +3415,29 @@ var vm = new Vue({
                       vm.$set(u, 'bmChecked', u.leaderDeptChoose);
                     }
                   } else {
-                    // 审批部门人员意见默认和牵头部门一致
-                    vm.$set(u, 'bmChecked', u.leaderDeptChoose);
+                    // 审批部门人员
+                    var _orgId = vm.guideDetail.approveOrgId; // 当前登录人部门id
+                    if (
+                      (_orgId == u.orgId) ||
+                      (u.currentCarryOutItem&&u.currentCarryOutItem.orgId==_orgId)
+                    ){
+                      if (u.detailState != 2) {
+                        vm.bmCanGuide = true;
+                        // 当前登录人要处理的数据 意见默认和牵头部门一致
+                        vm.$set(u, 'bmDisabled', false);
+                        vm.$set(u, 'bmChecked', u.leaderDeptChoose);
+                      } else {
+                        // 当前登录人已经填写过数据
+                        vm.$set(u, 'bmDisabled', true);
+                        vm.$set(u, 'bmChecked', u.approveDeptChoose);
+                        vm.$set(u, 'opinion', u.approveDeptOpinion);
+                      }
+                    } else {
+                      // 其它部门意见 登录人不可更改
+                      vm.$set(u, 'bmDisabled', true);
+                      vm.$set(u, 'bmChecked', u.approveDeptChoose);
+                    }
+
                   }
                 } else {
                   vm.$set(u, 'bmDisabled', true);
@@ -6808,11 +6923,13 @@ var vm = new Vue({
     // 根据阶段id查询关联的表单
     getOneFormList: function (_stageId) {
       var _that = this;
+      _that.loading = true;
       request('', {
         url: ctx + 'rest/stage/oneforms',
         type: 'get',
         data: {stageId: _stageId}
       }, function (result) {
+        _that.loading = false;
         if (result.success) {
           _that.oneFormData = result.content;
           if (_that.oneFormData.length > 0 && _that.firstGetneForm == 0) {
@@ -6835,6 +6952,7 @@ var vm = new Vue({
           });
         }
       }, function (msg) {
+        _that.loading = false;
         alertMsg('', '网络加载失败！', '关闭', 'error', true);
       })
     },

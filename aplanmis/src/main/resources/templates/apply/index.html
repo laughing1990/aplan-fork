@@ -1348,7 +1348,7 @@
                       </el-table-column>
                       <el-table-column label="审批部门意见" prop="opinion">
                         <template slot-scope="scope">
-                          <el-input placeholder="填写意见" v-model="scope.row.opinion"
+                          <el-input placeholder="暂无意见" v-model="scope.row.opinion"
                                     :disabled="scope.row.bmDisabled"></el-input>
                         </template>
                       </el-table-column>
@@ -1543,7 +1543,7 @@
                       </el-table-column>
                       <el-table-column label="审批部门意见" prop="opinion">
                         <template slot-scope="scope">
-                          <el-input placeholder="填写意见" v-model="scope.row.opinion"
+                          <el-input placeholder="暂无意见" v-model="scope.row.opinion"
                                     :disabled="scope.row.bmDisabled"></el-input>
                         </template>
                       </el-table-column>
@@ -1555,6 +1555,13 @@
                   {{(coreItemsShowCount < coreItems.length)?'显示更多':'隐藏更多'}}
                   <i :class="(coreItemsShowCount < coreItems.length)?'el-icon-arrow-down':'el-icon-arrow-up'"></i>
                 </p>
+              </div>
+              <!--部门辅导牵头部门意见展示-->
+              <div v-if="isGuidePage&&guideState==5" class="guide-finish-box">
+                <div class="g-f-title">牵头部门意见</div>
+                <div class="g-f-opinon">
+                  {{guideDetail.aeaHiGuide.leaderOrgOpinion||'无意见'}}
+                </div>
               </div>
             </div>
             <!--事项列表 end-->
@@ -1899,9 +1906,19 @@
         </el-button>
       </div>
       <div class="right-bottom-btn" v-if="isGuidePage">
-        <template v-if="leaderDept&&(guideState==2||guideState==1)">
-          <el-button circle type="primary" @click="openSoDialog">发起部<br/>门确认</el-button>
-          <el-button circle @click="leaderDeptPass">直接<br/>通过</el-button>
+        <template v-if="leaderDept">
+          <!--牵头部门按钮-->
+          <templte v-if="guideState==2||guideState==1">
+            <el-button circle type="primary" @click="openSoDialog">发起部<br/>门确认</el-button>
+            <el-button circle @click="leaderDeptPass">直接<br/>通过</el-button>
+          </templte>
+          <template v-else-if="guideState==6">
+            <el-button circle @click="leaderDeptPass(true)">结束<br/>辅导</el-button>
+          </template>
+        </template>
+        <template v-if="bmCanGuide">
+          <!--审批部门按钮-->
+          <el-button circle @click="bmGuideEnsure">部门<br/>确认</el-button>
         </template>
       </div>
       <!--项目树窗口 start-->
