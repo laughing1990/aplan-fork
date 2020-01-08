@@ -13,8 +13,8 @@ import java.util.List;
 @Data
 @ApiModel("并联审批事项确认返回结果VO")
 public class ApplyIteminstConfirmVo {
-//    @ApiModelProperty(value = "是否变更主题  1是 0否")
-//    private String isThemeChange;
+    @ApiModelProperty(value = "是否变更主题  1是 0否")
+    private String isThemeChange;
 
     @ApiModelProperty(value = "牵头部门选择主题ID")
     private String leaderThemeId;
@@ -29,9 +29,9 @@ public class ApplyIteminstConfirmVo {
     @ApiModelProperty(value = "申请人选择主题名称")
     private String applyThemeName;
 
-    @ApiModelProperty(value = "阶段ID")
+    @ApiModelProperty(value = "牵头部门阶段ID")
     private String stageId;
-    @ApiModelProperty(value = "阶段名称")
+    @ApiModelProperty(value = "通用阶段名称")
     private String stageName;
 
     @ApiModelProperty(value = "并行审批事项列表")
@@ -52,8 +52,18 @@ public class ApplyIteminstConfirmVo {
     @ApiModelProperty(value = "是否智能引导 1 是 0否")
     private String isItSel;
 
-    @ApiModelProperty(value = "阶段ID集合")
+    @ApiModelProperty(value = "阶段情形ID集合")
     private List<String> stateIds;
+
+    @ApiModelProperty(value = "申报主体 0表示个人，1表示企业", required = true, allowableValues = "0, 1")
+    private String applySubject;
+    @ApiModelProperty(value = "申办单位ID", required = false)
+    private String unitInfoId;
+    @ApiModelProperty(value = "联系人ID", required = true)
+    private String linkmanInfoId;
+
+    @ApiModelProperty(value = "申报实例ID")
+    private String applyinstId;
 
 
     public static ApplyIteminstConfirmVo formatGuide(GuideDetailVo detail) {
@@ -68,6 +78,7 @@ public class ApplyIteminstConfirmVo {
         vo.setStageId(StringUtils.isNotBlank(detail.getNewStageId())?detail.getNewStageId():detail.getAeaHiGuide().getStageId());
         vo.setStageName(detail.getAeaHiGuide().getStageName());
         vo.setDeptComments(detail.getAeaHiGuide().getLeaderOrgOpinion());
+        vo.setIsThemeChange(detail.isThemeChanged()?"1":"0");
         return vo;
     }
 }

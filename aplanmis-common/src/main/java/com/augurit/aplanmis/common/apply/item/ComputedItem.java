@@ -1,6 +1,8 @@
 package com.augurit.aplanmis.common.apply.item;
 
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
+import com.augurit.aplanmis.common.domain.AeaItemInout;
+import com.augurit.aplanmis.common.domain.AeaItemState;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -20,6 +22,9 @@ public class ComputedItem {
 
     @ApiModelProperty(name = "itemVerId", value = "事项版本id", dataType = "string")
     protected String itemVerId;
+
+    @ApiModelProperty(name = "baseItemVerId", value = "标准事项版本id", dataType = "string")
+    protected String baseItemVerId;
 
     @ApiModelProperty(name = "itemBasicId", value = "事项基本信息id", dataType = "string")
     protected String itemBasicId;
@@ -117,8 +122,14 @@ public class ComputedItem {
         @ApiModelProperty(value = "行政区划名称", dataType = "string")
         private String regionName;
 
-        @ApiModelProperty(value = "前置事项检查是否通过", dataType = "string", notes = "false: 不通过，此时并行事项不可选")
+        @ApiModelProperty(value = "前置事项检查是否通过",  notes = "false: 不通过，此时并行事项不可选")
         private boolean preItemCheckPassed = true;
+
+        @ApiModelProperty(value = "结果物")
+        private List<AeaItemInout> resultMats;
+
+        @ApiModelProperty(value = "情形")
+        private  List<AeaItemState> itemStateList;
 
         static CarryOutItem buildCarryOutItem(AeaItemBasic origin) {
             CarryOutItem carryOutItem = new CarryOutItem();
