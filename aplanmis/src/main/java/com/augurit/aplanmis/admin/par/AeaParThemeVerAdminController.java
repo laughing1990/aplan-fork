@@ -53,7 +53,15 @@ public class AeaParThemeVerAdminController {
         }
         aeaParThemeVer.setRootOrgId(SecurityContext.getCurrentOrgId());
         logger.debug("分页查询，过滤条件为{}，查询关键字为{}", aeaParThemeVer);
-        return aeaParThemeVerAdminService.listAeaParThemeVerNoRelThemeInfo(aeaParThemeVer);
+        return aeaParThemeVerAdminService.listAeaParThemeVer(aeaParThemeVer);
+    }
+
+    @RequestMapping("/listThemeVerNoRelThemeAndDiagramInfo.do")
+    public List<AeaParThemeVer> listThemeVerNoRelThemeAndDiagramInfo(AeaParThemeVer aeaParThemeVer) {
+
+        aeaParThemeVer.setRootOrgId(SecurityContext.getCurrentOrgId());
+        logger.debug("分页查询，过滤条件为{}，查询关键字为{}", aeaParThemeVer);
+        return aeaParThemeVerAdminService.listThemeVerNoRelThemeAndDiagramInfo(aeaParThemeVer);
     }
 
     /**
@@ -82,7 +90,7 @@ public class AeaParThemeVerAdminController {
         ver.setRootOrgId(SecurityContext.getCurrentOrgId());
         ver.setIsPublish(PublishStatus.UNPUBLISHED.getValue());
         ver.setIsDeleted(DeletedStatus.NOT_DELETED.getValue());
-        List<AeaParThemeVer> vers = aeaParThemeVerAdminService.listAeaParThemeVer(ver);
+        List<AeaParThemeVer> vers = aeaParThemeVerAdminService.listThemeVerNoRelThemeAndDiagramInfo(ver);
         if(vers!=null&&vers.size()>0){
             return new ResultForm(false,"存在最新未发布版本");
         }else{

@@ -5,15 +5,13 @@ var vm = new Vue({
     // 全局loading
     ctx: ctx,
     mloading: false,
-    noDataTip:"",
     keyword: '',
     pageNumDH: 1,
     pageSizeDH: 10,
     totalDH: 0,
-    draftApplyListData: [],
-    curWidth: (document.documentElement.clientWidth || document.body.clientWidth),//当前屏幕宽度
+    guideApplyListData: [],
     curHeight: (document.documentElement.clientHeight || document.body.clientHeight),//当前屏幕高度
-
+    applyState: '',
   },
   mounted: function () {
     this.getDraftApplyList()
@@ -55,7 +53,6 @@ var vm = new Vue({
     getDraftApplyList: function () {
       var vm = this;
       vm.mloading = true;
-      vm.noDataTip = ""
       request('', {
         url: ctx + 'rest/userCenter/apply/guide/list',
         type: 'get',
@@ -63,14 +60,12 @@ var vm = new Vue({
           keyword: vm.keyword,
           pageNum: vm.pageNumDH,
           pageSize: vm.pageSizeDH,
+          applyState: vm.applyState,
         }
       }, function (res) {
         vm.mloading = false;
         if (res.success) {
-          vm.draftApplyListData = res.content.list;
-          if(vm.draftApplyListData.length<=0){
-            vm.noDataTip = "暂无数据"
-          }
+          vm.guideApplyListData = res.content.list;
           vm.totalDe = res.content.total;
           vm.totalDH = res.content.total;
         } else {
@@ -102,6 +97,31 @@ var vm = new Vue({
       var date = new Date(time);
       if (!date) return;
       return formatDate(date, 'yyyy-MM-dd hh:mm');
+    },
+    formatApplyState: function (value) {
+      var defaultValue = '';
+      if (value) {
+        switch (value) {
+          case '1':
+            defaultValue = '牵头部门待签收';
+            break;
+          case '2':
+            defaultValue = '牵头部门处理中';
+            break;
+          case '3':
+            defaultValue = '所有部门征求处理中';
+            break;
+          case '4':
+            defaultValue = '申请人待确认';
+            break;
+          case '5':
+            defaultValue = '结束';
+          case '-1':
+            defaultValue = '其他';
+            break;
+        }
+      }
+      return defaultValue;
     },
   }
 })

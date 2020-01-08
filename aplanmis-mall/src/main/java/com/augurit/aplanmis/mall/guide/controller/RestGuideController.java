@@ -22,7 +22,10 @@ import com.augurit.aplanmis.mall.guide.vo.RestGuideStateVo;
 import com.augurit.aplanmis.mall.guide.vo.RestGuideVo;
 import com.augurit.aplanmis.mall.guide.vo.RestSingleGuideVo;
 import com.augurit.aplanmis.mall.main.vo.ItemListVo;
+import com.augurit.aplanmis.mall.userCenter.service.RestParallerApplyService;
+import com.augurit.aplanmis.mall.userCenter.vo.AeaGuideItemVo;
 import com.augurit.aplanmis.mall.userCenter.vo.MatListParamVo;
+import com.augurit.aplanmis.mall.userCenter.vo.StageStateParamVo;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -37,8 +40,11 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -63,6 +69,8 @@ public class RestGuideController {
     BscAttServiceImpl bscAttServiceImpl;
     @Autowired
     private FileUtilsService fileUtilsService;
+    @Autowired
+    private RestParallerApplyService restParallerApplyService;
 
     @Value("${dg.sso.access.platform.org.top-org-id:0368948a-1cdf-4bf8-a828-71d796ba89f6}")
     protected String topOrgId;
@@ -282,7 +290,7 @@ public class RestGuideController {
     }
 
     @GetMapping("itemAndState/list/{stageId}")
-    @ApiOperation(value = "办事指南 --> 根据阶段ID获取事项一单清列表数据")
+    @ApiOperation(value = "办事指南 --> 根据阶段ID获取阶段办事指南信息")
     @ApiImplicitParams({@ApiImplicitParam(value = "阶段ID",name = "stageId",required = true,dataType = "string")})
     public ContentResultForm<ItemListVo> listItemAndStateByStageId(@PathVariable("stageId") String stageId) {
         try {
@@ -293,7 +301,7 @@ public class RestGuideController {
             return new ContentResultForm<>(true,vo);
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
-            return new ContentResultForm(false,"","根据阶段id获取事项一单清列表数据异常");
+            return new ContentResultForm(false,"","根据阶段ID获取阶段办事指南信息异常");
         }
     }
 
@@ -325,6 +333,23 @@ public class RestGuideController {
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             return new ContentResultForm(false,"","获取事项对应的办事指南数据异常");
+        }
+    }
+
+
+    @PostMapping("itGuide/item/list")
+    @ApiOperation(value = "办事指南 --> 智能引导获取事项一单清列表数据")
+    public ContentResultForm listItemAndStateByStageId(@Valid @RequestBody StageStateParamVo stageStateParamVo) {
+        try {
+            Map<String,List<AeaGuideItemVo>> map=new HashMap<>(2);
+            List<AeaGuideItemVo> coreItemList = restParallerApplyService.listItemByStageIdAndStateList(stageStateParamVo,"1",topOrgId);//并行
+            List<AeaGuideItemVo> parallelItemList = restParallerApplyService.listItemByStageIdAndStateList(stageStateParamVo,"0",topOrgId);//并联
+            map.put("coreItemList",coreItemList);
+            map.put("parallelItemList",parallelItemList);
+            return new ContentResultForm(true,map);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ContentResultForm(false,"","智能引导获取事项一单清列表数据异常");
         }
     }
 

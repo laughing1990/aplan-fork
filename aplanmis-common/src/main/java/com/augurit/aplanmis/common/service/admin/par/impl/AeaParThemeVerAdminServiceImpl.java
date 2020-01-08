@@ -4079,5 +4079,13 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
 
         return aeaParThemeVerMapper.listMaxThemeVerGroupByThemeId(themeId, rootOrgId);
     }
+
+    @Override
+    public List<AeaParThemeVer> listThemeVerNoRelThemeAndDiagramInfo(AeaParThemeVer aeaParThemeVer){
+
+        List<AeaParThemeVer> list = aeaParThemeVerMapper.listThemeVerNoRelThemeAndDiagramInfo(aeaParThemeVer);
+        logger.debug("成功执行查询list！！");
+        return list;
+    }
 }
 

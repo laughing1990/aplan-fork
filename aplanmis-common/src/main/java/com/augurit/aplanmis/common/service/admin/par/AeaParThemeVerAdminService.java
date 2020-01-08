@@ -170,4 +170,12 @@ public interface AeaParThemeVerAdminService {
      * @return
      */
     List<AeaParThemeVer> listMaxThemeVerGroupByThemeId(String themeId, String rootOrgId);
+
+    /**
+     * 不包含在线运行图字段
+     *
+     * @param aeaParThemeVer
+     * @return
+     */
+    List<AeaParThemeVer> listThemeVerNoRelThemeAndDiagramInfo(AeaParThemeVer aeaParThemeVer);
 }

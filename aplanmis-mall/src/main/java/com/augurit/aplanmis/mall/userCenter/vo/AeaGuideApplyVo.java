@@ -35,6 +35,16 @@ public class AeaGuideApplyVo {
     @ApiModelProperty("是否智能引导 1是 0否")
     private String isItGuide;
 
+    @ApiModelProperty(value = "情形ID集合")
+    private String[] stateIds;
+    @ApiModelProperty(value = "单位项目关联ID")
+    private List<String> unitProjIds;
 
+    @ApiModelProperty(value = "智能引导主题ID")
+    private String itThemeId;
+    @ApiModelProperty(value = "智能引导主题版本ID")
+    private String itThemeVerId;
+    @ApiModelProperty(value = "智能引导阶段ID")
+    private String itStageId;
 
 }

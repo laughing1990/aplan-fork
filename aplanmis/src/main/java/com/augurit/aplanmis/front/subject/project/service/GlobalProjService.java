@@ -504,7 +504,7 @@ public class GlobalProjService {
                 resultForm.setMessage("项目代码不能为空！");
                 return resultForm;
             }
-            localCode = localCode.trim();
+            localCode = handleUninterruptedSpaces(localCode);
             //先查询本地数据库
             AeaProjInfo proj = aeaProjInfoMapper.getNotChildrenAndNotRootAeaProjInfoByLocalCode(localCode);
             if(proj == null){
@@ -577,5 +577,22 @@ public class GlobalProjService {
         return resultForm;
     }
 
+    /**
+     * 处理不间断空格 unicode编码是\u00A0
+     * @param localCode
+     * @return
+     */
+    public String handleUninterruptedSpaces(String localCode){
+        String regex = "^[A-Za-z0-9|-]$";
+        StringBuilder sb = new StringBuilder();
+        for(int i=0,len=localCode.length();i<len;i++){
+            char c = localCode.charAt(i);
+            boolean matches = (c+"").matches(regex);
+            if(matches){
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
 }
 

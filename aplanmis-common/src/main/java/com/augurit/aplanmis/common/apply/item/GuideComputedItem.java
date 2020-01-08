@@ -4,10 +4,15 @@ import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.aplanmis.common.constants.GuideChangeAction;
 import com.augurit.aplanmis.common.constants.GuideDetailType;
 import com.augurit.aplanmis.common.domain.AeaHiGuideDetail;
+import com.augurit.aplanmis.common.domain.AeaItemInout;
+import com.augurit.aplanmis.common.domain.AeaItemBasic;
+import com.augurit.aplanmis.common.domain.AeaItemState;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 /**
  * 换算后的事项
@@ -16,6 +21,12 @@ import lombok.Setter;
 @Setter
 @ApiModel(value = "部门辅导事项")
 public class GuideComputedItem extends ComputedItem {
+
+    @ApiModelProperty(value = "承诺办结时限单位")
+    private String bjType;
+
+    @ApiModelProperty(value = "办理时限，以工作日为单位")
+    private Double dueNum;
 
     @ApiModelProperty(value = "是否智能引导")
     private boolean intelliGuideChoose;
@@ -37,6 +48,18 @@ public class GuideComputedItem extends ComputedItem {
 
     @ApiModelProperty(value = "审批部门意见")
     private String approveDeptOpinion;
+
+    @ApiModelProperty(value = "事项情形列表")
+    List<AeaItemState> itemStateList;
+
+    @ApiModelProperty(name = "resultMats", value = "结果物", dataType = "list")
+    private List<AeaItemInout> resultMats;
+
+    protected void mergeCommonField(AeaItemBasic origin) {
+        super.mergeCommonField(origin);
+        this.bjType = origin.getBjType();
+        this.dueNum = origin.getDueNum();
+    }
 
     void fillInfo(AeaHiGuideDetail aeaHiGuideDetail) {
         if (!"0".equals(aeaHiGuideDetail.getDetailState())) {

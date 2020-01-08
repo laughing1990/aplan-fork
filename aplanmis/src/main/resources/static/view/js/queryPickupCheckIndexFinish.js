@@ -77,16 +77,11 @@ var vm = new Vue({
         //取件登记
         pickupCheck:function (row) {
             var applyinstId = row.applyinstId;
-            // window.open(ctx+'/rest/certificate/registerIndex/'+applyinstId);
-            //弹窗改为框架内tab页
             var urltemp = '';
             var menuName = '';
-            urltemp = ctx + 'rest/certificate/hadSendIndex?applyinstId=' + applyinstId;
+            urltemp = ctx + 'rest/certificate/view?applyinstId=' + applyinstId;
             menuName='查看';
 
-
-            var parentIfreamUrl = window.frames.location.href;
-            urltemp = urltemp +'&parentIfreamUrl='+parentIfreamUrl;
             var _jumpData = {
                 'menuName': menuName,
                 'menuInnerUrl': urltemp,

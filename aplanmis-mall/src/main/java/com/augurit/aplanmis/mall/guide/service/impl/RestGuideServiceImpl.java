@@ -36,9 +36,11 @@ import com.augurit.aplanmis.mall.main.service.RestMainService;
 import com.augurit.aplanmis.mall.main.vo.ItemListVo;
 import com.augurit.aplanmis.mall.main.vo.ParallelApproveItemVo;
 import com.augurit.aplanmis.mall.main.vo.ThemeTypeVo;
+import com.augurit.aplanmis.mall.userCenter.service.RestParallerApplyService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -112,6 +114,11 @@ public class RestGuideServiceImpl implements RestGuideService {
     private OpuOmOrgMapper opuOmOrgMapper;
     @Autowired
     private AeaHiItemInoutService aeaHiItemInoutService;
+    @Autowired
+    RestParallerApplyService restParallerApplyService;
+
+    @Value("${dg.sso.access.platform.org.top-org-id:0368948a-1cdf-4bf8-a828-71d796ba89f6}")
+    protected String topOrgId;
 
     @Override
     public RestGuideVo getGuideByStageId(String stageId,String rootOrgId) throws Exception {
@@ -496,10 +503,18 @@ public class RestGuideServiceImpl implements RestGuideService {
         vo.setThemeName(aeaParTheme.getThemeName());
         //情形
         List<AeaParState> stateList = null;
-        //并联
-        List<ParallelApproveItemVo> paraItemList = this.getRequiredItems(stageId,rootOrgId,isFilterStateItem);
-        //并行
-        List<ParallelApproveItemVo> coreItemList = this.getOptionalItems(stageId,rootOrgId,isFilterStateItem);
+
+        //从申报service拿并联、并行事项
+        ItemListVo applyVo = restParallerApplyService.listItemAndStateByStageId(stageId, "", "", "","1","0",topOrgId);
+        List<ParallelApproveItemVo> paraItemList;
+        List<ParallelApproveItemVo> coreItemList;
+        if (applyVo!=null){
+            paraItemList = applyVo.getParallelItemList();
+            coreItemList = applyVo.getCoreItemList();
+        }else {
+            paraItemList = this.getRequiredItems(stageId,rootOrgId,isFilterStateItem);
+            coreItemList = this.getOptionalItems(stageId,rootOrgId,isFilterStateItem);
+        }
         if("1".equals(isSelectState)){
             for (ParallelApproveItemVo item:coreItemList){
                 if ("1".equals(item.getIsCatalog())) {//标准事项
