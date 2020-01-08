@@ -389,7 +389,7 @@
             <if test="isActive != null" >
                 and asw.IS_ACTIVE = #{isActive}
             </if>
-            <if test="windowType != null" >
+            <if test="windowType != null and windowType != ''" >
                 and asw.WINDOW_TYPE = #{windowType}
             </if>
             <if test="windowType == null" >

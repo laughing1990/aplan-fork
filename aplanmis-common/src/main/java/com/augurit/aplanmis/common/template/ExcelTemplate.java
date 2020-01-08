@@ -110,6 +110,9 @@ public abstract class ExcelTemplate<T> {
      */
     public String getValue(Cell cell) {
         String value = null;
+        if(cell == null){
+            return "";
+        }
         switch (cell.getCellType()) {
             // 数字
             case Cell.CELL_TYPE_NUMERIC:

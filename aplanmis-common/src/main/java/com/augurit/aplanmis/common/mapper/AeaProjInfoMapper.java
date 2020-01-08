@@ -208,4 +208,11 @@ public interface AeaProjInfoMapper {
     List<String> listBelongRegionAndChildRegionsByUserId(@Param("userId") String userId);
 
     List<AeaProjInfo> getAeaProjInfosByStageIdAndLocalCode(@Param("stageId")String stageId, @Param("localCode")String localCode);
+
+    /**
+     * 通过项目代码获取非虚拟节点和非拆分工程的项目信息
+     * @param localCode
+     * @return
+     */
+    AeaProjInfo getNotChildrenAndNotRootAeaProjInfoByLocalCode(@Param("localCode") String localCode);
 }

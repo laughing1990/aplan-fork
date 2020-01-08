@@ -49,6 +49,14 @@
     where    PROJ_WINDOW_ID = #{id}
 </select>
 
+    <select id="getAeaProjWindowByProjInfoIdAndWindowId" resultType="AeaProjWindow" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_PROJ_WINDOW
+        where    PROJ_INFO_ID = #{projInfoId}
+        and WINDOW_ID = #{windowId}
+    </select>
+
     <select id="listAeaServiceWindowByProjInfoId" resultType="com.augurit.aplanmis.common.domain.AeaServiceWindow" >
         select
         <include refid="window_allColumns">
