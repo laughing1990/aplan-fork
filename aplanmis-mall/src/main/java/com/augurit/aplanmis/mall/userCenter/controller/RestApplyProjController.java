@@ -316,7 +316,9 @@ public class RestApplyProjController {
     public ResultForm searchProjList(String keyWord, int pageNum, int pageSize, HttpServletRequest request) {
         try {
             LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
+            if(StringUtils.isBlank(keyWord)) return new ContentResultForm(true, new PageInfo<>());
             PageInfo<AeaProjInfo> pageInfo = restApproveService.findAeaProjInfoByKeyword(keyWord, pageNum, pageSize);
+            //PageInfo<AeaProjInfo> pageInfo = restApproveService.findAeaProjInfoByUserPrev(keyWord,loginInfo.getUnitId(),loginInfo.getUserId(), pageNum, pageSize);
             if (pageInfo.getList().size() == 0 && !keyWord.contains("#") && !keyWord.contains("ZBM") && CommonTools.isComplianceWithRules(keyWord)) {
                 //List<AeaProjInfo> list = projectCodeService.getProjInfoFromThirdPlatform(keyWord,loginInfo.getUnitName(),loginInfo.getUnifiedSocialCreditCode());  //正式上线时用
                 List<AeaProjInfo> list = projectCodeService.getProjInfoFromThirdPlatform(keyWord, "","");
@@ -336,8 +338,10 @@ public class RestApplyProjController {
     @ApiImplicitParams({@ApiImplicitParam(value = "搜索关键字",name = "keyWord",required = false,dataType = "string")})
     public ContentResultForm<List<AeaProjInfoResultVo>> searchProjList(HttpServletRequest request, @PathVariable("keyWord") String keyWord) {
         try {
+            if(StringUtils.isBlank(keyWord)) return new ContentResultForm(true, new ArrayList<>());
             LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
             List<AeaProjInfo> list = aeaProjInfoService.findAeaProjInfoByKeyword(keyWord);
+            //List<AeaProjInfo> list = aeaProjInfoService.findAeaProjInfoByUserPrev(keyWord,loginInfo.getUnitId(),loginInfo.getUserId());
             if (list.size() == 0 && !keyWord.contains("#") && !keyWord.contains("ZBM") && CommonTools.isComplianceWithRules(keyWord)) {
                 //list.addAll(projectCodeService.getProjInfoFromThirdPlatform(keyWord,loginInfo.getUnitName(),loginInfo.getUnifiedSocialCreditCode())); //正式上线时用
                 list.addAll(projectCodeService.getProjInfoFromThirdPlatform(keyWord, "",""));

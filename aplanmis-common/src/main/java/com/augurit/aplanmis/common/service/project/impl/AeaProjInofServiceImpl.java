@@ -248,6 +248,11 @@ public class AeaProjInofServiceImpl extends AbstractFormDataOptManager implement
     }
 
     @Override
+    public List<AeaProjInfo> findAeaProjInfoByUserPrev(String keyWord, String unitInfoId, String linkmanInfoId){
+        return aeaProjInfoMapper.findAeaProjInfoByUserPrev(keyWord, unitInfoId,linkmanInfoId,SecurityContext.getCurrentOrgId());
+    }
+
+    @Override
     public PageInfo<AeaProjInfo> listAeaProjInfoByKeyword(String keyword, Page page) {
         LOGGER.debug("分页搜索项目信息");
         PageHelper.startPage(page);
