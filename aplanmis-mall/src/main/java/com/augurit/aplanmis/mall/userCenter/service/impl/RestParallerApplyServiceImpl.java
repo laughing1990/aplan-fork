@@ -159,6 +159,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
         vo.setProjName(projInfo!=null?projInfo.getProjName():"");
         List<AeaHiGuideDetail> details = aeaHiGuideDetailService.queryGuideDetailByGuideIdAndDetailType(guideId, "s");
         vo.setItThemeName(details.size()>0?details.get(0).getThemeName():"");
+        vo.setIsItSel(details.size()>0?"1":"0");
         return vo;
     }
 

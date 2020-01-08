@@ -49,6 +49,9 @@ public class ApplyIteminstConfirmVo {
     @ApiModelProperty(value = "项目/工程代码")
     private String gcbm;
 
+    @ApiModelProperty(value = "是否智能引导 1 是 0否")
+    private String isItSel;
+
 
     public static ApplyIteminstConfirmVo formatGuide(GuideDetailVo detail) {
         ApplyIteminstConfirmVo vo=new ApplyIteminstConfirmVo();
