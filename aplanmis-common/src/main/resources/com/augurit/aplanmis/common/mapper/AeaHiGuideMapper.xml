@@ -256,5 +256,6 @@
                 and ahg.APPLY_LINKMAN_INFO_ID = #{applyLinkmanInfoId}
             </if>
         </where>
+        order by ahg.GUIDE_START_TIME desc
     </select>
 </mapper>
