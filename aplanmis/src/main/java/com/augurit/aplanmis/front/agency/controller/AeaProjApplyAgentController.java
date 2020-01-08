@@ -49,10 +49,14 @@ private static Logger logger = LoggerFactory.getLogger(AeaProjApplyAgentControll
      */
     @RequestMapping("/saveAeaProjApplyAgent")
     public ResultForm saveAeaProjApplyAgent(AeaProjApplyAgent aeaProjApplyAgent) throws Exception {
-        if(StringUtils.isNotBlank(aeaProjApplyAgent.getApplyAgentId())){
-            aeaProjApplyAgentService.updateAeaProjApplyAgent(aeaProjApplyAgent);
-        }else {
-            aeaProjApplyAgentService.saveAeaProjApplyAgent(aeaProjApplyAgent);
+        try {
+            if(StringUtils.isNotBlank(aeaProjApplyAgent.getApplyAgentId())){
+                aeaProjApplyAgentService.updateAeaProjApplyAgent(aeaProjApplyAgent);
+            }else {
+                aeaProjApplyAgentService.saveAeaProjApplyAgent(aeaProjApplyAgent);
+            }
+        }catch (Exception e){
+            return  new ContentResultForm(false,null,e.getMessage());
         }
         return  new ContentResultForm(true,aeaProjApplyAgent);
     }

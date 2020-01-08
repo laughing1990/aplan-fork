@@ -71,6 +71,15 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
     }
     public void updateAeaProjApplyAgent(AeaProjApplyAgent aeaProjApplyAgent) throws Exception{
         if(aeaProjApplyAgent != null){
+            String agreementCode = aeaProjApplyAgent.getAgreementCode();
+            if(StringUtils.isBlank(agreementCode)){
+                throw new Exception("协议编号不能为空。");
+            }
+            //校验编号唯一性
+            AeaProjApplyAgent agent = aeaProjApplyAgentMapper.getAeaProjApplyAgentByAgreementCode(agreementCode);
+            if(agent != null && !agent.getApplyAgentId().equals(aeaProjApplyAgent.getApplyAgentId())){
+                throw new Exception("该协议编号已被使用。");
+            }
             aeaProjApplyAgent.setModifier(SecurityContext.getCurrentUserName());
             aeaProjApplyAgent.setModifyTime(new Date());
             aeaProjApplyAgentMapper.updateAeaProjApplyAgent(aeaProjApplyAgent);
