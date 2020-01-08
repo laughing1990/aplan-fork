@@ -153,7 +153,7 @@ public class RestAeaProjAgentService {
                 List<AeaUnitProjLinkman> list = aeaUnitProjLinkmans.stream().filter(v -> ("1".equals(v.getLinkmanType()) || "0".equals(v.getLinkmanType()))).collect(Collectors.toList());
                 if(list.size()>0){
                     for (AeaUnitProjLinkman linkman:list){
-                       if("0".equals(linkman.getLinkmanType())){
+                       if("0".equals(linkman.getLinkmanType())){//0 经办人  1 负责人
                             aeaUnitProjLinkmanVo.setOperatorName(linkman.getLinkmanName());
                             aeaUnitProjLinkmanVo.setOperatorMobilePhone(linkman.getLinkmanMobilePhone());
                             aeaUnitProjLinkmanVo.setOperatorDuty(linkman.getLinkmanDuty());

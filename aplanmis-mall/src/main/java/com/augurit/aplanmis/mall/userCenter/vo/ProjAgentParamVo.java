@@ -30,6 +30,8 @@ public class ProjAgentParamVo {
     private java.lang.String scaleContent;
     @ApiModelProperty("项目地址")
     private java.lang.String projAddr;
+    @ApiModelProperty("总建筑面积")
+    private java.lang.String foreignBuildingArea;
 
 
     @ApiModelProperty("建设地点")
