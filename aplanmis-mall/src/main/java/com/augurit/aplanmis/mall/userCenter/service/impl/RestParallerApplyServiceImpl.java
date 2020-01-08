@@ -175,7 +175,9 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
         if("1".equals(isSelectItemState) && parallelItems.size()>0)
             parallelItems.stream().forEach(v->{
                 try {
+                    List<AeaItemInout> resultMats=aeaHiItemInoutService.getAeaItemInoutMatCertByItemVerId(v.getItemVerId(),rootOrgId);
                     v.setItemStateList(aeaItemStateService.listAeaItemStateByParentId(v.getItemVerId(), "", "ROOT", rootOrgId));
+                    v.setResultMats(resultMats);
                 } catch (Exception e) {
                 }
             });
@@ -183,6 +185,8 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
             optionItems.stream().forEach(v->{
                 try {
                     v.setItemStateList(aeaItemStateService.listAeaItemStateByParentId(v.getItemVerId(), "", "ROOT", rootOrgId));
+                    List<AeaItemInout> resultMats=aeaHiItemInoutService.getAeaItemInoutMatCertByItemVerId(v.getItemVerId(),rootOrgId);
+                    v.setResultMats(resultMats);
                 } catch (Exception e) {
                 }
             });

@@ -4,6 +4,7 @@ import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.aplanmis.common.constants.GuideChangeAction;
 import com.augurit.aplanmis.common.constants.GuideDetailType;
 import com.augurit.aplanmis.common.domain.AeaHiGuideDetail;
+import com.augurit.aplanmis.common.domain.AeaItemInout;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaItemState;
 import io.swagger.annotations.ApiModel;
@@ -50,6 +51,9 @@ public class GuideComputedItem extends ComputedItem {
 
     @ApiModelProperty(value = "事项情形列表")
     List<AeaItemState> itemStateList;
+
+    @ApiModelProperty(name = "resultMats", value = "结果物", dataType = "list")
+    private List<AeaItemInout> resultMats;
 
     protected void mergeCommonField(AeaItemBasic origin) {
         super.mergeCommonField(origin);
