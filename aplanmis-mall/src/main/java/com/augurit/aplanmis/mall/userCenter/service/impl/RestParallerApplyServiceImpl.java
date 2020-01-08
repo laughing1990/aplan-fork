@@ -85,6 +85,8 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
     private AeaParStageService aeaParStageService;
     @Autowired
     private RestAeaHiGuideService restAeaHiGuideService;
+    @Autowired
+    private AeaParStateService aeaParStateService;
 
     @Override
     public ItemListVo listItemAndStateByStageId(String stageId, String projInfoId, String regionalism, String projectAddress,String isSelectItemState,String isFilterStateItem,String rootOrgId) throws Exception {
@@ -192,6 +194,13 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
             });
         vo.setCoreIteminstList(optionItems);
         vo.setParallelIteminstList(parallelItems);
+        //实例的阶段情形ID集合
+        List<AeaParState> aeaParStates =  aeaParStateService.listAeaParStateByStageinstIdORApplyinstId(applyinstId,"");
+        if (aeaParStates.size()>0){
+            vo.setStateIds(aeaParStates.stream().map(AeaParState::getStageId).collect(Collectors.toList()));
+        }else {
+            vo.setStateIds(new ArrayList<>());
+        }
         return vo;
     }
 

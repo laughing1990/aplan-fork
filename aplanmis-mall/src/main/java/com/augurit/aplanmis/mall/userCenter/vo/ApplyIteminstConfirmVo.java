@@ -52,6 +52,9 @@ public class ApplyIteminstConfirmVo {
     @ApiModelProperty(value = "是否智能引导 1 是 0否")
     private String isItSel;
 
+    @ApiModelProperty(value = "阶段ID集合")
+    private List<String> stateIds;
+
 
     public static ApplyIteminstConfirmVo formatGuide(GuideDetailVo detail) {
         ApplyIteminstConfirmVo vo=new ApplyIteminstConfirmVo();
