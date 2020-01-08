@@ -82,4 +82,6 @@ public interface AeaParThemeVerMapper extends BaseMapper<AeaParThemeVer> {
     List<AeaParThemeVer> getNotExpireThemeverByItemId(@Param("itemId") String itemId, @Param("rootOrgId")String rootOrgId);
 
     List<AeaParThemeVer> listMaxThemeVerGroupByThemeId(@Param("themeId") String themeId, @Param("rootOrgId") String rootOrgId);
+
+    List<AeaParThemeVer> listThemeVerNoRelThemeAndDiagramInfo(AeaParThemeVer aeaParThemeVer);
 }

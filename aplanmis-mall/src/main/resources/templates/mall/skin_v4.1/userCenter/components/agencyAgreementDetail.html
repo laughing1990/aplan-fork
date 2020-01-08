@@ -93,25 +93,28 @@
   <!-- 委托代办信息-end -->
 
   <!-- 代办协议-start -->
-  <h4 class="info-title" style="margin-bottom: 6px;">代办协议
-    <span :style="agencyStatusTagClassFn()">（{{curProj.projAgentState | projAgentStateFormat}}）</span>
-  </h4>
-  <el-table :data="agencyAgreementList" class="elTable" style="width: 100%;" border
-    :header-cell-style="{background:'#f7f8fa',height: '40px'}">
-    <el-table-column label="代办协议" prop="agentAgreementName" :show-overflow-tooltip="true" :formatter="tableCellFormat">
-    </el-table-column>
-    <el-table-column label="代办人员" prop="agentUserName" :formatter="tableCellFormat" width="100">
-    </el-table-column>
-    <el-table-column label="代办人员联系电话" prop="agentUserMobile" :formatter="tableCellFormat" width="150">
-    </el-table-column>
-    <el-table-column label="操作" align="center" width="260">
-      <template slot-scope="scope">
-        <el-button type="primary" plain size="small" @click="filePreview(scope.row.atts[0])">预览</el-button>
-        <el-button type="primary" plain size="small" @click="downloadFile(scope.row.atts[0].fileId)">下载</el-button>
-        <el-button type="primary" size="small">签章</el-button>
-      </template>
-    </el-table-column>
-  </el-table>
+  <div v-if="curProj.projAgentState !=1 && curProj.projAgentState !=2">
+    <h4 class="info-title" style="margin-bottom: 6px;">代办协议
+      <span :style="agencyStatusTagClassFn()">（{{curProj.projAgentState | projAgentStateFormat}}）</span>
+    </h4>
+    <el-table :data="agencyAgreementList" class="elTable" style="width: 100%;" border
+              :header-cell-style="{background:'#f7f8fa',height: '40px'}">
+      <el-table-column label="代办协议" prop="agentAgreementName" :show-overflow-tooltip="true" :formatter="tableCellFormat">
+      </el-table-column>
+      <el-table-column label="代办人员" prop="agentUserName" :formatter="tableCellFormat" width="100">
+      </el-table-column>
+      <el-table-column label="代办人员联系电话" prop="agentUserMobile" :formatter="tableCellFormat" width="150">
+      </el-table-column>
+      <el-table-column label="操作" align="center" width="260">
+        <template slot-scope="scope">
+          <el-button type="primary" plain size="small" @click="filePreview(scope.row.atts[0])">预览</el-button>
+          <el-button type="primary" plain size="small" @click="downloadFile(scope.row.atts[0].fileId)">下载</el-button>
+          <el-button type="primary" size="small">签章</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
+
   <div class="align-center mt50" v-if="curProj.projAgentState == 3">
     <el-button type="primary" @click="submitAgentAgreement">提交协议</el-button>
   </div>

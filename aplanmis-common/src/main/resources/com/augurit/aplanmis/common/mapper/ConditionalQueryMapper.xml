@@ -2871,7 +2871,7 @@
         aps_123.STAGE_NAME stageName ,
         NULL AS itemName,
         ahap_123.ACCEPT_TIME acceptTime,
-        ahap_123.MODIFY_TIME concludedTime,
+        ahap_123.END_TIME concludedTime,
         ahap_123.IS_SMS_SEND isSmsSend
         FROM
         AEA_HI_APPLYINST ahap_123
@@ -2905,7 +2905,7 @@
         NULL AS stageName,
         ahi_123.ITEMINST_NAME AS itemName,
         ahap_123.ACCEPT_TIME acceptTime,
-        ahap_123.MODIFY_TIME concludedTime,
+        ahap_123.END_TIME concludedTime,
         ahap_123.IS_SMS_SEND isSmsSend
         FROM
         AEA_HI_APPLYINST ahap_123
@@ -4106,8 +4106,9 @@
         NULL as iteminst_id,
         NULL AS itemName,
         ahap_123.ACCEPT_TIME acceptTime,
-        ahap_123.MODIFY_TIME concludedTime,
-        ahap_123.IS_SMS_SEND isSmsSend
+        ahap_123.END_TIME concludedTime,
+        '未领取' isSmsSend,
+        case ahsi.RECEIVE_TYPE when '0' then '多次领取' when '1' then '一次领取' end as receiveType
         FROM
         AEA_HI_APPLYINST ahap_123
         <include refid="leftJoinApplyinstProj">
@@ -4142,8 +4143,9 @@
         ahi_123.ITEMINST_ID,
         ahi_123.ITEMINST_NAME AS itemName,
         ahap_123.ACCEPT_TIME acceptTime,
-        ahap_123.MODIFY_TIME concludedTime,
-        ahap_123.IS_SMS_SEND isSmsSend
+        ahap_123.END_TIME concludedTime,
+        '未领取' isSmsSend,
+        case ahsi.RECEIVE_TYPE when '0' then '多次领取' when '1' then '一次领取' end as receiveType
         FROM
         AEA_HI_APPLYINST ahap_123
         <include refid="leftJoinApplyinstProj">

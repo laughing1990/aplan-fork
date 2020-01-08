@@ -4,10 +4,17 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
+import com.augurit.aplanmis.common.apply.item.GuideComputedItem;
+import com.augurit.aplanmis.common.constants.AeaHiApplyinstConstants;
+import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.service.apply.AeaHiGuideDetailService;
 import com.augurit.aplanmis.common.service.apply.AeaHiGuideService;
+import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutService;
+import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiParStateinstService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.item.AeaItemPrivService;
 import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
@@ -19,7 +26,10 @@ import com.augurit.aplanmis.common.utils.CommonTools;
 import com.augurit.aplanmis.common.vo.guide.GuideDetailVo;
 import com.augurit.aplanmis.mall.main.vo.ItemListVo;
 import com.augurit.aplanmis.mall.main.vo.ParallelApproveItemVo;
+import com.augurit.aplanmis.mall.userCenter.service.AeaParStageService;
+import com.augurit.aplanmis.mall.userCenter.service.RestAeaHiGuideService;
 import com.augurit.aplanmis.mall.userCenter.service.RestParallerApplyService;
+import com.augurit.aplanmis.mall.userCenter.vo.AeaGuideApplyVo;
 import com.augurit.aplanmis.mall.userCenter.vo.AeaGuideItemVo;
 import com.augurit.aplanmis.mall.userCenter.vo.ApplyIteminstConfirmVo;
 import com.augurit.aplanmis.mall.userCenter.vo.StageStateParamVo;
@@ -63,6 +73,18 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
     private AeaProjInfoService aeaProjInfoService;
     @Autowired
     private AeaHiGuideService aeaHiGuideService;
+    @Autowired
+    private AeaHiGuideDetailService aeaHiGuideDetailService;
+    @Autowired
+    private AeaHiApplyinstService aeaHiApplyinstService;
+    @Autowired
+    private AeaHiParStageinstService aeaHiParStageinstService;
+    @Autowired
+    private AeaHiParStateinstService aeaHiParStateinstService;
+    @Autowired
+    private AeaParStageService aeaParStageService;
+    @Autowired
+    private RestAeaHiGuideService restAeaHiGuideService;
 
     @Override
     public ItemListVo listItemAndStateByStageId(String stageId, String projInfoId, String regionalism, String projectAddress,String isSelectItemState,String isFilterStateItem,String rootOrgId) throws Exception {
@@ -138,8 +160,66 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
 
     @Override
     public ApplyIteminstConfirmVo listGuideItemsByApplyinstId(String guideId,String applyinstId,String projInfoId, String isSelectItemState) throws Exception {
+        String rootOrgId=SecurityContext.getCurrentOrgId();
         GuideDetailVo detail = aeaHiGuideService.detail(guideId);
-        return ApplyIteminstConfirmVo.formatGuide(detail);
+        AeaProjInfo projInfo = aeaProjInfoService.getAeaProjInfoByProjInfoId(projInfoId);
+        ApplyIteminstConfirmVo vo=ApplyIteminstConfirmVo.formatGuide(detail);
+        vo.setProjInfoId(projInfo!=null?projInfo.getProjInfoId():"");
+        vo.setGcbm(projInfo!=null?projInfo.getGcbm():"");
+        vo.setProjName(projInfo!=null?projInfo.getProjName():"");
+        List<AeaHiGuideDetail> details = aeaHiGuideDetailService.queryGuideDetailByGuideIdAndDetailType(guideId, "s");
+        vo.setItThemeName(details.size()>0?details.get(0).getThemeName():"");
+        vo.setIsItSel(details.size()>0?"1":"0");
+        List<GuideComputedItem> parallelItems = detail.getParallelItems();
+        List<GuideComputedItem> optionItems = detail.getOptionItems();
+        if("1".equals(isSelectItemState) && parallelItems.size()>0)
+            parallelItems.stream().forEach(v->{
+                try {
+                    List<AeaItemInout> resultMats=aeaHiItemInoutService.getAeaItemInoutMatCertByItemVerId(v.getItemVerId(),rootOrgId);
+                    v.setItemStateList(aeaItemStateService.listAeaItemStateByParentId(v.getItemVerId(), "", "ROOT", rootOrgId));
+                    v.setResultMats(resultMats);
+                } catch (Exception e) {
+                }
+            });
+        if("1".equals(isSelectItemState) && optionItems.size()>0)
+            optionItems.stream().forEach(v->{
+                try {
+                    v.setItemStateList(aeaItemStateService.listAeaItemStateByParentId(v.getItemVerId(), "", "ROOT", rootOrgId));
+                    List<AeaItemInout> resultMats=aeaHiItemInoutService.getAeaItemInoutMatCertByItemVerId(v.getItemVerId(),rootOrgId);
+                    v.setResultMats(resultMats);
+                } catch (Exception e) {
+                }
+            });
+        vo.setCoreIteminstList(optionItems);
+        vo.setParallelIteminstList(parallelItems);
+        return vo;
+    }
+
+    @Override
+    public String initGuideApply(AeaGuideApplyVo aeaGuideApplyVo) throws Exception {
+        String applyinstId=aeaGuideApplyVo.getApplyinstId();
+        String[] stateIds=aeaGuideApplyVo.getStateIds();
+        List<String> unitProjIds=aeaGuideApplyVo.getUnitProjIds();
+        String stageinstId="";
+        if(StringUtils.isBlank(aeaGuideApplyVo.getApplyinstId())){
+            AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(aeaGuideApplyVo.getApplySource(), aeaGuideApplyVo.getApplySubject(), aeaGuideApplyVo.getLinkmanInfoId(), AeaHiApplyinstConstants.STAGEINST_APPLY, null, ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"1",null);
+            applyinstId=aeaHiApplyinst.getApplyinstId();
+            String appinstId = UUID.randomUUID().toString();//预先生成流程模板实例ID
+            //2、实例化并联实例
+            AeaHiParStageinst aeaHiParStageinst = aeaHiParStageinstService.createAeaHiParStageinst(applyinstId, aeaGuideApplyVo.getStageId(), aeaGuideApplyVo.getThemeVerId(), appinstId, null);
+            stageinstId=aeaHiParStageinst.getStageinstId();
+        }
+        //4、情形实例
+        aeaHiParStateinstService.batchInsertAeaHiParStateinst(applyinstId, stageinstId, stateIds, SecurityContext.getCurrentUserName());
+        //7.1、单位本身的申报主体
+        aeaParStageService.insertApplySubject(aeaGuideApplyVo.getApplySubject(), applyinstId, new String[]{aeaGuideApplyVo.getProjInfoId()}, aeaGuideApplyVo.getUnitInfoId(), aeaGuideApplyVo.getLinkmanInfoId());
+        //7.2、新增单位的申报主体
+        if (unitProjIds!=null&&unitProjIds.size()>0){
+            aeaParStageService.insertApplySubject(aeaGuideApplyVo.getApplySubject(), applyinstId,  new String[]{aeaGuideApplyVo.getProjInfoId()}, aeaGuideApplyVo.getLinkmanInfoId(), aeaGuideApplyVo.getLinkmanInfoId(), unitProjIds);
+        }
+        aeaGuideApplyVo.setApplyinstId(applyinstId);
+        restAeaHiGuideService.initAeaHiGuide(aeaGuideApplyVo);
+        return applyinstId;
     }
 
     @Override
@@ -380,24 +460,26 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
     }
 
     @Override
-    public List<AeaGuideItemVo>  listItemByStageIdAndStateList(StageStateParamVo stageStateParamVo,String isOptionItem) throws Exception {
+    public List<AeaGuideItemVo>  listItemByStageIdAndStateList(StageStateParamVo stageStateParamVo,String isOptionItem,String rootOrgId) throws Exception {
+        if(StringUtils.isBlank(rootOrgId)) rootOrgId=SecurityContext.getCurrentOrgId();
         String stageId=stageStateParamVo.getStageId();
         String regionalism=stageStateParamVo.getRegionalism();
         String projectAddress=stageStateParamVo.getProjectAddress();
         List<String> stateIds=stageStateParamVo.getStateIds();
-        List<AeaItemBasic> itemList =aeaItemBasicService.getAeaItemBasicListByStageId(stageId,isOptionItem,null,SecurityContext.getCurrentOrgId());
-        Set<String> stateItemVerIds = aeaItemBasicService.getAeaItemBasicListByStageIdAndStateId(stageId, null, isOptionItem,SecurityContext.getCurrentOrgId())
+        List<AeaItemBasic> itemList =aeaItemBasicService.getAeaItemBasicListByStageId(stageId,isOptionItem,null,rootOrgId);
+        Set<String> stateItemVerIds = aeaItemBasicService.getAeaItemBasicListByStageIdAndStateId(stageId, null, isOptionItem,rootOrgId)
                 .stream().map(AeaItemBasic::getItemVerId).collect(Collectors.toSet());
         if(itemList.size()>0) itemList.stream().filter(v->stateItemVerIds.contains(v.getItemVerId())).collect(Collectors.toList());
         if(stateIds==null||stateIds.size()==0){
-            List<AeaItemBasic> coreStateItemList = aeaItemBasicService.getAeaItemBasicListByStageId(stageId,  isOptionItem,null, SecurityContext.getCurrentOrgId());
+            List<AeaItemBasic> coreStateItemList = aeaItemBasicService.getAeaItemBasicListByStageId(stageId,  isOptionItem,null, rootOrgId);
             itemList.addAll(coreStateItemList);
         }else{
-            List<AeaItemBasic> coreStateItemList = aeaItemBasicService.getAeaItemBasicListByStageIdAndStateIds(stageId, stateIds, isOptionItem, SecurityContext.getCurrentOrgId());
+            List<AeaItemBasic> coreStateItemList = aeaItemBasicService.getAeaItemBasicListByStageIdAndStateIds(stageId, stateIds, isOptionItem, rootOrgId);
             itemList.addAll(coreStateItemList);
         }
 
 
+        String finalRootOrgId = rootOrgId;
         return itemList.size()>0?itemList.stream().map(AeaGuideItemVo::format).peek(vo->{
             String flag=vo.getIsCatalog();
             if("1".equals(flag)) {//标准事项
@@ -409,7 +491,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
                     }
                 }
                 vo.setBaseItemVerId(vo.getItemVerId());
-                List<AeaItemBasic> sssxList = aeaItemBasicService.getSssxByItemIdAndRegionalism(vo.getItemId(), regionalism, arrRegionIdList.size() == 0 ? null : CommonTools.ListToArr(arrRegionIdList), SecurityContext.getCurrentOrgId());
+                List<AeaItemBasic> sssxList = aeaItemBasicService.getSssxByItemIdAndRegionalism(vo.getItemId(), regionalism, arrRegionIdList.size() == 0 ? null : CommonTools.ListToArr(arrRegionIdList), finalRootOrgId);
                 if(sssxList.size()>0){
                     vo.setItemVerId(sssxList.get(0).getItemVerId());
                 }

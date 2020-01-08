@@ -15,10 +15,39 @@ import com.augurit.agcloud.opus.common.domain.OpuOmUserInfo;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.agcloud.opus.common.mapper.OpuOmUserInfoMapper;
 import com.augurit.aplanmis.common.constants.ItemStatus;
-import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.domain.AeaApplyinstProj;
+import com.augurit.aplanmis.common.domain.AeaApplyinstUnitProj;
+import com.augurit.aplanmis.common.domain.AeaCert;
+import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
+import com.augurit.aplanmis.common.domain.AeaHiCertinst;
+import com.augurit.aplanmis.common.domain.AeaHiItemInoutinst;
+import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
+import com.augurit.aplanmis.common.domain.AeaHiIteminst;
+import com.augurit.aplanmis.common.domain.AeaHiSmsInfo;
+import com.augurit.aplanmis.common.domain.AeaHiSmsSendApply;
+import com.augurit.aplanmis.common.domain.AeaHiSmsSendBean;
+import com.augurit.aplanmis.common.domain.AeaHiSmsSendItem;
+import com.augurit.aplanmis.common.domain.AeaItemInout;
+import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
+import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.common.domain.AeaUnitInfo;
 import com.augurit.aplanmis.common.event.AplanmisEventPublisher;
 import com.augurit.aplanmis.common.event.def.ApplyMailQujianAplanmisEvent;
-import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
+import com.augurit.aplanmis.common.mapper.AeaApplyinstUnitProjMapper;
+import com.augurit.aplanmis.common.mapper.AeaCertMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiApplyinstMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiCertinstMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiItemMatinstMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiIteminstMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiSmsSendApplyMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiSmsSendItemMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemInoutMapper;
+import com.augurit.aplanmis.common.mapper.AeaLogItemStateHistMapper;
+import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
+import com.augurit.aplanmis.common.mapper.AeaUnitInfoMapper;
+import com.augurit.aplanmis.common.mapper.AeaUnitProjMapper;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiSmsInfoService;
@@ -42,7 +71,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -550,7 +586,7 @@ public class RestCertificateService {
         return modelAndView;
     }
 
-    public Map getCertBasicInfo() throws Exception {
+    public Map<String, Object> getCertBasicInfo() throws Exception {
         Map<String, Object> result = new HashMap<>();
         AeaCert cert = new AeaCert();
         cert.setCertHolder("p");

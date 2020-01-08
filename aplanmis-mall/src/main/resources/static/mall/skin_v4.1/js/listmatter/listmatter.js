@@ -184,6 +184,11 @@ var listmatter = (function(window){
                 window.location.hash='/DeclarGuidePage';
                 window.location.search='';
             },
+            // 跳转智能引导页
+            toLeadPagehandleFn:function(){
+                window.location.hash="/toLeadPage";
+                window.location.search='';
+            },
             // 获取url参数
             GetRequest: function () {
                 var url = location.search; //获取url中"?"符后的字串

@@ -163,8 +163,10 @@
                                 <div class="file-div">
                                     <div class="fl"><i class="ag" :class="getFileTypeIcon(item.fileType)"></i><span class="fileName" @click="previewFile(item)">{{item.fileName}}</span><span class="fontSize">（{{item.fileSize|getFileSize}}）</span></div>
                                     <div class="download fr" >
-                                        <i class="ag ag-download" @click="downloadFile(item.fileId)"></i>
-                                        <i class="el-icon-view" @click="previewFile(item)"></i>
+                                        <!--<i class="ag ag-download" @click="downloadFile(item.fileId)"></i>
+                                        <i class="el-icon-view" @click="previewFile(item)"></i>-->
+                                        <el-button type="text" @click="previewFile(item)">预览</el-button>
+                                        <el-button type="text" @click="downloadFile(item.fileId)">下载</el-button>
                                     </div>
                                 </div>
                             </el-form-item>

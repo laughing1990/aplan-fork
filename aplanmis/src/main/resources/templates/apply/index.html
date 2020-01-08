@@ -1819,10 +1819,16 @@
             <el-form :model="getResultForm" :rules="(getResultForm.receiveMode==1)?rulesResultForm:rulesResultForm1"
                      ref="resultForm" label-width="176px" class="get-result-form">
               <input type="hidden" value="getResultForm.id">
-              <el-form-item label="领取模式" prop="receiveMode">
+              <el-form-item label="签收方式" prop="receiveMode">
                 <el-radio-group v-model="getResultForm.receiveMode" @change="changeReceiveMode">
                   <el-radio :label="0">邮政快递</el-radio>
                   <el-radio :label="1">窗口取证</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item label="领取方式" prop="receiveType">
+                <el-radio-group v-model="getResultForm.receiveType">
+                  <el-radio :label="1">一次领取</el-radio>
+                  <el-radio :label="0">分别领取</el-radio>
                 </el-radio-group>
               </el-form-item>
               <el-form-item label="快递类型" prop="smsType" v-if="getResultForm.receiveMode==0">

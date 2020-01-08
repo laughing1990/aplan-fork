@@ -72,8 +72,8 @@ public class ReceivePDFTemplate {
 //        StringBuffer str = ReceivePDFTemplate.pdfFilePath();
         StringBuffer str = new StringBuffer("F:\\develop\\foshan20191120\\4、关于印发佛山市行政许可和公共服务事项流程标准应用规范的通知（ 佛政务〔2017〕81号）\\回执模板\\");
 
-        str.append("佛山市重点工程建设项目代办委托协议");
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+        str.append(aeaProjApplyAgent.getProjName()+"代办协议书");
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         // 创建writer，通过writer将文档写入磁盘
@@ -102,7 +102,7 @@ public class ReceivePDFTemplate {
         // 打开文档，只有打开后才能往里面加东西
         document.open();
         ReceivePDFUtils.paragrahCenter(document,receiveName,font2);
-        ReceivePDFUtils.paragrahCenter(document,"协议编号："+ instrumentNo,font4);
+        ReceivePDFUtils.paragrahCenter(document,"协议编号："+ instrumentNo==null?"":instrumentNo,font4);
         ReceivePDFUtils.oneLine(document,font6);
         ReceivePDFUtils.oneLine(document,font6);
 
@@ -173,7 +173,8 @@ public class ReceivePDFTemplate {
         ReceivePDFUtils.twoSpacing("甲方（盖章）：　              乙方（盖章）：",document,font6,25f);
         ReceivePDFUtils.twoSpacing("代表人（签字）：",document,font6,25f);
         ReceivePDFUtils.moreLine(document,font6);
-        ReceivePDFUtils.twoSpacing("　                签订时间：" + new SimpleDateFormat(" yyyy 年 MM 月 dd 日").format(signatureDate),document,font6,25f);
+        String date = signatureDate!=null?new SimpleDateFormat(" yyyy 年 MM 月 dd 日").format(signatureDate):"      年    月    日";
+        ReceivePDFUtils.twoSpacing("　                签订时间：" + date,document,font6,25f);
 
         // 关闭文档，才能输出
         document.close();

@@ -56,13 +56,13 @@
   cursor: pointer;
 }
 .wt-tab .wt-tab-nav li:hover{
-  color: #457EFF;
+  color: #4293F4;
 }
 .wt-tab .wt-tab-nav li.active {
   border-bottom: 5px solid rgba(66, 147, 244, 1);
 }
 .wt-tab .wt-tab-nav li.active a{
-  color: #457EFF;
+  color: #4293F4;
   font-family:Microsoft YaHei;
 }
 .wt-tab-content .wt-tab-item.hide {
@@ -674,7 +674,7 @@ input[type=checkbox]:checked:after {
   padding: 15px 12px;
 }
 td .option-btn {
-  color: #457EFF;
+  color: #4293F4;
   cursor: pointer;
   padding-left: 10px;
 }
@@ -704,9 +704,9 @@ td .option-btn {
   display: none;
 }
 .floor  .wt-tab-nav li.active {
-  border-bottom: 4px solid #457EFF;
+  border-bottom: 4px solid #4293F4;
   margin-bottom: -4px;
-  color: #457EFF;
+  color: #4293F4;
 }
 /* 小字号tab栏 */
 .floor .tab-nav3 li{
@@ -1123,19 +1123,19 @@ table{
 }
 /*element*/
 .el-pagination.is-background .el-pager li:not(.disabled).active {
-  background-color: #457EFF;
+  background-color: #4293F4;
   color: #FFF;
 }
 .el-button--primary {
-  background-color: #457EFF;
-  border-color: #457EFF;
+  background-color: #4293F4;
+  border-color: #4293F4;
 }
 .el-radio__input.is-checked .el-radio__inner {
-  border-color: #457EFF;
-  background: #457EFF;
+  border-color: #4293F4;
+  background: #4293F4;
 }
 .el-radio__input.is-checked+.el-radio__label{
-  color: #457EFF;
+  color: #4293F4;
 }
 .el-form--inline .el-form-item__content {
   display: inline-block;

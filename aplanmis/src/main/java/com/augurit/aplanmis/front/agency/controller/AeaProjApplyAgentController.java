@@ -7,9 +7,11 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaProjApplyAgent;
 import com.augurit.aplanmis.common.domain.AeaServiceWindowUser;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
+import com.augurit.aplanmis.common.service.file.impl.FileUtilsServiceImpl;
 import com.augurit.aplanmis.common.service.receive.utils.ReceivePDFTemplate;
 import com.augurit.aplanmis.common.service.window.AeaProjApplyAgentService;
 import com.augurit.aplanmis.common.vo.agency.AgencyDetailVo;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
 
 /**
@@ -29,6 +32,7 @@ import java.util.List;
 */
 @RestController
 @RequestMapping("/aea/proj/apply/agent")
+@Api(value = "项目代办接口", tags = "项目代办接口")
 public class AeaProjApplyAgentController {
 
 private static Logger logger = LoggerFactory.getLogger(AeaProjApplyAgentController.class);
@@ -47,10 +51,14 @@ private static Logger logger = LoggerFactory.getLogger(AeaProjApplyAgentControll
      */
     @RequestMapping("/saveAeaProjApplyAgent")
     public ResultForm saveAeaProjApplyAgent(AeaProjApplyAgent aeaProjApplyAgent) throws Exception {
-        if(StringUtils.isNotBlank(aeaProjApplyAgent.getApplyAgentId())){
-            aeaProjApplyAgentService.updateAeaProjApplyAgent(aeaProjApplyAgent);
-        }else {
-            aeaProjApplyAgentService.saveAeaProjApplyAgent(aeaProjApplyAgent);
+        try {
+            if(StringUtils.isNotBlank(aeaProjApplyAgent.getApplyAgentId())){
+                aeaProjApplyAgentService.updateAeaProjApplyAgent(aeaProjApplyAgent);
+            }else {
+                aeaProjApplyAgentService.saveAeaProjApplyAgent(aeaProjApplyAgent);
+            }
+        }catch (Exception e){
+            return  new ContentResultForm(false,null,e.getMessage());
         }
         return  new ContentResultForm(true,aeaProjApplyAgent);
     }
@@ -60,7 +68,7 @@ private static Logger logger = LoggerFactory.getLogger(AeaProjApplyAgentControll
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applyAgentId",value = "代办申请ID",required = true,dataType = "String")
     })
-    public ResultForm getAgencyDetail(String applyAgentId){
+    public ContentResultForm<AgencyDetailVo> getAgencyDetail(String applyAgentId){
         logger.debug("查询代办详情，查询关键字为{}", applyAgentId);
         ContentResultForm resultForm = new ContentResultForm(false);
         try {
@@ -114,28 +122,32 @@ private static Logger logger = LoggerFactory.getLogger(AeaProjApplyAgentControll
                     AeaProjApplyAgent agreementDetail = aeaProjApplyAgentService.getAgencyAgreementDetail(applyAgentId);
                     String str = ReceivePDFTemplate.createAgencyAgreement(agreementDetail);
                     //读取指定路径下的pdf文件
-                    ReceivePDFTemplate.readPdf(str, resp);
                     File file = new File(str);
-                    if (file.isFile()) {
-                        file.delete();
+                    if (file.exists()) {
+                        FileInputStream input = new FileInputStream(file);
+                        FileUtilsServiceImpl.writeContent(resp,input,file.getName());
+                        if (file.isFile()) {
+                            file.delete();
+                        }
                     }
                 }
             }
         }catch (Exception e){
+            e.printStackTrace();
             logger.error(e.getMessage(), e);
         }
     }
 
     @GetMapping("/getCurrAgencyWinUserList")
     @ApiOperation(value = "获取当前登录用户所在代办中心的代办人员", notes = "获取当前登录用户所在代办中心的代办人员", httpMethod = "GET")
-    public ResultForm getCurrAgencyWinUserList(){
+    public ContentResultForm<List<AeaServiceWindowUser>> getCurrAgencyWinUserList(){
         logger.debug("获取当前登录用户所在代办中心的代办人员");
         try {
             List<AeaServiceWindowUser> userList = aeaProjApplyAgentService.getCurrAgencyWinUserList();
             return new ContentResultForm<>(true,userList,"查询成功。");
         }catch (Exception e){
             logger.error(e.getMessage(), e);
-            return new ResultForm(false, e.getMessage());
+            return new ContentResultForm(false,null, e.getMessage());
         }
     }
 

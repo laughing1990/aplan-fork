@@ -16,20 +16,15 @@ import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.agcloud.opus.common.service.om.OpuOmOrgService;
 import com.augurit.aplanmis.common.constants.DicConstants;
-import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.common.domain.AeaUnitInfo;
-import com.augurit.aplanmis.common.domain.AeaUnitProj;
-import com.augurit.aplanmis.common.mapper.AeaLinkmanInfoMapper;
-import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
-import com.augurit.aplanmis.common.mapper.AeaUnitInfoMapper;
-import com.augurit.aplanmis.common.mapper.AeaUnitProjMapper;
+import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.vo.AeaProjInfoVo;
 import com.augurit.aplanmis.common.vo.conditional.ConditionalQueryAeaProjInfo;
 import com.augurit.aplanmis.front.subject.unit.service.GlobalApplicantService;
+import com.augurit.aplanmis.thirdPlatform.service.ProjectCodeService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
@@ -90,6 +85,15 @@ public class GlobalProjService {
 
     @Autowired
     OpuOmOrgMapper opuOmOrgMapper;
+
+    @Autowired
+    private ProjectCodeService projectCodeService;
+
+    @Autowired
+    AeaServiceWindowMapper aeaServiceWindowMapper;
+
+    @Autowired
+    AeaProjWindowMapper aeaProjWindowMapper;
 
     public String saveAeaProjInfo(AeaProjInfo aeaProjInfo, List<AeaUnitInfo> buildUnitList, List<AeaUnitInfo> agencyUnitList) throws Exception {
         if (StringUtils.isNotBlank(aeaProjInfo.getProjInfoId()))
@@ -484,6 +488,111 @@ public class GlobalProjService {
                 aeaProjInfoMapper.batchDeleteProjInfoAndChildProjInfo(ids);
             }
         }
+    }
+
+    /**
+     * 导入项目关联代办中心
+     * @param aeaProjInfo
+     * @return
+     */
+    public ResultForm handleAgentPorjRelation(AeaProjInfo aeaProjInfo) throws Exception{
+        ResultForm resultForm = new ResultForm(true);
+        try {
+            String localCode = aeaProjInfo.getLocalCode();
+            if(StringUtils.isBlank(localCode)){
+                resultForm.setSuccess(false);
+                resultForm.setMessage("项目代码不能为空！");
+                return resultForm;
+            }
+            localCode = handleUninterruptedSpaces(localCode);
+            //先查询本地数据库
+            AeaProjInfo proj = aeaProjInfoMapper.getNotChildrenAndNotRootAeaProjInfoByLocalCode(localCode);
+            if(proj == null){
+                List<AeaProjInfo> projInfos = projectCodeService.getProjInfoFromThirdPlatform(localCode, null, null);
+                if(projInfos != null && projInfos.size() > 0){
+                    proj = projInfos.get(0);
+                }
+            }
+            if(proj == null){
+                resultForm.setSuccess(false);
+                resultForm.setMessage("该项目代码没有找到项目信息！");
+                return resultForm;
+            }
+            if(StringUtils.isBlank(aeaProjInfo.getProjName())){
+                resultForm.setSuccess(false);
+                resultForm.setMessage("项目名称不能为空！");
+                return resultForm;
+            }
+            //比较项目名称是否一致
+            if(!proj.getProjName().equals(aeaProjInfo.getProjName().trim())){
+                resultForm.setSuccess(false);
+                resultForm.setMessage("项目名称不一致！");
+                return resultForm;
+            }
+            //查询代办中心是否存在
+            String agentName = aeaProjInfo.getAgentName();
+            if(StringUtils.isBlank(agentName)){
+                resultForm.setSuccess(false);
+                resultForm.setMessage("代办中心不能为空！");
+                return resultForm;
+            }
+            String currentOrgId = SecurityContext.getCurrentOrgId();
+            AeaServiceWindow window = new AeaServiceWindow();
+            window.setWindowName(agentName.trim());
+            window.setWindowType("d");
+            window.setRootOrgId(currentOrgId);
+            List<AeaServiceWindow> windows = aeaServiceWindowMapper.listAeaServiceWindow(window);
+            if(windows.size() == 0){
+                resultForm.setSuccess(false);
+                resultForm.setMessage("找不到该代办中心！");
+                return resultForm;
+            }
+            if(windows.size() > 1){
+                resultForm.setSuccess(false);
+                resultForm.setMessage("存在多个同名的代办中心！");
+                return resultForm;
+            }
+            String projInfoId = proj.getProjInfoId();
+            String windowId = windows.get(0).getWindowId();
+            AeaProjWindow win = aeaProjWindowMapper.getAeaProjWindowByProjInfoIdAndWindowId(projInfoId, windowId);
+            if(win != null){
+                resultForm.setSuccess(false);
+                resultForm.setMessage("该项目已关联该代办中心！");
+                return resultForm;
+            }
+            //创建关系
+            AeaProjWindow projWindow = new AeaProjWindow();
+            projWindow.setProjWindowId(UUID.randomUUID().toString());
+            projWindow.setProjInfoId(projInfoId);
+            projWindow.setWindowId(windowId);
+            projWindow.setCreater(SecurityContext.getCurrentUserName());
+            projWindow.setCreateTime(new Date());
+            projWindow.setRootOrgId(currentOrgId);
+            aeaProjWindowMapper.insertAeaProjWindow(projWindow);
+        }catch (Exception e){
+            resultForm.setSuccess(false);
+            resultForm.setMessage(e.getMessage());
+            return resultForm;
+        }
+        return resultForm;
+    }
+
+    /**
+     * 处理不间断空格 unicode编码是\u00A0
+     * @param localCode
+     * @return
+     */
+    public String handleUninterruptedSpaces(String localCode){
+        String regex = "^[A-Za-z0-9|-]$";
+        StringBuilder sb = new StringBuilder();
+        for(int i=0,len=localCode.length();i<len;i++){
+            char c = localCode.charAt(i);
+            boolean matches = (c+"").matches(regex);
+            if(matches){
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 }
 

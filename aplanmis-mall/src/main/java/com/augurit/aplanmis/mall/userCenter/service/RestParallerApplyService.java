@@ -45,9 +45,11 @@ public interface RestParallerApplyService {
 
     List<AeaItemMat> listMatByStateIdAndStageIdAndItemVerId(String stageId, String[] stateIds, String[] itemVerIds)throws Exception;
 
-    List<AeaGuideItemVo> listItemByStageIdAndStateList(StageStateParamVo stageStateParamVo,String isOptionItem) throws Exception;
+    List<AeaGuideItemVo> listItemByStageIdAndStateList(StageStateParamVo stageStateParamVo,String isOptionItem,String rootOrgId) throws Exception;
 
     List<AeaHiGuide> searchGuideApplyListByUnitIdAndUserId(String keyword, String applyState, String s, String userId, int pageNum, int pageSize);
 
     ApplyIteminstConfirmVo listGuideItemsByApplyinstId(String guideId,String applyinstId,String projInfoId, String isSelectItemState) throws Exception;
+
+    String initGuideApply(AeaGuideApplyVo aeaGuideApplyVo) throws Exception;
 }

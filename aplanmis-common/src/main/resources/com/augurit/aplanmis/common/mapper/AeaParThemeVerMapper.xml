@@ -21,6 +21,44 @@
         ${alias}.THEME_VER_DIAGRAM themeVerDiagram
     </sql>
 
+    <select id="listThemeVerNoRelThemeAndDiagramInfo" resultType="AeaParThemeVer" >
+        select
+            THEME_VER_ID  themeVerId,
+            THEME_ID  themeId,
+            VER_NUM  verNum,
+            IS_ACTIVE  isActive,
+            IS_DELETED  isDeleted,
+            VER_MEMO  verMemo,
+            IS_PUBLISH  isPublish,
+            ROOT_ORG_ID  rootOrgId
+        from AEA_PAR_THEME_VER
+        <where>
+            and  IS_DELETED = '0'
+            <if test="themeVerId != null">
+            and  THEME_VER_ID = #{themeVerId}
+            </if>
+            <if test="themeId != null">
+            and  THEME_ID = #{themeId}
+            </if>
+            <if test="verNum != null">
+            and  VER_NUM = #{verNum}
+            </if>
+            <if test="isActive != null">
+            and  IS_ACTIVE = #{isActive, jdbcType=VARCHAR}
+            </if>
+            <if test="isPublish != null">
+            and  IS_PUBLISH = #{isPublish, jdbcType=VARCHAR}
+            </if>
+            <if test="verMemo != null">
+            and  VER_MEMO = #{verMemo}
+            </if>
+            <if test="rootOrgId != null">
+            and  ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+        order by VER_NUM desc, CREATE_TIME desc
+    </select>
+
     <select id="selectOneById" resultType="AeaParThemeVer" >
         select
             <include refid="allColumns">
