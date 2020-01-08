@@ -4,10 +4,13 @@ import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.aplanmis.common.constants.GuideChangeAction;
 import com.augurit.aplanmis.common.constants.GuideDetailType;
 import com.augurit.aplanmis.common.domain.AeaHiGuideDetail;
+import com.augurit.aplanmis.common.domain.AeaItemState;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 /**
  * 换算后的事项
@@ -37,6 +40,9 @@ public class GuideComputedItem extends ComputedItem {
 
     @ApiModelProperty(value = "审批部门意见")
     private String approveDeptOpinion;
+
+    @ApiModelProperty(value = "事项情形列表")
+    List<AeaItemState> itemStateList;
 
     void fillInfo(AeaHiGuideDetail aeaHiGuideDetail) {
         if (!"0".equals(aeaHiGuideDetail.getDetailState())) {

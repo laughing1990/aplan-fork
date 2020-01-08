@@ -4,6 +4,7 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
+import com.augurit.aplanmis.common.apply.item.GuideComputedItem;
 import com.augurit.aplanmis.common.constants.AeaHiApplyinstConstants;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.domain.*;
@@ -33,9 +34,7 @@ import com.augurit.aplanmis.mall.userCenter.vo.AeaGuideItemVo;
 import com.augurit.aplanmis.mall.userCenter.vo.ApplyIteminstConfirmVo;
 import com.augurit.aplanmis.mall.userCenter.vo.StageStateParamVo;
 import com.github.pagehelper.PageHelper;
-import io.swagger.annotations.ApiModelProperty;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -76,6 +75,16 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
     private AeaHiGuideService aeaHiGuideService;
     @Autowired
     private AeaHiGuideDetailService aeaHiGuideDetailService;
+    @Autowired
+    private AeaHiApplyinstService aeaHiApplyinstService;
+    @Autowired
+    private AeaHiParStageinstService aeaHiParStageinstService;
+    @Autowired
+    private AeaHiParStateinstService aeaHiParStateinstService;
+    @Autowired
+    private AeaParStageService aeaParStageService;
+    @Autowired
+    private RestAeaHiGuideService restAeaHiGuideService;
 
     @Override
     public ItemListVo listItemAndStateByStageId(String stageId, String projInfoId, String regionalism, String projectAddress,String isSelectItemState,String isFilterStateItem,String rootOrgId) throws Exception {
@@ -151,6 +160,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
 
     @Override
     public ApplyIteminstConfirmVo listGuideItemsByApplyinstId(String guideId,String applyinstId,String projInfoId, String isSelectItemState) throws Exception {
+        String rootOrgId=SecurityContext.getCurrentOrgId();
         GuideDetailVo detail = aeaHiGuideService.detail(guideId);
         AeaProjInfo projInfo = aeaProjInfoService.getAeaProjInfoByProjInfoId(projInfoId);
         ApplyIteminstConfirmVo vo=ApplyIteminstConfirmVo.formatGuide(detail);
@@ -160,30 +170,32 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
         List<AeaHiGuideDetail> details = aeaHiGuideDetailService.queryGuideDetailByGuideIdAndDetailType(guideId, "s");
         vo.setItThemeName(details.size()>0?details.get(0).getThemeName():"");
         vo.setIsItSel(details.size()>0?"1":"0");
+        List<GuideComputedItem> parallelItems = detail.getParallelItems();
+        List<GuideComputedItem> optionItems = detail.getOptionItems();
+        if("1".equals(isSelectItemState) && parallelItems.size()>0)
+            parallelItems.stream().forEach(v->{
+                try {
+                    v.setItemStateList(aeaItemStateService.listAeaItemStateByParentId(v.getItemVerId(), "", "ROOT", rootOrgId));
+                } catch (Exception e) {
+                }
+            });
+        if("1".equals(isSelectItemState) && optionItems.size()>0)
+            optionItems.stream().forEach(v->{
+                try {
+                    v.setItemStateList(aeaItemStateService.listAeaItemStateByParentId(v.getItemVerId(), "", "ROOT", rootOrgId));
+                } catch (Exception e) {
+                }
+            });
+        vo.setCoreIteminstList(optionItems);
+        vo.setParallelIteminstList(parallelItems);
         return vo;
     }
-
-    @Autowired
-    private AeaHiApplyinstService aeaHiApplyinstService;
-    @Autowired
-    private AeaHiParStageinstService aeaHiParStageinstService;
-
-    @Autowired
-    private AeaHiParStateinstService aeaHiParStateinstService;
-    @Autowired
-    private AeaParStageService aeaParStageService;
-    @Autowired
-    private RestAeaHiGuideService restAeaHiGuideService;
-    @Autowired
-    private AeaApplyinstProjMapper aeaApplyinstProjMapper;
-    @Autowired
-    private AeaApplyinstUnitProjMapper aeaApplyinstUnitProjMapper;
 
     @Override
     public String initGuideApply(AeaGuideApplyVo aeaGuideApplyVo) throws Exception {
         String applyinstId=aeaGuideApplyVo.getApplyinstId();
         String[] stateIds=aeaGuideApplyVo.getStateIds();
-        List<String> unitProjIds=aeaGuideApplyVo.getProjUnitIds();
+        List<String> unitProjIds=aeaGuideApplyVo.getUnitProjIds();
         String stageinstId="";
         if(StringUtils.isBlank(aeaGuideApplyVo.getApplyinstId())){
             AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(aeaGuideApplyVo.getApplySource(), aeaGuideApplyVo.getApplySubject(), aeaGuideApplyVo.getLinkmanInfoId(), AeaHiApplyinstConstants.STAGEINST_APPLY, null, ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"1",null);

@@ -38,7 +38,7 @@ public class AeaGuideApplyVo {
     @ApiModelProperty(value = "情形ID集合")
     private String[] stateIds;
     @ApiModelProperty(value = "单位项目关联ID")
-    private List<String> projUnitIds;
+    private List<String> unitProjIds;
 
     @ApiModelProperty(value = "智能引导主题ID")
     private String itThemeId;

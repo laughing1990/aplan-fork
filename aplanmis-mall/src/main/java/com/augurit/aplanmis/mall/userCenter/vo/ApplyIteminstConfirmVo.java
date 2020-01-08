@@ -55,8 +55,6 @@ public class ApplyIteminstConfirmVo {
 
     public static ApplyIteminstConfirmVo formatGuide(GuideDetailVo detail) {
         ApplyIteminstConfirmVo vo=new ApplyIteminstConfirmVo();
-        vo.setCoreIteminstList(detail.getOptionItems());
-        vo.setParallelIteminstList(detail.getParallelItems());
 
         vo.setApplyThemeId(detail.getAeaHiGuide().getThemeId());
         vo.setApplyThemeName(detail.getAeaHiGuide().getThemeName());
