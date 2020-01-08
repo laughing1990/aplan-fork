@@ -298,8 +298,8 @@ public class RestParallerApplyController {
     public ContentResultForm listItemAndStateByStageId(@Valid @RequestBody StageStateParamVo stageStateParamVo) {
         try {
             Map<String,List<AeaGuideItemVo>> map=new HashMap<>(2);
-            List<AeaGuideItemVo> coreItemList = restParallerApplyService.listItemByStageIdAndStateList(stageStateParamVo,"1");//并行
-            List<AeaGuideItemVo> parallelItemList = restParallerApplyService.listItemByStageIdAndStateList(stageStateParamVo,"0");//并联
+            List<AeaGuideItemVo> coreItemList = restParallerApplyService.listItemByStageIdAndStateList(stageStateParamVo,"1",null);//并行
+            List<AeaGuideItemVo> parallelItemList = restParallerApplyService.listItemByStageIdAndStateList(stageStateParamVo,"0",null);//并联
             map.put("coreItemList",coreItemList);
             map.put("parallelItemList",parallelItemList);
             return new ContentResultForm(true,map);
