@@ -616,10 +616,10 @@ public class AeaParStageService {
         if ("0".equals(applySubject)) { //申报主体为个人
             aeaLinkmanInfoService.insertApplyAndLinkProjLinkman(applyinstId, projInfoIds, applyLinkmanId, linkmanInfoId);
         } else {
-            AeaApplyinstUnitProj aeaApplyinstUnitProj = new AeaApplyinstUnitProj();
-            aeaApplyinstUnitProj.setApplyinstId(applyinstId);
             if (unitPorjIds==null||unitPorjIds.size()==0) return;
             unitPorjIds.stream().forEach(unitPorId->{
+                AeaApplyinstUnitProj aeaApplyinstUnitProj = new AeaApplyinstUnitProj();
+                aeaApplyinstUnitProj.setApplyinstId(applyinstId);
                 aeaApplyinstUnitProj.setUnitProjId(unitPorId);
                 List<AeaApplyinstUnitProj> aeaApplyinstUnitProjs = aeaApplyinstUnitProjMapper.listAeaApplyinstUnitProj(aeaApplyinstUnitProj);
                 if (aeaApplyinstUnitProjs==null||aeaApplyinstUnitProjs.size()==0){

@@ -210,7 +210,8 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
             stageinstId=aeaHiParStageinst.getStageinstId();
         }
         //4、情形实例
-        aeaHiParStateinstService.batchInsertAeaHiParStateinst(applyinstId, stageinstId, stateIds, SecurityContext.getCurrentUserName());
+        if(stateIds.length>0)
+            aeaHiParStateinstService.batchInsertAeaHiParStateinst(applyinstId, stageinstId, stateIds, SecurityContext.getCurrentUserName());
         //7.1、单位本身的申报主体
         aeaParStageService.insertApplySubject(aeaGuideApplyVo.getApplySubject(), applyinstId, new String[]{aeaGuideApplyVo.getProjInfoId()}, aeaGuideApplyVo.getUnitInfoId(), aeaGuideApplyVo.getLinkmanInfoId());
         //7.2、新增单位的申报主体
