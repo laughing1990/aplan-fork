@@ -896,104 +896,95 @@
         </span>
         </p>
       </h4>
-      <el-form :rules="model.rules" :model="model" ref="itemFormChk">
-        <p class="header-title mb20 mt40" v-show="model.parallelItems&&model.parallelItems.length>0">并联事项</p>
-        <el-table ref="parallelItemsTable"
-                  :data="model.parallelItems"
-                  border
-                  v-show="model.parallelItems&&model.parallelItems.length>0"
-                  class="matter-list mb20"
-                  row-key="itemId"
-                  :default-sort = "{prop: 'sortNo', order: 'ascending'}"
-                  style="width: 100%">
-          <el-table-column prop="sortNo" sortable label="事项名称" min-width="400" >
-            <template slot-scope="scope">
-              <p>
-                <span class="is-catalog" :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标准':'实施'}}</span>
-                {{scope.row.itemName}}
-                <span v-show="scope.row.isDone=='FINISHED'" class="isNewTag isDone">已通过</span>
-                <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isNewTag isDone">已通过</span>
-                <span v-show="scope.row.isDone=='HANDLING'" class="isNewTag isDoing">办理中</span>
-                <span v-show="scope.row.isRecommend==1&& scope.row.isDone=='UN_FINISHED'" class="isNewTag isRecommend">推荐办理</span>
-              </p>
-              <span class="item-dueNum">审批部门：{{scope.row.orgName?scope.row.orgName:'/'}}</span>
-              <span class="item-dueNum">审批时限：{{scope.row.dueNum}}个工作日</span>
-              <span class="item-dueNum" v-if="scope.row.resultMats&&scope.row.resultMats.length>0">结果物：
-              <el-tooltip class="item" effect="dark" content="" placement="top">
-                <span class="tooltip-span">{{scope.row.resultMats.length}}个</span>
-                <div slot="content">
-                  <p v-for="item in scope.row.resultMats" class="result-item">{{item.aeaMatCertName}}</p>
-                </div>
-              </el-tooltip>
-            </span>
-              <p class="not-region-data" v-if="scope.row.notRegionData">* 该事项与项目区划不匹配，暂无办理权限</p>
-            </template>
-          </el-table-column>
-          <el-table-column label="是否必办" width="85" align="center">
-            <template slot-scope="scope">
-              <span>{{scope.row.isDoneItem=='1'?'必办':'选办'}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="审批层级" width="160" >
-            <template slot-scope="scope">
-              <div v-if="scope.row.isCatalog==1">
-                <template v-if="scope.row.carryOutItems&&scope.row.carryOutItems.length>0">
-                  <el-select :disabled="scope.row.disabled" v-model="scope.row.itemVerId"
-                             placeholder="请选择活动区域">
-                    <el-option v-for="(item,indexOp) in scope.row.carryOutItems"
-                               :key="indexOp"
-                               :label="item.regionName"
-                               @click.native="getItemOrgId(scope.row,scope.$index,item,'parallel',false)" :value="item.itemVerId"></el-option>
-                  </el-select>
-                </template>
-                <template v-else>
-                  <el-select disabled="disabled" value="" placeholder="请选择活动区域">
-                    <el-option value="请选择活动区域"></el-option>
-                  </el-select>
-                </template>
+      <p class="header-title mb20 mt40" v-show="parallelItems&&parallelItems.length>0">并联事项</p>
+      <el-table ref="parallelItemsTable"
+                :data="parallelItems"
+                border
+                v-show="parallelItems&&parallelItems.length>0"
+                class="matter-list mb20"
+                row-key="itemId"
+                :default-sort = "{prop: 'sortNo', order: 'ascending'}"
+                style="width: 100%">
+        <el-table-column prop="sortNo" sortable label="事项名称" min-width="400" >
+          <template slot-scope="scope">
+            <p>
+              <span class="is-catalog" :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标准':'实施'}}</span>
+              {{scope.row.itemName}}
+              <span v-show="scope.row.isDone=='FINISHED'" class="isNewTag isDone">已通过</span>
+              <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isNewTag isDone">已通过</span>
+              <span v-show="scope.row.isDone=='HANDLING'" class="isNewTag isDoing">办理中</span>
+              <span v-show="scope.row.isRecommend==1&& scope.row.isDone=='UN_FINISHED'" class="isNewTag isRecommend">推荐办理</span>
+            </p>
+            <span class="item-dueNum">审批部门：{{scope.row.orgName?scope.row.orgName:'/'}}</span>
+            <span class="item-dueNum" v-if="scope.row.dueNum&&scope.row.dueNum>0">审批时限：{{scope.row.dueNum}}个工作日</span>
+            <span class="item-dueNum" v-if="scope.row.resultMats&&scope.row.resultMats.length>0">结果物：
+            <el-tooltip class="item" effect="dark" content="" placement="top">
+              <span class="tooltip-span">{{scope.row.resultMats.length}}个</span>
+              <div slot="content">
+                <p v-for="item in scope.row.resultMats" class="result-item">{{item.aeaMatCertName}}</p>
               </div>
-              <div v-else>
-                <span>{{scope.row.regionName}}</span>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label="智能引导选择"
-                           v-if="needIntelligence==true"
-                           align="center"
-                           width="120">
-            <template slot-scope="scope">
-              <el-checkbox disabled v-model="scope.row.isITSel"></el-checkbox>
-            </template>
-          </el-table-column>
-          <el-table-column label="申请人选择"
-                           align="center"
-                           width="100">
-            <template slot-scope="scope">
-              <el-form-item
-                :ref="scope.$index+'applySelOpinion'">
-                <el-checkbox :disabled="scope.row.selRequired" v-model="scope.row.isApplySel" @change="function(val){test(val,scope.row.isITSel,scope.row)}"></el-checkbox>
-              </el-form-item>
-            </template>
-          </el-table-column>
-          <el-table-column label="申请人意见"
-                           v-if="needIntelligence==true"
-                           align="center"
-                           width="160">
-            <template slot-scope="scope">
-              <el-form-item
-                :ref="scope.$index+scope.row.isApplySel"
-                :prop="'parallelItems.' + scope.$index + '.applySelOpinion'"
-                :rules='!scope.row.rules?model.rules.applySelOpinion:[]'>
-                <el-input required v-model="scope.row.applySelOpinion" placeholder="请输入意见"></el-input>
-              </el-form-item>
-            </template>
-          </el-table-column>
-        </el-table>
-        <p class="header-title mb20 mt40" v-show="model.coreItems&&model.coreItems.length>0">并行推进事项</p>
-        <el-table ref="coreItemsTable"
-                  :data="model.coreItems"
+            </el-tooltip>
+          </span>
+            <p class="not-region-data" v-if="scope.row.notRegionData">* 该事项与项目区划不匹配，暂无办理权限</p>
+          </template>
+        </el-table-column>
+        <el-table-column label="是否必办" width="85" align="center">
+          <template slot-scope="scope">
+            <span>{{scope.row.isDoneItem=='1'?'必办':'选办'}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="审批层级" width="160" >
+          <template slot-scope="scope">
+            <div v-if="scope.row.isCatalog==1">
+              <template v-if="scope.row.carryOutItems&&scope.row.carryOutItems.length>0">
+                <el-select :disabled="scope.row.disabled" v-model="scope.row.itemVerId"
+                           placeholder="请选择活动区域">
+                  <el-option v-for="(item,indexOp) in scope.row.carryOutItems"
+                             :key="indexOp"
+                             :label="item.regionName"
+                             @click.native="getItemOrgId(scope.row,scope.$index,item,'parallel',false)" :value="item.itemVerId"></el-option>
+                </el-select>
+              </template>
+              <template v-else>
+                <el-select disabled="disabled" value="" placeholder="请选择活动区域">
+                  <el-option value="请选择活动区域"></el-option>
+                </el-select>
+              </template>
+            </div>
+            <div v-else>
+              <span>{{scope.row.regionName}}</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="智能引导选择"
+                         v-if="needIntelligence==true"
+                         align="center"
+                         width="120">
+          <template slot-scope="scope">
+            <el-checkbox disabled v-model="scope.row.isITSel"></el-checkbox>
+          </template>
+        </el-table-column>
+        <el-table-column label="申请人选择"
+                         align="center"
+                         width="100">
+          <template slot-scope="scope">
+            <el-checkbox :disabled="scope.row.selRequired" v-model="scope.row.isApplySel"></el-checkbox>
+          </template>
+        </el-table-column>
+        <el-table-column label="申请人意见"
+                         v-if="needIntelligence==true"
+                         align="center"
+                         width="160">
+          <template slot-scope="scope">
+            <el-input required v-model="scope.row.applySelOpinion" placeholder="请输入意见"></el-input>
+          </template>
+        </el-table-column>
+      </el-table>
+      <p class="header-title mb20 mt40" v-show="coreItems&&coreItems.length>0">并行推进事项</p>
+      <el-table ref="coreItemsTable"
+                  :data="coreItems"
                   border
-                  v-show="model.coreItems&&model.coreItems.length>0"
+                  v-show="coreItems&&coreItems.length>0"
                   class="matter-list mb20"
                   :default-sort = "{prop: 'sortNo', order: 'ascending'}"
                   row-key="itemId"
@@ -1009,7 +1000,7 @@
                 <span v-show="scope.row.isRecommend==1&& scope.row.isDone=='UN_FINISHED'" class="isNewTag isRecommend">推荐办理</span>
               </p>
               <span class="item-dueNum">审批部门：{{scope.row.orgName?scope.row.orgName:'/'}}</span>
-              <span class="item-dueNum">审批时限：{{scope.row.dueNum}}个工作日</span>
+              <span class="item-dueNum" v-if="scope.row.dueNum&&scope.row.dueNum>0">审批时限：{{scope.row.dueNum}}个工作日</span>
               <span class="item-dueNum" v-if="scope.row.resultMats&&scope.row.resultMats.length>0">结果物：
               <el-tooltip class="item" effect="dark" content="" placement="top">
                 <span class="tooltip-span">{{scope.row.resultMats.length}}个</span>
@@ -1054,10 +1045,7 @@
                            align="center"
                            width="100">
             <template slot-scope="scope">
-              <el-form-item
-                :ref="scope.$index+'applySelOpinion1'">
-                <el-checkbox :disabled="scope.row.selRequired" v-model="scope.row.isApplySel" @change="function(val){test(val,scope.row.isITSel,scope.row)}"></el-checkbox>
-              </el-form-item>
+              <el-checkbox :disabled="scope.row.selRequired" v-model="scope.row.isApplySel"></el-checkbox>
             </template>
           </el-table-column>
           <el-table-column label="申请人意见"
@@ -1065,16 +1053,10 @@
                            align="center"
                            width="160">
             <template slot-scope="scope">
-              <el-form-item
-                :ref="scope.$index+scope.row.isApplySel+'coreItems'"
-                :prop="'coreItems.' + scope.$index + '.applySelOpinion'"
-                :rules='!scope.row.rules?model.rules.applySelOpinion:[]'>
-                <el-input required v-model="scope.row.applySelOpinion" placeholder="请输入意见"></el-input>
-              </el-form-item>
+              <el-input required v-model="scope.row.applySelOpinion" placeholder="请输入意见"></el-input>
             </template>
           </el-table-column>
         </el-table>
-      </el-form>
 
 
       <div class="footer-stage-btn">
@@ -1127,11 +1109,11 @@
       </table>
       <!-- 并联审批事项列表 -->
       <h4 class="mt60">事项清单</h4>
-      <p class="header-title mb20 mt40" v-show="model.parallelItems&&model.parallelItems.length>0">并联事项</p>
+      <p class="header-title mb20 mt40" v-show="parallelItems&&parallelItems.length>0">并联事项</p>
       <el-table ref="parallelItemsTableCheck"
-                :data="model.parallelItems"
+                :data="parallelItems"
                 border
-                v-show="model.parallelItems&&model.parallelItems.length>0"
+                v-show="parallelItems&&parallelItems.length>0"
                 class="matter-list mb20"
                 row-key="itemId"
                 :default-sort = "{prop: 'sortNo', order: 'ascending'}"
@@ -1139,7 +1121,6 @@
         <el-table-column prop="sortNo" sortable label="事项名称" min-width="400" >
           <template slot-scope="scope">
             <p>
-              <span class="is-catalog" :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标准':'实施'}}</span>
               {{scope.row.itemName}}
               <span v-show="scope.row.isDone=='FINISHED'" class="isNewTag isDone">已通过</span>
               <span v-show="scope.row.isDone=='AGREE_TOLERANCE'" class="isNewTag isDone">已通过</span>
@@ -1147,7 +1128,7 @@
               <span v-show="scope.row.isRecommend==1&& scope.row.isDone=='UN_FINISHED'" class="isNewTag isRecommend">推荐办理</span>
             </p>
             <span class="item-dueNum">审批部门：{{scope.row.orgName?scope.row.orgName:'/'}}</span>
-            <span class="item-dueNum">审批时限：{{scope.row.dueNum}}个工作日</span>
+            <span class="item-dueNum" v-if="scope.row.dueNum&&scope.row.dueNum>0">审批时限：{{scope.row.dueNum}}个工作日</span>
             <span class="item-dueNum" v-if="scope.row.resultMats&&scope.row.resultMats.length>0">结果物：
               <el-tooltip class="item" effect="dark" content="" placement="top">
                 <span class="tooltip-span">{{scope.row.resultMats.length}}个</span>
@@ -1169,14 +1150,14 @@
                          align="center"
                          width="120">
           <template slot-scope="scope">
-            <el-checkbox disabled v-model="scope.row.isITSel"></el-checkbox>
+            <el-checkbox disabled v-model="scope.row.intelliGuideChoose"></el-checkbox>
           </template>
         </el-table-column>
         <el-table-column label="申请人选择"
                          align="center"
                          width="100">
           <template slot-scope="scope">
-            <el-checkbox disabled v-model="scope.row.isApplySel"></el-checkbox>
+            <el-checkbox disabled v-model="scope.row.applicantChoose"></el-checkbox>
           </template>
         </el-table-column>
         <el-table-column label="申请人意见"
@@ -1184,15 +1165,15 @@
                          align="center"
                          width="160">
           <template slot-scope="scope">
-            <span>{{scope.row.applySelOpinion?scope.row.applySelOpinion:'暂无'}}</span>
+            <span>{{scope.row.applicantOpinion?scope.row.applicantOpinion:'暂无'}}</span>
           </template>
         </el-table-column>
       </el-table>
-      <p class="header-title mb20 mt40" v-show="model.coreItems&&model.coreItems.length>0">并行推进事项</p>
+      <p class="header-title mb20 mt40" v-show="coreItems&&coreItems.length>0">并行推进事项</p>
       <el-table ref="coreItemsTableCheck"
-                :data="model.coreItems"
+                :data="coreItems"
                 border
-                v-show="model.coreItems&&model.coreItems.length>0"
+                v-show="coreItems&&coreItems.length>0"
                 class="matter-list mb20"
                 :default-sort = "{prop: 'sortNo', order: 'ascending'}"
                 row-key="itemId"
@@ -1208,7 +1189,7 @@
               <span v-show="scope.row.isRecommend==1&& scope.row.isDone=='UN_FINISHED'" class="isNewTag isRecommend">推荐办理</span>
             </p>
             <span class="item-dueNum">审批部门：{{scope.row.orgName?scope.row.orgName:'/'}}</span>
-            <span class="item-dueNum">审批时限：{{scope.row.dueNum}}个工作日</span>
+            <span class="item-dueNum" v-if="scope.row.dueNum&&scope.row.dueNum>0">审批时限：{{scope.row.dueNum}}个工作日</span>
             <span class="item-dueNum" v-if="scope.row.resultMats&&scope.row.resultMats.length>0">结果物：
               <el-tooltip class="item" effect="dark" content="" placement="top">
                 <span class="tooltip-span">{{scope.row.resultMats.length}}个</span>
@@ -1230,14 +1211,14 @@
                          align="center"
                          width="120">
           <template slot-scope="scope">
-            <el-checkbox disabled v-model="scope.row.isITSel"></el-checkbox>
+            <el-checkbox disabled v-model="scope.row.intelliGuideChoose"></el-checkbox>
           </template>
         </el-table-column>
         <el-table-column label="申请人选择"
                          align="center"
                          width="100">
           <template slot-scope="scope">
-            <el-checkbox disabled v-model="scope.row.isApplySel"></el-checkbox>
+            <el-checkbox disabled v-model="scope.row.applicantChoose"></el-checkbox>
           </template>
         </el-table-column>
         <el-table-column label="申请人意见"
@@ -1245,7 +1226,7 @@
                          align="center"
                          width="160">
           <template slot-scope="scope">
-            <span>{{scope.row.applySelOpinion?scope.row.applySelOpinion:'暂无'}}</span>
+            <span>{{scope.row.applicantOpinion?scope.row.applicantOpinion:'暂无'}}</span>
           </template>
         </el-table-column>
       </el-table>
@@ -1341,7 +1322,7 @@
               <span v-show="scope.row.isRecommend==1&& scope.row.isDone=='UN_FINISHED'" class="isNewTag isRecommend">推荐办理</span>
             </p>
             <span class="item-dueNum">审批部门：{{scope.row.orgName?scope.row.orgName:'/'}}</span>
-            <span class="item-dueNum">审批时限：{{scope.row.dueNum}}个工作日</span>
+            <span class="item-dueNum" v-if="scope.row.dueNum&&scope.row.dueNum>0">审批时限：{{scope.row.dueNum}}个工作日</span>
             <span class="item-dueNum" v-if="scope.row.resultMats&&scope.row.resultMats.length>0">结果物：
               <el-tooltip class="item" effect="dark" content="" placement="top">
                 <span class="tooltip-span">{{scope.row.resultMats.length}}个</span>
@@ -1469,7 +1450,7 @@
               <span v-show="scope.row.isRecommend==1&& scope.row.isDone=='UN_FINISHED'" class="isNewTag isRecommend">推荐办理</span>
             </p>
             <span class="item-dueNum">审批部门：{{scope.row.orgName?scope.row.orgName:'/'}}</span>
-            <span class="item-dueNum">审批时限：{{scope.row.dueNum}}个工作日</span>
+            <span class="item-dueNum" v-if="scope.row.dueNum&&scope.row.dueNum>0">审批时限：{{scope.row.dueNum}}个工作日</span>
             <span class="item-dueNum" v-if="scope.row.resultMats&&scope.row.resultMats.length>0">结果物：
               <el-tooltip class="item" effect="dark" content="" placement="top">
                 <span class="tooltip-span">{{scope.row.resultMats.length}}个</span>

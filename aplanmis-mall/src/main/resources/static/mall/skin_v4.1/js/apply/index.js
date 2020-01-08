@@ -443,22 +443,25 @@ var parallelDeclare = new Vue({
       dybzspjdxh: '',
       itCoreItemList: [], // 智能引导选中并行事项
       itParallelItemList: [], // 智能引导选中并联事项
-      model: {
-        rules: {
-          // applySelOpinion: {required: true, message: "请输入意见", trigger: ["blur"]},
-        },
-        coreItems: [],
-        parallelItems: [],
-      },
+      isSelectItemState: '', // 部门确认部门辅导是否展示事项情形
+      guideId: '', // 部门辅导id
     }
   },
   mounted: function () {
     var _that = this;
-    if(this.parallelApplyinstId&&this.parallelApplyinstId!=''&&this.parallelApplyinstId!='null'){
-      _that.lookProjDetail();
-      _that.draftsProj = true;
-    }else if (_that.projInfoId&&_that.projInfoId != 'null') {
-      _that.searchProjAllInfo(); // 获取项目信息
+    // if(this.parallelApplyinstId&&this.parallelApplyinstId!=''&&this.parallelApplyinstId!='null'){
+    //   _that.lookProjDetail();
+    //   _that.draftsProj = true;
+    // }else if (_that.projInfoId&&_that.projInfoId != 'null') {
+    //   _that.searchProjAllInfo(); // 获取项目信息
+    // }
+    if(_that.guideId&&_that.guideId.length>0){
+      _that.getGuideProjInfo();
+      if(_that.isSelectItemState=='0'){
+        _that.declareStep = 4;
+      }else if(_that.isSelectItemState=='1') {
+        _that.declareStep = 5;
+      }
     }
   },
   created: function () {
@@ -483,17 +486,42 @@ var parallelDeclare = new Vue({
     }
   },
   methods: {
-    test: function(isApplySel,isITSel,rowData){
-      if(isApplySel!==isITSel){
-        rowData.rules=true
-      }else {
-        rowData.rules=false
-      }
+    // 部门或申请人确认
+    getGuideProjInfo: function(){
+      var _that = this;
+      var params = {
+        applyinstId: _that.parallelApplyinstId,
+        guideId: _that.guideId,
+        isSelectItemState: _that.isSelectItemState,
+        projInfoId: _that.projInfoId
+      };
+      request('', {
+        url: ctx + 'rest/userCenter/apply/guideItems/list',
+        type: 'get',
+        data: params
+      }, function (res) {
+        if (res.success) {
+          console.log(res);
+          if(res.content){
+            _that.parallelItems = res.content.parallelIteminstList;
+            _that.coreItems = res.content.coreIteminstList;
+          }
+        }else {
+          _that.$message({
+            message: res.message?res.message:'查询失败！',
+            type: 'error'
+          })
+        }
+      },function(res){
+        _that.$message({
+          message: res.message?res.message:'查询失败！',
+          type: 'error'
+        })
+      });
     },
     // 显示拆分工程
     getSplitShow: function(){
       this.isSplitDiaShow = true;
-      console.log(this.dybzspjdxh);
       if(this.dybzspjdxh&&this.dybzspjdxh!=''){
         if(this.dybzspjdxh.indexOf('2')>-1){
           this.projSplitForm.stageNo = '1';
@@ -592,12 +620,14 @@ var parallelDeclare = new Vue({
         "stageId": _that.stageId,
         "stateIds": _selStateIds
       };
+      _that.loading = true;
       request('', {
         url: ctx + 'rest/userCenter/apply/itGuide/item/list',
         type: 'post',
         ContentType: 'application/json',
         data: JSON.stringify(params)
       }, function (res) {
+        _that.loading = false;
         if (res.success) {
           console.log(res);
           _that.declareStep = 3;
@@ -613,6 +643,7 @@ var parallelDeclare = new Vue({
           })
         }
       },function(res){
+        _that.loading = false;
         _that.$message({
           message: res.message?res.message:'获取事项一单清失败！',
           type: 'error'
@@ -628,8 +659,8 @@ var parallelDeclare = new Vue({
       var aeaLinkmanInfo = this.applyObjectInfo.aeaLinkmanInfo;
       _that.stageList = [];
       _that.stateList = [];
-      _that.model.parallelItems = [];
-      _that.model.coreItems = [];
+      _that.parallelItems = [];
+      _that.coreItems = [];
       _that.guideList=[];
       _that.stageListBefore = [];
       if (_that.applyObjectInfo.role == 0) {
@@ -688,6 +719,7 @@ var parallelDeclare = new Vue({
           if(_that.gbhyShowMsg!=''){
             if (jiansheUnitFlag) {
               _that.isIntelligenceShow=true;
+              _that.getThemeList();
             } else {
               _that.$message({
                 message: '请完善申办主体单位信息',
@@ -746,9 +778,8 @@ var parallelDeclare = new Vue({
         _parentId = answerData.factorId ? answerData.factorId : 'ROOT';
         getUrl = 'rest/userCenter/apply/factor/child/list/' + _parentId;
         _that.projInfoDetail.themeId = answerData.themeId;
+        _that.themeId = answerData.themeId;
         if(answerData.themeId&&answerData.themeId!=''){
-          _that.projInfoDetail.themeId = answerData.themeId;
-          _that.themeId = answerData.themeId;
           _that.saveThemeAndNext('guide');
         }else {
           _that.stateList = [];
@@ -900,8 +931,8 @@ var parallelDeclare = new Vue({
         _applySubject = 0;
       }
       debugger;
-      if(_that.model.parallelItems.length>0){
-        _that.model.parallelItems.map(function(item){
+      if(_that.parallelItems.length>0){
+        _that.parallelItems.map(function(item){
           if(item.isApplySel||item.isITSel){
             if(!item.notRegionData){
               var _itemListItem = {
@@ -912,16 +943,19 @@ var parallelDeclare = new Vue({
                 isApplySel: item.isApplySel?'1':'0',
                 isITSel: item.isITSel?'1':'0',
               };
-              if(_that.needIntelligence){
-                _itItemList.push(_itemListItem);
-              }
               _itemList.push(_itemListItem);
+              if(_that.needIntelligence){
+                _itemListItem.itemVerId = item.guideItemVerId;
+                _itItemList.push(_itemListItem);
+              }else {
+                _itItemList = [];
+              }
             }
           }
         });
       }
-      if(_that.model.coreItems.length>0){
-        _that.model.coreItems.map(function(item){
+      if(_that.coreItems.length>0){
+        _that.coreItems.map(function(item){
           if(item.isApplySel||item.isITSel){
             if(!item.notRegionData){
               var _itemListItem = {
@@ -931,11 +965,14 @@ var parallelDeclare = new Vue({
                 itemVerId: item.itemVerId,
                 isApplySel: item.isApplySel?'1':'0',
                 isITSel: item.isITSel?'1':'0',
-              }
-              if(_that.needIntelligence){
-                _itItemList.push(_itemListItem);
-              }
+              };
               _itemList.push(_itemListItem);
+              if(_that.needIntelligence){
+                _itemListItem.itemVerId = item.guideItemVerId;
+                _itItemList.push(_itemListItem);
+              }else {
+                _itItemList = [];
+              }
             }
           }
         });
@@ -1534,6 +1571,8 @@ var parallelDeclare = new Vue({
       }
       this.projInfoId = theRequest.projInfoId;
       this.parallelApplyinstId = theRequest.applyinstId;
+      this.isSelectItemState = theRequest.applyState;
+      this.guideId = theRequest.guideId;
       return theRequest;
     },
     // keyword模糊查询项目信息
@@ -2129,9 +2168,9 @@ var parallelDeclare = new Vue({
       }, function (res) {
         if (res.success) {
           _that.loading = false;
-          _that.model.parallelItems = res.content.parallelItemList;
-          _that.model.coreItems = res.content.coreItemList;
-          _that.model.coreItems.map(function (item) {
+          _that.parallelItems = res.content.parallelItemList;
+          _that.coreItems = res.content.coreItemList;
+          _that.coreItems.map(function (item) {
             if (item) {
               if (typeof item.isITSel == 'undefined' || item.isITSel == undefined) {
                 Vue.set(item, 'isITSel', false);
@@ -2148,6 +2187,9 @@ var parallelDeclare = new Vue({
               if (typeof item.rules == 'undefined' || item.rules == undefined) {
                 Vue.set(item, 'rules', false);
               }
+              if (typeof item.guideItemVerId == 'undefined' || item.guideItemVerId == undefined) {
+                Vue.set(item, 'guideItemVerId', '');
+              }
               if(item.isDoneItem=='1'){
                 item.isApplySel = true;
               }
@@ -2162,13 +2204,14 @@ var parallelDeclare = new Vue({
               if(_that.needIntelligence==true&&_that.itCoreItemList&&_that.itCoreItemList.length>0){
                 _that.itCoreItemList.map(function (itItem) {
                   if(item.itemId == itItem.itemId){
+                    item.guideItemVerId = itItem.itemVerId;
                     item.isITSel = true;
                   }
                 });
               }
             }
           });
-          _that.model.parallelItems.map(function (item) {
+          _that.parallelItems.map(function (item) {
             if (item) {
               if (typeof item.isITSel == 'undefined' || item.isITSel == undefined) {
                 Vue.set(item, 'isITSel', false);
@@ -2185,6 +2228,9 @@ var parallelDeclare = new Vue({
               if (typeof item.rules == 'undefined' || item.rules == undefined) {
                 Vue.set(item, 'rules', false);
               }
+              if (typeof item.guideItemVerId == 'undefined' || item.guideItemVerId == undefined) {
+                Vue.set(item, 'guideItemVerId', '');
+              }
               if(item.isDoneItem=='1'&&item.isStateItem!=='1'){
                 item.selRequired = true;
               }
@@ -2199,6 +2245,7 @@ var parallelDeclare = new Vue({
               if(_that.needIntelligence==true&&_that.itParallelItemList&&_that.itParallelItemList.length>0){
                 _that.itParallelItemList.map(function (itItem) {
                   if(item.itemId == itItem.itemId){
+                    item.guideItemVerId = itItem.itemVerId;
                     item.isITSel = true;
                   }
                 });
@@ -2253,18 +2300,18 @@ var parallelDeclare = new Vue({
           }
         }
         // 清空情形下所对应并联事项
-        for (var i = 0; i < _that.model.parallelItems.length; i++) {
-          var obj = _that.model.parallelItems[i];
+        for (var i = 0; i < _that.parallelItems.length; i++) {
+          var obj = _that.parallelItems[i];
           if (obj && (obj.parStateId&&selStateIds.indexOf(obj.parStateId) == -1)) {
-            _that.model.parallelItems.splice(i, 1);
+            _that.parallelItems.splice(i, 1);
             i--
           }
         }
         // 清空情形下所对应并行事项
-        for (var i = 0; i < _that.model.coreItems.length; i++) {
-          var obj = _that.model.coreItems[i];
+        for (var i = 0; i < _that.coreItems.length; i++) {
+          var obj = _that.coreItems[i];
           if (obj && (obj.parStateId&&selStateIds.indexOf(obj.parStateId) == -1)) {
-            _that.model.coreItems.splice(i, 1);
+            _that.coreItems.splice(i, 1);
             i--
           }
         }
@@ -2420,15 +2467,15 @@ var parallelDeclare = new Vue({
 
             selStateIds = _that.getStatusListId();
             // 当前情形附带的并行事项列表
-            for (var i = 0; i < _that.model.coreItems.length; i++) { // 清空情形下所对应事项
-              var obj = _that.model.coreItems[i];
+            for (var i = 0; i < _that.coreItems.length; i++) { // 清空情形下所对应事项
+              var obj = _that.coreItems[i];
               if (obj._parStateId == 'undefined' || obj._parStateId == undefined) {
                 Vue.set(obj, '_parStateId', []);
               } else {
                 if (obj && (obj._parStateId.length == 1)) {
                   var str = obj._parStateId.join('.')
                   if (selStateIds.indexOf(str) == -1) {
-                    _that.model.coreItems.splice(i, 1);
+                    _that.coreItems.splice(i, 1);
                     i--
                   }
                 } else {
@@ -2459,15 +2506,15 @@ var parallelDeclare = new Vue({
                 _that.setImplementItem(item);
               });
             }
-            for (var i = 0; i < _that.model.parallelItems.length; i++) { // 清空情形下所对应并联事项
-              var obj = _that.model.parallelItems[i];
+            for (var i = 0; i < _that.parallelItems.length; i++) { // 清空情形下所对应并联事项
+              var obj = _that.parallelItems[i];
               if (obj._parStateId == 'undefined' || obj._parStateId == undefined) {
                 Vue.set(obj, '_parStateId', []);
               } else {
                 if (obj && (obj._parStateId.length == 1)) {
                   var str = obj._parStateId.join('.')
                   if (selStateIds.indexOf(str) == -1) {
-                    _that.model.parallelItems.splice(i, 1);
+                    _that.parallelItems.splice(i, 1);
                     i--
                   }
                 } else {
@@ -2515,7 +2562,7 @@ var parallelDeclare = new Vue({
                   }
                 });
               }
-              _that.parallelItemsSelItem(_that.model.parallelItems, item, 'autoGetSel');
+              _that.parallelItemsSelItem(_that.parallelItems, item, 'autoGetSel');
               _that.setImplementItem(item);
             });
           }
@@ -2558,8 +2605,8 @@ var parallelDeclare = new Vue({
               _that.setImplementItem(item);
             });
           }
-          _that.model.coreItems = _that.unique(_that.model.coreItems.concat(res.content.coreItemList), 'stage');
-          _that.model.parallelItems = _that.unique(_that.model.parallelItems.concat(res.content.itemList), 'stage');
+          _that.coreItems = _that.unique(_that.coreItems.concat(res.content.coreItemList), 'stage');
+          _that.parallelItems = _that.unique(_that.parallelItems.concat(res.content.itemList), 'stage');
         } else {
           _that.$message({
             message: '获取阶段下情形失败',
@@ -2692,7 +2739,7 @@ var parallelDeclare = new Vue({
     // 单项事项列表收取展开事项
     itemExpandChange: function (row, expandedRows) {
       var _that = this;
-      _that.model.coreItemsSelItem(expandedRows, row);
+      _that.coreItemsSelItem(expandedRows, row);
       expandedRows.map(function (item) {
         if (item.itemVerId == row.itemVerId) {
           _that.$refs.coreItemsTable.toggleRowSelection(row, true);
@@ -2896,8 +2943,8 @@ var parallelDeclare = new Vue({
         },function(){
           _that.stageFrontCheckFlag = false;
           _that.stateList = [];
-          _that.model.parallelItems=[];
-          _that.model.coreItems=[];
+          _that.parallelItems=[];
+          _that.coreItems=[];
         },sucessBtn,cancelBtn, 'error', true);
         return false;
       }
@@ -2912,10 +2959,10 @@ var parallelDeclare = new Vue({
       _that.paraParentllelItemVerIds = [];
       _that.propulsionBranchOrgMap = [];
       _that.branchOrgMap = [];
-      if (_that.model.coreItems.length > 0) {
+      if (_that.coreItems.length > 0) {
         selCoreItems = _that.$refs.coreItemsTable.selection; // 所有选择的并行审批事项
       }
-      if (_that.model.parallelItems.length > 0) {
+      if (_that.parallelItems.length > 0) {
         selItemVer = _that.$refs.parallelItemsTable.selection; // 所有选择的并联审批事项
       }
       // 并联itemVerids集合
