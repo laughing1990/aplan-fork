@@ -1,5 +1,7 @@
 package com.augurit.aplanmis.common.service.window.impl;
 
+import com.augurit.agcloud.bsc.domain.BscAttForm;
+import com.augurit.agcloud.bsc.sc.att.service.IBscAttService;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.security.user.OpuOmUser;
 import com.augurit.agcloud.framework.util.StringUtils;
@@ -7,6 +9,7 @@ import com.augurit.agcloud.opus.common.domain.OpuOmUserInfo;
 import com.augurit.agcloud.opus.common.mapper.OpuOmUserInfoMapper;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.window.AeaProjApplyAgentService;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.aplanmis.common.vo.agency.AeaUnitProjLinkmanVo;
@@ -59,7 +62,10 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
     private AeaUnitProjLinkmanMapper aeaUnitProjLinkmanMapper;
 
     @Autowired
-    private AeaLinkmanInfoMapper aeaLinkmanInfoMapper;
+    private IBscAttService bscAttService;
+
+    @Autowired
+    private FileUtilsService fileUtilsService;
 
     public void saveAeaProjApplyAgent(AeaProjApplyAgent aeaProjApplyAgent) throws Exception{
         if(aeaProjApplyAgent != null){
@@ -135,6 +141,7 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
 
             String projInfoId = aeaProjApplyAgent.getProjInfoId();
             String unitInfoId = aeaProjApplyAgent.getUnitInfoId();
+            String agentApplyState = aeaProjApplyAgent.getAgentApplyState();
             AeaProjInfo projInfo = aeaProjInfoMapper.getAeaProjInfoById(projInfoId);
             AeaUnitInfo unitInfo = aeaUnitInfoMapper.getAeaUnitInfoById(unitInfoId);
             //项目单位信息
@@ -162,6 +169,15 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
                             }
                         }
                     }
+                }
+            }
+            //已签章的文件
+            if("3".equals(agentApplyState)||"4".equals(agentApplyState)){
+                List<BscAttForm> bscAttForms = bscAttService.listAttLinkAndDetailByTablePKRecordId("AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID", applyAgentId, SecurityContext.getCurrentOrgId());
+                if(bscAttForms != null && bscAttForms.size() > 0){
+                    BscAttForm bscAttForm = bscAttForms.get(0);
+                    aeaProjApplyAgent.setAgreementFileName(bscAttForm.getAttName());
+                    aeaProjApplyAgent.setDetailId(bscAttForm.getDetailId());
                 }
             }
             this.setAgentStageName(aeaProjApplyAgent);
@@ -207,6 +223,22 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
             result = aeaServiceWindowUserMapper.listAeaServiceWindowUserByWindowIdsAndRootOrgId(winIds.toArray(new String[winIds.size()]),currentOrgId);
         }
         return result;
+    }
+
+    /**
+     * 删除代办协议
+     * @param agreementCode
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public boolean deleteAgreementFile(String agreementCode) throws Exception{
+        List<BscAttForm> bscAttForms = bscAttService.listAttLinkAndDetailByTablePKRecordId("AEA_PROJ_APPLY_AGENT", "AGREEMENT_CODE", agreementCode, SecurityContext.getCurrentOrgId());
+        if(bscAttForms != null && bscAttForms.size() > 0){
+            BscAttForm bscAttForm = bscAttForms.get(0);
+            return fileUtilsService.deleteAttachment(bscAttForm.getDetailId());
+        }
+        return false;
     }
 
     private void setAgentStageName(AeaProjApplyAgent aeaProjApplyAgent){

@@ -36,4 +36,7 @@ public interface AeaProjApplyAgentService {
     public boolean checkAgreementCodeUnique(String agreementCode);
 
     public List<AeaServiceWindowUser> getCurrAgencyWinUserList();
+
+    public boolean deleteAgreementFile(String agreementCode) throws Exception;
+
 }
