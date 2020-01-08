@@ -320,6 +320,59 @@
         AND IS_DELETED = '0'
     </select>
 
+    <select id="findAeaProjInfoByUserPrev" resultType="AeaProjInfo">
+        select
+        <include refid="allColumnsAlias">
+            <property name="alias" value="proj"></property>
+        </include>
+        from aea_proj_info proj
+        left aea_unit_proj aup on proj.proj_info_id=aup.proj_info_id
+        where
+        proj.IS_DELETED = '0'
+        <if test="unitInfoId!=null and unitInfoId!=''">
+            and aup.unit_info_id=#{unitInfoId}
+        </if>
+        <if test="unitInfoId==null or unitInfoId==''">
+            and proj.proj_info_id is null
+        </if>
+        <if test="keyword!=null and keyword!=''">
+            AND(proj.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR proj.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR proj.CENTRAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR proj.GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%'))
+        </if>
+        <if test="rootOrgId != null and rootOrgId !=''">
+            AND proj.ROOT_ORG_ID = #{rootOrgId}
+        </if>
+
+        union
+
+        select
+        <include refid="allColumnsAlias">
+            <property name="alias" value="proj"></property>
+        </include>
+        from aea_proj_info proj
+        left aea_proj_linkman apl on proj.proj_info_id=apl.proj_info_id
+        where
+        proj.IS_DELETED = '0'
+        <if test="linkmanInfoId!=null and linkmanInfoId!=''">
+            and apl.linkman_info_id=#{linkmanInfoId}
+        </if>
+        <if test="linkmanInfoId==null or linkmanInfoId==''">
+            and proj.proj_info_id is null
+        </if>
+        <if test="keyword!=null and keyword!=''">
+            AND(proj.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR proj.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR proj.CENTRAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR proj.GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%'))
+        </if>
+        <if test="rootOrgId != null and rootOrgId !=''">
+            AND proj.ROOT_ORG_ID = #{rootOrgId}
+        </if>
+
+    </select>
+
     <select id="findAeaProjInfoByKeyword" resultType="AeaProjInfo">
         select
         <include refid="allColumnsAlias">

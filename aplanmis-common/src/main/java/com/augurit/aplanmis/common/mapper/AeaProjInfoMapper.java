@@ -40,6 +40,8 @@ public interface AeaProjInfoMapper {
 
     List<AeaProjInfo> findAeaProjInfoByKeyword(@Param("keyword") String keyword, @Param("rootOrgId") String rootOrgId);
 
+    List<AeaProjInfo> findAeaProjInfoByUserPrev(@Param("keyword")String keyWord, @Param("unitInfoId") String unitInfoId,@Param("linkmanInfoId")  String linkmanInfoId,@Param("rootOrgId")  String currentOrgId);
+
     List<AeaProjInfo> findApplyProj(@Param("applyinstId") String applyinstId);
 
     List<AeaProjInfo> findChildProj(@Param("projInfoId") String projInfoId);

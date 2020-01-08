@@ -18,10 +18,9 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
@@ -112,14 +111,17 @@ private static Logger logger = LoggerFactory.getLogger(AeaProjApplyAgentControll
         logger.debug("获取代办委托协议，查询关键字为{}", applyAgentId);
         try {
             if(StringUtils.isNotBlank(applyAgentId)){
-                //先根据applyAgentId找detailId，如果有则表示协议已存储进mongodb，根据detailId在mongodb获取协议文件
-                String[] ids = {applyAgentId};
-                List<BscAttForm> forms = fileUtilsService.getAttachmentsByRecordId(ids, "AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID");
+                //先根据agreementCode找detailId，如果有则表示协议已存储进mongodb，根据detailId在mongodb获取协议文件
+                AeaProjApplyAgent agreementDetail = aeaProjApplyAgentService.getAgencyAgreementDetail(applyAgentId);
+                if(agreementDetail == null){
+                    throw new Exception("代办申请不存在。");
+                }
+                String[] recordIds = {agreementDetail.getAgreementCode()};
+                List<BscAttForm> forms = fileUtilsService.getAttachmentsByRecordId(recordIds, "AEA_PROJ_APPLY_AGENT", "AGREEMENT_CODE");
                 if(forms != null && forms.size() > 0){
                     fileUtilsService.readFile(forms.get(0).getDetailId(),null,resp);
                 }else{
                     //协议没有存储到mongodb，动态生成一份。代办中心（乙方）签章之后要将委托协议存储到mongodb。
-                    AeaProjApplyAgent agreementDetail = aeaProjApplyAgentService.getAgencyAgreementDetail(applyAgentId);
                     String str = ReceivePDFTemplate.createAgencyAgreement(agreementDetail);
                     //读取指定路径下的pdf文件
                     File file = new File(str);
@@ -135,6 +137,31 @@ private static Logger logger = LoggerFactory.getLogger(AeaProjApplyAgentControll
         }catch (Exception e){
             e.printStackTrace();
             logger.error(e.getMessage(), e);
+        }
+    }
+
+    @PostMapping("uploadAgreementFile")
+    @ApiOperation(value = "代办申请 --> 代办协议上传")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "代办申请ID", name = "applyAgentId", required = true, dataType = "string")
+    })
+    public ContentResultForm uploadFile(String applyAgentId, HttpServletRequest request) {
+        ContentResultForm resultForm = new ContentResultForm(false);
+        try {
+            AeaProjApplyAgent agreementDetail = aeaProjApplyAgentService.getAgencyAgreementDetail(applyAgentId);
+            if(agreementDetail == null){
+                resultForm.setMessage("代办申请不存在。");
+            }else{
+                String agreementCode = agreementDetail.getAgreementCode();
+                aeaProjApplyAgentService.deleteAgreementFile(agreementCode);
+                fileUtilsService.uploadAttachments("AEA_PROJ_APPLY_AGENT", "AGREEMENT_CODE", agreementCode,null, request);
+                resultForm.setSuccess(true);
+                resultForm.setMessage("上传成功。");
+            }
+            return resultForm;
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ContentResultForm(false,"","代办协议上传接口异常。");
         }
     }
 

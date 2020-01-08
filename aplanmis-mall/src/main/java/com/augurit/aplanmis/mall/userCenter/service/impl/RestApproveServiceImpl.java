@@ -207,6 +207,15 @@ public class RestApproveServiceImpl implements RestApproveService {
     }
 
     @Override
+    public PageInfo<AeaProjInfo> findAeaProjInfoByUserPrev(String keyWord,String unitInfoId,String linkmanInfoId,  int pageNum, int pageSize) throws Exception {
+        PageHelper.startPage(pageNum,pageSize);
+        List<AeaProjInfo> list = aeaProjInfoService.findAeaProjInfoByUserPrev(keyWord,unitInfoId,linkmanInfoId);
+        return new PageInfo<AeaProjInfo>(list);
+    }
+
+
+
+    @Override
     public ApplyDetailVo getApplyDetailByApplyinstIdAndProjInfoId(String applyinstId, String projInfoId,String isSeriesApprove,String iteminstId,HttpServletRequest request) throws Exception {
         ApplyDetailVo applyDetailVo = new ApplyDetailVo();
         String isNeedState = "1";

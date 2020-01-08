@@ -794,9 +794,10 @@
                   </el-tooltip>
                 </p>
                 <template v-if="stageListBefore&&stageListBefore.length">
-                  <el-radio-group v-model="stageId" @change="getStateList">
+                  <el-radio-group v-model="stageId">
                     <el-radio v-for="(item,ind) in stageListBefore"
                               :key="ind"
+                              @click.native="selStatus(item,ind,'guide')"
                               :value="item.stageId" :label="item.stageId">{{item.stageName}}
                     </el-radio>
                   </el-radio-group>
@@ -961,14 +962,14 @@
                          align="center"
                          width="120">
           <template slot-scope="scope">
-            <el-checkbox disabled v-model="scope.row.isITSel"></el-checkbox>
+            <el-checkbox disabled v-model="scope.row.intelliGuideChoose"></el-checkbox>
           </template>
         </el-table-column>
         <el-table-column label="申请人选择"
                          align="center"
                          width="100">
           <template slot-scope="scope">
-            <el-checkbox :disabled="scope.row.selRequired" v-model="scope.row.isApplySel"></el-checkbox>
+            <el-checkbox :disabled="scope.row.selRequired" v-model="scope.row.applicantChoose"></el-checkbox>
           </template>
         </el-table-column>
         <el-table-column label="申请人意见"
@@ -976,7 +977,7 @@
                          align="center"
                          width="160">
           <template slot-scope="scope">
-            <el-input required v-model="scope.row.applySelOpinion" placeholder="请输入意见"></el-input>
+            <el-input required v-model="scope.row.applicantOpinion" placeholder="请输入意见"></el-input>
           </template>
         </el-table-column>
       </el-table>
@@ -1038,14 +1039,14 @@
                            align="center"
                            width="120">
             <template slot-scope="scope">
-              <el-checkbox disabled v-model="scope.row.isITSel"></el-checkbox>
+              <el-checkbox disabled v-model="scope.row.intelliGuideChoose"></el-checkbox>
             </template>
           </el-table-column>
           <el-table-column label="申请人选择"
                            align="center"
                            width="100">
             <template slot-scope="scope">
-              <el-checkbox :disabled="scope.row.selRequired" v-model="scope.row.isApplySel"></el-checkbox>
+              <el-checkbox :disabled="scope.row.selRequired" v-model="scope.row.applicantChoose"></el-checkbox>
             </template>
           </el-table-column>
           <el-table-column label="申请人意见"
@@ -1053,7 +1054,7 @@
                            align="center"
                            width="160">
             <template slot-scope="scope">
-              <el-input required v-model="scope.row.applySelOpinion" placeholder="请输入意见"></el-input>
+              <el-input required v-model="scope.row.applicantOpinion" placeholder="请输入意见"></el-input>
             </template>
           </el-table-column>
         </el-table>
@@ -1084,27 +1085,27 @@
       <h4 class="mt60">项目/工程信息</h4>
       <table class="el-table th-table el-table--border">
         <tr>
-          <th><div class="cell">项目/工程代码</div></th>
+          <th width="200px"><div class="cell">项目/工程代码</div></th>
           <td><div class="cell">{{projInfoDetail.localCode?projInfoDetail.localCode:'暂无'}}</div></td>
         </tr>
         <tr>
-          <th><div class="cell">项目/工程名称</div></th>
+          <th width="200px"><div class="cell">项目/工程名称</div></th>
           <td><div class="cell">{{projInfoDetail.projName?projInfoDetail.projName:'暂无'}}</div></td>
         </tr>
       </table>
       <h4 class="mt60">项目类型和阶段</h4>
       <table class="el-table th-table el-table--border">
         <tr>
-          <th><div class="cell">智能引导选择项目类型</div></th>
-          <td><div class="cell">社会投资工程建设项目房屋建筑类</div></td>
-          <th><div class="cell">智能引导选择阶段</div></th>
-          <td><div class="cell">社会投资工程建设项目房屋建筑类</div></td>
+          <th width="200px"><div class="cell">智能引导选择项目类型</div></th>
+          <td><div class="cell">{{itThemeName!==''?itThemeName:themeName}}</div></td>
+          <th width="200px"><div class="cell">智能引导选择阶段</div></th>
+          <td><div class="cell">{{stageName}}</div></td>
         </tr>
         <tr>
-          <th><div class="cell">申请人选择项目类型</div></th>
-          <td><div class="cell">工程建设许可阶段</div></td>
-          <th><div class="cell">申请人选择阶段</div></th>
-          <td><div class="cell">工程建设许可阶段</div></td>
+          <th width="200px"><div class="cell">申请人选择项目类型</div></th>
+          <td><div class="cell">{{themeName}}</div></td>
+          <th width="200px"><div class="cell">申请人选择阶段</div></th>
+          <td><div class="cell">{{stageName}}</div></td>
         </tr>
       </table>
       <!-- 并联审批事项列表 -->
@@ -1241,27 +1242,27 @@
       <h4 class="mt60">项目/工程信息</h4>
       <table class="el-table th-table el-table--border">
         <tr>
-          <th><div class="cell">项目/工程代码</div></th>
+          <th width="200px"><div class="cell">项目/工程代码</div></th>
           <td><div class="cell">{{projInfoDetail.localCode?projInfoDetail.localCode:'暂无'}}</div></td>
         </tr>
         <tr>
-          <th><div class="cell">项目/工程名称</div></th>
+          <th width="200px"><div class="cell">项目/工程名称</div></th>
           <td><div class="cell">{{projInfoDetail.projName?projInfoDetail.projName:'暂无'}}</div></td>
         </tr>
       </table>
       <h4 class="mt60">项目类型和阶段</h4>
       <table class="el-table th-table el-table--border">
         <tr>
-          <th><div class="cell">部门选择项目类型</div></th>
-          <td><div class="cell">社会投资工程建设项目房屋建筑类</div></td>
-          <th><div class="cell">部门选择阶段</div></th>
-          <td><div class="cell">社会投资工程建设项目房屋建筑类</div></td>
+          <th width="200px"><div class="cell">部门选择项目类型</div></th>
+          <td><div class="cell">{{leaderThemeName}}</div></td>
+          <th width="200px"><div class="cell">部门选择阶段</div></th>
+          <td><div class="cell">{{stageName}}</div></td>
         </tr>
         <tr>
-          <th><div class="cell">申请人选择项目类型</div></th>
-          <td><div class="cell">工程建设许可阶段</div></td>
-          <th><div class="cell">申请人选择阶段</div></th>
-          <td><div class="cell">工程建设许可阶段</div></td>
+          <th width="200px"><div class="cell">申请人选择项目类型</div></th>
+          <td><div class="cell">{{themeName}}</div></td>
+          <th width="200px"><div class="cell">申请人选择阶段</div></th>
+          <td><div class="cell">{{stageName}}</div></td>
         </tr>
       </table>
       <!-- 并联审批事项列表 -->
@@ -1365,21 +1366,21 @@
                          align="center"
                          width="120">
           <template slot-scope="scope">
-            <el-checkbox disabled v-model="scope.row.isApplySel"></el-checkbox>
+            <el-checkbox disabled v-model="scope.row.applicantChoose"></el-checkbox>
           </template>
         </el-table-column>
         <el-table-column label="部门选择"
                          align="center"
                          width="100">
           <template slot-scope="scope">
-            <el-checkbox disabled v-model="scope.row.isApplySel"></el-checkbox>
+            <el-checkbox disabled v-model="scope.row.approveDeptChoose"></el-checkbox>
           </template>
         </el-table-column>
         <el-table-column label="部门意见"
                          align="center"
                          width="160">
           <template slot-scope="scope">
-            <span>{{scope.row.applySelOpinion?scope.row.applySelOpinion:'暂无'}}</span>
+            <span>{{scope.row.approveDeptOpinion?scope.row.approveDeptOpinion:'暂无'}}</span>
           </template>
         </el-table-column>
         <el-table-column label="申请人最终选择"
@@ -1486,21 +1487,21 @@
                          align="center"
                          width="120">
           <template slot-scope="scope">
-            <el-checkbox disabled v-model="scope.row.isApplySel"></el-checkbox>
+            <el-checkbox disabled v-model="scope.row.applicantChoose"></el-checkbox>
           </template>
         </el-table-column>
         <el-table-column label="部门选择"
                          align="center"
                          width="100">
           <template slot-scope="scope">
-            <el-checkbox disabled v-model="scope.row.isApplySel"></el-checkbox>
+            <el-checkbox disabled v-model="scope.row.approveDeptChoose"></el-checkbox>
           </template>
         </el-table-column>
         <el-table-column label="部门意见"
                          align="center"
                          width="160">
           <template slot-scope="scope">
-            <span>{{scope.row.applySelOpinion?scope.row.applySelOpinion:'暂无'}}</span>
+            <span>{{scope.row.approveDeptOpinion?scope.row.approveDeptOpinion:'暂无'}}</span>
           </template>
         </el-table-column>
         <el-table-column label="申请人最终选择"
@@ -2091,7 +2092,7 @@
       <span class="msg-dia">您可以使用智能引导选择项目类型和事项，请选择：</span>
       <span slot="footer" class="dialog-footer clearfix">
         <span class="fl go-next-msg">我已确定项目类型和事项，<a href="javascript:;" @click="saveProOrSmsinfo('1');needIntelligence=false;isIntelligenceShow=false;">继续申报</a></span>
-        <el-button class="fr" type="primary" @click="getGuideList();needIntelligence=true;isIntelligenceShow=false;">我需要智能引导</el-button>
+        <el-button class="fr" type="primary" @click="saveProOrSmsinfo('0');getGuideList();needIntelligence=true;isIntelligenceShow=false;">我需要智能引导</el-button>
       </span>
     </el-dialog>
     <!--是否需要智能引导 end-->

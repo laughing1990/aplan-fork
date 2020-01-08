@@ -69,8 +69,8 @@ public class ReceivePDFTemplate {
         // 设置边距，单位都是像素，换算大约1厘米=28.33像素
         document.setMargins(80, 80, 10, 10);
         // 设置pdf生成的路径
-//        StringBuffer str = ReceivePDFTemplate.pdfFilePath();
-        StringBuffer str = new StringBuffer("F:\\develop\\foshan20191120\\4、关于印发佛山市行政许可和公共服务事项流程标准应用规范的通知（ 佛政务〔2017〕81号）\\回执模板\\");
+        StringBuffer str = ReceivePDFTemplate.pdfFilePath();
+//        StringBuffer str = new StringBuffer("F:\\develop\\foshan20191120\\4、关于印发佛山市行政许可和公共服务事项流程标准应用规范的通知（ 佛政务〔2017〕81号）\\回执模板\\");
 
         str.append(aeaProjApplyAgent.getProjName()+"代办协议书");
 //        str.append((int) ((Math.random() * 9 + 1) * 1000));

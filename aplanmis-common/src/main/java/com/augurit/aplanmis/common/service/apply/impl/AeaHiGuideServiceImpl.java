@@ -17,11 +17,13 @@ import com.augurit.aplanmis.common.domain.AeaHiGuide;
 import com.augurit.aplanmis.common.domain.AeaHiGuideDetail;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaParStage;
+import com.augurit.aplanmis.common.domain.AeaParTheme;
 import com.augurit.aplanmis.common.domain.AeaParThemeVer;
 import com.augurit.aplanmis.common.domain.AeaSolicitItem;
 import com.augurit.aplanmis.common.mapper.AeaHiGuideDetailMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiGuideMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
+import com.augurit.aplanmis.common.mapper.AeaParThemeMapper;
 import com.augurit.aplanmis.common.mapper.AeaParThemeVerMapper;
 import com.augurit.aplanmis.common.mapper.AeaSolicitItemMapper;
 import com.augurit.aplanmis.common.service.apply.AeaHiGuideService;
@@ -56,6 +58,8 @@ public class AeaHiGuideServiceImpl implements AeaHiGuideService {
     private AeaItemBasicService aeaItemBasicService;
     @Autowired
     private AeaParThemeVerMapper aeaParThemeVerMapper;
+    @Autowired
+    private AeaParThemeMapper aeaParThemeMapper;
     @Autowired
     private AeaSolicitItemMapper aeaSolicitItemMapper;
     @Autowired
@@ -106,7 +110,10 @@ public class AeaHiGuideServiceImpl implements AeaHiGuideService {
 
         AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(aeaHiGuide.getStageId());
         AeaParThemeVer aeaParThemeVer = aeaParThemeVerMapper.getAeaParThemeVerById(aeaParStage.getThemeVerId());
+        AeaParTheme aeaParTheme = aeaParThemeMapper.getAeaParThemeByThemeVerId(aeaParThemeVer.getThemeVerId());
         aeaHiGuide.setThemeId(aeaParThemeVer.getThemeId());
+        aeaHiGuide.setStageName(aeaParStage.getStageName());
+        aeaHiGuide.setThemeName(aeaParTheme.getThemeName());
 
         List<AeaItemBasic> originItems = aeaItemBasicService.getAeaItemBasicListByStageId(aeaHiGuide.getStageId(), null, aeaHiGuide.getProjInfoId(), rootOrgId);
 
