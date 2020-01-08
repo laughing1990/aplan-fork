@@ -117,3 +117,9 @@
 .status-label i {
     line-height: 40px;
 }
+.el-checkbox__inner::after {
+    height: 8px;
+    left: 6px;
+    top: 2px;
+    border-width: 2px;
+}
