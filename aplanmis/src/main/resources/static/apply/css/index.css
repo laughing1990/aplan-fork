@@ -2195,7 +2195,7 @@ textarea {
   cursor: pointer;
 }
 
-.form-ubr-icon{
+.form-ubr-icon {
   position: absolute;
   bottom: 0px;
   right: 0px;
@@ -2229,7 +2229,7 @@ textarea {
   color: #fff;
 }
 
-.form-ul-icon{
+.form-ul-icon {
   position: absolute;
   width: 38px;
   height: 38px;
@@ -2241,30 +2241,30 @@ textarea {
   background: #DCDFE6;
 }
 
-.one-form-unit:hover .form-ul-icon{
+.one-form-unit:hover .form-ul-icon {
   background: #169AFF;
 }
 
-.one-form-unit:hover{
-  border:1px solid #169AFF;
+.one-form-unit:hover {
+  border: 1px solid #169AFF;
 }
 
-.one-form-unit:hover .form-ubr-icon{
+.one-form-unit:hover .form-ubr-icon {
   background: url(../imgs/f_state3.png);
 }
 
 .is-fill.one-form-unit,
-.is-fill.one-form-unit:hover{
+.is-fill.one-form-unit:hover {
   border: 1px solid #00C161;
 }
 
 .is-fill.one-form-unit:hover .form-ul-icon,
-.is-fill.one-form-unit .form-ul-icon{
+.is-fill.one-form-unit .form-ul-icon {
   background: #00C161;
 }
 
 .is-fill.one-form-unit .form-ubr-icon,
-.is-fill.one-form-unit:hover .form-ubr-icon{
+.is-fill.one-form-unit:hover .form-ubr-icon {
   background: url(../imgs/f_state2.png);
 }
 
@@ -2498,34 +2498,43 @@ textarea {
   color: #FFB822;
   font-size: 20px;
 }
+
 #approve.is-audit {
   padding: 24px 48px;
 }
-.au-form .el-collapse-item__wrap{
+
+.au-form .el-collapse-item__wrap {
   padding: 20px 20px 0px 5px;
 }
-.is-audit .right-bottom-btn{
+
+.is-audit .right-bottom-btn {
   right: 22px;
 }
-.is-audit .status-img-item{
+
+.is-audit .status-img-item {
   cursor: default;
 }
-.is-audit  .el-table .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner{
+
+.is-audit .el-table .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner {
   background-color: #409EFF;
   border-color: #409EFF;
 }
-.is-audit  .el-table .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner::after{
+
+.is-audit .el-table .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner::after {
   border-color: #fff;
 }
-.guide-finish-box{
+
+.guide-finish-box {
   padding: 20px 0;
 }
-.g-f-title{
+
+.g-f-title {
   position: relative;
   line-height: 20px;
   padding-left: 14px;
 }
-.g-f-title:before{
+
+.g-f-title:before {
   content: '';
   position: absolute;
   top: 2px;
@@ -2535,15 +2544,17 @@ textarea {
   border-radius: 3px;
   background: #169AFF;
 }
-.g-f-opinon{
+
+.g-f-opinon {
   margin-top: 14px;
   background: #F0F2F5;
   line-height: 20px;
   padding: 10px 20px;
   mine-height: 80px;
 }
+
 /*部门辅导end*/
-.toggle-form-icon{
+.toggle-form-icon {
   width: 36px;
   height: 36px;
   border-radius: 100%;

@@ -234,7 +234,8 @@
                      :label="item.projName+' （'+item.localCode+'）'" :value="item.projInfoId">
           </el-option>
         </el-select>
-        <el-button type="primary" :disabled="isDraftsProj" icon="icon ag ag-search" @click="linkQuery()">联网查询</el-button>
+        <el-button type="primary" :disabled="isDraftsProj" icon="icon ag ag-search" @click="linkQuery()">联网查询
+        </el-button>
       </el-form-item>
 
     </el-form>
@@ -322,7 +323,8 @@
                   审批行政区划
                 </template>
                 <el-select filterable v-model="projBascInfoShow.regionalism" placeholder="请选择审批行政区划">
-                  <el-option v-for="item in districtList" :key="item.id" :label="item.regionName" :value="item.regionId">
+                  <el-option v-for="item in districtList" :key="item.id" :label="item.regionName"
+                             :value="item.regionId">
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -384,7 +386,8 @@
               </el-form-item>
               <el-form-item class="input-inline" prop="isDesignSolution">
                 <template slot="label">
-                  <el-tooltip class="item" effect="dark" content="建设用地不带设计方案选“否”，建设用地带设计方案选“是”。" placement="right-start">
+                  <el-tooltip class="item" effect="dark" content="建设用地不带设计方案选“否”，建设用地带设计方案选“是”。"
+                              placement="right-start">
                     <i class="ag ag-help"></i>
                   </el-tooltip>
                   土地是否带设计方案
@@ -506,7 +509,9 @@
           </el-form>
           <p class="more-base-info" @click="showMoreBaseInfo=!showMoreBaseInfo">{{showMoreBaseInfo?'隐藏更多':'显示更多'}}<i
               :class="showMoreBaseInfo?'el-icon-arrow-up':'el-icon-arrow-down'"></i></p>
-          <el-button v-if="!isGuidePage" type="primary" icon="el-icon-wallet" class="fr" @click="saveOrUpdateProjFrom(true)">保存</el-button>
+          <el-button v-if="!isGuidePage" type="primary" icon="el-icon-wallet" class="fr"
+                     @click="saveOrUpdateProjFrom(true)">保存
+          </el-button>
         </el-collapse-item>
         <!--  基本信息  end  -->
         <template v-if="showMoreProjInfo">
@@ -549,7 +554,9 @@
                     <el-autocomplete :trigger-on-focus="false" :fetch-suggestions="querySearchLinkMan"
                                      v-model="applyPersonFrom.applyLinkmanName" @select="querySearchApplyLinkMan"
                                      placeholder="请输入申请人姓名">
-                      <el-button slot="append" v-if="!isGuidePage" @click.native="clearApplyLinkManInfo(true)" title="清空">清空</el-button>
+                      <el-button slot="append" v-if="!isGuidePage" @click.native="clearApplyLinkManInfo(true)"
+                                 title="清空">清空
+                      </el-button>
                     </el-autocomplete>
                   </el-form-item>
                 </el-col>
@@ -582,7 +589,9 @@
                     <el-autocomplete :trigger-on-focus="false" :disabled="sameAsApplyLink"
                                      :fetch-suggestions="querySearchLinkMan" @select="querySearchLinkLinkMan"
                                      v-model="applyPersonFrom.linkLinkmanName" placeholder="请输入联系人姓名">
-                      <el-button slot="append" v-if="!isGuidePage" @click.native="clearApplyLinkManInfo(false)" title="清空">清空</el-button>
+                      <el-button slot="append" v-if="!isGuidePage" @click.native="clearApplyLinkManInfo(false)"
+                                 title="清空">清空
+                      </el-button>
                     </el-autocomplete>
                   </el-form-item>
                 </el-col>
@@ -761,7 +770,8 @@
                   <!--</el-col>-->
                   <el-col :span="11" class="fl linkman-set">
                     <el-form-item label="人员设置" prop="induCommRegNum">
-                      <el-row class="linkman-set-item" v-for="(type,index) in jiansheFromItem.linkmanTypes" :key="index">
+                      <el-row class="linkman-set-item" v-for="(type,index) in jiansheFromItem.linkmanTypes"
+                              :key="index">
                         <el-col :span="2">
                           <el-button v-if="index==0&&!isGuidePage"
                                      icon="el-icon-circle-plus-outline"
@@ -970,7 +980,8 @@
                   <!--</el-col>-->
                   <el-col :span="11" class="fl linkman-set">
                     <el-form-item label="人员设置">
-                      <el-row class="linkman-set-item" v-for="(type,index) in jingbanUnitsItem.linkmanTypes" :key="index">
+                      <el-row class="linkman-set-item" v-for="(type,index) in jingbanUnitsItem.linkmanTypes"
+                              :key="index">
                         <el-col :span="2">
                           <el-button v-if="index==0"
                                      icon="el-icon-circle-plus-outline"
@@ -1091,7 +1102,8 @@
             <!--申报阶段或辅线服务 start-->
             <div class="col-status-z" :class="(colStatusActive==1)?'active':''" @click="setColStatusActive(1)"
                  v-show="statusLineList.length>1||statusList.length>0">
-              <p class="col-s-title content-center">{{((statusLineList.length>1)&&(statusList.length>0))?'选阶段或服务':'选阶段'}}
+              <p class="col-s-title content-center">
+                {{((statusLineList.length>1)&&(statusList.length>0))?'选阶段或服务':'选阶段'}}
               </p>
               <!--<div class="line-type" v-show="statusLineList.length>1">-->
               <!--<ul>-->
@@ -1172,7 +1184,8 @@
                     <!--<span class="pro-core-card"><span class="is-catalog is-green">绿道</span>绿色通道</span>-->
                   </div>
                 </div>
-                <el-table class="items-table" v-loading="parallelLoading" id="parallelItemsTable" ref="parallelItemsTable"
+                <el-table class="items-table" v-loading="parallelLoading" id="parallelItemsTable"
+                          ref="parallelItemsTable"
                           :data="parallelItems" border :expand-row-keys="showParallelItemsKey"
                           row-key="itemBasicId" tooltip-effect="dark" @select="parallelItemsSelItem"
                           @select-all="parallelItemsSelAll" :default-sort="{prop: 'sortNo', order: 'ascending'}"
@@ -1232,8 +1245,9 @@
                       <span v-show="scope.row.isDone=='HANDLING'" class="isTag isDoing">
                         <!--<i class="ag ag-edit-circle-fill"></i>-->
                         办理中</span>
-                      <span v-show="scope.row.isRecommend==1&&scope.row.isDone!='HANDLING'&&scope.row.isDone!='FINISHED'"
-                            class="isTag isRecommend">推荐办理</span>
+                      <span
+                          v-show="scope.row.isRecommend==1&&scope.row.isDone!='HANDLING'&&scope.row.isDone!='FINISHED'"
+                          class="isTag isRecommend">推荐办理</span>
                       <p class="not-region-data" v-if="scope.row.itemHaved">* 该实施事项已存在，请勿重复选择!</p>
                       <p class="not-region-data" v-if="scope.row.notRegionData">* 该事项无匹配的行政区划及实施主体</p>
                     </template>
@@ -1335,7 +1349,8 @@
                     <!-- 审批部门结果 -->
                     <el-table-column v-if="guideState>3" label="审批部门" prop="approveDeptChoose" width="140">
                       <template slot-scope="scope">
-                        <el-checkbox v-model="scope.row.approveDeptChoose" disabled>{{scope.row.approveDeptOpinion}}</el-checkbox>
+                        <el-checkbox v-model="scope.row.approveDeptChoose" disabled>{{scope.row.approveDeptOpinion}}
+                        </el-checkbox>
                       </template>
                     </el-table-column>
                     <!-- 审批部门填写意见 -->
@@ -1376,7 +1391,8 @@
                           :default-sort="{prop: 'sortNo', order: 'ascending'}" :expand-row-keys="showCoreItemsKey"
                           row-key="itemBasicId" @select="coreItemsSelItem" @select-all="coreItemsSelAll"
                           style="width: 100%">
-                  <el-table-column type="selection" :selectable='checkboxInit' align="center" width="55" v-if="!isGuidePage">
+                  <el-table-column type="selection" :selectable='checkboxInit' align="center" width="55"
+                                   v-if="!isGuidePage">
                   </el-table-column>
                   <el-table-column type="expand" width="5px" v-if="coreItemQuestionFlag&&!isGuidePage">
                     <template slot-scope="scope">
@@ -1428,8 +1444,9 @@
                       <span v-show="scope.row.isDone=='HANDLING'" class="isTag isDoing">
                         <!--<i class="ag ag-edit-circle-fill"></i>-->
                         办理中</span>
-                      <span v-show="scope.row.isRecommend==1&&scope.row.isDone!='HANDLING'&&scope.row.isDone!='FINISHED'"
-                            class="isTag isRecommend">推荐办理</span>
+                      <span
+                          v-show="scope.row.isRecommend==1&&scope.row.isDone!='HANDLING'&&scope.row.isDone!='FINISHED'"
+                          class="isTag isRecommend">推荐办理</span>
                       <p class="not-region-data" v-if="scope.row.itemHaved">* 该实施事项已存在，请勿重复选择!</p>
                       <p class="not-region-data" v-if="scope.row.notRegionData">* 该事项无匹配的行政区划及实施主体</p>
                     </template>
@@ -1530,7 +1547,8 @@
                     <!-- 审批部门结果 -->
                     <el-table-column v-if="guideState>3" label="审批部门" prop="approveDeptChoose" width="140">
                       <template slot-scope="scope">
-                        <el-checkbox v-model="scope.row.approveDeptChoose" disabled>{{scope.row.approveDeptOpinion}}</el-checkbox>
+                        <el-checkbox v-model="scope.row.approveDeptChoose" disabled>{{scope.row.approveDeptOpinion}}
+                        </el-checkbox>
                       </template>
                     </el-table-column>
                     <!-- 审批部门填写意见 -->
@@ -1574,7 +1592,8 @@
               <i class="header-icon el-icon-edit-outline"></i>一张表单
             </template>
             <div style="padding-right:40px;">
-              <div @click="showOneFormList=!showOneFormList" class="toggle-form-icon ag" :class="[showOneFormList?'ag-up':'ag-down']"></div>
+              <div @click="showOneFormList=!showOneFormList" class="toggle-form-icon ag"
+                   :class="[showOneFormList?'ag-up':'ag-down']"></div>
               <div class="of-u-states" @click="openOneFormDialog(allFormInfoList[0])">
                 <div class="of-u-icon ag ag-edit"></div>
                 <span>{{oneFormData[0].oneformName}}</span>
@@ -1602,27 +1621,27 @@
                 </div>
               </el-collapse-transition>
             </div>
-<!--            <div class="of-u-states">-->
-<!--              <div class="of-u-icon ag ag-edit"></div>-->
-<!--              <span>{{oneFormData[0].oneformName}}</span>-->
-<!--              <div class="of-u-state-box r c-f">-->
-<!--                <div class="of-u-b-text l">总共</div>-->
-<!--                <div class="of-u-b-number l">{{formAllNum}}</div>-->
-<!--                <div class="of-u-b-text l">已填</div>-->
-<!--                <div class="of-u-b-number green l">{{formFilledNum}}</div>-->
-<!--                <div class="of-u-b-text l">未填</div>-->
-<!--                <div class="of-u-b-number yellow l">{{formUnFillNum}}</div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="c-f">-->
-<!--              <div class="one-form-unit" v-for="u in allFormInfoList"-->
-<!--                   @click="openOneFormDialog(u)" :class="{'is-fill': u.isFilled}">-->
-<!--                <i class="of-state-icon ag" :class="!u.isFilled?'ag-edit-circle-fill':'ag-check-circle-fill'"></i>-->
-<!--                <div class="one-form-title" :title="u.partformName">{{u.formName}}</div>-->
-<!--                <span class="goto-fill-form" v-if="!u.isFilled">去填写</span>-->
-<!--                <span class="of-fill-time" v-if="u.isFilled">{{u.createTime|formatDate}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
+            <!--            <div class="of-u-states">-->
+            <!--              <div class="of-u-icon ag ag-edit"></div>-->
+            <!--              <span>{{oneFormData[0].oneformName}}</span>-->
+            <!--              <div class="of-u-state-box r c-f">-->
+            <!--                <div class="of-u-b-text l">总共</div>-->
+            <!--                <div class="of-u-b-number l">{{formAllNum}}</div>-->
+            <!--                <div class="of-u-b-text l">已填</div>-->
+            <!--                <div class="of-u-b-number green l">{{formFilledNum}}</div>-->
+            <!--                <div class="of-u-b-text l">未填</div>-->
+            <!--                <div class="of-u-b-number yellow l">{{formUnFillNum}}</div>-->
+            <!--              </div>-->
+            <!--            </div>-->
+            <!--            <div class="c-f">-->
+            <!--              <div class="one-form-unit" v-for="u in allFormInfoList"-->
+            <!--                   @click="openOneFormDialog(u)" :class="{'is-fill': u.isFilled}">-->
+            <!--                <i class="of-state-icon ag" :class="!u.isFilled?'ag-edit-circle-fill':'ag-check-circle-fill'"></i>-->
+            <!--                <div class="one-form-title" :title="u.partformName">{{u.formName}}</div>-->
+            <!--                <span class="goto-fill-form" v-if="!u.isFilled">去填写</span>-->
+            <!--                <span class="of-fill-time" v-if="u.isFilled">{{u.createTime|formatDate}}</span>-->
+            <!--              </div>-->
+            <!--            </div>-->
             <!--            <div class="fl" v-for="item in oneFormData" @click="showOneFormDialog(item.oneformName)">-->
             <!--              <p class="one-form-name ellipsis">-->
             <!--                <span class="icon el-icon-edit-outline"></span>-->
@@ -1946,7 +1965,8 @@
           </div>
 
           <el-tree :data="projTree" :props="projTreeDefaultProps" default-expand-all show-checkbox
-                   :expand-on-click-node="false" :check-on-click-node="true" highlight-current @node-click="selChildProj"
+                   :expand-on-click-node="false" :check-on-click-node="true" highlight-current
+                   @node-click="selChildProj"
                    @node-contextmenu="showRightBtnList" :check-strictly="true" :filter-node-method="filterProjNode"
                    ref="projTree">
             <span class="custom-tree-node" slot-scope="scope">
@@ -2311,7 +2331,8 @@
       </el-dialog>
       <!--  一张表单  end-->
       <!--  材料一张表单  start-->
-      <el-dialog @closed="uploadPercentage=0;progressDialogVisible=false" class="show-mat-form" :title="oneformNameTitle"
+      <el-dialog @closed="uploadPercentage=0;progressDialogVisible=false" class="show-mat-form"
+                 :title="oneformNameTitle"
                  width="750px" :visible.sync="matFormDialogVisible">
         <div>
           <div id="matFormContent"></div>
@@ -2433,14 +2454,16 @@
                       <el-col :span="12" class="inline-block border-left al-center opinion">
                       <span class="color-999"
                             v-if="matMendDialogData.correctState == 6 || matMendDialogData.correctState == 7">{{item.paperDueIninstOpinion || '暂无'}}</span>
-                        <el-input class="w98" placeholder="请输入意见" v-model="item.paperDueIninstOpinion" v-else></el-input>
+                        <el-input class="w98" placeholder="请输入意见" v-model="item.paperDueIninstOpinion"
+                                  v-else></el-input>
                       </el-col>
                       <el-col :span="3" class="inline-block border-left al-center delete">
                         <span class="color-999"
                               v-if="matMendDialogData.correctState == 6 || matMendDialogData.correctState == 7">
                             <i class="el-icon-delete color-999" style="cursor: not-allowed;"></i>
                         </span>
-                        <i class="el-icon-delete" @click="delTobaMakeupMaterialMend('isNeedOrign',item,index)" v-else></i>
+                        <i class="el-icon-delete" @click="delTobaMakeupMaterialMend('isNeedOrign',item,index)"
+                           v-else></i>
                       </el-col>
                     </el-row>
                     <el-row class="tb-item" v-if="item.isNeedCopy">
@@ -2461,7 +2484,8 @@
                               v-if="matMendDialogData.correctState == 6 || matMendDialogData.correctState == 7">
                             <i class="el-icon-delete color-999" style="cursor: not-allowed;"></i>
                         </span>
-                        <i class="el-icon-delete" @click="delTobaMakeupMaterialMend('isNeedCopy',item,index)" v-else></i>
+                        <i class="el-icon-delete" @click="delTobaMakeupMaterialMend('isNeedCopy',item,index)"
+                           v-else></i>
                       </el-col>
                     </el-row>
                     <el-row class="tb-item" v-if="item.isNeedElectron">
@@ -2566,22 +2590,22 @@
                   <p class="not-region-data" v-if="scope.row.notRegionData">* 该事项无匹配的行政区划及实施主体</p>
                 </template>
               </el-table-column>
-<!--              <el-table-column label="行政区划" width="100" prop="regionName">-->
-<!--                <template slot-scope="scope">-->
-<!--                  <div v-if="scope.row.isImplement==false">-->
-<!--                    <el-select v-model="scope.row.implementItemVerId"-->
-<!--                               placeholder="请选择行政区划">-->
-<!--                      <el-option v-for="(item,indexOp) in scope.row.carryOutItems" :label="item.regionName"-->
-<!--                                 :key="indexOp"-->
-<!--                                 @click.native="getItemOrgId(scope.row,scope.$index,item, 'core')||soSelectedOrg(scope.row,item)"-->
-<!--                                 :value="item.itemVerId"></el-option>-->
-<!--                    </el-select>-->
-<!--                  </div>-->
-<!--                  <div v-else>-->
-<!--                    <span>{{scope.row.regionName}}</span>-->
-<!--                  </div>-->
-<!--                </template>-->
-<!--              </el-table-column>-->
+              <!--              <el-table-column label="行政区划" width="100" prop="regionName">-->
+              <!--                <template slot-scope="scope">-->
+              <!--                  <div v-if="scope.row.isImplement==false">-->
+              <!--                    <el-select v-model="scope.row.implementItemVerId"-->
+              <!--                               placeholder="请选择行政区划">-->
+              <!--                      <el-option v-for="(item,indexOp) in scope.row.carryOutItems" :label="item.regionName"-->
+              <!--                                 :key="indexOp"-->
+              <!--                                 @click.native="getItemOrgId(scope.row,scope.$index,item, 'core')||soSelectedOrg(scope.row,item)"-->
+              <!--                                 :value="item.itemVerId"></el-option>-->
+              <!--                    </el-select>-->
+              <!--                  </div>-->
+              <!--                  <div v-else>-->
+              <!--                    <span>{{scope.row.regionName}}</span>-->
+              <!--                  </div>-->
+              <!--                </template>-->
+              <!--              </el-table-column>-->
               <el-table-column prop="orgName" label="实施主体" width="280">
                 <template slot-scope="scope">
                   <div v-if="scope.row.isImplement==false">
@@ -2622,22 +2646,22 @@
                   <p class="not-region-data" v-if="scope.row.notRegionData">* 该事项无匹配的行政区划及实施主体</p>
                 </template>
               </el-table-column>
-<!--              <el-table-column label="行政区划" width="100" prop="regionName">-->
-<!--                <template slot-scope="scope">-->
-<!--                  <div v-if="scope.row.isImplement==false">-->
-<!--                    <el-select v-model="scope.row.implementItemVerId"-->
-<!--                               placeholder="请选择行政区划">-->
-<!--                      <el-option v-for="(item,indexOp) in scope.row.carryOutItems" :label="item.regionName"-->
-<!--                                 :key="indexOp"-->
-<!--                                 @click.native="getItemOrgId(scope.row,scope.$index,item, 'core')||soSelectedOrg(scope.row,item)"-->
-<!--                                 :value="item.itemVerId"></el-option>-->
-<!--                    </el-select>-->
-<!--                  </div>-->
-<!--                  <div v-else>-->
-<!--                    <span>{{scope.row.regionName}}</span>-->
-<!--                  </div>-->
-<!--                </template>-->
-<!--              </el-table-column>-->
+              <!--              <el-table-column label="行政区划" width="100" prop="regionName">-->
+              <!--                <template slot-scope="scope">-->
+              <!--                  <div v-if="scope.row.isImplement==false">-->
+              <!--                    <el-select v-model="scope.row.implementItemVerId"-->
+              <!--                               placeholder="请选择行政区划">-->
+              <!--                      <el-option v-for="(item,indexOp) in scope.row.carryOutItems" :label="item.regionName"-->
+              <!--                                 :key="indexOp"-->
+              <!--                                 @click.native="getItemOrgId(scope.row,scope.$index,item, 'core')||soSelectedOrg(scope.row,item)"-->
+              <!--                                 :value="item.itemVerId"></el-option>-->
+              <!--                    </el-select>-->
+              <!--                  </div>-->
+              <!--                  <div v-else>-->
+              <!--                    <span>{{scope.row.regionName}}</span>-->
+              <!--                  </div>-->
+              <!--                </template>-->
+              <!--              </el-table-column>-->
               <el-table-column prop="orgName" label="实施主体" width="280">
                 <template slot-scope="scope">
                   <div v-if="scope.row.isImplement==false">
