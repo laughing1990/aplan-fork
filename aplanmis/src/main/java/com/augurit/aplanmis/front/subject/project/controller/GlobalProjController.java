@@ -482,19 +482,27 @@ public class GlobalProjController {
                 //关闭流
                 inT.close();
                 List<AeaProjInfo> projInfos = inT.readData();
-                for(AeaProjInfo proj:projInfos){
-                    //TODO 在SERVICE层处理导入的代办项目
-                }
-                // TODO 导入失败的数据暂存在session中
                 if(projInfos.size() > 0){
-//                request.getSession().setAttribute(FAILED_IMPORT_DATA_KEY,projInfos);
-                    //返回failImportData方便前端调用接口获取失败信息
-//                resultForm.setContent(FAILED_IMPORT_DATA_KEY);
+                    List<AeaProjInfo> failList = new ArrayList<>();
+                    for(AeaProjInfo proj:projInfos){
+                        ResultForm result = globalProjService.handleAgentPorjRelation(proj);
+                        if(!result.isSuccess()){
+                            proj.setFailMsg(result.getMessage());
+                            failList.add(proj);
+                        }
+                    }
+                    // 导入失败的数据暂存在session中
+                    if(failList.size() > 0){
+                        request.getSession().setAttribute(FAILED_IMPORT_DATA_KEY,failList);
+                        //返回failImportData方便前端调用接口获取失败信息
+                        resultForm.setContent(FAILED_IMPORT_DATA_KEY);
+                    }
                 }
                 resultForm.setSuccess(true);
                 resultForm.setMessage("导入成功！");
                 return resultForm;
             }catch (Exception e){
+                e.printStackTrace();
                 resultForm.setMessage("导入出错！" + e.getMessage());
                 return resultForm;
             }

@@ -57,7 +57,10 @@ public class ImportAgentProjTemplate extends ExcelTemplate<AeaProjInfo> {
 
         for (int i = startRow; i <= lastRowNum; i++) {
             row = sheet.getRow(i);
-            data.add(rowToObj(row));
+            AeaProjInfo aeaProjInfo = rowToObj(row);
+            if(aeaProjInfo != null){
+                data.add(aeaProjInfo);
+            }
         }
         return data;
     }
