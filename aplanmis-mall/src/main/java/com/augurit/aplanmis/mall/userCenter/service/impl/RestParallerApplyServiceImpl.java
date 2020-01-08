@@ -8,6 +8,7 @@ import com.augurit.aplanmis.common.constants.AeaHiApplyinstConstants;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.service.apply.AeaHiGuideDetailService;
 import com.augurit.aplanmis.common.service.apply.AeaHiGuideService;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutService;
@@ -32,6 +33,7 @@ import com.augurit.aplanmis.mall.userCenter.vo.AeaGuideItemVo;
 import com.augurit.aplanmis.mall.userCenter.vo.ApplyIteminstConfirmVo;
 import com.augurit.aplanmis.mall.userCenter.vo.StageStateParamVo;
 import com.github.pagehelper.PageHelper;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
@@ -72,6 +74,8 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
     private AeaProjInfoService aeaProjInfoService;
     @Autowired
     private AeaHiGuideService aeaHiGuideService;
+    @Autowired
+    private AeaHiGuideDetailService aeaHiGuideDetailService;
 
     @Override
     public ItemListVo listItemAndStateByStageId(String stageId, String projInfoId, String regionalism, String projectAddress,String isSelectItemState,String isFilterStateItem,String rootOrgId) throws Exception {
@@ -148,7 +152,14 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
     @Override
     public ApplyIteminstConfirmVo listGuideItemsByApplyinstId(String guideId,String applyinstId,String projInfoId, String isSelectItemState) throws Exception {
         GuideDetailVo detail = aeaHiGuideService.detail(guideId);
-        return ApplyIteminstConfirmVo.formatGuide(detail);
+        AeaProjInfo projInfo = aeaProjInfoService.getAeaProjInfoByProjInfoId(projInfoId);
+        ApplyIteminstConfirmVo vo=ApplyIteminstConfirmVo.formatGuide(detail);
+        vo.setProjInfoId(projInfo!=null?projInfo.getProjInfoId():"");
+        vo.setGcbm(projInfo!=null?projInfo.getGcbm():"");
+        vo.setProjName(projInfo!=null?projInfo.getProjName():"");
+        List<AeaHiGuideDetail> details = aeaHiGuideDetailService.queryGuideDetailByGuideIdAndDetailType(guideId, "s");
+        vo.setItThemeName(details.size()>0?details.get(0).getThemeName():"");
+        return vo;
     }
 
     @Autowired

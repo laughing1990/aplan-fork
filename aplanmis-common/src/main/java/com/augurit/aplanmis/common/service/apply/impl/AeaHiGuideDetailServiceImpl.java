@@ -41,4 +41,12 @@ public class AeaHiGuideDetailServiceImpl implements AeaHiGuideDetailService {
         aeaHiGuideDetailMapper.batchInsertAeaHiGuideDetail(list);
     }
 
+    @Override
+    public List<AeaHiGuideDetail> queryGuideDetailByGuideIdAndDetailType(String guideId, String detailType) {
+        AeaHiGuideDetail aeaHiGuideDetail=new AeaHiGuideDetail();
+        aeaHiGuideDetail.setGuideId(guideId);
+        aeaHiGuideDetail.setDetailType(detailType);
+        return aeaHiGuideDetailMapper.listAeaHiGuideDetail(aeaHiGuideDetail);
+    }
+
 }

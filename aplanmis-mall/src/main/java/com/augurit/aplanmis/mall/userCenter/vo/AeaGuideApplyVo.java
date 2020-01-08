@@ -40,6 +40,11 @@ public class AeaGuideApplyVo {
     @ApiModelProperty(value = "单位项目关联ID", required = true)
     private List<String> projUnitIds;
 
-
+    @ApiModelProperty(value = "智能引导主题ID")
+    private String itThemeId;
+    @ApiModelProperty(value = "智能引导主题版本ID", required = true)
+    private String itThemeVerId;
+    @ApiModelProperty(value = "智能引导阶段ID", required = true)
+    private String itStageId;
 
 }
