@@ -39,6 +39,60 @@
     font-size: 14px;
 }
 /*定义table 头部 end*/
+
+/*定dialog  str*/
+.el-dialog__header {
+    border: none;
+    height: 44px;
+    line-height: 44px;
+    color: #fff;
+    background: #457EFF;
+    padding: 0 15px;
+}
+.el-dialog__headerbtn:focus .el-dialog__close,
+.el-dialog__headerbtn:hover .el-dialog__close {
+    color: #fff;
+}
+.el-dialog__title,.el-dialog__headerbtn .el-dialog__close{
+    color: #ffffff;
+    line-height: 45px;
+}
+.el-dialog__headerbtn{
+    top: 1px;
+}
+.el-dialog__body {
+    padding: 30px 20px;
+    color: #606266;
+    font-size: 14px;
+    word-break: break-all;
+    background: #F5F5F5;
+}
+.el-dialog__footer {
+    padding: 10px 20px 20px;
+    background: #F5F5F5;
+}
+.AIleadCon{
+    background: #ffffff;
+    margin: 20px 20px;
+}
+.AIleadCon .title{
+    font-family: "微软雅黑 Regular", 微软雅黑;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 14px;
+    color: rgb(66, 147, 244);
+    padding: 20px;
+}
+.AIleadCon .stateList-form{
+    padding-left:20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+}
+.AIleadCon .status-label{
+    border-top: 1px solid;
+    border-color: #EEEEEE;
+}
+/*定dialog end*/
 .matter-title-wrapper{
     width: 1200px;
     height: 112px;
