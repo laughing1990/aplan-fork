@@ -55,8 +55,17 @@ public class AeaProjApplyAgentController {
         return modelAndView;
     }
 
+    @ApiOperation(value = "项目代办 --> 跳转并联申报页面", notes = "项目代办 --> 跳转并联申报页面")
+    @RequestMapping("toApplyIndex")
+    public ModelAndView toApplyIndex(String projInfoId) {
+        ModelAndView modelAndView = new ModelAndView("apply/index");
+        modelAndView.addObject("projInfoId",projInfoId);
+        modelAndView.addObject("isAgentProjApply",true);
+        return modelAndView;
+    }
+
     @ApiOperation(value = "项目代办 --> 保存代办信息或签订协议操作校验", notes = "项目代办 --> 保存代办信息或签订协议操作校验")
-    @RequestMapping("checkOpreatePermit")
+    @PostMapping("checkOpreatePermit")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applyAgentId",value = "代办申请ID",required = true,dataType = "String"),
             @ApiImplicitParam(name = "operateType",value = "操作类型，1表示保存代办信息操作，2表示签订协议操作",required = true,dataType = "String")
