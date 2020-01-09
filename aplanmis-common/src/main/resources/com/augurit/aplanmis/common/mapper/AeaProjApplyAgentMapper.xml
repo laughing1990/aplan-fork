@@ -16,6 +16,8 @@
     AGENT_USER_ID  agentUserId,
     AGENT_USER_NAME  agentUserName,
     AGENT_USER_MOBILE  agentUserMobile,
+    AGENT_STOP_AGREEMENT_FILE_ID  agentStopAgreementFileId,
+    AGENT_END_AGREEMENT_FILE_ID  agentEndAgreementFileId,
     AGREEMENT_CODE  agreementCode,
     AGREEMENT_SIGN_TIME agreementSignTime,
     START_TIME  startTime,
@@ -39,6 +41,8 @@
         ${alias}.AGENT_USER_ID  agentUserId,
         ${alias}.AGENT_USER_NAME  agentUserName,
         ${alias}.AGENT_USER_MOBILE  agentUserMobile,
+        ${alias}.AGENT_STOP_AGREEMENT_FILE_ID  agentStopAgreementFileId,
+        ${alias}.AGENT_END_AGREEMENT_FILE_ID  agentEndAgreementFileId,
         ${alias}.AGREEMENT_CODE  agreementCode,
         ${alias}.AGREEMENT_SIGN_TIME agreementSignTime,
         ${alias}.START_TIME  startTime,
@@ -121,6 +125,12 @@
             </if>
             <if test="agentUserMobile != null" >
                 AND    AGENT_USER_MOBILE = #{agentUserMobile}
+            </if>
+            <if test="agentStopAgreementFileId != null" >
+                AND    AGENT_STOP_AGREEMENT_FILE_ID = #{agentStopAgreementFileId}
+            </if>
+            <if test="agentEndAgreementFileId != null" >
+                AND    AGENT_END_AGREEMENT_FILE_ID = #{agentEndAgreementFileId}
             </if>
             <if test="agreementCode != null" >
                 AND    AGREEMENT_CODE = #{agreementCode}
@@ -228,8 +238,14 @@
             <if test="agentUserMobile != null" >
                 AND    agent.AGENT_USER_MOBILE = #{agentUserMobile}
             </if>
+            <if test="agentStopAgreementFileId != null" >
+                AND    agent.AGENT_STOP_AGREEMENT_FILE_ID = #{agentStopAgreementFileId}
+            </if>
+            <if test="agentEndAgreementFileId != null" >
+                AND    agent.AGENT_END_AGREEMENT_FILE_ID = #{agentEndAgreementFileId}
+            </if>
             <if test="agreementCode != null" >
-                AND    AGREEMENT_CODE = #{agreementCode}
+                AND    agent.AGREEMENT_CODE = #{agreementCode}
             </if>
             <if test="agreementSignTime != null" >
                 AND    AGREEMENT_SIGN_TIME = #{agreementSignTime}
@@ -269,9 +285,9 @@
 <!--5 新增实体对象 -->
 <insert id="insertAeaProjApplyAgent" parameterType="AeaProjApplyAgent" >
     insert into AEA_PROJ_APPLY_AGENT (
-APPLY_AGENT_ID  ,AGENT_CODE  ,PROJ_INFO_ID  ,UNIT_INFO_ID  ,APPLY_USER_ID  ,AGENT_STAGE_STATE  ,AGENT_APPLY_STATE  ,WINDOW_ID  ,AGENT_USER_ID  ,AGENT_USER_NAME  ,AGENT_USER_MOBILE  ,AGREEMENT_CODE  ,AGREEMENT_SIGN_TIME  ,START_TIME  ,END_TIME  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
+APPLY_AGENT_ID  ,AGENT_CODE  ,PROJ_INFO_ID  ,UNIT_INFO_ID  ,APPLY_USER_ID  ,AGENT_STAGE_STATE  ,AGENT_APPLY_STATE  ,WINDOW_ID  ,AGENT_USER_ID  ,AGENT_USER_NAME  ,AGENT_USER_MOBILE  ,AGENT_STOP_AGREEMENT_FILE_ID  ,AGENT_END_AGREEMENT_FILE_ID  ,AGREEMENT_CODE  ,AGREEMENT_SIGN_TIME  ,START_TIME  ,END_TIME  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
     )  values  (
-#{applyAgentId},#{agentCode},#{projInfoId},#{unitInfoId},#{applyUserId},#{agentStageState},#{agentApplyState},#{windowId},#{agentUserId},#{agentUserName},#{agentUserMobile},#{agreementCode},#{agreementSignTime},#{startTime},#{endTime},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+#{applyAgentId},#{agentCode},#{projInfoId},#{unitInfoId},#{applyUserId},#{agentStageState},#{agentApplyState},#{windowId},#{agentUserId},#{agentUserName},#{agentUserMobile},#{agentStopAgreementFileId},#{agentEndAgreementFileId},#{agreementCode},#{agreementSignTime},#{startTime},#{endTime},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
     )
 </insert>
     <!--6 修改实体对象 -->
@@ -310,6 +326,12 @@ APPLY_AGENT_ID  ,AGENT_CODE  ,PROJ_INFO_ID  ,UNIT_INFO_ID  ,APPLY_USER_ID  ,AGEN
             </if>
             <if test="agentUserMobile != null" >
                 AGENT_USER_MOBILE = #{agentUserMobile},
+            </if>
+            <if test="agentStopAgreementFileId != null" >
+                AGENT_STOP_AGREEMENT_FILE_ID = #{agentStopAgreementFileId},
+            </if>
+            <if test="agentEndAgreementFileId != null" >
+                AGENT_END_AGREEMENT_FILE_ID = #{agentEndAgreementFileId},
             </if>
             <if test="agreementCode != null" >
                 AGREEMENT_CODE = #{agreementCode},
@@ -361,6 +383,8 @@ APPLY_AGENT_ID  ,AGENT_CODE  ,PROJ_INFO_ID  ,UNIT_INFO_ID  ,APPLY_USER_ID  ,AGEN
         <result property="agentUserId" column="AGENT_USER_ID"/>
         <result property="agentUserName" column="AGENT_USER_NAME"/>
         <result property="agentUserMobile" column="AGENT_USER_MOBILE"/>
+        <result property="agentStopAgreementFileId" column="AGENT_STOP_AGREEMENT_FILE_ID"/>
+        <result property="agentEndAgreementFileId" column="AGENT_END_AGREEMENT_FILE_ID"/>
         <result property="agreementCode" column="AGREEMENT_CODE"/>
         <result property="agreementSignTime" column="AGREEMENT_SIGN_TIME"/>
         <result property="startTime" column="START_TIME"/>
