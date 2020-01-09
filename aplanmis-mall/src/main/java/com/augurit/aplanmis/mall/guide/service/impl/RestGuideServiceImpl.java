@@ -502,6 +502,7 @@ public class RestGuideServiceImpl implements RestGuideService {
         AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageId);
         vo.setStageName(aeaParStage.getStageName());
         vo.setDueNum(aeaParStage.getDueNum());
+        vo.setHandWay(aeaParStage.getHandWay());
         AeaParTheme aeaParTheme = aeaParThemeService.getAeaParThemeByThemeVerId(aeaParStage.getThemeVerId());
         vo.setThemeName(aeaParTheme.getThemeName());
         //情形
