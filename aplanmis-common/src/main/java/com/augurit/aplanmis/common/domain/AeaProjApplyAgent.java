@@ -140,4 +140,11 @@ public class AeaProjApplyAgent implements Serializable{
     @ApiModelProperty(name = "detailId", value = "生成的代办协议文件预览和下载的ID")
     private String detailId;
 
+    @ApiModelProperty(name = "agreementStopReason", value = "代办终止单终止原因")
+    private String agreementStopReason;
+
+    @ApiModelProperty(name = "agreementStopTime", value = "代办终止单终止日期")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", locale = "zh", timezone = "GMT+8")
+    private java.util.Date agreementStopTime;
 }
