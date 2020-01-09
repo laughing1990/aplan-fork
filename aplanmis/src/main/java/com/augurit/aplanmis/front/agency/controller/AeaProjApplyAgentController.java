@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,6 +44,14 @@ private static Logger logger = LoggerFactory.getLogger(AeaProjApplyAgentControll
 
     @Autowired
     private FileUtilsService fileUtilsService;
+
+    @ApiOperation(value = "项目代办 --> 跳转代办详情页面", notes = "项目代办 --> 跳转代办详情页面")
+    @RequestMapping("agencyProjDetail")
+    public ModelAndView agencyProjDetail(String applyAgentId) {
+        ModelAndView modelAndView = new ModelAndView("agency/agencyProjDetail");
+        modelAndView.addObject("applyAgentId",applyAgentId);
+        return modelAndView;
+    }
 
     /**
      * 保存或编辑项目代办申请
