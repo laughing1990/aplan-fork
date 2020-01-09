@@ -2557,6 +2557,99 @@ textarea {
   min-height: 80px;
 }
 
+.guide-org-list {
+  margin-top: 20px;
+}
+
+.org-state-e {
+  min-width: 20px;
+  line-height: 18px;
+  border: 1px solid #F0F2F5;
+  background: #F0F2F5;
+  text-align: center;
+  border-radius: 20px;
+  min-height: 20px;
+}
+
+.state-ex>div{
+  float: left;
+}
+
+.state-ex .g-text{
+  margin: 0 20px 0 10px;
+  color: #7F8590;
+  line-height: 20px;
+}
+.org-state-e.now{
+  border: 1px solid #169AFF;
+  background: #E6F4FF;
+}
+
+.org-state-e.finish{
+  border: 1px solid #00C161;
+  background: #00C161;
+  color: #fff;
+  font-size: 16px;
+}
+
+.g-org-box{
+  padding-left: 30px;
+  position: relative;
+  margin-top: 11px;
+}
+
+.g-org-box .org-state-e{
+  margin: 8px 12px 0 0;
+  height: 28px;
+  line-height: 26px;
+  color: #7F8590;
+  position: relative;
+  float: left;
+  padding: 0 15px;
+}
+
+.org-state-e.now{
+  color: #169AFF;
+}
+
+.g-org-box .org-state-e.ed{
+  color: #575962;
+  position: relative;
+  padding-left: 28px;
+}
+
+.org-state-e .gs-i{
+  display: none;
+}
+
+.org-state-e.ed .gs-i{
+  display:block;
+}
+
+.org-state-e .gs-i{
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background: #00C161;
+  text-align: center;
+  color: #fff;
+  line-height: 20px;
+  font-size: 16px;
+}
+
+.g-org-box .l-icon {
+  position: absolute;
+  top: 8px;
+  left: -1px;
+  width: 20px;
+  height: 18px;
+  margin-top: 4px;
+  background-image: url(../../approve/imgs/icon_1.png);
+}
+
 /*部门辅导end*/
 .toggle-form-icon {
   width: 36px;

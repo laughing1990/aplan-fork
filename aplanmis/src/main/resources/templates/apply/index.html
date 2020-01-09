@@ -1576,6 +1576,25 @@
                   <i :class="(coreItemsShowCount < coreItems.length)?'el-icon-arrow-down':'el-icon-arrow-up'"></i>
                 </p>
               </div>
+              <!--部门辅导展示所有部门和状态-->
+              <div v-if="isGuidePage&&guideState>2" class="guide-org-list">
+                <div class="state-ex c-f">
+                  <div class="org-state-e now"></div>
+                  <div class="g-text">当前部门</div>
+                  <div class="org-state-e ing"></div>
+                  <div class="g-text">待确认部门</div>
+                  <div class="org-state-e finish ag ag-check"></div>
+                  <div class="g-text">已确认部门</div>
+                </div>
+                <div class="g-org-box c-f">
+                  <i class="l-icon"></i>
+                  <div v-for="u in guideOrgList"
+                       class="org-state-e" :class="[guideStateToClass(u)]">
+                    <div class="gs-i"><i class="ag ag-check"></i></div>
+                    {{u.orgName}}
+                  </div>
+                </div>
+              </div>
               <!--部门辅导牵头部门意见展示-->
               <div v-if="isGuidePage&&(guideState==4||guideState==5)" class="guide-finish-box">
                 <div class="g-f-title">牵头部门意见</div>
@@ -1934,7 +1953,8 @@
             <el-button circle @click="leaderDeptPass">直接<br/>通过</el-button>
           </template>
           <template v-else-if="guideState==6">
-            <el-button circle @click="leaderDeptPass(true)">结束部<br/>门确认</el-button>
+            <el-button circle type="primary" @click="leaderDeptPass(true)">结束部<br/>门确认</el-button>
+            <el-button circle @click="openSoDialog">添加征<br/>询确认</el-button>
           </template>
         </template>
         <template v-if="bmCanGuide">
