@@ -1395,7 +1395,7 @@
                   <el-table-column type="selection" :selectable='checkboxInit' align="center" width="55"
                                    v-if="!isGuidePage" :key="Math.random()">
                   </el-table-column>
-                  <el-table-column :key="Math.random()" type="expand" width="5px" v-if="coreItemQuestionFlag&&!isGuidePage">
+                  <el-table-column type="expand" width="5px" v-if="coreItemQuestionFlag&&!isGuidePage">
                     <template slot-scope="scope">
                       <el-form :model="stateSelVal" class="expand-coreItem">
                         <el-form-item class="sel-status-item" :required="item.mustAnswer==1"
@@ -1453,7 +1453,7 @@
                     </template>
                   </el-table-column>
                   <!-- 非部门辅导表格列 -->
-                  <tempplate v-if="!isGuidePage" :key="Math.random()">
+                  <tempplate v-if="!isGuidePage">
                     <el-table-column :key="Math.random()" label="行政区划" width="200">
                       <template slot-scope="scope">
                         <div v-if="scope.row.isImplement==false">
@@ -1488,7 +1488,7 @@
                     </el-table-column>
                   </tempplate>
                   <!-- 部门辅导表格列 -->
-                  <template v-if="isGuidePage" :key="Math.random()">
+                  <template v-if="isGuidePage">
                     <el-table-column :key="Math.random()" label="是否必选" prop="isDoneItem" width="80px" align="center">
                       <template slot-scope="scope">
                         {{scope.row.isDoneItem=='1'?"必选":"非必选"}}
@@ -1531,7 +1531,7 @@
                       </template>
                     </el-table-column>
                     <!-- 牵头部门填写意见 -->
-                    <template :key="Math.random()" v-if="leaderDept&&(guideState<3||guideState==6)">
+                    <template v-if="leaderDept&&(guideState<3||guideState==6)">
                       <el-table-column :key="Math.random()" label="牵头部门选择" prop="bmChecked" width="80px" align="center">
                         <template slot-scope="scope">
                           <el-checkbox v-model="scope.row.bmChecked"
@@ -1554,7 +1554,7 @@
                       </template>
                     </el-table-column>
                     <!-- 审批部门填写意见 -->
-                    <template v-if="!leaderDept&&guideState==3" :key="Math.random()">
+                    <template v-if="!leaderDept&&guideState==3">
                       <el-table-column :key="Math.random()" label="审批部门选择" prop="bmChecked" width="80px" align="center">
                         <template slot-scope="scope">
                           <el-checkbox v-model="scope.row.bmChecked"
@@ -1577,7 +1577,7 @@
                 </p>
               </div>
               <!--部门辅导牵头部门意见展示-->
-              <div v-if="isGuidePage&&guideState==5" class="guide-finish-box">
+              <div v-if="isGuidePage&&(guideState==4||guideState==5)" class="guide-finish-box">
                 <div class="g-f-title">牵头部门意见</div>
                 <div class="g-f-opinon">
                   {{guideDetail.aeaHiGuide.leaderOrgOpinion||'无意见'}}
@@ -1929,10 +1929,10 @@
       <div class="right-bottom-btn" v-if="isGuidePage">
         <template v-if="leaderDept">
           <!--牵头部门按钮-->
-          <templte v-if="guideState==2||guideState==1">
+          <template v-if="guideState==2||guideState==1">
             <el-button circle type="primary" @click="openSoDialog">发起部<br/>门确认</el-button>
             <el-button circle @click="leaderDeptPass">直接<br/>通过</el-button>
-          </templte>
+          </template>
           <template v-else-if="guideState==6">
             <el-button circle @click="leaderDeptPass(true)">结束部<br/>门确认</el-button>
           </template>
