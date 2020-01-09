@@ -67,7 +67,7 @@ body {
 .el-form-item__label {
   line-height: 22px;
   color: #575962;
-  width: calc(100% - 150px);
+  width: calc(100% - 166px);
 }
 .el-autocomplete {
   line-height: 34px;
@@ -108,6 +108,10 @@ body {
   color: #fff;
   background: #1C9AFD;
   padding: 0 15px;
+}
+.el-dialog__header .el-dialog__title,
+.el-dialog__header .el-dialog__headerbtn .el-dialog__close {
+  color: #E0E3E9 !important;
 }
 .el-dialog__headerbtn:focus .el-dialog__close,
 .el-dialog__headerbtn:hover .el-dialog__close {
@@ -309,10 +313,9 @@ body {
 .matCorrectToBeConfigm .content .supplement-form .el-select {
   width: 100%;
 }
-#app .content .supplement-form .el-input.is-disabled .el-input__inner,
-.matCorrectToBeConfigm .content .supplement-form .el-input.is-disabled .el-input__inner {
-  border: 0;
-  background-color: #fff;
+#app .content .supplement-form .el-date-editor.el-input,
+.matCorrectToBeConfigm .content .supplement-form .el-date-editor.el-input {
+  width: 100%;
 }
 #app .content .supplement-form .half-item,
 .matCorrectToBeConfigm .content .supplement-form .half-item {
@@ -480,4 +483,62 @@ body {
 #app {
   max-width: 1268px;
   margin: 0 auto;
+}
+.agree-box {
+  width: 96%;
+  height: 44px;
+  line-height: 44px;
+}
+.agree-box .state-tag {
+  display: inline-block;
+  vertical-align: middle;
+  width: 58px;
+  height: 16px;
+  font-size: 12px;
+  background: #FFB822;
+  color: #fff;
+  border-radius: 4px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+}
+.agree-box a {
+  color: #139bff;
+}
+.tb-right-line {
+  border-right: 1px solid #ECEFF5;
+}
+.icon-th {
+  background: #139bff !important;
+  font-size: 22px;
+  text-align: center;
+  color: #fff;
+}
+table.line-table {
+  width: 100%;
+  font-size: 14px;
+  border: 1px solid #ECEFF5;
+  border-left: 0;
+  border-bottom: 0;
+  color: #515151;
+  border-radius: 4px;
+}
+table.line-table tbody th,
+table.line-table tbody td {
+  border-bottom: 1px solid #ECEFF5;
+}
+table.line-table tbody th {
+  font-weight: 400;
+  width: 44px;
+  text-align: left;
+  background: #F9FBFD;
+  height: 46px;
+  border-left: 1px solid #ECEFF5;
+  border-right: 1px solid #ECEFF5;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+table.line-table tbody td {
+  padding: 10px;
+  line-height: 24px;
 }

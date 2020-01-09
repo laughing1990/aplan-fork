@@ -22,7 +22,7 @@
   <div id="app" v-cloak v-loading.fullscreen.lock="mloading">
     <div class="content">
       <!-- 项目title -->
-      <div class="proj-name">
+      <div class="proj-name mb20">
         <span class="text">{{projInfoForm.projName}}</span>
       </div>
 
@@ -38,14 +38,13 @@
           </ul>
         </div>
         <!-- 右侧操作按钮栏 -->
-        <div class="right-bottom-btn">
-          <el-button circle  type="danger">不予</br>受理</el-button>
-          <el-button circle  type="primary">签订</br>协议</el-button>
-
+        <div class="right-bottom-btn" v-if="3>agencyDetailApiData.agentApplyState && formListIsDo">
+          <el-button circle type="danger" @click="refuseToAccept">不予</br>受理</el-button>
+          <el-button circle type="primary" @click="signAgreementFn">签订</br>协议</el-button>
         </div>
       </div>
-      <el-form :inline="true" :model="projInfoForm" :rules="rules" label-width="140px"
-        class="demo-form-inline supplement-form" ref="supplemetForm">
+      <el-form :inline="true" :model="projInfoForm" :rules="rules" label-width="160px"
+        class="demo-form-inline supplement-form" ref="projInfoForm">
         <el-collapse v-model="activeNames">
           <!--  项目单位信息  start  -->
           <el-collapse-item class="clearfix" name="1" id="projunitInfo">
@@ -53,47 +52,47 @@
               <i class="header-icon el-icon-document-copy"></i>项目单位信息
             </template>
             <el-form-item label="单位名称：" class="wt448">
-              <el-input placeholder="请填写单位名称" v-model="projInfoForm.applicant">
+              <el-input placeholder="请填写单位名称" disabled v-model="projInfoForm.applicant">
               </el-input>
             </el-form-item>
             <el-form-item label="单位地址：" class="wt448">
-              <el-input placeholder="请填写单位地址" v-model="projInfoForm.applicantDetailSite">
+              <el-input placeholder="请填写单位地址" disabled v-model="projInfoForm.applicantDetailSite">
               </el-input>
             </el-form-item>
             <el-form-item label="单位性质：" class="wt448">
-              <el-select v-model="projInfoForm.unitNature">
+              <el-select disabled v-model="projInfoForm.unitNature">
                 <el-option label="企业" value="1"></el-option>
                 <el-option label="事业单位" value="2"></el-option>
                 <el-option label="社会组织" value="3"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="电子邮箱：" class="wt448">
-              <el-input placeholder="请填写电子邮箱" v-model="projInfoForm.email">
+              <el-input placeholder="请填写电子邮箱" disabled v-model="projInfoForm.email">
               </el-input>
             </el-form-item>
             <el-row class="proj-addr-scope">
               <el-col :span="24">
                 <el-form-item class="wt32" label="项目负责人：">
-                  <el-input placeholder="请输入" v-model="projInfoForm.leaderName"></el-input>
+                  <el-input placeholder="请输入" disabled v-model="projInfoForm.leaderName"></el-input>
                 </el-form-item>
                 <el-form-item class="wt32 ml14" label="职务：">
-                  <el-input placeholder="请输入" v-model="projInfoForm.leaderDuty"></el-input>
+                  <el-input placeholder="请输入" disabled v-model="projInfoForm.leaderDuty"></el-input>
                 </el-form-item>
                 <el-form-item class="wt32 mlf24" label="联系方式：">
-                  <el-input placeholder="请输入" v-model="projInfoForm.leaderMobilePhone"></el-input>
+                  <el-input placeholder="请输入" disabled v-model="projInfoForm.leaderMobilePhone"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row class="proj-addr-scope">
               <el-col :span="24">
                 <el-form-item class="wt32" label="项目经办人：">
-                  <el-input placeholder="请输入" v-model="projInfoForm.operatorName"></el-input>
+                  <el-input placeholder="请输入" disabled v-model="projInfoForm.operatorName"></el-input>
                 </el-form-item>
                 <el-form-item class="wt32 ml14" label="职务：">
-                  <el-input placeholder="请输入" v-model="projInfoForm.operatorDuty"></el-input>
+                  <el-input placeholder="请输入" disabled v-model="projInfoForm.operatorDuty"></el-input>
                 </el-form-item>
                 <el-form-item class="wt32 mlf24" label="联系方式：">
-                  <el-input placeholder="请输入" v-model="projInfoForm.operatorMobilePhone"></el-input>
+                  <el-input placeholder="请输入" disabled v-model="projInfoForm.operatorMobilePhone"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -105,11 +104,11 @@
             <template slot="title">
               <i class="header-icon el-icon-document-copy"></i>项目基本信息
             </template>
-            <el-form-item label="项目名称" class="wt448" prop="projName">
-              <el-input class="btn-input" placeholder="请填写项目名称" v-model="projInfoForm.projName">
+            <el-form-item label="项目名称" class="wt448">
+              <el-input class="btn-input" disabled placeholder="请填写项目名称" v-model="projInfoForm.projName">
               </el-input>
             </el-form-item>
-            <el-form-item class="wt448" prop="localCode">
+            <el-form-item class="wt448">
               <template slot="label">
                 <el-tooltip class="item" effect="dark"
                   content="填写全国统一项目代码(参考“投资项目基本信息共享规范”中的“投资项目统一代码规范”)。如果项目没有全国统一代码，填写地方项目编码。" placement="right-start">
@@ -117,44 +116,46 @@
                 </el-tooltip>
                 项目代码
               </template>
-              <el-input v-model="projInfoForm.localCode" placeholder="请填写项目代码"></el-input>
+              <el-input disabled v-model="projInfoForm.localCode" placeholder="请填写项目代码"></el-input>
             </el-form-item>
-            <el-form-item class="wt448" label="项目地址：" prop="projAddr">
-              <el-input class="w-775" v-model="projInfoForm.projAddr" placeholder="请输入项目地址"></el-input>
+            <el-form-item class="wt448" label="项目地址：">
+              <el-input class="w-775" disabled v-model="projInfoForm.projAddr" placeholder="请输入项目地址"></el-input>
             </el-form-item>
-            <el-form-item class="wt448" label="项目重点级别：" prop="projLevel">
-              <el-select v-model="projInfoForm.projLevel">
+            <el-form-item class="wt448" label="项目重点级别：">
+              <el-select disabled v-model="projInfoForm.projLevel">
                 <el-option v-for="item in proJAllOptions.XM_PROJECT_LEVEL" :key="item.id" :label="item.itemName"
                   :value="item.itemCode">
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item class="wt448" label="投资总金额（万元）：" prop="investSum">
-              <el-input v-model="projInfoForm.investSum" placeholder="请填写总投资金额"></el-input>
+            <el-form-item class="wt448" label="投资总金额（万元）：">
+              <el-input disabled v-model="projInfoForm.investSum" placeholder="请填写总投资金额"></el-input>
             </el-form-item>
-            <el-form-item label="资金来源：" class="wt448" prop="financialSource">
-              <el-select v-model="projInfoForm.financialSource">
+            <el-form-item label="资金来源：" class="wt448">
+              <el-select disabled v-model="projInfoForm.financialSource">
                 <el-option v-for="item in proJAllOptions.XM_ZJLY" :key="item.id" :label="item.itemName"
                   :value="item.itemCode">
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item class="wt448" label="总建筑面积（m&sup2;）：" prop="foreignBuildingArea">
-              <el-input v-model="projInfoForm.foreignBuildingArea" placeholder="请填写建筑面积"></el-input>
+            <el-form-item class="wt448" label="总建筑面积（m&sup2;）：">
+              <el-input disabled v-model="projInfoForm.foreignBuildingArea" placeholder="请填写建筑面积"></el-input>
             </el-form-item>
-            <el-form-item label="土地性质：" class="wt448" prop="landSource">
-              <el-select v-model="projInfoForm.landSource">
+            <el-form-item label="土地性质：" class="wt448">
+              <el-select disabled v-model="projInfoForm.landSource">
                 <el-option v-for="item in proJAllOptions.XM_TDLY" :key="item.id" :label="item.itemName"
                   :value="item.itemCode">
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item class="wt100 mt10" label="项目简介：" prop="scaleContent">
-              <el-input class="w-775" v-model="projInfoForm.scaleContent" type="textarea" placeholder="请输入项目简介">
+            <el-form-item class="wt100 mt10" label="项目简介：">
+              <el-input class="w-775" rows="4" disabled v-model="projInfoForm.scaleContent" type="textarea"
+                placeholder="请输入项目简介">
               </el-input>
             </el-form-item>
-            <el-form-item class="wt100" label="项目当前进度：" prop="currentProgress">
-              <el-input class="w-775" v-model="projInfoForm.currentProgress" type="textarea" placeholder="请输入项目当前进度">
+            <el-form-item class="wt100" label="项目当前进度：">
+              <el-input class="w-775" disabled v-model="projInfoForm.currentProgress" type="textarea"
+                placeholder="请输入项目当前进度">
               </el-input>
             </el-form-item>
           </el-collapse-item>
@@ -165,46 +166,101 @@
             <template slot="title">
               <i class="header-icon el-icon-document-copy"></i>代办信息
             </template>
-            <el-form-item label="协议编号：" class="wt448">
-              <el-input placeholder="请填写协议编号">
+            <el-form-item label="协议编号：" class="wt448" prop="agreementCode">
+              <el-input placeholder="请填写协议编号" :disabled="agencyDetailApiData.agentApplyState >= 3"
+                v-model="projInfoForm.agreementCode" @blur="checkAgreementCode">
               </el-input>
             </el-form-item>
             <el-form-item label="委托单位：" class="wt448">
-              <el-input placeholder="请填写委托单位">
+              <el-input placeholder="请填写委托单位" disabled v-model="projInfoForm.unitName">
               </el-input>
             </el-form-item>
             <el-form-item label="委托代办项目名称：" class="wt448">
-              <el-input placeholder="请填写委托代办项目名称">
+              <el-input placeholder="请填写委托代办项目名称" disabled v-model="projInfoForm.projName">
               </el-input>
             </el-form-item>
             <el-form-item label="具体委托事项：" class="wt448">
-              <el-input placeholder="请填写具体委托事项">
+              <el-input placeholder="请填写具体委托事项" disabled v-model="projInfoForm.agentStageName">
               </el-input>
             </el-form-item>
             <el-form-item label="申请人姓名：" class="wt448">
-              <el-input placeholder="请填写申请人姓名">
+              <el-input placeholder="请填写申请人姓名" disabled v-model="projInfoForm.applyUserName">
               </el-input>
             </el-form-item>
             <el-form-item label="申请人联系方式：" class="wt448">
-              <el-input placeholder="请填写申请人联系方式">
+              <el-input placeholder="请填写申请人联系方式" disabled v-model="projInfoForm.applyUserPhone">
               </el-input>
             </el-form-item>
-            <el-form-item label="代办人员姓名：" class="wt448">
-              <el-input placeholder="请填写代办人员姓名">
+            <el-form-item label="受托单位：" class="wt448">
+              <el-input placeholder="请填写受托单位" disabled v-model="projInfoForm.windowName">
               </el-input>
             </el-form-item>
-            <el-form-item label="代办人员联系方式：" class="wt448">
-              <el-input placeholder="代办人员联系方式">
+            <el-form-item label="代办人员姓名：" class="wt448" prop="agentUserId">
+              <el-select v-model="projInfoForm.agentUserId" :disabled="agencyDetailApiData.agentApplyState >= 3">
+                <el-option v-for="item in agencyPeopleOptions" :key="item.userId"
+                  @click.native="agencyPeopleSelect(item)" :label="item.userName" :value="item.userId">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="代办人员联系方式：" class="wt448" prop="agentUserMobile">
+              <el-input placeholder="请填写代办人员联系方式" :disabled="agencyDetailApiData.agentApplyState >= 3"
+                v-model="projInfoForm.agentUserMobile">
               </el-input>
             </el-form-item>
-            <div class="al-right mt10" style="padding-right: 40px;">
-              <el-button type="primary">保 存</el-button>
+            <el-form-item label="协议签订时间：" class="wt448" prop="agreementSignTime">
+              <el-date-picker type="date" placeholder="选择协议签订时间" value-format="yyyy-MM-dd"
+                :disabled="agencyDetailApiData.agentApplyState >= 3"
+                :picker-options="pickerOptions" v-model="projInfoForm.agreementSignTime">
+              </el-date-picker>
+            </el-form-item>
+            <div class="al-right mt10" style="padding-right: 40px;" v-if="3>agencyDetailApiData.agentApplyState">
+              <el-button type="primary" @click="saveAgencyInfo">保 存</el-button>
             </div>
           </el-collapse-item>
           <!-- 代办信息 end -->
+
+          <!-- 委托代办协议 start -->
+          <el-collapse-item class="clearfix" name="4" id="commissionagentagreement" v-if="agencyDetailApiData.agentApplyState >= 3">
+            <template slot="title">
+              <i class="header-icon el-icon-document-copy"></i>委托代办协议
+            </template>
+            <div class="agree-box">
+              <table class="nor-table line-table" border="0" cellpadding="0" cellspacing="0">
+                <tbody>
+                  <tr>
+                    <th class="icon-th">
+                      <div class="icon"> <i class="el-icon-document"></i> </div>
+                    </th>
+                    <td class="tb-right-line" colspan="3" style="width: 56%;">{{agencyDetailApiData.projName}}代办协议书.pdf
+                      <span class="state-tag">已签章</span>
+                    </td>
+                    <td class="tb-right-line" colspan="2">
+                      代办人员：{{projInfoForm.agentUserName || '-'}}
+                      （{{projInfoForm.agentUserMobile || '-'}}）
+                    </td>
+                    <td>
+                      <a href="javascript:;" @click="previewAgreement(agencyDetailApiData.detailId)">预览</a>
+                      <a class="ml20" href="javascript:;" @click="downAgreement(agencyDetailApiData.detailId)">下载</a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </el-collapse-item>
+          <!-- 委托代办协议 end -->
         </el-collapse>
       </el-form>
     </div>
+    <el-dialog title="签订协议书" :visible.sync="prePdfVisible" ref="prePdfRef" class="" width="800px" top="10vh" >
+      <div class="" style="height: 580px;">
+        <iframe :src="pdfSrc" class='ltab-iframe'></iframe>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button>取 消</el-button>
+        <el-button @click="agreementDown">下 载</el-button>
+        <el-button type="primary">签 章</el-button>
+      </span>
+    </el-dialog>
   </div>
 </body>
 <script

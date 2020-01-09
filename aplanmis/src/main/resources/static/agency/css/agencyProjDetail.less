@@ -80,7 +80,7 @@ body {
 .el-form-item__label {
   line-height: 22px;
   color: #575962;
-  width: calc(~ "100% - 150px");
+  width: calc(~ "100% - 166px");
 }
 
 .el-autocomplete {
@@ -130,6 +130,11 @@ body {
   color: #fff;
   background: #1C9AFD;
   padding: 0 15px;
+
+  .el-dialog__title,
+  .el-dialog__headerbtn .el-dialog__close {
+    color: #E0E3E9 !important;
+  }
 }
 
 .el-dialog__headerbtn:focus .el-dialog__close,
@@ -309,7 +314,7 @@ body {
   text-align: center;
 }
 
-.al-right{
+.al-right {
   text-align: right;
 }
 
@@ -379,13 +384,18 @@ body {
       .el-input {
         // width: 240px;
       }
-      .el-select{
+
+      .el-select {
+        width: 100%;
+      }
+
+      .el-date-editor.el-input {
         width: 100%;
       }
 
       .el-input.is-disabled .el-input__inner {
-        border: 0;
-        background-color: #fff;
+        // border: 0;
+        // background-color: #fff;
       }
 
       .half-item {
@@ -585,25 +595,100 @@ body {
   padding: 0;
 }
 
-.wt100{
+.wt100 {
   width: 97.3%;
 }
+
 .wt448 {
   width: 48%;
 }
+
 .wt32 {
   width: 31.5%;
 }
+
 // 项目标题样式
-.proj-name{
+.proj-name {
   text-align: center;
-  .text{
+
+  .text {
     display: inline-block;
     text-align: left;
     font-size: 28px;
   }
 }
-#app{
+
+#app {
   max-width: 1268px;
   margin: 0 auto;
+}
+
+// 协议列表
+.agree-box {
+  width: 96%;
+  height: 44px;
+  line-height: 44px;
+  line-height: 44px;
+  // border: 1px solid #DCDFE6;
+  .state-tag{
+    display: inline-block;
+    vertical-align: middle;
+    width: 58px;
+    height: 16px;
+    font-size: 12px;
+    background: #FFB822;
+    color: #fff;
+    border-radius: 4px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+  }
+  a{
+    color: #139bff;
+  }
+}
+.tb-right-line{
+  border-right: 1px solid #ECEFF5;
+}
+.icon-th{
+  background: #139bff!important;
+  font-size: 22px;
+  text-align: center;
+  color: #fff;
+}
+table.line-table {
+  width: 100%;
+  font-size: 14px;
+  border: 1px solid #ECEFF5;
+  border-left: 0;
+  border-bottom: 0;
+  color: #515151;
+  border-radius: 4px;
+
+  tbody {
+
+    th,
+    td {
+      border-bottom: 1px solid #ECEFF5;
+    }
+
+    th {
+      font-weight: 400;
+      // width: 110px;
+      width: 44px;
+      // background: #f2f2f2;
+      text-align: left;
+      background: #F9FBFD;
+      height: 46px;
+      border-left: 1px solid #ECEFF5;
+      border-right: 1px solid #ECEFF5;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+
+    td {
+      padding: 10px;
+      line-height: 24px;
+    }
+  }
 }
