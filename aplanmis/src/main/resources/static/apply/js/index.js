@@ -778,6 +778,8 @@ var vm = new Vue({
   },
   methods: {
     // 项目代办 start --------
+    // 终止协议
+    stopAgreement: function(){},
     // 关闭预览pdf弹窗
     closePrePdf: function(){
       this.prePdfUrl = '';

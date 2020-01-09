@@ -220,6 +220,9 @@
     </el-form>
   </template>
   <template v-else>
+    <div class="top-proj-name" v-if="isGuidePage||isAgentPage">
+      {{projName}}
+    </div>
     <div class="title-nav" v-if="!isGuidePage&&!isAgentPage">
       <span>投资项目申报前，请登陆 <a href="http://www.gdtz.gov.cn/tybm/apply3!search.action"
                            target="_blank">“投资项目在线审批监管平台”</a> 进行项目登记赋码</span>
@@ -1937,7 +1940,8 @@
       </el-collapse>
       <div class="right-bottom-btn" v-if="showMoreProjInfo&&!isGuidePage">
         <template v-if="isAgentPage">
-          <el-button circle type="primary" @click="seeAgreement">查看委<br/>托协议</el-button>
+          <el-button circle @click="seeAgreement">查看委<br/>托协议</el-button>
+          <el-button circle @click="stopAgreement">终止<br/>协议</el-button>
         </template>
         <template v-else>
           <el-button v-if="showSolicitBtn" type="success" @click="openSoDialog" circle>意见<br/>征求</el-button>
