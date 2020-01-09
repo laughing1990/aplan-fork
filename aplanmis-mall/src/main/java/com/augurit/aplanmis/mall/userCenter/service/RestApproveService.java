@@ -136,5 +136,5 @@ public interface RestApproveService {
      */
     LifeCycleDiagramVo getLiftCycleDiagramInfo(String projInfoId, String unitInfoId, String userInfoId)throws Exception;
 
-    void submitReviewStart(String applyinstId, String reviewComment, LoginInfoVo loginInfo);
+    void submitReviewStart(String applyinstId, String reviewComment, LoginInfoVo loginInfo) throws Exception;
 }

@@ -112,4 +112,5 @@ public interface AeaUnitInfoMapper {
 
     int batchInsertAeaUnitInfo(@Param("list") List<AeaUnitInfo> unitInfos) throws Exception;
 
+    List<AeaUnitInfo> findAeaUnitInfoByProjLocalCode(@Param("localCode")String localCode,  @Param("rootOrgId") String rootOrgId);
 }

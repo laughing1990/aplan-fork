@@ -389,4 +389,10 @@ public class AeaUnitInfoServiceImpl implements AeaUnitInfoService {
         LOGGER.debug("搜索单位信息");
         return aeaUnitInfoMapper.findAeaExProBuildUnitInfoByKeyword(keyword,SecurityContext.getCurrentOrgId());
     }
+
+    @Override
+    public List<AeaUnitInfo> findAeaUnitInfoByProjLocalCode(String localCode){
+        LOGGER.debug("根据项目代码搜索单位信息列表");
+        return aeaUnitInfoMapper.findAeaUnitInfoByProjLocalCode(localCode,SecurityContext.getCurrentOrgId());
+    }
 }

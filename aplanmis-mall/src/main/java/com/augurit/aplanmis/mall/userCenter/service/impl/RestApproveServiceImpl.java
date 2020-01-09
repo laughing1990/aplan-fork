@@ -1,6 +1,10 @@
 package com.augurit.aplanmis.mall.userCenter.service.impl;
 
+import com.augurit.agcloud.bpm.common.domain.ActStoAppinst;
 import com.augurit.agcloud.bpm.common.domain.ActStoTimeruleInst;
+import com.augurit.agcloud.bpm.common.engine.BpmProcessService;
+import com.augurit.agcloud.bpm.common.engine.BpmTaskService;
+import com.augurit.agcloud.bpm.common.service.ActStoAppinstService;
 import com.augurit.agcloud.bpm.common.service.ActStoTimeruleInstService;
 import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
@@ -38,6 +42,8 @@ import com.augurit.aplanmis.mall.userCenter.service.RestUserCenterService;
 import com.augurit.aplanmis.mall.userCenter.vo.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.flowable.engine.TaskService;
+import org.flowable.task.api.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -778,9 +784,30 @@ public class RestApproveServiceImpl implements RestApproveService {
 
         return matinstVos;
     }
+    @Autowired
+    private ActStoAppinstService actStoAppinstService;
+    @Autowired
+    private TaskService taskService;
+    @Autowired
+    private BpmTaskService bpmTaskService;
+    @Autowired
+    private BpmProcessService bpmProcessService;
 
     @Override
-    public void submitReviewStart(String applyinstId, String reviewComment, LoginInfoVo loginInfo){
-
+    public void submitReviewStart(String applyinstId, String reviewComment, LoginInfoVo loginInfo) throws Exception {
+        //查询模板实例信息
+        ActStoAppinst appinst = new ActStoAppinst();
+        appinst.setRootOrgId(SecurityContext.getCurrentOrgId());
+        appinst.setMasterRecordId(applyinstId);
+        List<ActStoAppinst> appinsts = actStoAppinstService.listActStoAppinst(appinst);
+        if (appinsts.size() < 1) throw new Exception("找不到模板实例！");
+        appinst = appinsts.get(0);
+        List<Task> tasks = taskService.createTaskQuery().processInstanceId(appinst.getProcinstId()).list();
+        if (tasks.size() < 1) throw new Exception("找不到主流程节点！");
+        Task task = tasks.get(0);
+        bpmProcessService.activateProcessInstanceById(appinst.getProcinstId());//激活流程
+        bpmTaskService.addTaskComment(task.getId(), task.getProcessInstanceId(), StringUtils.isBlank(reviewComment) ? "" : reviewComment);//复验意见
+        //推动流程往下流转
+        taskService.complete(task.getId());
     }
 }
