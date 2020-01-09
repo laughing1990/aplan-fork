@@ -531,7 +531,9 @@ public class AeaParStageService {
                 AeaHiSmsInfo seriesSms=aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(seriesApplyinstId);
                 if(seriesSms==null){
                     //seriesSms =aeaHiSmsInfoService.getAeaHiSmsInfoById(smsInfoId);
-                    BeanUtils.copyProperties(smsInfo,seriesSms);
+                    //seriesSms=new AeaHiSmsInfo();
+                    if(smsInfo==null) smsInfo=smsInfoVo.toSmsInfo();
+                    seriesSms=smsInfo;
                     seriesSms.setId(UUID.randomUUID().toString());
                     seriesSms.setApplyinstId(seriesApplyinstId);
                     aeaHiSmsInfoService.createAeaHiSmsInfo(seriesSms);
