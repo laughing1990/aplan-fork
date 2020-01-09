@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.common.service.window.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.augurit.agcloud.bsc.domain.BscAttForm;
 import com.augurit.agcloud.bsc.sc.att.service.IBscAttService;
 import com.augurit.agcloud.framework.security.SecurityContext;
@@ -8,6 +9,7 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmUserInfo;
 import com.augurit.agcloud.opus.common.mapper.OpuOmUserInfoMapper;
 import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.helper.JedisHelper;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.window.AeaProjApplyAgentService;
@@ -40,6 +42,8 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
 
     private static Logger logger = LoggerFactory.getLogger(AeaProjApplyAgentServiceImpl.class);
 
+    private static String CURRENT_AGENT_OPERATE_USER_INFO_KEY = "CURRENT_AGENT_OPERATE_USER_INFO_KEY_";
+
     @Autowired
     private AeaProjApplyAgentMapper aeaProjApplyAgentMapper;
 
@@ -67,6 +71,9 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
     @Autowired
     private FileUtilsService fileUtilsService;
 
+    @Autowired
+    private JedisHelper jedisUtil;
+
     public void saveAeaProjApplyAgent(AeaProjApplyAgent aeaProjApplyAgent) throws Exception{
         if(aeaProjApplyAgent != null){
             aeaProjApplyAgent.setApplyAgentId(UUID.randomUUID().toString());
@@ -86,9 +93,14 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
             if(agent != null && !agent.getApplyAgentId().equals(aeaProjApplyAgent.getApplyAgentId())){
                 throw new Exception("该协议编号已被使用。");
             }
+            aeaProjApplyAgent.setCurrentUserId(SecurityContext.getCurrentUserId());
             aeaProjApplyAgent.setModifier(SecurityContext.getCurrentUserName());
             aeaProjApplyAgent.setModifyTime(new Date());
             aeaProjApplyAgentMapper.updateAeaProjApplyAgent(aeaProjApplyAgent);
+            String redisData = this.queryRedisData(aeaProjApplyAgent.getApplyAgentId());
+            if(StringUtils.isBlank(redisData)){
+                this.saveRedisAeaProjApplyAgentInfo(aeaProjApplyAgent);
+            }
         }
     }
     public void deleteAeaProjApplyAgentById(String id) throws Exception{
@@ -239,6 +251,15 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
             return fileUtilsService.deleteAttachment(bscAttForm.getDetailId());
         }
         return false;
+    }
+
+    @Override
+    public String queryRedisData(String applyAgentId) throws Exception{
+        return jedisUtil.get(CURRENT_AGENT_OPERATE_USER_INFO_KEY + applyAgentId);
+    }
+
+    private void saveRedisAeaProjApplyAgentInfo(AeaProjApplyAgent aeaProjApplyAgent) throws Exception{//锁定10分钟操作时间
+        jedisUtil.setex(CURRENT_AGENT_OPERATE_USER_INFO_KEY + aeaProjApplyAgent.getApplyAgentId(),600, JSONObject.toJSONString(aeaProjApplyAgent));
     }
 
     private void setAgentStageName(AeaProjApplyAgent aeaProjApplyAgent){

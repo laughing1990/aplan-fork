@@ -43,6 +43,7 @@ import org.flowable.engine.TaskService;
 import org.flowable.task.api.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -233,8 +234,8 @@ public class AeaParStageService {
             throw new InvalidParameterException("流程模板ID参数为空！");
         if (stageApplyDataVo.getProjInfoIds() == null || stageApplyDataVo.getProjInfoIds().length == 0)
             throw new InvalidParameterException("项目ID参数为空！");
-        if (StringUtils.isBlank(stageApplyDataVo.getSmsInfoId()))
-            throw new InvalidParameterException("办证取件方式ID参数为空！");
+//        if (StringUtils.isBlank(stageApplyDataVo.getSmsInfoId()))
+//            throw new InvalidParameterException("办证取件方式ID参数为空！");
         StageApplyInstantiateResult result = new StageApplyInstantiateResult();
 
         //获取参数
@@ -257,13 +258,14 @@ public class AeaParStageService {
         List<String> unitProjIds = stageApplyDataVo.getProjUnitIds();
         String applyLinkmanId = stageApplyDataVo.getApplyLinkmanId();
         List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos = stageApplyDataVo.getPropulsionItemApplyinstIdVos();
+        SmsInfoVo smsInfoVo = stageApplyDataVo.getSmsInfoVo();
 
         List<String> appinstIds = new ArrayList<>();
         List<String> applyinstIds = new ArrayList<>();
         List<String> procinstIds = new ArrayList<>();
         List<String> iteminstIds = new ArrayList<>();
         List<String> applyinstCodeList = new ArrayList<>();
-
+        AeaHiSmsInfo smsInfo=null;
         AeaProjInfo projInfo = aeaProjInfoService.getAeaProjInfoByProjInfoId(projInfoIds[0]);
         parallelApplyResultVo.setGcbm(projInfo.getGcbm());
         parallelApplyResultVo.setLocalCode(projInfo.getLocalCode());
@@ -425,13 +427,11 @@ public class AeaParStageService {
             this.insertApplySubject(applySubject, applyinstId, projInfoIds, applyLinkmanId, linkmanInfoId, unitProjIds);
 
             //更新办件结果领取方式
-            AeaHiSmsInfo aeaSmsInfo=aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(applyinstId);
-            if(aeaSmsInfo==null){
-                aeaSmsInfo=new AeaHiSmsInfo();
-                aeaSmsInfo.setId(smsInfoId);
-                aeaSmsInfo.setApplyinstId(applyinstId);
-                aeaHiSmsInfoService.updateAeaHiSmsInfo(aeaSmsInfo);
-            }
+            //AeaHiSmsInfo aeaSmsInfo=aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(applyinstId);
+            //if(aeaSmsInfo==null){
+            smsInfo = aeaHiSmsInfoService.createAeaHiSmsInfo(smsInfoVo.toSmsInfo());
+            //smsInfoId=smsInfo.getId();
+            //}
 
             appinstIds.add(bpmProcessInstance.getActStoAppinst().getAppinstId());
             procinstIds.add(bpmProcessInstance.getProcessInstance().getId());
@@ -530,7 +530,8 @@ public class AeaParStageService {
                 //更新办件结果领取方式
                 AeaHiSmsInfo seriesSms=aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(seriesApplyinstId);
                 if(seriesSms==null){
-                    seriesSms =aeaHiSmsInfoService.getAeaHiSmsInfoById(smsInfoId);
+                    //seriesSms =aeaHiSmsInfoService.getAeaHiSmsInfoById(smsInfoId);
+                    BeanUtils.copyProperties(smsInfo,seriesSms);
                     seriesSms.setId(UUID.randomUUID().toString());
                     seriesSms.setApplyinstId(seriesApplyinstId);
                     aeaHiSmsInfoService.createAeaHiSmsInfo(seriesSms);

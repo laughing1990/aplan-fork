@@ -146,6 +146,10 @@ public class ApproveDataServiceImpl implements ApproveDataService {
                 AeaHiApplyinstCorrect correct = aeaHiApplyinstCorrectService.getCurrentCorrectinst(dto.getApplyinstId());
                 dto.setApproveComments(correct!=null ? correct.getCorrectMemo(): "");
             }
+
+            if(ApplyState.COMPLETED.getValue().equals(dto.getApplyinstState())){//已办结
+
+            }
         }
     }
 

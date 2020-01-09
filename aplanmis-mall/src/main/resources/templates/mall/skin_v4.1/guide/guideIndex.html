@@ -229,15 +229,15 @@
             </div>
             <div class="item">
                 <p class="p-header-phase1"> 受理权限</p>
-                <P>{{singleData.acceptAccess||'暂无'}}</P>
+                <P>{{singleData.acceptPriv||'暂无'}}</P>
             </div>
             <div class="item">
                 <p class="p-header-phase1"> 提交材料</p>
-                <template v-if="singleData.states && singleData.states.length > 0">
-                    <div v-for="item in singleData.states">
-                        <p style="margin: 15px 0px;"><span>{{item.index}}</span><span>：</span><span>{{item.stateName}}</span></p>
+                <template v-if="singleData.mats && singleData.mats.length > 0">
+<!--                    <div v-for="item in singleData.mats">-->
+                       <!-- <p style="margin: 15px 0px;"><span>{{item.index}}</span><span>：</span><span>{{item.stateName}}</span></p>-->
                         <el-table
-                                :data="tableData"
+                                :data="singleData.mats"
                                 border
                                 style="width: 100%">
                             <el-table-column
@@ -246,27 +246,27 @@
                                     width="80">
                             </el-table-column>
                             <el-table-column
-                                    prop="date"
+                                    prop="matName"
                                     label="材料名称"
                             >
                             </el-table-column>
                             <el-table-column
-                                    prop="name"
+                                    prop="reviewKeyPoints"
                                     label="全程网办接件标准"
+                                    width="150"
                             >
                             </el-table-column>
                             <el-table-column
-                                    prop="address"
+                                    prop="matMemo"
                                     label="备注"
                                     width="150">
                             </el-table-column>
                         </el-table>
-                    </div>
+<!--                    </div>-->
                 </template>
                 <template v-else>
                     <div>暂无</div>
                 </template>
-
             </div>
             <div class="item">
                 <p class="p-header-phase1"> 办理结果</p>
@@ -274,11 +274,11 @@
             </div>
             <div class="item">
                 <p class="p-header-phase1"> 办理时限</p>
-                <P>{{singleData.promissDay||'暂无'}}</P>
+                <P>{{singleData.promiseDay||'暂无'}}</P>
             </div>
             <div class="item">
                 <p class="p-header-phase1"> 是否收费</p>
-                <P>{{singleData.chargeTypeText||'暂无'}}</P>
+                <P>{{singleData.isFeeText||'暂无'}}</P>
             </div>
             </el-scrollbar>
         </div>

@@ -767,4 +767,20 @@
         AND aaup.APPLYINST_ID = #{applyinstId}
         and aup.UNIT_TYPE='1' and aup.IS_OWNER='1' and aaup.IS_DELETED !=1 and aup.is_deleted!=1 and aui.IS_DELETED !=1
     </select>
+
+    <select id="findAeaUnitInfoByProjLocalCode" resultType="AeaUnitInfo">
+        select distinct
+        <include refid="alias_allColumns">
+            <property name="alias" value="aui"/>
+        </include>
+        from aea_unit_info aui
+        left join aea_unit_proj aup on aui.unit_info_id=aup.unit_info_id
+        left join aea_proj_info api on aup.proj_info_id=api.proj_info_id
+        where api.local_code=#{localCode}
+        AND api.ROOT_ORG_ID = #{rootOrgId}
+        AND aui.ROOT_ORG_ID = #{rootOrgId}
+        AND aup.is_deleted != 1
+        AND aui.IS_DELETED != 1
+        AND api.IS_DELETED != 1
+    </select>
 </mapper>

@@ -42,4 +42,6 @@ public interface AeaParStageAdminService {
     Long getMaxSortNoByThemeVerId(String themeVerId, String rootOrgId);
 
     List<AppProcCaseDefPlusAdminVo> listAppProcCaseDefVo(String stageId, String keyword) throws Exception;
+
+    void batchSortStages(String[] stageIds, Long[] sortNos);
 }

@@ -308,7 +308,7 @@ public class AeaProjInofServiceImpl extends AbstractFormDataOptManager implement
             if(windows.size()>0){
                 aeaProjInfo.setIsAgentProj("1");
                 List<AeaProjApplyAgent> agentApplys=aeaProjApplyAgentService.listAeaProjApplyAgentByProjInfoId(aeaProjInfo.getProjInfoId());
-                aeaProjInfo.setProjAgentState(agentApplys.size()>0?agentApplys.get(0).getAgentApplyState(): AgencyState.WAIT_SIGNING.getValue());
+                aeaProjInfo.setProjAgentState(agentApplys.size()>0?agentApplys.get(0).getAgentApplyState(): AgencyState.WAIT_AGENT.getValue());
                 aeaProjInfo.setApplyAgentId(agentApplys.size()>0?agentApplys.get(0).getApplyAgentId():null);
             }else{
                 aeaProjInfo.setIsAgentProj("0");

@@ -484,7 +484,7 @@
 }
 /*材料上传*/
 .fileDiv {
-  border: 1px dashed #D2D2D2;
+  border: 1px dashed #4293F4;
   min-height: 170px;
   margin-bottom: 10px;
 }
@@ -519,7 +519,7 @@
   font-weight: bold;
 }
 .upload-flie {
-  min-height: 120px;
+  min-height: 170px;
   width: 100%;
   position: relative;
   max-height: 200px;
@@ -1368,10 +1368,10 @@
 .isGuidanceSuccess-title {
   height: 48px;
   line-height: 46px;
-  border: 1px solid #FFD27C;
-  color: #F1AC2F;
+  border: 1px solid #FDAAAA;
+  color: #515151;
   padding: 0 20px;
-  background: #FEFBF5;
+  background: #FEF5F5;
   font-size: 16px;
   margin-bottom: 20px;
 }
@@ -1379,6 +1379,10 @@
   font-size: 20px;
   vertical-align: middle;
   padding-right: 3px;
+  color: #F24040;
+}
+.red-color {
+  color: #F24040;
 }
 .file-preview-div {
   width: 450px;
@@ -1486,6 +1490,15 @@
 }
 .is-split-dia .el-dialog__footer {
   text-align: right;
-  padding: 0px 20px 20px;
+  padding: 0 20px 20px;
 }
-
+.type-info-msg {
+  background: #F2F3F8;
+  margin-left: 130px;
+  padding-left: 25px;
+  color: #515151;
+  height: 42px;
+  line-height: 42px;
+  position: relative;
+  top: -20px;
+}

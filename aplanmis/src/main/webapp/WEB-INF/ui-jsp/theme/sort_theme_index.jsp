@@ -17,30 +17,20 @@
                 </div>
             </div>
             <div class="modal-footer" style="padding: 15px;height: 50px;">
-                <span style="color: #f23454; margin-right: 28rem;">备注：拖拉拽完后点击"确定"按钮生效!</span>
+                <span style="color: #f23454b8;margin-right: 28rem;">备注：拖拉拽完后点击"确定"按钮生效!</span>
                 <button type="button" class="btn btn-info" onclick="saveThemeSort();" style="width: 75px;">确定</button>
             </div>
         </div>
     </div>
 </div>
 <script type="text/javascript">
+
     $(function(){
+
         Sortable.create(document.getElementById('themeUl'), {
             animation: 150,
-            //拖拽完毕之后发生该事件
             onEnd: function (evt) {
-                var liObjs = document.getElementsByName('themeLi');
-                var errorCount = 0;
-                for(var i=0;i<liObjs.length;i++){
-                    var sortNum = i+1;
-                    var themeName = $(liObjs[i]).find("span").eq(1).html();
-                    var themeId = $(liObjs[i]).attr('category-id');
-                    $.post(ctx+'/aea/par/theme/updateAeaParTheme.do',{'themeId':themeId,'sortNo':sortNum}, function(data){
-                        if(!data.success){
-                            errorCount++;
-                        }
-                    }, 'json');
-                }
+
             }
         });
     });
@@ -48,19 +38,21 @@
     //分类排序
     function themeSort(){
 
-        $('#theme_sort_modal').modal('show');
         $('#opusOmSortDiv1').animate({scrollTop: 0}, 800);//滚动到顶部
-
         $.post(ctx+'/aea/par/theme/listAeaParThemeNoPage.do',{}, function(data){
             if(data!=null&&data.length>0){
+                $('#theme_sort_modal').modal('show');
                 $("#themeUl").html("");
                 for(var i=0;i<data.length;i++){
                     var liHtml = '<li name="themeLi" category-id="'+data[i].themeId+'">' +
-                                    '<span class="drag-handle_td" style="width: 6%;  vertical-align: middle;  box-sizing: border-box;">&#9776;</span>' +
-                                    '<span class="org_name_td" style="width: 90%;">'+data[i].themeName+'</span>' +
-                                '</li>';
+                                     '<span class="drag-handle_td" style="width: 6%;">&#9776;</span>' +
+                                     '<span class="org_name_td" style="width: 90%;">'+data[i].themeName+'</span>' +
+                                  '</li>';
                     $('#themeUl').append(liHtml);
                 }
+            }else{
+                $("#themeUl").html("");
+                swal('提示信息', '暂无数据排序!', 'info');
             }
         }, 'json');
     }
@@ -68,7 +60,35 @@
     //保存分类排序
     function saveThemeSort(){
 
-        $('#theme_sort_modal').modal('hide');
-        location.reload();
+        var themeIds = [], sortNos = [];
+        var liObjs = document.getElementsByName('themeLi');
+        if(liObjs!=null&&liObjs.length>0){
+            for(var i=0;i<liObjs.length;i++){
+                themeIds.push($(liObjs[i]).attr('category-id'));
+                sortNos.push(i+1);
+            }
+            $.ajax({
+                url: ctx+'/aea/par/theme/batchSortThemes.do',
+                type: 'post',
+                data: {
+                    'themeIds': themeIds.toString(),
+                    'sortNos': sortNos.toString()
+                },
+                success: function (result) {
+                    if (result.success) {
+
+                        $('#theme_sort_modal').modal('hide');
+                        location.reload();
+                    } else {
+
+                        swal('错误信息', result.message, 'error');
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                    swal('错误信息', XMLHttpRequest.responseText, 'error');
+                }
+            });
+        }
     }
 </script>

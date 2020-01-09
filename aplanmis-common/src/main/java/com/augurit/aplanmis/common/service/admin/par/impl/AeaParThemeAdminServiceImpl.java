@@ -184,5 +184,19 @@ public class AeaParThemeAdminServiceImpl implements AeaParThemeAdminService {
         allNodes.add(rootNode);
         return allNodes;
     }
+
+    @Override
+    public void batchSortThemes(String[] themeIds, Long[] sortNos){
+
+        if(themeIds!=null&&themeIds.length>0&&sortNos!=null&&sortNos.length>0){
+            AeaParTheme theme;
+           for(int i=0;i<themeIds.length;i++){
+               theme = new AeaParTheme();
+               theme.setThemeId(themeIds[i]);
+               theme.setSortNo(sortNos[i]);
+               updateAeaParTheme(theme);
+           }
+        }
+    }
 }
 

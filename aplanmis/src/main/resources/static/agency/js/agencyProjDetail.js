@@ -17,16 +17,30 @@ var throttle = function (method, delay, time) {
   }
 }
 
-var allowPreType = {
-  'doc': true,
-  'docx': true,
-  'pdf': true,
-  'ppt': true,
-  'pptx': true,
-  'xls': true,
-  'xlsx': true,
-  'txt': true
-}
+// 简单解密
+function uncompile(code) {
+  code = unescape(code);
+  var c = String.fromCharCode(code.charCodeAt(0) - code.length);
+  for (var i = 1; i < code.length; i++) {
+    c += String.fromCharCode(code.charCodeAt(i) - c.charCodeAt(i - 1));
+  }
+  return c;
+};
+
+// 侧边栏导航数据
+var NAVLEFTDATA = [{
+  label: '项目单位信息',
+  target: 'projunitInfo'
+}, {
+  label: '项目基本信息',
+  target: 'projbaseInfo'
+}, {
+  label: '代办信息',
+  target: 'commissionagentinfo'
+}, {
+  label: '委托代办协议',
+  target: 'commissionagentagreement'
+}];
 
 function formatDate(date, fmt) {
   if (/(y+)/.test(fmt)) {
@@ -149,6 +163,12 @@ var pager = new Vue({
     return {
       // 全局loading
       mloading: false,
+      // 时间选择器配置
+      pickerOptions: {
+        disabledDate: function (time) {
+          return time.getTime() < Date.now() - 8.64e7;
+        },
+      },
       activeNames: ['1', '2', '3', '4', '5', '6'], // el-collapse 默认展开列表
       verticalTabData: [ // 左侧纵向导航数据
         {
@@ -203,7 +223,19 @@ var pager = new Vue({
         leaderDuty: '', //负责人职务
         operatorName: '', //项目经办人
         operatorMobilePhone: '', //经办人联系方式
-        operatorDuty: '' //经办人职务
+        operatorDuty: '', //经办人职务
+
+        // 代办信息
+        agreementCode: '', //协议编号
+        agentStageName: '', //具体委托事项
+        unitName: '', //委托单位
+        applyUserName: '', //申请人姓名
+        applyUserPhone: '', //申请人联系方式
+        windowName: '', //受托单位
+        agentUserId: '', //代办人id
+        agentUserName: '', //代办人姓名
+        agentUserMobile: '', //代办人联系方式
+        agreementSignTime: '', //协议签订时间
       },
       rules: {
         projName: [{
@@ -332,6 +364,27 @@ var pager = new Vue({
           message: '开工时间必须小于建成时间',
           trigger: ['change', 'blur']
         }, ],
+
+        agreementCode: [{
+          required: true,
+          message: '请输入协议编号',
+          trigger: 'blur'
+        }],
+        agentUserId: [{
+          required: true,
+          message: '请选择代办人',
+          trigger: 'change'
+        }],
+        agentUserMobile: [{
+          required: true,
+          message: '请输入代办人员联系方式',
+          trigger: 'blur'
+        }],
+        agreementSignTime: [{
+          required: true,
+          message: '请选择协议签订时间',
+          trigger: 'change'
+        }],
       },
 
       // 页面的下拉选项
@@ -348,7 +401,19 @@ var pager = new Vue({
         XM_GCFL: [] // 工程分类
       },
       // 行政区划下拉列表
-      districtList: [], 
+      districtList: [],
+      // 代办信息-代办人员下拉待选数据
+      agencyPeopleOptions: [],
+
+      // 页面获取的总的数据
+      agencyDetailApiData: {},
+      // 是否展示签订协议书dialog
+      prePdfVisible: false,
+      // 签订协议书的pdf的src
+      pdfSrc: '',
+
+      // 从列表过来是签订还是查看
+      formListIsDo: true,
     }
   },
   mounted: function () {
@@ -361,8 +426,10 @@ var pager = new Vue({
 
     this.fetchDicContents();
   },
-  created: function(){
-    // this.getRegionListData();
+  created: function () {
+    this.formListIsDoFn();
+    this.fetchAgencyPeopleOptions();
+    this.fetchPagerInfo();
   },
   methods: {
     // 页面resize
@@ -411,6 +478,14 @@ var pager = new Vue({
       }
     },
 
+    // 从列表跳转-是否是为查看或者签订
+    formListIsDoFn: function () {
+      var type = this.getSerachParamsForUrl('type');
+      type = uncompile(type);
+      type == 'do' ?
+        this.formListIsDo = true :
+        this.formListIsDo = false;
+    },
 
     // 获取待选项
     fetchDicContents: function () {
@@ -431,7 +506,6 @@ var pager = new Vue({
         return ts.apiMessage('网络错误！', 'error')
       });
     },
-
     // 获取所有的行政区划下拉数据
     getRegionListData: function () {
       var ts = this;
@@ -445,6 +519,238 @@ var pager = new Vue({
       }, function (msg) {
         alertMsg('', '网络加载失败！', '关闭', 'error', true);
       })
+    },
+
+    // 获取代办信息模块中-代办人员姓名下来待选项
+    fetchAgencyPeopleOptions: function () {
+      var ts = this;
+      ts.mloading = true;
+      request('', {
+        url: ctx + 'aea/proj/apply/agent/getCurrAgencyWinUserList',
+        type: 'get',
+      }, function (res) {
+        ts.mloading = false;
+        if (res.success) {
+          ts.agencyPeopleOptions = res.content;
+        } else {
+          return ts.apiMessage(res.message, 'error')
+        }
+      }, function () {
+        ts.mloading = false;
+        return ts.apiMessage('网络错误！', 'error')
+      });
+    },
+
+    // 获取页面中回显的数据
+    fetchPagerInfo: function () {
+      var ts = this,
+        getData = {};
+      getData.applyAgentId = ts.getSerachParamsForUrl('applyAgentId');
+      ts.mloading = true;
+      request('', {
+        url: ctx + 'aea/proj/apply/agent/getAgencyDetail',
+        type: 'get',
+        data: getData
+      }, function (res) {
+        ts.mloading = false;
+        if (res.success) {
+          ts.handelPagerInfo(res.content);
+        } else {
+          return ts.apiMessage(res.message, 'error')
+        }
+      }, function () {
+        ts.mloading = false;
+        return ts.apiMessage('网络错误！', 'error')
+      });
+    },
+    // 处理页面回显数据
+    handelPagerInfo: function (data) {
+      var form = {};
+      form = $.extend({}, data.aeaProjApplyAgent, data.aeaProjInfo, data.aeaUnitProjLinkmanVo);
+      // 操作按钮与委托代办协议的隐藏显示处理-处理侧边栏
+      this.agencyDetailApiData = form;
+      if (+this.agencyDetailApiData.agentApplyState < 3) {
+        this.verticalTabData.pop();
+      } else {
+        this.verticalTabData = JSON.parse(JSON.stringify(NAVLEFTDATA));
+      }
+      for (var k in this.projInfoForm) {
+        if (form[k]) {
+          this.projInfoForm[k] = form[k];
+        }
+      }
+      this.projInfoForm.agentUserId = this.projInfoForm.agentUserId == '' ?
+        form.currentUserId :
+        form.agentUserId;
+      this.projInfoForm.agentUserName = this.projInfoForm.agentUserName == '' ?
+        form.currentUserName :
+        form.agentUserName;
+      this.projInfoForm.agentUserMobile = this.projInfoForm.agentUserMobile == '' ?
+        form.currentUserMobile :
+        form.agentUserMobile;
+    },
+    // 选择代办人员
+    agencyPeopleSelect: function (obj) {
+      // console.log(obj)
+      this.projInfoForm.agentUserName = obj.userName;
+      this.projInfoForm.agentUserMobile = obj.userMobile;
+      // console.log(this.projInfoForm.agentUserId)
+    },
+    // 校验输入的协议编号是不是唯一
+    checkAgreementCode: function () {
+      var ts = this,
+        checkData = {};
+      checkData.agreementCode = ts.projInfoForm.agreementCode;
+      if (!checkData.agreementCode) return;
+      ts.mloading = true;
+      request('', {
+        url: ctx + 'aea/proj/apply/agent/checkAgreementCodeUnique',
+        type: 'get',
+        data: checkData
+      }, function (res) {
+        ts.mloading = false;
+        if (res.success) {
+
+        } else {
+          ts.projInfoForm.agreementCode = "";
+          return ts.apiMessage(res.message, 'error')
+        }
+      }, function () {
+        ts.mloading = false;
+        return ts.apiMessage('网络错误！', 'error')
+      });
+    },
+    // 保存代办信息
+    saveAgencyInfo: function () {
+      var ts = this;
+      this.$refs['projInfoForm'].validate(function (valid) {
+        if (valid) {
+          ts.checkBtnHandel(1, doFn)
+        } else {
+          ts.apiMessage('请完善代办信息！', 'error')
+          return false;
+        }
+      });
+
+      function doFn(){
+        var saveData = {
+          agreementCode: ts.projInfoForm.agreementCode,
+          agreementSignTime: ts.projInfoForm.agreementSignTime,
+          agentUserId: ts.projInfoForm.agentUserId,
+          agentUserName: ts.projInfoForm.agentUserName,
+          agentUserMobile: ts.projInfoForm.agentUserMobile,
+          applyAgentId: ts.getSerachParamsForUrl('applyAgentId')
+        };
+        // console.log(this.projInfoForm)
+        // return
+        ts.mloading = true;
+        request('', {
+          url: ctx + 'aea/proj/apply/agent/saveAeaProjApplyAgent',
+          type: 'post',
+          data: saveData
+        }, function (res) {
+          ts.mloading = false;
+          if (res.success) {
+            ts.apiMessage('保存成功！', 'success')
+          } else {
+            return ts.apiMessage(res.message, 'error')
+          }
+        }, function () {
+          ts.mloading = false;
+          return ts.apiMessage('网络错误！', 'error')
+        });
+      }
+    },
+
+    // 签订协议操作
+    signAgreementFn: function () {
+      // var fileUrl = ctx + 'aea/proj/apply/agent/getAgencyAgreement?applyAgentId=' + this.getSerachParamsForUrl('applyAgentId');
+      // this.pdfSrc = ctx + 'preview/pdfjs/web/viewer.html?file=' + encodeURIComponent(fileUrl);
+      // this.prePdfVisible = true;
+      // return
+      var ts = this;
+
+      function doFn() {
+        var fileUrl = ctx + 'aea/proj/apply/agent/getAgencyAgreement?applyAgentId=' + ts.getSerachParamsForUrl('applyAgentId');
+        ts.pdfSrc = ctx + 'preview/pdfjs/web/viewer.html?file=' + encodeURIComponent(fileUrl);
+        ts.prePdfVisible = true;
+      }
+      ts.checkBtnHandel(2, doFn)
+    },
+
+    // 校验是否可以操作代办信息保存与签订协议操作
+    checkBtnHandel: function (type, cb) {
+      var ts = this,
+        checkData = {};
+      checkData.applyAgentId = ts.getSerachParamsForUrl('applyAgentId');
+      checkData.operateType = type;
+      if (!checkData.applyAgentId) return;
+      ts.mloading = true;
+      request('', {
+        url: ctx + 'aea/proj/apply/agent/checkOpreatePermit',
+        type: 'post',
+        data: checkData
+      }, function (res) {
+        ts.mloading = false;
+        if (res.success) {
+          cb && cb();
+        } else {
+          return ts.apiMessage(res.message, 'error')
+        }
+      }, function () {
+        ts.mloading = false;
+        return ts.apiMessage('网络错误！', 'error')
+      });
+    },
+
+    // 关闭签订协议书dialog
+    closePdfDialog: function () {
+      this.pdfSrc = '';
+    },
+    // 协议下载
+    agreementDown: function () {
+      var fileUrl = ctx + 'aea/proj/apply/agent/getAgencyAgreement?applyAgentId=' + this.getSerachParamsForUrl('applyAgentId');
+      window.open(fileUrl);
+    },
+    // 不予受理操作
+    refuseToAccept: function () {
+      var ts = this;
+      confirmMsg('', '是否确定不予受理?', function () {
+        var saveData = {
+          agentApplyState: 6,
+          applyAgentId: ts.getSerachParamsForUrl('applyAgentId')
+        };
+        // console.log(saveData)
+        // return
+        ts.mloading = true;
+        request('', {
+          url: ctx + 'aea/proj/apply/agent/saveAeaProjApplyAgent',
+          type: 'post',
+          data: saveData
+        }, function (res) {
+          ts.mloading = false;
+          if (res.success) {
+            ts.apiMessage('保存成功！', 'success')
+          } else {
+            return ts.apiMessage(res.message, 'error')
+          }
+        }, function () {
+          ts.mloading = false;
+          return ts.apiMessage('网络错误！', 'error')
+        });
+      })
+
+    },
+    // 委托代办协议模块的预览
+    previewAgreement: function(id){
+      // console.log(this.agencyDetailApiData.currentUserName)
+      var _url = ctx + 'previewPdf/view?detailId=' + id;
+      window.open(_url);
+    },
+    // 委托代办协议模块的预览
+    downAgreement: function(id){
+      var _url = ctx + 'previewPdf/downLoadPdf?detailId=' + id;
+      window.open(_url);
     },
   },
   filters: {

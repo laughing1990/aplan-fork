@@ -8,8 +8,6 @@ import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
 import com.augurit.agcloud.framework.util.StringUtils;
-import com.augurit.aplanmis.common.constants.ActiveStatus;
-import com.augurit.aplanmis.common.constants.DeletedStatus;
 import com.augurit.aplanmis.common.domain.AeaParStage;
 import com.augurit.aplanmis.common.domain.AeaParTheme;
 import com.augurit.aplanmis.common.domain.AeaParThemeVer;
@@ -185,6 +183,15 @@ public class AeaParThemeAdminController {
 
         logger.debug("更新客户档案信息Form对象，对象为：{}", aeaParTheme);
         themeService.updateAeaParTheme(aeaParTheme);
+        return new ResultForm(true);
+    }
+
+    @RequestMapping("/batchSortThemes.do")
+    public ResultForm batchSortThemes(String[] themeIds, Long[] sortNos) {
+
+        if(themeIds!=null&&themeIds.length>0&&sortNos!=null&&sortNos.length>0){
+            themeService.batchSortThemes(themeIds, sortNos);
+        }
         return new ResultForm(true);
     }
 

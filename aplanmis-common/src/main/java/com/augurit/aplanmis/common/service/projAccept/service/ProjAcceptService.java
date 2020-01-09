@@ -1,7 +1,9 @@
-package com.augurit.aplanmis.front.projAccept.service;
+package com.augurit.aplanmis.common.service.projAccept.service;
 
 import com.augurit.agcloud.bpm.common.domain.BpmHistoryCommentForm;
 import com.augurit.agcloud.bpm.common.engine.BpmTaskService;
+import com.augurit.agcloud.bsc.domain.BscDicRegion;
+import com.augurit.agcloud.bsc.sc.dic.region.service.BscDicRegionService;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
@@ -9,8 +11,10 @@ import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
+import com.augurit.aplanmis.common.service.projAccept.vo.ProjAcceptOpinionSummaryVo;
+import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
-import com.augurit.aplanmis.front.projAccept.vo.ProjAcceptOpinionSummaryVo;
+import org.flowable.engine.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +27,7 @@ import java.util.*;
 @Service
 @Transactional
 public class ProjAcceptService {
-    private static String[] itemCategoryMarks = new String[]{"GHTJHS1","JSGCCJDAYS1","GCJGYSJD1","FWJZGCHSZJCSSGCJGYSBA1"};//规划条件核实、建设工程城建档案验收、工程竣工验收监督、房屋建筑工程和市政基础设施工程竣工验收备案
+    private static String[] itemCategoryMarks = new String[]{"GHTJHS1","JSGCCJDAYS1","GCJGYSJD1"/*,"FWJZGCHSZJCSSGCJGYSBA1"*/};//规划条件核实、建设工程城建档案验收、工程竣工验收监督、房屋建筑工程和市政基础设施工程竣工验收备案
 
     @Autowired
     private AeaHiParStageinstService aeaHiParStageinstService;
@@ -39,14 +43,19 @@ public class ProjAcceptService {
     private AeaUnitInfoService aeaUnitInfoService;
     @Autowired
     private AeaHiApplyinstService aeaHiApplyinstService;
+    @Autowired
+    private AeaProjInfoService aeaProjInfoService;
+    @Autowired
+    private BscDicRegionService bscDicRegionService;
 
     /**
      * 根据申报实例ID，获取竣工验收阶段汇总意见信息（只适合于竣工验收阶段）
-     * @param applyinstId
+     * @param applyinstId 申报实例ID
+     * @param yanshouProcInstId 竣工验收阶段验收二级流程的实例ID，可以为空
      * @return
      * @throws Exception
      */
-    public ProjAcceptOpinionSummaryVo caculateProjAcceptOpinionSummary(String applyinstId) throws Exception {
+    public ProjAcceptOpinionSummaryVo caculateProjAcceptOpinionSummary(String applyinstId,String yanshouProcInstId) throws Exception {
         if(StringUtils.isBlank(applyinstId))
             throw new RuntimeException("申报实例ID参数不能为空！");
 
@@ -101,12 +110,6 @@ public class ProjAcceptService {
 
         if(buildUnitInfo!=null) {
             buildUnit = buildUnitInfo.getApplicant();
-
-            /*List<LinkmanTypeVo> linkmanTypeVos = aeaLinkmanInfoService.findLinkmanTypes(projInfoId,buildUnitInfo.getUnitInfoId());
-            if(linkmanTypeVos!=null&&linkmanTypeVos.size()>0) {
-                linkman = linkmanTypeVos.get(0).getLinkmanName();
-                linkmanPhone = linkmanTypeVos.get(0).getLinkmanMobilePhone();
-            }*/
         }
 
         if(jianliUnitInfo!=null)
@@ -138,6 +141,21 @@ public class ProjAcceptService {
         acceptOpinionSummaryVo.setLinkman(linkman);
         acceptOpinionSummaryVo.setLinkmanPhone(linkmanPhone);
 
+        AeaProjInfo aeaProjInfo = aeaProjInfoService.getAeaProjInfoByProjInfoId(projInfoId);
+        String regionId = aeaProjInfo.getRegionalism();
+        if(StringUtils.isNotBlank(regionId)){
+            BscDicRegion region = bscDicRegionService.getBscDicRegionById(regionId);
+            if(region!=null)
+                acceptOpinionSummaryVo.setRegionName(region.getRegionName());
+        }
+        String projLevel = aeaProjInfo.getProjLevel();
+        if(StringUtils.isNotBlank(projLevel)){
+            acceptOpinionSummaryVo.setImportantProj("是");
+        }else{
+            acceptOpinionSummaryVo.setImportantProj("否");
+        }
+
+
         AeaHiParStageinst stageinst = aeaHiParStageinstService.getAeaHiParStageinstByApplyinstId(applyinstId);
 
         if(stageinst==null)
@@ -167,6 +185,18 @@ public class ProjAcceptService {
 
                             deptOpinions.put(iteminst.getApproveOrgName()+"（"+iteminst.getIteminstName()+"）", commentFormList.get(0).getCommentMessage());
                         }
+                    }
+                }
+            }
+
+            //获取联合验收二级流程“出具联合验收意见”节点的意见
+            if(StringUtils.isNotBlank(yanshouProcInstId)){
+                //联合验收二级流程的“出具联合验收意见”节点的编号为：chujulianheyanshouyijian
+                List<BpmHistoryCommentForm> commentFormList = bpmTaskService.getHistoryCommentsByTaskNode(yanshouProcInstId,"chujulianheyanshouyijian");
+                if(commentFormList!=null&&commentFormList.size()>0){
+                    BpmHistoryCommentForm commentForm = commentFormList.get(0);
+                    if(commentForm!=null&&StringUtils.isNotBlank(commentForm.getOrgName())){
+                        deptOpinions.put(commentForm.getOrgName(),commentForm.getCommentMessage());
                     }
                 }
             }

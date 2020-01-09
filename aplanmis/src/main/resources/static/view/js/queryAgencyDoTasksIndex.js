@@ -58,11 +58,23 @@ var vm = new Vue({
         },
         //办理
         viewDetail: function (row) {
-            var url = ctx + 'apanmis/page/stageApproveIndex?taskId=' + row.taskId + '&viewId=' + row.viewId + '&itemNature=' + row.itemNature;
-            if (row.busRecordId) {
-                url = url + '&busRecordId=' + row.busRecordId;
+            var menuName= '';
+            var menuInnerUrl =  '';
+            var id = 'menu_'+new Date().getTime();
+            menuName = row.projName;
+            menuInnerUrl = ctx + '/apanmis/page/stageApplyIndex?applyAgentId=' + row.applyAgentId;
+            menuInnerUrl += '&isApplyAgent=true';
+            menuInnerUrl += '&projInfoId='+row.projInfoId;
+            var data = {
+                'menuName':menuName,
+                'menuInnerUrl':menuInnerUrl,
+                'id':id,
+            };
+            try{
+                parent.vm.addTab('',data,'','');
+            }catch (e) {
+                window.open(menuInnerUrl,'_blank');
             }
-            window.open(url, '_blank');
         },
 
         //格式化代办状态
@@ -144,6 +156,32 @@ var vm = new Vue({
             });
         },
 
+        // 简单加密
+        compile:function(code) {
+          var c = String.fromCharCode(code.charCodeAt(0) + code.length);
+          for (var i = 1; i < code.length; i++) {
+            c += String.fromCharCode(code.charCodeAt(i) + code.charCodeAt(i - 1));
+          }
+          return escape(c);
+        },
+
+        // 跳转代办详情 签订与查看
+        toAgencyDetail: function(row, type){
+          var _url = ctx + 'aea/proj/apply/agent/agencyProjDetail?applyAgentId=' + row.applyAgentId + '&type=';
+          type == 'view' ? _url += this.compile('view'): _url += this.compile('do');
+          var tabsData = {
+            menuName: '代办详情',
+            id: 'agency_detail' + row.applyAgentId,
+            menuInnerUrl: _url,
+          }
+          try {
+            //获取父window vue对象
+            var parentVue = window.parent.vm
+            parentVue.addTab('', tabsData, 'MENU_', parentVue.leftMenuActive++);
+          } catch (err) {
+            top.postMessage(tabsData, '*')
+          }
+        },
     },
     created: function () {
         this.conditionalQueryDic();

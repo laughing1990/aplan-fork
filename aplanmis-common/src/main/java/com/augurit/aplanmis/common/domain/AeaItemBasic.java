@@ -103,6 +103,9 @@ public class AeaItemBasic implements Serializable {
     @ApiModelProperty(value = "法定办结时限单位")
     private String anticipateType;
 
+    @ApiModelProperty(value = "EL表达式内容")
+    private String elContent;
+
     /**
      * 行政区域
      */

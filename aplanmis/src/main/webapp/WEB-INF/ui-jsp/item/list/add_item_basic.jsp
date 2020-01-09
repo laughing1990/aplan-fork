@@ -94,13 +94,26 @@
                             <label class="col-2 col-form-label" style="text-align: right;padding-top: 6px;"><font color="red">*</font>实施事项换算方式:</label>
                             <div class="col-10">
                                 <div class="m-radio-inline">
-                                    <label class="m-radio" style="width: 250px;">
-                                        <input type="radio" name="itemExchangeWay" value="1" checked>仅按照审批行政区划换算<span></span>
+                                    <label class="m-radio" style="width: 200px;">
+                                        <input type="radio" name="itemExchangeWay" value="1" checked>仅按照审批行政区划<span></span>
+                                    </label>
+                                    <label class="m-radio" style="width: 280px;">
+                                        <input type="radio" name="itemExchangeWay" value="0" >按照审批行政区划和属地行政区划<span></span>
                                     </label>
                                     <label class="m-radio">
-                                        <input type="radio" name="itemExchangeWay" value="0" >按照审批行政区划和属地行政区划换算<span></span>
+                                        <input type="radio" name="itemExchangeWay" value="2" >按照EL表达式<span></span>
                                     </label>
                                 </div>
+                            </div>
+                        </div>
+
+                        <div id="elContentDiv" class="form-group m-form__group row">
+                            <label class="col-2 col-form-label" style="text-align: right;padding-top: 6px;"><font color="red">*</font>EL表达式:</label>
+                            <div class="col-10">
+                                <textarea class="form-control" name="elContent" rows="3"></textarea>
+                                <span class="m-form__help">
+                                    如所属标准事项的“实施事项换算方式”项设置为“按照EL表达式”，则须填写EL表达式
+                                </span>
                             </div>
                         </div>
 

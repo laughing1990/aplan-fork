@@ -89,6 +89,16 @@
                             </div>
                         </div>
 
+                        <div class="form-group m-form__group row">
+                            <label class="col-2 col-form-label" style="text-align: right;padding-top: 6px;"><font color="red">*</font>EL表达式:</label>
+                            <div class="col-10">
+                                <textarea class="form-control" name="elContent" rows="3"></textarea>
+                                <span class="m-form__help">
+                                    如所属标准事项的“实施事项换算方式”项设置为“按照EL表达式”，则须填写EL表达式
+                                </span>
+                            </div>
+                        </div>
+
                         <div class="form-group m-form__group row" >
                             <label class="col-lg-2 col-form-label" style="text-align: right;">审批行政区划:</label>
                             <div class="col-lg-4 input-group">
