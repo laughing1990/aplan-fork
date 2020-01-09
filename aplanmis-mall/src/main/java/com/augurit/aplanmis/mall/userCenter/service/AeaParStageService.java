@@ -257,6 +257,7 @@ public class AeaParStageService {
         List<String> unitProjIds = stageApplyDataVo.getProjUnitIds();
         String applyLinkmanId = stageApplyDataVo.getApplyLinkmanId();
         List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos = stageApplyDataVo.getPropulsionItemApplyinstIdVos();
+        SmsInfoVo smsInfoVo = stageApplyDataVo.getSmsInfoVo();
 
         List<String> appinstIds = new ArrayList<>();
         List<String> applyinstIds = new ArrayList<>();
@@ -425,13 +426,11 @@ public class AeaParStageService {
             this.insertApplySubject(applySubject, applyinstId, projInfoIds, applyLinkmanId, linkmanInfoId, unitProjIds);
 
             //更新办件结果领取方式
-            AeaHiSmsInfo aeaSmsInfo=aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(applyinstId);
-            if(aeaSmsInfo==null){
-                aeaSmsInfo=new AeaHiSmsInfo();
-                aeaSmsInfo.setId(smsInfoId);
-                aeaSmsInfo.setApplyinstId(applyinstId);
-                aeaHiSmsInfoService.updateAeaHiSmsInfo(aeaSmsInfo);
-            }
+            //AeaHiSmsInfo aeaSmsInfo=aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(applyinstId);
+            //if(aeaSmsInfo==null){
+            AeaHiSmsInfo smsInfo = aeaHiSmsInfoService.createAeaHiSmsInfo(smsInfoVo.toSmsInfo());
+            smsInfoId=smsInfo.getId();
+            //}
 
             appinstIds.add(bpmProcessInstance.getActStoAppinst().getAppinstId());
             procinstIds.add(bpmProcessInstance.getProcessInstance().getId());
