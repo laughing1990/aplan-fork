@@ -85,7 +85,7 @@ public class AeaProjApplyAgentController {
             if(StringUtils.isNotBlank(data)){
                 AeaProjApplyAgent applyAgent = JSONObject.parseObject(data, AeaProjApplyAgent.class);
                 if(!currentUser.getUserId().equals(applyAgent.getCurrentUserId())){
-                    resultForm.setMessage("代办人员：" + currentUser.getUserName() + " 正在操作该代办申请，请稍等。");
+                    resultForm.setMessage("代办人员：" + applyAgent.getCurrentUserName() + " 正在操作该代办申请，请稍等。");
                     return resultForm;
                 }
             }

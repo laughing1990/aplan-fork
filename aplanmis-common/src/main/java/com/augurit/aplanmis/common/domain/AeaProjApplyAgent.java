@@ -41,7 +41,7 @@ public class AeaProjApplyAgent implements Serializable{
 
     @ApiModelProperty(name = "agreementSignTime", value = "协议签订时间")
     @DateTimeFormat(pattern="yyyy-MM-dd")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", locale = "zh", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd", locale = "zh", timezone = "GMT+8")
     private java.util.Date agreementSignTime;
 
     @ApiModelProperty(name = "agentUserId", value = "代办中心的代办人ID")
