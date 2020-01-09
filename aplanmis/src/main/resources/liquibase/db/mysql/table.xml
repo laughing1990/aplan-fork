@@ -1924,4 +1924,12 @@
         </sql>
     </changeSet>
 
+    <changeSet id="20200109173525" author="zhangwn" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+
+            ALTER TABLE `aea_service_window`
+            ADD COLUMN `WINDOW_LEVEL` varchar(100) DEFAULT NULL COMMENT '代办中心等级' AFTER `ECHARTS_COLOR`;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

@@ -29,7 +29,8 @@
         ${alias}.ROOT_ORG_ID  rootOrgId,
         ${alias}.REGION_RANGE regionRange,
         ${alias}.STAGE_ITEM_FILTER stageItemFilter,
-        ${alias}.ECHARTS_COLOR echartsColor
+        ${alias}.ECHARTS_COLOR echartsColor,
+        ${alias}.WINDOW_LEVEL windowLevel
     </sql>
 
     <!-- 新增实体对象 -->
@@ -59,7 +60,8 @@
           ROOT_ORG_ID,
           REGION_RANGE,
           STAGE_ITEM_FILTER,
-          ECHARTS_COLOR
+          ECHARTS_COLOR,
+          WINDOW_LEVEL
         ) values  (
           #{windowId},
           #{windowName},
@@ -85,7 +87,8 @@
           #{rootOrgId},
           #{regionRange},
           #{stageItemFilter},
-          #{echartsColor}
+          #{echartsColor},
+          #{windowLevel}
         )
     </insert>
 
@@ -172,6 +175,9 @@
             </if>
             <if test="echartsColor != null" >
                 ECHARTS_COLOR = #{echartsColor},
+            </if>
+            <if test="windowLevel != null" >
+                WINDOW_LEVEL = #{windowLevel},
             </if>
         </set>
         where WINDOW_ID = #{windowId}
@@ -276,6 +282,9 @@
             <if test="regionRange != null" >
                 and asw.REGION_RANGE = #{regionRange}
             </if>
+            <if test="windowLevel != null" >
+                and asw.WINDOW_LEVEL = #{windowLevel}
+            </if>
             <if test="stageItemFilter != null" >
                 AND asw.STAGE_ITEM_FILTER = #{stageItemFilter}
             </if>
@@ -342,10 +351,9 @@
         select
         <include refid="allColumns">
             <property name="alias" value="asw"/>
-        </include>
-        ,
-            org.org_name orgName,
-            region.region_name regionName
+        </include>,
+        org.org_name orgName,
+        region.region_name regionName
         from AEA_SERVICE_WINDOW asw
         left join opu_om_org org on org.ORG_ID = asw.ORG_ID
         left join bsc_dic_region region on region.REGION_ID = asw.REGION_ID
@@ -409,6 +417,9 @@
             </if>
             <if test="regionRange != null" >
                 and asw.REGION_RANGE = #{regionRange}
+            </if>
+            <if test="windowLevel != null" >
+                AND asw.WINDOW_LEVEL = #{windowLevel}
             </if>
             <if test="stageItemFilter != null" >
                 AND asw.STAGE_ITEM_FILTER = #{stageItemFilter}
@@ -496,6 +507,9 @@
             <if test="regionRange != null" >
                 and asw.REGION_RANGE = #{regionRange}
             </if>
+            <if test="windowLevel != null" >
+                AND asw.WINDOW_LEVEL = #{windowLevel}
+            </if>
             <if test="stageItemFilter != null" >
                 AND asw.STAGE_ITEM_FILTER = #{stageItemFilter}
             </if>
@@ -581,6 +595,9 @@
             </if>
             <if test="regionRange != null" >
                 and asw.REGION_RANGE = #{regionRange}
+            </if>
+            <if test="windowLevel != null" >
+                AND asw.WINDOW_LEVEL = #{windowLevel}
             </if>
             <if test="stageItemFilter != null" >
                 AND asw.STAGE_ITEM_FILTER = #{stageItemFilter}
