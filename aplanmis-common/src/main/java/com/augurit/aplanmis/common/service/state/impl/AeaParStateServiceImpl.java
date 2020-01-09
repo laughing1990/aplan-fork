@@ -106,7 +106,7 @@ public class AeaParStateServiceImpl implements AeaParStateService {
                 return aeaParStateMapper.listAeaParStateByStageId(stageinst.getStageId(), rootOrgId);
             }
         }
-        return null;
+        return new ArrayList<>();
     }
 
     @Override

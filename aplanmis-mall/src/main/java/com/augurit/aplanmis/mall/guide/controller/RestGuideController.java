@@ -310,19 +310,14 @@ public class RestGuideController {
     @ApiOperation(value = "办事指南 --> 根据阶段ID、阶段情形ID集合、事项情形ID集合、事项版本ID集合获取必选、可选材料列表")
     public ContentResultForm<RestGuideMatVo> listItemAndStateeByStageId(@RequestBody MatListParamVo matListParamVo){
         try {
-            RestGuideMatVo  restGuideMatVo = new RestGuideMatVo();
-            List<AeaItemMat> list = aeaItemMatService.getMatListByStateListAndItemListAndStageId(matListParamVo.getItemStateIds(),matListParamVo.getStageStateIds(),
-                    matListParamVo.getCoreItemVerIds(),matListParamVo.getParallelItemVerIds(),matListParamVo.getCoreParentItemVerIds(),matListParamVo.getParaParentllelItemVerIds(),matListParamVo.getStageId(),null);
-            //必选材料
-            restGuideMatVo.setRequireMat(list.stream().filter(item->("1".equals(item.getAttIsRequire()))).collect(Collectors.toList()));
-            //可选材料
-            restGuideMatVo.setNoRequireMat(list.stream().filter(item->("0".equals(item.getAttIsRequire()))).collect(Collectors.toList()));
-            return new ContentResultForm(true,restGuideMatVo);
+            return new ContentResultForm(true,restGuideService.getRestGuideMatVo(matListParamVo));
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             return new ContentResultForm(false,"","办事指南 --> 根据阶段ID、阶段情形ID集合、事项情形ID集合、事项版本ID集合获取必选、可选材料列表异常");
         }
     }
+
+
 
     @GetMapping("/detailed/{itemVerId}")
     @ApiOperation(value = "办事指南 --> 获取事项对应的办事指南数据")

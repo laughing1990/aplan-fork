@@ -1486,9 +1486,9 @@
         </sql>
     </changeSet>
 
-    <changeSet id="20200103151125" author="zhangwn" failOnError="false">
+    <changeSet id="20200109094525" author="zhangwn" failOnError="false">
         <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
-            ALTER TABLE `aplanmis_foshan`.`aea_service_window`
+            ALTER TABLE `aea_service_window`
             MODIFY COLUMN `WINDOW_TYPE` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL
             COMMENT '窗口类型，来自于数据字典，0表示综合窗口，1表示收费发证窗口，d表示代办中心' AFTER `IS_ACTIVE`;
         </sql>
@@ -1907,6 +1907,20 @@
         <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
             ALTER TABLE `aea_hi_sms_info`
             ADD COLUMN `RECEIVE_TYPE` varchar(1) NULL DEFAULT 1 COMMENT '领取方式， 1：一次领取，0：多次领取' AFTER `RECEIVE_MODE`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20200109092725" author="zhangwn" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_proj_apply_agent`
+            MODIFY COLUMN `AGENT_APPLY_STATE` char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL
+            COMMENT '代办申请状态 1待签订 2窗口签订中 3 待申请人签章 4已签订（代办中） 5代办终止 6不予受理 7代办结束' AFTER `AGENT_STAGE_STATE`;
+
+            ALTER TABLE `aea_proj_apply_agent`
+            ADD COLUMN `AGENT_STOP_AGREEMENT_FILE_ID` varchar(50) NULL COMMENT '代办终止协议文件ID' AFTER `AGENT_USER_MOBILE`;
+
+            ALTER TABLE `aea_proj_apply_agent`
+            ADD COLUMN `AGENT_END_AGREEMENT_FILE_ID` varchar(11) NULL COMMENT '代办结束办结单文件ID' AFTER `AGENT_STOP_AGREEMENT_FILE_ID`;
         </sql>
     </changeSet>
 

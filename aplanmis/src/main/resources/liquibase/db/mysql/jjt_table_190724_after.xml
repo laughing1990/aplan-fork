@@ -1183,4 +1183,14 @@
         </sql>
     </changeSet>
 
+    <changeSet id="202001091046" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_basic`
+            ADD COLUMN `EL_CONTENT`  varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'EL表达式内容' AFTER `ANTICIPATE_TYPE`;
+
+            ALTER TABLE `aea_item_basic`
+            MODIFY COLUMN `ITEM_EXCHANGE_WAY` char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '实施事项换算方式 0 按照审批行政区划和属地行政区划换算 1 仅按照审批行政区划换算 2 按照EL表达式' AFTER `ITEM_CATEGORY_MARK`;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

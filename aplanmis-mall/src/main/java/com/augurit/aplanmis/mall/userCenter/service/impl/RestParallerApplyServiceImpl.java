@@ -34,6 +34,7 @@ import com.augurit.aplanmis.mall.userCenter.vo.AeaGuideApplyVo;
 import com.augurit.aplanmis.mall.userCenter.vo.AeaGuideItemVo;
 import com.augurit.aplanmis.mall.userCenter.vo.ApplyIteminstConfirmVo;
 import com.augurit.aplanmis.mall.userCenter.vo.StageStateParamVo;
+import com.augurit.aplanmis.supermarket.linkmanInfo.service.AeaLinkmanInfoService;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -89,6 +90,8 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
     private RestAeaHiGuideService restAeaHiGuideService;
     @Autowired
     private AeaUnitInfoMapper aeaUnitInfoMapper;
+    @Autowired
+    private AeaLinkmanInfoService aeaLinkmanInfoService;
 
     @Override
     public ItemListVo listItemAndStateByStageId(String stageId, String projInfoId, String regionalism, String projectAddress,String isSelectItemState,String isFilterStateItem,String rootOrgId) throws Exception {
@@ -212,6 +215,9 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
             }
         }
         vo.setUnitInfoId((StringUtils.isNotBlank(unitInfoId))?unitInfoId:(unitList.size()>0?unitList.get(0).getUnitInfoId():null));
+        vo.setLinkmanInfo(aeaLinkmanInfoService.getOneById(applyinst.getLinkmanInfoId()));
+        AeaParStage stage = aeaParStageMapper.getAeaParStageById(vo.getStageId());
+        vo.setDybzspjdxh(stage!=null?stage.getDybzspjdxh():"");
         return vo;
     }
 

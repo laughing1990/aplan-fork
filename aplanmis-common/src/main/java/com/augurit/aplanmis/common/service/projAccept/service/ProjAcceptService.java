@@ -1,4 +1,4 @@
-package com.augurit.aplanmis.front.projAccept.service;
+package com.augurit.aplanmis.common.service.projAccept.service;
 
 import com.augurit.agcloud.bpm.common.domain.BpmHistoryCommentForm;
 import com.augurit.agcloud.bpm.common.engine.BpmTaskService;
@@ -9,8 +9,8 @@ import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
+import com.augurit.aplanmis.common.service.projAccept.vo.ProjAcceptOpinionSummaryVo;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
-import com.augurit.aplanmis.front.projAccept.vo.ProjAcceptOpinionSummaryVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -3,7 +3,6 @@ package com.augurit.aplanmis.mall.userCenter.service.impl;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
-import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.aplanmis.common.constants.AeaUnitConstants;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.domain.*;
@@ -13,15 +12,11 @@ import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.vo.AeaUnitInfoVo;
 import com.augurit.aplanmis.common.vo.LinkmanTypeVo;
-import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyCommonService;
 import com.augurit.aplanmis.mall.userCenter.service.RestMyMatService;
 import com.augurit.aplanmis.mall.userCenter.vo.*;
-import io.swagger.annotations.ApiModelProperty;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -226,8 +221,67 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
     }
 
     @Override
-    public Map<String, Object> getStringObjectMap(@RequestBody SmsInfoVo smsInfoVo, Map<String, Object> resultMap, AeaProjInfo aeaProjInfo) throws Exception {
-        String smsId;//保存或修改领件人信息
+    public Map<String, Object> getStringObjectMap(SmsProjUnitInfoVo projUnitInfoVo, Map<String, Object> resultMap, AeaProjInfo aeaProjInfo) throws Exception {
+        //修改项目信息
+        if (StringUtils.isBlank(aeaProjInfo.getGcbm()))
+            aeaProjInfo.setGcbm(aeaProjInfo.getLocalCode());
+        aeaProjInfoService.updateAeaProjInfo(aeaProjInfo);
+        //当前企业用户的人员设置
+        if (projUnitInfoVo.getLinkmanTypeVos() != null && projUnitInfoVo.getLinkmanTypeVos().size() > 0) {
+            restApplyCommonService.saveOrUpdateLinkmanTypes(projUnitInfoVo.getLinkmanTypeVos());
+        }
+        //项目单位关联
+        Map<String, Object> map = new HashMap<>(2);
+        if (projUnitInfoVo.getAeaUnitInfos() != null && projUnitInfoVo.getAeaUnitInfos().size() > 0) {
+            map = restApplyCommonService.saveOrUpdateUnitInfo(aeaProjInfo.getProjInfoId(), projUnitInfoVo.getAeaUnitInfos());
+        }
+        String smsId="";
+        AeaHiSmsInfo aeaHiSmsInfo=null;
+        if(StringUtils.isNotBlank(projUnitInfoVo.getApplyinstId())){
+            aeaHiSmsInfo=aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(projUnitInfoVo.getApplyinstId());
+        }
+        if (StringUtils.isBlank(projUnitInfoVo.getId())) {
+            if(aeaHiSmsInfo==null) aeaHiSmsInfo = aeaHiSmsInfoService.createAeaHiSmsInfo(projUnitInfoVo.toSmsInfo());
+            smsId = aeaHiSmsInfo.getId();
+        } else {
+            if(aeaHiSmsInfo==null) aeaHiSmsInfo = aeaHiSmsInfoService.getAeaHiSmsInfoById(projUnitInfoVo.getId());
+            projUnitInfoVo.setApplyinstId(aeaHiSmsInfo.getApplyinstId());
+            aeaHiSmsInfoService.updateAeaHiSmsInfo(projUnitInfoVo.merge(aeaHiSmsInfo));
+            smsId = projUnitInfoVo.getId();
+        }
+        resultMap.put("smsId", map.get("smsId"));
+        resultMap.put("unitProjIds", map.get("unitProjIds"));
+        resultMap.put("unitReturnJson", map.get("unitReturnJson"));
+        resultMap.put("regionalism", aeaProjInfo.getRegionalism());
+        return map;
+    }
+
+
+    @Override
+    public Map<String, Object> saveProjUnit(ProjUnitInfoVo projUnitInfoVo, Map<String, Object> resultMap, AeaProjInfo aeaProjInfo) throws Exception {
+        //修改项目信息
+        if (StringUtils.isBlank(aeaProjInfo.getGcbm()))
+            aeaProjInfo.setGcbm(aeaProjInfo.getLocalCode());
+        aeaProjInfoService.updateAeaProjInfo(aeaProjInfo);
+        //当前企业用户的人员设置
+        if (projUnitInfoVo.getLinkmanTypeVos() != null && projUnitInfoVo.getLinkmanTypeVos().size() > 0) {
+            restApplyCommonService.saveOrUpdateLinkmanTypes(projUnitInfoVo.getLinkmanTypeVos());
+        }
+        //项目单位关联
+        Map<String, Object> map = new HashMap<>(2);
+        if (projUnitInfoVo.getAeaUnitInfos() != null && projUnitInfoVo.getAeaUnitInfos().size() > 0) {
+            map = restApplyCommonService.saveOrUpdateUnitInfo(aeaProjInfo.getProjInfoId(), projUnitInfoVo.getAeaUnitInfos());
+        }
+        resultMap.put("unitProjIds", map.get("unitProjIds"));
+        resultMap.put("unitReturnJson", map.get("unitReturnJson"));
+        resultMap.put("regionalism", aeaProjInfo.getRegionalism());
+        return map;
+    }
+
+
+    @Override
+    public String saveSmsInfo(SmsInfoVo smsInfoVo) throws Exception {
+        String smsId="";
         AeaHiSmsInfo aeaHiSmsInfo=null;
         if(StringUtils.isNotBlank(smsInfoVo.getApplyinstId())){
             aeaHiSmsInfo=aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(smsInfoVo.getApplyinstId());
@@ -241,26 +295,7 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
             aeaHiSmsInfoService.updateAeaHiSmsInfo(smsInfoVo.merge(aeaHiSmsInfo));
             smsId = smsInfoVo.getId();
         }
-        //修改项目信息
-        if (StringUtils.isBlank(aeaProjInfo.getGcbm()))
-            aeaProjInfo.setGcbm(aeaProjInfo.getLocalCode());
-        aeaProjInfoService.updateAeaProjInfo(aeaProjInfo);
-        //当前企业用户的人员设置
-        if (smsInfoVo.getLinkmanTypeVos() != null && smsInfoVo.getLinkmanTypeVos().size() > 0) {
-            restApplyCommonService.saveOrUpdateLinkmanTypes(smsInfoVo.getLinkmanTypeVos());
-        }
-
-        //项目单位关联
-        //List<String> projUnitIds = new ArrayList<>();
-        Map<String, Object> map = new HashMap<>(2);
-        if (smsInfoVo.getAeaUnitInfos() != null && smsInfoVo.getAeaUnitInfos().size() > 0) {
-            map = restApplyCommonService.saveOrUpdateUnitInfo(aeaProjInfo.getProjInfoId(), smsInfoVo.getAeaUnitInfos());
-        }
-        resultMap.put("smsId", smsId);
-        resultMap.put("unitProjIds", map.get("unitProjIds"));
-        resultMap.put("unitReturnJson", map.get("unitReturnJson"));
-        resultMap.put("regionalism", aeaProjInfo.getRegionalism());
-        return map;
+        return smsId;
     }
 
     @Override
@@ -337,67 +372,67 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
         }
     }
 
-    @Override
-    public Map<String,Object>  submitItemList(ItemListTemporaryParamVo itemListTemporaryParamVo,Map<String,Object> map) throws Exception {
-        String applyinstId=itemListTemporaryParamVo.getApplyinstId();
-        String stageId=itemListTemporaryParamVo.getStageId();
-        String stageinstId=itemListTemporaryParamVo.getStageinstId();
-        String themeVerId=itemListTemporaryParamVo.getThemeVerId();
-        String[] stateIds=itemListTemporaryParamVo.getStateIds();
-        List<String> itemVerIds=itemListTemporaryParamVo.getItemVerIds();
-        List<ParallelItemStateVo> parallelItemStateVoList=itemListTemporaryParamVo.getParallelItemStateIds();
-        String appinstId=UUID.randomUUID().toString();
-        List<String> propulsionItemVerIds=itemListTemporaryParamVo.getPropulsionItemVerIds();
-        List<PropulsionItemStateVo> propulsionItemStateIds=itemListTemporaryParamVo.getPropulsionItemStateIds();
-        List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos=itemListTemporaryParamVo.getPropulsionItemApplyinstIdVos();
-
-        AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageId);
-        if(StringUtils.isNotBlank(applyinstId) && StringUtils.isNotBlank(stageinstId)){//说明此前已经实例化过阶段，则需判断是否切换了阶段
-            AeaHiParStageinst stageinst = aeaHiParStageinstService.getAeaHiParStageinstById(stageinstId);
-            if(stageinst==null){
-                AeaHiParStageinst newStageinst=aeaHiParStageinstService.createAeaHiParStageinst(applyinstId,stageId,themeVerId,appinstId,null);
-                stageinstId=newStageinst.getStageinstId();
-            }if(!stageId.equals(stageinst.getStageId())){//说明阶段变了
-                aeaHiParStageinstService.deleteAeaHiParStageinstById(stageinstId);
-                AeaHiParStageinst newStageinst=aeaHiParStageinstService.createAeaHiParStageinst(applyinstId,stageId,themeVerId,appinstId,null);
-                stageinstId=newStageinst.getStageinstId();
-            }else{
-                appinstId=stageinst.getAppinstId();
-            }
-            //变更,1.删除该阶段的所有情形，重新实例化 2.删除该阶段下的所有事项，重新实例化  3.删除所有事项的情形重新实例化
-            deleteReInsertParStateinstUnderStageinst(applyinstId,stageinstId, stateIds);
-            deleteReInsertIteminstUnderStageinst(themeVerId,stageinstId,itemVerIds,appinstId,null);
-            // 多事项直接合并办理 handWay=0 时才处理
-            if (aeaParStage!= null && "0".equals(aeaParStage.getHandWay())) {
-                deleteItemStates(applyinstId);
-                // 简单合并申报的情况下，可能存在事项自己的情形列表
-                saveItemStateBySimpleMerge(parallelItemStateVoList, itemVerIds, applyinstId,stageinstId);
-            }
-        }else{//第一次暂存阶段信息
-            //2、实例化并联实例
-            AeaHiParStageinst aeaHiParStageinst= aeaHiParStageinstService.getAeaHiParStageinstByApplyinstId(applyinstId);
-            if(aeaHiParStageinst==null)
-                aeaHiParStageinst = aeaHiParStageinstService.createAeaHiParStageinst(applyinstId, stageId, themeVerId, appinstId, null);
-            stageinstId=aeaHiParStageinst.getStageinstId();
-            //3、实例化事项----此处已经做了事项实例表中的分局承办字段，
-            if(itemVerIds.size()>0){
-                aeaHiIteminstService.batchInsertAeaHiIteminstAndTriggerAeaLogItemStateHist(themeVerId,stageinstId,itemVerIds,null,null,appinstId);
-            }
-            //4、情形实例
-            if(stateIds.length>0){
-                aeaHiParStateinstService.batchInsertAeaHiParStateinst(applyinstId, stageinstId, stateIds, SecurityContext.getCurrentUserName());
-            }
-            // 多事项直接合并办理 handWay=0 时才处理
-            if (aeaParStage!= null && "0".equals(aeaParStage.getHandWay()) && itemVerIds.size()>0) {
-                // 简单合并申报的情况下，可能存在事项自己的情形列表
-                saveItemStateBySimpleMerge(parallelItemStateVoList, itemVerIds, applyinstId,stageinstId);
-            }
-        }
-        map.put("stageinstId",stageinstId);
-        //暂存并行事项
-        submitPropulsionItem(propulsionItemVerIds,propulsionItemStateIds,propulsionItemApplyinstIdVos,itemListTemporaryParamVo.getSmsInfoVo(),map);
-        return map;
-    }
+//    @Override
+//    public Map<String,Object>  submitItemList(ItemListTemporaryParamVo itemListTemporaryParamVo,Map<String,Object> map) throws Exception {
+//        String applyinstId=itemListTemporaryParamVo.getApplyinstId();
+//        String stageId=itemListTemporaryParamVo.getStageId();
+//        String stageinstId=itemListTemporaryParamVo.getStageinstId();
+//        String themeVerId=itemListTemporaryParamVo.getThemeVerId();
+//        String[] stateIds=itemListTemporaryParamVo.getStateIds();
+//        List<String> itemVerIds=itemListTemporaryParamVo.getItemVerIds();
+//        List<ParallelItemStateVo> parallelItemStateVoList=itemListTemporaryParamVo.getParallelItemStateIds();
+//        String appinstId=UUID.randomUUID().toString();
+//        List<String> propulsionItemVerIds=itemListTemporaryParamVo.getPropulsionItemVerIds();
+//        List<PropulsionItemStateVo> propulsionItemStateIds=itemListTemporaryParamVo.getPropulsionItemStateIds();
+//        List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos=itemListTemporaryParamVo.getPropulsionItemApplyinstIdVos();
+//
+//        AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageId);
+//        if(StringUtils.isNotBlank(applyinstId) && StringUtils.isNotBlank(stageinstId)){//说明此前已经实例化过阶段，则需判断是否切换了阶段
+//            AeaHiParStageinst stageinst = aeaHiParStageinstService.getAeaHiParStageinstById(stageinstId);
+//            if(stageinst==null){
+//                AeaHiParStageinst newStageinst=aeaHiParStageinstService.createAeaHiParStageinst(applyinstId,stageId,themeVerId,appinstId,null);
+//                stageinstId=newStageinst.getStageinstId();
+//            }if(!stageId.equals(stageinst.getStageId())){//说明阶段变了
+//                aeaHiParStageinstService.deleteAeaHiParStageinstById(stageinstId);
+//                AeaHiParStageinst newStageinst=aeaHiParStageinstService.createAeaHiParStageinst(applyinstId,stageId,themeVerId,appinstId,null);
+//                stageinstId=newStageinst.getStageinstId();
+//            }else{
+//                appinstId=stageinst.getAppinstId();
+//            }
+//            //变更,1.删除该阶段的所有情形，重新实例化 2.删除该阶段下的所有事项，重新实例化  3.删除所有事项的情形重新实例化
+//            deleteReInsertParStateinstUnderStageinst(applyinstId,stageinstId, stateIds);
+//            deleteReInsertIteminstUnderStageinst(themeVerId,stageinstId,itemVerIds,appinstId,null);
+//            // 多事项直接合并办理 handWay=0 时才处理
+//            if (aeaParStage!= null && "0".equals(aeaParStage.getHandWay())) {
+//                deleteItemStates(applyinstId);
+//                // 简单合并申报的情况下，可能存在事项自己的情形列表
+//                saveItemStateBySimpleMerge(parallelItemStateVoList, itemVerIds, applyinstId,stageinstId);
+//            }
+//        }else{//第一次暂存阶段信息
+//            //2、实例化并联实例
+//            AeaHiParStageinst aeaHiParStageinst= aeaHiParStageinstService.getAeaHiParStageinstByApplyinstId(applyinstId);
+//            if(aeaHiParStageinst==null)
+//                aeaHiParStageinst = aeaHiParStageinstService.createAeaHiParStageinst(applyinstId, stageId, themeVerId, appinstId, null);
+//            stageinstId=aeaHiParStageinst.getStageinstId();
+//            //3、实例化事项----此处已经做了事项实例表中的分局承办字段，
+//            if(itemVerIds.size()>0){
+//                aeaHiIteminstService.batchInsertAeaHiIteminstAndTriggerAeaLogItemStateHist(themeVerId,stageinstId,itemVerIds,null,null,appinstId);
+//            }
+//            //4、情形实例
+//            if(stateIds.length>0){
+//                aeaHiParStateinstService.batchInsertAeaHiParStateinst(applyinstId, stageinstId, stateIds, SecurityContext.getCurrentUserName());
+//            }
+//            // 多事项直接合并办理 handWay=0 时才处理
+//            if (aeaParStage!= null && "0".equals(aeaParStage.getHandWay()) && itemVerIds.size()>0) {
+//                // 简单合并申报的情况下，可能存在事项自己的情形列表
+//                saveItemStateBySimpleMerge(parallelItemStateVoList, itemVerIds, applyinstId,stageinstId);
+//            }
+//        }
+//        map.put("stageinstId",stageinstId);
+//        //暂存并行事项
+//        submitPropulsionItem(propulsionItemVerIds,propulsionItemStateIds,propulsionItemApplyinstIdVos,itemListTemporaryParamVo.getSmsInfoVo(),map);
+//        return map;
+//    }
     @Autowired
     private AeaHiApplyinstService aeaHiApplyinstService;
 
@@ -408,7 +443,7 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
      * @param propulsionItemApplyinstIdVos
      * @param map
      */
-    private void submitPropulsionItem(List<String> propulsionItemVerIds, List<PropulsionItemStateVo> propulsionItemStateIds, List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos,SmsInfoVo smsInfoVo, Map<String, Object> map) throws Exception {
+    private void submitPropulsionItem(List<String> propulsionItemVerIds, List<PropulsionItemStateVo> propulsionItemStateIds, List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos,SmsProjUnitInfoVo smsInfoVo, Map<String, Object> map) throws Exception {
         if(propulsionItemVerIds==null||propulsionItemVerIds.size()==0) return;
         List<String> unitProjIds=(List<String>)map.get("unitProjIds");
         String unitInfoId=(String) map.get("unitInfoId");
@@ -469,7 +504,7 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
         return null;
     }
      //并行事项申报
-    private AeaHiSeriesinst saveSeriesApplyinstAndStateinst(String itemVerId, List<PropulsionItemStateVo> propulsionItemStateIds, List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos,SmsInfoVo smsInfoVo,String parentApplyinstId,List<String> unitProjIds,String unitInfoId) throws Exception {
+    private AeaHiSeriesinst saveSeriesApplyinstAndStateinst(String itemVerId, List<PropulsionItemStateVo> propulsionItemStateIds, List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos,SmsProjUnitInfoVo smsInfoVo,String parentApplyinstId,List<String> unitProjIds,String unitInfoId) throws Exception {
         PropulsionItemApplyinstIdVo propulsionItemApplyinstIdVo=new PropulsionItemApplyinstIdVo();
         AeaHiApplyinst seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinst("net", smsInfoVo.getApplySubject(), smsInfoVo.getLinkmanInfoId(), "1", null, ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(), "1",parentApplyinstId);//实例化串联申请实例
         String seriesApplyinstId = seriesApplyinst.getApplyinstId();//申报实例ID

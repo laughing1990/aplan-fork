@@ -11,12 +11,13 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div id="opusOmSortDiv1" class="m-portlet__body" style="padding: 15px;max-height:500px;overflow-y:auto;overflow-x: hidden">
+            <div id="opusOmSortDiv1" class="m-portlet__body" style="padding: 0px; max-height:500px; overflow:auto;">
                 <div class="opusOmSortDiv">
                     <ul id="themeUl" class="block_ul_td"></ul>
                 </div>
             </div>
             <div class="modal-footer" style="padding: 15px;height: 50px;">
+                <span style="color: #f23454b8;margin-right: 28rem;">备注：拖拉拽完后点击"确定"按钮生效!</span>
                 <button type="button" class="btn btn-info" onclick="saveThemeSort();" style="width: 75px;">确定</button>
             </div>
         </div>
@@ -55,9 +56,9 @@
                 $("#themeUl").html("");
                 for(var i=0;i<data.length;i++){
                     var liHtml = '<li name="themeLi" category-id="'+data[i].themeId+'">' +
-                                    '<span class="drag-handle_td">&#9776;</span>' +
-                                    '<span class="org_name_td">'+data[i].themeName+'</span>' +
-                                '</li>';
+                                     '<span class="drag-handle_td" style="width: 6%;">&#9776;</span>' +
+                                     '<span class="org_name_td" style="width: 90%;">'+data[i].themeName+'</span>' +
+                                  '</li>';
                     $('#themeUl').append(liHtml);
                 }
             }

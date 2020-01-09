@@ -18,7 +18,10 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,6 +44,14 @@ private static Logger logger = LoggerFactory.getLogger(AeaProjApplyAgentControll
 
     @Autowired
     private FileUtilsService fileUtilsService;
+
+    @ApiOperation(value = "项目代办 --> 跳转代办详情页面", notes = "项目代办 --> 跳转代办详情页面")
+    @RequestMapping("agencyProjDetail")
+    public ModelAndView agencyProjDetail(String applyAgentId) {
+        ModelAndView modelAndView = new ModelAndView("agency/agencyProjDetail");
+        modelAndView.addObject("applyAgentId",applyAgentId);
+        return modelAndView;
+    }
 
     /**
      * 保存或编辑项目代办申请
@@ -143,18 +154,21 @@ private static Logger logger = LoggerFactory.getLogger(AeaProjApplyAgentControll
     @PostMapping("uploadAgreementFile")
     @ApiOperation(value = "代办申请 --> 代办协议上传")
     @ApiImplicitParams({
-            @ApiImplicitParam(value = "代办申请ID", name = "applyAgentId", required = true, dataType = "string")
+            @ApiImplicitParam(value = "代办申请ID", name = "applyAgentId", required = true, dataType = "string"),
+            @ApiImplicitParam(value = "代办协议文件", name = "file", required = true, dataType = "MultipartFile")
     })
-    public ContentResultForm uploadFile(String applyAgentId, HttpServletRequest request) {
+    public ContentResultForm uploadAgreementFile(String applyAgentId, @RequestParam("file") MultipartFile file) {
         ContentResultForm resultForm = new ContentResultForm(false);
         try {
+            Assert.notNull(applyAgentId,"代办申请ID不能为空。");
+            Assert.notNull(file,"代办协议文件不能为空。");
             AeaProjApplyAgent agreementDetail = aeaProjApplyAgentService.getAgencyAgreementDetail(applyAgentId);
             if(agreementDetail == null){
                 resultForm.setMessage("代办申请不存在。");
             }else{
                 String agreementCode = agreementDetail.getAgreementCode();
                 aeaProjApplyAgentService.deleteAgreementFile(agreementCode);
-                fileUtilsService.uploadAttachments("AEA_PROJ_APPLY_AGENT", "AGREEMENT_CODE", agreementCode,null, request);
+                fileUtilsService.upload("AEA_PROJ_APPLY_AGENT", "AGREEMENT_CODE", agreementCode,null, file);
                 resultForm.setSuccess(true);
                 resultForm.setMessage("上传成功。");
             }
@@ -162,6 +176,70 @@ private static Logger logger = LoggerFactory.getLogger(AeaProjApplyAgentControll
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             return new ContentResultForm(false,"","代办协议上传接口异常。");
+        }
+    }
+
+    @PostMapping("uploadAgentStopAgreementFile")
+    @ApiOperation(value = "代办申请 --> 代办终止协议文件上传")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "代办申请ID", name = "applyAgentId", required = true, dataType = "string"),
+            @ApiImplicitParam(value = "代办终止协议文件", name = "file", required = true, dataType = "MultipartFile")
+    })
+    public ContentResultForm uploadAgentStopAgreementFile(String applyAgentId, @RequestParam("file") MultipartFile file) {
+        ContentResultForm resultForm = new ContentResultForm(false);
+        try {
+            Assert.notNull(applyAgentId,"代办申请ID不能为空。");
+            Assert.notNull(file,"代办终止协议文件不能为空。");
+            AeaProjApplyAgent agreementDetail = aeaProjApplyAgentService.getAgencyAgreementDetail(applyAgentId);
+            if(agreementDetail == null){
+                resultForm.setMessage("代办申请不存在。");
+            }else{
+                if(StringUtils.isNotBlank(agreementDetail.getAgentStopAgreementFileId())){
+                    //删除原有的文件
+                    fileUtilsService.deleteAttachment(agreementDetail.getAgentStopAgreementFileId());
+                }
+                BscAttForm bscAttForm = fileUtilsService.upload("AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID", applyAgentId, null, file);
+                agreementDetail.setAgentStopAgreementFileId(bscAttForm.getDetailId());
+                aeaProjApplyAgentService.updateAeaProjApplyAgent(agreementDetail);
+                resultForm.setSuccess(true);
+                resultForm.setMessage("上传成功。");
+            }
+            return resultForm;
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ContentResultForm(false,"","代办终止协议文件上传接口异常。");
+        }
+    }
+
+    @PostMapping("uploadAgentEndAgreementFile")
+    @ApiOperation(value = "代办申请 --> 代办结束办结单文件上传")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "代办申请ID", name = "applyAgentId", required = true, dataType = "string"),
+            @ApiImplicitParam(value = "代办结束办结单文件", name = "file", required = true, dataType = "MultipartFile")
+    })
+    public ContentResultForm uploadAgentEndAgreementFile(String applyAgentId, @RequestParam("file") MultipartFile file) {
+        ContentResultForm resultForm = new ContentResultForm(false);
+        try {
+            Assert.notNull(applyAgentId,"代办申请ID不能为空。");
+            Assert.notNull(file,"代办结束办结单文件不能为空。");
+            AeaProjApplyAgent agreementDetail = aeaProjApplyAgentService.getAgencyAgreementDetail(applyAgentId);
+            if(agreementDetail == null){
+                resultForm.setMessage("代办申请不存在。");
+            }else{
+                if(StringUtils.isNotBlank(agreementDetail.getAgentEndAgreementFileId())){
+                    //删除原有的文件
+                    fileUtilsService.deleteAttachment(agreementDetail.getAgentEndAgreementFileId());
+                }
+                BscAttForm bscAttForm = fileUtilsService.upload("AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID", applyAgentId, null, file);
+                agreementDetail.setAgentEndAgreementFileId(bscAttForm.getDetailId());
+                aeaProjApplyAgentService.updateAeaProjApplyAgent(agreementDetail);
+                resultForm.setSuccess(true);
+                resultForm.setMessage("上传成功。");
+            }
+            return resultForm;
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ContentResultForm(false,"","代办结束办结单文件上传接口异常。");
         }
     }
 

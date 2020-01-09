@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.mall.userCenter.vo;
 
 
+import com.augurit.aplanmis.common.domain.AeaHiSmsInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -73,4 +74,13 @@ public class StageApplyDataVo {
 
     @ApiModelProperty(value = "并行事项及其申请实例ID集合")
     private List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos;
+
+    @ApiModelProperty(value = "领件人信息对象")
+    private SmsInfoVo smsInfoVo;
+
+    public AeaHiSmsInfo formatSmsInfoVo(SmsInfoVo smsInfoVo,String applyinstId){
+        AeaHiSmsInfo aeaHiSmsInfo=new AeaHiSmsInfo();
+
+        return aeaHiSmsInfo;
+    }
 }

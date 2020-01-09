@@ -128,6 +128,7 @@ var vm = new Vue({
         addresseePhone: '',
         addresseeIdcard: '',
         id: '',
+        receiveType: 1,
       }, // 结果领取方式
       themeInfoList: [], // 主题列表
       themeInfoListP: [], // 并联主题列表
@@ -766,12 +767,12 @@ var vm = new Vue({
       this.guideSaveItems('loading', function () {
         vm.$message.success('部门辅导确认成功');
         __STATIC.delayRefreshWindow();
-      });
+      }, '2');
     },
     // 部门辅导牵头部门直接通过
     leaderDeptPass: function (f) {
       var vm = this;
-      this.$prompt('请输入意见', f ? '结束辅导' : '直接通过', {
+      this.$prompt('请输入意见', f ? '结束部门确认' : '直接通过', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         inputValidator: function (val) {
@@ -817,13 +818,12 @@ var vm = new Vue({
       });
     },
     // 保存事项信息
-    guideSaveItems: function (visibleKey, cb) {
+    guideSaveItems: function (visibleKey, cb, state) {
       var vm = this;
       var _pass = true;
       var stateArr = ['l', 'l', 'l', 'i', 'o', 'r', 'r'];
-      var stateArr2 = ['2', '2', '2', '2', '2', '2', '2'];
       var params = {
-        detailState: stateArr2[vm.guideState],
+        detailState: state || '1',
         detailType: stateArr[vm.guideState],
         guideActionVos: [],
         guideId: vm.guideId,
@@ -1612,12 +1612,14 @@ var vm = new Vue({
         _bizId = reqData.unitInfoId;
         _bizType = 'u';
       }
+      _that.loading = true;
       request('', {
         url: ctx + 'aea/credit/redblack/listPersonOrUnitBlackByBizId',
         type: 'get',
         data: {bizId: _bizId, bizType: _bizType},
       }, function (result) {
         if (result.success) {
+          _that.loading = false;
           _that.unitIdList.push(_bizId);
           if (result.content && result.content.length > 0) {
             if (typeof reqData.isBlack == "undefined") {
@@ -1635,6 +1637,7 @@ var vm = new Vue({
           _that.listCreditSummaryDetailByBizId(reqData, _bizId, _bizType);
         }
       }, function (msg) {
+        _that.loading = false;
       })
 
     },
@@ -1743,6 +1746,8 @@ var vm = new Vue({
       this.parallelItems = [];
       this.coreItems = [];
       this.model.matsTableData = [];
+      this.statusList = [];
+      this.stageId = '';
       // this.parallelApplyinstId = '';
       // this.seriesApplyinstIds = [];
     },
@@ -3428,6 +3433,7 @@ var vm = new Vue({
                     } else if (vm.guideState == 6) {
                       // 牵头部门待结束部门辅导，默认和发起时的勾选一致
                       vm.$set(u, 'bmChecked', u.leaderDeptChoose);
+                      vm.$set(u, 'opinion', u.leanderDeptOpinion);
                     }
                   } else {
                     // 审批部门人员
@@ -3437,6 +3443,7 @@ var vm = new Vue({
                       (u.currentCarryOutItem && u.currentCarryOutItem.orgId == _orgId)
                     ) {
                       if (u.detailState != 2) {
+                      // if (u) {
                         vm.bmCanGuide = true;
                         // 当前登录人要处理的数据 意见默认和牵头部门一致
                         vm.$set(u, 'bmDisabled', false);

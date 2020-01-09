@@ -1,4 +1,4 @@
-package com.augurit.aplanmis.front.projAccept.vo;
+package com.augurit.aplanmis.common.service.projAccept.vo;
 
 import lombok.Data;
 

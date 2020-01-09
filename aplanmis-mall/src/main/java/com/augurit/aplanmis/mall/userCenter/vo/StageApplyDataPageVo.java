@@ -36,9 +36,12 @@ public class StageApplyDataPageVo {
     private List<String> itemVerIds;
    @ApiModelProperty(value = "分局承办，格式为", dataType = "string")
     private String branchOrgMap;
-    @ApiModelProperty(value = "领件人信息对象id", required = true)
-    @NotEmpty(message = "smsInfoVo is null")
+    @ApiModelProperty(value = "领件人信息对象id")
     private String smsInfoId;
+
+    @ApiModelProperty(value = "领件人信息对象")
+    private SmsInfoVo smsInfoVo;
+
     @ApiModelProperty(value = "并行推进事项版本ID", dataType = "java.util.List")
     private List<String> propulsionItemVerIds;
     @ApiModelProperty(value = "并行推进事项分局承办，格式为：[{\"itemVerId\":\"111\",\"branchOrg\":\"222\"}]", required = true)
@@ -99,6 +102,7 @@ public class StageApplyDataPageVo {
         stageApplyDataVo.setProjUnitIds(this.projUnitIds);
         stageApplyDataVo.setItemRegionMapList(this.itemRegionMapList);
         stageApplyDataVo.setPropulsionItemApplyinstIdVos(this.propulsionItemApplyinstIdVos);
+        stageApplyDataVo.setSmsInfoVo(this.smsInfoVo);
         return stageApplyDataVo;
     }
 
