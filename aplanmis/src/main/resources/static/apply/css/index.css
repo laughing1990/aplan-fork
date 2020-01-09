@@ -2652,10 +2652,40 @@ textarea {
 
 .top-proj-name{
   color: #575962;
-  font-weight: bold;
   font-size: 24px;
   line-height: 35px;
-  padding: 45px 20px 18px 20px;
+  padding: 35px 20px 35px 20px;
+  text-align: center;
+  min-height: 105px;
+}
+.agent-agreement .el-dialog__body{
+  padding: 0;
+}
+.agent-agreement iframe{
+  border: none;
+  width: 100%;
+  height: 100%;
+}
+.solicit-opinion-dialog .el-dialog__footer{
+  padding: 10px 16px 14px 16px;
+}
+.see-stop-agent{
+  cursor: pointer;
+  color: #169aff;
+  display: inline-block;
+  text-decoration: underline;
+  margin-left:10px;
+}
+.see-stop-agent:hover{
+  text-decoration: none;
+}
+.stop-a-box{
+  background: #fff;
+  padding: 20px 20px 6px 20px;
+  overflow: auto;
+}
+.stop-agent .el-dialog__body .el-form{
+  padding-right:0;
 }
 /*部门辅导end*/
 .toggle-form-icon {
