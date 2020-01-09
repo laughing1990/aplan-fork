@@ -289,4 +289,6 @@ public interface AeaUnitInfoService {
      * @return
      */
     List<ExSJUnitFromDetails> findAeaExProBuildUnitInfoByKeyword(String keyword);
+
+    List<AeaUnitInfo> findAeaUnitInfoByProjLocalCode(String localCode);
 }

@@ -1,7 +1,5 @@
 package com.augurit.aplanmis.admin.par;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.augurit.agcloud.bpm.common.sfengine.config.SFProperties;
 import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.page.PageParam;
@@ -11,7 +9,6 @@ import com.augurit.agcloud.framework.ui.pager.MetronicPageInfo;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
-import com.augurit.agcloud.framework.util.JsonUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaParStage;
 import com.augurit.aplanmis.common.domain.AeaParThemeVer;
@@ -34,7 +31,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -233,6 +229,15 @@ public class AeaParStageAdminController {
             }
         }
 
+        return new ResultForm(true);
+    }
+
+    @RequestMapping("/batchSortStages.do")
+    public ResultForm batchSortStages(String[] stageIds, Long[] sortNos) {
+
+        if(stageIds!=null&&stageIds.length>0&&sortNos!=null&&sortNos.length>0){
+            aeaParStageAdminService.batchSortStages(stageIds, sortNos);
+        }
         return new ResultForm(true);
     }
 

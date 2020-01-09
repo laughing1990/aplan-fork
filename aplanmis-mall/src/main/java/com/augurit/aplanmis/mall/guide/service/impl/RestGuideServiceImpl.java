@@ -459,6 +459,7 @@ public class RestGuideServiceImpl implements RestGuideService {
 
             //1.从主题列表根据项目类型查找符合条件主题并标记
             List<ThemeTypeVo> themeTypeVos = restMainService.getThemeTypeList(rootOrgId);
+            if (StringUtils.isBlank(keyword)) return themeTypeVos;
             themeTypeVos.stream().forEach(themeTypeVo -> {
                 themeTypeVo.getThemeList().stream().forEach(aeaParTheme -> {
                     if (StringUtils.isNotBlank(aeaParTheme.getThemeName())&&aeaParTheme.getThemeName().contains(keyword))
@@ -583,6 +584,9 @@ public class RestGuideServiceImpl implements RestGuideService {
         //办事指南基本信息
         AeaItemGuide aeaItemGuide = aeaItemGuideService.getAeaItemGuideListByItemVerId(itemVerId,topOrgId);
         BeanUtils.copyProperties(aeaItemGuide,vo);
+        if (aeaItemGuide!=null&&"1".equals(aeaItemGuide.getPromiseType())){
+            vo.setPromiseDay(aeaItemGuide.getPromiseDay()+"个工作日");
+        }else if (aeaItemGuide!=null&&"2".equals(aeaItemGuide.getPromiseType())){vo.setPromiseDay(aeaItemGuide.getPromiseDay()+"个自然日");}
         vo.setDeptName(aeaItemBasic.getOrgName());
 
         //情形
@@ -720,6 +724,7 @@ public class RestGuideServiceImpl implements RestGuideService {
         try {
         //1.设置所有符合条件的事项及标记符合条件的阶段的index
         RestStageAndItemVo vo = this.getStageAndItemByThemeId(themeId,rootOrgId);
+        if (StringUtils.isBlank(keyword)) return vo;
         Set<Integer> indexs = new HashSet<>();
 
         if (vo.getParallelItems()!=null){
