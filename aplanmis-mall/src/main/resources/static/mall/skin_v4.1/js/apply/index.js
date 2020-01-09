@@ -563,7 +563,7 @@ var parallelDeclare = new Vue({
               _that.parallelItems.map(function(item){
                 Vue.set(item, 'applicantChooseRel', ''); // 申请人最终选择
                 if(item.applicantChoose||item.leaderDeptChoose){
-                  item.applicantChooseRel = '0'
+                  item.applicantChooseRel = '0';
                 }
                 _that.setImplementItem(item);
               })
@@ -3015,7 +3015,7 @@ var parallelDeclare = new Vue({
       var parallelItemsSel = [], coreItemsSel = [];
       // 并联itemVerids集合
       _that.parallelItems.map(function (item) {
-        if((item.leanderDeptOpinion||item.applicantChoose)&&item.applicantChooseRel!=='1'){
+        if((item.leaderDeptChoose||item.applicantChoose)&&item.applicantChooseRel!=='1'){
           _that.itemVerIds.push(item.itemVerId);
           parallelItemsSel.push(item);
           if (item.baseItemVerId) {
@@ -3034,7 +3034,7 @@ var parallelDeclare = new Vue({
       }
       // 并行itemVerids集合
       _that.coreItems.map(function (item) {
-        if((item.leanderDeptOpinion||item.applicantChoose)&&item.applicantChooseRel!=='1'){
+        if((item.leaderDeptChoose||item.applicantChoose)&&item.applicantChooseRel!=='1'){
           _that.propulsionItemVerIds.push(item.itemVerId);
           coreItemsSel.push(item);
           _that.propulsionBranchOrgMap.push({
@@ -4495,18 +4495,9 @@ var parallelDeclare = new Vue({
           item.regionId = item.currentCarryOutItem.regionId;
           item.regionName = item.currentCarryOutItem.regionName;
           item.dueNum = item.currentCarryOutItem.dueNum;
-          item.paraStateList = item.currentCarryOutItem.paraStateList;
-          item.coreStateList = item.currentCarryOutItem.coreStateList;
-          if (item.coreStateList && item.coreStateList.length > 0) {
-            item.coreStateList.map(function (itemState,ind) {
-              if (itemState.answerType != 's' && itemState.answerType != 'y') {
-                Vue.set(itemState, 'selValue', []);
-                itemState.selectAnswerId = itemState.selValue;
-              }
-            });
-          }
-          if (item.paraStateList && item.paraStateList.length > 0) {
-            item.paraStateList.map(function (itemState,ind) {
+          item.itemStateList = item.currentCarryOutItem.itemStateList;
+          if (item.itemStateList && item.itemStateList.length > 0) {
+            item.itemStateList.map(function (itemState,ind) {
               if (itemState.answerType != 's' && itemState.answerType != 'y') {
                 Vue.set(itemState, 'selValue', []);
                 itemState.selectAnswerId = itemState.selValue;

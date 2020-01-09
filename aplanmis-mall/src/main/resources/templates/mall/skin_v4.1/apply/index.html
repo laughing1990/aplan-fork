@@ -1270,13 +1270,14 @@
       <p class="header-title mb20 mt40" v-show="parallelItems&&parallelItems.length>0">并联事项</p>
       <el-table ref="parallelItemsTableCheck"
                 :data="parallelItems"
+                :expand-row-keys="selParallelItemsKey"
                 border
                 v-show="parallelItems&&parallelItems.length>0"
                 class="matter-list mb20"
                 row-key="itemId"
                 :default-sort = "{prop: 'sortNo', order: 'ascending'}"
                 style="width: 100%">
-        <el-table-column type="expand" v-if="parallelItemsQuestionFlag" width="1px">
+        <el-table-column type="expand" width="1px">
           <template slot-scope="scope">
             <el-form :model="stateSelVal" class="expand-coreItem" v-if="scope.row.paraStateList&&scope.row.paraStateList.length>0">
               <el-form-item class="sel-status-item"
@@ -1399,6 +1400,7 @@
       <el-table ref="coreItemsTableCheck"
                 :data="coreItems"
                 border
+                :expand-row-keys="selCoreItemsKey"
                 v-show="coreItems&&coreItems.length>0"
                 class="matter-list mb20"
                 :default-sort = "{prop: 'sortNo', order: 'ascending'}"
