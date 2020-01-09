@@ -699,6 +699,13 @@ var vm = new Vue({
       guideOrgList: [],
       // 部门辅导 end--------------------------
       showOneFormList: false,
+      // 项目代办 start -------------------
+      isAgentPage: false,
+      applyAgentId: '',
+      prePdfDialogLoading: false,
+      prePdfDialogVisible: false,
+      prePdfUrl: '',
+      // 项目代办 end ---------------------
     }
   },
   created: function () {
@@ -721,6 +728,15 @@ var vm = new Vue({
       this.isGuidePage = true;
       this.guideId = _guideId;
       this.requestGuideData(_guideId);
+      return null;
+    }
+    // 来自项目代办
+    var isApplyAgent = __STATIC.getUrlParam('isApplyAgent');
+    if (isApplyAgent == 'true') {
+      this.projInfoId = __STATIC.getUrlParam('projInfoId');
+      this.applyAgentId = __STATIC.getUrlParam('applyAgentId');
+      this.isAgentPage = true;
+      this.linkQuery();
       return null;
     }
     //
@@ -761,6 +777,20 @@ var vm = new Vue({
     }
   },
   methods: {
+    // 项目代办 start --------
+    // 关闭预览pdf弹窗
+    closePrePdf: function(){
+      this.prePdfUrl = '';
+    },
+    // 得到协议的detailId
+    seeAgreement: function (){
+      this.prePdfDialogVisible = true;
+      var url = ctx + 'preview/pdfjs/web/viewer.html?file=';
+      var _url = ctx + 'aea/proj/apply/agent/getAgencyAgreement?applyAgentId='+vm.applyAgentId;
+      url += encodeURIComponent(_url);
+      this.prePdfUrl = url;
+    },
+    // 项目代办 end ---------
     // 部门辅导 start-----------------------
     guideStateToClass: function(u){
       var str = '';
