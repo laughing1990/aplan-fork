@@ -27,7 +27,7 @@ import java.util.*;
 @Service
 @Transactional
 public class ProjAcceptService {
-    private static String[] itemCategoryMarks = new String[]{"GHTJHS1","JSGCCJDAYS1","GCJGYSJD1","FWJZGCHSZJCSSGCJGYSBA1"};//规划条件核实、建设工程城建档案验收、工程竣工验收监督、房屋建筑工程和市政基础设施工程竣工验收备案
+    private static String[] itemCategoryMarks = new String[]{"GHTJHS1","JSGCCJDAYS1","GCJGYSJD1"/*,"FWJZGCHSZJCSSGCJGYSBA1"*/};//规划条件核实、建设工程城建档案验收、工程竣工验收监督、房屋建筑工程和市政基础设施工程竣工验收备案
 
     @Autowired
     private AeaHiParStageinstService aeaHiParStageinstService;
