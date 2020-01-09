@@ -104,7 +104,7 @@ var pager = new Vue({
     // 代办项目-各个状态下的样式
     agencyStatusTagClassFn: function(item){
       var state = item.projAgentState;
-      if(state == 1){
+      if(state == 0){
         return {
           color: '#f24040',
           background: '#FEF0F0'
@@ -127,8 +127,8 @@ var pager = new Vue({
   },
   filters: {
     projAgentStateFormat: function(val){
-      var tagCn = ['待签订', '签订中','待签章','已签订','已终止'];
-      return tagCn[val - 1]
+      var tagCn = ['可代办','待签订', '签订中','待签章','已签订','已终止'];
+      return tagCn[val]
     },
   },
 })

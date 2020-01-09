@@ -37,6 +37,8 @@ public class ApproveProjInfoDto {
     private String stageinstId;
     private String stageId;
     List<AeaHiIteminstStateDto> iteminst;//事项实例及其状态
+    private Boolean isNetSignPrev;//是否证照领取权限
+    private Boolean isExistUnPass;//是否存在未通过事项
 
     public static List<AeaHiIteminstStateDto> formatList(List<AeaHiIteminst> aeaHiIteminsts) {
         List<AeaHiIteminstStateDto> dtoList=new ArrayList<>();
