@@ -24,7 +24,6 @@ import com.augurit.aplanmis.mall.guide.vo.RestGuideMatVo;
 import com.augurit.aplanmis.mall.main.service.RestMainService;
 import com.augurit.aplanmis.mall.main.vo.ItemListVo;
 import com.augurit.aplanmis.mall.main.vo.ThemeTypeVo;
-import com.augurit.aplanmis.mall.userCenter.service.RestAeaHiGuideService;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyService;
 import com.augurit.aplanmis.mall.userCenter.service.RestParallerApplyService;
 import com.augurit.aplanmis.mall.userCenter.vo.*;
@@ -77,8 +76,6 @@ public class RestParallerApplyController {
     @Autowired
     private RestMainService restMainService;
     @Autowired
-    private RestAeaHiGuideService restAeaHiGuideService;
-    @Autowired
     private AeaParStateMapper aeaParStateMapper;
     @Autowired
     private RestGuideService restGuideService;
@@ -126,7 +123,7 @@ public class RestParallerApplyController {
 
     @PostMapping("mat/list")
     @ApiOperation(value = "阶段申报 --> 根据阶段ID、阶段情形ID集合、事项情形ID集合、事项版本ID集合获取材料一单清列表数据")
-    public ContentResultForm<ItemListVo> listItemAndStateeByStageId(@RequestBody MatListParamVo matListParamVo){
+    public ContentResultForm<AeaItemMat> listItemAndStateeByStageId(@RequestBody MatListParamVo matListParamVo){
         try {
             return new ContentResultForm(true,aeaItemMatService.getMatListByStateListAndItemListAndStageId(matListParamVo.getItemStateIds(),matListParamVo.getStageStateIds(),
                     matListParamVo.getCoreItemVerIds(),matListParamVo.getParallelItemVerIds(),matListParamVo.getCoreParentItemVerIds(),matListParamVo.getParaParentllelItemVerIds(),matListParamVo.getStageId(),null));
