@@ -61,7 +61,7 @@
                                                 </template>
                                                 <li class="theme-type active">
                                                     <ul class="theme-type-list">
-                                                        <li class="theme-type-item ellipsisLn" :id='itemSub.themeId' :class="{active:index==0 && indexSub==0 , selected : itemSub.isSelected && itemSub.isSelected == '1'}" @click="goToGuid($event,itemSub.themeId,indexSub,itemSub.themeMemo)" v-for="(itemSub, indexSub) in item.themeList" :key="indexSub">
+                                                        <li class="theme-type-item ellipsisLn" :id='itemSub.themeId' :class="{active:index==0 && indexSub==0 , active:indexSub==activeSub , selected : itemSub.isSelected && itemSub.isSelected == '1'}" @click="goToGuid($event,itemSub.themeId,indexSub,itemSub.themeMemo)" v-for="(itemSub, indexSub) in item.themeList" :key="indexSub">
                                                             <el-tooltip placement="bottom" effect="light">
                                                                 <div slot="content" style="width: 200px">
                                                                     <div v-html="itemSub.themeMemo" ></div>

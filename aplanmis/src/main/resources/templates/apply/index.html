@@ -220,11 +220,11 @@
     </el-form>
   </template>
   <template v-else>
-    <div class="title-nav" v-if="!isGuidePage">
+    <div class="title-nav" v-if="!isGuidePage&&!isAgentPage">
       <span>投资项目申报前，请登陆 <a href="http://www.gdtz.gov.cn/tybm/apply3!search.action"
                            target="_blank">“投资项目在线审批监管平台”</a> 进行项目登记赋码</span>
     </div>
-    <el-form class="search-proj-info" label-width="115px" v-if="!isGuidePage">
+    <el-form class="search-proj-info" label-width="115px" v-if="!isGuidePage&&!isAgentPage">
       <el-form-item label="项目/工程查询" id="projCodeInfo">
         <el-select v-model="searchKeyword" :disabled="isDraftsProj" filterable remote autofocus reserve-keyword
                    ref="searchProjInfo"
@@ -1576,6 +1576,25 @@
                   <i :class="(coreItemsShowCount < coreItems.length)?'el-icon-arrow-down':'el-icon-arrow-up'"></i>
                 </p>
               </div>
+              <!--部门辅导展示所有部门和状态-->
+              <div v-if="isGuidePage&&guideState>2" class="guide-org-list">
+                <div class="state-ex c-f">
+                  <div class="org-state-e now"></div>
+                  <div class="g-text">当前部门</div>
+                  <div class="org-state-e ing"></div>
+                  <div class="g-text">待确认部门</div>
+                  <div class="org-state-e finish ag ag-check"></div>
+                  <div class="g-text">已确认部门</div>
+                </div>
+                <div class="g-org-box c-f">
+                  <i class="l-icon"></i>
+                  <div v-for="u in guideOrgList"
+                       class="org-state-e" :class="[guideStateToClass(u)]">
+                    <div class="gs-i"><i class="ag ag-check"></i></div>
+                    {{u.orgName}}
+                  </div>
+                </div>
+              </div>
               <!--部门辅导牵头部门意见展示-->
               <div v-if="isGuidePage&&(guideState==4||guideState==5)" class="guide-finish-box">
                 <div class="g-f-title">牵头部门意见</div>
@@ -1917,14 +1936,17 @@
         </template>
       </el-collapse>
       <div class="right-bottom-btn" v-if="showMoreProjInfo&&!isGuidePage">
-        <el-button v-if="showSolicitBtn" type="success" @click="openSoDialog" circle>意见<br/>征求</el-button>
-        <el-button type="danger" :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('3')">不予<br/>受理
-        </el-button>
-        <el-button circle :disabled="!stageFrontCheckFlag" @click="showCommentDialog('5')">材料<br/>补全</el-button>
-        <el-button circle :disabled="!stageFrontCheckFlag" @click="showCommentDialog('1')">打印<br/>回执</el-button>
-        <el-button :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('4','stash')">暂存</el-button>
-        <el-button type="primary" :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('0')">发起<br/>申报
-        </el-button>
+        <template v-if="isAgentPage">
+          <el-button circle type="primary" @click="seeAgreement">查看委<br/>托协议</el-button>
+        </template>
+        <template v-else>
+          <el-button v-if="showSolicitBtn" type="success" @click="openSoDialog" circle>意见<br/>征求</el-button>
+          <el-button type="danger" :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('3')">不予<br/>受理</el-button>
+          <el-button circle :disabled="!stageFrontCheckFlag" @click="showCommentDialog('5')">材料<br/>补全</el-button>
+          <el-button circle :disabled="!stageFrontCheckFlag" @click="showCommentDialog('1')">打印<br/>回执</el-button>
+          <el-button :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('4','stash')">暂存</el-button>
+        </template>
+        <el-button type="primary" :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('0')">发起<br/>申报</el-button>
       </div>
       <div class="right-bottom-btn" v-if="isGuidePage">
         <template v-if="leaderDept">
@@ -1934,7 +1956,8 @@
             <el-button circle @click="leaderDeptPass">直接<br/>通过</el-button>
           </template>
           <template v-else-if="guideState==6">
-            <el-button circle @click="leaderDeptPass(true)">结束部<br/>门确认</el-button>
+            <el-button circle type="primary" @click="leaderDeptPass(true)">结束部<br/>门确认</el-button>
+            <el-button circle @click="openSoDialog">添加征<br/>询确认</el-button>
           </template>
         </template>
         <template v-if="bmCanGuide">
@@ -2689,6 +2712,13 @@
         </div>
       </el-dialog>
       <!-- 意见征求 end -->
+      <!-- 项目代办协议 查看pdf弹窗 start -->
+      <el-dialog title="部门辅导" class="solicit-opinion-dialog" v-loading="prePdfDialogLoading"
+                 :close-on-click-modal="false" :visible.sync="prePdfDialogVisible" @close="closePrePdf"
+                 :width="curWidth>1220?'1200px':(curWidth-20)+'px'" top="20px">
+        <iframe style="min-height:500px;" :src="prePdfUrl" width="100%" height="100%"></iframe>
+      </el-dialog>
+      <!-- 项目代办协议 查看pdf弹窗 end -->
     </div>
   </template>
 </div>

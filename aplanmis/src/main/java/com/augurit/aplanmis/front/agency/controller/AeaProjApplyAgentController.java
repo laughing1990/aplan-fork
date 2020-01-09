@@ -55,8 +55,22 @@ public class AeaProjApplyAgentController {
         return modelAndView;
     }
 
+    @ApiOperation(value = "项目代办 --> 跳转并联申报页面", notes = "项目代办 --> 跳转并联申报页面")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "projInfoId",value = "项目ID",required = true,dataType = "String"),
+            @ApiImplicitParam(name = "applyAgentId",value = "代办申请ID",required = true,dataType = "String")
+    })
+    @RequestMapping("toApplyIndex")
+    public ModelAndView toApplyIndex(String projInfoId,String applyAgentId) {
+        ModelAndView modelAndView = new ModelAndView("apply/index");
+        modelAndView.addObject("projInfoId",projInfoId);
+        modelAndView.addObject("applyAgentId",applyAgentId);
+        modelAndView.addObject("isAgentProjApply",true);
+        return modelAndView;
+    }
+
     @ApiOperation(value = "项目代办 --> 保存代办信息或签订协议操作校验", notes = "项目代办 --> 保存代办信息或签订协议操作校验")
-    @RequestMapping("checkOpreatePermit")
+    @PostMapping("checkOpreatePermit")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applyAgentId",value = "代办申请ID",required = true,dataType = "String"),
             @ApiImplicitParam(name = "operateType",value = "操作类型，1表示保存代办信息操作，2表示签订协议操作",required = true,dataType = "String")
@@ -71,7 +85,7 @@ public class AeaProjApplyAgentController {
             if(StringUtils.isNotBlank(data)){
                 AeaProjApplyAgent applyAgent = JSONObject.parseObject(data, AeaProjApplyAgent.class);
                 if(!currentUser.getUserId().equals(applyAgent.getCurrentUserId())){
-                    resultForm.setMessage("代办人员：" + currentUser.getUserName() + " 正在操作该代办申请，请稍等。");
+                    resultForm.setMessage("代办人员：" + applyAgent.getCurrentUserName() + " 正在操作该代办申请，请稍等。");
                     return resultForm;
                 }
             }

@@ -696,8 +696,16 @@ var vm = new Vue({
       isGuidePage: false,
       guideChangedType: false,
       bmCanGuide: false,
+      guideOrgList: [],
       // 部门辅导 end--------------------------
       showOneFormList: false,
+      // 项目代办 start -------------------
+      isAgentPage: false,
+      applyAgentId: '',
+      prePdfDialogLoading: false,
+      prePdfDialogVisible: false,
+      prePdfUrl: '',
+      // 项目代办 end ---------------------
     }
   },
   created: function () {
@@ -720,6 +728,15 @@ var vm = new Vue({
       this.isGuidePage = true;
       this.guideId = _guideId;
       this.requestGuideData(_guideId);
+      return null;
+    }
+    // 来自项目代办
+    var isApplyAgent = __STATIC.getUrlParam('isApplyAgent');
+    if (isApplyAgent == 'true') {
+      this.projInfoId = __STATIC.getUrlParam('projInfoId');
+      this.applyAgentId = __STATIC.getUrlParam('applyAgentId');
+      this.isAgentPage = true;
+      this.linkQuery();
       return null;
     }
     //
@@ -760,7 +777,33 @@ var vm = new Vue({
     }
   },
   methods: {
+    // 项目代办 start --------
+    // 关闭预览pdf弹窗
+    closePrePdf: function(){
+      this.prePdfUrl = '';
+    },
+    // 得到协议的detailId
+    seeAgreement: function (){
+      this.prePdfDialogVisible = true;
+      var url = ctx + 'preview/pdfjs/web/viewer.html?file=';
+      var _url = ctx + 'aea/proj/apply/agent/getAgencyAgreement?applyAgentId='+vm.applyAgentId;
+      url += encodeURIComponent(_url);
+      this.prePdfUrl = url;
+    },
+    // 项目代办 end ---------
     // 部门辅导 start-----------------------
+    guideStateToClass: function(u){
+      var str = '';
+      if (u.orgId == this.guideDetail.approveOrgId) {
+        str += 'now';
+      }
+      if (u.state == 1) {
+        str += ' ing';
+      } else if (u.state == 2) {
+        str += ' ed';
+      }
+      return str;
+    },
     // 审批部门确认操作
     bmGuideEnsure: function () {
       var vm = this;
@@ -769,7 +812,7 @@ var vm = new Vue({
         __STATIC.delayRefreshWindow();
       }, '2');
     },
-    // 部门辅导牵头部门直接通过
+    // 部门辅导牵头部门直接通过 true为正常通过 false为不发起部门确认直接通过
     leaderDeptPass: function (f) {
       var vm = this;
       this.$prompt('请输入意见', f ? '结束部门确认' : '直接通过', {
@@ -840,25 +883,38 @@ var vm = new Vue({
           itemVerId = u.currentCarryOutItem.itemVerId || '';
         }
         var _orgId = vm.guideDetail.approveOrgId; // 当前登录人部门id
-        if (vm.leaderDept && u.bmChecked) {
-          // 牵头部门意见数据
-          _list.push({
+        if (vm.leaderDept) {
+          var _obj = {
             catalogItemVerId: u.itemVerId,
             guideChangeAction: 'a',
             guideOpinion: u.opinion,
             itemId: itemId,
             itemVerId: itemVerId,
-            orgId: vm.leaderDept ? vm.guideDetail.aeaHiGuide.leaderOrgId : u.orgId,
-          });
+            orgId: vm.guideDetail.aeaHiGuide.leaderOrgId,
+          };
+          if (vm.guideState == 6) {
+            // 所有部门已确认，待牵头部门汇总，对比初次数据是否有更改
+            if (u.bmChecked != u.leaderDeptChoose) {
+              if (u.bmChecked) {
+                // 发起时没勾，汇总时勾选了
+              } else {
+                // 发起时勾选，汇总时取消了
+                _obj.guideChangeAction = 'd';
+              }
+              _list.push(_obj);
+            }
+          } else if (vm.guideState<3 && u.bmChecked) {
+            // 牵头部门发起部门确认
+            _list.push(_obj);
+          }
         } else if (
-          !vm.leaderDept &&
           (_orgId == u.orgId) ||
           (u.currentCarryOutItem && u.currentCarryOutItem.orgId == _orgId)
         ) {
           // 审批部门意见数据
           var _guideChangeAction = 'a';
           if (!u.bmChecked && u.leaderDeptChoose) {
-            _guideChangeAction = 'd'; // 牵头部门勾了，审批部门没勾
+            _guideChangeAction = 'd'; // 牵头部门勾了，审批部门没勾，需要填写意见
             if (!(u.opinion && u.opinion.length)) {
               _pass = false;
             }
@@ -869,7 +925,7 @@ var vm = new Vue({
             guideOpinion: u.opinion,
             itemId: itemId,
             itemVerId: itemVerId,
-            orgId: vm.leaderDept ? vm.guideDetail.aeaHiGuide.leaderOrgId : u.orgId,
+            orgId:  u.orgId,
           });
         }
       });
@@ -877,7 +933,12 @@ var vm = new Vue({
         return vm.$message.error('取消勾选事项请填写意见');
       }
       if (!_list.length) {
-        return vm.$message.info('未过滤到要保存的意见数据');
+        if (vm.guideState == 6) {
+          typeof cb == 'function' && cb();
+          return null;
+        } else {
+          return vm.$message.info('未过滤到要保存的意见数据');
+        }
       }
       params.guideActionVos = _list;
       vm[visibleKey] = true;
@@ -1055,7 +1116,7 @@ var vm = new Vue({
       var params = {};
       // 校验勾选事项
       if (!list1.length && !list2.length) {
-        return this.$message.error('请至少勾选一个事项')
+        return this.$message.error('请至少勾选一个部门')
       }
       var tmp = list1.concat(list2);
       var hasOrgId = true;
@@ -3479,12 +3540,27 @@ var vm = new Vue({
                 vm.$set(u, 'applicantChoose', false);
                 vm.$set(u, 'leaderDeptChoose', false);
                 vm.$set(u, 'approveDeptChoose', false);
-                vm.$set(u, 'leanderDeptOpinion', '');
+                vm.$set(u, 'leaderDeptOpinion', '');
                 vm.$set(u, 'approveDeptOpinion', '');
                 vm.$set(u, 'bmDisabled', false);
                 vm.$set(u, 'bmChecked', false);
                 vm.$set(u, 'opinion', '');
               }
+            }
+            // 展示所有部门状态
+            if (vm.guideState > 2) {
+              var _arr = [];
+              _coreItems.concat(_parallelItems).forEach(function(u){
+                // 被牵头部门勾选的
+                if (u.detailState==1||u.detailState==2) {
+                  _arr.push({
+                    state: u.detailState,
+                    orgId: u.currentCarryOutItem.orgId,
+                    orgName: u.currentCarryOutItem.orgName,
+                  });
+                }
+              });
+              vm.guideOrgList = _arr;
             }
           }
           _that.coreItems = _coreItems;

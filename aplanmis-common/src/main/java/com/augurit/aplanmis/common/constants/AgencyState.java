@@ -11,6 +11,8 @@ import java.util.Map;
 @Getter
 @ApiModel(value = "代办申请状态枚举", description = "代办申请状态枚举:WAIT_SIGNING||SIGNING||APPLYER_SIGNING...")
 public enum AgencyState implements BaseEnum<TimeruleInstState, String> {
+    @ApiModelProperty(value = "WAIT_AGENT", name = "可代办", allowableValues = "WAIT_AGENT")
+    WAIT_AGENT("可代办", "0"),
 
     @ApiModelProperty(value = "WAIT_SIGNING", name = "待签订", allowableValues = "WAIT_SIGNING")
     WAIT_SIGNING("待签订", "1"),
