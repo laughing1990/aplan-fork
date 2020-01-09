@@ -10,7 +10,6 @@ import com.augurit.aplanmis.common.service.receive.vo.ReceiveBaseVo;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import com.itextpdf.text.pdf.draw.DottedLineSeparator;
-import lombok.Data;
 import org.springframework.core.io.ClassPathResource;
 
 import javax.servlet.ServletOutputStream;
@@ -414,7 +413,6 @@ public class ReceivePDFTemplate {
         ReceivePDFUtils.twoParagraph(content5, document, font);
         ReceivePDFUtils.oneLine(document, font);
         ReceivePDFUtils.twoParagraph(content6, document, font);
-        ;
         ReceivePDFUtils.twoParagraph(content7, document, font);
         ReceivePDFUtils.twoParagraph(content8, document, font);
         ReceivePDFUtils.oneLine(document, font);
@@ -978,7 +976,7 @@ public class ReceivePDFTemplate {
         columnText.go();
     }
 
-    private static StringBuffer pdfFilePath() {
+    public static StringBuffer pdfFilePath() {
         // 设置pdf生成的路径
         StringBuffer str = new StringBuffer(System.getProperty("java.io.tmpdir"));
         // linux路径

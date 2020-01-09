@@ -7,8 +7,6 @@ import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.dto.AeaHiReceiveDto;
 import com.augurit.aplanmis.common.mapper.*;
-
-
 import com.augurit.aplanmis.common.service.receive.constant.ReceiveConstant;
 import com.augurit.aplanmis.common.service.receive.vo.*;
 import org.springframework.beans.BeanUtils;
@@ -569,9 +567,17 @@ public class ReceiveService extends AbstractReceiveService {
             Optional.ofNullable(mainUnitList).ifPresent(aeaUnitInfos -> {
                 String idcard = aeaUnitInfos.stream().map(AeaUnitInfo::getUnifiedSocialCreditCode).collect(Collectors.joining(","));
                 String applicant = aeaUnitInfos.stream().map(AeaUnitInfo::getApplicant).collect(Collectors.joining(","));
+                String applicantDetailSite = aeaUnitInfos.stream().map(AeaUnitInfo::getApplicantDetailSite).collect(Collectors.joining(","));
+                String idRepresenttative = aeaUnitInfos.stream().map(AeaUnitInfo::getIdrepresentative).collect(Collectors.joining(","));
+                String idNo = aeaUnitInfos.stream().map(AeaUnitInfo::getIdno).collect(Collectors.joining(","));
+                String idMobile = aeaUnitInfos.stream().map(AeaUnitInfo::getIdmobile).collect(Collectors.joining(","));
 
                 baseVo.setApplicant(applicant);
                 baseVo.setApplicantIDCard(idcard);
+                baseVo.setApplicantDetailSite(applicantDetailSite);
+                baseVo.setIdrepresentative(idRepresenttative);
+                baseVo.setIdno(idNo);
+                baseVo.setIdmobile(idMobile);
             });
             Optional.ofNullable(agentUnitList).ifPresent(agentUnitInfos -> {
                 String idcard = agentUnitInfos.stream().map(AeaUnitInfo::getUnifiedSocialCreditCode).collect(Collectors.joining(","));
