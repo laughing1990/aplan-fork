@@ -1,18 +1,19 @@
 package com.augurit.aplanmis.mall.guide.service;
 
 
-import com.augurit.aplanmis.mall.guide.vo.RestGuideStateVo;
-import com.augurit.aplanmis.mall.guide.vo.RestGuideVo;
-import com.augurit.aplanmis.mall.guide.vo.RestSingleGuideVo;
-import com.augurit.aplanmis.mall.guide.vo.RestStageAndItemVo;
+import com.augurit.aplanmis.common.domain.AeaItemMat;
+import com.augurit.aplanmis.mall.guide.vo.*;
 import com.augurit.aplanmis.mall.main.vo.ItemListVo;
 import com.augurit.aplanmis.mall.main.vo.ThemeTypeVo;
+import com.augurit.aplanmis.mall.userCenter.vo.MatListParamVo;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public interface RestGuideService {
 
@@ -79,4 +80,6 @@ public interface RestGuideService {
      * @throws Exception
      */
     RestGuideStateVo getRestGuideStateVo(String itemVerId, String topOrgId)throws Exception;
+
+    RestGuideMatVo getRestGuideMatVo(MatListParamVo matListParamVo) throws Exception;
 }

@@ -1062,7 +1062,7 @@
             </template>
             <!--申报阶段 start-->
             <!--主题类型 start-->
-            <p class="au-hint-text"><i class="ag ag-warn-circle"></i>
+            <p class="au-hint-text" v-if="isGuidePage"><i class="ag ag-warn-circle"></i>
               当前网厅申报处于部门辅导模式，需要对工程进行审核，可修改项目类型和事项，不可修改申报所属阶段。
             </p>
             <div class="col-status-z" :class="(colStatusActive==0)?'active':''" @click="setColStatusActive(0)">
@@ -1393,9 +1393,9 @@
                           row-key="itemBasicId" @select="coreItemsSelItem" @select-all="coreItemsSelAll"
                           style="width: 100%">
                   <el-table-column type="selection" :selectable='checkboxInit' align="center" width="55"
-                                   v-if="!isGuidePage">
+                                   v-if="!isGuidePage" :key="Math.random()">
                   </el-table-column>
-                  <el-table-column type="expand" width="5px" v-if="coreItemQuestionFlag&&!isGuidePage">
+                  <el-table-column :key="Math.random()" type="expand" width="5px" v-if="coreItemQuestionFlag&&!isGuidePage">
                     <template slot-scope="scope">
                       <el-form :model="stateSelVal" class="expand-coreItem">
                         <el-form-item class="sel-status-item" :required="item.mustAnswer==1"
@@ -1430,7 +1430,7 @@
                       </el-form>
                     </template>
                   </el-table-column>
-                  <el-table-column label="事项名称" prop="sortNo" sortable>
+                  <el-table-column :key="Math.random()" label="事项名称" prop="sortNo" sortable>
                     <template slot-scope="scope">
                       <span class="is-catalog"
                             :class="scope.row.isCatalog!=1?'is-shishi':''">{{scope.row.isCatalog==1?'标准':'实施'}}</span>
@@ -1453,8 +1453,8 @@
                     </template>
                   </el-table-column>
                   <!-- 非部门辅导表格列 -->
-                  <tempplate v-if="!isGuidePage">
-                    <el-table-column label="行政区划" width="200">
+                  <tempplate v-if="!isGuidePage" :key="Math.random()">
+                    <el-table-column :key="Math.random()" label="行政区划" width="200">
                       <template slot-scope="scope">
                         <div v-if="scope.row.isImplement==false">
                           <el-select v-model="scope.row.implementItemVerId"
@@ -1470,7 +1470,7 @@
                         </div>
                       </template>
                     </el-table-column>
-                    <el-table-column prop="orgName" label="实施主体" width="340">
+                    <el-table-column :key="Math.random()" prop="orgName" label="实施主体" width="340">
                       <template slot-scope="scope">
                         <div v-if="scope.row.isImplement==false">
                           <el-select v-model="scope.row.implementItemVerId"
@@ -1488,13 +1488,13 @@
                     </el-table-column>
                   </tempplate>
                   <!-- 部门辅导表格列 -->
-                  <template v-if="isGuidePage">
-                    <el-table-column label="是否必选" prop="isDoneItem" width="80px" align="center">
+                  <template v-if="isGuidePage" :key="Math.random()">
+                    <el-table-column :key="Math.random()" label="是否必选" prop="isDoneItem" width="80px" align="center">
                       <template slot-scope="scope">
                         {{scope.row.isDoneItem=='1'?"必选":"非必选"}}
                       </template>
                     </el-table-column>
-                    <el-table-column prop="orgName" label="审批部门" width="160">
+                    <el-table-column :key="Math.random()" prop="orgName" label="审批部门" width="160">
                       <template slot-scope="scope">
                         <div v-if="scope.row.isImplement==false">
                           <el-select v-model="scope.row.implementItemVerId"
@@ -1510,12 +1510,12 @@
                         </div>
                       </template>
                     </el-table-column>
-                    <el-table-column label="智能引导" prop="intelliGuideChoose" width="80px" align="center">
+                    <el-table-column :key="Math.random()" label="智能引导" prop="intelliGuideChoose" width="80px" align="center">
                       <template slot-scope="scope">
                         <el-checkbox v-model="scope.row.intelliGuideChoose" disabled></el-checkbox>
                       </template>
                     </el-table-column>
-                    <el-table-column label="申请人选择" prop="applicantChoose" width="120">
+                    <el-table-column :key="Math.random()" label="申请人选择" prop="applicantChoose" width="120">
                       <template slot-scope="scope">
                         <el-checkbox v-model="scope.row.applicantChoose" disabled>
                           {{scope.row.applicantOpinion||'未填写'}}
@@ -1523,7 +1523,7 @@
                       </template>
                     </el-table-column>
                     <!-- 牵头部门结果 -->
-                    <el-table-column label="牵头部门" prop="leaderDeptChoose" v-if="guideState>2" width="140">
+                    <el-table-column :key="Math.random()" label="牵头部门" prop="leaderDeptChoose" v-if="guideState>2" width="140">
                       <template slot-scope="scope">
                         <el-checkbox v-model="scope.row.leaderDeptChoose" disabled>
                           {{scope.row.leanderDeptOpinion||'未填写意见'}}
@@ -1531,14 +1531,14 @@
                       </template>
                     </el-table-column>
                     <!-- 牵头部门填写意见 -->
-                    <template v-if="leaderDept&&(guideState<3||guideState==6)">
-                      <el-table-column label="牵头部门选择" prop="bmChecked" width="80px" align="center">
+                    <template :key="Math.random()" v-if="leaderDept&&(guideState<3||guideState==6)">
+                      <el-table-column :key="Math.random()" label="牵头部门选择" prop="bmChecked" width="80px" align="center">
                         <template slot-scope="scope">
                           <el-checkbox v-model="scope.row.bmChecked"
                                        :disabled="scope.row.bmDisabled"></el-checkbox>
                         </template>
                       </el-table-column>
-                      <el-table-column label="牵头部门意见" prop="opinion">
+                      <el-table-column :key="Math.random()" label="牵头部门意见" prop="opinion">
                         <template slot-scope="scope">
                           <el-input placeholder="填写意见" v-model="scope.row.opinion"
                                     :disabled="scope.row.bmDisabled"></el-input>
@@ -1546,7 +1546,7 @@
                       </el-table-column>
                     </template>
                     <!-- 审批部门结果 -->
-                    <el-table-column v-if="guideState>3" label="审批部门" prop="approveDeptChoose" width="140">
+                    <el-table-column :key="Math.random()" v-if="guideState>3" label="审批部门" prop="approveDeptChoose" width="140">
                       <template slot-scope="scope">
                         <el-checkbox v-model="scope.row.approveDeptChoose" disabled>
                           {{scope.row.approveDeptOpinion||'无意见'}}
@@ -1554,14 +1554,14 @@
                       </template>
                     </el-table-column>
                     <!-- 审批部门填写意见 -->
-                    <template v-if="!leaderDept&&guideState==3">
-                      <el-table-column label="审批部门选择" prop="bmChecked" width="80px" align="center">
+                    <template v-if="!leaderDept&&guideState==3" :key="Math.random()">
+                      <el-table-column :key="Math.random()" label="审批部门选择" prop="bmChecked" width="80px" align="center">
                         <template slot-scope="scope">
                           <el-checkbox v-model="scope.row.bmChecked"
                                        :disabled="scope.row.bmDisabled"></el-checkbox>
                         </template>
                       </el-table-column>
-                      <el-table-column label="审批部门意见" prop="opinion">
+                      <el-table-column :key="Math.random()" label="审批部门意见" prop="opinion">
                         <template slot-scope="scope">
                           <el-input placeholder="暂无意见" v-model="scope.row.opinion"
                                     :disabled="scope.row.bmDisabled"></el-input>
@@ -1934,7 +1934,7 @@
             <el-button circle @click="leaderDeptPass">直接<br/>通过</el-button>
           </templte>
           <template v-else-if="guideState==6">
-            <el-button circle @click="leaderDeptPass(true)">结束<br/>辅导</el-button>
+            <el-button circle @click="leaderDeptPass(true)">结束部<br/>门确认</el-button>
           </template>
         </template>
         <template v-if="bmCanGuide">

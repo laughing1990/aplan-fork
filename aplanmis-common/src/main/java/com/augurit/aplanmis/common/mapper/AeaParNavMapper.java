@@ -3,6 +3,7 @@ package com.augurit.aplanmis.common.mapper;
 import com.augurit.aplanmis.common.domain.AeaParNav;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -10,6 +11,7 @@ import java.util.List;
  * 主题导航定义表-Mapper数据与持久化接口类
  */
 @Mapper
+@Repository
 public interface AeaParNavMapper {
 
     void insertAeaParNav(AeaParNav aeaParNav);

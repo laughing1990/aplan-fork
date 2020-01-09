@@ -32,13 +32,26 @@ public interface RestApplyCommonService {
     /**
      * 整合暂存项目等信息逻辑接口
      *
-     * @param smsInfoVo
+     * @param projUnitInfoVo
      * @param resultMap
      * @param aeaProjInfo
      * @return
      * @throws Exception
      */
-    public Map<String, Object> getStringObjectMap(@RequestBody SmsInfoVo smsInfoVo, Map<String, Object> resultMap, AeaProjInfo aeaProjInfo) throws Exception;
+    public Map<String, Object> getStringObjectMap(SmsProjUnitInfoVo projUnitInfoVo, Map<String, Object> resultMap, AeaProjInfo aeaProjInfo) throws Exception;
+
+    /**
+     * 整合暂存项目等信息逻辑接口
+     *
+     * @param projUnitInfoVo
+     * @param resultMap
+     * @param aeaProjInfo
+     * @return
+     * @throws Exception
+     */
+    public Map<String, Object> saveProjUnit(ProjUnitInfoVo projUnitInfoVo, Map<String, Object> resultMap, AeaProjInfo aeaProjInfo) throws Exception;
+
+    String saveSmsInfo(SmsInfoVo smsInfoVo) throws Exception;
 
     //需要将以前的记录删除，重新创建关联关系
     void deleteReInsertAeaApplyinstUnitProj(String applyinstId, List<String> unitProjIds);
@@ -49,7 +62,7 @@ public interface RestApplyCommonService {
 
     void saveOrUpdateAeaApplyinstProj(String applyinstId, String projInfoId) throws Exception;
 
-    Map<String, Object> submitItemList(ItemListTemporaryParamVo itemListTemporaryParamVo,Map<String,Object> map) throws Exception;
+   // Map<String, Object> submitItemList(ItemListTemporaryParamVo itemListTemporaryParamVo,Map<String,Object> map) throws Exception;
 
     void insertSeriesIteminst(String seriesApplyinstId, String itemVerId,Map<String,Object> resultMap) throws Exception;
 

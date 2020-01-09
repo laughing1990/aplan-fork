@@ -70,7 +70,7 @@ var vm = new Vue({
             if (!cellValue || cellValue == null) {
                 return '-'
             }
-            var stateNames = ['-','待签订','签订中','待申请人签章','代办中','代办终止'];
+            var stateNames = ['-','待签订','签订中','待申请人签章','代办中','代办终止','不予受理','代办结束'];
             return stateNames[cellValue];
         },
         // 显示委托代办阶段提示信息

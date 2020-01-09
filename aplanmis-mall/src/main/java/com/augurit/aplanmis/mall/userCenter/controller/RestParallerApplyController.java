@@ -19,10 +19,11 @@ import com.augurit.aplanmis.common.service.state.AeaItemStateService;
 import com.augurit.aplanmis.common.service.state.AeaParStateService;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
+import com.augurit.aplanmis.mall.guide.service.RestGuideService;
+import com.augurit.aplanmis.mall.guide.vo.RestGuideMatVo;
 import com.augurit.aplanmis.mall.main.service.RestMainService;
 import com.augurit.aplanmis.mall.main.vo.ItemListVo;
 import com.augurit.aplanmis.mall.main.vo.ThemeTypeVo;
-import com.augurit.aplanmis.mall.userCenter.service.RestAeaHiGuideService;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyService;
 import com.augurit.aplanmis.mall.userCenter.service.RestParallerApplyService;
 import com.augurit.aplanmis.mall.userCenter.vo.*;
@@ -75,9 +76,9 @@ public class RestParallerApplyController {
     @Autowired
     private RestMainService restMainService;
     @Autowired
-    private RestAeaHiGuideService restAeaHiGuideService;
-    @Autowired
     private AeaParStateMapper aeaParStateMapper;
+    @Autowired
+    private RestGuideService restGuideService;
 
     @Value("${aplanmis.mall.skin:skin_v4.1/}/")
     private String skin;
@@ -122,7 +123,7 @@ public class RestParallerApplyController {
 
     @PostMapping("mat/list")
     @ApiOperation(value = "阶段申报 --> 根据阶段ID、阶段情形ID集合、事项情形ID集合、事项版本ID集合获取材料一单清列表数据")
-    public ContentResultForm<ItemListVo> listItemAndStateeByStageId(@RequestBody MatListParamVo matListParamVo){
+    public ContentResultForm<AeaItemMat> listItemAndStateeByStageId(@RequestBody MatListParamVo matListParamVo){
         try {
             return new ContentResultForm(true,aeaItemMatService.getMatListByStateListAndItemListAndStageId(matListParamVo.getItemStateIds(),matListParamVo.getStageStateIds(),
                     matListParamVo.getCoreItemVerIds(),matListParamVo.getParallelItemVerIds(),matListParamVo.getCoreParentItemVerIds(),matListParamVo.getParaParentllelItemVerIds(),matListParamVo.getStageId(),null));
@@ -330,6 +331,15 @@ public class RestParallerApplyController {
         }
     }
 
-
+    @PostMapping("/requireOrNot/mat/list")
+    @ApiOperation(value = "阶段申报 --> 根据阶段ID、阶段情形ID集合、事项情形ID集合、事项版本ID集合获取可选、必选材料列表")
+    public ContentResultForm<RestGuideMatVo> listRequireOrNotByStageId(@RequestBody MatListParamVo matListParamVo){
+        try {
+            return new ContentResultForm<>(true,restGuideService.getRestGuideMatVo(matListParamVo));
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ContentResultForm(false,"","根据阶段ID、阶段情形ID集合、事项情形ID集合、事项版本ID集合获取可选、必选材料列表");
+        }
+    }
 
 }

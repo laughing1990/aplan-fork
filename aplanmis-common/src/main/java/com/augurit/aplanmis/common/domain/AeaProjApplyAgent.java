@@ -30,7 +30,7 @@ public class AeaProjApplyAgent implements Serializable{
     @ApiModelProperty(name = "agentStageState", value = "委托代办阶段：1立项用地规划许可阶段 2 工程建设许可阶段 3施工许可阶段 4竣工验收阶段  多选时逗号拼接")
     private String agentStageState;
 
-    @ApiModelProperty(name = "agentApplyState", value = "代办申请状态 1待签订 2窗口签订中 3 待申请人签章 4已签订（代办中） 5代办终止 6不予受理")
+    @ApiModelProperty(name = "agentApplyState", value = "代办申请状态 1待签订 2窗口签订中 3 待申请人签章 4已签订（代办中） 5代办终止 6不予受理 7代办结束")
     private String agentApplyState;
 
     @ApiModelProperty(name = "windowId", value = "窗口ID")
@@ -52,6 +52,12 @@ public class AeaProjApplyAgent implements Serializable{
 
     @ApiModelProperty(name = "agentUserMobile", value = "代办人的手机号")
     private java.lang.String agentUserMobile;
+
+    @ApiModelProperty(name = "agentStopAgreementFileId", value = "代办终止协议文件ID，存detailId")
+    private java.lang.String agentStopAgreementFileId;
+
+    @ApiModelProperty(name = "agentEndAgreementFileId", value = "代办结束办结单文件ID，存detailId")
+    private java.lang.String agentEndAgreementFileId;
 
     @ApiModelProperty(name = "startTime", value = "开始时间")
     @DateTimeFormat(pattern="yyyy-MM-dd")

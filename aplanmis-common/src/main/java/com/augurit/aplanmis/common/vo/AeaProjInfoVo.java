@@ -75,4 +75,7 @@ public class AeaProjInfoVo implements Serializable {
     @ApiModelProperty("是否有子项目")
     private boolean hasChildren;
 
+    @ApiModelProperty("是否代办项目")
+    private boolean isAgentProj;
+
 }

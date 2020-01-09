@@ -1612,12 +1612,14 @@ var vm = new Vue({
         _bizId = reqData.unitInfoId;
         _bizType = 'u';
       }
+      _that.loading = true;
       request('', {
         url: ctx + 'aea/credit/redblack/listPersonOrUnitBlackByBizId',
         type: 'get',
         data: {bizId: _bizId, bizType: _bizType},
       }, function (result) {
         if (result.success) {
+          _that.loading = false;
           _that.unitIdList.push(_bizId);
           if (result.content && result.content.length > 0) {
             if (typeof reqData.isBlack == "undefined") {
@@ -1635,6 +1637,7 @@ var vm = new Vue({
           _that.listCreditSummaryDetailByBizId(reqData, _bizId, _bizType);
         }
       }, function (msg) {
+        _that.loading = false;
       })
 
     },
@@ -1743,6 +1746,8 @@ var vm = new Vue({
       this.parallelItems = [];
       this.coreItems = [];
       this.model.matsTableData = [];
+      this.statusList = [];
+      this.stageId = '';
       // this.parallelApplyinstId = '';
       // this.seriesApplyinstIds = [];
     },
