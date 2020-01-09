@@ -71,6 +71,12 @@ public class ApplyIteminstConfirmVo {
     @ApiModelProperty(value = "联系人信息，用于办件领取信息回显")
     private AeaLinkmanInfo linkmanInfo;
 
+    @ApiModelProperty(value = "0 个人 1单位")
+    private String loginType;
+    @ApiModelProperty(value = "证件编码 loginType=0时，表示身份证  loginType=l时，表示企业统一信用代码")
+    private String idCardCode;
+
+
 
 
     public static ApplyIteminstConfirmVo formatGuide(GuideDetailVo detail) {

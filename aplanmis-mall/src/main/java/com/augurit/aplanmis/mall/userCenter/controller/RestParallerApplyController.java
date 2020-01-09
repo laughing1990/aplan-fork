@@ -318,12 +318,16 @@ public class RestParallerApplyController {
             @ApiImplicitParam(value = "申请实例ID",name = "applyinstId",required = true,dataType = "string"),
             @ApiImplicitParam(value = "项目ID",name = "projInfoId",required = true,dataType = "string"),
             @ApiImplicitParam(value = "是否展示事项情形 1 是，0 否", name = "isSelectItemState", required = true, dataType = "string")})
-    public ContentResultForm<ApplyIteminstConfirmVo> listGuideItemsByApplyinstId(String guideId,String applyinstId,String projInfoId,String isSelectItemState) {
+    public ContentResultForm<ApplyIteminstConfirmVo> listGuideItemsByApplyinstId(String guideId,String applyinstId,String projInfoId,String isSelectItemState,HttpServletRequest request) {
         try {
+            LoginInfoVo login = SessionUtil.getLoginInfo(request);
+            if(login==null) return new ContentResultForm(false,"","登录状态异常，请重新登录");
             logger.error("-----listGuideItemsByApplyinstId----start--------");
             long l=System.currentTimeMillis();
             ApplyIteminstConfirmVo vo = restParallerApplyService.listGuideItemsByApplyinstId(guideId,applyinstId,projInfoId,isSelectItemState);
             logger.error("-----listGuideItemsByApplyinstId----end--------耗时："+(System.currentTimeMillis()-l));
+            vo.setLoginType(StringUtils.isNotBlank(login.getUnitId())?"1":"0");
+            vo.setIdCardCode(StringUtils.isNotBlank(login.getUnitId())?login.getUnifiedSocialCreditCode():login.getIdCard());
             return new ContentResultForm<ApplyIteminstConfirmVo>(true,vo);
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
