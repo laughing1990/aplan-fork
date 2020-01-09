@@ -41,7 +41,7 @@
             <section>
                 <div class="wt-collapse-box" @click="show1 = !show1">
                     <div class="wt-collapse clearfix">
-                        <div class="fl"><span class="wt-collapse-title">事项一单清</span> <span class="wt-collapse-title-des">（我还不知道怎么选事项，我需要<a href="javascript:;" @click.stop="openAILeadDia" style="color: #4293F4;">智能引导</a>。）</span></div>
+                        <div class="fl"><span class="wt-collapse-title">事项一单清</span> <span class="wt-collapse-title-des" v-show="listmatterData.handWay == 1">（我还不知道怎么选事项，我需要<a href="javascript:;" @click.stop="openAILeadDia" style="color: #4293F4;">智能引导</a>。）</span></div>
                         <div class="fr">
                             <img width="27" height="16" th:src="@{/mall/skin_v4.1/images/icon/u370.png}" />
                         </div>
@@ -72,8 +72,8 @@
                                         <span>
                                             <p class="parallel-title">{{scope.row.itemName}}</p>
                                             <p class="parallel-title-intro">
-                                                <span>审批部门：{{scope.row.currentCarryOutItem.orgName||'-'}}</span>
-                                                <span>审批时限：{{scope.row.currentCarryOutItem.dueNum||5}}个工作日</span>
+                                                <span>审批部门：{{scope.row.currentCarryOutItem && scope.row.currentCarryOutItem.orgName||'-'}}</span>
+                                                <span>审批时限：{{scope.row.currentCarryOutItem && scope.row.currentCarryOutItem.dueNum||5}}个工作日</span>
                                                 <span style="margin-left: 20px;">结果物：
                                                     <span v-if="scope.row.resultMats">
                                                         <el-tooltip class="item" effect="dark" content="" placement="top">
@@ -415,44 +415,48 @@
         <!-- 事项阶段智能引导dialog -->
         <el-dialog title="智能引导" :visible.sync="AIleadDialogFlag" width="800px" >
             <div class="AIleadCon">
-                <p class="title">请您回答一下问题完成选择事项的引导：</p>
-                <div class="stateList-form">
-                    <el-form :model="stateSelVal" v-if="stateList&&stateList.length>0">
-                        <el-form-item :required="item.mustAnswer==1"
-                                      v-for="(item,index) in stateList"
-                                      :key="index"
-                                      :label="item.stateName">
-                            <p class="status-label">
-                                <el-tooltip class="item" effect="light" :content="item.stateMemo?item.stateMemo:'无'" placement="right">
-                                    <i class="el-icon-question"></i>
-                                </el-tooltip>
-                            </p>
-                            <template v-if="item.answerType=='s'||item.answerType=='y'">
-                                <el-radio-group v-model="item.selectAnswerId">
-                                    <el-radio v-for="(itemAns,ind) in item.answerStates"
-                                              :key="ind"
-                                              @change="getChildsStateList(stateList,item,itemAns,index,'true1')"
-                                              :value="itemAns.parStateId"
-                                              :label="itemAns.parStateId" name="answer">{{itemAns.stateName}}</el-radio>
-                                </el-radio-group>
-                            </template>
-                            <template v-else>
-                                <el-checkbox-group v-model="item.selectAnswerId"
-                                                   :required="item.mustAnswer==1">
-                                    <el-checkbox v-for="(itemAns,indAns) in item.answerStates"
-                                                 :key="indAns"
-                                                 :value="itemAns.parStateId"
-                                                 @change="function(value) {getChildsStateList(stateList,item,itemAns,index,value)}"
-                                                 :label="itemAns.parStateId" name="answer">{{itemAns.stateName}}</el-checkbox>
-                                </el-checkbox-group>
-                            </template>
-                        </el-form-item>
-                    </el-form>
-                </div>
-
+                <template v-if="stateList&&stateList.length>0">
+                    <p class="title">请您回答一下问题完成选择事项的引导：</p>
+                    <div class="stateList-form">
+                        <el-form :model="stateSelVal" v-if="stateList&&stateList.length>0">
+                            <el-form-item :required="item.mustAnswer==1"
+                                          v-for="(item,index) in stateList"
+                                          :key="index"
+                                          :label="item.stateName">
+                                <p class="status-label">
+                                    <el-tooltip class="item" effect="light" :content="item.stateMemo?item.stateMemo:'无'" placement="right">
+                                        <i class="el-icon-question"></i>
+                                    </el-tooltip>
+                                </p>
+                                <template v-if="item.answerType=='s'||item.answerType=='y'">
+                                    <el-radio-group v-model="item.selectAnswerId">
+                                        <el-radio v-for="(itemAns,ind) in item.answerStates"
+                                                  :key="ind"
+                                                  @change="getChildsStateList(stateList,item,itemAns,index,'true1')"
+                                                  :value="itemAns.parStateId"
+                                                  :label="itemAns.parStateId" name="answer">{{itemAns.stateName}}</el-radio>
+                                    </el-radio-group>
+                                </template>
+                                <template v-else>
+                                    <el-checkbox-group v-model="item.selectAnswerId"
+                                                       :required="item.mustAnswer==1">
+                                        <el-checkbox v-for="(itemAns,indAns) in item.answerStates"
+                                                     :key="indAns"
+                                                     :value="itemAns.parStateId"
+                                                     @change="function(value) {getChildsStateList(stateList,item,itemAns,index,value)}"
+                                                     :label="itemAns.parStateId" name="answer">{{itemAns.stateName}}</el-checkbox>
+                                    </el-checkbox-group>
+                                </template>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+                </template>
+                <template v-else>
+                    <div style="padding: 50px;font-size: 18px;">暂无引导信息</div>
+                </template>
             </div>
             <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="fileListDialog = false">开始引导</el-button>
+                <el-button type="primary" @click=" AIleadDialogFlag= false;startAILeadFn">开始引导</el-button>
             </div>
         </el-dialog>
         <div v-loading="contentLoading"  v-show="contentLoading" style="width: 100%; height: 100%;position: absolute;top: 180px;"></div>

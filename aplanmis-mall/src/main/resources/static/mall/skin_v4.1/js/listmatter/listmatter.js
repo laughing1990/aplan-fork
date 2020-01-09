@@ -88,7 +88,7 @@ var listmatter = (function(window){
                 // 默认勾选的事项，用户不能操作勾选
                 if(vm.parallelItemCheckData.length > 0){
                     vm.parallelItemCheckData.forEach(function (item) {
-                        if(item.currentCarryOutItem.itemVerId){
+                        if(item.currentCarryOutItem && item.currentCarryOutItem.itemVerId){
                             parallelItemVerIds.push(item.currentCarryOutItem.itemVerId);
                         }
                         parallelItemVerIds.push(item.currentCarryOutItem.itemVerId);
@@ -97,7 +97,7 @@ var listmatter = (function(window){
                 }
                 if(vm.coreItemCheckData.length > 0){
                     vm.coreItemCheckData.forEach(function (item) {
-                        if(item.currentCarryOutItem.itemVerId){
+                        if(item.currentCarryOutItem && item.currentCarryOutItem.itemVerId){
                             coreItemVerIds.push(item.currentCarryOutItem.itemVerId);
                         }
                         coreParentItemVerIds.push(item.itemVerId);
@@ -107,7 +107,7 @@ var listmatter = (function(window){
                 // 非必选，用户后来自由勾选
                 if(vm.noRequireParallelItemCheckData.length > 0){
                     vm.noRequireParallelItemCheckData.forEach(function (item) {
-                        if(item.currentCarryOutItem.itemVerId){
+                        if(item.currentCarryOutItem && item.currentCarryOutItem.itemVerId){
                             parallelItemVerIds.push(item.currentCarryOutItem.itemVerId);
                         }
                         paraParentllelItemVerIds.push(item.itemVerId);
@@ -115,7 +115,7 @@ var listmatter = (function(window){
                 }
                 if(vm.noRequireCoreItemCheckData.length > 0){
                     vm.noRequireCoreItemCheckData.forEach(function (item) {
-                        if(item.currentCarryOutItem.itemVerId){
+                        if(item.currentCarryOutItem && item.currentCarryOutItem.itemVerId){
                             coreItemVerIds.push(item.currentCarryOutItem.itemVerId);
                         }
                         coreParentItemVerIds.push(item.itemVerId);
@@ -210,6 +210,35 @@ var listmatter = (function(window){
             // 跳转智能引导页
             openAILeadDia:function(){
                 this.AIleadDialogFlag = true;
+            },
+            // 点击开始指引
+            startAILeadFn:function(){
+               var params = {
+                   "projectAddress": "",
+                   "regionalism": "",
+                   "stageId": "",
+                   "stateIds": []
+               }
+                $.ajax({
+                    url: ctx + 'rest/guide/itGuide/item/list',
+                    type: 'post',
+                    data:JSON.stringify(params),
+                    contentType: 'application/json;charset=utf-8',
+                    success:function(res){
+                        vm.materialLoading = false;
+                        if (res.success) {
+                            var content = res.content;
+                            vm.requireMat = content.requireMat;
+                            vm.noRequireMat = content.noRequireMat;
+                        } else {
+                            vm.$message.error(res.message);
+                        }
+                    },
+                    error:function () {
+                        vm.materialLoading = false;
+                        vm.$message.error('智能引导获取事项一单清列表数据接口失败，请稍后重试！');
+                    }
+                })
             },
             // 获取url参数
             GetRequest: function () {
