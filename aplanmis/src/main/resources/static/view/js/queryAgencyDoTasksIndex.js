@@ -58,11 +58,23 @@ var vm = new Vue({
         },
         //办理
         viewDetail: function (row) {
-            var url = ctx + 'apanmis/page/stageApproveIndex?taskId=' + row.taskId + '&viewId=' + row.viewId + '&itemNature=' + row.itemNature;
-            if (row.busRecordId) {
-                url = url + '&busRecordId=' + row.busRecordId;
+            var menuName= '';
+            var menuInnerUrl =  '';
+            var id = 'menu_'+new Date().getTime();
+            menuName = row.projName;
+            menuInnerUrl = ctx + '/apanmis/page/stageApplyIndex?applyAgentId=' + row.applyAgentId;
+            menuInnerUrl += '&isApplyAgent=true';
+            menuInnerUrl += '&projInfoId='+row.projInfoId;
+            var data = {
+                'menuName':menuName,
+                'menuInnerUrl':menuInnerUrl,
+                'id':id,
+            };
+            try{
+                parent.vm.addTab('',data,'','');
+            }catch (e) {
+                window.open(menuInnerUrl,'_blank');
             }
-            window.open(url, '_blank');
         },
 
         //格式化代办状态
