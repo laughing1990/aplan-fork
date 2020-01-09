@@ -40,7 +40,6 @@ public class ProjAcceptService {
     private AeaUnitInfoService aeaUnitInfoService;
     @Autowired
     private AeaHiApplyinstService aeaHiApplyinstService;
-    private TaskService taskService;
 
     /**
      * 根据申报实例ID，获取竣工验收阶段汇总意见信息（只适合于竣工验收阶段）
