@@ -39,4 +39,6 @@ public interface AeaProjApplyAgentService {
 
     public boolean deleteAgreementFile(String agreementCode) throws Exception;
 
+    public String queryRedisData(String applyAgentId) throws Exception;
+
 }
