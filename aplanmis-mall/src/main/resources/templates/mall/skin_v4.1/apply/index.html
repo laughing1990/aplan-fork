@@ -937,20 +937,13 @@
         <el-table-column label="审批层级" width="160" >
           <template slot-scope="scope">
             <div v-if="scope.row.isCatalog==1">
-              <template v-if="scope.row.carryOutItems&&scope.row.carryOutItems.length>0">
-                <el-select :disabled="scope.row.disabled" v-model="scope.row.itemVerId"
-                           placeholder="请选择活动区域">
-                  <el-option v-for="(item,indexOp) in scope.row.carryOutItems"
-                             :key="indexOp"
-                             :label="item.regionName"
-                             @click.native="getItemOrgId(scope.row,scope.$index,item,'parallel',false)" :value="item.itemVerId"></el-option>
-                </el-select>
-              </template>
-              <template v-else>
-                <el-select disabled="disabled" value="" placeholder="请选择活动区域">
-                  <el-option value="请选择活动区域"></el-option>
-                </el-select>
-              </template>
+              <el-select :disabled="scope.row.disabled" v-model="scope.row.itemVerId"
+                         placeholder="请选择活动区域">
+                <el-option v-for="(item,indexOp) in scope.row.carryOutItems"
+                           :key="indexOp"
+                           :label="item.regionName"
+                           @click.native="getItemOrgId(scope.row,scope.$index,item,'parallel',false)" :value="item.itemVerId"></el-option>
+              </el-select>
             </div>
             <div v-else>
               <span>{{scope.row.regionName}}</span>
@@ -1279,10 +1272,10 @@
                 style="width: 100%">
         <el-table-column type="expand" width="1px">
           <template slot-scope="scope">
-            <el-form :model="stateSelVal" class="expand-coreItem" v-if="scope.row.paraStateList&&scope.row.paraStateList.length>0">
+            <el-form :model="stateSelVal" class="expand-coreItem" v-if="scope.row.itemStateList&&scope.row.itemStateList.length>0">
               <el-form-item class="sel-status-item"
                             :required="item.mustAnswer==1"
-                            v-for="(item,index) in scope.row.paraStateList"
+                            v-for="(item,index) in scope.row.itemStateList"
                             :key="index"
                             :label="item.stateName">
                 <p class="status-label">
@@ -1294,7 +1287,7 @@
                   <el-radio-group v-model="item.selectAnswerId">
                     <el-radio v-for="(itemAns,ind) in item.answerStates"
                               :key="ind"
-                              @change="getCoreStateBystatus(scope.row.paraStateList,item,itemAns,index)"
+                              @change="getCoreStateBystatus(scope.row.itemStateList,item,itemAns,index)"
                               :value="itemAns.itemStateId"
                               :label="itemAns.itemStateId" name="answer">{{itemAns.stateName}}</el-radio>
                   </el-radio-group>
@@ -1305,7 +1298,7 @@
                     <el-checkbox v-for="(itemAns,indAns) in item.answerStates"
                                  :key="indAns"
                                  :value="itemAns.itemStateId"
-                                 @change="function(value){getCoreStateBystatus(scope.row.paraStateList,item,itemAns,index,value)}"
+                                 @change="function(value){getCoreStateBystatus(scope.row.itemStateList,item,itemAns,index,value)}"
                                  :label="itemAns.itemStateId" name="answer">{{itemAns.stateName}}</el-checkbox>
                   </el-checkbox-group>
                 </template>
@@ -1343,20 +1336,13 @@
         <el-table-column label="审批层级" width="160" >
           <template slot-scope="scope">
             <div v-if="scope.row.isCatalog==1">
-              <template v-if="scope.row.carryOutItems&&scope.row.carryOutItems.length>0">
-                <el-select :disabled="scope.row.disabled" v-model="scope.row.itemVerId"
-                           placeholder="请选择活动区域">
-                  <el-option v-for="(item,indexOp) in scope.row.carryOutItems"
-                             :key="indexOp"
-                             :label="item.regionName"
-                             @click.native="getItemOrgId(scope.row,scope.$index,item,'parallel',false)" :value="item.itemVerId"></el-option>
-                </el-select>
-              </template>
-              <template v-else>
-                <el-select disabled="disabled" value="" placeholder="请选择活动区域">
-                  <el-option value="请选择活动区域"></el-option>
-                </el-select>
-              </template>
+              <el-select :disabled="scope.row.disabled" v-model="scope.row.itemVerId"
+                         placeholder="请选择活动区域">
+                <el-option v-for="(item,indexOp) in scope.row.carryOutItems"
+                           :key="indexOp"
+                           :label="item.regionName"
+                           @click.native="getItemOrgId(scope.row,scope.$index,item,'parallel',false)" :value="item.itemVerId"></el-option>
+              </el-select>
             </div>
             <div v-else>
               <span>{{scope.row.regionName}}</span>
@@ -1389,9 +1375,10 @@
                          width="160">
           <template slot-scope="scope">
             <el-select v-model="scope.row.applicantChooseRel"
-                       placeholder="请选择活动区域">
+                       @change="function(val){applicantChange(val,scope.row)}"
+                       placeholder="请选择">
               <el-option label="现在办" value="0"></el-option>
-              <el-option label="开工前办" value="1"></el-option>
+              <el-option :label="dybzspjdxhLast?'暂不办理':'开工前办'" value="1"></el-option>
             </el-select>
           </template>
         </el-table-column>
@@ -1408,10 +1395,10 @@
                 style="width: 100%">
         <el-table-column type="expand" width="1px">
           <template slot-scope="scope">
-            <el-form :model="stateSelVal" class="expand-coreItem" v-if="scope.row.coreStateList&&scope.row.coreStateList.length>0">
+            <el-form :model="stateSelVal" class="expand-coreItem" v-if="scope.row.itemStateList&&scope.row.itemStateList.length>0">
               <el-form-item class="sel-status-item"
                             :required="item.mustAnswer==1"
-                            v-for="(item,index) in scope.row.coreStateList"
+                            v-for="(item,index) in scope.row.itemStateList"
                             :key="index"
                             :label="item.stateName">
                 <p class="status-label">
@@ -1423,7 +1410,7 @@
                   <el-radio-group v-model="item.selectAnswerId">
                     <el-radio v-for="(itemAns,ind) in item.answerStates"
                               :key="ind"
-                              @change="getCoreStateBystatus(scope.row.coreStateList,item,itemAns,index)"
+                              @change="getCoreStateBystatus(scope.row.itemStateList,item,itemAns,index)"
                               :value="itemAns.itemStateId"
                               :label="itemAns.itemStateId" name="answer">{{itemAns.stateName}}</el-radio>
                   </el-radio-group>
@@ -1434,7 +1421,7 @@
                     <el-checkbox v-for="(itemAns,indAns) in item.answerStates"
                                  :key="indAns"
                                  :value="itemAns.itemStateId"
-                                 @change="function(value){getCoreStateBystatus(scope.row.coreStateList,item,itemAns,index,value)}"
+                                 @change="function(value){getCoreStateBystatus(scope.row.itemStateList,item,itemAns,index,value)}"
                                  :label="itemAns.itemStateId" name="answer">{{itemAns.stateName}}</el-checkbox>
                   </el-checkbox-group>
                 </template>
@@ -1510,7 +1497,7 @@
                          align="center"
                          width="160">
           <template slot-scope="scope">
-            <el-select v-model="scope.row.applicantChooseRel">
+            <el-select v-model="scope.row.applicantChooseRel" placeholder="请选择" @change="function(val){applicantChange(val,scope.row,'coreItems')}">
               <el-option label="现在办" value="0"></el-option>
               <el-option :label="dybzspjdxhLast?'暂不办理':'开工前办'" value="1"></el-option>
             </el-select>
@@ -1590,7 +1577,7 @@
       <el-table :data="requireMatShow"
                 style="width: 100%"
                 row-key="matId"
-                :default-expand-all="true"
+                :expand-row-keys="showFileListKey"
                 :default-sort = "{prop: 'sortNo', order: 'ascending'}"
                 class="mat-list mt20 mb20">
         <el-table-column type="expand" width="10" align="right">
@@ -1621,8 +1608,8 @@
                 </div>
               </div>
             </div>
-            <div v-if="(scope.row.certChild&&scope.row.certChild.length==0)&&(scope.row.matChild&&scope.row.matChild.length==0)">
-              <span>无已上传关联材料</span>
+            <div v-if="(scope.row.certChild&&scope.row.certChild.length==0)&&(scope.row.childs&&scope.row.childs.length==0)">
+              <span>无关联材料</span>
             </div>
           </template>
         </el-table-column>
@@ -1645,7 +1632,7 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="400">
+        <el-table-column label="操作" width="460">
           <template slot-scope="scope">
             <el-upload
               ref="uploadFileWin"
@@ -1671,7 +1658,7 @@
       <el-table :data="noRequireMatShow"
                 style="width: 100%"
                 row-key="matId"
-                :default-expand-all="true"
+                :expand-row-keys="showFileListKey"
                 :default-sort = "{prop: 'sortNo', order: 'ascending'}"
                 class="mat-list mt20 mb20">
         <el-table-column type="expand" width="10" align="right">
@@ -1702,8 +1689,8 @@
                 </div>
               </div>
             </div>
-            <div v-if="(scope.row.certChild&&scope.row.certChild.length==0)&&(scope.row.matChild&&scope.row.matChild.length==0)">
-              <span>无已上传关联材料</span>
+            <div v-if="(scope.row.certChild&&scope.row.certChild.length==0)&&(scope.row.childs&&scope.row.childs.length==0)">
+              <span>无关联材料</span>
             </div>
           </template>
         </el-table-column>
@@ -1726,7 +1713,7 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="400">
+        <el-table-column label="操作" width="460">
           <template slot-scope="scope">
             <el-upload
               ref="uploadFileWin"
@@ -1962,10 +1949,10 @@
         </div>
       </div>
       <div slot="footer" class="dialog-footer clearfix">
-        <div class="fl">
-          <el-button type="primary" :disabled="selMatRowDataInd<=0" plain @click="changeRowDataSel('prev')">上一个</el-button>
-          <el-button type="primary" :disabled="selMatRowDataInd>=(allMatsTableData.length-1)" plain @click="changeRowDataSel('next')">下一个</el-button>
-        </div>
+        <!--<div class="fl">-->
+          <!--<el-button type="primary" :disabled="selMatRowDataInd<=0" plain @click="changeRowDataSel('prev')">上一个</el-button>-->
+          <!--<el-button type="primary" :disabled="selMatRowDataInd>=(allMatsTableData.length-1)" plain @click="changeRowDataSel('next')">下一个</el-button>-->
+        <!--</div>-->
         <div class="fr">
           <el-button @click="showUploadWindowFlag = false">关 闭</el-button>
         </div>
