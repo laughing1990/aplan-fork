@@ -562,7 +562,7 @@ var parallelDeclare = new Vue({
             if(_that.parallelItems&&_that.parallelItems.length>0){
               _that.parallelItems.map(function(item){
                 Vue.set(item, 'applicantChooseRel', ''); // 申请人最终选择
-                if(item.applicantChoose||item.leanderDeptOpinion){
+                if(item.applicantChoose||item.leaderDeptChoose){
                   item.applicantChooseRel = '0'
                 }
                 _that.setImplementItem(item);
@@ -571,7 +571,7 @@ var parallelDeclare = new Vue({
             if(_that.coreItems&&_that.coreItems.length>0){
               _that.coreItems.map(function(item){
                 Vue.set(item, 'applicantChooseRel', ''); // 申请人最终选择
-                if(item.applicantChoose||item.leanderDeptOpinion){
+                if(item.applicantChoose||item.leaderDeptChoose){
                   item.applicantChooseRel = '0'
                 }
                 _that.setImplementItem(item);
