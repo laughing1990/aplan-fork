@@ -1,5 +1,9 @@
 package com.augurit;
 
+import com.augurit.agcloud.bsc.upload.MongoDbAchieve;
+import com.augurit.agcloud.bsc.upload.UploadType;
+import com.augurit.agcloud.bsc.upload.factory.UploaderFactory;
+import com.augurit.agcloud.bsc.util.SpringUtil;
 import com.augurit.agcloud.framework.ui.pager.PageArgumentResolver;
 import com.augurit.agcloud.framework.util.JdkIdGenerator;
 import com.augurit.aplanmis.admin.log.TraceLogInterceptor;
@@ -12,9 +16,11 @@ import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreato
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.mobile.device.DeviceHandlerMethodArgumentResolver;
 import org.springframework.mobile.device.DeviceResolverHandlerInterceptor;
 import org.springframework.util.ResourceUtils;
@@ -33,7 +39,7 @@ import java.util.Properties;
 
 @ComponentScan({"springfox.collection.example.plugins"})
 @Configuration
-public class FrontWebMvcConfig implements WebMvcConfigurer/*, ApplicationListener<ContextRefreshedEvent> */{
+public class FrontWebMvcConfig implements WebMvcConfigurer, ApplicationListener<ContextRefreshedEvent> {
 
     private static Logger logger = LoggerFactory.getLogger(FrontWebMvcConfig.class);
 
@@ -169,10 +175,10 @@ public class FrontWebMvcConfig implements WebMvcConfigurer/*, ApplicationListene
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
-        registry
-            .addResourceHandler("/ui-static/**")
-            .addResourceLocations("/ui-static/")
-            .setCachePeriod(31556926);
+//        registry
+//            .addResourceHandler("/ui-static/**")
+//            .addResourceLocations("/ui-static/")
+//            .setCachePeriod(31556926);
 
         //applet部署配置
         String strClasspath="";
@@ -217,25 +223,25 @@ public class FrontWebMvcConfig implements WebMvcConfigurer/*, ApplicationListene
     public void addCorsMappings(CorsRegistry registry) {
 
         registry
-                .addMapping("/**")
-                .allowedMethods("*")
-                .allowedOrigins("http://192.168.32.53:8083")
-                .allowedOrigins("http://192.168.32.53:8001")
-                .allowedOrigins("*")
-                .allowedHeaders("*")
-                .allowCredentials(true)
-                .allowedOrigins("http://localhost:8083");
+            .addMapping("/**")
+            .allowedMethods("*")
+            .allowedOrigins("http://192.168.32.53:8083")
+            .allowedOrigins("http://192.168.32.53:8001")
+            .allowedOrigins("*")
+            .allowedHeaders("*")
+            .allowCredentials(true)
+            .allowedOrigins("http://localhost:8083");
     }
 
-//    @Override
-//    public void onApplicationEvent(ContextRefreshedEvent event) {
-//
-//        //该地方仅用于本地测试使用，请勿提交到代码库，谢谢
-//        MongoDbAchieve uploadFileStrategy = (MongoDbAchieve) SpringUtil.getBean(UploaderFactory.class).create(UploadType.MONGODB.getValue());
-//        uploadFileStrategy.setMongodbUri("mongodb://jjt1:jjt1@192.168.30.120:27017/jjt");
-//        try {
-//            uploadFileStrategy.queryFile("333");
-//        }catch (Exception e){
-//        }
-//    }
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+
+        //该地方仅用于本地测试使用，请勿提交到代码库，谢谢
+        MongoDbAchieve uploadFileStrategy = (MongoDbAchieve) SpringUtil.getBean(UploaderFactory.class).create(UploadType.MONGODB.getValue());
+        uploadFileStrategy.setMongodbUri("mongodb://jjt1:jjt1@192.168.30.120:27017/jjt");
+        try {
+            uploadFileStrategy.queryFile("333");
+        }catch (Exception e){
+        }
+    }
 }
