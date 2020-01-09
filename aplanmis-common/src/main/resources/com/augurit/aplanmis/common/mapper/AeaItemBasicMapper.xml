@@ -84,7 +84,8 @@
         IS_CHECK_PROJ  isCheckProj,
         IS_SHARE isShare,
         ANTICIPATE_DAY  anticipateDay,
-        ANTICIPATE_TYPE  anticipateType
+        ANTICIPATE_TYPE  anticipateType,
+        EL_CONTENT elContent
     </sql>
 
     <sql id="aib_allColumns">
@@ -166,7 +167,8 @@
         aib.IS_CHECK_PROJ  isCheckProj,
         aib.IS_SHARE isShare,
         aib.ANTICIPATE_DAY  anticipateDay,
-        aib.ANTICIPATE_TYPE  anticipateType
+        aib.ANTICIPATE_TYPE  anticipateType,
+        aib.EL_CONTENT elContent
     </sql>
 
     <sql id="allColumns2">
@@ -248,7 +250,8 @@
         ${alias}.IS_CHECK_PROJ  isCheckProj,
         ${alias}.IS_SHARE isShare,
         ${alias}.ANTICIPATE_DAY  anticipateDay,
-        ${alias}.ANTICIPATE_TYPE  anticipateType
+        ${alias}.ANTICIPATE_TYPE  anticipateType,
+        ${alias}.EL_CONTENT elContent
     </sql>
 
     <sql id="allColumns3">
@@ -330,7 +333,8 @@
         ${alias}.isCheckProj,
         ${alias}.isShare,
         ${alias}.anticipateDay,
-        ${alias}.anticipateType
+        ${alias}.anticipateType,
+        ${alias}.elContent
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
@@ -584,6 +588,9 @@
             <if test="anticipateType != null" >
                 AND aib.ANTICIPATE_TYPE = #{anticipateType}
             </if>
+            <if test="elContent != null" >
+                AND aib.EL_CONTENT = #{elContent}
+            </if>
             <if test="keyword != null and keyword !='' ">
                 AND aib.ITEM_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
             </if>
@@ -751,7 +758,8 @@
             IS_CHECK_PROJ,
             IS_SHARE,
             ANTICIPATE_DAY,
-            ANTICIPATE_TYPE
+            ANTICIPATE_TYPE,
+            EL_CONTENT
         )
         values(
             #{itemBasicId},
@@ -832,7 +840,8 @@
             #{isCheckProj},
             #{isShare},
             #{anticipateDay},
-            #{anticipateType}
+            #{anticipateType},
+            #{elContent}
         )
     </insert>
 
@@ -1077,6 +1086,9 @@
             <if test="anticipateType != null" >
                 ANTICIPATE_TYPE = #{anticipateType},
             </if>
+            <if test="elContent != null" >
+                EL_CONTENT = #{elContent},
+            </if>
         </set>
         where ITEM_BASIC_ID = #{itemBasicId}
     </update>
@@ -1167,6 +1179,7 @@
         <result property="isShare" column="IS_SHARE"/>
         <result property="anticipateDay" column="ANTICIPATE_DAY"/>
         <result property="anticipateType" column="ANTICIPATE_TYPE"/>
+        <result property="elContent" column="EL_CONTENT"/>
     </resultMap>
 
     <!--10.根据阶段ID查询事项定义列表-->
@@ -2378,8 +2391,7 @@
         select
         <include refid="allColumns2">
             <property name="alias" value="itemBasic"/>
-        </include>
-        ,
+        </include>,
         org.ORG_NAME orgName,
         region.region_name regionName
         from AEA_ITEM_BASIC itemBasic

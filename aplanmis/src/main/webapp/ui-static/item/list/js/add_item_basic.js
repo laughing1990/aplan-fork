@@ -371,6 +371,7 @@ function addItemInfo(isRoot, isCatalog){
         $("#isCheckItemDiv").hide();
         $('.isCheckProjDiv').hide();
         $('#itemExchangeWayDiv').show();
+        $('#elContentDiv').hide();
         $("#aedit_item_form input[name='itemExchangeWay'][value='1']").prop("checked", true);
         $('#aedit_item_form input[name="itemExchangeWay"]').rules("add", {
             required: true,
@@ -384,6 +385,7 @@ function addItemInfo(isRoot, isCatalog){
         $("#isCheckItemDiv").show();
         $('.isCheckProjDiv').show();
         $('#itemExchangeWayDiv').hide();
+        $('#elContentDiv').show();
         $('#aedit_item_form input[name="itemExchangeWay"]').rules("remove");
     }
 
@@ -427,6 +429,7 @@ function editItemBasicById(itemBasicId,itemVerStatus,isCatalog) {
         $("#isCheckItemDiv").hide();
         $('.isCheckProjDiv').hide();
         $('#itemExchangeWayDiv').show();
+        $('#elContentDiv').hide();
         $('#aedit_item_form input[name="itemExchangeWay"]').rules("add", {
             required: true,
             messages: {
@@ -438,6 +441,7 @@ function editItemBasicById(itemBasicId,itemVerStatus,isCatalog) {
         $("#isCheckItemDiv").show();
         $('.isCheckProjDiv').show();
         $('#itemExchangeWayDiv').hide();
+        $('#elContentDiv').show();
         $('#aedit_item_form input[name="itemExchangeWay"]').rules("remove");
     }
 
