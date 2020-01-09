@@ -40,7 +40,7 @@ public class ProjAcceptController {
 
         ProjAcceptOpinionSummaryVo acceptOpinionSummaryVo = null;
         try {
-            acceptOpinionSummaryVo = projAcceptService.caculateProjAcceptOpinionSummary(applyinstId);
+            acceptOpinionSummaryVo = projAcceptService.caculateProjAcceptOpinionSummary(applyinstId,null);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultForm(false,e.getMessage());

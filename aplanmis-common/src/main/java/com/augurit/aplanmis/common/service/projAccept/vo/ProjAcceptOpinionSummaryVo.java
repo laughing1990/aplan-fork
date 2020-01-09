@@ -26,5 +26,7 @@ public class ProjAcceptOpinionSummaryVo implements Serializable {
     private String linkman;//联系人
     private String linkmanPhone;//联系人电话
     private Map<String,String> deptOpinions;//部门意见集合
-
+    private String regionName;//行政区划名称
+    private String docNum;//文书编号
+    private String importantProj;//是否重大项目
 }

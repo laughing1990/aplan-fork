@@ -2,6 +2,8 @@ package com.augurit.aplanmis.common.service.projAccept.service;
 
 import com.augurit.agcloud.bpm.common.domain.BpmHistoryCommentForm;
 import com.augurit.agcloud.bpm.common.engine.BpmTaskService;
+import com.augurit.agcloud.bsc.domain.BscDicRegion;
+import com.augurit.agcloud.bsc.sc.dic.region.service.BscDicRegionService;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
@@ -10,6 +12,7 @@ import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.projAccept.vo.ProjAcceptOpinionSummaryVo;
+import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import org.flowable.engine.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +43,10 @@ public class ProjAcceptService {
     private AeaUnitInfoService aeaUnitInfoService;
     @Autowired
     private AeaHiApplyinstService aeaHiApplyinstService;
+    @Autowired
+    private AeaProjInfoService aeaProjInfoService;
+    @Autowired
+    private BscDicRegionService bscDicRegionService;
 
     /**
      * 根据申报实例ID，获取竣工验收阶段汇总意见信息（只适合于竣工验收阶段）
@@ -133,6 +140,21 @@ public class ProjAcceptService {
         acceptOpinionSummaryVo.setShigongUnitName(shigongUnit);
         acceptOpinionSummaryVo.setLinkman(linkman);
         acceptOpinionSummaryVo.setLinkmanPhone(linkmanPhone);
+
+        AeaProjInfo aeaProjInfo = aeaProjInfoService.getAeaProjInfoByProjInfoId(projInfoId);
+        String regionId = aeaProjInfo.getRegionalism();
+        if(StringUtils.isNotBlank(regionId)){
+            BscDicRegion region = bscDicRegionService.getBscDicRegionById(regionId);
+            if(region!=null)
+                acceptOpinionSummaryVo.setRegionName(region.getRegionName());
+        }
+        String projLevel = aeaProjInfo.getProjLevel();
+        if(StringUtils.isNotBlank(projLevel)){
+            acceptOpinionSummaryVo.setImportantProj("是");
+        }else{
+            acceptOpinionSummaryVo.setImportantProj("否");
+        }
+
 
         AeaHiParStageinst stageinst = aeaHiParStageinstService.getAeaHiParStageinstByApplyinstId(applyinstId);
 
