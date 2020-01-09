@@ -106,6 +106,8 @@ public interface AeaUnitInfoMapper {
      */
     AeaUnitInfo getAeaUnitIncludeDeleteById(@Param("unitInfoId") String unitInfoId) throws Exception;
 
+    List<AeaUnitInfo> getApplyJSUnitByProjInfoIdAndApplyinstId(@Param("projInfoId")String projInfoId,@Param("applyinstId")String applyinstId);
+
     int batchDeleteAeaUnitInfo(@Param("ids") List<String> ids) throws Exception;
 
     int batchInsertAeaUnitInfo(@Param("list") List<AeaUnitInfo> unitInfos) throws Exception;

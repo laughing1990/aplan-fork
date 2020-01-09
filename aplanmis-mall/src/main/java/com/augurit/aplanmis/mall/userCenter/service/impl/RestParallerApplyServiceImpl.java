@@ -4,6 +4,7 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
+import com.augurit.aplanmis.common.apply.item.ComputedItem;
 import com.augurit.aplanmis.common.apply.item.GuideComputedItem;
 import com.augurit.aplanmis.common.constants.AeaHiApplyinstConstants;
 import com.augurit.aplanmis.common.constants.ApplyState;
@@ -38,6 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -85,6 +87,8 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
     private AeaParStageService aeaParStageService;
     @Autowired
     private RestAeaHiGuideService restAeaHiGuideService;
+    @Autowired
+    private AeaUnitInfoMapper aeaUnitInfoMapper;
 
     @Override
     public ItemListVo listItemAndStateByStageId(String stageId, String projInfoId, String regionalism, String projectAddress,String isSelectItemState,String isFilterStateItem,String rootOrgId) throws Exception {
@@ -175,24 +179,63 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
         if("1".equals(isSelectItemState) && parallelItems.size()>0)
             parallelItems.stream().forEach(v->{
                 try {
-                    List<AeaItemInout> resultMats=aeaHiItemInoutService.getAeaItemInoutMatCertByItemVerId(v.getItemVerId(),rootOrgId);
-                    v.setItemStateList(aeaItemStateService.listAeaItemStateByParentId(v.getItemVerId(), "", "ROOT", rootOrgId));
-                    v.setResultMats(resultMats);
-                } catch (Exception e) {
-                }
+                    setMatsAndStatesForCarryItems(rootOrgId, v);
+                } catch (Exception e) {}
             });
         if("1".equals(isSelectItemState) && optionItems.size()>0)
             optionItems.stream().forEach(v->{
                 try {
-                    v.setItemStateList(aeaItemStateService.listAeaItemStateByParentId(v.getItemVerId(), "", "ROOT", rootOrgId));
-                    List<AeaItemInout> resultMats=aeaHiItemInoutService.getAeaItemInoutMatCertByItemVerId(v.getItemVerId(),rootOrgId);
-                    v.setResultMats(resultMats);
-                } catch (Exception e) {
-                }
+                    setMatsAndStatesForCarryItems(rootOrgId, v);
+                } catch (Exception e) {}
             });
         vo.setCoreIteminstList(optionItems);
         vo.setParallelIteminstList(parallelItems);
+        //实例的阶段情形ID集合
+        List<AeaParState> aeaParStates =  aeaParStateService.listAeaParStateByStageinstIdORApplyinstId(applyinstId,"");
+        if (aeaParStates.size()>0){
+            vo.setStateIds(aeaParStates.stream().map(AeaParState::getStageId).collect(Collectors.toList()));
+        }else {
+            vo.setStateIds(new ArrayList<>());
+        }
+        AeaHiApplyinst applyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+        vo.setLinkmanInfoId(applyinst.getLinkmanInfoId());
+        vo.setApplyinstId(applyinstId);
+        vo.setApplySubject(applyinst.getApplySubject());
+        List<AeaUnitInfo> unitList = aeaUnitInfoMapper.getApplyJSUnitByProjInfoIdAndApplyinstId(projInfoId, applyinstId);
+        String unitInfoId= "";
+        if(unitList.size()>0){
+            for (AeaUnitInfo v:unitList){
+                if(StringUtils.isNotBlank(v.getLinkmanInfoId())&&v.getLinkmanInfoId().equals(applyinst.getLinkmanInfoId())){
+                    unitInfoId=v.getUnitInfoId();
+                    break;
+                }
+            }
+        }
+        vo.setUnitInfoId((StringUtils.isNotBlank(unitInfoId))?unitInfoId:(unitList.size()>0?unitList.get(0).getUnitInfoId():null));
         return vo;
+    }
+
+    private void setMatsAndStatesForCarryItems(String rootOrgId, GuideComputedItem v) throws Exception {
+        if ("1".equals(v.getIsCatalog())) {//标准事项
+            v.setBaseItemVerId(v.getItemVerId());
+            List<ComputedItem.CarryOutItem> carryOutItems = v.getCarryOutItems();
+            ComputedItem.CarryOutItem currentCarryOutItem = v.getCurrentCarryOutItem();
+            if (carryOutItems.size() > 0) {
+                for (ComputedItem.CarryOutItem basic : carryOutItems) {
+                    List<AeaItemState> paraStateList = aeaItemStateService.listAeaItemStateByParentId(basic.getItemVerId(), "", "ROOT", rootOrgId);
+                    basic.setItemStateList(paraStateList.size() > 0 ? paraStateList : new ArrayList<>());
+                    List<AeaItemInout> resultMats = aeaHiItemInoutService.getAeaItemInoutMatCertByItemVerId(basic.getItemVerId(), rootOrgId);
+                    basic.setResultMats(resultMats);
+                    if (basic.getItemVerId().equals(currentCarryOutItem.getItemVerId())) {
+                        currentCarryOutItem.setItemStateList(paraStateList);
+                    }
+                }
+            }
+        } else {
+            List<AeaItemInout> resultMats = aeaHiItemInoutService.getAeaItemInoutMatCertByItemVerId(v.getItemVerId(), rootOrgId);
+            v.setItemStateList(aeaItemStateService.listAeaItemStateByParentId(v.getItemVerId(), "", "ROOT", rootOrgId));
+            v.setResultMats(resultMats);
+        }
     }
 
     @Override

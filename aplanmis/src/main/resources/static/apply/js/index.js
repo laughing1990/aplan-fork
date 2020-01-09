@@ -791,18 +791,22 @@ var vm = new Vue({
     requestFinishBmfd: function (val) {
       var vm = this;
       vm.loading = true;
+      var _val = val;
+      if (typeof val == 'object') {
+        _val = val.value;
+      }
       request('', {
         url: ctx + 'dept/guide/finish',
         type: 'post',
         ContentType: 'application/json',
         data: JSON.stringify({
           guideId: vm.guideId,
-          leaderOrgOpinion: val,
+          leaderOrgOpinion: _val,
         })
       }, function (res) {
         vm.loading = false;
         if (res.success) {
-          __STATIC.delayCloseWindow();
+          __STATIC.delayRefreshWindow();
           vm.$message.success('部门辅导结束，已通知申请人');
         } else {
           vm.message.error(res.message || '部门辅导结束失败');
@@ -2610,8 +2614,14 @@ var vm = new Vue({
     },
     // 展示选择主题弹窗
     showSelThemeDialog: function () {
-      if (this.isGuidePage && !this.leaderDept) {
-        this.$message('牵头部门才能修改项目类型');
+      if (this.isGuidePage) {
+        var text = '';
+        if (!this.leaderDept) {
+          text = '牵头部门才能修改项目类型';
+        } else if (this.guideState > 2) {
+          text = '已经发起部门辅导，不能修改项目类型';
+        }
+        // this.$message(text);
         return null;
       }
       var ind = 0;
@@ -3282,7 +3292,7 @@ var vm = new Vue({
     // 点击选择申报阶段
     selStatus: function (data, index, stageId, isSelItem, optFlag) {
       if (optFlag == 'guideFlag' && this.isGuidePage) {
-        this.$message('部门辅导不可修改申报所属阶段');
+        // this.$message('部门辅导不可修改申报所属阶段');
         return null;
       }
       this.isSelItem = isSelItem;

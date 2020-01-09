@@ -326,7 +326,7 @@
             <property name="alias" value="proj"></property>
         </include>
         from aea_proj_info proj
-        left aea_unit_proj aup on proj.proj_info_id=aup.proj_info_id
+        left join aea_unit_proj aup on proj.proj_info_id=aup.proj_info_id
         where
         proj.IS_DELETED = '0'
         <if test="unitInfoId!=null and unitInfoId!=''">
@@ -352,7 +352,7 @@
             <property name="alias" value="proj"></property>
         </include>
         from aea_proj_info proj
-        left aea_proj_linkman apl on proj.proj_info_id=apl.proj_info_id
+        left join aea_proj_linkman apl on proj.proj_info_id=apl.proj_info_id
         where
         proj.IS_DELETED = '0'
         <if test="linkmanInfoId!=null and linkmanInfoId!=''">
