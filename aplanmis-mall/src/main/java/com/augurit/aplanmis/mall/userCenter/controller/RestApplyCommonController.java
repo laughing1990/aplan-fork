@@ -105,19 +105,16 @@ public class RestApplyCommonController {
         }
     }
 
-
-
-
-    @PostMapping("/completioninfo/saveOrUpdate")
-    @ApiOperation(value = "并联申报/单项申报 --> 补全信息保存领件人、项目信息、单位项目关联", httpMethod = "POST")
-    public ContentResultForm saveOrUpdateSmsInfo(@RequestBody SmsInfoVo smsInfoVo) {
+    @PostMapping("completioninfo/saveOrUpdate")
+    @ApiOperation(value = "并联申报/单项申报 --> 补全信息保存项目信息、单位项目关联", httpMethod = "POST")
+    public ContentResultForm saveOrUpdateSmsInfo(@RequestBody ProjUnitInfoVo projUnitInfoVo) {
         Map<String,Object> resultMap=new HashMap();
         AeaProjInfo aeaProjInfo= new AeaProjInfo();
-        BeanUtils.copyProperties(smsInfoVo,aeaProjInfo);
-        String applyinstId=smsInfoVo.getApplyinstId();//有值则表示之前已经暂存过
+        BeanUtils.copyProperties(projUnitInfoVo,aeaProjInfo);
+        String applyinstId=projUnitInfoVo.getApplyinstId();//有值则表示之前已经暂存过
         try {
             //保存或修改领件人信息
-            Map<String, Object> map = restApplyCommonService.getStringObjectMap(smsInfoVo, resultMap, aeaProjInfo);
+            Map<String, Object> map = restApplyCommonService.saveProjUnit(projUnitInfoVo, resultMap, aeaProjInfo);
             if(StringUtils.isNotBlank(applyinstId)){//已暂存过
                 restApplyCommonService.insertAeaApplyinstUnitProj(applyinstId,(List<String>)map.get("unitProjIds"));
             }
@@ -128,152 +125,166 @@ public class RestApplyCommonController {
         }
     }
 
-    @PostMapping("/completioninfo/saveOrUpdate/temporary")
-    @ApiOperation(value = "并联申报/单项申报 --> 暂存补全信息保存领件人、项目信息、单位项目关联", httpMethod = "POST")
-    public ContentResultForm temporarySaveOrUpdateSmsInfo(@RequestBody SmsInfoVo smsInfoVo,HttpServletRequest request) {
-        Map<String,Object> resultMap=new HashMap();
-        AeaProjInfo aeaProjInfo= new AeaProjInfo();
-        BeanUtils.copyProperties(smsInfoVo,aeaProjInfo);
-        String applyinstId=smsInfoVo.getApplyinstId();//有值则表示之前已经暂存过
-        LoginInfoVo loginVo = SessionUtil.getLoginInfo(request);
+
+    @PostMapping("smsInfo/saveOrUpdate")
+    @ApiOperation(value = "并联申报/单项申报 --> 补全办件领取方式接口", httpMethod = "POST")
+    public ContentResultForm saveOrUpdateSmsInfo(@RequestBody SmsInfoVo smsInfoVo) {
         try {
-            Map<String, Object> map = restApplyCommonService.getStringObjectMap(smsInfoVo, resultMap, aeaProjInfo);
-            if(StringUtils.isNotBlank(applyinstId)){//已暂存过，需要删除历史记录，重新插入数据
-                restApplyCommonService.deleteReInsertAeaApplyinstUnitProj(applyinstId,(List<String>)map.get("unitProjIds"));
-            }else{//第一次暂存
-                AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst("net", smsInfoVo.getApplySubject(), smsInfoVo.getLinkmanInfoId(), smsInfoVo.getIsSeriesApprove(), null, ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"1",null);
-                applyinstId=aeaHiApplyinst==null?"":aeaHiApplyinst.getApplyinstId();
-                restApplyCommonService.insertAeaApplyinstUnitProj(applyinstId,(List<String>)map.get("unitProjIds"));
-                if("1".equals(smsInfoVo.getIsSeriesApprove()) && StringUtils.isNotBlank(smsInfoVo.getItemVerId())){
-                    restApplyCommonService.insertSeriesIteminst(applyinstId,smsInfoVo.getItemVerId(),resultMap);
-                }
-            }
-            resultMap.put("applyinstId", applyinstId);
-            if(StringUtils.isNotBlank(applyinstId)){//回填sms表的申请实例ID
-                AeaHiSmsInfo sms=aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(applyinstId);
-                String smsId=(String) resultMap.get("smsId");
-                if(sms==null&&StringUtils.isNotBlank(smsId)) {
-                    sms=aeaHiSmsInfoService.getAeaHiSmsInfoById(smsId);
-                    sms.setApplyinstId(applyinstId);
-                    aeaHiSmsInfoService.updateAeaHiSmsInfo(sms);
-                }
-                if(StringUtils.isNotBlank(loginVo.getUnitId())){
-                    restApplyCommonService.deleteReInsertAeaApplyinstUnitProjCurrentLogin(applyinstId,loginVo.getUnitId(),smsInfoVo.getLinkmanInfoId(),aeaProjInfo.getProjInfoId());
-                }else{
-                    restApplyCommonService.deleteReInsertAeaProjLinkmanCurrentLogin(applyinstId,loginVo.getUserId(),aeaProjInfo.getProjInfoId());
-                }
-                restApplyCommonService.saveOrUpdateAeaApplyinstProj(applyinstId,aeaProjInfo.getProjInfoId());
-            }
-            return new ContentResultForm<>(true, resultMap, "暂存成功!");
+            //保存或修改领件人信息
+            String smsId = restApplyCommonService.saveSmsInfo(smsInfoVo);
+            return new ContentResultForm<>(true, smsId, "保存成功!");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ContentResultForm(false, "", e.getMessage());
         }
     }
 
-
-    @PostMapping("/itemList/temporary")
-    @ApiOperation(value = "阶段申报-->暂存阶段，情形及事项(含事项情形)")
-    public ContentResultForm itemListTemporary(@Valid @RequestBody ItemListTemporaryParamVo itemListTemporaryParamVo,HttpServletRequest request){
-        SmsInfoVo smsInfoVo=itemListTemporaryParamVo.getSmsInfoVo();
-        smsInfoVo.setApplyinstId(itemListTemporaryParamVo.getApplyinstId());
-        itemListTemporaryParamVo.setSmsInfoVo(smsInfoVo);
-        Map<String,Object> map=new HashMap<>();
-        ContentResultForm firstStepResult = temporarySaveOrUpdateSmsInfo(itemListTemporaryParamVo.getSmsInfoVo(), request);
-        LoginInfoVo loginVo = SessionUtil.getLoginInfo(request);
-        String applyinstId="";
-        if(firstStepResult.isSuccess()){
-            map=(Map<String,Object>)(firstStepResult.getContent());
-            applyinstId=(String)map.get("applyinstId");
-        }else {
-            return new ContentResultForm(false,"",firstStepResult.getMessage());
-        }
-        try{
-            itemListTemporaryParamVo.setApplyinstId(applyinstId);
-            map.put("unitInfoId",loginVo.getUnitId());
-            map=restApplyCommonService.submitItemList(itemListTemporaryParamVo,map);
-        }catch (Exception e){
-            return new ContentResultForm(false,"",e.getMessage());
-        }
-        return new ContentResultForm(true,map,"暂存成功！");
-    }
-
-    @PostMapping("/matList/stage/temporary")
-    @ApiOperation(value = "阶段申报-->暂存材料)")
-    public ContentResultForm matListStageTemporary(@Valid @RequestBody MatListStageTemporaryParamVo matListStageTemporaryParamVo,HttpServletRequest request){
-        ItemListTemporaryParamVo itemListTemporaryParamVo=matListStageTemporaryParamVo.getItemListTemporaryParamVo();
-        itemListTemporaryParamVo.setApplyinstId(matListStageTemporaryParamVo.getApplyinstId());
-        matListStageTemporaryParamVo.setItemListTemporaryParamVo(itemListTemporaryParamVo);
-        Map<String,Object> map=new HashMap<>();
-        ContentResultForm secondStepResult = itemListTemporary(matListStageTemporaryParamVo.getItemListTemporaryParamVo(), request);
-        String applyinstId="";
-        if(secondStepResult.isSuccess()){
-            map=(Map<String,Object>)(secondStepResult.getContent());
-            applyinstId=(String)map.get("applyinstId");
-        }else {
-            return new ContentResultForm(false,"",secondStepResult.getMessage());
-        }
-        try{
-            matListStageTemporaryParamVo.setApplyinstId(applyinstId);
-            restApplyCommonService.submitMatmList(matListStageTemporaryParamVo);
-        }catch (Exception e){
-            return new ContentResultForm(false,"",e.getMessage());
-        }
-        return new ContentResultForm(true,map,"暂存成功！");
-    }
+//    @PostMapping("/completioninfo/saveOrUpdate/temporary")
+//    @ApiOperation(value = "并联申报/单项申报 --> 补全信息保存领件人、项目信息、单位项目关联", httpMethod = "POST")
+//    public ContentResultForm temporarySaveOrUpdateSmsInfo(@RequestBody SmsProjUnitInfoVo smsInfoVo,HttpServletRequest request) {
+//        Map<String,Object> resultMap=new HashMap();
+//        AeaProjInfo aeaProjInfo= new AeaProjInfo();
+//        BeanUtils.copyProperties(smsInfoVo,aeaProjInfo);
+//        String applyinstId=smsInfoVo.getApplyinstId();//有值则表示之前已经暂存过
+//        LoginInfoVo loginVo = SessionUtil.getLoginInfo(request);
+//        try {
+//            Map<String, Object> map = restApplyCommonService.getStringObjectMap(smsInfoVo, resultMap, aeaProjInfo);
+//            if(StringUtils.isNotBlank(applyinstId)){//已暂存过，需要删除历史记录，重新插入数据
+//                restApplyCommonService.deleteReInsertAeaApplyinstUnitProj(applyinstId,(List<String>)map.get("unitProjIds"));
+//            }else{//第一次暂存
+//                AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst("net", smsInfoVo.getApplySubject(), smsInfoVo.getLinkmanInfoId(), smsInfoVo.getIsSeriesApprove(), null, ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"1",null);
+//                applyinstId=aeaHiApplyinst==null?"":aeaHiApplyinst.getApplyinstId();
+//                restApplyCommonService.insertAeaApplyinstUnitProj(applyinstId,(List<String>)map.get("unitProjIds"));
+//                if("1".equals(smsInfoVo.getIsSeriesApprove()) && StringUtils.isNotBlank(smsInfoVo.getItemVerId())){
+//                    restApplyCommonService.insertSeriesIteminst(applyinstId,smsInfoVo.getItemVerId(),resultMap);
+//                }
+//            }
+//            resultMap.put("applyinstId", applyinstId);
+//            if(StringUtils.isNotBlank(applyinstId)){//回填sms表的申请实例ID
+//                AeaHiSmsInfo sms=aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(applyinstId);
+//                String smsId=(String) resultMap.get("smsId");
+//                if(sms==null&&StringUtils.isNotBlank(smsId)) {
+//                    sms=aeaHiSmsInfoService.getAeaHiSmsInfoById(smsId);
+//                    sms.setApplyinstId(applyinstId);
+//                    aeaHiSmsInfoService.updateAeaHiSmsInfo(sms);
+//                }
+//                if(StringUtils.isNotBlank(loginVo.getUnitId())){
+//                    restApplyCommonService.deleteReInsertAeaApplyinstUnitProjCurrentLogin(applyinstId,loginVo.getUnitId(),smsInfoVo.getLinkmanInfoId(),aeaProjInfo.getProjInfoId());
+//                }else{
+//                    restApplyCommonService.deleteReInsertAeaProjLinkmanCurrentLogin(applyinstId,loginVo.getUserId(),aeaProjInfo.getProjInfoId());
+//                }
+//                restApplyCommonService.saveOrUpdateAeaApplyinstProj(applyinstId,aeaProjInfo.getProjInfoId());
+//            }
+//            return new ContentResultForm<>(true, resultMap, "暂存成功!");
+//        } catch (Exception e) {
+//            logger.error(e.getMessage(), e);
+//            return new ContentResultForm(false, "", e.getMessage());
+//        }
+//    }
 
 
-    @PostMapping("/matList/series/temporary")
-    @ApiOperation(value = "单项申报-->暂存材料)")
-    public ContentResultForm matListSeriesTemporary(@Valid @RequestBody MatListSeiesTemporaryParamVo matListSeiesTemporaryParamVo,HttpServletRequest request){
-        StateListSeriesTemporaryParamVo vo=matListSeiesTemporaryParamVo.getStateListSeriesTemporaryParamVo();
-        vo.setApplyinstId(matListSeiesTemporaryParamVo.getApplyinstId());
-        matListSeiesTemporaryParamVo.setStateListSeriesTemporaryParamVo(vo);
-        Map<String,Object> map=new HashMap<>();
-        ContentResultForm secondStepResult = stateListSeriesTemporary(matListSeiesTemporaryParamVo.getStateListSeriesTemporaryParamVo(),request);//暂存情形
-        String applyinstId="";
-        if(secondStepResult.isSuccess()){
-            map=(Map<String,Object>)(secondStepResult.getContent());
-            applyinstId=(String)map.get("applyinstId");
-        }else {
-            return new ContentResultForm(false,"",secondStepResult.getMessage());
-        }
-        try{
-            matListSeiesTemporaryParamVo.setApplyinstId(applyinstId);
-            restApplyCommonService.submitMatmList(matListSeiesTemporaryParamVo);
-        }catch (Exception e){
-            return new ContentResultForm(false,"",e.getMessage());
-        }
-        return new ContentResultForm(true,map,"暂存成功！");
-    }
+//    @PostMapping("/itemList/temporary")
+//    @ApiOperation(value = "阶段申报-->暂存阶段，情形及事项(含事项情形)")
+//    public ContentResultForm itemListTemporary(@Valid @RequestBody ItemListTemporaryParamVo itemListTemporaryParamVo,HttpServletRequest request){
+//        SmsProjUnitInfoVo smsInfoVo=itemListTemporaryParamVo.getSmsInfoVo();
+//        smsInfoVo.setApplyinstId(itemListTemporaryParamVo.getApplyinstId());
+//        itemListTemporaryParamVo.setSmsInfoVo(smsInfoVo);
+//        Map<String,Object> map=new HashMap<>();
+//        ContentResultForm firstStepResult = temporarySaveOrUpdateSmsInfo(itemListTemporaryParamVo.getSmsInfoVo(), request);
+//        LoginInfoVo loginVo = SessionUtil.getLoginInfo(request);
+//        String applyinstId="";
+//        if(firstStepResult.isSuccess()){
+//            map=(Map<String,Object>)(firstStepResult.getContent());
+//            applyinstId=(String)map.get("applyinstId");
+//        }else {
+//            return new ContentResultForm(false,"",firstStepResult.getMessage());
+//        }
+//        try{
+//            itemListTemporaryParamVo.setApplyinstId(applyinstId);
+//            map.put("unitInfoId",loginVo.getUnitId());
+//            map=restApplyCommonService.submitItemList(itemListTemporaryParamVo,map);
+//        }catch (Exception e){
+//            return new ContentResultForm(false,"",e.getMessage());
+//        }
+//        return new ContentResultForm(true,map,"暂存成功！");
+//    }
+
+//    @PostMapping("/matList/stage/temporary")
+//    @ApiOperation(value = "阶段申报-->暂存材料)")
+//    public ContentResultForm matListStageTemporary(@Valid @RequestBody MatListStageTemporaryParamVo matListStageTemporaryParamVo,HttpServletRequest request){
+//        ItemListTemporaryParamVo itemListTemporaryParamVo=matListStageTemporaryParamVo.getItemListTemporaryParamVo();
+//        itemListTemporaryParamVo.setApplyinstId(matListStageTemporaryParamVo.getApplyinstId());
+//        matListStageTemporaryParamVo.setItemListTemporaryParamVo(itemListTemporaryParamVo);
+//        Map<String,Object> map=new HashMap<>();
+//        ContentResultForm secondStepResult = itemListTemporary(matListStageTemporaryParamVo.getItemListTemporaryParamVo(), request);
+//        String applyinstId="";
+//        if(secondStepResult.isSuccess()){
+//            map=(Map<String,Object>)(secondStepResult.getContent());
+//            applyinstId=(String)map.get("applyinstId");
+//        }else {
+//            return new ContentResultForm(false,"",secondStepResult.getMessage());
+//        }
+//        try{
+//            matListStageTemporaryParamVo.setApplyinstId(applyinstId);
+//            restApplyCommonService.submitMatmList(matListStageTemporaryParamVo);
+//        }catch (Exception e){
+//            return new ContentResultForm(false,"",e.getMessage());
+//        }
+//        return new ContentResultForm(true,map,"暂存成功！");
+//    }
+
+
+//    @PostMapping("/matList/series/temporary")
+//    @ApiOperation(value = "单项申报-->暂存材料)")
+//    public ContentResultForm matListSeriesTemporary(@Valid @RequestBody MatListSeiesTemporaryParamVo matListSeiesTemporaryParamVo,HttpServletRequest request){
+//        StateListSeriesTemporaryParamVo vo=matListSeiesTemporaryParamVo.getStateListSeriesTemporaryParamVo();
+//        vo.setApplyinstId(matListSeiesTemporaryParamVo.getApplyinstId());
+//        matListSeiesTemporaryParamVo.setStateListSeriesTemporaryParamVo(vo);
+//        Map<String,Object> map=new HashMap<>();
+//        ContentResultForm secondStepResult = stateListSeriesTemporary(matListSeiesTemporaryParamVo.getStateListSeriesTemporaryParamVo(),request);//暂存情形
+//        String applyinstId="";
+//        if(secondStepResult.isSuccess()){
+//            map=(Map<String,Object>)(secondStepResult.getContent());
+//            applyinstId=(String)map.get("applyinstId");
+//        }else {
+//            return new ContentResultForm(false,"",secondStepResult.getMessage());
+//        }
+//        try{
+//            matListSeiesTemporaryParamVo.setApplyinstId(applyinstId);
+//            restApplyCommonService.submitMatmList(matListSeiesTemporaryParamVo);
+//        }catch (Exception e){
+//            return new ContentResultForm(false,"",e.getMessage());
+//        }
+//        return new ContentResultForm(true,map,"暂存成功！");
+//    }
 
 
 
-    @PostMapping("/stateList/series/temporary")
-    @ApiOperation(value = "单项申报-->暂存情形)")
-    public ContentResultForm stateListSeriesTemporary(@Valid @RequestBody StateListSeriesTemporaryParamVo stateListSeriesTemporaryParamVo,HttpServletRequest request){
-        SmsInfoVo vo=stateListSeriesTemporaryParamVo.getSmsInfoVo();
-        vo.setApplyinstId(stateListSeriesTemporaryParamVo.getApplyinstId());
-        stateListSeriesTemporaryParamVo.setSmsInfoVo(vo);
-        Map<String,Object> map=new HashMap<>();
-        ContentResultForm firstStepResult = temporarySaveOrUpdateSmsInfo(stateListSeriesTemporaryParamVo.getSmsInfoVo(), request);
-        String applyinstId="";
-        String seriesinstId="";
-        if(firstStepResult.isSuccess()){
-            map=(Map<String,Object>)(firstStepResult.getContent());
-            applyinstId=(String)map.get("applyinstId");
-            seriesinstId=(String) map.get("seriesinstId");
-        }else {
-            return new ContentResultForm(false,"",firstStepResult.getMessage());
-        }
-        try{
-            stateListSeriesTemporaryParamVo.setApplyinstId(applyinstId);
-            restApplyCommonService.submitSeriesStateList(stateListSeriesTemporaryParamVo,seriesinstId,map);
-        }catch (Exception e){
-            return new ContentResultForm(false,"",e.getMessage());
-        }
-        return new ContentResultForm(true,map,"暂存成功！");
-    }
+//    @PostMapping("/stateList/series/temporary")
+//    @ApiOperation(value = "单项申报-->暂存情形)")
+//    public ContentResultForm stateListSeriesTemporary(@Valid @RequestBody StateListSeriesTemporaryParamVo stateListSeriesTemporaryParamVo,HttpServletRequest request){
+//        SmsInfoVo vo=stateListSeriesTemporaryParamVo.getSmsInfoVo();
+//        vo.setApplyinstId(stateListSeriesTemporaryParamVo.getApplyinstId());
+//        stateListSeriesTemporaryParamVo.setSmsInfoVo(vo);
+//        Map<String,Object> map=new HashMap<>();
+//        ContentResultForm firstStepResult = temporarySaveOrUpdateSmsInfo(stateListSeriesTemporaryParamVo.getSmsInfoVo(), request);
+//        String applyinstId="";
+//        String seriesinstId="";
+//        if(firstStepResult.isSuccess()){
+//            map=(Map<String,Object>)(firstStepResult.getContent());
+//            applyinstId=(String)map.get("applyinstId");
+//            seriesinstId=(String) map.get("seriesinstId");
+//        }else {
+//            return new ContentResultForm(false,"",firstStepResult.getMessage());
+//        }
+//        try{
+//            stateListSeriesTemporaryParamVo.setApplyinstId(applyinstId);
+//            restApplyCommonService.submitSeriesStateList(stateListSeriesTemporaryParamVo,seriesinstId,map);
+//        }catch (Exception e){
+//            return new ContentResultForm(false,"",e.getMessage());
+//        }
+//        return new ContentResultForm(true,map,"暂存成功！");
+//    }
 
 
     @GetMapping("itemState/findByParentItemStateId/{itemStateId}/{itemVerId}")
