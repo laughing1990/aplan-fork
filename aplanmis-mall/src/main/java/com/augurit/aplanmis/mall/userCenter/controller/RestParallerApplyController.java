@@ -334,7 +334,7 @@ public class RestParallerApplyController {
         }
     }
 
-    @PostMapping("require/mat/list")
+    @PostMapping("/requireOrNot/mat/list")
     @ApiOperation(value = "阶段申报 --> 根据阶段ID、阶段情形ID集合、事项情形ID集合、事项版本ID集合获取可选、必选材料列表")
     public ContentResultForm<RestGuideMatVo> listRequireOrNotByStageId(@RequestBody MatListParamVo matListParamVo){
         try {
