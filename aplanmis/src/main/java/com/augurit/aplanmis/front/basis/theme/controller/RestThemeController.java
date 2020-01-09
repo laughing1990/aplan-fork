@@ -170,7 +170,7 @@ public class RestThemeController {
         try {
             AeaParThemeVer themeVer = aeaParThemeService.getAeaParThemeVerByThemeIdAndVerNum(themeId, null, SecurityContext.getCurrentOrgId());
             if (themeVer == null) {
-                return new ContentResultForm<>(true, null, "themeVer is null");
+                return new ContentResultForm<>(false, null, "themeVer is null");
             }
 
             List<AeaParStage> filtedStages;
