@@ -19,6 +19,8 @@ import com.augurit.aplanmis.common.service.state.AeaItemStateService;
 import com.augurit.aplanmis.common.service.state.AeaParStateService;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
+import com.augurit.aplanmis.mall.guide.service.RestGuideService;
+import com.augurit.aplanmis.mall.guide.vo.RestGuideMatVo;
 import com.augurit.aplanmis.mall.main.service.RestMainService;
 import com.augurit.aplanmis.mall.main.vo.ItemListVo;
 import com.augurit.aplanmis.mall.main.vo.ThemeTypeVo;
@@ -78,6 +80,8 @@ public class RestParallerApplyController {
     private RestAeaHiGuideService restAeaHiGuideService;
     @Autowired
     private AeaParStateMapper aeaParStateMapper;
+    @Autowired
+    private RestGuideService restGuideService;
 
     @Value("${aplanmis.mall.skin:skin_v4.1/}/")
     private String skin;
@@ -330,6 +334,15 @@ public class RestParallerApplyController {
         }
     }
 
-
+    @PostMapping("require/mat/list")
+    @ApiOperation(value = "阶段申报 --> 根据阶段ID、阶段情形ID集合、事项情形ID集合、事项版本ID集合获取可选、必选材料列表")
+    public ContentResultForm<RestGuideMatVo> listRequireOrNotByStageId(@RequestBody MatListParamVo matListParamVo){
+        try {
+            return new ContentResultForm<>(true,restGuideService.getRestGuideMatVo(matListParamVo));
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ContentResultForm(false,"","根据阶段ID、阶段情形ID集合、事项情形ID集合、事项版本ID集合获取可选、必选材料列表");
+        }
+    }
 
 }

@@ -37,11 +37,13 @@ import com.augurit.aplanmis.mall.main.vo.ItemListVo;
 import com.augurit.aplanmis.mall.main.vo.ParallelApproveItemVo;
 import com.augurit.aplanmis.mall.main.vo.ThemeTypeVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestParallerApplyService;
+import com.augurit.aplanmis.mall.userCenter.vo.MatListParamVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -814,5 +816,17 @@ public class RestGuideServiceImpl implements RestGuideService {
                 toClient.close();
             }
         }
+    }
+
+    @Override
+    public RestGuideMatVo getRestGuideMatVo( MatListParamVo matListParamVo) throws Exception {
+        RestGuideMatVo  restGuideMatVo = new RestGuideMatVo();
+        List<AeaItemMat> list = aeaItemMatService.getMatListByStateListAndItemListAndStageId(matListParamVo.getItemStateIds(),matListParamVo.getStageStateIds(),
+                matListParamVo.getCoreItemVerIds(),matListParamVo.getParallelItemVerIds(),matListParamVo.getCoreParentItemVerIds(),matListParamVo.getParaParentllelItemVerIds(),matListParamVo.getStageId(),null);
+        //必选材料
+        restGuideMatVo.setRequireMat(list.stream().filter(item->("1".equals(item.getAttIsRequire()))).collect(Collectors.toList()));
+        //可选材料
+        restGuideMatVo.setNoRequireMat(list.stream().filter(item->("0".equals(item.getAttIsRequire()))).collect(Collectors.toList()));
+        return restGuideMatVo;
     }
 }
