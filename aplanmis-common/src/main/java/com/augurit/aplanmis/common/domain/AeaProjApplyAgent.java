@@ -56,7 +56,7 @@ public class AeaProjApplyAgent implements Serializable{
     @ApiModelProperty(name = "agentStopAgreementFileId", value = "代办终止协议文件ID，存detailId")
     private java.lang.String agentStopAgreementFileId;
 
-    @ApiModelProperty(name = "agentEndAgreementFileId", value = "代办结束协议文件ID，存detailId")
+    @ApiModelProperty(name = "agentEndAgreementFileId", value = "代办结束办结单文件ID，存detailId")
     private java.lang.String agentEndAgreementFileId;
 
     @ApiModelProperty(name = "startTime", value = "开始时间")
