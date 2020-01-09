@@ -388,5 +388,19 @@ public class AeaParStageAdminServiceImpl implements AeaParStageAdminService {
         }
         return new ArrayList<>();
     }
+
+    @Override
+    public void batchSortStages(String[] stageIds, Long[] sortNos){
+
+        if(stageIds!=null&&stageIds.length>0&&sortNos!=null&&sortNos.length>0){
+            AeaParStage stage;
+            for(int i=0;i<stageIds.length;i++){
+                stage = new AeaParStage();
+                stage.setStageId(stageIds[i]);
+                stage.setSortNo(sortNos[i]);
+                updateAeaParStage(stage);
+            }
+        }
+    }
 }
 

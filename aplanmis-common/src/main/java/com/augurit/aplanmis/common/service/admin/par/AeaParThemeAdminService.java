@@ -31,4 +31,6 @@ public interface AeaParThemeAdminService {
     List<ZtreeNode> gtreeTheme(AeaParTheme theme);
 
     List<ElementUiRsTreeNode> gtreeThemeForEUi(AeaParTheme theme);
+
+    void batchSortThemes(String[] themeIds, Long[] sortNos);
 }
