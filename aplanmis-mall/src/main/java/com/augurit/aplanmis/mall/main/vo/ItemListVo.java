@@ -25,4 +25,6 @@ public class ItemListVo {
     String stageName;
     @ApiModelProperty(value = "工作日")
     Double dueNum;
+    @ApiModelProperty("这个字段为1，说明阶段配了情形和材料，为0，说明就直接用事项的")
+    private String handWay;//这个字段为1，说明阶段配了情形和材料，为0，说明就直接用事项的
 }
