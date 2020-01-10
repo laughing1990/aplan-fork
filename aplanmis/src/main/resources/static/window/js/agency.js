@@ -135,7 +135,8 @@ var app = new Vue({
               value: 'value',
               label: 'label',
               children: 'children',
-              checkStrictly: true
+              checkStrictly: true,
+              expandTrigger: 'hover'
             },
         }
       },
@@ -552,8 +553,8 @@ var app = new Vue({
               windowName: this.formData.windowName,
               // regionName: this.formData.regionName,
               regionId: this.formData.regionId,
-              orgName: this.formData.orgName,
-              orgId: this.formData.orgId,
+              // orgName: this.formData.orgName,
+              // orgId: this.formData.orgId,
               linkPhone: this.formData.linkPhone,
               workTime: this.formData.workTime,
               windowAddress: this.formData.windowAddress,
