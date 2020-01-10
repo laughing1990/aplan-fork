@@ -1,5 +1,8 @@
 package com.augurit.aplanmis.common.service.admin.item.impl;
 
+import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
+import com.augurit.agcloud.bsc.sc.dic.code.service.BscDicCodeService;
+import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
@@ -7,8 +10,13 @@ import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmUser;
 import com.augurit.agcloud.opus.common.mapper.OpuOmUserMapper;
+import com.augurit.aplanmis.common.domain.AeaItemBasic;
+import com.augurit.aplanmis.common.domain.AeaItemGuide;
 import com.augurit.aplanmis.common.domain.AeaItemUser;
+import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemGuideMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemUserMapper;
+import com.augurit.aplanmis.common.service.admin.item.AeaItemGuideAdminService;
 import com.augurit.aplanmis.common.service.admin.item.AeaItemUserAdminService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
@@ -18,10 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
 * 用户事项管理-Service服务接口实现类
@@ -37,6 +42,12 @@ public class AeaItemUserAdminServiceImpl implements AeaItemUserAdminService {
 
     @Autowired
     private AeaItemUserMapper aeaItemUserMapper;
+
+    @Autowired
+    private AeaItemBasicMapper aeaItemBasicMapper;
+
+    @Autowired
+    private AeaItemGuideAdminService guideAdminService;
 
     @Override
     public Long getMaxSortNo(String rootOrgId){
@@ -249,6 +260,26 @@ public class AeaItemUserAdminServiceImpl implements AeaItemUserAdminService {
 
         if(StringUtils.isNotBlank(userId)){
             aeaItemUserMapper.batchDelItemByUserId(userId, rootOrgId);
+        }
+    }
+
+    @Override
+    public void syncLocalAeaItemGuide(String userId, String rootOrgId){
+
+        AeaItemUser sUserItem = new AeaItemUser();
+        sUserItem.setUserId(userId);
+        sUserItem.setRootOrgId(rootOrgId);
+        List<AeaItemUser> userItemList = aeaItemUserMapper.listAeaItemUser(sUserItem);
+        if(userItemList!=null&&userItemList.size()>0) {
+            Set<String> itemIdSet = new HashSet<String>();
+            for (AeaItemUser item : userItemList) {
+                itemIdSet.add(item.getItemId());
+            }
+            String[] itemIds = itemIdSet.toArray(new String[]{});
+            List<AeaItemBasic> itemBasicList = aeaItemBasicMapper.listAeaItemBasicByItemIds(itemIds, rootOrgId);
+            if (itemBasicList != null && itemBasicList.size() > 0) {
+                guideAdminService.copyItemBasicToGuide(itemBasicList, rootOrgId);
+            }
         }
     }
 }

@@ -27,6 +27,7 @@ import com.augurit.aplanmis.common.mapper.AeaServiceWindowStageMapper;
 import com.augurit.aplanmis.common.mapper.AeaServiceWindowUserMapper;
 import com.augurit.aplanmis.common.service.admin.window.AeaServiceWindowAdminService;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
+import com.augurit.aplanmis.common.vo.AeaRegionOptionVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
@@ -38,10 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author ZhangXinhui
@@ -233,6 +231,34 @@ public class AeaServiceWindowAdminServiceImpl implements AeaServiceWindowAdminSe
             node.setState(ElementUiRsTreeNode.STATE_OPEN);
             node.setType("user");
             node.setData(user);
+            childNodeList.add(node);
+        }
+        rootNode.setChildren(childNodeList);
+        rootNodeList.add(rootNode);
+        return rootNodeList;
+    }
+
+    @Override
+    public List<ElementUiRsTreeNode> listAllUserByOrgIdSimple(String orgId) {
+        List<ElementUiRsTreeNode> rootNodeList = new ArrayList<>();
+        ElementUiRsTreeNode rootNode = new ElementUiRsTreeNode();
+        OpuOmOrg opuOmOrg = opuOmOrgMapper.getOrg(orgId);
+        rootNode.setId("root");
+        rootNode.setLabel(StringUtils.isNotBlank(opuOmOrg.getOrgName()) ? opuOmOrg.getOrgName() : "组织用户树");
+        rootNode.setState(ElementUiRsTreeNode.STATE_OPEN);
+        rootNode.setType("root");
+        rootNode.setData(opuOmOrg);
+        List<OpuOmUser> list = opuOmUserMapper.listAllUserRelOrgByOrgId(orgId);
+        List<ElementUiRsTreeNode> childNodeList = new ArrayList<>();
+        for (OpuOmUser user:list){
+            ElementUiRsTreeNode node = new ElementUiRsTreeNode();
+            node.setId(user.getUserId());
+            node.setLabel(user.getLoginName());
+            if (StringUtils.isNotBlank(user.getOrgName())) {
+                node.setLabel(user.getLoginName() + "【" + user.getOrgName() + "】");
+            }
+            node.setState(ElementUiRsTreeNode.STATE_OPEN);
+            node.setType("user");
             childNodeList.add(node);
         }
         rootNode.setChildren(childNodeList);
@@ -455,5 +481,64 @@ public class AeaServiceWindowAdminServiceImpl implements AeaServiceWindowAdminSe
         if (userIds != null && userIds.length > 0) {
             aeaServiceWindowUserMapper.batchDeleteWindowUserByWindowIdAndUserId(windowId,userIds);
         }
+    }
+
+    @Override
+    public List<AeaRegionOptionVo> getRegionOptions() {
+        List<BscDicRegion> list = bscDicRegionMapper.listBscDicRegion( null);
+        List<AeaRegionOptionVo> voList = new ArrayList<>();
+        if (list != null && list.size() > 0) {
+            //p表示省份，m表示直辖市，c表示城市，a表示区县
+            String[] types = {"p","m","c","a"};
+            List<String> typeList = Arrays.asList(types);
+            AeaRegionOptionVo vo;
+            for (int i=0;i<list.size();i++) {
+                BscDicRegion bscDicRegion = list.get(i);
+                if(!typeList.contains(bscDicRegion.getRegionType())){
+                    list.remove(bscDicRegion);
+                    i--;
+                }
+            }
+            //直辖市：北京、天津、上海、重庆     特别行政区：香港、澳门
+            String specialCity = "北京、天津、上海、重庆";
+            String specialRegion = "香港、澳门";
+            for (int i=0;i<list.size();i++) {
+                BscDicRegion bscDicRegion = list.get(i);
+                if(bscDicRegion.getRegionalLevel() == 3){//省级
+                    String regionName = bscDicRegion.getRegionName();
+                    vo = new AeaRegionOptionVo();
+                    vo.setValue(bscDicRegion.getRegionId());
+                    if(specialCity.contains(regionName)){
+                        regionName += "市";
+                    }else if(specialRegion.contains(regionName)){
+                        regionName += "特别行政区";
+                    }else{
+                        regionName += "省";
+                    }
+                    vo.setLabel(regionName);
+                    List<AeaRegionOptionVo> children = getChildrenVo(list,bscDicRegion.getRegionId());
+                    vo.setChildren(children);
+                    voList.add(vo);
+                }
+            }
+        }
+        return voList;
+    }
+
+    private List<AeaRegionOptionVo> getChildrenVo(List<BscDicRegion> list,String regionId){
+        List<AeaRegionOptionVo> voList = new ArrayList<>();
+        for (int i=0;i<list.size();i++) {
+            BscDicRegion childRegion = list.get(i);
+            if(childRegion.getParentRegionId().equals(regionId)){
+                AeaRegionOptionVo optionVo = new AeaRegionOptionVo();
+                optionVo.setValue(childRegion.getRegionId());
+                optionVo.setLabel(childRegion.getRegionName());
+                optionVo.setChildren(getChildrenVo(list,childRegion.getRegionId()));
+                voList.add(optionVo);
+                list.remove(childRegion);
+                i--;
+            }
+        }
+        return voList;
     }
 }

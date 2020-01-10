@@ -7,6 +7,7 @@ import com.augurit.aplanmis.common.domain.AeaServiceWindow;
 import com.augurit.aplanmis.common.domain.AeaServiceWindowItem;
 import com.augurit.aplanmis.common.domain.AeaServiceWindowStage;
 import com.augurit.aplanmis.common.domain.AeaServiceWindowUser;
+import com.augurit.aplanmis.common.vo.AeaRegionOptionVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 
@@ -27,6 +28,14 @@ public interface AeaServiceWindowAdminService {
      * @return
      */
     List<ElementUiRsTreeNode> listAllUserByOrgId(String orgId);
+
+    /**
+     * 根据机构获取用户
+     *
+     * @param orgId
+     * @return
+     */
+    List<ElementUiRsTreeNode> listAllUserByOrgIdSimple(String orgId);
 
     /**
      * 分页服务查询窗口
@@ -207,4 +216,9 @@ public interface AeaServiceWindowAdminService {
      * @param userIds  用户id集
      */
     void deleteAgencyUser(String windowId, String[] userIds);
+
+    /**
+     * 获取行政区划数据
+     */
+    List<AeaRegionOptionVo> getRegionOptions();
 }

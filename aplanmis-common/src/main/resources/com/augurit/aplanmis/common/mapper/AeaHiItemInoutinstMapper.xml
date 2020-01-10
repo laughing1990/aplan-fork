@@ -290,15 +290,18 @@
         aii.item_ver_id= hii.ITEM_VER_ID and aii.is_input='0' and aii.file_type='cert' and aii.IS_DELETED='0'
         )ggg
         where ahii.ITEMINST_ID = #{iteminstId} and ggg.inout_id = ahii.item_inout_id
-
     </select>
-    <select id="getAeaHiItemInoutinstOutByIteminstIdWithoutInOut" resultType="AeaHiItemInoutinst">
-        select <include refid="aliasColumns"><property name="alias" value="ahii"></property></include> from aea_hi_item_inoutinst ahii ,
-        aea_item_inout aii
+
+    <select id="listOutMaterialsByIteminstId" resultType="AeaHiItemInoutinst">
+        select
+        <include refid="aliasColumns">
+            <property name="alias" value="ahii"></property>
+        </include>
+        from aea_hi_item_inoutinst ahii
+        join aea_item_inout aii on ahii.ITEM_INOUT_ID=aii.INOUT_ID
         where ahii.ITEMINST_ID = #{iteminstId}
-        and ahii.ITEM_INOUT_ID=aii.INOUT_ID
-        and aii.IS_INPUT='0'
         and ahii.ROOT_ORG_ID = #{rootOrgId}
+        and aii.IS_INPUT='0'
         and aii.ROOT_ORG_ID=#{rootOrgId}
         and aii.IS_DELETED='0'
     </select>

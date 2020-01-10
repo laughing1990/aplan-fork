@@ -29,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -179,7 +180,7 @@ public class AeaProjApplyAgentController {
     }
 
     @GetMapping("/getAgencyAgreement")
-    @ApiOperation(value = "项目代办 --> 代办委托协议", notes = "项目代办 --> 代办委托协议", httpMethod = "GET")
+    @ApiOperation(value = "项目代办 --> 获取代办委托协议", notes = "项目代办 --> 获取代办委托协议", httpMethod = "GET")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applyAgentId",value = "代办申请ID",required = true,dataType = "String")
     })
@@ -199,15 +200,71 @@ public class AeaProjApplyAgentController {
                 }else{
                     //协议没有存储到mongodb，动态生成一份。代办中心（乙方）签章之后要将委托协议存储到mongodb。
                     String str = ReceivePDFTemplate.createAgencyAgreement(agreementDetail);
-                    //读取指定路径下的pdf文件
-                    File file = new File(str);
-                    if (file.exists()) {
-                        FileInputStream input = new FileInputStream(file);
-                        FileUtilsServiceImpl.writeContent(resp,input,file.getName());
-                        if (file.isFile()) {
-                            file.delete();
-                        }
-                    }
+                    writeFile(str,resp);
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    @GetMapping("/getAgencyStopAgreementFile")
+    @ApiOperation(value = "项目代办 --> 获取代办委托终止单", notes = "项目代办 --> 获取代办委托终止单", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "aeaProjApplyAgent",value = "代办申请参数接收对象",required = true,dataType = "aeaProjApplyAgent")
+    })
+    public void getAgencyStopAgreementFile(AeaProjApplyAgent aeaProjApplyAgent, HttpServletResponse resp){
+        logger.debug("获取代办委托终止单");
+        try {
+            Assert.notNull(aeaProjApplyAgent,"参数不能为空");
+            String applyAgentId = aeaProjApplyAgent.getApplyAgentId();
+            if(StringUtils.isNotBlank(applyAgentId)){
+                AeaProjApplyAgent agreementDetail = aeaProjApplyAgentService.getAgencyAgreementDetail(applyAgentId);
+                if(agreementDetail == null){
+                    throw new Exception("代办申请不存在。");
+                }
+                String stopAgreementFileId = agreementDetail.getAgentStopAgreementFileId();
+                if(StringUtils.isNotBlank(stopAgreementFileId)){
+                    fileUtilsService.readFile(stopAgreementFileId,null,resp);
+                }else{
+                    agreementDetail.setAgreementStopReason(aeaProjApplyAgent.getAgreementStopReason());
+                    agreementDetail.setAgreementStopTime(aeaProjApplyAgent.getAgreementStopTime());
+                    //协议没有存储到mongodb，动态生成一份。代办中心（乙方）签章之后要将代办委托终止单存储到mongodb。
+                    String str = ReceivePDFTemplate.createAgencyStopAgreement(agreementDetail);
+                    writeFile(str,resp);
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    @GetMapping("/getAgencyEndAgreementFile")
+    @ApiOperation(value = "项目代办 --> 获取代办办结单", notes = "项目代办 --> 获取代办办结单", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "aeaProjApplyAgent",value = "代办申请参数接收对象",required = true,dataType = "aeaProjApplyAgent")
+    })
+    public void getAgencyEndAgreementFile(AeaProjApplyAgent aeaProjApplyAgent, HttpServletResponse resp){
+        logger.debug("获取代办办结单");
+        try {
+            Assert.notNull(aeaProjApplyAgent,"参数不能为空");
+            String applyAgentId = aeaProjApplyAgent.getApplyAgentId();
+            if(StringUtils.isNotBlank(applyAgentId)){
+                AeaProjApplyAgent agreementDetail = aeaProjApplyAgentService.getAgencyAgreementDetail(applyAgentId);
+                if(agreementDetail == null){
+                    throw new Exception("代办申请不存在。");
+                }
+                String endAgreementFileId = agreementDetail.getAgentEndAgreementFileId();
+                if(StringUtils.isNotBlank(endAgreementFileId)){
+                    fileUtilsService.readFile(endAgreementFileId,null,resp);
+                }else{
+                    //办结时间如果修改就要前端传值过来
+                    agreementDetail.setAgreementEndTime(aeaProjApplyAgent.getAgreementEndTime());
+                    //协议没有存储到mongodb，动态生成一份。代办中心（乙方）签章之后要将代办委托终止单存储到mongodb。
+                    String str = ReceivePDFTemplate.createAgencyStopAgreement(agreementDetail);
+                    writeFile(str,resp);
                 }
             }
         }catch (Exception e){
@@ -271,6 +328,7 @@ public class AeaProjApplyAgentController {
                 }
                 BscAttForm bscAttForm = fileUtilsService.upload("AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID", applyAgentId, null, file);
                 agreementDetail.setAgentStopAgreementFileId(bscAttForm.getDetailId());
+                agreementDetail.setAgentApplyState(AgencyState.WIN_STOP.getValue());
                 aeaProjApplyAgentService.updateAeaProjApplyAgent(agreementDetail);
                 resultForm.setSuccess(true);
                 resultForm.setMessage("上传成功。");
@@ -303,6 +361,7 @@ public class AeaProjApplyAgentController {
                 }
                 BscAttForm bscAttForm = fileUtilsService.upload("AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID", applyAgentId, null, file);
                 agreementDetail.setAgentEndAgreementFileId(bscAttForm.getDetailId());
+                agreementDetail.setAgentApplyState(AgencyState.WIN_END.getValue());
                 aeaProjApplyAgentService.updateAeaProjApplyAgent(agreementDetail);
                 resultForm.setSuccess(true);
                 resultForm.setMessage("上传成功。");
@@ -327,5 +386,15 @@ public class AeaProjApplyAgentController {
         }
     }
 
+    private void writeFile(String filePath,HttpServletResponse resp)throws Exception{
+        File file = new File(filePath);
+        if (file.exists()) {
+            FileInputStream input = new FileInputStream(file);
+            FileUtilsServiceImpl.writeContent(resp,input,file.getName());
+            if (file.isFile()) {
+                file.delete();
+            }
+        }
+    }
 
 }

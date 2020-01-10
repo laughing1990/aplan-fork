@@ -6,36 +6,50 @@
   <title>窗口取件</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}"/>
-  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
-  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css" th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
-  <link rel="stylesheet" href="../../static/searchTable/css/search-table.css" th:href="@{/searchTable/css/search-table.css}">
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+        th:href="@{/agcloud/framework/js-lib/element-2/element.css}"/>
+  <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css"
+        th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css"
+        th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
+  <link rel="stylesheet" href="../../static/searchTable/css/search-table.css"
+        th:href="@{/searchTable/css/search-table.css}">
   <script>
     var ctx = '[[@{/}]]';
     // var ctx = 'http://192.168.32.46:8083/aplanmis-front/';
   </script>
+  <script src="../../static/approve/js/ip.js" th:src="@{/approve/js/ip.js}"></script>
+  <style>
+    .red-color {
+      color: #FF4B47;
+    }
+  </style>
 </head>
-<body  class="gray-body">
-<div class="search-table" id="searchTableWin" v-loading.fullscreen.lock="loading" v-cloak :style="{height: (curHeight-32)+'px'}">
+<body class="gray-body">
+<div class="search-table" id="searchTableWin" v-loading.fullscreen.lock="loading" v-cloak
+     :style="{height: (curHeight-32)+'px'}">
   <div class="search-box">
-    <el-form  class="search-from clearfix" label-width="100px">
+    <el-form class="search-from clearfix" label-width="100px">
       <el-col :span="24" class="search-item-fif">
         <el-form-item label="搜索关键字" class="search-input">
           <el-input v-model="searchFrom.keyword" placeholder="请输入项目/工程编码、名称等关键词">
-            <el-button slot="append" icon="el-icon-search" @click="tableDataSearch" >查询</el-button>
+            <el-button slot="append" icon="el-icon-search" @click="tableDataSearch">查询</el-button>
           </el-input>
         </el-form-item>
-        <span class="more-search-item" @click="showMoreSearchItem=!showMoreSearchItem">高级查询 <i class="icon ag" :class="showMoreSearchItem?'ag-up-arrow':'ag-down-arrow'"></i></span>
+        <span class="more-search-item" @click="showMoreSearchItem=!showMoreSearchItem">高级查询 <i class="icon ag"
+                                                                                               :class="showMoreSearchItem?'ag-up-arrow':'ag-down-arrow'"></i></span>
       </el-col>
       <template v-if="showMoreSearchItem">
         <el-col :span="8">
           <el-form-item label="申报来源">
             <el-select v-model="searchFrom.applySource" placeholder="请选择" clearable @change="tableDataSearch">
               <el-option
-                      v-for="item in applySourceList"
-                      :key="item.itemId"
-                      :label="item.itemName"
-                      :value="item.itemCode">
+                  v-for="item in applySourceList"
+                  :key="item.itemId"
+                  :label="item.itemName"
+                  :value="item.itemCode">
               </el-option>
             </el-select>
           </el-form-item>
@@ -51,12 +65,13 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="所属主题">
-            <el-select v-model="searchFrom.theme" placeholder="请选择" clearable :disabled="searchFrom.applyType=='1'" @change="tableDataSearch">
+            <el-select v-model="searchFrom.theme" placeholder="请选择" clearable :disabled="searchFrom.applyType=='1'"
+                       @change="tableDataSearch">
               <el-option
-                      v-for="item in themeList"
-                      :key="item.themeId"
-                      :label="item.themeName"
-                      :value="item.themeId">
+                  v-for="item in themeList"
+                  :key="item.themeId"
+                  :label="item.themeName"
+                  :value="item.themeId">
               </el-option>
             </el-select>
           </el-form-item>
@@ -138,95 +153,130 @@
   <el-table class="search-content"
             :data="tableData"
             border stripe
-            :default-sort = "{prop: 'concludedTime', order: 'descending'}"
+            :default-sort="{prop: 'concludedTime', order: 'descending'}"
             style="width: 100%">
     <el-table-column
-            prop="applySource"
-            label="来源"
-            width="60"
-            show-overflow-tooltip
-            :formatter = "formatTableCell">
+        prop="applySource"
+        label="来源"
+        width="80"
+        show-overflow-tooltip>
+      <template slot-scope="scope">
+        {{scope.row.applySource=='win'?'网上申报':'窗口申报'}}
+      </template>
     </el-table-column>
     <el-table-column
-            prop="applyType"
-            width="60"
-            label="类型"
-            show-overflow-tooltip
-            :formatter = "formatTableCell">
+        prop="applyType"
+        width="60"
+        label="类型"
+        show-overflow-tooltip
+        :formatter="formatTableCell">
     </el-table-column>
     <el-table-column
-            prop="applyinstCode"
-            min-width="120"
-            label="申报流水号"
-            show-overflow-tooltip
-            :formatter = "formatTableCell">
+        prop="applyinstCode"
+        min-width="120"
+        label="申报流水号"
+        show-overflow-tooltip
+        :formatter="formatTableCell">
     </el-table-column>
     <el-table-column
-            prop="localCode"
-            min-width="220"
-            label="项目/工程代码"
-            show-overflow-tooltip
-            :formatter = "formatTableCell">
+        prop="localCode"
+        min-width="220"
+        label="项目/工程代码"
+        show-overflow-tooltip
+        :formatter="formatTableCell">
     </el-table-column>
     <el-table-column
-            min-width="250px"
-            prop="projName"
-            label="项目/工程名称"
-            show-overflow-tooltip
-            :formatter = "formatTableCell">
+        min-width="250px"
+        prop="projName"
+        label="项目/工程名称"
+        show-overflow-tooltip
+        :formatter="formatTableCell">
     </el-table-column>
     <!--<el-table-column-->
-            <!--prop="linkmanName"-->
-            <!--min-width="80"-->
-            <!--label="申请人"-->
-            <!--show-overflow-tooltip-->
-            <!--:formatter = "formatTableCell">-->
+    <!--prop="linkmanName"-->
+    <!--min-width="80"-->
+    <!--label="申请人"-->
+    <!--show-overflow-tooltip-->
+    <!--:formatter = "formatTableCell">-->
     <!--</el-table-column>-->
     <el-table-column
-            min-width="220px"
-            prop="stageItemName"
-            label="阶段/事项/辅线名称">
+        min-width="220px"
+        prop="stageItemName"
+        label="阶段/事项/辅线名称">
       <template scope="scope">
-        <el-tooltip  effect="light" placement="top" >
+        <el-tooltip effect="light" placement="top">
           <div slot="content" v-html="showThemeStageItemInfo(scope.row)"></div>
           <span v-html="stageFormatter(scope.row)"></span>
         </el-tooltip>
       </template>
     </el-table-column>
     <el-table-column
-            min-width="100"
-            prop="receiveType"
-            label="领取方式"
-            show-overflow-tooltip
-            :formatter = "formatTableCell">
-    </el-table-column>
-    <el-table-column
-            prop="isSmsSend"
-            min-width="100"
-            label="领取状态"
-            show-overflow-tooltip
-            :formatter = "formatTableCell">
-    </el-table-column>
-    <el-table-column
-            width="200"
-            label="操作">
+        min-width="80px"
+        prop="complementionStatus"
+        label="补齐状态">
       <template slot-scope="scope">
-        <span class="op-btn btn_border_right">到达通知</span>
-        <span class="op-btn"  @click="pickupCheck(scope.row)">取件登记</span>
+        <span :class="{'red-color':scope.row.complementionStatus!=1}">
+          {{scope.row.complementionStatus==0?"待补齐":scope.row.complementionStatus==1?"未容缺":"-"}}
+        </span>
+      </template>
+    </el-table-column>
+    <el-table-column
+        min-width="80px"
+        prop="chargeStatus"
+        label="是否缴费">
+      <template slot-scope="scope">
+        <span :class="{'red-color':scope.row.complementionStatus!=1}">
+          {{scope.row.chargeStatus==0?"未缴费":scope.row.chargeStatus==1?"已缴清":"-"}}
+        </span>
+      </template>
+    </el-table-column>
+    <el-table-column
+        min-width="80px"
+        prop="receiveType"
+        label="领取方式">
+      <template slot-scope="scope">
+        <span>
+          {{scope.row.receiveType==0?"多次领取":scope.row.receiveType==1?"一次领取":"-"}}
+        </span>
+      </template>
+    </el-table-column>
+    <el-table-column
+        prop="pickUpStatus"
+        min-width="80px"
+        label="领取状态"
+        show-overflow-tooltip>
+      <template slot-scope="scope">
+        <span>
+          {{scope.row.pickUpStatus==0?"未领取":scope.row.pickUpStatus==1?"已领取":scope.row.pickUpStatus==2?'部分领取':'-'}}
+        </span>
+      </template>
+    </el-table-column>
+    <el-table-column
+        width="80"
+        label="操作">
+      <template slot-scope="scope">
+        <!--        <span class="op-btn btn_border_right">到达通知</span>-->
+        <span class="op-btn" @click="pickupCheck(scope.row)">取件登记</span>
       </template>
     </el-table-column>
   </el-table>
   <el-pagination class="mt20 mb20 mr20 el-pagination-top" background align="right" @size-change="handleSizeChange"
-                 @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 50]" :page-size="searchFrom.pagination.perpage"
+                 @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 50]"
+                 :page-size="searchFrom.pagination.perpage"
                  :current-page="searchFrom.pagination.page" layout="total,sizes, prev, pager, next, jumper"
                  :total="dataTotal" v-show="dataTotal>10">
   </el-pagination>
 </div>
-<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
-<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
-<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
-<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+        th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+        th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+        th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
+        th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
 <script src="../../static/view/js/mixins.js" th:src="@{/view/js/mixins.js}" type="text/javascript"></script>
-<script src="../../static/view/js/queryPickupCheckIndexWin.js" th:src="@{/view/js/queryPickupCheckIndexWin.js}" type="text/javascript"></script>
+<script src="../../static/view/js/queryPickupCheckIndexWin.js" th:src="@{/view/js/queryPickupCheckIndexWin.js}"
+        type="text/javascript"></script>
 </body>
 </html>

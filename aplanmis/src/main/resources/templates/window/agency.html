@@ -7,9 +7,10 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>代办中心</title>
 
-  <link rel="stylesheet"
+  <!-- <link rel="stylesheet"
     href="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
-    th:href="@{/agcloud/framework/js-lib/element-2/element.css}" />
+    th:href="@{/agcloud/framework/js-lib/element-2/element.css}" /> -->
+    <link rel="stylesheet" href="../../static/global/element-2.9.2/index.css" th:href="@{/global/element-2.9.2/index.css}">
   <link rel="stylesheet"
     href="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css"
     th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
@@ -22,7 +23,7 @@
   <link rel="stylesheet" href="../../static/window/css/index.css" th:href="@{/window/css/index.css}">
   <script>
     var ctx = '[[@{/}]]';
-      // var ctx = 'http://192.168.30.37:8083/aplanmis-front/';
+      // var ctx = 'http://192.168.30.22:8083/aplanmis-front/';
   </script>
 </head>
 
@@ -55,10 +56,11 @@
               <div class="title">代办中心</div>
               <div class="list" :style="{height: leftMenuH + 'px'}">
                 <ul>
-                  <li v-for="(item, index) in tableData2" :class="[index === chooseItem ? 'active' : '']"
+                  <li class="pr" v-for="(item, index) in tableData2" :class="[index === chooseItem ? 'active' : '']"
                     @click="chooseWinlist(item, index)" @contextmenu.prevent="operationItem = index">
                     <i class="ag ag-service-window"></i>
-                    {{item.windowName}}
+                    <span class="inle-block ellipsis" style="width: 70%;">{{item.windowName}}</span>
+                    <span class="inle-block type-tag">{{item.windowLevel}}</span>
                     <div class="window-operationLayer" v-show="index === operationItem" v-clickoutside="closeOpLayer">
                       <div @click.stop="operationItem=-1,editWindow(item.windowId)">编辑</div>
                       <div @click.stop="operationItem=-1,delateWindow(item.windowId)">删除</div>
@@ -169,11 +171,15 @@
             <el-form-item label="代办中心名称" required prop="windowName">
               <el-input v-model="formData.windowName" style="width:350px" placeholder="请输入代办中心名称"></el-input>
             </el-form-item>
-            <el-form-item label="行政区划" required prop="regionName">
+            <!-- <el-form-item label="行政区划" required prop="regionName">
               <el-input v-model="formData.regionName" readonly style="width:350px" placeholder="请选择行政区划"
                 @focus="isForm=true;nounDialog=true">
                 <el-button slot="append" icon="el-icon-search" @click="isForm=true;nounDialog=true"></el-button>
               </el-input>
+            </el-form-item> -->
+            <el-form-item label="行政区划" required prop="regionId">
+              <el-cascader v-model="formData.regionId" :props="SetDistrictDept" :options="regionData"
+                :show-all-levels="false" style="width: 350px;"></el-cascader>
             </el-form-item>
             <el-form-item label="排序号" prop="sortNo">
               <el-input v-model="formData.sortNo" style="width:350px" placeholder="请输入排序号"></el-input>
@@ -214,6 +220,12 @@
                 inactive-color="#ccc">
               </el-switch>
               <el-input v-model="formData.isActive" type="hidden"></el-input>
+            </el-form-item>
+            <el-form-item label="代办中心级别" style="width: 100%;" prop="windowLevel">
+              <el-radio-group v-model="formData.windowLevel">
+                <el-radio label="市级">市级</el-radio>
+                <el-radio label="区级">区级</el-radio>
+              </el-radio-group>
             </el-form-item>
             <el-form-item label="备注说明" prop="windowMemo">
               <el-input type='textarea' v-model="formData.windowMemo" style="width:350px" placeholder="请输入备注说明">
@@ -265,9 +277,10 @@
     th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
   <script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
     th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
-  <script
+  <!-- <script
     src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
-    th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+    th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script> -->
+    <script src="../../static/global/element-2.9.2/index.js" th:src="@{/global/element-2.9.2/index.js}" type="text/javascript"></script>
   <script
     src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
     th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>

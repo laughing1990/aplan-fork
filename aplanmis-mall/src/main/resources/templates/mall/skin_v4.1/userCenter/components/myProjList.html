@@ -36,8 +36,8 @@
                   <a href="javascript:;"v-else @click="toSignAgencyAgreementDetail(item)">查看代办协议</a>
                 </template>
                 <template v-else>
-                  <a href="javascript:;" >工程管理</a>
-                  <a href="javascript:;" >关系图</a>
+                  <a :href="ctx + 'rest/main/toIndexPage?projInfoId='+item.projInfoId+'#/applyProjTree'" >工程管理</a>
+                  <!--<a href="javascript:;" >关系图</a>-->
                 </template>
               </div>
               <div class="btn btn-right" @click="todiaGramPage(item)">全景图</div>

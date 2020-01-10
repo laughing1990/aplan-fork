@@ -1932,4 +1932,27 @@
         </sql>
     </changeSet>
 
+    <changeSet id="20200109144048" author="xiong" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_sms_send_item`
+            MODIFY COLUMN `INOUTINST_ID` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT
+            '输出材料实例id，可能多个' AFTER `ITEMINST_ID`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="202001101503001" author="qinjp" failOnError="false">
+    <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+        CREATE TABLE `aea_proj_window` (
+        `PROJ_WINDOW_ID` varchar(50) NOT NULL COMMENT '主键',
+        `PROJ_INFO_ID` varchar(100) NOT NULL COMMENT '项目ID',
+        `WINDOW_ID` varchar(100) NOT NULL COMMENT '窗口ID',
+        `CREATER` varchar(50) NOT NULL COMMENT '创建人',
+        `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+        `ROOT_ORG_ID` varchar(50) DEFAULT NULL COMMENT '根组织ID',
+        PRIMARY KEY (`PROJ_WINDOW_ID`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='项目与代办中心（本质也是窗口）代办关联表';
+    </sql>
+    </changeSet>
+
+
 </databaseChangeLog>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>企业信用列表</title>
+    <style>
+
+    </style>
+</head>
+<body>
+    <div id="creditUnitList">
+        <p class="p-header">企业信用</p>
+        <div v-for="item in creditUnitListData" style="padding-bottom: 50px;">
+            <p class="p-header-phase1">{{item.projName}}</p>
+            <div class="my-declareing-table">
+                <el-table :data="item.unitList" style="width:100%">
+                    <el-table-column fixed prop="unitName" label="企业名称">
+                    </el-table-column>
+                    <el-table-column fixed="right" label="操作" align="center" width="150">
+                        <template slot-scope="scope">
+                            <span class="option-btn">
+                                <a href="javascript:;" @click="toDetail(scope.row)">查看信用记录</a>
+                            </span>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    (function($,w,doc){
+        var vm = new Vue({
+            el:"#creditUnitList",
+            data:{
+                creditUnitListData:{},
+            },
+            created:function(){
+                this.getCreditUnitList();
+            },
+            methods:{
+                //查询企业信用列表
+                getCreditUnitList:function(){
+                    var vm = this;
+                    request('', {
+                        url: ctx + 'rest/user/credit/redblack/getCreditUnitList',
+                        type: 'get',
+                    }, function (res) {
+                        if (res.success) {
+                            vm.creditUnitListData = res.content;
+                        } else {
+                            vm.$message.error(res.message);
+                        }
+
+                    }, function () {
+                        vm.$message.error('根据事项版本号获取根情形列表接口失败，请稍后重试！');
+                    });
+                }
+            }
+        })
+    }($,window,document))
+</script>
+</html>

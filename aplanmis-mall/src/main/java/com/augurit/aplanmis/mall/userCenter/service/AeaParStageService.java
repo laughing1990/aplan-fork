@@ -281,7 +281,7 @@ public class AeaParStageService {
             //
             AeaHiApplyinst aeaHiApplyinst = null;
             String applyinstId;
-            String appinstId;
+            String appinstId = UUID.randomUUID().toString();//预先生成流程模板实例ID
             List<AeaHiIteminst> aeaHiIteminsts=new ArrayList<>();
             if (StringUtils.isNotBlank(applyInstId)){//applyInstId不为空的情况:在调用一张表单(或暂存)时已经提前将申请实例化
                 aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyInstId);
@@ -295,7 +295,7 @@ public class AeaParStageService {
                 }
                 AeaHiParStageinst aeaHiParStageinst = aeaHiParStageinstService.getAeaHiParStageinstByApplyinstId(applyinstId);
                 if(aeaHiParStageinst==null) {//说明之前只是实例化了申报，阶段没有实例化，也就是没有实例化事项和情形了
-                    appinstId=UUID.randomUUID().toString();
+                    //appinstId=UUID.randomUUID().toString();
                     aeaHiParStageinst = aeaHiParStageinstService.createAeaHiParStageinst(applyinstId, stageId, themeVerId,appinstId , null);
                     //3、实例化事项----此处已经做了事项实例表中的分局承办字段，
                     aeaHiIteminsts = aeaHiIteminstService.batchInsertAeaHiIteminstAndTriggerAeaLogItemStateHist(themeVerId,aeaHiParStageinst.getStageinstId(),itemVerIds,branchOrgMap,null,appinstId);
@@ -306,7 +306,12 @@ public class AeaParStageService {
                     // 简单合并申报的情况下，可能存在事项自己的情形列表
                     saveItemStateBySimpleMerge(stageApplyDataVo, itemVerIds, applyinstId,aeaHiParStageinst.getStageinstId());
                 }else{
-                    appinstId=aeaHiParStageinst.getAppinstId();
+                    aeaHiParStageinst.setAppinstId(appinstId);
+                    aeaHiParStageinst.setModifier(SecurityContext.getCurrentUserName());
+                    aeaHiParStageinst.setModifyTime(new Date());
+                    aeaHiParStageinstService.updateAeaHiParStageinst(aeaHiParStageinst);
+                    //appinstId=aeaHiParStageinst.getAppinstId();
+
                     //如果已经实例化了事项，则删除事项重新实例化
                     aeaHiIteminsts=restApplyCommonService.deleteReInsertIteminstUnderStageinst(themeVerId,aeaHiParStageinst.getStageinstId(),itemVerIds,appinstId,branchOrgMap);
                     //如果已经实例化了情形，则删除重新实例化
@@ -324,7 +329,7 @@ public class AeaParStageService {
             }else {
                 aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "0", branchOrgMap,ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),"0",null);
                 applyinstId = aeaHiApplyinst.getApplyinstId();//获取申报实例ID
-                appinstId = UUID.randomUUID().toString();//预先生成流程模板实例ID
+
                 //2、实例化并联实例
                 AeaHiParStageinst aeaHiParStageinst = aeaHiParStageinstService.createAeaHiParStageinst(applyinstId, stageId, themeVerId, appinstId, null);
                 //3、实例化事项----此处已经做了事项实例表中的分局承办字段，
@@ -429,9 +434,9 @@ public class AeaParStageService {
             //更新办件结果领取方式
             //AeaHiSmsInfo aeaSmsInfo=aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(applyinstId);
             //if(aeaSmsInfo==null){
-            smsInfo = aeaHiSmsInfoService.createAeaHiSmsInfo(smsInfoVo.toSmsInfo());
-            //smsInfoId=smsInfo.getId();
-            //}
+            AeaHiSmsInfo sms = smsInfoVo.toSmsInfo();
+            sms.setApplyinstId(applyinstId);
+            smsInfo = aeaHiSmsInfoService.createAeaHiSmsInfo(sms);
 
             appinstIds.add(bpmProcessInstance.getActStoAppinst().getAppinstId());
             procinstIds.add(bpmProcessInstance.getProcessInstance().getId());

@@ -67,6 +67,11 @@ public class RestUserCenterController {
     public ModelAndView toParallelDeclarePage () throws Exception {
         return new ModelAndView("mall/"+skin+"apply/index");
     }
+    @GetMapping("toApplyProjTreePage")
+    @ApiOperation(value = "跳转工程管理页面")
+    public ModelAndView toApplyProjTreePage () throws Exception {
+        return new ModelAndView("mall/"+skin+"apply/applyProjTree");
+    }
     @GetMapping("/toMyCertificateLibraryPage")
     @ApiOperation(value = "我的证照")
     public ModelAndView toMyCertificateLibraryPage(){
@@ -103,6 +108,18 @@ public class RestUserCenterController {
     @ApiOperation(value = "跳转企业信用页面")
     public ModelAndView toCreditDetailPage() throws Exception {
         return new ModelAndView("mall/"+skin+"userCenter/components/creditDetail");
+    }
+
+    @GetMapping("toCreditUnitListPage")
+    @ApiOperation(value = "跳转企业信用列表")
+    public ModelAndView toCreditUnitListPage() throws Exception {
+        return new ModelAndView("mall/"+skin+"userCenter/components/creditUnitList");
+    }
+
+    @GetMapping("/toReviewAppyPage")
+    @ApiOperation(value = "首页-->跳转复验申请页面接口")
+    public ModelAndView toReviewAppyPage() throws Exception {
+        return new ModelAndView("mall/"+skin+"userCenter/components/reviewApply");
     }
 
     @GetMapping("/toMyProjListPage")

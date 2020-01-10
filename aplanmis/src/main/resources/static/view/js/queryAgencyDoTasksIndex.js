@@ -57,7 +57,7 @@ var vm = new Vue({
             });
         },
         //办理
-        viewDetail: function (row) {
+        toApplyPage: function (row) {
             var menuName= '';
             var menuInnerUrl =  '';
             var id = 'menu_'+new Date().getTime();
@@ -132,9 +132,9 @@ var vm = new Vue({
         },
         //查看按钮
         showOperateBtn2: function (row) {
-            return ('2' === row.agentApplyState || '3' === row.agentApplyState || '5' === row.agentApplyState);
+            return ('2' === row.agentApplyState || '3' === row.agentApplyState || '5' === row.agentApplyState || '6' === row.agentApplyState || '7' === row.agentApplyState);
         },
-        //办理按钮
+        //办理、办结按钮
         showOperateBtn3: function (row) {
             return ('4' === row.agentApplyState);
         },

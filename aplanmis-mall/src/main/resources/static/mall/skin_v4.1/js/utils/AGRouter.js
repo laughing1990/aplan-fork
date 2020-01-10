@@ -43,6 +43,7 @@
         //接受所有的配置路由内容
         this.routes = {};
         this.curUrl = '';
+        this.UserCenterReg= /ReviewAppy|CreditUnitList|declare|scheduleInquire|declareHave|matCompletionList|approve|matSupplementList|lifeCycle|UserInfo|MyHomeIndex|myHomeIndex|MyMaterials|AddProj|MyCertificateLibrary|CreditDetail|withdrawApplyList|drafts|matSupplement|MyProjList|guideList/igm;
         //所有路由和函数方法 传给 routes
         this.route = function (path, callback) {
             this.routes[path] = callback || function () {};
@@ -50,7 +51,7 @@
         this.refresh = function (e) {
             if(e.type=='load' && /div_step/igm.test(location.hash.slice(1))){
                 this.curUrl = '/guideIndex';
-            } else if (e.type == 'load' && /declare|scheduleInquire|declareHave|matCompletionList|approve|matSupplementList|lifeCycle|UserInfo|MyHomeIndex|myHomeIndex|MyMaterials|AddProj|MyCertificateLibrary|CreditDetail|withdrawApplyList|drafts|matSupplement|MyProjList|guideList/igm.test(location.hash.slice(1))) {
+            } else if (e.type == 'load' && this.UserCenterReg.test(location.hash.slice(1))) {
                this.curUrl = '/userCenterIndex'
             }else if(e.type="hashchange" && /userCenterIndex/igm.test(location.hash.slice(1))){
                this.curUrl = '/userCenterIndex'

@@ -705,6 +705,14 @@ var vm = new Vue({
       prePdfDialogLoading: false,
       prePdfDialogVisible: false,
       prePdfUrl: '',
+      stopAgentDialogLoading: false,
+      stopAgentDialogVisible: false,
+      topProjName: '',
+      stopAgentForm: {
+        code: '',
+        date: Date.now(),
+        reason: '',
+      },
       // 项目代办 end ---------------------
     }
   },
@@ -760,6 +768,7 @@ var vm = new Vue({
     window.addEventListener('scroll', _that.handleScroll);
     window.addEventListener('resize', function (ev) {
       _that.curWidth = (document.documentElement.clientWidth || document.body.clientWidth);
+      _that.curHeight = (document.documentElement.clientHeight || document.body.clientHeight);
     });
     _that.$nextTick(function () {
       this.$refs.searchProjInfo.$el.querySelector('input').click()
@@ -778,17 +787,78 @@ var vm = new Vue({
   },
   methods: {
     // 项目代办 start --------
-    // 终止协议
-    stopAgreement: function(){},
+    // 查看终止协议
+    seeStopAgent: function(){
+      var reason = this.stopAgentForm.reason;
+      if (!reason.length) {
+        return this.$message.error('请填写终止原因');
+      }
+      var _date = __STATIC.formatDate(this.stopAgentForm.date, 'yyyy-MM-dd');
+      var url = ctx + 'preview/pdfjs/web/viewer.html?file=';
+      var _url = ctx + 'aea/proj/apply/agent/getAgencyStopAgreementFile';
+      _url += '?applyAgentId=' + this.applyAgentId;
+      _url += '&agreementStopReason=' + reason;
+      _url += '&agreementStopTime=' + _date;
+      url += encodeURIComponent(_url);
+      this.prePdfDialogVisible = true;
+      this.prePdfUrl = url;
+    },
+    // 点击终止协议
+    clickStopAgreement: function(){
+      this.stopAgentForm.fileName = this.topProjName+'委托终止单.pdf';
+      if (this.stopAgentForm.code&&this.stopAgentForm.code.legnth) {
+        this.stopAgentDialogVisible = true;
+        return null;
+      }
+      var vm = this;
+      this.loading = true;
+      request('', {
+        url: ctx + 'aea/proj/apply/agent/getAgencyDetail?applyAgentId='+vm.applyAgentId,
+        type: 'get',
+      }, function(res) {
+        vm.loading = false;
+        if(res.success) {
+          try {
+            vm.stopAgentForm.code = res.content.aeaProjApplyAgent.agreementCode;
+          } catch(e){}
+          vm.stopAgentDialogVisible = true;
+        } else {
+          vm.$message.error(res.message||'获取代办详情数据失败');
+        }
+      }, function(){
+        vm.loading = false;
+        vm.$message.error('获取代办详情数据失败');
+      });
+    },
+    // 关闭终止协议弹窗
+    closeStopAgentDialog: function(){},
+    // 终止协议弹窗 签章
+    ensureStopAgent: function(){
+      var reason = this.stopAgentForm.reason;
+      if (!reason.length) {
+        return this.$message.error('请填写终止原因');
+      }
+      var _date = __STATIC.formatDate(this.stopAgentForm.date, 'yyyy-MM-dd');
+      var params = {
+        applyAgentId: this.applyAgentId,
+        agreementStopReason: reason,
+        agreementStopTime: _date,
+      };
+      this.$message.info('接口正在开发中... 请求参数为 '+JSON.stringify(params));
+    },
     // 关闭预览pdf弹窗
     closePrePdf: function(){
-      this.prePdfUrl = '';
+      // this.prePdfUrl = '';
+    },
+    // 下载协议
+    downLoadAgreement: function(){
+      window.open(ctx + 'aea/proj/apply/agent/getAgencyAgreement?applyAgentId='+this.applyAgentId);
     },
     // 得到协议的detailId
     seeAgreement: function (){
       this.prePdfDialogVisible = true;
       var url = ctx + 'preview/pdfjs/web/viewer.html?file=';
-      var _url = ctx + 'aea/proj/apply/agent/getAgencyAgreement?applyAgentId='+vm.applyAgentId;
+      var _url = ctx + 'aea/proj/apply/agent/getAgencyAgreement?applyAgentId='+this.applyAgentId;
       url += encodeURIComponent(_url);
       this.prePdfUrl = url;
     },
@@ -820,6 +890,8 @@ var vm = new Vue({
       this.$prompt('请输入意见', f ? '结束部门确认' : '直接通过', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
+        inputType: 'textarea',
+        customClass: 'guide-prompt',
         inputValidator: function (val) {
           return !!val
         },
@@ -1841,6 +1913,7 @@ var vm = new Vue({
             _that.localCode = result.localCode;
             _that.showMoreProjInfo = true;
             _that.projName = _that.projBascInfoShow.projName;
+            _that.topProjName = data.content.projName;
             _that.showVerLen = _that.verticalTabData.length;
             _that.projBascInfoShow = result; // 项目主要信息
             _that.getProjThemeIdList();
@@ -7076,7 +7149,7 @@ var vm = new Vue({
         }
       });
       // } catch (e) {}
-      console.log(itemVerId);
+      // console.log(itemVerId);
       request('', {
         url: ctx + 'rest/oneform/common/getListForm4StageOneForm',
         type: 'get',
