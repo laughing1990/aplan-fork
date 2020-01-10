@@ -63,7 +63,10 @@ public class RestApplyProjServiceImp implements RestApplyProjService {
             String themeId = aeaProjInfo.getThemeId();
             if (StringUtils.isNotBlank(themeId)) vo.setThemeName(aeaParThemeService.getAeaParThemeByThemeId(themeId).getThemeName());
             //set项目及子工程至VO
-            BeanUtils.copyProperties(aeaProjInfo,vo.getProjStatusVos());
+            ProjStatusTreeVo.ProjStatusVo projStatusVo = new ProjStatusTreeVo.ProjStatusVo();
+            BeanUtils.copyProperties(aeaProjInfo,projStatusVo);
+            vo.setProjStatusVos(new ArrayList<>());
+            vo.getProjStatusVos().add(projStatusVo);
             setChildProj(vo.getProjStatusVos());
             //主题下的所有主线阶段
             List<AeaParStage> nodeStages = (aeaParStageService.listAeaParStageByThemeIdOrThemeVerId(themeId, "",topOrgId))
@@ -74,11 +77,32 @@ public class RestApplyProjServiceImp implements RestApplyProjService {
             vo.getStagesVos().stream().forEach(stagesVo->{
                 setApplyStatus2Proj(vo.getProjStatusVos(),stagesVo);
             });
+
+
+            List<List<ProjStatusTreeVo.ProjStatusVo>> retList = new ArrayList<>();
+            retList.add(vo.getProjStatusVos());
+            temp(vo.getProjStatusVos(),retList);
+            vo.setProjStatusVoArrs(retList);
+            vo.getProjStatusVos();
             return vo;
         } catch (Exception e) {
             e.printStackTrace();
             throw new Exception("查询我的项目工程管理获取项目状态树异常");
         }
+    }
+
+
+    void temp(List<ProjStatusTreeVo.ProjStatusVo> vos,List<List<ProjStatusTreeVo.ProjStatusVo>> retList){
+        List<ProjStatusTreeVo.ProjStatusVo> list = new ArrayList<>();
+        vos.stream().forEach(vo->{
+            if (vo.getChildProjStatusVos()==null) return;
+            list.addAll(vo.getChildProjStatusVos());
+            list.stream().forEach(l->{
+                l.setParentProjInfoId(vo.getProjInfoId());
+            });
+        });
+        retList.add(list);
+
     }
 
     //给项目树及阶段设置状态
@@ -88,8 +112,8 @@ public class RestApplyProjServiceImp implements RestApplyProjService {
              Boolean isDoned = true;//已办结
              String stageId = nodeStage.getStageId();
              for (ProjStatusTreeVo.ProjStatusVo vo : vos) {
-                 if (!stageId.equals(vo.getStageId())) return;
-                 AeaHiApplyinst aeaHiApplyinst = getAeaHiApplyinstByProjInfoIdAndStageId(vo.getProjInfoId(),vo.getStageId());
+                 //if (!stageId.equals(vo.getStageId())) return;
+                 AeaHiApplyinst aeaHiApplyinst = getAeaHiApplyinstByProjInfoIdAndStageId(vo.getProjInfoId(),stageId);
                  if (aeaHiApplyinst!=null){
                      stageStatus = 2;
                      if (!"6".equals(aeaHiApplyinst.getApplyinstState())) {
