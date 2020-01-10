@@ -209,8 +209,8 @@
             </el-form-item>
             <el-form-item label="协议签订时间：" class="wt448" prop="agreementSignTime">
               <el-date-picker type="date" placeholder="选择协议签订时间" value-format="yyyy-MM-dd"
-                :disabled="agencyDetailApiData.agentApplyState >= 3"
-                :picker-options="pickerOptions" v-model="projInfoForm.agreementSignTime">
+                :disabled="agencyDetailApiData.agentApplyState >= 3" :picker-options="pickerOptions"
+                v-model="projInfoForm.agreementSignTime">
               </el-date-picker>
             </el-form-item>
             <div class="al-right mt10" style="padding-right: 40px;" v-if="3>agencyDetailApiData.agentApplyState">
@@ -219,10 +219,11 @@
           </el-collapse-item>
           <!-- 代办信息 end -->
 
-          <!-- 委托代办协议 start -->
-          <el-collapse-item class="clearfix" name="4" id="commissionagentagreement" v-if="agencyDetailApiData.agentApplyState >= 3">
+          <!-- 代办委托协议 start -->
+          <el-collapse-item class="clearfix" name="4" id="commissionagentagreement"
+            v-if="agencyDetailApiData.agentApplyState >= 3">
             <template slot="title">
-              <i class="header-icon el-icon-document-copy"></i>委托代办协议
+              <i class="header-icon el-icon-document-copy"></i>代办委托协议
             </template>
             <div class="agree-box">
               <table class="nor-table line-table" border="0" cellpadding="0" cellspacing="0">
@@ -247,11 +248,77 @@
               </table>
             </div>
           </el-collapse-item>
-          <!-- 委托代办协议 end -->
+          <!-- 代办委托协议 end -->
+
+          <!-- 代办办结单 start -->
+          <el-collapse-item class="clearfix" name="5" id="endagentagreement"
+            v-if="agencyDetailApiData.agentApplyState == 7">
+            <template slot="title">
+              <i class="header-icon el-icon-document-copy"></i>代办办结单
+            </template>
+            <div class="agree-box">
+              <table class="nor-table line-table" border="0" cellpadding="0" cellspacing="0">
+                <tbody>
+                  <tr>
+                    <th class="icon-th">
+                      <div class="icon"> <i class="el-icon-document"></i> </div>
+                    </th>
+                    <td class="tb-right-line" colspan="3" style="width: 56%;">{{agencyDetailApiData.projName}}代办办结单.pdf
+                      <span class="state-tag">已签章</span>
+                    </td>
+                    <td class="tb-right-line" colspan="2">
+                      代办人员：{{projInfoForm.agentUserName || '-'}}
+                      （{{projInfoForm.agentUserMobile || '-'}}）
+                    </td>
+                    <td>
+                      <a href="javascript:;"
+                        @click="previewAgreement(agencyDetailApiData.agentEndAgreementFileId)">预览</a>
+                      <a class="ml20" href="javascript:;"
+                        @click="downAgreement(agencyDetailApiData.agentEndAgreementFileId)">下载</a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </el-collapse-item>
+          <!-- 代办办结单 end -->
+
+          <!-- 代办委托终止单 start -->
+          <el-collapse-item class="clearfix" name="6" id="stopagentagreement"
+            v-if="agencyDetailApiData.agentApplyState == 5">
+            <template slot="title">
+              <i class="header-icon el-icon-document-copy"></i>代办委托终止单
+            </template>
+            <div class="agree-box">
+              <table class="nor-table line-table" border="0" cellpadding="0" cellspacing="0">
+                <tbody>
+                  <tr>
+                    <th class="icon-th">
+                      <div class="icon"> <i class="el-icon-document"></i> </div>
+                    </th>
+                    <td class="tb-right-line" colspan="3" style="width: 56%;">{{agencyDetailApiData.projName}}代办委托终止单.pdf
+                      <span class="state-tag">已签章</span>
+                    </td>
+                    <td class="tb-right-line" colspan="2">
+                      代办人员：{{projInfoForm.agentUserName || '-'}}
+                      （{{projInfoForm.agentUserMobile || '-'}}）
+                    </td>
+                    <td>
+                      <a href="javascript:;"
+                        @click="previewAgreement(agencyDetailApiData.agentStopAgreementFileId)">预览</a>
+                      <a class="ml20" href="javascript:;"
+                        @click="downAgreement(agencyDetailApiData.agentStopAgreementFileId)">下载</a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </el-collapse-item>
+          <!-- 代办委托终止单 end -->
         </el-collapse>
       </el-form>
     </div>
-    <el-dialog title="签订协议书" :visible.sync="prePdfVisible" ref="prePdfRef" class="" width="800px" top="10vh" >
+    <el-dialog title="签订协议书" :visible.sync="prePdfVisible" ref="prePdfRef" class="" width="800px" top="10vh">
       <div class="" style="height: 580px;">
         <iframe :src="pdfSrc" class='ltab-iframe'></iframe>
       </div>
