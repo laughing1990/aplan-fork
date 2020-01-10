@@ -830,7 +830,19 @@ var vm = new Vue({
     // 关闭终止协议弹窗
     closeStopAgentDialog: function(){},
     // 终止协议弹窗 签章
-    ensureStopAgent: function(){},
+    ensureStopAgent: function(){
+      var reason = this.stopAgentForm.reason;
+      if (!reason.length) {
+        return this.$message.error('请填写终止原因');
+      }
+      var _date = __STATIC.formatDate(this.stopAgentForm.date, 'yyyy-MM-dd');
+      var params = {
+        applyAgentId: this.applyAgentId,
+        agreementStopReason: reason,
+        agreementStopTime: _date,
+      };
+      this.$message.info('接口正在开发中... 请求参数为 '+JSON.stringify(params));
+    },
     // 关闭预览pdf弹窗
     closePrePdf: function(){
       // this.prePdfUrl = '';
