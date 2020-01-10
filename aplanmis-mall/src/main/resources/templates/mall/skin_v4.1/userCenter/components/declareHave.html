@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
 <link rel="stylesheet" href="../../../static/mall/css/userCenter/declarehave.css"
   th:href="@{/mall/skin_v4.1/css/userCenter/declarehave.css}">
-<div class="wt-tab" id="declareHaveVue" v-cloak v-loading.fullscreen.lock="mloading" style="position: relative;">
+<div class="wt-tab" id="declareHaveVue" v-cloak style="position: relative;">
 
   <div v-if="!isProjDetail">
     <p class="p-header">我的申报</p>
@@ -32,7 +32,7 @@
           </div>
         </div>
 
-        <table class="wt-table">
+        <table class="wt-table" v-loading="mloading">
           <thead>
             <tr>
               <th class="al" width="20%">申报流水号</th>
@@ -88,14 +88,12 @@
                   <span class="applyinstState applyinstState4"
                         v-else-if="item.applyinstState=='3'">
                     待补全
-                    <el-tooltip effect="light" placement="top">
-                      <div  slot="content">{{item.approveComments||'无'}}
-                      </div>
-                      <span class="mstage-count not-allow-sel"><i class="el-icon-question"></i>
-                      </span>
-                    </el-tooltip>
-                  </span>
-                  </el-tooltip>
+                      <el-tooltip effect="light" placement="top">
+                        <div  slot="content">{{item.approveComments||'无'}}
+                        </div>
+                        <span class="mstage-count not-allow-sel"><i class="el-icon-question"></i>
+                        </span>
+                      </el-tooltip>
                   </span>
                   <span class="applyinstState applyinstState5"
                         v-else-if="item.applyinstState=='4'">
@@ -128,8 +126,8 @@
                   <a v-if="item.applyinstState=='0'||item.applyinstState=='1'||item.applyinstState=='2'" class="option-btn" style="display: inline-block"  @click="withDrawFn(item)">撤件</a>
                   <span v-else style="display: inline-block;cursor: not-allowed;color: #ccc;paddingLeft: 10px;"  title="只可撤回未正式受理申报">撤件</span>
 
-                  <a class="option-btn" style="display: inline-block;" v-if="item.applyinstState='6' && !item.isExistUnPass">二次申报</a>
-                  <a class="option-btn" style="display: inline-block;" v-if="item.applyinstState='6' && item.isExistUnPass">重新申报</a>
+                  <a class="option-btn" style="display: inline-block;" v-if="item.applyinstState=='6'&&!item.isExistUnPass">二次申报</a>
+                  <a class="option-btn" style="display: inline-block;" v-if="item.applyinstState=='6'&&item.isExistUnPass">重新申报</a>
                 </td>
               </tr>
             </template>

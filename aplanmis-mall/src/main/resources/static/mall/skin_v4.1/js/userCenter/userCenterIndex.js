@@ -79,6 +79,11 @@ var userCenter = (function () {
                         select: false,
                     },
                     {
+                        name: '企业信用',
+                        value: 'DeclarGuide',
+                        select: false,
+                    },
+                    {
                         name: '用户管理',
                         value: 'UserInfo',
                         select: false,

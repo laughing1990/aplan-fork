@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>企业信用列表</title>
+    <style>
+
+    </style>
+</head>
+<body>
+    <div id="creditUnitList">
+        <p class="p-header">企业信用</p>
+        <div>
+            <p class="p-header-phase1">佛山市顺德区大良镇南芦村沙地元三路建设工程</p>
+            <div class="my-declareing-table">
+                <el-table :data="applyIngData" style="width:100%">
+                    <el-table-column fixed prop="applyinstCode" label="企业名称" width="200">
+                    </el-table-column>
+                    <el-table-column fixed="right" label="操作" align="center" width="80">
+                        <template slot-scope="scope">
+                            <span class="option-btn">
+                                <a href="javascript:;" @click="toDetail(scope.row)">查看信用记录</a>
+                            </span>
+                        </template>
+                    </el-table-column>
+                </el-table>
+
+                <el-pagination style="marginTop: 15px;" background align="right" :page-size="declare.pageSize"
+                               :current-page="declare.currentPage" @size-change="handleSizeChange"
+                               @current-change="handleCurrentChange" :page-sizes="[5,10, 20]"
+                               layout="total,sizes, prev, pager, next, jumper" :total="declare.total" :hide-on-single-page="true">
+                </el-pagination>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    (function($,w,doc){
+        var vm = new vue({
+            el:"#creditUnitList",
+            data:{
+
+            }
+        })
+    }($,window,document))
+</script>
+</html>
