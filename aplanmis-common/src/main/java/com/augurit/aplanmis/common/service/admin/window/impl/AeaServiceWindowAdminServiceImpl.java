@@ -474,9 +474,10 @@ public class AeaServiceWindowAdminServiceImpl implements AeaServiceWindowAdminSe
             for (int i=0;i<list.size();i++) {
                 BscDicRegion bscDicRegion = list.get(i);
                 if(bscDicRegion.getRegionalLevel() == 3){//省级
+                    String regionName = bscDicRegion.getRegionName();
                     vo = new AeaRegionOptionVo();
                     vo.setValue(bscDicRegion.getRegionId());
-                    vo.setLabel(bscDicRegion.getRegionName()+"省");
+                    vo.setLabel((regionName.contains("香港")||regionName.contains("澳门"))?regionName +"特别行政区":regionName +"省");
                     List<AeaRegionOptionVo> children = getChildrenVo(list,bscDicRegion.getRegionId());
                     vo.setChildren(children);
                     voList.add(vo);
