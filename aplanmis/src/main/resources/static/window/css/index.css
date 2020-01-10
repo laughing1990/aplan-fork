@@ -526,3 +526,45 @@ display: none;
 .right-sidebar .right-sidebar-close {
   top: 16px;
 }
+
+/* 超出隐藏-一行 */
+.ellipsis {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	word-wrap: normal;
+}
+
+/*// 2行省略*/
+.ellipsisLn {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+}
+
+.pr{
+  position: relative;
+}
+
+.inle-block{
+  display: inline-block;
+  vertical-align: top;
+}
+
+/* 市级还是区级 */
+.type-tag{
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  width: 34px;
+  height: 18px;
+  line-height: 18px;
+  text-align: center;
+  transform: translateY(-50%);
+  color: #fff;
+  background: #FFC04A;
+  font-size: 12px;
+  border-radius: 4px;
+}
