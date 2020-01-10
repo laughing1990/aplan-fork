@@ -256,7 +256,7 @@
         <iframe :src="pdfSrc" class='ltab-iframe'></iframe>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button>取 消</el-button>
+        <el-button @click="prePdfVisible = false;">取 消</el-button>
         <el-button @click="agreementDown">下 载</el-button>
         <el-button type="primary">签 章</el-button>
       </span>

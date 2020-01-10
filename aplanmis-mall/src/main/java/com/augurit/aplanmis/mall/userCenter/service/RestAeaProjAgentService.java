@@ -124,7 +124,7 @@ public class RestAeaProjAgentService {
         aeaProjApplyAgent.setProjInfoId(projInfoId);
         aeaProjApplyAgent.setApplyUserId(linkmanInfoId);
         aeaProjApplyAgent.setAgentStageState(agentStageState);
-        aeaProjApplyAgent.setAgentApplyState(AgencyState.SIGNING.getValue());
+        aeaProjApplyAgent.setAgentApplyState(AgencyState.WAIT_SIGNING.getValue());
         List<AeaServiceWindow> windows = aeaProjWindowService.listAeaServiceWindowByProjInfoId(projInfoId);
         if(windows.size()==0) throw new Exception("该项目无代办窗口");
         aeaProjApplyAgent.setWindowId(windows.get(0).getWindowId());
@@ -177,7 +177,7 @@ public class RestAeaProjAgentService {
             agentAgreementVo.setAgentUserName(applyAgent.getAgentUserName());
             agentAgreementVo.setAgentUserMobile(applyAgent.getAgentUserMobile());
             //List<BscAttForm> atts = bscAttMapper.listAttLinkAndDetailByTablePKRecordId("AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID", applyAgentId, SecurityContext.getCurrentOrgId());
-            List<BscAttFileAndDir> atts = restFileService.getAttFilesByPK("AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID", applyAgentId);
+            List<BscAttFileAndDir> atts = restFileService.getAttFilesByPK("AEA_PROJ_APPLY_AGENT", "AGREEMENT_CODE", applyAgent.getAgreementCode());
             agentAgreementVo.setAtts(atts);
             agentAgreementVo.setDetailId( atts.size()>0?atts.get(0).getBscAttDetail().getDetailId():null);
             list.add(agentAgreementVo);

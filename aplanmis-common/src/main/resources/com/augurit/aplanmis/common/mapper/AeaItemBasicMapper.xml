@@ -3117,6 +3117,11 @@
         <include refid="aib_allColumns"/>,bdr.region_name regionName,ooo.org_name orgName,ooo.org_tel
         orgTel,aig.SERVE_TYPE_text serveTypeText
         from AEA_ITEM_BASIC aib
+        join (select item_ver_id, ver_num, ITEM_VER_STATUS from aea_item_ver ver
+        join (select ITEM_ID, max(VER_NUM) maxNum from aea_item_ver where IS_DELETED='0' and ITEM_VER_STATUS in
+        ('2','1') group by ITEM_ID ) maxVer
+        on ver.item_id = maxVer.item_id and ver.VER_NUM = maxVer.maxNum ) itemVer on aib.ITEM_VER_ID =
+        itemVer.ITEM_VER_ID
         left join bsc_dic_region bdr on bdr.region_id=aib.region_id
         left join opu_om_org ooo on ooo.org_id = aib.org_id
         left join aea_item_guide aig on aib.item_ver_id = aig.item_Ver_id

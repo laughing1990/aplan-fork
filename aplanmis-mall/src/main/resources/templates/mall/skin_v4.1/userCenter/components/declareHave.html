@@ -319,20 +319,20 @@
         </table>
       </div>
     </div>
-    <div class="mt60 proj-module" v-if="projDetailData.isNeedState == 1">
-      <h4 class="mb20">办事情形</h4>
-      <template v-if="projDetailData.stateList.length">
-        <div class="mt20 pd10 module-content content-border">
-          <div class="mb20 box" v-for="(item, index) in projDetailData.stateList">
-            <p class="question">{{index + 1}}、{{item.question}}</p>
-            <p class="mt10 answer">{{item.answer}}</p>
-          </div>
-        </div>
-      </template>
-      <template v-else>
-        <p class="pl20 non-data">暂无数据</p>
-      </template>
-    </div>
+    <!--<div class="mt60 proj-module" v-if="projDetailData.isNeedState == 1">-->
+      <!--<h4 class="mb20">办事情形</h4>-->
+      <!--<template v-if="projDetailData.stateList.length">-->
+        <!--<div class="mt20 pd10 module-content content-border">-->
+          <!--<div class="mb20 box" v-for="(item, index) in projDetailData.stateList">-->
+            <!--<p class="question">{{index + 1}}、{{item.question}}</p>-->
+            <!--<p class="mt10 answer">{{item.answer}}</p>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</template>-->
+      <!--<template v-else>-->
+        <!--<p class="pl20 non-data">暂无数据</p>-->
+      <!--</template>-->
+    <!--</div>-->
     <div class="mt60 proj-module" v-if="projDetailData.isSeriesApprove == 0">
       <h4 class="mb20">事项（含情形）列表</h4>
       <div class="mt20 module-content">

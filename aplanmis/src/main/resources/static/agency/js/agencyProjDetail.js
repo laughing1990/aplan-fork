@@ -745,7 +745,7 @@ var pager = new Vue({
     previewAgreement: function(id){
       // console.log(this.agencyDetailApiData.currentUserName)
       var _url = ctx + 'previewPdf/view?detailId=' + id;
-      window.open(_url);
+      window.open(_url, '_blank');
     },
     // 委托代办协议模块的预览
     downAgreement: function(id){
