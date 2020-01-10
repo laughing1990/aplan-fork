@@ -429,9 +429,9 @@ public class AeaParStageService {
             //更新办件结果领取方式
             //AeaHiSmsInfo aeaSmsInfo=aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(applyinstId);
             //if(aeaSmsInfo==null){
-            smsInfo = aeaHiSmsInfoService.createAeaHiSmsInfo(smsInfoVo.toSmsInfo());
-            //smsInfoId=smsInfo.getId();
-            //}
+            AeaHiSmsInfo sms = smsInfoVo.toSmsInfo();
+            sms.setApplyinstId(applyinstId);
+            smsInfo = aeaHiSmsInfoService.createAeaHiSmsInfo(sms);
 
             appinstIds.add(bpmProcessInstance.getActStoAppinst().getAppinstId());
             procinstIds.add(bpmProcessInstance.getProcessInstance().getId());
