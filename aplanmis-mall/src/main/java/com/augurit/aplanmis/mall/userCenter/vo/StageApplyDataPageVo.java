@@ -70,6 +70,9 @@ public class StageApplyDataPageVo {
     @ApiModelProperty(value = "并行事项及其申请实例ID集合")
     private List<PropulsionItemApplyinstIdVo> propulsionItemApplyinstIdVos;
 
+    @ApiModelProperty(value = "部门辅导ID", required = true)
+    private String guideId;
+
     public StageApplyDataVo toStageApplyDataVo(String appId, String themeVerId) {
         StageApplyDataVo stageApplyDataVo = new StageApplyDataVo();
         stageApplyDataVo.setApplyinstIds(this.applyinstIds);

@@ -27,6 +27,7 @@ import com.augurit.aplanmis.common.mapper.AeaServiceWindowStageMapper;
 import com.augurit.aplanmis.common.mapper.AeaServiceWindowUserMapper;
 import com.augurit.aplanmis.common.service.admin.window.AeaServiceWindowAdminService;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
+import com.augurit.aplanmis.common.vo.AeaRegionOptionVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
@@ -38,10 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author ZhangXinhui
@@ -455,5 +453,53 @@ public class AeaServiceWindowAdminServiceImpl implements AeaServiceWindowAdminSe
         if (userIds != null && userIds.length > 0) {
             aeaServiceWindowUserMapper.batchDeleteWindowUserByWindowIdAndUserId(windowId,userIds);
         }
+    }
+
+    @Override
+    public List<AeaRegionOptionVo> getRegionOptions() {
+        List<BscDicRegion> list = bscDicRegionMapper.listBscDicRegion( null);
+        List<AeaRegionOptionVo> voList = new ArrayList<>();
+        if (list != null && list.size() > 0) {
+            //p表示省份，m表示直辖市，c表示城市，a表示区县
+            String[] types = {"p","m","c","a"};
+            List<String> typeList = Arrays.asList(types);
+            AeaRegionOptionVo vo;
+            for (int i=0;i<list.size();i++) {
+                BscDicRegion bscDicRegion = list.get(i);
+                if(!typeList.contains(bscDicRegion.getRegionType())){
+                    list.remove(bscDicRegion);
+                    i--;
+                }
+            }
+            for (int i=0;i<list.size();i++) {
+                BscDicRegion bscDicRegion = list.get(i);
+                if(bscDicRegion.getRegionalLevel() == 3){//省级
+                    vo = new AeaRegionOptionVo();
+                    vo.setValue(bscDicRegion.getRegionId());
+                    vo.setLabel(bscDicRegion.getRegionName()+"省");
+                    List<AeaRegionOptionVo> children = getChildrenVo(list,bscDicRegion.getRegionId());
+                    vo.setChildren(children);
+                    voList.add(vo);
+                }
+            }
+        }
+        return voList;
+    }
+
+    private List<AeaRegionOptionVo> getChildrenVo(List<BscDicRegion> list,String regionId){
+        List<AeaRegionOptionVo> voList = new ArrayList<>();
+        for (int i=0;i<list.size();i++) {
+            BscDicRegion childRegion = list.get(i);
+            if(childRegion.getParentRegionId().equals(regionId)){
+                AeaRegionOptionVo optionVo = new AeaRegionOptionVo();
+                optionVo.setValue(childRegion.getRegionId());
+                optionVo.setLabel(childRegion.getRegionName());
+                optionVo.setChildren(getChildrenVo(list,childRegion.getRegionId()));
+                voList.add(optionVo);
+                list.remove(childRegion);
+                i--;
+            }
+        }
+        return voList;
     }
 }

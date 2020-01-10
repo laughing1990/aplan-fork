@@ -259,6 +259,80 @@ public class ReceivePDFTemplate {
         return str.toString();
     }
 
+    /**
+     * 佛山代办办结单模板生成
+     * @return
+     * @throws Exception
+     */
+    public static String createAgencyEndAgreement(AeaProjApplyAgent aeaProjApplyAgent) throws Exception {
+        Document document = new Document();
+        document.setPageSize(PageSize.A4);
+        document.setMargins(80, 80, 10, 10);
+        StringBuffer str = ReceivePDFTemplate.pdfFilePath();
+//        StringBuffer str = new StringBuffer("F:\\develop\\foshan20191120\\4、关于印发佛山市行政许可和公共服务事项流程标准应用规范的通知（ 佛政务〔2017〕81号）\\回执模板\\");
+
+        str.append(aeaProjApplyAgent.getProjName()+"代办办结单");
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
+        str.append(".pdf");
+        FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
+        PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
+
+        //设置字体格式
+        initFontMap();
+        Font font2 = fontMap.get("font2");
+        Font font6 = fontMap.get("font6");
+        /*******************************************************模板填写的参数*******************************************************/
+        String receiveName = "佛山市重点工程建设项目代办办结单";
+        String projName = aeaProjApplyAgent.getProjName();
+        String instrumentNo = aeaProjApplyAgent.getAgreementCode();
+        Date agreementEndTime = aeaProjApplyAgent.getAgreementEndTime();
+        Date defaultTime = new Date();
+
+        /*******************************************************模板填写的参数*******************************************************/
+
+        // 打开文档，只有打开后才能往里面加东西
+        document.open();
+        ReceivePDFUtils.paragrahCenter(document,receiveName,font2);
+        ReceivePDFUtils.oneLine(document,font6);
+        ReceivePDFUtils.oneLine(document,font6);
+        String year = "    ";
+        String month = "  ";
+        String day = "  ";
+        if(agreementEndTime != null){
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(agreementEndTime);
+            year = calendar.get(Calendar.YEAR)+"";
+            month = (calendar.get(Calendar.MONTH)+1)<10?"0"+(calendar.get(Calendar.MONTH)+1):(calendar.get(Calendar.MONTH)+1)+"";
+            day = calendar.get(Calendar.DATE)<10?"0"+calendar.get(Calendar.DATE):calendar.get(Calendar.DATE)+"";
+        }
+        List<ReceivePDFUtils.ParagraphCentent> centents = new ArrayList<>();
+        centents.add(new ReceivePDFUtils.ParagraphCentent(false,"兹有代办委托项目"));
+        centents.add(new ReceivePDFUtils.ParagraphCentent(true,projName));
+        centents.add(new ReceivePDFUtils.ParagraphCentent(false,"，协议编号"));
+        centents.add(new ReceivePDFUtils.ParagraphCentent(true,instrumentNo));
+        centents.add(new ReceivePDFUtils.ParagraphCentent(false,"，已于"));
+        centents.add(new ReceivePDFUtils.ParagraphCentent(true," "+year+" "));
+        centents.add(new ReceivePDFUtils.ParagraphCentent(false,"年"));
+        centents.add(new ReceivePDFUtils.ParagraphCentent(true," "+month+" "));
+        centents.add(new ReceivePDFUtils.ParagraphCentent(false,"月"));
+        centents.add(new ReceivePDFUtils.ParagraphCentent(true," "+day+" "));
+        centents.add(new ReceivePDFUtils.ParagraphCentent(false,"日完成审批代办服务，有关资料已向建设单位移交完毕，经双方确认，同意办结。"));
+        ReceivePDFUtils.twoSpacingConcatUnderLineChunk(centents,document,font6,35f);
+
+        ReceivePDFUtils.moreLine(document,font6);
+        ReceivePDFUtils.twoSpacing("建设单位（盖章）      “重点项目代办”窗口（盖章）",document,font6,35f);
+        String date = new SimpleDateFormat("yyyy年MM月dd日").format(defaultTime);
+        ReceivePDFUtils.twoSpacing(date+"                 "+date,document,font6,35f);
+
+        // 关闭文档，才能输出
+        document.close();
+        writer.flush();
+        writer.close();
+        System.out.println(str.toString());
+        return str.toString();
+    }
+
+
 
     //市民服务中心申报材料清单模板
     public static String createMatTypeTemplate(ReceiveBaseVo receiveBaseVo) throws Exception {
@@ -1067,12 +1141,4 @@ public class ReceivePDFTemplate {
         return str;
     }
 
-    public static void main(String[] args) throws Exception{
-        AeaProjApplyAgent aeaProjApplyAgent = new AeaProjApplyAgent();
-        aeaProjApplyAgent.setProjName("佛山市顺德区大良镇南芦村沙地元三路 建设工程");
-        aeaProjApplyAgent.setAgreementCode("201912201982018");
-        aeaProjApplyAgent.setAgreementStopReason("虚假申报、前置要件（材料）不全、违法违规操作等建设单位原因不能继续审批");
-        aeaProjApplyAgent.setAgreementStopTime(new Date());
-        createAgencyStopAgreement(aeaProjApplyAgent);
-    }
 }

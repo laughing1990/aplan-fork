@@ -29,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -229,6 +230,37 @@ public class AeaProjApplyAgentController {
                 }else{
                     agreementDetail.setAgreementStopReason(aeaProjApplyAgent.getAgreementStopReason());
                     agreementDetail.setAgreementStopTime(aeaProjApplyAgent.getAgreementStopTime());
+                    //协议没有存储到mongodb，动态生成一份。代办中心（乙方）签章之后要将代办委托终止单存储到mongodb。
+                    String str = ReceivePDFTemplate.createAgencyStopAgreement(agreementDetail);
+                    writeFile(str,resp);
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    @GetMapping("/getAgencyEndAgreementFile")
+    @ApiOperation(value = "项目代办 --> 获取代办办结单", notes = "项目代办 --> 获取代办办结单", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "applyAgentId",value = "代办申请ID",required = true,dataType = "String")
+    })
+    public void getAgencyEndAgreementFile(String applyAgentId, HttpServletResponse resp){
+        logger.debug("获取代办办结单");
+        try {
+            Assert.notNull(applyAgentId,"代办申请ID不能为空");
+            if(StringUtils.isNotBlank(applyAgentId)){
+                AeaProjApplyAgent agreementDetail = aeaProjApplyAgentService.getAgencyAgreementDetail(applyAgentId);
+                if(agreementDetail == null){
+                    throw new Exception("代办申请不存在。");
+                }
+                String endAgreementFileId = agreementDetail.getAgentEndAgreementFileId();
+                if(StringUtils.isNotBlank(endAgreementFileId)){
+                    fileUtilsService.readFile(endAgreementFileId,null,resp);
+                }else{
+                    //办结时间如果修改就要前端传值过来
+                    agreementDetail.setAgreementEndTime(new Date());
                     //协议没有存储到mongodb，动态生成一份。代办中心（乙方）签章之后要将代办委托终止单存储到mongodb。
                     String str = ReceivePDFTemplate.createAgencyStopAgreement(agreementDetail);
                     writeFile(str,resp);

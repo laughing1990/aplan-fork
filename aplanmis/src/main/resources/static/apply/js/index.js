@@ -768,6 +768,7 @@ var vm = new Vue({
     window.addEventListener('scroll', _that.handleScroll);
     window.addEventListener('resize', function (ev) {
       _that.curWidth = (document.documentElement.clientWidth || document.body.clientWidth);
+      _that.curHeight = (document.documentElement.clientHeight || document.body.clientHeight);
     });
     _that.$nextTick(function () {
       this.$refs.searchProjInfo.$el.querySelector('input').click()
@@ -802,6 +803,7 @@ var vm = new Vue({
     },
     // 点击终止协议
     clickStopAgreement: function(){
+      this.stopAgentForm.fileName = this.topProjName+'委托终止单.pdf';
       if (this.stopAgentForm.code&&this.stopAgentForm.code.legnth) {
         this.stopAgentDialogVisible = true;
         return null;
@@ -829,7 +831,19 @@ var vm = new Vue({
     // 关闭终止协议弹窗
     closeStopAgentDialog: function(){},
     // 终止协议弹窗 签章
-    ensureStopAgent: function(){},
+    ensureStopAgent: function(){
+      var reason = this.stopAgentForm.reason;
+      if (!reason.length) {
+        return this.$message.error('请填写终止原因');
+      }
+      var _date = __STATIC.formatDate(this.stopAgentForm.date, 'yyyy-MM-dd');
+      var params = {
+        applyAgentId: this.applyAgentId,
+        agreementStopReason: reason,
+        agreementStopTime: _date,
+      };
+      this.$message.info('接口正在开发中... 请求参数为 '+JSON.stringify(params));
+    },
     // 关闭预览pdf弹窗
     closePrePdf: function(){
       // this.prePdfUrl = '';
@@ -874,6 +888,8 @@ var vm = new Vue({
       this.$prompt('请输入意见', f ? '结束部门确认' : '直接通过', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
+        inputType: 'textarea',
+        customClass: 'guide-prompt',
         inputValidator: function (val) {
           return !!val
         },

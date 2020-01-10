@@ -57,13 +57,13 @@ public class RestAeaProjAgentService {
         AeaProjInfo aeaProjInfo=AgentProjInfoParamVo.format(projAgentParamVo);
         aeaProjInfoService.updateAeaProjInfo(aeaProjInfo);
         saveOrUpdateLinkmanTypes(aeaUnitProjLinkmanVo.getLeaderName(),aeaUnitProjLinkmanVo.getLeaderMobilePhone(),aeaUnitProjLinkmanVo.getLeaderDuty(),unitInfoId,aeaProjInfo.getProjInfoId(),"1");
-        saveOrUpdateLinkmanTypes(aeaUnitProjLinkmanVo.getOperatorName(),aeaUnitProjLinkmanVo.getOperatorMobilePhone(),aeaUnitProjLinkmanVo.getOperatorDuty(),unitInfoId,aeaProjInfo.getProjInfoId(),"0");
-        AeaProjApplyAgent aeaProjApplyAgent=initAeaProjApplyAgent(loginInfo,agentStageState,aeaProjInfo.getProjInfoId());
+        AeaLinkmanInfo applyUser = saveOrUpdateLinkmanTypes(aeaUnitProjLinkmanVo.getOperatorName(), aeaUnitProjLinkmanVo.getOperatorMobilePhone(), aeaUnitProjLinkmanVo.getOperatorDuty(), unitInfoId, aeaProjInfo.getProjInfoId(), "0");
+        AeaProjApplyAgent aeaProjApplyAgent=initAeaProjApplyAgent(loginInfo.getUnitId(),agentStageState,aeaProjInfo.getProjInfoId(),applyUser.getLinkmanInfoId());
         aeaProjApplyAgentService.saveAeaProjApplyAgent(aeaProjApplyAgent);
         return aeaProjApplyAgent;
     }
 
-    private void saveOrUpdateLinkmanTypes(String linkmanName,String linkmanMobilePhone,String duty,String unitInfoId,String projInfoId,String type) throws Exception {
+    private AeaLinkmanInfo saveOrUpdateLinkmanTypes(String linkmanName,String linkmanMobilePhone,String duty,String unitInfoId,String projInfoId,String type) throws Exception {
         AeaLinkmanInfo query=new AeaLinkmanInfo();
         query.setLinkmanName(linkmanName);
         query.setLinkmanMobilePhone(linkmanMobilePhone);
@@ -113,15 +113,16 @@ public class RestAeaProjAgentService {
             aeaUnitProjLinkman.setLinkmanDuty(duty);
             aeaUnitProjLinkmanMapper.insertAeaUnitProjLinkman(aeaUnitProjLinkman);
         }
+        return aeaLinkmanInfo;
     }
 
-    private AeaProjApplyAgent initAeaProjApplyAgent(LoginInfoVo loginInfo,String agentStageState,String projInfoId) throws Exception {
+    private AeaProjApplyAgent initAeaProjApplyAgent(String unitInfoId,String agentStageState,String projInfoId,String linkmanInfoId) throws Exception {
         AeaProjApplyAgent aeaProjApplyAgent=new AeaProjApplyAgent();
         aeaProjApplyAgent.setApplyAgentId(UUID.randomUUID().toString());
         aeaProjApplyAgent.setAgentCode(CommonTools.createDateNo());
-        aeaProjApplyAgent.setUnitInfoId(loginInfo.getUnitId());
+        aeaProjApplyAgent.setUnitInfoId(unitInfoId);
         aeaProjApplyAgent.setProjInfoId(projInfoId);
-        aeaProjApplyAgent.setAgentUserId(loginInfo.getUserId());
+        aeaProjApplyAgent.setApplyUserId(linkmanInfoId);
         aeaProjApplyAgent.setAgentStageState(agentStageState);
         aeaProjApplyAgent.setAgentApplyState(AgencyState.SIGNING.getValue());
         List<AeaServiceWindow> windows = aeaProjWindowService.listAeaServiceWindowByProjInfoId(projInfoId);

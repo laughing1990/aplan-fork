@@ -39,4 +39,6 @@ public interface AeaItemUserAdminService {
      Long getMaxSortNo(String rootOrgId);
 
      void changIsActive(String id, String rootOrgId);
+
+     void syncLocalAeaItemGuide(String userId, String rootOrgId);
 }

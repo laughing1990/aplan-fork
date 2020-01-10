@@ -21,6 +21,7 @@ import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowItemService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowStageService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowUserService;
+import com.augurit.aplanmis.common.vo.AeaRegionOptionVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -652,6 +653,13 @@ public class AeaServiceWindowAdminController {
         }
         return new ResultForm(false);
 
+    }
+
+    @GetMapping("/getRegionOptions")
+    @ApiOperation("获取行政区划数据")
+    public ResultForm getRegionOptions() {
+        List<AeaRegionOptionVo> list = windowService.getRegionOptions();
+        return new ContentResultForm<>(true, list);
     }
 
 }

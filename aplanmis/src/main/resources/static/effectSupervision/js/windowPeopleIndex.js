@@ -589,8 +589,8 @@ var Index = new Vue({
       //   _url = _url + '?localCode=' + row.localCode + '&projInfoId=' + row.projInfoId :
       //   _url = _url + "&localCode=" + row.localCode + '&projInfoId=' + row.projInfoId 
       var _jumpData = {
-        'menuName': this.parallelDeclarationTabData.menuName,
-        'menuInnerUrl': _url,
+        'menuName': '并联申报',
+        'menuInnerUrl': ctx+'apanmis/page/stageApplyIndex',
         'id': row.projInfoId + "_parallelDecal",
         'localCode':  row.localCode,
         'projInfoId': row.projInfoId

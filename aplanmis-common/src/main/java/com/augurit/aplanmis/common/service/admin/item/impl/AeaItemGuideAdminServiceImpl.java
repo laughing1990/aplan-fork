@@ -20,6 +20,7 @@ import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -124,7 +125,7 @@ public class AeaItemGuideAdminServiceImpl implements AeaItemGuideAdminService {
             String[] itemIds = itemIdSet.toArray(new String[]{});
             List<AeaItemBasic> itemBasicList = aeaItemBasicMapper.listAeaItemBasicByItemIds(itemIds, rootOrgId);
             if (itemBasicList != null && itemBasicList.size() > 0) {
-                copyItemBasicToGuide(itemBasicList);
+                copyItemBasicToGuide(itemBasicList, rootOrgId);
             }
         }
     }
@@ -134,9 +135,8 @@ public class AeaItemGuideAdminServiceImpl implements AeaItemGuideAdminService {
      *
      * @param itemBasicList
      */
-    private void copyItemBasicToGuide(List<AeaItemBasic> itemBasicList) {
-
-        String topOrgId = SecurityContext.getCurrentOrgId();
+    @Override
+    public void copyItemBasicToGuide(List<AeaItemBasic> itemBasicList, String topOrgId) {
 
         //事项类型
         List<BscDicCodeItem> itemTypes = bscDicCodeService.getActiveItemsByTypeCode("DEPT_ITEM_TYPE", topOrgId);
@@ -221,7 +221,8 @@ public class AeaItemGuideAdminServiceImpl implements AeaItemGuideAdminService {
         }
     }
 
-    private String getBscDicCodeItemItemName(String itemCode, List<BscDicCodeItem> bscDicCodeItemList) {
+    @Override
+    public String getBscDicCodeItemItemName(String itemCode, List<BscDicCodeItem> bscDicCodeItemList) {
 
         if (bscDicCodeItemList != null && StringUtils.isNotBlank(itemCode)) {
             for (BscDicCodeItem bscDicCodeItem : bscDicCodeItemList) {
