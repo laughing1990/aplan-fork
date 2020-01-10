@@ -116,13 +116,13 @@ var parallelDeclare = new Vue({
       cityList: [], // 市列表
       countyList: [], // 区列表
       rulesResultForm: { // 办证结果取件方式信息校验
-        linkmanName: [
+        addresseeName: [
           { required: true, validator: checkMissValue, trigger: 'blur' },
         ],
-        linkmanMobilePhone: [
+        addresseePhone: [
           { required: true, validator: checkPhoneNum, trigger: 'blur' },
         ],
-        linkmanCertNo: [
+        addresseeIdcard: [
           { required: true, validator: checkMissValue, trigger: 'blur' },
         ],
         receiveMode: [
@@ -133,13 +133,13 @@ var parallelDeclare = new Vue({
         ],
       },
       rulesResultForm1: {
-        linkmanName: [
+        addresseeName: [
           { required: true, validator: checkMissValue, trigger: 'blur' },
         ],
-        linkmanMobilePhone: [
+        addresseePhone: [
           { required: true, validator: checkPhoneNum, trigger: 'blur' },
         ],
-        linkmanCertNo: [
+        addresseeIdcard: [
           { required: true, validator: checkMissValue, trigger: 'blur' },
         ],
         receiveMode: [
@@ -160,7 +160,7 @@ var parallelDeclare = new Vue({
         addresseeCounty: [
           { required: true, validator: checkMissValue, trigger: ['change', 'blur'] },
         ],
-        linkmanAddr: [
+        addresseeAddr: [
           { required: true, validator: checkMissValue, trigger: 'blur' },
         ]
       },
@@ -465,6 +465,11 @@ var parallelDeclare = new Vue({
       noRequireMatShow: [], // 展示的可选材料
       requireMatShow: [], // 展示的必选材料
       identityNumber: '', // 证件号码
+      receiveList: [],//回执列表
+      receiveModalShow: false,//回执弹窗控制
+      receiveItemActive: '', // 回执列表li active状态
+      receiveActive: '', // 回执列表 div active状态
+      pdfSrc: '', // 回执预览地址
     }
   },
   mounted: function () {
@@ -485,6 +490,7 @@ var parallelDeclare = new Vue({
     }
   },
   created: function () {
+    console.log(1);
     this.GetRequest();
     this.getDicContent(); // 数据字典
     this.getGbhy();
@@ -506,6 +512,61 @@ var parallelDeclare = new Vue({
     }
   },
   methods: {
+    //查询回执列表
+    showReceive: function () {
+      var _that = this;
+      request('', {
+        url: ctx + '/rest/user/receive/getStageOrSeriesReceiveByApplyinstIds',
+        type: 'get',
+        data: {'applyinstIds': _that.applyinstIds}
+      }, function (res) {
+        if (res.success) {
+          //显示列表弹框
+          if(res.content.length>0){
+            _that.receiveList = res.content;
+            _that.receiveList.map(function(item){
+              Vue.set(item,'show',true);
+            });
+            _that.printReceive1(_that.receiveList[0].receiveList[0],0,0);
+            _that.receiveModalShow = true;
+          }else {
+            _that.$message({
+              message: '暂无回执',
+              type: 'warning'
+            });
+          }
+        }else {
+          _that.$message({
+            message: res.message?res.message:'获取回执列表失败',
+            type: 'error'
+          });
+        }
+      }, function (msg) {
+        _that.$message({
+          message: '获取回执列表失败',
+          type: 'error'
+        });
+      });
+    },
+    //打印回执new
+    printReceive1: function (row,index,ind) {
+      this.receiveItemActive = index;
+      this.receiveActive = ind;
+      var fileUrl = ctx + '/rest/user/receive/toPDF/'+row.receiveId;
+      this.pdfSrc=ctx + 'preview/pdfjs/web/viewer.html?file='+encodeURIComponent(fileUrl)
+    },
+    // 跳转其他页面
+    goToOtherPage: function(flag){
+      window.location.reload();
+      if(flag=='myHomeIndex'){
+        window.location.href = ctx + 'rest/main/toIndexPage?#myHomeIndex';
+      }else if(flag=='guideList') {
+        window.location.href = ctx + 'rest/main/toIndexPage?#guideList';
+      }else if(flag=='declareHave') {
+        window.location.href = ctx + 'rest/main/toIndexPage?#declareHave';
+      }
+
+    },
     // 查看空表样表下载
     showMatFiles: function (ybKbDetailIds) {
       var _that = this;
@@ -598,9 +659,9 @@ var parallelDeclare = new Vue({
             _that.userInfoId = res.content.linkmanInfoId;
             _that.unitInfoId = res.content.unitInfoId;
             _that.deptComments = res.content.deptComments;
-            Vue.set(res.content.linkmanInfo, 'receiveMode', '1');
-            Vue.set(res.content.linkmanInfo, 'receiveType', '0');
-            _that.getResultForm = res.content.linkmanInfo;
+            res.content.smsInfoVo.receiveMode = res.content.smsInfoVo.receiveMode?res.content.smsInfoVo.receiveMode:'1';
+            res.content.smsInfoVo.receiveType=res.content.smsInfoVo.receiveType?res.content.smsInfoVo.receiveType:'1';
+            _that.getResultForm = res.content.smsInfoVo;
             _that.dybzspjdxh = res.content.dybzspjdxh;
             _that.identityNumber = res.content.idCardCode;
             if(_that.dybzspjdxh&&_that.dybzspjdxh!=''){
@@ -739,7 +800,6 @@ var parallelDeclare = new Vue({
     },
     // 智能引导获取事项一单清
     getItemListByGuide: function () {
-      debugger;
       var _that = this;
       for (var i = 0; i < _that.stateList.length; i++) {  // 并联情形id集合
         if (_that.stateList[i].mustAnswer == 1 && (_that.stateList[i].selectAnswerId == null || _that.stateList[i].selectAnswerId == '')) {
@@ -1068,7 +1128,6 @@ var parallelDeclare = new Vue({
       } else {
         _applySubject = 0;
       }
-      debugger;
       if(_that.parallelItems.length>0){
         _that.parallelItems.map(function(item){
           if(item.applicantChoose||item.intelliGuideChoose){
@@ -2254,7 +2313,6 @@ var parallelDeclare = new Vue({
         alertMsg('', '该主题下无可申报事项！', '关闭', 'warning', true);
         return false;
       }
-      debugger;
       if(index>0&&(index<this.stageList.length-1)){
         this.projSplit = true;
       }else {
@@ -3789,6 +3847,7 @@ var parallelDeclare = new Vue({
               _that.progressStus = 'success';
               _that.progressDialogVisible = false;
               _that.applySuccessProjInfo = res.content;
+              _that.applyinstIds = res.content.applyinstIds;
             } else {
               _that.progressIntervalStop = true;
               _that.progressStus = 'error';
@@ -4449,6 +4508,38 @@ var parallelDeclare = new Vue({
           case 'ABOLISHED':
             defaultValue='已废止';
             break;
+        }
+      }
+      return defaultValue;
+    },
+    changeReceiveType: function (value) {
+      var defaultValue='其他回执';
+      //{{(itemBtn.receiptType==2)?'收件回执':(itemBtn.receiptType==1)?'物料回执':(itemBtn.receiptType==3)?'不受理回执':'其他回执'}}
+      if(value){
+        switch(value) {
+          case '1':
+            defaultValue='物料回执';
+            break;
+          case '2':
+            defaultValue='受理回执';
+            break;
+          case '3':
+            defaultValue='不受理回执';
+            break;
+          case '4':
+            defaultValue='退件回执';
+            break;
+          case '5':
+            defaultValue='送达回证';
+            break;
+          case '6':
+            defaultValue='材料补正回执';
+            break;
+          case '7':
+            defaultValue='行政许可申请书';
+            break;
+          default:
+            defaultValue='其他回执';
         }
       }
       return defaultValue;
