@@ -882,4 +882,15 @@ and ahic_123.creater = #{currentUserId}
             union
         <include refid="searchStayMatCorrectListByCurrentUser"></include>
     </select>
+
+    <select id="listCorrectingApplyinstId" resultType="java.lang.String">
+        select distinct ahic.APPLYINST_ID
+        from aea_hi_item_correct ahic
+        where ahic.CORRECT_STATE='6'
+        and ahic.IS_DELETED='0'
+        and applyinst_id in
+        <foreach collection="applyinstIds" close=")" item="applyinstId" separator="," open="(">
+            #{applyinstId}
+        </foreach>
+    </select>
 </mapper>

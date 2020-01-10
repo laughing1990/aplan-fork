@@ -4085,17 +4085,16 @@
             </if>
         </where>
     </select>
-    <select id="listPickupCheckTasksByPageState" resultType="com.augurit.aplanmis.common.vo.conditional.TaskInfo">
 
+    <select id="listPickupCheckTasksByPageState" resultType="com.augurit.aplanmis.common.vo.conditional.TaskInfo">
         SELECT
         temp_123.*
         FROM
-        (
-
-        SELECT
+        ( SELECT
         ahap_123.APPLYINST_CODE applyinstCode,
         ahap_123.APPLYINST_ID applyinstId,
         ahap_123.APPLYINST_SOURCE applySource,
+        ahap_123.APPLYINST_STATE applyinstState,
         temp1.PROJ_NAME projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
@@ -4107,8 +4106,7 @@
         NULL AS itemName,
         ahap_123.ACCEPT_TIME acceptTime,
         ahap_123.END_TIME concludedTime,
-        '未领取' isSmsSend,
-        case ahsi.RECEIVE_TYPE when '0' then '多次领取' when '1' then '一次领取' end as receiveType
+        ahsi.RECEIVE_TYPE receiveType
         FROM
         AEA_HI_APPLYINST ahap_123
         <include refid="leftJoinApplyinstProj">
@@ -4120,19 +4118,28 @@
         LEFT JOIN aea_hi_sms_info ahsi on ahsi.APPLYINST_ID = ahap_123.APPLYINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
-            AND ahap_123.APPLYINST_STATE IN ('6')
-            AND (ahap_123.is_sms_send ='0' or ahap_123.IS_SMS_SEND is null )
             and ahsi.RECEIVE_MODE = #{receiveMode}
+            and exists (
+            select 1 from aea_hi_iteminst ahi
+            join aea_hi_item_inoutinst ahii on ahi.iteminst_id=ahii.iteminst_id
+            join aea_item_inout aii on ahii.item_inout_id=aii.inout_id
+            where aii.is_input='0'
+            and aii.is_deleted='0'
+            and ahi.is_deleted='0'
+            and ahi.stageinst_id=ahs_123.stageinst_id
+            )
             <if test="applyType != null and applyType != '' ">
                 AND ahap_123.IS_SERIES_APPROVE = #{applyType}
             </if>
         </where>
+
         UNION
 
         SELECT
         ahap_123.APPLYINST_CODE applyinstCode,
         ahap_123.APPLYINST_ID applyinstId,
         ahap_123.APPLYINST_SOURCE applySource,
+        ahap_123.APPLYINST_STATE applyinstState,
         temp1.PROJ_NAME projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
@@ -4144,8 +4151,7 @@
         ahi_123.ITEMINST_NAME AS itemName,
         ahap_123.ACCEPT_TIME acceptTime,
         ahap_123.END_TIME concludedTime,
-        '未领取' isSmsSend,
-        case ahsi.RECEIVE_TYPE when '0' then '多次领取' when '1' then '一次领取' end as receiveType
+        ahsi.RECEIVE_TYPE receiveType
         FROM
         AEA_HI_APPLYINST ahap_123
         <include refid="leftJoinApplyinstProj">
@@ -4155,10 +4161,16 @@
         LEFT JOIN aea_hi_sms_info ahsi on ahsi.APPLYINST_ID = ahap_123.APPLYINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '1'
-            AND ahap_123.APPLYINST_STATE IN ('6')
-
-            AND (ahap_123.is_sms_send ='0' or ahap_123.IS_SMS_SEND is null )
             and ahsi.RECEIVE_MODE = #{receiveMode}
+            and exists (
+            select 1 from aea_hi_iteminst ahi
+            join aea_hi_item_inoutinst ahii on ahi.iteminst_id=ahii.iteminst_id
+            join aea_item_inout aii on ahii.item_inout_id=aii.inout_id
+            where aii.is_input='0'
+            and aii.is_deleted='0'
+            and ahi.is_deleted='0'
+            and ahi.stageinst_id=ahs_123.SERIESINST_ID
+            )
             <if test="applyType != null and applyType != '' ">
                 AND ahap_123.IS_SERIES_APPROVE = #{applyType}
             </if>

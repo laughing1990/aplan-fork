@@ -44,7 +44,14 @@ import com.augurit.aplanmis.common.constants.ItemStatus;
 import com.augurit.aplanmis.common.constants.IteminstType;
 import com.augurit.aplanmis.common.constants.TimeruleInstState;
 import com.augurit.aplanmis.common.constants.TimeruleUnit;
-import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
+import com.augurit.aplanmis.common.domain.AeaHiIteminst;
+import com.augurit.aplanmis.common.domain.AeaItemBasic;
+import com.augurit.aplanmis.common.domain.AeaParStage;
+import com.augurit.aplanmis.common.domain.AeaParTheme;
+import com.augurit.aplanmis.common.domain.AeaParThemeVer;
+import com.augurit.aplanmis.common.domain.AeaProjApplyAgent;
+import com.augurit.aplanmis.common.domain.AeaServiceWindowUser;
 import com.augurit.aplanmis.common.event.AplanmisEventPublisher;
 import com.augurit.aplanmis.common.event.vo.ApplyEventVo;
 import com.augurit.aplanmis.common.event.vo.IteminstEventVo;
@@ -56,6 +63,7 @@ import com.augurit.aplanmis.common.mapper.AeaParThemeMapper;
 import com.augurit.aplanmis.common.mapper.AeaParThemeVerMapper;
 import com.augurit.aplanmis.common.mapper.AeaServiceWindowUserMapper;
 import com.augurit.aplanmis.common.mapper.ConditionalQueryMapper;
+import com.augurit.aplanmis.common.service.certificate.PickUpService;
 import com.augurit.aplanmis.common.service.window.AeaProjApplyAgentService;
 import com.augurit.aplanmis.common.shortMessage.AplanmisSmsConfigProperties;
 import com.augurit.aplanmis.common.utils.ExcelUtils;
@@ -142,6 +150,9 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
 
     @Autowired
     OpuOmOrgMapper opuOmOrgMapper;
+
+    @Autowired
+    private PickUpService pickUpService;
 
 
     @Autowired
@@ -1265,8 +1276,18 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
         PageHelper.startPage(page);
         conditionalQueryRequest.setReceiveMode(type);
         List<TaskInfo> taskList = conditionalQueryMapper.listPickupCheckTasksByPageState(conditionalQueryRequest);
+        if (taskList.size() > 0) {
+            Map<String, TaskInfo> taskInfoMap = taskList.stream().collect(Collectors.toMap(BaseInfo::getApplyinstId, info -> info));
 
-        loadTaskInfo(taskList, "取件登记");
+            // 是否缴费
+            pickUpService.chargeStatus(taskInfoMap);
+
+            // 补齐状态
+            pickUpService.complementStatus(taskInfoMap);
+
+            // 领取状态
+            pickUpService.pickUpStatus(taskInfoMap);
+        }
 
         return new PageInfo<>(taskList);
     }

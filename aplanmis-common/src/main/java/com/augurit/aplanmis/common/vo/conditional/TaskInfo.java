@@ -62,6 +62,15 @@ public class TaskInfo extends BaseInfo implements Serializable {
     @ApiModelProperty(value = "领取方式", notes = "1：一次领取，0：多次领取")
     private String receiveType;
 
+    @ApiModelProperty(value = "是否较费", notes = "1: 已缴清; 0: 未缴费")
+    private String chargeStatus;
+
+    @ApiModelProperty(value = "补齐状态", notes = "1: 未容缺; 0: 待补齐")
+    private String complementionStatus;
+
+    @ApiModelProperty(value = "领取状态", notes = "0: 未领取; 1: 已领取; 2: 部分领取")
+    private String pickUpStatus;
+
     @ApiModelProperty(value = "办结时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm", locale = "zh", timezone = "GMT+8")

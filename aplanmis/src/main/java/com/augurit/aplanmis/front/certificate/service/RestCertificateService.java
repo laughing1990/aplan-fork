@@ -47,7 +47,6 @@ import com.augurit.aplanmis.common.mapper.AeaHiSmsSendItemMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemInoutMapper;
 import com.augurit.aplanmis.common.mapper.AeaLogItemStateHistMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
-import com.augurit.aplanmis.common.mapper.AeaUnitInfoMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitProjMapper;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
@@ -111,8 +110,6 @@ public class RestCertificateService {
     private UploaderFactory uploaderFactory;
     @Autowired
     private AeaCertMapper aeaCertMapper;
-    @Autowired
-    private AeaUnitInfoMapper aeaUnitInfoMapper;
     @Autowired
     private AeaUnitInfoService aeaUnitInfoService;
     @Autowired
@@ -278,13 +275,12 @@ public class RestCertificateService {
      *
      */
     private void checkAllSmsItemSendThenUpdateAeaHiApplyinst(String applyinstId, String isSeriesApprove) throws Exception {
-        String rootOrgId = SecurityContext.getCurrentOrgId();
         boolean allSend;
         if (ApplyType.SERIES.equals(isSeriesApprove)) {//单项申报默认出证都是全部出证
             allSend = true;
         } else {
             // 需要出证的事项数量
-            int needSendCount = aeaHiSmsSendItemMapper.getNeedSendCount(applyinstId, rootOrgId);
+            int needSendCount = aeaHiSmsSendItemMapper.getNeedSendCount(applyinstId);
             // 已经出证的事项数量
             int hadSendCount = aeaHiSmsSendItemMapper.countSendItemByApplyinstId(applyinstId);
             allSend = (needSendCount == hadSendCount);
