@@ -244,12 +244,13 @@ public class AeaProjApplyAgentController {
     @GetMapping("/getAgencyEndAgreementFile")
     @ApiOperation(value = "项目代办 --> 获取代办办结单", notes = "项目代办 --> 获取代办办结单", httpMethod = "GET")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "applyAgentId",value = "代办申请ID",required = true,dataType = "String")
+            @ApiImplicitParam(name = "aeaProjApplyAgent",value = "代办申请参数接收对象",required = true,dataType = "aeaProjApplyAgent")
     })
-    public void getAgencyEndAgreementFile(String applyAgentId, HttpServletResponse resp){
+    public void getAgencyEndAgreementFile(AeaProjApplyAgent aeaProjApplyAgent, HttpServletResponse resp){
         logger.debug("获取代办办结单");
         try {
-            Assert.notNull(applyAgentId,"代办申请ID不能为空");
+            Assert.notNull(aeaProjApplyAgent,"参数不能为空");
+            String applyAgentId = aeaProjApplyAgent.getApplyAgentId();
             if(StringUtils.isNotBlank(applyAgentId)){
                 AeaProjApplyAgent agreementDetail = aeaProjApplyAgentService.getAgencyAgreementDetail(applyAgentId);
                 if(agreementDetail == null){
@@ -260,7 +261,7 @@ public class AeaProjApplyAgentController {
                     fileUtilsService.readFile(endAgreementFileId,null,resp);
                 }else{
                     //办结时间如果修改就要前端传值过来
-                    agreementDetail.setAgreementEndTime(new Date());
+                    agreementDetail.setAgreementEndTime(aeaProjApplyAgent.getAgreementEndTime());
                     //协议没有存储到mongodb，动态生成一份。代办中心（乙方）签章之后要将代办委托终止单存储到mongodb。
                     String str = ReceivePDFTemplate.createAgencyStopAgreement(agreementDetail);
                     writeFile(str,resp);

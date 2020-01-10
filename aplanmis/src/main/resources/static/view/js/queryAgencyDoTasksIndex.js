@@ -134,7 +134,7 @@ var vm = new Vue({
         showOperateBtn2: function (row) {
             return ('2' === row.agentApplyState || '3' === row.agentApplyState || '5' === row.agentApplyState || '6' === row.agentApplyState || '7' === row.agentApplyState);
         },
-        //办理按钮
+        //办理、办结按钮
         showOperateBtn3: function (row) {
             return ('4' === row.agentApplyState);
         },
