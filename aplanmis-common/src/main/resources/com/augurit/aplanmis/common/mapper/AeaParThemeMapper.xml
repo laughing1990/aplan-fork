@@ -613,6 +613,7 @@
         where aptv2.IS_PUBLISH in ('1', '2') and aptv2.ROOT_ORG_ID=#{rootOrgId} and aptv2.IS_DELETED = '0'
         group by aptv2.theme_id) maxVer on maxVer.theme_id=aptv.theme_id and maxVer.maxNum=aptv.VER_NUM
         <where>
+            and apt.is_deleted='0'
             <if test="themeCategory != null and themeCategory == 'mainline'">
                 and apt.IS_MAINLINE='1'
             </if>

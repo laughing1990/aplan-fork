@@ -1516,3 +1516,93 @@
 .mat-list .el-table td, .mat-list .el-table th {
   padding: 20px 0;
 }
+.receive-modal .el-dialog__body {
+  background: rgba(242,243,248,1);
+  padding: 16px;
+}
+.receive-item-header {
+  border-bottom: 1px solid #EBEDF2;
+  height: 40px;
+  line-height: 40px;
+  padding: 0 10px;
+  font-size: 16px;
+}
+.receive-list {
+  padding: 10px 14px;
+  margin-left: 23px;
+  position: relative;
+}
+.receive-list:before {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  width: 1px;
+  top: 0;
+  bottom: 30px;
+  background: #EBEDF2;
+  left: 0;
+}
+.receive-list li {
+  margin-bottom: 10px;
+  position: relative;
+}
+.receive-list li:before {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  height: 1px;
+  width: 14px;
+  top: 10px;
+  background: #EBEDF2;
+  left: -14px;
+}
+.receive-item {
+  background: rgba(255,255,255,1);
+  box-shadow: 0px 0px 8px 0px rgba(50,50,50,0.05);
+  border-radius: 4px;
+  width: 230px;
+  margin-bottom: 16px;
+}
+.receive-list span {
+  padding: 4px 8px 5px 8px;;
+  cursor: pointer;
+}
+
+.receive-list span:hover, .receive-item.active li.active span {
+  color: #169AFF;
+  background: rgba(244,250,254,1);
+}
+.receive-type, .receive-type-y {
+  padding: 0 12px;
+  color: #07CDC6;
+  border-radius: 11px;
+  border: 1px solid #07CDC6;
+  font-size: 14px;
+  height: 22px;
+  line-height: 22px;
+  margin: 9px 0;
+  display: inline-block;
+}
+.receive-type-y {
+  color: #FFB822;
+  border: 1px solid #FFB822;
+}
+
+.receive-modal .el-dialog {
+  background: rgba(242,243,248,1);
+  margin-top: 50px !important;
+}
+.pdf-view-win {
+  width: 100%;
+  padding-left: 250px;
+  height: 100%;
+}
+.receive-item-header .icon {
+  line-height: 40px;
+  padding-left: 5px;
+  cursor: pointer;
+}
+.receive-item-header span.ellipsis {
+  display: inline-block;
+  width: 130px;
+}

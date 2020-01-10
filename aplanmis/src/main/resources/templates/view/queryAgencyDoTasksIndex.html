@@ -212,7 +212,7 @@
       <template slot-scope="scope">
         <span class="op-btn" v-if="showOperateBtn1(scope.row)" @click="toAgencyDetail(scope.row, 'do')">签订协议</span>
         <span class="op-btn" v-if="showOperateBtn2(scope.row)" @click="toAgencyDetail(scope.row, 'view')">查看</span>
-        <span class="op-btn" v-if="showOperateBtn3(scope.row)" @click="viewDetail(scope.row)">办理</span>
+        <span class="op-btn" v-if="showOperateBtn3(scope.row)" @click="toApplyPage(scope.row)">办理</span>
       </template>
     </el-table-column>
   </el-table>

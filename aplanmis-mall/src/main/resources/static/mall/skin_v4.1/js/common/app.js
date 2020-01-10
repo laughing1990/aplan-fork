@@ -113,6 +113,14 @@
                     thUrl:'rest/user/toParallelDeclarePage',
                     hash:'/myParallelPage',
                 },
+                {
+                    label: '项目管理',
+                    id: 'applyProjTree',
+                    activeName:4,
+                    url: './apply/applyProjTree.html',
+                    thUrl:'rest/user/toApplyProjTreePage',
+                    hash:'/applyProjTree',
+                },
             ],
             curentLoginInfo:{},
             isShowCompatibleTips: true // 是否显示浏览器兼容模块提示

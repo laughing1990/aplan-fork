@@ -343,7 +343,7 @@ var vm = new Vue({
         _that.windowUserName = windowUserName;
         _that.searchSmsInfo();
         _that.getFileListWin('', _that.selMatRowData);
-        _that.getCertBasicInfoList();
+        // _that.getCertBasicInfoList();
         _that.queryProvince();
     },
     watch: {
@@ -422,7 +422,7 @@ var vm = new Vue({
             return '';
         },
         /** 获取制证所用基本信息**/
-        getCertBasicInfoList: function () {
+        /*getCertBasicInfoList: function () {
             var _this = this;
             request('', {
                 url: ctx + 'rest/certificate/getBasicInfo',
@@ -440,7 +440,7 @@ var vm = new Vue({
                     type: 'error'
                 });
             });
-        },
+        },*/
         //状态转换
         statuFormatter: function (row, col) {
             if (row.isSmsSend == '1') {
@@ -576,7 +576,7 @@ var vm = new Vue({
 
 
             request('', {
-                url: ctx + 'rest/certificate/getOutFileInfoByIteminstId',
+                url: ctx + 'rest/certificate/out/materials/view',
                 type: 'get',
                 data: {'iteminstId': row.iteminstId, 'applyinstId': applyinstId}
             }, function (result) {
@@ -631,7 +631,7 @@ var vm = new Vue({
             var _applyinstId = this.applyinstId;
             var tmp = [];
             request('', {
-                url: ctx + 'rest/certificate/listSmsCertDetailByApplyinstId',
+                url: ctx + 'rest/certificate/out/materials/register',
                 type: 'post',
                 data: {'applyinstId': _applyinstId}
             }, function (result) {
@@ -798,7 +798,7 @@ var vm = new Vue({
             }
             // debugger
             param.applyinstId = applyinstId;
-            param.isApprove = _this.multipleSelection[0].isSeriesApprove;
+            param.isSeriesApprove = _this.multipleSelection[0].isSeriesApprove;
             _this.sendInfoForm.windowUserName = windowUserName;
             _this.sendInfoForm.windowUserId = windowUserId;
             param.sendBean = _this.sendInfoForm;
@@ -827,24 +827,18 @@ var vm = new Vue({
 
             param.iteminsts = _this.multipleSelection;
 
-
-            var str = JSON.stringify(param);
-            // console.info(param);
             if (validateResult) {
                 request('', {
-                    url: ctx + 'rest/certificate/saveSmsCertDetail',
+                    url: ctx + 'rest/certificate/out/materials/confirm',
                     type: 'post',
-                    data: {'jsonstr': str}
+                    data: JSON.stringify(param),
+                    ContentType: "application/json"
                 }, function (result) {
                     if (result.success) {
                         _this.$message({
                             message: '保存成功',
                             type: 'success'
                         });
-                        /*setTimeout(function () {
-                            parent.vm.removeTab(_this.applyinstId);
-                        }, 1000);*/
-
                         _this.closeWindowTab();
                     }
 
@@ -868,7 +862,7 @@ var vm = new Vue({
         editSMSSend: function (index, row) {
             var _this = this;
             request('', {
-                url: ctx + 'rest/certificate/getSmsSendItemDetail',
+                url: ctx + 'rest/certificate/out/materials/detail',
                 type: 'get',
                 data: {'iteminstId': row.iteminstId, 'applyinstId': applyinstId}
             }, function (result) {
@@ -969,12 +963,11 @@ var vm = new Vue({
             }
             //封装采集参数
             var param = _this.ItemSmsInfoForm;
-            var str = JSON.stringify(param);
-
             request('', {
                 url: ctx + 'rest/certificate/updateSendItemInfo',
                 type: 'post',
-                data: {'jsonstr': str}
+                data: JSON.stringify(param),
+                ContentType: "application/json"
             }, function (result) {
                 if (result.success) {
                     _this.$message({
@@ -1005,7 +998,7 @@ var vm = new Vue({
             var _that = this;
 
             request('', {
-                url: ctx + 'rest/certificate/cert/list',
+                url: ctx + 'rest/certificate/out/materials/attachments',
                 type: 'get',
                 data: {'instId': instId, "type": type}
             }, function (res) {
@@ -1263,7 +1256,7 @@ var vm = new Vue({
             });
             detailIds = detailIds.join(',')
             request('', {
-                url: ctx + 'rest/certificate/att/delelte',
+                url: ctx + 'rest/certificate/consigner/att/delelte',
                 type: 'post',
                 data: {'detailIds': detailIds, 'applyinstId': applyinstId}
             }, function (res) {

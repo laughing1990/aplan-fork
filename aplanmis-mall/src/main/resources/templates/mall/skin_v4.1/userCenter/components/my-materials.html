@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>我的材料</title>
+    <title>申报材料</title>
     <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
     <style>
         .tips{
@@ -136,7 +136,7 @@
 </head>
 <body>
 <div id="my-materials">
-    <p class="p-header">我的材料</p>
+    <p class="p-header">申报材料</p>
     <section>
         <div class="tips">
             <i class="el-icon-warning-outline" style="font-size: 28px; color: rgb(255, 184, 34); vertical-align: middle;"></i>
@@ -146,7 +146,7 @@
 
     <section class="search-box">
         <el-input
-                placeholder="搜索你要找的材料"
+                placeholder="搜索您要找的材料"
                 v-model="keyword">
             <i slot="suffix" class="el-input__icon el-icon-search"></i>
         </el-input>
@@ -163,10 +163,10 @@
                                 <div class="file-div">
                                     <div class="fl"><i class="ag" :class="getFileTypeIcon(item.fileType)"></i><span class="fileName" @click="previewFile(item)">{{item.fileName}}</span><span class="fontSize">（{{item.fileSize|getFileSize}}）</span></div>
                                     <div class="download fr" >
-                                        <!--<i class="ag ag-download" @click="downloadFile(item.fileId)"></i>
-                                        <i class="el-icon-view" @click="previewFile(item)"></i>-->
-                                        <el-button type="text" @click="previewFile(item)">预览</el-button>
-                                        <el-button type="text" @click="downloadFile(item.fileId)">下载</el-button>
+                                        <i class="ag ag-download" @click="downloadFile(item.fileId)"></i>
+                                        <i class="el-icon-view" @click="previewFile(item)"></i>
+                                        <!--<el-button type="text" @click="previewFile(item)">预览</el-button>-->
+                                        <!--<el-button type="text" @click="downloadFile(item.fileId)">下载</el-button>-->
                                     </div>
                                 </div>
                             </el-form-item>
@@ -181,7 +181,7 @@
                         label="材料名称"
                 >
                     <template slot-scope="scope">
-                        <div class="fontSize">{{scope.row.matinstName}}</div>
+                        <div class="fontSize">{{scope.row.matinstName}} <span style=" color:#457EFF;">（{{scope.row.attCount}}）</span></div>
                     </template>
                 </el-table-column>
                 <el-table-column

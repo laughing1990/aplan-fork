@@ -80,7 +80,7 @@ var vm = new Vue({
             var urltemp = '';
             var menuName = '';
             urltemp = ctx + 'rest/certificate/registerIndex?applyinstId=' + applyinstId;
-            menuName = '出件登记';
+            menuName = '取件登记';
 
             var parentIfreamUrl = window.frames.location.href;
             urltemp = urltemp +'&parentIfreamUrl='+parentIfreamUrl;

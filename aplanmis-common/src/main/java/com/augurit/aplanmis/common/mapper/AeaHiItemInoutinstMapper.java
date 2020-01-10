@@ -71,14 +71,11 @@ public interface AeaHiItemInoutinstMapper {
      * @throws Exception
      */
     List<AeaHiItemInoutinst> getAeaHiItemInoutinstOutByIteminstId(String iteminstId) throws Exception;
+
     /**
-     * 根据iteminst找到其输出证照的实例，不关联inout表
-     * @param iteminstId
-     * @param rootOrgId
-     * @return
-     * @throws Exception
+     * 根据iteminst输出材料
      */
-    List<AeaHiItemInoutinst> getAeaHiItemInoutinstOutByIteminstIdWithoutInOut(@Param("iteminstId") String iteminstId, @Param("rootOrgId") String rootOrgId) throws Exception;
+    List<AeaHiItemInoutinst> listOutMaterialsByIteminstId(@Param("iteminstId") String iteminstId, @Param("rootOrgId") String rootOrgId) throws Exception;
 
     List<AeaHiItemInoutinst> getAeaHiIteminstCertByIteminstId(String iteminstId);
 

@@ -194,15 +194,29 @@
       </template>
     </el-table-column>
     <el-table-column
-            min-width="100"
-            prop="receiveType"
-            label="领取方式"
+            min-width="50"
+            prop="complementionStatus"
+            label="补齐状态"
             show-overflow-tooltip
             :formatter = "formatTableCell">
     </el-table-column>
     <el-table-column
-            prop="isSmsSend"
+            min-width="50"
+            prop="chargeStatus"
+            label="是否缴费"
+            show-overflow-tooltip
+            :formatter="formatTableCell">
+    </el-table-column>
+    <el-table-column
             min-width="100"
+            prop="receiveType"
+            label="领取方式"
+            show-overflow-tooltip
+            :formatter="formatTableCell">
+    </el-table-column>
+    <el-table-column
+            prop="pickUpStatus"
+            min-width="50"
             label="领取状态"
             show-overflow-tooltip
             :formatter = "formatTableCell">

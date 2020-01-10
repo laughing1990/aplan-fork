@@ -1,19 +1,20 @@
 package com.augurit.aplanmis.front.certificate.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.constants.InOutType;
 import com.augurit.aplanmis.common.domain.AeaHiCertinst;
 import com.augurit.aplanmis.common.domain.AeaHiSmsSendItem;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.front.certificate.service.RestCertificateService;
 import com.augurit.aplanmis.front.certificate.vo.CertListAndUnitVo;
+import com.augurit.aplanmis.front.certificate.vo.CertOutinstVo;
+import com.augurit.aplanmis.front.certificate.vo.CertReceivedVo;
+import com.augurit.aplanmis.front.certificate.vo.CertRegistrationVo;
 import com.augurit.aplanmis.front.certificate.vo.CertinstParamVo;
-import com.augurit.aplanmis.front.certificate.vo.SmsSaveParam;
-import com.augurit.aplanmis.front.certificate.vo.SmsSendBaseVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,11 +32,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @Slf4j
@@ -61,7 +61,7 @@ public class RestCertificateController {
     }
 
     @GetMapping("/registerIndex")
-    @ApiOperation("领证页面入口")
+    @ApiOperation("取件登记页入口")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applyinstId", value = "申请实例id", readOnly = true, dataType = "string", paramType = "path", required = true)
     })
@@ -73,49 +73,134 @@ public class RestCertificateController {
         return modelAndView;
     }
 
-    @PostMapping("/listSmsCertDetailByApplyinstId")
-    @ApiOperation(value = "获取事项出件出证信息")
+    @PostMapping("/out/materials/register")
+    @ApiOperation(value = "取件登记")
     @ApiImplicitParams({@ApiImplicitParam(value = "申请实例主键 ", name = "applyinstId", required = true)})
-    public ResultForm getCertificationInfo(String applyinstId){
-        Assert.notNull(applyinstId,"申请实例Id为空！");
+    public ContentResultForm<CertRegistrationVo> registerOutMaterials(String applyinstId) {
+        Assert.hasText(applyinstId, "申请实例Id为空！");
         try {
-            SmsSendBaseVo result = certificateService.getCertificationInfo(applyinstId);
-            return  new ContentResultForm<>(true,result,"获取事项实例成功");
+            return new ContentResultForm<>(true, certificateService.getCertificationInfo(applyinstId), "success.");
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResultForm(false, "获取事项实例失败！");
+            return new ContentResultForm<>(false, null, "获取信息失败, " + e.getMessage());
         }
     }
 
-    @PostMapping("/saveSmsCertDetail")
-    @ApiOperation(value = "保存出件领证相关信息")
-    @ApiImplicitParams({@ApiImplicitParam(value = "领证信息（json字符串格式） ", name = "jsonstr", required = true)})
-    public ContentResultForm<Boolean> insertSmsinfo(String jsonstr) {
-        Assert.notNull(jsonstr,"字符串参数为空！");
+    @GetMapping("/out/materials/view")
+    @ApiOperation(value = "取件登记-查看输出材料详情")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "事项实例id ", name = "iteminstId", required = true),
+            @ApiImplicitParam(value = "申报实例id ", name = "applyinstId", required = true),
+    })
+    public ContentResultForm<List<CertOutinstVo>> viewOutMaterials(String iteminstId, String applyinstId) {
+        Assert.hasText(iteminstId, "事项实例iteminstId为空！");
+        Assert.hasText(applyinstId, "申报实例applyinstId为空！");
         try {
-            SmsSaveParam smsSaveParam = JSONObject.parseObject(jsonstr, SmsSaveParam.class);
-            boolean result = certificateService.saveSmsRelevance(smsSaveParam);
-            return new ContentResultForm<>(true, result, "保存成功！");
+            List<CertOutinstVo> result = certificateService.viewOutMaterials(iteminstId, applyinstId);
+            return new ContentResultForm<>(true, result, "success.");
         } catch (Exception e) {
             e.printStackTrace();
-            return new ContentResultForm<>(false, false, "保存领证记录失败！");
+            return new ContentResultForm<>(false, null, "查询输出材料实例信息失败！" + e.getMessage());
+        }
+    }
+
+    @GetMapping("/out/materials/attachments")
+    @ApiOperation(value = "查询材料附件列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "instId", value = "实例id"),
+            @ApiImplicitParam(name = "type", value = "实例类型【cert输出证照，mat输出材料】")
+    })
+    public ContentResultForm<List<BscAttFileAndDir>> certFileListByItemisntId(String instId, String type) {
+        Assert.hasText(instId, "材料实例id不能为空！");
+        try {
+            List<BscAttFileAndDir> result = new ArrayList<>();
+            if (InOutType.CERT.getValue().equals(type)) {
+                result.addAll(fileUtilsService.getBscAttFileAndDirListByinstId(instId, "CERTINST_ID", "AEA_HI_CERTINST"));
+            } else if (InOutType.MAT.getValue().equals(type)) {
+                result.addAll(fileUtilsService.getBscAttFileAndDirListByinstId(instId, "MATINST_ID", "AEA_HI_ITEM_MATINST"));
+            }
+            return new ContentResultForm<>(true, result, "success.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ContentResultForm<>(false, null, "查询证照附件列表失败, " + e.getMessage());
+        }
+    }
+
+    @ApiOperation("取件登记-查看事项出件详情")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "applyinstId", value = "申请实例id", readOnly = true, dataType = "string", required = true),
+            @ApiImplicitParam(name = "iteminstId", value = "事项实例id", readOnly = true, dataType = "string", required = true)
+    })
+    @GetMapping("/out/materials/detail")
+    public ContentResultForm<AeaHiSmsSendItem> getSmsSendItemDetail(String applyinstId, String iteminstId) {
+        Assert.hasText(applyinstId, "申报实例id不能为空!");
+        Assert.hasText(iteminstId, "事项实例id不能为空!");
+        try {
+            AeaHiSmsSendItem sendItem = certificateService.getSmsSendItemDetail(applyinstId, iteminstId);
+            return new ContentResultForm<>(true, sendItem, "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ContentResultForm<>(false, null, "查看事项出件详情失败！" + e.getMessage());
+        }
+    }
+
+    @PostMapping("/updateSendItemInfo")
+    @ApiOperation("取件登记-更新事项出件信息")
+    public ResultForm updateSendItemInfo(@RequestBody AeaHiSmsSendItem aeaHiSmsSendItem) {
+        Assert.hasText(aeaHiSmsSendItem.getSendItemId(), "事项出件主键id不能为空!");
+        try {
+            certificateService.updateSendItemInfo(aeaHiSmsSendItem);
+            return new ResultForm(true, "success.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultForm(false, "更新失败！" + e.getMessage());
+        }
+    }
+
+    @PostMapping("/out/materials/confirm")
+    @ApiOperation(value = "领取确认")
+    public ResultForm confirmReceived(@RequestBody CertReceivedVo certReceivedVo) {
+        try {
+            certificateService.confirmReceived(certReceivedVo);
+            return new ResultForm(true, "保存成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultForm(false, "保存领证记录失败！" + e.getMessage());
         }
     }
 
     @PostMapping("/consignerAtt/upload")
     @ApiOperation(value = "上传委托证明附件")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "applyinstId", value = "申请实例id", dataType = "string", paramType = "query", required = true)
+            @ApiImplicitParam(name = "applyinstId", value = "申请实例id", required = true)
     })
-    public ContentResultForm<String> uploadFile(String applyinstId, HttpServletRequest request) {
-        Assert.notNull(applyinstId,"申请实例Id不能为空！");
+    public ContentResultForm<String> uploadConsignerAtt(String applyinstId, HttpServletRequest request) {
+        Assert.hasText(applyinstId, "申请实例Id不能为空！");
 
         try {
-            String consignerAttId = certificateService.uploadFile(applyinstId, request);
+            String consignerAttId = certificateService.uploadConsignerAtt(applyinstId, request);
             return new ContentResultForm<>(true, consignerAttId, "委托证明附件 upload success");
         } catch (Exception e) {
             e.printStackTrace();
-            return new ContentResultForm<>(false,null,"上传委托证明附件失败！");
+            return new ContentResultForm<>(false, null, "上传委托证明附件失败！" + e.getMessage());
+        }
+    }
+
+    @PostMapping("/consigner/att/delelte")
+    @ApiOperation(value = "删除委托证明")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "detailIds", value = "附件详情id", dataType = "string", paramType = "query", required = true),
+            @ApiImplicitParam(name = "applyinstId", value = "申请实例id", dataType = "string", paramType = "query", required = true)
+    })
+    public ContentResultForm<String> delelteConsignerAtt(String detailIds, String applyinstId) {
+        Assert.isTrue(StringUtils.isNotBlank(detailIds), "detailIds is null");
+
+        try {
+            certificateService.delelteConsignerAtt(detailIds);
+            return new ContentResultForm<>(true, applyinstId, "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ContentResultForm<>(false, null, "删除委托证明失败！" + e.getMessage());
         }
     }
 
@@ -131,41 +216,23 @@ public class RestCertificateController {
             return new ContentResultForm<>(true, fileAndDirs, "查询委托证明书列表 success");
         } catch (Exception e) {
             e.printStackTrace();
-            return new ContentResultForm<>(false, null, "查询委托证明书列表 list failed");
-        }
-    }
-
-    @PostMapping("/att/delelte")
-    @ApiOperation(value = "删除委托证明")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "detailIds", value = "附件详情id", dataType = "string", paramType = "query", required = true),
-            @ApiImplicitParam(name = "applyinstId", value = "申请实例id", dataType = "string", paramType = "query", required = true)
-    })
-    public ContentResultForm<String> delelteAttFile(String detailIds, String applyinstId){
-        Assert.isTrue(StringUtils.isNotBlank(detailIds), "detailIds is null");
-
-        try {
-            certificateService.delelteAttFile(detailIds);
-            return new ContentResultForm<>(true, applyinstId, "cert is deleted.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ContentResultForm<>(false,null,"删除委托证明失败！");
+            return new ContentResultForm<>(false, null, "查询委托证明书列表失败，" + e.getMessage());
         }
     }
 
     @GetMapping("/consignerAtt/preview")
     @ApiOperation(value = "预览委托证明")
     @ApiImplicitParam(name = "detailId", value = "附件ID", dataType = "string", required = true)
-    public ModelAndView preview(String detailId, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) throws Exception {
-        return certificateService.preview(detailId, request, response, redirectAttributes);
+    public ModelAndView preview(String detailId, RedirectAttributes redirectAttributes) throws Exception {
+        return certificateService.preview(detailId, redirectAttributes);
     }
 
-    @GetMapping("/getBasicInfo")
+    /*@GetMapping("/getBasicInfo")
     @ApiOperation(value = "获取制证所需基本信息")
     public ContentResultForm<Map<String, Object>> getBasicInfo() throws Exception {
         Map<String, Object> result = certificateService.getCertBasicInfo();
         return new ContentResultForm<>(true, result, "success");
-    }
+    }*/
 
 
     @PostMapping("/updateCertInfo")
@@ -239,10 +306,15 @@ public class RestCertificateController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "detailIds", value = "附件详情id", dataType = "string", paramType = "query", required = true)
     })
-    public ResultForm batchDeleteAttach(String detailIds) throws Exception {
+    public ResultForm batchDeleteAttach(String detailIds) {
         Assert.isTrue(StringUtils.isNotBlank(detailIds), "detailIds is null");
-        certificateService.delelteAttFile(detailIds);
-        return new ContentResultForm<>(true, "cert is deleted.");
+        try {
+            certificateService.delelteConsignerAtt(detailIds);
+            return new ResultForm(true, "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultForm(false, "批量删除证照附件失败!" + e.getMessage());
+        }
     }
 
     @GetMapping("/certinst/att/list")
@@ -257,74 +329,7 @@ public class RestCertificateController {
             return new ContentResultForm<>(true, fileAndDirs, "Query attachment list success");
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResultForm(false, "Query attachment list failed");
-        }
-    }
-
-    @GetMapping("/cert/list")
-    @ApiOperation(value = " 查询证照附件附件列表", notes = "{查询-事项实例-证照实例-附件列表}")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "instId", value = "实例id"),
-            @ApiImplicitParam(name = "type", value = "实例类型【cert输出证照，mat输出材料】")
-    })
-    public ResultForm certFileListByItemisntId(String instId,String type){
-        if (StringUtils.isBlank(instId)) {
-            return new ContentResultForm<>(true, new ArrayList<>(), "empty certinstId");
-        }
-        try {
-            List<BscAttFileAndDir> result = new ArrayList<>();
-            if("cert".equals(type)){
-                result.addAll(fileUtilsService.getBscAttFileAndDirListByinstId(instId, "CERTINST_ID", "AEA_HI_CERTINST"));
-            }else{
-                result.addAll(fileUtilsService.getBscAttFileAndDirListByinstId(instId, "MATINST_ID", "AEA_HI_ITEM_MATINST"));
-            }
-            return new ContentResultForm<>(true, result, "Query attachment list success");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResultForm(false,"query list false;");
-        }
-    }
-
-    @ApiOperation("获取事项出件详情")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "applyinstId", value = "申请实例id", readOnly = true, dataType = "string", paramType = "query", required = true),
-            @ApiImplicitParam(name = "iteminstId", value = "申请实例id", readOnly = true, dataType = "string", paramType = "query", required = true)
-    })
-    @GetMapping("/getSmsSendItemDetail")
-    public ResultForm getSmsSendItemDetail(String applyinstId , String iteminstId){
-        try {
-            AeaHiSmsSendItem sendItem = certificateService.getSmsSendItemDetail(applyinstId,iteminstId);
-            return new ContentResultForm<>(true,sendItem,"获取成功");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ContentResultForm<>(false,null,"获取失败！"+e.getMessage());
-        }
-    }
-
-    @RequestMapping("/updateSendItemInfo")
-    public ResultForm updateSendItemInfo(String jsonstr){
-        try {
-            AeaHiSmsSendItem sendItem = JSONObject.parseObject(jsonstr, AeaHiSmsSendItem.class);
-            certificateService.updateSendItemInfo(sendItem);
-            return new ContentResultForm<>(true,null,"更新成功");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ContentResultForm<>(false,null,"更新失败！"+e.getMessage());
-        }
-    }
-
-    @GetMapping("/getOutFileInfoByIteminstId")
-    @ApiOperation(value = "根据事项实例id查询输出材料信息")
-    @ApiImplicitParams({@ApiImplicitParam(value = "事项实例id ", name = "iteminstId", required = true)})
-    public ContentResultForm<List<Map<String, Object>>> getOutFileInfoByIteminstId(String iteminstId, String applyinstId) {
-        Assert.notNull(iteminstId,"iteminstId为空！");
-        Assert.notNull(applyinstId,"applyinstId为空！");
-        try {
-            List<Map<String,Object>> result = certificateService.getOutFileInfoByIteminstId(iteminstId,applyinstId);
-            return new ContentResultForm<>(true, result, "query success!");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ContentResultForm<>(false, null, "查询证照实例信息失败！");
+            return new ResultForm(false, "查询证照实例附件列表失败, " + e.getMessage());
         }
     }
 }

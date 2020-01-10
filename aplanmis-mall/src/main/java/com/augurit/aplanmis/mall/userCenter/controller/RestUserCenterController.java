@@ -67,6 +67,11 @@ public class RestUserCenterController {
     public ModelAndView toParallelDeclarePage () throws Exception {
         return new ModelAndView("mall/"+skin+"apply/index");
     }
+    @GetMapping("toApplyProjTreePage")
+    @ApiOperation(value = "跳转工程管理页面")
+    public ModelAndView toApplyProjTreePage () throws Exception {
+        return new ModelAndView("mall/"+skin+"apply/applyProjTree");
+    }
     @GetMapping("/toMyCertificateLibraryPage")
     @ApiOperation(value = "我的证照")
     public ModelAndView toMyCertificateLibraryPage(){
