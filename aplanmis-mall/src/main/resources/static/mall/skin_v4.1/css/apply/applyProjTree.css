@@ -1,0 +1,52 @@
+#applyProjTree {
+  width: 1200px;
+  margin: auto;
+}
+.proj-name {
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 20px;
+}
+.projinfo-detail {
+  width: 1200px;
+  height: 40px;
+  line-height: 40px;
+  background: #F2F3F8;
+  color: #515151;
+  padding: 0 20px;
+  border: 1px solid #ECEFF5;
+  margin-bottom: 20px;
+}
+.projinfo-detail span {
+  padding-right: 50px;
+}
+.projinfo-detail span:last-child {
+  padding-right: 0;
+}
+.apply-status {
+  text-align: right;
+}
+.apply-status-icon {
+  padding-left: 50px;
+  position: relative;
+}
+.apply-status-icon i {
+  padding: 8px;
+  position: absolute;
+  left: 28px;
+  top: 2px;
+  border-radius: 2px;
+}
+.apply-status-0, .apply-status-3 {
+  background: #999FAE;
+}
+.apply-status-2 {
+  background: #19AE91;
+}
+.apply-status-1 {
+  background: #4293F4;
+}
+.apply-status-4 {
+  background: #E0A44A;
+}
+

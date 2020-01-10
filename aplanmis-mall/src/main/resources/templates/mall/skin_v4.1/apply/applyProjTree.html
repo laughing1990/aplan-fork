@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>工程管理</title>
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet" href="../../../static/mall/skin_v4.1/css/apply/applyProjTree.css"
+        th:href="@{/mall/skin_v4.1/css/apply/applyProjTree.css}">
+
+</head>
+<body >
+<div id="applyProjTree" :style="{'min-height':(curHeight-500)+'px'}" v-cloak v-loading.fullscreen.lock="loading">
+  <div class="bread-nav">
+    <i class="icon-map"></i>
+    <span class="nav-tip">当前位置：</span>
+    <a :href= "ctx+'rest/main/toIndexPage'">首页</a>
+    <span class="local-span">&gt;</span>
+    <a :href="ctx+'rest/main/toIndexPage?#MyHomeIndex'">法人空间</a>
+    <span class="local-span">&gt;</span>
+    <a href="#">工程管理</a>
+  </div>
+  <p class="proj-name">{{projinfoDetailTree.projName}}</p>
+  <p class="projinfo-detail">
+    <span>项目代码：{{projinfoDetailTree.localCode}}</span>
+    <span>项目类型：{{projinfoDetailTree.themeName}}</span>
+    <span>开始时间：{{projinfoDetailTree.nstartTime}}</span>
+    <span>审批时限：{{projinfoDetailTree.dueNum}}工作日</span>
+    <span>投资金额：{{projinfoDetailTree.investSum}}万元</span>
+  </p>
+  <div class="apply-status">
+    <span class="apply-status-icon"><i class="apply-status-2"></i>已办结</span>
+    <span class="apply-status-icon"><i class="apply-status-1"></i>申报中</span>
+    <span class="apply-status-icon"><i class="apply-status-4"></i>工程已审核</span>
+    <span class="apply-status-icon"><i class="apply-status-3"></i>工程未审核</span>
+  </div>
+  <div class="stage-list" :class="'stage-list-'+projinfoDetailTree.stagesVos.length">
+    <div class="fl stage-title"
+         :calss="'apply-status-'+item.applyStatus"
+         v-for="item in projinfoDetailTree.stagesVos">
+      <span>{{item.stageName}}</span>
+    </div>
+  </div>
+</div>
+
+<script src="../../../static/mall/skin_v4.1/js/apply/applyProjTree.js"
+        th:src="@{/mall/skin_v4.1/js/apply/applyProjTree.js}" type="text/javascript"></script>
+</body>
+</html>
