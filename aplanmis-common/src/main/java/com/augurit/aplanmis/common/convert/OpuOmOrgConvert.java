@@ -28,7 +28,7 @@ public class OpuOmOrgConvert extends AbstractElementUiTreeCovert<OpuOmOrg>{
         node.setLabel(org.getOrgName());
         node.setState(ElementUiRsTreeNode.STATE_OPEN);
         node.setType(org.getOpusOmType().getCode());
-        node.setData(org);
+        //node.setData(org);
         return node;
     }
 }

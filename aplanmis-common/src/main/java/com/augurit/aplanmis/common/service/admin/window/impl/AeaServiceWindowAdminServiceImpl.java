@@ -239,6 +239,34 @@ public class AeaServiceWindowAdminServiceImpl implements AeaServiceWindowAdminSe
     }
 
     @Override
+    public List<ElementUiRsTreeNode> listAllUserByOrgIdSimple(String orgId) {
+        List<ElementUiRsTreeNode> rootNodeList = new ArrayList<>();
+        ElementUiRsTreeNode rootNode = new ElementUiRsTreeNode();
+        OpuOmOrg opuOmOrg = opuOmOrgMapper.getOrg(orgId);
+        rootNode.setId("root");
+        rootNode.setLabel(StringUtils.isNotBlank(opuOmOrg.getOrgName()) ? opuOmOrg.getOrgName() : "组织用户树");
+        rootNode.setState(ElementUiRsTreeNode.STATE_OPEN);
+        rootNode.setType("root");
+        rootNode.setData(opuOmOrg);
+        List<OpuOmUser> list = opuOmUserMapper.listAllUserRelOrgByOrgId(orgId);
+        List<ElementUiRsTreeNode> childNodeList = new ArrayList<>();
+        for (OpuOmUser user:list){
+            ElementUiRsTreeNode node = new ElementUiRsTreeNode();
+            node.setId(user.getUserId());
+            node.setLabel(user.getLoginName());
+            if (StringUtils.isNotBlank(user.getOrgName())) {
+                node.setLabel(user.getLoginName() + "【" + user.getOrgName() + "】");
+            }
+            node.setState(ElementUiRsTreeNode.STATE_OPEN);
+            node.setType("user");
+            childNodeList.add(node);
+        }
+        rootNode.setChildren(childNodeList);
+        rootNodeList.add(rootNode);
+        return rootNodeList;
+    }
+
+    @Override
     public PageInfo<AeaServiceWindow> listAeaServiceWindowByPage(AeaServiceWindow aeaServiceWindow, Page page) {
 
         PageHelper.startPage(page);
