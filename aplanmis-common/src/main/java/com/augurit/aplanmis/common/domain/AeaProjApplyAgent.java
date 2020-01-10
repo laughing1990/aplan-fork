@@ -30,7 +30,7 @@ public class AeaProjApplyAgent implements Serializable{
     @ApiModelProperty(name = "agentStageState", value = "委托代办阶段：1立项用地规划许可阶段 2 工程建设许可阶段 3施工许可阶段 4竣工验收阶段  多选时逗号拼接")
     private String agentStageState;
 
-    @ApiModelProperty(name = "agentApplyState", value = "代办申请状态 1待签订 2窗口签订中 3 待申请人签章 4已签订（代办中） 5代办终止 6不予受理 7代办结束")
+    @ApiModelProperty(name = "agentApplyState", value = "代办申请状态 1待签订 2窗口签订中 3 待申请人签章 4已签订（代办中） 5不予受理 6窗口终止 7代办终止 8窗口办结 9代办结束")
     private String agentApplyState;
 
     @ApiModelProperty(name = "windowId", value = "窗口ID")
