@@ -401,6 +401,7 @@
 
         // 打开弹窗
         $('#select_user_item_ztree_modal').modal('show');
+        $('#selectUserItemTreeDiv').animate({scrollTop: 0}, 800);
 
         // 初始化树
         initSelectUserItemZtree();

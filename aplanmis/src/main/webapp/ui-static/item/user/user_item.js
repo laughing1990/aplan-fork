@@ -400,7 +400,7 @@ function initItemVerSeq() {
 function syncLocalAeaItemGuide() {
 
     swal({
-        text: '确定将事项库的基本信息同步过去办事指南表吗？',
+        text: '确定将当前用户事项管理的事项数据信息同步至办事指南吗？',
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: '确定',
@@ -410,9 +410,9 @@ function syncLocalAeaItemGuide() {
             $("#uploadProgress").modal("show");
             $('#uploadProgressMsg').html("数据同步中,请勿点击,耐心等候...");
             $.ajax({
-                url: ctx + '/aea/item/guide/syncLocalAeaItemGuide.do',
+                url: ctx + '/aea/item/user/syncLocalAeaItemGuide.do',
                 type: 'post',
-                data: {},
+                data: {'userId': userId},
                 // async: false,
                 success: function (result) {
                     if (result.success) {

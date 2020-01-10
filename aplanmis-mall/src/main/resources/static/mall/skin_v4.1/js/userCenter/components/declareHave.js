@@ -161,7 +161,7 @@ var vm = new Vue({
     },
   },
   mounted: function () {
-    this.getHadApplyItemList()
+   this.getHadApplyItemList()
     this.isFormMyHomeIndex()
   },
   methods: {

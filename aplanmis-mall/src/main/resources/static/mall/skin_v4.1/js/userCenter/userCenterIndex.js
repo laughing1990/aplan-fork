@@ -57,12 +57,12 @@ var userCenter = (function () {
                         }]
                     },
                     {
-                        name: '我的资料库',
+                        name: '我的材料',
                         open: true,
                       icon:'icon-5',
                         childList: [
                             {
-                                name: '我的材料',
+                                name: '申报材料',
                                 value: 'MyMaterials',
                                 select: false,
                             },
@@ -73,9 +73,14 @@ var userCenter = (function () {
                             // },
                         ]
                     },
+                    // {
+                    //     name: '我的信用',
+                    //     value: 'CreditDetail',
+                    //     select: false,
+                    // },
                     {
-                        name: '我的信用',
-                        value: 'CreditDetail',
+                        name: '企业信用',
+                        value: 'CreditUnitList',
                         select: false,
                     },
                     {

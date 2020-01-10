@@ -64,11 +64,11 @@ public class RestProjAgentController {
     @PostMapping("upload/{applyAgentId}")
     @ApiOperation(value = "代办申请 --> 代办协议上传接口")
     @ApiImplicitParams({
-            @ApiImplicitParam(value = "代办申请ID", name = "applyAgentId", required = true, dataType = "string")
+            @ApiImplicitParam(value = "协议编码", name = "agreementCode", required = true, dataType = "string")
     })
-    public ContentResultForm uploadFile(@PathVariable String applyAgentId, HttpServletRequest request) {
+    public ContentResultForm uploadFile(@PathVariable String agreementCode, HttpServletRequest request) {
         try {
-            fileUtilsService.uploadAttachments("AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID", applyAgentId,null, request);
+            fileUtilsService.uploadAttachments("AEA_PROJ_APPLY_AGENT", "AGREEMENT_CODE", agreementCode,null, request);
             return new ContentResultForm(true,"");
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
