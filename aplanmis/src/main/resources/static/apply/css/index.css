@@ -2687,6 +2687,21 @@ textarea {
 .stop-agent .el-dialog__body .el-form{
   padding-right:0;
 }
+.guide-prompt{
+  width: 700px;
+}
+.guide-prompt textarea{
+  min-height: 85px!important;
+}
+.guide-prompt .el-message-box__input{
+  padding-top: 5px;
+}
+.guide-prompt .el-message-box__content{
+  padding-bottom: 0px;
+}
+.guide-prompt .el-message-box__errormsg{
+  min-height: 8px;
+}
 /*部门辅导end*/
 .toggle-form-icon {
   width: 36px;
