@@ -34,10 +34,24 @@
     <span class="apply-status-icon"><i class="apply-status-3"></i>工程未审核</span>
   </div>
   <div class="stage-list" :class="'stage-list-'+projinfoDetailTree.stagesVos.length">
-    <div class="fl stage-title"
-         :calss="'apply-status-'+item.applyStatus"
+    <div class="fl stage-title stage-list-card"
+         :class="'apply-status-'+item.applyStatus"
          v-for="item in projinfoDetailTree.stagesVos">
       <span>{{item.stageName}}</span>
+    </div>
+  </div>
+  <div class="pro-gc-content clearfix"
+       :class="'stage-list-'+projinfoDetailTree.stagesVos.length">
+    <div class="stage-list-card fl" v-for="projTree1 in projinfoDetailTree.projStatusVos">
+      <div class="stage-card">
+        <span class="proj-tree-status" :class="'apply-status-'+projTree1.applyStatus">已办结</span>
+        <p class="proj-tree-name">{{projTree1.projName}}</p>
+        <p class="proj-tree-gcdm">{{projTree1.localCode}}</p>
+        <div class="opt">
+          <span class="search-detail">查看</span>
+          <span class="color-AAA">申报</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
