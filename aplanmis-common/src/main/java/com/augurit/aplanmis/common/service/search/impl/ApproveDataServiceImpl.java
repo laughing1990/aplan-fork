@@ -108,13 +108,13 @@ public class ApproveDataServiceImpl implements ApproveDataService {
         List<ApproveProjInfoDto> list = aeaHiIteminstMapper.getApproveProjInfoListByUnitOrLinkman(unitInfoId, userInfoId, state,applyinstState, keyword);
         //this.convertStateCodeToName(SecurityContext.getCurrentOrgId(), list);
         convertCommentByState(list);
-        if ("0".equals(state)) {//已办结
-            list.stream().forEach(itemInst -> {
-                if (itemInst.getEndTime() != null) {
-                    itemInst.setDueNum(new Long(DateUtils.getWorkingDay(itemInst.getStartTime(), itemInst.getEndTime())));
-                }
-            });
-        }
+//        if ("0".equals(state)) {//已办结
+//            list.stream().forEach(itemInst -> {
+//                if (itemInst.getEndTime() != null) {
+//                    itemInst.setDueNum(new Long(DateUtils.getWorkingDay(itemInst.getStartTime(), itemInst.getEndTime())));
+//                }
+//            });
+//        }
         return new PageInfo<>(list);
     }
     @Autowired
@@ -157,7 +157,7 @@ public class ApproveDataServiceImpl implements ApproveDataService {
             if(ApplyState.COMPLETED.getValue().equals(dto.getApplyinstState())){//已办结
                 if(states.contains(ItemStatus.DISAGREE.getValue())) dto.setIsExistUnPass(true);
             }
-            if(sms==null) return;
+            if(sms==null) continue;
             if("2".equals(sms.getReceiveMode())){//网上签收
                 if("0".equals(sms.getReceiveType())){//多次领取，只要有办结的事项就能领取
                     if(states.contains(ItemStatus.AGREE_TOLERANCE.getValue())||states.contains(ItemStatus.AGREE.getValue()))
