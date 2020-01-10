@@ -10,8 +10,10 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.DicConstants;
+import com.augurit.aplanmis.common.constants.GuideApplyState;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.service.apply.AeaHiGuideService;
 import com.augurit.aplanmis.common.service.instance.*;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
@@ -139,6 +141,8 @@ public class RestApplyServiceImpl implements RestApplyService {
         }
         return vo;
     }
+    @Autowired
+    private AeaHiGuideService aeaHiGuideService;
 
     /**
      * 并联申报 --> 发起申报
@@ -161,6 +165,11 @@ public class RestApplyServiceImpl implements RestApplyService {
         List<String> applyInstIds = vo.getApplyinstIds();
         if (applyInstIds==null||applyInstIds.size()==0) return vo;
         receiveService.saveReceive(applyInstIds.toArray(new String[applyInstIds.size()]), receiptTypes, SecurityContext.getCurrentUserName(), "");
+        //更新部门辅导状态
+        AeaHiGuide updateParam=new AeaHiGuide();
+        updateParam.setGuideId(stageApplyDataPageVo.getGuideId());
+        updateParam.setApplyState(GuideApplyState.FINISHED.getValue());
+        aeaHiGuideService.updateAeaHiGuide(updateParam);
         return vo;
     }
 
