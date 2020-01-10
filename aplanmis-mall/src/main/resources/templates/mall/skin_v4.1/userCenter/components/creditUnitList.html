@@ -10,13 +10,13 @@
 <body>
     <div id="creditUnitList">
         <p class="p-header">企业信用</p>
-        <div>
-            <p class="p-header-phase1">佛山市顺德区大良镇南芦村沙地元三路建设工程</p>
+        <div v-for="item in creditUnitListData" style="padding-bottom: 50px;">
+            <p class="p-header-phase1">{{item.projName}}</p>
             <div class="my-declareing-table">
-                <el-table :data="applyIngData" style="width:100%">
-                    <el-table-column fixed prop="applyinstCode" label="企业名称" width="200">
+                <el-table :data="item.unitList" style="width:100%">
+                    <el-table-column fixed prop="unitName" label="企业名称">
                     </el-table-column>
-                    <el-table-column fixed="right" label="操作" align="center" width="80">
+                    <el-table-column fixed="right" label="操作" align="center" width="150">
                         <template slot-scope="scope">
                             <span class="option-btn">
                                 <a href="javascript:;" @click="toDetail(scope.row)">查看信用记录</a>
@@ -24,22 +24,38 @@
                         </template>
                     </el-table-column>
                 </el-table>
-
-                <el-pagination style="marginTop: 15px;" background align="right" :page-size="declare.pageSize"
-                               :current-page="declare.currentPage" @size-change="handleSizeChange"
-                               @current-change="handleCurrentChange" :page-sizes="[5,10, 20]"
-                               layout="total,sizes, prev, pager, next, jumper" :total="declare.total" :hide-on-single-page="true">
-                </el-pagination>
             </div>
         </div>
     </div>
 </body>
 <script>
     (function($,w,doc){
-        var vm = new vue({
+        var vm = new Vue({
             el:"#creditUnitList",
             data:{
+                creditUnitListData:{},
+            },
+            created:function(){
+                this.getCreditUnitList();
+            },
+            methods:{
+                //查询企业信用列表
+                getCreditUnitList:function(){
+                    var vm = this;
+                    request('', {
+                        url: ctx + 'rest/user/credit/redblack/getCreditUnitList',
+                        type: 'get',
+                    }, function (res) {
+                        if (res.success) {
+                            vm.creditUnitListData = res.content;
+                        } else {
+                            vm.$message.error(res.message);
+                        }
 
+                    }, function () {
+                        vm.$message.error('根据事项版本号获取根情形列表接口失败，请稍后重试！');
+                    });
+                }
             }
         })
     }($,window,document))

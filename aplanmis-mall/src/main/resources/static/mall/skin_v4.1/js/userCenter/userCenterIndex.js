@@ -80,7 +80,7 @@ var userCenter = (function () {
                     },
                     {
                         name: '企业信用',
-                        value: 'DeclarGuide',
+                        value: 'CreditUnitList',
                         select: false,
                     },
                     {
