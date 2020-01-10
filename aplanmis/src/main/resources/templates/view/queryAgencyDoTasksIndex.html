@@ -19,6 +19,7 @@
   
   <script>
     var ctx = '[[@{/}]]';
+    //  var ctx = "http://192.168.30.22:8083/aplanmis-front/";
     var viewDataCtrl = '[[${viewDataCtrl}]]';
   </script>
   <script src="../../static/approve/js/ip.js" th:src="@{/approve/js/ip.js}"></script>
@@ -213,6 +214,7 @@
         <span class="op-btn" v-if="showOperateBtn1(scope.row)" @click="toAgencyDetail(scope.row, 'do')">签订协议</span>
         <span class="op-btn" v-if="showOperateBtn2(scope.row)" @click="toAgencyDetail(scope.row, 'view')">查看</span>
         <span class="op-btn" v-if="showOperateBtn3(scope.row)" @click="toApplyPage(scope.row)">办理</span>
+        <span class="op-btn" v-if="showOperateBtn3(scope.row)" @click="banjie(scope.row)">办结</span>
       </template>
     </el-table-column>
   </el-table>
@@ -224,6 +226,49 @@
                  :total="dataTotal" v-show="dataTotal>10">
   </el-pagination>
 
+  <!-- 代办委托办结dialog -->
+  <el-dialog title="代办委托办结" class="solicit-opinion-dialog end-agent" :visible.sync="isShowBanjieDialog"
+    width="800px" top="100px">
+    <div class="stop-a-box">
+      <p class="au-hint-text">
+        <i class="ag ag-warn-circle"></i>
+        请确认办结日期后点击“签章”
+      </p>
+      <el-form :model="endAgentForm" :rules="endrules" label-width="100px" size="medium">
+        <el-form-item label="代办委托项目">
+          <el-input readonly v-model="curBanjieRow.projName"></el-input>
+        </el-form-item>
+        <el-form-item label="协议编号">
+          <el-input readonly  v-model="curBanjieRow.agreementCode"></el-input>
+        </el-form-item>
+        <el-form-item label="办结日期" prop="agreementEndTime">
+          <el-date-picker v-model="endAgentForm.agreementEndTime"
+           format="yyyy-MM-dd" value-format="yyyy-MM-dd"
+           :clearable="false" type="date" placeholder="选择日期">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="委托办结单">
+          <el-input :value="curBanjieRow.projName + '代办委托办结单.pdf'">
+            <el-button type="primary" slot="append" @click="viewBanjiePdf">查看</el-button>
+          </el-input>
+        </el-form-item>  
+      </el-form>
+    </div>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="isShowBanjieDialog = false">关闭</el-button>
+      <el-button type="primary" >签章</el-button>
+    </div>
+  </el-dialog>
+
+  <!-- 办结单弹框 -->
+  <el-dialog title="办结单"  :visible.sync="prePdfVisible" ref="prePdfRef" class="solicit-opinion-dialog end-agent" width="800px" top="10vh">
+    <div class="stop-a-box" style="height: 580px;">
+      <iframe :src="pdfSrc" class='ltab-iframe' style="width: 100%; height: 100%;"></iframe>
+    </div>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="prePdfVisible = false;">取 消</el-button>
+    </span>
+  </el-dialog>
 </div>
 
 <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
@@ -232,6 +277,7 @@
         th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
 <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
         th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="../../static/preview/pdfjs/build/pdf.js" th:src="@{/preview/pdfjs/build/pdf.js}"></script>
 <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
         th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
 

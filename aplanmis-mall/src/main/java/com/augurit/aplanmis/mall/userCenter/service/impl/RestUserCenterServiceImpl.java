@@ -1,5 +1,7 @@
 package com.augurit.aplanmis.mall.userCenter.service.impl;
 
+import com.augurit.agcloud.bsc.domain.BscDicRegion;
+import com.augurit.agcloud.bsc.sc.dic.region.service.BscDicRegionService;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
@@ -10,6 +12,7 @@ import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjLinkmanMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitLinkmanMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitProjMapper;
+import com.augurit.aplanmis.common.service.dic.FsGcbmBscRuleCodeStrategy;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
@@ -53,8 +56,14 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
     private AeaUnitLinkmanMapper aeaUnitLinkmanMapper;
     @Autowired
     private AeaProjLinkmanMapper aeaProjLinkmanMapper;
+    @Autowired
+    private FsGcbmBscRuleCodeStrategy fsGcbmBscRuleCodeStrategy;
+    @Autowired
+    BscDicRegionService bscDicRegionService;
     @Value("${mall.check.authority:false}")
     private boolean isCheckAuthority;
+    @Value("${dg.sso.access.platform.org.top-org-id}")
+    protected String topOrgId;
 
     @Override
     public String saveChildProject(HttpServletRequest request, AeaProjInfo aeaProjInfo) throws Exception {
@@ -125,10 +134,14 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
     @Override
     public String saveProjectInfo(HttpServletRequest request, AeaProjInfo aeaProjInfo) throws Exception {
         String isNeedGeneCode = aeaProjInfo.getIsNeedGeneCode();
+        String postCode = "";//邮编
         if (StringUtils.isNotBlank(isNeedGeneCode)&&"1".equals(isNeedGeneCode)){//需要生成编码
-            String uuid = UUID.randomUUID().toString().replaceAll("-","");
-            aeaProjInfo.setLocalCode(uuid);
-            aeaProjInfo.setGcbm(uuid);
+            String regionId = aeaProjInfo.getRegionalism();
+            BscDicRegion bscDicRegion = bscDicRegionService.getBscDicRegionById(regionId);
+            if (bscDicRegion!=null)  postCode = bscDicRegion.getRegionNum();
+            String code = fsGcbmBscRuleCodeStrategy.generateCode(aeaProjInfo.getGbCodeYear(),aeaProjInfo.getProjNature(),StringUtils.isBlank(aeaProjInfo.getProjType())?"01":aeaProjInfo.getProjType(),StringUtils.isBlank(postCode)?"528000":postCode,topOrgId);
+            aeaProjInfo.setLocalCode(code);
+            aeaProjInfo.setGcbm(code);
         }
 
         if (StringUtils.isNotBlank(aeaProjInfo.getProjInfoId())) {

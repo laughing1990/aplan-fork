@@ -46,6 +46,15 @@ public class AplanmisOpuOmOrgAdminController {
     }
 
     /**
+     * * 获取组织机构树节点列表
+     */
+    @RequestMapping("getOpusOmOrgAsyncElementUINode.do")
+    public List<ElementUiRsTreeNode> getOpusOmOrgAsyncElementUINode(String orgId) {
+
+        return opuOmOrgService.getOpusOmOrgAsyncElementUINode(orgId);
+    }
+
+    /**
      * 加载组织异步ztree 组织岗位用户树（包含组织、岗位和用户）
      *
      * @param id   组织或岗位id

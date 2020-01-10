@@ -460,6 +460,14 @@ public class AeaServiceWindowAdminController {
         return windowService.listAllUserByOrgId(orgId);
     }
 
+    @RequestMapping("/listAllUserByOrgIdSimple.do")
+    @ApiOperation("获取当下组织所有用户")
+    public List<ElementUiRsTreeNode> listAllUserByOrgIdSimple() {
+
+        String orgId = SecurityContext.getCurrentOrgId();
+        return windowService.listAllUserByOrgIdSimple(orgId);
+    }
+
     @RequestMapping("listWindowStageByWindowId.do")
     @ApiOperation("通过关键字查询窗口事项")
     @ApiImplicitParams({

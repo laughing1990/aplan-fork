@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -47,5 +48,15 @@ public class ProjAcceptController {
         }
 
         return new ContentResultForm<ProjAcceptOpinionSummaryVo>(true,acceptOpinionSummaryVo);
+    }
+
+    /**
+     * 传入申请实例id，生成联合验收终审意见书批文批复 测试接口
+     * @param applyinstId
+     * @throws Exception
+     */
+    @GetMapping("/test")
+    public void test(String applyinstId) throws Exception{
+        projAcceptService.createOpinionSummaryPwpf(applyinstId,null);
     }
 }

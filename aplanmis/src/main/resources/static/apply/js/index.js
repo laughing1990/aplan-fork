@@ -3044,14 +3044,12 @@ var vm = new Vue({
         }
         return false
       }
-      _that.loading = true;
       request('', {
         url: ctx + 'rest/mats/parallel/states/mats',
         type: 'get',
         data: {"stageId": stageId, "parentId": _parentId, "projInfoId": _that.projInfoId}
       }, function (data) {
         if (data.success) {
-          _that.loading = false;
           if (flag) {
             _that.matIds = [];
             _that.parallelItems = [];
@@ -3423,7 +3421,6 @@ var vm = new Vue({
           });
         }
       }, function (msg) {
-        _that.loading = false;
         _that.$message({
           message: msg.message ? msg.message : '获取阶段下情形事项材料失败',
           type: 'error'
@@ -3531,14 +3528,12 @@ var vm = new Vue({
       var vm = this;
       _that.showCoreItemsKey = [];
       _that.showParallelItemsKey = [];
-      vm.loading = true;
       request('', {
         url: ctx + 'rest/apply/stage/items',
         type: 'get',
         data: {"stageId": stageId, "projInfoId": _that.projInfoId}
       }, function (data) {
         if (data.success) {
-          vm.loading = false;
           var _coreItems = data.content.coreItems ? _that.unique(_that.coreItems.concat(data.content.coreItems), 'stage') : _that.unique(_that.coreItems, 'stage');
           var _parallelItems = data.content.parallelItems ? _that.unique(_that.parallelItems.concat(data.content.parallelItems), 'stage') : _that.unique(_that.parallelItems, 'stage');
           if (_that.isGuidePage) { // 部门辅导
@@ -3714,7 +3709,6 @@ var vm = new Vue({
           });
         }
       }, function (msg) {
-        vm.loading = false;
         alertMsg('', '服务请求失败', '关闭', 'error', true);
       });
     },

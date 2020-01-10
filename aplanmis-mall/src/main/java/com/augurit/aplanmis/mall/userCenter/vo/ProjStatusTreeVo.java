@@ -12,7 +12,7 @@ import java.util.List;
 @ApiModel("我的项目工程管理项目状态树VO")
 public class ProjStatusTreeVo {
     @ApiModelProperty("项目/工程ID")
-    private String projId;
+    private String projInfoId;
     @ApiModelProperty("项目/工程名称")
     private String projName;
     @ApiModelProperty("项目代码")
@@ -28,7 +28,9 @@ public class ProjStatusTreeVo {
     @ApiModelProperty("阶段数组")
     private List<ProjStatusTreeStageVo> stagesVos;
     @ApiModelProperty("工程状态树")
-    private List<ProjStatusVo> projStatusVo;
+    private List<ProjStatusVo> projStatusVos;
+    @ApiModelProperty("工程状态数组")
+    private List<List<ProjStatusVo>> projStatusVoArrs;
 
 
     @Data
@@ -56,6 +58,8 @@ public class ProjStatusTreeVo {
     public static class ProjStatusVo{
         @ApiModelProperty("项目/工程名称ID")
         private String projInfoId;
+        @ApiModelProperty("项目/工程名称ID")
+        private String parentProjInfoId;
         @ApiModelProperty("项目/工程名称")
         private String projName;
         @ApiModelProperty("项目代码")

@@ -30,6 +30,14 @@ public interface AeaServiceWindowAdminService {
     List<ElementUiRsTreeNode> listAllUserByOrgId(String orgId);
 
     /**
+     * 根据机构获取用户
+     *
+     * @param orgId
+     * @return
+     */
+    List<ElementUiRsTreeNode> listAllUserByOrgIdSimple(String orgId);
+
+    /**
      * 分页服务查询窗口
      *
      * @param aeaServiceWindow

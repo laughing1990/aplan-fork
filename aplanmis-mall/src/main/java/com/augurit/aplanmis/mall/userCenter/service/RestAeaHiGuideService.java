@@ -57,6 +57,7 @@ public class RestAeaHiGuideService {
             aeaSolicitOrgUser.setSolicitOrgId(solicitOrgs.get(0).getSolicitOrgId());
             aeaSolicitOrgUser.setIsActive("1");
             List<AeaSolicitOrgUser> solicitOrgUsers = aeaSolicitOrgUserService.listAeaSolicitOrgUser(aeaSolicitOrgUser);
+            if(solicitOrgUsers.size()==0) throw new Exception("牵头部门没找到人员");
             aeaHiGuide.setLeaderUserId(solicitOrgUsers.size()>0?solicitOrgUsers.get(0).getUserId():null);
         }
         aeaHiGuideService.insertAeaHiGuide(aeaHiGuide);

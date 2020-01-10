@@ -244,12 +244,13 @@ public class AeaProjApplyAgentController {
     @GetMapping("/getAgencyEndAgreementFile")
     @ApiOperation(value = "项目代办 --> 获取代办办结单", notes = "项目代办 --> 获取代办办结单", httpMethod = "GET")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "applyAgentId",value = "代办申请ID",required = true,dataType = "String")
+            @ApiImplicitParam(name = "aeaProjApplyAgent",value = "代办申请参数接收对象",required = true,dataType = "aeaProjApplyAgent")
     })
-    public void getAgencyEndAgreementFile(String applyAgentId, HttpServletResponse resp){
+    public void getAgencyEndAgreementFile(AeaProjApplyAgent aeaProjApplyAgent, HttpServletResponse resp){
         logger.debug("获取代办办结单");
         try {
-            Assert.notNull(applyAgentId,"代办申请ID不能为空");
+            Assert.notNull(aeaProjApplyAgent,"参数不能为空");
+            String applyAgentId = aeaProjApplyAgent.getApplyAgentId();
             if(StringUtils.isNotBlank(applyAgentId)){
                 AeaProjApplyAgent agreementDetail = aeaProjApplyAgentService.getAgencyAgreementDetail(applyAgentId);
                 if(agreementDetail == null){
@@ -260,9 +261,9 @@ public class AeaProjApplyAgentController {
                     fileUtilsService.readFile(endAgreementFileId,null,resp);
                 }else{
                     //办结时间如果修改就要前端传值过来
-                    agreementDetail.setAgreementEndTime(new Date());
+                    agreementDetail.setAgreementEndTime(aeaProjApplyAgent.getAgreementEndTime());
                     //协议没有存储到mongodb，动态生成一份。代办中心（乙方）签章之后要将代办委托终止单存储到mongodb。
-                    String str = ReceivePDFTemplate.createAgencyStopAgreement(agreementDetail);
+                    String str = ReceivePDFTemplate.createAgencyEndAgreement(agreementDetail);
                     writeFile(str,resp);
                 }
             }
@@ -309,13 +310,19 @@ public class AeaProjApplyAgentController {
     @PostMapping("uploadAgentStopAgreementFile")
     @ApiOperation(value = "代办申请 --> 代办终止协议文件上传")
     @ApiImplicitParams({
-            @ApiImplicitParam(value = "代办申请ID", name = "applyAgentId", required = true, dataType = "string"),
+            @ApiImplicitParam(name = "aeaProjApplyAgent",value = "代办申请参数接收对象",required = true,dataType = "aeaProjApplyAgent"),
             @ApiImplicitParam(value = "代办终止协议文件", name = "file", required = true, dataType = "MultipartFile")
     })
-    public ContentResultForm uploadAgentStopAgreementFile(String applyAgentId, @RequestParam("file") MultipartFile file) {
+    public ContentResultForm uploadAgentStopAgreementFile(AeaProjApplyAgent aeaProjApplyAgent, @RequestParam("file") MultipartFile file) {
         ContentResultForm resultForm = new ContentResultForm(false);
         try {
+            Assert.notNull(aeaProjApplyAgent,"参数不能为空。");
+            String applyAgentId = aeaProjApplyAgent.getApplyAgentId();
+            Date agreementStopTime = aeaProjApplyAgent.getAgreementStopTime();
+            String agreementStopReason = aeaProjApplyAgent.getAgreementStopReason();
             Assert.notNull(applyAgentId,"代办申请ID不能为空。");
+            Assert.notNull(agreementStopTime,"终止日期不能为空。");
+            Assert.notNull(agreementStopReason,"终止原因不能为空。");
             Assert.notNull(file,"代办终止协议文件不能为空。");
             AeaProjApplyAgent agreementDetail = aeaProjApplyAgentService.getAgencyAgreementDetail(applyAgentId);
             if(agreementDetail == null){
@@ -327,6 +334,9 @@ public class AeaProjApplyAgentController {
                 }
                 BscAttForm bscAttForm = fileUtilsService.upload("AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID", applyAgentId, null, file);
                 agreementDetail.setAgentStopAgreementFileId(bscAttForm.getDetailId());
+                agreementDetail.setAgreementStopTime(agreementStopTime);
+                agreementDetail.setAgreementStopReason(agreementStopReason);
+                agreementDetail.setAgentApplyState(AgencyState.WIN_STOP.getValue());
                 aeaProjApplyAgentService.updateAeaProjApplyAgent(agreementDetail);
                 resultForm.setSuccess(true);
                 resultForm.setMessage("上传成功。");
@@ -341,13 +351,17 @@ public class AeaProjApplyAgentController {
     @PostMapping("uploadAgentEndAgreementFile")
     @ApiOperation(value = "代办申请 --> 代办结束办结单文件上传")
     @ApiImplicitParams({
-            @ApiImplicitParam(value = "代办申请ID", name = "applyAgentId", required = true, dataType = "string"),
+            @ApiImplicitParam(name = "aeaProjApplyAgent",value = "代办申请参数接收对象",required = true,dataType = "aeaProjApplyAgent"),
             @ApiImplicitParam(value = "代办结束办结单文件", name = "file", required = true, dataType = "MultipartFile")
     })
-    public ContentResultForm uploadAgentEndAgreementFile(String applyAgentId, @RequestParam("file") MultipartFile file) {
+    public ContentResultForm uploadAgentEndAgreementFile(AeaProjApplyAgent aeaProjApplyAgent, @RequestParam("file") MultipartFile file) {
         ContentResultForm resultForm = new ContentResultForm(false);
         try {
+            Assert.notNull(aeaProjApplyAgent,"参数不能为空。");
+            String applyAgentId = aeaProjApplyAgent.getApplyAgentId();
+            Date agreementEndTime = aeaProjApplyAgent.getAgreementEndTime();
             Assert.notNull(applyAgentId,"代办申请ID不能为空。");
+            Assert.notNull(agreementEndTime,"办结日期不能为空。");
             Assert.notNull(file,"代办结束办结单文件不能为空。");
             AeaProjApplyAgent agreementDetail = aeaProjApplyAgentService.getAgencyAgreementDetail(applyAgentId);
             if(agreementDetail == null){
@@ -359,6 +373,8 @@ public class AeaProjApplyAgentController {
                 }
                 BscAttForm bscAttForm = fileUtilsService.upload("AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID", applyAgentId, null, file);
                 agreementDetail.setAgentEndAgreementFileId(bscAttForm.getDetailId());
+                agreementDetail.setAgreementEndTime(agreementEndTime);
+                agreementDetail.setAgentApplyState(AgencyState.WIN_END.getValue());
                 aeaProjApplyAgentService.updateAeaProjApplyAgent(agreementDetail);
                 resultForm.setSuccess(true);
                 resultForm.setMessage("上传成功。");

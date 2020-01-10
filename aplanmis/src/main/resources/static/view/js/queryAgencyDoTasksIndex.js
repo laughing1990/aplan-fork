@@ -1,3 +1,26 @@
+function formatDate(date, fmt) {
+  if (/(y+)/.test(fmt)) {
+    fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
+  }
+  var o = {
+    'M+': date.getMonth() + 1,
+    'd+': date.getDate(),
+    'h+': date.getHours(),
+    'm+': date.getMinutes(),
+    's+': date.getSeconds()
+  }
+  for (var k in o) {
+    if (new RegExp('(' + k + ')').test(fmt)) {
+      var str = o[k] + ''
+      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? str : padLeftZero(str))
+    }
+  }
+  return fmt
+}
+
+function padLeftZero(str) {
+  return ('00' + str).substr(str.length)
+}
 var vm = new Vue({
     el: '#searchTable',
     mixins: [mixins],
@@ -27,8 +50,27 @@ var vm = new Vue({
                 remindContent: '',
                 sendUserName: '',
                 sendDate: ''
-            }
+            },
 
+            // 办结dialog相关
+            // 是否展示办结dialog
+            isShowBanjieDialog: false,
+            // 当前办结行
+            curBanjieRow: {},
+            endAgentForm: {
+              agreementEndTime: new Date(), //办结时间
+            },
+            endrules: {
+              agreementEndTime: [{
+                required: true,
+                message: '请选择办结时间',
+                trigger: 'change'
+              }],
+            },
+            // 是否展示办结单pdf
+            prePdfVisible: false,
+            // 办结单 pdf -url
+            pdfSrc: '',
         }
     },
     methods: {
@@ -82,7 +124,7 @@ var vm = new Vue({
             if (!cellValue || cellValue == null) {
                 return '-'
             }
-            var stateNames = ['-','待签订','签订中','待申请人签章','代办中','代办终止','不予受理','代办结束'];
+            var stateNames = ['-','待签订','签订中','待申请人签章','代办中','不予受理','窗口终止','代办终止','窗口办结','代办结束'];
             return stateNames[cellValue];
         },
         // 显示委托代办阶段提示信息
@@ -132,9 +174,10 @@ var vm = new Vue({
         },
         //查看按钮
         showOperateBtn2: function (row) {
-            return ('2' === row.agentApplyState || '3' === row.agentApplyState || '5' === row.agentApplyState || '6' === row.agentApplyState || '7' === row.agentApplyState);
+            return ('2' === row.agentApplyState || '3' === row.agentApplyState || '5' === row.agentApplyState
+                || '6' === row.agentApplyState || '7' === row.agentApplyState|| '8' === row.agentApplyState|| '9' === row.agentApplyState);
         },
-        //办理按钮
+        //办理、办结按钮
         showOperateBtn3: function (row) {
             return ('4' === row.agentApplyState);
         },
@@ -181,6 +224,24 @@ var vm = new Vue({
           } catch (err) {
             top.postMessage(tabsData, '*')
           }
+        },
+
+        // 办结dialog相关
+        banjie: function(row){
+          this.curBanjieRow = row;
+          this.isShowBanjieDialog = true;
+        },
+        // 查看办结协议
+        viewBanjiePdf: function(){
+          var ts = this;
+          if(!this.endAgentForm.agreementEndTime)return this.$message.error('请选择办结日期');
+          var url = ctx + 'preview/pdfjs/web/viewer.html?file=';
+          var _url = ctx + 'aea/proj/apply/agent/getAgencyEndAgreementFile';
+          _url += '?applyAgentId=' + this.curBanjieRow.applyAgentId;
+          _url += '&agreementEndTime=' + formatDate(ts.endAgentForm.agreementEndTime, 'yyyy-MM-dd');
+          url += encodeURIComponent(_url);
+          this.prePdfVisible = true;
+          this.pdfSrc = url;
         },
     },
     created: function () {
