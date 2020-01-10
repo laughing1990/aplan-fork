@@ -75,8 +75,21 @@ public class RestCertificateController {
 
     @PostMapping("/out/materials/register")
     @ApiOperation(value = "取件登记")
-    @ApiImplicitParams({@ApiImplicitParam(value = "申请实例主键 ", name = "applyinstId", required = true)})
+    @ApiImplicitParams({@ApiImplicitParam(value = "申报实例主键 ", name = "applyinstId", required = true)})
     public ContentResultForm<CertRegistrationVo> registerOutMaterials(String applyinstId) {
+        Assert.hasText(applyinstId, "申请实例Id为空！");
+        try {
+            return new ContentResultForm<>(true, certificateService.getCertificationInfo(applyinstId), "success.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ContentResultForm<>(false, null, "获取信息失败, " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/out/materials/mail/post")
+    @ApiOperation(value = "邮件下单")
+    @ApiImplicitParams({@ApiImplicitParam(value = "申报实例主键 ", name = "applyinstId", required = true)})
+    public ContentResultForm<CertRegistrationVo> mailPost(String applyinstId) {
         Assert.hasText(applyinstId, "申请实例Id为空！");
         try {
             return new ContentResultForm<>(true, certificateService.getCertificationInfo(applyinstId), "success.");

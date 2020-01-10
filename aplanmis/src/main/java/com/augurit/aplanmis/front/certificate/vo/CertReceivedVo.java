@@ -1,6 +1,5 @@
 package com.augurit.aplanmis.front.certificate.vo;
 
-import com.augurit.aplanmis.common.domain.AeaHiIteminst;
 import com.augurit.aplanmis.common.domain.AeaHiSmsSendBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -27,7 +26,7 @@ public class CertReceivedVo {
     private AeaHiSmsSendBean consignerForm;
 
     @ApiModelProperty(value = "事项实例")
-    private List<AeaHiIteminst> iteminsts;
+    private List<CertRegistrationItemVo> certRegistrationItemVos;
 
     @ApiModelProperty(value = "是否一次领件, 0: 否; 1: 是")
     private String isOnceSend;

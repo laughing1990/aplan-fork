@@ -736,14 +736,17 @@
         <include refid="aliasColumns">
             <property name="alias" value="ahc"/>
         </include>
-        ,aui.APPLICANT applicant,ooo.ORG_NAME issueOrgName,temp.MATINST_ID matinstId
+        ,aui.APPLICANT applicant,ooo.ORG_NAME issueOrgName,temp.MATINST_ID matinstId, temp.iteminst_id iteminstId,
+        temp.INOUTINST_ID inoutinstId
         from aea_hi_certinst ahc
         left join aea_unit_info aui on aui.UNIT_INFO_ID=ahc.UNIT_INFO_ID
         left join opu_om_org ooo on ooo.ORG_ID=ahc.ISSUE_ORG_ID
         INNER JOIN (
         SELECT
         ahim.CERTINST_ID,
-        ahii.MATINST_ID
+        ahii.MATINST_ID,
+        ahii.iteminst_id,
+        ahii.INOUTINST_ID
         FROM
         aea_hi_item_inoutinst ahii,
         aea_hi_item_matinst ahim,

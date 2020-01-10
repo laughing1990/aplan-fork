@@ -4,8 +4,6 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.UUID;
 
 /**
  * 事项输入输出实例表-模型
@@ -38,14 +36,4 @@ public class AeaHiItemInoutinst implements Serializable {
     private String parInId; // (阶段情形输入定义ID【当IS_PAR_IN=1】)
     private String rootOrgId;//根组织ID
 
-    public void buildInoutInst(String iteminstId, String inoutId, String matinstId, String creater, String rootOrgId) {
-        this.inoutinstId = UUID.randomUUID().toString();
-        this.iteminstId = iteminstId;
-        this.itemInoutId = inoutId;
-        this.matinstId = matinstId;
-        this.creater = creater;
-        this.createTime = new Date();
-        this.isCollected = "1";
-        this.rootOrgId = rootOrgId;
-    }
 }
