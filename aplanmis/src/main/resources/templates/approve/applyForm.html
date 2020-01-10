@@ -1283,7 +1283,7 @@
       <!-- 企业，多条 -->
       <div v-if="applySubject=='1'" v-for="item in unitInfoList" :key="item.unitInfoId">
         <el-form :model="item" size="medium" :label-width="labelWidth" style="padding-top:18px;">
-          <div class="part-info-title">建设单位信息</div>
+          <div class="part-info-title">单位信息</div>
           <div class="credit-box" v-show="item.isBlack=='1'||item.creditType==false">
             当前企业为失信企业，可点击右侧查看详细历史记录。
             <div class="see-credit-btn r" @click="seeCredit(item, 'u')">查看记录</div>
