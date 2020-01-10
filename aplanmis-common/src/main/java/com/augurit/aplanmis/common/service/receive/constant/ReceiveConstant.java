@@ -26,6 +26,7 @@ public class ReceiveConstant {
     public static final String APPLY_MAT_CORRECT_TYPE = "7";//材料补全回执-窗口
     public static final String ITEM_MAT_CORRECT_MAT_RECEIVE_TYPE = "12";//材料补正物料回执-部门
     public static final String APPLY_MAT_CORRECT_MAT_RECEIVE_TYPE = "13";//材料补全物料回执-部门
+    public static final String LHYS_ZS_YJS_TYPE = "14";//联合验收终审意见书-部门
 
 
     public static final String LICENSE_TYPE8 = "8";//领证回执

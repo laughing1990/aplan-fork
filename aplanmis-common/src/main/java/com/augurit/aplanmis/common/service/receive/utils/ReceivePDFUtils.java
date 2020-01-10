@@ -7,8 +7,10 @@ import com.augurit.aplanmis.common.service.receive.vo.MatCorrectVo;
 import com.augurit.aplanmis.common.service.receive.vo.ReceiveBaseVo;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.draw.LineSeparator;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
+
 import java.util.List;
 
 //pdf回执模板工具类
@@ -37,6 +39,9 @@ public class ReceivePDFUtils {
                 MatCorrectVo correctVo = new MatCorrectVo();
                 BeanUtils.copyProperties(receiveBaseVo, correctVo);
                 str = ReceivePDFTemplate.createCorrectMatTemplat(correctVo);
+                break;
+            case ReceiveConstant.LHYS_ZS_YJS_TYPE://联合验收终审意见书-部门//14
+                str = FsReceivePDFTemplate.createLhysZhongshenYjsReceipt(receiveBaseVo);
                 break;
             default:
                 break;
@@ -146,6 +151,20 @@ public class ReceivePDFUtils {
         PdfPCell cell = new PdfPCell(new Paragraph(content, font));
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);//水平居中
         return cell;
+    }
+
+    /**
+     * 画一条实线
+     * @param document
+     * @param lineWidth   线宽度
+     * @param percentage 直线长度，是个百分数，0-100之间
+     * @param lineColor  直线颜色
+     * @param align      直线位置
+     * @param offset     上下移动位置
+     */
+    public static void drawLine(Document document,float lineWidth, float percentage, BaseColor lineColor, int align, float offset)throws Exception {
+        LineSeparator line = new LineSeparator(lineWidth,percentage, lineColor,align,offset);
+        document.add(line);
     }
 
     /**

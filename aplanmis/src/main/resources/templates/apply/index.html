@@ -220,11 +220,14 @@
     </el-form>
   </template>
   <template v-else>
-    <div class="title-nav" v-if="!isGuidePage">
+    <div class="top-proj-name" v-if="isGuidePage||isAgentPage">
+      {{topProjName||'加载中...'}}
+    </div>
+    <div class="title-nav" v-if="!isGuidePage&&!isAgentPage">
       <span>投资项目申报前，请登陆 <a href="http://www.gdtz.gov.cn/tybm/apply3!search.action"
                            target="_blank">“投资项目在线审批监管平台”</a> 进行项目登记赋码</span>
     </div>
-    <el-form class="search-proj-info" label-width="115px" v-if="!isGuidePage">
+    <el-form class="search-proj-info" label-width="115px" v-if="!isGuidePage&&!isAgentPage">
       <el-form-item label="项目/工程查询" id="projCodeInfo">
         <el-select v-model="searchKeyword" :disabled="isDraftsProj" filterable remote autofocus reserve-keyword
                    ref="searchProjInfo"
@@ -1936,14 +1939,18 @@
         </template>
       </el-collapse>
       <div class="right-bottom-btn" v-if="showMoreProjInfo&&!isGuidePage">
-        <el-button v-if="showSolicitBtn" type="success" @click="openSoDialog" circle>意见<br/>征求</el-button>
-        <el-button type="danger" :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('3')">不予<br/>受理
-        </el-button>
-        <el-button circle :disabled="!stageFrontCheckFlag" @click="showCommentDialog('5')">材料<br/>补全</el-button>
-        <el-button circle :disabled="!stageFrontCheckFlag" @click="showCommentDialog('1')">打印<br/>回执</el-button>
-        <el-button :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('4','stash')">暂存</el-button>
-        <el-button type="primary" :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('0')">发起<br/>申报
-        </el-button>
+        <template v-if="isAgentPage">
+          <el-button circle @click="seeAgreement">查看委<br/>托协议</el-button>
+          <el-button circle @click="clickStopAgreement">终止<br/>协议</el-button>
+        </template>
+        <template v-else>
+          <el-button v-if="showSolicitBtn" type="success" @click="openSoDialog" circle>意见<br/>征求</el-button>
+          <el-button type="danger" :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('3')">不予<br/>受理</el-button>
+          <el-button circle :disabled="!stageFrontCheckFlag" @click="showCommentDialog('5')">材料<br/>补全</el-button>
+          <el-button circle :disabled="!stageFrontCheckFlag" @click="showCommentDialog('1')">打印<br/>回执</el-button>
+          <el-button :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('4','stash')">暂存</el-button>
+        </template>
+        <el-button type="primary" :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('0')">发起<br/>申报</el-button>
       </div>
       <div class="right-bottom-btn" v-if="isGuidePage">
         <template v-if="leaderDept">
@@ -2709,6 +2716,55 @@
         </div>
       </el-dialog>
       <!-- 意见征求 end -->
+      <!-- 项目代办协议 查看pdf弹窗 start -->
+      <el-dialog title="代办协议" class="solicit-opinion-dialog agent-agreement" v-loading="prePdfDialogLoading"
+                 :close-on-click-modal="false" :visible.sync="prePdfDialogVisible" @close="closePrePdf"
+                 :width="curWidth>1220?'1200px':(curWidth-20)+'px'" top="20px">
+        <div :style="{height: (curHeight-175)+'px'}">
+          <iframe :src="prePdfUrl"></iframe>
+        </div>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="prePdfDialogVisible = false">关闭</el-button>
+          <el-button type="primary" @click="downLoadAgreement">下载</el-button>
+        </div>
+      </el-dialog>
+      <!-- 项目代办协议 查看pdf弹窗 end -->
+      <!-- 项目代办终止协议 start -->
+      <el-dialog title="终止协议" class="solicit-opinion-dialog stop-agent" v-loading="stopAgentDialogLoading"
+                 :close-on-click-modal="false" :visible.sync="stopAgentDialogVisible" @close="closeStopAgentDialog"
+                 :width="curWidth>1020?'1000px':(curWidth-20)+'px'" top="100px">
+        <div :style="{'max-height': (curHeight-305)+'px'}" class="stop-a-box">
+          <p class="au-hint-text">
+            <i class="ag ag-warn-circle"></i>
+            当前网厅申报处于部门辅导模式，请先进行工程审核，然后点击“下一步”进行事项的相关确认。
+          </p>
+          <el-form :model="stopAgentForm" label-width="120px" size="medium">
+            <el-form-item label="代办委托项目:">
+              <el-input v-model="topProjName" readonly></el-input>
+            </el-form-item>
+            <el-form-item label="协议编号:">
+              <el-input v-model="stopAgentForm.code" readonly></el-input>
+            </el-form-item>
+            <el-form-item label="委托协议:">
+              {{topProjName}}委托终止单.pdf
+              <span class="see-stop-agent" @click="seeStopAgent">查看</span>
+            </el-form-item>
+            <el-form-item label="终止日期">
+              <el-date-picker v-model="stopAgentForm.date" :clearable="false"
+                              type="date" placeholder="选择日期">
+              </el-date-picker>
+            </el-form-item>
+            <el-form-item label="终止原因">
+              <el-input v-model="stopAgentForm.reason" type="textarea" :rows="3"></el-input>
+            </el-form-item>
+          </el-form>
+        </div>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="stopAgentDialogVisible = false">关闭</el-button>
+          <el-button type="primary" @click="ensureStopAgent">签章</el-button>
+        </div>
+      </el-dialog>
+      <!-- 项目代办终止协议 end -->
     </div>
   </template>
 </div>

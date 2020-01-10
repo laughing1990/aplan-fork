@@ -136,6 +136,15 @@ public class AeaItemAdminController {
         return new ModelAndView("ui-jsp/item/user/item_user");
     }
 
+    @RequestMapping("/user/item.do")
+    public ModelAndView indexUserItem(ModelMap modelMap){
+
+        String userId = SecurityContext.getCurrentUserId();
+        modelMap.put("userId", userId);
+        loadBscItemData(modelMap);
+        return new ModelAndView("ui-jsp/item/user/user_item");
+    }
+
     /**
      * 事项下放
      *

@@ -170,9 +170,9 @@ public class FrontWebMvcConfig implements WebMvcConfigurer/*, ApplicationListene
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
         registry
-            .addResourceHandler("/ui-static/**")
-            .addResourceLocations("/ui-static/")
-            .setCachePeriod(31556926);
+                .addResourceHandler("/ui-static/**")
+                .addResourceLocations("/ui-static/")
+                .setCachePeriod(31556926);
 
         //applet部署配置
         String strClasspath="";

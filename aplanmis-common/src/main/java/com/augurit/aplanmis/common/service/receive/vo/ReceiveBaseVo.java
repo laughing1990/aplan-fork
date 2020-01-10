@@ -3,6 +3,7 @@ package com.augurit.aplanmis.common.service.receive.vo;
 import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
 import com.augurit.aplanmis.common.domain.AeaHiReceive;
+import com.augurit.aplanmis.common.service.projAccept.vo.ProjAcceptOpinionSummaryVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -126,6 +127,18 @@ public class ReceiveBaseVo implements Serializable {
     @ApiModelProperty(value = "建设单位证件号")
     private String applicantIDCard;
 
+    @ApiModelProperty(value = "法人姓名")
+    private String idrepresentative;
+
+    @ApiModelProperty(value = "法人身份证号码")
+    private String idno;
+
+    @ApiModelProperty(value = "法人手机号码")
+    private String idmobile;
+
+    @ApiModelProperty(value = "法人手机号码")
+    private String applicantDetailSite;
+
     @ApiModelProperty(value = "经办企业")
     private String agentName;
 
@@ -162,6 +175,35 @@ public class ReceiveBaseVo implements Serializable {
 
     @ApiModelProperty("领取模式：1 窗口取证  0 邮政快递")
     private String receiveMode;
+
+    //20190109新增
+
+    @ApiModelProperty("法律条款")
+    private String legalProvisions = "相关法律条款或理由";
+
+    @ApiModelProperty("特殊程序名称")
+    private String specialProcessName;
+
+    @ApiModelProperty("特殊程序准备工作")
+    private String readyConetent;
+
+    @ApiModelProperty("咨询联系人")
+    private String consultLinkmanName;
+
+    @ApiModelProperty("咨询电话")
+    private String consultLinkmanTel;
+
+    @ApiModelProperty("不予受理、不予批准的复议委员会行政区划，例如：佛山市禅城区")
+    private String reconsiderationRegion = "佛山市禅城区";
+
+    @ApiModelProperty("不予受理、不予批准的上级主管部门")
+    private String superiorDepartment = "上级主管部门";
+
+    @ApiModelProperty("联合验收意见汇总意见书行政区划")
+    private String lhpsYjsRegion = "南海区";
+
+    @ApiModelProperty("联合验收意见汇总")
+    private ProjAcceptOpinionSummaryVo projAcceptOpinionSummaryVo;
 
     public static ReceiveBaseVo copyCommonField(AeaHiReceive receive, AeaHiApplyinst applyinst, ReceiveBaseVo baseVo) {
         if (null == receive || null == applyinst || null == baseVo) return baseVo;

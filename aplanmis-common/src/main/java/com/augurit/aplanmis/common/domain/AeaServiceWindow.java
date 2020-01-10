@@ -196,4 +196,9 @@ public class AeaServiceWindow implements Serializable {
      */
     private String echartsColor;
 
+    /**
+     * 代办中心等级
+     */
+    private String windowLevel;
+
 }

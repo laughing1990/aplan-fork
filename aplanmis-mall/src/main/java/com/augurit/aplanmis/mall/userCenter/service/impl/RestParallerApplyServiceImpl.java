@@ -196,7 +196,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
         //实例的阶段情形ID集合
         List<AeaParState> aeaParStates =  aeaParStateService.listAeaParStateByStageinstIdORApplyinstId(applyinstId,"");
         if (aeaParStates.size()>0){
-            vo.setStateIds(aeaParStates.stream().map(AeaParState::getStageId).collect(Collectors.toList()));
+            vo.setStateIds(aeaParStates.stream().map(AeaParState::getStageId).distinct().collect(Collectors.toList()));
         }else {
             vo.setStateIds(new ArrayList<>());
         }
