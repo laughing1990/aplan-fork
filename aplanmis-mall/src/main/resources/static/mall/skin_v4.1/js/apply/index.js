@@ -506,6 +506,34 @@ var parallelDeclare = new Vue({
     }
   },
   methods: {
+    // 查看空表样表下载
+    showMatFiles: function (ybKbDetailIds) {
+      var _that = this;
+      request('', {
+        url: ctx + 'rest/cloud/att/download',
+        type: 'get',
+        data: {
+          detailIds: ybKbDetailIds,
+        },
+      }, function (result) {
+        if(result.success){
+          _that.$message({
+            message: '下载成功',
+            type: 'success'
+          });
+        }else {
+          _that.$message({
+            message: '下载失败',
+            type: 'error'
+          });
+        }
+      }, function (msg) {
+        _that.$message({
+          message: '下载失败',
+          type: 'error'
+        });
+      });
+    },
     // 切换申请人最终选择
     applicantChange: function(val, itemData,flag){
       if(val=='0'&&itemData.itemStateList&&itemData.itemStateList.length>0){

@@ -1647,7 +1647,7 @@
             <el-button type="primary" plain @click="showUploadWindow(scope.row,scope.$index)">材料共享</el-button>
             <el-button type="primary" plain v-if="scope.row.zcqy==1">容缺</el-button>
             <el-button type="primary" plain v-if="scope.row.matProp=='f'" @click="showOneFormDialog1(scope.row)">填写</el-button>
-            <el-button type="primary" plain @click="showUploadWindow(scope.row,scope.$index)">空表样表</el-button>
+            <el-button type="primary" plain v-if="scope.row.ybKbDetailIds&&scope.row.ybKbDetailIds!==''" @click="showMatFiles(scope.row.ybKbDetailIds)">空表样表</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -1700,7 +1700,7 @@
             <span v-show="scope.row.zcqy==0&&scope.row.attIsRequire==1" class="required-color">* </span>
             {{scope.row.matName}}
             <i class="cert-icon ag ag-id-card" v-if="scope.row.matProp=='c'"></i>
-            <span v-show="scope.row.zcqy==1" class="isTag isDone">容缺</span>
+            <!--<span v-show="scope.row.zcqy==1" class="isTag isDone">容缺</span>-->
             <span v-show="scope.row.zcqy==0&&scope.row.attIsRequire==1" class="isTag isRequired">必</span>
           </template>
         </el-table-column>
@@ -1726,10 +1726,10 @@
               <el-button slot="trigger">上传</el-button>
             </el-upload>
             <el-button type="primary" plain @click="showUploadWindow(scope.row,scope.$index)">材料共享</el-button>
-            <el-button type="primary" plain v-if="scope.row.zcqy==1">容缺</el-button>
+            <!--<el-button type="primary" plain v-if="scope.row.zcqy==1">容缺</el-button>-->
             <el-button type="primary" plain v-if="scope.row.matProp=='c'" @click="showUploadWindow(scope.row,scope.$index,'certList')">证照库</el-button>
             <el-button type="primary" plain v-if="scope.row.matProp=='f'" @click="showOneFormDialog1(scope.row)">填写</el-button>
-            <el-button type="primary" plain @click="showUploadWindow(scope.row,scope.$index)">空表样表</el-button>
+            <el-button type="primary" plain v-if="scope.row.ybKbDetailIds&&scope.row.ybKbDetailIds!==''" @click="showMatFiles(scope.row.ybKbDetailIds)">空表样表</el-button>
           </template>
         </el-table-column>
       </el-table>
