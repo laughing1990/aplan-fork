@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>复验申请</title>
+    <style>
+        .pro-search-btn {
+            width: 100px;
+            height: 40px;
+            color: #fff;
+            text-align: center;
+            line-height: 40px;
+            font-size: 14px;
+            border-radius: 2px;
+            background: #4293f4;
+            outline: none;
+            border: none;
+            cursor: pointer;
+        }
+        .stageIteminstName-bg {
+            background: rgba(238, 248, 255, 1);
+            border-radius: 15px;
+            padding: 2px 15px;
+            overflow: hidden;
+            -o-text-overflow: ellipsis;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            word-wrap: normal;
+            max-width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div id="creditUnitList">
+        <p class="p-header">复验申请</p>
+        <div class="search-input fl">
+            <span class="search-title">项目/工程查询</span>
+            <input type="text" placeholder="请输入工程代码 / 项目代码 / 项目名称"  v-model="keyword">
+            <button class="pro-search-btn" @click="pageNumDH = 1;getHadApplyItemList();">搜索</button>
+        </div>
+        <div style="padding-bottom: 50px;">
+            <div class="my-declareing-table">
+                <el-table :data="reviewApplyListData" style="width:100%">
+                    <el-table-column fixed prop="applyinstCode" label="申报流水号" width="200">
+                    </el-table-column>
+                    <el-table-column prop="" label="	项目代码 | 项目名称" win-width="400">
+                        <template slot-scope="scope">
+                            <el-tooltip placement="top" effect="light">
+                                <div slot="content">项目代码：{{scope.row.localCode}}<br />
+                                    <br />工程代码：{{scope.row.gcbm}}<br /> <br />项目/工程名称：{{scope.row.projName}}
+                                </div>
+                                <div>
+                                    <div>{{scope.row.localCode}}</div>
+                                    <div>{{scope.row.projName}}</div>
+                                </div>
+                            </el-tooltip>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="stageIteminstName" label="阶段 / 事项" width="200">
+                        <template slot-scope="scope">
+
+                            <el-tooltip placement="top" effect="light" v-if="scope.row.isSeriesApprove == 1">
+                                <div slot="content">项目类型：{{scope.row.themeName}}<br/> <br/>
+                                    办理事项：【<span :style="'color:' + iteminstStateColorFormat(scope.row.iteminst[0].iteminstState)">{{scope.row.iteminst[0].iteminstState|iteminstStateFormat}}</span>】{{scope.row.stageIteminstName}}</div>
+                                <div>
+                                    <span class=" pro-name" >{{scope.row.stageIteminstName}}</span>
+                                </div>
+                            </el-tooltip>
+                            <el-tooltip placement="top" effect="light" v-else>
+                                <div slot="content">项目类型：{{scope.row.themeName}} <br/> <br/>
+                                    所处阶段：{{scope.row.stageIteminstName}}<br/> <br/>
+                                    办理事项:
+                                    <template v-for="dto in scope.row.iteminst">
+                                        <div style="line-height: 20px;">【<span :style="'color:' + iteminstStateColorFormat(dto.iteminstState)">{{dto.iteminstState|iteminstStateFormat }}</span>】{{ dto.iteminstName }}</div>
+                                    </template>
+                                </div>
+                                <div>
+                                    <span class="stageIteminstName-bg" >{{scope.row.stageIteminstName}}</span>
+                                </div>
+                            </el-tooltip>
+                        </template>
+                    </el-table-column>
+                    <el-table-column  prop="endTime" label="办理时间" width="200">
+                        <template slot-scope="scope">
+                            <span>{{scope.row.endTime|formatDate}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column fixed="right" label="操作" align="center" width="150">
+                        <template slot-scope="scope">
+                                <span class="option-btn">
+                                    <a href="javascript:;" @click="toDetail(scope.row)">复验申请</a>
+                                </span>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <el-pagination style="marginTop: 15px;" background align="right" :page-size="pageSize"
+                               :current-page="pageNum" @size-change="handleSizeChange"
+                               @current-change="handleCurrentChange" :page-sizes="[5,10, 20]"
+                               layout="total,sizes, prev, pager, next, jumper" :total="total" :hide-on-single-page="true" v-show="total > 10">
+                </el-pagination>
+            </div>
+        </div>
+    </div>
+<script>
+    (function($,w,doc){
+        var vm = new Vue({
+            el:"#creditUnitList",
+            data:{
+                loading:false,
+                pageNum:1,
+                pageSize:10,
+                total:0,
+                keyword:'',
+                reviewApplyListData:[],
+            },
+            created:function(){
+                this.getreviewApplyList();
+            },
+            methods:{
+                //查询企业信用列表
+                getreviewApplyList:function(){
+                    var vm = this;
+                    vm.loading = true;
+                    request('', {
+                        url: ctx + 'rest/user/apply/review/list',
+                        type: 'get',
+                        data:{
+                            pageNum:vm.pageNum,
+                            pageSize:vm.pageSize,
+                            keyword:vm.keyword
+                        }
+                    }, function (res) {
+                        vm.loading = false;
+                        if (res.success) {
+                            vm.reviewApplyListData = res.content.list;
+                            vm.total =  res.content.total;
+                        } else {
+                            vm.$message.error(res.message);
+                        }
+                    }, function () {
+                        vm.loading = false;
+                        vm.$message.error('复验申请列表查询接口失败，请稍后重试！');
+                    });
+                },
+                iteminstStateColorFormat:function(val){
+                    if(val==1) return "#457EFF";
+                    if(val==2) return "#4EB1FD";
+                    if(val==3) return "#00C161";
+                    if(val==4) return "#eee";
+                    if(val==5) return "#eee";
+                    if(val==6) return "#447EFF";
+                    if(val==7) return "#2BB49E";
+                    if(val==8) return "#447EFF";
+                    if(val==9) return "#447EFF";
+                    if(val==10) return "#2BB49E";
+                    if(val==11) return "#00C161";
+                    if(val==12) return "#00C161";
+                    if(val==13) return "#FF4B47";
+                    if(val==14) return "#FF4B47";
+                    if(val==15) return "#FF4B47";
+                    return "#000";
+                },
+
+                handleSizeChange:function () {
+                    
+                },
+                handleCurrentChange:function () {
+                    
+                }
+                
+            },
+            filters:{
+                iteminstStateFormat: function (val) {
+                    if(val==1) return "已接件";
+                    if(val==2) return "已撤件";
+                    if(val==3) return "已受理";
+                    if(val==4) return "不受理";
+                    if(val==5) return "不予受理";
+                    if(val==6) return "补正（开始）";
+                    if(val==7) return "补正（结束）";
+                    if(val==8) return "部门开始办理";
+                    if(val==9) return "特别程序（开始）";
+                    if(val==10) return "特别程序（结束）";
+                    if(val==11) return "办结（通过）";
+                    if(val==12) return "办结（容缺通过）";
+                    if(val==13) return "办结（不通过）";
+                    if(val==14) return "撤回";
+                    if(val==15) return "撤销";
+                    return "-";
+                },
+                formatDate: function (val, mat) {
+                    if (!val) return '暂无'
+                    var _date = new Date(val);
+                    return formatDate(_date, 'yyyy-MM-dd hh:mm')
+                },
+            },
+        })
+    }($,window,document))
+</script>
+</body>
+</html>
