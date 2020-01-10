@@ -30,7 +30,10 @@ public enum AgencyState implements BaseEnum<TimeruleInstState, String> {
     STOP("代办终止", "5"),
 
     @ApiModelProperty(value = "OUT_SCOPE", name = "不予受理", allowableValues = "OUT_SCOPE")
-    OUT_SCOPE("不予受理", "6");
+    OUT_SCOPE("不予受理", "6"),
+
+    @ApiModelProperty(value = "AGENT_END", name = "代办结束（办结）", allowableValues = "AGENT_END")
+    AGENT_END("代办结束（办结）", "7");
 
     private String name;
     private String value;

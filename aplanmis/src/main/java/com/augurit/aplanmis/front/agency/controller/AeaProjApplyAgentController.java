@@ -328,6 +328,7 @@ public class AeaProjApplyAgentController {
                 }
                 BscAttForm bscAttForm = fileUtilsService.upload("AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID", applyAgentId, null, file);
                 agreementDetail.setAgentStopAgreementFileId(bscAttForm.getDetailId());
+                agreementDetail.setAgentApplyState(AgencyState.STOP.getValue());
                 aeaProjApplyAgentService.updateAeaProjApplyAgent(agreementDetail);
                 resultForm.setSuccess(true);
                 resultForm.setMessage("上传成功。");
@@ -360,6 +361,7 @@ public class AeaProjApplyAgentController {
                 }
                 BscAttForm bscAttForm = fileUtilsService.upload("AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID", applyAgentId, null, file);
                 agreementDetail.setAgentEndAgreementFileId(bscAttForm.getDetailId());
+                agreementDetail.setAgentApplyState(AgencyState.AGENT_END.getValue());
                 aeaProjApplyAgentService.updateAeaProjApplyAgent(agreementDetail);
                 resultForm.setSuccess(true);
                 resultForm.setMessage("上传成功。");
