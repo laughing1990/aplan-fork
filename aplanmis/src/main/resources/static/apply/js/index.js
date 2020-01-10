@@ -802,6 +802,7 @@ var vm = new Vue({
     },
     // 点击终止协议
     clickStopAgreement: function(){
+      this.stopAgentForm.fileName = this.topProjName+'委托终止单.pdf';
       if (this.stopAgentForm.code&&this.stopAgentForm.code.legnth) {
         this.stopAgentDialogVisible = true;
         return null;
@@ -874,6 +875,8 @@ var vm = new Vue({
       this.$prompt('请输入意见', f ? '结束部门确认' : '直接通过', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
+        inputType: 'textarea',
+        customClass: 'guide-prompt',
         inputValidator: function (val) {
           return !!val
         },
