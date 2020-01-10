@@ -14,6 +14,12 @@
     var ctx = '[[@{/}]]';
     // var ctx = 'http://192.168.32.46:8083/aplanmis-front/';
   </script>
+  <script src="../../static/approve/js/ip.js" th:src="@{/approve/js/ip.js}"></script>
+  <style>
+    .red-color{
+      color:#FF4B47;
+    }
+  </style>
 </head>
 <body  class="gray-body">
 <div class="search-table" id="searchTableWin" v-loading.fullscreen.lock="loading" v-cloak :style="{height: (curHeight-32)+'px'}">
@@ -141,51 +147,53 @@
             :default-sort = "{prop: 'concludedTime', order: 'descending'}"
             style="width: 100%">
     <el-table-column
-            prop="applySource"
-            label="来源"
-            width="60"
-            show-overflow-tooltip
-            :formatter = "formatTableCell">
+        prop="applySource"
+        label="来源"
+        width="80"
+        show-overflow-tooltip>
+      <template slot-scope="scope">
+        {{scope.row.applySource=='win'?'网上申报':'窗口申报'}}
+      </template>
     </el-table-column>
     <el-table-column
-            prop="applyType"
-            width="60"
-            label="类型"
-            show-overflow-tooltip
-            :formatter = "formatTableCell">
+        prop="applyType"
+        width="60"
+        label="类型"
+        show-overflow-tooltip
+        :formatter = "formatTableCell">
     </el-table-column>
     <el-table-column
-            prop="applyinstCode"
-            min-width="120"
-            label="申报流水号"
-            show-overflow-tooltip
-            :formatter = "formatTableCell">
+        prop="applyinstCode"
+        min-width="120"
+        label="申报流水号"
+        show-overflow-tooltip
+        :formatter = "formatTableCell">
     </el-table-column>
     <el-table-column
-            prop="localCode"
-            min-width="220"
-            label="项目/工程代码"
-            show-overflow-tooltip
-            :formatter = "formatTableCell">
+        prop="localCode"
+        min-width="220"
+        label="项目/工程代码"
+        show-overflow-tooltip
+        :formatter = "formatTableCell">
     </el-table-column>
     <el-table-column
-            min-width="250px"
-            prop="projName"
-            label="项目/工程名称"
-            show-overflow-tooltip
-            :formatter = "formatTableCell">
+        min-width="250px"
+        prop="projName"
+        label="项目/工程名称"
+        show-overflow-tooltip
+        :formatter = "formatTableCell">
     </el-table-column>
     <!--<el-table-column-->
-            <!--prop="linkmanName"-->
-            <!--min-width="80"-->
-            <!--label="申请人"-->
-            <!--show-overflow-tooltip-->
-            <!--:formatter = "formatTableCell">-->
+    <!--prop="linkmanName"-->
+    <!--min-width="80"-->
+    <!--label="申请人"-->
+    <!--show-overflow-tooltip-->
+    <!--:formatter = "formatTableCell">-->
     <!--</el-table-column>-->
     <el-table-column
-            min-width="220px"
-            prop="stageItemName"
-            label="阶段/事项/辅线名称">
+        min-width="220px"
+        prop="stageItemName"
+        label="阶段/事项/辅线名称">
       <template scope="scope">
         <el-tooltip  effect="light" placement="top" >
           <div slot="content" v-html="showThemeStageItemInfo(scope.row)"></div>
@@ -194,38 +202,51 @@
       </template>
     </el-table-column>
     <el-table-column
-            min-width="50"
-            prop="complementionStatus"
-            label="补齐状态"
-            show-overflow-tooltip
-            :formatter = "formatTableCell">
-    </el-table-column>
-    <el-table-column
-            min-width="50"
-            prop="chargeStatus"
-            label="是否缴费"
-            show-overflow-tooltip
-            :formatter="formatTableCell">
-    </el-table-column>
-    <el-table-column
-            min-width="100"
-            prop="receiveType"
-            label="领取方式"
-            show-overflow-tooltip
-            :formatter="formatTableCell">
-    </el-table-column>
-    <el-table-column
-            prop="pickUpStatus"
-            min-width="50"
-            label="领取状态"
-            show-overflow-tooltip
-            :formatter = "formatTableCell">
-    </el-table-column>
-    <el-table-column
-            width="200"
-            label="操作">
+        min-width="80px"
+        prop="complementionStatus"
+        label="补齐状态">
       <template slot-scope="scope">
-        <span class="op-btn btn_border_right">到达通知</span>
+        <span :class="{'red-color':scope.row.complementionStatus!=1}">
+          {{scope.row.complementionStatus==0?"待补齐":scope.row.complementionStatus==1?"未容缺":"-"}}
+        </span>
+      </template>
+    </el-table-column>
+    <el-table-column
+        min-width="80px"
+        prop="chargeStatus"
+        label="是否缴费">
+      <template slot-scope="scope">
+        <span :class="{'red-color':scope.row.complementionStatus!=1}">
+          {{scope.row.chargeStatus==0?"未缴费":scope.row.chargeStatus==1?"已缴清":"-"}}
+        </span>
+      </template>
+    </el-table-column>
+    <el-table-column
+        min-width="80px"
+        prop="receiveType"
+        label="领取方式">
+      <template slot-scope="scope">
+        <span>
+          {{scope.row.receiveType==0?"多次领取":scope.row.receiveType==1?"一次领取":"-"}}
+        </span>
+      </template>
+    </el-table-column>
+    <el-table-column
+        prop="pickUpStatus"
+        min-width="80px"
+        label="领取状态"
+        show-overflow-tooltip>
+      <template slot-scope="scope">
+        <span>
+          {{scope.row.pickUpStatus==0?"未领取":scope.row.pickUpStatus==1?"已领取":scope.row.pickUpStatus==2?'部分领取':'-'}}
+        </span>
+      </template>
+    </el-table-column>
+    <el-table-column
+        width="80"
+        label="操作">
+      <template slot-scope="scope">
+        <!--        <span class="op-btn btn_border_right">到达通知</span>-->
         <span class="op-btn"  @click="pickupCheck(scope.row)">取件登记</span>
       </template>
     </el-table-column>

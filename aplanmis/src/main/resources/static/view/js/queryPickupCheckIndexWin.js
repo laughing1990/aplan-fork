@@ -76,20 +76,19 @@ var vm = new Vue({
         },
         //取件登记
         pickupCheck:function (row) {
-            var applyinstId = row.applyinstId;
-            var urltemp = '';
-            var menuName = '';
-            urltemp = ctx + 'rest/certificate/registerIndex?applyinstId=' + applyinstId;
-            menuName = '取件登记';
-
-            var parentIfreamUrl = window.frames.location.href;
-            urltemp = urltemp +'&parentIfreamUrl='+parentIfreamUrl;
-            var _jumpData = {
-                'menuName': menuName,
-                'menuInnerUrl': urltemp,
-                'id':applyinstId
+            var menuName= '取件登记';
+            var menuInnerUrl =  ctx + 'rest/certificate/registerIndex?applyinstId=' + row.applyinstId;
+            var id = 'menu_'+new Date().getTime();
+            var data = {
+                'menuName':menuName,
+                'menuInnerUrl':menuInnerUrl,
+                'id':id,
             };
-            parent.vm.addTab('', _jumpData, parent.vm.activeTabIframe, '');
+            try{
+                parent.vm.addTab('',data,'','');
+            }catch (e) {
+                window.open(menuInnerUrl,'_blank');
+            }
         }
     },
     created: function () {
