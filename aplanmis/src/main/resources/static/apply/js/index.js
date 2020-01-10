@@ -768,6 +768,7 @@ var vm = new Vue({
     window.addEventListener('scroll', _that.handleScroll);
     window.addEventListener('resize', function (ev) {
       _that.curWidth = (document.documentElement.clientWidth || document.body.clientWidth);
+      _that.curHeight = (document.documentElement.clientHeight || document.body.clientHeight);
     });
     _that.$nextTick(function () {
       this.$refs.searchProjInfo.$el.querySelector('input').click()
