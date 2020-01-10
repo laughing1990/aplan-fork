@@ -147,4 +147,9 @@ public class AeaProjApplyAgent implements Serializable{
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd", locale = "zh", timezone = "GMT+8")
     private java.util.Date agreementStopTime;
+
+    @ApiModelProperty(name = "agreementEndTime", value = "代办办结单办结日期")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", locale = "zh", timezone = "GMT+8")
+    private java.util.Date agreementEndTime;
 }
