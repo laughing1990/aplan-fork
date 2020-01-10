@@ -40,6 +40,13 @@ public class AeaItemUserAdminController {
         return aeaItemUserService.listAllUserRelOrgByOrgId(rootOrgId);
     }
 
+    @RequestMapping("/syncLocalAeaItemGuide.do")
+    public ResultForm syncLocalAeaItemGuide(String userId) {
+
+        aeaItemUserService.syncLocalAeaItemGuide(userId, SecurityContext.getCurrentOrgId());
+        return new ResultForm(true);
+    }
+
     @RequestMapping("/listUserItemByPage.do")
     public EasyuiPageInfo<AeaItemUser> listUserItemByPage(AeaItemUser aeaItemUser, Page page) throws Exception {
 

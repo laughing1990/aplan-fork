@@ -1513,7 +1513,8 @@
                         </div>
                       </template>
                     </el-table-column>
-                    <el-table-column :key="Math.random()" label="智能引导" prop="intelliGuideChoose" width="80px" align="center">
+                    <el-table-column :key="Math.random()" label="智能引导" prop="intelliGuideChoose" width="80px"
+                                     align="center">
                       <template slot-scope="scope">
                         <el-checkbox v-model="scope.row.intelliGuideChoose" disabled></el-checkbox>
                       </template>
@@ -1526,7 +1527,8 @@
                       </template>
                     </el-table-column>
                     <!-- 牵头部门结果 -->
-                    <el-table-column :key="Math.random()" label="牵头部门" prop="leaderDeptChoose" v-if="guideState>2" width="140">
+                    <el-table-column :key="Math.random()" label="牵头部门" prop="leaderDeptChoose" v-if="guideState>2"
+                                     width="140">
                       <template slot-scope="scope">
                         <el-checkbox v-model="scope.row.leaderDeptChoose" disabled>
                           {{scope.row.leanderDeptOpinion||'未填写意见'}}
@@ -1549,7 +1551,8 @@
                       </el-table-column>
                     </template>
                     <!-- 审批部门结果 -->
-                    <el-table-column :key="Math.random()" v-if="guideState>3" label="审批部门" prop="approveDeptChoose" width="140">
+                    <el-table-column :key="Math.random()" v-if="guideState>3" label="审批部门" prop="approveDeptChoose"
+                                     width="140">
                       <template slot-scope="scope">
                         <el-checkbox v-model="scope.row.approveDeptChoose" disabled>
                           {{scope.row.approveDeptOpinion||'无意见'}}
@@ -1945,12 +1948,14 @@
         </template>
         <template v-else>
           <el-button v-if="showSolicitBtn" type="success" @click="openSoDialog" circle>意见<br/>征求</el-button>
-          <el-button type="danger" :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('3')">不予<br/>受理</el-button>
+          <el-button type="danger" :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('3')">不予<br/>受理
+          </el-button>
           <el-button circle :disabled="!stageFrontCheckFlag" @click="showCommentDialog('5')">材料<br/>补全</el-button>
           <el-button circle :disabled="!stageFrontCheckFlag" @click="showCommentDialog('1')">打印<br/>回执</el-button>
           <el-button :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('4','stash')">暂存</el-button>
         </template>
-        <el-button type="primary" :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('0')">发起<br/>申报</el-button>
+        <el-button type="primary" :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('0')">发起<br/>申报
+        </el-button>
       </div>
       <div class="right-bottom-btn" v-if="isGuidePage">
         <template v-if="leaderDept">
@@ -2717,7 +2722,7 @@
       </el-dialog>
       <!-- 意见征求 end -->
       <!-- 项目代办协议 查看pdf弹窗 start -->
-      <el-dialog title="代办协议" class="solicit-opinion-dialog agent-agreement" v-loading="prePdfDialogLoading"
+      <el-dialog title="查看协议" class="solicit-opinion-dialog agent-agreement" v-loading="prePdfDialogLoading"
                  :close-on-click-modal="false" :visible.sync="prePdfDialogVisible" @close="closePrePdf"
                  :width="curWidth>1220?'1200px':(curWidth-20)+'px'" top="20px">
         <div :style="{height: (curHeight-175)+'px'}">
@@ -2732,22 +2737,25 @@
       <!-- 项目代办终止协议 start -->
       <el-dialog title="终止协议" class="solicit-opinion-dialog stop-agent" v-loading="stopAgentDialogLoading"
                  :close-on-click-modal="false" :visible.sync="stopAgentDialogVisible" @close="closeStopAgentDialog"
-                 :width="curWidth>1020?'1000px':(curWidth-20)+'px'" top="100px">
+                 :width="curWidth>820?'800px':(curWidth-20)+'px'" top="100px">
         <div :style="{'max-height': (curHeight-305)+'px'}" class="stop-a-box">
           <p class="au-hint-text">
             <i class="ag ag-warn-circle"></i>
-            当前网厅申报处于部门辅导模式，请先进行工程审核，然后点击“下一步”进行事项的相关确认。
+            请填写终止原因，确认终止日期后点击“签章”
           </p>
-          <el-form :model="stopAgentForm" label-width="120px" size="medium">
-            <el-form-item label="代办委托项目:">
+          <el-form :model="stopAgentForm" label-width="100px" size="medium">
+            <el-form-item label="代办委托项目">
               <el-input v-model="topProjName" readonly></el-input>
             </el-form-item>
-            <el-form-item label="协议编号:">
+            <el-form-item label="协议编号">
               <el-input v-model="stopAgentForm.code" readonly></el-input>
             </el-form-item>
-            <el-form-item label="委托协议:">
-              {{topProjName}}委托终止单.pdf
-              <span class="see-stop-agent" @click="seeStopAgent">查看</span>
+            <el-form-item label="委托协议">
+              <el-input v-model="stopAgentForm.fileName">
+                <el-button type="primary" slot="append" @click="seeStopAgent">查看</el-button>
+              </el-input>
+              <!--              {{topProjName}}委托终止单.pdf-->
+              <!--              <span class="see-stop-agent" @click="seeStopAgent">查看</span>-->
             </el-form-item>
             <el-form-item label="终止日期">
               <el-date-picker v-model="stopAgentForm.date" :clearable="false"

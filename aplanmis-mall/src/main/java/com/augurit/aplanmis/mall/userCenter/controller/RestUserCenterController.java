@@ -105,6 +105,18 @@ public class RestUserCenterController {
         return new ModelAndView("mall/"+skin+"userCenter/components/creditDetail");
     }
 
+    @GetMapping("toCreditUnitListPage")
+    @ApiOperation(value = "跳转企业信用列表")
+    public ModelAndView toCreditUnitListPage() throws Exception {
+        return new ModelAndView("mall/"+skin+"userCenter/components/creditUnitList");
+    }
+
+    @GetMapping("/toReviewAppyPage")
+    @ApiOperation(value = "首页-->跳转复验申请页面接口")
+    public ModelAndView toReviewAppyPage() throws Exception {
+        return new ModelAndView("mall/"+skin+"userCenter/components/reviewApply");
+    }
+
     @GetMapping("/toMyProjListPage")
     @ApiOperation(value = "跳转我的项目列表页")
     public ModelAndView toMyProjListPage(){

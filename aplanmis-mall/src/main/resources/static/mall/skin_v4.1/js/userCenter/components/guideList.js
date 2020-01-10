@@ -116,6 +116,7 @@ var vm = new Vue({
             break;
           case '5':
             defaultValue = '结束';
+            break;
           case '-1':
             defaultValue = '其他';
             break;

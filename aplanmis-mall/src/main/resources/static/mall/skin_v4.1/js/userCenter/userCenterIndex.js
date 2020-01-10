@@ -36,7 +36,7 @@ var userCenter = (function () {
                       select: false,
                     },
                   {
-                    name: '申报管理',
+                    name: '申报查询',
                     open: true,
                     icon:'icon-5',
                     childList: [
@@ -54,15 +54,21 @@ var userCenter = (function () {
                             name: '补齐补正',
                             value: 'MatSupplement',
                             select: false,
-                        }]
+                        },
+                        {
+                            name: '复验申请',
+                            value: 'ReviewAppy',
+                            select: false,
+                        },
+                        ]
                     },
                     {
-                        name: '我的资料库',
+                        name: '我的材料',
                         open: true,
                       icon:'icon-5',
                         childList: [
                             {
-                                name: '我的材料',
+                                name: '申报材料',
                                 value: 'MyMaterials',
                                 select: false,
                             },
@@ -73,9 +79,14 @@ var userCenter = (function () {
                             // },
                         ]
                     },
+                    // {
+                    //     name: '我的信用',
+                    //     value: 'CreditDetail',
+                    //     select: false,
+                    // },
                     {
-                        name: '我的信用',
-                        value: 'CreditDetail',
+                        name: '企业信用',
+                        value: 'CreditUnitList',
                         select: false,
                     },
                     {

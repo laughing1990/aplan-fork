@@ -65,7 +65,9 @@ var app = new Vue({
               isAllStage :'1',
               stageItemFilter: '0',
               sortNo:'1',
-              windowType:'1'
+              windowType:'1',
+              regionId: [],  //行政区划id
+              windowLevel: '区级', //代办中心级别
             },
             isActive:'',
             windowType:'',
@@ -85,6 +87,9 @@ var app = new Vue({
             rules: {
                 windowName: [
                     { required: true, message: '此项为必填'},
+                ],
+                regionId: [
+                  { required: true, message: '此项为必填'},
                 ],
                 regionName: [
                     { required: true, message: '此项为必填'},
@@ -107,7 +112,10 @@ var app = new Vue({
                 trafficGuide: [
                     { required: true, message: '此项为必填'},
                 ],
-
+                windowLevel: [
+                  { required: true, message: '此项为必选'},
+              ] ,
+               
             },
             isForm:false,
             allUser:[],
@@ -120,7 +128,15 @@ var app = new Vue({
             keys:[],
             userCheckedArr: [],
             userCheckedData: [],
-            layerUserKeyWord: ''
+            layerUserKeyWord: '',
+
+             // 行政分区级联-prop
+            SetDistrictDept: {
+              value: 'value',
+              label: 'label',
+              children: 'children',
+              checkStrictly: true
+            },
         }
       },
       directives: {
@@ -252,17 +268,41 @@ var app = new Vue({
           regionTreeData: function() {
               var vm = this;
               // vm.loading = true;
-              request('',{
-                  type:'get',
-                  url:ctx+'aea/service/window/listRegionTreeByOrgId.do',
-              },function (res) {
-                  var arr = [];
-                  arr.push(res);
-                  vm.regionData = arr;
-                  vm.loading = false
-              },function (err) {
-                  vm.$message.error('服务器错了哦!');
-              })
+              // request('',{
+              //     type:'get',
+              //     url:ctx+'aea/service/window/listRegionTreeByOrgId.do',
+              // },function (res) {
+              //     var arr = [];
+              //     arr.push(res);
+              //     vm.regionData = arr;
+              //     vm.loading = false
+              // },function (err) {
+              //     vm.$message.error('服务器错了哦!');
+              // })
+
+            request('', {
+              type: 'get',
+              url: ctx + 'aea/service/window/getRegionOptions',
+            }, function (res) {
+              if (res.success) {
+                vm.regionData = res.content;
+                vm.handelRegionTreeData( vm.regionData)
+              } else {
+                return vm.$message.error(res.message)
+              }
+            }, function (err) {
+              vm.$message.error('服务器错了哦!');
+            })
+          },
+          // 处理地区数据
+          handelRegionTreeData: function(list){
+            for(var i = 0; i <list.length; i++){
+              if(list[i].children && list[i].children.length){
+                this.handelRegionTreeData(list[i].children)
+              }else {
+                delete list[i].children
+              }
+            }
           },
           // 请求部门树数据
           orgTreeData: function() {
@@ -372,6 +412,7 @@ var app = new Vue({
             this.editId = '';
             this.$set(this.formData,'isActive','1');
             this.$set(this.formData,'windowType','d');
+            this.$set(this.formData,'windowLevel','区级');
           },
           getSortNo:function(){
             var _this = this;
@@ -434,6 +475,14 @@ var app = new Vue({
                 for(var item in res){
                   _this.$set(_this.formData,item,res[item])
                 }
+
+                // 处理行政回显
+                if (_this.formData.regionId) {
+                  var _arr = [];
+                  _arr.push(_this.formData.regionId);
+                  _this.formData['regionId'] = _arr;
+                }
+
                 // _this.formData = res;
                 _this.addWindowDialog=true;
                 _this.getFile(id);
@@ -501,7 +550,7 @@ var app = new Vue({
               sortNo: this.formData.sortNo,
               windowType: this.formData.windowType,
               windowName: this.formData.windowName,
-              regionName: this.formData.regionName,
+              // regionName: this.formData.regionName,
               regionId: this.formData.regionId,
               orgName: this.formData.orgName,
               orgId: this.formData.orgId,
@@ -510,11 +559,26 @@ var app = new Vue({
               windowAddress: this.formData.windowAddress,
               trafficGuide: this.formData.trafficGuide,
               mapUrl: this.formData.mapUrl?this.formData.mapUrl:'',
+              windowLevel: this.formData.windowLevel? this.formData.windowLevel: '',
               windowMemo: this.formData.windowMemo?this.formData.windowMemo:''
             };
+             // 处理行政分区，只传最后一个地区的id
+            var _regionalism = "";
+            if (param.regionId) {
+              var _area = "", len = param.regionId.length;
+              _area =  param.regionId[len - 1];
+              _regionalism = _area;
+            }else{
+              _regionalism = "";
+            }
+
+            var saveParams = JSON.parse(JSON.stringify(param));
+            saveParams.regionId = _regionalism;
+            // console.log(saveParams)
+            // return;
             var formData = new FormData();
-            for (var k in param) {
-              formData.append(k, param[k])
+            for (var k in saveParams) {
+              formData.append(k, saveParams[k])
             }
             this.fileList.forEach(function (item) {
               formData.append('mapAttFile', item)
