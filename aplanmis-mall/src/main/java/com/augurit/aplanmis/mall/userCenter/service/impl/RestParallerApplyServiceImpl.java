@@ -8,6 +8,7 @@ import com.augurit.aplanmis.common.apply.item.ComputedItem;
 import com.augurit.aplanmis.common.apply.item.GuideComputedItem;
 import com.augurit.aplanmis.common.constants.AeaHiApplyinstConstants;
 import com.augurit.aplanmis.common.constants.ApplyState;
+import com.augurit.aplanmis.common.constants.GuideApplyState;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.apply.AeaHiGuideDetailService;
@@ -218,6 +219,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
         vo.setLinkmanInfo(aeaLinkmanInfoService.getOneById(applyinst.getLinkmanInfoId()));
         AeaParStage stage = aeaParStageMapper.getAeaParStageById(vo.getStageId());
         vo.setDybzspjdxh(stage!=null?stage.getDybzspjdxh():"");
+        vo.setGuideId(guideId);
         return vo;
     }
 
@@ -558,7 +560,8 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
         query.setApplyState(applyState);
         query.setApplyUnitInfoId(unitInfoId);
         query.setApplyLinkmanInfoId(linkmanInfoId);
-        return aeaHiGuideService.listAeaHiGuideListUnitIdOrLinkmanInfoId(query);
+        List<AeaHiGuide> list = aeaHiGuideService.listAeaHiGuideListUnitIdOrLinkmanInfoId(query);
+        return list.size()>0?list.stream().filter(v-> !GuideApplyState.FINISHED.getValue().equals(v.getApplyState())).collect(Collectors.toList()):new ArrayList<>();
     }
 
 

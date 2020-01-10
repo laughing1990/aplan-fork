@@ -76,7 +76,8 @@ public class ApplyIteminstConfirmVo {
     @ApiModelProperty(value = "证件编码 loginType=0时，表示身份证  loginType=l时，表示企业统一信用代码")
     private String idCardCode;
 
-
+    @ApiModelProperty(value = "部门辅导ID")
+    private String guideId;
 
 
     public static ApplyIteminstConfirmVo formatGuide(GuideDetailVo detail) {
