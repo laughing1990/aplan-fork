@@ -1954,5 +1954,21 @@
     </sql>
     </changeSet>
 
+    <changeSet id="20200110155525" author="zhangwn" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_proj_apply_agent`
+            MODIFY COLUMN `AGENT_APPLY_STATE` char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL
+            COMMENT '代办申请状态 1待签订 2窗口签订中 3 待申请人签章 4已签订（代办中） 5不予受理 6窗口终止 7代办终止 8窗口办结 9代办结束' AFTER `AGENT_STAGE_STATE`;
+
+            ALTER TABLE `aea_proj_apply_agent`
+            ADD COLUMN `AGREEMENT_STOP_TIME` datetime NULL COMMENT '代办终止时间' AFTER `AGREEMENT_SIGN_TIME`;
+
+            ALTER TABLE `aea_proj_apply_agent`
+            ADD COLUMN `AGREEMENT_STOP_REASON` varchar(500) DEFAULT NULL COMMENT '代办终止原因' AFTER `AGREEMENT_SIGN_TIME`;
+
+            ALTER TABLE `aea_proj_apply_agent`
+            ADD COLUMN `AGREEMENT_END_TIME` datetime NULL COMMENT '代办办结时间' AFTER `AGREEMENT_STOP_REASON`;
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>

@@ -20,6 +20,9 @@
     AGENT_END_AGREEMENT_FILE_ID  agentEndAgreementFileId,
     AGREEMENT_CODE  agreementCode,
     AGREEMENT_SIGN_TIME agreementSignTime,
+    AGREEMENT_STOP_TIME agreementStopTime,
+    AGREEMENT_STOP_REASON agreementStopReason,
+    AGREEMENT_END_TIME agreementEndTime,
     START_TIME  startTime,
     END_TIME  endTime,
     CREATER  creater,
@@ -45,6 +48,9 @@
         ${alias}.AGENT_END_AGREEMENT_FILE_ID  agentEndAgreementFileId,
         ${alias}.AGREEMENT_CODE  agreementCode,
         ${alias}.AGREEMENT_SIGN_TIME agreementSignTime,
+        ${alias}.AGREEMENT_STOP_TIME agreementStopTime,
+        ${alias}.AGREEMENT_STOP_REASON agreementStopReason,
+        ${alias}.AGREEMENT_END_TIME agreementEndTime,
         ${alias}.START_TIME  startTime,
         ${alias}.END_TIME  endTime,
         ${alias}.CREATER  creater,
@@ -137,6 +143,15 @@
             </if>
             <if test="agreementSignTime != null" >
                 AND    AGREEMENT_SIGN_TIME = #{agreementSignTime}
+            </if>
+            <if test="agreementStopTime != null" >
+                AND    AGREEMENT_STOP_TIME = #{agreementStopTime}
+            </if>
+            <if test="agreementStopReason != null" >
+                AND    AGREEMENT_STOP_REASON = #{agreementStopReason}
+            </if>
+            <if test="agreementEndTime != null" >
+                AND    AGREEMENT_END_TIME = #{agreementEndTime}
             </if>
             <if test="startTime != null" >
                 AND    START_TIME = #{startTime}
@@ -250,6 +265,15 @@
             <if test="agreementSignTime != null" >
                 AND    AGREEMENT_SIGN_TIME = #{agreementSignTime}
             </if>
+            <if test="agreementStopTime != null" >
+                AND    AGREEMENT_STOP_TIME = #{agreementStopTime}
+            </if>
+            <if test="agreementStopReason != null" >
+                AND    AGREEMENT_STOP_REASON = #{agreementStopReason}
+            </if>
+            <if test="agreementEndTime != null" >
+                AND    AGREEMENT_END_TIME = #{agreementEndTime}
+            </if>
             <if test="startTime != null" >
                 AND    agent.START_TIME = #{startTime}
             </if>
@@ -285,9 +309,9 @@
 <!--5 新增实体对象 -->
 <insert id="insertAeaProjApplyAgent" parameterType="AeaProjApplyAgent" >
     insert into AEA_PROJ_APPLY_AGENT (
-APPLY_AGENT_ID  ,AGENT_CODE  ,PROJ_INFO_ID  ,UNIT_INFO_ID  ,APPLY_USER_ID  ,AGENT_STAGE_STATE  ,AGENT_APPLY_STATE  ,WINDOW_ID  ,AGENT_USER_ID  ,AGENT_USER_NAME  ,AGENT_USER_MOBILE  ,AGENT_STOP_AGREEMENT_FILE_ID  ,AGENT_END_AGREEMENT_FILE_ID  ,AGREEMENT_CODE  ,AGREEMENT_SIGN_TIME  ,START_TIME  ,END_TIME  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
+APPLY_AGENT_ID  ,AGENT_CODE  ,PROJ_INFO_ID  ,UNIT_INFO_ID  ,APPLY_USER_ID  ,AGENT_STAGE_STATE  ,AGENT_APPLY_STATE  ,WINDOW_ID  ,AGENT_USER_ID  ,AGENT_USER_NAME  ,AGENT_USER_MOBILE  ,AGENT_STOP_AGREEMENT_FILE_ID  ,AGENT_END_AGREEMENT_FILE_ID  ,AGREEMENT_CODE  ,AGREEMENT_SIGN_TIME  ,AGREEMENT_STOP_TIME  ,AGREEMENT_STOP_REASON  ,AGREEMENT_END_TIME  ,START_TIME  ,END_TIME  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
     )  values  (
-#{applyAgentId},#{agentCode},#{projInfoId},#{unitInfoId},#{applyUserId},#{agentStageState},#{agentApplyState},#{windowId},#{agentUserId},#{agentUserName},#{agentUserMobile},#{agentStopAgreementFileId},#{agentEndAgreementFileId},#{agreementCode},#{agreementSignTime},#{startTime},#{endTime},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+#{applyAgentId},#{agentCode},#{projInfoId},#{unitInfoId},#{applyUserId},#{agentStageState},#{agentApplyState},#{windowId},#{agentUserId},#{agentUserName},#{agentUserMobile},#{agentStopAgreementFileId},#{agentEndAgreementFileId},#{agreementCode},#{agreementSignTime},#{agreementStopTime},#{agreementStopReason},#{agreementEndTime},#{startTime},#{endTime},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
     )
 </insert>
     <!--6 修改实体对象 -->
@@ -339,6 +363,15 @@ APPLY_AGENT_ID  ,AGENT_CODE  ,PROJ_INFO_ID  ,UNIT_INFO_ID  ,APPLY_USER_ID  ,AGEN
             <if test="agreementSignTime != null" >
                 AGREEMENT_SIGN_TIME = #{agreementSignTime},
             </if>
+            <if test="agreementStopTime != null" >
+                GREEMENT_STOP_TIME = #{agreementStopTime},
+            </if>
+            <if test="agreementStopReason != null" >
+                AGREEMENT_STOP_REASON = #{agreementStopReason},
+            </if>
+            <if test="agreementEndTime != null" >
+                AGREEMENT_END_TIME = #{agreementEndTime},
+            </if>
             <if test="startTime != null" >
                 START_TIME = #{startTime},
             </if>
@@ -387,6 +420,9 @@ APPLY_AGENT_ID  ,AGENT_CODE  ,PROJ_INFO_ID  ,UNIT_INFO_ID  ,APPLY_USER_ID  ,AGEN
         <result property="agentEndAgreementFileId" column="AGENT_END_AGREEMENT_FILE_ID"/>
         <result property="agreementCode" column="AGREEMENT_CODE"/>
         <result property="agreementSignTime" column="AGREEMENT_SIGN_TIME"/>
+        <result property="agreementStopTime" column="AGREEMENT_STOP_TIME"/>
+        <result property="agreementStopReason" column="AGREEMENT_STOP_REASON"/>
+        <result property="agreementEndTime" column="AGREEMENT_END_TIME"/>
         <result property="startTime" column="START_TIME"/>
         <result property="endTime" column="END_TIME"/>
         <result property="creater" column="CREATER"/>
