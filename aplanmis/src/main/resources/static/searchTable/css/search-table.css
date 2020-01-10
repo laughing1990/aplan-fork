@@ -466,3 +466,66 @@ body .el-table th.gutter{
 .is-catalog.is-green {
   background: #00C062;
 }
+
+/* 代办列表 */
+
+.solicit-opinion-dialog .el-dialog__body,
+.solicit-opinion-dialog .el-dialog__footer {
+  background: #F0F3F6;
+}
+.solicit-opinion-dialog .el-dialog__footer {
+  background: #fafafa;
+}
+
+.solicit-opinion-dialog .el-dialog__footer {
+  padding: 12px 25px;
+}
+
+.solicit-opinion-dialog .el-dialog__body {
+  padding: 14px;
+}
+
+.solicit-opinion-dialog  .el-dialog__header {
+  border: none;
+  height: 44px;
+  line-height: 44px;
+  color: #fff;
+  background: #1C9AFD;
+  padding: 0 15px;
+}
+
+.solicit-opinion-dialog .el-dialog__title{
+  color: #eee;
+}
+
+.solicit-opinion-dialog .el-dialog__headerbtn .el-dialog__close{
+  color: #eee;
+}
+
+.stop-a-box{
+  background: #fff;
+  padding: 20px 20px 6px 20px;
+  overflow: auto;
+}
+.stop-agent .el-dialog__body .el-form{
+  padding-right:0;
+}
+
+.au-hint-text {
+  position: relative;
+  line-height: 20px;
+  padding: 12px;
+  padding-left: 40px;
+  border: 1px solid #FFB822;
+  background: #FFFCEE;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.au-hint-text .ag-warn-circle {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  color: #FFB822;
+  font-size: 20px;
+}
