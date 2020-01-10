@@ -28,7 +28,7 @@ public class ProjStatusTreeVo {
     @ApiModelProperty("阶段数组")
     private List<ProjStatusTreeStageVo> stagesVos;
     @ApiModelProperty("工程状态树")
-    private List<ProjStatusVo> projStatusVo;
+    private List<ProjStatusVo> projStatusVos;
 
 
     @Data

@@ -63,15 +63,17 @@ public class RestApplyProjServiceImp implements RestApplyProjService {
             String themeId = aeaProjInfo.getThemeId();
             if (StringUtils.isNotBlank(themeId)) vo.setThemeName(aeaParThemeService.getAeaParThemeByThemeId(themeId).getThemeName());
             //set项目及子工程至VO
-            BeanUtils.copyProperties(aeaProjInfo,vo.getProjStatusVo());
-            setChildProj(vo.getProjStatusVo());
+            BeanUtils.copyProperties(aeaProjInfo,vo.getProjStatusVos());
+            setChildProj(vo.getProjStatusVos());
             //主题下的所有主线阶段
             List<AeaParStage> nodeStages = (aeaParStageService.listAeaParStageByThemeIdOrThemeVerId(themeId, "",topOrgId))
                     .stream().filter(stage->"1".equals(stage.getIsNode())).collect(Collectors.toList());
             if (nodeStages.size()<=0) throw new IllegalArgumentException("当前主题下无主线阶段");
             vo.setStagesVos(nodeStages.stream().map(ProjStatusTreeVo.ProjStatusTreeStageVo::build).collect(Collectors.toList()));
             //给项目树及阶段设置状态
-            setApplyStatus2Proj(vo.getProjStatusVo(),vo.getStagesVos());
+            vo.getStagesVos().stream().forEach(stagesVo->{
+                setApplyStatus2Proj(vo.getProjStatusVos(),stagesVo);
+            });
             return vo;
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,12 +82,13 @@ public class RestApplyProjServiceImp implements RestApplyProjService {
     }
 
     //给项目树及阶段设置状态
-     void setApplyStatus2Proj(List<ProjStatusTreeVo.ProjStatusVo> vos, List<ProjStatusTreeVo.ProjStatusTreeStageVo> nodeStages){
+     void setApplyStatus2Proj(List<ProjStatusTreeVo.ProjStatusVo> vos,ProjStatusTreeVo.ProjStatusTreeStageVo nodeStage){
          try {
              int stageStatus = 0;
              Boolean isDoned = true;//已办结
-             String stageId = vos.get(0).getStageId();
+             String stageId = nodeStage.getStageId();
              for (ProjStatusTreeVo.ProjStatusVo vo : vos) {
+                 if (!stageId.equals(vo.getStageId())) return;
                  AeaHiApplyinst aeaHiApplyinst = getAeaHiApplyinstByProjInfoIdAndStageId(vo.getProjInfoId(),vo.getStageId());
                  if (aeaHiApplyinst!=null){
                      stageStatus = 2;
@@ -97,15 +100,12 @@ public class RestApplyProjServiceImp implements RestApplyProjService {
              }
              int finalStageStatus = stageStatus;
              Boolean finalIsDoned = isDoned;
-             nodeStages.stream().forEach(nodeStage->{
-                 if (stageId.equals(nodeStage.getStageId())){
-                     if (finalStageStatus==0){
-                         nodeStage.setApplyStatus("0"); ; return;//未申报
-                     }
-                     if (finalIsDoned) nodeStage.setApplyStatus("2");
-                     nodeStage.setApplyStatus("1");
-                 }
-             });
+             if (finalStageStatus==0){
+                 nodeStage.setApplyStatus("0"); ; return;//未申报
+             }else {
+                 if (finalIsDoned) nodeStage.setApplyStatus("2");
+                 else  nodeStage.setApplyStatus("1");
+             }
          } catch (Exception e) {
              e.printStackTrace();
          }
@@ -117,6 +117,7 @@ public class RestApplyProjServiceImp implements RestApplyProjService {
            for (ProjStatusTreeVo.ProjStatusVo vo : vos) {
                aeaProjApplySplit.setFrontStageProjInfoId(vo.getProjInfoId());
                List<AeaProjApplySplit> aeaProjApplySplits = aeaProjApplySplitService.listAeaProjApplySplit(aeaProjApplySplit);
+
                if (aeaProjApplySplits.size()<=0) return;
                List<String> ids = aeaProjApplySplits.stream().map(AeaProjApplySplit::getProjInfoId).collect(Collectors.toList());
                String[] idArrays = ids.toArray(new String[ids.size()]);
