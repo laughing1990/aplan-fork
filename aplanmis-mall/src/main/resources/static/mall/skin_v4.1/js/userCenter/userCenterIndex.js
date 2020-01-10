@@ -36,7 +36,7 @@ var userCenter = (function () {
                       select: false,
                     },
                   {
-                    name: '申报管理',
+                    name: '申报查询',
                     open: true,
                     icon:'icon-5',
                     childList: [
@@ -54,7 +54,13 @@ var userCenter = (function () {
                             name: '补齐补正',
                             value: 'MatSupplement',
                             select: false,
-                        }]
+                        },
+                        {
+                            name: '复验申请',
+                            value: 'ReviewAppy',
+                            select: false,
+                        },
+                        ]
                     },
                     {
                         name: '我的材料',

@@ -794,10 +794,12 @@ var vm = new Vue({
         return this.$message.error('请填写终止原因');
       }
       var _date = __STATIC.formatDate(this.stopAgentForm.date, 'yyyy-MM-dd');
-      var url = ctx + 'aea/proj/apply/agent/getAgencyStopAgreementFile';
-      url += '?applyAgentId=' + this.applyAgentId;
-      url += '&agreementStopReason=' + reason;
-      url += '&agreementStopTime=' + _date;
+      var url = ctx + 'preview/pdfjs/web/viewer.html?file=';
+      var _url = ctx + 'aea/proj/apply/agent/getAgencyStopAgreementFile';
+      _url += '?applyAgentId=' + this.applyAgentId;
+      _url += '&agreementStopReason=' + reason;
+      _url += '&agreementStopTime=' + _date;
+      url += encodeURIComponent(_url);
       this.prePdfDialogVisible = true;
       this.prePdfUrl = url;
     },

@@ -1070,8 +1070,8 @@
         <p>已提交到审批部门确认，请您耐心等待短信通知，或通过  “申报管理 - 部门辅导”  查看审批部门确认的结果。</p><br/>
         <p class="guidance-time">预计用时：0.5个工作日</p><br/>
         <div class="guidance-btn">
-          <el-button type="primary"><a :href="ctx+'rest/main/toIndexPage?#myHomeIndex'">返回我的首页</a></el-button>
-          <el-button type="primary"><a :href="ctx+'rest/main/toIndexPage?#guideList'">前往部门辅导</a></el-button>
+          <el-button type="primary" @click="goToOtherPage('myHomeIndex')">返回我的首页</el-button>
+          <el-button type="primary" @click="goToOtherPage('guideList')">前往部门辅导</el-button>
         </div>
       </div>
       <!--项目/工程信息-->
@@ -1623,7 +1623,7 @@
             <span v-show="scope.row.zcqy==0&&scope.row.attIsRequire==1" class="isTag isRequired">必</span>
           </template>
         </el-table-column>
-        <el-table-column width="140" align="center" label="收件标准">
+        <el-table-column width="160" align="center" label="收件标准">
           <template slot-scope="scope">
             <el-tooltip effect="light"
                         :content="scope.row.reviewKeyPoints?scope.row.reviewKeyPoints:'暂无'"
@@ -1704,7 +1704,7 @@
             <span v-show="scope.row.zcqy==0&&scope.row.attIsRequire==1" class="isTag isRequired">必</span>
           </template>
         </el-table-column>
-        <el-table-column width="140" align="center" label="收件标准">
+        <el-table-column width="160" align="center" label="收件标准">
           <template slot-scope="scope">
             <el-tooltip effect="light"
                         :content="scope.row.reviewKeyPoints?scope.row.reviewKeyPoints:'暂无'"
@@ -1713,7 +1713,7 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="460">
+        <el-table-column label="操作" width="400">
           <template slot-scope="scope">
             <el-upload
               ref="uploadFileWin"
@@ -1758,58 +1758,61 @@
                 <el-radio label="2">网上签收</el-radio>
               </el-radio-group>
             </el-form-item>
-            <p class="type-info-msg">将所送达的证件文书通过窗口直接交互给申请人签收</p>
-            <el-form-item class="wt588" label="收件人名字" prop="linkmanName">
-              <el-input class="w-410" placeholder="请输入收件人名字" v-model="getResultForm.linkmanName"></el-input>
-            </el-form-item>
-            <el-form-item class="wt588" label="收件人联系方式" prop="linkmanMobilePhone">
-              <el-input class="w-410" v-model="getResultForm.linkmanMobilePhone" placeholder="请输入收件人联系方式"></el-input>
-            </el-form-item>
-            <el-form-item class="wt100" label="收件人身份证" prop="linkmanCertNo">
-              <el-input class="w-1010" v-model="getResultForm.linkmanCertNo" placeholder="请输入收件人身份证"></el-input>
-            </el-form-item>
-            <el-form-item class="wt100 addressee-sel" label="收件人所在区域" required v-if="getResultForm.receiveMode==0">
-              <el-select filterable allow-create  v-model="getResultForm.addresseeProvince"
-                         prop="addresseeProvince"
-                         placeholder="--请选择省--">
-                <el-option v-for="(item,index) in provinceList"
-                           :key="item.code"
-                           :label="item.name"
-                           @click.native.stop="queryCityData(index)"
-                           :value="item.code">
-                </el-option>
-              </el-select>
-              <el-select  filterable allow-create   v-model="getResultForm.addresseeCity"
-                          prop="addresseeCity"
-                          placeholder="--请选择市--">
-                <el-option v-for="(item,index) in cityList"
-                           :key="item.code"
-                           :label="item.name"
-                           @click.native.stop="queryAreaData(index)"
-                           :value="item.code">
-                </el-option>
-              </el-select>
-              <el-select filterable allow-create   v-model="getResultForm.addresseeCounty"
-                         prop="addresseeCounty"
-                         @change="$set(getResultForm, getResultForm.addresseeCounty, $event)"
-                         placeholder="--请选择区--">
-                <el-option v-for="(item,index) in countyList"
-                           :key="item.code"
-                           :label="item.name"
-                           :value="item.code">
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item class="wt100" label="收件人详细地址" prop="linkmanAddr" v-if="getResultForm.receiveMode==0">
-              <el-input class="w-1010" type="textarea" v-model="getResultForm.linkmanAddr" placeholder="请输入收件人详细地址"></el-input>
-            </el-form-item>
+            <p class="type-info-msg" v-show="getResultForm.receiveMode!='2'">将所送达的证件文书通过{{(getResultForm.receiveMode=='1')?'窗口直接':'邮寄送达'}}交互给申请人签收</p>
+            <p class="type-info-msg" v-show="getResultForm.receiveMode=='2'">证件文书可到“我的空间—我的申报”查看签收</p>
+            <template v-if="getResultForm.receiveMode!='2'">
+              <el-form-item class="wt588" label="收件人名字" prop="addresseeName">
+                <el-input class="w-410" placeholder="请输入收件人名字" v-model="getResultForm.addresseeName"></el-input>
+              </el-form-item>
+              <el-form-item class="wt588" label="收件人联系方式" prop="addresseePhone">
+                <el-input class="w-410" v-model="getResultForm.addresseePhone" placeholder="请输入收件人联系方式"></el-input>
+              </el-form-item>
+              <el-form-item class="wt100" label="收件人身份证" prop="addresseeIdcard">
+                <el-input class="w-1010" v-model="getResultForm.addresseeIdcard" placeholder="请输入收件人身份证"></el-input>
+              </el-form-item>
+              <el-form-item class="wt100 addressee-sel" label="收件人所在区域" required v-if="getResultForm.receiveMode==0">
+                <el-select filterable allow-create  v-model="getResultForm.addresseeProvince"
+                           prop="addresseeProvince"
+                           placeholder="--请选择省--">
+                  <el-option v-for="(item,index) in provinceList"
+                             :key="item.code"
+                             :label="item.name"
+                             @click.native.stop="queryCityData(index)"
+                             :value="item.code">
+                  </el-option>
+                </el-select>
+                <el-select  filterable allow-create   v-model="getResultForm.addresseeCity"
+                            prop="addresseeCity"
+                            placeholder="--请选择市--">
+                  <el-option v-for="(item,index) in cityList"
+                             :key="item.code"
+                             :label="item.name"
+                             @click.native.stop="queryAreaData(index)"
+                             :value="item.code">
+                  </el-option>
+                </el-select>
+                <el-select filterable allow-create   v-model="getResultForm.addresseeCounty"
+                           prop="addresseeCounty"
+                           @change="$set(getResultForm, getResultForm.addresseeCounty, $event)"
+                           placeholder="--请选择区--">
+                  <el-option v-for="(item,index) in countyList"
+                             :key="item.code"
+                             :label="item.name"
+                             :value="item.code">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item class="wt100" label="收件人详细地址" prop="addresseeAddr" v-if="getResultForm.receiveMode==0">
+                <el-input class="w-1010" type="textarea" v-model="getResultForm.addresseeAddr" placeholder="请输入收件人详细地址"></el-input>
+              </el-form-item>
+            </template>
             <el-form-item class="wt100" label="领取方式" prop="receiveType">
               <el-radio-group v-model="getResultForm.receiveType">
-                <el-radio label="0">一次领证</el-radio>
-                <el-radio label="1">分别领证</el-radio>
+                <el-radio label="1">一次领证</el-radio>
+                <el-radio label="0">分别领证</el-radio>
               </el-radio-group>
             </el-form-item>
-            <p class="type-info-msg">业务办结，企业（申请人）收到领证消息后，一次性领取所有结果物。</p>
+            <p class="type-info-msg">业务办结，企业（申请人）收到领证消息后，{{(getResultForm.receiveType=='1')?'一次性领取所有结果物。':'分多次领取结果物。'}}</p>
           </el-form>
         </el-collapse-transition>
         <div class="footer-stage-btn">
@@ -1828,16 +1831,16 @@
           </div>
           <div class="fl success-apply-info">
             <p>流水号：{{applySuccessProjInfo.applyinstCode}}</p>
-            <p>项目类型：{{applySuccessProjInfo.projType}}</p>
+            <p>项目类型：{{themeName}}</p>
             <p>申报阶段：{{stageName}}</p>
             <p>工程名称：{{applySuccessProjInfo.projName}}</p>
             <p>您办理的申报业务提交成功，请您留意短信通知，手机扫描二维码或进入“个人中心 - 我的申报”查看申报进度</p>
           </div>
         </div>
         <div class="footer-stage-btn">
-          <el-button type="primary">返回我的首页</el-button>
-          <el-button type="primary">我的申报</el-button>
-          <el-button type="primary">查看回执</el-button>
+          <el-button type="primary" @click="goToOtherPage('myHomeIndex')">返回我的首页</el-button>
+          <el-button type="primary" @click="goToOtherPage('declareHave')">我的申报</el-button>
+          <el-button type="primary" @click="showReceive()">查看回执</el-button>
         </div>
       </template>
     </div>
@@ -2220,6 +2223,28 @@
       </div>
     </el-dialog>
     <!--拆分工程 end-->
+    <!--回执列表弹窗 start-->
+    <el-dialog title="回执列表" :visible.sync="receiveModalShow" :close-on-click-modal="false" class="receive-modal" width="1200px">
+      <div class="fl" :style="{height: (curHeight-100)+'px'}">
+        <div class="receive-item" :class="receiveActive==ind?'active':''"  v-for="(item,ind) in receiveList" :key="item.receiveId">
+          <p class="receive-item-header">
+            <span :title="item.name" class="ellipsis">{{item.name}}</span>
+            <i class="fr icon" :class="item.show?'el-icon-arrow-down':'el-icon-arrow-right'" @click="toggleReceiveListShow(item)"></i>
+            <span class="fr" :class="item.isSeries==0?'receive-type-y':'receive-type'">{{item.isSeries==0?'并联':'并行'}}</span>
+          </p>
+          <ul class="receive-list" v-show="item.show">
+            <li :class="receiveItemActive==index?'active':''"
+                v-for="(itemBtn,index) in item.receiveList"
+                @click="printReceive1(itemBtn,index,ind)">
+              <span>{{$options.filters.changeReceiveType(itemBtn.receiptType)}}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="pdf-view-win" :style="{height: (curHeight-100)+'px'}">
+        <iframe :src="pdfSrc" width="100%" height="100%"></iframe>
+      </div>
+    </el-dialog>
   </div>
 </div>
 

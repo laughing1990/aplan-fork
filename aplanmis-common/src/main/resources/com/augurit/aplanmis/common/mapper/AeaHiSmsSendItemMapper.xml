@@ -349,21 +349,21 @@ SEND_ITEM_ID  ,SEND_ITEM_CODE  ,IS_ONCE_SEND  ,SEND_APPLY_ID  ,APPLYINST_ID  ,IT
             </foreach>
         </if>
     </insert>
+
     <select id="countSendItemByApplyinstId" resultType="int">
         select count(1) from AEA_HI_SMS_SEND_ITEM where APPLYINST_ID = #{applyinstId}
-
     </select>
-    <select id="getNeedSendCount" resultType="int">
 
-      select COUNT(1) from aea_hi_item_inoutinst ahii where ahii.ITEMINST_ID in(
-      select ahi.ITEMINST_ID from aea_hi_iteminst ahi ,aea_hi_par_stageinst ahps
-        where ahps.APPLYINST_ID=#{applyinstId}
-        and ahps.STAGEINST_ID = ahi.STAGEINST_ID
-        and ahi.ITEMINST_STATE in('11','12')
-        ) and ahii.ITEM_INOUT_ID=aii.INOUT_ID
-    and aii.IS_INPUT='0'
-    and ahii.ROOT_ORG_ID = #{rootOrgId}
-    and aii.ROOT_ORG_ID= #{rootOrgId}
-    and aii.IS_DELETED='0'
+    <select id="getNeedSendCount" resultType="int">
+      select COUNT(distinct ahii.iteminst_id) from aea_hi_item_inoutinst ahii
+      join aea_item_inout aii on aii.inout_id=ahii.item_inout_id
+      where ahii.ITEMINST_ID in(
+         select ahi.ITEMINST_ID from aea_hi_iteminst ahi ,aea_hi_par_stageinst ahps
+         where ahps.APPLYINST_ID=#{applyinstId}
+         and ahps.STAGEINST_ID = ahi.STAGEINST_ID
+         and ahi.ITEMINST_STATE in('11','12')
+      )
+      and aii.IS_INPUT='0'
+      and aii.IS_DELETED='0'
     </select>
 </mapper>

@@ -1932,4 +1932,12 @@
         </sql>
     </changeSet>
 
+    <changeSet id="20200109144048" author="xiong" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_sms_send_item`
+            MODIFY COLUMN `INOUTINST_ID` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT
+            '输出材料实例id，可能多个' AFTER `ITEMINST_ID`;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

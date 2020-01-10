@@ -23,6 +23,7 @@ import com.augurit.aplanmis.common.service.theme.AeaParThemeService;
 import com.augurit.aplanmis.common.utils.CommonTools;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
+import com.augurit.aplanmis.mall.userCenter.service.RestApplyProjService;
 import com.augurit.aplanmis.mall.userCenter.service.RestApproveService;
 import com.augurit.aplanmis.mall.userCenter.service.RestUserCenterService;
 import com.augurit.aplanmis.mall.userCenter.vo.AeaProjInfoResultVo;
@@ -86,6 +87,8 @@ public class RestApplyProjController {
     private AeaParThemeService aeaParThemeService;
     @Autowired
     private CommonCheckService commonCheckService;
+    @Autowired
+    private RestApplyProjService restApplyProjService;
     @Value("${aplanmis.mall.skin:skin_v4.1/}")
     private String skin;
 
@@ -618,7 +621,7 @@ public class RestApplyProjController {
     public ContentResultForm<ProjStatusTreeVo> getProjStatusTreeVo(@PathVariable("projInfoId") String projInfoId, HttpServletRequest request) {
         try {
             //返回子项目列表
-            return new ContentResultForm(true,"");
+            return new ContentResultForm(true,restApplyProjService.getProjStatusTreeVo(projInfoId,request));
         } catch (Exception e) {
             return new ContentResultForm(false, "","查询根据项目ID查询子工程及申办状态异常");
         }

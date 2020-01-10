@@ -216,7 +216,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
             }
         }
         vo.setUnitInfoId((StringUtils.isNotBlank(unitInfoId))?unitInfoId:(unitList.size()>0?unitList.get(0).getUnitInfoId():null));
-        vo.setLinkmanInfo(aeaLinkmanInfoService.getOneById(applyinst.getLinkmanInfoId()));
+        vo.setSmsInfoVo(ApplyIteminstConfirmVo.formatLinkmanInfo(aeaLinkmanInfoService.getOneById(applyinst.getLinkmanInfoId()),applyinstId));
         AeaParStage stage = aeaParStageMapper.getAeaParStageById(vo.getStageId());
         vo.setDybzspjdxh(stage!=null?stage.getDybzspjdxh():"");
         vo.setGuideId(guideId);

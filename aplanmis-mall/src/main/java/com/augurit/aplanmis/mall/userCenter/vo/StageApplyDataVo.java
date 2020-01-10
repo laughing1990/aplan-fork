@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**
@@ -78,9 +79,5 @@ public class StageApplyDataVo {
     @ApiModelProperty(value = "领件人信息对象")
     private SmsInfoVo smsInfoVo;
 
-    public AeaHiSmsInfo formatSmsInfoVo(SmsInfoVo smsInfoVo,String applyinstId){
-        AeaHiSmsInfo aeaHiSmsInfo=new AeaHiSmsInfo();
 
-        return aeaHiSmsInfo;
-    }
 }

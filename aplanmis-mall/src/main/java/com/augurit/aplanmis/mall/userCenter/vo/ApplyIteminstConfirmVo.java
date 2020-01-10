@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Data
@@ -69,7 +70,7 @@ public class ApplyIteminstConfirmVo {
     private String applyinstId;
 
     @ApiModelProperty(value = "联系人信息，用于办件领取信息回显")
-    private AeaLinkmanInfo linkmanInfo;
+    private SmsInfoVo smsInfoVo;
 
     @ApiModelProperty(value = "0 个人 1单位")
     private String loginType;
@@ -94,5 +95,14 @@ public class ApplyIteminstConfirmVo {
         vo.setDeptComments(detail.getAeaHiGuide().getLeaderOrgOpinion());
         vo.setIsThemeChange(detail.isThemeChanged()?"1":"0");
         return vo;
+    }
+
+    public static SmsInfoVo formatLinkmanInfo(AeaLinkmanInfo aeaLinkmanInfo,String applyinstId){
+        SmsInfoVo smsInfoVo=new SmsInfoVo();
+        smsInfoVo.setAddresseeName(aeaLinkmanInfo.getLinkmanName());
+        smsInfoVo.setAddresseeIdcard(aeaLinkmanInfo.getLinkmanCertNo());
+        smsInfoVo.setAddresseePhone(aeaLinkmanInfo.getLinkmanMobilePhone());
+        smsInfoVo.setApplyinstId(applyinstId);
+        return smsInfoVo;
     }
 }

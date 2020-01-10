@@ -18,6 +18,7 @@ import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
 import com.augurit.aplanmis.common.service.applyinst.AeaHiApplyinstCorrectService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemCorrectService;
 import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiSmsInfoService;
 import com.augurit.aplanmis.common.service.instance.AeaLogApplyStateHistService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.item.AeaLogItemStateHistService;
@@ -35,6 +36,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ApproveDataServiceImpl implements ApproveDataService {
@@ -106,15 +108,17 @@ public class ApproveDataServiceImpl implements ApproveDataService {
         List<ApproveProjInfoDto> list = aeaHiIteminstMapper.getApproveProjInfoListByUnitOrLinkman(unitInfoId, userInfoId, state,applyinstState, keyword);
         //this.convertStateCodeToName(SecurityContext.getCurrentOrgId(), list);
         convertCommentByState(list);
-        if ("0".equals(state)) {//已办结
-            list.stream().forEach(itemInst -> {
-                if (itemInst.getEndTime() != null) {
-                    itemInst.setDueNum(new Long(DateUtils.getWorkingDay(itemInst.getStartTime(), itemInst.getEndTime())));
-                }
-            });
-        }
+//        if ("0".equals(state)) {//已办结
+//            list.stream().forEach(itemInst -> {
+//                if (itemInst.getEndTime() != null) {
+//                    itemInst.setDueNum(new Long(DateUtils.getWorkingDay(itemInst.getStartTime(), itemInst.getEndTime())));
+//                }
+//            });
+//        }
         return new PageInfo<>(list);
     }
+    @Autowired
+    private AeaHiSmsInfoService aeaHiSmsInfoService;
 
     private void convertCommentByState(List<ApproveProjInfoDto> list) throws Exception {
         for (ApproveProjInfoDto dto : list) {
@@ -146,10 +150,24 @@ public class ApproveDataServiceImpl implements ApproveDataService {
                 AeaHiApplyinstCorrect correct = aeaHiApplyinstCorrectService.getCurrentCorrectinst(dto.getApplyinstId());
                 dto.setApproveComments(correct!=null ? correct.getCorrectMemo(): "");
             }
-
+            dto.setIsNetSignPrev(false);
+            dto.setIsExistUnPass(false);
+            AeaHiSmsInfo sms = aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(dto.getApplyinstId());
+            List<String> states = iteminst.stream().map(AeaHiIteminst::getIteminstState).collect(Collectors.toList());
             if(ApplyState.COMPLETED.getValue().equals(dto.getApplyinstState())){//已办结
-
+                if(states.contains(ItemStatus.DISAGREE.getValue())) dto.setIsExistUnPass(true);
             }
+            if(sms==null) continue;
+            if("2".equals(sms.getReceiveMode())){//网上签收
+                if("0".equals(sms.getReceiveType())){//多次领取，只要有办结的事项就能领取
+                    if(states.contains(ItemStatus.AGREE_TOLERANCE.getValue())||states.contains(ItemStatus.AGREE.getValue()))
+                        dto.setIsNetSignPrev(true);
+                }else{//一次领取，则需要申报办结才能领取
+                    if(ApplyState.COMPLETED.getValue().equals(dto.getApplyinstState()))
+                        dto.setIsNetSignPrev(true);
+                }
+            }
+
         }
     }
 
