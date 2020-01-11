@@ -1050,6 +1050,7 @@ var vm = new Vue({
         type: 'post',
         ContentType: 'application/json',
         data: JSON.stringify({
+          guideId: vm.guideId,
           applySplitId: vm.auProJForm.applySplitId,
           needSms: vm.auProJForm.needSms,
           passed: vm.auProJForm.passed,
