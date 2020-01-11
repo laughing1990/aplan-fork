@@ -137,7 +137,16 @@ PROJ_WINDOW_ID  ,PROJ_INFO_ID  ,WINDOW_ID  ,CREATER  ,CREATE_TIME  ,ROOT_ORG_ID
         where
     PROJ_WINDOW_ID = #{id}
     </delete>
-<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--8 删除实体对象列表 -->
+    <delete id="deleteAeaProjWindowByProjInfoIds">
+        delete from   AEA_PROJ_WINDOW
+        where
+        PROJ_INFO_ID in
+        <foreach collection="projInfoIds" item="projInfoId" open="(" close=")" separator=",">
+            #{projInfoId}
+        </foreach>
+    </delete>
+
 <!--9 返回所有字段的对象map,用于级联 -->
     <resultMap type="AeaProjWindow" id="AeaProjWindowMap">
         <id property="projWindowId" column="PROJ_WINDOW_ID"/>

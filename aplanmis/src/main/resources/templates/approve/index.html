@@ -3288,6 +3288,24 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row style="margin-bottom:5px;">
+          <el-col :span="12">
+            <el-form-item label="短信通知">
+              <el-radio-group v-model="solicitForm.isSendSms">
+                <el-radio label="1">是</el-radio>
+                <el-radio label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item v-show="dialogConfig.showType" :label="dialogConfig.formLabel+'类型'">
+              <el-radio-group v-model="solicitForm.solicitType" @change="changeOsTab">
+                <el-radio label="i">按事项征询</el-radio>
+                <el-radio label="d">按部门征询</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <template v-if="dialogConfig.showFileBox">
           <el-row style="margin-bottom:5px;">
             <el-col :span="12">
@@ -3331,24 +3349,6 @@
                     </template>
                   </el-table-column>
                 </el-table>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row style="margin-bottom:5px;">
-            <el-col :span="12">
-              <el-form-item label="短信通知">
-                <el-radio-group v-model="solicitForm.isSendSms">
-                  <el-radio label="1">是</el-radio>
-                  <el-radio label="0">否</el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item v-show="dialogConfig.showType" :label="dialogConfig.formLabel+'类型'">
-                <el-radio-group v-model="solicitForm.solicitType" @change="changeOsTab">
-                  <el-radio label="i">按事项征询</el-radio>
-                  <el-radio label="d">按部门征询</el-radio>
-                </el-radio-group>
               </el-form-item>
             </el-col>
           </el-row>
