@@ -623,4 +623,9 @@
             MODIFY COLUMN `MODIFY_TIME` datetime(0) NULL DEFAULT NULL AFTER `MODIFIER`;
         </sql>
     </changeSet>
+    <changeSet id="202001110952" author="chendx" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `aea_item_mat` (`MAT_ID`, `MAT_CODE`, `MAT_NAME`, `IS_GLOBAL_SHARE`, `MAT_TYPE_ID`, `RECEIVE_MODE`, `DUE_PAPER_COUNT`, `DUE_COPY_COUNT`, `MAT_FROM`, `SAMPLE_DOC`, `TEMPLATE_DOC`, `MAT_REQUIRE`, `MAT_BASIS`, `PAPER_IS_REQUIRE`, `SORT_NO`, `MAT_MEMO`, `IS_ACTIVE`, `IS_DELETED`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ATT_DIR_ID`, `MAT_HOLDER`, `IS_OFFICIAL_DOC`, `ATT_IS_REQUIRE`, `IS_COMMON`, `REVIEW_KEY_POINTS`, `REVIEW_SAMPLE_DOC`, `REVIEW_BASIS`, `MAT_FROM_DEPT`, `DUE_PAPER_TYPE`, `DUE_COPY_TYPE`, `PAPER_MAT_TYPE`, `ZCQY`, `ROOT_ORG_ID`, `MAT_PROP`, `CERT_ID`, `STO_FORM_ID`, `STDMAT_ID`, `OUTER_FORM_ID`, `IS_SIGN`) VALUES ('68d3903a-8ad9-4494-9842-51f414a39a14', 'MAT-C0000000583', '工程建设项目竣工联合验收终审意见书', '1', '5', NULL, '1', '1', '', NULL, NULL, NULL, NULL, '0', NULL, '', '1', '0', '4df31dde-9ed6-4f7c-968b-aa22fdd9ab7f', '2020-01-10 10:05:29', NULL, NULL, NULL, NULL, '1', '0', '1', '部门意见统一', NULL, '', '', '', '', '', '1', '0368948a-1cdf-4bf8-a828-71d796ba89f6', 'm', '', '', '', NULL, '0');
+        </sql>
+    </changeSet>
 </databaseChangeLog>
