@@ -1983,4 +1983,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="20200111" author="yinlf" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `OPU_OM_USER_INFO`
+            ADD INDEX `IDX_OPU_OM_USER_INFO_USER_ID` (`USER_ID`) ;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
