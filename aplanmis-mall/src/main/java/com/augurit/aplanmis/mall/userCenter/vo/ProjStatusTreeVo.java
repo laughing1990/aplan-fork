@@ -5,6 +5,7 @@ import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
@@ -35,6 +36,7 @@ public class ProjStatusTreeVo {
 
     @Data
     @ApiModel("项目状态树VO下阶段数组")
+    @ApiIgnore()
     public static class ProjStatusTreeStageVo{
         @ApiModelProperty("阶段ID")
         private String stageId;
@@ -49,12 +51,10 @@ public class ProjStatusTreeVo {
             return vo;
         }
     }
-    public ProjStatusTreeStageVo getProjStatusTreeStageVo(){
-        return new ProjStatusTreeStageVo();
-    }
 
     @Data
     @ApiModel("工程状态树")
+    @ApiIgnore()
     public static class ProjStatusVo{
         @ApiModelProperty("项目/工程名称ID")
         private String projInfoId;

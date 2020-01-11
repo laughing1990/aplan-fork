@@ -78,20 +78,18 @@ public class RestApplyProjServiceImp implements RestApplyProjService {
             vo.getProjStatusVos().add(projStatusVo);
             setChildProj(vo.getProjStatusVos());
 
-            //设置工程数组
+            //设置工程数组  retList为工程状态数组
             List<List<ProjStatusTreeVo.ProjStatusVo>> retList = new ArrayList<>();
-            retList.add(vo.getProjStatusVos());
-            temp(vo.getProjStatusVos(),retList);
+            retList.add(vo.getProjStatusVos());//首项目添加至工程状态数组
+            geneProjArr(vo.getProjStatusVos(),retList);//生成工程状态数组
             vo.setProjStatusVoArrs(retList);
+
             //给项目树及阶段设置状态
             vo.getStagesVos().stream().forEach(stagesVo->{
                 setApplyStatus2Proj(vo.getProjStatusVoArrs(),stagesVo);
             });
 
 
-
-
-            vo.getProjStatusVos();
             return vo;
         } catch (Exception e) {
             e.printStackTrace();
@@ -100,7 +98,7 @@ public class RestApplyProjServiceImp implements RestApplyProjService {
     }
 
 
-    void temp(List<ProjStatusTreeVo.ProjStatusVo> vos,List<List<ProjStatusTreeVo.ProjStatusVo>> retList){
+    void geneProjArr(List<ProjStatusTreeVo.ProjStatusVo> vos,List<List<ProjStatusTreeVo.ProjStatusVo>> retList){
         List<ProjStatusTreeVo.ProjStatusVo> list = new ArrayList<>();
         vos.stream().forEach(vo->{
             if (vo.getChildProjStatusVos()==null) return;
