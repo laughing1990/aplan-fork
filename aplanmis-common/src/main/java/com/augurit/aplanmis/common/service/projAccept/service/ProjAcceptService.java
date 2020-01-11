@@ -240,7 +240,11 @@ public class ProjAcceptService {
                             Collections.sort(commentFormList, new Comparator<BpmHistoryCommentForm>() {
                                 @Override
                                 public int compare(BpmHistoryCommentForm o1, BpmHistoryCommentForm o2) {
-                                    return o1.getEndDate().compareTo(o2.getEndDate());
+                                    if(o1.getEndDate()==null||o2.getEndDate()==null){
+                                        return o1.getSigeInDate().compareTo(o2.getSigeInDate());
+                                    }else{
+                                        return o1.getEndDate().compareTo(o2.getEndDate());
+                                    }
                                 }
                             });
 
@@ -285,7 +289,11 @@ public class ProjAcceptService {
                             Collections.sort(subflowComments, new Comparator<BpmHistoryCommentForm>() {
                                 @Override
                                 public int compare(BpmHistoryCommentForm o1, BpmHistoryCommentForm o2) {
-                                    return o1.getEndDate().compareTo(o2.getEndDate());
+                                    if(o1.getEndDate()==null||o2.getEndDate()==null){
+                                        return o1.getSigeInDate().compareTo(o2.getSigeInDate());
+                                    }else{
+                                        return o1.getEndDate().compareTo(o2.getEndDate());
+                                    }
                                 }
                             });
 
