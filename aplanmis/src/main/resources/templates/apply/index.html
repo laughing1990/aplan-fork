@@ -1327,7 +1327,7 @@
                       </template>
                     </el-table-column>
                     <!-- 牵头部门结果 -->
-                    <el-table-column label="牵头部门" prop="leaderDeptChoose" v-if="guideState>2" width="140">
+                    <el-table-column label="牵头部门" prop="leaderDeptChoose" v-if="guideState>2&&guideState!=6" width="140">
                       <template slot-scope="scope">
                         <el-checkbox v-model="scope.row.leaderDeptChoose" disabled>
                           {{scope.row.leanderDeptOpinion||'未填写意见'}}
@@ -1527,7 +1527,7 @@
                       </template>
                     </el-table-column>
                     <!-- 牵头部门结果 -->
-                    <el-table-column :key="Math.random()" label="牵头部门" prop="leaderDeptChoose" v-if="guideState>2"
+                    <el-table-column :key="Math.random()" label="牵头部门" prop="leaderDeptChoose" v-if="guideState>2&&guideState!=6"
                                      width="140">
                       <template slot-scope="scope">
                         <el-checkbox v-model="scope.row.leaderDeptChoose" disabled>
