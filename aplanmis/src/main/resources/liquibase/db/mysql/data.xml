@@ -2549,4 +2549,10 @@ INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`
             MODIFY COLUMN `ITEMINST_STATE` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '事项实例状态，1已接件，2已撤件，3部门受理 ，4不受理，5不予受理，6补正（开始），7补正（结束），8部门开始办理，9特别程序（开始），10特别程序（结束），11办结（通过），12办结（容缺通过），13办结（不通 过），14撤回，15撤销、16撤件待确认' AFTER `PUBLIC_MODE`;
         </sql>
     </changeSet>
+
+    <changeSet id="202001110952" author="chendx" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `aea_item_mat` (`MAT_ID`, `MAT_CODE`, `MAT_NAME`, `IS_GLOBAL_SHARE`, `MAT_TYPE_ID`, `RECEIVE_MODE`, `DUE_PAPER_COUNT`, `DUE_COPY_COUNT`, `MAT_FROM`, `SAMPLE_DOC`, `TEMPLATE_DOC`, `MAT_REQUIRE`, `MAT_BASIS`, `PAPER_IS_REQUIRE`, `SORT_NO`, `MAT_MEMO`, `IS_ACTIVE`, `IS_DELETED`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ATT_DIR_ID`, `MAT_HOLDER`, `IS_OFFICIAL_DOC`, `ATT_IS_REQUIRE`, `IS_COMMON`, `REVIEW_KEY_POINTS`, `REVIEW_SAMPLE_DOC`, `REVIEW_BASIS`, `MAT_FROM_DEPT`, `DUE_PAPER_TYPE`, `DUE_COPY_TYPE`, `PAPER_MAT_TYPE`, `ZCQY`, `ROOT_ORG_ID`, `MAT_PROP`, `CERT_ID`, `STO_FORM_ID`, `STDMAT_ID`, `OUTER_FORM_ID`, `IS_SIGN`) VALUES ('68d3903a-8ad9-4494-9842-51f414a39a14', 'MAT-C0000000583', '工程建设项目竣工联合验收终审意见书', '1', '5', NULL, '1', '1', '', NULL, NULL, NULL, NULL, '0', NULL, '', '1', '0', '4df31dde-9ed6-4f7c-968b-aa22fdd9ab7f', '2020-01-10 10:05:29', NULL, NULL, NULL, NULL, '1', '0', '1', '部门意见统一', NULL, '', '', '', '', '', '1', '0368948a-1cdf-4bf8-a828-71d796ba89f6', 'm', '', '', '', NULL, '0');
+        </sql>
+    </changeSet>
 </databaseChangeLog>
