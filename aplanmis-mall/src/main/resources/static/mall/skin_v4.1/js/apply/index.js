@@ -70,7 +70,7 @@ var parallelDeclare = new Vue({
       loadingFileWin: false, // 窗口文件上传loading
       declareStep: 1, // 申报步骤 1-补全信息 2-选择主题 3-选择阶段 4-事项材料一单清
       declareStepList: [  // 所有的步骤
-        { num: '1', name: '补全信息' },
+        { num: '1', name: '项目/工程信息' },
         { num: '2', name: '智能引导' },
         { num: '3', name: '选择事项' },
         { num: '4', name: '部门确认' },
