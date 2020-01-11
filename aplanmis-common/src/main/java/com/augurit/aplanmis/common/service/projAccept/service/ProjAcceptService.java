@@ -1,7 +1,9 @@
 package com.augurit.aplanmis.common.service.projAccept.service;
 
+import com.augurit.agcloud.bpm.common.domain.ActStoAppinstSubflow;
 import com.augurit.agcloud.bpm.common.domain.BpmHistoryCommentForm;
 import com.augurit.agcloud.bpm.common.engine.BpmTaskService;
+import com.augurit.agcloud.bpm.common.service.ActStoAppinstSubflowService;
 import com.augurit.agcloud.bsc.domain.BscDicRegion;
 import com.augurit.agcloud.bsc.sc.dic.region.service.BscDicRegionService;
 import com.augurit.agcloud.framework.constant.Status;
@@ -22,6 +24,14 @@ import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.receive.utils.ReceivePDFUtils;
 import com.augurit.aplanmis.common.service.receive.vo.ReceiveBaseVo;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
+import org.flowable.bpmn.model.BpmnModel;
+import org.flowable.bpmn.model.FlowableListener;
+import org.flowable.bpmn.model.Process;
+import org.flowable.bpmn.model.UserTask;
+import org.flowable.engine.RepositoryService;
+import org.flowable.engine.RuntimeService;
+import org.flowable.engine.repository.ProcessDefinition;
+import org.flowable.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
@@ -83,6 +93,12 @@ public class ProjAcceptService {
     private AeaHiItemStateinstService aeaHiItemStateinstService;
     @Autowired
     private AeaHiItemMatinstService aeaHiItemMatinstService;
+    @Autowired
+    private RepositoryService repositoryService;
+    @Autowired
+    private RuntimeService runtimeService;
+    @Autowired
+    private ActStoAppinstSubflowService actStoAppinstSubflowService;
 
     /**
      * 根据申报实例ID，获取竣工验收阶段汇总意见信息（只适合于竣工验收阶段）
@@ -228,11 +244,50 @@ public class ProjAcceptService {
             //获取联合验收二级流程“出具联合验收意见”节点的意见
             if(StringUtils.isNotBlank(yanshouProcInstId)){
                 //联合验收二级流程的“出具联合验收意见”节点的编号为：chujulianheyanshouyijian
-                List<BpmHistoryCommentForm> commentFormList = bpmTaskService.getHistoryCommentsByTaskNode(yanshouProcInstId,"chujulianheyanshouyijian");
-                if(commentFormList!=null&&commentFormList.size()>0){
-                    BpmHistoryCommentForm commentForm = commentFormList.get(0);
-                    if(commentForm!=null&&StringUtils.isNotBlank(commentForm.getOrgName())){
-                        deptOpinions.put(commentForm.getOrgName(),commentForm.getCommentMessage());
+                String taskDefKey = "chujulianheyanshouyijian";
+
+                ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(yanshouProcInstId).singleResult();
+                BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
+                Process process = bpmnModel.getProcesses().get(0);
+                //获取当前任务定义信息
+                UserTask currTaskElement = (UserTask) process.getFlowElement(taskDefKey);
+
+                boolean isSubFlow = false;
+                List<FlowableListener> taskListeners = currTaskElement.getTaskListeners();
+                if(taskListeners!=null&&taskListeners.size()>0){
+                    for(FlowableListener listener:taskListeners){
+                        if(listener.getSubFlow()){
+                            isSubFlow = true;
+                            break;
+                        }
+                    }
+                }
+
+                //如果是子流程，需要获取子流程的意见
+                if(isSubFlow){
+                    ActStoAppinstSubflow subflow = actStoAppinstSubflowService.getActStoAppinstSubflowBySubflowProcinstId(yanshouProcInstId);
+                    if(subflow!=null){
+                        String subflowProcinstId = subflow.getSubflowProcinstId();
+                        List<BpmHistoryCommentForm> subflowComments = bpmTaskService.getHistoryCommentsByProcessInstanceId(subflowProcinstId);
+                        if(subflowComments!=null&&subflowComments.size()>0) {
+                            //倒序排序，获取最后一个节点的意见
+                            Collections.sort(subflowComments, new Comparator<BpmHistoryCommentForm>() {
+                                @Override
+                                public int compare(BpmHistoryCommentForm o1, BpmHistoryCommentForm o2) {
+                                    return o1.getEndDate().compareTo(o2.getEndDate());
+                                }
+                            });
+
+                            deptOpinions.put(subflowComments.get(0).getOrgName(),subflowComments.get(0).getCommentMessage());
+                        }
+                    }
+                }else{
+                    List<BpmHistoryCommentForm> commentFormList = bpmTaskService.getHistoryCommentsByTaskNode(yanshouProcInstId,taskDefKey);
+                    if(commentFormList!=null&&commentFormList.size()>0){
+                        BpmHistoryCommentForm commentForm = commentFormList.get(0);
+                        if(commentForm!=null&&StringUtils.isNotBlank(commentForm.getOrgName())){
+                            deptOpinions.put(commentForm.getOrgName(),commentForm.getCommentMessage());
+                        }
                     }
                 }
             }
