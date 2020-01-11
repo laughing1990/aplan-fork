@@ -3634,12 +3634,12 @@ var vm = new Vue({
         elementRender: '<button class="btn btn-outline-info" onclick="showDiagramDialog()">查看流程图</button>'
       }];
       var solicitBtn = [{
-        elementName: "意见征求",
+        elementName: "意见征询",
         elementCode: "wfBusSave",
         columnType: "button",
         isReadonly: '0',
         isHidden: '0',
-        elementRender: '<button class="btn btn-outline-info" onclick="clickStartSolicit()">意见征求</button>'
+        elementRender: '<button class="btn btn-outline-info" onclick="clickStartSolicit()">意见征询</button>'
       }];
       var oneSolicitBtn = [{
         elementName: "一次征询",
