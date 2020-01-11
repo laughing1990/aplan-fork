@@ -158,6 +158,7 @@ public class RestApplyProjServiceImp implements RestApplyProjService {
                    aeaProjApplySplits.stream().forEach(aeaProjApplySplit1 -> {
                        if (projStatusVo.getProjInfoId().equals(aeaProjApplySplit1.getProjInfoId())) {
                            projStatusVo.setStageId(aeaProjApplySplit1.getStageId());
+                           projStatusVo.setProjFlag("c");//设置为子工程
                             if ("3".equals(aeaProjApplySplit1.getApplyState())) projStatusVo.setApplyStatus("4");//已审核
                             if ("2".equals(aeaProjApplySplit1.getApplyState())) projStatusVo.setApplyStatus("3");//未审核
                        }
