@@ -20,7 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 @EnableAspectJAutoProxy
 public class AplanmisMallApplication {
 
-    @Value("${aplanmis.mall.skin:skin_v4.1/}/")
+    @Value("${aplanmis.mall.skin:skin_v4.1/}")
     private String skin;
 
     public static void main(String[] args) {

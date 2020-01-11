@@ -40,7 +40,7 @@ public class LoginController {
 
     @Autowired
     private CommonLoginService commonLoginService;
-    @Value("${aplanmis.mall.skin:skin_v4.1}/")
+    @Value("${aplanmis.mall.skin:skin_v4.1/}")
     private String skin;
 
     Gson gson = new Gson();

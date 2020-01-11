@@ -62,7 +62,7 @@ public class RestApplyCommonController {
     private RestFileService restFileService;
     @Autowired
     private AeaHiApplyinstService aeaHiApplyinstService;
-    @Value("${aplanmis.mall.skin:skin_v4.1}/")
+    @Value("${aplanmis.mall.skin:skin_v4.1/}")
     private String skin;
 
 
