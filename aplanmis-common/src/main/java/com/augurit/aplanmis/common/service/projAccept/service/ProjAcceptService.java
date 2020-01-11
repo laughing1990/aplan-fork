@@ -4,7 +4,9 @@ import com.augurit.agcloud.bpm.common.domain.ActStoAppinstSubflow;
 import com.augurit.agcloud.bpm.common.domain.BpmHistoryCommentForm;
 import com.augurit.agcloud.bpm.common.engine.BpmTaskService;
 import com.augurit.agcloud.bpm.common.service.ActStoAppinstSubflowService;
+import com.augurit.agcloud.bsc.domain.BscAttForm;
 import com.augurit.agcloud.bsc.domain.BscDicRegion;
+import com.augurit.agcloud.bsc.mapper.BscAttMapper;
 import com.augurit.agcloud.bsc.sc.dic.region.service.BscDicRegionService;
 import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
@@ -30,7 +32,6 @@ import org.flowable.bpmn.model.Process;
 import org.flowable.bpmn.model.UserTask;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.RuntimeService;
-import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
@@ -42,6 +43,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 竣工验收阶段相关逻辑
@@ -99,6 +101,13 @@ public class ProjAcceptService {
     private RuntimeService runtimeService;
     @Autowired
     private ActStoAppinstSubflowService actStoAppinstSubflowService;
+    @Autowired
+    private BscAttMapper bscAttMapper;
+
+    //固定的联合验收终审意见书批文批复材料编号
+    private final String MAT_CODE = "MAT-C0000000583";
+    private final String TABLE_NAME = "AEA_HI_ITEM_MATINST";
+    private final String PK_NAME = "MATINST_ID";
 
     /**
      * 根据申报实例ID，获取竣工验收阶段汇总意见信息（只适合于竣工验收阶段）
@@ -155,7 +164,7 @@ public class ProjAcceptService {
                     kanchaUnitInfo = aeaUnitInfo;
                 if("4".equals(aeaUnitInfo.getUnitType()))
                     designUnitInfo = aeaUnitInfo;
-                if("2".equals(aeaUnitInfo.getUnitType()))
+                if("22".equals(aeaUnitInfo.getUnitType()))
                     shigongUnitInfo = aeaUnitInfo;
             }
         }
@@ -318,36 +327,19 @@ public class ProjAcceptService {
         //生成意见书，会再本地系统临时目录下生成，后续完成后自动删除
         String fileUrl = ReceivePDFUtils.createPDF(receiveBaseVo);
 
-        //固定的联合验收终审意见书批文批复材料编号
-        String matCode = "MAT-C0000000583";
         //查询默认的联合验收终审意见批文批复材料
         AeaItemMat query = new AeaItemMat();
-        query.setMatCode(matCode);
+        query.setMatCode(MAT_CODE);
         query.setRootOrgId(currentOrgId);
         query.setIsDeleted("0");
         List<AeaItemMat> aeaItemMats = aeaItemMatMapper.listAeaItemMat(query);
         if (aeaItemMats.size() > 0) {
-            AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(receiveBaseVo.getApplyinstId());
-            List<AeaHiIteminst> aeaHiIteminstList = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(receiveBaseVo.getApplyinstId());
-            //暂时默认将批文批复绑定为 房屋建筑工程和市政基础设施工程竣工验收备案 事项的输出材料
-            String itemCategory = "FWJZGCHSZJCSSGCJGYSBA1";
-            AeaItemBasic query1 = new AeaItemBasic();
-            query1.setIsDeleted("0");
-            query1.setRootOrgId(currentOrgId);
-            query1.setItemCategoryMark(itemCategory);
-            List<AeaItemBasic> itemBasics = aeaItemBasicService.listAeaItemBasic(query1);
-            AeaHiIteminst aeaHiIteminst = aeaHiIteminstList.get(0);
-            boolean flag = false;
-            for(int i=0,len=aeaHiIteminstList.size(); i<len; i++){
-                aeaHiIteminst = aeaHiIteminstList.get(i);
-                for(int j=0,lenj=itemBasics.size(); j<lenj; j++){
-                    if(aeaHiIteminst.getItemVerId().equals(itemBasics.get(j).getItemVerId())){
-                        flag = true;
-                        break;
-                    }
-                }
-                if(flag) break;
-            }
+            AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+            //获取当前需要创建批复的事项实例
+            AeaHiIteminst aeaHiIteminst = getPwpfAeaHiIteminst(applyinstId, currentOrgId);
+            //先删除原有已经生成的批文批复
+            deleteOpinionSummaryPwpf(aeaHiIteminst.getIteminstId());
+
             AeaItemMat aeaItemOfficeMat = aeaItemMats.get(0);
             AeaItemInout bindInout = getBindingAeaItemInoutOrCreateNewOne(aeaHiIteminst.getItemVerId(), aeaItemOfficeMat.getMatId());
             //创建批文批复材料实例
@@ -356,12 +348,83 @@ public class ProjAcceptService {
             File file = new File(fileUrl);
             InputStream inputStream = new FileInputStream(file);
             MultipartFile multipartFile = new MockMultipartFile(file.getName(),file.getName(),null, inputStream);
-            fileUtilsService.upload("AEA_HI_ITEM_MATINST", "MATINST_ID", aeaHiItemMatinst.getMatinstId(), null, multipartFile);
+            fileUtilsService.upload(TABLE_NAME, PK_NAME, aeaHiItemMatinst.getMatinstId(), null, multipartFile);
             //创建事项输入输出实例
             createAeaItemInoutinst(aeaHiIteminst.getIteminstId(), bindInout.getInoutId(), aeaHiItemMatinst.getMatinstId(), "1");
 
             //自动删除
             file.delete();
+        }
+    }
+
+    private AeaHiIteminst getPwpfAeaHiIteminst(String applyinstId, String currentOrgId) throws Exception {
+        List<AeaHiIteminst> aeaHiIteminstList = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
+        //暂时默认将批文批复绑定为 房屋建筑工程和市政基础设施工程竣工验收备案 事项的输出材料
+        String itemCategory = "FWJZGCHSZJCSSGCJGYSBA1";
+        AeaItemBasic query1 = new AeaItemBasic();
+        query1.setIsDeleted("0");
+        query1.setRootOrgId(currentOrgId);
+        query1.setItemCategoryMark(itemCategory);
+        List<AeaItemBasic> itemBasics = aeaItemBasicService.listAeaItemBasic(query1);
+        AeaHiIteminst aeaHiIteminst = aeaHiIteminstList.get(0);
+        boolean flag = false;
+        for(int i=0,len=aeaHiIteminstList.size(); i<len; i++){
+            aeaHiIteminst = aeaHiIteminstList.get(i);
+            for(int j=0,lenj=itemBasics.size(); j<lenj; j++){
+                if(aeaHiIteminst.getItemVerId().equals(itemBasics.get(j).getItemVerId())){
+                    flag = true;
+                    break;
+                }
+            }
+            if(flag) break;
+        }
+        return aeaHiIteminst;
+    }
+
+    /**
+     * 根据申报实例ID，查询是否已经生成了竣工验收阶段汇总意见 批文批复（只适合于竣工验收阶段）
+     * @param applyinstId 申报实例ID
+     * @throws Exception
+     */
+    public boolean checkOpinionSummaryPwpf(String applyinstId) throws Exception {
+        String currentOrgId = SecurityContext.getCurrentOrgId();
+        //获取当前需要创建批复的事项实例
+        AeaHiIteminst aeaHiIteminst = getPwpfAeaHiIteminst(applyinstId, currentOrgId);
+        if(aeaHiIteminst != null){
+            List<AeaHiItemMatinst> aeaHiItemMatinsts = aeaHiItemMatinstMapper.listOfficialDocsByIteminstId(aeaHiIteminst.getIteminstId());
+            if(aeaHiItemMatinsts != null && aeaHiItemMatinsts.size() > 0){
+                for(int i=0,len=aeaHiItemMatinsts.size(); i<len; i++){
+                    if(aeaHiItemMatinsts.get(i).getMatinstCode().equals(MAT_CODE)){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 删除事项批复批复信息
+     * @param iteminstId
+     * @throws Exception
+     */
+    private void deleteOpinionSummaryPwpf(String iteminstId) throws Exception{
+        List<AeaHiItemMatinst> aeaHiItemMatinsts = aeaHiItemMatinstMapper.listOfficialDocsByIteminstId(iteminstId);
+        if(aeaHiItemMatinsts != null && aeaHiItemMatinsts.size() > 0){
+            for(int i=0,len=aeaHiItemMatinsts.size(); i<len; i++){
+                AeaHiItemMatinst aeaHiItemMatinst = aeaHiItemMatinsts.get(i);
+                if(aeaHiItemMatinst.getMatinstCode().equals(MAT_CODE)){
+                    String matinstId = aeaHiItemMatinst.getMatinstId();
+                    aeaHiItemInoutinstMapper.deleteAeaHiItemInoutinstByMatinstId(matinstId);
+                    List<BscAttForm> bscAttForms = bscAttMapper.listAttLinkAndDetailByTablePKRecordId(TABLE_NAME, PK_NAME, matinstId, SecurityContext.getCurrentOrgId());
+                    if(bscAttForms.size() > 0) {
+                        Set<String> detailIds = bscAttForms.stream().map(BscAttForm::getDetailId).collect(Collectors.toSet());
+                        fileUtilsService.deleteAttachments(detailIds.toArray(new String[]{}));
+                        bscAttMapper.deleteAttLinkByDetailId(bscAttForms.get(0).getDetailId());
+                        aeaHiItemMatinstMapper.deleteAeaHiItemMatinst(matinstId);
+                    }
+                }
+            }
         }
     }
 

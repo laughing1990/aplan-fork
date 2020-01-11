@@ -8,9 +8,11 @@ import com.augurit.aplanmis.common.domain.AeaHiGuide;
 import com.augurit.aplanmis.common.domain.AeaProjApplySplit;
 import com.augurit.aplanmis.common.mapper.AeaHiGuideMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjApplySplitMapper;
+import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.service.window.AeaProjApplySplitService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
+import io.jsonwebtoken.lang.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,9 @@ public class AeaProjApplySplitServiceImpl implements AeaProjApplySplitService {
 
     @Autowired
     private AeaHiGuideMapper aeaHiGuideMapper;
+
+    @Autowired
+    private AeaUnitInfoService aeaUnitInfoService;
 
     public void saveAeaProjApplySplit(AeaProjApplySplit aeaProjApplySplit) throws Exception{
         aeaProjApplySplitMapper.insertAeaProjApplySplit(aeaProjApplySplit);
@@ -77,12 +82,17 @@ public class AeaProjApplySplitServiceImpl implements AeaProjApplySplitService {
         aeaProjApplySplit.setModifyTime(new Date());
         aeaProjApplySplitMapper.updateAeaProjApplySplit(aeaProjApplySplit);
 
+        AeaHiGuide aeaHiGuideFromDb = aeaHiGuideMapper.getAeaHiGuideByGuideId(guideId);
+        Assert.notNull(aeaHiGuideFromDb, "部门辅导记录不能为空");
+
         AeaHiGuide aeaHiGuide = new AeaHiGuide();
         aeaHiGuide.setGuideId(guideId);
         aeaHiGuide.setProjInfoId(aeaProjApplySplit.getProjInfoId());
         aeaHiGuide.setModifyTime(new Date());
         aeaHiGuide.setModifier(SecurityContext.getCurrentUserId());
         aeaHiGuideMapper.updateAeaHiGuide(aeaHiGuide);
+
+        aeaUnitInfoService.replaceProjRelationByChild(aeaHiGuideFromDb.getApplyinstId(), aeaProjApplySplit.getFrontStageProjInfoId(), aeaProjApplySplit.getProjInfoId());
     }
 
     @Override

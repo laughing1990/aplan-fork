@@ -127,6 +127,7 @@ public class AeaProjApplyAgentController {
                     ResultForm form = checkOpreatePermit(applyAgentId, "1");
                     if(form.isSuccess()){
                         aeaProjApplyAgentService.updateAeaProjApplyAgent(aeaProjApplyAgent);
+                        aeaProjApplyAgentService.saveRedisAeaProjApplyAgentInfo(aeaProjApplyAgent);
                         resultForm.setSuccess(true);
                     }
                     resultForm.setMessage(form.getMessage());
@@ -262,7 +263,7 @@ public class AeaProjApplyAgentController {
                 }else{
                     //办结时间如果修改就要前端传值过来
                     agreementDetail.setAgreementEndTime(aeaProjApplyAgent.getAgreementEndTime());
-                    //协议没有存储到mongodb，动态生成一份。代办中心（乙方）签章之后要将代办委托终止单存储到mongodb。
+                    //协议没有存储到mongodb，动态生成一份。代办中心（乙方）签章之后要将代办办结单存储到mongodb。
                     String str = ReceivePDFTemplate.createAgencyEndAgreement(agreementDetail);
                     writeFile(str,resp);
                 }
