@@ -21,6 +21,7 @@ import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.*;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
+import com.augurit.aplanmis.common.service.projAccept.vo.OpinionSummaryVo;
 import com.augurit.aplanmis.common.service.projAccept.vo.ProjAcceptOpinionSummaryVo;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.receive.utils.ReceivePDFUtils;
@@ -30,9 +31,11 @@ import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.bpmn.model.FlowableListener;
 import org.flowable.bpmn.model.Process;
 import org.flowable.bpmn.model.UserTask;
+import org.flowable.engine.HistoryService;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.runtime.ProcessInstance;
+import org.flowable.task.api.history.HistoricTaskInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
@@ -96,13 +99,9 @@ public class ProjAcceptService {
     @Autowired
     private AeaHiItemMatinstService aeaHiItemMatinstService;
     @Autowired
-    private RepositoryService repositoryService;
-    @Autowired
-    private RuntimeService runtimeService;
-    @Autowired
-    private ActStoAppinstSubflowService actStoAppinstSubflowService;
-    @Autowired
     private BscAttMapper bscAttMapper;
+    @Autowired
+    private HistoryService historyService;
 
     //固定的联合验收终审意见书批文批复材料编号
     private final String MAT_CODE = "MAT-C0000000583";
@@ -164,7 +163,7 @@ public class ProjAcceptService {
                     kanchaUnitInfo = aeaUnitInfo;
                 if("4".equals(aeaUnitInfo.getUnitType()))
                     designUnitInfo = aeaUnitInfo;
-                if("22".equals(aeaUnitInfo.getUnitType()))
+                if("2".equals(aeaUnitInfo.getUnitType()))
                     shigongUnitInfo = aeaUnitInfo;
             }
         }
@@ -224,8 +223,9 @@ public class ProjAcceptService {
 
         List<AeaHiIteminst> iteminstList = aeaHiIteminstService.getAeaHiIteminstListByStageinstId(stageinst.getStageinstId());
 
+        int count = 0;
         if(iteminstList!=null&&iteminstList.size()>0){
-            Map<String,String> deptOpinions = new HashMap<>();
+            List<OpinionSummaryVo> deptOpinions = new ArrayList<>();
             for(AeaHiIteminst iteminst:iteminstList){
                 String itemCategoryMark = iteminst.getItemCategoryMark();
                 //获取符合要求的事项节点的审批意见
@@ -233,22 +233,17 @@ public class ProjAcceptService {
                     String procinstId = iteminst.getProcinstId();
 
                     if(StringUtils.isNotBlank(procinstId)){
-                        List<BpmHistoryCommentForm> commentFormList = bpmTaskService.getHistoryCommentsByProcessInstanceId(procinstId);
+                        //需要对应审查决定流程配置“审查决定”节点编号为：shenchajueding
+                        String shenchaNodeKey = "shenchajueding";
+                        List<BpmHistoryCommentForm> commentFormList = bpmTaskService.getHistoryCommentsByTaskNode(procinstId,shenchaNodeKey);
 
                         if(commentFormList!=null&&commentFormList.size()>0) {
-                            //倒序排序，获取最后一个节点的意见
-                            Collections.sort(commentFormList, new Comparator<BpmHistoryCommentForm>() {
-                                @Override
-                                public int compare(BpmHistoryCommentForm o1, BpmHistoryCommentForm o2) {
-                                    if(o1.getEndDate()==null||o2.getEndDate()==null){
-                                        return o1.getSigeInDate().compareTo(o2.getSigeInDate());
-                                    }else{
-                                        return o1.getEndDate().compareTo(o2.getEndDate());
-                                    }
-                                }
-                            });
-
-                            deptOpinions.put(iteminst.getApproveOrgName()+"（"+iteminst.getIteminstName()+"）", commentFormList.get(0).getCommentMessage());
+                            OpinionSummaryVo summaryVo = new OpinionSummaryVo();
+                            summaryVo.setSortNum(count);
+                            summaryVo.setDeptName(iteminst.getApproveOrgName()+"（"+iteminst.getIteminstName()+"）");
+                            summaryVo.setOpinion(commentFormList.get(0).getCommentMessage());
+                            deptOpinions.add(summaryVo);
+                            count++;
                         }
                     }
                 }
@@ -259,56 +254,58 @@ public class ProjAcceptService {
                 //联合验收二级流程的“出具联合验收意见”节点的编号为：chujulianheyanshouyijian
                 String taskDefKey = "chujulianheyanshouyijian";
 
-                ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(yanshouProcInstId).singleResult();
-                BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
-                Process process = bpmnModel.getProcesses().get(0);
-                //获取当前任务定义信息
-                UserTask currTaskElement = (UserTask) process.getFlowElement(taskDefKey);
+                //如果能拿到编号为：chujulianheyanshouyijian的节点，那当前为联合验收二级流程，直接获取该节点任务意见
+                HistoricTaskInstance taskInstance = historyService.createHistoricTaskInstanceQuery().processInstanceId(yanshouProcInstId).taskDefinitionKey(taskDefKey).singleResult();
+                if(taskInstance != null) {
+                    List<BpmHistoryCommentForm> taskComments = bpmTaskService.getHistoryCommentsByTaskId(yanshouProcInstId, taskInstance.getId());
+                    if(taskComments!=null&&taskComments.size()>0){
+                        String key = taskComments.get(0).getNodeName();
+                        if (taskComments.get(0).getOrgName() != null)
+                            key = taskComments.get(0).getOrgName();
 
-                boolean isSubFlow = false;
-                if(currTaskElement!=null) {
-                    List<FlowableListener> taskListeners = currTaskElement.getTaskListeners();
-                    if (taskListeners != null && taskListeners.size() > 0) {
-                        for (FlowableListener listener : taskListeners) {
-                            if (listener.getSubFlow()) {
-                                isSubFlow = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                //如果是子流程，需要获取子流程的意见
-                if(isSubFlow){
-                    ActStoAppinstSubflow subflow = actStoAppinstSubflowService.getActStoAppinstSubflowBySubflowProcinstId(yanshouProcInstId);
-                    if(subflow!=null){
-                        String subflowProcinstId = subflow.getSubflowProcinstId();
-                        List<BpmHistoryCommentForm> subflowComments = bpmTaskService.getHistoryCommentsByProcessInstanceId(subflowProcinstId);
-                        if(subflowComments!=null&&subflowComments.size()>0) {
-                            //倒序排序，获取最后一个节点的意见
-                            Collections.sort(subflowComments, new Comparator<BpmHistoryCommentForm>() {
-                                @Override
-                                public int compare(BpmHistoryCommentForm o1, BpmHistoryCommentForm o2) {
-                                    if(o1.getEndDate()==null||o2.getEndDate()==null){
-                                        return o1.getSigeInDate().compareTo(o2.getSigeInDate());
-                                    }else{
-                                        return o1.getEndDate().compareTo(o2.getEndDate());
-                                    }
-                                }
-                            });
-
-                            deptOpinions.put(subflowComments.get(0).getOrgName(),subflowComments.get(0).getCommentMessage());
-                        }
+                        OpinionSummaryVo summaryVo = new OpinionSummaryVo();
+                        summaryVo.setSortNum(count);
+                        summaryVo.setDeptName(key);
+                        summaryVo.setOpinion(taskComments.get(0).getCommentMessage());
+                        deptOpinions.add(summaryVo);
+                        count++;
                     }
                 }else{
-                    List<BpmHistoryCommentForm> commentFormList = bpmTaskService.getHistoryCommentsByTaskNode(yanshouProcInstId,taskDefKey);
-                    if(commentFormList!=null&&commentFormList.size()>0){
-                        BpmHistoryCommentForm commentForm = commentFormList.get(0);
-                        if(commentForm!=null&&StringUtils.isNotBlank(commentForm.getOrgName())){
-                            deptOpinions.put(commentForm.getOrgName(),commentForm.getCommentMessage());
-                        }
+                    List<BpmHistoryCommentForm> taskComments = bpmTaskService.getHistoryCommentsByProcessInstanceId(yanshouProcInstId);
+                    if (taskComments != null && taskComments.size() > 0) {
+                        //倒序排序，获取最后一个节点的意见
+                        Collections.sort(taskComments, new Comparator<BpmHistoryCommentForm>() {
+                            @Override
+                            public int compare(BpmHistoryCommentForm o1, BpmHistoryCommentForm o2) {
+                                if (o1.getEndDate() == null || o2.getEndDate() == null) {
+                                    return o2.getSigeInDate().compareTo(o1.getSigeInDate());
+                                } else {
+                                    return o2.getEndDate().compareTo(o1.getEndDate());
+                                }
+                            }
+                        });
+
+                        String key = taskComments.get(0).getNodeName();
+                        if (taskComments.get(0).getOrgName() != null)
+                            key = taskComments.get(0).getOrgName();
+
+                        OpinionSummaryVo summaryVo = new OpinionSummaryVo();
+                        summaryVo.setSortNum(count);
+                        summaryVo.setDeptName(key);
+                        summaryVo.setOpinion(taskComments.get(0).getCommentMessage());
+                        deptOpinions.add(summaryVo);
+                        count++;
                     }
                 }
+            }
+
+            if(deptOpinions.size()>1){
+                Collections.sort(deptOpinions, new Comparator<OpinionSummaryVo>() {
+                    @Override
+                    public int compare(OpinionSummaryVo o1, OpinionSummaryVo o2) {
+                        return o1.getSortNum().compareTo(o2.getSortNum());
+                    }
+                });
             }
 
             acceptOpinionSummaryVo.setDeptOpinions(deptOpinions);
