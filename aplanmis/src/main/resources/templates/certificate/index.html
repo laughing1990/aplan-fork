@@ -7,14 +7,19 @@
 
 <head>
   <!--引入公共css-->
-<!--  <th:block th:include="common/common :: commonheader('取件登记')"/>-->
-    <meta charset="UTF-8">
-    <title>取件登记</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}"/>
-    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
-    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css" th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
+  <!--  <th:block th:include="common/common :: commonheader('取件登记')"/>-->
+  <meta charset="UTF-8">
+  <title>取件登记</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+        th:href="@{/agcloud/framework/js-lib/element-2/element.css}"/>
+  <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css"
+        th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css"
+        th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
   <link rel="stylesheet" href="../../static/certificate/css/index.css" th:href="@{/certificate/css/index.css}">
   <script>
     var ctx = '[[@{/}]]';
@@ -22,291 +27,299 @@
     var windowUserId = '[[${windowUserId}]]';
     var windowUserName = '[[${windowUserName}]]';
   </script>
-    <script src="../../static/approve/js/ip.js" th:src="@{/approve/js/ip.js}"></script>
-<style>
-    .custor{
-        cursor:pointer;
+  <script src="../../static/approve/js/ip.js" th:src="@{/approve/js/ip.js}"></script>
+  <style>
+    .custor {
+      cursor: pointer;
     }
+
     .el-table .warning-row {
-        background: #DBE0E6;
+      background: #DBE0E6;
     }
-    .selectDialog{
-        width: 125px;
+
+    .selectDialog {
+      width: 125px;
     }
-</style>
+  </style>
 </head>
 
 <body>
 
 
-  <div id="approve" v-cloak v-loading="loading">
-      <div class="content">
-          <div class="vertical-tab">
-              <ul>
-                  <li class="vertical-label" v-show="index<showVerLen" v-for="(item, index) in verticalTabData"
-                      :class="activeTab==index?'active':item.target" data-name="item.target"
-                      @click="targetCollapse(item.target,index)">
-                      <a :href="'#'+item.target">{{item.label}}</a>
-                  </li>
-              </ul>
+<div id="approve" v-cloak v-loading="loading">
+  <div class="content">
+    <div class="vertical-tab">
+      <ul>
+        <li class="vertical-label" v-show="index<showVerLen" v-for="(item, index) in verticalTabData"
+            :class="activeTab==index?'active':item.target" data-name="item.target"
+            @click="targetCollapse(item.target,index)">
+          <a :href="'#'+item.target">{{item.label}}</a>
+        </li>
+      </ul>
+    </div>
+
+    <el-collapse v-model="activeNames">
+      <!--  基本信息  start  -->
+      <el-collapse-item class="clearfix" name="1" id="baseInfo">
+        <template slot="title">
+          <i class="header-icon el-icon-document-copy"></i>事项信息列表
+        </template>
+        <el-button type="primary" @click="doOnceSend()" v-if="isSmsSend == '0'">全选</el-button>
+        <el-table
+            ref="multipleTable"
+            :data="tableData3"
+            tooltip-effect="dark"
+            :row-class-name="tableRowClass"
+            style="width: 100%"
+            @selection-change="handleSelectionChange">
+          <el-table-column
+              type="selection"
+              :selectable='checkboxInit2'
+              width="55"
+          >
+          </el-table-column>
+          <el-table-column
+              label="办件编号"
+              width="180">
+            <template slot-scope="scope">{{ scope.row.iteminstCode }}</template>
+          </el-table-column>
+          <el-table-column
+              prop="iteminstName"
+              label="事项名称"
+              width="400">
+          </el-table-column>
+          <el-table-column
+              prop="approveOrgName"
+              label="审批部门"
+              width="180">
+          </el-table-column>
+          <el-table-column
+              prop="iteminstState"
+              label="办件状态"
+              width="120"
+              :formatter="itemStatuFormatter">
+          </el-table-column>
+          <el-table-column
+              prop="isSmsSend"
+              label="出件状态"
+              width="100"
+              :formatter="statuFormatter">
+          </el-table-column>
+
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
+                         v-if="scope.row.hasOutCertinst == '1'">查看
+              </el-button>
+              <el-button size="mini" @click="editSMSSend(scope.$index, scope.row)" v-if="scope.row.isSmsSend == '1'">
+                出件详情
+              </el-button>
+
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-collapse-item>
+      <!--  基本信息  end  -->
+
+      <!--证件领取方式start-->
+      <el-collapse-item name="2" id="receiveMode">
+        <template slot="title">
+          <i class="header-icon el-icon-info"></i>证件领取方式
+        </template>
+        <el-form label-width="200px"
+                 ref="receInfo2"
+                 :model="sendInfoForm" :rules="sendSmsInfoRules">
+          <el-form-item label="签收方式">
+            <el-radio-group v-model="sendInfoForm.receiveMode">
+              <el-radio label="0" disabled>邮政快递</el-radio>
+              <el-radio label="1" disabled>窗口取证</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="领取方式">
+            <el-radio-group v-model="sendInfoForm.receiveType">
+              <el-radio label="1" disabled>一次领取</el-radio>
+              <el-radio label="0" disabled>分别领取</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="快递方式" v-if="sendInfoForm.receiveMode == 0">
+            <el-radio-group v-model="sendInfoForm.smsType">
+              <el-radio label="1" disabled>普通快递</el-radio>
+              <el-radio label="2" disabled>上门取件</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item class="input-inline" label="订单号" prop="orderId" v-if="sendInfoForm.receiveMode == 0">
+            <el-input v-model="sendInfoForm.orderId" id="orderId" placeholder="订单号"></el-input>
+          </el-form-item>
+          <el-form-item class="input-inline" label="运单号" prop="expressNum" v-if="sendInfoForm.receiveMode == 0">
+            <el-input v-model="sendInfoForm.expressNum" id="expressNum" placeholder="运单号"></el-input>
+          </el-form-item>
+        </el-form>
+      </el-collapse-item>
+      <!--证件领取方式end -->
+      <!--  领件人主体信息  start  -->
+      <el-collapse-item name="3" id="receiver">
+        <template slot="title">
+          <i class="header-icon el-icon-info"></i>领件人信息
+        </template>
+        <el-form label-width="200px"
+                 ref="receInfo"
+                 :model="sendInfoForm" :rules="sendSmsInfoRules">
+          <el-form-item label="是否委托领取">
+            <el-radio-group v-model="sendInfoForm.isConsigner">
+              <el-radio label="0" :disabled="receiveModeShow">否</el-radio>
+              <el-radio label="1" :disabled="receiveModeShow">是</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <div class="clearfix" v-if="sendInfoForm.isConsigner == '0'">
+            <el-form-item class="input-inline" label="领件人姓名" prop="addresseeName">
+              <el-input v-model="sendInfoForm.addresseeName" id="addresseeName" placeholder="领件人姓名" disabled></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" label="领件人电话" prop="addresseePhone">
+              <el-input v-model="sendInfoForm.addresseePhone" id="addresseePhone" placeholder="领件人电话"></el-input>
+            </el-form-item>
+
+            <el-form-item class="input-inline" label="领件人身份证号码" prop="addresseeIdcard"
+                          v-if="sendInfoForm.receiveMode == '1'">
+              <el-input v-model="sendInfoForm.addresseeIdcard" id="addresseeIdcard" placeholder="领件人身份证号码"></el-input>
+            </el-form-item>
           </div>
-
-      <el-collapse v-model="activeNames">
-        <!--  基本信息  start  -->
-        <el-collapse-item class="clearfix" name="1" id="baseInfo">
-          <template slot="title">
-            <i class="header-icon el-icon-document-copy"></i>事项信息列表
-          </template>
-            <el-button type="primary"  @click="doOnceSend()" v-if="isSmsSend == '0'">全选</el-button>
-          <el-table
-                  ref="multipleTable"
-                  :data="tableData3"
-                  tooltip-effect="dark"
-                  :row-class-name="tableRowClass"
-                  style="width: 100%"
-                  @selection-change="handleSelectionChange">
-            <el-table-column
-                    type="selection"
-                    :selectable='checkboxInit2'
-                    width="55"
-                    >
-            </el-table-column>
-            <el-table-column
-                    label="办件编号"
-                    width="180">
-              <template slot-scope="scope">{{ scope.row.iteminstCode }}</template>
-            </el-table-column>
-            <el-table-column
-                    prop="iteminstName"
-                    label="事项名称"
-                    width="400">
-            </el-table-column>
-              <el-table-column
-                      prop="approveOrgName"
-                      label="审批部门"
-                      width="180">
-              </el-table-column>
-              <el-table-column
-                      prop="iteminstState"
-                      label="办件状态"
-                      width="120"
-                      :formatter="itemStatuFormatter">
-              </el-table-column>
-              <el-table-column
-                      prop="isSmsSend"
-                      label="出件状态"
-                      width="100"
-                      :formatter="statuFormatter">
-              </el-table-column>
-
-            <el-table-column label="操作">
-              <template slot-scope="scope">
-                <el-button size="mini" @click="handleEdit(scope.$index, scope.row)" v-if="scope.row.hasOutCertinst == '1'">查看</el-button>
-                <el-button size="mini" @click="editSMSSend(scope.$index, scope.row)" v-if="scope.row.isSmsSend == '1'">出件详情</el-button>
-
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-collapse-item>
-        <!--  基本信息  end  -->
-
-          <!--证件领取方式start-->
-          <el-collapse-item name="2" id="receiveMode" >
-              <template slot="title">
-                  <i class="header-icon el-icon-info"></i>证件领取方式
-              </template>
-          <el-form label-width="200px"
-                   ref="receInfo2"
-                   :model="sendInfoForm" :rules="sendSmsInfoRules">
-              <el-form-item label="签收方式">
-                  <el-radio-group v-model="sendInfoForm.receiveMode" >
-                      <el-radio label="0"  disabled>邮政快递</el-radio>
-                      <el-radio label="1" disabled >窗口取证</el-radio>
-                  </el-radio-group>
-              </el-form-item>
-              <el-form-item label="领取方式">
-                  <el-radio-group v-model="sendInfoForm.receiveType">
-                      <el-radio label="1" disabled>一次领取</el-radio>
-                      <el-radio label="0" disabled>分别领取</el-radio>
-                  </el-radio-group>
-              </el-form-item>
-              <el-form-item label="快递方式"  v-if="sendInfoForm.receiveMode == 0">
-                  <el-radio-group v-model="sendInfoForm.smsType">
-                      <el-radio label="1"  disabled>普通快递</el-radio>
-                      <el-radio label="2"  disabled>上门取件</el-radio>
-                  </el-radio-group>
-              </el-form-item>
-              <el-form-item class="input-inline" label="订单号" prop="orderId" v-if="sendInfoForm.receiveMode == 0">
-                  <el-input v-model="sendInfoForm.orderId" id="orderId" placeholder="订单号"></el-input>
-              </el-form-item>
-              <el-form-item class="input-inline" label="运单号" prop="expressNum" v-if="sendInfoForm.receiveMode == 0">
-                  <el-input v-model="sendInfoForm.expressNum" id="expressNum" placeholder="运单号"></el-input>
-              </el-form-item>
-          </el-form>
-          </el-collapse-item>
-          <!--证件领取方式end -->
-          <!--  领件人主体信息  start  -->
-          <el-collapse-item name="3" id="receiver" >
-              <template slot="title">
-                  <i class="header-icon el-icon-info"></i>领件人信息
-              </template>
-              <el-form label-width="200px"
-                       ref="receInfo"
-                       :model="sendInfoForm" :rules="sendSmsInfoRules">
-                  <el-form-item label="是否委托领取">
-                      <el-radio-group v-model="sendInfoForm.isConsigner">
-                          <el-radio label="0" :disabled="receiveModeShow">否</el-radio>
-                          <el-radio label="1" :disabled="receiveModeShow">是</el-radio>
-                      </el-radio-group>
-                  </el-form-item>
-                  <div class="clearfix" v-if="sendInfoForm.isConsigner == '0'">
-                      <el-form-item class="input-inline" label="领件人姓名" prop="addresseeName">
-                          <el-input v-model="sendInfoForm.addresseeName" id="addresseeName" placeholder="领件人姓名" disabled></el-input>
-                      </el-form-item>
-                      <el-form-item class="input-inline" label="领件人电话" prop="addresseePhone">
-                          <el-input v-model="sendInfoForm.addresseePhone" id="addresseePhone" placeholder="领件人电话" ></el-input>
-                      </el-form-item>
-
-                      <el-form-item class="input-inline" label="领件人身份证号码" prop="addresseeIdcard" v-if="sendInfoForm.receiveMode == '1'" >
-                          <el-input v-model="sendInfoForm.addresseeIdcard" id="addresseeIdcard" placeholder="领件人身份证号码" ></el-input>
-                      </el-form-item>
-                  </div>
-                  <el-form-item label="领件人所在区域" prop="addresseeProvince" v-if="sendInfoForm.isConsigner == '0'">
-                      <el-select v-model="sendInfoForm.addresseeProvince"
-                                 prop="addresseeProvince"
-                                 placeholder="--请选择省--" >
-                          <el-option v-for="(item,index) in provinceList"
-                                     :key="item.code"
-                                     :label="item.name"
-                                     @click.native.stop="queryCityData(index,'lz')"
-                                     :value="item.code">
-                          </el-option>
-                      </el-select>
-                      <el-select v-model="sendInfoForm.addresseeCity"
-                                 prop="addresseeCity"
-                                 placeholder="--请选择市--" >
-                          <el-option v-for="(item,index) in cityList"
-                                     :key="item.code"
-                                     :label="item.name"
-                                     @click.native.stop="queryAreaData(index,'lz')"
-                                     :value="item.code">
-                          </el-option>
-                      </el-select>
-                      <el-select v-model="sendInfoForm.addresseeCounty"
-                                 prop="addresseeCounty"
-                                 @change="$set(sendInfoForm, sendInfoForm.addresseeCounty, $event)"
-                                 placeholder="--请选择区--" >
-                          <el-option v-for="(item,index) in countyList"
-                                     :key="item.code"
-                                     :label="item.name"
-                                     :value="item.code">
-                          </el-option>
-                      </el-select>
-                  </el-form-item>
-                  <el-form-item class="input-block" label="领件人详细地址" prop="addresseeAddr" v-if="sendInfoForm.isConsigner == '0'">
-                      <el-input v-model="sendInfoForm.addresseeAddr" id="addresseeAddr" placeholder="领件人详细地址" ></el-input>
-                  </el-form-item>
+          <el-form-item label="领件人所在区域" prop="addresseeProvince" v-if="sendInfoForm.isConsigner == '0'">
+            <el-select v-model="sendInfoForm.addresseeProvince"
+                       prop="addresseeProvince"
+                       placeholder="--请选择省--">
+              <el-option v-for="(item,index) in provinceList"
+                         :key="item.code"
+                         :label="item.name"
+                         @click.native.stop="queryCityData(index,'lz')"
+                         :value="item.code">
+              </el-option>
+            </el-select>
+            <el-select v-model="sendInfoForm.addresseeCity"
+                       prop="addresseeCity"
+                       placeholder="--请选择市--">
+              <el-option v-for="(item,index) in cityList"
+                         :key="item.code"
+                         :label="item.name"
+                         @click.native.stop="queryAreaData(index,'lz')"
+                         :value="item.code">
+              </el-option>
+            </el-select>
+            <el-select v-model="sendInfoForm.addresseeCounty"
+                       prop="addresseeCounty"
+                       @change="$set(sendInfoForm, sendInfoForm.addresseeCounty, $event)"
+                       placeholder="--请选择区--">
+              <el-option v-for="(item,index) in countyList"
+                         :key="item.code"
+                         :label="item.name"
+                         :value="item.code">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item class="input-block" label="领件人详细地址" prop="addresseeAddr" v-if="sendInfoForm.isConsigner == '0'">
+            <el-input v-model="sendInfoForm.addresseeAddr" id="addresseeAddr" placeholder="领件人详细地址"></el-input>
+          </el-form-item>
 
 
-              </el-form>
+        </el-form>
 
-              <el-form label-width="200px"
-                       ref="consignerInfo"
-                       :model="consignerForm" :rules="consignerInfoRules">
-              <div class="clearfix" v-if="sendInfoForm.isConsigner == '1'">
+        <el-form label-width="200px"
+                 ref="consignerInfo"
+                 :model="consignerForm" :rules="consignerInfoRules">
+          <div class="clearfix" v-if="sendInfoForm.isConsigner == '1'">
 
-                  <el-form-item class="input-inline" label="委托人姓名" prop="addresseeName">
-                      <el-input v-model="consignerForm.addresseeName" id="addresseeNameWT" placeholder="委托人姓名" ></el-input>
-                  </el-form-item>
-                  <el-form-item class="input-inline" label="委托人电话" prop="addresseePhone">
-                      <el-input v-model="consignerForm.addresseePhone" id="addresseePhoneWT" placeholder="委托人电话" ></el-input>
-                  </el-form-item>
+            <el-form-item class="input-inline" label="委托人姓名" prop="addresseeName">
+              <el-input v-model="consignerForm.addresseeName" id="addresseeNameWT" placeholder="委托人姓名"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" label="委托人电话" prop="addresseePhone">
+              <el-input v-model="consignerForm.addresseePhone" id="addresseePhoneWT" placeholder="委托人电话"></el-input>
+            </el-form-item>
 
-                  <el-form-item class="input-inline" label="委托人身份证号码" prop="addresseeIdcard">
-                      <el-input v-model="consignerForm.addresseeIdcard" id="addresseeIdcardWT" placeholder="委托人身份证号码" ></el-input>
-                  </el-form-item>
+            <el-form-item class="input-inline" label="委托人身份证号码" prop="addresseeIdcard">
+              <el-input v-model="consignerForm.addresseeIdcard" id="addresseeIdcardWT"
+                        placeholder="委托人身份证号码"></el-input>
+            </el-form-item>
 
+          </div>
+          <el-form-item label="委托人所在区域" v-if="sendInfoForm.isConsigner == '1'" prop="addresseeProvince">
+            <el-select v-model="consignerForm.addresseeProvince"
+                       prop="addresseeProvince"
+                       placeholder="--请选择省--">
+              <el-option v-for="(item,index) in provinceList"
+                         :key="item.code"
+                         :label="item.name"
+                         @click.native.stop="queryCityData(index,'lz')"
+                         :value="item.code">
+              </el-option>
+            </el-select>
+            <el-select v-model="consignerForm.addresseeCity"
+                       prop="addresseeCity"
+                       placeholder="--请选择市--">
+              <el-option v-for="(item,index) in cityList"
+                         :key="item.code"
+                         :label="item.name"
+                         @click.native.stop="queryAreaData(index,'lz')"
+                         :value="item.code">
+              </el-option>
+            </el-select>
+            <el-select v-model="consignerForm.addresseeCounty"
+                       prop="addresseeCounty"
+                       @change="$set(sendInfoForm, sendInfoForm.addresseeCounty, $event)"
+                       placeholder="--请选择区--">
+              <el-option v-for="(item,index) in countyList"
+                         :key="item.code"
+                         :label="item.name"
+                         :value="item.code">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item class="input-block" label="委托人详细地址" prop="addresseeAddr" v-if="sendInfoForm.isConsigner == '1'">
+            <el-input v-model="consignerForm.addresseeAddr" id="addresseeAddrWT" placeholder="委托人详细地址"></el-input>
+          </el-form-item>
+          <el-form-item label="委托书上传" v-if="sendInfoForm.isConsigner==1">
+            <div class="upload-file-content"
+                 :loading="loadingFileWin"
+                 element-loading-text="文件上传中"
+                 element-loading-background="rgba(0, 0, 0, 0.3)"
+                 element-loading-spinner="el-icon-loading">
+              <div class="file-opt-btn">
+                <!--<el-button type="primary" @click="downloadFile()">下载</el-button>-->
+                <el-upload
+                    ref="uploadFileWin"
+                    class="upload-s-file"
+                    :action="ctx+'rest/certificate/consignerAtt/upload'"
+                    :show-file-list="false"
+                    :http-request="uploadFileCom"
+                    :file-list="fileList">
+                  <el-button slot="trigger" size="small" type="primary">上传</el-button>
+                  <el-button type="primary" @click="delSelectFileCom()">删除</el-button>
+                </el-upload>
               </div>
-              <el-form-item label="委托人所在区域" v-if="sendInfoForm.isConsigner == '1'" prop="addresseeProvince">
-                  <el-select v-model="consignerForm.addresseeProvince"
-                             prop="addresseeProvince"
-                             placeholder="--请选择省--" >
-                      <el-option v-for="(item,index) in provinceList"
-                                 :key="item.code"
-                                 :label="item.name"
-                                 @click.native.stop="queryCityData(index,'lz')"
-                                 :value="item.code">
-                      </el-option>
-                  </el-select>
-                  <el-select v-model="consignerForm.addresseeCity"
-                             prop="addresseeCity"
-                             placeholder="--请选择市--" >
-                      <el-option v-for="(item,index) in cityList"
-                                 :key="item.code"
-                                 :label="item.name"
-                                 @click.native.stop="queryAreaData(index,'lz')"
-                                 :value="item.code">
-                      </el-option>
-                  </el-select>
-                  <el-select v-model="consignerForm.addresseeCounty"
-                             prop="addresseeCounty"
-                             @change="$set(sendInfoForm, sendInfoForm.addresseeCounty, $event)"
-                             placeholder="--请选择区--" >
-                      <el-option v-for="(item,index) in countyList"
-                                 :key="item.code"
-                                 :label="item.name"
-                                 :value="item.code">
-                      </el-option>
-                  </el-select>
-              </el-form-item>
-              <el-form-item class="input-block" label="委托人详细地址" prop="addresseeAddr" v-if="sendInfoForm.isConsigner == '1'">
-                  <el-input v-model="consignerForm.addresseeAddr" id="addresseeAddrWT" placeholder="委托人详细地址" ></el-input>
-              </el-form-item>
-              <el-form-item label="委托书上传" v-if="sendInfoForm.isConsigner==1">
-                  <div class="upload-file-content"
-                       :loading="loadingFileWin"
-                       element-loading-text="文件上传中"
-                       element-loading-background="rgba(0, 0, 0, 0.3)"
-                       element-loading-spinner="el-icon-loading" >
-                      <div class="file-opt-btn">
-                          <!--<el-button type="primary" @click="downloadFile()">下载</el-button>-->
-                          <el-upload
-                                  ref="uploadFileWin"
-                                  class="upload-s-file"
-                                  :action="ctx+'rest/certificate/consignerAtt/upload'"
-                                  :show-file-list="false"
-                                  :http-request="uploadFileCom"
-                                  :file-list="fileList">
-                              <el-button slot="trigger" size="small" type="primary">上传</el-button>
-                              <el-button type="primary" @click="delSelectFileCom()">删除</el-button>
-                          </el-upload>
-                      </div>
-                      <el-table :data="uploadTableData" border @selection-change="selectionFileChange">
-                          <el-table-column type="selection"
-                                           align="center"
-                                           width="55">
-                          </el-table-column>
-                          <el-table-column prop="fileName" label="文件名"></el-table-column>
-                          <el-table-column label="操作" align="center" width="150">
-                              <template slot-scope="scope">
-                                  <el-button type="primary" size="mini" @click="filePreview(scope.row)">预览</el-button>
-                              </template>
-                          </el-table-column>
-                      </el-table>
-                  </div>
-              </el-form-item>
-              </el-form>
-          </el-collapse-item>
-          <!--  收件人主体信息  end  -->
+              <el-table :data="uploadTableData" border @selection-change="selectionFileChange">
+                <el-table-column type="selection"
+                                 align="center"
+                                 width="55">
+                </el-table-column>
+                <el-table-column prop="fileName" label="文件名"></el-table-column>
+                <el-table-column label="操作" align="center" width="150">
+                  <template slot-scope="scope">
+                    <el-button type="primary" size="mini" @click="filePreview(scope.row)">预览</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-form-item>
+        </el-form>
+      </el-collapse-item>
+      <!--  收件人主体信息  end  -->
 
-        <!--  寄件人信息  start  -->
-        <el-collapse-item name="4" id="sender" v-if="sendInfoForm.receiveMode == 0">
-          <template slot="title">
-            <i class="header-icon el-icon-info"></i>寄件人信息
-          </template>
-          <el-form label-width="200px"
-                   ref="sendInfo_jjr"
-                   :model="sendInfoForm" :rules="sendSmsInfoRules">
+      <!--  寄件人信息  start  -->
+      <el-collapse-item name="4" id="sender" v-if="sendInfoForm.receiveMode == 0">
+        <template slot="title">
+          <i class="header-icon el-icon-info"></i>寄件人信息
+        </template>
+        <el-form label-width="200px"
+                 ref="sendInfo_jjr"
+                 :model="sendInfoForm" :rules="sendSmsInfoRules">
           <div class="clearfix">
             <el-form-item class="input-inline" label="寄件人姓名" prop="senderName">
               <el-input v-model="sendInfoForm.senderName" id="senderName" placeholder="寄件人姓名"></el-input>
@@ -315,343 +328,354 @@
               <el-input v-model="sendInfoForm.senderPhone" id="senderPhone" placeholder="寄件人电话"></el-input>
             </el-form-item>
           </div>
-              <el-form-item label="寄件人所在区域" prop="senderProvince">
-                  <el-select v-model="sendInfoForm.senderProvince"
-                             prop="senderProvince"
-                             placeholder="--请选择省--" >
-                      <el-option v-for="(item,index) in provinceList_jjr"
-                                 :key="item.code"
-                                 :label="item.name"
-                                 @click.native.stop="queryCityData(index,'jjr')"
-                                 :value="item.code">
-                      </el-option>
-                  </el-select>
-                  <el-select v-model="sendInfoForm.senderCity"
-                             prop="senderCity"
-                             placeholder="--请选择市--" >
-                      <el-option v-for="(item,index) in cityList_jjr"
-                                 :key="item.code"
-                                 :label="item.name"
-                                 @click.native.stop="queryAreaData(index,'jjr')"
-                                 :value="item.code">
-                      </el-option>
-                  </el-select>
-                  <el-select v-model="sendInfoForm.senderCounty"
-                             prop="senderCounty"
-                             @change="$set(sendInfoForm, sendInfoForm.addresseeCounty, $event)"
-                             placeholder="--请选择区--" >
-                      <el-option v-for="(item,index) in countyList_jjr"
-                                 :key="item.code"
-                                 :label="item.name"
-                                 :value="item.code">
-                      </el-option>
-                  </el-select>
-              </el-form-item>
-          <el-form-item class="input-block" label="寄件人详细地址"  prop="senderAddr">
+          <el-form-item label="寄件人所在区域" prop="senderProvince">
+            <el-select v-model="sendInfoForm.senderProvince"
+                       prop="senderProvince"
+                       placeholder="--请选择省--">
+              <el-option v-for="(item,index) in provinceList_jjr"
+                         :key="item.code"
+                         :label="item.name"
+                         @click.native.stop="queryCityData(index,'jjr')"
+                         :value="item.code">
+              </el-option>
+            </el-select>
+            <el-select v-model="sendInfoForm.senderCity"
+                       prop="senderCity"
+                       placeholder="--请选择市--">
+              <el-option v-for="(item,index) in cityList_jjr"
+                         :key="item.code"
+                         :label="item.name"
+                         @click.native.stop="queryAreaData(index,'jjr')"
+                         :value="item.code">
+              </el-option>
+            </el-select>
+            <el-select v-model="sendInfoForm.senderCounty"
+                       prop="senderCounty"
+                       @change="$set(sendInfoForm, sendInfoForm.addresseeCounty, $event)"
+                       placeholder="--请选择区--">
+              <el-option v-for="(item,index) in countyList_jjr"
+                         :key="item.code"
+                         :label="item.name"
+                         :value="item.code">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item class="input-block" label="寄件人详细地址" prop="senderAddr">
             <el-input v-model="sendInfoForm.senderAddr" id="senderAddr" placeholder="寄件人详细地址"></el-input>
           </el-form-item>
-          </el-form>
-        </el-collapse-item>
-        <!--  寄件人信息  end  -->
-        <!--出件人start-->
-          <el-collapse-item name="5" id="outFile" v-if="sendInfoForm.receiveMode == 1">
-              <template slot="title">
-                  <i class="header-icon el-icon-info"></i>出件人信息
+        </el-form>
+      </el-collapse-item>
+      <!--  寄件人信息  end  -->
+      <!--出件人start-->
+      <el-collapse-item name="5" id="outFile" v-if="sendInfoForm.receiveMode == 1">
+        <template slot="title">
+          <i class="header-icon el-icon-info"></i>出件人信息
+        </template>
+        <el-form label-width="200px"
+                 ref="sendInfo"
+                 :model="sendInfoForm" :rules="sendSmsInfoRules">
+          <div class="clearfix">
+            <el-form-item class="input-inline" label="出件人姓名" prop="senderName">
+              <el-input v-model="sendInfoForm.senderName" id="senderName" placeholder="出件人姓名"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" label="出件人电话" prop="senderPhone">
+              <el-input v-model="sendInfoForm.senderPhone" id="senderPhone2" placeholder="出件人电话"></el-input>
+            </el-form-item>
+          </div>
+
+          <el-form-item class="input-block" label="出件人详细地址" prop="senderAddr">
+            <el-input v-model="sendInfoForm.senderAddr" id="senderAddr" placeholder="出件人详细地址"></el-input>
+          </el-form-item>
+        </el-form>
+      </el-collapse-item>
+
+      <!--出件人end-->
+
+
+      <el-button type="primary" icon="el-icon-wallet" class="fr" @click="saveSmsFormInfo()" v-if="showSaveBtn">保存
+      </el-button>
+    </el-collapse>
+
+  </div>
+
+  <!--查看证照实例 start-->
+  <el-dialog
+      :title="editCertModalTitle"
+      :visible.sync="editCertModalShow"
+      width="900px"
+      class="dg-modal-add-linkmain-info"
+      @close="resetForm('editCertForm')">
+    <el-tabs v-model="tabActive" type="card" @tab-click="showCertPage">
+      <el-tab-pane :key="item.id"
+                   v-for="item in certTableTabs"
+                   :label="item.name"
+                   :name="item.id"></el-tab-pane>
+
+    </el-tabs>
+    <el-form :model="editCertForm" ref="editCertForm" label-width="180px" :rules="certFormRules">
+
+      <el-form-item label="证书编号：" prop="certinstCode" v-if="editCertFormType=='cert'">
+        <el-input v-model="editCertForm.certinstCode" placeholder="请输入证书编号" disabled></el-input>
+      </el-form-item>
+      <el-form-item label="证书名称：" prop="certinstName" v-if="editCertFormType=='cert'">
+        <el-input v-model="editCertForm.certinstName" placeholder="请输入证书名称" disabled></el-input>
+      </el-form-item>
+      <el-form-item label="业主单位：" prop="issueOrg" v-if="editCertFormType=='cert'">
+        <el-input v-model="editCertForm.applicant" placeholder="请输入业主单位" disabled></el-input>
+
+      </el-form-item>
+      <el-form-item label="颁发单位：" prop="issueOrg" v-if="editCertFormType=='cert'">
+        <el-input v-model="editCertForm.issueOrgName" placeholder="请输入颁发单位" disabled></el-input>
+      </el-form-item>
+      <el-form-item label="有效期起止：" v-if="editCertFormType=='cert'">
+        <el-col :span="11">
+          <el-date-picker type="date" placeholder="选择日期" v-model="editCertForm.termStart" style="width: 100%;"
+                          disabled></el-date-picker>
+        </el-col>
+        <el-col class="line" :span="2">-</el-col>
+        <el-col :span="11">
+          <el-date-picker type="date" placeholder="选择日期" v-model="editCertForm.termEnd" style="width: 100%;"
+                          prop="termEnd" disabled></el-date-picker>
+        </el-col>
+      </el-form-item>
+      <el-form-item label="制证时间：" v-if="editCertFormType=='cert'">
+        <!--<el-input v-model="editCertForm.issueDate"></el-input>-->
+        <el-date-picker type="date" placeholder="选择日期" v-model="editCertForm.issueDate" style="width: 100%;"
+                        disabled></el-date-picker>
+      </el-form-item>
+      <el-form-item label="材料名称：" v-if="editCertFormType=='mat'">
+        <el-input v-model="editCertForm.matinstName" disabled></el-input>
+      </el-form-item>
+
+      <el-form-item label="创建者：" v-if="editCertFormType=='mat'">
+        <el-input v-model="editCertForm.creater" disabled></el-input>
+      </el-form-item>
+
+      <el-form-item label="份数：" v-if="editCertFormType=='mat'">
+        <el-input v-model="editCertForm.attCount" disabled></el-input>
+      </el-form-item>
+
+      <el-form-item label="创建时间：" v-if="editCertFormType=='mat'">
+        <!--<el-input v-model="editCertForm.createTime" disabled></el-input>-->
+        <el-date-picker type="date" placeholder="选择日期" v-model="editCertForm.createTime" style="width: 100%;"
+                        disabled></el-date-picker>
+
+      </el-form-item>
+
+      <el-form-item label="附件列表：">
+        <div class="upload-file-content"
+             :loading="loadingFileWin"
+             element-loading-text="文件上传中"
+             element-loading-background="rgba(0, 0, 0, 0.3)"
+             element-loading-spinner="el-icon-loading">
+
+          <el-table :data="uploadCertData" border @selection-change="selectionCertChange">
+            <el-table-column type="selection"
+                             align="center"
+                             width="55">
+            </el-table-column>
+            <el-table-column prop="fileName" label="文件名"></el-table-column>
+            <el-table-column label="操作" align="center" width="150">
+              <template slot-scope="scope">
+                <el-button type="primary" size="mini" @click="filePreview(scope.row)">预览</el-button>
               </template>
-              <el-form label-width="200px"
-                       ref="sendInfo"
-                       :model="sendInfoForm" :rules="sendSmsInfoRules">
-                  <div class="clearfix">
-                      <el-form-item class="input-inline" label="出件人姓名" prop="senderName">
-                          <el-input v-model="sendInfoForm.senderName" id="senderName" placeholder="出件人姓名"></el-input>
-                      </el-form-item>
-                      <el-form-item class="input-inline" label="出件人电话" prop="senderPhone">
-                          <el-input v-model="sendInfoForm.senderPhone" id="senderPhone2" placeholder="出件人电话"></el-input>
-                      </el-form-item>
-                  </div>
-
-                  <el-form-item class="input-block" label="出件人详细地址"  prop="senderAddr">
-                      <el-input v-model="sendInfoForm.senderAddr" id="senderAddr" placeholder="出件人详细地址"></el-input>
-                  </el-form-item>
-              </el-form>
-          </el-collapse-item>
-
-          <!--出件人end-->
-
-
-        <el-button type="primary" icon="el-icon-wallet" class="fr" @click="saveSmsFormInfo()" v-if="showSaveBtn">保存</el-button>
-      </el-collapse>
-
-      </div>
-
-      <!--查看证照实例 start-->
-      <el-dialog
-              :title="editCertModalTitle"
-              :visible.sync="editCertModalShow"
-              width="900px"
-              class="dg-modal-add-linkmain-info"
-              @close="resetForm('editCertForm')">
-          <el-tabs v-model="tabActive" type="card" @tab-click="showCertPage">
-          <el-tab-pane :key="item.id"
-                       v-for="item in certTableTabs"
-                       :label="item.name"
-                       :name="item.id"></el-tab-pane>
-
-          </el-tabs>
-          <el-form :model="editCertForm" ref="editCertForm" label-width="180px" :rules="certFormRules" >
-
-              <el-form-item label="证书编号：" prop="certinstCode" v-if="editCertFormType=='cert'">
-                  <el-input v-model="editCertForm.certinstCode" placeholder="请输入证书编号" disabled></el-input>
-              </el-form-item>
-              <el-form-item label="证书名称：" prop="certinstName" v-if="editCertFormType=='cert'">
-                  <el-input v-model="editCertForm.certinstName" placeholder="请输入证书名称" disabled></el-input>
-              </el-form-item>
-              <el-form-item label="业主单位：" prop="issueOrg" v-if="editCertFormType=='cert'">
-                  <el-input v-model="editCertForm.applicant" placeholder="请输入业主单位" disabled></el-input>
-
-              </el-form-item>
-              <el-form-item label="颁发单位：" prop="issueOrg" v-if="editCertFormType=='cert'">
-                  <el-input v-model="editCertForm.issueOrgName" placeholder="请输入颁发单位" disabled></el-input>
-              </el-form-item>
-              <el-form-item label="有效期起止：" v-if="editCertFormType=='cert'">
-                  <el-col :span="11">
-                      <el-date-picker type="date" placeholder="选择日期" v-model="editCertForm.termStart" style="width: 100%;" disabled></el-date-picker>
-                  </el-col>
-                  <el-col class="line" :span="2">-</el-col>
-                  <el-col :span="11">
-                      <el-date-picker type="date" placeholder="选择日期" v-model="editCertForm.termEnd" style="width: 100%;" prop="termEnd" disabled></el-date-picker>
-                  </el-col>
-              </el-form-item>
-              <el-form-item label="制证时间：" v-if="editCertFormType=='cert'">
-                  <!--<el-input v-model="editCertForm.issueDate"></el-input>-->
-                      <el-date-picker type="date" placeholder="选择日期" v-model="editCertForm.issueDate" style="width: 100%;" disabled></el-date-picker>
-              </el-form-item>
-              <el-form-item label="材料名称：" v-if="editCertFormType=='mat'">
-                  <el-input v-model="editCertForm.matinstName" disabled></el-input>
-              </el-form-item>
-
-              <el-form-item label="创建者：" v-if="editCertFormType=='mat'">
-                  <el-input v-model="editCertForm.creater" disabled></el-input>
-              </el-form-item>
-
-              <el-form-item label="份数：" v-if="editCertFormType=='mat'">
-                  <el-input v-model="editCertForm.attCount" disabled></el-input>
-              </el-form-item>
-
-              <el-form-item label="创建时间：" v-if="editCertFormType=='mat'">
-                  <!--<el-input v-model="editCertForm.createTime" disabled></el-input>-->
-                  <el-date-picker type="date" placeholder="选择日期" v-model="editCertForm.createTime" style="width: 100%;" disabled></el-date-picker>
-
-              </el-form-item>
-
-              <el-form-item label="附件列表：" >
-                  <div class="upload-file-content"
-                       :loading="loadingFileWin"
-                       element-loading-text="文件上传中"
-                       element-loading-background="rgba(0, 0, 0, 0.3)"
-                       element-loading-spinner="el-icon-loading" >
-
-                      <el-table :data="uploadCertData" border @selection-change="selectionCertChange">
-                          <el-table-column type="selection"
-                                           align="center"
-                                           width="55">
-                          </el-table-column>
-                          <el-table-column prop="fileName" label="文件名"></el-table-column>
-                          <el-table-column label="操作" align="center" width="150">
-                              <template slot-scope="scope">
-                                  <el-button type="primary" size="mini" @click="filePreview(scope.row)">预览</el-button>
-                              </template>
-                          </el-table-column>
-                      </el-table>
-                  </div>
-              </el-form-item>
-          </el-form>
-          <div slot="footer" class="dialog-footer">
-              <el-button @click="editCertModalShow = false">取 消</el-button>
-              <!--<el-button type="primary" @click="updateItemCert()" v-if="showUpdateBtn">确 定</el-button>-->
-          </div>
-      </el-dialog>
-      <!--查看证照实例 end-->
-
-      <!--编辑查看出证历史记录 start-->
-      <el-dialog
-              :title="editItemSmsInfoModalTitle"
-              :visible.sync="editItemSmsInfoModalShow"
-              width="1200px"
-              class="dg-modal-add-linkmain-info"
-              @close="resetForm('ItemSmsInfoForm')">
-          <el-form :model="ItemSmsInfoForm" ref="ItemSmsInfoForm" label-width="180px" :rules="itemSmsInfoFormRules" >
-              <el-form-item label="领取方式">
-                  <el-radio-group v-model="ItemSmsInfoForm.receiveMode" >
-                      <el-radio label="0"  disabled>邮政快递</el-radio>
-                      <el-radio label="1" disabled >窗口取证</el-radio>
-                  </el-radio-group>
-              </el-form-item>
-              <el-form-item label="快递方式"  v-if="receiveMode_dig == '0'">
-                  <el-radio-group v-model="ItemSmsInfoForm.smsType">
-                      <el-radio label="1"  disabled>普通快递</el-radio>
-                      <el-radio label="2"  disabled>上门取件</el-radio>
-                  </el-radio-group>
-              </el-form-item>
-              <div class="clearfix">
-              <el-form-item class="input-inline" label="订单号" prop="orderId" v-if="receiveMode_dig == '0'">
-                  <el-input v-model="ItemSmsInfoForm.orderId" id="orderId_item" placeholder="订单号"></el-input>
-              </el-form-item>
-              <el-form-item class="input-inline" label="运单号" prop="expressNum" v-if="receiveMode_dig == '0'">
-                  <el-input v-model="ItemSmsInfoForm.expressNum" id="expressNum_item" placeholder="运单号"></el-input>
-              </el-form-item>
-              </div>
-              <el-form-item label="是否委托领取">
-                  <el-radio-group v-model="ItemSmsInfoForm.isConsigner">
-                      <el-radio label="0">否</el-radio>
-                      <el-radio label="1">是</el-radio>
-                  </el-radio-group>
-              </el-form-item>
-
-              <el-form-item class="input-inline" :label="addresseeName" prop="addresseeName">
-                  <el-input v-model="ItemSmsInfoForm.addresseeName" id="addresseeName_item" placeholder="姓名" disabled></el-input>
-              </el-form-item>
-              <el-form-item class="input-inline" :label="addresseePhone" prop="addresseePhone">
-                  <el-input v-model="ItemSmsInfoForm.addresseePhone" id="addresseePhone_item" placeholder="电话" disabled></el-input>
-              </el-form-item>
-              <div class="clearfix">
-              <el-form-item class="input-inline" :label="addresseeIdcard" prop="addresseeIdcard">
-                  <el-input v-model="ItemSmsInfoForm.addresseeIdcard" id="addresseeIdcard_item" placeholder="身份证号码" ></el-input>
-              </el-form-item>
-              </div>
-                <div class="clearfix">
-              <el-form-item :label="addresseeP" prop="addresseeProvince">
-                  <el-select v-model="ItemSmsInfoForm.addresseeProvince"
-                             prop="addresseeProvince"
-                             placeholder="--请选择省--" style="width:125px;">
-                      <el-option v-for="(item,index) in provinceList"
-                                 :key="item.code"
-                                 :label="item.name"
-                                 @click.native.stop="queryCityData(index,'lz')"
-                                 :value="item.code">
-                      </el-option>
-                  </el-select>
-                  <el-select v-model="ItemSmsInfoForm.addresseeCity"
-                             prop="addresseeCity" id="addresseeCity_item"
-                             placeholder="--请选择市--"   style="width:125px;">
-                      <el-option v-for="(item,index) in cityList"
-                                 :key="item.code"
-                                 :label="item.name"
-                                 @click.native.stop="queryAreaData(index,'lz')"
-                                 :value="item.code">
-                      </el-option>
-                  </el-select>
-                  <el-select v-model="ItemSmsInfoForm.addresseeCounty"
-                             prop="addresseeCounty"
-                             @change="$set(sendInfoForm, sendInfoForm.addresseeCounty, $event)"
-                             placeholder="--请选择区--"   style="width:125px;">
-                      <el-option v-for="(item,index) in countyList"
-                                 :key="item.code"
-                                 :label="item.name"
-                                 :value="item.code">
-                      </el-option>
-                  </el-select>
-              </el-form-item>
-                </div>
-              <el-form-item class="input-block" :label="addresseeAddr" prop="addresseeAddr" >
-                  <el-input v-model="ItemSmsInfoForm.addresseeAddr" id="addresseeAddr_item" placeholder="详细地址" ></el-input>
-              </el-form-item>
-
-
-              <el-form-item label="委托书上传" v-if="isConsigner_dig=='1'">
-                  <div class="upload-file-content"
-                       :loading="loadingFileWin"
-                       element-loading-text="文件上传中"
-                       element-loading-background="rgba(0, 0, 0, 0.3)"
-                       element-loading-spinner="el-icon-loading" >
-                      <div class="file-opt-btn">
-                          <!--<el-button type="primary" @click="downloadFile()">下载</el-button>-->
-                          <el-upload
-                                  ref="uploadFileWin"
-                                  class="upload-s-file"
-                                  :action="ctx+'rest/certificate/consignerAtt/upload'"
-                                  :show-file-list="false"
-                                  :http-request="uploadFileCom"
-                                  :file-list="fileList">
-                              <el-button slot="trigger" size="small" type="primary">上传</el-button>
-                              <el-button type="primary" @click="delSelectFileCom()">删除</el-button>
-                          </el-upload>
-                      </div>
-                      <el-table :data="uploadTableData" border @selection-change="selectionFileChange">
-                          <el-table-column type="selection"
-                                           align="center"
-                                           width="55">
-                          </el-table-column>
-                          <el-table-column prop="fileName" label="文件名"></el-table-column>
-                          <el-table-column label="操作" align="center" width="150">
-                              <template slot-scope="scope">
-                                  <el-button type="primary" size="mini" @click="filePreview(scope.row)">预览</el-button>
-                              </template>
-                          </el-table-column>
-                      </el-table>
-                  </div>
-              </el-form-item>
-              <el-form-item class="input-inline" :label="senderName" prop="senderName" >
-                  <el-input v-model="ItemSmsInfoForm.senderName" id="senderName_item" placeholder="出件人姓名"></el-input>
-              </el-form-item>
-              <el-form-item class="input-inline" :label="senderPhone" prop="senderPhone">
-                  <el-input v-model="ItemSmsInfoForm.senderPhone" id="senderPhone_item" placeholder="出件人电话"></el-input>
-              </el-form-item>
-
-
-              <el-form-item label="寄件人所在区域"  v-if="receiveMode_dig == '0'">
-                  <el-select v-model="ItemSmsInfoForm.senderProvince"
-                             prop="addresseeProvince"
-                             placeholder="--请选择省--" style="width:120px;">
-                      <el-option v-for="(item,index) in provinceList_jjr"
-                                 :key="item.code"
-                                 :label="item.name"
-                                 @click.native.stop="queryCityData(index,'jjr')"
-                                 :value="item.code">
-                      </el-option>
-                  </el-select>
-                  <el-select v-model="ItemSmsInfoForm.senderCity"
-                             prop="addresseeCity"
-                             placeholder="--请选择市--" style="width:120px;">
-                      <el-option v-for="(item,index) in cityList_jjr"
-                                 :key="item.code"
-                                 :label="item.name"
-                                 @click.native.stop="queryAreaData(index,'jjr')"
-                                 :value="item.code">
-                      </el-option>
-                  </el-select>
-                  <el-select v-model="ItemSmsInfoForm.senderCounty"
-                             prop="addresseeCounty"
-                             @change="$set(ItemSmsInfoForm, ItemSmsInfoForm.addresseeCounty, $event)"
-                             placeholder="--请选择区--" style="width:120px;">
-                      <el-option v-for="(item,index) in countyList_jjr"
-                                 :key="item.code"
-                                 :label="item.name"
-                                 :value="item.code">
-                      </el-option>
-                  </el-select>
-              </el-form-item>
-              <el-form-item class="input-block" :label="senderAddr"  prop="senderAddr">
-                  <el-input v-model="ItemSmsInfoForm.senderAddr" id="senderAddr_item" placeholder="出件人详细地址"></el-input>
-              </el-form-item>
-
-
-          </el-form>
-          <div slot="footer" class="dialog-footer">
-              <el-button @click="editItemSmsInfoModalShow  = false">取 消</el-button>
-              <el-button type="primary" @click="updateSendItemInfo()">更新</el-button>
-          </div>
-      </el-dialog>
-      <!--编辑查看出证历史记录 end-->
+            </el-table-column>
+          </el-table>
+        </div>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="editCertModalShow = false">取 消</el-button>
+      <!--<el-button type="primary" @click="updateItemCert()" v-if="showUpdateBtn">确 定</el-button>-->
     </div>
+  </el-dialog>
+  <!--查看证照实例 end-->
+
+  <!--编辑查看出证历史记录 start-->
+  <el-dialog
+      :title="editItemSmsInfoModalTitle"
+      :visible.sync="editItemSmsInfoModalShow"
+      width="1200px"
+      class="dg-modal-add-linkmain-info"
+      @close="resetForm('ItemSmsInfoForm')">
+    <el-form :model="ItemSmsInfoForm" ref="ItemSmsInfoForm" label-width="180px" :rules="itemSmsInfoFormRules">
+      <el-form-item label="领取方式">
+        <el-radio-group v-model="ItemSmsInfoForm.receiveMode">
+          <el-radio label="0" disabled>邮政快递</el-radio>
+          <el-radio label="1" disabled>窗口取证</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="快递方式" v-if="receiveMode_dig == '0'">
+        <el-radio-group v-model="ItemSmsInfoForm.smsType">
+          <el-radio label="1" disabled>普通快递</el-radio>
+          <el-radio label="2" disabled>上门取件</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <div class="clearfix">
+        <el-form-item class="input-inline" label="订单号" prop="orderId" v-if="receiveMode_dig == '0'">
+          <el-input v-model="ItemSmsInfoForm.orderId" id="orderId_item" placeholder="订单号"></el-input>
+        </el-form-item>
+        <el-form-item class="input-inline" label="运单号" prop="expressNum" v-if="receiveMode_dig == '0'">
+          <el-input v-model="ItemSmsInfoForm.expressNum" id="expressNum_item" placeholder="运单号"></el-input>
+        </el-form-item>
+      </div>
+      <el-form-item label="是否委托领取">
+        <el-radio-group v-model="ItemSmsInfoForm.isConsigner">
+          <el-radio label="0">否</el-radio>
+          <el-radio label="1">是</el-radio>
+        </el-radio-group>
+      </el-form-item>
+
+      <el-form-item class="input-inline" :label="addresseeName" prop="addresseeName">
+        <el-input v-model="ItemSmsInfoForm.addresseeName" id="addresseeName_item" placeholder="姓名" disabled></el-input>
+      </el-form-item>
+      <el-form-item class="input-inline" :label="addresseePhone" prop="addresseePhone">
+        <el-input v-model="ItemSmsInfoForm.addresseePhone" id="addresseePhone_item" placeholder="电话"
+                  disabled></el-input>
+      </el-form-item>
+      <div class="clearfix">
+        <el-form-item class="input-inline" :label="addresseeIdcard" prop="addresseeIdcard">
+          <el-input v-model="ItemSmsInfoForm.addresseeIdcard" id="addresseeIdcard_item" placeholder="身份证号码"></el-input>
+        </el-form-item>
+      </div>
+      <div class="clearfix">
+        <el-form-item :label="addresseeP" prop="addresseeProvince">
+          <el-select v-model="ItemSmsInfoForm.addresseeProvince"
+                     prop="addresseeProvince"
+                     placeholder="--请选择省--" style="width:125px;">
+            <el-option v-for="(item,index) in provinceList"
+                       :key="item.code"
+                       :label="item.name"
+                       @click.native.stop="queryCityData(index,'lz')"
+                       :value="item.code">
+            </el-option>
+          </el-select>
+          <el-select v-model="ItemSmsInfoForm.addresseeCity"
+                     prop="addresseeCity" id="addresseeCity_item"
+                     placeholder="--请选择市--" style="width:125px;">
+            <el-option v-for="(item,index) in cityList"
+                       :key="item.code"
+                       :label="item.name"
+                       @click.native.stop="queryAreaData(index,'lz')"
+                       :value="item.code">
+            </el-option>
+          </el-select>
+          <el-select v-model="ItemSmsInfoForm.addresseeCounty"
+                     prop="addresseeCounty"
+                     @change="$set(sendInfoForm, sendInfoForm.addresseeCounty, $event)"
+                     placeholder="--请选择区--" style="width:125px;">
+            <el-option v-for="(item,index) in countyList"
+                       :key="item.code"
+                       :label="item.name"
+                       :value="item.code">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </div>
+      <el-form-item class="input-block" :label="addresseeAddr" prop="addresseeAddr">
+        <el-input v-model="ItemSmsInfoForm.addresseeAddr" id="addresseeAddr_item" placeholder="详细地址"></el-input>
+      </el-form-item>
+
+
+      <el-form-item label="委托书上传" v-if="isConsigner_dig=='1'">
+        <div class="upload-file-content"
+             :loading="loadingFileWin"
+             element-loading-text="文件上传中"
+             element-loading-background="rgba(0, 0, 0, 0.3)"
+             element-loading-spinner="el-icon-loading">
+          <div class="file-opt-btn">
+            <!--<el-button type="primary" @click="downloadFile()">下载</el-button>-->
+            <el-upload
+                ref="uploadFileWin"
+                class="upload-s-file"
+                :action="ctx+'rest/certificate/consignerAtt/upload'"
+                :show-file-list="false"
+                :http-request="uploadFileCom"
+                :file-list="fileList">
+              <el-button slot="trigger" size="small" type="primary">上传</el-button>
+              <el-button type="primary" @click="delSelectFileCom()">删除</el-button>
+            </el-upload>
+          </div>
+          <el-table :data="uploadTableData" border @selection-change="selectionFileChange">
+            <el-table-column type="selection"
+                             align="center"
+                             width="55">
+            </el-table-column>
+            <el-table-column prop="fileName" label="文件名"></el-table-column>
+            <el-table-column label="操作" align="center" width="150">
+              <template slot-scope="scope">
+                <el-button type="primary" size="mini" @click="filePreview(scope.row)">预览</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </el-form-item>
+      <el-form-item class="input-inline" :label="senderName" prop="senderName">
+        <el-input v-model="ItemSmsInfoForm.senderName" id="senderName_item" placeholder="出件人姓名"></el-input>
+      </el-form-item>
+      <el-form-item class="input-inline" :label="senderPhone" prop="senderPhone">
+        <el-input v-model="ItemSmsInfoForm.senderPhone" id="senderPhone_item" placeholder="出件人电话"></el-input>
+      </el-form-item>
+
+
+      <el-form-item label="寄件人所在区域" v-if="receiveMode_dig == '0'">
+        <el-select v-model="ItemSmsInfoForm.senderProvince"
+                   prop="addresseeProvince"
+                   placeholder="--请选择省--" style="width:120px;">
+          <el-option v-for="(item,index) in provinceList_jjr"
+                     :key="item.code"
+                     :label="item.name"
+                     @click.native.stop="queryCityData(index,'jjr')"
+                     :value="item.code">
+          </el-option>
+        </el-select>
+        <el-select v-model="ItemSmsInfoForm.senderCity"
+                   prop="addresseeCity"
+                   placeholder="--请选择市--" style="width:120px;">
+          <el-option v-for="(item,index) in cityList_jjr"
+                     :key="item.code"
+                     :label="item.name"
+                     @click.native.stop="queryAreaData(index,'jjr')"
+                     :value="item.code">
+          </el-option>
+        </el-select>
+        <el-select v-model="ItemSmsInfoForm.senderCounty"
+                   prop="addresseeCounty"
+                   @change="$set(ItemSmsInfoForm, ItemSmsInfoForm.addresseeCounty, $event)"
+                   placeholder="--请选择区--" style="width:120px;">
+          <el-option v-for="(item,index) in countyList_jjr"
+                     :key="item.code"
+                     :label="item.name"
+                     :value="item.code">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item class="input-block" :label="senderAddr" prop="senderAddr">
+        <el-input v-model="ItemSmsInfoForm.senderAddr" id="senderAddr_item" placeholder="出件人详细地址"></el-input>
+      </el-form-item>
+
+
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="editItemSmsInfoModalShow  = false">取 消</el-button>
+      <el-button type="primary" @click="updateSendItemInfo()">更新</el-button>
+    </div>
+  </el-dialog>
+  <!--编辑查看出证历史记录 end-->
+</div>
 </body>
 <!--<th:block th:include="common/common :: commonfooter"/>-->
-<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
-<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/polyfill.min.js" th:src="@{/agcloud/framework/js-lib/element-2/polyfill.min.js}"></script>
-<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
-<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+        th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/polyfill.min.js"
+        th:src="@{/agcloud/framework/js-lib/element-2/polyfill.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+        th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+        th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
 <script src="../../static/common/js/axios.min.js" th:src="@{/common/js/axios.min.js}"></script>
-<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
+        th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
 
 <script src="../../static/certificate/js/index.js" th:src="@{/certificate/js/index.js}"></script>
 
