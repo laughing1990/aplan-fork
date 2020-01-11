@@ -88,6 +88,7 @@ public class RestAeaHiGuideService {
                     guideChangeAction="d";
                 }
             }
+            aeaHiGuideDetail.setCatalogItemVerId(aeaGuideItemVo.getBaseItemVerId());
             aeaHiGuideDetail.setGuideChangeAction(guideChangeAction);//c表示change，a表示add，d表示delete
             aeaHiGuideDetail.setCreater(SecurityContext.getCurrentUserName());
             aeaHiGuideDetail.setThemeId("s".equals(detailType)?aeaGuideApplyVo.getItThemeId():aeaGuideApplyVo.getThemeId());
