@@ -76,7 +76,7 @@ public class RestApplyProjServiceImp implements RestApplyProjService {
             projStatusVo.setStageId(nodeStages.get(0).getStageId());
             vo.setProjStatusVos(new ArrayList<>());
             vo.getProjStatusVos().add(projStatusVo);
-            setChildProj(vo.getProjStatusVos());
+            setChildProj(vo.getProjStatusVos(),1,vo.getStagesVos());
 
             //设置工程数组  retList为工程状态数组
             List<List<ProjStatusTreeVo.ProjStatusVo>> retList = new ArrayList<>();
@@ -89,7 +89,7 @@ public class RestApplyProjServiceImp implements RestApplyProjService {
                 setApplyStatus2Proj(vo.getProjStatusVoArrs(),stagesVo);
             });
 
-
+            //TODO 如果工建和施工阶段也用项目，需把项目加到项目工程状态数组中
             return vo;
         } catch (Exception e) {
             e.printStackTrace();
@@ -145,30 +145,50 @@ public class RestApplyProjServiceImp implements RestApplyProjService {
          }
      }
 
-   void setChildProj(List<ProjStatusTreeVo.ProjStatusVo> vos){
+    /**
+     *
+     * @param vos  根项目list（list大小为1，为了递归参数一致，将根项目也封装为list）
+     * @param
+     */
+   void setChildProj(List<ProjStatusTreeVo.ProjStatusVo> vos,int i, List<ProjStatusTreeVo.ProjStatusTreeStageVo> stageVos){
        try {
            AeaProjApplySplit aeaProjApplySplit = new AeaProjApplySplit();
+           String stageId = stageVos.get(i).getStageId();//第几阶段的阶段ID
+
            for (ProjStatusTreeVo.ProjStatusVo vo : vos) {
                aeaProjApplySplit.setFrontStageProjInfoId(vo.getProjInfoId());
+
+               //根据父工程ID和阶段ID查询有无申报实例，有则set到他本身的子工程
+               AeaHiApplyinst aeaHiApplyinst = getAeaHiApplyinstByProjInfoIdAndStageId(vo.getProjInfoId(),stageId);
+
+               //查询拆分的子工程
                List<AeaProjApplySplit> aeaProjApplySplits = aeaProjApplySplitService.listAeaProjApplySplit(aeaProjApplySplit);
 
-               if (aeaProjApplySplits.size()<=0) return;
+               if ((aeaProjApplySplits.size()<=0)&&StringUtils.isBlank(aeaHiApplyinst.getApplyinstId())) return;
+
+               //查询当前项目的拆分工程
                List<String> ids = aeaProjApplySplits.stream().map(AeaProjApplySplit::getProjInfoId).collect(Collectors.toList());
                String[] idArrays = ids.toArray(new String[ids.size()]);
                List<AeaProjInfo> aeaProjChildrenList = aeaProjInfoMapper.listAeaProjInfoByIds(idArrays);
+
+               //根据父工程ID和阶段ID查询有无申报实例，有则set到他本身的子工程
+               if (StringUtils.isNotBlank(aeaHiApplyinst.getApplyinstId())){
+                   aeaProjChildrenList.add(aeaProjInfoService.getAeaProjInfoByProjInfoId(vo.getProjInfoId()));
+               }
+
                List<ProjStatusTreeVo.ProjStatusVo> projInfoVos =  aeaProjChildrenList.stream().map(ProjStatusTreeVo.ProjStatusVo::build).collect(Collectors.toList());
                projInfoVos.stream().forEach(projStatusVo -> {
                    aeaProjApplySplits.stream().forEach(aeaProjApplySplit1 -> {
                        if (projStatusVo.getProjInfoId().equals(aeaProjApplySplit1.getProjInfoId())) {
                            projStatusVo.setStageId(aeaProjApplySplit1.getStageId());
-                           projStatusVo.setProjFlag("c");//设置为子工程
+                           if (StringUtils.isBlank(projStatusVo.getProjFlag()))projStatusVo.setProjFlag("c");//设置为子工程
                             if ("3".equals(aeaProjApplySplit1.getApplyState())) projStatusVo.setApplyStatus("4");//已审核
                             if ("2".equals(aeaProjApplySplit1.getApplyState())) projStatusVo.setApplyStatus("3");//未审核
                        }
                    });
                });
                vo.setChildProjStatusVos(projInfoVos);
-               setChildProj(vo.getChildProjStatusVos());
+               setChildProj(vo.getChildProjStatusVos(),i++,stageVos);
            }
 
        } catch (Exception e) {
