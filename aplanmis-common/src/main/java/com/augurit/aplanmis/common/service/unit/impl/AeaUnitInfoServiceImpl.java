@@ -277,7 +277,8 @@ public class AeaUnitInfoServiceImpl implements AeaUnitInfoService {
     @Override
     public List<AeaUnitInfo> findApplyUnitProj(String applyinstId, String projInfoId) {
         LOGGER.debug("查询项目申报单位");
-        return aeaUnitInfoMapper.findApplyUnitProj(applyinstId, projInfoId, null);
+        return aeaUnitInfoMapper.getApplyUnitProj(applyinstId,projInfoId);
+        //return aeaUnitInfoMapper.findApplyUnitProj(applyinstId, projInfoId, null);
     }
 
     @Override

@@ -139,7 +139,7 @@ public class ProjAcceptService {
                     kanchaUnitInfo = aeaUnitInfo;
                 if("4".equals(aeaUnitInfo.getUnitType()))
                     designUnitInfo = aeaUnitInfo;
-                if("22".equals(aeaUnitInfo.getUnitType()))
+                if("2".equals(aeaUnitInfo.getUnitType()))
                     shigongUnitInfo = aeaUnitInfo;
             }
         }
