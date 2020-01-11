@@ -568,6 +568,12 @@
                 aha.APPLYINST_CODE = #{keyword}
                 )
             </if>
+            <if test="filterStates!=null and filterStates!='' and filterStates.length>0">
+               and aha.APPLYINST_STATE not in
+                <foreach collection="filterStates" separator="," close=")" open="(" item="filterState">
+                    #{filterState}
+                </foreach>
+            </if>
         </where>
         UNION
 
@@ -628,6 +634,12 @@
                 aha.APPLYINST_CODE = #{keyword}
                 )
             </if>
+            <if test="filterStates!=null and filterStates!='' and filterStates.length>0">
+                and aha.APPLYINST_STATE not in
+                <foreach collection="filterStates" separator="," close=")" open="(" item="filterState">
+                    #{filterState}
+                </foreach>
+            </if>
         </where>
         UNION
 
@@ -686,6 +698,12 @@
                 api.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
                 aha.APPLYINST_CODE = #{keyword}
                 )
+            </if>
+            <if test="filterStates!=null and filterStates!='' and filterStates.length>0">
+                and aha.APPLYINST_STATE not in
+                <foreach collection="filterStates" separator="," close=")" open="(" item="filterState">
+                    #{filterState}
+                </foreach>
             </if>
         </where>
         UNION
@@ -746,6 +764,12 @@
                 api.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
                 aha.APPLYINST_CODE = #{keyword}
                 )
+            </if>
+            <if test="filterStates!=null and filterStates!='' and filterStates.length>0">
+                and aha.APPLYINST_STATE not in
+                <foreach collection="filterStates" separator="," close=")" open="(" item="filterState">
+                    #{filterState}
+                </foreach>
             </if>
         </where>
         ) aea_123

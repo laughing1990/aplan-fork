@@ -384,11 +384,11 @@ public class RestApplyProjController {
         try {
             LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
             if("1".equals(loginInfo.getIsPersonAccount())){//个人
-                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId(),state,applyinstState,keyword,pageNum,pageSize));
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId(),state,applyinstState,keyword,null,pageNum,pageSize));
             }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
-                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),state,applyinstState,keyword,pageNum,pageSize));
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),state,applyinstState,keyword,null,pageNum,pageSize));
             }else{//企业
-                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"",state,applyinstState,keyword,pageNum,pageSize));
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"",state,applyinstState,keyword,null,pageNum,pageSize));
             }
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
@@ -408,11 +408,11 @@ public class RestApplyProjController {
         try {
             LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
             if("1".equals(loginInfo.getIsPersonAccount())){//个人
-                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId(),null,applyinstState,keyword,pageNum,pageSize));
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId(),null,applyinstState,keyword,new String[]{ApplyState.WAIT_REVIEW.getValue()},pageNum,pageSize));
             }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
-                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),null,applyinstState,keyword,pageNum,pageSize));
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),null,applyinstState,keyword,new String[]{ApplyState.WAIT_REVIEW.getValue()},pageNum,pageSize));
             }else{//企业
-                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"",null,applyinstState,keyword,pageNum,pageSize));
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"",null,applyinstState,keyword,new String[]{ApplyState.WAIT_REVIEW.getValue()},pageNum,pageSize));
             }
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
@@ -431,11 +431,11 @@ public class RestApplyProjController {
         try {
             LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
             if("1".equals(loginInfo.getIsPersonAccount())){//个人
-                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId(),null, ApplyState.WAIT_REVIEW.getValue(),keyword,pageNum,pageSize));
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId(),null, ApplyState.WAIT_REVIEW.getValue(),keyword,null,pageNum,pageSize));
             }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
-                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),null, ApplyState.WAIT_REVIEW.getValue(),keyword,pageNum,pageSize));
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),null, ApplyState.WAIT_REVIEW.getValue(),keyword,null,pageNum,pageSize));
             }else{//企业
-                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"",null, ApplyState.WAIT_REVIEW.getValue(),keyword,pageNum,pageSize));
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"",null, ApplyState.WAIT_REVIEW.getValue(),keyword,null,pageNum,pageSize));
             }
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
