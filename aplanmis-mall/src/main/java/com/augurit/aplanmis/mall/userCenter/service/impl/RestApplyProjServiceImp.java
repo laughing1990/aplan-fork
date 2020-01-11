@@ -73,16 +73,19 @@ public class RestApplyProjServiceImp implements RestApplyProjService {
                     .stream().filter(stage->"1".equals(stage.getIsNode())).collect(Collectors.toList());
             if (nodeStages.size()<=0) throw new IllegalArgumentException("当前主题下无主线阶段");
             vo.setStagesVos(nodeStages.stream().map(ProjStatusTreeVo.ProjStatusTreeStageVo::build).collect(Collectors.toList()));
-            //给项目树及阶段设置状态
-            vo.getStagesVos().stream().forEach(stagesVo->{
-                setApplyStatus2Proj(vo.getProjStatusVos(),stagesVo);
-            });
-
-
+            //设置工程数组
             List<List<ProjStatusTreeVo.ProjStatusVo>> retList = new ArrayList<>();
             retList.add(vo.getProjStatusVos());
             temp(vo.getProjStatusVos(),retList);
             vo.setProjStatusVoArrs(retList);
+            //给项目树及阶段设置状态
+            vo.getStagesVos().stream().forEach(stagesVo->{
+                setApplyStatus2Proj(vo.getProjStatusVoArrs(),stagesVo);
+            });
+
+
+
+
             vo.getProjStatusVos();
             return vo;
         } catch (Exception e) {
@@ -106,22 +109,26 @@ public class RestApplyProjServiceImp implements RestApplyProjService {
     }
 
     //给项目树及阶段设置状态
-     void setApplyStatus2Proj(List<ProjStatusTreeVo.ProjStatusVo> vos,ProjStatusTreeVo.ProjStatusTreeStageVo nodeStage){
+     void setApplyStatus2Proj(List<List<ProjStatusTreeVo.ProjStatusVo>> vos,ProjStatusTreeVo.ProjStatusTreeStageVo nodeStage){
          try {
              int stageStatus = 0;
              Boolean isDoned = true;//已办结
              String stageId = nodeStage.getStageId();
-             for (ProjStatusTreeVo.ProjStatusVo vo : vos) {
-                 //if (!stageId.equals(vo.getStageId())) return;
-                 AeaHiApplyinst aeaHiApplyinst = getAeaHiApplyinstByProjInfoIdAndStageId(vo.getProjInfoId(),stageId);
-                 if (aeaHiApplyinst!=null){
-                     stageStatus = 2;
-                     if (!"6".equals(aeaHiApplyinst.getApplyinstState())) {
-                         stageStatus = 1;isDoned=false;
+             for (List<ProjStatusTreeVo.ProjStatusVo> vo1 : vos) {
+                 for (ProjStatusTreeVo.ProjStatusVo vo : vo1) {
+                     //if (!stageId.equals(vo.getStageId())) return;
+                     AeaHiApplyinst aeaHiApplyinst = getAeaHiApplyinstByProjInfoIdAndStageId(vo.getProjInfoId(),stageId);
+                     if (StringUtils.isBlank(aeaHiApplyinst.getApplyinstId())) aeaHiApplyinst=null;
+                     if (aeaHiApplyinst!=null){
+                         stageStatus = 2;
+                         if (!"6".equals(aeaHiApplyinst.getApplyinstState())) {
+                             stageStatus = 1;isDoned=false;
+                         }
+                         vo.setApplyStatus(stageStatus+"");
                      }
-                     vo.setApplyStatus(stageStatus+"");
                  }
              }
+
              int finalStageStatus = stageStatus;
              Boolean finalIsDoned = isDoned;
              if (finalStageStatus==0){

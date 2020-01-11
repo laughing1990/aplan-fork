@@ -68,6 +68,8 @@ public class ProjStatusTreeVo {
         private String applyStatus;
         @ApiModelProperty("阶段ID")
         private String stageId;
+        @ApiModelProperty("项目标识，r表示ROOT项目，p表示发改项目，c表示子项目或子子项目")
+        private String projFlag;
         @ApiModelProperty("子工程")
         private List<ProjStatusVo> childProjStatusVos;
 
