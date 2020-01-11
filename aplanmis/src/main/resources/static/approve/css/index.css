@@ -2740,6 +2740,22 @@ input[type="number"] {
   background:#f5f7fa;
 }
 
+.guide-prompt{
+  width: 700px;
+}
+.guide-prompt textarea{
+  min-height: 85px!important;
+}
+.guide-prompt .el-message-box__input{
+  padding-top: 5px;
+}
+.guide-prompt .el-message-box__content{
+  padding-bottom: 0px;
+}
+.guide-prompt .el-message-box__errormsg{
+  min-height: 8px;
+}
+
 
 
 

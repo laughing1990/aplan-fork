@@ -2698,6 +2698,7 @@ textarea {
 }
 .guide-prompt .el-message-box__content{
   padding-bottom: 0px;
+  padding-top: 8px;
 }
 .guide-prompt .el-message-box__errormsg{
   min-height: 8px;

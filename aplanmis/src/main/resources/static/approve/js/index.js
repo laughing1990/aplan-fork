@@ -798,6 +798,36 @@ var vm = new Vue({
     },
   },
   methods: {
+    // 只填写一个意见
+    onlySaveOpinon: function(){
+      var vm = this;
+      vm.$prompt('', '填写意见', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputType: 'textarea',
+        customClass: 'guide-prompt',
+        inputValidator: function (val) {
+          return !!val
+        },
+        inputErrorMessage: '请输入意见'
+      }).then(function(obj){
+        vm.parentPageLoading = true;
+        request('', {
+          url: ctx + 'rest/bpm/approve/addTaskComment',
+          type: 'put',
+          data: {
+            taskId: vm.taskId,
+            processInstanceId: vm.processInstanceId,
+            comment: obj.value,
+          },
+        }, function(res) {
+          vm.parentPageLoading = false;
+        }, function(){
+          vm.parentPageLoading = false;
+        });
+        return true;
+      }).catch(function(){});
+    },
     // 联合评审 start
     ensureUnionReview: function(val){
       // todo
@@ -6848,6 +6878,10 @@ function clickOneSolicit() {
 
 function ensureUnionReview(val){
   vm.ensureUnionReview(val);
+}
+
+function onlySaveOpinon(){
+  vm.onlySaveOpinon();
 }
 
 /**
