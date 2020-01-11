@@ -82,7 +82,7 @@ public class ProjAcceptController {
         if(!"1".equals(override)){
             boolean isHasPwpf = projAcceptService.checkOpinionSummaryPwpf(applyinstId);
             if(isHasPwpf)
-                return new ResultForm(false,"当前审批已经存在联合验收终审意见书批文批复！请确认是否覆盖！");
+                return new ResultForm(false,"当前已存在《联合验收终审意见书》！是否重新生成！");
         }
         projAcceptService.createOpinionSummaryPwpf(applyinstId,procinstId);
         return new ResultForm(true,"操作成功！");
