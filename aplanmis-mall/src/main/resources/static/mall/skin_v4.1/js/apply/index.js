@@ -3119,7 +3119,7 @@ var parallelDeclare = new Vue({
       var parallelItemsSel = [], coreItemsSel = [];
       // 并联itemVerids集合
       _that.parallelItems.map(function (item) {
-        if((item.leaderDeptChoose||item.applicantChoose)&&item.applicantChooseRel!=='1'){
+        if(item.applicantChooseRel!=='1'){
           _that.itemVerIds.push(item.itemVerId);
           parallelItemsSel.push(item);
           if (item.baseItemVerId) {
@@ -3138,7 +3138,7 @@ var parallelDeclare = new Vue({
       }
       // 并行itemVerids集合
       _that.coreItems.map(function (item) {
-        if((item.leaderDeptChoose||item.applicantChoose)&&item.applicantChooseRel!=='1'){
+        if(item.applicantChooseRel!=='1'){
           _that.propulsionItemVerIds.push(item.itemVerId);
           coreItemsSel.push(item);
           _that.propulsionBranchOrgMap.push({
