@@ -4,7 +4,9 @@ import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.aplanmis.common.constants.SplitApplyState;
+import com.augurit.aplanmis.common.domain.AeaHiGuide;
 import com.augurit.aplanmis.common.domain.AeaProjApplySplit;
+import com.augurit.aplanmis.common.mapper.AeaHiGuideMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjApplySplitMapper;
 import com.augurit.aplanmis.common.service.window.AeaProjApplySplitService;
 import com.github.pagehelper.Page;
@@ -28,6 +30,9 @@ public class AeaProjApplySplitServiceImpl implements AeaProjApplySplitService {
 
     @Autowired
     private AeaProjApplySplitMapper aeaProjApplySplitMapper;
+
+    @Autowired
+    private AeaHiGuideMapper aeaHiGuideMapper;
 
     public void saveAeaProjApplySplit(AeaProjApplySplit aeaProjApplySplit) throws Exception{
         aeaProjApplySplitMapper.insertAeaProjApplySplit(aeaProjApplySplit);
@@ -64,13 +69,20 @@ public class AeaProjApplySplitServiceImpl implements AeaProjApplySplitService {
     }
 
     @Override
-    public void passed(String applySplitId, String reason) throws Exception {
+    public void passed(String applySplitId, String reason, String guideId) throws Exception {
         AeaProjApplySplit aeaProjApplySplit = aeaProjApplySplitMapper.getAeaProjApplySplitById(applySplitId);
         aeaProjApplySplit.setApplyState(SplitApplyState.PASSED.getValue());
         aeaProjApplySplit.setSplitMemo(reason);
         aeaProjApplySplit.setModifier(SecurityContext.getCurrentUserId());
         aeaProjApplySplit.setModifyTime(new Date());
         aeaProjApplySplitMapper.updateAeaProjApplySplit(aeaProjApplySplit);
+
+        AeaHiGuide aeaHiGuide = new AeaHiGuide();
+        aeaHiGuide.setGuideId(guideId);
+        aeaHiGuide.setProjInfoId(aeaProjApplySplit.getProjInfoId());
+        aeaHiGuide.setModifyTime(new Date());
+        aeaHiGuide.setModifier(SecurityContext.getCurrentUserId());
+        aeaHiGuideMapper.updateAeaHiGuide(aeaHiGuide);
     }
 
     @Override

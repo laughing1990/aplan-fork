@@ -24,7 +24,7 @@ public interface AeaProjApplySplitService {
 
     List<AeaProjApplySplit> listSplitedProjInfo(String projInfoId);
 
-    void passed(String applySplitId, String reason) throws Exception;
+    void passed(String applySplitId, String reason, String guideId) throws Exception;
 
     void rejected(String applySplitId, String reason) throws Exception;
 }
