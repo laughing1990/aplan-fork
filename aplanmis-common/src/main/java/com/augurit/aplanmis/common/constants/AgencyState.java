@@ -14,13 +14,13 @@ public enum AgencyState implements BaseEnum<TimeruleInstState, String> {
     @ApiModelProperty(value = "WAIT_AGENT", name = "可代办", allowableValues = "WAIT_AGENT")
     WAIT_AGENT("可代办", "0"),
 
-    @ApiModelProperty(value = "WAIT_SIGNING", name = "待签订", allowableValues = "WAIT_SIGNING")
+    @ApiModelProperty(value = "WAIT_SIGNING", name = "待签订(签订中)", allowableValues = "WAIT_SIGNING")
     WAIT_SIGNING("待签订", "1"),
 
     @ApiModelProperty(value = "SIGNING", name = "签订中", allowableValues = "SIGNING")
     SIGNING("签订中", "2"),//项目代办列表点击签订协议修改代办申请状态为2
 
-    @ApiModelProperty(value = "APPLYER_SIGNING", name = "待申请人签章", allowableValues = "APPLYER_SIGNING")
+    @ApiModelProperty(value = "APPLYER_SIGNING", name = "待申请人签章(委托待签章)", allowableValues = "APPLYER_SIGNING")
     APPLYER_SIGNING("待申请人签章", "3"),
 
     @ApiModelProperty(value = "SIGN_COMPLETED", name = "已签订（代办中）", allowableValues = "SIGN_COMPLETED")
@@ -29,13 +29,13 @@ public enum AgencyState implements BaseEnum<TimeruleInstState, String> {
     @ApiModelProperty(value = "OUT_SCOPE", name = "不予受理", allowableValues = "OUT_SCOPE")
     OUT_SCOPE("不予受理", "5"),
 
-    @ApiModelProperty(value = "WIN_STOP", name = "窗口终止", allowableValues = "WIN_STOP")
+    @ApiModelProperty(value = "WIN_STOP", name = "窗口终止(终止待签章)", allowableValues = "WIN_STOP")
     WIN_STOP("窗口终止", "6"),
 
     @ApiModelProperty(value = "STOP", name = "代办终止", allowableValues = "STOP")
     STOP("代办终止", "7"),
 
-    @ApiModelProperty(value = "WIN_END", name = "窗口办结", allowableValues = "WIN_END")
+    @ApiModelProperty(value = "WIN_END", name = "窗口办结(办结待签章)", allowableValues = "WIN_END")
     WIN_END("窗口办结", "8"),
 
     @ApiModelProperty(value = "AGENT_END", name = "代办结束", allowableValues = "AGENT_END")
