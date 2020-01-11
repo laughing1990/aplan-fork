@@ -85,7 +85,7 @@ public class FsReceivePDFTemplate {
         StringBuffer str = new StringBuffer("C:\\document\\奥格\\工改\\工建与广东省平台（数广）对接\\佛山工改\\回执模板\\");
 
         str.append(TI_JIAO_SHEN_QING);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         // 创建writer，通过writer将文档写入磁盘
@@ -192,7 +192,7 @@ public class FsReceivePDFTemplate {
         StringBuffer str = new StringBuffer("C:\\document\\奥格\\工改\\工建与广东省平台（数广）对接\\佛山工改\\回执模板\\");
 
         str.append(JIE_SHOU);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         // 创建writer，通过writer将文档写入磁盘
@@ -273,7 +273,7 @@ public class FsReceivePDFTemplate {
         StringBuffer str = ReceivePDFTemplate.pdfFilePath();
 
         str.append(SHOU_LI);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
@@ -417,7 +417,7 @@ public class FsReceivePDFTemplate {
         //StringBuffer str = new StringBuffer("D:\\Augur\\foshan\\回执模板\\");
 
         str.append(PI_ZHUN);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         // 创建writer，通过writer将文档写入磁盘
@@ -487,7 +487,7 @@ public class FsReceivePDFTemplate {
         //StringBuffer str = new StringBuffer("D:\\Augur\\foshan\\回执模板\\");
 
         str.append(BU_YU_PI_ZHUN);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         // 创建writer，通过writer将文档写入磁盘
@@ -574,7 +574,7 @@ public class FsReceivePDFTemplate {
         //StringBuffer str = new StringBuffer("D:\\Augur\\foshan\\回执模板\\");
 
         str.append(JIAO_FEI);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         // 创建writer，通过writer将文档写入磁盘
@@ -676,7 +676,7 @@ public class FsReceivePDFTemplate {
         //StringBuffer str = new StringBuffer("D:\\Augur\\foshan\\回执模板\\");
 
         str.append(SONG_DA);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         // 创建writer，通过writer将文档写入磁盘
@@ -816,7 +816,7 @@ public class FsReceivePDFTemplate {
         //StringBuffer str = new StringBuffer("D:\\Augur\\foshan\\回执模板\\");
 
         str.append(WU_LIAO_LIU_ZHUANG);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         // 创建writer，通过writer将文档写入磁盘
@@ -943,7 +943,7 @@ public class FsReceivePDFTemplate {
         StringBuffer str = ReceivePDFTemplate.pdfFilePath();
 
         str.append(BU_ZHENG);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
@@ -1043,7 +1043,7 @@ public class FsReceivePDFTemplate {
         document.setMargins(70, 70, 10, 10);
         StringBuffer str = ReceivePDFTemplate.pdfFilePath();
         str.append(BU_YU_SHOU_LI);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
@@ -1180,7 +1180,7 @@ public class FsReceivePDFTemplate {
         document.setMargins(70, 70, 10, 10);
         StringBuffer str = ReceivePDFTemplate.pdfFilePath();
         str.append(TE_SHU);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
@@ -1254,7 +1254,7 @@ public class FsReceivePDFTemplate {
         document.setMargins(70, 70, 10, 10);
         StringBuffer str = ReceivePDFTemplate.pdfFilePath();
         str.append(YAN_CHANG);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
@@ -1319,7 +1319,7 @@ public class FsReceivePDFTemplate {
         document.setMargins(70, 70, 10, 10);
         StringBuffer str = ReceivePDFTemplate.pdfFilePath();
         str.append(LHYS_ZHONGSHEN_YJS);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
