@@ -70,7 +70,7 @@ var parallelDeclare = new Vue({
       loadingFileWin: false, // 窗口文件上传loading
       declareStep: 1, // 申报步骤 1-补全信息 2-选择主题 3-选择阶段 4-事项材料一单清
       declareStepList: [  // 所有的步骤
-        { num: '1', name: '补全信息' },
+        { num: '1', name: '项目/工程信息' },
         { num: '2', name: '智能引导' },
         { num: '3', name: '选择事项' },
         { num: '4', name: '部门确认' },
@@ -3119,7 +3119,7 @@ var parallelDeclare = new Vue({
       var parallelItemsSel = [], coreItemsSel = [];
       // 并联itemVerids集合
       _that.parallelItems.map(function (item) {
-        if((item.leaderDeptChoose||item.applicantChoose)&&item.applicantChooseRel!=='1'){
+        if(item.applicantChooseRel!=='1'){
           _that.itemVerIds.push(item.itemVerId);
           parallelItemsSel.push(item);
           if (item.baseItemVerId) {
@@ -3138,7 +3138,7 @@ var parallelDeclare = new Vue({
       }
       // 并行itemVerids集合
       _that.coreItems.map(function (item) {
-        if((item.leaderDeptChoose||item.applicantChoose)&&item.applicantChooseRel!=='1'){
+        if(item.applicantChooseRel!=='1'){
           _that.propulsionItemVerIds.push(item.itemVerId);
           coreItemsSel.push(item);
           _that.propulsionBranchOrgMap.push({

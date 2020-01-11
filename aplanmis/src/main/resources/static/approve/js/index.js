@@ -818,7 +818,8 @@ var vm = new Vue({
         vm.parentPageLoading = false;
         if (res.success){
           vm.$message.success('联合验收终审意见书生成成功');
-          delayRefreshWindow();
+          vm.pageLeftActiveId = '6';
+          document.getElementById('ltabs_6').contentWindow.location.reload();
         } else {
           vm.$confirm(res.message, '提示', {
             confirmButtonText: '确定',
