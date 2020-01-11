@@ -1798,7 +1798,8 @@
         ,r.region_name regionText,
         theme.theme_name themeName,
         case when parProj.PARENT_PROJ_ID is NULL then false else true end as hasChildren,
-        case when apw.PROJ_INFO_ID is null then false else true end as isAgentProj
+        case when agent.PROJ_INFO_ID is null then false else true end as ifAgentProj,
+        agent.WINDOW_NAME agentName
         from AEA_PROJ_INFO proj
         <if test="handler">
             inner join (
@@ -1832,7 +1833,12 @@
         left join (
             select DISTINCT p.PARENT_PROJ_ID from aea_parent_proj p inner join aea_proj_info aapi on p.CHILD_PROJ_ID = aapi.PROJ_INFO_ID where aapi.IS_DELETED = '0'
         ) parProj on parProj.PARENT_PROJ_ID = proj.PROJ_INFO_ID
-        left join aea_proj_window apw on apw.PROJ_INFO_ID = proj.PROJ_INFO_ID
+        left join (
+          select apw.PROJ_INFO_ID,asw.WINDOW_NAME
+          from aea_proj_window apw,aea_service_window asw
+          where apw.WINDOW_ID = asw.WINDOW_ID
+          and asw.WINDOW_TYPE = 'd'
+        ) agent on agent.PROJ_INFO_ID = proj.PROJ_INFO_ID
         where proj.IS_DELETED = '0'
         and ( proj.PROJ_FLAG = 'p' or proj.PROJ_FLAG = '' or proj.PROJ_FLAG is null)
         <if test="onlyRegion">

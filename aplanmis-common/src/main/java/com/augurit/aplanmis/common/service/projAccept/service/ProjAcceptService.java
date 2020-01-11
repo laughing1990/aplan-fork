@@ -105,6 +105,9 @@ public class ProjAcceptService {
 
     //固定的联合验收终审意见书批文批复材料编号
     private final String MAT_CODE = "MAT-C0000000583";
+    //房屋建筑工程和市政基础设施工程竣工验收备案 事项的 唯一分类标记
+    private final String ITEM_CATEGORY = "FWJZGCHSZJCSSGCJGYSBA1";
+
     private final String TABLE_NAME = "AEA_HI_ITEM_MATINST";
     private final String PK_NAME = "MATINST_ID";
 
@@ -367,11 +370,10 @@ public class ProjAcceptService {
     private AeaHiIteminst getPwpfAeaHiIteminst(String applyinstId, String currentOrgId) throws Exception {
         List<AeaHiIteminst> aeaHiIteminstList = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
         //暂时默认将批文批复绑定为 房屋建筑工程和市政基础设施工程竣工验收备案 事项的输出材料
-        String itemCategory = "FWJZGCHSZJCSSGCJGYSBA1";
         AeaItemBasic query1 = new AeaItemBasic();
         query1.setIsDeleted("0");
         query1.setRootOrgId(currentOrgId);
-        query1.setItemCategoryMark(itemCategory);
+        query1.setItemCategoryMark(ITEM_CATEGORY);
         List<AeaItemBasic> itemBasics = aeaItemBasicService.listAeaItemBasic(query1);
         AeaHiIteminst aeaHiIteminst = aeaHiIteminstList.get(0);
         boolean flag = false;

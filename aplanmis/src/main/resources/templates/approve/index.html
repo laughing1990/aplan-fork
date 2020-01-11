@@ -1524,7 +1524,7 @@
             </template>
           </div>
         </div>
-        <iframe v-else :src="u.src" class="ltab-iframe"></iframe>
+        <iframe v-else :src="u.src" :id="'ltabs_'+u.labelId" class="ltab-iframe"></iframe>
       </el-tab-pane>
     </el-tabs>
   </div>

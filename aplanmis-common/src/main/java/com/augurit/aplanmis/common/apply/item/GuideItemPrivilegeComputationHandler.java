@@ -76,7 +76,6 @@ public final class GuideItemPrivilegeComputationHandler extends ItemPrivilegeCom
         if (CollectionUtils.isNotEmpty(this.originalItems)) {
             originalItems.forEach(origin -> {
                 GuideComputedItem computedItem = new GuideComputedItem();
-                computedItem.mergeCommonField(origin);
                 complementCarryoutItems(computedItem, origin);
                 computedItems.add(computedItem);
 
