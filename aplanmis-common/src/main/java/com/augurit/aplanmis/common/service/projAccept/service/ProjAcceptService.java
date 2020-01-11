@@ -253,12 +253,14 @@ public class ProjAcceptService {
                 UserTask currTaskElement = (UserTask) process.getFlowElement(taskDefKey);
 
                 boolean isSubFlow = false;
-                List<FlowableListener> taskListeners = currTaskElement.getTaskListeners();
-                if(taskListeners!=null&&taskListeners.size()>0){
-                    for(FlowableListener listener:taskListeners){
-                        if(listener.getSubFlow()){
-                            isSubFlow = true;
-                            break;
+                if(currTaskElement!=null) {
+                    List<FlowableListener> taskListeners = currTaskElement.getTaskListeners();
+                    if (taskListeners != null && taskListeners.size() > 0) {
+                        for (FlowableListener listener : taskListeners) {
+                            if (listener.getSubFlow()) {
+                                isSubFlow = true;
+                                break;
+                            }
                         }
                     }
                 }
