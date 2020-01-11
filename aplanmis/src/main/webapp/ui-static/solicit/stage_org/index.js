@@ -155,9 +155,9 @@ function initValidateSolicitOrg(){
                     if (result.success) {
                         swal({
                             type: 'success',
-                            title: '保存成功！',
+                            title: '保存成功！请继续给牵头部门配置牵头人员！',
                             showConfirmButton: false,
-                            timer: 1000
+                            timer: 2000
                         });
                         // 隐藏模式框
                         $('#aedit_solicit_org_modal').modal('hide');
@@ -228,9 +228,9 @@ function initValidateImportSolicitOrg(){
                                 setTimeout(function () {
                                     $("#uploadProgress").modal('hide');
                                     swal({
-                                        text: '保存成功！',
+                                        text: '保存成功！请继续给牵头部门配置牵头人员！',
                                         type: 'success',
-                                        timer: 1500,
+                                        timer: 2000,
                                         showConfirmButton: false
                                     });
                                     closeSelectSolicitOrgZtree();
