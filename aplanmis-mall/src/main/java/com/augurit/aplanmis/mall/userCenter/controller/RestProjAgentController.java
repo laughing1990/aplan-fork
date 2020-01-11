@@ -61,7 +61,7 @@ public class RestProjAgentController {
     }
 
 
-    @PostMapping("upload/{applyAgentId}")
+    @PostMapping("upload/{agreementCode}")
     @ApiOperation(value = "代办申请 --> 代办协议上传接口")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "协议编码", name = "agreementCode", required = true, dataType = "string")

@@ -284,7 +284,7 @@ var pager = new Vue({
         }, ],
         investType: [{
           required: true,
-          message: '请选择申请人类型码',
+          message: '请选择投资类型',
           trigger: 'change'
         }, ],
         landSource: [{

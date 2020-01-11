@@ -459,27 +459,27 @@ public class RestApplyProjController {
         }
     }
 
-    @GetMapping("withdrawApply/list")
-    @ApiOperation(value = "撤回申报 --> 撤回申报列表查询接口")
-    @ApiImplicitParams({
-            @ApiImplicitParam(value = "关键词",name = "keyword",required = false,dataType = "string"),
-            @ApiImplicitParam(value = "页面数量",name = "pageNum",required = true,dataType = "string"),
-            @ApiImplicitParam(value = "页面页数",name = "pageSize",required = true,dataType = "string")})
-    public ResultForm getWithdrawApplylist(String state, String keyword, int pageNum, int pageSize,HttpServletRequest request){
-        try {
-            LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
-            if("1".equals(loginInfo.getIsPersonAccount())){//个人
-                return new ContentResultForm(true,restApproveService.searchWithdrawApplyListByUnitOrLinkman("",loginInfo.getUserId(),keyword,pageNum,pageSize));
-            }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
-                return new ContentResultForm(true,restApproveService.searchWithdrawApplyListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),keyword,pageNum,pageSize));
-            }else{//企业
-                return new ContentResultForm(true,restApproveService.searchWithdrawApplyListByUnitOrLinkman(loginInfo.getUnitId(),"",keyword,pageNum,pageSize));
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(),e);
-            return new ResultForm(false,"撤回申报列表接口异常");
-        }
-    }
+//    @GetMapping("withdrawApply/list")
+//    @ApiOperation(value = "撤回申报 --> 撤回申报列表查询接口")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(value = "关键词",name = "keyword",required = false,dataType = "string"),
+//            @ApiImplicitParam(value = "页面数量",name = "pageNum",required = true,dataType = "string"),
+//            @ApiImplicitParam(value = "页面页数",name = "pageSize",required = true,dataType = "string")})
+//    public ResultForm getWithdrawApplylist(String state, String keyword, int pageNum, int pageSize,HttpServletRequest request){
+//        try {
+//            LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
+//            if("1".equals(loginInfo.getIsPersonAccount())){//个人
+//                return new ContentResultForm(true,restApproveService.searchWithdrawApplyListByUnitOrLinkman("",loginInfo.getUserId(),keyword,pageNum,pageSize));
+//            }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
+//                return new ContentResultForm(true,restApproveService.searchWithdrawApplyListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),keyword,pageNum,pageSize));
+//            }else{//企业
+//                return new ContentResultForm(true,restApproveService.searchWithdrawApplyListByUnitOrLinkman(loginInfo.getUnitId(),"",keyword,pageNum,pageSize));
+//            }
+//        } catch (Exception e) {
+//            logger.error(e.getMessage(),e);
+//            return new ResultForm(false,"撤回申报列表接口异常");
+//        }
+//    }
 
     @GetMapping("applydetail/{applyinstId}/{projInfoId}/{isSeriesApprove}")
     @ApiOperation(value = "已申报项目详情信息接口")

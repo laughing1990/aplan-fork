@@ -147,6 +147,7 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
         if (StringUtils.isNotBlank(aeaProjInfo.getProjInfoId())) {
             aeaProjInfoService.updateAeaProjInfo(aeaProjInfo);
         } else {
+            aeaProjInfo.setProjInfoId(UUID.randomUUID().toString());
             aeaProjInfoService.insertAeaProjInfo(aeaProjInfo);
         }
 

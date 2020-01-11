@@ -93,10 +93,10 @@
         </div>
         <input v-model="projInfoForm.theIndustry" type="hidden">
       </el-form-item>
-      <el-form-item class="wt448 gbCodeYear" label="项目所属年份" prop="gbCodeYear">
-        <el-input class="w-320" v-model="projInfoForm.gbCodeYear" placeholder="请填写项目所属年份"></el-input>
+      <el-form-item class="wt448 gbCodeYear  twoLine" label="国标行业代码发布年代" prop="gbCodeYear">
+        <el-input class="w-320" v-model="projInfoForm.gbCodeYear" placeholder="请填写国标行业代码发布年代"></el-input>
       </el-form-item>
-      <el-form-item label="申请人类型码" class="wt448" prop="investType">
+      <el-form-item label="投资类型" class="wt448" prop="investType">
         <el-select class="w-320" v-model="projInfoForm.investType">
           <el-option v-for="item in proJAllOptions.XM_TZLX" :key="item.id" :label="item.itemName"
             :value="item.itemCode">
@@ -214,7 +214,7 @@
 
     <div class="tip-bottom-box">
       <p>本地编码规则(例子)：FS-2019-440600-00-01-000001</p>
-      <p>说明：FS:代表佛山特有标记； 2019:项目登记年份； 440600:项目所在区划； 00:项目性质：新建(00)、改建(01)、扩建(02)、其他(09)； 01:项目类别； 000001:项目序号</p>
+      <p>说明：FS:代表佛山特有标记； 2019:国标行业代码发布年代； 440600:项目所在区域； 00:建设性质：新建(00)、改建(01)、扩建(02)、其他(09)； 01:立项类型； 000001:项目序号</p>
     </div>
     <div class="handel mt60" style="text-align: center">
       <el-button class="mr25" @click="returnList">返 回</el-button>

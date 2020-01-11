@@ -165,7 +165,7 @@
   <!-- 不予受理-start -->
   <div v-if="curProj.projAgentState ==5">
     <h4 class="info-title" style="margin-bottom: 6px;">委托结果</h4>
-    <el-table :data="agencyEndList" class="elTable" style="width: 100%;" border
+    <el-table :data="agencyOutScopeList" class="elTable" style="width: 100%;" border
               :header-cell-style="{background:'#f7f8fa',height: '40px'}">
       <el-table-column label="代办人员" prop="agentEndName" :show-overflow-tooltip="true" :formatter="tableCellFormat">
       </el-table-column>
