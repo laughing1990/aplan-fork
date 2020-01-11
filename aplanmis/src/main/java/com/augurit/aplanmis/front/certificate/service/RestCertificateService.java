@@ -54,11 +54,18 @@ import com.augurit.aplanmis.common.service.instance.AeaHiSmsInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowService;
 import com.augurit.aplanmis.front.certificate.vo.CertListAndUnitVo;
+import com.augurit.aplanmis.front.certificate.vo.CertLogisticsDetailResultVo;
+import com.augurit.aplanmis.front.certificate.vo.CertLogisticsDetailVo;
 import com.augurit.aplanmis.front.certificate.vo.CertOutinstVo;
 import com.augurit.aplanmis.front.certificate.vo.CertReceivedVo;
 import com.augurit.aplanmis.front.certificate.vo.CertRegistrationItemVo;
 import com.augurit.aplanmis.front.certificate.vo.CertRegistrationVo;
 import com.augurit.aplanmis.front.certificate.vo.CertinstParamVo;
+import com.augurit.aplanmis.front.third.logistics.LogisticsService;
+import com.augurit.aplanmis.front.third.logistics.vo.LogisticsOrderDetailVo;
+import com.augurit.aplanmis.front.third.logistics.vo.LogisticsOrderResultVo;
+import com.augurit.aplanmis.front.third.logistics.vo.LogisticsOrderVo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -86,6 +93,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@Slf4j
 public class RestCertificateService {
     @Autowired
     private AeaHiIteminstService aeaHiIteminstService;
@@ -133,8 +141,10 @@ public class RestCertificateService {
     private AeaHiItemMatinstMapper aeaHiItemMatinstMapper;
     @Autowired
     private AeaServiceWindowService aeaServiceWindowService;
+    @Autowired
+    private LogisticsService logisticsService;
 
-    public void confirmReceived(CertReceivedVo certReceivedVo) throws Exception {
+    public List<AeaHiSmsSendItem> confirmReceived(CertReceivedVo certReceivedVo) throws Exception {
         Assert.hasText(certReceivedVo.getApplyinstId(), "申报实例id不能为空!");
         Assert.isTrue(certReceivedVo.getCertRegistrationItemVos().size() > 0, "应该至少选中一个事项实例进行出件");
 
@@ -146,15 +156,58 @@ public class RestCertificateService {
 
         // 更新或保存 申报出件记录 AeaHiSmsSendApply
         String sendApplyId = saveOrUpdateAeaHiSmsSendApply(sendBean, certReceivedVo.getApplyinstId());
-
+        List<AeaHiSmsSendItem> aeaHiSmsSendItems = new ArrayList<>();
         if (ApplyType.SERIES.getValue().equals(certReceivedVo.getIsSeriesApprove())) {
-            confirmReceived4Series(certReceivedVo.getIsOnceSend(), sendApplyId, sendBean, certReceivedVo.getCertRegistrationItemVos());
+            AeaHiSmsSendItem aeaHiSmsSendItem = confirmReceived4Series(certReceivedVo.getIsOnceSend(), sendApplyId, sendBean, certReceivedVo.getCertRegistrationItemVos());
+            aeaHiSmsSendItems.add(aeaHiSmsSendItem);
         } else {// 并联
-            confirmReceived4Parallel(certReceivedVo.getIsOnceSend(), sendApplyId, sendBean, certReceivedVo.getCertRegistrationItemVos());
+            List<AeaHiSmsSendItem> aeaHiSmsSendItemList = confirmReceived4Parallel(certReceivedVo.getIsOnceSend(), sendApplyId, sendBean, certReceivedVo.getCertRegistrationItemVos());
+            aeaHiSmsSendItems.addAll(aeaHiSmsSendItemList);
         }
 
         // 判断并更新申报实例是否已全部出件
         checkAllSmsItemSendThenUpdateAeaHiApplyinst(certReceivedVo.getApplyinstId(), certReceivedVo.getIsSeriesApprove());
+        return aeaHiSmsSendItems;
+    }
+
+    public String mailOrder(CertReceivedVo certReceivedVo) throws Exception {
+        // 保存出件信息
+        List<AeaHiSmsSendItem> aeaHiSmsSendItems = confirmReceived(certReceivedVo);
+        // 物流下单
+        LogisticsOrderVo logisticsOrderVo = new LogisticsOrderVo();
+        BeanUtils.copyProperties(logisticsOrderVo, certReceivedVo.getSendBean());
+        LogisticsOrderResultVo order = logisticsService.order(logisticsOrderVo);
+        Assert.notNull(order, "物流下单失败");
+        Assert.notNull(order, "物流下单获取快递单号失败");
+        for (AeaHiSmsSendItem aeaHiSmsSendItem : aeaHiSmsSendItems) {
+            aeaHiSmsSendItem.setExpressNum(order.getExpressNum());
+            aeaHiSmsSendItem.setOrderId(order.getOrderId());
+            aeaHiSmsSendItemMapper.updateAeaHiSmsSendItem(aeaHiSmsSendItem);
+        }
+        return order.getExpressNum();
+    }
+
+    public CertLogisticsDetailResultVo logisticsDetail(CertLogisticsDetailVo certLogisticsDetailVo) throws Exception {
+        CertLogisticsDetailResultVo resultVo = new CertLogisticsDetailResultVo();
+        List<LogisticsOrderDetailVo> detail = logisticsService.detail(certLogisticsDetailVo.getExpressNum());
+        resultVo.setLogisticsOrderDetails(detail);
+
+        AeaHiSmsSendItem param = new AeaHiSmsSendItem();
+        param.setApplyinstId(certLogisticsDetailVo.getApplyinstId());
+        param.setExpressNum(certLogisticsDetailVo.getExpressNum());
+        param.setIteminstId(certLogisticsDetailVo.getIteminstId());
+        List<AeaHiSmsSendItem> aeaHiSmsSendItems = aeaHiSmsSendItemMapper.listAeaHiSmsSendItem(param);
+        Assert.isTrue(aeaHiSmsSendItems.size() > 0, "无法找到该事项的出件记录");
+
+        if (aeaHiSmsSendItems.size() > 1) {
+            log.warn("事项应该只存在一条出件记录, 但数据库中发现两条, 默认取第一条, iteminstId: {}, applyinstId: {}", certLogisticsDetailVo.getIteminstId(), certLogisticsDetailVo.getApplyinstId());
+        }
+        resultVo.setAeaHiSmsSendItem(aeaHiSmsSendItems.get(0));
+        List<AeaHiCertinst> certinsts = aeaHiCertinstMapper.listAeaHiCertinstByIteminstIds(new String[]{certLogisticsDetailVo.getIteminstId()});
+        Assert.notEmpty(certinsts, "无法找到该事项的证照实例, iteminstId: " + certLogisticsDetailVo.getIteminstId());
+
+        resultVo.setAeaHiCertinsts(certinsts);
+        return resultVo;
     }
 
     private void mergeConsignerAtt(CertReceivedVo certReceivedVo, AeaHiSmsSendBean sendBean) {
@@ -194,7 +247,7 @@ public class RestCertificateService {
         return new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
     }
 
-    private void confirmReceived4Series(String isOneSend, String sendApplyId, AeaHiSmsSendBean sendBean, List<CertRegistrationItemVo> certRegistrationItemVos) throws Exception {
+    private AeaHiSmsSendItem confirmReceived4Series(String isOneSend, String sendApplyId, AeaHiSmsSendBean sendBean, List<CertRegistrationItemVo> certRegistrationItemVos) throws Exception {
         Assert.isTrue(certRegistrationItemVos.size() == 1, "应该有且仅有一个事项申报实例");
 
         AeaHiSmsSendItem aeaHiSmsSendItem = assembleAeaHiSmsSendItem(sendBean, isOneSend, sendApplyId, certRegistrationItemVos.get(0));
@@ -205,9 +258,10 @@ public class RestCertificateService {
 
         // 插入aea_log_item_state_hist记录
         insertIntoItemStateHist(Collections.singletonList(aeaHiSmsSendItem));
+        return aeaHiSmsSendItem;
     }
 
-    private void confirmReceived4Parallel(String isOneSend, String sendApplyId, AeaHiSmsSendBean sendBean, List<CertRegistrationItemVo> certRegistrationItemVos) throws Exception {
+    private List<AeaHiSmsSendItem> confirmReceived4Parallel(String isOneSend, String sendApplyId, AeaHiSmsSendBean sendBean, List<CertRegistrationItemVo> certRegistrationItemVos) throws Exception {
         Map<String, AeaHiSmsSendItem> aeaHiSmsSendItemMap = new HashMap<>(certRegistrationItemVos.size());
         for (CertRegistrationItemVo vo : certRegistrationItemVos) {
             AeaHiSmsSendItem aeaHiSmsSendItem = assembleAeaHiSmsSendItem(sendBean, isOneSend, sendApplyId, vo);
@@ -227,7 +281,9 @@ public class RestCertificateService {
             aeaHiSmsSendItemMapper.batchInsertAeaHiSmsSendItem(aeaHiSmsSendItems);
             //插入aea_log_item_state_hist记录
             insertIntoItemStateHist(aeaHiSmsSendItems);
+            return aeaHiSmsSendItems;
         }
+        return new ArrayList<>();
     }
 
     /**
@@ -623,8 +679,6 @@ public class RestCertificateService {
                 vo.setCertList(collect);
             }
         }
-
-
         return vo;
 
     }
@@ -707,6 +761,7 @@ public class RestCertificateService {
         }
         return certOutinstVos;
     }
+
 }
 
 
