@@ -470,6 +470,9 @@ var parallelDeclare = new Vue({
       receiveItemActive: '', // 回执列表li active状态
       receiveActive: '', // 回执列表 div active状态
       pdfSrc: '', // 回执预览地址
+      saveSplitLoading: false, // 工程拆分loading
+      saveSplitSuccFlag: false, // 工程拆分是否成功
+      splitProjName: '',
     }
   },
   mounted: function () {
@@ -480,6 +483,7 @@ var parallelDeclare = new Vue({
     // }else if (_that.projInfoId&&_that.projInfoId != 'null') {
     //   _that.searchProjAllInfo(); // 获取项目信息
     // }
+    _that.getThemeList();
     if(_that.guideId&&_that.guideId.length>0){
       _that.getGuideProjInfo();
       if(_that.isSelectItemState=='0'){
@@ -745,8 +749,8 @@ var parallelDeclare = new Vue({
       }, function (res) {
         if (res.success) {
           console.log(res);
-          _that.projSplitForm.frontStageGcbm = res.content.gcbm;
-          _that.projSplitForm.frontStageProjInfoId = res.content.projInfoId;
+          _that.projSplitForm.frontStageGcbm = res.content?res.content.gcbm:'';
+          _that.projSplitForm.frontStageProjInfoId = res.content?res.content.projInfoId:'';
         }else {
           _that.$message({
             message: res.message?res.message:'查询失败！',
@@ -770,27 +774,37 @@ var parallelDeclare = new Vue({
       _that.projSplitForm.unitInfoId = _that.unitInfoId;
       _that.$refs['projSplitForm'].validate(function (valid) {
         if (valid) {
+          _that.saveSplitLoading = true;
           request('', {
             url: ctx + 'rest/user/proj/split/start',
             type: 'post',
             ContentType: 'application/json',
             data: JSON.stringify(_that.projSplitForm)
           }, function (res) {
+            _that.saveSplitLoading = false;
             if (res.success) {
               console.log(res);
+              _that.saveSplitSuccFlag = true;
+              _that.splitProjName = _that.projSplitForm.projName;
+              _that.isSplitDiaShow = false;
+              _that.$message({
+                message: '工程拆分成功！',
+                type: 'success'
+              })
             }else {
               _that.$message({
-                message: res.message?res.message:'查询失败！',
+                message: res.message?res.message:'工程拆分失败！',
                 type: 'error'
               })
             }
           },function(res){
             _that.$message({
-              message: res.message?res.message:'查询失败！',
+              message: res.message?res.message:'工程拆分失败！',
               type: 'error'
             })
           });
         }else {
+          _that.saveSplitLoading = false;
           _that.$message({
             message: '请完善单项工程信息！',
             type: 'error'
@@ -913,7 +927,6 @@ var parallelDeclare = new Vue({
           if(_that.gbhyShowMsg!=''){
             if (jiansheUnitFlag) {
               _that.isIntelligenceShow=true;
-              _that.getThemeList();
             } else {
               _that.$message({
                 message: '请完善申办主体单位信息',
@@ -2126,13 +2139,6 @@ var parallelDeclare = new Vue({
       _that.projInfoDetail.localCode = _that.projInfoDetail.localCode?_that.projInfoDetail.localCode.trim():'';
       _that.projInfoDetail.regionalism = _that.projInfoDetail.regionalism?_that.projInfoDetail.regionalism.trim():'';
       _that.getResultForm.id = _that.smsInfoId;
-      var saveUrl = '';
-      // if(saveFlag=='1'){
-        saveUrl= ctx + 'rest/apply/common/completioninfo/saveOrUpdate';
-
-      // }else {
-      //   saveUrl= ctx + 'rest/apply/common/completioninfo/saveOrUpdate/temporary'
-      // }
       _that.loading = true;
       _that.projInfoDetail.projectAddress = _that.projInfoDetail.projectAddress?_that.projInfoDetail.projectAddress.join(','):'';
       var params = _that.projInfoDetail;
@@ -2147,7 +2153,7 @@ var parallelDeclare = new Vue({
       params.applyinstId = _that.parallelApplyinstId;
       _that.projInfoFirstSave = params;
       request('', {
-        url: saveUrl,
+        url: ctx + 'rest/apply/common/completioninfo/saveOrUpdate',
         type: 'post',
         ContentType: 'application/json',
         data: JSON.stringify(params)
@@ -2180,7 +2186,6 @@ var parallelDeclare = new Vue({
             // });
           }else {
             _that.declareStep = 3;
-            _that.getThemeList();
             _that.saveThemeAndNext();
           }
         } else {
