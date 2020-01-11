@@ -244,6 +244,23 @@ var vm = new Vue({
         downloadImportTemplate:function () {
             window.location.href = ctx + '/aea/proj/info/downloadImportTemplate';
         },
+        // 显示代办提示信息
+        showAgentProjInfo:function (row) {
+            var html = '';
+            if (row.localCode) {
+                html = html + "项目代码 : " + row.localCode + "</br></br>";
+            }
+            if(row.gcbm) {
+                html = html + "工程编码 : " + row.gcbm + "</br></br>";
+            }
+            if(row.projName) {
+                html = html + "项目/工程名称 : " + row.projName;
+            }
+            if(row.ifAgentProj) {
+                html = html  + "</br></br>" + "代办中心名称 : " + row.agentName;
+            }
+            return html;
+        },
     },
     created: function () {
         this.conditionalQueryDic();
