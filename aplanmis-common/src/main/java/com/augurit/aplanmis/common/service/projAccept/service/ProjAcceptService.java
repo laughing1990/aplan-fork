@@ -259,9 +259,10 @@ public class ProjAcceptService {
                 if(taskInstance != null) {
                     List<BpmHistoryCommentForm> taskComments = bpmTaskService.getHistoryCommentsByTaskId(yanshouProcInstId, taskInstance.getId());
                     if(taskComments!=null&&taskComments.size()>0){
-                        String key = taskComments.get(0).getNodeName();
-                        if (taskComments.get(0).getOrgName() != null)
-                            key = taskComments.get(0).getOrgName();
+                        String key = "联合验收办";
+//                        String key = taskComments.get(0).getNodeName();
+//                        if (taskComments.get(0).getOrgName() != null)
+//                            key = taskComments.get(0).getOrgName();
 
                         OpinionSummaryVo summaryVo = new OpinionSummaryVo();
                         summaryVo.setSortNum(count);
@@ -285,9 +286,10 @@ public class ProjAcceptService {
                             }
                         });
 
-                        String key = taskComments.get(0).getNodeName();
+                        String key = "联合验收办";
+                        /*String key = taskComments.get(0).getNodeName();
                         if (taskComments.get(0).getOrgName() != null)
-                            key = taskComments.get(0).getOrgName();
+                            key = taskComments.get(0).getOrgName();*/
 
                         OpinionSummaryVo summaryVo = new OpinionSummaryVo();
                         summaryVo.setSortNum(count);
