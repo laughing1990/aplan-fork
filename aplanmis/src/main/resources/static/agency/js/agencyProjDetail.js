@@ -28,19 +28,27 @@ function uncompile(code) {
 };
 
 // 侧边栏导航数据
-var NAVLEFTDATA = [{
-  label: '项目单位信息',
-  target: 'projunitInfo'
-}, {
-  label: '项目基本信息',
-  target: 'projbaseInfo'
-}, {
-  label: '代办信息',
-  target: 'commissionagentinfo'
-}, {
-  label: '委托代办协议',
-  target: 'commissionagentagreement'
-}];
+var NAVLEFTDATA = [ 
+  {
+    label: '项目单位信息',
+    target: 'projunitInfo'
+  }, {
+    label: '项目基本信息',
+    target: 'projbaseInfo'
+  }, {
+    label: '代办信息',
+    target: 'commissionagentinfo'
+  }, {
+    label: '代办委托协议',
+    target: 'commissionagentagreement'
+  },{
+    label: '代办办结单',
+    target: 'endagentagreement'
+  },{
+    label: '代办委托终止单',
+    target: 'stopagentagreement'
+  }
+];
 
 function formatDate(date, fmt) {
   if (/(y+)/.test(fmt)) {
@@ -181,8 +189,14 @@ var pager = new Vue({
           label: '代办信息',
           target: 'commissionagentinfo'
         }, {
-          label: '委托代办协议',
+          label: '代办委托协议',
           target: 'commissionagentagreement'
+        },{
+          label: '代办办结单',
+          target: 'endagentagreement'
+        },{
+          label: '代办委托终止单',
+          target: 'stopagentagreement'
         }
       ],
       activeTab: 0, // 纵向导航active状态index
@@ -569,10 +583,17 @@ var pager = new Vue({
       form = $.extend({}, data.aeaProjApplyAgent, data.aeaProjInfo, data.aeaUnitProjLinkmanVo);
       // 操作按钮与委托代办协议的隐藏显示处理-处理侧边栏
       this.agencyDetailApiData = form;
-      if (+this.agencyDetailApiData.agentApplyState < 3) {
-        this.verticalTabData.pop();
+      var state = +this.agencyDetailApiData.agentApplyState;
+      if (state < 3) {
+        this.verticalTabData.splice(3,1);
       } else {
-        this.verticalTabData = JSON.parse(JSON.stringify(NAVLEFTDATA));
+        if(state == 5){
+          this.verticalTabData.splice(4,1);
+        }else if(state == 7){
+          this.verticalTabData.splice(5,1);
+        }else{
+          this.verticalTabData = JSON.parse(JSON.stringify(NAVLEFTDATA));
+        }  
       }
       for (var k in this.projInfoForm) {
         if (form[k]) {

@@ -1539,11 +1539,11 @@
         <li :class="{active:asideIndex===1}" @click="asideIndex=1" v-if="isShowMatiPanel">{{asideTabs[1]}}</li>
       </ul>
     </div>
-    <div class="aside-content">
+    <div class="aside-content" v-loading="approveProcessLoading">
       <div class="aside-title">{{asideTabs[asideIndex]}}</div>
       <div class="contents">
         <!-- 审批过程 -->
-        <div class="content-u approve-step" v-show="asideIndex===0" v-loading="approveProcessLoading">
+        <div class="content-u approve-step" v-show="asideIndex===0">
           <div data-title="一级" class="step-box" v-for="(item, index) in approveStepList">
             <div class="step-title">
               <div class="step-title-text" :title="item.nodeName">{{item.nodeName}}</div>

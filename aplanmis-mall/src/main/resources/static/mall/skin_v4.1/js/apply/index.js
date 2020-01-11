@@ -557,11 +557,11 @@ var parallelDeclare = new Vue({
     },
     // 跳转其他页面
     goToOtherPage: function(flag){
-      window.location.reload();
+      // window.location.reload();
       if(flag=='myHomeIndex'){
-        window.location.href = ctx + 'rest/main/toIndexPage?#myHomeIndex';
+        window.location.href = ctx + 'rest/main/toIndexPage?#/userCenterIndex';
       }else if(flag=='guideList') {
-        window.location.href = ctx + 'rest/main/toIndexPage?#guideList';
+        window.location.href = ctx + 'rest/main/toIndexPage?flag=1'+'#guideList';
       }else if(flag=='declareHave') {
         window.location.href = ctx + 'rest/main/toIndexPage?#declareHave';
       }
