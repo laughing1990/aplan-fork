@@ -21,6 +21,10 @@ public class AeaProjApplyAgentDetailVo {
     private String agentApplyState;
     @ApiModelProperty("代办协议")
     private List<AgentAgreementVo> agentAgreement;
+    @ApiModelProperty("代办协议")
+    private List<AgentAgreementVo> agentAgreement1;
+    @ApiModelProperty("代办协议")
+    private List<AgentAgreementVo> agentAgreement2;
 
     public static ProjAgentParamVo formatAeaProjApplyAgentDetailVo(AeaProjInfo aeaProjInfo){
         ProjAgentParamVo projAgentParamVo=new ProjAgentParamVo();

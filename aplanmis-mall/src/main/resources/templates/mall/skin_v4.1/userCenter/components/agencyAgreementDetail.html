@@ -95,7 +95,8 @@
   <!-- 代办协议-start -->
   <div v-if="curProj.projAgentState !=1 && curProj.projAgentState !=2">
     <h4 class="info-title" style="margin-bottom: 6px;">代办协议
-      <span :style="agencyStatusTagClassFn()">（{{curProj.projAgentState | projAgentStateFormat}}）</span>
+      <span :style="agencyStatusTagClassFn()" v-if="curProj.projAgentState ==3">（待签章）</span>
+      <span :style="agencyStatusTagClassFn()" v-if="curProj.projAgentState ==4||curProj.projAgentState ==9">（已签章）</span>
     </h4>
     <el-table :data="agencyAgreementList" class="elTable" style="width: 100%;" border
               :header-cell-style="{background:'#f7f8fa',height: '40px'}">
@@ -107,15 +108,77 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="260">
         <template slot-scope="scope">
-          <el-button type="primary" plain size="small" @click="filePreview(scope.row.atts[0])">预览</el-button>
-          <el-button type="primary" plain size="small" @click="downloadFile(scope.row.atts[0].fileId)">下载</el-button>
-          <el-button type="primary" size="small">签章</el-button>
+          <el-button type="primary" plain size="small" @click="filePreview(curProj.detailId)">预览</el-button>
+          <el-button type="primary" plain size="small" @click="downloadFile(curProj.detailId)">下载</el-button>
+          <el-button type="primary" size="small" v-if="curProj.projAgentState ==3" >签章</el-button>
         </template>
       </el-table-column>
     </el-table>
   </div>
 
-  <div class="align-center mt50" v-if="curProj.projAgentState == 3">
+  <!-- 终止单-start -->
+  <div v-if="curProj.projAgentState ==6 || curProj.projAgentState ==7">
+    <h4 class="info-title" style="margin-bottom: 6px;">终止单
+      <span :style="agencyStatusTagClassFn()" v-if="curProj.projAgentState ==6">（待签章）</span>
+      <span :style="agencyStatusTagClassFn()" v-if="curProj.projAgentState ==7">（已签章）</span>
+    </h4>
+    <el-table :data="agencyStopList" class="elTable" style="width: 100%;" border
+              :header-cell-style="{background:'#f7f8fa',height: '40px'}">
+      <el-table-column label="终止单" prop="agentAgreementName" :show-overflow-tooltip="true" :formatter="tableCellFormat">
+      </el-table-column>
+      <el-table-column label="终止时间" prop="agentUserName" :formatter="tableCellFormat" width="100">
+      </el-table-column>
+      <el-table-column label="终止原因" prop="agentUserMobile" :formatter="tableCellFormat" width="150">
+      </el-table-column>
+      <el-table-column label="操作" align="center" width="260">
+        <template slot-scope="scope">
+          <el-button type="primary" plain size="small" @click="filePreview(curProj.detailId)">预览</el-button>
+          <el-button type="primary" plain size="small" @click="downloadFile(curProj.detailId)">下载</el-button>
+          <el-button type="primary" size="small" v-if="curProj.projAgentState ==6" >签章</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
+
+  <!-- 办结单-start -->
+  <div v-if="curProj.projAgentState ==8 || curProj.projAgentState ==9">
+    <h4 class="info-title" style="margin-bottom: 6px;">办结单
+      <span :style="agencyStatusTagClassFn()" v-if="curProj.projAgentState ==3">（待签章）</span>
+      <span :style="agencyStatusTagClassFn()" v-if="curProj.projAgentState ==4||curProj.projAgentState ==9">（已签章）</span>
+    </h4>
+    <el-table :data="agencyEndList" class="elTable" style="width: 100%;" border
+              :header-cell-style="{background:'#f7f8fa',height: '40px'}">
+      <el-table-column label="办结单" prop="agentEndName" :show-overflow-tooltip="true" :formatter="tableCellFormat">
+      </el-table-column>
+      <el-table-column label="办结时间" prop="agentEndTime" :formatter="tableCellFormat" width="100">
+      </el-table-column>
+      <el-table-column label="操作" align="center" width="260">
+        <template slot-scope="scope">
+          <el-button type="primary" plain size="small" @click="filePreview(curProj.detailId)">预览</el-button>
+          <el-button type="primary" plain size="small" @click="downloadFile(curProj.detailId)">下载</el-button>
+          <el-button type="primary" size="small" v-if="curProj.projAgentState ==8" >签章</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
+
+  <!-- 不予受理-start -->
+  <div v-if="curProj.projAgentState ==5">
+    <h4 class="info-title" style="margin-bottom: 6px;">委托结果</h4>
+    <el-table :data="agencyEndList" class="elTable" style="width: 100%;" border
+              :header-cell-style="{background:'#f7f8fa',height: '40px'}">
+      <el-table-column label="代办人员" prop="agentEndName" :show-overflow-tooltip="true" :formatter="tableCellFormat">
+      </el-table-column>
+      <el-table-column label="联系电话" prop="agentEndName" :show-overflow-tooltip="true" :formatter="tableCellFormat">
+      </el-table-column>
+      <el-table-column label="委托结果" prop="agentEndTime" :formatter="tableCellFormat" width="100">
+      </el-table-column>
+      <el-table-column label="不予受理原因" prop="agentEndTime" :formatter="tableCellFormat" width="100">
+      </el-table-column>
+    </el-table>
+  </div>
+
+  <div class="align-center mt50" v-if="curProj.projAgentState == 3||curProj.projAgentState == 6||curProj.projAgentState == 8">
     <el-button type="primary" @click="submitAgentAgreement">提交协议</el-button>
   </div>
   <!-- 代办协议-end -->

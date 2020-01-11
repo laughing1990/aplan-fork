@@ -132,7 +132,7 @@ var pager = new Vue({
   },
   filters: {
     projAgentStateFormat: function(val){
-      var tagCn = ['可代办','签订中', '签订中','委托待签章','代办中','不予受理','终止待签章','代办终止','办结待签章','代办结束'];
+      var tagCn = ['可代办','签订中', '签订中','委托待签章','代办中','拒绝代办','终止待签章','代办终止','办结待签章','代办结束'];
       return tagCn[val]
     },
   },

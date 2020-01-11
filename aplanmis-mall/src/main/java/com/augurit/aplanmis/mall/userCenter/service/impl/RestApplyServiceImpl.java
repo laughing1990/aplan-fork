@@ -164,7 +164,7 @@ public class RestApplyServiceImpl implements RestApplyService {
         // 保存回执
         String[] receiptTypes = new String[]{"1", "2"};
         List<String> applyInstIds = vo.getApplyinstIds();
-        if (applyInstIds==null||applyInstIds.size()==0) return vo;
+        if (applyInstIds==null||applyInstIds.size()==0) throw new Exception("申报实例化失败");
         receiveService.saveReceive(applyInstIds.toArray(new String[applyInstIds.size()]), receiptTypes, SecurityContext.getCurrentUserName(), "");
         //更新部门辅导状态
         AeaHiGuide updateParam=new AeaHiGuide();

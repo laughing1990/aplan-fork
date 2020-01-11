@@ -39,11 +39,12 @@ import com.augurit.aplanmis.supermarket.linkmanInfo.service.AeaLinkmanInfoServic
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
-
+@Transactional
 @Service
 public class RestParallerApplyServiceImpl implements RestParallerApplyService {
 

@@ -13,15 +13,15 @@ import com.augurit.aplanmis.common.service.apply.AeaHiGuideDetailService;
 import com.augurit.aplanmis.common.service.apply.AeaHiGuideService;
 import com.augurit.aplanmis.mall.userCenter.vo.AeaGuideApplyVo;
 import com.augurit.aplanmis.mall.userCenter.vo.AeaGuideItemVo;
-import io.swagger.annotations.ApiModelProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+@Transactional
 @Service
 public class RestAeaHiGuideService {
     @Autowired
