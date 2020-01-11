@@ -4123,9 +4123,12 @@
             select 1 from aea_hi_iteminst ahi
             join aea_hi_item_inoutinst ahii on ahi.iteminst_id=ahii.iteminst_id
             join aea_item_inout aii on ahii.item_inout_id=aii.inout_id
+            join aea_hi_item_matinst ahim on ahim.matinst_id=ahii.matinst_id
             where aii.is_input='0'
             and aii.is_deleted='0'
             and ahi.is_deleted='0'
+            and ahim.mat_prop='c'
+            and ahim.certinst_id is not null
             and ahi.stageinst_id=ahs_123.stageinst_id
             )
             <if test="applyType != null and applyType != '' ">
