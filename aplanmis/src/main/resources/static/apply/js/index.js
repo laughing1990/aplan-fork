@@ -1212,11 +1212,9 @@ var vm = new Vue({
       }
       params.detailInfo = JSON.stringify(itemList);
       vm.guideSaveItems('solicitOpinionLoading', function () {
-        var stateArr = ['l', 'l', 'l', 'i', 'o', 'r', 'r'];
-        var stateArr2 = ['2', '2', '2', '2', '2', '2', '2'];
         var params = {
-          detailState: stateArr2[vm.guideState],
-          detailType: stateArr[vm.guideState],
+          detailState: '2',
+          detailType: 'i',
           guideActionVos: [],
           guideId: vm.guideId,
           stageId: vm.stageId,
@@ -1237,7 +1235,7 @@ var vm = new Vue({
             _list.push({
               catalogItemVerId: u.itemVerId,
               guideChangeAction: 'a',
-              guideOpinion: u.opinion,
+              // guideOpinion: u.opinion,
               itemId: itemId,
               itemVerId: itemVerId,
               orgId: vm.leaderDept ? vm.guideDetail.aeaHiGuide.leaderOrgId : u.orgId,
@@ -1288,7 +1286,7 @@ var vm = new Vue({
       this.coreItems.forEach(function (u) {
         u.bmChecked && list2.push(u);
       });
-      if (!list1.length) {
+      if (!list1.length&&!list2.length) {
         return this.$message('请至少勾选一个事项');
       }
       this.soParallelItems = list1.concat([]);
