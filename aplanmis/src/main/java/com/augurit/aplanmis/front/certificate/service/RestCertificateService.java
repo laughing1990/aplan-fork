@@ -302,11 +302,22 @@ public class RestCertificateService {
         aeaHiSmsSendItem.setSendItemId(UuidUtil.generateUuid());
         aeaHiSmsSendItem.setSendApplyId(sendApplyId);
         aeaHiSmsSendItem.setIsOnceSend(isOnceSend);
+        aeaHiSmsSendItem.setIssueTime(new Date());
         aeaHiSmsSendItem.setCreater(SecurityContext.getCurrentUserId());
         aeaHiSmsSendItem.setRootOrgId(SecurityContext.getCurrentOrgId());
         aeaHiSmsSendItem.setCreateTime(new Date());
         aeaHiSmsSendItem.setIteminstId(certRegistrationItemVo.getIteminstId());
         aeaHiSmsSendItem.setInoutinstId(certRegistrationItemVo.getInoutinstId());
+        if (StringUtils.isBlank(aeaHiSmsSendItem.getIsConsigner())) {
+            aeaHiSmsSendItem.setIsConsigner(Status.OFF);
+        }
+        if (StringUtils.isBlank(aeaHiSmsSendItem.getWindowUserId())) {
+            aeaHiSmsSendItem.setWindowUserId(SecurityContext.getCurrentUserId());
+        }
+        if (StringUtils.isBlank(aeaHiSmsSendItem.getWindowUserName())) {
+            aeaHiSmsSendItem.setWindowUserName(SecurityContext.getCurrentUserName());
+        }
+        aeaHiSmsSendItem.setWindowHandleTime(new Date());
         return aeaHiSmsSendItem;
     }
 
