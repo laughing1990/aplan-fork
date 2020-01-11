@@ -62,17 +62,22 @@ public class RestApplyProjServiceImp implements RestApplyProjService {
             //主题名称
             String themeId = aeaProjInfo.getThemeId();
             if (StringUtils.isNotBlank(themeId)) vo.setThemeName(aeaParThemeService.getAeaParThemeByThemeId(themeId).getThemeName());
-            //set项目及子工程至VO
-            ProjStatusTreeVo.ProjStatusVo projStatusVo = new ProjStatusTreeVo.ProjStatusVo();
-            BeanUtils.copyProperties(aeaProjInfo,projStatusVo);
-            vo.setProjStatusVos(new ArrayList<>());
-            vo.getProjStatusVos().add(projStatusVo);
-            setChildProj(vo.getProjStatusVos());
+
             //主题下的所有主线阶段
             List<AeaParStage> nodeStages = (aeaParStageService.listAeaParStageByThemeIdOrThemeVerId(themeId, "",topOrgId))
                     .stream().filter(stage->"1".equals(stage.getIsNode())).collect(Collectors.toList());
             if (nodeStages.size()<=0) throw new IllegalArgumentException("当前主题下无主线阶段");
             vo.setStagesVos(nodeStages.stream().map(ProjStatusTreeVo.ProjStatusTreeStageVo::build).collect(Collectors.toList()));
+
+
+            //set项目及子工程至VO
+            ProjStatusTreeVo.ProjStatusVo projStatusVo = new ProjStatusTreeVo.ProjStatusVo();
+            BeanUtils.copyProperties(aeaProjInfo,projStatusVo);
+            projStatusVo.setStageId(nodeStages.get(0).getStageId());
+            vo.setProjStatusVos(new ArrayList<>());
+            vo.getProjStatusVos().add(projStatusVo);
+            setChildProj(vo.getProjStatusVos());
+
             //设置工程数组
             List<List<ProjStatusTreeVo.ProjStatusVo>> retList = new ArrayList<>();
             retList.add(vo.getProjStatusVos());
