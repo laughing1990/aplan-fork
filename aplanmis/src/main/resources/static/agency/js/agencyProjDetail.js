@@ -733,10 +733,10 @@ var pager = new Vue({
       var fileUrl = ctx + 'aea/proj/apply/agent/getAgencyAgreement?applyAgentId=' + this.getSerachParamsForUrl('applyAgentId');
       window.open(fileUrl);
     },
-    // 不予受理操作
+    // 拒绝代办操作
     refuseToAccept: function () {
       var ts = this;
-      confirmMsg('', '是否确定不予受理?', function () {
+      confirmMsg('', '请确认拒绝代办该项目的代办申请?', function () {
         var saveData = {
           agentApplyState: 6,
           applyAgentId: ts.getSerachParamsForUrl('applyAgentId')

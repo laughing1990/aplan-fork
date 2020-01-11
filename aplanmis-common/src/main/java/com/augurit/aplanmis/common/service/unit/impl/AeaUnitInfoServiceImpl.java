@@ -6,19 +6,15 @@ import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.AeaUnitConstants;
 import com.augurit.aplanmis.common.constants.DeletedStatus;
-import com.augurit.aplanmis.common.domain.AeaApplyinstUnitProj;
-import com.augurit.aplanmis.common.domain.AeaUnitInfo;
-import com.augurit.aplanmis.common.domain.AeaUnitProj;
-import com.augurit.aplanmis.common.domain.ExSJUnitFromDetails;
-import com.augurit.aplanmis.common.mapper.AeaApplyinstUnitProjMapper;
-import com.augurit.aplanmis.common.mapper.AeaUnitInfoMapper;
-import com.augurit.aplanmis.common.mapper.AeaUnitProjMapper;
+import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author yinlf
@@ -47,6 +44,10 @@ public class AeaUnitInfoServiceImpl implements AeaUnitInfoService {
 
     @Autowired
     private AeaApplyinstUnitProjMapper aeaApplyinstUnitProjMapper;
+    @Autowired
+    private AeaApplyinstProjMapper aeaApplyinstProjMapper;
+    @Autowired
+    private AeaUnitProjLinkmanMapper aeaUnitProjLinkmanMapper;
 
     @Override
     public void insertAeaUnitInfo(AeaUnitInfo aeaUnitInfo) {
@@ -395,5 +396,75 @@ public class AeaUnitInfoServiceImpl implements AeaUnitInfoService {
     public List<AeaUnitInfo> findAeaUnitInfoByProjLocalCode(String localCode){
         LOGGER.debug("根据项目代码搜索单位信息列表");
         return aeaUnitInfoMapper.findAeaUnitInfoByProjLocalCode(localCode,SecurityContext.getCurrentOrgId());
+    }
+
+    @Override
+    public void replaceProjRelationByChild(String applyinstId,String parentProjInfoId,String childProjInfoId) throws Exception {
+        LOGGER.debug("用工程替换项目的关联关系");
+        //    aea_unit_proj ,aea_unit_proj_linkman 没有的就新增   aea_applyinst_unit_proj,aea_applyinst_proj 更新为工程的关联关系
+        List<AeaUnitInfo> unitList = aeaUnitInfoMapper.getApplyUnitProj(applyinstId, parentProjInfoId);
+        List<AeaUnitProj> childAeaUnitProjs=new ArrayList<>();
+        if(unitList.size()>0){
+            List<String> unitProjIds = unitList.stream().map(AeaUnitInfo::getUnitProjId).collect(Collectors.toList());
+            for (String unitProjId:unitProjIds){
+                AeaUnitProj unitProjEntity = aeaUnitProjMapper.getAeaUnitProjById(unitProjId);
+                AeaUnitProj childUnitProj = aeaUnitProjMapper.findUnitPorojByProjInfoIdAndUnitInfoId(unitProjEntity.getUnitInfoId(), childProjInfoId, unitProjEntity.getIsOwner());
+                if(childUnitProj==null){
+                    String childUnitProjId=UUID.randomUUID().toString();
+                    unitProjEntity.setCreateTime(new Date());
+                    unitProjEntity.setCreater(SecurityContext.getCurrentUserName());
+                    unitProjEntity.setUnitProjId(childUnitProjId);
+                    unitProjEntity.setProjInfoId(childProjInfoId);
+                    aeaUnitProjMapper.insertAeaUnitProj(unitProjEntity);
+                    childAeaUnitProjs.add(unitProjEntity);
+                    AeaUnitProjLinkman query=new AeaUnitProjLinkman();
+                    query.setUnitProjId(unitProjId);
+                    List<AeaUnitProjLinkman> projLinkmans = aeaUnitProjLinkmanMapper.listAeaUnitProjLinkman(query);
+                    if(projLinkmans.size()>0){
+                        for (AeaUnitProjLinkman entity:projLinkmans){
+                            AeaUnitProjLinkman aeaUnitProjLinkman=new AeaUnitProjLinkman();
+                            aeaUnitProjLinkman.setProjLinkmanId(UUID.randomUUID().toString());
+                            aeaUnitProjLinkman.setUnitProjId(unitProjId);
+                            aeaUnitProjLinkman.setIsDeleted(Status.OFF);
+                            aeaUnitProjLinkman.setCreater(SecurityContext.getCurrentUserName());
+                            aeaUnitProjLinkman.setCreateTime(new Date());
+                            aeaUnitProjLinkman.setLinkmanType(entity.getLinkmanType());
+                            aeaUnitProjLinkman.setLinkmanInfoId(entity.getLinkmanInfoId());
+                            aeaUnitProjLinkmanMapper.insertAeaUnitProjLinkman(aeaUnitProjLinkman);
+                        }
+                    }
+                }else{
+                    childAeaUnitProjs.add(childUnitProj);
+                }
+            }
+        }
+
+        List<AeaApplyinstUnitProj> applyinstUnitProjs = aeaApplyinstUnitProjMapper.getAeaApplyinstUnitProjByApplyinstId(applyinstId);
+        List<AeaApplyinstProj> applyinstProjs = aeaApplyinstProjMapper.getAeaApplyinstProjByApplyinstId(applyinstId);
+        if(applyinstUnitProjs.size()>0){
+            String[] applyinstUnitProjIds=applyinstUnitProjs.stream().map(AeaApplyinstUnitProj::getApplyinstUnitProjId).toArray(String[]::new);
+            aeaApplyinstUnitProjMapper.batchDeleteAeaApplyinstUnitProj(applyinstUnitProjIds);
+        }
+        if(applyinstProjs.size()>0){
+            for (AeaApplyinstProj aeaApplyinstProj:applyinstProjs){
+                aeaApplyinstProj.setProjInfoId(childProjInfoId);
+                aeaApplyinstProj.setCreater(SecurityContext.getCurrentUserName());
+                aeaApplyinstProj.setCreateTime(new Date());
+                aeaApplyinstProjMapper.updateAeaApplyinstProj(aeaApplyinstProj);
+            }
+        }
+
+        if(childAeaUnitProjs.size()>0){
+            for (AeaUnitProj child:childAeaUnitProjs){
+                AeaApplyinstUnitProj aeaApplyinstUnitProj=new AeaApplyinstUnitProj();
+                aeaApplyinstUnitProj.setApplyinstUnitProjId(UUID.randomUUID().toString()); // ()
+                aeaApplyinstUnitProj.setUnitProjId(child.getUnitProjId()); // (企业项目关联ID)
+                aeaApplyinstUnitProj.setApplyinstId(applyinstId); // (申请实例ID)
+                aeaApplyinstUnitProj.setIsDeleted(Status.OFF); // (逻辑删除标记。0表示正常记录，1表示已删除记录。)
+                aeaApplyinstUnitProj.setCreater(SecurityContext.getCurrentUserName()); // (创建人)
+                aeaApplyinstUnitProj.setCreateTime(new Date()); // (创建时间)
+                aeaApplyinstUnitProjMapper.insertAeaApplyinstUnitProj(aeaApplyinstUnitProj);
+            }
+        }
     }
 }

@@ -127,6 +127,7 @@ public class AeaProjApplyAgentController {
                     ResultForm form = checkOpreatePermit(applyAgentId, "1");
                     if(form.isSuccess()){
                         aeaProjApplyAgentService.updateAeaProjApplyAgent(aeaProjApplyAgent);
+                        aeaProjApplyAgentService.saveRedisAeaProjApplyAgentInfo(aeaProjApplyAgent);
                         resultForm.setSuccess(true);
                     }
                     resultForm.setMessage(form.getMessage());
@@ -262,7 +263,7 @@ public class AeaProjApplyAgentController {
                 }else{
                     //办结时间如果修改就要前端传值过来
                     agreementDetail.setAgreementEndTime(aeaProjApplyAgent.getAgreementEndTime());
-                    //协议没有存储到mongodb，动态生成一份。代办中心（乙方）签章之后要将代办委托终止单存储到mongodb。
+                    //协议没有存储到mongodb，动态生成一份。代办中心（乙方）签章之后要将代办办结单存储到mongodb。
                     String str = ReceivePDFTemplate.createAgencyEndAgreement(agreementDetail);
                     writeFile(str,resp);
                 }
@@ -328,16 +329,17 @@ public class AeaProjApplyAgentController {
             if(agreementDetail == null){
                 resultForm.setMessage("代办申请不存在。");
             }else{
-                if(StringUtils.isNotBlank(agreementDetail.getAgentStopAgreementFileId())){
-                    //删除原有的文件
-                    fileUtilsService.deleteAttachment(agreementDetail.getAgentStopAgreementFileId());
-                }
+                String oldAgentStopAgreementFileId = agreementDetail.getAgentStopAgreementFileId();
                 BscAttForm bscAttForm = fileUtilsService.upload("AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID", applyAgentId, null, file);
                 agreementDetail.setAgentStopAgreementFileId(bscAttForm.getDetailId());
                 agreementDetail.setAgreementStopTime(agreementStopTime);
                 agreementDetail.setAgreementStopReason(agreementStopReason);
                 agreementDetail.setAgentApplyState(AgencyState.WIN_STOP.getValue());
                 aeaProjApplyAgentService.updateAeaProjApplyAgent(agreementDetail);
+                if(StringUtils.isNotBlank(oldAgentStopAgreementFileId)){
+                    //删除旧的文件
+                    fileUtilsService.deleteAttachment(oldAgentStopAgreementFileId);
+                }
                 resultForm.setSuccess(true);
                 resultForm.setMessage("上传成功。");
             }
@@ -367,15 +369,16 @@ public class AeaProjApplyAgentController {
             if(agreementDetail == null){
                 resultForm.setMessage("代办申请不存在。");
             }else{
-                if(StringUtils.isNotBlank(agreementDetail.getAgentEndAgreementFileId())){
-                    //删除原有的文件
-                    fileUtilsService.deleteAttachment(agreementDetail.getAgentEndAgreementFileId());
-                }
+                String oldAgentEndAgreementFileId = agreementDetail.getAgentEndAgreementFileId();
                 BscAttForm bscAttForm = fileUtilsService.upload("AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID", applyAgentId, null, file);
                 agreementDetail.setAgentEndAgreementFileId(bscAttForm.getDetailId());
                 agreementDetail.setAgreementEndTime(agreementEndTime);
                 agreementDetail.setAgentApplyState(AgencyState.WIN_END.getValue());
                 aeaProjApplyAgentService.updateAeaProjApplyAgent(agreementDetail);
+                if(StringUtils.isNotBlank(oldAgentEndAgreementFileId)){
+                    //删除旧的文件
+                    fileUtilsService.deleteAttachment(oldAgentEndAgreementFileId);
+                }
                 resultForm.setSuccess(true);
                 resultForm.setMessage("上传成功。");
             }

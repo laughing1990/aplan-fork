@@ -37,7 +37,7 @@
 
 <body>
 <div id="approvePage" v-cloak :class="{ 'is-expanded': expanded }" v-loading="parentPageLoading"
-     element-loading-text="拼命加载中" element-loading-background="rgba(0, 0, 0, 0.8)">
+     element-loading-text="数据加载中..." element-loading-background="rgba(0, 0, 0, 0.8)">
   <header class="page-header">
     <h3>
       <b>{{typeAstateData.stageOrItemName || '加载中...'}}</b>
@@ -1524,7 +1524,7 @@
             </template>
           </div>
         </div>
-        <iframe v-else :src="u.src" class="ltab-iframe"></iframe>
+        <iframe v-else :src="u.src" :id="'ltabs_'+u.labelId" class="ltab-iframe"></iframe>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -1891,12 +1891,12 @@
   </el-dialog>
   <!--  只有办理意见的dialog  start-->
   <el-dialog :title="preApproveOperation" width="942px" v-loading="onlySuggestLoading"
-             :visible.sync="onlySuggestDialog">
+             :visible.sync="onlySuggestDialog" @close="closeOSD">
     <el-form class="send-dia-form" ref="onlySuggestForm" :rules="sendFormRule" :model="onlySuggestForm"
              label-width="110px">
       <div class="send-form-part">
-        <div class="part-title">办理结果及意见</div>
-        <el-form-item label="办理结果：" style="padding-top:14px;pading-bottom: 9px;">
+        <div class="part-title" v-show="!onlySaveOpinonFlag">办理结果及意见</div>
+        <el-form-item label="办理结果：" style="padding-top:14px;pading-bottom: 9px;" v-if="!onlySaveOpinonFlag">
           <el-radio-group v-model="conclusionOptionValue">
             <el-radio label="1">同意</el-radio>
             <el-radio label="0">不同意</el-radio>
@@ -1913,7 +1913,19 @@
                 class="ag ag-save-common"></i></el-button>
           </el-tooltip>
         </el-form-item>
-        <el-form-item label="办理意见：" style="padding-right:25px;padding-bottom: 29px;">
+        <el-form-item label="选择意见：" style="padding-top:14px;pading-bottom: 9px;" v-if="onlySaveOpinonFlag">
+          <el-select v-model="sendForm.selectOpinion" filterable placeholder="请选择常用意见" @change="opinionSelectChange"
+                     style="margin-right:5px;width:295px;"
+                     size="medium" class="sug-select">
+            <el-option :label="item.opinionContent" :value="item.opinionContent" v-for="item in opinionTableData"
+                       :key="item.opinionId"></el-option>
+          </el-select>
+          <el-tooltip class="item" effect="dark" content="设为常用意见" placement="top">
+            <el-button size="medium" type="info" style="position:relative;top:3px;" @click="setCommonOpinion()"><i
+                class="ag ag-save-common"></i></el-button>
+          </el-tooltip>
+        </el-form-item>
+        <el-form-item :label="onlySaveOpinonFlag?'填写意见':'办理意见：'" style="padding-right:25px;padding-bottom: 29px;">
           <el-input type="textarea" :rows="4" class="send-sug-textarea" placeholder="请输入内容"
                     v-model="opinionForm.opinionText"/>
         </el-form-item>
@@ -3276,6 +3288,24 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row style="margin-bottom:5px;">
+          <el-col :span="12">
+            <el-form-item label="短信通知">
+              <el-radio-group v-model="solicitForm.isSendSms">
+                <el-radio label="1">是</el-radio>
+                <el-radio label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item v-show="dialogConfig.showType" :label="dialogConfig.formLabel+'类型'">
+              <el-radio-group v-model="solicitForm.solicitType" @change="changeOsTab">
+                <el-radio label="i">按事项征询</el-radio>
+                <el-radio label="d">按部门征询</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <template v-if="dialogConfig.showFileBox">
           <el-row style="margin-bottom:5px;">
             <el-col :span="12">
@@ -3319,24 +3349,6 @@
                     </template>
                   </el-table-column>
                 </el-table>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row style="margin-bottom:5px;">
-            <el-col :span="12">
-              <el-form-item label="短信通知">
-                <el-radio-group v-model="solicitForm.isSendSms">
-                  <el-radio label="1">是</el-radio>
-                  <el-radio label="0">否</el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item v-show="dialogConfig.showType" :label="dialogConfig.formLabel+'类型'">
-                <el-radio-group v-model="solicitForm.solicitType" @change="changeOsTab">
-                  <el-radio label="i">按事项征询</el-radio>
-                  <el-radio label="d">按部门征询</el-radio>
-                </el-radio-group>
               </el-form-item>
             </el-col>
           </el-row>

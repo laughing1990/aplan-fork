@@ -291,4 +291,7 @@ public interface AeaUnitInfoService {
     List<ExSJUnitFromDetails> findAeaExProBuildUnitInfoByKeyword(String keyword);
 
     List<AeaUnitInfo> findAeaUnitInfoByProjLocalCode(String localCode);
+
+    //用工程替换项目的关联关系
+    void replaceProjRelationByChild(String applyinstId,String parentProjInfoId,String childProjInfoId) throws Exception;
 }

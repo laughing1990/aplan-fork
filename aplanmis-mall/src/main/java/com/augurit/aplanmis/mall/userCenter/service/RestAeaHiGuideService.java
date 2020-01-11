@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.mall.userCenter.service;
 
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.GuideApplyState;
 import com.augurit.aplanmis.common.domain.AeaHiGuide;
 import com.augurit.aplanmis.common.domain.AeaHiGuideDetail;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class RestAeaHiGuideService {
@@ -47,10 +49,15 @@ public class RestAeaHiGuideService {
         aeaHiGuide.setCreateTime(new Date());
         aeaHiGuide.setApplyUnitInfoId(aeaGuideApplyVo.getUnitInfoId());
         AeaSolicitOrg aeaSolicitOrg=new AeaSolicitOrg();
-        aeaSolicitOrg.setStageId(aeaGuideApplyVo.getStageId());
+        aeaSolicitOrg.setLatestStageId(aeaGuideApplyVo.getStageId());
         aeaSolicitOrg.setIsBusSolicit("0");
-        List<AeaSolicitOrg> solicitOrgs = aeaSolicitOrgService.listAeaSolicitOrg(aeaSolicitOrg);
+        List<AeaSolicitOrg> solicitOrgs = aeaSolicitOrgService.listAeaSolicitOrgRelOrgInfo(aeaSolicitOrg);
         if(solicitOrgs.size()==0) throw new Exception("找不到牵头部门");
+        String regionId=aeaGuideApplyVo.getRegionalism();
+        if(StringUtils.isNotBlank(regionId)) {
+            solicitOrgs=solicitOrgs.stream().filter(v->regionId.equals(v.getRegionId())).collect(Collectors.toList());
+            if(solicitOrgs.size()==0) throw new Exception("找不到与当前项目行政区划匹配的牵头部门");
+        }
         aeaHiGuide.setLeaderOrgId(solicitOrgs.size()>0?solicitOrgs.get(0).getOrgId():null);
         if(solicitOrgs.size()>0){
             AeaSolicitOrgUser aeaSolicitOrgUser=new AeaSolicitOrgUser();

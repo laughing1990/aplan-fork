@@ -41,7 +41,7 @@ public interface AeaHiIteminstMapper {
     //isDeleted  1 则包含 isDeleted字段
     List<AeaHiIteminst> getAeaHiIteminstListByApplyinstId(@Param("applyinstId") String applyinstId, @Param("isDeleted") String isDeleted);
 
-    List<ApproveProjInfoDto> getApproveProjInfoListByUnitOrLinkman(@Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId, @Param("state") String state,@Param("applyinstState") String applyinstState,@Param("keyword") String keyword);
+    List<ApproveProjInfoDto> getApproveProjInfoListByUnitOrLinkman(@Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId, @Param("state") String state,@Param("applyinstState") String applyinstState,@Param("keyword") String keyword,@Param("filterStates") String[] filterStates);
 
 
     /**

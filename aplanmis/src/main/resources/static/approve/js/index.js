@@ -735,6 +735,7 @@ var vm = new Vue({
       // 一次征询 end
       processDialogFull: false,
       configOrgList: [],
+      onlySaveOpinonFlag: false,
     }
   },
   filters: {
@@ -798,8 +799,59 @@ var vm = new Vue({
     },
   },
   methods: {
-    // 只填写一个意见
+    // 生成终审意见书
+    createFinalOpinon: function () {},
+    // 检查是否已经存在意见书
+    checkFinalOpinonExist: function(val){
+      var vm = this;
+      vm.parentPageLoading = true;
+      request('', {
+        url: ctx + 'projAccept/createAcceptOpinionSummaryPwpf',
+        type: 'post',
+        timeout: 120000,
+        data: {
+          applyinstId: vm.masterEntityKey,
+          procinstId: vm.processInstanceId,
+          override: val,
+        }
+      }, function(res){
+        vm.parentPageLoading = false;
+        if (res.success){
+          vm.$message.success('联合验收终审意见书生成成功');
+          vm.pageLeftActiveId = '6';
+          document.getElementById('ltabs_6').contentWindow.location.reload();
+        } else {
+          vm.$confirm(res.message, '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(function(){
+            vm.checkFinalOpinonExist(1);
+          }).catch(function(){});
+        }
+      }, function(){
+        vm.parentPageLoading = false;
+        vm.$message.error('操作失败，请重试');
+      });
+    },
+    // 点击生成终审意见书按钮
+    clickCreateFinalOpinon: function(){
+      this.checkFinalOpinonExist('');
+    },
+    // 关闭弹窗
+    closeOSD: function(){
+      this.onlySaveOpinonFlag = false;
+    },
+    // 仅仅填写意见
     onlySaveOpinon: function(){
+      var vm = this;
+      this.preApproveOperation = '填写意见';
+      this.onlySaveOpinonFlag = true;
+      this.getOpinionList();
+      this.onlySuggestDialog = true;
+    },
+    // 仅仅填写意见 废弃
+    onlySaveOpinon1: function(){
       var vm = this;
       vm.$prompt('', '填写意见', {
         confirmButtonText: '确定',
@@ -822,8 +874,14 @@ var vm = new Vue({
           },
         }, function(res) {
           vm.parentPageLoading = false;
+          if (res.success) {
+            vm.$message.success('意见保存成功');
+          } else {
+            vm.$message.error('保存意见失败，请重试');
+          }
         }, function(){
           vm.parentPageLoading = false;
+          vm.$message.error('保存意见失败，请重试');
         });
         return true;
       }).catch(function(){});
@@ -3578,12 +3636,12 @@ var vm = new Vue({
         elementRender: '<button class="btn btn-outline-info" onclick="showDiagramDialog()">查看流程图</button>'
       }];
       var solicitBtn = [{
-        elementName: "意见征求",
+        elementName: "意见征询",
         elementCode: "wfBusSave",
         columnType: "button",
         isReadonly: '0',
         isHidden: '0',
-        elementRender: '<button class="btn btn-outline-info" onclick="clickStartSolicit()">意见征求</button>'
+        elementRender: '<button class="btn btn-outline-info" onclick="clickStartSolicit()">意见征询</button>'
       }];
       var oneSolicitBtn = [{
         elementName: "一次征询",
@@ -4816,6 +4874,34 @@ var vm = new Vue({
 
     //网上预审的接口
     updateApplyState: function () {
+      if (this.onlySaveOpinonFlag){
+        // 仅仅填写意见，不推动流程操作
+        if (vm.checkNull(vm.opinionForm.opinionText)) {
+          return vm.$message.error('请填写办理意见！');
+        }
+        vm.onlySuggestLoading = true;
+        request('', {
+          url: ctx + 'rest/bpm/approve/addTaskComment',
+          type: 'put',
+          data: {
+            taskId: vm.taskId,
+            processInstanceId: vm.processInstanceId,
+            comment: vm.opinionForm.opinionText,
+          },
+        }, function(res) {
+          vm.onlySuggestLoading = false;
+          if (res.success) {
+            vm.onlySuggestDialog = false;
+            vm.$message.success('意见保存成功');
+          } else {
+            vm.$message.error('保存意见失败，请重试');
+          }
+        }, function(){
+          vm.onlySuggestLoading = false;
+          vm.$message.error('保存意见失败，请重试');
+        });
+        return null;
+      }
       if (vm.preApproveOperation == '填写办理意见') {
         if (vm.checkNull(vm.opinionForm.opinionText)) {
           vm.$message.error('请填写办理意见！');
@@ -6882,6 +6968,10 @@ function ensureUnionReview(val){
 
 function onlySaveOpinon(){
   vm.onlySaveOpinon();
+}
+
+function clickCreateFinalOpinon(){
+  vm.clickCreateFinalOpinon();
 }
 
 /**

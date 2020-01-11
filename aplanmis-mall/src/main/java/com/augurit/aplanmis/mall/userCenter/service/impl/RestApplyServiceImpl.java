@@ -38,13 +38,14 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.flowable.engine.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Transactional
 @Service
 public class RestApplyServiceImpl implements RestApplyService {
 

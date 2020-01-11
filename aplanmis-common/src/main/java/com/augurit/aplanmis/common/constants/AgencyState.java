@@ -26,8 +26,8 @@ public enum AgencyState implements BaseEnum<TimeruleInstState, String> {
     @ApiModelProperty(value = "SIGN_COMPLETED", name = "已签订（代办中）", allowableValues = "SIGN_COMPLETED")
     SIGN_COMPLETED("已签订（代办中）", "4"),
 
-    @ApiModelProperty(value = "OUT_SCOPE", name = "不予受理", allowableValues = "OUT_SCOPE")
-    OUT_SCOPE("不予受理", "5"),
+    @ApiModelProperty(value = "OUT_SCOPE", name = "拒绝代办", allowableValues = "OUT_SCOPE")
+    OUT_SCOPE("拒绝代办", "5"),
 
     @ApiModelProperty(value = "WIN_STOP", name = "窗口终止(终止待签章)", allowableValues = "WIN_STOP")
     WIN_STOP("窗口终止", "6"),

@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.common.service.receive.utils;
 
 import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
+import com.augurit.aplanmis.common.service.projAccept.vo.OpinionSummaryVo;
 import com.augurit.aplanmis.common.service.projAccept.vo.ProjAcceptOpinionSummaryVo;
 import com.augurit.aplanmis.common.service.receive.vo.ReceiveBaseVo;
 import com.augurit.aplanmis.common.utils.DateUtils;
@@ -85,7 +86,7 @@ public class FsReceivePDFTemplate {
         StringBuffer str = new StringBuffer("C:\\document\\奥格\\工改\\工建与广东省平台（数广）对接\\佛山工改\\回执模板\\");
 
         str.append(TI_JIAO_SHEN_QING);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         // 创建writer，通过writer将文档写入磁盘
@@ -192,7 +193,7 @@ public class FsReceivePDFTemplate {
         StringBuffer str = new StringBuffer("C:\\document\\奥格\\工改\\工建与广东省平台（数广）对接\\佛山工改\\回执模板\\");
 
         str.append(JIE_SHOU);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         // 创建writer，通过writer将文档写入磁盘
@@ -273,7 +274,7 @@ public class FsReceivePDFTemplate {
         StringBuffer str = ReceivePDFTemplate.pdfFilePath();
 
         str.append(SHOU_LI);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
@@ -417,7 +418,7 @@ public class FsReceivePDFTemplate {
         //StringBuffer str = new StringBuffer("D:\\Augur\\foshan\\回执模板\\");
 
         str.append(PI_ZHUN);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         // 创建writer，通过writer将文档写入磁盘
@@ -487,7 +488,7 @@ public class FsReceivePDFTemplate {
         //StringBuffer str = new StringBuffer("D:\\Augur\\foshan\\回执模板\\");
 
         str.append(BU_YU_PI_ZHUN);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         // 创建writer，通过writer将文档写入磁盘
@@ -574,7 +575,7 @@ public class FsReceivePDFTemplate {
         //StringBuffer str = new StringBuffer("D:\\Augur\\foshan\\回执模板\\");
 
         str.append(JIAO_FEI);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         // 创建writer，通过writer将文档写入磁盘
@@ -676,7 +677,7 @@ public class FsReceivePDFTemplate {
         //StringBuffer str = new StringBuffer("D:\\Augur\\foshan\\回执模板\\");
 
         str.append(SONG_DA);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         // 创建writer，通过writer将文档写入磁盘
@@ -816,7 +817,7 @@ public class FsReceivePDFTemplate {
         //StringBuffer str = new StringBuffer("D:\\Augur\\foshan\\回执模板\\");
 
         str.append(WU_LIAO_LIU_ZHUANG);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         // 创建writer，通过writer将文档写入磁盘
@@ -943,7 +944,7 @@ public class FsReceivePDFTemplate {
         StringBuffer str = ReceivePDFTemplate.pdfFilePath();
 
         str.append(BU_ZHENG);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
@@ -1043,7 +1044,7 @@ public class FsReceivePDFTemplate {
         document.setMargins(70, 70, 10, 10);
         StringBuffer str = ReceivePDFTemplate.pdfFilePath();
         str.append(BU_YU_SHOU_LI);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
@@ -1180,7 +1181,7 @@ public class FsReceivePDFTemplate {
         document.setMargins(70, 70, 10, 10);
         StringBuffer str = ReceivePDFTemplate.pdfFilePath();
         str.append(TE_SHU);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
@@ -1254,7 +1255,7 @@ public class FsReceivePDFTemplate {
         document.setMargins(70, 70, 10, 10);
         StringBuffer str = ReceivePDFTemplate.pdfFilePath();
         str.append(YAN_CHANG);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
@@ -1319,7 +1320,7 @@ public class FsReceivePDFTemplate {
         document.setMargins(70, 70, 10, 10);
         StringBuffer str = ReceivePDFTemplate.pdfFilePath();
         str.append(LHYS_ZHONGSHEN_YJS);
-        str.append((int) ((Math.random() * 9 + 1) * 1000));
+//        str.append((int) ((Math.random() * 9 + 1) * 1000));
         str.append(".pdf");
         FileOutputStream fileOutputStream = new FileOutputStream(str.toString());
         PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
@@ -1332,7 +1333,7 @@ public class FsReceivePDFTemplate {
         String receiveName = LHYS_ZHONGSHEN_YJS;
         String instrumentNo = receiveBaseVo.getDocumentNum() == null?"":receiveBaseVo.getDocumentNum();
         String region = "（佛山市/" + receiveBaseVo.getLhpsYjsRegion() + ")";
-        Map<String, String> deptOpinions = null;
+        List<OpinionSummaryVo> deptOpinions = null;
         ProjAcceptOpinionSummaryVo projAcceptOpinionSummaryVo = receiveBaseVo.getProjAcceptOpinionSummaryVo();
         if(projAcceptOpinionSummaryVo != null){
             deptOpinions = receiveBaseVo.getProjAcceptOpinionSummaryVo().getDeptOpinions();
@@ -1384,9 +1385,9 @@ public class FsReceivePDFTemplate {
         addCell(table1,font3,"验收（监督）部门名称",Element.ALIGN_LEFT,false,1,30);
         addCell(table1,font3,"意见",Element.ALIGN_CENTER,false,5,30);
         if(deptOpinions != null && deptOpinions.size() > 0){
-            for (String key : deptOpinions.keySet()) {
-                addCell(table1,font3,key,Element.ALIGN_LEFT,false,1);
-                addCell(table1,font3,deptOpinions.get(key),Element.ALIGN_CENTER,false,5,50);
+            for (OpinionSummaryVo deptOpinion : deptOpinions) {
+                addCell(table1,font3,deptOpinion.getDeptName(),Element.ALIGN_LEFT,false,1);
+                addCell(table1,font3,deptOpinion.getOpinion(),Element.ALIGN_CENTER,false,5,50);
             }
         }
 
@@ -2016,7 +2017,7 @@ public class FsReceivePDFTemplate {
         }
     }
 
-    public static void test() throws Exception{
+    /*public static void test() throws Exception{
         ReceiveBaseVo vo = new ReceiveBaseVo();
         vo.setReceiveCertNo("88888888");
         vo.setApplicant("广东拓杰机电工程有限公司");
@@ -2058,10 +2059,10 @@ public class FsReceivePDFTemplate {
         vo.setProjAcceptOpinionSummaryVo(projAcceptOpinionSummaryVo);
 
         createLhysZhongshenYjsReceipt(vo);
-    }
+    }*/
 
     public static void main(String[] args) throws Exception{
-        test();
+//        test();
 //        createTeShuReceipt();
 //        createShouLiReceipt(null);
     }

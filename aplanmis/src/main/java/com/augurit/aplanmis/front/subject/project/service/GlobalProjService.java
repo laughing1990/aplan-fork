@@ -594,5 +594,25 @@ public class GlobalProjService {
         }
         return sb.toString();
     }
+
+    public void saveProjWinRelation(String windowId,String projInfoIds) throws Exception{
+        AeaServiceWindow window = aeaServiceWindowMapper.getAeaServiceWindowById(windowId);
+        if(window != null){
+            String[] ids = projInfoIds.split(",");
+            String currentOrgId = SecurityContext.getCurrentOrgId();
+            String currentUserName = SecurityContext.getCurrentUserName();
+            aeaProjWindowMapper.deleteAeaProjWindowByProjInfoIds(ids);
+            for(String id: ids){
+                AeaProjWindow projWindow = new AeaProjWindow();
+                projWindow.setProjWindowId(UUID.randomUUID().toString());
+                projWindow.setProjInfoId(id);
+                projWindow.setWindowId(windowId);
+                projWindow.setCreater(currentUserName);
+                projWindow.setCreateTime(new Date());
+                projWindow.setRootOrgId(currentOrgId);
+                aeaProjWindowMapper.insertAeaProjWindow(projWindow);
+            }
+        }
+    }
 }
 

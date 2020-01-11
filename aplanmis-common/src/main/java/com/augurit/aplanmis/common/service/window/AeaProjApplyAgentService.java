@@ -41,4 +41,5 @@ public interface AeaProjApplyAgentService {
 
     public String queryRedisData(String applyAgentId) throws Exception;
 
+    public void saveRedisAeaProjApplyAgentInfo(AeaProjApplyAgent aeaProjApplyAgent) throws Exception;
 }
