@@ -1990,4 +1990,12 @@
         </sql>
     </changeSet>
 
+    <changeSet id="20200111160525" author="zhangwn" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_proj_apply_agent`
+            MODIFY COLUMN `AGENT_APPLY_STATE` char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL
+            COMMENT '代办申请状态 1待签订 2窗口签订中 3 待申请人签章 4已签订（代办中） 5拒绝代办 6窗口终止 7代办终止 8窗口办结 9代办结束' AFTER `AGENT_STAGE_STATE`;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
