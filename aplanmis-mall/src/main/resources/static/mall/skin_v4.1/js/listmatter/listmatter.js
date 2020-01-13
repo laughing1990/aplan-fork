@@ -41,6 +41,12 @@ var listmatter = (function(window){
                         vm.contentLoading = false;
                         var content = res.content;
                         vm.stateList = content.stateList;
+                        vm.stateList.map(function (item, ind) { // 情形下插入对应的情形
+                            if (item.answerType != 's' && item.answerType != 'y') {
+                                Vue.set(item, 'selValue', []);
+                                item.selectAnswerId = item.selValue;
+                            }
+                        });
                         vm.listmatterData = content;
                         vm.parallelItemList = content.parallelItemList; //  并联事项
                         //筛选出isDoneItem为“1”的数据，该数据勾选状态需要设置为勾选且禁用
@@ -332,15 +338,19 @@ var listmatter = (function(window){
             },
             // 点击开始指引
             startAILeadFn:function(){
-                console.log(this.stateSelVal);
+                var vm = this;
+                this.AIleadDialogFlag= false;
+                // 取到选择的情形id列表
+                var stateIds = this.fetchStateList(this.stateList) || [];
                 var params = {
                     "projectAddress": "", // 建设地点
                     "regionalism": "", //行政区划
                     "stageId":vm.stageId, // 阶段id
-                    "stateIds": [] // 情形ID列表
-                }
+                    "stateIds": stateIds // 情形ID列表
+                };
+
                 $.ajax({
-                    url: ctx + 'rest/guide/itGuide/item/list',
+                    url: ctx + 'rest/guide/itGuide/item/list', // 智能引导获取事项一单清列表数据
                     type: 'post',
                     data:JSON.stringify(params),
                     contentType: 'application/json;charset=utf-8',
@@ -348,8 +358,10 @@ var listmatter = (function(window){
                         vm.materialLoading = false;
                         if (res.success) {
                             var content = res.content;
-                            vm.requireMat = content.requireMat;
-                            vm.noRequireMat = content.noRequireMat;
+                            var coreItemList = content.coreItemList;
+                            var parallelItemList = content.parallelItemList;
+                            // 和原来的数据对比，页面的事项对应有的话要勾选
+                            vm.compareAutoSelect(coreItemList,parallelItemList);
                         } else {
                             vm.$message.error(res.message);
                         }
@@ -382,6 +394,52 @@ var listmatter = (function(window){
                 this.stageId = theRequest.stageId? theRequest.stageId : null;
                 this.getItemList(this.stageId);
                 return theRequest;
+            },
+            fetchStateList:function(stateList){
+                var fetchStateListData = [];
+                if (stateList.length < 1) return  fetchStateListData;
+                stateList.forEach(function (item) {
+                    if(item.selectAnswerId){
+                        var itemSelectAnswerId = item.selectAnswerId
+                        if(typeof itemSelectAnswerId == 'object' && itemSelectAnswerId.constructor == Array){
+                            for (var i = 0; i < itemSelectAnswerId.length; i++) {
+                                fetchStateListData.push(itemSelectAnswerId[i]);
+                            }
+                        }else if(typeof itemSelectAnswerId == 'string' && itemSelectAnswerId.constructor == String){
+                            fetchStateListData.push(itemSelectAnswerId)
+                        }
+                    }
+                });
+                return fetchStateListData;
+            },
+            compareAutoSelect:function(coreItemList,parallelItemList){
+                for (var i = 0; i < vm.coreItemList.length; i++) {
+                    var isflag ;
+                    for (var j = 0; j < coreItemList.length; j++) {
+                        if(coreItemList[j].itemVerId == vm.coreItemList[i].itemVerId){
+                            isExit = true;
+                        }
+                    }
+                    vm.$nextTick(function(){
+                        debugger
+                        console.log(vm.coreItemList[i])
+                        isflag  &&  vm.$refs.coreItemListTable.toggleRowSelection(vm.coreItemList[i].true);
+                    })
+                }
+
+                for (var i = 0; i < vm.parallelItemList.length; i++) {
+                    var isflag ;
+                    for (var j = 0; j < parallelItemList.length; j++) {
+                        if(parallelItemList[j].itemVerId == vm.parallelItemList[i].itemVerId){
+                            isExit = true;
+                        }
+                    }
+                    vm.$nextTick(function(){
+                        debugger
+                        console.log(vm.parallelItemList[i])
+                        isflag  &&   vm.$refs.parallelItematable.toggleRowSelection(vm.parallelItemList[i],true);
+                    })
+                }
             },
         }
     })
