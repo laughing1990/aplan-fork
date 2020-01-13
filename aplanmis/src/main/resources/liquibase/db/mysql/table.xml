@@ -1998,4 +1998,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="202001130954" author="yinlf" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `bsc_att_dir`
+            ADD COLUMN `STORE_URL` varchar(255) COMMENT '文件存储路径' AFTER `STORE_TYPE`;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
