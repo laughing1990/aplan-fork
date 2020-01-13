@@ -1933,7 +1933,8 @@
     </el-form>
     <span slot="footer" class="dialog-footer">
         <el-button @click="onlySuggestDialog=false" size="medium">取 消</el-button>
-        <el-button type="primary" size="medium" @click="updateApplyState">发 送</el-button>
+        <el-button v-show="finalOpinonBtnVisibel" type="primary" size="medium" @click="clickCreateFinalOpinon">生成终审意见书</el-button>
+        <el-button type="primary" size="medium" @click="updateApplyState">确 定</el-button>
       </span>
   </el-dialog>
   <!--更改事项状态专用弹框 start-->
