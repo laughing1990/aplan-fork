@@ -970,8 +970,12 @@ textarea {
 }
 
 .right-bottom-btn .el-button.is-circle.el-button--primary {
-  background: #169aff;
-  color: #fff;
+    background: #169aff;
+    color: #fff;
+}
+.right-bottom-btn .el-button.is-circle.el-button--success {
+    background: #00C161;
+    color: #fff;
 }
 
 /*项目树窗口 start*/
