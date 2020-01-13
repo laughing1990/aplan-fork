@@ -736,6 +736,7 @@ var vm = new Vue({
       processDialogFull: false,
       configOrgList: [],
       onlySaveOpinonFlag: false,
+      finalOpinonBtnVisibel: false,
     }
   },
   filters: {
@@ -804,7 +805,7 @@ var vm = new Vue({
     // 检查是否已经存在意见书
     checkFinalOpinonExist: function(val){
       var vm = this;
-      vm.parentPageLoading = true;
+      vm.onlySuggestLoading = true;
       request('', {
         url: ctx + 'projAccept/createAcceptOpinionSummaryPwpf',
         type: 'post',
@@ -815,7 +816,7 @@ var vm = new Vue({
           override: val,
         }
       }, function(res){
-        vm.parentPageLoading = false;
+        vm.onlySuggestLoading = false;
         if (res.success){
           vm.$message.success('联合验收终审意见书生成成功');
           vm.pageLeftActiveId = '6';
@@ -830,7 +831,7 @@ var vm = new Vue({
           }).catch(function(){});
         }
       }, function(){
-        vm.parentPageLoading = false;
+        vm.onlySuggestLoading = false;
         vm.$message.error('操作失败，请重试');
       });
     },
@@ -841,6 +842,7 @@ var vm = new Vue({
     // 关闭弹窗
     closeOSD: function(){
       this.onlySaveOpinonFlag = false;
+      this.finalOpinonBtnVisibel = false;
     },
     // 仅仅填写意见
     onlySaveOpinon: function(){
@@ -848,7 +850,21 @@ var vm = new Vue({
       this.preApproveOperation = '填写意见';
       this.onlySaveOpinonFlag = true;
       this.getOpinionList();
-      this.onlySuggestDialog = true;
+      this.parentPageLoading = true;
+      // 请求旧的意见数据
+      request('', {
+        url: ctx + 'rest/bpm/approve/task/comment',
+        type: 'get',
+        data: { taskId: vm.taskId },
+      }, function(res) {
+        vm.parentPageLoading = false;
+        try {
+          vm.opinionForm.opinionText = res.content.commentList[0].commentMessage;
+        } catch(e) {}
+        vm.onlySuggestDialog = true;
+      }, function(){
+        vm.parentPageLoading = false;
+      });
     },
     // 仅仅填写意见 废弃
     onlySaveOpinon1: function(){
@@ -4281,6 +4297,10 @@ var vm = new Vue({
     },
     //获取审批意见列表
     getOpinionList: function () {
+      var vm = this;
+      if (vm.opinionTableData.length) {
+        return null;
+      }
       request('bpmFrontUrl', {
         url: ctx + 'rest/comment/getAllActiveUserOpinions',
         type: 'get',
@@ -4891,7 +4911,8 @@ var vm = new Vue({
         }, function(res) {
           vm.onlySuggestLoading = false;
           if (res.success) {
-            vm.onlySuggestDialog = false;
+            // vm.onlySuggestDialog = false;
+            vm.finalOpinonBtnVisibel = true;
             vm.$message.success('意见保存成功');
           } else {
             vm.$message.error('保存意见失败，请重试');
