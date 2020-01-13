@@ -76,6 +76,10 @@
         <div class="window-title">
           <div class="clearfix">
             <span>{{windowNameTitle}}</span>
+            <span class="fr win-info">
+              联系电话： {{chooseAgencyCenter.linkPhone || '-'}}&nbsp; &nbsp;
+              地址： {{chooseAgencyCenter.windowAddress || '-'}}
+            </span>
           </div>
         </div>
         <el-tabs v-model="activeName" @tab-click="tabclick" style="padding: 0 12px 0;">

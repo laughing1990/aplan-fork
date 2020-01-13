@@ -40,7 +40,8 @@
         <!-- 右侧操作按钮栏 -->
         <div class="right-bottom-btn" v-if="3>agencyDetailApiData.agentApplyState && formListIsDo">
           <el-button circle type="danger" @click="refuseToAccept">不予</br>受理</el-button>
-          <el-button circle type="primary" @click="signAgreementFn">签订</br>协议</el-button>
+          <!-- <el-button circle type="primary" @click="signAgreementFn">签订</br>协议</el-button> -->
+          <el-button circle type="primary" @click="saveAgencyInfo">签订</br>协议</el-button>
         </div>
       </div>
       <el-form :inline="true" :model="projInfoForm" :rules="rules" label-width="160px"
@@ -213,15 +214,15 @@
                 v-model="projInfoForm.agreementSignTime">
               </el-date-picker>
             </el-form-item>
-            <div class="al-right mt10" style="padding-right: 40px;" v-if="3>agencyDetailApiData.agentApplyState">
+            <!-- <div class="al-right mt10" style="padding-right: 40px;" v-if="3>agencyDetailApiData.agentApplyState">
               <el-button type="primary" @click="saveAgencyInfo">保 存</el-button>
-            </div>
+            </div> -->
           </el-collapse-item>
           <!-- 代办信息 end -->
 
           <!-- 代办委托协议 start -->
           <el-collapse-item class="clearfix" name="4" id="commissionagentagreement"
-            v-if="agencyDetailApiData.agentApplyState >= 3">
+            v-if="agencyDetailApiData.agentApplyState >= 3 && agencyDetailApiData.agentApplyState != 5">
             <template slot="title">
               <i class="header-icon el-icon-document-copy"></i>代办委托协议
             </template>
@@ -252,7 +253,7 @@
 
           <!-- 代办办结单 start -->
           <el-collapse-item class="clearfix" name="5" id="endagentagreement"
-            v-if="agencyDetailApiData.agentApplyState == 7">
+            v-if="agencyDetailApiData.agentApplyState == 8 || agencyDetailApiData.agentApplyState == 9">
             <template slot="title">
               <i class="header-icon el-icon-document-copy"></i>代办办结单
             </template>
@@ -285,7 +286,7 @@
 
           <!-- 代办委托终止单 start -->
           <el-collapse-item class="clearfix" name="6" id="stopagentagreement"
-            v-if="agencyDetailApiData.agentApplyState == 5">
+            v-if="agencyDetailApiData.agentApplyState == 6 || agencyDetailApiData.agentApplyState == 7">
             <template slot="title">
               <i class="header-icon el-icon-document-copy"></i>代办委托终止单
             </template>
