@@ -56,6 +56,7 @@ import com.augurit.aplanmis.common.service.window.AeaServiceWindowService;
 import com.augurit.aplanmis.front.certificate.vo.CertListAndUnitVo;
 import com.augurit.aplanmis.front.certificate.vo.CertLogisticsDetailResultVo;
 import com.augurit.aplanmis.front.certificate.vo.CertLogisticsDetailVo;
+import com.augurit.aplanmis.front.certificate.vo.CertMailListVo;
 import com.augurit.aplanmis.front.certificate.vo.CertOutinstVo;
 import com.augurit.aplanmis.front.certificate.vo.CertReceivedVo;
 import com.augurit.aplanmis.front.certificate.vo.CertRegistrationItemVo;
@@ -185,6 +186,17 @@ public class RestCertificateService {
             aeaHiSmsSendItemMapper.updateAeaHiSmsSendItem(aeaHiSmsSendItem);
         }
         return order.getExpressNum();
+    }
+
+    /**
+     * 寄件信息
+     *
+     * @param applyinstId 申报实例id
+     */
+    public List<CertMailListVo> mailList(String applyinstId) {
+        Assert.hasText(applyinstId, "申报实例不能为空");
+        List<AeaHiSmsSendItem> aeaHiSmsSendItems = aeaHiSmsSendItemMapper.listMailListByApplyinstId(applyinstId);
+        return aeaHiSmsSendItems.stream().map(CertMailListVo::from).collect(Collectors.toList());
     }
 
     public CertLogisticsDetailResultVo logisticsDetail(CertLogisticsDetailVo certLogisticsDetailVo) throws Exception {

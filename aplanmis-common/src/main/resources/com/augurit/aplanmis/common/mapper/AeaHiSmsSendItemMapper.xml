@@ -369,4 +369,13 @@ SEND_ITEM_ID  ,SEND_ITEM_CODE  ,IS_ONCE_SEND  ,SEND_APPLY_ID  ,APPLYINST_ID  ,IT
       and aii.IS_INPUT='0'
       and aii.IS_DELETED='0'
     </select>
+
+    <select id="listMailListByApplyinstId" resultType="com.augurit.aplanmis.common.domain.AeaHiSmsSendItem">
+        select
+        <include refid="allColumns"/>
+        from aea_hi_sms_send_item ahss
+        where ahss.applyinst_id=#{applyinstId}
+        and ahss.EXPRESS_NUM is not null
+        order by ahss.CREATE_TIME desc
+    </select>
 </mapper>

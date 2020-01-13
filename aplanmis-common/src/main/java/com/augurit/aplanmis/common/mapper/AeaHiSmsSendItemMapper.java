@@ -40,4 +40,6 @@ public interface AeaHiSmsSendItemMapper {
      * @param applyinstId
      */
     int getNeedSendCount(@Param("applyinstId") String applyinstId);
+
+    List<AeaHiSmsSendItem> listMailListByApplyinstId(String applyinstId);
 }

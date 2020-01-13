@@ -13,6 +13,7 @@ import com.augurit.aplanmis.front.certificate.service.RestCertificateService;
 import com.augurit.aplanmis.front.certificate.vo.CertListAndUnitVo;
 import com.augurit.aplanmis.front.certificate.vo.CertLogisticsDetailResultVo;
 import com.augurit.aplanmis.front.certificate.vo.CertLogisticsDetailVo;
+import com.augurit.aplanmis.front.certificate.vo.CertMailListVo;
 import com.augurit.aplanmis.front.certificate.vo.CertOutinstVo;
 import com.augurit.aplanmis.front.certificate.vo.CertReceivedVo;
 import com.augurit.aplanmis.front.certificate.vo.CertRegistrationVo;
@@ -136,6 +137,20 @@ public class RestCertificateController {
         } catch (Exception e) {
             e.printStackTrace();
             return new ContentResultForm<>(false, null, "下单失败！" + e.getMessage());
+        }
+    }
+
+    @GetMapping("/out/materials/mail/list")
+    @ApiOperation(value = "寄件信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "applyinstId", value = "申报实例id", required = true)
+    })
+    public ContentResultForm<List<CertMailListVo>> mailList(String applyinstId) {
+        try {
+            return new ContentResultForm<>(true, certificateService.mailList(applyinstId), "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ContentResultForm<>(false, null, "寄件信息列表查询失败！" + e.getMessage());
         }
     }
 
