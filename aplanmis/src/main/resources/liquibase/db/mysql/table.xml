@@ -2005,4 +2005,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="202001141723" author="yinlf" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `bsc_job_remind`
+            ADD COLUMN `IS_DELETED` varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT '是否删除，0表示未删除，1表示已删除' AFTER `REMIND_UPDATE_ERROR`;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
