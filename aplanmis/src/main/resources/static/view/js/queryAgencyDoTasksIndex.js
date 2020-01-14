@@ -111,7 +111,7 @@ var vm = new Vue({
       var _date = __STATIC.formatDate(this.stopAgentForm.date, 'yyyy-MM-dd');
       var url = ctx + 'preview/pdfjs/web/viewer.html?file=';
       var _url = ctx + 'aea/proj/apply/agent/getAgencyStopAgreementFile';
-      _url += '?applyAgentId=' + this.applyAgentId;
+      _url += '?applyAgentId=' + this.targetRow.applyAgentId;
       _url += '&agreementStopReason=' + reason;
       _url += '&agreementStopTime=' + _date;
       url += encodeURIComponent(_url);
