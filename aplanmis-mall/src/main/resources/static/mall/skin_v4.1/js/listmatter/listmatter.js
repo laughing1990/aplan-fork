@@ -159,8 +159,14 @@ var listmatter = (function(window){
                 })
             },
             //根据事项版本号获取根情形列表
-            currentItemVerIdChangehandle:function(itemVerId){
-                this.getItemStateList(itemVerId);
+            currentItemVerIdChangehandle:function(item ,index){
+                console.log(item);
+                console.log(index);
+                this.parallelItemList[index].itemName = item.itemName;
+                this.parallelItemList[index].resultMats = item.resultMats;
+                this.parallelItemList[index].currentCarryOutItem.orgName = item.orgName;
+                this.parallelItemList[index].currentCarryOutItem.dueNum = item.dueNum;
+                //this.getItemStateList(itemVerId);
             },
             getItemStateList:function(itemVerId){
                 var vm = this;

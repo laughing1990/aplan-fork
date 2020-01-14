@@ -340,7 +340,6 @@ var guideIndex = (function () {
                         $(".theme-list").eq(val[i] - 1).addClass('active');
                     }
                 }
-
             },
 
             // 获取url参数
@@ -370,43 +369,6 @@ var guideIndex = (function () {
             getOrgId:function(){
                 var secOrgId = this.secOrgId;
                 this.getOrgList(secOrgId);
-            },
-
-
-
-            tableToggle: function (e, index) {
-
-                e.cancelBubble = true;
-
-                this.curIndex = index;
-
-                if (!e) {
-                    $(".items>li").eq(0).addClass('activeLi').siblings().removeClass('activeLi');
-                    return;
-                }
-                if (e.target.localName == "span") {
-                    $(e.target).parents("li").addClass('activeLi').siblings().removeClass('activeLi');
-                } else {
-                    $(e.target).addClass('activeLi').siblings().removeClass('activeLi');
-                }
-
-
-            },
-            tableToggle2: function (e, index) {
-
-                e.cancelBubble = true;
-
-                this.curIndex2 = index;
-
-                if (!e) {
-                    $(".items2>li").eq(0).addClass('activeLi').siblings().removeClass('activeLi');
-                    return;
-                }
-                if (e.target.localName == "span") {
-                    $(e.target).parents("li").addClass('activeLi').siblings().removeClass('activeLi');
-                } else {
-                    $(e.target).addClass('activeLi').siblings().removeClass('activeLi');
-                }
             },
 
             // 跳转智能引导页

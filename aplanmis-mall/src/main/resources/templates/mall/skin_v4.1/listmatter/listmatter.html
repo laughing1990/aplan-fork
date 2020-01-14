@@ -64,7 +64,7 @@
                                     width="50">
                             </el-table-column>
                             <el-table-column
-                                    prop="date"
+                                    prop="itemName"
                                     label="事项名称"
                                     >
                                 <template slot-scope="scope">
@@ -118,11 +118,12 @@
                                     <template slot-scope="scope">
                                         <div v-if="scope.row.isCatalog==1">
                                             <template v-if="scope.row.carryOutItems&&scope.row.carryOutItems.length>0">
-                                                <el-select :disabled="scope.row.disabled" v-model="scope.row.currentCarryOutItem.itemVerId" @change="currentItemVerIdChangehandle"
+                                                <el-select :disabled="scope.row.disabled" v-model="scope.row.currentCarryOutItem.itemVerId"
                                                            placeholder="请选择活动区域">
                                                     <el-option v-for="(item,indexOp) in scope.row.carryOutItems"
                                                                :key="indexOp"
                                                                :label="item.regionName"
+                                                               @click.native="currentItemVerIdChangehandle(item,scope.$index)"
                                                                :value="item.itemVerId"></el-option>
                                                 </el-select>
                                             </template>

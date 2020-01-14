@@ -1474,6 +1474,7 @@
     background-size: 100px 100px;
     background-repeat: no-repeat;
     background-position: center 30px;
+    cursor: pointer;
     display: none;
 }
 #guideMainLine .index-phase1 li:hover .wrapperGuide{
