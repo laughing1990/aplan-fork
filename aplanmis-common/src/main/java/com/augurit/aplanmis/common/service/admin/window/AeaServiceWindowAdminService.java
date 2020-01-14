@@ -3,6 +3,7 @@ package com.augurit.aplanmis.common.service.admin.window;
 import com.augurit.agcloud.bsc.domain.BscAttForm;
 import com.augurit.agcloud.framework.ui.elementui.ElementUiRsTreeNode;
 import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
+import com.augurit.agcloud.opus.common.domain.OpuOmUser;
 import com.augurit.aplanmis.common.domain.AeaServiceWindow;
 import com.augurit.aplanmis.common.domain.AeaServiceWindowItem;
 import com.augurit.aplanmis.common.domain.AeaServiceWindowStage;
@@ -221,4 +222,6 @@ public interface AeaServiceWindowAdminService {
      * 获取行政区划数据
      */
     List<AeaRegionOptionVo> getRegionOptions();
+
+    PageInfo<OpuOmUser> listAllUserByOrgId(OpuOmUser opuOmUser, String orgId, Page page);
 }

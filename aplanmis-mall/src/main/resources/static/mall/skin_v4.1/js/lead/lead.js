@@ -185,11 +185,7 @@
                         _that.stageListBefore = data.content;
                         if(data.content&&data.content.length>0){
                             if(flag=='guide'){
-                                if((!_that.stageId)||_that.stageId == ''){
-                                    if(_that.stageList.length>0){
-                                        _that.getStateList(_that.stageList[0].stageId);
-                                    }
-                                }else {
+                                if(_that.stageId&&_that.stageId !== ''){
                                     _that.getStateList(_that.stageId);
                                 }
                             }else {

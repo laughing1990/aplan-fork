@@ -104,9 +104,9 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
         //情形
         List<AeaParState> stateList = null;
         //并联
-        List<ParallelApproveItemVo> paraItemList = this.getRequiredItems(stageId, projInfoId, regionalism, projectAddress,isFilterStateItem);
+        List<ParallelApproveItemVo> paraItemList = this.getRequiredItems(stageId, projInfoId, regionalism, projectAddress,isFilterStateItem,rootOrgId);
         //并行
-        List<ParallelApproveItemVo> coreItemList = this.getOptionalItems(stageId, projInfoId, regionalism, projectAddress,isFilterStateItem);
+        List<ParallelApproveItemVo> coreItemList = this.getOptionalItems(stageId, projInfoId, regionalism, projectAddress,isFilterStateItem,rootOrgId);
         if("1".equals(isSelectItemState)){
             for (ParallelApproveItemVo item:coreItemList){
                 if ("1".equals(item.getIsCatalog())) {//标准事项
@@ -394,11 +394,11 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
      * @param stageId    阶段id
      * @param projInfoId 项目id
      */
-    public List<ParallelApproveItemVo> getRequiredItems(String stageId, String projInfoId, String regionalism, String projectAddress,String isFilterStateItem) throws Exception {
-        List<AeaItemBasic> coreItems = aeaItemBasicService.getAeaItemBasicListByStageId(stageId, "0", projInfoId,SecurityContext.getCurrentOrgId());
+    public List<ParallelApproveItemVo> getRequiredItems(String stageId, String projInfoId, String regionalism, String projectAddress,String isFilterStateItem,String rootOrgId) throws Exception {
+        List<AeaItemBasic> coreItems = aeaItemBasicService.getAeaItemBasicListByStageId(stageId, "0", projInfoId,rootOrgId);
         if (coreItems.size() == 0) return new ArrayList<>();
 
-        return postHandle(coreItems, stageId, "0", regionalism, projectAddress,isFilterStateItem);
+        return postHandle(coreItems, stageId, "0", regionalism, projectAddress,isFilterStateItem,rootOrgId);
     }
 
     /**
@@ -407,10 +407,10 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
      * @param stageId    阶段id
      * @param projInfoId 项目id
      */
-    public List<ParallelApproveItemVo> getOptionalItems(String stageId, String projInfoId, String regionalism, String projectAddress,String isFilterStateItem) throws Exception {
-        List<AeaItemBasic> optionItems = aeaItemBasicService.getAeaItemBasicListByStageId(stageId, "1", projInfoId,SecurityContext.getCurrentOrgId());
+    public List<ParallelApproveItemVo> getOptionalItems(String stageId, String projInfoId, String regionalism, String projectAddress,String isFilterStateItem,String rootOrgId) throws Exception {
+        List<AeaItemBasic> optionItems = aeaItemBasicService.getAeaItemBasicListByStageId(stageId, "1", projInfoId,rootOrgId);
         if (optionItems.size() == 0) return new ArrayList<>();
-        return postHandle(optionItems, stageId, "1", regionalism, projectAddress,isFilterStateItem);
+        return postHandle(optionItems, stageId, "1", regionalism, projectAddress,isFilterStateItem,rootOrgId);
     }
 
     /**
@@ -422,7 +422,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
      * @return 返回事项vo
      * @throws Exception 查询事项异常
      */
-    private List<ParallelApproveItemVo> postHandle(List<AeaItemBasic> aeaItemBasics, String stageId, String isOptionItem, String regionalism, String projectAddress,String isFilterStateItem) throws Exception {
+    private List<ParallelApproveItemVo> postHandle(List<AeaItemBasic> aeaItemBasics, String stageId, String isOptionItem, String regionalism, String projectAddress,String isFilterStateItem,String rootOrgId) throws Exception {
         AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageId);
 
         // 设置事项的审批组织信息
@@ -449,7 +449,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
         List<AeaItemBasic> resultItems = new ArrayList<>(aeaItemBasics.size());
         // 分情形时要过滤情形事项
         // 情形事项
-        Set<String> stateItemVerIds = aeaItemBasicService.getAeaItemBasicListByStageIdAndStateId(stageId, null, isOptionItem,SecurityContext.getCurrentOrgId())
+        Set<String> stateItemVerIds = aeaItemBasicService.getAeaItemBasicListByStageIdAndStateId(stageId, null, isOptionItem,rootOrgId)
                 .stream().map(AeaItemBasic::getItemVerId).collect(Collectors.toSet());
         if ("1".equals(aeaParStage.getIsNeedState()) && "1".equals(isFilterStateItem)) {
             // 过滤情形事项
@@ -482,10 +482,10 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
                     }
                 }
 
-                List<AeaItemBasic> sssxList = aeaItemBasicService.getSssxByItemIdAndRegionalism(vo.getItemId(), regionalism, arrRegionIdList.size() == 0 ? null : CommonTools.ListToArr(arrRegionIdList), SecurityContext.getCurrentOrgId());
+                List<AeaItemBasic> sssxList = aeaItemBasicService.getSssxByItemIdAndRegionalism(vo.getItemId(), regionalism, arrRegionIdList.size() == 0 ? null : CommonTools.ListToArr(arrRegionIdList), rootOrgId);
                 if(sssxList.size()>0){
                     sssxList.stream().forEach(ss->{
-                        List<AeaItemInout> resultMats=aeaHiItemInoutService.getAeaItemInoutMatCertByItemVerId(vo.getItemVerId(),SecurityContext.getCurrentOrgId());
+                        List<AeaItemInout> resultMats=aeaHiItemInoutService.getAeaItemInoutMatCertByItemVerId(vo.getItemVerId(),rootOrgId);
                         ss.setResultMats(resultMats);
                     });
                 }
@@ -499,7 +499,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
                     //vo.setIsCatalog(flag);
                 }
             }else{
-                List<AeaItemInout> resultMats=aeaHiItemInoutService.getAeaItemInoutMatCertByItemVerId(vo.getItemVerId(),SecurityContext.getCurrentOrgId());
+                List<AeaItemInout> resultMats=aeaHiItemInoutService.getAeaItemInoutMatCertByItemVerId(vo.getItemVerId(),rootOrgId);
                 vo.setResultMats(resultMats.size()>0?resultMats:new ArrayList<>());
             }
             AeaItemPriv aeaItemPriv = privMap.get(vo.getItemVerId());

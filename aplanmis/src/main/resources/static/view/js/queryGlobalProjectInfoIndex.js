@@ -60,7 +60,22 @@ var vm = new Vue({
             },
             showUploadFlag:false,
             //列表选中
-            projSelectList:[]
+            projSelectList:[],
+
+            // 设置代办标志dialog相关
+            // 是否展示设置代办标志dialog
+            isShowSetAgencyTagDialog: false,
+            // 所有已有的代办中心iotions
+            agencyOptionList: [],
+            // 代办标志设置表单
+            setAgencyForm: {
+              windowId: '',   //代办中心id
+            },
+            setAgencyRules: {
+              windowId: [
+                { required: true, message: '此项为必选', trigger: 'change'},
+              ],
+            },
         }
     },
     components:{
@@ -260,6 +275,80 @@ var vm = new Vue({
                 html = html  + "</br></br>" + "代办中心名称 : " + row.agentName;
             }
             return html;
+          },
+        // 设置代办标志
+        setAgencyTag: function(){
+          // console.log(this.projSelectList)
+          if(!this.projSelectList.length) return this.$message.warning('请选择项目')
+          this.fetchAgencyList();
+        },
+        // 获取代办中心下拉列表数据
+        fetchAgencyList: function () {
+          var ts = this;
+          ts.loading = true;
+          request('', {
+            url: ctx + 'aea/service/window/listAgencyWin.do',
+            type: 'get',
+            data:{
+              windowType: 'd',
+            }
+          }, function (res) {
+            ts.loading = false;
+            if (res.success) {
+              ts.agencyOptionList = res.content;
+              ts.isShowSetAgencyTagDialog = true;
+            } else {
+              return ts.apiMessage(res.message, 'error')
+            }
+          }, function () {
+            ts.loading = false;
+            return ts.apiMessage('网络错误！', 'error')
+          });
+        },
+        // 保存设置成代办标识的项目
+        saveSetAgencyTagProjList: function () {
+          var ts = this;
+          ts.$refs['setAgencyForm'].validate(function (valid) {
+            if (valid) {
+              var saveData = {},
+                projInfoIds = [];
+              ts.projSelectList.forEach(function (item) {
+                projInfoIds.push(item.projInfoId);
+              })
+
+              saveData = {
+                windowId: ts.setAgencyForm.windowId,
+                projInfoIds: projInfoIds.join(',')
+              };
+              // console.log(saveData)
+              // return
+              ts.loading = true;
+              request('', {
+                url: ctx + 'aea/proj/info/saveProjWinRelation',
+                type: 'post',
+                data: saveData
+              }, function (res) {
+                ts.loading = false;
+                if (res.success) {
+                  ts.apiMessage('设置成功！', 'success');
+                  ts.isShowSetAgencyTagDialog = false;
+                } else {
+                  return ts.apiMessage(res.message, 'error')
+                }
+              }, function () {
+                ts.loading = false;
+                return ts.apiMessage('网络错误！', 'error')
+              });
+            } else {
+              ts.apiMessage('请选择代办中心！', 'warning')
+              return false;
+            }
+          });
+        },
+        // 表格缺省填充
+        formatCell: function(row, column, cellValue, index){
+          if(!!cellValue)return cellValue;
+          return '-';
         },
     },
     created: function () {

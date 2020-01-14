@@ -26,16 +26,16 @@
             <div class="list-wrap">
                 <div class="tab-2 clearfix" v-show="activeTab == 0">
                     <div class="video-src fl">
-                        <video width="800" height="450" controls>
-                            <source src="movie.mp4" type="video/mp4">
-                            <source src="movie.ogg" type="video/ogg">
+                        <video width="800" height="450" controls :src="movieUrl">
+                            <!--<source :src="movieUrl" type="video/mp4">
+                            <source :src="movieUrl" type="video/ogg">-->
                             您的浏览器不支持Video标签。
                         </video>
                     </div>
                     <div class="video-list fl" >
                         <p class="video-title">视频教学</p>
                         <ul class="video-name">
-                            <li :class="[item.nameTab==nameActiveTab? 'active': '']" v-for="item in videoNameData">{{item.name}}</li>
+                            <li @click="videoHandleFn(item)" :class="[item.nameTab==nameActiveTab? 'active': '']" v-for="item in videoNameData">{{item.name}}</li>
                           <!--  <li>2.网厅使用讲解视频</li>-->
                         </ul>
                     </div>

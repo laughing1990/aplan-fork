@@ -114,10 +114,17 @@
                                             <ul class="paraller-wraper" v-if="stagesData.parallelItems && stagesData.parallelItems.length>0">
                                                 <li class="item" v-for="(item,index) in stagesData.parallelItems">
                                                     <p class="title">{{item.title}}</p>
-                                                    <div class="item-strip" :class="{selected:itemSub.isSelected=='1'}" v-for="(itemSub,indexSub) in item.items">
-                                                        {{itemSub.itemName}}
-                                                        <div class="item-strip-bg"  @click="getSinleData(itemSub.itemVerId,itemSub.itemName)">查看事项指南</div>
-                                                    </div>
+                                                    <template v-if="item.items.length>0">
+                                                        <div class="item-strip" :class="{selected:itemSub.isSelected=='1'}" v-for="(itemSub,indexSub) in item.items">
+                                                            {{itemSub.itemName}}
+                                                            <div class="item-strip-bg"  @click="getSinleData(itemSub.itemVerId,itemSub.itemName)">查看事项指南</div>
+                                                        </div>
+                                                    </template>
+                                                    <template v-else>
+                                                        <div class="item-strip" >
+                                                            该阶段暂无事项
+                                                        </div>
+                                                    </template>
                                                     <!-- <div class="item-strip selected">项目建议书/可行性研究报告批复</div>
                                                      <div class="item-strip">建设项目用地预审</div>
                                                      <div class="item-strip">建设用地 (含临时用地)规划许可证客户</div>-->
@@ -157,10 +164,17 @@
                                             <ul class="paraller-wraper" v-if="stagesData.seriItems && stagesData.seriItems.length>0">
                                                 <li class="item" v-for="(item,index) in stagesData.seriItems">
                                                     <p class="title">{{item.title}}</p>
-                                                    <div class="item-strip" :class="{selected:itemSub.isSelected=='1'}" v-for="(itemSub,indexSub) in item.items">
-                                                        {{itemSub.itemName}}
-                                                        <div class="item-strip-bg" @click="getSinleData(itemSub.itemVerId,itemSub.itemName)">查看事项指南</div>
-                                                    </div>
+                                                    <template v-if="item.items.length>0">
+                                                        <div class="item-strip" :class="{selected:itemSub.isSelected=='1'}" v-for="(itemSub,indexSub) in item.items">
+                                                            {{itemSub.itemName}}
+                                                            <div class="item-strip-bg" @click="getSinleData(itemSub.itemVerId,itemSub.itemName)">查看事项指南</div>
+                                                        </div>
+                                                    </template>
+                                                    <template v-else>
+                                                        <div class="item-strip" >
+                                                            该阶段暂无事项
+                                                        </div>
+                                                    </template>
                                                     <!--  <div class="item-strip">项目建议书/可行性研究报告批复</div>
                                                       <div class="item-strip">建设项目用地预审</div>
                                                       <div class="item-strip">建设用地 (含临时用地)规划许可证客户</div>-->

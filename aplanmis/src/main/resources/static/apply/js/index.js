@@ -866,7 +866,7 @@ var vm = new Vue({
     // 部门辅导 start-----------------------
     guideStateToClass: function(u){
       var str = '';
-      if (u.orgId == this.guideDetail.approveOrgId) {
+      if (u.itemVerId == this.guideDetail.approveItemVerIds) {
         str += 'now';
       }
       if (u.state == 1) {
@@ -956,7 +956,7 @@ var vm = new Vue({
           itemId = u.currentCarryOutItem.itemId || '';
           itemVerId = u.currentCarryOutItem.itemVerId || '';
         }
-        var _orgId = vm.guideDetail.approveOrgId; // 当前登录人部门id
+        var _itemIds = vm.guideDetail.approveItemVerIds||[]; // 当前登录人能审核的事项id
         if (vm.leaderDept) {
           var _obj = {
             catalogItemVerId: u.itemVerId,
@@ -981,10 +981,7 @@ var vm = new Vue({
             // 牵头部门发起部门确认
             _list.push(_obj);
           }
-        } else if (
-          (_orgId == u.orgId) ||
-          (u.currentCarryOutItem && u.currentCarryOutItem.orgId == _orgId)
-        ) {
+        } else if ( _itemIds.indexOf(u.currentCarryOutItem.itemVerId) != -1 ) {
           // 审批部门意见数据
           var _guideChangeAction = 'a';
           if (!u.bmChecked && u.leaderDeptChoose) {
@@ -3567,11 +3564,8 @@ var vm = new Vue({
                     }
                   } else {
                     // 审批部门人员
-                    var _orgId = vm.guideDetail.approveOrgId; // 当前登录人部门id
-                    if (
-                      (_orgId == u.orgId) ||
-                      (u.currentCarryOutItem && u.currentCarryOutItem.orgId == _orgId)
-                    ) {
+                    var _itemIds = vm.guideDetail.approveItemVerIds||[]; // 当前登录人能审核的事项id
+                    if ( _itemIds.indexOf(u.currentCarryOutItem.itemVerId) != -1 ) {
                       if (u.detailState != 2) {
                       // if (u) {
                         vm.bmCanGuide = true;
@@ -3626,6 +3620,7 @@ var vm = new Vue({
                     state: u.detailState,
                     orgId: u.currentCarryOutItem.orgId,
                     orgName: u.currentCarryOutItem.orgName,
+                    itemVerId: u.currentCarryOutItem.itemVerId,
                   });
                 }
               });
