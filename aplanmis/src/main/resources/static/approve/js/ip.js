@@ -23,7 +23,7 @@ if (isDevelop) {
   // ctx = 'http://192.168.3.65:8083/aplanmis-front/'; // 熊贻标-佛山
   // ctx = 'http://192.168.3.28:8083/aplanmis-front/'; // 张伟宁-佛山
   // ctx = 'http://192.168.3.64:8083/aplanmis-front/'; // 邹永胜-佛山
-  // ctx = 'http://5na8yw.natappfree.cc/aplanmis-front/'; // 熊贻标-外网
+  ctx = 'http://5na8yw.natappfree.cc/aplanmis-front/'; // 熊贻标-外网
 }
 
 var __STATIC = {

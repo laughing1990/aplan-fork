@@ -71,9 +71,87 @@ var vm = new Vue({
             prePdfVisible: false,
             // 办结单 pdf -url
             pdfSrc: '',
+          stopAgentDialogLoading: false,
+          curWidth: (document.documentElement.clientWidth || document.body.clientWidth),//当前屏幕宽度
+          curHeight: (document.documentElement.clientHeight || document.body.clientHeight),//当前屏幕高度
+          stopAgentDialogVisible: false,
+          stopAgentForm: {
+            code: '',
+            date: Date.now(),
+            reason: '',
+          },
+          prePdfUrl: '',
+          prePdfDialogLoading: false,
+          prePdfDialogVisible: false,
+          targetRow: {},
         }
     },
     methods: {
+      // 终止协议弹窗 签章
+      ensureStopAgent: function(){
+        var reason = this.stopAgentForm.reason;
+        if (!reason.length) {
+          return this.$message.error('请填写终止原因');
+        }
+        var _date = __STATIC.formatDate(this.stopAgentForm.date, 'yyyy-MM-dd');
+        var params = {
+          applyAgentId: this.applyAgentId,
+          agreementStopReason: reason,
+          agreementStopTime: _date,
+        };
+        this.$message.info('接口正在开发中... 请求参数为 '+JSON.stringify(params));
+      },
+      // 查看终止协议
+      seeStopAgent: function(){
+        var reason = this.stopAgentForm.reason;
+        if (!reason.length) {
+          return this.$message.error('请填写终止原因');
+        }
+        var _date = __STATIC.formatDate(this.stopAgentForm.date, 'yyyy-MM-dd');
+        var url = ctx + 'preview/pdfjs/web/viewer.html?file=';
+        var _url = ctx + 'aea/proj/apply/agent/getAgencyStopAgreementFile';
+        _url += '?applyAgentId=' + this.applyAgentId;
+        _url += '&agreementStopReason=' + reason;
+        _url += '&agreementStopTime=' + _date;
+        url += encodeURIComponent(_url);
+        this.prePdfDialogVisible = true;
+        this.prePdfUrl = url;
+      },
+      // 点击终止协议
+      clickStopAgent: function(row){
+        var vm  = this;
+        this.targetRow = row;
+        this.stopAgentForm.fileName = row.projName+'委托终止单.pdf';
+        if (this.stopAgentForm.code&&this.stopAgentForm.code.legnth) {
+          this.stopAgentDialogVisible = true;
+          return null;
+        }
+        var vm = this;
+        this.loading = true;
+        request('', {
+          url: ctx + 'aea/proj/apply/agent/getAgencyDetail?applyAgentId='+row.applyAgentId,
+          type: 'get',
+        }, function(res) {
+          vm.loading = false;
+          if(res.success) {
+            try {
+              vm.stopAgentForm.code = res.content.aeaProjApplyAgent.agreementCode;
+            } catch(e){}
+            vm.stopAgentDialogVisible = true;
+          } else {
+            vm.$message.error(res.message||'获取代办详情数据失败');
+          }
+        }, function(){
+          vm.loading = false;
+          vm.$message.error('获取代办详情数据失败');
+        });
+      },
+      // 下载协议
+      downLoadAgreement: function(){
+        window.open(ctx + 'aea/proj/apply/agent/getAgencyAgreement?applyAgentId='+this.applyAgentId);
+      },
+      closePrePdf: function(){},
+      closeStopAgentDialog: function(){},
         //刷新列表
         fetchTableData: function () {
 
@@ -248,5 +326,12 @@ var vm = new Vue({
         this.conditionalQueryDic();
         this.fetchTableData();
         this.queryAgencyState();
-    }
+    },
+  mounted: function () {
+    var _that = this;
+    window.addEventListener('resize', function (ev) {
+      _that.curWidth = (document.documentElement.clientWidth || document.body.clientWidth);
+      _that.curHeight = (document.documentElement.clientHeight || document.body.clientHeight);
+    });
+  },
 });
