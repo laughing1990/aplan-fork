@@ -2,11 +2,11 @@ var isDevelop = 0;
 if (isDevelop) {
   // ctx = '[[@{/}]]';
   // ctx = 'http://localhost:8083/aplanmis-front/'; // localhost
-  ctx = 'http://106.52.77.101:8083/aplanmis-front/'; // 101
+  // ctx = 'http://106.52.77.101:8083/aplanmis-front/'; // 101
   // ctx = 'http://192.168.32.46:8083/aplanmis-front/'; // 李文钦
   // ctx = 'http://192.168.32.59:8083/aplanmis-front/'; // 赵雄
   // ctx = 'http://192.168.30.24:8083/aplanmis-front/'; // 陈锭星
-  // ctx = 'http://192.168.3.66:8083/aplanmis-front/'; // 陈锭星-佛山
+  ctx = 'http://192.168.3.66:8083/aplanmis-front/'; // 陈锭星-佛山
   // ctx = 'http://192.168.30.110:8083/aplanmis-front/'; // 邹永胜
   // ctx = 'http://192.168.30.98:8083/aplanmis-front/'; // 邹永胜
   // ctx = 'http://192.168.14.2:8083/aplanmis-front/'; // 邓振强
@@ -23,7 +23,7 @@ if (isDevelop) {
   // ctx = 'http://192.168.3.65:8083/aplanmis-front/'; // 熊贻标-佛山
   // ctx = 'http://192.168.3.28:8083/aplanmis-front/'; // 张伟宁-佛山
   // ctx = 'http://192.168.3.64:8083/aplanmis-front/'; // 邹永胜-佛山
-  ctx = 'http://5na8yw.natappfree.cc/aplanmis-front/'; // 熊贻标-外网
+  // ctx = 'http://5na8yw.natappfree.cc/aplanmis-front/'; // 熊贻标-外网
 }
 
 var __STATIC = {

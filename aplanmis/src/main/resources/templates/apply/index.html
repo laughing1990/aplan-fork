@@ -1584,20 +1584,32 @@
               </div>
               <!--部门辅导展示所有部门和状态-->
               <div v-if="isGuidePage&&guideState>2" class="guide-org-list">
-                <div class="state-ex c-f">
-                  <div class="org-state-e now"></div>
-                  <div class="g-text">当前部门</div>
-                  <div class="org-state-e ing"></div>
-                  <div class="g-text">待确认部门</div>
-                  <div class="org-state-e finish ag ag-check"></div>
-                  <div class="g-text">已确认部门</div>
-                </div>
+<!--                <div class="state-ex c-f">-->
+<!--                  <div class="org-state-e now"></div>-->
+<!--                  <div class="g-text">当前部门</div>-->
+<!--                  <div class="org-state-e ing"></div>-->
+<!--                  <div class="g-text">待确认部门</div>-->
+<!--                  <div class="org-state-e finish ag ag-check"></div>-->
+<!--                  <div class="g-text">已确认部门</div>-->
+<!--                </div>-->
                 <div class="g-org-box c-f">
                   <i class="l-icon"></i>
                   <div v-for="u in guideOrgList"
-                       class="org-state-e" :class="[guideStateToClass(u)]">
+                       class="org-state-e c-f" :class="[guideStateToClass(u)]">
                     <div class="gs-i"><i class="ag ag-check"></i></div>
-                    {{u.orgName}}
+                    <span>{{u.orgName}}</span>
+                    <span class="y-line"></span>
+                    <template v-if="u.state==1" data-title="部门确认">
+                      <span>待确认 {{u.notEnsureNum}}</span>
+                      <span class="xy-line">/</span>
+                      <span>已确认 {{u.ensureNum}}</span>
+                    </template>
+                    <span v-if="u.state==0" date-title="全部未确认">
+                     待确认 {{u.notEnsureNum}}
+                    </span>
+                    <span v-if="u.state==2" date-title="全部已确认">
+                     确认完成 {{u.allNum}}
+                    </span>
                   </div>
                 </div>
               </div>

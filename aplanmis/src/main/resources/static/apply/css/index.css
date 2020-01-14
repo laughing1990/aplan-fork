@@ -2483,6 +2483,19 @@ textarea {
 }
 
 /*意见征求 end*/
+.toggle-form-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 100%;
+  border: 1px solid #169AFF;
+  line-height: 34px;
+  text-align: center;
+  position: absolute;
+  right: 0;
+  top: 28px;
+  color: #169AFF;
+  cursor: pointer;
+}
 /*部门辅导 start*/
 .au-hint-text {
   position: relative;
@@ -2707,20 +2720,21 @@ textarea {
 .guide-prompt .el-message-box__errormsg{
   min-height: 8px;
 }
-/*部门辅导end*/
-.toggle-form-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 100%;
-  border: 1px solid #169AFF;
-  line-height: 34px;
-  text-align: center;
-  position: absolute;
-  right: 0;
-  top: 28px;
-  color: #169AFF;
-  cursor: pointer;
+.org-state-e>span{
+  display:block;
+  float: left;
 }
+.org-state-e .y-line{
+  height: 16px;
+  width: 1px;
+  background: #DCDFE6;
+  margin: 5px 8px;
+}
+.org-state-e .xy-line{
+  margin: 0 5px;
+}
+/*部门辅导end*/
+
 
 
 

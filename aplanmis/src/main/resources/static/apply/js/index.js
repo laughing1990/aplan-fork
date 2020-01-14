@@ -866,7 +866,7 @@ var vm = new Vue({
     // 部门辅导 start-----------------------
     guideStateToClass: function(u){
       var str = '';
-      if (u.itemVerId == this.guideDetail.approveItemVerIds) {
+      if (u.orgId == this.guideDetail.approveOrgId) {
         str += 'now';
       }
       if (u.state == 1) {
@@ -3612,19 +3612,63 @@ var vm = new Vue({
             }
             // 展示所有部门状态
             if (vm.guideState > 2) {
-              var _arr = [];
-              _coreItems.concat(_parallelItems).forEach(function(u){
-                // 被牵头部门勾选的
-                if (u.detailState==1||u.detailState==2) {
-                  _arr.push({
-                    state: u.detailState,
-                    orgId: u.currentCarryOutItem.orgId,
-                    orgName: u.currentCarryOutItem.orgName,
-                    itemVerId: u.currentCarryOutItem.itemVerId,
-                  });
+              var _tmpIds = [];
+              var _result = [];
+              _coreItems.concat(_parallelItems).forEach(function(u) {
+                if (u.detailState==1||u.detailState==2){
+                  // 1和2状态的才是需要确认的
+                  if (u.currentCarryOutItem&&u.currentCarryOutItem.orgId){
+                    var _orgId = u.currentCarryOutItem.orgId;
+                    var _index = _tmpIds.indexOf(_orgId);
+                    if (_index == -1) {
+                      // orgid在_tmpIds不存在
+                      _tmpIds.push(_orgId);
+                      _result.push({
+                        state: '1',
+                        orgId: _orgId,
+                        orgName: u.currentCarryOutItem.orgName,
+                        allNum: 0,
+                        ensureNum: 0,
+                        notEnsureNum: 0,
+                      })
+                      _index = _tmpIds.length -1 ;
+                    } else {
+                      // orgid在_tmpIds已经存在
+                    }
+                    var _obj = _result[_index];
+                    if (u.detailState == 1) {
+                      // 未确认
+                      _obj.notEnsureNum++;
+                    } else {
+                      // 已确认
+                      _obj.ensureNum++;
+                    }
+                    _obj.allNum++;
+                    if (_obj.notEnsureNum == _obj.allNum) {
+                      _obj.state = '0'; // 该部门全部未确认
+                    } else if (_obj.ensureNum == _obj.allNum) {
+                      _obj.state = '2'; // 该部门已全部确认
+                    } else {
+                      _obj.state = '1'; // 该部门已部分确认
+                    }
+                  }
                 }
               });
-              vm.guideOrgList = _arr;
+              vm.guideOrgList = _result;
+
+              // var _arr = [];
+              // _coreItems.concat(_parallelItems).forEach(function(u){
+              //   // 被牵头部门勾选的
+              //   if (u.detailState==1||u.detailState==2) {
+              //     _arr.push({
+              //       state: u.detailState,
+              //       orgId: u.currentCarryOutItem.orgId,
+              //       orgName: u.currentCarryOutItem.orgName,
+              //       itemVerId: u.currentCarryOutItem.itemVerId,
+              //     });
+              //   }
+              // });
+              // vm.guideOrgList = _arr;
             }
           }
           _that.coreItems = _coreItems;
