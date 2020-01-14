@@ -318,7 +318,7 @@ public class RestProjectController {
     public ResultForm approveSplitedProj(@RequestBody SplitedProjApproveVo splitedProjApproveVo) {
         try {
             if (splitedProjApproveVo.isPassed()) {
-                aeaProjApplySplitService.passed(splitedProjApproveVo.getApplySplitId(), splitedProjApproveVo.getReason());
+                aeaProjApplySplitService.passed(splitedProjApproveVo.getApplySplitId(), splitedProjApproveVo.getReason(), splitedProjApproveVo.getGuideId());
             } else {
                 aeaProjApplySplitService.rejected(splitedProjApproveVo.getApplySplitId(), splitedProjApproveVo.getReason());
             }

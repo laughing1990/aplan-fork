@@ -20,4 +20,6 @@ public interface AeaProjWindowMapper {
     public List <AeaServiceWindow> listAeaServiceWindowByProjInfoId(@Param("projInfoId") String projInfoId);
 
     public AeaProjWindow getAeaProjWindowByProjInfoIdAndWindowId(@Param("projInfoId") String projInfoId,@Param("windowId") String windowId);
+
+    public void deleteAeaProjWindowByProjInfoIds(@Param("projInfoIds") String[] projInfoIds);
 }

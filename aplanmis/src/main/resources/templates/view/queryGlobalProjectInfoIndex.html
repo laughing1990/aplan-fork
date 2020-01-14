@@ -204,9 +204,13 @@
     <el-table-column
             min-width="200px"
             prop="projName"
-            label="项目/工程名称"
-            show-overflow-tooltip
-            :formatter = "formatTableCell">
+            label="项目/工程名称">
+        <template scope="scope">
+          <el-tooltip effect="light" placement="top">
+            <div slot="content" v-html="showAgentProjInfo(scope.row)"></div>
+            <span>{{scope.row.projName?scope.row.projName:'-'}}</span>
+          </el-tooltip>
+        </template>
     </el-table-column>
     <el-table-column
             prop="localCode"

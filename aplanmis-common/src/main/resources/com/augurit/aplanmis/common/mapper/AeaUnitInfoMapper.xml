@@ -783,4 +783,28 @@
         AND aui.IS_DELETED != 1
         AND api.IS_DELETED != 1
     </select>
+
+    <select id="getApplyUnitProj" resultType="AeaUnitInfo">
+        SELECT
+        <include refid="alias_allColumns">
+            <property name="alias" value="aui"/>
+        </include>,
+    acr.IS_BLACK isBlack,
+        acr.REDBLACK_ID redblackId,
+        aup.UNIT_PROJ_ID unitProjId
+    FROM
+        aea_hi_applyinst aha
+    LEFT JOIN aea_applyinst_proj aap ON aha.APPLYINST_ID = aap.APPLYINST_ID
+    LEFT JOIN aea_applyinst_unit_proj aaup ON aaup.APPLYINST_ID = aha.APPLYINST_ID
+    LEFT JOIN aea_unit_proj aup ON aup.UNIT_PROJ_ID = aaup.UNIT_PROJ_ID
+    LEFT JOIN aea_unit_info aui ON aui.UNIT_INFO_ID = aup.UNIT_INFO_ID
+    LEFT JOIN aea_credit_redblack acr ON acr.UNIT_INFO_ID = aui.UNIT_INFO_ID
+    WHERE
+        aup.PROJ_INFO_ID = #{projInfoId}
+    AND aha.APPLYINST_ID = #{applyinstId}
+    AND aha.IS_DELETED != 1
+    AND aaup.IS_DELETED != 1
+    AND aup.is_deleted != 1
+    AND aui.IS_DELETED != 1
+    </select>
 </mapper>

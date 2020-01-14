@@ -278,7 +278,7 @@
                 </template>
                 <el-input name="localCode" :disabled="linkQuerySucc" v-model="projBascInfoShow.localCode"
                           placeholder="投资平台登记的项目代码">
-                  <el-button slot="append" type="primary" :disabled="!localCode==''" @click="getLocalcode()">本地赋码
+                  <el-button v-if="!isGuidePage&&!isAgentPage" slot="append" type="primary" :disabled="!localCode==''" @click="getLocalcode()">本地赋码
                   </el-button>
                 </el-input>
               </el-form-item>
@@ -1327,7 +1327,7 @@
                       </template>
                     </el-table-column>
                     <!-- 牵头部门结果 -->
-                    <el-table-column label="牵头部门" prop="leaderDeptChoose" v-if="guideState>2" width="140">
+                    <el-table-column label="牵头部门" prop="leaderDeptChoose" v-if="guideState>2&&guideState!=6" width="140">
                       <template slot-scope="scope">
                         <el-checkbox v-model="scope.row.leaderDeptChoose" disabled>
                           {{scope.row.leanderDeptOpinion||'未填写意见'}}
@@ -1527,7 +1527,7 @@
                       </template>
                     </el-table-column>
                     <!-- 牵头部门结果 -->
-                    <el-table-column :key="Math.random()" label="牵头部门" prop="leaderDeptChoose" v-if="guideState>2"
+                    <el-table-column :key="Math.random()" label="牵头部门" prop="leaderDeptChoose" v-if="guideState>2&&guideState!=6"
                                      width="140">
                       <template slot-scope="scope">
                         <el-checkbox v-model="scope.row.leaderDeptChoose" disabled>
@@ -1943,8 +1943,8 @@
       </el-collapse>
       <div class="right-bottom-btn" v-if="showMoreProjInfo&&!isGuidePage">
         <template v-if="isAgentPage">
-          <el-button circle @click="seeAgreement">查看委<br/>托协议</el-button>
-          <el-button circle @click="clickStopAgreement">终止<br/>协议</el-button>
+          <el-button type="success" circle @click="seeAgreement">查看委<br/>托协议</el-button>
+          <el-button type="danger" circle @click="clickStopAgreement">终止<br/>协议</el-button>
         </template>
         <template v-else>
           <el-button v-if="showSolicitBtn" type="success" @click="openSoDialog" circle>意见<br/>征求</el-button>
@@ -1961,17 +1961,17 @@
         <template v-if="leaderDept">
           <!--牵头部门按钮-->
           <template v-if="guideState==2||guideState==1">
-            <el-button circle type="primary" @click="openSoDialog">发起部<br/>门确认</el-button>
+            <el-button type="success" circle type="primary" @click="openSoDialog">发起部<br/>门确认</el-button>
             <el-button circle @click="leaderDeptPass">直接<br/>通过</el-button>
           </template>
           <template v-else-if="guideState==6">
-            <el-button circle type="primary" @click="leaderDeptPass(true)">结束部<br/>门确认</el-button>
+            <el-button type="success" circle type="primary" @click="leaderDeptPass(true)">结束部<br/>门确认</el-button>
             <el-button circle @click="openSoDialog">添加征<br/>询确认</el-button>
           </template>
         </template>
         <template v-if="bmCanGuide">
           <!--审批部门按钮-->
-          <el-button circle @click="bmGuideEnsure">部门<br/>确认</el-button>
+          <el-button type="success" circle @click="bmGuideEnsure">部门<br/>确认</el-button>
         </template>
       </div>
       <!--项目树窗口 start-->
@@ -2735,7 +2735,7 @@
       </el-dialog>
       <!-- 项目代办协议 查看pdf弹窗 end -->
       <!-- 项目代办终止协议 start -->
-      <el-dialog title="终止协议" class="solicit-opinion-dialog stop-agent" v-loading="stopAgentDialogLoading"
+      <el-dialog title="待办委托终止单" class="solicit-opinion-dialog stop-agent" v-loading="stopAgentDialogLoading"
                  :close-on-click-modal="false" :visible.sync="stopAgentDialogVisible" @close="closeStopAgentDialog"
                  :width="curWidth>820?'800px':(curWidth-20)+'px'" top="100px">
         <div :style="{'max-height': (curHeight-305)+'px'}" class="stop-a-box">
@@ -2743,19 +2743,12 @@
             <i class="ag ag-warn-circle"></i>
             请填写终止原因，确认终止日期后点击“签章”
           </p>
-          <el-form :model="stopAgentForm" label-width="100px" size="medium">
+          <el-form :model="stopAgentForm" label-width="112px" size="medium">
             <el-form-item label="代办委托项目">
               <el-input v-model="topProjName" readonly></el-input>
             </el-form-item>
             <el-form-item label="协议编号">
               <el-input v-model="stopAgentForm.code" readonly></el-input>
-            </el-form-item>
-            <el-form-item label="委托协议">
-              <el-input v-model="stopAgentForm.fileName">
-                <el-button type="primary" slot="append" @click="seeStopAgent">查看</el-button>
-              </el-input>
-              <!--              {{topProjName}}委托终止单.pdf-->
-              <!--              <span class="see-stop-agent" @click="seeStopAgent">查看</span>-->
             </el-form-item>
             <el-form-item label="终止日期">
               <el-date-picker v-model="stopAgentForm.date" :clearable="false"
@@ -2765,10 +2758,16 @@
             <el-form-item label="终止原因">
               <el-input v-model="stopAgentForm.reason" type="textarea" :rows="3"></el-input>
             </el-form-item>
+            <el-form-item label="待办委托终止单">
+              <el-input v-model="stopAgentForm.fileName">
+                <!--<el-button type="primary" slot="append" @click="seeStopAgent">查看</el-button>-->
+              </el-input>
+            </el-form-item>
           </el-form>
         </div>
         <div slot="footer" class="dialog-footer">
           <el-button @click="stopAgentDialogVisible = false">关闭</el-button>
+          <el-button type="primary" @click="seeStopAgent">查看终止单</el-button>
           <el-button type="primary" @click="ensureStopAgent">签章</el-button>
         </div>
       </el-dialog>

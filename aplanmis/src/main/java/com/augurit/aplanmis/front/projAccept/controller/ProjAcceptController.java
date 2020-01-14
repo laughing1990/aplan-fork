@@ -10,7 +10,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -51,12 +50,41 @@ public class ProjAcceptController {
     }
 
     /**
-     * 传入申请实例id，生成联合验收终审意见书批文批复 测试接口
-     * @param applyinstId
+     * 生成联合验收终审意见书批文批复 接口
+     * @param applyinstId 申请实例id
      * @throws Exception
      */
-    @GetMapping("/test")
-    public void test(String applyinstId) throws Exception{
-        projAcceptService.createOpinionSummaryPwpf(applyinstId,null);
+    @RequestMapping("/checkAcceptOpinionSummaryPwpf")
+    @ApiOperation(value = "竣工验收 --> 检查当前申报是否已经生成联合验收终审意见书批文批复")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "applyinstId", value = "申请实例ID", dataType = "string", required = true)
+            })
+    public ResultForm checkAcceptOpinionSummaryPwpf(String applyinstId) throws Exception{
+        boolean isHasPwpf = projAcceptService.checkOpinionSummaryPwpf(applyinstId);
+        if(isHasPwpf)
+            return new ResultForm(true,"当前审批已经存在联合验收终审意见书批文批复！");
+        return new ResultForm(false,"当前审批还未生成联合验收终审意见书批文批复！");
+    }
+    /**
+     * 生成联合验收终审意见书批文批复 接口
+     * @param applyinstId 申请实例id
+     * @param procinstId 验收节点子流程实例id
+     * @throws Exception
+     */
+    @RequestMapping("/createAcceptOpinionSummaryPwpf")
+    @ApiOperation(value = "竣工验收 --> 生成联合验收终审意见书批文批复")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "applyinstId", value = "申请实例ID", dataType = "string", required = true),
+            @ApiImplicitParam(name = "procinstId", value = "申请实例ID", dataType = "string", required = true),
+            @ApiImplicitParam(name = "override", value = "是否覆盖之前已经生成的批文批复,1是 0否", dataType = "string", required = true)
+            })
+    public ResultForm createAcceptOpinionSummaryPwpf(String applyinstId,String procinstId,String override) throws Exception{
+        if(!"1".equals(override)){
+            boolean isHasPwpf = projAcceptService.checkOpinionSummaryPwpf(applyinstId);
+            if(isHasPwpf)
+                return new ResultForm(false,"当前已存在《联合验收终审意见书》！是否重新生成！");
+        }
+        projAcceptService.createOpinionSummaryPwpf(applyinstId,procinstId);
+        return new ResultForm(true,"操作成功！");
     }
 }

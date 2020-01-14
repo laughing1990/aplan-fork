@@ -1,11 +1,13 @@
 package com.augurit.aplanmis.common.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -31,6 +33,10 @@ public class AeaHiSmsSendItem extends AeaHiSmsSendBean implements Serializable {
 
     @ApiModelProperty(value = "输入输出实例id")
     private String inoutinstId;
+
+    @ApiModelProperty(value = "邮件签收时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    protected Date postSignTime;
 
     // 扩展字段
 

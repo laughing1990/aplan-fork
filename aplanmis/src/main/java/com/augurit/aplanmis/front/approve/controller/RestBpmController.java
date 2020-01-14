@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.front.approve.controller;
 
+import com.augurit.agcloud.bpm.common.engine.BpmTaskService;
 import com.augurit.agcloud.bpm.front.service.BpmProcessFrontService;
 import com.augurit.agcloud.bpm.front.service.BpmTaskFrontService;
 import com.augurit.agcloud.bpm.front.vo.ExtendBpmHistoryCommentForm;
@@ -35,6 +36,8 @@ public class RestBpmController {
     private RestBpmService restBpmService;
     @Autowired
     private BpmProcessFrontService bpmProcessFrontService;
+    @Autowired
+    private BpmTaskService bpmTaskService;
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     @GetMapping("/act/param/")
@@ -305,5 +308,24 @@ public class RestBpmController {
             return new ResultForm(false, "申请实例id不能为空！");
         }
         return restBpmService.withdrawInformCommitIteminst(applyinstId);
+    }
+
+    @ApiOperation(value = "添加节点意见")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "taskId", value = "任务Id", required = true, dataType = "string", paramType = "query", readOnly = true),
+            @ApiImplicitParam(name = "processInstanceId", value = "流程Id", required = true, dataType = "string", paramType = "query", readOnly = true),
+            @ApiImplicitParam(name = "comment", value = "意见信息", required = true, dataType = "string", paramType = "query", readOnly = true)
+    })
+    @RequestMapping("/addTaskComment")
+    public ResultForm addTaskComment(String taskId,String processInstanceId,String comment) throws Exception{
+        if(StringUtils.isBlank(taskId))
+            return new ResultForm(true,"参数taskId不能为空！");
+        if(StringUtils.isBlank(processInstanceId))
+            return new ResultForm(true,"参数processInstanceId不能为空！");
+        if(StringUtils.isBlank(comment))
+            return new ResultForm(true,"参数comment不能为空！");
+
+        bpmTaskService.addTaskComment(taskId,processInstanceId,comment);
+        return new ResultForm(true,"意见保存成功！");
     }
 }

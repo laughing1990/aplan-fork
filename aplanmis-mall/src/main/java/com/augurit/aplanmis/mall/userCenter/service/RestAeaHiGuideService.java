@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.mall.userCenter.service;
 
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.GuideApplyState;
 import com.augurit.aplanmis.common.domain.AeaHiGuide;
 import com.augurit.aplanmis.common.domain.AeaHiGuideDetail;
@@ -12,14 +13,15 @@ import com.augurit.aplanmis.common.service.apply.AeaHiGuideDetailService;
 import com.augurit.aplanmis.common.service.apply.AeaHiGuideService;
 import com.augurit.aplanmis.mall.userCenter.vo.AeaGuideApplyVo;
 import com.augurit.aplanmis.mall.userCenter.vo.AeaGuideItemVo;
-import io.swagger.annotations.ApiModelProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
+import java.util.stream.Collectors;
+@Transactional
 @Service
 public class RestAeaHiGuideService {
     @Autowired
@@ -47,16 +49,22 @@ public class RestAeaHiGuideService {
         aeaHiGuide.setCreateTime(new Date());
         aeaHiGuide.setApplyUnitInfoId(aeaGuideApplyVo.getUnitInfoId());
         AeaSolicitOrg aeaSolicitOrg=new AeaSolicitOrg();
-        aeaSolicitOrg.setStageId(aeaGuideApplyVo.getStageId());
+        aeaSolicitOrg.setLatestStageId(aeaGuideApplyVo.getStageId());
         aeaSolicitOrg.setIsBusSolicit("0");
-        List<AeaSolicitOrg> solicitOrgs = aeaSolicitOrgService.listAeaSolicitOrg(aeaSolicitOrg);
+        List<AeaSolicitOrg> solicitOrgs = aeaSolicitOrgService.listAeaSolicitOrgRelOrgInfo(aeaSolicitOrg);
         if(solicitOrgs.size()==0) throw new Exception("找不到牵头部门");
+        String regionId=aeaGuideApplyVo.getRegionalism();
+        if(StringUtils.isNotBlank(regionId)) {
+            solicitOrgs=solicitOrgs.stream().filter(v->regionId.equals(v.getRegionId())).collect(Collectors.toList());
+            if(solicitOrgs.size()==0) throw new Exception("找不到与当前项目行政区划匹配的牵头部门");
+        }
         aeaHiGuide.setLeaderOrgId(solicitOrgs.size()>0?solicitOrgs.get(0).getOrgId():null);
         if(solicitOrgs.size()>0){
             AeaSolicitOrgUser aeaSolicitOrgUser=new AeaSolicitOrgUser();
             aeaSolicitOrgUser.setSolicitOrgId(solicitOrgs.get(0).getSolicitOrgId());
             aeaSolicitOrgUser.setIsActive("1");
             List<AeaSolicitOrgUser> solicitOrgUsers = aeaSolicitOrgUserService.listAeaSolicitOrgUser(aeaSolicitOrgUser);
+            if(solicitOrgUsers.size()==0) throw new Exception("牵头部门没找到人员");
             aeaHiGuide.setLeaderUserId(solicitOrgUsers.size()>0?solicitOrgUsers.get(0).getUserId():null);
         }
         aeaHiGuideService.insertAeaHiGuide(aeaHiGuide);
@@ -80,6 +88,7 @@ public class RestAeaHiGuideService {
                     guideChangeAction="d";
                 }
             }
+            aeaHiGuideDetail.setCatalogItemVerId(aeaGuideItemVo.getBaseItemVerId());
             aeaHiGuideDetail.setGuideChangeAction(guideChangeAction);//c表示change，a表示add，d表示delete
             aeaHiGuideDetail.setCreater(SecurityContext.getCurrentUserName());
             aeaHiGuideDetail.setThemeId("s".equals(detailType)?aeaGuideApplyVo.getItThemeId():aeaGuideApplyVo.getThemeId());

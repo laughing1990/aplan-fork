@@ -47,7 +47,7 @@ public class RestMatSupplyController {
     private RestMatSupplyService restMatSupplyService;
     @Autowired
     private RestFileService restFileService;
-    @Value("${aplanmis.mall.skin:skin_v4.1/}/")
+    @Value("${aplanmis.mall.skin:skin_v4.1/}")
     private String skin;
 
     @GetMapping("tomatSupplementListPage")

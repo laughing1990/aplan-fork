@@ -11,6 +11,9 @@ import com.augurit.aplanmis.common.domain.AeaHiSmsSendItem;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.front.certificate.service.RestCertificateService;
 import com.augurit.aplanmis.front.certificate.vo.CertListAndUnitVo;
+import com.augurit.aplanmis.front.certificate.vo.CertLogisticsDetailResultVo;
+import com.augurit.aplanmis.front.certificate.vo.CertLogisticsDetailVo;
+import com.augurit.aplanmis.front.certificate.vo.CertMailListVo;
 import com.augurit.aplanmis.front.certificate.vo.CertOutinstVo;
 import com.augurit.aplanmis.front.certificate.vo.CertReceivedVo;
 import com.augurit.aplanmis.front.certificate.vo.CertRegistrationVo;
@@ -75,7 +78,7 @@ public class RestCertificateController {
 
     @PostMapping("/out/materials/register")
     @ApiOperation(value = "取件登记")
-    @ApiImplicitParams({@ApiImplicitParam(value = "申请实例主键 ", name = "applyinstId", required = true)})
+    @ApiImplicitParams({@ApiImplicitParam(value = "申报实例主键 ", name = "applyinstId", required = true)})
     public ContentResultForm<CertRegistrationVo> registerOutMaterials(String applyinstId) {
         Assert.hasText(applyinstId, "申请实例Id为空！");
         try {
@@ -83,6 +86,71 @@ public class RestCertificateController {
         } catch (Exception e) {
             e.printStackTrace();
             return new ContentResultForm<>(false, null, "获取信息失败, " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/out/materials/mail/post")
+    @ApiOperation(value = "邮件下单信息")
+    @ApiImplicitParams({@ApiImplicitParam(value = "申报实例主键", name = "applyinstId", required = true)})
+    public ContentResultForm<CertRegistrationVo> mailPostInfo(String applyinstId) {
+        Assert.hasText(applyinstId, "申请实例Id为空！");
+        try {
+            return new ContentResultForm<>(true, certificateService.getCertificationInfo(applyinstId), "success.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ContentResultForm<>(false, null, "获取信息失败, " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/cert/logistics/detail")
+    @ApiOperation(value = "物流追踪信息")
+    public ContentResultForm<CertLogisticsDetailResultVo> logisticsDetail(CertLogisticsDetailVo certLogisticsDetailVo) {
+        Assert.hasText(certLogisticsDetailVo.getIteminstId(), "事项实例id为空！");
+        Assert.hasText(certLogisticsDetailVo.getApplyinstId(), "申报实例id为空！");
+        Assert.hasText(certLogisticsDetailVo.getExpressNum(), "快递单号为空！");
+        try {
+            return new ContentResultForm<>(true, certificateService.logisticsDetail(certLogisticsDetailVo), "success.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ContentResultForm<>(false, null, "获取信息失败, " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/out/materials/confirm")
+    @ApiOperation(value = "领取确认")
+    public ResultForm confirmReceived(@RequestBody CertReceivedVo certReceivedVo) {
+        try {
+            certificateService.confirmReceived(certReceivedVo);
+            return new ResultForm(true, "保存成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultForm(false, "保存领证记录失败！" + e.getMessage());
+        }
+    }
+
+    @PostMapping("/out/materials/mail/order")
+    @ApiOperation(value = "邮件下单")
+    public ContentResultForm<String> mailOrder(@RequestBody CertReceivedVo certReceivedVo) {
+        try {
+            String expressNum = certificateService.mailOrder(certReceivedVo);
+            return new ContentResultForm<>(true, expressNum, "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ContentResultForm<>(false, null, "下单失败！" + e.getMessage());
+        }
+    }
+
+    @GetMapping("/out/materials/mail/list")
+    @ApiOperation(value = "寄件信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "applyinstId", value = "申报实例id", required = true)
+    })
+    public ContentResultForm<List<CertMailListVo>> mailList(String applyinstId) {
+        try {
+            return new ContentResultForm<>(true, certificateService.mailList(applyinstId), "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ContentResultForm<>(false, null, "寄件信息列表查询失败！" + e.getMessage());
         }
     }
 
@@ -154,18 +222,6 @@ public class RestCertificateController {
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultForm(false, "更新失败！" + e.getMessage());
-        }
-    }
-
-    @PostMapping("/out/materials/confirm")
-    @ApiOperation(value = "领取确认")
-    public ResultForm confirmReceived(@RequestBody CertReceivedVo certReceivedVo) {
-        try {
-            certificateService.confirmReceived(certReceivedVo);
-            return new ResultForm(true, "保存成功！");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResultForm(false, "保存领证记录失败！" + e.getMessage());
         }
     }
 

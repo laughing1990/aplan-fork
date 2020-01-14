@@ -26,6 +26,7 @@ import com.augurit.aplanmis.common.vo.conditional.ConditionalQueryAeaProjInfo;
 import com.augurit.aplanmis.front.subject.project.service.GlobalProjService;
 import com.augurit.aplanmis.front.subject.unit.service.GlobalApplicantService;
 import com.github.pagehelper.Page;
+import io.jsonwebtoken.lang.Assert;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -542,6 +543,24 @@ public class GlobalProjController {
             }
         }catch (Exception e){
             e.printStackTrace();
+        }
+    }
+
+    @PostMapping("/saveProjWinRelation")
+    @ApiOperation("全局项目库 --> 设置代办标志")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "windowId", value = "代办中心ID", required = true, dataType = "string"),
+            @ApiImplicitParam(name = "projInfoIds", value = "项目id,多个用,隔开", required = true, dataType = "string"),
+    })
+    public ResultForm saveProjWinRelation(String windowId,String projInfoIds){
+        try {
+            Assert.notNull(windowId,"代办中心参数不能为空。");
+            Assert.notNull(projInfoIds,"代办项目参数不能为空。");
+            globalProjService.saveProjWinRelation(windowId,projInfoIds);
+            return new ResultForm(true,"保存成功。");
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+            return new ResultForm(false, e.getMessage());
         }
     }
 }

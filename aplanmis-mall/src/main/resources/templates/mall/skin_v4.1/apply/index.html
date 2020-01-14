@@ -880,11 +880,16 @@
           <span class="not-done" v-if="item.isDoing==0">未办理</span>
         </div>
       </div>
-      <p class="split-title" v-show="projSplit">
+      <p class="split-title" v-show="projSplit&&!saveSplitSuccFlag">
         <span>您可以依据项目/工程的实际情况拆分新的工程，拆分新工程请点击：</span>
         <a href="javascript:;" @click="getSplitShow()"><img src="../../../../static/mall/skin_v4.1/images/apply/u1608.png" th:src="@{/mall/skin_v4.1/images/apply/u1608.png}" alt="">拆分工程</a>
       </p>
-
+      <table class="el-table th-table el-table--border mt20" v-show="saveSplitSuccFlag">
+        <tr>
+          <th width="200px"><div class="cell">工程名称</div></th>
+          <td><div class="cell">{{splitProjName}}</div></td>
+        </tr>
+      </table>
       <!-- 并联审批事项列表 -->
       <h4 class="mt60">
         事项清单
@@ -1066,12 +1071,12 @@
           <img src="../../../static/mall/skin_v4.1/images/apply/guidancing.png" th:src="@{/mall/skin_v4.1/images/apply/guidancing.png}" alt="">
         </div>
         <br/>
-        <p class="guidance-status-title">部门辅导中</p><br/>
-        <p>已提交到审批部门确认，请您耐心等待短信通知，或通过  “申报管理 - 部门辅导”  查看审批部门确认的结果。</p><br/>
+        <p class="guidance-status-title">部门确认中</p><br/>
+        <p>已提交到审批部门确认，请您耐心等待短信通知，或通过  “申报管理 - 部门确认”  查看审批部门确认的结果。</p><br/>
         <p class="guidance-time">预计用时：0.5个工作日</p><br/>
         <div class="guidance-btn">
           <el-button type="primary" @click="goToOtherPage('myHomeIndex')">返回我的首页</el-button>
-          <el-button type="primary" @click="goToOtherPage('guideList')">前往部门辅导</el-button>
+          <el-button type="primary" @click="goToOtherPage('guideList')">前往部门确认</el-button>
         </div>
       </div>
       <!--项目/工程信息-->
@@ -1538,7 +1543,7 @@
     <!--  一张表单 end-->
     <!-- 选项材料一单清 -->
     <div class="proj-module pd-info-pandel" v-show="declareStep == 7">
-      <h4>事项材料一单清 </h4>
+      <h4>材料一单清 </h4>
       <div class="fileDiv"
            v-loading="loadingFile"
            element-loading-text="文件上传中"
@@ -2219,7 +2224,7 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button @click="isSplitDiaShow = false">取 消</el-button>
-        <el-button type="primary" @click="saveSplitStart()">确 定</el-button>
+        <el-button type="primary" @click="saveSplitStart()" :loading="saveSplitLoading">确 定</el-button>
       </div>
     </el-dialog>
     <!--拆分工程 end-->

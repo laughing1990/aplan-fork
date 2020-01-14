@@ -70,7 +70,7 @@ var parallelDeclare = new Vue({
       loadingFileWin: false, // 窗口文件上传loading
       declareStep: 1, // 申报步骤 1-补全信息 2-选择主题 3-选择阶段 4-事项材料一单清
       declareStepList: [  // 所有的步骤
-        { num: '1', name: '补全信息' },
+        { num: '1', name: '项目/工程信息' },
         { num: '2', name: '智能引导' },
         { num: '3', name: '选择事项' },
         { num: '4', name: '部门确认' },
@@ -470,6 +470,9 @@ var parallelDeclare = new Vue({
       receiveItemActive: '', // 回执列表li active状态
       receiveActive: '', // 回执列表 div active状态
       pdfSrc: '', // 回执预览地址
+      saveSplitLoading: false, // 工程拆分loading
+      saveSplitSuccFlag: false, // 工程拆分是否成功
+      splitProjName: '',
     }
   },
   mounted: function () {
@@ -480,6 +483,7 @@ var parallelDeclare = new Vue({
     // }else if (_that.projInfoId&&_that.projInfoId != 'null') {
     //   _that.searchProjAllInfo(); // 获取项目信息
     // }
+    _that.getThemeList();
     if(_that.guideId&&_that.guideId.length>0){
       _that.getGuideProjInfo();
       if(_that.isSelectItemState=='0'){
@@ -557,11 +561,11 @@ var parallelDeclare = new Vue({
     },
     // 跳转其他页面
     goToOtherPage: function(flag){
-      window.location.reload();
+      // window.location.reload();
       if(flag=='myHomeIndex'){
-        window.location.href = ctx + 'rest/main/toIndexPage?#myHomeIndex';
+        window.location.href = ctx + 'rest/main/toIndexPage?#/userCenterIndex';
       }else if(flag=='guideList') {
-        window.location.href = ctx + 'rest/main/toIndexPage?#guideList';
+        window.location.href = ctx + 'rest/main/toIndexPage?flag=1'+'#guideList';
       }else if(flag=='declareHave') {
         window.location.href = ctx + 'rest/main/toIndexPage?#declareHave';
       }
@@ -745,8 +749,8 @@ var parallelDeclare = new Vue({
       }, function (res) {
         if (res.success) {
           console.log(res);
-          _that.projSplitForm.frontStageGcbm = res.content.gcbm;
-          _that.projSplitForm.frontStageProjInfoId = res.content.projInfoId;
+          _that.projSplitForm.frontStageGcbm = res.content?res.content.gcbm:'';
+          _that.projSplitForm.frontStageProjInfoId = res.content?res.content.projInfoId:'';
         }else {
           _that.$message({
             message: res.message?res.message:'查询失败！',
@@ -770,27 +774,37 @@ var parallelDeclare = new Vue({
       _that.projSplitForm.unitInfoId = _that.unitInfoId;
       _that.$refs['projSplitForm'].validate(function (valid) {
         if (valid) {
+          _that.saveSplitLoading = true;
           request('', {
             url: ctx + 'rest/user/proj/split/start',
             type: 'post',
             ContentType: 'application/json',
             data: JSON.stringify(_that.projSplitForm)
           }, function (res) {
+            _that.saveSplitLoading = false;
             if (res.success) {
               console.log(res);
+              _that.saveSplitSuccFlag = true;
+              _that.splitProjName = _that.projSplitForm.projName;
+              _that.isSplitDiaShow = false;
+              _that.$message({
+                message: '工程拆分成功！',
+                type: 'success'
+              })
             }else {
               _that.$message({
-                message: res.message?res.message:'查询失败！',
+                message: res.message?res.message:'工程拆分失败！',
                 type: 'error'
               })
             }
           },function(res){
             _that.$message({
-              message: res.message?res.message:'查询失败！',
+              message: res.message?res.message:'工程拆分失败！',
               type: 'error'
             })
           });
         }else {
+          _that.saveSplitLoading = false;
           _that.$message({
             message: '请完善单项工程信息！',
             type: 'error'
@@ -913,7 +927,6 @@ var parallelDeclare = new Vue({
           if(_that.gbhyShowMsg!=''){
             if (jiansheUnitFlag) {
               _that.isIntelligenceShow=true;
-              _that.getThemeList();
             } else {
               _that.$message({
                 message: '请完善申办主体单位信息',
@@ -2126,13 +2139,6 @@ var parallelDeclare = new Vue({
       _that.projInfoDetail.localCode = _that.projInfoDetail.localCode?_that.projInfoDetail.localCode.trim():'';
       _that.projInfoDetail.regionalism = _that.projInfoDetail.regionalism?_that.projInfoDetail.regionalism.trim():'';
       _that.getResultForm.id = _that.smsInfoId;
-      var saveUrl = '';
-      // if(saveFlag=='1'){
-        saveUrl= ctx + 'rest/apply/common/completioninfo/saveOrUpdate';
-
-      // }else {
-      //   saveUrl= ctx + 'rest/apply/common/completioninfo/saveOrUpdate/temporary'
-      // }
       _that.loading = true;
       _that.projInfoDetail.projectAddress = _that.projInfoDetail.projectAddress?_that.projInfoDetail.projectAddress.join(','):'';
       var params = _that.projInfoDetail;
@@ -2147,7 +2153,7 @@ var parallelDeclare = new Vue({
       params.applyinstId = _that.parallelApplyinstId;
       _that.projInfoFirstSave = params;
       request('', {
-        url: saveUrl,
+        url: ctx + 'rest/apply/common/completioninfo/saveOrUpdate',
         type: 'post',
         ContentType: 'application/json',
         data: JSON.stringify(params)
@@ -2180,7 +2186,6 @@ var parallelDeclare = new Vue({
             // });
           }else {
             _that.declareStep = 3;
-            _that.getThemeList();
             _that.saveThemeAndNext();
           }
         } else {
@@ -3114,7 +3119,7 @@ var parallelDeclare = new Vue({
       var parallelItemsSel = [], coreItemsSel = [];
       // 并联itemVerids集合
       _that.parallelItems.map(function (item) {
-        if((item.leaderDeptChoose||item.applicantChoose)&&item.applicantChooseRel!=='1'){
+        if(item.applicantChooseRel==='0'){
           _that.itemVerIds.push(item.itemVerId);
           parallelItemsSel.push(item);
           if (item.baseItemVerId) {
@@ -3133,7 +3138,7 @@ var parallelDeclare = new Vue({
       }
       // 并行itemVerids集合
       _that.coreItems.map(function (item) {
-        if((item.leaderDeptChoose||item.applicantChoose)&&item.applicantChooseRel!=='1'){
+        if(item.applicantChooseRel==='0'){
           _that.propulsionItemVerIds.push(item.itemVerId);
           coreItemsSel.push(item);
           _that.propulsionBranchOrgMap.push({

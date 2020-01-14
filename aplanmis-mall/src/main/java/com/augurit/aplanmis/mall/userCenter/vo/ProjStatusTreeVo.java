@@ -5,6 +5,7 @@ import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @ApiModel("我的项目工程管理项目状态树VO")
 public class ProjStatusTreeVo {
     @ApiModelProperty("项目/工程ID")
-    private String projId;
+    private String projInfoId;
     @ApiModelProperty("项目/工程名称")
     private String projName;
     @ApiModelProperty("项目代码")
@@ -29,10 +30,13 @@ public class ProjStatusTreeVo {
     private List<ProjStatusTreeStageVo> stagesVos;
     @ApiModelProperty("工程状态树")
     private List<ProjStatusVo> projStatusVos;
+    @ApiModelProperty("工程状态数组")
+    private List<List<ProjStatusVo>> projStatusVoArrs;
 
 
     @Data
     @ApiModel("项目状态树VO下阶段数组")
+    @ApiIgnore()
     public static class ProjStatusTreeStageVo{
         @ApiModelProperty("阶段ID")
         private String stageId;
@@ -47,15 +51,15 @@ public class ProjStatusTreeVo {
             return vo;
         }
     }
-    public ProjStatusTreeStageVo getProjStatusTreeStageVo(){
-        return new ProjStatusTreeStageVo();
-    }
 
     @Data
     @ApiModel("工程状态树")
+    @ApiIgnore()
     public static class ProjStatusVo{
         @ApiModelProperty("项目/工程名称ID")
         private String projInfoId;
+        @ApiModelProperty("项目/工程名称ID")
+        private String parentProjInfoId;
         @ApiModelProperty("项目/工程名称")
         private String projName;
         @ApiModelProperty("项目代码")
@@ -64,6 +68,8 @@ public class ProjStatusTreeVo {
         private String applyStatus;
         @ApiModelProperty("阶段ID")
         private String stageId;
+        @ApiModelProperty("项目标识，r表示ROOT项目，p表示发改项目，c表示子项目或子子项目")
+        private String projFlag;
         @ApiModelProperty("子工程")
         private List<ProjStatusVo> childProjStatusVos;
 

@@ -368,11 +368,11 @@ body {
   vertical-align: top;
   overflow: hidden;
   height: 26px;
-  color: #575962;
   background: #E2E2E2;
+}
+.stageEnd {
   line-height: 16px;
-  line-height: 25px;
-  color: #fff;
+  color: #575962;
 }
 .stage li:first-child:before {
   display: none;

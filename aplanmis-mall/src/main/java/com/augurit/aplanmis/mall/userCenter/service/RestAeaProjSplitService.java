@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class RestAeaProjSplitService {
@@ -78,10 +79,15 @@ public class RestAeaProjSplitService {
         aeaProjApplySplit.setStageId(splitProjInfoParamVo.getStageId());
         aeaProjApplySplit.setFrontStageProjInfoId(splitProjInfoParamVo.getFrontStageProjInfoId());
         AeaSolicitOrg aeaSolicitOrg=new AeaSolicitOrg();
-        aeaSolicitOrg.setStageId(splitProjInfoParamVo.getStageId());
+        aeaSolicitOrg.setLatestStageId(splitProjInfoParamVo.getStageId());
         aeaSolicitOrg.setIsBusSolicit("0");
-        List<AeaSolicitOrg> solicitOrgs = aeaSolicitOrgService.listAeaSolicitOrg(aeaSolicitOrg);
+        List<AeaSolicitOrg> solicitOrgs = aeaSolicitOrgService.listAeaSolicitOrgRelOrgInfo(aeaSolicitOrg);
         if(solicitOrgs.size()==0) throw new Exception("找不到牵头部门");
+        String regionId=splitProjInfoParamVo.getRegionalism();
+        if(StringUtils.isNotBlank(regionId)){
+            solicitOrgs=solicitOrgs.stream().filter(v->regionId.equals(v.getRegionId())).collect(Collectors.toList());
+            if(solicitOrgs.size()==0) throw new Exception("找不到与当前工程的行政区划匹配的牵头部门");
+        }
         aeaProjApplySplit.setLeaderOrgId(solicitOrgs.size()>0?solicitOrgs.get(0).getOrgId():null);
         if(solicitOrgs.size()>0){
             AeaSolicitOrgUser aeaSolicitOrgUser=new AeaSolicitOrgUser();

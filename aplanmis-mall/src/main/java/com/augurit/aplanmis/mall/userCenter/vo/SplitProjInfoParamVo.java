@@ -6,6 +6,7 @@ import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 
 import java.util.Date;
 import java.util.UUID;
@@ -42,31 +43,38 @@ public class SplitProjInfoParamVo {
     @ApiModelProperty(value = "申请人ID")
     private String linkmanInfoId;
 
+    @ApiModelProperty(value = "行政区划ID")
+    private String regionalism;
+
+
 
     public static AeaProjInfo formatProjInfo(AeaProjInfo projInfo, SplitProjInfoParamVo splitProjInfoParamVo) {
         AeaProjInfo aeaProjInfo=new AeaProjInfo();
         //继承父项目信息
-        aeaProjInfo.setLocalCode(projInfo.getLocalCode());
-        aeaProjInfo.setThemeId(projInfo.getThemeId());
-        aeaProjInfo.setThemeVerId(projInfo.getThemeVerId());
-        aeaProjInfo.setRegionalism(projInfo.getRegionalism());
-        aeaProjInfo.setDistrict(projInfo.getDistrict());
-        aeaProjInfo.setIsDeleted(Status.OFF);
-        aeaProjInfo.setRootOrgId(SecurityContext.getCurrentOrgId());
-        aeaProjInfo.setCreateTime(new Date());
-        aeaProjInfo.setCreater(SecurityContext.getCurrentUserName());
-        aeaProjInfo.setProjType(projInfo.getProjType());
-        aeaProjInfo.setProjectAddress(projInfo.getProjectAddress());
-        aeaProjInfo.setFinancialSource(projInfo.getFinancialSource());
-        aeaProjInfo.setIsForeign(projInfo.getIsForeign());
-        aeaProjInfo.setInvestType(projInfo.getInvestType());
-        aeaProjInfo.setLandSource(projInfo.getLandSource());
-        aeaProjInfo.setProjCategory(projInfo.getProjCategory());
-        aeaProjInfo.setGbCodeYear(projInfo.getGbCodeYear());
-        aeaProjInfo.setIndustry(projInfo.getIndustry());
+//        aeaProjInfo.setLocalCode(projInfo.getLocalCode());
+//        aeaProjInfo.setThemeId(projInfo.getThemeId());
+//        aeaProjInfo.setThemeVerId(projInfo.getThemeVerId());
+//        aeaProjInfo.setRegionalism(projInfo.getRegionalism());
+//        aeaProjInfo.setDistrict(projInfo.getDistrict());
+//        aeaProjInfo.setProjType(projInfo.getProjType());
+//        aeaProjInfo.setProjectAddress(projInfo.getProjectAddress());
+//        aeaProjInfo.setFinancialSource(projInfo.getFinancialSource());
+//        aeaProjInfo.setIsForeign(projInfo.getIsForeign());
+//        aeaProjInfo.setInvestType(projInfo.getInvestType());
+//        aeaProjInfo.setLandSource(projInfo.getLandSource());
+//        aeaProjInfo.setProjCategory(projInfo.getProjCategory());
+//        aeaProjInfo.setGbCodeYear(projInfo.getGbCodeYear());
+//        aeaProjInfo.setIndustry(projInfo.getIndustry());
+//        aeaProjInfo.setProjLevel(projInfo.getProjLevel());
+//        aeaProjInfo.setNstartTime(projInfo.getNstartTime());
+        BeanUtils.copyProperties(projInfo,aeaProjInfo);
 
         //工程信息
         aeaProjInfo.setProjInfoId(UUID.randomUUID().toString());
+        aeaProjInfo.setCreater(SecurityContext.getCurrentUserName());
+        aeaProjInfo.setCreateTime(new Date());
+        aeaProjInfo.setRootOrgId(SecurityContext.getCurrentOrgId());
+        aeaProjInfo.setIsDeleted(Status.OFF);
         aeaProjInfo.setProjFlag("c");
         aeaProjInfo.setProjName(splitProjInfoParamVo.getProjName());
         aeaProjInfo.setForeignManagement(splitProjInfoParamVo.getForeignManagement());

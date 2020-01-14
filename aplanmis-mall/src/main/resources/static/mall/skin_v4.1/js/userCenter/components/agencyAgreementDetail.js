@@ -78,6 +78,12 @@ var module = new Vue({
 
     // 代办协议
     agencyAgreementList: [],
+    // 终止单
+    agencyStopList: [],
+    // 办结单
+    agencyEndList: [],
+    // 拒绝代办
+    agencyOutScopeList: [],
 
     filePreviewCount: 0, // 查询预览是否成功次数
   },
@@ -132,6 +138,11 @@ var module = new Vue({
       }
       this.projInfoForm.agentStageState = data.agentStageState;
       this.agencyAgreementList = data.agentAgreement;
+      this.agencyStopList=data.agencyStopList;
+          // 办结单
+      this.agencyEndList=data.agencyEndList;
+          // 拒绝代办
+      this.agencyOutScopeList=data.agencyEndList;
       this.dicFormat(this.projInfoForm.financialSource, 'XM_ZJLY', 'financialSourceCn');
       this.dicFormat(this.projInfoForm.landSource, 'XM_TDLY', 'landSourceCn');
       this.dicFormat(this.projInfoForm.projLevel, 'XM_PROJECT_LEVEL', 'projLevelCn');

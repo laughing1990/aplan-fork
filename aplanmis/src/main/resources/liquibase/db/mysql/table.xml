@@ -1941,17 +1941,17 @@
     </changeSet>
 
     <changeSet id="202001101503001" author="qinjp" failOnError="false">
-    <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
-        CREATE TABLE `aea_proj_window` (
-        `PROJ_WINDOW_ID` varchar(50) NOT NULL COMMENT '主键',
-        `PROJ_INFO_ID` varchar(100) NOT NULL COMMENT '项目ID',
-        `WINDOW_ID` varchar(100) NOT NULL COMMENT '窗口ID',
-        `CREATER` varchar(50) NOT NULL COMMENT '创建人',
-        `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
-        `ROOT_ORG_ID` varchar(50) DEFAULT NULL COMMENT '根组织ID',
-        PRIMARY KEY (`PROJ_WINDOW_ID`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='项目与代办中心（本质也是窗口）代办关联表';
-    </sql>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            CREATE TABLE `aea_proj_window` (
+            `PROJ_WINDOW_ID` varchar(50) NOT NULL COMMENT '主键',
+            `PROJ_INFO_ID` varchar(100) NOT NULL COMMENT '项目ID',
+            `WINDOW_ID` varchar(100) NOT NULL COMMENT '窗口ID',
+            `CREATER` varchar(50) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `ROOT_ORG_ID` varchar(50) DEFAULT NULL COMMENT '根组织ID',
+            PRIMARY KEY (`PROJ_WINDOW_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='项目与代办中心（本质也是窗口）代办关联表';
+        </sql>
     </changeSet>
 
     <changeSet id="20200110155525" author="zhangwn" failOnError="false">
@@ -1968,6 +1968,40 @@
 
             ALTER TABLE `aea_proj_apply_agent`
             ADD COLUMN `AGREEMENT_END_TIME` datetime NULL COMMENT '代办办结时间' AFTER `AGREEMENT_STOP_REASON`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20200110162952" author="xiong" failOnError="false">
+        <preConditions>
+            <not>
+                <columnExists tableName="aea_hi_sms_send_item" columnName="POST_SIGN_TIME"/>
+            </not>
+        </preConditions>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_sms_send_item`
+            ADD COLUMN `POST_SIGN_TIME` datetime NULL COMMENT '邮政下单时的签收时间' AFTER `EXPRESS_NUM`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20200111" author="yinlf" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `OPU_OM_USER_INFO`
+            ADD INDEX `IDX_OPU_OM_USER_INFO_USER_ID` (`USER_ID`) ;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20200111160525" author="zhangwn" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_proj_apply_agent`
+            MODIFY COLUMN `AGENT_APPLY_STATE` char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL
+            COMMENT '代办申请状态 1待签订 2窗口签订中 3 待申请人签章 4已签订（代办中） 5拒绝代办 6窗口终止 7代办终止 8窗口办结 9代办结束' AFTER `AGENT_STAGE_STATE`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="202001130954" author="yinlf" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `bsc_att_dir`
+            ADD COLUMN `STORE_URL` varchar(255) COMMENT '文件存储路径' AFTER `STORE_TYPE`;
         </sql>
     </changeSet>
 

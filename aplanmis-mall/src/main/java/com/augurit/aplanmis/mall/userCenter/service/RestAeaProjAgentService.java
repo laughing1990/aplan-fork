@@ -176,12 +176,39 @@ public class RestAeaProjAgentService {
             AgentAgreementVo agentAgreementVo=new AgentAgreementVo();
             agentAgreementVo.setAgentUserName(applyAgent.getAgentUserName());
             agentAgreementVo.setAgentUserMobile(applyAgent.getAgentUserMobile());
-            //List<BscAttForm> atts = bscAttMapper.listAttLinkAndDetailByTablePKRecordId("AEA_PROJ_APPLY_AGENT", "APPLY_AGENT_ID", applyAgentId, SecurityContext.getCurrentOrgId());
             List<BscAttFileAndDir> atts = restFileService.getAttFilesByPK("AEA_PROJ_APPLY_AGENT", "AGREEMENT_CODE", applyAgent.getAgreementCode());
             agentAgreementVo.setAtts(atts);
             agentAgreementVo.setDetailId( atts.size()>0?atts.get(0).getBscAttDetail().getDetailId():null);
             list.add(agentAgreementVo);
             vo.setAgentAgreement(list);
+
+            if(AgencyState.OUT_SCOPE.getValue().equals(applyAgent.getAgentApplyState())){
+                List<AgentAgreementVo> outScopeList=new ArrayList<>();
+                AgentAgreementVo outScopeVo=new AgentAgreementVo();
+                outScopeList.add(outScopeVo);
+                vo.setAgencyStopList(outScopeList);
+            }
+
+            if(AgencyState.WIN_END.getValue().equals(applyAgent.getAgentApplyState())
+                    ||AgencyState.AGENT_END.getValue().equals(applyAgent.getAgentApplyState())){
+                List<AgentAgreementVo> endList=new ArrayList<>();
+                AgentAgreementVo endVo=new AgentAgreementVo();
+                endVo.setAgreementEndTime(applyAgent.getAgreementStopTime());
+                endVo.setAgentEndAgreementFileId("");
+                endList.add(endVo);
+                vo.setAgencyStopList(endList);
+            }
+
+            if(AgencyState.WIN_STOP.getValue().equals(applyAgent.getAgentApplyState())
+                    ||AgencyState.STOP.getValue().equals(applyAgent.getAgentApplyState())){
+                List<AgentAgreementVo> stopList=new ArrayList<>();
+                AgentAgreementVo stopVo=new AgentAgreementVo();
+                stopVo.setAgreementStopReason(applyAgent.getAgreementStopReason());
+                stopVo.setAgreementStopTime(applyAgent.getAgreementStopTime());
+                stopVo.setAgentStopAgreementFileId("");
+                stopList.add(stopVo);
+                vo.setAgencyStopList(stopList);
+            }
         }
         vo.setProjAgentParamVo(AeaProjApplyAgentDetailVo.formatAeaProjApplyAgentDetailVo(projInfo));
         vo.setAeaUnitProjLinkmanVo(aeaUnitProjLinkmanVo);

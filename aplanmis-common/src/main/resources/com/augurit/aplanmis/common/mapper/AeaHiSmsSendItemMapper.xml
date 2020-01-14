@@ -357,13 +357,25 @@ SEND_ITEM_ID  ,SEND_ITEM_CODE  ,IS_ONCE_SEND  ,SEND_APPLY_ID  ,APPLYINST_ID  ,IT
     <select id="getNeedSendCount" resultType="int">
       select COUNT(distinct ahii.iteminst_id) from aea_hi_item_inoutinst ahii
       join aea_item_inout aii on aii.inout_id=ahii.item_inout_id
+      join aea_hi_item_matinst ahim on ahii.matinst_id=ahim.matinst_id
       where ahii.ITEMINST_ID in(
          select ahi.ITEMINST_ID from aea_hi_iteminst ahi ,aea_hi_par_stageinst ahps
          where ahps.APPLYINST_ID=#{applyinstId}
          and ahps.STAGEINST_ID = ahi.STAGEINST_ID
          and ahi.ITEMINST_STATE in('11','12')
       )
+      and ahim.mat_prop='c'
+      and ahim.certinst_id is not null
       and aii.IS_INPUT='0'
       and aii.IS_DELETED='0'
+    </select>
+
+    <select id="listMailListByApplyinstId" resultType="com.augurit.aplanmis.common.domain.AeaHiSmsSendItem">
+        select
+        <include refid="allColumns"/>
+        from aea_hi_sms_send_item ahss
+        where ahss.applyinst_id=#{applyinstId}
+        and ahss.EXPRESS_NUM is not null
+        order by ahss.CREATE_TIME desc
     </select>
 </mapper>

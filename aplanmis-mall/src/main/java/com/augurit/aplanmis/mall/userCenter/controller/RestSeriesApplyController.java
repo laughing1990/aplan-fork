@@ -70,7 +70,7 @@ public class RestSeriesApplyController {
     RestSeriesApplyService restSeriesApplyService;
     @Autowired
     AeaHiApplyinstService aeaHiApplyinstService;
-    @Value("${aplanmis.mall.skin:skin_v4.1/}/")
+    @Value("${aplanmis.mall.skin:skin_v4.1/}")
     private String skin;
 
     @GetMapping("/toSingleApplyPage")

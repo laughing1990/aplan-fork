@@ -80,7 +80,7 @@ public class RestParallerApplyController {
     @Autowired
     private RestGuideService restGuideService;
 
-    @Value("${aplanmis.mall.skin:skin_v4.1/}/")
+    @Value("${aplanmis.mall.skin:skin_v4.1/}")
     private String skin;
     @GetMapping("/toParaApplyPage")
     @ApiOperation(value = "阶段申报-->跳转阶段申报页面接口")

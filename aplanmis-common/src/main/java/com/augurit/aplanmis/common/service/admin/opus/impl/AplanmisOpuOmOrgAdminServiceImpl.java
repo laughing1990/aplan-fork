@@ -2,6 +2,7 @@ package com.augurit.aplanmis.common.service.admin.opus.impl;
 
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.elementui.ElementUiRsTreeNode;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.agcloud.opus.common.sc.scc.runtime.kernal.support.om.OpusOmZtreeNode;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -68,6 +70,25 @@ public class AplanmisOpuOmOrgAdminServiceImpl implements AplanmisOpuOmOrgAdminSe
             return elementUiRsTreeNode;
         }
         return null;
+    }
+
+    @Override
+    public List<ElementUiRsTreeNode> getOpusOmOrgAsyncElementUINode(String orgId) {
+        List<ElementUiRsTreeNode> nodes = new ArrayList<>();
+        OpuOmOrgConvert convert = new OpuOmOrgConvert();
+        if (StringUtils.isBlank(orgId)) {
+            orgId = SecurityContext.getCurrentOrgId();
+            OpuOmOrg org = opuOmOrgMapper.getOrg(orgId);
+            ElementUiRsTreeNode elementUiRsTreeNode = convert.convertToElementUiNode(org);
+            nodes.add(elementUiRsTreeNode);
+        }else{
+            List<OpuOmOrg> childOrgsByParentOrgId = opuOmOrgService.getChildOrgsByParentOrgId(orgId);
+            for (OpuOmOrg org : childOrgsByParentOrgId) {
+                ElementUiRsTreeNode elementUiRsTreeNode = convert.convertToElementUiNode(org);
+                nodes.add(elementUiRsTreeNode);
+            }
+        }
+        return nodes;
     }
 
 }

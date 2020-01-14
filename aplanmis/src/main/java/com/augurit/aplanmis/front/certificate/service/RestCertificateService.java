@@ -54,10 +54,19 @@ import com.augurit.aplanmis.common.service.instance.AeaHiSmsInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowService;
 import com.augurit.aplanmis.front.certificate.vo.CertListAndUnitVo;
+import com.augurit.aplanmis.front.certificate.vo.CertLogisticsDetailResultVo;
+import com.augurit.aplanmis.front.certificate.vo.CertLogisticsDetailVo;
+import com.augurit.aplanmis.front.certificate.vo.CertMailListVo;
 import com.augurit.aplanmis.front.certificate.vo.CertOutinstVo;
 import com.augurit.aplanmis.front.certificate.vo.CertReceivedVo;
+import com.augurit.aplanmis.front.certificate.vo.CertRegistrationItemVo;
 import com.augurit.aplanmis.front.certificate.vo.CertRegistrationVo;
 import com.augurit.aplanmis.front.certificate.vo.CertinstParamVo;
+import com.augurit.aplanmis.front.third.logistics.LogisticsService;
+import com.augurit.aplanmis.front.third.logistics.vo.LogisticsOrderDetailVo;
+import com.augurit.aplanmis.front.third.logistics.vo.LogisticsOrderResultVo;
+import com.augurit.aplanmis.front.third.logistics.vo.LogisticsOrderVo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -76,13 +85,16 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@Slf4j
 public class RestCertificateService {
     @Autowired
     private AeaHiIteminstService aeaHiIteminstService;
@@ -130,10 +142,12 @@ public class RestCertificateService {
     private AeaHiItemMatinstMapper aeaHiItemMatinstMapper;
     @Autowired
     private AeaServiceWindowService aeaServiceWindowService;
+    @Autowired
+    private LogisticsService logisticsService;
 
-    public void confirmReceived(CertReceivedVo certReceivedVo) throws Exception {
+    public List<AeaHiSmsSendItem> confirmReceived(CertReceivedVo certReceivedVo) throws Exception {
         Assert.hasText(certReceivedVo.getApplyinstId(), "申报实例id不能为空!");
-        Assert.isTrue(certReceivedVo.getIteminsts().size() > 0, "应该至少选中一个事项实例经行出件");
+        Assert.isTrue(certReceivedVo.getCertRegistrationItemVos().size() > 0, "应该至少选中一个事项实例进行出件");
 
         AeaHiSmsSendBean sendBean = certReceivedVo.getSendBean();
         // 判断是否委托上传
@@ -143,15 +157,69 @@ public class RestCertificateService {
 
         // 更新或保存 申报出件记录 AeaHiSmsSendApply
         String sendApplyId = saveOrUpdateAeaHiSmsSendApply(sendBean, certReceivedVo.getApplyinstId());
-
+        List<AeaHiSmsSendItem> aeaHiSmsSendItems = new ArrayList<>();
         if (ApplyType.SERIES.getValue().equals(certReceivedVo.getIsSeriesApprove())) {
-            confirmReceived4Series(sendApplyId, sendBean, certReceivedVo);
+            AeaHiSmsSendItem aeaHiSmsSendItem = confirmReceived4Series(certReceivedVo.getIsOnceSend(), sendApplyId, sendBean, certReceivedVo.getCertRegistrationItemVos());
+            aeaHiSmsSendItems.add(aeaHiSmsSendItem);
         } else {// 并联
-            confirmReceived4Parallel(sendApplyId, sendBean, certReceivedVo);
+            List<AeaHiSmsSendItem> aeaHiSmsSendItemList = confirmReceived4Parallel(certReceivedVo.getIsOnceSend(), sendApplyId, sendBean, certReceivedVo.getCertRegistrationItemVos());
+            aeaHiSmsSendItems.addAll(aeaHiSmsSendItemList);
         }
 
         // 判断并更新申报实例是否已全部出件
         checkAllSmsItemSendThenUpdateAeaHiApplyinst(certReceivedVo.getApplyinstId(), certReceivedVo.getIsSeriesApprove());
+        return aeaHiSmsSendItems;
+    }
+
+    public String mailOrder(CertReceivedVo certReceivedVo) throws Exception {
+        // 保存出件信息
+        List<AeaHiSmsSendItem> aeaHiSmsSendItems = confirmReceived(certReceivedVo);
+        // 物流下单
+        LogisticsOrderVo logisticsOrderVo = new LogisticsOrderVo();
+        BeanUtils.copyProperties(logisticsOrderVo, certReceivedVo.getSendBean());
+        LogisticsOrderResultVo order = logisticsService.order(logisticsOrderVo);
+        Assert.notNull(order, "物流下单失败");
+        Assert.notNull(order, "物流下单获取快递单号失败");
+        for (AeaHiSmsSendItem aeaHiSmsSendItem : aeaHiSmsSendItems) {
+            aeaHiSmsSendItem.setExpressNum(order.getExpressNum());
+            aeaHiSmsSendItem.setOrderId(order.getOrderId());
+            aeaHiSmsSendItemMapper.updateAeaHiSmsSendItem(aeaHiSmsSendItem);
+        }
+        return order.getExpressNum();
+    }
+
+    /**
+     * 寄件信息
+     *
+     * @param applyinstId 申报实例id
+     */
+    public List<CertMailListVo> mailList(String applyinstId) {
+        Assert.hasText(applyinstId, "申报实例不能为空");
+        List<AeaHiSmsSendItem> aeaHiSmsSendItems = aeaHiSmsSendItemMapper.listMailListByApplyinstId(applyinstId);
+        return aeaHiSmsSendItems.stream().map(CertMailListVo::from).collect(Collectors.toList());
+    }
+
+    public CertLogisticsDetailResultVo logisticsDetail(CertLogisticsDetailVo certLogisticsDetailVo) throws Exception {
+        CertLogisticsDetailResultVo resultVo = new CertLogisticsDetailResultVo();
+        List<LogisticsOrderDetailVo> detail = logisticsService.detail(certLogisticsDetailVo.getExpressNum());
+        resultVo.setLogisticsOrderDetails(detail);
+
+        AeaHiSmsSendItem param = new AeaHiSmsSendItem();
+        param.setApplyinstId(certLogisticsDetailVo.getApplyinstId());
+        param.setExpressNum(certLogisticsDetailVo.getExpressNum());
+        param.setIteminstId(certLogisticsDetailVo.getIteminstId());
+        List<AeaHiSmsSendItem> aeaHiSmsSendItems = aeaHiSmsSendItemMapper.listAeaHiSmsSendItem(param);
+        Assert.isTrue(aeaHiSmsSendItems.size() > 0, "无法找到该事项的出件记录");
+
+        if (aeaHiSmsSendItems.size() > 1) {
+            log.warn("事项应该只存在一条出件记录, 但数据库中发现两条, 默认取第一条, iteminstId: {}, applyinstId: {}", certLogisticsDetailVo.getIteminstId(), certLogisticsDetailVo.getApplyinstId());
+        }
+        resultVo.setAeaHiSmsSendItem(aeaHiSmsSendItems.get(0));
+        List<AeaHiCertinst> certinsts = aeaHiCertinstMapper.listAeaHiCertinstByIteminstIds(new String[]{certLogisticsDetailVo.getIteminstId()});
+        Assert.notEmpty(certinsts, "无法找到该事项的证照实例, iteminstId: " + certLogisticsDetailVo.getIteminstId());
+
+        resultVo.setAeaHiCertinsts(certinsts);
+        return resultVo;
     }
 
     private void mergeConsignerAtt(CertReceivedVo certReceivedVo, AeaHiSmsSendBean sendBean) {
@@ -191,22 +259,10 @@ public class RestCertificateService {
         return new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
     }
 
-    /**
-     * 根据事项实例获取输出材料实例， 多个用逗号分隔
-     */
-    private String getitemInoutinstId(String iteminstId) throws Exception {
-        List<AeaHiItemInoutinst> itemInoutinst = aeaHiItemInoutinstMapper.listOutMaterialsByIteminstId(iteminstId, SecurityContext.getCurrentOrgId());
-        if (itemInoutinst.size() > 0) {
-            return itemInoutinst.stream().map(AeaHiItemInoutinst::getInoutinstId).collect(Collectors.joining(","));
-        }
-        return null;
-    }
+    private AeaHiSmsSendItem confirmReceived4Series(String isOneSend, String sendApplyId, AeaHiSmsSendBean sendBean, List<CertRegistrationItemVo> certRegistrationItemVos) throws Exception {
+        Assert.isTrue(certRegistrationItemVos.size() == 1, "应该有且仅有一个事项申报实例");
 
-    private void confirmReceived4Series(String sendApplyId, AeaHiSmsSendBean sendBean, CertReceivedVo certReceivedVo) throws Exception {
-        Assert.isTrue(certReceivedVo.getIteminsts().size() == 1, "应该有且仅有一个事项申报实例");
-
-        String iteminstId = certReceivedVo.getIteminsts().get(0).getIteminstId();
-        AeaHiSmsSendItem aeaHiSmsSendItem = assembleAeaHiSmsSendItem(sendBean, certReceivedVo.getIsOnceSend(), iteminstId, sendApplyId);
+        AeaHiSmsSendItem aeaHiSmsSendItem = assembleAeaHiSmsSendItem(sendBean, isOneSend, sendApplyId, certRegistrationItemVos.get(0));
         aeaHiSmsSendItemMapper.insertAeaHiSmsSendItem(aeaHiSmsSendItem);
 
         // 修改iteminst状态
@@ -214,22 +270,32 @@ public class RestCertificateService {
 
         // 插入aea_log_item_state_hist记录
         insertIntoItemStateHist(Collections.singletonList(aeaHiSmsSendItem));
+        return aeaHiSmsSendItem;
     }
 
-    private void confirmReceived4Parallel(String sendApplyId, AeaHiSmsSendBean sendBean, CertReceivedVo certReceivedVo) throws Exception {
-        List<AeaHiIteminst> iteminsts = certReceivedVo.getIteminsts();
-        List<AeaHiSmsSendItem> aeaHiSmsSendItems = new ArrayList<>();
-        for (AeaHiIteminst iteminst : iteminsts) {
-            AeaHiSmsSendItem aeaHiSmsSendItem = assembleAeaHiSmsSendItem(sendBean, certReceivedVo.getIsOnceSend(), iteminst.getIteminstId(), sendApplyId);
-            aeaHiSmsSendItems.add(aeaHiSmsSendItem);
-            updateIteminstSendStatus(iteminst.getIteminstId());
+    private List<AeaHiSmsSendItem> confirmReceived4Parallel(String isOneSend, String sendApplyId, AeaHiSmsSendBean sendBean, List<CertRegistrationItemVo> certRegistrationItemVos) throws Exception {
+        Map<String, AeaHiSmsSendItem> aeaHiSmsSendItemMap = new HashMap<>(certRegistrationItemVos.size());
+        for (CertRegistrationItemVo vo : certRegistrationItemVos) {
+            AeaHiSmsSendItem aeaHiSmsSendItem = assembleAeaHiSmsSendItem(sendBean, isOneSend, sendApplyId, vo);
+
+            AeaHiSmsSendItem fromMap = aeaHiSmsSendItemMap.get(aeaHiSmsSendItem.getIteminstId());
+            if (fromMap != null && StringUtils.isNotBlank(fromMap.getInoutinstId())) {
+                fromMap.setInoutinstId(fromMap.getInoutinstId() + ", " + aeaHiSmsSendItem.getInoutinstId());
+            } else {
+                aeaHiSmsSendItemMap.put(aeaHiSmsSendItem.getIteminstId(), aeaHiSmsSendItem);
+            }
+            updateIteminstSendStatus(vo.getIteminstId());
         }
-        if (aeaHiSmsSendItems.size() > 0) {
+        if (aeaHiSmsSendItemMap.size() > 0) {
+            List<AeaHiSmsSendItem> aeaHiSmsSendItems = new ArrayList<>();
+            aeaHiSmsSendItems.addAll(aeaHiSmsSendItemMap.values());
             // 插入senditem记录
             aeaHiSmsSendItemMapper.batchInsertAeaHiSmsSendItem(aeaHiSmsSendItems);
             //插入aea_log_item_state_hist记录
             insertIntoItemStateHist(aeaHiSmsSendItems);
+            return aeaHiSmsSendItems;
         }
+        return new ArrayList<>();
     }
 
     /**
@@ -276,7 +342,7 @@ public class RestCertificateService {
      */
     private void checkAllSmsItemSendThenUpdateAeaHiApplyinst(String applyinstId, String isSeriesApprove) throws Exception {
         boolean allSend;
-        if (ApplyType.SERIES.equals(isSeriesApprove)) {//单项申报默认出证都是全部出证
+        if (ApplyType.SERIES.getValue().equals(isSeriesApprove)) {//单项申报默认出证都是全部出证
             allSend = true;
         } else {
             // 需要出证的事项数量
@@ -296,36 +362,38 @@ public class RestCertificateService {
     /**
      * 组装 AeaHiSmsSendItem
      */
-    private AeaHiSmsSendItem assembleAeaHiSmsSendItem(AeaHiSmsSendBean sendBean, String isOnceSend, String iteminstId, String sendApplyId) throws Exception {
+    private AeaHiSmsSendItem assembleAeaHiSmsSendItem(AeaHiSmsSendBean sendBean, String isOnceSend, String sendApplyId, CertRegistrationItemVo certRegistrationItemVo) throws Exception {
         AeaHiSmsSendItem aeaHiSmsSendItem = new AeaHiSmsSendItem();
         BeanUtils.copyProperties(aeaHiSmsSendItem, sendBean);
         // 暂时用datestr
         aeaHiSmsSendItem.setSendItemCode(getDateString());
-        aeaHiSmsSendItem.setIteminstId(iteminstId);
         aeaHiSmsSendItem.setSendItemId(UuidUtil.generateUuid());
         aeaHiSmsSendItem.setSendApplyId(sendApplyId);
         aeaHiSmsSendItem.setIsOnceSend(isOnceSend);
+        aeaHiSmsSendItem.setIssueTime(new Date());
         aeaHiSmsSendItem.setCreater(SecurityContext.getCurrentUserId());
         aeaHiSmsSendItem.setRootOrgId(SecurityContext.getCurrentOrgId());
         aeaHiSmsSendItem.setCreateTime(new Date());
-        aeaHiSmsSendItem.setInoutinstId(getitemInoutinstId(iteminstId));
+        aeaHiSmsSendItem.setIteminstId(certRegistrationItemVo.getIteminstId());
+        aeaHiSmsSendItem.setInoutinstId(certRegistrationItemVo.getInoutinstId());
+        if (StringUtils.isBlank(aeaHiSmsSendItem.getIsConsigner())) {
+            aeaHiSmsSendItem.setIsConsigner(Status.OFF);
+        }
+        if (StringUtils.isBlank(aeaHiSmsSendItem.getWindowUserId())) {
+            aeaHiSmsSendItem.setWindowUserId(SecurityContext.getCurrentUserId());
+        }
+        if (StringUtils.isBlank(aeaHiSmsSendItem.getWindowUserName())) {
+            aeaHiSmsSendItem.setWindowUserName(SecurityContext.getCurrentUserName());
+        }
+        aeaHiSmsSendItem.setWindowHandleTime(new Date());
         return aeaHiSmsSendItem;
     }
 
     public CertRegistrationVo getCertificationInfo(String applyinstId) throws Exception {
         CertRegistrationVo certRegistrationVo = new CertRegistrationVo();
-        List<AeaHiIteminst> iteminsts = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
-        // 过滤剩下办结通过和容缺通过的
-        List<AeaHiIteminst> needSendIteminsts = iteminsts.stream().filter(
-                inst -> ItemStatus.AGREE_TOLERANCE.getValue().equals(inst.getIteminstState()) ||
-                        ItemStatus.AGREE.getValue().equals(inst.getIteminstState())
-        ).collect(Collectors.toList());
 
-        // 判断该事项是否有件可出
-        for (AeaHiIteminst iteminst : needSendIteminsts) {
-            List<AeaHiItemInoutinst> outinsts = aeaHiItemInoutinstMapper.listOutMaterialsByIteminstId(iteminst.getIteminstId(), SecurityContext.getCurrentOrgId());
-            iteminst.setHasOutCertinst(outinsts.size() > 0 ? Status.ON : Status.OFF);
-        }
+        List<CertRegistrationItemVo> registrationItems = getRegistrationItems(applyinstId);
+        certRegistrationVo.setCertRegistrationItemVos(registrationItems);
 
         AeaHiSmsInfo smsInfo = aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(applyinstId);
         Assert.notNull(smsInfo, "根据申报实例没有找到对应的领件人信息, applyinstId: " + applyinstId);
@@ -335,10 +403,41 @@ public class RestCertificateService {
         smsInfo.setSenderName(currentUserWindow.getWindowName());
         smsInfo.setSenderPhone(currentUserWindow.getLinkPhone());
 
-        certRegistrationVo.setIteminsts(iteminsts);
         certRegistrationVo.setSmsInfo(smsInfo);
         return certRegistrationVo;
 
+    }
+
+    private List<CertRegistrationItemVo> getRegistrationItems(String applyinstId) throws Exception {
+        ArrayList<CertRegistrationItemVo> certRegistrationItemVos = new ArrayList<>();
+        List<AeaHiIteminst> iteminsts = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
+        // 过滤剩下办结通过和容缺通过的
+        Map<String, AeaHiIteminst> aeaHiIteminstMap = iteminsts.stream().filter(
+                inst -> ItemStatus.AGREE_TOLERANCE.getValue().equals(inst.getIteminstState()) ||
+                        ItemStatus.AGREE.getValue().equals(inst.getIteminstState())
+        ).collect(Collectors.toMap(AeaHiIteminst::getIteminstId, iteminst -> iteminst));
+
+        if (aeaHiIteminstMap.size() == 0) {
+            return certRegistrationItemVos;
+        }
+
+        Map<String, AeaHiSmsSendItem> aeaHiSmsSendItemMap = aeaHiSmsSendItemMapper.getAeaHiSmsSendItemListByApplyinstId(applyinstId).stream().collect(Collectors.toMap(AeaHiSmsSendItem::getIteminstId, item -> item));
+
+        List<AeaHiCertinst> certinsts = aeaHiCertinstMapper.listAeaHiCertinstByIteminstIds(aeaHiIteminstMap.keySet().toArray(new String[0]));
+        certinsts.forEach(certinst -> {
+            AeaHiIteminst aeaHiIteminst = aeaHiIteminstMap.get(certinst.getIteminstId());
+            CertRegistrationItemVo vo = CertRegistrationItemVo.from(aeaHiIteminst, certinst);
+            AeaHiSmsSendItem aeaHiSmsSendItem = aeaHiSmsSendItemMap.get(certinst.getIteminstId());
+            if (aeaHiSmsSendItem != null
+                    && StringUtils.isNotBlank(aeaHiSmsSendItem.getInoutinstId())
+                    && aeaHiSmsSendItem.getInoutinstId().contains(certinst.getInoutinstId())) {
+                vo.setHandled(true);
+                vo.setExpressNum(aeaHiSmsSendItem.getExpressNum());
+                vo.setPostSignTime(aeaHiSmsSendItem.getPostSignTime());
+            }
+            certRegistrationItemVos.add(vo);
+        });
+        return certRegistrationItemVos;
     }
 
     public String uploadConsignerAtt(String applyinstId, HttpServletRequest request) throws Exception {
@@ -592,8 +691,6 @@ public class RestCertificateService {
                 vo.setCertList(collect);
             }
         }
-
-
         return vo;
 
     }
@@ -676,6 +773,7 @@ public class RestCertificateService {
         }
         return certOutinstVos;
     }
+
 }
 
 

@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -24,5 +25,21 @@ public class AgentAgreementVo {
 
     @ApiModelProperty("代办协议文件ID,用于下载，预览")
     private String  detailId;
+
+    @ApiModelProperty("代办终止协议文件ID")
+    private String  agentStopAgreementFileId;
+    @ApiModelProperty("代办结束办结单文件ID")
+    private String  agentEndAgreementFileId;
+    @ApiModelProperty("协议编号")
+    private String  agreementCode;
+    @ApiModelProperty("协议签订时间")
+    private String  agreementSignTime;
+    @ApiModelProperty("代办终止原因")
+    private String  agreementStopReason;
+    @ApiModelProperty("代办办结时间")
+    private Date  agreementEndTime;
+    @ApiModelProperty("代办终止时间")
+    private Date agreementStopTime;
+
 
 }

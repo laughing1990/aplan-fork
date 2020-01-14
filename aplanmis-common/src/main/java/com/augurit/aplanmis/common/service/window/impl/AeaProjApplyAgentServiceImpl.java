@@ -97,10 +97,6 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
             aeaProjApplyAgent.setModifier(SecurityContext.getCurrentUserName());
             aeaProjApplyAgent.setModifyTime(new Date());
             aeaProjApplyAgentMapper.updateAeaProjApplyAgent(aeaProjApplyAgent);
-            String redisData = this.queryRedisData(aeaProjApplyAgent.getApplyAgentId());
-            if(StringUtils.isBlank(redisData)){
-                this.saveRedisAeaProjApplyAgentInfo(aeaProjApplyAgent);
-            }
         }
     }
     public void deleteAeaProjApplyAgentById(String id) throws Exception{
@@ -258,8 +254,17 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
         return jedisUtil.get(CURRENT_AGENT_OPERATE_USER_INFO_KEY + applyAgentId);
     }
 
-    private void saveRedisAeaProjApplyAgentInfo(AeaProjApplyAgent aeaProjApplyAgent) throws Exception{//锁定10分钟操作时间
-        jedisUtil.setex(CURRENT_AGENT_OPERATE_USER_INFO_KEY + aeaProjApplyAgent.getApplyAgentId(),600, JSONObject.toJSONString(aeaProjApplyAgent));
+    @Override
+    public void saveRedisAeaProjApplyAgentInfo(AeaProjApplyAgent aeaProjApplyAgent) throws Exception{
+        String applyAgentId = aeaProjApplyAgent.getApplyAgentId();
+        String redisData = this.queryRedisData(applyAgentId);
+        if(StringUtils.isBlank(redisData)){
+            OpuOmUser currentUser = SecurityContext.getCurrentUser();
+            aeaProjApplyAgent.setCurrentUserId(currentUser.getUserId());
+            aeaProjApplyAgent.setCurrentUserName(currentUser.getUserName());
+            //锁定10分钟操作时间
+            jedisUtil.setex(CURRENT_AGENT_OPERATE_USER_INFO_KEY + applyAgentId,600, JSONObject.toJSONString(aeaProjApplyAgent));
+        }
     }
 
     private void setAgentStageName(AeaProjApplyAgent aeaProjApplyAgent){

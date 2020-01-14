@@ -104,20 +104,25 @@ var pager = new Vue({
     // 代办项目-各个状态下的样式
     agencyStatusTagClassFn: function(item){
       var state = item.projAgentState;
-      if(state == 0){
+      if(state == 0||state == 3||state == 6||state == 8){
+        return {
+          color: '#4293f4',
+          background: '#f0f7fe'
+        }
+      }else if(state == 1||state == 2||state== 4){
+        return {
+          color: '#f4a242',
+          background: '#FEF8F0'
+        }
+      }else if(state ==5||state == 7){
         return {
           color: '#f24040',
           background: '#FEF0F0'
         }
-      }else if(state >= 4){
+      }else{
         return {
           color: '#00a854',
           background: '#EBF8F2'
-        }
-      }else{
-        return {
-          color: '#f4a242',
-          background: '#FEF8F0'
         }
       }
     },
@@ -127,7 +132,7 @@ var pager = new Vue({
   },
   filters: {
     projAgentStateFormat: function(val){
-      var tagCn = ['可代办','签订中', '签订中','待签章','已签订','已终止'];
+      var tagCn = ['可代办','签订中', '签订中','委托待签章','代办中','拒绝代办','终止待签章','代办终止','办结待签章','代办结束'];
       return tagCn[val]
     },
   },

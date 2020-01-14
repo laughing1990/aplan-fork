@@ -13,6 +13,9 @@ public class SplitedProjApproveVo {
     @ApiModelProperty(value = "子工程拆分记录id")
     private String applySplitId;
 
+    @ApiModelProperty(value = "子工程审核通过后需要用子工程进行申报")
+    private String guideId;
+
     @ApiModelProperty(value = "原因描述")
     private String reason;
 

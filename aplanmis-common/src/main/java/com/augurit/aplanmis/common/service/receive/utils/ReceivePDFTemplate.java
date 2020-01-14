@@ -101,7 +101,7 @@ public class ReceivePDFTemplate {
         // 打开文档，只有打开后才能往里面加东西
         document.open();
         ReceivePDFUtils.paragrahCenter(document,receiveName,font2);
-        ReceivePDFUtils.paragrahCenter(document,"协议编号："+ instrumentNo==null?"":instrumentNo,font4);
+        ReceivePDFUtils.paragrahCenter(document,"协议编号："+ (instrumentNo==null?"":instrumentNo),font4);
         ReceivePDFUtils.oneLine(document,font6);
         ReceivePDFUtils.oneLine(document,font6);
 

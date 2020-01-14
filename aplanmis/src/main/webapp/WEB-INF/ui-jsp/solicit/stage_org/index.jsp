@@ -143,6 +143,6 @@
 </div>
 
 <!-- 业务js -->
-<script src="${pageContext.request.contextPath}/ui-static/solicit/stage_org/index.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath}/ui-static/solicit/stage_org/index.js?v=1" type="text/javascript"></script>
 </body>
 </html>

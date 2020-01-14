@@ -46,5 +46,6 @@ public class AeaGuideApplyVo {
     private String itThemeVerId;
     @ApiModelProperty(value = "智能引导阶段ID")
     private String itStageId;
-
+    @ApiModelProperty(value = "行政区划ID")
+    private String regionalism;
 }

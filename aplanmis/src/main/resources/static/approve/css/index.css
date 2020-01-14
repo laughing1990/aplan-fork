@@ -750,7 +750,7 @@ input[type="number"] {
 }
 
 .send-dia-form {
-  padding: 8px 14px 16px 14px;
+  padding: 16px 14px 16px 14px;
   background: #f2f3f8;
 }
 
@@ -2738,6 +2738,22 @@ input[type="number"] {
 }
 .config-org-u:hover{
   background:#f5f7fa;
+}
+
+.guide-prompt{
+  width: 700px;
+}
+.guide-prompt textarea{
+  min-height: 85px!important;
+}
+.guide-prompt .el-message-box__input{
+  padding-top: 5px;
+}
+.guide-prompt .el-message-box__content{
+  padding-bottom: 0px;
+}
+.guide-prompt .el-message-box__errormsg{
+  min-height: 8px;
 }
 
 

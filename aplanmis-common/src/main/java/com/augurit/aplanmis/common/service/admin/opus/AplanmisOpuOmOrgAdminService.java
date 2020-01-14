@@ -21,4 +21,6 @@ public interface AplanmisOpuOmOrgAdminService {
     OpuOmOrg getTopOrgByCurOrgId(String orgId);
 
     ElementUiRsTreeNode getAllOpuOmOrgElementUITreeByOrgId(String orgId);
+
+    List<ElementUiRsTreeNode> getOpusOmOrgAsyncElementUINode(String orgId);
 }

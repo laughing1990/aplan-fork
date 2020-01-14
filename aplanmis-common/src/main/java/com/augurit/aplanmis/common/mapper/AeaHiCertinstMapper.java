@@ -25,15 +25,15 @@ import java.util.List;
 @Repository
 public interface AeaHiCertinstMapper {
 
-    public void insertAeaHiCertinst(AeaHiCertinst aeaHiCertinst) throws Exception;
+    void insertAeaHiCertinst(AeaHiCertinst aeaHiCertinst) throws Exception;
 
-    public void updateAeaHiCertinst(AeaHiCertinst aeaHiCertinst) throws Exception;
+    void updateAeaHiCertinst(AeaHiCertinst aeaHiCertinst) throws Exception;
 
-    public void deleteAeaHiCertinst(@Param("id") String id) throws Exception;
+    void deleteAeaHiCertinst(@Param("id") String id) throws Exception;
 
-    public List<AeaHiCertinst> listAeaHiCertinst(AeaHiCertinst aeaHiCertinst) throws Exception;
+    List<AeaHiCertinst> listAeaHiCertinst(AeaHiCertinst aeaHiCertinst) throws Exception;
 
-    public AeaHiCertinst getAeaHiCertinstById(@Param("id") String id) throws Exception;
+    AeaHiCertinst getAeaHiCertinstById(@Param("id") String id) throws Exception;
 
     List<AeaHiCertinst> getAeaHiCertinstByIds(@Param("ids") List<String> ids);
 
@@ -93,7 +93,7 @@ public interface AeaHiCertinstMapper {
 
     List<AeaHiCertinst> getCertinsts(@Param("certId") String certId, @Param("linkmanInfoId") String linkmanInfoId, @Param("projInfoId") String projInfoId, @Param("unInfoIds") String[] unInfoIds, @Param("rootOrgId") String rootOrgId);
 
-    List<AeaHiCertinst> getCertintListByProjInfoIds(@Param("linkmanInfoId") String linkmanInfoId, @Param("unitInfoId") String unitInfoId, @Param("projInfoIds") String[] projInfoIds,@Param("keyword") String keyword, @Param("rootOrgId") String rootOrgId);
+    List<AeaHiCertinst> getCertintListByProjInfoIds(@Param("linkmanInfoId") String linkmanInfoId, @Param("unitInfoId") String unitInfoId, @Param("projInfoIds") String[] projInfoIds, @Param("keyword") String keyword, @Param("rootOrgId") String rootOrgId);
 
     List<AeaHiCertinst> getCertintListByUnitInfoIdOrLinkmanInfoId(@Param("linkmanInfoId") String linkmanInfoId, @Param("unitInfoId") String unitInfoId, @Param("keyword") String keyword, @Param("rootOrgId") String rootOrgId);
 }

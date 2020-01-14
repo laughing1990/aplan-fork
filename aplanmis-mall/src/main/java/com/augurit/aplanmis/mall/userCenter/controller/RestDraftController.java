@@ -36,7 +36,7 @@ public class RestDraftController {
     RestApproveService restApproveService;
     @Autowired
     private RestApplyCommonService restApplyCommonService;
-    @Value("${aplanmis.mall.skin:skin_v4.1}/")
+    @Value("${aplanmis.mall.skin:skin_v4.1/}")
     private String skin;
     @GetMapping("todraftsPage")
     @ApiOperation(value = "跳转草稿箱页面")
