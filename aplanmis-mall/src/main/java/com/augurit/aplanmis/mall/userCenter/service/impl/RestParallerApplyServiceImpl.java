@@ -42,7 +42,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 @Transactional
 @Service
@@ -94,6 +93,8 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
     private AeaUnitInfoMapper aeaUnitInfoMapper;
     @Autowired
     private AeaLinkmanInfoService aeaLinkmanInfoService;
+    @Autowired
+    private AeaParThemeMapper aeaParThemeMapper;
 
     @Override
     public ItemListVo listItemAndStateByStageId(String stageId, String projInfoId, String regionalism, String projectAddress,String isSelectItemState,String isFilterStateItem,String rootOrgId) throws Exception {
@@ -302,6 +303,9 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
                 aeaParFactorTheme.setFactorId(answerfactor.getFactorId());
                 List<AeaParFactorTheme> aeaParFactorThemes = aeaParFactorThemeMapper.listAeaParFactorTheme(aeaParFactorTheme);
                 if (aeaParFactorThemes.size()>0) answerfactor.setThemeId(aeaParFactorThemes.get(0).getThemeId());
+                if(StringUtils.isBlank(answerfactor.getThemeId())) return;
+                AeaParTheme theme = aeaParThemeMapper.selectOneById(answerfactor.getThemeId());
+                answerfactor.setThemeName(theme!=null?theme.getThemeName():"");
             });
 
             aeaParFactor.setAnswerFactors(answerfactors);
@@ -330,6 +334,9 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
                 if (param!=null) answerfactor.setParentQuestionFactorId(param.getParentFactorId());
                 List<AeaParFactorTheme> aeaParFactorThemes = aeaParFactorThemeMapper.listAeaParFactorTheme(aeaParFactorTheme);
                 if (aeaParFactorThemes.size()>0) answerfactor.setThemeId(aeaParFactorThemes.get(0).getThemeId());
+                if(StringUtils.isBlank(answerfactor.getThemeId())) return;
+                AeaParTheme theme = aeaParThemeMapper.selectOneById(answerfactor.getThemeId());
+                answerfactor.setThemeName(theme!=null?theme.getThemeName():"");
             });
             aeaParFactor.setAnswerFactors(answerfactors);
         });
