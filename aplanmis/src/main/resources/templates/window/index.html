@@ -22,8 +22,8 @@
   <link rel="stylesheet" href="../../static/window/css/index.css" th:href="@{/window/css/index.css}">
   <script>
     var ctx = '[[@{/}]]';
-      // var ctx = 'http://192.168.30.37:8083/aplanmis-front/';
-      // var ctx = 'http://192.168.30.30:8083/aplanmis-front/';
+    // var ctx = 'http://192.168.30.37:8083/aplanmis-front/';
+    // var ctx = 'http://192.168.30.18:8083/aplanmis-front/';
   </script>
 </head>
 
@@ -317,8 +317,8 @@
         <el-button size='medium' @click="fold2">折叠</el-button>
       </div>
       <el-tree :data="orgData" class="filter-tree tree1" :style="{height:treeLeftHeight+'px',overflow: 'auto'}"
-        default-expand-all :expand-on-click-node="false" :filter-node-method="filterNodeOrg" highlight-current
-        @node-click="orgTreeNode" node-key="id" ref="orgTree">
+        :default-expanded-keys="treeShowNode" :expand-on-click-node="false" :filter-node-method="filterNodeOrg"
+        highlight-current @node-click="orgTreeNode" node-key="id" ref="orgTree" :load="loadOrgNode" lazy>
       </el-tree>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" size='medium' @click="orgSave">保存</el-button>
