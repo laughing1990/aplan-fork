@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.mall.userCenter.controller;
 
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
+import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.AeaHiApplyinstConstants;
 import com.augurit.aplanmis.common.constants.ApplyState;
@@ -157,9 +158,13 @@ public class RestSeriesApplyController {
 
     @PostMapping("/series/processflow/start")
     @ApiOperation(value = "单项申报 --> 提交申请", httpMethod = "POST")
-    public ContentResultForm<SeriesApplyResultVo> startSeriesFlow(@RequestBody SeriesApplyDataPageVo seriesApplyDataPageVo) throws Exception {
-        SeriesApplyResultVo vo = restApplyService.startSeriesFlow(seriesApplyDataPageVo);
-        return new ContentResultForm<>(true, vo, "Series start process success");
+    public ResultForm startSeriesFlow(@RequestBody SeriesApplyDataPageVo seriesApplyDataPageVo){
+        try {
+            SeriesApplyResultVo vo = restApplyService.startSeriesFlow(seriesApplyDataPageVo);
+            return new ContentResultForm<>(true, vo, "Series start process success");
+        }catch (Exception e){
+            return new ResultForm(false, "Series start process error");
+        }
     }
 
 
