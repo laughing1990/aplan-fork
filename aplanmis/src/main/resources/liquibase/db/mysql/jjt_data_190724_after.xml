@@ -390,4 +390,10 @@
         </sql>
     </changeSet>
 
+    <changeSet id="202001140928" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('4f479f9c-da20-41f6-9196-2721c32e6289', 'c4230b57-c869-49c0-8a3c-0ff8ff67fea6', 'BMQR', '部门确认', '1', '4', '', NULL, '0', '0', NULL, NULL, '2020-01-14 09:25:20', NULL, '2020-01-14 09:25:20', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
