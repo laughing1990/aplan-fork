@@ -1961,11 +1961,11 @@
         <template v-if="leaderDept">
           <!--牵头部门按钮-->
           <template v-if="guideState==2||guideState==1">
-            <el-button type="success" circle type="primary" @click="openSoDialog">发起部<br/>门确认</el-button>
+            <el-button type="success" circle @click="openSoDialog">发起部<br/>门确认</el-button>
             <el-button circle @click="leaderDeptPass">直接<br/>通过</el-button>
           </template>
           <template v-else-if="guideState==6">
-            <el-button type="success" circle type="primary" @click="leaderDeptPass(true)">结束部<br/>门确认</el-button>
+            <el-button type="success" circle @click="leaderDeptPass(true)">结束部<br/>门确认</el-button>
             <el-button circle @click="openSoDialog">添加征<br/>询确认</el-button>
           </template>
         </template>
