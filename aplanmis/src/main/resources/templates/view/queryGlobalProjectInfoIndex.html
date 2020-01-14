@@ -69,6 +69,7 @@
         <!--<el-button class="el-button&#45;&#45;medium">导入代办项目</el-button>-->
       <!--</el-upload>-->
       <div style="float: right">
+        <a class="el-button el-button--medium is-plain" href="javascript:;" @click="setAgencyTag">设置代办标志</a>
         <a class="el-button el-button--medium" href="javascript:;" @click.prevent="openImportWin()">导入代办项目</a>
         <a class="el-button el-button--primary el-button--medium" href="projectDetail.html" target="_blank" v-if="isLocal">新增项目</a>
         <a class="el-button el-button--primary el-button--medium" href="javascript:;" @click.prevent="jumpToDetail('add')" v-else>新增项目</a>
@@ -186,6 +187,46 @@
   </el-dialog>
   <!--导入代办项目弹窗 end-->
 
+  <!-- 设置代办标志dialog start-->
+  <el-dialog title="设置代办标志" class="solicit-opinion-dialog set-agencytag-dialog" :visible.sync="isShowSetAgencyTagDialog"
+    width="800px" top="100px">
+    <div class="stop-a-box">
+       <span class="title">请选择代办中心</span>
+    </div>
+    <div class="stop-a-box" style="margin-top: 4px;">
+      <el-form :model="setAgencyForm" :rules="setAgencyRules" label-width="100px" size="medium" ref="setAgencyForm">
+        <el-form-item label="代办中心：" prop="windowId">
+          <el-select filterable v-model="setAgencyForm.windowId" placeholder="请选择代办中心">
+            <el-option v-for="item in agencyOptionList" :key="item.windowId" :label="item.windowName"
+                :value="item.windowId">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="stop-a-box" style="margin-top: 12px;">
+      <span class="title">代办项目列表</span>
+    </div> 
+    <div class="stop-a-box" style="margin-top: 4px;">
+      <el-table :data="projSelectList" style="width: 100%;" height="290" border
+        :header-cell-style="{background:'#F3F6F9',padding:'8px 0', color: '#575962'}">
+        <el-table-column prop="localCode" label="项目/工程代码" width="180" show-overflow-tooltip :formatter="formatCell">
+        </el-table-column>
+        <el-table-column prop="projName" label="项目/工程名称" show-overflow-tooltip :formatter="formatCell">
+        </el-table-column>
+        <el-table-column prop="regionText" label="审批行政区划" width="180" :formatter="formatCell">
+        </el-table-column>
+        <el-table-column prop="projLevelText" label="重点项目" width="180" :formatter="formatCell">
+        </el-table-column>
+      </el-table>
+    </div> 
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="isShowSetAgencyTagDialog = false">取 消</el-button>
+      <el-button type="primary" @click="saveSetAgencyTagProjList">确 定</el-button>
+    </div>
+  </el-dialog>
+  <!-- 设置代办标志dialog end-->
+
   <el-table class="search-content"
             :data="tableData"
             border stripe
@@ -208,8 +249,9 @@
         <template scope="scope">
           <el-tooltip effect="light" placement="top">
             <div slot="content" v-html="showAgentProjInfo(scope.row)"></div>
-            <span>{{scope.row.projName?scope.row.projName:'-'}}</span>
+            <span class="ellipsis" style="max-width: 78%; display: inline-block; vertical-align: top;">{{scope.row.projName?scope.row.projName:'-'}}</span>
           </el-tooltip>
+          <span class="agency-tag" v-if="scope.row.ifAgentProj">代办</span>
         </template>
     </el-table-column>
     <el-table-column

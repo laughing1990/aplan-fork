@@ -586,10 +586,11 @@ var pager = new Vue({
       var state = +this.agencyDetailApiData.agentApplyState;
       if (state < 3) {
         this.verticalTabData.splice(3,1);
+        this.verticalTabData.length = 3;
       } else {
-        if(state == 5){
+        if(state == 6 || state == 7){
           this.verticalTabData.splice(4,1);
-        }else if(state == 7){
+        }else if(state == 8 || state == 9){
           this.verticalTabData.splice(5,1);
         }else{
           this.verticalTabData = JSON.parse(JSON.stringify(NAVLEFTDATA));
@@ -672,7 +673,8 @@ var pager = new Vue({
         }, function (res) {
           ts.mloading = false;
           if (res.success) {
-            ts.apiMessage('保存成功！', 'success')
+            // ts.apiMessage('保存成功！', 'success')
+            ts.signAgreementFn();
           } else {
             return ts.apiMessage(res.message, 'error')
           }
@@ -685,18 +687,18 @@ var pager = new Vue({
 
     // 签订协议操作
     signAgreementFn: function () {
-      // var fileUrl = ctx + 'aea/proj/apply/agent/getAgencyAgreement?applyAgentId=' + this.getSerachParamsForUrl('applyAgentId');
-      // this.pdfSrc = ctx + 'preview/pdfjs/web/viewer.html?file=' + encodeURIComponent(fileUrl);
-      // this.prePdfVisible = true;
+      var fileUrl = ctx + 'aea/proj/apply/agent/getAgencyAgreement?applyAgentId=' + this.getSerachParamsForUrl('applyAgentId');
+      this.pdfSrc = ctx + 'preview/pdfjs/web/viewer.html?file=' + encodeURIComponent(fileUrl);
+      this.prePdfVisible = true;
       // return
-      var ts = this;
+      // var ts = this;
 
-      function doFn() {
-        var fileUrl = ctx + 'aea/proj/apply/agent/getAgencyAgreement?applyAgentId=' + ts.getSerachParamsForUrl('applyAgentId');
-        ts.pdfSrc = ctx + 'preview/pdfjs/web/viewer.html?file=' + encodeURIComponent(fileUrl);
-        ts.prePdfVisible = true;
-      }
-      ts.checkBtnHandel(2, doFn)
+      // function doFn() {
+      //   var fileUrl = ctx + 'aea/proj/apply/agent/getAgencyAgreement?applyAgentId=' + ts.getSerachParamsForUrl('applyAgentId');
+      //   ts.pdfSrc = ctx + 'preview/pdfjs/web/viewer.html?file=' + encodeURIComponent(fileUrl);
+      //   ts.prePdfVisible = true;
+      // }
+      // ts.checkBtnHandel(2, doFn)
     },
 
     // 校验是否可以操作代办信息保存与签订协议操作

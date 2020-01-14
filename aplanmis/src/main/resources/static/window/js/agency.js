@@ -138,6 +138,7 @@ var app = new Vue({
               checkStrictly: true,
               expandTrigger: 'hover'
             },
+            chooseAgencyCenter: {},  //左侧代办中心列表选中的代办中心
         }
       },
       directives: {
@@ -209,6 +210,8 @@ var app = new Vue({
           },
           chooseWinlist: function(item, index) {
             this.chooseItem = index;
+            this.chooseAgencyCenter = item;
+            // console.log( this.chooseAgencyCenter)
             this.windowNameTitle = item.windowName
 
             this.windowCurId = item.windowId;
@@ -236,6 +239,8 @@ var app = new Vue({
 
                   if (vm.tableData2.length) {
                     vm.windowNameTitle = vm.tableData2[0].windowName
+                    vm.chooseAgencyCenter =  vm.tableData2[0];
+                    // console.log( vm.chooseAgencyCenter)
                     vm.windowCurId = vm.tableData2[0].windowId;
                     vm.getUserByWindowId();
                   }
