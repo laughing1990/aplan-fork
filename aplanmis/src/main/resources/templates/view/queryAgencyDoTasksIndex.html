@@ -16,7 +16,7 @@
         th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
   <link rel="stylesheet" href="../../static/searchTable/css/search-table.css"
         th:href="@{/searchTable/css/search-table.css}">
-  
+
   <script>
     var ctx = '[[@{/}]]';
     //  var ctx = "http://192.168.30.22:8083/aplanmis-front/";
@@ -37,25 +37,25 @@
       border: #FF9933;
       font-size: 12px;
     }
-    
+
     .remind_text {
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;
     }
-    
+
     .sendMsg {
       padding: 10px 20px;
       border-bottom: 1px solid #EBEDF2;
     }
-    
+
     .remindContent {
       text-indent: 20px;
       padding: 10px 20px;
       min-height: 200px;
       font-size: 16px;
     }
-    
+
     .more-time {
       display: inline-block;
       background: #DDDFE3;
@@ -67,6 +67,7 @@
       border-radius: 12px;
       color: #fff;
     }
+
     .solicit-opinion-dialog .el-dialog__body,
     .solicit-opinion-dialog .el-dialog__footer {
       background: #F0F3F6;
@@ -79,17 +80,21 @@
     .solicit-opinion-dialog .el-dialog__body {
       padding: 14px 14px 0 14px;
     }
-    .solicit-opinion-dialog .el-dialog__footer{
+
+    .solicit-opinion-dialog .el-dialog__footer {
       padding: 10px 16px 14px 16px;
     }
-    .stop-agent .el-dialog__body .el-form{
-      padding-right:0;
+
+    .stop-agent .el-dialog__body .el-form {
+      padding-right: 0;
     }
-    .stop-a-box{
+
+    .stop-a-box {
       background: #fff;
       padding: 20px 20px 6px 20px;
       overflow: auto;
     }
+
     .au-hint-text {
       position: relative;
       line-height: 20px;
@@ -108,10 +113,12 @@
       color: #FFB822;
       font-size: 20px;
     }
-    .agent-agreement .el-dialog__body{
+
+    .agent-agreement .el-dialog__body {
       padding: 0;
     }
-    .agent-agreement iframe{
+
+    .agent-agreement iframe {
       border: none;
       width: 100%;
       height: 100%;
@@ -148,7 +155,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="项目类型">
-            <el-select v-model="searchFrom.theme" placeholder="请选择" clearable  @change="tableDataSearch">
+            <el-select v-model="searchFrom.theme" placeholder="请选择" clearable @change="tableDataSearch">
               <el-option
                   v-for="item in themeList"
                   :key="item.themeId"
@@ -190,7 +197,7 @@
       </template>
     </el-form>
   </div>
-  
+
   <el-table class="search-content"
             :data="tableData"
             border stripe
@@ -198,11 +205,11 @@
             :default-sort="{prop: 'startTime', order: 'descending'}"
             @sort-change='sortChange'>
     <el-table-column
-            prop="agentCode"
-            min-width="140"
-            label="代办申请编号"
-            show-overflow-tooltip
-            :formatter="formatTableCell">
+        prop="agentCode"
+        min-width="140"
+        label="代办申请编号"
+        show-overflow-tooltip
+        :formatter="formatTableCell">
     </el-table-column>
     <el-table-column
         prop="localCode"
@@ -268,7 +275,7 @@
       </template>
     </el-table-column>
   </el-table>
-  
+
   <el-pagination class="mt20 mb20 mr20 el-pagination-top" background align="right" @size-change="handleSizeChange"
                  @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 50]"
                  :page-size="searchFrom.pagination.perpage"
@@ -278,7 +285,7 @@
 
   <!-- 代办委托办结dialog -->
   <el-dialog title="代办委托办结" class="solicit-opinion-dialog end-agent" :visible.sync="isShowBanjieDialog"
-    width="800px" top="100px">
+             width="800px" top="100px">
     <div class="stop-a-box">
       <p class="au-hint-text">
         <i class="ag ag-warn-circle"></i>
@@ -289,29 +296,30 @@
           <el-input readonly v-model="curBanjieRow.projName"></el-input>
         </el-form-item>
         <el-form-item label="协议编号">
-          <el-input readonly  v-model="curBanjieRow.agreementCode"></el-input>
+          <el-input readonly v-model="curBanjieRow.agreementCode"></el-input>
         </el-form-item>
         <el-form-item label="办结日期" prop="agreementEndTime">
           <el-date-picker v-model="endAgentForm.agreementEndTime"
-           format="yyyy-MM-dd" value-format="yyyy-MM-dd"
-           :clearable="false" type="date" placeholder="选择日期">
+                          format="yyyy-MM-dd" value-format="yyyy-MM-dd"
+                          :clearable="false" type="date" placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="委托办结单">
           <el-input :value="curBanjieRow.projName + '代办委托办结单.pdf'">
             <el-button type="primary" slot="append" @click="viewBanjiePdf">查看</el-button>
           </el-input>
-        </el-form-item>  
+        </el-form-item>
       </el-form>
     </div>
     <div slot="footer" class="dialog-footer">
       <el-button @click="isShowBanjieDialog = false">关闭</el-button>
-      <el-button type="primary" >签章</el-button>
+      <el-button type="primary">签章</el-button>
     </div>
   </el-dialog>
 
   <!-- 办结单弹框 -->
-  <el-dialog title="办结单"  :visible.sync="prePdfVisible" ref="prePdfRef" class="solicit-opinion-dialog end-agent" width="800px" top="10vh">
+  <el-dialog title="办结单" :visible.sync="prePdfVisible" ref="prePdfRef" class="solicit-opinion-dialog end-agent"
+             width="800px" top="10vh">
     <div class="stop-a-box" style="height: 580px;">
       <iframe :src="pdfSrc" class='ltab-iframe' style="width: 100%; height: 100%;"></iframe>
     </div>
