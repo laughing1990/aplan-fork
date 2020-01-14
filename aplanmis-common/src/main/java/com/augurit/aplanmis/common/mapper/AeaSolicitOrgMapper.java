@@ -88,4 +88,12 @@ public interface AeaSolicitOrgMapper {
       * @param rootOrgId
       */
      void batchUpdateStageIdByThemeVerId(@Param("themeVerId") String themeVerId, @Param("rootOrgId") String rootOrgId);
+
+    /**
+     * 根据用户id查找牵头部门配置
+     *
+     * @param userId 用户id
+     * @return 数量
+     */
+    int countLeaderDeptByUserId(String userId);
 }

@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -29,6 +30,9 @@ public class GuideDetailVo {
 
     @ApiModelProperty(value = "审批部门id", notes = "当 leaderDept=false时使用")
     private String approveOrgId;
+
+    @ApiModelProperty(value = "部门确认的实施事项id", notes = "当 leaderDept=false时，需要精确的知道实施事项具体是由哪一个人来确认， 可能存在一个人可以审多个的情况")
+    private Set<String> approveItemVerIds;
 
     @ApiModelProperty(value = "部门辅导主记录")
     private AeaHiGuide aeaHiGuide;

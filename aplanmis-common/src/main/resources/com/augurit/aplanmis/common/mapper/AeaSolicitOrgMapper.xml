@@ -285,4 +285,13 @@
         <result property="latestStageId" column="LATEST_STAGE_ID"/>
     </resultMap>
 
+    <select id="countLeaderDeptByUserId" resultType="int">
+        select count(*)
+        from aea_solicit_org aso
+        join aea_solicit_org_user asou on aso.SOLICIT_ORG_ID=asou.SOLICIT_ORG_ID
+        where asou.IS_ACTIVE='1'
+        and asou.USER_ID=#{userId}
+        and aso.IS_BUS_SOLICIT='0'
+    </select>
+
 </mapper>

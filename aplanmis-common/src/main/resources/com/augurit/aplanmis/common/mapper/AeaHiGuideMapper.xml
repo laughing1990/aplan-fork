@@ -199,9 +199,23 @@
         <where>
             (exists (
             select 1 from aea_hi_guide_detail ahgd
+            join aea_solicit_item asi on asi.item_ver_id=ahgd.item_ver_id
+            join aea_solicit_item_user asiu on asiu.SOLICIT_ITEM_ID=asi.SOLICIT_ITEM_ID and
+            asiu.USER_ID=ahgd.GUIDE_USER_ID
             where ahgd.guide_id=ahg.guide_id
-            and ahgd.guide_user_id=#{currentUserId}
-            ) or ahg.LEADER_USER_ID=#{currentUserId} )
+            and ahgd.detail_type='i'
+            and asiu.user_id=#{currentUserId}
+            and asi.BUS_TYPE='BMQR'
+            and asiu.IS_ACTIVE='1'
+            ) or exists (
+            select 1 from aea_solicit_org aso
+            join aea_solicit_org_user asou on aso.SOLICIT_ORG_ID=asou.SOLICIT_ORG_ID
+            where aso.STAGE_ID=ahg.stage_id
+            and asou.USER_ID=ahg.LEADER_USER_ID
+            and aso.IS_BUS_SOLICIT='0'
+            and asou.IS_ACTIVE='1'
+            and asou.USER_ID=#{currentUserId}
+            ))
             <if test="keyword != null and keyword != ''">
                 and (
                 apt.theme_name like concat(#{keyword}, '%')
@@ -247,7 +261,7 @@
                 and ahg.apply_state=#{applyState}
             </if>
             <if test="applyUnitInfoId != null and applyUnitInfoId != '' and applyLinkmanInfoId != null and applyLinkmanInfoId != ''">
-                and （ahg.APPLY_UNIT_INFO_ID = #{applyUnitInfoId} or ahg.APPLY_LINKMAN_INFO_ID = #{applyLinkmanInfoId}  )
+                and (ahg.APPLY_UNIT_INFO_ID = #{applyUnitInfoId} or ahg.APPLY_LINKMAN_INFO_ID = #{applyLinkmanInfoId} )
             </if>
             <if test="applyUnitInfoId != null and applyUnitInfoId != '' and (applyLinkmanInfoId == null or applyLinkmanInfoId == '')">
                 and ahg.APPLY_UNIT_INFO_ID = #{applyUnitInfoId}

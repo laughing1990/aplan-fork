@@ -275,10 +275,34 @@
         asiu.USER_ID userId
         from AEA_SOLICIT_ITEM asi
         join aea_solicit_item_user asiu on asiu.SOLICIT_ITEM_ID=asi.SOLICIT_ITEM_ID
-        where asi.ITEM_VER_ID in
+        where asiu.IS_ACTIVE='1'
+        and asi.BUS_TYPE='BMQR'
+        and asi.ITEM_VER_ID in
         <foreach collection="itemVerIds" open="(" separator="," item="itemVerId" close=")">
             #{itemVerId}
         </foreach>
+    </select>
+
+    <select id="listAeaSolicitItemForDeptConfirmByUserId"
+            resultType="com.augurit.aplanmis.common.domain.AeaSolicitItem">
+        select
+        <include refid="alias_allColumns">
+            <property name="alias" value="asi"/>
+        </include>
+        from AEA_SOLICIT_ITEM asi
+        join aea_solicit_item_user asiu on asiu.SOLICIT_ITEM_ID=asi.SOLICIT_ITEM_ID
+        where asiu.IS_ACTIVE='1'
+        and asi.BUS_TYPE='BMQR'
+        and asiu.user_id=#{currentUserId}
+    </select>
+
+    <select id="countApproveDeptByUserId" resultType="int">
+        select count(*)
+        from aea_solicit_item asi
+        join aea_solicit_item_user asiu on asi.SOLICIT_ITEM_ID=asi.SOLICIT_ITEM_ID
+        where asiu.IS_ACTIVE='1'
+        and asiu.user_id=#{currentUserId}
+        and asi.BUS_TYPE='BMQR'
     </select>
 
 </mapper>

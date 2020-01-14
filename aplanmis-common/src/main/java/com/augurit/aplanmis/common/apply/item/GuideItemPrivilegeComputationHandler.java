@@ -1,14 +1,20 @@
 package com.augurit.aplanmis.common.apply.item;
 
 import com.augurit.agcloud.bpm.common.utils.SpringContextHolder;
+import com.augurit.agcloud.bsc.mapper.BscDicRegionMapper;
 import com.augurit.agcloud.framework.constant.Status;
+import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.CollectionUtils;
+import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.constants.CommonConstant;
 import com.augurit.aplanmis.common.domain.AeaHiGuide;
 import com.augurit.aplanmis.common.domain.AeaHiGuideDetail;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaParStage;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.mapper.AeaHiGuideDetailMapper;
+import com.augurit.aplanmis.common.mapper.AeaSolicitItemMapper;
+import com.augurit.aplanmis.common.mapper.AeaSolicitOrgMapper;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +36,9 @@ public final class GuideItemPrivilegeComputationHandler extends ItemPrivilegeCom
 
     private Map<String, GuideComputedItem> guideComputedItemMap;
 
+    // 行政区划与序列map
+    private Map<String, String> regionIdRegionSeqMap;
+
     private AeaHiGuide aeaHiGuide;
 
     private List<AeaHiGuideDetail> aeaHiGuideDetails;
@@ -49,8 +58,24 @@ public final class GuideItemPrivilegeComputationHandler extends ItemPrivilegeCom
     protected void doCompute(List<GuideComputedItem> computedItems) {
         Assert.state(computedItems.size() > 0, "没有可用于计算的事项");
 
-        // 基于项目属地换算实施事项
-        projRangeFilter(computedItems);
+        // 判断是否牵头部门
+        int leaderDeptCnt = SpringContextHolder.getBean(AeaSolicitOrgMapper.class).countLeaderDeptByUserId(SecurityContext.getCurrentUserId());
+        // 判断是否审批部门
+        int approvedeptCnt = SpringContextHolder.getBean(AeaSolicitItemMapper.class).countApproveDeptByUserId(SecurityContext.getCurrentUserId());
+        if (leaderDeptCnt > 0) {
+            // 牵头部门可以看所有实施事项
+        } else if (approvedeptCnt > 0) {
+            if (itemVerIdRegionIdMap != null && itemVerIdRegionIdMap.size() > 0) {
+                List<String> regionIds = new ArrayList<>(itemVerIdRegionIdMap.values());
+                regionIdRegionSeqMap = SpringContextHolder.getBean(CustomAeaDicRegionMapper.class).listRegionVo(regionIds)
+                        .stream().collect(Collectors.toMap(CustomAeaDicRegionMapper.RegionVo::getRegionId, CustomAeaDicRegionMapper.RegionVo::getRegionSeq));
+                // 审批部门可以看当前行政区划 以及 子级行政区划 实施事项
+                projRangeAndChildRegionFilter(computedItems);
+            }
+        } else {
+            // 基于项目属地换算实施事项
+            projRangeFilter(computedItems);
+        }
 
         // 事项选择信息填充: 包括是否智能引导、申请人选择、牵头部门、审批部门
         fillInfoComplemention();
@@ -89,15 +114,53 @@ public final class GuideItemPrivilegeComputationHandler extends ItemPrivilegeCom
     private void projRangeFilter(List<GuideComputedItem> computedItems) {
         List<String> projectAddressRegionIds = SpringContextHolder.getBean(AeaProjInfoService.class).getProjAddressRegion(projInfoId);
         AeaProjInfo aeaProjInfo = SpringContextHolder.getBean(AeaProjInfoService.class).getAeaProjInfoByProjInfoId(projInfoId);
+        String regionalism = aeaProjInfo.getRegionalism();
         computedItems.forEach(item -> {
             if (Status.ON.equals(item.isCatalog)) {
                 List<String> regionIds = new ArrayList<>();
-                regionIds.add(aeaProjInfo.getRegionalism());
+                regionIds.add(regionalism);
                 // 根据事项的换算方式过滤实施事项
                 if (Status.OFF.equals(item.getItemExchangeWay())) {
                     regionIds.addAll(projectAddressRegionIds);
                 }
                 List<ComputedItem.CarryOutItem> finalCarryOutItems = item.getCarryOutItems().stream().filter(co -> regionIds.contains(co.getRegionId())).collect(Collectors.toList());
+                item.setCarryOutItems(finalCarryOutItems);
+                if (CollectionUtils.isNotEmpty(finalCarryOutItems)) {
+                    item.setCurrentCarryOutItem(finalCarryOutItems.get(0));
+                }
+            }
+        });
+    }
+
+    // 审批部门可以看当前行政区划 以及 子级行政区划 实施事项
+    private void projRangeAndChildRegionFilter(List<GuideComputedItem> computedItems) {
+        List<String> projectAddressRegionIds = SpringContextHolder.getBean(AeaProjInfoService.class).getProjAddressRegion(projInfoId);
+        String projectRegionSeq = SpringContextHolder.getBean(CustomAeaDicRegionMapper.class).listRegionVo(projectAddressRegionIds).stream().map(CustomAeaDicRegionMapper.RegionVo::getRegionSeq).collect(Collectors.joining(CommonConstant.COMMA_SEPARATOR));
+
+        AeaProjInfo aeaProjInfo = SpringContextHolder.getBean(AeaProjInfoService.class).getAeaProjInfoByProjInfoId(projInfoId);
+        String regionalism = aeaProjInfo.getRegionalism();
+        String regionalismSeq = SpringContextHolder.getBean(BscDicRegionMapper.class).getBscDicRegionById(regionalism).getRegionSeq();
+
+        final StringBuffer finalRegionSeq = new StringBuffer();
+        computedItems.forEach(item -> {
+            finalRegionSeq.setLength(0);
+            if (Status.ON.equals(item.isCatalog)) {
+                finalRegionSeq.append(regionalismSeq);
+                // 根据事项的换算方式过滤实施事项
+                if (Status.OFF.equals(item.getItemExchangeWay())) {
+                    finalRegionSeq.append(CommonConstant.COMMA_SEPARATOR).append(projectRegionSeq);
+                }
+                List<ComputedItem.CarryOutItem> finalCarryOutItems = item.getCarryOutItems()
+                        .stream()
+                        .filter(co -> {
+                            String regionId = itemVerIdRegionIdMap.get(co.getItemVerId());
+                            if (StringUtils.isNotBlank(regionId)) {
+                                String carryOutItemRegionSeq = regionIdRegionSeqMap.get(regionId);
+                                return finalRegionSeq.indexOf(carryOutItemRegionSeq) > 0;
+                            }
+                            return false;
+                        })
+                        .collect(Collectors.toList());
                 item.setCarryOutItems(finalCarryOutItems);
                 if (CollectionUtils.isNotEmpty(finalCarryOutItems)) {
                     item.setCurrentCarryOutItem(finalCarryOutItems.get(0));

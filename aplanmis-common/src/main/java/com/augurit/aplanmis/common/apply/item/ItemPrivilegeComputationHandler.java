@@ -14,7 +14,9 @@ import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -49,6 +51,9 @@ public abstract class ItemPrivilegeComputationHandler<ITEM extends ComputedItem>
     在思维导图中配置的原生事项范围
      */
     List<AeaItemBasic> originalItems;
+
+    // 事项事项的行政区划regionSeq, 用于匹配子级区划
+    protected Map<String, String> itemVerIdRegionIdMap = new HashMap<>();
 
     ItemPrivilegeComputationHandler(String projInfoId, String rootOrgId, AeaParStage aeaParStage, @Nullable List<AeaItemBasic> originalItems, boolean needFilterStateItem) {
         this.currentStage = aeaParStage;
@@ -140,7 +145,10 @@ public abstract class ItemPrivilegeComputationHandler<ITEM extends ComputedItem>
         if (Status.ON.equals(origin.getIsCatalog())) {
             List<AeaItemBasic> carryOutItems = SpringContextHolder.getBean(AeaItemBasicAdminService.class).findCarryOutItemsByItemId(origin.getItemId(), rootOrgId);
             if (CollectionUtils.isNotEmpty(carryOutItems)) {
-                computedItem.getCarryOutItems().addAll(carryOutItems.stream().map(ComputedItem.CarryOutItem::buildCarryOutItem).collect(Collectors.toList()));
+                computedItem.getCarryOutItems().addAll(carryOutItems
+                        .stream()
+                        .peek(item -> itemVerIdRegionIdMap.put(item.getItemVerId(), item.getRegionId()))
+                        .map(ComputedItem.CarryOutItem::buildCarryOutItem).collect(Collectors.toList()));
             }
         }
         // 实施

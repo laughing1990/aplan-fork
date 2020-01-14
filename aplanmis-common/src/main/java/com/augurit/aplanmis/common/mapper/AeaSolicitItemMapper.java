@@ -82,4 +82,14 @@ public interface AeaSolicitItemMapper {
      void batchDelSolicitItemByRootOrgId(@Param("rootOrgId") String rootOrgId);
 
      List<AeaSolicitItem> listAeaSolicitItemWithUserIdByItemVerIds(@Param("itemVerIds") List<String> itemVerIds);
+
+    /*
+    查询部门确认的用户对应的事项
+     */
+    List<AeaSolicitItem> listAeaSolicitItemForDeptConfirmByUserId(String currentUserId);
+
+    /*
+    根据用户判断是否是审批部门人员
+     */
+    int countApproveDeptByUserId(String currentUserId);
 }

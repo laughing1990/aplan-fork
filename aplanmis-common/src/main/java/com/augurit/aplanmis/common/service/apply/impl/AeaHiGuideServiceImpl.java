@@ -4,7 +4,6 @@ import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.util.CollectionUtils;
-import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.aplanmis.common.apply.item.ComputedItem;
@@ -26,6 +25,7 @@ import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
 import com.augurit.aplanmis.common.mapper.AeaParThemeMapper;
 import com.augurit.aplanmis.common.mapper.AeaParThemeVerMapper;
 import com.augurit.aplanmis.common.mapper.AeaSolicitItemMapper;
+import com.augurit.aplanmis.common.mapper.AeaSolicitOrgMapper;
 import com.augurit.aplanmis.common.service.apply.AeaHiGuideService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.vo.guide.GuideDetailVo;
@@ -38,8 +38,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -62,6 +65,8 @@ public class AeaHiGuideServiceImpl implements AeaHiGuideService {
     private AeaParThemeMapper aeaParThemeMapper;
     @Autowired
     private AeaSolicitItemMapper aeaSolicitItemMapper;
+    @Autowired
+    private AeaSolicitOrgMapper aeaSolicitOrgMapper;
     @Autowired
     private OpuOmOrgMapper opuOmOrgMapper;
 
@@ -129,7 +134,8 @@ public class AeaHiGuideServiceImpl implements AeaHiGuideService {
             guideDetailVo.setNewStageId(aeaHiGuideDetail.getStageId());
             guideDetailVo.setNewThemeName(aeaHiGuideDetail.getThemeName());
         }
-        boolean isDeptOrg = currentUserId.equals(aeaHiGuide.getLeaderUserId());
+        int leaderDeptCnt = aeaSolicitOrgMapper.countLeaderDeptByUserId(currentUserId);
+        boolean isDeptOrg = leaderDeptCnt > 0;
         guideDetailVo.setLeaderDept(isDeptOrg);
         // 如果是审批部门
         if (!isDeptOrg) {
@@ -137,6 +143,7 @@ public class AeaHiGuideServiceImpl implements AeaHiGuideService {
             if (CollectionUtils.isNotEmpty(opuOmOrgs)) {
                 guideDetailVo.setApproveOrgId(opuOmOrgs.get(0).getOrgId());
             }
+            guideDetailVo.setApproveItemVerIds(aeaSolicitItemMapper.listAeaSolicitItemForDeptConfirmByUserId(currentUserId).stream().map(AeaSolicitItem::getItemVerId).collect(Collectors.toSet()));
         }
         guideDetailVo.setAeaHiGuide(aeaHiGuide);
         guideDetailVo.setParallelItems(result.get("0"));
@@ -224,16 +231,27 @@ public class AeaHiGuideServiceImpl implements AeaHiGuideService {
     @Override
     public void solicitDept(List<AeaHiGuideDetail> aeaHiGuideDetails) {
         if (CollectionUtils.isNotEmpty(aeaHiGuideDetails)) {
-            Map<String, String> solicitItemUserMap = aeaSolicitItemMapper.listAeaSolicitItemWithUserIdByItemVerIds(aeaHiGuideDetails
-                    .stream().map(AeaHiGuideDetail::getItemVerId).collect(Collectors.toList())
-            )
-                    .stream().collect(Collectors.toMap(AeaSolicitItem::getItemVerId, AeaSolicitItem::getUserId));
+            Map<String, Set<String>> solicitItemUserMap = new HashMap<>();
+            List<AeaSolicitItem> aeaSolicitItems = aeaSolicitItemMapper.listAeaSolicitItemWithUserIdByItemVerIds(aeaHiGuideDetails
+                    .stream().map(AeaHiGuideDetail::getItemVerId).collect(Collectors.toList()));
+            aeaSolicitItems.forEach(aeaSolicitItem -> {
+                Set<String> userIds = solicitItemUserMap.get(aeaSolicitItem.getItemVerId());
+                if (CollectionUtils.isEmpty(userIds)) {
+                    userIds = new HashSet<>();
+                    userIds.add(aeaSolicitItem.getUserId());
+                    solicitItemUserMap.put(aeaSolicitItem.getItemVerId(), userIds);
+                } else {
+                    userIds.add(aeaSolicitItem.getUserId());
+                }
+            });
+
             Assert.isTrue(aeaHiGuideDetails.size() == solicitItemUserMap.size(), "请配置实施事项对应审批部门的人员");
 
             aeaHiGuideDetails.forEach(detail -> {
-                String userId = solicitItemUserMap.get(detail.getItemVerId());
-                if (StringUtils.isNotBlank(userId)) {
-                    detail.setGuideUserId(userId);
+                Set<String> userIds = solicitItemUserMap.get(detail.getItemVerId());
+                if (CollectionUtils.isNotEmpty(userIds)) {
+                    // 如果部门确认配置的是多人模式，这里默认先取第一个， 在事项部门打开部门辅导页面的时候通过数据库查询验证
+                    detail.setGuideUserId(userIds.toArray(new String[0])[0]);
                 } else {
                     log.warn("事项itemVerId: {} 没有找到对应的审批人员", detail.getItemVerId());
                 }
