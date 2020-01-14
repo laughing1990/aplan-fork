@@ -4,6 +4,7 @@ import com.augurit.agcloud.opus.common.domain.OpuOmUser;
 import com.augurit.aplanmis.common.domain.AeaProjApplyAgent;
 import com.augurit.aplanmis.common.domain.AeaServiceWindowUser;
 import com.augurit.aplanmis.common.vo.agency.AgencyDetailVo;
+import com.augurit.aplanmis.common.vo.agency.SplitProjFromVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 
@@ -42,4 +43,8 @@ public interface AeaProjApplyAgentService {
     public String queryRedisData(String applyAgentId) throws Exception;
 
     public void saveRedisAeaProjApplyAgentInfo(AeaProjApplyAgent aeaProjApplyAgent) throws Exception;
+
+    public SplitProjFromVo getSplitProjFromInfo(String localCode) throws Exception;
+
+    public void saveSplitProjFromInfo(SplitProjFromVo splitProjFromVo) throws Exception;
 }

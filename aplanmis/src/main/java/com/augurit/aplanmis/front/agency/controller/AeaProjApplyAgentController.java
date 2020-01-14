@@ -2,6 +2,7 @@ package com.augurit.aplanmis.front.agency.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.augurit.agcloud.bsc.domain.BscAttForm;
+import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.security.user.OpuOmUser;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
@@ -10,11 +11,13 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.AgencyState;
 import com.augurit.aplanmis.common.domain.AeaProjApplyAgent;
 import com.augurit.aplanmis.common.domain.AeaServiceWindowUser;
+import com.augurit.aplanmis.common.service.dic.BscDicCodeItemService;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.file.impl.FileUtilsServiceImpl;
 import com.augurit.aplanmis.common.service.receive.utils.ReceivePDFTemplate;
 import com.augurit.aplanmis.common.service.window.AeaProjApplyAgentService;
 import com.augurit.aplanmis.common.vo.agency.AgencyDetailVo;
+import com.augurit.aplanmis.common.vo.agency.SplitProjFromVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -48,6 +51,9 @@ public class AeaProjApplyAgentController {
     @Autowired
     private FileUtilsService fileUtilsService;
 
+    @Autowired
+    private BscDicCodeItemService bscDicCodeItemService;
+
     @ApiOperation(value = "项目代办 --> 跳转代办详情页面", notes = "项目代办 --> 跳转代办详情页面")
     @RequestMapping("agencyProjDetail")
     public ModelAndView agencyProjDetail(String applyAgentId) {
@@ -56,19 +62,19 @@ public class AeaProjApplyAgentController {
         return modelAndView;
     }
 
-    @ApiOperation(value = "项目代办 --> 跳转并联申报页面", notes = "项目代办 --> 跳转并联申报页面")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "projInfoId",value = "项目ID",required = true,dataType = "String"),
-            @ApiImplicitParam(name = "applyAgentId",value = "代办申请ID",required = true,dataType = "String")
-    })
-    @RequestMapping("toApplyIndex")
-    public ModelAndView toApplyIndex(String projInfoId,String applyAgentId) {
-        ModelAndView modelAndView = new ModelAndView("apply/index");
-        modelAndView.addObject("projInfoId",projInfoId);
-        modelAndView.addObject("applyAgentId",applyAgentId);
-        modelAndView.addObject("isAgentProjApply",true);
-        return modelAndView;
-    }
+//    @ApiOperation(value = "项目代办 --> 跳转并联申报页面", notes = "项目代办 --> 跳转并联申报页面")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "projInfoId",value = "项目ID",required = true,dataType = "String"),
+//            @ApiImplicitParam(name = "applyAgentId",value = "代办申请ID",required = true,dataType = "String")
+//    })
+//    @RequestMapping("toApplyIndex")
+//    public ModelAndView toApplyIndex(String projInfoId,String applyAgentId) {
+//        ModelAndView modelAndView = new ModelAndView("apply/index");
+//        modelAndView.addObject("projInfoId",projInfoId);
+//        modelAndView.addObject("applyAgentId",applyAgentId);
+//        modelAndView.addObject("isAgentProjApply",true);
+//        return modelAndView;
+//    }
 
     @ApiOperation(value = "项目代办 --> 保存代办信息或签订协议操作校验", notes = "项目代办 --> 保存代办信息或签订协议操作校验")
     @PostMapping("checkOpreatePermit")
@@ -396,6 +402,51 @@ public class AeaProjApplyAgentController {
         try {
             List<AeaServiceWindowUser> userList = aeaProjApplyAgentService.getCurrAgencyWinUserList();
             return new ContentResultForm<>(true,userList,"查询成功。");
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+            return new ContentResultForm(false,null, e.getMessage());
+        }
+    }
+
+    @GetMapping("/getSplitProjFromInfo")
+    @ApiOperation(value = "获取拆分工程详情页面信息", notes = "获取拆分工程详情页面信息", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "localCode",value = "项目代码",required = true,dataType = "String")
+    })
+    public ContentResultForm<SplitProjFromVo> getSplitProjFromInfo(String localCode){
+        logger.debug("获取拆分工程详情页面信息");
+        try {
+            SplitProjFromVo vo = aeaProjApplyAgentService.getSplitProjFromInfo(localCode);
+            return new ContentResultForm<>(true,vo,"查询成功。");
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+            return new ContentResultForm(false,null, e.getMessage());
+        }
+    }
+
+    @PostMapping("/saveSplitProjFromInfo")
+    @ApiOperation(value = "保存项目代办的拆分工程信息", notes = "保存项目代办的拆分工程信息", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "splitProjFromVo",value = "表单参数接收对象",required = true,dataType = "SplitProjFromVo")
+    })
+    public ResultForm saveSplitProjFromInfo(SplitProjFromVo splitProjFromVo){
+        logger.debug("保存项目代办的拆分工程信息");
+        try {
+            aeaProjApplyAgentService.saveSplitProjFromInfo(splitProjFromVo);
+            return new ResultForm(true,"查询成功。");
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+            return new ResultForm(false, e.getMessage());
+        }
+    }
+
+    @GetMapping("/getUnitTypeDic")
+    @ApiOperation(value = "获取项目单位类型数据字典", notes = "获取项目单位类型数据字典", httpMethod = "GET")
+    public ContentResultForm<List<BscDicCodeItem>> getUnitTypeDic(){
+        logger.debug("获取项目单位类型数据字典");
+        try {
+            List<BscDicCodeItem> items = bscDicCodeItemService.getActiveItemsByTypeCode("XM_DWLX", null);
+            return new ContentResultForm<>(true,items,"查询成功。");
         }catch (Exception e){
             logger.error(e.getMessage(), e);
             return new ContentResultForm(false,null, e.getMessage());

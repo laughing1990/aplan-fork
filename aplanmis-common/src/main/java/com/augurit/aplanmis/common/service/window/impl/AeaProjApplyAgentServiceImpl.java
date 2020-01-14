@@ -3,6 +3,7 @@ package com.augurit.aplanmis.common.service.window.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.augurit.agcloud.bsc.domain.BscAttForm;
 import com.augurit.agcloud.bsc.sc.att.service.IBscAttService;
+import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.security.user.OpuOmUser;
 import com.augurit.agcloud.framework.util.StringUtils;
@@ -11,11 +12,13 @@ import com.augurit.agcloud.opus.common.mapper.OpuOmUserInfoMapper;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.helper.JedisHelper;
 import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.service.dic.GcbmBscRuleCodeStrategy;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.window.AeaProjApplyAgentService;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.aplanmis.common.vo.agency.AeaUnitProjLinkmanVo;
 import com.augurit.aplanmis.common.vo.agency.AgencyDetailVo;
+import com.augurit.aplanmis.common.vo.agency.SplitProjFromVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,7 @@ import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -73,6 +77,12 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
 
     @Autowired
     private JedisHelper jedisUtil;
+
+    @Autowired
+    private AeaParentProjMapper aeaParentProjMapper;
+
+    @Autowired
+    private GcbmBscRuleCodeStrategy gcbmBscRuleCodeStrategy;
 
     public void saveAeaProjApplyAgent(AeaProjApplyAgent aeaProjApplyAgent) throws Exception{
         if(aeaProjApplyAgent != null){
@@ -264,6 +274,131 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
             aeaProjApplyAgent.setCurrentUserName(currentUser.getUserName());
             //锁定10分钟操作时间
             jedisUtil.setex(CURRENT_AGENT_OPERATE_USER_INFO_KEY + applyAgentId,600, JSONObject.toJSONString(aeaProjApplyAgent));
+        }
+    }
+
+    @Override
+    public SplitProjFromVo getSplitProjFromInfo(String localCode) throws Exception{
+        AeaProjInfo projInfo = aeaProjInfoMapper.getNotChildrenAndNotRootAeaProjInfoByLocalCode(localCode);
+        if(projInfo == null){
+           throw new Exception("找不到项目信息");
+        }
+        SplitProjFromVo vo = new SplitProjFromVo();
+        //查询建设单位。拆分详情弹出窗口默认显示建设单位
+        List<AeaUnitInfo> unitInfos = aeaUnitInfoMapper.listAeaUintListByProjInfoIdAndUnitYype(projInfo.getProjInfoId(), "1");
+        if(unitInfos != null && unitInfos.size() > 0){
+            SplitProjFromVo.setUnitInfo(vo,unitInfos.get(0));
+        }
+//        vo.setStageNo("");
+//        vo.setLastGcbm("");
+        vo.setParentProjInfoId(projInfo.getProjInfoId());
+        vo.setLocalCode(projInfo.getLocalCode());
+        vo.setProjName(projInfo.getProjName());
+        vo.setInvestSum(projInfo.getInvestSum());
+        return vo;
+    }
+
+    public void saveSplitProjFromInfo(SplitProjFromVo splitProjFromVo) throws Exception{
+        Assert.notNull(splitProjFromVo,"项目工程信息不能为空");
+        String stageNo = splitProjFromVo.getStageNo();
+        String lastGcbm = splitProjFromVo.getLastGcbm();
+        Assert.notNull(stageNo,"所处阶段不能为空");
+//        Assert.notNull(lastGcbm,"前阶段关联工程代码不能为空");
+        String localCode = splitProjFromVo.getLocalCode();
+        Assert.notNull(localCode,"项目代码不能为空");
+        String parentProjInfoId = splitProjFromVo.getParentProjInfoId();
+        String currentOrgId = SecurityContext.getCurrentOrgId();
+        String currentUserName = SecurityContext.getCurrentUserName();
+        // TODO 调用省发改接口获取工程编码
+        String gcbm = gcbmBscRuleCodeStrategy.generateCode(localCode, localCode, "工程编码", currentOrgId);
+        AeaProjInfo aeaProjInfo = new AeaProjInfo();
+        aeaProjInfo.setProjInfoId(UUID.randomUUID().toString());
+        aeaProjInfo.setLocalCode(localCode);
+        aeaProjInfo.setGcbm(gcbm);
+        aeaProjInfo.setProjName(splitProjFromVo.getChildProjName());
+        aeaProjInfo.setForeignManagement(splitProjFromVo.getChildForeignManagement());
+        aeaProjInfo.setInvestSum(splitProjFromVo.getChildProjInvestSum());
+        aeaProjInfo.setScaleContent(splitProjFromVo.getChildScaleContent());
+        aeaProjInfo.setXmYdmj(splitProjFromVo.getChildXmYdmj());
+        aeaProjInfo.setBuildAreaSum(splitProjFromVo.getChildBuildAreaSum());
+        aeaProjInfo.setCreater(currentUserName);
+        aeaProjInfo.setCreateTime(new Date());
+        aeaProjInfo.setProjectCreateDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        aeaProjInfo.setRootOrgId(currentOrgId);
+        aeaProjInfo.setIsDeleted(Status.OFF);
+        aeaProjInfo.setProjFlag("c");
+        aeaProjInfoMapper.insertAeaProjInfo(aeaProjInfo);
+        //插入父子项目关系
+        String projInfoId = aeaProjInfo.getProjInfoId();
+        AeaParentProj aeaParentProj=new AeaParentProj();
+        aeaParentProj.setNodeProjId(UUID.randomUUID().toString());
+        aeaParentProj.setParentProjId(parentProjInfoId);
+        aeaParentProj.setChildProjId(projInfoId);
+        aeaParentProj.setCreater(currentUserName);
+        aeaParentProj.setCreateTime(new Date());
+        aeaParentProj.setRootOrgId(currentOrgId);
+        aeaParentProj.setProjSeq(parentProjInfoId +"."+ projInfoId);
+        aeaParentProjMapper.insertAeaParentProj(aeaParentProj);
+
+        //新增单位信息或者更新单位信息
+        String certCode = splitProjFromVo.getCertCode();
+        String certType = splitProjFromVo.getCertType();
+        //用证件号码查询单位，如果有相同的证件的单位就更新单位信息，否则就新建一个单位。
+        AeaUnitInfo search = new AeaUnitInfo();
+        if("1".equals(certType)){
+            search.setOrganizationalCode(certCode);
+        }else if("2".equals(certType)){
+            search.setUnifiedSocialCreditCode(certCode);
+        }else if("3".equals(certType)){
+            search.setTaxpayerNum(certCode);
+        }
+        List<AeaUnitInfo> aeaUnitInfos = aeaUnitInfoMapper.listAeaUnitInfo(search);
+        if(aeaUnitInfos != null && aeaUnitInfos.size() > 1){
+            throw new Exception("数据库存在多个证件号相同的单位。");
+        }
+        AeaUnitInfo aeaUnitInfo = null;
+        String unitName = splitProjFromVo.getUnitName();
+        String idrepresentative = splitProjFromVo.getIdrepresentative();
+        String idmobile = splitProjFromVo.getIdmobile();
+        if(aeaUnitInfos != null && aeaUnitInfos.size() == 0){
+            //新增单位
+            aeaUnitInfo = new AeaUnitInfo();
+            aeaUnitInfo.setUnitInfoId(UUID.randomUUID().toString());
+            aeaUnitInfo.setApplicant(unitName);
+            aeaUnitInfo.setIdrepresentative(idrepresentative);
+            aeaUnitInfo.setIdmobile(idmobile);
+            aeaUnitInfo.setOrganizationalCode(search.getOrganizationalCode());
+            aeaUnitInfo.setUnifiedSocialCreditCode(search.getUnifiedSocialCreditCode());
+            aeaUnitInfo.setTaxpayerNum(search.getTaxpayerNum());
+            aeaUnitInfo.setCreater(currentUserName);
+            aeaUnitInfo.setCreateTime(new Date());
+            aeaUnitInfo.setIsDeleted("0");
+            aeaUnitInfoMapper.insertAeaUnitInfo(aeaUnitInfo);
+        }else{
+            //更新单位
+            aeaUnitInfo = aeaUnitInfos.get(0);
+            if(!aeaUnitInfo.getApplicant().equals(unitName) || !aeaUnitInfo.getIdrepresentative().equals(idrepresentative) || !aeaUnitInfo.getIdmobile().equals(idmobile)){
+                aeaUnitInfo.setApplicant(unitName);
+                aeaUnitInfo.setIdrepresentative(idrepresentative);
+                aeaUnitInfo.setIdmobile(idmobile);
+                aeaUnitInfo.setModifier(currentUserName);
+                aeaUnitInfo.setModifyTime(new Date());
+                aeaUnitInfoMapper.updateAeaUnitInfo(aeaUnitInfo);
+            }
+        }
+        //添加项目单位关系
+        AeaUnitProj aeaUnitProj = new AeaUnitProj();
+        aeaUnitProj.setUnitInfoId(aeaUnitInfo.getUnitInfoId());
+        aeaUnitProj.setIsOwner("1");
+        aeaUnitProj.setProjInfoId(aeaProjInfo.getProjInfoId());
+        aeaUnitProj.setUnitType(splitProjFromVo.getUnitType());
+        aeaUnitProj.setIsDeleted("0");
+        List<AeaUnitProj> aeaUnitProjs = aeaUnitProjMapper.listAeaUnitProj(aeaUnitProj);
+        if(aeaUnitProjs.size() == 0){
+            aeaUnitProj.setUnitProjId(UUID.randomUUID().toString());
+            aeaUnitProj.setCreater(currentUserName);
+            aeaUnitProj.setCreateTime(new Date());
+            aeaUnitProjMapper.insertAeaUnitProj(aeaUnitProj);
         }
     }
 

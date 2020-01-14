@@ -88,6 +88,14 @@ public interface AeaUnitInfoMapper {
     List<AeaUnitInfo> getAeaUintListByProjInfoIdAndUnitYype(@Param("projInfoId") String projInfoId, @Param("unitType") String unitType);
 
     /**
+     * 查询业主/建设单位
+     * @param projInfoId 项目ID
+     * @param unitType   单位类型
+     * @return
+     */
+    List<AeaUnitInfo> listAeaUintListByProjInfoIdAndUnitYype(@Param("projInfoId") String projInfoId, @Param("unitType") String unitType);
+
+    /**
      * 模糊查询，供施工和监理单位表单使用
      *
      * @param keyword

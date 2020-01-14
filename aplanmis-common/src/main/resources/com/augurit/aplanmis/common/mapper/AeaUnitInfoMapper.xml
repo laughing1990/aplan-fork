@@ -706,6 +706,24 @@
         gg ,aea_unit_info aui where  gg.unit_info_id = aui.unit_info_id  and aui.UNIT_TYPE=#{unitType}
 
     </select>
+
+    <select id="listAeaUintListByProjInfoIdAndUnitYype" resultType="AeaUnitInfo">
+        select
+        <include refid="alias_allColumns">
+                <property name="alias" value="aui"></property>
+        </include>,
+        gg.UNIT_TYPE unitProjUnitType
+        from (
+                select DISTINCT aup.unit_info_id,aup.UNIT_TYPE
+                from aea_unit_proj aup
+                where aup.proj_info_id=#{projInfoId}
+                and aup.is_owner ='1'
+                and aup.is_deleted='0'
+        )gg ,aea_unit_info aui
+        where  gg.unit_info_id = aui.unit_info_id
+        and gg.UNIT_TYPE=#{unitType}
+    </select>
+
     <select id="findAeaExProBuildUnitInfoByKeyword" resultType="ExSJUnitFromDetails">
         select
         <include refid="allColumns"/>
