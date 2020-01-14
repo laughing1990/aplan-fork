@@ -859,7 +859,10 @@ var vm = new Vue({
       }, function(res) {
         vm.parentPageLoading = false;
         try {
-          vm.opinionForm.opinionText = res.content.commentList[0].commentMessage;
+          vm.opinionForm.opinionText = res.content[0].commentMessage;
+          if (vm.opinionForm.opinionText&&vm.opinionForm.opinionText.length) {
+            vm.finalOpinonBtnVisibel = true;
+          }
         } catch(e) {}
         vm.onlySuggestDialog = true;
       }, function(){
