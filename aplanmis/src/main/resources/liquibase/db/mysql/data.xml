@@ -2582,4 +2582,13 @@ INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`
         </sql>
     </changeSet>
 
+    <changeSet id="202001141726" author="yinlf" failOnError="false">
+        <preConditions>
+            <columnExists tableName="bsc_job_remind" columnName="IS_DELETED"></columnExists>
+        </preConditions>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE bsc_job_remind SET IS_DELETED = '0' WHERE IS_DELETED IS NULL;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
