@@ -14,6 +14,7 @@ import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.agcloud.opus.common.domain.OpuOmUser;
 import com.augurit.aplanmis.admin.window.vo.AeaWindowStageVo;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.service.admin.window.AeaServiceWindowAdminService;
@@ -458,6 +459,14 @@ public class AeaServiceWindowAdminController {
 
         String orgId = SecurityContext.getCurrentOrgId();
         return windowService.listAllUserByOrgId(orgId);
+    }
+
+    @RequestMapping("/listCurrentTopOrgAllUser")
+    @ApiOperation("获取当下组织所有用户")
+    public PageInfo<OpuOmUser> listCurrentTopOrgAllUser(OpuOmUser opuOmUser, Page page) {
+
+        String orgId = SecurityContext.getCurrentOrgId();
+        return windowService.listAllUserByOrgId(opuOmUser, orgId, page);
     }
 
     @RequestMapping("/listAllUserByOrgIdSimple.do")

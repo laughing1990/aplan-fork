@@ -525,6 +525,18 @@ public class AeaServiceWindowAdminServiceImpl implements AeaServiceWindowAdminSe
         return voList;
     }
 
+    @Override
+    public PageInfo<OpuOmUser> listAllUserByOrgId(OpuOmUser opuOmUser, String orgId, Page page) {
+        PageHelper.startPage(page);
+        List<OpuOmUser> opuOmUsers = opuOmUserMapper.listAllUserByOrgId(opuOmUser, orgId);
+        for(OpuOmUser user:opuOmUsers){
+            //返回密码置空
+            user.setLoginPwd(null);
+        }
+        return new PageInfo<>(opuOmUsers);
+    }
+
+
     private List<AeaRegionOptionVo> getChildrenVo(List<BscDicRegion> list,String regionId){
         List<AeaRegionOptionVo> voList = new ArrayList<>();
         for (int i=0;i<list.size();i++) {
