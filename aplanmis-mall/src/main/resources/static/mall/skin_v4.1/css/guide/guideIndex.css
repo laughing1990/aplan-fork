@@ -1311,6 +1311,7 @@
 }
 .guide-content-right .paraller-wraper .item{
     width: 216px;
+    min-height: 272px;
     background: #000;
     background-color: rgba(252, 252, 252, 1);
     -webkit-border-radius: 4px;
