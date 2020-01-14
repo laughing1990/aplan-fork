@@ -162,8 +162,8 @@ var listmatter = (function(window){
             currentItemVerIdChangehandle:function(item ,index){
                 console.log(item);
                 console.log(index);
-                this.parallelItemList[index].itemName = item.itemName;
                 this.parallelItemList[index].resultMats = item.resultMats;
+                this.parallelItemList[index].currentCarryOutItem.itemName = item.itemName;
                 this.parallelItemList[index].currentCarryOutItem.orgName = item.orgName;
                 this.parallelItemList[index].currentCarryOutItem.dueNum = item.dueNum;
                 //this.getItemStateList(itemVerId);

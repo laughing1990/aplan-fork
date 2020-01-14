@@ -70,7 +70,7 @@
                                 <template slot-scope="scope">
                                     <div>
                                         <span>
-                                            <p class="parallel-title">{{scope.row.itemName}}</p>
+                                            <p class="parallel-title">{{scope.row.currentCarryOutItem && scope.row.currentCarryOutItem.itemName}}</p>
                                             <p class="parallel-title-intro">
                                                 <span>审批部门：{{scope.row.currentCarryOutItem && scope.row.currentCarryOutItem.orgName||'-'}}</span>
                                                 <span>审批时限：{{scope.row.currentCarryOutItem && scope.row.currentCarryOutItem.dueNum||5}}个工作日</span>
@@ -154,13 +154,13 @@
                                     width="50">
                             </el-table-column>
                             <el-table-column
-                                    prop="date"
+                                    prop="itemName"
                                     label="事项名称"
                             >
                                 <template slot-scope="scope">
                                     <div>
                                         <div>
-                                            <p class="parallel-title">{{scope.row.itemName}}</p>
+                                            <p class="parallel-title">{{scope.row.currentCarryOutItem && scope.row.currentCarryOutItem.itemName}}</p>
                                             <p class="parallel-title-intro">
                                                 <span>审批时限：{{scope.row.currentCarryOutItem.dueNum||5}}个工作日</span>
                                                 <span style="margin-left: 20px;">结果物：
