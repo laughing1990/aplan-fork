@@ -20,6 +20,7 @@ import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.process.AeaBpmProcessService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.receive.ReceiveService;
+import com.augurit.aplanmis.common.service.receive.constant.ReceiveConstant;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.utils.CommonTools;
 import com.augurit.aplanmis.common.utils.DesensitizedUtil;
@@ -162,7 +163,7 @@ public class RestApplyServiceImpl implements RestApplyService {
         ParallelApplyResultVo vo = aeaParStageService.stageApply(stageApplyDataVo);
         //updateAeaSmsInfo(stageApplyDataPageVo.getSmsInfoId(), applyinstIds);
         // 保存回执
-        String[] receiptTypes = new String[]{"1", "2"};
+        String[] receiptTypes = new String[]{ReceiveConstant.ACCEPT_TYPE };
         List<String> applyInstIds = vo.getApplyinstIds();
         if (applyInstIds==null||applyInstIds.size()==0) throw new Exception("申报实例化失败");
         receiveService.saveReceive(applyInstIds.toArray(new String[applyInstIds.size()]), receiptTypes, SecurityContext.getCurrentUserName(), "");

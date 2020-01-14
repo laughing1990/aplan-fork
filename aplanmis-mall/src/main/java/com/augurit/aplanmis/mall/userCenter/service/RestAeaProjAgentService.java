@@ -216,9 +216,14 @@ public class RestAeaProjAgentService {
     }
 
     public void submitAgentAgreement(String applyAgentId) throws Exception {
-        AeaProjApplyAgent aeaProjApplyAgent =new AeaProjApplyAgent();
-        aeaProjApplyAgent.setApplyAgentId(applyAgentId);
-        aeaProjApplyAgent.setAgentApplyState(AgencyState.SIGN_COMPLETED.getValue());//申请人签订完成
+        AeaProjApplyAgent aeaProjApplyAgent = aeaProjApplyAgentService.getAeaProjApplyAgentById(applyAgentId);
+        if(AgencyState.APPLYER_SIGNING.getValue().equals(aeaProjApplyAgent.getAgentApplyState())){//申请人签订完成
+            aeaProjApplyAgent.setAgentApplyState(AgencyState.SIGN_COMPLETED.getValue());//
+        }else if(AgencyState.WIN_STOP.getValue().equals(aeaProjApplyAgent.getAgentApplyState())){//窗口终止(终止待签章)
+            aeaProjApplyAgent.setAgentApplyState(AgencyState.STOP.getValue());//代办终止
+        }else if(AgencyState.WIN_END.getValue().equals(aeaProjApplyAgent.getAgentApplyState())){//窗口办结(办结待签章)
+            aeaProjApplyAgent.setAgentApplyState(AgencyState.AGENT_END.getValue());//代办结束
+        }
         aeaProjApplyAgentService.updateAeaProjApplyAgent(aeaProjApplyAgent);
     }
 
