@@ -529,3 +529,27 @@ body .el-table th.gutter{
   color: #FFB822;
   font-size: 20px;
 }
+
+/* 全局项目库 */
+.set-agencytag-dialog .stop-a-box{
+  padding: 10px 20px;
+}
+.set-agencytag-dialog .stop-a-box .el-select{
+  width: 100%;
+}
+.set-agencytag-dialog .title{
+  font-weight: bold;
+  font-size: 14px;
+}
+/* 表格代办标识 */
+.agency-tag{
+  display: inline-block;
+  width: 30px;
+  height: 18px;
+  line-height: 18px;
+  text-align: center;
+  color: #fff;
+  background: #FFC04A;
+  font-size: 12px;
+  border-radius: 4px;
+}
