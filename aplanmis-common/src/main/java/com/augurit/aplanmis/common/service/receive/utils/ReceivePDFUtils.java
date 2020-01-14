@@ -26,7 +26,8 @@ public class ReceivePDFUtils {
                 break;
             case ReceiveConstant.ACCEPT_TYPE://受理回执//2
             case ReceiveConstant.RETURNED_TYPE://退件回执//3
-                str = ReceivePDFTemplate.createAcceptTypeTemplate(receiveBaseVo);
+//                str = ReceivePDFTemplate.createAcceptTypeTemplate(receiveBaseVo);
+                str = FsReceivePDFTemplate.createShouLiReceipt(receiveBaseVo);
                 break;
             case ReceiveConstant.REJECT_TYPE://不受理回执//4
                 str = ReceivePDFTemplate.createRefuseTypeTemplate(receiveBaseVo);
