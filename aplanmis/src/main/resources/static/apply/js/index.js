@@ -950,11 +950,11 @@ var vm = new Vue({
       };
       var _list = [];
       this.parallelItems.concat(this.coreItems).forEach(function (u) {
-        var itemId = ''; // 实施事项id
-        var itemVerId = ''; // 实施事项版本id
+        var itemId = '-1'; // 实施事项id
+        var itemVerId = '-1'; // 实施事项版本id
         if (u.currentCarryOutItem) {
-          itemId = u.currentCarryOutItem.itemId || '';
-          itemVerId = u.currentCarryOutItem.itemVerId || '';
+          itemId = u.currentCarryOutItem.itemId || '-1';
+          itemVerId = u.currentCarryOutItem.itemVerId || '-1';
         }
         var _itemIds = vm.guideDetail.approveItemVerIds||[]; // 当前登录人能审核的事项id
         if (vm.leaderDept) {
@@ -981,7 +981,7 @@ var vm = new Vue({
             // 牵头部门发起部门确认
             _list.push(_obj);
           }
-        } else if ( _itemIds.indexOf(u.currentCarryOutItem.itemVerId) != -1 ) {
+        } else if ( _itemIds.indexOf(itemVerId) != -1 ) {
           // 审批部门意见数据
           var _guideChangeAction = 'a';
           if (!u.bmChecked && u.leaderDeptChoose) {
@@ -3565,7 +3565,11 @@ var vm = new Vue({
                   } else {
                     // 审批部门人员
                     var _itemIds = vm.guideDetail.approveItemVerIds||[]; // 当前登录人能审核的事项id
-                    if ( _itemIds.indexOf(u.currentCarryOutItem.itemVerId) != -1 ) {
+                    var itemVerId = '-1'; // 事项版本id
+                    if (u.currentCarryOutItem) {
+                      itemVerId = u.currentCarryOutItem.itemVerId || '-1';
+                    }
+                    if ( _itemIds.indexOf(itemVerId) != -1 ) {
                       if (u.detailState != 2) {
                       // if (u) {
                         vm.bmCanGuide = true;
