@@ -302,7 +302,7 @@ var vm = new Vue({
       certSelectionList: [],
       certWinData: [],
       currentIteminstId: '',//当前iteminstId
-      activeNames: ['1', '2', '3', '4', '5'], // el-collapse 默认展开列表
+      activeNames: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], // el-collapse 默认展开列表
       verticalTabData: [ // 左侧纵向导航数据
         {
           label: '事项信息列表',
@@ -314,7 +314,7 @@ var vm = new Vue({
           label: '领件人信息',
           target: 'receiver'
         }, {
-          label: '寄件人信息',
+          label: '出件人信息',
           target: 'sender'
         }
       ],
@@ -324,7 +324,7 @@ var vm = new Vue({
       ctx: ctx,
       fileList: [],
       activeTab: 0,  // 纵向导航active状态index
-      showVerLen: 3, // 显示左侧纵向导航栏的长度
+      showVerLen: 5, // 显示左侧纵向导航栏的长度
       certList: [],
       orgList: [],
       unitInfoList: [],
@@ -637,7 +637,7 @@ var vm = new Vue({
       }, function (result) {
 
         if (result.content) {
-          _that.tableData3 = _that.getShow(result.content.iteminsts);
+          _that.tableData3 = _that.getShow(result.content.certRegistrationItemVos);
           _that.sendInfoForm = result.content.smsInfo;
           // _that.sendInfoForm.senderPhone = '';
           // _that.sendInfoForm.senderName = _windowUserName;
@@ -1026,7 +1026,7 @@ var vm = new Vue({
       request('', {
         url: ctx + 'rest/certificate/consignerAtt/list',
         type: 'get',
-        data: {'applyinstId': applyinstId}
+        data: {'applyinstId': _that.applyinstId}
       }, function (res) {
         if (res.success) {
           if (res.content) {
