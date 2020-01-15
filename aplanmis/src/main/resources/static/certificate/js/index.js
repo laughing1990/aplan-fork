@@ -341,6 +341,7 @@ var vm = new Vue({
       activities: [],
       aeaHiCertinsts: [],
       aeaHiSmsSendItem: {},
+      newestState: '运输中',
     }
   },
   mounted: function () {
@@ -384,6 +385,12 @@ var vm = new Vue({
           vm.activities = res.content.logisticsOrderDetails;
           vm.aeaHiCertinsts = res.content.aeaHiCertinsts;
           vm.aeaHiSmsSendItem = res.content.aeaHiSmsSendItem;
+          // 物流信息头部最新的状态
+          vm.activities.forEach(function(u){
+            if (u.remark&&u.remark.length) {
+              vm.newestState = u.remark;
+            }
+          });
         } else {
           vm.$message.error(res.message || '获取物流信息失败');
         }
@@ -759,6 +766,8 @@ var vm = new Vue({
               }
             })
           });
+        } else {
+          vm.$message.error(result.message || '获取数据失败');
         }
 
       }, function (msg) {

@@ -54,8 +54,6 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class ProjAcceptService {
-    private static String[] itemCategoryMarks = new String[]{"GHTJHS1","JSGCCJDAYS1","GCJGYSJD1"/*,"FWJZGCHSZJCSSGCJGYSBA1"*/};//规划条件核实、建设工程城建档案验收、工程竣工验收监督、房屋建筑工程和市政基础设施工程竣工验收备案
-
     @Autowired
     private AeaHiParStageinstService aeaHiParStageinstService;
     @Autowired
@@ -102,6 +100,9 @@ public class ProjAcceptService {
     private BscAttMapper bscAttMapper;
     @Autowired
     private HistoryService historyService;
+
+    //联合验收涉及到的审批事项：规划条件核实、建设工程城建档案验收、工程竣工验收监督、房屋建筑工程和市政基础设施工程竣工验收备案
+    private static String[] itemCategoryMarks = new String[]{"GHTJHS1","JSGCCJDAYS1","GCJGYSJD1"/*,"FWJZGCHSZJCSSGCJGYSBA1"*/};
 
     //固定的联合验收终审意见书批文批复材料编号
     private final String MAT_CODE = "MAT-C0000000583";
@@ -217,7 +218,6 @@ public class ProjAcceptService {
         }else{
             acceptOpinionSummaryVo.setImportantProj("否");
         }
-
 
         AeaHiParStageinst stageinst = aeaHiParStageinstService.getAeaHiParStageinstByApplyinstId(applyinstId);
 

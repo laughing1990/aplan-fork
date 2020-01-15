@@ -113,110 +113,113 @@
     <!--3 根据条件查询实体list -->
     <select id="listAeaHiIteminst" resultType="AeaHiIteminst">
         select
-        <include refid="allColumns"/>
-        from AEA_HI_ITEMINST
+        <include refid="aliasColumns">
+            <property name="alias" value="ahi"/>
+        </include>,aib.ITEM_CATEGORY_MARK itemCategoryMark
+        from AEA_HI_ITEMINST ahi
+        LEFT JOIN aea_item_basic aib on aib.item_id = ahi.item_id
         <where>
             <if test="iteminstId != null">
-                AND ITEMINST_ID = #{iteminstId}
+                AND ahi.ITEMINST_ID = #{iteminstId}
             </if>
             <if test="itemId != null">
-                AND ITEM_ID = #{itemId}
+                AND ahi.ITEM_ID = #{itemId}
             </if>
             <if test="iteminstCode != null">
-                AND ITEMINST_CODE = #{iteminstCode}
+                AND ahi.ITEMINST_CODE = #{iteminstCode}
             </if>
             <if test="iteminstName != null">
-                AND ITEMINST_NAME = #{iteminstName}
+                AND ahi.ITEMINST_NAME = #{iteminstName}
             </if>
             <if test="approveOrgId != null">
-                AND APPROVE_ORG_ID = #{approveOrgId}
+                AND ahi.APPROVE_ORG_ID = #{approveOrgId}
             </if>
             <if test="isLackIteminst != null">
-                AND IS_LACK_ITEMINST = #{isLackIteminst}
+                AND ahi.IS_LACK_ITEMINST = #{isLackIteminst}
             </if>
             <if test="isSeriesApprove != null">
-                AND IS_SERIES_APPROVE = #{isSeriesApprove}
+                AND ahi.IS_SERIES_APPROVE = #{isSeriesApprove}
             </if>
             <if test="themeVerId != null">
-                AND THEME_VER_ID = #{themeVerId}
+                AND ahi.THEME_VER_ID = #{themeVerId}
             </if>
             <if test="stageinstId != null">
-                AND STAGEINST_ID = #{stageinstId}
+                AND ahi.STAGEINST_ID = #{stageinstId}
             </if>
             <if test="seriesinstId != null">
-                AND SERIESINST_ID = #{seriesinstId}
+                AND ahi.SERIESINST_ID = #{seriesinstId}
             </if>
             <if test="startTime != null">
-                AND START_TIME = #{startTime}
+                AND ahi.START_TIME = #{startTime}
             </if>
             <if test="registerTime != null">
-                AND REGISTER_TIME = #{registerTime}
+                AND ahi.REGISTER_TIME = #{registerTime}
             </if>
             <if test="signTime != null">
-                AND SIGN_TIME = #{signTime}
+                AND ahi.SIGN_TIME = #{signTime}
             </if>
             <if test="endTime != null">
-                AND END_TIME = #{endTime}
+                AND ahi.END_TIME = #{endTime}
             </if>
             <if test="publicMode != null">
-                AND PUBLIC_MODE = #{publicMode}
+                AND ahi.PUBLIC_MODE = #{publicMode}
             </if>
             <if test="iteminstState != null">
-                AND ITEMINST_STATE = #{iteminstState}
+                AND ahi.ITEMINST_STATE = #{iteminstState}
             </if>
             <if test="innerAppinstId != null">
-                AND INNER_APPINST_ID = #{innerAppinstId}
+                AND ahi.INNER_APPINST_ID = #{innerAppinstId}
             </if>
             <if test="creater != null">
-                AND CREATER = #{creater}
+                AND ahi.CREATER = #{creater}
             </if>
             <if test="createTime != null">
-                AND CREATE_TIME = #{createTime}
+                AND ahi.CREATE_TIME = #{createTime}
             </if>
             <if test="modifier != null">
-                AND MODIFIER = #{modifier}
+                AND ahi.MODIFIER = #{modifier}
             </if>
             <if test="modifyTime != null">
-                AND MODIFY_TIME = #{modifyTime}
+                AND ahi.MODIFY_TIME = #{modifyTime}
             </if>
             <if test="iteminstLevel != null">
-                AND ITEMINST_LEVEL = #{iteminstLevel}
+                AND ahi.ITEMINST_LEVEL = #{iteminstLevel}
             </if>
             <if test="businessState != null">
-                AND BUSINESS_STATE = #{businessState}
+                AND ahi.BUSINESS_STATE = #{businessState}
             </if>
             <if test="itemVerId != null">
-                AND ITEM_VER_ID = #{itemVerId}
+                AND ahi.ITEM_VER_ID = #{itemVerId}
             </if>
             <if test="isJoinApproval != null">
-                AND IS_JOIN_APPROVAL = #{isJoinApproval}
+                AND ahi.IS_JOIN_APPROVAL = #{isJoinApproval}
             </if>
             <if test="itemApplyCode != null">
-                AND ITEM_APPLY_CODE = #{itemApplyCode}
+                AND ahi.ITEM_APPLY_CODE = #{itemApplyCode}
             </if>
             <if test="isToleranceAccept != null">
-                AND IS_TOLERANCE_ACCEPT = #{isToleranceAccept}
+                AND ahi.IS_TOLERANCE_ACCEPT = #{isToleranceAccept}
             </if>
             <if test="rootOrgId != null">
-                AND ROOT_ORG_ID = #{rootOrgId}
+                AND ahi.ROOT_ORG_ID = #{rootOrgId}
             </if>
             <if test="procinstId != null">
-                AND PROCINST_ID = #{procinstId}
+                AND ahi.PROCINST_ID = #{procinstId}
             </if>
             <if test="iteminstType != null">
-                AND ITEMINST_TYPE = #{iteminstType}
+                AND ahi.ITEMINST_TYPE = #{iteminstType}
             </if>
             <if test="toleranceTime != null">
-                AND TOLERANCE_TIME = #{toleranceTime}
+                AND ahi.TOLERANCE_TIME = #{toleranceTime}
             </if>
             <if test="timeruleId != null">
-                AND TIMERULE_ID = #{timeruleId}
+                AND ahi.TIMERULE_ID = #{timeruleId}
             </if>
             <if test="isSuspendedBefore != null">
-                AND IS_SUSPENDED_BEFORE = #{isSuspendedBefore}
+                AND ahi.IS_SUSPENDED_BEFORE = #{isSuspendedBefore}
             </if>
             <if test="isDeleted != null">
-                AND IS_DELETED = #{isDeleted}
+                AND ahi.IS_DELETED = #{isDeleted}
             </if>
         </where>
     </select>

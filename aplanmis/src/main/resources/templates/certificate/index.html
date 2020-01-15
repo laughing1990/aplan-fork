@@ -556,12 +556,12 @@
              :visible.sync="logicDialogVisible" width="620px">
     <div class="ld-wrap">
       <div class="ld-top ld-padding">
-        <div class="ld-title">派送中</div>
+        <div class="ld-title">{{newestState}}</div>
         <div class="c-f">
           <i class="ag ag-folder-fill l"></i>
           <div class="ldt-text l">
-            <div>证件名称：建设用地规划许可证</div>
-            <div>【1144070000706244X834420010130032】</div>
+            <div>证件名称：{{aeaHiCertinsts[0].certinstName}}</div>
+            <div>【{{aeaHiCertinsts[0].certinstCode}}】</div>
           </div>
         </div>
       </div>
@@ -579,7 +579,7 @@
             <div class="ld-irowu c-f">
               <div>邮件单号：{{aeaHiSmsSendItem.expressNum}}</div>
               <div>物流公司：中国邮政</div>
-              <div>客服电话：95338</div>
+              <div>客服电话：11183</div>
             </div>
             <div class="ld-irowu c-f">
               <div>寄件地址：广东省佛山市禅城区XXXX服务中心</div>
