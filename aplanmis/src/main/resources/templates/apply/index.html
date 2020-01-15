@@ -1987,13 +1987,14 @@
         </template>
       </div>
       <!--项目树窗口 start-->
-      <el-dialog title="查看项目工程结构" :visible.sync="projectTreeInfoModal" class="proj-tree-dialog"
+      <el-dialog title="工程管理" :visible.sync="projectTreeInfoModal" class="proj-tree-dialog"
                  @closed="clearTreeChildInfo()" width="750px">
         <div class="project-tree">
           <div class="search-proj" v-if="!addChildProjShow">
-            <el-input suffix-icon="el-icon-search" :inline="true" placeholder="输入关键字" v-model="searchProjfilterText">
+            <el-input suffix-icon="el-icon-search" :inline="true" placeholder="输入关键字" v-model="searchProjfilterText" style="width: 68%;">
             </el-input>
             <el-button @click="clearProjfilterText">清空</el-button>
+            <el-button icon="el-icon-connection" type="primary" v-if="isAgentPage" @click="splitEngineFn">拆分工程</el-button>
           </div>
           <div class="search-proj" v-else>
             <el-input :inline="true" placeholder="请输入子项目工程名称" v-model="childProjName">
@@ -2034,6 +2035,80 @@
         </div>
       </el-dialog>
       <!--项目树窗口 end-->
+       <!--项目树窗口 start-->
+      <el-dialog title="拆分工程" :visible.sync="splitEngineDialogVisiable" class="split-engine-dialog" :inline="true"
+        width="980px">
+        <el-form :model="splitForm" :rules="splitRules" label-width="180px" ref="splitForm">
+          <h4>项目信息</h4>
+          <el-form-item class="w100" label="项目代码">
+            <el-input placeholder="请输入项目代码" disabled :value="projBascInfoShow.localCode"></el-input>
+          </el-form-item>
+          <el-form-item class="w50" label="项目名称">
+            <el-input placeholder="请输入项目名称" disabled :value="projBascInfoShow.projName"></el-input>
+          </el-form-item>
+          <el-form-item class="w50" label="项目总投资（万元）">
+            <el-input placeholder="请输入项目总投资" disabled :value="projBascInfoShow.investSum"></el-input>
+          </el-form-item>
+          <h4>单项工程信息</h4>
+          <el-form-item class="w50" label="所处阶段" prop="stageNo">
+            <el-select placeholder="请选择" v-model="splitForm.stageNo">
+              <el-option label="工程建设许可阶段" value="1"></el-option>
+              <el-option label="施工许可阶段" value="2"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item class="w50" label="前阶段关联工程代码" prop="stageNo">
+            <el-input placeholder="请输入前阶段关联工程代码" v-model="splitForm.lastGcbm"></el-input>
+          </el-form-item>
+          <el-form-item class="w50" label="单项工程名称" prop="childProjName">
+            <el-input placeholder="请输入单项工程名称" v-model="splitForm.childProjName"></el-input>
+          </el-form-item>
+          <el-form-item class="w50" label="工程范围" prop="childForeignManagement">
+            <el-input placeholder="请输入工程范围" v-model="splitForm.childForeignManagement"></el-input>
+          </el-form-item>
+          <el-form-item class="w100" label="单项工程投资额（万元）" prop="childProjInvestSum">
+            <el-input placeholder="请输入单项工程投资额" style="width: 37.4%;" v-model="splitForm.childProjInvestSum"></el-input>
+          </el-form-item>
+          <el-form-item class="w100" label="单项工程建设规模" prop="childScaleContent">
+            <el-input placeholder="请输入单项工程建设规模" type="textarea" v-model="splitForm.childScaleContent"></el-input>
+          </el-form-item>
+          <el-form-item class="w50" label="用地面积（m&sup2;）" prop="childXmYdmj">
+            <el-input placeholder="请输入用地面积" v-model="splitForm.childXmYdmj"></el-input>
+          </el-form-item>
+          <el-form-item class="w50" label="建筑面积（m&sup2;）" prop="childBuildAreaSum">
+            <el-input placeholder="请输入建筑面积" v-model="splitForm.childBuildAreaSum"></el-input>
+          </el-form-item>
+          <h4>申报单位信息</h4>
+          <el-form-item class="w50" label="申报单位类型" prop="unitType">
+            <el-select placeholder="请选择" v-model="splitForm.unitType">
+              <el-option v-for="(item,index) in applyUnitTypeOptions" :key="item.id" :label="item.itemName"
+                :value="item.itemCode"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item class="w50" label="项目单位名称" prop="unitName">
+            <el-input placeholder="默认引用项目单位信息，可修改" v-model="splitForm.unitName"></el-input>
+          </el-form-item>
+          <el-form-item class="w50" label="证件类型" prop="certType">
+            <el-select placeholder="请选择" v-model="splitForm.certType">
+              <el-option label="组织机构代码" value="1"></el-option>
+              <el-option label="统一社会信用代码" value="2"></el-option>
+              <el-option label="纳税人识别号" value="3"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item class="w50" label="证件编号" prop="certCode">
+            <el-input placeholder="默认引用项目单位信息，可修改" v-model="splitForm.certCode"></el-input>
+          </el-form-item>
+          <el-form-item class="w50" label="法人姓名" prop="idrepresentative">
+            <el-input placeholder="默认引用项目单位信息，可修改" v-model="splitForm.idrepresentative"></el-input>
+          </el-form-item>
+          <el-form-item class="w50" label="联系电话" prop="idmobile">
+            <el-input placeholder="默认引用项目单位信息，可修改" v-model="splitForm.idmobile"></el-input>
+          </el-form-item>
+        </el-form>
+        <div class="hendel-box">
+          <el-button type="primary" @click="saveSplitFormData">保 存</el-button>
+        </div>
+      </el-dialog>
+       <!--项目树窗口 end-->
       <!--新增编辑联系人 start-->
       <el-dialog :title="addEditManModalTitle" :visible.sync="addEditManModalShow" width="750px"
                  class="dg-modal-add-linkmain-info" @close="resetForm('addEditManform')">
