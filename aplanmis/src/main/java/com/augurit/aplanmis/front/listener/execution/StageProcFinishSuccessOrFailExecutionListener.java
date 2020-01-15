@@ -92,8 +92,6 @@ public class StageProcFinishSuccessOrFailExecutionListener implements ExecutionL
                         Task task = taskService.createTaskQuery().taskId(parentTaskId).singleResult();
                         if (task != null) {
                             taskService.complete(parentTaskId, new String[]{"fazheng"}, (Map) null);
-//                            aeaHiParStageinstService.updateBusinessStateByApplyinstId(aeaHiApplyinst.getApplyinstId(),);
-//                            aeaHiParStageinstService.updateBusinessStateByApplyinstId(aeaHiApplyinst.getApplyinstId(),);
                         }
                     }
                 }else{
