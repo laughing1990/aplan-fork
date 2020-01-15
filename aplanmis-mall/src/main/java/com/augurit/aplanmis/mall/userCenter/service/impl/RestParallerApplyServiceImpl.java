@@ -14,10 +14,7 @@ import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.apply.AeaHiGuideDetailService;
 import com.augurit.aplanmis.common.service.apply.AeaHiGuideService;
-import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutService;
-import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiParStateinstService;
+import com.augurit.aplanmis.common.service.instance.*;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.item.AeaItemPrivService;
 import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
@@ -96,6 +93,8 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
     private AeaLinkmanInfoService aeaLinkmanInfoService;
     @Autowired
     private AeaParThemeMapper aeaParThemeMapper;
+    @Autowired
+    private AeaHiIteminstService aeaHiIteminstService;
 
     @Override
     public ItemListVo listItemAndStateByStageId(String stageId, String projInfoId, String regionalism, String projectAddress,String isSelectItemState,String isFilterStateItem,String rootOrgId) throws Exception {
@@ -172,7 +171,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
     private AeaApplyinstForminstMapper aeaApplyinstForminstMapper;
 
     @Override
-    public ApplyIteminstConfirmVo listGuideItemsByApplyinstId(String guideId,String applyinstId,String projInfoId, String isSelectItemState) throws Exception {
+    public ApplyIteminstConfirmVo listGuideItemsByApplyinstId(String guideId,String applyinstId,String projInfoId, String isSelectItemState,String isQueryIteminstState) throws Exception {
         String rootOrgId=SecurityContext.getCurrentOrgId();
         GuideDetailVo detail = aeaHiGuideService.detail(guideId);
         AeaProjInfo projInfo = aeaProjInfoService.getAeaProjInfoByProjInfoId(projInfoId);
@@ -197,6 +196,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
                     setMatsAndStatesForCarryItems(rootOrgId, v);
                 } catch (Exception e) {}
             });
+        setIteminstState(parallelItems,optionItems,isQueryIteminstState,applyinstId);
         vo.setCoreIteminstList(optionItems);
         vo.setParallelIteminstList(parallelItems);
         //实例的阶段情形ID集合
@@ -231,6 +231,32 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
         }
         vo.setGuideId(guideId);
         return vo;
+    }
+
+    private void setIteminstState(List<GuideComputedItem> parallelItems, List<GuideComputedItem> optionItems, String isQueryIteminstState,String applyinstId) throws Exception {
+        if("1".equals(isQueryIteminstState)){
+            List<AeaHiIteminst> iteminstList = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
+            if(iteminstList.size()==0) return;
+            Map<String,String> map=new HashMap<>();
+            iteminstList.stream().forEach(v->{
+                map.put(v.getItemVerId(),v.getIteminstState());
+            });
+            if(parallelItems.size()>0) parallelItems.stream().forEach(v-> {
+               v.setIteminstState(map.get(v.getItemVerId()));
+            });
+            List<AeaHiApplyinst> seriesApplyinsts = aeaHiApplyinstService.getSeriesAeaHiApplyinstListByParentApplyinstId(applyinstId,null);
+            if(seriesApplyinsts.size()==0) return;
+            List<String> seriesApplyinstIds=seriesApplyinsts.stream().map(AeaHiApplyinst::getApplyinstId).collect(Collectors.toList());
+            List<AeaHiIteminst> seriesIteminstList = aeaHiIteminstService.getAeaHiIteminstListByApplyinstIds(seriesApplyinstIds, "1", "0");
+            if(seriesIteminstList.size()==0) return;
+            Map<String,String> seriesMap=new HashMap<>();
+            seriesIteminstList.stream().forEach(v->{
+                seriesMap.put(v.getItemVerId(),v.getIteminstState());
+            });
+            if(optionItems.size()>0) optionItems.stream().forEach(v-> {
+                v.setIteminstState(seriesMap.get(v.getItemVerId()));
+            });
+        }
     }
 
     private void setMatsAndStatesForCarryItems(String rootOrgId, GuideComputedItem v) throws Exception {
