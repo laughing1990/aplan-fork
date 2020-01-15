@@ -62,6 +62,10 @@ public class ProjectSplitServiceImpl implements ProjectSplitService {
         String username = "jmzjtest";
         String password = "test20200114";
 
+        //生产环境账号密码
+//        String username = "swfg2zj";
+//        String password = "sw190718a3p";
+
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
         String timestamp = sdf.format(date);
