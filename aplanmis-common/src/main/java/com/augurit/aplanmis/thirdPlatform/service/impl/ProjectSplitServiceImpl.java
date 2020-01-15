@@ -108,7 +108,7 @@ public class ProjectSplitServiceImpl implements ProjectSplitService {
         String engineeringCode = null;
         if (responseJSON != null) {
             if ((RESULT.操作成功.getCode() == responseJSON.getInteger("result")) && (XMZT.通过.code == responseJSON.getInteger("xmzt"))) {
-                responseJSON.getString("engineeringCode");//工程编码
+                engineeringCode = responseJSON.getString("engineeringCode");//工程编码
                 String releaseDate = responseJSON.getString("releaseDate");//赋码日期
             } else {
                 String message = responseJSON.getString("message");//错误提示信息
