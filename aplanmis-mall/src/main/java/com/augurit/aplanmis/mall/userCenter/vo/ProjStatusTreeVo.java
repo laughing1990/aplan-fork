@@ -58,8 +58,10 @@ public class ProjStatusTreeVo {
     public static class ProjStatusVo{
         @ApiModelProperty("项目/工程名称ID")
         private String projInfoId;
-        @ApiModelProperty("项目/工程名称ID")
+        @ApiModelProperty("父项目/工程名称ID")
         private String parentProjInfoId;
+        @ApiModelProperty("申请实例ID")
+        private String applyInstId;
         @ApiModelProperty("项目/工程名称")
         private String projName;
         @ApiModelProperty("项目代码")
