@@ -87,14 +87,8 @@
                                                 </span>
                                             </p>
                                         </div>
-                                        <div v-if="itemStateList && itemStateList.lenght>0">
-                                            <div>
-                                                <p class="situation-title"><span class="situation">情形</span>属于踏勘论证范围或按规定应当进行节地评价的提交：</p>
-                                                <p class="situation-title-intro">
-                                                    <el-radio v-model="radio" label="1">是</el-radio>
-                                                    <el-radio v-model="radio" label="2">否</el-radio>
-                                                </p>
-                                            </div>
+                                        <div v-if="scope.row.currentCarryOutItem && scope.row.currentCarryOutItem.paraStateList && scope.row.currentCarryOutItem.paraStateList.length > 0">
+                                            <list :list="scope.row.currentCarryOutItem.paraStateList"></list>
                                         </div>
                                     </div>
                                 </template>
@@ -176,12 +170,38 @@
                                                 </span>
                                             </p>
                                         </div>
-                                        <div v-if="itemStateList && itemStateList.lenght>0">
+                                      <!--  <div v-if="paraStateList && paraStateList.lenght>0">
                                             <div>
                                                 <p class="situation-title"><span class="situation">情形</span>属于踏勘论证范围或按规定应当进行节地评价的提交：</p>
                                                 <p class="situation-title-intro">
                                                     <el-radio v-model="radio" label="1">是</el-radio>
                                                     <el-radio v-model="radio" label="2">否</el-radio>
+                                                </p>
+                                            </div>
+                                        </div>-->
+                                        <div v-if="scope.row.currentCarryOutItem && scope.row.currentCarryOutItem.coreStateList && scope.row.currentCarryOutItem.coreStateList.length > 0">
+                                            <div v-for="(item,index) in scope.row.currentCarryOutItem.coreStateList">
+                                                <p class="situation-title"><span class="situation">情形</span> &nbsp;{{item.stateName}}：</p>
+                                                <p class="situation-title-intro">
+                                                    <template v-if="item.answerType=='s'||item.answerType=='y'">
+                                                        <el-radio-group v-model="item.selectAnswerId">
+                                                            <el-radio v-for="(itemAns,ind) in item.answerStates"
+                                                                      :key="ind"
+                                                                      @change="getChildsStateList(scope.row.currentCarryOutItem.coreStateList,item,itemAns,index,'true1')"
+                                                                      :value="itemAns.parStateId"
+                                                                      :label="itemAns.parStateId" name="answer">{{itemAns.stateName}}</el-radio>
+                                                        </el-radio-group>
+                                                    </template>
+                                                    <template v-else>
+                                                        <el-checkbox-group v-model="item.selectAnswerId"
+                                                                           :required="item.mustAnswer==1">
+                                                            <el-checkbox v-for="(itemAns,indAns) in item.answerStates"
+                                                                         :key="indAns"
+                                                                         :value="itemAns.parStateId"
+                                                                         @change="function(value) {getChildsStateList(scope.row.currentCarryOutItem.coreStateList,item,itemAns,index,value)}"
+                                                                         :label="itemAns.parStateId" name="answer">{{itemAns.stateName}}</el-checkbox>
+                                                        </el-checkbox-group>
+                                                    </template>
                                                 </p>
                                             </div>
                                         </div>
@@ -462,6 +482,38 @@
         </el-dialog>
         <div v-loading="contentLoading"  v-show="contentLoading" style="width: 100%; height: 100%;position: absolute;top: 180px;"></div>
     </div>
+
+    <template id="recursionList">
+        <div>
+          <div v-for="(item,index) in list" :key="index">
+            <p class="situation-title"><span class="situation">情形&nbsp;</span> &nbsp;{{item.stateName}}：</p>
+            <p class="situation-title-intro">
+                <template v-if="item.answerType=='s'||item.answerType=='y'">
+                    <el-radio-group v-model="item.selectAnswerId">
+                        <el-radio v-for="(itemAns,ind) in item.answerStates"
+                                  :key="ind"
+                                  @change="getMatterChildsStateList(list,item,itemAns,index,'radio')"
+                                  :value="itemAns.itemStateId"
+                                  :label="itemAns.itemStateId" name="answer">{{itemAns.stateName}}</el-radio>
+                    </el-radio-group>
+                </template>
+                <template v-else>
+                    <el-checkbox-group v-model="item.selectAnswerId"
+                                       :required="item.mustAnswer==1">
+                        <el-checkbox v-for="(itemAns,indAns) in item.answerStates"
+                                     :key="indAns"
+                                     :value="itemAns.itemStateId"
+                                     @change="function(value) {getMatterChildsStateList(list,item,itemAns,index,'checkbox',value)}"
+                                     :label="itemAns.itemStateId" name="answer">{{itemAns.stateName}}</el-checkbox>
+                    </el-checkbox-group>
+                </template>
+            </p>
+            <div v-if="item.children" class="children-item">
+                <list :list="item.children"></list>
+            </div>
+        </div>
+        </div>
+    </template>
     <script src="../../static/mall/js/listmatter/listmatter.js" th:src="@{/mall/skin_v4.1/js/listmatter/listmatter.js}" type="text/javascript"></script>
 </body>
 </html>

@@ -199,6 +199,7 @@
 }
 .situation-title-intro{
     margin-top: 10px;
+    margin-bottom: 10px;
 }
 .el-radio__inner{
     width: 18px;
@@ -243,4 +244,7 @@
     left: 6px;
     top: 2px;
     border-width: 2px;
+}
+.children-item{
+    margin-left:20px;
 }
