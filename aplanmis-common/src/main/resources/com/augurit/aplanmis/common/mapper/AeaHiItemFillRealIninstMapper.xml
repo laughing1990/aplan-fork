@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Augurit    2020-01-15 09:38:23 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiItemFillRealIninstMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    REAL_ININST_ID  realIninstId,
+    FILL_ID  fillId,
+    DUE_ININST_ID  dueIninstId,
+    INOUTINST_ID  inoutinstId,
+    IS_PASS  isPass,
+    ATT_COUNT  attCount,
+    REAL_PAPER_COUNT  realPaperCount,
+    REAL_COPY_COUNT  realCopyCount,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    ROOT_ORG_ID  rootOrgId
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaHiItemFillRealIninstById" resultType="AeaHiItemFillRealIninst" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_HI_ITEM_FILL_REAL_ININST
+    where    REAL_ININST_ID = #{id}
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaHiItemFillRealIninst" resultType="AeaHiItemFillRealIninst" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_HI_ITEM_FILL_REAL_ININST
+    <where>
+        <if test="realIninstId != null AND realIninstId != ''" >
+        AND    REAL_ININST_ID = #{realIninstId}
+        </if>
+        <if test="fillId != null AND fillId != ''" >
+        AND    FILL_ID = #{fillId}
+        </if>
+        <if test="dueIninstId != null AND dueIninstId != ''" >
+        AND    DUE_ININST_ID = #{dueIninstId}
+        </if>
+        <if test="inoutinstId != null AND inoutinstId != ''" >
+        AND    INOUTINST_ID = #{inoutinstId}
+        </if>
+        <if test="isPass != null AND isPass != ''" >
+        AND    IS_PASS = #{isPass}
+        </if>
+        <if test="attCount != null AND attCount != ''" >
+        AND    ATT_COUNT = #{attCount}
+        </if>
+        <if test="realPaperCount != null AND realPaperCount != ''" >
+        AND    REAL_PAPER_COUNT = #{realPaperCount}
+        </if>
+        <if test="realCopyCount != null AND realCopyCount != ''" >
+        AND    REAL_COPY_COUNT = #{realCopyCount}
+        </if>
+        <if test="creater != null AND creater != ''" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null AND createTime != ''" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+        <if test="modifier != null AND modifier != ''" >
+        AND    MODIFIER = #{modifier}
+        </if>
+        <if test="modifyTime != null AND modifyTime != ''" >
+        AND    MODIFY_TIME = #{modifyTime}
+        </if>
+        <if test="rootOrgId != null AND rootOrgId != ''" >
+        AND    ROOT_ORG_ID = #{rootOrgId}
+        </if>
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaHiItemFillRealIninst" parameterType="AeaHiItemFillRealIninst" >
+    insert into AEA_HI_ITEM_FILL_REAL_ININST (
+REAL_ININST_ID  ,FILL_ID  ,DUE_ININST_ID  ,INOUTINST_ID  ,IS_PASS  ,ATT_COUNT  ,REAL_PAPER_COUNT  ,REAL_COPY_COUNT  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID  
+    )  values  (
+#{realIninstId},#{fillId},#{dueIninstId},#{inoutinstId},#{isPass},#{attCount},#{realPaperCount},#{realCopyCount},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaHiItemFillRealIninst" parameterType="AeaHiItemFillRealIninst" >
+    update AEA_HI_ITEM_FILL_REAL_ININST
+    <set >
+        <if test="realIninstId != null AND realIninstId != '' " >
+        REAL_ININST_ID = #{realIninstId},
+        </if>
+        <if test="fillId != null AND fillId != '' " >
+        FILL_ID = #{fillId},
+        </if>
+        <if test="dueIninstId != null AND dueIninstId != '' " >
+        DUE_ININST_ID = #{dueIninstId},
+        </if>
+        <if test="inoutinstId != null AND inoutinstId != '' " >
+        INOUTINST_ID = #{inoutinstId},
+        </if>
+        <if test="isPass != null AND isPass != '' " >
+        IS_PASS = #{isPass},
+        </if>
+        <if test="attCount != null AND attCount != '' " >
+        ATT_COUNT = #{attCount},
+        </if>
+        <if test="realPaperCount != null AND realPaperCount != '' " >
+        REAL_PAPER_COUNT = #{realPaperCount},
+        </if>
+        <if test="realCopyCount != null AND realCopyCount != '' " >
+        REAL_COPY_COUNT = #{realCopyCount},
+        </if>
+        <if test="creater != null AND creater != '' " >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null AND createTime != '' " >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="modifier != null AND modifier != '' " >
+        MODIFIER = #{modifier},
+        </if>
+        <if test="modifyTime != null AND modifyTime != '' " >
+        MODIFY_TIME = #{modifyTime},
+        </if>
+        <if test="rootOrgId != null AND rootOrgId != '' " >
+        ROOT_ORG_ID = #{rootOrgId},
+        </if>
+    </set>
+    where REAL_ININST_ID = #{realIninstId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaHiItemFillRealIninst">
+        delete from   AEA_HI_ITEM_FILL_REAL_ININST
+        where
+    REAL_ININST_ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaHiItemFillRealIninst" id="AeaHiItemFillRealIninstMap">
+        <id property="realIninstId" column="REAL_ININST_ID"/>
+        <result property="fillId" column="FILL_ID"/>
+        <result property="dueIninstId" column="DUE_ININST_ID"/>
+        <result property="inoutinstId" column="INOUTINST_ID"/>
+        <result property="isPass" column="IS_PASS"/>
+        <result property="attCount" column="ATT_COUNT"/>
+        <result property="realPaperCount" column="REAL_PAPER_COUNT"/>
+        <result property="realCopyCount" column="REAL_COPY_COUNT"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+</mapper>
