@@ -2104,4 +2104,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="2020011519460003" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `opu_om_org`
+            ADD COLUMN `UNIFIED_SOCIAL_CREDIT_CODE` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '统一社会信用代码' AFTER `REGION_ID`;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
