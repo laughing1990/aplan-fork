@@ -2737,8 +2737,47 @@ textarea {
 
 
 
-
-
+/* 代办-拆分子工程 */
+.split-engine-dialog .el-dialog__body .el-form{
+  padding: 15px;
+  padding-right: 42px;
+}
+.split-engine-dialog .el-dialog__body .el-form .el-form-item{
+  display: inline-block;
+  vertical-align: top;
+}
+.split-engine-dialog .el-dialog__body .el-form .el-form-item .el-select{
+  width: 100%;
+}
+.split-engine-dialog h4{
+  font-size: 16px;
+  padding-left: 10px;
+  margin-bottom: 20px;
+  position: relative;
+  color: #666;
+  line-height: 31px;
+  font-weight: normal;
+}
+.split-engine-dialog h4:after {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  width: 4px;
+  height: 20px;
+  background: #3e97df;
+  left: 0;
+  top: 5px;
+}
+.split-engine-dialog .w100{
+  width: 98.4%;
+}
+.split-engine-dialog .w50{
+  width: 49%;
+}
+.split-engine-dialog .hendel-box{
+  margin-top: 20px;
+  text-align: center;
+}
 
 
 
