@@ -76,7 +76,7 @@ public class RestCertificateController {
         return modelAndView;
     }
 
-    @PostMapping("/out/materials/register")
+    @GetMapping("/out/materials/register")
     @ApiOperation(value = "取件登记")
     @ApiImplicitParams({@ApiImplicitParam(value = "申报实例主键 ", name = "applyinstId", required = true)})
     public ContentResultForm<CertRegistrationVo> registerOutMaterials(String applyinstId) {
@@ -89,7 +89,7 @@ public class RestCertificateController {
         }
     }
 
-    @PostMapping("/out/materials/mail/post")
+    @GetMapping("/out/materials/mail/post")
     @ApiOperation(value = "邮件下单信息")
     @ApiImplicitParams({@ApiImplicitParam(value = "申报实例主键", name = "applyinstId", required = true)})
     public ContentResultForm<CertRegistrationVo> mailPostInfo(String applyinstId) {
