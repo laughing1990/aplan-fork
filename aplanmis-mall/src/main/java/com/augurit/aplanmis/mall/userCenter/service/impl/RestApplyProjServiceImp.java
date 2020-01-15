@@ -128,6 +128,7 @@ public class RestApplyProjServiceImp implements RestApplyProjService {
                              stageStatus = 1;isDoned=false;
                          }
                          vo.setApplyStatus(stageStatus+"");
+                         vo.setApplyInstId(aeaHiApplyinst.getApplyinstId());
                      }
                  }
              }
