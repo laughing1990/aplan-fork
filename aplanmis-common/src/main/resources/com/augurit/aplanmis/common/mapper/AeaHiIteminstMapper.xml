@@ -833,7 +833,6 @@
 
             <if test="keyword != null and keyword != ''">
                 AND (
-                api.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
                 api.GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
                 api.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
                 aha.APPLYINST_CODE = #{keyword}
@@ -902,7 +901,6 @@
             </if>
             <if test="keyword != null and keyword != ''">
                 AND (
-                api.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
                 api.GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
                 api.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
                 aha.APPLYINST_CODE = #{keyword}
