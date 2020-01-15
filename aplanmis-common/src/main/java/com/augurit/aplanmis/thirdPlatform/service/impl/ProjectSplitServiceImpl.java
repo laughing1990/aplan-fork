@@ -13,10 +13,13 @@ import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.service.window.AeaProjApplySplitService;
 import com.augurit.aplanmis.common.utils.HttpUtil;
+import com.augurit.aplanmis.common.vo.SplitProjGetGcbmVo;
 import com.augurit.aplanmis.thirdPlatform.service.ProjectSplitService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
@@ -24,6 +27,7 @@ import java.util.Date;
 
 @Service
 @Transactional
+@Slf4j
 public class ProjectSplitServiceImpl implements ProjectSplitService {
 
     @Autowired
@@ -40,6 +44,10 @@ public class ProjectSplitServiceImpl implements ProjectSplitService {
     //    private String url = "https://tzba.forgov.com/tybmcheck";     // 最新的测试环境地址（未启用）
     private String url = "http://tybmcheck.forgov.com:9000/tybmcheck";  // 测试环境地址（已启用）
 //    private String url = "http://www.gdtz.gov.cn/tybmcheck";  // 生产环境地址
+
+    private static String POST_URL_PRE = "http://tybmcheck.forgov.com:9000/tybmcheck";
+    private static String USER_NAME = "jmzjtest";
+    private static String PASS_WORD = "test20200114";
 
     @Override
     public String getGCBM(String applySplitId) throws Exception {
@@ -115,6 +123,29 @@ public class ProjectSplitServiceImpl implements ProjectSplitService {
             }
         }
 
+        return engineeringCode;
+    }
+
+    public String getGCBM(SplitProjGetGcbmVo splitProjGetGcbmVo)throws Exception{
+        Assert.notNull(splitProjGetGcbmVo,"请求参数不能为空");
+        JSONObject projectInfo = splitProjGetGcbmVo.covertJSONObject(splitProjGetGcbmVo);
+        //账号和项目代码
+        String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        String captcha = md5((timestamp + USER_NAME + PASS_WORD + timestamp).getBytes()).toUpperCase();
+        JSONObject param = new JSONObject();
+        param.put("user", USER_NAME);
+        param.put("captcha", captcha);
+        param.put("timestamp", timestamp);
+        param.put("isDirectPass", "1");   //默认免审模式
+        param.put("xmdm", splitProjGetGcbmVo.getXMDM());
+        param.put("projectInfo", projectInfo);
+
+        JSONObject responseJSON = HttpUtil.sendPostJson(POST_URL_PRE + "/zj/gcdm/project/create", param);
+        log.debug("调用省发改接口获取工程编码返回信息。{}",JSONObject.toJSONString(responseJSON));
+        String engineeringCode = null;
+        if (responseJSON != null && (RESULT.操作成功.getCode() == responseJSON.getInteger("result")) && (XMZT.通过.code == responseJSON.getInteger("xmzt"))) {
+            engineeringCode = responseJSON.getString("engineeringCode");
+        }
         return engineeringCode;
     }
 

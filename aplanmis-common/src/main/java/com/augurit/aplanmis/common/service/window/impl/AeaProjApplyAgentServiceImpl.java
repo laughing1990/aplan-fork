@@ -16,9 +16,11 @@ import com.augurit.aplanmis.common.service.dic.GcbmBscRuleCodeStrategy;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.window.AeaProjApplyAgentService;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
+import com.augurit.aplanmis.common.vo.SplitProjGetGcbmVo;
 import com.augurit.aplanmis.common.vo.agency.AeaUnitProjLinkmanVo;
 import com.augurit.aplanmis.common.vo.agency.AgencyDetailVo;
 import com.augurit.aplanmis.common.vo.agency.SplitProjFromVo;
+import com.augurit.aplanmis.thirdPlatform.service.ProjectSplitService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +85,9 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
 
     @Autowired
     private GcbmBscRuleCodeStrategy gcbmBscRuleCodeStrategy;
+
+    @Autowired
+    private ProjectSplitService projectSplitService;
 
     public void saveAeaProjApplyAgent(AeaProjApplyAgent aeaProjApplyAgent) throws Exception{
         if(aeaProjApplyAgent != null){
@@ -309,8 +314,9 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
         String parentProjInfoId = splitProjFromVo.getParentProjInfoId();
         String currentOrgId = SecurityContext.getCurrentOrgId();
         String currentUserName = SecurityContext.getCurrentUserName();
-        // TODO 调用省发改接口获取工程编码
-        String gcbm = gcbmBscRuleCodeStrategy.generateCode(localCode, localCode, "工程编码", currentOrgId);
+//        String gcbm = gcbmBscRuleCodeStrategy.generateCode(localCode, localCode, "工程编码", currentOrgId);
+        //调用省发改接口获取工程编码
+        String gcbm = projectSplitService.getGCBM(SplitProjGetGcbmVo.covertSplitProjGetGcbmVo(splitProjFromVo));
         AeaProjInfo aeaProjInfo = new AeaProjInfo();
         aeaProjInfo.setProjInfoId(UUID.randomUUID().toString());
         aeaProjInfo.setLocalCode(localCode);
