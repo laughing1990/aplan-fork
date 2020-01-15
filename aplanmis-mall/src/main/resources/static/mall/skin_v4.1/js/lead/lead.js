@@ -9,6 +9,7 @@
             stageSelVal: {}, // 选择阶段信息
             stateList: [], // 情形列表
             stateSelVal: {},
+            stageId:'',
         },
         created:function(){
             this.getFactorList();
