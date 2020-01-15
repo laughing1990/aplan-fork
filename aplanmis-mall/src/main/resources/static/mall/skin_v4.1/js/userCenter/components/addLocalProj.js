@@ -181,7 +181,7 @@ var module1 = new Vue({
           validator: checkNumber,
           trigger: 'blur'
         } ],
-        foreignRemark: [{
+          scaleContent: [{
           required: true,
           message: '请输入建设规模及内容',
           trigger: 'blur'
@@ -249,7 +249,7 @@ var module1 = new Vue({
       setTimeout(function(){
         ts.$refs.projInfoForm.validateField('endTime');
       },300)
-      
+
     },
     'projInfoForm.endTime': function(val){
       if(!val) return;

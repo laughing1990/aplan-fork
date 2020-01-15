@@ -35,6 +35,8 @@ public class FsGcbmBscRuleCodeStrategy {
     public static final String PORJ_NATURE = "{projNature}";
     //邮编
     public static final String POST_CODE = "{postCode}";
+    //年份
+    public static final String PROJ_YEAR = "{projYear}";
     private static final long CODE_VALUE_INCREASE = 1L;
     private static final long CODE_VALUE_COUNT = 6L;
     private static final String CODE_NAME = "佛山项目代码生成规则";
@@ -59,7 +61,7 @@ public class FsGcbmBscRuleCodeStrategy {
     }
 
     public String buildCodeTemplate() {
-        return "FS-"+String.valueOf(Calendar.getInstance().get(Calendar.YEAR))+"-"+POST_CODE+"-0"+PORJ_NATURE+"-"+PORJ_TYPE+"-"+TEMPLATE_STR;
+        return "FS-"+PROJ_YEAR+"-"+POST_CODE+"-0"+PORJ_NATURE+"-"+PORJ_TYPE+"-"+TEMPLATE_STR;
     }
 
     public String buildCodeMemo(String codeMemoFactor) {
@@ -105,8 +107,9 @@ public class FsGcbmBscRuleCodeStrategy {
 
         return template.replace(TEMPLATE_STR, String.format("%0" + codeValueCount + "d", currentValue))
                 .replace(POST_CODE,postCode)
-                .replace(PORJ_TYPE,projType)
-                .replace(PORJ_NATURE,projNature);
+                .replace(PORJ_TYPE,StringUtils.isNotBlank(projType)?projType.substring(projType.length()-2):"01")
+                .replace(PORJ_NATURE,projNature)
+                .replace(PROJ_YEAR,gbCodeYear);
     }
 
     public BscRuleCode createBscRuleCode(String codeIc, String codeMemo, String orgId) {

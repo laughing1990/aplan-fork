@@ -63,7 +63,7 @@
         <include refid="aliasColumns">
             <property name="alias" value="aaf"/>
         </include>
-        , atf.FORM_ID stoFormId
+        , atf.FORM_ID stoFormId, atf.FORM_PRIMARY_KEY formPrimaryKey
         from aea_applyinst_forminst aaf
         join act_sto_forminst atf on aaf.forminst_id=atf.STO_FORMINST_ID
         where atf.IS_DELETE = '0' and aaf.applyinst_id = #{applyinstId}

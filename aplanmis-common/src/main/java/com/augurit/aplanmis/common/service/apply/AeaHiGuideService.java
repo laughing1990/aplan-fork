@@ -47,4 +47,6 @@ public interface AeaHiGuideService {
     List<AeaHiGuide> listAeaHiGuideListUnitIdOrLinkmanInfoId(AeaHiGuide query);
 
     void finish(AeaHiGuide toAeaHiGuide);
+
+    List<AeaHiGuide> getAeaHiGuideByApplyinstId(String applyinstId);
 }

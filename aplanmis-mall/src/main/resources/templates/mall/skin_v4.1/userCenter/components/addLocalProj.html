@@ -36,7 +36,7 @@
       </el-form-item>
       <el-form-item class="wt448" label="联系人姓名">
         <el-select class="w-320" v-model="projInfoForm.linkmanInfoId" @change="linkmanItemSelected">
-          <el-option v-for="item in unitInfoData.linkmanInfoList" :key="item.linkmanInfoId" 
+          <el-option v-for="item in unitInfoData.linkmanInfoList" :key="item.linkmanInfoId"
             :label="item.linkmanName" :value="item.linkmanInfoId" @click="linkmanItemSelected(item)">
           </el-option>
         </el-select>
@@ -116,6 +116,22 @@
           </el-option>
         </el-select>
       </el-form-item>
+
+      <el-form-item label="资金来源" class="wt448" prop="financialSource">
+        <el-select class="w-320" v-model="projInfoForm.financialSource">
+          <el-option v-for="item in proJAllOptions.XM_ZJLY" :key="item.id" :label="item.itemName"
+                     :value="item.itemCode">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="立项类型" class="wt448" prop="projType">
+        <el-select class="w-320" v-model="projInfoForm.projType">
+          <el-option v-for="item in proJAllOptions.PROJECT_CLASS" :key="item.id" :label="item.itemName"
+                     :value="item.itemCode">
+          </el-option>
+        </el-select>
+      </el-form-item>
+
       <el-form-item class="wt448" label="用地面积（m&sup2;）" prop="xmYdmj">
         <el-input class="w-320" v-model="projInfoForm.xmYdmj" placeholder="请填写用地面积"></el-input>
       </el-form-item>
@@ -198,7 +214,7 @@
         <el-input class="w-775" v-model="projInfoForm.projAddr" placeholder="请输入建设地点详细地址"></el-input>
       </el-form-item>
 
-      <el-form-item class="wt100" prop="foreignRemark">
+      <el-form-item class="wt100" prop="scaleContent">
         <template slot="label">
           <el-tooltip class="item" effect="dark" content="国标行业以国家统计局发布的《国民经济行业分类》（GB/T 4754-2017）编码为基准。"
             placement="right-start">
@@ -206,7 +222,7 @@
           </el-tooltip>
           建设规模及内容
         </template>
-        <el-input class="w-775" v-model="projInfoForm.foreignRemark" type="textarea" placeholder="建设规模及内容"></el-input>
+        <el-input class="w-775" v-model="projInfoForm.scaleContent" type="textarea" placeholder="建设规模及内容"></el-input>
       </el-form-item>
       <!-- 项目信息 end -->
 

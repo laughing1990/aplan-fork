@@ -26,7 +26,7 @@ public interface RestApproveService {
      * @param pageSize
      * @return
      */
-    PageInfo<ApproveProjInfoDto> searchApproveProjInfoListByUnitOrLinkman(String unitInfoId, String userInfoId, String state,String applyinstState, String keyword,String[]filterStates, int pageNum, int pageSize) throws Exception;
+    PageInfo<ApproveProjInfoDto> searchApproveProjInfoListByUnitOrLinkman(String unitInfoId, String userInfoId, String state,String applyinstState, String keyword,String[]filterStates, int pageNum, int pageSize,String localCode,String stageId) throws Exception;
 
     /**
      * 根据登录信息查询撤件列表

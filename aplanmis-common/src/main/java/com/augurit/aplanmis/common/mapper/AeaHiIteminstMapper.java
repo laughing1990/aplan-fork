@@ -43,6 +43,18 @@ public interface AeaHiIteminstMapper {
 
     List<ApproveProjInfoDto> getApproveProjInfoListByUnitOrLinkman(@Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId, @Param("state") String state,@Param("applyinstState") String applyinstState,@Param("keyword") String keyword,@Param("filterStates") String[] filterStates);
 
+    /**
+     * 从工程树跳转过来查看当前工程和阶段的申报历史数据列表
+     * @param unitInfoId
+     * @param userInfoId
+     * @param state
+     * @param applyinstState
+     * @param keyword
+     * @param filterStates
+     * @return
+     */
+    List<ApproveProjInfoDto> getApproveProjInfoListByStageIdAndLocalCodeAndUnitOrLinkman(@Param("unitInfoId") String unitInfoId, @Param("userInfoId") String userInfoId, @Param("state") String state,@Param("applyinstState") String applyinstState,@Param("keyword") String keyword,@Param("filterStates") String[] filterStates,@Param("lcoalCode") String localCode,@Param("stageId") String stageId);
+
 
     /**
      * 撤件列表
