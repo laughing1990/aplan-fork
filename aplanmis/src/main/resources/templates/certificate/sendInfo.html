@@ -20,19 +20,66 @@
   <link rel="stylesheet"
         href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css"
         th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
+  <link rel="stylesheet" href="../../static/searchTable/css/search-table.css"
+        th:href="@{/searchTable/css/search-table.css}">
   <link rel="stylesheet" href="../../static/certificate/css/index.css" th:href="@{/certificate/css/index.css}">
   <script>
     var ctx = '[[@{/}]]';
   </script>
   <script src="../../static/approve/js/ip.js" th:src="@{/approve/js/ip.js}"></script>
 </head>
-
+<style>
+  #app{
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    bottom: 25px;
+    left: 25px;
+    z-index: 10;
+  }
+  .u-cbox{
+    line-height: 26px;
+    padding: 7px 0;
+  }
+  .el-table__expanded-cell[class*=cell]{
+    padding: 10px 76px;
+  }
+  .el-table__expand-column{
+    border-right: none!important;
+  }
+  .el-table__expand-icon>.el-icon{
+    margin-top: -11px;
+  }
+</style>
 <body>
-
-
-<div id="approve" v-cloak v-loading="loading">
-  <div>邮政寄件信息开发中...</div>
-</div>
+  <div id="app" v-cloak v-loading="loading">
+    <div style="width: 100%;height: 100%;overflow: auto">
+      <el-table :data="tableData" border class="search-content" default-expand-all>
+        <el-table-column label="序号" type="index" width="50"></el-table-column>
+        <el-table-column label="" type="expand" width="20" show-overflow-tooltip>
+          <template slot-scope="scope">
+            <div v-for="u in scope.row.certList" class="u-cbox">
+              证件名称：{{u.certinstName}} 【{{u.certinstCode}}】
+            </div>
+            <el-timeline :reverse="reverse" style="margin-top:10px;">
+              <el-timeline-item
+                  v-for="(activity, index) in scope.row.logicList"
+                  :key="index"
+                  :timestamp="activity.acceptTime">
+                {{activity.acceptAddress}}
+              </el-timeline-item>
+            </el-timeline>
+          </template>
+        </el-table-column>
+        <el-table-column label="邮件单号" prop="expressNum" show-overflow-tooltip></el-table-column>
+        <el-table-column label="物流公司" prop="logicCompany" width="100" show-overflow-tooltip></el-table-column>
+        <el-table-column label="联系电话" prop="logicPhone" width="110" show-overflow-tooltip></el-table-column>
+        <el-table-column label="寄件人" prop="senderName" width="120" show-overflow-tooltip></el-table-column>
+        <el-table-column label="收件人" prop="addresseeName" width="100" show-overflow-tooltip></el-table-column>
+        <el-table-column label="备注" prop="remark" show-overflow-tooltip></el-table-column>
+      </el-table>
+    </div>
+  </div>
 </body>
 <!--<th:block th:include="common/common :: commonfooter"/>-->
 <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"

@@ -93,7 +93,19 @@ var vm = new Vue({
     },
     // 查看寄件信息
     clickSeeEMS: function(row){
-      // todo
+      var menuName = '寄件信息-' + row.projName;
+      var menuInnerUrl = ctx + 'rest/certificate/sendInfo?applyinstId=' + row.applyinstId;
+      var id = 'menu_' + new Date().getTime();
+      var data = {
+        'menuName': menuName,
+        'menuInnerUrl': menuInnerUrl,
+        'id': id,
+      };
+      try {
+        parent.vm.addTab('', data, '', '');
+      } catch (e) {
+        window.open(menuInnerUrl, '_blank');
+      }
     },
     //取件登记
     pickupCheck: function (row) {
