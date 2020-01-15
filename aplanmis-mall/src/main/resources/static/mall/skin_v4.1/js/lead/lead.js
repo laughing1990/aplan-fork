@@ -272,6 +272,15 @@
                     return ((x < y) ? -1 : ((x > y) ? 1 : 0));
                 });
             },
+            // 跳转办事指南一单清
+            toListMatter:function(){
+              /*  if(!stageId){
+                    this.$message.error("获取不到当前阶段id,无法跳转")
+                    return
+                }*/
+                var stageId = 'daf59894-9c83-43f7-8d12-8cac21b023c9'
+                window.location.href =ctx + "rest/main/toIndexPage?stageId="+stageId+"#/listmatter";
+            }
         }
     })
 })();
