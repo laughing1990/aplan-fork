@@ -107,8 +107,7 @@ public class RestApplyProjServiceImp implements RestApplyProjService {
                 l.setParentProjInfoId(vo.getProjInfoId());
             });
         });
-        retList.add(list);
-
+        if (list.size()>0)  retList.add(list);
     }
 
     //给项目树及阶段设置状态
