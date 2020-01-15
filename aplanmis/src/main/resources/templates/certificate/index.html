@@ -36,6 +36,25 @@
     }
   </script>
   <style>
+    .c-f {
+      zoom: 1;
+    }
+
+    .c-f:after {
+      content: "";
+      display: block;
+      height: 0;
+      clear: both;
+      visibility: hidden;
+    }
+
+    .l {
+      float: left;
+    }
+
+    .r {
+      float: right;
+    }
     .custor {
       cursor: pointer;
     }
@@ -87,6 +106,50 @@
     }
     .logic-dialog .el-dialog__body{
       padding: 0;
+    }
+    .ld-wrap{
+      width: 620px;
+      overflow: auto;
+    }
+    .ld-top{
+      height: 150px;
+      background: rgba(19, 155, 255, 1);
+      color: #fff;
+    }
+    .ld-title{
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      line-height:40px;
+      padding: 25px 0 15px 0;
+      min-height: 80px;
+    }
+    .ag-folder-fill{
+      font-size: 50px;
+      color: #fff;
+    }
+    .ld-padding{
+      padding: 0 40px 0 60px;
+    }
+    .ldt-text{
+      line-height: 25px;
+    }
+    .ld-irowu>div{
+      float: left;
+    }
+    .ld-irowu div+div{
+      margin-left: 15px;
+    }
+    .ld-btn-box{
+      text-align: center;
+      padding: 30px 0 20px 0;
+    }
+    .ld-logic-inner{
+      padding-top: 20px;
+      max-height: 400px;
+      overflow: auto;
+      padding-left: 60px;
+      padding-right: 40px;
     }
   </style>
 </head>
@@ -489,8 +552,50 @@
   </div>
 
   <!--查看物流弹窗 start-->
-  <el-dialog class="logic-dialog" :visible.sync="logicDialogVisible" width="600px">
-    <div>物流信息</div>
+  <el-dialog class="logic-dialog" top="5vh"
+             :visible.sync="logicDialogVisible" width="620px">
+    <div class="ld-wrap">
+      <div class="ld-top ld-padding">
+        <div class="ld-title">派送中</div>
+        <div class="c-f">
+          <i class="ag ag-folder-fill l"></i>
+          <div class="ldt-text l">
+            <div>证件名称：建设用地规划许可证</div>
+            <div>【1144070000706244X834420010130032】</div>
+          </div>
+        </div>
+      </div>
+      <div class="ld-logic">
+        <div class="ld-logic-inner">
+          <el-timeline :reverse="reverse" class="el-tl">
+            <el-timeline-item
+                v-for="(activity, index) in activities"
+                :key="index"
+                :timestamp="activity.acceptTime">
+              {{activity.acceptAddress}}
+            </el-timeline-item>
+          </el-timeline>
+          <div class="ld-infos">
+            <div class="ld-irowu c-f">
+              <div>邮件单号：{{aeaHiSmsSendItem.expressNum}}</div>
+              <div>物流公司：中国邮政</div>
+              <div>客服电话：95338</div>
+            </div>
+            <div class="ld-irowu c-f">
+              <div>寄件地址：广东省佛山市禅城区XXXX服务中心</div>
+              <div>窗口人员：{{aeaHiSmsSendItem.windowUserName}}</div>
+            </div>
+            <div class="ld-irowu c-f">
+              <div>收件地址：广东省佛山市禅城区XXXX服务中心</div>
+              <div>{{aeaHiSmsSendItem.addresseeName}}：{{aeaHiSmsSendItem.addresseePhone}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="ld-btn-box">
+          <el-button type="primary" size="medium" @click="logicDialogVisible=false">关 闭</el-button>
+        </div>
+      </div>
+    </div>
   </el-dialog>
   <!--查看物流弹窗 end-->
 

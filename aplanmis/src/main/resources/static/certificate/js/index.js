@@ -337,6 +337,10 @@ var vm = new Vue({
       isSmsSend: '0',//是否已经出件了
       isEMSPage: false,
       logicDialogVisible: false,
+      reverse: true,
+      activities: [],
+      aeaHiCertinsts: [],
+      aeaHiSmsSendItem: {},
     }
   },
   mounted: function () {
@@ -377,6 +381,9 @@ var vm = new Vue({
         vm.loading = false;
         if (res.success) {
           vm.logicDialogVisible = true;
+          vm.activities = res.content.logisticsOrderDetails;
+          vm.aeaHiCertinsts = res.content.aeaHiCertinsts;
+          vm.aeaHiSmsSendItem = res.content.aeaHiSmsSendItem;
         } else {
           vm.$message.error(res.message || '获取物流信息失败');
         }
@@ -399,6 +406,7 @@ var vm = new Vue({
           target: 'sender'
         }
       ];
+      document.title = '邮寄下单';
     },
     //一次出件
     doOnceSend: function () {
