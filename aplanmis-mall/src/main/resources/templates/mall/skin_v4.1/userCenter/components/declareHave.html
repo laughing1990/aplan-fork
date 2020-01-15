@@ -357,7 +357,7 @@
           </el-table-column>
 
           <el-table-column label="序号" width="55">
-            <template scope="scope">
+            <template slot-scope="scope">
               {{scope.$index+1}}
             </template>
           </el-table-column>
@@ -366,7 +366,7 @@
           <el-table-column prop="approveOrgName" label="征求部门">
           </el-table-column>
           <el-table-column prop="" label="审批状态">
-            <template scope="scope">
+            <template slot-scope="scope">
               <span>{{scope.row.iteminstState | iteminstStateFormat}}</span>
             </template>
           </el-table-column>
@@ -384,12 +384,12 @@
         <el-table :data="showMaterialList" class="scrollable mt20" style="width: 100%;"
           :header-cell-style="{background:'#f7f8fa'}">
           <el-table-column label="序号" min-width="45">
-            <template scope="scope">
+            <template slot-scope="scope">
               {{scope.$index+1}}
             </template>
           </el-table-column>
           <el-table-column prop="matName" label="材料名称" min-width="300">
-            <template scope="scope">
+            <template slot-scope="scope">
               <span class="file-name" v-if="scope.row.matProp=='c'">
                 <span class="cert-icon icon ag ag-id-card"></span>
                 {{scope.row.matName}}
@@ -398,17 +398,17 @@
             </template>
           </el-table-column>
           <el-table-column label="原件是否已验" min-width="100">
-            <template scope="scope">
+            <template slot-scope="scope">
               {{(scope.row.realPaperCount&&scope.row.realPaperCount>=1)?'是':'否'}}
             </template>
           </el-table-column>
           <el-table-column label="复印件是否已验收" min-width="100">
-            <template scope="scope">
+            <template slot-scope="scope">
               {{(scope.row.realCopyCount&&scope.row.realCopyCount>=1)? '是':'否'}}
             </template>
           </el-table-column>
           <el-table-column label="电子件信息">
-            <template scope="scope" >
+            <template slot-scope="scope" >
               <template v-if="scope.row.matProp=='f'">
                 <el-button size="small" type="default" disabled
                            v-if="(!scope.row.attCount||scope.row.attCount==0)">未上传
@@ -512,14 +512,14 @@
     <el-table :data="electronFileList" class="scrollable mt20" style="width: 100%;"
       :header-cell-style="{background:'#f7f8fa'}">
       <el-table-column label="序号" width="55">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.$index+1}}
         </template>
       </el-table-column>
       <el-table-column prop="fileName" label="文件名称">
       </el-table-column>
       <el-table-column label="操作" width="100">
-        <template scope="scope">
+        <template slot-scope="scope">
           <i title="预览" class="el-icon-search" @click="filePreview(scope.row)" style="cursor: pointer;"></i>
           &nbsp;&nbsp;
           <i title="下载" class="el-icon-download" @click="downloadFile(scope.row)" style="cursor: pointer;"></i>
@@ -533,14 +533,14 @@
     <el-table :data="licenseFileList" class="scrollable mt20" style="width: 100%;"
               :header-cell-style="{background:'#f7f8fa'}">
       <el-table-column label="序号" width="55">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.$index+1}}
         </template>
       </el-table-column>
       <el-table-column prop="fileName" label="文件名称">
       </el-table-column>
       <el-table-column label="操作" width="100">
-        <template scope="scope">
+        <template slot-scope="scope">
           <i title="预览" class="el-icon-search" @click="licensePreview(scope.row)" style="cursor: pointer;"></i>
           &nbsp;&nbsp;
         </template>
