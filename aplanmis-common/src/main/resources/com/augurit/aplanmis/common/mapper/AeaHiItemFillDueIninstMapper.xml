@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Augurit    2020-01-15 09:38:02 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiItemFillDueIninstMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    DUE_ININST_ID  dueIninstId,
+    FILL_ID  fillId,
+    INOUTINST_ID  inoutinstId,
+    FILL_OPINION  fillOpinion,
+    TIME_LIMIT_TYPE  timeLimitType,
+    PAPER_COUNT  paperCount,
+    COPY_COUNT  copyCount,
+    IS_NEED_ATT  isNeedAtt,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    ROOT_ORG_ID  rootOrgId
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaHiItemFillDueIninstById" resultType="AeaHiItemFillDueIninst" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_HI_ITEM_FILL_DUE_ININST
+    where    DUE_ININST_ID = #{id}
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaHiItemFillDueIninst" resultType="AeaHiItemFillDueIninst" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_HI_ITEM_FILL_DUE_ININST
+    <where>
+        <if test="dueIninstId != null AND dueIninstId != ''" >
+        AND    DUE_ININST_ID = #{dueIninstId}
+        </if>
+        <if test="fillId != null AND fillId != ''" >
+        AND    FILL_ID = #{fillId}
+        </if>
+        <if test="inoutinstId != null AND inoutinstId != ''" >
+        AND    INOUTINST_ID = #{inoutinstId}
+        </if>
+        <if test="fillOpinion != null AND fillOpinion != ''" >
+        AND    FILL_OPINION = #{fillOpinion}
+        </if>
+        <if test="timeLimitType != null AND timeLimitType != ''" >
+        AND    TIME_LIMIT_TYPE = #{timeLimitType}
+        </if>
+        <if test="paperCount != null AND paperCount != ''" >
+        AND    PAPER_COUNT = #{paperCount}
+        </if>
+        <if test="copyCount != null AND copyCount != ''" >
+        AND    COPY_COUNT = #{copyCount}
+        </if>
+        <if test="isNeedAtt != null AND isNeedAtt != ''" >
+        AND    IS_NEED_ATT = #{isNeedAtt}
+        </if>
+        <if test="creater != null AND creater != ''" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null AND createTime != ''" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+        <if test="rootOrgId != null AND rootOrgId != ''" >
+        AND    ROOT_ORG_ID = #{rootOrgId}
+        </if>
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaHiItemFillDueIninst" parameterType="AeaHiItemFillDueIninst" >
+    insert into AEA_HI_ITEM_FILL_DUE_ININST (
+DUE_ININST_ID  ,FILL_ID  ,INOUTINST_ID  ,FILL_OPINION  ,TIME_LIMIT_TYPE  ,PAPER_COUNT  ,COPY_COUNT  ,IS_NEED_ATT  ,CREATER  ,CREATE_TIME  ,ROOT_ORG_ID  
+    )  values  (
+#{dueIninstId},#{fillId},#{inoutinstId},#{fillOpinion},#{timeLimitType},#{paperCount},#{copyCount},#{isNeedAtt},#{creater},#{createTime},  #{rootOrgId}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaHiItemFillDueIninst" parameterType="AeaHiItemFillDueIninst" >
+    update AEA_HI_ITEM_FILL_DUE_ININST
+    <set >
+        <if test="dueIninstId != null AND dueIninstId != '' " >
+        DUE_ININST_ID = #{dueIninstId},
+        </if>
+        <if test="fillId != null AND fillId != '' " >
+        FILL_ID = #{fillId},
+        </if>
+        <if test="inoutinstId != null AND inoutinstId != '' " >
+        INOUTINST_ID = #{inoutinstId},
+        </if>
+        <if test="fillOpinion != null AND fillOpinion != '' " >
+        FILL_OPINION = #{fillOpinion},
+        </if>
+        <if test="timeLimitType != null AND timeLimitType != '' " >
+        TIME_LIMIT_TYPE = #{timeLimitType},
+        </if>
+        <if test="paperCount != null AND paperCount != '' " >
+        PAPER_COUNT = #{paperCount},
+        </if>
+        <if test="copyCount != null AND copyCount != '' " >
+        COPY_COUNT = #{copyCount},
+        </if>
+        <if test="isNeedAtt != null AND isNeedAtt != '' " >
+        IS_NEED_ATT = #{isNeedAtt},
+        </if>
+        <if test="creater != null AND creater != '' " >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null AND createTime != '' " >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="rootOrgId != null AND rootOrgId != '' " >
+        ROOT_ORG_ID = #{rootOrgId},
+        </if>
+    </set>
+    where DUE_ININST_ID = #{dueIninstId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaHiItemFillDueIninst">
+        delete from   AEA_HI_ITEM_FILL_DUE_ININST
+        where
+    DUE_ININST_ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaHiItemFillDueIninst" id="AeaHiItemFillDueIninstMap">
+        <id property="dueIninstId" column="DUE_ININST_ID"/>
+        <result property="fillId" column="FILL_ID"/>
+        <result property="inoutinstId" column="INOUTINST_ID"/>
+        <result property="fillOpinion" column="FILL_OPINION"/>
+        <result property="timeLimitType" column="TIME_LIMIT_TYPE"/>
+        <result property="paperCount" column="PAPER_COUNT"/>
+        <result property="copyCount" column="COPY_COUNT"/>
+        <result property="isNeedAtt" column="IS_NEED_ATT"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+</mapper>
