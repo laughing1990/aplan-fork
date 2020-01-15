@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.mall.userCenter.service.impl;
 
+import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
@@ -167,6 +168,8 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
         return vo;
     }
 
+    @Autowired
+    private AeaApplyinstForminstMapper aeaApplyinstForminstMapper;
 
     @Override
     public ApplyIteminstConfirmVo listGuideItemsByApplyinstId(String guideId,String applyinstId,String projInfoId, String isSelectItemState) throws Exception {
@@ -221,6 +224,11 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
         vo.setSmsInfoVo(ApplyIteminstConfirmVo.formatLinkmanInfo(aeaLinkmanInfoService.getOneById(applyinst.getLinkmanInfoId()),applyinstId));
         AeaParStage stage = aeaParStageMapper.getAeaParStageById(vo.getStageId());
         vo.setDybzspjdxh(stage!=null?stage.getDybzspjdxh():"");
+        vo.setUseOneForm(stage!=null?stage.getUseOneForm(): Status.OFF);
+        if("1".equals(vo.getUseOneForm())){
+            List<AeaApplyinstForminst> forminstList = aeaApplyinstForminstMapper.listAeaApplyinstForminstByApplyinstId(vo.getApplyinstId());
+            vo.setForminsts(forminstList);
+        }
         vo.setGuideId(guideId);
         return vo;
     }

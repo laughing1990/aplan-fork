@@ -17,4 +17,6 @@ public interface AeaHiGuideDetailService {
     void batchInsertAeaHiGuideDetail(List<AeaHiGuideDetail> list);
 
     List<AeaHiGuideDetail> queryGuideDetailByGuideIdAndDetailType(String guideId, String detailType);
+
+    List<AeaHiGuideDetail> listAeaHiGuideDetail(AeaHiGuideDetail aeaHiGuideDetail);
 }
