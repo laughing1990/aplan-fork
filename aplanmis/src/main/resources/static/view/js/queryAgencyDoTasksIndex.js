@@ -186,7 +186,8 @@ var vm = new Vue({
       var menuInnerUrl = '';
       var id = 'menu_' + new Date().getTime();
       menuName = row.projName;
-      menuInnerUrl = ctx + '/apanmis/page/stageApplyIndex?applyAgentId=' + row.applyAgentId;
+      // menuInnerUrl = ctx + '/apanmis/page/stageApplyIndex?applyAgentId=' + row.applyAgentId;
+      menuInnerUrl = ctx + '/aea/proj/apply/agent/toApplyIndex?applyAgentId=' + row.applyAgentId;
       menuInnerUrl += '&isApplyAgent=true';
       menuInnerUrl += '&projInfoId=' + row.projInfoId;
       var data = {

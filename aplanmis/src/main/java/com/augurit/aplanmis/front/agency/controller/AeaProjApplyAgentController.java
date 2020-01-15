@@ -62,19 +62,19 @@ public class AeaProjApplyAgentController {
         return modelAndView;
     }
 
-//    @ApiOperation(value = "项目代办 --> 跳转并联申报页面", notes = "项目代办 --> 跳转并联申报页面")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "projInfoId",value = "项目ID",required = true,dataType = "String"),
-//            @ApiImplicitParam(name = "applyAgentId",value = "代办申请ID",required = true,dataType = "String")
-//    })
-//    @RequestMapping("toApplyIndex")
-//    public ModelAndView toApplyIndex(String projInfoId,String applyAgentId) {
-//        ModelAndView modelAndView = new ModelAndView("apply/index");
-//        modelAndView.addObject("projInfoId",projInfoId);
-//        modelAndView.addObject("applyAgentId",applyAgentId);
-//        modelAndView.addObject("isAgentProjApply",true);
-//        return modelAndView;
-//    }
+    @ApiOperation(value = "项目代办 --> 跳转并联申报页面", notes = "项目代办 --> 跳转并联申报页面")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "projInfoId",value = "项目ID",required = true,dataType = "String"),
+            @ApiImplicitParam(name = "applyAgentId",value = "代办申请ID",required = true,dataType = "String")
+    })
+    @RequestMapping("toApplyIndex")
+    public ModelAndView toApplyIndex(String projInfoId,String applyAgentId) {
+        ModelAndView modelAndView = new ModelAndView("apply/index");
+        modelAndView.addObject("projInfoId",projInfoId);
+        modelAndView.addObject("applyAgentId",applyAgentId);
+        modelAndView.addObject("isAgentProjApply",true);
+        return modelAndView;
+    }
 
     @ApiOperation(value = "项目代办 --> 保存代办信息或签订协议操作校验", notes = "项目代办 --> 保存代办信息或签订协议操作校验")
     @PostMapping("checkOpreatePermit")
