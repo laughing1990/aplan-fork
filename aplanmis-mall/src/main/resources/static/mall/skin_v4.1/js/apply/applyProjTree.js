@@ -124,6 +124,20 @@ var parallelDeclare = new Vue({
       this.projInfoId = theRequest.projInfoId;
       return theRequest;
     },
+    // 跳转申报页
+    goToApplyPage: function (projTreeData) {
+      if(projTreeData.applyStatus!='1'&&projTreeData.applyStatus!='4'){
+        return false;
+      }else {
+        if(projTreeData.applyInstId&&projTreeData.applyInstId!=''){
+          window.location.href = ctx+'rest/main/toIndexPage?applyState=1&applyinstId='+projTreeData.applyinstId+'&guideId='+projTreeData.guideId+'&projInfoId='+projTreeData.projInfoId+'&isQueryIteminstState='+projTreeData.applyStatus+'#/myParallelPage'
+        }
+      }
+    },
+    // 跳转查看页
+    goToDetailPage: function (projTreeData) {
+      window.location.href = ctx+'rest/main/toIndexPage?localCode='+projTreeData.localCode+'&stageId='+projTreeData.stageId+'#declareHave';
+    },
   },
   filters: {
     formatApplyStatus: function (value) {

@@ -132,6 +132,7 @@
   color: #515151;
   line-height: 24px;
   height: 48px;
+  font-weight: 800;
 }
 .pro-gc-content .proj-tree-gcdm {
   font-size: 12px;
@@ -153,6 +154,10 @@
   width: 49%;
   display: inline-block;
   color: #4293F4;
+}
+.pro-gc-content .opt span.disabled {
+  color: #aaa;
+  cursor: not-allowed;
 }
 .pro-gc-content .opt .search-detail {
   position: relative;
