@@ -271,6 +271,7 @@ public class RestApplyProjController {
                 aeaParTheme.setThemeType(themeType);
             }
             aeaParTheme.setIsOnlineSb("1");
+            List<AeaParTheme> list=new ArrayList<>();
             List<AeaParTheme> aeaParThemes=aeaParThemeAdminService.listAeaParTheme(aeaParTheme);
             if(aeaParThemes.size()>0){
                 aeaParThemes.stream().forEach(theme->{
@@ -280,10 +281,12 @@ public class RestApplyProjController {
                     } catch (Exception e) {
                         logger.error("getThemes 获取主题信息接口查询主题版本异常:"+e.getMessage(),e);
                     }
+                    if(themeVer==null) return;
                     theme.setThemeVerId(themeVer==null?"":themeVer.getThemeVerId());
+                    list.add(theme);
                 });
             }
-            return new ContentResultForm<>(true, aeaParThemes);
+            return new ContentResultForm<>(true, list);
         }else{
             List<AeaParTheme> aeaParThemes=aeaParThemeService.getTestRunOrPublishedVerAeaParThemeByDygjbzfxfw(dygjbzfxfw,"1");
             return new ContentResultForm<>(true, aeaParThemes);
