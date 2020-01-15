@@ -42,14 +42,28 @@
   </div>
   <div class="pro-gc-content clearfix"
        :class="'stage-list-'+projinfoDetailTree.stagesVos.length">
-    <div class="stage-list-card fl" v-for="projTree1 in projinfoDetailTree.projStatusVos">
-      <div class="stage-card">
-        <span class="proj-tree-status" :class="'apply-status-'+projTree1.applyStatus">已办结</span>
-        <p class="proj-tree-name">{{projTree1.projName}}</p>
-        <p class="proj-tree-gcdm">{{projTree1.localCode}}</p>
-        <div class="opt">
-          <span class="search-detail">查看</span>
-          <span class="color-AAA">申报</span>
+    <div class="stage-list-card fl" :class="'stage-index-'+index" v-for="(projTree1,index) in projinfoDetailTree.projStatusVoArrs">
+      <i v-if="index==1" class="line"></i>
+      <div class="projTree-item content-center" v-for="(projTree2,ind) in projTree1"
+           :class="(projTree2.childProjStatusVos&&projTree2.childProjStatusVos.length>0)?'has-child':''"
+           :childrenLength="projTree2.childProjStatusVos?projTree2.childProjStatusVos.length:'0'"
+           :keyIndex="ind"
+           :stageLength="projTree1.length"
+           :stageId="projTree2.stageId"
+           :projInfoId="projTree2.projInfoId"
+           :id="projTree2.projInfoId"
+           :parentProjInfoId="(projTree2.parentProjInfoId&&index>1)?projTree2.parentProjInfoId:'root'">
+        <i v-if="index>1" class="line"></i>
+        <div class="stage-card">
+          <span class="proj-tree-status" :class="'apply-status-'+projTree2.applyStatus">
+            {{$options.filters.formatApplyStatus(projTree2.applyStatus)}}
+          </span>
+          <p class="proj-tree-name ellipsisLn">{{projTree2.projName}}</p>
+          <p class="proj-tree-gcdm">{{projTree2.localCode}}</p>
+          <div class="opt">
+            <span class="search-detail">查看</span>
+            <span :class="(projTree2.applyStatus!='1'&&projTree2.applyStatus!='4')?'color-AAA':''">申报</span>
+          </div>
         </div>
       </div>
     </div>
