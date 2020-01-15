@@ -710,11 +710,15 @@ var vm = new Vue({
   },
   filters: {
     projTypeFormat: function (val) {
-      if (!val) return '暂无';
+      if (!val){
+        return '暂无';
+      }
       return val == 'A00001' ? '审批类' : (val == 'A00002' ? '核准类' : '备案类');
     },
     timeFormat: function (val) {
-      if (!val) return '暂无';
+      if (!val){
+        return '暂无';
+      }
       // 获取年月日时分秒值  slice(-2)过滤掉大于10日期前面的0
       var datetime=new Date(val);
       var year = datetime.getFullYear(),
