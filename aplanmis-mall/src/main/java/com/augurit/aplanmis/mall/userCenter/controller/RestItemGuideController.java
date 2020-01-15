@@ -15,6 +15,7 @@ import com.augurit.aplanmis.common.service.state.AeaItemStateService;
 import com.augurit.aplanmis.common.service.state.AeaParStateService;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
+import com.augurit.aplanmis.mall.guide.controller.RestGuideController;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyService;
 import com.augurit.aplanmis.mall.userCenter.service.RestParallerApplyService;
 import com.augurit.aplanmis.mall.userCenter.vo.AeaGuideApplyVo;
@@ -35,8 +36,8 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("rest/userCenter/apply")
 @Api(value = "部门确认",tags = "部门确认 --> 部门确认接口")
-public class RestGuideController {
-    Logger logger= LoggerFactory.getLogger(RestGuideController.class);
+public class RestItemGuideController {
+    Logger logger= LoggerFactory.getLogger(RestItemGuideController.class);
     @Autowired
     RestApplyService restApplyService;
     @Autowired
