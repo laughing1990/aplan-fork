@@ -64,14 +64,17 @@
 }
 .stage-list {
   height: 40px;
-  line-height: 40px;
+  line-height: 39px;
   font-size: 16px;
-  color: #fff;
+  color: #4293F4;
   text-align: center;
   margin-top: 10px;
+  width: 100%;
+  border: 1px solid #CEE2FA;
 }
 .stage-list .stage-title {
-  border-right: 1px solid #fff;
+  border-right: 1px solid #CEE2FA;
+  background: #F1F6FB;
 }
 .stage-list .stage-title:last-child {
   border-right: none;
@@ -82,16 +85,16 @@
   float: left;
 }
 .stage-list-1 .stage-list-card {
-  width: 1198px;
+  width: 100%;
 }
 .stage-list-2 .stage-list-card {
-  width: 598px;
+  width: 50%;
 }
 .stage-list-3 .stage-list-card {
-  width: 398px;
+  width: 33.3%;
 }
 .stage-list-4 .stage-list-card {
-  width: 298px;
+  width: 25%;
 }
 .stage-index-3.stage-list-card {
   float: right;
@@ -99,7 +102,8 @@
 .pro-gc-content {
   padding: 40px 0;
   background: #FAFBFC;
-  border: 1px solid #ECEFF5;
+  border: 1px solid #CEE2FA;
+  width: 100%;
 }
 .pro-gc-content .stage-card {
   height: 150px;
