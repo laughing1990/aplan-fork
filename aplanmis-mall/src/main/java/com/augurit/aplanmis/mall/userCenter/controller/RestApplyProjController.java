@@ -384,11 +384,11 @@ public class RestApplyProjController {
         try {
             LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
             if("1".equals(loginInfo.getIsPersonAccount())){//个人
-                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId(),state,applyinstState,keyword,null,pageNum,pageSize));
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId(),state,applyinstState,keyword,null,pageNum,pageSize,"",""));
             }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
-                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),state,applyinstState,keyword,null,pageNum,pageSize));
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),state,applyinstState,keyword,null,pageNum,pageSize,"",""));
             }else{//企业
-                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"",state,applyinstState,keyword,null,pageNum,pageSize));
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"",state,applyinstState,keyword,null,pageNum,pageSize,"",""));
             }
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
@@ -403,16 +403,18 @@ public class RestApplyProjController {
             @ApiImplicitParam(value = "申报状态",name = "applyinstState",required = false,dataType = "string"),
             @ApiImplicitParam(value = "关键词",name = "keyword",required = false,dataType = "string"),
             @ApiImplicitParam(value = "页面数量",name = "pageNum",required = true,dataType = "string"),
-            @ApiImplicitParam(value = "页面页数",name = "pageSize",required = true,dataType = "string")})
-    public ResultForm getApplylist(String applyinstState,String keyword, int pageNum, int pageSize,HttpServletRequest request){
+            @ApiImplicitParam(value = "页面页数",name = "pageSize",required = true,dataType = "string"),
+            @ApiImplicitParam(value = "阶段ID",name = "stageId",required = false,dataType = "string"),
+            @ApiImplicitParam(value = "工程代码",name = "localCode",required = false,dataType = "string")})
+    public ResultForm getApplylist(String applyinstState,String keyword, int pageNum, int pageSize,String localCode,String stageId,HttpServletRequest request){
         try {
             LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
             if("1".equals(loginInfo.getIsPersonAccount())){//个人
-                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId(),null,applyinstState,keyword,new String[]{ApplyState.WAIT_REVIEW.getValue()},pageNum,pageSize));
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId(),null,applyinstState,keyword,new String[]{ApplyState.WAIT_REVIEW.getValue()},pageNum,pageSize,localCode,stageId));
             }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
-                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),null,applyinstState,keyword,new String[]{ApplyState.WAIT_REVIEW.getValue()},pageNum,pageSize));
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),null,applyinstState,keyword,new String[]{ApplyState.WAIT_REVIEW.getValue()},pageNum,pageSize,localCode,stageId));
             }else{//企业
-                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"",null,applyinstState,keyword,new String[]{ApplyState.WAIT_REVIEW.getValue()},pageNum,pageSize));
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"",null,applyinstState,keyword,new String[]{ApplyState.WAIT_REVIEW.getValue()},pageNum,pageSize,localCode,stageId));
             }
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
@@ -431,11 +433,11 @@ public class RestApplyProjController {
         try {
             LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
             if("1".equals(loginInfo.getIsPersonAccount())){//个人
-                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId(),null, ApplyState.WAIT_REVIEW.getValue(),keyword,null,pageNum,pageSize));
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId(),null, ApplyState.WAIT_REVIEW.getValue(),keyword,null,pageNum,pageSize,"",""));
             }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
-                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),null, ApplyState.WAIT_REVIEW.getValue(),keyword,null,pageNum,pageSize));
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),null, ApplyState.WAIT_REVIEW.getValue(),keyword,null,pageNum,pageSize,"",""));
             }else{//企业
-                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"",null, ApplyState.WAIT_REVIEW.getValue(),keyword,null,pageNum,pageSize));
+                return new ContentResultForm(true,restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"",null, ApplyState.WAIT_REVIEW.getValue(),keyword,null,pageNum,pageSize,"",""));
             }
         } catch (Exception e) {
             logger.error(e.getMessage(),e);

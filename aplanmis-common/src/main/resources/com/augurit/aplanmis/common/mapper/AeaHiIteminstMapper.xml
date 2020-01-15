@@ -775,6 +775,151 @@
         ) aea_123
         order by aea_123.startTime desc,aea_123.localCode desc
     </select>
+
+
+
+    <!--网厅已申报项目查询-->
+    <select id="getApproveProjInfoListByStageIdAndLocalCodeAndUnitOrLinkman" resultType="com.augurit.aplanmis.common.dto.ApproveProjInfoDto">
+        SELECT
+        aha.APPLYINST_ID applyinstId,
+        aha.APPLYINST_CODE applyinstCode,
+        aps.STAGE_NAME stageIteminstName,
+        aha.APPLYINST_STATE applyinstState,
+        aha.CREATE_TIME startTime,
+        aha.MODIFY_TIME endTime,
+        api.PROJ_NAME projName,
+        api.LOCAL_CODE localCode,
+        '0' isSeriesApprove,
+        api.PROJ_INFO_ID projInfoId,
+        aps.STAGE_NAME stageName,
+        apt.THEME_NAME themeName,
+        api.GCBM gcbm
+        FROM aea_hi_applyinst aha
+        LEFT JOIN aea_hi_par_stageinst ahps ON aha.APPLYINST_ID=ahps.APPLYINST_ID
+        LEFT JOIN aea_par_stage aps ON aps.STAGE_ID=ahps.STAGE_ID
+        LEFT JOIN aea_applyinst_proj aap ON aap.APPLYINST_ID=aha.APPLYINST_ID
+        LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID=aap.PROJ_INFO_ID
+        LEFT JOIN aea_proj_linkman apl ON apl.APPLYINST_ID=aha.APPLYINST_ID AND apl.PROJ_INFO_ID=api.PROJ_INFO_ID
+        LEFT JOIN aea_linkman_info ali ON ali.LINKMAN_INFO_ID=apl.LINKMAN_INFO_ID
+        LEFT JOIN aea_par_theme_ver aptv on aptv.THEME_VER_ID=ahps.THEME_VER_ID
+        LEFT JOIN aea_par_theme apt on apt.THEME_ID=aptv.THEME_ID
+        <where>
+            <if test="userInfoId !=null and userInfoId!=''">
+                ali.LINKMAN_INFO_ID=#{userInfoId}
+            </if>
+            <if test="userInfoId ==null || userInfoId==''">
+                ali.LINKMAN_INFO_ID is null
+            </if>
+            <if test="applyinstState!=null and applyinstState!=''">
+                and  aha.APPLYINST_STATE=#{applyinstState}
+            </if>
+            AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND ali.IS_DELETED !=1
+            and ahps.stage_id = #{stageId}
+            and api.LOCAL_CODE = #{localCode} AND
+            apl.TYPE='apply' AND aha.IS_SERIES_APPROVE='0'
+            <if test="state!=null and state!=''">
+                <choose>
+                    <when test="state == '0'.toString()">
+                        AND aha.APPLYINST_STATE in ('6')
+                    </when>
+                    <when test="state == '1'.toString()">
+                        AND aha.APPLYINST_STATE in ('0','1','2','3','5','4') AND aha.APPLYINST_STATE IS NOT NULL
+                    </when>
+                    <otherwise>
+                        AND aha.APPLYINST_STATE IS NULL
+                    </otherwise>
+                </choose>
+            </if>
+
+            <if test="keyword != null and keyword != ''">
+                AND (
+                api.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
+                api.GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                api.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
+                aha.APPLYINST_CODE = #{keyword}
+                )
+            </if>
+            <if test="filterStates!=null and filterStates!='' and filterStates.length>0">
+                and aha.APPLYINST_STATE not in
+                <foreach collection="filterStates" separator="," close=")" open="(" item="filterState">
+                    #{filterState}
+                </foreach>
+            </if>
+        </where>
+        UNION
+
+
+        SELECT DISTINCT
+        aha.APPLYINST_ID applyinstId,
+        aha.APPLYINST_CODE applyinstCode,
+        aps.STAGE_NAME stageIteminstName,
+        aha.APPLYINST_STATE applyinstState,
+        aha.CREATE_TIME startTime,
+        aha.MODIFY_TIME endTime,
+        api.PROJ_NAME projName,
+        api.LOCAL_CODE localCode,
+        '0' isSeriesApprove,
+        api.PROJ_INFO_ID projInfoId,
+        aps.STAGE_NAME stageName,
+        apt.THEME_NAME themeName,
+        api.GCBM gcbm
+        FROM aea_hi_applyinst aha
+        LEFT JOIN aea_hi_par_stageinst ahps ON aha.APPLYINST_ID=ahps.APPLYINST_ID
+        LEFT JOIN aea_par_stage aps ON aps.STAGE_ID=ahps.STAGE_ID
+        LEFT JOIN aea_applyinst_proj aap ON aap.APPLYINST_ID=aha.APPLYINST_ID
+        LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID=aap.PROJ_INFO_ID
+        LEFT JOIN aea_applyinst_unit_proj aaup ON aaup.APPLYINST_ID=aha.APPLYINST_ID
+        LEFT JOIN aea_unit_proj aup ON aup.UNIT_PROJ_ID=aaup.UNIT_PROJ_ID
+        LEFT JOIN aea_unit_info aui ON aup.UNIT_INFO_ID=aui.UNIT_INFO_ID
+        LEFT JOIN aea_par_theme_ver aptv on aptv.THEME_VER_ID=ahps.THEME_VER_ID
+        LEFT JOIN aea_par_theme apt on apt.THEME_ID=aptv.THEME_ID
+        <where>
+            <if test="unitInfoId !=null and unitInfoId!=''">
+                aui.UNIT_INFO_ID=#{unitInfoId}
+            </if>
+            <if test="unitInfoId ==null || unitInfoId==''">
+                aui.UNIT_INFO_ID is null
+            </if>
+            <if test="applyinstState!=null and applyinstState!=''">
+                and  aha.APPLYINST_STATE=#{applyinstState}
+            </if>
+            AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND aui.IS_DELETED !=1 AND aup.IS_DELETED !=1
+            and ahps.stage_id = #{stageId}
+            and api.LOCAL_CODE = #{localCode} AND
+            aha.IS_SERIES_APPROVE='0' and aha.IS_TEMPORARY_SUBMIT='0'
+            <if test="state!=null and state!=''">
+                <choose>
+                    <when test="state == '0'.toString()">
+                        AND aha.APPLYINST_STATE in ('6')
+                    </when>
+                    <when test="state == '1'.toString()">
+                        AND aha.APPLYINST_STATE in ('0','1','2','3','5','4') AND aha.APPLYINST_STATE IS NOT NULL
+                    </when>
+                    <otherwise>
+                        AND aha.APPLYINST_STATE IS NULL
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (
+                api.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
+                api.GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                api.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
+                aha.APPLYINST_CODE = #{keyword}
+                )
+            </if>
+            <if test="filterStates!=null and filterStates!='' and filterStates.length>0">
+                and aha.APPLYINST_STATE not in
+                <foreach collection="filterStates" separator="," close=")" open="(" item="filterState">
+                    #{filterState}
+                </foreach>
+            </if>
+        </where>
+        ) aea_123
+        order by aea_123.startTime desc,aea_123.localCode desc
+    </select>
+
+
     <select id="countApproveProjInfoListByUnitOrLinkman" resultType="long">
         select count(1) from (
         SELECT
