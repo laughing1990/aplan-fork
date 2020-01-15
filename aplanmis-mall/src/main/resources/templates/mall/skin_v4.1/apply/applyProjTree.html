@@ -48,7 +48,7 @@
            :class="(projTree2.childProjStatusVos&&projTree2.childProjStatusVos.length>0)?'has-child':''"
            :childrenLength="projTree2.childProjStatusVos?projTree2.childProjStatusVos.length:'0'"
            :keyIndex="ind"
-           :stageLength="projTree1.length"
+           :stageLength="projTree1&&projTree1.length"
            :stageId="projTree2.stageId"
            :projInfoId="projTree2.projInfoId"
            :id="projTree2.projInfoId"
