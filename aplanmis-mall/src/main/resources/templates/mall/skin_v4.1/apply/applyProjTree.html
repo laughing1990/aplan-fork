@@ -34,7 +34,7 @@
     <span class="apply-status-icon"><i class="apply-status-3"></i>工程未审核</span>
   </div>
   <div class="stage-list" :class="'stage-list-'+projinfoDetailTree.stagesVos.length">
-    <div class="fl stage-title stage-list-card"
+    <div class="stage-title stage-list-card fl"
          :class="'apply-status-'+item.applyStatus"
          v-for="item in projinfoDetailTree.stagesVos">
       <span>{{item.stageName}}</span>
@@ -42,18 +42,19 @@
   </div>
   <div class="pro-gc-content clearfix"
        :class="'stage-list-'+projinfoDetailTree.stagesVos.length">
-    <div class="stage-list-card fl" :class="'stage-index-'+index" v-for="(projTree1,index) in projinfoDetailTree.projStatusVoArrs">
+    <div class="stage-list-card" :class="'stage-index-'+index" v-for="(projTree1,index) in projinfoDetailTree.projStatusVoArrs">
       <i v-if="index==1" class="line"></i>
       <div class="projTree-item content-center" v-for="(projTree2,ind) in projTree1"
            :class="(projTree2.childProjStatusVos&&projTree2.childProjStatusVos.length>0)?'has-child':''"
            :childrenLength="projTree2.childProjStatusVos?projTree2.childProjStatusVos.length:'0'"
            :keyIndex="ind"
+           :stageIndex="index"
            :stageLength="projTree1&&projTree1.length"
            :stageId="projTree2.stageId"
            :projInfoId="projTree2.projInfoId"
            :id="projTree2.projInfoId"
            :parentProjInfoId="(projTree2.parentProjInfoId&&index>1)?projTree2.parentProjInfoId:'root'">
-        <i v-if="index>1" class="line"></i>
+        <i v-if="index==2" class="line"></i>
         <div class="stage-card">
           <span class="proj-tree-status" :class="'apply-status-'+projTree2.applyStatus">
             {{$options.filters.formatApplyStatus(projTree2.applyStatus)}}

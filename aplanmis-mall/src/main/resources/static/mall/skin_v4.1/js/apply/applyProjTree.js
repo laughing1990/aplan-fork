@@ -42,55 +42,60 @@ var parallelDeclare = new Vue({
           _that.loading = false;
           if (result.success) {
             _that.projinfoDetailTree = result.content;
-            _that.$nextTick(function(){
-              var projTreeItem = $('.projTree-item');
-              for(var i=0;i<projTreeItem.length;i++){
-                var childrenLength = $(projTreeItem[i]).attr('childrenLength');
-                var keyIndex = $(projTreeItem[i]).attr('keyIndex');
-                var stageLength = $(projTreeItem[i]).attr('stageLength')-1;
-                var parentProjInfoId = $(projTreeItem[i]).attr('parentProjInfoId');
-                var stageId = $(projTreeItem[i]).attr('stageId');
-                var stageIdBefore = '',parentProjInfoIdBefore ='';
-                if(i>0){
-                  stageIdBefore = $(projTreeItem[i-1]).attr('stageId');
-                  parentProjInfoIdBefore = $(projTreeItem[i-1]).attr('parentProjInfoId');
-                }
-                if(childrenLength&&childrenLength>1){
-                  var minHeight = (150*childrenLength+((childrenLength-1)*40)) + 'px';
-                  $(projTreeItem[i]).css({'min-height': minHeight});
-                }
-                var offsetTop = 0;
-                if($('#'+parentProjInfoId).offset()){
-                  if(stageIdBefore!==stageId){
-                    offsetTop = $('#'+parentProjInfoId).offset().top;
-                    console.log($('#'+parentProjInfoId).offset().top)
-                  }else {
-                    if(parentProjInfoIdBefore!=''&&parentProjInfoIdBefore!==parentProjInfoId){
-                      $(projTreeItem[i-1]).find('.line').hide();
-                    }else if(stageLength==keyIndex){
-                      $(projTreeItem[i]).find('.line').hide();
-                    }
-                    console.log($(projTreeItem[i-1]).offset().top)
-                    offsetTop = ($(projTreeItem[i-1]).offset().top)+190;
+            // setTimeout(function(){
+              _that.$nextTick(function(){
+                var projTreeItem = $('.projTree-item');
+                for(var i=0;i<projTreeItem.length;i++){
+                  var childrenLength = $(projTreeItem[i]).attr('childrenLength');
+                  var keyIndex = $(projTreeItem[i]).attr('keyIndex');
+                  var stageIndex = $(projTreeItem[i]).attr('stageIndex');
+                  var stageIndexLength = _that.projinfoDetailTree.stagesVos.length-1;
+                  var stageLength = $(projTreeItem[i]).attr('stageLength')-1;
+                  var parentProjInfoId = $(projTreeItem[i]).attr('parentProjInfoId');
+                  var stageId = $(projTreeItem[i]).attr('stageId');
+                  var stageIdBefore = '',parentProjInfoIdBefore ='';
+                  if(i>0){
+                    stageIdBefore = $(projTreeItem[i-1]).attr('stageId');
+                    parentProjInfoIdBefore = $(projTreeItem[i-1]).attr('parentProjInfoId');
                   }
-                  console.log(offsetTop);
-                  $(projTreeItem[i]).offset({top:offsetTop});
+                  if(childrenLength&&childrenLength>1){
+                    var minHeight = (150*childrenLength+((childrenLength-1)*40)) + 'px';
+                    $(projTreeItem[i]).css({'min-height': minHeight});
+                  }
+                  var offsetTop = 0;
+                  if($('#'+parentProjInfoId).offset()){
+                    if(stageIdBefore!==stageId){
+                      if(stageIndex!=stageIndexLength){
+                        offsetTop = $('#'+parentProjInfoId).offset().top;
+                      }else {
+                        offsetTop = $('.stage-index-0').offset().top;
+                      }
+                    }else {
+                      if(parentProjInfoIdBefore!=''&&parentProjInfoIdBefore!==parentProjInfoId){
+                        $(projTreeItem[i-1]).find('.line').hide();
+                      }else if(stageLength==keyIndex){
+                        $(projTreeItem[i]).find('.line').hide();
+                      }
+                      offsetTop = ($(projTreeItem[i-1]).offset().top)+190;
+                    }
+                    $(projTreeItem[i]).offset({top:offsetTop});
+                  }
+                  $(projTreeItem[i]).siblings('i.line').css({top:(offsetTop-541)+'px'});
+                  var str = '.stage-index-'+((_that.projinfoDetailTree.projStatusVoArrs.length)-1);
+                  var stage1Height =$(str).height();
+                  if(stage1Height>0){
+                    $('.pro-gc-content .stage-index-0 .projTree-item').css({'height':stage1Height+'px'});
+                  }
                 }
-                $(projTreeItem[i]).siblings('i.line').css({top:(offsetTop-541)+'px'});
-                var str = '.stage-index-'+((_that.projinfoDetailTree.projStatusVoArrs.length)-1);
-                var stage1Height =$(str).height();
-                if(stage1Height>0){
-                  $('.pro-gc-content .stage-index-0 .projTree-item').css({'height':stage1Height+'px'});
+                if($('.stage-index-1').length==1){
+                  var stage1ProjCard = $('.stage-index-1 .projTree-item');
+                  var topH = ($(stage1ProjCard[0]).height())/2-1;
+                  var bottomH = ($(stage1ProjCard[stage1ProjCard.length-1]).height())/2-3;
+                  $('.stage-index-1 .line').css({top:topH,bottom:bottomH});
                 }
-              }
-              if($('.stage-index-1').length==1){
-                var stage1ProjCard = $('.stage-index-1 .projTree-item');
-                var topH = ($(stage1ProjCard[0]).height())/2-1;
-                var bottomH = ($(stage1ProjCard[stage1ProjCard.length-1]).height())/2-3;
-                $('.stage-index-1 .line').css({top:topH,bottom:bottomH});
-              }
 
-            })
+              })
+            // },100)
           }else {
             _that.$message({
               message: result.message ? result.message : '获取项目树信息失败',
