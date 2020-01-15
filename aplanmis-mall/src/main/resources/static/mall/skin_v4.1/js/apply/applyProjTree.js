@@ -354,7 +354,9 @@ var parallelDeclare = new Vue({
                 $(projTreeItem[i]).siblings('i.line').css({top:(offsetTop-541)+'px'});
                 var str = '.stage-index-'+((_that.projinfoDetailTree.projStatusVoArrs.length)-1);
                 var stage1Height =$(str).height();
-                $('.pro-gc-content .stage-index-0 .projTree-item').css({'height':stage1Height+'px'});
+                if(stage1Height>0){
+                  $('.pro-gc-content .stage-index-0 .projTree-item').css({'height':stage1Height+'px'});
+                }
               }
               if($('.stage-index-1').length==1){
                 var stage1ProjCard = $('.stage-index-1 .projTree-item');
