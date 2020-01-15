@@ -11,10 +11,12 @@ import com.augurit.agcloud.bsc.upload.factory.UploaderFactory;
 import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.aplanmis.common.constants.ApplyType;
+import com.augurit.aplanmis.common.constants.CommonConstant;
 import com.augurit.aplanmis.common.constants.InOutType;
 import com.augurit.aplanmis.common.constants.ItemStatus;
 import com.augurit.aplanmis.common.domain.AeaApplyinstProj;
@@ -30,6 +32,7 @@ import com.augurit.aplanmis.common.domain.AeaHiSmsSendApply;
 import com.augurit.aplanmis.common.domain.AeaHiSmsSendBean;
 import com.augurit.aplanmis.common.domain.AeaHiSmsSendItem;
 import com.augurit.aplanmis.common.domain.AeaItemInout;
+import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
 import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.domain.AeaServiceWindow;
@@ -45,6 +48,7 @@ import com.augurit.aplanmis.common.mapper.AeaHiIteminstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiSmsSendApplyMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiSmsSendItemMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemInoutMapper;
+import com.augurit.aplanmis.common.mapper.AeaLinkmanInfoMapper;
 import com.augurit.aplanmis.common.mapper.AeaLogItemStateHistMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitProjMapper;
@@ -53,6 +57,7 @@ import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiSmsInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowService;
+import com.augurit.aplanmis.front.certificate.vo.CertArrivedVo;
 import com.augurit.aplanmis.front.certificate.vo.CertListAndUnitVo;
 import com.augurit.aplanmis.front.certificate.vo.CertLogisticsDetailResultVo;
 import com.augurit.aplanmis.front.certificate.vo.CertLogisticsDetailVo;
@@ -88,6 +93,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -134,6 +140,8 @@ public class RestCertificateService {
     private AeaUnitProjMapper aeaUnitProjMapper;
     @Autowired
     private AeaProjInfoMapper aeaProjInfoMapper;
+    @Autowired
+    private AeaLinkmanInfoMapper aeaLinkmanInfoMapper;
     @Autowired
     private OpuOmOrgMapper opuOmOrgMapper;
     @Autowired
@@ -393,6 +401,8 @@ public class RestCertificateService {
         CertRegistrationVo certRegistrationVo = new CertRegistrationVo();
 
         List<CertRegistrationItemVo> registrationItems = getRegistrationItems(applyinstId);
+        // 如果之前已出过件，则获取物流信息或者设置取件登记状态
+        fillInfoIfHadPickedUp(applyinstId, registrationItems);
         certRegistrationVo.setCertRegistrationItemVos(registrationItems);
 
         AeaHiSmsInfo smsInfo = aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(applyinstId);
@@ -421,23 +431,85 @@ public class RestCertificateService {
             return certRegistrationItemVos;
         }
 
-        Map<String, AeaHiSmsSendItem> aeaHiSmsSendItemMap = aeaHiSmsSendItemMapper.getAeaHiSmsSendItemListByApplyinstId(applyinstId).stream().collect(Collectors.toMap(AeaHiSmsSendItem::getIteminstId, item -> item));
-
         List<AeaHiCertinst> certinsts = aeaHiCertinstMapper.listAeaHiCertinstByIteminstIds(aeaHiIteminstMap.keySet().toArray(new String[0]));
         certinsts.forEach(certinst -> {
             AeaHiIteminst aeaHiIteminst = aeaHiIteminstMap.get(certinst.getIteminstId());
             CertRegistrationItemVo vo = CertRegistrationItemVo.from(aeaHiIteminst, certinst);
-            AeaHiSmsSendItem aeaHiSmsSendItem = aeaHiSmsSendItemMap.get(certinst.getIteminstId());
-            if (aeaHiSmsSendItem != null
-                    && StringUtils.isNotBlank(aeaHiSmsSendItem.getInoutinstId())
-                    && aeaHiSmsSendItem.getInoutinstId().contains(certinst.getInoutinstId())) {
-                vo.setHandled(true);
-                vo.setExpressNum(aeaHiSmsSendItem.getExpressNum());
-                vo.setPostSignTime(aeaHiSmsSendItem.getPostSignTime());
-            }
             certRegistrationItemVos.add(vo);
         });
         return certRegistrationItemVos;
+    }
+
+    private void fillInfoIfHadPickedUp(String applyinstId, List<CertRegistrationItemVo> registrationItems) throws Exception {
+        if (CollectionUtils.isNotEmpty(registrationItems)) {
+            Map<String, AeaHiSmsSendItem> aeaHiSmsSendItemMap = aeaHiSmsSendItemMapper.getAeaHiSmsSendItemListByApplyinstId(applyinstId).stream().collect(Collectors.toMap(AeaHiSmsSendItem::getIteminstId, item -> item));
+            registrationItems.forEach(vo -> {
+                AeaHiSmsSendItem aeaHiSmsSendItem = aeaHiSmsSendItemMap.get(vo.getIteminstId());
+                if (aeaHiSmsSendItem != null
+                        && StringUtils.isNotBlank(aeaHiSmsSendItem.getInoutinstId())
+                        && aeaHiSmsSendItem.getInoutinstId().contains(vo.getInoutinstId())) {
+                    vo.setHandled(true);
+                    vo.setExpressNum(aeaHiSmsSendItem.getExpressNum());
+                    vo.setPostSignTime(aeaHiSmsSendItem.getPostSignTime());
+                }
+            });
+        }
+    }
+
+    /**
+     * 证件到达通知
+     *
+     * @param applyinstId 申报实例id
+     */
+    public CertArrivedVo certArrivedNotify(String applyinstId) throws Exception {
+        CertArrivedVo certArrivedVo = new CertArrivedVo();
+        List<CertRegistrationItemVo> registrationItems = getRegistrationItems(applyinstId);
+        certArrivedVo.setCertRegistrationItemVos(registrationItems);
+
+        AeaProjInfo aeaProjInfo = aeaProjInfoMapper.listProjByApplyinstId(applyinstId).get(0);
+        certArrivedVo.setProjInfoId(aeaProjInfo.getProjInfoId());
+        certArrivedVo.setProjName(aeaProjInfo.getProjName());
+
+        // 获取单位 或者 个人信息
+        getUnitOrLinkmanInfo(applyinstId, certArrivedVo, aeaProjInfo);
+
+        return certArrivedVo;
+    }
+
+    private void getUnitOrLinkmanInfo(String applyinstId, CertArrivedVo certArrivedVo, AeaProjInfo aeaProjInfo) throws Exception {
+        AeaHiApplyinst applyinst = aeaHiApplyinstMapper.getAeaHiApplyinstById(applyinstId);
+        // 申办主体：1 单位，0 个人
+        if (Status.ON.equals(applyinst.getApplySubject())) {
+            List<AeaApplyinstUnitProj> aeaApplyinstUnitProjs = aeaApplyinstUnitProjMapper.getAeaApplyinstUnitProjByApplyinstId(applyinstId);
+            Assert.notEmpty(aeaApplyinstUnitProjs, "没有找到与申报实例关联的企业项目关联信息");
+            // 获取到所有的单位项目IDs
+            String[] unitProjIds = aeaApplyinstUnitProjs.stream().map(AeaApplyinstUnitProj::getUnitProjId).toArray(String[]::new);
+            // 查询单位信息
+            List<AeaUnitInfo> unitList = aeaUnitProjMapper.getAeaUnitProjByUnitProjIds(unitProjIds);
+            Assert.notEmpty(unitList, "没有找到申报实例的单位信息");
+            // 业主单位
+            List<AeaUnitInfo> mainUnitList = unitList.stream().filter(unit -> Status.ON.equals(unit.getIsOwner())).collect(Collectors.toList());
+
+            Optional.of(mainUnitList).ifPresent(aeaUnitInfos -> {
+                String applicant = aeaUnitInfos.stream().map(AeaUnitInfo::getApplicant).collect(Collectors.joining(CommonConstant.COMMA_SEPARATOR));
+                String idRepresenttative = aeaUnitInfos.stream().map(AeaUnitInfo::getIdrepresentative).collect(Collectors.joining(CommonConstant.COMMA_SEPARATOR));
+                String idCard = aeaUnitInfos.stream().map(AeaUnitInfo::getIdno).collect(Collectors.joining(CommonConstant.COMMA_SEPARATOR));
+                String idMobile = aeaUnitInfos.stream().map(AeaUnitInfo::getIdmobile).collect(Collectors.joining(CommonConstant.COMMA_SEPARATOR));
+
+                certArrivedVo.setUnitInfoName(applicant);
+                certArrivedVo.setLinkmanIdCard(idCard);
+                certArrivedVo.setLinkmanInfoName(idRepresenttative);
+                certArrivedVo.setLinkmanMobilephone(idMobile);
+            });
+        } else {
+            AeaLinkmanInfo aeaLinkmanInfo = aeaLinkmanInfoMapper.getApplyProjLinkman(applyinstId, aeaProjInfo.getProjInfoId());
+            if (aeaLinkmanInfo != null) {
+                certArrivedVo.setUnitInfoName(aeaLinkmanInfo.getLinkmanName());
+                certArrivedVo.setLinkmanInfoName(aeaLinkmanInfo.getLinkmanName());
+                certArrivedVo.setLinkmanIdCard(aeaLinkmanInfo.getLinkmanCertNo());
+                certArrivedVo.setLinkmanMobilephone(aeaLinkmanInfo.getLinkmanMobilePhone());
+            }
+        }
     }
 
     public String uploadConsignerAtt(String applyinstId, HttpServletRequest request) throws Exception {

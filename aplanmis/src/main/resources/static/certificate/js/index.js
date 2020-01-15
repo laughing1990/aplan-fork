@@ -336,6 +336,7 @@ var vm = new Vue({
       countyList_jjr: [], // 所有地区信息
       isSmsSend: '0',//是否已经出件了
       isEMSPage: false,
+      logicDialogVisible: false,
     }
   },
   mounted: function () {
@@ -360,6 +361,30 @@ var vm = new Vue({
     },
   },
   methods: {
+    // 查看物流
+    seeLogistic: function(row){
+      var vm = this;
+      vm.loading = true;
+      request('', {
+        url: ctx + 'rest/certificate/cert/logistics/detail',
+        type: 'get',
+        data: {
+          applyinstId: vm.applyinstId,
+          expressNum: row.expressNum,
+          iteminstId: row.iteminstId,
+        },
+      }, function(res){
+        vm.loading = false;
+        if (res.success) {
+          vm.logicDialogVisible = true;
+        } else {
+          vm.$message.error(res.message || '获取物流信息失败');
+        }
+      }, function() {
+        vm.loading = false;
+        vm.$message.error('获取物流信息失败');
+      });
+    },
     EMSconfig: function(){
       var vm = this;
       vm.verticalTabData = [ // 左侧纵向导航数据
@@ -568,7 +593,12 @@ var vm = new Vue({
     //已出件的不给勾选
     checkboxInit2: function (row, idx) {
       var vm = this;
-      if (row.isSmsSend == '1' || row.hasOutCertinst == "0" || row.iteminstState == '13') {
+      if (
+        row.isSmsSend == '1' ||
+        row.hasOutCertinst == "0" ||
+        row.iteminstState == '13' ||
+        row.handled
+      ) {
         return false;
       } else {
         return true;

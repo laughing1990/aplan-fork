@@ -58,6 +58,9 @@ public class GuideComputedItem extends ComputedItem {
     @ApiModelProperty(name = "resultMats", value = "结果物", dataType = "list")
     private List<AeaItemInout> resultMats;
 
+    @ApiModelProperty(name = "iteminstState", value = "事项状态", dataType = "string")
+    private String iteminstState;
+
     protected void mergeCommonField(AeaItemBasic origin) {
         super.mergeCommonField(origin);
         this.bjType = origin.getBjType();
