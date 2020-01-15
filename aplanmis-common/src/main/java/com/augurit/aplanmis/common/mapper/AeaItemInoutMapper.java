@@ -98,7 +98,7 @@ public interface AeaItemInoutMapper {
 
      List<AeaItemInoutMatDto> listInoutAndMatByCriteria(ItemMatInoutQo commonCriteria);
 
-     List<AeaItemInout> listAeaItemInoutByMatIds(@Param("matIds") List<String> matIds, @Param("itemId") String itemId, @Param("isInput") String isInput);
+     List<AeaItemInout> listAeaItemInoutByMatIds(@Param("matIds") List<String> matIds, @Param("itemVerId") String itemVerId, @Param("isInput") String isInput);
 
      /**
       * 获取输入或者输出排序

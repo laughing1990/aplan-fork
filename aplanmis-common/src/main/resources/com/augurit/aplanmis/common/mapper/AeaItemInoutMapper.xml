@@ -970,11 +970,11 @@
                 #{matId}
             </foreach>
 
-            <if test="itemId != null">
-                AND ITEM_ID = #{itemId}
+            <if test="itemVerId != null">
+                AND iout.ITEM_VER_ID = #{itemVerId}
             </if>
             <if test="isInput != null">
-                AND IS_INPUT = #{isInput}
+                AND iout.IS_INPUT = #{isInput}
             </if>
         </where>
     </select>

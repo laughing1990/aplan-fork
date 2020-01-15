@@ -85,6 +85,18 @@ REAL_ININST_ID  ,FILL_ID  ,DUE_ININST_ID  ,INOUTINST_ID  ,IS_PASS  ,ATT_COUNT  ,
 #{realIninstId},#{fillId},#{dueIninstId},#{inoutinstId},#{isPass},#{attCount},#{realPaperCount},#{realCopyCount},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
     )
 </insert>
+
+    <insert id="batchInsertAeaHiItemFillRealIninst" parameterType="AeaHiItemFillRealIninst" >
+        insert into AEA_HI_ITEM_FILL_REAL_ININST (
+        REAL_ININST_ID  ,FILL_ID  ,DUE_ININST_ID  ,INOUTINST_ID  ,IS_PASS  ,ATT_COUNT  ,REAL_PAPER_COUNT  ,REAL_COPY_COUNT  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
+        )  values
+        <foreach collection="list" item="item" separator=",">
+        (
+        #{item.realIninstId},#{item.fillId},#{item.dueIninstId},#{item.inoutinstId},#{item.isPass},#{item.attCount},
+            #{item.realPaperCount},#{item.realCopyCount},#{item.creater},#{item.createTime},#{item.modifier},#{item.modifyTime},  #{item.rootOrgId}
+        )
+        </foreach>
+    </insert>
 <!--6 修改实体对象 -->
 <update id="updateAeaHiItemFillRealIninst" parameterType="AeaHiItemFillRealIninst" >
     update AEA_HI_ITEM_FILL_REAL_ININST

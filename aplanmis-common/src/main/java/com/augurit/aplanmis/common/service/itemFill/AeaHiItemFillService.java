@@ -16,4 +16,13 @@ public interface AeaHiItemFillService {
     public AeaHiItemFill getAeaHiItemFillById(String id) throws Exception;
     public List<AeaHiItemFill> listAeaHiItemFill(AeaHiItemFill aeaHiItemFill) throws Exception;
 
+    /**
+     * 创建容缺补齐实例，包括补齐的详细信息
+     * @param applyinstId
+     * @throws Exception
+     */
+    public void createAeaHiItemFill(String applyinstId) throws Exception;
+
+
+
 }
