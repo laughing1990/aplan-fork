@@ -132,6 +132,8 @@ public class AeaParThemeAdminServiceImpl implements AeaParThemeAdminService {
     public List<ZtreeNode> gtreeTheme(AeaParTheme theme){
 
         List<ZtreeNode> allNodes = new ArrayList<>();
+        String rootOrgId = SecurityContext.getCurrentOrgId();
+        // 根节点
         ZtreeNode rootNode = new ZtreeNode();
         rootNode.setId("root");
         rootNode.setName("主题库");
@@ -140,15 +142,13 @@ public class AeaParThemeAdminServiceImpl implements AeaParThemeAdminService {
         rootNode.setNocheck(true);
         rootNode.setOpen(true);
         allNodes.add(rootNode);
-        theme.setRootOrgId(SecurityContext.getCurrentOrgId());
-        theme.setIsDeleted(DeletedStatus.NOT_DELETED.getValue());
-        List<AeaParTheme> list = themeMapper.listAeaParTheme(theme);
-        if(list!=null&&list.size()>0){
-            ZtreeNode node;
-            for(AeaParTheme item:list) {
-                node = new ZtreeNode();
-                node.setId(item.getThemeId());
-                node.setName(item.getThemeName());
+        // 查询存在可用版本的主题
+        List<AeaParThemeVer> verList = themeVerMapper.listOkVerNoRelDiagramInfo(rootOrgId);
+        if (verList != null && verList.size() > 0) {
+            for (AeaParThemeVer themeVer : verList) {
+                ZtreeNode node = new ZtreeNode();
+                node.setId(themeVer.getThemeId());
+                node.setName(themeVer.getThemeName());
                 node.setpId("root");
                 node.setType("theme");
                 node.setIsParent(false);
@@ -164,19 +164,18 @@ public class AeaParThemeAdminServiceImpl implements AeaParThemeAdminService {
     public List<ElementUiRsTreeNode> gtreeThemeForEUi(AeaParTheme theme){
 
         List<ElementUiRsTreeNode> allNodes = new ArrayList<>();
+        String rootOrgId = SecurityContext.getCurrentOrgId();
         ElementUiRsTreeNode rootNode = new ElementUiRsTreeNode();
         rootNode.setId("root");
         rootNode.setLabel("主题库");
         rootNode.setType("root");
-        theme.setRootOrgId(SecurityContext.getCurrentOrgId());
-        theme.setIsDeleted(DeletedStatus.NOT_DELETED.getValue());
-        List<AeaParTheme> list = themeMapper.listAeaParTheme(theme);
-        if(list!=null&&list.size()>0){
-            ElementUiRsTreeNode node;
-            for(AeaParTheme item:list) {
-                node = new ElementUiRsTreeNode();
-                node.setId(item.getThemeId());
-                node.setLabel(item.getThemeName());
+        // 查询存在可用版本的主题
+        List<AeaParThemeVer> verList = themeVerMapper.listOkVerNoRelDiagramInfo(rootOrgId);
+        if (verList != null && verList.size() > 0) {
+            for (AeaParThemeVer themeVer : verList) {
+                ElementUiRsTreeNode node = new ElementUiRsTreeNode();
+                node.setId(themeVer.getThemeId());
+                node.setLabel(themeVer.getThemeName());
                 node.setType("theme");
                 rootNode.getChildren().add(node);
             }

@@ -21,6 +21,21 @@
         ${alias}.THEME_VER_DIAGRAM themeVerDiagram
     </sql>
 
+    <sql id="noRelDiagramColumns">
+        ${alias}.THEME_VER_ID  themeVerId,
+        ${alias}.THEME_ID  themeId,
+        ${alias}.VER_NUM  verNum,
+        ${alias}.IS_ACTIVE  isActive,
+        ${alias}.IS_DELETED  isDeleted,
+        ${alias}.VER_MEMO  verMemo,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.IS_PUBLISH  isPublish,
+        ${alias}.ROOT_ORG_ID  rootOrgId
+    </sql>
+
     <select id="listThemeVerNoRelThemeAndDiagramInfo" resultType="AeaParThemeVer" >
         select
             THEME_VER_ID  themeVerId,
@@ -346,6 +361,25 @@
           and IS_DELETED = '0'
           and IS_PUBLISH in('1', '2')
         order by VER_NUM desc
+    </select>
+
+    <select id="listOkVerNoRelDiagramInfo" resultType="com.augurit.aplanmis.common.domain.AeaParThemeVer">
+        select
+            <include refid="noRelDiagramColumns">
+                <property name="alias" value="themeVer"/>
+            </include>,
+            theme.THEME_NAME themeName
+        from AEA_PAR_THEME_VER themeVer, AEA_PAR_THEME theme
+        <where>
+            and themeVer.THEME_ID = theme.THEME_ID
+            and themeVer.ROOT_ORG_ID = #{rootOrgId}
+            and theme.ROOT_ORG_ID = #{rootOrgId}
+            and themeVer.IS_DELETED = '0'
+            and themeVer.IS_PUBLISH in('1', '2')
+            and theme.IS_DELETED = '0'
+            and theme.IS_ACTIVE = '1'
+        </where>
+        order by theme.THEME_TYPE asc, theme.SORT_NO asc, theme.CREATE_TIME asc
     </select>
 
     <select id="getNotExpireThemeverByItemId" resultType="com.augurit.aplanmis.common.domain.AeaParThemeVer">
