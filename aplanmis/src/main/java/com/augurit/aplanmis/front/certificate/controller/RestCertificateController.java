@@ -10,6 +10,7 @@ import com.augurit.aplanmis.common.domain.AeaHiCertinst;
 import com.augurit.aplanmis.common.domain.AeaHiSmsSendItem;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.front.certificate.service.RestCertificateService;
+import com.augurit.aplanmis.front.certificate.vo.CertArrivedVo;
 import com.augurit.aplanmis.front.certificate.vo.CertListAndUnitVo;
 import com.augurit.aplanmis.front.certificate.vo.CertLogisticsDetailResultVo;
 import com.augurit.aplanmis.front.certificate.vo.CertLogisticsDetailVo;
@@ -74,6 +75,12 @@ public class RestCertificateController {
         modelAndView.addObject("windowUserId", SecurityContext.getCurrentUserId());
         modelAndView.addObject("windowUserName", SecurityContext.getCurrentUserName());
         return modelAndView;
+    }
+
+    @GetMapping("/sendInfo")
+    @ApiOperation("寄件信息")
+    public ModelAndView sendInfo() {
+        return new ModelAndView("certificate/sendInfo");
     }
 
     @GetMapping("/out/materials/register")
@@ -148,6 +155,20 @@ public class RestCertificateController {
     public ContentResultForm<List<CertMailListVo>> mailList(String applyinstId) {
         try {
             return new ContentResultForm<>(true, certificateService.mailList(applyinstId), "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ContentResultForm<>(false, null, "寄件信息列表查询失败！" + e.getMessage());
+        }
+    }
+
+    @GetMapping("/cert/arrived/notify")
+    @ApiOperation(value = "证件到达通知信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "applyinstId", value = "申报实例id", required = true)
+    })
+    public ContentResultForm<CertArrivedVo> certArrivedNotify(String applyinstId) {
+        try {
+            return new ContentResultForm<>(true, certificateService.certArrivedNotify(applyinstId), "success");
         } catch (Exception e) {
             e.printStackTrace();
             return new ContentResultForm<>(false, null, "寄件信息列表查询失败！" + e.getMessage());
