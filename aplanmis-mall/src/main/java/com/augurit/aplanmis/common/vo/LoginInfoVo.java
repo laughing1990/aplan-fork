@@ -41,4 +41,6 @@ public class LoginInfoVo implements Serializable {
     private String idCard;//用户身份证号
     @ApiModelProperty(value = "企业统一社会信用代码")
     private String unifiedSocialCreditCode;//企业统一社会信用代码
+    @ApiModelProperty(value = "信用等级")
+    private String creditLevel;//信用等级
 }

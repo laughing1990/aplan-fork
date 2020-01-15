@@ -2,6 +2,7 @@ package com.augurit.aplanmis.mall.userCenter.controller;
 
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
+import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.AeaHiApplyinstConstants;
 import com.augurit.aplanmis.common.constants.ApplyState;
@@ -16,6 +17,8 @@ import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.state.AeaItemStateService;
 import com.augurit.aplanmis.common.service.state.AeaParStateService;
+import com.augurit.aplanmis.common.utils.SessionUtil;
+import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.guide.service.RestGuideService;
 import com.augurit.aplanmis.mall.guide.vo.RestGuideMatVo;
 import com.augurit.aplanmis.mall.main.service.RestMainService;
@@ -35,6 +38,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -77,6 +81,9 @@ public class RestParallerApplyController {
 
     @Value("${aplanmis.mall.skin:skin_v4.1/}")
     private String skin;
+    @Value("${aplanmis.mall.isStartCreditLevel:false}")
+    private boolean isStartCreditLevel;
+
     @GetMapping("/toParaApplyPage")
     @ApiOperation(value = "阶段申报-->跳转阶段申报页面接口")
     public ModelAndView toParaApplyPage(){
@@ -130,8 +137,21 @@ public class RestParallerApplyController {
 
     @PostMapping("net/process/start")
     @ApiOperation("阶段申报--> 提交申请")
-    public ContentResultForm<ParallelApplyResultVo> startNetStageProcess(@Valid @RequestBody StageApplyDataPageVo stageApplyDataPageVo ){
+    public ResultForm startNetStageProcess(@Valid @RequestBody StageApplyDataPageVo stageApplyDataPageVo, HttpServletRequest request){
+        LoginInfoVo loginVo = SessionUtil.getLoginInfo(request);
         try {
+            if(isStartCreditLevel){//企业L3级   个人L2,L3级  才能申报
+                String creditLevel=loginVo.getCreditLevel();
+                if(StringUtils.isNotBlank(loginVo.getUnitId())){
+                    if(!"L3".equalsIgnoreCase(creditLevel)){
+                        return new ResultForm(false,"企业认证等级需要达到L3级才有权限申报，您当前等级为"+creditLevel);
+                    }
+                }else{
+                    if(!"L2".equalsIgnoreCase(creditLevel) && !"L3".equalsIgnoreCase(creditLevel)){
+                        return new ResultForm(false,"个人认证等级需要达到L2级以上才有权限申报，您当前等级为"+creditLevel);
+                    }
+                }
+            }
             ParallelApplyResultVo vo = restApplyService.startStageProcess(stageApplyDataPageVo);
             return new ContentResultForm<>(true, vo, "申报成功!");
         } catch (Exception e) {
