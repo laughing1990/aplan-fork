@@ -82,4 +82,5 @@ public class AeaHiGuideDetail {
     // 扩展字段
 
     private String themeName;
+    private String itemName;
 }

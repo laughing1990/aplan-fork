@@ -82,4 +82,6 @@ public interface RestGuideService {
     RestGuideStateVo getRestGuideStateVo(String itemVerId, String topOrgId)throws Exception;
 
     RestGuideMatVo getRestGuideMatVo(MatListParamVo matListParamVo) throws Exception;
+
+    public RestGuideApproveInfoVo getGuideCommentDetail(String applyinstId) throws Exception;
 }

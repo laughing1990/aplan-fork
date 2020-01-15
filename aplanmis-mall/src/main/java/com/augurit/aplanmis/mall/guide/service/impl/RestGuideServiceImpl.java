@@ -19,8 +19,12 @@ import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemRelevanceMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStateMapper;
+import com.augurit.aplanmis.common.service.apply.AeaHiGuideDetailService;
+import com.augurit.aplanmis.common.service.apply.AeaHiGuideService;
 import com.augurit.aplanmis.common.service.guide.*;
+import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutService;
+import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.item.AeaItemPrivService;
 import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
@@ -118,6 +122,14 @@ public class RestGuideServiceImpl implements RestGuideService {
     private AeaHiItemInoutService aeaHiItemInoutService;
     @Autowired
     RestParallerApplyService restParallerApplyService;
+    @Autowired
+    private AeaHiIteminstService aeaHiIteminstService;
+    @Autowired
+    private AeaHiGuideService aeaHiGuideService;
+    @Autowired
+    private AeaHiGuideDetailService aeaHiGuideDetailService;
+    @Autowired
+    private AeaHiApplyinstService aeaHiApplyinstService;
 
     @Value("${dg.sso.access.platform.org.top-org-id:0368948a-1cdf-4bf8-a828-71d796ba89f6}")
     protected String topOrgId;
@@ -834,5 +846,59 @@ public class RestGuideServiceImpl implements RestGuideService {
         //可选材料
         restGuideMatVo.setNoRequireMat(list.stream().filter(item->("0".equals(item.getAttIsRequire()))).collect(Collectors.toList()));
         return restGuideMatVo;
+    }
+
+    @Override
+    public RestGuideApproveInfoVo getGuideCommentDetail(String applyinstId) throws Exception{
+        RestGuideApproveInfoVo vo=new RestGuideApproveInfoVo();
+        List<AeaHiGuide> aeaHiGuideList=aeaHiGuideService.getAeaHiGuideByApplyinstId(applyinstId);
+        vo.setLeaderComment(aeaHiGuideList.size()>0?aeaHiGuideList.get(0).getLeaderOrgOpinion():"");
+        String guideId=aeaHiGuideList.size()>0?aeaHiGuideList.get(0).getGuideId():"";
+        String stageId=aeaHiGuideList.size()>0?aeaHiGuideList.get(0).getStageId():"";
+        if(StringUtils.isNotBlank(stageId)){
+            AeaParStage stage = aeaParStageService.getAeaParStageById(stageId);
+            vo.setStageNo(stage==null?"":stage.getDybzspjdxh());
+        }
+        List<AeaHiIteminst> parallelIteminstList = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
+        List<RestGuideApproveItemInfoVo> parallelGuideApproveItemInfoVos=new ArrayList<>();
+        if(parallelIteminstList.size()>0){
+            parallelIteminstList.stream().forEach(v->{
+                RestGuideApproveItemInfoVo restGuideApproveItemInfoVo=new RestGuideApproveItemInfoVo();
+                AeaHiGuideDetail aeaHiGuideDetail=new AeaHiGuideDetail();
+                aeaHiGuideDetail.setGuideId(guideId);
+                aeaHiGuideDetail.setItemVerId(v.getItemVerId());
+                aeaHiGuideDetail.setDetailType("i");
+                List<AeaHiGuideDetail> list=aeaHiGuideDetailService.listAeaHiGuideDetail(aeaHiGuideDetail);
+                restGuideApproveItemInfoVo.setGuideComments(list.size()>0?list.get(0).getGuideOpinion():"");
+                restGuideApproveItemInfoVo.setIteminstName(v.getIteminstName());
+                restGuideApproveItemInfoVo.setOrgName(v.getApproveOrgName());
+                restGuideApproveItemInfoVo.setStartTime(list.size()>0?list.get(0).getDetailStartTime():null);
+                parallelGuideApproveItemInfoVos.add(restGuideApproveItemInfoVo);
+            });
+        }
+        vo.setGuideParallelItemList(parallelGuideApproveItemInfoVos);
+        List<AeaHiApplyinst> seriesApplyList = aeaHiApplyinstService.getSeriesAeaHiApplyinstListByParentApplyinstId(applyinstId, null);
+        List<String> seriesApplyIds=seriesApplyList.size()>0?seriesApplyList.stream().map(AeaHiApplyinst::getApplyinstId).collect(Collectors.toList()) : new ArrayList<>();
+        List<RestGuideApproveItemInfoVo> coreGuideApproveItemInfoVos=new ArrayList<>();
+        if(seriesApplyIds.size()>0){
+            List<AeaHiIteminst> coreIteminstList = aeaHiIteminstService.getAeaHiIteminstListByApplyinstIds(seriesApplyIds, "1", "0");
+            if(coreIteminstList.size()>0){
+                coreIteminstList.stream().forEach(v->{
+                    RestGuideApproveItemInfoVo restGuideApproveItemInfoVo=new RestGuideApproveItemInfoVo();
+                    AeaHiGuideDetail aeaHiGuideDetail=new AeaHiGuideDetail();
+                    aeaHiGuideDetail.setGuideId(guideId);
+                    aeaHiGuideDetail.setItemVerId(v.getItemVerId());
+                    aeaHiGuideDetail.setDetailType("i");
+                    List<AeaHiGuideDetail> list=aeaHiGuideDetailService.listAeaHiGuideDetail(aeaHiGuideDetail);
+                    restGuideApproveItemInfoVo.setGuideComments(list.size()>0?list.get(0).getGuideOpinion():"");
+                    restGuideApproveItemInfoVo.setIteminstName(v.getIteminstName());
+                    restGuideApproveItemInfoVo.setOrgName(v.getApproveOrgName());
+                    restGuideApproveItemInfoVo.setStartTime(list.size()>0?list.get(0).getDetailStartTime():null);
+                    coreGuideApproveItemInfoVos.add(restGuideApproveItemInfoVo);
+                });
+            }
+        }
+        vo.setGuideCoreItemList(coreGuideApproveItemInfoVos);
+        return vo;
     }
 }

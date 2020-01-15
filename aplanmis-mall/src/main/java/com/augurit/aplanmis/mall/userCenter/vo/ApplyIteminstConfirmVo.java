@@ -2,6 +2,7 @@ package com.augurit.aplanmis.mall.userCenter.vo;
 
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.apply.item.GuideComputedItem;
+import com.augurit.aplanmis.common.domain.AeaApplyinstForminst;
 import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
 import com.augurit.aplanmis.common.vo.guide.GuideDetailVo;
 import com.augurit.aplanmis.mall.main.vo.ParallelApproveItemVo;
@@ -37,6 +38,10 @@ public class ApplyIteminstConfirmVo {
     private String stageName;
     @ApiModelProperty(value = "牵头部门阶段国家标准 对应国家标准审批阶段，多选，1 立项用地规划许可 2 工程建设许可 3 施工许可 4 竣工验收 5 并行推进")
     private String dybzspjdxh;//DYBZSPJDXH
+    @ApiModelProperty(value = "是否启用一张表单 1是 0否")
+    private String useOneForm;
+    @ApiModelProperty(value = "表单实例列表")
+    private List<AeaApplyinstForminst> forminsts;
 
     @ApiModelProperty(value = "并行审批事项列表")
     private List<GuideComputedItem> coreIteminstList;

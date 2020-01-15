@@ -37,4 +37,8 @@ public class AeaApplyinstForminst implements Serializable {
 
     @ApiModelProperty(value = "表单定义id")
     private String stoFormId;
+
+    @ApiModelProperty(value = "表单记录主键")
+    private String formPrimaryKey;
+
 }

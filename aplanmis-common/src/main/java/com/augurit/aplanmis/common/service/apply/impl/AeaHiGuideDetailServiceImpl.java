@@ -49,4 +49,9 @@ public class AeaHiGuideDetailServiceImpl implements AeaHiGuideDetailService {
         return aeaHiGuideDetailMapper.listAeaHiGuideDetail(aeaHiGuideDetail);
     }
 
+    @Override
+    public List<AeaHiGuideDetail> listAeaHiGuideDetail(AeaHiGuideDetail aeaHiGuideDetail){
+        return aeaHiGuideDetailMapper.listAeaHiGuideDetail(aeaHiGuideDetail);
+    }
+
 }
