@@ -354,7 +354,7 @@ public class AeaProjApplyAgentServiceImpl implements AeaProjApplyAgentService {
         }
         List<AeaUnitInfo> aeaUnitInfos = aeaUnitInfoMapper.listAeaUnitInfo(search);
         if(aeaUnitInfos != null && aeaUnitInfos.size() > 1){
-            throw new Exception("数据库存在多个证件号相同的单位。");
+            throw new RuntimeException("数据库存在多个证件号相同的单位。");
         }
         AeaUnitInfo aeaUnitInfo = null;
         String unitName = splitProjFromVo.getUnitName();

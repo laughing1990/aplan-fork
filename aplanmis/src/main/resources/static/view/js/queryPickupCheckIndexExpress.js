@@ -74,6 +74,39 @@ var vm = new Vue({
       }
       window.open(url, '_blank');
     },
+    // 邮政下单
+    clickEMS: function(row) {
+      var menuName = '邮政下单';
+      var menuInnerUrl = ctx + 'rest/certificate/registerIndex?applyinstId=' + row.applyinstId;
+      menuInnerUrl += '&isEMS=true';
+      var id = 'menu_' + new Date().getTime();
+      var data = {
+        'menuName': menuName,
+        'menuInnerUrl': menuInnerUrl,
+        'id': id,
+      };
+      try {
+        parent.vm.addTab('', data, '', '');
+      } catch (e) {
+        window.open(menuInnerUrl, '_blank');
+      }
+    },
+    // 查看寄件信息
+    clickSeeEMS: function(row){
+      var menuName = '寄件信息-' + row.projName;
+      var menuInnerUrl = ctx + 'rest/certificate/sendInfo?applyinstId=' + row.applyinstId;
+      var id = 'menu_' + new Date().getTime();
+      var data = {
+        'menuName': menuName,
+        'menuInnerUrl': menuInnerUrl,
+        'id': id,
+      };
+      try {
+        parent.vm.addTab('', data, '', '');
+      } catch (e) {
+        window.open(menuInnerUrl, '_blank');
+      }
+    },
     //取件登记
     pickupCheck: function (row) {
       var menuName = '取件登记';

@@ -116,7 +116,7 @@
                 {
                     label: '项目管理',
                     id: 'applyProjTree',
-                    activeName:4,
+                    activeName:3,
                     url: './apply/applyProjTree.html',
                     thUrl:'rest/user/toApplyProjTreePage',
                     hash:'/applyProjTree',

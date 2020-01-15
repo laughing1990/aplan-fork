@@ -83,8 +83,9 @@
                         placeholder="请填写项目/工程名称"></el-input>
             </el-form-item>
             <el-form-item class="wt588" label="项目类型">
-              <el-select :disabled="draftsProj" clearable filterable class="w-410" v-model="projInfoDetail.themeId" @change="changeThemeId">
+              <el-select :disabled="draftsProj" clearable filterable class="w-410" v-model="projInfoDetail.themeId">
                 <el-option v-for="item in themeList" :key="item.themeId" :label="item.themeName"
+                           @click.native="changeThemeId(item)"
                            :value="item.themeId">
                 </el-option>
               </el-select>

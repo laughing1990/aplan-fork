@@ -27,7 +27,6 @@ import com.augurit.aplanmis.mall.main.vo.ThemeTypeVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyService;
 import com.augurit.aplanmis.mall.userCenter.service.RestParallerApplyService;
 import com.augurit.aplanmis.mall.userCenter.vo.*;
-import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -82,6 +81,9 @@ public class RestParallerApplyController {
 
     @Value("${aplanmis.mall.skin:skin_v4.1/}")
     private String skin;
+    @Value("${aplanmis.mall.isStartCreditLevel:false}")
+    private boolean isStartCreditLevel;
+
     @GetMapping("/toParaApplyPage")
     @ApiOperation(value = "阶段申报-->跳转阶段申报页面接口")
     public ModelAndView toParaApplyPage(){
@@ -135,8 +137,21 @@ public class RestParallerApplyController {
 
     @PostMapping("net/process/start")
     @ApiOperation("阶段申报--> 提交申请")
-    public ContentResultForm<ParallelApplyResultVo> startNetStageProcess(@Valid @RequestBody StageApplyDataPageVo stageApplyDataPageVo ){
+    public ResultForm startNetStageProcess(@Valid @RequestBody StageApplyDataPageVo stageApplyDataPageVo, HttpServletRequest request){
+        LoginInfoVo loginVo = SessionUtil.getLoginInfo(request);
         try {
+            if(isStartCreditLevel){//企业L3级   个人L2,L3级  才能申报
+                String creditLevel=loginVo.getCreditLevel();
+                if(StringUtils.isNotBlank(loginVo.getUnitId())){
+                    if(!"L3".equalsIgnoreCase(creditLevel)){
+                        return new ResultForm(false,"企业认证等级需要达到L3级才有权限申报，您当前等级为"+creditLevel);
+                    }
+                }else{
+                    if(!"L2".equalsIgnoreCase(creditLevel) && !"L3".equalsIgnoreCase(creditLevel)){
+                        return new ResultForm(false,"个人认证等级需要达到L2级以上才有权限申报，您当前等级为"+creditLevel);
+                    }
+                }
+            }
             ParallelApplyResultVo vo = restApplyService.startStageProcess(stageApplyDataPageVo);
             return new ContentResultForm<>(true, vo, "申报成功!");
         } catch (Exception e) {
@@ -259,41 +274,6 @@ public class RestParallerApplyController {
         }
     }
 
-    @PostMapping("net/guide/apply/start")
-    @ApiOperation("阶段申报--> 部门辅导申请")
-    public ContentResultForm<String> startGuideApply(@Valid @RequestBody AeaGuideApplyVo aeaGuideApplyVo){
-        try {
-            String applyinstId=restParallerApplyService.initGuideApply(aeaGuideApplyVo);
-            return new ContentResultForm<>(true, applyinstId, "部门辅导申请成功!");
-        } catch (Exception e) {
-            logger.error(e.getMessage(),e);
-            return new ContentResultForm(false,"",e.getMessage());
-        }
-    }
-
-    @GetMapping("guide/list")
-    @ApiOperation("部门辅导--> 部门辅导列表")
-    @ApiImplicitParams({
-            @ApiImplicitParam(value = "关键字",name = "keyword",required = false,dataType = "string"),
-            @ApiImplicitParam(value = "辅导状态",name = "applyState",required = false,dataType = "string"),
-            @ApiImplicitParam(value = "页面数量",name = "pageNum",required = true,dataType = "string"),
-            @ApiImplicitParam(value = "页面页数",name = "pageSize",required = true,dataType = "string")})
-    public ResultForm guideApplyList(String keyword, String applyState, int pageNum, int pageSize, HttpServletRequest request){
-        try {
-            LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
-            if("1".equals(loginInfo.getIsPersonAccount())){//个人
-                return new ContentResultForm<>(true,new PageInfo<AeaHiGuide>(restParallerApplyService.searchGuideApplyListByUnitIdAndUserId(keyword,applyState,"",loginInfo.getUserId(),pageNum,pageSize)));
-            }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
-                return new ContentResultForm<>(true,new PageInfo<AeaHiGuide>(restParallerApplyService.searchGuideApplyListByUnitIdAndUserId(keyword,applyState,loginInfo.getUnitId(),loginInfo.getUserId(),pageNum,pageSize)));
-            }else{//企业
-                return new ContentResultForm<>(true,new PageInfo<AeaHiGuide>(restParallerApplyService.searchGuideApplyListByUnitIdAndUserId(keyword,applyState,loginInfo.getUnitId(),"",pageNum,pageSize)));
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(),e);
-            return new ContentResultForm(false,"",e.getMessage());
-        }
-    }
-
     @PostMapping("itGuide/item/list")
     @ApiOperation(value = "阶段申报 --> 智能引导获取事项一单清列表数据")
     public ContentResultForm listItemAndStateByStageId(@Valid @RequestBody StageStateParamVo stageStateParamVo) {
@@ -307,31 +287,6 @@ public class RestParallerApplyController {
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             return new ContentResultForm(false,"","智能引导获取事项一单清列表数据异常");
-        }
-    }
-
-
-    @GetMapping("guideItems/list")
-    @ApiOperation(value = "阶段申报 --> 事项-部门确认/申请人确认接口")
-    @ApiImplicitParams({
-            @ApiImplicitParam(value = "部门辅导ID",name = "guideId",required = true,dataType = "string"),
-            @ApiImplicitParam(value = "申请实例ID",name = "applyinstId",required = true,dataType = "string"),
-            @ApiImplicitParam(value = "项目ID",name = "projInfoId",required = true,dataType = "string"),
-            @ApiImplicitParam(value = "是否展示事项情形 1 是，0 否", name = "isSelectItemState", required = true, dataType = "string")})
-    public ContentResultForm<ApplyIteminstConfirmVo> listGuideItemsByApplyinstId(String guideId,String applyinstId,String projInfoId,String isSelectItemState,HttpServletRequest request) {
-        try {
-            LoginInfoVo login = SessionUtil.getLoginInfo(request);
-            if(login==null) return new ContentResultForm(false,"","登录状态异常，请重新登录");
-            logger.error("-----listGuideItemsByApplyinstId----start--------");
-            long l=System.currentTimeMillis();
-            ApplyIteminstConfirmVo vo = restParallerApplyService.listGuideItemsByApplyinstId(guideId,applyinstId,projInfoId,isSelectItemState);
-            logger.error("-----listGuideItemsByApplyinstId----end--------耗时："+(System.currentTimeMillis()-l));
-            vo.setLoginType(StringUtils.isNotBlank(login.getUnitId())?"1":"0");
-            vo.setIdCardCode(StringUtils.isNotBlank(login.getUnitId())?login.getUnifiedSocialCreditCode():login.getIdCard());
-            return new ContentResultForm<ApplyIteminstConfirmVo>(true,vo);
-        } catch (Exception e) {
-            logger.error(e.getMessage(),e);
-            return new ContentResultForm(false,"","事项-部门确认/申请人确认接口异常");
         }
     }
 

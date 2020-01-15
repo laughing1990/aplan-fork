@@ -714,6 +714,45 @@ var vm = new Vue({
         reason: '',
       },
       // 项目代办 end ---------------------
+      // 项目代办-工程拆分--------------------start
+      splitEngineDialogVisiable: false,
+      splitForm: {
+        stageNo: '', //所处阶段
+        lastGcbm: '', //前阶段关联工程代码
+        childProjName: '', // 单项工程名称
+        childForeignManagement: '', //工程范围
+        childProjInvestSum: '', //单项工程投资额（万元）
+        childScaleContent: '', //单项工程建设规模
+        childXmYdmj: '', //用地面积
+        childBuildAreaSum: '', //建筑面积
+        unitType: '', //单位类型
+        unitName: '', //单位名称
+        certType: '', // 证件类型（1组织机构代码、2统一社会信用代码、3纳税人识别号）
+        certCode: '', //证件编号
+        idrepresentative: '', //法人姓名
+        idmobile: '', //法人手机号码
+        parentProjInfoId: '',  //父项目的projInfoId
+        localCode: '',   //父项目的localCode
+      },
+      splitRules: {
+        stageNo:  [{required: true, message: '请选择', trigger: 'blur'}], //所处阶段
+        lastGcbm: [{required: true, message: '请填写', trigger: 'blur'}], //前阶段关联工程代码
+        childProjName: [{required: true, message: '请填写', trigger: 'blur'}], // 单项工程名称
+        childForeignManagement: [{required: true, message: '请填写', trigger: 'blur'}], //工程范围
+        childProjInvestSum: [{required: true, message: '请填写', trigger: 'blur'}, {validator: checkNumFloat, trigger: ['blur']},], //单项工程投资额（万元）
+        childScaleContent: [{required: true, message: '请填写', trigger: 'blur'}], //单项工程建设规模
+        childXmYdmj: [{required: true, message: '请填写', trigger: 'blur'}, {validator: checkNumFloat, trigger: ['blur']},], //用地面积
+        childBuildAreaSum: [{required: true, message: '请填写', trigger: 'blur'}, {validator: checkNumFloat, trigger: ['blur']},], //建筑面积
+        unitType: [{required: true, message: '请选择', trigger: 'blur'}], //单位类型
+        unitName: [{required: true, message: '请填写', trigger: 'blur'}], //单位名称
+        certType: [{required: true, message: '请选择', trigger: 'blur'}], // 证件类型（1组织机构代码、2统一社会信用代码、3纳税人识别号）
+        certCode: [{required: true, message: '请填写', trigger: 'blur'}], //证件编号
+        idrepresentative: [{required: true, message: '请填写', trigger: 'blur'}], //法人姓名
+        idmobile: [{required: true, message: '请填写', trigger: 'blur'}, {validator: checkPhoneNum, trigger: ['blur']},], //法人手机号码
+      },
+      applyUnitTypeOptions: [],  //申报单位类型options
+
+      // 项目代办-工程拆分--------------------end
     }
   },
   created: function () {
@@ -7886,7 +7925,88 @@ var vm = new Vue({
       }, function (msg) {
 
       })
-    }
+    },
+
+    // 代办--拆分工程-----------start
+    splitEngineFn: function(){
+      // console.log( this.auProJForm)
+      this.splitEngineDialogVisiable = true;
+      this.fetchApplyUnitTypeOptions();
+      this.fetchApplyUnitData();
+    },
+    // 获取申报单位类型
+    fetchApplyUnitTypeOptions: function(){
+      var ts = this;
+      request('', { // 判断并行实施事项是否可选
+        url: ctx + 'aea/proj/apply/agent/getUnitTypeDic',
+        type: 'get',
+      }, function (res) {
+        if (res.success) {
+          ts.applyUnitTypeOptions = res.content;
+        } else {
+          ts.$message.error(res.message);
+        }
+      }, function (err) {
+        ts.$message.error('网络错误');
+      })
+    },
+    // 单位信息
+    fetchApplyUnitData: function(){
+      var ts = this;
+      request('', { // 判断并行实施事项是否可选
+        url: ctx + 'aea/proj/apply/agent/getSplitProjFromInfo',
+        type: 'get',
+        data: {
+          localCode: ts.projBascInfoShow.localCode
+        }
+      }, function (res) {
+        if (res.success) {
+          ts.handelApplyUnitData(res.content)
+        } else {
+          ts.$message.error(res.message);
+        }
+      }, function (err) {
+        ts.$message.error('网络错误');
+      })
+    },
+    // 处理默认的单位信息回显
+    handelApplyUnitData: function(data){
+      var keys = this.splitForm;
+      for(var k in keys){
+        data[k] && ( keys[k] = data[k]);
+      }
+    },
+    // 保存拆分工程数据
+    saveSplitFormData: function(){
+      var ts = this;
+      ts.$refs['splitForm'].validate(function(valid) {
+        if (valid) {
+          var saveData = {};
+          saveData = ts.splitForm;
+          // console.log(saveData)
+          // return
+          request('', {
+            url: ctx + 'aea/proj/apply/agent/saveSplitProjFromInfo',
+            type: 'post',
+            data: saveData
+          }, function (res) {
+            if (res.success) {
+              ts.$message.success('保存成功！');
+              ts.splitEngineDialogVisiable = false;
+              ts.showProjTree();
+            } else {
+              ts.$message.error(res.message);
+            }
+          }, function (err) {
+            ts.$message.error('网络错误');
+          })
+        } else {
+          ts.$message.warning('请完善信息')
+          return false;
+        }
+      });
+    },
+    // 代办--拆分工程-----------end
   },
   filters: {
     changeReceiveType: function (value) {

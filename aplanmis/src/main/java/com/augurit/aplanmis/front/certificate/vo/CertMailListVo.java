@@ -14,6 +14,9 @@ public class CertMailListVo {
     @ApiModelProperty(value = "事项出件主键id")
     private String sendItemId;
 
+    @ApiModelProperty(value = "事项实例id")
+    private String iteminstId;
+
     @ApiModelProperty(value = "申报实例id")
     private String applyinstId;
 
@@ -41,6 +44,7 @@ public class CertMailListVo {
     public static CertMailListVo from(AeaHiSmsSendItem aeaHiSmsSendItem) {
         CertMailListVo certMailListVo = new CertMailListVo();
         certMailListVo.setSendItemId(aeaHiSmsSendItem.getSendItemId());
+        certMailListVo.setIteminstId(aeaHiSmsSendItem.getIteminstId());
         certMailListVo.setApplyinstId(aeaHiSmsSendItem.getApplyinstId());
         certMailListVo.setStatus("派送中");
         certMailListVo.setExpressNum(aeaHiSmsSendItem.getExpressNum());

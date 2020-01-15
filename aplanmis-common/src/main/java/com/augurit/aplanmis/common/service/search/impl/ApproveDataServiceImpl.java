@@ -61,7 +61,7 @@ public class ApproveDataServiceImpl implements ApproveDataService {
 
     @Autowired
     private AeaItemBasicService aeaItemBasicService;
-    
+
     @Autowired
     private AeaProjInfoService aeaProjInfoService;
     @Autowired
@@ -103,9 +103,14 @@ public class ApproveDataServiceImpl implements ApproveDataService {
     }
 
     @Override
-    public PageInfo<ApproveProjInfoDto> searchApproveProjInfoListByUnitOrLinkman(String unitInfoId, String userInfoId, String state,String applyinstState, String keyword,String[] filterStates ,int pageNum, int pageSize) throws Exception {
+    public PageInfo<ApproveProjInfoDto> searchApproveProjInfoListByUnitOrLinkman(String unitInfoId, String userInfoId, String state,String applyinstState, String keyword,String[] filterStates ,int pageNum, int pageSize,String localCode,String stageId) throws Exception {
         PageHelper.startPage(pageNum,pageSize);
-        List<ApproveProjInfoDto> list = aeaHiIteminstMapper.getApproveProjInfoListByUnitOrLinkman(unitInfoId, userInfoId, state,applyinstState, keyword,filterStates);
+        List<ApproveProjInfoDto> list;
+        if (StringUtils.isNotBlank(stageId)){
+            list = aeaHiIteminstMapper.getApproveProjInfoListByStageIdAndLocalCodeAndUnitOrLinkman(unitInfoId, userInfoId, state,applyinstState, keyword,filterStates,localCode,stageId);
+        }else {
+            list = aeaHiIteminstMapper.getApproveProjInfoListByUnitOrLinkman(unitInfoId, userInfoId, state,applyinstState, keyword,filterStates);
+        }
         //this.convertStateCodeToName(SecurityContext.getCurrentOrgId(), list);
         convertCommentByState(list);
 //        if ("0".equals(state)) {//已办结

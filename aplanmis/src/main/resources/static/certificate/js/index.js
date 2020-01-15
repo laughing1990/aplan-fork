@@ -335,16 +335,22 @@ var vm = new Vue({
       cityList_jjr: [], // 所有市区信息
       countyList_jjr: [], // 所有地区信息
       isSmsSend: '0',//是否已经出件了
+      isEMSPage: false,
+      logicDialogVisible: false,
     }
   },
   mounted: function () {
-    var _that = this;
-    _that.applyinstId = applyinstId;
-    _that.windowUserName = windowUserName;
-    _that.searchSmsInfo();
-    _that.getFileListWin('', _that.selMatRowData);
-    // _that.getCertBasicInfoList();
-    _that.queryProvince();
+    var vm = this;
+    vm.applyinstId = applyinstId;
+    vm.windowUserName = windowUserName;
+    vm.isEMSPage = (__STATIC.getUrlParam('isEMS')=='true');
+    if (vm.isEMSPage) {
+      vm.EMSconfig();
+    }
+    vm.searchSmsInfo();
+    vm.getFileListWin('', vm.selMatRowData);
+    // vm.getCertBasicInfoList();
+    vm.queryProvince();
   },
   watch: {
     searchProjfilterText: function (val) {
@@ -355,22 +361,61 @@ var vm = new Vue({
     },
   },
   methods: {
+    // 查看物流
+    seeLogistic: function(row){
+      var vm = this;
+      vm.loading = true;
+      request('', {
+        url: ctx + 'rest/certificate/cert/logistics/detail',
+        type: 'get',
+        data: {
+          applyinstId: vm.applyinstId,
+          expressNum: row.expressNum,
+          iteminstId: row.iteminstId,
+        },
+      }, function(res){
+        vm.loading = false;
+        if (res.success) {
+          vm.logicDialogVisible = true;
+        } else {
+          vm.$message.error(res.message || '获取物流信息失败');
+        }
+      }, function() {
+        vm.loading = false;
+        vm.$message.error('获取物流信息失败');
+      });
+    },
+    EMSconfig: function(){
+      var vm = this;
+      vm.verticalTabData = [ // 左侧纵向导航数据
+        {
+          label: '事项信息列表',
+          target: 'baseInfo'
+        }, {
+          label: '收件人信息',
+          target: 'receiver'
+        }, {
+          label: '寄件人信息',
+          target: 'sender'
+        }
+      ];
+    },
     //一次出件
     doOnceSend: function () {
-      var _this = this;
-      if (_this.needSendItem.length == '0') {
+      var vm = this;
+      if (vm.needSendItem.length == '0') {
         return;
       }
-      if (_this.multipleSelection.length > 0 && _this.hadSelectionTmp.length > 0) {
-        _this.$message({
+      if (vm.multipleSelection.length > 0 && vm.hadSelectionTmp.length > 0) {
+        vm.$message({
           message: '已有个别事项出件，不能一次全选，请手动勾选！！',
           type: 'error'
         });
       } else {
-        // _this.toggleSelection(_this.tableData3);
-        $.each(_this.tableData3, function (idx, obj) {
+        // vm.toggleSelection(vm.tableData3);
+        $.each(vm.tableData3, function (idx, obj) {
           if (obj.hasOutCertinst == '1' && (obj.iteminstState == '11' || obj.iteminstState == '12')) {
-            _this.$refs.multipleTable.toggleRowSelection(obj);
+            vm.$refs.multipleTable.toggleRowSelection(obj);
           }
 
         });
@@ -378,15 +423,15 @@ var vm = new Vue({
     },
     // 获取省份信息
     queryProvince: function () {
-      var _that = this;
+      var vm = this;
       request('', {
         url: ctx + 'rest/apply/province',
         type: 'get'
       }, function (data) {
-        _that.provinceList = data.content;
-        _that.provinceList_jjr = data.content;
-        _that.queryCityData(0, 'jjr');
-        _that.queryCityData(0, 'lz');
+        vm.provinceList = data.content;
+        vm.provinceList_jjr = data.content;
+        vm.queryCityData(0, 'jjr');
+        vm.queryCityData(0, 'lz');
       })
     },
     // 选择省份
@@ -423,19 +468,19 @@ var vm = new Vue({
     },
     /** 获取制证所用基本信息**/
     /*getCertBasicInfoList: function () {
-        var _this = this;
+        var vm = this;
         request('', {
             url: ctx + 'rest/certificate/getBasicInfo',
             type: 'get'
         }, function (result) {
             if (result.content) {
-                _this.certList = result.content.certList;
-                _this.orgList = result.content.orgList;
-                _this.unitInfoList = result.content.orgList;
+                vm.certList = result.content.certList;
+                vm.orgList = result.content.orgList;
+                vm.unitInfoList = result.content.orgList;
             }
 
         }, function (msg) {
-            _this.$message({
+            vm.$message({
                 message: '服务请求失败',
                 type: 'error'
             });
@@ -474,35 +519,35 @@ var vm = new Vue({
     },
     targetCollapse: function (target, ind) { // 纵向导航点击事件
       this.activeTab = ind;
-      $(document).scrollTop($('#' + target).offset().top)
+      // $(document).scrollTop($('#' + target).offset().top)
     },
     handleScroll: function () { // 屏幕滚动纵向导航相应获取焦点
       var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
       var ele = $('.el-collapse-item');
       var eleLen = ele.length;
-      var _that = this;
+      var vm = this;
       for (var i = 0; i < eleLen; i++) {
         if (scrollTop >= ($(ele[i]).offset().top - 60)) {
-          _that.activeTab = i
+          vm.activeTab = i
         }
       }
     },
     //更新证照信息
     updateItemCert: function () {
-      var _this = this;
-      if (_this.editCertForm.issueDate == '' || _this.editCertForm.issueDate == null) {
-        _this.$message({
+      var vm = this;
+      if (vm.editCertForm.issueDate == '' || vm.editCertForm.issueDate == null) {
+        vm.$message({
           message: '请选择日期',
           type: 'error'
         });
       }
       var detailId = '';
-      if (_this.uploadCertData.length > 0) {
-        $.each(_this.uploadCertData, function (idx, obj) {
+      if (vm.uploadCertData.length > 0) {
+        $.each(vm.uploadCertData, function (idx, obj) {
           detailId += obj.fileId + ",";
         });
       } else {
-        _this.$message({
+        vm.$message({
           message: '请先上传证照！！',
           type: 'error'
         });
@@ -510,14 +555,14 @@ var vm = new Vue({
       }
 
       detailId = detailId.substring(0, detailId.length - 1);
-      _this.$refs['editCertForm'].validate(function (valid) {
+      vm.$refs['editCertForm'].validate(function (valid) {
         if (valid) {
-          var obj = _this.editCertForm;
+          var obj = vm.editCertForm;
           obj.attLinkId = detailId;
-          obj.iteminstId = _this.currentIteminstId;
-          obj.termStart = _this.dateFormat(obj.termStart);
-          obj.termEnd = _this.dateFormat(obj.termEnd);
-          obj.issueDate = _this.dateFormat(obj.issueDate);
+          obj.iteminstId = vm.currentIteminstId;
+          obj.termStart = vm.dateFormat(obj.termStart);
+          obj.termEnd = vm.dateFormat(obj.termEnd);
+          obj.issueDate = vm.dateFormat(obj.issueDate);
           obj.bscAttDetails = [];
           obj.applyinstId = applyinstId;
           request('', {
@@ -525,11 +570,11 @@ var vm = new Vue({
             type: 'post',
             data: obj
           }, function (result) {
-            _this.editCertModalShow = false;
+            vm.editCertModalShow = false;
 
 
           }, function (msg) {
-            _this.$message({
+            vm.$message({
               message: '服务请求失败',
               type: 'error'
             });
@@ -547,8 +592,13 @@ var vm = new Vue({
     },
     //已出件的不给勾选
     checkboxInit2: function (row, idx) {
-      var _this = this;
-      if (row.isSmsSend == '1' || row.hasOutCertinst == "0" || row.iteminstState == '13') {
+      var vm = this;
+      if (
+        row.isSmsSend == '1' ||
+        row.hasOutCertinst == "0" ||
+        row.iteminstState == '13' ||
+        row.handled
+      ) {
         return false;
       } else {
         return true;
@@ -558,21 +608,21 @@ var vm = new Vue({
      * 点击tab显示不同的证照实例详情
      */
     showCertPage: function (event) {
-      var _this = this;
+      var vm = this;
       var id = event.name;
-      for (var i = 0, len = _this.certTableTabs.length; i < len; i++) {
-        if (id == _this.certTableTabs[i].id) {
-          _this.editCertForm = _this.certTableTabs[i].data;
-          _this.editCertFormType = _this.certTableTabs[i].type;
+      for (var i = 0, len = vm.certTableTabs.length; i < len; i++) {
+        if (id == vm.certTableTabs[i].id) {
+          vm.editCertForm = vm.certTableTabs[i].data;
+          vm.editCertFormType = vm.certTableTabs[i].type;
           break;
         }
       }
-      _this.getCertListWin(id, _this.editCertFormType);
+      vm.getCertListWin(id, vm.editCertFormType);
     },
     /** 查看cert信息*/
     handleEdit: function (index, row) {
-      var _this = this;
-      _this.currentIteminstId = row.iteminstId;
+      var vm = this;
+      vm.currentIteminstId = row.iteminstId;
 
 
       request('', {
@@ -581,20 +631,20 @@ var vm = new Vue({
         data: {'iteminstId': row.iteminstId, 'applyinstId': applyinstId}
       }, function (result) {
         if (result.content) {
-          _this.certTableTabs = result.content;
-          _this.tabActive = result.content[0].id;
-          _this.editCertFormType = result.content[0].type;
-          _this.editCertForm = result.content[0].data;
-          _this.getCertListWin(_this.tabActive, _this.editCertFormType);
+          vm.certTableTabs = result.content;
+          vm.tabActive = result.content[0].id;
+          vm.editCertFormType = result.content[0].type;
+          vm.editCertForm = result.content[0].data;
+          vm.getCertListWin(vm.tabActive, vm.editCertFormType);
         }
 
       }, function (msg) {
-        _this.$message({
+        vm.$message({
           message: '服务请求失败',
           type: 'error'
         });
       });
-      _this.editCertModalShow = true;
+      vm.editCertModalShow = true;
 
     },
     toggleSelection: function (rows) {
@@ -626,71 +676,76 @@ var vm = new Vue({
     },
     //根据applyinstId获取寄件收件人及事项信息信息
     searchSmsInfo: function () {
-      var _that = this;
+      var vm = this;
       var _windowUserName = this.windowUserName;
       var _applyinstId = this.applyinstId;
       var tmp = [];
+      vm.loading = true;
+      var _url = ctx + 'rest/certificate/out/materials/register';
+      if (vm.isEMSPage) {
+        _url = ctx + 'rest/certificate/out/materials/mail/post';
+      }
       request('', {
-        url: ctx + 'rest/certificate/out/materials/register',
-        type: 'post',
+        url: _url,
+        type: 'get',
         data: {'applyinstId': _applyinstId}
       }, function (result) {
-
+        vm.loading = false;
         if (result.content) {
-          _that.tableData3 = _that.getShow(result.content.certRegistrationItemVos);
-          _that.sendInfoForm = result.content.smsInfo;
-          // _that.sendInfoForm.senderPhone = '';
-          // _that.sendInfoForm.senderName = _windowUserName;
-          _that.sendInfoForm.smsType = '1';
-          _that.sendInfoForm.isConsigner = '0';
-          _that.$nextTick(function () {
-            $.each(_that.tableData3, function (idx, obj) {
+          vm.tableData3 = vm.getShow(result.content.certRegistrationItemVos);
+          vm.sendInfoForm = result.content.smsInfo;
+          // vm.sendInfoForm.senderPhone = '';
+          // vm.sendInfoForm.senderName = _windowUserName;
+          vm.sendInfoForm.smsType = '1';
+          vm.sendInfoForm.isConsigner = '0';
+          vm.$nextTick(function () {
+            $.each(vm.tableData3, function (idx, obj) {
               if (obj.isSmsSend == '1') {
-                _that.$refs.multipleTable.toggleRowSelection(obj);
+                vm.$refs.multipleTable.toggleRowSelection(obj);
 
-                _that.setHadSendIndex();
+                vm.setHadSendIndex();
               }
               if (obj.hasOutCertinst == '1') {
-                _that.needSendItem.push(obj);
+                vm.needSendItem.push(obj);
               }
             });
 
-            /*if (_that.tableData3.length == _that.multipleSelection.length) {
-                _that.showSaveBtn = false;
+            /*if (vm.tableData3.length == vm.multipleSelection.length) {
+                vm.showSaveBtn = false;
             }*/
-            if (_that.needSendItem.length == _that.multipleSelection.length) {
-              _that.showSaveBtn = false;
+            if (vm.needSendItem.length == vm.multipleSelection.length) {
+              vm.showSaveBtn = false;
             }
-            if (_that.needSendItem.length == 0) {
-              _that.showSaveBtn = false;
+            if (vm.needSendItem.length == 0) {
+              vm.showSaveBtn = false;
             }
-            _that.hadSelectionTmp = _that.multipleSelection;
-            if (_that.sendInfoForm.receiveMode == "0") {
-              _that.receiveModeShow = true;
+            vm.hadSelectionTmp = vm.multipleSelection;
+            if (vm.sendInfoForm.receiveMode == "0") {
+              vm.receiveModeShow = true;
             } else {
-              _that.receiveModeShow = false;
+              vm.receiveModeShow = false;
             }
 
 
             $.each(this.provinceList, function (idx, obj) {
               if (obj.code == result.content.smsInfo.addresseeProvince) {
                 var index = idx;
-                _that.queryCityData(index, "lz");
+                vm.queryCityData(index, "lz");
                 $.each(this.cityList, function (idx2, obj2) {
                   if (obj2.code == result.content.smsInfo.addresseeCity) {
                     var index2 = idx2;
-                    _that.queryAreaData(index2, "lz");
+                    vm.queryAreaData(index2, "lz");
                   }
                 });
               }
 
               if (obj.code == result.content.smsInfo.senderProvince) {
                 var index = idx;
-                _that.queryCityData(index, "jjr");
+                vm.queryCityData(index, "jjr");
                 $.each(this.cityList, function (idx2, obj2) {
                   if (obj2.code == result.content.smsInfo.senderCity) {
                     var index2 = idx2;
-                    _that.queryAreaData(index2, "jjr");
+                    vm.queryAreaData(index2, "jjr");
                   }
                 });
               }
@@ -699,7 +754,8 @@ var vm = new Vue({
         }
 
       }, function (msg) {
-        _that.$message({
+        vm.loading = false;
+        vm.$message({
           message: '服务请求失败',
           type: 'error'
         });
@@ -712,14 +768,14 @@ var vm = new Vue({
      * 保存出证信息
      */
     saveSmsFormInfo: function () {
-      var _this = this;
+      var vm = this;
       //封装采集参数
       var param = {};
       var validateResult = true;
 
-      _this.$refs['receInfo'].validate(function (valid) {
+      vm.$refs['receInfo'].validate(function (valid) {
         if (!valid) {
-          _this.$message({
+          vm.$message({
             message: '请输入完整信息！',
             type: 'error'
           });
@@ -727,9 +783,9 @@ var vm = new Vue({
           return false;
         }
       });
-      _this.$refs['consignerInfo'].validate(function (valid) {
+      vm.$refs['consignerInfo'].validate(function (valid) {
         if (!valid) {
-          _this.$message({
+          vm.$message({
             message: '请输入完整信息！',
             type: 'error'
           });
@@ -737,10 +793,10 @@ var vm = new Vue({
           return false;
         }
       });
-      if (_this.sendInfoForm.receiveMode == '1') {
-        _this.$refs['sendInfo'].validate(function (valid) {
+      if (vm.sendInfoForm.receiveMode == '1') {
+        vm.$refs['sendInfo'].validate(function (valid) {
           if (!valid) {
-            _this.$message({
+            vm.$message({
               message: '请输入完整信息！',
               type: 'error'
             });
@@ -750,9 +806,9 @@ var vm = new Vue({
         });
       } else {
 
-        _this.$refs['sendInfo_jjr'].validate(function (valid) {
+        vm.$refs['sendInfo_jjr'].validate(function (valid) {
           if (!valid) {
-            _this.$message({
+            vm.$message({
               message: '请输入完整信息！',
               type: 'error'
             });
@@ -762,9 +818,9 @@ var vm = new Vue({
         });
       }
 
-      _this.$refs['receInfo2'].validate(function (valid) {
+      !vm.isEMSPage && vm.$refs['receInfo2'].validate(function (valid) {
         if (!valid) {
-          _this.$message({
+          vm.$message({
             message: '请输入完整信息！',
             type: 'error'
           });
@@ -776,7 +832,7 @@ var vm = new Vue({
 
       //判断是否一次上传
       var _tmpSelection = [];
-      if (_this.multipleSelection.length == 0) {
+      if (vm.multipleSelection.length == 0) {
         this.$message({
           message: '请勾选要出证的事项！',
           type: 'error'
@@ -784,12 +840,12 @@ var vm = new Vue({
         return;
 
       } else {
-        $.each(_this.multipleSelection, function (idx, obj) {
+        $.each(vm.multipleSelection, function (idx, obj) {
           if (obj.isSmsSend != '1') {
             _tmpSelection.push(obj);
           }
         });
-        if (_tmpSelection.length == _this.needSendItem.length) {
+        if (_tmpSelection.length == vm.needSendItem.length) {
           param.isOnceSend = '1';
         } else {
           param.isOnceSend = '0';
@@ -797,15 +853,15 @@ var vm = new Vue({
       }
       // debugger
       param.applyinstId = applyinstId;
-      param.isSeriesApprove = _this.multipleSelection[0].isSeriesApprove;
-      _this.sendInfoForm.windowUserName = windowUserName;
-      _this.sendInfoForm.windowUserId = windowUserId;
-      param.sendBean = _this.sendInfoForm;
-      param.consignerForm = _this.consignerForm;
+      param.isSeriesApprove = vm.multipleSelection[0].isSeriesApprove;
+      vm.sendInfoForm.windowUserName = windowUserName;
+      vm.sendInfoForm.windowUserId = windowUserId;
+      param.sendBean = vm.sendInfoForm;
+      param.consignerForm = vm.consignerForm;
 
 
-      if (_this.sendInfoForm.isConsigner == '1') {
-        if (_this.uploadTableData.length == 0) {
+      if (vm.sendInfoForm.isConsigner == '1') {
+        if (vm.uploadTableData.length == 0) {
           this.$message({
             message: '委托领取请上传委托书！',
             type: 'error'
@@ -816,33 +872,45 @@ var vm = new Vue({
       } else {
         param.sendBean.isConsigner = '0';
       }
-      if (_this.uploadTableData.length > 0) {
+      if (vm.uploadTableData.length > 0) {
         var fileIds = [];
-        $.each(_this.uploadTableData, function (idx, obj) {
+        $.each(vm.uploadTableData, function (idx, obj) {
           fileIds.push(obj.fileId);
         });
-        _this.sendInfoForm.consignerAttId = fileIds.join(",");
+        vm.sendInfoForm.consignerAttId = fileIds.join(",");
       }
 
-      param.iteminsts = _this.multipleSelection;
-
+      // param.iteminsts = vm.multipleSelection;
+      param.certRegistrationItemVos = vm.multipleSelection;
+      var _url = ctx + 'rest/certificate/out/materials/confirm';
+      if (vm.isEMSPage) {
+        _url = ctx + 'rest/certificate/out/materials/mail/order';
+      }
       if (validateResult) {
+        vm.loading = true;
         request('', {
-          url: ctx + 'rest/certificate/out/materials/confirm',
+          url: _url,
           type: 'post',
           data: JSON.stringify(param),
           ContentType: "application/json"
         }, function (result) {
+          vm.loading = false;
           if (result.success) {
-            _this.$message({
-              message: '保存成功',
+            var text = '取件成功';
+            if (vm.isEMSPage) {
+              text = '下单成功，快递单号是：' + result.content;
+            }
+            vm.$message({
+              message: text,
               type: 'success'
             });
-            _this.closeWindowTab();
+            vm.closeWindowTab();
+          } else {
+            vm.$message.error(result.message||'操作失败');
           }
-
         }, function (msg) {
-          _this.$message({
+          vm.loading = false;
+          vm.$message({
             message: '服务请求失败',
             type: 'error'
           });
@@ -859,26 +927,28 @@ var vm = new Vue({
      * @param row
      */
     editSMSSend: function (index, row) {
-      var _this = this;
+      var vm = this;
+      vm.loading = true;
       request('', {
         url: ctx + 'rest/certificate/out/materials/detail',
         type: 'get',
         data: {'iteminstId': row.iteminstId, 'applyinstId': applyinstId}
       }, function (result) {
+        vm.loading = false;
         if (result.content) {
-          _this.ItemSmsInfoForm = result.content;
-          _this.showDifName(_this.ItemSmsInfoForm.isConsigner, _this.ItemSmsInfoForm.receiveMode)
-          _this.receiveMode_dig = _this.ItemSmsInfoForm.receiveMode;
-          _this.isConsigner_dig = _this.ItemSmsInfoForm.isConsigner
-          var proviceCode = _this.ItemSmsInfoForm.addresseeProvince
-          var cityCode = _this.ItemSmsInfoForm.addresseeCity;
-          for (var i = 0, len = _this.provinceList.length; i < len; i++) {
-            if (proviceCode == _this.provinceList[i].code) {
-              var list = _this.provinceList[i].cityList;
-              _this.cityList = list;
+          vm.ItemSmsInfoForm = result.content;
+          vm.showDifName(vm.ItemSmsInfoForm.isConsigner, vm.ItemSmsInfoForm.receiveMode)
+          vm.receiveMode_dig = vm.ItemSmsInfoForm.receiveMode;
+          vm.isConsigner_dig = vm.ItemSmsInfoForm.isConsigner
+          var proviceCode = vm.ItemSmsInfoForm.addresseeProvince
+          var cityCode = vm.ItemSmsInfoForm.addresseeCity;
+          for (var i = 0, len = vm.provinceList.length; i < len; i++) {
+            if (proviceCode == vm.provinceList[i].code) {
+              var list = vm.provinceList[i].cityList;
+              vm.cityList = list;
               for (var j = 0, len = list.length; j < len; j++) {
                 if (cityCode == list[j].code) {
-                  _this.countyList = list[j].areaList;
+                  vm.countyList = list[j].areaList;
                   break;
                 }
               }
@@ -889,13 +959,14 @@ var vm = new Vue({
         }
 
       }, function (msg) {
-        _this.$message({
+        vm.loading = false;
+        vm.$message({
           message: '服务请求失败',
           type: 'error'
         });
       });
 
-      _this.editItemSmsInfoModalShow = true;
+      vm.editItemSmsInfoModalShow = true;
     },
 
     /**
@@ -904,38 +975,38 @@ var vm = new Vue({
      * @param receiveMode
      */
     showDifName: function (isConsigner, receiveMode) {
-      var _this = this;
+      var vm = this;
       if (isConsigner == '0') {
-        _this.addresseeName = "领证人姓名：";
-        _this.addresseePhone = "领证人电话：";
-        _this.addresseeIdcard = "领证人身份证：";
-        _this.addresseeP = "领证人区域：";
-        _this.addresseeAddr = "领证人详细地址：";
+        vm.addresseeName = "领证人姓名：";
+        vm.addresseePhone = "领证人电话：";
+        vm.addresseeIdcard = "领证人身份证：";
+        vm.addresseeP = "领证人区域：";
+        vm.addresseeAddr = "领证人详细地址：";
 
       } else {
-        _this.addresseeName = "委托人姓名：";
-        _this.addresseePhone = "委托人电话：";
-        _this.addresseeIdcard = "委托人身份证：";
-        _this.addresseeP = "委托人区域：";
-        _this.addresseeAddr = "委托人详细地址：";
+        vm.addresseeName = "委托人姓名：";
+        vm.addresseePhone = "委托人电话：";
+        vm.addresseeIdcard = "委托人身份证：";
+        vm.addresseeP = "委托人区域：";
+        vm.addresseeAddr = "委托人详细地址：";
       }
 
       if (receiveMode == '0') {
-        _this.senderName = "寄件人姓名：";
-        _this.senderPhone = "寄件人电话：";
-        _this.senderAddr = "寄件人详细地址：";
+        vm.senderName = "寄件人姓名：";
+        vm.senderPhone = "寄件人电话：";
+        vm.senderAddr = "寄件人详细地址：";
       } else {
-        _this.senderName = "出件人姓名：";
-        _this.senderPhone = "出件人电话：";
-        _this.senderAddr = "出件人详细地址：";
+        vm.senderName = "出件人姓名：";
+        vm.senderPhone = "出件人电话：";
+        vm.senderAddr = "出件人详细地址：";
       }
     },
     //更新单个事项出证详情
     updateSendItemInfo: function () {
-      var _this = this;
-      _this.$refs['ItemSmsInfoForm'].validate(function (valid) {
+      var vm = this;
+      vm.$refs['ItemSmsInfoForm'].validate(function (valid) {
         if (!valid) {
-          _this.$message({
+          vm.$message({
             message: '请输入完整信息！',
             type: 'error'
           });
@@ -943,8 +1014,8 @@ var vm = new Vue({
         }
       });
 
-      if (_this.ItemSmsInfoForm.isConsigner == '1') {
-        if (_this.uploadTableData.length == 0) {
+      if (vm.ItemSmsInfoForm.isConsigner == '1') {
+        if (vm.uploadTableData.length == 0) {
           this.$message({
             message: '委托领取请上传委托书！',
             type: 'error'
@@ -953,15 +1024,15 @@ var vm = new Vue({
         }
 
       }
-      if (_this.uploadTableData.length > 0) {
+      if (vm.uploadTableData.length > 0) {
         var fileIds = [];
-        $.each(_this.uploadTableData, function (idx, obj) {
+        $.each(vm.uploadTableData, function (idx, obj) {
           fileIds.push(obj.fileId);
         });
-        _this.ItemSmsInfoForm.consignerAttId = fileIds.join(",");
+        vm.ItemSmsInfoForm.consignerAttId = fileIds.join(",");
       }
       //封装采集参数
-      var param = _this.ItemSmsInfoForm;
+      var param = vm.ItemSmsInfoForm;
       request('', {
         url: ctx + 'rest/certificate/updateSendItemInfo',
         type: 'post',
@@ -969,15 +1040,15 @@ var vm = new Vue({
         ContentType: "application/json"
       }, function (result) {
         if (result.success) {
-          _this.$message({
+          vm.$message({
             message: '更新成功',
             type: 'success'
           });
-          _this.editItemSmsInfoModalShow = false;
+          vm.editItemSmsInfoModalShow = false;
         }
 
       }, function (msg) {
-        _this.$message({
+        vm.$message({
           message: '服务请求失败',
           type: 'error'
         });
@@ -994,7 +1065,7 @@ var vm = new Vue({
 
 //获取已上传证照
     getCertListWin: function (instId, type) {
-      var _that = this;
+      var vm = this;
 
       request('', {
         url: ctx + 'rest/certificate/out/materials/attachments',
@@ -1003,16 +1074,16 @@ var vm = new Vue({
       }, function (res) {
         if (res.success) {
           if (res.content) {
-            _that.uploadCertData = res.content;
+            vm.uploadCertData = res.content;
           }
         } else {
-          _that.$message({
+          vm.$message({
             message: res.message ? res.message : '加载已上传材料列表失败',
             type: 'error'
           });
         }
       }, function (msg) {
-        _that.$message({
+        vm.$message({
           message: '服务请求失败',
           type: 'error'
         });
@@ -1022,27 +1093,27 @@ var vm = new Vue({
 
     // 获取已上传文件列表
     getFileListWin: function (matid, rowData) {
-      var _that = this;
+      var vm = this;
       request('', {
         url: ctx + 'rest/certificate/consignerAtt/list',
         type: 'get',
-        data: {'applyinstId': _that.applyinstId}
+        data: {'applyinstId': vm.applyinstId}
       }, function (res) {
         if (res.success) {
           if (res.content) {
-            _that.uploadTableData = res.content;
+            vm.uploadTableData = res.content;
             if (rowData) {
               rowData.children = res.content;
             }
           }
         } else {
-          _that.$message({
+          vm.$message({
             message: res.message ? res.message : '加载已上传材料列表失败',
             type: 'error'
           });
         }
       }, function (msg) {
-        _that.$message({
+        vm.$message({
           message: '服务请求失败',
           type: 'error'
         });
@@ -1051,14 +1122,14 @@ var vm = new Vue({
 
     // 预览电子件
     filePreview: function (data) {
-      var _that = this;
+      var vm = this;
       var detailId = data.fileId;
       var flashAttributes = '';
       // console.log(data);
       var regText = /doc|docx|ppt|pptx|xls|xlsx|txt$/;
       var fileName = data.fileName;
       var fileType = this.getFileType(fileName);
-      _that.filePreviewCount++;
+      vm.filePreviewCount++;
       if (fileType == 'pdf') {
         var tempwindow = window.open(); // 先打开页面
         setTimeout(function () {
@@ -1066,43 +1137,43 @@ var vm = new Vue({
         }, 1000)
       } else if (regText.test(fileType)) {
         // previewPdf/pdfIsCoverted
-        _that.loading = true;
+        vm.loading = true;
         request('', {
           url: ctx + 'previewPdf/pdfIsCoverted?detailId=' + detailId,
           type: 'get',
         }, function (result) {
           if (result.success) {
-            _that.loading = false;
+            vm.loading = false;
             var tempwindow = window.open(); // 先打开页面
             setTimeout(function () {
               tempwindow.location = ctx + 'previewPdf/view?detailId=' + detailId;
             }, 1000)
           } else {
-            if (_that.filePreviewCount > 9) {
+            if (vm.filePreviewCount > 9) {
               confirmMsg('提示信息：', '文件预览请求中，是否继续等待？', function () {
-                _that.filePreviewCount = 0;
-                _that.filePreview(data);
+                vm.filePreviewCount = 0;
+                vm.filePreview(data);
               }, function () {
-                _that.filePreviewCount = 0;
-                _that.loading = false;
+                vm.filePreviewCount = 0;
+                vm.loading = false;
                 return false;
               }, '确定', '取消', 'warning', true)
 
             } else {
               setTimeout(function () {
-                _that.filePreview(data);
+                vm.filePreview(data);
               }, 1000)
             }
           }
         }, function (msg) {
-          _that.loading = false;
-          _that.$message({
+          vm.loading = false;
+          vm.$message({
             message: '文件预览失败',
             type: 'error'
           });
         })
       } else {
-        _that.loading = false;
+        vm.loading = false;
         var tempwindow = window.open(); // 先打开页面
         setTimeout(function () {
           tempwindow.location = ctx + 'rest/mats/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
@@ -1114,7 +1185,7 @@ var vm = new Vue({
        try {
            window.open(url);
        } catch (e) {
-           _that.$message({
+           vm.$message({
                message: '服务请求失败',
                type: 'error'
            });
@@ -1140,16 +1211,16 @@ var vm = new Vue({
     },
     // 下载电子件
     downloadFile: function () {
-      var _that = this;
+      var vm = this;
       var detailIds = [];
-      if (_that.fileSelectionList.length == 0) {
-        _that.$message({
+      if (vm.fileSelectionList.length == 0) {
+        vm.$message({
           message: '请勾选数据后操作！',
           type: 'error'
         });
         return false;
       }
-      _that.fileSelectionList.map(function (item, index) {
+      vm.fileSelectionList.map(function (item, index) {
         detailIds.push(item.matinstId);
       });
       detailIds = detailIds.join(',')
@@ -1158,40 +1229,40 @@ var vm = new Vue({
 
     // 上传电子件
     uploadFileCom: function (file) {
-      var _that = this;
-      var rowData = _that.selMatRowData;
+      var vm = this;
+      var rowData = vm.selMatRowData;
       this.fileWinData = new FormData();
       Vue.set(file.file, 'fileName', file.file.name);
       this.fileWinData.append('file', file.file);
       this.fileWinData.append("applyinstId", applyinstId);
 
-      _that.loadingFileWin = true;
-      axios.post(ctx + 'rest/certificate/consignerAtt/upload', _that.fileWinData).then(function (res) {
+      vm.loadingFileWin = true;
+      axios.post(ctx + 'rest/certificate/consignerAtt/upload', vm.fileWinData).then(function (res) {
         Vue.set(file.file, 'matinstId', res.data.content)
-        // _that.sendInfoForm.consignerAttId = res.data.content;
-        _that.getFileListWin(res.data.content, rowData);
+        // vm.sendInfoForm.consignerAttId = res.data.content;
+        vm.getFileListWin(res.data.content, rowData);
 
 
-        _that.loadingFileWin = false;
-        _that.$message({
+        vm.loadingFileWin = false;
+        vm.$message({
           message: '上传成功',
           type: 'success'
         });
 
       }).catch(function (error) {
-        _that.loadingFileWin = false;
+        vm.loadingFileWin = false;
         if (error.response) {
-          _that.$message({
+          vm.$message({
             message: '文件上传失败(' + error.response.status + ')，' + error.response.data,
             type: 'error'
           });
         } else if (error.request) {
-          _that.$message({
+          vm.$message({
             message: '文件上传失败，服务器端无响应',
             type: 'error'
           });
         } else {
-          _that.$message({
+          vm.$message({
             message: '文件上传失败，请求封装失败',
             type: 'error'
           });
@@ -1202,16 +1273,16 @@ var vm = new Vue({
     //删除证照
     delSelectCertCom: function () {
 
-      var _that = this;
+      var vm = this;
       var detailIds = [];
-      if (_that.certSelectionList.length == 0) {
-        _that.$message({
+      if (vm.certSelectionList.length == 0) {
+        vm.$message({
           message: '请勾选数据后操作！',
           type: 'error'
         });
         return false;
       }
-      _that.certSelectionList.map(function (item, index) {
+      vm.certSelectionList.map(function (item, index) {
         detailIds.push(item.fileId);
       });
       detailIds = detailIds.join(',')
@@ -1221,19 +1292,19 @@ var vm = new Vue({
         data: {'detailIds': detailIds}
       }, function (res) {
         if (res.success) {
-          _that.getCertListWin(_that.tabActive, _that.editCertFormType);
-          _that.$message({
+          vm.getCertListWin(vm.tabActive, vm.editCertFormType);
+          vm.$message({
             message: '删除成功',
             type: 'success'
           });
         } else {
-          _that.$message({
+          vm.$message({
             message: res.message ? res.message : '删除失败',
             type: 'error'
           });
         }
       }, function (msg) {
-        _that.$message({
+        vm.$message({
           message: '服务请求失败',
           type: 'error'
         });
@@ -1241,16 +1312,16 @@ var vm = new Vue({
     },
     // 删除电子件
     delSelectFileCom: function () {
-      var _that = this;
+      var vm = this;
       var detailIds = [];
-      if (_that.fileSelectionList.length == 0) {
-        _that.$message({
+      if (vm.fileSelectionList.length == 0) {
+        vm.$message({
           message: '请勾选数据后操作！',
           type: 'error'
         });
         return false;
       }
-      _that.fileSelectionList.map(function (item, index) {
+      vm.fileSelectionList.map(function (item, index) {
         detailIds.push(item.fileId);
       });
       detailIds = detailIds.join(',')
@@ -1260,19 +1331,19 @@ var vm = new Vue({
         data: {'detailIds': detailIds, 'applyinstId': applyinstId}
       }, function (res) {
         if (res.success) {
-          _that.getFileListWin('', _that.selMatRowData);
-          _that.$message({
+          vm.getFileListWin('', vm.selMatRowData);
+          vm.$message({
             message: '删除成功',
             type: 'success'
           });
         } else {
-          _that.$message({
+          vm.$message({
             message: res.message ? res.message : '删除失败',
             type: 'error'
           });
         }
       }, function (msg) {
-        _that.$message({
+        vm.$message({
           message: '服务请求失败',
           type: 'error'
         });
@@ -1335,11 +1406,11 @@ var vm = new Vue({
     },
     //设置已取件页面
     setHadSendIndex: function () {
-      var _that = this;
-      _that.isSmsSend = '1';
+      var vm = this;
+      vm.isSmsSend = '1';
       var _verticalTabData = [];
-      _verticalTabData.push(_that.verticalTabData[0]);
-      _that.verticalTabData = _verticalTabData;
+      _verticalTabData.push(vm.verticalTabData[0]);
+      vm.verticalTabData = _verticalTabData;
     }
   },
 

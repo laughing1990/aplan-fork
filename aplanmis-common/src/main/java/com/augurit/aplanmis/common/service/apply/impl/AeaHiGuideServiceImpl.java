@@ -285,4 +285,11 @@ public class AeaHiGuideServiceImpl implements AeaHiGuideService {
 
         aeaHiGuideMapper.updateAeaHiGuide(aeaHiGuide);
     }
+
+    @Override
+    public List<AeaHiGuide> getAeaHiGuideByApplyinstId(String applyinstId){
+        AeaHiGuide query=new AeaHiGuide();
+        query.setApplyinstId(applyinstId);
+        return aeaHiGuideMapper.listAeaHiGuide(query);
+    }
 }

@@ -17,7 +17,7 @@ var listmatter = (function(window){
             parallelItemList:[],
             parallelItemCheckData:[],// 筛选出isDoneItem为“1”的数据
             noRequireParallelItemCheckData:[], // 非必选的并联事项（用户后来可以自由勾选的）
-            itemStateList:[], // 事项情形列表
+           /* itemStateList:[], // 事项情形列表*/
             requireMat:[],// 必选材料
             noRequireMat:[], //可选材料
 
@@ -158,7 +158,7 @@ var listmatter = (function(window){
                     }
                 })
             },
-            //根据事项版本号获取根情形列表
+            // 切换审批层次
             currentItemVerIdChangehandle:function(item ,index){
                 console.log(item);
                 console.log(index);
@@ -167,22 +167,6 @@ var listmatter = (function(window){
                 this.parallelItemList[index].currentCarryOutItem.orgName = item.orgName;
                 this.parallelItemList[index].currentCarryOutItem.dueNum = item.dueNum;
                 //this.getItemStateList(itemVerId);
-            },
-            getItemStateList:function(itemVerId){
-                var vm = this;
-                request('', {
-                    url: ctx + 'rest/userCenter/apply/series/itemState/list/'+itemVerId,
-                    type: 'get',
-                }, function (res) {
-                    if (res.success) {
-                        vm.itemStateList = res.content;
-                    } else {
-                        vm.$message.error(res.message);
-                    }
-
-                }, function () {
-                    vm.$message.error('根据事项版本号获取根情形列表接口失败，请稍后重试！');
-                });
             },
             //二、单独勾选表格中某条数据所对应的勾选框
             selectParallelItem:function(selection,row){
@@ -354,7 +338,6 @@ var listmatter = (function(window){
                     "stageId":vm.stageId, // 阶段id
                     "stateIds": stateIds // 情形ID列表
                 };
-
                 $.ajax({
                     url: ctx + 'rest/guide/itGuide/item/list', // 智能引导获取事项一单清列表数据
                     type: 'post',
@@ -423,7 +406,7 @@ var listmatter = (function(window){
                     var isflag ;
                     for (var j = 0; j < coreItemList.length; j++) {
                         if(coreItemList[j].itemVerId == vm.coreItemList[i].itemVerId){
-                            isExit = true;
+                            isflag = true;
                         }
                     }
                     vm.$nextTick(function(){
@@ -437,7 +420,7 @@ var listmatter = (function(window){
                     var isflag ;
                     for (var j = 0; j < parallelItemList.length; j++) {
                         if(parallelItemList[j].itemVerId == vm.parallelItemList[i].itemVerId){
-                            isExit = true;
+                            isflag = true;
                         }
                     }
                     vm.$nextTick(function(){
@@ -448,5 +431,69 @@ var listmatter = (function(window){
                 }
             },
         }
-    })
+    });
+    Vue.component('list',{
+        template:"#recursionList",
+        props: {
+            list: Array
+        },
+        methods:{
+            // 事项父情形下获取事项子情形
+            getMatterChildsStateList:function(cStateList,pData,answerData,index,type,value){
+                var vm = this;
+                console.log(value);
+                var answerId = answerData.itemStateId ? answerData.itemStateId : 'ROOT';
+                request('', {
+                    url: ctx +  'rest/guide/itemState/findByParentItemStateId/'+ answerId,
+                    type: 'get',
+                }, function (res) {
+                    if (res.success) {
+                        var content = res.content || [];
+                        vm.matterChildsSateListDataHandle(content,cStateList,index,type,value);
+                    } else {
+                        vm.$message.error(res.message);
+                    }
+
+                }, function () {
+                    vm.$message.error('获取子情形列表接口失败，请稍后重试！');
+                });
+            },
+            matterChildsSateListDataHandle:function(content,cStateList,index,type,value){
+                content.map(function (item) {                       // 对多选checkbox绑定的值selectAnswerId类型重置为数组，防止点击出现全部选中
+                    if(item.answerType !='s'||item.answerType!='y'){
+                        item.selectAnswerId = [];
+                    }
+                });
+                if(!cStateList[index].children){
+                    vm.$set(cStateList[index],'children',[]);
+                }
+                if(type === 'radio'){
+                    cStateList[index].children = content;
+                }else{
+                    if(value){ // 为真checkbox勾选
+                        cStateList[index].children = cStateList[index].children.concat(content);
+                    }else{
+                        if(content.length > 0){
+                            var cStateList_C = JSON.stringify(cStateList[index].children);
+                            var indexArry = [];
+                            for (var i = 0; i < cStateList_C.length; i++) {
+                                for (var j = 0; j < content.length; j++) {
+                                    if(content[j].itemStateId != cStateList_C[i].itemStateId){
+                                        indexArry.push(i);
+                                    }
+                                }
+                            }
+                            setTimeout(function () {
+                                for (var i = 0; i <indexArry.length ; i++) {
+                                    cStateList[index].children.splice(indexArry[i],1);
+                                }
+                            },0)
+                        }
+                    }
+                }
+                console.log(cStateList)
+
+            }
+        }
+    });
 })(window);

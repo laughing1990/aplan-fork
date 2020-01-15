@@ -256,8 +256,8 @@
         label="操作">
       <template slot-scope="scope">
         <!--<span class="op-btn">到达通知</span>-->
-        <span class="op-btn">邮政下单</span>
-        <span class="op-btn">寄件信息</span>
+        <span @click="clickEMS(scope.row)" class="op-btn" v-if="scope.row.pickUpStatus==0||scope.row.pickUpStatus==1">邮政下单</span>
+        <span @click="clickSeeEMS(scope.row)" class="op-btn" v-if="scope.row.pickUpStatus==1||scope.row.pickUpStatus==2">寄件信息</span>
       </template>
     </el-table-column>
   </el-table>

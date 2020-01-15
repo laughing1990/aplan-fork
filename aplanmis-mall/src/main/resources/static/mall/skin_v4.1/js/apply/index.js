@@ -1087,8 +1087,10 @@ var parallelDeclare = new Vue({
       });
     },
     // 切换项目类型
-    changeThemeId: function (val) {
-      this.themeId = val;
+    changeThemeId: function (selTheme) {
+      this.themeId = selTheme.themeId;
+      this.themeName = selTheme.themeName;
+      this.selThemeInfo = selTheme;
     },
     //获取智能指引列表
     getGuideList: function () {
@@ -1216,6 +1218,7 @@ var parallelDeclare = new Vue({
         itThemeVerId: _that.itThemeVerId?_that.itThemeVerId:_that.themeVerId,
         stateIds: _that.stateIds,
         unitProjIds: _that.unitProjIds,
+        regionalism: _that.regionalism
       }
       request('', {
         url: ctx + 'rest/userCenter/apply/net/guide/apply/start',
@@ -1788,7 +1791,7 @@ var parallelDeclare = new Vue({
       var theRequest = new Object();
       if (url.indexOf("?") != -1) {
         var str = url.substr(1);
-        strs = str.split("&");
+        var strs = str.split("&");
         for (var i = 0; i < strs.length; i++) {
           theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
         }
@@ -1849,6 +1852,23 @@ var parallelDeclare = new Vue({
           _that.projType = data.content.projType;
           _that.projInfoId = data.content.projInfoId;
           _that.searchKeyword = data.content.projName + ' （' + data.content.localCode + '）';
+          if (_that.themeType) {
+            _that.itemTabSelect = 'tab_' + _that.themeType;
+            if (_that.themeId) {
+              _that.themeActive = _that.themeId;
+              var copyThemeTypeList = _that.themeTypeList.mainLine;
+              copyThemeTypeList = copyThemeTypeList.filter(function (item, index) {
+                return item.themeTypeCode === _that.themeType;
+              })
+              copyThemeTypeList[0].themeList = copyThemeTypeList[0].themeList.filter(function (item, index) {
+                return item.themeId === _that.themeId;
+              })
+              _that.themeName = copyThemeTypeList[0].themeList[0]?copyThemeTypeList[0].themeList[0].themeName:'';
+              _that.selThemeInfo = copyThemeTypeList[0].themeList[0];
+            }
+          } else {
+            _that.itemTabSelect = 'tab_' + _that.themeTypeList.mainLine[0].themeTypeCode;
+          }
           _that.getApplyObjectInfo(); // 获取申报主体
           if (!_that.projInfoDetail.isAreaEstimate) _that.projInfoDetail.isAreaEstimate = '0';
           if (!_that.projInfoDetail.isDesignSolution) _that.projInfoDetail.isDesignSolution = '0';
@@ -3671,7 +3691,8 @@ var parallelDeclare = new Vue({
         if (res.data.success) {
           file.forEach(function (u) {
             Vue.set(u.file, 'matinstId', res.data.content);
-          })
+          });
+          rowData.matinstId = res.data.content;
           // Vue.set(file.file,'matinstId',res.data.content)
           _that.selMatinstId = res.data.content;
           _that.getFileListWin(res.data.content, rowData);

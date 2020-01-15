@@ -29,7 +29,11 @@
   </script>
   <script src="../../static/approve/js/ip.js" th:src="@{/approve/js/ip.js}"></script>
   <script>
-    applyinstId = __STATIC.getUrlParam('applyinstId');
+    if (isDevelop) {
+      applyinstId = __STATIC.getUrlParam('applyinstId');
+      windowUserId = '3a7d6d4d-8b73-496c-85e0-390be1da35f4';
+      windowUserName = 'ckry';
+    }
   </script>
   <style>
     .custor {
@@ -42,6 +46,47 @@
 
     .selectDialog {
       width: 125px;
+    }
+    .right-bottom-btn {
+      position: fixed;
+      right: 55px;
+      bottom: 40px;
+      z-index: 1000;
+    }
+
+    .right-bottom-btn .el-button.is-circle {
+      display: block;
+      height: 68px;
+      width: 68px;
+      text-align: center;
+      padding: 12px 0;
+      margin: 0 0 16px 0;
+      -webkit-box-shadow: 1px 1px 20px 2px rgba(69, 65, 78, 0.2);
+      box-shadow: 1px 1px 20px 2px rgba(69, 65, 78, 0.2);
+      border: none;
+      line-height: 18px;
+      color: #575962;
+      background: #fff;
+    }
+
+    .right-bottom-btn .el-button.is-circle.el-button--danger {
+      background: #ff4b47;
+      color: #fff;
+    }
+
+    .right-bottom-btn .el-button.is-circle.el-button--primary {
+      background: #169aff;
+      color: #fff;
+    }
+    .right-bottom-btn .el-button.is-circle.el-button--success {
+      background: #00C161;
+      color: #fff;
+    }
+    .logic-dialog .el-dialog__header{
+      display: none;
+    }
+    .logic-dialog .el-dialog__body{
+      padding: 0;
     }
   </style>
 </head>
@@ -60,6 +105,14 @@
         </li>
       </ul>
     </div>
+    <div class="right-bottom-btn">
+      <el-button v-if="!isEMSPage" type="primary" circle @click="saveSmsFormInfo">
+        领取<br/>确认
+      </el-button>
+      <el-button v-if="isEMSPage" type="primary" circle @click="saveSmsFormInfo">
+        下单
+      </el-button>
+    </div>
 
     <el-collapse v-model="activeNames">
       <!--  基本信息  start  -->
@@ -67,7 +120,7 @@
         <template slot="title">
           <i class="header-icon el-icon-document-copy"></i>事项信息列表
         </template>
-        <el-button type="primary" @click="doOnceSend()" v-if="isSmsSend == '0'">全选</el-button>
+<!--        <el-button type="primary" @click="doOnceSend()" v-if="isSmsSend == '0'">全选</el-button>-->
         <el-table
             ref="multipleTable"
             :data="tableData3"
@@ -78,54 +131,88 @@
           <el-table-column
               type="selection"
               :selectable='checkboxInit2'
-              width="55"
-          >
-          </el-table-column>
-          <el-table-column
-              label="办件编号"
-              width="180">
-            <template slot-scope="scope">{{ scope.row.iteminstCode }}</template>
+              width="55">
           </el-table-column>
           <el-table-column
               prop="iteminstName"
-              label="事项名称"
-              width="400">
+              min-width="200"
+              show-overflow-tooltip
+              label="事项">
           </el-table-column>
           <el-table-column
-              prop="approveOrgName"
-              label="审批部门"
-              width="180">
+              prop="orgName"
+              label="部门"
+              show-overflow-tooltip
+              width="200">
           </el-table-column>
           <el-table-column
-              prop="iteminstState"
-              label="办件状态"
-              width="120"
-              :formatter="itemStatuFormatter">
+              prop="certinstCode"
+              label="证件编号"
+              show-overflow-tooltip
+              width="140">
+          </el-table-column>
+          <el-table-column
+              prop="certinstName"
+              label="证件名称"
+              show-overflow-tooltip
+              width="140">
           </el-table-column>
           <el-table-column
               prop="isSmsSend"
               label="出件状态"
+              show-overflow-tooltip
               width="100"
               :formatter="statuFormatter">
           </el-table-column>
-
-          <el-table-column label="操作">
+          <el-table-column
+              prop="issueDate"
+              label="签发时间"
+              show-overflow-tooltip
+              width="160">
+          </el-table-column>
+          <el-table-column
+              prop="expressNum"
+              label="邮件单号"
+              show-overflow-tooltip
+              width="160">
+          </el-table-column>
+          <el-table-column label="操作" width="100">
             <template slot-scope="scope">
-              <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
-                         v-if="scope.row.hasOutCertinst == '1'">查看
+              <el-button size="mini" @click="seeLogistic(scope.row)">
+                查看物流
               </el-button>
-              <el-button size="mini" @click="editSMSSend(scope.$index, scope.row)" v-if="scope.row.isSmsSend == '1'">
-                出件详情
-              </el-button>
-
             </template>
           </el-table-column>
+
+
+<!--          <el-table-column-->
+<!--              prop="iteminstState"-->
+<!--              label="办件状态"-->
+<!--              width="120"-->
+<!--              :formatter="itemStatuFormatter">-->
+<!--          </el-table-column>-->
+<!--          <el-table-column-->
+<!--              prop="isSmsSend"-->
+<!--              label="出件状态"-->
+<!--              width="100"-->
+<!--              :formatter="statuFormatter">-->
+<!--          </el-table-column>-->
+<!--          <el-table-column label="操作">-->
+<!--            <template slot-scope="scope">-->
+<!--              <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"-->
+<!--                         v-if="scope.row.hasOutCertinst == '1'">查看-->
+<!--              </el-button>-->
+<!--              <el-button size="mini" @click="editSMSSend(scope.$index, scope.row)" v-if="scope.row.isSmsSend == '1'">-->
+<!--                出件详情-->
+<!--              </el-button>-->
+<!--            </template>-->
+<!--          </el-table-column>-->
         </el-table>
       </el-collapse-item>
       <!--  基本信息  end  -->
 
       <!--证件领取方式start-->
-      <el-collapse-item name="2" id="receiveMode">
+      <el-collapse-item name="2" id="receiveMode" v-show="!isEMSPage">
         <template slot="title">
           <i class="header-icon el-icon-info"></i>证件领取方式
         </template>
@@ -162,31 +249,31 @@
       <!--  领件人主体信息  start  -->
       <el-collapse-item name="3" id="receiver">
         <template slot="title">
-          <i class="header-icon el-icon-info"></i>领件人信息
+          <i class="header-icon el-icon-info"></i>{{isEMSPage?'收':'领'}}件人信息
         </template>
         <el-form label-width="200px"
                  ref="receInfo"
                  :model="sendInfoForm" :rules="sendSmsInfoRules">
-          <el-form-item label="是否委托领取">
+          <el-form-item label="是否委托领取" v-if="!isEMSPage">
             <el-radio-group v-model="sendInfoForm.isConsigner">
               <el-radio label="0" :disabled="receiveModeShow">否</el-radio>
               <el-radio label="1" :disabled="receiveModeShow">是</el-radio>
             </el-radio-group>
           </el-form-item>
           <div class="clearfix" v-if="sendInfoForm.isConsigner == '0'">
-            <el-form-item class="input-inline" label="领件人姓名" prop="addresseeName">
+            <el-form-item class="input-inline" :label="(isEMSPage?'收':'领')+'件人姓名'" prop="addresseeName">
               <el-input v-model="sendInfoForm.addresseeName" id="addresseeName" placeholder="领件人姓名" disabled></el-input>
             </el-form-item>
-            <el-form-item class="input-inline" label="领件人电话" prop="addresseePhone">
+            <el-form-item class="input-inline" :label="(isEMSPage?'收':'领')+'件人电话'" prop="addresseePhone">
               <el-input v-model="sendInfoForm.addresseePhone" id="addresseePhone" placeholder="领件人电话"></el-input>
             </el-form-item>
 
-            <el-form-item class="input-inline" label="领件人身份证号码" prop="addresseeIdcard"
+            <el-form-item class="input-inline" :label="(isEMSPage?'收':'领')+'件人身份证号码'" prop="addresseeIdcard"
                           v-if="sendInfoForm.receiveMode == '1'">
               <el-input v-model="sendInfoForm.addresseeIdcard" id="addresseeIdcard" placeholder="领件人身份证号码"></el-input>
             </el-form-item>
           </div>
-          <el-form-item label="领件人所在区域" prop="addresseeProvince" v-if="sendInfoForm.isConsigner == '0'">
+          <el-form-item :label="(isEMSPage?'收':'领')+'件人所在区域'" prop="addresseeProvince" v-if="sendInfoForm.isConsigner == '0'">
             <el-select v-model="sendInfoForm.addresseeProvince"
                        prop="addresseeProvince"
                        placeholder="--请选择省--">
@@ -218,7 +305,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item class="input-block" label="领件人详细地址" prop="addresseeAddr" v-if="sendInfoForm.isConsigner == '0'">
+          <el-form-item class="input-block" :label="(isEMSPage?'收':'领')+'件人详细地址'" prop="addresseeAddr" v-if="sendInfoForm.isConsigner == '0'">
             <el-input v-model="sendInfoForm.addresseeAddr" id="addresseeAddr" placeholder="领件人详细地址"></el-input>
           </el-form-item>
 
@@ -297,7 +384,7 @@
                   <el-button type="primary" @click="delSelectFileCom()">删除</el-button>
                 </el-upload>
               </div>
-              <el-table :data="uploadTableData" border @selection-change="selectionFileChange">
+              <el-table style="margin-top:12px;" :data="uploadTableData" border @selection-change="selectionFileChange">
                 <el-table-column type="selection"
                                  align="center"
                                  width="55">
@@ -395,11 +482,17 @@
       <!--出件人end-->
 
 
-      <el-button type="primary" icon="el-icon-wallet" class="fr" @click="saveSmsFormInfo()" v-if="showSaveBtn">保存
+<!--      <el-button type="primary" icon="el-icon-wallet" class="fr" @click="saveSmsFormInfo()" v-if="showSaveBtn">保存-->
       </el-button>
     </el-collapse>
 
   </div>
+
+  <!--查看物流弹窗 start-->
+  <el-dialog class="logic-dialog" :visible.sync="logicDialogVisible" width="600px">
+    <div>物流信息</div>
+  </el-dialog>
+  <!--查看物流弹窗 end-->
 
   <!--查看证照实例 start-->
   <el-dialog
