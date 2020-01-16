@@ -2,10 +2,23 @@ package com.augurit.aplanmis.front.solicit.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.augurit.agcloud.bpm.common.domain.*;
+import com.augurit.agcloud.bpm.common.domain.ActStoAppinst;
+import com.augurit.agcloud.bpm.common.domain.ActStoAppinstSubflow;
+import com.augurit.agcloud.bpm.common.domain.ActStoTimegroup;
+import com.augurit.agcloud.bpm.common.domain.ActStoTimegroupAct;
+import com.augurit.agcloud.bpm.common.domain.ActStoTimerule;
+import com.augurit.agcloud.bpm.common.domain.ActStoTimeruleInst;
+import com.augurit.agcloud.bpm.common.domain.ActTplAppTrigger;
+import com.augurit.agcloud.bpm.common.domain.BpmDestTaskConfig;
 import com.augurit.agcloud.bpm.common.engine.BpmProcessService;
 import com.augurit.agcloud.bpm.common.engine.BpmTaskService;
-import com.augurit.agcloud.bpm.common.mapper.*;
+import com.augurit.agcloud.bpm.common.mapper.ActStoAppinstMapper;
+import com.augurit.agcloud.bpm.common.mapper.ActStoAppinstSubflowMapper;
+import com.augurit.agcloud.bpm.common.mapper.ActStoTimegroupActMapper;
+import com.augurit.agcloud.bpm.common.mapper.ActStoTimegroupMapper;
+import com.augurit.agcloud.bpm.common.mapper.ActStoTimeruleInstMapper;
+import com.augurit.agcloud.bpm.common.mapper.ActStoTimeruleMapper;
+import com.augurit.agcloud.bpm.common.mapper.ActTplAppTriggerMapper;
 import com.augurit.agcloud.bpm.common.service.ActStoTimeruleService;
 import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
@@ -23,8 +36,21 @@ import com.augurit.agcloud.opus.common.service.om.OpuOmOrgService;
 import com.augurit.aplanmis.common.constants.SolicitBusTypeEnum;
 import com.augurit.aplanmis.common.constants.TimeruleInstState;
 import com.augurit.aplanmis.common.constants.TimeruleUnit;
-import com.augurit.aplanmis.common.domain.*;
-import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.domain.AeaHiIteminst;
+import com.augurit.aplanmis.common.domain.AeaHiSolicit;
+import com.augurit.aplanmis.common.domain.AeaHiSolicitDetail;
+import com.augurit.aplanmis.common.domain.AeaHiSolicitDetailUser;
+import com.augurit.aplanmis.common.domain.AeaItemBasic;
+import com.augurit.aplanmis.common.domain.AeaSolicitItemUser;
+import com.augurit.aplanmis.common.domain.AeaSolicitOrg;
+import com.augurit.aplanmis.common.domain.AeaSolicitOrgUser;
+import com.augurit.aplanmis.common.mapper.AeaHiSolicitDetailMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiSolicitDetailUserMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiSolicitMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
+import com.augurit.aplanmis.common.mapper.AeaSolicitItemUserMapper;
+import com.augurit.aplanmis.common.mapper.AeaSolicitOrgMapper;
+import com.augurit.aplanmis.common.mapper.AeaSolicitOrgUserMapper;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.vo.solicit.AeaHiSolicitVo;
@@ -33,7 +59,11 @@ import com.augurit.aplanmis.front.constant.SolicitConstant;
 import com.augurit.aplanmis.front.queryView.service.ConditionalQueryService;
 import com.augurit.aplanmis.front.solicit.service.RestAeaHiSolicitService;
 import com.augurit.aplanmis.front.solicit.service.SolicitCodeService;
-import com.augurit.aplanmis.front.solicit.vo.*;
+import com.augurit.aplanmis.front.solicit.vo.AeaHiSolicitInfo;
+import com.augurit.aplanmis.front.solicit.vo.SolicitDetailUserVo;
+import com.augurit.aplanmis.front.solicit.vo.SolicitDetailVo;
+import com.augurit.aplanmis.front.solicit.vo.SolicitLhpsFile;
+import com.augurit.aplanmis.front.solicit.vo.SolicitVo;
 import com.github.pagehelper.Page;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -47,7 +77,15 @@ import org.springframework.web.multipart.support.StandardMultipartHttpServletReq
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -710,7 +748,8 @@ public class RestAeaHiSolicitServiceImpl implements RestAeaHiSolicitService {
                 }
             }
             if (isComplete) {
-                completeTaskAfterfinishSolicit(temp);
+                taskService.complete(temp.getHiTaskinstId());
+                //completeTaskAfterfinishSolicit(temp);
             }
         }
         return temp;

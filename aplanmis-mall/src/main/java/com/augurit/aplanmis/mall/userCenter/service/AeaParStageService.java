@@ -2,7 +2,6 @@ package com.augurit.aplanmis.mall.userCenter.service;
 
 import com.augurit.agcloud.bpm.common.engine.BpmProcessService;
 import com.augurit.agcloud.bpm.common.engine.form.BpmProcessInstance;
-import com.augurit.agcloud.bpm.common.service.ActStoAppinstService;
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
 import com.augurit.agcloud.bsc.sc.dic.code.service.BscDicCodeService;
 import com.augurit.agcloud.framework.security.SecurityContext;
@@ -15,7 +14,19 @@ import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.constants.ApplyType;
 import com.augurit.aplanmis.common.constants.DicConstants;
 import com.augurit.aplanmis.common.constants.ItemStatus;
-import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.domain.AeaApplyinstProj;
+import com.augurit.aplanmis.common.domain.AeaApplyinstUnitProj;
+import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
+import com.augurit.aplanmis.common.domain.AeaHiItemInoutinst;
+import com.augurit.aplanmis.common.domain.AeaHiIteminst;
+import com.augurit.aplanmis.common.domain.AeaHiParStageinst;
+import com.augurit.aplanmis.common.domain.AeaHiSeriesinst;
+import com.augurit.aplanmis.common.domain.AeaHiSmsInfo;
+import com.augurit.aplanmis.common.domain.AeaItemBasic;
+import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
+import com.augurit.aplanmis.common.domain.AeaParStage;
+import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.common.domain.ProjectCheckForm;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstUnitProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
@@ -28,7 +39,6 @@ import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiParStateinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiSeriesinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiSmsInfoService;
-import com.augurit.aplanmis.common.service.instance.RestTimeruleinstService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.item.AeaLogItemStateHistService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
@@ -37,19 +47,33 @@ import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowUserService;
 import com.augurit.aplanmis.common.utils.BusinessUtil;
-import com.augurit.aplanmis.mall.userCenter.vo.*;
+import com.augurit.aplanmis.mall.userCenter.vo.AeaCoreItemVo;
+import com.augurit.aplanmis.mall.userCenter.vo.AeaParaItemVo;
+import com.augurit.aplanmis.mall.userCenter.vo.ApplyInstantiateResult;
+import com.augurit.aplanmis.mall.userCenter.vo.BuildProjUnitVo;
+import com.augurit.aplanmis.mall.userCenter.vo.ParallelApplyResultVo;
+import com.augurit.aplanmis.mall.userCenter.vo.ParallelItemStateVo;
+import com.augurit.aplanmis.mall.userCenter.vo.PropulsionItemApplyinstIdVo;
+import com.augurit.aplanmis.mall.userCenter.vo.PropulsionItemStateVo;
+import com.augurit.aplanmis.mall.userCenter.vo.SmsInfoVo;
+import com.augurit.aplanmis.mall.userCenter.vo.StageApplyDataVo;
+import com.augurit.aplanmis.mall.userCenter.vo.StageApplyInstantiateResult;
 import com.google.common.collect.Lists;
 import org.flowable.engine.TaskService;
 import org.flowable.task.api.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.InvalidParameterException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * 并联申报service
@@ -183,6 +207,7 @@ public class AeaParStageService {
             }
             //更改申请实例状态和新增历史记录
             aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(applyInstantiateResult.getApplyinstId(), tasks.get(0).getId(), applyInstantiateResult.getAppinstId(), ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue(),null);
+            aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(applyInstantiateResult.getApplyinstId(), tasks.get(0).getId(), applyInstantiateResult.getAppinstId(), ApplyState.ACCEPT_DEAL.getValue(), null);
 
         }
         return resultVo;
@@ -405,6 +430,7 @@ public class AeaParStageService {
             aeaHiApplyinst.setIsBranchHandle(isBranchHandle);
             aeaHiApplyinst.setApprovalOrgCode(approveOrgMap);
             aeaHiApplyinst.setIteminsts(iteminstMap);
+            aeaHiApplyinst.setProjCheck(projectCheck);
 
             // 用于流程启动情形
             aeaHiApplyinst.setStateinsts(applyCommonService.filterProcessStartConditions(stateIds, ApplyType.UNIT));

@@ -12,8 +12,11 @@ import com.augurit.aplanmis.common.domain.AeaHiIteminst;
 import com.augurit.aplanmis.common.event.AplanmisEventPublisher;
 import com.augurit.aplanmis.common.event.def.BpmNodeSendAplanmisEvent;
 import com.augurit.aplanmis.common.mapper.AeaHiIteminstMapper;
-import org.flowable.bpmn.model.*;
+import org.flowable.bpmn.model.BpmnModel;
+import org.flowable.bpmn.model.FlowElement;
 import org.flowable.bpmn.model.Process;
+import org.flowable.bpmn.model.SequenceFlow;
+import org.flowable.bpmn.model.UserTask;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.RuntimeService;
@@ -85,16 +88,18 @@ public class ChildProcessCompleteExecutionListener implements ExecutionListener 
                             taskService.complete(task.getId());
                         } else {
                             List<String> taskFlowElementActIds = new ArrayList<>();//非办结节点的节点ID集合
-                            String notPassActId = "banjie";//必须有一个节点ID为banjie的，要不会报错
+                            String notPassActId = "jieshu";//必须有一个节点ID为jieshu的，要不会报错
 
                             for (SequenceFlow flow : outgoingFlows) {
                                 FlowElement flowElement = flow.getTargetFlowElement();
 
-                                if (!flowElement.getId().equals(notPassActId)) {
+                                if (!flowElement.getId().equals(notPassActId) && !flowElement.getId().startsWith("endEvent")) {
                                     taskFlowElementActIds.add(flowElement.getId());
+                                } else {
+                                    notPassActId = flowElement.getId();
                                 }
                             }
-                            //当事项为通过时，流向非办结节点，如果为不通过时，流向ID为“banjie”的节点（前提是，需要有办结节点）
+                            //当事项为通过时，流向非办结节点，如果为不通过时，流向ID为“jieshu”的节点（前提是，需要有结束节点）
                             if (ItemStatus.AGREE.getValue().equals(aeaHiIteminst.getIteminstState())
                                     ||ItemStatus.AGREE_TOLERANCE.getValue().equals(aeaHiIteminst.getIteminstState())) {
                                 taskService.complete(task.getId(), (String[]) taskFlowElementActIds.toArray(), null);
