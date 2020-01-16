@@ -1741,7 +1741,7 @@
             </el-upload>
             <el-button type="primary" plain @click="showUploadWindow(scope.row,scope.$index)">材料共享</el-button>
             <!--<el-button type="primary" plain v-if="scope.row.zcqy==1">容缺</el-button>-->
-            <el-button type="primary" plain v-if="scope.row.matProp=='c'" @click="showUploadWindow(scope.row,scope.$index,'certList')">证照库</el-button>
+            <!--<el-button type="primary" plain v-if="scope.row.matProp=='c'" @click="showUploadWindow(scope.row,scope.$index,'certList')">证照库</el-button>-->
             <el-button type="primary" plain v-if="scope.row.matProp=='f'" @click="showOneFormDialog1(scope.row)">填写</el-button>
             <el-button type="primary" plain v-if="scope.row.ybKbDetailIds&&scope.row.ybKbDetailIds!==''" @click="showMatFiles(scope.row.ybKbDetailIds)">空表样表</el-button>
           </template>
@@ -1918,7 +1918,7 @@
                 layout="sizes, prev, pager, next, jumper">
               </el-pagination>
             </el-tab-pane>
-            <el-tab-pane label="我的证照" name="myCertMat">
+            <el-tab-pane label="我的证照" name="myCertMat" v-if="selMatRowData.matProp=='c'">
               <div class="upload-file-content">
                 <!--<div class="file-opt-btn">-->
                   <!--<el-form :inline="true" :model="searchInline">-->
