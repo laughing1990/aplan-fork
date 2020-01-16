@@ -25,6 +25,7 @@ var listmatter = (function(window){
             stateList: [], // 情形列表
             stateSelVal: {},
             getViewIframeSrc:'',
+            filePreviewCount: 0,
             matDialog:false,
         },
         created:function(){
@@ -33,13 +34,13 @@ var listmatter = (function(window){
         methods:{
             // 预览电子件（查看项目报建流程）
             previewFile: function(data,getSrc){ // getSrc TRUE不打开新页面仅获取src
+                var _this = this;
                 var detailId = data.detailId;
-                var _that = this;
                 var regText = /doc|docx|ppt|pptx|xls|xlsx|txt$/;
-                var fileName=data.attName;
+                var fileName=data.attName || 'xxx.png';
                 var fileType = this.getFileType(fileName);
                 var flashAttributes = '';
-                _that.filePreviewCount++
+                _this.filePreviewCount++
                 if(fileType=='pdf'){
                     var tempwindow=window.open(); // 先打开页面
                     setTimeout(function(){
@@ -49,15 +50,15 @@ var listmatter = (function(window){
                 }else {
                     if(regText.test(fileType)){
                         // previewPdf/pdfIsCoverted
-                        _that.showProcessLoading = true;
+                        _this.showProcessLoading = true;
                         request('', {
                             url: ctx + 'previewPdf/pdfIsCoverted?detailId='+detailId,
                             type: 'get',
                         }, function (result) {
                             if(result.success){
-                                _that.showProcessLoading = false;
+                                _this.showProcessLoading = false;
                                 if(getSrc){
-                                    _that.getViewIframeSrc = ctx+'previewPdf/view?detailId='+detailId;
+                                    _this.getViewIframeSrc = ctx+'previewPdf/view?detailId='+detailId;
                                 }else {
                                     var tempwindow=window.open(); // 先打开页面
                                     setTimeout(function(){
@@ -65,32 +66,32 @@ var listmatter = (function(window){
                                     },1000)
                                 }
                             }else {
-                                if(_that.filePreviewCount>9){
+                                if(_this.filePreviewCount>9){
                                     confirmMsg('提示信息：', '文件预览请求中，是否继续等待？', function () {
-                                        _that.filePreviewCount=0;
-                                        _that.previewFile(data);
+                                        _this.filePreviewCount=0;
+                                        _this.previewFile(data);
                                     }, function () {
-                                        _that.filePreviewCount=0;
-                                        _that.showProcessLoading = false;
+                                        _this.filePreviewCount=0;
+                                        _this.showProcessLoading = false;
                                         return false;
                                     }, '确定', '取消', 'warning', true)
                                 }else {
                                     setTimeout(function(){
-                                        _that.previewFile(data);
+                                        _this.previewFile(data);
                                     },1000)
                                 }
                             }
                         }, function (msg) {
-                            _that.showProcessLoading = false;
-                            _that.$message({
+                            _this.showProcessLoading = false;
+                            _this.$message({
                                 message: '文件预览失败',
                                 type: 'error'
                             });
                         })
                     }else {
-                        _that.showProcessLoading = false;
+                        _this.showProcessLoading = false;
                         if(getSrc){
-                            _that.getViewIframeSrc = ctx + 'rest/file/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
+                            _this.getViewIframeSrc = ctx + 'rest/file/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
                         }else {
                             var tempwindow=window.open(); // 先打开页面
                             setTimeout(function(){
@@ -271,26 +272,26 @@ var listmatter = (function(window){
             },
             // 根据情形id获取子情形列表
             getChildsStateList: function(cStateList,pData, answerData, index, checkFlag,guideflag){
-                var _that = this, questionStateId = '',_parentId = '',selStateIds = [], getUrl='';
+                var _this = this, questionStateId = '',_parentId = '',selStateIds = [], getUrl='';
                 var stateListLen = cStateList?cStateList.length:0;
                 if(guideflag=='guide'){
                     questionStateId = pData.factorId;
                     _parentId = answerData.factorId ? answerData.factorId : 'ROOT';
                     getUrl = 'rest/userCenter/apply/factor/child/list/' + _parentId;
-                    _that.projInfoDetail.themeId = answerData.themeId;
+                    _this.projInfoDetail.themeId = answerData.themeId;
                     if(answerData.themeId&&answerData.themeId!=''){
-                        _that.projInfoDetail.themeId = answerData.themeId;
-                        _that.themeId = answerData.themeId;
-                        _that.saveThemeAndNext('guide');
+                        _this.projInfoDetail.themeId = answerData.themeId;
+                        _this.themeId = answerData.themeId;
+                        _this.saveThemeAndNext('guide');
                     }else {
-                        _that.stateList = [];
+                        _this.stateList = [];
                     }
                 }else {
                     questionStateId = pData.parStateId;
                     _parentId = answerData.parStateId ? answerData.parStateId : 'ROOT';
-                    getUrl = 'rest/userCenter/apply/childState/list/' + _parentId + '/' + _that.stageId
+                    getUrl = 'rest/userCenter/apply/childState/list/' + _parentId + '/' + _this.stageId
                 }
-                selStateIds = _that.getCoreItemsStatusListId(cStateList);
+                selStateIds = _this.getCoreItemsStatusListId(cStateList);
                 if (checkFlag == false) {
                     for (var i = 0; i < stateListLen; i++) { // 清空情形下所对应情形
                         var obj = cStateList[i];
@@ -364,13 +365,13 @@ var listmatter = (function(window){
                             cStateList.splice((index + 1 + ind), 0, item);
                         });
                     } else {
-                        _that.$message({
+                        _this.$message({
                             message: '获取情形失败',
                             type: 'error'
                         });
                     }
                 }, function (msg) {
-                    _that.$message({
+                    _this.$message({
                         message: '获取情形失败',
                         type: 'error'
                     });
@@ -481,6 +482,13 @@ var listmatter = (function(window){
                 this.stageId = theRequest.stageId? theRequest.stageId : null;
                 this.getItemList(this.stageId);
                 return theRequest;
+            },
+            // 获取文件后缀
+            getFileType: function(fileName){
+                var index1=fileName.lastIndexOf(".");
+                var index2=fileName.length;
+                var suffix=fileName.substring(index1+1, index2).toLowerCase();//后缀名
+                return suffix;
             },
             fetchStateList:function(stateList){
                 var fetchStateListData = [];
