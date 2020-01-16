@@ -180,30 +180,7 @@
                                             </div>
                                         </div>-->
                                         <div v-if="scope.row.currentCarryOutItem && scope.row.currentCarryOutItem.coreStateList && scope.row.currentCarryOutItem.coreStateList.length > 0">
-                                            <div v-for="(item,index) in scope.row.currentCarryOutItem.coreStateList">
-                                                <p class="situation-title"><span class="situation">情形</span> &nbsp;{{item.stateName}}：</p>
-                                                <p class="situation-title-intro">
-                                                    <template v-if="item.answerType=='s'||item.answerType=='y'">
-                                                        <el-radio-group v-model="item.selectAnswerId">
-                                                            <el-radio v-for="(itemAns,ind) in item.answerStates"
-                                                                      :key="ind"
-                                                                      @change="getChildsStateList(scope.row.currentCarryOutItem.coreStateList,item,itemAns,index,'true1')"
-                                                                      :value="itemAns.parStateId"
-                                                                      :label="itemAns.parStateId" name="answer">{{itemAns.stateName}}</el-radio>
-                                                        </el-radio-group>
-                                                    </template>
-                                                    <template v-else>
-                                                        <el-checkbox-group v-model="item.selectAnswerId"
-                                                                           :required="item.mustAnswer==1">
-                                                            <el-checkbox v-for="(itemAns,indAns) in item.answerStates"
-                                                                         :key="indAns"
-                                                                         :value="itemAns.parStateId"
-                                                                         @change="function(value) {getChildsStateList(scope.row.currentCarryOutItem.coreStateList,item,itemAns,index,value)}"
-                                                                         :label="itemAns.parStateId" name="answer">{{itemAns.stateName}}</el-checkbox>
-                                                        </el-checkbox-group>
-                                                    </template>
-                                                </p>
-                                            </div>
+                                            <list :list="scope.row.currentCarryOutItem.coreStateList"></list>
                                         </div>
                                     </div>
                                 </template>
@@ -416,10 +393,10 @@
                                     label="资料下载">
                                 <template slot-scope="scope">
                                     <div>
-                                        <el-button type="text" class="text-table">空表下载</el-button>
+                                        <el-button type="text" class="text-table"  @click="showMatFiles(scope.row,'TEMPLATE_DOC')">空表下载</el-button>
                                     </div>
                                     <div>
-                                        <el-button type="text" class="text-table">样表下载</el-button>
+                                        <el-button type="text" class="text-table"  @click="showMatFiles(scope.row,'SAMPLE_DOC')">样表下载</el-button>
                                     </div>
                                 </template>
                             </el-table-column>
@@ -481,7 +458,24 @@
             </div>
         </el-dialog>
         <div v-loading="contentLoading"  v-show="contentLoading" style="width: 100%; height: 100%;position: absolute;top: 180px;"></div>
+
+        <el-dialog title="查看样本" :visible.sync="matDialog" width="760px">
+            <ul v-if="mats!== undefined && mats.length >0" class="matBox">
+                <li v-for="item in mats" @click="download(item)">
+                    <img src="../../static/mall/images/icon/guide.png" alt=""/>
+                    <a href="javascript:void(0);">{{item.attName}}</a>
+                </li>
+            </ul>
+            <p v-else style="margin: 30px 20px;font-size: 16px;">无模板</p>
+            <span slot="footer" class="dialog-footer">
+              <!--<el-button type="primary" @click="matDialog=false">关闭</el-button>-->
+            </span>
+        </el-dialog>
+
     </div>
+
+
+
 
     <template id="recursionList">
         <div>

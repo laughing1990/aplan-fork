@@ -20,15 +20,86 @@ var listmatter = (function(window){
            /* itemStateList:[], // 事项情形列表*/
             requireMat:[],// 必选材料
             noRequireMat:[], //可选材料
-
+            mats: [],        // 空表下载、样表下载
             AIleadDialogFlag:false, // 智能引导弹出框
             stateList: [], // 情形列表
             stateSelVal: {},
+            getViewIframeSrc:'',
+            matDialog:false,
         },
         created:function(){
             this.GetRequest();
         },
         methods:{
+            // 预览电子件（查看项目报建流程）
+            previewFile: function(data,getSrc){ // getSrc TRUE不打开新页面仅获取src
+                var detailId = data.detailId;
+                var _that = this;
+                var regText = /doc|docx|ppt|pptx|xls|xlsx|txt$/;
+                var fileName=data.attName;
+                var fileType = this.getFileType(fileName);
+                var flashAttributes = '';
+                _that.filePreviewCount++
+                if(fileType=='pdf'){
+                    var tempwindow=window.open(); // 先打开页面
+                    setTimeout(function(){
+                        tempwindow.location=ctx+'/previewPdf/view?detailId='+detailId;
+                    },1000)
+
+                }else {
+                    if(regText.test(fileType)){
+                        // previewPdf/pdfIsCoverted
+                        _that.showProcessLoading = true;
+                        request('', {
+                            url: ctx + 'previewPdf/pdfIsCoverted?detailId='+detailId,
+                            type: 'get',
+                        }, function (result) {
+                            if(result.success){
+                                _that.showProcessLoading = false;
+                                if(getSrc){
+                                    _that.getViewIframeSrc = ctx+'previewPdf/view?detailId='+detailId;
+                                }else {
+                                    var tempwindow=window.open(); // 先打开页面
+                                    setTimeout(function(){
+                                        tempwindow.location=ctx+'previewPdf/view?detailId='+detailId;
+                                    },1000)
+                                }
+                            }else {
+                                if(_that.filePreviewCount>9){
+                                    confirmMsg('提示信息：', '文件预览请求中，是否继续等待？', function () {
+                                        _that.filePreviewCount=0;
+                                        _that.previewFile(data);
+                                    }, function () {
+                                        _that.filePreviewCount=0;
+                                        _that.showProcessLoading = false;
+                                        return false;
+                                    }, '确定', '取消', 'warning', true)
+                                }else {
+                                    setTimeout(function(){
+                                        _that.previewFile(data);
+                                    },1000)
+                                }
+                            }
+                        }, function (msg) {
+                            _that.showProcessLoading = false;
+                            _that.$message({
+                                message: '文件预览失败',
+                                type: 'error'
+                            });
+                        })
+                    }else {
+                        _that.showProcessLoading = false;
+                        if(getSrc){
+                            _that.getViewIframeSrc = ctx + 'rest/file/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
+                        }else {
+                            var tempwindow=window.open(); // 先打开页面
+                            setTimeout(function(){
+                                tempwindow.location = ctx + 'rest/file/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
+                            },1000)
+                        }
+                    }
+                }
+            },
             // 获取事项一单清
             getItemList:function (stageId) {
                 var vm = this;
@@ -325,6 +396,33 @@ var listmatter = (function(window){
                     return selStateIds.indexOf(item, 0) === index
                 })
                 return selStateIds;
+            },
+            // 空表下载、样表下载
+            showMatFiles: function (item, _docType) {
+                var _this = this;
+                $.ajax({
+                    url: ctx + 'rest/guide/attLinkAndDetailNoPage/list',
+                    type: "get",
+                    cache: false,
+                    data: {
+                        tableName: 'AEA_ITEM_MAT',
+                        pkName: _docType,
+                        recordId: item.matId,
+                        attType: '',
+                    },
+                    dataType: 'json',
+                    success: function (result) {
+                        _this.mats = [];
+                        if (result != null && result.content.length > 1) {
+                            _this.matDialog = true;
+                            _this.mats = result.content;
+                        } else if (result.content.length == 1) {
+                            window.open(_this.ctx + 'rest/file/applydetail/mat/download/' + result.content[0].detailId);
+                        } else {
+                            _this.matDialog = true;
+                        }
+                    }
+                });
             },
             // 点击开始指引
             startAILeadFn:function(){
