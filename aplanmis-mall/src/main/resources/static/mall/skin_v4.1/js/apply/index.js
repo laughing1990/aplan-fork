@@ -512,6 +512,13 @@ var parallelDeclare = new Vue({
     }
   },
   methods: {
+    // 关闭上传弹窗
+    closedFileWin: function(){
+      this.uploadTableData=[];
+      this.myMatsList = [];
+      this.certMatTableData = [];
+      this.fileSpaceActive = 'myMats';
+    },
     //查询回执列表
     showReceive: function () {
       var _that = this;
@@ -2138,6 +2145,12 @@ var parallelDeclare = new Vue({
     saveProOrSmsinfo: function (saveFlag) {
       var _that = this;
       var _linkmanTypes = [];
+      if(saveFlag=='1'){
+        if(_that.themeId==''||_that.projInfoDetail.themeId==null||_that.projInfoDetail.themeId==''){
+          alertMsg('', '请选择项目类型或进行部门辅导！', '关闭', 'error', true);
+          return false;
+        }
+      }
       if (_that.applyObjectInfo.aeaUnitInfo && _that.applyObjectInfo.aeaUnitInfo.linkmanTypes && _that.applyObjectInfo.aeaUnitInfo.linkmanTypes.length > 0) {
         _that.applyObjectInfo.aeaUnitInfo.linkmanTypes.map(function (itemType) {
           if (itemType.linkmanInfoId) {
@@ -3401,7 +3414,32 @@ var parallelDeclare = new Vue({
       _that.matIds = [];
       _that.matinstIds = [];
       _that.attIsRequireFlag = true;
-      _that.allMatsTableData.map(function (item) {
+      _that.requireMat.map(function (item) {
+        if (item.childs == 'undefined' || item.childs == undefined) {
+          Vue.set(item, 'childs', []);
+        }
+        if(item.certChild=='undefined'||item.certChild==undefined){
+          Vue.set(item,'certChild',[]);
+        }
+        if (item.matinstId == 'undefined' || item.matinstId == undefined) {
+          Vue.set(item, 'matinstId', '');
+        }
+        if (item.zcqy == 0 && item.attIsRequire == 1) {
+          if (item.childs&&item.childs.length == 0) {
+            _that.attIsRequireFlag = false;
+          }
+        }
+        _that.matIds.push(item.matId);
+        if (typeof item.matinstId !== "undefined" && item.matinstId != '') {
+          if(_that.matinstIds.indexOf(item.matinstId)<0){
+            _that.matinstIds.push(item.matinstId)
+          }
+        }
+        if(item.certMatinstIds&&item.certMatinstIds.length>0){
+          _that.matinstIds = _that.matinstIds.concat(item.certMatinstIds)
+        }
+      });
+      _that.noRequireMat.map(function (item) {
         if (item.childs == 'undefined' || item.childs == undefined) {
           Vue.set(item, 'childs', []);
         }
