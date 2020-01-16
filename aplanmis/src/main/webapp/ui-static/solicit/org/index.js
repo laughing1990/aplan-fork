@@ -69,7 +69,10 @@ $(function () {
     });
 });
 
+var i=0;
 function clickToLoadSolicitOrgUser(){
+
+    i++;
 
     // 初始化征求部门树
     initSelectSolicitOrg2Ztree();
@@ -77,11 +80,13 @@ function clickToLoadSolicitOrgUser(){
     // 初始化征求人员表格
     initSolicitOrgUserTb();
 
-    // 征求组织人员列表
-    $('#solicit_org_user_list_tb').bootstrapTable('resetView', {
+    if(i==1){
+        // 征求组织人员列表
+        $('#solicit_org_user_list_tb').bootstrapTable('resetView', {
 
-        height: $('#westPanel').height() - 175
-    });
+            height: $('#westPanel').height() - 175
+        });
+    }
 
     // 处理事项表格滚动条
     $(".fixed-table-body").niceScroll({
