@@ -654,6 +654,7 @@ var vm = new Vue({
       showSolicitBtn: isDevelop,
       // 意见征求 end--------------------------
       // 部门辅导 start------------------------
+      guideEmptyLoaded: false, //
       showAuditProj: false, // 需要进行工程审核
       guideDetail: {}, // 部门辅导数据详情
       guideId: '',
@@ -1971,7 +1972,7 @@ var vm = new Vue({
       _that.loading = true;
       _that.matCodes = [];// 材料code集合
       _that.clearSearchData();
-      if (!_that.isDraftsProj) {
+      if (!_that.isDraftsProj && _that.guideEmptyLoaded) {
         this.parallelApplyinstId = '';
         this.isGreenWay = false;
         this.seriesApplyinstIds = [];
@@ -1981,6 +1982,7 @@ var vm = new Vue({
         this.themeIdHis = '';
         this.stageIdHis = '';
       }
+      _that.guideEmptyLoaded = true;
       request('', {
         url: ctx + 'rest/project/one/' + _that.projInfoId,
         type: 'get',
@@ -2975,11 +2977,13 @@ var vm = new Vue({
               } else {
                 item.bigImgPath = 'apply/imgs/立项.png';
               }
-              if (_that.stageIdHis && _that.stageIdHis == item.stageId) {
-                selStatusHis = item;
-                selIndexHis = index;
-                _stageId = item.stageId;
-                _isSelItem = item.isSelItem;
+              if (_that.stageIdHis) {
+                if (_that.stageIdHis == item.stageId) {
+                  selStatusHis = item;
+                  selIndexHis = index;
+                  _stageId = item.stageId;
+                  _isSelItem = item.isSelItem;
+                }
               } else {
                 // 默认选择阶段1
                 selStatusHis = _that.statusList[0];
