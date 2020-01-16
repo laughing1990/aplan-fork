@@ -138,15 +138,20 @@ Vue.component('list',{
                 }
             }
             console.log(cStateList);
+            console.log(cStateList);
 
             // 更新材料一单清数据
-            var selectAnswerId = cStateList[index].selectAnswerId;
+             var selectAnswerId = cStateList[index].selectAnswerId;
             if(typeof  selectAnswerId == 'object'&& selectAnswerId.constructor == Array){
                 selectAnswerId.forEach(function (ele) {
                     listmatter.vm.itemStateIds.push(ele);
                 })
             }else{
-                listmatter.vm.itemStateIds.push(selectAnswerId);
+                if($.inArray(selectAnswerId,listmatter.vm.itemStateIds)){
+                    listmatter.vm.itemStateIds.push(selectAnswerId);
+                }else{
+                    listmatter.vm.itemStateIds.push(selectAnswerId);
+                }
             }
             listmatter.vm.getMateriallist();
         },

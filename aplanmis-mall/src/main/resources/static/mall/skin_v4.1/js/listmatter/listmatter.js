@@ -242,6 +242,7 @@ var listmatter = (function(window){
                 this.parallelItemList[index].currentCarryOutItem.orgName = item.orgName;
                 this.parallelItemList[index].currentCarryOutItem.dueNum = item.dueNum;
                 this.parallelItemList[index].currentCarryOutItem.paraStateList = item.paraStateList;
+                this.ispandEx(vm.parallelItemList,item);
             },
             coreItemCurrentItemVerIdChangehandle:function(item ,index){
                 this.coreItemList[index].resultMats = item.resultMats;
@@ -249,8 +250,19 @@ var listmatter = (function(window){
                 this.coreItemList[index].currentCarryOutItem.orgName = item.orgName;
                 this.coreItemList[index].currentCarryOutItem.dueNum = item.dueNum;
                 this.coreItemList[index].currentCarryOutItem.paraStateList = item.paraStateList;
+                this.ispandEx(vm.coreItemList,item);
             },
-            //二、单独勾选表格中某条数据所对应的勾选框
+            // 判断是否必选和之前用户是否已经选中事项，是则请求材料数据
+            ispandEx:function(data,item){
+                if(item.isDoneItem == 1){
+                    this.getMateriallist();
+                }else{
+                    if(data.indexOf(item)){
+                        this.getMateriallist();
+                    }
+                }
+            },
+            // 单独勾选表格中某条数据所对应的勾选框
             selectParallelItem:function(selection,row){
                 var vm = this;
                 vm.noRequireParallelItemCheckData = [];

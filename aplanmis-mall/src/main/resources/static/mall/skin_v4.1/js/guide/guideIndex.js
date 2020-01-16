@@ -414,7 +414,7 @@ var guideIndex = (function () {
                     if (res.success) {
                         if (!res.content.detailId) {
                             vm.$message({
-                                message: '暂无流程图',
+                                message: '暂无指南',
                                 type: 'error'
                             });
                             return
