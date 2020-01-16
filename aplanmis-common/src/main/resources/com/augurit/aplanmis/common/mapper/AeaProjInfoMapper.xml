@@ -1840,7 +1840,7 @@
           and asw.WINDOW_TYPE = 'd'
         ) agent on agent.PROJ_INFO_ID = proj.PROJ_INFO_ID
         where proj.IS_DELETED = '0'
-        and ( proj.PROJ_FLAG = 'p' or proj.PROJ_FLAG = '' or proj.PROJ_FLAG is null)
+        and ( proj.PROJ_FLAG = 'p' or proj.PROJ_FLAG = 'l' or proj.PROJ_FLAG is null)
         <if test="onlyRegion">
             and proj.REGIONALISM in
             <foreach collection="selfAndChildRegionIds" item="id" open="(" separator="," close=")">
@@ -1927,7 +1927,7 @@
             )
         </foreach>
     </update>
-    
+
     <select id="listBelongRegionAndChildRegionsByUserId" resultType="java.lang.String">
         select
             distinct region.REGION_ID
