@@ -15,10 +15,7 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.aplanmis.common.domain.*;
-import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
-import com.augurit.aplanmis.common.mapper.AeaItemRelevanceMapper;
-import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
-import com.augurit.aplanmis.common.mapper.AeaParStateMapper;
+import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.apply.AeaHiGuideDetailService;
 import com.augurit.aplanmis.common.service.apply.AeaHiGuideService;
 import com.augurit.aplanmis.common.service.guide.*;
@@ -130,6 +127,8 @@ public class RestGuideServiceImpl implements RestGuideService {
     private AeaHiGuideDetailService aeaHiGuideDetailService;
     @Autowired
     private AeaHiApplyinstService aeaHiApplyinstService;
+    @Autowired
+    private AeaParStageItemMapper aeaParStageItemMapper;
 
     @Value("${dg.sso.access.platform.org.top-org-id:0368948a-1cdf-4bf8-a828-71d796ba89f6}")
     protected String topOrgId;
@@ -483,11 +482,20 @@ public class RestGuideServiceImpl implements RestGuideService {
             AeaItemBasic param = new AeaItemBasic();
             param.setItemName(keyword);
             List<AeaItemBasic> aeaItemBasics = aeaItemBasicService.getAeaItemBasicListByKeyword(keyword,"1");
-            Set<AeaParStage> stages = new HashSet<>();
+            List<AeaParStageItem> aeaParStageItems = new ArrayList<>();
             if (aeaItemBasics.size()>0){
+                AeaParStageItem aeaParStageItem = new AeaParStageItem();
                 for (AeaItemBasic aeaItemBasic : aeaItemBasics) {
-                    stages.addAll(aeaParStageService.listAeaParStageByThemeIdOrThemeVerId(aeaItemBasic.getItemId(),aeaItemBasic.getBaseItemVerId(),rootOrgId));
+                    aeaParStageItem.setItemId(aeaItemBasic.getItemId());
+                    aeaParStageItems.addAll(aeaParStageItemMapper.listAeaParStageItem(aeaParStageItem));
                 }
+            }
+
+            if (aeaParStageItems.size()==0) return themeTypeVos;
+            List<String> stageIds = aeaParStageItems.stream().map(AeaParStageItem::getStageId).distinct().collect(Collectors.toList());
+            List<AeaParStage> stages = new ArrayList<>();
+            for (String stageId : stageIds) {
+                stages.add(aeaParStageService.getAeaParStageById(stageId));
             }
             if (stages.size()>0){
                 themeTypeVos.stream().forEach(themeTypeVo -> {

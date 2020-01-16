@@ -586,6 +586,7 @@ function importSolicitOrg(){
     if(import_solicit_org_validator!=null){
         import_solicit_org_validator.resetForm();
     }
+    $('#selectSolicitOrgDiv').animate({scrollTop: 0}, 800);//滚动到顶部
     initSolicitOrgCheck();
     setTimeout(function () {
         $("#uploadProgress").modal('hide');

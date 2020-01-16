@@ -68,7 +68,10 @@ $(function () {
     });
 });
 
+var i=0;
 function clickToLoadSolicitItemUser(){
+
+    i++;
 
     // 初始化征求事项树
     initSelectSolicitItem2Ztree();
@@ -76,11 +79,13 @@ function clickToLoadSolicitItemUser(){
     // 初始化征求人员表格
     initSolicitItemUserTb();
 
-    // 征求组织人员列表
-    $('#solicit_item_user_list_tb').bootstrapTable('resetView', {
+    if(i==1) {
+        // 征求组织人员列表
+        $('#solicit_item_user_list_tb').bootstrapTable('resetView', {
 
-        height: $('#westPanel').height() - 175
-    });
+            height: $('#westPanel').height() - 175
+        });
+    }
 
     // 处理事项表格滚动条
     $(".fixed-table-body").niceScroll({
@@ -432,6 +437,8 @@ function importSolicitItem(){
     if(import_solicit_item_validator!=null){
         import_solicit_item_validator.resetForm();
     }
+    //滚动到顶部
+    $('#selectSolicitItemDiv').animate({scrollTop: 0}, 800);
     initSolicitItemCheck();
     setTimeout(function () {
         $("#uploadProgress").modal('hide');
@@ -999,6 +1006,8 @@ function importSolicitUser(){
 
     $("#uploadProgress").modal("show");
     $('#uploadProgressMsg').html("加载数据中,请勿点击,耐心等候...");
+    //滚动到顶部
+    $('#selectSolicitItemUserDiv').animate({scrollTop: 0}, 800);
     initSolicitItemUserCheck();
     setTimeout(function () {
         $("#uploadProgress").modal('hide');
