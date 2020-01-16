@@ -3747,17 +3747,17 @@ var parallelDeclare = new Vue({
     // 一张表单获取并联申报实例化id
     getParallelApplyinstId: function (flag,_stoFormId) {
       var _that = this;
-      var _applySubject = '';
-      if (_that.applyObjectInfo.role == 2) {
-        _applySubject = 1;
-      } else {
-        _applySubject = 0;
-      }
-      if (_applySubject == 0) {
-        _that.userInfoId = this.applyObjectInfo.aeaLinkmanInfo.linkmanInfoId;
-        _that.userLinkmanCertNo = _that.applyObjectInfo.aeaLinkmanInfo.linkmanCertNo;
-      }
-      _that.applySubject = _applySubject;
+      // var _applySubject = '';
+      // if (_that.applyObjectInfo.role == 2) {
+      //   _applySubject = 1;
+      // } else {
+      //   _applySubject = 0;
+      // }
+      // if (_applySubject == 0) {
+      //   _that.userInfoId = this.applyObjectInfo.aeaLinkmanInfo.linkmanInfoId;
+      //   _that.userLinkmanCertNo = _that.applyObjectInfo.aeaLinkmanInfo.linkmanCertNo;
+      // }
+      // _that.applySubject = _applySubject;
       var parmas = {
         applySource: 'net',
         applySubject: _that.applySubject,
