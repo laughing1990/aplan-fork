@@ -21,4 +21,7 @@ public interface AeaHiItemFillRealIninstMapper {
     public List<AeaHiItemFillRealIninst> listAeaHiItemFillRealIninst(AeaHiItemFillRealIninst aeaHiItemFillRealIninst) throws Exception;
 
     public AeaHiItemFillRealIninst getAeaHiItemFillRealIninstById(@Param("id") String id) throws Exception;
+
+    public void batchInsertAeaHiItemFillRealIninst(List<AeaHiItemFillRealIninst> list) throws Exception;
+
 }

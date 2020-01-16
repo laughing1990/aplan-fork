@@ -1,5 +1,7 @@
 package com.augurit.aplanmis.common.dto;
 
+import com.augurit.aplanmis.common.domain.AeaHiIteminst;
+import com.augurit.aplanmis.common.domain.AeaItemMat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -38,4 +40,10 @@ public class MatCorrectInfoDto implements Serializable {
 
     @ApiModelProperty(name = "submittedMats", value = "已提交的材料列表")
     private List<MatCorrectDto> submittedMats;
+
+    @ApiModelProperty(name = "allMats", value = "所有材料列表")
+    private List<AeaItemMat> allMats;
+
+    @ApiModelProperty(name = "iteminstList", value = "所有事项列表")
+    private List<AeaHiIteminst> iteminstList;
 }

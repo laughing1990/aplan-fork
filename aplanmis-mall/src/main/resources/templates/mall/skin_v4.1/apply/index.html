@@ -1235,7 +1235,7 @@
     <!-- 申请人确认 -->
     <div class="proj-module pd-info-pandel" v-show="declareStep == 5">
       <p class="isGuidanceSuccess-title">
-        <i class="ag ag-warn-circle-fill"></i>相关部门已经对您的项目类型和事项进行了修改确认，请您确认后继续发起申报
+        <i class="ag ag-warn-circle-fill"></i>相关部门已经确认您的项目类型和事项，请您确认后继续申报
       </p>
       <!--项目/工程信息-->
       <h4 class="mt60">项目/工程信息</h4>
@@ -1342,7 +1342,7 @@
         <el-table-column label="审批层级" width="160" >
           <template slot-scope="scope">
             <div v-if="scope.row.isCatalog==1">
-              <el-select :disabled="scope.row.disabled" v-model="scope.row.itemVerId"
+              <el-select disabled v-model="scope.row.itemVerId"
                          placeholder="请选择活动区域">
                 <el-option v-for="(item,indexOp) in scope.row.carryOutItems"
                            :key="indexOp"
@@ -1381,6 +1381,7 @@
                          width="160">
           <template slot-scope="scope">
             <el-select v-model="scope.row.applicantChooseRel"
+                       :disabled="scope.row.leaderDeptChoose&&scope.row.isDoneItem=='1'"
                        @change="function(val){applicantChange(val,scope.row)}"
                        placeholder="请选择">
               <el-option label="现在办" value="0"></el-option>
@@ -1465,7 +1466,7 @@
         <el-table-column label="审批层级" width="160" >
           <template slot-scope="scope">
             <div v-if="scope.row.isCatalog==1">
-              <el-select :disabled="scope.row.disabled" v-model="scope.row.itemVerId"
+              <el-select disabled v-model="scope.row.itemVerId"
                          placeholder="请选择活动区域">
                 <el-option v-for="(item,indexOp) in scope.row.carryOutItems"
                            :key="indexOp"
@@ -1607,7 +1608,7 @@
                   <a :href="ctx+'rest/file/applydetail/mat/download/'+item.fileId"><span title="下载" class="el-icon-download"></span></a>
                   <span title="删除" class="el-icon-delete" @click="delSelectFileCom(scope.row,item,index)"></span>
                   <span title="预览" class="el-icon-search" @click="filePreview(item)"></span>
-                  <a v-if="getFileType(item.fileName)=='pdf'"
+                  <a v-if="scope.row.isSign=='1'"
                     :href="ctx+'rest/gdca/trustStamp/openFile?fileUrl='+ctx+'rest/file/applydetail/mat/download/'+item.fileId" target="_blank">
                     <span title="签章" class="el-icon-s-check"></span>
                   </a>
@@ -1688,7 +1689,7 @@
                   <a :href="ctx+'rest/file/applydetail/mat/download/'+item.fileId"><span title="下载" class="el-icon-download"></span></a>
                   <span title="删除" class="el-icon-delete" @click="delSelectFileCom(scope.row,item,index)"></span>
                   <span title="预览" class="el-icon-search" @click="filePreview(item)"></span>
-                  <a v-if="getFileType(item.fileName)=='pdf'"
+                  <a v-if="scope.row.isSign=='1'"
                      :href="ctx+'rest/gdca/trustStamp/openFile?fileUrl='+ctx+'rest/file/applydetail/mat/download/'+item.fileId" target="_blank">
                     <span title="签章" class="el-icon-s-check"></span>
                   </a>

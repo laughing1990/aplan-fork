@@ -357,7 +357,7 @@
 				label="操作">
 			<template slot-scope="scope">
 				<span class="op-btn" @click="viewDetail(scope.row)">
-					辅导
+					{{stateToText(scope.row.applyState)}}
 				</span>
 <!--				<span v-if="scope.row.solicitState && scope.row.solicitState == 2" class="op-btn" @click="viewDetail(scope.row)">部门辅导完成</span>-->
 <!--				<span v-else-if="scope.row.solicitState && scope.row.solicitState == 3" class="op-btn" @click="viewDetail(scope.row)">部门辅导中止</span>-->

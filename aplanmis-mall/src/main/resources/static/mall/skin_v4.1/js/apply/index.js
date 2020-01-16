@@ -473,17 +473,11 @@ var parallelDeclare = new Vue({
       saveSplitLoading: false, // 工程拆分loading
       saveSplitSuccFlag: false, // 工程拆分是否成功
       splitProjName: '',
+      isQueryIteminstState: '0', // 是否需要查询事项状态 1 是，0
     }
   },
   mounted: function () {
     var _that = this;
-    // if(this.parallelApplyinstId&&this.parallelApplyinstId!=''&&this.parallelApplyinstId!='null'){
-    //   _that.lookProjDetail();
-    //   _that.draftsProj = true;
-    // }else if (_that.projInfoId&&_that.projInfoId != 'null') {
-    //   _that.searchProjAllInfo(); // 获取项目信息
-    // }
-    _that.getThemeList();
     if(_that.guideId&&_that.guideId.length>0){
       _that.getGuideProjInfo();
       if(_that.isSelectItemState=='0'){
@@ -491,10 +485,11 @@ var parallelDeclare = new Vue({
       }else if(_that.isSelectItemState=='1') {
         _that.declareStep = 5;
       }
+    }else {
+      _that.getThemeList();
     }
   },
   created: function () {
-    console.log(1);
     this.GetRequest();
     this.getDicContent(); // 数据字典
     this.getGbhy();
@@ -632,7 +627,8 @@ var parallelDeclare = new Vue({
         applyinstId: _that.parallelApplyinstId,
         guideId: _that.guideId,
         isSelectItemState: _that.isSelectItemState,
-        projInfoId: _that.projInfoId
+        projInfoId: _that.projInfoId,
+        isQueryIteminstState: _that.isQueryIteminstState,
       };
       _that.loading = true;
       request('', {
@@ -663,6 +659,7 @@ var parallelDeclare = new Vue({
             _that.userInfoId = res.content.linkmanInfoId;
             _that.unitInfoId = res.content.unitInfoId;
             _that.deptComments = res.content.deptComments;
+            _that.useOneForm = res.content.useOneForm
             res.content.smsInfoVo.receiveMode = res.content.smsInfoVo.receiveMode?res.content.smsInfoVo.receiveMode:'1';
             res.content.smsInfoVo.receiveType=res.content.smsInfoVo.receiveType?res.content.smsInfoVo.receiveType:'1';
             _that.getResultForm = res.content.smsInfoVo;
@@ -2349,7 +2346,7 @@ var parallelDeclare = new Vue({
       this.stageinstId = data.stageinstId?data.stageinstId:this.stageinstId;
       this.stageName = data.stageName;
       this.dybzspjdxh = data.dybzspjdxh;
-      this.useOneForm = data.useOneForm;
+      // this.useOneForm = data.useOneForm;
       this.themeVerId = data.themeVerId;
       if (data && (data.handWay == 0)) {
         this.parallelItemsQuestionFlag = true;
@@ -3750,17 +3747,17 @@ var parallelDeclare = new Vue({
     // 一张表单获取并联申报实例化id
     getParallelApplyinstId: function (flag,_stoFormId) {
       var _that = this;
-      var _applySubject = '';
-      if (_that.applyObjectInfo.role == 2) {
-        _applySubject = 1;
-      } else {
-        _applySubject = 0;
-      }
-      if (_applySubject == 0) {
-        _that.userInfoId = this.applyObjectInfo.aeaLinkmanInfo.linkmanInfoId;
-        _that.userLinkmanCertNo = _that.applyObjectInfo.aeaLinkmanInfo.linkmanCertNo;
-      }
-      _that.applySubject = _applySubject;
+      // var _applySubject = '';
+      // if (_that.applyObjectInfo.role == 2) {
+      //   _applySubject = 1;
+      // } else {
+      //   _applySubject = 0;
+      // }
+      // if (_applySubject == 0) {
+      //   _that.userInfoId = this.applyObjectInfo.aeaLinkmanInfo.linkmanInfoId;
+      //   _that.userLinkmanCertNo = _that.applyObjectInfo.aeaLinkmanInfo.linkmanCertNo;
+      // }
+      // _that.applySubject = _applySubject;
       var parmas = {
         applySource: 'net',
         applySubject: _that.applySubject,

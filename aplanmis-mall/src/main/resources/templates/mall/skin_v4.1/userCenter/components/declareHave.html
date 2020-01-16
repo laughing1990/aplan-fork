@@ -35,20 +35,18 @@
         <table class="wt-table" v-loading="mloading">
           <thead>
             <tr>
-              <th class="al" width="20%">申报流水号</th>
-              <th class="al" width="18%">项目代码 | 项目名称</th>
-              <th width="14%">阶段/事项名称</th>
-              <th width="22%">申报状态</th>
-              <th  width="20%">
-                <div style="width: 150px;">操作</div>
-              </th>
+              <th class="al" width="16%">申报流水号</th>
+              <th class="al" width="20%">项目代码 | 项目名称</th>
+              <th width="16%">阶段/事项名称</th>
+              <th width="16%">申报状态</th>
+              <th  width="28%">操作</th>
             </tr>
           </thead>
           <tbody id="inProgressProjBody">
             <template v-if="hadApplyItemData.length>0">
               <tr v-for="item in hadApplyItemData">
-                <td width="20%">{{item.applyinstCode}}</td>
-                <td class="al" width="18%">
+                <td width="16%">{{item.applyinstCode}}</td>
+                <td class="al" width="20%">
                   <el-tooltip placement="top" effect="light">
                     <div slot="content">项目代码：{{item.localCode}}<br/> <br/>工程代码：{{item.gcbm}}<br /> <br/>项目/工程名称：{{item.projName}}</div>
                     <div>
@@ -57,7 +55,7 @@
                     </div>
                   </el-tooltip>
                 </td>
-                <td class="al" width="18%">
+                <td class="al" width="16%">
                   <el-tooltip placement="top" effect="light" v-if="item.isSeriesApprove == 1">
                     <div slot="content">项目类型：{{item.themeName}}<br/> <br/>
                       办理事项：【<span :style="'color:' + iteminstStateColorFormat(item.iteminst[0].iteminstState)">{{item.iteminst[0].iteminstState|iteminstStateFormat}}</span>】{{item.stageIteminstName}}</div>
@@ -78,11 +76,11 @@
                     </div>
                   </el-tooltip>
                 </td>
-                <td width="22%">
-                  <span class="applyinstState applyinstState1" style="line-height: 20px;"
+                <td width="16%">
+                  <span class="applyinstState applyinstState1"
                         v-if="item.applyinstState=='0'">已接件未审核</span>
                   <span class="applyinstState applyinstState2"
-                        v-else-if="item.applyinstState=='1'" style="line-height: 20px;">已接件并审核</span>
+                        v-else-if="item.applyinstState=='1'">已接件并审核</span>
                   <span class="applyinstState applyinstState3"
                         v-else-if="item.applyinstState=='2'">已受理</span>
                   <span class="applyinstState applyinstState4"
@@ -116,7 +114,7 @@
                   <span class="applyinstState applyinstState5"
                         v-else-if="item.applyinstState=='14'">撤件办结</span>
                 </td>
-                <td width="20%" style="cursor: pointer">
+                <td width="28%" style="cursor: pointer">
                   <a class="option-btn" style="display: inline-block;"  >审批信息</a>
                   <a class="option-btn" style="display: inline-block;"  @click="lookProjDetail(item)">申报信息</a>
                   <a class="option-btn" style="display: inline-block;" v-if="item.isNetSignPrev">证照领取</a>
@@ -357,7 +355,7 @@
           </el-table-column>
 
           <el-table-column label="序号" width="55">
-            <template scope="scope">
+            <template slot-scope="scope">
               {{scope.$index+1}}
             </template>
           </el-table-column>
@@ -366,7 +364,7 @@
           <el-table-column prop="approveOrgName" label="征求部门">
           </el-table-column>
           <el-table-column prop="" label="审批状态">
-            <template scope="scope">
+            <template slot-scope="scope">
               <span>{{scope.row.iteminstState | iteminstStateFormat}}</span>
             </template>
           </el-table-column>
@@ -384,12 +382,12 @@
         <el-table :data="showMaterialList" class="scrollable mt20" style="width: 100%;"
           :header-cell-style="{background:'#f7f8fa'}">
           <el-table-column label="序号" min-width="45">
-            <template scope="scope">
+            <template slot-scope="scope">
               {{scope.$index+1}}
             </template>
           </el-table-column>
           <el-table-column prop="matName" label="材料名称" min-width="300">
-            <template scope="scope">
+            <template slot-scope="scope">
               <span class="file-name" v-if="scope.row.matProp=='c'">
                 <span class="cert-icon icon ag ag-id-card"></span>
                 {{scope.row.matName}}
@@ -398,17 +396,17 @@
             </template>
           </el-table-column>
           <el-table-column label="原件是否已验" min-width="100">
-            <template scope="scope">
+            <template slot-scope="scope">
               {{(scope.row.realPaperCount&&scope.row.realPaperCount>=1)?'是':'否'}}
             </template>
           </el-table-column>
           <el-table-column label="复印件是否已验收" min-width="100">
-            <template scope="scope">
+            <template slot-scope="scope">
               {{(scope.row.realCopyCount&&scope.row.realCopyCount>=1)? '是':'否'}}
             </template>
           </el-table-column>
           <el-table-column label="电子件信息">
-            <template scope="scope" >
+            <template slot-scope="scope" >
               <template v-if="scope.row.matProp=='f'">
                 <el-button size="small" type="default" disabled
                            v-if="(!scope.row.attCount||scope.row.attCount==0)">未上传
@@ -512,14 +510,14 @@
     <el-table :data="electronFileList" class="scrollable mt20" style="width: 100%;"
       :header-cell-style="{background:'#f7f8fa'}">
       <el-table-column label="序号" width="55">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.$index+1}}
         </template>
       </el-table-column>
       <el-table-column prop="fileName" label="文件名称">
       </el-table-column>
       <el-table-column label="操作" width="100">
-        <template scope="scope">
+        <template slot-scope="scope">
           <i title="预览" class="el-icon-search" @click="filePreview(scope.row)" style="cursor: pointer;"></i>
           &nbsp;&nbsp;
           <i title="下载" class="el-icon-download" @click="downloadFile(scope.row)" style="cursor: pointer;"></i>
@@ -533,14 +531,14 @@
     <el-table :data="licenseFileList" class="scrollable mt20" style="width: 100%;"
               :header-cell-style="{background:'#f7f8fa'}">
       <el-table-column label="序号" width="55">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{scope.$index+1}}
         </template>
       </el-table-column>
       <el-table-column prop="fileName" label="文件名称">
       </el-table-column>
       <el-table-column label="操作" width="100">
-        <template scope="scope">
+        <template slot-scope="scope">
           <i title="预览" class="el-icon-search" @click="licensePreview(scope.row)" style="cursor: pointer;"></i>
           &nbsp;&nbsp;
         </template>

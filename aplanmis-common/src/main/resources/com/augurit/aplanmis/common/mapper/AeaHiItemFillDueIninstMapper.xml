@@ -77,6 +77,19 @@ DUE_ININST_ID  ,FILL_ID  ,INOUTINST_ID  ,FILL_OPINION  ,TIME_LIMIT_TYPE  ,PAPER_
 #{dueIninstId},#{fillId},#{inoutinstId},#{fillOpinion},#{timeLimitType},#{paperCount},#{copyCount},#{isNeedAtt},#{creater},#{createTime},  #{rootOrgId}
     )
 </insert>
+
+    <insert id="batchInsertAeaHiItemFillDueIninst" parameterType="AeaHiItemFillDueIninst" >
+        insert into AEA_HI_ITEM_FILL_DUE_ININST (
+        DUE_ININST_ID  ,FILL_ID  ,INOUTINST_ID  ,FILL_OPINION  ,TIME_LIMIT_TYPE  ,PAPER_COUNT  ,COPY_COUNT  ,IS_NEED_ATT  ,CREATER  ,CREATE_TIME  ,ROOT_ORG_ID
+        )  values
+        <foreach collection="list" item="item" separator=",">
+        (
+            #{item.dueIninstId},#{item.fillId},#{item.inoutinstId},#{item.fillOpinion},#{item.timeLimitType},#{item.paperCount},
+            #{item.copyCount},#{item.isNeedAtt},#{item.creater},#{item.createTime},  #{item.rootOrgId}
+        )
+        </foreach>
+    </insert>
+
 <!--6 修改实体对象 -->
 <update id="updateAeaHiItemFillDueIninst" parameterType="AeaHiItemFillDueIninst" >
     update AEA_HI_ITEM_FILL_DUE_ININST

@@ -14,6 +14,8 @@ public interface AeaHiItemFillDueIninstMapper {
 
     public void insertAeaHiItemFillDueIninst(AeaHiItemFillDueIninst aeaHiItemFillDueIninst) throws Exception;
 
+    public void batchInsertAeaHiItemFillDueIninst(List<AeaHiItemFillDueIninst> list) throws Exception;
+
     public void updateAeaHiItemFillDueIninst(AeaHiItemFillDueIninst aeaHiItemFillDueIninst) throws Exception;
 
     public void deleteAeaHiItemFillDueIninst(@Param("id") String id) throws Exception;

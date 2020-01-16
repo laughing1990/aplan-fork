@@ -37,10 +37,24 @@ var vm = new Vue({
 				{value: '3', label: '所有部门征求处理中'},
 				{value: '4', label: '申请人待确认'},
 				{value: '5', label: '结束'},
+				{value: '6', label: '结束部门辅导'},
 			],
 		}
 	},
 	methods: {
+		stateToText: function(state){
+			var arr = [
+				'辅导', // 0 默认值
+				'发起部门辅导', // 1 牵头部门待签收
+				'发起部门辅导', // 2 牵头部门处理中
+				'部门辅导确认', // 3 所有部门征求处理中
+				'查看详情', // 4 申请人待确认
+				'查看详情', // 5 结束
+				'结束部门辅导', // 6 所有部门已确认
+			];
+			var s = +state;
+			return arr[s] || '辅导';
+		},
 		//刷新列表
 		fetchTableData: function () {
 

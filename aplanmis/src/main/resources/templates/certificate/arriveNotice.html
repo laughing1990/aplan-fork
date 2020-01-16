@@ -1,0 +1,228 @@
+<!--@Author: ZL-->
+<!--@Date:   2019/05/27-->
+<!--@Last Modified by:   ZL-->
+<!--@Last Modified time: $ $-->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <!--引入公共css-->
+  <meta charset="UTF-8">
+  <title>到达通知</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+        th:href="@{/agcloud/framework/js-lib/element-2/element.css}"/>
+  <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css"
+        th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css"
+        th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
+  <link rel="stylesheet" href="../../static/certificate/css/index.css" th:href="@{/certificate/css/index.css}">
+  <script>
+    var ctx = '[[@{/}]]';
+  </script>
+  <script src="../../static/approve/js/ip.js" th:src="@{/approve/js/ip.js}"></script>
+  <style>
+    .c-f {
+      zoom: 1;
+    }
+
+    .c-f:after {
+      content: "";
+      display: block;
+      height: 0;
+      clear: both;
+      visibility: hidden;
+    }
+
+    .l {
+      float: left;
+    }
+
+    .r {
+      float: right;
+    }
+    .custor {
+      cursor: pointer;
+    }
+
+    .el-table .warning-row {
+      background: #DBE0E6;
+    }
+
+    .selectDialog {
+      width: 125px;
+    }
+    .right-bottom-btn {
+      position: fixed;
+      right: 55px;
+      bottom: 40px;
+      z-index: 1000;
+    }
+
+    .right-bottom-btn .el-button.is-circle {
+      display: block;
+      height: 68px;
+      width: 68px;
+      text-align: center;
+      padding: 12px 0;
+      margin: 0 0 16px 0;
+      -webkit-box-shadow: 1px 1px 20px 2px rgba(69, 65, 78, 0.2);
+      box-shadow: 1px 1px 20px 2px rgba(69, 65, 78, 0.2);
+      border: none;
+      line-height: 18px;
+      color: #575962;
+      background: #fff;
+    }
+
+    .right-bottom-btn .el-button.is-circle.el-button--danger {
+      background: #ff4b47;
+      color: #fff;
+    }
+
+    .right-bottom-btn .el-button.is-circle.el-button--primary {
+      background: #169aff;
+      color: #fff;
+    }
+    .right-bottom-btn .el-button.is-circle.el-button--success {
+      background: #00C161;
+      color: #fff;
+    }
+    .logic-dialog .el-dialog__header{
+      display: none;
+    }
+    .logic-dialog .el-dialog__body{
+      padding: 0;
+    }
+    .ld-wrap{
+      width: 620px;
+      overflow: auto;
+    }
+    .ld-top{
+      height: 150px;
+      background: rgba(19, 155, 255, 1);
+      color: #fff;
+    }
+    .ld-title{
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      line-height:40px;
+      padding: 25px 0 15px 0;
+      min-height: 80px;
+    }
+    .ag-folder-fill{
+      font-size: 50px;
+      color: #fff;
+    }
+    .ld-padding{
+      padding: 0 40px 0 60px;
+    }
+    .ldt-text{
+      line-height: 25px;
+    }
+    .ld-irowu>div{
+      float: left;
+    }
+    .ld-irowu div+div{
+      margin-left: 15px;
+    }
+    .ld-btn-box{
+      text-align: center;
+      padding: 30px 0 20px 0;
+    }
+    .ld-logic-inner{
+      padding-top: 20px;
+      max-height: 400px;
+      overflow: auto;
+      padding-left: 60px;
+      padding-right: 40px;
+    }
+  </style>
+</head>
+
+<body>
+
+
+<div id="approve" v-cloak v-loading="loading">
+  <div class="content">
+    <div class="vertical-tab">
+      <ul>
+        <li class="vertical-label" v-for="(item, index) in verticalTabData"
+            :class="activeTab==index?'active':item.target" data-name="item.target"
+            @click="targetCollapse(item.target,index)">
+          <a :href="'#'+item.target">{{item.label}}</a>
+        </li>
+      </ul>
+    </div>
+    <div class="right-bottom-btn">
+      <el-button type="primary" circle>
+        通知<br/>申请人
+      </el-button>
+    </div>
+
+    <el-collapse v-model="activeNames">
+
+      <!--  基本信息  start  -->
+      <el-collapse-item class="clearfix" name="1" id="baseInfo">
+        <template slot="title">
+          <i class="header-icon el-icon-document-copy"></i>基本信息
+        </template>
+      </el-collapse-item>
+      <!--  基本信息  end  -->
+
+      <!--事项列表信息start-->
+      <el-collapse-item name="2" id="itemList">
+        <template slot="title">
+          <i class="header-icon el-icon-info"></i>事项列表信息
+        </template>
+      </el-collapse-item>
+      <!--事项列表信息end -->
+
+      <!-- 材料补齐 start  -->
+      <el-collapse-item name="3" id="matBq">
+        <template slot="title">
+          <i class="header-icon el-icon-info"></i>材料补齐
+        </template>
+      </el-collapse-item>
+      <!-- 材料补齐 end -->
+
+      <!--  缴费信息  start  -->
+      <el-collapse-item name="4" id="payInfo">
+        <template slot="title">
+          <i class="header-icon el-icon-info"></i>缴费信息
+        </template>
+      </el-collapse-item>
+      <!--  缴费信息  end  -->
+
+      <!-- 短信通知模版 start-->
+      <el-collapse-item name="5" id="msgModule">
+        <template slot="title">
+          <i class="header-icon el-icon-info"></i>短信通知模版
+        </template>
+      </el-collapse-item>
+      <!-- 短信通知模版 end-->
+
+      </el-button>
+    </el-collapse>
+  </div>
+</div>
+</body>
+<!--<th:block th:include="common/common :: commonfooter"/>-->
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+        th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/polyfill.min.js"
+        th:src="@{/agcloud/framework/js-lib/element-2/polyfill.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+        th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+        th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="../../static/common/js/axios.min.js" th:src="@{/common/js/axios.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
+        th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+
+<script src="../../static/certificate/js/arriveNotice.js" th:src="@{/certificate/js/arriveNotice.js}"></script>
+
+</html>

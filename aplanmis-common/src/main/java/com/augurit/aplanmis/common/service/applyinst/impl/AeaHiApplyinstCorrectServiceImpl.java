@@ -22,22 +22,7 @@ import com.augurit.agcloud.opus.common.mapper.OpuOmUserInfoMapper;
 import com.augurit.aplanmis.bpm.common.timeCalculate.RestTimeruleinstCalService;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.constants.ItemStatus;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinstCorrect;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinstCorrectDueIninst;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinstCorrectRealIninst;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinstCorrectStateHist;
-import com.augurit.aplanmis.common.domain.AeaHiItemInoutinst;
-import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
-import com.augurit.aplanmis.common.domain.AeaHiItemStateinst;
-import com.augurit.aplanmis.common.domain.AeaHiIteminst;
-import com.augurit.aplanmis.common.domain.AeaHiParStageinst;
-import com.augurit.aplanmis.common.domain.AeaHiParStateinst;
-import com.augurit.aplanmis.common.domain.AeaItemMat;
-import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
-import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.common.domain.AeaUnitInfo;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.dto.ApplyinstCorrectinstDto;
 import com.augurit.aplanmis.common.dto.MatCorrectDto;
 import com.augurit.aplanmis.common.dto.MatCorrectInfoDto;
@@ -78,14 +63,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -594,11 +572,12 @@ public class AeaHiApplyinstCorrectServiceImpl implements AeaHiApplyinstCorrectSe
                 iteminstNames += aeaHiIteminst.getIteminstName() + "，";
                 approveOrgNames += aeaHiIteminst.getApproveOrgName() + "，";
             }
-
+            matCorrectInfoDto.setIteminstList(aeaHiIteminstList);
             matCorrectInfoDto.setIteminstName(iteminstNames.substring(0, iteminstNames.length() - 1));
             matCorrectInfoDto.setChargeOrgName(approveOrgNames.substring(0, approveOrgNames.length() - 1));
 
             mats.addAll(aeaItemMatService.getMatListByApplyinstIdContainsMatinst(applyinstId, null));
+            matCorrectInfoDto.setAllMats(mats);
 
             Map<String, List> map = matCorrectBaseService.getCorrectMatsAndSubmittedMats(mats);
             matCorrectDtos.addAll(map.get("MatCorrectDtos"));
@@ -609,6 +588,7 @@ public class AeaHiApplyinstCorrectServiceImpl implements AeaHiApplyinstCorrectSe
             if (projInfos.size() < 1) throw new Exception("找不到项目信息！");
             matCorrectInfoDto.setProjInfoName(projInfos.get(0).getProjName());
             matCorrectInfoDto.setLocalCode(projInfos.get(0).getLocalCode());
+            matCorrectInfoDto.setProjInfoId(projInfos.get(0).getProjInfoId());
 
             String owner = null;
             if ("1".equals(aeaHiApplyinst.getApplySubject())) {

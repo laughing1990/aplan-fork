@@ -40,7 +40,7 @@ var vm = new Vue({
       list.forEach(function(u){
         if (u.expressNum&&u.expressNum.length) {
           u.logicCompany = '中国邮政';
-          u.logicPhone = '95338';
+          u.logicPhone = '11183';
           u.remark = '无';
           u.senderName = '';
           u.addresseeName = '';

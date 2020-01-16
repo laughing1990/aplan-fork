@@ -84,4 +84,12 @@ public interface AeaParThemeVerMapper extends BaseMapper<AeaParThemeVer> {
     List<AeaParThemeVer> listMaxThemeVerGroupByThemeId(@Param("themeId") String themeId, @Param("rootOrgId") String rootOrgId);
 
     List<AeaParThemeVer> listThemeVerNoRelThemeAndDiagramInfo(AeaParThemeVer aeaParThemeVer);
+
+    /**
+     * 获取试运行或者发布主题版本信息，携带主题信息，不携带运行图字段
+     *
+     * @param rootOrgId
+     * @return
+     */
+    List<AeaParThemeVer> listOkVerNoRelDiagramInfo(@Param("rootOrgId") String rootOrgId);
 }
