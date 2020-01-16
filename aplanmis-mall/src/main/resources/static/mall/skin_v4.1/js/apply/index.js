@@ -460,6 +460,7 @@ var parallelDeclare = new Vue({
       leaderThemeName: '', // 部门选择项目类型
       applySubject: '', // 申报主体类型
       deptComments: '', // 部门意见
+      deptCommentsObj: {},
       requireMat: [], // 所以必选材料
       noRequireMat: [], // 所有可选材料
       noRequireMatShow: [], // 展示的可选材料

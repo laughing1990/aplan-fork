@@ -1237,6 +1237,13 @@
       <p class="isGuidanceSuccess-title">
         <i class="ag ag-warn-circle-fill"></i>相关部门已经确认您的项目类型和事项，请您确认后继续申报
       </p>
+      <!--牵头部门意见-->
+      <h4 class="mt60">牵头部门意见</h4>
+      <el-form label-width="130px" v-model="deptCommentsObj">
+        <el-form-item class="wt100" label="牵头部门意见：">
+          <el-input type="textarea" v-model="deptComments"></el-input>
+        </el-form-item>
+      </el-form>
       <!--项目/工程信息-->
       <h4 class="mt60">项目/工程信息</h4>
       <table class="el-table th-table el-table--border">
