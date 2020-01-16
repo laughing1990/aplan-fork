@@ -143,8 +143,8 @@ public class AeaHiGuideServiceImpl implements AeaHiGuideService {
             if (CollectionUtils.isNotEmpty(opuOmOrgs)) {
                 guideDetailVo.setApproveOrgId(opuOmOrgs.get(0).getOrgId());
             }
-            guideDetailVo.setApproveItemVerIds(aeaSolicitItemMapper.listAeaSolicitItemForDeptConfirmByUserId(currentUserId).stream().map(AeaSolicitItem::getItemVerId).collect(Collectors.toSet()));
         }
+        guideDetailVo.setApproveItemVerIds(aeaSolicitItemMapper.listAeaSolicitItemForDeptConfirmByUserId(currentUserId).stream().map(AeaSolicitItem::getItemVerId).collect(Collectors.toSet()));
         guideDetailVo.setAeaHiGuide(aeaHiGuide);
         guideDetailVo.setParallelItems(result.get("0"));
         guideDetailVo.setOptionItems(result.get("1"));

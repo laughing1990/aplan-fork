@@ -1,6 +1,5 @@
 package com.augurit.aplanmis.common.apply.item;
 
-import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.aplanmis.common.constants.GuideChangeAction;
 import com.augurit.aplanmis.common.constants.GuideDetailType;
 import com.augurit.aplanmis.common.domain.AeaHiGuideDetail;
@@ -93,16 +92,6 @@ public class GuideComputedItem extends ComputedItem {
             }
         }
         this.detailState = aeaHiGuideDetail.getDetailState();
-
-        // 标准事项需要重新匹配实施事项
-        if (Status.ON.equals(this.isCatalog)) {
-            for (CarryOutItem co : this.carryOutItems) {
-                if (co.getItemVerId().equals(aeaHiGuideDetail.getItemVerId())) {
-                    this.currentCarryOutItem = co;
-                    break;
-                }
-            }
-        }
     }
 }
 
