@@ -19,6 +19,8 @@
   <link rel="stylesheet"
         href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css"
         th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
+  <link rel="stylesheet" href="../../static/searchTable/css/search-table.css"
+        th:href="@{/searchTable/css/search-table.css}">
   <link rel="stylesheet" href="../../static/certificate/css/index.css" th:href="@{/certificate/css/index.css}">
   <script>
     var ctx = '[[@{/}]]';
@@ -140,6 +142,21 @@
       padding-left: 60px;
       padding-right: 40px;
     }
+    .el-form-item{
+      margin-bottom: 10px;
+    }
+    .el-form{
+      margin-top: 10px;
+    }
+    .el-table__expand-column{
+      border-right: none!important;
+    }
+    .abcdefg>div{
+      padding-left:0px!important;
+    }
+    .msg-b{
+      padding: 5px 0;
+    }
   </style>
 </head>
 
@@ -170,6 +187,27 @@
         <template slot="title">
           <i class="header-icon el-icon-document-copy"></i>基本信息
         </template>
+        <el-form label-width="140px">
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="项目名称：">
+                占用城市绿地审批（7000平方米以上）占用城市绿地审批（7000平方米以上）
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="申请人姓名：">王先生</el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="单位名称：">王先生</el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="申请人身份证号：">王先生</el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="申请人手机号：">王先生</el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
       </el-collapse-item>
       <!--  基本信息  end  -->
 
@@ -178,6 +216,14 @@
         <template slot="title">
           <i class="header-icon el-icon-info"></i>事项列表信息
         </template>
+        <el-table :data="itemInfoList" class="search-content" border>
+          <el-table-column label="序号" type="index" width="50"></el-table-column>
+          <el-table-column label="部门名称" show-overflow-tooltip></el-table-column>
+          <el-table-column label="事项名称" show-overflow-tooltip></el-table-column>
+          <el-table-column label="证件编号" show-overflow-tooltip></el-table-column>
+          <el-table-column label="证件名称" show-overflow-tooltip></el-table-column>
+          <el-table-column label="签发时间" show-overflow-tooltip></el-table-column>
+        </el-table>
       </el-collapse-item>
       <!--事项列表信息end -->
 
@@ -186,6 +232,18 @@
         <template slot="title">
           <i class="header-icon el-icon-info"></i>材料补齐
         </template>
+        <el-table :data="itemInfoList" class="search-content" border>
+          <el-table-column label="序号" type="index" width="50"></el-table-column>
+          <el-table-column type="expand" width="25"></el-table-column>
+          <el-table-column label="材料名称" class-name="abcdefg" show-overflow-tooltip></el-table-column>
+          <el-table-column label="容缺受理书" show-overflow-tooltip></el-table-column>
+          <el-table-column label="收件标准" show-overflow-tooltip></el-table-column>
+          <el-table-column label="类型" show-overflow-tooltip></el-table-column>
+          <el-table-column label="应收" show-overflow-tooltip></el-table-column>
+          <el-table-column label="已收" show-overflow-tooltip></el-table-column>
+          <el-table-column label="截止期限" show-overflow-tooltip></el-table-column>
+          <el-table-column label="补齐意见" show-overflow-tooltip></el-table-column>
+        </el-table>
       </el-collapse-item>
       <!-- 材料补齐 end -->
 
@@ -194,6 +252,16 @@
         <template slot="title">
           <i class="header-icon el-icon-info"></i>缴费信息
         </template>
+        <el-form label-width="140px">
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="应收费用：">1789.00元</el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="实际缴费：">1789.00元</el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
       </el-collapse-item>
       <!--  缴费信息  end  -->
 
@@ -202,10 +270,16 @@
         <template slot="title">
           <i class="header-icon el-icon-info"></i>短信通知模版
         </template>
+        <el-radio-group v-model="msgRadio" style="width:100%">
+          <div v-for="u in defaultMsgList" style="margin-top:10px;">
+            <div class="msg-b"><el-radio :label="u.value">{{u.title}}</el-radio></div>
+            <div class="msg-b">
+              <el-input type="textarea" :rows="1" v-model="u.detail"></el-input>
+            </div>
+          </div>
+        </el-radio-group>
       </el-collapse-item>
       <!-- 短信通知模版 end-->
-
-      </el-button>
     </el-collapse>
   </div>
 </div>

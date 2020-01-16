@@ -44,12 +44,13 @@ var app = new Vue({
       orgDialog: false,
       addWindowDialog: false,
       addWinDialog: false,
+      winH: document.documentElement.clientHeight,
       treeLeftHeight: document.documentElement.clientHeight - 400,
       treeLeftHeight2: document.documentElement.clientHeight - 191,
       windowHeight: document.documentElement.clientHeight - 186,
       leftMenuH: document.documentElement.clientHeight - 240,
       tableH: document.documentElement.clientHeight - 230,
-      winH: document.documentElement.clientHeight,
+      userH: document.documentElement.clientHeight - 300,
       pageLoading: true,
       loading: false,
       pageNum: 1,
@@ -199,6 +200,14 @@ var app = new Vue({
       ],
       treeData: [], // 选择组织架构树结构数据
       treeShowNode: [], // 选择组织架构树结构展开的节点
+      isShowAddUser: false, // 是否显示新增人员弹窗
+      userParam: {
+        page: 1,
+        pageSize: 10,
+        userName: '',
+        total: 0
+      }, // 新增人员table分页配置参数
+      userSelection: [], // 新增人员table选中的人员集合
     }
   },
   directives: { clickoutside },
@@ -206,7 +215,7 @@ var app = new Vue({
     this.getAllUser();
     this.showData();
     this.regionTreeData();
-    this.orgTreeData();
+    // this.orgTreeData();
 
     this.getAllItem();
     this.getAllStage()
@@ -436,19 +445,31 @@ var app = new Vue({
     },
     // 请求部门树数据
     orgTreeData: function () {
-      var vm = this;
-      // vm.loading = true;
-      request('', {
-        type: 'get',
-        url: ctx + 'opus/om/org/admin/getOpusOmOrgElementUINode.do',
-      }, function (res) {
-        var arr = [];
-        arr.push(res);
-        vm.orgData = arr;
-        vm.loading = false
-      }, function (err) {
-        vm.$message.error('服务器错了哦!');
-      })
+      // var vm = this;
+      // // vm.loading = true;
+      // request('', {
+      //   type: 'get',
+      //   url: ctx + 'opus/om/org/admin/getOpusOmOrgElementUINode.do',
+      // }, function (res) {
+      //   var arr = [];
+      //   arr.push(res);
+      //   vm.orgData = arr;
+      //   vm.loading = false
+      // }, function (err) {
+      //   vm.$message.error('服务器错了哦!');
+      // })
+      request('opus-admin', { url: ctx + 'opus/om/org/admin/getOpusOmOrgAsyncElementUINode.do', type: 'get' }, function (data) {
+        _that.treeData = [];
+        data.forEach(function (e) {
+          _that.treeData.push(e)
+        })
+        _that.treeShowNode[0] = _that.treeData[0].id;
+
+        resolve(_that.treeData);
+      }, function () {
+        resolve([]);
+        _that.loading = false;
+      });
     },
 
     clearSearch: function () {
@@ -555,8 +576,35 @@ var app = new Vue({
         this.stageCheckedArr = val
       }
     },
+    // 新增人员
+    addNewUser: function () {
+      this.userParam.userName = '';
+      this.userParam.page = 1;
+      this.isShowAddUser = true;
+    },
+    // 关闭人员
+    closeUserData: function () {
+      this.$refs.addUserMultipleTable.clearSelection();
+      this.isShowAddUser = false;
+    },
+    // 关闭前回调
+    handleClose: function (done) {
+      this.$refs.addUserMultipleTable.clearSelection();
+      done();
+    },
+    // 新增人员表格查询
+    searchUser: function () {
+      this.userParam.page = 1;
+      this.getAllUser();
+    },
+    // 新增人员用户选中的人员list
     handleSelectionChange: function (val) {
-      this.multipleSelection = val;
+      this.userSelection = val;
+    },
+    addUserData: function () {
+      var arr = this.removeRepeatArr(this.userCheckedData, this.userSelection, 'userId');
+      this.userCheckedData = this.userCheckedData.concat(arr);
+      this.isShowAddUser = false;
     },
     handleSelectionChange2: function (val) {
       this.multipleSelection2 = val;
@@ -942,18 +990,54 @@ var app = new Vue({
       }
     },
     // 获取组织人员列表
+    // getAllUser: function () {
+    //   var _this = this;
+    //   request('', {
+    //     type: 'get',
+    //     url: ctx + 'aea/service/window/listAllUserByOrgId.do',
+    //     async: false
+    //   }, function (res) {
+    //     _this.allUser = res[0].children;
+    //     _this.storeAllUser = res[0].children;
+    //   }, function (err) {
+    //     _this.$message.error('服务器错了哦!');
+    //   })
+    // },
+
+    // 获取组织人员列表
     getAllUser: function () {
       var _this = this;
+      var param = {
+        page: this.userParam.page,
+        rows: this.userParam.pageSize,
+        userName: this.userParam.userName
+      };
+
       request('', {
         type: 'get',
-        url: ctx + 'aea/service/window/listAllUserByOrgId.do',
-        async: false
+        url: ctx + 'aea/service/window/listCurrentTopOrgAllUser',
+        async: false,
+        data: param
       }, function (res) {
-        _this.allUser = res[0].children;
-        _this.storeAllUser = res[0].children;
+        _this.allUser = res.list;
+        _this.userParam.total = res.total;
+        // _this.allUser = res[0].children;
+        // _this.storeAllUser = res[0].children;
       }, function (err) {
         _this.$message.error('服务器错了哦!');
       })
+    },
+    handPageNumChange: function (value) {
+      var _that = this;
+      if (typeof (value) != "undefined") {
+        _that.userParam.page = value;
+      }
+      _that.getAllUser();
+    },
+    handleSizeChange: function (value) {
+      var _that = this;
+      _that.userParam.page = value;
+      _that.getAllUser();
     },
     // 获取事项列表
     getAllItem: function () {
@@ -1204,7 +1288,7 @@ var app = new Vue({
       var _this = this;
       var ids = [];
       this.userCheckedData.map(function (item) {
-        ids.push(item.id);
+        ids.push(item.userId);
       })
       if (ids.length == 0) {
         _this.$message({
@@ -1335,15 +1419,15 @@ var app = new Vue({
         },
         async: false
       }, function (res) {
-        _this.userCheckedData = [];
-        for (var i = 0; i < res.length; i++) {
-          for (var j = 0; j < _this.allUser.length; j++) {
-            if (res[i].userId == _this.allUser[j].id) {
-              _this.userCheckedData.push(_this.allUser[j]);
-              break;
-            }
-          }
-        }
+        _this.userCheckedData = res ? res : [];
+        // for (var i = 0; i < res.length; i++) {
+        //   for (var j = 0; j < _this.allUser.length; j++) {
+        //     if (res[i].userId == _this.allUser[j].id) {
+        //       _this.userCheckedData.push(_this.allUser[j]);
+        //       break;
+        //     }
+        //   }
+        // }
       }, function (err) {
         _this.$message.error('服务器错了哦!');
       })
@@ -1412,6 +1496,19 @@ var app = new Vue({
         _this.$message.error('服务器错了哦!');
       })
     },
+    // 去除第二个参数数组在第一个参数数组里重复的数据,markType: 标识属性
+    removeRepeatArr: function (fArr, sArr, markType) {
+      for (var i = 0; i < fArr.length; i++) {
+        for (var j = 0; j < sArr.length; j++) {
+          if (fArr[i][markType] === sArr[j][markType]) {
+            sArr.splice(j, 1);
+            break;
+          }
+        }
+      }
+
+      return sArr;
+    }
   },
   watch: {
     regionKeyword: function (val) {
@@ -1420,9 +1517,9 @@ var app = new Vue({
     orgKeyword: function (val) {
       this.$refs.orgTree.filter(val);
     },
-    layerUserKeyWord: function (val) {
-      this.serachUser(val);
-    },
+    // layerUserKeyWord: function (val) {
+    //   this.serachUser(val);
+    // },
     layerItemKeyWord: function (val) {
       this.serachItem(val);
     },

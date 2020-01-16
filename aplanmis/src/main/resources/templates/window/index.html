@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="../../static/window/css/index.css" th:href="@{/window/css/index.css}">
   <script>
     var ctx = '[[@{/}]]';
-    // var ctx = 'http://192.168.30.37:8083/aplanmis-front/';
+    // var ctx = 'http://192.168.3.85:8083/aplanmis-front/';
     // var ctx = 'http://192.168.30.18:8083/aplanmis-front/';
   </script>
 </head>
@@ -145,8 +145,9 @@
                             @click.native="getUserByWindowId">查询</el-button>
                         </el-input>
                       </el-col>
-                      <el-col :span="12" class="tableOpBtn">
-                        <el-button type="primary" @click="openWinDialog">新增人员</el-button>
+                      <el-col :span="11" class="tableOpBtn">
+                        <!-- <el-button type="primary" @click="openWinDialog">新增人员</el-button> -->
+                        <el-button type="primary" @click="addNewUser">新增人员</el-button>
                         <el-button @click="saveWindowUser">保存配置</el-button>
                         <el-button type="danger" @click="batchRemoveUser">批量删除</el-button>
                       </el-col>
@@ -156,24 +157,24 @@
                       style="width: 100%; marginTop: 20px;">
                       <el-table-column type="selection" width="55"></el-table-column>
                       <el-table-column prop="userName" label="姓名">
-                        <template slot-scope='scope'>
+                        <!-- <template slot-scope='scope'>
                           {{scope.row.data.userName}}
-                        </template>
+                        </template> -->
                       </el-table-column>
                       <el-table-column prop="userMobile" label="手机号码">
-                        <template slot-scope='scope'>
+                        <!-- <template slot-scope='scope'>
                           {{scope.row.data.userMobile}}
-                        </template>
+                        </template> -->
                       </el-table-column>
                       <el-table-column prop="orgName" label="所属组织">
-                        <template slot-scope='scope'>
+                        <!-- <template slot-scope='scope'>
                           {{scope.row.data.orgName}}
-                        </template>
+                        </template> -->
                       </el-table-column>
                       <el-table-column prop="loginName" label="登录名">
-                        <template slot-scope='scope'>
+                        <!-- <template slot-scope='scope'>
                           {{scope.row.data.loginName}}
-                        </template>
+                        </template> -->
                       </el-table-column>
                       <el-table-column label="操作" width='100'>
                         <template slot-scope='scope'>
@@ -512,6 +513,31 @@
       </div>
     </div>
     <div class="right-sidebar-overlay" v-show="addWinDialog" @click="resetWinSearch"></div>
+
+    <!-- 新增人员单独弹窗 -->
+    <el-dialog class="addUser" title="新增人员" :visible.sync="isShowAddUser" :before-close="handleClose" width="75%" center>
+      <div class="searchBox" style="marginBottom: 15px;">
+        <el-input placeholder="请输入用户姓名、单位名称" v-model="userParam.userName"
+          class="input-with-select">
+          <el-button slot="append" icon="el-icon-search" @click="searchUser"></el-button>
+        </el-input>
+      </div>
+      <el-table ref="addUserMultipleTable" :data="allUser" tooltip-effect="dark"
+        @selection-change="handleSelectionChange" border row-key="userId" :height="userH">
+        <el-table-column type="selection" width="55" :reserve-selection="true">
+        </el-table-column>
+        <el-table-column prop="userName" label="用户名"></el-table-column>
+        <el-table-column prop="orgName" label="单位名称" show-overflow-tooltip></el-table-column>
+      </el-table>
+      <el-pagination layout="prev, pager, next,total,jumper, sizes" background align="right"
+        :page-sizes="[10, 20, 50, 500]" :page-size="userParam.pageSize" :current-page="userParam.page"
+        :total="userParam.total" @current-change="handPageNumChange" @size-change="handleSizeChange">
+      </el-pagination>
+      <span slot="footer" class="dialog-footer" style="textAlign: right;">
+        <el-button @click="closeUserData">取 消</el-button>
+        <el-button type="primary" @click="addUserData">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 
 

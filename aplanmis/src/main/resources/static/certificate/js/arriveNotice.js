@@ -31,6 +31,25 @@ var vm = new Vue({
       curWidth: (document.documentElement.clientWidth || document.body.clientWidth),//当前屏幕宽度
       curHeight: (document.documentElement.clientHeight || document.body.clientHeight),//当前屏幕高度
       loading: false,
+      itemInfoList: [],
+      defaultMsgList: [{
+        value: '1',
+        title: '模版一：容缺材料未补齐，未缴费',
+        detail: '您的证件已经到达，但是相关的容缺材料未补齐，以及需要缴纳费用1789.00元，请登录“政务服务网”进行缴费和补齐，方可到政务中心窗口领取相关证件。',
+      }, {
+        value: '2',
+        title: '模版二：容缺材料未补齐，已缴费',
+        detail: '您的证件已经到达，但是相关的容缺材料未补齐，请登录“政务服务网”进行补齐，并且可到政务中心窗口领取相关证件。',
+      }, {
+        value: '3',
+        title: '模版三：容缺材料已补齐，未缴费',
+        detail: '您的证件已经到达，但是需要缴纳费用1789.00元，请登录“政务服务网”进行缴费，方可到政务中心窗口领取相关证件。',
+      }, {
+        value: '4',
+        title: '模版四：容缺材料已补齐，已缴费',
+        detail: '您的证件已经到达，请尽快到政务中心窗口领取相关证件。',
+      }],
+      msgRadio: '1',
     }
   },
   mounted: function () {
