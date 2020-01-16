@@ -403,13 +403,30 @@ var guideIndex = (function () {
                 }
                 window.location.href =ctx + "rest/main/toIndexPage?stageId="+stageId+"#/listmatter";
               },
-            // 查看流程图
-            previewRow:function (detailId) {
-                if(viewer)viewer.destroy();//当存在viewer对象，先销毁
-                viewer = new Viewer(document.getElementById(detailId), {
-                    url: 'data-original'
+
+            //查看主题流程图
+            showProcess: function () {
+                var vm = this;
+                request('', {
+                    url: ctx + 'rest/guide/theme/file/list/' + vm.themeId,
+                    type: 'get'
+                }, function (res) {
+                    if (res.success) {
+                        if (!res.content.detailId) {
+                            vm.$message({
+                                message: '暂无流程图',
+                                type: 'error'
+                            });
+                            return
+                        }
+                        // window.open(ctx + 'rest/file/att/preview/' + res.content.detailId);
+                        vm.previewFile(res.content)
+                    } else {
+                        vm.$message.error(res.message);
+                    }
+                }, function () {
+                    vm.$message.error('获取附件失败，请重试！');
                 });
-                viewer.show();//展示图片
             },
 
             handleSizeChange: function (val) {

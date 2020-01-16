@@ -62,9 +62,10 @@
                                                 <li class="theme-type active">
                                                     <ul class="theme-type-list">
                                                         <li class="theme-type-item ellipsisLn" :id='itemSub.themeId' :class="{active:index==0 && indexSub==0 , active:indexSub==activeSub , selected : itemSub.isSelected && itemSub.isSelected == '1'}" @click="goToGuid($event,itemSub.themeId,indexSub,itemSub.themeMemo)" v-for="(itemSub, indexSub) in item.themeList" :key="indexSub">
-                                                            <el-tooltip placement="bottom" effect="light">
+                                                            <el-tooltip placement="top" effect="light">
                                                                 <div slot="content" style="width: 200px">
-                                                                    <div v-html="itemSub.themeMemo" ></div>
+                                                                    <div v-html="itemSub.themeMemo" style="display: inline-block"></div>
+                                                                    <el-button type="text" style="font-size: 12px;color: #4293F4;" @click="showProcess()">下载指南</el-button>
                                                                 </div>
                                                                 <span>{{(indexSub+1)+'、'+itemSub.themeName}}</span>
                                                             </el-tooltip>
