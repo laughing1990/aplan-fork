@@ -281,18 +281,20 @@ SELECT proj.PROJ_INFO_ID AS DFSJZJ, '000000' AS XZQHDM
 		ELSE '2017'
 	END AS GBHYDMFBND
 	, CASE
-		WHEN length(trim(NSTART_TIME)) > 0 THEN
-			CASE
-				WHEN length(trim(proj.NSTART_TIME)) = 4 THEN CONCAT(proj.NSTART_TIME, '-01-01')
-				WHEN length(trim(proj.NSTART_TIME)) < 9 THEN replace(replace(proj.END_TIME, '月', '-'), '年', '-')
-				ELSE replace(replace(proj.NSTART_TIME, '月', '-01'), '年', '-')
-			END
-		ELSE '1970-01-01'
-	END AS NKGSJ
+        WHEN length(trim(proj.NSTART_TIME)) > 0 THEN
+            CASE
+                WHEN length(trim(proj.NSTART_TIME)) = 4 THEN CONCAT(proj.NSTART_TIME, '-01-01')
+                WHEN length(trim(proj.NSTART_TIME)) = 7 THEN CONCAT(proj.NSTART_TIME, '-01')
+                WHEN length(trim(proj.NSTART_TIME)) < 9 THEN replace(replace(proj.NSTART_TIME, '月', '-'), '年', '-')
+                ELSE replace(replace(proj.NSTART_TIME, '月', '-01'), '年', '-')
+            END
+        ELSE '1970-01-01'
+    END AS NKGSJ
 	, CASE
 		WHEN length(trim(proj.END_TIME)) > 0 THEN
 			CASE
 				WHEN length(trim(proj.END_TIME)) = 4 THEN CONCAT(proj.END_TIME, '-12-31')
+				WHEN length(trim(proj.END_TIME)) = 7 THEN CONCAT(proj.END_TIME, '-01')
 				WHEN length(trim(proj.END_TIME)) < 9 THEN replace(replace(proj.END_TIME, '月', '-'), '年', '-')
 				ELSE replace(replace(proj.END_TIME, '月', '-01'), '年', '-')
 			END
@@ -400,18 +402,20 @@ SELECT ahai123.APPLYINST_PROJ_ID AS DFSJZJ, '000000' AS XZQHDM
 		ELSE '2017'
 	END AS GBHYDMFBND
 	, CASE
-		WHEN length(trim(NSTART_TIME)) > 0 THEN
-			CASE
-				WHEN length(trim(proj.NSTART_TIME)) = 4 THEN CONCAT(proj.NSTART_TIME, '-01-01')
-				WHEN length(trim(proj.NSTART_TIME)) < 9 THEN replace(replace(proj.END_TIME, '月', '-'), '年', '-')
-				ELSE replace(replace(proj.NSTART_TIME, '月', '-01'), '年', '-')
-			END
-		ELSE '1970-01-01'
-	END AS NKGSJ
+        WHEN length(trim(proj.NSTART_TIME)) > 0 THEN
+            CASE
+                WHEN length(trim(proj.NSTART_TIME)) = 4 THEN CONCAT(proj.NSTART_TIME, '-01-01')
+                WHEN length(trim(proj.NSTART_TIME)) = 7 THEN CONCAT(proj.NSTART_TIME, '-01')
+                WHEN length(trim(proj.NSTART_TIME)) < 9 THEN replace(replace(proj.NSTART_TIME, '月', '-'), '年', '-')
+                ELSE replace(replace(proj.NSTART_TIME, '月', '-01'), '年', '-')
+            END
+        ELSE '1970-01-01'
+    END AS NKGSJ
 	, CASE
 		WHEN length(trim(proj.END_TIME)) > 0 THEN
 			CASE
 				WHEN length(trim(proj.END_TIME)) = 4 THEN CONCAT(proj.END_TIME, '-12-31')
+				WHEN length(trim(proj.END_TIME)) = 7 THEN CONCAT(proj.END_TIME, '-01')
 				WHEN length(trim(proj.END_TIME)) < 9 THEN replace(replace(proj.END_TIME, '月', '-'), '年', '-')
 				ELSE replace(replace(proj.END_TIME, '月', '-01'), '年', '-')
 			END
