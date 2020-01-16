@@ -404,6 +404,8 @@ function importSolicitOrg(){
     if(import_solicit_org_validator!=null){
         import_solicit_org_validator.resetForm();
     }
+    //滚动到顶部
+    $('#selectSolicitOrgDiv').animate({scrollTop: 0}, 800);
     initSolicitOrgCheck();
     setTimeout(function () {
         $("#uploadProgress").modal('hide');
@@ -969,6 +971,8 @@ function importSolicitUser(){
 
     $("#uploadProgress").modal("show");
     $('#uploadProgressMsg').html("加载数据中,请勿点击,耐心等候...");
+    //滚动到顶部
+    $('#selectSolicitOrgUserDiv').animate({scrollTop: 0}, 800);
     initSolicitOrgUserCheck();
     setTimeout(function () {
         $("#uploadProgress").modal('hide');

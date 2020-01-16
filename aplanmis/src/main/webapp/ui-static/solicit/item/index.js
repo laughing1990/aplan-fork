@@ -432,6 +432,8 @@ function importSolicitItem(){
     if(import_solicit_item_validator!=null){
         import_solicit_item_validator.resetForm();
     }
+    //滚动到顶部
+    $('#selectSolicitItemDiv').animate({scrollTop: 0}, 800);
     initSolicitItemCheck();
     setTimeout(function () {
         $("#uploadProgress").modal('hide');
@@ -999,6 +1001,8 @@ function importSolicitUser(){
 
     $("#uploadProgress").modal("show");
     $('#uploadProgressMsg').html("加载数据中,请勿点击,耐心等候...");
+    //滚动到顶部
+    $('#selectSolicitItemUserDiv').animate({scrollTop: 0}, 800);
     initSolicitItemUserCheck();
     setTimeout(function () {
         $("#uploadProgress").modal('hide');
