@@ -155,11 +155,9 @@ public class AeaHiGuideServiceImpl implements AeaHiGuideService {
         boolean isDeptOrg = leaderDeptCnt > 0;
         guideDetailVo.setLeaderDept(isDeptOrg);
         // 如果是审批部门
-        if (!isDeptOrg) {
-            List<OpuOmOrg> opuOmOrgs = opuOmOrgMapper.listOpuOmUserOrgByUserId(currentUserId);
-            if (CollectionUtils.isNotEmpty(opuOmOrgs)) {
-                guideDetailVo.setApproveOrgId(opuOmOrgs.get(0).getOrgId());
-            }
+        List<OpuOmOrg> opuOmOrgs = opuOmOrgMapper.listOpuOmUserOrgByUserId(currentUserId);
+        if (CollectionUtils.isNotEmpty(opuOmOrgs)) {
+            guideDetailVo.setApproveOrgId(opuOmOrgs.get(0).getOrgId());
         }
         guideDetailVo.setApproveItemVerIds(aeaSolicitItemMapper.listAeaSolicitItemForDeptConfirmByUserId(currentUserId).stream().map(AeaSolicitItem::getItemVerId).collect(Collectors.toSet()));
         guideDetailVo.setAeaHiGuide(aeaHiGuide);
