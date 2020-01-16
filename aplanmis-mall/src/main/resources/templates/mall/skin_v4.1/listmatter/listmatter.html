@@ -117,7 +117,7 @@
                                                     <el-option v-for="(item,indexOp) in scope.row.carryOutItems"
                                                                :key="indexOp"
                                                                :label="item.regionName"
-                                                               @click.native="currentItemVerIdChangehandle(item,scope.$index)"
+                                                               @click.native="parallelItemCurrentItemVerIdChangehandle(item,scope.$index)"
                                                                :value="item.itemVerId"></el-option>
                                                 </el-select>
                                             </template>
@@ -150,13 +150,14 @@
                             <el-table-column
                                     prop="itemName"
                                     label="事项名称"
-                            >
+                                    >
                                 <template slot-scope="scope">
                                     <div>
                                         <div>
                                             <p class="parallel-title">{{scope.row.currentCarryOutItem && scope.row.currentCarryOutItem.itemName}}</p>
                                             <p class="parallel-title-intro">
-                                                <span>审批时限：{{scope.row.currentCarryOutItem.dueNum||5}}个工作日</span>
+                                                <span>审批部门：{{scope.row.currentCarryOutItem && scope.row.currentCarryOutItem.orgName||'-'}}</span>
+                                                <span>审批时限：{{scope.row.currentCarryOutItem && scope.row.currentCarryOutItem.dueNum||5}}个工作日</span>
                                                 <span style="margin-left: 20px;">结果物：
                                                     <span v-if="scope.row.resultMats">
                                                         <el-tooltip class="item" effect="dark" content="" placement="top">
@@ -204,11 +205,12 @@
                                 <template slot-scope="scope">
                                     <div v-if="scope.row.isCatalog==1">
                                         <template v-if="scope.row.carryOutItems&&scope.row.carryOutItems.length>0">
-                                            <el-select :disabled="scope.row.disabled" v-model="scope.row.currentCarryOutItem.itemVerId" @change="currentItemVerIdChangehandle"
+                                            <el-select :disabled="scope.row.disabled" v-model="scope.row.currentCarryOutItem.itemVerId"
                                                        placeholder="请选择活动区域">
                                                 <el-option v-for="(item,indexOp) in scope.row.carryOutItems"
                                                            :key="indexOp"
                                                            :label="item.regionName"
+                                                           @click.native="coreItemCurrentItemVerIdChangehandle(item,scope.$index)"
                                                            :value="item.itemVerId"></el-option>
                                             </el-select>
                                         </template>
@@ -471,11 +473,7 @@
               <!--<el-button type="primary" @click="matDialog=false">关闭</el-button>-->
             </span>
         </el-dialog>
-
     </div>
-
-
-
 
     <template id="recursionList">
         <div>

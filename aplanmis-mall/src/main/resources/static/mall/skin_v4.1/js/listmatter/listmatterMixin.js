@@ -78,3 +78,78 @@ var listmatterMixin = {
         },
     }
 }
+Vue.component('list',{
+    template:"#recursionList",
+    props: {
+        list: Array
+    },
+    methods:{
+        // 事项父情形下获取事项子情形
+        getMatterChildsStateList:function(cStateList,pData,answerData,index,type,value){
+            var vm = this;
+            var answerId = answerData.itemStateId ? answerData.itemStateId : 'ROOT';
+            request('', {
+                url: ctx +  'rest/guide/itemState/findByParentItemStateId/'+ answerId,
+                type: 'get',
+            }, function (res) {
+                if (res.success) {
+                    var content = res.content || [];
+                    vm.matterChildsSateListDataHandle(content,cStateList,index,type,value);
+                } else {
+                    vm.$message.error(res.message);
+                }
+
+            }, function () {
+                vm.$message.error('获取子情形列表接口失败，请稍后重试！');
+            });
+        },
+        matterChildsSateListDataHandle:function(content,cStateList,index,type,value){
+            var vm = this;
+            content.map(function (item) {                       // 对多选checkbox绑定的值selectAnswerId类型重置为数组，防止点击出现全部选中
+                if(item.answerType !='s'||item.answerType!='y'){
+                    item.selectAnswerId = [];
+                }
+            });
+            if(!cStateList[index].children){
+                vm.$set(cStateList[index],'children',[]);
+            }
+            if(type === 'radio'){
+                cStateList[index].children = content;
+            }else{
+                if(value){ // 为真checkbox勾选
+                    cStateList[index].children = cStateList[index].children.concat(content);
+                }else{
+                    if(content.length > 0){
+                        var cStateList_C = JSON.parse(JSON.stringify(cStateList[index].children));
+                        var indexArry = [];
+                        for (var i = 0; i < cStateList_C.length; i++) {
+                            for (var j = 0; j < content.length; j++) {
+                                if(content[j].itemStateId != cStateList_C[i].itemStateId){
+                                    indexArry.push(i);
+                                }
+                            }
+                        }
+                        setTimeout(function () {
+                            for (var i = 0; i <indexArry.length ; i++) {
+                                cStateList[index].children.splice(indexArry[i],1);
+                            }
+                        },0)
+                    }
+                }
+            }
+            console.log(cStateList);
+
+            // 更新材料一单清数据
+            var selectAnswerId = cStateList[index].selectAnswerId;
+            if(typeof  selectAnswerId == 'object'&& selectAnswerId.constructor == Array){
+                selectAnswerId.forEach(function (ele) {
+                    listmatter.vm.itemStateIds.push(ele);
+                })
+            }else{
+                listmatter.vm.itemStateIds.push(selectAnswerId);
+            }
+            listmatter.vm.getMateriallist();
+        },
+
+    }
+});
