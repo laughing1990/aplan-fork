@@ -304,7 +304,9 @@
 					<span class="bg-status">不计时</span>
 				</div>
 				<div v-else>
-					<span class="bg-status green-deadline">{{scope.row.timeLimitText}}</span>
+					<span class="bg-status green-deadline"
+								:class="[scope.row.overdue==1?'red-deadline':'green-deadline']">
+						{{scope.row.timeLimitText}}</span>
 <!--					<span class="bg-status green-deadline" v-if="!scope.row.instState">{{scope.row.timeLimitText}}</span>-->
 <!--					<span class="bg-status green-deadline" v-else-if="scope.row.instState=='1'">{{scope.row.remainingOrOverTimeText}}</span>-->
 <!--					<span class="bg-status yellow-deadline" v-else-if="scope.row.instState=='2'">{{scope.row.remainingOrOverTimeText}}</span>-->
