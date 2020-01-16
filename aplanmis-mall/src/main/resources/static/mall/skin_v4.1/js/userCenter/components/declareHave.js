@@ -780,8 +780,5 @@ var vm = new Vue({
       }
       return defaultValue;
     },
-    computed:{
-
-    }
   },
 })
