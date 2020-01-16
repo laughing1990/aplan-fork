@@ -1078,7 +1078,7 @@
               <!--</div>-->
               <div class="apply-theme clearfix" v-if="themeTypeIndex==0">
                 <div class="theme-list-item" v-if="selTheme.themeId">
-                  <img class="text-left" src="../../apply/imgs/pro_type_4.png">
+                  <img class="text-left" :src="ctx+'apply/imgs/pro_type_4.png'">
                   <span class="theme-name ellipsis">{{selTheme.themeName}}</span>
                 </div>
                 <div class="theme-list-item no-sel-theme" v-else>
