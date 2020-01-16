@@ -342,6 +342,8 @@ var vm = new Vue({
       aeaHiCertinsts: [],
       aeaHiSmsSendItem: {},
       newestState: '运输中',
+      friCertName: '',
+      friCertCode: '',
     }
   },
   mounted: function () {
@@ -385,6 +387,8 @@ var vm = new Vue({
           vm.activities = res.content.logisticsOrderDetails;
           vm.aeaHiCertinsts = res.content.aeaHiCertinsts;
           vm.aeaHiSmsSendItem = res.content.aeaHiSmsSendItem;
+          vm.friCertName = vm.aeaHiCertinsts[0].certinstName;
+          vm.friCertCode = vm.aeaHiCertinsts[0].certinstCode;
           // 物流信息头部最新的状态
           vm.activities.forEach(function(u){
             if (u.remark&&u.remark.length) {
