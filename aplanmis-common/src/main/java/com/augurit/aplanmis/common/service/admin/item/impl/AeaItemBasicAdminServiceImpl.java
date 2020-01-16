@@ -33,9 +33,44 @@ import com.augurit.aplanmis.common.constants.InOutStatus;
 import com.augurit.aplanmis.common.constants.InOutType;
 import com.augurit.aplanmis.common.constants.MindType;
 import com.augurit.aplanmis.common.convert.BscAttDetailConvert;
-import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.domain.AeaHiItemInoutinst;
+import com.augurit.aplanmis.common.domain.AeaItem;
+import com.augurit.aplanmis.common.domain.AeaItemAgency;
+import com.augurit.aplanmis.common.domain.AeaItemAgencyAux;
+import com.augurit.aplanmis.common.domain.AeaItemAuxService;
+import com.augurit.aplanmis.common.domain.AeaItemBasic;
+import com.augurit.aplanmis.common.domain.AeaItemCond;
+import com.augurit.aplanmis.common.domain.AeaItemInout;
+import com.augurit.aplanmis.common.domain.AeaItemMat;
+import com.augurit.aplanmis.common.domain.AeaItemRelevance;
+import com.augurit.aplanmis.common.domain.AeaItemServiceBasic;
+import com.augurit.aplanmis.common.domain.AeaItemServiceWindowRel;
+import com.augurit.aplanmis.common.domain.AeaItemVer;
+import com.augurit.aplanmis.common.domain.AeaServiceLegalClause;
+import com.augurit.aplanmis.common.domain.AeaServiceWindow;
 import com.augurit.aplanmis.common.exception.ResultFormException;
-import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.mapper.AeaCertMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemAcceptRangeMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemAgencyAuxMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemAgencyMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemAuxServiceMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemExeorgMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemInoutMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemLegalRemedyMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemMatMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemRelevanceMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemRightsObligationsMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemServiceChargeMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemServiceConsultingMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemServiceFlowMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemServiceServeMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemServiceWindowRelMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemVerMapper;
+import com.augurit.aplanmis.common.mapper.AeaServiceLegalClauseMapper;
+import com.augurit.aplanmis.common.mapper.AeaServiceWindowMapper;
 import com.augurit.aplanmis.common.service.admin.item.AeaItemBasicAdminService;
 import com.augurit.aplanmis.common.service.admin.item.AeaItemCondAdminService;
 import com.augurit.aplanmis.common.service.admin.par.AeaParThemeVerAdminService;
@@ -60,7 +95,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -1306,7 +1348,11 @@ public class AeaItemBasicAdminServiceImpl implements AeaItemBasicAdminService {
             List<AeaItemBasic> aeaItemBasics = aeaItemBasicMapper.listCarryOutAeaItemBasicByParentItemIds(parentItemIds, rootOrgId);
             parentItemIds.clear();
             if (aeaItemBasics != null && aeaItemBasics.size() > 0) {
-                carryOutItems.addAll(aeaItemBasics);
+                for (AeaItemBasic aeaItemBasic : aeaItemBasics) {
+                    if (Status.OFF.equals(aeaItemBasic.getIsCatalog())) {
+                        carryOutItems.add(aeaItemBasic);
+                    }
+                }
                 parentItemIds.addAll(aeaItemBasics.stream().map(AeaItemBasic::getItemId).collect(Collectors.toList()));
             }
         }

@@ -3915,6 +3915,9 @@ var vm = new Vue({
         }
 
       }
+      if (this.isGuidePage && this.leaderDept) {
+        data.bmDisabled = false;
+      }
 
     },
     // 主题下主线辅线切换事件

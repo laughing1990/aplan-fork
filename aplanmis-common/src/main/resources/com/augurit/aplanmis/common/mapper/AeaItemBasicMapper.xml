@@ -2884,7 +2884,6 @@
         join aea_item ai2 on aib2.item_id=ai2.item_id
         join aea_item_ver aiv2 on aiv2.item_ver_id=aib2.item_ver_id
         where aib2.root_org_id=#{rootOrgId}
-        and aib2.is_catalog='0'
         and aiv2.item_ver_status in('1', '2')
         and aiv2.is_deleted='0'
         and ai2.parent_item_id in
@@ -2898,7 +2897,6 @@
             #{parentItemId}
         </foreach>
         and aib.root_org_id=#{rootOrgId}
-        and aib.is_catalog='0'
         and aiv.is_deleted='0'
     </select>
 
