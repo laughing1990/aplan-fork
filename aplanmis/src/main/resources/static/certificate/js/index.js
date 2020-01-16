@@ -344,6 +344,8 @@ var vm = new Vue({
       newestState: '运输中',
       friCertName: '',
       friCertCode: '',
+      address1: '',
+      address2: '',
     }
   },
   mounted: function () {
@@ -395,6 +397,20 @@ var vm = new Vue({
               vm.newestState = u.remark;
             }
           });
+
+          var p1 = vm.aeaHiSmsSendItem.addresseeProvince;
+          var city1 = vm.aeaHiSmsSendItem.addresseeCity;
+          var county1 = vm.aeaHiSmsSendItem.addresseeCounty;
+          var detail1 = vm.aeaHiSmsSendItem.addresseeAddr;
+
+          var p2 = vm.aeaHiSmsSendItem.senderProvince;
+          var city2 = vm.aeaHiSmsSendItem.senderCity;
+          var county2 = vm.aeaHiSmsSendItem.senderCounty;
+          var detail2 = vm.aeaHiSmsSendItem.senderAddr;
+
+          vm.address1 = vm.addressIdToText(p1, city1, county1, detail1);
+          vm.address2 = vm.addressIdToText(p2, city2, county2, detail2);
+
         } else {
           vm.$message.error(res.message || '获取物流信息失败');
         }
@@ -403,6 +419,40 @@ var vm = new Vue({
         vm.$message.error('获取物流信息失败');
       });
     },
+    //
+    addressIdToText: function(province, city, county, detail){
+      var text = '';
+      var f1 = false;
+      var f2 = false;
+      var f3 = false;
+      vm.provinceList.forEach(function(u){
+        if (f1) return null;
+        if (u.code == province) {
+          f1 = true;
+          text += u.name;
+          console.log(u.name);
+          u.cityList&&u.cityList.length&&u.cityList.forEach(function(uu) {
+            if (f2) return null;
+            if (uu.code == city) {
+              f2 = true;
+              text += uu.name;
+              console.log(uu.name);
+              uu.areaList&&uu.areaList.length&&uu.areaList.forEach(function(uuu) {
+                if (f3) return null;
+                if (uuu.code == county) {
+                  f3 = true;
+                  text += uuu.name;
+                  console.log(uuu.name);
+                }
+              })
+            }
+          });
+        }
+      });
+      text += detail;
+      return text;
+    },
+    // config funciton
     EMSconfig: function(){
       var vm = this;
       vm.verticalTabData = [ // 左侧纵向导航数据

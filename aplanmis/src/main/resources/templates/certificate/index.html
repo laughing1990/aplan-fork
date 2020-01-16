@@ -200,11 +200,11 @@
               prop="iteminstName"
               min-width="200"
               show-overflow-tooltip
-              label="事项">
+              label="事项名称">
           </el-table-column>
           <el-table-column
               prop="orgName"
-              label="部门"
+              label="部门名称"
               show-overflow-tooltip
               width="200">
           </el-table-column>
@@ -280,21 +280,27 @@
         <template slot="title">
           <i class="header-icon el-icon-info"></i>证件领取方式
         </template>
-        <el-form label-width="200px"
+        <el-form label-width="120px"
                  ref="receInfo2"
                  :model="sendInfoForm" :rules="sendSmsInfoRules">
-          <el-form-item label="签收方式">
-            <el-radio-group v-model="sendInfoForm.receiveMode">
-              <el-radio label="0" disabled>邮政快递</el-radio>
-              <el-radio label="1" disabled>窗口取证</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="领取方式">
-            <el-radio-group v-model="sendInfoForm.receiveType">
-              <el-radio label="1" disabled>一次领取</el-radio>
-              <el-radio label="0" disabled>分别领取</el-radio>
-            </el-radio-group>
-          </el-form-item>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="签收方式">
+                <el-radio-group v-model="sendInfoForm.receiveMode">
+                  <el-radio label="0" disabled>邮政快递</el-radio>
+                  <el-radio label="1" disabled>窗口取证</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="领取方式">
+                <el-radio-group v-model="sendInfoForm.receiveType">
+                  <el-radio label="1" disabled>一次领取</el-radio>
+                  <el-radio label="0" disabled>分别领取</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+          </el-row>
           <el-form-item label="快递方式" v-if="sendInfoForm.receiveMode == 0">
             <el-radio-group v-model="sendInfoForm.smsType">
               <el-radio label="1" disabled>普通快递</el-radio>
@@ -585,11 +591,11 @@
               <div>客服电话：11183</div>
             </div>
             <div class="ld-irowu c-f">
-              <div>寄件地址：{{aeaHiSmsSendItem.senderName}}</div>
-              <div>窗口人员：{{aeaHiSmsSendItem.addresseeAddr}}</div>
+              <div>寄件地址：{{address2}}</div>
+              <div>窗口人员：{{aeaHiSmsSendItem.windowUserName}}</div>
             </div>
             <div class="ld-irowu c-f">
-              <div>收件地址：{{aeaHiSmsSendItem.windowUserName}}</div>
+              <div>收件地址：{{address1}}</div>
               <div>{{aeaHiSmsSendItem.addresseeName}}：{{aeaHiSmsSendItem.addresseePhone}}</div>
             </div>
           </div>
