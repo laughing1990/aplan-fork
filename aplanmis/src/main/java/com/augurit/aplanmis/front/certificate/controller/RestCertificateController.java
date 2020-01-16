@@ -78,9 +78,15 @@ public class RestCertificateController {
     }
 
     @GetMapping("/sendInfo")
-    @ApiOperation("寄件信息")
+    @ApiOperation("寄件信息页面入口")
     public ModelAndView sendInfo() {
         return new ModelAndView("certificate/sendInfo");
+    }
+
+    @GetMapping("/arrived/notice")
+    @ApiOperation("证件到达通知页面入口")
+    public ModelAndView arrivedNotice() {
+        return new ModelAndView("certificate/arriveNotice");
     }
 
     @GetMapping("/out/materials/register")
