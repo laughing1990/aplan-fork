@@ -103,8 +103,25 @@ public class AeaHiGuideServiceImpl implements AeaHiGuideService {
         aeaHiGuides.forEach(ahg -> {
             ahg.setApplyStateName(GuideApplyState.fromValue(ahg.getApplyState()).getName());
             ahg.setApplySource(ApplySource.NET.getName());
+            computeTimeLimit(ahg);
         });
         return new PageInfo<>(aeaHiGuides);
+    }
+
+    private void computeTimeLimit(AeaHiGuide ahg) {
+        if (!GuideApplyState.DEPT_FINISHED.getValue().equals(ahg.getApplyState())) {
+            Date currentTime = new Date();
+            long duration = (currentTime.getTime() - ahg.getGuideStartTime().getTime()) / (1000 * 3600);
+            long delt = duration - ahg.getDueTimeLimit().longValue();
+            if (delt > 0) {
+                ahg.setTimeLimitText("逾期" + delt + "小时");
+            } else {
+                ahg.setTimeLimitText("剩余" + Math.abs(delt) + "小时");
+            }
+        } else {
+            ahg.setTimeLimitText("共计" + ahg.getRealTimeLimit() + "小时");
+        }
+
     }
 
     @Override
