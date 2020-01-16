@@ -525,7 +525,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
                         arrRegionIdList.add(id);
                     }
                 }
-                arrRegionIdList.addAll(regionService.getSeqBscDicRegionIds(regionalism));
+                if(StringUtils.isNotBlank(regionalism)) arrRegionIdList.addAll(regionService.getSeqBscDicRegionIds(regionalism));
                 List<AeaItemBasic> sssxList = aeaItemBasicService.getSssxByItemIdAndRegionalism(vo.getItemId(), regionalism, arrRegionIdList.size() == 0 ? null : CommonTools.ListToArr(arrRegionIdList), rootOrgId);
                 if(sssxList.size()>0){
                     sssxList.stream().forEach(ss->{
@@ -558,6 +558,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
 
     private AeaItemBasic getAeaItemBasicByMatchingRules(String regionId,List<AeaItemBasic> sssxList){
         if(sssxList.size()>0){
+            if(StringUtils.isBlank(regionId)) return sssxList.get(0);
             for (AeaItemBasic basic:sssxList){
                 if(regionId.equals(basic.getRegionId())){
                     return basic;
@@ -600,7 +601,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
                         arrRegionIdList.add(id);
                     }
                 }
-                arrRegionIdList.addAll(regionService.getSeqBscDicRegionIds(regionalism));
+                if(StringUtils.isNotBlank(regionalism)) arrRegionIdList.addAll(regionService.getSeqBscDicRegionIds(regionalism));
                 vo.setBaseItemVerId(vo.getItemVerId());
                 List<AeaItemBasic> sssxList = aeaItemBasicService.getSssxByItemIdAndRegionalism(vo.getItemId(), regionalism, arrRegionIdList.size() == 0 ? null : CommonTools.ListToArr(arrRegionIdList), finalRootOrgId);
                 if(sssxList.size()>0){
