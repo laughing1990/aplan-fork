@@ -23,6 +23,20 @@ public interface AeaHiItemFillService {
      */
     public void createAeaHiItemFill(String applyinstId) throws Exception;
 
+    /**
+     * 根据条件分页查询容缺列表
+     * @param aeaHiItemFill
+     * @param page
+     * @return
+     * @throws Exception
+     */
+    public PageInfo<AeaHiItemFill> listItemFills(AeaHiItemFill aeaHiItemFill, Page page)throws Exception;
 
-
+    /**
+     * 查询事项容缺补齐详情
+     * @param fillId
+     * @return
+     * @throws Exception
+     */
+    public AeaHiItemFill getAeaHiItemFillDetail(String fillId) throws Exception;
 }

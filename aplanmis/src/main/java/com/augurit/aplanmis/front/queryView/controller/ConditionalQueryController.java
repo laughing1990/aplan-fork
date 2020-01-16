@@ -9,6 +9,7 @@ import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.aplanmis.common.constants.AgencyState;
+import com.augurit.aplanmis.common.domain.AeaHiItemFill;
 import com.augurit.aplanmis.common.domain.AeaParStage;
 import com.augurit.aplanmis.common.domain.AeaServiceWindow;
 import com.augurit.aplanmis.common.service.area.RegionService;
@@ -787,5 +788,17 @@ public class ConditionalQueryController {
     @ApiOperation(value = "查询代办状态")
     public ResultForm getAgencyState() {
         return new ContentResultForm<>(true, AgencyState.getAgencyStateMap());
+    }
+
+    @PostMapping("/listItemFills")
+    @ApiOperation(value = "根据查询条件获取容缺审核列表")
+    public ResultForm listItemFills(AeaHiItemFill aeaHiItemFill, Page page) {
+        try {
+            PageInfo listItemFills = conditionalQueryService.listItemFills(aeaHiItemFill, page);
+            return new ContentResultForm<>(true, listItemFills);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return new ContentResultForm<>(false, null, e.getMessage());
+        }
     }
 }

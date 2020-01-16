@@ -23,4 +23,6 @@ public interface AeaHiItemFillDueIninstMapper {
     public List<AeaHiItemFillDueIninst> listAeaHiItemFillDueIninst(AeaHiItemFillDueIninst aeaHiItemFillDueIninst) throws Exception;
 
     public AeaHiItemFillDueIninst getAeaHiItemFillDueIninstById(@Param("id") String id) throws Exception;
+
+    public List<AeaHiItemFillDueIninst> listAeaHiItemFillDueIninstByFillId(@Param("fillId") String fillId);
 }

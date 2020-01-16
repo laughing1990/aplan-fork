@@ -10,12 +10,30 @@
     INOUTINST_ID  inoutinstId,
     FILL_OPINION  fillOpinion,
     TIME_LIMIT_TYPE  timeLimitType,
+    IS_PASS  isPass,
+    ATT_COUNT  attCount,
     PAPER_COUNT  paperCount,
     COPY_COUNT  copyCount,
     IS_NEED_ATT  isNeedAtt,
     CREATER  creater,
     CREATE_TIME  createTime,
     ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <sql id="aliasColumns" >
+        ${alias}.DUE_ININST_ID  dueIninstId,
+        ${alias}.FILL_ID  fillId,
+        ${alias}.INOUTINST_ID  inoutinstId,
+        ${alias}.FILL_OPINION  fillOpinion,
+        ${alias}.TIME_LIMIT_TYPE  timeLimitType,
+        ${alias}.IS_PASS  isPass,
+        ${alias}.ATT_COUNT  attCount,
+        ${alias}.PAPER_COUNT  paperCount,
+        ${alias}.COPY_COUNT  copyCount,
+        ${alias}.IS_NEED_ATT  isNeedAtt,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.ROOT_ORG_ID  rootOrgId
     </sql>
 
 <!--2 根据主键ID查询单个实体 -->
@@ -25,6 +43,21 @@
     from    AEA_HI_ITEM_FILL_DUE_ININST
     where    DUE_ININST_ID = #{id}
 </select>
+
+    <select id="listAeaHiItemFillDueIninstByFillId" resultType="AeaHiItemFillDueIninst" >
+        SELECT
+        <include refid="aliasColumns">
+            <property name="alias" value="due"/>
+        </include>,
+        tt.MAT_NAME
+        FROM aea_hi_item_fill_due_ininst due
+        LEFT JOIN (
+            SELECT aim.MAT_NAME, ahii.INOUTINST_ID FROM aea_hi_item_inoutinst ahii
+            LEFT JOIN aea_item_inout aii ON ahii.ITEM_INOUT_ID = aii.INOUT_ID
+            LEFT JOIN aea_item_mat aim ON aim.MAT_ID = aii.MAT_ID
+        ) tt ON tt.INOUTINST_ID = due.INOUTINST_ID
+        WHERE due.FILL_ID = #{fillId}
+    </select>
 
 <!--3 根据条件查询实体list -->
     <select id="listAeaHiItemFillDueIninst" resultType="AeaHiItemFillDueIninst" >
@@ -46,6 +79,12 @@
         </if>
         <if test="timeLimitType != null AND timeLimitType != ''" >
         AND    TIME_LIMIT_TYPE = #{timeLimitType}
+        </if>
+        <if test="isPass != null AND isPass != ''" >
+            AND    IS_PASS = #{isPass}
+        </if>
+        <if test="attCount != null AND attCount != ''" >
+            AND    ATT_COUNT = #{attCount}
         </if>
         <if test="paperCount != null AND paperCount != ''" >
         AND    PAPER_COUNT = #{paperCount}
@@ -72,19 +111,19 @@
 <!--5 新增实体对象 -->
 <insert id="insertAeaHiItemFillDueIninst" parameterType="AeaHiItemFillDueIninst" >
     insert into AEA_HI_ITEM_FILL_DUE_ININST (
-DUE_ININST_ID  ,FILL_ID  ,INOUTINST_ID  ,FILL_OPINION  ,TIME_LIMIT_TYPE  ,PAPER_COUNT  ,COPY_COUNT  ,IS_NEED_ATT  ,CREATER  ,CREATE_TIME  ,ROOT_ORG_ID  
+DUE_ININST_ID  ,FILL_ID  ,INOUTINST_ID  ,FILL_OPINION  ,TIME_LIMIT_TYPE  ,IS_PASS  ,ATT_COUNT  ,PAPER_COUNT  ,COPY_COUNT  ,IS_NEED_ATT  ,CREATER  ,CREATE_TIME  ,ROOT_ORG_ID
     )  values  (
-#{dueIninstId},#{fillId},#{inoutinstId},#{fillOpinion},#{timeLimitType},#{paperCount},#{copyCount},#{isNeedAtt},#{creater},#{createTime},  #{rootOrgId}
+#{dueIninstId},#{fillId},#{inoutinstId},#{fillOpinion},#{timeLimitType},#{isPass},#{attCount},#{paperCount},#{copyCount},#{isNeedAtt},#{creater},#{createTime},  #{rootOrgId}
     )
 </insert>
 
     <insert id="batchInsertAeaHiItemFillDueIninst" parameterType="AeaHiItemFillDueIninst" >
         insert into AEA_HI_ITEM_FILL_DUE_ININST (
-        DUE_ININST_ID  ,FILL_ID  ,INOUTINST_ID  ,FILL_OPINION  ,TIME_LIMIT_TYPE  ,PAPER_COUNT  ,COPY_COUNT  ,IS_NEED_ATT  ,CREATER  ,CREATE_TIME  ,ROOT_ORG_ID
+        DUE_ININST_ID  ,FILL_ID  ,INOUTINST_ID  ,FILL_OPINION  ,TIME_LIMIT_TYPE  ,IS_PASS  ,ATT_COUNT  ,PAPER_COUNT  ,COPY_COUNT  ,IS_NEED_ATT  ,CREATER  ,CREATE_TIME  ,ROOT_ORG_ID
         )  values
         <foreach collection="list" item="item" separator=",">
         (
-            #{item.dueIninstId},#{item.fillId},#{item.inoutinstId},#{item.fillOpinion},#{item.timeLimitType},#{item.paperCount},
+            #{item.dueIninstId},#{item.fillId},#{item.inoutinstId},#{item.fillOpinion},#{item.timeLimitType},#{isPass},#{attCount},#{item.paperCount},
             #{item.copyCount},#{item.isNeedAtt},#{item.creater},#{item.createTime},  #{item.rootOrgId}
         )
         </foreach>
@@ -108,6 +147,12 @@ DUE_ININST_ID  ,FILL_ID  ,INOUTINST_ID  ,FILL_OPINION  ,TIME_LIMIT_TYPE  ,PAPER_
         </if>
         <if test="timeLimitType != null AND timeLimitType != '' " >
         TIME_LIMIT_TYPE = #{timeLimitType},
+        </if>
+        <if test="isPass != null AND isPass != ''" >
+         IS_PASS = #{isPass},
+        </if>
+        <if test="attCount != null AND attCount != ''" >
+         ATT_COUNT = #{attCount},
         </if>
         <if test="paperCount != null AND paperCount != '' " >
         PAPER_COUNT = #{paperCount},
@@ -144,6 +189,8 @@ DUE_ININST_ID  ,FILL_ID  ,INOUTINST_ID  ,FILL_OPINION  ,TIME_LIMIT_TYPE  ,PAPER_
         <result property="inoutinstId" column="INOUTINST_ID"/>
         <result property="fillOpinion" column="FILL_OPINION"/>
         <result property="timeLimitType" column="TIME_LIMIT_TYPE"/>
+        <result property="isPass" column="IS_PASS"/>
+        <result property="attCount" column="ATT_COUNT"/>
         <result property="paperCount" column="PAPER_COUNT"/>
         <result property="copyCount" column="COPY_COUNT"/>
         <result property="isNeedAtt" column="IS_NEED_ATT"/>

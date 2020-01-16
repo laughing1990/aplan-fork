@@ -28,6 +28,30 @@
     ROOT_ORG_ID  rootOrgId
     </sql>
 
+    <sql id="aliasColumns" >
+        ${alias}.FILL_ID  fillId,
+        ${alias}.ITEMINST_ID  iteminstId,
+        ${alias}.APPLYINST_ID  applyinstId,
+        ${alias}.PROJ_INFO_ID  projInfoId,
+        ${alias}.FILL_DESC  fillDesc,
+        ${alias}.FILL_MEMO  fillMemo,
+        ${alias}.CHARGE_ORG_ID  chargeOrgId,
+        ${alias}.CHARGE_ORG_NAME  chargeOrgName,
+        ${alias}.OPS_USER_ID  opsUserId,
+        ${alias}.OPS_USER_NAME  opsUserName,
+        ${alias}.LAST_OPS_TIME  lastOpsTime,
+        ${alias}.LAST_UPLOAD_TIME  lastUploadTime,
+        ${alias}.LAST_TIPS_COUNT  lastTipsCount,
+        ${alias}.FILL_END_TIME  fillEndTime,
+        ${alias}.FILL_STATE  fillState,
+        ${alias}.IS_DELETED  isDeleted,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.ROOT_ORG_ID  rootOrgId
+    </sql>
+
 <!--2 根据主键ID查询单个实体 -->
 <select id="getAeaHiItemFillById" resultType="AeaHiItemFill" >
     select
@@ -36,6 +60,30 @@
     where    FILL_ID = #{id}
     AND  IS_DELETED = '0'
 </select>
+
+    <select id="getAeaHiItemFillDetail" resultType="AeaHiItemFill" >
+      SELECT
+        <include refid="aliasColumns">
+            <property name="alias" value="fill"/>
+        </include>,
+        tt.APPLICANT unitName,
+        api.PROJ_NAME projName,api.LOCAL_CODE localCode,
+        ahi.ITEMINST_NAME itemName
+        FROM aea_hi_item_fill fill
+        LEFT JOIN (
+            SELECT aui.APPLICANT,aha.APPLYINST_ID
+            FROM aea_hi_applyinst aha,aea_applyinst_unit_proj aaup,aea_unit_proj aup,aea_unit_info aui
+            WHERE aha.APPLYINST_ID = aaup.APPLYINST_ID
+            AND aaup.UNIT_PROJ_ID = aup.UNIT_PROJ_ID
+            AND aup.UNIT_INFO_ID = aui.UNIT_INFO_ID
+            AND aup.IS_OWNER = '1'
+            GROUP BY aha.APPLYINST_ID
+        ) tt ON tt.APPLYINST_ID = fill.APPLYINST_ID
+        LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID = fill.PROJ_INFO_ID
+        LEFT JOIN aea_hi_iteminst ahi ON ahi.ITEMINST_ID = fill.ITEMINST_ID
+        WHERE fill.FILL_ID = #{fillId}
+        AND fill.IS_DELETED = '0'
+    </select>
 
 <!--3 根据条件查询实体list -->
     <select id="listAeaHiItemFill" resultType="AeaHiItemFill" >
@@ -110,7 +158,108 @@
     </where>
     </select>
 <!--4 根据条件查询实体list,返回分页对象 -->
-
+    <select id="listAeaHiItemFillsByCondition" resultType="AeaHiItemFill" >
+        SELECT
+        <include refid="aliasColumns">
+            <property name="alias" value="fill"/>
+        </include>,
+        aha.APPLYINST_CODE applyinstCode,
+        aha.APPLYINST_SOURCE applyinstSource,
+        aha.IS_SERIES_APPROVE isSeriesApprove,
+        aha.CREATE_TIME applyTime,
+        api.PROJ_NAME projName,
+        api.LOCAL_CODE localCode,
+        ahi.ITEMINST_NAME itemName,
+        stage.STAGE_NAME stageName,
+        stage.DYBZSPJDXH dybzspjdxh
+        FROM aea_hi_item_fill fill
+        LEFT JOIN aea_hi_applyinst aha ON aha.APPLYINST_ID = fill.APPLYINST_ID
+        LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID = fill.PROJ_INFO_ID
+        LEFT JOIN aea_hi_iteminst ahi ON ahi.ITEMINST_ID = fill.ITEMINST_ID
+        LEFT JOIN (
+            SELECT ahps.APPLYINST_ID,aps.STAGE_NAME,aps.DYBZSPJDXH
+            FROM aea_hi_par_stageinst ahps,aea_par_stage aps
+            WHERE aps.STAGE_ID = ahps.STAGE_ID
+        ) stage ON stage.APPLYINST_ID = fill.APPLYINST_ID
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (
+                api.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                api.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                ahi.ITEMINST_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                stage.STAGE_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                aha.APPLYINST_CODE = #{keyword}
+                )
+            </if>
+            <if test="applyinstSource != null AND applyinstSource != ''" >
+                AND    aha.APPLYINST_SOURCE = #{applyinstSource}
+            </if>
+            <if test="isSeriesApprove != null AND isSeriesApprove != ''" >
+                AND    aha.IS_SERIES_APPROVE = #{isSeriesApprove}
+            </if>
+            <if test="fillId != null AND fillId != ''" >
+                AND    fill.FILL_ID = #{fillId}
+            </if>
+            <if test="iteminstId != null AND iteminstId != ''" >
+                AND    fill.ITEMINST_ID = #{iteminstId}
+            </if>
+            <if test="applyinstId != null AND applyinstId != ''" >
+                AND    fill.APPLYINST_ID = #{applyinstId}
+            </if>
+            <if test="projInfoId != null AND projInfoId != ''" >
+                AND    fill.PROJ_INFO_ID = #{projInfoId}
+            </if>
+            <if test="fillDesc != null AND fillDesc != ''" >
+                AND    fill.FILL_DESC = #{fillDesc}
+            </if>
+            <if test="fillMemo != null AND fillMemo != ''" >
+                AND    fill.FILL_MEMO = #{fillMemo}
+            </if>
+            <if test="chargeOrgId != null AND chargeOrgId != ''" >
+                AND    fill.CHARGE_ORG_ID = #{chargeOrgId}
+            </if>
+            <if test="chargeOrgName != null AND chargeOrgName != ''" >
+                AND    fill.CHARGE_ORG_NAME = #{chargeOrgName}
+            </if>
+            <if test="opsUserId != null AND opsUserId != ''" >
+                AND    fill.OPS_USER_ID = #{opsUserId}
+            </if>
+            <if test="opsUserName != null AND opsUserName != ''" >
+                AND    fill.OPS_USER_NAME = #{opsUserName}
+            </if>
+            <if test="lastOpsTime != null AND lastOpsTime != ''" >
+                AND    fill.LAST_OPS_TIME = #{lastOpsTime}
+            </if>
+            <if test="lastUploadTime != null AND lastUploadTime != ''" >
+                AND    fill.LAST_UPLOAD_TIME = #{lastUploadTime}
+            </if>
+            <if test="lastTipsCount != null AND lastTipsCount != ''" >
+                AND    fill.LAST_TIPS_COUNT = #{lastTipsCount}
+            </if>
+            <if test="fillEndTime != null AND fillEndTime != ''" >
+                AND    fill.FILL_END_TIME = #{fillEndTime}
+            </if>
+            <if test="fillState != null AND fillState != ''" >
+                AND    fill.FILL_STATE = #{fillState}
+            </if>
+            <if test="creater != null AND creater != ''" >
+                AND    fill.CREATER = #{creater}
+            </if>
+            <if test="createTime != null AND createTime != ''" >
+                AND    fill.CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null AND modifier != ''" >
+                AND    fill.MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null AND modifyTime != ''" >
+                AND    fill.MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null AND rootOrgId != ''" >
+                AND    fill.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            AND  IS_DELETED = '0'
+        </where>
+    </select>
 <!--5 新增实体对象 -->
 <insert id="insertAeaHiItemFill" parameterType="AeaHiItemFill" >
     insert into AEA_HI_ITEM_FILL (

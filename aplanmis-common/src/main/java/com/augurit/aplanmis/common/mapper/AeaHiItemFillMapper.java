@@ -21,4 +21,8 @@ public interface AeaHiItemFillMapper {
     public List<AeaHiItemFill> listAeaHiItemFill(AeaHiItemFill aeaHiItemFill) throws Exception;
 
     public AeaHiItemFill getAeaHiItemFillById(@Param("id") String id) throws Exception;
+
+    public List<AeaHiItemFill> listAeaHiItemFillsByCondition(AeaHiItemFill aeaHiItemFill);
+
+    public AeaHiItemFill getAeaHiItemFillDetail(@Param("fillId") String fillId);
 }

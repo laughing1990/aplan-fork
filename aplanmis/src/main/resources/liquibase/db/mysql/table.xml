@@ -2111,4 +2111,16 @@
         </sql>
     </changeSet>
 
+    <changeSet id="20200116200225" author="zhangwn" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            DROP TABLE IF EXISTS `aea_hi_item_fill_real_ininst`;
+
+            ALTER TABLE `aea_hi_item_fill_due_ininst`
+            ADD COLUMN `IS_PASS` char(1) NOT NULL COMMENT '是否通过，0表示未通过，1表示通过' AFTER `TIME_LIMIT_TYPE`;
+
+            ALTER TABLE `aea_hi_item_fill_due_ininst`
+            ADD COLUMN `ATT_COUNT` int(5) DEFAULT NULL COMMENT '附件总数' AFTER `IS_PASS`;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

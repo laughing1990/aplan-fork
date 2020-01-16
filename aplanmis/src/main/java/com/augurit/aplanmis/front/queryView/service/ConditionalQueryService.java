@@ -3,6 +3,7 @@ package com.augurit.aplanmis.front.queryView.service;
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
+import com.augurit.aplanmis.common.domain.AeaHiItemFill;
 import com.augurit.aplanmis.common.domain.AeaParStage;
 import com.augurit.aplanmis.common.vo.conditional.ConditionalQueryRequest;
 import com.augurit.aplanmis.front.queryView.vo.ConditionalQueryDic;
@@ -464,5 +465,13 @@ public interface ConditionalQueryService {
      */
     PageInfo listAgencyDoTasks(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception;
 
+    /**
+     * 分页查询容缺审核列表
+     * @param aeaHiItemFill
+     * @param page
+     * @return
+     * @throws Exception
+     */
+    PageInfo listItemFills(AeaHiItemFill aeaHiItemFill, Page page) throws Exception;
 }
 

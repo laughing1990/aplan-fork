@@ -44,14 +44,7 @@ import com.augurit.aplanmis.common.constants.ItemStatus;
 import com.augurit.aplanmis.common.constants.IteminstType;
 import com.augurit.aplanmis.common.constants.TimeruleInstState;
 import com.augurit.aplanmis.common.constants.TimeruleUnit;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaHiIteminst;
-import com.augurit.aplanmis.common.domain.AeaItemBasic;
-import com.augurit.aplanmis.common.domain.AeaParStage;
-import com.augurit.aplanmis.common.domain.AeaParTheme;
-import com.augurit.aplanmis.common.domain.AeaParThemeVer;
-import com.augurit.aplanmis.common.domain.AeaProjApplyAgent;
-import com.augurit.aplanmis.common.domain.AeaServiceWindowUser;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.event.AplanmisEventPublisher;
 import com.augurit.aplanmis.common.event.vo.ApplyEventVo;
 import com.augurit.aplanmis.common.event.vo.IteminstEventVo;
@@ -64,6 +57,7 @@ import com.augurit.aplanmis.common.mapper.AeaParThemeVerMapper;
 import com.augurit.aplanmis.common.mapper.AeaServiceWindowUserMapper;
 import com.augurit.aplanmis.common.mapper.ConditionalQueryMapper;
 import com.augurit.aplanmis.common.service.certificate.PickUpService;
+import com.augurit.aplanmis.common.service.itemFill.AeaHiItemFillService;
 import com.augurit.aplanmis.common.service.window.AeaProjApplyAgentService;
 import com.augurit.aplanmis.common.shortMessage.AplanmisSmsConfigProperties;
 import com.augurit.aplanmis.common.utils.ExcelUtils;
@@ -178,6 +172,9 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
 
     @Autowired
     private AeaProjApplyAgentService aeaProjApplyAgentService;
+
+    @Autowired
+    private AeaHiItemFillService aeaHiItemFillService;
 
     @Override
     public ConditionalQueryDic applyConditionalQueryDic() {
@@ -799,7 +796,11 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
         return pageInfo;
     }
 
-
+    @Override
+    public PageInfo listItemFills(AeaHiItemFill aeaHiItemFill, Page page) throws Exception {
+        PageInfo<AeaHiItemFill> pageInfo = aeaHiItemFillService.listItemFills(aeaHiItemFill,page);
+        return pageInfo;
+    }
 
     /**
      * 查询催办信息
