@@ -641,7 +641,7 @@
   width: 100%;
 }
 .th-table th, .el-table th {
-  background: #ECEFF5;
+  background: #F9FBFD;
 }
 .th-table.el-table:before {
   border-color: #E6EAF4;
