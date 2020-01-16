@@ -420,13 +420,17 @@ var guideIndex = (function () {
                             return
                         }
                         // window.open(ctx + 'rest/file/att/preview/' + res.content.detailId);
-                        vm.previewFile(res.content)
+                        vm.downloadFile(res.content.detailIds);
                     } else {
                         vm.$message.error(res.message);
                     }
                 }, function () {
                     vm.$message.error('获取附件失败，请重试！');
                 });
+            },
+            // 下载电子件
+            downloadFile: function (detailIds) {
+                window.open(ctx + 'rest/file/applydetail/mat/download/' + detailIds)
             },
 
             handleSizeChange: function (val) {
