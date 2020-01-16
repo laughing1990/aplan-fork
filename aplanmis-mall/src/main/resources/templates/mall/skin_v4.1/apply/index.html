@@ -1237,6 +1237,13 @@
       <p class="isGuidanceSuccess-title">
         <i class="ag ag-warn-circle-fill"></i>相关部门已经确认您的项目类型和事项，请您确认后继续申报
       </p>
+      <!--牵头部门意见-->
+      <h4 class="mt60">牵头部门意见</h4>
+      <el-form label-width="130px" v-model="deptCommentsObj">
+        <el-form-item class="wt100" label="牵头部门意见：">
+          <el-input type="textarea" v-model="deptComments"></el-input>
+        </el-form-item>
+      </el-form>
       <!--项目/工程信息-->
       <h4 class="mt60">项目/工程信息</h4>
       <table class="el-table th-table el-table--border">
@@ -1734,7 +1741,7 @@
             </el-upload>
             <el-button type="primary" plain @click="showUploadWindow(scope.row,scope.$index)">材料共享</el-button>
             <!--<el-button type="primary" plain v-if="scope.row.zcqy==1">容缺</el-button>-->
-            <el-button type="primary" plain v-if="scope.row.matProp=='c'" @click="showUploadWindow(scope.row,scope.$index,'certList')">证照库</el-button>
+            <!--<el-button type="primary" plain v-if="scope.row.matProp=='c'" @click="showUploadWindow(scope.row,scope.$index,'certList')">证照库</el-button>-->
             <el-button type="primary" plain v-if="scope.row.matProp=='f'" @click="showOneFormDialog1(scope.row)">填写</el-button>
             <el-button type="primary" plain v-if="scope.row.ybKbDetailIds&&scope.row.ybKbDetailIds!==''" @click="showMatFiles(scope.row.ybKbDetailIds)">空表样表</el-button>
           </template>
@@ -1911,7 +1918,7 @@
                 layout="sizes, prev, pager, next, jumper">
               </el-pagination>
             </el-tab-pane>
-            <el-tab-pane label="我的证照" name="myCertMat">
+            <el-tab-pane label="我的证照" name="myCertMat" v-if="selMatRowData.matProp=='c'">
               <div class="upload-file-content">
                 <!--<div class="file-opt-btn">-->
                   <!--<el-form :inline="true" :model="searchInline">-->

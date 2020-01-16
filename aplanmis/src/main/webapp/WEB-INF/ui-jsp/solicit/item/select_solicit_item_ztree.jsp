@@ -134,13 +134,15 @@
                                     </div>
                                     <div class="m-portlet__body" style="padding: 10px 0px;">
                                         <c:forEach items="${solicitBusTypes}" var="solicitBusType">
-                                            <div class="form-group m-form__group row" style="margin-bottom: 10px;">
-                                                <div class="col-12">
-                                                    <label class="m-radio">
-                                                        <input type="radio" name="busType" value="${solicitBusType.itemCode}">${solicitBusType.itemName}<span></span>
-                                                    </label>
+                                            <c:if test="${solicitBusType.itemCode!='LHPS'&&solicitBusType.itemCode!='YCZX'}">
+                                                <div class="form-group m-form__group row" style="margin-bottom: 10px;">
+                                                    <div class="col-12">
+                                                        <label class="m-radio">
+                                                            <input type="radio" name="busType" value="${solicitBusType.itemCode}">${solicitBusType.itemName}<span></span>
+                                                        </label>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            </c:if>
                                         </c:forEach>
                                     </div>
 

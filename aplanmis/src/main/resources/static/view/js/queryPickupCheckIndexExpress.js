@@ -74,6 +74,22 @@ var vm = new Vue({
       }
       window.open(url, '_blank');
     },
+    // 到达通知
+    clickArriveNotice: function(row) {
+      var menuName = '到达通知';
+      var menuInnerUrl = ctx + 'rest/certificate/arrived/notice?applyinstId=' + row.applyinstId;
+      var id = 'menu_' + new Date().getTime();
+      var data = {
+        'menuName': menuName,
+        'menuInnerUrl': menuInnerUrl,
+        'id': id,
+      };
+      try {
+        parent.vm.addTab('', data, '', '');
+      } catch (e) {
+        window.open(menuInnerUrl, '_blank');
+      }
+    },
     // 邮政下单
     clickEMS: function(row) {
       var menuName = '邮政下单';

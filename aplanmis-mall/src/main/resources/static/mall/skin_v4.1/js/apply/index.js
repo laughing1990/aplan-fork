@@ -460,6 +460,7 @@ var parallelDeclare = new Vue({
       leaderThemeName: '', // 部门选择项目类型
       applySubject: '', // 申报主体类型
       deptComments: '', // 部门意见
+      deptCommentsObj: {},
       requireMat: [], // 所以必选材料
       noRequireMat: [], // 所有可选材料
       noRequireMatShow: [], // 展示的可选材料
@@ -3125,6 +3126,7 @@ var parallelDeclare = new Vue({
     },
     // 保存并下一步  获取一张表单列表
     saveAndGetOneForm: function () {
+      debugger;
       var _that = this;
       var _itemStateIds = [];
       _that.itemVerIds = [];
@@ -4249,9 +4251,16 @@ var parallelDeclare = new Vue({
     // 根据阶段id查询关联的表单
     getOneFormList: function (_stageId) {
       var _that = this;
-      var selItemVer = _that.$refs.parallelItemsTable.selection; // 所有选择的并联审批事项
+      var selItemVer = []; // 所有选择的并联审批事项
       var str = '';
       var sFRenderConfig = '&showBasicButton=true&includePlatformResource=false';
+      if(_that.parallelItems&&_that.parallelItems.length>0){
+        _that.parallelItems.map(function(item){
+          if(item.applicantChooseRel=='0'){
+            selItemVer.push(item);
+          }
+        });
+      };
       selItemVer.map(function (item) {
         str += 'itemids=' + item.itemId + '&'
       });
@@ -4433,10 +4442,24 @@ var parallelDeclare = new Vue({
     },
     // 行政区划承办机构选中获得orgId
     getItemOrgId: function (data, index, item, flag,flagSelItem) { // flag = 'core' 并行事项; flagSelItem = true; 是否查询事项下情形材料
-      var selItemVer = this.$refs.parallelItemsTable.selection; // 所有选择的并联审批事项
-      var selCoreItemVer = this.$refs.coreItemsTable ? this.$refs.coreItemsTable.selection : ''; // 所有选择的并行审批事项
+      var selItemVer = []; // 所有选择的并联审批事项
+      var selCoreItemVer = []; // 所有选择的并行审批事项
       var _itemVerIdS = [], selAllItem = [];
       var _that = this;
+      if(_that.parallelItems&&_that.parallelItems.length>0){
+        _that.parallelItems.map(function(item){
+          if(item.applicantChooseRel=='0'){
+            selItemVer.push(item);
+          }
+        });
+      };
+      if(_that.coreItems&&_that.coreItems.length>0){
+        _that.coreItems.map(function(item){
+          if(item.applicantChooseRel=='0'){
+            selCoreItemVer.push(item);
+          }
+        });
+      }
       data.regionId = item.regionId;
       data.regionName = item.regionName;
       data.dueNum = item.dueNum;
