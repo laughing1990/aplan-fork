@@ -101,5 +101,7 @@ public class AeaHiGuide {
     private String keyword;
     // 当前用户id，用于列表数据权限控制
     private String currentUserId;
+    // 时限说明
+    private String timeLimitText;
 
 }

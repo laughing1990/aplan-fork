@@ -5,11 +5,14 @@ import com.augurit.agcloud.bsc.sc.dic.region.service.BscDicRegionService;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.service.om.OpuOmOrgService;
+import com.augurit.aplanmis.common.domain.AeaItemMat;
+import com.augurit.aplanmis.common.utils.CommonTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RegionService {
@@ -27,6 +30,46 @@ public class RegionService {
         OpuOmOrg rootOrg = opuOmOrgService.getOrg(rootOrgId);
         if(rootOrg==null) return new ArrayList<>();
         return bscDicRegionService.listSelfAndChildRegions(rootOrg.getRegionId(),null);
+    }
+
+
+    /**
+     * 根据行政区划ID查找当前区划及其子区划，还有父级区划
+     * @param regionId
+     * @return
+     */
+    public List<BscDicRegion> getSeqBscDicRegionList(String regionId) {
+        List<BscDicRegion> list = bscDicRegionService.listSelfAndChildRegions(regionId, null);
+        BscDicRegion region = bscDicRegionService.getBscDicRegionById(regionId);
+        String regionSeq=region.getRegionSeq();
+        if(StringUtils.isNotBlank(regionSeq)&&StringUtils.isNotBlank(region.getParentRegionId())){
+            String[] arr=regionSeq.split("\\.");
+            for (String i:arr){
+                if(StringUtils.isBlank(i)) continue;
+                list.add(bscDicRegionService.getBscDicRegionById(i));
+            }
+        }
+        if(list.size()>0){
+            list.stream()
+                    .filter(CommonTools.distinctByKey(BscDicRegion::getRegionId))
+                    .collect(Collectors.toList());
+        }
+        return list;
+    }
+
+    /**
+     * 根据行政区划ID查找当前区划及其子区划，还有父级区划ID列表
+     * @param regionId
+     * @return
+     */
+    public List<String> getSeqBscDicRegionIds(String regionId) {
+        List<BscDicRegion> list =this.getSeqBscDicRegionList(regionId);
+        if(list.size()>0){
+            return list.stream()
+                    .filter(CommonTools.distinctByKey(BscDicRegion::getRegionId)).map(BscDicRegion::getRegionId)
+                    .collect(Collectors.toList());
+        }
+        return new ArrayList<>();
     }
 
     /**

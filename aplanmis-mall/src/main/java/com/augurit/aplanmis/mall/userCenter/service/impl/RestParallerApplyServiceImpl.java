@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.mall.userCenter.service.impl;
 
+import com.augurit.agcloud.bsc.mapper.BscDicRegionMapper;
 import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
@@ -14,6 +15,7 @@ import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.apply.AeaHiGuideDetailService;
 import com.augurit.aplanmis.common.service.apply.AeaHiGuideService;
+import com.augurit.aplanmis.common.service.area.RegionService;
 import com.augurit.aplanmis.common.service.instance.*;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.item.AeaItemPrivService;
@@ -95,6 +97,10 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
     private AeaParThemeMapper aeaParThemeMapper;
     @Autowired
     private AeaHiIteminstService aeaHiIteminstService;
+    @Autowired
+    private AeaApplyinstForminstMapper aeaApplyinstForminstMapper;
+    @Autowired
+    private RegionService regionService;
 
     @Override
     public ItemListVo listItemAndStateByStageId(String stageId, String projInfoId, String regionalism, String projectAddress,String isSelectItemState,String isFilterStateItem,String rootOrgId) throws Exception {
@@ -166,9 +172,6 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
         vo.setStateList(stateList==null?new ArrayList<>():stateList);
         return vo;
     }
-
-    @Autowired
-    private AeaApplyinstForminstMapper aeaApplyinstForminstMapper;
 
     @Override
     public ApplyIteminstConfirmVo listGuideItemsByApplyinstId(String guideId,String applyinstId,String projInfoId, String isSelectItemState,String isQueryIteminstState) throws Exception {
@@ -522,7 +525,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
                         arrRegionIdList.add(id);
                     }
                 }
-
+                arrRegionIdList.addAll(regionService.getSeqBscDicRegionIds(regionalism));
                 List<AeaItemBasic> sssxList = aeaItemBasicService.getSssxByItemIdAndRegionalism(vo.getItemId(), regionalism, arrRegionIdList.size() == 0 ? null : CommonTools.ListToArr(arrRegionIdList), rootOrgId);
                 if(sssxList.size()>0){
                     sssxList.stream().forEach(ss->{
@@ -531,7 +534,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
                     });
                 }
                 vo.setCarryOutItems(sssxList);
-                AeaItemBasic sssx=sssxList.size()>0?sssxList.get(0):null;
+                AeaItemBasic sssx=sssxList.size()>0?this.getAeaItemBasicByMatchingRules(regionalism,sssxList):null;
                 if(sssx!=null){
                     vo.setCurrentCarryOutItem(sssx);
                     vo.setBaseItemVerId(vo.getItemVerId());
@@ -552,6 +555,19 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
         })
                 .collect(Collectors.toList());
     }
+
+    private AeaItemBasic getAeaItemBasicByMatchingRules(String regionId,List<AeaItemBasic> sssxList){
+        if(sssxList.size()>0){
+            for (AeaItemBasic basic:sssxList){
+                if(regionId.equals(basic.getRegionId())){
+                    return basic;
+                }
+            }
+            return sssxList.get(0);
+        }
+        return null;
+    }
+
 
     @Override
     public List<AeaGuideItemVo>  listItemByStageIdAndStateList(StageStateParamVo stageStateParamVo,String isOptionItem,String rootOrgId) throws Exception {
@@ -584,10 +600,11 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
                         arrRegionIdList.add(id);
                     }
                 }
+                arrRegionIdList.addAll(regionService.getSeqBscDicRegionIds(regionalism));
                 vo.setBaseItemVerId(vo.getItemVerId());
                 List<AeaItemBasic> sssxList = aeaItemBasicService.getSssxByItemIdAndRegionalism(vo.getItemId(), regionalism, arrRegionIdList.size() == 0 ? null : CommonTools.ListToArr(arrRegionIdList), finalRootOrgId);
                 if(sssxList.size()>0){
-                    vo.setItemVerId(sssxList.get(0).getItemVerId());
+                    vo.setItemVerId(this.getAeaItemBasicByMatchingRules(regionalism,sssxList).getItemVerId());
                 }
             }
         }).collect(Collectors.toList()):new ArrayList<>();
