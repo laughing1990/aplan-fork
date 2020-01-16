@@ -252,10 +252,10 @@
       </template>
     </el-table-column>
     <el-table-column
-        width="160"
+        width="240"
         label="操作">
       <template slot-scope="scope">
-        <!--<span class="op-btn">到达通知</span>-->
+        <span @click="clickArriveNotice(scope.row)" class="op-btn">到达通知</span>
         <span @click="clickEMS(scope.row)" class="op-btn" v-if="scope.row.pickUpStatus==0||scope.row.pickUpStatus==1">邮政下单</span>
         <span @click="clickSeeEMS(scope.row)" class="op-btn" v-if="scope.row.pickUpStatus==1||scope.row.pickUpStatus==2">寄件信息</span>
       </template>

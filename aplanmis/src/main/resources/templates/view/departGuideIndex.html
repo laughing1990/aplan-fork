@@ -304,33 +304,34 @@
 					<span class="bg-status">不计时</span>
 				</div>
 				<div v-else>
-					<span class="bg-status green-deadline" v-if="!scope.row.instState">{{'剩余'+scope.row.dueTimeLimit+'天'}}</span>
-					<span class="bg-status green-deadline" v-else-if="scope.row.instState=='1'">{{scope.row.remainingOrOverTimeText}}</span>
-					<span class="bg-status yellow-deadline" v-else-if="scope.row.instState=='2'">{{scope.row.remainingOrOverTimeText}}</span>
-					<span class="bg-status red-deadline"
-					      v-else-if="scope.row.instState=='3'">{{scope.row.remainingOrOverTimeText}}</span>
-					<el-popover
-							v-if="scope.row.nodeTimelimitList&&scope.row.nodeTimelimitList.length"
-							placement="right"
-							width="300"
-							trigger="hover">
-						<el-row :class="scope.row.nodeTimelimitList.length==1?'popover-item':'popover-item-border-bottom'"
-						        v-for="uu in scope.row.nodeTimelimitList" :key="uu.name">
-							<el-col class="wit-opc-color remind_text" :span="16">
-								{{uu.name}}：
-							</el-col>
-							<el-col :span="8">
-								<span class="bg-status green-deadline" v-if="!uu.instState">{{'剩余'+uu.text}}</span>
-								<span class="bg-status green-deadline" v-else-if="uu.instState=='1'">{{uu.text}}</span>
-								<span class="bg-status yellow-deadline" v-else-if="uu.instState=='2'">{{uu.text}}</span>
-								<span class="bg-status red-deadline"
-								      v-else-if="uu.instState=='3'">{{uu.text}}</span>
-							</el-col>
-						</el-row>
-						<span slot="reference" class="more-time">
-            <i class="el-icon-more"></i>
-          </span>
-					</el-popover>
+					<span class="bg-status green-deadline">{{scope.row.timeLimitText}}</span>
+<!--					<span class="bg-status green-deadline" v-if="!scope.row.instState">{{scope.row.timeLimitText}}</span>-->
+<!--					<span class="bg-status green-deadline" v-else-if="scope.row.instState=='1'">{{scope.row.remainingOrOverTimeText}}</span>-->
+<!--					<span class="bg-status yellow-deadline" v-else-if="scope.row.instState=='2'">{{scope.row.remainingOrOverTimeText}}</span>-->
+<!--					<span class="bg-status red-deadline"-->
+<!--					      v-else-if="scope.row.instState=='3'">{{scope.row.remainingOrOverTimeText}}</span>-->
+<!--					<el-popover-->
+<!--							v-if="scope.row.nodeTimelimitList&&scope.row.nodeTimelimitList.length"-->
+<!--							placement="right"-->
+<!--							width="300"-->
+<!--							trigger="hover">-->
+<!--						<el-row :class="scope.row.nodeTimelimitList.length==1?'popover-item':'popover-item-border-bottom'"-->
+<!--						        v-for="uu in scope.row.nodeTimelimitList" :key="uu.name">-->
+<!--							<el-col class="wit-opc-color remind_text" :span="16">-->
+<!--								{{uu.name}}：-->
+<!--							</el-col>-->
+<!--							<el-col :span="8">-->
+<!--								<span class="bg-status green-deadline" v-if="!uu.instState">{{'剩余'+uu.text}}</span>-->
+<!--								<span class="bg-status green-deadline" v-else-if="uu.instState=='1'">{{uu.text}}</span>-->
+<!--								<span class="bg-status yellow-deadline" v-else-if="uu.instState=='2'">{{uu.text}}</span>-->
+<!--								<span class="bg-status red-deadline"-->
+<!--								      v-else-if="uu.instState=='3'">{{uu.text}}</span>-->
+<!--							</el-col>-->
+<!--						</el-row>-->
+<!--						<span slot="reference" class="more-time">-->
+<!--							<i class="el-icon-more"></i>-->
+<!--						</span>-->
+<!--					</el-popover>-->
 				</div>
 
 			</template>
