@@ -37,9 +37,11 @@
                         <div class="col-10">
                             <div class="m-radio-inline">
                                 <c:forEach items="${solicitBusTypes}" var="solicitBusType">
-                                    <label class="m-radio">
-                                        <input type="radio" name="busType" value="${solicitBusType.itemCode}">${solicitBusType.itemName}<span></span>
-                                    </label>
+                                    <c:if test="${solicitBusType.itemCode!='LHPS'&&solicitBusType.itemCode!='YCZX'}">
+                                        <label class="m-radio">
+                                            <input type="radio" name="busType" value="${solicitBusType.itemCode}">${solicitBusType.itemName}<span></span>
+                                        </label>
+                                    </c:if>
                                 </c:forEach>
                             </div>
                         </div>

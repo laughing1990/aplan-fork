@@ -114,11 +114,14 @@ public class AeaHiGuideServiceImpl implements AeaHiGuideService {
             long duration = (currentTime.getTime() - ahg.getGuideStartTime().getTime()) / (1000 * 3600);
             long delt = duration - ahg.getDueTimeLimit().longValue();
             if (delt > 0) {
+                ahg.setOverdue("1");
                 ahg.setTimeLimitText("逾期" + delt + "小时");
             } else {
+                ahg.setOverdue("0");
                 ahg.setTimeLimitText("剩余" + Math.abs(delt) + "小时");
             }
         } else {
+            ahg.setOverdue("2");
             ahg.setTimeLimitText("共计" + ahg.getRealTimeLimit() + "小时");
         }
 
@@ -155,11 +158,9 @@ public class AeaHiGuideServiceImpl implements AeaHiGuideService {
         boolean isDeptOrg = leaderDeptCnt > 0;
         guideDetailVo.setLeaderDept(isDeptOrg);
         // 如果是审批部门
-        if (!isDeptOrg) {
-            List<OpuOmOrg> opuOmOrgs = opuOmOrgMapper.listOpuOmUserOrgByUserId(currentUserId);
-            if (CollectionUtils.isNotEmpty(opuOmOrgs)) {
-                guideDetailVo.setApproveOrgId(opuOmOrgs.get(0).getOrgId());
-            }
+        List<OpuOmOrg> opuOmOrgs = opuOmOrgMapper.listOpuOmUserOrgByUserId(currentUserId);
+        if (CollectionUtils.isNotEmpty(opuOmOrgs)) {
+            guideDetailVo.setApproveOrgId(opuOmOrgs.get(0).getOrgId());
         }
         guideDetailVo.setApproveItemVerIds(aeaSolicitItemMapper.listAeaSolicitItemForDeptConfirmByUserId(currentUserId).stream().map(AeaSolicitItem::getItemVerId).collect(Collectors.toSet()));
         guideDetailVo.setAeaHiGuide(aeaHiGuide);

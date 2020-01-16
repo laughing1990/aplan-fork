@@ -1560,7 +1560,7 @@
                       </template>
                     </el-table-column>
                     <!-- 审批部门填写意见 -->
-                    <template v-if="!leaderDept&&guideState==3">
+                    <template v-if="guideState==3">
                       <el-table-column :key="Math.random()" label="审批部门选择" prop="bmChecked" width="80px" align="center">
                         <template slot-scope="scope">
                           <el-checkbox v-model="scope.row.bmChecked"

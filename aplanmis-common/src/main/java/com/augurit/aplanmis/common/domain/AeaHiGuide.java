@@ -103,5 +103,7 @@ public class AeaHiGuide {
     private String currentUserId;
     // 时限说明
     private String timeLimitText;
+    // 是否逾期 0：否, 1: 是 , 2: 结束
+    private String overdue;
 
 }
