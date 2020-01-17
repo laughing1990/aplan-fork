@@ -12,6 +12,7 @@ import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaItem;
 import com.augurit.aplanmis.common.domain.AeaSolicitItem;
+import com.augurit.aplanmis.common.domain.AeaSolicitOrg;
 import com.augurit.aplanmis.common.service.admin.solicit.AeaSolicitItemService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
@@ -180,4 +181,11 @@ public class AeaSolicitItemController {
         return aeaSolicitItemService.gtreeSolicitItem(SecurityContext.getCurrentOrgId());
     }
 
+    @RequestMapping("/getCountNotRelSelf.do")
+    public ResultForm getCountNotRelSelf(AeaSolicitItem aeaSolicitItem) throws Exception {
+
+        aeaSolicitItem.setRootOrgId(SecurityContext.getCurrentOrgId());
+        Long num = aeaSolicitItemService.getCountNotRelSelf(aeaSolicitItem);
+        return num==null? new ContentResultForm<>(false, num): new ContentResultForm<>(true, num);
+    }
 }
