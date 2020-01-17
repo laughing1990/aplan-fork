@@ -1499,7 +1499,8 @@ var vm = new Vue({
         vm.parentPageLoading = false;
         if (res.success) {
           vm.$message.success('提交成功');
-          delayRefreshWindow();
+          refreshOpener();
+          delayCloseWindow();
         } else {
           vm.$message.error(res.message || '提交失败');
         }

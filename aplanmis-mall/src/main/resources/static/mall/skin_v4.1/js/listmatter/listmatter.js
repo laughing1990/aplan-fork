@@ -145,7 +145,7 @@ var listmatter = (function(window){
                             vm.$nextTick(function () {
                                 if(vm.coreItemCheckData.length > 0){
                                     vm.coreItemCheckData.forEach(function (item) {
-                                        vm.$refs.coreItemListTable.toggleRowSelection(item.true);
+                                        vm.$refs.coreItemListTable.toggleRowSelection(item,true);
                                     })
                                 }
                             })
@@ -449,10 +449,14 @@ var listmatter = (function(window){
             },
             // 点击开始指引
             startAILeadFn:function(){
-                var vm = this;
+                var stateList = this.stateList;
                 this.AIleadDialogFlag= false;
+                this.getAIleadData(stateList);
+            },
+            getAIleadData:function(stateList){
+                var vm = this;
                 // 取到选择的情形id列表
-                var stateIds = this.fetchStateList(this.stateList) || [];
+                var stateIds = this.fetchStateList(stateList) || [];
                 var params = {
                     "projectAddress": "", // 建设地点
                     "regionalism": "", //行政区划

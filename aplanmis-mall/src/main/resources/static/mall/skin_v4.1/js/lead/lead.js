@@ -274,11 +274,13 @@
             },
             // 跳转办事指南一单清
             toListMatter:function(){
-              /*  if(!stageId){
-                    this.$message.error("获取不到当前阶段id,无法跳转")
+                if(!this.stageId){
+                    this.$message.error("请继续引导，选择阶段id")
                     return
-                }*/
-                var stageId = 'daf59894-9c83-43f7-8d12-8cac21b023c9'
+                }
+                var stageId = this.stageId;
+                var stateList = this.stateList;  // 情形列表数据（选择的情形id数据里面）
+                sessionStorage.setItem('stateList',JSON.stringify(stateList));
                 window.location.href =ctx + "rest/main/toIndexPage?stageId="+stageId+"#/listmatter";
             }
         }

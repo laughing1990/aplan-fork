@@ -1,5 +1,21 @@
 var listmatterMixin = {
+    data:{
+        isfromLeadPageflage:false,
+    },
+    mounted:function(){
+        this.isfromLeadPage();
+    },
     methods: {
+        // 判断是否是在智能引导页跳转过来的
+        isfromLeadPage:function(){
+            var stateList = JSON.parse(sessionStorage.getItem('stateList'));
+            if(stateList){
+                this.isfromLeadPageflage = true;
+                this.getAIleadData(stateList);
+            }else{
+                this.isfromLeadPageflage = false;
+            }
+        },
         gotoGuideIndex:function () {
             window.location.hash='/DeclarGuidePage';
             window.location.search='';
@@ -48,33 +64,30 @@ var listmatterMixin = {
             return fetchStateListData;
         },
         compareAutoSelect:function(coreItemList,parallelItemList){
-            for (var i = 0; i < vm.coreItemList.length; i++) {
-                var isflag ;
-                for (var j = 0; j < coreItemList.length; j++) {
-                    if(coreItemList[j].itemVerId == vm.coreItemList[i].itemVerId){
-                        isflag = true;
+            var _this = this;
+            _this.$nextTick(function(){
+                for (var i = 0; i < _this.coreItemList.length; i++) {
+                    var isflag ;
+                    for (var j = 0; j < coreItemList.length; j++) {
+                        if(coreItemList[j].itemVerId == _this.coreItemList[i].itemVerId){
+                            isflag = true;
+                            console.log(_this.coreItemList[i])
+                        }
                     }
+                    isflag  &&  _this.$refs.coreItemListTable.toggleRowSelection(_this.coreItemList[i],true);
                 }
-                vm.$nextTick(function(){
-                    debugger
-                    console.log(vm.coreItemList[i])
-                    isflag  &&  vm.$refs.coreItemListTable.toggleRowSelection(vm.coreItemList[i].true);
-                })
-            }
 
-            for (var i = 0; i < vm.parallelItemList.length; i++) {
-                var isflag ;
-                for (var j = 0; j < parallelItemList.length; j++) {
-                    if(parallelItemList[j].itemVerId == vm.parallelItemList[i].itemVerId){
-                        isflag = true;
+                for (var i = 0; i < _this.parallelItemList.length; i++) {
+                    var isflag ;
+                    for (var j = 0; j < parallelItemList.length; j++) {
+                        if(parallelItemList[j].itemVerId == _this.parallelItemList[i].itemVerId){
+                            isflag = true;
+                        }
                     }
+                    isflag  &&   _this.$refs.parallelItematable.toggleRowSelection(_this.parallelItemList[i],true);
+
                 }
-                vm.$nextTick(function(){
-                    debugger
-                    console.log(vm.parallelItemList[i])
-                    isflag  &&   vm.$refs.parallelItematable.toggleRowSelection(vm.parallelItemList[i],true);
-                })
-            }
+            })
         },
     }
 }
