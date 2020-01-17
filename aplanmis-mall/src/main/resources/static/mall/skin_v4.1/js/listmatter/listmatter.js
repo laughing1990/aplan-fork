@@ -48,7 +48,6 @@ var listmatter = (function(window){
                     setTimeout(function(){
                         tempwindow.location=ctx+'/previewPdf/view?detailId='+detailId;
                     },1000)
-
                 }else {
                     if(regText.test(fileType)){
                         // previewPdf/pdfIsCoverted
