@@ -96,4 +96,12 @@ public interface AeaSolicitOrgMapper {
      * @return 数量
      */
     int countLeaderDeptByUserId(String userId);
+
+     /**
+      * 获取征求部门某种征求业务数量
+      *
+      * @param aeaSolicitOrg
+      * @return
+      */
+    Long getCountNotRelSelf(AeaSolicitOrg aeaSolicitOrg);
 }

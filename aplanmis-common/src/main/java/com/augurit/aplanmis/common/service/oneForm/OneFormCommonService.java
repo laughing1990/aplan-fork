@@ -3,6 +3,7 @@ package com.augurit.aplanmis.common.service.oneForm;
 import com.augurit.agcloud.bpm.common.constant.ActStoConstant;
 import com.augurit.agcloud.bpm.common.domain.*;
 import com.augurit.agcloud.bpm.common.domain.vo.SFFormParam;
+import com.augurit.agcloud.bpm.common.mapper.ActStoFormMapper;
 import com.augurit.agcloud.bpm.common.mapper.ActStoSmartFormOperaMapper;
 import com.augurit.agcloud.bpm.common.service.*;
 import com.augurit.agcloud.bpm.common.sfengine.config.SFRenderConfig;
@@ -84,6 +85,8 @@ public class OneFormCommonService {
     private MetaDbConnService metaDbConnService;
     @Autowired
     private ActStoForminstService actStoForminstService;
+    @Autowired
+    private ActStoFormMapper actStoFormMapper;
 
     @Value("${spring.datasource.url}")
     private String jdbcUrl;
@@ -208,7 +211,7 @@ public class OneFormCommonService {
     }
 
 
-    public List<SFFormParam> genListSFFormParam4OneForm(OneFormStageRequest oneFormStageRequest, boolean isIncludeDevForm) {
+    public List<SFFormParam> genListSFFormParam4StageOneForm(OneFormStageRequest oneFormStageRequest, boolean isIncludeDevForm) {
         List<SFFormParam> result = null;
 
         // itemids参数去重去空
@@ -299,11 +302,11 @@ public class OneFormCommonService {
         return listSFFormParam;
     }
 
-    public void renderPage(OneFormStageRequest oneFormStageRequest, SFRenderConfig sFRenderConfig) {
+    public void renderPage4StageOneForm(OneFormStageRequest oneFormStageRequest, SFRenderConfig sFRenderConfig) {
         if (StringUtils.isBlank(oneFormStageRequest.getApplyinstId())) {
             logger.warn("申报实例ID不能为空!!");
         } else {
-            List<SFFormParam> listSFFormParam = genListSFFormParam4OneForm(oneFormStageRequest, false);
+            List<SFFormParam> listSFFormParam = genListSFFormParam4StageOneForm(oneFormStageRequest, false);
             sFFormMultipleRender.renderPage(listSFFormParam, sFRenderConfig);
         }
     }
@@ -846,7 +849,15 @@ public class OneFormCommonService {
                                                 // 根据第一个字段和值查询是否已有记录，无则新增
                                                 Map<String, Object> dataExist = actStoSmartFormOperaMapper.getFormDataByBizId(sheetName, columnList.get(0).get("fieldName").toString(), sheetColumnData.get(0).toString());
                                                 if (dataExist == null) {
-                                                    actStoSmartFormOperaMapper.insertTableData(sheetName, dataMap);
+                                                    // 由于act_sto_form中FORM_LAYOUT_HTML为longblob类型，需要单独处理
+                                                    if (sheetName.equals("act_sto_form")) {
+                                                        ActStoForm actStoForm = (ActStoForm) CommonTools.convertMap2Bean(dataMap, ActStoForm.class);
+                                                        if(actStoForm != null){
+                                                            actStoFormMapper.insertActStoForm(actStoForm);
+                                                        }
+                                                    } else {
+                                                        actStoSmartFormOperaMapper.insertTableData(sheetName, dataMap);
+                                                    }
                                                 }
                                             }
                                         }

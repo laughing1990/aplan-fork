@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>容缺待确认</title>
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+    th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
+  <link rel="stylesheet"
+    href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css"
+    th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet" href="../../static/tolerance/css/reset.css" th:href="@{/tolerance/css/reset.css}">
+  <link rel="stylesheet" href="../../static/tolerance/css/base.css" th:href="@{/tolerance/css/base.css}">
+  <link rel="stylesheet" href="../../static/tolerance/css/index.css" th:href="@{/tolerance/css/index.css}">
+  <script>
+    var ctx = "[[@{/}]]";
+    // var ctx = "http://192.168.30.22:8083/aplanmis-front/";
+  </script>
+</head>
+
+<body>
+  <div id="app" v-cloak v-loading.fullscreen.lock="mloading">
+    <div class="content">
+      <!-- 右侧导航 -->
+      <div class="right-handel-pandel">
+        <div class="vertical-tab">
+          <ul>
+            <li class="vertical-label" v-for="(item, index) in verticalTabData"
+              :class="activeTab==index?'active':item.target" data-name="item.target"
+              @click="targetCollapse(item.target,index)">
+              <a :href="'#'+item.target">{{item.label}}</a>
+            </li>
+          </ul>
+        </div>
+        <!-- 右侧操作按钮栏 -->
+        <div class="right-bottom-btn">
+          <el-button circle type="primary" @click="saveAuditData">确定</el-button>
+        </div>
+      </div>
+      <el-form :inline="true" :model="projInfoForm" :rules="projInfoForm.rules" label-width="160px"
+        class="demo-form-inline supplement-form" ref="projInfoForm">
+        <el-collapse v-model="activeNames">
+          <!--  基本信息  start  -->
+          <el-collapse-item class="clearfix" name="1" id="projBaseInfo">
+            <template slot="title">
+              <i class="header-icon el-icon-document-copy"></i>基本信息
+            </template>
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <span class="sp-title">申报流水号：</span>
+                <span class="sp-content">{{allPageData.applyinstCode || '-'}}</span>
+              </el-col>
+              <el-col :span="12">
+                <span class="sp-title">项目/工程代码：</span>
+                <span class="sp-content">{{allPageData.localCode || '-'}}</span>
+              </el-col>
+            </el-row>
+            <el-row :gutter="20" class="mt20">
+              <el-col :span="12">
+                <span class="sp-title">项目/工程名称：</span>
+                <span class="sp-content">{{allPageData.projName || '-'}}</span>
+              </el-col>
+              <el-col :span="12">
+                <span class="sp-title">业主单位：</span>
+                <span class="sp-content">{{allPageData.unitName || '-'}}</span>
+              </el-col>
+            </el-row>
+            <el-row :gutter="20" class="mt20">
+              <el-col :span="12">
+                <span class="sp-title">事项名称：</span>
+                <span class="sp-content">{{allPageData.itemName || '-'}}</span>
+              </el-col>
+              <el-col :span="12">
+                <span class="sp-title">部门名称：</span>
+                <span class="sp-content">{{allPageData.chargeOrgName || '-'}}</span>
+              </el-col>
+            </el-row>
+          </el-collapse-item>
+          <!-- 基本信息 end -->
+          <!-- 容缺材料待审核  start  -->
+          <el-collapse-item class="clearfix" name="2" id="waitAudit">
+            <template slot="title">
+              <i class="header-icon el-icon-document-copy"></i>容缺材料待审核
+            </template>
+            <el-table :data="projInfoForm.tableList" row-key="dueIninstId" class="scrollable mt20 mb20 matFileListTable"
+              style="width: 100%;" border :header-cell-style="{background:'#F3F6F9',padding:'8px 0'}">
+              <el-table-column type="expand" width="20">
+                <template slot-scope="scope">
+                  <el-form label-position="left" inline class="demo-table-expand"
+                    v-if="scope.row.detailList && scope.row.detailList.length>0">
+                    <el-form-item v-for="(item,index) in scope.row.detailList" :key="index">
+                      <div class="file-div">
+                        <div class="fl ellipsis" style="max-width:50%;"><i class="ag"
+                            :class="getFileTypeIcon(item.attFormat)"></i><span class="fileName"
+                            @click="previewFile(item)">{{item.attName}}</span></div>
+                        <div class="fl color-AFB2C1 lnh40">&nbsp;({{item.createTime | formatDate('yyyy-MM-dd')}}上传)
+                        </div>
+                        <div class="download fr">
+                          <i class="ag ag-download" @click="downloadFile(item.detailId)"></i>
+                          <i class="el-icon-view" @click="previewFile(item)"></i>
+                        </div>
+                      </div>
+                    </el-form-item>
+                  </el-form>
+                  <el-form v-else label-position="left" inline class="demo-table-expand">
+                    <el-form-item>暂无电子文件</el-form-item>
+                  </el-form>
+                </template>
+              </el-table-column>
+              <el-table-column label="序号" type="index" width="54" align="center">
+                <template slot-scope="scope">{{scope.$index + 1}}</template>
+              </el-table-column>
+              <el-table-column prop="matName" label="材料名称" :formatter="tableCell" show-overflow-tooltip>
+              </el-table-column>
+              <el-table-column label="容缺受理书" width="100" align="center">
+                <template slot-scope="scope">
+                  <span @click="previewFile(scope.row)"><i class="el-icon-search"></i></span>
+                </template>
+              </el-table-column>
+              <el-table-column label="收件标准" width="80" align="center">
+                <template slot-scope="scope">
+                  <span><i class="el-icon-info"></i></span>
+                </template>
+              </el-table-column>
+              <el-table-column label="类型" width="80">
+                <template slot-scope="scope">
+                  <span>电子件</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="补齐截止期限" width="150">
+                <template slot-scope="scope">
+                  <span class="plain-round-successbtn"
+                    :class="[scope.row.timeLimitType == 1? 'plain-round-warnbtn': '']">{{scope.row.timeLimitType | timeLimitTypeFormat}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="审核意见" width="160" show-overflow-tooltip>
+                <template slot-scope="scope">
+                  <el-form-item class="table-form-item" :prop="'tableList.' + scope.$index + '.fillOpinion'"
+                    :rules='scope.row.isPass == 0?projInfoForm.rules.fillOpinion: []'>
+                    <el-input v-model="scope.row.fillOpinion" type="textarea" rows="1" autosize placeholder="请输入">
+                    </el-input>
+                  </el-form-item>
+                </template>
+              </el-table-column>
+              <el-table-column label="材料是否符合" width="110" align="center">
+                <template slot-scope="scope">
+                  <el-checkbox true-label="1" false-label="0" v-model="scope.row.isPass"
+                    @change="clearValidate('tableList.' + scope.$index + '.fillOpinion', scope.row.isPass )">
+                  </el-checkbox>
+                </template>
+              </el-table-column>
+            </el-table>
+            <span>申请人补齐意见：</span>
+            <el-input type="textarea" rows="3" disabled v-model="allPageData.fillDesc"></el-input>
+          </el-collapse-item>>
+          <!-- 容缺材料待审核 end -->
+        </el-collapse>
+      </el-form>
+    </div>
+  </div>
+</body>
+<script
+  src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+  th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+  th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+  th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="../../static/preview/pdfjs/build/pdf.js" th:src="@{/preview/pdfjs/build/pdf.js}"></script>
+<script
+  src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
+  th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+<script src="../../static/tolerance/js/index.js" th:src="@{/tolerance/js/index.js}"></script>
+
+</html>

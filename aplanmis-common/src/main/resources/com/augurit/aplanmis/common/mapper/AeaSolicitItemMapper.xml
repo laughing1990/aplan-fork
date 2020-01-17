@@ -109,6 +109,18 @@
         </where>
     </select>
 
+    <select id="getCountNotRelSelf" resultType="java.lang.Long">
+        select
+           count(SOLICIT_ITEM_ID) as num
+        from  AEA_SOLICIT_ITEM
+        <where>
+            and  ITEM_ID = #{itemId}
+            and  ITEM_VER_ID = #{itemVerId}
+            and  SOLICIT_TYPE = #{solicitType}
+            and  ROOT_ORG_ID = #{rootOrgId}
+        </where>
+    </select>
+
     <select id="listAeaSolicitItemRelInfo" resultType="AeaSolicitItem">
         select
             <include refid="alias_allColumns">

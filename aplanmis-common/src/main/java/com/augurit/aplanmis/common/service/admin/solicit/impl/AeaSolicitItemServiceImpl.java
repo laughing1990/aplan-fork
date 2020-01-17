@@ -235,12 +235,12 @@ public class AeaSolicitItemServiceImpl implements AeaSolicitItemService {
             // 标准事项
             if (item.getIsCatalog().equals(Status.ON)) {
                 if (StringUtils.isNotBlank(item.getGuideOrgName())) {
-                    item.setItemName(item.getItemName() + "【" + item.getGuideOrgName() + "】");
+                    item.setItemName("【标准事项】" + item.getItemName() + "【" + item.getGuideOrgName() + "】");
                 }
                 // 实施事项
             } else {
                 if (StringUtils.isNotBlank(item.getOrgName())) {
-                    item.setItemName(item.getItemName() + "【" + item.getOrgName() + "】");
+                    item.setItemName("【实施事项】" + item.getItemName() + "【" + item.getOrgName() + "】");
                 }
             }
         }
@@ -252,11 +252,24 @@ public class AeaSolicitItemServiceImpl implements AeaSolicitItemService {
             }
         }
         node.setName(item.getItemName());
+        if(StringUtils.isNotBlank(item.getSolicitType())){
+            if(item.getSolicitType().equals(Status.OFF)){
+                node.setName(node.getName()+"【多人征求模式】");
+            }else{
+                node.setName(node.getName()+"【单人征求模式】");
+            }
+        }
         node.setpId("root");
         node.setType("item");
         node.setOpen(true);
         node.setIsParent(false);
         node.setNocheck(false);
         return node;
+    }
+
+    @Override
+    public Long getCountNotRelSelf(AeaSolicitItem aeaSolicitItem){
+
+       return aeaSolicitItemMapper.getCountNotRelSelf(aeaSolicitItem);
     }
 }

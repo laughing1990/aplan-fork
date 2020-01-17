@@ -14,29 +14,14 @@ import com.augurit.aplanmis.common.apply.item.WindowComputedItem;
 import com.augurit.aplanmis.common.apply.item.WindowItemPrivilegeComputationHandler;
 import com.augurit.aplanmis.common.constants.MatHolder;
 import com.augurit.aplanmis.common.constants.MatinstSource;
-import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
-import com.augurit.aplanmis.common.domain.AeaItemBasic;
-import com.augurit.aplanmis.common.domain.AeaItemMat;
-import com.augurit.aplanmis.common.domain.AeaItemState;
-import com.augurit.aplanmis.common.domain.AeaParStage;
-import com.augurit.aplanmis.common.domain.AeaParStageItem;
-import com.augurit.aplanmis.common.domain.AeaParState;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.common.domain.AeaServiceWindow;
-import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiItemMatinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaItemMatMapper;
-import com.augurit.aplanmis.common.mapper.AeaItemStateMapper;
-import com.augurit.aplanmis.common.mapper.AeaParStageItemMapper;
-import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
-import com.augurit.aplanmis.common.mapper.AeaParStateMapper;
+import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.diagram.constant.HandleStatus;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
-import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.state.AeaItemStateService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowService;
 import com.augurit.aplanmis.common.utils.CommonTools;
@@ -45,12 +30,7 @@ import com.augurit.aplanmis.front.apply.vo.Mat2MatInstVo;
 import com.augurit.aplanmis.front.apply.vo.ParallelApplyHandleVo;
 import com.augurit.aplanmis.front.apply.vo.SaveMatinstVo;
 import com.augurit.aplanmis.front.apply.vo.SeriesApplyHandleVo;
-import com.augurit.aplanmis.front.apply.vo.attach.ApplyAbstractQueryVo;
-import com.augurit.aplanmis.front.apply.vo.attach.ApplyImportListVo;
-import com.augurit.aplanmis.front.apply.vo.attach.ApplyImportVo;
-import com.augurit.aplanmis.front.apply.vo.attach.AttImportQueryVo;
-import com.augurit.aplanmis.front.apply.vo.attach.AutoImportVo;
-import com.augurit.aplanmis.front.apply.vo.attach.UploadMatReturnVo;
+import com.augurit.aplanmis.front.apply.vo.attach.*;
 import com.augurit.aplanmis.front.constant.CommonConstant;
 import com.github.pagehelper.Page;
 import lombok.extern.slf4j.Slf4j;
@@ -64,17 +44,7 @@ import org.springframework.web.multipart.support.StandardMultipartHttpServletReq
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -96,8 +66,6 @@ public class RestApplyMatService {
     private BscAttMapper bscAttMapper;
     @Autowired
     private FileUtilsService fileUtilsService;
-    @Autowired
-    private AeaProjInfoService aeaProjInfoService;
     @Autowired
     private AeaItemMatMapper aeaItemMatMapper;
     @Autowired
@@ -256,7 +224,6 @@ public class RestApplyMatService {
 
     /**
      * 给文件类型是批复文件的在其文件名后加上批复标识
-     *
      */
     private void addReplyIdentifier(AeaItemMat itemMat) {
         if ("1".equals(itemMat.getIsOfficialDoc())) {
@@ -389,6 +356,8 @@ public class RestApplyMatService {
             }
             PageHelper.startPage(page);
             List<BscAttDetail> list = aeaHiItemMatinstMapper.getAeaHiItemMatinstFile("AEA_HI_ITEM_MATINST", "MATINST_ID", attImportQueryVo.getKeyword(), recordIds, excludeIds);
+            if (list.size() > 1)
+                list = list.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(BscAttDetail::getDetailId))), ArrayList::new));
             for (BscAttDetail detail : list) {
                 String detailId = detail.getDetailId();
                 String attName = detail.getAttName();
@@ -403,7 +372,7 @@ public class RestApplyMatService {
     /**
      * 获取已上传的电子材料
      *
-     * @param _matCodes    材料编码，多个时用逗号隔开
+     * @param _matCodes  材料编码，多个时用逗号隔开
      * @param projInfoId 项目ID
      */
     public Map getHistoryAttMatList(String _matCodes, String projInfoId) throws Exception {
@@ -433,7 +402,8 @@ public class RestApplyMatService {
                 aeaHiItemMatinstMapper.insertAeaHiItemMatinst(copyMatinst);
 
                 List<BscAttDetail> list = aeaHiItemMatinstMapper.getAeaHiItemMatinstFile("AEA_HI_ITEM_MATINST", "MATINST_ID", null, new String[]{matinst.getMatinstId()}, null);
-
+                if (list.size() > 1)
+                    list = list.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(BscAttDetail::getDetailId))), ArrayList::new));
                 for (BscAttDetail attDetail : list) {
 
                     String detailId = attDetail.getDetailId();
@@ -517,48 +487,6 @@ public class RestApplyMatService {
             throw new RuntimeException("Import matinst file failed. ", e);
         }
     }
-
-    /**
-     * 一键提取功能
-     */
-    public List<UploadMatReturnVo> getAeaHiItemMatinstFile(ApplyAbstractQueryVo applyAbstractQueryVo) throws Exception {
-        String[] matCodes = applyAbstractQueryVo.getMatCodes().split(",");
-        String[] projInfoIds = applyAbstractQueryVo.getProjInfoIds().split(",");
-        String unitInfoIds = applyAbstractQueryVo.getUnitInfoIds();
-        String[] unitIds = null;
-        if (StringUtils.isNotBlank(unitInfoIds)) {
-            unitIds = unitInfoIds.split(",");
-        }
-        //可能有父子项目，所以需要先查出所有的父子项目ID，然后在查询材料
-        List<String> projectIds = new ArrayList<>(Arrays.asList(projInfoIds));
-        for (String projId : projInfoIds) {
-            //查询项目树 aeaProjInfoSer
-            List<AeaProjInfo> listProjZtreeNodeMysql = aeaProjInfoService.getListProjZtreeNodeMysql(projId);
-            if (listProjZtreeNodeMysql.size() > 0) {
-                Set<String> projArray = listProjZtreeNodeMysql.stream().map(AeaProjInfo::getProjInfoId).collect(Collectors.toSet());
-                projectIds.addAll(projArray);
-            }
-        }
-        projInfoIds = projectIds.toArray(new String[0]);
-        //---包括历史上传的和本次上传还未发起申报的数据
-        List<AeaHiItemMatinst> aeaHiItemMatinsts = aeaHiItemMatinstMapper.listProjAeaHiItemMatinst(matCodes, projInfoIds, unitIds);
-        //fixme ----待定是否需要过滤掉当前申报页已上传的文件
-
-        /*if (aeaHiItemMatinsts != null && aeaHiItemMatinsts.size() > 0) {
-            String[] recordIds = new String[aeaHiItemMatinsts.size()];
-            for (int i = 0; i < aeaHiItemMatinsts.size(); i++) {
-                recordIds[i] = aeaHiItemMatinsts.get(i).getMatinstId();
-            }
-            String[] excludeIds = null;
-            if (null != matinstIds) {
-                excludeIds = matinstIds.split(",");
-            }
-            List<BscAttDetail> fileList = aeaHiItemMatinstMapper.getAeaHiItemMatinstFile("AEA_HI_ITEM_MATINST", "MATINST_ID", null, recordIds, excludeIds);
-
-        }*/
-        return getUploadMatReturnVos(aeaHiItemMatinsts);
-    }
-
 
     /**
      * 一件分拣功能

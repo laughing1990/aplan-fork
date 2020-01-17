@@ -3,7 +3,13 @@ package com.augurit.aplanmis.common.utils;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.googlecode.aviator.AviatorEvaluator;
 import com.googlecode.aviator.Expression;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.converters.DateConverter;
 
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
@@ -18,6 +24,8 @@ import java.util.regex.Pattern;
  * Created by Augurit on 2018-08-17.
  */
 public class CommonTools {
+
+    private final static String UNDERLINE = "_";
 
     //  执行EL表达式
     public static Object convertToCode(String expression, Map<String, Object> map) throws Exception {
@@ -287,6 +295,52 @@ public class CommonTools {
             sb.append(matcher.end() == line.length() ? "" : "_");
         }
         return sb.toString();
+    }
+
+    /**
+     * 将 Map对象转化为JavaBean
+     *
+     * @param map
+     * @param T
+     * @return T
+     * @throws Exception
+     */
+    public static <T> T convertMap2Bean(Map<String, Object> map, Class<T> T) throws Exception {
+        if (map == null || map.size() == 0) {
+            return null;
+        }
+
+        // 获取map中所有的key值，全部更新成大写，添加到keys集合中，与mybatis中驼峰命名匹配
+        Object mvalue = null;
+        Map<String, Object> newMap = new HashMap<>();
+        Iterator<Map.Entry<String, Object>> it = map.entrySet().iterator();
+        while (it.hasNext()) {
+            String key = it.next().getKey();
+            mvalue = map.get(key);
+            if (key.indexOf(CommonTools.UNDERLINE) != -1) {
+                key = key.replaceAll(CommonTools.UNDERLINE, "");
+            }
+            newMap.put(key.toUpperCase(Locale.US), mvalue);
+        }
+
+        BeanInfo beanInfo = Introspector.getBeanInfo(T);
+        T bean = T.newInstance();
+        PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+        for (int i = 0, n = propertyDescriptors.length; i < n; i++) {
+            PropertyDescriptor descriptor = propertyDescriptors[i];
+            String propertyName = descriptor.getName();
+            String upperPropertyName = propertyName.toUpperCase();
+
+            if (newMap.keySet().contains(upperPropertyName)) {
+                Object value = newMap.get(upperPropertyName);
+                //注册日期转换器
+                DateConverter dateConverter = new DateConverter(null);
+                dateConverter.setPatterns(new String[]{"yyyy-MM-dd", "yyyy/MM/dd", "yyyy-MM-dd HH:mm:ss"});
+                ConvertUtils.register(dateConverter, java.util.Date.class);
+                BeanUtils.copyProperty(bean, propertyName, value);
+            }
+        }
+        return bean;
     }
 
     public static void main(String[] args) {

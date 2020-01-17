@@ -39,7 +39,7 @@
                                 <c:forEach items="${solicitBusTypes}" var="solicitBusType">
                                     <c:if test="${solicitBusType.itemCode!='BMQR'}">
                                         <label class="m-radio">
-                                            <input type="radio" name="busType" value="${solicitBusType.itemCode}">${solicitBusType.itemName}<span></span>
+                                            <input type="radio" name="busType" value="${solicitBusType.itemCode}" onclick="changeBusType(this, '#aedit_solicit_org_form', '${solicitBusType.itemName}');">${solicitBusType.itemName}<span></span>
                                         </label>
                                     </c:if>
                                 </c:forEach>

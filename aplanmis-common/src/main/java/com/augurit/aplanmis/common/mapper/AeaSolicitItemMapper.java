@@ -92,4 +92,6 @@ public interface AeaSolicitItemMapper {
     根据用户判断是否是审批部门人员
      */
     int countApproveDeptByUserId(String currentUserId);
+
+    Long getCountNotRelSelf(AeaSolicitItem aeaSolicitItem);
 }
