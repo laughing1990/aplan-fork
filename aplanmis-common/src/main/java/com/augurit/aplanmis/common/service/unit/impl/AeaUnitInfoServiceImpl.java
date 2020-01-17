@@ -6,6 +6,7 @@ import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.AeaUnitConstants;
 import com.augurit.aplanmis.common.constants.DeletedStatus;
+import com.augurit.aplanmis.common.constants.UnitType;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
@@ -176,6 +177,10 @@ public class AeaUnitInfoServiceImpl implements AeaUnitInfoService {
         this.createApplyinstUnitProjAndUnitProj(applyinstId, isOwner, aeaUnitProjListMutiProj, applyinstUnitProjListMutiProj, projInfoId, Arrays.asList(unitInfoId), aeaUnitProjList);
 
         if(aeaUnitProjListMutiProj.size()>0){
+            for (AeaUnitProj aeaUnitProj : aeaUnitProjListMutiProj) {
+                aeaUnitProj.setIsDeleted("0");
+                aeaUnitProj.setUnitType(UnitType.DEVELOPMENT_UNIT.getValue());
+            }
             aeaUnitProjMapper.batchInsertAeaUnitProj(aeaUnitProjListMutiProj);
         }
         aeaApplyinstUnitProjMapper.batchInsertAeaApplyinstUnitProjMapper(applyinstUnitProjListMutiProj);
