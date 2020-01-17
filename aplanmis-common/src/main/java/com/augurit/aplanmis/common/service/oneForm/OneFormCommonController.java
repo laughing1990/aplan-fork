@@ -47,7 +47,7 @@ public class OneFormCommonController {
     }
 
     @RequestMapping(value = "/renderPage4StageOneForm", method = {RequestMethod.GET})
-    @ApiOperation("根据参数渲染一张表单整个页面")
+    @ApiOperation("根据参数渲染一张表单整个页面-阶段")
     public void renderPage4StageOneForm(OneFormStageRequest oneFormStageRequest, SFRenderConfig sFRenderConfig) {
         oneFormCommonService.renderPage4StageOneForm(oneFormStageRequest,sFRenderConfig);
     }
@@ -65,7 +65,11 @@ public class OneFormCommonController {
             return new ContentResultForm(false, e.getMessage());
         }
     }
-
+    @RequestMapping(value = "/renderPage4ItemOneForm", method = {RequestMethod.GET})
+    @ApiOperation("根据参数渲染一张表单整个页面-事项")
+    public void renderPage4ItemOneForm(OneFormItemRequest oneFormItemRequest, SFRenderConfig sFRenderConfig) {
+        oneFormCommonService.renderPage4ItemOneForm(oneFormItemRequest,sFRenderConfig);
+    }
     /********************单事项申报接口 end ********************************/
 
     @RequestMapping(value = "/exportAllFormDatas", method = {RequestMethod.GET, RequestMethod.POST})

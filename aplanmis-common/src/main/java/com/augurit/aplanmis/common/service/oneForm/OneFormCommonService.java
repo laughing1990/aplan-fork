@@ -311,6 +311,44 @@ public class OneFormCommonService {
         }
     }
 
+    public void renderPage4ItemOneForm(OneFormItemRequest oneFormItemRequest, SFRenderConfig sFRenderConfig){
+        if (StringUtils.isBlank(oneFormItemRequest.getApplyinstId())) {
+            logger.warn("申报实例ID不能为空!!");
+        } else {
+            List<SFFormParam> listSFFormParam = genListSFFormParam4ItemOneForm(oneFormItemRequest, false);
+            sFFormMultipleRender.renderPage(listSFFormParam, sFRenderConfig);
+        }
+    }
+    private List<SFFormParam> genListSFFormParam4ItemOneForm(OneFormItemRequest oneFormItemRequest, boolean isIncludeDevForm){
+        List<SFFormParam> result=new ArrayList<SFFormParam>();
+        List<FormFrofileVo> list=null;
+        try{
+            list = getListForm4ItemOneForm(oneFormItemRequest);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        for(FormFrofileVo item:list){
+            if(isIncludeDevForm==false){
+                if(item.isSmartForm()){
+                    SFFormParam sFFormParam=new SFFormParam();
+                    sFFormParam.setFormId(item.getFormId());
+                    sFFormParam.setRefEntityId(oneFormItemRequest.getApplyinstId());
+                    result.add(sFFormParam);
+                }
+            }
+            else{
+                SFFormParam sFFormParam=new SFFormParam();
+                sFFormParam.setFormId(item.getFormId());
+                sFFormParam.setRefEntityId(oneFormItemRequest.getApplyinstId());
+                result.add(sFFormParam);
+            }
+
+        }
+        return result;
+    }
+
     public List<FormFrofileVo> getListForm4ItemOneForm(OneFormItemRequest oneFormItemRequest) throws Exception {
         List<FormFrofileVo> result = new ArrayList<>();
 
@@ -893,4 +931,6 @@ public class OneFormCommonService {
             }
         }
     }
+
+
 }
