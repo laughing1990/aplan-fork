@@ -123,7 +123,7 @@ DUE_ININST_ID  ,FILL_ID  ,INOUTINST_ID  ,FILL_OPINION  ,TIME_LIMIT_TYPE  ,IS_PAS
         )  values
         <foreach collection="list" item="item" separator=",">
         (
-            #{item.dueIninstId},#{item.fillId},#{item.inoutinstId},#{item.fillOpinion},#{item.timeLimitType},#{isPass},#{attCount},#{item.paperCount},
+            #{item.dueIninstId},#{item.fillId},#{item.inoutinstId},#{item.fillOpinion},#{item.timeLimitType},#{item.isPass},#{item.attCount},#{item.paperCount},
             #{item.copyCount},#{item.isNeedAtt},#{item.creater},#{item.createTime},  #{item.rootOrgId}
         )
         </foreach>
