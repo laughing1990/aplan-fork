@@ -2,6 +2,7 @@ package com.augurit.aplanmis.front.approve.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.augurit.agcloud.bsc.domain.BscAttDetail;
 import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
 import com.augurit.agcloud.bsc.domain.BscAttLink;
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
@@ -1186,10 +1187,16 @@ public class ApproveService {
     public List<AeaHiCertinst> certinstLibrary(String certId, String applyinstId) throws Exception {
 
         List<AeaHiCertinst> certinsts = new ArrayList();
-
         if (StringUtils.isNotBlank(certId) && StringUtils.isNotBlank(applyinstId)) {
-            AeaCert cert = aeaCertMapper.getAeaCertById(certId, SecurityContext.getCurrentOrgId());
-            if (cert != null) {
+
+            AeaItemMat aeaItemMat = new AeaItemMat();
+            aeaItemMat.setCertId(certId);
+            aeaItemMat.setRootOrgId(SecurityContext.getCurrentOrgId());
+            aeaItemMat.setIsDeleted("0");
+            List<AeaItemMat> mats = aeaItemMatMapper.listAeaItemMat(aeaItemMat);
+            List<String> certIds = mats.stream().map(AeaItemMat::getCertId).collect(Collectors.toList());
+            List<AeaCert> certs = aeaCertMapper.listAeaCertByIds(certIds);
+            for (AeaCert cert : certs) {
                 //个人材料
                 if ("u".equals(cert.getCertHolder())) {
                     AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
@@ -1211,10 +1218,13 @@ public class ApproveService {
                         certinsts.addAll(aeaHiCertinstMapper.getCertinsts(certId, null, null, unitInIds, SecurityContext.getCurrentOrgId()));
                     }
                 }
+            }
 
-                for (AeaHiCertinst certinst : certinsts) {
-                    certinst.setBscAttDetails(aeaHiCertinstMapper.getFilesByRecordIds("AEA_HI_CERTINST", "CERTINST_ID", null, new String[]{certinst.getCertinstId()}));
-                }
+            for (AeaHiCertinst certinst : certinsts) {
+                List<BscAttDetail> details = aeaHiCertinstMapper.getFilesByRecordIds("AEA_HI_CERTINST", "CERTINST_ID", null, new String[]{certinst.getCertinstId()});
+                if (details.size() > 1)
+                    details = details.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(BscAttDetail::getDetailId))), ArrayList::new));
+                certinst.setBscAttDetails(details);
             }
         }
 
