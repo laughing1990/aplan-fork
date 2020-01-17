@@ -523,9 +523,9 @@ var parallelDeclare = new Vue({
     showReceive: function () {
       var _that = this;
       request('', {
-        url: ctx + '/rest/user/receive/getStageOrSeriesReceiveByApplyinstIds',
+        url: ctx + 'rest/user/receive/getStageOrSeriesReceiveByApplyinstIds',
         type: 'get',
-        data: {'applyinstIds': _that.applyinstIds}
+        data: {'applyinstIds': _that.applyinstIds.join(',')}
       }, function (res) {
         if (res.success) {
           //显示列表弹框
@@ -559,7 +559,7 @@ var parallelDeclare = new Vue({
     printReceive1: function (row,index,ind) {
       this.receiveItemActive = index;
       this.receiveActive = ind;
-      var fileUrl = ctx + '/rest/user/receive/toPDF/'+row.receiveId;
+      var fileUrl = ctx + 'rest/user/receive/toPDF/'+row.receiveId;
       this.pdfSrc=ctx + 'preview/pdfjs/web/viewer.html?file='+encodeURIComponent(fileUrl)
     },
     // 跳转其他页面
