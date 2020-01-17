@@ -116,4 +116,12 @@ public interface AeaSolicitOrgService {
       * @return
       */
      List<ZtreeNode> gtreeSolicitOrg(String rootOrgId);
+
+     /**
+      * 获取征求部门某种征求业务数量
+      *
+      * @param aeaSolicitOrg
+      * @return
+      */
+     Long getCountNotRelSelf(AeaSolicitOrg aeaSolicitOrg);
 }

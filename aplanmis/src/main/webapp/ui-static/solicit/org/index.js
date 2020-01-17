@@ -9,24 +9,25 @@ $(function () {
     // 初始化高度
     $('#mainContentPanel').css('height', $(document.body).height() - 20);
 
-    $('#mainContentPanel2').css('height', $(document.body).height() - 150);
+    $('#selectSolicitOrg2Tree').css('height', $('#westPanel').height()-116);
 
-    $('#selectSolicitOrg2Tree').css('height', $('#westPanel').height() - 170);
+    // 初始化征求部门树
+    initSelectSolicitOrg2Ztree();
 
-    // 初始征求部门
-    initSolicitOrgTb();
+    // 初始化征求人员表格
+    initSolicitOrgUserTb();
+
+    // 设置表格高度
+    $('#solicit_org_user_list_tb').bootstrapTable('resetView', {
+
+        height: $('#westPanel').height()-116
+    });
 
     // 初始化校验
     initValidateSolicitOrg();
 
     // 初始化导入
     initValidateImportSolicitOrg();
-
-    // 征求组织列表
-    $('#solicit_org_list_tb').bootstrapTable('resetView', {
-
-        height: $('#westPanel').height() - 165
-    });
 
     // 处理滚动条
     $('#selectSolicitOrg2Tree').niceScroll({
@@ -58,8 +59,8 @@ $(function () {
     selectSolicitOrg2Key = $("#selectSolicitOrg2KeyWord");
 
     selectSolicitOrg2Key.bind("focus", focusSelectSolicitOrg2Key)
-                        .bind("blur", blurSelectSolicitOrg2Key)
-                        .bind("change cut input propertychange",searchSelectSolicitOrg2Node);
+        .bind("blur", blurSelectSolicitOrg2Key)
+        .bind("change cut input propertychange",searchSelectSolicitOrg2Node);
 
     selectSolicitOrg2Key.bind('keydown', function (e){
 
@@ -68,39 +69,6 @@ $(function () {
         }
     });
 });
-
-var i=0;
-function clickToLoadSolicitOrgUser(){
-
-    i++;
-
-    // 初始化征求部门树
-    initSelectSolicitOrg2Ztree();
-
-    // 初始化征求人员表格
-    initSolicitOrgUserTb();
-
-    if(i==1){
-        // 征求组织人员列表
-        $('#solicit_org_user_list_tb').bootstrapTable('resetView', {
-
-            height: $('#westPanel').height() - 175
-        });
-    }
-
-    // 处理事项表格滚动条
-    $(".fixed-table-body").niceScroll({
-
-        cursorcolor: "#e2e5ec",//#CC0071 光标颜色
-        cursoropacitymin: 0, // 当滚动条是隐藏状态时改变透明度, 值范围 1 到 0
-        cursoropacitymax: 1, // 当滚动条是显示状态时改变透明度, 值范围 1 到 0
-        touchbehavior: false, //使光标拖动滚动像在台式电脑触摸设备
-        cursorwidth: "4px", //像素光标的宽度
-        cursorborder: "0", //   游标边框css定义
-        cursorborderradius: "2px",//以像素为光标边界半径
-        autohidemode: true  //是否隐藏滚动条
-    });
-}
 
 function initValidateSolicitOrg(){
 
@@ -147,8 +115,10 @@ function initValidateSolicitOrg(){
                         });
                         // 隐藏模式框
                         $('#aedit_solicit_org_modal').modal('hide');
-                        // 刷新列表
-                        clearSearchSolicitOrgList();
+                        // 初始化征求部门树
+                        initSelectSolicitOrg2Ztree();
+                        // 初始化征求人员表格
+                        initSolicitOrgUserTb();
                     } else {
 
                         swal('错误信息', result.message, 'error');
@@ -222,9 +192,12 @@ function initValidateImportSolicitOrg(){
                                     timer: 1500,
                                     showConfirmButton: false
                                 });
+                                // 关闭选择部门弹窗
                                 closeSelectSolicitOrgZtree();
-                                // 刷新列表
-                                searchSolicitOrgList();
+                                // 初始化征求部门树
+                                initSelectSolicitOrg2Ztree();
+                                // 初始化征求人员表格
+                                initSolicitOrgUserTb();
                             }, 500);
 
                         }else{
@@ -320,21 +293,21 @@ var getSolicitOrgColumns = function () {
 function solicitOrgFormatter(value, row, index, field) {
 
     var editBtn = '<a href="javascript:editSolicitOrgById(\'' + row.solicitOrgId + '\')" ' +
-                      'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill"' +
-                      'title="编辑"><i class="la la-edit"></i>' +
-                  '</a>';
+        'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill"' +
+        'title="编辑"><i class="la la-edit"></i>' +
+        '</a>';
 
     var delSolicitOrgBtn = '<a href="javascript:deleteSolicitOrgById(\'' + row.solicitOrgId + '\')" ' +
-                                'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
-                                'title="移除"><i class="la la-trash"></i>' +
-                            '</a>';
+        'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
+        'title="移除"><i class="la la-trash"></i>' +
+        '</a>';
 
     return editBtn + delSolicitOrgBtn;
 
 }
 
 function solicitTypeFormatter(value, row, index, field) {
-   
+
     if(value=='0'){
 
         return '多人征求模式';
@@ -427,8 +400,20 @@ function isEmpty(obj){
     }
 }
 
+function editSolicitOrgById2(){
+
+    hideRMenu('solicitOrgContextMenu');
+    if (curSelectSolicitOrg2TreeNode) {
+        editSolicitOrgById(curSelectSolicitOrg2TreeNode.id);
+    } else {
+        swal('提示信息', "请选择征求部门节点！", 'info');
+    }
+}
+
+var curBuzType = null;
 function editSolicitOrgById(id){
 
+    curBuzType = null;
     if(!isEmpty(id)){
 
         $("#aedit_solicit_org_modal").modal("show");
@@ -446,11 +431,22 @@ function editSolicitOrgById(id){
                 if (data) {
 
                     loadFormData(true, '#aedit_solicit_org_form', data);
+                    curBuzType = data.busType;
                 }
             }
         });
     }else{
         swal('提示信息', "请选择需要编辑的数据！", 'info');
+    }
+}
+
+function deleteSolicitOrgById2(){
+
+    hideRMenu('solicitOrgContextMenu');
+    if (curSelectSolicitOrg2TreeNode) {
+        deleteSolicitOrgById(curSelectSolicitOrg2TreeNode.id);
+    } else {
+        swal('提示信息', "请选择征求部门节点！", 'info');
     }
 }
 
@@ -481,7 +477,12 @@ function deleteSolicitOrgById(id){
                                 timer: 1000
                             });
                             // 列表数据重新加载
-                            searchSolicitOrgList();
+                            // searchSolicitOrgList();
+                            // 初始化征求部门树
+                            initSelectSolicitOrg2Ztree();
+
+                            // 初始化征求人员表格
+                            initSolicitOrgUserTb();
                         }else{
                             swal('错误信息', result1.message, 'error');
                         }
@@ -580,8 +581,31 @@ var selectSolicitOrg2Key,
         callback: {
 
             onClick: onClickSelectSolicitOrg2Node,
+            onRightClick: onRightClickSelectSolicitOrg2Node
         }
     };
+
+function onRightClickSelectSolicitOrg2Node(event, treeId, treeNode) {
+
+    //禁止浏览器的菜单打开
+    event.preventDefault();
+
+    var treeObj = $.fn.zTree.getZTreeObj(treeId);
+    treeObj.selectNode(treeNode);
+    curSelectSolicitOrg2TreeNode = treeNode;
+    if(event.target.tagName.toLowerCase()=='span'||event.target.tagName.toLowerCase()=='a'||event.target.tagName.toLowerCase()=='ul'){
+
+        var y = event.clientY+10;
+        var maxHeight = $('#selectSolicitOrg2Tree').height();
+        if(event.clientY>maxHeight){
+            y -= ($('.contextMenuDiv').height()+5);
+        }
+        if(treeNode.type=='org'){
+
+            showRMenu('solicitOrgContextMenu', event.clientX+15, y);
+        }
+    }
+}
 
 function onClickSelectSolicitOrg2Node(event, treeId, treeNode) {
 
@@ -679,7 +703,7 @@ function clearSearchSelectSolicitOrg2Node(){
     $('#selectSolicitOrg2KeyWord').val('');
     showSelectSolicitOrg2AllNode(selectSolicitOrg2Tree.getNodes());
     setTimeout(function() {
-        expandSelectSolicitOrg2AllNode
+        expandSelectSolicitOrg2AllNode();
     }, 300);
 }
 
@@ -780,7 +804,6 @@ function initSolicitOrgUserTb() {
         sidePagination: 'server',
         singleSelect: false,
         clickToSelect: true,
-        height: $('#westPanel').height() - 175
     });
 }
 
@@ -847,19 +870,19 @@ function solicitOrgUserIsActiveFormatter(value, row, index, field) {
     if(value=='1'){
 
         return  '<span class="m-switch m-switch--success">' +
-                '  <label>' +
-                '     <input type="checkbox" checked="checked" name="isActive" onclick="changeSolicitOrgUserIsActive(this, \''+ row.orgUserId +'\', \''+ row.isActive +'\');">' +
-                '     <span></span>' +
-                '   </label>' +
-                '</span>'
+            '  <label>' +
+            '     <input type="checkbox" checked="checked" name="isActive" onclick="changeSolicitOrgUserIsActive(this, \''+ row.orgUserId +'\', \''+ row.isActive +'\');">' +
+            '     <span></span>' +
+            '   </label>' +
+            '</span>'
     }else{
 
         return  '<span class="m-switch m-switch--success">' +
-                '  <label>' +
-                '     <input type="checkbox" name="isActive" onclick="changeSolicitOrgUserIsActive(this, \''+ row.orgUserId +'\', \''+ row.isActive +'\');">' +
-                '     <span></span>' +
-                '   </label>' +
-                '</span>'
+            '  <label>' +
+            '     <input type="checkbox" name="isActive" onclick="changeSolicitOrgUserIsActive(this, \''+ row.orgUserId +'\', \''+ row.isActive +'\');">' +
+            '     <span></span>' +
+            '   </label>' +
+            '</span>'
     }
 }
 
@@ -882,7 +905,7 @@ function changeSolicitOrgUserIsActive(obj, id, isActive){
                     data: {"id": id},
                     success: function (result) {
                         if(result.success){
-                           searchSolicitOrgUserList();
+                            searchSolicitOrgUserList();
                         }else{
                             swal('错误信息', result.message, 'error');
                         }
@@ -904,8 +927,8 @@ function changeSolicitOrgUserIsActive(obj, id, isActive){
 function solicitOrgUserFormatter(value, row, index, field) {
 
     var delBtn = '<a href="javascript:deleteSolicitOrgUserById(\'' + row.orgUserId + '\')" ' +
-                     'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
-                     'title="移除"><i class="la la-trash"></i>' +
+                    'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
+                    'title="移除"><i class="la la-trash"></i>' +
                  '</a>';
 
     return delBtn;
@@ -933,6 +956,8 @@ function solicitOrgUserParam(params) {
     var solicitOrgId = null;
     if(curSelectSolicitOrg2TreeNode!=null){
         solicitOrgId = curSelectSolicitOrg2TreeNode.id;
+    }else{
+        solicitOrgId = 'not_exist';
     }
     commonQueryParams.push({name: 'solicitOrgId', value: solicitOrgId});
     if (commonQueryParams) {
@@ -1079,5 +1104,32 @@ function batchDelSolicitOrgUser(){
         });
     }else{
         swal('提示信息', "请选择需要移除的数据！", 'info');
+    }
+}
+
+function changeBusType(obj, formObj, name){
+
+    var busType = $(obj).val();
+    var orgId = $(formObj+" input[name='orgId']").val();
+    if(curBuzType!=busType){
+        $.ajax({
+            url: ctx+"/aea/solicit/org/getCountNotRelSelf.do",
+            type: 'POST',
+            data: {
+                'isBusSolicit': isBusSolicit,
+                'busType': busType,
+                'orgId': orgId
+            },
+            success: function (result) {
+                if(result.success){
+                    swal('提示信息', '当前征求部门【'+name+'】征求业务类型已经存在,请不要重复添加！', 'info');
+                    $(formObj+" input[name='busType'][value='"+ curBuzType +"']").prop("checked", true);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                swal('错误信息', XMLHttpRequest.responseText, 'error');
+            }
+        });
     }
 }
