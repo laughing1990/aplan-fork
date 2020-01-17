@@ -178,7 +178,7 @@ public class RestAeaProjAgentService {
             agentAgreementVo.setAgentUserMobile(applyAgent.getAgentUserMobile());
             List<BscAttFileAndDir> atts = restFileService.getAttFilesByPK("AEA_PROJ_APPLY_AGENT", "AGREEMENT_CODE", applyAgent.getAgreementCode());
             agentAgreementVo.setAtts(atts);
-            agentAgreementVo.setDetailId( atts.size()>0?atts.get(0).getBscAttDetail().getDetailId():null);
+            agentAgreementVo.setDetailId( atts.size()>0?atts.get(0).getFileId():null);
             list.add(agentAgreementVo);
             vo.setAgentAgreement(list);
 

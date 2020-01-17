@@ -258,6 +258,7 @@ var module = new Vue({
     },
     // 获取文件后缀
     getFileType: function (fileName) {
+      debugger;
       var index1 = fileName.lastIndexOf(".");
       var index2 = fileName.length;
       var suffix = fileName.substring(index1 + 1, index2).toLowerCase(); //后缀名
@@ -272,12 +273,12 @@ var module = new Vue({
       var fileType = this.getFileType(fileName);
       var flashAttributes = '';
       _that.filePreviewCount++
-      if (flag == 'pdf') {
-        var tempwindow = window.open(); // 先打开页面
-        setTimeout(function () {
-          tempwindow.location = ctx + 'cod/drawing/drawingCheck?detailId=' + detailId;
-        }, 1000)
-      } else {
+      // if (flag == 'pdf') {
+      //   var tempwindow = window.open(); // 先打开页面
+      //   setTimeout(function () {
+      //     tempwindow.location = ctx + 'cod/drawing/drawingCheck?detailId=' + detailId;
+      //   }, 1000)
+      // } else {
         if (fileType == 'pdf') {
           var tempwindow = window.open(); // 先打开页面
           setTimeout(function () {
@@ -326,7 +327,7 @@ var module = new Vue({
             tempwindow.location = ctx + 'rest/mats/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
           }, 1000)
         }
-      }
+      //}
     },
 
     // 返回我的项目列表
