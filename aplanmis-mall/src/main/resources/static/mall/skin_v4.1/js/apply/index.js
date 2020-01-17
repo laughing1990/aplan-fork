@@ -4469,12 +4469,14 @@ var parallelDeclare = new Vue({
           item.disabled = false;
           if(item.carryOutItems&&item.carryOutItems.length==0){
             item.notRegionData = true;
+            item.itemVerId = '';
           }
         } else {
           item.orgId = '';
           item.orgName = '';
           item.disabled = true;
           item.notRegionData = true;
+          item.itemVerId = '';
         }
       }
     },
