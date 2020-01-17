@@ -14,29 +14,14 @@ import com.augurit.aplanmis.common.apply.item.WindowComputedItem;
 import com.augurit.aplanmis.common.apply.item.WindowItemPrivilegeComputationHandler;
 import com.augurit.aplanmis.common.constants.MatHolder;
 import com.augurit.aplanmis.common.constants.MatinstSource;
-import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
-import com.augurit.aplanmis.common.domain.AeaItemBasic;
-import com.augurit.aplanmis.common.domain.AeaItemMat;
-import com.augurit.aplanmis.common.domain.AeaItemState;
-import com.augurit.aplanmis.common.domain.AeaParStage;
-import com.augurit.aplanmis.common.domain.AeaParStageItem;
-import com.augurit.aplanmis.common.domain.AeaParState;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.common.domain.AeaServiceWindow;
-import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiItemMatinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaItemMatMapper;
-import com.augurit.aplanmis.common.mapper.AeaItemStateMapper;
-import com.augurit.aplanmis.common.mapper.AeaParStageItemMapper;
-import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
-import com.augurit.aplanmis.common.mapper.AeaParStateMapper;
+import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.diagram.constant.HandleStatus;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
-import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.state.AeaItemStateService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowService;
 import com.augurit.aplanmis.common.utils.CommonTools;
@@ -81,8 +66,6 @@ public class RestApplyMatService {
     private BscAttMapper bscAttMapper;
     @Autowired
     private FileUtilsService fileUtilsService;
-    @Autowired
-    private AeaProjInfoService aeaProjInfoService;
     @Autowired
     private AeaItemMatMapper aeaItemMatMapper;
     @Autowired
