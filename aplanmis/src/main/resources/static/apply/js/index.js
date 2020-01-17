@@ -922,6 +922,7 @@ var vm = new Vue({
       var vm = this;
       this.guideSaveItems('loading', function () {
         vm.$message.success('部门辅导确认成功');
+        __STATIC.refreshOpener();
         __STATIC.delayRefreshWindow();
       }, '2');
     },
@@ -971,6 +972,7 @@ var vm = new Vue({
         vm.loading = false;
         if (res.success) {
           __STATIC.delayRefreshWindow();
+          __STATIC.refreshOpener();
           vm.$message.success('部门辅导结束，已通知申请人');
         } else {
           vm.message.error(res.message || '部门辅导结束失败');
@@ -1340,6 +1342,7 @@ var vm = new Vue({
           if (res.success) {
             // 发起部门辅导
             vm.$message.success('发起部门辅导成功');
+            __STATIC.refreshOpener();
             __STATIC.delayRefreshWindow();
           } else {
             vm.$message.error(res.message || '发起部门辅导失败');
