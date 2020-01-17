@@ -476,11 +476,8 @@ function deleteSolicitOrgById(id){
                                 showConfirmButton: false,
                                 timer: 1000
                             });
-                            // 列表数据重新加载
-                            // searchSolicitOrgList();
                             // 初始化征求部门树
                             initSelectSolicitOrg2Ztree();
-
                             // 初始化征求人员表格
                             initSolicitOrgUserTb();
                         }else{

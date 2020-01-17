@@ -109,4 +109,5 @@ public interface AeaSolicitItemService {
 
      List<ZtreeNode> gtreeSolicitItem(String rootOrgId);
 
+     Long getCountNotRelSelf(AeaSolicitItem aeaSolicitItem);
 }
