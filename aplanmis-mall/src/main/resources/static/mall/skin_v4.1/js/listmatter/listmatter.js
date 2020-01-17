@@ -261,8 +261,8 @@ var listmatter = (function(window){
                     }
                 }
             },
-            // 单独勾选表格中某条数据所对应的勾选框
-            selectParallelItem:function(selection,row){
+            // 勾选头部勾选框，进行全选或者全不选
+            selectAllParallelItem:function(selection){
                 var vm = this;
                 vm.noRequireParallelItemCheckData = [];
                 selection.forEach(function (item) {
@@ -272,7 +272,7 @@ var listmatter = (function(window){
                 })
                 vm.getMateriallist();
             },
-            selectCoreItem:function(selection,row){
+            selectAllCoreItem:function(selection){
                 var vm = this;
                 vm.noRequireCoreItemCheckData = [];
                 selection.forEach(function (item) {
@@ -280,6 +280,27 @@ var listmatter = (function(window){
                         vm.noRequireCoreItemCheckData.push(item);
                     }
                 })
+                vm.getMateriallist();
+            },
+            // 单独勾选表格中某条数据所对应的勾选框
+            selectParallelItem:function(selection,row){
+                var vm = this;
+                vm.noRequireParallelItemCheckData = [];
+                selection.forEach(function (item) {
+                    if(item && item.isDoneItem !='1'){
+                        vm.noRequireParallelItemCheckData.push(item);
+                    }
+                })
+                vm.getMateriallist();
+            },
+            selectCoreItem:function(selection,row){
+                var vm = this;
+                vm.noRequireCoreItemCheckData = [];
+                selection.forEach(function (item) {
+                    if(item && item.isDoneItem !='1'){
+                        vm.noRequireCoreItemCheckData.push(item);
+                    }
+                });
                 vm.getMateriallist();
             },
             // 控制事项一单清是否可以勾选
@@ -448,11 +469,14 @@ var listmatter = (function(window){
             },
             // 点击开始指引
             startAILeadFn:function(){
+                var vm = this
                 var stateList = this.stateList;
                 this.AIleadDialogFlag= false;
-                this.getAIleadData(stateList);
+                this.getAIleadData(stateList,function(msg){
+                    vm.$message.waring(msg);
+                });
             },
-            getAIleadData:function(stateList){
+            getAIleadData:function(stateList,cb){
                 var vm = this;
                 // 取到选择的情形id列表
                 var stateIds = this.fetchStateList(stateList) || [];
@@ -478,10 +502,12 @@ var listmatter = (function(window){
                         } else {
                             vm.$message.error(res.message);
                         }
+                        cb && cb('智能引导完成');
                     },
                     error:function () {
                         vm.materialLoading = false;
                         vm.$message.error('智能引导获取事项一单清列表数据接口失败，请稍后重试！');
+                        cb && cb('智能引导超时，请稍后重试！');
                     }
                 })
             },

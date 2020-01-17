@@ -75,6 +75,7 @@ var listmatterMixin = {
                         }
                     }
                     isflag  &&  _this.$refs.coreItemListTable.toggleRowSelection(_this.coreItemList[i],true);
+                    isflag  &&  _this.noRequireCoreItemCheckData.push(_this.coreItemList[i]);
                 }
 
                 for (var i = 0; i < _this.parallelItemList.length; i++) {
@@ -84,9 +85,12 @@ var listmatterMixin = {
                             isflag = true;
                         }
                     }
-                    isflag  &&   _this.$refs.parallelItematable.toggleRowSelection(_this.parallelItemList[i],true);
-
+                    isflag  &&   _this.$refs.parallelItematable.toggleRowSelection(_this.parallelItemList[i],true)
+                    isflag  &&   _this.noRequireParallelItemCheckData.push(_this.parallelItemList[i]);
                 }
+                setTimeout(function () {
+                    _this.getMateriallist();
+                },200)
             })
         },
     }
@@ -150,12 +154,10 @@ Vue.component('list',{
                     }
                 }
             }
-            console.log(cStateList);
-            console.log(cStateList);
-
             // 更新材料一单清数据
-             var selectAnswerId = cStateList[index].selectAnswerId;
-            if(typeof  selectAnswerId == 'object'&& selectAnswerId.constructor == Array){
+            vm.upDateMatList();
+           //  var selectAnswerId = cStateList[index].selectAnswerId;
+           /* if(typeof  selectAnswerId == 'object'&& selectAnswerId.constructor == Array){
                 selectAnswerId.forEach(function (ele) {
                     listmatter.vm.itemStateIds.push(ele);
                 })
@@ -165,9 +167,39 @@ Vue.component('list',{
                 }else{
                     listmatter.vm.itemStateIds.push(selectAnswerId);
                 }
-            }
-            listmatter.vm.getMateriallist();
-        },
+            }*/
 
+        },
+        upDateMatList:function () {
+            var vm = this;
+            listmatter.vm.itemStateIds = [];
+            var forListDataFN = function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    var item = data[i];
+                    var selectAnswerId = item.selectAnswerId;
+                    if(typeof  selectAnswerId == 'object'&& selectAnswerId.constructor == Array){
+                        selectAnswerId.forEach(function (ele) {
+                            listmatter.vm.itemStateIds.push(ele);
+                        })
+                    }else{
+                        selectAnswerId && listmatter.vm.itemStateIds.push(selectAnswerId);
+                    }
+                    if (item.children && item.children.length > 0) {
+                        forListDataFN(item.children);
+                    }
+                }
+            }
+            listmatter.vm.parallelItemList.forEach(function (value1) {
+                if(value1.currentCarryOutItem.paraStateList){
+                    forListDataFN(value1.currentCarryOutItem.paraStateList);
+                }
+            });
+            listmatter.vm.coreItemList.forEach(function (value1) {
+                if(value1.currentCarryOutItem.coreStateList){
+                    forListDataFN(value1.currentCarryOutItem.coreStateList);
+                }
+            })
+            listmatter.vm.getMateriallist();
+        }
     }
 });
