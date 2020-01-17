@@ -233,6 +233,7 @@
                 and ahg.GUIDE_END_TIME &lt;= #{guideEndTime}
             </if>
         </where>
+        order by ahg.GUIDE_START_TIME desc
     </select>
 
     <select id="listAeaHiGuideListUnitIdOrLinkmanInfoId" parameterType="com.augurit.aplanmis.common.domain.AeaHiGuide"
