@@ -46,7 +46,8 @@ public class SplitProjInfoParamVo {
     @ApiModelProperty(value = "行政区划ID")
     private String regionalism;
 
-
+    @ApiModelProperty(value = "统一认证登录账号uid")
+    private String uid;
 
     public static AeaProjInfo formatProjInfo(AeaProjInfo projInfo, SplitProjInfoParamVo splitProjInfoParamVo) {
         AeaProjInfo aeaProjInfo=new AeaProjInfo();

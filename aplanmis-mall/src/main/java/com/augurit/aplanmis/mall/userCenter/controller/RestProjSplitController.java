@@ -1,8 +1,12 @@
 package com.augurit.aplanmis.mall.userCenter.controller;
 
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
+import com.augurit.agcloud.framework.ui.result.ResultForm;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaProjApplySplit;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.common.utils.SessionUtil;
+import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestAeaProjSplitService;
 import com.augurit.aplanmis.mall.userCenter.vo.SplitProjInfoParamVo;
 import io.swagger.annotations.Api;
@@ -28,7 +32,10 @@ public class RestProjSplitController {
 
     @PostMapping("start")
     @ApiOperation(value = "拆分工程申请 --> 拆分工程申请接口")
-    public ContentResultForm saveProjInfoAndInitProjApplySplit(@Valid @RequestBody SplitProjInfoParamVo splitProjInfoParamVo) {
+    public ResultForm saveProjInfoAndInitProjApplySplit(@Valid @RequestBody SplitProjInfoParamVo splitProjInfoParamVo,HttpServletRequest request) {
+        LoginInfoVo loginVo = SessionUtil.getLoginInfo(request);
+        if(StringUtils.isBlank(loginVo.getUid()))  return new ResultForm(false,"为获取到统一认证登录账号uid");
+        splitProjInfoParamVo.setUid(loginVo.getUid());
         try {
             AeaProjApplySplit aeaProjApplySplit=restAeaProjSplitService.saveProjInfoAndInitProjApplySplit(splitProjInfoParamVo);
             return new ContentResultForm(true,aeaProjApplySplit);
