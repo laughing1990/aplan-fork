@@ -50,13 +50,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -89,6 +82,8 @@ public class OneFormCommonService {
     private BscDicCodeService bscDicCodeService;
     @Autowired
     private MetaDbConnService metaDbConnService;
+    @Autowired
+    private ActStoForminstService actStoForminstService;
 
     @Value("${spring.datasource.url}")
     private String jdbcUrl;
@@ -349,7 +344,6 @@ public class OneFormCommonService {
         String message = "智能表单设计相关表数据";
 
         String[] tableNames = request.getParameterValues("tableNames");
-        //String[] tableNames = {"meta_db_table", "meta_db_column", "act_sto_form", "act_sto_element", "act_sto_element_value", "act_sto_form_element", "act_sto_forminst"};
         // 获取表单对应物理表名
         List<String> tableNameList = tableNameList(tableNames);
         if (tableNameList != null && tableNameList.size() > 0) {
@@ -407,7 +401,6 @@ public class OneFormCommonService {
     // 以表单数据为主体导出相关表数据
     public void exportOneFormTableDatas(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String[] formIds = request.getParameterValues("formIds");
-        //String[] formIds = {"1469965d-1150-4448-84df-2fa43ae98eb4", "6249e8b5-6acc-4490-a23f-38e8d2577b56", "c2a71d40-d16f-40e7-8a17-6e399bc848a0"};
         // 获取所有表单id列表（主表单+子表单,去重formId）
         List<String> formIdList = formIdList(formIds);
         if (formIdList != null && formIdList.size() > 0) {
