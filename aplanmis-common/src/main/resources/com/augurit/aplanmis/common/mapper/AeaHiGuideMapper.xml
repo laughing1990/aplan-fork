@@ -72,17 +72,17 @@
 
     <insert id="insertAeaHiGuide" parameterType="com.augurit.aplanmis.common.domain.AeaHiGuide">
     insert into aea_hi_guide (GUIDE_ID, APPLYINST_ID, GUIDE_TYPE, PROJ_INFO_ID, STAGE_ID,
-      APPLY_UNIT_INFO_ID, APPLY_LINKMAN_INFO_ID, APPLY_STATE, 
-      GUIDE_START_TIME, GUIDE_END_TIME, DUE_TIME_LIMIT, 
-      REAL_TIME_LIMIT, LEADER_ORG_ID, LEADER_USER_ID, 
-      LEADER_ORG_OPINION, CREATER, CREATE_TIME, 
+      APPLY_UNIT_INFO_ID, APPLY_LINKMAN_INFO_ID, APPLY_STATE,
+      GUIDE_START_TIME, GUIDE_END_TIME, DUE_TIME_LIMIT,
+      REAL_TIME_LIMIT, LEADER_ORG_ID, LEADER_USER_ID,
+      LEADER_ORG_OPINION, CREATER, CREATE_TIME,
       MODIFIER, MODIFY_TIME, IS_IT_GUIDE
       )
     values (#{guideId,jdbcType=VARCHAR}, #{applyinstId,jdbcType=VARCHAR}, #{guideType,jdbcType=CHAR}, #{projInfoId,jdbcType=VARCHAR}, #{stageId,jdbcType=VARCHAR},
-      #{applyUnitInfoId,jdbcType=VARCHAR}, #{applyLinkmanInfoId,jdbcType=VARCHAR}, #{applyState,jdbcType=CHAR}, 
-      #{guideStartTime,jdbcType=TIMESTAMP}, #{guideEndTime,jdbcType=TIMESTAMP}, #{dueTimeLimit,jdbcType=FLOAT}, 
-      #{realTimeLimit,jdbcType=FLOAT}, #{leaderOrgId,jdbcType=VARCHAR}, #{leaderUserId,jdbcType=VARCHAR}, 
-      #{leaderOrgOpinion,jdbcType=VARCHAR}, #{creater,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{applyUnitInfoId,jdbcType=VARCHAR}, #{applyLinkmanInfoId,jdbcType=VARCHAR}, #{applyState,jdbcType=CHAR},
+      #{guideStartTime,jdbcType=TIMESTAMP}, #{guideEndTime,jdbcType=TIMESTAMP}, #{dueTimeLimit,jdbcType=FLOAT},
+      #{realTimeLimit,jdbcType=FLOAT}, #{leaderOrgId,jdbcType=VARCHAR}, #{leaderUserId,jdbcType=VARCHAR},
+      #{leaderOrgOpinion,jdbcType=VARCHAR}, #{creater,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
       #{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{isItGuide,jdbcType=CHAR}
       )
   </insert>
@@ -258,9 +258,14 @@
                 or api.gcbm like concat(#{keyword}, '%')
                 )
             </if>
-            <if test="applyState != null and applyState != ''">
-                and ahg.apply_state=#{applyState}
-            </if>
+            <choose>
+                <when test="applyState != null and applyState == '1'.toString()">
+                    and ahg.apply_state in ('1','2','3')
+                </when>
+                <otherwise>
+                    and ahg.apply_state = #{applyState}
+                </otherwise>
+            </choose>
             <if test="applyUnitInfoId != null and applyUnitInfoId != '' and applyLinkmanInfoId != null and applyLinkmanInfoId != ''">
                 and (ahg.APPLY_UNIT_INFO_ID = #{applyUnitInfoId} or ahg.APPLY_LINKMAN_INFO_ID = #{applyLinkmanInfoId} )
             </if>
