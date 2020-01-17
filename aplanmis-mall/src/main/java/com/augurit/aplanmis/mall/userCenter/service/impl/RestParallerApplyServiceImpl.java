@@ -1,6 +1,5 @@
 package com.augurit.aplanmis.mall.userCenter.service.impl;
 
-import com.augurit.agcloud.bsc.mapper.BscDicRegionMapper;
 import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
