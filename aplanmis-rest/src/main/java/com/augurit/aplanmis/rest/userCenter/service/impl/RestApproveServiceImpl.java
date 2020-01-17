@@ -132,7 +132,8 @@ public class RestApproveServiceImpl implements RestApproveService {
 
     @Override
     public PageInfo<ApproveProjInfoDto> searchApproveProjInfoListByUnitOrLinkman(String unitInfoId, String userInfoId, String state, String keyword, int pageNum, int pageSize) throws Exception {
-        return approveDataService.searchApproveProjInfoListByUnitOrLinkman(unitInfoId, userInfoId, state, keyword, null,null,pageNum, pageSize);
+        throw new Exception("not implemented method");
+//        return approveDataService.searchApproveProjInfoListByUnitOrLinkman(unitInfoId, userInfoId, state, keyword, null,null,pageNum, pageSize);
     }
 
     @Override
