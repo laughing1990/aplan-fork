@@ -620,7 +620,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
         query.setApplyUnitInfoId(unitInfoId);
         query.setApplyLinkmanInfoId(linkmanInfoId);
         List<AeaHiGuide> list = aeaHiGuideService.listAeaHiGuideListUnitIdOrLinkmanInfoId(query);
-        return list.size()>0?list.stream().filter(v-> !GuideApplyState.FINISHED.getValue().equals(v.getApplyState())).collect(Collectors.toList()):list;
+        return list;
     }
 
 
