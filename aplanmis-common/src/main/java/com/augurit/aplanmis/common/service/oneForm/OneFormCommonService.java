@@ -211,7 +211,7 @@ public class OneFormCommonService {
     }
 
 
-    public List<SFFormParam> genListSFFormParam4OneForm(OneFormStageRequest oneFormStageRequest, boolean isIncludeDevForm) {
+    public List<SFFormParam> genListSFFormParam4StageOneForm(OneFormStageRequest oneFormStageRequest, boolean isIncludeDevForm) {
         List<SFFormParam> result = null;
 
         // itemids参数去重去空
@@ -302,11 +302,11 @@ public class OneFormCommonService {
         return listSFFormParam;
     }
 
-    public void renderPage(OneFormStageRequest oneFormStageRequest, SFRenderConfig sFRenderConfig) {
+    public void renderPage4StageOneForm(OneFormStageRequest oneFormStageRequest, SFRenderConfig sFRenderConfig) {
         if (StringUtils.isBlank(oneFormStageRequest.getApplyinstId())) {
             logger.warn("申报实例ID不能为空!!");
         } else {
-            List<SFFormParam> listSFFormParam = genListSFFormParam4OneForm(oneFormStageRequest, false);
+            List<SFFormParam> listSFFormParam = genListSFFormParam4StageOneForm(oneFormStageRequest, false);
             sFFormMultipleRender.renderPage(listSFFormParam, sFRenderConfig);
         }
     }

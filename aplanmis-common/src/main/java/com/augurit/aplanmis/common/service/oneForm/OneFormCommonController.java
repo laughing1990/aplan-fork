@@ -2,10 +2,6 @@ package com.augurit.aplanmis.common.service.oneForm;
 import com.augurit.agcloud.bpm.common.sfengine.config.SFRenderConfig;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
-import com.augurit.aplanmis.common.constants.TimeruleInstState;
-import com.augurit.aplanmis.common.utils.ExcelUtils;
-import com.augurit.aplanmis.common.vo.conditional.ApplyInfo;
-import com.augurit.aplanmis.common.vo.conditional.ConditionalQueryRequest;
 import com.augurit.aplanmis.front.basis.stage.vo.OneFormItemRequest;
 import com.augurit.aplanmis.front.basis.stage.vo.OneFormStageRequest;
 import com.augurit.aplanmis.front.basis.stage.vo.FormFrofileVo;
@@ -13,11 +9,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
 import java.util.List;
 
 @RequestMapping("/rest/oneform/common")
@@ -52,10 +46,10 @@ public class OneFormCommonController {
         }
     }
 
-    @RequestMapping(value = "/renderPage", method = {RequestMethod.GET})
+    @RequestMapping(value = "/renderPage4StageOneForm", method = {RequestMethod.GET})
     @ApiOperation("根据参数渲染一张表单整个页面")
-    public void renderPage(OneFormStageRequest oneFormStageRequest, SFRenderConfig sFRenderConfig) {
-        oneFormCommonService.renderPage(oneFormStageRequest,sFRenderConfig);
+    public void renderPage4StageOneForm(OneFormStageRequest oneFormStageRequest, SFRenderConfig sFRenderConfig) {
+        oneFormCommonService.renderPage4StageOneForm(oneFormStageRequest,sFRenderConfig);
     }
     /********************并联申报接口 end ********************************/
 
