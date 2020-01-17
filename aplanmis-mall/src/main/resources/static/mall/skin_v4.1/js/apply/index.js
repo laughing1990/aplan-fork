@@ -494,6 +494,7 @@ var parallelDeclare = new Vue({
     this.GetRequest();
     this.getDicContent(); // 数据字典
     this.getGbhy();
+    this.querySelecTheme();
     this.dygjbzfxfw = getUrlParam('fuxianCode');
     var text = '并联申报';
     if (this.dygjbzfxfw){
@@ -992,9 +993,10 @@ var parallelDeclare = new Vue({
         getUrl = 'rest/userCenter/apply/factor/child/list/' + _parentId;
         _that.projInfoDetail.themeId = answerData.themeId;
         _that.themeId = answerData.themeId;
-        _that.itThemeId = answerData.itThemeId;
-        _that.itThemeName = answerData.itThemeName;
-        _that.itThemeVerId = answerData.itThemeVerId;
+        _that.themeName = answerData.themeName;
+        _that.itThemeId = answerData.themeId;
+        _that.itThemeName = answerData.themeName;
+        _that.itThemeVerId = answerData.themeVerId;
         if(answerData.themeId&&answerData.themeId!=''){
           _that.saveThemeAndNext('guide');
         }else {
@@ -1865,7 +1867,7 @@ var parallelDeclare = new Vue({
             _that.itemTabSelect = 'tab_' + _that.themeType;
             if (_that.themeId) {
               _that.themeActive = _that.themeId;
-              var copyThemeTypeList = _that.themeTypeList.mainLine;
+              var copyThemeTypeList = JSON.parse(JSON.stringify(_that.themeTypeList.mainLine));
               copyThemeTypeList = copyThemeTypeList.filter(function (item, index) {
                 return item.themeTypeCode === _that.themeType;
               })
@@ -1888,7 +1890,7 @@ var parallelDeclare = new Vue({
           if (data.content.rootOrgId != null && "" != data.content.rootOrgId) {
             _that.querySelentDistrict(data.content.rootOrgId);
           }
-          _that.querySelecTheme(data.content.projType);
+          // _that.querySelecTheme(data.content.projType);
           if (data.content.themeId != null && "" != data.content.themeId) {
             _that.isAble = true;
           } else {
@@ -2243,7 +2245,7 @@ var parallelDeclare = new Vue({
       _that.loading = true;
       request('', {
         // url: ctx + 'rest/main/theme/list',
-        url: ctx + 'rest/userCenter/apply/theme/list ',
+        url: ctx + 'rest/userCenter/apply/theme/list',
         type: 'get',
       }, function (data) {
         if (data.success) {
@@ -3143,7 +3145,6 @@ var parallelDeclare = new Vue({
     },
     // 保存并下一步  获取一张表单列表
     saveAndGetOneForm: function () {
-      debugger;
       var _that = this;
       var _itemStateIds = [];
       _that.itemVerIds = [];
@@ -4373,7 +4374,9 @@ var parallelDeclare = new Vue({
       var _that = this;
       var params = {};
       if (this.dygjbzfxfw) {
-        params.dygjbzfxfw = this.dygjbzfxfw;
+        params = {
+          dygjbzfxfw: this.dygjbzfxfw,
+        };
       }
       request('', {
         url: ctx + 'rest/user/getThemes',

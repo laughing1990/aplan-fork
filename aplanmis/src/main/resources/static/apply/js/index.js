@@ -927,6 +927,11 @@ var vm = new Vue({
     },
     // 部门辅导牵头部门直接通过 true为正常通过 false为不发起部门确认直接通过
     leaderDeptPass: function (f) {
+      // _that.submitCommentsTitle = '收件意见对话框'
+      // _that.showMatList = false;
+      // _that.submitCommentsFlag = true;
+      // _that.getUserComments();
+
       var vm = this;
       this.$prompt('请输入意见', f ? '结束部门确认' : '直接通过', {
         confirmButtonText: '确定',
@@ -5923,6 +5928,7 @@ var vm = new Vue({
     //加载常用意见
     getUserComments: function () {
       var _that = this;
+      if (_that.commentsList&&_that.commentsList.length) return null;
       request('', {
         url: ctx + 'rest/comment/getAllActiveUserOpinions',
         type: 'get'
