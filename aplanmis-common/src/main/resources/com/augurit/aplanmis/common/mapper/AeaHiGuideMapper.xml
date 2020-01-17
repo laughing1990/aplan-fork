@@ -262,8 +262,11 @@
                 <when test="applyState != null and applyState == '1'.toString()">
                     and ahg.apply_state in ('1','2','3')
                 </when>
+                <when test="applyState != null and applyState == '4'.toString()">
+                    and ahg.apply_state = '4'
+                </when>
                 <otherwise>
-                    and ahg.apply_state = #{applyState}
+                    and ahg.apply_state in ('1','2','3','4')
                 </otherwise>
             </choose>
             <if test="applyUnitInfoId != null and applyUnitInfoId != '' and applyLinkmanInfoId != null and applyLinkmanInfoId != ''">
