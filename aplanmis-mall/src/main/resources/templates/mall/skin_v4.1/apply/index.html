@@ -747,7 +747,9 @@
           </el-form>
         </el-collapse-transition>
         <div class="footer-stage-btn">
-          <el-button class="mt20" type="primary" @click="isNeedIntelligence()">下一步</el-button>
+          <!--<el-button class="mt20" type="primary" @click="isNeedIntelligence()">下一步</el-button>-->
+          <el-button class="mt20" type="primary" @click="saveProOrSmsinfo('0');getGuideList();needIntelligence=true;">下一步</el-button>
+
         </div>
       </div>
     </div>
@@ -793,6 +795,7 @@
                               placement="right">
                     <i class="el-icon-question"></i>
                   </el-tooltip>
+                  <span>【{{themeName}}】</span>
                 </p>
                 <template v-if="stageListBefore&&stageListBefore.length">
                   <el-radio-group v-model="stageId">
@@ -1388,7 +1391,7 @@
                          width="160">
           <template slot-scope="scope">
             <el-select v-model="scope.row.applicantChooseRel"
-                       :disabled="scope.row.leaderDeptChoose&&scope.row.isDoneItem=='1'"
+                       :disabled="(scope.row.leaderDeptChoose&&scope.row.isDoneItem=='1')||scope.row.notRegionData"
                        @change="function(val){applicantChange(val,scope.row)}"
                        placeholder="请选择">
               <el-option label="现在办" value="0"></el-option>
@@ -1511,7 +1514,7 @@
                          align="center"
                          width="160">
           <template slot-scope="scope">
-            <el-select v-model="scope.row.applicantChooseRel" placeholder="请选择" @change="function(val){applicantChange(val,scope.row,'coreItems')}">
+            <el-select v-model="scope.row.applicantChooseRel" :disabled="scope.row.notRegionData" placeholder="请选择" @change="function(val){applicantChange(val,scope.row,'coreItems')}">
               <el-option label="现在办" value="0"></el-option>
               <el-option :label="dybzspjdxhLast?'暂不办理':'开工前办'" value="1"></el-option>
             </el-select>
@@ -1637,6 +1640,11 @@
             <span v-show="scope.row.zcqy==0&&scope.row.attIsRequire==1" class="isTag isRequired">必</span>
           </template>
         </el-table-column>
+        <el-table-column label="是否签章" width="120" align="center">
+          <template slot-scope="scope">
+            {{scope.row.isSign=='1'?'是':'否'}}
+          </template>
+        </el-table-column>
         <el-table-column width="160" align="center" label="收件标准">
           <template slot-scope="scope">
             <el-tooltip effect="light"
@@ -1716,6 +1724,11 @@
             <i class="cert-icon ag ag-id-card" v-if="scope.row.matProp=='c'"></i>
             <!--<span v-show="scope.row.zcqy==1" class="isTag isDone">容缺</span>-->
             <span v-show="scope.row.zcqy==0&&scope.row.attIsRequire==1" class="isTag isRequired">必</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="是否签章" width="120" align="center">
+          <template slot-scope="scope">
+            {{scope.row.isSign=='1'?'是':'否'}}
           </template>
         </el-table-column>
         <el-table-column width="160" align="center" label="收件标准">

@@ -3,7 +3,13 @@ package com.augurit.aplanmis.common.utils;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.googlecode.aviator.AviatorEvaluator;
 import com.googlecode.aviator.Expression;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.converters.DateConverter;
 
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
@@ -18,6 +24,8 @@ import java.util.regex.Pattern;
  * Created by Augurit on 2018-08-17.
  */
 public class CommonTools {
+
+    private final static String UNDERLINE = "_";
 
     //  执行EL表达式
     public static Object convertToCode(String expression, Map<String, Object> map) throws Exception {
@@ -186,11 +194,6 @@ public class CommonTools {
         return false;
     }
 
-    public static void main(String[] args) {
-        String str = "2019-440608-29-03-026324";
-        System.out.println(isComplianceWithRules(str));
-    }
-
     public static String[] ListToArr(List<String> strList) {
         String[] array = new String[strList.size()];
         strList.toArray(array);
@@ -213,5 +216,147 @@ public class CommonTools {
     public static String createDateNo() {
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyyMMddHHmmss");
         return simpleDateFormat.format(new Date());
+    }
+
+    /**
+     * 字符串list下划线转驼峰（默认小驼峰）
+     *
+     * @param list
+     *            源字符串列表
+     * @param smallCamel
+     *            大小驼峰,是否为小驼峰(驼峰，第一个字符是大写还是小写)
+     * @return 转换后的字符串列表
+     */
+    public static List<String> underline2Camel(List<String> list, boolean... smallCamel) {
+        List<String> newList = new ArrayList<>();
+        if (list != null && list.size() > 0) {
+            for (String str : list) {
+                newList.add(underline2Camel(str, smallCamel));
+            }
+        }
+        return newList;
+    }
+
+    /**
+     * 下划线转驼峰法(默认小驼峰)
+     *
+     * @param line
+     *            源字符串
+     * @param smallCamel
+     *            大小驼峰,是否为小驼峰(驼峰，第一个字符是大写还是小写)
+     * @return 转换后的字符串
+     */
+    public static String underline2Camel(String line, boolean ... smallCamel) {
+        if (line == null || "".equals(line)) {
+            return "";
+        }
+        StringBuffer sb = new StringBuffer();
+        Pattern pattern = Pattern.compile("([A-Za-z\\d]+)(_)?");
+        Matcher matcher = pattern.matcher(line);
+        //匹配正则表达式
+        while (matcher.find()) {
+            String word = matcher.group();
+            //当是true 或则是空的情况
+            if((smallCamel.length ==0 || smallCamel[0] ) && matcher.start()==0){
+                sb.append(Character.toLowerCase(word.charAt(0)));
+            }else{
+                sb.append(Character.toUpperCase(word.charAt(0)));
+            }
+
+            int index = word.lastIndexOf('_');
+            if (index > 0) {
+                sb.append(word.substring(1, index).toLowerCase());
+            } else {
+                sb.append(word.substring(1).toLowerCase());
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 驼峰法转下划线
+     *
+     * @param line
+     *            源字符串
+     * @return 转换后的字符串
+     */
+    public static String camel2Underline(String line) {
+        if (line == null || "".equals(line)) {
+            return "";
+        }
+        line = String.valueOf(line.charAt(0)).toUpperCase()
+                .concat(line.substring(1));
+        StringBuffer sb = new StringBuffer();
+        Pattern pattern = Pattern.compile("[A-Z]([a-z\\d]+)?");
+        Matcher matcher = pattern.matcher(line);
+        while (matcher.find()) {
+            String word = matcher.group();
+            sb.append(word.toUpperCase());
+            sb.append(matcher.end() == line.length() ? "" : "_");
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 将 Map对象转化为JavaBean
+     *
+     * @param map
+     * @param T
+     * @return T
+     * @throws Exception
+     */
+    public static <T> T convertMap2Bean(Map<String, Object> map, Class<T> T) throws Exception {
+        if (map == null || map.size() == 0) {
+            return null;
+        }
+
+        // 获取map中所有的key值，全部更新成大写，添加到keys集合中，与mybatis中驼峰命名匹配
+        Object mvalue = null;
+        Map<String, Object> newMap = new HashMap<>();
+        Iterator<Map.Entry<String, Object>> it = map.entrySet().iterator();
+        while (it.hasNext()) {
+            String key = it.next().getKey();
+            mvalue = map.get(key);
+            if (key.indexOf(CommonTools.UNDERLINE) != -1) {
+                key = key.replaceAll(CommonTools.UNDERLINE, "");
+            }
+            newMap.put(key.toUpperCase(Locale.US), mvalue);
+        }
+
+        BeanInfo beanInfo = Introspector.getBeanInfo(T);
+        T bean = T.newInstance();
+        PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+        for (int i = 0, n = propertyDescriptors.length; i < n; i++) {
+            PropertyDescriptor descriptor = propertyDescriptors[i];
+            String propertyName = descriptor.getName();
+            String upperPropertyName = propertyName.toUpperCase();
+
+            if (newMap.keySet().contains(upperPropertyName)) {
+                Object value = newMap.get(upperPropertyName);
+                //注册日期转换器
+                DateConverter dateConverter = new DateConverter(null);
+                dateConverter.setPatterns(new String[]{"yyyy-MM-dd", "yyyy/MM/dd", "yyyy-MM-dd HH:mm:ss"});
+                ConvertUtils.register(dateConverter, java.util.Date.class);
+                BeanUtils.copyProperty(bean, propertyName, value);
+            }
+        }
+        return bean;
+    }
+
+    public static void main(String[] args) {
+        String line = "ARE_YOU_DOU_BI_YELLOWCONG";
+        //下划线转驼峰（大驼峰）
+        //AreYouDouBiYellowcong
+        String camel = underline2Camel(line, false);
+        System.out.println(camel);
+
+        //下划线转驼峰（小驼峰）
+        //areYouDouBiYellowcong
+        String camel2 = underline2Camel(line);
+        System.out.println(camel);
+
+        //驼峰转下划线
+        //ARE_YOU_DOU_BI_YELLOWCONG
+        System.out.println(camel2Underline(camel));
     }
 }

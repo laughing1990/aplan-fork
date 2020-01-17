@@ -163,6 +163,8 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
             if (list.size()>0) return aeaProjInfo.getProjInfoId();
             aeaProjLinkman.setProjLinkmanId(UUID.randomUUID().toString());
             aeaProjLinkman.setType("link");
+            aeaProjLinkman.setCreater(SecurityContext.getCurrentUserName());
+            aeaProjLinkman.setCreateTime(new Date());
             aeaProjLinkmanMapper.insertAeaProjLinkman(aeaProjLinkman);
         } else {//企业用户
             AeaUnitProj aeaUnitProj = new AeaUnitProj();

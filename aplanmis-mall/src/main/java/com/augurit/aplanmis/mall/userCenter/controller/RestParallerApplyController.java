@@ -13,6 +13,7 @@ import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiSmsInfoService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.item.AeaItemCondService;
+import com.augurit.aplanmis.common.service.itemFill.AeaHiItemFillService;
 import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.state.AeaItemStateService;
@@ -78,6 +79,8 @@ public class RestParallerApplyController {
     private AeaParStateMapper aeaParStateMapper;
     @Autowired
     private RestGuideService restGuideService;
+    @Autowired
+    private AeaHiItemFillService aeaHiItemFillService;
 
     @Value("${aplanmis.mall.skin:skin_v4.1/}")
     private String skin;
@@ -153,6 +156,17 @@ public class RestParallerApplyController {
                 }
             }
             ParallelApplyResultVo vo = restApplyService.startStageProcess(stageApplyDataPageVo);
+            //申报成功，创建容缺实例
+            if(vo != null && vo.getApplyinstIds() != null && vo.getApplyinstIds().size() > 0){
+                vo.getApplyinstIds().forEach(applyinstId ->{
+                    try {
+                        aeaHiItemFillService.createAeaHiItemFill(applyinstId);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        logger.error(e.getMessage(), e);
+                    }
+                });
+            }
             return new ContentResultForm<>(true, vo, "申报成功!");
         } catch (Exception e) {
             logger.error(e.getMessage(),e);

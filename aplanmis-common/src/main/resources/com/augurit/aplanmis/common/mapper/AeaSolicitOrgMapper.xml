@@ -294,4 +294,16 @@
         and aso.IS_BUS_SOLICIT='0'
     </select>
 
+    <select id="getCountNotRelSelf" resultType="java.lang.Long">
+        select
+            count(SOLICIT_ORG_ID) as num
+        from AEA_SOLICIT_ORG
+        <where>
+            and  ORG_ID = #{orgId}
+            and  IS_BUS_SOLICIT = #{isBusSolicit}
+            and  BUS_TYPE = #{busType}
+            and  ROOT_ORG_ID = #{rootOrgId}
+        </where>
+    </select>
+
 </mapper>

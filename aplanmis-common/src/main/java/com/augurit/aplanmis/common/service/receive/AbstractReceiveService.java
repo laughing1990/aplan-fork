@@ -6,6 +6,7 @@ import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.dic.ApplyinstCodeService;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 
+import com.augurit.aplanmis.common.service.instance.AeaHiSmsInfoService;
 import com.augurit.aplanmis.common.service.receive.vo.RefusedRecepitVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,7 @@ public abstract class AbstractReceiveService {
     @Autowired
     private AeaItemBasicMapper aeaItemBasicMapper;
     @Autowired
-    private AeaHiSmsInfoMapper aeaHiSmsInfoMapper;
+    private AeaHiSmsInfoService aeaHiSmsInfoService;
     @Autowired
     private ApplyinstCodeService applyinstCodeService;
 
@@ -76,7 +77,7 @@ public abstract class AbstractReceiveService {
             List<AeaHiIteminst> aeaHiIteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applysinstId,"0");
 
             //在查询联系人信息
-            AeaHiSmsInfo aeaHiSmsInfo = aeaHiSmsInfoMapper.getAeaHiSmsInfoByApplyinstId(applysinstId);
+            AeaHiSmsInfo aeaHiSmsInfo = aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(applysinstId);
             if (null == aeaHiSmsInfo) {
                 return false;
             }

@@ -1,6 +1,5 @@
 package com.augurit.aplanmis.mall.userCenter.service.impl;
 
-import com.augurit.agcloud.bsc.mapper.BscDicRegionMapper;
 import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
@@ -205,7 +204,7 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
         //实例的阶段情形ID集合
         List<AeaParState> aeaParStates =  aeaParStateService.listAeaParStateByStageinstIdORApplyinstId(applyinstId,"");
         if (aeaParStates.size()>0){
-            vo.setStateIds(aeaParStates.stream().map(AeaParState::getStageId).distinct().collect(Collectors.toList()));
+            vo.setStateIds(aeaParStates.stream().map(AeaParState::getParStateId).distinct().collect(Collectors.toList()));
         }else {
             vo.setStateIds(new ArrayList<>());
         }

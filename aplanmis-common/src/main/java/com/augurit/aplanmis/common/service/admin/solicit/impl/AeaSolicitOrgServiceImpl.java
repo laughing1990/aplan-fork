@@ -244,6 +244,13 @@ public class AeaSolicitOrgServiceImpl implements AeaSolicitOrgService {
             }
         }
         node.setName(org.getOrgName());
+        if(StringUtils.isNotBlank(org.getSolicitType())){
+            if(org.getSolicitType().equals(Status.OFF)){
+                node.setName(node.getName()+"【多人征求模式】");
+            }else{
+                node.setName(node.getName()+"【单人征求模式】");
+            }
+        }
         node.setpId("root");
         node.setType("org");
         node.setOpen(true);
@@ -258,5 +265,11 @@ public class AeaSolicitOrgServiceImpl implements AeaSolicitOrgService {
             node.setIconSkin("group");
         }
         return node;
+    }
+
+    @Override
+    public Long getCountNotRelSelf(AeaSolicitOrg aeaSolicitOrg){
+
+        return aeaSolicitOrgMapper.getCountNotRelSelf(aeaSolicitOrg);
     }
 }

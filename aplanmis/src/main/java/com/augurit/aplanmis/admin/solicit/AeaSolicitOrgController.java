@@ -84,6 +84,14 @@ public class AeaSolicitOrgController {
         return list;
     }
 
+    @RequestMapping("/getCountNotRelSelf.do")
+    public ResultForm getCountNotRelSelf(AeaSolicitOrg aeaSolicitOrg) throws Exception {
+
+        aeaSolicitOrg.setRootOrgId(SecurityContext.getCurrentOrgId());
+        Long num = aeaSolicitOrgService.getCountNotRelSelf(aeaSolicitOrg);
+        return num==null? new ContentResultForm<>(false, num): new ContentResultForm<>(true, num);
+    }
+
     @RequestMapping("/getSolicitOrgById.do")
     public AeaSolicitOrg getAeaSolicitOrgById(String id) throws Exception {
 

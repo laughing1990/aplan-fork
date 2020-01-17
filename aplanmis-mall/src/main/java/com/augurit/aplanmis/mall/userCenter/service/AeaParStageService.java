@@ -458,11 +458,13 @@ public class AeaParStageService {
             this.insertApplySubject(applySubject, applyinstId, projInfoIds, applyLinkmanId, linkmanInfoId, unitProjIds);
 
             //更新办件结果领取方式
-            //AeaHiSmsInfo aeaSmsInfo=aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(applyinstId);
-            //if(aeaSmsInfo==null){
-            AeaHiSmsInfo sms = smsInfoVo.toSmsInfo();
-            sms.setApplyinstId(applyinstId);
-            smsInfo = aeaHiSmsInfoService.createAeaHiSmsInfo(sms);
+            AeaHiSmsInfo aeaSmsInfo=aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(applyinstId);
+            if(aeaSmsInfo==null){
+                AeaHiSmsInfo sms = smsInfoVo.toSmsInfo();
+                sms.setApplyinstId(applyinstId);
+                smsInfo = aeaHiSmsInfoService.createAeaHiSmsInfo(sms);
+            }
+
 
             appinstIds.add(bpmProcessInstance.getActStoAppinst().getAppinstId());
             procinstIds.add(bpmProcessInstance.getProcessInstance().getId());
@@ -561,8 +563,6 @@ public class AeaParStageService {
                 //更新办件结果领取方式
                 AeaHiSmsInfo seriesSms=aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(seriesApplyinstId);
                 if(seriesSms==null){
-                    //seriesSms =aeaHiSmsInfoService.getAeaHiSmsInfoById(smsInfoId);
-                    //seriesSms=new AeaHiSmsInfo();
                     if(smsInfo==null) smsInfo=smsInfoVo.toSmsInfo();
                     seriesSms=smsInfo;
                     seriesSms.setId(UUID.randomUUID().toString());

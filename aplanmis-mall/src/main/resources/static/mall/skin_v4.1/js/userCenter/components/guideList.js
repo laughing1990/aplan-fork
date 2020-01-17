@@ -103,23 +103,22 @@ var vm = new Vue({
       if (value) {
         switch (value) {
           case '1':
-            defaultValue = '牵头部门待签收';
+            defaultValue = '待部门确认';
             break;
           case '2':
-            defaultValue = '牵头部门处理中';
+            defaultValue = '待部门确认';
             break;
           case '3':
-            defaultValue = '所有部门征求处理中';
+            defaultValue = '待部门确认';
             break;
           case '4':
             defaultValue = '申请人待确认';
             break;
           case '5':
-            defaultValue = '结束';
+            defaultValue = '待部门确认';
             break;
-          case '-1':
-            defaultValue = '其他';
-            break;
+          default:
+            defaultValue = '待部门确认';
         }
       }
       return defaultValue;

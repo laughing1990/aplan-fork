@@ -494,6 +494,7 @@ var parallelDeclare = new Vue({
     this.GetRequest();
     this.getDicContent(); // 数据字典
     this.getGbhy();
+    this.querySelecTheme();
     this.dygjbzfxfw = getUrlParam('fuxianCode');
     var text = '并联申报';
     if (this.dygjbzfxfw){
@@ -523,9 +524,9 @@ var parallelDeclare = new Vue({
     showReceive: function () {
       var _that = this;
       request('', {
-        url: ctx + '/rest/user/receive/getStageOrSeriesReceiveByApplyinstIds',
+        url: ctx + 'rest/user/receive/getStageOrSeriesReceiveByApplyinstIds',
         type: 'get',
-        data: {'applyinstIds': _that.applyinstIds}
+        data: {'applyinstIds': _that.applyinstIds.join(',')}
       }, function (res) {
         if (res.success) {
           //显示列表弹框
@@ -559,7 +560,7 @@ var parallelDeclare = new Vue({
     printReceive1: function (row,index,ind) {
       this.receiveItemActive = index;
       this.receiveActive = ind;
-      var fileUrl = ctx + '/rest/user/receive/toPDF/'+row.receiveId;
+      var fileUrl = ctx + 'rest/user/receive/toPDF/'+row.receiveId;
       this.pdfSrc=ctx + 'preview/pdfjs/web/viewer.html?file='+encodeURIComponent(fileUrl)
     },
     // 跳转其他页面
@@ -684,7 +685,7 @@ var parallelDeclare = new Vue({
               _that.parallelItems.map(function(item){
                 _that.setImplementItem(item);
                 Vue.set(item, 'applicantChooseRel', ''); // 申请人最终选择
-                if(item.applicantChoose||item.leaderDeptChoose){
+                if((item.applicantChoose||item.leaderDeptChoose)&&!item.notRegionData){
                   item.applicantChooseRel = '0';
                   if(item.itemStateList&&item.itemStateList.length>0){
                     if(_that.selParallelItemsKey.indexOf(item.itemId)<0){
@@ -698,7 +699,7 @@ var parallelDeclare = new Vue({
               _that.coreItems.map(function(item){
                 _that.setImplementItem(item);
                 Vue.set(item, 'applicantChooseRel', ''); // 申请人最终选择
-                if(item.applicantChoose||item.leaderDeptChoose){
+                if((item.applicantChoose||item.leaderDeptChoose)&&!item.notRegionData){
                   item.applicantChooseRel = '0'
                   if(item.itemStateList&&item.itemStateList.length>0){
                     if(_that.selCoreItemsKey.indexOf(item.itemId)<0){
@@ -992,9 +993,13 @@ var parallelDeclare = new Vue({
         getUrl = 'rest/userCenter/apply/factor/child/list/' + _parentId;
         _that.projInfoDetail.themeId = answerData.themeId;
         _that.themeId = answerData.themeId;
-        _that.itThemeId = answerData.itThemeId;
-        _that.itThemeName = answerData.itThemeName;
-        _that.itThemeVerId = answerData.itThemeVerId;
+        _that.themeName = answerData.themeName;
+        _that.itThemeId = answerData.themeId;
+        _that.itThemeName = answerData.themeName;
+        _that.selThemeInfo.themeId = answerData.themeId;
+        _that.selThemeInfo.themeName = answerData.themeName;
+        _that.themeActive = _that.themeId;
+        _that.itThemeVerId = answerData.themeVerId;
         if(answerData.themeId&&answerData.themeId!=''){
           _that.saveThemeAndNext('guide');
         }else {
@@ -1101,6 +1106,10 @@ var parallelDeclare = new Vue({
     getGuideList: function () {
       var _that = this;
       _that.declareStep = 2;
+      _that.guideList = [];
+      _that.stateList = [];
+      _that.stageList = [];
+      _that.stageListBefore = [];
       console.log(_that.stageId);
       if(_that.projInfoDetail.themeId&&_that.projInfoDetail.themeId!=''){
         _that.saveThemeAndNext('guide');
@@ -1849,6 +1858,7 @@ var parallelDeclare = new Vue({
           _that.projInfoDetail = data.content;
           _that.themeType = data.content.themeType;
           _that.themeId = data.content.themeId;
+          _that.themeActive = _that.themeId;
           _that.themeVerId = data.content.themeVerId;
           _that.jiansheFrom = data.content.aeaUnitInfos ? data.content.aeaUnitInfos : [];
           _that.projUnitList = JSON.parse(JSON.stringify(data.content.aeaUnitInfos));
@@ -1861,7 +1871,7 @@ var parallelDeclare = new Vue({
             _that.itemTabSelect = 'tab_' + _that.themeType;
             if (_that.themeId) {
               _that.themeActive = _that.themeId;
-              var copyThemeTypeList = _that.themeTypeList.mainLine;
+              var copyThemeTypeList = JSON.parse(JSON.stringify(_that.themeTypeList.mainLine));
               copyThemeTypeList = copyThemeTypeList.filter(function (item, index) {
                 return item.themeTypeCode === _that.themeType;
               })
@@ -1884,7 +1894,7 @@ var parallelDeclare = new Vue({
           if (data.content.rootOrgId != null && "" != data.content.rootOrgId) {
             _that.querySelentDistrict(data.content.rootOrgId);
           }
-          _that.querySelecTheme(data.content.projType);
+          // _that.querySelecTheme(data.content.projType);
           if (data.content.themeId != null && "" != data.content.themeId) {
             _that.isAble = true;
           } else {
@@ -2195,6 +2205,7 @@ var parallelDeclare = new Vue({
           _that.projInfoDetail.projectAddress = _that.projInfoDetail.projectAddress?_that.projInfoDetail.projectAddress.split(','):'';
           _that.loading = false;
           _that.themeId = _that.projInfoDetail.themeId;
+          _that.themeActive = _that.themeId;
           _that.themeVerId = _that.projInfoDetail.themeVerId;
           _that.unitProjIds = data.content.unitProjIds?data.content.unitProjIds:[];
           if(data.content.unitReturnJson&&data.content.unitReturnJson.length>0){
@@ -2239,7 +2250,7 @@ var parallelDeclare = new Vue({
       _that.loading = true;
       request('', {
         // url: ctx + 'rest/main/theme/list',
-        url: ctx + 'rest/userCenter/apply/theme/list ',
+        url: ctx + 'rest/userCenter/apply/theme/list',
         type: 'get',
       }, function (data) {
         if (data.success) {
@@ -3139,7 +3150,6 @@ var parallelDeclare = new Vue({
     },
     // 保存并下一步  获取一张表单列表
     saveAndGetOneForm: function () {
-      debugger;
       var _that = this;
       var _itemStateIds = [];
       _that.itemVerIds = [];
@@ -4369,7 +4379,9 @@ var parallelDeclare = new Vue({
       var _that = this;
       var params = {};
       if (this.dygjbzfxfw) {
-        params.dygjbzfxfw = this.dygjbzfxfw;
+        params = {
+          dygjbzfxfw: this.dygjbzfxfw,
+        };
       }
       request('', {
         url: ctx + 'rest/user/getThemes',
@@ -4469,12 +4481,24 @@ var parallelDeclare = new Vue({
           item.disabled = false;
           if(item.carryOutItems&&item.carryOutItems.length==0){
             item.notRegionData = true;
+            item.itemVerId = '';
+            if (typeof item.applicantChooseRel == 'undefined' || item.applicantChooseRel == undefined) {
+              Vue.set(item, 'applicantChooseRel', '');
+            }else {
+              item.applicantChooseRel = '';
+            }
           }
         } else {
           item.orgId = '';
           item.orgName = '';
           item.disabled = true;
           item.notRegionData = true;
+          item.itemVerId = '';
+          if (typeof item.applicantChooseRel == 'undefined' || item.applicantChooseRel == undefined) {
+            Vue.set(item, 'applicantChooseRel', '');
+          }else {
+            item.applicantChooseRel = '';
+          }
         }
       }
     },

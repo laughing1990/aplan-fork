@@ -193,9 +193,9 @@ var myHomeIndex = (function () {
             // 点击企业信用
             toCreditDetail: function () {
                 var mod = {
-                    name: '我的信用',
+                    name: '企业信用',
                     open: true,
-                    value: 'CreditDetail',
+                    value: 'CreditUnitList',
                 }
                 userCenter.vm.userCenterMenuSelect(mod)
             },

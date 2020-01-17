@@ -5,12 +5,7 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
-import com.augurit.aplanmis.common.domain.AeaHiCertinst;
-import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
-import com.augurit.aplanmis.common.domain.AeaItemBasic;
-import com.augurit.aplanmis.common.domain.AeaItemMat;
-import com.augurit.aplanmis.common.domain.AeaItemState;
-import com.augurit.aplanmis.common.domain.AeaParStage;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
@@ -18,18 +13,8 @@ import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.state.AeaItemStateService;
 import com.augurit.aplanmis.front.apply.service.AeaSeriesService;
 import com.augurit.aplanmis.front.apply.service.RestApplyMatService;
-import com.augurit.aplanmis.front.apply.vo.BindForminstVo;
-import com.augurit.aplanmis.front.apply.vo.Mat2MatInstVo;
-import com.augurit.aplanmis.front.apply.vo.ParallelApplyHandleVo;
-import com.augurit.aplanmis.front.apply.vo.SaveMatinstVo;
-import com.augurit.aplanmis.front.apply.vo.SeriesApplyHandleVo;
-import com.augurit.aplanmis.front.apply.vo.attach.ApplyAbstractQueryVo;
-import com.augurit.aplanmis.front.apply.vo.attach.ApplyImportListVo;
-import com.augurit.aplanmis.front.apply.vo.attach.ApplyImportVo;
-import com.augurit.aplanmis.front.apply.vo.attach.ApplyMatUploadVo;
-import com.augurit.aplanmis.front.apply.vo.attach.AttImportQueryVo;
-import com.augurit.aplanmis.front.apply.vo.attach.AutoImportVo;
-import com.augurit.aplanmis.front.apply.vo.attach.UploadMatReturnVo;
+import com.augurit.aplanmis.front.apply.vo.*;
+import com.augurit.aplanmis.front.apply.vo.attach.*;
 import com.github.pagehelper.Page;
 import io.jsonwebtoken.lang.Assert;
 import io.swagger.annotations.Api;
@@ -40,14 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -260,16 +238,6 @@ public class RestApplyMatAndAttachmentController {
         Assert.isTrue(StringUtils.isNotBlank(applyImportVo.getFileIds()), "fileIds is null");
         String matinstId = restApplyMatService.importAtt(applyImportVo);
         return new ContentResultForm<>(true, matinstId, "Import attach success");
-    }
-
-    @GetMapping("/att/extract")
-    @ApiOperation(value = "申报页面--> 一键提取")
-    public ContentResultForm<List<UploadMatReturnVo>> extract(@ModelAttribute ApplyAbstractQueryVo applyAbstractQueryVo) throws Exception {
-        Assert.notNull(applyAbstractQueryVo, "applyAbstractQueryVo is null");
-        Assert.isTrue(StringUtils.isNotBlank(applyAbstractQueryVo.getProjInfoIds()), "projInfoId is null");
-        Assert.notNull(applyAbstractQueryVo.getMatCodes(), "matCodes is null");
-        List<UploadMatReturnVo> list = restApplyMatService.getAeaHiItemMatinstFile(applyAbstractQueryVo);
-        return new ContentResultForm<>(true, list, "success");
     }
 
     @PostMapping("/att/upload/auto")

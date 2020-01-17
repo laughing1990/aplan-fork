@@ -108,8 +108,8 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="260">
         <template slot-scope="scope">
-          <el-button type="primary" plain size="small" @click="filePreview(curProj.detailId)">预览</el-button>
-          <el-button type="primary" plain size="small" @click="downloadFile(curProj.detailId)">下载</el-button>
+          <el-button type="primary" plain size="small" @click="filePreview(scope.row,scope.row.fileType)">预览</el-button>
+          <el-button type="primary" plain size="small" @click="downloadFile(scope.row.detailId)">下载</el-button>
           <el-button type="primary" size="small" v-if="curProj.projAgentState ==3" >签章</el-button>
         </template>
       </el-table-column>
@@ -132,8 +132,8 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="260">
         <template slot-scope="scope">
-          <el-button type="primary" plain size="small" @click="filePreview(curProj.detailId)">预览</el-button>
-          <el-button type="primary" plain size="small" @click="downloadFile(curProj.detailId)">下载</el-button>
+          <el-button type="primary" plain size="small" @click="filePreview(scope.row,scope.row.fileType)">预览</el-button>
+          <el-button type="primary" plain size="small" @click="downloadFile(scope.row.detailId)">下载</el-button>
           <el-button type="primary" size="small" v-if="curProj.projAgentState ==6" >签章</el-button>
         </template>
       </el-table-column>
@@ -154,8 +154,8 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="260">
         <template slot-scope="scope">
-          <el-button type="primary" plain size="small" @click="filePreview(curProj.detailId)">预览</el-button>
-          <el-button type="primary" plain size="small" @click="downloadFile(curProj.detailId)">下载</el-button>
+          <el-button type="primary" plain size="small" @click="filePreview(scope.row,scope.row.fileType)">预览</el-button>
+          <el-button type="primary" plain size="small" @click="downloadFile(scope.row.detailId)">下载</el-button>
           <el-button type="primary" size="small" v-if="curProj.projAgentState ==8" >签章</el-button>
         </template>
       </el-table-column>

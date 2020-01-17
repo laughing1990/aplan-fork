@@ -1319,7 +1319,7 @@
                         <el-checkbox v-model="scope.row.intelliGuideChoose" disabled></el-checkbox>
                       </template>
                     </el-table-column>
-                    <el-table-column label="申请人选择" prop="applicantChoose" width="120">
+                    <el-table-column label="申请人选择" prop="applicantChoose" width="120" show-overflow-tooltip>
                       <template slot-scope="scope">
                         <el-checkbox v-model="scope.row.applicantChoose" disabled>
                           {{scope.row.applicantOpinion||'未填写'}}
@@ -1327,7 +1327,7 @@
                       </template>
                     </el-table-column>
                     <!-- 牵头部门结果 -->
-                    <el-table-column label="牵头部门" prop="leaderDeptChoose" v-if="guideState>2&&guideState!=6" width="140">
+                    <el-table-column label="牵头部门" show-overflow-tooltip prop="leaderDeptChoose" v-if="guideState>2&&guideState!=6" width="140">
                       <template slot-scope="scope">
                         <el-checkbox v-model="scope.row.leaderDeptChoose" disabled>
                           {{scope.row.leanderDeptOpinion||'未填写意见'}}
@@ -1350,7 +1350,7 @@
                       </el-table-column>
                     </template>
                     <!-- 审批部门结果 -->
-                    <el-table-column v-if="guideState>3" label="审批部门" prop="approveDeptChoose" width="140">
+                    <el-table-column v-if="guideState>3" show-overflow-tooltip label="审批部门" prop="approveDeptChoose" width="140">
                       <template slot-scope="scope">
                         <el-checkbox v-model="scope.row.approveDeptChoose" disabled>
                           {{scope.row.approveDeptOpinion||'无意见'}}
@@ -1519,7 +1519,7 @@
                         <el-checkbox v-model="scope.row.intelliGuideChoose" disabled></el-checkbox>
                       </template>
                     </el-table-column>
-                    <el-table-column :key="Math.random()" label="申请人选择" prop="applicantChoose" width="120">
+                    <el-table-column :key="Math.random()" label="申请人选择" prop="applicantChoose" show-overflow-tooltip width="120">
                       <template slot-scope="scope">
                         <el-checkbox v-model="scope.row.applicantChoose" disabled>
                           {{scope.row.applicantOpinion||'未填写'}}
@@ -1527,7 +1527,7 @@
                       </template>
                     </el-table-column>
                     <!-- 牵头部门结果 -->
-                    <el-table-column :key="Math.random()" label="牵头部门" prop="leaderDeptChoose" v-if="guideState>2&&guideState!=6"
+                    <el-table-column :key="Math.random()" label="牵头部门" show-overflow-tooltip prop="leaderDeptChoose" v-if="guideState>2&&guideState!=6"
                                      width="140">
                       <template slot-scope="scope">
                         <el-checkbox v-model="scope.row.leaderDeptChoose" disabled>
@@ -1551,7 +1551,7 @@
                       </el-table-column>
                     </template>
                     <!-- 审批部门结果 -->
-                    <el-table-column :key="Math.random()" v-if="guideState>3" label="审批部门" prop="approveDeptChoose"
+                    <el-table-column :key="Math.random()" v-if="guideState>3" show-overflow-tooltip label="审批部门" prop="approveDeptChoose"
                                      width="140">
                       <template slot-scope="scope">
                         <el-checkbox v-model="scope.row.approveDeptChoose" disabled>
@@ -2426,7 +2426,7 @@
       <el-dialog @closed="uploadPercentage=0;progressDialogVisible=false" class="show-one-form" title="一张表单"
                  :close-on-press-escape="false" :close-on-click-modal="false"
                  :width="(curWidth-20)+'px'" :visible.sync="oneFormDialogVisible">
-        <!--<el-button type="primary" style="margin-left: 20px"><a target="_blank" :href="ctx+'rest/oneform/common/renderPage?applyinstId='+parallelApplyinstId+'&stageId='+stageId+'&'+formItemsIdStr+'&showBasicButton=false&includePlatformResource=true'">打印表单</a></el-button>-->
+        <!--<el-button type="primary" style="margin-left: 20px"><a target="_blank" :href="ctx+'rest/oneform/common/renderPage4StageOneForm?applyinstId='+parallelApplyinstId+'&stageId='+stageId+'&'+formItemsIdStr+'&showBasicButton=false&includePlatformResource=true'">打印表单</a></el-button>-->
         <div :style="{height:(curHeight-64)+'px',overflow: 'auto'}">
           <el-tabs tab-position="left" v-model="oneformActiveName">
             <el-tab-pane v-for="(item,index) in allFormInfoList"

@@ -176,10 +176,10 @@ public class AeaHiItemFillServiceImpl implements AeaHiItemFillService {
                     temp.setCreateTime(currentTime);
                     temp.setModifyTime(currentTime);
                     aeaHiItemFillMapper.insertAeaHiItemFill(temp);
-                    //插入事项容缺 要求补齐材料实例
-                    aeaHiItemFillDueIninstMapper.batchInsertAeaHiItemFillDueIninst(fillDueIninsts);
                     //插入容缺事项输入材料实例
                     aeaHiItemInoutinstMapper.batchInsertAeaHiItemInoutinst(inoutinstList);
+                    //插入事项容缺 要求补齐材料实例
+                    aeaHiItemFillDueIninstMapper.batchInsertAeaHiItemFillDueIninst(fillDueIninsts);
                 }
             }
         }
