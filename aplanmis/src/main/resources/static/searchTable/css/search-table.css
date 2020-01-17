@@ -553,3 +553,17 @@ body .el-table th.gutter{
   font-size: 12px;
   border-radius: 4px;
 }
+/* 红色-dot */
+.dot {
+  background-color: #f56c6c;
+  border-radius: 10px;
+  color: #fff;
+  display: inline-block;
+  font-size: 12px;
+  height: 18px;
+  line-height: 16px;
+  padding: 0 6px;
+  text-align: center;
+  white-space: nowrap;
+  border: 1px solid #fff;
+}
