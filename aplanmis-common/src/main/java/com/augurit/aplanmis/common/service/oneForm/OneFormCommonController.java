@@ -2,18 +2,23 @@ package com.augurit.aplanmis.common.service.oneForm;
 import com.augurit.agcloud.bpm.common.sfengine.config.SFRenderConfig;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
+import com.augurit.aplanmis.common.constants.TimeruleInstState;
+import com.augurit.aplanmis.common.utils.ExcelUtils;
+import com.augurit.aplanmis.common.vo.conditional.ApplyInfo;
+import com.augurit.aplanmis.common.vo.conditional.ConditionalQueryRequest;
 import com.augurit.aplanmis.front.basis.stage.vo.OneFormItemRequest;
 import com.augurit.aplanmis.front.basis.stage.vo.OneFormStageRequest;
 import com.augurit.aplanmis.front.basis.stage.vo.FormFrofileVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @RequestMapping("/rest/oneform/common")
 @RestController
@@ -46,9 +51,10 @@ public class OneFormCommonController {
             return new ContentResultForm(false, e.getMessage());
         }
     }
+
     @RequestMapping(value = "/renderPage", method = {RequestMethod.GET})
     @ApiOperation("根据参数渲染一张表单整个页面")
-    public void renderPage(OneFormStageRequest oneFormStageRequest,SFRenderConfig sFRenderConfig) {
+    public void renderPage(OneFormStageRequest oneFormStageRequest, SFRenderConfig sFRenderConfig) {
         oneFormCommonService.renderPage(oneFormStageRequest,sFRenderConfig);
     }
     /********************并联申报接口 end ********************************/
@@ -67,5 +73,24 @@ public class OneFormCommonController {
     }
 
     /********************单事项申报接口 end ********************************/
+
+    @RequestMapping(value = "/exportAllFormDatas", method = {RequestMethod.GET, RequestMethod.POST})
+    @ApiOperation("导出智能表单设计相关表数据到Excel")
+    public ResultForm exportAllFormDatas(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        return oneFormCommonService.exportAllFormTableDatas(request, response);
+    }
+
+    @RequestMapping(value = "/exportOneFormDatas", method = {RequestMethod.GET, RequestMethod.POST})
+    @ApiOperation("导出智能表单数据到Excel")
+    public void exportOneFormDatas(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        oneFormCommonService.exportOneFormTableDatas(request, response);
+    }
+
+    @PostMapping(value = "/importOneFormDatas")
+    @ApiOperation("导入智能表单设计相关表数据")
+    public ResultForm importOneFormDatas(HttpServletRequest request) throws Exception {
+        oneFormCommonService.importOneFormTableDatas(request);
+        return new ContentResultForm<>(true, null, "success");
+    }
 
 }
