@@ -78,6 +78,15 @@ public class RestAeaHiGuideService {
         List<AeaGuideItemVo> itemList= "s".equals(detailType)?aeaGuideApplyVo.getItItemList():aeaGuideApplyVo.getItemList();
         if(itemList.size()==0) return;
         for (AeaGuideItemVo aeaGuideItemVo:itemList){
+            if("s".equals(detailType)){
+                if(!"1".equals(aeaGuideItemVo.getIsITSel())){
+                    continue;
+                }
+            }else{
+                if(!"1".equals(aeaGuideItemVo.getIsApplySel())){
+                    continue;
+                }
+            }
             AeaHiGuideDetail aeaHiGuideDetail=new AeaHiGuideDetail();
             aeaHiGuideDetail.setGuideDetailId(UUID.randomUUID().toString());
             aeaHiGuideDetail.setGuideId(guideId);
