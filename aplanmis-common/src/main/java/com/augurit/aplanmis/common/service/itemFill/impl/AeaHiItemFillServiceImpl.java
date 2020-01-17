@@ -174,6 +174,7 @@ public class AeaHiItemFillServiceImpl implements AeaHiItemFillService {
                     temp.setRootOrgId(currentOrgId);
                     temp.setCreater(currentUser.getUserId());
                     temp.setCreateTime(currentTime);
+                    temp.setModifyTime(currentTime);
                     aeaHiItemFillMapper.insertAeaHiItemFill(temp);
                     //插入事项容缺 要求补齐材料实例
                     aeaHiItemFillDueIninstMapper.batchInsertAeaHiItemFillDueIninst(fillDueIninsts);

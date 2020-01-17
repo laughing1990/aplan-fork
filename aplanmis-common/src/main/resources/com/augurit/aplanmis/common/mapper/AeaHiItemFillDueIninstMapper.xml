@@ -65,44 +65,44 @@
         <include refid="allColumns"/>
         from    AEA_HI_ITEM_FILL_DUE_ININST
     <where>
-        <if test="dueIninstId != null AND dueIninstId != ''" >
-        AND    DUE_ININST_ID = #{dueIninstId}
+        <if test="dueIninstId != null and dueIninstId != ''" >
+        and    DUE_ININST_ID = #{dueIninstId}
         </if>
-        <if test="fillId != null AND fillId != ''" >
-        AND    FILL_ID = #{fillId}
+        <if test="fillId != null and fillId != ''" >
+        and    FILL_ID = #{fillId}
         </if>
-        <if test="inoutinstId != null AND inoutinstId != ''" >
-        AND    INOUTINST_ID = #{inoutinstId}
+        <if test="inoutinstId != null and inoutinstId != ''" >
+        and    INOUTINST_ID = #{inoutinstId}
         </if>
-        <if test="fillOpinion != null AND fillOpinion != ''" >
-        AND    FILL_OPINION = #{fillOpinion}
+        <if test="fillOpinion != null and fillOpinion != ''" >
+        and    FILL_OPINION = #{fillOpinion}
         </if>
-        <if test="timeLimitType != null AND timeLimitType != ''" >
-        AND    TIME_LIMIT_TYPE = #{timeLimitType}
+        <if test="timeLimitType != null and timeLimitType != ''" >
+        and    TIME_LIMIT_TYPE = #{timeLimitType}
         </if>
-        <if test="isPass != null AND isPass != ''" >
-            AND    IS_PASS = #{isPass}
+        <if test="isPass != null and isPass != ''" >
+            and    IS_PASS = #{isPass}
         </if>
-        <if test="attCount != null AND attCount != ''" >
-            AND    ATT_COUNT = #{attCount}
+        <if test="attCount != null and attCount != ''" >
+            and    ATT_COUNT = #{attCount}
         </if>
-        <if test="paperCount != null AND paperCount != ''" >
-        AND    PAPER_COUNT = #{paperCount}
+        <if test="paperCount != null and paperCount != ''" >
+        and    PAPER_COUNT = #{paperCount}
         </if>
-        <if test="copyCount != null AND copyCount != ''" >
-        AND    COPY_COUNT = #{copyCount}
+        <if test="copyCount != null and copyCount != ''" >
+        and    COPY_COUNT = #{copyCount}
         </if>
-        <if test="isNeedAtt != null AND isNeedAtt != ''" >
-        AND    IS_NEED_ATT = #{isNeedAtt}
+        <if test="isNeedAtt != null and isNeedAtt != ''" >
+        and    IS_NEED_ATT = #{isNeedAtt}
         </if>
-        <if test="creater != null AND creater != ''" >
-        AND    CREATER = #{creater}
+        <if test="creater != null and creater != ''" >
+        and    CREATER = #{creater}
         </if>
-        <if test="createTime != null AND createTime != ''" >
-        AND    CREATE_TIME = #{createTime}
+        <if test="createTime != null and createTime != ''" >
+        and    CREATE_TIME = #{createTime}
         </if>
-        <if test="rootOrgId != null AND rootOrgId != ''" >
-        AND    ROOT_ORG_ID = #{rootOrgId}
+        <if test="rootOrgId != null and rootOrgId != ''" >
+        and    ROOT_ORG_ID = #{rootOrgId}
         </if>
     </where>
     </select>
@@ -133,43 +133,43 @@ DUE_ININST_ID  ,FILL_ID  ,INOUTINST_ID  ,FILL_OPINION  ,TIME_LIMIT_TYPE  ,IS_PAS
 <update id="updateAeaHiItemFillDueIninst" parameterType="AeaHiItemFillDueIninst" >
     update AEA_HI_ITEM_FILL_DUE_ININST
     <set >
-        <if test="dueIninstId != null AND dueIninstId != '' " >
+        <if test="dueIninstId != null and dueIninstId != '' " >
         DUE_ININST_ID = #{dueIninstId},
         </if>
-        <if test="fillId != null AND fillId != '' " >
+        <if test="fillId != null and fillId != '' " >
         FILL_ID = #{fillId},
         </if>
-        <if test="inoutinstId != null AND inoutinstId != '' " >
+        <if test="inoutinstId != null and inoutinstId != '' " >
         INOUTINST_ID = #{inoutinstId},
         </if>
-        <if test="fillOpinion != null AND fillOpinion != '' " >
+        <if test="fillOpinion != null and fillOpinion != '' " >
         FILL_OPINION = #{fillOpinion},
         </if>
-        <if test="timeLimitType != null AND timeLimitType != '' " >
+        <if test="timeLimitType != null and timeLimitType != '' " >
         TIME_LIMIT_TYPE = #{timeLimitType},
         </if>
-        <if test="isPass != null AND isPass != ''" >
+        <if test="isPass != null and isPass != ''" >
          IS_PASS = #{isPass},
         </if>
-        <if test="attCount != null AND attCount != ''" >
+        <if test="attCount != null and attCount != ''" >
          ATT_COUNT = #{attCount},
         </if>
-        <if test="paperCount != null AND paperCount != '' " >
+        <if test="paperCount != null and paperCount != '' " >
         PAPER_COUNT = #{paperCount},
         </if>
-        <if test="copyCount != null AND copyCount != '' " >
+        <if test="copyCount != null and copyCount != '' " >
         COPY_COUNT = #{copyCount},
         </if>
-        <if test="isNeedAtt != null AND isNeedAtt != '' " >
+        <if test="isNeedAtt != null and isNeedAtt != '' " >
         IS_NEED_ATT = #{isNeedAtt},
         </if>
-        <if test="creater != null AND creater != '' " >
+        <if test="creater != null and creater != '' " >
         CREATER = #{creater},
         </if>
-        <if test="createTime != null AND createTime != '' " >
+        <if test="createTime != null and createTime != '' " >
         CREATE_TIME = #{createTime},
         </if>
-        <if test="rootOrgId != null AND rootOrgId != '' " >
+        <if test="rootOrgId != null and rootOrgId != '' " >
         ROOT_ORG_ID = #{rootOrgId},
         </if>
     </set>
