@@ -996,6 +996,9 @@ var parallelDeclare = new Vue({
         _that.themeName = answerData.themeName;
         _that.itThemeId = answerData.themeId;
         _that.itThemeName = answerData.themeName;
+        _that.selThemeInfo.themeId = answerData.themeId;
+        _that.selThemeInfo.themeName = answerData.themeName;
+        _that.themeActive = _that.themeId;
         _that.itThemeVerId = answerData.themeVerId;
         if(answerData.themeId&&answerData.themeId!=''){
           _that.saveThemeAndNext('guide');
@@ -1855,6 +1858,7 @@ var parallelDeclare = new Vue({
           _that.projInfoDetail = data.content;
           _that.themeType = data.content.themeType;
           _that.themeId = data.content.themeId;
+          _that.themeActive = _that.themeId;
           _that.themeVerId = data.content.themeVerId;
           _that.jiansheFrom = data.content.aeaUnitInfos ? data.content.aeaUnitInfos : [];
           _that.projUnitList = JSON.parse(JSON.stringify(data.content.aeaUnitInfos));
@@ -2201,6 +2205,7 @@ var parallelDeclare = new Vue({
           _that.projInfoDetail.projectAddress = _that.projInfoDetail.projectAddress?_that.projInfoDetail.projectAddress.split(','):'';
           _that.loading = false;
           _that.themeId = _that.projInfoDetail.themeId;
+          _that.themeActive = _that.themeId;
           _that.themeVerId = _that.projInfoDetail.themeVerId;
           _that.unitProjIds = data.content.unitProjIds?data.content.unitProjIds:[];
           if(data.content.unitReturnJson&&data.content.unitReturnJson.length>0){
