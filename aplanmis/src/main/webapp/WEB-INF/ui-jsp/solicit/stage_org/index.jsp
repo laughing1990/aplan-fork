@@ -23,8 +23,7 @@
 </head>
 <body>
 <div id="mainContentPanel" class="row" style="width: 100%;height: 99%;padding: 15px 10px 5px 10px;margin: 0px;">
-    <!-- 主题阶段 -->
-    <div id="westPanel" class="col-xl-4" style="padding: 0px 2px 0px 8px;">
+    <div id="westPanel" class="col-xl-5" style="padding: 0px 2px 0px 8px;">
         <div class="m-portlet" style="margin-bottom: 0px;width: 100%;height: 100%;">
             <div class="m-portlet__head">
                 <div class="m-portlet__head-caption">
@@ -63,24 +62,24 @@
     </div>
 
     <!-- 相关配置 -->
-    <div class="col-xl-8" style="padding: 0px 8px 0px 2px;">
+    <div class="col-xl-7" style="padding: 0px 8px 0px 2px;">
         <div class="m-portlet" style="margin-bottom: 0px;width: 100%;height: 100%;">
             <div class="m-portlet__head">
                 <div class="m-portlet__head-caption">
                     <div class="m-portlet__head-title">
-                        <span class="m-portlet__head-icon m--hide">
-                            <i class="la la-gear"></i>
-                        </span>
+                       <span class="m-portlet__head-icon m--hide">
+                           <i class="la la-gear"></i>
+                       </span>
                         <h3 class="m-portlet__head-text">
                             牵头部门
                         </h3>
                     </div>
                 </div>
             </div>
-            <div class="m-portlet__body"  style="padding: 10px 0px;">
+            <div class="m-portlet__body" style="padding: 10px 0px;">
                 <div class="m-form m-form--label-align-right m--margin-bottom-5">
                     <div class="row" style="margin: 0px;">
-                        <div class="col-md-5" style="text-align: left;">
+                        <div class="col-md-6" style="text-align: left;">
                             <button type="button" class="btn btn-info"
                                     onclick="importSolicitOrg();">导入部门</button>
                             <button type="button" class="btn btn-secondary"
@@ -88,11 +87,11 @@
                             <button type="button" class="btn btn-secondary"
                                     onclick="refreshSolicitOrgList();">刷新</button>
                         </div>
-                        <div class="col-md-7" style="padding: 0px;">
+                        <div class="col-md-6" style="padding: 0px;">
                             <form id="search_solicit_org_form" method="post">
                                 <div class="row" style="margin: 0px;">
-                                    <div class="col-4"></div>
-                                    <div class="col-5" style="text-align: right;">
+                                    <div class="col-2"></div>
+                                    <div class="col-6" style="text-align: right;">
                                         <div class="m-input-icon m-input-icon--left">
                                             <input type="text" class="form-control m-input"
                                                    placeholder="请输入关键字..." name="keyword" value=""/>
@@ -101,7 +100,7 @@
                                             </span>
                                         </div>
                                     </div>
-                                    <div class="col-3" style="text-align: center;">
+                                    <div class="col-4" style="text-align: center;">
                                         <button type="button" class="btn btn-info"
                                                 onclick="searchSolicitOrgList();">查询
                                         </button>

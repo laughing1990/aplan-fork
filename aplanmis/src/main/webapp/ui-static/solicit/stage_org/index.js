@@ -63,6 +63,24 @@ $(function () {
 
     $('#selectThemeStageTree').css('height', $('#westPanel').height()-116);
 
+    // 初始化主题阶段
+    initSelectThemeStageTreeZtree();
+
+    // 初始牵头部门
+    initSolicitOrgTb();
+
+    // 初始化校验
+    initValidateSolicitOrg();
+
+    // 初始化导入
+    initValidateImportSolicitOrg();
+
+    // 征求组织列表
+    $('#solicit_org_list_tb').bootstrapTable('resetView', {
+
+        height: $('#westPanel').height()-116
+    });
+
     // 处理滚动条
     $('#selectThemeStageTree').niceScroll({
 
@@ -87,24 +105,6 @@ $(function () {
         cursorborder: "0", //   游标边框css定义
         cursorborderradius: "2px",//以像素为光标边界半径
         autohidemode: true  //是否隐藏滚动条
-    });
-
-    // 初始化主题阶段
-    initSelectThemeStageTreeZtree();
-
-    // 初始牵头部门
-    initSolicitOrgTb();
-
-    // 初始化校验
-    initValidateSolicitOrg();
-
-    // 初始化导入
-    initValidateImportSolicitOrg();
-
-    // 征求组织列表
-    $('#solicit_org_list_tb').bootstrapTable('resetView', {
-
-        height: $('#westPanel').height() - 165
     });
 
     // 关键字搜索用户节点
@@ -454,21 +454,27 @@ var getSolicitOrgColumns = function () {
             checkbox:true,
             width: 5
         },
+        // {
+        //     field: 'orgCode',
+        //     title: '部门编号',
+        //     align: 'left',
+        //     width: 200,
+        // },
         {
             field: 'orgName',
             align: 'left',
-            width: 250,
-            title: '牵头部门名称',
+            width: 230,
+            title: '部门名称',
         },
         {
-            field: 'orgCode',
-            title: '牵头部门编号',
+            field: 'regionName',
             align: 'left',
-            width: 250,
+            width: 230,
+            title: '所属区域',
         },
         {
             field: 'solicitType',
-            title: '征求意见模式',
+            title: '征求模式',
             align: 'center',
             width: 100,
             formatter: solicitTypeFormatter

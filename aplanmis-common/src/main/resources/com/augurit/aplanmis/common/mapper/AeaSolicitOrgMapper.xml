@@ -107,9 +107,11 @@
             org.ORG_NAME orgName,
             org.ORG_CODE orgCode,
             org.ORG_PROPERTY orgProperty,
-            org.region_id regionId
+            org.region_id regionId,
+            region.REGION_NAME regionName
         from AEA_SOLICIT_ORG soliOrg
         left join OPU_OM_ORG org on ( org.ORG_ID = soliOrg.ORG_ID and org.ORG_DELETED = '0' )
+        left join bsc_dic_region region on region.REGION_ID = org.REGION_ID
         <where>
             <if test="solicitOrgId != null" >
             and    soliOrg.SOLICIT_ORG_ID = #{solicitOrgId}
@@ -150,7 +152,8 @@
             <if test="keyword!=null and keyword!='' ">
             and (
                 org.ORG_NAME like concat('%', concat( #{keyword}, '%')) or
-                org.ORG_CODE like concat('%', concat( #{keyword}, '%'))
+                org.ORG_CODE like concat('%', concat( #{keyword}, '%')) or
+                region.REGION_NAME like concat('%', concat( #{keyword}, '%'))
             )
             </if>
         </where>

@@ -66,4 +66,7 @@ public class AeaSolicitOrg implements Serializable{
     @ApiModelProperty("行政区划ID")
     private String regionId;
 
+    @ApiModelProperty("行政区划名称")
+    private String regionName;
+
 }
