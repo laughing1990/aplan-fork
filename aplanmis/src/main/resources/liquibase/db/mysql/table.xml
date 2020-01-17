@@ -2046,7 +2046,7 @@
         </sql>
     </changeSet>
 
-    <changeSet id="2020011509150002" author="xiong" failOnError="false">
+    <changeSet id="20200117121702" author="xiong" failOnError="false">
         <preConditions>
             <not>
                 <tableExists tableName="aea_hi_item_fill_due_ininst"/>
@@ -2068,39 +2068,9 @@
             PRIMARY KEY (`DUE_ININST_ID`),
             KEY `FK_AEA_HI_ITEM_CORRECT_DUE_ININST_C` (`FILL_ID`) USING BTREE,
             KEY `FK_AEA_HI_ITEM_CORRECT_DUE_ININST_I` (`INOUTINST_ID`) USING BTREE,
-            CONSTRAINT `aea_hi_item_fill_due_ininst_ibfk_1` FOREIGN KEY (`FILL_ID`) REFERENCES `aea_hi_item_correct` (`CORRECT_ID`),
+            CONSTRAINT `aea_hi_item_fill_due_ininst_ibfk_1` FOREIGN KEY (`FILL_ID`) REFERENCES `aea_hi_item_fill` (`FILL_ID`),
             CONSTRAINT `aea_hi_item_fill_due_ininst_ibfk_2` FOREIGN KEY (`INOUTINST_ID`) REFERENCES `aea_hi_item_inoutinst` (`INOUTINST_ID`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='事项容缺要求补齐材料实例表';
-        </sql>
-    </changeSet>
-
-    <changeSet id="2020011509150003" author="xiong" failOnError="false">
-        <preConditions>
-            <not>
-                <tableExists tableName="aea_hi_item_fill_real_ininst"/>
-            </not>
-        </preConditions>
-        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
-            CREATE TABLE `aea_hi_item_fill_real_ininst` (
-            `REAL_ININST_ID` varchar(50) NOT NULL COMMENT 'ID',
-            `FILL_ID` varchar(50) NOT NULL COMMENT '补齐ID',
-            `DUE_ININST_ID` varchar(50) NOT NULL COMMENT '要求补齐输入ID',
-            `INOUTINST_ID` varchar(50) NOT NULL COMMENT '输入输出实例ID',
-            `IS_PASS` char(1) NOT NULL COMMENT '是否通过，0表示未通过，1表示通过',
-            `ATT_COUNT` int(5) DEFAULT NULL COMMENT '附件总数',
-            `REAL_PAPER_COUNT` int(5) DEFAULT NULL COMMENT '实际纸质数',
-            `REAL_COPY_COUNT` int(5) DEFAULT NULL COMMENT '实际复印件数',
-            `CREATER` varchar(50) NOT NULL COMMENT '创建人',
-            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
-            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
-            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
-            `ROOT_ORG_ID` varchar(50) DEFAULT NULL COMMENT '根组织ID',
-            PRIMARY KEY (`REAL_ININST_ID`),
-            KEY `FK_AEA_HI_ITEM_CORRECT_REAL_ININST_C` (`FILL_ID`) USING BTREE,
-            KEY `FK_AEA_HI_ITEM_CORRECT_REAL_ININST_I` (`INOUTINST_ID`) USING BTREE,
-            CONSTRAINT `aea_hi_item_fill_real_ininst_ibfk_1` FOREIGN KEY (`FILL_ID`) REFERENCES `aea_hi_item_correct` (`CORRECT_ID`),
-            CONSTRAINT `aea_hi_item_fill_real_ininst_ibfk_2` FOREIGN KEY (`INOUTINST_ID`) REFERENCES `aea_hi_item_inoutinst` (`INOUTINST_ID`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='事项容缺实际补齐材料实例表';
         </sql>
     </changeSet>
 

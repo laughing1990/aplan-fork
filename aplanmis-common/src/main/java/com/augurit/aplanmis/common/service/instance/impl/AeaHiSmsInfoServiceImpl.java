@@ -77,7 +77,8 @@ public class AeaHiSmsInfoServiceImpl implements AeaHiSmsInfoService {
         if(applyinstId==null)
             throw new InvalidParameterException("参数id为空！");
 
-        return aeaHiSmsInfoMapper.getAeaHiSmsInfoByApplyinstId(applyinstId);
+        List<AeaHiSmsInfo> list = aeaHiSmsInfoMapper.getAeaHiSmsInfoByApplyinstId(applyinstId);
+        return list.size()>0?list.get(0):null;
     }
 
     @Override

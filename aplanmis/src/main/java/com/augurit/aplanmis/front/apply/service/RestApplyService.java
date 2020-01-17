@@ -219,8 +219,8 @@ public class RestApplyService {
                     aeaHiSmsInfoMapper.updateAeaHiSmsInfo(aeaHiSmsInfo);
                     continue;
                 }
-                AeaHiSmsInfo aeaHiSmsInfoByApplyinstId = aeaHiSmsInfoMapper.getAeaHiSmsInfoByApplyinstId(applyinstId);
-                if (aeaHiSmsInfoByApplyinstId == null) {
+                List<AeaHiSmsInfo> aeaHiSmsInfoByApplyinstId = aeaHiSmsInfoMapper.getAeaHiSmsInfoByApplyinstId(applyinstId);
+                if (aeaHiSmsInfoByApplyinstId == null||aeaHiSmsInfoByApplyinstId.size()==0) {
                     AeaHiSmsInfo newOne = new AeaHiSmsInfo();
                     BeanUtils.copyProperties(newOne, aeaHiSmsInfo);
                     newOne.setId(UuidUtil.generateUuid());
