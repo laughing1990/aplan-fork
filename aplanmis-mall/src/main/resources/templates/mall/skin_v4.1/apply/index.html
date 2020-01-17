@@ -1637,6 +1637,11 @@
             <span v-show="scope.row.zcqy==0&&scope.row.attIsRequire==1" class="isTag isRequired">必</span>
           </template>
         </el-table-column>
+        <el-table-column label="是否签章" width="120" align="center">
+          <template slot-scope="scope">
+            {{scope.row.isSign=='1'?'是':'否'}}
+          </template>
+        </el-table-column>
         <el-table-column width="160" align="center" label="收件标准">
           <template slot-scope="scope">
             <el-tooltip effect="light"
@@ -1716,6 +1721,11 @@
             <i class="cert-icon ag ag-id-card" v-if="scope.row.matProp=='c'"></i>
             <!--<span v-show="scope.row.zcqy==1" class="isTag isDone">容缺</span>-->
             <span v-show="scope.row.zcqy==0&&scope.row.attIsRequire==1" class="isTag isRequired">必</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="是否签章" width="120" align="center">
+          <template slot-scope="scope">
+            {{scope.row.isSign=='1'?'是':'否'}}
           </template>
         </el-table-column>
         <el-table-column width="160" align="center" label="收件标准">
