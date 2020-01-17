@@ -181,6 +181,7 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
             aeaUnitProj.setUnitType(UnitType.DEVELOPMENT_UNIT.getValue());
             aeaUnitProj.setLinkmanInfoId(loginInfoVo.getUserId());
             aeaUnitProj.setIsDeleted("0");
+            aeaUnitProj.setUnitType("1");
             aeaUnitProjMapper.insertAeaUnitProj(aeaUnitProj);
         }
 
