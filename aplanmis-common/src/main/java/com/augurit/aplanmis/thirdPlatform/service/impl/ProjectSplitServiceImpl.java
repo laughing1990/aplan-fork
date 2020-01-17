@@ -221,6 +221,9 @@ public class ProjectSplitServiceImpl implements ProjectSplitService {
         String engineeringCode = null;
         if (responseJSON != null && (RESULT.操作成功.getCode() == responseJSON.getInteger("result")) && (XMZT.通过.code == responseJSON.getInteger("xmzt"))) {
             engineeringCode = responseJSON.getString("engineeringCode");
+        }else if(responseJSON != null){
+            String message = responseJSON.getString("message");//错误提示信息
+            throw new RuntimeException("调用省发改接口获取工程编码失败：" + message);
         }
         return engineeringCode;
     }

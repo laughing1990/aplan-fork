@@ -55,6 +55,12 @@ public class AeaHiItemFillDueIninst implements Serializable {
     private String rootOrgId;
 
     //非表字段
+    @ApiModelProperty("材料定义ID")
+    private String matId;
+
+    @ApiModelProperty("材料编号")
+    private String matCode;
+
     @ApiModelProperty("材料名称")
     private String matName;
 

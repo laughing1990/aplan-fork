@@ -122,4 +122,6 @@ public interface AeaHiItemInoutinstMapper {
     List<AeaHiItemInoutinst> getAeaHiItemInoutinstByIteminstIds(@Param("ids")String[] oldIteminstIds);
 
     void batchDeleteAeaHiItemInoutinst(@Param("ids")String[] outinstIds);
+
+    List<AeaHiItemInoutinst> listAeaHiItemInoutinstByInoutinstIds(@Param("inoutinstIds")String[] inoutinstIds);
 }

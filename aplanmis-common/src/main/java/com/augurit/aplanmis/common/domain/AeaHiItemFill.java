@@ -121,10 +121,15 @@ public class AeaHiItemFill implements Serializable {
     @ApiModelProperty("查询关键字")
     private String keyword;
 
+    @ApiModelProperty("业主单位ID")
+    private String unitInfoId;
+
     @ApiModelProperty("业主单位名称")
     private String unitName;
 
     @ApiModelProperty("容缺补齐材料集合")
     private List<AeaHiItemFillDueIninst> itemFillDueIninstList;
 
+    @ApiModelProperty("部门ID数组。查询使用")
+    private String[] orgIds;
 }

@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.common.service.itemFill;
 
 import com.augurit.aplanmis.common.domain.AeaHiItemFill;
+import com.augurit.aplanmis.common.domain.AeaHiItemFillDueIninst;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 
@@ -39,4 +40,12 @@ public interface AeaHiItemFillService {
      * @throws Exception
      */
     public AeaHiItemFill getAeaHiItemFillDetail(String fillId) throws Exception;
+
+    /**
+     * 保存容缺审核结果
+     * @param fillDueList
+     * @return
+     * @throws Exception
+     */
+    public void saveLeranceAproveOpinion(List<AeaHiItemFillDueIninst> fillDueList) throws Exception;
 }

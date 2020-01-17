@@ -306,6 +306,15 @@
         and aii.IS_DELETED='0'
     </select>
 
+    <select id="listAeaHiItemInoutinstByInoutinstIds" resultType="AeaHiItemInoutinst">
+        select
+        <include refid="aliasColumns">
+            <property name="alias" value="ahii"></property>
+        </include>
+        from aea_hi_item_inoutinst ahii
+        where ahii.INOUTINST_ID in
+        <foreach collection="inoutinstIds" close=")" open="(" separator="," item="inoutinstId">#{inoutinstId}</foreach>
+    </select>
 
     <!--8 删除实体对象列表,根据主键ID列表 -->
     <!--9 返回所有字段的对象map,用于级联 -->

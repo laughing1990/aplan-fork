@@ -49,10 +49,12 @@
         <include refid="aliasColumns">
             <property name="alias" value="due"/>
         </include>,
-        tt.MAT_NAME
+        tt.MAT_ID matId,
+        tt.MAT_CODE matCode,
+        tt.MAT_NAME matName
         FROM aea_hi_item_fill_due_ininst due
         LEFT JOIN (
-            SELECT aim.MAT_NAME, ahii.INOUTINST_ID FROM aea_hi_item_inoutinst ahii
+            SELECT aim.MAT_ID,aim.MAT_CODE,aim.MAT_NAME, ahii.INOUTINST_ID FROM aea_hi_item_inoutinst ahii
             LEFT JOIN aea_item_inout aii ON ahii.ITEM_INOUT_ID = aii.INOUT_ID
             LEFT JOIN aea_item_mat aim ON aim.MAT_ID = aii.MAT_ID
         ) tt ON tt.INOUTINST_ID = due.INOUTINST_ID
@@ -98,7 +100,7 @@
         <if test="creater != null and creater != ''" >
         and    CREATER = #{creater}
         </if>
-        <if test="createTime != null and createTime != ''" >
+        <if test="createTime != null" >
         and    CREATE_TIME = #{createTime}
         </if>
         <if test="rootOrgId != null and rootOrgId != ''" >
@@ -166,7 +168,7 @@ DUE_ININST_ID  ,FILL_ID  ,INOUTINST_ID  ,FILL_OPINION  ,TIME_LIMIT_TYPE  ,IS_PAS
         <if test="creater != null and creater != '' " >
         CREATER = #{creater},
         </if>
-        <if test="createTime != null and createTime != '' " >
+        <if test="createTime != null" >
         CREATE_TIME = #{createTime},
         </if>
         <if test="rootOrgId != null and rootOrgId != '' " >
@@ -175,6 +177,105 @@ DUE_ININST_ID  ,FILL_ID  ,INOUTINST_ID  ,FILL_OPINION  ,TIME_LIMIT_TYPE  ,IS_PAS
     </set>
     where DUE_ININST_ID = #{dueIninstId}
 </update>
+
+    <update id="batchUpdateAeaHiItemFillDueIninst" parameterType="java.util.List">
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="list" open="begin" close=";end;" separator=";" item="item">
+                update AEA_HI_ITEM_FILL_DUE_ININST
+                <set >
+                    <if test="item.dueIninstId != null and item.dueIninstId != '' " >
+                        DUE_ININST_ID = #{item.dueIninstId},
+                    </if>
+                    <if test="item.fillId != null and item.fillId != '' " >
+                        FILL_ID = #{item.fillId},
+                    </if>
+                    <if test="item.inoutinstId != null and item.inoutinstId != '' " >
+                        INOUTINST_ID = #{item.inoutinstId},
+                    </if>
+                    <if test="item.fillOpinion != null and item.fillOpinion != '' " >
+                        FILL_OPINION = #{item.fillOpinion},
+                    </if>
+                    <if test="item.timeLimitType != null and item.timeLimitType != '' " >
+                        TIME_LIMIT_TYPE = #{item.timeLimitType},
+                    </if>
+                    <if test="item.isPass != null and item.isPass != ''" >
+                        IS_PASS = #{item.isPass},
+                    </if>
+                    <if test="item.attCount != null and item.attCount != ''" >
+                        ATT_COUNT = #{item.attCount},
+                    </if>
+                    <if test="item.paperCount != null and item.paperCount != '' " >
+                        PAPER_COUNT = #{item.paperCount},
+                    </if>
+                    <if test="item.copyCount != null and item.copyCount != '' " >
+                        COPY_COUNT = #{item.copyCount},
+                    </if>
+                    <if test="item.isNeedAtt != null and item.isNeedAtt != '' " >
+                        IS_NEED_ATT = #{item.isNeedAtt},
+                    </if>
+                    <if test="item.creater != null and item.creater != '' " >
+                        CREATER = #{item.creater},
+                    </if>
+                    <if test="item.createTime != null" >
+                        CREATE_TIME = #{item.createTime},
+                    </if>
+                    <if test="item.rootOrgId != null and item.rootOrgId != '' " >
+                        ROOT_ORG_ID = #{item.rootOrgId},
+                    </if>
+                </set>
+                where DUE_ININST_ID = #{item.dueIninstId}
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <foreach collection="list" open="" close="" separator=";" item="item">
+                update AEA_HI_ITEM_FILL_DUE_ININST
+                <set >
+                    <if test="item.dueIninstId != null and item.dueIninstId != '' " >
+                        DUE_ININST_ID = #{item.dueIninstId},
+                    </if>
+                    <if test="item.fillId != null and item.fillId != '' " >
+                        FILL_ID = #{item.fillId},
+                    </if>
+                    <if test="item.inoutinstId != null and item.inoutinstId != '' " >
+                        INOUTINST_ID = #{item.inoutinstId},
+                    </if>
+                    <if test="item.fillOpinion != null and item.fillOpinion != '' " >
+                        FILL_OPINION = #{item.fillOpinion},
+                    </if>
+                    <if test="item.timeLimitType != null and item.timeLimitType != '' " >
+                        TIME_LIMIT_TYPE = #{item.timeLimitType},
+                    </if>
+                    <if test="item.isPass != null and item.isPass != ''" >
+                        IS_PASS = #{item.isPass},
+                    </if>
+                    <if test="item.attCount != null and item.attCount != ''" >
+                        ATT_COUNT = #{item.attCount},
+                    </if>
+                    <if test="item.paperCount != null and item.paperCount != '' " >
+                        PAPER_COUNT = #{item.paperCount},
+                    </if>
+                    <if test="item.copyCount != null and item.copyCount != '' " >
+                        COPY_COUNT = #{item.copyCount},
+                    </if>
+                    <if test="item.isNeedAtt != null and item.isNeedAtt != '' " >
+                        IS_NEED_ATT = #{item.isNeedAtt},
+                    </if>
+                    <if test="item.creater != null and item.creater != '' " >
+                        CREATER = #{item.creater},
+                    </if>
+                    <if test="item.createTime != null" >
+                        CREATE_TIME = #{item.createTime},
+                    </if>
+                    <if test="item.rootOrgId != null and item.rootOrgId != '' " >
+                        ROOT_ORG_ID = #{item.rootOrgId},
+                    </if>
+                </set>
+                where DUE_ININST_ID = #{item.dueIninstId}
+            </foreach>
+        </if>
+
+
+    </update>
 <!--7 删除实体对象,根据主键ID -->
     <delete id="deleteAeaHiItemFillDueIninst">
         delete from   AEA_HI_ITEM_FILL_DUE_ININST
