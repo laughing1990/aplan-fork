@@ -481,7 +481,7 @@ public class AeaParStageService extends RestApplyService {
             }
         });
         parallelUnstashVo.setBranchOrg(branchOrg);
-        parallelUnstashVo.setSmsInfoId(Optional.ofNullable(aeaHiSmsInfoMapper.getAeaHiSmsInfoByApplyinstId(applyinstId)).orElse(new AeaHiSmsInfo()).getId());
+        parallelUnstashVo.setSmsInfoId(Optional.ofNullable(aeaHiSmsInfoMapper.getAeaHiSmsInfoByApplyinstId(applyinstId).get(0)).orElse(new AeaHiSmsInfo()).getId());
 
         List<AeaHiApplyinst> aeaHiApplyinsts = aeaHiApplyinstService.getSeriesAeaHiApplyinstListByParentApplyinstId(applyinstId, null);
         for (AeaHiApplyinst ahi : aeaHiApplyinsts) {

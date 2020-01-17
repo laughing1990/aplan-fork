@@ -17,6 +17,7 @@ import com.augurit.aplanmis.common.exception.SmsException;
 import com.augurit.aplanmis.common.listener.builder.BscJobRemindBuilder;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiSmsInfoService;
 import com.augurit.aplanmis.common.shortMessage.AplanmisSmsConfigProperties;
 import com.augurit.aplanmis.common.shortMessage.converter.SendSmsRemindContentConverter;
 import lombok.extern.slf4j.Slf4j;
@@ -69,7 +70,7 @@ public class SmsAplanmisListener {
     @Autowired
     private ActTplAppFlowdefMapper actTplAppFlowdefMapper;
     @Autowired
-    private AeaHiSmsInfoMapper aeaHiSmsInfoMapper;
+    private AeaHiSmsInfoService aeaHiSmsInfoService;
     @Autowired
     private AeaHiIteminstMapper aeaHiIteminstMapper;
     @Autowired
@@ -347,7 +348,7 @@ public class SmsAplanmisListener {
 
             String projName = applyinstProjList.get(0).getProjName();
 
-            AeaHiSmsInfo aeaHiSmsInfo = aeaHiSmsInfoMapper.getAeaHiSmsInfoByApplyinstId(applyinstId);
+            AeaHiSmsInfo aeaHiSmsInfo = aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(applyinstId);
             if(aeaHiSmsInfo!=null){
                 String receiveMode = aeaHiSmsInfo.getReceiveMode();//领取模式：1 窗口取证  0 邮政快递
 
@@ -764,7 +765,7 @@ public class SmsAplanmisListener {
 
             String projName = applyinstProjList.get(0).getProjName();
 
-            AeaHiSmsInfo aeaHiSmsInfo = aeaHiSmsInfoMapper.getAeaHiSmsInfoByApplyinstId(applyinstId);
+            AeaHiSmsInfo aeaHiSmsInfo = aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(applyinstId);
             if(aeaHiSmsInfo!=null){
                 String receiveMode = aeaHiSmsInfo.getReceiveMode();//领取模式：1 窗口取证  0 邮政快递
 

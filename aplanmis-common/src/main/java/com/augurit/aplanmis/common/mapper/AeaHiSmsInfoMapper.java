@@ -31,7 +31,7 @@ public interface AeaHiSmsInfoMapper {
 
     public AeaHiSmsInfo getAeaHiSmsInfoById(@Param("id") String id) throws Exception;
 
-    public AeaHiSmsInfo getAeaHiSmsInfoByApplyinstId(@Param("applyinstId") String applyinstId) throws Exception;
+    public List<AeaHiSmsInfo> getAeaHiSmsInfoByApplyinstId(@Param("applyinstId") String applyinstId) throws Exception;
 
     public List<AeaHiSmsInfo> listAeaHiSmsInfoLikeSenderName(@Param("senderName") String senderName,@Param("rootOrgId") String rootOrgId) throws Exception;
 

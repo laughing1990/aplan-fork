@@ -7,6 +7,7 @@ import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.dto.AeaHiReceiveDto;
 import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.service.instance.AeaHiSmsInfoService;
 import com.augurit.aplanmis.common.service.receive.constant.ReceiveConstant;
 import com.augurit.aplanmis.common.service.receive.vo.*;
 import org.springframework.beans.BeanUtils;
@@ -30,7 +31,7 @@ public class ReceiveService extends AbstractReceiveService {
     @Autowired
     private AeaItemBasicMapper aeaItemBasicMapper;
     @Autowired
-    private AeaHiSmsInfoMapper aeaHiSmsInfoMapper;
+    private AeaHiSmsInfoService aeaHiSmsInfoService;
     @Autowired
     private AeaHiIteminstMapper aeaHiIteminstMapper;
 
@@ -179,7 +180,7 @@ public class ReceiveService extends AbstractReceiveService {
         //获取办理时限
         this.getDueUnit(baseVo);
         baseVo.setWinName(SecurityContext.getCurrentUserName());
-        AeaHiSmsInfo smsInfo = aeaHiSmsInfoMapper.getAeaHiSmsInfoByApplyinstId(applyinst.getApplyinstId());
+        AeaHiSmsInfo smsInfo = aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(applyinst.getApplyinstId());
         baseVo.setReceiveMode(smsInfo == null ? "" : smsInfo.getReceiveMode());
         switch (receive.getReceiptType()) {
             case ReceiveConstant.MAT_TYPE://物料回执
@@ -240,7 +241,7 @@ public class ReceiveService extends AbstractReceiveService {
 
     //退件回执||领证回执
     private ReturnedCertReceiveVo getReturnedCertReceiveVo(ReturnedCertReceiveVo vo) throws Exception {
-        AeaHiSmsInfo aeaHiSmsInfo = aeaHiSmsInfoMapper.getAeaHiSmsInfoByApplyinstId(vo.getApplyinstId());
+        AeaHiSmsInfo aeaHiSmsInfo = aeaHiSmsInfoService.getAeaHiSmsInfoByApplyinstId(vo.getApplyinstId());
         Optional.ofNullable(aeaHiSmsInfo).ifPresent(sms -> {
             vo.setIssueUserName(sms.getAddresseeName());
             vo.setIssueUserMobile(sms.getAddresseePhone());
