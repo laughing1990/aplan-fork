@@ -347,7 +347,7 @@ public class AeaSeriesService extends RestApplyService {
         List<AeaApplyinstForminst> aeaApplyinstForminsts = aeaApplyinstForminstMapper.listAeaApplyinstForminstByApplyinstId(applyinstId);
         seriesUnstashVo.getForminstVos().addAll(aeaApplyinstForminsts.stream()
                 .map(ForminstVo::from).collect(Collectors.toList()));
-        seriesUnstashVo.setSmsInfoId(Optional.ofNullable(aeaHiSmsInfoMapper.getAeaHiSmsInfoByApplyinstId(applyinstId)).orElse(new AeaHiSmsInfo()).getId());
+        seriesUnstashVo.setSmsInfoId(Optional.ofNullable(aeaHiSmsInfoMapper.getAeaHiSmsInfoByApplyinstId(applyinstId).get(0)).orElse(new AeaHiSmsInfo()).getId());
         return seriesUnstashVo;
     }
 

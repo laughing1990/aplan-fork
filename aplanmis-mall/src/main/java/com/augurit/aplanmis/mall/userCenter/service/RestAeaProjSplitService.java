@@ -13,6 +13,7 @@ import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.window.AeaProjApplySplitService;
 import com.augurit.aplanmis.mall.main.service.RestMainService;
 import com.augurit.aplanmis.mall.userCenter.vo.SplitProjInfoParamVo;
+import com.augurit.aplanmis.thirdPlatform.service.ProjectSplitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,21 +39,26 @@ public class RestAeaProjSplitService {
     private AeaParentProjMapper aeaParentProjMapper;
     @Autowired
     private RestMainService restMainService;
+    @Autowired
+    private ProjectSplitService projectSplitService;
+
 
     public AeaProjApplySplit saveProjInfoAndInitProjApplySplit(SplitProjInfoParamVo splitProjInfoParamVo) throws Exception {
         String parentProjInfoId=splitProjInfoParamVo.getParentProjInfoId();
         if(StringUtils.isBlank(parentProjInfoId)) throw new Exception("项目ID不能为空");
         AeaProjInfo projInfo = aeaProjInfoService.getAeaProjInfoByProjInfoId(parentProjInfoId);
         AeaProjInfo gcInfo=SplitProjInfoParamVo.formatProjInfo(projInfo,splitProjInfoParamVo);
-        String gcbm = gcbmBscRuleCodeStrategy.generateCode(gcInfo.getLocalCode(), gcInfo.getLocalCode(), "工程编码", gcInfo.getRootOrgId());
-        gcInfo.setGcbm(gcbm);
-        aeaProjInfoService.insertAeaProjInfo(gcInfo);//插入工程信息
         //插入父子项目关系
         AeaParentProj aeaParentProj=initAeaParentProj(parentProjInfoId,gcInfo.getProjInfoId());
         aeaParentProjMapper.insertAeaParentProj(aeaParentProj);
         //初始化拆分申请
         AeaProjApplySplit aeaProjApplySplit=initAeaProjApplySplit(splitProjInfoParamVo,gcInfo.getProjInfoId());
         aeaProjApplySplitService.saveAeaProjApplySplit(aeaProjApplySplit);//实例化拆分申请
+
+        //String gcbm = gcbmBscRuleCodeStrategy.generateCode(gcInfo.getLocalCode(), gcInfo.getLocalCode(), "工程编码", gcInfo.getRootOrgId());
+        String gcbm = projectSplitService.getGCBMFromThirdPlat(aeaProjApplySplit);
+        gcInfo.setGcbm(gcbm);
+        aeaProjInfoService.insertAeaProjInfo(gcInfo);//插入工程信息
         return aeaProjApplySplit;
 
     }

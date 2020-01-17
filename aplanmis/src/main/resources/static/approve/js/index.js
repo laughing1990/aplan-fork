@@ -1542,7 +1542,8 @@ var vm = new Vue({
         vm.parentPageLoading = false;
         if (res.success) {
           vm.$message.success('提交成功');
-          delayRefreshWindow();
+          refreshOpener();
+          delayCloseWindow();
         } else {
           vm.$message.error(res.message || '提交失败');
         }
@@ -1866,7 +1867,8 @@ var vm = new Vue({
       }, function (res) {
         if (res.success) {
           vm.$message.success('操作成功');
-          delayRefreshWindow();
+          refreshOpener();
+          delayCloseWindow();
         } else {
           vm.$message.error(res.message || '操作失败');
         }
@@ -6951,6 +6953,10 @@ function getPrintList() {
 
 function delayCloseWindow(time) {
   __STATIC.delayCloseWindow();
+}
+
+function refreshOpener(){
+  __STATIC.refreshOpener();
 }
 
 function delayRefreshWindow(time) {

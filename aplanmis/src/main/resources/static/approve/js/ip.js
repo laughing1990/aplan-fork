@@ -23,10 +23,10 @@ if (isDevelop) {
   // ctx = 'http://192.168.32.47:8083/aplanmis-front/'; // 熊贻标
   // ctx = 'http://192.168.3.65:8083/aplanmis-front/'; // 熊贻标-佛山
   // ctx = 'http://192.168.3.28:8083/aplanmis-front/'; // 张伟宁-佛山
-  ctx = 'http://192.168.3.64:8083/aplanmis-front/'; // 邹永胜-佛山
+  // ctx = 'http://192.168.3.64:8083/aplanmis-front/'; // 邹永胜-佛山
   // ctx = 'http://192.168.3.95:8083/aplanmis-front/'; // 唐秀董-佛山
   // ctx = 'http://19.130.245.117:8083/aplanmis-front/'; // 测试服务器-佛山
-  // ctx = 'http://6685w7.natappfree.cc/aplanmis-front/'; // 熊贻标-外网
+  ctx = 'http://6685w7.natappfree.cc/aplanmis-front/'; // 熊贻标-外网
 }
 
 var __STATIC = {
@@ -183,6 +183,12 @@ var __STATIC = {
     window.setTimeout(function () {
       __STATIC.closeCurrentTab();
     }, time || 2000);
+  },
+  // 刷新opener页面
+  refreshOpener: function () {
+    if (window.opener) {
+      window.opener.location.reload();
+    }
   },
   staticIconData: {
     "7Z": {text: "&#xe63c", color: "rgb(87, 193, 255)"},

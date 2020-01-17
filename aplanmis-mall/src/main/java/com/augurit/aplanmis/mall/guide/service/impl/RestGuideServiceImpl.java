@@ -519,12 +519,17 @@ public class RestGuideServiceImpl implements RestGuideService {
     @Override
     public ItemListVo listItemAndStateByStageId(String stageId,String rootOrgId,String isSelectState,String isFilterStateItem) throws Exception {
         ItemListVo vo = new ItemListVo();
+        //阶段
         AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageId);
-        vo.setStageName(aeaParStage.getStageName());
-        vo.setDueNum(aeaParStage.getDueNum());
-        vo.setHandWay(aeaParStage.getHandWay());
+        BeanUtils.copyProperties(aeaParStage,vo);
+        //主题
         AeaParTheme aeaParTheme = aeaParThemeService.getAeaParThemeByThemeVerId(aeaParStage.getThemeVerId());
         vo.setThemeName(aeaParTheme.getThemeName());
+        vo.setThemeId(aeaParTheme.getThemeId());
+        vo.setThemeVerId(aeaParTheme.getThemeVerId());
+        //流程图
+        AeaParStageGuide aeaParStageGuide = aeaParStageGuideService.getAeaParStageGuideByStageId(stageId,rootOrgId);
+        if (aeaParStageGuide!=null) vo.setDetailId(aeaParStageGuide.getWsbllct());
         //情形
         List<AeaParState> stateList = null;
 

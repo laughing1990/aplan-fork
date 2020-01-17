@@ -31,6 +31,14 @@ public class AeaHiItemFillController {
         return modelAndView;
     }
 
+    @ApiOperation(value = "容缺审核 --> 跳转容缺审核详情页", notes = "容缺审核 --> 跳转容缺审核详情页")
+    @RequestMapping("/toleranceDetailIndex")
+    public ModelAndView toleranceDetailIndex(String fillId) {
+        ModelAndView modelAndView = new ModelAndView("tolerance/index");
+        modelAndView.addObject("fillId",fillId);
+        return modelAndView;
+    }
+
     @RequestMapping("/detail")
     @ApiOperation(value = "容缺审核 --> 视图列表点击进入审核页面，获取容缺审核详细信息，包括申报基本信息，材料不齐信息等")
     @ApiImplicitParams(
